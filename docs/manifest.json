@@ -1,0 +1,281 @@
+{
+  "schema_version": "1.0",
+  "work_package": "WP-IPC-DESIGN-BASELINE-01",
+  "created_date": "2026-10-16",
+  "repository": "yuan2go/importer-pc",
+  "branch": "main",
+  "visibility_at_review": "public",
+  "delivery_state": "PUBLIC_SUBSET_ONLY",
+  "full_archive_in_main": false,
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
+      "version": "archive-01",
+      "sha256": "017998893e36c261c38bc7965b824201bc9cccd7dc575b99d1b28a843fd845a7",
+      "size_bytes": 1958,
+      "purpose": "资料归档与阅读/限制控制",
+      "status": "current_baseline_control",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "new_archival_document"
+    },
+    {
+      "path": "README.md",
+      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
+      "version": "archive-01",
+      "sha256": "4ddfc16dd134757217fb3989b085eaaa5609d120353769986d7376981db8e1c1",
+      "size_bytes": 872,
+      "purpose": "资料归档与阅读/限制控制",
+      "status": "current_baseline_control",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "new_archival_document"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
+      "version": "archive-01",
+      "sha256": "74265d43c8d986e5b1a2eb4b846858fdb47e6320a89d4b484edeb36156c51d35",
+      "size_bytes": 2130,
+      "purpose": "资料归档与阅读/限制控制",
+      "status": "current_baseline_control",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "new_archival_document"
+    },
+    {
+      "path": "docs/baseline/CHANGELOG.md",
+      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
+      "version": "archive-01",
+      "sha256": "aa9b6f52b85eb20654fee912e3d8daa12cd41506d7ec41208832511d379f9cc8",
+      "size_bytes": 909,
+      "purpose": "资料归档与阅读/限制控制",
+      "status": "current_baseline_control",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "new_archival_document"
+    },
+    {
+      "path": "docs/baseline/CONFLICTS.md",
+      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
+      "version": "archive-01",
+      "sha256": "1381adca5840134d830c1991cba9ab605d8bb515993a3e28be1ae62ccba70014",
+      "size_bytes": 1699,
+      "purpose": "资料归档与阅读/限制控制",
+      "status": "current_baseline_control",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "new_archival_document"
+    },
+    {
+      "path": "docs/baseline/MISSING.md",
+      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
+      "version": "archive-01",
+      "sha256": "05d09b93ae3eaf3fbe028370bb158790a4ae896b60a95305dc75b684cd6fc97b",
+      "size_bytes": 2388,
+      "purpose": "资料归档与阅读/限制控制",
+      "status": "current_baseline_control",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "new_archival_document"
+    },
+    {
+      "path": "docs/baseline/PUBLICATION.md",
+      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
+      "version": "archive-01",
+      "sha256": "a02a8714d06f73eeff5c061a05efa87867290d7e0350b5d284537e189753e115",
+      "size_bytes": 2360,
+      "purpose": "资料归档与阅读/限制控制",
+      "status": "current_baseline_control",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "new_archival_document"
+    },
+    {
+      "path": "docs/baseline/artifact-checks.json",
+      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
+      "version": "archive-01",
+      "sha256": "49a41eb36faa73a9fbcec1a93f68a4fafd716299d4e6c341ce16ced0ed842d81",
+      "size_bytes": 761,
+      "purpose": "资料归档与阅读/限制控制",
+      "status": "current_baseline_control",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "new_archival_document"
+    },
+    {
+      "path": "docs/reviews/STATUS.md",
+      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
+      "version": "archive-01",
+      "sha256": "79f0b11c214d1907544a2058576d57b2b9cd6da8e70a1b00fbb543e484f100f9",
+      "size_bytes": 1281,
+      "purpose": "资料归档与阅读/限制控制",
+      "status": "current_baseline_control",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "new_archival_document"
+    },
+    {
+      "path": "docs/reviews/issues.json",
+      "source": "SS-REVIEW-001 v1.0 / delivery archive evidence/issues.json",
+      "version": "1.0",
+      "sha256": "a16947ee9ee1a60a16afd35ab2b0e04897d88d24a44c97a1c2249ddeeb9d2ed9",
+      "size_bytes": 26928,
+      "purpose": "完整历史技术问题表，RV-01..17全部OPEN",
+      "status": "historical_review_open",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "none"
+    },
+    {
+      "path": "docs/ui/STATUS.md",
+      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
+      "version": "archive-01",
+      "sha256": "70aa7f233b22f93a71a847235d7f6ea212f5195f6deb91c5531010cee55ed61a",
+      "size_bytes": 917,
+      "purpose": "资料归档与阅读/限制控制",
+      "status": "current_baseline_control",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "new_archival_document"
+    },
+    {
+      "path": "docs/ui/tokens/tokens.css",
+      "source": "SS-UI-VIS-001 v1.1 / design/tokens.css",
+      "version": "1.1",
+      "sha256": "99ad481832ec36bb901032e597fccc9d36a0f7fa1b77ed5ffbf4c85434b18ec5",
+      "size_bytes": 629,
+      "purpose": "完整CSS设计变量，不含字体文件",
+      "status": "design_reference_not_approved",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "none"
+    },
+    {
+      "path": "docs/ui/tokens/tokens.json",
+      "source": "SS-UI-VIS-001 v1.1 / design/tokens.json",
+      "version": "1.1",
+      "sha256": "09bbfe810d571cfd57115729c78f59a3f43ee65974ce317fe08b9bbe8e8efb5e",
+      "size_bytes": 1779,
+      "purpose": "完整通用设计变量，非现场验收规格",
+      "status": "design_reference_not_approved",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "none"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-DESIGN-BASELINE-01.md",
+      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
+      "version": "archive-01",
+      "sha256": "fa5c1fac5d85ee66c5471bc53683649f6985385b58f4c74c737bb0b279e6dd45",
+      "size_bytes": 1650,
+      "purpose": "资料归档与阅读/限制控制",
+      "status": "current_baseline_control",
+      "public_review": "cleared_no_customer_identity_or_private_link",
+      "modification": "new_archival_document"
+    }
+  ],
+  "withheld_primary_artifacts": [
+    {
+      "intended_path": "docs/source/prd-v1.1/供包台功能PRD.md",
+      "actual_repository_path": null,
+      "sha256": "9318884d582d57f5d5a021647ce48cc4d5f174f77e20302b95025c4136cc6543",
+      "size_bytes": 16653,
+      "status": "collected_not_uploaded",
+      "reason": "customer_release_not_evidenced"
+    },
+    {
+      "intended_path": "docs/source/product-html/供包台.html",
+      "actual_repository_path": null,
+      "sha256": "eb52c3a1e965bb0f52f96379d8ec031c4954407998cae3077e6653a284b990f8",
+      "size_bytes": 35536,
+      "status": "collected_not_uploaded",
+      "reason": "customer_release_not_evidenced"
+    },
+    {
+      "intended_path": "docs/archive/design-20261015/供包台详细设计说明书.md",
+      "actual_repository_path": null,
+      "sha256": "23b5d3e0305845ad98907f4367ab7ea2cbc9f52856bdabb2febef6fe3310f29f",
+      "size_bytes": 103080,
+      "status": "collected_not_uploaded",
+      "reason": "customer_release_not_evidenced"
+    },
+    {
+      "intended_path": "docs/archive/design-20261015/供包台开发实施说明书.md",
+      "actual_repository_path": null,
+      "sha256": "c9979c0e9aa780ec6c3130a7b6773e78c0cd0ae048d93c413b656afda9402ab2",
+      "size_bytes": 65850,
+      "status": "collected_not_uploaded",
+      "reason": "customer_release_not_evidenced"
+    },
+    {
+      "intended_path": "docs/archive/design-20261015/供包台UI设计输入包.md",
+      "actual_repository_path": null,
+      "sha256": "202023e49e1c0a0c42b2706e12a6456b4093983c060a72e3cb10ef85c48c1d2e",
+      "size_bytes": 21995,
+      "status": "collected_not_uploaded",
+      "reason": "customer_release_not_evidenced"
+    },
+    {
+      "intended_path": "docs/ui/v1.1/docs/供包工作站_UIUX设计与开发交接说明.md",
+      "actual_repository_path": null,
+      "sha256": "4e0b59865d326b7297e06dee76e72c8bd11cfd22377a7dca497e091d1f32c599",
+      "size_bytes": 32953,
+      "status": "collected_not_uploaded",
+      "reason": "customer_release_not_evidenced"
+    },
+    {
+      "intended_path": "docs/ui/v1.1/供包工作站_高保真交互原型.html",
+      "actual_repository_path": null,
+      "sha256": "d46b0ed9b057cda6779012ecdc6981d0799ba8c3de73e9be22d92b61d4860b6c",
+      "size_bytes": 84945,
+      "status": "collected_not_uploaded",
+      "reason": "customer_release_not_evidenced"
+    },
+    {
+      "intended_path": "docs/ui/v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx",
+      "actual_repository_path": null,
+      "sha256": "88a71e35bc9e97c7995d63ee8369868a6f18c576c93c1aed21276ef259c34dda",
+      "size_bytes": 3975627,
+      "status": "collected_not_uploaded",
+      "reason": "customer_release_not_evidenced"
+    },
+    {
+      "intended_path": "docs/reviews/20261016/供包台设计与UI开发就绪评审报告.md",
+      "actual_repository_path": null,
+      "sha256": "6f1a677cead036a2ba36d9c1ece30688bacaece043934fdef2203bf3bc07556d",
+      "size_bytes": 80446,
+      "status": "collected_not_uploaded",
+      "reason": "customer_release_not_evidenced"
+    }
+  ],
+  "source_archives_checked": [
+    {
+      "name": "供包工作站_UIUX高保真交付_v1.1.zip",
+      "sha256": "191be3c69a75dd43dbe810f324e94697f216569e05c8ac5e280a381d364062fa",
+      "crc_ok": true,
+      "entries": 70
+    },
+    {
+      "name": "供包台_设计与开发文档交付_20261015.zip",
+      "sha256": "8bc52b6cac882ae3efcbc0a245f1c933427de1c6ff7d585d98f36ea00d14d43a",
+      "crc_ok": true,
+      "entries": 35
+    },
+    {
+      "name": "供包台_设计与UI开发就绪独立评审_20261016.zip",
+      "sha256": "46b43268455fe8267534e054c18c80e73b11b1c03cea0d6b0b06b313a9069566",
+      "crc_ok": true,
+      "entries": 51
+    }
+  ],
+  "full_local_inventory": {
+    "file": "restricted-bundle/docs/manifest.json",
+    "sha256": "09c037e5175d4de4f195b53ec38525cb69076a1f2711d265ecb188d4534263f9",
+    "records": 191,
+    "in_this_repository": false
+  },
+  "self_verification": {
+    "sha256_file": "manifest.sha256",
+    "excluded_from_file_records": [
+      "docs/manifest.json",
+      "docs/manifest.sha256"
+    ],
+    "reason": "avoid recursive self hashes; compare these two Git blobs during remote verification"
+  },
+  "status_semantics": {
+    "current_baseline_control": "当前归档管理文件，不是新客户需求",
+    "historical_review_open": "历史评审事实；未重新运行，未关闭",
+    "design_reference_not_approved": "设计建议与假设，不是客户批准或现场验收",
+    "collected_not_uploaded": "实际文件已取得但未进入公开Git"
+  },
+  "approval_changes": []
+}

@@ -1,0 +1,24 @@
+{
+  "checked_at": "2026-10-16",
+  "scope": "artifact-integrity-only",
+  "archive_crc_ok": true,
+  "json_files": 33,
+  "image_files": 92,
+  "pptx_files": 1,
+  "errors": [],
+  "font_or_sdk_files_excluded": [],
+  "business_tests_run": false,
+  "browser_tests_run": false,
+  "resource_results": {
+    "unavailable": 16
+  },
+  "pptx_page_count": 18,
+  "script_execution": "Not executed: historical scripts retain their original environment paths and are not production code.",
+  "public_links": {
+    "local_references_checked": 17,
+    "external_reference_count": 0,
+    "status": "passed"
+  },
+  "public_sensitive_marker_scan": [],
+  "disclaimer": "Marker scans complement, not prove, ownership/privacy review. Original client-dependent full artifacts withheld."
+}

@@ -1,0 +1,36 @@
+name: Import final UI design assets
+on:
+  push:
+    branches: [docs/final-ui-assets-20261016]
+    paths: [.ui-import/ready]
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/final-ui-assets-20261016
+          fetch-depth: 1
+      - name: Restore verified design source files
+        run: python .ui-import/import.py
+      - name: Install rendering dependencies
+        run: |
+          python -m pip install 'playwright==1.56.0' pillow
+          python -m playwright install --with-deps chromium
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-noto-cjk
+      - name: Export PNG pages from the original interactive design
+        run: python .ui-import/render.py
+      - name: Update design index and integrity manifest
+        run: python .ui-import/finalize.py
+      - name: Commit only design assets and documentation
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/ui docs/INDEX.md docs/manifest.json docs/manifest.sha256 AGENTS.md
+          git diff --cached --check
+          git commit -m 'docs: publish complete final UI sources, editable boards and rendered states'
+          git push origin HEAD:docs/final-ui-assets-20261016

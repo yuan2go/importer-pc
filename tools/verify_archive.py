@@ -133,6 +133,20 @@ def markdown(text):
     return refs, ids
 
 
+# Runtime build outputs are not archival inputs. These exact project output roots and the
+# repository's dedicated publication directory are generated; docs/assets remain exhaustive.
+RUNTIME_PROJECTS = {
+    'src/Ipc.Platform', 'src/Ipc.Supply', 'src/Ipc.Adapters', 'src/Ipc.Product',
+    'src/Ipc.Fixture', 'src/Ipc.Desktop', 'tests/Ipc.Verification',
+}
+
+
+def runtime_generated(rel):
+    parts = PurePosixPath(rel).parts
+    return bool(parts) and (parts[0] == '.artifacts' or
+        (len(parts) >= 3 and '/'.join(parts[:2]) in RUNTIME_PROJECTS and parts[2] in ('bin', 'obj')))
+
+
 def verify(root, manifest_path, scope, registry_path=None):
     errors, registered, external = [], [], []
     counts = Counter()
@@ -152,7 +166,7 @@ def verify(root, manifest_path, scope, registry_path=None):
     files = []
     for f in sorted(root.rglob('*')):
         rel = f.relative_to(root).as_posix()
-        if '.git' in f.relative_to(root).parts or '__pycache__' in f.relative_to(root).parts:
+        if '.git' in f.relative_to(root).parts or '__pycache__' in f.relative_to(root).parts or runtime_generated(rel):
             continue
         if f.is_symlink():
             fail('symlink', rel)

@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Ipc.Adapters/Ipc.Adapters.csproj" />
+    <Project Path="src/Ipc.Desktop/Ipc.Desktop.csproj" />
+    <Project Path="src/Ipc.Fixture/Ipc.Fixture.csproj" />
+    <Project Path="src/Ipc.Platform/Ipc.Platform.csproj" />
+    <Project Path="src/Ipc.Product/Ipc.Product.csproj" />
+    <Project Path="src/Ipc.Supply/Ipc.Supply.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Ipc.Verification/Ipc.Verification.csproj" />
+  </Folder>
+</Solution>

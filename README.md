@@ -1,9 +1,17 @@
 # importer-pc
 
-Windows工业工位框架与供包参考产品。当前仓库已形成目标架构与下一实施工作包；**尚无供包业务工程，已有代码为资料校验工具**，不能把设计入库解释为客户端已实现。
+C#/.NET 10 工位运行基座与供包**独立参考产品**：Generic Host、WPF、多页面/布局共享业务、实际SQLite事务/Outbox/恢复，两类模拟读码源与独立持久接收账loopback夹具。不是既有现场工程迁移，也未接入厂商SDK或真实WCS。
 
-从 [统一入口](docs/INDEX.md) 阅读 [框架设计](docs/design/framework.md) 和 [WP-IPC-RUNTIME-03](docs/work-packages/WP-IPC-RUNTIME-03.md)。新参考实现采用C#/.NET10/WPF/SQLite的推荐路线；既有现场工程迁移、真实SDK/WCS和业务规则仍需各自核验。可开展隔离运行闭环，不以缺少局部现场资料阻止全部框架开发。
+[运行与发布](docs/runtime/operations.md) · [实施记录](docs/runtime/implementation.md) · [验证与交付报告](docs/runtime/delivery.md) · [统一入口](docs/INDEX.md) · [框架设计](docs/design/framework.md) · [工作包](docs/work-packages/WP-IPC-RUNTIME-03.md)
 
-本仓库为public。[公开范围](docs/baseline/PUBLICATION.md) 和 [缺失登记](docs/baseline/MISSING.md) 继续有效；完整客户资料归档仍是PUBLIC_SUBSET_ONLY，不上传客户原稿、私密来源、凭据、SDK或字体。本轮新增的是通用技术设计，不代替客户批准，RV-01～17不因此关闭。
+```sh
+# .NET SDK 10.0.402 + Python3
+./scripts/build.sh
+dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll .
+# 本地模拟接收端：保持运行
+dotnet src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll --url http://127.0.0.1:18743/ --data /tmp/ipc-simulation-receiver
+```
 
-本轮只修订文档，不开发业务代码。后续按工作包在开发分支实施并提交PR；实际运行命令由真实工程提供，目前仅有 [资料校验工具用法](tools/README.md)。
+Windows桌面和离线win-x64发布命令见运行说明。macOS能运行核心/夹具和持久化验证，并交叉编译WPF；Windows桌面、DPI/触控、提示声、SDK/WCS与现场验收均须另验。Production必需能力缺失时报NotReady，不回退模拟成功。
+
+仓库public。[公开范围](docs/baseline/PUBLICATION.md) 持续有效：仅提交新的通用实现和合成数据，不上传客户原稿、私密来源、凭据、生产数据、SDK或字体。完整客户归档仍为PUBLIC_SUBSET_ONLY，D未批准、RV-01～17保持OPEN。新参考实现的验证不表示旧HTML已修复。

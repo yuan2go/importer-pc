@@ -1,0 +1,19 @@
+{
+  "SchemaVersion": 1,
+  "StationId": "SIM-STATION-01",
+  "Version": "SIM-1",
+  "Mode": "Simulation",
+  "Devices": [
+    { "Role": "left", "Driver": "manual", "DeviceId": "SIM-CAMERA-L", "Revision": "1", "ReplayFile": null },
+    { "Role": "right", "Driver": "manual", "DeviceId": "SIM-CAMERA-R", "Revision": "1", "ReplayFile": null }
+  ],
+  "Integration": { "Id": "loopback", "Revision": "SIM-1", "Contract": "SIMULATION-v1", "Endpoint": "http://127.0.0.1:18743/" },
+  "EventCapacity": 64,
+  "CommandCapacity": 32,
+  "OutboxCapacity": 64,
+  "TimeoutMs": 1500,
+  "MinimumFreeMb": 128,
+  "Policy": "SYNTHETIC-KEEP-v1",
+  "FixtureDemand": 120,
+  "MaximumPackage": 1000
+}

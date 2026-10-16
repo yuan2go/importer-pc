@@ -1,0 +1,6 @@
+{"Kind":"Enter","AdmissionId":"SYNTHETIC-REPLAY-ENTITY-1","Codes":[],"PackageQuantity":null,"SourceEventId":"enter-1"}
+{"Kind":"Read","AdmissionId":"SYNTHETIC-REPLAY-ENTITY-1","Codes":["000123"],"PackageQuantity":1,"SourceEventId":"read-1"}
+{"Kind":"Depart","AdmissionId":"SYNTHETIC-REPLAY-ENTITY-1","Codes":[],"PackageQuantity":null,"SourceEventId":"depart-1"}
+{"Kind":"Reset","AdmissionId":"SYNTHETIC-REPLAY-ENTITY-1","Codes":[],"PackageQuantity":null,"SourceEventId":"reset-1"}
+{"Kind":"Enter","AdmissionId":"SYNTHETIC-REPLAY-ENTITY-2","Codes":[],"PackageQuantity":null,"SourceEventId":"enter-2"}
+{"Kind":"Read","AdmissionId":"SYNTHETIC-REPLAY-ENTITY-2","Codes":["000123"],"PackageQuantity":1,"SourceEventId":"read-2"}

@@ -1,0 +1,32 @@
+# WP-IPC-RUNTIME-03 implementation record
+
+Execution starts at main `89089092ad8b7445071e0c12c9c558dc012a26e5`, after the analysis baseline. No existing C# project was found. This is the independent F-02 reference product, not a migrated site application. The approved framework and work package remain the design authority; historical D/RV and restricted assets are unchanged.
+
+## Implementation sequence
+
+- [x] S0: isolate workspace, verify archive baseline, SDK and publication scope.
+- [x] S1: `Ipc.Platform` manifest/configuration validation, bounded execution, process ownership and dependency lifecycle; explicit `Ipc.Product` composition.
+- [x] S2: `Ipc.Supply` shared application coordinator, command/revision guards, entity/observation identities, reference quantity/disposition/close flows.
+- [x] S3: SQLite transactions, immutable requests and attempts, Outbox and recovery; `Ipc.Adapters` two sources and HTTP port; independent `Ipc.Fixture` persistent receiver. Verify with real databases, endpoint and process restarts.
+- [x] S4: WPF workstation, history/details, alarms/reconciliation and diagnostics/configuration; stable view models and two layouts/windows sharing one host.
+- [x] S5: locked builds, offline publication, backup/preflight/restore, necessary risk regression and deliverable report.
+
+## Responsibility and verification
+
+Platform contains no supply rules. Supply owns the command authority, snapshots, store schema and reconciliation decisions. Adapters own observation buffers and protocol translation. Product is the only composition root. Desktop consumes the application facade, never HTTP/database/driver objects. The fixture owns a separate receiving database and atomically arbitrates synthetic demand.
+
+T1 saves state, evidence, immutable intent and Outbox together. T2 claims the original request and records an attempt. T3 saves response/unique acceptance/state together. Network waits occur outside the coordinator and transaction. Dispatching becomes Unknown after restart; Unknown is only queried, never blindly retried. Restored databases enter quarantine. Simulation quantities, roles and physical events are explicitly synthetic.
+
+Risk checks cover AC-01–11 rather than a test-count target. macOS can execute core/fixture/persistence and compile Windows targets, but cannot establish WPF runtime/DPI/touch/SDK/site PASS. See the final delivery record for actual commands and outcomes.
+
+## Inheritance and boundaries
+
+The only existing executable code was `tools/verify_archive.py` and its tests. Both are retained; generated-output scope is narrowed to the seven known project bin/obj roots and `.artifacts`, with a negative test proving documentation and unknown source roots remain checked. There was no inherited business implementation, SDK, Windows deployment or WCS contract.
+
+Platform owns mechanism only; Supply owns persistence schema and business guards; Product is the explicit registration root. Desktop receives `IStationApplication`, never the store, HTTP client or device-source objects. Its source controls call guarded product-level SIMULATION actions. One host/sender/coordinator survives page/layout changes and serves a second window.
+
+SQLite schema1 uses foreign keys, checksummed migration, actual transaction rollback, immutable identity/content/binding checks, unique acceptance and normalized historical records. Restored Prepared intents become Unknown because a snapshot can lag the receiver. Event overflow latches a separate diagnostic and records unadmitted count; admitted events drain without silent discard. Entity permission is a separate epoch/revision/expiry from business revision; after source/process replacement explicit synthetic revalidation is required.
+
+Configuration promotion is deferred until owned modules actually initialize. A missing replay source records ActivationFailed and retains the previous effective configuration for the next controlled start. No new endpoint is applied to old requests. Simulation identity is reset on every process start and frozen in each original payload.
+
+Reference cleanup requires maintenance evidence and an explicit synthetic retention period; it preserves unresolved/current aggregates and referenced configurations. Diagnostic export is metadata-only by default. Windows scripts are syntax-checked separately from desktop/Windows operational validation.

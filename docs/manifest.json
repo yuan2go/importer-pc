@@ -474,9 +474,9 @@
     },
     {
       "path": "docs/reviews/main-static-review-03-checks.json",
-      "sha256": "9861bea2c3e8915d9838dcc66a11537ce0319977c63bebc59b059a6ec8ff1532",
-      "size_bytes": 9701,
-      "git_blob": "51344f4ffd8729600b3df7261b015fa9f63cdf9a",
+      "sha256": "1009328d484009784ba7ce1956211d30b55952c7c87543a1c4596e47f4011fab",
+      "size_bytes": 10064,
+      "git_blob": "06b9b1a396d9a2ed155ba8addb647229f797bb73",
       "version": "main-static-review-03",
       "status": "current_static_review_or_navigation",
       "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
@@ -485,9 +485,9 @@
     },
     {
       "path": "docs/reviews/main-static-review-03.md",
-      "sha256": "fb48cef5001065c4ec66b4f3f6ddaf9339b871619a74f2725cef635f401db7b4",
-      "size_bytes": 16593,
-      "git_blob": "49ebcd1ca4f189c3250c928167659ba35e9b82c2",
+      "sha256": "0454f4c50386965a8e0bc6a2f7237b9b0e4c7e4a97fe2c7d4054b15f6835c066",
+      "size_bytes": 16856,
+      "git_blob": "7ccb963bd0e5ad8f6e947b33edab439e6e026535",
       "version": "main-static-review-03",
       "status": "current_static_review_or_navigation",
       "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
@@ -2785,13 +2785,16 @@
     "new_binary": false,
     "historical_d_rv_unchanged": true,
     "new_packages_execution": "PLANNED_NOT_STARTED",
-    "delivery_pr_state": "PENDING_CREATION",
+    "delivery_pr_state": "OPEN_AT_CREATION",
     "public_scope": "New generic review/work packages plus retained authorized UI baseline from PR #7; no new customer originals, private URLs, credentials, SDK or fonts published by this review",
     "initial_analysis_base": "677a5adeef277adb4c6dd742749f06d02b01c2a7",
     "parallel_pr_7_state": "MERGED",
     "ui_alignment_findings": [
       "UI-01"
     ],
-    "public_ui_entry": "docs/ui/ss-ui-vis-001-v1.1/README.md"
+    "public_ui_entry": "docs/ui/ss-ui-vis-001-v1.1/README.md",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/8",
+    "pr_creation_head": "16bed1eef4782c9d732aba74569a8bb286e75292",
+    "review_pr_merged": false
   }
 }

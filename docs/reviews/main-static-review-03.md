@@ -108,3 +108,5 @@ PR #7已使v1.1原HTML、分离源码、PPTX/画板JSON、tokens和34张同源PN
 5. [INTEGRATION-BOUNDARY-05](../work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)：可并行准备获授权资料，真实实现/联调逐项等待能力证据与授权；当前BLOCKED。
 
 本次仅文档和工作包整理；不改业务/测试源码、不重写07的检查JSON、历史issues、D批准或原验收记录，不修旧HTML。更新当前导航与manifest，提交文档开发分支供main PR审查，不自行合并本次复核PR，不发布二进制。实际提交/PR以最终回执与GitHub核验为准。
+
+已创建[文档main PR #8](https://github.com/yuan2go/importer-pc/pull/8)，创建时HEAD `16bed1eef4782c9d732aba74569a8bb286e75292`；当前分支的最终HEAD以GitHub PR及最终回执为准。本任务只合并获授权的PR #6，未合并本次复核PR。

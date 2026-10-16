@@ -231,5 +231,13 @@
     "method": "Passive local source/image reading only; no re-render/browser/prototype execution",
     "implementation_alignment": "UI-01_OPEN",
     "windows": "NOT_RUN"
+  },
+  "delivery": {
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/8",
+    "base": "main",
+    "state_at_creation": "OPEN",
+    "creation_head": "16bed1eef4782c9d732aba74569a8bb286e75292",
+    "merged_by_this_task": false,
+    "head_authority": "GitHub PR headRefOid; creation_head retained as creation receipt, no self-referential final hash"
   }
 }

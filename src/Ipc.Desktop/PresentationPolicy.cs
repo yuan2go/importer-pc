@@ -2,6 +2,16 @@ using Ipc.Supply;
 
 namespace Ipc.Desktop;
 
+// The confirmation belongs to the identity/revision that reviewed the draft. Refreshing
+// a window during a modal must not authorize old content with a newer business revision.
+internal sealed record MaintenanceReviewToken(long Revision, Actor Actor)
+{
+    public static MaintenanceReviewToken Capture(long revision, Actor? actor, DateTimeOffset now) =>
+        actor is { Role: SimulationRole.Maintenance } && actor.ExpiresAt > now
+            ? new(revision, actor) : throw new GuardException("Valid maintenance identity required before review");
+    public bool IdentityMatches(Actor? current, DateTimeOffset now) => current == Actor && Actor.ExpiresAt > now;
+}
+
 // Presentation facts only: a difference does not create a new acceptance rule.
 internal sealed record WaveComparison(string Box, string Item, bool Differs)
 {

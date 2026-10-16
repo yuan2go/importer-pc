@@ -245,6 +245,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                         Maintenance(next); Require(command.Value is not null, "Configuration JSON required");
                         var draft = Wire.Decode<StationConfig>(command.Value!); var errors = SupplyConfiguration.Validate(draft).Concat(configurationValidator?.Invoke(draft) ?? []).Distinct().ToArray();
                         Require(draft.StationId == config.StationId && draft.Mode == config.Mode && draft.Version != config.Version, "Station/mode fixed; revision must change");
+                        Require(!store.ConfigVersionExists(draft.Version), "Configuration version already used; create a new immutable revision identity");
                         revision = new(Wire.Id(), config.Version, draft, next.Actor!.Id, errors.Length == 0 ? "Validated" : "Rejected", string.Join("; ", errors), Now);
                         owner = revision.Id; break;
                     }
@@ -253,6 +254,8 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                         Maintenance(next); Require(!HasUnresolved() && (next.Session is null || next.Session.Status is SessionStatus.Closed or SessionStatus.Rejected), "Close box and resolve effects before restart activation");
                         var draft = store.Configs().FirstOrDefault(x => x.Id == owner) ?? throw new GuardException("Configuration revision not found");
                         Require(draft.Status == "Validated" && draft.BaseVersion == config.Version, "Stale/invalid configuration draft");
+                        Require(!store.ConfigVersionExists(draft.Content.Version, draft.Id), "Configuration version reused in retained history; create a new draft");
+                        Require(store.CurrentConfig("PendingActivation") is null, "A configuration is already pending controlled restart");
                         Require(SupplyConfiguration.Validate(draft.Content).Concat(configurationValidator?.Invoke(draft.Content) ?? []).Count() == 0, "Configuration capabilities changed; validate draft again");
                         revision = draft with { Status = "PendingActivation" };
                         SetBlock(next, "ConfigPending", "station", "configuration", revision.Id, "controlled-restart"); break;
@@ -608,7 +611,9 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                 StationId = config.StationId, NotificationBacklog = notifications.Count, NotificationOverflow = notificationOverflow,
                 ProjectionVersion = Interlocked.Increment(ref projectionVersion), GeneratedAt = Now,
                 AcceptedQuantity = state.Session is null ? 0 : store.AcceptedQuantity(state.Session.Id),
-                RecentOperations = store.History(null, 0, 8)
+                // Current station/recovery diagnostics remain visible. Cross-session
+                // recent history is a historical read and must obey the same identity rule.
+                RecentOperations = state.Actor is { } reader && reader.ExpiresAt > Now ? store.History(null, 0, 8) : []
             }; }
         finally { gate.Release(); }
     }
@@ -633,16 +638,16 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     }
     public Task<Alarm[]> AlarmHistoryAsync(int offset = 0, int limit = 100) => owner.Invoke(() => AlarmHistoryCore(offset, limit), priority: false, waitForCapacity: false);
     async Task<Alarm[]> AlarmHistoryCore(int offset, int limit)
-    { await gate.WaitAsync(); try { return store.AlarmHistory(offset, limit); } finally { gate.Release(); } }
+    { await gate.WaitAsync(); try { RequireIdentity(state); return store.AlarmHistory(offset, limit); } finally { gate.Release(); } }
     public Task<SupplyOperation[]> HistoryAsync(string? filter = null, int offset = 0, int limit = 100) => owner.Invoke(() => HistoryCore(filter, offset, limit), priority: false, waitForCapacity: false);
     async Task<SupplyOperation[]> HistoryCore(string? filter, int offset, int limit)
-    { await gate.WaitAsync(); try { return store.History(filter, offset, limit); } finally { gate.Release(); } }
+    { await gate.WaitAsync(); try { RequireIdentity(state); return store.History(filter, offset, limit); } finally { gate.Release(); } }
     public Task<RequestDetail[]> DetailsAsync(string ownerId) => owner.Invoke(() => DetailsCore(ownerId), priority: false, waitForCapacity: false);
     async Task<RequestDetail[]> DetailsCore(string ownerId)
     { await gate.WaitAsync(); try { RequireIdentity(state); var request = store.Request(ownerId); return (request is null ? store.Requests(ownerId) : [request]).Select(x => new RequestDetail(x, store.Attempts(x.Id), store.Responses(x.Id), store.Audits(x.OwnerId).Concat(store.Audits(x.Id)).DistinctBy(a => a.Id).OrderBy(a => a.At).ToArray())).ToArray(); } finally { gate.Release(); } }
     public Task<BusinessRequest[]> UnknownRequestsAsync() => owner.Invoke(() => UnknownRequestsCore(), priority: false, waitForCapacity: true);
     async Task<BusinessRequest[]> UnknownRequestsCore()
-    { await gate.WaitAsync(); try { return store.PendingRequests().Where(x => x.Status == RequestStatus.Unknown).ToArray(); } finally { gate.Release(); } }
+    { await gate.WaitAsync(); try { RequireIdentity(state); return store.PendingRequests().Where(x => x.Status == RequestStatus.Unknown).ToArray(); } finally { gate.Release(); } }
     public Task RecordQueryAsync(string requestId, string evidence) => owner.Invoke(() => RecordQueryCore(requestId, evidence), priority: false, waitForCapacity: true);
     async Task RecordQueryCore(string requestId, string evidence)
     { await gate.WaitAsync(); try { store.Commit(state, "ReconciliationQuery", store.Request(requestId)!.OwnerId, "reconciler", evidence); } catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); } finally { gate.Release(); } }
@@ -659,7 +664,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     }
     public Task<ConfigRevision[]> ConfigsAsync() => owner.Invoke(() => ConfigsCore(), priority: false, waitForCapacity: false);
     async Task<ConfigRevision[]> ConfigsCore()
-    { await gate.WaitAsync(); try { return store.Configs(); } finally { gate.Release(); } }
+    { await gate.WaitAsync(); try { RequireIdentity(state); return store.Configs(); } finally { gate.Release(); } }
     public Task BackupAsync(string destination) => owner.Invoke(() => BackupCore(destination), priority: false, waitForCapacity: true);
     async Task BackupCore(string destination)
     { await gate.WaitAsync(); try { RequireIdentity(state); Maintenance(state); store.Backup(destination); } finally { gate.Release(); } }

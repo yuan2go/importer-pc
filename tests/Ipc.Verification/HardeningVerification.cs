@@ -56,9 +56,11 @@ static class HardeningVerification
             await module.StartAsync(CancellationToken.None);
             async Task Command(string kind) { var s = await app.SnapshotAsync(); var r = await app.ExecuteAsync(new(Wire.Id(), s.State.Revision, kind, Value: kind == "Login" ? "maintenance" : "SIMULATION source inspected", EvidenceVersion: s.OverloadVersion)); Assert(r.Status == "Persisted", r.Reason); }
             await Command("Login");
-            var before = await app.SnapshotAsync();
-            await app.ExecuteAsync(new(Wire.Id(), before.State.Revision, "OpenContext", Value: "000001"));
             await using var port = new LoopbackIntegration(cfg);
+            await app.SetWcsHealthAsync(await port.HealthAsync(CancellationToken.None));
+            var before = await app.SnapshotAsync();
+            var open = await app.ExecuteAsync(new(Wire.Id(), before.State.Revision, "OpenContext", Value: "000001"));
+            Assert(open.Status == "Persisted", "Context requires current independent loopback health: " + open.Reason);
             var context = (await app.ClaimAsync())!.Value;
             Assert(await app.BeforeSendAsync(context.Request, context.Attempt), "Context transport authorized");
             await app.CompleteAsync(context.Request, context.Attempt, await port.ExecuteAsync(context.Request, CancellationToken.None));
@@ -194,11 +196,15 @@ static class HardeningVerification
             contract.ValidateResponse(original, response);
             await using var h = await Rig.New(root, url);
             using var db = new SqliteConnection("Data Source=" + h.Store.Path); db.Open(); using var sql = db.CreateCommand(); sql.CommandText = "SELECT count(*) FROM schema_history";
-            Assert(Convert.ToInt32(sql.ExecuteScalar()) == 2, "Forward semantic format migration is explicit");
+            Assert(Convert.ToInt32(sql.ExecuteScalar()) == 3, "Three historical migrations retain explicit format3 semantics");
             sql.CommandText = "SELECT checksum FROM schema_history WHERE id=1";
             Assert((string?)sql.ExecuteScalar() == Wire.Hash(File.ReadAllText(Path.Combine(fixtures, "schema1.sql"))), "Original schema1 SQL checksum is unchanged");
+            sql.CommandText = "SELECT checksum FROM schema_history WHERE id=2";
+            Assert((string?)sql.ExecuteScalar() == AlignmentDataVerification.Format2Checksum, "Historical format2 checksum is unchanged");
+            sql.CommandText = "SELECT checksum FROM schema_history WHERE id=3";
+            Assert((string?)sql.ExecuteScalar() == AlignmentDataVerification.Format3Checksum, "Historical format3 checksum is unchanged");
             sql.CommandText = "SELECT version || ':' || minimum_reader FROM storage_format WHERE id=1";
-            Assert((string?)sql.ExecuteScalar() == "2:2", "New JSON format records a matching minimum reader");
+            Assert((string?)sql.ExecuteScalar() == "3:3", "Format3 records a matching minimum reader");
         });
         await Check("same alarm code retains independent owners and recovery", async () =>
         {

@@ -1,12 +1,12 @@
 # 运行、发布与运维
 
-当前复核边界：[MAIN-REVIEW-03](../reviews/main-static-review-03.md) 确认E-06旧历史读取权限和E-10最终生效配置/租约集合仍有工程缺口，待08整改。已有机级策略不保证实际设备集合已被正确锁定；旧历史入口不能据新API守卫推定已受控。以下为已实现入口，均未在本轮执行；核心验证09、Windows06和真实集成05分别登记。
+当前执行：[AUDIT-RECONCILIATION-01](../work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)，以[09实际检查](reference-validation-09.md)及[10逐页映射](ui-baseline-alignment-10.md)为准。用户已授权合成/参考测试、构建、启动和发布；历史不测试/NOT_RUN见原报告和[纠偏前快照](../archive/pre-reconciliation-01/README.md)。Windows06与真实能力05继续分别记录。
 
-当前工程实现与未验证边界见 [ENGINEERING-CLOSURE-07](engineering-closure-07.md)，[执行记录](engineering-closure-07-checks.json)。Windows06/真实集成05继续分开。以下操作入口本轮均未执行；用户要求不测试，也未构建或发布新包。ALIGNMENT/H04结果保留形成时范围。
+08启动顺序：取得数据根租约→读取最终Effective与待激活修订→核验站点/模式/产品能力→取得最终站点和设备集合租约→创建应用、来源与发送器。seed设备可与Effective不同，实际锁覆盖Effective；不锁seed-B却启动A。非法待激活保留ActivationFailed并使用旧Effective；启源失败记录激活失败，完全停止后下一次受控启动回到旧Effective，不在失败进程里并行启第二套来源。首次成功启动也固定seed为Effective。历史查询全部要求有效模拟身份；无权时Snapshot不查询跨箱最近历史，返回空RecentOperations。当前工位聚合、当前箱及原未决请求/恢复诊断仍可发现；其可见性不授权历史/尝试/回执详情读取。 配置Version是不可复用的修订身份（被拒绝/失败版本也保留，纠正时用新Version）；推广新Effective与旧版Superseded在同一事务。遗留多Effective根据持久ConfigActivation顺序读取，不按草稿插入rowid猜生效顺序，激活审计失败整体回滚保旧。
 
 当前StorageVersion=3、minimum_reader=3；schema1/id2文本保留，追加id3。preflight/backup使用不迁移源库的独立路径；旧format1/2默认启动拒绝，须按07记录显式备份升级。普通Run与升级/回滚均显式选择Release，不使用active-release指针。备份/升级回执和实际新包的操作步骤见07记录；不要从旧发布目录使用旧升级脚本处理新格式。
 
-Windows首次安装需在提升的维护会话执行新包的 `pwsh ./provision-runtime.ps1 -RuntimeAccount 'MACHINE\station-user'`，指定实际运行账户；之后以该账户运行。程序检查ProgramData下维护方拥有的runtime-policy.json、机级leases目录及ACL；缺策略、账户不符或权限不符即拒绝启动业务，不能回退用户级租约。安装脚本本轮NOT_RUN，固定账户/ACL和跨会话行为仍待Windows验证。
+Windows首次安装需在提升的维护会话执行新包的 `pwsh ./provision-runtime.ps1 -RuntimeAccount 'MACHINE\station-user'`，指定实际运行账户；之后以该账户运行。程序检查ProgramData下维护方拥有的runtime-policy.json、机级leases目录及ACL；缺策略、账户不符或权限不符即拒绝启动业务，不能回退用户级租约。安装脚本的实际Windows执行为NOT_RUN；固定账户/ACL和跨会话行为仍待Windows验证。
 
 本实现是 F-02 独立参考产品。所有设备、身份、数量策略和外部端点为 **SIMULATION**。核心、SQLite 与恢复为真实代码；没有旧现场工程迁移、厂商驱动或真实 WCS。D/RV 的客户与现场状态不改变。
 
@@ -18,10 +18,10 @@ SDK 锁定 `global.json` 的 .NET 10.0.402。NuGet 来源仅 nuget.org；Microso
 
 ```sh
 ./scripts/build.sh
-dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll .
+dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --reconciliation
 ```
 
-核心和夹具可在 macOS/Linux 运行；WPF 只能在 Windows 运行。交叉编译成功不证明桌面运行。此前构建采用单节点 MSBuild 避免工作节点提前退出；本轮未执行还原或构建。
+核心和夹具可在 macOS/Linux 运行；WPF 只能在 Windows 运行。交叉编译成功不证明桌面运行。构建采用单节点 MSBuild；实际本次结果见09报告。
 
 ## 开始模拟
 
@@ -155,6 +155,19 @@ python3 scripts/smoke.py --product .artifacts/native-smoke-final --fixture src/I
 
 应用读写由StationDispatcher的单个后台消费者拥有；UI读取不写报警，状态变化/维护脉冲更新报警。投影有独立版本与生成时间，超过3秒/读取失败阻断UI输入，后台命令仍查当前状态。设备健康回调只入队；原观察拒收marker保留H04同步持久性，其文件I/O受磁盘时延影响，真实SDK需单独验证。所有实际SQLite和网络工作均不在UI/设备回调执行。
 
-ALIGNMENT-01原版本为Storage2；当前07待构建元数据为ENGINEERING-CLOSURE-07 / Storage3 / SIMULATION-v1，旧EXE因未知id3拒绝当前库，回退必须原格式备份+匹配旧EXE/配置+新根+恢复隔离。桌面内全库备份需要有效维护身份；离线运维使用数据租约和本机账户权限。
+ALIGNMENT-01原版本为Storage2；本次元数据为AUDIT-RECONCILIATION-01 / Storage3 / SIMULATION-v1，旧EXE因未知id3拒绝当前库，回退必须原格式备份+匹配旧EXE/配置+新根+恢复隔离。桌面内全库备份需要有效维护身份；离线运维使用数据租约和本机账户权限。
 
-`--alignment`仅为原包筛选入口，不能作为07已验结论。07相关过期迁移/格式预期和后续验证落点见工程实施记录；用户明确恢复验证授权后再对齐测试并执行。Windows按Windows06逐项留证，须绑定07实际新包与源提交；本轮全部NOT_RUN。
+`--alignment`保留H04+A01的兼容范围；07/08及持续参考旅程使用明确的新选择器。旧迁移断言已按显式升级及3:3对齐，原SQL/checksum不变。实际分项运行结果见09，Windows按06绑定本次同版包，不能复用07或旧包截图。
+
+## 本次同版包与验证选择
+
+`--reconciliation`（也为默认）=H04+A01+07+08/持续参考旅程+原AC/进程中断基线；`--hardening`仅H04，`--alignment`=H04+A01，`--data`仅A01，`--baseline`仅原AC/进程，`--closure`仅07，`--followup`仅08及双箱旅程。先运行必要完整基线，修复后用对应选择器，不循环运行无关全量。
+
+```sh
+# 先提交所有运行源码、配置及打包脚本；输出目录必须全新
+python3 scripts/package-reference.py --target portable --output .artifacts/reconciliation-portable
+python3 scripts/package-reference.py --target win-x64 --output .artifacts/reconciliation-win-x64
+python3 scripts/smoke.py --product .artifacts/reconciliation-portable/app --fixture .artifacts/reconciliation-portable/fixture/Ipc.Fixture.dll --output .artifacts/reconciliation-smoke.json
+```
+
+portable依赖已安装.NET10运行时；win-x64自包含包需实际Windows执行。两者`app/release.json`的SourceCommit/SourceCodeSha256、Release/Storage/Contract和模块配置指纹必须一致；`SHA256SUMS`核对每个包文件，ZIP SHA在09报告记录。包SHA识别字节，不是发布者签名或ACL证明。Windows上的`publish.ps1`继续可用；本次Python封装用于macOS交叉发布，不替代PowerShell行为验收。业务守卫和Production拒绝规则不因包生成而放宽。

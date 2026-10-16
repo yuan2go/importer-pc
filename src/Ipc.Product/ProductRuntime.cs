@@ -31,6 +31,8 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
     public IStationApplication? Application => application;
     public RunMode? Mode { get; private set; }
     public StationConfig? Configuration { get; private set; }
+    public string[] HeldResources => resourceLease?.Resources ?? [];
+    internal int SourceStartAttempts => observationModule?.SourceStartAttempts ?? 0;
     public PresentationSettings Presentation { get; private set; } = new();
     public List<string> Diagnostics { get; } = [];
     public IReadOnlyDictionary<string, ModuleState> ModuleStates => catalog?.States ?? new();
@@ -63,20 +65,21 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
             Presentation = new(options.View ?? Presentation.View, options.Layout ?? Presentation.Layout);
             if (!allowedViews.Contains(Presentation.View) || !AllowedLayouts.Contains(Presentation.Layout)) throw new InvalidDataException("Requested View/layout not installed");
             journal = new(Path.Combine(DataDirectory, "logs"), reason => { application?.Latch("DiagnosticLogFailure", reason); logger.LogError("{Reason}", reason); });
-            resourceLease = new(leaseRoot,
-                new[] { $"{seed.Mode}:station:{seed.StationId}" }.Concat(seed.Devices.Select(x => $"{seed.Mode}:device:{x.DeviceId}")));
             store = new(Path.Combine(DataDirectory, "station.db")) { Journal = journal.Write };
             // Effective/pending revisions live in the owned database. Failed activation never
             // replaces the last effective configuration; all changes require controlled restart.
-            var effective = store.Configs().FirstOrDefault(x => x.Status == "Effective");
+            var effective = store.CurrentConfig("Effective");
             var selected = effective?.Content ?? seed;
-            var pending = store.Configs().FirstOrDefault(x => x.Status == "PendingActivation");
+            // The data-root lease protects selection. Never let a copied/restored database
+            // silently change the station or mode encoded in this deployment's data path.
+            var currentErrors = ValidateStartupConfiguration(selected, seed);
+            if (currentErrors.Count != 0) throw new InvalidDataException(string.Join("; ", currentErrors));
+            var pending = store.CurrentConfig("PendingActivation");
             if (pending is not null)
             {
-                var state = store.Load(); var activationErrors = ReferenceProduct.Validate(manifest, pending.Content, Presentation, install).ToList();
-                if (pending.Content.StationId != seed.StationId || pending.Content.Mode != seed.Mode || pending.BaseVersion != selected.Version) activationErrors.Add("Config station/mode/base version mismatch");
+                var state = store.Load(); var activationErrors = ValidateStartupConfiguration(pending.Content, seed).ToList();
+                if (pending.BaseVersion != selected.Version) activationErrors.Add("Config base version mismatch");
                 if (store.PendingCount() != 0 || state.Session is { Status: not (SessionStatus.Closed or SessionStatus.Rejected) }) activationErrors.Add("Outstanding business prevents activation");
-                if (pending.Content.Devices.Any(x => !seed.Devices.Any(y => y.DeviceId == x.DeviceId))) activationErrors.Add("New device ownership requires a new product deployment");
                 var succeeded = activationErrors.Count == 0;
                 if (succeeded) { selected = pending.Content; activating = pending; }
                 else
@@ -86,19 +89,27 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
                         config: pending with { Status = "ActivationFailed", Reason = string.Join("; ", activationErrors) });
                 }
             }
-            var currentErrors = ReferenceProduct.Validate(manifest, selected, Presentation, install);
-            if (currentErrors.Count != 0) throw new InvalidDataException(string.Join("; ", currentErrors));
+            // Acquire the FINAL set atomically (partial acquisition unwinds internally).
+            // No application owner, source factory, epoch registration or callback starts
+            // before these exact station/device resources have been acquired.
+            resourceLease = new(leaseRoot, ConfigurationResources(selected));
             Configuration = selected;
             application = new(store, selected, new SimulationRequestContract(selected), configurationValidator: ValidateConfiguration);
             await application.SetWcsHealthAsync(false);
             var drive = new DriveInfo(Path.GetPathRoot(DataDirectory)!);
             if (drive.AvailableFreeSpace < selected.MinimumFreeMb * 1024L * 1024) application.Latch("StorageCapacity", "Free disk space below configured low-water mark");
             var configDirectory = Path.GetDirectoryName(Path.GetFullPath(options.Station))!;
-            var sources = selected.Devices.Select(binding => ReferenceProduct.CreateSource(binding, configDirectory)).ToArray();
+            var sources = await CreateSourcesAsync(selected, configDirectory);
             observationModule = new(application, sources, selected.EventCapacity);
             catalog = new(new IRuntimeModule[] { observationModule, new SenderModule(application, new LoopbackIntegration(selected)) });
             await catalog.StartAsync(token);
             if (activating is not null) { await application.FinishConfigurationActivationAsync(activating, true, "Modules initialized under new configuration"); activating = null; }
+            else if (effective is null)
+            {
+                // Pin the initially deployed seed after successful activation as well.
+                // Subsequent redeployments cannot silently reinterpret an existing store.
+                await application.FinishConfigurationActivationAsync(new(Wire.Id(), selected.Version, selected, "runtime", "Effective", "Initial deployment", DateTimeOffset.UtcNow), true, "Initial configuration and leased resources initialized");
+            }
             logger.LogInformation("Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation", RuntimeId, selected.StationId, selected.Version, selected.Mode);
         }
         catch (Exception ex)
@@ -121,6 +132,28 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
                 catch (Exception persistenceError) { Diagnostics.Add("Activation failure could not be persisted: " + persistenceError.GetType().Name); }
                 activating = null;
             }
+        }
+    }
+    IReadOnlyList<string> ValidateStartupConfiguration(StationConfig selected, StationConfig seed) =>
+        ReferenceProduct.Validate(manifest!, selected, Presentation, install)
+            .Concat(selected.StationId != seed.StationId || selected.Mode != seed.Mode ? ["Config station/mode does not match the owned data root"] : Array.Empty<string>()).ToArray();
+    internal static string[] ConfigurationResources(StationConfig selected) =>
+        new[] { $"{selected.Mode}:station:{selected.StationId}" }.Concat(selected.Devices.Select(x => $"{selected.Mode}:device:{x.DeviceId}")).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
+    static async Task<IObservationSource[]> CreateSourcesAsync(StationConfig selected, string directory)
+    {
+        List<IObservationSource> sources = [];
+        try
+        {
+            foreach (var binding in selected.Devices) sources.Add(ReferenceProduct.CreateSource(binding, directory));
+            return sources.ToArray();
+        }
+        catch (Exception creation)
+        {
+            List<Exception> failures = [creation];
+            foreach (var source in sources.AsEnumerable().Reverse())
+                try { await source.DisposeAsync().ConfigureAwait(false); } catch (Exception cleanup) { failures.Add(cleanup); }
+            if (failures.Count > 1) throw new AggregateException("Source creation and independent cleanup failed", failures);
+            throw;
         }
     }
     public async Task StopAsync(CancellationToken token)
@@ -287,6 +320,7 @@ sealed class ObservationModule(StationApplication application, IObservationSourc
     public string Id => "observations";
     public string[] Dependencies => [];
     public IObservationSource[] Sources => sources;
+    public int SourceStartAttempts { get; private set; }
     readonly Channel<Observation> queue = Channel.CreateBounded<Observation>(new BoundedChannelOptions(capacity) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
     Task? worker, healthWorker;
     readonly StationDispatcher sourceInput = new(8);
@@ -358,6 +392,7 @@ sealed class ObservationModule(StationApplication application, IObservationSourc
         registeredEpochs[source.DeviceId] = epoch;
         sourceStops.Remove(source);
         lock (ingress) sourceOwners.Add(source); // Partial Start failure still owns its registration.
+        SourceStartAttempts++;
         await controlled.StartControlledAsync(epoch, Receive, Health, token).ConfigureAwait(false);
     }
     bool Receive(Observation observation)

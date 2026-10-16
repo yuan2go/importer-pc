@@ -1,5 +1,12 @@
 # WP-IPC-INTEGRATION-BOUNDARY-05：真实集成证据与能力准入
 
+
+> 当前纠偏结果：**B-01-06_BLOCKED**；SourceCommit `a08082563bc13b2f146e71c4be9136f0469af9db`。见[09同版报告](../runtime/reference-validation-09.md)及[检查](../runtime/reference-validation-09-checks.json)。本次实施/合成验证授权已执行；生产WCS/设备动作未授权，D/RV未变。
+
+## 形成时工作包定义与记录
+
+以下保留形成时状态与原要求，不能读作当前不测试禁令或本次结果；[原字节快照](../archive/pre-reconciliation-01/README.md)可核对原版本。
+
 状态：**BLOCKED（真实实现/联调）；资料映射可分项推进**。2026-10-16形成；分析基准main `cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa`。补齐此前manifest/H04已引用的工作包，不宣称真实适配已存在。
 
 当前工程增量见 [07交付记录](../runtime/engineering-closure-07.md)，代码源提交493416f；没有新二进制或运行结果。本包原NOT_RUN/BLOCKED边界继续有效，不因工程实现而自动关闭。

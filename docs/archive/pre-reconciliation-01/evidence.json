@@ -1,0 +1,103 @@
+{
+  "source_commit": "856e4de73f09a1c4f12af798c4d21e8631a6a86f",
+  "records": [
+    {
+      "path": "AGENTS.md",
+      "archive": "docs/archive/pre-reconciliation-01/AGENTS.md.txt",
+      "git_blob": "fbedc31d3fc8cc0c7194abdbabf63e0316988145",
+      "sha256": "11a1cc84db7901e3d0a3fb017d8d87c4898b9c6f4a18c68bd30956aa28949fb9",
+      "bytes": 3319
+    },
+    {
+      "path": "docs/INDEX.md",
+      "archive": "docs/archive/pre-reconciliation-01/docs/INDEX.md.txt",
+      "git_blob": "fcae321a8aedd4d0358521e6d385c2b18c698971",
+      "sha256": "18098d3e4c5f7dc0e2df1aaceeee885589db2a45efc1bc07b2548cbe177edc8e",
+      "bytes": 7617
+    },
+    {
+      "path": "docs/design/framework.md",
+      "archive": "docs/archive/pre-reconciliation-01/docs/design/framework.md.txt",
+      "git_blob": "691fc106ad31ec0ee9837afa3ec06cd784999ec2",
+      "sha256": "4140902fb12e255d8734f74d70ae84615b9c406c7c7fb1efa9fe88949d639104",
+      "bytes": 34921
+    },
+    {
+      "path": "docs/design/framework-decisions.md",
+      "archive": "docs/archive/pre-reconciliation-01/docs/design/framework-decisions.md.txt",
+      "git_blob": "a3b067adb9a2f94533469519fd28ed7c3186b6af",
+      "sha256": "46a4352b8bdfab9fd893c7c190b753bd399b7ecfaeab1126128ef03120c87e55",
+      "bytes": 15198
+    },
+    {
+      "path": "docs/manifest.json",
+      "archive": "docs/archive/pre-reconciliation-01/docs/manifest.json.txt",
+      "git_blob": "526e9aea908cb365e1e6cc48a69fa1eff3213bda",
+      "sha256": "41e16fed6c50fbf8ce3a8457bfd96cd96fb2cf97b52f6ff2fa38cd477c0b293f",
+      "bytes": 150116
+    },
+    {
+      "path": "docs/manifest.sha256",
+      "archive": "docs/archive/pre-reconciliation-01/docs/manifest.sha256.txt",
+      "git_blob": "703087e69e5aa9a90a90c35ebf20bdd66b34591b",
+      "sha256": "30c6c64e3a1a9efd65c2551ffcfc9042a1a3ecf97fd890ff1740c7358a5f998a",
+      "bytes": 80
+    },
+    {
+      "path": "docs/reviews/main-static-review-02.md",
+      "archive": "docs/archive/pre-reconciliation-01/docs/reviews/main-static-review-02.md.txt",
+      "git_blob": "d520bed1117eb5632b265d34cf3412bd5c97aec8",
+      "sha256": "288ddb3b8f2006d617ac5b155d6f6f1d6193e3a30a8e1c4d5ad83aae68c0ef69",
+      "bytes": 20549
+    },
+    {
+      "path": "docs/reviews/main-static-review-03.md",
+      "archive": "docs/archive/pre-reconciliation-01/docs/reviews/main-static-review-03.md.txt",
+      "git_blob": "7ccb963bd0e5ad8f6e947b33edab439e6e026535",
+      "sha256": "0454f4c50386965a8e0bc6a2f7237b9b0e4c7e4a97fe2c7d4054b15f6835c066",
+      "bytes": 16856
+    },
+    {
+      "path": "docs/reviews/main-static-review-03-checks.json",
+      "archive": "docs/archive/pre-reconciliation-01/docs/reviews/main-static-review-03-checks.json.txt",
+      "git_blob": "06b9b1a396d9a2ed155ba8addb647229f797bb73",
+      "sha256": "1009328d484009784ba7ce1956211d30b55952c7c87543a1c4596e47f4011fab",
+      "bytes": 10064
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md",
+      "archive": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md.txt",
+      "git_blob": "81d722bc92df713de8defef4c95a8e4e4150ac12",
+      "sha256": "f444eecd2e2685c6b3730f279fcab427a0386e18e7dfd81e70ed0179fb119980",
+      "bytes": 5033
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md",
+      "archive": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md.txt",
+      "git_blob": "685d1168cd3045c8b2e2f163862110890c220d71",
+      "sha256": "ae13045745dd7cbe38970c9838baea32a0d295be12f2c23001f01a5b1abbca3d",
+      "bytes": 4002
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md",
+      "archive": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md.txt",
+      "git_blob": "02bdfce98d720ff0f881bf5079687e4730b62244",
+      "sha256": "5e92be8812c2afc687dc25b3d3747ff92b2acc0db072729941aade6a69f929c4",
+      "bytes": 5328
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md",
+      "archive": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md.txt",
+      "git_blob": "8cacbed21bb1fa7b7f2fb339081d944595a91438",
+      "sha256": "af4fede60001a9f3011ee4e423964e4fd4eeaac6e99f6d66717ca3381b082ce5",
+      "bytes": 5300
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md",
+      "archive": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md.txt",
+      "git_blob": "d31afb0d705094aad21a59041da4e8b64a4bb6a1",
+      "sha256": "72b2f5e0a01d5c1a858f41612c46ddefffcf4b37e3398a8faa5670558f290b99",
+      "bytes": 7792
+    }
+  ]
+}

@@ -14,6 +14,8 @@ static class AlignmentRuntimeVerification
         using var store = new SupplyStore(Path.Combine(directory, "station.db"));
         var faults = new FaultInjection(); await using var app = new StationApplication(store, cfg, new SimulationRequestContract(cfg), faults);
         foreach (var device in cfg.Devices) await app.SetDeviceAsync(device.DeviceId, Wire.Id(), DeviceHealth.Ready);
+        await using var healthPort = new LoopbackIntegration(cfg);
+        await app.SetWcsHealthAsync(await healthPort.HealthAsync(CancellationToken.None));
         try { await app.BackupAsync(Path.Combine(root, "unauthorized-backup.db")); throw new InvalidOperationException("Unauthenticated backup was allowed"); }
         catch (GuardException) { Assert(!File.Exists(Path.Combine(root, "unauthorized-backup.db")), "Backend protects full database backup without UI guard"); }
         var first = await app.SnapshotAsync();
@@ -99,11 +101,26 @@ static class AlignmentRuntimeVerification
         {
             stopDb.Open(); using var trigger = stopDb.CreateCommand();
             trigger.CommandText = "CREATE TRIGGER fail_stop BEFORE INSERT ON audit WHEN json_extract(NEW.json,'$.Kind')='StoppingBarrier' BEGIN SELECT RAISE(ABORT,'SIMULATION stop persistence failure'); END;"; trigger.ExecuteNonQuery();
-            try { await host.StopAsync(); throw new InvalidOperationException("Stop failure injection did not execute"); } catch (AggregateException) { }
-            var stopped = await business.SnapshotAsync();
-            Assert(stopped.State.Stopping && stopped.RuntimeFaults.Any(x => x.StartsWith("StorageFailure")), "Failed durable stop still retains memory stop barrier");
-            Assert(runtime.ModuleStates.Values.All(x => x == ModuleState.Stopped), "Sender and sources stop even when stop persistence fails");
-            Assert(await ((StationApplication)business).ClaimAsync() is null, "No new handoff after failed durable stop");
+            try
+            {
+                AggregateException? original = null;
+                try { await host.StopAsync(); } catch (AggregateException failure) { original = failure; }
+                Assert(original?.ToString().Contains("SIMULATION stop persistence failure") == true, "Original injected SQLite stop failure remains reported");
+                var stopped = await business.SnapshotAsync();
+                Assert(stopped.State.Stopping && stopped.RuntimeFaults.Any(x => x.StartsWith("StorageFailure")), "Failed durable stop still retains memory stop barrier");
+                Assert(runtime.ModuleStates.Values.All(x => x == ModuleState.Stopped), "Sender and sources stop even when stop persistence fails");
+                Assert(await ((StationApplication)business).ClaimAsync() is null, "No new handoff after failed durable stop");
+            }
+            finally
+            {
+                // End the injected disk fault after observing its original exception and
+                // resource boundary. Leaving it installed would deliberately fail the
+                // later IDisposable cleanup again, obscuring the scenario's result.
+                trigger.CommandText = "DROP TRIGGER fail_stop"; trigger.ExecuteNonQuery();
+            }
+            await runtime.StopAsync(CancellationToken.None);
+            trigger.CommandText = "SELECT count(*) FROM audit WHERE json_extract(json,'$.Kind')='StoppingBarrier'";
+            Assert(Convert.ToInt32(trigger.ExecuteScalar()) == 1 && runtime.ModuleStates.Values.All(x => x == ModuleState.Stopped), "After fault removal one retried durable stop succeeds without restarting modules");
         }
         Console.WriteLine("PASS A01 startup view/layout, shared command deduplication/one sender, failed-stop resource shutdown and backup authority");
         await QueueAndHandoff(root, url);

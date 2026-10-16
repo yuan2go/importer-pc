@@ -1,0 +1,16 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> <WORKTREE>/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply -> <WORKTREE>/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> <WORKTREE>/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> <WORKTREE>/src/Ipc.Product/bin/Release/net10.0/Ipc.Product.dll
+  Ipc.Product -> <WORKTREE>/.artifacts/reconciliation-a080825-portable/app/
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> <WORKTREE>/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply -> <WORKTREE>/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> <WORKTREE>/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Fixture -> <WORKTREE>/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll
+  Ipc.Fixture -> <WORKTREE>/.artifacts/reconciliation-a080825-portable/fixture/
+Sealed Simulation configuration: <WORKTREE>/.artifacts/reconciliation-a080825-portable/app/config
+{"Package": "<WORKTREE>/.artifacts/reconciliation-a080825-portable.zip", "Sha256": "d625224d2109cd15a3a1e1a0a2cfe7901116c912e986fd6cb300956ba10f33fb", "SourceCommit": "a08082563bc13b2f146e71c4be9136f0469af9db", "ReleaseVersion": "AUDIT-RECONCILIATION-01", "StorageVersion": 3, "ContractVersion": "SIMULATION-v1", "SourceCodeSha256": "bae6bc350e576aa726b609c9eced8aa4dc37eac0aadfc4c48f5e186e4b3a1bd5", "Target": "portable", "WindowsRuntimeValidation": "NOT_RUN", "PhysicalIntegration": "BLOCKED", "Note": "Portable requires pinned .NET runtime; win-x64 is self-contained and requires Windows validation."}

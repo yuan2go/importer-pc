@@ -1,0 +1,135 @@
+SELECT --reconciliation: H04 + A01 + E07 + E08 + AC/process baseline
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-e9482f32d9064ba3b9d152eb7bd96570
+RUN H04 overload + Prepared controlled disposition
+PASS H04 overload + Prepared controlled disposition
+RUN H04 old active alarms survive 350 historical occurrences
+PASS H04 old active alarms survive 350 historical occurrences
+RUN H04 source marker does not resurrect after acknowledged recovery
+PASS H04 source marker does not resurrect after acknowledged recovery
+RUN H04 original actor expiry cannot reauthorize Prepared or release entity
+PASS H04 original actor expiry cannot reauthorize Prepared or release entity
+RUN H04 cancel competes with pre-network guard and durable handoff
+PASS H04 cancel competes with pre-network guard and durable handoff
+RUN H04 all Prepared kinds terminate without inventing release or acceptance
+PASS H04 all Prepared kinds terminate without inventing release or acceptance
+RUN H04 SIMULATION-v1 baseline JSON compatibility and forward format gate
+PASS H04 SIMULATION-v1 baseline JSON compatibility and forward format gate
+RUN H04 same alarm code retains independent owners and recovery
+PASS H04 same alarm code retains independent owners and recovery
+RUN H04 SQLite local termination rollback and acknowledged restart
+PASS H04 SQLite local termination rollback and acknowledged restart
+PASS A01 format1/2 read-only custody, explicit backed-up upgrade, frozen request, rollback and restore isolation
+PASS A01 independent semantic fixture, task/request/restart/history consistency and unique acceptance
+PASS ALIGNMENT composition: two explicit test definitions assemble without Platform business edits
+PASS ALIGNMENT composition: one-channel generic registration does not weaken Supply two-channel rule
+PASS ALIGNMENT composition: unknown modules refused
+PASS ALIGNMENT composition: missing module refused
+PASS ALIGNMENT composition: module kind refused
+PASS ALIGNMENT composition: module version refused
+PASS ALIGNMENT composition: contract version refused
+PASS ALIGNMENT composition: dependency registration must match
+PASS ALIGNMENT composition: cycles refused even in malformed trusted registration
+PASS ALIGNMENT composition: tampered bytes refused
+PASS ALIGNMENT composition: unsafe path refused ../alpha.bin
+PASS ALIGNMENT composition: unsafe path refused /tmp/alpha.bin
+PASS ALIGNMENT composition: unsafe path refused modules/../alpha.bin
+PASS ALIGNMENT composition: unsafe path refused modules\alpha.bin
+PASS ALIGNMENT composition: linked ancestor refused
+PASS ALIGNMENT composition: mode mismatch refused
+PASS ALIGNMENT composition: unregistered driver refused
+PASS ALIGNMENT composition: unregistered page/layout refused
+PASS ALIGNMENT composition: packaging and compiled product registrations match
+PASS ALIGNMENT composition: null/missing registration structure refused
+PASS ALIGNMENT composition: duplicate trusted registrations refused without fallback
+PASS ALIGNMENT composition: schema1 station JSON remains compatible
+PASS A01 slow storage background ownership, detached versioned projections and read-only snapshots
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime 40b06576-4b12-452b-8be9-cad8bd438ad8 station VIEW-d2a8979226b44489b3f7d4c7ed681ab1 configuration SIM-1 mode Simulation ready for identity/context validation","State":{"Runtime":"40b06576-4b12-452b-8be9-cad8bd438ad8","Station":"VIEW-d2a8979226b44489b3f7d4c7ed681ab1","Revision":"SIM-1","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: <WORKTREE>","State":{"ContentRoot":"<WORKTREE>","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+PASS A01 startup view/layout, shared command deduplication/one sender, failed-stop resource shutdown and backup authority
+PASS A01 bounded command/control saturation and concurrent overload during real SQLite handoff
+RUN E07 E-01 current input invalidation, legitimate correction and original receipts
+PASS E07 E-01 current input invalidation, legitimate correction and original receipts
+RUN E07 E-03 source/epoch/evidence CAS and Unknown isolation
+PASS E07 E-03 source/epoch/evidence CAS and Unknown isolation
+RUN E07 E-05 source silence, replay/future rejection and controlled reconnect
+PASS E07 E-05 source silence, replay/future rejection and controlled reconnect
+RUN E07 E-06 empty-session close chain, exact queries, paging and retention boundary
+PASS E07 E-06 empty-session close chain, exact queries, paging and retention boundary
+RUN E07 E-08 ordered cue ownership, replay deduplication and bounded overflow
+PASS E07 E-08 ordered cue ownership, replay deduplication and bounded overflow
+RUN E07 E-09 independent stop/dispose failures and retained active ownership
+PASS E07 E-09 independent stop/dispose failures and retained active ownership
+PASS FOLLOWUP-08 history identity=never-logged-in entries=8 allowed=False
+PASS FOLLOWUP-08 history identity=valid-operator entries=8 allowed=True
+PASS FOLLOWUP-08 history identity=logged-out entries=8 allowed=False
+PASS FOLLOWUP-08 history identity=valid-maintenance entries=8 allowed=True
+PASS FOLLOWUP-08 history identity=expired entries=8 allowed=False
+PASS FOLLOWUP-08 Effective/seed/pending/fallback/restored identity/competition/partial resource terminal states
+PASS FOLLOWUP-08 configuration version ABA, activation chronology, unique Effective and failure rollback
+PASS REFERENCE-JOURNEY startup/identity/box/dual-lane/rejection/split/acceptance/Unknown/original-query/physical-simulation-reset/close/new-box/history/restart
+PASS FOLLOWUP-08 all history identities and final configuration ownership
+RUN AC-01/10 lifecycle, bounded command queue and ownership
+PASS AC-01/10 lifecycle, bounded command queue and ownership
+RUN AC-01/11 product assembly, modes and strict configuration
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime 55b5c49e-f5fe-4708-b383-ecd4203da3f5 station SIM-37f7de9c5dd041e486f3f307395ca2dc configuration SIM-1 mode Simulation ready for identity/context validation","State":{"Runtime":"55b5c49e-f5fe-4708-b383-ecd4203da3f5","Station":"SIM-37f7de9c5dd041e486f3f307395ca2dc","Revision":"SIM-1","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: <WORKTREE>","State":{"ContentRoot":"<WORKTREE>","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Error","Category":"Ipc.Product.ProductRuntime","Message":"Startup NotReady: IOException: The process cannot access the file \u0027/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-e9482f32d9064ba3b9d152eb7bd96570/product-data/Simulation/SIM-37f7de9c5dd041e486f3f307395ca2dc/3549B0028B75D981CDDA2E573E9CB49DEDC200185876DF299F912B79F69DABD8.lease\u0027 because it is being used by another process.","State":{"Type":"IOException","Message":"The process cannot access the file \u0027/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-e9482f32d9064ba3b9d152eb7bd96570/product-data/Simulation/SIM-37f7de9c5dd041e486f3f307395ca2dc/3549B0028B75D981CDDA2E573E9CB49DEDC200185876DF299F912B79F69DABD8.lease\u0027 because it is being used by another process.","{OriginalFormat}":"Startup NotReady: {Type}: {Message}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: <WORKTREE>","State":{"ContentRoot":"<WORKTREE>","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime ddcfe765-b3d6-4f84-93ce-35f0838a5b28 station SIM-37f7de9c5dd041e486f3f307395ca2dc configuration SIM-1 mode Simulation ready for identity/context validation","State":{"Runtime":"ddcfe765-b3d6-4f84-93ce-35f0838a5b28","Station":"SIM-37f7de9c5dd041e486f3f307395ca2dc","Revision":"SIM-1","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: <WORKTREE>","State":{"ContentRoot":"<WORKTREE>","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Error","Category":"Ipc.Product.ProductRuntime","Message":"Startup NotReady: InvalidDataException: Replay path must be an installed relative file without links","State":{"Type":"InvalidDataException","Message":"Replay path must be an installed relative file without links","{OriginalFormat}":"Startup NotReady: {Type}: {Message}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: <WORKTREE>","State":{"ContentRoot":"<WORKTREE>","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime fb4d76e3-07db-4606-90d1-d93ba921b716 station SIM-37f7de9c5dd041e486f3f307395ca2dc configuration SIM-1 mode Simulation ready for identity/context validation","State":{"Runtime":"fb4d76e3-07db-4606-90d1-d93ba921b716","Station":"SIM-37f7de9c5dd041e486f3f307395ca2dc","Revision":"SIM-1","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: <WORKTREE>","State":{"ContentRoot":"<WORKTREE>","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime 79cf2987-8de4-462a-b123-d46585d79768 station SIM-37f7de9c5dd041e486f3f307395ca2dc configuration SIM-3 mode Simulation ready for identity/context validation","State":{"Runtime":"79cf2987-8de4-462a-b123-d46585d79768","Station":"SIM-37f7de9c5dd041e486f3f307395ca2dc","Revision":"SIM-3","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: <WORKTREE>","State":{"ContentRoot":"<WORKTREE>","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+PASS AC-01/11 product assembly, modes and strict configuration
+RUN AC-02/07 combined guards and independent alarms
+PASS AC-02/07 combined guards and independent alarms
+RUN AC-03/04/06 continuous same-code entities, correction and unique ledger
+PASS AC-03/04/06 continuous same-code entities, correction and unique ledger
+RUN AC-04/09 split, atomic two-lane demand and close barrier
+PASS AC-04/09 split, atomic two-lane demand and close barrier
+RUN AC-05/06/09 dropped/late response, original binding and close Unknown
+PASS AC-05/06/09 dropped/late response, original binding and close Unknown
+RUN AC-05 query absent/unsupported is not proof of non-delivery; delayed receipts
+PASS AC-05 query absent/unsupported is not proof of non-delivery; delayed receipts
+RUN AC-05 actual SQLite rollback and T3 storage failure
+PASS AC-05 actual SQLite rollback and T3 storage failure
+RUN AC-05/09 real process crash/restart windows
+PASS AC-05/09 real process crash/restart windows
+RUN AC-02/05/06 durable T3 failure, stale commands, entity permit restart
+PASS AC-02/05/06 durable T3 failure, stale commands, entity permit restart
+RUN AC-10 actual observation queue full preserves accepted events and overflow marker
+PASS AC-10 actual observation queue full preserves accepted events and overflow marker
+RUN AC-04/06 guarded pre-network cancellation allows same-ID second attempt
+PASS AC-04/06 guarded pre-network cancellation allows same-ID second attempt
+RUN AC-01/06/09 config validation/activation and backup quarantine
+PASS AC-01/06/09 config validation/activation and backup quarantine
+RUN AC-09 restored Prepared may already exist remotely, retention preserves current aggregate
+PASS AC-09 restored Prepared may already exist remotely, retention preserves current aggregate
+RUN AC-01/03/10 source replacement, capacity and resource stop
+PASS AC-01/03/10 source replacement, capacity and resource stop
+PASS selected verification scope --reconciliation; Windows desktop/SDK/field validation NOT_RUN by this core executable
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-e9482f32d9064ba3b9d152eb7bd96570

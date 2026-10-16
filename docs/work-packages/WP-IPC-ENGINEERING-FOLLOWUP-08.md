@@ -1,5 +1,12 @@
 # WP-IPC-ENGINEERING-FOLLOWUP-08：历史权限与最终配置所有权
 
+
+> 当前纠偏结果：**IMPLEMENTED / REFERENCE_PASS**；SourceCommit `a08082563bc13b2f146e71c4be9136f0469af9db`。见[09同版报告](../runtime/reference-validation-09.md)及[检查](../runtime/reference-validation-09-checks.json)。本次实施/合成验证授权已执行；生产WCS/设备动作未授权，D/RV未变。
+
+## 形成时工作包定义与记录
+
+以下保留形成时状态与原要求，不能读作当前不测试禁令或本次结果；[原字节快照](../archive/pre-reconciliation-01/README.md)可核对原版本。
+
 状态：**PLANNED / NOT_STARTED**；日期2026-10-16。依据 [MAIN-REVIEW-03](../reviews/main-static-review-03.md)，分析基准main `2579392ddcc0b4302d4aae865d4b2d8b3c083b59`（PR #6已合并）。本轮只整理工作包，没有实施授权推定，也没有执行测试。
 
 目标：补齐E-06、E-10的两个剩余应用路径；保留07已经建立的类型化历史、单所有者、固定账户/机级策略和资源持有机制，不重建第二套框架。

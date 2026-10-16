@@ -31,10 +31,18 @@ if (args.FirstOrDefault() == "--child")
     throw new Exception("Expected crash window was not reached");
 }
 
-var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
+var workspace = Path.GetFullPath(args.FirstOrDefault(x => !x.StartsWith("--", StringComparison.Ordinal)) ?? ".");
+var selector = args.FirstOrDefault(x => x.StartsWith("--", StringComparison.Ordinal)) ?? "--reconciliation";
+if (args.Count(x => x.StartsWith("--", StringComparison.Ordinal)) > 1 ||
+    selector is not ("--hardening" or "--alignment" or "--data" or "--baseline" or "--closure" or "--followup" or "--reconciliation"))
+    throw new ArgumentException("Select one of --hardening, --alignment, --data, --baseline, --closure, --followup, --reconciliation; optional workspace is a separate positional argument");
+var full = selector == "--reconciliation";
+Console.WriteLine("SELECT " + selector + ": " + (full ? "H04 + A01 + E07 + E08 + AC/process baseline" : selector switch
+{ "--hardening" => "H04", "--alignment" => "H04 + A01", "--data" => "A01 data/composition/runtime", "--baseline" => "AC/process baseline", "--closure" => "E07", _ => "E08" }));
 var dotnet = Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") ?? Environment.ProcessPath ?? "dotnet";
 if (!Path.GetFileNameWithoutExtension(dotnet).Equals("dotnet", StringComparison.OrdinalIgnoreCase)) dotnet = "dotnet";
 var root = Path.Combine(Path.GetTempPath(), "ipc-verification-" + Wire.Id()); Directory.CreateDirectory(root);
+Console.WriteLine("Evidence data retained at " + root);
 var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start(); int port = ((IPEndPoint)listener.LocalEndpoint).Port; listener.Stop();
 var url = $"http://127.0.0.1:{port}/";
 var fixtureDll = Path.Combine(workspace, "src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll");
@@ -43,14 +51,16 @@ using var http = new HttpClient(new SocketsHttpHandler { UseProxy = false }) { T
 try
 {
     await Eventually(async () => { try { return (await http.GetStringAsync(url + "health")) == "SIMULATION-v1"; } catch (HttpRequestException) { return false; } });
-    await HardeningVerification.Run(root, url, workspace);
-    if (args.Contains("--alignment") || !args.Contains("--hardening"))
+    if (full || selector is "--hardening" or "--alignment") await HardeningVerification.Run(root, url, workspace);
+    if (full || selector is "--alignment" or "--data")
     {
         await AlignmentDataVerification.Run(root, url, workspace);
         await AlignmentCompositionVerification.Run(root, url, workspace);
         await AlignmentRuntimeVerification.Run(root, url, workspace);
     }
-    if (!args.Contains("--hardening") && !args.Contains("--alignment"))
+    if (full || selector == "--closure") await ClosureVerification.Run(root, url, workspace);
+    if (full || selector == "--followup") await FollowupVerification.Run(root, url, workspace);
+    if (full || selector == "--baseline")
     {
     await Check("AC-01/10 lifecycle, bounded command queue and ownership", async () =>
     {
@@ -100,6 +110,12 @@ try
         Assert(!File.ReadAllText(Path.Combine(root, "metadata-diagnostics.json")).Contains(cfg.Integration.Endpoint), "Diagnostic excludes endpoint");
         await host.StopAsync(); host.Dispose();
         // A failed source activation must retain the previous effective version in the real DB.
+        async Task Login(ProductRuntime target)
+        {
+            var snapshot = await target.Application!.SnapshotAsync();
+            var receipt = await target.Application.ExecuteAsync(new(Wire.Id(), snapshot.State.Revision, "Login", Value: "maintenance"));
+            Assert(receipt.Status == "Persisted", "Startup maintenance identity: " + receipt.Reason);
+        }
         async Task Stage(ProductRuntime target, StationConfig draft)
         {
             var app = target.Application!; await Eventually(async () => !(await app.SnapshotAsync()).State.Blocks.Any(x => x.Source == "transport")); var snap = await app.SnapshotAsync();
@@ -117,6 +133,7 @@ try
         using (var failed = ProductHost.Build(boot))
         {
             await failed.StartAsync(); var current = failed.Services.GetRequiredService<ProductRuntime>();
+            await Login(current);
             Assert(current.Diagnostics.Count > 0 && (await current.Application!.ConfigsAsync()).First().Status == "ActivationFailed", "Source initialization failure recorded without promoting configuration"); await failed.StopAsync();
         }
         using (var fallback = ProductHost.Build(boot))
@@ -129,6 +146,7 @@ try
         using (var active = ProductHost.Build(boot))
         {
             await active.StartAsync(); var current = active.Services.GetRequiredService<ProductRuntime>();
+            await Login(current);
             Assert(current.Configuration!.Version == "SIM-3" && (await current.Application!.ConfigsAsync()).First().Status == "Effective", "Configuration becomes Effective only after real owned modules initialize"); await active.StopAsync();
         }
     });
@@ -146,6 +164,8 @@ try
         await h.App.SetDeviceAsync(h.ConfigValue.Devices[0].DeviceId, h.Epochs["left"], DeviceHealth.Faulted);
         await h.Command("Pause"); await h.Command("Resume"); Assert(!(await h.App.SnapshotAsync()).Admit.Allowed, "Faulted device never green");
         await h.App.SetDeviceAsync(h.ConfigValue.Devices[1].DeviceId, h.Epochs["right"], (DeviceHealth)987);
+        Assert((await h.App.SnapshotAsync()).State.Devices["right"].Health == DeviceHealth.Ready, "Unknown enum cannot replace registered source health");
+        await h.App.SetDeviceAsync(h.ConfigValue.Devices[1].DeviceId, h.Epochs["right"], DeviceHealth.Unknown);
         var alarms = (await h.App.SnapshotAsync()).Alarms.Where(x => x.ClearedAt is null).OrderBy(x => x.Scope).ToArray(); Assert(alarms.Length >= 2, "Two independent source alarms");
         await h.Command("AckAlarm", alarms[0].Id);
         var after = (await h.App.SnapshotAsync()).Alarms; Assert(after.Single(x => x.Id == alarms[0].Id).AckedBy is not null && after.Single(x => x.Id == alarms[1].Id).AckedBy is null, "Ack is occurrence specific");
@@ -184,7 +204,7 @@ try
         Assert((await h.App.SnapshotAsync()).State.Session!.Id == session, "Continuous same box, no scene reset");
         await h.App.ReceiveAsync(new(Wire.Id(), h.ConfigValue.Devices[0].DeviceId, "old-epoch", Wire.Id(), 999, Wire.Id(), "Enter", [], null, DateTimeOffset.UtcNow));
         Assert(!(await h.App.SnapshotAsync()).Admit.Allowed, "Old connection observations retained for review, never bound to new entity");
-        await h.App.ReviewObservationsAsync("SIMULATION source epoch inspected; no new entity admitted");
+        await h.ReviewSources("SIMULATION source epoch inspected; no new entity admitted");
     });
     await Check("AC-04/09 split, atomic two-lane demand and close barrier", async () =>
     {
@@ -354,7 +374,7 @@ try
         await using var h = await Rig.New(root, url);
         var original = h.ConfigValue;
         await h.Command("SaveConfig", value: Wire.Encode(original with { Version = "SIM-2", TimeoutMs = 1 })); Assert((await h.App.ConfigsAsync()).First().Status == "Rejected", "Invalid draft retained, original effective");
-        var changed = original with { Version = "SIM-2", Integration = original.Integration with { Revision = "SIM-2", Endpoint = "http://127.0.0.1:18744/" } };
+        var changed = original with { Version = "SIM-3", Integration = original.Integration with { Revision = "SIM-2", Endpoint = "http://127.0.0.1:18744/" } };
         await h.Command("SaveConfig", value: Wire.Encode(changed)); var revision = (await h.App.ConfigsAsync()).First();
         await h.Command("ActivateConfig", revision.Id); Assert((await h.App.ConfigsAsync()).First().Status == "PendingActivation" && h.ConfigValue == original, "Activation waits for controlled restart");
         var backup = Path.Combine(root, "consistent-backup.db"); await h.App.BackupAsync(backup);
@@ -407,7 +427,7 @@ try
         await Throws<SqliteException>(() => { using var store = new SupplyStore(bad); return Task.CompletedTask; }); Assert(File.ReadAllText(bad) == "not a database", "Corrupt database retained, never silently replaced");
     });
     }
-    Console.WriteLine("PASS necessary core/SQLite/process/loopback risk regression; Windows desktop runtime NOT_RUN on non-Windows");
+    Console.WriteLine("PASS selected verification scope " + selector + "; Windows desktop/SDK/field validation NOT_RUN by this core executable");
     Console.WriteLine("Evidence data retained at " + root);
 }
 finally { if (!fixture.HasExited) { fixture.Kill(entireProcessTree: true); await fixture.WaitForExitAsync(); } }
@@ -443,6 +463,8 @@ sealed class Rig : IAsyncDisposable
     public required StationApplication App { get; init; }
     public required StationConfig ConfigValue { get; init; }
     public required IIntegrationPort Port { get; init; }
+    public TimeProvider Clock { get; init; } = TimeProvider.System;
+    public bool AutoConfirmSyntheticHealth { get; set; } = true;
     public Dictionary<string, string> Epochs { get; } = new() { ["left"] = Wire.Id(), ["right"] = Wire.Id() };
     readonly Dictionary<string, long> sequence = new() { ["left"] = 0, ["right"] = 0 };
     public static StationConfig Config(string url, int demand = 120, int timeout = 500) => new(1, "SIM-" + Wire.Id(), "SIM-1", RunMode.Simulation,
@@ -451,7 +473,7 @@ sealed class Rig : IAsyncDisposable
     public static async Task<Rig> Open(string directory, StationConfig config, FaultInjection? faults = null, TimeProvider? clock = null)
     {
         var store = new SupplyStore(Path.Combine(directory, "station.db")); var app = new StationApplication(store, config, new SimulationRequestContract(config), faults, clock);
-        var h = new Rig { Store = store, App = app, ConfigValue = config, Port = new LoopbackIntegration(config) };
+        var h = new Rig { Store = store, App = app, ConfigValue = config, Port = new LoopbackIntegration(config), Clock = clock ?? TimeProvider.System };
         // Child crash injection is armed only after startup/identity setup, at the business window.
         var crash = faults?.CrashAt; if (faults is not null) faults.CrashAt = null;
         foreach (var d in config.Devices) await app.SetDeviceAsync(d.DeviceId, h.Epochs[d.Role], DeviceHealth.Ready);
@@ -460,6 +482,7 @@ sealed class Rig : IAsyncDisposable
     }
     public async Task<CommandReceipt> Command(string kind, string? owner = null, string? value = null, string expect = "Persisted")
     {
+        if (AutoConfirmSyntheticHealth) await ConfirmSyntheticHealth();
         var s = await App.SnapshotAsync(); var r = await App.ExecuteAsync(new(Wire.Id(), s.State.Revision, kind, owner, value, EvidenceVersion: kind == "ClearOverload" ? s.OverloadVersion : null));
         if (r.Status != expect) throw new InvalidOperationException($"{kind}: expected {expect}; got {r.Status}: {r.Reason}"); return r;
     }
@@ -467,11 +490,13 @@ sealed class Rig : IAsyncDisposable
     public async Task<SupplyOperation> Enter(string lane) { await Event(lane, "Enter", Wire.Id()); return await Op(lane); }
     public async Task Event(string lane, string kind, string admission, string[]? codes = null, int? quantity = null, string? source = null)
     {
-        var d = ConfigValue.Devices.Single(x => x.Role == lane); await App.ReceiveAsync(new(Wire.Id(), d.DeviceId, Epochs[lane], source ?? Wire.Id(), ++sequence[lane], admission, kind, codes ?? [], quantity, DateTimeOffset.UtcNow));
+        if (AutoConfirmSyntheticHealth) await ConfirmSyntheticHealth();
+        var d = ConfigValue.Devices.Single(x => x.Role == lane); await App.ReceiveAsync(new(Wire.Id(), d.DeviceId, Epochs[lane], source ?? Wire.Id(), ++sequence[lane], admission, kind, codes ?? [], quantity, Clock.GetUtcNow()));
     }
     public async Task<SupplyOperation> Op(string lane) => (await App.SnapshotAsync()).State.Lanes[lane];
     public async Task Drain()
     {
+        if (AutoConfirmSyntheticHealth) await ConfirmSyntheticHealth();
         for (var i = 0; i < 100; i++)
         {
             var claim = await App.ClaimAsync(); if (claim is null) return;
@@ -480,6 +505,26 @@ sealed class Rig : IAsyncDisposable
             catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException) { await App.UnknownAsync(request, attempt, ex.GetType().Name); }
         }
         throw new InvalidOperationException("Outbox did not converge");
+    }
+    // Deliberate synthetic source events at scenario boundaries. Snapshot reads never
+    // renew health. Preserve injected faults, registered source and epoch identity.
+    public async Task ConfirmSyntheticHealth()
+    {
+        var devices = (await App.SnapshotAsync()).State.Devices;
+        foreach (var device in devices.Values.Where(x => x.Health == DeviceHealth.Ready))
+        {
+            var now = Clock.GetUtcNow();
+            await App.SetDeviceHealthAsync(new(device.DeviceId, device.Epoch, DeviceHealth.Ready, now, now.AddSeconds(5), device.Source));
+        }
+        await App.SetWcsHealthAsync(await Port.HealthAsync(CancellationToken.None));
+    }
+    public async Task ReviewSources(string evidence)
+    {
+        var snapshot = await App.SnapshotAsync();
+        var selection = snapshot.State.Blocks.Where(x => x.Code == "ObservationReview")
+            .Select(x => new ObservationReviewSelection(x.Code, x.Scope, x.Source, x.SourceEpoch, x.EvidenceVersion)).ToArray();
+        var receipt = await App.ExecuteAsync(new(Wire.Id(), snapshot.State.Revision, "ReviewObservations", Value: Wire.Encode(new ObservationReviewEvidence(selection, evidence))));
+        if (receipt.Status != "Persisted") throw new InvalidOperationException("Versioned source review failed: " + receipt.Reason);
     }
     public async ValueTask DisposeAsync() { await App.StopAsync(); await App.DisposeAsync(); await Port.DisposeAsync(); Store.Dispose(); }
 }

@@ -1,5 +1,12 @@
 # WP-IPC-REFERENCE-VALIDATION-09：07/08/10核心证据与同版交付
 
+
+> 当前纠偏结果：**REFERENCE_PASS / WINDOWS_NOT_RUN / REAL_CAPABILITIES_BLOCKED**；SourceCommit `a08082563bc13b2f146e71c4be9136f0469af9db`。见[09同版报告](../runtime/reference-validation-09.md)及[检查](../runtime/reference-validation-09-checks.json)。本次实施/合成验证授权已执行；生产WCS/设备动作未授权，D/RV未变。
+
+## 形成时工作包定义与记录
+
+以下保留形成时状态与原要求，不能读作当前不测试禁令或本次结果；[原字节快照](../archive/pre-reconciliation-01/README.md)可核对原版本。
+
 状态：**PLANNED / EXECUTION_NOT_RUN**；日期2026-10-16。基准main `2579392ddcc0b4302d4aae865d4b2d8b3c083b59`；依据 [MAIN-REVIEW-03](../reviews/main-static-review-03.md)。本包用于区分“工程源码路径”“核心合成运行”“Windows操作”和“真实现场”四层；用户当前不要测试，本轮不执行本包。
 
 ## 开始条件

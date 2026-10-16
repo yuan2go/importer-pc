@@ -1,5 +1,7 @@
 # 框架决策、讨论来源与适用范围
 
+> 当前纠偏执行与结果入口：[AUDIT-RECONCILIATION-01](../work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)。目标设计和下文历史实施/不测试记录保持形成时含义；当前08/10/09实施及验证以该包的同版报告为准。原字节已归档，D/RV不变。
+
 当前独立复核：[MAIN-REVIEW-03](../reviews/main-static-review-03.md)，基准main `2579392`（PR #6/#7已合并）。8项指定整改路径静态补齐，E-06/E-10仍有工程缺口；全部运行NOT_RUN，Windows06/真实集成05分别保持NOT_RUN/BLOCKED。后续见工程增量08、参考验证09；下文07/更早记录保留形成时范围。
 
 07形成时实施补充：[ENGINEERING-CLOSURE-07](../runtime/engineering-closure-07.md) 已完成10项工程源码整改（源提交493416f），Storage3显式升级、固定Windows账户/机级租约及UI路径以该记录为准。本轮按用户要求不测试，编译/运行/Windows为NOT_RUN、真实能力为BLOCKED；以下原记录保留形成时范围。

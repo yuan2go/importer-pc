@@ -1,0 +1,36 @@
+SELECT --reconciliation: H04 + A01 + E07 + E08 + AC/process baseline
+RUN H04 overload + Prepared controlled disposition
+PASS H04 overload + Prepared controlled disposition
+RUN H04 old active alarms survive 350 historical occurrences
+PASS H04 old active alarms survive 350 historical occurrences
+RUN H04 source marker does not resurrect after acknowledged recovery
+FAIL H04 source marker does not resurrect after acknowledged recovery: Nullable object must have a value.
+RUN H04 original actor expiry cannot reauthorize Prepared or release entity
+PASS H04 original actor expiry cannot reauthorize Prepared or release entity
+RUN H04 cancel competes with pre-network guard and durable handoff
+PASS H04 cancel competes with pre-network guard and durable handoff
+RUN H04 all Prepared kinds terminate without inventing release or acceptance
+PASS H04 all Prepared kinds terminate without inventing release or acceptance
+RUN H04 SIMULATION-v1 baseline JSON compatibility and forward format gate
+PASS H04 SIMULATION-v1 baseline JSON compatibility and forward format gate
+RUN H04 same alarm code retains independent owners and recovery
+PASS H04 same alarm code retains independent owners and recovery
+RUN H04 SQLite local termination rollback and acknowledged restart
+PASS H04 SQLite local termination rollback and acknowledged restart
+Unhandled exception. System.AggregateException: One or more errors occurred. (Nullable object must have a value.)
+ ---> System.InvalidOperationException: Nullable object must have a value.
+   at System.Nullable`1.get_Value()
+   at HardeningVerification.<>c__DisplayClass0_0.<<Run>b__3>d.MoveNext() in <WORKTREE>/tests/Ipc.Verification/HardeningVerification.cs:line 62
+--- End of stack trace from previous location ---
+   at HardeningVerification.<>c__DisplayClass0_0.<<Run>b__3>d.MoveNext() in <WORKTREE>/tests/Ipc.Verification/HardeningVerification.cs:line 92
+--- End of stack trace from previous location ---
+   at HardeningVerification.<>c__DisplayClass0_0.<<Run>b__3>d.MoveNext() in <WORKTREE>/tests/Ipc.Verification/HardeningVerification.cs:line 92
+--- End of stack trace from previous location ---
+   at HardeningVerification.<>c__DisplayClass0_0.<<Run>b__3>d.MoveNext() in <WORKTREE>/tests/Ipc.Verification/HardeningVerification.cs:line 92
+--- End of stack trace from previous location ---
+   at HardeningVerification.<>c__DisplayClass0_0.<<Run>g__Check|0>d.MoveNext() in <WORKTREE>/tests/Ipc.Verification/HardeningVerification.cs:line 15
+   --- End of inner exception stack trace ---
+   at HardeningVerification.Run(String root, String url, String workspace) in <WORKTREE>/tests/Ipc.Verification/HardeningVerification.cs:line 249
+   at Program.<Main>$(String[] args) in <WORKTREE>/tests/Ipc.Verification/Program.cs:line 53
+   at Program.<Main>$(String[] args) in <WORKTREE>/tests/Ipc.Verification/Program.cs:line 430
+   at Program.<Main>(String[] args)

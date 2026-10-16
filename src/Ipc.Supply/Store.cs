@@ -104,6 +104,14 @@ public sealed partial class SupplyStore : IDisposable
     public Alarm? Alarm(string id) => Read<Alarm>("SELECT json FROM alarms WHERE id=$a", id).SingleOrDefault();
     public Alarm[] AlarmHistory(int offset, int limit) => Read<Alarm>("SELECT json FROM alarms WHERE active=0 ORDER BY rowid DESC LIMIT $a OFFSET $b", Math.Clamp(limit, 1, 200), Math.Max(0, offset));
     public ConfigRevision[] Configs() => Read<ConfigRevision>("SELECT json FROM configs ORDER BY rowid DESC LIMIT 100");
+    // Startup authority must not depend on the UI's bounded recent-revision list.
+    public ConfigRevision? CurrentConfig(string status) => Read<ConfigRevision>("""
+        SELECT c.json FROM configs c WHERE c.status=$a
+        ORDER BY coalesce((SELECT max(a.rowid) FROM audit a WHERE a.owner=c.id
+          AND json_extract(a.json,'$.Kind')='ConfigActivation'),0) DESC,c.rowid DESC LIMIT 1
+        """, status).SingleOrDefault();
+    public bool ConfigVersionExists(string version, string? exceptId = null) => int.Parse(Scalar(
+        "SELECT count(*) FROM configs WHERE json_extract(json,'$.Content.Version')=$a AND ($b IS NULL OR id<>$b)", version, exceptId)!) != 0;
     public CommandReceipt? Receipt(Command command)
     {
         using var c = Sql("SELECT hash,receipt FROM commands WHERE id=$a", null, command.Id); using var r = c.ExecuteReader();
@@ -149,7 +157,13 @@ public sealed partial class SupplyStore : IDisposable
             Exec("INSERT OR IGNORE INTO responses VALUES($a,$b,$c)", tx, response.EvidenceId, response.RequestId, Wire.Encode(response));
             if (count) Exec("INSERT OR IGNORE INTO acceptance VALUES($a,$b,$c,$d)", tx, response.RequestId, response.EvidenceId, request!.OwnerId, response.Quantity);
         }
-        if (config is not null) Exec("INSERT INTO configs VALUES($a,$b,$c) ON CONFLICT(id) DO UPDATE SET status=excluded.status,json=excluded.json", tx, config.Id, config.Status, Wire.Encode(config));
+        if (config is not null)
+        {
+            // Exactly one current Effective after promotion. Prior activation facts and
+            // content remain in audit/config history; the prior revision is now superseded.
+            if (config.Status == "Effective") Exec("UPDATE configs SET status='Superseded',json=json_set(json,'$.Status','Superseded') WHERE status='Effective' AND id<>$a", tx, config.Id);
+            Exec("INSERT INTO configs VALUES($a,$b,$c) ON CONFLICT(id) DO UPDATE SET status=excluded.status,json=excluded.json", tx, config.Id, config.Status, Wire.Encode(config));
+        }
         if (alarm is not null) SaveAlarm(alarm);
         if (command is not null) Exec("INSERT INTO commands VALUES($a,$b,$c)", tx, command.Id, Wire.Hash(Wire.Encode(command)), Wire.Encode(receipt));
         var a = new Audit(Wire.Id(), owner, actor, command?.Id ?? "system", kind, evidence, DateTimeOffset.UtcNow);

@@ -8,7 +8,6 @@
     "runtime": "10.0.13",
     "powershell": "7.6.7"
   },
-  "source_state": "reviewed implementation candidate; code commit is identified in the final delivery receipt",
   "core_build": {
     "command": "dotnet build ImporterPc.slnx --no-restore -m:1 -nr:false",
     "result": "PASS",
@@ -50,5 +49,41 @@
   "windows_runtime": "BLOCKED",
   "real_sdk_wcs_site": "BLOCKED",
   "production_readiness": "NotReady / mandatory capabilities missing",
-  "historical_rv_status": "RV-01..RV-17 OPEN"
+  "historical_rv_status": "RV-01..RV-17 OPEN",
+  "source_commit": "04a3d46713b318c84999906ae2479b62e7d49cf0",
+  "windows_reference_baseline": "Windows 11 24H2 / build 26100+ x64; deployment script check; runtime NOT_RUN",
+  "locked_restore": "PASS / portable and separate win-x64 dependency graphs / no suppressed NuGet audit",
+  "publication": {
+    "result": "PASS",
+    "file_count": 810,
+    "zip_bytes": 118902308,
+    "zip_sha256": "c185501702b51e70fd330e78aaacd2279cfb4f72e695b0ce3db3b6fad4825665",
+    "module_hashes": "PASS",
+    "release": {
+      "WorkPackage": "WP-IPC-RUNTIME-03",
+      "SchemaVersion": 1,
+      "SourceCodeSha256": "8ec828c921c9556ad3a50394d286d18c9614a120d9ad06b1c8a45770c3d01b69",
+      "GitBase": "04a3d46713b318c84999906ae2479b62e7d49cf0",
+      "Mode": "Simulation",
+      "Target": "win-x64"
+    },
+    "command": "pwsh -NoProfile -File scripts/publish.ps1 -Mode Simulation -Output .artifacts/WP-IPC-RUNTIME-03-win-x64"
+  },
+  "native_published_smoke": {
+    "command": "python3 scripts/smoke.py --product .artifacts/native-04a3d46 --fixture src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll --output .artifacts/smoke-final-results.json",
+    "results": {
+      "published_native_start": "PASS",
+      "second_process_ownership": "PASS",
+      "published_backup_preflight_restore_quarantine": "PASS",
+      "metadata_export": "PASS",
+      "unwritable_storage_not_ready": "PASS",
+      "changed_module_not_ready": "PASS",
+      "production_no_fixture_or_business": "PASS",
+      "windows_desktop_runtime": "BLOCKED_ON_NON_WINDOWS"
+    },
+    "log_sha256": "2e293d1e1f29572d4486938e4473f34ba7825a7bb1111d849651e40f6bb3a384"
+  },
+  "powershell_scripts": "PASS syntax / publish.ps1 executed on macOS PowerShell 7.6.7; Windows station.ps1 execution BLOCKED",
+  "archive_final": "PASS manifest, hashes, JSON, references, source/publication scan; not business acceptance",
+  "restricted_evidence": "Original untracked customer files preserved in original checkout; issues.json and public tokens byte-identical to main"
 }

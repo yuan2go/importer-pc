@@ -435,26 +435,27 @@
     },
     {
       "path": "docs/runtime/checks.json",
-      "sha256": "61b5de650a3714afe4f4cea69b53ac61339b2c2cd89a8cb30a7ddcb49f55a889",
-      "size_bytes": 2326,
-      "git_blob": "c81894bdf0d232d05666b908669a34dc4d431eca",
-      "version": "runtime-1.0",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "docs/runtime/delivery.md",
-      "sha256": "c37de72f2a6dcd2655ec2f286a1c106d5c4d6ba07aeae6ad36b0ed17999708ef",
-      "size_bytes": 4446,
-      "git_blob": "af9db5793cf0a466ebabfdaf5b952aadf124ddb2",
+      "sha256": "d124de131d5bffdd84b3d5bcd885d119d4ccaa5a5d21b4e623ff9a0d337644f2",
+      "size_bytes": 4218,
+      "git_blob": "f7b0c529c7eca98fd1fc0d1f6829c2e56c6e9b17",
       "version": "runtime-1.0",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
       "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "0693370cca12fcf7619021bbdb7729c417d40a31"
+      "previous_git_blob": "c81894bdf0d232d05666b908669a34dc4d431eca"
+    },
+    {
+      "path": "docs/runtime/delivery.md",
+      "sha256": "4524260bb99e4582e0ee859afb0d4d286b6aaec8814eae0489740359e6656da3",
+      "size_bytes": 5746,
+      "git_blob": "1a0cd01e3f8affe05a6ca366fff5639bb3a8de57",
+      "version": "runtime-1.0",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
+      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "af9db5793cf0a466ebabfdaf5b952aadf124ddb2"
     },
     {
       "path": "docs/runtime/implementation.md",

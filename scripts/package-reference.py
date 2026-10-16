@@ -18,7 +18,7 @@ output = a.output.resolve()
 archive = Path(str(output) + '.zip')
 if output.exists() or archive.exists():
     raise FileExistsError('Use a fresh output; prior packages retained')
-source_changes = subprocess.check_output(['git', 'status', '--porcelain', '--', 'src', 'config', 'scripts', 'global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx'], cwd=root, text=True).strip()
+source_changes = subprocess.check_output(['git', 'status', '--porcelain', '--', 'src', 'config', 'scripts', 'global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx', 'docs/runtime/operations.md'], cwd=root, text=True).strip()
 if source_changes:
     raise ValueError('Commit runtime/configuration/packaging sources before publication')
 output.mkdir(parents=True)

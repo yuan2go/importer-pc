@@ -58,7 +58,7 @@ manifest = dict(SchemaVersion=1, ProductId=definition['ProductId'], Mode=a.mode,
 (output / 'product.json').write_text(json.dumps(manifest, indent=2) + '\n')
 # Bind generated artifacts to source bytes, even for a reviewed working-tree build.
 source_root = Path(__file__).resolve().parent.parent
-inputs = [source_root / name for name in ('global.json', 'Directory.Build.props', 'NuGet.Config')]
+inputs = [source_root / name for name in ('global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx', 'docs/runtime/operations.md')]
 for directory in ('src', 'config', 'scripts'):
     inputs.extend(f for f in (source_root / directory).rglob('*') if f.is_file() and
                   not {'bin', 'obj', '__pycache__'}.intersection(f.relative_to(source_root).parts))
@@ -66,7 +66,7 @@ fingerprint = hashlib.sha256()
 for source in sorted(inputs):
     fingerprint.update(source.relative_to(source_root).as_posix().encode() + b'\0' + source.read_bytes() + b'\0')
 source_commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source_root, text=True).strip()
-source_paths = ['src', 'config', 'scripts', 'global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx']
+source_paths = ['src', 'config', 'scripts', 'global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx', 'docs/runtime/operations.md']
 source_changes = subprocess.check_output(['git', 'status', '--porcelain', '--', *source_paths], cwd=source_root, text=True).strip()
 if a.require_clean_source and source_changes:
     raise ValueError('Publication requires committed runtime/configuration/packaging inputs')

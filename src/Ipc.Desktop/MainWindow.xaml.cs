@@ -257,10 +257,16 @@ public partial class MainWindow : Window
         if (operation is not null)
         {
             Add(root,$"作业 {operation.Id} / r{operation.Revision}\n{OperatorText.Operation(operation.Status)} · {operation.Occupancy}\n箱 {OperatorText.Known(operation.BoxBarcode)} / 箱波次 {OperatorText.Known(operation.BoxWave)}\nItem {OperatorText.Known(operation.Barcode)} / SKU {OperatorText.Known(operation.Task?.Sku)}\nItem 波次 {OperatorText.Known(operation.Task?.ItemWave)} / 任务 {OperatorText.Known(operation.Task?.TaskId)}\n格口 {OperatorText.Known(operation.Task?.Destination)} / 数量 {operation.Supply?.ToString() ?? "未取得"} {OperatorText.Known(operation.Task?.Unit)}\n{OperatorText.Reason(operation.Reason)}");
-            if (LaneForOwner(operation.Id) is { CanCancel: true } lane)
+            if (LaneForOwner(operation.Id) is { CanCancel: true, Current: { } current } && current.Revision == operation.Revision)
             {
+                var reviewedRevision = snapshot!.State.Revision;
                 var dispose = new Button { Content = "处置当前未提交草稿" };
-                dispose.Click += async (_, _) => await SendAsync("CancelDraft", operation.Id, confirm: $"处置作业 {operation.Id} / r{operation.Revision} 的未提交草稿？原请求、接受账、预留与实体责任保留。");
+                dispose.Click += async (_, _) =>
+                {
+                    if (!Fresh || snapshot!.State.Revision != reviewedRevision || LaneForOwner(operation.Id)?.Current?.Revision != operation.Revision)
+                    { dispose.IsEnabled = false; model.LastResult = "详情核对对象或版本已变化；请重新打开当前作业详情后再处置。旧阅读快照不授权当前草稿。"; return; }
+                    await SendAsync("CancelDraft", operation.Id, confirm: $"处置作业 {operation.Id} / r{operation.Revision} 的未提交草稿？原请求、接受账、预留与实体责任保留。", expectedRevision: reviewedRevision);
+                };
                 root.Items.Add(dispose);
             }
             if(operation.CurrentInput is { } input) Add(root,$"本次观察 {input.ObservationId} / {input.ObservedAt:O} / 码集合 {string.Join(" / ",input.Codes)} / 包装量 {input.PackageQuantity?.ToString() ?? "未取得"}");

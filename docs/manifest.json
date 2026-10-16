@@ -526,9 +526,9 @@
     },
     {
       "path": "docs/runtime/hardening-04-checks.json",
-      "sha256": "5d83054acb1fcf0b37b54addc351f3434dfb388996b55cb58dbdac60b06c6a2a",
-      "size_bytes": 6300,
-      "git_blob": "2b9cc86cf6e47d5dd2a8df1828feb494877d31c5",
+      "sha256": "fbf9f03219791004dd56e3643506c1eae0c33c7a4f8b2b6a6ac97504a63a4798",
+      "size_bytes": 6415,
+      "git_blob": "86393ccbc8b3cb6a85a39b8eacee81c16468854a",
       "version": "runtime-hardening-04",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
@@ -537,9 +537,9 @@
     },
     {
       "path": "docs/runtime/hardening-04.md",
-      "sha256": "6fa8a1639fdc660ac5c0dbd0c8cc1eda31f684f165f005b7b958ae9a86b38186",
-      "size_bytes": 5756,
-      "git_blob": "9ce724af87b9b05914a6d314167859e6b70503d4",
+      "sha256": "f98c0cfe36ad2c0b52d0cc107c230320928c68fe432d59eaa1ba15fd8b02bfc6",
+      "size_bytes": 5862,
+      "git_blob": "168678fa067d951e2b4f673f7dedf77030f322f0",
       "version": "runtime-hardening-04",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
@@ -1328,6 +1328,6 @@
     "source_commit": "2619a7a2a485a8176ae15ea7ed6fe0a18d34d9f6",
     "windows_runtime": "NOT_RUN",
     "binary_storage": "local_artifacts_not_git",
-    "pull_request": "pending_creation"
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/3"
   }
 }

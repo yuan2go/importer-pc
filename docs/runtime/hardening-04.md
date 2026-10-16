@@ -2,6 +2,8 @@
 
 实施基准 main `752d5a89a9bf2a5e54c2551a3af77b82e1bc1961`；代码提交 `2619a7a2a485a8176ae15ea7ed6fe0a18d34d9f6`，开发分支 `codex/wp-ipc-runtime-hardening-04`。开始时无开放PR，原工作区未跟踪客户资料保持原样；本包使用独立worktree。交付为F-02参考产品工程加固，不是旧现场迁移或生产供包批准。
 
+交付PR：[PR #3](https://github.com/yuan2go/importer-pc/pull/3)（保持开放，不自行合并）。
+
 本轮机器结果和日志指纹见 [checks](hardening-04-checks.json)，当前恢复步骤见 [operations](operations.md#hardening-04-恢复与请求处置)，范围见 [工作包](../work-packages/WP-IPC-RUNTIME-HARDENING-04.md)。RUNTIME-03交付和历史D/RV证据保留，不倒写。
 
 ## 已实现与已验证

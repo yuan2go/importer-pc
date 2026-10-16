@@ -148,5 +148,7 @@
     "snapshot_and_handoff_serialized_with_overload_latch": true,
     "old_attempt_cannot_resurrect_cancelled_request": true,
     "local_terminal_is_not_release_or_admission": true
-  }
+  },
+  "pull_request": "https://github.com/yuan2go/importer-pc/pull/3",
+  "delivery_head_before_pr_receipt": "ca92256"
 }

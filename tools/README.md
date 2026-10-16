@@ -22,4 +22,6 @@ python3 tools/verify_archive.py --zip "$INPUT_ZIP" --sha256 8685ba48f19aa0875415
 
 `reference-policy.json` 的 `exceptions` 必须精确记录 `source`、`target`、`reason`、`status`；多余或未使用的豁免也报错。`locators` 可记录 `path`、`sha256`、`line_end`，核对历史证据身份和行号范围。已登记缺失会单列输出；整体 PASS 只表示未发现未登记的交付错误，不能解释为全部原始资产已取得、获准公开或业务通过。
 
+PPTX 必需部件、包内 SVG/CSS/位图也检查。原件若将 SVG 字节命名为位图，只能通过 `package_exceptions` 逐项登记 `container`、`part`、`sha256`、`reason` 及 `status=HISTORICAL_FORMAT_MISMATCH`；字节变化或多余登记仍报错。登记不豁免 SVG 内的资源错误，不修改原件，不把这些部件计为可解码位图。
+
 敏感标记扫描是补充检查，不能证明所有权、公开许可或完全没有秘密。准备公开材料仍须逐文件审查，包含嵌入内容、来源元数据和实际暂存差异。

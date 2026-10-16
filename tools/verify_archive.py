@@ -180,6 +180,8 @@ def verify(root, manifest_path, scope, registry_path=None):
     policy = json.loads(registry_path.read_text()) if registry_path else {}
     exceptions = {(r['source'], r['target']): r for r in policy.get('exceptions', [])}
     used = set()
+    package_exceptions = {(r['container'], r['part']): r for r in policy.get('package_exceptions', [])}
+    package_used = set()
     ids = {}
     def anchors(path):
         if path not in ids:
@@ -264,6 +266,8 @@ def verify(root, manifest_path, scope, registry_path=None):
                     if not required <= parts:
                         fail('pptx_required_parts', rel)
                     for name in sorted(parts):
+                        if name.endswith('/'):
+                            continue
                         if '/embeddings/' in name.lower() or 'vbaproject' in name.lower():
                             fail('pptx_embedded_object_review_required', rel + ':' + name)
                         if name.lower().endswith(('.ttf', '.otf', '.odttf', '.woff', '.woff2')) or '/fonts/' in name.lower():
@@ -286,13 +290,28 @@ def verify(root, manifest_path, scope, registry_path=None):
                         if name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')):
                             from io import BytesIO
                             from PIL import Image
-                            with Image.open(BytesIO(z.read(name))) as im: im.verify()
-                            with Image.open(BytesIO(z.read(name))) as im: im.load()
+                            data = z.read(name)
+                            if data.lstrip().startswith((b'<svg', b'<?xml')) and ET.fromstring(data).tag.split('}')[-1] == 'svg':
+                                for value in svg_references(data):
+                                    if not value.startswith(('#', 'data:')):
+                                        fail('pptx_svg_external_asset', rel + ':' + name)
+                                key = (rel, name)
+                                item = package_exceptions.get(key, {})
+                                if item.get('sha256') == digest(data) and item.get('reason') and item.get('status') == 'HISTORICAL_FORMAT_MISMATCH':
+                                    package_used.add(key)
+                                    registered.append({'source': rel, 'target': name, 'status': item['status']})
+                                else:
+                                    fail('pptx_media_type_mismatch', rel + ':' + name)
+                            else:
+                                with Image.open(BytesIO(data)) as im: im.verify()
+                                with Image.open(BytesIO(data)) as im: im.load()
                 counts['pptx'] += 1
         except (ValueError, OSError, KeyError, ET.ParseError, ImportError, zipfile.BadZipFile) as e:
             fail(type(e).__name__, rel)
     for key in sorted(set(exceptions) - used):
         fail('unused_exception', key[0] + ' -> ' + key[1])
+    for key in sorted(set(package_exceptions) - package_used):
+        fail('unused_package_exception', key[0] + ':' + key[1])
     # Explicit evidence locators are checked independently of textual link syntax.
     for r in policy.get('locators', []):
         target = root / r['path']

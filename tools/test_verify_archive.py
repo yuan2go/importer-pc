@@ -100,10 +100,11 @@ class ArchiveTests(unittest.TestCase):
             z.writestr('_rels/.rels', '<Relationships><Relationship Target="https://example.invalid" TargetMode="External"/></Relationships>')
             z.writestr('ppt/fonts/font.odttf', b'font')
             z.writestr('ppt/media/icon.svg', '<svg style="fill:url(missing.png)"></svg>')
+            z.writestr('ppt/media/vector.png', '<svg/>')
         self.refresh()
         codes = {x['code'] for x in self.check_archive()['errors']}
         self.assertTrue({'UnidentifiedImageError', 'secret_marker', 'pptx_external_relationship', 'embedded_font',
-                         'pptx_required_parts', 'pptx_svg_external_asset'} <= codes)
+                         'pptx_required_parts', 'pptx_svg_external_asset', 'pptx_media_type_mismatch'} <= codes)
 
 
 if __name__ == '__main__':

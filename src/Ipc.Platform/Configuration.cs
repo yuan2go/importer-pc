@@ -29,7 +29,7 @@ public sealed record IntegrationBinding(string Id, string Revision, string Contr
 public sealed record StationConfig(int SchemaVersion, string StationId, string Version, RunMode Mode, DeviceBinding[] Devices,
     IntegrationBinding Integration, int EventCapacity = 64, int CommandCapacity = 32, int OutboxCapacity = 64,
     int TimeoutMs = 1500, int MinimumFreeMb = 128, string Policy = "SYNTHETIC-KEEP-v1", int FixtureDemand = 120,
-    int MaximumPackage = 1000);
+    int MaximumPackage = 1000, [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DeploymentExtensions? Extensions = null);
 public sealed record PresentationSettings(string View = "workstation", string Layout = "standard");
 
 // Explicit, trusted registration supplied by the installed product. The platform does not

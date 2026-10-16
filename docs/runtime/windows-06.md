@@ -1,3 +1,5 @@
+> DELIVERY-12待验入口：[12报告](extension-windows-delivery-12.md)。当前授权包含Windows参考验证；开工检查无本机/VM/自托管runner/交互桌面。新增远端原生WPF冒烟另列实际结果，不能替代本文件W01～06。原11/09记录保留，不改变支持矩阵；保护拒绝不算正常适配PASS。
+
 > 当前待验版本绑定[REVIEW-FOLLOWUP-11](review-followup-11.md)的新SourceCommit/包SHA。下文上一版边界保持；没有新增Windows/真实集成执行，W01～06 NOT_RUN，B01～06 BLOCKED。
 
 # WINDOWS-VALIDATION-06 同版待验记录

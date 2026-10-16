@@ -12,7 +12,7 @@ public static class SupplyConfiguration
         if (s.Devices.Length != 2 || !s.Devices.Select(x => x.Role).Order().SequenceEqual(new[] { "left", "right" })) e.Add("Supply requires two unique left/right logical bindings");
         if (s.Mode == RunMode.Simulation)
         {
-            if (s.Devices.Any(x => x.Driver is not ("manual" or "replay"))) e.Add("Unknown simulation driver");
+            if (s.Devices.Any(x => x.Driver is not ("manual" or "replay") && !x.Driver.StartsWith("extension:", StringComparison.Ordinal))) e.Add("Unknown simulation driver");
             if (!Uri.TryCreate(s.Integration.Endpoint, UriKind.Absolute, out var uri) || uri.Scheme != "http" || uri.Host != "127.0.0.1" || uri.UserInfo != "" || uri.AbsolutePath != "/" || uri.Query != "" || uri.Fragment != "") e.Add("Fixture requires literal IPv4 loopback root HTTP endpoint");
             if (s.Integration.Contract != "SIMULATION-v1" || s.Policy != "SYNTHETIC-KEEP-v1" || s.FixtureDemand is < 1 or > 100000 || s.MaximumPackage is < 1 or > 10000) e.Add("Invalid synthetic policy/contract");
             if (s.Devices.Any(x => x.Driver == "replay" && string.IsNullOrWhiteSpace(x.ReplayFile))) e.Add("Replay file missing");

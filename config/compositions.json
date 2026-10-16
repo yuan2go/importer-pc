@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "components": {
+    "platform": {"version":"1.0.0","contract":1,"dependencies":[],"delivery":"core"},
+    "supply": {"version":"1.0.0","contract":1,"dependencies":["platform"],"delivery":"core"},
+    "adapters": {"version":"1.0.0","contract":1,"dependencies":["supply"],"delivery":"core"},
+    "product": {"version":"1.0.0","contract":1,"dependencies":["adapters"],"delivery":"core"},
+    "reference.barcode": {"version":"1.0.0","contract":1,"dependencies":["platform"],"delivery":"offline-bundle"}
+  },
+  "compositions": {
+    "core-reference": ["product"],
+    "barcode-reference": ["product","reference.barcode"]
+  },
+  "required": ["platform","supply","adapters","product"]
+}

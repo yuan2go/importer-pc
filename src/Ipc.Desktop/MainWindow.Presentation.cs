@@ -12,7 +12,7 @@ public partial class MainWindow
 {
     const double MinimumClientWidth = 1280, MinimumClientHeight = 680;
     IInputElement? drawerReturnFocus;
-    bool entryRequested, recoveryEntryAcknowledged, layoutPauseRequired, layoutPauseInFlight;
+    bool entryRequested, recoveryEntryAcknowledged, layoutPauseRequired, layoutPauseAcknowledged;
     Actor? observedReadActor;
     readonly BoxEntryFocusPolicy boxEntryFocus = new();
     long alarmHistoryGeneration;
@@ -52,6 +52,7 @@ public partial class MainWindow
         {
             "history" => ("作业记录与原请求详情", "PAGE-06 · 业务作业、原请求、网络尝试、回执与审计分层"),
             "recovery" or "alarms" => ("报警、核对与恢复", "PAGE-01 / 07 · 已读不等于恢复；Unknown保留原请求"),
+            "extensions" => ("组件与部署管理", "受控签名包 / 实例与角色绑定 / 统一部署修订 / 重启生效"),
             "engineering" => ("工程控制 · SIMULATION", "仅合成观察及故障注入；不控制真实设备，不写生产WCS"),
             _ => ("设备与设置", "PAGE-08 · 只读诊断 / 维护配置草稿 / 受控重启生效")
         };
@@ -61,6 +62,7 @@ public partial class MainWindow
         catch (Exception ex) { model.LastResult="页面偏好保存失败："+ex.Message; }
         if (view=="history" && HistoryGrid.ItemsSource is null && !navigatingDirectDetail) await LoadHistoryAsync();
         if (view=="maintenance" && ConfigsList.ItemsSource is null) await LoadConfigs();
+        if (view=="extensions") await LoadExtensionsAsync();
         UpdateGuards();
     }
     void CloseDrawer()
@@ -92,6 +94,7 @@ public partial class MainWindow
     }
     async void OpenDevicesClick(object sender,RoutedEventArgs e) => await NavigateToViewAsync(Runtime.AllowedViews.Contains("diagnostics") ? "diagnostics" : "maintenance");
     async void OpenMaintenanceClick(object sender,RoutedEventArgs e) => await NavigateToViewAsync("maintenance");
+    async void OpenExtensionsClick(object sender,RoutedEventArgs e) => await NavigateToViewAsync("extensions");
     async void OpenEngineeringClick(object sender,RoutedEventArgs e) => await NavigateToViewAsync("engineering");
     void OpenIdentityClick(object sender,RoutedEventArgs e) { CloseDrawer(); entryRequested=true; UpdateEntryProjection(); }
     void ContinueEntryClick(object sender,RoutedEventArgs e)
@@ -139,7 +142,10 @@ public partial class MainWindow
     {
         if (LaneGrid is null || SmallAreaWarning is null) return;
         var insufficient = ClientArea.ActualWidth < MinimumClientWidth || ClientArea.ActualHeight < MinimumClientHeight;
-        if (IsLoaded && !smallArea && insufficient) layoutPauseRequired=true;
+        // The first measure often happens before Loaded. Latch the protection request
+        // whenever actual measured space is insufficient, including that first measure.
+        // It remains latched after enlarging until an explicit successful Resume.
+        if (ClientArea.ActualWidth > 0 && ClientArea.ActualHeight > 0 && insufficient) layoutPauseRequired=true;
         smallArea=insufficient;
         SmallAreaWarning.Visibility=smallArea ? Visibility.Visible : Visibility.Collapsed;
         var dense = compact || ClientArea.ActualWidth <=1550 || ClientArea.ActualHeight<=880;
@@ -159,20 +165,15 @@ public partial class MainWindow
         LayoutButton.Content=$"{(compact ? "紧凑偏好" : "标准偏好")} · 双通道";
         UpdateGuards();
     }
-    async Task EnsureLayoutPauseAsync()
+    Task EnsureLayoutPauseAsync()
     {
-        if (!layoutPauseRequired || layoutPauseInFlight || busy || closing || !HasIdentity || snapshot?.State.Blocks.Any(x=>x.Code=="OperatorPaused")==true) return;
-        layoutPauseInFlight=true;
-        try
-        {
-            var current=await Runtime.Application!.SnapshotAsync().WaitAsync(lifetime.Token);
-            if (!layoutPauseRequired || current.State.Actor?.ExpiresAt<=DateTimeOffset.UtcNow || closing) return;
-            var receipt=await Runtime.CommandAsync(new(Wire.Id(),current.State.Revision,"Pause"));
-            model.LastResult=receipt.Status=="Persisted" ? "窗口保护已暂停新入场；恢复区域后仍须人工恢复。" : "窗口保护保持阻断；暂停命令反馈："+OperatorText.Reason(receipt.Reason);
-        }
-        catch(OperationCanceledException) when(closing) { }
-        catch(Exception ex) { if(!closing) model.LastResult="窗口保护暂停未确认，继续阻断本窗业务："+ex.Message; }
-        finally { layoutPauseInFlight=false; }
+        // SetWindowAreaAsync owns the persistent application pause, even before login.
+        // An explicit Resume in another valid window is shared authority; do not
+        // recreate a pause from this window's already-acknowledged local latch.
+        if (snapshot?.State.Blocks.Any(x => x.Code == "OperatorPaused") == true) layoutPauseAcknowledged = true;
+        else if (layoutPauseAcknowledged && !smallArea && Fresh)
+        { layoutPauseRequired = false; layoutPauseAcknowledged = false; }
+        return Task.CompletedTask;
     }
     void ObserveReadIdentity()
     {

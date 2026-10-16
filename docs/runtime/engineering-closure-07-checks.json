@@ -1,0 +1,168 @@
+{
+  "work_package": "WP-IPC-ENGINEERING-CLOSURE-07",
+  "execution_base": "6d4063ec54e8167c8710e46befbe66f8b688ef08",
+  "code_source_commit": "493416f99970d95bb4a4076130de5c28ee33502d",
+  "branch": "codex/wp-ipc-engineering-closure-07",
+  "prior_pr": {
+    "number": 5,
+    "state": "MERGED",
+    "merge_commit": "6d4063ec54e8167c8710e46befbe66f8b688ef08"
+  },
+  "implementation_status": "IMPLEMENTED_RUNTIME_UNVERIFIED",
+  "engineering": {
+    "E-01": {
+      "status": "IMPLEMENTED_NOT_RUNTIME_VERIFIED",
+      "files": [
+        "src/Ipc.Supply/Model.cs",
+        "src/Ipc.Supply/StationApplication.cs",
+        "src/Ipc.Desktop/ViewModels.cs"
+      ]
+    },
+    "E-02": {
+      "status": "IMPLEMENTED_NOT_RUNTIME_VERIFIED",
+      "files": [
+        "src/Ipc.Desktop/MainWindow.xaml",
+        "src/Ipc.Desktop/MainWindow.Closure.cs"
+      ]
+    },
+    "E-03": {
+      "status": "IMPLEMENTED_NOT_RUNTIME_VERIFIED",
+      "files": [
+        "src/Ipc.Supply/Model.cs",
+        "src/Ipc.Supply/StationApplication.cs",
+        "src/Ipc.Desktop/MainWindow.Closure.cs"
+      ]
+    },
+    "E-04": {
+      "status": "IMPLEMENTED_NOT_RUNTIME_VERIFIED",
+      "files": [
+        "src/Ipc.Supply/Maintenance.cs",
+        "src/Ipc.Supply/Store.cs",
+        "src/Ipc.Product/Program.cs",
+        "scripts/station.ps1"
+      ]
+    },
+    "E-05": {
+      "status": "IMPLEMENTED_NOT_RUNTIME_VERIFIED",
+      "files": [
+        "src/Ipc.Platform/DeviceCapabilities.cs",
+        "src/Ipc.Adapters/ObservationSources.cs",
+        "src/Ipc.Supply/StationClosure.cs",
+        "src/Ipc.Product/ProductRuntime.cs"
+      ]
+    },
+    "E-06": {
+      "status": "IMPLEMENTED_NOT_RUNTIME_VERIFIED",
+      "files": [
+        "src/Ipc.Supply/HistoryQueries.cs",
+        "src/Ipc.Desktop/HistoryPresentation.cs",
+        "src/Ipc.Desktop/MainWindow.Closure.cs"
+      ]
+    },
+    "E-07": {
+      "status": "IMPLEMENTED_NOT_RUNTIME_VERIFIED",
+      "files": [
+        "src/Ipc.Desktop/MainWindow.xaml",
+        "src/Ipc.Desktop/MainWindow.Closure.cs",
+        "src/Ipc.Desktop/ViewModels.cs"
+      ]
+    },
+    "E-08": {
+      "status": "IMPLEMENTED_NOT_RUNTIME_VERIFIED",
+      "files": [
+        "src/Ipc.Supply/StationClosure.cs",
+        "src/Ipc.Desktop/OperatorNotificationPlayer.cs"
+      ]
+    },
+    "E-09": {
+      "status": "IMPLEMENTED_NOT_RUNTIME_VERIFIED",
+      "files": [
+        "src/Ipc.Platform/Lifecycle.cs",
+        "src/Ipc.Product/ProductRuntime.cs",
+        "src/Ipc.Supply/StationApplication.cs",
+        "src/Ipc.Desktop/App.xaml.cs",
+        "src/Ipc.Product/Program.cs"
+      ]
+    },
+    "E-10": {
+      "status": "IMPLEMENTED_NOT_RUNTIME_VERIFIED",
+      "files": [
+        "src/Ipc.Platform/MachineRuntimePolicy.cs",
+        "scripts/provision-runtime.ps1",
+        "src/Ipc.Product/ProductRuntime.cs",
+        "src/Ipc.Product/Program.cs"
+      ]
+    }
+  },
+  "static_review": {
+    "method": "Source and diff reading, including focused independent cross-review; no compiler, parser, validator or runtime checks",
+    "findings_addressed": [
+      "input invalidation on guard/capacity rejection",
+      "source/epoch/time authority and no confirmation replay extension",
+      "independent cleanup signalling and original error aggregation",
+      "query/detail generation and initial direct-detail navigation",
+      "paging returned conditions and insert boundary",
+      "critical barcode wrapping and fixed health/alarm row",
+      "notification consumer restored on failed shutdown"
+    ]
+  },
+  "execution": {
+    "tests": "NOT_RUN_USER_REQUEST",
+    "archive_validator": "NOT_RUN_USER_REQUEST",
+    "restore_or_build": "NOT_RUN_USER_REQUEST",
+    "compilation": "NOT_RUN_USER_REQUEST",
+    "application_or_fixture": "NOT_RUN_USER_REQUEST",
+    "publishing": "NOT_RUN_USER_REQUEST",
+    "smoke": "NOT_RUN_USER_REQUEST",
+    "powershell_execution": "NOT_RUN_USER_REQUEST",
+    "windows": "NOT_RUN_USER_REQUEST",
+    "sdk": "NOT_RUN_USER_REQUEST",
+    "wcs": "NOT_RUN_USER_REQUEST",
+    "device_actions": "NOT_RUN_USER_REQUEST"
+  },
+  "windows": {
+    "W-01": "NOT_RUN",
+    "W-02": "NOT_RUN",
+    "W-03": "NOT_RUN",
+    "W-04": "NOT_RUN",
+    "W-05": "NOT_RUN",
+    "W-06": "NOT_RUN"
+  },
+  "integration": {
+    "B-01": "BLOCKED",
+    "B-02": "BLOCKED",
+    "B-03": "BLOCKED",
+    "B-04": "BLOCKED",
+    "B-05": "BLOCKED",
+    "B-06": "BLOCKED"
+  },
+  "versions": {
+    "planned_release_metadata": "ENGINEERING-CLOSURE-07",
+    "storage": 3,
+    "minimum_reader": 3,
+    "contract": "SIMULATION-v1",
+    "existing_format_1_2": "EXPLICIT_BACKED_UP_UPGRADE_REQUIRED",
+    "schema1_and_id2_sql": "UNCHANGED",
+    "forward_migration": 3
+  },
+  "artifact_delivery": {
+    "binary_built": false,
+    "binary_published": false,
+    "zip_sha256": null,
+    "windows_screenshots": []
+  },
+  "test_source_policy": {
+    "modified": false,
+    "known_stale_expectations": [
+      "AlignmentDataVerification.LegacyMigration implicit constructor migration and format2 expectations",
+      "HardeningVerification migration count 2 and minimum reader 2:2",
+      "Long synthetic health scenarios must supply current source confirmations"
+    ]
+  },
+  "historical_status": {
+    "rv": "RV-01..17 OPEN",
+    "d_approvals": "UNCHANGED",
+    "prior_validation_records": "UNCHANGED"
+  },
+  "public_scope": "Authorized generic code, synthetic semantics and documentation only; restricted inputs remain in original checkout; no customer assets, credentials, production data, SDK or fonts"
+}

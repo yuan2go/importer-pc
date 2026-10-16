@@ -2,6 +2,8 @@
 
 状态：**NOT_RUN / 等待明确执行授权与目标Windows环境**。2026-10-16形成；分析基准main `cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa`。补齐manifest中已有工作包编号，不改原Windows结果。
 
+当前工程增量见 [07交付记录](../runtime/engineering-closure-07.md)，代码源提交493416f；没有新二进制或运行结果。本包原NOT_RUN/BLOCKED边界继续有效，不因工程实现而自动关闭。
+
 ## 目标与前置
 
 验证实际Windows包、操作工作站、显示输入与维护路径；继承 [alignment-01-windows.md](../runtime/alignment-01-windows.md) 的细目和 [MAIN-REVIEW-02](../reviews/main-static-review-02.md) W-01～06。核心模拟PASS、交叉编译及包完整性不能代替本包。

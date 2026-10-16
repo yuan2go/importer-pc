@@ -2,9 +2,9 @@
 
 C#/.NET 10 工位运行基座与供包**独立参考产品**：Generic Host、WPF、多页面/布局共享业务、实际SQLite事务/Outbox/恢复，两类模拟读码源与独立持久接收账loopback夹具。不是既有现场工程迁移，也未接入厂商SDK或真实WCS。
 
-[运行与发布](docs/runtime/operations.md) · [实施记录](docs/runtime/implementation.md) · [上一包验证与交付](docs/runtime/alignment-01.md) · [统一入口](docs/INDEX.md) · [框架设计](docs/design/framework.md) · [独立静态复核](docs/reviews/main-static-review-02.md) · [下一工程工作包](docs/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)
+[运行与发布](docs/runtime/operations.md) · [实施记录](docs/runtime/implementation.md) · [本轮工程交付与验证边界](docs/runtime/engineering-closure-07.md) · [统一入口](docs/INDEX.md) · [框架设计](docs/design/framework.md) · [独立静态复核](docs/reviews/main-static-review-02.md) · [当前工程工作包](docs/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)
 
-最新静态复核基准main `cc3675f`：仍有10项工程缺口，Windows待验证、真实SDK/WCS/规则阻塞另列。下一阶段按工程收敛07、Windows验证06、集成边界05推进。本轮按用户要求不测试，未运行构建、程序或资料验证器；以下为已有运行命令，不是本轮执行记录。
+工程收敛07从main `6d4063e`实施，代码源提交`493416f`：10项工程缺口已实现，均待运行验证。StorageVersion为3，旧1/2须先原格式备份并显式升级；Windows需维护安装的固定账户/机级租约策略。Windows06仍NOT_RUN，SDK/WCS/生产规则05仍BLOCKED。本轮用户要求不测试，未运行测试、构建、程序、验证器或发布，未生成新二进制；以下仅为已有操作入口。
 
 ```sh
 # .NET SDK 10.0.402 + Python3

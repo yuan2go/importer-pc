@@ -516,9 +516,9 @@
     },
     {
       "path": "docs/runtime/engineering-closure-07-checks.json",
-      "sha256": "c0f0e40f96bd04b35cae515531c3683739a388b8bf2c6e6162eb7e26f00255bd",
-      "size_bytes": 5477,
-      "git_blob": "fd7e503110f30df7325a36a2e4f163c839811d5d",
+      "sha256": "f23553458806c38ee305a8ca28c1a3a8041d6d82c24e57e930042a8191482a18",
+      "size_bytes": 5869,
+      "git_blob": "9748d65ade10277f639508b94adfd09a8ff90a24",
       "version": "engineering-closure-07",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
@@ -527,9 +527,9 @@
     },
     {
       "path": "docs/runtime/engineering-closure-07.md",
-      "sha256": "64edbe3c148c72dbdb0dfa51d1b7b2cc375d6fb63ff0d68af5584adfa34fe178",
-      "size_bytes": 9437,
-      "git_blob": "2bf05097576781d4856211fb9f38d9654562258c",
+      "sha256": "993a003ceff2b98d1df67a4ee472dfd0f6f065b5806c92f06bd5a6de219881f0",
+      "size_bytes": 9709,
+      "git_blob": "b0132b2ee1d892b49ab52ea10d94c3d3da63f31b",
       "version": "engineering-closure-07",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
@@ -882,9 +882,9 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md",
-      "sha256": "fe52be2ef49adf3d03801f7a8f4f24ff2d1788639e226f08e2cc6b24570d0848",
-      "size_bytes": 13026,
-      "git_blob": "8e5f6e5b256d0bb35518b73857667af248a25f2c",
+      "sha256": "5d1817ce00d72a67d0d5d309670d1c163a0ddd92cbbf8ef665d296f6373df273",
+      "size_bytes": 13081,
+      "git_blob": "9d0980e3dd7b921b6ff535f02bfb671d5ed5dd1c",
       "version": "engineering-closure-07",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
@@ -1882,8 +1882,11 @@
     "binary_generated": false,
     "historical_d_rv_unchanged": true,
     "prior_pr_5_state": "MERGED",
-    "implementation_pr_state": "PENDING_CREATION",
-    "public_scope": "Authorized generic code, synthetic semantics and documentation only; no customer originals/assets, private URLs, credentials, production data, SDK or fonts."
+    "implementation_pr_state": "OPEN_AT_CREATION",
+    "public_scope": "Authorized generic code, synthetic semantics and documentation only; no customer originals/assets, private URLs, credentials, production data, SDK or fonts.",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/6",
+    "pr_creation_head": "5e27df93aca167d09d6ab7735299713795248a05",
+    "implementation_pr_merged": false
   },
   "engineering_versions": {
     "planned_release_metadata": "ENGINEERING-CLOSURE-07",

@@ -54,4 +54,4 @@ pwsh ./provision-runtime.ps1 -RuntimeAccount 'MACHINE\station-user'
 - B-01～06继续BLOCKED，见 [集成边界05](../work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)。没有取得真实SDK/合同、生产数量/实体/权限批准或旧现场工程，Production继续NotReady，未控制设备。
 - 历史RV-01～17仍OPEN；D批准、历史issues及ALIGNMENT/H04验收记录不倒写。此次“工程已实现”不等于旧HTML修复、现场迁移或生产验收。
 
-交付是开发分支源码及main PR，不创建新发布资产、不自行合并本次实施PR。实际commit/PR回执由最终答复与GitHub记录核验。
+交付是开发分支源码及main PR，不创建新发布资产、不自行合并本次实施PR。已创建 [main PR #6](https://github.com/yuan2go/importer-pc/pull/6)，创建时HEAD为`5e27df93aca167d09d6ab7735299713795248a05`；本次实施PR保持OPEN，后续文档回执提交仍在同一分支。代码源提交仍为`493416f`；当前最终HEAD以GitHub PR和最终答复核验，不把本文件自引用为自身提交。

@@ -164,5 +164,14 @@
     "d_approvals": "UNCHANGED",
     "prior_validation_records": "UNCHANGED"
   },
-  "public_scope": "Authorized generic code, synthetic semantics and documentation only; restricted inputs remain in original checkout; no customer assets, credentials, production data, SDK or fonts"
+  "public_scope": "Authorized generic code, synthetic semantics and documentation only; restricted inputs remain in original checkout; no customer assets, credentials, production data, SDK or fonts",
+  "pull_request": {
+    "number": 6,
+    "url": "https://github.com/yuan2go/importer-pc/pull/6",
+    "base": "main",
+    "state_at_creation": "OPEN",
+    "creation_head": "5e27df93aca167d09d6ab7735299713795248a05",
+    "merged_by_this_task": false,
+    "current_head_authority": "GitHub PR headRefOid; creation_head is a historical creation receipt, not a self-referential final commit"
+  }
 }

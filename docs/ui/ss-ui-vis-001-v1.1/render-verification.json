@@ -1,0 +1,357 @@
+{
+  "design": "SS-UI-VIS-001 v1.1",
+  "method": "new Chromium exports of byte-identical original HTML through set_content",
+  "exported_at_utc": "2026-10-16T13:44:04.972730+00:00",
+  "source_html_sha256": "d46b0ed9b057cda6779012ecdc6981d0799ba8c3de73e9be22d92b61d4860b6c",
+  "engine": "141.0.7390.37",
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "font_dependency": "system Noto CJK, not distributed in this repository",
+  "screenshots": [
+    {
+      "file": "screens/01-normal-1920.png",
+      "scene": "normal",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "cd995e976724445d049d5eea6aab678e3351d14d03530a06e1edcad278dfe66d",
+      "size_bytes": 210993
+    },
+    {
+      "file": "screens/02-camera-offline-1920.png",
+      "scene": "offline",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "d36a53d2206ef7e8eb95c2b5cf99cefafb029b2313975e94a360b8d707196e19",
+      "size_bytes": 217097
+    },
+    {
+      "file": "screens/03-result-unknown-1920.png",
+      "scene": "unknown",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "ce2fbd3ed4cad5be46471f35a455808d484aa7619e40508db862de8fdaed70fa",
+      "size_bytes": 217480
+    },
+    {
+      "file": "screens/04-business-rejected-1920.png",
+      "scene": "rejected",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "679d2e34f1beda2f58eaab0cc099c6bb4417e1679beccaab928ee19e26da8133",
+      "size_bytes": 211779
+    },
+    {
+      "file": "screens/05-no-read-1920.png",
+      "scene": "noread",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "90616f3c704dcde7cdf0511c6297f482b21c87eb54f2daeebcfb6ae0a4f85fed",
+      "size_bytes": 210758
+    },
+    {
+      "file": "screens/06-multiple-barcodes-1920.png",
+      "scene": "multi",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "a35e8bafecc65a9c2c447b274e0f17a335091a1fdb1551e6554ff04a6407f15d",
+      "size_bytes": 231114
+    },
+    {
+      "file": "screens/07-storage-failed-1920.png",
+      "scene": "storage",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "3ef7236358795ffea2df70adb89de8425f0ffc484b8cbe836ad3088ef73cc184",
+      "size_bytes": 216287
+    },
+    {
+      "file": "screens/08-split-unapproved-1920.png",
+      "scene": "splitBlocked",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "866b4387020f8b3174ce3cc737058ecc292a93ef35148542653a0dfd7c6fa32e",
+      "size_bytes": 218102
+    },
+    {
+      "file": "screens/09-split-candidate-1920.png",
+      "scene": "split",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "ada9b0593ea39b3ca3c9168e0d677e5bd27f47dde8b7688439a6cae1517fdf47",
+      "size_bytes": 216813
+    },
+    {
+      "file": "screens/10-shortage-1920.png",
+      "scene": "shortage",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "97255488811984fde71b2d6bd54af9823e4639c4b31b4d571f0d415f64549b5e",
+      "size_bytes": 254694
+    },
+    {
+      "file": "screens/11-records-1920.png",
+      "scene": "records",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "9f85679e32ed2cbd3b7533e8d2b4c6b11d9c22323d5f7ebd008f48148ab27021",
+      "size_bytes": 216576
+    },
+    {
+      "file": "screens/12-record-detail-1920.png",
+      "scene": "recordDetail",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "e04949df5a23f1ef94a1dac5dd1080e6e6db28dcab0c5b53bddd361bcb6d71fb",
+      "size_bytes": 277634
+    },
+    {
+      "file": "screens/12b-record-detail-attempts-1920.png",
+      "scene": "recordDetail",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "23e9d5f88b84e0ecd78530b1e57f357c7d5997516c31629ec5091d65e062c076",
+      "size_bytes": 278162
+    },
+    {
+      "file": "screens/13-devices-1920.png",
+      "scene": "settings",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "54aeef370d4d1a052c14526b0b6cbbdff74d7416d4580ed99a03f0e393ae5cab",
+      "size_bytes": 272050
+    },
+    {
+      "file": "screens/14-login-1920.png",
+      "scene": "login",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "c1236dac2faeade8b0b131fbf040d033d1870e8454db20e07e4a60f614762fa1",
+      "size_bytes": 66093
+    },
+    {
+      "file": "screens/15-recovery-1920.png",
+      "scene": "recovering",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "ab50e1e6d080a1d58109ccef13f244835e1dffc0359337528733a3a9abd2a5f6",
+      "size_bytes": 107982
+    },
+    {
+      "file": "screens/16-components-1920.png",
+      "scene": "components",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "fb935ede107cea1a8b3f23f226ebe860614b65a2e48bb70661529b59c58f054a",
+      "size_bytes": 237612
+    },
+    {
+      "file": "screens/17-waiting-1920.png",
+      "scene": "waiting",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "26bfcbbc988c88d83a4a4d618c28c449ce0ac641c3a4b58b46ddf0472ace1132",
+      "size_bytes": 159557
+    },
+    {
+      "file": "screens/18-recovered-1920.png",
+      "scene": "recovered",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "0925f87546c3f938e9c2ed03c1623d5ef8aa02804dc32d847ff3c0afeee0eac9",
+      "size_bytes": 199614
+    },
+    {
+      "file": "screens/19-alarm-1920.png",
+      "scene": "alarms",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "3e693da6dbc9aaa18a116e2873dae1b535832bb1f557a2b75c1d02ae91f56a32",
+      "size_bytes": 245699
+    },
+    {
+      "file": "screens/20-wcs-offline-1920.png",
+      "scene": "wcsOffline",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "df6f1e48a093c8bf9be1799a20ae8daae5ba5b91031c7aa79ff1cbb43e726ea5",
+      "size_bytes": 214237
+    },
+    {
+      "file": "screens/21-long-content-1920.png",
+      "scene": "long",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "ec32d08a0d98a34111774235a5f59877ab8a4570b0dca92524ef5fac84a5a7f8",
+      "size_bytes": 267989
+    },
+    {
+      "file": "screens/22-no-records-1920.png",
+      "scene": "empty",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "aa38dc8057a202fc0b03b8d2aed0c4d98bdd53e54cac04e8f2b530cb106204ce",
+      "size_bytes": 167972
+    },
+    {
+      "file": "screens/23-pending-1920.png",
+      "scene": "pending",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "09578e463ccdf0615b4bf2d585e15320085cecd87f5cd2a0d346291de08ad17a",
+      "size_bytes": 206804
+    },
+    {
+      "file": "screens/24-maintenance-1920.png",
+      "scene": "maintenance",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "0dde2d01213a273332be62ca16de4a2a4b767b128e01061a88d4d52dfc63d0a0",
+      "size_bytes": 218284
+    },
+    {
+      "file": "screens/25-long-content-1366.png",
+      "scene": "long",
+      "viewport": [
+        1366,
+        768
+      ],
+      "sha256": "8a7cfc77d493b57347e7b630ce43c3515ba0d215cae58ccaa0770ca44e608926",
+      "size_bytes": 199479
+    },
+    {
+      "file": "screens/26-split-1366.png",
+      "scene": "split",
+      "viewport": [
+        1366,
+        768
+      ],
+      "sha256": "1019f6617980d7e3ad37cf2c18b2daba9dc397402d7a08fb368d48ad6c573a7e",
+      "size_bytes": 180777
+    },
+    {
+      "file": "screens/layout-1920x1080.png",
+      "scene": "normal",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "sha256": "cd995e976724445d049d5eea6aab678e3351d14d03530a06e1edcad278dfe66d",
+      "size_bytes": 210993
+    },
+    {
+      "file": "screens/layout-1536x864.png",
+      "scene": "normal",
+      "viewport": [
+        1536,
+        864
+      ],
+      "sha256": "6c2aa477a92b8991a0b5b8c278e559274cbd2fa32fb68ecca77687501559f515",
+      "size_bytes": 163825
+    },
+    {
+      "file": "screens/layout-1366x768.png",
+      "scene": "normal",
+      "viewport": [
+        1366,
+        768
+      ],
+      "sha256": "2acbaf92c706bb6034fb01f840ba7a594fa09a1da37a940a73ae01b4acbd9cb9",
+      "size_bytes": 161200
+    },
+    {
+      "file": "screens/layout-1280x720.png",
+      "scene": "normal",
+      "viewport": [
+        1280,
+        720
+      ],
+      "sha256": "1768334814f4f03a2fb4fd5272423a4afbbf271bfad29006ec430d8381b2f427",
+      "size_bytes": 150810
+    },
+    {
+      "file": "screens/layout-1280x680.png",
+      "scene": "normal",
+      "viewport": [
+        1280,
+        680
+      ],
+      "sha256": "0336d2dc55c716f06c488f4c3865ff28686140109ff246bff12eadd23ace25f0",
+      "size_bytes": 147342
+    },
+    {
+      "file": "screens/layout-1093x614.png",
+      "scene": "normal",
+      "viewport": [
+        1093,
+        614
+      ],
+      "sha256": "3c53c18c072b93229a9e358a623a03d4fe3846fb0e22d5e129368f942bc21a30",
+      "size_bytes": 64287
+    },
+    {
+      "file": "screens/layout-911x512.png",
+      "scene": "normal",
+      "viewport": [
+        911,
+        512
+      ],
+      "sha256": "a2847fd66ca563ba2e4d33a536311d735e3e76062f988000a9b876a694c815c6",
+      "size_bytes": 62558
+    }
+  ],
+  "page_errors": [],
+  "network_requests_blocked": [],
+  "checks": "source identity, requested scene activation, PNG decode/dimensions; no business regression or native desktop acceptance",
+  "windows_client_run": "NOT_RUN",
+  "sdk_wcs_site": "NOT_RUN",
+  "original_screenshot_bytes": "NOT_UPLOADED"
+}

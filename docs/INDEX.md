@@ -2,6 +2,12 @@
 
 更新日期：2026-10-16；当前实施：WP-IPC-ENGINEERING-CLOSURE-07；执行基准 `6d4063ec54e8167c8710e46befbe66f8b688ef08`（PR #5已合并）。用户授权实施10项工程整改，仍要求不测试；所有运行验证NOT_RUN。
 
+## 已入库的最终交付UI：Codex页面开发必读
+
+[SS-UI-VIS-001 v1.1完整设计入口](ui/ss-ui-vis-001-v1.1/README.md) · [34张独立状态图](ui/ss-ui-vis-001-v1.1/GALLERY.md) · [原始交互HTML](ui/ss-ui-vis-001-v1.1/供包工作站_高保真交互原型.html) · [完整UI规范与交接](ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md)。PPTX、画板JSON、tokens及分离HTML/CSS/JS均在该目录，不仅是链接或摘要。11份源文件原字节保留，PNG为同源重新导出、非Windows运行截图；版本与边界见目录README。
+
+该组生成成果依据用户本次明确上传要求发布。下文历史“所有衍生图均未入库”仅对本组以外材料有效；完整客户资料归档仍为部分完成。设计保存不自动关闭D/RV，也不能覆盖实际应用安全约束。
+
 ## 当前结论
 
 本轮 [ENGINEERING-CLOSURE-07实施记录](runtime/engineering-closure-07.md) 和 [执行边界](runtime/engineering-closure-07-checks.json) 为当前入口：10项工程整改已实现，代码源提交 `493416f`，所有运行验证NOT_RUN（用户要求不测试）。待构建元数据为ENGINEERING-CLOSURE-07 / Storage3 / SIMULATION-v1，没有生成新包或包SHA。

@@ -1,10 +1,12 @@
 # 统一资料与实施入口
 
-更新日期：2026-10-16；当前复核：WP-IPC-MAIN-REVIEW-02；分析基准 `cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa`（PR #4已合并）。本轮仅静态复核和工作包文档，用户要求不测试。
+更新日期：2026-10-16；当前实施：WP-IPC-ENGINEERING-CLOSURE-07；执行基准 `6d4063ec54e8167c8710e46befbe66f8b688ef08`（PR #5已合并）。用户授权实施10项工程整改，仍要求不测试；所有运行验证NOT_RUN。
 
 ## 当前结论
 
-最新独立判断见 [MAIN-REVIEW-02](reviews/main-static-review-02.md)：10项工程缺口、6组Windows待验、6组真实接口/规则/许可阻塞分别登记；本轮运行验证全部NOT_RUN。下一步先做 [ENGINEERING-CLOSURE-07](work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)，[Windows验证06](work-packages/WP-IPC-WINDOWS-VALIDATION-06.md) 与 [集成边界05](work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md) 分项推进；三个包均未执行，不构成生产放行。
+本轮 [ENGINEERING-CLOSURE-07实施记录](runtime/engineering-closure-07.md) 和 [执行边界](runtime/engineering-closure-07-checks.json) 为当前入口：10项工程整改已实现，代码源提交 `493416f`，所有运行验证NOT_RUN（用户要求不测试）。待构建元数据为ENGINEERING-CLOSURE-07 / Storage3 / SIMULATION-v1，没有生成新包或包SHA。
+
+[MAIN-REVIEW-02](reviews/main-static-review-02.md) 保留原10项问题的形成时证据，不倒写为已验收；当前实现状态以07记录为准。[Windows验证06](work-packages/WP-IPC-WINDOWS-VALIDATION-06.md) 的W-01～06仍NOT_RUN，[集成边界05](work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md) 的B-01～06仍BLOCKED。没有生产放行或历史RV关闭。
 
 现有参考实现及上一包验证见 [ALIGNMENT-01](runtime/alignment-01.md)、[检查记录](runtime/alignment-01-checks.json)、[Windows待验](runtime/alignment-01-windows.md)。原检查中的PR OPEN和PASS保留形成时快照；PR #4当前已MERGED，历史运行结果未在本轮重跑。
 
@@ -12,7 +14,7 @@
 
 完整客户材料归档仍为 **PUBLIC_SUBSET_ONLY**；本轮只公开新的通用框架和实施规范，不上传受限原稿。开发就绪仍有条件：参考闭环可实施，真实业务规则、旧工程迁移、SDK/WCS和实体动作分别受对应证据约束。17个RV不因架构入库自动关闭。
 
-上一包实施范围与验收见 [ARCH-UI-ALIGNMENT-01](work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)，其继承H04的装配、数据链、UI与后台隔离实现继续保留；当前剩余差距以MAIN-REVIEW-02为准。原加固范围与实施基准见 [HARDENING-04](work-packages/WP-IPC-RUNTIME-HARDENING-04.md)。RUNTIME-03交付结果保留为历史验证，不代表本轮结果。
+上一包实施范围与验收见 [ARCH-UI-ALIGNMENT-01](work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)，其继承H04的装配、数据链、UI与后台隔离实现继续保留；本轮实现状态以07记录为准，历史复核定位保留。原加固范围与实施基准见 [HARDENING-04](work-packages/WP-IPC-RUNTIME-HARDENING-04.md)。RUNTIME-03交付结果保留为历史验证，不代表本轮结果。
 
 ## 当前必读
 

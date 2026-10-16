@@ -25,6 +25,7 @@ if ($Mode -eq 'Simulation') {
 & python scripts/seal.py --bin "$Output/app" --mode $Mode --architecture x64 --product-definition $ProductDefinition
 if ($LASTEXITCODE -ne 0) { throw 'Manifest seal failed' }
 Copy-Item scripts/station.ps1 "$Output/station.ps1"
+Copy-Item scripts/provision-runtime.ps1 "$Output/provision-runtime.ps1"
 Copy-Item docs/runtime/operations.md "$Output/OPERATIONS.md"
 Get-ChildItem $Output -Recurse -Filter '*.lock.json' | Out-Null
 Copy-Item global.json "$Output/global.json"

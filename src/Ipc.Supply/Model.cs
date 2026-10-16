@@ -15,6 +15,12 @@ public sealed record BlockReason(string Code, string Scope, string Source, strin
 public sealed record Provenance(string Source, string Version, string EvidenceId, DateTimeOffset AcquiredAt);
 public sealed record ContextSnapshot(string? BoxWave, Provenance Provenance);
 public sealed record TaskSnapshot(string? Sku, string? ItemWave, string? TaskId, string? Destination, string? Unit, Provenance Provenance);
+public sealed record ConfirmedOperationSnapshot(long Revision, string Barcode, int? Package, int? Remaining, int? Supply, TaskSnapshot? Task, string Reason);
+public sealed record OperationInputSnapshot(string ObservationId, string[] Codes, int? PackageQuantity, DateTimeOffset ObservedAt);
+public sealed record ObservationReviewSelection(string Code, string Scope, string Source, string SourceEpoch, long EvidenceVersion);
+public sealed record ObservationReviewEvidence(ObservationReviewSelection[] Sources, string Evidence);
+public sealed record OperatorNotification(long Sequence, string OperationId, string Lane, OperationStatus Status, long Revision);
+
 public sealed class SupplyOperation
 {
     public string Id { get; set; } = Wire.Id();
@@ -29,6 +35,8 @@ public sealed class SupplyOperation
     public string? BoxBarcode { get; set; }
     public string? BoxWave { get; set; }
     public TaskSnapshot? Task { get; set; }
+    public OperationInputSnapshot? CurrentInput { get; set; }
+    public ConfirmedOperationSnapshot? PreviousConfirmed { get; set; }
     public int? Package { get; set; }
     public int? Remaining { get; set; }
     public int? Supply { get; set; }
@@ -61,6 +69,7 @@ public sealed class StationState
     public Dictionary<string, DeviceState> Devices { get; set; } = [];
     public List<BlockReason> Blocks { get; set; } = [];
     public Actor? Actor { get; set; }
+    public DeviceState? IntegrationHealth { get; set; }
     public bool Quarantined { get; set; }
     public bool Stopping { get; set; }
     public string NextFault { get; set; } = "None";
@@ -81,6 +90,9 @@ public sealed record CommandReceipt(string Status, string Reason, long Revision,
 public sealed record Guard(bool Allowed, string[] Reasons);
 public sealed record StationSnapshot(StationState State, BusinessRequest[] Requests, Alarm[] Alarms, Guard Admit, Guard Submit, Guard Close, Dictionary<string, Guard> OperationGuards, string[] RuntimeFaults, RequestRecovery[] Recovery, int ActiveAlarmCount, long OverloadVersion, Guard OverloadRecovery)
 {
+    public string StationId { get; init; } = "";
+    public int NotificationBacklog { get; init; }
+    public long NotificationOverflow { get; init; }
     public long ProjectionVersion { get; init; }
     public DateTimeOffset GeneratedAt { get; init; }
     public int AcceptedQuantity { get; init; }
@@ -103,6 +115,10 @@ public interface IStationApplication
     Task<Alarm[]> AlarmHistoryAsync(int offset = 0, int limit = 100);
     Task<SupplyOperation[]> HistoryAsync(string? filter = null, int offset = 0, int limit = 100);
     Task<RequestDetail[]> DetailsAsync(string ownerId);
+    Task<HistoryPage> QueryHistoryAsync(HistoryQuery query);
+    Task<SessionHistoryDetail> SessionDetailsAsync(string sessionId);
+    Task<OperatorNotification?> PeekNotificationAsync();
+    Task AcknowledgeNotificationAsync(long sequence);
     Task<ConfigRevision[]> ConfigsAsync();
     Task BackupAsync(string destination);
     Task ReviewObservationsAsync(string evidence);

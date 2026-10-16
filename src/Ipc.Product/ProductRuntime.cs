@@ -18,6 +18,7 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
     ProductManifest? manifest;
     string install = "";
     readonly SemaphoreSlim presentationGate = new(1, 1);
+    readonly SemaphoreSlim shutdownGate = new(1, 1);
     public string[] AllowedViews => allowedViews.ToArray();
     public string[] AllowedLayouts => ReferenceProduct.Definition.Layouts.ToArray();
     public string[] InstalledDrivers => ReferenceProduct.Definition.Drivers.Where(x => x.Mode == Mode).Select(x => x.Id).ToArray();
@@ -26,6 +27,7 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
     SupplyStore? store;
     ModuleCatalog? catalog;
     StationApplication? application;
+    Task? applicationStop, applicationDisposal;
     public IStationApplication? Application => application;
     public RunMode? Mode { get; private set; }
     public StationConfig? Configuration { get; private set; }
@@ -47,6 +49,7 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
             install = options.InstallRoot ?? AppContext.BaseDirectory;
             var errors = ReferenceProduct.Validate(manifest, seed, Presentation, install);
             if (errors.Count != 0) { Diagnostics.AddRange(errors); return; }
+            var leaseRoot = MachineRuntimePolicy.ResolveLeaseRoot(options.LeaseRoot);
             DataDirectory = Path.GetFullPath(Path.Combine(options.DataRoot, seed.Mode.ToString(), seed.StationId));
             if (DataDirectory.StartsWith(Path.GetFullPath(install).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, StringComparison.Ordinal)) throw new InvalidDataException("Data must be outside install directory");
             dataLease = new(DataDirectory, ["database"]);
@@ -60,7 +63,7 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
             Presentation = new(options.View ?? Presentation.View, options.Layout ?? Presentation.Layout);
             if (!allowedViews.Contains(Presentation.View) || !AllowedLayouts.Contains(Presentation.Layout)) throw new InvalidDataException("Requested View/layout not installed");
             journal = new(Path.Combine(DataDirectory, "logs"), reason => { application?.Latch("DiagnosticLogFailure", reason); logger.LogError("{Reason}", reason); });
-            resourceLease = new(options.LeaseRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "leases"),
+            resourceLease = new(leaseRoot,
                 new[] { $"{seed.Mode}:station:{seed.StationId}" }.Concat(seed.Devices.Select(x => $"{seed.Mode}:device:{x.DeviceId}")));
             store = new(Path.Combine(DataDirectory, "station.db")) { Journal = journal.Write };
             // Effective/pending revisions live in the owned database. Failed activation never
@@ -102,7 +105,8 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
         {
             Diagnostics.Add($"Startup NotReady: {ex.GetType().Name}: {ex.Message}");
             logger.LogError("Startup NotReady: {Type}: {Message}", ex.GetType().Name, ex.Message);
-            if (application is not null) application.Latch("StartupFailure", ex.Message);
+            try { if (application is not null) application.Latch("StartupFailure", ex.Message); }
+            catch (Exception diagnostic) { Diagnostics.Add("Startup failure diagnostic also failed: " + diagnostic.GetType().Name + ": " + diagnostic.Message); }
             if (activating is not null && store is not null)
             {
                 try
@@ -119,12 +123,27 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
             }
         }
     }
-    public Task StopAsync(CancellationToken token) => Task.Run(() => StopCore(token), token);
+    public async Task StopAsync(CancellationToken token)
+    {
+        // A pre-cancelled host token must not skip the stop barrier or independent cleanup.
+        await shutdownGate.WaitAsync().ConfigureAwait(false);
+        try { await StopCore(token).ConfigureAwait(false); }
+        finally { shutdownGate.Release(); }
+    }
     async Task StopCore(CancellationToken token)
     {
         var errors = new List<Exception>();
-        try { if (application is not null) await application.StopAsync(); } catch (Exception ex) { errors.Add(ex); }
+        try
+        {
+            if (application is not null && !applicationDisposed)
+            {
+                if (applicationStop is null || applicationStop.IsFaulted || applicationStop.IsCanceled) applicationStop = application.StopAsync();
+                await applicationStop.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+            }
+        }
+        catch (Exception ex) { errors.Add(ex); }
         try { if (catalog is not null) await catalog.StopAsync(token); } catch (Exception ex) { errors.Add(ex); }
+        if (catalog?.HasActiveWork == true) Diagnostics.AddRange(catalog.OwnershipDiagnostics);
         if (errors.Count != 0) throw new AggregateException("Controlled stop completed with retained diagnostic failures", errors);
     }
     public Task<CommandReceipt> CommandAsync(Command command) => application?.ExecuteAsync(command) ?? Task.FromResult(new CommandReceipt("NotReady", string.Join("; ", Diagnostics), 0));
@@ -145,6 +164,14 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
         var binding = Configuration.Devices.Single(x => x.Role == lane);
         if (observationModule.Sources.Single(x => x.DeviceId == binding.DeviceId) is not FileReplaySource replay) throw new GuardException("Select a replay binding before restart");
         if (!await observationModule.ExecuteSourceAsync(replay.Advance)) throw new InvalidOperationException("Replay event not admitted; overload latched");
+    }
+    public async Task RestartSourceAsync(string deviceId)
+    {
+        if (application is null || observationModule is null) throw new GuardException("Runtime unavailable");
+        var snapshot = await application.SnapshotAsync().ConfigureAwait(false);
+        if (snapshot.State.Actor?.Role != SimulationRole.Maintenance || snapshot.State.Actor.ExpiresAt <= DateTimeOffset.UtcNow || snapshot.State.Stopping)
+            throw new GuardException("Unexpired maintenance identity and a running runtime required");
+        await observationModule.RestartSourceAsync(deviceId).ConfigureAwait(false);
     }
     public async Task ReconcileAsync(string requestId)
     {
@@ -198,18 +225,64 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
         }
         await File.WriteAllTextAsync(destination, Wire.Encode(report));
     }
-    bool disposed;
+    bool disposed, applicationDisposed, storeDisposed, journalDisposed, presentationDisposed;
     public void Dispose() => DisposeAsync().AsTask().GetAwaiter().GetResult();
     public async ValueTask DisposeAsync()
     {
-        if (disposed) return; disposed = true;
-        if (catalog is not null) await catalog.DisposeAsync().ConfigureAwait(false);
-        if (application is not null) await application.DisposeAsync().ConfigureAwait(false);
-        store?.Dispose(); if (journal is not null) await journal.DisposeAsync().ConfigureAwait(false); resourceLease?.Dispose(); dataLease?.Dispose(); presentationGate.Dispose();
+        await shutdownGate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            if (disposed) return;
+            List<Exception> errors = [];
+            try { await StopCore(CancellationToken.None).ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+            // Module disposal attempts every independent source/port even after one failure.
+            try { if (catalog is not null) await catalog.DisposeAsync().ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+            var active = catalog?.HasActiveWork == true || applicationStop is { IsCompleted: false };
+            if (active)
+            {
+                if (catalog is not null) Diagnostics.AddRange(catalog.OwnershipDiagnostics);
+                if (applicationStop is { IsCompleted: false }) Diagnostics.Add("Application stop barrier has not terminated; owned store and leases retained");
+                errors.Add(new InvalidOperationException("Application/store/journal/device and data leases retained: runtime work has not terminated"));
+            }
+            else
+            {
+                if (!applicationDisposed)
+                    try
+                    {
+                        if (application is { } closingApplication)
+                        {
+                            if (applicationDisposal is null || applicationDisposal.IsFaulted || applicationDisposal.IsCanceled)
+                                applicationDisposal = Task.Run(async () => await closingApplication.DisposeAsync().ConfigureAwait(false), CancellationToken.None);
+                            await applicationDisposal.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+                        }
+                        applicationDisposed = true;
+                    }
+                    catch (Exception ex) { errors.Add(ex); }
+                // Failed application disposal is conservative: it may still own the store or
+                // invoke the journal. Retain those resources and both leases until termination.
+                if (applicationDisposed)
+                {
+                    if (!storeDisposed) try { store?.Dispose(); storeDisposed = true; } catch (Exception ex) { errors.Add(ex); }
+                    if (!journalDisposed) try { if (journal is not null) await journal.DisposeAsync().ConfigureAwait(false); journalDisposed = true; } catch (Exception ex) { errors.Add(ex); }
+                    if (storeDisposed && journalDisposed && catalog?.HasUnreleasedResources != true)
+                    {
+                        try { resourceLease?.Dispose(); resourceLease = null; } catch (Exception ex) { errors.Add(ex); }
+                        try { dataLease?.Dispose(); dataLease = null; } catch (Exception ex) { errors.Add(ex); }
+                    }
+                }
+            }
+            if (!presentationDisposed) try { presentationGate.Dispose(); presentationDisposed = true; } catch (Exception ex) { errors.Add(ex); }
+            if (!active && catalog?.HasUnreleasedResources == true)
+                errors.Add(new InvalidOperationException("Device/data leases retained: one or more modules still own resources after failed disposal"));
+            disposed = !active && catalog?.HasUnreleasedResources != true && applicationDisposed && storeDisposed && journalDisposed && resourceLease is null && dataLease is null && errors.Count == 0;
+            foreach (var error in errors) Diagnostics.Add("Cleanup: " + error.GetType().Name + ": " + error.Message);
+            if (errors.Count != 0) throw new AggregateException("Runtime cleanup failures; active ownership is retained until safe termination", errors);
+        }
+        finally { shutdownGate.Release(); }
     }
 }
 
-sealed class ObservationModule(StationApplication application, IObservationSource[] sources, int capacity) : IRuntimeModule
+sealed class ObservationModule(StationApplication application, IObservationSource[] sources, int capacity) : IRuntimeModule, IRuntimeOwnership
 {
     public string Id => "observations";
     public string[] Dependencies => [];
@@ -217,15 +290,40 @@ sealed class ObservationModule(StationApplication application, IObservationSourc
     readonly Channel<Observation> queue = Channel.CreateBounded<Observation>(new BoundedChannelOptions(capacity) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
     Task? worker, healthWorker;
     readonly StationDispatcher sourceInput = new(8);
-    sealed record SourceHealth(string Id, string Epoch, DeviceHealth Health, TaskCompletionSource? Fence = null);
+    readonly SemaphoreSlim lifecycle = new(1, 1);
+    sealed record SourceHealth(DeviceHealthConfirmation? Confirmation = null, TaskCompletionSource? Fence = null);
     readonly Channel<SourceHealth> healthQueue = Channel.CreateBounded<SourceHealth>(new BoundedChannelOptions(Math.Max(8, sources.Length * 2)) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
-    public Task<bool> ExecuteSourceAsync(Func<bool> input) => sourceInput.Invoke(() => Task.FromResult(input()));
-    int missed, pending;
+    readonly Dictionary<string, string> registeredEpochs = [];
+    readonly HashSet<IObservationSource> sourceOwners = [], disposedSources = [];
+    readonly Dictionary<IObservationSource, Task> sourceStops = [], sourceDisposals = [];
+    bool sourceInputDisposed;
+    Task? sourceInputDisposal;
+    public bool HasActiveWork
+    {
+        get { lock (ingress) return sourceOwners.Count != 0 || worker is { IsCompleted: false } || healthWorker is { IsCompleted: false } ||
+            sourceInputDisposal is { IsCompleted: false } || sourceDisposals.Values.Any(x => !x.IsCompleted); }
+    }
+    public bool HasUnreleasedResources => HasActiveWork || disposedSources.Count != sources.Length || !sourceInputDisposed;
+    public string[] OwnershipDiagnostics
+    {
+        get
+        {
+            lock (ingress) return sourceOwners.Select(x => "Source ownership retained: " + x.DeviceId + "; epoch=" + x.Epoch)
+                .Concat(worker is { IsCompleted: false } ? ["Observation worker still running"] : [])
+                .Concat(healthWorker is { IsCompleted: false } ? ["Device health worker still running"] : []).ToArray();
+        }
+    }
+    public Task<bool> ExecuteSourceAsync(Func<bool> input) => sourceInput.Invoke(() =>
+    {
+        lock (ingress) { if (stopping) throw new InvalidOperationException("Observation source input is stopping"); }
+        return Task.FromResult(input());
+    });
+    int missed, pending, pendingOverloadMarkers;
     readonly object ingress = new();
     bool stopping;
     public async Task StartAsync(CancellationToken token)
     {
-        application.InputDrained = () => Volatile.Read(ref pending) == 0;
+        application.InputDrained = () => Volatile.Read(ref pending) == 0 && Volatile.Read(ref pendingOverloadMarkers) == 0;
         healthWorker = Task.Run(async () =>
         {
             try
@@ -233,7 +331,7 @@ sealed class ObservationModule(StationApplication application, IObservationSourc
                 await foreach (var change in healthQueue.Reader.ReadAllAsync())
                 {
                     if (change.Fence is not null) { change.Fence.TrySetResult(); continue; }
-                    await application.SetDeviceAsync(change.Id, change.Epoch, change.Health).ConfigureAwait(false);
+                    await application.SetDeviceHealthAsync(change.Confirmation!).ConfigureAwait(false);
                 }
             }
             catch (Exception ex) { application.Latch("DeviceHealthWorkerFault", ex.GetType().Name); throw; }
@@ -243,55 +341,147 @@ sealed class ObservationModule(StationApplication application, IObservationSourc
             try
             {
                 await foreach (var observation in queue.Reader.ReadAllAsync())
-                    try { await application.ReceiveAsync(observation); }
+                    try { await application.ReceiveAsync(observation).ConfigureAwait(false); }
                     finally { Interlocked.Decrement(ref pending); }
             }
             catch (Exception ex) { application.Latch("ObservationWorkerFault", ex.Message); throw; }
         }, CancellationToken.None);
-        foreach (var source in sources)
-            await source.StartAsync(x =>
+        foreach (var source in sources) await StartSourceAsync(source, token).ConfigureAwait(false);
+        await FlushHealthAsync(token).ConfigureAwait(false);
+    }
+    async Task StartSourceAsync(IObservationSource source, CancellationToken token)
+    {
+        if (source is not IControlledObservationSource controlled) throw new InvalidDataException("Source lacks runtime-owned epoch and reliable confirmation contract: " + source.DeviceId);
+        var previous = registeredEpochs.GetValueOrDefault(source.DeviceId, "not-connected");
+        var epoch = Wire.Id();
+        await application.RegisterDeviceEpochAsync(source.DeviceId, previous, epoch, controlled.ConfirmationSource).ConfigureAwait(false);
+        registeredEpochs[source.DeviceId] = epoch;
+        sourceStops.Remove(source);
+        lock (ingress) sourceOwners.Add(source); // Partial Start failure still owns its registration.
+        await controlled.StartControlledAsync(epoch, Receive, Health, token).ConfigureAwait(false);
+    }
+    bool Receive(Observation observation)
+    {
+        string rejection;
+        lock (ingress)
+        {
+            if (stopping) return false;
+            if (Volatile.Read(ref pendingOverloadMarkers) == 0 && !application.IsOverloaded)
             {
-                lock (ingress)
-                {
-                    if (!stopping && !application.IsOverloaded)
-                    {
-                        Interlocked.Increment(ref pending);
-                        if (queue.Writer.TryWrite(x)) return true;
-                        Interlocked.Decrement(ref pending);
-                    }
-                    missed++;
-                    application.Latch("Overload", $"Observation not admitted: device={x.DeviceId}; epoch={x.Epoch}; source={x.SourceEventId}; unadmitted={missed}");
-                    return false;
-                }
-            }, (id, epoch, health) =>
-            {
-                if (!healthQueue.Writer.TryWrite(new(id, epoch, health))) application.Latch("DeviceHealthOverload", "Device health event not admitted; stop and inspect source");
-            }, token);
+                Interlocked.Increment(ref pending);
+                if (queue.Writer.TryWrite(observation)) return true;
+                Interlocked.Decrement(ref pending);
+            }
+            missed++; Interlocked.Increment(ref pendingOverloadMarkers);
+            rejection = $"Observation not admitted: device={observation.DeviceId}; epoch={observation.Epoch}; source={observation.SourceEventId}; unadmitted={missed}";
+        }
+        // H04 still requires the overload marker before returning rejection. A slow/failing
+        // marker must not hold the common ingress gate and block other sources' shutdown.
+        try { application.Latch("Overload", rejection); return false; }
+        finally { Interlocked.Decrement(ref pendingOverloadMarkers); }
+    }
+    void Health(DeviceHealthConfirmation confirmation)
+    {
+        lock (ingress)
+        {
+            if (stopping) return;
+            if (!healthQueue.Writer.TryWrite(new(confirmation))) application.Latch("DeviceHealthOverload", "Device health event not admitted; stop and inspect source");
+        }
+    }
+    async Task FlushHealthAsync(CancellationToken token)
+    {
         var ready = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        await healthQueue.Writer.WriteAsync(new("", "", default, ready), token);
-        await ready.Task.WaitAsync(TimeSpan.FromSeconds(5), token);
+        await healthQueue.Writer.WriteAsync(new(Fence: ready), token).ConfigureAwait(false);
+        await ready.Task.WaitAsync(TimeSpan.FromSeconds(5), token).ConfigureAwait(false);
+    }
+    public async Task RestartSourceAsync(string deviceId)
+    {
+        await lifecycle.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            lock (ingress) { if (stopping) throw new InvalidOperationException("Source restart denied while stopping"); }
+            var source = sources.Single(x => x.DeviceId == deviceId);
+            // Failure retains old registration/ownership; no new epoch or duplicate source starts.
+            await StopSourceAsync(source, CancellationToken.None).ConfigureAwait(false);
+            await StartSourceAsync(source, CancellationToken.None).ConfigureAwait(false);
+            await FlushHealthAsync(CancellationToken.None).ConfigureAwait(false);
+        }
+        finally { lifecycle.Release(); }
+    }
+    async Task StopSourceAsync(IObservationSource source, CancellationToken token)
+    {
+        // A timed-out adapter call is still running, not cancelled. Reuse that exact task;
+        // never launch another Stop or a new registration while it owns callbacks.
+        if (!sourceStops.TryGetValue(source, out var stop) || stop.IsFaulted || stop.IsCanceled)
+            sourceStops[source] = stop = Task.Run(() => source.StopAsync(token), CancellationToken.None);
+        await stop.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
+        lock (ingress) sourceOwners.Remove(source);
     }
     public async Task StopAsync(CancellationToken token)
     {
         lock (ingress) stopping = true;
-        foreach (var source in sources.Reverse()) await source.StopAsync(token);
-        queue.Writer.TryComplete(); healthQueue.Writer.TryComplete();
-        if (worker is not null) await worker.WaitAsync(TimeSpan.FromSeconds(5), token);
-        if (healthWorker is not null) await healthWorker.WaitAsync(TimeSpan.FromSeconds(5), token);
+        List<Exception> errors = [];
+        await lifecycle.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            foreach (var source in sources.Reverse())
+            {
+                lock (ingress) { if (!sourceOwners.Contains(source)) continue; }
+                try
+                {
+                    await StopSourceAsync(source, token).ConfigureAwait(false);
+                }
+                catch (Exception ex) { errors.Add(new InvalidOperationException("Source stop failed; registration retained: " + source.DeviceId, ex)); }
+            }
+            // Ingress is sealed even if one source is broken. Independent accepted work can drain.
+            queue.Writer.TryComplete(); healthQueue.Writer.TryComplete();
+            if (worker is not null) try { await worker.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+            if (healthWorker is not null) try { await healthWorker.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+        }
+        finally { lifecycle.Release(); }
+        if (errors.Count != 0) throw new AggregateException("Observation shutdown failures", errors);
     }
     public async ValueTask DisposeAsync()
     {
-        foreach (var source in sources.Reverse()) await source.DisposeAsync();
-        await sourceInput.DisposeAsync();
+        List<Exception> errors = [];
+        try { await StopAsync(CancellationToken.None).ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+        foreach (var source in sources.Reverse())
+        {
+            lock (ingress)
+            {
+                if (disposedSources.Contains(source)) continue;
+                if (sourceOwners.Contains(source)) { errors.Add(new InvalidOperationException("Source disposal deferred while callbacks may remain: " + source.DeviceId)); continue; }
+            }
+            try
+            {
+                if (!sourceDisposals.TryGetValue(source, out var disposal) || disposal.IsFaulted || disposal.IsCanceled)
+                    sourceDisposals[source] = disposal = Task.Run(async () => await source.DisposeAsync().ConfigureAwait(false), CancellationToken.None);
+                await disposal.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false); disposedSources.Add(source);
+            }
+            catch (Exception ex) { errors.Add(new InvalidOperationException("Source disposal failed: " + source.DeviceId, ex)); }
+        }
+        if (!sourceInputDisposed)
+            try
+            {
+                sourceInputDisposal ??= sourceInput.DisposeAsync().AsTask();
+                await sourceInputDisposal.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false); sourceInputDisposed = true;
+            }
+            catch (Exception ex) { errors.Add(ex); }
+        if (errors.Count != 0) throw new AggregateException("Observation disposal failures", errors);
     }
 }
 
-sealed class SenderModule(StationApplication application, IIntegrationPort port) : IRuntimeModule
+sealed class SenderModule(StationApplication application, IIntegrationPort port) : IRuntimeModule, IRuntimeOwnership
 {
     public string Id => "sender";
     public string[] Dependencies => ["observations"];
     readonly CancellationTokenSource stop = new();
-    Task? worker;
+    Task? worker, portDisposal;
+    bool portDisposed, stopDisposed;
+    public bool HasActiveWork => worker is { IsCompleted: false } || portDisposal is { IsCompleted: false };
+    public bool HasUnreleasedResources => HasActiveWork || !portDisposed || !stopDisposed;
+    public string[] OwnershipDiagnostics => worker is { IsCompleted: false } ? ["Sender worker still running; integration port retained"] :
+        portDisposal is { IsCompleted: false } ? ["Integration port disposal has not terminated"] : [];
     public Task StartAsync(CancellationToken token)
     {
         worker = Task.Run(async () =>
@@ -317,9 +507,28 @@ sealed class SenderModule(StationApplication application, IIntegrationPort port)
     }
     public async Task StopAsync(CancellationToken token)
     {
-        stop.Cancel(); if (worker is not null) await worker.WaitAsync(TimeSpan.FromSeconds(5), token);
+        if (!stopDisposed) stop.Cancel();
+        if (worker is not null) await worker.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
     }
-    public async ValueTask DisposeAsync() { stop.Dispose(); await port.DisposeAsync(); }
+    public async ValueTask DisposeAsync()
+    {
+        List<Exception> errors = [];
+        try { await StopAsync(CancellationToken.None).ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+        if (worker is { IsCompleted: false }) errors.Add(new InvalidOperationException("Integration port disposal deferred until sender terminates"));
+        else
+        {
+            if (!portDisposed)
+                try
+                {
+                    if (portDisposal is null || portDisposal.IsFaulted || portDisposal.IsCanceled)
+                        portDisposal = Task.Run(async () => await port.DisposeAsync().ConfigureAwait(false), CancellationToken.None);
+                    await portDisposal.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false); portDisposed = true;
+                }
+                catch (Exception ex) { errors.Add(ex); }
+            if (!stopDisposed) try { stop.Dispose(); stopDisposed = true; } catch (Exception ex) { errors.Add(ex); }
+        }
+        if (errors.Count != 0) throw new AggregateException("Sender disposal failures", errors);
+    }
 }
 
 public static class ProductHost

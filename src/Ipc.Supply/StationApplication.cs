@@ -4,7 +4,7 @@ using Ipc.Platform;
 
 namespace Ipc.Supply;
 
-public sealed class StationApplication : IStationApplication, IAsyncDisposable
+public sealed partial class StationApplication : IStationApplication, IAsyncDisposable
 {
     readonly SupplyStore store;
     readonly StationConfig config;
@@ -34,9 +34,8 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
     public StationApplication(SupplyStore store, StationConfig config, IRequestContract contract, FaultInjection? faults = null, TimeProvider? clock = null, Func<StationConfig, IReadOnlyList<string>>? configurationValidator = null)
     {
         this.configurationValidator = configurationValidator; this.store = store; this.config = config; this.contract = contract; this.clock = clock ?? TimeProvider.System; this.faults = faults ?? new(); state = store.Load();
-        owner = new(config.CommandCapacity);
         if (File.Exists(OverloadMarker)) runtimeFaults["Overload"] = "Unacknowledged overflow; inspect source/entity evidence";
-        state.Actor = null; state.Stopping = false;
+        state.Actor = null; state.Stopping = false; state.IntegrationHealth = null;
         // A released process does not imply unfinished calls were cancelled remotely.
         foreach (var request in store.PendingRequests().Where(x => x.Status == RequestStatus.Dispatching))
         {
@@ -57,6 +56,8 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             }
             state.Revision++; store.Commit(state, "RestoreQuarantine", config.StationId, "runtime");
         }
+        // Start asynchronous owners only after synchronous recovery commits succeeded.
+        owner = new(config.CommandCapacity);
         overflowWriter = Task.Run(async () =>
         {
             await foreach (var signal in overflowWrites.Reader.ReadAllAsync())
@@ -79,6 +80,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                     await owner.Invoke(() => { SyncAlarms(); return Task.CompletedTask; }, waitForCapacity: true).ConfigureAwait(false);
             }
             catch (OperationCanceledException) when (maintenanceStop.IsCancellationRequested) { }
+            catch (ChannelClosedException) when (maintenanceStop.IsCancellationRequested) { }
             catch (Exception ex) { Latch("ProjectionMaintenanceFailure", ex.GetType().Name); }
         });
     }
@@ -218,6 +220,23 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                         Maintenance(next); Require(config.Mode == RunMode.Simulation, "Simulation only");
                         Require(command.Value is "EntityPermit" or "WcsUnavailable" or "License" or "DeviceFault", "Only the matching synthetic source may clear");
                         next.Blocks.RemoveAll(x => x.Code == command.Value && x.Source == "fixture-control"); break;
+                    case "ReviewObservations":
+                    {
+                        Maintenance(next);
+                        Require(command.Value is { Length: > 0 and <= 65536 }, "Versioned source review required");
+                        ObservationReviewEvidence review;
+                        try { review = Wire.Decode<ObservationReviewEvidence>(command.Value!); }
+                        catch (System.Text.Json.JsonException) { throw new GuardException("Invalid source review selection"); }
+                        Require(review.Sources is { Length: > 0 and <= 128 } && review.Evidence?.Length is >= 8 and <= 1000, "Select source evidence and provide 8..1000 characters of inspection evidence");
+                        Require(review.Sources.Distinct().Count() == review.Sources.Length, "Duplicate source selection");
+                        foreach (var selection in review.Sources)
+                        {
+                            Require(selection is not null && selection.Code == "ObservationReview", "Only observation source evidence can be reviewed here");
+                            Require(next.Blocks.Any(b => MatchesReview(b, selection)), "Source evidence changed; inspect the current version");
+                        }
+                        next.Blocks.RemoveAll(b => review.Sources.Any(x => MatchesReview(b, x)));
+                        break;
+                    }
                     case "RecordReconciliation":
                         Maintenance(next); Require(store.Request(owner) is not null, "Original request required");
                         Require(command.Value?.Length is >= 8 and <= 1000, "Record authority/source/evidence; notes cannot force success"); break;
@@ -258,7 +277,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                     evidence = command.Kind == "ClearOverload" ? $"{command.Value}; version={overloadVersion}; {runtimeFaults.GetValueOrDefault("Overload")}" : command.Value ?? "";
                 }
                 store.Commit(next, command.Kind, owner, next.Actor?.Id ?? state.Actor?.Id ?? "signed-out", evidence, command, receipt, request, config: revision, alarm: acknowledgement);
-                state = next;
+                Adopt(next);
                 if (command.Kind == "ClearOverload")
                 {
                     lock (markerGate)
@@ -299,7 +318,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             try
             {
                 Require(binding is not null && next.Devices.TryGetValue(binding.Role, out var d) && d.Epoch == observation.Epoch && observation.Sequence > d.Sequence, "Stale/unbound device epoch or source sequence");
-                var device = next.Devices[binding!.Role]; next.Devices[binding.Role] = device with { Sequence = observation.Sequence, UpdatedAt = Now };
+                var device = next.Devices[binding!.Role]; next.Devices[binding.Role] = device with { Sequence = observation.Sequence };
                 next.Lanes.TryGetValue(binding.Role, out op);
                 switch (observation.Kind)
                 {
@@ -313,7 +332,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                         Demand(GuardFor(next, "Admit", admittedEvent: true));
                         Require(op.Status is OperationStatus.Observed or OperationStatus.ValidationRejected or OperationStatus.Rejected, "Request/result must be resolved before correction");
                         Require(!store.Requests(op.Id).Any(IsPending), "Cannot revise unresolved effect");
-                        op.Revision++; op.ObservationIds.Add(observation.Id); op.SplitScans.Clear();
+                        InvalidateReadInput(op, observation);
                         if (observation.Codes.Length != 1 || !ValidBarcode(observation.Codes.SingleOrDefault()) || observation.PackageQuantity is null or < 1 || observation.PackageQuantity > config.MaximumPackage)
                         { op.Status = OperationStatus.ValidationRejected; op.Reason = observation.Codes.Length == 0 ? "No code" : observation.Codes.Length > 1 ? "Multiple codes" : "Invalid barcode/quantity"; }
                         else
@@ -342,42 +361,25 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             {
                 // Persist rejected source evidence without changing business state partially.
                 next = Clone(state); op = null; request = null; disposition = "RejectedObservation: " + ex.Message;
+                // A new read for the same revisable entity is still the latest input even
+                // when admission/capacity refuses its validation request. Never restore old
+                // task quantities into that input's current display on transaction rollback.
+                if (observation.Kind == "Read" && binding is not null && next.Devices.TryGetValue(binding.Role, out var currentDevice) &&
+                    currentDevice.Epoch == observation.Epoch && observation.Sequence > currentDevice.Sequence &&
+                    next.Lanes.TryGetValue(binding.Role, out var currentOperation) && currentOperation.AdmissionId == observation.AdmissionId &&
+                    currentOperation.Occupancy == Occupancy.Occupied &&
+                    currentOperation.Status is OperationStatus.Observed or OperationStatus.ValidationRejected or OperationStatus.Rejected &&
+                    !store.Requests(currentOperation.Id).Any(IsPending))
+                {
+                    InvalidateReadInput(currentOperation, observation);
+                    currentOperation.Status = OperationStatus.ValidationRejected; currentOperation.Reason = disposition;
+                    next.Devices[binding.Role] = currentDevice with { Sequence = observation.Sequence }; op = currentOperation;
+                }
                 SetBlock(next, "ObservationReview", binding?.Role ?? "station", observation.DeviceId, observation.Epoch, "maintenance");
             }
             next.Revision++; faults.Hit("T1");
             store.Commit(next, disposition, op?.Id ?? observation.Id, "device:" + observation.DeviceId, Wire.Encode(observation), request: request, observation: observation, operation: op);
-            state = next; SyncAlarms();
-        }
-        catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); }
-        finally { gate.Release(); }
-    }
-    public Task SetDeviceAsync(string deviceId, string epoch, DeviceHealth health) => owner.Invoke(() => SetDeviceCore(deviceId, epoch, health), priority: false, waitForCapacity: true);
-    async Task SetDeviceCore(string deviceId, string epoch, DeviceHealth health)
-    {
-        await gate.WaitAsync();
-        try
-        {
-            var binding = config.Devices.Single(x => x.DeviceId == deviceId); var next = Clone(state);
-            var previous = next.Devices.GetValueOrDefault(binding.Role);
-            if (previous is not null && previous.Epoch != "not-connected" && previous.Epoch != epoch)
-            { store.Commit(state, "StaleHealthIgnored", deviceId, "driver", "Old epoch health callback ignored"); return; }
-            if (previous?.Epoch == epoch && previous.Health == health) return;
-            next.Devices[binding.Role] = new(deviceId, epoch, previous?.Epoch == epoch ? previous.Sequence : 0, health, Now);
-            next.Revision++; store.Commit(next, "DeviceHealth", deviceId, "driver", health.ToString()); state = next; SyncAlarms();
-        }
-        catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); }
-        finally { gate.Release(); }
-    }
-    public Task SetWcsHealthAsync(bool available) => owner.Invoke(() => SetWcsHealthCore(available), priority: false, waitForCapacity: true);
-    async Task SetWcsHealthCore(bool available)
-    {
-        await gate.WaitAsync();
-        try
-        {
-            var had = state.Blocks.Any(x => x.Code == "WcsUnavailable" && x.Source == "transport"); if (had == !available) return;
-            var next = Clone(state); next.Blocks.RemoveAll(x => x.Code == "WcsUnavailable" && x.Source == "transport");
-            if (!available) SetBlock(next, "WcsUnavailable", "station", "transport", config.Integration.Revision, "transport-health");
-            next.Revision++; store.Commit(next, "IntegrationHealth", config.StationId, "transport", available.ToString()); state = next; SyncAlarms();
+            Adopt(next); SyncAlarms();
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); }
         finally { gate.Release(); }
@@ -394,7 +396,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             var next = Clone(state); next.Revision++;
             var attempt = new SendAttempt(Wire.Id(), request.Id, store.Attempts(request.Id).Length + 1, Now, null, "Dispatching", null);
             request = request with { Status = RequestStatus.Dispatching };
-            store.Commit(next, "T2Claim", request.OwnerId, "sender", request.Id, request: request, attempt: attempt); state = next;
+            store.Commit(next, "T2Claim", request.OwnerId, "sender", request.Id, request: request, attempt: attempt); Adopt(next);
             faults.Hit("AfterT2"); return (request, attempt);
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); return null; }
@@ -418,7 +420,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                     // Conservative durable authorization boundary. After this, cancellation cannot prove non-delivery.
                     store.Commit(next, "TransportHandoffAuthorized", request.OwnerId, "sender", request.Id,
                         attempt: latest with { Disposition = "TransportHandoff" });
-                    state = next;
+                    Adopt(next);
                     bool changedDuringCommit;
                     lock (faultGate) changedDuringCommit = !runtimeFaults.IsEmpty || overloadVersion != authorizedOverflowVersion;
                     if (changedDuringCommit)
@@ -432,7 +434,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                 }
                 store.Commit(next, "NotDelivered", request.OwnerId, "sender", "Guard changed before handing request to network",
                     request: request with { Status = RequestStatus.Prepared }, attempt: attempt with { EndedAt = Now, Disposition = "NotDelivered" });
-                state = next; return false;
+                Adopt(next); return false;
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); return false; }
         finally { gate.Release(); }
@@ -447,7 +449,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             contract.ValidateResponse(original, response);
             var next = Clone(state);
             var matchedOperation = next.Lanes.Values.FirstOrDefault(x => x.Id == original.OwnerId);
-            bool semanticConflict = original.Kind == RequestKind.Submit && matchedOperation?.Task is { } task && response.Task is { } incoming &&
+            bool semanticConflict = original.Kind == RequestKind.Submit && matchedOperation is { } currentOperation && currentOperation.Revision == original.OwnerRevision && currentOperation.Task is { } task && response.Task is { } incoming &&
                 (task.Sku != incoming.Sku || task.ItemWave != incoming.ItemWave || task.TaskId != incoming.TaskId || task.Destination != incoming.Destination || task.Unit != incoming.Unit);
             bool conflicting = semanticConflict || original.Status == RequestStatus.CancelledBeforeDispatch || store.Responses(original.Id).Any(x => x.Result != response.Result || x.Quantity != response.Quantity || x.Remaining != response.Remaining || x.CheckToken != response.CheckToken || x.Context != response.Context || x.Task != response.Task);
             var status = conflicting ? RequestStatus.Unknown : response.Result == "Accepted" ? RequestStatus.Accepted : RequestStatus.Rejected;
@@ -459,7 +461,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             store.Commit(next, conflicting ? "ConflictingResponse" : "T3Response", request.OwnerId, "integration", response.Reason,
                 request: request, response: response, count: count,
                 attempt: attempt is null ? null : attempt with { EndedAt = Now, Disposition = status.ToString() });
-            state = next; faults.Hit("AfterT3"); SyncAlarms();
+            Adopt(next); faults.Hit("AfterT3"); SyncAlarms();
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", "Response received but could not persist: " + ex.Message); }
         catch (InvalidDataException ex) { Latch("ProtocolFailure", ex.Message); await UnknownLocked(sent, attempt, ex.Message); }
@@ -482,7 +484,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             MarkOwner(next, request, reason);
             store.Commit(next, "OutcomeUnknown", request.OwnerId, "sender", reason, request: request,
                 attempt: attempt is null ? null : attempt with { EndedAt = Now, Disposition = "Unknown", Error = reason });
-            state = next; SyncAlarms();
+            Adopt(next); SyncAlarms();
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); }
         return Task.CompletedTask;
@@ -533,7 +535,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         if (request.Binding != config.Integration) reasons.Add("OriginalBindingNotActive");
         if (s.Session?.Id != request.SessionId) reasons.Add("SessionChanged");
         if (request.Kind is RequestKind.Context or RequestKind.Validate or RequestKind.Submit)
-            foreach (var device in s.Devices) if (device.Value.Health != DeviceHealth.Ready) reasons.Add("Device:" + device.Key + ":" + device.Value.Health);
+            foreach (var device in s.Devices) if (!device.Value.IsValid(Now)) reasons.Add("Device:" + device.Key + ":" + device.Value.ValidityReason(Now));
         if (request.Kind is RequestKind.Validate or RequestKind.Submit)
         {
             var op = s.Lanes.Values.FirstOrDefault(x => x.Id == request.OwnerId);
@@ -550,12 +552,13 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         if (s.Quarantined) yield return "RestoreQuarantine";
         if (s.Actor is null || s.Actor.ExpiresAt <= Now) yield return "IdentityUnavailable";
         foreach (var b in s.Blocks) yield return b.Code + ":" + b.Scope;
+        if (s.IntegrationHealth?.IsValid(Now) != true) yield return "WcsHealth:" + (s.IntegrationHealth?.ValidityReason(Now) ?? "Unconfirmed");
         if (store.PendingRequests().Any(x => x.Status == RequestStatus.Unknown)) yield return "OutcomeUnknown";
     }
     Guard GuardFor(StationState s, string action, bool admittedEvent = false)
     {
         var reasons = BaseReasons(s, admittedEvent).ToList();
-        if (action is "Open" or "Admit" or "Submit") foreach (var d in s.Devices) if (d.Value.Health != DeviceHealth.Ready) reasons.Add("Device:" + d.Key + ":" + d.Value.Health);
+        if (action is "Open" or "Admit" or "Submit") foreach (var d in s.Devices) if (!d.Value.IsValid(Now)) reasons.Add("Device:" + d.Key + ":" + d.Value.ValidityReason(Now));
         if (action is "Admit" or "Submit" && s.Session?.Status != SessionStatus.Active) reasons.Add("NoActiveBoxOrCloseBarrier");
         if (action is "Close" or "ConfirmClose")
         {
@@ -585,9 +588,9 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         foreach (var b in state.Blocks)
         {
             blocks.RemoveAll(x => x.Code == b.Code + ":" + b.Scope);
-            blocks.Add((b.Code + ":" + b.Scope, b.Scope, b.Scope == "request" ? b.Source : state.Session?.Id, b.Source, b.SourceEpoch));
+            blocks.Add((b.Code + ":" + b.Scope, b.Scope, b.Scope == "request" ? b.Source : state.Session?.Id, b.Source, b.Code == "ObservationReview" ? b.SourceEpoch + ":" + b.EvidenceVersion : b.SourceEpoch));
         }
-        foreach (var d in state.Devices.Where(x => x.Value.Health != DeviceHealth.Ready)) blocks.Add(("Device:" + d.Value.Health, d.Key, d.Value.DeviceId, d.Value.DeviceId, d.Value.Epoch));
+        foreach (var d in state.Devices.Where(x => !x.Value.IsValid(Now))) blocks.Add(("Device:" + d.Value.ValidityReason(Now), d.Key, d.Value.DeviceId, d.Value.DeviceId, d.Value.Epoch));
         foreach (var op in state.Lanes.Values.Where(x => x.Status is OperationStatus.ValidationRejected or OperationStatus.Rejected)) blocks.Add(("OperationRejected", op.Lane, op.Id, "operation", op.Revision.ToString()));
         foreach (var request in store.PendingRequests().Where(x => x.Status == RequestStatus.Unknown)) blocks.Add(("UnknownRequest", "request", request.Id, request.Binding.Id, request.Binding.Revision));
         var active = store.ActiveAlarms();
@@ -602,6 +605,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         await gate.WaitAsync();
         try { return new StationSnapshot(Clone(state), state.Session is null ? [] : store.RequestsForSession(state.Session.Id), store.ActiveAlarms(), GuardFor(state, "Admit"), GuardFor(state, "Submit"), GuardFor(state, "Close"), state.Lanes.ToDictionary(x => x.Key, x => OperationGuard(state, x.Value)), runtimeFaults.Select(x => x.Key + ": " + x.Value).ToArray(), store.PendingRequests().Select(x => new RequestRecovery(x, SendGuard(state, x), LocalTerminationGuard(state, x), x.Status == RequestStatus.Unknown ? "Query original binding; never resend" : x.Status == RequestStatus.Dispatching ? "Await original response; interrupted handoff becomes Unknown" : "Restore matching guards or inspect and locally terminate; prior reservations/entity remain held")).ToArray(), store.ActiveAlarmCount(), Interlocked.Read(ref overloadVersion), OverloadRecoveryGuard())
             {
+                StationId = config.StationId, NotificationBacklog = notifications.Count, NotificationOverflow = notificationOverflow,
                 ProjectionVersion = Interlocked.Increment(ref projectionVersion), GeneratedAt = Now,
                 AcceptedQuantity = state.Session is null ? 0 : store.AcceptedQuantity(state.Session.Id),
                 RecentOperations = store.History(null, 0, 8)
@@ -635,7 +639,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
     { await gate.WaitAsync(); try { return store.History(filter, offset, limit); } finally { gate.Release(); } }
     public Task<RequestDetail[]> DetailsAsync(string ownerId) => owner.Invoke(() => DetailsCore(ownerId), priority: false, waitForCapacity: false);
     async Task<RequestDetail[]> DetailsCore(string ownerId)
-    { await gate.WaitAsync(); try { var request = store.Request(ownerId); return (request is null ? store.Requests(ownerId) : [request]).Select(x => new RequestDetail(x, store.Attempts(x.Id), store.Responses(x.Id), store.Audits(x.OwnerId).Concat(store.Audits(x.Id)).DistinctBy(a => a.Id).OrderBy(a => a.At).ToArray())).ToArray(); } finally { gate.Release(); } }
+    { await gate.WaitAsync(); try { RequireIdentity(state); var request = store.Request(ownerId); return (request is null ? store.Requests(ownerId) : [request]).Select(x => new RequestDetail(x, store.Attempts(x.Id), store.Responses(x.Id), store.Audits(x.OwnerId).Concat(store.Audits(x.Id)).DistinctBy(a => a.Id).OrderBy(a => a.At).ToArray())).ToArray(); } finally { gate.Release(); } }
     public Task<BusinessRequest[]> UnknownRequestsAsync() => owner.Invoke(() => UnknownRequestsCore(), priority: false, waitForCapacity: true);
     async Task<BusinessRequest[]> UnknownRequestsCore()
     { await gate.WaitAsync(); try { return store.PendingRequests().Where(x => x.Status == RequestStatus.Unknown).ToArray(); } finally { gate.Release(); } }
@@ -649,7 +653,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         try
         {
             var next = Clone(state); next.Blocks.RemoveAll(x => x.Code == "ConfigPending"); next.Revision++;
-            store.Commit(next, "ConfigActivation", revision.Id, "runtime", evidence, config: revision with { Status = success ? "Effective" : "ActivationFailed", Reason = evidence }); state = next;
+            store.Commit(next, "ConfigActivation", revision.Id, "runtime", evidence, config: revision with { Status = success ? "Effective" : "ActivationFailed", Reason = evidence }); Adopt(next);
         }
         finally { gate.Release(); }
     }
@@ -667,7 +671,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         {
             // The in-memory barrier survives even when durable storage is unavailable.
             state.Stopping = true; var next = Clone(state); next.Revision++;
-            faults.Hit("StoppingBarrier"); store.Commit(next, "StoppingBarrier", config.StationId, "runtime"); state = next;
+            faults.Hit("StoppingBarrier"); store.Commit(next, "StoppingBarrier", config.StationId, "runtime"); Adopt(next);
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", "Stop barrier persistence failed: " + ex.GetType().Name); throw; }
         finally { gate.Release(); }
@@ -692,25 +696,41 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); throw; }
         finally { gate.Release(); }
     }
-    public Task ReviewObservationsAsync(string evidence) => owner.Invoke(() => ReviewObservationsCore(evidence), priority: false, waitForCapacity: true);
-    async Task ReviewObservationsCore(string evidence)
-    {
-        await gate.WaitAsync();
-        try
-        {
-            RequireIdentity(state); Maintenance(state); Require(evidence.Length >= 8, "Source/entity inspection evidence required");
-            var next = Clone(state); next.Blocks.RemoveAll(x => x.Code == "ObservationReview"); next.Revision++;
-            store.Commit(next, "ObservationReview", config.StationId, state.Actor!.Id, evidence); state = next; SyncAlarms();
-        }
-        finally { gate.Release(); }
-    }
+    public Task ReviewObservationsAsync(string evidence) => Task.FromException(new GuardException("Select current source/epoch/evidence versions and use the ReviewObservations command"));
+    readonly SemaphoreSlim disposalGate = new(1, 1);
+    bool disposalComplete;
     public async ValueTask DisposeAsync()
     {
-        if (Interlocked.Exchange(ref disposed, 1) != 0) return;
-        maintenanceStop.Cancel(); await maintenance.ConfigureAwait(false);
-        await owner.DisposeAsync().ConfigureAwait(false);
-        overflowWrites.Writer.TryComplete(); await overflowWriter.ConfigureAwait(false);
-        maintenanceStop.Dispose(); gate.Dispose();
+        await disposalGate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            if (disposalComplete) return;
+            Interlocked.Exchange(ref disposed, 1);
+            var errors = new List<Exception>();
+            maintenanceStop.Cancel();
+            // Signal independent closure before waiting for any one possibly stuck owner.
+            var ownerClosing = owner.DisposeAsync().AsTask();
+            overflowWrites.Writer.TryComplete();
+            try { await maintenance.ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+            var ownerStopped = false;
+            try { await ownerClosing.ConfigureAwait(false); ownerStopped = true; } catch (Exception ex) { errors.Add(ex); }
+            var overflowStopped = false;
+            try { await overflowWriter.ConfigureAwait(false); overflowStopped = true; } catch (Exception ex) { errors.Add(ex); }
+            if (maintenance.IsCompleted && ownerStopped && overflowStopped)
+            {
+                maintenanceStop.Dispose(); gate.Dispose(); disposalComplete = true;
+            }
+            if (errors.Count != 0) throw new AggregateException("Application cleanup retained failures", errors);
+        }
+        finally { disposalGate.Release(); }
+    }
+    static void InvalidateReadInput(SupplyOperation operation, Observation observation)
+    {
+        if (operation.Task is not null || operation.Remaining is not null || operation.Supply is not null)
+            operation.PreviousConfirmed = new(operation.Revision, operation.Barcode, operation.Package, operation.Remaining, operation.Supply, operation.Task, operation.Reason);
+        operation.Revision++; operation.ObservationIds.Add(observation.Id); operation.SplitScans.Clear();
+        operation.CurrentInput = new(observation.Id, observation.Codes.ToArray(), observation.PackageQuantity, observation.ObservedAt);
+        operation.Barcode = ""; operation.Task = null; operation.Package = null; operation.Remaining = null; operation.Supply = null;
     }
     static bool IsStorage(Exception e) => e is Microsoft.Data.Sqlite.SqliteException or IOException or UnauthorizedAccessException;
     static StationState Clone(StationState s) => Wire.Decode<StationState>(Wire.Encode(s));
@@ -724,6 +744,9 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
     static SupplyOperation Operation(StationState s, string id) => s.Lanes.Values.SingleOrDefault(x => x.Id == id) ?? throw new GuardException("Current operation not found");
     static void SetBlock(StationState s, string code, string scope, string source, string epoch, string authority)
     {
-        if (!s.Blocks.Any(x => x.Code == code && x.Scope == scope && x.Source == source)) s.Blocks.Add(new(code, scope, source, epoch, s.Revision + 1, authority));
+        var index = s.Blocks.FindIndex(x => x.Code == code && x.Scope == scope && x.Source == source);
+        if (index < 0) s.Blocks.Add(new(code, scope, source, epoch, s.Revision + 1, authority));
+        else if (code == "ObservationReview")
+            s.Blocks[index] = new(code, scope, source, epoch, Math.Max(s.Revision + 1, s.Blocks[index].EvidenceVersion + 1), authority);
     }
 }

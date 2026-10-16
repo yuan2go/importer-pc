@@ -4,13 +4,13 @@ using Microsoft.Data.Sqlite;
 namespace Ipc.Supply;
 
 // Single writer is owned by StationApplication. Reads also use that coordinator, never UI connections.
-public sealed class SupplyStore : IDisposable
+public sealed partial class SupplyStore : IDisposable
 {
     readonly SqliteConnection db;
     SqliteTransaction? current;
     public string Path { get; }
     public Action<object>? Journal { get; set; }
-    public const int CurrentFormatVersion = 2;
+    public const int CurrentFormatVersion = 3;
     // This forward migration intentionally makes schema1 readers refuse new JSON semantics.
     const string SemanticFormatMigration = """
         CREATE TABLE storage_format(id INTEGER PRIMARY KEY CHECK(id=1),version INTEGER NOT NULL,minimum_reader INTEGER NOT NULL);
@@ -41,45 +41,38 @@ public sealed class SupplyStore : IDisposable
     public SupplyStore(string path)
     {
         Path = System.IO.Path.GetFullPath(path);
-        Directory.CreateDirectory(System.IO.Path.GetDirectoryName(Path)!);
-        db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path, Mode = SqliteOpenMode.ReadWriteCreate, Pooling = false, DefaultTimeout = 5, ForeignKeys = true }.ToString());
+        // An existing database is inspected through a read-only connection BEFORE opening a
+        // writer or changing journal settings. Older formats require the explicit maintenance
+        // upgrade, including its original-format backup and durable operation receipt.
+        var existing = File.Exists(Path);
+        if (existing)
+        {
+            var inspection = InspectReadOnly(Path);
+            if (!inspection.SelectedReaderCompatible)
+                throw new InvalidDataException($"Storage format {inspection.FormatVersion} requires an explicit backed-up upgrade to {CurrentFormatVersion}; original retained");
+        }
+        else Directory.CreateDirectory(System.IO.Path.GetDirectoryName(Path)!);
+        db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path, Mode = existing ? SqliteOpenMode.ReadWrite : SqliteOpenMode.ReadWriteCreate, Pooling = false, DefaultTimeout = 5, ForeignKeys = true }.ToString());
         try
         {
-            db.Open(); Exec("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA busy_timeout=5000; PRAGMA wal_autocheckpoint=1000;");
-            if (Scalar("PRAGMA integrity_check") != "ok") throw new InvalidDataException("SQLite integrity check failed; retained original database");
-            if (Scalar("SELECT name FROM sqlite_master WHERE type='table' AND name='schema_history'") is null &&
-                Scalar("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' LIMIT 1") is not null)
-                throw new InvalidDataException("Existing non-station SQLite database; refusing implicit initialization");
-            if (Scalar("PRAGMA foreign_key_check") is not null) throw new InvalidDataException("SQLite foreign key check failed");
-            Exec("CREATE TABLE IF NOT EXISTS schema_history(id INTEGER PRIMARY KEY,checksum TEXT NOT NULL,applied TEXT NOT NULL);");
-            if (Scalar("SELECT id FROM schema_history WHERE id NOT IN (1,2)") is not null) throw new InvalidDataException("Newer schema: rollback requires matching product");
-            var hash = Scalar("SELECT checksum FROM schema_history WHERE id=1");
-            if (hash is null)
-            {
-                using var tx = db.BeginTransaction(); Exec(Schema, tx); Exec("INSERT INTO schema_history VALUES(1,$a,$b)", tx, Wire.Hash(Schema), DateTimeOffset.UtcNow.ToString("O")); tx.Commit();
-            }
-            else if (hash != Wire.Hash(Schema)) throw new InvalidDataException("Schema checksum mismatch");
-            var semanticHash = Scalar("SELECT checksum FROM schema_history WHERE id=2");
-            if (semanticHash is null && Scalar("SELECT name FROM sqlite_master WHERE type='table' AND name='storage_format'") is not null)
-                throw new InvalidDataException("Storage format has no matching migration evidence");
-            if (semanticHash is null)
+            db.Open();
+            if (!existing)
             {
                 using var tx = db.BeginTransaction();
-                Exec(SemanticFormatMigration, tx);
-                Exec("INSERT INTO schema_history VALUES(2,$a,$b)", tx, Wire.Hash(SemanticFormatMigration), DateTimeOffset.UtcNow.ToString("O"));
+                Exec("CREATE TABLE schema_history(id INTEGER PRIMARY KEY,checksum TEXT NOT NULL,applied TEXT NOT NULL);", tx);
+                Exec(Schema, tx);
+                Exec("INSERT INTO schema_history VALUES(1,$a,$b)", tx, Wire.Hash(Schema), DateTimeOffset.UtcNow.ToString("O"));
+                ApplyForwardMigrations(db, tx, 1);
                 tx.Commit();
             }
-            else if (semanticHash != Wire.Hash(SemanticFormatMigration)) throw new InvalidDataException("Semantic format migration checksum mismatch");
             ValidateStorageFormat(db);
+            Exec("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA busy_timeout=5000; PRAGMA wal_autocheckpoint=1000;");
         }
         catch { db.Dispose(); throw; }
     }
     static void ValidateStorageFormat(SqliteConnection connection)
     {
-        using var c = connection.CreateCommand();
-        c.CommandText = "SELECT version,minimum_reader FROM storage_format WHERE id=1";
-        using var r = c.ExecuteReader();
-        if (!r.Read() || r.GetInt32(0) != CurrentFormatVersion || r.GetInt32(1) != CurrentFormatVersion || r.Read())
+        if (ReadFormat(connection) != CurrentFormatVersion)
             throw new InvalidDataException("Storage format incompatible with selected product");
     }
     SqliteCommand Sql(string sql, SqliteTransaction? tx, params object?[] values)
@@ -102,7 +95,7 @@ public sealed class SupplyStore : IDisposable
     public BusinessRequest[] PendingRequests() => Read<BusinessRequest>("SELECT json FROM requests WHERE status IN ('Prepared','Dispatching','Unknown') ORDER BY rowid");
     public BusinessRequest[] RequestsForSession(string session) => Read<BusinessRequest>("SELECT json FROM requests WHERE session=$a ORDER BY rowid", session);
     public BusinessRequest? Request(string id) => Read<BusinessRequest>("SELECT json FROM requests WHERE id=$a", id).SingleOrDefault();
-    public SupplyOperation[] History(string? filter, int offset, int limit) => Read<SupplyOperation>("SELECT json FROM operations WHERE $a IS NULL OR instr(json,$a)>0 ORDER BY created DESC,id LIMIT $b OFFSET $c", filter, Math.Clamp(limit, 1, 200), Math.Max(0, offset));
+    public SupplyOperation[] History(string? filter, int offset, int limit) => Read<SupplyOperation>("SELECT json FROM operations WHERE $a IS NULL OR json_extract(json,'$.Barcode')=$a OR json_extract(json,'$.BoxBarcode')=$a OR json_extract(json,'$.Task.Sku')=$a OR json_extract(json,'$.Task.TaskId')=$a ORDER BY created DESC,id LIMIT $b OFFSET $c", filter, Math.Clamp(limit, 1, 200), Math.Max(0, offset));
     public SendAttempt[] Attempts(string id) => Read<SendAttempt>("SELECT json FROM attempts WHERE request=$a ORDER BY ordinal", id);
     public IntegrationResponse[] Responses(string id) => Read<IntegrationResponse>("SELECT json FROM responses WHERE request=$a ORDER BY rowid", id);
     public Audit[] Audits(string id) => Read<Audit>("SELECT json FROM audit WHERE owner=$a ORDER BY rowid", id);
@@ -170,47 +163,28 @@ public sealed class SupplyStore : IDisposable
         alarm.Id, alarm.Code, alarm.Scope, alarm.ClearedAt is null ? 1 : 0, Wire.Encode(alarm));
     public static void RestoreVerified(string source, string destination)
     {
-        if (!File.Exists(source) || File.GetAttributes(source).HasFlag(FileAttributes.ReparsePoint)) throw new FileNotFoundException("Existing regular backup required", source);
-        if (File.Exists(destination) || System.IO.Path.GetFullPath(source) == System.IO.Path.GetFullPath(destination)) throw new IOException("Restore requires a new destination");
-        using var backup = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = source, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); backup.Open();
-        using (var c = backup.CreateCommand())
-        {
-            c.CommandText = "PRAGMA integrity_check"; if ((string?)c.ExecuteScalar() != "ok") throw new InvalidDataException("Backup integrity failed");
-            c.CommandText = "PRAGMA foreign_key_check"; if (c.ExecuteScalar() is not null) throw new InvalidDataException("Backup foreign keys invalid");
-            c.CommandText = "SELECT checksum FROM schema_history WHERE id=1"; if ((string?)c.ExecuteScalar() != Wire.Hash(Schema)) throw new InvalidDataException("Backup schema incompatible with selected product");
-            c.CommandText = "SELECT count(*) FROM schema_history WHERE id NOT IN (1,2)"; if (Convert.ToInt32(c.ExecuteScalar()) != 0) throw new InvalidDataException("Backup contains newer migration");
-            c.CommandText = "SELECT checksum FROM schema_history WHERE id=2";
-            var semanticHash = (string?)c.ExecuteScalar();
-            if (semanticHash is null)
-            {
-                c.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='storage_format'";
-                if (c.ExecuteScalar() is not null) throw new InvalidDataException("Backup format has no matching migration evidence");
-            }
-            else
-            {
-                if (semanticHash != Wire.Hash(SemanticFormatMigration)) throw new InvalidDataException("Backup semantic migration incompatible with selected product");
-                ValidateStorageFormat(backup);
-            }
-        }
-        // Persist isolation BEFORE exposing restored bytes. A process death between copying
-        // and updating the aggregate must not create an unquarantined restored station.
+        var inspection = InspectReadOnly(source);
+        if (File.Exists(destination) || File.Exists(destination + "-wal") || File.Exists(destination + "-shm") ||
+            System.IO.Path.GetFullPath(source) == System.IO.Path.GetFullPath(destination))
+            throw new IOException("Restore requires a new destination; original retained");
+        // Persist isolation BEFORE exposing restored bytes. Source/backup bytes are never
+        // upgraded: only the explicitly requested isolated restore copy may move forward.
         var directory = System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(destination))!; Directory.CreateDirectory(directory);
-        using (var marker = new FileStream(System.IO.Path.Combine(directory, "restore-quarantine"), FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough))
+        using (var marker = new FileStream(System.IO.Path.Combine(directory, "restore-quarantine"), FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough))
         {
             marker.Write(System.Text.Encoding.UTF8.GetBytes("Restored snapshot may lag external effects; reconcile before admission")); marker.Flush(true);
         }
-        using (var target = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = destination, Mode = SqliteOpenMode.ReadWriteCreate, Pooling = false }.ToString()))
-        { target.Open(); backup.BackupDatabase(target); }
+        BackupReadOnly(source, destination);
+        if (!inspection.SelectedReaderCompatible)
+        {
+            using var target = OpenMaintenance(destination, SqliteOpenMode.ReadWrite);
+            using var tx = target.BeginTransaction();
+            ApplyForwardMigrations(target, tx, inspection.FormatVersion); tx.Commit();
+        }
         using var restored = new SupplyStore(destination); var state = restored.Load(); state.Quarantined = true; state.Revision++;
-        restored.Commit(state, "RestoreIsolation", state.Session?.Id ?? "station", "offline-restore", "External ledger/inventory reconciliation required");
+        restored.Commit(state, "RestoreIsolation", state.Session?.Id ?? "station", "offline-restore", "External ledger/inventory reconciliation required; source backup retained in original format");
     }
-    public void Backup(string destination)
-    {
-        if (System.IO.Path.GetFullPath(destination) == Path || File.Exists(destination)) throw new IOException("Backup destination must be new");
-        using var target = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = destination, Pooling = false }.ToString()); target.Open(); db.BackupDatabase(target);
-        using var check = target.CreateCommand(); check.CommandText = "PRAGMA integrity_check";
-        if ((string?)check.ExecuteScalar() != "ok") throw new InvalidDataException("Backup integrity failed");
-    }
+    public void Backup(string destination) => BackupReadOnly(Path, destination);
     public int PruneClosedSessions(DateTimeOffset before, string actor, string evidence)
     {
         var eligible = Read<StationSession>("SELECT json FROM sessions").Where(x => x.Status == SessionStatus.Closed && x.ClosedAt < before)

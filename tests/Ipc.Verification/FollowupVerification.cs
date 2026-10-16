@@ -3,6 +3,7 @@ using Ipc.Platform;
 using Ipc.Product;
 using Ipc.Supply;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Data.Sqlite;
 
 static class FollowupVerification
 {
@@ -10,6 +11,7 @@ static class FollowupVerification
     {
         await HistoryIdentityMatrix(root, url);
         await EffectiveOwnership(root, url);
+        await ConfigurationHistory(root, url);
         await ReferenceJourneyVerification.Run(root, url);
         Console.WriteLine("PASS FOLLOWUP-08 all history identities and final configuration ownership");
     }
@@ -137,6 +139,49 @@ static class FollowupVerification
             catch (IOException) { using var first = new ResourceLease(leases, ["partial-a"]); }
         }
         Console.WriteLine("PASS FOLLOWUP-08 Effective/seed/pending/fallback/restored identity/competition/partial resource terminal states");
+    }
+    static async Task ConfigurationHistory(string root, string url)
+    {
+        var cfg = Rig.Config(url); var directory = Path.Combine(root, "followup-config-history");
+        using var store = new SupplyStore(Path.Combine(directory, "station.db"));
+        ConfigRevision Revision(string version) => new(Wire.Id(), cfg.Version, cfg with { Version = version }, "fixture", "Validated", "synthetic immutable draft", DateTimeOffset.UtcNow);
+        var seed = Revision(cfg.Version) with { Status = "Effective" };
+        var early = Revision("version-early"); var later = Revision("version-later");
+        store.Commit(new(), "ConfigActivation", seed.Id, "fixture", config: seed);
+        store.Commit(store.Load(), "SaveConfig", early.Id, "fixture", config: early);
+        store.Commit(store.Load(), "SaveConfig", later.Id, "fixture", config: later);
+        store.Commit(store.Load(), "ConfigActivation", later.Id, "fixture", config: later with { Status = "Effective" });
+        store.Commit(store.Load(), "ConfigActivation", early.Id, "fixture", config: early with { Status = "Effective" });
+        Assert(store.CurrentConfig("Effective")!.Id == early.Id && store.Configs().Count(x => x.Status == "Effective") == 1 && store.Configs().Single(x => x.Id == later.Id).Status == "Superseded", "Promotion is one transaction with a single current Effective, regardless of draft insertion order");
+        using (var db = new SqliteConnection($"Data Source={store.Path};Pooling=False"))
+        {
+            db.Open(); using var sql = db.CreateCommand();
+            // Recreate the retained pre-fix multiple-Effective representation. Existing
+            // activation audit order, not draft rowid, must identify the last activation.
+            sql.CommandText = "UPDATE configs SET status='Effective',json=json_set(json,'$.Status','Effective') WHERE id=$id"; sql.Parameters.AddWithValue("$id", later.Id); sql.ExecuteNonQuery();
+            Assert(store.CurrentConfig("Effective")!.Id == early.Id, "Legacy multiple-Effective selection follows durable activation chronology");
+            sql.Parameters.Clear(); sql.CommandText = "CREATE TRIGGER config_promotion_failure BEFORE INSERT ON audit WHEN json_extract(NEW.json,'$.Kind')='ConfigActivation' BEGIN SELECT RAISE(ABORT,'SIMULATION configuration promotion failure'); END;"; sql.ExecuteNonQuery();
+            var failed = false;
+            try { store.Commit(store.Load(), "ConfigActivation", later.Id, "fixture", config: later with { Status = "Effective" }); }
+            catch (SqliteException ex) { failed = ex.Message.Contains("SIMULATION configuration promotion failure"); }
+            Assert(failed && store.CurrentConfig("Effective")!.Id == early.Id && store.Configs().Count(x => x.Status == "Effective") == 2, "Promotion audit failure rolls back supersession and selected identity together, retaining prior history");
+            sql.CommandText = "DROP TRIGGER config_promotion_failure"; sql.ExecuteNonQuery();
+        }
+        var activeConfig = early.Content;
+        await using var app = new StationApplication(store, activeConfig, new SimulationRequestContract(activeConfig));
+        async Task<CommandReceipt> Command(string kind, string? owner = null, string? value = null)
+        {
+            var snapshot = await app.SnapshotAsync(); return await app.ExecuteAsync(new(Wire.Id(), snapshot.State.Revision, kind, owner, value));
+        }
+        Assert((await Command("Login", value: "maintenance")).Status == "Persisted", "Configuration regression identity");
+        var aba = await Command("SaveConfig", value: Wire.Encode(cfg with { Version = "version-later" }));
+        Assert(aba.Status == "RejectedByGuard" && aba.Reason.Contains("version already used"), "Historical configuration versions cannot be reused, preventing ABA authorization of old drafts");
+        var fresh = activeConfig with { Version = "fresh-version" };
+        Assert((await Command("SaveConfig", value: Wire.Encode(fresh))).Status == "Persisted", "New unique configuration revision remains saveable");
+        var draft = (await app.ConfigsAsync()).First();
+        Assert((await Command("ActivateConfig", draft.Id)).Status == "Persisted", "Unique revision can be staged once");
+        Assert((await Command("ActivateConfig", early.Id)).Status == "RejectedByGuard", "Old effective/superseded draft cannot be silently reactivated");
+        Console.WriteLine("PASS FOLLOWUP-08 configuration version ABA, activation chronology, unique Effective and failure rollback");
     }
     static async Task Denied(Func<Task> action, string reason)
     {

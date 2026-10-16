@@ -374,7 +374,7 @@ try
         await using var h = await Rig.New(root, url);
         var original = h.ConfigValue;
         await h.Command("SaveConfig", value: Wire.Encode(original with { Version = "SIM-2", TimeoutMs = 1 })); Assert((await h.App.ConfigsAsync()).First().Status == "Rejected", "Invalid draft retained, original effective");
-        var changed = original with { Version = "SIM-2", Integration = original.Integration with { Revision = "SIM-2", Endpoint = "http://127.0.0.1:18744/" } };
+        var changed = original with { Version = "SIM-3", Integration = original.Integration with { Revision = "SIM-2", Endpoint = "http://127.0.0.1:18744/" } };
         await h.Command("SaveConfig", value: Wire.Encode(changed)); var revision = (await h.App.ConfigsAsync()).First();
         await h.Command("ActivateConfig", revision.Id); Assert((await h.App.ConfigsAsync()).First().Status == "PendingActivation" && h.ConfigValue == original, "Activation waits for controlled restart");
         var backup = Path.Combine(root, "consistent-backup.db"); await h.App.BackupAsync(backup);

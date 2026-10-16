@@ -245,6 +245,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                         Maintenance(next); Require(command.Value is not null, "Configuration JSON required");
                         var draft = Wire.Decode<StationConfig>(command.Value!); var errors = SupplyConfiguration.Validate(draft).Concat(configurationValidator?.Invoke(draft) ?? []).Distinct().ToArray();
                         Require(draft.StationId == config.StationId && draft.Mode == config.Mode && draft.Version != config.Version, "Station/mode fixed; revision must change");
+                        Require(!store.ConfigVersionExists(draft.Version), "Configuration version already used; create a new immutable revision identity");
                         revision = new(Wire.Id(), config.Version, draft, next.Actor!.Id, errors.Length == 0 ? "Validated" : "Rejected", string.Join("; ", errors), Now);
                         owner = revision.Id; break;
                     }
@@ -253,6 +254,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                         Maintenance(next); Require(!HasUnresolved() && (next.Session is null || next.Session.Status is SessionStatus.Closed or SessionStatus.Rejected), "Close box and resolve effects before restart activation");
                         var draft = store.Configs().FirstOrDefault(x => x.Id == owner) ?? throw new GuardException("Configuration revision not found");
                         Require(draft.Status == "Validated" && draft.BaseVersion == config.Version, "Stale/invalid configuration draft");
+                        Require(!store.ConfigVersionExists(draft.Content.Version, draft.Id), "Configuration version reused in retained history; create a new draft");
                         Require(store.CurrentConfig("PendingActivation") is null, "A configuration is already pending controlled restart");
                         Require(SupplyConfiguration.Validate(draft.Content).Concat(configurationValidator?.Invoke(draft.Content) ?? []).Count() == 0, "Configuration capabilities changed; validate draft again");
                         revision = draft with { Status = "PendingActivation" };

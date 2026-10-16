@@ -1,0 +1,53 @@
+{
+  "base_commit": "9f320459969ee4398dc602ae037ecdcb3685996c",
+  "files": [
+    {
+      "path": "README.md",
+      "blob": "b1f81aadd1e2aea3459d395ca2f65e23a4556971",
+      "sha256": "5156ffbb5ff5e482a817a140f40ae424125dc0109584496cce39181039f667e7",
+      "bytes": 2929
+    },
+    {
+      "path": "docs/INDEX.md",
+      "blob": "294ff71ff19d7300f1f372049a6170542342711c",
+      "sha256": "fcff3ae6198214170cd16373338242d9fa87b6261679ca1532ba20306c33ca57",
+      "bytes": 6024
+    },
+    {
+      "path": "docs/design/framework.md",
+      "blob": "e375fa2ef34c0c8ae12895d2d5256ec0a16561cb",
+      "sha256": "bda82f79796d6cab7a2c8ec6089dc61734cd777b057735ea35a4f45ab9100f51",
+      "bytes": 35210
+    },
+    {
+      "path": "docs/design/framework-decisions.md",
+      "blob": "c65b8951d6c0d18fc07127227c1316ccc364210a",
+      "sha256": "6bf772934183f9628d0d892f729b5efec6678951dde16a3bceb5fece574078fa",
+      "bytes": 15487
+    },
+    {
+      "path": "docs/runtime/operations.md",
+      "blob": "2f8f787a11e399a1eb0487ea6093ab4e992cbae9",
+      "sha256": "4cda1848ef390bcd42f21c5a39ce6aeeb7d6f9d1e9d687a069f4e71c7314bd9e",
+      "bytes": 25335
+    },
+    {
+      "path": "docs/runtime/windows-06.md",
+      "blob": "3ea4822ca3bf57ee54c6a77f736d046e137df35b",
+      "sha256": "102b54ff83bcb28c0ac57dc906d2552670c34389b178a788e464d3bb4e8cf80d",
+      "bytes": 2348
+    },
+    {
+      "path": "docs/runtime/ui-baseline-alignment-10.md",
+      "blob": "e79f5c656491688e85ecf770e3761bdf8d3db9b9",
+      "sha256": "356e0c4f19871372265a16d4d19c28e9a458dc232e65e14f7a40df458c7482a9",
+      "bytes": 14262
+    },
+    {
+      "path": "docs/manifest.json",
+      "blob": "6d595a5196875e54ea8262f953b42e86c18ba3cd",
+      "sha256": "4dcec3a0e08634850c19a06d581a6c5a137e71560b5d6b4d05a6897d02035d6e",
+      "bytes": 212339
+    }
+  ]
+}

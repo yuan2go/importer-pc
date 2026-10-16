@@ -238,18 +238,19 @@ public partial class MainWindow : Window
     {
         if (Runtime.Application is null || closing) return;
         if (!BeginHistoricalRead("作业详情", out var readActor)) return;
+        var reviewedStateRevision=snapshot!.State.Revision;
         var generation = ++detailGeneration;
         try
         {
             var details = await Runtime.Application.DetailsAsync(owner).WaitAsync(lifetime.Token);
             if (closing || generation != detailGeneration || !ReadIdentityMatches(readActor)) return;
             DetailTree.IsEnabled = true; ReadAccessFeedback.Text = "详情为本次有效身份取得的只读快照；查看不会发送业务请求。";
-            RenderDetails(owner, operation, details); NavigateToHistoryDetail();
+            RenderDetails(owner, operation, details, reviewedStateRevision); NavigateToHistoryDetail();
         }
         catch (OperationCanceledException) when (closing) { }
         catch(Exception ex) { if (!closing && generation == detailGeneration) MarkDetailReadFailure("详情读取失败：" + ex.Message); }
     }
-    void RenderDetails(string owner, SupplyOperation? operation, RequestDetail[] details)
+    void RenderDetails(string owner, SupplyOperation? operation, RequestDetail[] details, long? reviewedStateRevision = null)
     {
         DetailTree.Items.Clear();
         var root = new TreeViewItem { Header = "作业 / 会话  " + owner, IsExpanded = true };
@@ -257,9 +258,11 @@ public partial class MainWindow : Window
         if (operation is not null)
         {
             Add(root,$"作业 {operation.Id} / r{operation.Revision}\n{OperatorText.Operation(operation.Status)} · {operation.Occupancy}\n箱 {OperatorText.Known(operation.BoxBarcode)} / 箱波次 {OperatorText.Known(operation.BoxWave)}\nItem {OperatorText.Known(operation.Barcode)} / SKU {OperatorText.Known(operation.Task?.Sku)}\nItem 波次 {OperatorText.Known(operation.Task?.ItemWave)} / 任务 {OperatorText.Known(operation.Task?.TaskId)}\n格口 {OperatorText.Known(operation.Task?.Destination)} / 数量 {operation.Supply?.ToString() ?? "未取得"} {OperatorText.Known(operation.Task?.Unit)}\n{OperatorText.Reason(operation.Reason)}");
-            if (LaneForOwner(operation.Id) is { CanCancel: true, Current: { } current } && current.Revision == operation.Revision)
+            if (reviewedStateRevision is { } reviewedRevision && snapshot!.State.Revision == reviewedRevision &&
+                CanCommand("CancelDraft", out _) && LaneForOwner(operation.Id)?.Current is { } current &&
+                current.Revision == operation.Revision && Wire.Encode(current) == Wire.Encode(operation) &&
+                current.Status is OperationStatus.AwaitingAction or OperationStatus.SplitRequired or OperationStatus.ValidationRejected or OperationStatus.Rejected)
             {
-                var reviewedRevision = snapshot!.State.Revision;
                 var dispose = new Button { Content = "处置当前未提交草稿" };
                 dispose.Click += async (_, _) =>
                 {

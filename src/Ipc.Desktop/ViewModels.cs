@@ -68,6 +68,8 @@ public sealed class LaneViewModel(string lane) : Bindable
     public string Package { get => package; private set => Put(ref package, value); }
     public string Remaining { get => remaining; private set => Put(ref remaining, value); }
     public string Supply { get => supply; private set => Put(ref supply, value); }
+    string quantityUnit = "数量单位：未取得";
+    public string QuantityUnit { get => quantityUnit; private set => Put(ref quantityUnit, value); }
     public string Reason { get => reason; private set => Put(ref reason, value); }
     public string Next { get => next; private set => Put(ref next, value); }
     public string Provenance { get => provenance; private set => Put(ref provenance, value); }
@@ -115,6 +117,7 @@ public sealed class LaneViewModel(string lane) : Bindable
         Remaining = Current?.Remaining?.ToString(CultureInfo.InvariantCulture) ?? "未取得";
         Supply = Current?.Supply?.ToString(CultureInfo.InvariantCulture) ?? "未取得";
         var t = Current?.Task;
+        QuantityUnit = "数量单位："+OperatorText.Known(t?.Unit);
         Sku = OperatorText.Known(t?.Sku); TaskId = OperatorText.Known(t?.TaskId); Destination = OperatorText.Known(t?.Destination);
         ItemWave = $"Item关联波次  {OperatorText.Known(t?.ItemWave)} · 单位 {OperatorText.Known(t?.Unit)}" + (t?.ItemWave is { } wave && Current?.BoxWave is { } boxWave && wave != boxWave ? " · 与入场箱波次不一致" : "");
         ObservationSource = Current?.CurrentInput is { } input ? $"观察 {input.ObservedAt.ToLocalTime():HH:mm:ss zzz} · {input.ObservationId}" : "本次观察来源 / 时间：未取得";
@@ -135,7 +138,7 @@ public sealed class LaneViewModel(string lane) : Bindable
         CanSubmit = available && readable && hasIdentity && guard?.Allowed == true;
         CanScan = available && readable && hasIdentity && SplitVisible && snapshot.Submit.Allowed && Current!.SplitScans.Count < Current.Supply;
         CanClear = available && readable && hasIdentity && SplitVisible;
-        CanCancel = available && hasIdentity && state is OperationStatus.Rejected or OperationStatus.ValidationRejected or OperationStatus.AwaitingAction or OperationStatus.SplitRequired;
+        CanCancel = hasIdentity && !executing && state is OperationStatus.Rejected or OperationStatus.ValidationRejected or OperationStatus.AwaitingAction or OperationStatus.SplitRequired;
         CanDetail = hasIdentity && Current is not null;
         ActionLabel = state switch { OperationStatus.Accepted => "查看作业详情", OperationStatus.OutcomeUnknown => "查看原请求核对", OperationStatus.ValidationRejected or OperationStatus.Rejected => "查看拒绝详情", OperationStatus.SubmitPending or OperationStatus.ValidationPending => "查看处理详情", OperationStatus.AwaitingDisposition => "查看处置详情", OperationStatus.SplitRequired => "确认拆包并供包", _ => "手动供包" };
         if (executing) ActionLabel="正在处理…";
@@ -198,7 +201,7 @@ public sealed class OperatorLabelConverter : IValueConverter
         RequestStatus status => OperatorText.Request(status),
         OperationStatus status => OperatorText.Operation(status),
         SessionStatus status => OperatorText.Session(status),
-        string text => text switch { "Validated"=>"已验证 · 待激活", "Rejected"=>"已拒绝", "PendingActivation"=>"待重启激活", "Effective"=>"当前有效", "ActivationFailed"=>"激活失败 · 保留旧版", _=>OperatorText.Reason(text) },
+        string text => text switch { "Validated"=>"已验证 · 待激活", "Rejected"=>"已拒绝", "PendingActivation"=>"待重启激活", "Effective"=>"当前有效", "ActivationFailed"=>"激活失败 · 保留旧版", "Superseded"=>"已被新修订替代", _=>OperatorText.Reason(text) },
         _ => value
     };
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();

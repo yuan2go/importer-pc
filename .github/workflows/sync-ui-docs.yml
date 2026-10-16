@@ -1,0 +1,72 @@
+name: Reconcile UI assets with latest main
+on:
+  push:
+    branches: [docs/final-ui-assets-20261016]
+    paths: [.github/workflows/sync-ui-docs.yml]
+permissions:
+  contents: write
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: docs/final-ui-assets-20261016
+          fetch-depth: 0
+      - name: Merge current main without discarding either document inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin main
+          git merge --no-commit --no-ff origin/main || true
+          python - <<'PY'
+          import hashlib, json, subprocess
+          from pathlib import Path
+          def gitfile(ref,path):
+              return subprocess.check_output(['git','show',f'{ref}:{path}'])
+          conflicts=subprocess.check_output(['git','diff','--name-only','--diff-filter=U'],text=True).splitlines()
+          assert set(conflicts) <= {'docs/INDEX.md','docs/manifest.json','docs/manifest.sha256'}, conflicts
+          ours_index=gitfile('HEAD','docs/INDEX.md').decode()
+          latest_index=gitfile('origin/main','docs/INDEX.md').decode()
+          marker='## 已入库的最终交付UI：Codex页面开发必读'
+          section=marker+ours_index.split(marker,1)[1].split('## 当前结论',1)[0]
+          assert marker not in latest_index, 'Concurrent UI entry requires manual review'
+          assert '## 当前结论' in latest_index
+          Path('docs/INDEX.md').write_text(latest_index.replace('## 当前结论',section+'## 当前结论',1),encoding='utf-8')
+          ours=json.loads(gitfile('HEAD','docs/manifest.json'))
+          latest=json.loads(gitfile('origin/main','docs/manifest.json'))
+          prefix='docs/ui/ss-ui-vis-001-v1.1/'
+          records={x['path']:x for x in latest['files']}
+          old={x['path']:x for x in ours['files']}
+          changed={'AGENTS.md','docs/INDEX.md','docs/ui/STATUS.md','docs/baseline/PUBLICATION.md','docs/baseline/MISSING.md'}
+          changed.update(p for p in old if p.startswith(prefix))
+          for name in sorted(changed):
+              p=Path(name); assert p.is_file(), name
+              b=p.read_bytes(); rec=old[name].copy()
+              rec.update(sha256=hashlib.sha256(b).hexdigest(),size_bytes=len(b))
+              records[name]=rec
+          source=json.loads(Path(prefix+'source-manifest.json').read_text())
+          identity={x['sha256']:prefix+x['path'] for x in source['files']}
+          for item in latest.get('withheld_primary_artifacts',[]):
+              if item.get('sha256') in identity:
+                  item.update(actual_repository_path=identity[item['sha256']],status='included_by_final_ui_request',reason='user_explicit_final_generated_ui_upload_request')
+          latest['files']=sorted(records.values(),key=lambda x:x['path'])
+          latest['ui_design_publication']=ours['ui_design_publication']
+          latest['full_archive_in_main']=False
+          target=Path('docs/manifest.json')
+          target.write_text(json.dumps(latest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          Path('docs/manifest.sha256').write_text(hashlib.sha256(target.read_bytes()).hexdigest()+'  manifest.json\n')
+          for name in changed:
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==records[name]['sha256'],name
+          for item in source['files']:
+              assert hashlib.sha256(Path(prefix+item['path']).read_bytes()).hexdigest()==item['sha256'],item['path']
+          print('Preserved latest main inventory and exact UI source files; merged navigation and hashes.')
+          PY
+          git add docs/INDEX.md docs/manifest.json docs/manifest.sha256
+          test -z "$(git diff --name-only --diff-filter=U)"
+          git diff --cached --check
+          git commit -m 'docs: reconcile final UI assets with latest engineering changes'
+          git push origin HEAD:docs/final-ui-assets-20261016

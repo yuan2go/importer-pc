@@ -8,7 +8,7 @@ static class AlignmentDataVerification
     public static async Task Run(string root, string url, string workspace)
     {
         await LegacyMigration(root, workspace);
-        Console.WriteLine("PASS A01 schema1 migration, frozen payload, restore isolation and future format rejection");
+        Console.WriteLine("PASS A01 format1/2 read-only custody, explicit backed-up upgrade, frozen request, rollback and restore isolation");
         var cfg = Rig.Config(url, demand: 1); var directory = Path.Combine(root, "alignment-data");
         string sessionId, operationId, originalPayload, originalHash; ContextSnapshot context; TaskSnapshot task;
         await using (var h = await Rig.Open(directory, cfg))
@@ -53,50 +53,124 @@ static class AlignmentDataVerification
         Console.WriteLine("PASS A01 independent semantic fixture, task/request/restart/history consistency and unique acceptance");
     }
 
+    internal const string Schema1Checksum = "D4CED2B811DFF4D3D66DC66C431B9DCC8C75F491CA30F10A2E5507AAD741C981";
+    internal const string Format2Checksum = "4C1BBC06BAF48D95D464867131CD63BFD7048DAC64515B07916652497B60A897";
+    internal const string Format3Checksum = "AF01C0A2D5AE4FEB3481E4E703C0BC544CC746FD044736CD8A5B3D86B661FD25";
+    const string Format2Migration = "CREATE TABLE storage_format(id INTEGER PRIMARY KEY CHECK(id=1),version INTEGER NOT NULL,minimum_reader INTEGER NOT NULL);\nINSERT INTO storage_format VALUES(1,2,2);";
+
     static Task LegacyMigration(string root, string workspace)
     {
-        var fixture = Path.Combine(workspace, "tests/Ipc.Verification/fixtures"); var schema = File.ReadAllText(Path.Combine(fixture, "schema1.sql"));
-        const string baselineHash = "D4CED2B811DFF4D3D66DC66C431B9DCC8C75F491CA30F10A2E5507AAD741C981";
-        Assert(Wire.Hash(schema) == baselineHash, "Schema1 fixture independently pinned to main 2b8b35b");
-        var original = Wire.Decode<BusinessRequest>(File.ReadAllText(Path.Combine(fixture, "simulation-v1-request.json")));
-        var oldResponseText = File.ReadAllText(Path.Combine(fixture, "simulation-v1-response.json")).TrimEnd();
-        var oldResponse = Wire.Decode<IntegrationResponse>(oldResponseText);
-        Assert(oldResponse.Context is null && oldResponse.Task is null && Wire.Encode(oldResponse) == oldResponseText, "Old receipt optional fields remain absent and bytes unchanged");
-        var legacy = Path.Combine(root, "legacy-schema1.db");
-        using (var db = Open(legacy))
+        var fixtures = Path.Combine(workspace, "tests/Ipc.Verification/fixtures");
+        var schema = File.ReadAllText(Path.Combine(fixtures, "schema1.sql"));
+        Assert(Wire.Hash(schema) == Schema1Checksum && Wire.Hash(Format2Migration) == Format2Checksum, "Historical schema1 and format2 SQL independently pinned");
+        var original = Wire.Decode<BusinessRequest>(File.ReadAllText(Path.Combine(fixtures, "simulation-v1-request.json")));
+        var responseText = File.ReadAllText(Path.Combine(fixtures, "simulation-v1-response.json")).TrimEnd();
+        var oldResponse = Wire.Decode<IntegrationResponse>(responseText);
+        Assert(oldResponse.Context is null && oldResponse.Task is null && Wire.Encode(oldResponse) == responseText, "Old receipt optional fields remain absent and bytes unchanged");
+        var release = new MaintenanceReleaseIdentity(Schema1Checksum, Schema1Checksum, Format2Checksum, new() { ["synthetic-config.json"] = Format2Checksum });
+        var selected = release with { ProgramAssemblySha256 = Format3Checksum };
+        string Legacy(string name, int format = 1, bool active = false)
         {
+            var path = Path.Combine(root, name + ".db");
+            using var db = Open(path);
             Exec(db, schema); Exec(db, "CREATE TABLE schema_history(id INTEGER PRIMARY KEY,checksum TEXT NOT NULL,applied TEXT NOT NULL)");
-            Exec(db, "INSERT INTO schema_history VALUES(1,$a,$b)", baselineHash, DateTimeOffset.UtcNow.ToString("O"));
-            var sessionText = "{\"Id\":\"" + original.SessionId + "\",\"Barcode\":\"000001\",\"Status\":\"Active\"}";
+            Exec(db, "INSERT INTO schema_history VALUES(1,$a,$b)", Schema1Checksum, DateTimeOffset.UtcNow.ToString("O"));
+            if (format == 2)
+            {
+                Exec(db, Format2Migration); Exec(db, "INSERT INTO schema_history VALUES(2,$a,$b)", Format2Checksum, DateTimeOffset.UtcNow.ToString("O"));
+            }
+            var sessionText = "{\"Id\":\"" + original.SessionId + "\",\"Barcode\":\"000001\",\"Status\":\"" + (active ? "Active" : "Closed") + "\"}";
             Exec(db, "INSERT INTO sessions VALUES($a,$b)", original.SessionId, sessionText);
-            Exec(db, "INSERT INTO operations VALUES('legacy-operation',$a,'left',$b,$c)", original.SessionId, DateTimeOffset.UtcNow.ToString("O"), "{\"Id\":\"legacy-operation\",\"SessionId\":\"" + original.SessionId + "\",\"Lane\":\"left\",\"Barcode\":\"000123\"}");
+            Exec(db, "INSERT INTO operations VALUES($a,$b,'left',$c,$d)", original.OwnerId, original.SessionId, DateTimeOffset.UtcNow.ToString("O"),
+                "{\"Id\":\"" + original.OwnerId + "\",\"SessionId\":\"" + original.SessionId + "\",\"Lane\":\"left\",\"Barcode\":\"000123\"}");
             Exec(db, "INSERT INTO requests VALUES($a,$b,$c,$d,$e,$f,$g)", original.Id, original.OwnerId, original.SessionId, original.Kind.ToString(), original.IntentKey, original.Status.ToString(), Wire.Encode(original));
+            return path;
         }
-        var restoredLegacy = Path.Combine(root, "legacy-restore", "station.db"); SupplyStore.RestoreVerified(legacy, restoredLegacy);
-        using (var restored = new SupplyStore(restoredLegacy)) Assert(restored.Load().Quarantined && File.Exists(Path.Combine(root, "legacy-restore", "restore-quarantine")), "Legacy backup migration remains isolated");
-        using (var store = new SupplyStore(legacy))
+        void Frozen(SupplyStore store)
         {
+            var saved = store.Request(original.Id)!;
+            Assert(saved == original && saved.Payload == original.Payload && saved.PayloadHash == original.PayloadHash && saved.Binding == original.Binding,
+                "Original request identity, raw payload/hash, contract and target remain exact");
             Assert(store.Session(original.SessionId)!.Context is null && store.History(null, 0, 100).Single().Task is null && store.History(null, 0, 100).Single().BoxWave is null, "Legacy missing fields remain unknown");
-            Assert(store.Request(original.Id)!.Payload == original.Payload && store.Request(original.Id)!.PayloadHash == original.PayloadHash, "Migration does not reserialize frozen request");
         }
-        using (var db = Open(legacy))
+        foreach (var format in new[] { 1, 2 })
         {
-            using var c = db.CreateCommand(); c.CommandText = "SELECT checksum FROM schema_history WHERE id=1";
-            Assert((string?)c.ExecuteScalar() == baselineHash, "Original migration checksum remains unchanged");
-            c.CommandText = "SELECT count(*) FROM schema_history WHERE id<>1";
-            Assert(Convert.ToInt32(c.ExecuteScalar()) == 1, "Original reader's id<>1 guard rejects format2");
+            var source = Legacy("legacy-format" + format, format); var before = Wire.FileHash(source);
+            var inspection = SupplyStore.InspectReadOnly(source);
+            Assert(inspection.FormatVersion == format && inspection.MinimumReader == format && !inspection.SelectedReaderCompatible && inspection.ExplicitUpgradeSupported, "Read-only inspection identifies format" + format);
+            Throws(() => { using var denied = new SupplyStore(source); });
+            Assert(Wire.FileHash(source) == before, "Inspection and default startup refusal do not mutate original format" + format);
+            var backup = Path.Combine(root, "original-format" + format + "-backup.db");
+            var backupReceipt = SupplyStore.BackupReadOnly(source, backup);
+            Assert(backupReceipt.Source.FormatVersion == format && backupReceipt.Backup.FormatVersion == format && backupReceipt.Sha256 == Wire.FileHash(backup), "Backup receipt binds original format and physical SHA");
+            Assert(Wire.FileHash(source) == before && SupplyStore.InspectReadOnly(backup).FormatVersion == format, "Backup preserves source and is original-reader compatible");
+            using (var reader = Open(backup))
+            {
+                using var command = reader.CreateCommand(); command.CommandText = "SELECT count(*) FROM schema_history WHERE id>" + format;
+                Assert(Convert.ToInt32(command.ExecuteScalar()) == 0, "Selected historical reader recognizes its own original-format backup");
+            }
+            var restore = Path.Combine(root, "legacy-format" + format + "-restore", "station.db");
+            SupplyStore.RestoreVerified(backup, restore);
+            using (var restored = new SupplyStore(restore))
+            {
+                Frozen(restored);
+                Assert(restored.Load().Quarantined && File.Exists(Path.Combine(Path.GetDirectoryName(restore)!, "restore-quarantine")), "Only isolated restored copy upgrades and remains quarantined");
+            }
+            Assert(SupplyStore.InspectReadOnly(backup).FormatVersion == format && Wire.FileHash(source) == before, "Restore never upgrades source backup or source database");
+            var receiptPath = Path.Combine(root, "format" + format + "-upgrade.json");
+            var upgradeBackup = Path.Combine(root, "format" + format + "-pre-upgrade.db");
+            var upgraded = SupplyStore.UpgradeVerified(source, upgradeBackup, receiptPath, release, selected);
+            var receipt = Wire.Decode<StorageUpgradeReceipt>(File.ReadAllText(receiptPath));
+            Assert(Wire.Encode(receipt) == Wire.Encode(upgraded) && receipt.Status == "ForwardMigrationCommitted" && receipt.Backup.Source.FormatVersion == format && receipt.Backup.Sha256 == Wire.FileHash(upgradeBackup), "Durable upgrade identity binds verified original-format backup");
+            Assert(Wire.Encode(receipt.PreviousRelease) == Wire.Encode(release) && Wire.Encode(receipt.SelectedRelease) == Wire.Encode(selected) && receipt.DestinationFormat == 3, "Receipt freezes previous/selected release and configuration identities");
+            using (var store = new SupplyStore(source)) Frozen(store);
+            using (var db = Open(source))
+            {
+                using var command = db.CreateCommand(); command.CommandText = "SELECT id,checksum FROM schema_history ORDER BY id";
+                using var reader = command.ExecuteReader(); var expected = new[] { Schema1Checksum, Format2Checksum, Format3Checksum }; var index = 0;
+                while (reader.Read()) { Assert(reader.GetInt32(0) == index + 1 && reader.GetString(1) == expected[index], "Migration checksum remains pinned at id" + (index + 1)); index++; }
+                Assert(index == 3, "Explicit upgrade retains three historical migrations"); reader.Close();
+                command.CommandText = "SELECT count(*) FROM schema_history WHERE id<>1";
+                Assert(Convert.ToInt32(command.ExecuteScalar()) == 2, "Original schema1 reader refuses new migration history");
+                command.CommandText = "SELECT count(*) FROM schema_history WHERE id NOT IN (1,2)";
+                Assert(Convert.ToInt32(command.ExecuteScalar()) == 1, "Format2 reader refuses format3 history");
+            }
         }
-        var backup = Path.Combine(root, "format2-backup.db"); using (var store = new SupplyStore(legacy)) store.Backup(backup);
-        var restoredCurrent = Path.Combine(root, "format2-restore", "station.db"); SupplyStore.RestoreVerified(backup, restoredCurrent);
-        using (var store = new SupplyStore(restoredCurrent)) Assert(store.Load().Quarantined, "Matching format2 backup restores only into quarantine");
-        using (var db = Open(backup)) Exec(db, "UPDATE storage_format SET version=3,minimum_reader=3");
-        Throws(() => { using var rejected = new SupplyStore(backup); });
-        var rejectedPath = Path.Combine(root, "future-restore", "station.db"); Throws(() => SupplyStore.RestoreVerified(backup, rejectedPath));
-        Assert(!File.Exists(rejectedPath) && !Directory.Exists(Path.GetDirectoryName(rejectedPath)), "Future format rejected before restore output");
-        using (var db = Open(legacy)) Exec(db, "INSERT INTO schema_history VALUES(3,'future',$a)", DateTimeOffset.UtcNow.ToString("O"));
-        Throws(() => { using var rejected = new SupplyStore(legacy); });
+        // A rejected preflight, failed backup destination or failed durable initial receipt
+        // must leave the original old-reader database untouched.
+        var blocked = Legacy("legacy-active", active: true); var blockedHash = Wire.FileHash(blocked);
+        Expect<InvalidOperationException>(() => SupplyStore.UpgradeVerified(blocked, blocked + ".backup", blocked + ".receipt", release, selected));
+        Assert(Wire.FileHash(blocked) == blockedHash && !File.Exists(blocked + ".backup") && !File.Exists(blocked + ".receipt"), "Open-session upgrade refusal keeps original and creates no success evidence");
+        var receiptFailure = Legacy("legacy-receipt-failure"); var failureHash = Wire.FileHash(receiptFailure);
+        var retainedBackup = receiptFailure + ".backup";
+        Expect<DirectoryNotFoundException>(() => SupplyStore.UpgradeVerified(receiptFailure, retainedBackup, Path.Combine(root, "missing-receipt-directory", "upgrade.json"), release, selected));
+        Assert(Wire.FileHash(receiptFailure) == failureHash && SupplyStore.InspectReadOnly(retainedBackup).FormatVersion == 1, "Initial receipt failure precedes writer; original and verified backup survive");
+        Expect<IOException>(() => SupplyStore.BackupReadOnly(receiptFailure, retainedBackup));
+        Assert(Wire.FileHash(receiptFailure) == failureHash, "Backup destination collision does not mutate or overwrite original");
+        var migrationFailure = Legacy("legacy-migration-failure");
+        using (var db = Open(migrationFailure)) Exec(db, "CREATE TRIGGER fail_upgrade BEFORE INSERT ON schema_history WHEN NEW.id=3 BEGIN SELECT RAISE(ABORT,'SIMULATION explicit migration failure'); END;");
+        var migrationHash = Wire.FileHash(migrationFailure);
+        Expect<SqliteException>(() => SupplyStore.UpgradeVerified(migrationFailure, migrationFailure + ".backup", migrationFailure + ".receipt", release, selected));
+        Assert(Wire.FileHash(migrationFailure) == migrationHash && SupplyStore.InspectReadOnly(migrationFailure).FormatVersion == 1, "Migration SQL failure rolls back format2 and format3 atomically; original unchanged");
+        var failedReceipt = Wire.Decode<StorageUpgradeReceipt>(File.ReadAllText(migrationFailure + ".receipt"));
+        Assert(failedReceipt.Status == "UpgradeFailedInspectBeforeRetry" && failedReceipt.Failure!.Contains("SqliteException") && failedReceipt.Backup.Sha256 == Wire.FileHash(migrationFailure + ".backup"), "Failure retains original exception and original-format backup identity");
+        foreach (var damage in new[] { "future-format", "future-migration", "wrong-checksum" })
+        {
+            var future = Legacy(damage, 2);
+            using (var db = Open(future)) Exec(db, damage switch
+            {
+                "future-format" => "UPDATE storage_format SET version=4,minimum_reader=4",
+                "future-migration" => "INSERT INTO schema_history VALUES(4,'future','2099-01-01T00:00:00Z')",
+                _ => "UPDATE schema_history SET checksum='tampered' WHERE id=2"
+            });
+            var hash = Wire.FileHash(future); var destination = Path.Combine(root, damage + "-restore", "station.db");
+            Throws(() => SupplyStore.InspectReadOnly(future)); Throws(() => { using var rejected = new SupplyStore(future); });
+            Throws(() => SupplyStore.RestoreVerified(future, destination));
+            Assert(Wire.FileHash(future) == hash && !File.Exists(destination) && !Directory.Exists(Path.GetDirectoryName(destination)), "Future/unknown/checksum evidence refused before restore output and source write: " + damage);
+        }
         return Task.CompletedTask;
     }
+    static void Expect<T>(Action action) where T : Exception { try { action(); } catch (T) { return; } throw new InvalidOperationException("Expected maintenance failure " + typeof(T).Name); }
     static SqliteConnection Open(string path) { var db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = path, Pooling = false }.ToString()); db.Open(); return db; }
     static void Exec(SqliteConnection db, string sql, params object?[] values)
     {

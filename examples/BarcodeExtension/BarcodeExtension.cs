@@ -18,6 +18,7 @@ sealed class BarcodeSource(ExtensionContext context) : IControlledObservationSou
     Action<DeviceHealthConfirmation>? confirm;
     CancellationTokenSource? stop;
     Task? heartbeat;
+    Task? termination;
     long sequence;
     public string DeviceId => context.DeviceId;
     public string Epoch { get; private set; } = "not-started";
@@ -31,7 +32,7 @@ sealed class BarcodeSource(ExtensionContext context) : IControlledObservationSou
         {
             if (stop is not null) throw new InvalidOperationException("Source still owns its previous registration");
             if (context.Parameters.GetValueOrDefault("fault.fail-start") == "true") throw new InvalidOperationException("Explicit synthetic extension startup fault");
-            Epoch = registeredEpoch; receiver = receive; confirm = health; sequence = 0; stop = new();
+            Epoch = registeredEpoch; receiver = receive; confirm = health; sequence = 0; stop = new(); termination = null;
             var cancellation = stop.Token; Confirm(DeviceHealth.Ready);
             heartbeat = Task.Run(async () =>
             {
@@ -60,11 +61,15 @@ sealed class BarcodeSource(ExtensionContext context) : IControlledObservationSou
             return receiver(new(Wire.Id(), DeviceId, Epoch, sourceEventId, ++sequence, admissionId, kind, codes, quantity, DateTimeOffset.UtcNow));
         }
     }
-    public async Task StopAsync(CancellationToken token)
+    public Task StopAsync(CancellationToken token)
+    { lock (gate) return termination ??= StopCore(); }
+    async Task StopCore()
     {
         Task? running;
         lock (gate) { receiver = null; stop?.Cancel(); running = heartbeat; }
-        if (running is not null) await running.WaitAsync(token).ConfigureAwait(false);
+        if (running is not null) await running.ConfigureAwait(false);
+        var delay = int.Parse(context.Parameters.GetValueOrDefault("fault.stop-delay-ms", "0"), System.Globalization.CultureInfo.InvariantCulture);
+        if (delay > 0) await Task.Delay(delay).ConfigureAwait(false); // Explicit synthetic unterminated adapter, never a production timeout policy.
         lock (gate) { Confirm(DeviceHealth.Stopped); confirm = null; heartbeat = null; stop?.Dispose(); stop = null; }
     }
     public async ValueTask DisposeAsync() => await StopAsync(CancellationToken.None).ConfigureAwait(false);

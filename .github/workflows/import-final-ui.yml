@@ -30,7 +30,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/ui docs/INDEX.md docs/manifest.json docs/manifest.sha256 AGENTS.md
+          git add docs/ui docs/INDEX.md docs/manifest.json docs/manifest.sha256 docs/baseline/PUBLICATION.md docs/baseline/MISSING.md AGENTS.md
           git diff --cached --check
           git commit -m 'docs: publish complete final UI sources, editable boards and rendered states'
           git push origin HEAD:docs/final-ui-assets-20261016

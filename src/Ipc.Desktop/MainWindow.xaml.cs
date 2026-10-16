@@ -133,8 +133,10 @@ public partial class MainWindow : Window
     }
     async void AlarmSelected(object sender, SelectionChangedEventArgs e)
     {
-        if ((sender as DataGrid)?.SelectedItem is not Alarm alarm || alarm.OwnerId is null || Runtime.Application is null) return;
-        selectedAlarm = alarm;
+        selectedAlarm = (sender as DataGrid)?.SelectedItem as Alarm;
+        if (selectedAlarm is not Alarm alarm) return;
+        RequestIdBox.Text = "";
+        if (alarm.OwnerId is null || Runtime.Application is null) { model.LastResult = "来源诊断：" + alarm.Source + " / " + alarm.Scope + " / " + alarm.Code; return; }
         var details = await Runtime.Application.DetailsAsync(alarm.OwnerId);
         if (selectedAlarm?.Id != alarm.Id) return;
         RequestIdBox.Text = details.FirstOrDefault(x => x.Request.Status == RequestStatus.Unknown)?.Request.Id ?? (alarm.Scope == "request" ? alarm.OwnerId : "");

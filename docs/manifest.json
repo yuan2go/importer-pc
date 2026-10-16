@@ -1,18 +1,18 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-ENGINEERING-CLOSURE-07",
+  "work_package": "WP-IPC-MAIN-REVIEW-03",
   "created_date": "2026-10-16",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/wp-ipc-engineering-closure-07",
+  "branch": "codex/wp-ipc-main-review-03",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
-  "framework_design_state": "REFERENCE_IMPLEMENTED_ENGINEERING_CLOSURE_UNVERIFIED_WINDOWS_NOT_RUN",
+  "framework_design_state": "REFERENCE_STATIC_REVIEW_TWO_ENGINEERING_GAPS_ALL_RUNTIME_NOT_RUN",
   "previous_manifest": {
-    "commit": "6d4063ec54e8167c8710e46befbe66f8b688ef08",
+    "commit": "677a5adeef277adb4c6dd742749f06d02b01c2a7",
     "path": "docs/manifest.json",
-    "git_blob": "9ea99ee3499b3ae453821fb169dd02a107491bc4",
-    "meaning": "Merged PR #5 static review baseline; original design approvals, RV issues and historical verification records retained."
+    "git_blob": "be089454be374ff2793ff0cca188efb32cc65264",
+    "meaning": "Merged PR #6 implementation-time manifest retained; this delivery reviews closure independently and does not rewrite historical approvals or verification."
   },
   "self_verification": {
     "sha256_file": "manifest.sha256",
@@ -104,7 +104,9 @@
     "historical_original": "原字节保留，不作为当前指令",
     "inherited_baseline": "用途/版本/历史来源以previous_manifest相同路径记录为准",
     "implemented_runtime_unverified": "代码已实现，未构建或运行验证，不代表Windows或现场验收",
-    "current_implementation_or_boundary_record": "当前工程实现、运行入口及未验证边界记录"
+    "current_implementation_or_boundary_record": "当前工程实现、运行入口及未验证边界记录",
+    "static_path_complete": "指定整改调用链静态可见且本轮未发现同级缺口；不表示编译/运行/Windows/现场PASS",
+    "partial_engineering_open": "部分实现但仍有可据源码定位的工程缺口，不归因于Windows或SDK环境"
   },
   "files": [
     {
@@ -165,15 +167,15 @@
     },
     {
       "path": "README.md",
-      "sha256": "95c6b8a040d9fe535feaf919fb41500601fba5adf1ec093876465fe9d347ded2",
-      "size_bytes": 2041,
-      "git_blob": "d60401a331fa33cbf3011c968e66389d88931631",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "5a635af57acccfbe47445891639c489283e9395b9d1d05228c0b4c4840d6f251",
+      "size_bytes": 2282,
+      "git_blob": "8840153363b72a824c9865972ce8a3d0b7f94c15",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "1e08b66bcae8d708fc1bec26ee1b376030b0d9df"
+      "previous_git_blob": "d60401a331fa33cbf3011c968e66389d88931631"
     },
     {
       "path": "config/presentation.json",
@@ -221,15 +223,15 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "af3df71b501f58530192f0cfb29345204cb9115b456eecad8879d45860334af5",
-      "size_bytes": 5949,
-      "git_blob": "38a97a5bbfc5f91ca8412409d15654deaae05f72",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "da00b93f26bb394063fffbf89a5687e88548785e9cba06c89e8ce01c0d34daec",
+      "size_bytes": 6589,
+      "git_blob": "7067b69febc910e0df4dc9596e460ad47b5ba49d",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "f8acba4facaf4137ea350e45f722e692d2e65345"
+      "previous_git_blob": "38a97a5bbfc5f91ca8412409d15654deaae05f72"
     },
     {
       "path": "docs/archive/pre-framework-20261016/AGENTS.md.txt",
@@ -356,27 +358,27 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "ea32921391453070070fc99f854bb35e65ba51a248963c2fb0a8f10018b8e4b1",
-      "size_bytes": 15170,
-      "git_blob": "4ea139835ca4a535adabfa761bcec0eb68164acd",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "c28593664a1ba26e077666a49dd5a8c56e1b725a9e8190056d537b621270cfa6",
+      "size_bytes": 15195,
+      "git_blob": "662ef8b443fec0e8623c03aa9354ae061463b528",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "fcbb5723c147d6d848876f10b3540b027d6a46c5"
+      "previous_git_blob": "4ea139835ca4a535adabfa761bcec0eb68164acd"
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "abd7d713c1312502242bcb6abf98f8fa70d7da046e0422f1893dbc14c84dbe05",
-      "size_bytes": 34750,
-      "git_blob": "66c9d7d2e18c3e875301bef391de67c4ac403bb7",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "51d2c4b5ee82b7e0349363b839893844e57845da2081db1cca23194a6c829e5c",
+      "size_bytes": 34918,
+      "git_blob": "1499db825efcb98f76a7140704571f390c669727",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "793a8f679b7746723b4dd7c23ef86c1b1797040e"
+      "previous_git_blob": "66c9d7d2e18c3e875301bef391de67c4ac403bb7"
     },
     {
       "path": "docs/readiness/checks.json",
@@ -458,6 +460,28 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/reviews/main-static-review-03-checks.json",
+      "sha256": "951e0881a69839aedf46d83bc6b9d0ec3270ea240376b50e01c44f53c3e3765e",
+      "size_bytes": 6842,
+      "git_blob": "528c4084056bf872eb45ec051bfbe1df25e96fe3",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/reviews/main-static-review-03.md",
+      "sha256": "4a6462efd1ba75815a053ad023e3fc187535979abdb0e926737945f5327a86c8",
+      "size_bytes": 13813,
+      "git_blob": "b44dee2f8034746f570ee5635d3f640d1dc2c844",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/runtime/alignment-01-checks.json",
       "sha256": "f1220b7cb06b958541e926a980f96a12c724bae272de16f697341ffe735abf76",
       "size_bytes": 8102,
@@ -527,14 +551,15 @@
     },
     {
       "path": "docs/runtime/engineering-closure-07.md",
-      "sha256": "993a003ceff2b98d1df67a4ee472dfd0f6f065b5806c92f06bd5a6de219881f0",
-      "size_bytes": 9709,
-      "git_blob": "b0132b2ee1d892b49ab52ea10d94c3d3da63f31b",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
-      "storage_scope": "public_repository"
+      "sha256": "2828f6047d86d1ef259c2c298bf7281e674312168bb8c404385882fc3ee82a96",
+      "size_bytes": 10062,
+      "git_blob": "f1a1d9bb8ec2c752dc2893541a77df1f7cf0d400",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "b0132b2ee1d892b49ab52ea10d94c3d3da63f31b"
     },
     {
       "path": "docs/runtime/evidence/WP-IPC-RUNTIME-03-win-x64.zip.sha256",
@@ -781,27 +806,27 @@
     },
     {
       "path": "docs/runtime/implementation.md",
-      "sha256": "f78fb0c04f637b2555fed7283e25a5e09133dcf64f3d3137cf852df9f6cf3167",
-      "size_bytes": 5290,
-      "git_blob": "e2143ab8fbee7695d4c707c8e1dd7a58a310bb4b",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "72eff30589227ccd6f619c440885a598d0f5b5f4c09e6db2ed9f53cd745bea49",
+      "size_bytes": 5643,
+      "git_blob": "c9f561759950b87608a57278defda14eb10f9035",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "2e8edf65a47398c7b491318e46d9a742682019f5"
+      "previous_git_blob": "e2143ab8fbee7695d4c707c8e1dd7a58a310bb4b"
     },
     {
       "path": "docs/runtime/operations.md",
-      "sha256": "54a06b1df8939ada207518828abd3ec94e87f7bc857c051c4bc6fed1349c15b6",
-      "size_bytes": 20493,
-      "git_blob": "0ba6375238193b3e32ec6a4d47a597ab6b83b825",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "48f46c8e721c78eb83e15622dd4f6ff8eb4619123add745679b352cedb547e68",
+      "size_bytes": 20903,
+      "git_blob": "6f5e1e449b4d41e130cb823e9833a41d697d5d53",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "9bb1749900ef9560748b7b49ac5c6bddc1647762"
+      "previous_git_blob": "0ba6375238193b3e32ec6a4d47a597ab6b83b825"
     },
     {
       "path": "docs/runtime/publication.md",
@@ -882,27 +907,49 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md",
-      "sha256": "5d1817ce00d72a67d0d5d309670d1c163a0ddd92cbbf8ef665d296f6373df273",
-      "size_bytes": 13081,
-      "git_blob": "9d0980e3dd7b921b6ff535f02bfb671d5ed5dd1c",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "1692473b82c59b8ace21001f4e5c3f145f849da5bf0959ed8075ca239588202b",
+      "size_bytes": 13434,
+      "git_blob": "4fe9015c2c4faed0c3fa6c9bc338abcbcdb4aa05",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "d74ebd2751b80e142001abcd9210bb6b4f735cea"
+      "previous_git_blob": "9d0980e3dd7b921b6ff535f02bfb671d5ed5dd1c"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md",
+      "sha256": "eaa6c36ddce8dc7d27937a797f205d2b439e5f94bdb1372fe4cb0a206cfdd5c6",
+      "size_bytes": 5033,
+      "git_blob": "808cf35e134ecb4b60b044eee729eccf5aecd658",
+      "version": "main-static-review-03",
+      "status": "implementation_planned",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md",
-      "sha256": "de2dfffe33647e2ee7e9da611e6c479c2d97ade0c618e62e6fcfff2965234c45",
-      "size_bytes": 7313,
-      "git_blob": "ad92bf3f0172126f78a39e1fadf4c2cda45f8d9c",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "23ce61767b4e567342acb491fdc658676031c3de47724e75ab605897dc6fcc78",
+      "size_bytes": 7642,
+      "git_blob": "6f7ff492b34f5ef8e51e89d6d616991a5dbf133c",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "42869ab0930a4ebc7c19503664e8c9cc2e99ac9d"
+      "previous_git_blob": "ad92bf3f0172126f78a39e1fadf4c2cda45f8d9c"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md",
+      "sha256": "02106c3d8964907fbe2e2cf2b62e9de71df2c76744fc745c6cac4120ae1198e9",
+      "size_bytes": 5203,
+      "git_blob": "075eb2b2b2eb0e28034a5ed0d3afd88e60e0e11f",
+      "version": "main-static-review-03",
+      "status": "implementation_planned",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/work-packages/WP-IPC-RUNTIME-03-Codex.md",
@@ -940,15 +987,15 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md",
-      "sha256": "a4d36751c2baacb92a46bbdd6784741be0ebb420df4da7f2d1d1d60b8598b765",
-      "size_bytes": 4842,
-      "git_blob": "95c066a9cce48c911250ff39794c79a5aab1139c",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "aba29bffd12bc5ba125a81aa1a257fb2aa20a454cc0ac09c0b729a56bf9dde55",
+      "size_bytes": 5188,
+      "git_blob": "5b7d73015f92a64300d24b9f558cbb5b8bbd3567",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "c23846b261097e940e7a38d529f0cc053d6d4a97"
+      "previous_git_blob": "95c066a9cce48c911250ff39794c79a5aab1139c"
     },
     {
       "path": "global.json",
@@ -1820,6 +1867,8 @@
     "current_remote_status": "read_PR_and_Release_records"
   },
   "followup_work_packages": [
+    "WP-IPC-ENGINEERING-FOLLOWUP-08",
+    "WP-IPC-REFERENCE-VALIDATION-09",
     "WP-IPC-WINDOWS-VALIDATION-06",
     "WP-IPC-INTEGRATION-BOUNDARY-05"
   ],
@@ -1896,5 +1945,43 @@
     "source_commit": "493416f99970d95bb4a4076130de5c28ee33502d",
     "binary_built": false,
     "binary_sha256": null
+  },
+  "next_implementation_work_package": "WP-IPC-ENGINEERING-FOLLOWUP-08",
+  "main_static_review_03": {
+    "entry": "docs/reviews/main-static-review-03.md",
+    "checks": "docs/reviews/main-static-review-03-checks.json",
+    "analysis_base": "677a5adeef277adb4c6dd742749f06d02b01c2a7",
+    "implementation_source": "493416f99970d95bb4a4076130de5c28ee33502d",
+    "prior_pr_6_state_at_review": "MERGED",
+    "static_paths_complete": [
+      "E-01",
+      "E-02",
+      "E-03",
+      "E-04",
+      "E-05",
+      "E-07",
+      "E-08",
+      "E-09"
+    ],
+    "engineering_findings_open": [
+      "E-06",
+      "E-10"
+    ],
+    "standards_findings": 1,
+    "spec_findings": 1,
+    "all_ten_runtime_acceptance": "NOT_RUN_USER_REQUEST",
+    "windows_groups_not_run": 6,
+    "external_blocker_groups": 6,
+    "tests": "NOT_RUN_USER_REQUEST",
+    "build_compile_programs": "NOT_RUN",
+    "document_validator": "NOT_RUN",
+    "publication_and_smoke": "NOT_RUN",
+    "business_code_changed": false,
+    "test_sources_changed": false,
+    "new_binary": false,
+    "historical_d_rv_unchanged": true,
+    "new_packages_execution": "PLANNED_NOT_STARTED",
+    "delivery_pr_state": "PENDING_CREATION",
+    "public_scope": "Generic independent findings and next-stage planning only; restricted originals and assets remain local and unmodified."
   }
 }

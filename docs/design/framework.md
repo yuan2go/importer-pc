@@ -1,6 +1,8 @@
 # 供包工位框架架构与模块设计
 
-当前实施补充：[ENGINEERING-CLOSURE-07](../runtime/engineering-closure-07.md) 已完成10项工程源码整改（源提交493416f），Storage3显式升级、固定Windows账户/机级租约及UI路径以该记录为准。本轮按用户要求不测试，编译/运行/Windows为NOT_RUN、真实能力为BLOCKED；以下原记录保留形成时范围。
+当前独立复核：[MAIN-REVIEW-03](../reviews/main-static-review-03.md)，基准main `677a5ad`（PR #6已合并）。8项指定整改路径静态补齐，E-06/E-10仍有工程缺口；全部运行NOT_RUN，Windows06/真实集成05分别保持NOT_RUN/BLOCKED。后续见工程增量08、参考验证09；下文07/更早记录保留形成时范围。
+
+07形成时实施补充：[ENGINEERING-CLOSURE-07](../runtime/engineering-closure-07.md) 已完成10项工程源码整改（源提交493416f），Storage3显式升级、固定Windows账户/机级租约及UI路径以该记录为准。本轮按用户要求不测试，编译/运行/Windows为NOT_RUN、真实能力为BLOCKED；以下原记录保留形成时范围。
 
 文档：IPC-FRAMEWORK-01 v1.0；整理日期：2026-10-16。分析基准：`39747a8c35b748da71bf9acfd56a9c9812b199b4`。
 
@@ -8,7 +10,7 @@
 
 ## 1. 推荐方案及适用边界
 
-当前增量状态补充：PR #4已合并至main `cc3675f`；[MAIN-REVIEW-02](../reviews/main-static-review-02.md) 为其后的独立静态复核。[工程收敛07](../work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md) 处理剩余实现差距，Windows06/集成边界05分别处理操作验证与真实能力准入。本轮未测试，不修改本文目标设计或历史D/RV结论。
+当前工程阶段：PR #6已合并至main `677a5ad`；03复核确认E-06/E-10尚有剩余工程缺口。后续08/09、Windows06/集成05分别推进，目标架构与历史D/RV结论不变。
 
 采用**单工位模块化单体、显式产品装配、一个业务运行实例、多视图共享、设备/集成端口隔离、本地事务与受控恢复**。基座提供运行机制，不判断拆包、发车、换箱；业务模块决定流程；UI只读状态并发起应用命令；适配器只转换边界协议。默认不引入微服务、分布式消息中间件、万能事件总线、插件市场或工作流引擎。
 

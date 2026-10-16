@@ -1,5 +1,7 @@
 # 运行、发布与运维
 
+当前复核边界：[MAIN-REVIEW-03](../reviews/main-static-review-03.md) 确认E-06旧历史读取权限和E-10最终生效配置/租约集合仍有工程缺口，待08整改。已有机级策略不保证实际设备集合已被正确锁定；旧历史入口不能据新API守卫推定已受控。以下为已实现入口，均未在本轮执行；核心验证09、Windows06和真实集成05分别登记。
+
 当前工程实现与未验证边界见 [ENGINEERING-CLOSURE-07](engineering-closure-07.md)，[执行记录](engineering-closure-07-checks.json)。Windows06/真实集成05继续分开。以下操作入口本轮均未执行；用户要求不测试，也未构建或发布新包。ALIGNMENT/H04结果保留形成时范围。
 
 当前StorageVersion=3、minimum_reader=3；schema1/id2文本保留，追加id3。preflight/backup使用不迁移源库的独立路径；旧format1/2默认启动拒绝，须按07记录显式备份升级。普通Run与升级/回滚均显式选择Release，不使用active-release指针。备份/升级回执和实际新包的操作步骤见07记录；不要从旧发布目录使用旧升级脚本处理新格式。

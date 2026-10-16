@@ -1,6 +1,10 @@
 # 运行、发布与运维
 
-当前增量实现与验证见 [ALIGNMENT-01](alignment-01.md)，Windows待验见[操作清单](alignment-01-windows.md)。H04原证据保留形成时范围。
+当前工程实现与未验证边界见 [ENGINEERING-CLOSURE-07](engineering-closure-07.md)，[执行记录](engineering-closure-07-checks.json)。Windows06/真实集成05继续分开。以下操作入口本轮均未执行；用户要求不测试，也未构建或发布新包。ALIGNMENT/H04结果保留形成时范围。
+
+当前StorageVersion=3、minimum_reader=3；schema1/id2文本保留，追加id3。preflight/backup使用不迁移源库的独立路径；旧format1/2默认启动拒绝，须按07记录显式备份升级。普通Run与升级/回滚均显式选择Release，不使用active-release指针。备份/升级回执和实际新包的操作步骤见07记录；不要从旧发布目录使用旧升级脚本处理新格式。
+
+Windows首次安装需在提升的维护会话执行新包的 `pwsh ./provision-runtime.ps1 -RuntimeAccount 'MACHINE\station-user'`，指定实际运行账户；之后以该账户运行。程序检查ProgramData下维护方拥有的runtime-policy.json、机级leases目录及ACL；缺策略、账户不符或权限不符即拒绝启动业务，不能回退用户级租约。安装脚本本轮NOT_RUN，固定账户/ACL和跨会话行为仍待Windows验证。
 
 本实现是 F-02 独立参考产品。所有设备、身份、数量策略和外部端点为 **SIMULATION**。核心、SQLite 与恢复为真实代码；没有旧现场工程迁移、厂商驱动或真实 WCS。D/RV 的客户与现场状态不改变。
 
@@ -15,7 +19,7 @@ SDK 锁定 `global.json` 的 .NET 10.0.402。NuGet 来源仅 nuget.org；Microso
 dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll .
 ```
 
-核心和夹具可在 macOS/Linux 运行；WPF 只能在 Windows 运行。交叉编译成功不证明桌面运行。单节点 MSBuild 避免本次环境观察到的工作节点提前退出。
+核心和夹具可在 macOS/Linux 运行；WPF 只能在 Windows 运行。交叉编译成功不证明桌面运行。此前构建采用单节点 MSBuild 避免工作节点提前退出；本轮未执行还原或构建。
 
 ## 开始模拟
 
@@ -39,7 +43,7 @@ dotnet src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll --config src/Ip
 
 相同条码前导零保留；无码/多码/非法输入保留观察与拒绝原因，可在同一实体修正读码。待提交草稿可显式处置；Unknown/在途/已接受效果不能靠取消清除。结束检查要求实体位已复位、无待决请求，建立双通道屏障；不足时可以取消或确认当前检查。只有原关闭回执接受才关闭箱，CloseUnknown 保留箱身份与专属请求。
 
-工作台、历史、报警、设备诊断、维护配置、工程控制六个受控页面与两个窗口共用唯一业务实例。布局切换只改展示。全局阻断贯穿页签，输入草稿和详情滚动不随快照重建。启动可加 `--view history --layout compact`，View必须在产品允许名单；布局持久化保留当前View。标准布局按有效区自动双列/单列，紧凑显式单列，内容滚动且主操作固定；小于800×420 DIP有效区显示阻断。确认窗初始焦点在取消、Tab在窗内循环、关闭归还焦点；Enter不触发高风险动作。Windows实际键盘/扫码/DPI/提示声听审仍待验。
+工作台选择当前通道核对；关键字段不能完整显示时阻止供包/计数，收起详情或扩大窗口。非当前通道结果与工位/设备/WCS健康/报警持续可见，具体DPI/触控待验。工作台、历史、报警、设备诊断、维护配置、工程控制六个受控页面与两个窗口共用唯一业务实例。布局切换只改展示。全局阻断贯穿页签，输入草稿和详情滚动不随快照重建。启动可加 `--view history --layout compact`，View必须在产品允许名单；布局持久化保留当前View。当前核对区每次展示一个通道，标准布局的展开通道详情按有效区双列/单列，紧凑详情显式单列；核对区可滚动但关键字段未全部容纳时主操作阻断；小于800×420 DIP有效区显示阻断。确认窗初始焦点在取消、Tab在窗内循环、关闭归还焦点；Enter不触发高风险动作。Windows实际键盘/扫码/DPI/提示声听审仍待验。
 
 ## 设备替换与配置
 
@@ -63,7 +67,7 @@ T1原子保存事实/意图/Outbox；T2记录领取与独立Attempt；T3保存�
 
 ## HARDENING-04 恢复与请求处置
 
-当前加固结果见 [HARDENING-04](hardening-04.md)，旧RUNTIME-03报告保留其形成时证据。
+H04原加固范围与结果见 [HARDENING-04](hardening-04.md)，与RUNTIME-03报告一起保留形成时证据；当前07新增的来源版本、资源清理和维护流程以上方07记录为准。
 
 过载首先关闭源的新输入；在过载之前已接纳的观察继续按业务规则处理和保存，其它许可仍有效。未接纳的观察只保留来源/累计计数等诊断，不承诺逐条持久化。过载标记在实际拒收时同步写入，不再由累计计数定时重写。排空后维护员检查来源与受影响实体；零pending且无未解决运行故障时才能确认过载。UI显示排空/请求/权限禁止原因。确认绑定当前 `OverloadVersion`，新拒收导致版本变化时拒绝旧确认；确认依据和最新来源原因写入SQLite审计后才删除标记。退出不会重建已确认标记；新一轮过载写入新标记，重启重建阻断。普通Resume仍只解除人工暂停。
 
@@ -79,7 +83,7 @@ T2领取为Dispatching；发送前的最终守卫与过载锁串行裁决，并�
 
 活动报警集合与计数只查active=1，不受历史LIMIT影响；已恢复历史独立分页。按原报警ID已读，已读不减少活动计数；恢复匹配对象、来源和代次，新的发生不继承旧已读。请求报警可打开原请求详情及本地终结审计。
 
-没有更改schema1 SQL或迁移校验和，也没有改写旧请求。新版读取原SIMULATION-v1报文/响应；兼容样本来自本次运行的未修改main可执行文件，全部为合成数据。新增JSON状态需要新版解释，**不得用旧EXE直接读取已产生AwaitingDisposition的新库**。升级前保留一致备份；回退旧版只使用升级前兼容备份、新数据根和恢复隔离，重新核对外部账及实体，不把schema号相同解释为任意版本可降级。
+没有更改schema1 SQL或迁移校验和，也没有改写旧请求。新版读取原SIMULATION-v1报文/响应；H04兼容样本来自当时未修改main可执行文件，全部为合成数据；07没有重跑这些样本。新增JSON状态需要新版解释，**不得用旧EXE直接读取已产生AwaitingDisposition的新库**。升级前保留一致备份；回退旧版只使用升级前兼容备份、新数据根和恢复隔离，重新核对外部账及实体，不把schema号相同解释为任意版本可降级。
 
 ## 离线发布与部署
 
@@ -91,7 +95,7 @@ T2领取为Dispatching；发送前的最终守卫与过载锁串行裁决，并�
 ./scripts/publish.ps1 -Mode Production -Output .artifacts/release-production
 ```
 
-生成自包含 win-x64 `app`、Simulation专用 `fixture`、配置/锁/运维脚本、SHA256SUMS和ZIP。离线机器运行不需要 SDK 或联网还原；构建机仍需取得锁定NuGet包。安装目录只读，数据放 `%LOCALAPPDATA%/ImporterPc/data/{Mode}/{StationId}`；跨账户共享需运维显式设置共同数据根和租约根/ACL，当前默认单运行账户。不能随意放网络盘。Production包不带夹具可执行文件。
+生成自包含 win-x64 `app`、Simulation专用 `fixture`、配置/锁/运维脚本、SHA256SUMS和ZIP。离线机器运行不需要 SDK 或联网还原；构建机仍需取得锁定NuGet包。安装目录只读，默认数据放 `%LOCALAPPDATA%/ImporterPc/data/{Mode}/{StationId}`。Windows首版只支持维护策略指定的一个运行账户跨登录会话；机级租约固定在 `%ProgramData%/ImporterPc/leases`，不能通过用户偏好或自选根实现第二个账户运行。首次安装策略后才执行下列命令；安装目录可信分发及数据访问权限另由维护方管理，不能随意放网络盘。Production包不带夹具可执行文件。
 
 在解压目录运行：
 
@@ -112,18 +116,18 @@ T2领取为Dispatching；发送前的最终守卫与过载锁串行裁决，并�
 退出桌面后（离线运维与桌面竞争同一数据租约）：
 
 ```powershell
-./station.ps1 -Action Backup -File 'D:/IpcBackups/station-new.db'
-./station.ps1 -Action Preflight
-./station.ps1 -Action Upgrade -NextRelease 'D:/Ipc/releases/next' -File 'D:/IpcBackups/before-upgrade.db'
+./station.ps1 -Action Backup -Release 'D:/Ipc/releases/next' -File 'D:/IpcBackups/station-new.db'
+./station.ps1 -Action Preflight -Release 'D:/Ipc/releases/next'
+./station.ps1 -Action Upgrade -Release 'D:/Ipc/releases/previous' -NextRelease 'D:/Ipc/releases/next' -File 'D:/IpcBackups/before-upgrade.db' -Receipt 'D:/IpcBackups/before-upgrade.upgrade.json'
 # 指定选中的发布目录运行，不覆盖旧文件：
 ./station.ps1 -Action Run -Release 'D:/Ipc/releases/next'
 # 必须用新的数据根，原库不删除：
-./station.ps1 -Action Rollback -NextRelease 'D:/Ipc/releases/previous' -DataRoot 'D:/Ipc/recovery-new' -File 'D:/IpcBackups/before-upgrade.db'
+./station.ps1 -Action Rollback -NextRelease 'D:/Ipc/releases/previous' -DataRoot 'D:/Ipc/recovery-new' -File 'D:/IpcBackups/before-upgrade.db' -Receipt 'D:/IpcBackups/before-upgrade.upgrade.json'
 ```
 
-升级先要求无活动箱/未决请求/恢复隔离，校验两套发布文件，再备份并更新旁置发布指针。当前存储格式2（schema_history id1+2，原schema1 SQL不变）；新版可前向迁移schema1备份，匹配格式2可恢复，未来格式/迁移拒绝，不声称任意旧EXE兼容新库。回滚/恢复只接受现存一致备份，创建新库并持久设置恢复隔离；备份中的Prepared亦转Unknown，可能已被外部处理，不能自动补发。先比对原外部接收账和实体库存，未决全部有权威结果后维护员带依据解除隔离。真实上游无查询/人工SOP时继续阻塞，不能凭“恢复成功”放货。
+必须使用07新脚本处理旧库，并保持同一DataRoot。升级要求无活动箱/未决请求/占位/恢复隔离，校验两套发布文件后先制作原格式备份和绑定旧/新发布及配置指纹的回执，最后显式迁移；不写发布指针，不自动启动。当前格式3（schema_history id1+2+3，原schema1/id2 SQL不变）；普通启动拒绝隐式升级既有1/2，未知格式/迁移拒绝，不声称任意旧EXE兼容新库。失败保留原文件、备份和回执，先核对实际格式及错误，不把失败等同已回滚。回滚只接受与回执匹配的原格式备份和旧发布/配置；恢复创建新库并持久设置恢复隔离；备份中的Prepared亦转Unknown，可能已被外部处理，不能自动补发。先比对原外部接收账和实体库存，未决全部有权威结果后维护员带依据解除隔离。真实上游无查询/人工SOP时继续阻塞，不能凭“恢复成功”放货。
 
-历史读取自数据库，可按对象/状态/日期片段筛选、分页和查看多请求/多尝试/回执/审计。模拟保留清理仅维护接口 `PruneHistoryAsync(days,evidence)` 或控制台 `prune-history`，至少保留1天，只删除过期已关闭且无未决的完整会话、保留当前会话、请求引用配置和清理墓碑审计；不提供生产默认保留天数。诊断导出仅元数据和所选对象请求身份/哈希/尝试，不含条码、原报文、端点、角色备注和私密路径。DB/备份本身不脱敏，必须由本机访问控制保护，禁止公开Git。
+历史使用类型化查询精确匹配箱/Item/SKU、会话/作业/请求状态、通道和含时区日期范围；可查空箱会话与跨箱关闭链。翻页沿用提交条件与初页父记录上界，既有事实/保留清理仍实时变化；Loading、空、失败/旧结果分别呈现，详情按选择代次隔离迟到结果。模拟保留清理仅维护接口 `PruneHistoryAsync(days,evidence)` 或控制台 `prune-history`，至少保留1天，只删除过期已关闭且无未决的完整会话、保留当前会话、请求引用配置和清理墓碑审计；不提供生产默认保留天数。诊断导出仅元数据和所选对象请求身份/哈希/尝试，不含条码、原报文、端点、角色备注和私密路径。DB/备份本身不脱敏，必须由本机访问控制保护，禁止公开Git。
 
 ## 可选控制台
 
@@ -133,7 +137,7 @@ T2领取为Dispatching；发送前的最终守卫与过载锁串行裁决，并�
 dotnet src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll --config src/Ipc.Product/bin/Debug/net10.0/config --data-root /tmp/ipc-client-data --action serve
 ```
 
-每行一个JSON：`{"Action":"command","Command":{"Id":"唯一命令ID","ExpectedRevision":当前快照版本,"Kind":"Login","Value":"maintenance"}}`。先输入 `snapshot` 取得当前版本。命令/回执由 `Ipc.Supply/Model.cs` 定义；`emit` 输入 Lane/Kind/Codes/Quantity，入场身份由装配生成；`replay` 推进文件；`reconcile` 输入原 RequestId；`review-observations`、`clear-overload` 输入 Evidence。`quit` 受控停止。核心离线 `--action backup|preflight|restore|export` 与Windows脚本同一实现。
+每行一个JSON：`{"Action":"command","Command":{"Id":"唯一命令ID","ExpectedRevision":当前快照版本,"Kind":"Login","Value":"maintenance"}}`。先输入 `snapshot` 取得当前版本。命令/回执由 `Ipc.Supply/Model.cs` 定义；`emit` 输入 Lane/Kind/Codes/Quantity，入场身份由装配生成；`replay` 推进文件；`reconcile` 输入原 RequestId；旧`review-observations`自由文本入口现在拒绝变更；来源核对改用`ReviewObservations`命令，Value为Sources（Code/Scope/Source/SourceEpoch/EvidenceVersion）与Evidence的JSON，绑定原Command.Id/ExpectedRevision。`clear-overload`继续输入Evidence并绑定当前过载版本。`quit` 受控停止。核心离线 `--action backup|preflight|restore|export` 与Windows脚本同一实现。
 
 本机发布/维护冒烟可执行：
 
@@ -149,6 +153,6 @@ python3 scripts/smoke.py --product .artifacts/native-smoke-final --fixture src/I
 
 应用读写由StationDispatcher的单个后台消费者拥有；UI读取不写报警，状态变化/维护脉冲更新报警。投影有独立版本与生成时间，超过3秒/读取失败阻断UI输入，后台命令仍查当前状态。设备健康回调只入队；原观察拒收marker保留H04同步持久性，其文件I/O受磁盘时延影响，真实SDK需单独验证。所有实际SQLite和网络工作均不在UI/设备回调执行。
 
-ReleaseVersion=ALIGNMENT-01、StorageVersion=2、ContractVersion=SIMULATION-v1各自独立；旧EXE因schema_history id2拒绝新库，回退必须旧兼容备份+新根+恢复隔离。桌面内全库备份需要有效维护身份；离线运维使用数据租约和本机账户权限。
+ALIGNMENT-01原版本为Storage2；当前07待构建元数据为ENGINEERING-CLOSURE-07 / Storage3 / SIMULATION-v1，旧EXE因未知id3拒绝当前库，回退必须原格式备份+匹配旧EXE/配置+新根+恢复隔离。桌面内全库备份需要有效维护身份；离线运维使用数据租约和本机账户权限。
 
-仅跑本包受影响验证可执行 `dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --alignment`（含H04）；交付前完整关键回归使用不带筛选参数的命令。Windows执行与截图按alignment-01-windows清单逐项留证。
+`--alignment`仅为原包筛选入口，不能作为07已验结论。07相关过期迁移/格式预期和后续验证落点见工程实施记录；用户明确恢复验证授权后再对齐测试并执行。Windows按Windows06逐项留证，须绑定07实际新包与源提交；本轮全部NOT_RUN。

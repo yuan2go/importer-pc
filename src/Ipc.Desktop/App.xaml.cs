@@ -24,7 +24,26 @@ public partial class App : Application
             await host.StartAsync();
             new MainWindow(host.Services.GetRequiredService<ProductRuntime>(), true).Show();
         }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "启动失败 / NotReady", MessageBoxButton.OK, MessageBoxImage.Error); Shutdown(2); }
+        catch (Exception ex)
+        {
+            Exception failure = ex;
+            try { await StopRuntimeAsync(); }
+            catch (Exception cleanup) { failure = new AggregateException("启动失败且受控清理报告故障", ex, cleanup); }
+            MessageBox.Show(failure.Message, "启动失败 / NotReady", MessageBoxButton.OK, MessageBoxImage.Error); Shutdown(2);
+        }
     }
-    public async Task StopRuntimeAsync() { if (host is not null) { await host.StopAsync().ConfigureAwait(false); host.Dispose(); host = null; } }
+    public async Task StopRuntimeAsync()
+    {
+        var owned = host; if (owned is null) return;
+        var errors = new List<Exception>();
+        try { await owned.StopAsync().ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+        var disposed = false;
+        try { await owned.Services.GetRequiredService<ProductRuntime>().DisposeAsync().ConfigureAwait(false); disposed = true; }
+        catch (Exception ex) { errors.Add(ex); }
+        if (disposed)
+        {
+            try { owned.Dispose(); host = null; } catch (Exception ex) { errors.Add(ex); }
+        }
+        if (errors.Count > 0) throw new AggregateException("停止和资源清理保留故障", errors);
+    }
 }

@@ -1,19 +1,18 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-ARCH-UI-ALIGNMENT-01",
+  "work_package": "WP-IPC-ENGINEERING-CLOSURE-07",
   "created_date": "2026-10-16",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/wp-ipc-arch-ui-alignment-01",
+  "branch": "codex/wp-ipc-engineering-closure-07",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
-  "framework_design_state": "ALIGNMENT_CORE_VERIFIED_WINDOWS_NOT_RUN",
-  "next_implementation_work_package": "WP-IPC-WINDOWS-VALIDATION-06",
+  "framework_design_state": "REFERENCE_IMPLEMENTED_ENGINEERING_CLOSURE_UNVERIFIED_WINDOWS_NOT_RUN",
   "previous_manifest": {
-    "commit": "2b8b35b6025ed87438f27c7c821260f4740befba",
+    "commit": "6d4063ec54e8167c8710e46befbe66f8b688ef08",
     "path": "docs/manifest.json",
-    "git_blob": "7ab6e10420693c0d28bd158e3200d1f9716d56a3",
-    "meaning": "H04 formation-time records retained in Git; current rows identify only authorized generic implementation and new evidence."
+    "git_blob": "9ea99ee3499b3ae453821fb169dd02a107491bc4",
+    "meaning": "Merged PR #5 static review baseline; original design approvals, RV issues and historical verification records retained."
   },
   "self_verification": {
     "sha256_file": "manifest.sha256",
@@ -103,7 +102,9 @@
     "implementation_planned": "下一工作包定义，尚未执行",
     "current_navigation": "当前资料入口及工程约束",
     "historical_original": "原字节保留，不作为当前指令",
-    "inherited_baseline": "用途/版本/历史来源以previous_manifest相同路径记录为准"
+    "inherited_baseline": "用途/版本/历史来源以previous_manifest相同路径记录为准",
+    "implemented_runtime_unverified": "代码已实现，未构建或运行验证，不代表Windows或现场验收",
+    "current_implementation_or_boundary_record": "当前工程实现、运行入口及未验证边界记录"
   },
   "files": [
     {
@@ -168,15 +169,15 @@
     },
     {
       "path": "README.md",
-      "sha256": "11ee36be1afc7a9198ac715b771c561224ad16479043380ed57673236963850c",
-      "size_bytes": 1503,
-      "git_blob": "d7efd51cda9d537fd4c15e1b01eb7c848d685339",
-      "version": "alignment-01",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "95c6b8a040d9fe535feaf919fb41500601fba5adf1ec093876465fe9d347ded2",
+      "size_bytes": 2041,
+      "git_blob": "d60401a331fa33cbf3011c968e66389d88931631",
+      "version": "engineering-closure-07",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "56077a46bea9c84950d6d62474836ee6b72e103b"
+      "previous_git_blob": "1e08b66bcae8d708fc1bec26ee1b376030b0d9df"
     },
     {
       "path": "config/presentation.json",
@@ -224,8 +225,8 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "35c22435eede7cd9047a463d461c1b6149473d7c2091bee204c23a952a703f4d",
-      "size_bytes": 5437,
+      "sha256": "993f7231f14b4c438abd9fd9a3f0385c070bb7d080889b364d89fb8be12749c3",
+      "size_bytes": 6810,
       "git_blob": "0f395600964b40fe5bbee64f8b04623226b02f16",
       "version": "ui-publication-20261016",
       "status": "current_baseline_control",
@@ -371,27 +372,27 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "ea4466c5b326b9bfd560bfa629976baec2247bbcdafdcbc170713ea86b2610cf",
-      "size_bytes": 14433,
-      "git_blob": "849b453d2866ea4deb0956ac465c8d9bd463f29f",
-      "version": "alignment-01",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "ea32921391453070070fc99f854bb35e65ba51a248963c2fb0a8f10018b8e4b1",
+      "size_bytes": 15170,
+      "git_blob": "4ea139835ca4a535adabfa761bcec0eb68164acd",
+      "version": "engineering-closure-07",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "ef69131752c1a1b62d46fe4c6436b135d8cae614"
+      "previous_git_blob": "fcbb5723c147d6d848876f10b3540b027d6a46c5"
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "7f287d236181e5a6580be689094fbf400f909f001c7a735a5755f4e70edb795e",
-      "size_bytes": 33956,
-      "git_blob": "e788efaab3238fce5810e5d4a304ff975fe0e1d9",
-      "version": "alignment-01",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "abd7d713c1312502242bcb6abf98f8fa70d7da046e0422f1893dbc14c84dbe05",
+      "size_bytes": 34750,
+      "git_blob": "66c9d7d2e18c3e875301bef391de67c4ac403bb7",
+      "version": "engineering-closure-07",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "7d803b9b1a41d2b7976dfbbb6d8b21a41777beeb"
+      "previous_git_blob": "793a8f679b7746723b4dd7c23ef86c1b1797040e"
     },
     {
       "path": "docs/readiness/checks.json",
@@ -462,6 +463,17 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/reviews/main-static-review-02.md",
+      "sha256": "288ddb3b8f2006d617ac5b155d6f6f1d6193e3a30a8e1c4d5ad83aae68c0ef69",
+      "size_bytes": 20549,
+      "git_blob": "d520bed1117eb5632b265d34cf3412bd5c97aec8",
+      "version": "main-static-review-02",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Authorized generic static architecture and workstation review, remaining gaps and planned work packages",
+      "source": "User requested latest-main independent static review and next-stage work packages; no tests; no restricted customer originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/runtime/alignment-01-checks.json",
       "sha256": "f1220b7cb06b958541e926a980f96a12c724bae272de16f697341ffe735abf76",
       "size_bytes": 8102,
@@ -517,6 +529,28 @@
       "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
       "storage_scope": "public_repository",
       "previous_git_blob": "1a0cd01e3f8affe05a6ca366fff5639bb3a8de57"
+    },
+    {
+      "path": "docs/runtime/engineering-closure-07-checks.json",
+      "sha256": "f23553458806c38ee305a8ca28c1a3a8041d6d82c24e57e930042a8191482a18",
+      "size_bytes": 5869,
+      "git_blob": "9748d65ade10277f639508b94adfd09a8ff90a24",
+      "version": "engineering-closure-07",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/engineering-closure-07.md",
+      "sha256": "993a003ceff2b98d1df67a4ee472dfd0f6f065b5806c92f06bd5a6de219881f0",
+      "size_bytes": 9709,
+      "git_blob": "b0132b2ee1d892b49ab52ea10d94c3d3da63f31b",
+      "version": "engineering-closure-07",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/runtime/evidence/WP-IPC-RUNTIME-03-win-x64.zip.sha256",
@@ -763,27 +797,27 @@
     },
     {
       "path": "docs/runtime/implementation.md",
-      "sha256": "59b127d686c2dcc3c0ddd19bb302a3d2adb5ed48ac0022bafe4fdfa45a0932be",
-      "size_bytes": 5044,
-      "git_blob": "2e8edf65a47398c7b491318e46d9a742682019f5",
-      "version": "alignment-01",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "f78fb0c04f637b2555fed7283e25a5e09133dcf64f3d3137cf852df9f6cf3167",
+      "size_bytes": 5290,
+      "git_blob": "e2143ab8fbee7695d4c707c8e1dd7a58a310bb4b",
+      "version": "engineering-closure-07",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "5a77e64a1903d0a42223993420eb15ca9c847793"
+      "previous_git_blob": "2e8edf65a47398c7b491318e46d9a742682019f5"
     },
     {
       "path": "docs/runtime/operations.md",
-      "sha256": "c5a2a5c4a7a307b0ebdf1735193a743270da1cfd7444b2ea5c1ba25f8ead738a",
-      "size_bytes": 17750,
-      "git_blob": "b1863c9f253f36e946b773d2645572e0e3ef4767",
-      "version": "alignment-01",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "54a06b1df8939ada207518828abd3ec94e87f7bc857c051c4bc6fed1349c15b6",
+      "size_bytes": 20493,
+      "git_blob": "0ba6375238193b3e32ec6a4d47a597ab6b83b825",
+      "version": "engineering-closure-07",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "a1f3f5329d2979d0f7371ae10727f3f015f5013b"
+      "previous_git_blob": "9bb1749900ef9560748b7b49ac5c6bddc1647762"
     },
     {
       "path": "docs/runtime/publication.md",
@@ -1581,6 +1615,30 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md",
+      "sha256": "5d1817ce00d72a67d0d5d309670d1c163a0ddd92cbbf8ef665d296f6373df273",
+      "size_bytes": 13081,
+      "git_blob": "9d0980e3dd7b921b6ff535f02bfb671d5ed5dd1c",
+      "version": "engineering-closure-07",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "d74ebd2751b80e142001abcd9210bb6b4f735cea"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md",
+      "sha256": "de2dfffe33647e2ee7e9da611e6c479c2d97ade0c618e62e6fcfff2965234c45",
+      "size_bytes": 7313,
+      "git_blob": "ad92bf3f0172126f78a39e1fadf4c2cda45f8d9c",
+      "version": "engineering-closure-07",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "42869ab0930a4ebc7c19503664e8c9cc2e99ac9d"
+    },
+    {
       "path": "docs/work-packages/WP-IPC-RUNTIME-03-Codex.md",
       "sha256": "62858dd687c648adca1ddcef52c303c4a9b9a9c33d313b1f73b71a0dcbed4129",
       "size_bytes": 3451,
@@ -1615,6 +1673,18 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md",
+      "sha256": "a4d36751c2baacb92a46bbdd6784741be0ebb420df4da7f2d1d1d60b8598b765",
+      "size_bytes": 4842,
+      "git_blob": "95c066a9cce48c911250ff39794c79a5aab1139c",
+      "version": "engineering-closure-07",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "c23846b261097e940e7a38d529f0cc053d6d4a97"
+    },
+    {
       "path": "global.json",
       "sha256": "d1bb820bf074027be921b263729d1fba343d34328f0c4b7484d10162287c059e",
       "size_bytes": 55,
@@ -1637,28 +1707,39 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "scripts/provision-runtime.ps1",
+      "sha256": "3403c8645e84020ab6503868349b4a14b2feeef13e357cda2fbb9025d7e5572e",
+      "size_bytes": 5353,
+      "git_blob": "f7b199d1a90d8c54f75485ba7a26c5d068aceb34",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "scripts/publish.ps1",
-      "sha256": "752a2b0158495cde8eac298d83a991485274ae4c961885f7d99b1823493dcdcd",
-      "size_bytes": 2631,
-      "git_blob": "8ca2f6e5664a51723ea472a3e1d987d17aa6e7b6",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "b6ed116dfa24a6dcf3e3f50946a9f1b23a4a3ee41976444de3a37a17f784e8e9",
+      "size_bytes": 2703,
+      "git_blob": "3a675f6f1e710184e7441987756179781bff0293",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "d095cd1251309b8c01aee19c79859ea38a0c03fa"
+      "previous_git_blob": "8ca2f6e5664a51723ea472a3e1d987d17aa6e7b6"
     },
     {
       "path": "scripts/seal.py",
-      "sha256": "5130a26f0b20455a5d4a390d2bd01d56346bb34c3110b6ac2dc20762554e2f7c",
-      "size_bytes": 5015,
-      "git_blob": "1437d138c493168ef06870f63edca5c80ee10277",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "19456a410c567ed126ca1895ae7fe207bebdbc2d61a697c6bb4c343c67e735cf",
+      "size_bytes": 5027,
+      "git_blob": "97d4bf68c7566ef0c39321426dfbaebbc1435ba2",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "ef5fabc9b03aa1bd5bb2699196e454948aad911f"
+      "previous_git_blob": "1437d138c493168ef06870f63edca5c80ee10277"
     },
     {
       "path": "scripts/smoke.py",
@@ -1673,15 +1754,15 @@
     },
     {
       "path": "scripts/station.ps1",
-      "sha256": "26300efdc9bbb78987ee00b91ec71ed2fd25022ed19d81519ba90208801d3b6c",
-      "size_bytes": 3974,
-      "git_blob": "8d34d3da13d63dae1955b48d81d8138805575604",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "63adcf56fbfec056982f43d88ebb6fbba1d0d7ab029ab5d9ad859640d22d3d93",
+      "size_bytes": 7790,
+      "git_blob": "e54e439072fef12099b2172f31f7448a1cc5125d",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "22f0ef264f9872b2486e83c84b06f79c94c49639"
+      "previous_git_blob": "8d34d3da13d63dae1955b48d81d8138805575604"
     },
     {
       "path": "src/Ipc.Adapters/Ipc.Adapters.csproj",
@@ -1708,15 +1789,15 @@
     },
     {
       "path": "src/Ipc.Adapters/ObservationSources.cs",
-      "sha256": "f2e2619210274641c2b499d50988c66a9834a7f225f730a9086a9d224a20bf30",
-      "size_bytes": 3440,
-      "git_blob": "3738d35f1c5dd8884a74240eed4cbe1f4d7b21da",
-      "version": "runtime-1.0",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "sha256": "fb88e857ce2f1a684ee740a7bad863ee12b15710bb3f13758cae43b197bbb329",
+      "size_bytes": 5605,
+      "git_blob": "3eb612e1f78b93eb4aa1de4bf65a55c17d8ecbb1",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "6cedbf49b0831efdb58b4fdc12e20c69d44c4326"
+      "previous_git_blob": "3738d35f1c5dd8884a74240eed4cbe1f4d7b21da"
     },
     {
       "path": "src/Ipc.Adapters/SimulationRequestContract.cs",
@@ -1754,27 +1835,27 @@
     },
     {
       "path": "src/Ipc.Desktop/App.xaml",
-      "sha256": "9de6905787c4c75d94aa7d2dd038d7c67d17b89a445a7d4491f3ea25fce1b839",
-      "size_bytes": 2226,
-      "git_blob": "233874e87c91e32005b85b65dea3474e6d39f1de",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "aff40e595e95310789a9a4e0890e777743913133427d2319dfe70485ddb79217",
+      "size_bytes": 2284,
+      "git_blob": "ef592e5c67a22e3f6c77db7f014f28b77753c759",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "49df11a24e3ebbe0d8668366613dc09af1770387"
+      "previous_git_blob": "233874e87c91e32005b85b65dea3474e6d39f1de"
     },
     {
       "path": "src/Ipc.Desktop/App.xaml.cs",
-      "sha256": "8ef7622c2a7f8d54fead9145c1e1b32e51568ce3c66948323dcfe7c6862b9b93",
-      "size_bytes": 1835,
-      "git_blob": "1fcdc312da344419eb096e6e7a4faf5bc1c305ed",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "e80f4983d02b64083b167f01a910651288ad7092b422dbee69707a4700a8e8b8",
+      "size_bytes": 2636,
+      "git_blob": "b289e66a2a4f02fda352dc840afeb27e0dc3c60d",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "1b419323e9481731901df6ee846867fc1c1b47e0"
+      "previous_git_blob": "1fcdc312da344419eb096e6e7a4faf5bc1c305ed"
     },
     {
       "path": "src/Ipc.Desktop/Confirmation.cs",
@@ -1785,6 +1866,17 @@
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
       "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Desktop/HistoryPresentation.cs",
+      "sha256": "10f5b7ffe755517912389dd1632bdf3d930f029fb1931301d7b97d9984983ac8",
+      "size_bytes": 1863,
+      "git_blob": "1265f580cb077657352b2dc2ca145d8fa8e35edf",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository"
     },
     {
@@ -1801,15 +1893,15 @@
     },
     {
       "path": "src/Ipc.Desktop/LaneControl.xaml",
-      "sha256": "11e3d2270800a8e7ddba0f4f18bee2c768551c7ffc919c58dff77b9fd2864e16",
-      "size_bytes": 2887,
-      "git_blob": "f748e292008ea1885e6681797e418eba82905df0",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "9490279786fe0d17c82f89ebb93371992ad1143a404781e4675926949e4dc111",
+      "size_bytes": 3169,
+      "git_blob": "41158935a3eac894824db85d38e14df914ae4c06",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "3f7980aff88981752c9e5ccd72522eb152a81c59"
+      "previous_git_blob": "f748e292008ea1885e6681797e418eba82905df0"
     },
     {
       "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
@@ -1824,40 +1916,62 @@
       "previous_git_blob": "17a3409b94ce934b4e60812e7699ba89ea57904e"
     },
     {
+      "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+      "sha256": "287890d851444c985a99c4d129b29a33f78010d1dfa6b18c7eec3d426fad5b54",
+      "size_bytes": 14258,
+      "git_blob": "793ce45a65ffd9e8ba24cbb0944344c158bded99",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "src/Ipc.Desktop/MainWindow.xaml",
-      "sha256": "696bc38d269639605592507abdcf2e64ff75f0f11317ac90978fdaef03a9507c",
-      "size_bytes": 19619,
-      "git_blob": "f58d3b9fd79effafc0ed991f2241ef6b1b855eb7",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "ada52f07e30b49644f8de473e5a9c9dcb815cc483dc191609ebcc40116c39131",
+      "size_bytes": 23055,
+      "git_blob": "ad18e66e6b58fc8b26d8db01b1abcdf36d2981b0",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "e94937349bedb329838c4799deb43bd331fa599b"
+      "previous_git_blob": "f58d3b9fd79effafc0ed991f2241ef6b1b855eb7"
     },
     {
       "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
-      "sha256": "185015382fa20bc48881c57ada2a9dfd01d66c8bb3dd7c64ffe0402e2e4aef01",
-      "size_bytes": 40907,
-      "git_blob": "651752aa5433885f1c9a9cdef8997df44156170d",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "043e01d9e4f25eb96278899bca36d150434039b20c27c966bea7bc7af6a1a735",
+      "size_bytes": 40613,
+      "git_blob": "c7a8a4abd06f982a633055ea7831ecacc438eabc",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "70e0aef66d3193fce38348a2706844c5c7e8ad90"
+      "previous_git_blob": "651752aa5433885f1c9a9cdef8997df44156170d"
+    },
+    {
+      "path": "src/Ipc.Desktop/OperatorNotificationPlayer.cs",
+      "sha256": "d85b7581dac18ee1d6ca47cef650ffe0f067503d905e7798a0cae525a5ab89b9",
+      "size_bytes": 1529,
+      "git_blob": "196695e9cac21476099d778c0b33fe7fc7973651",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "storage_scope": "public_repository"
     },
     {
       "path": "src/Ipc.Desktop/ViewModels.cs",
-      "sha256": "ac0d68c4559cdaed18ac745cee2a01303c92933600c1f79563287a4eda3c736a",
-      "size_bytes": 18252,
-      "git_blob": "359f422edcfd2a1798fd28c5aa8ec326cfac306e",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "e51e722e07f75232fb82d1d3109ea9db9516625b8c00fb51b767c4801ebe9097",
+      "size_bytes": 20490,
+      "git_blob": "241d828fa5c8fddd5f4592926b5ce27b5ee783f6",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "8137af7048b06c1fa98a0c775daa0b5e4d94772e"
+      "previous_git_blob": "359f422edcfd2a1798fd28c5aa8ec326cfac306e"
     },
     {
       "path": "src/Ipc.Desktop/ViewRegistry.cs",
@@ -1988,14 +2102,15 @@
     },
     {
       "path": "src/Ipc.Platform/DeviceCapabilities.cs",
-      "sha256": "0ba4a4b5cf88e81f5ea21a3f17f34064c329b1e8d1070f354ff6f7effd761e91",
-      "size_bytes": 926,
-      "git_blob": "01c9605148ebeab3b00308c1af5ed95ca5727ee1",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
-      "storage_scope": "public_repository"
+      "sha256": "189af444f20e34ae9aa27c73fcb4d312769819f36f9d8e75ba815d160f75dff6",
+      "size_bytes": 2346,
+      "git_blob": "97e00fb6217c38458de6cb7b5a5ae7b0eccdc799",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "01c9605148ebeab3b00308c1af5ed95ca5727ee1"
     },
     {
       "path": "src/Ipc.Platform/Ipc.Platform.csproj",
@@ -2010,13 +2125,25 @@
     },
     {
       "path": "src/Ipc.Platform/Lifecycle.cs",
-      "sha256": "7490ee6482f9857797a50d9b0b38693bbc8db88aa2a15ad8ff663cf4859338b9",
-      "size_bytes": 4403,
-      "git_blob": "8ba7e3e0536f1aadb4863edf8268e21d39363405",
-      "version": "runtime-1.0",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "sha256": "531eb8b69b9eefcd31e7b82a63d1bd61d1de3c3b444307305fbe6a654f4f9257",
+      "size_bytes": 7318,
+      "git_blob": "af6f7a93708a530a2aa90363b72263d78341d581",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "8ba7e3e0536f1aadb4863edf8268e21d39363405"
+    },
+    {
+      "path": "src/Ipc.Platform/MachineRuntimePolicy.cs",
+      "sha256": "0fd62e9f456c57e080936dce5e82e826606437cb961b4c2e2d84f465c3ce4e03",
+      "size_bytes": 4172,
+      "git_blob": "956d489031768a093225a6e038aa218c9b2b7152",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository"
     },
     {
@@ -2087,27 +2214,27 @@
     },
     {
       "path": "src/Ipc.Product/ProductRuntime.cs",
-      "sha256": "732276e9467e4d149aa1b15ef4f2b5b43602b6b97b94f1ace85756693d121fcf",
-      "size_bytes": 22988,
-      "git_blob": "6c1d6c910f4729e7ceb7705dbf755dbe06294360",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "487f39251b9d28b9566636a2a618c46f740fd17ae319bf12518d664d2f509201",
+      "size_bytes": 36029,
+      "git_blob": "2465e9e2508d44d7e3d48ca43b3fe9b8b4f9c6e4",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "3def940aa00ad25404fc9e6de44154095ccd3edc"
+      "previous_git_blob": "6c1d6c910f4729e7ceb7705dbf755dbe06294360"
     },
     {
       "path": "src/Ipc.Product/Program.cs",
-      "sha256": "d1332e2cf8f40ecff88441ec0f31e2dd88a605741f3267428a5b932553e91a56",
-      "size_bytes": 4809,
-      "git_blob": "4a7b86751dac9dcfcc2fa1ad8c98b4642a2c1630",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "05fdb2ccdf6155e74f2f7d797cd82ee22a28954c7e8fb551a8fad744df160d31",
+      "size_bytes": 8040,
+      "git_blob": "8fd1a0bf6f5d267d88c529048f831912e3736020",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "ffde775f2d015a8b7e868e8e4d8d33d4efcdb700"
+      "previous_git_blob": "4a7b86751dac9dcfcc2fa1ad8c98b4642a2c1630"
     },
     {
       "path": "src/Ipc.Product/ReferenceProduct.cs",
@@ -2143,6 +2270,17 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "src/Ipc.Supply/HistoryQueries.cs",
+      "sha256": "bc3490354bfe7aef7167c89b43fc384cf2bd95b578ff15ec6a5f78bb96ebfa0e",
+      "size_bytes": 11190,
+      "git_blob": "d23bc3a9c2edbf884bfcf0fd518f0031e5a42dea",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "src/Ipc.Supply/Ipc.Supply.csproj",
       "sha256": "9bace06842bde0daa9a6e73a40c22c25e513425c42ab260f29c3ddd1823aeb85",
       "size_bytes": 277,
@@ -2154,16 +2292,27 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "src/Ipc.Supply/Maintenance.cs",
+      "sha256": "8f2d30a0a81cbfa6d075b76ac3a6d657c448745eb28e543de8a536ee169078e6",
+      "size_bytes": 14355,
+      "git_blob": "366c6d7ed891570d968e6f3b215cd272ba7b6659",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "src/Ipc.Supply/Model.cs",
-      "sha256": "a9535cf03ff97b662b3687c71395f12d8eea8f2c41e1e7179d4cc47886029d5a",
-      "size_bytes": 7575,
-      "git_blob": "c28fb7e24e2b49568fca34b704bd10e8a830d5ca",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "268ab845b56c33ca9ef009c01d03cb30379864d9d47a6e8ef6357628741a0681",
+      "size_bytes": 8814,
+      "git_blob": "452371b2851e5e3f4dbe92d608f8fbb97b06d7ad",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "8a8a63157e244f1f2ee30f570b230c4e14f21040"
+      "previous_git_blob": "c28fb7e24e2b49568fca34b704bd10e8a830d5ca"
     },
     {
       "path": "src/Ipc.Supply/RequestContract.cs",
@@ -2178,27 +2327,38 @@
     },
     {
       "path": "src/Ipc.Supply/StationApplication.cs",
-      "sha256": "91f9c5cb8472df180b38707d0402c515d66f6b8bc658c20b63307714b54c3756",
-      "size_bytes": 56701,
-      "git_blob": "ba1adacc3c5ba36280ff6fa06ae50fd3d471b6e7",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "59d539236b12fc638f19747ac903c5c414eb1eb4cad6deb31d6581e5ca7943da",
+      "size_bytes": 59388,
+      "git_blob": "3a32bc3d9ad89dbcb5c6b99174324a504edbb6fe",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "01d630d64f93ede6f7f7b129d177ac77c6a51136"
+      "previous_git_blob": "ba1adacc3c5ba36280ff6fa06ae50fd3d471b6e7"
+    },
+    {
+      "path": "src/Ipc.Supply/StationClosure.cs",
+      "sha256": "cde0d399dd197edd1bebcb336c24b5a2019472ac61b7630d00c5d0a1c8de0032",
+      "size_bytes": 9583,
+      "git_blob": "f9f6fcfe912f07cf7bfc120987c25e445e2b1847",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "storage_scope": "public_repository"
     },
     {
       "path": "src/Ipc.Supply/Store.cs",
-      "sha256": "1aac569104a52036b464b51f5272fedcd8bcf3beaf62968007e901483871b227",
-      "size_bytes": 21517,
-      "git_blob": "41c3bd24b0dc7ce783ee1533a377b961b2ec9bd2",
-      "version": "alignment-01",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "2d81bbd854c80f30e2cd442e513d35b085be8c4a17d163e1592b9136dda8b761",
+      "size_bytes": 18328,
+      "git_blob": "2384858d4c65156efd34dc65bc0b7a9403a2b79b",
+      "version": "engineering-closure-07",
+      "status": "implemented_runtime_unverified",
+      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
+      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "eed9d4afe3aea3e8469a53f9320ed3b1a4def5ec"
+      "previous_git_blob": "41c3bd24b0dc7ce783ee1533a377b961b2ec9bd2"
     },
     {
       "path": "src/Ipc.Supply/SupplyConfiguration.cs",
@@ -2394,8 +2554,8 @@
     "current_remote_status": "read_PR_and_Release_records"
   },
   "followup_work_packages": [
-    "WP-IPC-INTEGRATION-BOUNDARY-05",
-    "WP-IPC-WINDOWS-VALIDATION-06"
+    "WP-IPC-WINDOWS-VALIDATION-06",
+    "WP-IPC-INTEGRATION-BOUNDARY-05"
   ],
   "hardening_publication": {
     "entry": "docs/runtime/hardening-04.md",
@@ -2419,6 +2579,57 @@
     "storage": 2,
     "contract": "SIMULATION-v1",
     "source_commit": "712446ae262c6b269bd6576ad5c17784a644c7d7"
+  },
+  "main_static_review_02": {
+    "entry": "docs/reviews/main-static-review-02.md",
+    "analysis_base": "cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa",
+    "implementation_source": "712446ae262c6b269bd6576ad5c17784a644c7d7",
+    "engineering_findings_open": 10,
+    "windows_groups_not_run": 6,
+    "external_blocker_groups": 6,
+    "tests": "NOT_RUN_USER_REQUEST",
+    "build": "NOT_RUN",
+    "publication_and_smoke": "NOT_RUN",
+    "document_validator": "NOT_RUN",
+    "business_code_changed": false,
+    "historical_d_rv_unchanged": true,
+    "previous_pr_4_state_at_review": "MERGED",
+    "work_package_execution": "PLANNED_NOT_STARTED",
+    "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
+  },
+  "current_implementation_work_package": "WP-IPC-ENGINEERING-CLOSURE-07",
+  "engineering_closure_07": {
+    "entry": "docs/runtime/engineering-closure-07.md",
+    "checks": "docs/runtime/engineering-closure-07-checks.json",
+    "execution_base": "6d4063ec54e8167c8710e46befbe66f8b688ef08",
+    "source_commit": "493416f99970d95bb4a4076130de5c28ee33502d",
+    "engineering_items_implemented_runtime_unverified": 10,
+    "engineering_acceptance": "NOT_RUN_USER_REQUEST",
+    "windows_groups_not_run": 6,
+    "external_blocker_groups": 6,
+    "tests": "NOT_RUN_USER_REQUEST",
+    "restore_build_compile": "NOT_RUN_USER_REQUEST",
+    "program_fixture_scripts": "NOT_RUN_USER_REQUEST",
+    "publication_and_smoke": "NOT_RUN_USER_REQUEST",
+    "document_validator": "NOT_RUN_USER_REQUEST",
+    "test_sources_modified": false,
+    "binary_generated": false,
+    "historical_d_rv_unchanged": true,
+    "prior_pr_5_state": "MERGED",
+    "implementation_pr_state": "OPEN_AT_CREATION",
+    "public_scope": "Authorized generic code, synthetic semantics and documentation only; no customer originals/assets, private URLs, credentials, production data, SDK or fonts.",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/6",
+    "pr_creation_head": "5e27df93aca167d09d6ab7735299713795248a05",
+    "implementation_pr_merged": false
+  },
+  "engineering_versions": {
+    "planned_release_metadata": "ENGINEERING-CLOSURE-07",
+    "storage": 3,
+    "minimum_reader": 3,
+    "contract": "SIMULATION-v1",
+    "source_commit": "493416f99970d95bb4a4076130de5c28ee33502d",
+    "binary_built": false,
+    "binary_sha256": null
   },
   "ui_design_publication": {
     "version": "SS-UI-VIS-001 v1.1",

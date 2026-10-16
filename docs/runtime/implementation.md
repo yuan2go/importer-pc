@@ -1,5 +1,6 @@
 # WP-IPC-RUNTIME-03 implementation record
 
+当前工程路径与未验证边界见 [ENGINEERING-CLOSURE-07](engineering-closure-07.md)。10项源码整改已实现，Storage3、显式维护和当前UI以07记录为准；本轮未测试/构建/运行，原实施与历史验证不倒写。
 This is the retained RUNTIME-03 implementation record. Current alignment gaps, scope and acceptance: [ARCH-UI-ALIGNMENT-01](../work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md). The completion checks below are formation-time RUNTIME-03 evidence, not acceptance of this new package. Retained hardening changes and evidence: [HARDENING-04](hardening-04.md).
 
 Execution starts at main `89089092ad8b7445071e0c12c9c558dc012a26e5`, after the analysis baseline. No existing C# project was found. This is the independent F-02 reference product, not a migrated site application. The approved framework and work package remain the design authority; historical D/RV and restricted assets are unchanged.

@@ -1,10 +1,14 @@
 # 供包工位框架架构与模块设计
 
+当前实施补充：[ENGINEERING-CLOSURE-07](../runtime/engineering-closure-07.md) 已完成10项工程源码整改（源提交493416f），Storage3显式升级、固定Windows账户/机级租约及UI路径以该记录为准。本轮按用户要求不测试，编译/运行/Windows为NOT_RUN、真实能力为BLOCKED；以下原记录保留形成时范围。
+
 文档：IPC-FRAMEWORK-01 v1.0；整理日期：2026-10-16。分析基准：`39747a8c35b748da71bf9acfd56a9c9812b199b4`。
 
-**本文保留设计形成时的目标定义；RUNTIME-03已加入独立参考实现，当前文件映射与验证见[实施记录](../runtime/implementation.md)及[交付报告](../runtime/delivery.md)。不是客户规则批准、原工程迁移批准或现场放行。** 设计形成时仓库只有资料与归档校验工具。讨论依据、方案取舍及外部事实见 [决策记录](framework-decisions.md)；当前增量实施与验收见 [ARCH-UI-ALIGNMENT-01](../work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)；历史实施范围与验收以 [WP-IPC-RUNTIME-03](../work-packages/WP-IPC-RUNTIME-03.md) 为准。D 系列仍由 [决策确认包](../readiness/decision-pack.md) 管理，RV 状态仍以 [评审状态](../reviews/STATUS.md) 为准。
+**本文保留设计形成时的目标定义；RUNTIME-03已加入独立参考实现，当前文件映射与验证见[实施记录](../runtime/implementation.md)及[交付报告](../runtime/delivery.md)。不是客户规则批准、原工程迁移批准或现场放行。** 设计形成时仓库只有资料与归档校验工具。讨论依据、方案取舍及外部事实见 [决策记录](framework-decisions.md)；当前07增量及未验证边界见上方07记录，上一包实施与验收见 [ARCH-UI-ALIGNMENT-01](../work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)；历史实施范围与验收以 [WP-IPC-RUNTIME-03](../work-packages/WP-IPC-RUNTIME-03.md) 为准。D 系列仍由 [决策确认包](../readiness/decision-pack.md) 管理，RV 状态仍以 [评审状态](../reviews/STATUS.md) 为准。
 
 ## 1. 推荐方案及适用边界
+
+当前增量状态补充：PR #4已合并至main `cc3675f`；[MAIN-REVIEW-02](../reviews/main-static-review-02.md) 为其后的独立静态复核。[工程收敛07](../work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md) 处理剩余实现差距，Windows06/集成边界05分别处理操作验证与真实能力准入。本轮未测试，不修改本文目标设计或历史D/RV结论。
 
 采用**单工位模块化单体、显式产品装配、一个业务运行实例、多视图共享、设备/集成端口隔离、本地事务与受控恢复**。基座提供运行机制，不判断拆包、发车、换箱；业务模块决定流程；UI只读状态并发起应用命令；适配器只转换边界协议。默认不引入微服务、分布式消息中间件、万能事件总线、插件市场或工作流引擎。
 

@@ -1,10 +1,14 @@
 # 框架决策、讨论来源与适用范围
 
+当前实施补充：[ENGINEERING-CLOSURE-07](../runtime/engineering-closure-07.md) 已完成10项工程源码整改（源提交493416f），Storage3显式升级、固定Windows账户/机级租约及UI路径以该记录为准。本轮按用户要求不测试，编译/运行/Windows为NOT_RUN、真实能力为BLOCKED；以下原记录保留形成时范围。
+
 IPC-FRAMEWORK-ADR v1.0；整理日期2026-10-16；分析基准 `39747a8c35b748da71bf9acfd56a9c9812b199b4`。本轮任务为WP-IPC-FRAMEWORK-01（设计与文档），下一实施工作包为WP-IPC-RUNTIME-03。
 
 “采用”在本文表示**本轮推荐设计已作取舍，可作为新参考产品的实施依据**，不表示用户历史上已逐项批准，也不表示客户、设备或现场批准。设计形成时框架源码未实现；RUNTIME-03当前实现见[实施记录](../runtime/implementation.md)及[交付报告](../runtime/delivery.md)，下表基准实现列保留形成时事实。外部D项的批准状态不因实现变化。
 
 当前增量执行采用 [ARCH-UI-ALIGNMENT-01](../work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)，实际路径/验证边界见 [ALIGNMENT-01](../runtime/alignment-01.md)；上文“本轮/下一”及下表基准列均为FRAMEWORK形成时记录。
+
+后续状态：ALIGNMENT-01已随PR #4合并到main `cc3675f`。[MAIN-REVIEW-02](../reviews/main-static-review-02.md) 记录其后的剩余静态缺口；下一工程范围为 [ENGINEERING-CLOSURE-07](../work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)，Windows06/集成边界05分项处理。此次不改变F/D决策、不执行测试，也不倒写以下形成时记录。
 
 ## 1. 对话与文件证据范围
 

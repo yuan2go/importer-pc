@@ -7,10 +7,11 @@
    <TextBlock Text="{Binding Task}" Margin="0,10" FontSize="15" LineHeight="23"/>
    <UniformGrid Columns="3" Margin="0,8"><StackPanel><TextBlock Text="包装量" Foreground="{StaticResource Muted}"/><TextBlock Text="{Binding Package}" FontSize="28"/></StackPanel><StackPanel><TextBlock Text="需求快照" Foreground="{StaticResource Muted}"/><TextBlock Text="{Binding Remaining}" FontSize="28"/></StackPanel><StackPanel><TextBlock Text="供给 / 保留量" Foreground="{StaticResource Muted}"/><TextBlock Text="{Binding Supply}" FontSize="28" FontWeight="SemiBold"/></StackPanel></UniformGrid>
    <Border Background="#F6F8FA" Padding="10" Margin="0,8"><StackPanel><TextBlock Text="{Binding Reason}"/><TextBlock Text="{Binding Next}" Foreground="{StaticResource Accent}" Margin="0,6,0,0"/><TextBlock Text="{Binding Occupancy}" Foreground="{StaticResource Muted}" Margin="0,6,0,0"/></StackPanel></Border>
-   <TextBlock Text="{Binding SplitProgress}" FontSize="18" FontWeight="SemiBold" Margin="0,8"/>
-   <WrapPanel><TextBox Text="{Binding RetainedDraft,UpdateSourceTrigger=PropertyChanged}" Width="200" AutomationProperties.Name="保留件独立身份" KeyDown="RetainedKeyDown"/><Button Content="计入保留件" Click="ScanClick" IsEnabled="{Binding CanScan}" ToolTip="{Binding DisabledReason}" ToolTipService.ShowOnDisabled="True"/><Button Content="清空计数" Click="ClearClick" IsEnabled="{Binding CanClear}" ToolTip="{Binding DisabledReason}" ToolTipService.ShowOnDisabled="True"/></WrapPanel>
+   <TextBlock Visibility="{Binding SplitVisible,Converter={StaticResource VisibleWhenTrue}}" Text="{Binding SplitProgress}" FontSize="18" FontWeight="SemiBold" Margin="0,8"/>
+   <WrapPanel Visibility="{Binding SplitVisible,Converter={StaticResource VisibleWhenTrue}}"><TextBox Text="{Binding RetainedDraft,UpdateSourceTrigger=PropertyChanged}" Width="200" AutomationProperties.Name="保留件独立身份" KeyDown="RetainedKeyDown"/><Button Content="计入保留件" Click="ScanClick" IsEnabled="{Binding CanScan}" ToolTip="{Binding DisabledReason}" ToolTipService.ShowOnDisabled="True"/><Button Content="清空计数" Click="ClearClick" IsEnabled="{Binding CanClear}" ToolTip="{Binding DisabledReason}" ToolTipService.ShowOnDisabled="True"/></WrapPanel>
    <WrapPanel><Button Content="处置未提交草稿" Click="CancelClick" IsEnabled="{Binding CanCancel}" ToolTip="{Binding DisabledReason}" ToolTipService.ShowOnDisabled="True"/><Button Content="作业详情" Click="DetailClick"/></WrapPanel>
    <TextBlock Text="{Binding DisabledReason}" Foreground="{StaticResource Muted}" Margin="0,6"/>
+   <Expander Header="历史证实结果（不授权本次输入）"><TextBlock Text="{Binding PreviousResult}"/></Expander>
    <Expander Header="语义来源与版本"><TextBlock Text="{Binding Provenance}" FontSize="12" Foreground="{StaticResource Muted}" Margin="0,8"/></Expander>
   </StackPanel>
  </Border>

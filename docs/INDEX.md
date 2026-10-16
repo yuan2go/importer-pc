@@ -1,24 +1,27 @@
 # 统一资料与实施入口
 
-更新日期：2026-10-16；本轮实施任务：WP-IPC-ARCH-UI-ALIGNMENT-01；历史分析基准 `39747a8c35b748da71bf9acfd56a9c9812b199b4`。
+更新日期：2026-10-16；当前复核：WP-IPC-MAIN-REVIEW-02；分析基准 `cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa`（PR #4已合并）。本轮仅静态复核和工作包文档，用户要求不测试。
 
 ## 当前结论
 
-当前工作包实施和验证见 [ALIGNMENT-01](runtime/alignment-01.md)、[检查记录](runtime/alignment-01-checks.json)、[Windows待验](runtime/alignment-01-windows.md)。
+最新独立判断见 [MAIN-REVIEW-02](reviews/main-static-review-02.md)：10项工程缺口、6组Windows待验、6组真实接口/规则/许可阻塞分别登记；本轮运行验证全部NOT_RUN。下一步先做 [ENGINEERING-CLOSURE-07](work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)，[Windows验证06](work-packages/WP-IPC-WINDOWS-VALIDATION-06.md) 与 [集成边界05](work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md) 分项推进；三个包均未执行，不构成生产放行。
+
+现有参考实现及上一包验证见 [ALIGNMENT-01](runtime/alignment-01.md)、[检查记录](runtime/alignment-01-checks.json)、[Windows待验](runtime/alignment-01-windows.md)。原检查中的PR OPEN和PASS保留形成时快照；PR #4当前已MERGED，历史运行结果未在本轮重跑。
 
 **独立参考实现已加入。** RUNTIME-03从当时main `8908909` 开始，已建设工位基座、供包应用、多UI、SQLite/Outbox及独立loopback夹具；不是旧现场迁移。[运行/发布](runtime/operations.md)、[实施映射](runtime/implementation.md)、[实际验证与交付](runtime/delivery.md) 是当前实现入口。Windows运行与真实接口/现场状态分项报告，不以核心PASS替代。
 
 完整客户材料归档仍为 **PUBLIC_SUBSET_ONLY**；本轮只公开新的通用框架和实施规范，不上传受限原稿。开发就绪仍有条件：参考闭环可实施，真实业务规则、旧工程迁移、SDK/WCS和实体动作分别受对应证据约束。17个RV不因架构入库自动关闭。
 
-当前实施范围与验收见 [ARCH-UI-ALIGNMENT-01](work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)。本包继承 H04 并修复装配、数据链、UI与后台隔离缺口，目标尚须逐项验证。原加固范围与实施基准见 [HARDENING-04](work-packages/WP-IPC-RUNTIME-HARDENING-04.md)。RUNTIME-03交付结果保留为历史验证，不代表本轮结果。
+上一包实施范围与验收见 [ARCH-UI-ALIGNMENT-01](work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)，其继承H04的装配、数据链、UI与后台隔离实现继续保留；当前剩余差距以MAIN-REVIEW-02为准。原加固范围与实施基准见 [HARDENING-04](work-packages/WP-IPC-RUNTIME-HARDENING-04.md)。RUNTIME-03交付结果保留为历史验证，不代表本轮结果。
 
 ## 当前必读
 
 1. [框架架构与模块设计](design/framework.md)：职责、依赖、装配、数据/状态、配置、设备/外部边界、UI与部署。
 2. [框架决策与讨论依据](design/framework-decisions.md)：用户设想和GPT建议分别登记；取舍、新参考技术路线、公开范围和外部依据。
-3. [WP-IPC-RUNTIME-03](work-packages/WP-IPC-RUNTIME-03.md)：设计—实现差距、S0～S5实施范围、局部阻塞和AC-01～11验收。
-4. [可直接执行的Codex提示词](work-packages/WP-IPC-RUNTIME-03-Codex.md)：从最新main读取真实文档后实施，在开发分支创建PR。
-5. [本轮资料检查](design/framework-checks.json)、[基线变更记录](baseline/CHANGELOG.md)、[当前manifest](manifest.json)。
+   当前剩余差距和后续执行先读 [独立静态复核](reviews/main-static-review-02.md) 及 [工程收敛07](work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)；Windows/真实接口分别读06/05，不把未验证功能标为已验收。
+3. [WP-IPC-RUNTIME-03](work-packages/WP-IPC-RUNTIME-03.md)：历史S0～S5实施范围、局部阻塞和AC-01～11验收；不要把形成时“无实现”当当前事实。
+4. [RUNTIME-03历史Codex提示词](work-packages/WP-IPC-RUNTIME-03-Codex.md)：保留原授权和执行上下文；下一阶段用07/06/05，不重新执行一遍RUNTIME-03。
+5. [FRAMEWORK形成时资料检查](design/framework-checks.json)、[基线变更记录](baseline/CHANGELOG.md)、[当前manifest](manifest.json)。本次静态复核未运行资料验证器。
 
 F系列为本轮架构推荐，不等于客户D项批准。C#/.NET10/WPF/SQLite用于无旧工程时的新参考产品，不是已有工程已采用此技术的声明。代码实施中取得不同事实时按ADR记录修订，不凭界面载体推断技术栈。
 

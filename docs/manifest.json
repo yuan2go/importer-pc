@@ -1,19 +1,19 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-ARCH-UI-ALIGNMENT-01",
+  "work_package": "WP-IPC-MAIN-REVIEW-02",
   "created_date": "2026-10-16",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/wp-ipc-arch-ui-alignment-01",
+  "branch": "codex/wp-ipc-main-review-02",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
-  "framework_design_state": "ALIGNMENT_CORE_VERIFIED_WINDOWS_NOT_RUN",
-  "next_implementation_work_package": "WP-IPC-WINDOWS-VALIDATION-06",
+  "framework_design_state": "REFERENCE_IMPLEMENTED_STATIC_GAPS_OPEN_WINDOWS_NOT_RUN",
+  "next_implementation_work_package": "WP-IPC-ENGINEERING-CLOSURE-07",
   "previous_manifest": {
-    "commit": "2b8b35b6025ed87438f27c7c821260f4740befba",
+    "commit": "cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa",
     "path": "docs/manifest.json",
-    "git_blob": "7ab6e10420693c0d28bd158e3200d1f9716d56a3",
-    "meaning": "H04 formation-time records retained in Git; current rows identify only authorized generic implementation and new evidence."
+    "git_blob": "ddf04eef6c17ddca707f9e6c3a927357be83f939",
+    "meaning": "Previous implementation and validation records retained; this delivery is static review and planned work packages only."
   },
   "self_verification": {
     "sha256_file": "manifest.sha256",
@@ -164,15 +164,15 @@
     },
     {
       "path": "README.md",
-      "sha256": "11ee36be1afc7a9198ac715b771c561224ad16479043380ed57673236963850c",
-      "size_bytes": 1503,
-      "git_blob": "d7efd51cda9d537fd4c15e1b01eb7c848d685339",
-      "version": "alignment-01",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "39eaabd35c32eb56077cde873cd8f6b8109116a9476dc112b8655629081d3178",
+      "size_bytes": 1908,
+      "git_blob": "1e08b66bcae8d708fc1bec26ee1b376030b0d9df",
+      "version": "main-static-review-02",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Authorized generic static architecture and workstation review, remaining gaps and planned work packages",
+      "source": "User requested latest-main independent static review and next-stage work packages; no tests; no restricted customer originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "56077a46bea9c84950d6d62474836ee6b72e103b"
+      "previous_git_blob": "d7efd51cda9d537fd4c15e1b01eb7c848d685339"
     },
     {
       "path": "config/presentation.json",
@@ -220,15 +220,15 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "3533ac35545382cd9fe906c71dbd9a136387c8d9f4d52aa35adb6d7630583207",
-      "size_bytes": 4576,
-      "git_blob": "0f395600964b40fe5bbee64f8b04623226b02f16",
-      "version": "alignment-01",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "7aec806512314ebe7ce9234155a2fb504353d7aa0c15bf8ac9eabc0027e2be44",
+      "size_bytes": 5638,
+      "git_blob": "f8acba4facaf4137ea350e45f722e692d2e65345",
+      "version": "main-static-review-02",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Authorized generic static architecture and workstation review, remaining gaps and planned work packages",
+      "source": "User requested latest-main independent static review and next-stage work packages; no tests; no restricted customer originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "44026ad1c650f105b22694fbae2cfb853aceed89"
+      "previous_git_blob": "0f395600964b40fe5bbee64f8b04623226b02f16"
     },
     {
       "path": "docs/archive/pre-framework-20261016/AGENTS.md.txt",
@@ -355,27 +355,27 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "ea4466c5b326b9bfd560bfa629976baec2247bbcdafdcbc170713ea86b2610cf",
-      "size_bytes": 14433,
-      "git_blob": "849b453d2866ea4deb0956ac465c8d9bd463f29f",
-      "version": "alignment-01",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "0e0f71b4a42e2ccdf02a90260fbe091d5bdd68dfb5e29d5d27b2ac5f819736b3",
+      "size_bytes": 14809,
+      "git_blob": "fcbb5723c147d6d848876f10b3540b027d6a46c5",
+      "version": "main-static-review-02",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Authorized generic static architecture and workstation review, remaining gaps and planned work packages",
+      "source": "User requested latest-main independent static review and next-stage work packages; no tests; no restricted customer originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "ef69131752c1a1b62d46fe4c6436b135d8cae614"
+      "previous_git_blob": "849b453d2866ea4deb0956ac465c8d9bd463f29f"
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "7f287d236181e5a6580be689094fbf400f909f001c7a735a5755f4e70edb795e",
-      "size_bytes": 33956,
-      "git_blob": "e788efaab3238fce5810e5d4a304ff975fe0e1d9",
-      "version": "alignment-01",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "fd2f14646ea44934b6d25f21b8f1c15cf8b796953b1039ad1ffc559702218642",
+      "size_bytes": 34340,
+      "git_blob": "793a8f679b7746723b4dd7c23ef86c1b1797040e",
+      "version": "main-static-review-02",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Authorized generic static architecture and workstation review, remaining gaps and planned work packages",
+      "source": "User requested latest-main independent static review and next-stage work packages; no tests; no restricted customer originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "7d803b9b1a41d2b7976dfbbb6d8b21a41777beeb"
+      "previous_git_blob": "e788efaab3238fce5810e5d4a304ff975fe0e1d9"
     },
     {
       "path": "docs/readiness/checks.json",
@@ -443,6 +443,17 @@
       "status": "inherited_baseline",
       "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
       "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/reviews/issues.json",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/reviews/main-static-review-02.md",
+      "sha256": "288ddb3b8f2006d617ac5b155d6f6f1d6193e3a30a8e1c4d5ad83aae68c0ef69",
+      "size_bytes": 20549,
+      "git_blob": "d520bed1117eb5632b265d34cf3412bd5c97aec8",
+      "version": "main-static-review-02",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Authorized generic static architecture and workstation review, remaining gaps and planned work packages",
+      "source": "User requested latest-main independent static review and next-stage work packages; no tests; no restricted customer originals or assets",
       "storage_scope": "public_repository"
     },
     {
@@ -759,15 +770,15 @@
     },
     {
       "path": "docs/runtime/operations.md",
-      "sha256": "c5a2a5c4a7a307b0ebdf1735193a743270da1cfd7444b2ea5c1ba25f8ead738a",
-      "size_bytes": 17750,
-      "git_blob": "b1863c9f253f36e946b773d2645572e0e3ef4767",
-      "version": "alignment-01",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
-      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "sha256": "75cebd8a7bdc328d50fff94a08f1f1047f5e03920619b0ec146944f6f174951e",
+      "size_bytes": 18399,
+      "git_blob": "9bb1749900ef9560748b7b49ac5c6bddc1647762",
+      "version": "main-static-review-02",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Authorized generic static architecture and workstation review, remaining gaps and planned work packages",
+      "source": "User requested latest-main independent static review and next-stage work packages; no tests; no restricted customer originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "a1f3f5329d2979d0f7371ae10727f3f015f5013b"
+      "previous_git_blob": "b1863c9f253f36e946b773d2645572e0e3ef4767"
     },
     {
       "path": "docs/runtime/publication.md",
@@ -847,6 +858,28 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md",
+      "sha256": "122796f7dc611c9e16945dbc6de6999f0911e7e13f3cc6fae9df2036adbe6f91",
+      "size_bytes": 12389,
+      "git_blob": "d74ebd2751b80e142001abcd9210bb6b4f735cea",
+      "version": "main-static-review-02",
+      "status": "planned_work_package",
+      "purpose": "Authorized generic static architecture and workstation review, remaining gaps and planned work packages",
+      "source": "User requested latest-main independent static review and next-stage work packages; no tests; no restricted customer originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md",
+      "sha256": "bf0d68fbdb641fded87699de07712eb75a98f213e0c5934a42a701f797a7d0f2",
+      "size_bytes": 7090,
+      "git_blob": "42869ab0930a4ebc7c19503664e8c9cc2e99ac9d",
+      "version": "main-static-review-02",
+      "status": "planned_work_package",
+      "purpose": "Authorized generic static architecture and workstation review, remaining gaps and planned work packages",
+      "source": "User requested latest-main independent static review and next-stage work packages; no tests; no restricted customer originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/work-packages/WP-IPC-RUNTIME-03-Codex.md",
       "sha256": "62858dd687c648adca1ddcef52c303c4a9b9a9c33d313b1f73b71a0dcbed4129",
       "size_bytes": 3451,
@@ -878,6 +911,17 @@
       "status": "current_navigation_or_verification",
       "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
       "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; no restricted customer originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md",
+      "sha256": "0241437cf892dd11446a16c92c20d42f326db951d89430885976d3c1015b0c46",
+      "size_bytes": 4619,
+      "git_blob": "c23846b261097e940e7a38d529f0cc053d6d4a97",
+      "version": "main-static-review-02",
+      "status": "planned_work_package",
+      "purpose": "Authorized generic static architecture and workstation review, remaining gaps and planned work packages",
+      "source": "User requested latest-main independent static review and next-stage work packages; no tests; no restricted customer originals or assets",
       "storage_scope": "public_repository"
     },
     {
@@ -1660,8 +1704,9 @@
     "current_remote_status": "read_PR_and_Release_records"
   },
   "followup_work_packages": [
-    "WP-IPC-INTEGRATION-BOUNDARY-05",
-    "WP-IPC-WINDOWS-VALIDATION-06"
+    "WP-IPC-ENGINEERING-CLOSURE-07",
+    "WP-IPC-WINDOWS-VALIDATION-06",
+    "WP-IPC-INTEGRATION-BOUNDARY-05"
   ],
   "hardening_publication": {
     "entry": "docs/runtime/hardening-04.md",
@@ -1685,5 +1730,22 @@
     "storage": 2,
     "contract": "SIMULATION-v1",
     "source_commit": "712446ae262c6b269bd6576ad5c17784a644c7d7"
+  },
+  "main_static_review_02": {
+    "entry": "docs/reviews/main-static-review-02.md",
+    "analysis_base": "cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa",
+    "implementation_source": "712446ae262c6b269bd6576ad5c17784a644c7d7",
+    "engineering_findings_open": 10,
+    "windows_groups_not_run": 6,
+    "external_blocker_groups": 6,
+    "tests": "NOT_RUN_USER_REQUEST",
+    "build": "NOT_RUN",
+    "publication_and_smoke": "NOT_RUN",
+    "document_validator": "NOT_RUN",
+    "business_code_changed": false,
+    "historical_d_rv_unchanged": true,
+    "previous_pr_4_state_at_review": "MERGED",
+    "work_package_execution": "PLANNED_NOT_STARTED",
+    "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   }
 }

@@ -6,6 +6,8 @@ IPC-FRAMEWORK-ADR v1.0；整理日期2026-10-16；分析基准 `39747a8c35b748da
 
 当前增量执行采用 [ARCH-UI-ALIGNMENT-01](../work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)，实际路径/验证边界见 [ALIGNMENT-01](../runtime/alignment-01.md)；上文“本轮/下一”及下表基准列均为FRAMEWORK形成时记录。
 
+后续状态：ALIGNMENT-01已随PR #4合并到main `cc3675f`。[MAIN-REVIEW-02](../reviews/main-static-review-02.md) 记录其后的剩余静态缺口；下一工程范围为 [ENGINEERING-CLOSURE-07](../work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)，Windows06/集成边界05分项处理。此次不改变F/D决策、不执行测试，也不倒写以下形成时记录。
+
 ## 1. 对话与文件证据范围
 
 实际可见本次对话中的用户原始框架设想、随后GPT的完整架构建议、归档任务及两次评审的可见交付和本次收敛要求。没有读取其他不可见会话。框架两条消息没有可核验的独立发送时间戳，因此按会话顺序定位，**不将本轮整理日期伪称原消息日期**。不会把用户画像或记忆摘要当作全文证据。

@@ -4,7 +4,7 @@
 
 当前工程增量见 [07交付记录](../runtime/engineering-closure-07.md)，代码源提交493416f；没有新二进制或运行结果。本包原NOT_RUN/BLOCKED边界继续有效，不因工程实现而自动关闭。
 
-最新复核为[MAIN-REVIEW-03](../reviews/main-static-review-03.md)，基准main `677a5ad`；E-06/E-10继续由[工程增量08](WP-IPC-ENGINEERING-FOLLOWUP-08.md)整改，核心证据及同版包由[参考验证09](WP-IPC-REFERENCE-VALIDATION-09.md)在获准后形成。本包状态不变，07代码存在不等于已验证。
+最新复核为[MAIN-REVIEW-03](../reviews/main-static-review-03.md)，基准main `2579392`；E-06/E-10继续由[工程增量08](WP-IPC-ENGINEERING-FOLLOWUP-08.md)整改，核心证据及同版包由[参考验证09](WP-IPC-REFERENCE-VALIDATION-09.md)在获准后形成。PR #7已公开限定v1.1实物基线，不能继续将这组文件写为未取得；本组以外资料、客户原稿和SDK许可仍按实际证据。本包状态不变，07代码存在不等于已验证。
 
 ## 目标与授权界限
 

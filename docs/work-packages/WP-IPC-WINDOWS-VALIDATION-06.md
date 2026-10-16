@@ -4,7 +4,7 @@
 
 当前工程增量见 [07交付记录](../runtime/engineering-closure-07.md)，代码源提交493416f；没有新二进制或运行结果。本包原NOT_RUN/BLOCKED边界继续有效，不因工程实现而自动关闭。
 
-最新复核为[MAIN-REVIEW-03](../reviews/main-static-review-03.md)，基准main `677a5ad`；E-06/E-10继续由[工程增量08](WP-IPC-ENGINEERING-FOLLOWUP-08.md)整改，核心证据及同版包由[参考验证09](WP-IPC-REFERENCE-VALIDATION-09.md)在获准后形成。本包状态不变，07代码存在不等于已验证。
+最新复核为[MAIN-REVIEW-03](../reviews/main-static-review-03.md)，基准main `2579392`；E-06/E-10继续由[工程增量08](WP-IPC-ENGINEERING-FOLLOWUP-08.md)整改，核心证据及同版包由[参考验证09](WP-IPC-REFERENCE-VALIDATION-09.md)在获准后形成。[UI基线落实10](WP-IPC-UI-BASELINE-ALIGNMENT-10.md)负责实物到WPF的逐页差异；本包状态不变，设计图和07代码存在不等于Windows已验证。
 
 ## 目标与前置
 
@@ -12,7 +12,7 @@
 
 本次用户“不要测试”有效，当前不启动任何程序或场景。后续执行须收到明确恢复验证授权，有Windows 11 build26100+ x64参考环境、可用输入/显示设备，以及固定SourceCommit/发布包SHA。现场目标OS/触控/扫码与参考基线不同的部分另列差异，不能擅称已支持。
 
-E-01～10整改与本包分开；可先登记现有ALIGNMENT-01基准，但最终验收要绑定08收敛并由09形成的同版包，不能混合新代码与旧截图。
+E-01～10整改与本包分开；可先登记现有ALIGNMENT-01基准，但最终验收要绑定08/10收敛并由09形成的同版包，不能混合新代码与旧截图。
 
 ## 输入与记录格式
 

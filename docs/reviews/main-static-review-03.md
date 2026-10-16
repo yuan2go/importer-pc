@@ -2,15 +2,16 @@
 
 日期：2026-10-16（Asia/Shanghai）；工作包：WP-IPC-MAIN-REVIEW-03。
 
-**不能确认10项全部闭环。8项的指定整改路径在源码中补齐；E-06、E-10各有一项剩余工程缺口。10项的编译、运行和验收均未执行。Windows六组待验与真实集成六组阻塞继续独立登记。** 这里的“静态路径补齐”只表示本轮未发现同级缺口，不表示PASS或生产放行。
+**不能确认10项全部闭环。8项的指定整改路径在源码中补齐；E-06、E-10各有一项剩余工程缺口。10项的编译、运行和验收均未执行。另有UI-01实物基线到WPF的落实差异；Windows六组待验与真实集成六组阻塞继续独立登记。** 这里的“静态路径补齐”只表示本轮未发现同级缺口，不表示PASS或生产放行。
 
 ## 1. 基准、方法与证据边界
 
-- 按用户要求先合并 [PR #6](https://github.com/yuan2go/importer-pc/pull/6)。实际合并时间2026-10-16 21:43:07 +08:00；合并后远端main及本次分析基准为 `677a5adeef277adb4c6dd742749f06d02b01c2a7`，PR源头为 `ca4f0bfe64dfb738153da4d0a78ea277a969189d`。
+- 按用户要求先合并 [PR #6](https://github.com/yuan2go/importer-pc/pull/6)。实际合并时间2026-10-16 21:43:07 +08:00；合并后的初始分析基准为 `677a5adeef277adb4c6dd742749f06d02b01c2a7`，PR源头为 `ca4f0bfe64dfb738153da4d0a78ea277a969189d`。
+- 复核期间并行 [PR #7](https://github.com/yuan2go/importer-pc/pull/7) 于21:49:12 +08:00合并，仅增加获授权公开的UI实物和文档，未改业务/测试/部署源码。交付前将其纳入，最终分析main为 `2579392ddcc0b4302d4aae865d4b2d8b3c083b59`；保留并行资料及其公开范围，原10项代码行号与判断不受该文档合并改变。
 - 对照前一main `6d4063ec54e8167c8710e46befbe66f8b688ef08` 与上述基准的差异，再回查完整调用链；不是只读07勾选表。当前最后业务代码源提交 `493416f99970d95bb4a4076130de5c28ee33502d`，待构建元数据 ENGINEERING-CLOSURE-07 / Storage3 / SIMULATION-v1；没有本包新二进制或包SHA。
 - 先核对工作区、开放PR，再读INDEX、07工作包、framework/decisions、前次复核、D/RV、公开范围、相关源码/部署脚本和验证源码。复用干净的已附加worktree，在 `codex/wp-ipc-main-review-03` 整理文档；原工作区受限未跟踪资料保持原样。
 - 使用code-review的Standards与Spec两条独立阅读轴；主审再核对问题条件和行号。Standards以AGENTS和架构职责为准，Spec以07验收边界及供包UI要求为准，不把代码味道当硬缺陷，也不因此新建框架或问题跟踪系统。
-- UI核对同时只读获授权本地PRD、UI输入和v1.1交接正文。公开交付仅新增通用判断、工作包及既有REQ/BR/CAPI/D/RV索引，不复制客户全文、标识、视觉资产、私密来源或SDK/字体。
+- UI核对先只读获授权本地PRD/UI输入，后纳入#7的公开v1.1 README/GALLERY、完整交接、原HTML、分离CSS/JS及tokens；被动查看normal1920、split1366、record-detail1920三张现有PNG，没有重新渲染或执行原型。公开交付仅新增通用判断、工作包及既有REQ/BR/CAPI/D/RV索引，不复制客户全文、标识、视觉资产、私密来源或SDK/字体。
 - 用户明确“不要测试”：测试、资料验证器、还原/构建/编译、应用/夹具、PowerShell、发布/冒烟、浏览器/WPF、Windows/SDK/WCS/实体动作全部 **NOT_RUN**。源码阅读与Git/PR元数据核对不是运行复现。分项记录见 [checks](main-static-review-03-checks.json)。
 
 ## 2. 10项工程闭环复核
@@ -44,7 +45,7 @@
 
 ## Spec
 
-**1项明确发现；本轴最高优先级为P2：E-06历史读取权限存在旧入口旁路。**
+**2项明确发现；本轴两项均为P2：E-06历史读取权限旁路、UI-01实物UI落实差异。**
 
 证据：[Model.cs](../../src/Ipc.Supply/Model.cs) 115–119行保留全部公开入口；[StationApplication.cs](../../src/Ipc.Supply/StationApplication.cs) 634–642行中，HistoryCore/AlarmHistoryCore直接读取Store，没有RequireIdentity；新QueryHistoryAsync/SessionDetailsAsync及DetailsAsync有身份检查。依据：07切片5“查询无副作用且无权时返回明确失败”，framework §6.4 QueryHistory/GetRequestDetail的“权限检查”。
 
@@ -52,9 +53,21 @@
 
 整改方向：统一历史读权限；旧入口委托受控新路径或显式拒绝，UI反馈无权/过期；明确当前状态快照的展示策略，避免把常驻诊断与完整历史读取混为一谈。此问题在现有模拟身份下就可整改，不等真实认证合同。未发现该轴范围扩张；其他指定路径的静态符合性见上表。
 
-两轴分别为Standards 1项 / Spec 1项；未合并为另一套严重度排名。两项都属工程剩余问题，而非已复现事故。
+UI-01的实物要求、源码差异和适用范围见下一节；它独立于原10项工程统计。两个原E项残留与一个UI落实问题分别安排，不将普通模态确认或导航裁决直接等同于业务守卫失效。
 
-## 3. 运行验证债务（非Windows专属）
+两轴分别为Standards 1项 / Spec 2项；未合并为另一套严重度排名。三项都属工程剩余问题，而非已复现事故。
+
+## 3. 实物UI落实与运行验证债务
+
+PR #7已使v1.1原HTML、分离源码、PPTX/画板JSON、tokens和34张同源PNG进入main；不再把“完整UI原型未入库”当成此组的阻塞。它只扩大这一组生成设计的公开范围，原客户资料、其他资产/新Canva来源及真实接口许可仍分别受限。应用实现与设计实物不是同一个交付对象。
+
+**UI-01 / P2：当前WPF尚未按实物形成完整逐页映射/差异裁决。** 公开README的“设计与实现取舍”、交接§2.3/7/8与`prototype/workstation.js:47,53,58–59`保留共享箱、同时双通道的结果/字段/数量/固定动作及低频辅助视图。现有`MainWindow.xaml:7–37`是单选通道核对区、另一通道简短摘要及折叠详情，六个Tab承载辅助页；`ViewModels.cs:105–106`把任务/数量主要拼成文本。07为E-02选择的单通道核对和ReviewFits确实改善了动作安全，但没有据此证明已实现基线的双通道信息密度、数量/拆包进度视觉及逐页组件层级。
+
+另需在同包裁决普通供包是否每次模态确认：交接133/212行避免无意义确认，而`MainWindow.Closure.cs:77–81`每次供包均提供确认文案。保留owner/revision锁定，不简单删确认来模仿原型。
+
+这是可据现有图与源码确定的实施/范围映射工作，不是本轮测得的像素遮挡，也不意味着必须删除07的安全方案或逐像素照抄旧HTML。新增[UI-BASELINE-ALIGNMENT-10](../work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md)，逐页明确继承/调整/待实现/受阻并落实获准差异；Windows可读性另属06。UI-01独立于原10项统计，不将E-02重新表述为“固定按钮完全没绑定任务”。
+
+### 非Windows专属的运行验证债务
 
 07没有构建或运行，本轮仍没有执行授权，不能确认编译通过、恢复防重通过或新包能启动。现有验证资产还保留旧语义：`AlignmentDataVerification.cs:75–97` 期待构造时隐式迁移和format2；`HardeningVerification.cs:196–201` 期待两条迁移/2:2。它们与当前显式升级/format3不一致，这是静态识别的待对齐项，不是本轮实际测试FAIL，也不是Windows环境问题。
 
@@ -71,7 +84,7 @@
 |W-05|自包含包、PowerShell、固定普通账户/ACL/跨会话、路径、旧库升级与回滚隔离|先修E-10；机级策略文件存在不代表实际设备集合已被正确锁定|
 |W-06|慢盘/故障中持续绘制、投影过期禁用、停止失败/重启/未决恢复|核心09与Windows06各自留证；SDK缓冲仍B-01|
 
-继承 [WINDOWS-VALIDATION-06](../work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)；须绑定08整改及09形成的最终同一SourceCommit/包SHA。旧包可作历史基准，不能作为新代码截图或新验收证据。本轮没有制作新包。
+继承 [WINDOWS-VALIDATION-06](../work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)；须绑定08/10最终改动及09形成的同一SourceCommit/包SHA。旧包可作历史基准，不能作为新代码截图或新验收证据。本轮没有制作新包。
 
 ## 5. 真实接口、规则与许可：B-01～06全部BLOCKED
 
@@ -82,15 +95,16 @@
 |B-03 / D-05/06|相机—实体位—箱映射、入场/许可/离场/复位的身份/来源/顺序/时效与最终联锁|模拟心跳及显式实体事件不批准生产TTL或动作|
 |B-04 / D-03/04|数量单位/需求版本/并发分配、等量/不足量、保留/移除、承运次数及剩余件/预留处置|SYNTHETIC-KEEP-v1不成为客户规则；AwaitingDisposition继续持有|
 |B-05 / D-08/11/10|真实认证/跳过、换班、特殊处置权限、人工SOP与输入来源|E-06现有模拟权限旁路先修；不以缺真实认证掩盖工程问题|
-|B-06 / D-09/12/13/15/16、PUB-01|目标工控机/显示输入、单站预算/保留政策、验收人员指标、原稿/视觉资产/SDK公开许可|Windows参考验证不等于现场放行，脱敏不自动等于许可|
+|B-06 / D-09/12/13/15/16、PUB-01|目标工控机/显示输入、单站预算/保留政策、验收人员指标、本组以外原稿/视觉资产/SDK公开许可|Windows参考验证不等于现场放行，脱敏不自动等于许可|
 
 继承 [INTEGRATION-BOUNDARY-05](../work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)，按能力分项解阻。本轮未取得新的SDK/合同/客户批准或现场操作授权，Production继续NotReady。D批准状态不变，RV-01～17仍OPEN。
 
 ## 6. 下一阶段与交付
 
 1. [ENGINEERING-FOLLOWUP-08](../work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md)：只收敛E-06历史权限和E-10最终配置/租约；两条独立切片，均不依赖真实SDK/WCS。本轮仅定义，尚未实施。
-2. [REFERENCE-VALIDATION-09](../work-packages/WP-IPC-REFERENCE-VALIDATION-09.md)：对齐旧验证预期，补07/08风险场景；明确获准恢复验证后才构建、运行及形成新包。当前NOT_RUN。
-3. [WINDOWS-VALIDATION-06](../work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)：对最终同版包实施W-01～06；当前NOT_RUN，不能以09模拟结果替代。
-4. [INTEGRATION-BOUNDARY-05](../work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)：可并行准备获授权资料，真实实现/联调逐项等待能力证据与授权；当前BLOCKED。
+2. [UI-BASELINE-ALIGNMENT-10](../work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md)：先读#7已入库实物，形成WPF逐页映射和获准差异，不改共享业务所有权；当前未实施。
+3. [REFERENCE-VALIDATION-09](../work-packages/WP-IPC-REFERENCE-VALIDATION-09.md)：对齐旧验证预期，补07/08/10风险场景；明确获准恢复验证后才构建、运行及形成新包。当前NOT_RUN。
+4. [WINDOWS-VALIDATION-06](../work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)：对最终同版包实施W-01～06；当前NOT_RUN，不能以09模拟结果替代。
+5. [INTEGRATION-BOUNDARY-05](../work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)：可并行准备获授权资料，真实实现/联调逐项等待能力证据与授权；当前BLOCKED。
 
 本次仅文档和工作包整理；不改业务/测试源码、不重写07的检查JSON、历史issues、D批准或原验收记录，不修旧HTML。更新当前导航与manifest，提交文档开发分支供main PR审查，不自行合并本次复核PR，不发布二进制。实际提交/PR以最终回执与GitHub核验为准。

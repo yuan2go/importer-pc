@@ -1,7 +1,7 @@
 {
   "work_package": "WP-IPC-MAIN-REVIEW-03",
   "review_date": "2026-10-16",
-  "analysis_main": "677a5adeef277adb4c6dd742749f06d02b01c2a7",
+  "analysis_main": "2579392ddcc0b4302d4aae865d4b2d8b3c083b59",
   "comparison_main": "6d4063ec54e8167c8710e46befbe66f8b688ef08",
   "business_code_source": "493416f99970d95bb4a4076130de5c28ee33502d",
   "branch": "codex/wp-ipc-main-review-03",
@@ -88,7 +88,7 @@
       ]
     },
     "Spec": {
-      "findings": 1,
+      "findings": 2,
       "highest_priority": "P2",
       "items": [
         {
@@ -111,6 +111,30 @@
           "trigger": "Logged-out or expired identity calls HistoryAsync/AlarmHistoryAsync; current alarm-history UI also reaches the unguarded API",
           "consequence": "Old application paths bypass the identity check present in typed history/detail queries",
           "remedy": "Apply one application-owned historical read policy across new and old interfaces, and give explicit UI failure feedback"
+        },
+        {
+          "id": "R03-SP-02",
+          "engineering_id": "UI-01",
+          "status": "OPEN_STATIC_SOURCE_FINDING",
+          "priority": "P2",
+          "file": "src/Ipc.Desktop/MainWindow.xaml",
+          "lines": [
+            11,
+            27
+          ],
+          "supporting_files": [
+            "docs/ui/ss-ui-vis-001-v1.1/README.md:39",
+            "docs/ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md:57-59",
+            "docs/ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md:206",
+            "docs/ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md:222-225",
+            "src/Ipc.Desktop/MainWindow.Closure.cs:21-22",
+            "src/Ipc.Desktop/MainWindow.Closure.cs:50-51",
+            "src/Ipc.Desktop/ViewModels.cs:105-106"
+          ],
+          "requirement": "Published physical UI baseline shared box, simultaneous dual-channel task/barcode/quantity/result/actions and professional information hierarchy; inherited safety overrides demo logic",
+          "trigger": "WPF always presents one selected full review, other lane only as status; full dual lane and recent records are default collapsed, with no per-page baseline difference adjudication",
+          "consequence": "Original E02/E07 safety mechanisms do not establish full published UI implementation; this is source structure, not measured Windows pixel failure",
+          "remedy": "WP-IPC-UI-BASELINE-ALIGNMENT-10 maps pages/components and explicitly implements or adjudicates layout, low-frequency views and ordinary confirmation differences while retaining application guards"
         }
       ]
     }
@@ -169,18 +193,43 @@
     "rv_status": false,
     "new_binary": false,
     "new_package_sha": null,
-    "documents_and_manifest_only": true
+    "documents_and_manifest_only": true,
+    "inherited_ui_assets_from_pr_7": "Retained unchanged, not created/rendered/validated by this review"
   },
   "next_work_packages": {
     "WP-IPC-ENGINEERING-FOLLOWUP-08": "PLANNED_NOT_STARTED",
     "WP-IPC-REFERENCE-VALIDATION-09": "PLANNED_EXECUTION_NOT_RUN",
     "WP-IPC-WINDOWS-VALIDATION-06": "NOT_RUN",
-    "WP-IPC-INTEGRATION-BOUNDARY-05": "BLOCKED"
+    "WP-IPC-INTEGRATION-BOUNDARY-05": "BLOCKED",
+    "WP-IPC-UI-BASELINE-ALIGNMENT-10": "PLANNED_NOT_STARTED"
   },
   "historical_status": {
     "RV-01..17": "OPEN",
     "07_implementation_record": "Retained as delivery-time claim; this independent review governs current closure interpretation",
     "prior_validation": "UNCHANGED_NOT_RERUN"
   },
-  "public_scope": "New generic findings, planning and navigation only; restricted inputs read locally and retained in original checkout; no customer originals/assets/private URLs/credentials/production data/SDK/fonts copied or uploaded"
+  "public_scope": "New generic findings, planning and navigation only; restricted inputs read locally and retained in original checkout; no customer originals/assets/private URLs/credentials/production data/SDK/fonts copied or uploaded",
+  "initial_analysis_main": "677a5adeef277adb4c6dd742749f06d02b01c2a7",
+  "parallel_main_update": {
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/7",
+    "state": "MERGED",
+    "merge_commit": "2579392ddcc0b4302d4aae865d4b2d8b3c083b59",
+    "merged_at": "2026-10-16T13:49:12Z",
+    "changes": "Authorized final UI design assets/publication documents only; application/scripts/tests unchanged",
+    "handling": "Merged without force, preserve imported assets/authorization and regenerate combined manifest; no tests"
+  },
+  "ui_baseline": {
+    "entry": "docs/ui/ss-ui-vis-001-v1.1/README.md",
+    "source": "SS-UI-VIS-001 v1.1",
+    "existing_source_files": 11,
+    "existing_reexported_pngs": 34,
+    "read_existing_images": [
+      "01-normal-1920.png",
+      "26-split-1366.png",
+      "12-record-detail-1920.png"
+    ],
+    "method": "Passive local source/image reading only; no re-render/browser/prototype execution",
+    "implementation_alignment": "UI-01_OPEN",
+    "windows": "NOT_RUN"
+  }
 }

@@ -1,11 +1,11 @@
-# WP-IPC-REFERENCE-VALIDATION-09：07/08核心证据与同版交付
+# WP-IPC-REFERENCE-VALIDATION-09：07/08/10核心证据与同版交付
 
-状态：**PLANNED / EXECUTION_NOT_RUN**；日期2026-10-16。基准main `677a5adeef277adb4c6dd742749f06d02b01c2a7`；依据 [MAIN-REVIEW-03](../reviews/main-static-review-03.md)。本包用于区分“工程源码路径”“核心合成运行”“Windows操作”和“真实现场”四层；用户当前不要测试，本轮不执行本包。
+状态：**PLANNED / EXECUTION_NOT_RUN**；日期2026-10-16。基准main `2579392ddcc0b4302d4aae865d4b2d8b3c083b59`；依据 [MAIN-REVIEW-03](../reviews/main-static-review-03.md)。本包用于区分“工程源码路径”“核心合成运行”“Windows操作”和“真实现场”四层；用户当前不要测试，本轮不执行本包。
 
 ## 开始条件
 
-1. 收到明确恢复相应验证的授权；重新核对真实main、08合并结果及并行变更，冻结待验源提交。测试/构建/发布各按实际授权范围，不从本文件存在推定授权。
-2. 使用当前工程真实命令与锁定依赖，先读build/publish/verification入口；不假定旧二进制就是新源码。当前Storage3 / SIMULATION-v1，发布元数据若因08改变必须同步记录。
+1. 收到明确恢复相应验证的授权；重新核对真实main、08/10合并结果及并行变更，冻结待验源提交。测试/构建/发布各按实际授权范围，不从本文件存在推定授权。
+2. 使用当前工程真实命令与锁定依赖，先读build/publish/verification入口；不假定旧二进制就是新源码。当前Storage3 / SIMULATION-v1，发布元数据若因08/10改变必须同步记录。
 3. 只使用可审查合成输入、新数据根、独立loopback接收账及可保留的旧格式样本；无Windows和真实SDK亦可先覆盖核心。不得访问真实WCS或控制设备。
 
 ## V-01：验证资产对齐（先修改源码，后执行）
@@ -36,6 +36,6 @@
 - [ ] 明确获准后执行必要还原/构建；记录真实SDK/NuGet/源码、命令和结果，不把代码阅读当编译结果。
 - [ ] 明确获准后形成新离线包及必要发布启动冒烟，绑定SourceCommit、源码/配置/模块指纹、ReleaseVersion/StorageVersion/ContractVersion与ZIP SHA；失败保留原包/日志，不覆盖旧证据。
 - [ ] 新增`docs/runtime/reference-validation-09.md`、`reference-validation-09-checks.json`及获准公开的合成证据；没有执行就不预建成功日志、截图、ZIP或SHA。
-- [ ] 给 [Windows06](WP-IPC-WINDOWS-VALIDATION-06.md) 同一最终源提交和包；跨平台核心/包检查不关闭W-01～06。给 [集成05](WP-IPC-INTEGRATION-BOUNDARY-05.md) 的只是参考能力边界，不是SDK/WCS支持声明。
+- [ ] UI10改动后的应用契约和组件路径亦纳入受影响范围，具体几何/触控不以核心结果代替。给 [Windows06](WP-IPC-WINDOWS-VALIDATION-06.md) 同一最终源提交和包；跨平台核心/包检查不关闭W-01～06。给 [集成05](WP-IPC-INTEGRATION-BOUNDARY-05.md) 的只是参考能力边界，不是SDK/WCS支持声明。
 
 退出：已授权范围有真实PASS/FAIL/BLOCKED/NOT_RUN和原始身份，未验边界清楚，08遗留问题有归属；生产放行仍需相应D批准、真实接口/设备和现场/Windows结果。交付使用开发分支main PR，不自行合并。

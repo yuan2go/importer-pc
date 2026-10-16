@@ -1,6 +1,6 @@
 # WP-IPC-ENGINEERING-FOLLOWUP-08：历史权限与最终配置所有权
 
-状态：**PLANNED / NOT_STARTED**；日期2026-10-16。依据 [MAIN-REVIEW-03](../reviews/main-static-review-03.md)，分析基准main `677a5adeef277adb4c6dd742749f06d02b01c2a7`（PR #6已合并）。本轮只整理工作包，没有实施授权推定，也没有执行测试。
+状态：**PLANNED / NOT_STARTED**；日期2026-10-16。依据 [MAIN-REVIEW-03](../reviews/main-static-review-03.md)，分析基准main `2579392ddcc0b4302d4aae865d4b2d8b3c083b59`（PR #6已合并）。本轮只整理工作包，没有实施授权推定，也没有执行测试。
 
 目标：补齐E-06、E-10的两个剩余应用路径；保留07已经建立的类型化历史、单所有者、固定账户/机级策略和资源持有机制，不重建第二套框架。
 

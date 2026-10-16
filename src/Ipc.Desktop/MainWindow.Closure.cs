@@ -18,8 +18,6 @@ public sealed record ObservationReviewRow(ObservationReviewSelection Selection)
 
 public partial class MainWindow
 {
-    string activeLane = "left";
-    LaneViewModel ActiveLane => activeLane == "left" ? left : right;
     CancellationTokenSource soundStop = new();
     Task? soundTask;
     readonly ObservableCollection<ObservationReviewRow> sourceReviews = [];
@@ -27,10 +25,6 @@ public partial class MainWindow
     bool updatingHistory, navigatingDirectDetail;
     string? historySessionId;
     Ipc.Supply.HistoryPage? loadedHistory;
-    bool ReviewFits => ActionReviewScroll is not null && ActionReviewScroll.ViewportHeight > 0 &&
-        ActionReviewScroll.ScrollableHeight < 0.5 && ActionReviewScroll.ScrollableWidth < 0.5 &&
-        ClientArea.ActualWidth >= 800 && ClientArea.ActualHeight >= 420;
-
     void StartNotificationPlayer()
     {
         if (!ownsLifetime || soundTask is not null || Runtime.Application is null) return;
@@ -47,8 +41,7 @@ public partial class MainWindow
             " · " + (health?.ConfirmedAt?.ToLocalTime().ToString("HH:mm:ss") ?? "未确认");
         model.HealthSummary = string.Join("   ", Health("CAM0", current.State.Devices.GetValueOrDefault("left")),
             Health("CAM1", current.State.Devices.GetValueOrDefault("right")), Health("WCS", current.State.IntegrationHealth));
-        var other = current.State.Lanes.GetValueOrDefault(activeLane == "left" ? "right" : "left");
-        model.OtherLane = $"{(activeLane == "left" ? "右" : "左")}通道：{(other is null ? "等待实体" : OperatorText.Operation(other.Status))}";
+        model.OtherLane = $"CAM0：{(current.State.Lanes.GetValueOrDefault("left") is { } l ? OperatorText.Operation(l.Status) : "等待实体")}\nCAM1：{(current.State.Lanes.GetValueOrDefault("right") is { } r ? OperatorText.Operation(r.Status) : "等待实体")}";
         var selected = ObservationReviews.SelectedItems.Cast<ObservationReviewRow>().Select(x => x.Selection).ToHashSet();
         var rows = current.State.Blocks.Where(x => x.Code == "ObservationReview")
             .Select(x => new ObservationReviewRow(new(x.Code, x.Scope, x.Source, x.SourceEpoch, x.EvidenceVersion))).ToArray();
@@ -59,35 +52,19 @@ public partial class MainWindow
         }
         ObservationReviews.ItemsSource = sourceReviews;
     }
-    void NavigateToHistoryDetail()
+    async void NavigateToHistoryDetail()
     {
         navigatingDirectDetail = true;
-        try { Pages.SelectedItem = HistoryPage; }
+        try { await NavigateToViewAsync("history"); }
         finally { navigatingDirectDetail = false; }
     }
-    void OpenRecoveryClick(object sender, RoutedEventArgs e) => Pages.SelectedItem = RecoveryPage;
-    void SelectLaneClick(object sender, RoutedEventArgs e)
+    public async Task SubmitLaneAsync(LaneViewModel lane)
     {
-        activeLane = (string)((Button)sender).CommandParameter;
-        PinnedReview.DataContext = ActiveLane;
-        if (snapshot is not null) ApplyClosureProjection(snapshot);
-        UpdateGuards();
-    }
-    void ReviewScrollChanged(object sender, ScrollChangedEventArgs e) => UpdateGuards();
-    async Task ConfirmActiveSubmitAsync(LaneViewModel lane)
-    {
-        if (lane.Lane != activeLane || lane.Current is not { } operation) return;
-        await SendAsync("Submit", operation.Id, confirm:
-            $"{lane.Label} · 作业 {operation.Id} / r{operation.Revision}\nItem {lane.Barcode}\n{lane.KeyTask}\n{lane.Quantities}\n{lane.SplitProgress}\n确认当前实体与数量后提交供包？");
-    }
-    async void PinnedScanClick(object sender, RoutedEventArgs e) => await SendAsync("ScanRetained", ActiveLane.Current?.Id, ActiveLane.RetainedDraft.TrimEnd('\r', '\n', '\t'));
-    async void PinnedClearClick(object sender, RoutedEventArgs e) => await SendAsync("ClearSplit", ActiveLane.Current?.Id, "CONFIRM", "清空当前作业尚未提交的保留件计数？历史与实体责任保留。");
-    async void PinnedRetainedKeyDown(object sender, KeyEventArgs e)
-    {
-        if (e.Key is not (Key.Enter or Key.Tab) || Keyboard.Modifiers != ModifierKeys.None) return;
-        e.Handled = true;
-        if (ActiveLane.CanScan && ActiveLane.RetainedDraft.Length > 0)
-            await SendAsync("ScanRetained", ActiveLane.Current?.Id, ActiveLane.RetainedDraft.TrimEnd('\r', '\n', '\t'));
+        if (lane.Current is not { } operation || !ReviewFits(lane) || !IsWorkstationActive) { model.LastResult="请完整核对本通道当前Item、任务和数量"; return; }
+        // Capture this owner and station revision before any risk dialog. The application CAS
+        // rejects changed observations/owners; normal manual supply needs no repeated dialog.
+        await SendAsync("Submit", operation.Id, confirm: operation.Status == OperationStatus.SplitRequired ?
+            $"{lane.Label} · 作业 {operation.Id} / r{operation.Revision}\nItem {lane.Barcode}\n{lane.KeyTask}\n{lane.Quantities}\n{lane.SplitProgress} / {lane.Remove}\n已核对实际保留件与移除量，确认按本版拆包结果提交供包？" : null);
     }
     async Task ReviewSelectedSourcesAsync()
     {
@@ -126,13 +103,14 @@ public partial class MainWindow
     }
     HistoryQuery BuildHistoryQuery() => new(
         Entity: HistoryEntityBox.SelectedIndex == 1 ? HistoryEntity.Operations : HistoryEntity.Sessions,
-        SessionId: historySessionId, BoxBarcode: FilterBox.Text.Trim(), ItemBarcode: ItemFilter.Text.Trim(), Sku: SkuFilter.Text.Trim(),
+        SessionId: historySessionId, BoxBarcode: FilterBox.Text.Trim(), ItemBarcode: ItemFilter.Text.Trim(), Sku: SkuFilter.Text.Trim(), TaskId: TaskFilter.Text.Trim(),
         SessionStatus: HistoryStatus<SessionStatus>(SessionStatusFilter), OperationStatus: HistoryStatus<OperationStatus>(OperationStatusFilter),
         RequestStatus: HistoryStatus<RequestStatus>(RequestStatusFilter), Lane: HistoryLaneBox.SelectedIndex switch { 1 => "left", 2 => "right", _ => null },
         FromInclusive: HistoryDate(HistoryFrom), UntilExclusive: HistoryDate(HistoryUntil), Offset: historyOffset, Limit: 50);
     async Task LoadHistoryAsync(HistoryQuery? requestedQuery = null)
     {
         if (Runtime.Application is null || closing) return;
+        if (!BeginHistoricalRead("作业历史", out var readActor)) return;
         var generation = ++historyGeneration;
         detailGeneration++;
         var selected = (HistoryGrid.SelectedItem as HistoryQueryRow)?.Id;
@@ -144,7 +122,9 @@ public partial class MainWindow
         {
             var query = requestedQuery ?? BuildHistoryQuery();
             var page = await Runtime.Application.QueryHistoryAsync(query).WaitAsync(lifetime.Token);
-            if (closing || generation != historyGeneration) return;
+            if (closing || generation != historyGeneration || !ReadIdentityMatches(readActor)) return;
+            HistoryGrid.IsEnabled = true;
+            ReadAccessFeedback.Text="历史为本次有效身份取得的只读快照；退出或过期后须重新查询。";
             loadedHistory = page;
             updatingHistory = true;
             try
@@ -166,7 +146,7 @@ public partial class MainWindow
         catch (Exception ex)
         {
             if (closing || generation != historyGeneration) return;
-            loadedHistory = null;
+            loadedHistory = null; HistoryGrid.IsEnabled = false;
             HistoryFeedback.Text = "查询失败：" + ex.Message + "；下方保留的是旧结果，未作为本次查询成功";
         }
     }
@@ -188,7 +168,7 @@ public partial class MainWindow
     {
         if (HistoryGrid.SelectedItem is not HistoryQueryRow row) return;
         historySessionId = row.SessionId; historyOffset = 0; HistoryEntityBox.SelectedIndex = 1;
-        FilterBox.Text = ItemFilter.Text = SkuFilter.Text = HistoryFrom.Text = HistoryUntil.Text = "";
+        FilterBox.Text = ItemFilter.Text = SkuFilter.Text = TaskFilter.Text = HistoryFrom.Text = HistoryUntil.Text = "";
         SessionStatusFilter.SelectedIndex = OperationStatusFilter.SelectedIndex = RequestStatusFilter.SelectedIndex = HistoryLaneBox.SelectedIndex = 0;
         await LoadHistoryAsync();
     }
@@ -197,11 +177,13 @@ public partial class MainWindow
     async Task ShowSessionAsync(string sessionId)
     {
         if (Runtime.Application is null || closing) return;
+        if (!BeginHistoricalRead("箱会话详情", out var readActor)) return;
         var generation = ++detailGeneration;
         try
         {
             var detail = await Runtime.Application.SessionDetailsAsync(sessionId).WaitAsync(lifetime.Token);
-            if (closing || generation != detailGeneration) return;
+            if (closing || generation != detailGeneration || !ReadIdentityMatches(readActor)) return;
+            DetailTree.IsEnabled=true; ReadAccessFeedback.Text="箱关闭链为本次有效身份取得的只读快照。";
             RenderDetails(sessionId, null, detail.Requests);
             if (DetailTree.Items[0] is TreeViewItem root)
             {
@@ -214,6 +196,6 @@ public partial class MainWindow
             NavigateToHistoryDetail();
         }
         catch (OperationCanceledException) when (closing) { }
-        catch (Exception ex) { if (!closing && generation == detailGeneration) HistoryFeedback.Text = "箱会话详情读取失败：" + ex.Message; }
+        catch (Exception ex) { if (!closing && generation == detailGeneration) MarkDetailReadFailure("箱会话详情读取失败：" + ex.Message); }
     }
 }

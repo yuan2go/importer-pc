@@ -64,7 +64,7 @@ for directory in ('src', 'config', 'scripts'):
 fingerprint = hashlib.sha256()
 for source in sorted(inputs):
     fingerprint.update(source.relative_to(source_root).as_posix().encode() + b'\0' + source.read_bytes() + b'\0')
-release = dict(WorkPackage='WP-IPC-ARCH-UI-ALIGNMENT-01', SchemaVersion=1, ReleaseVersion='ALIGNMENT-01', StorageVersion=2, ContractVersion='SIMULATION-v1', ProductId=definition['ProductId'], ProductDefinitionSha256=hashlib.sha256(a.product_definition.read_bytes()).hexdigest(), SourceCodeSha256=fingerprint.hexdigest(),
+release = dict(WorkPackage='WP-IPC-ENGINEERING-CLOSURE-07', SchemaVersion=1, ReleaseVersion='ENGINEERING-CLOSURE-07', StorageVersion=3, ContractVersion='SIMULATION-v1', ProductId=definition['ProductId'], ProductDefinitionSha256=hashlib.sha256(a.product_definition.read_bytes()).hexdigest(), SourceCodeSha256=fingerprint.hexdigest(),
                GitBase=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source_root, text=True).strip(),
                Mode=a.mode, Target='win-x64' if a.architecture == 'x64' else 'portable-development')
 (a.bin / 'release.json').write_text(json.dumps(release, indent=2) + '\n')

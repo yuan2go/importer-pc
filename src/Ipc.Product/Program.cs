@@ -8,30 +8,63 @@ string Get(string key, string fallback) => map.GetValueOrDefault(key, fallback);
 var root = Get("--config", Path.Combine(AppContext.BaseDirectory, "config"));
 var data = Get("--data-root", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data"));
 var action = Get("--action", "snapshot");
-if (action is "backup" or "preflight" or "restore")
+if (action is "backup" or "preflight" or "restore" or "upgrade")
 {
-    // Offline operations acquire the same data ownership lock. Restore always requires a new
-    // data directory, preserves the old database and enters external reconciliation quarantine.
+    // Maintenance must obey the same fixed Windows account and protected machine policy
+    // before creating a restore destination, opening a database or acquiring a data lease.
+    _ = MachineRuntimePolicy.ResolveLeaseRoot(null);
+    // The maintenance owner uses the same data lease as runtime. Read-only actions do
+    // not construct SupplyStore, create a missing station, or change SQLite settings.
     var station = Wire.Decode<StationConfig>(File.ReadAllText(Path.Combine(root, "station.json")));
-    var directory = Path.Combine(data, station.Mode.ToString(), station.StationId); Directory.CreateDirectory(directory);
+    var directory = Path.Combine(data, station.Mode.ToString(), station.StationId);
+    if (action != "restore" && !Directory.Exists(directory)) throw new DirectoryNotFoundException("Initialize station before maintenance; missing source retained");
+    if (action == "restore") Directory.CreateDirectory(directory);
     using var lease = new ResourceLease(directory, ["database"]);
     var dbPath = Path.Combine(directory, "station.db");
     if (action == "restore")
     {
-        if (File.Exists(dbPath) || File.Exists(dbPath + "-wal")) throw new IOException("Restore requires a fresh station data directory; original retained");
-        SupplyStore.RestoreVerified(Get("--file", "backup.db"), dbPath);
-        Console.WriteLine("RESTORED / QUARANTINED"); return;
+        var source = Get("--file", "backup.db");
+        var inspection = SupplyStore.InspectReadOnly(source);
+        SupplyStore.RestoreVerified(source, dbPath);
+        Console.WriteLine(Wire.Encode(new { Status = "RestoredQuarantined", SourceFormat = inspection.FormatVersion,
+            DestinationFormat = SupplyStore.CurrentFormatVersion, SourceBackupSha256 = Wire.FileHash(source),
+            Launch = "NOT_RUN", ExternalReconciliation = "REQUIRED" })); return;
     }
-    if (!File.Exists(dbPath)) throw new FileNotFoundException("Initialize station before maintenance", dbPath);
-    using var store = new SupplyStore(dbPath);
     if (action == "preflight")
     {
-        var state = store.Load(); var pending = store.PendingCount();
-        if (pending != 0 || state.Session is { Status: not (SessionStatus.Closed or SessionStatus.Rejected) } || state.Quarantined) throw new InvalidOperationException("Upgrade blocked: close context, reconcile pending effects/quarantine");
-        Console.WriteLine("PREFLIGHT PASS / storage format 2 / no pending effects");
+        var inspection = SupplyStore.InspectReadOnly(dbPath);
+        Console.WriteLine(Wire.Encode(new { Status = inspection.UpgradeBlockers.Length == 0 ? "ReadOnlyInspectionCompleted" : "Blocked",
+            Inspection = inspection, Launch = "NOT_RUN" }));
+        if (inspection.UpgradeBlockers.Length != 0) Environment.ExitCode = 2;
     }
-    else { store.Backup(Get("--file", "backup.db")); Console.WriteLine("CONSISTENT BACKUP SAVED"); }
+    else if (action == "backup") Console.WriteLine(Wire.Encode(SupplyStore.BackupReadOnly(dbPath, Get("--file", "backup.db"))));
+    else
+    {
+        if (!map.TryGetValue("--previous-release", out var previous) || !map.TryGetValue("--target-release", out var selected) || !map.ContainsKey("--file"))
+            throw new InvalidDataException("Explicit upgrade requires --previous-release, --target-release and new --file backup");
+        var selectedIdentity = ReleaseIdentity(selected);
+        if (selectedIdentity.ProgramAssemblySha256 != Wire.FileHash(typeof(ProductRuntime).Assembly.Location) ||
+            !string.Equals(Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar), Path.GetFullPath(Path.Combine(selected, "app", "config")).TrimEnd(Path.DirectorySeparatorChar), OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
+            throw new InvalidDataException("Upgrade must execute the selected release program and configuration");
+        var previousIdentity = ReleaseIdentity(previous);
+        // Changing station identity/mode/root must be a separate reviewed migration, not
+        // silently selecting a different database while backing up an unrelated station.
+        var previousStation = Wire.Decode<StationConfig>(File.ReadAllText(Path.Combine(previous, "app", "config", "station.json")));
+        if (previousStation.StationId != station.StationId || previousStation.Mode != station.Mode)
+            throw new InvalidDataException("Previous and selected station identity/mode differ; controlled migration required");
+        var file = map["--file"];
+        Console.WriteLine(Wire.Encode(SupplyStore.UpgradeVerified(dbPath, file, Get("--receipt", file + ".upgrade.json"), previousIdentity, selectedIdentity)));
+    }
     return;
+}
+MaintenanceReleaseIdentity ReleaseIdentity(string release)
+{
+    var app = Path.Combine(release, "app");
+    var configuration = new Dictionary<string, string>();
+    foreach (var name in new[] { "product.json", "station.json", "presentation.json" })
+        configuration.Add(name, Wire.FileHash(Path.Combine(app, "config", name)));
+    return new(Wire.FileHash(Path.Combine(app, "Ipc.Product.exe")), Wire.FileHash(Path.Combine(app, "Ipc.Product.dll")),
+        Wire.FileHash(Path.Combine(release, "SHA256SUMS")), configuration);
 }
 using var host = ProductHost.Build(new(Path.Combine(root, "product.json"), Path.Combine(root, "station.json"), Path.Combine(root, "presentation.json"), data, View: map.GetValueOrDefault("--view"), Layout: map.GetValueOrDefault("--layout")));
 await host.StartAsync();

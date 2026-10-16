@@ -18,13 +18,13 @@
 
 ## 任务与检查点
 
-- [ ] A 证据/入口：原字节快照及哈希，现行入口转向本计划与本次授权。业务改动前提交。
-- [ ] B 08A：StationApplication全部历史/详情入口统一RequireIdentity；核验未登录/有效/退出/过期矩阵，桌面由UI任务实现失效。
-- [ ] C 08B：ProductRuntime最终Effective/Pending选择与seed站点/模式校验，锁实际设备集合；失败激活保旧，部分取得失败无来源启动；新增针对性验证。
-- [ ] D 10：Desktop按v1.1原HTML/CSS/JS/tokens/交接增量组件化，PAGE01-08、双通道数量/拆包、普通/风险确认、抽屉导航及焦点/布局守卫；保存逐页映射和未知字段来源边界。
-- [ ] E 09：先对齐AlignmentDataVerification及HardeningVerification显式迁移3:3断言，保留历史checksum/失败保旧/旧及未来读者拒绝；补07风险和恢复防重/来源/提示/资源终态。先读Program选择器再按风险执行。
-- [ ] F 集成运行：锁定SDK还原构建，运行受影响/必要基线及完整合成持续闭环；失败定位修复并仅重跑受影响模块。
-- [ ] G 同版交付：提交最终运行源码，封存SourceCommit/Release/Storage/Contract/模块配置指纹与ZIP SHA；新包启动/发布冒烟。无Windows时06所有实际客户端项NOT_RUN并说明缺项；05逐能力BLOCKED。
+- [x] A 证据/入口：原字节快照及哈希，现行入口转向本计划与本次授权。业务改动前提交。
+- [x] B 08A：StationApplication全部历史/详情入口统一RequireIdentity；核验未登录/有效/退出/过期矩阵，桌面由UI任务实现失效。
+- [x] C 08B：ProductRuntime最终Effective/Pending选择与seed站点/模式校验，锁实际设备集合；失败激活保旧，部分取得失败无来源启动；新增针对性验证。
+- [x] D 10：Desktop按v1.1原HTML/CSS/JS/tokens/交接增量组件化，PAGE01-08、双通道数量/拆包、普通/风险确认、抽屉导航及焦点/布局守卫；保存逐页映射和未知字段来源边界。
+- [x] E 09：先对齐AlignmentDataVerification及HardeningVerification显式迁移3:3断言，保留历史checksum/失败保旧/旧及未来读者拒绝；补07风险和恢复防重/来源/提示/资源终态。先读Program选择器再按风险执行。
+- [x] F 集成运行：锁定SDK还原构建，运行受影响/必要基线及完整合成持续闭环；失败定位修复并仅重跑受影响模块。
+- [x] G 同版交付：提交最终运行源码，封存SourceCommit/Release/Storage/Contract/模块配置指纹与ZIP SHA；新包启动/发布冒烟。无Windows时06所有实际客户端项NOT_RUN并说明缺项；05逐能力BLOCKED。
 - [ ] H 同步INDEX/runtime/operations/manifest及检查JSON，复核最新main/并行PR和差异，开发分支提交推送创建main PR并附加，不合并。
 
 ## 可复现命令入口

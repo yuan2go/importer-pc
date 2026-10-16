@@ -1,6 +1,11 @@
 # WP-IPC-UI-BASELINE-ALIGNMENT-10：实物UI基线到WPF的逐页落实
 
-> 当前执行：AUDIT-RECONCILIATION-01已获用户授权实施及合成/参考验证，见[计划](../superpowers/plans/2026-10-16-ipc-audit-reconciliation.md)。本页以下为形成时范围及记录；历史不测试/NOT_RUN不限制本次已授权工作。生产WCS/设备动作未授权；06取决于实际Windows环境，05按能力证据保持阻断。原字节已保存于[快照](../archive/pre-reconciliation-01/README.md)。
+
+> 当前纠偏结果：**IMPLEMENTED / STATIC_PATH_CLOSED / BUILD_PASS / WINDOWS_NOT_RUN**；SourceCommit `a08082563bc13b2f146e71c4be9136f0469af9db`。见[09同版报告](../runtime/reference-validation-09.md)及[检查](../runtime/reference-validation-09-checks.json)。本次实施/合成验证授权已执行；生产WCS/设备动作未授权，D/RV未变。
+
+## 形成时工作包定义与记录
+
+以下保留形成时状态与原要求，不能读作当前不测试禁令或本次结果；[原字节快照](../archive/pre-reconciliation-01/README.md)可核对原版本。
 
 状态：**PLANNED / NOT_STARTED**；2026-10-16。分析基准main `2579392ddcc0b4302d4aae865d4b2d8b3c083b59`；PR #7已加入获授权公开的SS-UI-VIS-001 v1.1实物。依据 [MAIN-REVIEW-03](../reviews/main-static-review-03.md) UI-01；本轮只整理，不修改UI、不运行原型或WPF。
 

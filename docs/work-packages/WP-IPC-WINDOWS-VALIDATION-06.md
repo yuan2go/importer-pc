@@ -1,6 +1,11 @@
 # WP-IPC-WINDOWS-VALIDATION-06：Windows参考产品操作验证
 
-> 当前执行：AUDIT-RECONCILIATION-01已获用户授权实施及合成/参考验证，见[计划](../superpowers/plans/2026-10-16-ipc-audit-reconciliation.md)。本页以下为形成时范围及记录；历史不测试/NOT_RUN不限制本次已授权工作。生产WCS/设备动作未授权；06取决于实际Windows环境，05按能力证据保持阻断。原字节已保存于[快照](../archive/pre-reconciliation-01/README.md)。
+
+> 当前纠偏结果：**ENVIRONMENT_BLOCKED / W-01-06_NOT_RUN**；SourceCommit `a08082563bc13b2f146e71c4be9136f0469af9db`。见[09同版报告](../runtime/reference-validation-09.md)及[检查](../runtime/reference-validation-09-checks.json)。本次实施/合成验证授权已执行；生产WCS/设备动作未授权，D/RV未变。
+
+## 形成时工作包定义与记录
+
+以下保留形成时状态与原要求，不能读作当前不测试禁令或本次结果；[原字节快照](../archive/pre-reconciliation-01/README.md)可核对原版本。
 
 状态：**NOT_RUN / 等待明确执行授权与目标Windows环境**。2026-10-16形成；分析基准main `cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa`。补齐manifest中已有工作包编号，不改原Windows结果。
 

@@ -1,0 +1,120 @@
+[
+  {
+    "Target": "portable",
+    "Status": "PASS",
+    "Files": 130,
+    "ZipSha256": "d625224d2109cd15a3a1e1a0a2cfe7901116c912e986fd6cb300956ba10f33fb",
+    "SourceCommit": "a08082563bc13b2f146e71c4be9136f0469af9db",
+    "SourceCodeSha256": "bae6bc350e576aa726b609c9eced8aa4dc37eac0aadfc4c48f5e186e4b3a1bd5",
+    "ConfigSha256": {
+      "presentation.json": "631b7675cd7ac2982711443908aee096ebbae2766790086faaa9fd6e555e3e2f",
+      "product.definition.json": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+      "product.json": "962ca34a108715d9faf7326662bb31497a4a7af9a3bef032eb58a52ef6ee1406",
+      "replay.jsonl": "e8ee63bb8172d46a7b612529741df2bfc259b82af92b996605cdd50069bddf41",
+      "station.json": "5b19a4ccd4276c84960ad86bc99c9bc0ca9eb5dabcf899904d2cdfde25f8a195"
+    },
+    "Modules": [
+      {
+        "Id": "platform",
+        "Kind": "platform",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [],
+        "File": "Ipc.Platform.dll",
+        "Sha256": "6806543B8559C56A98CEE23F75D2CB032307503F4B8CC6FA8F82DA783156EFA1"
+      },
+      {
+        "Id": "supply",
+        "Kind": "supply",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [
+          "platform"
+        ],
+        "File": "Ipc.Supply.dll",
+        "Sha256": "23B47E38D6DE345B1EF01C6ABFF88734C400EAA6F6E92B7C5F90AAA6197E18AF"
+      },
+      {
+        "Id": "adapters",
+        "Kind": "adapters",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [
+          "supply"
+        ],
+        "File": "Ipc.Adapters.dll",
+        "Sha256": "8C5F413DE799D5815CDE493E4E655EB0EAE68FE497524C67A7846892B2AA6A16"
+      },
+      {
+        "Id": "product",
+        "Kind": "product",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [
+          "adapters"
+        ],
+        "File": "Ipc.Product.dll",
+        "Sha256": "4757815DC27CDC16077348DE9FEBEBC1C8E337A06B5A4DADBD8FD568054F571F"
+      }
+    ]
+  },
+  {
+    "Target": "win-x64",
+    "Status": "PASS",
+    "Files": 815,
+    "ZipSha256": "0eeebec5b07995af3a2fb02beaa63abfe2a436ba70e01cc35cc865a8df623849",
+    "SourceCommit": "a08082563bc13b2f146e71c4be9136f0469af9db",
+    "SourceCodeSha256": "bae6bc350e576aa726b609c9eced8aa4dc37eac0aadfc4c48f5e186e4b3a1bd5",
+    "ConfigSha256": {
+      "presentation.json": "631b7675cd7ac2982711443908aee096ebbae2766790086faaa9fd6e555e3e2f",
+      "product.definition.json": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+      "product.json": "f85fd00403bf6e4b529d49d2be665f2146050a5d05c624417609515ffdfe11b5",
+      "replay.jsonl": "e8ee63bb8172d46a7b612529741df2bfc259b82af92b996605cdd50069bddf41",
+      "station.json": "5b19a4ccd4276c84960ad86bc99c9bc0ca9eb5dabcf899904d2cdfde25f8a195"
+    },
+    "Modules": [
+      {
+        "Id": "platform",
+        "Kind": "platform",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [],
+        "File": "Ipc.Platform.dll",
+        "Sha256": "6806543B8559C56A98CEE23F75D2CB032307503F4B8CC6FA8F82DA783156EFA1"
+      },
+      {
+        "Id": "supply",
+        "Kind": "supply",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [
+          "platform"
+        ],
+        "File": "Ipc.Supply.dll",
+        "Sha256": "23B47E38D6DE345B1EF01C6ABFF88734C400EAA6F6E92B7C5F90AAA6197E18AF"
+      },
+      {
+        "Id": "adapters",
+        "Kind": "adapters",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [
+          "supply"
+        ],
+        "File": "Ipc.Adapters.dll",
+        "Sha256": "8C5F413DE799D5815CDE493E4E655EB0EAE68FE497524C67A7846892B2AA6A16"
+      },
+      {
+        "Id": "product",
+        "Kind": "product",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [
+          "adapters"
+        ],
+        "File": "Ipc.Product.dll",
+        "Sha256": "521C830030202E02E1CF14BAF8308A35A8DE92E8E682163112FAD1579339F482"
+      }
+    ]
+  }
+]

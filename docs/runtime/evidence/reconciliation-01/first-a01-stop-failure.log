@@ -1,0 +1,65 @@
+SELECT --data: A01 data/composition/runtime
+PASS A01 format1/2 read-only custody, explicit backed-up upgrade, frozen request, rollback and restore isolation
+PASS A01 independent semantic fixture, task/request/restart/history consistency and unique acceptance
+PASS ALIGNMENT composition: two explicit test definitions assemble without Platform business edits
+PASS ALIGNMENT composition: one-channel generic registration does not weaken Supply two-channel rule
+PASS ALIGNMENT composition: unknown modules refused
+PASS ALIGNMENT composition: missing module refused
+PASS ALIGNMENT composition: module kind refused
+PASS ALIGNMENT composition: module version refused
+PASS ALIGNMENT composition: contract version refused
+PASS ALIGNMENT composition: dependency registration must match
+PASS ALIGNMENT composition: cycles refused even in malformed trusted registration
+PASS ALIGNMENT composition: tampered bytes refused
+PASS ALIGNMENT composition: unsafe path refused ../alpha.bin
+PASS ALIGNMENT composition: unsafe path refused /tmp/alpha.bin
+PASS ALIGNMENT composition: unsafe path refused modules/../alpha.bin
+PASS ALIGNMENT composition: unsafe path refused modules\alpha.bin
+PASS ALIGNMENT composition: linked ancestor refused
+PASS ALIGNMENT composition: mode mismatch refused
+PASS ALIGNMENT composition: unregistered driver refused
+PASS ALIGNMENT composition: unregistered page/layout refused
+PASS ALIGNMENT composition: packaging and compiled product registrations match
+PASS ALIGNMENT composition: null/missing registration structure refused
+PASS ALIGNMENT composition: duplicate trusted registrations refused without fallback
+PASS ALIGNMENT composition: schema1 station JSON remains compatible
+PASS A01 slow storage background ownership, detached versioned projections and read-only snapshots
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime 12649611-ef4d-4a1b-b805-0b806b292b2f station VIEW-4cfe991f6c064b83bad7cfb767e15642 configuration SIM-1 mode Simulation ready for identity/context validation","State":{"Runtime":"12649611-ef4d-4a1b-b805-0b806b292b2f","Station":"VIEW-4cfe991f6c064b83bad7cfb767e15642","Revision":"SIM-1","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: <WORKTREE>","State":{"ContentRoot":"<WORKTREE>","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+PASS A01 startup view/layout, shared command deduplication/one sender, failed-stop resource shutdown and backup authority
+PASS A01 bounded command/control saturation and concurrent overload during real SQLite handoff
+Unhandled exception. System.AggregateException: Runtime cleanup failures; active ownership is retained until safe termination (Controlled stop completed with retained diagnostic failures (SQLite Error 19: 'SIMULATION stop persistence failure'.))
+ ---> System.AggregateException: Controlled stop completed with retained diagnostic failures (SQLite Error 19: 'SIMULATION stop persistence failure'.)
+ ---> Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 19: 'SIMULATION stop persistence failure'.
+   at Microsoft.Data.Sqlite.SqliteException.ThrowExceptionForRC(Int32 rc, sqlite3 db)
+   at Microsoft.Data.Sqlite.SqliteDataReader.NextResult()
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReader()
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteNonQuery()
+   at Ipc.Supply.SupplyStore.Exec(String sql, SqliteTransaction tx, Object[] values) in <WORKTREE>/src/Ipc.Supply/Store.cs:line 84
+   at Ipc.Supply.SupplyStore.Commit(StationState state, String kind, String owner, String actor, String evidence, Command command, CommandReceipt receipt, BusinessRequest request, Observation observation, SupplyOperation operation, SendAttempt attempt, IntegrationResponse response, Boolean count, ConfigRevision config, Alarm alarm) in <WORKTREE>/src/Ipc.Supply/Store.cs:line 158
+   at Ipc.Supply.StationApplication.StopCore() in <WORKTREE>/src/Ipc.Supply/StationApplication.cs:line 675
+   at Ipc.Platform.StationDispatcher.<>c__DisplayClass7_0.<<Invoke>b__0>d.MoveNext() in <WORKTREE>/src/Ipc.Platform/StationDispatcher.cs:line 57
+--- End of stack trace from previous location ---
+   at Ipc.Platform.StationDispatcher.<>c__DisplayClass6_0`1.<<Invoke>b__0>d.MoveNext() in <WORKTREE>/src/Ipc.Platform/StationDispatcher.cs:line 50
+--- End of stack trace from previous location ---
+   at Ipc.Platform.StationDispatcher.Consume() in <WORKTREE>/src/Ipc.Platform/StationDispatcher.cs:line 32
+   at Ipc.Product.ProductRuntime.StopCore(CancellationToken token) in <WORKTREE>/src/Ipc.Product/ProductRuntime.cs:line 173
+   --- End of inner exception stack trace ---
+   at Ipc.Product.ProductRuntime.StopCore(CancellationToken token) in <WORKTREE>/src/Ipc.Product/ProductRuntime.cs:line 179
+   at Ipc.Product.ProductRuntime.DisposeAsync() in <WORKTREE>/src/Ipc.Product/ProductRuntime.cs:line 269
+   --- End of inner exception stack trace ---
+   at Ipc.Product.ProductRuntime.DisposeAsync() in <WORKTREE>/src/Ipc.Product/ProductRuntime.cs:line 311
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.<DisposeAsync>g__Await|26_0(Int32 i, ValueTask vt, List`1 toDispose)
+   at Microsoft.Extensions.Hosting.Internal.Host.DisposeAsync()
+   at Microsoft.Extensions.Hosting.Internal.Host.Dispose()
+   at AlignmentRuntimeVerification.Run(String root, String url, String workspace) in <WORKTREE>/tests/Ipc.Verification/AlignmentRuntimeVerification.cs:line 111
+   at AlignmentRuntimeVerification.Run(String root, String url, String workspace)
+   at AlignmentRuntimeVerification.Run(String root, String url, String workspace) in <WORKTREE>/tests/Ipc.Verification/AlignmentRuntimeVerification.cs:line 111
+   at AlignmentRuntimeVerification.Run(String root, String url, String workspace) in <WORKTREE>/tests/Ipc.Verification/AlignmentRuntimeVerification.cs:line 111
+   at Program.<Main>$(String[] args) in <WORKTREE>/tests/Ipc.Verification/Program.cs:line 58
+   at Program.<Main>$(String[] args) in <WORKTREE>/tests/Ipc.Verification/Program.cs:line 432
+   at Program.<Main>(String[] args)

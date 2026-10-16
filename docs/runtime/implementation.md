@@ -1,5 +1,7 @@
 # WP-IPC-RUNTIME-03 implementation record
 
+> 当前纠偏执行与结果入口：[AUDIT-RECONCILIATION-01](../work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)。目标设计和下文历史实施/不测试记录保持形成时含义；当前08/10/09实施及验证以该包的同版报告为准。原字节已归档，D/RV不变。
+
 当前独立复核：[MAIN-REVIEW-03](../reviews/main-static-review-03.md)，基准main `2579392`（PR #6/#7已合并）。8项指定整改路径静态补齐，E-06/E-10仍有工程缺口；全部运行NOT_RUN，Windows06/真实集成05分别保持NOT_RUN/BLOCKED。后续见工程增量08、参考验证09；下文07/更早记录保留形成时范围。
 
 当前工程路径与未验证边界见 [ENGINEERING-CLOSURE-07](engineering-closure-07.md)。10项源码整改已实现，Storage3、显式维护和当前UI以07记录为准；本轮未测试/构建/运行，原实施与历史验证不倒写。

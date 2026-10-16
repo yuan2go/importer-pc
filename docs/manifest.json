@@ -1,19 +1,19 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-RUNTIME-03",
+  "work_package": "WP-IPC-RUNTIME-HARDENING-04",
   "created_date": "2026-10-16",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/wp-ipc-runtime-03",
+  "branch": "codex/wp-ipc-runtime-hardening-04",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
-  "framework_design_state": "REFERENCE_IMPLEMENTATION_CORE_VERIFIED_WINDOWS_RUNTIME_BLOCKED",
-  "next_implementation_work_package": null,
+  "framework_design_state": "REFERENCE_HARDENING_CORE_VERIFIED_WINDOWS_NOT_RUN",
+  "next_implementation_work_package": "WP-IPC-INTEGRATION-BOUNDARY-05",
   "previous_manifest": {
-    "commit": "89089092ad8b7445071e0c12c9c558dc012a26e5",
+    "commit": "752d5a89a9bf2a5e54c2551a3af77b82e1bc1961",
     "path": "docs/manifest.json",
-    "git_blob": "65577781f252e24ad90f92ec25cc79c6f0f681e3",
-    "meaning": "Formation-time provenance and historical evidence retained in Git; current rows identify authorized reference implementation and documents."
+    "git_blob": "ba8b0118acb3f8bf5d3146098e012d46f4af4e46",
+    "meaning": "RUNTIME-03 formation-time records retained in Git; only affected current file records updated."
   },
   "self_verification": {
     "sha256_file": "manifest.sha256",
@@ -164,15 +164,15 @@
     },
     {
       "path": "README.md",
-      "sha256": "587dd1608ecbc8e7ecbfdfc9892e2f635ec392dbdb5badc0ed698023e72a56a0",
-      "size_bytes": 1483,
-      "git_blob": "f426318033d0ca2aa5765a92ba7dc3965b170afb",
-      "version": "runtime-1.0",
+      "sha256": "5430547cb7cf0edf1ecef08ca40e5d474780b2429cc87dc4ba49f53e928137dc",
+      "size_bytes": 1509,
+      "git_blob": "56077a46bea9c84950d6d62474836ee6b72e103b",
+      "version": "runtime-hardening-04",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "327c9b1f4bcdf72f6f153ce565344087ac4ab2b5"
+      "previous_git_blob": "f426318033d0ca2aa5765a92ba7dc3965b170afb"
     },
     {
       "path": "config/presentation.json",
@@ -209,15 +209,15 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "53f24e8fffa56a263928ea39e08bdc3061f7fb86df6f9528bfd7d0bff2e23431",
-      "size_bytes": 4005,
-      "git_blob": "a0f12d0ce0c2b07faee6e78314bbc483367cd954",
-      "version": "runtime-1.0",
+      "sha256": "f3a2e1d8cca36046db1b62ff7239b7b33822fdee02b643a429708a0c3e66c029",
+      "size_bytes": 4197,
+      "git_blob": "44026ad1c650f105b22694fbae2cfb853aceed89",
+      "version": "runtime-hardening-04",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "859e4354bad5a55679b729f8eca5bcd6d20a5ae0"
+      "previous_git_blob": "a0f12d0ce0c2b07faee6e78314bbc483367cd954"
     },
     {
       "path": "docs/archive/pre-framework-20261016/AGENTS.md.txt",
@@ -390,14 +390,15 @@
     },
     {
       "path": "docs/readiness/revision-and-verification.md",
-      "git_blob": "d5c36af2df500a1854ff3f0ac7a761a6770ac328",
-      "sha256": "8ecc042188718a50aa1579db539e63816909d37f91b31fc6e8fb41484182e77d",
-      "size_bytes": 7262,
-      "version": "unchanged-from-39747a8",
+      "git_blob": "b30b095c4b3dac1d5f5ada955d5da2336eb0f03b",
+      "sha256": "f8c6c1e1be3c5b0500585e26badd812f5c19375875bac67c6afaf26366eb0ca5",
+      "size_bytes": 7469,
+      "version": "runtime-hardening-04",
       "status": "inherited_baseline",
       "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
-      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/readiness/revision-and-verification.md",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "d5c36af2df500a1854ff3f0ac7a761a6770ac328"
     },
     {
       "path": "docs/readiness/technical-baseline.json",
@@ -524,26 +525,50 @@
       "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
     },
     {
-      "path": "docs/runtime/implementation.md",
-      "sha256": "f421e3cd9fd6cba947ca2cb9c937d578393c1a8d2d97d78e21a74f04c9220879",
-      "size_bytes": 4391,
-      "git_blob": "e41f8f2d281ef6a71ba49b26623f3439ead152bb",
-      "version": "runtime-1.0",
+      "path": "docs/runtime/hardening-04-checks.json",
+      "sha256": "5d83054acb1fcf0b37b54addc351f3434dfb388996b55cb58dbdac60b06c6a2a",
+      "size_bytes": 6300,
+      "git_blob": "2b9cc86cf6e47d5dd2a8df1828feb494877d31c5",
+      "version": "runtime-hardening-04",
       "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; no restricted customer originals or assets",
       "storage_scope": "public_repository"
     },
     {
-      "path": "docs/runtime/operations.md",
-      "sha256": "e30d7ec19a2c5dd08f6025bca239cd319b027693e771063a9f0dc172653ed203",
-      "size_bytes": 11670,
-      "git_blob": "e3a79fde49184fb739d0366cd7dbc478fa9d652e",
-      "version": "runtime-1.0",
+      "path": "docs/runtime/hardening-04.md",
+      "sha256": "6fa8a1639fdc660ac5c0dbd0c8cc1eda31f684f165f005b7b958ae9a86b38186",
+      "size_bytes": 5756,
+      "git_blob": "9ce724af87b9b05914a6d314167859e6b70503d4",
+      "version": "runtime-hardening-04",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; no restricted customer originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/implementation.md",
+      "sha256": "8473b353c9d1990a020a3312cb27d31bf25b86a66711b3b363def63a87ac69aa",
+      "size_bytes": 4520,
+      "git_blob": "5a77e64a1903d0a42223993420eb15ca9c847793",
+      "version": "runtime-hardening-04",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "e41f8f2d281ef6a71ba49b26623f3439ead152bb"
+    },
+    {
+      "path": "docs/runtime/operations.md",
+      "sha256": "1540e5443b065a100bdc288a915f97d496dd92bd90f3e0721188090f742e8c4d",
+      "size_bytes": 15268,
+      "git_blob": "a1f3f5329d2979d0f7371ae10727f3f015f5013b",
+      "version": "runtime-hardening-04",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "e3a79fde49184fb739d0366cd7dbc478fa9d652e"
     },
     {
       "path": "docs/runtime/publication.md",
@@ -635,6 +660,17 @@
       "previous_git_blob": "6dbfa3116d408cf8f295368eb034c953e0edd7a1"
     },
     {
+      "path": "docs/work-packages/WP-IPC-RUNTIME-HARDENING-04.md",
+      "sha256": "108a495c454abcec7c5bd1368eb115e9cf304b62c494ad0ba0327ef21f3103b8",
+      "size_bytes": 2544,
+      "git_blob": "95de8b55857c1d9bbf302e2b6c99b6a30c4e888f",
+      "version": "runtime-hardening-04",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; no restricted customer originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "global.json",
       "sha256": "d1bb820bf074027be921b263729d1fba343d34328f0c4b7484d10162287c059e",
       "size_bytes": 55,
@@ -669,14 +705,15 @@
     },
     {
       "path": "scripts/seal.py",
-      "sha256": "767e485c610a4343d22d1229ed4bc9ee3e6c9b4464256c7feaa64baf3fc5884e",
-      "size_bytes": 3088,
-      "git_blob": "1b4d61d31d69f342d5c2e9abff3b514d5fa1ffd1",
-      "version": "runtime-1.0",
+      "sha256": "34f946f75274f9dcaf60ff35a6ecba2ed77c32a0388f972440a7d957e563c8b9",
+      "size_bytes": 3098,
+      "git_blob": "ef5fabc9b03aa1bd5bb2699196e454948aad911f",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "1b4d61d31d69f342d5c2e9abff3b514d5fa1ffd1"
     },
     {
       "path": "scripts/smoke.py",
@@ -713,14 +750,15 @@
     },
     {
       "path": "src/Ipc.Adapters/LoopbackIntegration.cs",
-      "sha256": "075a66b1b6ff793710262bad41e3935972c05f376ab38366258da4a80040b9bc",
-      "size_bytes": 2672,
-      "git_blob": "5196d52cef6955d0cd3c4a5dc4315a997e500c15",
-      "version": "runtime-1.0",
+      "sha256": "cbc70f1c6acbf4f8a6aa38cb28a662dfe2631845cdf797749c1081c587739a60",
+      "size_bytes": 2688,
+      "git_blob": "171f5017875ebc6bdf68cdba7e43474a45449f63",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "5196d52cef6955d0cd3c4a5dc4315a997e500c15"
     },
     {
       "path": "src/Ipc.Adapters/ObservationSources.cs",
@@ -733,6 +771,17 @@
       "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
       "storage_scope": "public_repository",
       "previous_git_blob": "6cedbf49b0831efdb58b4fdc12e20c69d44c4326"
+    },
+    {
+      "path": "src/Ipc.Adapters/SimulationRequestContract.cs",
+      "sha256": "584a96537db59f58e8229c8479e58049c26964b3b12cbbce9c08cc64508ae80b",
+      "size_bytes": 2770,
+      "git_blob": "e4315d95d723d36d9c51deac50a6714eeeae4fde",
+      "version": "runtime-hardening-04",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; no restricted customer originals or assets",
+      "storage_scope": "public_repository"
     },
     {
       "path": "src/Ipc.Adapters/packages.lock.json",
@@ -824,36 +873,39 @@
     },
     {
       "path": "src/Ipc.Desktop/MainWindow.xaml",
-      "sha256": "9d49fdc4d6646c9a0c9d4f5eaba19baca789827feb1ec760113bf56d6954e883",
-      "size_bytes": 7449,
-      "git_blob": "f59d58f3a33bc384a448255e29cb798944d83fc6",
-      "version": "runtime-1.0",
+      "sha256": "eacbf6a3fae4fdbeeb3800169248c6177b414e1ebb1e25bdc73564732424a79f",
+      "size_bytes": 9154,
+      "git_blob": "e94937349bedb329838c4799deb43bd331fa599b",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "f59d58f3a33bc384a448255e29cb798944d83fc6"
     },
     {
       "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
-      "sha256": "502a0c73117680d73452c8f995f1db3fbc9e4cbea7ea0ba4bef6dc5c91a3ecd3",
-      "size_bytes": 13592,
-      "git_blob": "bfc91fbe2afd7ea8aed3b5d8e1aac3c96404d51d",
-      "version": "runtime-1.0",
+      "sha256": "2d68f54fa7d731413bc6a8b7cf362c3156576d34a1af8f9eb617babe9622703f",
+      "size_bytes": 16561,
+      "git_blob": "70e0aef66d3193fce38348a2706844c5c7e8ad90",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "bfc91fbe2afd7ea8aed3b5d8e1aac3c96404d51d"
     },
     {
       "path": "src/Ipc.Desktop/ViewModels.cs",
-      "sha256": "928864b77e1e415a701b7862b84d08a4002845c57bbf9688c3900920c62d72d4",
-      "size_bytes": 5088,
-      "git_blob": "f8683d149450ffcc943270afd71c7bc128fd0705",
-      "version": "runtime-1.0",
+      "sha256": "18e68a2f6f91983d9a3bb9c861432853511cccf8d7ab168e9fc7fd9870513c5d",
+      "size_bytes": 6056,
+      "git_blob": "8137af7048b06c1fa98a0c775daa0b5e4d94772e",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "f8683d149450ffcc943270afd71c7bc128fd0705"
     },
     {
       "path": "src/Ipc.Desktop/packages.lock.json",
@@ -879,58 +931,63 @@
     },
     {
       "path": "src/Ipc.Fixture/Ipc.Fixture.csproj",
-      "sha256": "6309e4a9d3ffb105a923d4a52af89864041015befabe6155e9c46f9ad232659f",
-      "size_bytes": 132,
-      "git_blob": "00f4f73299f96646be371981013942b2af616bc7",
-      "version": "runtime-1.0",
+      "sha256": "94ff68933a771b581e88ee2aaa465be74225bea171f936abe625378f7c9a1cb6",
+      "size_bytes": 136,
+      "git_blob": "ad97d421fc7594a6b696b39ae70b52b6b6f92276",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "00f4f73299f96646be371981013942b2af616bc7"
     },
     {
       "path": "src/Ipc.Fixture/Program.cs",
-      "sha256": "49fb08bb5c04f67c320d358cade16543e94f8684fd451e30d9b83391565198e7",
-      "size_bytes": 2249,
-      "git_blob": "06eee994a79865274d4d7024955a8360200c37af",
-      "version": "runtime-1.0",
+      "sha256": "adcfe74bc7b9c3c955783f780142f7243a731e950880b003fe09a546989d3de6",
+      "size_bytes": 2273,
+      "git_blob": "9a46fd4e3e1a75035a99515dc8dac9172f9c24c0",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "06eee994a79865274d4d7024955a8360200c37af"
     },
     {
       "path": "src/Ipc.Fixture/Receiver.cs",
-      "sha256": "5fcc0aabe1c9241152a68c4101e6589df50316f8a4d9995e18754cd9f482eda3",
-      "size_bytes": 7765,
-      "git_blob": "4df4f458abff06753dedd69adfd67b1481f0508c",
-      "version": "runtime-1.0",
+      "sha256": "07b1fc12202fa2ab4073832383253265572cbf765ade4769326f75c0ab48b452",
+      "size_bytes": 7809,
+      "git_blob": "ed9c6aee0e70938342815d7d78afb5cd35bf61f3",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "4df4f458abff06753dedd69adfd67b1481f0508c"
     },
     {
       "path": "src/Ipc.Fixture/packages.lock.json",
-      "sha256": "2f2b755c1b83d423b5ae93e5803c20274cc5491e56bec399ebd792a417a8f95a",
-      "size_bytes": 2161,
-      "git_blob": "7dadd6baee10b8c29ef945df4d89728a11ae12f3",
-      "version": "runtime-1.0",
+      "sha256": "eb1f8ed99f6c70ce0e0c42826ec536133f6602297913dc41132e9789dcded2e2",
+      "size_bytes": 2293,
+      "git_blob": "be75d5cc4b2c5430ec84e24c2b17f265d0287550",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "7dadd6baee10b8c29ef945df4d89728a11ae12f3"
     },
     {
       "path": "src/Ipc.Fixture/packages.win-x64.lock.json",
-      "sha256": "56a1cb7c290db03a53fe7caa3b25414b5f1f8ee4af77aa5291d0831cc519b9ad",
-      "size_bytes": 2413,
-      "git_blob": "9b5c3746959640d5b727ce4c729da58d8d19da12",
-      "version": "runtime-1.0",
+      "sha256": "be30e95c96a01599c10c840090387cab106672cdbeeeba60025571e5fd1e8fd5",
+      "size_bytes": 2545,
+      "git_blob": "4fac5ea648b78a711f3c36ea0a28ba29afa07ff9",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "9b5c3746959640d5b727ce4c729da58d8d19da12"
     },
     {
       "path": "src/Ipc.Platform/Configuration.cs",
@@ -1022,14 +1079,15 @@
     },
     {
       "path": "src/Ipc.Product/ProductRuntime.cs",
-      "sha256": "7b32bb018ca2f31d5dc9f99d91f42797171ece589a12116192ad6520a83248bd",
-      "size_bytes": 20779,
-      "git_blob": "1917db4e30f40e3a79bc4867cf732588d797f90a",
-      "version": "runtime-1.0",
+      "sha256": "31ec6a38c1af742f0216a1740e00735d8313446dae0ac57994a9d63910017ac5",
+      "size_bytes": 20114,
+      "git_blob": "3def940aa00ad25404fc9e6de44154095ccd3edc",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "1917db4e30f40e3a79bc4867cf732588d797f90a"
     },
     {
       "path": "src/Ipc.Product/Program.cs",
@@ -1078,38 +1136,50 @@
     },
     {
       "path": "src/Ipc.Supply/Model.cs",
-      "sha256": "f058c8d16578de7946451dc8d5e43f1349750a53afc32c5a9786490dc667e4e8",
-      "size_bytes": 7125,
-      "git_blob": "19b67a7bda286520eca1fddfa69d994fee5cceac",
-      "version": "runtime-1.0",
+      "sha256": "1add15ddf64f790168eacde23e4ec7d60617730396df455eac6ee7a59a024e31",
+      "size_bytes": 7238,
+      "git_blob": "8a8a63157e244f1f2ee30f570b230c4e14f21040",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "19b67a7bda286520eca1fddfa69d994fee5cceac"
+    },
+    {
+      "path": "src/Ipc.Supply/RequestContract.cs",
+      "sha256": "63425e5fe696a42e2ccf84c52c2442ce838f7251fce3b651c36ea2f3469ca710",
+      "size_bytes": 648,
+      "git_blob": "f3ccc2407a18aa92f9ec8e1cfa7abdb252041bad",
+      "version": "runtime-hardening-04",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; no restricted customer originals or assets",
       "storage_scope": "public_repository"
     },
     {
       "path": "src/Ipc.Supply/StationApplication.cs",
-      "sha256": "b3190986f466a0642d82cc3a3e15cef01df74dd1a0cb7d4db5f920b17d9b4cee",
-      "size_bytes": 42384,
-      "git_blob": "d365b0cac49567f36cfaf6e7e9d429338fcf9df8",
-      "version": "runtime-1.0",
+      "sha256": "61b53c80faa088f58330df8ec7e00e9ebf5d96b828e1f4f7c144ce65d3249154",
+      "size_bytes": 47549,
+      "git_blob": "01d630d64f93ede6f7f7b129d177ac77c6a51136",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "a9627dc033f383880f4fb9b181f9be2122ec4c09"
+      "previous_git_blob": "d365b0cac49567f36cfaf6e7e9d429338fcf9df8"
     },
     {
       "path": "src/Ipc.Supply/Store.cs",
-      "sha256": "5de79d8d72f9f48e3cf28768afd0f15832ed2a3dd8ad493e5235e5a277c6d9cc",
-      "size_bytes": 18284,
-      "git_blob": "c24c9e140fb1de7bca4a2743042a6f2d4c6bc72a",
-      "version": "runtime-1.0",
+      "sha256": "bafb84468abf77c5302e8865730d417158f8df64212a402f0bc7f7f2a4c21d04",
+      "size_bytes": 18726,
+      "git_blob": "eed9d4afe3aea3e8469a53f9320ed3b1a4def5ec",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "d51038c6b67716de687982f92e1e7b266a02b7da"
+      "previous_git_blob": "c24c9e140fb1de7bca4a2743042a6f2d4c6bc72a"
     },
     {
       "path": "src/Ipc.Supply/packages.lock.json",
@@ -1134,6 +1204,17 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "tests/Ipc.Verification/HardeningVerification.cs",
+      "sha256": "28e9b9de2bc613cfdde6cea38c378834364c8cea0009f2ca51f02da39a079d9e",
+      "size_bytes": 23280,
+      "git_blob": "e470fc4349c1d9edb44ab045587c5a1ca1159da2",
+      "version": "runtime-hardening-04",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; no restricted customer originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "tests/Ipc.Verification/Ipc.Verification.csproj",
       "sha256": "d28bfac57089a6d0d9aec317edefa08c792619028b8d2c79373ce52be1717909",
       "size_bytes": 196,
@@ -1146,15 +1227,37 @@
     },
     {
       "path": "tests/Ipc.Verification/Program.cs",
-      "sha256": "542bc458d3e6294fcc765a8ca8b789290359068139e3cbdccd260836880fea0f",
-      "size_bytes": 44539,
-      "git_blob": "0493729886c40104ba6c871ed777ea65551d8563",
-      "version": "runtime-1.0",
+      "sha256": "4a16f8836569880c1803dfa2f1869a5ef8f4c45ea26258486efbcde9c3d90c4f",
+      "size_bytes": 44820,
+      "git_blob": "cf54869a1869eead11207fc20acaf1873eeedb38",
+      "version": "runtime-hardening-04",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "6d8d5e91dec0b451c536e717cb9e5c70244541ea"
+      "previous_git_blob": "0493729886c40104ba6c871ed777ea65551d8563"
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/simulation-v1-request.json",
+      "sha256": "e7554eea0a949a116361c199b584f3a5fd3d3f459d0b388d4e38ad44112a0a07",
+      "size_bytes": 1326,
+      "git_blob": "c041a87f446a94f68626a1084fc97c8511fa849c",
+      "version": "runtime-hardening-04",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; no restricted customer originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/simulation-v1-response.json",
+      "sha256": "1bd599d1342f2e97c817197467de98dfd356bffb9dbbd797f45ae35386db155c",
+      "size_bytes": 308,
+      "git_blob": "d7e39f487289280abcbc33d1338629e8ef77ab10",
+      "version": "runtime-hardening-04",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; no restricted customer originals or assets",
+      "storage_scope": "public_repository"
     },
     {
       "path": "tests/Ipc.Verification/packages.lock.json",
@@ -1214,5 +1317,17 @@
     "binary_storage": "github_release_asset_not_git",
     "code_commit": "04a3d46713b318c84999906ae2479b62e7d49cf0",
     "current_remote_status": "read_PR_and_Release_records"
+  },
+  "followup_work_packages": [
+    "WP-IPC-INTEGRATION-BOUNDARY-05",
+    "WP-IPC-WINDOWS-VALIDATION-06"
+  ],
+  "hardening_publication": {
+    "entry": "docs/runtime/hardening-04.md",
+    "checks": "docs/runtime/hardening-04-checks.json",
+    "source_commit": "2619a7a2a485a8176ae15ea7ed6fe0a18d34d9f6",
+    "windows_runtime": "NOT_RUN",
+    "binary_storage": "local_artifacts_not_git",
+    "pull_request": "pending_creation"
   }
 }

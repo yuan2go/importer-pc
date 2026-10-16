@@ -1,0 +1,152 @@
+{
+  "work_package": "WP-IPC-RUNTIME-HARDENING-04",
+  "execution_base": "752d5a89a9bf2a5e54c2551a3af77b82e1bc1961",
+  "source_commit": "2619a7a2a485a8176ae15ea7ed6fe0a18d34d9f6",
+  "environment": {
+    "os": "macOS / Darwin 25.5.0",
+    "architecture": "arm64",
+    "sdk": "10.0.402",
+    "powershell": "7.6.7",
+    "windows_available": false
+  },
+  "baseline": {
+    "build": "PASS",
+    "regression_groups": 15,
+    "regression": "PASS",
+    "build_log_sha256": "924c391f090e87bd43641844077bf116e9650d2a7c14e4969fa3dd0c96de510c",
+    "test_log_sha256": "70fa5c92ece5ec29274acf8b6155185660623bbb30fdae7a5dd44292dd8c80cd"
+  },
+  "original_reproductions": {
+    "status": "FAIL_BEFORE_FIX",
+    "failures": [
+      "Overload + Prepared: CancelPrepared rejected; no recovery path",
+      "Old active alarm hidden after 350 historical occurrences",
+      "Acknowledged overload marker rewritten from cumulative missed counter"
+    ],
+    "log_sha256": "ac9391f5101dfd0c57dfb21d4af147947e8d20b52edbc5f45e30525656896a39"
+  },
+  "build": {
+    "status": "PASS",
+    "command": "./scripts/build.sh",
+    "warnings": 0,
+    "errors": 0,
+    "includes": "WPF cross compilation, not execution",
+    "log_sha256": "36342748795db2a937d5b99a0bfe9462ee4543058d58a123a9dc12fb1ec6fee5"
+  },
+  "regression": {
+    "status": "PASS",
+    "command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll .",
+    "groups": 24,
+    "hardening_groups": 9,
+    "cases": [
+      "H04 overload + Prepared controlled disposition",
+      "H04 old active alarms survive 350 historical occurrences",
+      "H04 source marker does not resurrect after acknowledged recovery",
+      "H04 original actor expiry cannot reauthorize Prepared or release entity",
+      "H04 cancel competes with pre-network guard and durable handoff",
+      "H04 all Prepared kinds terminate without inventing release or acceptance",
+      "H04 SIMULATION-v1 baseline JSON compatibility and schema1 checksum",
+      "H04 same alarm code retains independent owners and recovery",
+      "H04 SQLite local termination rollback and acknowledged restart",
+      "AC-01/10 lifecycle, bounded command queue and ownership",
+      "AC-01/11 product assembly, modes and strict configuration",
+      "AC-02/07 combined guards and independent alarms",
+      "AC-03/04/06 continuous same-code entities, correction and unique ledger",
+      "AC-04/09 split, atomic two-lane demand and close barrier",
+      "AC-05/06/09 dropped/late response, original binding and close Unknown",
+      "AC-05 query absent/unsupported is not proof of non-delivery; delayed receipts",
+      "AC-05 actual SQLite rollback and T3 storage failure",
+      "AC-05/09 real process crash/restart windows",
+      "AC-02/05/06 durable T3 failure, stale commands, entity permit restart",
+      "AC-10 actual observation queue full preserves accepted events and overflow marker",
+      "AC-04/06 guarded pre-network cancellation allows same-ID second attempt",
+      "AC-01/06/09 config validation/activation and backup quarantine",
+      "AC-09 restored Prepared may already exist remotely, retention preserves current aggregate",
+      "AC-01/03/10 source replacement, capacity and resource stop"
+    ],
+    "log_sha256": "4a4c11ee8a30d56e87356ba2be5d6be7081dc5cc955f1b0080b975d1085ce86a"
+  },
+  "persistence": {
+    "schema1_sql_unchanged": true,
+    "migration_checksum_unchanged": true,
+    "original_payloads_unchanged": true,
+    "forward_migration": "NOT_REQUIRED",
+    "old_exe_on_new_states": "UNSUPPORTED; use pre-upgrade backup/new root/quarantine",
+    "sqlite": "actual SQLite transactions, rollback trigger, process reopen, separate receiving ledger"
+  },
+  "publication": {
+    "status": "PASS",
+    "files": 812,
+    "zip_bytes": 118942932,
+    "zip_sha256": "2d75536788c14d4df0325a6b6e2f2a74237ff9c9e5d348f28af0bb81235d2c88",
+    "checks": [
+      "all SHA256SUMS",
+      "module hashes",
+      "three Windows PE executables",
+      "ZIP CRC"
+    ],
+    "windows_execution": "NOT_RUN",
+    "release": {
+      "WorkPackage": "WP-IPC-RUNTIME-HARDENING-04",
+      "SchemaVersion": 1,
+      "SourceCodeSha256": "1e730f9a07560dc957a4b35a1f66161b40255f1b4b2266f9ac4477721aa13730",
+      "GitBase": "2619a7a2a485a8176ae15ea7ed6fe0a18d34d9f6",
+      "Mode": "Simulation",
+      "Target": "win-x64"
+    }
+  },
+  "native_published_smoke": {
+    "status": "PASS",
+    "results": {
+      "published_native_start": "PASS",
+      "second_process_ownership": "PASS",
+      "published_backup_preflight_restore_quarantine": "PASS",
+      "metadata_export": "PASS",
+      "unwritable_storage_not_ready": "PASS",
+      "changed_module_not_ready": "PASS",
+      "production_no_fixture_or_business": "PASS",
+      "windows_desktop_runtime": "BLOCKED_ON_NON_WINDOWS"
+    },
+    "windows_result_interpretation": "NOT_RUN: inherited smoke script reports BLOCKED_ON_NON_WINDOWS",
+    "log_sha256": "fdf8a34c107d737320b98bb31975d48d34a3ec8955a64c52cec7d566739dfc6c"
+  },
+  "powershell": {
+    "publish_on_macOS": "PASS",
+    "publish_station_syntax": "PASS",
+    "windows_station_execution": "NOT_RUN"
+  },
+  "windows": {
+    "status": "NOT_RUN",
+    "reason": "No configured Windows execution environment",
+    "not_executed": [
+      "desktop startup",
+      "focus and Enter/Esc/Tab",
+      "draft and scroll preservation",
+      "dual windows/layout",
+      "alarm/recovery interaction",
+      "station.ps1 Init/Run/Backup/Preflight/Upgrade/Rollback"
+    ]
+  },
+  "integration": {
+    "status": "BLOCKED",
+    "missing": [
+      "real SDK",
+      "WCS contract and receiving authority",
+      "reservation release/entity disposition",
+      "production quantity/identity/shift approval"
+    ],
+    "production": "NotReady; no simulation fallback"
+  },
+  "historical_rv": "RV-01..RV-17 OPEN, no status edits",
+  "public_scope": "Authorized generic code and synthetic data only; restricted untracked originals remain in original checkout",
+  "archive": {
+    "status": "PASS",
+    "command": "python3 tools/verify_archive.py --root . --scope public",
+    "business_acceptance": false
+  },
+  "review": {
+    "snapshot_and_handoff_serialized_with_overload_latch": true,
+    "old_attempt_cannot_resurrect_cancelled_request": true,
+    "local_terminal_is_not_release_or_admission": true
+  }
+}

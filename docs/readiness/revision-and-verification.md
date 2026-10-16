@@ -2,7 +2,7 @@
 
 工作包：WP-IPC-READINESS-02；日期：2026-10-16；状态：准备材料，未实施业务修订。
 
-本文把 [历史问题表](../reviews/issues.json) 转为可审查的后续交付项，不修改历史问题内容。原稿/真实工程的具体修订文件及 commit 必须在取得材料、批准范围后登记；当前没有可以承诺的业务代码路径或构建命令。
+本文把 [历史问题表](../reviews/issues.json) 转为可审查的后续交付项，不修改历史问题内容。原稿/真实工程的具体修订文件及 commit 必须在取得材料、批准范围后登记；该准备阶段没有业务代码路径或构建命令；当前独立参考产品已在RUNTIME-03实现，入口见 [runtime](../runtime/implementation.md)，当前加固见 [HARDENING-04](../work-packages/WP-IPC-RUNTIME-HARDENING-04.md)。旧现场迁移仍待证据。
 
 ## 修订批次
 

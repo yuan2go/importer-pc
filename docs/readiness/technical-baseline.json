@@ -1,0 +1,561 @@
+{
+  "schema_version": "1.0",
+  "work_package": "WP-IPC-READINESS-02",
+  "observed_date": "2026-10-16",
+  "baseline_commit": "8090914e752d724b3e67b09227609830030d9510",
+  "scope": "documentation_preparation_only",
+  "status": "PREPARATION_COMPLETE_EXTERNAL_INPUTS_BLOCKED",
+  "status_semantics": {
+    "VERIFIED": "仅该记录所述文档身份或当前资料事实已核对，不代表业务通过",
+    "BLOCKED": "所列证据或批准尚未取得，未执行依赖工作",
+    "PARTIAL": "已有部分来源记录，仍有明确缺项；不代表全文已入 main"
+  },
+  "reference_identity": [
+    {
+      "path": "docs/reviews/issues.json",
+      "sha256": "a16947ee9ee1a60a16afd35ab2b0e04897d88d24a44c97a1c2249ddeeb9d2ed9",
+      "basis": "public_baseline_bytes"
+    },
+    {
+      "path": "docs/ui/tokens/tokens.json",
+      "sha256": "09bbfe810d571cfd57115729c78f59a3f43ee65974ce317fe08b9bbe8e8efb5e",
+      "basis": "public_baseline_bytes"
+    },
+    {
+      "path": "docs/ui/tokens/tokens.css",
+      "sha256": "99ad481832ec36bb901032e597fccc9d36a0f7fa1b77ed5ffbf4c85434b18ec5",
+      "basis": "public_baseline_bytes"
+    }
+  ],
+  "source_registers": [
+    {
+      "path": "docs/baseline/MISSING.md",
+      "baseline_commit": "8090914e752d724b3e67b09227609830030d9510"
+    },
+    {
+      "path": "docs/reviews/STATUS.md",
+      "baseline_commit": "8090914e752d724b3e67b09227609830030d9510"
+    }
+  ],
+  "records": [
+    {
+      "id": "TB-01",
+      "subject": "资料仓库与保留成果身份",
+      "status": "VERIFIED",
+      "related_decisions": [],
+      "related_reviews": [],
+      "evidence_basis": [
+        "local HEAD and remote main both 8090914e752d724b3e67b09227609830030d9510",
+        "issues/tokens unchanged compared with baseline"
+      ],
+      "required_inputs": [],
+      "suggested_responsible_roles": [
+        "归档维护者"
+      ],
+      "completion_evidence": [
+        "起点提交与公开保留文件哈希可复核"
+      ],
+      "received_external_evidence": [],
+      "approval_records": []
+    },
+    {
+      "id": "TB-02",
+      "subject": "既有 C# 工程与发布基线",
+      "status": "BLOCKED",
+      "related_decisions": [
+        "D-14"
+      ],
+      "related_reviews": [
+        "RV-09"
+      ],
+      "evidence_basis": [
+        "current project has no .sln/.slnx/.csproj/.cs or release package available for verification",
+        "BASE-01"
+      ],
+      "required_inputs": [
+        "获授权可读的既有工程路径与 commit",
+        "实际部署版本/发布包哈希、依赖和配置/旧数据结构",
+        "工程中已有构建和发布说明"
+      ],
+      "suggested_responsible_roles": [
+        "代码所有者",
+        "现场维护"
+      ],
+      "completion_evidence": [
+        "实际读取工程后形成模块到现有文件映射",
+        "按真实工程说明记录构建/发布结果或准确失败原因；本轮无业务构建命令"
+      ],
+      "received_external_evidence": [],
+      "approval_records": []
+    },
+    {
+      "id": "TB-03",
+      "subject": "相机型号、SDK 与运行环境",
+      "status": "BLOCKED",
+      "related_decisions": [
+        "D-01"
+      ],
+      "related_reviews": [
+        "RV-09"
+      ],
+      "evidence_basis": [
+        "HW-01"
+      ],
+      "required_inputs": [
+        "型号/固件/SDK 版本与来源、位数、手册和官方样例",
+        "目标 Windows/CPU/驱动及实际回调样本"
+      ],
+      "suggested_responsible_roles": [
+        "设备供应/维护",
+        "客户端开发"
+      ],
+      "completion_evidence": [
+        "目标环境运行官方样例和真实适配的分项记录",
+        "回调所有权、稳定设备身份、重连和资源释放有证据"
+      ],
+      "received_external_evidence": [],
+      "approval_records": []
+    },
+    {
+      "id": "TB-04",
+      "subject": "供包台—WCS 实际契约",
+      "status": "BLOCKED",
+      "related_decisions": [
+        "D-02"
+      ],
+      "related_reviews": [
+        "RV-01",
+        "RV-06",
+        "RV-07"
+      ],
+      "evidence_basis": [
+        "INT-01",
+        "RV-07"
+      ],
+      "required_inputs": [
+        "版本化客户端合同，含副作用、请求身份、幂等/查询、认证、预留、关闭和报警",
+        "授权联调环境及接受/拒绝/结果不明样例"
+      ],
+      "suggested_responsible_roles": [
+        "WCS 接口负责人",
+        "产品",
+        "客户端维护者"
+      ],
+      "completion_evidence": [
+        "CAPI 逻辑目的到真实接口映射及双方确认",
+        "真实语义和查询/人工核对能力验证；不拿上游接口表替代"
+      ],
+      "received_external_evidence": [],
+      "approval_records": []
+    },
+    {
+      "id": "TB-05",
+      "subject": "数量与拆包策略",
+      "status": "BLOCKED",
+      "related_decisions": [
+        "D-03",
+        "D-04"
+      ],
+      "related_reviews": [
+        "RV-08"
+      ],
+      "evidence_basis": [
+        "DEC-01",
+        "RV-08"
+      ],
+      "required_inputs": [
+        "数量单位/范围/版本，等量/不足/超量分支的批准",
+        "扫描保留或移除、逐件贡献、承运粒度、剩余件归属"
+      ],
+      "suggested_responsible_roles": [
+        "产品",
+        "现场业务",
+        "WCS"
+      ],
+      "completion_evidence": [
+        "带批准人与日期的决策记录",
+        "共同案例数量账、扫描证据和请求数量一致"
+      ],
+      "received_external_evidence": [],
+      "approval_records": []
+    },
+    {
+      "id": "TB-06",
+      "subject": "实体时序与双相机映射",
+      "status": "BLOCKED",
+      "related_decisions": [
+        "D-05",
+        "D-06"
+      ],
+      "related_reviews": [
+        "RV-01",
+        "RV-02",
+        "RV-04",
+        "RV-09"
+      ],
+      "evidence_basis": [
+        "HW-01",
+        "RV-02",
+        "RV-09"
+      ],
+      "required_inputs": [
+        "相机—实体位—AGV—周转箱关系",
+        "入场/就位/装载/许可/离站/复位的来源、身份、版本、时效及控制权"
+      ],
+      "suggested_responsible_roles": [
+        "现场实施",
+        "设备",
+        "WCS",
+        "安全责任角色"
+      ],
+      "completion_evidence": [
+        "获确认的布局/事件时序及失效边界",
+        "连续实体和合法同码新实体可关联；实体动作由权威反馈证明"
+      ],
+      "received_external_evidence": [],
+      "approval_records": []
+    },
+    {
+      "id": "TB-07",
+      "subject": "离线与结果不明的人工核对",
+      "status": "BLOCKED",
+      "related_decisions": [
+        "D-07"
+      ],
+      "related_reviews": [
+        "RV-06",
+        "RV-07"
+      ],
+      "evidence_basis": [
+        "DEC-01",
+        "RV-06",
+        "RV-07"
+      ],
+      "required_inputs": [
+        "离线可进行的实体作业范围",
+        "无查询能力时的权威证据、人员职责、物品保留与恢复 SOP"
+      ],
+      "suggested_responsible_roles": [
+        "现场运营",
+        "WCS"
+      ],
+      "completion_evidence": [
+        "批准流程及实际可执行的核对记录",
+        "未知保持原身份，未确认关闭不换箱"
+      ],
+      "received_external_evidence": [],
+      "approval_records": []
+    },
+    {
+      "id": "TB-08",
+      "subject": "认证、登出、换班与受控退出",
+      "status": "BLOCKED",
+      "related_decisions": [
+        "D-08",
+        "D-11"
+      ],
+      "related_reviews": [
+        "RV-10"
+      ],
+      "evidence_basis": [
+        "RV-10"
+      ],
+      "required_inputs": [
+        "实际认证/登出能力和跳过登录的身份规则",
+        "活动箱/未决情况下的换班、退出、特殊操作权限与责任归属"
+      ],
+      "suggested_responsible_roles": [
+        "产品",
+        "运营",
+        "WCS",
+        "客户端维护者"
+      ],
+      "completion_evidence": [
+        "批准的身份生命周期和责任转移表",
+        "历史操作者、原请求和未决责任不被覆盖"
+      ],
+      "received_external_evidence": [],
+      "approval_records": []
+    },
+    {
+      "id": "TB-09",
+      "subject": "工位、扫码枪与显示输入环境",
+      "status": "BLOCKED",
+      "related_decisions": [
+        "D-09",
+        "D-10",
+        "D-12"
+      ],
+      "related_reviews": [
+        "RV-09",
+        "RV-12",
+        "RV-13"
+      ],
+      "evidence_basis": [
+        "BASE-01",
+        "HW-01",
+        "VAL-01"
+      ],
+      "required_inputs": [
+        "计划/实际工位及楼层规则",
+        "扫码枪模式、设备来源、前后缀、码制和编码",
+        "真实屏幕/有效客户区/DPI/输入方式/语言/提示声环境"
+      ],
+      "suggested_responsible_roles": [
+        "产品",
+        "设备",
+        "现场实施"
+      ],
+      "completion_evidence": [
+        "规则版本及真实输入/显示环境记录",
+        "Windows、扫码枪、DPI/触控/声音分项验收"
+      ],
+      "received_external_evidence": [],
+      "approval_records": []
+    },
+    {
+      "id": "TB-10",
+      "subject": "明细保留、单站性能与恢复指标",
+      "status": "BLOCKED",
+      "related_decisions": [
+        "D-13",
+        "D-15"
+      ],
+      "related_reviews": [
+        "RV-16"
+      ],
+      "evidence_basis": [
+        "DEC-01",
+        "VAL-01"
+      ],
+      "required_inputs": [
+        "保留期限口径、字段、旧数据和未决保护",
+        "单站峰值、突发、WCS 时延、资源容量、恢复目标"
+      ],
+      "suggested_responsible_roles": [
+        "运营",
+        "WCS",
+        "现场维护"
+      ],
+      "completion_evidence": [
+        "经确认的验收指标与容量/恢复证据",
+        "不从全场日产能直接推定单站峰值"
+      ],
+      "received_external_evidence": [],
+      "approval_records": []
+    },
+    {
+      "id": "TB-11",
+      "subject": "原始图像、HTML 依赖与历史资产",
+      "status": "PARTIAL",
+      "related_decisions": [
+        "D-16"
+      ],
+      "related_reviews": [
+        "RV-17"
+      ],
+      "evidence_basis": [
+        "SRC-01/02 collected in baseline continuation; not downloaded or revalidated here",
+        "SRC-03/04/05 and HIST-01/02 remain recorded",
+        "docs/baseline/MISSING.md"
+      ],
+      "required_inputs": [
+        "仍缺失的原附件/版本关系、新完整可编辑导出和历史截图",
+        "获授权受限归档目标"
+      ],
+      "suggested_responsible_roles": [
+        "资料所有者",
+        "设计维护者"
+      ],
+      "completion_evidence": [
+        "新取得资产逐项身份与引用登记",
+        "历史遗漏及格式问题保留；完整性不等于业务/排版验收"
+      ],
+      "received_external_evidence": [],
+      "approval_records": []
+    },
+    {
+      "id": "TB-12",
+      "subject": "完整资料存放/公开授权",
+      "status": "BLOCKED",
+      "related_decisions": [],
+      "related_reviews": [],
+      "evidence_basis": [
+        "PUB-01",
+        "docs/baseline/PUBLICATION.md"
+      ],
+      "required_inputs": [
+        "材料所有者明确公开许可范围，或明确授权的私有归档目标"
+      ],
+      "suggested_responsible_roles": [
+        "材料所有者"
+      ],
+      "completion_evidence": [
+        "范围与目标授权可核验后，逐文件复核并记录目标内容身份"
+      ],
+      "received_external_evidence": [],
+      "approval_records": []
+    },
+    {
+      "id": "TB-13",
+      "subject": "历史技术问题与设计参考",
+      "status": "VERIFIED",
+      "related_decisions": [],
+      "related_reviews": [
+        "RV-01",
+        "RV-02",
+        "RV-03",
+        "RV-04",
+        "RV-05",
+        "RV-06",
+        "RV-07",
+        "RV-08",
+        "RV-09",
+        "RV-10",
+        "RV-11",
+        "RV-12",
+        "RV-13",
+        "RV-14",
+        "RV-15",
+        "RV-16",
+        "RV-17"
+      ],
+      "evidence_basis": [
+        "docs/reviews/STATUS.md",
+        "docs/reviews/issues.json",
+        "docs/ui/tokens/tokens.json",
+        "docs/ui/tokens/tokens.css"
+      ],
+      "required_inputs": [],
+      "suggested_responsible_roles": [
+        "评审维护者"
+      ],
+      "completion_evidence": [
+        "历史 issues 和 tokens 保持原字节",
+        "OPEN 的权威来源仍为 docs/reviews/STATUS.md；未修改历史 JSON 添加关闭状态"
+      ],
+      "received_external_evidence": [],
+      "approval_records": []
+    }
+  ],
+  "decision_status": [
+    {
+      "id": "D-01",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-02",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-03",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-04",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-05",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-06",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-07",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-08",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-09",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-10",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-11",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-12",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-13",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-14",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-15",
+      "status": "UNDECIDED",
+      "approval_records": []
+    },
+    {
+      "id": "D-16",
+      "status": "UNDECIDED",
+      "approval_records": []
+    }
+  ],
+  "historical_reviews": {
+    "status": "ALL_OPEN",
+    "ids": [
+      "RV-01",
+      "RV-02",
+      "RV-03",
+      "RV-04",
+      "RV-05",
+      "RV-06",
+      "RV-07",
+      "RV-08",
+      "RV-09",
+      "RV-10",
+      "RV-11",
+      "RV-12",
+      "RV-13",
+      "RV-14",
+      "RV-15",
+      "RV-16",
+      "RV-17"
+    ],
+    "status_authority": "docs/reviews/STATUS.md",
+    "historical_tests_reexecuted": false
+  },
+  "verification": {
+    "documentation": "see docs/readiness/checks.json",
+    "business_tests": "NOT_RUN",
+    "historical_scenes": "NOT_RUN",
+    "sdk_wcs": "NOT_RUN",
+    "windows_dpi_touch": "NOT_RUN",
+    "physical_throughput_continuous_operation": "NOT_RUN"
+  },
+  "publication": {
+    "customer_materials_added_to_git": false,
+    "private_links_or_credentials_recorded": false,
+    "full_archive_in_main": false,
+    "this_branch_remote_inclusion": "NOT_PUBLISHED"
+  }
+}

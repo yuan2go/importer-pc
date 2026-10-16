@@ -1,0 +1,18 @@
+{
+  "Id": "13cb6f2414c6489f887f30b5c4da9ad3",
+  "OwnerId": "299ee4c91402424e9b670faa9fd11807",
+  "SessionId": "5ee5d9ab52d24f72b2dd2bd97ca73894",
+  "Kind": "Submit",
+  "OwnerRevision": 3,
+  "IntentKey": "299ee4c91402424e9b670faa9fd11807:Submit:3",
+  "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-8760b3fa62c2418ab021f89db523be66\u0022,\n  \u0022SessionId\u0022: \u00225ee5d9ab52d24f72b2dd2bd97ca73894\u0022,\n  \u0022OwnerId\u0022: \u0022299ee4c91402424e9b670faa9fd11807\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 1,\n  \u0022Quantity\u0022: 1,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 100,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-16T15:28:39.904532\u002B00:00\u0022\n  }\n}",
+  "PayloadHash": "1B0F3D8F401FAC06A5819114EE0BC975A2B5A6BB3190544D865886EBC9891773",
+  "Binding": {
+    "Id": "loopback",
+    "Revision": "1",
+    "Contract": "SIMULATION-v1",
+    "Endpoint": "http://127.0.0.1:56283/"
+  },
+  "Status": "Accepted",
+  "CreatedAt": "2026-10-16T07:28:39.920664+00:00"
+}

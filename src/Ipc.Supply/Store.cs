@@ -76,9 +76,12 @@ public sealed class SupplyStore : IDisposable
     public BusinessRequest? Request(string id) => Read<BusinessRequest>("SELECT json FROM requests WHERE id=$a", id).SingleOrDefault();
     public SupplyOperation[] History(string? filter, int offset, int limit) => Read<SupplyOperation>("SELECT json FROM operations WHERE $a IS NULL OR instr(json,$a)>0 ORDER BY created DESC,id LIMIT $b OFFSET $c", filter, Math.Clamp(limit, 1, 200), Math.Max(0, offset));
     public SendAttempt[] Attempts(string id) => Read<SendAttempt>("SELECT json FROM attempts WHERE request=$a ORDER BY ordinal", id);
-    public FixtureResponse[] Responses(string id) => Read<FixtureResponse>("SELECT json FROM responses WHERE request=$a ORDER BY rowid", id);
+    public IntegrationResponse[] Responses(string id) => Read<IntegrationResponse>("SELECT json FROM responses WHERE request=$a ORDER BY rowid", id);
     public Audit[] Audits(string id) => Read<Audit>("SELECT json FROM audit WHERE owner=$a ORDER BY rowid", id);
-    public Alarm[] Alarms() => Read<Alarm>("SELECT json FROM alarms ORDER BY rowid DESC LIMIT 300");
+    public Alarm[] ActiveAlarms() => Read<Alarm>("SELECT json FROM alarms WHERE active=1 ORDER BY rowid DESC");
+    public int ActiveAlarmCount() => int.Parse(Scalar("SELECT count(*) FROM alarms WHERE active=1")!);
+    public Alarm? Alarm(string id) => Read<Alarm>("SELECT json FROM alarms WHERE id=$a", id).SingleOrDefault();
+    public Alarm[] AlarmHistory(int offset, int limit) => Read<Alarm>("SELECT json FROM alarms WHERE active=0 ORDER BY rowid DESC LIMIT $a OFFSET $b", Math.Clamp(limit, 1, 200), Math.Max(0, offset));
     public ConfigRevision[] Configs() => Read<ConfigRevision>("SELECT json FROM configs ORDER BY rowid DESC LIMIT 100");
     public CommandReceipt? Receipt(Command command)
     {
@@ -93,7 +96,7 @@ public sealed class SupplyStore : IDisposable
     public int PendingCount() => int.Parse(Scalar("SELECT count(*) FROM requests WHERE status IN ('Prepared','Dispatching','Unknown')")!);
     public void Commit(StationState state, string kind, string owner, string actor, string evidence = "", Command? command = null, CommandReceipt? receipt = null,
         BusinessRequest? request = null, Observation? observation = null, SupplyOperation? operation = null,
-        SendAttempt? attempt = null, FixtureResponse? response = null, bool count = false, ConfigRevision? config = null, Alarm? alarm = null)
+        SendAttempt? attempt = null, IntegrationResponse? response = null, bool count = false, ConfigRevision? config = null, Alarm? alarm = null)
     {
         using var tx = db.BeginTransaction();
         current = tx;
@@ -120,7 +123,7 @@ public sealed class SupplyStore : IDisposable
         if (attempt is not null) Exec("INSERT INTO attempts VALUES($a,$b,$c,$d) ON CONFLICT(id) DO UPDATE SET json=excluded.json", tx, attempt.Id, attempt.RequestId, attempt.Ordinal, Wire.Encode(attempt));
         if (response is not null)
         {
-            var old = Read<FixtureResponse>("SELECT json FROM responses WHERE id=$a", response.EvidenceId).SingleOrDefault();
+            var old = Read<IntegrationResponse>("SELECT json FROM responses WHERE id=$a", response.EvidenceId).SingleOrDefault();
             if (old is not null && old != response) throw new InvalidDataException("Conflicting evidence identity");
             Exec("INSERT OR IGNORE INTO responses VALUES($a,$b,$c)", tx, response.EvidenceId, response.RequestId, Wire.Encode(response));
             if (count) Exec("INSERT OR IGNORE INTO acceptance VALUES($a,$b,$c,$d)", tx, response.RequestId, response.EvidenceId, request!.OwnerId, response.Quantity);

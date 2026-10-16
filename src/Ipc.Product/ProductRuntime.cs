@@ -74,9 +74,8 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
             var currentErrors = ProductValidation.Validate(manifest, selected, Presentation, install);
             if (currentErrors.Count != 0) throw new InvalidDataException(string.Join("; ", currentErrors));
             Configuration = selected;
-            application = new(store, selected);
+            application = new(store, selected, new SimulationRequestContract(selected));
             await application.SetWcsHealthAsync(false);
-            if (File.Exists(Path.Combine(DataDirectory, "overload-marker"))) application.Latch("Overload", "Prior source overflow; inspect entity/source evidence before recovery");
             var drive = new DriveInfo(Path.GetPathRoot(DataDirectory)!);
             if (drive.AvailableFreeSpace < selected.MinimumFreeMb * 1024L * 1024) application.Latch("StorageCapacity", "Free disk space below configured low-water mark");
             var sources = selected.Devices.Select(binding => binding.Driver switch
@@ -85,7 +84,7 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
                 "replay" => new FileReplaySource(binding.DeviceId, binding.ReplayFile is null ? throw new InvalidDataException("Replay file missing") : ResolveReplay(binding.ReplayFile, Path.GetDirectoryName(Path.GetFullPath(options.Station))!)),
                 _ => throw new InvalidDataException("Unregistered source")
             }).ToArray();
-            observationModule = new(application, sources, selected.EventCapacity, DataDirectory);
+            observationModule = new(application, sources, selected.EventCapacity);
             catalog = new(new IRuntimeModule[] { observationModule, new SenderModule(application, new LoopbackIntegration(selected)) });
             await catalog.StartAsync(token);
             if (activating is not null) { await application.FinishConfigurationActivationAsync(activating, true, "Modules initialized under new configuration"); activating = null; }
@@ -168,9 +167,8 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
     public async Task ClearOverloadAsync(string evidence)
     {
         if (application is null) throw new GuardException("Runtime unavailable");
-        var s = await application.SnapshotAsync(); var receipt = await application.ExecuteAsync(new(Wire.Id(), s.State.Revision, "ClearOverload", Value: evidence));
+        var s = await application.SnapshotAsync(); var receipt = await application.ExecuteAsync(new(Wire.Id(), s.State.Revision, "ClearOverload", Value: evidence, EvidenceVersion: s.OverloadVersion));
         if (receipt.Status != "Persisted") throw new GuardException(receipt.Reason);
-        File.Delete(Path.Combine(DataDirectory!, "overload-marker"));
     }
     public async Task ExportAsync(string destination, string? owner = null)
     {
@@ -201,55 +199,54 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
     }
 }
 
-sealed class ObservationModule(StationApplication application, IObservationSource[] sources, int capacity, string data) : IRuntimeModule
+sealed class ObservationModule(StationApplication application, IObservationSource[] sources, int capacity) : IRuntimeModule
 {
     public string Id => "observations";
     public string[] Dependencies => [];
     public IObservationSource[] Sources => sources;
     readonly Channel<Observation> queue = Channel.CreateBounded<Observation>(new BoundedChannelOptions(capacity) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
     Task? worker;
-    int missed;
-    readonly CancellationTokenSource monitorStop = new();
-    Task? monitor;
+    int missed, pending;
+    readonly object ingress = new();
     bool stopping;
     public async Task StartAsync(CancellationToken token)
     {
-        monitor = Task.Run(async () =>
+        application.InputDrained = () => Volatile.Read(ref pending) == 0;
+        worker = Task.Run(async () =>
         {
             try
             {
-                while (!monitorStop.IsCancellationRequested)
-                {
-                    if (Volatile.Read(ref missed) != 0) await File.WriteAllTextAsync(Path.Combine(data, "overload-marker"), $"missed={Volatile.Read(ref missed)}; unadmitted observations require source/entity inspection", monitorStop.Token);
-                    await Task.Delay(100, monitorStop.Token);
-                }
+                await foreach (var observation in queue.Reader.ReadAllAsync())
+                    try { await application.ReceiveAsync(observation); }
+                    finally { Interlocked.Decrement(ref pending); }
             }
-            catch (OperationCanceledException) when (monitorStop.IsCancellationRequested) { }
-            catch (Exception ex) { application.Latch("OverflowEvidenceFailure", ex.Message); throw; }
-        });
-        worker = Task.Run(async () =>
-        {
-            try { await foreach (var observation in queue.Reader.ReadAllAsync()) await application.ReceiveAsync(observation); }
             catch (Exception ex) { application.Latch("ObservationWorkerFault", ex.Message); throw; }
         }, CancellationToken.None);
         foreach (var source in sources)
             await source.StartAsync(x =>
             {
-                if (!stopping && queue.Writer.TryWrite(x)) return true;
-                Interlocked.Increment(ref missed); application.Latch("Overload", $"Observation not admitted: device={x.DeviceId}; epoch={x.Epoch}; source={x.SourceEventId}; missed={missed}");
-                return false;
+                lock (ingress)
+                {
+                    if (!stopping && !application.IsOverloaded)
+                    {
+                        Interlocked.Increment(ref pending);
+                        if (queue.Writer.TryWrite(x)) return true;
+                        Interlocked.Decrement(ref pending);
+                    }
+                    missed++;
+                    application.Latch("Overload", $"Observation not admitted: device={x.DeviceId}; epoch={x.Epoch}; source={x.SourceEventId}; unadmitted={missed}");
+                    return false;
+                }
             }, (id, epoch, health) => application.SetDeviceAsync(id, epoch, health).GetAwaiter().GetResult(), token);
     }
     public async Task StopAsync(CancellationToken token)
     {
-        stopping = true;
+        lock (ingress) stopping = true;
         foreach (var source in sources.Reverse()) await source.StopAsync(token);
         queue.Writer.TryComplete();
         if (worker is not null) await worker.WaitAsync(TimeSpan.FromSeconds(5), token);
-        monitorStop.Cancel(); if (monitor is not null) await monitor;
-        if (missed != 0) await File.WriteAllTextAsync(Path.Combine(data, "overload-marker"), $"missed={missed}; inspect source/entity before clearing", token);
     }
-    public async ValueTask DisposeAsync() { monitorStop.Dispose(); foreach (var source in sources.Reverse()) await source.DisposeAsync(); }
+    public async ValueTask DisposeAsync() { foreach (var source in sources.Reverse()) await source.DisposeAsync(); }
 }
 
 sealed class SenderModule(StationApplication application, IIntegrationPort port) : IRuntimeModule

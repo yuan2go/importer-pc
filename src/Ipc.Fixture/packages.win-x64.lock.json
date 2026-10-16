@@ -47,6 +47,12 @@
           "SQLitePCLRaw.core": "2.1.14"
         }
       },
+      "ipc.adapters": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Supply": "[1.0.0, )"
+        }
+      },
       "ipc.platform": {
         "type": "Project"
       },

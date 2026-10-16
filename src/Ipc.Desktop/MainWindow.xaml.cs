@@ -20,7 +20,8 @@ public partial class MainWindow : Window
     readonly ObservableCollection<Alarm> alarms = [];
     StationSnapshot? snapshot;
     bool refreshing, closing, compact;
-    int historyOffset;
+    int historyOffset, alarmHistoryOffset;
+    Alarm? selectedAlarm;
     readonly Dictionary<string, OperationStatus> audible = [];
     DateTimeOffset lastSound;
     public MainWindow(ProductRuntime runtime, bool ownsLifetime = false)
@@ -59,12 +60,24 @@ public partial class MainWindow : Window
             var reasons = snapshot.Admit.Reasons.Concat(snapshot.OperationGuards.Where(x => snapshot.State.Lanes[x.Key].Status is OperationStatus.AwaitingAction or OperationStatus.SplitRequired or OperationStatus.SubmitPending).SelectMany(x => x.Value.Reasons.Select(r => x.Key + ":" + r))).Concat(snapshot.RuntimeFaults).Distinct().ToArray();
             model.GlobalStatus = "SIMULATION · " + (reasons.Length == 0 ? "可继续入场" : "阻断：" + string.Join("；", reasons));
             model.Devices = string.Join("\n", snapshot.State.Devices.Select(x => $"{x.Key}: {x.Value.DeviceId} / {x.Value.Health} / epoch {x.Value.Epoch}"));
-            // Update only changed occurrences: selection and scroll remain bound to stable identities.
+            model.AlarmSummary = $"活动报警 {snapshot.ActiveAlarmCount} · 已读仍计入活动";
+            model.RecoveryHint = snapshot.OverloadRecovery.Allowed ? "已排空；检查来源和实体后可确认过载。其它阻断仍保留。" : string.Join("；", snapshot.OverloadRecovery.Reasons);
+            OverloadButton.IsEnabled = snapshot.OverloadRecovery.Allowed;
+            // Keep active identity/selection stable; resolved occurrences leave only this collection.
+            foreach (var old in alarms.Where(x => !snapshot.Alarms.Any(a => a.Id == x.Id)).ToArray()) alarms.Remove(old);
             foreach (var alarm in snapshot.Alarms.Reverse())
             {
                 var old = alarms.FirstOrDefault(x => x.Id == alarm.Id);
                 if (old is null) alarms.Add(alarm); else if (old != alarm) alarms[alarms.IndexOf(old)] = alarm;
             }
+            var selectedRequest = (RecoveryGrid.SelectedItem as RequestRecoveryRow)?.Id;
+            var recoveryRows = snapshot.Recovery.Select(x => new RequestRecoveryRow(x)).ToArray();
+            if (RecoveryGrid.ItemsSource is not RequestRecoveryRow[] oldRows || Wire.Encode(oldRows) != Wire.Encode(recoveryRows))
+            {
+                RecoveryGrid.ItemsSource = recoveryRows;
+                RecoveryGrid.SelectedItem = recoveryRows.FirstOrDefault(x => x.Id == selectedRequest);
+            }
+            CancelPreparedButton.IsEnabled = (RecoveryGrid.SelectedItem as RequestRecoveryRow)?.Recovery.LocalTermination.Allowed == true;
         }
         catch (Exception ex) { model.GlobalStatus = "状态读取失败 · 禁止业务：" + ex.Message; }
         finally { refreshing = false; }
@@ -120,14 +133,17 @@ public partial class MainWindow : Window
     }
     async void AlarmSelected(object sender, SelectionChangedEventArgs e)
     {
-        if (AlarmGrid.SelectedItem is not Alarm alarm || alarm.OwnerId is null || Runtime.Application is null) return;
+        if ((sender as DataGrid)?.SelectedItem is not Alarm alarm || alarm.OwnerId is null || Runtime.Application is null) return;
+        selectedAlarm = alarm;
         var details = await Runtime.Application.DetailsAsync(alarm.OwnerId);
+        if (selectedAlarm?.Id != alarm.Id) return;
         RequestIdBox.Text = details.FirstOrDefault(x => x.Request.Status == RequestStatus.Unknown)?.Request.Id ?? (alarm.Scope == "request" ? alarm.OwnerId : "");
-        if (details.Length == 0) model.LastResult = "来源诊断：" + alarm.Source + " / " + alarm.Scope + " / " + alarm.Code;
+        if (alarm.Code.StartsWith("LocalDispositionRequired", StringComparison.Ordinal)) model.LastResult = "保留原记录与实体；待取得预留/实体处置证据，当前版本不提供放行命令。";
+        else if (details.Length == 0) model.LastResult = "来源诊断：" + alarm.Source + " / " + alarm.Scope + " / " + alarm.Code;
     }
     async void AlarmDetailClick(object sender, RoutedEventArgs e)
     {
-        if (AlarmGrid.SelectedItem is not Alarm alarm || alarm.OwnerId is null || Runtime.Application is null) return;
+        if (selectedAlarm is not Alarm alarm || alarm.OwnerId is null || Runtime.Application is null) return;
         await RunAsync(async () =>
         {
             var details = await Runtime.Application.DetailsAsync(alarm.OwnerId);
@@ -136,7 +152,21 @@ public partial class MainWindow : Window
         });
     }
     async void ReconcileClick(object sender, RoutedEventArgs e) => await RunAsync(() => Runtime.ReconcileAsync(RequestIdBox.Text));
-    async void AckClick(object sender, RoutedEventArgs e) { if (AlarmGrid.SelectedItem is Alarm alarm) await SendAsync("AckAlarm", alarm.Id); }
+    async void AckClick(object sender, RoutedEventArgs e) { if (selectedAlarm is Alarm alarm) await SendAsync("AckAlarm", alarm.Id); }
+    async Task LoadAlarmHistoryAsync() => await RunAsync(async () => { if (Runtime.Application is not null) AlarmHistoryGrid.ItemsSource = await Runtime.Application.AlarmHistoryAsync(alarmHistoryOffset, 50); });
+    async void AlarmHistoryClick(object sender, RoutedEventArgs e) { alarmHistoryOffset = 0; await LoadAlarmHistoryAsync(); }
+    async void AlarmNextClick(object sender, RoutedEventArgs e) { alarmHistoryOffset += 50; await LoadAlarmHistoryAsync(); }
+    async void AlarmPreviousClick(object sender, RoutedEventArgs e) { alarmHistoryOffset = Math.Max(0, alarmHistoryOffset - 50); await LoadAlarmHistoryAsync(); }
+    void RecoverySelected(object sender, SelectionChangedEventArgs e)
+    {
+        if (RecoveryGrid.SelectedItem is RequestRecoveryRow row) { RequestIdBox.Text = row.Id; model.LastResult = row.Reasons + " · " + row.NextStep; }
+        CancelPreparedButton.IsEnabled = (RecoveryGrid.SelectedItem as RequestRecoveryRow)?.Recovery.LocalTermination.Allowed == true;
+    }
+    async void CancelPreparedClick(object sender, RoutedEventArgs e)
+    {
+        if (RecoveryGrid.SelectedItem is RequestRecoveryRow row)
+            await SendAsync("CancelPrepared", row.Id, EvidenceBox.Text, $"仅终结原请求 {row.Id}？此前预留与实体保持待处置，不撤销远端动作。");
+    }
     async void CloseDetailClick(object sender, RoutedEventArgs e) { if (snapshot?.State.Session is not null) await ShowDetailAsync(snapshot.State.Session.Id); }
     async void RecordEvidenceClick(object sender, RoutedEventArgs e) => await SendAsync("RecordReconciliation", RequestIdBox.Text, EvidenceBox.Text);
     static string Selected(ComboBox box) => ((ComboBoxItem)box.SelectedItem).Content.ToString()!;

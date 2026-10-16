@@ -7,26 +7,35 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
 {
     readonly SupplyStore store;
     readonly StationConfig config;
+    readonly IRequestContract contract;
     readonly SemaphoreSlim gate = new(1, 1);
     readonly BoundedExecutor commands;
     readonly FaultInjection faults;
     readonly ConcurrentDictionary<string, string> runtimeFaults = new();
     StationState state;
+    readonly TimeProvider clock;
+    readonly object faultGate = new();
+    long overloadVersion;
+    string OverloadMarker => System.IO.Path.Combine(System.IO.Path.GetDirectoryName(store.Path)!, "overload-marker");
+    public Func<bool>? InputDrained { private get; set; }
+    public bool IsOverloaded => runtimeFaults.ContainsKey("Overload");
+    DateTimeOffset Now => clock.GetUtcNow();
     public Guid InstanceId { get; } = Guid.NewGuid();
-    public StationApplication(SupplyStore store, StationConfig config, FaultInjection? faults = null)
+    public StationApplication(SupplyStore store, StationConfig config, IRequestContract contract, FaultInjection? faults = null, TimeProvider? clock = null)
     {
-        this.store = store; this.config = config; this.faults = faults ?? new(); state = store.Load();
+        this.store = store; this.config = config; this.contract = contract; this.clock = clock ?? TimeProvider.System; this.faults = faults ?? new(); state = store.Load();
         commands = new(config.CommandCapacity, () => Latch("Overload", "Application command queue rejected input; inspect source and explicitly clear overload"));
+        if (File.Exists(OverloadMarker)) runtimeFaults["Overload"] = "Unacknowledged overflow; inspect source/entity evidence";
         state.Actor = null; state.Stopping = false;
         // A released process does not imply unfinished calls were cancelled remotely.
         foreach (var request in store.PendingRequests().Where(x => x.Status == RequestStatus.Dispatching))
         {
             var unknown = request with { Status = RequestStatus.Unknown };
             MarkOwner(state, unknown, "Process interrupted during dispatch"); state.Revision++;
-            var interrupted = store.Attempts(request.Id).Last() with { EndedAt = DateTimeOffset.UtcNow, Disposition = "Unknown", Error = "Process restart" };
+            var interrupted = store.Attempts(request.Id).Last() with { EndedAt = Now, Disposition = "Unknown", Error = "Process restart" };
             store.Commit(state, "RecoveryUnknown", request.OwnerId, "recovery", request.Id, request: unknown, attempt: interrupted);
         }
-        foreach (var binding in config.Devices) state.Devices[binding.Role] = new(binding.DeviceId, "not-connected", 0, DeviceHealth.Unknown, DateTimeOffset.UtcNow);
+        foreach (var binding in config.Devices) state.Devices[binding.Role] = new(binding.DeviceId, "not-connected", 0, DeviceHealth.Unknown, Now);
         state.Revision++; store.Commit(state, "Startup", state.Session?.Id ?? config.StationId, "runtime", "Identity reset; devices must reconnect");
         if (state.Quarantined || File.Exists(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(store.Path)!, "restore-quarantine")))
         {
@@ -39,7 +48,23 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             state.Revision++; store.Commit(state, "RestoreQuarantine", config.StationId, "runtime");
         }
     }
-    public void Latch(string code, string reason) => runtimeFaults[code] = reason;
+    public void Latch(string code, string reason)
+    {
+        lock (faultGate)
+        {
+            if (code == "Overload")
+            {
+                Interlocked.Increment(ref overloadVersion);
+                try
+                {
+                    using var marker = new FileStream(OverloadMarker, FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.WriteThrough);
+                    marker.Write(System.Text.Encoding.UTF8.GetBytes(reason)); marker.Flush(true);
+                }
+                catch (Exception ex) when (IsStorage(ex)) { runtimeFaults["OverflowEvidenceFailure"] = ex.Message; }
+            }
+            runtimeFaults[code] = reason;
+        }
+    }
     public async Task<CommandReceipt> ExecuteAsync(Command command)
     {
         // Pause, identity logout and overload control bypass the bounded ordinary queue.
@@ -63,14 +88,17 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                     case "Login":
                         Require(config.Mode == RunMode.Simulation, "Production identity provider unavailable");
                         Require(command.Value is "operator" or "maintenance", "Select a defined SIMULATION identity");
-                        next.Actor = new("SIM-" + command.Value, command.Value == "maintenance" ? SimulationRole.Maintenance : SimulationRole.Operator, DateTimeOffset.UtcNow.AddHours(8)); break;
+                        next.Actor = new("SIM-" + command.Value, command.Value == "maintenance" ? SimulationRole.Maintenance : SimulationRole.Operator, Now.AddHours(8)); break;
                     case "Logout":
                         next.Actor = null; break; // Prior responsibility is frozen on every request.
                     case "Pause": SetBlock(next, "OperatorPaused", "station", "operator", "manual", "operator"); break;
                     case "Resume": next.Blocks.RemoveAll(x => x.Code == "OperatorPaused"); break;
                     case "ClearOverload":
-                        Maintenance(next); Require(command.Value?.Length >= 8, "Source inspection evidence required");
-                        Require(!HasUnresolved(), "Reconcile pending external effects before overload recovery");
+                        Maintenance(next); Require(command.Value?.Length is >= 8 and <= 1000, "Source inspection evidence required");
+                        Require(IsOverloaded, "No active overload to acknowledge");
+                        Require(!runtimeFaults.Keys.Any(x => x != "Overload"), "Resolve runtime evidence/worker faults before overload acknowledgement");
+                        Require(InputDrained?.Invoke() != false, "Drain admitted observations before overload acknowledgement");
+                        Require(!HasUnresolved(), "Reconcile sent/Unknown requests or locally terminate proven undelivered Prepared requests first");
                         break;
                     case "OpenContext":
                         Demand(GuardFor(next, "Open")); Require(next.Session is null || next.Session.Status is SessionStatus.Closed or SessionStatus.Rejected, "Existing box must be authoritatively closed");
@@ -99,6 +127,19 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                     {
                         var op = Operation(next, owner); Require(op.Status == OperationStatus.SplitRequired, "Split already submitted");
                         Require(command.Value == "CONFIRM", "Explicit clear confirmation required"); op.SplitScans.Clear(); op.Revision++; break;
+                    }
+                    case "CancelPrepared":
+                    {
+                        Maintenance(next); Require(command.Value?.Length is >= 8 and <= 1000, "Local termination inspection evidence required");
+                        request = store.Request(owner) ?? throw new GuardException("Original request not found");
+                        Demand(LocalTerminationGuard(next, request));
+                        request = request with { Status = RequestStatus.CancelledBeforeDispatch };
+                        // This local fact says nothing about reservations from earlier requests or physical permission.
+                        SetBlock(next, "LocalDispositionRequired", "request", request.Id, request.PayloadHash, "approved-disposition-evidence");
+                        var affected = next.Lanes.Values.SingleOrDefault(x => x.Id == request.OwnerId);
+                        if (affected is not null) { affected.Status = OperationStatus.AwaitingDisposition; affected.Reason = "Original request locally terminated; prior reservations/entity require disposition"; }
+                        else if (next.Session?.Id == request.SessionId) next.Session.Status = SessionStatus.AwaitingDisposition;
+                        break;
                     }
                     case "CancelDraft":
                     {
@@ -140,7 +181,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                         Maintenance(next); Require(command.Value is not null, "Configuration JSON required");
                         var draft = Wire.Decode<StationConfig>(command.Value!); var errors = ProductValidation.ValidateStation(draft);
                         Require(draft.StationId == config.StationId && draft.Mode == config.Mode && draft.Version != config.Version, "Station/mode fixed; revision must change");
-                        revision = new(Wire.Id(), config.Version, draft, next.Actor!.Id, errors.Count == 0 ? "Validated" : "Rejected", string.Join("; ", errors), DateTimeOffset.UtcNow);
+                        revision = new(Wire.Id(), config.Version, draft, next.Actor!.Id, errors.Count == 0 ? "Validated" : "Rejected", string.Join("; ", errors), Now);
                         owner = revision.Id; break;
                     }
                     case "ActivateConfig":
@@ -156,17 +197,23 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                         next.Quarantined = false; break;
                     case "AckAlarm":
                     {
-                        var alarm = store.Alarms().SingleOrDefault(x => x.Id == owner) ?? throw new GuardException("Alarm identity not found");
-                        acknowledgement = alarm with { AckedBy = next.Actor!.Id, AckedAt = DateTimeOffset.UtcNow }; break;
+                        var alarm = store.Alarm(owner) ?? throw new GuardException("Alarm identity not found");
+                        acknowledgement = alarm with { AckedBy = next.Actor!.Id, AckedAt = Now }; break;
                     }
                     default: throw new GuardException("Unknown application command");
                 }
                 next.Revision++;
                 var receipt = new CommandReceipt("Persisted", revision?.Status ?? "Saved locally; external acceptance is separate", next.Revision, owner, request?.Id);
                 faults.Hit("BeforeT1"); faults.Hit("T1");
-                store.Commit(next, command.Kind, owner, next.Actor?.Id ?? state.Actor?.Id ?? "signed-out", command.Value ?? "", command, receipt, request, config: revision, alarm: acknowledgement);
-                state = next;
-                if (command.Kind == "ClearOverload") runtimeFaults.TryRemove("Overload", out _);
+                // Serialize acknowledgement with new overload latches. A later overflow creates a new marker.
+                lock (faultGate)
+                {
+                    if (command.Kind == "ClearOverload") Require(command.EvidenceVersion == overloadVersion, "Overflow evidence changed; inspect current source evidence and retry");
+                    var evidence = command.Kind == "ClearOverload" ? $"{command.Value}; version={overloadVersion}; {runtimeFaults.GetValueOrDefault("Overload")}" : command.Value ?? "";
+                    store.Commit(next, command.Kind, owner, next.Actor?.Id ?? state.Actor?.Id ?? "signed-out", evidence, command, receipt, request, config: revision, alarm: acknowledgement);
+                    state = next;
+                    if (command.Kind == "ClearOverload") { File.Delete(OverloadMarker); runtimeFaults.TryRemove("Overload", out _); }
+                }
                 if (command.Kind == "ClearQuarantine") File.Delete(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(store.Path)!, "restore-quarantine"));
                 faults.Hit("AfterT1"); SyncAlarms(); return receipt;
             }
@@ -179,11 +226,9 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
     {
         Require(store.PendingCount() < config.OutboxCapacity, "Outbox capacity reached");
         var actor = next.Actor ?? throw new GuardException("Authenticated identity required");
-        var payload = new FixturePayload(config.StationId, next.Session!.Id, owner, ownerRevision, kind, barcode, package, quantity,
-            next.Session.CloseToken, config.Policy, config.FixtureDemand, next.NextFault, actor);
-        next.NextFault = "None";
-        var json = Wire.Encode(payload);
-        return new(Wire.Id(), owner, next.Session.Id, kind, ownerRevision, $"{owner}:{kind}:{ownerRevision}", json, Wire.Hash(json), config.Integration, RequestStatus.Prepared, DateTimeOffset.UtcNow);
+        var intent = new RequestIntent(config.StationId, next.Session!.Id, owner, ownerRevision, kind, barcode, package, quantity, next.Session.CloseToken, actor);
+        var json = contract.Encode(intent, next.NextFault); next.NextFault = "None";
+        return new(Wire.Id(), owner, next.Session.Id, kind, ownerRevision, $"{owner}:{kind}:{ownerRevision}", json, Wire.Hash(json), config.Integration, RequestStatus.Prepared, Now);
     }
     public async Task ReceiveAsync(Observation observation)
     {
@@ -196,18 +241,18 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             try
             {
                 Require(binding is not null && next.Devices.TryGetValue(binding.Role, out var d) && d.Epoch == observation.Epoch && observation.Sequence > d.Sequence, "Stale/unbound device epoch or source sequence");
-                var device = next.Devices[binding!.Role]; next.Devices[binding.Role] = device with { Sequence = observation.Sequence, UpdatedAt = DateTimeOffset.UtcNow };
+                var device = next.Devices[binding!.Role]; next.Devices[binding.Role] = device with { Sequence = observation.Sequence, UpdatedAt = Now };
                 next.Lanes.TryGetValue(binding.Role, out op);
                 switch (observation.Kind)
                 {
                     case "Enter":
-                        Demand(GuardFor(next, "Admit")); Require(!store.HasAdmission(observation.AdmissionId), "Admission identity already consumed");
+                        Demand(GuardFor(next, "Admit", admittedEvent: true)); Require(!store.HasAdmission(observation.AdmissionId), "Admission identity already consumed");
                         Require(op is null || op.Occupancy == Occupancy.Clear, "Previous physical entity not reset");
-                        op = new() { SessionId = next.Session!.Id, Lane = binding.Role, AdmissionId = observation.AdmissionId, PermitEpoch = observation.Epoch, PermitExpiresAt = DateTimeOffset.UtcNow.AddMinutes(30), Status = OperationStatus.Observed };
+                        op = new() { SessionId = next.Session!.Id, Lane = binding.Role, AdmissionId = observation.AdmissionId, PermitEpoch = observation.Epoch, PermitExpiresAt = Now.AddMinutes(30), Status = OperationStatus.Observed };
                         next.Lanes[binding.Role] = op; break;
                     case "Read":
                         Require(op is not null && op.AdmissionId == observation.AdmissionId && op.Occupancy == Occupancy.Occupied, "Read requires matching occupied admission");
-                        Demand(GuardFor(next, "Admit"));
+                        Demand(GuardFor(next, "Admit", admittedEvent: true));
                         Require(op.Status is OperationStatus.Observed or OperationStatus.ValidationRejected or OperationStatus.Rejected, "Request/result must be resolved before correction");
                         Require(!store.Requests(op.Id).Any(IsPending), "Cannot revise unresolved effect");
                         op.Revision++; op.ObservationIds.Add(observation.Id); op.SplitScans.Clear();
@@ -223,7 +268,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                         Require(op is not null && op.AdmissionId == observation.AdmissionId && op.Occupancy == Occupancy.Occupied, "Revalidation requires matching occupied entity");
                         RequireIdentity(next); Maintenance(next);
                         Require(config.Mode == RunMode.Simulation && !store.Requests(op.Id).Any(x => x.Status is RequestStatus.Unknown or RequestStatus.Dispatching), "Cannot revalidate unresolved external effects");
-                        op.PermitEpoch = observation.Epoch; op.PermitRevision++; op.PermitExpiresAt = DateTimeOffset.UtcNow.AddMinutes(30); break;
+                        op.PermitEpoch = observation.Epoch; op.PermitRevision++; op.PermitExpiresAt = Now.AddMinutes(30); break;
                     case "Depart":
                         Require(op is not null && op.AdmissionId == observation.AdmissionId, "Wrong entity departure");
                         Require(op.Status is OperationStatus.Accepted or OperationStatus.Rejected or OperationStatus.ValidationRejected or OperationStatus.Cancelled, "Unresolved/draft operation requires disposition before departure");
@@ -258,7 +303,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             if (previous is not null && previous.Epoch != "not-connected" && previous.Epoch != epoch)
             { store.Commit(state, "StaleHealthIgnored", deviceId, "driver", "Old epoch health callback ignored"); return; }
             if (previous?.Epoch == epoch && previous.Health == health) return;
-            next.Devices[binding.Role] = new(deviceId, epoch, previous?.Epoch == epoch ? previous.Sequence : 0, health, DateTimeOffset.UtcNow);
+            next.Devices[binding.Role] = new(deviceId, epoch, previous?.Epoch == epoch ? previous.Sequence : 0, health, Now);
             next.Revision++; store.Commit(next, "DeviceHealth", deviceId, "driver", health.ToString()); state = next; SyncAlarms();
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); }
@@ -286,7 +331,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             var request = store.PendingRequests().FirstOrDefault(x => x.Status == RequestStatus.Prepared && SendGuard(state, x).Allowed);
             if (request is null) return null;
             var next = Clone(state); next.Revision++;
-            var attempt = new SendAttempt(Wire.Id(), request.Id, store.Attempts(request.Id).Length + 1, DateTimeOffset.UtcNow, null, "Dispatching", null);
+            var attempt = new SendAttempt(Wire.Id(), request.Id, store.Attempts(request.Id).Length + 1, Now, null, "Dispatching", null);
             request = request with { Status = RequestStatus.Dispatching };
             store.Commit(next, "T2Claim", request.OwnerId, "sender", request.Id, request: request, attempt: attempt); state = next;
             faults.Hit("AfterT2"); return (request, attempt);
@@ -299,24 +344,36 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         await gate.WaitAsync();
         try
         {
-            if (SendGuard(state, request).Allowed) return true;
-            var next = Clone(state); next.Revision++;
-            store.Commit(next, "NotDelivered", request.OwnerId, "sender", "Guard changed before handing request to network",
-                request: request with { Status = RequestStatus.Prepared }, attempt: attempt with { EndedAt = DateTimeOffset.UtcNow, Disposition = "NotDelivered" });
-            state = next; return false;
+            lock (faultGate)
+            {
+                var current = store.Request(request.Id);
+                var latest = store.Attempts(request.Id).LastOrDefault();
+                if (current?.Status != RequestStatus.Dispatching || latest?.Id != attempt.Id || latest.Disposition != "Dispatching") return false;
+                var next = Clone(state); next.Revision++;
+                if (SendGuard(state, current).Allowed)
+                {
+                    // Conservative durable authorization boundary. After this, cancellation cannot prove non-delivery.
+                    store.Commit(next, "TransportHandoffAuthorized", request.OwnerId, "sender", request.Id,
+                        attempt: latest with { Disposition = "TransportHandoff" });
+                    state = next; return true;
+                }
+                store.Commit(next, "NotDelivered", request.OwnerId, "sender", "Guard changed before handing request to network",
+                    request: request with { Status = RequestStatus.Prepared }, attempt: attempt with { EndedAt = Now, Disposition = "NotDelivered" });
+                state = next; return false;
+            }
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); return false; }
         finally { gate.Release(); }
     }
-    public async Task CompleteAsync(BusinessRequest sent, SendAttempt? attempt, FixtureResponse response)
+    public async Task CompleteAsync(BusinessRequest sent, SendAttempt? attempt, IntegrationResponse response)
     {
         await gate.WaitAsync();
         try
         {
             var original = store.Request(sent.Id) ?? throw new InvalidDataException("Response without original request");
-            RequireResponse(original, response);
+            contract.ValidateResponse(original, response);
             var next = Clone(state);
-            bool conflicting = store.Responses(original.Id).Any(x => x.Result != response.Result || x.Quantity != response.Quantity || x.Remaining != response.Remaining || x.CheckToken != response.CheckToken);
+            bool conflicting = original.Status == RequestStatus.CancelledBeforeDispatch || store.Responses(original.Id).Any(x => x.Result != response.Result || x.Quantity != response.Quantity || x.Remaining != response.Remaining || x.CheckToken != response.CheckToken);
             var status = conflicting ? RequestStatus.Unknown : response.Result == "Accepted" ? RequestStatus.Accepted : RequestStatus.Rejected;
             var request = original with { Status = status };
             bool count = !conflicting && request.Kind == RequestKind.Submit && status == RequestStatus.Accepted;
@@ -325,7 +382,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             next.Revision++; faults.Hit("T3");
             store.Commit(next, conflicting ? "ConflictingResponse" : "T3Response", request.OwnerId, "integration", response.Reason,
                 request: request, response: response, count: count,
-                attempt: attempt is null ? null : attempt with { EndedAt = DateTimeOffset.UtcNow, Disposition = status.ToString() });
+                attempt: attempt is null ? null : attempt with { EndedAt = Now, Disposition = status.ToString() });
             state = next; faults.Hit("AfterT3"); SyncAlarms();
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", "Response received but could not persist: " + ex.Message); }
@@ -343,24 +400,15 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         try
         {
             var request = store.Request(original.Id)!;
-            if (request.Status is RequestStatus.Accepted or RequestStatus.Rejected) return Task.CompletedTask;
+            if (request.Status is RequestStatus.Accepted or RequestStatus.Rejected or RequestStatus.CancelledBeforeDispatch) return Task.CompletedTask;
             request = request with { Status = RequestStatus.Unknown }; var next = Clone(state); next.Revision++;
             MarkOwner(next, request, reason);
             store.Commit(next, "OutcomeUnknown", request.OwnerId, "sender", reason, request: request,
-                attempt: attempt is null ? null : attempt with { EndedAt = DateTimeOffset.UtcNow, Disposition = "Unknown", Error = reason });
+                attempt: attempt is null ? null : attempt with { EndedAt = Now, Disposition = "Unknown", Error = reason });
             state = next; SyncAlarms();
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); }
         return Task.CompletedTask;
-    }
-    static void RequireResponse(BusinessRequest request, FixtureResponse response)
-    {
-        if (response.RequestId != request.Id || response.PayloadHash != request.PayloadHash || response.Result is not ("Accepted" or "Rejected") || string.IsNullOrWhiteSpace(response.EvidenceId)) throw new InvalidDataException("Response identity/hash/classification mismatch");
-        if (response.Result != "Accepted") return;
-        var payload = Wire.Decode<FixturePayload>(request.Payload);
-        if (request.Kind == RequestKind.Submit && (response.Quantity != payload.Quantity || response.Quantity is not > 0)) throw new InvalidDataException("Acceptance quantity mismatch");
-        if (request.Kind == RequestKind.Validate && (response.Quantity is null or < 0 || response.Quantity > payload.Package || response.Remaining is null or < 0)) throw new InvalidDataException("Validation quantity missing/invalid");
-        if (request.Kind == RequestKind.CheckClose && (response.Remaining is null or < 0 || response.CheckToken is null)) throw new InvalidDataException("Close snapshot missing");
     }
     static void MarkOwner(StationState next, BusinessRequest request, string reason)
     {
@@ -368,7 +416,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         var op = next.Lanes.Values.FirstOrDefault(x => x.Id == request.OwnerId && x.Revision == request.OwnerRevision);
         if (op is not null) { op.Status = OperationStatus.OutcomeUnknown; op.Reason = reason; }
     }
-    static void ApplyOwner(StationState next, BusinessRequest request, FixtureResponse response, bool conflict)
+    void ApplyOwner(StationState next, BusinessRequest request, IntegrationResponse response, bool conflict)
     {
         if (conflict) { MarkOwner(next, request, response.Reason); return; }
         var accepted = request.Status == RequestStatus.Accepted;
@@ -382,7 +430,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                     next.Session.Status = accepted ? SessionStatus.AwaitingShortageDecision : SessionStatus.Active; break;
                 case RequestKind.Close:
                     next.Session.Status = accepted ? SessionStatus.Closed : SessionStatus.Active;
-                    if (accepted) next.Session.ClosedAt = DateTimeOffset.UtcNow; break;
+                    if (accepted) next.Session.ClosedAt = Now; break;
             }
         }
         var op = next.Lanes.Values.FirstOrDefault(x => x.Id == request.OwnerId && x.Revision == request.OwnerRevision);
@@ -397,11 +445,11 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
     }
     Guard SendGuard(StationState s, BusinessRequest request)
     {
-        var reasons = BaseReasons(s, true).ToList();
+        var reasons = BaseReasons(s).ToList();
         // A request carries its original authenticated actor and immutable destination. Expiry
         // still blocks dispatch; logging in again cannot silently re-authorize an old intent.
-        var payload = Wire.Decode<FixturePayload>(request.Payload);
-        if (payload.Actor.ExpiresAt <= DateTimeOffset.UtcNow) reasons.Add("OriginalActorExpired");
+        var payload = contract.Authority(request);
+        if (payload.Actor.ExpiresAt <= Now) reasons.Add("OriginalActorExpired");
         if (request.Binding != config.Integration) reasons.Add("OriginalBindingNotActive");
         if (s.Session?.Id != request.SessionId) reasons.Add("SessionChanged");
         if (request.Kind is RequestKind.Context or RequestKind.Validate or RequestKind.Submit)
@@ -415,18 +463,18 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         }
         return new(reasons.Count == 0, reasons.Distinct().ToArray());
     }
-    IEnumerable<string> BaseReasons(StationState s, bool forSend = false)
+    IEnumerable<string> BaseReasons(StationState s, bool admittedEvent = false)
     {
-        foreach (var f in runtimeFaults.Keys) yield return f;
+        foreach (var f in runtimeFaults.Keys) if (!admittedEvent || f != "Overload") yield return f;
         if (s.Stopping) yield return "Stopping";
         if (s.Quarantined) yield return "RestoreQuarantine";
-        if (s.Actor is null || s.Actor.ExpiresAt <= DateTimeOffset.UtcNow) yield return "IdentityUnavailable";
+        if (s.Actor is null || s.Actor.ExpiresAt <= Now) yield return "IdentityUnavailable";
         foreach (var b in s.Blocks) yield return b.Code + ":" + b.Scope;
         if (store.PendingRequests().Any(x => x.Status == RequestStatus.Unknown)) yield return "OutcomeUnknown";
     }
-    Guard GuardFor(StationState s, string action)
+    Guard GuardFor(StationState s, string action, bool admittedEvent = false)
     {
-        var reasons = BaseReasons(s).ToList();
+        var reasons = BaseReasons(s, admittedEvent).ToList();
         if (action is "Open" or "Admit" or "Submit") foreach (var d in s.Devices) if (d.Value.Health != DeviceHealth.Ready) reasons.Add("Device:" + d.Key + ":" + d.Value.Health);
         if (action is "Admit" or "Submit" && s.Session?.Status != SessionStatus.Active) reasons.Add("NoActiveBoxOrCloseBarrier");
         if (action is "Close" or "ConfirmClose")
@@ -436,10 +484,10 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         }
         return new(reasons.Count == 0, reasons.Distinct().ToArray());
     }
-    static IEnumerable<string> PermitReasons(StationState s, SupplyOperation op)
+    IEnumerable<string> PermitReasons(StationState s, SupplyOperation op)
     {
         if (op.PermitEpoch != s.Devices.GetValueOrDefault(op.Lane)?.Epoch) yield return "EntityEpochChanged: explicit synthetic revalidation required";
-        if (op.PermitExpiresAt <= DateTimeOffset.UtcNow) yield return "EntityPermitExpired";
+        if (op.PermitExpiresAt <= Now) yield return "EntityPermitExpired";
     }
     Guard OperationGuard(StationState s, SupplyOperation op)
     {
@@ -457,27 +505,48 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         foreach (var b in state.Blocks)
         {
             blocks.RemoveAll(x => x.Code == b.Code + ":" + b.Scope);
-            blocks.Add((b.Code + ":" + b.Scope, b.Scope, state.Session?.Id, b.Source, b.SourceEpoch));
+            blocks.Add((b.Code + ":" + b.Scope, b.Scope, b.Scope == "request" ? b.Source : state.Session?.Id, b.Source, b.SourceEpoch));
         }
         foreach (var d in state.Devices.Where(x => x.Value.Health != DeviceHealth.Ready)) blocks.Add(("Device:" + d.Value.Health, d.Key, d.Value.DeviceId, d.Value.DeviceId, d.Value.Epoch));
         foreach (var op in state.Lanes.Values.Where(x => x.Status is OperationStatus.ValidationRejected or OperationStatus.Rejected)) blocks.Add(("OperationRejected", op.Lane, op.Id, "operation", op.Revision.ToString()));
         foreach (var request in store.PendingRequests().Where(x => x.Status == RequestStatus.Unknown)) blocks.Add(("UnknownRequest", "request", request.Id, request.Binding.Id, request.Binding.Revision));
-        var active = store.Alarms().Where(x => x.ClearedAt is null).ToArray();
+        var active = store.ActiveAlarms();
         foreach (var alarm in active)
-            if (!blocks.Any(x => x.Code == alarm.Code && x.Scope == alarm.Scope && x.Owner == alarm.OwnerId && x.Source == alarm.Source && x.Epoch == alarm.Epoch)) store.SaveAlarm(alarm with { ClearedAt = DateTimeOffset.UtcNow });
+            if (!blocks.Any(x => x.Code == alarm.Code && x.Scope == alarm.Scope && x.Owner == alarm.OwnerId && x.Source == alarm.Source && x.Epoch == alarm.Epoch)) store.SaveAlarm(alarm with { ClearedAt = Now });
         foreach (var b in blocks.Distinct()) if (!active.Any(x => x.Code == b.Code && x.Scope == b.Scope && x.OwnerId == b.Owner && x.Source == b.Source && x.Epoch == b.Epoch))
-            store.SaveAlarm(new(Wire.Id(), b.Code, b.Scope, b.Source, b.Epoch, b.Owner, DateTimeOffset.UtcNow, null, null, null));
+            store.SaveAlarm(new(Wire.Id(), b.Code, b.Scope, b.Source, b.Epoch, b.Owner, Now, null, null, null));
     }
     public async Task<StationSnapshot> SnapshotAsync()
     {
         await gate.WaitAsync();
-        try { return new(Clone(state), state.Session is null ? [] : store.RequestsForSession(state.Session.Id), store.Alarms(), GuardFor(state, "Admit"), GuardFor(state, "Submit"), GuardFor(state, "Close"), state.Lanes.ToDictionary(x => x.Key, x => OperationGuard(state, x.Value)), runtimeFaults.Select(x => x.Key + ": " + x.Value).ToArray()); }
+        try { lock (faultGate) { SyncAlarms(); return new(Clone(state), state.Session is null ? [] : store.RequestsForSession(state.Session.Id), store.ActiveAlarms(), GuardFor(state, "Admit"), GuardFor(state, "Submit"), GuardFor(state, "Close"), state.Lanes.ToDictionary(x => x.Key, x => OperationGuard(state, x.Value)), runtimeFaults.Select(x => x.Key + ": " + x.Value).ToArray(), store.PendingRequests().Select(x => new RequestRecovery(x, SendGuard(state, x), LocalTerminationGuard(state, x), x.Status == RequestStatus.Unknown ? "Query original binding; never resend" : x.Status == RequestStatus.Dispatching ? "Await original response; interrupted handoff becomes Unknown" : "Restore matching guards or inspect and locally terminate; prior reservations/entity remain held")).ToArray(), store.ActiveAlarmCount(), Interlocked.Read(ref overloadVersion), OverloadRecoveryGuard()); } }
         finally { gate.Release(); }
     }
+    Guard OverloadRecoveryGuard()
+    {
+        var reasons = new List<string>();
+        if (!IsOverloaded) reasons.Add("NoActiveOverload");
+        reasons.AddRange(runtimeFaults.Keys.Where(x => x != "Overload").Select(x => "UnresolvedRuntimeFault:" + x));
+        if (state.Actor?.Role != SimulationRole.Maintenance || state.Actor.ExpiresAt <= Now) reasons.Add("UnexpiredMaintenanceIdentityRequired");
+        if (InputDrained?.Invoke() == false) reasons.Add("AdmittedObservationsDraining");
+        if (HasUnresolved()) reasons.Add("ReconcileSentOrTerminateProvenUndeliveredPrepared");
+        return new(reasons.Count == 0, reasons.ToArray());
+    }
+    Guard LocalTerminationGuard(StationState s, BusinessRequest request)
+    {
+        var reasons = new List<string>();
+        if (s.Actor?.Role != SimulationRole.Maintenance || s.Actor.ExpiresAt <= Now) reasons.Add("UnexpiredMaintenanceIdentityRequired");
+        if (request.Status != RequestStatus.Prepared) reasons.Add("OnlyPreparedCanTerminateLocally");
+        if (store.Responses(request.Id).Length != 0 || store.Attempts(request.Id).Any(x => x.Disposition != "NotDelivered" || x.EndedAt is null)) reasons.Add("NoDurableNonDeliveryProof");
+        if (SendGuard(s, request).Allowed) reasons.Add("RequestNotBlocked: pause and inspect first");
+        return new(reasons.Count == 0, reasons.ToArray());
+    }
+    public async Task<Alarm[]> AlarmHistoryAsync(int offset = 0, int limit = 100)
+    { await gate.WaitAsync(); try { return store.AlarmHistory(offset, limit); } finally { gate.Release(); } }
     public async Task<SupplyOperation[]> HistoryAsync(string? filter = null, int offset = 0, int limit = 100)
     { await gate.WaitAsync(); try { return store.History(filter, offset, limit); } finally { gate.Release(); } }
     public async Task<RequestDetail[]> DetailsAsync(string ownerId)
-    { await gate.WaitAsync(); try { return store.Requests(ownerId).Select(x => new RequestDetail(x, store.Attempts(x.Id), store.Responses(x.Id), store.Audits(ownerId))).ToArray(); } finally { gate.Release(); } }
+    { await gate.WaitAsync(); try { var request = store.Request(ownerId); return (request is null ? store.Requests(ownerId) : [request]).Select(x => new RequestDetail(x, store.Attempts(x.Id), store.Responses(x.Id), store.Audits(x.OwnerId).Concat(store.Audits(x.Id)).DistinctBy(a => a.Id).OrderBy(a => a.At).ToArray())).ToArray(); } finally { gate.Release(); } }
     public async Task<BusinessRequest[]> UnknownRequestsAsync()
     { await gate.WaitAsync(); try { return store.PendingRequests().Where(x => x.Status == RequestStatus.Unknown).ToArray(); } finally { gate.Release(); } }
     public async Task RecordQueryAsync(string requestId, string evidence)
@@ -510,7 +579,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             // Keep the current session in the aggregate even if old; its full SQL history is
             // retained until a newer context has replaced it.
             var closed = state.Session?.ClosedAt;
-            var cutoff = DateTimeOffset.UtcNow.AddDays(-retentionDays);
+            var cutoff = Now.AddDays(-retentionDays);
             if (closed < cutoff) cutoff = closed.Value;
             return store.PruneClosedSessions(cutoff, state.Actor!.Id, evidence);
         }
@@ -535,7 +604,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
     bool HasUnresolved() => store.PendingCount() != 0;
     static void Require([System.Diagnostics.CodeAnalysis.DoesNotReturnIf(false)] bool valid, string reason) { if (!valid) throw new GuardException(reason); }
     static void Demand(Guard g) => Require(g.Allowed, string.Join("; ", g.Reasons));
-    static void RequireIdentity(StationState s) => Require(s.Actor is not null && s.Actor.ExpiresAt > DateTimeOffset.UtcNow, "Authenticated unexpired identity required");
+    void RequireIdentity(StationState s) => Require(s.Actor is not null && s.Actor.ExpiresAt > Now, "Authenticated unexpired identity required");
     static void Maintenance(StationState s) => Require(s.Actor?.Role == SimulationRole.Maintenance, "Maintenance role required");
     static bool ValidBarcode(string? value) => value?.Length is > 0 and <= 128 && value.All(char.IsAsciiDigit);
     static SupplyOperation Operation(StationState s, string id) => s.Lanes.Values.SingleOrDefault(x => x.Id == id) ?? throw new GuardException("Current operation not found");

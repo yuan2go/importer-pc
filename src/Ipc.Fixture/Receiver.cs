@@ -1,3 +1,4 @@
+using Ipc.Adapters;
 using Ipc.Platform;
 using Ipc.Supply;
 using Microsoft.Data.Sqlite;
@@ -31,7 +32,7 @@ public sealed class Receiver : IDisposable
         for (int i = 0; i < values.Length; i++) c.Parameters.AddWithValue("$" + (char)('a' + i), values[i] ?? DBNull.Value);
         return c;
     }
-    public FixtureResponse Process(RequestEnvelope envelope)
+    public IntegrationResponse Process(RequestEnvelope envelope)
     {
         lock (gate)
         {
@@ -40,10 +41,10 @@ public sealed class Receiver : IDisposable
             if (p.Policy != "SYNTHETIC-KEEP-v1" || !p.Actor.Id.StartsWith("SIM-", StringComparison.Ordinal) || p.InitialDemand is < 1 or > 100000) throw new InvalidDataException("Synthetic policy/identity required");
             using var tx = db.BeginTransaction();
             Exec("INSERT INTO network_calls VALUES($a,$b)", tx, envelope.RequestId, DateTimeOffset.UtcNow.ToString("O"));
-            FixtureResponse? prior = null;
+            IntegrationResponse? prior = null;
             using (var c = Command("SELECT hash,json FROM receipts WHERE id=$a", tx, envelope.RequestId))
             using (var r = c.ExecuteReader())
-                if (r.Read()) { if (r.GetString(0) != envelope.PayloadHash) throw new InvalidDataException("Identity reused with different payload"); prior = Wire.Decode<FixtureResponse>(r.GetString(1)); }
+                if (r.Read()) { if (r.GetString(0) != envelope.PayloadHash) throw new InvalidDataException("Identity reused with different payload"); prior = Wire.Decode<IntegrationResponse>(r.GetString(1)); }
             if (prior is not null) { tx.Commit(); return prior; }
             bool exists = false, closed = false; int demand = 0, accepted = 0, revision = 0; string station = "";
             using (var c = Command("SELECT station,demand,accepted,closed,revision FROM contexts WHERE id=$a", tx, p.SessionId))
@@ -79,17 +80,17 @@ public sealed class Receiver : IDisposable
                     if (ok) Exec("UPDATE contexts SET closed=1,revision=revision+1 WHERE id=$a", tx, p.SessionId); break;
                 default: ok = false; reason = "Unsupported logical intent"; break;
             }
-            var response = new FixtureResponse(envelope.RequestId, envelope.PayloadHash, Wire.Id(), ok ? "Accepted" : "Rejected", reason, remaining, quantity, checkToken);
+            var response = new IntegrationResponse(envelope.RequestId, envelope.PayloadHash, Wire.Id(), ok ? "Accepted" : "Rejected", reason, remaining, quantity, checkToken);
             Exec("INSERT INTO receipts VALUES($a,$b,$c,$d)", tx, envelope.RequestId, envelope.PayloadHash, envelope.Payload, Wire.Encode(response)); tx.Commit(); return response;
         }
     }
-    public (FixtureResponse? Response, string? Fault) Query(string id)
+    public (IntegrationResponse? Response, string? Fault) Query(string id)
     {
         lock (gate)
         {
             using var c = Command("SELECT json,payload FROM receipts WHERE id=$a", null, id); using var r = c.ExecuteReader();
             if (!r.Read()) return (null, null);
-            return (Wire.Decode<FixtureResponse>(r.GetString(0)), Wire.Decode<FixturePayload>(r.GetString(1)).Fault);
+            return (Wire.Decode<IntegrationResponse>(r.GetString(0)), Wire.Decode<FixturePayload>(r.GetString(1)).Fault);
         }
     }
     public object Statistics()

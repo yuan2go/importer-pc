@@ -1,0 +1,11 @@
+  正在确定要还原的项目…
+  已还原 $RETAINED_TEMP/BarcodeExtension.csproj (用时 61 毫秒)。
+  BarcodeExtension -> $RETAINED_TEMP/Ipc.Reference.BarcodeExtension.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.98
+Verified OK
+{"Package": "reference.barcode-1.1.0-win-x64.ipcx", "PackageSha256": "cbdb1c5de231be6b1816b7cb35772682fd39e4029d6a69a806cd86e0572bcfc0", "PluginSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9", "HostContractSha256": "259cd65594630d5a48d4eb0cb5e28b9c2603403bbb42d50b63d9696203024e8d", "FrozenHostUnchanged": true, "Publisher": "reference-test", "Version": "1.1.0", "ExtensionContract": 1, "Signature": "RSA-PSS/SHA256", "Mode": "Simulation", "PluginSourceSha256": "cf2864697afb658f858fc5c857081351f8e2099a5c5cb78c7a38afcd913b376e"}

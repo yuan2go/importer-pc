@@ -1,0 +1,19 @@
+  正在确定要还原的项目…
+  已还原 $WORKTREE/src/Ipc.Fixture/Ipc.Fixture.csproj (用时 3.46 秒)。
+  已还原 $WORKTREE/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 3.58 秒)。
+  已还原 $WORKTREE/tests/Ipc.Verification/Ipc.Verification.csproj (用时 3.58 秒)。
+  已还原 $WORKTREE/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 3.59 秒)。
+  已还原 $WORKTREE/src/Ipc.Product/Ipc.Product.csproj (用时 3.58 秒)。
+  已还原 $WORKTREE/src/Ipc.Supply/Ipc.Supply.csproj (用时 3.59 秒)。
+  已还原 $WORKTREE/src/Ipc.Platform/Ipc.Platform.csproj (用时 3.59 秒)。
+$WORKTREE/src/Ipc.Platform/ExtensionStore.cs(12,44): error CS9124: 参数“ExtensionTrust trust”被捕获到封闭类型的状态，其值也用于初始化字段、属性或事件。 [$WORKTREE/src/Ipc.Platform/Ipc.Platform.csproj]
+$WORKTREE/src/Ipc.Platform/ExtensionStore.cs(13,36): error CS9124: 参数“RunMode mode”被捕获到封闭类型的状态，其值也用于初始化字段、属性或事件。 [$WORKTREE/src/Ipc.Platform/Ipc.Platform.csproj]
+
+生成失败。
+
+$WORKTREE/src/Ipc.Platform/ExtensionStore.cs(12,44): error CS9124: 参数“ExtensionTrust trust”被捕获到封闭类型的状态，其值也用于初始化字段、属性或事件。 [$WORKTREE/src/Ipc.Platform/Ipc.Platform.csproj]
+$WORKTREE/src/Ipc.Platform/ExtensionStore.cs(13,36): error CS9124: 参数“RunMode mode”被捕获到封闭类型的状态，其值也用于初始化字段、属性或事件。 [$WORKTREE/src/Ipc.Platform/Ipc.Platform.csproj]
+    0 个警告
+    2 个错误
+
+已用时间 00:00:06.92

@@ -1,0 +1,16 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> $WORKTREE/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply -> $WORKTREE/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> $WORKTREE/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> $WORKTREE/src/Ipc.Product/bin/Release/net10.0/Ipc.Product.dll
+  Ipc.Product -> $WORKTREE/.artifacts/delivery12-11f0728-core-portable/app/
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> $WORKTREE/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply -> $WORKTREE/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> $WORKTREE/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Fixture -> $WORKTREE/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll
+  Ipc.Fixture -> $WORKTREE/.artifacts/delivery12-11f0728-core-portable/fixture/
+Sealed Simulation configuration: $WORKTREE/.artifacts/delivery12-11f0728-core-portable/app/config
+{"Package": "$WORKTREE/.artifacts/delivery12-11f0728-core-portable.zip", "Sha256": "98d268bbfee6704e3b503e13fd961427261635445b735398ffb360276160544c", "WorkPackage": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12", "SourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d", "ReleaseVersion": "EXTENSION-WINDOWS-DELIVERY-12", "StorageVersion": 3, "ContractVersion": "SIMULATION-v1", "SourceCodeSha256": "ad9a5c5b9c3cab04858b31002c9897887aa1c2bedc9620f7683041c46282ba93", "Target": "portable", "WindowsRuntimeValidation": "NOT_RUN", "PhysicalIntegration": "BLOCKED", "Note": "Portable requires pinned .NET runtime; win-x64 is self-contained and requires Windows validation.", "Composition": "core-reference", "Mode": "Simulation", "ExtensionContract": 1, "MinimumReader": 3, "CompositionLockSha256": "a088a12b5fb0b78a068b54105a75b45bf2243c1906a74282bc4486d5146e9369"}

@@ -1,18 +1,18 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-REVIEW-FOLLOWUP-11",
+  "work_package": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12",
   "created_date": "2026-10-17",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/wp-ipc-review-followup-11",
+  "branch": "codex/wp-ipc-extension-windows-delivery-12",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
   "framework_design_state": "MODULAR_MONOLITH_P2_SOURCE_CORRECTED_PRODUCT_COMPOSITE_REFERENCE_PASS_WPF_BUILD_PASS_WINDOWS_NOT_RUN_REAL_CAPABILITIES_BLOCKED",
   "previous_manifest": {
-    "commit": "4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+    "commit": "9f320459969ee4398dc602ae037ecdcb3685996c",
     "path": "docs/manifest.json",
-    "git_blob": "3d7dcc00ea88ce27a56d77200c8982353be731f5",
-    "meaning": "Pre-followup-11 exact bytes retained in docs/archive/pre-review-followup-11; historical reports and acceptance are unchanged."
+    "git_blob": "6d595a5196875e54ea8262f953b42e86c18ba3cd",
+    "meaning": "Exact previous manifest retained in docs/archive/pre-extension-delivery-12; original historical reports and acceptance are unchanged."
   },
   "self_verification": {
     "sha256_file": "manifest.sha256",
@@ -171,14 +171,26 @@
     },
     {
       "path": "README.md",
-      "sha256": "5156ffbb5ff5e482a817a140f40ae424125dc0109584496cce39181039f667e7",
-      "size_bytes": 2929,
-      "git_blob": "b1f81aadd1e2aea3459d395ca2f65e23a4556971",
-      "version": "REVIEW-FOLLOWUP-11",
+      "sha256": "2387ed6aefa7428c32625c91024376a46c6e68088d08013bca2b95127236ec2e",
+      "size_bytes": 3305,
+      "git_blob": "eb68bbcfff72be7e48f9269f17b96c8f89ac31bd",
+      "version": "delivery-12-reference",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "b1f81aadd1e2aea3459d395ca2f65e23a4556971"
+    },
+    {
+      "path": "config/compositions.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ade8ffd01abfae8e306467dbfcb9cf7c758c7947ff1d1eb1cc55689ba6dc3108",
+      "size_bytes": 699,
+      "git_blob": "5697c8c204a26ea51d661bf4cd59fb1ddd5b858b"
     },
     {
       "path": "config/presentation.json",
@@ -193,14 +205,15 @@
     },
     {
       "path": "config/product.reference.json",
-      "sha256": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
-      "size_bytes": 866,
-      "git_blob": "852444966af0b1e2e08ec87819be84b716ec8027",
-      "version": "alignment-01",
+      "sha256": "029c4789ee01571858cd700fce9bcd64cdb3fb5a043057c631b4d14388b42a8d",
+      "size_bytes": 879,
+      "git_blob": "2a8a74069e9d995b9f961815a22473fd879f3c86",
+      "version": "delivery-12-reference",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
       "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "852444966af0b1e2e08ec87819be84b716ec8027"
     },
     {
       "path": "config/replay.jsonl",
@@ -226,14 +239,125 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "fcff3ae6198214170cd16373338242d9fa87b6261679ca1532ba20306c33ca57",
-      "size_bytes": 6024,
-      "git_blob": "294ff71ff19d7300f1f372049a6170542342711c",
-      "version": "REVIEW-FOLLOWUP-11",
+      "sha256": "5d8863382b2a587a7f5a6329ddee946de40dc01daa1cd194903e96d6bdbb62d4",
+      "size_bytes": 6986,
+      "git_blob": "2ccbd5ea9ead4fde169033511eed2f9ecf712629",
+      "version": "delivery-12-reference",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "294ff71ff19d7300f1f372049a6170542342711c"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/README.md",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ad9625cfef244d98ab1334efe1e2f777e52ee2ac7d543e29db9ba3a6c9d7de97",
+      "size_bytes": 286,
+      "git_blob": "8c9c4e9ff5314e29cf6da367829b6a7dec98a066"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/README.md.txt",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "5156ffbb5ff5e482a817a140f40ae424125dc0109584496cce39181039f667e7",
+      "size_bytes": 2929,
+      "git_blob": "b1f81aadd1e2aea3459d395ca2f65e23a4556971"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/INDEX.md.txt",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "fcff3ae6198214170cd16373338242d9fa87b6261679ca1532ba20306c33ca57",
+      "size_bytes": 6024,
+      "git_blob": "294ff71ff19d7300f1f372049a6170542342711c"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/design/framework-decisions.md.txt",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6bf772934183f9628d0d892f729b5efec6678951dde16a3bceb5fece574078fa",
+      "size_bytes": 15487,
+      "git_blob": "c65b8951d6c0d18fc07127227c1316ccc364210a"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/design/framework.md.txt",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "bda82f79796d6cab7a2c8ec6089dc61734cd777b057735ea35a4f45ab9100f51",
+      "size_bytes": 35210,
+      "git_blob": "e375fa2ef34c0c8ae12895d2d5256ec0a16561cb"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/manifest.json.txt",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "4dcec3a0e08634850c19a06d581a6c5a137e71560b5d6b4d05a6897d02035d6e",
+      "size_bytes": 212339,
+      "git_blob": "6d595a5196875e54ea8262f953b42e86c18ba3cd"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/runtime/operations.md.txt",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "4cda1848ef390bcd42f21c5a39ce6aeeb7d6f9d1e9d687a069f4e71c7314bd9e",
+      "size_bytes": 25335,
+      "git_blob": "2f8f787a11e399a1eb0487ea6093ab4e992cbae9"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/runtime/ui-baseline-alignment-10.md.txt",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "356e0c4f19871372265a16d4d19c28e9a458dc232e65e14f7a40df458c7482a9",
+      "size_bytes": 14262,
+      "git_blob": "e79f5c656491688e85ecf770e3761bdf8d3db9b9"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/runtime/windows-06.md.txt",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "102b54ff83bcb28c0ac57dc906d2552670c34389b178a788e464d3bb4e8cf80d",
+      "size_bytes": 2348,
+      "git_blob": "3ea4822ca3bf57ee54c6a77f736d046e137df35b"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/manifest.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e59e71db412180eca4136c2b6623c252040bb3be0e36bcd7698685e579d9b742",
+      "size_bytes": 1821,
+      "git_blob": "c97f50686fbd19a4cd83f610115af2a24e29b469"
     },
     {
       "path": "docs/archive/pre-framework-20261016/AGENTS.md.txt",
@@ -687,6 +811,17 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/design/controlled-extensions.md",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "521006c0523ba7b094d12a2dcc57d7be68d650add38aff4e30bc4ca0fcc80fe3",
+      "size_bytes": 2786,
+      "git_blob": "e119e20d6d9f187d7d48e07269bfa0d101e26e25"
+    },
+    {
       "path": "docs/design/framework-checks.json",
       "sha256": "3a6c717a1aa4531ed877c3468aaa5d3e1dcc8b4765a43fbe52ce5f076bf2effc",
       "size_bytes": 1454,
@@ -699,27 +834,38 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "6bf772934183f9628d0d892f729b5efec6678951dde16a3bceb5fece574078fa",
-      "size_bytes": 15487,
-      "git_blob": "c65b8951d6c0d18fc07127227c1316ccc364210a",
-      "version": "audit-reconciliation-01",
+      "sha256": "803827623750df4bccc619db4cc9caf97983d7caafe9db08b654a10b7d3c1775",
+      "size_bytes": 16260,
+      "git_blob": "9d8e1938c88116c7198543efe877e628327d6c30",
+      "version": "delivery-12-reference",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
       "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
       "storage_scope": "public_repository",
-      "previous_git_blob": "a3b067adb9a2f94533469519fd28ed7c3186b6af"
+      "previous_git_blob": "c65b8951d6c0d18fc07127227c1316ccc364210a"
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "bda82f79796d6cab7a2c8ec6089dc61734cd777b057735ea35a4f45ab9100f51",
-      "size_bytes": 35210,
-      "git_blob": "e375fa2ef34c0c8ae12895d2d5256ec0a16561cb",
-      "version": "audit-reconciliation-01",
+      "sha256": "c154ea12c31dcb976d1ee94029ee0999c12f7d7b0153b66d0954959939566244",
+      "size_bytes": 36447,
+      "git_blob": "d4b51cebb2e0e4e605eeeb006df917f189864009",
+      "version": "delivery-12-reference",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
       "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
       "storage_scope": "public_repository",
-      "previous_git_blob": "691fc106ad31ec0ee9837afa3ec06cd784999ec2"
+      "previous_git_blob": "e375fa2ef34c0c8ae12895d2d5256ec0a16561cb"
+    },
+    {
+      "path": "docs/extensions/developer-guide.md",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "5e65f24e11675852075b0ac7fb4d4ce518b3b9bbbcd513b2d325549c7a56339d",
+      "size_bytes": 13664,
+      "git_blob": "37efd0926ac8791f8bfc700324bcbe9ced026bdb"
     },
     {
       "path": "docs/readiness/checks.json",
@@ -989,6 +1135,435 @@
       "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
       "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/abrupt-process.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "bd2b9a0f7d8e052765bf9746da48d354250d2e191b6fe376354598fd75652c20",
+      "size_bytes": 12,
+      "git_blob": "c9dcbe4cdf6ec2f5ee3b6e894128712d0991046d"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/archive-baseline.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "70441324cc8f1746799eed5ab2b03803e8ded8c78d72b605ea797d29e937cc38",
+      "size_bytes": 50507,
+      "git_blob": "342b07df218aed1b4199a9f145359dde11803ecb"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/archive-comparison.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7c3ab6cb139f6e731d0b637787e0a1de32061b1cfa74eafb80a634f3cbb3d2f9",
+      "size_bytes": 740,
+      "git_blob": "492240ff4f5976dfe869b63f68b70b449ea27032"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/archive-current.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c8f1afb248f4fb5a72bbac03f58d7ddf8be3bbf85ef39faf3ec9e9b18901d380",
+      "size_bytes": 50993,
+      "git_blob": "3d4226fcc09b0a08b8fc465362546a8f59724cc8"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/candidate-inventory.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d63a7d9d44c6a3bb8df06a00cd8f4c20b7dc990bf07ac994789fa0aba34428ce",
+      "size_bytes": 5110,
+      "git_blob": "c663feb72f01cdd0a2a0e73d403ce0913d3358fb"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/environment-and-windows-blocker.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "973c9cd7e41012a488a8616f9fa9786d604c4dc2f5860f44a56e52a5b4855938",
+      "size_bytes": 1168,
+      "git_blob": "dd72bc69eb51d32b4205b05c0e79b948295cb44e"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/evidence-identities.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "bd5ce7d170d49f0805da195b94c553b6fa526d31c992d0f8a3a8fe8b2699273c",
+      "size_bytes": 10385,
+      "git_blob": "85b3d2e8b344a562de075ce70c43ee088a2b3d32"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/extension-evidence.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "437b5a05b595acfcb3bec71782cb0caa2bc2662a50400af77a7300c32d529b32",
+      "size_bytes": 17242,
+      "git_blob": "0b0fb0ce680d2fa5bab48e3451576ff7b8b115ed"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/final-11f0728-build-session.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "5238103870cf3609ab03f03912cda11565bede5a952f4e98d03a0cddffb99049",
+      "size_bytes": 3099,
+      "git_blob": "3436e5d4b9af4e106e27697ea495620341ccd269"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/final-core-smoke.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "size_bytes": 347,
+      "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/final-extension-smoke.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ea971bb10bada372e1ac7b46c8285da2dcc7a7d8dd28fa9ba990eaf8d2752c92",
+      "size_bytes": 7880,
+      "git_blob": "18adb48cc73be4cf66c03e45de5e38c65bb28f06"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-FilesVerified-operations-3db6ae64e4634cf786cf232c1cf50591.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0aa127ae05e9a9ef13fbd0cc3c297533b2bfaa068ecfe697fc5b65016f1a1bf9",
+      "size_bytes": 404,
+      "git_blob": "1f6ac2ca6eb3de61fc44f25dd9d3d7f66abf1851"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-Prepared-operations-88fb1eea014d4d689df5d7b311bf24a9.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7bd541d9a968427a08883eb53800294c05fe7e15eedcf727931d31eabf35a5d4",
+      "size_bytes": 404,
+      "git_blob": "36564dcf2a76559762206e6785a111f8644a0f7c"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-Published-operations-8bb1a56c25d046cc9957ca2e756e9f22.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c2c4dceb3fbd52d2b7705bf6c1b031e5f539eca47cf53e45e38db1ee1fac0c50",
+      "size_bytes": 404,
+      "git_blob": "7014d9ad0005a5490343bc179e5d1e0badc81745"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-Registered-operations-35dacbf1f1484252ab56a04b70c71821.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0381a50b5474a4459873aeea02b41a7386e93f652ec22d3aba19849f3c5b5e6e",
+      "size_bytes": 404,
+      "git_blob": "b1b6d57957cb111bb255493463a1d9917ba62710"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-build.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "34b8e15def994f4de778e8c951a2c4d91272042f6be0ce305b26b8385536c32a",
+      "size_bytes": 1374,
+      "git_blob": "620743929dc282ed64d92479bb5f126745c164e9"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-extensions.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "18b378acbe359e623bc3469536280a050b6299661141452019facfebee988296",
+      "size_bytes": 2489,
+      "git_blob": "799213a95b19373538cd734b9442fb38988dabca"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-package-barcode-portable.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "1ec6326f70aad1d11c266aa9df7fdbd0f915520d58912df3e0e0b9c55a87648c",
+      "size_bytes": 2736,
+      "git_blob": "8762df1b6b3b5d8d9ae52b7c2e5ed0f24e034fb9"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-package-barcode-win-x64.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ec223a2964a82c6afc8acb5df647e83dba830025973795d1641555ac1995edab",
+      "size_bytes": 3771,
+      "git_blob": "5b83d667b98c44df4827e0ad17fab2184757cdff"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-package-core-portable.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e53ca70d6ab4cd736cf3d7d8f73cc255c7c9859ebc436af4c5c13b66a1ef5500",
+      "size_bytes": 1918,
+      "git_blob": "822cd94f535f917661556ceaecb91d2384b13f0f"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-ae57856-review-followup.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7c98641f9b6c3326ec8ae180a65cb157abad7aa5b3a3847b82404a276c88f8b7",
+      "size_bytes": 1171,
+      "git_blob": "885f5440387836a0c28bf56f954cc1ea85b89827"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-baseline.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f6f987226b9ffa9911efd8927926d8ce56db2c96064b90fa35400a9ba8d601ed",
+      "size_bytes": 10540,
+      "git_blob": "3559ba607a7d2cad38e0a7bfbc4546e3da4c2014"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-closure.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6684da39330d565ecb51034b47a627b8afe4d4c0ad41fa303256797d089be2e6",
+      "size_bytes": 1251,
+      "git_blob": "ba9f048ade4826462e5271b7fe79aae97bd3ad92"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-followup.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f4133dcc877b6c81671e6deccd90b98b88723fe145cc9f50614f5b167b0bf2de",
+      "size_bytes": 1126,
+      "git_blob": "8df2e3c03233e823e773a27a6996937b800d023f"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-review-followup.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "1a4bdffe1494ac062345991e366d8958c2bab941f2fff832422789a05ef8698f",
+      "size_bytes": 1072,
+      "git_blob": "9c204c76f4056225bcd88d4cb1b5c81e36de94d7"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-compile-freeze.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c7715d9fadf8bf51edabd7d17340137853d20d760ff40535898b019a925065df",
+      "size_bytes": 983,
+      "git_blob": "d49b7d60460f0d13dd7c70cbea80ae337428be67"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-final-worktree.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0ad5cfa226fe184d817997bca40c2f8cff2c96c1a6f2ec0eeb0b815cd6271907",
+      "size_bytes": 2895,
+      "git_blob": "2c012ee03831aedb663642b1bb25270255681c8d"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-first.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "baf816e6254ea7ff835363048533165d08ac3d4bbc76a386566e20628fa0b4a4",
+      "size_bytes": 888,
+      "git_blob": "6e931fcfc843b7dc59764c6cbecfda78ca7b9cb0"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-second.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "30e518ea40253961b1b83d192e473c2908db240193320f99cc21d614096feb19",
+      "size_bytes": 2377,
+      "git_blob": "69c69c8720ffa3a760c520a7b0b444daf584c7fc"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-settled-health.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "13cd38c29e5043055a88728273a4a35a7d2779e8360acc6cf2b7eb1fe95e0d73",
+      "size_bytes": 2416,
+      "git_blob": "08c81941985e465c8b277a57413046575db0b18b"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-final-upgrade-build.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0d7f5304535b5397b3c259c13b180bb6e4fad2838d7ea72fc1ddf095ab3ec12f",
+      "size_bytes": 811,
+      "git_blob": "e9025c7a624db17584d816026010a508aa95f1c1"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-first-build.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d290fd22fa8ba502e8041cc345bfb4021cf78ca3e20779d4b9b9d548960d78fd",
+      "size_bytes": 1600,
+      "git_blob": "1cfdd57c3e714095ab85fee7eb6afccabb9c4fbc"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-tools-tests-bundled.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9f244fb2cd145cad87f7ca8ff27a3a58256968acbf575efffaf719a2649e4dfa",
+      "size_bytes": 1286,
+      "git_blob": "a09b0dfaa81f4675d1ca1184b90cbeef8c3c6b86"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-tools-tests.log",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6fe4608533cf8457770bc78bc287945fb3858608b5ec9b51b1ac0a53eab43ac6",
+      "size_bytes": 1884,
+      "git_blob": "38dd73a48c99aa1534099a59c09858b88195a2c1"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/journey.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "bbc2aa4f18f6d2bf848af4850a50087ee30260584ab8f4707b0228763513659c",
+      "size_bytes": 345346,
+      "git_blob": "a4813196c67039304ebe5efef83e3519e7ef0e62"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/remote-readback.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "46e8a8d3df8f791cb2173537e3d4cb729aed1991753291ae3bc2bb9417d7682c",
+      "size_bytes": 3883,
+      "git_blob": "ce39f0033711d3221142a1b0addeabd7869e236e"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/review-product-ownership.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6a958079fdd0ce395065d54b87ab3d60cea82932fbbd9fb9e944153aff024983",
+      "size_bytes": 37723,
+      "git_blob": "76f949e07e4287e1e95339771efd4722c892b557"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/uninstall-interruption-operations-9a25212574b34d99b68e748ffef5d81c.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c27e0caa33775b0f4abebb42ae2f550e06ed48fd2d66d6298059253184d3be57",
+      "size_bytes": 407,
+      "git_blob": "bdb7cf9dfa78f585ef8f61e36a8cd77b90bec4d3"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/uninstall-interruption-operations-fb46364fdc8e40d8b1610d49b79845c9.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0ecd6436805ee3a3089eae8d43bcc114863da88cf79eab1f0514c42c5ccc9cfc",
+      "size_bytes": 404,
+      "git_blob": "7dd9212156b222f27677d15ded25d6cb06bace8a"
     },
     {
       "path": "docs/runtime/evidence/hardening-04/HARDENING-04-2619a7a-win-x64.zip.sha256",
@@ -1454,6 +2029,28 @@
       "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
     },
     {
+      "path": "docs/runtime/extension-windows-delivery-12-checks.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c60160927f8d2f846c20c2499e39feff9a4f336af0a9b1f0dee04fe4ed55999b",
+      "size_bytes": 8392,
+      "git_blob": "d6baaaed4939e46ced7ca5602aa16dcfff9b5365"
+    },
+    {
+      "path": "docs/runtime/extension-windows-delivery-12.md",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "5a884ef444994fac7f7aad9725e5c458f2488eaa887488be75ab105cd2d69a67",
+      "size_bytes": 10353,
+      "git_blob": "067a6a6c2eb5df4b8852d2b639d74cf57a9d99ae"
+    },
+    {
       "path": "docs/runtime/hardening-04-checks.json",
       "sha256": "fbf9f03219791004dd56e3643506c1eae0c33c7a4f8b2b6a6ac97504a63a4798",
       "size_bytes": 6415,
@@ -1512,14 +2109,15 @@
     },
     {
       "path": "docs/runtime/operations.md",
-      "sha256": "4cda1848ef390bcd42f21c5a39ce6aeeb7d6f9d1e9d687a069f4e71c7314bd9e",
-      "size_bytes": 25335,
-      "git_blob": "2f8f787a11e399a1eb0487ea6093ab4e992cbae9",
-      "version": "REVIEW-FOLLOWUP-11",
+      "sha256": "ccc14860d078155e2b1338844f4e2de155e64347a1d4f0960f07682c35bcd1d3",
+      "size_bytes": 28634,
+      "git_blob": "f13839f03789f2963b18d72f95eb76f9a68f9952",
+      "version": "delivery-12-reference",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "2f8f787a11e399a1eb0487ea6093ab4e992cbae9"
     },
     {
       "path": "docs/runtime/publication.md",
@@ -1589,6 +2187,17 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/runtime/validation/reference-windows.workflow.yml",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "92b7d729bcc54b05bdf2d87c285d985810741aa7204c9f15b21e43c6dd3337c1",
+      "size_bytes": 1595,
+      "git_blob": "028c86d72e85509fd160b96dbc41910737ea73e4"
+    },
+    {
       "path": "docs/runtime/validation-scenarios-09.md",
       "sha256": "2959c8c46c59370fda09f18f1bf981c56261415d7f3b44ecee57aac56cc88b8c",
       "size_bytes": 9571,
@@ -1601,14 +2210,15 @@
     },
     {
       "path": "docs/runtime/windows-06.md",
-      "sha256": "102b54ff83bcb28c0ac57dc906d2552670c34389b178a788e464d3bb4e8cf80d",
-      "size_bytes": 2348,
-      "git_blob": "3ea4822ca3bf57ee54c6a77f736d046e137df35b",
-      "version": "REVIEW-FOLLOWUP-11",
+      "sha256": "0fa043153c5865626337e56fde59bacb117c83586c0d8a8a645d4fc429d5a16b",
+      "size_bytes": 2685,
+      "git_blob": "0e4713c9b8b518247401ba8d28580e839de5ef95",
+      "version": "delivery-12-reference",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "3ea4822ca3bf57ee54c6a77f736d046e137df35b"
     },
     {
       "path": "docs/superpowers/plans/2026-10-16-ipc-audit-reconciliation.md",
@@ -1634,6 +2244,17 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/superpowers/plans/2026-10-17-ipc-extension-delivery-12.md",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f1b316c28ec591c7b4c0a1f4e4b888d9c77e9983f1981f354d1af43e12e755c7",
+      "size_bytes": 1988,
+      "git_blob": "7acff963ad7afdbba6a09ab963e6e32b6ed0c4c1"
+    },
+    {
       "path": "docs/superpowers/plans/2026-10-17-ipc-review-followup-11.md",
       "sha256": "9e19ceae3fe3ae1a1ce349f875a2771ceb6ff3391122d9885c3aa4e3a4430063",
       "size_bytes": 5296,
@@ -1646,10 +2267,10 @@
     },
     {
       "path": "docs/ui/STATUS.md",
-      "git_blob": "4b546db07a91dff9e2fa8728a2e8fc0ad1503e52",
-      "sha256": "65a7f551b1ee684998725a1163c360c09a0ce08fb3ab37cd6bb9464ec8bd2a20",
-      "size_bytes": 2117,
-      "version": "ui-publication-20261016",
+      "git_blob": "eea8d9a6efa30508510c58f5b531bcd74eea94e2",
+      "sha256": "b717a57d6a3ecb61f1ac2f172d516e56c60ba678439bf58e244c5e1cacbfe98a",
+      "size_bytes": 2524,
+      "version": "delivery-12-reference",
       "status": "current_baseline_control",
       "purpose": "complete visual/source design baseline for Codex; not production acceptance",
       "source": "user-requested final UI publication / SS-UI-VIS-001 v1.1",
@@ -1658,7 +2279,18 @@
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
       "remote_inclusion": "verify_final_main_after_merge",
-      "previous_git_blob": "10f47352a9ea0784c035cc99562dc6a76510caa1"
+      "previous_git_blob": "4b546db07a91dff9e2fa8728a2e8fc0ad1503e52"
+    },
+    {
+      "path": "docs/ui/extension-delivery-12-mapping.md",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6dd8b2c7523170db87e3edf9a393bb9b925223aefd0fb44ef55fa0aeaa4f9a97",
+      "size_bytes": 3006,
+      "git_blob": "169ccfe980ff8327558b8061eab4a2711672009e"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/GALLERY.md",
@@ -2505,6 +3137,17 @@
       "previous_git_blob": "81d722bc92df713de8defef4c95a8e4e4150ac12"
     },
     {
+      "path": "docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "2aacec8c135b9c92737ed206d408a56d8aed0d690420dda9676de70a5ae5390c",
+      "size_bytes": 25624,
+      "git_blob": "2841ac8c74ae1a4d2a9a601eca954e31055b4203"
+    },
+    {
       "path": "docs/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md",
       "sha256": "2ff017c25cad4d8aea44536d390d44d56fc1c4ceeda2a6cf10de1374ed24214b",
       "size_bytes": 8323,
@@ -2596,6 +3239,39 @@
       "previous_git_blob": "8cacbed21bb1fa7b7f2fb339081d944595a91438"
     },
     {
+      "path": "examples/BarcodeExtension/BarcodeExtension.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "2164f02eda938d1c66a96b4f5550c30cadf87633cd4974a495d9562d1b61bb64",
+      "size_bytes": 4323,
+      "git_blob": "5fc6309bb7b732401ba83527da4ecb50d66ef94e"
+    },
+    {
+      "path": "examples/BarcodeExtension/BarcodeExtension.csproj",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "8f8845e50dfa256e7dc714b7f5504ba7d7dc7e43fea6a0b8ea2d48333e7532b0",
+      "size_bytes": 598,
+      "git_blob": "16d1344f7242f310d72bd1584589e182f323e510"
+    },
+    {
+      "path": "examples/BarcodeExtension/packages.lock.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "a29c6aa8cfb81874ff8bb78dc369d7416f28c9b8cc47e99592bfc019b20c41eb",
+      "size_bytes": 61,
+      "git_blob": "4a91a8cd78fbfd79345585bb9bdbb8099ec40383"
+    },
+    {
       "path": "global.json",
       "sha256": "d1bb820bf074027be921b263729d1fba343d34328f0c4b7484d10162287c059e",
       "size_bytes": 55,
@@ -2605,6 +3281,17 @@
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
       "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "scripts/build-extension.py",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "583a450dc7955a5f3ed433abcc00f4e0a00b53256b3226a70a22bb78017e3b49",
+      "size_bytes": 7343,
+      "git_blob": "1a0eedd5b22d341a61b6b8f6f6743806aaa3a848"
     },
     {
       "path": "scripts/build.sh",
@@ -2618,15 +3305,49 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "scripts/composition.py",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "20274016597fb4f551bd01709e96c545437ed356054dda47d2e55618f41f04ea",
+      "size_bytes": 1554,
+      "git_blob": "d48f796effb2c0ff852e7c31428055c2d4d913c3"
+    },
+    {
       "path": "scripts/package-reference.py",
-      "sha256": "0f5b62e2229deefb8ff9472ddf635dd70ace73569c31fb68c60a1febf08e37a1",
-      "size_bytes": 3574,
-      "git_blob": "0b71b778c457d5adaadc6562f679a7027f668602",
-      "version": "REVIEW-FOLLOWUP-11",
+      "sha256": "64f1998c40c0727d4e90050432f735172ddc1a928157f51e155bc99a3f07a05c",
+      "size_bytes": 6593,
+      "git_blob": "8c76a2ef449c7bb95d16dab1f92ab0b63e26f53c",
+      "version": "delivery-12-reference",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "0b71b778c457d5adaadc6562f679a7027f668602"
+    },
+    {
+      "path": "scripts/protect-release.ps1",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6581af6d65edce4d4bbeefb5be71da5d57596db999eae4699ab4f440c9e36adc",
+      "size_bytes": 3097,
+      "git_blob": "209adfed382a940205a68c6f34bf5abb74d6358b"
+    },
+    {
+      "path": "scripts/provision-extensions.ps1",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ef705ac153f9be90f15e06d0f4a366fd464c002def0b1583e9059ce96b10078f",
+      "size_bytes": 5661,
+      "git_blob": "8e403d714d58c1358140ccbbedad83514d504645"
     },
     {
       "path": "scripts/provision-runtime.ps1",
@@ -2641,26 +3362,38 @@
     },
     {
       "path": "scripts/publish.ps1",
-      "sha256": "046bbb301a919348a79ace0c423e666fbc49c20621ab2beb840f02943a69060c",
-      "size_bytes": 2726,
-      "git_blob": "2af230bdf949bcb9968e8ea02f2514e41476d70f",
-      "version": "audit-reconciliation-01",
+      "sha256": "cb161e752f0ca39ed5e8e739ad81e3975de81b39d8a9917eb84cc2bcf79d021a",
+      "size_bytes": 1039,
+      "git_blob": "a3b834c15ae15d60a10fe4a634c0ef9b97a29ac9",
+      "version": "delivery-12-reference",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
       "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
       "storage_scope": "public_repository",
-      "previous_git_blob": "3a675f6f1e710184e7441987756179781bff0293"
+      "previous_git_blob": "2af230bdf949bcb9968e8ea02f2514e41476d70f"
     },
     {
       "path": "scripts/seal.py",
-      "sha256": "72af9fffb6e24fc001dc387025e26997549637238ceff0b1810b647c39aed57e",
-      "size_bytes": 5675,
-      "git_blob": "07a41f3bc3228519ef647ced2e547c386a10e7c7",
-      "version": "REVIEW-FOLLOWUP-11",
+      "sha256": "c2f2338088cc8c261f03ab0cb494ce0905ff109f124de7312b32c76430351289",
+      "size_bytes": 5811,
+      "git_blob": "2c858d990ab37c9ec56b562a8570e4339699d264",
+      "version": "delivery-12-reference",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "07a41f3bc3228519ef647ced2e547c386a10e7c7"
+    },
+    {
+      "path": "scripts/smoke-extension.py",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "47569bcc3893923022997fd641e928290be0324ccc6fbaf5751c6d1466308b04",
+      "size_bytes": 7661,
+      "git_blob": "71a03d13dfe8a96efc9de444b29615db486345da"
     },
     {
       "path": "scripts/smoke.py",
@@ -2684,6 +3417,17 @@
       "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
       "previous_git_blob": "8d34d3da13d63dae1955b48d81d8138805575604"
+    },
+    {
+      "path": "scripts/windows-reference-validation.ps1",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e1866d25588ce3b666bb09129f48d84ba9683b7cf582252b911745434ebb670a",
+      "size_bytes": 7910,
+      "git_blob": "5afa819ba34d7fef118c4ef3b769e918d0f86bd8"
     },
     {
       "path": "src/Ipc.Adapters/Ipc.Adapters.csproj",
@@ -2791,6 +3535,28 @@
       "previous_git_blob": "f6f626af4d09ca78a6b30ac377ccc425c6a26f24"
     },
     {
+      "path": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "29e5e2e45ebf6c99194b40b12a5ac2891b665610fa6f7e06e4fb9a4d81507fea",
+      "size_bytes": 6245,
+      "git_blob": "e005c8b94d72743ff25e82487765a56a21e9c465"
+    },
+    {
+      "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "5d9f54618fe4ae056a0103ce14d776bdb3eb7412bb46b94e027e87dea4c88d80",
+      "size_bytes": 18896,
+      "git_blob": "3f5f2b78c5dc4095ba32174c4c60c6526bae86e0"
+    },
+    {
       "path": "src/Ipc.Desktop/HistoryPresentation.cs",
       "sha256": "10f5b7ffe755517912389dd1632bdf3d930f029fb1931301d7b97d9984983ac8",
       "size_bytes": 1863,
@@ -2848,6 +3614,17 @@
       "previous_git_blob": "793ce45a65ffd9e8ba24cbb0944344c158bded99"
     },
     {
+      "path": "src/Ipc.Desktop/MainWindow.Extensions.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7216061d6021d53759a309be4d7064d51425b64286404c95cc593fdf1078ddb4",
+      "size_bytes": 2934,
+      "git_blob": "611018cca9903b6b594e7c4684355695e9f258b4"
+    },
+    {
       "path": "src/Ipc.Desktop/MainWindow.HistoryExport.cs",
       "sha256": "51d1a332b04f3f037f7c117869791cd462853b9f4b5ff2416be7e980adf17639",
       "size_bytes": 3017,
@@ -2860,38 +3637,39 @@
     },
     {
       "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
-      "sha256": "b9268e31a237cbbac0af468cd51694ce864a93426e6e00aee582ce85b5736be1",
-      "size_bytes": 14835,
-      "git_blob": "c48f3a6326b27ccf38dc70708905e0028d5901fa",
-      "version": "REVIEW-FOLLOWUP-11",
+      "sha256": "717122a7303f71c571210face47dc1e237f579572d8964fdbe686ade31699bce",
+      "size_bytes": 14972,
+      "git_blob": "f61beb28f5acb7e0017cc87c8338a1c25daecfb9",
+      "version": "delivery-12-reference",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "c48f3a6326b27ccf38dc70708905e0028d5901fa"
     },
     {
       "path": "src/Ipc.Desktop/MainWindow.xaml",
-      "sha256": "50f5afe245352e3b68123218078b9296dd943ffd79b963a0f05768ce34e4ba74",
-      "size_bytes": 27965,
-      "git_blob": "167471706591fa5853db3939aea02a7c85d7633f",
-      "version": "audit-reconciliation-01",
+      "sha256": "36d49be60d2c4bf7f9c62d9e00042cd21dc15c22079253f7e0e2aed773209a9f",
+      "size_bytes": 28794,
+      "git_blob": "9bb7026251b149f972edf85f8043c1766ceb6986",
+      "version": "delivery-12-reference",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
       "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
       "storage_scope": "public_repository",
-      "previous_git_blob": "ad18e66e6b58fc8b26d8db01b1abcdf36d2981b0"
+      "previous_git_blob": "167471706591fa5853db3939aea02a7c85d7633f"
     },
     {
       "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
-      "sha256": "7b4573583971337b33afe9930d9aa623f5b0313c683c5404792ab03fa0aeaaf7",
-      "size_bytes": 42833,
-      "git_blob": "88f569756b3805c796e007f595b58bee4b1633d3",
-      "version": "audit-reconciliation-01",
+      "sha256": "ea66f365ee502be6c24b75dc29d7c4284f717518313b9550e87734d980cfcca8",
+      "size_bytes": 43383,
+      "git_blob": "9baf608722ef27b03faab101f5813172cd8e48ee",
+      "version": "delivery-12-reference",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
       "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
       "storage_scope": "public_repository",
-      "previous_git_blob": "c7a8a4abd06f982a633055ea7831ecacc438eabc"
+      "previous_git_blob": "88f569756b3805c796e007f595b58bee4b1633d3"
     },
     {
       "path": "src/Ipc.Desktop/OperatorNotificationPlayer.cs",
@@ -2906,14 +3684,15 @@
     },
     {
       "path": "src/Ipc.Desktop/PresentationPolicy.cs",
-      "sha256": "e73e0d8a45e4317ab2bfffe31fa3aeeed80d0aa624130e802735a5915eba1099",
-      "size_bytes": 1701,
-      "git_blob": "7295c26c5073b2fc4628ef872ba3ccfc0837bce2",
-      "version": "REVIEW-FOLLOWUP-11",
+      "sha256": "3e70400e3fa1ada743389663e20f7c5384f91bbb21dbb7a61ba1019b4f02c53d",
+      "size_bytes": 2369,
+      "git_blob": "0f66be3d2d1e5d1c7edec45480550495cb8cc197",
+      "version": "delivery-12-reference",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "7295c26c5073b2fc4628ef872ba3ccfc0837bce2"
     },
     {
       "path": "src/Ipc.Desktop/Themes/Workstation.xaml",
@@ -2939,14 +3718,15 @@
     },
     {
       "path": "src/Ipc.Desktop/ViewRegistry.cs",
-      "sha256": "251a51f9ec0ed3555849d77a53c9d59b0734ee5e867f9015346da96b7947dc8b",
-      "size_bytes": 737,
-      "git_blob": "8d81dbd1cfee3f82ae79dd27a5774872244f6895",
-      "version": "alignment-01",
+      "sha256": "25eb457e2ca2bec8b5f74bf6449b08f51a68c1baf23c840083ca90cc4a218d6e",
+      "size_bytes": 772,
+      "git_blob": "3444e2f33775fb6085c3e5b84865689c44b560b1",
+      "version": "delivery-12-reference",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
       "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "8d81dbd1cfee3f82ae79dd27a5774872244f6895"
     },
     {
       "path": "src/Ipc.Desktop/app.manifest",
@@ -3053,16 +3833,27 @@
       "previous_git_blob": "9b5c3746959640d5b727ce4c729da58d8d19da12"
     },
     {
+      "path": "src/Ipc.Platform/AssemblyInfo.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "8569ff12564fee7e80a680d4047a077a5634c7f6691f7ac54639376875ccdf71",
+      "size_bytes": 90,
+      "git_blob": "929d47d23f060b051e740dee210a1ed9a5be16f8"
+    },
+    {
       "path": "src/Ipc.Platform/Configuration.cs",
-      "sha256": "932f00676f398daa55d68538ab950a03869105cb160e5aa7a3cdd9c01a395180",
-      "size_bytes": 10909,
-      "git_blob": "7b4ac1413bfe5a0a674bbbd0c06143e2ec29ae4d",
-      "version": "alignment-01",
+      "sha256": "55e6c5694e90e3c92683077e094f790af6f140e31365fc3786a39079b058db14",
+      "size_bytes": 11022,
+      "git_blob": "9e8399c069483c3a9e59de123ee8c2d4937b90c8",
+      "version": "delivery-12-reference",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
       "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "aca2c1cca3a556032442dc9f5d31ce613232e553"
+      "previous_git_blob": "7b4ac1413bfe5a0a674bbbd0c06143e2ec29ae4d"
     },
     {
       "path": "src/Ipc.Platform/DeviceCapabilities.cs",
@@ -3075,6 +3866,50 @@
       "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
       "previous_git_blob": "01c9605148ebeab3b00308c1af5ed95ca5727ee1"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionContracts.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "dc13c3498f401998eced4766a3fa2a2647e28ac1573e3868315c41dcd0014c53",
+      "size_bytes": 7608,
+      "git_blob": "567b868d011564cee6c90543a73342d3c164018e"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionLoading.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ac5126806e114a4fd241f356fd0631af0c8a7fb7fe6ad6343f3e55453c1db22a",
+      "size_bytes": 9562,
+      "git_blob": "3db0b5aa2a3545dcaabb8915b2c442971f921c66"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionPackages.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "2ee0ce6bfbb29163de6e95373420da4ac30988bbb0c66efb3a5b76ab290d4ba4",
+      "size_bytes": 13872,
+      "git_blob": "c9b1af280262b6d85a42c1069f2f4b9afc365fe4"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionStore.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "39646847339f11a4912a5686d0dc2b103d2b0199904f717ecaa68241e0125b05",
+      "size_bytes": 15826,
+      "git_blob": "495a1f4fe92414c2c17ef3af7fc0f908d1f0f091"
     },
     {
       "path": "src/Ipc.Platform/Ipc.Platform.csproj",
@@ -3101,14 +3936,26 @@
     },
     {
       "path": "src/Ipc.Platform/MachineRuntimePolicy.cs",
-      "sha256": "0fd62e9f456c57e080936dce5e82e826606437cb961b4c2e2d84f465c3ce4e03",
-      "size_bytes": 4172,
-      "git_blob": "956d489031768a093225a6e038aa218c9b2b7152",
-      "version": "engineering-closure-07",
+      "sha256": "283216960b4cf34c5e34b5817172eefc86b3803efd2b2fc7c0d38a43efa3552d",
+      "size_bytes": 8336,
+      "git_blob": "f4a25fb01be3903216358ab5249fe63590d3828b",
+      "version": "delivery-12-reference",
       "status": "implemented_runtime_unverified",
       "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
       "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "956d489031768a093225a6e038aa218c9b2b7152"
+    },
+    {
+      "path": "src/Ipc.Platform/PackageUseLease.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9ada0ecb14c98e711a89c7eab7efa95ec2d2ccdea1d21f7bf691d242cef6af57",
+      "size_bytes": 1508,
+      "git_blob": "1d409983eb4fb29a71bd40e84a72e33cc35acc84"
     },
     {
       "path": "src/Ipc.Platform/RuntimeJournal.cs",
@@ -3166,6 +4013,17 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "src/Ipc.Product/ExtensionManagement.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "946fabcda8a5ea040f801ed507ef1d846eb60e01463522a828056f101c8f3b8d",
+      "size_bytes": 5899,
+      "git_blob": "730c8635596582e6318729edf6c2eace33576d7b"
+    },
+    {
       "path": "src/Ipc.Product/Ipc.Product.csproj",
       "sha256": "9788bf061d766145f19fa258c179a9796183d8707badfcd9e5921fba578f6cb5",
       "size_bytes": 191,
@@ -3178,37 +4036,50 @@
     },
     {
       "path": "src/Ipc.Product/ProductRuntime.cs",
-      "sha256": "a7c10d69e1391683baa880907ec058008f945215d75573caf691adcbeb851288",
-      "size_bytes": 38761,
-      "git_blob": "eb5d1194b56c0e5f2dcbede9eb2706a84452796d",
-      "version": "REVIEW-FOLLOWUP-11",
+      "sha256": "6fb4f9f00456527404a2bf4a65669148772fa93de28bf84bf96e61717e20665f",
+      "size_bytes": 43921,
+      "git_blob": "af5bc180a0c6f827326c8809e4f10b6df79b8752",
+      "version": "delivery-12-reference",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "eb5d1194b56c0e5f2dcbede9eb2706a84452796d"
     },
     {
       "path": "src/Ipc.Product/Program.cs",
-      "sha256": "05fdb2ccdf6155e74f2f7d797cd82ee22a28954c7e8fb551a8fad744df160d31",
-      "size_bytes": 8040,
-      "git_blob": "8fd1a0bf6f5d267d88c529048f831912e3736020",
-      "version": "engineering-closure-07",
+      "sha256": "aeadc961b75fd27f51ee3a500d850c3418b149f5fa6f2807618c5d53087eaa55",
+      "size_bytes": 11558,
+      "git_blob": "fc277925c224790c6bd91ffb20302e10c3b78620",
+      "version": "delivery-12-reference",
       "status": "implemented_runtime_unverified",
       "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
       "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "4a7b86751dac9dcfcc2fa1ad8c98b4642a2c1630"
+      "previous_git_blob": "8fd1a0bf6f5d267d88c529048f831912e3736020"
     },
     {
       "path": "src/Ipc.Product/ReferenceProduct.cs",
-      "sha256": "f4e7066cfaa4ab61e653e623e590666dd50d8b752318d38bd09de7de56b715e3",
-      "size_bytes": 2357,
-      "git_blob": "a81c27434988b6fc39c6de4ff0e6d3ab3c57f3ac",
-      "version": "alignment-01",
+      "sha256": "652633dd5d390477c2782134dbf1c97a2547d287292e19ee7c2a0bcf8cee9a06",
+      "size_bytes": 2556,
+      "git_blob": "e73ac6e5437e1432904d491c898d9b26ff6515e2",
+      "version": "delivery-12-reference",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
       "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "a81c27434988b6fc39c6de4ff0e6d3ab3c57f3ac"
+    },
+    {
+      "path": "src/Ipc.Product/SourceConstruction.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f13093fb1139bd4b35c4e81aebdf83a9ce508f6d9baa3cb8926b5edf4ee84bac",
+      "size_bytes": 1367,
+      "git_blob": "393d78b074cea3aa49251e555e629b221009fc33"
     },
     {
       "path": "src/Ipc.Product/packages.lock.json",
@@ -3231,6 +4102,17 @@
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
       "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply/ExtensionMaintenance.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "cc755c44d5ba9fb71076c7d572c9ce7e255e7c3988da45fb8d83bc2d787443ab",
+      "size_bytes": 2310,
+      "git_blob": "85184dc8d807fc7bb893b1cd03a3c27dd617e3cc"
     },
     {
       "path": "src/Ipc.Supply/HistoryQueries.cs",
@@ -3278,6 +4160,17 @@
       "previous_git_blob": "c28fb7e24e2b49568fca34b704bd10e8a830d5ca"
     },
     {
+      "path": "src/Ipc.Supply/PresentationProtection.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "80f4e456ba3917c6937910937cf39a053f14a51b9fe82b0bea2e9f302c26ebcf",
+      "size_bytes": 1560,
+      "git_blob": "6ac03efb0fe85d176c00b081215f068355acce30"
+    },
+    {
       "path": "src/Ipc.Supply/RequestContract.cs",
       "sha256": "63425e5fe696a42e2ccf84c52c2442ce838f7251fce3b651c36ea2f3469ca710",
       "size_bytes": 648,
@@ -3290,15 +4183,15 @@
     },
     {
       "path": "src/Ipc.Supply/StationApplication.cs",
-      "sha256": "41c3810c1c6fd03297a7cb9adf46290f476e8b7a417c75115b1c1d6e3633d78e",
-      "size_bytes": 60184,
-      "git_blob": "48d893c2c8c0df1de28e0ba84b0d7851fde9e704",
-      "version": "audit-reconciliation-01",
+      "sha256": "654bcddfacb19011f72b220cabd00c389fa06994aaf3f1a147db451d97c94d67",
+      "size_bytes": 61341,
+      "git_blob": "5793b2f9cb3a24683c3793a6c564df158fc98f41",
+      "version": "delivery-12-reference",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
       "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
       "storage_scope": "public_repository",
-      "previous_git_blob": "3a32bc3d9ad89dbcb5c6b99174324a504edbb6fe"
+      "previous_git_blob": "48d893c2c8c0df1de28e0ba84b0d7851fde9e704"
     },
     {
       "path": "src/Ipc.Supply/StationClosure.cs",
@@ -3325,14 +4218,15 @@
     },
     {
       "path": "src/Ipc.Supply/SupplyConfiguration.cs",
-      "sha256": "11d64510199ac40a17587d2ffd823e942f534009eb87e19e602a524e479ccd72",
-      "size_bytes": 1581,
-      "git_blob": "d274407bc6647a804e8f32c579846e09bbebb47f",
-      "version": "alignment-01",
+      "sha256": "7e608115aadee32d74be333228804e274a39a7b0e7b3ef76f466143f9d60543f",
+      "size_bytes": 1645,
+      "git_blob": "2a0d13a5f3d9ea6cf5ab3db7a226766a9ede6823",
+      "version": "delivery-12-reference",
       "status": "current_reference_implementation",
       "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
       "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "d274407bc6647a804e8f32c579846e09bbebb47f"
     },
     {
       "path": "src/Ipc.Supply/packages.lock.json",
@@ -3403,6 +4297,17 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "tests/Ipc.Verification/ExtensionVerification.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "cc39f12d05cfb719c2a39a7f63b53a5c382431b1cbe08adb19e6792dce048733",
+      "size_bytes": 34855,
+      "git_blob": "b53d4a71e7b4bdc24a634ed8e3098b9117316921"
+    },
+    {
       "path": "tests/Ipc.Verification/FollowupVerification.cs",
       "sha256": "67ea66442ecce3989dd7e11b7d8d5369f53fc94cd0b9b0f00080ba5e3c591736",
       "size_bytes": 16877,
@@ -3438,14 +4343,15 @@
     },
     {
       "path": "tests/Ipc.Verification/PresentationVerification.cs",
-      "sha256": "10cceef62109693be66b8c35f82e4c7a5724b174267e1907e69fc54c49deb05e",
-      "size_bytes": 4563,
-      "git_blob": "fd44336418ccbac5e6f03436eaf777ada9fc0ec3",
-      "version": "REVIEW-FOLLOWUP-11",
+      "sha256": "81d3de4539cf1ca9334579bbdf92a86e79e3ba91da44e1ccb62aa85b2631f50f",
+      "size_bytes": 5532,
+      "git_blob": "126eeef5b5ab932ed1fd78e73cbfc562e0d50c82",
+      "version": "delivery-12-reference",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "fd44336418ccbac5e6f03436eaf777ada9fc0ec3"
     },
     {
       "path": "tests/Ipc.Verification/ProductOwnershipVerification.cs",
@@ -3460,14 +4366,15 @@
     },
     {
       "path": "tests/Ipc.Verification/Program.cs",
-      "sha256": "65d5cca4ca70ddb1c44fa398132ef8708870614148397b0c57486b616048f4b7",
-      "size_bytes": 48995,
-      "git_blob": "041bfe3357b607a45f48418f42f7ecdd561c850c",
-      "version": "REVIEW-FOLLOWUP-11",
+      "sha256": "a53609b32d9ce8f3f9ced83d2bb788292c30d596fd548acee35bd12815d2c454",
+      "size_bytes": 49670,
+      "git_blob": "bb57b02431acb8eba3a46afee03b5d7cc553b0ff",
+      "version": "delivery-12-reference",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "041bfe3357b607a45f48418f42f7ecdd561c850c"
     },
     {
       "path": "tests/Ipc.Verification/ReferenceJourneyVerification.cs",
@@ -3479,6 +4386,17 @@
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
       "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Verification/SourceConstructionVerification.cs",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c43657d35f957e23f5cb94005d6be4c0936b9fe86526c70caa139158d738c6b9",
+      "size_bytes": 3108,
+      "git_blob": "7ce96859db3dc177757395307c1c3c8ca1f96e57"
     },
     {
       "path": "tests/Ipc.Verification/fixtures/schema1.sql",
@@ -3535,6 +4453,17 @@
       "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
       "storage_scope": "public_repository",
       "previous_git_blob": "30df4098595ed88a260bc684475012137417754b"
+    },
+    {
+      "path": "tools/test_composition.py",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "eb5d66e4c6de90f8b91433b5386b27b4999f502ab14cc6ef4f75cc491d192f20",
+      "size_bytes": 1770,
+      "git_blob": "f9d5c0d85a3c93f9a6a538d6b2d6f01199dd3a5f"
     },
     {
       "path": "tools/test_verify_archive.py",
@@ -3619,7 +4548,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "WP-IPC-REVIEW-FOLLOWUP-11",
+  "current_implementation_work_package": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -3665,7 +4594,7 @@
     "application_code_changed": false,
     "remote_verification": "read exact main commit and file identities after merge"
   },
-  "next_implementation_work_package": "WP-IPC-WINDOWS-VALIDATION-06",
+  "next_implementation_work_package": "Windows reference qualification / real integration approvals remain OPEN",
   "main_static_review_03": {
     "entry": "docs/reviews/main-static-review-03.md",
     "checks": "docs/reviews/main-static-review-03-checks.json",
@@ -3777,5 +4706,21 @@
       "github_checks_at_read": [],
       "merged_by_this_task": false
     }
+  },
+  "extension_delivery_12": {
+    "host_source_commit": "11f0728e506753dafcdc22fb190c5b268118423d",
+    "plugin_source_commit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+    "source_code_sha256": "ad9a5c5b9c3cab04858b31002c9897887aa1c2bedc9620f7683041c46282ba93",
+    "report": "docs/runtime/extension-windows-delivery-12.md",
+    "checks": "docs/runtime/extension-windows-delivery-12-checks.json",
+    "candidate": "https://github.com/yuan2go/importer-pc/releases/tag/delivery-12-reference-11f0728",
+    "source": "IMPLEMENTED",
+    "core": "PASS_REFERENCE",
+    "windows": "OPEN_NOT_RUN",
+    "remote": "PASS_CANDIDATE_DELIVERY",
+    "field": "BLOCKED",
+    "overall": "NOT_COMPLETE",
+    "production_trust": "NOT_AVAILABLE",
+    "actual_wpf_screenshots": 0
   }
 }

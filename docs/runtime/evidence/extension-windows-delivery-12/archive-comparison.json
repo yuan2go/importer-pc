@@ -1,0 +1,15 @@
+{
+  "BaselineCommit": "9f320459969ee4398dc602ae037ecdcb3685996c",
+  "CurrentRuntimeSourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+  "BaselineResult": "FAIL",
+  "CurrentResult": "FAIL",
+  "BaselineErrors": 267,
+  "CurrentErrors": 267,
+  "AddedErrors": [],
+  "RemovedErrors": [],
+  "ValidatorChanged": false,
+  "NewExclusionsAdded": false,
+  "Result": "PASS_NO_NEW_ARCHIVE_ERRORS_HISTORICAL_ARCHIVE_FAIL_RETAINED",
+  "Command": "Bundled Python tools/verify_archive.py --root <clean git archive main or current worktree> --scope public",
+  "Note": "Manifest regenerated after evidence additions, same exact inherited error set required; counts include extra public evidence files. Raw historical assets are preserved unchanged."
+}

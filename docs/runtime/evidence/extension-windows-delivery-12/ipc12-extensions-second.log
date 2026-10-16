@@ -1,0 +1,31 @@
+SELECT --extensions: E08
+Evidence data retained at $RETAINED_TEMP/ipc-verification-207be7a0dd6a47bc8beedb6064301903
+PASS E12 reject test trust cannot enter Production / InvalidDataException
+PASS E12 reject untrusted publisher / InvalidDataException
+PASS E12 reject changed plan SHA / InvalidDataException
+PASS E12 reject signature / CryptographicException
+PASS E12 reject ZIP path/duplicate ../escape / InvalidDataException
+PASS E12 reject ZIP path/duplicate C:/absolute / InvalidDataException
+PASS E12 reject ZIP path/duplicate aux.txt / InvalidDataException
+PASS E12 reject ZIP path/duplicate x:ads / InvalidDataException
+PASS E12 reject ZIP path/duplicate /root / InvalidDataException
+PASS E12 reject ZIP path/duplicate bad\file / InvalidDataException
+PASS E12 reject ZIP path/duplicate Ipc.Reference.BarcodeExtension.DLL / InvalidDataException
+PASS E12 reject signed wrong file hash / InvalidDataException
+PASS E12 reject RID / InvalidDataException
+PASS E12 reject offline missing dependency / InvalidDataException
+PASS E12 reject unsupported schema / InvalidDataException
+PASS E12 reject installation interruption Prepared / IOException
+PASS E12 reject installation interruption FilesVerified / IOException
+PASS E12 reject installation interruption Published / IOException
+PASS E12 reject installation interruption Registered / IOException
+PASS E12 reject effective deployment reference / InvalidOperationException
+PASS E12 reject active/unterminated package lease / IOException
+PASS E12 reject reverse package dependency / InvalidOperationException
+Unhandled exception. Ipc.Supply.GuardException: Explicit Enter required
+   at Ipc.Product.ProductRuntime.EmitAsync(String lane, String kind, String[] codes, Nullable`1 quantity, String sourceEventId) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 216
+   at ExtensionVerification.RuntimeJourney(BootOptions boot, StationConfig cfg, ExtensionStore manager, PackageReference upgrade) in $WORKTREE/tests/Ipc.Verification/ExtensionVerification.cs:line 160
+   at ExtensionVerification.Run(String root, String url, String workspace) in $WORKTREE/tests/Ipc.Verification/ExtensionVerification.cs:line 120
+   at Program.<Main>$(String[] args) in $WORKTREE/tests/Ipc.Verification/Program.cs:line 61
+   at Program.<Main>$(String[] args) in $WORKTREE/tests/Ipc.Verification/Program.cs:line 439
+   at Program.<Main>(String[] args)

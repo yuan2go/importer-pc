@@ -1,14 +1,16 @@
 # 统一资料与实施入口
 
-更新日期：2026-10-16；本轮实施任务：WP-IPC-RUNTIME-HARDENING-04；历史分析基准 `39747a8c35b748da71bf9acfd56a9c9812b199b4`。
+更新日期：2026-10-16；本轮实施任务：WP-IPC-ARCH-UI-ALIGNMENT-01；历史分析基准 `39747a8c35b748da71bf9acfd56a9c9812b199b4`。
 
 ## 当前结论
+
+当前工作包实施和验证见 [ALIGNMENT-01](runtime/alignment-01.md)、[检查记录](runtime/alignment-01-checks.json)、[Windows待验](runtime/alignment-01-windows.md)。
 
 **独立参考实现已加入。** RUNTIME-03从当时main `8908909` 开始，已建设工位基座、供包应用、多UI、SQLite/Outbox及独立loopback夹具；不是旧现场迁移。[运行/发布](runtime/operations.md)、[实施映射](runtime/implementation.md)、[实际验证与交付](runtime/delivery.md) 是当前实现入口。Windows运行与真实接口/现场状态分项报告，不以核心PASS替代。
 
 完整客户材料归档仍为 **PUBLIC_SUBSET_ONLY**；本轮只公开新的通用框架和实施规范，不上传受限原稿。开发就绪仍有条件：参考闭环可实施，真实业务规则、旧工程迁移、SDK/WCS和实体动作分别受对应证据约束。17个RV不因架构入库自动关闭。
 
-当前加固范围与实施基准见 [HARDENING-04](work-packages/WP-IPC-RUNTIME-HARDENING-04.md)。RUNTIME-03交付结果保留为历史验证，不代表本轮结果。
+当前实施范围与验收见 [ARCH-UI-ALIGNMENT-01](work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)。本包继承 H04 并修复装配、数据链、UI与后台隔离缺口，目标尚须逐项验证。原加固范围与实施基准见 [HARDENING-04](work-packages/WP-IPC-RUNTIME-HARDENING-04.md)。RUNTIME-03交付结果保留为历史验证，不代表本轮结果。
 
 ## 当前必读
 

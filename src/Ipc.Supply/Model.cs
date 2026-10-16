@@ -1,4 +1,5 @@
 using Ipc.Platform;
+using System.Text.Json.Serialization;
 
 namespace Ipc.Supply;
 
@@ -7,13 +8,13 @@ public enum OperationStatus { Observed, ValidationPending, ValidationRejected, A
 public enum Occupancy { Occupied, Departed, Clear }
 public enum RequestStatus { Prepared, Dispatching, Accepted, Rejected, Unknown, CancelledBeforeDispatch }
 public enum RequestKind { Context, Validate, Submit, CheckClose, Close }
-public enum DeviceHealth { Connecting, Ready, Disconnected, Reconnecting, Faulted, Stopping, Stopped, Unknown }
 public enum SimulationRole { Operator, Maintenance }
 public sealed record Actor(string Id, SimulationRole Role, DateTimeOffset ExpiresAt);
 public sealed record BlockReason(string Code, string Scope, string Source, string SourceEpoch, long EvidenceVersion, string ClearAuthority, DateTimeOffset? ExpiresAt = null);
-public sealed record DeviceState(string DeviceId, string Epoch, long Sequence, DeviceHealth Health, DateTimeOffset UpdatedAt);
-public sealed record Observation(string Id, string DeviceId, string Epoch, string SourceEventId, long Sequence,
-    string AdmissionId, string Kind, string[] Codes, int? PackageQuantity, DateTimeOffset ObservedAt);
+// Semantic values are optional evidence snapshots, never inferred from current UI/configuration.
+public sealed record Provenance(string Source, string Version, string EvidenceId, DateTimeOffset AcquiredAt);
+public sealed record ContextSnapshot(string? BoxWave, Provenance Provenance);
+public sealed record TaskSnapshot(string? Sku, string? ItemWave, string? TaskId, string? Destination, string? Unit, Provenance Provenance);
 public sealed class SupplyOperation
 {
     public string Id { get; set; } = Wire.Id();
@@ -25,6 +26,9 @@ public sealed class SupplyOperation
     public long PermitRevision { get; set; } = 1;
     public DateTimeOffset PermitExpiresAt { get; set; }
     public string Barcode { get; set; } = "";
+    public string? BoxBarcode { get; set; }
+    public string? BoxWave { get; set; }
+    public TaskSnapshot? Task { get; set; }
     public int? Package { get; set; }
     public int? Remaining { get; set; }
     public int? Supply { get; set; }
@@ -39,6 +43,7 @@ public sealed class StationSession
 {
     public string Id { get; set; } = Wire.Id();
     public string Barcode { get; set; } = "";
+    public ContextSnapshot? Context { get; set; }
     public SessionStatus Status { get; set; }
     public string? CloseCheckRequest { get; set; }
     public int? CloseRemaining { get; set; }
@@ -64,7 +69,9 @@ public sealed record BusinessRequest(string Id, string OwnerId, string SessionId
     string IntentKey, string Payload, string PayloadHash, IntegrationBinding Binding, RequestStatus Status, DateTimeOffset CreatedAt);
 public sealed record RequestEnvelope(string RequestId, string PayloadHash, string Contract, string Payload);
 public sealed record IntegrationResponse(string RequestId, string PayloadHash, string EvidenceId, string Result, string Reason,
-    int? Remaining = null, int? Quantity = null, string? CheckToken = null);
+    int? Remaining = null, int? Quantity = null, string? CheckToken = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ContextSnapshot? Context = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] TaskSnapshot? Task = null);
 public sealed record SendAttempt(string Id, string RequestId, int Ordinal, DateTimeOffset StartedAt, DateTimeOffset? EndedAt, string Disposition, string? Error);
 public sealed record Alarm(string Id, string Code, string Scope, string Source, string Epoch, string? OwnerId,
     DateTimeOffset RaisedAt, string? AckedBy, DateTimeOffset? AckedAt, DateTimeOffset? ClearedAt);
@@ -72,7 +79,13 @@ public sealed record Audit(string Id, string OwnerId, string Actor, string Comma
 public sealed record Command(string Id, long ExpectedRevision, string Kind, string? OwnerId = null, string? Value = null, int? Quantity = null, long? EvidenceVersion = null);
 public sealed record CommandReceipt(string Status, string Reason, long Revision, string? OwnerId = null, string? RequestId = null);
 public sealed record Guard(bool Allowed, string[] Reasons);
-public sealed record StationSnapshot(StationState State, BusinessRequest[] Requests, Alarm[] Alarms, Guard Admit, Guard Submit, Guard Close, Dictionary<string, Guard> OperationGuards, string[] RuntimeFaults, RequestRecovery[] Recovery, int ActiveAlarmCount, long OverloadVersion, Guard OverloadRecovery);
+public sealed record StationSnapshot(StationState State, BusinessRequest[] Requests, Alarm[] Alarms, Guard Admit, Guard Submit, Guard Close, Dictionary<string, Guard> OperationGuards, string[] RuntimeFaults, RequestRecovery[] Recovery, int ActiveAlarmCount, long OverloadVersion, Guard OverloadRecovery)
+{
+    public long ProjectionVersion { get; init; }
+    public DateTimeOffset GeneratedAt { get; init; }
+    public int AcceptedQuantity { get; init; }
+    public SupplyOperation[] RecentOperations { get; init; } = [];
+}
 public sealed record RequestRecovery(BusinessRequest Request, Guard Dispatch, Guard LocalTermination, string NextStep);
 public sealed record RequestDetail(BusinessRequest Request, SendAttempt[] Attempts, IntegrationResponse[] Responses, Audit[] Audit);
 public sealed record ConfigRevision(string Id, string BaseVersion, StationConfig Content, string Actor, string Status, string Reason, DateTimeOffset At);
@@ -82,13 +95,6 @@ public interface IIntegrationPort : IAsyncDisposable
     Task<IntegrationResponse> ExecuteAsync(BusinessRequest request, CancellationToken token);
     Task<IntegrationResponse?> QueryAsync(BusinessRequest request, CancellationToken token);
     Task<bool> HealthAsync(CancellationToken token);
-}
-public interface IObservationSource : IAsyncDisposable
-{
-    string DeviceId { get; }
-    string Epoch { get; }
-    Task StartAsync(Func<Observation, bool> receive, Action<string, string, DeviceHealth> health, CancellationToken token);
-    Task StopAsync(CancellationToken token);
 }
 public interface IStationApplication
 {

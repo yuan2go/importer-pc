@@ -80,7 +80,10 @@ public sealed class Receiver : IDisposable
                     if (ok) Exec("UPDATE contexts SET closed=1,revision=revision+1 WHERE id=$a", tx, p.SessionId); break;
                 default: ok = false; reason = "Unsupported logical intent"; break;
             }
-            var response = new IntegrationResponse(envelope.RequestId, envelope.PayloadHash, Wire.Id(), ok ? "Accepted" : "Rejected", reason, remaining, quantity, checkToken);
+            var evidenceId = Wire.Id(); var acquiredAt = DateTimeOffset.UtcNow;
+            var response = new IntegrationResponse(envelope.RequestId, envelope.PayloadHash, evidenceId, ok ? "Accepted" : "Rejected", reason, remaining, quantity, checkToken,
+                ok && p.Kind == RequestKind.Context ? SyntheticSemanticFixture.Context(p, evidenceId, acquiredAt) : null,
+                ok && p.Kind is RequestKind.Validate or RequestKind.Submit ? SyntheticSemanticFixture.Item(p, evidenceId, acquiredAt) : null);
             Exec("INSERT INTO receipts VALUES($a,$b,$c,$d)", tx, envelope.RequestId, envelope.PayloadHash, envelope.Payload, Wire.Encode(response)); tx.Commit(); return response;
         }
     }

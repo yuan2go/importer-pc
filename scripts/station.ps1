@@ -3,7 +3,9 @@ param(
     [string]$Release = $PSScriptRoot,
     [string]$DataRoot = "$env:LOCALAPPDATA/ImporterPc/data",
     [string]$File,
-    [string]$NextRelease
+    [string]$NextRelease,
+    [ValidateSet('workstation','history','alarms','diagnostics','maintenance','engineering')][string]$View,
+    [ValidateSet('standard','compact')][string]$Layout
 )
 $ErrorActionPreference = 'Stop'
 if (-not $IsWindows -or [Environment]::OSVersion.Version.Build -lt 26100 -or [Runtime.InteropServices.RuntimeInformation]::OSArchitecture -ne 'X64') {
@@ -23,7 +25,13 @@ function Verify-Release([string]$Directory) {
     }
 }
 switch ($Action) {
-    Run { Verify-Release $Release; & (Join-Path $Release 'app/Ipc.Desktop.exe') --config $config --data-root $DataRoot }
+    Run {
+        Verify-Release $Release
+        $presentation = @()
+        if ($View) { $presentation += @('--view', $View) }
+        if ($Layout) { $presentation += @('--layout', $Layout) }
+        & (Join-Path $Release 'app/Ipc.Desktop.exe') --config $config --data-root $DataRoot @presentation
+    }
     Fixture {
         $fixture = Join-Path $Release 'fixture/Ipc.Fixture.exe'
         if (-not (Test-Path $fixture)) { throw 'This release has no simulation fixture' }

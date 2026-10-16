@@ -28,12 +28,12 @@ if (action is "backup" or "preflight" or "restore")
     {
         var state = store.Load(); var pending = store.PendingCount();
         if (pending != 0 || state.Session is { Status: not (SessionStatus.Closed or SessionStatus.Rejected) } || state.Quarantined) throw new InvalidOperationException("Upgrade blocked: close context, reconcile pending effects/quarantine");
-        Console.WriteLine("PREFLIGHT PASS / schema 1 / no pending effects");
+        Console.WriteLine("PREFLIGHT PASS / storage format 2 / no pending effects");
     }
     else { store.Backup(Get("--file", "backup.db")); Console.WriteLine("CONSISTENT BACKUP SAVED"); }
     return;
 }
-using var host = ProductHost.Build(new(Path.Combine(root, "product.json"), Path.Combine(root, "station.json"), Path.Combine(root, "presentation.json"), data));
+using var host = ProductHost.Build(new(Path.Combine(root, "product.json"), Path.Combine(root, "station.json"), Path.Combine(root, "presentation.json"), data, View: map.GetValueOrDefault("--view"), Layout: map.GetValueOrDefault("--layout")));
 await host.StartAsync();
 var runtime = host.Services.GetRequiredService<ProductRuntime>();
 try

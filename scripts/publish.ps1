@@ -1,6 +1,7 @@
 param(
     [ValidateSet('Simulation','Production')][string]$Mode = 'Simulation',
     [string]$Output = '.artifacts/win-x64',
+    [string]$ProductDefinition = 'config/product.reference.json',
     [switch]$NoRestore
 )
 $ErrorActionPreference = 'Stop'
@@ -21,7 +22,7 @@ foreach ($project in @('Ipc.Desktop','Ipc.Product')) {
 if ($Mode -eq 'Simulation') {
     Invoke-Dotnet publish src/Ipc.Fixture/Ipc.Fixture.csproj -c Release -r win-x64 --self-contained true --no-restore "-p:NuGetLockFilePath=$lock" '-m:1' -o "$Output/fixture"
 }
-& python scripts/seal.py --bin "$Output/app" --mode $Mode --architecture x64
+& python scripts/seal.py --bin "$Output/app" --mode $Mode --architecture x64 --product-definition $ProductDefinition
 if ($LASTEXITCODE -ne 0) { throw 'Manifest seal failed' }
 Copy-Item scripts/station.ps1 "$Output/station.ps1"
 Copy-Item docs/runtime/operations.md "$Output/OPERATIONS.md"

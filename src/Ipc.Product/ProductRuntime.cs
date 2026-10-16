@@ -8,13 +8,21 @@ using Microsoft.Extensions.Logging;
 
 namespace Ipc.Product;
 
-public sealed record BootOptions(string Manifest, string Station, string Presentation, string DataRoot, string? InstallRoot = null, string? LeaseRoot = null);
+public sealed record BootOptions(string Manifest, string Station, string Presentation, string DataRoot, string? InstallRoot = null, string? LeaseRoot = null, string? View = null, string? Layout = null);
 public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> logger) : IHostedService, IAsyncDisposable, IDisposable
 {
     ResourceLease? dataLease, resourceLease;
     ConfigRevision? activating;
     RuntimeJournal? journal;
     string[] allowedViews = [];
+    ProductManifest? manifest;
+    string install = "";
+    readonly SemaphoreSlim presentationGate = new(1, 1);
+    public string[] AllowedViews => allowedViews.ToArray();
+    public string[] AllowedLayouts => ReferenceProduct.Definition.Layouts.ToArray();
+    public string[] InstalledDrivers => ReferenceProduct.Definition.Drivers.Where(x => x.Mode == Mode).Select(x => x.Id).ToArray();
+    public IReadOnlyList<string> ValidateConfiguration(StationConfig draft) => manifest is null ? ["Product not initialized"] : draft.Devices is null ? ["Incomplete device bindings"] :
+        SupplyConfiguration.Validate(draft).Concat(draft.Devices.Where(x => !ReferenceProduct.Definition.Drivers.Any(d => d.Id == x.Driver && d.Mode == draft.Mode)).Select(x => "Unregistered installed driver: " + x.Driver)).Distinct().ToArray();
     SupplyStore? store;
     ModuleCatalog? catalog;
     StationApplication? application;
@@ -27,15 +35,17 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
     public string? DataDirectory { get; private set; }
     public Guid RuntimeId { get; } = Guid.NewGuid();
     ObservationModule? observationModule;
-    public async Task StartAsync(CancellationToken token)
+    public Task StartAsync(CancellationToken token) => Task.Run(() => StartCore(token), token);
+    async Task StartCore(CancellationToken token)
     {
         try
         {
-            var manifest = Wire.Decode<ProductManifest>(File.ReadAllText(options.Manifest)); allowedViews = manifest.Views;
+            manifest = Wire.Decode<ProductManifest>(File.ReadAllText(options.Manifest)); allowedViews = manifest.Views;
             var seed = Wire.Decode<StationConfig>(File.ReadAllText(options.Station)); Mode = seed.Mode;
             Presentation = Wire.Decode<PresentationSettings>(File.ReadAllText(options.Presentation));
-            var install = options.InstallRoot ?? AppContext.BaseDirectory;
-            var errors = ProductValidation.Validate(manifest, seed, Presentation, install);
+            Presentation = new(options.View ?? Presentation.View, options.Layout ?? Presentation.Layout);
+            install = options.InstallRoot ?? AppContext.BaseDirectory;
+            var errors = ReferenceProduct.Validate(manifest, seed, Presentation, install);
             if (errors.Count != 0) { Diagnostics.AddRange(errors); return; }
             DataDirectory = Path.GetFullPath(Path.Combine(options.DataRoot, seed.Mode.ToString(), seed.StationId));
             if (DataDirectory.StartsWith(Path.GetFullPath(install).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, StringComparison.Ordinal)) throw new InvalidDataException("Data must be outside install directory");
@@ -44,9 +54,11 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
             if (File.Exists(userPresentation))
             {
                 var preference = Wire.Decode<PresentationSettings>(File.ReadAllText(userPresentation));
-                if (!allowedViews.Contains(preference.View) || preference.Layout is not ("standard" or "compact")) throw new InvalidDataException("Stored presentation preference invalid");
+                if (!allowedViews.Contains(preference.View) || !AllowedLayouts.Contains(preference.Layout)) throw new InvalidDataException("Stored presentation preference invalid");
                 Presentation = preference;
             }
+            Presentation = new(options.View ?? Presentation.View, options.Layout ?? Presentation.Layout);
+            if (!allowedViews.Contains(Presentation.View) || !AllowedLayouts.Contains(Presentation.Layout)) throw new InvalidDataException("Requested View/layout not installed");
             journal = new(Path.Combine(DataDirectory, "logs"), reason => { application?.Latch("DiagnosticLogFailure", reason); logger.LogError("{Reason}", reason); });
             resourceLease = new(options.LeaseRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "leases"),
                 new[] { $"{seed.Mode}:station:{seed.StationId}" }.Concat(seed.Devices.Select(x => $"{seed.Mode}:device:{x.DeviceId}")));
@@ -58,7 +70,7 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
             var pending = store.Configs().FirstOrDefault(x => x.Status == "PendingActivation");
             if (pending is not null)
             {
-                var state = store.Load(); var activationErrors = ProductValidation.Validate(manifest, pending.Content, Presentation, install).ToList();
+                var state = store.Load(); var activationErrors = ReferenceProduct.Validate(manifest, pending.Content, Presentation, install).ToList();
                 if (pending.Content.StationId != seed.StationId || pending.Content.Mode != seed.Mode || pending.BaseVersion != selected.Version) activationErrors.Add("Config station/mode/base version mismatch");
                 if (store.PendingCount() != 0 || state.Session is { Status: not (SessionStatus.Closed or SessionStatus.Rejected) }) activationErrors.Add("Outstanding business prevents activation");
                 if (pending.Content.Devices.Any(x => !seed.Devices.Any(y => y.DeviceId == x.DeviceId))) activationErrors.Add("New device ownership requires a new product deployment");
@@ -71,19 +83,15 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
                         config: pending with { Status = "ActivationFailed", Reason = string.Join("; ", activationErrors) });
                 }
             }
-            var currentErrors = ProductValidation.Validate(manifest, selected, Presentation, install);
+            var currentErrors = ReferenceProduct.Validate(manifest, selected, Presentation, install);
             if (currentErrors.Count != 0) throw new InvalidDataException(string.Join("; ", currentErrors));
             Configuration = selected;
-            application = new(store, selected, new SimulationRequestContract(selected));
+            application = new(store, selected, new SimulationRequestContract(selected), configurationValidator: ValidateConfiguration);
             await application.SetWcsHealthAsync(false);
             var drive = new DriveInfo(Path.GetPathRoot(DataDirectory)!);
             if (drive.AvailableFreeSpace < selected.MinimumFreeMb * 1024L * 1024) application.Latch("StorageCapacity", "Free disk space below configured low-water mark");
-            var sources = selected.Devices.Select(binding => binding.Driver switch
-            {
-                "manual" => (IObservationSource)new ManualObservationSource(binding.DeviceId),
-                "replay" => new FileReplaySource(binding.DeviceId, binding.ReplayFile is null ? throw new InvalidDataException("Replay file missing") : ResolveReplay(binding.ReplayFile, Path.GetDirectoryName(Path.GetFullPath(options.Station))!)),
-                _ => throw new InvalidDataException("Unregistered source")
-            }).ToArray();
+            var configDirectory = Path.GetDirectoryName(Path.GetFullPath(options.Station))!;
+            var sources = selected.Devices.Select(binding => ReferenceProduct.CreateSource(binding, configDirectory)).ToArray();
             observationModule = new(application, sources, selected.EventCapacity);
             catalog = new(new IRuntimeModule[] { observationModule, new SenderModule(application, new LoopbackIntegration(selected)) });
             await catalog.StartAsync(token);
@@ -111,17 +119,13 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
             }
         }
     }
-    static string ResolveReplay(string path, string configDirectory)
+    public Task StopAsync(CancellationToken token) => Task.Run(() => StopCore(token), token);
+    async Task StopCore(CancellationToken token)
     {
-        if (Path.IsPathRooted(path) || path.Split(Path.DirectorySeparatorChar).Contains("..")) throw new InvalidDataException("Replay path must be relative to configuration directory");
-        var resolved = Path.GetFullPath(Path.Combine(configDirectory, path));
-        if (!resolved.StartsWith(configDirectory + Path.DirectorySeparatorChar, StringComparison.Ordinal) || File.GetAttributes(resolved).HasFlag(FileAttributes.ReparsePoint)) throw new InvalidDataException("Unsafe replay path");
-        return resolved;
-    }
-    public async Task StopAsync(CancellationToken token)
-    {
-        if (application is not null) await application.StopAsync();
-        if (catalog is not null) await catalog.StopAsync(token);
+        var errors = new List<Exception>();
+        try { if (application is not null) await application.StopAsync(); } catch (Exception ex) { errors.Add(ex); }
+        try { if (catalog is not null) await catalog.StopAsync(token); } catch (Exception ex) { errors.Add(ex); }
+        if (errors.Count != 0) throw new AggregateException("Controlled stop completed with retained diagnostic failures", errors);
     }
     public Task<CommandReceipt> CommandAsync(Command command) => application?.ExecuteAsync(command) ?? Task.FromResult(new CommandReceipt("NotReady", string.Join("; ", Diagnostics), 0));
     public async Task EmitAsync(string lane, string kind, string[]? codes = null, int? quantity = null, string? sourceEventId = null)
@@ -132,15 +136,15 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
         var binding = Configuration.Devices.Single(x => x.Role == lane);
         if (observationModule.Sources.Single(x => x.DeviceId == binding.DeviceId) is not ManualObservationSource source) throw new GuardException("Selected lane uses file replay; advance the file instead");
         var admission = kind == "Enter" ? Wire.Id() : snap.State.Lanes.GetValueOrDefault(lane)?.AdmissionId ?? throw new GuardException("Explicit Enter required");
-        if (!source.Emit(kind, admission, codes, quantity, sourceEventId)) throw new InvalidOperationException("Observation queue full: event not admitted; inspect source/entity");
+        if (!await observationModule.ExecuteSourceAsync(() => source.Emit(kind, admission, codes, quantity, sourceEventId))) throw new InvalidOperationException("Observation queue full: event not admitted; inspect source/entity");
     }
     public async Task ReplayAsync(string lane)
     {
         if (Configuration?.Mode != RunMode.Simulation || observationModule is null || application is null) throw new GuardException("Simulation only");
-        var snapshot = await application.SnapshotAsync(); if (snapshot.State.Actor is null) throw new GuardException("Identity required");
+        var snapshot = await application.SnapshotAsync(); if (snapshot.State.Actor is null || snapshot.State.Actor.ExpiresAt <= DateTimeOffset.UtcNow) throw new GuardException("Unexpired identity required");
         var binding = Configuration.Devices.Single(x => x.Role == lane);
         if (observationModule.Sources.Single(x => x.DeviceId == binding.DeviceId) is not FileReplaySource replay) throw new GuardException("Select a replay binding before restart");
-        if (!replay.Advance()) throw new InvalidOperationException("Replay event not admitted; overload latched");
+        if (!await observationModule.ExecuteSourceAsync(replay.Advance)) throw new InvalidOperationException("Replay event not admitted; overload latched");
     }
     public async Task ReconcileAsync(string requestId)
     {
@@ -160,9 +164,15 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
     }
     public async Task SavePresentationAsync(PresentationSettings settings)
     {
-        if (DataDirectory is null || !allowedViews.Contains(settings.View) || settings.Layout is not ("standard" or "compact")) throw new GuardException("View/layout not approved");
-        var path = Path.Combine(DataDirectory, "presentation.json");
-        await File.WriteAllTextAsync(path + ".new", Wire.Encode(settings)); File.Move(path + ".new", path, overwrite: true); Presentation = settings;
+        if (DataDirectory is null || !allowedViews.Contains(settings.View) || !AllowedLayouts.Contains(settings.Layout)) throw new GuardException("View/layout not approved");
+        await presentationGate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            var path = Path.Combine(DataDirectory, "presentation.json");
+            await File.WriteAllTextAsync(path + ".new", Wire.Encode(settings)).ConfigureAwait(false);
+            File.Move(path + ".new", path, overwrite: true); Presentation = settings;
+        }
+        finally { presentationGate.Release(); }
     }
     public async Task ClearOverloadAsync(string evidence)
     {
@@ -193,9 +203,9 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
     public async ValueTask DisposeAsync()
     {
         if (disposed) return; disposed = true;
-        if (catalog is not null) await catalog.DisposeAsync();
-        if (application is not null) await application.DisposeAsync();
-        store?.Dispose(); if (journal is not null) await journal.DisposeAsync(); resourceLease?.Dispose(); dataLease?.Dispose();
+        if (catalog is not null) await catalog.DisposeAsync().ConfigureAwait(false);
+        if (application is not null) await application.DisposeAsync().ConfigureAwait(false);
+        store?.Dispose(); if (journal is not null) await journal.DisposeAsync().ConfigureAwait(false); resourceLease?.Dispose(); dataLease?.Dispose(); presentationGate.Dispose();
     }
 }
 
@@ -205,13 +215,29 @@ sealed class ObservationModule(StationApplication application, IObservationSourc
     public string[] Dependencies => [];
     public IObservationSource[] Sources => sources;
     readonly Channel<Observation> queue = Channel.CreateBounded<Observation>(new BoundedChannelOptions(capacity) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
-    Task? worker;
+    Task? worker, healthWorker;
+    readonly StationDispatcher sourceInput = new(8);
+    sealed record SourceHealth(string Id, string Epoch, DeviceHealth Health, TaskCompletionSource? Fence = null);
+    readonly Channel<SourceHealth> healthQueue = Channel.CreateBounded<SourceHealth>(new BoundedChannelOptions(Math.Max(8, sources.Length * 2)) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
+    public Task<bool> ExecuteSourceAsync(Func<bool> input) => sourceInput.Invoke(() => Task.FromResult(input()));
     int missed, pending;
     readonly object ingress = new();
     bool stopping;
     public async Task StartAsync(CancellationToken token)
     {
         application.InputDrained = () => Volatile.Read(ref pending) == 0;
+        healthWorker = Task.Run(async () =>
+        {
+            try
+            {
+                await foreach (var change in healthQueue.Reader.ReadAllAsync())
+                {
+                    if (change.Fence is not null) { change.Fence.TrySetResult(); continue; }
+                    await application.SetDeviceAsync(change.Id, change.Epoch, change.Health).ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex) { application.Latch("DeviceHealthWorkerFault", ex.GetType().Name); throw; }
+        });
         worker = Task.Run(async () =>
         {
             try
@@ -237,16 +263,27 @@ sealed class ObservationModule(StationApplication application, IObservationSourc
                     application.Latch("Overload", $"Observation not admitted: device={x.DeviceId}; epoch={x.Epoch}; source={x.SourceEventId}; unadmitted={missed}");
                     return false;
                 }
-            }, (id, epoch, health) => application.SetDeviceAsync(id, epoch, health).GetAwaiter().GetResult(), token);
+            }, (id, epoch, health) =>
+            {
+                if (!healthQueue.Writer.TryWrite(new(id, epoch, health))) application.Latch("DeviceHealthOverload", "Device health event not admitted; stop and inspect source");
+            }, token);
+        var ready = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        await healthQueue.Writer.WriteAsync(new("", "", default, ready), token);
+        await ready.Task.WaitAsync(TimeSpan.FromSeconds(5), token);
     }
     public async Task StopAsync(CancellationToken token)
     {
         lock (ingress) stopping = true;
         foreach (var source in sources.Reverse()) await source.StopAsync(token);
-        queue.Writer.TryComplete();
+        queue.Writer.TryComplete(); healthQueue.Writer.TryComplete();
         if (worker is not null) await worker.WaitAsync(TimeSpan.FromSeconds(5), token);
+        if (healthWorker is not null) await healthWorker.WaitAsync(TimeSpan.FromSeconds(5), token);
     }
-    public async ValueTask DisposeAsync() { foreach (var source in sources.Reverse()) await source.DisposeAsync(); }
+    public async ValueTask DisposeAsync()
+    {
+        foreach (var source in sources.Reverse()) await source.DisposeAsync();
+        await sourceInput.DisposeAsync();
+    }
 }
 
 sealed class SenderModule(StationApplication application, IIntegrationPort port) : IRuntimeModule

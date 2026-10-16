@@ -1,0 +1,172 @@
+{
+  "work_package": "WP-IPC-ARCH-UI-ALIGNMENT-01",
+  "execution_base": "2b8b35b6025ed87438f27c7c821260f4740befba",
+  "source_commit": "712446ae262c6b269bd6576ad5c17784a644c7d7",
+  "environment": {
+    "os": "macOS",
+    "architecture": "arm64",
+    "sdk": "10.0.402",
+    "windows_available": false
+  },
+  "baseline": {
+    "build": "PASS",
+    "original_risk_groups": 24,
+    "regression": "PASS"
+  },
+  "implementation": {
+    "composition": "PASS: two explicit test descriptions, generic one-lane admission and Supply two-lane refusal, illegal module/dependency/version/path/hash/mode/driver/view rejection",
+    "task_chain": "PASS: independent semantic fixture; box and Item waves distinct; request/restart/history snapshots and source preserved; unique acceptance counted once",
+    "legacy": "PASS: old request/response byte compatibility, frozen schema1 checksum, schema2 migration, future-format refusal, restore quarantine",
+    "background": "PASS: real SQLite writer lock and T1 hook; async caller; retained observations; snapshots do not write alarms; versioned detached projections",
+    "multiple_views": "PASS: startup View/Layout settings, shared instance, identical command receipt, one request/attempt/response; WPF dual-window operation NOT_RUN",
+    "recovery": "PASS: H04 nine groups, command/control saturation, disposed late command rejection, fault during real SQLite handoff kept Unknown, failed-stop modules stopped, backup authority"
+  },
+  "build": {
+    "status": "PASS",
+    "command": "./scripts/build.sh",
+    "warnings": 0,
+    "errors": 0,
+    "wpf_cross_compile": "PASS; execution NOT_RUN"
+  },
+  "regression": {
+    "status": "PASS",
+    "command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll .",
+    "original_groups_retained": 24,
+    "summary": "evidence/alignment-01/verification-summary.txt"
+  },
+  "failures_addressed": [
+    {
+      "classification": "test fixture setup race",
+      "status": "FIXED",
+      "evidence": "first-final-attempt in log-digests.json",
+      "reason": "Sender initial transport health changed reviewed revision; newly added two-view test now waits for actual health readiness before taking command snapshot; dedup and one-send assertions retained"
+    },
+    {
+      "classification": "outdated schema test",
+      "status": "UPDATED_WITH_STRONGER_EVIDENCE",
+      "reason": "H04 asserted only one migration; format2 explicitly adds id2; test retains independent schema1 SHA256 and verifies id2/storage_format instead of removing compatibility assertions"
+    },
+    {
+      "classification": "independent review findings",
+      "status": "FIXED",
+      "reason": "stop persistence failure now retains memory barrier and stops resources; backup authority checked in backend; burst rejection coalesces durable work; committed handoff rechecks concurrent faults; late command after disposal finishes NotReady"
+    }
+  ],
+  "persistence": {
+    "schema1_sql_unchanged": true,
+    "schema1_sha256": "D4CED2B811DFF4D3D66DC66C431B9DCC8C75F491CA30F10A2E5507AAD741C981",
+    "storage_version": 2,
+    "release_version": "ALIGNMENT-01",
+    "contract": "SIMULATION-v1",
+    "request_bytes_unchanged": true,
+    "rollback": "pre-upgrade schema1 backup, new root, old program restore quarantine and ledger/entity reconciliation"
+  },
+  "powershell": {
+    "syntax": "PASS",
+    "windows_script_execution": "NOT_RUN"
+  },
+  "windows": {
+    "status": "NOT_RUN",
+    "screenshots": [],
+    "checklist": "alignment-01-windows.md",
+    "cases": [
+      "1920x1080 and 1366x768 at 100/125/150 percent",
+      "normal/rejected/unknown/split/configuration/recovery",
+      "two windows, focus, selection, scroll, Enter/Tab scanner terminators",
+      "PerMonitorV2 runtime, sound/touch and Windows deployment scripts"
+    ]
+  },
+  "integration": {
+    "status": "BLOCKED",
+    "production": "NotReady without required capabilities; no simulated success fallback",
+    "missing": [
+      "real SDK and device callback/resource validation",
+      "WCS contract and authoritative receipts",
+      "approved entity/quantity/split/identity and site evidence"
+    ]
+  },
+  "device_overflow_boundary": "Existing H04 durable-before-return marker file flush retained on overflow callback; no SQLite/network on callback; real SDK slow-disk behavior NOT_RUN",
+  "historical_rv": "RV-01..17 OPEN; no historical issues or D approvals rewritten",
+  "publication_scope": "Authorized generic code and synthetic fixtures only; original untracked restricted materials remain in initial checkout",
+  "publication": {
+    "status": "PASS",
+    "source_commit": "712446ae262c6b269bd6576ad5c17784a644c7d7",
+    "zip": "ALIGNMENT-01-712446a-win-x64.zip",
+    "zip_bytes": 119023233,
+    "zip_sha256": "1089c45f294ead68154d92b26217b9fd3c18bf86089c4f745cdc43ed5c7a8aeb",
+    "files": 813,
+    "checks": [
+      "exhaustive SHA256SUMS",
+      "module hashes",
+      "three Windows PE entries",
+      "embedded PerMonitorV2 manifest",
+      "ZIP CRC",
+      "no DB/credential/font files"
+    ],
+    "windows_execution": "NOT_RUN",
+    "release": {
+      "WorkPackage": "WP-IPC-ARCH-UI-ALIGNMENT-01",
+      "SchemaVersion": 1,
+      "ReleaseVersion": "ALIGNMENT-01",
+      "StorageVersion": 2,
+      "ContractVersion": "SIMULATION-v1",
+      "ProductId": "ipc-reference",
+      "ProductDefinitionSha256": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+      "SourceCodeSha256": "628a98d84a911ad5700489e3dbcadc52d1292401b1cd2931eee898bead3662e6",
+      "GitBase": "712446ae262c6b269bd6576ad5c17784a644c7d7",
+      "Mode": "Simulation",
+      "Target": "win-x64"
+    },
+    "build_log_sha256": "727c2501efea662130513964f157ad86f427cfc38e28b47464de1f6ba99ae692"
+  },
+  "native_published_smoke": {
+    "status": "PASS",
+    "results": {
+      "published_native_start": "PASS",
+      "second_process_ownership": "PASS",
+      "published_backup_preflight_restore_quarantine": "PASS",
+      "metadata_export": "PASS",
+      "unwritable_storage_not_ready": "PASS",
+      "changed_module_not_ready": "PASS",
+      "production_no_fixture_or_business": "PASS",
+      "windows_desktop_runtime": "BLOCKED_ON_NON_WINDOWS"
+    },
+    "command": "python3 scripts/smoke.py --product .artifacts/ALIGNMENT-01-712446a-native --fixture src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll --output docs/runtime/evidence/alignment-01/native-smoke.json",
+    "windows_interpretation": "NOT_RUN; inherited smoke field BLOCKED_ON_NON_WINDOWS is not Windows execution",
+    "log_sha256": "fe9cecb89fc6f9dc2f590a173b6a48329a4f230d71c104ec400c53850004c820"
+  },
+  "archive": {
+    "status": "PASS",
+    "command": "python3 tools/verify_archive.py --root . --scope public",
+    "meaning": "generic source and documentation integrity/public scope only; not Windows or site acceptance"
+  },
+  "review": {
+    "status": "ISSUES_FIXED_AND_VERIFIED",
+    "stop_failure": "memory barrier plus module shutdown",
+    "bounded_rejection": "one coalesced signal/writer/completion rather than per-rejection capacity waiters",
+    "handoff_race": "post-commit guard recheck; original identity becomes Unknown if changed",
+    "late_command": "disposed admission explicitly finishes NotReady"
+  },
+  "final_main_check": {
+    "commit": "2b8b35b6025ed87438f27c7c821260f4740befba",
+    "open_pull_requests_before_creation": 0,
+    "parallel_branch_untouched": "docs/ui-assets-20261016"
+  },
+  "pull_request": {
+    "url": "https://github.com/yuan2go/importer-pc/pull/4",
+    "state": "OPEN",
+    "base": "main",
+    "merged": false
+  },
+  "cloud_artifact": {
+    "state": "DRAFT_UPLOADED",
+    "release_tag": "wp-ipc-arch-ui-alignment-01-simulation-20261016",
+    "target_commit": "712446ae262c6b269bd6576ad5c17784a644c7d7",
+    "zip_asset_id": 647268473,
+    "zip_bytes": 119023233,
+    "remote_digest": "sha256:1089c45f294ead68154d92b26217b9fd3c18bf86089c4f745cdc43ed5c7a8aeb",
+    "local_remote_digest_match": true,
+    "publicly_published": false,
+    "meaning": "Draft Simulation asset uploaded for owner review and Windows validation; no production/site release"
+  }
+}

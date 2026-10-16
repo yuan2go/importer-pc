@@ -180,7 +180,7 @@ static class HardeningVerification
                 Assert((await h.App.DetailsAsync(original.Id)).Single().Request.Id == original.Id, "Request alarm detail resolves only original request");
             }
         });
-        await Check("SIMULATION-v1 baseline JSON compatibility and schema1 checksum", async () =>
+        await Check("SIMULATION-v1 baseline JSON compatibility and forward format gate", async () =>
         {
             var fixtures = Path.Combine(workspace, "tests/Ipc.Verification/fixtures");
             var requestText = File.ReadAllText(Path.Combine(fixtures, "simulation-v1-request.json")).TrimEnd();
@@ -194,7 +194,11 @@ static class HardeningVerification
             contract.ValidateResponse(original, response);
             await using var h = await Rig.New(root, url);
             using var db = new SqliteConnection("Data Source=" + h.Store.Path); db.Open(); using var sql = db.CreateCommand(); sql.CommandText = "SELECT count(*) FROM schema_history";
-            Assert(Convert.ToInt32(sql.ExecuteScalar()) == 1, "No migration invented for JSON-compatible additions");
+            Assert(Convert.ToInt32(sql.ExecuteScalar()) == 2, "Forward semantic format migration is explicit");
+            sql.CommandText = "SELECT checksum FROM schema_history WHERE id=1";
+            Assert((string?)sql.ExecuteScalar() == Wire.Hash(File.ReadAllText(Path.Combine(fixtures, "schema1.sql"))), "Original schema1 SQL checksum is unchanged");
+            sql.CommandText = "SELECT version || ':' || minimum_reader FROM storage_format WHERE id=1";
+            Assert((string?)sql.ExecuteScalar() == "2:2", "New JSON format records a matching minimum reader");
         });
         await Check("same alarm code retains independent owners and recovery", async () =>
         {

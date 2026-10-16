@@ -1,19 +1,19 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-RUNTIME-HARDENING-04",
+  "work_package": "WP-IPC-ARCH-UI-ALIGNMENT-01",
   "created_date": "2026-10-16",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/wp-ipc-runtime-hardening-04",
+  "branch": "codex/wp-ipc-arch-ui-alignment-01",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
-  "framework_design_state": "REFERENCE_HARDENING_CORE_VERIFIED_WINDOWS_NOT_RUN",
-  "next_implementation_work_package": "WP-IPC-INTEGRATION-BOUNDARY-05",
+  "framework_design_state": "ALIGNMENT_CORE_VERIFIED_WINDOWS_NOT_RUN",
+  "next_implementation_work_package": "WP-IPC-WINDOWS-VALIDATION-06",
   "previous_manifest": {
-    "commit": "752d5a89a9bf2a5e54c2551a3af77b82e1bc1961",
+    "commit": "2b8b35b6025ed87438f27c7c821260f4740befba",
     "path": "docs/manifest.json",
-    "git_blob": "ba8b0118acb3f8bf5d3146098e012d46f4af4e46",
-    "meaning": "RUNTIME-03 formation-time records retained in Git; only affected current file records updated."
+    "git_blob": "7ab6e10420693c0d28bd158e3200d1f9716d56a3",
+    "meaning": "H04 formation-time records retained in Git; current rows identify only authorized generic implementation and new evidence."
   },
   "self_verification": {
     "sha256_file": "manifest.sha256",
@@ -164,15 +164,15 @@
     },
     {
       "path": "README.md",
-      "sha256": "5430547cb7cf0edf1ecef08ca40e5d474780b2429cc87dc4ba49f53e928137dc",
-      "size_bytes": 1509,
-      "git_blob": "56077a46bea9c84950d6d62474836ee6b72e103b",
-      "version": "runtime-hardening-04",
+      "sha256": "11ee36be1afc7a9198ac715b771c561224ad16479043380ed57673236963850c",
+      "size_bytes": 1503,
+      "git_blob": "d7efd51cda9d537fd4c15e1b01eb7c848d685339",
+      "version": "alignment-01",
       "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "f426318033d0ca2aa5765a92ba7dc3965b170afb"
+      "previous_git_blob": "56077a46bea9c84950d6d62474836ee6b72e103b"
     },
     {
       "path": "config/presentation.json",
@@ -183,6 +183,17 @@
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
       "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "config/product.reference.json",
+      "sha256": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+      "size_bytes": 866,
+      "git_blob": "852444966af0b1e2e08ec87819be84b716ec8027",
+      "version": "alignment-01",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository"
     },
     {
@@ -209,15 +220,15 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "f3a2e1d8cca36046db1b62ff7239b7b33822fdee02b643a429708a0c3e66c029",
-      "size_bytes": 4197,
-      "git_blob": "44026ad1c650f105b22694fbae2cfb853aceed89",
-      "version": "runtime-hardening-04",
+      "sha256": "3533ac35545382cd9fe906c71dbd9a136387c8d9f4d52aa35adb6d7630583207",
+      "size_bytes": 4576,
+      "git_blob": "0f395600964b40fe5bbee64f8b04623226b02f16",
+      "version": "alignment-01",
       "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "a0f12d0ce0c2b07faee6e78314bbc483367cd954"
+      "previous_git_blob": "44026ad1c650f105b22694fbae2cfb853aceed89"
     },
     {
       "path": "docs/archive/pre-framework-20261016/AGENTS.md.txt",
@@ -344,27 +355,27 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "d7578fa428d2f7749b938ef9d5629f860973fc11c194d5ab0ea592729f449a11",
-      "size_bytes": 13123,
-      "git_blob": "ef69131752c1a1b62d46fe4c6436b135d8cae614",
-      "version": "runtime-1.0",
+      "sha256": "ea4466c5b326b9bfd560bfa629976baec2247bbcdafdcbc170713ea86b2610cf",
+      "size_bytes": 14433,
+      "git_blob": "849b453d2866ea4deb0956ac465c8d9bd463f29f",
+      "version": "alignment-01",
       "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "3ec1bd68ea5b2d1dead106d57fe9dc33bb2003eb"
+      "previous_git_blob": "ef69131752c1a1b62d46fe4c6436b135d8cae614"
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "565e4e695e6395c65b9c605494a09b042912854a2145b9fc5a02318e437420e9",
-      "size_bytes": 33845,
-      "git_blob": "7d803b9b1a41d2b7976dfbbb6d8b21a41777beeb",
-      "version": "runtime-1.0",
+      "sha256": "7f287d236181e5a6580be689094fbf400f909f001c7a735a5755f4e70edb795e",
+      "size_bytes": 33956,
+      "git_blob": "e788efaab3238fce5810e5d4a304ff975fe0e1d9",
+      "version": "alignment-01",
       "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "ece0a6a88f6bdedb11f25288e83b18245a58bc50"
+      "previous_git_blob": "7d803b9b1a41d2b7976dfbbb6d8b21a41777beeb"
     },
     {
       "path": "docs/readiness/checks.json",
@@ -435,6 +446,39 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/runtime/alignment-01-checks.json",
+      "sha256": "f1220b7cb06b958541e926a980f96a12c724bae272de16f697341ffe735abf76",
+      "size_bytes": 8102,
+      "git_blob": "f236636e790bdcd94a3d7bc403eeb7ea01d5c320",
+      "version": "alignment-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/alignment-01-windows.md",
+      "sha256": "13a5c73893b01bcb704597a11256cd7ec6f6f74303d089f88ec495538c047fdf",
+      "size_bytes": 3597,
+      "git_blob": "af4e192ec56febf0a1f28aefa6587db1d3ef2f35",
+      "version": "alignment-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/alignment-01.md",
+      "sha256": "5404617c1a2b0fd298f1dc694b3407501d5ff85caaa5ef8f5f7c6656618cb15a",
+      "size_bytes": 9118,
+      "git_blob": "73f29f5c789859855d8af0f34d63bb3964247eb2",
+      "version": "alignment-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/runtime/checks.json",
       "sha256": "d124de131d5bffdd84b3d5bcd885d119d4ccaa5a5d21b4e623ff9a0d337644f2",
       "size_bytes": 4218,
@@ -468,6 +512,83 @@
       "sha256": "a80a1e754b40524b13513a47e8289dcbe27574c0c56a6b35e6911fa57daed136",
       "size_bytes": 96,
       "git_blob": "1c1e7d68bcd2aa62f26ce9a3d7b78897c23d8b98"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/ALIGNMENT-01-712446a-win-x64.zip.sha256",
+      "sha256": "7b7c2e46985bbf0b3e6ce188a0742707fbaf7b4d4fd746cbfbc52749997ae906",
+      "size_bytes": 99,
+      "git_blob": "1df0ffaf8e55307a9e18bb5d5a9489af581fb7fe",
+      "version": "alignment-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/log-digests.json",
+      "sha256": "a5c36d3a98068f741b93196488c0bdd44f4e6287918b35c24f4d03a4654b2e3a",
+      "size_bytes": 781,
+      "git_blob": "049bfe158d012ddcfa74ca3d441c2d2208b4627d",
+      "version": "alignment-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/native-smoke.json",
+      "sha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "size_bytes": 347,
+      "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2",
+      "version": "alignment-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/package-verification.json",
+      "sha256": "7bab13bade21f5670403bc5094e555b3d699184dcef6c4a72893ed584aab288b",
+      "size_bytes": 1010,
+      "git_blob": "b52f4b0b55e9c790d6c8ca97a5898c92688db923",
+      "version": "alignment-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/release-SHA256SUMS.txt",
+      "sha256": "759fc75e19ef0bbc025c9492445252097b871ba9d33c50816e98dea0393d084c",
+      "size_bytes": 85431,
+      "git_blob": "e77f83326b14bb872b45e1900a0ee6f430c8cf96",
+      "version": "alignment-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/release.json",
+      "sha256": "11b8859ca1bb270d5dbbc76fee432698cddaf2d0895874d268ca9ce2cf80f7e6",
+      "size_bytes": 493,
+      "git_blob": "b49c54c754e909bf1b3bfae63fde81c6e224a44c",
+      "version": "alignment-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/verification-summary.txt",
+      "sha256": "a5c0f63f098cf693f2c117427d8cac3220df81a9a48b45b17c9944c4a7ac7410",
+      "size_bytes": 5347,
+      "git_blob": "0346ed2c6807dbb9e381ccac72bfacce0fa7ae97",
+      "version": "alignment-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/runtime/evidence/hardening-04/HARDENING-04-2619a7a-win-x64.zip.sha256",
@@ -626,27 +747,27 @@
     },
     {
       "path": "docs/runtime/implementation.md",
-      "sha256": "8473b353c9d1990a020a3312cb27d31bf25b86a66711b3b363def63a87ac69aa",
-      "size_bytes": 4520,
-      "git_blob": "5a77e64a1903d0a42223993420eb15ca9c847793",
-      "version": "runtime-hardening-04",
+      "sha256": "59b127d686c2dcc3c0ddd19bb302a3d2adb5ed48ac0022bafe4fdfa45a0932be",
+      "size_bytes": 5044,
+      "git_blob": "2e8edf65a47398c7b491318e46d9a742682019f5",
+      "version": "alignment-01",
       "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "e41f8f2d281ef6a71ba49b26623f3439ead152bb"
+      "previous_git_blob": "5a77e64a1903d0a42223993420eb15ca9c847793"
     },
     {
       "path": "docs/runtime/operations.md",
-      "sha256": "1540e5443b065a100bdc288a915f97d496dd92bd90f3e0721188090f742e8c4d",
-      "size_bytes": 15268,
-      "git_blob": "a1f3f5329d2979d0f7371ae10727f3f015f5013b",
-      "version": "runtime-hardening-04",
+      "sha256": "c5a2a5c4a7a307b0ebdf1735193a743270da1cfd7444b2ea5c1ba25f8ead738a",
+      "size_bytes": 17750,
+      "git_blob": "b1863c9f253f36e946b773d2645572e0e3ef4767",
+      "version": "alignment-01",
       "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "e3a79fde49184fb739d0366cd7dbc478fa9d652e"
+      "previous_git_blob": "a1f3f5329d2979d0f7371ae10727f3f015f5013b"
     },
     {
       "path": "docs/runtime/publication.md",
@@ -701,6 +822,17 @@
       "status": "inherited_baseline",
       "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
       "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/ui/tokens/tokens.json",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md",
+      "sha256": "48e4facfe59dccf60d499d0a1f22cc0b20f9acf1b0b07325c9e273c89036ac27",
+      "size_bytes": 5750,
+      "git_blob": "d18be6f0fdde10019d57fea1366abfe5255903b3",
+      "version": "alignment-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository"
     },
     {
@@ -772,26 +904,27 @@
     },
     {
       "path": "scripts/publish.ps1",
-      "sha256": "599597728fbe55428af171f0fd0717a75b9e9b1f297f2877a95ffe69a738b3ed",
-      "size_bytes": 2525,
-      "git_blob": "d095cd1251309b8c01aee19c79859ea38a0c03fa",
-      "version": "runtime-1.0",
+      "sha256": "752a2b0158495cde8eac298d83a991485274ae4c961885f7d99b1823493dcdcd",
+      "size_bytes": 2631,
+      "git_blob": "8ca2f6e5664a51723ea472a3e1d987d17aa6e7b6",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "d095cd1251309b8c01aee19c79859ea38a0c03fa"
     },
     {
       "path": "scripts/seal.py",
-      "sha256": "34f946f75274f9dcaf60ff35a6ecba2ed77c32a0388f972440a7d957e563c8b9",
-      "size_bytes": 3098,
-      "git_blob": "ef5fabc9b03aa1bd5bb2699196e454948aad911f",
-      "version": "runtime-hardening-04",
+      "sha256": "5130a26f0b20455a5d4a390d2bd01d56346bb34c3110b6ac2dc20762554e2f7c",
+      "size_bytes": 5015,
+      "git_blob": "1437d138c493168ef06870f63edca5c80ee10277",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "1b4d61d31d69f342d5c2e9abff3b514d5fa1ffd1"
+      "previous_git_blob": "ef5fabc9b03aa1bd5bb2699196e454948aad911f"
     },
     {
       "path": "scripts/smoke.py",
@@ -806,14 +939,15 @@
     },
     {
       "path": "scripts/station.ps1",
-      "sha256": "671bd8c458763ff0d3fa6096cebfa76226ba1a1652561a4de4df83cd33c18298",
-      "size_bytes": 3625,
-      "git_blob": "22f0ef264f9872b2486e83c84b06f79c94c49639",
-      "version": "runtime-1.0",
+      "sha256": "26300efdc9bbb78987ee00b91ec71ed2fd25022ed19d81519ba90208801d3b6c",
+      "size_bytes": 3974,
+      "git_blob": "8d34d3da13d63dae1955b48d81d8138805575604",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "22f0ef264f9872b2486e83c84b06f79c94c49639"
     },
     {
       "path": "src/Ipc.Adapters/Ipc.Adapters.csproj",
@@ -828,15 +962,15 @@
     },
     {
       "path": "src/Ipc.Adapters/LoopbackIntegration.cs",
-      "sha256": "cbc70f1c6acbf4f8a6aa38cb28a662dfe2631845cdf797749c1081c587739a60",
-      "size_bytes": 2688,
-      "git_blob": "171f5017875ebc6bdf68cdba7e43474a45449f63",
-      "version": "runtime-hardening-04",
+      "sha256": "fe98078fef7b19564764efd2fca7101d0d0855430d18900ac1b4242f486997bb",
+      "size_bytes": 2683,
+      "git_blob": "011558ca721bb016fde792697a74ca74b05c954d",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "5196d52cef6955d0cd3c4a5dc4315a997e500c15"
+      "previous_git_blob": "171f5017875ebc6bdf68cdba7e43474a45449f63"
     },
     {
       "path": "src/Ipc.Adapters/ObservationSources.cs",
@@ -852,14 +986,15 @@
     },
     {
       "path": "src/Ipc.Adapters/SimulationRequestContract.cs",
-      "sha256": "584a96537db59f58e8229c8479e58049c26964b3b12cbbce9c08cc64508ae80b",
-      "size_bytes": 2770,
-      "git_blob": "e4315d95d723d36d9c51deac50a6714eeeae4fde",
-      "version": "runtime-hardening-04",
+      "sha256": "bc4a26a90fc7f77d92ab6c0bef1c3ff8b1215a2b42f54d07aa2d1bf87859bff5",
+      "size_bytes": 4094,
+      "git_blob": "24e9c19d2be2e1675836dfb954e82b3a62714678",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; no restricted customer originals or assets",
-      "storage_scope": "public_repository"
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "e4315d95d723d36d9c51deac50a6714eeeae4fde"
     },
     {
       "path": "src/Ipc.Adapters/packages.lock.json",
@@ -885,25 +1020,27 @@
     },
     {
       "path": "src/Ipc.Desktop/App.xaml",
-      "sha256": "d5f2f7e424c4d47dab8a1000755156fd8f5e44beba79f62d7e3a3bcaa1687755",
-      "size_bytes": 2130,
-      "git_blob": "49df11a24e3ebbe0d8668366613dc09af1770387",
-      "version": "runtime-1.0",
+      "sha256": "9de6905787c4c75d94aa7d2dd038d7c67d17b89a445a7d4491f3ea25fce1b839",
+      "size_bytes": 2226,
+      "git_blob": "233874e87c91e32005b85b65dea3474e6d39f1de",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "49df11a24e3ebbe0d8668366613dc09af1770387"
     },
     {
       "path": "src/Ipc.Desktop/App.xaml.cs",
-      "sha256": "bc60dd938a0fc60dacd8ee53704b1bcef21f07fbb20101474cd39827ca707ee6",
-      "size_bytes": 1318,
-      "git_blob": "1b419323e9481731901df6ee846867fc1c1b47e0",
-      "version": "runtime-1.0",
+      "sha256": "8ef7622c2a7f8d54fead9145c1e1b32e51568ce3c66948323dcfe7c6862b9b93",
+      "size_bytes": 1835,
+      "git_blob": "1fcdc312da344419eb096e6e7a4faf5bc1c305ed",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "1b419323e9481731901df6ee846867fc1c1b47e0"
     },
     {
       "path": "src/Ipc.Desktop/Confirmation.cs",
@@ -918,72 +1055,97 @@
     },
     {
       "path": "src/Ipc.Desktop/Ipc.Desktop.csproj",
-      "sha256": "43be7e47352782e312b832f01b0c51c65b5cb8f8a121cc2e22cff821774c3183",
-      "size_bytes": 316,
-      "git_blob": "6d113dbf390c79b3a55103b82c84e535cffc1ab6",
-      "version": "runtime-1.0",
+      "sha256": "e83209d86f48317d2a0c9e3e854b01a558d44372a70d592e11429043b637cb78",
+      "size_bytes": 371,
+      "git_blob": "064d0147707121c27423c673154b5b4a1b0fa2db",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "6d113dbf390c79b3a55103b82c84e535cffc1ab6"
     },
     {
       "path": "src/Ipc.Desktop/LaneControl.xaml",
-      "sha256": "d36e37b0dad43512ee4667079a320076e9f6dcce849a8b7ce231a0823c934992",
-      "size_bytes": 3541,
-      "git_blob": "3f7980aff88981752c9e5ccd72522eb152a81c59",
-      "version": "runtime-1.0",
+      "sha256": "11e3d2270800a8e7ddba0f4f18bee2c768551c7ffc919c58dff77b9fd2864e16",
+      "size_bytes": 2887,
+      "git_blob": "f748e292008ea1885e6681797e418eba82905df0",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "3f7980aff88981752c9e5ccd72522eb152a81c59"
     },
     {
       "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
-      "sha256": "7a2f11091d29ad0abfbbf2c6e7f01d7518645c2c8dd4d94d11bec555a9d23b6a",
-      "size_bytes": 2098,
-      "git_blob": "17a3409b94ce934b4e60812e7699ba89ea57904e",
-      "version": "runtime-1.0",
+      "sha256": "cd3814ae11541977814cc81f15307f446aff0e58b1e2ac3b8c23661197758fae",
+      "size_bytes": 1443,
+      "git_blob": "4d5d1878c03978ce8d30a2da4a45032c71ca40b9",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
-      "storage_scope": "public_repository"
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "17a3409b94ce934b4e60812e7699ba89ea57904e"
     },
     {
       "path": "src/Ipc.Desktop/MainWindow.xaml",
-      "sha256": "eacbf6a3fae4fdbeeb3800169248c6177b414e1ebb1e25bdc73564732424a79f",
-      "size_bytes": 9154,
-      "git_blob": "e94937349bedb329838c4799deb43bd331fa599b",
-      "version": "runtime-hardening-04",
+      "sha256": "696bc38d269639605592507abdcf2e64ff75f0f11317ac90978fdaef03a9507c",
+      "size_bytes": 19619,
+      "git_blob": "f58d3b9fd79effafc0ed991f2241ef6b1b855eb7",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "f59d58f3a33bc384a448255e29cb798944d83fc6"
+      "previous_git_blob": "e94937349bedb329838c4799deb43bd331fa599b"
     },
     {
       "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
-      "sha256": "2d68f54fa7d731413bc6a8b7cf362c3156576d34a1af8f9eb617babe9622703f",
-      "size_bytes": 16561,
-      "git_blob": "70e0aef66d3193fce38348a2706844c5c7e8ad90",
-      "version": "runtime-hardening-04",
+      "sha256": "185015382fa20bc48881c57ada2a9dfd01d66c8bb3dd7c64ffe0402e2e4aef01",
+      "size_bytes": 40907,
+      "git_blob": "651752aa5433885f1c9a9cdef8997df44156170d",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "bfc91fbe2afd7ea8aed3b5d8e1aac3c96404d51d"
+      "previous_git_blob": "70e0aef66d3193fce38348a2706844c5c7e8ad90"
     },
     {
       "path": "src/Ipc.Desktop/ViewModels.cs",
-      "sha256": "18e68a2f6f91983d9a3bb9c861432853511cccf8d7ab168e9fc7fd9870513c5d",
-      "size_bytes": 6056,
-      "git_blob": "8137af7048b06c1fa98a0c775daa0b5e4d94772e",
-      "version": "runtime-hardening-04",
+      "sha256": "ac0d68c4559cdaed18ac745cee2a01303c92933600c1f79563287a4eda3c736a",
+      "size_bytes": 18252,
+      "git_blob": "359f422edcfd2a1798fd28c5aa8ec326cfac306e",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "f8683d149450ffcc943270afd71c7bc128fd0705"
+      "previous_git_blob": "8137af7048b06c1fa98a0c775daa0b5e4d94772e"
+    },
+    {
+      "path": "src/Ipc.Desktop/ViewRegistry.cs",
+      "sha256": "251a51f9ec0ed3555849d77a53c9d59b0734ee5e867f9015346da96b7947dc8b",
+      "size_bytes": 737,
+      "git_blob": "8d81dbd1cfee3f82ae79dd27a5774872244f6895",
+      "version": "alignment-01",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Desktop/app.manifest",
+      "sha256": "24c199ddf62f39ece92a528a433a4d588575ed7245bd328305f91b1247460dc2",
+      "size_bytes": 712,
+      "git_blob": "98ee819e7178b6e08ee1b7e81a9097a92e0f7e89",
+      "version": "alignment-01",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
     },
     {
       "path": "src/Ipc.Desktop/packages.lock.json",
@@ -1033,15 +1195,26 @@
     },
     {
       "path": "src/Ipc.Fixture/Receiver.cs",
-      "sha256": "07b1fc12202fa2ab4073832383253265572cbf765ade4769326f75c0ab48b452",
-      "size_bytes": 7809,
-      "git_blob": "ed9c6aee0e70938342815d7d78afb5cd35bf61f3",
-      "version": "runtime-hardening-04",
+      "sha256": "00679e654ce186544dd8fdc19b9d787fc54e80a8dc68dd147902d7f4f8916e08",
+      "size_bytes": 8154,
+      "git_blob": "35a0582d5ad831fa40cc955faab57ca20c5eb9ef",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "4df4f458abff06753dedd69adfd67b1481f0508c"
+      "previous_git_blob": "ed9c6aee0e70938342815d7d78afb5cd35bf61f3"
+    },
+    {
+      "path": "src/Ipc.Fixture/SyntheticSemanticFixture.cs",
+      "sha256": "2b2a343f961470875e75c1973349cf6acd63e596f2b0c6540507f20e2fc00788",
+      "size_bytes": 1271,
+      "git_blob": "17785645004103ad3e9a8af7139717e271515a93",
+      "version": "alignment-01",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
     },
     {
       "path": "src/Ipc.Fixture/packages.lock.json",
@@ -1069,13 +1242,25 @@
     },
     {
       "path": "src/Ipc.Platform/Configuration.cs",
-      "sha256": "a66e5b28faa9680c96c977e4892728ea64326a3a0aad5acdfc70e44eca68ac3c",
-      "size_bytes": 6393,
-      "git_blob": "aca2c1cca3a556032442dc9f5d31ce613232e553",
-      "version": "runtime-1.0",
+      "sha256": "932f00676f398daa55d68538ab950a03869105cb160e5aa7a3cdd9c01a395180",
+      "size_bytes": 10909,
+      "git_blob": "7b4ac1413bfe5a0a674bbbd0c06143e2ec29ae4d",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "aca2c1cca3a556032442dc9f5d31ce613232e553"
+    },
+    {
+      "path": "src/Ipc.Platform/DeviceCapabilities.cs",
+      "sha256": "0ba4a4b5cf88e81f5ea21a3f17f34064c329b1e8d1070f354ff6f7effd761e91",
+      "size_bytes": 926,
+      "git_blob": "01c9605148ebeab3b00308c1af5ed95ca5727ee1",
+      "version": "alignment-01",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository"
     },
     {
@@ -1109,6 +1294,17 @@
       "status": "current_reference_implementation",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
       "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Platform/StationDispatcher.cs",
+      "sha256": "57b39e66dcd914b086c8055284cde8a0bf375017581f19fd5bf92e685db216cc",
+      "size_bytes": 3462,
+      "git_blob": "75cc2cd6069774f1e0cf972319e2f9c81dc6c093",
+      "version": "alignment-01",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository"
     },
     {
@@ -1157,27 +1353,38 @@
     },
     {
       "path": "src/Ipc.Product/ProductRuntime.cs",
-      "sha256": "31ec6a38c1af742f0216a1740e00735d8313446dae0ac57994a9d63910017ac5",
-      "size_bytes": 20114,
-      "git_blob": "3def940aa00ad25404fc9e6de44154095ccd3edc",
-      "version": "runtime-hardening-04",
+      "sha256": "732276e9467e4d149aa1b15ef4f2b5b43602b6b97b94f1ace85756693d121fcf",
+      "size_bytes": 22988,
+      "git_blob": "6c1d6c910f4729e7ceb7705dbf755dbe06294360",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "1917db4e30f40e3a79bc4867cf732588d797f90a"
+      "previous_git_blob": "3def940aa00ad25404fc9e6de44154095ccd3edc"
     },
     {
       "path": "src/Ipc.Product/Program.cs",
-      "sha256": "21e86a26ecc8ff16b04dbd7800b8e01e232a7876697434e41d640d8c1cded120",
-      "size_bytes": 4719,
-      "git_blob": "ffde775f2d015a8b7e868e8e4d8d33d4efcdb700",
-      "version": "runtime-1.0",
+      "sha256": "d1332e2cf8f40ecff88441ec0f31e2dd88a605741f3267428a5b932553e91a56",
+      "size_bytes": 4809,
+      "git_blob": "4a7b86751dac9dcfcc2fa1ad8c98b4642a2c1630",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "f655f7bb9622c2e944e4414831484d6be5b157f5"
+      "previous_git_blob": "ffde775f2d015a8b7e868e8e4d8d33d4efcdb700"
+    },
+    {
+      "path": "src/Ipc.Product/ReferenceProduct.cs",
+      "sha256": "f4e7066cfaa4ab61e653e623e590666dd50d8b752318d38bd09de7de56b715e3",
+      "size_bytes": 2357,
+      "git_blob": "a81c27434988b6fc39c6de4ff0e6d3ab3c57f3ac",
+      "version": "alignment-01",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
     },
     {
       "path": "src/Ipc.Product/packages.lock.json",
@@ -1214,15 +1421,15 @@
     },
     {
       "path": "src/Ipc.Supply/Model.cs",
-      "sha256": "1add15ddf64f790168eacde23e4ec7d60617730396df455eac6ee7a59a024e31",
-      "size_bytes": 7238,
-      "git_blob": "8a8a63157e244f1f2ee30f570b230c4e14f21040",
-      "version": "runtime-hardening-04",
+      "sha256": "a9535cf03ff97b662b3687c71395f12d8eea8f2c41e1e7179d4cc47886029d5a",
+      "size_bytes": 7575,
+      "git_blob": "c28fb7e24e2b49568fca34b704bd10e8a830d5ca",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "19b67a7bda286520eca1fddfa69d994fee5cceac"
+      "previous_git_blob": "8a8a63157e244f1f2ee30f570b230c4e14f21040"
     },
     {
       "path": "src/Ipc.Supply/RequestContract.cs",
@@ -1237,27 +1444,38 @@
     },
     {
       "path": "src/Ipc.Supply/StationApplication.cs",
-      "sha256": "61b53c80faa088f58330df8ec7e00e9ebf5d96b828e1f4f7c144ce65d3249154",
-      "size_bytes": 47549,
-      "git_blob": "01d630d64f93ede6f7f7b129d177ac77c6a51136",
-      "version": "runtime-hardening-04",
+      "sha256": "91f9c5cb8472df180b38707d0402c515d66f6b8bc658c20b63307714b54c3756",
+      "size_bytes": 56701,
+      "git_blob": "ba1adacc3c5ba36280ff6fa06ae50fd3d471b6e7",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "d365b0cac49567f36cfaf6e7e9d429338fcf9df8"
+      "previous_git_blob": "01d630d64f93ede6f7f7b129d177ac77c6a51136"
     },
     {
       "path": "src/Ipc.Supply/Store.cs",
-      "sha256": "bafb84468abf77c5302e8865730d417158f8df64212a402f0bc7f7f2a4c21d04",
-      "size_bytes": 18726,
-      "git_blob": "eed9d4afe3aea3e8469a53f9320ed3b1a4def5ec",
-      "version": "runtime-hardening-04",
+      "sha256": "1aac569104a52036b464b51f5272fedcd8bcf3beaf62968007e901483871b227",
+      "size_bytes": 21517,
+      "git_blob": "41c3bd24b0dc7ce783ee1533a377b961b2ec9bd2",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "c24c9e140fb1de7bca4a2743042a6f2d4c6bc72a"
+      "previous_git_blob": "eed9d4afe3aea3e8469a53f9320ed3b1a4def5ec"
+    },
+    {
+      "path": "src/Ipc.Supply/SupplyConfiguration.cs",
+      "sha256": "11d64510199ac40a17587d2ffd823e942f534009eb87e19e602a524e479ccd72",
+      "size_bytes": 1581,
+      "git_blob": "d274407bc6647a804e8f32c579846e09bbebb47f",
+      "version": "alignment-01",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
     },
     {
       "path": "src/Ipc.Supply/packages.lock.json",
@@ -1282,15 +1500,49 @@
       "storage_scope": "public_repository"
     },
     {
-      "path": "tests/Ipc.Verification/HardeningVerification.cs",
-      "sha256": "28e9b9de2bc613cfdde6cea38c378834364c8cea0009f2ca51f02da39a079d9e",
-      "size_bytes": 23280,
-      "git_blob": "e470fc4349c1d9edb44ab045587c5a1ca1159da2",
-      "version": "runtime-hardening-04",
+      "path": "tests/Ipc.Verification/AlignmentCompositionVerification.cs",
+      "sha256": "20298801b90e59a30fedae07a8aa3a67a2cfc827f9c6aa7b5ee20c6e7a963404",
+      "size_bytes": 5760,
+      "git_blob": "d08d7d8b2b19bb23f79de2805b11197a62accdc0",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; no restricted customer originals or assets",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentDataVerification.cs",
+      "sha256": "7a407e54e6589c43807689777e5546e47a2414271029a87888170f9a711e753b",
+      "size_bytes": 10538,
+      "git_blob": "4d0c65f5fd96f0c08ee23287df6051529219a74e",
+      "version": "alignment-01",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentRuntimeVerification.cs",
+      "sha256": "c60de6e17d066e89081da5554a420150ef67421f4332dabe349e634ee9213d28",
+      "size_bytes": 14749,
+      "git_blob": "67accce682fcc2075f6a505bf8090cd4f87e4376",
+      "version": "alignment-01",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Verification/HardeningVerification.cs",
+      "sha256": "9f72f0f6f2a23120b5e669e1df9ec6dadf0517552ce46a3921a4796ddc701db7",
+      "size_bytes": 23739,
+      "git_blob": "dee9a68d404325fb0248064b73ea2ff36f9bc8d2",
+      "version": "alignment-01",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "e470fc4349c1d9edb44ab045587c5a1ca1159da2"
     },
     {
       "path": "tests/Ipc.Verification/Ipc.Verification.csproj",
@@ -1305,15 +1557,26 @@
     },
     {
       "path": "tests/Ipc.Verification/Program.cs",
-      "sha256": "4a16f8836569880c1803dfa2f1869a5ef8f4c45ea26258486efbcde9c3d90c4f",
-      "size_bytes": 44820,
-      "git_blob": "cf54869a1869eead11207fc20acaf1873eeedb38",
-      "version": "runtime-hardening-04",
+      "sha256": "6d7bec47dd5ccfc47b38de09144ce71c63fb1b22cc552d9cbc82c33f37db041f",
+      "size_bytes": 45133,
+      "git_blob": "772e9ad83a8b248b95479ea39ad85f8223cb15f0",
+      "version": "alignment-01",
       "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; generic implementation and synthetic data only",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "0493729886c40104ba6c871ed777ea65551d8563"
+      "previous_git_blob": "cf54869a1869eead11207fc20acaf1873eeedb38"
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/schema1.sql",
+      "sha256": "d4ced2b811dff4d3d66dc66c431b9dcc8c75f491ca30f10a2e5507aad741c981",
+      "size_bytes": 2049,
+      "git_blob": "7757913dbac5fae64d0bf1e6d26a618cdb3ab797",
+      "version": "alignment-01",
+      "status": "current_reference_implementation",
+      "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
+      "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
+      "storage_scope": "public_repository"
     },
     {
       "path": "tests/Ipc.Verification/fixtures/simulation-v1-request.json",
@@ -1416,5 +1679,11 @@
     "binary_storage": "github_release_asset_not_git",
     "code_commit": "2619a7a2a485a8176ae15ea7ed6fe0a18d34d9f6",
     "current_remote_status": "read_PR_and_Release_records"
+  },
+  "alignment_versions": {
+    "release": "ALIGNMENT-01",
+    "storage": 2,
+    "contract": "SIMULATION-v1",
+    "source_commit": "712446ae262c6b269bd6576ad5c17784a644c7d7"
   }
 }

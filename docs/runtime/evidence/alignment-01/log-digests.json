@@ -1,0 +1,26 @@
+{
+  "baseline-build": {
+    "sha256": "548801e6a382a99c11a15a753909090fef6587d18172f8fc31be9e18c0897269",
+    "bytes": 2181
+  },
+  "baseline-regression": {
+    "sha256": "176351d6117aacec5ecf561ad419d60244be08b86ca037d36b7b732dd29a47fe",
+    "bytes": 12831
+  },
+  "final-build": {
+    "sha256": "464c49a8d6780a555fecfc7ab2ba48f9489aaa0b9a226d995a7b88e47958bdd9",
+    "bytes": 1277
+  },
+  "final-regression": {
+    "sha256": "5908bae17c7c6e96014ebb8e64bb3c87e63aa67cd485cad84077b2186292b0d6",
+    "bytes": 16054
+  },
+  "first-final-attempt": {
+    "sha256": "511f37f4e092fcf632b2afdc21f02bf9f5f5224806bf93865e12623f516b1c35",
+    "bytes": 5337
+  },
+  "targeted-regression": {
+    "sha256": "fbb919286f5150da6da9df054e75d62181dc335e07103dad7a7d09c1d37627ed",
+    "bytes": 4887
+  }
+}

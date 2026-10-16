@@ -2,7 +2,7 @@
 
 C#/.NET 10 工位运行基座与供包**独立参考产品**：Generic Host、WPF、多页面/布局共享业务、实际SQLite事务/Outbox/恢复，两类模拟读码源与独立持久接收账loopback夹具。不是既有现场工程迁移，也未接入厂商SDK或真实WCS。
 
-[运行与发布](docs/runtime/operations.md) · [实施记录](docs/runtime/implementation.md) · [验证与交付报告](docs/runtime/hardening-04.md) · [统一入口](docs/INDEX.md) · [框架设计](docs/design/framework.md) · [当前加固工作包](docs/work-packages/WP-IPC-RUNTIME-HARDENING-04.md)
+[运行与发布](docs/runtime/operations.md) · [实施记录](docs/runtime/implementation.md) · [验证与交付报告](docs/runtime/alignment-01.md) · [统一入口](docs/INDEX.md) · [框架设计](docs/design/framework.md) · [当前工作包](docs/work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)
 
 ```sh
 # .NET SDK 10.0.402 + Python3

@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "source_commit": "712446ae262c6b269bd6576ad5c17784a644c7d7",
+  "zip": "ALIGNMENT-01-712446a-win-x64.zip",
+  "zip_bytes": 119023233,
+  "zip_sha256": "1089c45f294ead68154d92b26217b9fd3c18bf86089c4f745cdc43ed5c7a8aeb",
+  "files": 813,
+  "checks": [
+    "exhaustive SHA256SUMS",
+    "module hashes",
+    "three Windows PE entries",
+    "embedded PerMonitorV2 manifest",
+    "ZIP CRC",
+    "no DB/credential/font files"
+  ],
+  "windows_execution": "NOT_RUN",
+  "release": {
+    "WorkPackage": "WP-IPC-ARCH-UI-ALIGNMENT-01",
+    "SchemaVersion": 1,
+    "ReleaseVersion": "ALIGNMENT-01",
+    "StorageVersion": 2,
+    "ContractVersion": "SIMULATION-v1",
+    "ProductId": "ipc-reference",
+    "ProductDefinitionSha256": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+    "SourceCodeSha256": "628a98d84a911ad5700489e3dbcadc52d1292401b1cd2931eee898bead3662e6",
+    "GitBase": "712446ae262c6b269bd6576ad5c17784a644c7d7",
+    "Mode": "Simulation",
+    "Target": "win-x64"
+  }
+}

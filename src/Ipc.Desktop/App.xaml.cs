@@ -12,14 +12,19 @@ public partial class App : Application
         base.OnStartup(e);
         try
         {
-            var map = e.Args.Chunk(2).ToDictionary(x => x[0], x => x.Length == 2 ? x[1] : "");
+            var map = new Dictionary<string,string>(StringComparer.Ordinal);
+            for(var i=0;i<e.Args.Length;i+=2)
+            {
+                if(i+1>=e.Args.Length || e.Args[i] is not ("--config" or "--data-root" or "--view" or "--layout") || e.Args[i+1].StartsWith("--",StringComparison.Ordinal) || !map.TryAdd(e.Args[i],e.Args[i+1]))
+                    throw new ArgumentException("启动参数无效；支持 --config、--data-root、--view、--layout，每项仅一个值。");
+            }
             var root = map.GetValueOrDefault("--config", System.IO.Path.Combine(AppContext.BaseDirectory, "config"));
             host = ProductHost.Build(new(System.IO.Path.Combine(root, "product.json"), System.IO.Path.Combine(root, "station.json"), System.IO.Path.Combine(root, "presentation.json"),
-                map.GetValueOrDefault("--data-root", System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data"))));
+                map.GetValueOrDefault("--data-root", System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data")), View: map.GetValueOrDefault("--view"), Layout: map.GetValueOrDefault("--layout")));
             await host.StartAsync();
             new MainWindow(host.Services.GetRequiredService<ProductRuntime>(), true).Show();
         }
         catch (Exception ex) { MessageBox.Show(ex.Message, "启动失败 / NotReady", MessageBoxButton.OK, MessageBoxImage.Error); Shutdown(2); }
     }
-    public async Task StopRuntimeAsync() { if (host is not null) { await host.StopAsync(); host.Dispose(); host = null; } }
+    public async Task StopRuntimeAsync() { if (host is not null) { await host.StopAsync().ConfigureAwait(false); host.Dispose(); host = null; } }
 }

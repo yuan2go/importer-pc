@@ -1,5 +1,7 @@
 # 运行、发布与运维
 
+当前增量实现与验证见 [ALIGNMENT-01](alignment-01.md)，Windows待验见[操作清单](alignment-01-windows.md)。H04原证据保留形成时范围。
+
 本实现是 F-02 独立参考产品。所有设备、身份、数量策略和外部端点为 **SIMULATION**。核心、SQLite 与恢复为真实代码；没有旧现场工程迁移、厂商驱动或真实 WCS。D/RV 的客户与现场状态不改变。
 
 ## 环境与构建
@@ -31,21 +33,21 @@ Windows 启动桌面：
 dotnet src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll --config src/Ipc.Desktop/bin/Debug/net10.0-windows/config --data-root "$env:LOCALAPPDATA/ImporterPc/data"
 ```
 
-选择模拟角色→输入箱码并校验→某通道“实体入场”→输入条码/包装数量并读码→等待校验→确认供包→业务接受后提供显式模拟“实体离场”“实体复位”→继续同一箱下一件。两通道可重复同码，实体身份不同；同来源观察身份重复不新建请求。不通过定时清屏进入下一件。
+工程控制页选择模拟角色→工作台输入箱码并校验→某通道“实体入场”→输入条码/包装数量并读码→等待校验→确认供包→业务接受后提供显式模拟“实体离场”“实体复位”→继续同一箱下一件。两通道可重复同码，实体身份不同；同来源观察身份重复不新建请求。不通过定时清屏进入下一件。
 
 超量使用 `SYNTHETIC-KEEP-v1`：扫描**保留件**，单位为合成件，9包装/6需求时保留6、移除3；不同 retained-unit 身份计数，重复身份不增加。该策略、30分钟模拟实体许可、双逻辑位/共享箱、120初始需求和固定角色均为工程选择，不是生产默认。过期或跨进程代次的实体许可须由维护角色提供“核对实体许可”事件；不改变原请求业务内容。生产禁止人工改码/强制成功/自动发车。
 
 相同条码前导零保留；无码/多码/非法输入保留观察与拒绝原因，可在同一实体修正读码。待提交草稿可显式处置；Unknown/在途/已接受效果不能靠取消清除。结束检查要求实体位已复位、无待决请求，建立双通道屏障；不足时可以取消或确认当前检查。只有原关闭回执接受才关闭箱，CloseUnknown 保留箱身份与专属请求。
 
-主工作台、历史、报警、设备/配置与两个窗口共用唯一业务实例。布局切换只改展示。全局阻断贯穿页签，输入草稿和详情滚动不随快照重建。确认窗初始焦点在取消、Tab在窗内循环、关闭归还焦点；Enter不触发高风险动作。Windows实际键盘/扫码/DPI/提示声听审仍待验。
+工作台、历史、报警、设备诊断、维护配置、工程控制六个受控页面与两个窗口共用唯一业务实例。布局切换只改展示。全局阻断贯穿页签，输入草稿和详情滚动不随快照重建。启动可加 `--view history --layout compact`，View必须在产品允许名单；布局持久化保留当前View。标准布局按有效区自动双列/单列，紧凑显式单列，内容滚动且主操作固定；小于800×420 DIP有效区显示阻断。确认窗初始焦点在取消、Tab在窗内循环、关闭归还焦点；Enter不触发高风险动作。Windows实际键盘/扫码/DPI/提示声听审仍待验。
 
 ## 设备替换与配置
 
-产品清单由显式允许名单、契约主版本、依赖、架构、文件哈希校验；不扫描任意DLL。安装目录须可信且受ACL保护，自带哈希不证明发布者身份。每工位/设备和数据库路径分别持有跨进程文件租约；不删除租约文件。此本机独占不替代真实设备端协议。
+打包输入 `config/product.reference.json` 选择已实现业务和允许模块；`ReferenceProduct` 的编译注册是执行权威，修改JSON不创造未安装业务或驱动。Platform只检查通用结构/依赖/版本/模式/路径/完整性，双通道和模拟数量规则由Supply拥有。产品清单由显式允许名单、契约主版本、依赖、架构、文件哈希校验；不扫描任意DLL。安装目录须可信且受ACL保护，自带哈希不证明发布者身份。每工位/设备和数据库路径分别持有跨进程文件租约；不删除租约文件。此本机独占不替代真实设备端协议。
 
 三层文件：`product.json` 为装配；`station.json` 为绑定、容量和外部目标；`presentation.json` 为页面/布局。未知字段拒绝。两个读码实现均可绑定任意逻辑通道：`manual` 人工事件源，`replay` 文件源；回放绑定设置 `Driver="replay"`、`ReplayFile="replay.jsonl"`，需维护草稿验证并受控重启。回放每次按钮推进一条，不自动跨过业务提交/物理确认。旧 sourceEventId/admissionId 不能用于新实体。
 
-维护草稿经历 Validated/Rejected→PendingActivation→重启 Effective/ActivationFailed，无有效规则的草稿保留原因。失败保留旧有效配置。活动箱/未决请求阻止激活；原请求始终保留旧报文、合同、绑定和端点版本，不随配置或换人重投。显示布局不重启业务。初次源码启动先由 seal 工具生成实际程序集哈希；二进制变化后重新执行 build/seal。
+维护页提供驱动/端点/站点参数表单、逐字段差异/校验/生效时机和失败反馈，JSON仅高级诊断。站点ID/模式固定；后台重复核验权限与状态。维护草稿经历 Validated/Rejected→PendingActivation→重启 Effective/ActivationFailed，无有效规则的草稿保留原因。失败保留旧有效配置。活动箱/未决请求阻止激活；原请求始终保留旧报文、合同、绑定和端点版本，不随配置或换人重投。显示布局不重启业务。初次源码启动先由 seal 工具生成实际程序集哈希；二进制变化后重新执行 build/seal。
 
 Production 模板不注册任何成功夹具或模拟身份/源，不访问生产设备；必需 SDK、合同、策略、身份未取得时，启动诊断并返回 NotReady。它是防伪检查模板，不是生产可用产品。
 
@@ -84,7 +86,7 @@ T2领取为Dispatching；发送前的最终守卫与过载锁串行裁决，并�
 已提交独立 `packages.win-x64.lock.json`，使RID还原不改写便携锁。联网构建机执行（PowerShell 7与Python3）：
 
 ```powershell
-./scripts/publish.ps1 -Mode Simulation -Output .artifacts/release-simulation
+./scripts/publish.ps1 -Mode Simulation -Output .artifacts/release-simulation -ProductDefinition config/product.reference.json
 # 防伪模板另生成，使用全新目录：
 ./scripts/publish.ps1 -Mode Production -Output .artifacts/release-production
 ```
@@ -97,7 +99,7 @@ T2领取为Dispatching；发送前的最终守卫与过载锁串行裁决，并�
 ./station.ps1 -Action Fixture
 # 另一窗口
 ./station.ps1 -Action Init
-./station.ps1 -Action Run
+./station.ps1 -Action Run -View workstation -Layout standard
 ./station.ps1 -Action Export -File 'D:/IpcDiagnostics/diag-new.json'
 ```
 
@@ -119,7 +121,7 @@ T2领取为Dispatching；发送前的最终守卫与过载锁串行裁决，并�
 ./station.ps1 -Action Rollback -NextRelease 'D:/Ipc/releases/previous' -DataRoot 'D:/Ipc/recovery-new' -File 'D:/IpcBackups/before-upgrade.db'
 ```
 
-升级先要求无活动箱/未决请求/恢复隔离，校验两套发布文件，再备份并更新旁置发布指针。当前只有schema1；备份schema/迁移校验和与所选产品不匹配即拒绝恢复，不声称任意旧EXE兼容新库。回滚/恢复只接受现存一致备份，创建新库并持久设置恢复隔离；备份中的Prepared亦转Unknown，可能已被外部处理，不能自动补发。先比对原外部接收账和实体库存，未决全部有权威结果后维护员带依据解除隔离。真实上游无查询/人工SOP时继续阻塞，不能凭“恢复成功”放货。
+升级先要求无活动箱/未决请求/恢复隔离，校验两套发布文件，再备份并更新旁置发布指针。当前存储格式2（schema_history id1+2，原schema1 SQL不变）；新版可前向迁移schema1备份，匹配格式2可恢复，未来格式/迁移拒绝，不声称任意旧EXE兼容新库。回滚/恢复只接受现存一致备份，创建新库并持久设置恢复隔离；备份中的Prepared亦转Unknown，可能已被外部处理，不能自动补发。先比对原外部接收账和实体库存，未决全部有权威结果后维护员带依据解除隔离。真实上游无查询/人工SOP时继续阻塞，不能凭“恢复成功”放货。
 
 历史读取自数据库，可按对象/状态/日期片段筛选、分页和查看多请求/多尝试/回执/审计。模拟保留清理仅维护接口 `PruneHistoryAsync(days,evidence)` 或控制台 `prune-history`，至少保留1天，只删除过期已关闭且无未决的完整会话、保留当前会话、请求引用配置和清理墓碑审计；不提供生产默认保留天数。诊断导出仅元数据和所选对象请求身份/哈希/尝试，不含条码、原报文、端点、角色备注和私密路径。DB/备份本身不脱敏，必须由本机访问控制保护，禁止公开Git。
 
@@ -140,3 +142,13 @@ python3 scripts/smoke.py --product .artifacts/native-smoke-final --fixture src/I
 ```
 
 该脚本在新临时目录使用实际进程、已发布核心、SQLite与loopback端点；检查第二进程、备份/预检查/恢复隔离、导出、不可写存储、损坏模块与Production防伪。它不执行Windows EXE，不代替WPF运行验收。
+
+## ALIGNMENT-01 数据、后台与版本
+
+箱波次和Item波次来自独立合成接收夹具的不同语义快照，SKU/任务ID/格口/单位/来源/版本/证据时间跟随持久回执；旧字段缺失显示“未取得”。原SIMULATION-v1请求字节和身份不改写。本箱接受量仅从唯一接受账投影，页面不累加计数。
+
+应用读写由StationDispatcher的单个后台消费者拥有；UI读取不写报警，状态变化/维护脉冲更新报警。投影有独立版本与生成时间，超过3秒/读取失败阻断UI输入，后台命令仍查当前状态。设备健康回调只入队；原观察拒收marker保留H04同步持久性，其文件I/O受磁盘时延影响，真实SDK需单独验证。所有实际SQLite和网络工作均不在UI/设备回调执行。
+
+ReleaseVersion=ALIGNMENT-01、StorageVersion=2、ContractVersion=SIMULATION-v1各自独立；旧EXE因schema_history id2拒绝新库，回退必须旧兼容备份+新根+恢复隔离。桌面内全库备份需要有效维护身份；离线运维使用数据租约和本机账户权限。
+
+仅跑本包受影响验证可执行 `dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --alignment`（含H04）；交付前完整关键回归使用不带筛选参数的命令。Windows执行与截图按alignment-01-windows清单逐项留证。

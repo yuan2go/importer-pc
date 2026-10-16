@@ -10,19 +10,50 @@ from pathlib import Path
 p = argparse.ArgumentParser()
 p.add_argument('--bin', type=Path, required=True)
 p.add_argument('--config', type=Path, default=Path('config'))
+p.add_argument('--product-definition', type=Path, default=Path('config/product.reference.json'))
 p.add_argument('--mode', choices=['Simulation', 'Production'], default='Simulation')
 p.add_argument('--architecture', choices=['any', 'x64'], default='any')
 a = p.parse_args()
 output = a.bin / 'config'
 output.mkdir(exist_ok=True)
+definition = json.loads(a.product_definition.read_text())
+required = {'ProductId', 'Runtime', 'BusinessModule', 'Modes', 'Modules', 'Views', 'Layouts', 'Drivers'}
+if set(definition) != required or a.mode not in definition['Modes']:
+    raise ValueError('Invalid product definition/mode')
+registered = definition['Modules']
+ids = [m['Id'] for m in registered]
+if len(ids) != len(set(ids)) or definition['BusinessModule'] not in ids:
+    raise ValueError('Duplicate/missing business registration')
+seen, visiting = set(), set()
+def visit(key):
+    if key in seen:
+        return
+    if key in visiting or key not in ids:
+        raise ValueError('Missing dependency/cycle: ' + key)
+    visiting.add(key)
+    for dependency in next(m for m in registered if m['Id'] == key)['Dependencies']:
+        visit(dependency)
+    visiting.remove(key)
+    seen.add(key)
 modules = []
-for key, dependencies in [('platform', []), ('supply', ['platform']), ('adapters', ['supply']), ('product', ['adapters'])]:
-    name = 'Ipc.' + key.title() + '.dll'
-    data = (a.bin / name).read_bytes()
-    modules.append(dict(Id=key, Kind=key, Version='1.0.0', ContractMajor=1, Dependencies=dependencies,
-                        File=name, Sha256=hashlib.sha256(data).hexdigest().upper()))
-manifest = dict(SchemaVersion=1, ProductId='ipc-reference', Mode=a.mode, Runtime='net10.0', Architecture=a.architecture,
-                BusinessModule='supply', Views=['workstation', 'history', 'alarms', 'diagnostics'], Modules=modules)
+for module in registered:
+    if set(module) != {'Id', 'Kind', 'Version', 'ContractMajor', 'Dependencies', 'File'} or module['ContractMajor'] < 1:
+        raise ValueError('Invalid module registration')
+    visit(module['Id'])
+    relative = Path(module['File'])
+    if relative.is_absolute() or any(part in ('', '.', '..') for part in module['File'].split('/')) or '\\' in module['File'] or ':' in module['File']:
+        raise ValueError('Unsafe module path')
+    current = a.bin
+    if current.is_symlink():
+        raise ValueError('Linked install directory')
+    for part in relative.parts:
+        current = current / part
+        if current.is_symlink():
+            raise ValueError('Linked module path')
+    data = current.read_bytes()
+    modules.append(dict(module, Sha256=hashlib.sha256(data).hexdigest().upper()))
+manifest = dict(SchemaVersion=1, ProductId=definition['ProductId'], Mode=a.mode, Runtime=definition['Runtime'], Architecture=a.architecture,
+                BusinessModule=definition['BusinessModule'], Views=definition['Views'], Modules=modules)
 (output / 'product.json').write_text(json.dumps(manifest, indent=2) + '\n')
 # Bind generated artifacts to source bytes, even for a reviewed working-tree build.
 source_root = Path(__file__).resolve().parent.parent
@@ -33,7 +64,7 @@ for directory in ('src', 'config', 'scripts'):
 fingerprint = hashlib.sha256()
 for source in sorted(inputs):
     fingerprint.update(source.relative_to(source_root).as_posix().encode() + b'\0' + source.read_bytes() + b'\0')
-release = dict(WorkPackage='WP-IPC-RUNTIME-HARDENING-04', SchemaVersion=1, SourceCodeSha256=fingerprint.hexdigest(),
+release = dict(WorkPackage='WP-IPC-ARCH-UI-ALIGNMENT-01', SchemaVersion=1, ReleaseVersion='ALIGNMENT-01', StorageVersion=2, ContractVersion='SIMULATION-v1', ProductId=definition['ProductId'], ProductDefinitionSha256=hashlib.sha256(a.product_definition.read_bytes()).hexdigest(), SourceCodeSha256=fingerprint.hexdigest(),
                GitBase=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source_root, text=True).strip(),
                Mode=a.mode, Target='win-x64' if a.architecture == 'x64' else 'portable-development')
 (a.bin / 'release.json').write_text(json.dumps(release, indent=2) + '\n')
@@ -46,6 +77,10 @@ if a.mode == 'Production':
     for binding in station['Devices']:
         binding['Driver'] = 'unavailable'
 (output / 'station.json').write_text(json.dumps(station, indent=2) + '\n')
-shutil.copyfile(a.config / 'presentation.json', output / 'presentation.json')
+presentation = json.loads((a.config / 'presentation.json').read_text())
+if presentation['View'] not in definition['Views'] or presentation['Layout'] not in definition['Layouts']:
+    raise ValueError('Unregistered initial view/layout')
+(output / 'presentation.json').write_text(json.dumps(presentation, indent=2) + '\n')
+shutil.copyfile(a.product_definition, output / 'product.definition.json')
 shutil.copyfile(a.config / 'replay.jsonl', output / 'replay.jsonl')
 print(f'Sealed {a.mode} configuration: {output}')

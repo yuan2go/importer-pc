@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Threading.Channels;
 using Ipc.Platform;
 
 namespace Ipc.Supply;
@@ -8,23 +9,32 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
     readonly SupplyStore store;
     readonly StationConfig config;
     readonly IRequestContract contract;
+    readonly Func<StationConfig, IReadOnlyList<string>>? configurationValidator;
     readonly SemaphoreSlim gate = new(1, 1);
-    readonly BoundedExecutor commands;
+    readonly StationDispatcher owner;
+    readonly CancellationTokenSource maintenanceStop = new();
+    readonly Task maintenance;
+    long projectionVersion;
+    int disposed;
     readonly FaultInjection faults;
     readonly ConcurrentDictionary<string, string> runtimeFaults = new();
     StationState state;
     readonly TimeProvider clock;
     readonly object faultGate = new();
     long overloadVersion;
+    readonly object markerGate = new();
+    readonly Channel<bool> overflowWrites = Channel.CreateBounded<bool>(new BoundedChannelOptions(1) { SingleReader = true, FullMode = BoundedChannelFullMode.DropWrite });
+    readonly Task overflowWriter;
+    TaskCompletionSource<CommandReceipt>? overflowReceipt;
     string OverloadMarker => System.IO.Path.Combine(System.IO.Path.GetDirectoryName(store.Path)!, "overload-marker");
     public Func<bool>? InputDrained { private get; set; }
     public bool IsOverloaded => runtimeFaults.ContainsKey("Overload");
     DateTimeOffset Now => clock.GetUtcNow();
     public Guid InstanceId { get; } = Guid.NewGuid();
-    public StationApplication(SupplyStore store, StationConfig config, IRequestContract contract, FaultInjection? faults = null, TimeProvider? clock = null)
+    public StationApplication(SupplyStore store, StationConfig config, IRequestContract contract, FaultInjection? faults = null, TimeProvider? clock = null, Func<StationConfig, IReadOnlyList<string>>? configurationValidator = null)
     {
-        this.store = store; this.config = config; this.contract = contract; this.clock = clock ?? TimeProvider.System; this.faults = faults ?? new(); state = store.Load();
-        commands = new(config.CommandCapacity, () => Latch("Overload", "Application command queue rejected input; inspect source and explicitly clear overload"));
+        this.configurationValidator = configurationValidator; this.store = store; this.config = config; this.contract = contract; this.clock = clock ?? TimeProvider.System; this.faults = faults ?? new(); state = store.Load();
+        owner = new(config.CommandCapacity);
         if (File.Exists(OverloadMarker)) runtimeFaults["Overload"] = "Unacknowledged overflow; inspect source/entity evidence";
         state.Actor = null; state.Stopping = false;
         // A released process does not imply unfinished calls were cancelled remotely.
@@ -47,30 +57,65 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             }
             state.Revision++; store.Commit(state, "RestoreQuarantine", config.StationId, "runtime");
         }
+        overflowWriter = Task.Run(async () =>
+        {
+            await foreach (var signal in overflowWrites.Reader.ReadAllAsync())
+            {
+                TaskCompletionSource<CommandReceipt>? completed;
+                lock (markerGate)
+                {
+                    FlushOverflow();
+                    lock (faultGate) { completed = overflowReceipt; overflowReceipt = null; }
+                }
+                completed?.TrySetResult(new("RejectedByGuard", "Command queue full; input not admitted; durable Overload evidence retained", state.Revision));
+            }
+        });
+        maintenance = Task.Run(async () =>
+        {
+            using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(500));
+            try
+            {
+                while (await timer.WaitForNextTickAsync(maintenanceStop.Token).ConfigureAwait(false))
+                    await owner.Invoke(() => { SyncAlarms(); return Task.CompletedTask; }, waitForCapacity: true).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (maintenanceStop.IsCancellationRequested) { }
+            catch (Exception ex) { Latch("ProjectionMaintenanceFailure", ex.GetType().Name); }
+        });
     }
+    // The memory decision lock is never held across SQLite or marker I/O. Device overload
+    // retains H04's durable-before-return marker; product UI source injection is dispatched
+    // off the UI thread. Ordinary command rejection shares one bounded evidence writer/task.
     public void Latch(string code, string reason)
     {
+        if (code != "Overload") { runtimeFaults[code] = reason; return; }
+        lock (faultGate) { Interlocked.Increment(ref overloadVersion); runtimeFaults[code] = reason; }
+        lock (markerGate) FlushOverflow();
+    }
+    void FlushOverflow()
+    {
+        if (!runtimeFaults.TryGetValue("Overload", out var reason)) return;
+        try
+        {
+            using var marker = new FileStream(OverloadMarker, FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.WriteThrough);
+            marker.Write(System.Text.Encoding.UTF8.GetBytes(reason)); marker.Flush(true);
+        }
+        catch (Exception ex) when (IsStorage(ex)) { runtimeFaults["OverflowEvidenceFailure"] = ex.Message; }
+    }
+    public Task<CommandReceipt> ExecuteAsync(Command command)
+    {
+        if (Volatile.Read(ref disposed) != 0) return Task.FromResult(new CommandReceipt("NotReady", "Application disposed; command not admitted", state.Revision));
+        var work = owner.Invoke(() => ExecuteCore(command), priority: command.Kind is "Pause" or "Logout" or "ClearOverload");
+        if (!work.IsFaulted || work.Exception?.InnerException is not QueueAdmissionException) return work;
         lock (faultGate)
         {
-            if (code == "Overload")
-            {
-                Interlocked.Increment(ref overloadVersion);
-                try
-                {
-                    using var marker = new FileStream(OverloadMarker, FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.WriteThrough);
-                    marker.Write(System.Text.Encoding.UTF8.GetBytes(reason)); marker.Flush(true);
-                }
-                catch (Exception ex) when (IsStorage(ex)) { runtimeFaults["OverflowEvidenceFailure"] = ex.Message; }
-            }
-            runtimeFaults[code] = reason;
+            Interlocked.Increment(ref overloadVersion); runtimeFaults["Overload"] = "Application command queue rejected input; inspect source and explicitly clear overload";
+            // One shared completion and one coalesced signal, regardless of rejection burst size.
+            overflowReceipt ??= new(TaskCreationOptions.RunContinuationsAsynchronously);
+            if (!overflowWrites.Writer.TryWrite(true)) overflowReceipt.TrySetResult(new("NotReady", "Application stopping; command not admitted", state.Revision));
+            return overflowReceipt.Task;
         }
     }
-    public async Task<CommandReceipt> ExecuteAsync(Command command)
-    {
-        // Pause, identity logout and overload control bypass the bounded ordinary queue.
-        if (command.Kind is "Pause" or "Logout" or "ClearOverload") return await ExecuteCore(command);
-        return await commands.Execute(() => ExecuteCore(command));
-    }
+
     async Task<CommandReceipt> ExecuteCore(Command command)
     {
         await gate.WaitAsync();
@@ -179,9 +224,9 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                     case "SaveConfig":
                     {
                         Maintenance(next); Require(command.Value is not null, "Configuration JSON required");
-                        var draft = Wire.Decode<StationConfig>(command.Value!); var errors = ProductValidation.ValidateStation(draft);
+                        var draft = Wire.Decode<StationConfig>(command.Value!); var errors = SupplyConfiguration.Validate(draft).Concat(configurationValidator?.Invoke(draft) ?? []).Distinct().ToArray();
                         Require(draft.StationId == config.StationId && draft.Mode == config.Mode && draft.Version != config.Version, "Station/mode fixed; revision must change");
-                        revision = new(Wire.Id(), config.Version, draft, next.Actor!.Id, errors.Count == 0 ? "Validated" : "Rejected", string.Join("; ", errors), Now);
+                        revision = new(Wire.Id(), config.Version, draft, next.Actor!.Id, errors.Length == 0 ? "Validated" : "Rejected", string.Join("; ", errors), Now);
                         owner = revision.Id; break;
                     }
                     case "ActivateConfig":
@@ -189,6 +234,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                         Maintenance(next); Require(!HasUnresolved() && (next.Session is null || next.Session.Status is SessionStatus.Closed or SessionStatus.Rejected), "Close box and resolve effects before restart activation");
                         var draft = store.Configs().FirstOrDefault(x => x.Id == owner) ?? throw new GuardException("Configuration revision not found");
                         Require(draft.Status == "Validated" && draft.BaseVersion == config.Version, "Stale/invalid configuration draft");
+                        Require(SupplyConfiguration.Validate(draft.Content).Concat(configurationValidator?.Invoke(draft.Content) ?? []).Count() == 0, "Configuration capabilities changed; validate draft again");
                         revision = draft with { Status = "PendingActivation" };
                         SetBlock(next, "ConfigPending", "station", "configuration", revision.Id, "controlled-restart"); break;
                     }
@@ -205,14 +251,25 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                 next.Revision++;
                 var receipt = new CommandReceipt("Persisted", revision?.Status ?? "Saved locally; external acceptance is separate", next.Revision, owner, request?.Id);
                 faults.Hit("BeforeT1"); faults.Hit("T1");
-                // Serialize acknowledgement with new overload latches. A later overflow creates a new marker.
+                string evidence;
                 lock (faultGate)
                 {
                     if (command.Kind == "ClearOverload") Require(command.EvidenceVersion == overloadVersion, "Overflow evidence changed; inspect current source evidence and retry");
-                    var evidence = command.Kind == "ClearOverload" ? $"{command.Value}; version={overloadVersion}; {runtimeFaults.GetValueOrDefault("Overload")}" : command.Value ?? "";
-                    store.Commit(next, command.Kind, owner, next.Actor?.Id ?? state.Actor?.Id ?? "signed-out", evidence, command, receipt, request, config: revision, alarm: acknowledgement);
-                    state = next;
-                    if (command.Kind == "ClearOverload") { File.Delete(OverloadMarker); runtimeFaults.TryRemove("Overload", out _); }
+                    evidence = command.Kind == "ClearOverload" ? $"{command.Value}; version={overloadVersion}; {runtimeFaults.GetValueOrDefault("Overload")}" : command.Value ?? "";
+                }
+                store.Commit(next, command.Kind, owner, next.Actor?.Id ?? state.Actor?.Id ?? "signed-out", evidence, command, receipt, request, config: revision, alarm: acknowledgement);
+                state = next;
+                if (command.Kind == "ClearOverload")
+                {
+                    lock (markerGate)
+                    {
+                        bool current;
+                        lock (faultGate) { current = command.EvidenceVersion == overloadVersion; if (current) runtimeFaults.TryRemove("Overload", out _); }
+                        if (current) File.Delete(OverloadMarker);
+                        // A newer overflow during the commit/delete is a separate occurrence.
+                        // Rewrite it before releasing marker ownership; never acknowledge it away.
+                        FlushOverflow();
+                    }
                 }
                 if (command.Kind == "ClearQuarantine") File.Delete(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(store.Path)!, "restore-quarantine"));
                 faults.Hit("AfterT1"); SyncAlarms(); return receipt;
@@ -230,7 +287,8 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         var json = contract.Encode(intent, next.NextFault); next.NextFault = "None";
         return new(Wire.Id(), owner, next.Session.Id, kind, ownerRevision, $"{owner}:{kind}:{ownerRevision}", json, Wire.Hash(json), config.Integration, RequestStatus.Prepared, Now);
     }
-    public async Task ReceiveAsync(Observation observation)
+    public Task ReceiveAsync(Observation observation) => owner.Invoke(() => ReceiveCore(observation), priority: false, waitForCapacity: true);
+    async Task ReceiveCore(Observation observation)
     {
         await gate.WaitAsync();
         try
@@ -248,7 +306,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                     case "Enter":
                         Demand(GuardFor(next, "Admit", admittedEvent: true)); Require(!store.HasAdmission(observation.AdmissionId), "Admission identity already consumed");
                         Require(op is null || op.Occupancy == Occupancy.Clear, "Previous physical entity not reset");
-                        op = new() { SessionId = next.Session!.Id, Lane = binding.Role, AdmissionId = observation.AdmissionId, PermitEpoch = observation.Epoch, PermitExpiresAt = Now.AddMinutes(30), Status = OperationStatus.Observed };
+                        op = new() { BoxBarcode = next.Session!.Barcode, BoxWave = next.Session.Context?.BoxWave, SessionId = next.Session.Id, Lane = binding.Role, AdmissionId = observation.AdmissionId, PermitEpoch = observation.Epoch, PermitExpiresAt = Now.AddMinutes(30), Status = OperationStatus.Observed };
                         next.Lanes[binding.Role] = op; break;
                     case "Read":
                         Require(op is not null && op.AdmissionId == observation.AdmissionId && op.Occupancy == Occupancy.Occupied, "Read requires matching occupied admission");
@@ -260,7 +318,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
                         { op.Status = OperationStatus.ValidationRejected; op.Reason = observation.Codes.Length == 0 ? "No code" : observation.Codes.Length > 1 ? "Multiple codes" : "Invalid barcode/quantity"; }
                         else
                         {
-                            op.Barcode = observation.Codes[0]; op.Package = observation.PackageQuantity; op.Status = OperationStatus.ValidationPending; op.Reason = "";
+                            op.Task = null; op.Barcode = observation.Codes[0]; op.Package = observation.PackageQuantity; op.Status = OperationStatus.ValidationPending; op.Reason = "";
                             request = Prepare(next, op.Id, op.Revision, RequestKind.Validate, op.Barcode, op.Package, null);
                         }
                         break;
@@ -293,7 +351,8 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); }
         finally { gate.Release(); }
     }
-    public async Task SetDeviceAsync(string deviceId, string epoch, DeviceHealth health)
+    public Task SetDeviceAsync(string deviceId, string epoch, DeviceHealth health) => owner.Invoke(() => SetDeviceCore(deviceId, epoch, health), priority: false, waitForCapacity: true);
+    async Task SetDeviceCore(string deviceId, string epoch, DeviceHealth health)
     {
         await gate.WaitAsync();
         try
@@ -309,7 +368,8 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); }
         finally { gate.Release(); }
     }
-    public async Task SetWcsHealthAsync(bool available)
+    public Task SetWcsHealthAsync(bool available) => owner.Invoke(() => SetWcsHealthCore(available), priority: false, waitForCapacity: true);
+    async Task SetWcsHealthCore(bool available)
     {
         await gate.WaitAsync();
         try
@@ -322,7 +382,8 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); }
         finally { gate.Release(); }
     }
-    public async Task<(BusinessRequest Request, SendAttempt Attempt)?> ClaimAsync()
+    public Task<(BusinessRequest Request, SendAttempt Attempt)?> ClaimAsync() => owner.Invoke(() => ClaimCore(), priority: false, waitForCapacity: true);
+    async Task<(BusinessRequest Request, SendAttempt Attempt)?> ClaimCore()
     {
         await gate.WaitAsync();
         try
@@ -339,33 +400,45 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); return null; }
         finally { gate.Release(); }
     }
-    public async Task<bool> BeforeSendAsync(BusinessRequest request, SendAttempt attempt)
+    public Task<bool> BeforeSendAsync(BusinessRequest request, SendAttempt attempt) => owner.Invoke(() => BeforeSendCore(request, attempt), priority: false, waitForCapacity: true);
+    async Task<bool> BeforeSendCore(BusinessRequest request, SendAttempt attempt)
     {
         await gate.WaitAsync();
         try
         {
-            lock (faultGate)
-            {
                 var current = store.Request(request.Id);
                 var latest = store.Attempts(request.Id).LastOrDefault();
                 if (current?.Status != RequestStatus.Dispatching || latest?.Id != attempt.Id || latest.Disposition != "Dispatching") return false;
                 var next = Clone(state); next.Revision++;
-                if (SendGuard(state, current).Allowed)
+                var guardAllowed = SendGuard(state, current).Allowed;
+                bool authorize; long authorizedOverflowVersion;
+                lock (faultGate) { authorize = guardAllowed && runtimeFaults.IsEmpty; authorizedOverflowVersion = overloadVersion; }
+                if (authorize)
                 {
                     // Conservative durable authorization boundary. After this, cancellation cannot prove non-delivery.
                     store.Commit(next, "TransportHandoffAuthorized", request.OwnerId, "sender", request.Id,
                         attempt: latest with { Disposition = "TransportHandoff" });
-                    state = next; return true;
+                    state = next;
+                    bool changedDuringCommit;
+                    lock (faultGate) changedDuringCommit = !runtimeFaults.IsEmpty || overloadVersion != authorizedOverflowVersion;
+                    if (changedDuringCommit)
+                    {
+                        // Durable handoff already exists. A concurrent fault during slow storage
+                        // forbids network, but is never relabeled as proven non-delivery/Prepared.
+                        await UnknownLocked(current, latest with { Disposition = "TransportHandoff" }, "Runtime guard changed while persisting handoff; network suppressed; reconcile original identity");
+                        return false;
+                    }
+                    return true;
                 }
                 store.Commit(next, "NotDelivered", request.OwnerId, "sender", "Guard changed before handing request to network",
                     request: request with { Status = RequestStatus.Prepared }, attempt: attempt with { EndedAt = Now, Disposition = "NotDelivered" });
                 state = next; return false;
-            }
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); return false; }
         finally { gate.Release(); }
     }
-    public async Task CompleteAsync(BusinessRequest sent, SendAttempt? attempt, IntegrationResponse response)
+    public Task CompleteAsync(BusinessRequest sent, SendAttempt? attempt, IntegrationResponse response) => owner.Invoke(() => CompleteCore(sent, attempt, response), priority: false, waitForCapacity: true);
+    async Task CompleteCore(BusinessRequest sent, SendAttempt? attempt, IntegrationResponse response)
     {
         await gate.WaitAsync();
         try
@@ -373,7 +446,10 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
             var original = store.Request(sent.Id) ?? throw new InvalidDataException("Response without original request");
             contract.ValidateResponse(original, response);
             var next = Clone(state);
-            bool conflicting = original.Status == RequestStatus.CancelledBeforeDispatch || store.Responses(original.Id).Any(x => x.Result != response.Result || x.Quantity != response.Quantity || x.Remaining != response.Remaining || x.CheckToken != response.CheckToken);
+            var matchedOperation = next.Lanes.Values.FirstOrDefault(x => x.Id == original.OwnerId);
+            bool semanticConflict = original.Kind == RequestKind.Submit && matchedOperation?.Task is { } task && response.Task is { } incoming &&
+                (task.Sku != incoming.Sku || task.ItemWave != incoming.ItemWave || task.TaskId != incoming.TaskId || task.Destination != incoming.Destination || task.Unit != incoming.Unit);
+            bool conflicting = semanticConflict || original.Status == RequestStatus.CancelledBeforeDispatch || store.Responses(original.Id).Any(x => x.Result != response.Result || x.Quantity != response.Quantity || x.Remaining != response.Remaining || x.CheckToken != response.CheckToken || x.Context != response.Context || x.Task != response.Task);
             var status = conflicting ? RequestStatus.Unknown : response.Result == "Accepted" ? RequestStatus.Accepted : RequestStatus.Rejected;
             var request = original with { Status = status };
             bool count = !conflicting && request.Kind == RequestKind.Submit && status == RequestStatus.Accepted;
@@ -389,7 +465,8 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         catch (InvalidDataException ex) { Latch("ProtocolFailure", ex.Message); await UnknownLocked(sent, attempt, ex.Message); }
         finally { gate.Release(); }
     }
-    public async Task UnknownAsync(BusinessRequest request, SendAttempt? attempt, string reason)
+    public Task UnknownAsync(BusinessRequest request, SendAttempt? attempt, string reason) => owner.Invoke(() => UnknownCore(request, attempt, reason), priority: false, waitForCapacity: true);
+    async Task UnknownCore(BusinessRequest request, SendAttempt? attempt, string reason)
     {
         await gate.WaitAsync();
         try { await UnknownLocked(request, attempt, reason); }
@@ -424,7 +501,9 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         {
             switch (request.Kind)
             {
-                case RequestKind.Context: next.Session.Status = accepted ? SessionStatus.Active : SessionStatus.Rejected; break;
+                case RequestKind.Context:
+                    next.Session.Status = accepted ? SessionStatus.Active : SessionStatus.Rejected;
+                    if (accepted) next.Session.Context = response.Context; break;
                 case RequestKind.CheckClose:
                     next.Session.CloseRemaining = response.Remaining; next.Session.CloseToken = response.CheckToken;
                     next.Session.Status = accepted ? SessionStatus.AwaitingShortageDecision : SessionStatus.Active; break;
@@ -438,6 +517,7 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         op.Reason = response.Reason;
         if (request.Kind == RequestKind.Validate)
         {
+            if (accepted) op.Task = response.Task;
             op.Remaining = response.Remaining; op.Supply = response.Quantity;
             op.Status = !accepted || response.Quantity is not > 0 ? OperationStatus.ValidationRejected : op.Package > op.Supply ? OperationStatus.SplitRequired : OperationStatus.AwaitingAction;
         }
@@ -516,10 +596,16 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         foreach (var b in blocks.Distinct()) if (!active.Any(x => x.Code == b.Code && x.Scope == b.Scope && x.OwnerId == b.Owner && x.Source == b.Source && x.Epoch == b.Epoch))
             store.SaveAlarm(new(Wire.Id(), b.Code, b.Scope, b.Source, b.Epoch, b.Owner, Now, null, null, null));
     }
-    public async Task<StationSnapshot> SnapshotAsync()
+    public Task<StationSnapshot> SnapshotAsync() => owner.Invoke(() => SnapshotCore(), priority: false, waitForCapacity: false);
+    async Task<StationSnapshot> SnapshotCore()
     {
         await gate.WaitAsync();
-        try { lock (faultGate) { SyncAlarms(); return new(Clone(state), state.Session is null ? [] : store.RequestsForSession(state.Session.Id), store.ActiveAlarms(), GuardFor(state, "Admit"), GuardFor(state, "Submit"), GuardFor(state, "Close"), state.Lanes.ToDictionary(x => x.Key, x => OperationGuard(state, x.Value)), runtimeFaults.Select(x => x.Key + ": " + x.Value).ToArray(), store.PendingRequests().Select(x => new RequestRecovery(x, SendGuard(state, x), LocalTerminationGuard(state, x), x.Status == RequestStatus.Unknown ? "Query original binding; never resend" : x.Status == RequestStatus.Dispatching ? "Await original response; interrupted handoff becomes Unknown" : "Restore matching guards or inspect and locally terminate; prior reservations/entity remain held")).ToArray(), store.ActiveAlarmCount(), Interlocked.Read(ref overloadVersion), OverloadRecoveryGuard()); } }
+        try { return new StationSnapshot(Clone(state), state.Session is null ? [] : store.RequestsForSession(state.Session.Id), store.ActiveAlarms(), GuardFor(state, "Admit"), GuardFor(state, "Submit"), GuardFor(state, "Close"), state.Lanes.ToDictionary(x => x.Key, x => OperationGuard(state, x.Value)), runtimeFaults.Select(x => x.Key + ": " + x.Value).ToArray(), store.PendingRequests().Select(x => new RequestRecovery(x, SendGuard(state, x), LocalTerminationGuard(state, x), x.Status == RequestStatus.Unknown ? "Query original binding; never resend" : x.Status == RequestStatus.Dispatching ? "Await original response; interrupted handoff becomes Unknown" : "Restore matching guards or inspect and locally terminate; prior reservations/entity remain held")).ToArray(), store.ActiveAlarmCount(), Interlocked.Read(ref overloadVersion), OverloadRecoveryGuard())
+            {
+                ProjectionVersion = Interlocked.Increment(ref projectionVersion), GeneratedAt = Now,
+                AcceptedQuantity = state.Session is null ? 0 : store.AcceptedQuantity(state.Session.Id),
+                RecentOperations = store.History(null, 0, 8)
+            }; }
         finally { gate.Release(); }
     }
     Guard OverloadRecoveryGuard()
@@ -541,17 +627,23 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         if (SendGuard(s, request).Allowed) reasons.Add("RequestNotBlocked: pause and inspect first");
         return new(reasons.Count == 0, reasons.ToArray());
     }
-    public async Task<Alarm[]> AlarmHistoryAsync(int offset = 0, int limit = 100)
+    public Task<Alarm[]> AlarmHistoryAsync(int offset = 0, int limit = 100) => owner.Invoke(() => AlarmHistoryCore(offset, limit), priority: false, waitForCapacity: false);
+    async Task<Alarm[]> AlarmHistoryCore(int offset, int limit)
     { await gate.WaitAsync(); try { return store.AlarmHistory(offset, limit); } finally { gate.Release(); } }
-    public async Task<SupplyOperation[]> HistoryAsync(string? filter = null, int offset = 0, int limit = 100)
+    public Task<SupplyOperation[]> HistoryAsync(string? filter = null, int offset = 0, int limit = 100) => owner.Invoke(() => HistoryCore(filter, offset, limit), priority: false, waitForCapacity: false);
+    async Task<SupplyOperation[]> HistoryCore(string? filter, int offset, int limit)
     { await gate.WaitAsync(); try { return store.History(filter, offset, limit); } finally { gate.Release(); } }
-    public async Task<RequestDetail[]> DetailsAsync(string ownerId)
+    public Task<RequestDetail[]> DetailsAsync(string ownerId) => owner.Invoke(() => DetailsCore(ownerId), priority: false, waitForCapacity: false);
+    async Task<RequestDetail[]> DetailsCore(string ownerId)
     { await gate.WaitAsync(); try { var request = store.Request(ownerId); return (request is null ? store.Requests(ownerId) : [request]).Select(x => new RequestDetail(x, store.Attempts(x.Id), store.Responses(x.Id), store.Audits(x.OwnerId).Concat(store.Audits(x.Id)).DistinctBy(a => a.Id).OrderBy(a => a.At).ToArray())).ToArray(); } finally { gate.Release(); } }
-    public async Task<BusinessRequest[]> UnknownRequestsAsync()
+    public Task<BusinessRequest[]> UnknownRequestsAsync() => owner.Invoke(() => UnknownRequestsCore(), priority: false, waitForCapacity: true);
+    async Task<BusinessRequest[]> UnknownRequestsCore()
     { await gate.WaitAsync(); try { return store.PendingRequests().Where(x => x.Status == RequestStatus.Unknown).ToArray(); } finally { gate.Release(); } }
-    public async Task RecordQueryAsync(string requestId, string evidence)
+    public Task RecordQueryAsync(string requestId, string evidence) => owner.Invoke(() => RecordQueryCore(requestId, evidence), priority: false, waitForCapacity: true);
+    async Task RecordQueryCore(string requestId, string evidence)
     { await gate.WaitAsync(); try { store.Commit(state, "ReconciliationQuery", store.Request(requestId)!.OwnerId, "reconciler", evidence); } catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); } finally { gate.Release(); } }
-    public async Task FinishConfigurationActivationAsync(ConfigRevision revision, bool success, string evidence)
+    public Task FinishConfigurationActivationAsync(ConfigRevision revision, bool success, string evidence) => owner.Invoke(() => FinishConfigurationActivationCore(revision, success, evidence), priority: false, waitForCapacity: true);
+    async Task FinishConfigurationActivationCore(ConfigRevision revision, bool success, string evidence)
     {
         await gate.WaitAsync();
         try
@@ -561,13 +653,27 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         }
         finally { gate.Release(); }
     }
-    public async Task<ConfigRevision[]> ConfigsAsync()
+    public Task<ConfigRevision[]> ConfigsAsync() => owner.Invoke(() => ConfigsCore(), priority: false, waitForCapacity: false);
+    async Task<ConfigRevision[]> ConfigsCore()
     { await gate.WaitAsync(); try { return store.Configs(); } finally { gate.Release(); } }
-    public async Task BackupAsync(string destination)
-    { await gate.WaitAsync(); try { store.Backup(destination); } finally { gate.Release(); } }
-    public async Task StopAsync()
-    { await gate.WaitAsync(); try { var next = Clone(state); next.Stopping = true; next.Revision++; store.Commit(next, "StoppingBarrier", config.StationId, "runtime"); state = next; } finally { gate.Release(); } }
-    public async Task<int> PruneHistoryAsync(int retentionDays, string evidence)
+    public Task BackupAsync(string destination) => owner.Invoke(() => BackupCore(destination), priority: false, waitForCapacity: true);
+    async Task BackupCore(string destination)
+    { await gate.WaitAsync(); try { RequireIdentity(state); Maintenance(state); store.Backup(destination); } finally { gate.Release(); } }
+    public Task StopAsync() => owner.Invoke(() => StopCore(), priority: true, waitForCapacity: true);
+    async Task StopCore()
+    {
+        await gate.WaitAsync();
+        try
+        {
+            // The in-memory barrier survives even when durable storage is unavailable.
+            state.Stopping = true; var next = Clone(state); next.Revision++;
+            faults.Hit("StoppingBarrier"); store.Commit(next, "StoppingBarrier", config.StationId, "runtime"); state = next;
+        }
+        catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", "Stop barrier persistence failed: " + ex.GetType().Name); throw; }
+        finally { gate.Release(); }
+    }
+    public Task<int> PruneHistoryAsync(int retentionDays, string evidence) => owner.Invoke(() => PruneHistoryCore(retentionDays, evidence), priority: false, waitForCapacity: true);
+    async Task<int> PruneHistoryCore(int retentionDays, string evidence)
     {
         await gate.WaitAsync();
         try
@@ -586,7 +692,8 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); throw; }
         finally { gate.Release(); }
     }
-    public async Task ReviewObservationsAsync(string evidence)
+    public Task ReviewObservationsAsync(string evidence) => owner.Invoke(() => ReviewObservationsCore(evidence), priority: false, waitForCapacity: true);
+    async Task ReviewObservationsCore(string evidence)
     {
         await gate.WaitAsync();
         try
@@ -597,7 +704,14 @@ public sealed class StationApplication : IStationApplication, IAsyncDisposable
         }
         finally { gate.Release(); }
     }
-    public async ValueTask DisposeAsync() { await commands.DisposeAsync(); gate.Dispose(); }
+    public async ValueTask DisposeAsync()
+    {
+        if (Interlocked.Exchange(ref disposed, 1) != 0) return;
+        maintenanceStop.Cancel(); await maintenance.ConfigureAwait(false);
+        await owner.DisposeAsync().ConfigureAwait(false);
+        overflowWrites.Writer.TryComplete(); await overflowWriter.ConfigureAwait(false);
+        maintenanceStop.Dispose(); gate.Dispose();
+    }
     static bool IsStorage(Exception e) => e is Microsoft.Data.Sqlite.SqliteException or IOException or UnauthorizedAccessException;
     static StationState Clone(StationState s) => Wire.Decode<StationState>(Wire.Encode(s));
     static bool IsPending(BusinessRequest r) => r.Status is RequestStatus.Prepared or RequestStatus.Dispatching or RequestStatus.Unknown;

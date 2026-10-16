@@ -11,7 +11,7 @@ public sealed class LoopbackIntegration : IIntegrationPort
     readonly string healthEndpoint;
     public LoopbackIntegration(StationConfig config)
     {
-        if (config.Mode != RunMode.Simulation || ProductValidation.ValidateStation(config).Count != 0) throw new InvalidDataException("Loopback adapter is SIMULATION only");
+        if (config.Mode != RunMode.Simulation || SupplyConfiguration.Validate(config).Count != 0) throw new InvalidDataException("Loopback adapter is SIMULATION only");
         healthEndpoint = config.Integration.Endpoint;
         client = new(new SocketsHttpHandler { AllowAutoRedirect = false, UseProxy = false, MaxConnectionsPerServer = 2 }) { Timeout = TimeSpan.FromMilliseconds(config.TimeoutMs) };
     }

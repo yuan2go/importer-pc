@@ -1,6 +1,6 @@
 # WP-IPC-RUNTIME-03 implementation record
 
-This is the retained RUNTIME-03 implementation record. Current hardening changes and evidence: [HARDENING-04](hardening-04.md).
+This is the retained RUNTIME-03 implementation record. Current alignment gaps, scope and acceptance: [ARCH-UI-ALIGNMENT-01](../work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md). The completion checks below are formation-time RUNTIME-03 evidence, not acceptance of this new package. Retained hardening changes and evidence: [HARDENING-04](hardening-04.md).
 
 Execution starts at main `89089092ad8b7445071e0c12c9c558dc012a26e5`, after the analysis baseline. No existing C# project was found. This is the independent F-02 reference product, not a migrated site application. The approved framework and work package remain the design authority; historical D/RV and restricted assets are unchanged.
 

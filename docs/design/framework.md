@@ -2,7 +2,7 @@
 
 文档：IPC-FRAMEWORK-01 v1.0；整理日期：2026-10-16。分析基准：`39747a8c35b748da71bf9acfd56a9c9812b199b4`。
 
-**本文保留设计形成时的目标定义；RUNTIME-03已加入独立参考实现，当前文件映射与验证见[实施记录](../runtime/implementation.md)及[交付报告](../runtime/delivery.md)。不是客户规则批准、原工程迁移批准或现场放行。** 设计形成时仓库只有资料与归档校验工具。讨论依据、方案取舍及外部事实见 [决策记录](framework-decisions.md)；实施范围与验收以 [WP-IPC-RUNTIME-03](../work-packages/WP-IPC-RUNTIME-03.md) 为准。D 系列仍由 [决策确认包](../readiness/decision-pack.md) 管理，RV 状态仍以 [评审状态](../reviews/STATUS.md) 为准。
+**本文保留设计形成时的目标定义；RUNTIME-03已加入独立参考实现，当前文件映射与验证见[实施记录](../runtime/implementation.md)及[交付报告](../runtime/delivery.md)。不是客户规则批准、原工程迁移批准或现场放行。** 设计形成时仓库只有资料与归档校验工具。讨论依据、方案取舍及外部事实见 [决策记录](framework-decisions.md)；当前增量实施与验收见 [ARCH-UI-ALIGNMENT-01](../work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)；历史实施范围与验收以 [WP-IPC-RUNTIME-03](../work-packages/WP-IPC-RUNTIME-03.md) 为准。D 系列仍由 [决策确认包](../readiness/decision-pack.md) 管理，RV 状态仍以 [评审状态](../reviews/STATUS.md) 为准。
 
 ## 1. 推荐方案及适用边界
 

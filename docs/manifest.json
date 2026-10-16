@@ -7,7 +7,7 @@
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
-  "framework_design_state": "MODULAR_MONOLITH_P2_SOURCE_CORRECTED_PRODUCT_COMPOSITE_REFERENCE_PASS_WPF_BUILD_PASS_WINDOWS_NOT_RUN_REAL_CAPABILITIES_BLOCKED",
+  "framework_design_state": "CONTROLLED_EXTENSION_IMPLEMENTED_CORE_REFERENCE_PASS_WPF_BUILD_PASS_WINDOWS_NOT_RUN_REAL_CAPABILITIES_BLOCKED",
   "previous_manifest": {
     "commit": "9f320459969ee4398dc602ae037ecdcb3685996c",
     "path": "docs/manifest.json",
@@ -4504,13 +4504,17 @@
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
   "generated_output_policy": "Only seven registered project bin/obj directories and root .artifacts are generated; source, documentation, configs and dependency locks remain exhaustive.",
   "runtime_publication": {
-    "entry": "docs/runtime/publication.md",
-    "pull_request": "https://github.com/yuan2go/importer-pc/pull/2",
-    "release": "https://github.com/yuan2go/importer-pc/releases/tag/wp-ipc-runtime-03-simulation-20261016",
-    "execution_status_this_publication": "NOT_RUN",
+    "entry": "docs/runtime/extension-windows-delivery-12.md",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/11",
+    "release": "https://github.com/yuan2go/importer-pc/releases/tag/delivery-12-reference-11f0728",
+    "code_commit": "11f0728e506753dafcdc22fb190c5b268118423d",
+    "plugin_commit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
     "binary_storage": "github_release_asset_not_git",
-    "code_commit": "04a3d46713b318c84999906ae2479b62e7d49cf0",
-    "current_remote_status": "read_PR_and_Release_records"
+    "current_remote_status": "PASS_CANDIDATE_DELIVERY_ALL_7_ASSETS_DOWNLOADED_AND_VERIFIED",
+    "core_execution": "PASS_REFERENCE",
+    "windows_execution": "NOT_RUN",
+    "field_qualification": "BLOCKED",
+    "note": "Prior runtime publication is preserved under historical_runtime_publication_03; no prior evidence reclassified."
   },
   "followup_work_packages": [
     "WP-IPC-ENGINEERING-FOLLOWUP-08",
@@ -4585,16 +4589,24 @@
     "implementation_pr_merged": false
   },
   "engineering_versions": {
-    "release": "REVIEW-FOLLOWUP-11",
+    "release": "EXTENSION-WINDOWS-DELIVERY-12",
     "storage": 3,
     "minimum_reader": 3,
     "contract": "SIMULATION-v1",
-    "source_commit": "4edb909e71097a7da61506beaa10ae5db82ec6cb",
+    "extension_contract": 1,
+    "source_commit": "11f0728e506753dafcdc22fb190c5b268118423d",
+    "source_code_sha256": "ad9a5c5b9c3cab04858b31002c9897887aa1c2bedc9620f7683041c46282ba93",
+    "plugin_source_commit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
     "binary_built": true,
     "binary_sha256": {
-      "portable": "f38ad91a43b8244a0e25ca2581821d72a7c231baa0707212b2e82e925e7e99a1",
-      "win-x64": "a1d9a00ef06affb87def7598b2f29d81de61b4deac0dafdee9c358dee24b05b5"
-    }
+      "delivery12-11f0728-core-portable.zip": "98d268bbfee6704e3b503e13fd961427261635445b735398ffb360276160544c",
+      "delivery12-11f0728-barcode-portable.zip": "95a3e3d6a63600a68c3e6ae66067fbd690d842d1cf97e60eb18a12a4b5256293",
+      "delivery12-11f0728-barcode-win-x64.zip": "489563f0bf9b8b854c606b2d3a86b674632d0c6351994b51f28fed856328e50e",
+      "reference.barcode-1.1.0-win-x64.ipcx": "cbdb1c5de231be6b1816b7cb35772682fd39e4029d6a69a806cd86e0572bcfc0",
+      "reference-barcode-source-6507edb.zip": "f466803a1b0e39a445c04c754ddc0683a9e653f7340ebe1f8fba1b92b47331de"
+    },
+    "windows_validation": "NOT_RUN",
+    "note": "Prior 11 engineering versions preserved unchanged under historical_engineering_versions_11."
   },
   "ui_design_publication": {
     "version": "SS-UI-VIS-001 v1.1",
@@ -4733,5 +4745,26 @@
     "overall": "NOT_COMPLETE",
     "production_trust": "NOT_AVAILABLE",
     "actual_wpf_screenshots": 0
+  },
+  "historical_runtime_publication_03": {
+    "entry": "docs/runtime/publication.md",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/2",
+    "release": "https://github.com/yuan2go/importer-pc/releases/tag/wp-ipc-runtime-03-simulation-20261016",
+    "execution_status_this_publication": "NOT_RUN",
+    "binary_storage": "github_release_asset_not_git",
+    "code_commit": "04a3d46713b318c84999906ae2479b62e7d49cf0",
+    "current_remote_status": "read_PR_and_Release_records"
+  },
+  "historical_engineering_versions_11": {
+    "release": "REVIEW-FOLLOWUP-11",
+    "storage": 3,
+    "minimum_reader": 3,
+    "contract": "SIMULATION-v1",
+    "source_commit": "4edb909e71097a7da61506beaa10ae5db82ec6cb",
+    "binary_built": true,
+    "binary_sha256": {
+      "portable": "f38ad91a43b8244a0e25ca2581821d72a7c231baa0707212b2e82e925e7e99a1",
+      "win-x64": "a1d9a00ef06affb87def7598b2f29d81de61b4deac0dafdee9c358dee24b05b5"
+    }
   }
 }

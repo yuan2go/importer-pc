@@ -470,6 +470,72 @@
       "git_blob": "1c1e7d68bcd2aa62f26ce9a3d7b78897c23d8b98"
     },
     {
+      "path": "docs/runtime/evidence/hardening-04/HARDENING-04-2619a7a-win-x64.zip.sha256",
+      "version": "hardening-04-publication-1.0",
+      "status": "historical_execution_evidence",
+      "purpose": "Original hardening execution output or cloud publication record; no verification reexecuted",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 prior generated artifacts; user requested cloud delivery without testing",
+      "storage_scope": "public_repository",
+      "sha256": "2c99c76168df37269050c31eb2925d9438b8eb180cff98447753c7ac41725f42",
+      "size_bytes": 99,
+      "git_blob": "2e7b64d9f3bf654efb3178c90f9e514ef24f95cb"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/hardening04-final-smoke.json",
+      "version": "hardening-04-publication-1.0",
+      "status": "historical_execution_evidence",
+      "purpose": "Original hardening execution output or cloud publication record; no verification reexecuted",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 prior generated artifacts; user requested cloud delivery without testing",
+      "storage_scope": "public_repository",
+      "sha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "size_bytes": 347,
+      "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/hardening04-package-verification.json",
+      "version": "hardening-04-publication-1.0",
+      "status": "historical_execution_evidence",
+      "purpose": "Original hardening execution output or cloud publication record; no verification reexecuted",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 prior generated artifacts; user requested cloud delivery without testing",
+      "storage_scope": "public_repository",
+      "sha256": "437ffc80e43b848c7c2a5528e625b5c782e9c04c8e3920e437fce53140ff4034",
+      "size_bytes": 590,
+      "git_blob": "be8633e666c79a609b7b941a308d9352e30fdc2f"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/hardening04-smoke.json",
+      "version": "hardening-04-publication-1.0",
+      "status": "historical_execution_evidence",
+      "purpose": "Original hardening execution output or cloud publication record; no verification reexecuted",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 prior generated artifacts; user requested cloud delivery without testing",
+      "storage_scope": "public_repository",
+      "sha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "size_bytes": 347,
+      "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/release-SHA256SUMS.txt",
+      "version": "hardening-04-publication-1.0",
+      "status": "historical_execution_evidence",
+      "purpose": "Original hardening execution output or cloud publication record; no verification reexecuted",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 prior generated artifacts; user requested cloud delivery without testing",
+      "storage_scope": "public_repository",
+      "sha256": "fd43f38b9ff17e44013e9811e2e43476b89dbbf5dae9331b7db5b67f3bc8af06",
+      "size_bytes": 85330,
+      "git_blob": "ccf6cb8b98a18536e4e80414dd0f2430a3feb23f"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/release.json",
+      "version": "hardening-04-publication-1.0",
+      "status": "historical_execution_evidence",
+      "purpose": "Original hardening execution output or cloud publication record; no verification reexecuted",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 prior generated artifacts; user requested cloud delivery without testing",
+      "storage_scope": "public_repository",
+      "sha256": "086fa67124e1a4d9536f5ae1b712caa9d885fba1b44b5867be8c3c9fb53c30b1",
+      "size_bytes": 267,
+      "git_blob": "445811666ed7c19a0ed8a986f062525d73e5f21e"
+    },
+    {
       "path": "docs/runtime/evidence/package-verification.json",
       "version": "runtime-publication-1.0",
       "status": "historical_execution_evidence",
@@ -536,15 +602,27 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/runtime/hardening-04-publication.md",
+      "version": "hardening-04-publication-1.0",
+      "status": "current_navigation_or_verification",
+      "purpose": "Original hardening execution output or cloud publication record; no verification reexecuted",
+      "source": "WP-IPC-RUNTIME-HARDENING-04 prior generated artifacts; user requested cloud delivery without testing",
+      "storage_scope": "public_repository",
+      "sha256": "cdcb574b15efe03d40b68ca7195a0e7eee402776f4cfa11e1d240d30e6ed3026",
+      "size_bytes": 2932,
+      "git_blob": "b3e8a72d2032e3b4c6a38525893b8b12805ae146"
+    },
+    {
       "path": "docs/runtime/hardening-04.md",
-      "sha256": "f98c0cfe36ad2c0b52d0cc107c230320928c68fe432d59eaa1ba15fd8b02bfc6",
-      "size_bytes": 5862,
-      "git_blob": "168678fa067d951e2b4f673f7dedf77030f322f0",
+      "sha256": "d77a213c4015b74b4ab1cec00e7955d3a387dcc661580cbf1d4f8928a79d89b8",
+      "size_bytes": 6213,
+      "git_blob": "d97e001ecdac718ebd81b2475435233a03404a2a",
       "version": "runtime-hardening-04",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized recovery hardening implementation, synthetic regression or delivery evidence",
       "source": "WP-IPC-RUNTIME-HARDENING-04 explicit authorization; no restricted customer originals or assets",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "168678fa067d951e2b4f673f7dedf77030f322f0"
     },
     {
       "path": "docs/runtime/implementation.md",
@@ -1329,5 +1407,14 @@
     "windows_runtime": "NOT_RUN",
     "binary_storage": "local_artifacts_not_git",
     "pull_request": "https://github.com/yuan2go/importer-pc/pull/3"
+  },
+  "hardening_04_publication": {
+    "entry": "docs/runtime/hardening-04-publication.md",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/3",
+    "release": "https://github.com/yuan2go/importer-pc/releases/tag/wp-ipc-runtime-hardening-04-simulation-20261016",
+    "execution_status_this_publication": "NOT_RUN",
+    "binary_storage": "github_release_asset_not_git",
+    "code_commit": "2619a7a2a485a8176ae15ea7ed6fe0a18d34d9f6",
+    "current_remote_status": "read_PR_and_Release_records"
   }
 }

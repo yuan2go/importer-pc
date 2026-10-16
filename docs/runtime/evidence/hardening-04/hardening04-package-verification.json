@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "files": 812,
+  "zip_bytes": 118942932,
+  "zip_sha256": "2d75536788c14d4df0325a6b6e2f2a74237ff9c9e5d348f28af0bb81235d2c88",
+  "checks": [
+    "all SHA256SUMS",
+    "module hashes",
+    "three Windows PE executables",
+    "ZIP CRC"
+  ],
+  "windows_execution": "NOT_RUN",
+  "release": {
+    "WorkPackage": "WP-IPC-RUNTIME-HARDENING-04",
+    "SchemaVersion": 1,
+    "SourceCodeSha256": "1e730f9a07560dc957a4b35a1f66161b40255f1b4b2266f9ac4477721aa13730",
+    "GitBase": "2619a7a2a485a8176ae15ea7ed6fe0a18d34d9f6",
+    "Mode": "Simulation",
+    "Target": "win-x64"
+  }
+}

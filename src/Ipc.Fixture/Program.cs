@@ -1,3 +1,4 @@
+using Ipc.Adapters;
 using Ipc.Fixture;
 using Ipc.Platform;
 using Ipc.Supply;
@@ -20,7 +21,7 @@ app.MapGet("/requests/{id}", (string id) =>
 });
 app.MapPost("/requests", async (RequestEnvelope envelope, HttpContext context) =>
 {
-    FixtureResponse response;
+    IntegrationResponse response;
     try { response = receiver.Process(envelope); }
     catch (InvalidDataException ex) { return Results.Conflict(new { Error = ex.Message }); }
     var payload = Wire.Decode<FixturePayload>(envelope.Payload);

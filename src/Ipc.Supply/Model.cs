@@ -2,8 +2,8 @@ using Ipc.Platform;
 
 namespace Ipc.Supply;
 
-public enum SessionStatus { Validating, Active, ClosingCheck, AwaitingShortageDecision, Closing, CloseUnknown, Closed, Rejected }
-public enum OperationStatus { Observed, ValidationPending, ValidationRejected, AwaitingAction, SplitRequired, SubmitPending, Accepted, Rejected, OutcomeUnknown, Cancelled }
+public enum SessionStatus { Validating, Active, ClosingCheck, AwaitingShortageDecision, Closing, CloseUnknown, Closed, Rejected, AwaitingDisposition }
+public enum OperationStatus { Observed, ValidationPending, ValidationRejected, AwaitingAction, SplitRequired, SubmitPending, Accepted, Rejected, OutcomeUnknown, Cancelled, AwaitingDisposition }
 public enum Occupancy { Occupied, Departed, Clear }
 public enum RequestStatus { Prepared, Dispatching, Accepted, Rejected, Unknown, CancelledBeforeDispatch }
 public enum RequestKind { Context, Validate, Submit, CheckClose, Close }
@@ -60,29 +60,27 @@ public sealed class StationState
     public bool Stopping { get; set; }
     public string NextFault { get; set; } = "None";
 }
-public sealed record FixturePayload(string StationId, string SessionId, string OwnerId, long OwnerRevision,
-    RequestKind Kind, string Barcode, int? Package, int? Quantity, string? CheckToken,
-    string Policy, int InitialDemand, string Fault, Actor Actor);
 public sealed record BusinessRequest(string Id, string OwnerId, string SessionId, RequestKind Kind, long OwnerRevision,
     string IntentKey, string Payload, string PayloadHash, IntegrationBinding Binding, RequestStatus Status, DateTimeOffset CreatedAt);
 public sealed record RequestEnvelope(string RequestId, string PayloadHash, string Contract, string Payload);
-public sealed record FixtureResponse(string RequestId, string PayloadHash, string EvidenceId, string Result, string Reason,
+public sealed record IntegrationResponse(string RequestId, string PayloadHash, string EvidenceId, string Result, string Reason,
     int? Remaining = null, int? Quantity = null, string? CheckToken = null);
 public sealed record SendAttempt(string Id, string RequestId, int Ordinal, DateTimeOffset StartedAt, DateTimeOffset? EndedAt, string Disposition, string? Error);
 public sealed record Alarm(string Id, string Code, string Scope, string Source, string Epoch, string? OwnerId,
     DateTimeOffset RaisedAt, string? AckedBy, DateTimeOffset? AckedAt, DateTimeOffset? ClearedAt);
 public sealed record Audit(string Id, string OwnerId, string Actor, string CommandId, string Kind, string Evidence, DateTimeOffset At);
-public sealed record Command(string Id, long ExpectedRevision, string Kind, string? OwnerId = null, string? Value = null, int? Quantity = null);
+public sealed record Command(string Id, long ExpectedRevision, string Kind, string? OwnerId = null, string? Value = null, int? Quantity = null, long? EvidenceVersion = null);
 public sealed record CommandReceipt(string Status, string Reason, long Revision, string? OwnerId = null, string? RequestId = null);
 public sealed record Guard(bool Allowed, string[] Reasons);
-public sealed record StationSnapshot(StationState State, BusinessRequest[] Requests, Alarm[] Alarms, Guard Admit, Guard Submit, Guard Close, Dictionary<string, Guard> OperationGuards, string[] RuntimeFaults);
-public sealed record RequestDetail(BusinessRequest Request, SendAttempt[] Attempts, FixtureResponse[] Responses, Audit[] Audit);
+public sealed record StationSnapshot(StationState State, BusinessRequest[] Requests, Alarm[] Alarms, Guard Admit, Guard Submit, Guard Close, Dictionary<string, Guard> OperationGuards, string[] RuntimeFaults, RequestRecovery[] Recovery, int ActiveAlarmCount, long OverloadVersion, Guard OverloadRecovery);
+public sealed record RequestRecovery(BusinessRequest Request, Guard Dispatch, Guard LocalTermination, string NextStep);
+public sealed record RequestDetail(BusinessRequest Request, SendAttempt[] Attempts, IntegrationResponse[] Responses, Audit[] Audit);
 public sealed record ConfigRevision(string Id, string BaseVersion, StationConfig Content, string Actor, string Status, string Reason, DateTimeOffset At);
 
 public interface IIntegrationPort : IAsyncDisposable
 {
-    Task<FixtureResponse> ExecuteAsync(BusinessRequest request, CancellationToken token);
-    Task<FixtureResponse?> QueryAsync(BusinessRequest request, CancellationToken token);
+    Task<IntegrationResponse> ExecuteAsync(BusinessRequest request, CancellationToken token);
+    Task<IntegrationResponse?> QueryAsync(BusinessRequest request, CancellationToken token);
     Task<bool> HealthAsync(CancellationToken token);
 }
 public interface IObservationSource : IAsyncDisposable
@@ -96,6 +94,7 @@ public interface IStationApplication
 {
     Task<CommandReceipt> ExecuteAsync(Command command);
     Task<StationSnapshot> SnapshotAsync();
+    Task<Alarm[]> AlarmHistoryAsync(int offset = 0, int limit = 100);
     Task<SupplyOperation[]> HistoryAsync(string? filter = null, int offset = 0, int limit = 100);
     Task<RequestDetail[]> DetailsAsync(string ownerId);
     Task<ConfigRevision[]> ConfigsAsync();

@@ -33,7 +33,7 @@ for directory in ('src', 'config', 'scripts'):
 fingerprint = hashlib.sha256()
 for source in sorted(inputs):
     fingerprint.update(source.relative_to(source_root).as_posix().encode() + b'\0' + source.read_bytes() + b'\0')
-release = dict(WorkPackage='WP-IPC-RUNTIME-03', SchemaVersion=1, SourceCodeSha256=fingerprint.hexdigest(),
+release = dict(WorkPackage='WP-IPC-RUNTIME-HARDENING-04', SchemaVersion=1, SourceCodeSha256=fingerprint.hexdigest(),
                GitBase=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source_root, text=True).strip(),
                Mode=a.mode, Target='win-x64' if a.architecture == 'x64' else 'portable-development')
 (a.bin / 'release.json').write_text(json.dumps(release, indent=2) + '\n')

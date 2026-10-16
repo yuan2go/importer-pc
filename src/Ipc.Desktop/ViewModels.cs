@@ -40,7 +40,7 @@ public sealed class LaneViewModel(string lane) : Bindable
         {
             OperationStatus.Observed => "已入场 · 等待读码", OperationStatus.ValidationPending => "已保存 · 等待校验", OperationStatus.ValidationRejected => "校验未通过",
             OperationStatus.AwaitingAction => "待确认供包", OperationStatus.SplitRequired => "待拆包计数", OperationStatus.SubmitPending => "已保存 · 待发送 / 处理中",
-            OperationStatus.Accepted => "业务已接受", OperationStatus.Rejected => "业务已拒绝", OperationStatus.OutcomeUnknown => "结果待核对", OperationStatus.Cancelled => "草稿已处置", null => "等待实体", _ => "状态未取得"
+            OperationStatus.Accepted => "业务已接受", OperationStatus.Rejected => "业务已拒绝", OperationStatus.OutcomeUnknown => "结果待核对", OperationStatus.Cancelled => "草稿已处置", OperationStatus.AwaitingDisposition => "请求已本地终结 · 实体仍待处置", null => "等待实体", _ => "状态未取得"
         };
         Barcode = Current?.Barcode is { Length: > 0 } code ? code : "—";
         Package = Current?.Package?.ToString() ?? "—"; Remaining = Current?.Remaining?.ToString() ?? "—"; Supply = Current?.Supply?.ToString() ?? "—";
@@ -58,10 +58,26 @@ public sealed class LaneViewModel(string lane) : Bindable
 public sealed class StationViewModel : Bindable
 {
     string identity = "未登录", globalStatus = "正在核验装配…", context = "等待箱", devices = "", lastResult = "SIMULATION · 工程参考产品", boxDraft = "000001";
+    string alarmSummary = "活动报警待取得", recoveryHint = "";
+    public string AlarmSummary { get => alarmSummary; set => Put(ref alarmSummary, value); }
+    public string RecoveryHint { get => recoveryHint; set => Put(ref recoveryHint, value); }
     public string Identity { get => identity; set => Put(ref identity, value); }
     public string GlobalStatus { get => globalStatus; set => Put(ref globalStatus, value); }
     public string Context { get => context; set => Put(ref context, value); }
     public string Devices { get => devices; set => Put(ref devices, value); }
     public string LastResult { get => lastResult; set => Put(ref lastResult, value); }
     public string BoxDraft { get => boxDraft; set => Put(ref boxDraft, value); }
+}
+
+public sealed record RequestRecoveryRow(RequestRecovery Recovery)
+{
+    public string Id => Recovery.Request.Id;
+    public string Status => Recovery.Request.Status.ToString();
+    public string Reasons => string.Join("; ", Recovery.Dispatch.Reasons.Concat(Recovery.LocalTermination.Reasons).Distinct());
+    public string NextStep => Recovery.Request.Status switch
+    {
+        RequestStatus.Unknown => "查询原请求；无权威结果继续保留，不重发",
+        RequestStatus.Dispatching => "等待原响应；中断后核对原请求",
+        _ => "恢复对应许可，或检查证据后本地终结"
+    };
 }

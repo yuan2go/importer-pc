@@ -1,0 +1,8 @@
+{
+  "WorkPackage": "WP-IPC-RUNTIME-HARDENING-04",
+  "SchemaVersion": 1,
+  "SourceCodeSha256": "1e730f9a07560dc957a4b35a1f66161b40255f1b4b2266f9ac4477721aa13730",
+  "GitBase": "2619a7a2a485a8176ae15ea7ed6fe0a18d34d9f6",
+  "Mode": "Simulation",
+  "Target": "win-x64"
+}

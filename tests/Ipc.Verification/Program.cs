@@ -43,6 +43,9 @@ using var http = new HttpClient(new SocketsHttpHandler { UseProxy = false }) { T
 try
 {
     await Eventually(async () => { try { return (await http.GetStringAsync(url + "health")) == "SIMULATION-v1"; } catch (HttpRequestException) { return false; } });
+    await HardeningVerification.Run(root, url, workspace);
+    if (!args.Contains("--hardening"))
+    {
     await Check("AC-01/10 lifecycle, bounded command queue and ownership", async () =>
     {
         var stopped = new List<string>(); var modules = new[] { new TestModule("a", [], stopped), new TestModule("b", ["a"], stopped, fail: true) };
@@ -141,7 +144,7 @@ try
         await h.Command("AckAlarm", alarms[0].Id);
         var after = (await h.App.SnapshotAsync()).Alarms; Assert(after.Single(x => x.Id == alarms[0].Id).AckedBy is not null && after.Single(x => x.Id == alarms[1].Id).AckedBy is null, "Ack is occurrence specific");
         await h.App.SetDeviceAsync(h.ConfigValue.Devices[0].DeviceId, h.Epochs["left"], DeviceHealth.Ready);
-        Assert((await h.App.SnapshotAsync()).Alarms.Single(x => x.Id == alarms[0].Id).ClearedAt is not null, "Recovery and acknowledgement independently stored");
+        Assert((await h.App.AlarmHistoryAsync()).Single(x => x.Id == alarms[0].Id).ClearedAt is not null, "Recovery and acknowledgement independently stored");
         await h.Command("Logout"); Assert(!(await h.App.SnapshotAsync()).Admit.Allowed, "Logout blocks admission");
     });
     await Check("AC-03/04/06 continuous same-code entities, correction and unique ledger", async () =>
@@ -316,9 +319,9 @@ try
     {
         var cfg = Rig.Config(url); var directory = Path.Combine(root, "queue-full");
         using var store = new SupplyStore(Path.Combine(directory, "station.db"));
-        var injection = new FaultInjection(); await using var app = new StationApplication(store, cfg, injection);
+        var injection = new FaultInjection(); await using var app = new StationApplication(store, cfg, new SimulationRequestContract(cfg), injection);
         var left = new ManualObservationSource(cfg.Devices[0].DeviceId); var right = new ManualObservationSource(cfg.Devices[1].DeviceId);
-        await using var module = new ObservationModule(app, [left, right], 1, directory);
+        await using var module = new ObservationModule(app, [left, right], 1);
         await module.StartAsync(CancellationToken.None);
         var s = await app.SnapshotAsync(); await app.ExecuteAsync(new(Wire.Id(), s.State.Revision, "Login", Value: "maintenance"));
         var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); int once = 0;
@@ -397,7 +400,8 @@ try
         var bad = Path.Combine(root, "corrupt.db"); File.WriteAllText(bad, "not a database");
         await Throws<SqliteException>(() => { using var store = new SupplyStore(bad); return Task.CompletedTask; }); Assert(File.ReadAllText(bad) == "not a database", "Corrupt database retained, never silently replaced");
     });
-    Console.WriteLine("PASS necessary core/SQLite/process/loopback risk regression; Windows desktop runtime BLOCKED on macOS");
+    }
+    Console.WriteLine("PASS necessary core/SQLite/process/loopback risk regression; Windows desktop runtime NOT_RUN on non-Windows");
     Console.WriteLine("Evidence data retained at " + root);
 }
 finally { if (!fixture.HasExited) { fixture.Kill(entireProcessTree: true); await fixture.WaitForExitAsync(); } }
@@ -438,9 +442,9 @@ sealed class Rig : IAsyncDisposable
     public static StationConfig Config(string url, int demand = 120, int timeout = 500) => new(1, "SIM-" + Wire.Id(), "SIM-1", RunMode.Simulation,
         [new("left", "manual", "L-" + Wire.Id(), "1"), new("right", "manual", "R-" + Wire.Id(), "1")], new("loopback", "1", "SIMULATION-v1", url), TimeoutMs: timeout, FixtureDemand: demand);
     public static Task<Rig> New(string root, string url, int demand = 120, int timeout = 500) => Open(Path.Combine(root, Wire.Id()), Config(url, demand, timeout));
-    public static async Task<Rig> Open(string directory, StationConfig config, FaultInjection? faults = null)
+    public static async Task<Rig> Open(string directory, StationConfig config, FaultInjection? faults = null, TimeProvider? clock = null)
     {
-        var store = new SupplyStore(Path.Combine(directory, "station.db")); var app = new StationApplication(store, config, faults);
+        var store = new SupplyStore(Path.Combine(directory, "station.db")); var app = new StationApplication(store, config, new SimulationRequestContract(config), faults, clock);
         var h = new Rig { Store = store, App = app, ConfigValue = config, Port = new LoopbackIntegration(config) };
         // Child crash injection is armed only after startup/identity setup, at the business window.
         var crash = faults?.CrashAt; if (faults is not null) faults.CrashAt = null;
@@ -450,7 +454,7 @@ sealed class Rig : IAsyncDisposable
     }
     public async Task<CommandReceipt> Command(string kind, string? owner = null, string? value = null, string expect = "Persisted")
     {
-        var s = await App.SnapshotAsync(); var r = await App.ExecuteAsync(new(Wire.Id(), s.State.Revision, kind, owner, value));
+        var s = await App.SnapshotAsync(); var r = await App.ExecuteAsync(new(Wire.Id(), s.State.Revision, kind, owner, value, EvidenceVersion: kind == "ClearOverload" ? s.OverloadVersion : null));
         if (r.Status != expect) throw new InvalidOperationException($"{kind}: expected {expect}; got {r.Status}: {r.Reason}"); return r;
     }
     public async Task OpenBox() { await Command("OpenContext", value: "000001"); await Drain(); if ((await App.SnapshotAsync()).State.Session?.Status != SessionStatus.Active) throw new InvalidOperationException("Box not active"); }

@@ -20,19 +20,19 @@ public sealed class LoopbackIntegration : IIntegrationPort
         if (request.Binding.Contract != "SIMULATION-v1" || !Uri.TryCreate(request.Binding.Endpoint, UriKind.Absolute, out var uri) || uri.Host != "127.0.0.1" || uri.Scheme != "http" || uri.AbsolutePath != "/" || uri.UserInfo != "") throw new InvalidDataException("Frozen binding is not an approved loopback contract");
         return new(uri, path);
     }
-    public async Task<FixtureResponse> ExecuteAsync(BusinessRequest request, CancellationToken token)
+    public async Task<IntegrationResponse> ExecuteAsync(BusinessRequest request, CancellationToken token)
     {
         var envelope = new RequestEnvelope(request.Id, request.PayloadHash, request.Binding.Contract, request.Payload);
         using var response = await client.PostAsJsonAsync(Endpoint(request, "requests"), envelope, Wire.Json, token);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<FixtureResponse>(Wire.Json, token) ?? throw new InvalidDataException("Empty fixture response");
+        return await response.Content.ReadFromJsonAsync<IntegrationResponse>(Wire.Json, token) ?? throw new InvalidDataException("Empty fixture response");
     }
-    public async Task<FixtureResponse?> QueryAsync(BusinessRequest request, CancellationToken token)
+    public async Task<IntegrationResponse?> QueryAsync(BusinessRequest request, CancellationToken token)
     {
         using var response = await client.GetAsync(Endpoint(request, "requests/" + request.Id), token);
         if (response.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.NotImplemented) return null;
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<FixtureResponse>(Wire.Json, token);
+        return await response.Content.ReadFromJsonAsync<IntegrationResponse>(Wire.Json, token);
     }
     public async Task<bool> HealthAsync(CancellationToken token)
     {

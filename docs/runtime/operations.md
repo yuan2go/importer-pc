@@ -59,6 +59,26 @@ T1原子保存事实/意图/Outbox；T2记录领取与独立Attempt；T3保存�
 
 队列容量可配，发送器仅一个在途网络调用，Outbox有待决数量上限。回调队列满明确返回未接纳、记录计数和独立过载标记；已入队事件排空或故障可诊断。**未被接纳的SDK观察没有逐条持久性保证**，须核对受影响实体。清除过载要求维护依据，不通过普通Resume清除。原生SDK未接入，不声称其资源回调通过。
 
+## HARDENING-04 恢复与请求处置
+
+当前加固结果见 [HARDENING-04](hardening-04.md)，旧RUNTIME-03报告保留其形成时证据。
+
+过载首先关闭源的新输入；在过载之前已接纳的观察继续按业务规则处理和保存，其它许可仍有效。未接纳的观察只保留来源/累计计数等诊断，不承诺逐条持久化。过载标记在实际拒收时同步写入，不再由累计计数定时重写。排空后维护员检查来源与受影响实体；零pending且无未解决运行故障时才能确认过载。UI显示排空/请求/权限禁止原因。确认绑定当前 `OverloadVersion`，新拒收导致版本变化时拒绝旧确认；确认依据和最新来源原因写入SQLite审计后才删除标记。退出不会重建已确认标记；新一轮过载写入新标记，重启重建阻断。普通Resume仍只解除人工暂停。
+
+请求列表分别显示原状态、发送阻断、本地终结禁止原因和下一步。`Prepared`在暂停、过载、原身份过期等情况下可能无法发送。维护员可选择原请求，输入检查依据，执行 `CancelPrepared`。允许条件：仍为Prepared、没有响应，且没有发送尝试，或每次尝试都有已结束的 `NotDelivered` 持久证明。应用在同一协调器内核验/保存状态、Outbox和审计；取消与领取/交付竞争不会复活已终结请求。CLI示例（先snapshot取得当前revision）：
+
+```json
+{"Action":"command","Command":{"Id":"unique-local-command","ExpectedRevision":42,"Kind":"CancelPrepared","OwnerId":"original-request-id","Value":"SIMULATION source inspected; local non-delivery evidence reviewed"}}
+```
+
+本地终结状态为 `CancelledBeforeDispatch`，原ID、报文、哈希、合同、目标版本和旧操作者均不变。作业或会话进入 `AwaitingDisposition`，另存 `LocalDispositionRequired` 阻断。**此前校验可能产生的预留、实体占位和原接受事实均保留。** 当前版本不提供解除该处置阻断、释放预留、重新授权旧请求或准入新实体的命令；这些需要后续INTEGRATION-BOUNDARY-05取得合同/实体证据。本地终结没有接收端回执，不会新增接受量。异常迟到回执保留为矛盾证据并进入Unknown核对。
+
+T2领取为Dispatching；发送前的最终守卫与过载锁串行裁决，并先保存 `TransportHandoffAuthorized` 审计和 `TransportHandoff` 尝试状态。此后即使实际网络调用尚未开始，也保守视为不能证明未交付。跨进程中断按Unknown核对；不能本地取消或盲重发。发送前守卫失败时记录NotDelivered并回到原Prepared，可恢复对应许可后以同ID再尝试，或受控本地终结。Unknown只能查询原绑定；新登录不重新授权原身份已过期的报文。
+
+活动报警集合与计数只查active=1，不受历史LIMIT影响；已恢复历史独立分页。按原报警ID已读，已读不减少活动计数；恢复匹配对象、来源和代次，新的发生不继承旧已读。请求报警可打开原请求详情及本地终结审计。
+
+没有更改schema1 SQL或迁移校验和，也没有改写旧请求。新版读取原SIMULATION-v1报文/响应；兼容样本来自本次运行的未修改main可执行文件，全部为合成数据。新增JSON状态需要新版解释，**不得用旧EXE直接读取已产生AwaitingDisposition的新库**。升级前保留一致备份；回退旧版只使用升级前兼容备份、新数据根和恢复隔离，重新核对外部账及实体，不把schema号相同解释为任意版本可降级。
+
 ## 离线发布与部署
 
 已提交独立 `packages.win-x64.lock.json`，使RID还原不改写便携锁。联网构建机执行（PowerShell 7与Python3）：

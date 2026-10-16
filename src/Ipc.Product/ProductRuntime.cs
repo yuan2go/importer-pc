@@ -32,6 +32,7 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
     public RunMode? Mode { get; private set; }
     public StationConfig? Configuration { get; private set; }
     public string[] HeldResources => resourceLease?.Resources ?? [];
+    internal int SourceStartAttempts => observationModule?.SourceStartAttempts ?? 0;
     public PresentationSettings Presentation { get; private set; } = new();
     public List<string> Diagnostics { get; } = [];
     public IReadOnlyDictionary<string, ModuleState> ModuleStates => catalog?.States ?? new();
@@ -319,6 +320,7 @@ sealed class ObservationModule(StationApplication application, IObservationSourc
     public string Id => "observations";
     public string[] Dependencies => [];
     public IObservationSource[] Sources => sources;
+    public int SourceStartAttempts { get; private set; }
     readonly Channel<Observation> queue = Channel.CreateBounded<Observation>(new BoundedChannelOptions(capacity) { SingleReader = true, FullMode = BoundedChannelFullMode.Wait });
     Task? worker, healthWorker;
     readonly StationDispatcher sourceInput = new(8);
@@ -390,6 +392,7 @@ sealed class ObservationModule(StationApplication application, IObservationSourc
         registeredEpochs[source.DeviceId] = epoch;
         sourceStops.Remove(source);
         lock (ingress) sourceOwners.Add(source); // Partial Start failure still owns its registration.
+        SourceStartAttempts++;
         await controlled.StartControlledAsync(epoch, Receive, Health, token).ConfigureAwait(false);
     }
     bool Receive(Observation observation)

@@ -8,6 +8,7 @@ import subprocess
 from pathlib import Path
 
 p = argparse.ArgumentParser()
+p.add_argument('--require-clean-source', action='store_true')
 p.add_argument('--bin', type=Path, required=True)
 p.add_argument('--config', type=Path, default=Path('config'))
 p.add_argument('--product-definition', type=Path, default=Path('config/product.reference.json'))
@@ -64,8 +65,13 @@ for directory in ('src', 'config', 'scripts'):
 fingerprint = hashlib.sha256()
 for source in sorted(inputs):
     fingerprint.update(source.relative_to(source_root).as_posix().encode() + b'\0' + source.read_bytes() + b'\0')
-release = dict(WorkPackage='WP-IPC-ENGINEERING-CLOSURE-07', SchemaVersion=1, ReleaseVersion='ENGINEERING-CLOSURE-07', StorageVersion=3, ContractVersion='SIMULATION-v1', ProductId=definition['ProductId'], ProductDefinitionSha256=hashlib.sha256(a.product_definition.read_bytes()).hexdigest(), SourceCodeSha256=fingerprint.hexdigest(),
-               GitBase=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source_root, text=True).strip(),
+source_commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source_root, text=True).strip()
+source_paths = ['src', 'config', 'scripts', 'global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx']
+source_changes = subprocess.check_output(['git', 'status', '--porcelain', '--', *source_paths], cwd=source_root, text=True).strip()
+if a.require_clean_source and source_changes:
+    raise ValueError('Publication requires committed runtime/configuration/packaging inputs')
+release = dict(WorkPackage='WP-IPC-AUDIT-RECONCILIATION-01', SchemaVersion=1, ReleaseVersion='AUDIT-RECONCILIATION-01', StorageVersion=3, ContractVersion='SIMULATION-v1', ProductId=definition['ProductId'], ProductDefinitionSha256=hashlib.sha256(a.product_definition.read_bytes()).hexdigest(), SourceCodeSha256=fingerprint.hexdigest(),
+               SourceCommit=source_commit if not source_changes else None, WorkingTree=bool(source_changes), GitBase=source_commit,
                Mode=a.mode, Target='win-x64' if a.architecture == 'x64' else 'portable-development')
 (a.bin / 'release.json').write_text(json.dumps(release, indent=2) + '\n')
 station = json.loads((a.config / 'station.simulation.json').read_text())

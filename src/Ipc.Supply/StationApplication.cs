@@ -611,7 +611,9 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                 StationId = config.StationId, NotificationBacklog = notifications.Count, NotificationOverflow = notificationOverflow,
                 ProjectionVersion = Interlocked.Increment(ref projectionVersion), GeneratedAt = Now,
                 AcceptedQuantity = state.Session is null ? 0 : store.AcceptedQuantity(state.Session.Id),
-                RecentOperations = store.History(null, 0, 8)
+                // Current station/recovery diagnostics remain visible. Cross-session
+                // recent history is a historical read and must obey the same identity rule.
+                RecentOperations = state.Actor is { } reader && reader.ExpiresAt > Now ? store.History(null, 0, 8) : []
             }; }
         finally { gate.Release(); }
     }

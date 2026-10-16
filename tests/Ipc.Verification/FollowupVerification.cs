@@ -44,6 +44,7 @@ static class FollowupVerification
             }
             var current = await app.SnapshotAsync();
             Assert(current.State.Session?.Barcode == session.Barcode, "Current diagnostics remain discoverable without historical read authority");
+            Assert(allowed ? current.RecentOperations.Single().Id == operation.Id : current.RecentOperations.Length == 0, "Cross-session recent history follows identity while current diagnostics remain visible");
             Console.WriteLine($"PASS FOLLOWUP-08 history identity={identity} entries={reads.Length} allowed={allowed}");
         }
         async Task Command(string kind, string? value = null)

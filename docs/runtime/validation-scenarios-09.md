@@ -58,3 +58,5 @@ schema1原件、SIMULATION-v1请求/响应fixtures保持原字节。验证原请
 E-09的动态故障覆盖到ObservationModule和ModuleCatalog；ProductRuntime在仍活来源时保留store/journal/data与设备租约的组合分支为静态检查，未用私有字段反射或新增生产注入接口伪造动态通过。实际SQLite停止屏障故障验证在观测原异常/内存屏障/来源终止后撤销合成触发器，再验证一次持久重试；保留原故障日志，不把永久故障遗留到验证宿主清理中。
 
 这些断言验证工程合成行为。WPF几何、PAGE01～08实际操作、DPI、双窗、焦点、扫码、提示可辨性和PowerShell/Windows账户ACL仍按06绑定同版实际Windows证据；真实SDK/WCS、规则/实体/权限及现场准入仍按05逐能力处理。不能用本程序PASS关闭W-01～06、B-01～06或历史D/RV。
+
+独立审查后追加配置回归：复用历史Version的ABA授权被拒绝；推广新Effective同时事务替代旧Effective，草稿插入先后不能替代激活审计顺序；遗留多Effective按实际激活审计选择；SQLite触发器令推广审计失败，断言配置状态与选择一起回滚。Rejected/ActivationFailed的版本身份同样保留，纠正须新Version。

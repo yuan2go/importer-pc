@@ -2,7 +2,7 @@
 
 文档：IPC-FRAMEWORK-01 v1.0；整理日期：2026-10-16。分析基准：`39747a8c35b748da71bf9acfd56a9c9812b199b4`。
 
-**状态：本轮收敛的目标设计，尚未实现；不是客户规则批准、原工程迁移批准或现场放行。** 当前仓库只有资料与归档校验工具。讨论依据、方案取舍及外部事实见 [决策记录](framework-decisions.md)；实施范围与验收以 [WP-IPC-RUNTIME-03](../work-packages/WP-IPC-RUNTIME-03.md) 为准。D 系列仍由 [决策确认包](../readiness/decision-pack.md) 管理，RV 状态仍以 [评审状态](../reviews/STATUS.md) 为准。
+**本文保留设计形成时的目标定义；RUNTIME-03已加入独立参考实现，当前文件映射与验证见[实施记录](../runtime/implementation.md)及[交付报告](../runtime/delivery.md)。不是客户规则批准、原工程迁移批准或现场放行。** 设计形成时仓库只有资料与归档校验工具。讨论依据、方案取舍及外部事实见 [决策记录](framework-decisions.md)；实施范围与验收以 [WP-IPC-RUNTIME-03](../work-packages/WP-IPC-RUNTIME-03.md) 为准。D 系列仍由 [决策确认包](../readiness/decision-pack.md) 管理，RV 状态仍以 [评审状态](../reviews/STATUS.md) 为准。
 
 ## 1. 推荐方案及适用边界
 
@@ -297,3 +297,18 @@ Simulation与Production使用不同装配清单、端点允许规则、数据根
 本设计允许新参考运行产品实现平台机制和供包参考业务的可控模拟闭环；不宣称完整客户生产需求已经进入公开仓库。数量、实体、权限、合同和旧工程决策未解决，只阻塞相关生产路径。参考策略、角色、事件夹具均写明工程性质，不把模拟参数落成生产默认值。
 
 后续通过代码、持久化与UI实际运行证明边界；原型本身不是可照抄的实现。业务外部契约与最终联锁仍需D系列证据；RV关闭分别记录新实现修订、验证范围与尚未验证部分，不能仅因目标设计已写完就关闭。下一阶段完整范围、检查和不做项见 [实施工作包](../work-packages/WP-IPC-RUNTIME-03.md)。
+
+## 13. RUNTIME-03 当前实现映射
+
+|责任|实现|
+|---|---|
+|显式装配/配置/受控生命周期|`src/Ipc.Platform/Configuration.cs`、`Lifecycle.cs`，`src/Ipc.Product/ProductRuntime.cs`|
+|共享应用契约/作业/命令/许可|`src/Ipc.Supply/Model.cs`、`StationApplication.cs`|
+|实际SQLite事务/Outbox/接受账/备份|`src/Ipc.Supply/Store.cs`|
+|人工/文件源、固定绑定HTTP端口|`src/Ipc.Adapters/ObservationSources.cs`、`LoopbackIntegration.cs`|
+|独立持久接收账与原子需求裁决|`src/Ipc.Fixture/Receiver.cs`、`Program.cs`|
+|WPF页面/布局/焦点/草稿|`src/Ipc.Desktop/`|
+|关键故障/进程重启验证|`tests/Ipc.Verification/Program.cs`|
+|发布/备份/预检查/回滚|`scripts/publish.ps1`、`station.ps1`，核心CLI维护入口|
+
+当前批准范围为新通用参考实现。数量/实体/权限策略带SIMULATION身份；Production缺必需能力拒绝业务。真实SDK、WCS、Windows桌面运行和现场放行仍分项待验。设计形成时的原始事实与外部D/RV状态不倒写。

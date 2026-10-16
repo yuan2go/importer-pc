@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+**/__pycache__/
+.artifacts/
+.vs/
+*.user
+*.db
+*.db-shm
+*.db-wal
+*.db-journal

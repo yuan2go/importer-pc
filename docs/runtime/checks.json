@@ -1,0 +1,54 @@
+{
+  "work_package": "WP-IPC-RUNTIME-03",
+  "execution_base": "89089092ad8b7445071e0c12c9c558dc012a26e5",
+  "environment": {
+    "os": "macOS 26.5",
+    "rid": "osx-arm64",
+    "sdk": "10.0.402",
+    "runtime": "10.0.13",
+    "powershell": "7.6.7"
+  },
+  "source_state": "reviewed implementation candidate; code commit is identified in the final delivery receipt",
+  "core_build": {
+    "command": "dotnet build ImporterPc.slnx --no-restore -m:1 -nr:false",
+    "result": "PASS",
+    "warnings": 0,
+    "errors": 0
+  },
+  "core_regression": {
+    "command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll .",
+    "result": "PASS",
+    "cases": [
+      "AC-01/10 lifecycle, bounded command queue and ownership",
+      "AC-01/11 product assembly, modes and strict configuration",
+      "AC-02/07 combined guards and independent alarms",
+      "AC-03/04/06 continuous same-code entities, correction and unique ledger",
+      "AC-04/09 split, atomic two-lane demand and close barrier",
+      "AC-05/06/09 dropped/late response, original binding and close Unknown",
+      "AC-05 query absent/unsupported is not proof of non-delivery; delayed receipts",
+      "AC-05 actual SQLite rollback and T3 storage failure",
+      "AC-05/09 real process crash/restart windows",
+      "AC-02/05/06 durable T3 failure, stale commands, entity permit restart",
+      "AC-10 actual observation queue full preserves accepted events and overflow marker",
+      "AC-04/06 guarded pre-network cancellation allows same-ID second attempt",
+      "AC-01/06/09 config validation/activation and backup quarantine",
+      "AC-09 restored Prepared may already exist remotely, retention preserves current aggregate",
+      "AC-01/03/10 source replacement, capacity and resource stop"
+    ],
+    "raw_log_sha256": "63600863105b1a143938bf5a87797aae3cd3ce3274f20fb63c629ab4e833b030"
+  },
+  "archive_baseline": {
+    "base_manifest": "PASS",
+    "original_tests_with_pillow": "PASS"
+  },
+  "archive_scope_tests": {
+    "command": "python3 -m unittest discover -s tools -p 'test_*.py' -v",
+    "result": "PASS",
+    "tests": 7
+  },
+  "wpf_compile": "PASS",
+  "windows_runtime": "BLOCKED",
+  "real_sdk_wcs_site": "BLOCKED",
+  "production_readiness": "NotReady / mandatory capabilities missing",
+  "historical_rv_status": "RV-01..RV-17 OPEN"
+}

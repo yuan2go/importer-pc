@@ -50,3 +50,9 @@
 已实现待验证：WPF真实启动、正常/拒绝/Unknown/拆包/配置/恢复、多窗口、焦点/选区/滚动、6组分辨率缩放、提示声/触控。受阻：真实 SDK/WCS/数量/拆包/实体/权限及旧工程迁移，Production继续 NotReady。历史D/RV登记不改、受限原稿/图像/SDK/字体不随包。未完成的 Windows/真实接口验收不归入已验证。
 
 构建/运行/发布和回滚详见[运行说明](operations.md)，实际包文件及哈希见 evidence/alignment-01 与检查记录。开发分支提交并创建 main PR，不强推、不自行合并。
+
+## 本次发布回执
+
+代码提交 `712446ae262c6b269bd6576ad5c17784a644c7d7`；自包含包 `ALIGNMENT-01-712446a-win-x64.zip`，119023233 bytes，SHA256 `1089c45f294ead68154d92b26217b9fd3c18bf86089c4f745cdc43ed5c7a8aeb`。813个包内文件校验、模块哈希、三个Windows PE入口、嵌入PerMonitorV2声明和ZIP CRC均PASS；没有数据库、凭据或字体文件。发布核心原生运行冒烟7项PASS，Windows执行NOT_RUN。二进制通过单独发布资产交付，不进Git源码。
+
+固定版本运行：解压后 `./station.ps1 -Action Fixture`，另一窗口 `./station.ps1 -Action Init`、`./station.ps1 -Action Run -View workstation -Layout standard`。Windows首次运行与全部操作仍按清单验收，不能由包检查推定通过。

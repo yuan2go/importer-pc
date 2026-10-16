@@ -1,3 +1,5 @@
+> 当前扩展：[REVIEW-FOLLOWUP-11](review-followup-11.md)，SourceCommit `4edb909e71097a7da61506beaa10ae5db82ec6cb`。下文09原执行选择和形成时静态边界保留；新增E11动态验证详见末节。
+
 # REFERENCE-VALIDATION-09 验证选择与合成场景
 
 2026-10-16；用于AUDIT-RECONCILIATION-01。此页登记验证程序的实际选择规则、输入边界和断言，不预写执行成功；同版SourceCommit、运行日志、Release/Storage/Contract及包SHA由最终`reference-validation-09.md`和checks绑定。历史07/03的NOT_RUN保留形成时记录。
@@ -60,3 +62,16 @@ E-09的动态故障覆盖到ObservationModule和ModuleCatalog；ProductRuntime�
 这些断言验证工程合成行为。WPF几何、PAGE01～08实际操作、DPI、双窗、焦点、扫码、提示可辨性和PowerShell/Windows账户ACL仍按06绑定同版实际Windows证据；真实SDK/WCS、规则/实体/权限及现场准入仍按05逐能力处理。不能用本程序PASS关闭W-01～06、B-01～06或历史D/RV。
 
 独立审查后追加配置回归：复用历史Version的ABA授权被拒绝；推广新Effective同时事务替代旧Effective，草稿插入先后不能替代激活审计顺序；遗留多Effective按实际激活审计选择；SQLite触发器令推广审计失败，断言配置状态与选择一起回滚。Rejected/ActivationFailed的版本身份同样保留，纠正须新Version。
+
+## REVIEW-FOLLOWUP-11 新增范围
+
+`--review-followup`=实际桌面共享的WaveComparison/BoxEntryFocusPolicy源码+XAML结构检查+Product组合所有权。完整`--reconciliation`也包含E11；原选择器范围不削减。
+
+- WaveComparison保留原始前导零、两种波次及未知；差异显示在固定结果区，ItemWave不在Expander。没有新增供包放行规则。
+- 焦点策略运行初次登录、新箱/拒绝、身份变更/过期、延后、重复投影、多窗独立及A/B排队旧ticket竞争，验证一次性与代次。执行的是链接的实际展示策略；XAML结构检查不是实际WPF焦点。
+- 内部sourceFactory构造仅供既有验证友元使用；公开Host/CLI仍用ReferenceProduct注册，所有配置/模式/最终租约校验仍先行。
+- 真实Product分别注入Stop抛错、Stop任务未终止、Dispose任务未终止。捕获原异常，独立来源清理，未终止来源不重复Stop/Dispose；数据根及全部站点/设备键保持独占。相同数据根第二Product和不同工位/根争设备均不能建源。
+- 在Product尚未完成Dispose时经原ReconcileAsync查询真实接收账的丢回执请求；真实SQLite保存Accepted、真实journal追加T3Response/ReconciliationQuery，Stopping仍阻断新入场，原payload/Binding/Attempt未变。
+- 显式解除故障/完成原任务，重试Dispose后恰一次释放来源；同一lease文件名保留，全部键可重新取得，公开注册工厂可重启同库，原请求远端发送恰1次。
+
+这补齐了上一版Product组合层只有静态检查的验证缺口。实际日志/原数据根/三故障证据与新包SHA见11报告及checks；不倒写上一版09的运行结果，不改schema/旧请求/历史断言。Windows几何、真实键盘焦点、扫码、声音与ACL仍NOT_RUN，真实SDK回调仍BLOCKED。

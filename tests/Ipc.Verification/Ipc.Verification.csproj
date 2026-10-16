@@ -1,1 +1,1 @@
-<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType></PropertyGroup><ItemGroup><ProjectReference Include="../../src/Ipc.Product/Ipc.Product.csproj"/></ItemGroup></Project>
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType></PropertyGroup><ItemGroup><ProjectReference Include="../../src/Ipc.Product/Ipc.Product.csproj"/><Compile Include="../../src/Ipc.Desktop/PresentationPolicy.cs" Link="Desktop/PresentationPolicy.cs"/></ItemGroup></Project>

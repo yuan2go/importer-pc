@@ -1,3 +1,5 @@
+> 后续同版交付与Product动态证据见[REVIEW-FOLLOWUP-11](review-followup-11.md)，SourceCommit `4edb909e71097a7da61506beaa10ae5db82ec6cb`。下文09/a080825原结果及当时静态验证限制保持，不把新验证倒写进旧日志或旧checks。
+
 # REFERENCE-VALIDATION-09：纠偏实施与同版参考交付
 
 2026-10-16（Asia/Shanghai）；执行包[AUDIT-RECONCILIATION-01](../work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)。起点main `856e4de73f09a1c4f12af798c4d21e8631a6a86f`；分支`codex/wp-ipc-audit-reconciliation-01`。**最终运行源码 SourceCommit：`a08082563bc13b2f146e71c4be9136f0469af9db`**；后续仅文档、manifest和PR回执，不把文档HEAD冒称二进制来源。

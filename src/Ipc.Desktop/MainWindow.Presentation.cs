@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Ipc.Platform;
 using Ipc.Supply;
 
@@ -13,6 +14,7 @@ public partial class MainWindow
     IInputElement? drawerReturnFocus;
     bool entryRequested, recoveryEntryAcknowledged, layoutPauseRequired, layoutPauseInFlight;
     Actor? observedReadActor;
+    readonly BoxEntryFocusPolicy boxEntryFocus = new();
     long alarmHistoryGeneration;
     bool IsDrawerOpen => DrawerOverlay?.Visibility == Visibility.Visible;
     bool IsWorkstationActive => !IsDrawerOpen && EntryOverlay?.Visibility != Visibility.Visible;
@@ -95,7 +97,7 @@ public partial class MainWindow
     void ContinueEntryClick(object sender,RoutedEventArgs e)
     {
         if (!HasIdentity) { model.LastResult="请先取得有效参考身份"; return; }
-        entryRequested=false; recoveryEntryAcknowledged=true; UpdateEntryProjection(); UpdateGuards();
+        entryRequested=false; recoveryEntryAcknowledged=true; boxEntryFocus.Request(); UpdateEntryProjection(); UpdateGuards();
     }
     void MaximizeClick(object sender,RoutedEventArgs e) => WindowState=WindowState.Maximized;
     void UpdateEntryProjection()
@@ -117,6 +119,21 @@ public partial class MainWindow
         CloseDecisionButton.Content=session?.CloseRemaining == 0 ? "确认正常关闭" : session?.CloseRemaining is null ? "关闭检查数量未取得" : "查看少货关闭检查";
         CloseDecisionButton.Visibility=session?.Status == SessionStatus.AwaitingShortageDecision ? Visibility.Visible : Visibility.Collapsed;
         CloseButton.Visibility=session?.Status == SessionStatus.AwaitingShortageDecision ? Visibility.Collapsed : Visibility.Visible;
+        boxEntryFocus.Observe(session?.Id, canOpen, HasIdentity ? snapshot?.State.Actor : null);
+        TryFocusBoxInput();
+    }
+    bool TryFocusBoxInput()
+    {
+        bool Available() => !closing && !busy && IsLoaded && HasIdentity && !smallArea && !layoutPauseRequired && IsWorkstationActive && BoxInput.IsVisible && BoxInput.IsEnabled;
+        if (!boxEntryFocus.TryTake(Available(), out var ticket)) return false;
+        var actor = snapshot!.State.Actor; var sessionId = snapshot.State.Session?.Id;
+        _ = Dispatcher.InvokeAsync(() =>
+        {
+            // A drawer, identity change or new box may arrive before this queued handoff.
+            if (!boxEntryFocus.IsCurrent(ticket) || !Available() || snapshot is not { } current || current.State.Actor != actor || current.State.Session?.Id != sessionId || !BoxInput.Focus()) { boxEntryFocus.Retry(ticket); return; }
+            BoxInput.SelectAll(); // Retain the draft, but the next scanner input replaces it.
+        }, DispatcherPriority.Input);
+        return true;
     }
     void ApplyWorkstationLayout()
     {

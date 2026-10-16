@@ -1,3 +1,5 @@
+> 当前待验版本绑定[REVIEW-FOLLOWUP-11](review-followup-11.md)的新SourceCommit/包SHA。下文上一版边界保持；没有新增Windows/真实集成执行，W01～06 NOT_RUN，B01～06 BLOCKED。
+
 # WINDOWS-VALIDATION-06 同版待验记录
 
 2026-10-16；授权已具备，**实际Windows环境缺失：BLOCKED**。当前执行宿主为macOS ARM64；没有可用Windows客户端、工控机、显示/DPI设备、扫码器、触控或扬声器听审环境。包身份及SHA引用[09同版检查](reference-validation-09-checks.json)。不拿HTML导出、旧包或跨平台核心结果代替WPF操作。

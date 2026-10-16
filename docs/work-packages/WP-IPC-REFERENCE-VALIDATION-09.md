@@ -1,3 +1,5 @@
+> 当前增量结果：[REVIEW-FOLLOWUP-11](WP-IPC-REVIEW-FOLLOWUP-11.md)，运行源码 `4edb909e71097a7da61506beaa10ae5db82ec6cb`。两个P2已补源码、Product组合所有权三故障动态参考验证PASS；Windows/真实集成仍NOT_RUN/BLOCKED。下文a080825和形成时记录保留其原版本含义。
+
 # WP-IPC-REFERENCE-VALIDATION-09：07/08/10核心证据与同版交付
 
 

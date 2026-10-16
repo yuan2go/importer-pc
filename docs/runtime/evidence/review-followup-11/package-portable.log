@@ -1,0 +1,16 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> <WORKTREE>/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply -> <WORKTREE>/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> <WORKTREE>/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> <WORKTREE>/src/Ipc.Product/bin/Release/net10.0/Ipc.Product.dll
+  Ipc.Product -> <WORKTREE>/.artifacts/review-followup-4edb909-portable/app/
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> <WORKTREE>/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply -> <WORKTREE>/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> <WORKTREE>/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Fixture -> <WORKTREE>/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll
+  Ipc.Fixture -> <WORKTREE>/.artifacts/review-followup-4edb909-portable/fixture/
+Sealed Simulation configuration: <WORKTREE>/.artifacts/review-followup-4edb909-portable/app/config
+{"Package": "<WORKTREE>/.artifacts/review-followup-4edb909-portable.zip", "Sha256": "f38ad91a43b8244a0e25ca2581821d72a7c231baa0707212b2e82e925e7e99a1", "WorkPackage": "WP-IPC-REVIEW-FOLLOWUP-11", "SourceCommit": "4edb909e71097a7da61506beaa10ae5db82ec6cb", "ReleaseVersion": "REVIEW-FOLLOWUP-11", "StorageVersion": 3, "ContractVersion": "SIMULATION-v1", "SourceCodeSha256": "91036e12987b33656ebee458337de3d0b1ee85f9dd37f20b199f6092a02a80fb", "Target": "portable", "WindowsRuntimeValidation": "NOT_RUN", "PhysicalIntegration": "BLOCKED", "Note": "Portable requires pinned .NET runtime; win-x64 is self-contained and requires Windows validation."}

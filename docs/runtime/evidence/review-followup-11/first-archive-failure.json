@@ -1,0 +1,1188 @@
+{
+  "status": "FAIL",
+  "scope": "public",
+  "counts": {
+    "files": 290,
+    "references": 440,
+    "json": 63,
+    "boards": 18,
+    "slides": 18,
+    "pptx": 1,
+    "images": 34
+  },
+  "errors": [
+    {
+      "code": "private_metadata_marker",
+      "path": "docs/runtime/evidence/review-followup-11/package-readback.json"
+    },
+    {
+      "code": "private_metadata_marker",
+      "path": "docs/runtime/review-followup-11-checks.json"
+    },
+    {
+      "code": "private_metadata_marker",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/README.source.md"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-27.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-1-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-27.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-10-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-27.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-29.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-31.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-11-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-27.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-29.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-31.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-12-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-27.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-29.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-31.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-33.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-13-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-27.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-14-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-27.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-29.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-31.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-33.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-35.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-37.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-15-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-27.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-29.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-31.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-33.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-35.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-37.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-16-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-17-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-17-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-17-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-17-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-17-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-17-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-17-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-17-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-17-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-17-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-17-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-17-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-17-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-27.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-29.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-18-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-27.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-2-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-3-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-3-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-3-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-3-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-3-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-3-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-3-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-3-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-3-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-3-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-3-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-3-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-3-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-4-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-4-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-4-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-4-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-4-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-4-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-4-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-4-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-4-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-4-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-4-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-4-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-4-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-5-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-5-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-5-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-5-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-5-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-5-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-5-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-5-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-5-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-5-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-5-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-5-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-5-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-6-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-6-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-6-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-6-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-6-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-6-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-6-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-6-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-6-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-6-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-6-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-6-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-6-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-27.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-7-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-8-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-8-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-8-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-8-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-8-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-8-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-8-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-8-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-8-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-8-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-8-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-8-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-8-9.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-1.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-11.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-13.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-15.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-17.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-19.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-21.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-23.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-25.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-27.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-29.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-3.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-5.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-7.png"
+    },
+    {
+      "code": "pptx_media_type_mismatch",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx:ppt/media/image-9-9.png"
+    },
+    {
+      "code": "private_metadata_marker",
+      "path": "docs/ui/ss-ui-vis-001-v1.1/界面图册.html"
+    }
+  ],
+  "registered_reference_gaps": [],
+  "external_references": [
+    {
+      "source": "docs/design/framework-decisions.md",
+      "target_sha256": "ba2efb3a7e636413f0c379629c2c7ad5e2e60510e78222110317031ff9c0c131"
+    },
+    {
+      "source": "docs/design/framework-decisions.md",
+      "target_sha256": "778a34261ac3d22547d5156c6a2d30f198a7c82ddca91906d601664a22131bb7"
+    },
+    {
+      "source": "docs/design/framework-decisions.md",
+      "target_sha256": "4c1f00b29baee11bf345ac2b0d589cf245f965bbea5f59d20b196744592615ea"
+    },
+    {
+      "source": "docs/design/framework-decisions.md",
+      "target_sha256": "672dcc806dbff0a2dc872c754c75a3486a56e956cded2ef0623eb1a4e0194e59"
+    },
+    {
+      "source": "docs/design/framework-decisions.md",
+      "target_sha256": "a1f8dc709fd46f8b5a158fbaa9f666e8069605a654dbf07774c86da1ccbe3f88"
+    },
+    {
+      "source": "docs/design/framework-decisions.md",
+      "target_sha256": "ffb56b490bc994ac1cd4ee18b061251c408b8d59330000baea073c3364ca1be2"
+    },
+    {
+      "source": "docs/design/framework-decisions.md",
+      "target_sha256": "d6f43ae05df1743ec9dc47f73aef8701a56fd8d7268a9b4869611af11c6bc10a"
+    },
+    {
+      "source": "docs/design/framework-decisions.md",
+      "target_sha256": "42754b59f3106abf2a27777d269f0d24ba4ecda79f5affa7c4217f624a7349c2"
+    },
+    {
+      "source": "docs/reviews/main-static-review-03.md",
+      "target_sha256": "a6c1304179d0f19cfec840b8094f89738a3bede16c4edbdad517222032eb6f54"
+    },
+    {
+      "source": "docs/reviews/main-static-review-03.md",
+      "target_sha256": "ce45aae796b338c4077078494462638216123851e1e4ba14f30b157b8fa858bf"
+    },
+    {
+      "source": "docs/reviews/main-static-review-03.md",
+      "target_sha256": "bbd6fbba7a5a6a542e05c1122d1828df47560b2d284039fd1b7150639804e212"
+    },
+    {
+      "source": "docs/runtime/alignment-01.md",
+      "target_sha256": "d273e15dfb392cfb896fb4125311b6ce59a26eca702948ad3fc59a5ab7735c19"
+    },
+    {
+      "source": "docs/runtime/alignment-01.md",
+      "target_sha256": "fc6db6cc2a00329e296c7e0c27fe00f1b6c14403639ccd5a7e60d25de7e3710d"
+    },
+    {
+      "source": "docs/runtime/engineering-closure-07.md",
+      "target_sha256": "a6c1304179d0f19cfec840b8094f89738a3bede16c4edbdad517222032eb6f54"
+    },
+    {
+      "source": "docs/runtime/hardening-04-publication.md",
+      "target_sha256": "b8d349e39b2d31abdfb5d3d5e02832481df63a26000c2c8395b29b762355dd29"
+    },
+    {
+      "source": "docs/runtime/hardening-04-publication.md",
+      "target_sha256": "0eec6c71793cdbe8a630d1e8b29504a90ec8ef434d4c4198beddbcd752c08bca"
+    },
+    {
+      "source": "docs/runtime/hardening-04.md",
+      "target_sha256": "b8d349e39b2d31abdfb5d3d5e02832481df63a26000c2c8395b29b762355dd29"
+    },
+    {
+      "source": "docs/runtime/operations.md",
+      "target_sha256": "d2da18ee23d654efff3ee10c3a6035af231c22a792491960fb0545a2ee451cf8"
+    },
+    {
+      "source": "docs/runtime/publication.md",
+      "target_sha256": "8c891aef688955aba7087a9bf332046251fc8c0fa3f01c601b81deea11f64923"
+    },
+    {
+      "source": "docs/runtime/publication.md",
+      "target_sha256": "eb3233eed97595b450692ef84890118388c9529ce7cfe4826dc56a628432ac0a"
+    },
+    {
+      "source": "docs/runtime/reference-validation-09.md",
+      "target_sha256": "757e765bdbd8ee1e62af8ceebb22346d14c1a130ab025b2294bebb07f98c684d"
+    },
+    {
+      "source": "docs/ui/ss-ui-vis-001-v1.1/界面图册.html",
+      "target_sha256": "3744c2d115713c66d111e4350c0347987be79c8c5dca09e400c63372a2131f94"
+    },
+    {
+      "source": "docs/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md",
+      "target_sha256": "a6c1304179d0f19cfec840b8094f89738a3bede16c4edbdad517222032eb6f54"
+    }
+  ],
+  "business_tests": "NOT_RUN",
+  "network_access": false
+}

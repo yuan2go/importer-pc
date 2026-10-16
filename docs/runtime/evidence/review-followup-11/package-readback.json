@@ -1,0 +1,158 @@
+[
+  {
+    "target": "portable",
+    "path": ".artifacts/review-followup-4edb909-portable.zip",
+    "sha256": "f38ad91a43b8244a0e25ca2581821d72a7c231baa0707212b2e82e925e7e99a1",
+    "bytes": 35207922,
+    "listed_files": 130,
+    "release": {
+      "WorkPackage": "WP-IPC-REVIEW-FOLLOWUP-11",
+      "SchemaVersion": 1,
+      "ReleaseVersion": "REVIEW-FOLLOWUP-11",
+      "StorageVersion": 3,
+      "ContractVersion": "SIMULATION-v1",
+      "ProductId": "ipc-reference",
+      "ProductDefinitionSha256": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+      "SourceCodeSha256": "91036e12987b33656ebee458337de3d0b1ee85f9dd37f20b199f6092a02a80fb",
+      "SourceCommit": "4edb909e71097a7da61506beaa10ae5db82ec6cb",
+      "WorkingTree": false,
+      "GitBase": "4edb909e71097a7da61506beaa10ae5db82ec6cb",
+      "Mode": "Simulation",
+      "Target": "portable-development"
+    },
+    "modules": [
+      {
+        "Id": "platform",
+        "Kind": "platform",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [],
+        "File": "Ipc.Platform.dll",
+        "Sha256": "E361E2C044CE6FFB7575AFEDF4FD4E84836D4A83A914EF816E9A14D029E7236E"
+      },
+      {
+        "Id": "supply",
+        "Kind": "supply",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [
+          "platform"
+        ],
+        "File": "Ipc.Supply.dll",
+        "Sha256": "456F5CD19CD005BE84BD0691821110C36EDEA09B86B4C422BAF20B3D4A38D8D1"
+      },
+      {
+        "Id": "adapters",
+        "Kind": "adapters",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [
+          "supply"
+        ],
+        "File": "Ipc.Adapters.dll",
+        "Sha256": "AB061AFC39481D960C1266570F3ADFF02DF2D5CC7E33960723933577640A41F1"
+      },
+      {
+        "Id": "product",
+        "Kind": "product",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [
+          "adapters"
+        ],
+        "File": "Ipc.Product.dll",
+        "Sha256": "7C5592079800C89FDC7E7E4F1E5266A88D83C5E8E60078EDE2FC126D23A67686"
+      }
+    ],
+    "config_sha256": {
+      "presentation.json": "631b7675cd7ac2982711443908aee096ebbae2766790086faaa9fd6e555e3e2f",
+      "product.definition.json": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+      "product.json": "b5806c7c329813b238c1b64855bfac9e1731c712bde822fb2de6ded18cdd930e",
+      "replay.jsonl": "e8ee63bb8172d46a7b612529741df2bfc259b82af92b996605cdd50069bddf41",
+      "station.json": "5b19a4ccd4276c84960ad86bc99c9bc0ca9eb5dabcf899904d2cdfde25f8a195"
+    },
+    "crc": "PASS",
+    "exact_file_set": "PASS",
+    "sha256sums": "PASS",
+    "registered_modules": "PASS",
+    "actual_execution": "NATIVE_CORE_SMOKE_PASS"
+  },
+  {
+    "target": "win-x64",
+    "path": ".artifacts/review-followup-4edb909-win-x64.zip",
+    "sha256": "a1d9a00ef06affb87def7598b2f29d81de61b4deac0dafdee9c358dee24b05b5",
+    "bytes": 115347119,
+    "listed_files": 815,
+    "release": {
+      "WorkPackage": "WP-IPC-REVIEW-FOLLOWUP-11",
+      "SchemaVersion": 1,
+      "ReleaseVersion": "REVIEW-FOLLOWUP-11",
+      "StorageVersion": 3,
+      "ContractVersion": "SIMULATION-v1",
+      "ProductId": "ipc-reference",
+      "ProductDefinitionSha256": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+      "SourceCodeSha256": "91036e12987b33656ebee458337de3d0b1ee85f9dd37f20b199f6092a02a80fb",
+      "SourceCommit": "4edb909e71097a7da61506beaa10ae5db82ec6cb",
+      "WorkingTree": false,
+      "GitBase": "4edb909e71097a7da61506beaa10ae5db82ec6cb",
+      "Mode": "Simulation",
+      "Target": "win-x64"
+    },
+    "modules": [
+      {
+        "Id": "platform",
+        "Kind": "platform",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [],
+        "File": "Ipc.Platform.dll",
+        "Sha256": "E361E2C044CE6FFB7575AFEDF4FD4E84836D4A83A914EF816E9A14D029E7236E"
+      },
+      {
+        "Id": "supply",
+        "Kind": "supply",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [
+          "platform"
+        ],
+        "File": "Ipc.Supply.dll",
+        "Sha256": "456F5CD19CD005BE84BD0691821110C36EDEA09B86B4C422BAF20B3D4A38D8D1"
+      },
+      {
+        "Id": "adapters",
+        "Kind": "adapters",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [
+          "supply"
+        ],
+        "File": "Ipc.Adapters.dll",
+        "Sha256": "AB061AFC39481D960C1266570F3ADFF02DF2D5CC7E33960723933577640A41F1"
+      },
+      {
+        "Id": "product",
+        "Kind": "product",
+        "Version": "1.0.0",
+        "ContractMajor": 1,
+        "Dependencies": [
+          "adapters"
+        ],
+        "File": "Ipc.Product.dll",
+        "Sha256": "3B75381437EBE8F0063BB34E7BAEC0AADEA3E7CA413E8C59064836F1C52827E4"
+      }
+    ],
+    "config_sha256": {
+      "presentation.json": "631b7675cd7ac2982711443908aee096ebbae2766790086faaa9fd6e555e3e2f",
+      "product.definition.json": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+      "product.json": "3694570496e58cd6a008f2fb0e42275110d9dd6899fc38ba94c5fe377233c5a8",
+      "replay.jsonl": "e8ee63bb8172d46a7b612529741df2bfc259b82af92b996605cdd50069bddf41",
+      "station.json": "5b19a4ccd4276c84960ad86bc99c9bc0ca9eb5dabcf899904d2cdfde25f8a195"
+    },
+    "crc": "PASS",
+    "exact_file_set": "PASS",
+    "sha256sums": "PASS",
+    "registered_modules": "PASS",
+    "actual_execution": "WINDOWS_NOT_RUN"
+  }
+]

@@ -1,0 +1,593 @@
+{
+  "work_package": "WP-IPC-REVIEW-FOLLOWUP-11",
+  "date": "2026-10-17",
+  "base_commit": "4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+  "source_commit": "4edb909e71097a7da61506beaa10ae5db82ec6cb",
+  "branch": "codex/wp-ipc-review-followup-11",
+  "source_code_sha256": "91036e12987b33656ebee458337de3d0b1ee85f9dd37f20b199f6092a02a80fb",
+  "host": {
+    "os": "macOS-26.5.2-arm64-arm-64bit",
+    "sdk": "10.0.402"
+  },
+  "versions": {
+    "release": "REVIEW-FOLLOWUP-11",
+    "storage": 3,
+    "minimum_reader": 3,
+    "contract": "SIMULATION-v1"
+  },
+  "authorization": {
+    "synthetic_reference": true,
+    "production_wcs_writes": false,
+    "physical_device_actions": false
+  },
+  "results": {
+    "solution_build": "PASS",
+    "warnings": 0,
+    "errors": 0,
+    "review_followup": "PASS",
+    "product_composite_cases": {
+      "stop-throws": "PASS",
+      "stop-pending": "PASS",
+      "dispose-pending": "PASS"
+    },
+    "presentation_shared_policies": "PASS",
+    "presentation_xaml_structure": "PASS",
+    "closure_e07": "PASS",
+    "followup_e08_and_journey": "PASS",
+    "portable_publish": "PASS",
+    "win_x64_cross_publish": "PASS",
+    "zip_readback": "PASS",
+    "unpacked_native_smoke": "PASS_7",
+    "windows_environment": "BLOCKED",
+    "windows_groups": {
+      "W-01": "NOT_RUN",
+      "W-02": "NOT_RUN",
+      "W-03": "NOT_RUN",
+      "W-04": "NOT_RUN",
+      "W-05": "NOT_RUN",
+      "W-06": "NOT_RUN"
+    },
+    "real_capabilities": {
+      "B-01": "BLOCKED",
+      "B-02": "BLOCKED",
+      "B-03": "BLOCKED",
+      "B-04": "BLOCKED",
+      "B-05": "BLOCKED",
+      "B-06": "BLOCKED"
+    },
+    "actual_wpf_screenshots": 0,
+    "archive_tool_tests": "PASS_7",
+    "d_rv_unchanged": true
+  },
+  "commands": [
+    "./scripts/build.sh",
+    "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --review-followup",
+    "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --closure",
+    "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --followup",
+    "python3 scripts/package-reference.py --target portable --output .artifacts/review-followup-4edb909-portable",
+    "python3 scripts/package-reference.py --target win-x64 --output .artifacts/review-followup-4edb909-win-x64",
+    "python3 scripts/smoke.py --product .artifacts/review-followup-4edb909-portable-unpacked/app --fixture .artifacts/review-followup-4edb909-portable-unpacked/fixture/Ipc.Fixture.dll --output .artifacts/review-followup-4edb909-unpacked-smoke.json"
+  ],
+  "raw_evidence": [
+    {
+      "path": "/tmp/ipc-review-11-build-final.log",
+      "sha256": "999e3949a07fda2210d83fdafc088912cb5a43b3a075b3ec75e3acdb0f54501a",
+      "bytes": 1298
+    },
+    {
+      "path": "/tmp/ipc-review-11-build-first.log",
+      "sha256": "d2dba7ec2bcd9f9f9eee18fd38bf903df77f33c71c4f7be33e4d3e69e3ff3984",
+      "bytes": 1578
+    },
+    {
+      "path": "/tmp/ipc-review-11-target-final.log",
+      "sha256": "37eba6200cb96cf28d4ae9269159bf9fc50c3b06e96798a25dbee7f7be03c975",
+      "bytes": 1140
+    },
+    {
+      "path": "/tmp/ipc-review-11-closure.log",
+      "sha256": "2115f7e05d8a7341f680b3238b152a8ca7efb5421c4711a7718bd13e1e9c28db",
+      "bytes": 1319
+    },
+    {
+      "path": "/tmp/ipc-review-11-followup.log",
+      "sha256": "57f8d401d7ebd99331ca9eba5b79a5ece4c336559e2a58034688ceecb90cdbb2",
+      "bytes": 1194
+    },
+    {
+      "path": "/tmp/ipc-review-11-package-portable.log",
+      "sha256": "655db09d370857276f03525a6e3386ef399754e45b43fa6757ab7fc45437611f",
+      "bytes": 2412
+    },
+    {
+      "path": "/tmp/ipc-review-11-package-win-x64.log",
+      "sha256": "16dc4ab59c6e6fbd77304c096dac0b86df287144a2a7917568f26b764895980c",
+      "bytes": 4143
+    },
+    {
+      "path": "/tmp/ipc-review-11-smoke.log",
+      "sha256": "d91d3271d11304680c516e899823f389215af1af5c806a4486d3e65a70b81539",
+      "bytes": 432
+    },
+    {
+      "path": "/tmp/ipc-review-11-archive-tests.log",
+      "sha256": "e7eee426cbb24ef3029695d5555a014c5e8e1a682674eb4544bc934934b32c0d",
+      "bytes": 1048
+    },
+    {
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-91d33f87da5642b192c7d8c62d01a489/review-product-ownership.json",
+      "sha256": "adb6a8f3d7c337cb9ab418ffa35d819711a8f84acc78fea4eb571313dc3242fd",
+      "bytes": 41235
+    },
+    {
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8/reference-journey/journey.json",
+      "sha256": "8d468e4a04414cd47b84259aead2b5cee64b746d7333ca21d8f21368a759da82",
+      "bytes": 345277
+    },
+    {
+      "path": "<WORKTREE>/.artifacts/review-followup-4edb909-unpacked-smoke.json",
+      "sha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "bytes": 347
+    },
+    {
+      "path": "/tmp/ipc-review-11-archive-first.json",
+      "sha256": "7470bf336e84528b17de6b2875451f0c0ed102e373b0940c2fc8416145332e4d",
+      "bytes": 50597
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/runtime/evidence/review-followup-11/build.log",
+      "sha256": "38d6864b7d0e7765e1818fc35a81ad63ae214ef2bcd0c8b41f99524e7d62dbfc",
+      "bytes": 892
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/first-build-failure.log",
+      "sha256": "d795655e9d5965842c780bb930e64acf82dba86a43230179090dc87febc14d69",
+      "bytes": 998
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/target.log",
+      "sha256": "37eba6200cb96cf28d4ae9269159bf9fc50c3b06e96798a25dbee7f7be03c975",
+      "bytes": 1140
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/closure.log",
+      "sha256": "2115f7e05d8a7341f680b3238b152a8ca7efb5421c4711a7718bd13e1e9c28db",
+      "bytes": 1319
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/followup.log",
+      "sha256": "57f8d401d7ebd99331ca9eba5b79a5ece4c336559e2a58034688ceecb90cdbb2",
+      "bytes": 1194
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/package-portable.log",
+      "sha256": "ed08c8c63c470225ceb73744eeecd5dd62d8e7ac0d92ab908a11273e5b5a0a6d",
+      "bytes": 1716
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/package-win-x64.log",
+      "sha256": "60fe99d7d7564e54c4c89ea697c1d26fde0ad1d8055f8128190b13457f3caf99",
+      "bytes": 2751
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/unpacked-smoke.log",
+      "sha256": "d91d3271d11304680c516e899823f389215af1af5c806a4486d3e65a70b81539",
+      "bytes": 432
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/archive-tests.log",
+      "sha256": "e7eee426cbb24ef3029695d5555a014c5e8e1a682674eb4544bc934934b32c0d",
+      "bytes": 1048
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/product-ownership.json",
+      "sha256": "c01f9aee86df66c6bb226ae6a4d8397e90ed2c0713537ee0da2139fbf3daaee0",
+      "bytes": 37871
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/reference-journey.json",
+      "sha256": "8d468e4a04414cd47b84259aead2b5cee64b746d7333ca21d8f21368a759da82",
+      "bytes": 345277
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/unpacked-smoke.json",
+      "sha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "bytes": 347
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/package-readback.json",
+      "sha256": "e88f03944d0c08d2f5cb70fc41b14aa650f2ced81e9c49297c543388ea46c395",
+      "bytes": 5492
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/first-archive-failure.json",
+      "sha256": "7470bf336e84528b17de6b2875451f0c0ed102e373b0940c2fc8416145332e4d",
+      "bytes": 50597
+    }
+  ],
+  "synthetic_roots": {
+    "target": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-91d33f87da5642b192c7d8c62d01a489",
+    "closure": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f2392e4e248c4f999185e26b947fa116",
+    "followup": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8"
+  },
+  "databases": [
+    {
+      "run": "target",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-91d33f87da5642b192c7d8c62d01a489/product-ownership-dispose-pending/owner-data/Simulation/SIM-17b2fab8cc4540f792a4f89134730ee8/station.db",
+      "sha256": "5034e7e246408063fb6c6c6205289fa63955bda2c7f81afba7235375f6afa9e5",
+      "bytes": 184320
+    },
+    {
+      "run": "target",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-91d33f87da5642b192c7d8c62d01a489/product-ownership-dispose-pending/rival-data/Simulation/SIM-17b2fab8cc4540f792a4f89134730ee8-rival/station.db",
+      "sha256": "940808208201377448b8c03e6e9b270da02f8f29590ec891f205ba23986030cf",
+      "bytes": 163840
+    },
+    {
+      "run": "target",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-91d33f87da5642b192c7d8c62d01a489/product-ownership-stop-pending/owner-data/Simulation/SIM-24f27635d4fd49bf9e4a213c16d96f75/station.db",
+      "sha256": "32a332f6745546b43716b64b79e6685f730c4883dd310bec37820d8d14562d79",
+      "bytes": 184320
+    },
+    {
+      "run": "target",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-91d33f87da5642b192c7d8c62d01a489/product-ownership-stop-pending/rival-data/Simulation/SIM-24f27635d4fd49bf9e4a213c16d96f75-rival/station.db",
+      "sha256": "d10061c88d32ca1b9437779be0d264b0dee50eaaeeba7d4b7b1dce4d4bbaf9d0",
+      "bytes": 163840
+    },
+    {
+      "run": "target",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-91d33f87da5642b192c7d8c62d01a489/product-ownership-stop-throws/owner-data/Simulation/SIM-fcc7d7654adf452cb9d31aff60e584b9/station.db",
+      "sha256": "26ac1f600285e0d69bbf7f8dc8e3be4adfee24ea662e93febe2364e7f00a35ec",
+      "bytes": 184320
+    },
+    {
+      "run": "target",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-91d33f87da5642b192c7d8c62d01a489/product-ownership-stop-throws/rival-data/Simulation/SIM-fcc7d7654adf452cb9d31aff60e584b9-rival/station.db",
+      "sha256": "838a12fcf7055972b809d7bc83939d7c5cd9697065f5e1d213c6a6121d4dfc62",
+      "bytes": 163840
+    },
+    {
+      "run": "target",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-91d33f87da5642b192c7d8c62d01a489/receiver/receiver.db",
+      "sha256": "2e96884c16791c7d4bde90a6db2c9da33c2a2aab3e52088adc148c368552a423",
+      "bytes": 4096
+    },
+    {
+      "run": "closure",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f2392e4e248c4f999185e26b947fa116/1ac328df56474d68aaca594e47bc7a39/station.db",
+      "sha256": "42a47c00a0d73f8582859a843ce50a9b25e38863aaefd9e1d95eae15b1b80195",
+      "bytes": 258048
+    },
+    {
+      "run": "closure",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f2392e4e248c4f999185e26b947fa116/3795a6d9dfaa403d92996ae23a90078b/station.db",
+      "sha256": "307fcc5da06e1007b29f1096fc3bfba52b9aee6dfd25f3623ea90351d0487e8b",
+      "bytes": 208896
+    },
+    {
+      "run": "closure",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f2392e4e248c4f999185e26b947fa116/a1e4d53538fc4214bb6194743480c030/station.db",
+      "sha256": "0e8f0099baf426b4369cfa6b477270f31affac98effb33b27d66aa4d949df37a",
+      "bytes": 212992
+    },
+    {
+      "run": "closure",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f2392e4e248c4f999185e26b947fa116/closure-cue-overflow/station.db",
+      "sha256": "8beede2159fa7ebedabed406eb25008c0b58fdbb2208bcd947560af0c3298b4c",
+      "bytes": 487424
+    },
+    {
+      "run": "closure",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f2392e4e248c4f999185e26b947fa116/closure-health/station.db",
+      "sha256": "d037ce9953e606a6b3fcd269e3f16c013a369031eaa398b5ab09f232c0122379",
+      "bytes": 184320
+    },
+    {
+      "run": "closure",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f2392e4e248c4f999185e26b947fa116/closure-resource-dispose/station.db",
+      "sha256": "aef1483f04f541d5b205138f54340620999feda7a9c5b9776e52990d2810cc88",
+      "bytes": 163840
+    },
+    {
+      "run": "closure",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f2392e4e248c4f999185e26b947fa116/closure-resource-stop/station.db",
+      "sha256": "390464504c0566a42570344699184932be5c26b6e68af31c4371221f0f7edfa1",
+      "bytes": 163840
+    },
+    {
+      "run": "closure",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f2392e4e248c4f999185e26b947fa116/closure-resource-timeout/station.db",
+      "sha256": "c0ae31b540c604296e1dd8400a40ffbb63dbcb79cfc4f043bb0783662883c46c",
+      "bytes": 163840
+    },
+    {
+      "run": "closure",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f2392e4e248c4f999185e26b947fa116/f9222cf5191d446dbe001eca704411e9/station.db",
+      "sha256": "09edb7a07f4bef31dcaf60e502962b2a6a3c763fb90532061c1ecea2d2649f49",
+      "bytes": 233472
+    },
+    {
+      "run": "closure",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f2392e4e248c4f999185e26b947fa116/receiver/receiver.db",
+      "sha256": "2e96884c16791c7d4bde90a6db2c9da33c2a2aab3e52088adc148c368552a423",
+      "bytes": 4096
+    },
+    {
+      "run": "followup",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8/followup-config-history/station.db",
+      "sha256": "95c2ee16861be88f1137628f8eaf178d14ccea7be43701f99daa8b54b1e08b28",
+      "bytes": 180224
+    },
+    {
+      "run": "followup",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8/followup-identity/station.db",
+      "sha256": "6fafdc9131ce67512d300a6cb2bda665e623818a3b8c08487f610778898cc2a9",
+      "bytes": 163840
+    },
+    {
+      "run": "followup",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8/followup-ownership/different-station-competes-a/data/Simulation/SIM-7c87a10a312c46af9de7758efdccb65e/station.db",
+      "sha256": "b85ef7606c51346177177f33b3744621a43eeb38b02f4240c76e143c2eec3678",
+      "bytes": 163840
+    },
+    {
+      "run": "followup",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8/followup-ownership/effective-a-seed-b/data/Simulation/SIM-fca79df95dcf4defb5e2d2e4f90a4d28/station.db",
+      "sha256": "c87a7f2741a9c518b4f9dd8a4b7ffcd8e76ceea3ce067e871189007df70acc23",
+      "bytes": 385024
+    },
+    {
+      "run": "followup",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8/followup-ownership/pending-invalid-fallback/data/Simulation/SIM-fca79df95dcf4defb5e2d2e4f90a4d28/station.db",
+      "sha256": "8ac204ea7699888a4d89106c54f005a721d3a721fda32d881b7dfbf690c8b551",
+      "bytes": 172032
+    },
+    {
+      "run": "followup",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8/followup-ownership/pending-new-device-set/data/Simulation/SIM-fca79df95dcf4defb5e2d2e4f90a4d28/station.db",
+      "sha256": "8d55b7856b3153a73fbd2498e439cd77a77930aea0dbaf28eadde87cd0b713e7",
+      "bytes": 172032
+    },
+    {
+      "run": "followup",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8/followup-ownership/pending-source-failure/data/Simulation/SIM-fca79df95dcf4defb5e2d2e4f90a4d28/station.db",
+      "sha256": "75bcec7b22d690d6acde158d1e9b0b49ae954594b96cfc23a547b0e5605fe50a",
+      "bytes": 172032
+    },
+    {
+      "run": "followup",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8/followup-ownership/restored-identity-15d4924033054063a58c29ea290e4c67/data/Simulation/SIM-fca79df95dcf4defb5e2d2e4f90a4d28/station.db",
+      "sha256": "e7d4cb5eac89b65ad0ee3b7ec4286f8e27d4a0dc096dc44ba219aaabf9a70b67",
+      "bytes": 163840
+    },
+    {
+      "run": "followup",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8/followup-ownership/restored-identity-8533ce53dd0b45e5a8fe42820b1b159f/data/Simulation/SIM-fca79df95dcf4defb5e2d2e4f90a4d28/station.db",
+      "sha256": "1dd38c24bdfdde485a2c3c38dc3855fdffb89e4862e6dd9f746fb950675c313a",
+      "bytes": 163840
+    },
+    {
+      "run": "followup",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8/receiver/receiver.db",
+      "sha256": "2e96884c16791c7d4bde90a6db2c9da33c2a2aab3e52088adc148c368552a423",
+      "bytes": 4096
+    },
+    {
+      "run": "followup",
+      "path": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8/reference-journey/data/Simulation/SIM-090a404b8509414fa82a244cd7ed1d19/station.db",
+      "sha256": "052804579142b512a2949d23276b8823e0dd9e2b52deb59bdb0a06fed3881150",
+      "bytes": 282624
+    }
+  ],
+  "journey": {
+    "station_id": "SIM-090a404b8509414fa82a244cd7ed1d19",
+    "original_lost_response_request": "d2f6f75a6a8442b78e8916b0b28444d7",
+    "original_receiver_sends": 1,
+    "original_attempts": 1,
+    "acceptance_facts": 2,
+    "accepted_quantity": 6,
+    "station_db": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-0e1c245397104c23a5a3fc89800fc6e8/reference-journey/data/Simulation/SIM-090a404b8509414fa82a244cd7ed1d19/station.db"
+  },
+  "reviews": {
+    "standards": "PASS_NO_OPEN_FINDINGS",
+    "spec": "PASS_NO_OPEN_FINDINGS",
+    "closed_during_review": "Stale identity A focus callback could requeue B; generation/ticket/Retry guard and A-to-B regression added"
+  },
+  "failures": [
+    {
+      "path": "docs/runtime/evidence/review-followup-11/first-build-failure.log",
+      "reason": "CS8602 in queued focus callback",
+      "fix": "Pattern-match one non-null snapshot before comparing captured actor/session; complete solution rebuild passed"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/first-archive-failure.json",
+      "reason": "Two new public JSON metadata records included local worktree package paths",
+      "fix": "Use relative package locations and WORKTREE placeholder in public metadata; original ZIP bytes/hashes retained and validator unchanged"
+    }
+  ],
+  "inherited_tests_not_rerun": {
+    "migration": "No Supply/schema changes; a080825 plus independent PR9 --data evidence retained",
+    "t1_t2_t3": "Prior full reconciliation child-process evidence retained; no sender/protocol/transaction edits",
+    "full_reconciliation": "Not repeated; risk-specific E11/E07/E08 selected"
+  },
+  "archive_validation": {
+    "status": "FAIL_INHERITED_BASELINE_ASSETS",
+    "error_count": 267,
+    "identical_to_main_reconciliation_error_set": true,
+    "new_file_errors": 0,
+    "raw_result_path": "/tmp/ipc-review-11-archive-final.json",
+    "raw_sha256": "6446476895446e698c56ec23420b7bbbee005d0e1c5e396912225fe418923f90",
+    "validator_changed": false
+  },
+  "packages": [
+    {
+      "target": "portable",
+      "path": ".artifacts/review-followup-4edb909-portable.zip",
+      "sha256": "f38ad91a43b8244a0e25ca2581821d72a7c231baa0707212b2e82e925e7e99a1",
+      "bytes": 35207922,
+      "listed_files": 130,
+      "release": {
+        "WorkPackage": "WP-IPC-REVIEW-FOLLOWUP-11",
+        "SchemaVersion": 1,
+        "ReleaseVersion": "REVIEW-FOLLOWUP-11",
+        "StorageVersion": 3,
+        "ContractVersion": "SIMULATION-v1",
+        "ProductId": "ipc-reference",
+        "ProductDefinitionSha256": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+        "SourceCodeSha256": "91036e12987b33656ebee458337de3d0b1ee85f9dd37f20b199f6092a02a80fb",
+        "SourceCommit": "4edb909e71097a7da61506beaa10ae5db82ec6cb",
+        "WorkingTree": false,
+        "GitBase": "4edb909e71097a7da61506beaa10ae5db82ec6cb",
+        "Mode": "Simulation",
+        "Target": "portable-development"
+      },
+      "modules": [
+        {
+          "Id": "platform",
+          "Kind": "platform",
+          "Version": "1.0.0",
+          "ContractMajor": 1,
+          "Dependencies": [],
+          "File": "Ipc.Platform.dll",
+          "Sha256": "E361E2C044CE6FFB7575AFEDF4FD4E84836D4A83A914EF816E9A14D029E7236E"
+        },
+        {
+          "Id": "supply",
+          "Kind": "supply",
+          "Version": "1.0.0",
+          "ContractMajor": 1,
+          "Dependencies": [
+            "platform"
+          ],
+          "File": "Ipc.Supply.dll",
+          "Sha256": "456F5CD19CD005BE84BD0691821110C36EDEA09B86B4C422BAF20B3D4A38D8D1"
+        },
+        {
+          "Id": "adapters",
+          "Kind": "adapters",
+          "Version": "1.0.0",
+          "ContractMajor": 1,
+          "Dependencies": [
+            "supply"
+          ],
+          "File": "Ipc.Adapters.dll",
+          "Sha256": "AB061AFC39481D960C1266570F3ADFF02DF2D5CC7E33960723933577640A41F1"
+        },
+        {
+          "Id": "product",
+          "Kind": "product",
+          "Version": "1.0.0",
+          "ContractMajor": 1,
+          "Dependencies": [
+            "adapters"
+          ],
+          "File": "Ipc.Product.dll",
+          "Sha256": "7C5592079800C89FDC7E7E4F1E5266A88D83C5E8E60078EDE2FC126D23A67686"
+        }
+      ],
+      "config_sha256": {
+        "presentation.json": "631b7675cd7ac2982711443908aee096ebbae2766790086faaa9fd6e555e3e2f",
+        "product.definition.json": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+        "product.json": "b5806c7c329813b238c1b64855bfac9e1731c712bde822fb2de6ded18cdd930e",
+        "replay.jsonl": "e8ee63bb8172d46a7b612529741df2bfc259b82af92b996605cdd50069bddf41",
+        "station.json": "5b19a4ccd4276c84960ad86bc99c9bc0ca9eb5dabcf899904d2cdfde25f8a195"
+      },
+      "crc": "PASS",
+      "exact_file_set": "PASS",
+      "sha256sums": "PASS",
+      "registered_modules": "PASS",
+      "actual_execution": "NATIVE_CORE_SMOKE_PASS"
+    },
+    {
+      "target": "win-x64",
+      "path": ".artifacts/review-followup-4edb909-win-x64.zip",
+      "sha256": "a1d9a00ef06affb87def7598b2f29d81de61b4deac0dafdee9c358dee24b05b5",
+      "bytes": 115347119,
+      "listed_files": 815,
+      "release": {
+        "WorkPackage": "WP-IPC-REVIEW-FOLLOWUP-11",
+        "SchemaVersion": 1,
+        "ReleaseVersion": "REVIEW-FOLLOWUP-11",
+        "StorageVersion": 3,
+        "ContractVersion": "SIMULATION-v1",
+        "ProductId": "ipc-reference",
+        "ProductDefinitionSha256": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+        "SourceCodeSha256": "91036e12987b33656ebee458337de3d0b1ee85f9dd37f20b199f6092a02a80fb",
+        "SourceCommit": "4edb909e71097a7da61506beaa10ae5db82ec6cb",
+        "WorkingTree": false,
+        "GitBase": "4edb909e71097a7da61506beaa10ae5db82ec6cb",
+        "Mode": "Simulation",
+        "Target": "win-x64"
+      },
+      "modules": [
+        {
+          "Id": "platform",
+          "Kind": "platform",
+          "Version": "1.0.0",
+          "ContractMajor": 1,
+          "Dependencies": [],
+          "File": "Ipc.Platform.dll",
+          "Sha256": "E361E2C044CE6FFB7575AFEDF4FD4E84836D4A83A914EF816E9A14D029E7236E"
+        },
+        {
+          "Id": "supply",
+          "Kind": "supply",
+          "Version": "1.0.0",
+          "ContractMajor": 1,
+          "Dependencies": [
+            "platform"
+          ],
+          "File": "Ipc.Supply.dll",
+          "Sha256": "456F5CD19CD005BE84BD0691821110C36EDEA09B86B4C422BAF20B3D4A38D8D1"
+        },
+        {
+          "Id": "adapters",
+          "Kind": "adapters",
+          "Version": "1.0.0",
+          "ContractMajor": 1,
+          "Dependencies": [
+            "supply"
+          ],
+          "File": "Ipc.Adapters.dll",
+          "Sha256": "AB061AFC39481D960C1266570F3ADFF02DF2D5CC7E33960723933577640A41F1"
+        },
+        {
+          "Id": "product",
+          "Kind": "product",
+          "Version": "1.0.0",
+          "ContractMajor": 1,
+          "Dependencies": [
+            "adapters"
+          ],
+          "File": "Ipc.Product.dll",
+          "Sha256": "3B75381437EBE8F0063BB34E7BAEC0AADEA3E7CA413E8C59064836F1C52827E4"
+        }
+      ],
+      "config_sha256": {
+        "presentation.json": "631b7675cd7ac2982711443908aee096ebbae2766790086faaa9fd6e555e3e2f",
+        "product.definition.json": "cc524ac37c18bf0bdb09941d6c54ae4730d01ee85b1a3253ce6e3e75ac333d8c",
+        "product.json": "3694570496e58cd6a008f2fb0e42275110d9dd6899fc38ba94c5fe377233c5a8",
+        "replay.jsonl": "e8ee63bb8172d46a7b612529741df2bfc259b82af92b996605cdd50069bddf41",
+        "station.json": "5b19a4ccd4276c84960ad86bc99c9bc0ca9eb5dabcf899904d2cdfde25f8a195"
+      },
+      "crc": "PASS",
+      "exact_file_set": "PASS",
+      "sha256sums": "PASS",
+      "registered_modules": "PASS",
+      "actual_execution": "WINDOWS_NOT_RUN"
+    }
+  ],
+  "pull_request": {
+    "url": "https://github.com/yuan2go/importer-pc/pull/10",
+    "creation_head": "bf1c9e82038baaca6c5fbd32de1796fa476c6e58",
+    "base_commit": "4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+    "state_at_creation": "OPEN",
+    "mergeable_at_read": "MERGEABLE",
+    "merge_state_at_read": "CLEAN",
+    "github_checks_at_read": [],
+    "merged_by_this_task": false
+  }
+}

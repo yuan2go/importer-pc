@@ -1,0 +1,12 @@
+test_hash_json_manifest_and_unlisted_fail (test_verify_archive.ArchiveTests.test_hash_json_manifest_and_unlisted_fail) ... ok
+test_images_pptx_relations_and_public_secrets_fail (test_verify_archive.ArchiveTests.test_images_pptx_relations_and_public_secrets_fail) ... ok
+test_links_anchors_css_and_symlink_fail (test_verify_archive.ArchiveTests.test_links_anchors_css_and_symlink_fail) ... ok
+test_registered_gap_has_reason_and_cannot_hide_unrelated_gap (test_verify_archive.ArchiveTests.test_registered_gap_has_reason_and_cannot_hide_unrelated_gap) ... ok
+test_repeated_verification_is_read_only (test_verify_archive.ArchiveTests.test_repeated_verification_is_read_only) ... ok
+test_runtime_outputs_do_not_hide_documentation_or_source (test_verify_archive.ArchiveTests.test_runtime_outputs_do_not_hide_documentation_or_source) ... ok
+test_zip_traversal_link_crc_identity (test_verify_archive.ArchiveTests.test_zip_traversal_link_crc_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.316s
+
+OK

@@ -9,8 +9,16 @@ using Microsoft.Extensions.Logging;
 namespace Ipc.Product;
 
 public sealed record BootOptions(string Manifest, string Station, string Presentation, string DataRoot, string? InstallRoot = null, string? LeaseRoot = null, string? View = null, string? Layout = null);
-public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> logger) : IHostedService, IAsyncDisposable, IDisposable
+public sealed class ProductRuntime : IHostedService, IAsyncDisposable, IDisposable
 {
+    readonly BootOptions options;
+    readonly ILogger<ProductRuntime> logger;
+    readonly Func<DeviceBinding, string, IObservationSource> sourceFactory;
+    public ProductRuntime(BootOptions options, ILogger<ProductRuntime> logger) : this(options, logger, ReferenceProduct.CreateSource) { }
+    // Only the existing verification friend assembly can supply controlled sources. All
+    // configuration/product validation and lease acquisition still precede this factory.
+    internal ProductRuntime(BootOptions options, ILogger<ProductRuntime> logger, Func<DeviceBinding, string, IObservationSource> sourceFactory)
+    { this.options = options; this.logger = logger; this.sourceFactory = sourceFactory; }
     ResourceLease? dataLease, resourceLease;
     ConfigRevision? activating;
     RuntimeJournal? journal;
@@ -139,12 +147,12 @@ public sealed class ProductRuntime(BootOptions options, ILogger<ProductRuntime> 
             .Concat(selected.StationId != seed.StationId || selected.Mode != seed.Mode ? ["Config station/mode does not match the owned data root"] : Array.Empty<string>()).ToArray();
     internal static string[] ConfigurationResources(StationConfig selected) =>
         new[] { $"{selected.Mode}:station:{selected.StationId}" }.Concat(selected.Devices.Select(x => $"{selected.Mode}:device:{x.DeviceId}")).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
-    static async Task<IObservationSource[]> CreateSourcesAsync(StationConfig selected, string directory)
+    async Task<IObservationSource[]> CreateSourcesAsync(StationConfig selected, string directory)
     {
         List<IObservationSource> sources = [];
         try
         {
-            foreach (var binding in selected.Devices) sources.Add(ReferenceProduct.CreateSource(binding, directory));
+            foreach (var binding in selected.Devices) sources.Add(sourceFactory(binding, directory));
             return sources.ToArray();
         }
         catch (Exception creation)

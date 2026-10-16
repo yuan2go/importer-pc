@@ -24,11 +24,21 @@ static class ExtensionVerification
     }
     static async Task Build(string workspace, string output, string contract)
     {
+        var isolated = output + "-source"; Directory.CreateDirectory(isolated);
+        var original = Path.Combine(workspace, "examples/BarcodeExtension");
+        foreach (var name in Git(workspace, "ls-files", "examples/BarcodeExtension").Split('\n', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var source = Path.Combine(workspace, name); var target = Path.Combine(isolated, Path.GetRelativePath(original, source));
+            Directory.CreateDirectory(Path.GetDirectoryName(target)!); File.Copy(source, target);
+        }
+        foreach (var name in new[] { "Directory.Build.props", "global.json", "NuGet.Config" }) File.Copy(Path.Combine(workspace, name), Path.Combine(Path.GetDirectoryName(isolated)!, name), overwrite: true);
+        var pluginCommit = Git(workspace, "log", "-1", "--format=%H", "--", "examples/BarcodeExtension").Trim();
         var dotnet = Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") ?? Environment.ProcessPath!;
         foreach (var command in new[] { "restore", "build" })
         {
             var start = new ProcessStartInfo(dotnet) { WorkingDirectory = workspace, RedirectStandardOutput = true, RedirectStandardError = true };
-            foreach (var arg in new[] { command, "examples/BarcodeExtension/BarcodeExtension.csproj", "-p:IpcContractPath=" + contract }) start.ArgumentList.Add(arg);
+            foreach (var arg in new[] { command, Path.Combine(isolated, "BarcodeExtension.csproj"), "-p:IpcContractPath=" + contract,
+                "-p:SourceRevisionId=" + pluginCommit, "-p:PathMap=" + isolated + "=/_/reference-barcode" }) start.ArgumentList.Add(arg);
             foreach (var arg in command == "restore" ? new[] { "--locked-mode" } : new[] { "--no-restore", "-c", "Release", "-m:1", "-nr:false", "-o", output }) start.ArgumentList.Add(arg);
             using var process = Process.Start(start)!;
             var stdout = process.StandardOutput.ReadToEndAsync(); var stderr = process.StandardError.ReadToEndAsync(); await process.WaitForExitAsync();

@@ -37,9 +37,21 @@ if not commit:
     raise ValueError('Commit the independent example sources before building distribution packages')
 with tempfile.TemporaryDirectory(prefix='ipc-extension-build-') as temporary:
     work = Path(temporary)
+    isolated = work / 'project'
+    isolated.mkdir()
+    tracked = subprocess.check_output(['git', 'ls-files', '-z', '--', 'examples/BarcodeExtension'], cwd=root).decode().split('\0')
+    for name in filter(None, tracked):
+        source = root / name
+        copy = isolated / source.relative_to(project.parent)
+        copy.parent.mkdir(parents=True, exist_ok=True)
+        copy.write_bytes(source.read_bytes())
+    for name in ('Directory.Build.props', 'global.json', 'NuGet.Config'):
+        (work / name).write_bytes((root / name).read_bytes())
+    isolated_project = isolated / project.name
+    properties = [f'-p:IpcContractPath={contract}', f'-p:SourceRevisionId={commit}', f'-p:PathMap={isolated}=/_/reference-barcode']
     for command in [
-        [a.dotnet, 'restore', str(project), '--locked-mode', f'-p:IpcContractPath={contract}'],
-        [a.dotnet, 'build', str(project), '--no-restore', '-c', 'Release', '-m:1', '-nr:false', f'-p:IpcContractPath={contract}', f'-p:Version={a.version}', '-o', str(work / 'bin')],
+        [a.dotnet, 'restore', str(isolated_project), '--locked-mode', *properties],
+        [a.dotnet, 'build', str(isolated_project), '--no-restore', '-c', 'Release', '-m:1', '-nr:false', *properties, f'-p:Version={a.version}', '-o', str(work / 'bin')],
     ]:
         subprocess.run(command, cwd=root, check=True)
     binary = work / 'bin/Ipc.Reference.BarcodeExtension.dll'

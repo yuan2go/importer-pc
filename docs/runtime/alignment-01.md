@@ -56,3 +56,5 @@
 代码提交 `712446ae262c6b269bd6576ad5c17784a644c7d7`；自包含包 `ALIGNMENT-01-712446a-win-x64.zip`，119023233 bytes，SHA256 `1089c45f294ead68154d92b26217b9fd3c18bf86089c4f745cdc43ed5c7a8aeb`。813个包内文件校验、模块哈希、三个Windows PE入口、嵌入PerMonitorV2声明和ZIP CRC均PASS；没有数据库、凭据或字体文件。发布核心原生运行冒烟7项PASS，Windows执行NOT_RUN。二进制通过单独发布资产交付，不进Git源码。
 
 固定版本运行：解压后 `./station.ps1 -Action Fixture`，另一窗口 `./station.ps1 -Action Init`、`./station.ps1 -Action Run -View workstation -Layout standard`。Windows首次运行与全部操作仍按清单验收，不能由包检查推定通过。
+
+[main PR #4](https://github.com/yuan2go/importer-pc/pull/4) 已创建，保持OPEN未合并。Simulation包与校验文件已上传到草稿发布，目标为上述代码提交，远端ZIP digest与本地一致；草稿未公开发布，不等于生产/现场放行。

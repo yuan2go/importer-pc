@@ -151,5 +151,22 @@
     "commit": "2b8b35b6025ed87438f27c7c821260f4740befba",
     "open_pull_requests_before_creation": 0,
     "parallel_branch_untouched": "docs/ui-assets-20261016"
+  },
+  "pull_request": {
+    "url": "https://github.com/yuan2go/importer-pc/pull/4",
+    "state": "OPEN",
+    "base": "main",
+    "merged": false
+  },
+  "cloud_artifact": {
+    "state": "DRAFT_UPLOADED",
+    "release_tag": "wp-ipc-arch-ui-alignment-01-simulation-20261016",
+    "target_commit": "712446ae262c6b269bd6576ad5c17784a644c7d7",
+    "zip_asset_id": 647268473,
+    "zip_bytes": 119023233,
+    "remote_digest": "sha256:1089c45f294ead68154d92b26217b9fd3c18bf86089c4f745cdc43ed5c7a8aeb",
+    "local_remote_digest_match": true,
+    "publicly_published": false,
+    "meaning": "Draft Simulation asset uploaded for owner review and Windows validation; no production/site release"
   }
 }

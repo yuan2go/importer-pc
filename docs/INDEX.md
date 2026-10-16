@@ -2,6 +2,12 @@
 
 更新日期：2026-10-16；本轮实施任务：WP-IPC-ARCH-UI-ALIGNMENT-01；历史分析基准 `39747a8c35b748da71bf9acfd56a9c9812b199b4`。
 
+## 已入库的最终交付UI：Codex页面开发必读
+
+[SS-UI-VIS-001 v1.1完整设计入口](ui/ss-ui-vis-001-v1.1/README.md) · [34张独立状态图](ui/ss-ui-vis-001-v1.1/GALLERY.md) · [原始交互HTML](ui/ss-ui-vis-001-v1.1/供包工作站_高保真交互原型.html) · [完整UI规范与交接](ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md)。PPTX、画板JSON、tokens及分离HTML/CSS/JS均在该目录，不仅是链接或摘要。11份源文件原字节保留，PNG为同源重新导出、非Windows运行截图；版本与边界见目录README。
+
+该组生成成果依据用户本次明确上传要求发布。下文历史“所有衍生图均未入库”仅对本组以外材料有效；完整客户资料归档仍为部分完成。设计保存不自动关闭D/RV，也不能覆盖实际应用安全约束。
+
 ## 当前结论
 
 当前工作包实施和验证见 [ALIGNMENT-01](runtime/alignment-01.md)、[检查记录](runtime/alignment-01-checks.json)、[Windows待验](runtime/alignment-01-windows.md)。

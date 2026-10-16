@@ -1,0 +1,89 @@
+{
+  "design": "SS-UI-VIS-001",
+  "version": "1.1",
+  "source_archive": "供包工作站_UIUX高保真交付_v1.1.zip",
+  "source_archive_sha256": "191be3c69a75dd43dbe810f324e94697f216569e05c8ac5e280a381d364062fa",
+  "version_basis": "last complete UI delivery in the current design conversation; not a claim about an unexported Canva revision or a different conversation version",
+  "publication_scope": "user-requested generated final UI assets only; no raw customer PRD, private links, SDK or font binaries",
+  "files": [
+    {
+      "source_path": "README.md",
+      "path": "README.source.md",
+      "sha256": "0d6659534ab054403fe3f7cb8f5d8bb38cf94b50058868c8743483e44326ae99",
+      "size_bytes": 3437,
+      "byte_identical": true
+    },
+    {
+      "source_path": "design/editable-boards.json",
+      "path": "design/editable-boards.json",
+      "sha256": "93febef83f0e69625b8b08f76ee05f7275e505bce8cc8154530eaa54bee7f7a7",
+      "size_bytes": 1073550,
+      "byte_identical": true
+    },
+    {
+      "source_path": "design/tokens.css",
+      "path": "design/tokens.css",
+      "sha256": "99ad481832ec36bb901032e597fccc9d36a0f7fa1b77ed5ffbf4c85434b18ec5",
+      "size_bytes": 629,
+      "byte_identical": true
+    },
+    {
+      "source_path": "design/tokens.json",
+      "path": "design/tokens.json",
+      "sha256": "09bbfe810d571cfd57115729c78f59a3f43ee65974ce317fe08b9bbe8e8efb5e",
+      "size_bytes": 1779,
+      "byte_identical": true
+    },
+    {
+      "source_path": "design/供包工作站_可编辑UI画板_v1.1.pptx",
+      "path": "design/供包工作站_可编辑UI画板_v1.1.pptx",
+      "sha256": "88a71e35bc9e97c7995d63ee8369868a6f18c576c93c1aed21276ef259c34dda",
+      "size_bytes": 3975627,
+      "byte_identical": true
+    },
+    {
+      "source_path": "docs/供包工作站_UIUX设计与开发交接说明.md",
+      "path": "docs/供包工作站_UIUX设计与开发交接说明.md",
+      "sha256": "4e0b59865d326b7297e06dee76e72c8bd11cfd22377a7dca497e091d1f32c599",
+      "size_bytes": 32953,
+      "byte_identical": true
+    },
+    {
+      "source_path": "prototype/index.html",
+      "path": "prototype/index.html",
+      "sha256": "0990509ae71265eb9ae85702faba150e11d05c7b4cc42c913076e924d6343d01",
+      "size_bytes": 645,
+      "byte_identical": true
+    },
+    {
+      "source_path": "prototype/workstation.css",
+      "path": "prototype/workstation.css",
+      "sha256": "03987ef6fc3d8b31823e6863d18146a5af4020c48bbe3b0097d13c89c9b3049c",
+      "size_bytes": 20713,
+      "byte_identical": true
+    },
+    {
+      "source_path": "prototype/workstation.js",
+      "path": "prototype/workstation.js",
+      "sha256": "0d8663f607d7cd4ae360bda2e998376e8fc70d5e266cf3402ab62de3c49d77e3",
+      "size_bytes": 63623,
+      "byte_identical": true
+    },
+    {
+      "source_path": "供包工作站_高保真交互原型.html",
+      "path": "供包工作站_高保真交互原型.html",
+      "sha256": "d46b0ed9b057cda6779012ecdc6981d0799ba8c3de73e9be22d92b61d4860b6c",
+      "size_bytes": 84945,
+      "byte_identical": true
+    },
+    {
+      "source_path": "界面图册.html",
+      "path": "界面图册.html",
+      "sha256": "513e0fd177b5f58d1c90ff799d9f20fe093f72b485a43b75dc3aadf5d57e8786",
+      "size_bytes": 7486,
+      "byte_identical": true
+    }
+  ],
+  "original_screen_png_bytes_uploaded": false,
+  "screen_provenance": "PNG pages will be re-exported from the byte-identical original HTML; not historical screenshot bytes or Windows client evidence"
+}

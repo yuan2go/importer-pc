@@ -1,0 +1,21 @@
+{
+  "scope": "UI source publication and screenshot export only",
+  "source_files_byte_identical": 11,
+  "png_exports": 34,
+  "pptx_pages": 18,
+  "editable_board_pages": 18,
+  "pptx_external_relations": [],
+  "known_png_named_svg_parts": 265,
+  "source_business_logic_changed": false,
+  "business_tests": "NOT_RUN",
+  "windows_sdk_wcs_site": "NOT_RUN",
+  "source_and_image_identity": "PASS",
+  "historical_evidence_reexecution": false,
+  "not_included": [
+    "historical screenshot bytes",
+    "raw customer PRD/product HTML and private source links",
+    "new Canva export",
+    "other conversation unmaterialized v2.1 package"
+  ],
+  "publication_basis": "explicit repeated user request to upload this final generated UI set to the known public repository; not a blanket customer-material release"
+}

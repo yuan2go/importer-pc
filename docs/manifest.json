@@ -1544,6 +1544,17 @@
       "git_blob": "76f949e07e4287e1e95339771efd4722c892b557"
     },
     {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/source-publication.json",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "b85d44e32d0678bcd99a74738ba9b36b69631234dd619773491849e79bbc1432",
+      "size_bytes": 761,
+      "git_blob": "ef6ab402ee954d10764d8fbf9243bffdad448871"
+    },
+    {
       "path": "docs/runtime/evidence/extension-windows-delivery-12/uninstall-interruption-operations-9a25212574b34d99b68e748ffef5d81c.json",
       "version": "delivery-12-reference",
       "status": "current_implementation_or_evidence",
@@ -2046,9 +2057,9 @@
       "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
       "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "5a884ef444994fac7f7aad9725e5c458f2488eaa887488be75ab105cd2d69a67",
-      "size_bytes": 10353,
-      "git_blob": "067a6a6c2eb5df4b8852d2b639d74cf57a9d99ae"
+      "sha256": "6183ff0772ac4cf3b2ed7653b6ac9346d5d6604c701970563de4ba7e9d06fc51",
+      "size_bytes": 10729,
+      "git_blob": "58fb279f52581a618c4984e6cd860342396061ac"
     },
     {
       "path": "docs/runtime/hardening-04-checks.json",

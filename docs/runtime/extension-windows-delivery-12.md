@@ -43,6 +43,8 @@ Release `EXTENSION-WINDOWS-DELIVERY-12`；Storage/MinimumReader=3；业务合同
 
 ## 交付与接手
 
+面向main的 [草稿PR #11](https://github.com/yuan2go/importer-pc/pull/11) 已创建并附着当前任务，未合并。证据提交 `9a21616` 的远端整树/逐文件blob已与本地完整对照，见 [源码发布回读](evidence/extension-windows-delivery-12/source-publication.json)。随后仅补充本链接/回执与manifest，候选运行源码仍冻结11f0728。
+
 下载预发布资产，先核对外层SHA，再解压内层SHA256SUMS和composition.lock；远端下载的每个资产均与本地SHA和内容库存对照。候选不是MSI/生产代码签名安装器；使用现有Windows部署脚本完成受保护目录/普通账户设置，实际安装边界必须在Windows验收。禁止直接从可写Downloads目录提权助手。
 
 按包内EXTENSIONS.md及 [扩展开发/恢复指南](../extensions/developer-guide.md) 在隔离合成Windows参考机执行：安装扩展 → 参数/实例/角色绑定 → 保存差异/审核/激活 → 受控重启 → 验箱/双通道/拆包或供包 → Unknown原请求核对 → 关闭/新箱历史 → 重启恢复 → 升级1.1.0或失败安全退回 → 停用/卸载。不要使用本文核心证据勾选Windows动作。W01～06的环境、分辨率、缩放、实际客户区、动作/对象/部署/请求身份、截图、行为结果均需独立记录。验证入口不会把键盘注入写成扫码器、触控或听审。

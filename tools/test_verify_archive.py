@@ -59,10 +59,13 @@ class ArchiveTests(unittest.TestCase):
     def test_links_anchors_css_and_symlink_fail(self):
         (self.root / 'README.md').write_text('[bad](docs/entry.md#不存在)\n[missing](docs/absent.md)\n')
         (self.root / 'docs/a.css').write_text('x{background:url("absent.png")}')
+        (self.root / 'docs/boards.json').write_text(json.dumps([{'width': 10, 'height': 10, 'objects': [
+            {'type': 'svg', 'svg': '<svg><style>rect{fill:url(missing.png)}</style></svg>'}]}]))
         (self.root / 'docs/link').symlink_to(self.root / 'README.md')
         self.refresh()
         codes = {x['code'] for x in self.check_archive()['errors']}
         self.assertTrue({'missing_anchor', 'missing_or_unsafe_reference', 'symlink'} <= codes)
+        self.assertTrue(any('boards.json -> missing.png' in x['path'] for x in self.check_archive()['errors']))
 
     def test_zip_traversal_link_crc_identity(self):
         p = self.root / 'bad.zip'
@@ -96,9 +99,11 @@ class ArchiveTests(unittest.TestCase):
         with zipfile.ZipFile(self.root / 'docs/test.pptx', 'w') as z:
             z.writestr('_rels/.rels', '<Relationships><Relationship Target="https://example.invalid" TargetMode="External"/></Relationships>')
             z.writestr('ppt/fonts/font.odttf', b'font')
+            z.writestr('ppt/media/icon.svg', '<svg style="fill:url(missing.png)"></svg>')
         self.refresh()
         codes = {x['code'] for x in self.check_archive()['errors']}
-        self.assertTrue({'UnidentifiedImageError', 'secret_marker', 'pptx_external_relationship', 'embedded_font'} <= codes)
+        self.assertTrue({'UnidentifiedImageError', 'secret_marker', 'pptx_external_relationship', 'embedded_font',
+                         'pptx_required_parts', 'pptx_svg_external_asset'} <= codes)
 
 
 if __name__ == '__main__':

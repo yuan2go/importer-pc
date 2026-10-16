@@ -78,6 +78,21 @@ def css_references(text):
     return refs
 
 
+def svg_references(text):
+    tree = ET.fromstring(text)
+    refs, styles = [], []
+    for node in tree.iter():
+        if node.tag.split('}')[-1] == 'style':
+            styles.append(node.text or '')
+        for key, value in node.attrib.items():
+            local_key = key.split('}')[-1]
+            if local_key in ('href', 'src'):
+                refs.append(value)
+            elif local_key == 'style':
+                styles.append(value)
+    return refs + css_references('\n'.join(styles))
+
+
 def markdown(text):
     clean = re.sub(r'^\s*(`{3,}|~{3,}).*?^\s*\1\s*$', '', text, flags=re.M | re.S)
     refs = []
@@ -214,9 +229,7 @@ def verify(root, manifest_path, scope, registry_path=None):
                             raise ValueError('invalid board dimensions')
                         for o in b['objects']:
                             if o.get('type') == 'svg':
-                                ET.fromstring(o['svg'])
-                                parser = HTMLReferences(); parser.feed(o['svg'])
-                                for target in parser.refs:
+                                for target in svg_references(o['svg']):
                                     if not target.startswith('#'): reference(f, target)
                             for key in ('src', 'image', 'file', 'asset'):
                                 if isinstance(o.get(key), str): reference(f, o[key])
@@ -247,7 +260,12 @@ def verify(root, manifest_path, scope, registry_path=None):
                 zip_check(f)
                 with zipfile.ZipFile(f) as z:
                     parts = set(z.namelist())
+                    required = {'[Content_Types].xml', '_rels/.rels', 'ppt/presentation.xml', 'ppt/_rels/presentation.xml.rels'}
+                    if not required <= parts:
+                        fail('pptx_required_parts', rel)
                     for name in sorted(parts):
+                        if '/embeddings/' in name.lower() or 'vbaproject' in name.lower():
+                            fail('pptx_embedded_object_review_required', rel + ':' + name)
                         if name.lower().endswith(('.ttf', '.otf', '.odttf', '.woff', '.woff2')) or '/fonts/' in name.lower():
                             fail('embedded_font', rel)
                         if name.endswith(('.xml', '.rels')):
@@ -261,6 +279,15 @@ def verify(root, manifest_path, scope, registry_path=None):
                                         dest = posixpath.normpath(str(parent / unquote(item.get('Target', ''))))
                                         if dest not in parts: fail('pptx_missing_part', rel + ':' + name)
                         if re.fullmatch(r'ppt/slides/slide\d+\.xml', name): counts['slides'] += 1
+                        if name.lower().endswith('.svg'):
+                            for value in svg_references(z.read(name)):
+                                if not value.startswith(('#', 'data:')):
+                                    fail('pptx_svg_external_asset', rel + ':' + name)
+                        if name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')):
+                            from io import BytesIO
+                            from PIL import Image
+                            with Image.open(BytesIO(z.read(name))) as im: im.verify()
+                            with Image.open(BytesIO(z.read(name))) as im: im.load()
                 counts['pptx'] += 1
         except (ValueError, OSError, KeyError, ET.ParseError, ImportError, zipfile.BadZipFile) as e:
             fail(type(e).__name__, rel)

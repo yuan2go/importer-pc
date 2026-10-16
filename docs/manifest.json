@@ -508,8 +508,8 @@
     },
     {
       "path": "tools/test_verify_archive.py",
-      "sha256": "3c9e031cc1bf68717ee22f79006de80bf3ac8551338ceb6ce98e89f295fd4a1c",
-      "size_bytes": 5643,
+      "sha256": "8ea3fb260122189182b9d6cddcef2d920cc60911eac7420c97f4d3cf3e5f2f29",
+      "size_bytes": 6122,
       "storage_scope": "public_repository",
       "collected": true,
       "hash_checked": true,
@@ -531,8 +531,8 @@
     },
     {
       "path": "tools/verify_archive.py",
-      "sha256": "4dd43d7f455e61883d07ed46961ffe49d9dba04ff2deb8c2b66fe027dca2a390",
-      "size_bytes": 15311,
+      "sha256": "f339f8a9d0bca2b8a13e39d6e3acd634522b5821d56db871e3b3f81e70eaf52e",
+      "size_bytes": 16756,
       "storage_scope": "public_repository",
       "collected": true,
       "hash_checked": true,

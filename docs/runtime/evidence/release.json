@@ -1,0 +1,8 @@
+{
+  "WorkPackage": "WP-IPC-RUNTIME-03",
+  "SchemaVersion": 1,
+  "SourceCodeSha256": "8ec828c921c9556ad3a50394d286d18c9614a120d9ad06b1c8a45770c3d01b69",
+  "GitBase": "04a3d46713b318c84999906ae2479b62e7d49cf0",
+  "Mode": "Simulation",
+  "Target": "win-x64"
+}

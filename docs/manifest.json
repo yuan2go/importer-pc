@@ -447,15 +447,81 @@
     },
     {
       "path": "docs/runtime/delivery.md",
-      "sha256": "4524260bb99e4582e0ee859afb0d4d286b6aaec8814eae0489740359e6656da3",
-      "size_bytes": 5746,
-      "git_blob": "1a0cd01e3f8affe05a6ca366fff5639bb3a8de57",
+      "sha256": "41576efa2b8bf887ddef9f256518c713aaf1926c17880de986905c8bd03adfe1",
+      "size_bytes": 6088,
+      "git_blob": "c9d4edc60ea1d2ac779fc49ea177b990df58444f",
       "version": "runtime-1.0",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
       "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "af9db5793cf0a466ebabfdaf5b952aadf124ddb2"
+      "previous_git_blob": "1a0cd01e3f8affe05a6ca366fff5639bb3a8de57"
+    },
+    {
+      "path": "docs/runtime/evidence/WP-IPC-RUNTIME-03-win-x64.zip.sha256",
+      "version": "runtime-publication-1.0",
+      "status": "historical_execution_evidence",
+      "purpose": "Original runtime execution output or cloud publication record; no tests reexecuted",
+      "source": "WP-IPC-RUNTIME-03 prior generated artifacts; user requested cloud publication without testing",
+      "storage_scope": "public_repository",
+      "sha256": "a80a1e754b40524b13513a47e8289dcbe27574c0c56a6b35e6911fa57daed136",
+      "size_bytes": 96,
+      "git_blob": "1c1e7d68bcd2aa62f26ce9a3d7b78897c23d8b98"
+    },
+    {
+      "path": "docs/runtime/evidence/package-verification.json",
+      "version": "runtime-publication-1.0",
+      "status": "historical_execution_evidence",
+      "purpose": "Original runtime execution output or cloud publication record; no tests reexecuted",
+      "source": "WP-IPC-RUNTIME-03 prior generated artifacts; user requested cloud publication without testing",
+      "storage_scope": "public_repository",
+      "sha256": "68e107ea0c3a8a31a7dd4ae58f3c23fd457e2da54e47fb4df36d06d3368195ac",
+      "size_bytes": 466,
+      "git_blob": "d5aac509996e9e3c04aa860f44c8300445d34d29"
+    },
+    {
+      "path": "docs/runtime/evidence/release-SHA256SUMS.txt",
+      "version": "runtime-publication-1.0",
+      "status": "historical_execution_evidence",
+      "purpose": "Original runtime execution output or cloud publication record; no tests reexecuted",
+      "source": "WP-IPC-RUNTIME-03 prior generated artifacts; user requested cloud publication without testing",
+      "storage_scope": "public_repository",
+      "sha256": "bfec5588265ade13e799feb4df900fde58be08accb415bdc05a4abf455739b1a",
+      "size_bytes": 85148,
+      "git_blob": "3272e7f909c98689e79fb4ceea9a7fb613a17088"
+    },
+    {
+      "path": "docs/runtime/evidence/release.json",
+      "version": "runtime-publication-1.0",
+      "status": "historical_execution_evidence",
+      "purpose": "Original runtime execution output or cloud publication record; no tests reexecuted",
+      "source": "WP-IPC-RUNTIME-03 prior generated artifacts; user requested cloud publication without testing",
+      "storage_scope": "public_repository",
+      "sha256": "0bc57f3297e7c9332c31eebf8ec8d0778d9d18e5b473ee9038a5c6bd3aaad504",
+      "size_bytes": 257,
+      "git_blob": "02a25a3f599a0979512fc15152a22d44d683702b"
+    },
+    {
+      "path": "docs/runtime/evidence/smoke-final-results.json",
+      "version": "runtime-publication-1.0",
+      "status": "historical_execution_evidence",
+      "purpose": "Original runtime execution output or cloud publication record; no tests reexecuted",
+      "source": "WP-IPC-RUNTIME-03 prior generated artifacts; user requested cloud publication without testing",
+      "storage_scope": "public_repository",
+      "sha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "size_bytes": 347,
+      "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+    },
+    {
+      "path": "docs/runtime/evidence/smoke-results.json",
+      "version": "runtime-publication-1.0",
+      "status": "historical_execution_evidence",
+      "purpose": "Original runtime execution output or cloud publication record; no tests reexecuted",
+      "source": "WP-IPC-RUNTIME-03 prior generated artifacts; user requested cloud publication without testing",
+      "storage_scope": "public_repository",
+      "sha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "size_bytes": 347,
+      "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
     },
     {
       "path": "docs/runtime/implementation.md",
@@ -478,6 +544,17 @@
       "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
       "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/publication.md",
+      "version": "runtime-publication-1.0",
+      "status": "current_navigation_or_verification",
+      "purpose": "Original runtime execution output or cloud publication record; no tests reexecuted",
+      "source": "WP-IPC-RUNTIME-03 prior generated artifacts; user requested cloud publication without testing",
+      "storage_scope": "public_repository",
+      "sha256": "5c799a7c998b19d90c3a4a7d6c3c3d07483ca78a0ea83c7744d50d1da526760d",
+      "size_bytes": 2642,
+      "git_blob": "d6bce942df601d3e78431ac12f59b2656e035def"
     },
     {
       "path": "docs/superpowers/plans/2026-10-16-ipc-readiness.md",
@@ -1128,5 +1205,14 @@
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
-  "generated_output_policy": "Only seven registered project bin/obj directories and root .artifacts are generated; source, documentation, configs and dependency locks remain exhaustive."
+  "generated_output_policy": "Only seven registered project bin/obj directories and root .artifacts are generated; source, documentation, configs and dependency locks remain exhaustive.",
+  "runtime_publication": {
+    "entry": "docs/runtime/publication.md",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/2",
+    "release": "https://github.com/yuan2go/importer-pc/releases/tag/wp-ipc-runtime-03-simulation-20261016",
+    "execution_status_this_publication": "NOT_RUN",
+    "binary_storage": "github_release_asset_not_git",
+    "code_commit": "04a3d46713b318c84999906ae2479b62e7d49cf0",
+    "current_remote_status": "read_PR_and_Release_records"
+  }
 }

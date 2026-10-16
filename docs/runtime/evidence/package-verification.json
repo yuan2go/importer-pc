@@ -1,0 +1,15 @@
+{
+  "result": "PASS",
+  "file_count": 810,
+  "zip_bytes": 118902308,
+  "zip_sha256": "c185501702b51e70fd330e78aaacd2279cfb4f72e695b0ce3db3b6fad4825665",
+  "module_hashes": "PASS",
+  "release": {
+    "WorkPackage": "WP-IPC-RUNTIME-03",
+    "SchemaVersion": 1,
+    "SourceCodeSha256": "8ec828c921c9556ad3a50394d286d18c9614a120d9ad06b1c8a45770c3d01b69",
+    "GitBase": "04a3d46713b318c84999906ae2479b62e7d49cf0",
+    "Mode": "Simulation",
+    "Target": "win-x64"
+  }
+}

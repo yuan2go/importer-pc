@@ -1,5 +1,6 @@
 <Application x:Class="Ipc.Desktop.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:Ipc.Desktop">
  <Application.Resources>
+  <BooleanToVisibilityConverter x:Key="VisibleWhenTrue"/>
   <local:OperatorLabelConverter x:Key="OperatorLabel"/>
   <SolidColorBrush x:Key="Ink" Color="#192736"/><SolidColorBrush x:Key="Muted" Color="#536577"/>
   <SolidColorBrush x:Key="Line" Color="#D8E0E7"/><SolidColorBrush x:Key="Accent" Color="#205FCE"/>

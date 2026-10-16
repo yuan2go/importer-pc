@@ -30,8 +30,7 @@ public partial class MainWindow : Window
     bool refreshing, closing, compact;
     int historyOffset, alarmHistoryOffset;
     Alarm? selectedAlarm;
-    readonly Dictionary<string, OperationStatus> audible = [];
-    DateTimeOffset lastSound;
+
     public MainWindow(ProductRuntime runtime, bool ownsLifetime = false)
     {
         Runtime = runtime; this.ownsLifetime = ownsLifetime; InitializeComponent(); DataContext = model;
@@ -43,7 +42,8 @@ public partial class MainWindow : Window
         RuntimeIdentity.Text = $"运行实例 {runtime.RuntimeId} · 所有窗口共享此业务实例与发送器";
         ModeBadge.Text = runtime.Mode == RunMode.Simulation ? "SIMULATION" : "PRODUCTION · 未就绪";
         if (runtime.Application is null) model.GlobalStatus = "未就绪 · " + string.Join("；", runtime.Diagnostics);
-        LeftLane.DataContext = left; RightLane.DataContext = right; AlarmGrid.ItemsSource = alarms;
+        LeftLane.DataContext = left; RightLane.DataContext = right; PinnedReview.DataContext = left; AlarmGrid.ItemsSource = alarms;
+        InitializeHistoryFilters();
         LoadConfigForm(runtime.Configuration);
         DriverColumn.ItemsSource = runtime.InstalledDrivers;
         compact = runtime.Presentation.Layout == "compact"; currentView = runtime.Presentation.View;
@@ -55,8 +55,8 @@ public partial class MainWindow : Window
         EngineeringPage.Visibility = runtime.Mode == RunMode.Simulation && runtime.AllowedViews.Contains("engineering") ? Visibility.Visible : Visibility.Collapsed;
         if (FindName(ViewRegistry.Resolve(currentView)) is TabItem selected) Pages.SelectedItem = selected;
         timer.Tick += async (_, _) => { UpdateGuards(); await RefreshAsync(); };
-        Loaded += async (_, _) => { ApplyLayout(); timer.Start(); await RefreshAsync(); if(Pages.SelectedItem==HistoryPage)await LoadHistoryAsync(); if(Pages.SelectedItem==MaintenancePage)await LoadConfigs(); };
-        Closed += (_, _) => { closing = true; timer.Stop(); lifetime.Cancel(); lifetime.Dispose(); };
+        Loaded += async (_, _) => { ApplyLayout(); timer.Start(); StartNotificationPlayer(); await RefreshAsync(); if(Pages.SelectedItem==HistoryPage)await LoadHistoryAsync(); if(Pages.SelectedItem==MaintenancePage)await LoadConfigs(); };
+        Closed += (_, _) => { closing = true; timer.Stop(); soundStop.Cancel(); lifetime.Cancel(); lifetime.Dispose(); };
     }
     async Task RefreshAsync()
     {
@@ -67,19 +67,8 @@ public partial class MainWindow : Window
             var next = await Runtime.Application.SnapshotAsync().WaitAsync(lifetime.Token);
             if (closing) return;
             snapshot = next; ready = true; UpdateGuards();
-            if (ownsLifetime)
-                foreach (var op in snapshot.State.Lanes.Values)
-                {
-                    if (audible.GetValueOrDefault(op.Id, OperationStatus.Observed) != op.Status && DateTimeOffset.UtcNow - lastSound > TimeSpan.FromMilliseconds(800))
-                    {
-                        if (op.Status == OperationStatus.Accepted) { System.Media.SystemSounds.Asterisk.Play(); lastSound = DateTimeOffset.UtcNow; }
-                        else if (op.Status is OperationStatus.Rejected or OperationStatus.ValidationRejected) { System.Media.SystemSounds.Hand.Play(); lastSound = DateTimeOffset.UtcNow; }
-                        else if (op.Status == OperationStatus.SplitRequired) { System.Media.SystemSounds.Question.Play(); lastSound = DateTimeOffset.UtcNow; }
-                    }
-                    audible[op.Id] = op.Status;
-                }
-            foreach(var stale in audible.Keys.Except(snapshot.State.Lanes.Values.Select(x=>x.Id)).ToArray())audible.Remove(stale);
-            model.Identity = snapshot.State.Actor?.Id ?? "未登录";
+            model.Identity = snapshot.State.Actor is { } actor && actor.ExpiresAt > DateTimeOffset.UtcNow ? actor.Id : "未登录 / 身份已过期";
+            ApplyClosureProjection(snapshot);
             var session = snapshot.State.Session;
             model.Context = session is null ? "未取得 · 请校验箱码" : $"{session.Barcode}   /   {OperatorText.Known(session.Context?.BoxWave)}   ·   {OperatorText.Session(session.Status)}";
             model.ContextSource = session?.Context?.Provenance is { } p ? $"来源 {p.Source} · 版本 {p.Version} · 证据 {p.EvidenceId} · {p.AcquiredAt:O}" : "箱语义来源 / 版本 / 证据：未取得";
@@ -128,6 +117,8 @@ public partial class MainWindow : Window
     public async Task SendAsync(string kind, string? owner = null, string? value = null, string? confirm = null)
     {
         if (busy || closing) return;
+        if (kind is "Submit" or "ScanRetained" or "ClearSplit" && (!ReviewFits || ActiveLane.Current?.Id != owner || Pages.SelectedItem != WorkstationPage))
+        { model.LastResult = "请先在当前通道完整核对条码、任务和数量；区域不足时扩大窗口"; return; }
         if (!CanCommand(kind, out var reason)) { model.LastResult = "当前不能执行：" + reason; return; }
         var revision = snapshot?.State.Revision ?? 0;
         var evidenceVersion = kind == "ClearOverload" ? snapshot?.OverloadVersion : null;
@@ -146,7 +137,7 @@ public partial class MainWindow : Window
         else if (!Fresh) reason = "投影未就绪或已过期，请等待重新读取";
         else if (kind == "Login") { if (Runtime.Mode != RunMode.Simulation) reason = "当前模式不允许模拟身份"; }
         else if (snapshot!.State.Actor is null || snapshot.State.Actor.ExpiresAt <= DateTimeOffset.UtcNow) reason = "请取得有效身份";
-        else if (kind is "SaveConfig" or "ActivateConfig" or "Reconcile" or "RecordReconciliation" or "SetFixtureFault" or "SetSyntheticBlock" or "ClearSyntheticBlock" or "ReviewObservations" or "ClearOverload" or "ClearQuarantine" or "CancelPrepared" or "Backup" or "Revalidate")
+        else if (kind is "SaveConfig" or "ActivateConfig" or "Reconcile" or "RecordReconciliation" or "SetFixtureFault" or "SetSyntheticBlock" or "ClearSyntheticBlock" or "ReviewObservations" or "ClearOverload" or "ClearQuarantine" or "CancelPrepared" or "Backup" or "Revalidate" or "ReconnectSource")
         { if (snapshot.State.Actor.Role != SimulationRole.Maintenance) reason = "需要维护身份"; }
         if (reason.Length == 0 && snapshot is not null)
         {
@@ -157,7 +148,7 @@ public partial class MainWindow : Window
             if (kind == "CancelPrepared" && (RecoveryGrid.SelectedItem as RequestRecoveryRow)?.Recovery.LocalTermination.Allowed != true) reason = "需选择具备持久未交付证明的原请求";
             if (kind == "ClearOverload" && !snapshot.OverloadRecovery.Allowed) reason = OperatorText.Reasons(snapshot.OverloadRecovery.Reasons);
             if (kind == "ActivateConfig" && ((ConfigsList.SelectedItem as ConfigRevision)?.Status != "Validated" || session is not null && session.Status != SessionStatus.Closed)) reason = "需选中有效草稿，并先关闭当前箱";
-            if (kind is "Enter" or "Read" or "NoCode" or "MultiCode" or "Depart" or "Reset" or "Replay" or "Revalidate" && Runtime.Mode != RunMode.Simulation) reason = "仅模拟模式允许工程事件";
+            if (kind is "Enter" or "Read" or "NoCode" or "MultiCode" or "Depart" or "Reset" or "Replay" or "Revalidate" or "ReconnectSource" && Runtime.Mode != RunMode.Simulation) reason = "仅模拟模式允许工程事件";
             if(kind == "AckAlarm" && (selectedAlarm is null || selectedAlarm.AckedBy is not null))reason="请选择尚未已读的报警";
             if(kind == "Reconcile" && RequestIdBox.Text.Trim().Length==0)reason="请选择或输入原请求身份";
             if(kind is "RecordReconciliation" or "CancelPrepared" && (EvidenceBox.Text.Length is <8 or >1000))reason="请填写 8～1000 字符的检查依据";
@@ -187,7 +178,14 @@ public partial class MainWindow : Window
     void UpdateGuards()
     {
         if (LeftLane is null || SubmitLeft is null || EngineeringControls is null) return;
-        if (snapshot is not null) { left.Apply(snapshot, Fresh && !busy && !smallArea); right.Apply(snapshot, Fresh && !busy && !smallArea); }
+        if (snapshot is not null)
+        {
+            left.Apply(snapshot, Fresh && !busy && !smallArea && ReviewFits && activeLane == "left");
+            right.Apply(snapshot, Fresh && !busy && !smallArea && ReviewFits && activeLane == "right");
+        }
+        SubmitLeft.Visibility = activeLane == "left" ? Visibility.Visible : Visibility.Collapsed;
+        SubmitRight.Visibility = activeLane == "right" ? Visibility.Visible : Visibility.Collapsed;
+        model.ReviewLayoutHint = ReviewFits ? "" : "当前任务的必核字段未能同时显示；请收起详情或扩大窗口后操作。";
         SubmitLeft.IsEnabled = left.CanSubmit; SubmitRight.IsEnabled = right.CanSubmit;
         SubmitLeft.ToolTip = left.DisabledReason; SubmitRight.ToolTip = right.DisabledReason;
         ToolTipService.SetShowOnDisabled(SubmitLeft,true); ToolTipService.SetShowOnDisabled(SubmitRight,true);
@@ -212,8 +210,8 @@ public partial class MainWindow : Window
     async void CheckClick(object sender, RoutedEventArgs e) => await SendAsync("CheckClose", confirm: "建立两通道关闭屏障并核对剩余需求？");
     async void CancelCloseClick(object sender, RoutedEventArgs e) => await SendAsync("CancelClose");
     async void ConfirmCloseClick(object sender, RoutedEventArgs e) => await SendAsync("ConfirmClose", snapshot?.State.Session?.CloseCheckRequest, "CONFIRM", $"按当前检查关闭箱？剩余需求：{snapshot?.State.Session?.CloseRemaining}。确认只代表提交关闭请求。");
-    async void SubmitLeftClick(object sender, RoutedEventArgs e) => await SendAsync("Submit", left.Current?.Id, confirm: "确认左通道供包？请核对 Item 条码、任务、数量与当前实体。");
-    async void SubmitRightClick(object sender, RoutedEventArgs e) => await SendAsync("Submit", right.Current?.Id, confirm: "确认右通道供包？请核对 Item 条码、任务、数量与当前实体。");
+    async void SubmitLeftClick(object sender, RoutedEventArgs e) => await ConfirmActiveSubmitAsync(left);
+    async void SubmitRightClick(object sender, RoutedEventArgs e) => await ConfirmActiveSubmitAsync(right);
     async void BoxKeyDown(object sender, KeyEventArgs e) { if (e.Key is Key.Enter or Key.Tab && Keyboard.Modifiers == ModifierKeys.None && model.BoxDraft.Length > 0) { e.Handled = true; await SendAsync("OpenContext", value: model.BoxDraft.TrimEnd('\r','\n','\t')); } }
     void SecondViewClick(object sender, RoutedEventArgs e) => new MainWindow(Runtime) { Owner = this }.Show();
     async void LayoutClick(object sender, RoutedEventArgs e)
@@ -253,11 +251,6 @@ public partial class MainWindow : Window
         if(page == MaintenancePage && ConfigsList.ItemsSource is null) await LoadConfigs();
         UpdateGuards();
     }
-    async Task LoadHistoryAsync() => await RunAsync(async () => { if (Runtime.Application is not null) HistoryGrid.ItemsSource = (await Runtime.Application.HistoryAsync(FilterBox.Text.Length == 0 ? null : FilterBox.Text, historyOffset, 50).WaitAsync(lifetime.Token)).Select(x=>new HistoryRow(x)).ToArray(); });
-    async void HistoryClick(object sender, RoutedEventArgs e) { historyOffset = 0; await LoadHistoryAsync(); }
-    async void NextClick(object sender, RoutedEventArgs e) { historyOffset += 50; await LoadHistoryAsync(); }
-    async void PreviousClick(object sender, RoutedEventArgs e) { historyOffset = Math.Max(0, historyOffset - 50); await LoadHistoryAsync(); }
-    async void HistorySelected(object sender, SelectionChangedEventArgs e) { if ((sender as DataGrid)?.SelectedItem is HistoryRow row) await ShowDetailAsync(row.Id, row.Operation); }
     public async Task ShowDetailAsync(string owner, SupplyOperation? operation = null)
     {
         if (Runtime.Application is null || closing) return;
@@ -269,7 +262,7 @@ public partial class MainWindow : Window
             RenderDetails(owner, operation, details); Pages.SelectedItem = HistoryPage;
         }
         catch (OperationCanceledException) when (closing) { }
-        catch(Exception ex) { if (!closing) model.LastResult = "详情读取失败：" + ex.Message; }
+        catch(Exception ex) { if (!closing && generation == detailGeneration) model.LastResult = "详情读取失败：" + ex.Message; }
     }
     void RenderDetails(string owner, SupplyOperation? operation, RequestDetail[] details)
     {
@@ -279,6 +272,8 @@ public partial class MainWindow : Window
         if (operation is not null)
         {
             Add(root,$"{OperatorText.Operation(operation.Status)} · {operation.Occupancy}\n箱 {OperatorText.Known(operation.BoxBarcode)} / 箱波次 {OperatorText.Known(operation.BoxWave)}\nItem {OperatorText.Known(operation.Barcode)} / SKU {OperatorText.Known(operation.Task?.Sku)}\nItem 波次 {OperatorText.Known(operation.Task?.ItemWave)} / 任务 {OperatorText.Known(operation.Task?.TaskId)}\n格口 {OperatorText.Known(operation.Task?.Destination)} / 数量 {operation.Supply?.ToString() ?? "未取得"} {OperatorText.Known(operation.Task?.Unit)}\n{OperatorText.Reason(operation.Reason)}");
+            if(operation.CurrentInput is { } input) Add(root,$"本次观察 {input.ObservationId} / {input.ObservedAt:O} / 码集合 {string.Join(" / ",input.Codes)} / 包装量 {input.PackageQuantity?.ToString() ?? "未取得"}");
+            if(operation.PreviousConfirmed is { } prior) Add(root,$"历史证实结果 r{prior.Revision}（不授权本次输入） · Item {prior.Barcode} / 数量 {prior.Supply?.ToString() ?? "未取得"} / SKU {OperatorText.Known(prior.Task?.Sku)}");
             if(operation.Task?.Provenance is {} p) Add(root,$"语义来源 {p.Source} / {p.Version} / {p.EvidenceId} / {p.AcquiredAt:O}");
         }
         foreach(var detail in details)
@@ -323,10 +318,11 @@ public partial class MainWindow : Window
     async void AlarmDetailClick(object sender, RoutedEventArgs e)
     {
         if (selectedAlarm is not Alarm alarm || alarm.OwnerId is null || Runtime.Application is null) return;
+        var generation = ++detailGeneration;
         await RunAsync(async () =>
         {
             var details = await Runtime.Application.DetailsAsync(alarm.OwnerId).WaitAsync(lifetime.Token);
-            if(closing) return;
+            if(closing || generation != detailGeneration) return;
             if (details.Length != 0) { RenderDetails(alarm.OwnerId, null, details); Pages.SelectedItem = HistoryPage; }
             else { Pages.SelectedItem = DiagnosticsPage; model.LastResult = "来源诊断：" + alarm.OwnerId + " / " + alarm.Scope + " / " + alarm.Code; }
         });
@@ -421,7 +417,7 @@ public partial class MainWindow : Window
         var dialog = new SaveFileDialog { Filter = "SQLite|*.db", FileName = "ipc-backup-" + DateTime.UtcNow.ToString("yyyyMMddHHmmss") + ".db" };
         if (dialog.ShowDialog(this) == true && Runtime.Application is not null) await RunAsync(() => Runtime.Application.BackupAsync(dialog.FileName));
     }
-    async void ReviewClick(object sender, RoutedEventArgs e) => await RunAsync(() => Runtime.Application!.ReviewObservationsAsync(ReviewEvidence.Text));
+    async void ReviewClick(object sender, RoutedEventArgs e) => await ReviewSelectedSourcesAsync();
     async void OverloadClick(object sender, RoutedEventArgs e) => await SendAsync("ClearOverload",value:ReviewEvidence.Text,confirm:$"确认已检查当前过载证据版本 {snapshot?.OverloadVersion} 的来源与实体？新拒收会使本次确认失效，其它阻断继续保留。");
     async void QuarantineClick(object sender, RoutedEventArgs e) => await SendAsync("ClearQuarantine", value: ReviewEvidence.Text, confirm: "已核对原外部账与实体库存，解除恢复隔离？未决请求将继续阻断。");
     async void WindowClosing(object? sender, CancelEventArgs e)
@@ -429,9 +425,14 @@ public partial class MainWindow : Window
         if (!ownsLifetime || closing) return;
         e.Cancel = true;
         if (!Confirmation.Ask(this, "退出将停止采集和发送。未决结果与原责任保留，重启后需登录和核对。确认退出？")) return;
-        closing = true; timer.Stop();
-        try { await ((App)Application.Current).StopRuntimeAsync(); Application.Current.Shutdown(); }
-        catch (Exception ex) { closing = false; ready = false; timer.Start(); model.GlobalStatus = "停止失败，保留诊断：" + ex.Message; }
+        closing = true; timer.Stop(); soundStop.Cancel();
+        try { if(soundTask is not null) await soundTask; await ((App)Application.Current).StopRuntimeAsync(); Application.Current.Shutdown(); }
+        catch (Exception ex)
+        {
+            closing = false; ready = false; timer.Start();
+            soundStop.Dispose(); soundStop = new(); soundTask = null; StartNotificationPlayer();
+            model.GlobalStatus = "停止或清理失败，业务保持阻断，保留诊断：" + ex.Message;
+        }
     }
 }
 

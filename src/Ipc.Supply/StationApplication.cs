@@ -80,6 +80,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                     await owner.Invoke(() => { SyncAlarms(); return Task.CompletedTask; }, waitForCapacity: true).ConfigureAwait(false);
             }
             catch (OperationCanceledException) when (maintenanceStop.IsCancellationRequested) { }
+            catch (ChannelClosedException) when (maintenanceStop.IsCancellationRequested) { }
             catch (Exception ex) { Latch("ProjectionMaintenanceFailure", ex.GetType().Name); }
         });
     }

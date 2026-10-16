@@ -24,7 +24,7 @@ public partial class MainWindow
     Task? soundTask;
     readonly ObservableCollection<ObservationReviewRow> sourceReviews = [];
     long historyGeneration;
-    bool updatingHistory;
+    bool updatingHistory, navigatingDirectDetail;
     string? historySessionId;
     Ipc.Supply.HistoryPage? loadedHistory;
     bool ReviewFits => ActionReviewScroll is not null && ActionReviewScroll.ViewportHeight > 0 &&
@@ -58,6 +58,12 @@ public partial class MainWindow
             foreach (var row in sourceReviews.Where(x => selected.Contains(x.Selection))) ObservationReviews.SelectedItems.Add(row);
         }
         ObservationReviews.ItemsSource = sourceReviews;
+    }
+    void NavigateToHistoryDetail()
+    {
+        navigatingDirectDetail = true;
+        try { Pages.SelectedItem = HistoryPage; }
+        finally { navigatingDirectDetail = false; }
     }
     void OpenRecoveryClick(object sender, RoutedEventArgs e) => Pages.SelectedItem = RecoveryPage;
     void SelectLaneClick(object sender, RoutedEventArgs e)
@@ -205,7 +211,7 @@ public partial class MainWindow
                 foreach (var entry in detail.Audit) audit.Items.Add($"{entry.At:O} · {entry.Kind} · {entry.Actor} · {entry.Evidence}");
                 root.Items.Add(audit);
             }
-            Pages.SelectedItem = HistoryPage;
+            NavigateToHistoryDetail();
         }
         catch (OperationCanceledException) when (closing) { }
         catch (Exception ex) { if (!closing && generation == detailGeneration) HistoryFeedback.Text = "箱会话详情读取失败：" + ex.Message; }

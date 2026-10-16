@@ -244,10 +244,11 @@ public partial class MainWindow : Window
     async void TabChanged(object sender, SelectionChangedEventArgs e)
     {
         if (!ReferenceEquals(e.Source,Pages) || Pages.SelectedItem is not TabItem page || !IsLoaded || closing) return;
+        var loadHistoryOnEntry = !navigatingDirectDetail;
         currentView = Runtime.AllowedViews.FirstOrDefault(v=>ViewRegistry.Pages.GetValueOrDefault(v)==page.Name) ?? currentView;
         try { await Runtime.SavePresentationAsync(new(currentView,compact ? "compact" : "standard")); }
         catch(Exception ex) { if(!closing)model.LastResult="页面偏好保存失败："+ex.Message; }
-        if(page == HistoryPage && HistoryGrid.ItemsSource is null) await LoadHistoryAsync();
+        if(page == HistoryPage && HistoryGrid.ItemsSource is null && loadHistoryOnEntry) await LoadHistoryAsync();
         if(page == MaintenancePage && ConfigsList.ItemsSource is null) await LoadConfigs();
         UpdateGuards();
     }
@@ -259,7 +260,7 @@ public partial class MainWindow : Window
         {
             var details = await Runtime.Application.DetailsAsync(owner).WaitAsync(lifetime.Token);
             if (closing || generation != detailGeneration) return;
-            RenderDetails(owner, operation, details); Pages.SelectedItem = HistoryPage;
+            RenderDetails(owner, operation, details); NavigateToHistoryDetail();
         }
         catch (OperationCanceledException) when (closing) { }
         catch(Exception ex) { if (!closing && generation == detailGeneration) model.LastResult = "详情读取失败：" + ex.Message; }
@@ -323,7 +324,7 @@ public partial class MainWindow : Window
         {
             var details = await Runtime.Application.DetailsAsync(alarm.OwnerId).WaitAsync(lifetime.Token);
             if(closing || generation != detailGeneration) return;
-            if (details.Length != 0) { RenderDetails(alarm.OwnerId, null, details); Pages.SelectedItem = HistoryPage; }
+            if (details.Length != 0) { RenderDetails(alarm.OwnerId, null, details); NavigateToHistoryDetail(); }
             else { Pages.SelectedItem = DiagnosticsPage; model.LastResult = "来源诊断：" + alarm.OwnerId + " / " + alarm.Scope + " / " + alarm.Code; }
         });
     }

@@ -1,9 +1,9 @@
 # importer-pc
 
-Windows 供包工作站资料基线，当前没有业务工程或已核验的构建命令。
+Windows工业工位框架与供包参考产品。当前仓库已形成目标架构与下一实施工作包；**尚无供包业务工程，已有代码为资料校验工具**，不能把设计入库解释为客户端已实现。
 
-**WP-IPC-DESIGN-BASELINE-01 续作：公开子集，完整归档目标仍部分完成。** 本仓库为 public；客户材料及其衍生成果缺少明确公开许可，也没有另行获授权的私有远端。本轮完整原件和新增资源保存在 Git 外受限本地包，未将其写入任何 Git 分支。
+从 [统一入口](docs/INDEX.md) 阅读 [框架设计](docs/design/framework.md) 和 [WP-IPC-RUNTIME-03](docs/work-packages/WP-IPC-RUNTIME-03.md)。新参考实现采用C#/.NET10/WPF/SQLite的推荐路线；既有现场工程迁移、真实SDK/WCS和业务规则仍需各自核验。可开展隔离运行闭环，不以缺少局部现场资料阻止全部框架开发。
 
-从 [资料入口](docs/INDEX.md) 阅读；[公开范围](docs/baseline/PUBLICATION.md)、[缺失/未上传](docs/baseline/MISSING.md) 和[manifest](docs/manifest.json)区分收集、校验、授权与入库。原样问题表与 tokens 继续保留，RV-01～RV-17 全部 OPEN。归档不代表客户批准或业务开发就绪。
+本仓库为public。[公开范围](docs/baseline/PUBLICATION.md) 和 [缺失登记](docs/baseline/MISSING.md) 继续有效；完整客户资料归档仍是PUBLIC_SUBSET_ONLY，不上传客户原稿、私密来源、凭据、SDK或字体。本轮新增的是通用技术设计，不代替客户批准，RV-01～17不因此关闭。
 
-本轮只增加必要的[资料校验工具](tools/README.md)及归档记录，不修复业务原型。进入业务开发前须取得授权需求正文、核验已有 C# 工程，并解决真实 SDK/WCS 契约、关键业务决策和现场验证边界。
+本轮只修订文档，不开发业务代码。后续按工作包在开发分支实施并提交PR；实际运行命令由真实工程提供，目前仅有 [资料校验工具用法](tools/README.md)。

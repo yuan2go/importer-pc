@@ -1,12 +1,28 @@
 {
-  "schema_version": "1.1",
-  "work_package": "WP-IPC-DESIGN-BASELINE-01",
+  "schema_version": "1.2",
+  "work_package": "WP-IPC-FRAMEWORK-01",
   "created_date": "2026-10-16",
   "repository": "yuan2go/importer-pc",
   "branch": "main",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
+  "framework_design_state": "TARGET_DESIGN_RECOMMENDED_NOT_IMPLEMENTED",
+  "next_implementation_work_package": "WP-IPC-RUNTIME-03",
+  "previous_manifest": {
+    "commit": "39747a8c35b748da71bf9acfd56a9c9812b199b4",
+    "path": "docs/manifest.json",
+    "git_blob": "d9a46ba6c0e4decb2c9023d0229a4732bc9deef5",
+    "meaning": "Full prior provenance and historical collection/approval records remain in immutable Git history; current rows normalize unchanged metadata by reference."
+  },
+  "self_verification": {
+    "sha256_file": "manifest.sha256",
+    "excluded_from_file_records": [
+      "docs/manifest.json",
+      "docs/manifest.sha256"
+    ],
+    "reason": "Avoid recursive self-hashes; verify these two Git blobs separately."
+  },
   "withheld_primary_artifacts": [
     {
       "intended_path": "docs/source/prd-v1.1/供包台功能PRD.md",
@@ -81,620 +97,370 @@
       "reason": "customer_release_not_evidenced"
     }
   ],
-  "source_archives_checked": [
-    {
-      "name": "供包工作站_UIUX高保真交付_v1.1.zip",
-      "sha256": "191be3c69a75dd43dbe810f324e94697f216569e05c8ac5e280a381d364062fa",
-      "crc_ok": true,
-      "entries": 70,
-      "verification_in_this_continuation": "inherited_historical_record_not_raw_zip_reexecution"
-    },
-    {
-      "name": "供包台_设计与开发文档交付_20261015.zip",
-      "sha256": "8bc52b6cac882ae3efcbc0a245f1c933427de1c6ff7d585d98f36ea00d14d43a",
-      "crc_ok": true,
-      "entries": 35,
-      "verification_in_this_continuation": "inherited_historical_record_not_raw_zip_reexecution"
-    },
-    {
-      "name": "供包台_设计与UI开发就绪独立评审_20261016.zip",
-      "sha256": "46b43268455fe8267534e054c18c80e73b11b1c03cea0d6b0b06b313a9069566",
-      "crc_ok": true,
-      "entries": 51,
-      "verification_in_this_continuation": "inherited_historical_record_not_raw_zip_reexecution"
-    }
-  ],
-  "full_local_inventory": {
-    "file": null,
-    "sha256": "09c037e5175d4de4f195b53ec38525cb69076a1f2711d265ecb188d4534263f9",
-    "records": 191,
-    "in_this_repository": false,
-    "historical_input_manifest": true,
-    "actual_repository_path": null,
-    "source": "specified_input_zip_manifest_not_current_local_delivery_inventory",
-    "current_inventory_published": false
-  },
-  "self_verification": {
-    "sha256_file": "manifest.sha256",
-    "excluded_from_file_records": [
-      "docs/manifest.json",
-      "docs/manifest.sha256"
-    ],
-    "reason": "avoid recursive self hashes; compare these two Git blobs during remote verification"
-  },
-  "status_semantics": {
-    "current_baseline_control": "当前归档管理文件，不是新客户需求",
-    "historical_review_open": "历史评审事实；未重新运行，未关闭",
-    "design_reference_not_approved": "设计建议与假设，不是客户批准或现场验收",
-    "collected_not_uploaded": "实际文件已取得但未进入公开Git",
-    "readiness_preparation_not_approved": "下一阶段证据接收/决策/修订准备；不代表已获批准、实际修复或运行通过"
-  },
   "approval_changes": [],
-  "continuation_input": {
-    "sha256": "8685ba48f19aa087541598b0efc4e56a04f017e56251197bd53b9318d2c3302a",
-    "zip_files": 193,
-    "manifest_records": 191,
-    "verified_in_this_continuation": true
+  "status_semantics": {
+    "target_design_recommended": "本轮推荐目标，非已实现或客户批准",
+    "implementation_planned": "下一工作包定义，尚未执行",
+    "current_navigation": "当前资料入口及工程约束",
+    "historical_original": "原字节保留，不作为当前指令",
+    "inherited_baseline": "用途/版本/历史来源以previous_manifest相同路径记录为准"
   },
-  "current_missing_register": "docs/baseline/MISSING.md",
-  "remote_verification": "Exact commit/tree/content receipt retained outside this manifest after write; this field is not a claim of completed remote inclusion.",
   "files": [
     {
       "path": "AGENTS.md",
-      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
-      "version": "archive-01",
-      "sha256": "017998893e36c261c38bc7965b824201bc9cccd7dc575b99d1b28a843fd845a7",
-      "size_bytes": 1958,
-      "purpose": "资料归档与阅读/限制控制",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "new_archival_document",
+      "sha256": "16db10ea33a4ae76ecd4b4b253eef4d523e0579fc6b177bf83ac4d1c5f3dd3e1",
+      "size_bytes": 2835,
+      "git_blob": "ad88410c5019747b8e6bcf6db554579729c7d2b7",
+      "version": "framework-1.0",
+      "status": "current_navigation",
+      "purpose": "当前入口、来源与范围管理",
+      "source": "WP-IPC-FRAMEWORK-01 user-authorized generic design; baseline lineage in previous_manifest",
       "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "AGENTS.md"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "previous_git_blob": "9b6abe72ecad925e79ad7d8f63421b980a68a822"
     },
     {
       "path": "README.md",
-      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
-      "version": "archive-02",
-      "sha256": "c56eaf6aecf8ce464ecb7a735168d4c6aeace1ceacabc5bdbc92497dda7c8f3d",
-      "size_bytes": 1013,
-      "purpose": "资料归档与阅读/限制控制",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "archival_control_or_integrity_tool_only",
+      "sha256": "5c1b29bc97707f76e96b7bdfbf00316075e1dcd53b7e2d4478cd987936273f76",
+      "size_bytes": 1153,
+      "git_blob": "327c9b1f4bcdf72f6f153ce565344087ac4ab2b5",
+      "version": "framework-1.0",
+      "status": "current_navigation",
+      "purpose": "当前入口、来源与范围管理",
+      "source": "WP-IPC-FRAMEWORK-01 user-authorized generic design; baseline lineage in previous_manifest",
       "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "README.md"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "previous_git_blob": "62d7ad85cc2f869d9f23ae8649fb0aaadd929668"
     },
     {
       "path": "docs/INDEX.md",
-      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
-      "version": "readiness-01",
+      "sha256": "e0b4876c115ff4854dc8dbbdbbe4b0b6003365ddddf61032bd776f6899ce4ae4",
+      "size_bytes": 3851,
+      "git_blob": "859e4354bad5a55679b729f8eca5bcd6d20a5ae0",
+      "version": "framework-1.0",
+      "status": "current_navigation",
+      "purpose": "当前入口、来源与范围管理",
+      "source": "WP-IPC-FRAMEWORK-01 user-authorized generic design; baseline lineage in previous_manifest",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "456a136c7ae38aee81bc0a1cbe8f112ed222be07"
+    },
+    {
+      "path": "docs/archive/pre-framework-20261016/AGENTS.md.txt",
+      "sha256": "017998893e36c261c38bc7965b824201bc9cccd7dc575b99d1b28a843fd845a7",
+      "size_bytes": 1958,
+      "git_blob": "9b6abe72ecad925e79ad7d8f63421b980a68a822",
+      "version": "pre-framework-39747a8",
+      "status": "historical_original",
+      "purpose": "基准入口原字节存档，不作为当前Agent指令",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:AGENTS.md",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-framework-20261016/INDEX.md.txt",
       "sha256": "4b75b3b65301f1f63906d90698f7d479e8df3033b20e0fca2614cd43dbefa7bd",
       "size_bytes": 2992,
-      "purpose": "资料归档与阅读/限制控制",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "documentation_preparation_navigation_only",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "docs/INDEX.md"
-        },
-        {
-          "kind": "readiness_preparation",
-          "baseline": "8090914e752d724b3e67b09227609830030d9510",
-          "work_package": "WP-IPC-READINESS-02",
-          "path": "docs/INDEX.md"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "git_blob": "456a136c7ae38aee81bc0a1cbe8f112ed222be07",
+      "version": "pre-framework-39747a8",
+      "status": "historical_original",
+      "purpose": "基准入口原字节存档，不作为当前Agent指令",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/INDEX.md",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-framework-20261016/README.md",
+      "sha256": "313c51e8e5dc0c6c4cfd089fe8e564232c279a9a3ba6ca43df95a7748145b98e",
+      "size_bytes": 842,
+      "git_blob": "176c9a54dc4abfe53807dd8028a283fb3a281ae1",
+      "version": "framework-1.0",
+      "status": "current_navigation",
+      "purpose": "当前入口、来源与范围管理",
+      "source": "WP-IPC-FRAMEWORK-01 user-authorized generic design; baseline lineage in previous_manifest",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-framework-20261016/README.md.txt",
+      "sha256": "c56eaf6aecf8ce464ecb7a735168d4c6aeace1ceacabc5bdbc92497dda7c8f3d",
+      "size_bytes": 1013,
+      "git_blob": "62d7ad85cc2f869d9f23ae8649fb0aaadd929668",
+      "version": "pre-framework-39747a8",
+      "status": "historical_original",
+      "purpose": "基准入口原字节存档，不作为当前Agent指令",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:README.md",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/baseline/CHANGELOG.md",
-      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
-      "version": "readiness-01",
-      "sha256": "561eeca603071d3b463ee3530e8a426801f8027fc0e3e5357d3036218cf4962c",
-      "size_bytes": 3135,
-      "purpose": "资料归档与阅读/限制控制",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "documentation_preparation_navigation_only",
+      "sha256": "6ab3e121ec96559da8f8e5f89adc822563516d03aa3f755ee376c39ecbda62bb",
+      "size_bytes": 4359,
+      "git_blob": "af6659fceca10c456da6b159adc995fa16283026",
+      "version": "framework-1.0",
+      "status": "current_navigation",
+      "purpose": "当前入口、来源与范围管理",
+      "source": "WP-IPC-FRAMEWORK-01 user-authorized generic design; baseline lineage in previous_manifest",
       "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "docs/baseline/CHANGELOG.md"
-        },
-        {
-          "kind": "readiness_preparation",
-          "baseline": "8090914e752d724b3e67b09227609830030d9510",
-          "work_package": "WP-IPC-READINESS-02",
-          "path": "docs/baseline/CHANGELOG.md"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "previous_git_blob": "7fa886a74fe5a7c2e2db121e10f16c005f5ec879"
     },
     {
       "path": "docs/baseline/CONFLICTS.md",
-      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
-      "version": "archive-01",
+      "git_blob": "7e37f4143be025c00e63d959ef74828f7113bf5a",
       "sha256": "1381adca5840134d830c1991cba9ab605d8bb515993a3e28be1ae62ccba70014",
       "size_bytes": 1699,
-      "purpose": "资料归档与阅读/限制控制",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "new_archival_document",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "docs/baseline/CONFLICTS.md"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/baseline/CONFLICTS.md",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/baseline/MISSING.md",
-      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
-      "version": "archive-02",
+      "git_blob": "21c9ee5d27368250dc3f44b4599bbfbd89322fd5",
       "sha256": "e7704bdbfb2cd537d5c47653583ae20b5a8556797c927180eb0f0930cf41bb33",
       "size_bytes": 3001,
-      "purpose": "资料归档与阅读/限制控制",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "archival_control_or_integrity_tool_only",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "docs/baseline/MISSING.md"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/baseline/MISSING.md",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/baseline/PUBLICATION.md",
-      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
-      "version": "archive-02",
+      "git_blob": "6fb2924ba8b056d5dafa8e22b964442e0a6bc8d5",
       "sha256": "b2f32b16c34a47d885e9d469786a9725962c59dada34bac9934fcda6f85696c9",
       "size_bytes": 2974,
-      "purpose": "资料归档与阅读/限制控制",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "archival_control_or_integrity_tool_only",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "docs/baseline/PUBLICATION.md"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/baseline/PUBLICATION.md",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/baseline/artifact-checks.json",
-      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
-      "version": "archive-01",
+      "git_blob": "7e2cd21b0bcbb3ca2ec3b3bba8e8fd8f65c02edb",
       "sha256": "49a41eb36faa73a9fbcec1a93f68a4fafd716299d4e6c341ce16ced0ed842d81",
       "size_bytes": 761,
-      "purpose": "资料归档与阅读/限制控制",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "new_archival_document",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "docs/baseline/artifact-checks.json"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/baseline/artifact-checks.json",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/baseline/continuation-checks.json",
+      "git_blob": "da0f92c16915bc56d587bf199e4f0aaa63554df9",
       "sha256": "95b0f01a4fd5a5e517e1e15b74e1e25c3875cc5a18920da72e315de1be1934de",
       "size_bytes": 2728,
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "docs/baseline/continuation-checks.json"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push",
-      "source": "WP-IPC-DESIGN-BASELINE-01 continuation",
-      "version": "archive-02",
-      "purpose": "资料管理或只读资料校验",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_content_or_private_link",
-      "modification": "archival_control_or_integrity_tool_only"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/baseline/continuation-checks.json",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/design/framework-checks.json",
+      "sha256": "3a6c717a1aa4531ed877c3468aaa5d3e1dcc8b4765a43fbe52ce5f076bf2effc",
+      "size_bytes": 1454,
+      "git_blob": "d987ebd1f017be42825a472da562d5897b76b3fa",
+      "version": "framework-1.0",
+      "status": "current_navigation",
+      "purpose": "本轮资料静态检查及未验证边界",
+      "source": "WP-IPC-FRAMEWORK-01 user-authorized generic design; baseline lineage in previous_manifest",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/design/framework-decisions.md",
+      "sha256": "8bb95b65c6566f3113a613d24e6da3338bc1a852732a2fd740ea2c99a1bced90",
+      "size_bytes": 12956,
+      "git_blob": "3ec1bd68ea5b2d1dead106d57fe9dc33bb2003eb",
+      "version": "framework-1.0",
+      "status": "target_design_recommended",
+      "purpose": "新通用框架及设计取舍",
+      "source": "WP-IPC-FRAMEWORK-01 user-authorized generic design; baseline lineage in previous_manifest",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/design/framework.md",
+      "sha256": "abc2e927de3f9f59d2ca2a0b7c8cc33d5b97f7db020d4faa24d40f6c64014007",
+      "size_bytes": 32640,
+      "git_blob": "ece0a6a88f6bdedb11f25288e83b18245a58bc50",
+      "version": "framework-1.0",
+      "status": "target_design_recommended",
+      "purpose": "新通用框架及设计取舍",
+      "source": "WP-IPC-FRAMEWORK-01 user-authorized generic design; baseline lineage in previous_manifest",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/readiness/checks.json",
-      "source": "WP-IPC-READINESS-02 user-authorized preparation; existing public issues and repository constraints; index metadata only for legacy identifiers",
-      "version": "readiness-01",
+      "git_blob": "a3d13d093ecd1d10d9bd49db4aa69403238d4348",
       "sha256": "9eb80eba64ffa0f4997fec0c63c433ce7f2189b315eecf6903a27b26774cc102",
       "size_bytes": 2802,
-      "purpose": "技术基线/决策/修订及资料核验准备；非客户批准或业务实现",
-      "status": "readiness_preparation_not_approved",
-      "public_review": "reviewed_generic_management_no_customer_text_identity_private_link_or_binary",
-      "modification": "new_documentation_preparation_only",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "user_authorized_management_preparation_only_no_customer_material_publication",
-      "source_mapping": [
-        {
-          "kind": "readiness_preparation",
-          "baseline": "8090914e752d724b3e67b09227609830030d9510",
-          "work_package": "WP-IPC-READINESS-02",
-          "path": "docs/readiness/checks.json"
-        }
-      ],
-      "remote_inclusion": "NOT_PUBLISHED"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/readiness/checks.json",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/readiness/decision-pack.md",
-      "source": "WP-IPC-READINESS-02 user-authorized preparation; existing public issues and repository constraints; index metadata only for legacy identifiers",
-      "version": "readiness-01",
+      "git_blob": "8199de86adce0d9676b15844ec322264d77dbbe9",
       "sha256": "a767a1cce43c74cec5dc97b3b0ee98e33ad1250804e11d0c7f3f952c58bb294f",
       "size_bytes": 8272,
-      "purpose": "技术基线/决策/修订及资料核验准备；非客户批准或业务实现",
-      "status": "readiness_preparation_not_approved",
-      "public_review": "reviewed_generic_management_no_customer_text_identity_private_link_or_binary",
-      "modification": "new_documentation_preparation_only",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "user_authorized_management_preparation_only_no_customer_material_publication",
-      "source_mapping": [
-        {
-          "kind": "readiness_preparation",
-          "baseline": "8090914e752d724b3e67b09227609830030d9510",
-          "work_package": "WP-IPC-READINESS-02",
-          "path": "docs/readiness/decision-pack.md"
-        }
-      ],
-      "remote_inclusion": "NOT_PUBLISHED"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/readiness/decision-pack.md",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/readiness/revision-and-verification.md",
-      "source": "WP-IPC-READINESS-02 user-authorized preparation; existing public issues and repository constraints; index metadata only for legacy identifiers",
-      "version": "readiness-01",
+      "git_blob": "d5c36af2df500a1854ff3f0ac7a761a6770ac328",
       "sha256": "8ecc042188718a50aa1579db539e63816909d37f91b31fc6e8fb41484182e77d",
       "size_bytes": 7262,
-      "purpose": "技术基线/决策/修订及资料核验准备；非客户批准或业务实现",
-      "status": "readiness_preparation_not_approved",
-      "public_review": "reviewed_generic_management_no_customer_text_identity_private_link_or_binary",
-      "modification": "new_documentation_preparation_only",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "user_authorized_management_preparation_only_no_customer_material_publication",
-      "source_mapping": [
-        {
-          "kind": "readiness_preparation",
-          "baseline": "8090914e752d724b3e67b09227609830030d9510",
-          "work_package": "WP-IPC-READINESS-02",
-          "path": "docs/readiness/revision-and-verification.md"
-        }
-      ],
-      "remote_inclusion": "NOT_PUBLISHED"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/readiness/revision-and-verification.md",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/readiness/technical-baseline.json",
-      "source": "WP-IPC-READINESS-02 user-authorized preparation; existing public issues and repository constraints; index metadata only for legacy identifiers",
-      "version": "readiness-01",
+      "git_blob": "3f19a7623e3c13cad1748f59d1751bafb9747368",
       "sha256": "6193225e4940240ea68d4510f1bb69c8a4a682b68b54abc7b09a7bdccf5e0312",
       "size_bytes": 14967,
-      "purpose": "技术基线/决策/修订及资料核验准备；非客户批准或业务实现",
-      "status": "readiness_preparation_not_approved",
-      "public_review": "reviewed_generic_management_no_customer_text_identity_private_link_or_binary",
-      "modification": "new_documentation_preparation_only",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "user_authorized_management_preparation_only_no_customer_material_publication",
-      "source_mapping": [
-        {
-          "kind": "readiness_preparation",
-          "baseline": "8090914e752d724b3e67b09227609830030d9510",
-          "work_package": "WP-IPC-READINESS-02",
-          "path": "docs/readiness/technical-baseline.json"
-        }
-      ],
-      "remote_inclusion": "NOT_PUBLISHED"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/readiness/technical-baseline.json",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/reviews/STATUS.md",
-      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
-      "version": "archive-02",
+      "git_blob": "977044d2379c55fb00fbf72f73f584013375a53a",
       "sha256": "0015215fd115fd603b69a34355f97c00541790730c3f7a83ca05ec6f7833feaa",
       "size_bytes": 1748,
-      "purpose": "资料归档与阅读/限制控制",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "archival_control_or_integrity_tool_only",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "docs/reviews/STATUS.md"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/reviews/STATUS.md",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/reviews/issues.json",
-      "source": "SS-REVIEW-001 v1.0 / delivery archive evidence/issues.json",
-      "version": "1.0",
+      "git_blob": "a80f71cf1cc385a754f5bca31cd3d20e3a106b24",
       "sha256": "a16947ee9ee1a60a16afd35ab2b0e04897d88d24a44c97a1c2249ddeeb9d2ed9",
       "size_bytes": 26928,
-      "purpose": "完整历史技术问题表，RV-01..17全部OPEN",
-      "status": "historical_review_open",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "none",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "docs/reviews/issues.json"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/reviews/issues.json",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/superpowers/plans/2026-10-16-ipc-readiness.md",
-      "source": "WP-IPC-READINESS-02 user-authorized preparation; existing public issues and repository constraints; index metadata only for legacy identifiers",
-      "version": "readiness-01",
+      "git_blob": "2c23a82ad65459aafe7cafb525ac4e5df8b584c3",
       "sha256": "e84998fc4c91f234955cd224bf8302848eba2ad3ce7b415dde3e185e5c8ffeca",
       "size_bytes": 4823,
-      "purpose": "技术基线/决策/修订及资料核验准备；非客户批准或业务实现",
-      "status": "readiness_preparation_not_approved",
-      "public_review": "reviewed_generic_management_no_customer_text_identity_private_link_or_binary",
-      "modification": "new_documentation_preparation_only",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "user_authorized_management_preparation_only_no_customer_material_publication",
-      "source_mapping": [
-        {
-          "kind": "readiness_preparation",
-          "baseline": "8090914e752d724b3e67b09227609830030d9510",
-          "work_package": "WP-IPC-READINESS-02",
-          "path": "docs/superpowers/plans/2026-10-16-ipc-readiness.md"
-        }
-      ],
-      "remote_inclusion": "NOT_PUBLISHED"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/superpowers/plans/2026-10-16-ipc-readiness.md",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/ui/STATUS.md",
-      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
-      "version": "archive-02",
+      "git_blob": "10f47352a9ea0784c035cc99562dc6a76510caa1",
       "sha256": "4816f9857ee1dfb99e2b69a648c60668d21478ba473d31c0228bb31c6d64c64e",
       "size_bytes": 1621,
-      "purpose": "资料归档与阅读/限制控制",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "archival_control_or_integrity_tool_only",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "docs/ui/STATUS.md"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/ui/STATUS.md",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/ui/tokens/tokens.css",
-      "source": "SS-UI-VIS-001 v1.1 / design/tokens.css",
-      "version": "1.1",
+      "git_blob": "7b0c3ea4663a61357625d7520a3ecb7b05cc23f0",
       "sha256": "99ad481832ec36bb901032e597fccc9d36a0f7fa1b77ed5ffbf4c85434b18ec5",
       "size_bytes": 629,
-      "purpose": "完整CSS设计变量，不含字体文件",
-      "status": "design_reference_not_approved",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "none",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "docs/ui/tokens/tokens.css"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/ui/tokens/tokens.css",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/ui/tokens/tokens.json",
-      "source": "SS-UI-VIS-001 v1.1 / design/tokens.json",
-      "version": "1.1",
+      "git_blob": "6c19c3e90a8829d58acb9d6d8ed2617d7c6cb30a",
       "sha256": "09bbfe810d571cfd57115729c78f59a3f43ee65974ce317fe08b9bbe8e8efb5e",
       "size_bytes": 1779,
-      "purpose": "完整通用设计变量，非现场验收规格",
-      "status": "design_reference_not_approved",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "none",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "docs/ui/tokens/tokens.json"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/ui/tokens/tokens.json",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/work-packages/WP-IPC-DESIGN-BASELINE-01.md",
-      "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
-      "version": "archive-02",
+      "git_blob": "75e80e26d44ec8d2c98473270db56b7ae4fba76e",
       "sha256": "31e9b56b196f6bcbe16583fb47e5ea53e6722720998061824f5ff6643ab493d3",
       "size_bytes": 2892,
-      "purpose": "资料归档与阅读/限制控制",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "archival_control_or_integrity_tool_only",
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "docs/work-packages/WP-IPC-DESIGN-BASELINE-01.md"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/work-packages/WP-IPC-DESIGN-BASELINE-01.md",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-RUNTIME-03-Codex.md",
+      "sha256": "62858dd687c648adca1ddcef52c303c4a9b9a9c33d313b1f73b71a0dcbed4129",
+      "size_bytes": 3451,
+      "git_blob": "fef11744b9233d3082edfbb71e42552cec64f42b",
+      "version": "framework-1.0",
+      "status": "implementation_planned",
+      "purpose": "完整参考运行闭环与执行提示词",
+      "source": "WP-IPC-FRAMEWORK-01 user-authorized generic design; baseline lineage in previous_manifest",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-RUNTIME-03.md",
+      "sha256": "39773089dccd5daa515d36c60d257649ae51b33f472287cd01c60407f5039f31",
+      "size_bytes": 13329,
+      "git_blob": "6dbfa3116d408cf8f295368eb034c953e0edd7a1",
+      "version": "framework-1.0",
+      "status": "implementation_planned",
+      "purpose": "完整参考运行闭环与执行提示词",
+      "source": "WP-IPC-FRAMEWORK-01 user-authorized generic design; baseline lineage in previous_manifest",
+      "storage_scope": "public_repository"
     },
     {
       "path": "tools/README.md",
+      "git_blob": "30df4098595ed88a260bc684475012137417754b",
       "sha256": "244aa6c7cc7c635980d89ffe0bec1f173611b7c05aed57e457658f7a178bbed9",
       "size_bytes": 2480,
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "tools/README.md"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push",
-      "source": "WP-IPC-DESIGN-BASELINE-01 continuation",
-      "version": "archive-02",
-      "purpose": "资料管理或只读资料校验",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_content_or_private_link",
-      "modification": "archival_control_or_integrity_tool_only"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:tools/README.md",
+      "storage_scope": "public_repository"
     },
     {
       "path": "tools/test_verify_archive.py",
+      "git_blob": "b334e4a0dbedd3afd695cb6daa4239e7479d5758",
       "sha256": "bf4d7a8edcbb1c1189074e47738a29e38f02603883202de8b18901e8d462c53c",
       "size_bytes": 6207,
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "tools/test_verify_archive.py"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push",
-      "source": "WP-IPC-DESIGN-BASELINE-01 continuation",
-      "version": "archive-02",
-      "purpose": "资料管理或只读资料校验",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_content_or_private_link",
-      "modification": "archival_control_or_integrity_tool_only"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:tools/test_verify_archive.py",
+      "storage_scope": "public_repository"
     },
     {
       "path": "tools/verify_archive.py",
+      "git_blob": "5d9fb73a38d859a3b073160135ffb3029daef01e",
       "sha256": "4d6676c46c69f12f0650b4e99fa76238716f11270e8ce4548e8bdf35c9eecf47",
       "size_bytes": 18100,
-      "storage_scope": "public_repository",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "reviewed_public_management_or_inherited_public_bytes",
-      "source_mapping": [
-        {
-          "kind": "git_baseline_or_continuation",
-          "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
-          "path": "tools/verify_archive.py"
-        }
-      ],
-      "remote_inclusion": "verify_exact_commit_after_push",
-      "source": "WP-IPC-DESIGN-BASELINE-01 continuation",
-      "version": "archive-02",
-      "purpose": "资料管理或只读资料校验",
-      "status": "current_baseline_control",
-      "public_review": "cleared_no_customer_content_or_private_link",
-      "modification": "archival_control_or_integrity_tool_only"
+      "version": "unchanged-from-39747a8",
+      "status": "inherited_baseline",
+      "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
+      "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:tools/verify_archive.py",
+      "storage_scope": "public_repository"
     }
-  ],
-  "readiness_preparation": {
-    "work_package": "WP-IPC-READINESS-02",
-    "baseline_commit": "8090914e752d724b3e67b09227609830030d9510",
-    "status": "PREPARATION_COMPLETE_EXTERNAL_INPUTS_BLOCKED",
-    "entry": "docs/superpowers/plans/2026-10-16-ipc-readiness.md",
-    "checks": "docs/readiness/checks.json",
-    "business_changes": false,
-    "decision_approvals_added": 0,
-    "review_closures": 0,
-    "remote_publication": "NOT_PUBLISHED"
-  }
+  ]
 }

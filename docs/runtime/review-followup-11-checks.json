@@ -579,5 +579,15 @@
       "registered_modules": "PASS",
       "actual_execution": "WINDOWS_NOT_RUN"
     }
-  ]
+  ],
+  "pull_request": {
+    "url": "https://github.com/yuan2go/importer-pc/pull/10",
+    "creation_head": "bf1c9e82038baaca6c5fbd32de1796fa476c6e58",
+    "base_commit": "4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+    "state_at_creation": "OPEN",
+    "mergeable_at_read": "MERGEABLE",
+    "merge_state_at_read": "CLEAN",
+    "github_checks_at_read": [],
+    "merged_by_this_task": false
+  }
 }

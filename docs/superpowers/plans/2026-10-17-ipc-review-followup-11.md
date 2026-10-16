@@ -48,4 +48,4 @@ Files: `src/Ipc.Product/ProductRuntime.cs`, `tests/Ipc.Verification/ProductOwner
 - [x] Review diff, commit runtime/config/scripts/packaged operations inputs on the development branch, freeze SourceCommit.
 - [x] Build fresh portable and win-x64 reference ZIPs; verify CRC/exact SHA256SUMS/module/config/source identities, run native smoke from fresh extracted portable bytes.
 - [x] Save public synthetic logs and checks, precise Windows/integration blockers, report/manifest; preserve existing failure267 archive boundary and old packages.
-- [ ] Commit documentation, push development branch, create/attach main PR and read back state. Do not merge or force-push.
+- [x] Commit documentation, push development branch, create/attach main PR and read back state. Do not merge or force-push.

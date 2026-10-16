@@ -92,3 +92,7 @@ python3 scripts/smoke.py --product <新解压目录>/app --fixture <新解压目
 ```
 
 公开日志仅替换本地工作树/SDK路径；原字节与公开副本SHA分别登记。4edb909后运行/打包/运维输入无变化。仅开发分支PR供main审查，不自行合并、不强推；实际PR回执随后附加。
+
+## 开发分支PR回执
+
+已创建[main PR #10](https://github.com/yuan2go/importer-pc/pull/10)，创建时HEAD `bf1c9e82038baaca6c5fbd32de1796fa476c6e58`、base `4ae5319`，读回OPEN / MERGEABLE / CLEAN。GitHub检查列表为空，不等于CI PASS；本报告PASS来自真实本地日志。后续仅本回执/计划/manifest文档提交，运行SourceCommit和两个包仍固定4edb909。未自行合并、未强推；最终远端状态以GitHub读回为准。

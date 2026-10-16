@@ -1,5 +1,7 @@
 # ENGINEERING-CLOSURE-07 实施与交付
 
+当前独立复核：[MAIN-REVIEW-03](../reviews/main-static-review-03.md)，基准main `2579392`（PR #6/#7已合并）。8项指定整改路径静态补齐，E-06/E-10仍有工程缺口；全部运行NOT_RUN，Windows06/真实集成05分别保持NOT_RUN/BLOCKED。后续见工程增量08、参考验证09；下文07/更早记录保留形成时范围。
+
 2026-10-16。执行包：[WP-IPC-ENGINEERING-CLOSURE-07](../work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)。PR #5已按用户要求合并；执行基准main `6d4063ec54e8167c8710e46befbe66f8b688ef08`。开发分支 `codex/wp-ipc-engineering-closure-07`；代码源提交 `493416f99970d95bb4a4076130de5c28ee33502d`。
 
 **10项工程整改均已实现，运行验证均NOT_RUN。** 用户明确要求不测试，因此没有运行测试、资料验证器、构建/还原/编译、应用/夹具、发布/冒烟或Windows/SDK/WCS操作。源码阅读与静态交叉复查不能证明编译通过、显示适配通过或真实接口可用。实际分项记录见 [checks](engineering-closure-07-checks.json)。

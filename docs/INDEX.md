@@ -1,6 +1,6 @@
 # 统一资料与实施入口
 
-更新日期：2026-10-16；当前实施：WP-IPC-ENGINEERING-CLOSURE-07；执行基准 `6d4063ec54e8167c8710e46befbe66f8b688ef08`（PR #5已合并）。用户授权实施10项工程整改，仍要求不测试；所有运行验证NOT_RUN。
+更新日期：2026-10-16；最新复核：WP-IPC-MAIN-REVIEW-03；分析基准main `2579392ddcc0b4302d4aae865d4b2d8b3c083b59`（PR #6/#7已合并）。本轮仅独立复核和下一工作包整理，用户要求不测试，全部运行验证NOT_RUN。
 
 ## 已入库的最终交付UI：Codex页面开发必读
 
@@ -10,25 +10,27 @@
 
 ## 当前结论
 
-本轮 [ENGINEERING-CLOSURE-07实施记录](runtime/engineering-closure-07.md) 和 [执行边界](runtime/engineering-closure-07-checks.json) 为当前入口：10项工程整改已实现，代码源提交 `493416f`，所有运行验证NOT_RUN（用户要求不测试）。待构建元数据为ENGINEERING-CLOSURE-07 / Storage3 / SIMULATION-v1，没有生成新包或包SHA。
+[独立复核03](reviews/main-static-review-03.md) 与[执行边界](reviews/main-static-review-03-checks.json) 为当前入口：10项中8项的指定整改路径静态补齐；**E-06历史旧入口权限、E-10最终生效配置与实际租约集合仍有工程缺口**，均可不等SDK/WCS整改。源码静态符合性不代表运行PASS，10项运行验收均NOT_RUN。
 
-[MAIN-REVIEW-02](reviews/main-static-review-02.md) 保留原10项问题的形成时证据，不倒写为已验收；当前实现状态以07记录为准。[Windows验证06](work-packages/WP-IPC-WINDOWS-VALIDATION-06.md) 的W-01～06仍NOT_RUN，[集成边界05](work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md) 的B-01～06仍BLOCKED。没有生产放行或历史RV关闭。
+下一阶段由[工程增量08](work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md)收敛这两个缺口；[参考验证09](work-packages/WP-IPC-REFERENCE-VALIDATION-09.md)承接旧验证预期对齐、07/08风险覆盖及必要构建/同版交付，须明确恢复验证授权后执行。另有[UI基线落实10](work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md)处理已入库实物与当前WPF的差异；08/09/10本轮均未执行。[Windows06](work-packages/WP-IPC-WINDOWS-VALIDATION-06.md) W-01～06继续NOT_RUN，[集成05](work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md) B-01～06继续BLOCKED；不能混合为一个“待联调”。
+
+[07实施记录](runtime/engineering-closure-07.md)保留形成时“10项已实现、运行未验”的交付范围，PR #6当前已MERGED；当前闭环判断以上述03为准。[复核02](reviews/main-static-review-02.md)保留原问题形成时证据。最后业务代码源提交`493416f`，待构建元数据ENGINEERING-CLOSURE-07 / Storage3 / SIMULATION-v1；没有新包、包SHA或Windows截图。历史D/RV不改写。
 
 现有参考实现及上一包验证见 [ALIGNMENT-01](runtime/alignment-01.md)、[检查记录](runtime/alignment-01-checks.json)、[Windows待验](runtime/alignment-01-windows.md)。原检查中的PR OPEN和PASS保留形成时快照；PR #4当前已MERGED，历史运行结果未在本轮重跑。
 
 **独立参考实现已加入。** RUNTIME-03从当时main `8908909` 开始，已建设工位基座、供包应用、多UI、SQLite/Outbox及独立loopback夹具；不是旧现场迁移。[运行/发布](runtime/operations.md)、[实施映射](runtime/implementation.md)、[实际验证与交付](runtime/delivery.md) 是当前实现入口。Windows运行与真实接口/现场状态分项报告，不以核心PASS替代。
 
-完整客户材料归档仍为 **PUBLIC_SUBSET_ONLY**；本轮只公开新的通用框架和实施规范，不上传受限原稿。开发就绪仍有条件：参考闭环可实施，真实业务规则、旧工程迁移、SDK/WCS和实体动作分别受对应证据约束。17个RV不因架构入库自动关闭。
+完整客户材料归档仍为 **PUBLIC_SUBSET_ONLY**；本轮只公开新的通用复核与工作包，不上传受限原稿。开发就绪仍有条件：参考闭环可实施，真实业务规则、旧工程迁移、SDK/WCS和实体动作分别受对应证据约束。17个RV不因架构入库自动关闭。
 
-上一包实施范围与验收见 [ARCH-UI-ALIGNMENT-01](work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)，其继承H04的装配、数据链、UI与后台隔离实现继续保留；本轮实现状态以07记录为准，历史复核定位保留。原加固范围与实施基准见 [HARDENING-04](work-packages/WP-IPC-RUNTIME-HARDENING-04.md)。RUNTIME-03交付结果保留为历史验证，不代表本轮结果。
+上一包实施范围与验收见 [ARCH-UI-ALIGNMENT-01](work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)，其继承H04的装配、数据链、UI与后台隔离实现继续保留；当前闭环判断以03复核为准，07实施与历史复核定位保留。原加固范围与实施基准见 [HARDENING-04](work-packages/WP-IPC-RUNTIME-HARDENING-04.md)。RUNTIME-03交付结果保留为历史验证，不代表本轮结果。
 
 ## 当前必读
 
 1. [框架架构与模块设计](design/framework.md)：职责、依赖、装配、数据/状态、配置、设备/外部边界、UI与部署。
 2. [框架决策与讨论依据](design/framework-decisions.md)：用户设想和GPT建议分别登记；取舍、新参考技术路线、公开范围和外部依据。
-   当前剩余差距和后续执行先读 [独立静态复核](reviews/main-static-review-02.md) 及 [工程收敛07](work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)；Windows/真实接口分别读06/05，不把未验证功能标为已验收。
+   当前剩余差距先读 [独立复核03](reviews/main-static-review-03.md)、[工程增量08](work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md) 和 [参考验证09](work-packages/WP-IPC-REFERENCE-VALIDATION-09.md)；07是已合并的实施记录，Windows/真实接口分别读06/05。
 3. [WP-IPC-RUNTIME-03](work-packages/WP-IPC-RUNTIME-03.md)：历史S0～S5实施范围、局部阻塞和AC-01～11验收；不要把形成时“无实现”当当前事实。
-4. [RUNTIME-03历史Codex提示词](work-packages/WP-IPC-RUNTIME-03-Codex.md)：保留原授权和执行上下文；下一阶段用07/06/05，不重新执行一遍RUNTIME-03。
+4. [RUNTIME-03历史Codex提示词](work-packages/WP-IPC-RUNTIME-03-Codex.md)：保留原授权和执行上下文；下一阶段用08/10/09/06/05，不重新执行一遍RUNTIME-03。
 5. [FRAMEWORK形成时资料检查](design/framework-checks.json)、[基线变更记录](baseline/CHANGELOG.md)、[当前manifest](manifest.json)。本次静态复核未运行资料验证器。
 
 F系列为本轮架构推荐，不等于客户D项批准。C#/.NET10/WPF/SQLite用于无旧工程时的新参考产品，不是已有工程已采用此技术的声明。代码实施中取得不同事实时按ADR记录修订，不凭界面载体推断技术栈。
@@ -38,7 +40,7 @@ F系列为本轮架构推荐，不等于客户D项批准。C#/.NET10/WPF/SQLite�
 - [关键决策确认包](readiness/decision-pack.md) 与 [技术基线](readiness/technical-baseline.json)：数量、拆包、实体、SDK、WCS、权限和旧工程仍待相应证据，不复制第二套D登记。
 - [历史问题表](reviews/issues.json)、[评审状态](reviews/STATUS.md)、[修订和分层验证](readiness/revision-and-verification.md)：历史事实与新实现验收不能混淆。
 - [UI状态](ui/STATUS.md)、[设计tokens](ui/tokens/tokens.json)、[CSS变量](ui/tokens/tokens.css)：作为视觉参考；当前操作约束见框架§10，未证明Windows/DPI/触控或持续操作通过。
-- [公开范围](baseline/PUBLICATION.md)、[缺失/未上传](baseline/MISSING.md)：完整客户原件和衍生图像未入公开main；受限阅读与公开发布分开。
+- [公开范围](baseline/PUBLICATION.md)、[缺失/未上传](baseline/MISSING.md)：客户原件和本组以外受限资产仍未公开；v1.1限定发布见上方实物入口，不扩大为全部材料许可。
 
 ## 历史准备与原始资料归档
 

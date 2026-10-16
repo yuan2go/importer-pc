@@ -1,0 +1,243 @@
+{
+  "work_package": "WP-IPC-MAIN-REVIEW-03",
+  "review_date": "2026-10-16",
+  "analysis_main": "2579392ddcc0b4302d4aae865d4b2d8b3c083b59",
+  "comparison_main": "6d4063ec54e8167c8710e46befbe66f8b688ef08",
+  "business_code_source": "493416f99970d95bb4a4076130de5c28ee33502d",
+  "branch": "codex/wp-ipc-main-review-03",
+  "merged_before_review": {
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/6",
+    "state": "MERGED",
+    "head": "ca4f0bfe64dfb738153da4d0a78ea277a969189d",
+    "merge_commit": "677a5adeef277adb4c6dd742749f06d02b01c2a7",
+    "merged_at": "2026-10-16T13:43:07Z"
+  },
+  "conclusion": "EIGHT_STATIC_PATHS_COMPLETE_TWO_PARTIAL_ALL_RUNTIME_NOT_RUN",
+  "engineering": {
+    "E-01": {
+      "static_status": "STATIC_PATH_COMPLETE",
+      "runtime_acceptance": "NOT_RUN_USER_REQUEST"
+    },
+    "E-02": {
+      "static_status": "STATIC_PATH_COMPLETE",
+      "runtime_acceptance": "NOT_RUN_USER_REQUEST"
+    },
+    "E-03": {
+      "static_status": "STATIC_PATH_COMPLETE",
+      "runtime_acceptance": "NOT_RUN_USER_REQUEST"
+    },
+    "E-04": {
+      "static_status": "STATIC_PATH_COMPLETE",
+      "runtime_acceptance": "NOT_RUN_USER_REQUEST"
+    },
+    "E-05": {
+      "static_status": "STATIC_PATH_COMPLETE",
+      "runtime_acceptance": "NOT_RUN_USER_REQUEST"
+    },
+    "E-06": {
+      "static_status": "PARTIAL_ENGINEERING_OPEN",
+      "runtime_acceptance": "NOT_RUN_USER_REQUEST"
+    },
+    "E-07": {
+      "static_status": "STATIC_PATH_COMPLETE",
+      "runtime_acceptance": "NOT_RUN_USER_REQUEST"
+    },
+    "E-08": {
+      "static_status": "STATIC_PATH_COMPLETE",
+      "runtime_acceptance": "NOT_RUN_USER_REQUEST"
+    },
+    "E-09": {
+      "static_status": "STATIC_PATH_COMPLETE",
+      "runtime_acceptance": "NOT_RUN_USER_REQUEST"
+    },
+    "E-10": {
+      "static_status": "PARTIAL_ENGINEERING_OPEN",
+      "runtime_acceptance": "NOT_RUN_USER_REQUEST"
+    }
+  },
+  "review_axes": {
+    "Standards": {
+      "findings": 1,
+      "highest_priority": "P2",
+      "items": [
+        {
+          "id": "R03-ST-01",
+          "engineering_id": "E-10",
+          "status": "OPEN_STATIC_SOURCE_FINDING",
+          "priority": "P2",
+          "file": "src/Ipc.Product/ProductRuntime.cs",
+          "lines": [
+            66,
+            72
+          ],
+          "supporting_lines": [
+            [
+              79,
+              79
+            ],
+            [
+              89,
+              99
+            ]
+          ],
+          "requirement": "framework section11 actual device binding ownership; WP07 slice2",
+          "trigger": "Persisted Effective config uses device A, redeployed valid seed uses device B; machine leases cover B but sources start A",
+          "consequence": "Another station/data root can acquire A while current runtime already starts configured A; no physical contention claimed",
+          "remedy": "Select and validate final effective identity/device set before acquiring its resource leases or reject the mismatch before source startup"
+        }
+      ]
+    },
+    "Spec": {
+      "findings": 2,
+      "highest_priority": "P2",
+      "items": [
+        {
+          "id": "R03-SP-01",
+          "engineering_id": "E-06",
+          "status": "OPEN_STATIC_SOURCE_FINDING",
+          "priority": "P2",
+          "file": "src/Ipc.Supply/StationApplication.cs",
+          "lines": [
+            634,
+            642
+          ],
+          "supporting_files": [
+            "src/Ipc.Supply/Model.cs:115-119",
+            "src/Ipc.Supply/StationClosure.cs:138-148",
+            "src/Ipc.Desktop/MainWindow.xaml.cs:333-336",
+            "src/Ipc.Desktop/MainWindow.xaml:44"
+          ],
+          "requirement": "WP07 slice5 unauthorized historical query fails; framework section6.4 QueryHistory/GetRequestDetail permission check",
+          "trigger": "Logged-out or expired identity calls HistoryAsync/AlarmHistoryAsync; current alarm-history UI also reaches the unguarded API",
+          "consequence": "Old application paths bypass the identity check present in typed history/detail queries",
+          "remedy": "Apply one application-owned historical read policy across new and old interfaces, and give explicit UI failure feedback"
+        },
+        {
+          "id": "R03-SP-02",
+          "engineering_id": "UI-01",
+          "status": "OPEN_STATIC_SOURCE_FINDING",
+          "priority": "P2",
+          "file": "src/Ipc.Desktop/MainWindow.xaml",
+          "lines": [
+            11,
+            27
+          ],
+          "supporting_files": [
+            "docs/ui/ss-ui-vis-001-v1.1/README.md:39",
+            "docs/ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md:57-59",
+            "docs/ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md:206",
+            "docs/ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md:222-225",
+            "src/Ipc.Desktop/MainWindow.Closure.cs:21-22",
+            "src/Ipc.Desktop/MainWindow.Closure.cs:50-51",
+            "src/Ipc.Desktop/ViewModels.cs:105-106"
+          ],
+          "requirement": "Published physical UI baseline shared box, simultaneous dual-channel task/barcode/quantity/result/actions and professional information hierarchy; inherited safety overrides demo logic",
+          "trigger": "WPF always presents one selected full review, other lane only as status; full dual lane and recent records are default collapsed, with no per-page baseline difference adjudication",
+          "consequence": "Original E02/E07 safety mechanisms do not establish full published UI implementation; this is source structure, not measured Windows pixel failure",
+          "remedy": "WP-IPC-UI-BASELINE-ALIGNMENT-10 maps pages/components and explicitly implements or adjudicates layout, low-frequency views and ordinary confirmation differences while retaining application guards"
+        }
+      ]
+    }
+  },
+  "verification_debt": {
+    "V-01": {
+      "status": "NOT_RUN",
+      "static_observation": "Old implicit-migration/format2 verification expectations remain, not an observed test failure",
+      "files": [
+        "tests/Ipc.Verification/AlignmentDataVerification.cs:75-97",
+        "tests/Ipc.Verification/HardeningVerification.cs:196-201"
+      ],
+      "next_work_package": "WP-IPC-REFERENCE-VALIDATION-09"
+    }
+  },
+  "windows": {
+    "W-01": "NOT_RUN",
+    "W-02": "NOT_RUN",
+    "W-03": "NOT_RUN",
+    "W-04": "NOT_RUN",
+    "W-05": "NOT_RUN",
+    "W-06": "NOT_RUN"
+  },
+  "integration": {
+    "B-01": "BLOCKED",
+    "B-02": "BLOCKED",
+    "B-03": "BLOCKED",
+    "B-04": "BLOCKED",
+    "B-05": "BLOCKED",
+    "B-06": "BLOCKED"
+  },
+  "execution": {
+    "tests": "NOT_RUN_USER_REQUEST",
+    "document_validator": "NOT_RUN_USER_REQUEST",
+    "restore": "NOT_RUN_USER_REQUEST",
+    "build": "NOT_RUN_USER_REQUEST",
+    "compile": "NOT_RUN_USER_REQUEST",
+    "application": "NOT_RUN_USER_REQUEST",
+    "fixture": "NOT_RUN_USER_REQUEST",
+    "powershell": "NOT_RUN_USER_REQUEST",
+    "publish": "NOT_RUN_USER_REQUEST",
+    "smoke": "NOT_RUN_USER_REQUEST",
+    "browser": "NOT_RUN_USER_REQUEST",
+    "wpf": "NOT_RUN_USER_REQUEST",
+    "windows": "NOT_RUN_USER_REQUEST",
+    "sdk": "NOT_RUN_USER_REQUEST",
+    "wcs": "NOT_RUN_USER_REQUEST",
+    "device_actions": "NOT_RUN_USER_REQUEST"
+  },
+  "method": "Read code, diffs, architecture, approved work package, UI requirements and existing evidence; independent Standards/Spec readings with root source confirmation. No compiler/parser/validator or runtime execution.",
+  "changes": {
+    "business_code": false,
+    "test_sources": false,
+    "historical_issues_or_validation_json": false,
+    "d_approvals": false,
+    "rv_status": false,
+    "new_binary": false,
+    "new_package_sha": null,
+    "documents_and_manifest_only": true,
+    "inherited_ui_assets_from_pr_7": "Retained unchanged, not created/rendered/validated by this review"
+  },
+  "next_work_packages": {
+    "WP-IPC-ENGINEERING-FOLLOWUP-08": "PLANNED_NOT_STARTED",
+    "WP-IPC-REFERENCE-VALIDATION-09": "PLANNED_EXECUTION_NOT_RUN",
+    "WP-IPC-WINDOWS-VALIDATION-06": "NOT_RUN",
+    "WP-IPC-INTEGRATION-BOUNDARY-05": "BLOCKED",
+    "WP-IPC-UI-BASELINE-ALIGNMENT-10": "PLANNED_NOT_STARTED"
+  },
+  "historical_status": {
+    "RV-01..17": "OPEN",
+    "07_implementation_record": "Retained as delivery-time claim; this independent review governs current closure interpretation",
+    "prior_validation": "UNCHANGED_NOT_RERUN"
+  },
+  "public_scope": "New generic findings, planning and navigation only; restricted inputs read locally and retained in original checkout; no customer originals/assets/private URLs/credentials/production data/SDK/fonts copied or uploaded",
+  "initial_analysis_main": "677a5adeef277adb4c6dd742749f06d02b01c2a7",
+  "parallel_main_update": {
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/7",
+    "state": "MERGED",
+    "merge_commit": "2579392ddcc0b4302d4aae865d4b2d8b3c083b59",
+    "merged_at": "2026-10-16T13:49:12Z",
+    "changes": "Authorized final UI design assets/publication documents only; application/scripts/tests unchanged",
+    "handling": "Merged without force, preserve imported assets/authorization and regenerate combined manifest; no tests"
+  },
+  "ui_baseline": {
+    "entry": "docs/ui/ss-ui-vis-001-v1.1/README.md",
+    "source": "SS-UI-VIS-001 v1.1",
+    "existing_source_files": 11,
+    "existing_reexported_pngs": 34,
+    "read_existing_images": [
+      "01-normal-1920.png",
+      "26-split-1366.png",
+      "12-record-detail-1920.png"
+    ],
+    "method": "Passive local source/image reading only; no re-render/browser/prototype execution",
+    "implementation_alignment": "UI-01_OPEN",
+    "windows": "NOT_RUN"
+  },
+  "delivery": {
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/8",
+    "base": "main",
+    "state_at_creation": "OPEN",
+    "creation_head": "16bed1eef4782c9d732aba74569a8bb286e75292",
+    "merged_by_this_task": false,
+    "head_authority": "GitHub PR headRefOid; creation_head retained as creation receipt, no self-referential final hash"
+  }
+}

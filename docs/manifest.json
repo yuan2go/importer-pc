@@ -1,18 +1,18 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-ENGINEERING-CLOSURE-07",
+  "work_package": "WP-IPC-MAIN-REVIEW-03",
   "created_date": "2026-10-16",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/wp-ipc-engineering-closure-07",
+  "branch": "codex/wp-ipc-main-review-03",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
-  "framework_design_state": "REFERENCE_IMPLEMENTED_ENGINEERING_CLOSURE_UNVERIFIED_WINDOWS_NOT_RUN",
+  "framework_design_state": "REFERENCE_STATIC_REVIEW_TWO_ENGINEERING_GAPS_ALL_RUNTIME_NOT_RUN",
   "previous_manifest": {
-    "commit": "6d4063ec54e8167c8710e46befbe66f8b688ef08",
+    "commit": "2579392ddcc0b4302d4aae865d4b2d8b3c083b59",
     "path": "docs/manifest.json",
-    "git_blob": "9ea99ee3499b3ae453821fb169dd02a107491bc4",
-    "meaning": "Merged PR #5 static review baseline; original design approvals, RV issues and historical verification records retained."
+    "git_blob": "6f6a191dd125768a3776587be32dfb607da99679",
+    "meaning": "Parallel UI publication PR #7 retained with all assets/authorization; review branch adds independent closure findings and planned work, no business changes or test results."
   },
   "self_verification": {
     "sha256_file": "manifest.sha256",
@@ -104,7 +104,9 @@
     "historical_original": "原字节保留，不作为当前指令",
     "inherited_baseline": "用途/版本/历史来源以previous_manifest相同路径记录为准",
     "implemented_runtime_unverified": "代码已实现，未构建或运行验证，不代表Windows或现场验收",
-    "current_implementation_or_boundary_record": "当前工程实现、运行入口及未验证边界记录"
+    "current_implementation_or_boundary_record": "当前工程实现、运行入口及未验证边界记录",
+    "static_path_complete": "指定整改调用链静态可见且本轮未发现同级缺口；不表示编译/运行/Windows/现场PASS",
+    "partial_engineering_open": "部分实现但仍有可据源码定位的工程缺口，不归因于Windows或SDK环境"
   },
   "files": [
     {
@@ -122,13 +124,13 @@
       "path": "AGENTS.md",
       "sha256": "11a1cc84db7901e3d0a3fb017d8d87c4898b9c6f4a18c68bd30956aa28949fb9",
       "size_bytes": 3319,
-      "git_blob": "612824b9ad357d4b1530eb28f0bff417a416dfa4",
+      "git_blob": "fbedc31d3fc8cc0c7194abdbabf63e0316988145",
       "version": "ui-publication-20261016",
       "status": "current_baseline_control",
       "purpose": "complete visual/source design baseline for Codex; not production acceptance",
       "source": "user-requested final UI publication / SS-UI-VIS-001 v1.1",
       "storage_scope": "public_repository",
-      "previous_git_blob": "ad88410c5019747b8e6bcf6db554579729c7d2b7",
+      "previous_git_blob": "612824b9ad357d4b1530eb28f0bff417a416dfa4",
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
@@ -169,15 +171,15 @@
     },
     {
       "path": "README.md",
-      "sha256": "95c6b8a040d9fe535feaf919fb41500601fba5adf1ec093876465fe9d347ded2",
-      "size_bytes": 2041,
-      "git_blob": "d60401a331fa33cbf3011c968e66389d88931631",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "9dad75a525469b4cf5a7faf0c6e67668e27c51137aa656a3e10b9218fee1c77d",
+      "size_bytes": 2403,
+      "git_blob": "8b7fec578f833c96edeb1d1f28822e47fcbae19c",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "1e08b66bcae8d708fc1bec26ee1b376030b0d9df"
+      "previous_git_blob": "d60401a331fa33cbf3011c968e66389d88931631"
     },
     {
       "path": "config/presentation.json",
@@ -225,19 +227,15 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "993f7231f14b4c438abd9fd9a3f0385c070bb7d080889b364d89fb8be12749c3",
-      "size_bytes": 6810,
-      "git_blob": "0f395600964b40fe5bbee64f8b04623226b02f16",
-      "version": "ui-publication-20261016",
-      "status": "current_baseline_control",
-      "purpose": "complete visual/source design baseline for Codex; not production acceptance",
-      "source": "user-requested final UI publication / SS-UI-VIS-001 v1.1",
+      "sha256": "18098d3e4c5f7dc0e2df1aaceeee885589db2a45efc1bc07b2548cbe177edc8e",
+      "size_bytes": 7617,
+      "git_blob": "fcae321a8aedd4d0358521e6d385c2b18c698971",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "44026ad1c650f105b22694fbae2cfb853aceed89",
-      "collected": true,
-      "hash_checked": true,
-      "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "previous_git_blob": "0f395600964b40fe5bbee64f8b04623226b02f16"
     },
     {
       "path": "docs/archive/pre-framework-20261016/AGENTS.md.txt",
@@ -310,13 +308,13 @@
       "path": "docs/baseline/MISSING.md",
       "sha256": "b4c01a16a46916e681730086e891f4c3e6a4900cff5ef50e0530d8492a9a23ce",
       "size_bytes": 3659,
-      "git_blob": "b68dd8a0b98bd6afffb37a144b080e3148c77f50",
+      "git_blob": "0d62957e2be885a9d6732a628cf4622803f6aaea",
       "version": "ui-publication-20261016",
       "status": "current_baseline_control",
       "purpose": "complete visual/source design baseline for Codex; not production acceptance",
       "source": "user-requested final UI publication / SS-UI-VIS-001 v1.1",
       "storage_scope": "public_repository",
-      "previous_git_blob": "21c9ee5d27368250dc3f44b4599bbfbd89322fd5",
+      "previous_git_blob": "b68dd8a0b98bd6afffb37a144b080e3148c77f50",
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
@@ -324,7 +322,7 @@
     },
     {
       "path": "docs/baseline/PUBLICATION.md",
-      "git_blob": "6fb2924ba8b056d5dafa8e22b964442e0a6bc8d5",
+      "git_blob": "bb962dcc3b5048fe782eb886b217c047eff45381",
       "sha256": "68db14d88bb1772689f7fd8740dc145c0177037b36b753162a0f260e9b8ca906",
       "size_bytes": 3548,
       "version": "ui-publication-20261016",
@@ -335,7 +333,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "previous_git_blob": "6fb2924ba8b056d5dafa8e22b964442e0a6bc8d5"
     },
     {
       "path": "docs/baseline/artifact-checks.json",
@@ -372,27 +371,27 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "ea32921391453070070fc99f854bb35e65ba51a248963c2fb0a8f10018b8e4b1",
-      "size_bytes": 15170,
-      "git_blob": "4ea139835ca4a535adabfa761bcec0eb68164acd",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "46a4352b8bdfab9fd893c7c190b753bd399b7ecfaeab1126128ef03120c87e55",
+      "size_bytes": 15198,
+      "git_blob": "a3b067adb9a2f94533469519fd28ed7c3186b6af",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "fcbb5723c147d6d848876f10b3540b027d6a46c5"
+      "previous_git_blob": "4ea139835ca4a535adabfa761bcec0eb68164acd"
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "abd7d713c1312502242bcb6abf98f8fa70d7da046e0422f1893dbc14c84dbe05",
-      "size_bytes": 34750,
-      "git_blob": "66c9d7d2e18c3e875301bef391de67c4ac403bb7",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "4140902fb12e255d8734f74d70ae84615b9c406c7c7fb1efa9fe88949d639104",
+      "size_bytes": 34921,
+      "git_blob": "691fc106ad31ec0ee9837afa3ec06cd784999ec2",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "793a8f679b7746723b4dd7c23ef86c1b1797040e"
+      "previous_git_blob": "66c9d7d2e18c3e875301bef391de67c4ac403bb7"
     },
     {
       "path": "docs/readiness/checks.json",
@@ -474,6 +473,28 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/reviews/main-static-review-03-checks.json",
+      "sha256": "1009328d484009784ba7ce1956211d30b55952c7c87543a1c4596e47f4011fab",
+      "size_bytes": 10064,
+      "git_blob": "06b9b1a396d9a2ed155ba8addb647229f797bb73",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/reviews/main-static-review-03.md",
+      "sha256": "0454f4c50386965a8e0bc6a2f7237b9b0e4c7e4a97fe2c7d4054b15f6835c066",
+      "size_bytes": 16856,
+      "git_blob": "7ccb963bd0e5ad8f6e947b33edab439e6e026535",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/runtime/alignment-01-checks.json",
       "sha256": "f1220b7cb06b958541e926a980f96a12c724bae272de16f697341ffe735abf76",
       "size_bytes": 8102,
@@ -543,14 +564,15 @@
     },
     {
       "path": "docs/runtime/engineering-closure-07.md",
-      "sha256": "993a003ceff2b98d1df67a4ee472dfd0f6f065b5806c92f06bd5a6de219881f0",
-      "size_bytes": 9709,
-      "git_blob": "b0132b2ee1d892b49ab52ea10d94c3d3da63f31b",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
-      "storage_scope": "public_repository"
+      "sha256": "0ba02c001b5761121bff98855a4b53d73e02a51fedb7ca3869a0c81dec90d3db",
+      "size_bytes": 10065,
+      "git_blob": "1e4ebc17f74d92c9d77a9eb4389032f0c9154899",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "b0132b2ee1d892b49ab52ea10d94c3d3da63f31b"
     },
     {
       "path": "docs/runtime/evidence/WP-IPC-RUNTIME-03-win-x64.zip.sha256",
@@ -797,27 +819,27 @@
     },
     {
       "path": "docs/runtime/implementation.md",
-      "sha256": "f78fb0c04f637b2555fed7283e25a5e09133dcf64f3d3137cf852df9f6cf3167",
-      "size_bytes": 5290,
-      "git_blob": "e2143ab8fbee7695d4c707c8e1dd7a58a310bb4b",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "071e7db35bd5e42c7577a371f89d4878d53f96d99086b4b3a57f0e78f82000fa",
+      "size_bytes": 5646,
+      "git_blob": "3dedcbd2f9ea3f09b893d50b4bcb806c0e02cba3",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "2e8edf65a47398c7b491318e46d9a742682019f5"
+      "previous_git_blob": "e2143ab8fbee7695d4c707c8e1dd7a58a310bb4b"
     },
     {
       "path": "docs/runtime/operations.md",
-      "sha256": "54a06b1df8939ada207518828abd3ec94e87f7bc857c051c4bc6fed1349c15b6",
-      "size_bytes": 20493,
-      "git_blob": "0ba6375238193b3e32ec6a4d47a597ab6b83b825",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "48f46c8e721c78eb83e15622dd4f6ff8eb4619123add745679b352cedb547e68",
+      "size_bytes": 20903,
+      "git_blob": "6f5e1e449b4d41e130cb823e9833a41d697d5d53",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "9bb1749900ef9560748b7b49ac5c6bddc1647762"
+      "previous_git_blob": "0ba6375238193b3e32ec6a4d47a597ab6b83b825"
     },
     {
       "path": "docs/runtime/publication.md",
@@ -843,7 +865,7 @@
     },
     {
       "path": "docs/ui/STATUS.md",
-      "git_blob": "10f47352a9ea0784c035cc99562dc6a76510caa1",
+      "git_blob": "4b546db07a91dff9e2fa8728a2e8fc0ad1503e52",
       "sha256": "65a7f551b1ee684998725a1163c360c09a0ce08fb3ab37cd6bb9464ec8bd2a20",
       "size_bytes": 2117,
       "version": "ui-publication-20261016",
@@ -854,7 +876,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "previous_git_blob": "10f47352a9ea0784c035cc99562dc6a76510caa1"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/GALLERY.md",
@@ -868,7 +891,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "f92a26f9e1a4f7270bc236a55fef6da227a8e271"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/README.md",
@@ -882,7 +906,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "255fd75b95fc870be895489cc423c7e5b9f62a9e"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/README.source.md",
@@ -896,7 +921,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "670d0cf0ab6c690b4e0d01ddc40328bca9207b73"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/design/editable-boards.json",
@@ -910,7 +936,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "d9ee759630af88f55cd8944e63481854dcb66dfb"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/design/tokens.css",
@@ -924,7 +951,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "7b0c3ea4663a61357625d7520a3ecb7b05cc23f0"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/design/tokens.json",
@@ -938,7 +966,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "6c19c3e90a8829d58acb9d6d8ed2617d7c6cb30a"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx",
@@ -952,7 +981,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "e2ed3647d5355b41eaf041a1a4632c05b9a3209e"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md",
@@ -966,7 +996,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "d2a12bd3e5f87739f3e703c1d99a34d0482657cf"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/prototype/index.html",
@@ -980,7 +1011,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "45bc7698d2a377e2fb5d16f4a62d82fd7ac3b2c4"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.css",
@@ -994,7 +1026,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "8997fb0040204c85ac253bf97f5ecb7882e593dc"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.js",
@@ -1008,7 +1041,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "87e7cafdd7b191da11055c2036ffbb20e63f1b56"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/publication-checks.json",
@@ -1022,7 +1056,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "2b6b889ae2f0a8b5beb17112dca41bf8a12bd1ef"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/render-verification.json",
@@ -1036,7 +1071,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "3d0a9d826e53759a696dddefcc2011f4bdd9b4ab"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/01-normal-1920.png",
@@ -1050,7 +1086,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "6fbc98816c5974db9bf2dccd2c37248825aeed45"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/02-camera-offline-1920.png",
@@ -1064,7 +1101,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "1d8c8921c2844a719d33895ab9bd9061619db239"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/03-result-unknown-1920.png",
@@ -1078,7 +1116,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "ccb7c8e353ed58572a7ca0c1235aa51f269e0b3d"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/04-business-rejected-1920.png",
@@ -1092,7 +1131,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "24784d2ff514bc4dc6edeb8d2d3234b179b3cbd2"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/05-no-read-1920.png",
@@ -1106,7 +1146,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "f04963fb064cdd49aba023ca5b41ef1a3037dcbe"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/06-multiple-barcodes-1920.png",
@@ -1120,7 +1161,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "091689c086e5f83a8d77f1327ce237c4e6c42152"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/07-storage-failed-1920.png",
@@ -1134,7 +1176,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "0bc099e0b5d8f9532bb387908074f038fc7c4c0d"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/08-split-unapproved-1920.png",
@@ -1148,7 +1191,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "e4a2d2e4fc7203510f4a7fcaa45c355a72d1e8cf"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/09-split-candidate-1920.png",
@@ -1162,7 +1206,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "b9521495c3831df0530db7ade0924cb780368b82"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/10-shortage-1920.png",
@@ -1176,7 +1221,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "7945dc713488ee80adc34ec43879b6df00710772"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/11-records-1920.png",
@@ -1190,7 +1236,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "b0ca81ad4e9b125042badc38a19c85299b28bfbc"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/12-record-detail-1920.png",
@@ -1204,7 +1251,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "5944bef20e5cbb28e20c0bc85b5b757b8e1531b6"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/12b-record-detail-attempts-1920.png",
@@ -1218,7 +1266,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "94e1538d81053e4575592feeb00925e707a94b4e"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/13-devices-1920.png",
@@ -1232,7 +1281,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "54e6f37aad5bb89c3b83bc77774693683e1d8b8c"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/14-login-1920.png",
@@ -1246,7 +1296,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "3acdbf88c3af10700ebd1bbdb1d5264a3b5a35a3"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/15-recovery-1920.png",
@@ -1260,7 +1311,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "4102dab611a724eca418ee818724218669597a73"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/16-components-1920.png",
@@ -1274,7 +1326,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "0f5bfa5d7dac6bc993010274fb2a09a572081123"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/17-waiting-1920.png",
@@ -1288,7 +1341,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "cae8928b240f43026462dc6a6b8491d7f5790545"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/18-recovered-1920.png",
@@ -1302,7 +1356,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "11426e3c04c24e3a90d2f445b7db4dfe4172e8e1"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/19-alarm-1920.png",
@@ -1316,7 +1371,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "2ac25f5e0267be2bf129e2769ad6e5283ce7a497"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/20-wcs-offline-1920.png",
@@ -1330,7 +1386,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "bf10dea3985968332db96a87393e1161657e526f"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/21-long-content-1920.png",
@@ -1344,7 +1401,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "796aff760f0600af6c21b4bde9a4f7381cb5871d"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/22-no-records-1920.png",
@@ -1358,7 +1416,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "4a20676e69b7d5edb88636c386c4621522c0bd6d"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/23-pending-1920.png",
@@ -1372,7 +1431,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "dd01402a54d5824622832b9072a3f6c0c6cb27ce"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/24-maintenance-1920.png",
@@ -1386,7 +1446,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "7924b656d66987b24a71a0a7ea052a6f1039559c"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/25-long-content-1366.png",
@@ -1400,7 +1461,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "051c94393d7b68b58fa5976975bf3a2729e89b8d"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/26-split-1366.png",
@@ -1414,7 +1476,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "7d76d529f09c68f4afbb2547d8737cfe99282e2d"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1093x614.png",
@@ -1428,7 +1491,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "75582a52384c244b18542709bc0291c55d0bbd63"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1280x680.png",
@@ -1442,7 +1506,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "f96c306127410481585ff52ff576dd9bccc0a9d0"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1280x720.png",
@@ -1456,7 +1521,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "759653c78b3231145ef1e4ae7d26845fd23ba4f2"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1366x768.png",
@@ -1470,7 +1536,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "b4b9a822b9bf8132f4b66801f9a82d74bb7d0068"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1536x864.png",
@@ -1484,7 +1551,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "da49d08d59c9f3ae1e5f16048ce7cdddfd8eb946"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1920x1080.png",
@@ -1498,7 +1566,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "6fbc98816c5974db9bf2dccd2c37248825aeed45"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-911x512.png",
@@ -1512,7 +1581,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "a5bf346c075f04d86391cf1990598c238fb6a1e6"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/source-manifest.json",
@@ -1526,7 +1596,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "82329afc3e8c907b84f801d9ac9084d9ba2302ea"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/tools/reexport_screenshots.py",
@@ -1540,7 +1611,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "472b7da5a134a02b940275c0a3e655d4650e11d5"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/供包工作站_高保真交互原型.html",
@@ -1554,7 +1626,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "56e719dbe845ca66add73e15b227a2b0578729c9"
     },
     {
       "path": "docs/ui/ss-ui-vis-001-v1.1/界面图册.html",
@@ -1568,7 +1641,8 @@
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
-      "remote_inclusion": "verify_final_main_after_merge"
+      "remote_inclusion": "verify_final_main_after_merge",
+      "git_blob": "0ba2fa079727f97d86d148a85ae066d5cc524bde"
     },
     {
       "path": "docs/ui/tokens/tokens.css",
@@ -1616,27 +1690,49 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md",
-      "sha256": "5d1817ce00d72a67d0d5d309670d1c163a0ddd92cbbf8ef665d296f6373df273",
-      "size_bytes": 13081,
-      "git_blob": "9d0980e3dd7b921b6ff535f02bfb671d5ed5dd1c",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "981176ffa1ae25e9d62352abc87b1ee1d676b992e8e44992623d16de759dca00",
+      "size_bytes": 13437,
+      "git_blob": "952f28db8c5b5f62239ad63995891f2351d5d44a",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "d74ebd2751b80e142001abcd9210bb6b4f735cea"
+      "previous_git_blob": "9d0980e3dd7b921b6ff535f02bfb671d5ed5dd1c"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md",
+      "sha256": "f444eecd2e2685c6b3730f279fcab427a0386e18e7dfd81e70ed0179fb119980",
+      "size_bytes": 5033,
+      "git_blob": "81d722bc92df713de8defef4c95a8e4e4150ac12",
+      "version": "main-static-review-03",
+      "status": "implementation_planned",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md",
-      "sha256": "de2dfffe33647e2ee7e9da611e6c479c2d97ade0c618e62e6fcfff2965234c45",
-      "size_bytes": 7313,
-      "git_blob": "ad92bf3f0172126f78a39e1fadf4c2cda45f8d9c",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "sha256": "72b2f5e0a01d5c1a858f41612c46ddefffcf4b37e3398a8faa5670558f290b99",
+      "size_bytes": 7792,
+      "git_blob": "d31afb0d705094aad21a59041da4e8b64a4bb6a1",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "42869ab0930a4ebc7c19503664e8c9cc2e99ac9d"
+      "previous_git_blob": "ad92bf3f0172126f78a39e1fadf4c2cda45f8d9c"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md",
+      "sha256": "5e92be8812c2afc687dc25b3d3747ff92b2acc0db072729941aade6a69f929c4",
+      "size_bytes": 5328,
+      "git_blob": "02bdfce98d720ff0f881bf5079687e4730b62244",
+      "version": "main-static-review-03",
+      "status": "implementation_planned",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/work-packages/WP-IPC-RUNTIME-03-Codex.md",
@@ -1673,16 +1769,27 @@
       "storage_scope": "public_repository"
     },
     {
-      "path": "docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md",
-      "sha256": "a4d36751c2baacb92a46bbdd6784741be0ebb420df4da7f2d1d1d60b8598b765",
-      "size_bytes": 4842,
-      "git_blob": "95c066a9cce48c911250ff39794c79a5aab1139c",
-      "version": "engineering-closure-07",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic engineering closure implementation, deployment entry or explicit unverified delivery record",
-      "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
+      "version": "main-static-review-03",
+      "status": "implementation_planned",
+      "purpose": "Next implementation scope for published UI baseline alignment",
+      "source": "Latest main independent review; planned only, no tests or UI modifications",
       "storage_scope": "public_repository",
-      "previous_git_blob": "c23846b261097e940e7a38d529f0cc053d6d4a97"
+      "path": "docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md",
+      "sha256": "ae13045745dd7cbe38970c9838baea32a0d295be12f2c23001f01a5b1abbca3d",
+      "size_bytes": 4002,
+      "git_blob": "685d1168cd3045c8b2e2f163862110890c220d71"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md",
+      "sha256": "af4fede60001a9f3011ee4e423964e4fd4eeaac6e99f6d66717ca3381b082ce5",
+      "size_bytes": 5300,
+      "git_blob": "8cacbed21bb1fa7b7f2fb339081d944595a91438",
+      "version": "main-static-review-03",
+      "status": "current_static_review_or_navigation",
+      "purpose": "Independent source review of ten engineering closures, two residual findings, separated validation/integration boundaries or planned next work packages",
+      "source": "User authorized merge of PR #6 then latest-main independent architecture/UI review and next packages; no tests; generic conclusions only, no restricted originals or assets",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "95c066a9cce48c911250ff39794c79a5aab1139c"
     },
     {
       "path": "global.json",
@@ -2554,6 +2661,9 @@
     "current_remote_status": "read_PR_and_Release_records"
   },
   "followup_work_packages": [
+    "WP-IPC-ENGINEERING-FOLLOWUP-08",
+    "WP-IPC-UI-BASELINE-ALIGNMENT-10",
+    "WP-IPC-REFERENCE-VALIDATION-09",
     "WP-IPC-WINDOWS-VALIDATION-06",
     "WP-IPC-INTEGRATION-BOUNDARY-05"
   ],
@@ -2639,5 +2749,52 @@
     "screen_provenance": "new exports of exact original HTML, not old PNG bytes",
     "application_code_changed": false,
     "remote_verification": "read exact main commit and file identities after merge"
+  },
+  "next_implementation_work_package": "WP-IPC-ENGINEERING-FOLLOWUP-08",
+  "main_static_review_03": {
+    "entry": "docs/reviews/main-static-review-03.md",
+    "checks": "docs/reviews/main-static-review-03-checks.json",
+    "analysis_base": "2579392ddcc0b4302d4aae865d4b2d8b3c083b59",
+    "implementation_source": "493416f99970d95bb4a4076130de5c28ee33502d",
+    "prior_pr_6_state_at_review": "MERGED",
+    "static_paths_complete": [
+      "E-01",
+      "E-02",
+      "E-03",
+      "E-04",
+      "E-05",
+      "E-07",
+      "E-08",
+      "E-09"
+    ],
+    "engineering_findings_open": [
+      "E-06",
+      "E-10"
+    ],
+    "standards_findings": 1,
+    "spec_findings": 2,
+    "all_ten_runtime_acceptance": "NOT_RUN_USER_REQUEST",
+    "windows_groups_not_run": 6,
+    "external_blocker_groups": 6,
+    "tests": "NOT_RUN_USER_REQUEST",
+    "build_compile_programs": "NOT_RUN",
+    "document_validator": "NOT_RUN",
+    "publication_and_smoke": "NOT_RUN",
+    "business_code_changed": false,
+    "test_sources_changed": false,
+    "new_binary": false,
+    "historical_d_rv_unchanged": true,
+    "new_packages_execution": "PLANNED_NOT_STARTED",
+    "delivery_pr_state": "OPEN_AT_CREATION",
+    "public_scope": "New generic review/work packages plus retained authorized UI baseline from PR #7; no new customer originals, private URLs, credentials, SDK or fonts published by this review",
+    "initial_analysis_base": "677a5adeef277adb4c6dd742749f06d02b01c2a7",
+    "parallel_pr_7_state": "MERGED",
+    "ui_alignment_findings": [
+      "UI-01"
+    ],
+    "public_ui_entry": "docs/ui/ss-ui-vis-001-v1.1/README.md",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/8",
+    "pr_creation_head": "16bed1eef4782c9d732aba74569a8bb286e75292",
+    "review_pr_merged": false
   }
 }

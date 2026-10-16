@@ -1,5 +1,7 @@
 # WP-IPC-RUNTIME-03 implementation record
 
+当前独立复核：[MAIN-REVIEW-03](../reviews/main-static-review-03.md)，基准main `2579392`（PR #6/#7已合并）。8项指定整改路径静态补齐，E-06/E-10仍有工程缺口；全部运行NOT_RUN，Windows06/真实集成05分别保持NOT_RUN/BLOCKED。后续见工程增量08、参考验证09；下文07/更早记录保留形成时范围。
+
 当前工程路径与未验证边界见 [ENGINEERING-CLOSURE-07](engineering-closure-07.md)。10项源码整改已实现，Storage3、显式维护和当前UI以07记录为准；本轮未测试/构建/运行，原实施与历史验证不倒写。
 This is the retained RUNTIME-03 implementation record. Current alignment gaps, scope and acceptance: [ARCH-UI-ALIGNMENT-01](../work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md). The completion checks below are formation-time RUNTIME-03 evidence, not acceptance of this new package. Retained hardening changes and evidence: [HARDENING-04](hardening-04.md).
 

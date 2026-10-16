@@ -13,6 +13,10 @@ Execution starts at main `89089092ad8b7445071e0c12c9c558dc012a26e5`, after the a
 - [x] S4: WPF workstation, history/details, alarms/reconciliation and diagnostics/configuration; stable view models and two layouts/windows sharing one host.
 - [x] S5: locked builds, offline publication, backup/preflight/restore, necessary risk regression and deliverable report.
 
+## Current alignment
+
+ALIGNMENT-01 moves hardcoded product/supply validation out of Platform, completes semantic task snapshots and introduces a background single owner. Current paths and limits: [alignment record](alignment-01.md). Prior S4 completion does not imply current Windows/UI acceptance.
+
 ## Responsibility and verification
 
 Platform contains no supply rules. Supply owns the command authority, snapshots, store schema and reconciliation decisions. Adapters own observation buffers and protocol translation. Product is the only composition root. Desktop consumes the application facade, never HTTP/database/driver objects. The fixture owns a separate receiving database and atomically arbitrates synthetic demand.

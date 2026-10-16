@@ -44,7 +44,13 @@ try
 {
     await Eventually(async () => { try { return (await http.GetStringAsync(url + "health")) == "SIMULATION-v1"; } catch (HttpRequestException) { return false; } });
     await HardeningVerification.Run(root, url, workspace);
-    if (!args.Contains("--hardening"))
+    if (args.Contains("--alignment") || !args.Contains("--hardening"))
+    {
+        await AlignmentDataVerification.Run(root, url, workspace);
+        await AlignmentCompositionVerification.Run(root, url, workspace);
+        await AlignmentRuntimeVerification.Run(root, url, workspace);
+    }
+    if (!args.Contains("--hardening") && !args.Contains("--alignment"))
     {
     await Check("AC-01/10 lifecycle, bounded command queue and ownership", async () =>
     {
@@ -70,13 +76,13 @@ try
     {
         var cfg = Rig.Config(url); var install = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
         var manifest = Manifest(install);
-        Assert(ProductValidation.Validate(manifest, cfg, new(), install).Count == 0, "Approved explicit composition");
+        Assert(ReferenceProduct.Validate(manifest, cfg, new(), install).Count == 0, "Approved explicit composition");
         var bad = manifest with { Modules = manifest.Modules.Select(x => x.Id == "supply" ? x with { ContractMajor = 9 } : x).ToArray() };
-        Assert(ProductValidation.Validate(bad, cfg, new(), install).Count > 0, "Contract mismatch refused");
-        Assert(ProductValidation.Validate(manifest with { Architecture = "impossible" }, cfg, new(), install).Count > 0, "Architecture refused");
-        Assert(ProductValidation.Validate(manifest with { Modules = manifest.Modules.Select(x => x with { Sha256 = "changed" }).ToArray() }, cfg, new(), install).Count > 0, "Changed file refused");
-        Assert(ProductValidation.ValidateStation(cfg with { Integration = cfg.Integration with { Endpoint = "https://example.com/" } }).Count > 0, "External fixture endpoint refused");
-        Assert(ProductValidation.ValidateStation(cfg with { Mode = RunMode.Production }).Any(x => x.Contains("Production NotReady")), "Missing production capabilities refused");
+        Assert(ReferenceProduct.Validate(bad, cfg, new(), install).Count > 0, "Contract mismatch refused");
+        Assert(ReferenceProduct.Validate(manifest with { Architecture = "impossible" }, cfg, new(), install).Count > 0, "Architecture refused");
+        Assert(ReferenceProduct.Validate(manifest with { Modules = manifest.Modules.Select(x => x with { Sha256 = "changed" }).ToArray() }, cfg, new(), install).Count > 0, "Changed file refused");
+        Assert(SupplyConfiguration.Validate(cfg with { Integration = cfg.Integration with { Endpoint = "https://example.com/" } }).Count > 0, "External fixture endpoint refused");
+        Assert(SupplyConfiguration.Validate(cfg with { Mode = RunMode.Production }).Any(x => x.Contains("Production NotReady")), "Missing production capabilities refused");
         await Throws<System.Text.Json.JsonException>(() => Task.FromResult(Wire.Decode<StationConfig>(Wire.Encode(cfg).Replace("\"SchemaVersion\"", "\"UnknownField\""))));
         var bootRoot = Path.Combine(root, "product-config"); Directory.CreateDirectory(bootRoot);
         File.WriteAllText(Path.Combine(bootRoot, "product.json"), Wire.Encode(manifest)); File.WriteAllText(Path.Combine(bootRoot, "station.json"), Wire.Encode(cfg)); File.WriteAllText(Path.Combine(bootRoot, "presentation.json"), Wire.Encode(new PresentationSettings()));

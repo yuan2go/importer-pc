@@ -1,0 +1,15 @@
+{
+  "ProductId": "ipc-reference",
+  "Runtime": "net10.0",
+  "BusinessModule": "supply",
+  "Modes": ["Simulation", "Production"],
+  "Modules": [
+    {"Id":"platform","Kind":"platform","Version":"1.0.0","ContractMajor":1,"Dependencies":[],"File":"Ipc.Platform.dll"},
+    {"Id":"supply","Kind":"supply","Version":"1.0.0","ContractMajor":1,"Dependencies":["platform"],"File":"Ipc.Supply.dll"},
+    {"Id":"adapters","Kind":"adapters","Version":"1.0.0","ContractMajor":1,"Dependencies":["supply"],"File":"Ipc.Adapters.dll"},
+    {"Id":"product","Kind":"product","Version":"1.0.0","ContractMajor":1,"Dependencies":["adapters"],"File":"Ipc.Product.dll"}
+  ],
+  "Views": ["workstation","history","alarms","diagnostics","maintenance","engineering"],
+  "Layouts": ["standard","compact"],
+  "Drivers": [{"Id":"manual","Mode":"Simulation"},{"Id":"replay","Mode":"Simulation"}]
+}

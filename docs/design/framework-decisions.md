@@ -4,6 +4,8 @@ IPC-FRAMEWORK-ADR v1.0；整理日期2026-10-16；分析基准 `39747a8c35b748da
 
 “采用”在本文表示**本轮推荐设计已作取舍，可作为新参考产品的实施依据**，不表示用户历史上已逐项批准，也不表示客户、设备或现场批准。设计形成时框架源码未实现；RUNTIME-03当前实现见[实施记录](../runtime/implementation.md)及[交付报告](../runtime/delivery.md)，下表基准实现列保留形成时事实。外部D项的批准状态不因实现变化。
 
+当前增量执行采用 [ARCH-UI-ALIGNMENT-01](../work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)，实际路径/验证边界见 [ALIGNMENT-01](../runtime/alignment-01.md)；上文“本轮/下一”及下表基准列均为FRAMEWORK形成时记录。
+
 ## 1. 对话与文件证据范围
 
 实际可见本次对话中的用户原始框架设想、随后GPT的完整架构建议、归档任务及两次评审的可见交付和本次收敛要求。没有读取其他不可见会话。框架两条消息没有可核验的独立发送时间戳，因此按会话顺序定位，**不将本轮整理日期伪称原消息日期**。不会把用户画像或记忆摘要当作全文证据。
@@ -93,3 +95,13 @@ F-02为本次目标推荐，不改变 [technical-baseline.json](../readiness/tec
 |REF-06|[Process interoperability](https://learn.microsoft.com/en-us/windows/win32/winprog64/process-interoperability)|进程不能直接加载另一位数DLL，隔离时需明确IPC|
 |REF-07|[SQLite WAL](https://www.sqlite.org/wal.html)|单写者、本机共享内存约束及WAL/checkpoint管理|
 |REF-08|[SQLite backup](https://www.sqlite.org/backup.html)|一致性备份机制，而非随意复制正在使用的主库|
+
+## ALIGNMENT-01 实施决定（2026-10-16）
+
+- F-03/F-04/F-05落地：显式产品定义/工厂注册；Platform不判供包双通道或数量，通用观察契约不依赖Supply；只随产品安装已允许模块，缺能力拒绝。
+- F-08/F-09落实：单后台串行所有者，UI只读带时间/版本投影，快照不写报警；维护脉冲和业务变更拥有报警写入，H04活动集合和原请求裁决继续继承。
+- F-10落实：六个ViewId实际选页，布局不覆写View，配置表单/差异/重启激活/失败保旧，后台再次查权限状态。
+- 新语义字段进入可缺省历史快照，原SIMULATION-v1请求不变；存储前向格式2，旧SQL校验和保留，旧程序拒读新库。任务数据来自独立合成夹具，不是生产WCS合同。
+- 有效客户区适配扩展到800×420 DIP，显式紧凑/自动单列与固定主操作；原tokens不倒改，Windows六种屏幕/缩放和焦点/扫码仍NOT_RUN。
+
+这些是本工作包工程决定，不能替代D批准、真实实体权限或现场RV关闭。

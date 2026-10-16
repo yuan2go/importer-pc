@@ -10,6 +10,12 @@ public sealed class SupplyStore : IDisposable
     SqliteTransaction? current;
     public string Path { get; }
     public Action<object>? Journal { get; set; }
+    public const int CurrentFormatVersion = 2;
+    // This forward migration intentionally makes schema1 readers refuse new JSON semantics.
+    const string SemanticFormatMigration = """
+        CREATE TABLE storage_format(id INTEGER PRIMARY KEY CHECK(id=1),version INTEGER NOT NULL,minimum_reader INTEGER NOT NULL);
+        INSERT INTO storage_format VALUES(1,2,2);
+        """;
     const string Schema = """
         CREATE TABLE state(id INTEGER PRIMARY KEY CHECK(id=1), json TEXT NOT NULL);
         CREATE TABLE sessions(id TEXT PRIMARY KEY,json TEXT NOT NULL);
@@ -46,15 +52,35 @@ public sealed class SupplyStore : IDisposable
                 throw new InvalidDataException("Existing non-station SQLite database; refusing implicit initialization");
             if (Scalar("PRAGMA foreign_key_check") is not null) throw new InvalidDataException("SQLite foreign key check failed");
             Exec("CREATE TABLE IF NOT EXISTS schema_history(id INTEGER PRIMARY KEY,checksum TEXT NOT NULL,applied TEXT NOT NULL);");
+            if (Scalar("SELECT id FROM schema_history WHERE id NOT IN (1,2)") is not null) throw new InvalidDataException("Newer schema: rollback requires matching product");
             var hash = Scalar("SELECT checksum FROM schema_history WHERE id=1");
             if (hash is null)
             {
                 using var tx = db.BeginTransaction(); Exec(Schema, tx); Exec("INSERT INTO schema_history VALUES(1,$a,$b)", tx, Wire.Hash(Schema), DateTimeOffset.UtcNow.ToString("O")); tx.Commit();
             }
             else if (hash != Wire.Hash(Schema)) throw new InvalidDataException("Schema checksum mismatch");
-            if (Scalar("SELECT id FROM schema_history WHERE id<>1") is not null) throw new InvalidDataException("Newer schema: rollback requires matching product");
+            var semanticHash = Scalar("SELECT checksum FROM schema_history WHERE id=2");
+            if (semanticHash is null && Scalar("SELECT name FROM sqlite_master WHERE type='table' AND name='storage_format'") is not null)
+                throw new InvalidDataException("Storage format has no matching migration evidence");
+            if (semanticHash is null)
+            {
+                using var tx = db.BeginTransaction();
+                Exec(SemanticFormatMigration, tx);
+                Exec("INSERT INTO schema_history VALUES(2,$a,$b)", tx, Wire.Hash(SemanticFormatMigration), DateTimeOffset.UtcNow.ToString("O"));
+                tx.Commit();
+            }
+            else if (semanticHash != Wire.Hash(SemanticFormatMigration)) throw new InvalidDataException("Semantic format migration checksum mismatch");
+            ValidateStorageFormat(db);
         }
         catch { db.Dispose(); throw; }
+    }
+    static void ValidateStorageFormat(SqliteConnection connection)
+    {
+        using var c = connection.CreateCommand();
+        c.CommandText = "SELECT version,minimum_reader FROM storage_format WHERE id=1";
+        using var r = c.ExecuteReader();
+        if (!r.Read() || r.GetInt32(0) != CurrentFormatVersion || r.GetInt32(1) != CurrentFormatVersion || r.Read())
+            throw new InvalidDataException("Storage format incompatible with selected product");
     }
     SqliteCommand Sql(string sql, SqliteTransaction? tx, params object?[] values)
     {
@@ -70,6 +96,8 @@ public sealed class SupplyStore : IDisposable
         while (r.Read()) list.Add(Wire.Decode<T>(r.GetString(0))); return list.ToArray();
     }
     public StationState Load() => Read<StationState>("SELECT json FROM state WHERE id=1").SingleOrDefault() ?? new();
+    public StationSession? Session(string id) => Read<StationSession>("SELECT json FROM sessions WHERE id=$a", id).SingleOrDefault();
+    public StationSession[] Sessions(int offset = 0, int limit = 100) => Read<StationSession>("SELECT json FROM sessions ORDER BY rowid DESC LIMIT $a OFFSET $b", Math.Clamp(limit, 1, 200), Math.Max(0, offset));
     public BusinessRequest[] Requests(string? owner = null) => Read<BusinessRequest>(owner is null ? "SELECT json FROM requests ORDER BY rowid" : "SELECT json FROM requests WHERE owner=$a ORDER BY rowid", owner is null ? [] : [owner]);
     public BusinessRequest[] PendingRequests() => Read<BusinessRequest>("SELECT json FROM requests WHERE status IN ('Prepared','Dispatching','Unknown') ORDER BY rowid");
     public BusinessRequest[] RequestsForSession(string session) => Read<BusinessRequest>("SELECT json FROM requests WHERE session=$a ORDER BY rowid", session);
@@ -150,7 +178,19 @@ public sealed class SupplyStore : IDisposable
             c.CommandText = "PRAGMA integrity_check"; if ((string?)c.ExecuteScalar() != "ok") throw new InvalidDataException("Backup integrity failed");
             c.CommandText = "PRAGMA foreign_key_check"; if (c.ExecuteScalar() is not null) throw new InvalidDataException("Backup foreign keys invalid");
             c.CommandText = "SELECT checksum FROM schema_history WHERE id=1"; if ((string?)c.ExecuteScalar() != Wire.Hash(Schema)) throw new InvalidDataException("Backup schema incompatible with selected product");
-            c.CommandText = "SELECT count(*) FROM schema_history WHERE id<>1"; if (Convert.ToInt32(c.ExecuteScalar()) != 0) throw new InvalidDataException("Backup contains newer migration");
+            c.CommandText = "SELECT count(*) FROM schema_history WHERE id NOT IN (1,2)"; if (Convert.ToInt32(c.ExecuteScalar()) != 0) throw new InvalidDataException("Backup contains newer migration");
+            c.CommandText = "SELECT checksum FROM schema_history WHERE id=2";
+            var semanticHash = (string?)c.ExecuteScalar();
+            if (semanticHash is null)
+            {
+                c.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='storage_format'";
+                if (c.ExecuteScalar() is not null) throw new InvalidDataException("Backup format has no matching migration evidence");
+            }
+            else
+            {
+                if (semanticHash != Wire.Hash(SemanticFormatMigration)) throw new InvalidDataException("Backup semantic migration incompatible with selected product");
+                ValidateStorageFormat(backup);
+            }
         }
         // Persist isolation BEFORE exposing restored bytes. A process death between copying
         // and updating the aggregate must not create an unquarantined restored station.

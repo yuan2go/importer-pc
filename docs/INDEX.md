@@ -4,6 +4,8 @@
 
 ## 当前结论
 
+当前工作包实施和验证见 [ALIGNMENT-01](runtime/alignment-01.md)、[检查记录](runtime/alignment-01-checks.json)、[Windows待验](runtime/alignment-01-windows.md)。
+
 **独立参考实现已加入。** RUNTIME-03从当时main `8908909` 开始，已建设工位基座、供包应用、多UI、SQLite/Outbox及独立loopback夹具；不是旧现场迁移。[运行/发布](runtime/operations.md)、[实施映射](runtime/implementation.md)、[实际验证与交付](runtime/delivery.md) 是当前实现入口。Windows运行与真实接口/现场状态分项报告，不以核心PASS替代。
 
 完整客户材料归档仍为 **PUBLIC_SUBSET_ONLY**；本轮只公开新的通用框架和实施规范，不上传受限原稿。开发就绪仍有条件：参考闭环可实施，真实业务规则、旧工程迁移、SDK/WCS和实体动作分别受对应证据约束。17个RV不因架构入库自动关闭。

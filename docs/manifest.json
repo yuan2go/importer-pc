@@ -126,7 +126,8 @@
     "current_baseline_control": "当前归档管理文件，不是新客户需求",
     "historical_review_open": "历史评审事实；未重新运行，未关闭",
     "design_reference_not_approved": "设计建议与假设，不是客户批准或现场验收",
-    "collected_not_uploaded": "实际文件已取得但未进入公开Git"
+    "collected_not_uploaded": "实际文件已取得但未进入公开Git",
+    "readiness_preparation_not_approved": "下一阶段证据接收/决策/修订准备；不代表已获批准、实际修复或运行通过"
   },
   "approval_changes": [],
   "continuation_input": {
@@ -187,13 +188,13 @@
     {
       "path": "docs/INDEX.md",
       "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
-      "version": "archive-02",
-      "sha256": "46a8de8c943e42d9de5b603e82d5be62a98291a4cc6f1b3ba9b653dbbd5a00b1",
-      "size_bytes": 2538,
+      "version": "readiness-01",
+      "sha256": "4b75b3b65301f1f63906d90698f7d479e8df3033b20e0fca2614cd43dbefa7bd",
+      "size_bytes": 2992,
       "purpose": "资料归档与阅读/限制控制",
       "status": "current_baseline_control",
       "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "archival_control_or_integrity_tool_only",
+      "modification": "documentation_preparation_navigation_only",
       "storage_scope": "public_repository",
       "collected": true,
       "hash_checked": true,
@@ -203,6 +204,12 @@
           "kind": "git_baseline_or_continuation",
           "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
           "path": "docs/INDEX.md"
+        },
+        {
+          "kind": "readiness_preparation",
+          "baseline": "8090914e752d724b3e67b09227609830030d9510",
+          "work_package": "WP-IPC-READINESS-02",
+          "path": "docs/INDEX.md"
         }
       ],
       "remote_inclusion": "verify_exact_commit_after_push"
@@ -210,13 +217,13 @@
     {
       "path": "docs/baseline/CHANGELOG.md",
       "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
-      "version": "archive-02",
-      "sha256": "db5e75c1adf501343edc7650bf232d474b73b2a1b975ac29af38b7ced1679278",
-      "size_bytes": 2381,
+      "version": "readiness-01",
+      "sha256": "561eeca603071d3b463ee3530e8a426801f8027fc0e3e5357d3036218cf4962c",
+      "size_bytes": 3135,
       "purpose": "资料归档与阅读/限制控制",
       "status": "current_baseline_control",
       "public_review": "cleared_no_customer_identity_or_private_link",
-      "modification": "archival_control_or_integrity_tool_only",
+      "modification": "documentation_preparation_navigation_only",
       "storage_scope": "public_repository",
       "collected": true,
       "hash_checked": true,
@@ -225,6 +232,12 @@
         {
           "kind": "git_baseline_or_continuation",
           "baseline": "04187f7e200bce0b82315af1922d58e42be612ad",
+          "path": "docs/baseline/CHANGELOG.md"
+        },
+        {
+          "kind": "readiness_preparation",
+          "baseline": "8090914e752d724b3e67b09227609830030d9510",
+          "work_package": "WP-IPC-READINESS-02",
           "path": "docs/baseline/CHANGELOG.md"
         }
       ],
@@ -346,6 +359,102 @@
       "modification": "archival_control_or_integrity_tool_only"
     },
     {
+      "path": "docs/readiness/checks.json",
+      "source": "WP-IPC-READINESS-02 user-authorized preparation; existing public issues and repository constraints; index metadata only for legacy identifiers",
+      "version": "readiness-01",
+      "sha256": "9eb80eba64ffa0f4997fec0c63c433ce7f2189b315eecf6903a27b26774cc102",
+      "size_bytes": 2802,
+      "purpose": "技术基线/决策/修订及资料核验准备；非客户批准或业务实现",
+      "status": "readiness_preparation_not_approved",
+      "public_review": "reviewed_generic_management_no_customer_text_identity_private_link_or_binary",
+      "modification": "new_documentation_preparation_only",
+      "storage_scope": "public_repository",
+      "collected": true,
+      "hash_checked": true,
+      "authorization_status": "user_authorized_management_preparation_only_no_customer_material_publication",
+      "source_mapping": [
+        {
+          "kind": "readiness_preparation",
+          "baseline": "8090914e752d724b3e67b09227609830030d9510",
+          "work_package": "WP-IPC-READINESS-02",
+          "path": "docs/readiness/checks.json"
+        }
+      ],
+      "remote_inclusion": "NOT_PUBLISHED"
+    },
+    {
+      "path": "docs/readiness/decision-pack.md",
+      "source": "WP-IPC-READINESS-02 user-authorized preparation; existing public issues and repository constraints; index metadata only for legacy identifiers",
+      "version": "readiness-01",
+      "sha256": "a767a1cce43c74cec5dc97b3b0ee98e33ad1250804e11d0c7f3f952c58bb294f",
+      "size_bytes": 8272,
+      "purpose": "技术基线/决策/修订及资料核验准备；非客户批准或业务实现",
+      "status": "readiness_preparation_not_approved",
+      "public_review": "reviewed_generic_management_no_customer_text_identity_private_link_or_binary",
+      "modification": "new_documentation_preparation_only",
+      "storage_scope": "public_repository",
+      "collected": true,
+      "hash_checked": true,
+      "authorization_status": "user_authorized_management_preparation_only_no_customer_material_publication",
+      "source_mapping": [
+        {
+          "kind": "readiness_preparation",
+          "baseline": "8090914e752d724b3e67b09227609830030d9510",
+          "work_package": "WP-IPC-READINESS-02",
+          "path": "docs/readiness/decision-pack.md"
+        }
+      ],
+      "remote_inclusion": "NOT_PUBLISHED"
+    },
+    {
+      "path": "docs/readiness/revision-and-verification.md",
+      "source": "WP-IPC-READINESS-02 user-authorized preparation; existing public issues and repository constraints; index metadata only for legacy identifiers",
+      "version": "readiness-01",
+      "sha256": "8ecc042188718a50aa1579db539e63816909d37f91b31fc6e8fb41484182e77d",
+      "size_bytes": 7262,
+      "purpose": "技术基线/决策/修订及资料核验准备；非客户批准或业务实现",
+      "status": "readiness_preparation_not_approved",
+      "public_review": "reviewed_generic_management_no_customer_text_identity_private_link_or_binary",
+      "modification": "new_documentation_preparation_only",
+      "storage_scope": "public_repository",
+      "collected": true,
+      "hash_checked": true,
+      "authorization_status": "user_authorized_management_preparation_only_no_customer_material_publication",
+      "source_mapping": [
+        {
+          "kind": "readiness_preparation",
+          "baseline": "8090914e752d724b3e67b09227609830030d9510",
+          "work_package": "WP-IPC-READINESS-02",
+          "path": "docs/readiness/revision-and-verification.md"
+        }
+      ],
+      "remote_inclusion": "NOT_PUBLISHED"
+    },
+    {
+      "path": "docs/readiness/technical-baseline.json",
+      "source": "WP-IPC-READINESS-02 user-authorized preparation; existing public issues and repository constraints; index metadata only for legacy identifiers",
+      "version": "readiness-01",
+      "sha256": "6193225e4940240ea68d4510f1bb69c8a4a682b68b54abc7b09a7bdccf5e0312",
+      "size_bytes": 14967,
+      "purpose": "技术基线/决策/修订及资料核验准备；非客户批准或业务实现",
+      "status": "readiness_preparation_not_approved",
+      "public_review": "reviewed_generic_management_no_customer_text_identity_private_link_or_binary",
+      "modification": "new_documentation_preparation_only",
+      "storage_scope": "public_repository",
+      "collected": true,
+      "hash_checked": true,
+      "authorization_status": "user_authorized_management_preparation_only_no_customer_material_publication",
+      "source_mapping": [
+        {
+          "kind": "readiness_preparation",
+          "baseline": "8090914e752d724b3e67b09227609830030d9510",
+          "work_package": "WP-IPC-READINESS-02",
+          "path": "docs/readiness/technical-baseline.json"
+        }
+      ],
+      "remote_inclusion": "NOT_PUBLISHED"
+    },
+    {
       "path": "docs/reviews/STATUS.md",
       "source": "WP-IPC-DESIGN-BASELINE-01 user instruction and actual archival checks",
       "version": "archive-02",
@@ -390,6 +499,30 @@
         }
       ],
       "remote_inclusion": "verify_exact_commit_after_push"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-16-ipc-readiness.md",
+      "source": "WP-IPC-READINESS-02 user-authorized preparation; existing public issues and repository constraints; index metadata only for legacy identifiers",
+      "version": "readiness-01",
+      "sha256": "e84998fc4c91f234955cd224bf8302848eba2ad3ce7b415dde3e185e5c8ffeca",
+      "size_bytes": 4823,
+      "purpose": "技术基线/决策/修订及资料核验准备；非客户批准或业务实现",
+      "status": "readiness_preparation_not_approved",
+      "public_review": "reviewed_generic_management_no_customer_text_identity_private_link_or_binary",
+      "modification": "new_documentation_preparation_only",
+      "storage_scope": "public_repository",
+      "collected": true,
+      "hash_checked": true,
+      "authorization_status": "user_authorized_management_preparation_only_no_customer_material_publication",
+      "source_mapping": [
+        {
+          "kind": "readiness_preparation",
+          "baseline": "8090914e752d724b3e67b09227609830030d9510",
+          "work_package": "WP-IPC-READINESS-02",
+          "path": "docs/superpowers/plans/2026-10-16-ipc-readiness.md"
+        }
+      ],
+      "remote_inclusion": "NOT_PUBLISHED"
     },
     {
       "path": "docs/ui/STATUS.md",
@@ -552,5 +685,16 @@
       "public_review": "cleared_no_customer_content_or_private_link",
       "modification": "archival_control_or_integrity_tool_only"
     }
-  ]
+  ],
+  "readiness_preparation": {
+    "work_package": "WP-IPC-READINESS-02",
+    "baseline_commit": "8090914e752d724b3e67b09227609830030d9510",
+    "status": "PREPARATION_COMPLETE_EXTERNAL_INPUTS_BLOCKED",
+    "entry": "docs/superpowers/plans/2026-10-16-ipc-readiness.md",
+    "checks": "docs/readiness/checks.json",
+    "business_changes": false,
+    "decision_approvals_added": 0,
+    "review_closures": 0,
+    "remote_publication": "NOT_PUBLISHED"
+  }
 }

@@ -27,3 +27,7 @@
 受限包按原始资料→独立评审→设计/开发→UI读取；S/T证据指向哈希匹配的原稿和历史文件，原行号不转指阅读副本。原要求、HTML模拟行为、工程建议、未批准规则和历史验证分别解释。旧设计“唯一主定义”和旧UI检查通过均不能覆盖未决项、后续评审或缺失证据。
 
 当前入口不冻结客户业务规则。数量拆包、实体入场/复位、双相机映射、真实 WCS/SDK、已有 C# 工程、Windows 与现场验收仍未补齐；后续优先级见评审状态。
+
+## 下一阶段准备
+
+[WP-IPC-READINESS-02 分步工作包](superpowers/plans/2026-10-16-ipc-readiness.md) 已建立 [技术基线登记](readiness/technical-baseline.json)、[关键决策确认包](readiness/decision-pack.md) 和 [修订与验证交接](readiness/revision-and-verification.md)。这是证据接收和修订准备，不是客户批准、业务修复或运行验收；实际资料校验结果见 [checks.json](readiness/checks.json)。

@@ -1,0 +1,95 @@
+{
+  "work_package": "WP-IPC-READINESS-02",
+  "date": "2026-10-16",
+  "baseline_commit": "8090914e752d724b3e67b09227609830030d9510",
+  "scope": "documentation_preparation_only",
+  "checks": [
+    {
+      "name": "retained_issues_and_tokens_identity",
+      "status": "PASS",
+      "files": [
+        "docs/reviews/issues.json",
+        "docs/ui/tokens/tokens.json",
+        "docs/ui/tokens/tokens.css"
+      ],
+      "baseline_commit": "8090914e752d724b3e67b09227609830030d9510"
+    },
+    {
+      "name": "baseline_register_semantics",
+      "status": "PASS",
+      "records": 13,
+      "blocked": 10,
+      "undecided_decisions": 16,
+      "open_reviews": 17
+    },
+    {
+      "name": "revision_backlog_rv_coverage",
+      "status": "PASS",
+      "covered": [
+        "RV-01",
+        "RV-02",
+        "RV-03",
+        "RV-04",
+        "RV-05",
+        "RV-06",
+        "RV-07",
+        "RV-08",
+        "RV-09",
+        "RV-10",
+        "RV-11",
+        "RV-12",
+        "RV-13",
+        "RV-14",
+        "RV-15",
+        "RV-16",
+        "RV-17"
+      ]
+    },
+    {
+      "name": "concrete_review_cases",
+      "status": "PASS",
+      "joint_decision_cases": 8,
+      "future_validation_cases": 11,
+      "case_execution": "NOT_RUN"
+    },
+    {
+      "name": "provided_project_inventory",
+      "status": "PASS",
+      "verified_business_project_found": false,
+      "search_scope": "isolated checkout of baseline; original project inventory separately inspected",
+      "meaning": "absence here does not prove no existing project elsewhere"
+    }
+  ],
+  "archive_integrity": {
+    "status": "PASS",
+    "command": "python3 tools/verify_archive.py --root . --scope public",
+    "counts": {
+      "files": 25,
+      "references": 38,
+      "json": 7
+    },
+    "errors": 0,
+    "registered_reference_gaps": 0,
+    "external_references": 0,
+    "scope": "public candidate documentation in isolated checkout; no remote publication proof"
+  },
+  "diff_whitespace": {
+    "status": "PASS",
+    "command": "git diff --check"
+  },
+  "business_tests": "NOT_RUN",
+  "historical_browser_scenes": "NOT_RUN",
+  "sdk_wcs": "NOT_RUN",
+  "windows_dpi_touch_physical_continuous_operation": "NOT_RUN",
+  "approval_records_added": 0,
+  "historical_reviews_closed": 0,
+  "business_code_changes": 0,
+  "remote_publication": "NOT_PUBLISHED",
+  "interpretation": "PASS applies only to the named documentation checks; external inputs and approvals remain blocked.",
+  "publication_review": {
+    "status": "PASS_FOR_LOCAL_DOCUMENTATION_CANDIDATE",
+    "scope": "new documents and changed navigation/manifest reviewed for customer originals, identities, private links, credentials, production data and SDK/font binaries",
+    "customer_material_publication_authorized": false,
+    "remote_upload_performed": false
+  }
+}

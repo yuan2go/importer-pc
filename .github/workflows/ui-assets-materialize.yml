@@ -1,0 +1,105 @@
+name: Materialize reviewed UI assets
+on:
+  push:
+    branches: [docs/ui-assets-20261016]
+    paths: [docs/ui/.transfer/ready.json]
+permissions:
+  contents: write
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Restore reviewed files and export existing vector boards
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: docs/ui-assets-20261016
+          INPUT_COMMIT: ${{ github.sha }}
+        shell: python
+        run: |
+          import os, json, base64, hashlib, urllib.request, tarfile, io, lzma, re, html
+          from pathlib import PurePosixPath
+          repo=os.environ['REPOSITORY']; branch=os.environ['BRANCH']; expected=os.environ['INPUT_COMMIT']
+          api='https://api.github.com/repos/'+repo
+          def call(path, data=None, method=None):
+              body=None if data is None else json.dumps(data).encode()
+              request=urllib.request.Request(api+path, data=body, method=method or ('GET' if body is None else 'POST'), headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'})
+              with urllib.request.urlopen(request, timeout=60) as response: return json.load(response)
+          def getblob(sha): return base64.b64decode(call('/git/blobs/'+sha)['content'])
+          head=call('/git/ref/heads/'+branch)['object']['sha']
+          if head!=expected: raise RuntimeError('Branch advanced; retain concurrent work')
+          commit=call('/git/commits/'+head); tree=call('/git/trees/'+commit['tree']['sha']+'?recursive=1')
+          if tree.get('truncated'): raise RuntimeError('Incomplete tree')
+          paths={x['path']:x for x in tree['tree'] if x['type']=='blob'}
+          ready=json.loads(getblob(paths['docs/ui/.transfer/ready.json']['sha']))
+          packed=b''.join(getblob(paths[p]['sha']) for p in ready['parts'])
+          if len(packed)!=ready['size'] or hashlib.sha256(packed).hexdigest()!=ready['sha256']: raise RuntimeError('Transfer checksum mismatch')
+          raw=lzma.decompress(packed,memlimit=256*1024*1024)
+          if len(raw)>32*1024*1024: raise RuntimeError('Expansion exceeds reviewed scope')
+          prefix='docs/ui/design-library/20261016/'
+          output={}
+          with tarfile.open(fileobj=io.BytesIO(raw),mode='r:') as archive:
+              for member in archive:
+                  path=PurePosixPath(member.name)
+                  if not member.isfile() or path.is_absolute() or '..' in path.parts or not member.name.startswith(prefix) or member.name in output: raise RuntimeError('Unsafe archive member')
+                  if member.name in paths: raise RuntimeError('Refusing to overwrite existing design version')
+                  output[member.name]=archive.extractfile(member).read()
+          boards=json.loads(output[prefix+'workstation-v1.1/design/editable-boards.json'])
+          if len(boards)!=18: raise RuntimeError('Unexpected board count')
+          gallery=['# 18 张可编辑画板的 SVG 导出','', '从既有画板对象数据导出，不是原始 PNG 截图，不是 WPF 运行截图。字体由查看环境提供；原始 PPTX 与对象数据同时保存。','']
+          for number, board in enumerate(boards,1):
+              w,h=board['width'],board['height']
+              parts=[f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">', '<title>'+html.escape(board['title'])+'</title>']
+              for obj in board['objects']:
+                  x,y,ow,oh=(obj[k] for k in ('x','y','w','h'))
+                  if obj['type']=='shape':
+                      parts.append(f'<rect x="{x}" y="{y}" width="{ow}" height="{oh}" rx="{obj.get("radius",0)}" fill="{html.escape(obj["fill"],quote=True)}"/>')
+                  elif obj['type']=='text':
+                      font=html.escape(obj['font'],quote=True);color=html.escape(obj['color'],quote=True);size=obj['size'];weight=obj.get('weight','400')
+                      parts.append(f'<text x="{x}" y="{y+size}" font-family="{font}" font-size="{size}" font-weight="{weight}" fill="{color}">{html.escape(obj["text"])}</text>')
+                  elif obj['type']=='svg':
+                      source=obj['svg']
+                      if re.search(r'<script|(?:href|src)\s*=\s*[\"\'](?:https?:|data:)|onload\s*=',source,re.I): raise RuntimeError('Unexpected active vector content')
+                      parts.append(f'<g transform="translate({x} {y})">'+source+'</g>')
+                  else: raise RuntimeError('Unknown board object type')
+              parts.append('</svg>')
+              filename=f'{number:02d}-{board["scene"]}.svg'
+              output[prefix+'workstation-v1.1/boards-svg/'+filename]='\n'.join(parts).encode()
+              gallery.extend(['## '+board['title'],f'![{board["title"]}]({filename})',''])
+          output[prefix+'workstation-v1.1/boards-svg/README.md']='\n'.join(gallery).encode()
+          index=getblob(paths['docs/INDEX.md']['sha']).decode()
+          index+='\n\n## 已交付 UI 原型与画板归档（2026-10-16）\n\n[设计资料库](ui/design-library/20261016/README.md) 包含两条设计线的完整交互 HTML、组件与交接说明、主版可编辑 PPTX/对象数据及 18 张 SVG 格式导出。原始 PNG 的未传输范围在资料库明确登记；这不是当前 WPF 程序的运行验收。\n'
+          output['docs/INDEX.md']=index.encode()
+          status=getblob(paths['docs/ui/STATUS.md']['sha']).decode()
+          status+='\n\n## 2026-10-16 设计源文件归档\n\n已补入[设计资料库](design-library/20261016/README.md)。本次用户明确要求保存既有 UI 与相关设计资料；原始客户 PRD、私密来源及未取得的资产不随本次发布。设计文档仍属历史参考，业务规则和 RV 不因此获准或关闭。原始 PNG 传输状态与新 SVG 格式导出分别记录，不将二者混称。\n'
+          output['docs/ui/STATUS.md']=status.encode()
+          package=json.loads(output[prefix+'source-manifest.json'])
+          package['materialized_files']=[{'path':p[len(prefix):],'sha256':hashlib.sha256(v).hexdigest(),'size_bytes':len(v)} for p,v in sorted(output.items()) if p.startswith(prefix) and not p.endswith('/source-manifest.json')]
+          package['svg_export']={'count':18,'basis':'existing editable-boards.json','original_png':False,'wpf_runtime':False}
+          output[prefix+'source-manifest.json']=json.dumps(package,ensure_ascii=False,indent=2).encode()+b'\n'
+          manifest=json.loads(getblob(paths['docs/manifest.json']['sha']))
+          rows={r['path']:r for r in manifest['files']}
+          for p,data in output.items():
+              previous=rows.get(p,{})
+              rows[p]={**previous,'path':p,'sha256':hashlib.sha256(data).hexdigest(),'size_bytes':len(data),'source':'WP-IPC-UI-ASSETS-01: user requested preservation of existing generated UI designs','version':'ui-archive-20261016','purpose':'Historical design source/format export; not current implementation acceptance','status':'design_reference_not_approved','storage_scope':'public_repository','public_review':'generated_designs_and_reviewed_reading_copies; private references removed where recorded','modification':'unchanged_source_or_recorded_reading_copy_or_vector_format_export'}
+          # Include the branch-scoped workflow in integrity enumeration; no business code is executed.
+          workflow='.github/workflows/ui-assets-materialize.yml'
+          workflow_bytes=getblob(paths[workflow]['sha'])
+          rows[workflow]={'path':workflow,'sha256':hashlib.sha256(workflow_bytes).hexdigest(),'size_bytes':len(workflow_bytes),'source':'WP-IPC-UI-ASSETS-01','version':'1','purpose':'Bounded one-time asset materialization on dedicated branch','status':'current_baseline_control','storage_scope':'public_repository'}
+          remove=[p for p in paths if p.startswith('docs/ui/.transfer/')]
+          for p in remove: rows.pop(p,None)
+          manifest['files']=[rows[p] for p in sorted(rows)]
+          manifest['ui_design_archive']={'entry':prefix+'README.md','source_files':len(package['source_records']),'svg_boards':18,'original_png_transfer':'NOT_COMPLETED','business_changes':False}
+          output['docs/manifest.json']=json.dumps(manifest,ensure_ascii=False,indent=2).encode()+b'\n'
+          output['docs/manifest.sha256']=(hashlib.sha256(output['docs/manifest.json']).hexdigest()+'  manifest.json\n').encode()
+          elements=[]
+          for p,data in sorted(output.items()):
+              sha=call('/git/blobs',{'content':base64.b64encode(data).decode(),'encoding':'base64'})['sha']
+              elements.append({'path':p,'mode':'100644','type':'blob','sha':sha})
+          elements.extend({'path':p,'mode':'100644','type':'blob','sha':None} for p in remove)
+          newtree=call('/git/trees',{'base_tree':commit['tree']['sha'],'tree':elements})['sha']
+          newcommit=call('/git/commits',{'message':'docs: preserve complete UI HTML and editable boards with explicit image-transfer boundary','tree':newtree,'parents':[head]})['sha']
+          if call('/git/ref/heads/'+branch)['object']['sha']!=head: raise RuntimeError('Branch changed; no ref updated')
+          call('/git/refs/heads/'+branch,{'sha':newcommit,'force':False},'PATCH')
+          print(json.dumps({'commit':newcommit,'files_written':len(output),'svg_boards':18,'original_png_transfer':'NOT_COMPLETED','business_code_executed':False}))

@@ -25,7 +25,7 @@
 - [x] E 09：先对齐AlignmentDataVerification及HardeningVerification显式迁移3:3断言，保留历史checksum/失败保旧/旧及未来读者拒绝；补07风险和恢复防重/来源/提示/资源终态。先读Program选择器再按风险执行。
 - [x] F 集成运行：锁定SDK还原构建，运行受影响/必要基线及完整合成持续闭环；失败定位修复并仅重跑受影响模块。
 - [x] G 同版交付：提交最终运行源码，封存SourceCommit/Release/Storage/Contract/模块配置指纹与ZIP SHA；新包启动/发布冒烟。无Windows时06所有实际客户端项NOT_RUN并说明缺项；05逐能力BLOCKED。
-- [ ] H 同步INDEX/runtime/operations/manifest及检查JSON，复核最新main/并行PR和差异，开发分支提交推送创建main PR并附加，不合并。
+- [x] H 同步INDEX/runtime/operations/manifest及检查JSON，复核最新main/并行PR和差异，开发分支提交推送创建main PR并附加，不合并。
 
 ## 可复现命令入口
 

@@ -850,5 +850,15 @@
       "pptx": 1,
       "images": 34
     }
+  },
+  "pull_request": {
+    "url": "https://github.com/yuan2go/importer-pc/pull/9",
+    "state_at_creation": "OPEN",
+    "creation_head": "f2de36ab44c4b55144ef7ea49d03aee558ab5ee6",
+    "mergeable_at_readback": "MERGEABLE",
+    "merge_state_at_readback": "CLEAN",
+    "github_checks_at_readback": [],
+    "github_ci_result": "NOT_RUN_NO_CHECKS_CONFIGURED",
+    "merged_by_this_task": false
   }
 }

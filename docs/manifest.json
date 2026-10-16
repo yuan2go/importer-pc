@@ -1229,27 +1229,27 @@
     },
     {
       "path": "docs/runtime/reference-validation-09-checks.json",
-      "sha256": "3346af6df0386cf5beb6396059e5038a66a2b0a54f191974739720b94df3e004",
-      "size_bytes": 32502,
-      "git_blob": "9cc1b8989115a94da0ad4b9dc53046a236670455",
+      "sha256": "0e6ad02dbad1aed9aed2a2386a1c64cd8b7e3816559a196f63c3d5b0b6cf7ead",
+      "size_bytes": 32893,
+      "git_blob": "d103e8f1923af0b1462f0943c8e86aadc7f31bd9",
       "version": "audit-reconciliation-01",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
       "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
       "storage_scope": "public_repository",
-      "previous_git_blob": "fe49fd7314dd57336309b29c050b31ae9f773551"
+      "previous_git_blob": "9cc1b8989115a94da0ad4b9dc53046a236670455"
     },
     {
       "path": "docs/runtime/reference-validation-09.md",
-      "sha256": "ecf42ff21124690e5e60d16bcee2dad12f301e4f67b7ddd29c8643ff4be7dee1",
-      "size_bytes": 11162,
-      "git_blob": "fdfe88f875ccfc0ee38fc259a00a843a6cc46411",
+      "sha256": "2d5ef593abd87d8b3ff4f6d216a00792320e2f0c9cfabae580660976bf596fa2",
+      "size_bytes": 11657,
+      "git_blob": "5ff29b8ed71202d8835d8f08fabc422d39596006",
       "version": "audit-reconciliation-01",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
       "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
       "storage_scope": "public_repository",
-      "previous_git_blob": "615f910a8aa55a6d87417a6eb67d26332967e00f"
+      "previous_git_blob": "fdfe88f875ccfc0ee38fc259a00a843a6cc46411"
     },
     {
       "path": "docs/runtime/ui-baseline-alignment-10.md",
@@ -1286,14 +1286,15 @@
     },
     {
       "path": "docs/superpowers/plans/2026-10-16-ipc-audit-reconciliation.md",
-      "sha256": "d46bd1b32c202e97417dfa0fd6ad5f8871636f6ebb52a50d931641b7e785091d",
+      "sha256": "7bfc653cb773690d8edc8fac0140ee1bc0d7b6b31d9198df2ed5d6c6fad30777",
       "size_bytes": 3604,
-      "git_blob": "4fdf50d6721222e8092b9e89ab5ed22257c61d37",
+      "git_blob": "5bbb4f58b23087eed17e6f9cfdeefb245f7a16b6",
       "version": "audit-reconciliation-01",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
       "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob": "4fdf50d6721222e8092b9e89ab5ed22257c61d37"
     },
     {
       "path": "docs/superpowers/plans/2026-10-16-ipc-readiness.md",
@@ -3356,6 +3357,10 @@
     "real_capabilities": "B01_B06_BLOCKED",
     "historical_d_rv_unchanged": true,
     "packages_in_source_git": false,
-    "public_scope": "Generic authorized code and synthetic evidence; local user paths in public log renditions replaced, original byte hashes separately retained; no restricted originals, private links, credentials, production data, SDK or fonts."
+    "public_scope": "Generic authorized code and synthetic evidence; local user paths in public log renditions replaced, original byte hashes separately retained; no restricted originals, private links, credentials, production data, SDK or fonts.",
+    "public_archive_validator": "FAIL_267_INHERITED_ERRORS_IDENTICAL_TO_MAIN_NO_NEW_FILE_ERRORS",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/9",
+    "pull_request_state_at_creation": "OPEN",
+    "merged_by_this_task": false
   }
 }

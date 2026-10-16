@@ -72,3 +72,7 @@ python3 scripts/smoke.py --product <解压目录>/app --fixture <解压目录>/f
 ## 资料校验的独立失败边界
 
 公开总校验 **FAIL**：原v1.1 PPTX有265个“PNG扩展名实际为SVG字节”的媒体部件，原README.source与图册有2处Canva链接标记。对纠偏前main `856e4de`的独立原字节导出执行同一工具，同样FAIL267项；两次错误集合完全一致，三个源资产SHA/blob不变，本次新增/修改文件没有该工具错误。见[原main结果](evidence/reconciliation-01/archive-pristine-main.json)、[当前结果](evidence/reconciliation-01/archive-current.json)和checks中的资产身份。原件保留字节与发布范围，不删断言/不加宽泛豁免换PASS；Canva标记只是工具命中，不据此推断链接访问权限。资料工具7项单元测试PASS与此总校验FAIL分别记录，不影响已完成的应用构建/合成运行，但也不宣称全仓资料校验通过。
+
+## 开发分支PR回执
+
+已推送开发分支并创建[main PR #9](https://github.com/yuan2go/importer-pc/pull/9)，创建时HEAD `f2de36ab44c4b55144ef7ea49d03aee558ab5ee6`，读回OPEN / MERGEABLE / CLEAN；后续仅本回执与manifest文档提交，最终HEAD以PR读回为准。没有配置GitHub CI检查（空check列表不等于CI PASS），本次PASS来自记录的实际本地运行。未合并、未强推，main保持起点；两个包仍固定运行源码a080825及本报告SHA。

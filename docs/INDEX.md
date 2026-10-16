@@ -1,3 +1,5 @@
+> 当前执行：[REVIEW-FOLLOWUP-11](work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)，起点main `4ae5319`。修复PR9独立复核的两个P2并补Product组合所有权动态证据；[前版本](archive/pre-review-followup-11/README.md)保留。下文09/a080825为上一版证据，不自动代表本次输出；Windows/真实集成仍按06/05分项阻塞。
+
 # 统一资料与实施入口
 
 2026-10-16；当前执行 **[WP-IPC-AUDIT-RECONCILIATION-01](work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)**，基准main `856e4de73f09a1c4f12af798c4d21e8631a6a86f`。用户本次授权08/10及09合成/参考环境必要测试、构建、启动和发布验证；生产WCS写入与真实设备动作未授权。[纠偏前原字节快照](archive/pre-reconciliation-01/README.md)保留原报告、工作包、入口、manifest及blob/SHA，历史不测试/NOT_RUN按形成时含义保留。

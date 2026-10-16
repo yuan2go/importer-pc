@@ -1,3 +1,5 @@
+> 后续复核整改：[REVIEW-FOLLOWUP-11](../work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)。PR9复核发现波次差异常显、箱码焦点交接两项P2；Product组合层仍活来源的保留分支需补动态证据。下文a080825及原状态保留形成时含义，不能当作本次已验结论。
+
 # UI基线落实10：实际WPF组件与逐页映射
 
 日期：2026-10-16（Asia/Shanghai）。执行包：WP-IPC-AUDIT-RECONCILIATION-01 / WP-IPC-UI-BASELINE-ALIGNMENT-10，起始main `856e4de73f09a1c4f12af798c4d21e8631a6a86f`。这是新F-02参考产品的桌面增量，沿用单个ProductRuntime / Supply应用所有者、SQLite3和SIMULATION-v1；不是旧现场工程迁移，也不修改D批准、原RV或历史验收。

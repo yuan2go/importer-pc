@@ -1,3 +1,5 @@
+> 后续复核整改：[REVIEW-FOLLOWUP-11](WP-IPC-REVIEW-FOLLOWUP-11.md)。PR9复核发现波次差异常显、箱码焦点交接两项P2；Product组合层仍活来源的保留分支需补动态证据。下文a080825及原状态保留形成时含义，不能当作本次已验结论。
+
 # WP-IPC-UI-BASELINE-ALIGNMENT-10：实物UI基线到WPF的逐页落实
 
 

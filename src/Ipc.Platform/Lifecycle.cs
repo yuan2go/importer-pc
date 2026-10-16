@@ -89,12 +89,15 @@ public sealed class ModuleCatalog(IEnumerable<IRuntimeModule> modules) : IAsyncD
 public sealed class ResourceLease : IDisposable
 {
     readonly List<FileStream> locks = [];
+    readonly string[] resources;
+    public string[] Resources => locks.Count == resources.Length ? resources.ToArray() : [];
     public ResourceLease(string root, IEnumerable<string> resources)
     {
+        this.resources = resources.Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
         Directory.CreateDirectory(root);
         try
         {
-            foreach (var resource in resources.Distinct().Order())
+            foreach (var resource in this.resources)
             {
                 var stream = new FileStream(Path.Combine(root, Wire.Hash(resource) + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
                 locks.Add(stream);

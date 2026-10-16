@@ -104,6 +104,8 @@ public sealed partial class SupplyStore : IDisposable
     public Alarm? Alarm(string id) => Read<Alarm>("SELECT json FROM alarms WHERE id=$a", id).SingleOrDefault();
     public Alarm[] AlarmHistory(int offset, int limit) => Read<Alarm>("SELECT json FROM alarms WHERE active=0 ORDER BY rowid DESC LIMIT $a OFFSET $b", Math.Clamp(limit, 1, 200), Math.Max(0, offset));
     public ConfigRevision[] Configs() => Read<ConfigRevision>("SELECT json FROM configs ORDER BY rowid DESC LIMIT 100");
+    // Startup authority must not depend on the UI's bounded recent-revision list.
+    public ConfigRevision? CurrentConfig(string status) => Read<ConfigRevision>("SELECT json FROM configs WHERE status=$a ORDER BY rowid DESC LIMIT 1", status).SingleOrDefault();
     public CommandReceipt? Receipt(Command command)
     {
         using var c = Sql("SELECT hash,receipt FROM commands WHERE id=$a", null, command.Id); using var r = c.ExecuteReader();

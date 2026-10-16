@@ -10,11 +10,22 @@ public interface IRuntimeModule : IAsyncDisposable
     Task StartAsync(CancellationToken token);
     Task StopAsync(CancellationToken token);
 }
+// Ownership remains held while a callback/worker may still use a downstream resource.
+public interface IRuntimeOwnership
+{
+    bool HasActiveWork { get; }
+    bool HasUnreleasedResources { get; }
+    string[] OwnershipDiagnostics { get; }
+}
 public sealed class ModuleCatalog(IEnumerable<IRuntimeModule> modules) : IAsyncDisposable
 {
     readonly IRuntimeModule[] entries = modules.ToArray();
     readonly List<IRuntimeModule> owned = [];
+    readonly HashSet<IRuntimeModule> disposed = [];
     public Dictionary<string, ModuleState> States { get; } = [];
+    public bool HasUnreleasedResources => entries.Any(x => !disposed.Contains(x));
+    public bool HasActiveWork => owned.Any(x => x is IRuntimeOwnership lifetime ? lifetime.HasActiveWork : States.GetValueOrDefault(x.Id) != ModuleState.Stopped);
+    public string[] OwnershipDiagnostics => owned.SelectMany(x => x is IRuntimeOwnership lifetime ? lifetime.OwnershipDiagnostics : [x.Id + ": stop has not completed"]).ToArray();
     public async Task StartAsync(CancellationToken token)
     {
         foreach (var module in entries) States.Add(module.Id, ModuleState.Registered);
@@ -25,33 +36,56 @@ public sealed class ModuleCatalog(IEnumerable<IRuntimeModule> modules) : IAsyncD
                 var next = entries.FirstOrDefault(x => !owned.Contains(x) && x.Dependencies.All(d => States.GetValueOrDefault(d) == ModuleState.Ready))
                     ?? throw new InvalidDataException("Missing/cyclic module dependency");
                 owned.Add(next); States[next.Id] = ModuleState.Initializing;
-                try { await next.StartAsync(token); States[next.Id] = ModuleState.Ready; }
+                try { await next.StartAsync(token).ConfigureAwait(false); States[next.Id] = ModuleState.Ready; }
                 catch { States[next.Id] = ModuleState.Faulted; throw; }
             }
         }
-        catch { await StopAsync(CancellationToken.None); throw; }
+        catch (Exception startup)
+        {
+            try { await StopAsync(CancellationToken.None).ConfigureAwait(false); }
+            catch (Exception cleanup) { throw new AggregateException("Module startup failed; shutdown also reported failures", startup, cleanup); }
+            throw;
+        }
     }
     public async Task StopAsync(CancellationToken token)
     {
         List<Exception> errors = [];
         foreach (var module in owned.AsEnumerable().Reverse())
         {
+            if (disposed.Contains(module) || States.GetValueOrDefault(module.Id) == ModuleState.Stopped) continue;
             States[module.Id] = ModuleState.Stopping;
-            try { await module.StopAsync(token); States[module.Id] = ModuleState.Stopped; }
-            catch (Exception ex) { States[module.Id] = ModuleState.Faulted; errors.Add(ex); }
+            try { await module.StopAsync(token).ConfigureAwait(false); States[module.Id] = ModuleState.Stopped; }
+            catch (Exception ex) { States[module.Id] = ModuleState.Faulted; errors.Add(new InvalidOperationException("Stop: " + module.Id, ex)); }
         }
-        owned.Clear();
-        if (errors.Count != 0) throw new AggregateException("Module shutdown failure", errors);
+        if (errors.Count != 0) throw new AggregateException("Module shutdown failures; ownership retained where still active", errors);
     }
     public async ValueTask DisposeAsync()
     {
-        if (owned.Count != 0) await StopAsync(CancellationToken.None);
-        foreach (var module in entries.Reverse()) await module.DisposeAsync();
+        List<Exception> errors = [];
+        try { await StopAsync(CancellationToken.None).ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+        foreach (var module in entries.Reverse())
+        {
+            if (disposed.Contains(module)) continue;
+            // Ownership-aware modules clean independent resources themselves and retain any
+            // still-live native/worker resources. Unknown modules require a successful stop.
+            if (owned.Contains(module) && module is not IRuntimeOwnership && States.GetValueOrDefault(module.Id) != ModuleState.Stopped)
+            { errors.Add(new InvalidOperationException("Dispose deferred while ownership is uncertain: " + module.Id)); continue; }
+            try { await module.DisposeAsync().ConfigureAwait(false); disposed.Add(module); }
+            catch (Exception ex)
+            {
+                // A faulted worker may be terminal and all resources safely released even
+                // though its original failure is still reported. Keep that failure visible.
+                if (module is IRuntimeOwnership lifetime && !lifetime.HasUnreleasedResources) disposed.Add(module);
+                errors.Add(new InvalidOperationException("Dispose: " + module.Id, ex));
+            }
+        }
+        if (errors.Count != 0) throw new AggregateException("Module disposal failures", errors);
     }
 }
 
-// FileShare.None is enforced across processes/sessions. The file is retained: deleting an owned
-// lock path would let a second Unix inode bypass the lock. No native device ownership is claimed.
+// FileShare.None covers the same canonical root across processes/login sessions. The file
+// is retained; removing a lock pathname could create a second lock identity. This mechanism
+// does not prove or replace the device vendor's control-ownership protocol.
 public sealed class ResourceLease : IDisposable
 {
     readonly List<FileStream> locks = [];
@@ -60,7 +94,7 @@ public sealed class ResourceLease : IDisposable
         Directory.CreateDirectory(root);
         try
         {
-            foreach (var resource in resources.Order())
+            foreach (var resource in resources.Distinct().Order())
             {
                 var stream = new FileStream(Path.Combine(root, Wire.Hash(resource) + ".lease"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
                 locks.Add(stream);
@@ -68,9 +102,19 @@ public sealed class ResourceLease : IDisposable
                 writer.Write($"pid={Environment.ProcessId}; resource={resource}"); writer.Flush(); stream.Flush(true);
             }
         }
-        catch { Dispose(); throw; }
+        catch (Exception acquisition)
+        {
+            try { Dispose(); } catch (Exception cleanup) { throw new AggregateException("Lease acquisition and partial cleanup failed", acquisition, cleanup); }
+            throw;
+        }
     }
-    public void Dispose() { foreach (var stream in locks) stream.Dispose(); locks.Clear(); }
+    public void Dispose()
+    {
+        List<Exception> errors = [];
+        foreach (var stream in locks.ToArray())
+            try { stream.Dispose(); locks.Remove(stream); } catch (Exception ex) { errors.Add(ex); }
+        if (errors.Count != 0) throw new AggregateException("Lease release failure", errors);
+    }
 }
 
 public sealed class BoundedExecutor : IAsyncDisposable

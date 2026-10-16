@@ -66,11 +66,12 @@ MaintenanceReleaseIdentity ReleaseIdentity(string release)
     return new(Wire.FileHash(Path.Combine(app, "Ipc.Product.exe")), Wire.FileHash(Path.Combine(app, "Ipc.Product.dll")),
         Wire.FileHash(Path.Combine(release, "SHA256SUMS")), configuration);
 }
-using var host = ProductHost.Build(new(Path.Combine(root, "product.json"), Path.Combine(root, "station.json"), Path.Combine(root, "presentation.json"), data, View: map.GetValueOrDefault("--view"), Layout: map.GetValueOrDefault("--layout")));
-await host.StartAsync();
+var host = ProductHost.Build(new(Path.Combine(root, "product.json"), Path.Combine(root, "station.json"), Path.Combine(root, "presentation.json"), data, View: map.GetValueOrDefault("--view"), Layout: map.GetValueOrDefault("--layout")));
 var runtime = host.Services.GetRequiredService<ProductRuntime>();
+Exception? operationFailure = null;
 try
 {
+    await host.StartAsync();
     if (action == "serve")
     {
         Console.WriteLine("JSON command console. One command per line; snapshot / emit / replay / reconcile / export / quit supported. SIMULATION only.");
@@ -97,6 +98,16 @@ try
     else Console.WriteLine(runtime.Application is null ? Wire.Encode(runtime.Diagnostics) : Wire.Encode(await runtime.Application.SnapshotAsync()));
     if (runtime.Diagnostics.Count != 0) Environment.ExitCode = 2;
 }
-finally { await host.StopAsync(); }
+catch (Exception ex) { operationFailure = ex; }
+finally
+{
+    var failures = new List<Exception>();
+    if (operationFailure is not null) failures.Add(operationFailure);
+    try { await host.StopAsync(); } catch (Exception ex) { failures.Add(ex); }
+    var runtimeDisposed = false;
+    try { await runtime.DisposeAsync(); runtimeDisposed = true; } catch (Exception ex) { failures.Add(ex); }
+    if (runtimeDisposed) try { host.Dispose(); } catch (Exception ex) { failures.Add(ex); }
+    if (failures.Count > 0) throw new AggregateException("Console operation and controlled cleanup retained failures", failures);
+}
 public sealed record ConsoleInput(string Action, Command? Command = null, string? Lane = null, string? Kind = null, string[]? Codes = null, int? Quantity = null,
     string? RequestId = null, string? File = null, string? OwnerId = null, string? Evidence = null);

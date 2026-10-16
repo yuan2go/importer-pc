@@ -2,6 +2,8 @@
 
 当前增量实现与验证见 [ALIGNMENT-01](alignment-01.md)，Windows待验见[操作清单](alignment-01-windows.md)。H04原证据保留形成时范围。
 
+最新静态复核见 [MAIN-REVIEW-02](../reviews/main-static-review-02.md)，下一工程整改见 [工程收敛07](../work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)。当前preflight/backup由会自动迁移的SupplyStore打开源库；使用新程序处理schema1会先升到format2，不能据此制作旧EXE可读的升级前备份。旧格式升级前备份须由兼容旧版本完成并保留；整改前不要把新版本的preflight解释为无副作用检查。Upgrade写入的active-release指针当前也不被Run读取，实际启动由显式Release/PSScriptRoot决定。此为代码静态结论，Windows脚本执行本轮NOT_RUN。
+
 本实现是 F-02 独立参考产品。所有设备、身份、数量策略和外部端点为 **SIMULATION**。核心、SQLite 与恢复为真实代码；没有旧现场工程迁移、厂商驱动或真实 WCS。D/RV 的客户与现场状态不改变。
 
 ## 环境与构建

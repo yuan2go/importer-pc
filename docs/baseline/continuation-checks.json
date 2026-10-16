@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-16",
+  "work_package": "WP-IPC-DESIGN-BASELINE-01",
+  "baseline_commit": "04187f7e200bce0b82315af1922d58e42be612ad",
+  "scope": "archive_delivery_only",
+  "input": {
+    "sha256": "8685ba48f19aa087541598b0efc4e56a04f017e56251197bd53b9318d2c3302a",
+    "zip_files": 193,
+    "manifest_records": 191,
+    "sha256_crc_path_links_and_record_identity": "PASS"
+  },
+  "retained_assets_checked": {
+    "images_in_input": 92,
+    "new_prd_images": 9,
+    "new_html_cdn_files": 7,
+    "pptx_slides": 18,
+    "pptx_package_parts": 637,
+    "pptx_external_relationships": 0,
+    "embedded_fonts": 0,
+    "boards": 18,
+    "board_objects": 6189
+  },
+  "evidence": {
+    "exact_source_identities": 10,
+    "historical_test_locators": 31,
+    "rv_items_unchanged_open": 17,
+    "known_historical_screenshot_references": 61,
+    "known_screenshots_not_in_input": 34,
+    "missing_reference_details": "retained in restricted local evidence map; no replacements generated"
+  },
+  "executed_checks": [
+    {"argv": ["tools/verify_archive.py", "--root", ".", "--scope", "public"], "result": "PASS", "runtime": "bundled Python; host path withheld"},
+    {"argv": ["-m", "unittest", "discover", "-s", "tools", "-p", "test_*.py", "-v"], "result": "PASS", "critical_test_groups": 6},
+    {"mode": "restricted local root with exact reference registry", "result": "PASS_WITH_REGISTERED_GAPS", "checks": "hashes, JSON, Markdown links/anchors, HTML/CSS resources, images, PPTX relationships, board references, sensitive markers"},
+    {"mode": "isolated local reading-entry smoke", "result": "PASS", "observed": "offline product page rendered; UI workbench and read-only records entry opened", "external_network": "blocked by restrictive localhost content security policy", "warning": "historical in-browser Babel development warning"}
+  ],
+  "historical_artifact_checks": "artifact-checks.json is retained input history, not re-executed current evidence",
+  "publication": "BLOCKED_FOR_FULL_MATERIALS",
+  "full_archive_in_main": false,
+  "business_tests": "NOT_RUN",
+  "historical_44_scenes": "NOT_RUN",
+  "sdk_wcs_windows_dpi_touch_throughput_continuous_operation": "NOT_RUN",
+  "remote_receipt": "record exact written commit, complete paths and byte comparisons separately after push; this report does not itself prove remote inclusion"
+}

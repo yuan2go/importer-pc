@@ -1,6 +1,6 @@
 # 统一资料与实施入口
 
-更新日期：2026-10-16；最新复核：WP-IPC-MAIN-REVIEW-03；分析基准main `2579392ddcc0b4302d4aae865d4b2d8b3c083b59`（PR #6/#7已合并）。本轮仅独立复核和下一工作包整理，用户要求不测试，全部运行验证NOT_RUN。
+更新日期：2026-10-16；当前执行 **WP-IPC-AUDIT-RECONCILIATION-01**，基准main `856e4de73f09a1c4f12af798c4d21e8631a6a86f`。本次用户已授权08/10实施及09合成/参考环境必要测试、构建、启动和发布；未授权生产WCS写入或真实设备动作。执行映射见[本次计划](superpowers/plans/2026-10-16-ipc-audit-reconciliation.md)，历史入口/报告/工作包的原字节见[纠偏前快照](archive/pre-reconciliation-01/README.md)。下列旧“本轮不要测试/尚未执行”描述是形成时记录，当前执行和最终结果以本次报告为准。
 
 ## 已入库的最终交付UI：Codex页面开发必读
 

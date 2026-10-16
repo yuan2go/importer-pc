@@ -1,5 +1,7 @@
 # WP-IPC-ENGINEERING-FOLLOWUP-08：历史权限与最终配置所有权
 
+> 当前执行：AUDIT-RECONCILIATION-01已获用户授权实施及合成/参考验证，见[计划](../superpowers/plans/2026-10-16-ipc-audit-reconciliation.md)。本页以下为形成时范围及记录；历史不测试/NOT_RUN不限制本次已授权工作。生产WCS/设备动作未授权；06取决于实际Windows环境，05按能力证据保持阻断。原字节已保存于[快照](../archive/pre-reconciliation-01/README.md)。
+
 状态：**PLANNED / NOT_STARTED**；日期2026-10-16。依据 [MAIN-REVIEW-03](../reviews/main-static-review-03.md)，分析基准main `2579392ddcc0b4302d4aae865d4b2d8b3c083b59`（PR #6已合并）。本轮只整理工作包，没有实施授权推定，也没有执行测试。
 
 目标：补齐E-06、E-10的两个剩余应用路径；保留07已经建立的类型化历史、单所有者、固定账户/机级策略和资源持有机制，不重建第二套框架。

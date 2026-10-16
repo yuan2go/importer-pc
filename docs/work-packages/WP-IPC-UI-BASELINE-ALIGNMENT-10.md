@@ -1,5 +1,7 @@
 # WP-IPC-UI-BASELINE-ALIGNMENT-10：实物UI基线到WPF的逐页落实
 
+> 当前执行：AUDIT-RECONCILIATION-01已获用户授权实施及合成/参考验证，见[计划](../superpowers/plans/2026-10-16-ipc-audit-reconciliation.md)。本页以下为形成时范围及记录；历史不测试/NOT_RUN不限制本次已授权工作。生产WCS/设备动作未授权；06取决于实际Windows环境，05按能力证据保持阻断。原字节已保存于[快照](../archive/pre-reconciliation-01/README.md)。
+
 状态：**PLANNED / NOT_STARTED**；2026-10-16。分析基准main `2579392ddcc0b4302d4aae865d4b2d8b3c083b59`；PR #7已加入获授权公开的SS-UI-VIS-001 v1.1实物。依据 [MAIN-REVIEW-03](../reviews/main-static-review-03.md) UI-01；本轮只整理，不修改UI、不运行原型或WPF。
 
 ## 基线与界限

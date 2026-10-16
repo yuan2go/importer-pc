@@ -1,5 +1,7 @@
 # WP-IPC-REFERENCE-VALIDATION-09：07/08/10核心证据与同版交付
 
+> 当前执行：AUDIT-RECONCILIATION-01已获用户授权实施及合成/参考验证，见[计划](../superpowers/plans/2026-10-16-ipc-audit-reconciliation.md)。本页以下为形成时范围及记录；历史不测试/NOT_RUN不限制本次已授权工作。生产WCS/设备动作未授权；06取决于实际Windows环境，05按能力证据保持阻断。原字节已保存于[快照](../archive/pre-reconciliation-01/README.md)。
+
 状态：**PLANNED / EXECUTION_NOT_RUN**；日期2026-10-16。基准main `2579392ddcc0b4302d4aae865d4b2d8b3c083b59`；依据 [MAIN-REVIEW-03](../reviews/main-static-review-03.md)。本包用于区分“工程源码路径”“核心合成运行”“Windows操作”和“真实现场”四层；用户当前不要测试，本轮不执行本包。
 
 ## 开始条件

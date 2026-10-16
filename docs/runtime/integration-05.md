@@ -1,3 +1,5 @@
+> 当前待验版本绑定[REVIEW-FOLLOWUP-11](review-followup-11.md)的新SourceCommit/包SHA。下文上一版边界保持；没有新增Windows/真实集成执行，W01～06 NOT_RUN，B01～06 BLOCKED。
+
 # INTEGRATION-BOUNDARY-05 当前逐能力状态
 
 2026-10-16；归属[AUDIT-RECONCILIATION-01](../work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)。本次授权只含合成/参考工程实施与验证，未取得生产WCS写入或真实设备动作授权。源码/包身份引用[09检查](reference-validation-09-checks.json)，不复制第二套D批准登记。

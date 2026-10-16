@@ -1,4 +1,4 @@
-> 后续复核整改：[REVIEW-FOLLOWUP-11](../work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)。PR9复核发现波次差异常显、箱码焦点交接两项P2；Product组合层仍活来源的保留分支需补动态证据。下文a080825及原状态保留形成时含义，不能当作本次已验结论。
+> 后续同版交付与Product动态证据见[REVIEW-FOLLOWUP-11](review-followup-11.md)，SourceCommit `4edb909e71097a7da61506beaa10ae5db82ec6cb`。下文09/a080825原结果及当时静态验证限制保持，不把新验证倒写进旧日志或旧checks。
 
 # REFERENCE-VALIDATION-09：纠偏实施与同版参考交付
 

@@ -10,3 +10,5 @@
 - 发布：新的SourceCommit、Release/Storage/Contract、源码/模块/配置指纹与两个ZIP SHA；定向核心及解压包启动/维护冒烟。旧a080825包/证据不覆盖。
 
 结果入口为[11实施报告](../runtime/review-followup-11.md)（完成后记录实际结果）。Windows环境BLOCKED、W01～06 NOT_RUN；真实集成B01～06 BLOCKED，缺项继承[06](../runtime/windows-06.md)与[05](../runtime/integration-05.md)，不以核心或编译结果关闭。
+
+当前结果：两个P2 SOURCE_CORRECTED/SHARED_POLICY_PASS/WPF_BUILD_PASS；三类Product组合故障PASS_REFERENCE，E07/E08与持续旅程及解压核心冒烟PASS。运行SourceCommit `4edb909e71097a7da61506beaa10ae5db82ec6cb`，Release REVIEW-FOLLOWUP-11；完整包SHA/检查见11报告，Windows/真实状态不变。

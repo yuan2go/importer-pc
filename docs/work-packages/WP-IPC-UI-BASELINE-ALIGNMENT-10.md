@@ -1,4 +1,4 @@
-> 后续复核整改：[REVIEW-FOLLOWUP-11](WP-IPC-REVIEW-FOLLOWUP-11.md)。PR9复核发现波次差异常显、箱码焦点交接两项P2；Product组合层仍活来源的保留分支需补动态证据。下文a080825及原状态保留形成时含义，不能当作本次已验结论。
+> 当前增量结果：[REVIEW-FOLLOWUP-11](WP-IPC-REVIEW-FOLLOWUP-11.md)，运行源码 `4edb909e71097a7da61506beaa10ae5db82ec6cb`。两个P2已补源码、Product组合所有权三故障动态参考验证PASS；Windows/真实集成仍NOT_RUN/BLOCKED。下文a080825和形成时记录保留其原版本含义。
 
 # WP-IPC-UI-BASELINE-ALIGNMENT-10：实物UI基线到WPF的逐页落实
 

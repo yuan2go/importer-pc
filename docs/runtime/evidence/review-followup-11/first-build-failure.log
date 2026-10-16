@@ -1,0 +1,17 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> <WORKTREE>/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply -> <WORKTREE>/src/Ipc.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> <WORKTREE>/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> <WORKTREE>/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
+<WORKTREE>/src/Ipc.Desktop/MainWindow.Presentation.cs(133,67): error CS8602: 解引用可能出现空引用。 [<WORKTREE>/src/Ipc.Desktop/Ipc.Desktop_izvslbtr_wpftmp.csproj]
+  Ipc.Fixture -> <WORKTREE>/src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll
+  Ipc.Verification -> <WORKTREE>/tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll
+
+生成失败。
+
+<WORKTREE>/src/Ipc.Desktop/MainWindow.Presentation.cs(133,67): error CS8602: 解引用可能出现空引用。 [<WORKTREE>/src/Ipc.Desktop/Ipc.Desktop_izvslbtr_wpftmp.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:05.64

@@ -1,4 +1,4 @@
-> 后续复核整改：[REVIEW-FOLLOWUP-11](../work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)。PR9复核发现波次差异常显、箱码焦点交接两项P2；Product组合层仍活来源的保留分支需补动态证据。下文a080825及原状态保留形成时含义，不能当作本次已验结论。
+> 当前复核整改见[REVIEW-FOLLOWUP-11](review-followup-11.md)，SourceCommit `4edb909e71097a7da61506beaa10ae5db82ec6cb`。两个P2源码已补齐，共用展示策略与Product组合层动态参考验证PASS；WPF仅BUILD_PASS，实际焦点/几何仍NOT_RUN。下文a080825的映射与结论保留形成时含义。
 
 # UI基线落实10：实际WPF组件与逐页映射
 
@@ -62,3 +62,11 @@ Windows06 W-01～06仍须对最终同版包执行：1920/1366各100/125/150%、�
 复核发现两项真实工程问题：原ReviewFits把含低频字段的整个ScrollViewer“无可滚动内容”作为前提，紧凑局部滚动可能持续禁用；原ApplyDensity折叠全部次动作且历史抽屉使CanCancel为false，导致紧凑的当前草稿缺详情/处置路径。已分别改为上面的必核控件实际可见矩形守卫、辅助展开和始终可达的固定详情/处置动作，取消资格不再依赖工作台视图available。继承并收紧fc5e24e的旧详情权限冻结，未将应用CAS改成新revision重试。配置Superseded状态显示“已被新修订替代”。
 
 本段是源码整改与静态XML检查记录，实际Windows几何、焦点、连续扫码、声音和双窗仍NOT_RUN；后续统一构建/复核结果绑定09最终源提交，不把静态尺寸推算写成运行PASS。
+
+## REVIEW-FOLLOWUP-11 两项P2的修正
+
+当前Item波次移出辅助Expander；当两种已取得原值不一致时，固定通道结果区持续显示入场箱/Item波次及差异，关键可见性守卫也检查该差异摘要。未知不被标为不一致。合成身份不同只是显示事实，不新增或替代WCS业务裁决。
+
+进入可扫箱状态后由每窗BoxEntryFocusPolicy生成一次交接；真实WPF回调以ticket、有效身份、箱、区域和当前可见/启用状态再次检查，聚焦BoxInput并SelectAll保留旧草稿。后台刷新不重复消费；旧身份A回调不能重排身份B的交接；抽屉/忙态/过期/不足区域延后。纯策略及XAML结构通过不等于Windows焦点行为已通过。
+
+PAGE-03/04新增固定差异摘要会占用高度，W01必须覆盖长波次、两通道/拆包及最小区实际ViewportHeight/必核矩形；已有小区域首次Loaded时的暂停锁条件仍属待Windows复现的条件风险，不把它写成本轮已复现或已修复。设计v1.1和原图片字节不改。

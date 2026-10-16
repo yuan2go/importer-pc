@@ -1,18 +1,18 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-AUDIT-RECONCILIATION-01",
-  "created_date": "2026-10-16",
+  "work_package": "WP-IPC-REVIEW-FOLLOWUP-11",
+  "created_date": "2026-10-17",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/wp-ipc-audit-reconciliation-01",
+  "branch": "codex/wp-ipc-review-followup-11",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
-  "framework_design_state": "MODULAR_MONOLITH_REFERENCE_PASS_WPF_BUILD_PASS_WINDOWS_NOT_RUN_REAL_CAPABILITIES_BLOCKED",
+  "framework_design_state": "MODULAR_MONOLITH_P2_SOURCE_CORRECTED_PRODUCT_COMPOSITE_REFERENCE_PASS_WPF_BUILD_PASS_WINDOWS_NOT_RUN_REAL_CAPABILITIES_BLOCKED",
   "previous_manifest": {
-    "commit": "856e4de73f09a1c4f12af798c4d21e8631a6a86f",
+    "commit": "4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
     "path": "docs/manifest.json",
-    "git_blob": "526e9aea908cb365e1e6cc48a69fa1eff3213bda",
-    "meaning": "Pre-reconciliation original bytes and historical claims retained in docs/archive/pre-reconciliation-01; new implementation/verification claims have separate identity."
+    "git_blob": "3d7dcc00ea88ce27a56d77200c8982353be731f5",
+    "meaning": "Pre-followup-11 exact bytes retained in docs/archive/pre-review-followup-11; historical reports and acceptance are unchanged."
   },
   "self_verification": {
     "sha256_file": "manifest.sha256",
@@ -171,15 +171,14 @@
     },
     {
       "path": "README.md",
-      "sha256": "2ed84541e0f85c10d6791e841cac371f1e4d68470fd20b79e97a04db2c5369b3",
-      "size_bytes": 2490,
-      "git_blob": "6bc402ffafe8abf8b14548860afb934b2fdc70b3",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
-      "storage_scope": "public_repository",
-      "previous_git_blob": "8b7fec578f833c96edeb1d1f28822e47fcbae19c"
+      "sha256": "5156ffbb5ff5e482a817a140f40ae424125dc0109584496cce39181039f667e7",
+      "size_bytes": 2929,
+      "git_blob": "b1f81aadd1e2aea3459d395ca2f65e23a4556971",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "config/presentation.json",
@@ -227,15 +226,14 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "bccbb29a90e59bfb9ae82f9f47b7aa6b7ba9b81fda1970888dad5d7ec70cbfad",
-      "size_bytes": 5512,
-      "git_blob": "cf38377ef5eadbeb4ae763ea85a131ab2291eb44",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
-      "storage_scope": "public_repository",
-      "previous_git_blob": "fcae321a8aedd4d0358521e6d385c2b18c698971"
+      "sha256": "fcff3ae6198214170cd16373338242d9fa87b6261679ca1532ba20306c33ca57",
+      "size_bytes": 6024,
+      "git_blob": "294ff71ff19d7300f1f372049a6170542342711c",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/archive/pre-framework-20261016/AGENTS.md.txt",
@@ -455,6 +453,160 @@
       "status": "historical_snapshot_preserved",
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
       "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/README.md",
+      "sha256": "82a28fd300c6b06237c6eb50642aa8c1a585dd1f8317d1b02e475dac50aa7356",
+      "size_bytes": 362,
+      "git_blob": "56ca36f525f13d9f265d573f07e7a6d064974143",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/README.md.txt",
+      "sha256": "2ed84541e0f85c10d6791e841cac371f1e4d68470fd20b79e97a04db2c5369b3",
+      "size_bytes": 2490,
+      "git_blob": "6bc402ffafe8abf8b14548860afb934b2fdc70b3",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/INDEX.md.txt",
+      "sha256": "bccbb29a90e59bfb9ae82f9f47b7aa6b7ba9b81fda1970888dad5d7ec70cbfad",
+      "size_bytes": 5512,
+      "git_blob": "cf38377ef5eadbeb4ae763ea85a131ab2291eb44",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/manifest.json.txt",
+      "sha256": "0d39c27d01e8214d41d8618516906befdccf086fc4392bd3d70104aa8993da6b",
+      "size_bytes": 193305,
+      "git_blob": "3d7dcc00ea88ce27a56d77200c8982353be731f5",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/manifest.sha256.txt",
+      "sha256": "9d3b71ec5d9271c1c2c4096ddd97ea6f3bd05f05008b8ea6dabd19b563c80e85",
+      "size_bytes": 80,
+      "git_blob": "0b13fe5869e7799c5e98944e147069aae578abd0",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/integration-05.md.txt",
+      "sha256": "1293115071f1b7f3504f1a704080e0934085671c93499de7909d30c7515c2979",
+      "size_bytes": 2761,
+      "git_blob": "c09221351b2160a874eb5841245dbab82d46e42f",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/operations.md.txt",
+      "sha256": "1e57615b0f89853a62d8ebf09f36585ead29bbe729eaa561637995a4f616989f",
+      "size_bytes": 22985,
+      "git_blob": "4281056be777da091e593382092733eb3afc3382",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/reference-validation-09.md.txt",
+      "sha256": "2d5ef593abd87d8b3ff4f6d216a00792320e2f0c9cfabae580660976bf596fa2",
+      "size_bytes": 11657,
+      "git_blob": "5ff29b8ed71202d8835d8f08fabc422d39596006",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/ui-baseline-alignment-10.md.txt",
+      "sha256": "a5d7f194870fdbaff5af634a0b3752d0702cdfdbbf535234059c15b484a724c5",
+      "size_bytes": 12882,
+      "git_blob": "7f180d103e5c54a2fb2be9ae489f881dd13c9bb1",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/validation-scenarios-09.md.txt",
+      "sha256": "ab92e93ccbd69564ad7df71593cb76a4c656fe9580b80535de93cc8a9bbaf153",
+      "size_bytes": 7503,
+      "git_blob": "6069fb697ef94e6af464e5ff8378bb3122b543b0",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/windows-06.md.txt",
+      "sha256": "9dcad7eeb2adc4cea0cf5bc1d77283371f832aa14e051fca3f078f7eef017dd2",
+      "size_bytes": 2140,
+      "git_blob": "6281a4d8ed2144a9b7d724b74761758240a2c527",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md.txt",
+      "sha256": "7a2ce33205e7710ada915b59d02c48976ce1afbd1712c9e90ff6245f11256191",
+      "size_bytes": 5904,
+      "git_blob": "dfef8e0e56147d85aa4b89e28098bc58f7a81619",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md.txt",
+      "sha256": "f0b97f7f62f017ae94288879994b22b2a61d9911c5598bcf2d71c516a6eb20a4",
+      "size_bytes": 4581,
+      "git_blob": "c004be21f8092501390d4460314c8596b27768cf",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/evidence.json",
+      "sha256": "cd18389017a08aca745dcee7d1ac136b8f81dd9578c0f9c123e7ae2d578fe8b4",
+      "size_bytes": 3914,
+      "git_blob": "2881dd0bdf51cb61be3a66607bdbced9d08e164d",
+      "version": "main-4ae5319-custody",
+      "status": "historical_original",
+      "purpose": "Exact original pre-followup bytes and evidence identity",
+      "source": "main 4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
       "storage_scope": "public_repository"
     },
     {
@@ -1126,6 +1278,160 @@
       "git_blob": "02a25a3f599a0979512fc15152a22d44d683702b"
     },
     {
+      "path": "docs/runtime/evidence/review-followup-11/archive-tests.log",
+      "sha256": "e7eee426cbb24ef3029695d5555a014c5e8e1a682674eb4544bc934934b32c0d",
+      "size_bytes": 1048,
+      "git_blob": "d89f1e42de400b91db8eecaccefe7990af0247b4",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/build.log",
+      "sha256": "38d6864b7d0e7765e1818fc35a81ad63ae214ef2bcd0c8b41f99524e7d62dbfc",
+      "size_bytes": 892,
+      "git_blob": "4fca826824f14d13fd0e61d8414f31732f539d5b",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/closure.log",
+      "sha256": "2115f7e05d8a7341f680b3238b152a8ca7efb5421c4711a7718bd13e1e9c28db",
+      "size_bytes": 1319,
+      "git_blob": "54657fdea70c9897e3b75ab1e143ff8f9c7fb02a",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/first-archive-failure.json",
+      "sha256": "7470bf336e84528b17de6b2875451f0c0ed102e373b0940c2fc8416145332e4d",
+      "size_bytes": 50597,
+      "git_blob": "33cf197e660f2446f8776307d41ce5c5c033c414",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/first-build-failure.log",
+      "sha256": "d795655e9d5965842c780bb930e64acf82dba86a43230179090dc87febc14d69",
+      "size_bytes": 998,
+      "git_blob": "90b45c458872c0327327bc9500f3dd7aa06196d7",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/followup.log",
+      "sha256": "57f8d401d7ebd99331ca9eba5b79a5ece4c336559e2a58034688ceecb90cdbb2",
+      "size_bytes": 1194,
+      "git_blob": "ecf86c29e7fda89a347747403f71f33d13111e7c",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/package-portable.log",
+      "sha256": "ed08c8c63c470225ceb73744eeecd5dd62d8e7ac0d92ab908a11273e5b5a0a6d",
+      "size_bytes": 1716,
+      "git_blob": "d09f44d00fae7ea78bb4eb26743c477411bc7211",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/package-readback.json",
+      "sha256": "e88f03944d0c08d2f5cb70fc41b14aa650f2ced81e9c49297c543388ea46c395",
+      "size_bytes": 5492,
+      "git_blob": "26c575c43ade4e6545db9f6a6054c90de6b830f3",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/package-win-x64.log",
+      "sha256": "60fe99d7d7564e54c4c89ea697c1d26fde0ad1d8055f8128190b13457f3caf99",
+      "size_bytes": 2751,
+      "git_blob": "9e5616f48bfa63125fe5a7456b7c921f65d6afa6",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/product-ownership.json",
+      "sha256": "c01f9aee86df66c6bb226ae6a4d8397e90ed2c0713537ee0da2139fbf3daaee0",
+      "size_bytes": 37871,
+      "git_blob": "1503841759a010079d0da424282c8e571209ccd5",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/reference-journey.json",
+      "sha256": "8d468e4a04414cd47b84259aead2b5cee64b746d7333ca21d8f21368a759da82",
+      "size_bytes": 345277,
+      "git_blob": "e7789e20957ccdde0f4efee60b74970b6fc2e496",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/target.log",
+      "sha256": "37eba6200cb96cf28d4ae9269159bf9fc50c3b06e96798a25dbee7f7be03c975",
+      "size_bytes": 1140,
+      "git_blob": "9d0831f1a1ff932ce2eab14d0e1f4923ddb4baae",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/unpacked-smoke.json",
+      "sha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "size_bytes": 347,
+      "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/unpacked-smoke.log",
+      "sha256": "d91d3271d11304680c516e899823f389215af1af5c806a4486d3e65a70b81539",
+      "size_bytes": 432,
+      "git_blob": "f863b69d9634613d3f278ce214271a3ff7470e1b",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/runtime/evidence/smoke-final-results.json",
       "version": "runtime-publication-1.0",
       "status": "historical_execution_evidence",
@@ -1195,26 +1501,25 @@
     },
     {
       "path": "docs/runtime/integration-05.md",
-      "sha256": "1293115071f1b7f3504f1a704080e0934085671c93499de7909d30c7515c2979",
-      "size_bytes": 2761,
-      "git_blob": "c09221351b2160a874eb5841245dbab82d46e42f",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
+      "sha256": "999f43604dc87e01d4a1fa5108869385590138fc59785cd1f71245ddbaf16fbc",
+      "size_bytes": 2969,
+      "git_blob": "b7bf6aa0238adee803a64ff8cd6e1003456b493e",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
       "storage_scope": "public_repository"
     },
     {
       "path": "docs/runtime/operations.md",
-      "sha256": "1e57615b0f89853a62d8ebf09f36585ead29bbe729eaa561637995a4f616989f",
-      "size_bytes": 22985,
-      "git_blob": "4281056be777da091e593382092733eb3afc3382",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
-      "storage_scope": "public_repository",
-      "previous_git_blob": "6f5e1e449b4d41e130cb823e9833a41d697d5d53"
+      "sha256": "4cda1848ef390bcd42f21c5a39ce6aeeb7d6f9d1e9d687a069f4e71c7314bd9e",
+      "size_bytes": 25335,
+      "git_blob": "2f8f787a11e399a1eb0487ea6093ab4e992cbae9",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/runtime/publication.md",
@@ -1241,47 +1546,68 @@
     },
     {
       "path": "docs/runtime/reference-validation-09.md",
-      "sha256": "2d5ef593abd87d8b3ff4f6d216a00792320e2f0c9cfabae580660976bf596fa2",
-      "size_bytes": 11657,
-      "git_blob": "5ff29b8ed71202d8835d8f08fabc422d39596006",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
-      "storage_scope": "public_repository",
-      "previous_git_blob": "fdfe88f875ccfc0ee38fc259a00a843a6cc46411"
+      "sha256": "21d7c959598532622aac0365532f5b8aafda18963176af02650f28d8b79271b6",
+      "size_bytes": 11917,
+      "git_blob": "7a90a156b5913c542ebc6a706e0a8863165fc531",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/review-followup-11-checks.json",
+      "sha256": "87f3f0d4625895c2e352f740b881a9bf2af79ef34340aeff7ad6a57ba6e4bf7a",
+      "size_bytes": 25177,
+      "git_blob": "7f2af6d700a799650389177647283d8d1e3fa974",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/review-followup-11.md",
+      "sha256": "1840fc06daeaf0671d75cee676994eb6cc77837fd5209cdf0620563d08672c50",
+      "size_bytes": 10256,
+      "git_blob": "09fa9c4002d34a6ada2fa4980d390851c46f5c78",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/runtime/ui-baseline-alignment-10.md",
-      "sha256": "a5d7f194870fdbaff5af634a0b3752d0702cdfdbbf535234059c15b484a724c5",
-      "size_bytes": 12882,
-      "git_blob": "7f180d103e5c54a2fb2be9ae489f881dd13c9bb1",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
+      "sha256": "356e0c4f19871372265a16d4d19c28e9a458dc232e65e14f7a40df458c7482a9",
+      "size_bytes": 14262,
+      "git_blob": "e79f5c656491688e85ecf770e3761bdf8d3db9b9",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
       "storage_scope": "public_repository"
     },
     {
       "path": "docs/runtime/validation-scenarios-09.md",
-      "sha256": "ab92e93ccbd69564ad7df71593cb76a4c656fe9580b80535de93cc8a9bbaf153",
-      "size_bytes": 7503,
-      "git_blob": "6069fb697ef94e6af464e5ff8378bb3122b543b0",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
+      "sha256": "2959c8c46c59370fda09f18f1bf981c56261415d7f3b44ecee57aac56cc88b8c",
+      "size_bytes": 9571,
+      "git_blob": "379943809dd4fd797f1735c53d075557e890d564",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
       "storage_scope": "public_repository"
     },
     {
       "path": "docs/runtime/windows-06.md",
-      "sha256": "9dcad7eeb2adc4cea0cf5bc1d77283371f832aa14e051fca3f078f7eef017dd2",
-      "size_bytes": 2140,
-      "git_blob": "6281a4d8ed2144a9b7d724b74761758240a2c527",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
+      "sha256": "102b54ff83bcb28c0ac57dc906d2552670c34389b178a788e464d3bb4e8cf80d",
+      "size_bytes": 2348,
+      "git_blob": "3ea4822ca3bf57ee54c6a77f736d046e137df35b",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
       "storage_scope": "public_repository"
     },
     {
@@ -1305,6 +1631,17 @@
       "status": "inherited_baseline",
       "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
       "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/superpowers/plans/2026-10-16-ipc-readiness.md",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-17-ipc-review-followup-11.md",
+      "sha256": "23a04a37dab7fe1532d1c1e64cc03f71427dcd0d4d55e0d2d49a68e74e3cf2b2",
+      "size_bytes": 5296,
+      "git_blob": "ab92bec8b761e990af63fe4362a2331d0418a9d9",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
       "storage_scope": "public_repository"
     },
     {
@@ -2181,15 +2518,25 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md",
-      "sha256": "7a2ce33205e7710ada915b59d02c48976ce1afbd1712c9e90ff6245f11256191",
-      "size_bytes": 5904,
-      "git_blob": "dfef8e0e56147d85aa4b89e28098bc58f7a81619",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
-      "storage_scope": "public_repository",
-      "previous_git_blob": "02bdfce98d720ff0f881bf5079687e4730b62244"
+      "sha256": "f4efa582e65b7a98bdedaf14b5a539a62260fb33fbca1c2460bd2b847339e1aa",
+      "size_bytes": 6218,
+      "git_blob": "1361745f554c6792248d5c268041e57003605ab0",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md",
+      "sha256": "e002738b24e36f4c99b5b00459262c22d190d25aef8e310530c3a80b5551bc21",
+      "size_bytes": 2045,
+      "git_blob": "d2d131535c5185fa4c48fd54f33cae8e4e97513c",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/work-packages/WP-IPC-RUNTIME-03-Codex.md",
@@ -2226,16 +2573,15 @@
       "storage_scope": "public_repository"
     },
     {
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
-      "storage_scope": "public_repository",
       "path": "docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md",
-      "sha256": "f0b97f7f62f017ae94288879994b22b2a61d9911c5598bcf2d71c516a6eb20a4",
-      "size_bytes": 4581,
-      "git_blob": "c004be21f8092501390d4460314c8596b27768cf",
-      "previous_git_blob": "685d1168cd3045c8b2e2f163862110890c220d71"
+      "sha256": "a52ab025be9ad97b66217722770c7d748892aba9b5a96dac1f1e04a017f6e76c",
+      "size_bytes": 4895,
+      "git_blob": "1dbb64062f806765818692eda9a475460cb817eb",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md",
@@ -2273,13 +2619,13 @@
     },
     {
       "path": "scripts/package-reference.py",
-      "sha256": "d69339a4a1cec18cb4fc90e14699e876341e0968930a113e6052ec3d3b5416e8",
-      "size_bytes": 3538,
-      "git_blob": "052ed75b7bc91ce0c6ebf1a8cade871005232139",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
+      "sha256": "0f5b62e2229deefb8ff9472ddf635dd70ace73569c31fb68c60a1febf08e37a1",
+      "size_bytes": 3574,
+      "git_blob": "0b71b778c457d5adaadc6562f679a7027f668602",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
       "storage_scope": "public_repository"
     },
     {
@@ -2307,15 +2653,14 @@
     },
     {
       "path": "scripts/seal.py",
-      "sha256": "4ff7113b7e9e3e1845b01c7d1f0189afdbf557456c9e029011397fcba7c5a8c7",
-      "size_bytes": 5685,
-      "git_blob": "9d416766d6e0afea36bbad54d11cd2a68c19172c",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
-      "storage_scope": "public_repository",
-      "previous_git_blob": "97d4bf68c7566ef0c39321426dfbaebbc1435ba2"
+      "sha256": "72af9fffb6e24fc001dc387025e26997549637238ceff0b1810b647c39aed57e",
+      "size_bytes": 5675,
+      "git_blob": "07a41f3bc3228519ef647ced2e547c386a10e7c7",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "scripts/smoke.py",
@@ -2470,27 +2815,25 @@
     },
     {
       "path": "src/Ipc.Desktop/LaneControl.xaml",
-      "sha256": "af47b35feef5efdddab3673e33100b93a25c1a6bec40f1ab4d171c258e680a48",
-      "size_bytes": 6849,
-      "git_blob": "8dd0bf0d92df366daf329d3ba7d3d4b806074846",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
-      "storage_scope": "public_repository",
-      "previous_git_blob": "41158935a3eac894824db85d38e14df914ae4c06"
+      "sha256": "9bdd822fddc3fd53f40dcd0a269082a2824f0686e7500b636bbead2d5736093d",
+      "size_bytes": 7178,
+      "git_blob": "4273c8390a47a47eb64d347e1117fa9fd5c13050",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
-      "sha256": "cf8d53d9e06c804247de18c54798181149de1018319a32b39dbe3da87354da7f",
-      "size_bytes": 4521,
-      "git_blob": "e205b1ff9ad5f974675d141f3df257970a72f7a0",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
-      "storage_scope": "public_repository",
-      "previous_git_blob": "4d5d1878c03978ce8d30a2da4a45032c71ca40b9"
+      "sha256": "4e338866ea8704441ac3c98613a6da035dae39116eae776445959b7d914839b3",
+      "size_bytes": 4610,
+      "git_blob": "957178431a4e9b241322c62c11e68286a18bc21f",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
@@ -2517,13 +2860,13 @@
     },
     {
       "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
-      "sha256": "20dc882aac4d54828f353bdd2e42832bc6ed8d6c2b90cc8a172a4bd934a5ae35",
-      "size_bytes": 13683,
-      "git_blob": "56f30c221bab45e21d878f2836740eb2251cffe8",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
+      "sha256": "b9268e31a237cbbac0af468cd51694ce864a93426e6e00aee582ce85b5736be1",
+      "size_bytes": 14835,
+      "git_blob": "c48f3a6326b27ccf38dc70708905e0028d5901fa",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
       "storage_scope": "public_repository"
     },
     {
@@ -2562,6 +2905,17 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "src/Ipc.Desktop/PresentationPolicy.cs",
+      "sha256": "e73e0d8a45e4317ab2bfffe31fa3aeeed80d0aa624130e802735a5915eba1099",
+      "size_bytes": 1701,
+      "git_blob": "7295c26c5073b2fc4628ef872ba3ccfc0837bce2",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "src/Ipc.Desktop/Themes/Workstation.xaml",
       "sha256": "e0e4e33966e7f8c90b988911d82c34ca18d32bece7f11ea55d31ad0fe5455108",
       "size_bytes": 6717,
@@ -2574,15 +2928,14 @@
     },
     {
       "path": "src/Ipc.Desktop/ViewModels.cs",
-      "sha256": "20cf2aebd20f0bf3479b13fa9b5a2d07b7d3f48fb36c0102de83ecf73cf3babc",
-      "size_bytes": 24371,
-      "git_blob": "2cd33b3191aa29a223fbda003a5ac7e836a21be9",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
-      "storage_scope": "public_repository",
-      "previous_git_blob": "241d828fa5c8fddd5f4592926b5ce27b5ee783f6"
+      "sha256": "f4c9c54ce2bfeaec5eeefcacced68bd9633ce532eb3d2f726fcbeb9eb20580dd",
+      "size_bytes": 24612,
+      "git_blob": "b50d7c4c5c99a94d56f2d9a6135951ea2e03afa5",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "src/Ipc.Desktop/ViewRegistry.cs",
@@ -2825,15 +3178,14 @@
     },
     {
       "path": "src/Ipc.Product/ProductRuntime.cs",
-      "sha256": "8b9b170bf4957c7291c893ad6b259868f9d02ef44e3da5b30bf64b5311daaaab",
-      "size_bytes": 38131,
-      "git_blob": "a997e07d8619524a3a8658888de108bd85f36ad4",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
-      "storage_scope": "public_repository",
-      "previous_git_blob": "2465e9e2508d44d7e3d48ca43b3fe9b8b4f9c6e4"
+      "sha256": "a7c10d69e1391683baa880907ec058008f945215d75573caf691adcbeb851288",
+      "size_bytes": 38761,
+      "git_blob": "eb5d1194b56c0e5f2dcbede9eb2706a84452796d",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "src/Ipc.Product/Program.cs",
@@ -3075,26 +3427,47 @@
     },
     {
       "path": "tests/Ipc.Verification/Ipc.Verification.csproj",
-      "sha256": "d28bfac57089a6d0d9aec317edefa08c792619028b8d2c79373ce52be1717909",
-      "size_bytes": 196,
-      "git_blob": "fd6b6a117b14f1ad9ad20249a743d8ad9d8e9e76",
-      "version": "runtime-1.0",
-      "status": "current_reference_implementation",
-      "purpose": "Authorized generic reference implementation, synthetic fixtures, operations or evidence",
-      "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
+      "sha256": "af4275fd27a413f63826b20f9ad15d9b31a9e302f2f138c44817deb59bac67a9",
+      "size_bytes": 297,
+      "git_blob": "972aae5f8aa48a6332e2e1d4baa8bf14becea528",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Verification/PresentationVerification.cs",
+      "sha256": "10cceef62109693be66b8c35f82e4c7a5724b174267e1907e69fc54c49deb05e",
+      "size_bytes": 4563,
+      "git_blob": "fd44336418ccbac5e6f03436eaf777ada9fc0ec3",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Verification/ProductOwnershipVerification.cs",
+      "sha256": "9b94a1e93de09d8c1a10a08896cdd046e0407468ffca8e418208300540b9f990",
+      "size_bytes": 13805,
+      "git_blob": "a38688212690cb103ff9f0d13ce271ea2377a1d9",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
       "storage_scope": "public_repository"
     },
     {
       "path": "tests/Ipc.Verification/Program.cs",
-      "sha256": "a8e021de6075d8fa794cff4f5abb6bd7cdd7ddb5e09bdf397711c5f811066a5e",
-      "size_bytes": 48696,
-      "git_blob": "4923f121eebcd5953c121d06d62e5aa678050528",
-      "version": "audit-reconciliation-01",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
-      "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
-      "storage_scope": "public_repository",
-      "previous_git_blob": "772e9ad83a8b248b95479ea39ad85f8223cb15f0"
+      "sha256": "65d5cca4ca70ddb1c44fa398132ef8708870614148397b0c57486b616048f4b7",
+      "size_bytes": 48995,
+      "git_blob": "041bfe3357b607a45f48418f42f7ecdd561c850c",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "tests/Ipc.Verification/ReferenceJourneyVerification.cs",
@@ -3246,7 +3619,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "WP-IPC-AUDIT-RECONCILIATION-01",
+  "current_implementation_work_package": "WP-IPC-REVIEW-FOLLOWUP-11",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -3272,15 +3645,15 @@
     "implementation_pr_merged": false
   },
   "engineering_versions": {
-    "release": "AUDIT-RECONCILIATION-01",
+    "release": "REVIEW-FOLLOWUP-11",
     "storage": 3,
     "minimum_reader": 3,
     "contract": "SIMULATION-v1",
-    "source_commit": "a08082563bc13b2f146e71c4be9136f0469af9db",
+    "source_commit": "4edb909e71097a7da61506beaa10ae5db82ec6cb",
     "binary_built": true,
     "binary_sha256": {
-      "portable": "d625224d2109cd15a3a1e1a0a2cfe7901116c912e986fd6cb300956ba10f33fb",
-      "win_x64": "0eeebec5b07995af3a2fb02beaa63abfe2a436ba70e01cc35cc865a8df623849"
+      "portable": "f38ad91a43b8244a0e25ca2581821d72a7c231baa0707212b2e82e925e7e99a1",
+      "win-x64": "a1d9a00ef06affb87def7598b2f29d81de61b4deac0dafdee9c358dee24b05b5"
     }
   },
   "ui_design_publication": {
@@ -3362,5 +3735,37 @@
     "pull_request": "https://github.com/yuan2go/importer-pc/pull/9",
     "pull_request_state_at_creation": "OPEN",
     "merged_by_this_task": false
+  },
+  "review_followup_11": {
+    "entry": "docs/runtime/review-followup-11.md",
+    "checks": "docs/runtime/review-followup-11-checks.json",
+    "base_commit": "4ae5319c264f8cd0b2152d5d7242bb1ca39b65e5",
+    "source_commit": "4edb909e71097a7da61506beaa10ae5db82ec6cb",
+    "source_code_sha256": "91036e12987b33656ebee458337de3d0b1ee85f9dd37f20b199f6092a02a80fb",
+    "p2_wave": "SOURCE_CORRECTED_SHARED_POLICY_PASS_WINDOWS_NOT_RUN",
+    "p2_focus": "SOURCE_CORRECTED_TICKET_RACE_REGRESSION_PASS_WINDOWS_NOT_RUN",
+    "product_composite_ownership": "PASS_REFERENCE_STOP_THROWS_STOP_PENDING_DISPOSE_PENDING",
+    "core_selectors": [
+      "--review-followup",
+      "--closure",
+      "--followup"
+    ],
+    "native_unpacked_smoke": "PASS_7",
+    "win_x64": "CROSS_PUBLISH_BYTE_READBACK_PASS_WINDOWS_NOT_RUN",
+    "standards_open": 0,
+    "spec_open": 0,
+    "windows": "ENVIRONMENT_BLOCKED_W01_W06_NOT_RUN",
+    "real_capabilities": "B01_B06_BLOCKED",
+    "historical_d_rv_unchanged": true,
+    "packages_in_source_git": false,
+    "archive_validation": {
+      "status": "FAIL_INHERITED_BASELINE_ASSETS",
+      "error_count": 267,
+      "identical_to_main_reconciliation_error_set": true,
+      "new_file_errors": 0,
+      "raw_result_path": "/tmp/ipc-review-11-archive-final.json",
+      "raw_sha256": "6446476895446e698c56ec23420b7bbbee005d0e1c5e396912225fe418923f90",
+      "validator_changed": false
+    }
   }
 }

@@ -1,10 +1,10 @@
-> 当前执行：[REVIEW-FOLLOWUP-11](work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)，起点main `4ae5319`。修复PR9独立复核的两个P2并补Product组合所有权动态证据；[前版本](archive/pre-review-followup-11/README.md)保留。下文09/a080825为上一版证据，不自动代表本次输出；Windows/真实集成仍按06/05分项阻塞。
+> 当前执行：[REVIEW-FOLLOWUP-11](work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)，起点main `4ae5319`。修复PR9独立复核的两个P2并补Product组合所有权动态证据；结果、同版包及新SHA见[11报告](runtime/review-followup-11.md)与[11 checks](runtime/review-followup-11-checks.json)；[前版本](archive/pre-review-followup-11/README.md)保留。下文09/a080825为上一版证据，不自动代表本次输出；Windows/真实集成仍按06/05分项阻塞。
 
 # 统一资料与实施入口
 
-2026-10-16；当前执行 **[WP-IPC-AUDIT-RECONCILIATION-01](work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)**，基准main `856e4de73f09a1c4f12af798c4d21e8631a6a86f`。用户本次授权08/10及09合成/参考环境必要测试、构建、启动和发布验证；生产WCS写入与真实设备动作未授权。[纠偏前原字节快照](archive/pre-reconciliation-01/README.md)保留原报告、工作包、入口、manifest及blob/SHA，历史不测试/NOT_RUN按形成时含义保留。
+2026-10-16形成；上一版执行 **[WP-IPC-AUDIT-RECONCILIATION-01](work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)**，基准main `856e4de73f09a1c4f12af798c4d21e8631a6a86f`。用户本次授权08/10及09合成/参考环境必要测试、构建、启动和发布验证；生产WCS写入与真实设备动作未授权。[纠偏前原字节快照](archive/pre-reconciliation-01/README.md)保留原报告、工作包、入口、manifest及blob/SHA，历史不测试/NOT_RUN按形成时含义保留。
 
-## 当前实现与证据
+## 上一版实现与证据（a080825）
 
 - [09实际验证与同版交付](runtime/reference-validation-09.md)：SourceCommit、运行日志、持续双箱旅程、Release/Storage/Contract、模块/配置指纹与ZIP SHA；[检查JSON](runtime/reference-validation-09-checks.json)。源码路径、合成运行、Windows操作和现场准入分别记录。
 - [10逐页UI映射](runtime/ui-baseline-alignment-10.md)：v1.1实物到PAGE01～08、双通道、数量/拆包、确认及低频抽屉；实际Windows截图与行为另按[06待验](runtime/windows-06.md)。不能以HTML图或交叉编译替代WPF验收。

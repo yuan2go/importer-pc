@@ -34,11 +34,11 @@ if (args.FirstOrDefault() == "--child")
 var workspace = Path.GetFullPath(args.FirstOrDefault(x => !x.StartsWith("--", StringComparison.Ordinal)) ?? ".");
 var selector = args.FirstOrDefault(x => x.StartsWith("--", StringComparison.Ordinal)) ?? "--reconciliation";
 if (args.Count(x => x.StartsWith("--", StringComparison.Ordinal)) > 1 ||
-    selector is not ("--hardening" or "--alignment" or "--data" or "--baseline" or "--closure" or "--followup" or "--reconciliation"))
-    throw new ArgumentException("Select one of --hardening, --alignment, --data, --baseline, --closure, --followup, --reconciliation; optional workspace is a separate positional argument");
+    selector is not ("--hardening" or "--alignment" or "--data" or "--baseline" or "--closure" or "--followup" or "--review-followup" or "--reconciliation"))
+    throw new ArgumentException("Select one of --hardening, --alignment, --data, --baseline, --closure, --followup, --review-followup, --reconciliation; optional workspace is a separate positional argument");
 var full = selector == "--reconciliation";
-Console.WriteLine("SELECT " + selector + ": " + (full ? "H04 + A01 + E07 + E08 + AC/process baseline" : selector switch
-{ "--hardening" => "H04", "--alignment" => "H04 + A01", "--data" => "A01 data/composition/runtime", "--baseline" => "AC/process baseline", "--closure" => "E07", _ => "E08" }));
+Console.WriteLine("SELECT " + selector + ": " + (full ? "H04 + A01 + E07 + E08 + E11 + AC/process baseline" : selector switch
+{ "--hardening" => "H04", "--alignment" => "H04 + A01", "--data" => "A01 data/composition/runtime", "--baseline" => "AC/process baseline", "--closure" => "E07", "--review-followup" => "E11 presentation policies + Product composite ownership", _ => "E08" }));
 var dotnet = Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") ?? Environment.ProcessPath ?? "dotnet";
 if (!Path.GetFileNameWithoutExtension(dotnet).Equals("dotnet", StringComparison.OrdinalIgnoreCase)) dotnet = "dotnet";
 var root = Path.Combine(Path.GetTempPath(), "ipc-verification-" + Wire.Id()); Directory.CreateDirectory(root);
@@ -60,6 +60,11 @@ try
     }
     if (full || selector == "--closure") await ClosureVerification.Run(root, url, workspace);
     if (full || selector == "--followup") await FollowupVerification.Run(root, url, workspace);
+    if (full || selector == "--review-followup")
+    {
+        PresentationVerification.Run(workspace);
+        await ProductOwnershipVerification.Run(root, url);
+    }
     if (full || selector == "--baseline")
     {
     await Check("AC-01/10 lifecycle, bounded command queue and ownership", async () =>

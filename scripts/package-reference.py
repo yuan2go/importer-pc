@@ -41,7 +41,7 @@ for source, name in [('scripts/station.ps1', 'station.ps1'), ('scripts/provision
 for lock in sorted((root / 'src').glob('*/packages*.lock.json')):
     shutil.copyfile(lock, output / 'dependencies' / (lock.parent.name + '-' + lock.name))
 release = json.loads((output / 'app/release.json').read_text())
-identity = dict(SourceCommit=release['SourceCommit'], ReleaseVersion=release['ReleaseVersion'], StorageVersion=release['StorageVersion'],
+identity = dict(WorkPackage=release['WorkPackage'], SourceCommit=release['SourceCommit'], ReleaseVersion=release['ReleaseVersion'], StorageVersion=release['StorageVersion'],
                 ContractVersion=release['ContractVersion'], SourceCodeSha256=release['SourceCodeSha256'], Target=a.target,
                 WindowsRuntimeValidation='NOT_RUN', PhysicalIntegration='BLOCKED',
                 Note='Portable requires pinned .NET runtime; win-x64 is self-contained and requires Windows validation.')

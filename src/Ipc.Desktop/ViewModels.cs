@@ -52,7 +52,10 @@ public sealed class LaneViewModel(string lane) : Bindable
     public SupplyOperation? Current { get; private set; }
     string health = "状态未取得", status = "等待有效Item入场", barcode = "未取得", package = "未取得", remaining = "未取得", supply = "未取得", reason = "请先校验周转箱", occupancy = "", splitProgress = "", provenance = "未取得", next = "请先校验当前箱";
     string keyTask = "任务未取得", quantities = "数量未取得", previousResult = "无上次已证实结果", sku = "未取得", taskId = "未取得", destination = "未取得", itemWave = "Item关联波次：未取得", observationSource = "来源 / 时间未取得", remove = "移除量未取得", actionLabel = "手动供包", actionSummary = "暂无可提交的Item", splitPolicy = "";
-    bool splitVisible, canSubmit, canScan, canClear, canCancel, canDetail, canPrimary;
+    bool splitVisible, canSubmit, canScan, canClear, canCancel, canDetail, canPrimary, hasWaveDifference;
+    string waveDifference = "";
+    public bool HasWaveDifference { get => hasWaveDifference; private set => Put(ref hasWaveDifference, value); }
+    public string WaveDifference { get => waveDifference; private set => Put(ref waveDifference, value); }
     double splitCount, splitTarget = 1;
     string retainedDraft = "", disabledReason = "等待业务投影";
     Brush statusBrush = Brushes.SteelBlue, statusBackground = new SolidColorBrush(Color.FromRgb(238,244,255));
@@ -119,7 +122,9 @@ public sealed class LaneViewModel(string lane) : Bindable
         var t = Current?.Task;
         QuantityUnit = "数量单位："+OperatorText.Known(t?.Unit);
         Sku = OperatorText.Known(t?.Sku); TaskId = OperatorText.Known(t?.TaskId); Destination = OperatorText.Known(t?.Destination);
-        ItemWave = $"Item关联波次  {OperatorText.Known(t?.ItemWave)} · 单位 {OperatorText.Known(t?.Unit)}" + (t?.ItemWave is { } wave && Current?.BoxWave is { } boxWave && wave != boxWave ? " · 与入场箱波次不一致" : "");
+        var waves = WaveComparison.Compare(Current?.BoxWave, t?.ItemWave);
+        ItemWave = $"Item关联波次  {waves.Item}";
+        HasWaveDifference = waves.Differs; WaveDifference = waves.Difference;
         ObservationSource = Current?.CurrentInput is { } input ? $"观察 {input.ObservedAt.ToLocalTime():HH:mm:ss zzz} · {input.ObservationId}" : "本次观察来源 / 时间：未取得";
         Provenance = t?.Provenance is { } p ? $"来源 {p.Source} · 版本 {p.Version}\n证据 {p.EvidenceId} · {p.AcquiredAt:O}" : "语义来源 / 版本 / 证据：未取得";
         SplitVisible = state == OperationStatus.SplitRequired;

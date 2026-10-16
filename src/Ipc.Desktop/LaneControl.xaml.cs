@@ -21,6 +21,7 @@ public partial class LaneControl : UserControl
             // overflow independently; scrolling a required fact out of view revokes review.
             return FullyVisible(BarcodeReview,viewport) && FullyVisible(Metadata,viewport) &&
                 FullyVisible(QuantityPanel,viewport) && FullyVisible(QuantityUnitLabel,viewport) && (!Model.SplitVisible || FullyVisible(SplitReview,viewport)) &&
+                (!Model.HasWaveDifference || FullyVisible(WaveDifferenceReview,this)) &&
                 FullyVisible(PrimaryAction,this) && FullyVisible(SecondaryActions,this);
         }
     }

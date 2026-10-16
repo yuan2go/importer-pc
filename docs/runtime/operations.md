@@ -1,6 +1,6 @@
 # 运行、发布与运维
 
-当前执行：[AUDIT-RECONCILIATION-01](../work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)，以[09实际检查](reference-validation-09.md)及[10逐页映射](ui-baseline-alignment-10.md)为准。用户已授权合成/参考测试、构建、启动和发布；历史不测试/NOT_RUN见原报告和[纠偏前快照](../archive/pre-reconciliation-01/README.md)。Windows06与真实能力05继续分别记录。
+当前执行：[REVIEW-FOLLOWUP-11](../work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)，以[11实施与同版报告](review-followup-11.md)为准；[09上一版检查](reference-validation-09.md)及[10逐页映射](ui-baseline-alignment-10.md)保留各自源提交边界。用户已授权合成/参考测试、构建、启动和发布；历史不测试/NOT_RUN见原报告和[纠偏前快照](../archive/pre-reconciliation-01/README.md)。Windows06与真实能力05继续分别记录。
 
 08启动顺序：取得数据根租约→读取最终Effective与待激活修订→核验站点/模式/产品能力→取得最终站点和设备集合租约→创建应用、来源与发送器。seed设备可与Effective不同，实际锁覆盖Effective；不锁seed-B却启动A。非法待激活保留ActivationFailed并使用旧Effective；启源失败记录激活失败，完全停止后下一次受控启动回到旧Effective，不在失败进程里并行启第二套来源。首次成功启动也固定seed为Effective。历史查询全部要求有效模拟身份；无权时Snapshot不查询跨箱最近历史，返回空RecentOperations。当前工位聚合、当前箱及原未决请求/恢复诊断仍可发现；其可见性不授权历史/尝试/回执详情读取。 配置Version是不可复用的修订身份（被拒绝/失败版本也保留，纠正时用新Version）；推广新Effective与旧版Superseded在同一事务。遗留多Effective根据持久ConfigActivation顺序读取，不按草稿插入rowid猜生效顺序，激活审计失败整体回滚保旧。
 
@@ -18,7 +18,7 @@ SDK 锁定 `global.json` 的 .NET 10.0.402。NuGet 来源仅 nuget.org；Microso
 
 ```sh
 ./scripts/build.sh
-dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --reconciliation
+dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --review-followup
 ```
 
 核心和夹具可在 macOS/Linux 运行；WPF 只能在 Windows 运行。交叉编译成功不证明桌面运行。构建采用单节点 MSBuild；实际本次结果见09报告。
@@ -45,7 +45,9 @@ dotnet src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll --config src/Ip
 
 相同条码前导零保留；无码/多码/非法输入保留观察与拒绝原因，可在同一实体修正读码。待提交草稿可显式处置；Unknown/在途/已接受效果不能靠取消清除。结束检查要求实体位已复位、无待决请求，建立双通道屏障；不足时可以取消或确认当前检查。只有原关闭回执接受才关闭箱，CloseUnknown 保留箱身份与专属请求。
 
-工作台选择当前通道核对；关键字段不能完整显示时阻止供包/计数，收起详情或扩大窗口。非当前通道结果与工位/设备/WCS健康/报警持续可见，具体DPI/触控待验。工作台、历史、报警、设备诊断、维护配置、工程控制六个受控页面与两个窗口共用唯一业务实例。布局切换只改展示。全局阻断贯穿页签，输入草稿和详情滚动不随快照重建。启动可加 `--view history --layout compact`，View必须在产品允许名单；布局持久化保留当前View。当前核对区每次展示一个通道，标准布局的展开通道详情按有效区双列/单列，紧凑详情显式单列；核对区可滚动但关键字段未全部容纳时主操作阻断；小于800×420 DIP有效区显示阻断。确认窗初始焦点在取消、Tab在窗内循环、关闭归还焦点；Enter不触发高风险动作。Windows实际键盘/扫码/DPI/提示声听审仍待验。
+工作台保留并排双通道，各自显示当前条码、任务、包装/需求/供给及拆包计数，固定动作绑定本通道owner/revision。当前Item波次不藏在辅助展开；与入场箱波次不一致时，固定结果区同时显示两种原值及差异，不据此编造新的生产接受规则。来源/历史证实可辅助展开；关键核对控件或差异摘要未完整可见时禁止提交/计数，不能通过整体缩字绕过。客户区按1280×680 DIP保护，窗口恢复空间后仍需人工核对并恢复入场；实际可用最小区与DPI尚待Windows验证。
+
+初次有效身份、旧箱明确关闭/拒绝后进入可扫箱状态时，本窗发起一次专用箱码焦点交接并选择既有草稿，下一扫码替换旧输入；300ms投影刷新不重复夺焦点。抽屉、身份入口、过期投影、身份失效、正在执行及区域不足时延后或撤销，执行排队回调时再次检查身份与箱。每窗的草稿、筛选、选区和滚动独立。布局切换只改展示，所有页面和窗口共享唯一业务实例/发送器；低频抽屉背景业务不可操作，全局诊断继续可见。风险确认初始焦点在取消、Tab在窗内循环、关闭归还焦点；Enter不触发高风险动作。Windows实际焦点/扫码/DPI/双窗和提示声听审仍NOT_RUN。
 
 ## 设备替换与配置
 
@@ -155,19 +157,35 @@ python3 scripts/smoke.py --product .artifacts/native-smoke-final --fixture src/I
 
 应用读写由StationDispatcher的单个后台消费者拥有；UI读取不写报警，状态变化/维护脉冲更新报警。投影有独立版本与生成时间，超过3秒/读取失败阻断UI输入，后台命令仍查当前状态。设备健康回调只入队；原观察拒收marker保留H04同步持久性，其文件I/O受磁盘时延影响，真实SDK需单独验证。所有实际SQLite和网络工作均不在UI/设备回调执行。
 
-ALIGNMENT-01原版本为Storage2；本次元数据为AUDIT-RECONCILIATION-01 / Storage3 / SIMULATION-v1，旧EXE因未知id3拒绝当前库，回退必须原格式备份+匹配旧EXE/配置+新根+恢复隔离。桌面内全库备份需要有效维护身份；离线运维使用数据租约和本机账户权限。
+ALIGNMENT-01原版本为Storage2；当前元数据为REVIEW-FOLLOWUP-11 / Storage3 / SIMULATION-v1，旧EXE因未知id3拒绝当前库，回退必须原格式备份+匹配旧EXE/配置+新根+恢复隔离。桌面内全库备份需要有效维护身份；离线运维使用数据租约和本机账户权限。
 
-`--alignment`保留H04+A01的兼容范围；07/08及持续参考旅程使用明确的新选择器。旧迁移断言已按显式升级及3:3对齐，原SQL/checksum不变。实际分项运行结果见09，Windows按06绑定本次同版包，不能复用07或旧包截图。
+`--alignment`保留H04+A01的兼容范围；07/08及持续参考旅程使用明确的新选择器。旧迁移断言已按显式升级及3:3对齐，原SQL/checksum不变。上一版分项运行结果见09，当前11结果见11报告；Windows按06绑定当前同版包，不能复用07或旧包截图。
 
-## 本次同版包与验证选择
+## 同版包与验证选择
 
-`--reconciliation`（也为默认）=H04+A01+07+08/持续参考旅程+原AC/进程中断基线；`--hardening`仅H04，`--alignment`=H04+A01，`--data`仅A01，`--baseline`仅原AC/进程，`--closure`仅07，`--followup`仅08及双箱旅程。先运行必要完整基线，修复后用对应选择器，不循环运行无关全量。
+`--reconciliation`（也为默认） =H04+A01+07+08/持续参考旅程+11展示/组合所有权+原AC/进程中断基线；`--hardening`仅H04，`--alignment`=H04+A01，`--data`仅A01，`--baseline`仅原AC/进程，`--closure`仅07，`--followup`仅08及双箱旅程。按本包风险运行必要基线和定向选择器；已有适用基线时不循环运行无关全量。
 
 ```sh
 # 先提交所有运行源码、配置及打包脚本；输出目录必须全新
-python3 scripts/package-reference.py --target portable --output .artifacts/reconciliation-portable
-python3 scripts/package-reference.py --target win-x64 --output .artifacts/reconciliation-win-x64
-python3 scripts/smoke.py --product .artifacts/reconciliation-portable/app --fixture .artifacts/reconciliation-portable/fixture/Ipc.Fixture.dll --output .artifacts/reconciliation-smoke.json
+python3 scripts/package-reference.py --target portable --output .artifacts/review-11-portable
+python3 scripts/package-reference.py --target win-x64 --output .artifacts/review-11-win-x64
+python3 scripts/smoke.py --product .artifacts/review-11-portable/app --fixture .artifacts/review-11-portable/fixture/Ipc.Fixture.dll --output .artifacts/review-11-smoke.json
 ```
 
-portable依赖已安装.NET10运行时；win-x64自包含包需实际Windows执行。两者`app/release.json`的SourceCommit/SourceCodeSha256、Release/Storage/Contract和模块配置指纹必须一致；`SHA256SUMS`核对每个包文件，ZIP SHA在09报告记录。包SHA识别字节，不是发布者签名或ACL证明。Windows上的`publish.ps1`继续可用；本次Python封装用于macOS交叉发布，不替代PowerShell行为验收。业务守卫和Production拒绝规则不因包生成而放宽。
+portable依赖已安装.NET10运行时；win-x64自包含包需实际Windows执行。两个包的SourceCommit/SourceCodeSha256及Release/Storage/Contract必须一致；模块版本/合同来自同一装配定义，各目标的二进制与配置指纹分别记录，RID导致的字节差异不冒称同SHA。`SHA256SUMS`核对每个包文件，ZIP SHA在11报告记录。包SHA识别字节，不是发布者签名或ACL证明。Windows上的`publish.ps1`继续可用；本次Python封装用于macOS交叉发布，不替代PowerShell行为验收。业务守卫和Production拒绝规则不因包生成而放宽。
+
+## REVIEW-FOLLOWUP-11 定向验证与同版交付
+
+新增实际选择器`--review-followup`执行桌面实际共用的纯展示策略（源码链接编入现有Verifier）、波次XAML结构约束及Product组合所有权三类故障；这不是WPF运行。`--closure`保留E07来源/健康/提示/清理回归，`--followup`覆盖E08权限/配置/双箱Unknown旅程，不重复未改的迁移及全部AC基线。完整`--reconciliation`也纳入新增E11；未知/多个选择器仍拒绝。
+
+Product测试只通过验证友元可用的内部来源工厂进入；公开构造、Host/CLI和配置仍用注册工厂，Production先做原能力校验。Stop抛错、Stop任务未终止、Dispose任务未终止分别核验真实Product持有应用/store/journal/data与站点/设备租约；独立来源继续清理，未终止任务不重复启动，晚完成后恰一次释放。测试通过原请求查询在保留期间写入真实SQLite和日志，并检查另一运行实例不能取得资源；它不证明真实SDK回调停止合同。
+
+新的ReleaseVersion为`REVIEW-FOLLOWUP-11`，Storage/MinimumReader继续3/3、Contract仍SIMULATION-v1。从报告指定SourceCommit以全新输出生成portable和win-x64包，不覆盖a080825旧包：
+
+```sh
+python3 scripts/package-reference.py --target portable --output .artifacts/review-11-portable
+python3 scripts/package-reference.py --target win-x64 --output .artifacts/review-11-win-x64
+python3 scripts/smoke.py --product <新解压目录>/app --fixture <新解压目录>/fixture/Ipc.Fixture.dll --output <新结果.json>
+```
+
+SourceCommit、源码/配置/模块指纹、实际ZIP SHA及运行结果以11报告为准；无Windows时win-x64只有交叉发布与字节核验，W01～06 NOT_RUN、B01～06 BLOCKED。

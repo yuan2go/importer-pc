@@ -1,6 +1,6 @@
 # WP-IPC-ENGINEERING-CLOSURE-07：参考工程与操作工作台收敛
 
-状态：**PLANNED / NOT_STARTED**。形成日期2026-10-16；依据 [MAIN-REVIEW-02](../reviews/main-static-review-02.md)，分析基准main `cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa`。这是下一实施范围，本文不授权本轮改业务代码或执行测试。
+状态：**IMPLEMENTING / VALIDATION_NOT_RUN**。形成日期2026-10-16；依据 [MAIN-REVIEW-02](../reviews/main-static-review-02.md)，原分析基准main `cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa`。用户已明确授权先合并PR #5再实施本包；实际执行基准main `6d4063ec54e8167c8710e46befbe66f8b688ef08`，开发分支 `codex/wp-ipc-engineering-closure-07`。用户仍要求不测试；本轮不构建、不运行验证器或程序。
 
 **目标：** 修复E-01～10，使当前参考产品的状态有效性、恢复证据、运维安全和UI操作信息形成可审查闭环，再提交Windows操作验收。
 

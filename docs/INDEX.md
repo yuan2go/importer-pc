@@ -1,10 +1,10 @@
 # 统一资料与实施入口
 
-更新日期：2026-10-16；当前复核：WP-IPC-MAIN-REVIEW-02；分析基准 `cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa`（PR #4已合并）。本轮仅静态复核和工作包文档，用户要求不测试。
+更新日期：2026-10-16；当前实施：WP-IPC-ENGINEERING-CLOSURE-07；执行基准 `6d4063ec54e8167c8710e46befbe66f8b688ef08`（PR #5已合并）。用户授权实施10项工程整改，仍要求不测试；所有运行验证NOT_RUN。
 
 ## 当前结论
 
-最新独立判断见 [MAIN-REVIEW-02](reviews/main-static-review-02.md)：10项工程缺口、6组Windows待验、6组真实接口/规则/许可阻塞分别登记；本轮运行验证全部NOT_RUN。下一步先做 [ENGINEERING-CLOSURE-07](work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)，[Windows验证06](work-packages/WP-IPC-WINDOWS-VALIDATION-06.md) 与 [集成边界05](work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md) 分项推进；三个包均未执行，不构成生产放行。
+最新独立判断见 [MAIN-REVIEW-02](reviews/main-static-review-02.md)：10项工程缺口、6组Windows待验、6组真实接口/规则/许可阻塞分别登记；本轮运行验证全部NOT_RUN。下一步先做 [ENGINEERING-CLOSURE-07](work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)，[Windows验证06](work-packages/WP-IPC-WINDOWS-VALIDATION-06.md) 与 [集成边界05](work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md) 分项推进；07已获本次实施授权；06尚未执行、05真实能力仍受阻，均不构成生产放行。
 
 现有参考实现及上一包验证见 [ALIGNMENT-01](runtime/alignment-01.md)、[检查记录](runtime/alignment-01-checks.json)、[Windows待验](runtime/alignment-01-windows.md)。原检查中的PR OPEN和PASS保留形成时快照；PR #4当前已MERGED，历史运行结果未在本轮重跑。
 

@@ -3,6 +3,7 @@ using Ipc.Product;
 using Ipc.Supply;
 using Microsoft.Extensions.DependencyInjection;
 
+SupplyContractRegistration.Register();
 var map = args.Chunk(2).ToDictionary(x => x[0], x => x.Length == 2 ? x[1] : "");
 string Get(string key, string fallback) => map.GetValueOrDefault(key, fallback);
 var root = Get("--config", Path.Combine(AppContext.BaseDirectory, "config"));
@@ -19,11 +20,12 @@ if (action.StartsWith("extension-", StringComparison.Ordinal))
     var trust = Wire.Decode<ExtensionTrust>(File.ReadAllText(paths.TrustFile));
     // Inspection is read-only; mutation authority and the protected lease policy are
     // rechecked in the elevated branch before any filesystem transaction.
-    var leaseRoot = action == "extension-inspect" && OperatingSystem.IsWindows()
+    var leaseRoot = action is "extension-inspect" or "extension-list" && OperatingSystem.IsWindows()
         ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc", "leases")
         : MachineRuntimePolicy.InstallerLeaseRoot(Path.Combine(paths.Root, "leases"));
     var extensions = new ExtensionStore(paths.Root, trust, mode, leaseRoot);
-    if (action == "extension-inspect") Console.WriteLine(Wire.Encode(extensions.Plan(Get("--file", ""))));
+    if (action == "extension-list") Console.WriteLine(Wire.Encode(new { Packages = extensions.Inventory(), Operations = extensions.Operations() }));
+    else if (action == "extension-inspect") Console.WriteLine(Wire.Encode(extensions.Plan(Get("--file", ""))));
     else
     {
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
@@ -127,6 +129,8 @@ try
         {
             try
             {
+                if (line == "integration-diagnostics") { Console.WriteLine(Wire.Encode(runtime.IntegrationDiagnostics)); continue; }
+                if (line == "extensions") { Console.WriteLine(Wire.Encode(await runtime.ExtensionSnapshotAsync())); continue; }
                 if (line == "snapshot") { Console.WriteLine(Wire.Encode(await runtime.Application!.SnapshotAsync())); continue; }
                 var input = Wire.Decode<ConsoleInput>(line);
                 if (input.Action == "emit") await runtime.EmitAsync(input.Lane!, input.Kind!, input.Codes, input.Quantity);

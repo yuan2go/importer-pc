@@ -36,3 +36,14 @@ public interface IControlledObservationSource : IObservationSource
     Task StartControlledAsync(string registeredEpoch, Func<Observation, bool> receive,
         Action<DeviceHealthConfirmation> health, CancellationToken token);
 }
+
+// Service targets are not devices. Legacy DeviceState-shaped WCS health remains readable
+// only for the original dedicated assembly; new typed integrations use this projection.
+public enum ServiceStatus { Ready, Unavailable, Stopping, Stopped, Unknown }
+public sealed record ServiceState(string TargetId, string TargetRevision, ServiceStatus Status,
+    DateTimeOffset ConfirmedAt, DateTimeOffset ValidUntil, string Source)
+{
+    public string? ValidityReason(DateTimeOffset now) => Status != ServiceStatus.Ready ? "Health:" + Status :
+        ConfirmedAt > now || ValidUntil <= ConfirmedAt || string.IsNullOrWhiteSpace(Source) ? "InvalidConfirmation" : ValidUntil <= now ? "Expired" : null;
+    public bool IsValid(DateTimeOffset now) => ValidityReason(now) is null;
+}

@@ -10,6 +10,9 @@ public static class SupplyConfiguration
         if (s.Devices is null || s.Devices.Any(x => x is null) || s.Integration is null) return e;
         if (s.Devices is null || s.Devices.Any(x => x is null) || s.Integration is null) return e;
         if (s.Devices.Length != 2 || !s.Devices.Select(x => x.Role).Order().SequenceEqual(new[] { "left", "right" })) e.Add("Supply requires two unique left/right logical bindings");
+        var requests = s.Extensions?.Ports?.SingleOrDefault(x => x.Port == "requests");
+        if (s.Extensions?.Services?.Any(x => x.Enabled) == true && requests is null) e.Add("Supply requires a requests integration port");
+        if (requests is not null && requests.Target != s.Integration) e.Add("Supply integration target must match its requests port");
         if (s.Mode == RunMode.Simulation)
         {
             if (s.Devices.Any(x => x.Driver is not ("manual" or "replay") && !x.Driver.StartsWith("extension:", StringComparison.Ordinal))) e.Add("Unknown simulation driver");

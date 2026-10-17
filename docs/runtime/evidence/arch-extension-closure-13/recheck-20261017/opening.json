@@ -1,0 +1,14 @@
+{
+  "Main": "feed6e9ce79449e48c667c17e2671939a86fb588",
+  "DeltaFromFeed6e9c": [],
+  "ExistingPr": 12,
+  "InheritedHead": "451f7f5b3a9e7aace77c6617d05eb15ed69888b1",
+  "ExistingWorktree": "clean and not modified",
+  "NewBranch": "codex/closure13-verification-20261017",
+  "OriginalMainWorkspace": "unchanged; untracked user material retained",
+  "UserOriginalPrompt": "docs/work-packages/Codex-WP-IPC-ARCH-EXTENSION-CLOSURE-13.md inherited, same task",
+  "Windows": "WINDOWS_NOT_RUN",
+  "VmOrRunnerSearch": false,
+  "OAuthChanged": false,
+  "MergePerformed": false
+}

@@ -10,6 +10,8 @@ using Ipc.Supply;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 
+SupplyContractRegistration.Register();
+
 if (args.FirstOrDefault() == "--extension-interrupt")
 {
     var trust = Wire.Decode<ExtensionTrust>(File.ReadAllText(args[2]));
@@ -42,11 +44,11 @@ if (args.FirstOrDefault() == "--child")
 var workspace = Path.GetFullPath(args.FirstOrDefault(x => !x.StartsWith("--", StringComparison.Ordinal)) ?? ".");
 var selector = args.FirstOrDefault(x => x.StartsWith("--", StringComparison.Ordinal)) ?? "--reconciliation";
 if (args.Count(x => x.StartsWith("--", StringComparison.Ordinal)) > 1 ||
-    selector is not ("--hardening" or "--alignment" or "--data" or "--baseline" or "--closure" or "--followup" or "--review-followup" or "--extensions" or "--reconciliation"))
+    selector is not ("--hardening" or "--alignment" or "--data" or "--baseline" or "--closure" or "--followup" or "--review-followup" or "--extensions" or "--architecture" or "--reconciliation"))
     throw new ArgumentException("Select one of --hardening, --alignment, --data, --baseline, --closure, --followup, --review-followup, --extensions, --reconciliation; optional workspace is a separate positional argument");
 var full = selector == "--reconciliation";
 Console.WriteLine("SELECT " + selector + ": " + (full ? "H04 + A01 + E07 + E08 + E11 + E12 + AC/process baseline" : selector switch
-{ "--hardening" => "H04", "--alignment" => "H04 + A01", "--data" => "A01 data/composition/runtime", "--baseline" => "AC/process baseline", "--closure" => "E07", "--extensions" => "E12 controlled extensions + actual Product deployment", "--review-followup" => "E11 presentation policies + Product composite ownership", _ => "E08" }));
+{ "--hardening" => "H04", "--alignment" => "H04 + A01", "--data" => "A01 data/composition/runtime", "--baseline" => "AC/process baseline", "--closure" => "E07", "--extensions" => "E12 controlled extensions + actual Product deployment", "--architecture" => "E13 P2/typed integration/actual selected business assemblies", "--review-followup" => "E11 presentation policies + Product composite ownership", _ => "E08" }));
 var dotnet = Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") ?? Environment.ProcessPath ?? "dotnet";
 if (!Path.GetFileNameWithoutExtension(dotnet).Equals("dotnet", StringComparison.OrdinalIgnoreCase)) dotnet = "dotnet";
 var root = Path.Combine(Path.GetTempPath(), "ipc-verification-" + Wire.Id()); Directory.CreateDirectory(root);
@@ -66,6 +68,7 @@ try
         await AlignmentCompositionVerification.Run(root, url, workspace);
         await AlignmentRuntimeVerification.Run(root, url, workspace);
     }
+    if (selector == "--architecture") await ArchitectureClosureVerification.Run(root, url, workspace);
     if (full || selector == "--extensions") await ExtensionVerification.Run(root, url, workspace);
     if (full || selector == "--closure") await ClosureVerification.Run(root, url, workspace);
     if (full || selector == "--followup") await FollowupVerification.Run(root, url, workspace);
@@ -124,19 +127,34 @@ try
         Assert(!File.ReadAllText(Path.Combine(root, "metadata-diagnostics.json")).Contains(cfg.Integration.Endpoint), "Diagnostic excludes endpoint");
         await host.StopAsync(); host.Dispose();
         // A failed source activation must retain the previous effective version in the real DB.
+        async Task<CommandReceipt> ReviewedMaintenance(ProductRuntime target, string kind, string? owner = null, string? value = null)
+        {
+            CommandReceipt? receipt = null;
+            await Eventually(async () =>
+            {
+                var snapshot = await target.Application!.SnapshotAsync();
+                receipt = await target.Application.ExecuteAsync(new(Wire.Id(), snapshot.State.Revision, kind, owner, value));
+                // Conflict is an explicit pre-execution rejection. Re-read the projection;
+                // never retry an uncertain result, an exception or a business rejection.
+                return receipt.Status != "Conflict";
+            });
+            return receipt!;
+        }
         async Task Login(ProductRuntime target)
         {
             var snapshot = await target.Application!.SnapshotAsync();
-            var receipt = await target.Application.ExecuteAsync(new(Wire.Id(), snapshot.State.Revision, "Login", Value: "maintenance"));
+            var stale = await target.Application.ExecuteAsync(new(Wire.Id(), snapshot.State.Revision - 1, "Login", Value: "maintenance"));
+            Assert(stale.Status == "Conflict", "Stale maintenance command remains rejected before execution");
+            var receipt = await ReviewedMaintenance(target, "Login", value: "maintenance");
             Assert(receipt.Status == "Persisted", "Startup maintenance identity: " + receipt.Reason);
         }
         async Task Stage(ProductRuntime target, StationConfig draft)
         {
-            var app = target.Application!; await Eventually(async () => !(await app.SnapshotAsync()).State.Blocks.Any(x => x.Source == "transport")); var snap = await app.SnapshotAsync();
-            var login = await app.ExecuteAsync(new(Wire.Id(), snap.State.Revision, "Login", Value: "maintenance")); Assert(login.Status == "Persisted", "Maintenance login");
-            snap = await app.SnapshotAsync(); var saved = await app.ExecuteAsync(new(Wire.Id(), snap.State.Revision, "SaveConfig", Value: Wire.Encode(draft))); Assert(saved.Status == "Persisted", "Draft persisted: " + saved.Status + ": " + saved.Reason);
-            var revision = (await app.ConfigsAsync()).First(); snap = await app.SnapshotAsync();
-            Assert((await app.ExecuteAsync(new(Wire.Id(), snap.State.Revision, "ActivateConfig", revision.Id))).Status == "Persisted", "Restart activation staged");
+            var app = target.Application!; await Eventually(async () => !(await app.SnapshotAsync()).State.Blocks.Any(x => x.Source == "transport"));
+            var login = await ReviewedMaintenance(target, "Login", value: "maintenance"); Assert(login.Status == "Persisted", "Maintenance login");
+            var saved = await ReviewedMaintenance(target, "SaveConfig", value: Wire.Encode(draft)); Assert(saved.Status == "Persisted", "Draft persisted: " + saved.Status + ": " + saved.Reason);
+            var revision = (await app.ConfigsAsync()).First();
+            Assert((await ReviewedMaintenance(target, "ActivateConfig", revision.Id)).Status == "Persisted", "Restart activation staged");
         }
         using (var setup = ProductHost.Build(boot))
         {
@@ -460,9 +478,8 @@ static Process Start(string dotnet, params string[] args)
     // Drain bounded OS pipes; retain only crash classification, never raw payloads in test output.
     process.OutputDataReceived += (_, _) => { }; process.ErrorDataReceived += (_, _) => { }; process.BeginOutputReadLine(); process.BeginErrorReadLine(); return process;
 }
-static ProductManifest Manifest(string install) => new(1, "ipc-reference", RunMode.Simulation, "net10.0", "any", "supply", ["workstation", "history", "alarms", "diagnostics"],
-    new[] { ("platform", Array.Empty<string>()), ("supply", new[] { "platform" }), ("adapters", new[] { "supply" }), ("product", new[] { "adapters" }) }
-    .Select(x => new ModuleSpec(x.Item1, x.Item1, "1.0.0", 1, x.Item2, "Ipc." + char.ToUpperInvariant(x.Item1[0]) + x.Item1[1..] + ".dll", Wire.FileHash(Path.Combine(install, "Ipc." + char.ToUpperInvariant(x.Item1[0]) + x.Item1[1..] + ".dll")))).ToArray());
+static ProductManifest Manifest(string install) => new(1, ReferenceProduct.Definition.ProductId, RunMode.Simulation, ReferenceProduct.Definition.Runtime, "any", ReferenceProduct.Definition.BusinessModule, ["workstation", "history", "alarms", "diagnostics"],
+    ReferenceProduct.Definition.Modules.Select(x => new ModuleSpec(x.Id, x.Kind, x.Version, x.ContractMajor, x.Dependencies, x.File, Wire.FileHash(Path.Combine(install, x.File)))).ToArray());
 
 sealed class TestModule(string id, string[] dependencies, List<string> stopped, bool fail = false) : IRuntimeModule
 {

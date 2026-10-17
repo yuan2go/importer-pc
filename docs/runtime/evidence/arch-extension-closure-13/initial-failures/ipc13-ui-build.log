@@ -1,0 +1,19 @@
+  正在确定要还原的项目…
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Platform/Ipc.Platform.csproj (用时 152 毫秒)。
+  7 个项目(共 8 个)是最新的，无法还原。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Desktop/ExtensionsView.xaml.cs(289,17): error CS0136: 无法在此范围中声明名为“errors”的局部变量或参数，因为该名称在封闭局部范围中用于定义局部变量或参数 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Desktop/Ipc.Desktop_w1nt4ieg_wpftmp.csproj]
+  Ipc.Fixture -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll
+  Ipc.Verification -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll
+
+生成失败。
+
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Desktop/ExtensionsView.xaml.cs(289,17): error CS0136: 无法在此范围中声明名为“errors”的局部变量或参数，因为该名称在封闭局部范围中用于定义局部变量或参数 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Desktop/Ipc.Desktop_w1nt4ieg_wpftmp.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:02.95

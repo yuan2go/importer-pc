@@ -11,24 +11,24 @@ public sealed class ExtensionLoading(ExtensionStore store) : IDisposable
     readonly List<FileStream> pinned = [];
     public IControlledObservationSource Create(PackageReference package, ExtensionModule module, ExtensionInstance instance)
     {
-        var verified = store.VerifyInstalled(package);
-        if (!verified.Manifest.Modules.Contains(module))
-        {
-            // Records containing schema arrays do not have structural array equality.
-            if (!verified.Manifest.Modules.Any(x => Wire.Encode(x) == Wire.Encode(module))) throw new InvalidDataException("Unverified module descriptor");
-        }
         if (!instance.Enabled || instance.PackageId != package.Id || instance.ModuleId != module.Id ||
             ExtensionSchema.Validate(module.Parameters, instance.Parameters).Length != 0) throw new InvalidDataException("Invalid extension instance");
-        var context = Context(package);
-        var assembly = context.LoadEntry(module.Assembly);
-        var type = assembly.GetType(module.EntryType, throwOnError: true)!;
-        if (!typeof(IObservationExtension).IsAssignableFrom(type) || type.IsAbstract || !type.IsPublic)
-            throw new InvalidDataException("Entry does not implement the shared observation contract");
-        var factory = (IObservationExtension)(Activator.CreateInstance(type) ?? throw new InvalidDataException("Entry construction failed"));
+        var factory = CreateFactory<IObservationExtension>(package, module, "observation");
         var source = factory.Create(new(instance.Id, instance.DeviceId, ExtensionSchema.EffectiveValues(module, instance)));
         return source ?? throw new InvalidDataException("Extension returned no source");
         // The Product takes ownership immediately, then validates identity. A mismatched
         // returned source must still be stopped/disposed before releasing any lease.
+    }
+    public T CreateFactory<T>(PackageReference package, ExtensionModule module, string kind) where T : class
+    {
+        var verified = store.VerifyInstalled(package);
+        if (module.Kind != kind || !verified.Manifest.Modules.Any(x => Wire.Encode(x) == Wire.Encode(module)))
+            throw new InvalidDataException("Unverified module descriptor/kind");
+        var assembly = Context(package).LoadEntry(module.Assembly);
+        var type = assembly.GetType(module.EntryType, throwOnError: true)!;
+        if (!typeof(T).IsAssignableFrom(type) || type.IsAbstract || !type.IsPublic)
+            throw new InvalidDataException("Entry does not implement the required public extension contract");
+        return (T)(Activator.CreateInstance(type) ?? throw new InvalidDataException("Extension factory construction failed"));
     }
     PackageLoadContext Context(PackageReference package)
     {
@@ -57,26 +57,26 @@ public sealed class ExtensionLoading(ExtensionStore store) : IDisposable
         public Assembly LoadEntry(string file) => LoadFromAssemblyPath(Path.Combine(directory, file));
         protected override Assembly? Load(AssemblyName name)
         {
-            if (name.Name == typeof(IObservationExtension).Assembly.GetName().Name)
-            {
-                if (name.Version != typeof(IObservationExtension).Assembly.GetName().Version) throw new FileLoadException("Shared contract assembly version mismatch");
-                return typeof(IObservationExtension).Assembly;
-            }
-            if (name.Name is "netstandard" or "mscorlib" || name.Name?.StartsWith("System.", StringComparison.Ordinal) == true || name.Name == "System") return null;
-            var candidates = files.Where(x => x.Path.EndsWith("/" + name.Name + ".dll", StringComparison.Ordinal) || x.Path == name.Name + ".dll").ToArray();
+            var shared = ManagedAssemblyPolicy.Shared(name);
+            if (shared is not null) return shared;
+            var candidates = files.Where(x => x.Path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) && string.Equals(Path.GetFileNameWithoutExtension(x.Path), name.Name, StringComparison.OrdinalIgnoreCase)).ToArray();
             if (candidates.Length == 0)
             {
-                var owners = dependencies.Where(x => x.HasAssembly(name.Name!)).ToArray();
+                var owners = dependencies.SelectMany(x => x.Owners(name.Name!)).Distinct().ToArray();
                 if (owners.Length != 1) throw new FileLoadException("Missing/ambiguous declared dependency: " + name.Name);
                 return owners[0].LoadFromAssemblyName(name);
             }
             if (candidates.Length != 1) throw new FileLoadException("Private dependency not in signed exact package: " + name.Name);
             var path = Path.Combine(directory, candidates[0].Path);
             if (Wire.FileHash(path) != candidates[0].Sha256.ToUpperInvariant()) throw new FileLoadException("Private dependency changed");
-            if (AssemblyName.GetAssemblyName(path).Version != name.Version) throw new FileLoadException("Exact private dependency version mismatch");
+            if (!ManagedAssemblyPolicy.Exact(AssemblyName.GetAssemblyName(path), name)) throw new FileLoadException("Exact private dependency version mismatch");
             return LoadFromAssemblyPath(path);
         }
-        bool HasAssembly(string name) => files.Any(x => Path.GetFileName(x.Path) == name + ".dll");
+        IEnumerable<PackageLoadContext> Owners(string name)
+        {
+            if (files.Any(x => x.Path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) && string.Equals(Path.GetFileNameWithoutExtension(x.Path), name, StringComparison.OrdinalIgnoreCase))) yield return this;
+            foreach (var owner in dependencies.SelectMany(x => x.Owners(name))) yield return owner;
+        }
         protected override nint LoadUnmanagedDll(string name) => throw new DllNotFoundException("No approved native SDK boundary for " + name);
     }
 }
@@ -118,7 +118,7 @@ public static class ExtensionDeployment
             if (!ExtensionSchema.IsId(i.Id) || string.IsNullOrWhiteSpace(i.DeviceId) || i.DeviceId.Length > 128 || i.DeviceId.Any(char.IsControl) ||
                 !packages.TryGetValue(i.PackageId, out var p)) { errors.Add("Invalid instance identity/package: " + i.Id); continue; }
             var module = p.Manifest.Modules.SingleOrDefault(x => x.Id == i.ModuleId);
-            if (module is null) { errors.Add("Unknown instance module: " + i.Id); continue; }
+            if (module is null || module.Kind != "observation") { errors.Add("Unknown observation instance module: " + i.Id); continue; }
             errors.AddRange(ExtensionSchema.Validate(module.Parameters, i.Parameters).Select(x => i.Id + ": " + x));
             if (deployment.Instances.Count(x => x.PackageId == i.PackageId && x.ModuleId == i.ModuleId) > module.MaximumInstances) errors.Add("Module instance quota: " + i.ModuleId);
         }
@@ -131,6 +131,33 @@ public static class ExtensionDeployment
         }
         foreach (var i in deployment.Instances.Where(x => x.Enabled))
             if (!used.Any(x => x.Driver == "extension:" + i.Id)) errors.Add("Enabled observation instance requires an explicit business role binding: " + i.Id);
+        errors.AddRange(ValidateServices(deployment, packages));
         return errors.Distinct().ToArray();
     }
+    static IEnumerable<string> ValidateServices(DeploymentExtensions deployment, Dictionary<string, VerifiedExtension> packages)
+    {
+        var services = deployment.Services ?? []; var ports = deployment.Ports ?? [];
+        if (services.Length > 64 || ports.Length > 64 || services.Any(x => x is null || x.Parameters is null) || ports.Any(x => x is null || x.Target is null))
+            return ["Malformed service deployment"];
+        List<string> errors = [];
+        if (services.Select(x => x.Id).Concat(deployment.Instances.Select(x => x.Id)).Distinct().Count() != services.Length + deployment.Instances.Length)
+            errors.Add("Service/device instance IDs must be distinct");
+        if (ports.Select(x => x.Port).Distinct().Count() != ports.Length) errors.Add("Duplicate service port binding");
+        foreach (var service in services)
+        {
+            if (!ExtensionSchema.IsId(service.Id) || !packages.TryGetValue(service.PackageId, out var package)) { errors.Add("Invalid service instance/package: " + service.Id); continue; }
+            var module = package.Manifest.Modules.SingleOrDefault(x => x.Id == service.ModuleId && x.Kind == "integration");
+            if (module is null) { errors.Add("Missing typed integration capability: " + service.Id); continue; }
+            errors.AddRange(ExtensionSchema.Validate(module.Parameters, service.Parameters).Select(x => service.Id + ": " + x));
+            if (services.Count(x => x.PackageId == service.PackageId && x.ModuleId == service.ModuleId) > module.MaximumInstances) errors.Add("Service module instance quota");
+            if (service.Enabled && !ports.Any(x => x.InstanceId == service.Id)) errors.Add("Enabled service requires an explicit port: " + service.Id);
+        }
+        foreach (var port in ports)
+            if (!ExtensionSchema.IsId(port.Port) || !services.Any(x => x.Enabled && x.Id == port.InstanceId) ||
+                string.IsNullOrWhiteSpace(port.Target.Id) || string.IsNullOrWhiteSpace(port.Target.Revision) || string.IsNullOrWhiteSpace(port.Target.Contract) ||
+                !Uri.TryCreate(port.Target.Endpoint, UriKind.Absolute, out _)) errors.Add("Invalid service port/target: " + port.Port);
+        if (ports.GroupBy(x => x.InstanceId).Any(x => x.Count() != 1)) errors.Add("Service instance must own exactly one target/port");
+        return errors;
+    }
+
 }

@@ -1,0 +1,13 @@
+{
+  "WorkPackage": "WP-IPC-ARCH-EXTENSION-CLOSURE-13",
+  "MainAtStart": "feed6e9ce79449e48c667c17e2671939a86fb588",
+  "DeltaFromAnalysis": [],
+  "OpenPrsAtStart": [],
+  "OriginalWorkspace": "main with untracked user/customer material retained",
+  "WorktreeBranch": "codex/arch-extension-closure-13",
+  "Windows": "WINDOWS_NOT_RUN",
+  "VmOrRunnerSearch": false,
+  "OAuthChanged": false,
+  "Visibility": "PUBLIC unchanged",
+  "RawPrompt": "docs/work-packages/Codex-WP-IPC-ARCH-EXTENSION-CLOSURE-13.md"
+}

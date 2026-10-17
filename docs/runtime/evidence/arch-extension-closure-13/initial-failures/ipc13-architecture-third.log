@@ -1,0 +1,37 @@
+SELECT --architecture: E08
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-fe578eb0f81b4193a02bf14d1fc406f1
+PASS E13 two independent plugins build against frozen public contracts without changing host hashes
+PASS E13 both independent kinds install without executing factories
+PASS E13 refused P2-01 different content after uninstall / InvalidDataException
+PASS E13 refused P2-01 different content cannot bypass installation / InvalidDataException
+PASS E13 P2-01 exact original can reinstall with retired bytes/audit retained
+PASS E13 refused P2-01 prepared interruption / IOException
+PASS E13 refused P2-01 interrupted identity reservation / InvalidDataException
+PASS E13 P2-01 recovery preserves original operation identity
+PASS E13 P2-01 concurrent different-content install has one immutable winner
+PASS E13 refused P2-02 actual undeclared managed reference absent from signed closure / InvalidDataException
+PASS E13 P2-02 inspection and rejected installation never execute plugin constructors
+PASS E13 P2-02 legal exact dependency enters actual runtime resolution only after install and lease
+PASS E13 refused P2-02 System.* is not a framework allowlist / InvalidDataException
+PASS E13 P2-02 signed private System-named assembly requires exact bytes rather than blanket denial or allow
+Unhandled exception. System.Exception: E13 command failed: build /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-fe578eb0f81b4193a02bf14d1fc406f1/architecture-13/compile-System.Unapproved/probe.csproj -m:1 -nr:false -o /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-fe578eb0f81b4193a02bf14d1fc406f1/architecture-13/compile-System.Unapproved/output
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-fe578eb0f81b4193a02bf14d1fc406f1/architecture-13/compile-System.Unapproved/obj/Debug/net10.0/probe.AssemblyInfo.cs(19,12): error CS0579: “System.Reflection.AssemblyVersionAttribute”特性重复 [/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-fe578eb0f81b4193a02bf14d1fc406f1/architecture-13/compile-System.Unapproved/probe.csproj]
+
+生成失败。
+
+/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-fe578eb0f81b4193a02bf14d1fc406f1/architecture-13/compile-System.Unapproved/obj/Debug/net10.0/probe.AssemblyInfo.cs(19,12): error CS0579: “System.Reflection.AssemblyVersionAttribute”特性重复 [/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-fe578eb0f81b4193a02bf14d1fc406f1/architecture-13/compile-System.Unapproved/probe.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:00.54
+
+   at ArchitectureClosureVerification.RunProcess(String workspace, String log, String[] arguments) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs:line 31
+   at ArchitectureClosureVerification.<>c__DisplayClass11_0.<<ManagedReferences>g__Compile|0>d.MoveNext() in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs:line 115
+--- End of stack trace from previous location ---
+   at ArchitectureClosureVerification.ManagedReferences(String workspace, String area, ExtensionManifest om, String observationArchive, RSA key, ExtensionStore manager, String observation) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs:line 145
+   at ArchitectureClosureVerification.Run(String root, String url, String workspace) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs:line 100
+   at Program.<Main>$(String[] args) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Program.cs:line 69
+   at Program.<Main>$(String[] args) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Program.cs:line 448
+   at Program.<Main>(String[] args)

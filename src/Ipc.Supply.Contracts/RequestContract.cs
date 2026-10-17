@@ -6,6 +6,7 @@ public sealed record RequestIntent(string StationId, string SessionId, string Ow
 public sealed record RequestAuthority(Actor Actor, int? Package, int? Quantity);
 public interface IRequestContract
 {
+    IntegrationImplementation? Freeze() => null;
     string Encode(RequestIntent intent, string scenario);
     RequestAuthority Authority(BusinessRequest request);
     void ValidateResponse(BusinessRequest request, IntegrationResponse response);

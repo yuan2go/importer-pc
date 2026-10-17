@@ -1,0 +1,25 @@
+SELECT --architecture: E13 P2/typed integration/actual selected business assemblies
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-6c0371de9d974e39a777a2fe7a182c14
+PASS E13 two independent plugins build against frozen public contracts without changing host hashes
+PASS E13 both independent kinds install without executing factories
+PASS E13 refused P2-01 different content after uninstall / InvalidDataException
+PASS E13 refused P2-01 different content cannot bypass installation / InvalidDataException
+PASS E13 P2-01 exact original can reinstall with retired bytes/audit retained
+PASS E13 refused P2-01 prepared interruption / IOException
+PASS E13 refused P2-01 interrupted identity reservation / InvalidDataException
+PASS E13 P2-01 recovery preserves original operation identity
+PASS E13 P2-01 concurrent different-content install has one immutable winner
+PASS E13 refused P2-02 actual undeclared managed reference absent from signed closure / InvalidDataException
+PASS E13 P2-02 inspection and rejected installation never execute plugin constructors
+PASS E13 P2-02 legal exact dependency enters actual runtime resolution only after install and lease
+PASS E13 refused P2-02 System.* is not a framework allowlist / InvalidDataException
+PASS E13 P2-02 library-only exact signed dependency is accepted without a fake entry module
+PASS E13 refused actual managed library dependency protects uninstall / InvalidOperationException
+Unhandled exception. System.IO.InvalidDataException: Package ID/version is permanently bound to different signed content, including retired/interrupted history
+   at Ipc.Platform.ExtensionStore.ValidateIdentity(PackageReference reference) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Platform/ExtensionStore.cs:line 97
+   at Ipc.Platform.ExtensionStore.Plan(String file) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Platform/ExtensionStore.cs:line 83
+   at ArchitectureClosureVerification.ManagedReferences(String workspace, String area, ExtensionManifest om, String observationArchive, RSA key, ExtensionStore manager, String observation) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs:line 152
+   at ArchitectureClosureVerification.Run(String root, String url, String workspace) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs:line 100
+   at Program.<Main>$(String[] args) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Program.cs:line 71
+   at Program.<Main>$(String[] args) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Program.cs:line 450
+   at Program.<Main>(String[] args)

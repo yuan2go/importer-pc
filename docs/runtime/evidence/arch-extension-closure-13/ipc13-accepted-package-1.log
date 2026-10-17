@@ -1,0 +1,16 @@
+  正在确定要还原的项目…
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 417 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj (用时 417 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Platform/Ipc.Platform.csproj (用时 417 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Supply/Ipc.Supply.csproj (用时 417 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Product/Ipc.Product.csproj (用时 417 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 417 毫秒)。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Product/bin/Release/net10.0/Ipc.Product.dll
+  Ipc.Assembly -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.dll
+  Ipc.Assembly -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/.artifacts/closure13-dc5b405-supply-assembly/app/
+Sealed Simulation configuration: /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/.artifacts/closure13-dc5b405-supply-assembly/app/config
+{"Package": "/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/.artifacts/closure13-dc5b405-supply-assembly.zip", "Sha256": "b9d87c6887f711eb2e88fbc659aa9105a7aba804eae948d537c22adc46c649a1", "SchemaVersion": 1, "Business": "supply", "Views": ["workstation", "history", "alarms", "diagnostics", "maintenance", "engineering", "extensions"], "Layouts": ["standard", "compact"], "EntryPoint": "app/Ipc.Assembly.dll", "SourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0", "Windows": "WINDOWS_NOT_RUN", "Field": "BLOCKED", "Binaries": {"Ipc.Adapters.dll": "a55a7f7ff2731f0ae5ae523e63a40e1b04ee033e213f821e4f7b8918042096d5", "Ipc.Assembly.dll": "c0a760499625d6cb0b82b50c2cf3fe920aa70b3dabe270da96a050be5b341fb1", "Ipc.Platform.dll": "4e8b8eceda06d38aabd74af3d78fde8aedf9769082d05f6964172caa7fbf1afd", "Ipc.Product.dll": "4b5ae881f5349226c29c9755a99e7109c201df0b76eec091d8c92f0fd9b674ac", "Ipc.Supply.Contracts.dll": "917abdb121e9dbf063ec24157bdd3d815171a618685d1198f0cc1df36d423041", "Ipc.Supply.dll": "e050141fb97f305252304e1e0a6e13f900010b093cff40840c104fdb1e94dd51"}}

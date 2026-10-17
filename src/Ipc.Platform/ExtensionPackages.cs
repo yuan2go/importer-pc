@@ -48,21 +48,28 @@ public static class ExtensionPackages
             throw new CryptographicException("Extension signature invalid");
         if (m.SchemaVersion != 1 || !ExtensionSchema.IsId(m.Id) || !ExtensionSchema.IsVersion(m.Version) ||
             m.ContractMajor != 1 || m.Runtime != "net10.0" || m.Mode != mode ||
-            !ExtensionSchema.IsHash(m.HostContractSha256) || m.HostContractSha256 != Wire.FileHash(typeof(IObservationExtension).Assembly.Location) ||
+            !ExtensionSchema.IsHash(m.HostContractSha256) || !ExtensionContractCompatibility.Accepts(m) ||
             m.SourceCommit is null || m.SourceCommit.Length != 40 || !m.SourceCommit.All(char.IsAsciiHexDigit) ||
             m.Rid != "any" && m.Rid != RuntimeInformation.RuntimeIdentifier)
             throw new InvalidDataException("Unsupported extension identity/runtime/contract/RID/mode/source");
         if (m.Files is null || m.Modules is null || m.Dependencies is null || m.Prerequisites is null ||
-            m.Files.Length is < 1 or > MaximumFiles || m.Modules.Length is < 1 or > 32 || m.Dependencies.Length > 32 ||
+            m.Files.Length is < 1 or > MaximumFiles || m.Modules.Length > 32 || m.Dependencies.Length > 32 ||
             m.Files.Any(x => x is null || !SafePath(x.Path) || x.Path is "manifest.json" or "manifest.sig" || x.Length is < 0 or > MaximumFileBytes || !ExtensionSchema.IsHash(x.Sha256)) ||
             m.Files.Sum(x => x.Length) > MaximumExpandedBytes || m.Files.Select(x => x.Path).Distinct(StringComparer.OrdinalIgnoreCase).Count() != m.Files.Length ||
             m.Dependencies.Any(x => x is null || !ExtensionSchema.IsId(x.Id) || !ExtensionSchema.IsVersion(x.Version) || !ExtensionSchema.IsHash(x.ManifestSha256) || x.Id == m.Id) ||
             m.Dependencies.Select(x => x.Id).Distinct().Count() != m.Dependencies.Length ||
-            m.Modules.Any(x => x is null || !ExtensionSchema.IsId(x.Id) || x.Kind != "observation" ||
+            m.Modules.Any(x => x is null || !ExtensionSchema.IsId(x.Id) || x.Kind is not ("observation" or "integration") ||
                 x.MaximumInstances is < 1 or > 32 || string.IsNullOrWhiteSpace(x.EntryType) || x.EntryType.Length > 256 ||
                 !m.Files.Any(f => f.Path == x.Assembly && f.Path.EndsWith(".dll", StringComparison.Ordinal)) || ExtensionSchema.ValidateDefinition(x.Parameters).Length != 0) ||
             m.Modules.Select(x => x.Id).Distinct().Count() != m.Modules.Length)
             throw new InvalidDataException("Invalid extension inventory/module/schema/dependency/quota");
+        var publicContracts = ExtensionPublicContracts.Snapshot();
+        if (m.Modules.Any(x => x.Kind == "integration") && m.PublicContracts is not { Count: > 0 })
+            throw new InvalidDataException("Integration requires pinned public business contracts");
+        if (m.PublicContracts is not null)
+            foreach (var contract in m.PublicContracts)
+                if (!publicContracts.TryGetValue(contract.Key, out var assembly) || contract.Value != Wire.FileHash(assembly.Location))
+                    throw new InvalidDataException("Missing/changed installed public contract: " + contract.Key);
         // SDK packages and system drivers are prerequisite evidence, never installer actions.
         if (m.Prerequisites.Any(x => x is null || x.Kind is not ("vendor-sdk" or "system-driver") || string.IsNullOrWhiteSpace(x.Identity) || string.IsNullOrWhiteSpace(x.Version) || string.IsNullOrWhiteSpace(x.Evidence)))
             throw new InvalidDataException("Invalid prerequisite declaration");
@@ -82,7 +89,8 @@ public static class ExtensionPackages
         else if (element.ValueKind == System.Text.Json.JsonValueKind.Array)
             foreach (var child in element.EnumerateArray()) RejectDuplicateProperties(child);
     }
-    public static VerifiedExtension Inspect(string archive, ExtensionTrust trust, RunMode mode)
+    public static VerifiedExtension Inspect(string archive, ExtensionTrust trust, RunMode mode) => Inspect(archive, trust, mode, null);
+    public static VerifiedExtension Inspect(string archive, ExtensionTrust trust, RunMode mode, Func<PackageReference, (VerifiedExtension Package, string Directory)>? resolve)
     {
         using var input = new FileStream(archive, FileMode.Open, FileAccess.Read, FileShare.Read);
         if (input.Length > MaximumExpandedBytes) throw new InvalidDataException("Extension archive quota exceeded");
@@ -103,14 +111,46 @@ public static class ExtensionPackages
         if (!zip.Entries.Select(x => x.FullName).Order(StringComparer.Ordinal).SequenceEqual(
             verified.Manifest.Files.Select(x => x.Path).Concat(["manifest.json", "manifest.sig"]).Order(StringComparer.Ordinal)))
             throw new InvalidDataException("ZIP must have exactly the signed file set");
+        List<ManagedAssemblyPolicy.Image> images = [];
         foreach (var file in verified.Manifest.Files)
         {
             var bytes = ReadEntry(file.Path, file.Length);
             if (bytes.LongLength != file.Length || Convert.ToHexString(SHA256.HashData(bytes)) != file.Sha256.ToUpperInvariant())
                 throw new InvalidDataException("Extension file hash/length mismatch: " + file.Path);
             ValidateManaged(verified.Manifest, file.Path, bytes);
+            if (file.Path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)) images.Add(ManagedAssemblyPolicy.Read(file.Path, bytes));
         }
+        ValidateClosure(verified, images.ToArray(), resolve);
         return verified;
+    }
+    static void ValidateClosure(VerifiedExtension root, ManagedAssemblyPolicy.Image[] local,
+        Func<PackageReference, (VerifiedExtension Package, string Directory)>? resolve)
+    {
+        var publicContracts = ExtensionPublicContracts.Snapshot();
+        foreach (var reference in local.SelectMany(x => x.References).Where(x => x.Name != typeof(IObservationExtension).Assembly.GetName().Name && publicContracts.ContainsKey(x.Name!)))
+            if (root.Manifest.PublicContracts?.ContainsKey(reference.Name!) != true)
+                throw new InvalidDataException("Managed public contract reference is not pinned in the signed manifest: " + reference.Name);
+        Dictionary<string, PackageReference> selected = new(StringComparer.Ordinal);
+        HashSet<string> visiting = [], seen = [];
+        List<ManagedAssemblyPolicy.Image> images = [];
+        void Visit(PackageReference reference)
+        {
+            if (selected.TryGetValue(reference.Id, out var prior) && prior != reference)
+                throw new InvalidDataException("Conflicting exact dependency versions: " + reference.Id);
+            selected[reference.Id] = reference;
+            if (visiting.Contains(reference.ManifestSha256)) throw new InvalidDataException("Cyclic package dependency");
+            if (!seen.Add(reference.ManifestSha256)) return;
+            visiting.Add(reference.ManifestSha256);
+            var dependency = resolve?.Invoke(reference) ?? throw new InvalidDataException("Exact dependency resolver required before acceptance");
+            if (dependency.Package.Reference != reference) throw new InvalidDataException("Dependency identity mismatch");
+            foreach (var child in dependency.Package.Manifest.Dependencies) Visit(child);
+            foreach (var file in dependency.Package.Manifest.Files.Where(x => x.Path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)))
+                images.Add(ManagedAssemblyPolicy.Read(reference.Id + "/" + file.Path, File.ReadAllBytes(Path.Combine(dependency.Directory, file.Path))));
+            visiting.Remove(reference.ManifestSha256);
+        }
+        selected[root.Manifest.Id] = root.Reference;
+        foreach (var dependency in root.Manifest.Dependencies) Visit(dependency);
+        ManagedAssemblyPolicy.Validate(local, images);
     }
     static void ValidateManaged(ExtensionManifest manifest, string path, byte[] bytes)
     {
@@ -130,11 +170,12 @@ public static class ExtensionPackages
             if (!metadata.TypeDefinitions.Any(h => { var t = metadata.GetTypeDefinition(h); return metadata.GetString(t.Namespace) + "." + metadata.GetString(t.Name) == module.EntryType; }))
                 throw new InvalidDataException("Declared entry type missing (static metadata)");
     }
-    public static void ExtractVerified(string archive, string destination, ExtensionTrust trust, RunMode mode, string expectedHash)
+    public static void ExtractVerified(string archive, string destination, ExtensionTrust trust, RunMode mode, string expectedHash) => ExtractVerified(archive, destination, trust, mode, expectedHash, null);
+    public static void ExtractVerified(string archive, string destination, ExtensionTrust trust, RunMode mode, string expectedHash, Func<PackageReference, (VerifiedExtension Package, string Directory)>? resolve)
     {
         // One read handle prevents replacing the input while it is inspected/extracted.
         using var hold = new FileStream(archive, FileMode.Open, FileAccess.Read, FileShare.Read);
-        var verified = Inspect(archive, trust, mode);
+        var verified = Inspect(archive, trust, mode, resolve);
         if (verified.PackageSha256 != expectedHash) throw new InvalidDataException("Package changed after installation plan");
         using var zip = new ZipArchive(hold, ZipArchiveMode.Read);
         foreach (var entry in zip.Entries)
@@ -145,9 +186,10 @@ public static class ExtensionPackages
             var bytes = ReadBounded(source, entry.FullName == "manifest.json" ? MaximumManifestBytes : MaximumFileBytes);
             output.Write(bytes); output.Flush(true);
         }
-        VerifyDirectory(destination, trust, mode, expectedHash);
+        VerifyDirectory(destination, trust, mode, expectedHash, resolve);
     }
-    public static VerifiedExtension VerifyDirectory(string directory, ExtensionTrust trust, RunMode mode, string packageHash = "installed")
+    public static VerifiedExtension VerifyDirectory(string directory, ExtensionTrust trust, RunMode mode, string packageHash = "installed") => VerifyDirectory(directory, trust, mode, packageHash, null);
+    public static VerifiedExtension VerifyDirectory(string directory, ExtensionTrust trust, RunMode mode, string packageHash, Func<PackageReference, (VerifiedExtension Package, string Directory)>? resolve)
     {
         string Safe(string name) => ProductValidation.IsSafeRelativeFile(directory, name, out var p) ? p : throw new InvalidDataException("Linked or unsafe installed extension");
         var manifest = Safe("manifest.json"); var signature = Safe("manifest.sig");
@@ -161,6 +203,8 @@ public static class ExtensionPackages
             if (new FileInfo(path).Length != f.Length || Wire.FileHash(path) != f.Sha256.ToUpperInvariant()) throw new InvalidDataException("Installed extension changed: " + f.Path);
             ValidateManaged(verified.Manifest, f.Path, File.ReadAllBytes(path));
         }
+        ValidateClosure(verified, verified.Manifest.Files.Where(x => x.Path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+            .Select(x => ManagedAssemblyPolicy.Read(x.Path, File.ReadAllBytes(Safe(x.Path)))).ToArray(), resolve);
         return verified;
     }
     static IEnumerable<string> EnumerateOrdinaryFiles(string root)

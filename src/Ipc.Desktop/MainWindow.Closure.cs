@@ -39,8 +39,10 @@ public partial class MainWindow
         string Health(string name, DeviceState? health) => name + " " +
             (health?.IsValid(now) == true ? "就绪" : health is null ? "未取得" : OperatorText.Health(health.Health.ToString()) + "/" + health.ValidityReason(now)) +
             " · " + (health?.ConfirmedAt?.ToLocalTime().ToString("HH:mm:ss") ?? "未确认");
+        var service = current.State.IntegrationServiceHealth;
+        var wcs = service is null ? Health("WCS", current.State.IntegrationHealth) : "WCS " + (service.IsValid(now) ? "就绪" : service.ValidityReason(now)) + " · " + service.ConfirmedAt.ToLocalTime().ToString("HH:mm:ss");
         model.HealthSummary = string.Join("   ", Health("CAM0", current.State.Devices.GetValueOrDefault("left")),
-            Health("CAM1", current.State.Devices.GetValueOrDefault("right")), Health("WCS", current.State.IntegrationHealth));
+            Health("CAM1", current.State.Devices.GetValueOrDefault("right")), wcs);
         model.OtherLane = $"CAM0：{(current.State.Lanes.GetValueOrDefault("left") is { } l ? OperatorText.Operation(l.Status) : "等待实体")}\nCAM1：{(current.State.Lanes.GetValueOrDefault("right") is { } r ? OperatorText.Operation(r.Status) : "等待实体")}";
         var selected = ObservationReviews.SelectedItems.Cast<ObservationReviewRow>().Select(x => x.Selection).ToHashSet();
         var rows = current.State.Blocks.Where(x => x.Code == "ObservationReview")

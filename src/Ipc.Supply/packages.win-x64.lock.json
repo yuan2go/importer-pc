@@ -338,6 +338,12 @@
         "dependencies": {
           "Microsoft.Extensions.Hosting": "[10.0.13, )"
         }
+      },
+      "ipc.supply.contracts": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Platform": "[1.0.0, )"
+        }
       }
     },
     "net10.0/win-x64": {

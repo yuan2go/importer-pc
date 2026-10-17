@@ -1,0 +1,20 @@
+{
+  "FrozenSourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+  "CurrentRuntimeInputsEqualFrozenSource": true,
+  "Paths": [
+    "src",
+    "config",
+    "scripts",
+    "global.json",
+    "Directory.Build.props",
+    "NuGet.Config",
+    "ImporterPc.slnx",
+    "docs/runtime/operations.md",
+    "docs/extensions/developer-guide.md"
+  ],
+  "LaterChanges": "report, manifest, raw evidence and exact archive project-output registration only",
+  "Branch": "codex/arch-extension-closure-13",
+  "Release": "closure13-reference-dc5b405",
+  "SourcePublished": true,
+  "MergePerformed": false
+}

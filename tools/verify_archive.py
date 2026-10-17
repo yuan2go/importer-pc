@@ -138,6 +138,7 @@ def markdown(text):
 RUNTIME_PROJECTS = {
     'src/Ipc.Platform', 'src/Ipc.Supply', 'src/Ipc.Adapters', 'src/Ipc.Product',
     'src/Ipc.Fixture', 'src/Ipc.Desktop', 'tests/Ipc.Verification',
+    'src/Ipc.Supply.Contracts', 'src/Ipc.Assembly', 'src/Ipc.Inspection',
 }
 
 

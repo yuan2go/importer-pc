@@ -1,8 +1,16 @@
-> 当前执行：WP-IPC-EXTENSION-WINDOWS-DELIVERY-12；起点 main `9f320459`，受控构建选装、签名离线后装和统一部署修订正在实施。安装不等于激活，二进制变更受控重启。下文11及更早结果属于其原版本；[原字节](archive/pre-extension-delivery-12/README.md)保留。正式工作包见 docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md；按 AC12-01～10 分项取证，Windows未验不宣布整包完成。
+> CLOSURE-13当前交付补充：最终宿主/工具8cb475b，独立插件1.0.1；[PR12复核与AC13](runtime/arch-extension-closure-13-recheck.md) · [checks](runtime/arch-extension-closure-13-recheck-checks.json)。核心/Mac/WPF交叉构建通过，Windows实际验收统一延期；首轮dc5b405与全部历史证据保留。
+
+> 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入核心实现已提交；Mac参考验证与WPF交叉构建按13报告分项记录，候选交付不代表Windows或现场验收。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](archive/pre-arch-extension-closure-13/README.md)。
+
+## CLOSURE-13 当前入口
+
+[13工作包](work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md) · [职责/装配/扩展设计](design/controlled-extensions.md) · [开发安装与恢复](extensions/developer-guide.md) · [逐AC13报告](runtime/arch-extension-closure-13.md) · [checks](runtime/arch-extension-closure-13-checks.json) · [WPF增量与Windows延期](ui/arch-extension-closure-13-mapping.md)。供包/非供包真实业务选装、两个P2、独立观察/集成包、多实例服务目标、原请求精确实现冻结和查询/停止所有权为当前实现范围；逐项验证以报告为准。核心工程、Mac参考、WPF构建、实际Windows与现场资格分别判断。
+
+以下12及更早段落保留其形成时身份，不能拿旧候选/旧PASS替代13证据。
 
 > 上一版11执行：[REVIEW-FOLLOWUP-11](work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)，起点main `4ae5319`。修复PR9独立复核的两个P2并补Product组合所有权动态证据；结果、同版包及新SHA见[11报告](runtime/review-followup-11.md)与[11 checks](runtime/review-followup-11-checks.json)；[前版本](archive/pre-review-followup-11/README.md)保留。下文09/a080825为上一版证据，不自动代表本次输出；Windows/真实集成仍按06/05分项阻塞。
 
-## DELIVERY-12 当前入口
+## DELIVERY-12 历史交付入口
 
 [原工作包](work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md) · [受控扩展设计](design/controlled-extensions.md) · [扩展开发与安装/恢复](extensions/developer-guide.md) · [12实施/AC/候选交付](runtime/extension-windows-delivery-12.md)。从main 9f320459起开发；原11证据、SQL/请求/设计原件和D/RV保留。核心验证与Windows参考验收、远端候选和真实现场资格分别判断，未验不关闭整包。
 

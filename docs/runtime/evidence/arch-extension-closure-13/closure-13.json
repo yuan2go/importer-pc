@@ -1,0 +1,318 @@
+{
+  "Result": "PASS_REFERENCE",
+  "HostHashes": {
+    "Ipc.Supply.Contracts.dll": "641EE6C31926FB23C9182EE8CB8CF5EDECFF95EDF709C7C47CFD4BA1264951E1",
+    "Ipc.Platform.dll": "2CEA141C9A47023A8B19DFB0C5749429FFD8F5BB59CD8916EA0AFFD0F8F0CAFF",
+    "Ipc.Supply.dll": "790CFC342AA10E968BA326B125E55D05D7B6E000268130538FBE854E1D95B315",
+    "Ipc.Adapters.dll": "735914C0BE1A97A41DD66967BA91FAF3A5B12AE92A07C213E47FB6D12C855257",
+    "Ipc.Verification.dll": "9B1A6B41D320E4062E2B9FAEA137A1F7C50C966F379BEFA06199C439C311FA9F",
+    "Ipc.Product.dll": "6017C16734F39672586566AF69BF1D6C81343E2648FA65DB2B24641B2E20D89C"
+  },
+  "ObservationSource": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+  "IntegrationSource": "01038cc5e21d200e4545c0a26594adc05eb62923",
+  "Packages": [
+    {
+      "Package": {
+        "Id": "reference.falseframework",
+        "Version": "1.0.0",
+        "ManifestSha256": "0F222BD7EBE8849BD8B22D542553FD359943416DD7450A9CE452504AC48294D6"
+      },
+      "PackageSha256": "A3A2BBF5B69CC145C6990ED4F78277CD36DC652D592E6C74119EE340586726AE",
+      "TrustSha256": "C553F9CC9F12C0BD3D53DDBEA2EB99CBA2A0479AB18F047A15A1C0830FE056A6",
+      "OperationId": "99dad352e9d44805afcd2a07ddae7aa5",
+      "At": "2026-10-17T05:16:24.010216+00:00",
+      "Status": "Uninstalled",
+      "Reason": "Disabled/unbound; files retired for recovery, audit retained"
+    },
+    {
+      "Package": {
+        "Id": "reference.integration",
+        "Version": "1.1.0",
+        "ManifestSha256": "1AB25F38C581D11B82BCF401E88C57E13CC7E216F92A50F45ABACC504FD733E9"
+      },
+      "PackageSha256": "85A9D4ED4973179D7662F5767BEDA235F38274DA1322CDF90A1B4B0A3F2F5A83",
+      "TrustSha256": "C553F9CC9F12C0BD3D53DDBEA2EB99CBA2A0479AB18F047A15A1C0830FE056A6",
+      "OperationId": "726651bdb1d248ce9afcf3cb09a612ab",
+      "At": "2026-10-17T05:16:27.263587+00:00",
+      "Status": "Uninstalled",
+      "Reason": "Disabled/unbound; files retired for recovery, audit retained"
+    },
+    {
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.0.0",
+        "ManifestSha256": "3F4CDA97789989752E61BA6EED6084D6A0465EE456BF30E01F61966820993529"
+      },
+      "PackageSha256": "A23AB128388EBDA0BCDCF81462F4BEF8EB221711720A475E801646A78B641BD9",
+      "TrustSha256": "C553F9CC9F12C0BD3D53DDBEA2EB99CBA2A0479AB18F047A15A1C0830FE056A6",
+      "OperationId": "a472a9ca5f084542afad6630fcbd88d5",
+      "At": "2026-10-17T05:16:19.977427+00:00",
+      "Status": "Installed",
+      "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
+    },
+    {
+      "Package": {
+        "Id": "reference.dependency",
+        "Version": "1.0.0",
+        "ManifestSha256": "77C2A3DDAC842358EF5C4E78D6EA36A218C95F52C6A362854770A958BF718F41"
+      },
+      "PackageSha256": "7EB5028EE2E5CD81D8FCF0077D9C1AEF3C8087C3DE098DC69605E0395BE37667",
+      "TrustSha256": "C553F9CC9F12C0BD3D53DDBEA2EB99CBA2A0479AB18F047A15A1C0830FE056A6",
+      "OperationId": "c1afb1b8bde2496cb6bf1c8072be6dcd",
+      "At": "2026-10-17T05:16:26.071992+00:00",
+      "Status": "Uninstalled",
+      "Reason": "Disabled/unbound; files retired for recovery, audit retained"
+    },
+    {
+      "Package": {
+        "Id": "reference.integration",
+        "Version": "1.0.0",
+        "ManifestSha256": "A35E78D4BC08D4376BCA561BD3D755D91992ABD21CEE5EEC51ADB7E711357970"
+      },
+      "PackageSha256": "B7F196C654D473544A7626BD7CC4E63E79AD1B9B3194D6B1ABF2B4CD78E13397",
+      "TrustSha256": "C553F9CC9F12C0BD3D53DDBEA2EB99CBA2A0479AB18F047A15A1C0830FE056A6",
+      "OperationId": "e626220a66f24915bab4c2e9b22ac96f",
+      "At": "2026-10-17T05:16:19.902256+00:00",
+      "Status": "Installed",
+      "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
+    },
+    {
+      "Package": {
+        "Id": "reference.library",
+        "Version": "1.0.0",
+        "ManifestSha256": "C2BCDE5A1DC45067A6EA2400DD106B06FB3899703B47A81E21793761E6392A38"
+      },
+      "PackageSha256": "F497E0F4197150C7F3E0A5890B4DA6749CE021BAD30C855FDDFB8B6DCE30E570",
+      "TrustSha256": "C553F9CC9F12C0BD3D53DDBEA2EB99CBA2A0479AB18F047A15A1C0830FE056A6",
+      "OperationId": "37c037c58f784e90bd19ef77a34e2460",
+      "At": "2026-10-17T05:16:24.030171+00:00",
+      "Status": "Uninstalled",
+      "Reason": "Disabled/unbound; files retired for recovery, audit retained"
+    }
+  ],
+  "Operations": [
+    {
+      "Id": "222ca9b0bd354488a7fbe5ffd41b2cc2",
+      "PackageSha256": "F497E0F4197150C7F3E0A5890B4DA6749CE021BAD30C855FDDFB8B6DCE30E570",
+      "Package": {
+        "Id": "reference.library",
+        "Version": "1.0.0",
+        "ManifestSha256": "C2BCDE5A1DC45067A6EA2400DD106B06FB3899703B47A81E21793761E6392A38"
+      },
+      "State": "UninstallRecoveryRequired",
+      "At": "2026-10-17T05:16:23.983617+00:00",
+      "Error": "InvalidOperationException: Reverse package dependency prevents uninstall: reference.falseframework",
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "29993944f3d644c39d8b1f16e8a69773",
+      "PackageSha256": "F497E0F4197150C7F3E0A5890B4DA6749CE021BAD30C855FDDFB8B6DCE30E570",
+      "Package": {
+        "Id": "reference.library",
+        "Version": "1.0.0",
+        "ManifestSha256": "C2BCDE5A1DC45067A6EA2400DD106B06FB3899703B47A81E21793761E6392A38"
+      },
+      "State": "Uninstalled",
+      "At": "2026-10-17T05:16:24.017897+00:00",
+      "Error": null,
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "2f6d7aa1bdab465fb570f64d16ff97b5",
+      "PackageSha256": "B7F196C654D473544A7626BD7CC4E63E79AD1B9B3194D6B1ABF2B4CD78E13397",
+      "Package": {
+        "Id": "reference.integration",
+        "Version": "1.0.0",
+        "ManifestSha256": "A35E78D4BC08D4376BCA561BD3D755D91992ABD21CEE5EEC51ADB7E711357970"
+      },
+      "State": "UninstallRecoveryRequired",
+      "At": "2026-10-17T05:16:26.774736+00:00",
+      "Error": "IOException: The process cannot access the file \u0027/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-3f4e0b93bcde4c5fadd7501bbb1fee63/architecture-13/store/usage/A35E78D4BC08D4376BCA561BD3D755D91992ABD21CEE5EEC51ADB7E711357970.lease\u0027 because it is being used by another process.",
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "37c037c58f784e90bd19ef77a34e2460",
+      "PackageSha256": "F497E0F4197150C7F3E0A5890B4DA6749CE021BAD30C855FDDFB8B6DCE30E570",
+      "Package": {
+        "Id": "reference.library",
+        "Version": "1.0.0",
+        "ManifestSha256": "C2BCDE5A1DC45067A6EA2400DD106B06FB3899703B47A81E21793761E6392A38"
+      },
+      "State": "Registered",
+      "At": "2026-10-17T05:16:23.891414+00:00",
+      "Error": null,
+      "Kind": "Install"
+    },
+    {
+      "Id": "3850a7c8207948b58e05aa89696ca355",
+      "PackageSha256": "A23AB128388EBDA0BCDCF81462F4BEF8EB221711720A475E801646A78B641BD9",
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.0.0",
+        "ManifestSha256": "3F4CDA97789989752E61BA6EED6084D6A0465EE456BF30E01F61966820993529"
+      },
+      "State": "Uninstalled",
+      "At": "2026-10-17T05:16:19.915899+00:00",
+      "Error": null,
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "4ff38360c0f04e6da65bf660606d2f54",
+      "PackageSha256": "B7F196C654D473544A7626BD7CC4E63E79AD1B9B3194D6B1ABF2B4CD78E13397",
+      "Package": {
+        "Id": "reference.integration",
+        "Version": "1.0.0",
+        "ManifestSha256": "A35E78D4BC08D4376BCA561BD3D755D91992ABD21CEE5EEC51ADB7E711357970"
+      },
+      "State": "UninstallRecoveryRequired",
+      "At": "2026-10-17T05:16:49.213328+00:00",
+      "Error": "IOException: The process cannot access the file \u0027/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-3f4e0b93bcde4c5fadd7501bbb1fee63/architecture-13/store/usage/A35E78D4BC08D4376BCA561BD3D755D91992ABD21CEE5EEC51ADB7E711357970.lease\u0027 because it is being used by another process.",
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "726651bdb1d248ce9afcf3cb09a612ab",
+      "PackageSha256": "85A9D4ED4973179D7662F5767BEDA235F38274DA1322CDF90A1B4B0A3F2F5A83",
+      "Package": {
+        "Id": "reference.integration",
+        "Version": "1.1.0",
+        "ManifestSha256": "1AB25F38C581D11B82BCF401E88C57E13CC7E216F92A50F45ABACC504FD733E9"
+      },
+      "State": "Registered",
+      "At": "2026-10-17T05:16:27.066059+00:00",
+      "Error": null,
+      "Kind": "Install"
+    },
+    {
+      "Id": "90d0361b483b412e802a920e2a98fc68",
+      "PackageSha256": "A23AB128388EBDA0BCDCF81462F4BEF8EB221711720A475E801646A78B641BD9",
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.0.0",
+        "ManifestSha256": "3F4CDA97789989752E61BA6EED6084D6A0465EE456BF30E01F61966820993529"
+      },
+      "State": "Registered",
+      "At": "2026-10-17T05:16:19.809999+00:00",
+      "Error": null,
+      "Kind": "Install"
+    },
+    {
+      "Id": "99dad352e9d44805afcd2a07ddae7aa5",
+      "PackageSha256": "A3A2BBF5B69CC145C6990ED4F78277CD36DC652D592E6C74119EE340586726AE",
+      "Package": {
+        "Id": "reference.falseframework",
+        "Version": "1.0.0",
+        "ManifestSha256": "0F222BD7EBE8849BD8B22D542553FD359943416DD7450A9CE452504AC48294D6"
+      },
+      "State": "Registered",
+      "At": "2026-10-17T05:16:23.936898+00:00",
+      "Error": null,
+      "Kind": "Install"
+    },
+    {
+      "Id": "a472a9ca5f084542afad6630fcbd88d5",
+      "PackageSha256": "A23AB128388EBDA0BCDCF81462F4BEF8EB221711720A475E801646A78B641BD9",
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.0.0",
+        "ManifestSha256": "3F4CDA97789989752E61BA6EED6084D6A0465EE456BF30E01F61966820993529"
+      },
+      "State": "Registered",
+      "At": "2026-10-17T05:16:19.948185+00:00",
+      "Error": null,
+      "Kind": "Install"
+    },
+    {
+      "Id": "ac8482884ebb42648861c003304720ae",
+      "PackageSha256": "85A9D4ED4973179D7662F5767BEDA235F38274DA1322CDF90A1B4B0A3F2F5A83",
+      "Package": {
+        "Id": "reference.integration",
+        "Version": "1.1.0",
+        "ManifestSha256": "1AB25F38C581D11B82BCF401E88C57E13CC7E216F92A50F45ABACC504FD733E9"
+      },
+      "State": "Uninstalled",
+      "At": "2026-10-17T05:16:27.249217+00:00",
+      "Error": null,
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "c1afb1b8bde2496cb6bf1c8072be6dcd",
+      "PackageSha256": "7EB5028EE2E5CD81D8FCF0077D9C1AEF3C8087C3DE098DC69605E0395BE37667",
+      "Package": {
+        "Id": "reference.dependency",
+        "Version": "1.0.0",
+        "ManifestSha256": "77C2A3DDAC842358EF5C4E78D6EA36A218C95F52C6A362854770A958BF718F41"
+      },
+      "State": "Registered",
+      "At": "2026-10-17T05:16:21.389674+00:00",
+      "Error": null,
+      "Kind": "Install"
+    },
+    {
+      "Id": "e626220a66f24915bab4c2e9b22ac96f",
+      "PackageSha256": "B7F196C654D473544A7626BD7CC4E63E79AD1B9B3194D6B1ABF2B4CD78E13397",
+      "Package": {
+        "Id": "reference.integration",
+        "Version": "1.0.0",
+        "ManifestSha256": "A35E78D4BC08D4376BCA561BD3D755D91992ABD21CEE5EEC51ADB7E711357970"
+      },
+      "State": "Registered",
+      "At": "2026-10-17T05:16:19.872521+00:00",
+      "Error": null,
+      "Kind": "Install"
+    },
+    {
+      "Id": "ea57288149424bbd807f2252f2f1e56d",
+      "PackageSha256": "A3A2BBF5B69CC145C6990ED4F78277CD36DC652D592E6C74119EE340586726AE",
+      "Package": {
+        "Id": "reference.falseframework",
+        "Version": "1.0.0",
+        "ManifestSha256": "0F222BD7EBE8849BD8B22D542553FD359943416DD7450A9CE452504AC48294D6"
+      },
+      "State": "Uninstalled",
+      "At": "2026-10-17T05:16:23.994279+00:00",
+      "Error": null,
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "ebb86abb0297409f9c9932d00403f6c5",
+      "PackageSha256": "B7F196C654D473544A7626BD7CC4E63E79AD1B9B3194D6B1ABF2B4CD78E13397",
+      "Package": {
+        "Id": "reference.integration",
+        "Version": "1.0.0",
+        "ManifestSha256": "A35E78D4BC08D4376BCA561BD3D755D91992ABD21CEE5EEC51ADB7E711357970"
+      },
+      "State": "UninstallRecoveryRequired",
+      "At": "2026-10-17T05:16:27.158362+00:00",
+      "Error": "IOException: The process cannot access the file \u0027/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-3f4e0b93bcde4c5fadd7501bbb1fee63/architecture-13/store/usage/A35E78D4BC08D4376BCA561BD3D755D91992ABD21CEE5EEC51ADB7E711357970.lease\u0027 because it is being used by another process.",
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "f3999dda1a9f4d7e8fd489d00e62333b",
+      "PackageSha256": "B7F196C654D473544A7626BD7CC4E63E79AD1B9B3194D6B1ABF2B4CD78E13397",
+      "Package": {
+        "Id": "reference.integration",
+        "Version": "1.0.0",
+        "ManifestSha256": "A35E78D4BC08D4376BCA561BD3D755D91992ABD21CEE5EEC51ADB7E711357970"
+      },
+      "State": "UninstallRecoveryRequired",
+      "At": "2026-10-17T05:16:32.596913+00:00",
+      "Error": "IOException: The process cannot access the file \u0027/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-3f4e0b93bcde4c5fadd7501bbb1fee63/architecture-13/store/usage/A35E78D4BC08D4376BCA561BD3D755D91992ABD21CEE5EEC51ADB7E711357970.lease\u0027 because it is being used by another process.",
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "f6a676501e664561beabf0a60c171432",
+      "PackageSha256": "7EB5028EE2E5CD81D8FCF0077D9C1AEF3C8087C3DE098DC69605E0395BE37667",
+      "Package": {
+        "Id": "reference.dependency",
+        "Version": "1.0.0",
+        "ManifestSha256": "77C2A3DDAC842358EF5C4E78D6EA36A218C95F52C6A362854770A958BF718F41"
+      },
+      "State": "Uninstalled",
+      "At": "2026-10-17T05:16:26.050744+00:00",
+      "Error": null,
+      "Kind": "Uninstall"
+    }
+  ],
+  "Windows": "WINDOWS_NOT_RUN",
+  "ActualWpfScreenshots": 0
+}

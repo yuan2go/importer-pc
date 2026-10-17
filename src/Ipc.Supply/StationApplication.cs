@@ -36,7 +36,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     {
         this.configurationValidator = configurationValidator; this.configurationLeaseFactory = configurationLeaseFactory; this.store = store; this.config = config; this.contract = contract; this.clock = clock ?? TimeProvider.System; this.faults = faults ?? new(); state = store.Load();
         if (File.Exists(OverloadMarker)) runtimeFaults["Overload"] = "Unacknowledged overflow; inspect source/entity evidence";
-        state.Actor = null; state.Stopping = false; state.IntegrationHealth = null;
+        state.Actor = null; state.Stopping = false; state.IntegrationHealth = null; state.IntegrationServiceHealth = null;
         state.Blocks.RemoveAll(x => x.Code == "WindowArea" && x.ClearAuthority == "presentation-owner");
         // A released process does not imply unfinished calls were cancelled remotely.
         foreach (var request in store.PendingRequests().Where(x => x.Status == RequestStatus.Dispatching))
@@ -316,7 +316,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
         var actor = next.Actor ?? throw new GuardException("Authenticated identity required");
         var intent = new RequestIntent(config.StationId, next.Session!.Id, owner, ownerRevision, kind, barcode, package, quantity, next.Session.CloseToken, actor);
         var json = contract.Encode(intent, next.NextFault); next.NextFault = "None";
-        return new(Wire.Id(), owner, next.Session.Id, kind, ownerRevision, $"{owner}:{kind}:{ownerRevision}", json, Wire.Hash(json), config.Integration, RequestStatus.Prepared, Now);
+        return new(Wire.Id(), owner, next.Session.Id, kind, ownerRevision, $"{owner}:{kind}:{ownerRevision}", json, Wire.Hash(json), config.Integration, RequestStatus.Prepared, Now, contract.Freeze());
     }
     public Task ReceiveAsync(Observation observation) => owner.Invoke(() => ReceiveCore(observation), priority: false, waitForCapacity: true);
     async Task ReceiveCore(Observation observation)
@@ -542,9 +542,14 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
         var reasons = BaseReasons(s).ToList();
         // A request carries its original authenticated actor and immutable destination. Expiry
         // still blocks dispatch; logging in again cannot silently re-authorize an old intent.
-        var payload = contract.Authority(request);
+        RequestAuthority payload;
+        try { payload = contract.Authority(request); }
+        catch (Exception ex) when (ex is InvalidDataException or IOException or System.Security.Cryptography.CryptographicException or System.Text.Json.JsonException)
+        { return new(false, reasons.Append("OriginalIntegrationUnavailable:" + ex.GetType().Name).Distinct().ToArray()); }
         if (payload.Actor.ExpiresAt <= Now) reasons.Add("OriginalActorExpired");
         if (request.Binding != config.Integration) reasons.Add("OriginalBindingNotActive");
+        if (request.Implementation is not null && request.Implementation.ConfigurationSha256 != contract.Freeze()?.ConfigurationSha256)
+            reasons.Add("OriginalImplementationNotActive");
         if (s.Session?.Id != request.SessionId) reasons.Add("SessionChanged");
         if (request.Kind is RequestKind.Context or RequestKind.Validate or RequestKind.Submit)
             foreach (var device in s.Devices) if (!device.Value.IsValid(Now)) reasons.Add("Device:" + device.Key + ":" + device.Value.ValidityReason(Now));
@@ -564,7 +569,9 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
         if (s.Quarantined) yield return "RestoreQuarantine";
         if (s.Actor is null || s.Actor.ExpiresAt <= Now) yield return "IdentityUnavailable";
         foreach (var b in s.Blocks) yield return b.Code + ":" + b.Scope;
-        if (s.IntegrationHealth?.IsValid(Now) != true) yield return "WcsHealth:" + (s.IntegrationHealth?.ValidityReason(Now) ?? "Unconfirmed");
+        var integrationReason = s.IntegrationServiceHealth is { } service ? service.ValidityReason(Now) :
+            s.IntegrationHealth is { } legacy ? legacy.ValidityReason(Now) : "Unconfirmed";
+        if (integrationReason is not null) yield return "WcsHealth:" + integrationReason;
         if (store.PendingRequests().Any(x => x.Status == RequestStatus.Unknown)) yield return "OutcomeUnknown";
     }
     Guard GuardFor(StationState s, string action, bool admittedEvent = false)

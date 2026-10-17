@@ -26,8 +26,11 @@ work = Path(tempfile.mkdtemp(prefix='ipc-frozen-extension-smoke-'))
 app = release / 'app'
 hashes = lambda: {f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in app.glob('Ipc.*') if f.is_file()}
 before = hashes()
-package = release / 'offline-extensions/reference.barcode-1.0.0.ipcx'
+composition = json.loads((release / 'composition.lock.json').read_text())
+versions = {c['id']: c['version'] for c in composition['components']}
+package = release / f"offline-extensions/reference.barcode-{versions['reference.barcode']}.ipcx"
 trust = release / 'offline-extensions/trust.Simulation.reference.json'
+integration_package = release / f"offline-extensions/reference.integration-{versions.get('reference.integration', 'not-selected')}.ipcx"
 with zipfile.ZipFile(package) as archive:
     raw_manifest = archive.read('manifest.json')
     manifest = json.loads(raw_manifest)
@@ -51,6 +54,14 @@ for i, role in enumerate(('left', 'right')):
                     Enabled=True, Parameters={'input.prefix': '000' if i == 0 else '111'})
     station['Extensions']['Instances'].append(instance)
     station['Devices'][i].update(Driver='extension:' + instance['Id'], DeviceId=instance['DeviceId'], Revision=station['Version'])
+if integration_package.exists():
+    with zipfile.ZipFile(integration_package) as archive:
+        raw = archive.read('manifest.json')
+        integration_manifest = json.loads(raw)
+    integration_reference = dict(Id=integration_manifest['Id'], Version=integration_manifest['Version'], ManifestSha256=hashlib.sha256(raw).hexdigest().upper())
+    station['Extensions']['Packages'].append(integration_reference)
+    station['Extensions']['Services'] = [dict(Id='receiver-primary', PackageId=integration_reference['Id'], ModuleId='reference-http', Enabled=True, Parameters={'metadata.label':'frozen host late integration'})]
+    station['Extensions']['Ports'] = [dict(Port='requests', InstanceId='receiver-primary', Target=station['Integration'])]
 (config / 'station.json').write_text(json.dumps(station))
 common = [a.dotnet, str(app / 'Ipc.Product.dll'), '--config', str(config), '--data-root', str(work / 'data'),
           '--extension-root', str(extensions), '--extension-trust', str(trust)]
@@ -59,15 +70,17 @@ client = fixture = None
 client_log = (work / 'client.log').open('w')
 fixture_log = (work / 'fixture.log').open('w')
 try:
-    for action in ('extension-inspect', 'extension-install'):
-        command = [*common, '--action', action, '--mode', 'Simulation', '--file', str(package)]
-        if action == 'extension-install':
-            command.extend(['--sha256', hashlib.sha256(package.read_bytes()).hexdigest().upper()])
-        result = subprocess.run(command, capture_output=True, text=True, timeout=30)
-        (work / (action + '.log')).write_text(result.stdout + result.stderr)
-        if result.returncode != 0:
-            raise AssertionError(action + ': ' + result.stderr[-1200:])
-        results[action] = 'PASS'
+    for selected in [package] + ([integration_package] if integration_package.exists() else []):
+        for action in ('extension-inspect', 'extension-install'):
+            command = [*common, '--action', action, '--mode', 'Simulation', '--file', str(selected)]
+            if action == 'extension-install':
+                command.extend(['--sha256', hashlib.sha256(selected.read_bytes()).hexdigest().upper()])
+            result = subprocess.run(command, capture_output=True, text=True, timeout=30)
+            (work / (selected.stem + '-' + action + '.log')).write_text(result.stdout + result.stderr)
+            if result.returncode != 0:
+                raise AssertionError(action + ': ' + result.stderr[-1200:])
+            results[selected.stem + '-' + action] = 'PASS'
+    results['TypedIntegration'] = integration_reference if integration_package.exists() else 'not selected'
     fixture = subprocess.Popen([a.dotnet, str(release / 'fixture/Ipc.Fixture.dll'), '--url', url, '--data', str(work / 'receiver')], stdout=fixture_log, stderr=subprocess.STDOUT)
     client = subprocess.Popen([*common, '--action', 'serve'], stdin=subprocess.PIPE, stdout=client_log, stderr=subprocess.STDOUT, text=True)
 
@@ -115,7 +128,7 @@ try:
     def emit(role, kind, codes=None, quantity=None):
         write(json.dumps(dict(Action='emit', Lane=role, Kind=kind, Codes=codes, Quantity=quantity)))
 
-    until(lambda s: s['State'].get('IntegrationHealth', {}).get('Health') == 'Ready')
+    until(lambda s: (s['State'].get('IntegrationServiceHealth') or {}).get('Status') == 'Ready' or (s['State'].get('IntegrationHealth') or {}).get('Health') == 'Ready')
     command('Login', value='maintenance')
     command('OpenContext', value='000001')
     until(lambda s: s['State'].get('Session', {}).get('Status') == 'Active')

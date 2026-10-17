@@ -1,0 +1,16 @@
+  正在确定要还原的项目…
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Platform/Ipc.Platform.csproj (用时 421 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj (用时 421 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply/Ipc.Supply.csproj (用时 421 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Product/Ipc.Product.csproj (用时 421 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 421 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 421 毫秒)。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Product/bin/Release/net10.0/Ipc.Product.dll
+  Ipc.Assembly -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.dll
+  Ipc.Assembly -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/.artifacts/closure13-8cb475b-supply-assembly/app/
+Sealed Simulation configuration: /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/.artifacts/closure13-8cb475b-supply-assembly/app/config
+{"Package": "/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/.artifacts/closure13-8cb475b-supply-assembly.zip", "Sha256": "8f8bca002ccbd5eadd622b34d37ab20d05b909701d97d4f57a460c089ab0e611", "SchemaVersion": 1, "Business": "supply", "Views": ["workstation", "history", "alarms", "diagnostics", "maintenance", "engineering", "extensions"], "Layouts": ["standard", "compact"], "EntryPoint": "app/Ipc.Assembly.dll", "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519", "Windows": "WINDOWS_NOT_RUN", "Field": "BLOCKED", "Binaries": {"Ipc.Adapters.dll": "c06f58b5b1744d9b888dd7d93f8c8df521d826e7ecb51dd51eac05199b1e0666", "Ipc.Assembly.dll": "495993cdcb5302fe5527bf239fa672731a7d7de438882dcde23aa6e3604df3e4", "Ipc.Platform.dll": "9b701e6acc709fe1e071021bf25510d87626a8fc8bd159999e46535d109a7c36", "Ipc.Product.dll": "8cb79873dea04561dfab3da863b5d14f3660aca502f403855f45920a939ad59e", "Ipc.Supply.Contracts.dll": "2fcfbd711a9d91f257ae84a256f23e49c96a2eff583dfa87ad1c998da99cf733", "Ipc.Supply.dll": "a36bad331edfed01c3c766897290f196932d41f22edecc7fef5c062772bbb645"}}

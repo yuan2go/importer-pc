@@ -1,0 +1,111 @@
+{
+  "Result": "PASS_EXACT_SIGNED_CONTENT",
+  "Builds": [
+    {
+      "Kind": "observation",
+      "Repeat": 0,
+      "ContractDirectory": ".artifacts/closure13-8cb475b-integration-portable/app",
+      "SourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+      "Version": "1.0.1",
+      "ManifestSha256": "1327afa2291f8076e0043a5e24665a67f32ff3ed1991fa1310e2f865efd7104f",
+      "Files": {
+        "Ipc.Reference.BarcodeExtension.dll": "abb328da4ea96b1bcc0fa7b569c7638d7d60d81fa0b4a327f1dcfcc500122c7c"
+      },
+      "HostContractSha256": "9B701E6ACC709FE1E071021BF25510D87626A8FC8BD159999E46535D109A7C36",
+      "FrozenHostUnchanged": true
+    },
+    {
+      "Kind": "observation",
+      "Repeat": 1,
+      "ContractDirectory": ".artifacts/closure13-8cb475b-integration-portable/app",
+      "SourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+      "Version": "1.0.1",
+      "ManifestSha256": "1327afa2291f8076e0043a5e24665a67f32ff3ed1991fa1310e2f865efd7104f",
+      "Files": {
+        "Ipc.Reference.BarcodeExtension.dll": "abb328da4ea96b1bcc0fa7b569c7638d7d60d81fa0b4a327f1dcfcc500122c7c"
+      },
+      "HostContractSha256": "9B701E6ACC709FE1E071021BF25510D87626A8FC8BD159999E46535D109A7C36",
+      "FrozenHostUnchanged": true
+    },
+    {
+      "Kind": "observation",
+      "Repeat": 0,
+      "ContractDirectory": ".artifacts/closure13-8cb475b-integration-win-x64/app",
+      "SourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+      "Version": "1.0.1",
+      "ManifestSha256": "1327afa2291f8076e0043a5e24665a67f32ff3ed1991fa1310e2f865efd7104f",
+      "Files": {
+        "Ipc.Reference.BarcodeExtension.dll": "abb328da4ea96b1bcc0fa7b569c7638d7d60d81fa0b4a327f1dcfcc500122c7c"
+      },
+      "HostContractSha256": "9B701E6ACC709FE1E071021BF25510D87626A8FC8BD159999E46535D109A7C36",
+      "FrozenHostUnchanged": true
+    },
+    {
+      "Kind": "observation",
+      "Repeat": 1,
+      "ContractDirectory": ".artifacts/closure13-8cb475b-integration-win-x64/app",
+      "SourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+      "Version": "1.0.1",
+      "ManifestSha256": "1327afa2291f8076e0043a5e24665a67f32ff3ed1991fa1310e2f865efd7104f",
+      "Files": {
+        "Ipc.Reference.BarcodeExtension.dll": "abb328da4ea96b1bcc0fa7b569c7638d7d60d81fa0b4a327f1dcfcc500122c7c"
+      },
+      "HostContractSha256": "9B701E6ACC709FE1E071021BF25510D87626A8FC8BD159999E46535D109A7C36",
+      "FrozenHostUnchanged": true
+    },
+    {
+      "Kind": "integration",
+      "Repeat": 0,
+      "ContractDirectory": ".artifacts/closure13-8cb475b-integration-portable/app",
+      "SourceCommit": "01038cc5e21d200e4545c0a26594adc05eb62923",
+      "Version": "1.0.1",
+      "ManifestSha256": "1f5e9272b5e3e8cc97589067a49a63168152f6bed5892c78049b3e02d13337e6",
+      "Files": {
+        "Ipc.Reference.IntegrationExtension.dll": "102d8abfa8adb095164c7049f6c2a9874139dccf6f62d1a2d9cf9b77195cf71d"
+      },
+      "HostContractSha256": "9B701E6ACC709FE1E071021BF25510D87626A8FC8BD159999E46535D109A7C36",
+      "FrozenHostUnchanged": true
+    },
+    {
+      "Kind": "integration",
+      "Repeat": 1,
+      "ContractDirectory": ".artifacts/closure13-8cb475b-integration-portable/app",
+      "SourceCommit": "01038cc5e21d200e4545c0a26594adc05eb62923",
+      "Version": "1.0.1",
+      "ManifestSha256": "1f5e9272b5e3e8cc97589067a49a63168152f6bed5892c78049b3e02d13337e6",
+      "Files": {
+        "Ipc.Reference.IntegrationExtension.dll": "102d8abfa8adb095164c7049f6c2a9874139dccf6f62d1a2d9cf9b77195cf71d"
+      },
+      "HostContractSha256": "9B701E6ACC709FE1E071021BF25510D87626A8FC8BD159999E46535D109A7C36",
+      "FrozenHostUnchanged": true
+    },
+    {
+      "Kind": "integration",
+      "Repeat": 0,
+      "ContractDirectory": ".artifacts/closure13-8cb475b-integration-win-x64/app",
+      "SourceCommit": "01038cc5e21d200e4545c0a26594adc05eb62923",
+      "Version": "1.0.1",
+      "ManifestSha256": "1f5e9272b5e3e8cc97589067a49a63168152f6bed5892c78049b3e02d13337e6",
+      "Files": {
+        "Ipc.Reference.IntegrationExtension.dll": "102d8abfa8adb095164c7049f6c2a9874139dccf6f62d1a2d9cf9b77195cf71d"
+      },
+      "HostContractSha256": "9B701E6ACC709FE1E071021BF25510D87626A8FC8BD159999E46535D109A7C36",
+      "FrozenHostUnchanged": true
+    },
+    {
+      "Kind": "integration",
+      "Repeat": 1,
+      "ContractDirectory": ".artifacts/closure13-8cb475b-integration-win-x64/app",
+      "SourceCommit": "01038cc5e21d200e4545c0a26594adc05eb62923",
+      "Version": "1.0.1",
+      "ManifestSha256": "1f5e9272b5e3e8cc97589067a49a63168152f6bed5892c78049b3e02d13337e6",
+      "Files": {
+        "Ipc.Reference.IntegrationExtension.dll": "102d8abfa8adb095164c7049f6c2a9874139dccf6f62d1a2d9cf9b77195cf71d"
+      },
+      "HostContractSha256": "9B701E6ACC709FE1E071021BF25510D87626A8FC8BD159999E46535D109A7C36",
+      "FrozenHostUnchanged": true
+    }
+  ],
+  "Windows": "WINDOWS_NOT_RUN",
+  "PrivateKeyIncluded": false
+}

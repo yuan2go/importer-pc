@@ -1,0 +1,14 @@
+  正在确定要还原的项目…
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Platform/Ipc.Platform.csproj (用时 410 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj (用时 410 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Supply/Ipc.Supply.csproj (用时 410 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 410 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Product/Ipc.Product.csproj (用时 410 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 410 毫秒)。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Product/bin/Release/net10.0/Ipc.Product.dll
+  Ipc.Assembly -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.dll
+  Ipc.Assembly -> /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-3f4e0b93bcde4c5fadd7501bbb1fee63/architecture-13/supply-composition/

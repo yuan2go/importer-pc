@@ -59,9 +59,15 @@
       "ipc.supply": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Platform": "[1.0.0, )",
+          "Ipc.Supply.Contracts": "[1.0.0, )",
           "Microsoft.Data.Sqlite": "[10.0.13, )",
           "SQLitePCLRaw.bundle_e_sqlite3": "[2.1.14, )"
+        }
+      },
+      "ipc.supply.contracts": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Platform": "[1.0.0, )"
         }
       }
     }

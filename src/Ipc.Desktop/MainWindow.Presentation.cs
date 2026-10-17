@@ -113,7 +113,7 @@ public partial class MainWindow
         IdentityEntry.Visibility = Runtime.Mode == RunMode.Simulation ? Visibility.Visible : Visibility.Collapsed;
         EntryTitle.Text = !ready ? "启动自检 / NotReady" : !HasIdentity ? "登录供包工作台" : recovery ? "恢复旧箱与原请求" : "当前模拟身份";
         EntryDescription.Text = !ready ? "装配或状态读取未就绪。保留原始诊断，不以连接或假进度代替就绪。" : !HasIdentity ? "身份未取得或已过期。当前诊断可见；历史、详情和业务命令需要有效身份。" : recovery ? "发现原请求或恢复隔离；先核对原请求、接受账及实体，不生成替代ID。" : "切换参考角色会被应用层再次校验；未完成责任不会因登出而清除。";
-        StartupChecks.Text = $"配置：{Runtime.Configuration?.Version ?? "未取得"} · 模式 {Runtime.Mode?.ToString() ?? "未取得"}\n运行所有者：{Runtime.RuntimeId}\n当前箱：{session?.Barcode ?? "未取得"} / {(session is null ? "无活动箱" : OperatorText.Session(session.Status))}\n原请求：{snapshot?.Requests.Count(x=>x.Status is RequestStatus.Unknown or RequestStatus.Dispatching or RequestStatus.Prepared).ToString() ?? "未取得"} 项未决\n{model.HealthSummary}\n" + (Runtime.Diagnostics.Count>0 ? string.Join("；",Runtime.Diagnostics) : "实际来源、存储与业务守卫见持续状态；没有真实SDK或现场准入结论。");
+        StartupChecks.Text = $"配置：{Runtime.Configuration?.Version ?? "未取得"} · 模式 {Runtime.Mode?.ToString() ?? "未取得"}\n运行所有者：{Runtime.RuntimeId}\n当前箱：{session?.Barcode ?? "未取得"} / {(session is null ? "无活动箱" : OperatorText.Session(session.Status))}\n原请求：{snapshot?.Requests.Count(x=>x.Status is RequestStatus.Unknown or RequestStatus.Dispatching or RequestStatus.Prepared).ToString() ?? "未取得"} 项未决\n{model.HealthSummary}\n" + (Runtime.RuntimeDiagnostics.Count>0 ? string.Join("；",Runtime.RuntimeDiagnostics) : "实际来源、存储与业务守卫见持续状态；没有真实SDK或现场准入结论。");
         EntryContinueButton.IsEnabled=HasIdentity;
         EntryRecoveryButton.IsEnabled=ready;
         var canOpen = session is null || session.Status is SessionStatus.Closed or SessionStatus.Rejected;

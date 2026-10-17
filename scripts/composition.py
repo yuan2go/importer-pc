@@ -6,7 +6,7 @@ from pathlib import Path
 
 def resolve(file: Path, name: str):
     data = json.loads(file.read_text())
-    if set(data) != {'schema', 'components', 'compositions', 'required'} or data['schema'] != 1:
+    if set(data) != {'schema', 'components', 'compositions', 'required', 'products'} or data['schema'] != 2:
         raise ValueError('Unsupported composition schema')
     components = data['components']
     roots = data['compositions'][name]
@@ -31,6 +31,6 @@ def resolve(file: Path, name: str):
 
     for key in roots:
         visit(key)
-    if not set(data['required']).issubset(seen):
+    if not set(data['required'][name]).issubset(seen):
         raise ValueError('Core management/recovery/business dependencies cannot be removed')
-    return dict(schema=1, composition=name, definition_sha256=hashlib.sha256(file.read_bytes()).hexdigest(), components=ordered)
+    return dict(schema=2, composition=name, product=data['products'][name], definition_sha256=hashlib.sha256(file.read_bytes()).hexdigest(), components=ordered)

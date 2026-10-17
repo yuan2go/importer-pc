@@ -1,0 +1,21 @@
+{
+  "FrozenSourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+  "RuntimeInputsEqualFrozenSource": true,
+  "Paths": [
+    "src",
+    "config",
+    "scripts",
+    "global.json",
+    "Directory.Build.props",
+    "NuGet.Config",
+    "ImporterPc.slnx",
+    "docs/runtime/operations.md",
+    "docs/extensions/developer-guide.md"
+  ],
+  "AllFinalVerificationCommandsExitCode": 0,
+  "Windows": "WINDOWS_NOT_RUN",
+  "ActualWpfScreenshots": 0,
+  "ParentPr": 12,
+  "NoMerge": true,
+  "UnpublishedWithdrawnCandidate": "a1c41bc"
+}

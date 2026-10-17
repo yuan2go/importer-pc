@@ -1,95 +1,70 @@
-# 受控扩展开发、安装与恢复
+# CLOSURE-13 扩展开发、安装与恢复
 
-本指南对应EXTENSION-WINDOWS-DELIVERY-12 / ExtensionContract1。宿主源码和包SHA由12报告登记，插件源码身份独立登记。当前新增的后装能力为受信任托管观察来源；既有manual/replay和SIMULATION-v1继续走同一个Product来源/发送器、Supply契约与事务。厂商SDK、系统驱动、真实WCS和新业务不在本期支持声明内，未支持的模块kind/原生导入/元数据语义明确拒绝。
+本指南对应[13工作包](../work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)和ExtensionContract1；[设计与职责](../design/controlled-extensions.md)、[实际结果/候选身份](../runtime/arch-extension-closure-13.md)。12指南[原字节](../archive/pre-arch-extension-closure-13/docs/extensions/developer-guide.md.txt)保留。Windows实际操作、普通账户/UAC/ACL、UI/输入/分辨率/DPI、听审与持续旅程全部WINDOWS_NOT_RUN，不能把下列命令写成实机验收。
 
-## 宿主与包的身份
+## 公共契约与独立构建
 
-宿主release.json和config/product.json固定核心字节，不因后装重seal。扩展.ipcx是ZIP，包含manifest.json原UTF-8字节、manifest.sig原RSA-PSS/SHA256签名、Files精确文件集合。算法使用.NET/OpenSSL标准实现，RSA至少3072位。manifest含包/发布者/源提交/版本、模块/入口、Runtime/RID/契约及冻结宿主公共契约SHA、依赖、参数schema、SDK或系统驱动前置证据和文件长度/SHA。包无权把自己加入信任。当前无在线吊销查询，界面/回执保存离线策略SHA、核验时间和TEST ONLY标记，不能宣称联网核验。
+观察包实现Ipc.Platform.IObservationExtension，Create(ExtensionContext)返回IControlledObservationSource。只构造，StartControlledAsync后才能采集；DeviceId/epoch/sourceEvent/sequence/admission必须真实关联；健康确认来自源，不能靠UI读取续期。观察包不得引用Supply实现或SQLite。
 
-同一ID/版本不允许绑定另一份manifest；部署每个包只选一个精确版本，安装目录可并存多个版本。依赖必须精确到ID/版本/manifestSHA，部署校验整个闭包、版本冲突和环。签名manifest精确绑定HostContractSha256，不把同一契约主版本视为任意宿主二进制兼容；不同目标构建若公共契约字节不同，分别构建匹配包。托管加载共享宿主Ipc.Platform类型身份；私有程序集只从签名清单及声明的精确依赖上下文解析，不扫描DLL、不改PATH。ALC不是沙箱，可信发布者对进程内代码负责；Unload是协作请求，不能作为停止/释放证据。
+集成包实现Ipc.Supply.IIntegrationExtension，Create(IntegrationExtensionContext)返回IControlledIntegration。公共程序集为Ipc.Supply.Contracts.dll和Ipc.Platform.dll，无业务数据库、UI或根容器。实现Encode/Authority/ValidateResponse及ExecuteAsync/QueryAsync/HealthAsync、StopAsync、DisposeAsync、Diagnostic；以原请求和原Target校验，不从当前配置找替代地址。CancellationToken与有界超时必须穿透网络；请求超时/取消可能已经被接收，保持Unknown并查询原ID。Stop完成代表所有在途任务终止，Dispose失败不得伪称释放。
 
-SDK前置是vendor-sdk，Windows驱动前置是system-driver；它们不是插件入口。当前缺批准的前置证据解析能力时拒绝激活该包，原生/混合DLL及P/Invoke也拒绝。不执行安装脚本、任意XAML、表达式、MSI或设备控制来“检测”兼容。
-
-## 独立构建与签名
-
-先发布并冻结宿主，再仅引用其Ipc.Platform.dll构建examples/BarcodeExtension。示例不在宿主solution/project引用图中。可用下列本机命令生成**参考测试**签名材料；私钥始终在构建方私有目录，不进Git、客户端或公开制品：
+先发布冻结宿主，再独立构建；两个示例均不在宿主项目引用图：examples/BarcodeExtension和examples/IntegrationExtension。私钥只放构建者私有目录，不进Git或客户端：
 
 ```sh
-openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:3072 -out /private/build-only/reference-signing.pem
-openssl pkey -in /private/build-only/reference-signing.pem -pubout -out /private/build-only/reference-public.pem
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:3072 -out /private/build/reference.pem
+openssl pkey -in /private/build/reference.pem -pubout -out /private/build/reference-public.pem
+python3 scripts/build-extension.py --contract /frozen/app/Ipc.Platform.dll --kind observation --output /new/reader-1.0.0.ipcx --key /private/build/reference.pem --publisher reference-test --trust /independent/trust.json
+python3 scripts/build-extension.py --contract /frozen/app/Ipc.Platform.dll --kind integration --output /new/integration-1.0.0.ipcx --key /private/build/reference.pem --publisher reference-test --trust /independent/trust.json
 ```
 
-独立可信通道提供策略JSON，SchemaVersion=1，Publishers每项为Id、PublicKeyPem、TestOnly。参考包要求TestOnly=true；Production策略中出现测试发布者就拒绝。不要从插件包中导入其自带证书作为信任。生产签名根和代码签名未取得，本候选没有生产签名资格。
+独立政策SchemaVersion=1，Publishers每项为Id/PublicKeyPem/TestOnly；参考发布者TestOnly=true。包内公钥不构成信任，不自动导入。Production拒绝测试根。脚本只引用冻结公共DLL，校验宿主Ipc.*.dll前后SHA，记录每个示例自己的Git source commit和源字节指纹。新版本用--version和新路径，原包不覆盖。
+
+产品装配在首个静态预检前注册公共契约并封存名单，平台不硬编码业务程序集名。依赖类库可用Modules=[]，真实引用仍须闭包完整，不能用空入口蒙混。manifest精确绑定HostContractSha256，集成还绑定PublicContracts.Ipc.Supply.Contracts的SHA。程序集实际AssemblyRef必须满足锁定net10.0框架/明确公共契约/完整签名闭包，版本、token、culture和所有权必须唯一；System.*不自动可信。SDK/系统驱动只作前置证据，未批准resolver时拒绝激活；原生/混合/PInvoke、脚本、任意XAML或命令安装均拒绝。
+
+## 两类多实例及参数
+
+包不等于实例，设备不等于服务。Packages选择完整精确闭包；Instances为观察设备，DeviceBinding.Driver=extension:实例ID且业务拥有Role。Services为外部集成，不携带DeviceId；Ports按业务用途绑定ServiceInstance和Target(Id/Revision/Contract/Endpoint)。供包主端口为requests，必须与StationConfig.Integration一致，另可配置独立辅助命名端口；所有实例各有参数、健康和诊断。
+
+schema为明确有限子集：string/integer/boolean/choice/string-list/secret-reference；分组、单位、长度/范围/集合上限、默认、条件必填、只读、说明、Maintenance权限和Restart生效级别。未知语义拒绝。敏感参数只存credential:名称引用，参考实现不读取生产密码。UI不执行包内XAML/脚本；安装后直接由schema生成表单。
+
+同一PAGE08“组件与部署”可读包/信任/精确依赖、安装计划、设备及服务实例、服务目标、参数有效值与草稿、部署差异/回执、运行诊断、升级/停用/卸载及原安装操作。每窗有自己的草稿和查询代次，页面切换不创建第二业务/来源/连接/发送器。维护身份到期、无权、版本竞争、未激活与失败均由应用守卫裁决。
+
+1. 安装原.ipcx并读取Installed回执；安装不激活。
+2. 选精确包加入部署草稿，选模块创建实例。设备填写真实稳定DeviceId和业务Role；服务填写端口与目标身份，不填写虚构设备。
+3. 编辑参数，比较有效值；包、实例、参数、角色/端口和站点参数形成唯一StationConfig部署修订。
+4. SaveConfig/ActivateConfig经应用CAS、有效维护身份、资源/原请求责任校验。保存Validated不代表生效；PendingActivation要求受控停止/重启。
+5. 最终组合取得实际资源与包租约并初始化成功，才写Effective。失败记录ActivationFailed，旧Effective和原业务账保留；完全停止后下一受控启动可回旧组合。
+
+## CLI与Windows运维
+
+CLI与WPF使用同一个ExtensionStore和业务维护契约；不会在提权阶段构造插件。portable开发可显式指定合成store/trust路径，Windows只能使用已由维护主体配置的ProgramData目录与独立信任策略，不开放用户路径覆盖：
 
 ```sh
-python3 scripts/build-extension.py \
-  --contract /frozen-host/app/Ipc.Platform.dll \
-  --output /new-output/reference.barcode-1.0.0.ipcx \
-  --key /private/build-only/reference-signing.pem \
-  --publisher reference-test --trust /independent-policy/trust.Simulation.json
+dotnet app/Ipc.Product.dll --action extension-list --mode Simulation --extension-root /reference/store --extension-trust /independent/trust.json
+dotnet app/Ipc.Product.dll --action extension-inspect --mode Simulation --file /offline/reference.ipcx --extension-root /reference/store --extension-trust /independent/trust.json
+dotnet app/Ipc.Product.dll --action extension-install --mode Simulation --file /offline/reference.ipcx --sha256 ORIGINAL_PACKAGE_SHA --extension-root /reference/store --extension-trust /independent/trust.json
 ```
 
-脚本使用锁定SDK/空外部依赖锁，不编译宿主；签名前后校验冻结宿主所有Ipc.*.dll，独立插件SourceCommit来自示例目录最后源码提交。签名后再以独立公钥策略验证。升级用新的--version及全新输出，不覆盖旧包；插件源码有变化应先提交该源码，身份文件保留其实际提交。
+实际业务控制台--action serve接受snapshot、extensions、integration-diagnostics，以及原JSON command SaveConfig/ActivateConfig/原请求reconcile。先snapshot取ExpectedRevision；维护登录与应用守卫不可绕过。无需UI手工编辑数据库。
 
-实现IObservationExtension.Create(ExtensionContext)，返回IControlledObservationSource。Create只构造资源所有者，不偷偷开始采集；StartControlledAsync接受宿主注册epoch，观察保持device/epoch/sourceEvent/sequence/admission身份。健康确认时间来自可靠来源，不从UI读取续期。Stop完成必须表示所有回调/后台任务已终止；不可将超时当作已停止。Dispose幂等，失败仍明确保留所有权。例子的ISyntheticObservationInput仅Simulation工程入口调用，输入真实进入原Observation队列、Supply/SQLite/Outbox和独立loopback；它不是模拟成功返回值。
+Windows候选在Program Files/ImporterPc的受保护发布目录，经同版protect-release.ps1、provision-runtime.ps1和provision-extensions.ps1配置指定普通运行账户、机级租约及只读包库。WPF调用同版受限Ipc.Product.exe OS runas辅助程序，辅助程序重新验信任、原SHA、路径和计划；UAC取消/ACL拒绝不得伪称成功。不要从Downloads可写目录提升。生产签名根/SDK/WCS及批准策略未取得，继续BLOCKED。原12指南中的Windows具体步骤仍可参照，但没有本轮实机PASS。
 
-## 参数schema与实例
+## 恢复、原请求和卸载
 
-这是显式有限schema，不冒称完整JSON Schema。每个字段Key是稳定的参数路径，点号表达嵌套路径；Group以“/”表达分组层级。支持string、integer（InvariantCulture整数/上下界）、boolean、choice、string-list（有界集合）、secret-reference。支持默认、必填、条件必填（RequiredWhenKey/Equals）、只读、说明、单位、长度/集合上限、维护编辑权限及Restart生效级别。当前所有影响来源的参数都要求重启；未知类型、权限、生效级别或未支持的语义拒绝，不静默忽略。schema只生成标准WPF控件，没有脚本/XAML执行。
+同ID/version永远绑定同一manifest，跨Uninstalled/retired/中断/并发/修复保持。原精确包可重装；更换签名内容必须新版本，不删登记、日志或identities目录。安装Prepared/FilesVerified/Published/Registered原操作ID和原包SHA可恢复，UninstallRetired中断也用原操作恢复；损坏原字节移入damaged保留，修复需要独占包租约。
 
-string-list在编辑器每行一项，存储为有界字符串数组的JSON值；每项也检查长度和控制字符。只读字段必须等于签名默认值。敏感字段只能为credential:名称，持久配置/差异/日志只保存引用，不能输入明文秘密；参考来源不读取生产凭据。真实凭据读取器需与真实身份/SDK集成另行批准，不能靠本例宣称已支持。
+新请求首次T1持久化精确实现/包/模块/实例/部署/参数指纹/合同SHA/目标/超时及参考业务策略。历史查询/回执验证使用原身份，缺旧能力精确阻断；不换目标、不换ID、不改原报文/hash、不默认重发。旧Implementation缺失的SIMULATION-v1只走明确原Binding/原payload兼容适配。12公开观察包仅对登记指纹允许Contract1兼容，不删除HostContractSha256或改主版本冒充兼容。
 
-包不等于实例。一个模块可有多个实例，每个实例独立参数及稳定DeviceId；DeviceBinding.Driver=extension:实例ID，Role仍由Supply拥有left/right。相同设备资源同时持有模式无关的全局设备租约，不能仅改实例名或模式逃避独占。当前观察实例必须显式绑定一个业务角色，重复角色/设备、未启用实例、缺失包/能力/依赖和实例配额超限均拒绝。
+先在统一部署停用实例、移除绑定及包并受控重启。卸载重新检查反向依赖、Effective/Pending、所有未决原请求及实际包租约；不是UI分页快照。Stop/Dispose或查询/T3/审计未终止时保留应用/库/日志和全部租约，不能并行创建第二所有者。成功只退休文件，保留登记、审计、业务事实。旧SQL/checksum1/2/3不改，不回滚station.db隐藏外部接受；回退核心仍按备份/匹配旧发布/新根/恢复隔离的原流程。
 
-## Windows安装与普通账户运行
+## 验证与候选
 
-从12报告的授权远端下载并核验ZIP SHA和SHA256SUMS。候选未通过Windows验收，首次在隔离参考机使用合成数据，不能用于现场放行。使用Windows11 24H2/build26100+ x64和PowerShell7；日常使用指定普通账户。提升的维护终端执行首次部署（替换实际账户与路径）：
+--architecture实际覆盖P2身份失败窗口、真实AssemblyRef负例与合法依赖、两个独立包、两类多实例、冻结原请求/改目标/缺旧能力、取消、失败激活、Stop所有权和两个真实业务组合。--extensions保留12中断安装/修复/卸载/升级与来源恢复旅程；--baseline、--followup、--review-followup保护相关T1/T2/T3、双箱及所有权。具体源码、命令与结果只以13报告/checks为准。
 
-```powershell
-$release = 'C:/Program Files/ImporterPc/releases/delivery-12-reference'
-./protect-release.ps1 -Release $release -RuntimeAccount 'MACHINE\station-user'
-./provision-runtime.ps1 -RuntimeAccount 'MACHINE\station-user'
-./provision-extensions.ps1 -Mode Simulation -TrustFile 'D:/independent-policy/trust.Simulation.json'
-```
+package-reference.py integration-reference交付完整供包portable或win-x64未验候选，含两类独立签名包及单独TEST ONLY公钥策略；package-business.py提供inspection-reference和supply-assembly真实裁剪组合。锁、SourceCommit、Release、Storage/MinimumReader、契约、每个独立插件身份、精确文件SHA、ZIP SHA和远端回读均分别记录。Windows包是候选，不能当已验最终版或现场资格。
 
-账户名实际采用Windows可解析的MACHINE\station-user格式。安装目录和Program Files/ImporterPc下父目录必须由维护主体拥有，普通账户只读。辅助程序和UI双方检查此边界；不能从用户可写Downloads或临时目录运行提权辅助程序。ProgramData/ImporterPc下的extensions/Simulation与extensions/Production和两份离线信任策略独立；只有SYSTEM/Administrators可写扩展库，普通运行账户只读。机级leases保留既有指定账户写锁权限，并检查ACL/重解析点。新政策不会自动信任包里的公钥。
+## PR12补丁的包内容身份
 
-再回普通账户启动fixture及station.ps1 Init/Run。PAGE-08“组件与部署”或登录/启动页的“组件管理与恢复”可查看包、信任、依赖和操作。选择.ipcx先取得静态计划，再确认精确包/版本/SHA。UI用固定同版Ipc.Product.exe + 参数列表调用OS runas；辅助程序重新验证独立策略、文件和SHA，不加载插件或执行任意命令。UAC取消/权限拒绝保持失败状态，模拟维护身份不能绕过OS。参考托管安装通常只需该受限辅助步骤；没有安装厂商SDK或Windows驱动。
+组合中的`reference.barcode`和`reference.integration`已声明补丁版本1.0.1。`package-reference.py`按组合精确版本传给独立构建器，`smoke-extension.py`按发布的`composition.lock.json`选择原包，不扫描最新版。插件源提交仍分别取各自examples目录的最后提交；宿主提交及公共契约SHA另记。换宿主导致manifest公共契约指纹变化时必须使用新包版本；已发布1.0.0及永久ID/version登记不可改写。Production批准与实际Windows接入状态不随参考包版本改变。
 
-命令行使用同一管理实现，extension-inspect只读，extension-install/recover/uninstall均按OS授权：
-
-```powershell
-./app/Ipc.Product.exe --action extension-inspect --mode Simulation --file 'D:/offline/reference.barcode-1.0.0.ipcx'
-./app/Ipc.Product.exe --action extension-install --mode Simulation --file 'D:/offline/reference.barcode-1.0.0.ipcx' --sha256 '计划中的64位SHA'
-```
-
-没有业务身份或业务未启动时，核心包读取、安装计划和OS授权的安装/恢复仍可达；参数保存/激活需要应用内有效维护身份。普通操作者的UI提示不是提权证明，Windows普通账户、UAC取消/ACL/跨会话结果须看06及12实际证据。
-
-## 经UI形成唯一部署修订
-
-1. 在包列表选择已安装精确版本，加入部署草稿（自动解析精确依赖闭包）。安装状态只是Installed。
-2. 在实例页选模块，填写唯一实例ID、稳定设备ID及left/right，编辑schema生成的完整参数，写入本窗草稿。两个实例独立，右侧显示当前有效值，敏感项仅显示引用已设置。
-3. 统一部署页填写新的不可复用版本，预览差异后保存；站点参数来自同一维护表单。包集合、实例、参数和DeviceBinding全都进入原StationConfig/ConfigRevision，而非第二个可生效配置账。
-4. 后台校验结构/schema、实例/跨绑定/资源、产品能力，保存Validated或Rejected及原因。CAS竞争返回Conflict；过期身份/迟到读取不能覆盖新身份结果。保存不代表激活。
-5. 关闭活动箱、核对Unknown与实体责任后，选择Validated修订申请激活。后台再查权限、原版本、原请求、隔离、占位、依赖和签名，标PendingActivation并阻断。受控退出/重启；来源Stop或Dispose未终止时继续保留全部依赖/租约，不能启动第二所有者。
-6. 重启在数据租约下选择最终配置，再取得最终设备/包租约，重验包、建立来源/代次和发送器。DeploymentPhase审计记录部署指纹/验证/资源/模块阶段；只有组合初始化成功，原事务才将新修订Effective、旧修订Superseded。业务就绪仍由真实健康/身份/实体/Unknown守卫决定。
-
-界面草稿每窗独立。只开抽屉或第二窗不会复制业务实例。新箱焦点沿用ticket；窗口区域不足由应用拥有每窗保护标记，首次Loaded前测得不足也会提交，且不依赖已登录。另一窗口不能Resume仍在不足区的窗口。扩大/关闭窗口只解除对应区域条件，持久人工暂停必须显式恢复；其它原因保留。
-
-## 升级、失败与卸载
-
-新版本先安装另一目录，再以新部署修订选择；旧包/旧Effective/原业务账保留。启动失败记录ActivationFailed，核心管理可见；完全停止后下一受控启动使用旧Effective。不能在未终止进程里并行启动旧来源。切回旧包仍要通过当前schema、契约、包/配置及资源校验；不支持的配置迁移明确拒绝。对本期托管观察扩展，回退不回滚station.db，不修改原请求字节/目标/合同，不补发Unknown。
-
-安装日志阶段Prepared→FilesVerified→Published→Registered绑定原操作ID和包SHA。incoming受控原包、staging、版本目录和登记分开；实际进程中断后以原ID恢复。部分暂存保留为interrupted，不先执行代码。损坏的同身份包可用原签名包修复：取得独占包租约后将坏字节保留到damaged，再静态重装；仍在使用时拒绝。不要换ID盲重装或手删日志/租约。
-
-先在新部署草稿停用/移除实例并解除绑定、移出包，受控重启生效。卸载检查反向包依赖、Effective/Pending和原未决请求需求；原请求未决时保守保留所有相关历史配置包引用，查询不受UI分页100条限制。实际使用/未终止插件的包租约也阻止卸载。包使用锁在安装方拥有、运行账户只读的usage目录，多个工位可共享不可变包；卸载/修复取独占读句柄，不在提升进程中写入运行账户可替换的租约文件。配置保存/激活持有包读租约直至原事务提交；卸载先取得独占包租约，再重新读取DB引用，防止以旧快照漏掉并发Pending。成功将文件原子移至retired，保留登记、操作日志和所有业务事实；UninstallRetired阶段中断可用同一原操作恢复。需要后续清理容量时必须另行审查保留政策，不在本包自动删审计。
-
-历史Storage SQL/checksum1/2/3未改。带Extensions字段的新部署需要12兼容宿主，不能因Storage仍3就让旧EXE直接解释新配置；旧严格DTO会拒绝新字段。核心二进制回退仍遵守既有备份+匹配发布+新根+恢复隔离流程，不用业务数据库回滚隐藏外部接受事实。
-
-## 验证与交付边界
-
-`--extensions`实际独立构建来源、验证签名/路径/RID/配额/依赖/篡改、多个中断点、真实进程终止后原ID恢复、实例参数隔离、配置竞争、Unknown原请求核对、升级成功/启动失败保旧、停用卸载、真实延迟Stop及构造失败时的所有权；不代替WPF。
-
-两个构建组合由config/compositions.json锁定：core-reference不带可选插件；barcode-reference额外独立构建并携带签名离线插件及单独TEST ONLY公钥策略（仍须OS显式配置，不自动信任/激活）。composition.lock.json记录依赖闭包、核心字节和可选包SHA；SHA256SUMS覆盖精确产物集合。
-
-Windows可执行入口是随包windows-reference-validation.ps1，记录包回读、环境、实际WPF进程/UIAutomation与屏幕截图。它的runner管理入口冒烟不等于06六组验收；Windows Server/admin会话不算Windows11/普通账户资格。每格分辨率/缩放、跨屏、多窗、扫码器、触控、听审、持续旅程及维护/故障按06独立保留证据；缺项继续OPEN/NOT_RUN。远端同版候选和下载回读SHA见12报告，不从工作流文件存在推定运行PASS。
+重复构建证明：`python3 scripts/verify-extension-reproducibility.py --contract-directory <portable/app> --contract-directory <win-x64/app> --key <external-private-key> --trust <independent-test-policy> --publisher reference-test --version 1.0.1 --dotnet <pinned-dotnet> --output <fresh-evidence.json>`。两种扩展对每个冻结宿主各构建两次，必须有相同原始manifest和payload，宿主字节不变；RSA-PSS签名随机性不要求ZIP原字节相同。macOS临时目录先解析物理路径并映射整个构建根，避免随机/private/var路径进入托管DLL。新输出不可覆盖旧证据；私钥不会进入输出。

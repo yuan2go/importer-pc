@@ -1,0 +1,248 @@
+{
+  "Original": {
+    "Id": "d300c00661bd4d7ea7fae8b23fc0921b",
+    "OwnerId": "f74e08ba01454cf4bfdc9d193650b4ff",
+    "SessionId": "ebb3303f63224c2586a9213d6f8e06ef",
+    "Kind": "Submit",
+    "OwnerRevision": 3,
+    "IntentKey": "f74e08ba01454cf4bfdc9d193650b4ff:Submit:3",
+    "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-d0e2dee5365c486885a6bfabf65ed62b\u0022,\n  \u0022SessionId\u0022: \u0022ebb3303f63224c2586a9213d6f8e06ef\u0022,\n  \u0022OwnerId\u0022: \u0022f74e08ba01454cf4bfdc9d193650b4ff\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T15:52:27.421154\u002B00:00\u0022\n  }\n}",
+    "PayloadHash": "9BEE543A8F03A1B139798922E38566F861D5CF29E682D4B231B9797345246C76",
+    "Binding": {
+      "Id": "reference-target-a",
+      "Revision": "1",
+      "Contract": "SIMULATION-v1",
+      "Endpoint": "http://127.0.0.1:61792/"
+    },
+    "Status": "Unknown",
+    "CreatedAt": "2026-10-17T07:52:27.681305+00:00",
+    "Implementation": {
+      "Driver": "extension",
+      "Package": {
+        "Id": "reference.integration",
+        "Version": "1.0.0",
+        "ManifestSha256": "A2FDEBD569EE2EC12ED4E74B4B16E6D4C49D2ED8A32FD81110CC7928B50F2F69"
+      },
+      "ModuleId": "reference-http",
+      "InstanceId": "receiver-a",
+      "DeploymentVersion": "E13-DEPLOY-1",
+      "ConfigurationSha256": "7E05BD19059ACC7550EA46672E7123DC984101EA4DAFAFD7BCB6D7FC66AF1498",
+      "ContractSha256": "A94CF7E9AF23A865F811C8AB5600855E1A93E89EAF5592B89BD4CCA24F373731",
+      "Target": {
+        "Id": "reference-target-a",
+        "Revision": "1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:61792/"
+      },
+      "TimeoutMs": 500,
+      "Policy": "SYNTHETIC-KEEP-v1",
+      "FixtureDemand": 120,
+      "Parameters": {
+        "metadata.label": "primary",
+        "fault.fail-create": "false",
+        "fault.stop-delay-ms": "0",
+        "fault.dispose-delay-ms": "0"
+      }
+    }
+  },
+  "Resolved": {
+    "Request": {
+      "Id": "d300c00661bd4d7ea7fae8b23fc0921b",
+      "OwnerId": "f74e08ba01454cf4bfdc9d193650b4ff",
+      "SessionId": "ebb3303f63224c2586a9213d6f8e06ef",
+      "Kind": "Submit",
+      "OwnerRevision": 3,
+      "IntentKey": "f74e08ba01454cf4bfdc9d193650b4ff:Submit:3",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-d0e2dee5365c486885a6bfabf65ed62b\u0022,\n  \u0022SessionId\u0022: \u0022ebb3303f63224c2586a9213d6f8e06ef\u0022,\n  \u0022OwnerId\u0022: \u0022f74e08ba01454cf4bfdc9d193650b4ff\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T15:52:27.421154\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "9BEE543A8F03A1B139798922E38566F861D5CF29E682D4B231B9797345246C76",
+      "Binding": {
+        "Id": "reference-target-a",
+        "Revision": "1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:61792/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T07:52:27.681305+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.0",
+          "ManifestSha256": "A2FDEBD569EE2EC12ED4E74B4B16E6D4C49D2ED8A32FD81110CC7928B50F2F69"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "receiver-a",
+        "DeploymentVersion": "E13-DEPLOY-1",
+        "ConfigurationSha256": "7E05BD19059ACC7550EA46672E7123DC984101EA4DAFAFD7BCB6D7FC66AF1498",
+        "ContractSha256": "A94CF7E9AF23A865F811C8AB5600855E1A93E89EAF5592B89BD4CCA24F373731",
+        "Target": {
+          "Id": "reference-target-a",
+          "Revision": "1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:61792/"
+        },
+        "TimeoutMs": 500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "metadata.label": "primary",
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0"
+        }
+      }
+    },
+    "Attempts": [
+      {
+        "Id": "4a9badf215364a3caea7a9204f1f49f8",
+        "RequestId": "d300c00661bd4d7ea7fae8b23fc0921b",
+        "Ordinal": 1,
+        "StartedAt": "2026-10-17T07:52:27.753044+00:00",
+        "EndedAt": "2026-10-17T07:52:27.760728+00:00",
+        "Disposition": "Unknown",
+        "Error": "HttpRequestException: transport outcome not authoritative"
+      }
+    ],
+    "Responses": [
+      {
+        "RequestId": "d300c00661bd4d7ea7fae8b23fc0921b",
+        "PayloadHash": "9BEE543A8F03A1B139798922E38566F861D5CF29E682D4B231B9797345246C76",
+        "EvidenceId": "3bada23cac1240b9bf0938aafa5c6dca",
+        "Result": "Accepted",
+        "Reason": "SIMULATION accepted",
+        "Remaining": 118,
+        "Quantity": 2,
+        "CheckToken": null,
+        "Task": {
+          "Sku": "SIM-SKU-4403E0E0DC91",
+          "ItemWave": "SIM-ITEM-WAVE-2915F5A950D9",
+          "TaskId": "SIM-TASK-FE4E1453677B",
+          "Destination": "SIM-CHUTE-06",
+          "Unit": "\u4EF6",
+          "Provenance": {
+            "Source": "Independent synthetic task fixture",
+            "Version": "SYNTHETIC-SEMANTICS-v1",
+            "EvidenceId": "3bada23cac1240b9bf0938aafa5c6dca",
+            "AcquiredAt": "2026-10-17T07:52:27.756834+00:00"
+          }
+        }
+      }
+    ],
+    "Audit": [
+      {
+        "Id": "34ea909e8d044a2f802eb3535595afe7",
+        "OwnerId": "f74e08ba01454cf4bfdc9d193650b4ff",
+        "Actor": "device:SIM-E13-A",
+        "CommandId": "system",
+        "Kind": "Associated",
+        "Evidence": "{\n  \u0022Id\u0022: \u0022a5f217e4d96043748a36085a30b2a0db\u0022,\n  \u0022DeviceId\u0022: \u0022SIM-E13-A\u0022,\n  \u0022Epoch\u0022: \u0022aa4a39f4f9694d8fa65c1aa1de583272\u0022,\n  \u0022SourceEventId\u0022: \u002270efea87a4474007ba0a3ffb347d0a25\u0022,\n  \u0022Sequence\u0022: 1,\n  \u0022AdmissionId\u0022: \u0022a4a5e30817d043ce90e17758d1316c06\u0022,\n  \u0022Kind\u0022: \u0022Enter\u0022,\n  \u0022Codes\u0022: [],\n  \u0022PackageQuantity\u0022: null,\n  \u0022ObservedAt\u0022: \u00222026-10-17T07:52:27.570737\u002B00:00\u0022\n}",
+        "At": "2026-10-17T07:52:27.575111+00:00"
+      },
+      {
+        "Id": "562535feb220491183df169b5d84aa61",
+        "OwnerId": "f74e08ba01454cf4bfdc9d193650b4ff",
+        "Actor": "device:SIM-E13-A",
+        "CommandId": "system",
+        "Kind": "Associated",
+        "Evidence": "{\n  \u0022Id\u0022: \u0022279bfce603484d5e808ebe0013290ba1\u0022,\n  \u0022DeviceId\u0022: \u0022SIM-E13-A\u0022,\n  \u0022Epoch\u0022: \u0022aa4a39f4f9694d8fa65c1aa1de583272\u0022,\n  \u0022SourceEventId\u0022: \u0022324327c6f526466dada320dcab4b8339\u0022,\n  \u0022Sequence\u0022: 2,\n  \u0022AdmissionId\u0022: \u0022a4a5e30817d043ce90e17758d1316c06\u0022,\n  \u0022Kind\u0022: \u0022Read\u0022,\n  \u0022Codes\u0022: [\n    \u0022000123\u0022\n  ],\n  \u0022PackageQuantity\u0022: 2,\n  \u0022ObservedAt\u0022: \u00222026-10-17T07:52:27.578928\u002B00:00\u0022\n}",
+        "At": "2026-10-17T07:52:27.579658+00:00"
+      },
+      {
+        "Id": "ec4a4934c8ca494c8c854024aede8617",
+        "OwnerId": "f74e08ba01454cf4bfdc9d193650b4ff",
+        "Actor": "sender",
+        "CommandId": "system",
+        "Kind": "T2Claim",
+        "Evidence": "d5b9bed92c1e46608ad59735b3c6ad4d",
+        "At": "2026-10-17T07:52:27.647168+00:00"
+      },
+      {
+        "Id": "a3d18f5f366748329d1a6caeaa73e70e",
+        "OwnerId": "f74e08ba01454cf4bfdc9d193650b4ff",
+        "Actor": "sender",
+        "CommandId": "system",
+        "Kind": "TransportHandoffAuthorized",
+        "Evidence": "d5b9bed92c1e46608ad59735b3c6ad4d",
+        "At": "2026-10-17T07:52:27.647941+00:00"
+      },
+      {
+        "Id": "069b0064d42f4d34838be9f4e1652e1f",
+        "OwnerId": "f74e08ba01454cf4bfdc9d193650b4ff",
+        "Actor": "integration",
+        "CommandId": "system",
+        "Kind": "T3Response",
+        "Evidence": "SIMULATION accepted",
+        "At": "2026-10-17T07:52:27.651232+00:00"
+      },
+      {
+        "Id": "e0c8689781944db6a62dea296c42897c",
+        "OwnerId": "f74e08ba01454cf4bfdc9d193650b4ff",
+        "Actor": "SIM-maintenance",
+        "CommandId": "77f50fbd3a194d938ef794254e82cdf4",
+        "Kind": "Submit",
+        "Evidence": "",
+        "At": "2026-10-17T07:52:27.681446+00:00"
+      },
+      {
+        "Id": "22defcf22023413fb5b561b5c8554fc3",
+        "OwnerId": "f74e08ba01454cf4bfdc9d193650b4ff",
+        "Actor": "sender",
+        "CommandId": "system",
+        "Kind": "T2Claim",
+        "Evidence": "d300c00661bd4d7ea7fae8b23fc0921b",
+        "At": "2026-10-17T07:52:27.75323+00:00"
+      },
+      {
+        "Id": "77ff002e94e3447f934b9092907a7560",
+        "OwnerId": "f74e08ba01454cf4bfdc9d193650b4ff",
+        "Actor": "sender",
+        "CommandId": "system",
+        "Kind": "TransportHandoffAuthorized",
+        "Evidence": "d300c00661bd4d7ea7fae8b23fc0921b",
+        "At": "2026-10-17T07:52:27.756014+00:00"
+      },
+      {
+        "Id": "5bcf2158eea64a54a782f252dbe3a0f2",
+        "OwnerId": "f74e08ba01454cf4bfdc9d193650b4ff",
+        "Actor": "sender",
+        "CommandId": "system",
+        "Kind": "OutcomeUnknown",
+        "Evidence": "HttpRequestException: transport outcome not authoritative",
+        "At": "2026-10-17T07:52:27.760933+00:00"
+      },
+      {
+        "Id": "e8f7407210ab4f3cb2d2c1b7adabc8e2",
+        "OwnerId": "f74e08ba01454cf4bfdc9d193650b4ff",
+        "Actor": "integration",
+        "CommandId": "system",
+        "Kind": "T3Response",
+        "Evidence": "SIMULATION accepted",
+        "At": "2026-10-17T07:52:27.879714+00:00"
+      },
+      {
+        "Id": "cf68ba316ced45eb8eaecebf344ba721",
+        "OwnerId": "f74e08ba01454cf4bfdc9d193650b4ff",
+        "Actor": "reconciler",
+        "CommandId": "system",
+        "Kind": "ReconciliationQuery",
+        "Evidence": "Authoritative SIMULATION receiver evidence 3bada23cac1240b9bf0938aafa5c6dca",
+        "At": "2026-10-17T07:52:27.880732+00:00"
+      }
+    ]
+  },
+  "Diagnostics": [
+    {
+      "InstanceId": "receiver-a",
+      "State": "Available",
+      "InFlight": 0,
+      "LastFailure": null
+    },
+    {
+      "InstanceId": "receiver-b",
+      "State": "Available",
+      "InFlight": 0,
+      "LastFailure": null
+    }
+  ],
+  "Accepted": 2
+}

@@ -1,0 +1,63 @@
+{
+  "Business": "inspection",
+  "Presentation": {
+    "Views": [
+      "inspection",
+      "inspection-history"
+    ],
+    "Layouts": [
+      "standard",
+      "compact"
+    ]
+  },
+  "Status": "Started"
+}
+{
+  "RuntimeId": "3f4b7bbf-9714-465b-aa39-d03447c167c8",
+  "Revision": 0,
+  "State": "Ready",
+  "Facts": {
+    "Business": "inspection",
+    "Batches": "0",
+    "Samples": "0",
+    "CurrentBatch": "",
+    "CurrentState": "Empty"
+  }
+}
+{
+  "Status": "Persisted",
+  "Reason": "Inspection fact committed",
+  "Revision": 1
+}
+{
+  "Status": "Persisted",
+  "Reason": "Inspection fact committed",
+  "Revision": 2
+}
+{
+  "Status": "Persisted",
+  "Reason": "Inspection fact committed",
+  "Revision": 2
+}
+{
+  "Status": "Conflict",
+  "Reason": "Refresh the current projection",
+  "Revision": 2
+}
+{
+  "Status": "Persisted",
+  "Reason": "Inspection fact committed",
+  "Revision": 3
+}
+{
+  "RuntimeId": "3f4b7bbf-9714-465b-aa39-d03447c167c8",
+  "Revision": 3,
+  "State": "Ready",
+  "Facts": {
+    "Business": "inspection",
+    "Batches": "1",
+    "Samples": "1",
+    "CurrentBatch": "batch-one",
+    "CurrentState": "Closed"
+  }
+}

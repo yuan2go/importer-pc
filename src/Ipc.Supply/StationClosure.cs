@@ -120,15 +120,28 @@ public sealed partial class StationApplication
         await gate.WaitAsync();
         try
         {
-            var next = Clone(state); var previous = state.IntegrationHealth;
-            var health = available ? DeviceHealth.Ready : DeviceHealth.Disconnected;
-            if (previous is not null && previous.Health == health && previous.ConfirmedAt > Now.AddSeconds(-1) && (previous.IsValid(Now) == available)) return;
-            next.IntegrationHealth = new(config.Integration.Id, config.Integration.Revision, 0, health,
-                previous is not null && previous.Health == health ? previous.UpdatedAt : Now, Now, Now.AddMilliseconds(config.TimeoutMs + 3000), "SIMULATION:loopback-health");
+            var next = Clone(state); var previous = state.IntegrationHealth; var service = state.IntegrationServiceHealth;
+            var typed = config.Extensions?.Ports?.Any(x => x.Port == "requests") == true;
+            var wasValid = typed ? service?.IsValid(Now) == true : previous?.IsValid(Now) == true;
+            if (typed)
+            {
+                var status = available ? ServiceStatus.Ready : ServiceStatus.Unavailable;
+                if (service is not null && service.Status == status && service.ConfirmedAt > Now.AddSeconds(-1) && wasValid == available) return;
+                next.IntegrationHealth = null;
+                next.IntegrationServiceHealth = new(config.Integration.Id, config.Integration.Revision, status, Now, Now.AddMilliseconds(config.TimeoutMs + 3000), "integration:" + config.Integration.Id);
+            }
+            else
+            {
+                var health = available ? DeviceHealth.Ready : DeviceHealth.Disconnected;
+                if (previous is not null && previous.Health == health && previous.ConfirmedAt > Now.AddSeconds(-1) && wasValid == available) return;
+                next.IntegrationServiceHealth = null;
+                next.IntegrationHealth = new(config.Integration.Id, config.Integration.Revision, 0, health,
+                    previous is not null && previous.Health == health ? previous.UpdatedAt : Now, Now, Now.AddMilliseconds(config.TimeoutMs + 3000), "SIMULATION:loopback-health");
+            }
             var had = next.Blocks.Any(x => x.Code == "WcsUnavailable" && x.Source == "transport");
             next.Blocks.RemoveAll(x => x.Code == "WcsUnavailable" && x.Source == "transport");
             if (!available) SetBlock(next, "WcsUnavailable", "station", "transport", config.Integration.Revision, "transport-health");
-            if (had == available || previous?.IsValid(Now) != next.IntegrationHealth.IsValid(Now)) next.Revision++;
+            if (had == available || wasValid != available) next.Revision++;
             store.Commit(next, "IntegrationHealth", config.StationId, "transport", available.ToString());
             Adopt(next); SyncAlarms();
         }

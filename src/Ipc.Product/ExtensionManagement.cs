@@ -3,16 +3,13 @@ using Ipc.Supply;
 
 namespace Ipc.Product;
 
-public sealed record ExtensionManagementSnapshot(string State, string[] Diagnostics,
-    ExtensionInstallation[] Packages, ExtensionInstallOperation[] Operations, string? EffectiveDeployment,
-    string? EffectiveFingerprint);
-
 public sealed partial class ProductRuntime
 {
     ExtensionStore? extensionStore;
     ExtensionLoading? extensionLoading;
     PackageUseLease? extensionLease;
     readonly List<string> extensionDiagnostics = [];
+    public IntegrationDiagnostic[] IntegrationDiagnostics => integrations?.Diagnostics ?? [];
     public string? ExtensionRoot => extensionStore?.Root;
     public string BaseDataRoot => Path.GetFullPath(options.DataRoot);
     public string? ExtensionTrustFile { get; private set; }

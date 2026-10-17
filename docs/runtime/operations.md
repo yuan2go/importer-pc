@@ -1,4 +1,26 @@
-> 当前执行：WP-IPC-EXTENSION-WINDOWS-DELIVERY-12；起点 main `9f320459`，受控构建选装、签名离线后装和统一部署修订正在实施。安装不等于激活，二进制变更受控重启。下文11及更早结果属于其原版本；[原字节](../archive/pre-extension-delivery-12/README.md)保留。正式工作包见 docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md；按 AC12-01～10 分项取证，Windows未验不宣布整包完成。
+> 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入核心实现已提交；Mac参考验证与WPF交叉构建按13报告分项记录，候选交付不代表Windows或现场验收。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](../archive/pre-arch-extension-closure-13/README.md)。
+
+## CLOSURE-13 当前运行与候选
+
+当前[13报告](arch-extension-closure-13.md)/[checks](arch-extension-closure-13-checks.json)登记实际源码/包/hash和远端回读；[扩展指南](../extensions/developer-guide.md)包含观察设备与类型化服务实例、公共契约、签名依赖、安装/参数/生效/原请求/卸载。原12报告、原候选和形成时验收不改写。Windows由用户决定延期：本轮只做Mac核心验证与WPF交叉构建，WINDOWS_NOT_RUN；不寻找或开通VM/runner，不扩OAuth。
+
+```sh
+# 固定SDK 10.0.402；所有输出使用新目录，先提交实际输入
+python3 scripts/package-reference.py --target portable --composition integration-reference --extension-key /private/build/reference.pem --extension-trust /independent/trust.json --output /new/closure13-supply-portable
+python3 scripts/package-reference.py --target win-x64 --composition integration-reference --extension-key /private/build/reference.pem --extension-trust /independent/trust.json --output /new/closure13-supply-win-x64
+python3 scripts/package-business.py --composition inspection-reference --output /new/closure13-inspection
+python3 scripts/package-business.py --composition supply-assembly --output /new/closure13-supply-assembly
+```
+
+通用装配使用`dotnet app/Ipc.Assembly.dll --config app/config --data-root /reference/data --view inspection-history --layout compact`（inspection组合）或供包所属页面（supply-assembly组合）。每行snapshot或BusinessCommand JSON；quit受控停止。Inspection只有明确合成模式，持久BeginBatch/RecordSample/CloseBatch、命令去重/CAS、重启查询；不是客户新业务。Supply装配转交同一个ProductRuntime，原Ipc.Product/WPF入口继续可用。未知业务/所属页面/布局拒绝。
+
+新服务实例在Services/Ports中，无DeviceId；供包requests端口目标与原Integration必须一致。管理页、CLI配置命令共用SaveConfig/ActivateConfig。原请求冻结集成实现/参数/目标，改当前包或地址不会改写历史路由。发送停止后，在其它资源仍未终止时允许原身份查询；最终释放须排空整个查询/T3/审计再Dispose。未终止继续持有实际包/设备/站点/库租约。
+
+必要验证选择器：--architecture（13新增风险及两个真实业务组合）、--extensions（12后装与部署旅程）、--baseline（T1/T2/T3/进程恢复）、--followup（配置/权限/双箱旅程）、--review-followup（展示及Product所有权）；只按受影响范围执行，原断言和失败证据保留。smoke.py/smoke-extension.py必须对实际解压的新候选运行，两种插件都在冻结发布宿主后独立构建，宿主前后hash不变。
+
+### 继承的运维细节
+
+以下保留前版本的具体存储/恢复/Windows安装政策；旧版本号、旧输出路径和历史测试结果只作原版本参考，当前候选身份以上方13报告为准。
 
 # 运行、发布与运维
 
@@ -219,3 +241,9 @@ python3 scripts/smoke.py --product <新解压目录>/app --fixture <新解压目
 ```
 
 SourceCommit、源码/配置/模块指纹、实际ZIP SHA及运行结果以11报告为准；无Windows时win-x64只有交叉发布与字节核验，W01～06 NOT_RUN、B01～06 BLOCKED。
+
+## CLOSURE-13 PR12维护补丁
+
+实例列表选中后修改ID表示重命名：原实例/绑定在本窗草稿中替换；重名、跨设备/服务重名及其他服务占用端口均拒绝。新增实例使用“新建另一个实例”；原实例保留。以上仍须统一保存、版本校验及受控重启，保存草稿不改变有效配置。
+
+新候选两类扩展使用组合清单声明的1.0.1；旧1.0.0及旧宿主保持原字节。不要删除身份登记或用同版本重签绕过永久内容绑定。跨宿主精确公共契约不匹配时保持阻断，使用与该宿主匹配的新版本包及原部署修订流程。实际WPF重命名/新建操作仍待Windows统一验收。

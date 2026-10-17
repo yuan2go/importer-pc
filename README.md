@@ -1,16 +1,20 @@
-> 当前实施为 [DELIVERY-12](docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)：受控扩展、统一部署及同版候选交付。见 [12报告](docs/runtime/extension-windows-delivery-12.md) 与 [扩展指南](docs/extensions/developer-guide.md)。Windows参考验收与真实现场资格单列；下文11及更早结果保持其原版本含义。
+> CLOSURE-13当前交付补充：最终宿主/工具8cb475b，独立插件1.0.1；[PR12复核与AC13](docs/runtime/arch-extension-closure-13-recheck.md) · [checks](docs/runtime/arch-extension-closure-13-recheck-checks.json)。核心/Mac/WPF交叉构建通过，Windows实际验收统一延期；首轮dc5b405与全部历史证据保留。
+
+> 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入核心实现已提交；Mac参考验证与WPF交叉构建按13报告分项记录，候选交付不代表Windows或现场验收。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](docs/archive/pre-arch-extension-closure-13/README.md)。
+
+> 上一版实施为 [DELIVERY-12](docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)：受控扩展、统一部署及同版候选交付。见 [12报告](docs/runtime/extension-windows-delivery-12.md) 与 [扩展指南](docs/extensions/developer-guide.md)。Windows参考验收与真实现场资格单列；下文11及更早结果保持其原版本含义。
 
 # importer-pc
 
 C#/.NET 10 工位运行基座与供包**独立参考产品**：Generic Host、WPF、多视图共享业务、实际SQLite事务/Outbox/恢复、合成读码源和独立持久接收账。不是旧现场工程迁移，未接入厂商SDK或真实WCS。
 
-[当前交付与检查](docs/runtime/extension-windows-delivery-12.md) · [运行/发布/维护](docs/runtime/operations.md) · [UI逐页映射](docs/runtime/ui-baseline-alignment-10.md) · [统一入口](docs/INDEX.md) · [框架设计](docs/design/framework.md)
+[当前AC13交付与检查](docs/runtime/arch-extension-closure-13.md) · [运行/发布/维护](docs/runtime/operations.md) · [当前WPF映射与Windows延期](docs/ui/arch-extension-closure-13-mapping.md) · [统一入口](docs/INDEX.md) · [框架设计](docs/design/framework.md)
 
 上一版AUDIT-RECONCILIATION-01从main `856e4de`实施08/10/09，最终运行源码`a08082563bc13b2f146e71c4be9136f0469af9db`。应用历史鉴权、最终配置与实际租约覆盖、配置生效身份、v1.1双通道WPF与受控确认/导航已补齐；关联风险基线和持续双箱参考闭环PASS，完整构建及同版portable/win-x64发布成功。ZIP/模块/配置指纹与包SHA见交付报告。开发分支供main PR审查，不自行合并。
 
 REVIEW-FOLLOWUP-11从main `4ae5319`修复PR9两项P2：波次差异固定常显、箱码一次性焦点交接及代次竞争；新增真实Product组合层三故障验证，证明来源未终止时存储/日志与数据/站点/设备租约保留、晚完成后恰一次释放。冻结源码`4edb909e71097a7da61506beaa10ae5db82ec6cb`，定向E11/E07/E08、完整构建与新同版包/解压启动冒烟PASS；旧包与证据保留。
 
-Windows实际WPF/DPI/双窗/扫码/声音/部署行为 **NOT_RUN**（当前无Windows环境）；真实SDK/WCS/实体/数量/权限及现场能力 **BLOCKED**。源码/交叉编译不代表Windows或现场验收。Storage3旧库需原格式备份、绑定身份回执和显式升级；Windows需维护安装的指定账户/机级策略。Production缺必需能力继续NotReady。
+Windows实际WPF/DPI/双窗/扫码/声音/部署行为 **WINDOWS_NOT_RUN**（按用户决定统一后续验收）；真实SDK/WCS/实体/数量/权限及现场能力 **BLOCKED**。源码/交叉编译不代表Windows或现场验收。Storage3旧库需原格式备份、绑定身份回执和显式升级；Windows需维护安装的指定账户/机级策略。Production缺必需能力继续NotReady。
 
 ```sh
 # 使用global.json固定的.NET SDK 10.0.402与Python3

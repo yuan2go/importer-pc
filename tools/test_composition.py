@@ -15,8 +15,14 @@ class CompositionTests(unittest.TestCase):
     def test_distinct_selected_closures(self):
         core = composition.resolve(ROOT / 'config/compositions.json', 'core-reference')
         extended = composition.resolve(ROOT / 'config/compositions.json', 'barcode-reference')
-        self.assertEqual({x['id'] for x in core['components']}, {'platform', 'supply', 'adapters', 'product'})
+        self.assertEqual({x['id'] for x in core['components']}, {'platform', 'supply-contracts', 'supply', 'adapters', 'product'})
         self.assertEqual({x['id'] for x in extended['components']} - {x['id'] for x in core['components']}, {'reference.barcode'})
+
+    def test_non_supply_is_a_real_selected_closure(self):
+        selected = composition.resolve(ROOT / 'config/compositions.json', 'inspection-reference')
+        self.assertEqual({x['id'] for x in selected['components']}, {'platform', 'inspection', 'assembly.inspection'})
+        self.assertEqual(selected['product']['business'], 'inspection')
+        self.assertEqual(selected['product']['views'], ['inspection', 'inspection-history'])
 
     def test_missing_cycle_and_core_removal_refused(self):
         original = json.loads((ROOT / 'config/compositions.json').read_text())

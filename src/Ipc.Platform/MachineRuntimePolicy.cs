@@ -57,7 +57,7 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
             throw new UnauthorizedAccessException("Elevated extension helper must come from a maintenance-protected Program Files/ImporterPc release");
         for (var current = new DirectoryInfo(root); current is not null && !string.Equals(current.FullName, programFiles, StringComparison.OrdinalIgnoreCase); current = current.Parent)
         { RejectLinks(current.FullName); RequireProtectedAcl(current, null); }
-        foreach (var name in new[] { "Ipc.Product.exe", "Ipc.Product.dll", "Ipc.Platform.dll", "Ipc.Supply.dll", "Ipc.Adapters.dll" })
+        foreach (var name in new[] { "Ipc.Product.exe", "Ipc.Product.dll", "Ipc.Platform.dll", "Ipc.Supply.Contracts.dll", "Ipc.Supply.dll", "Ipc.Adapters.dll" })
         {
             var path = Path.Combine(root, name); RejectLinks(path); RequireProtectedAcl(new FileInfo(path), null);
         }

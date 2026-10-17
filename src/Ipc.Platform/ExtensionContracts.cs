@@ -14,15 +14,32 @@ public sealed record ParameterField(string Key, string Group, string Label, stri
     string? RequiredWhenKey = null, string? RequiredWhenEquals = null, int MaximumItems = 32);
 public sealed record ExtensionModule(string Id, string Assembly, string EntryType, string Kind,
     int MaximumInstances, ParameterField[] Parameters);
+[method: System.Text.Json.Serialization.JsonConstructor]
 public sealed record ExtensionManifest(int SchemaVersion, string Id, string Version, string Publisher,
     string Runtime, string Rid, int ContractMajor, RunMode Mode, string SourceCommit,
     PackageReference[] Dependencies, ExtensionFile[] Files, ExtensionModule[] Modules,
-    ExtensionPrerequisite[] Prerequisites, string HostContractSha256 = "");
+    ExtensionPrerequisite[] Prerequisites, string HostContractSha256 = "",
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] Dictionary<string, string>? PublicContracts = null)
+{
+    public ExtensionManifest(int schemaVersion, string id, string version, string publisher, string runtime, string rid,
+        int contractMajor, RunMode mode, string sourceCommit, PackageReference[] dependencies, ExtensionFile[] files,
+        ExtensionModule[] modules, ExtensionPrerequisite[] prerequisites, string hostContractSha256)
+        : this(schemaVersion, id, version, publisher, runtime, rid, contractMajor, mode, sourceCommit, dependencies, files, modules, prerequisites, hostContractSha256, null) { }
+}
 public sealed record PublisherTrust(string Id, string PublicKeyPem, bool TestOnly);
 public sealed record ExtensionTrust(int SchemaVersion, PublisherTrust[] Publishers);
 public sealed record ExtensionInstance(string Id, string PackageId, string ModuleId, string DeviceId,
     bool Enabled, Dictionary<string, string> Parameters);
-public sealed record DeploymentExtensions(PackageReference[] Packages, ExtensionInstance[] Instances);
+public sealed record ServiceInstance(string Id, string PackageId, string ModuleId, bool Enabled, Dictionary<string, string> Parameters);
+public sealed record ServicePortBinding(string Port, string InstanceId, IntegrationBinding Target);
+[method: System.Text.Json.Serialization.JsonConstructor]
+public sealed record DeploymentExtensions(PackageReference[] Packages, ExtensionInstance[] Instances,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] ServiceInstance[]? Services = null,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] ServicePortBinding[]? Ports = null)
+{
+    public DeploymentExtensions(PackageReference[] packages, ExtensionInstance[] instances) : this(packages, instances, null, null) { }
+    public void Deconstruct(out PackageReference[] packages, out ExtensionInstance[] instances) { packages = Packages; instances = Instances; }
+}
 public sealed record ExtensionContext(string InstanceId, string DeviceId, IReadOnlyDictionary<string, string> Parameters);
 public interface IObservationExtension
 {

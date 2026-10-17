@@ -27,7 +27,7 @@ sealed class SenderModule(StationApplication application, IIntegrationPort port)
                     if (claimed is null) { await Task.Delay(100, stop.Token); continue; }
                     var (request, attempt) = claimed.Value;
                     if (!await application.BeforeSendAsync(request, attempt)) continue;
-                    var receiptId = await application.BeginReceiptAsync(request, attempt, "execute");
+                    var receiptId = "send-" + attempt.Id; // reserved atomically with BeforeSend handoff authorization
                     IntegrationResponse response;
                     try { response = await port.ExecuteAsync(request, stop.Token); }
                     catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or System.Text.Json.JsonException or InvalidDataException)

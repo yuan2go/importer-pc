@@ -434,7 +434,8 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                 {
                     // Conservative durable authorization boundary. After this, cancellation cannot prove non-delivery.
                     store.Commit(next, "TransportHandoffAuthorized", request.OwnerId, "sender", request.Id,
-                        attempt: latest with { Disposition = "TransportHandoff" });
+                        attempt: latest with { Disposition = "TransportHandoff" },
+                        occurrence: new("send-" + attempt.Id, request.Id, attempt.Id, "execute", Now, "AwaitingResponse"));
                     Adopt(next);
                     bool changedDuringCommit;
                     lock (faultGate) changedDuringCommit = !runtimeFaults.IsEmpty || overloadVersion != authorizedOverflowVersion;
@@ -462,7 +463,8 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
         {
             var original = store.Request(sent.Id) ?? throw new InvalidDataException("Response without original request");
             contract.ValidateResponse(original, response);
-            var occurrence = receiptId is null ? BeginReceipt(original, attempt, "direct-receipt") :
+            var sentOccurrence = attempt is null ? null : store.ReceiptOccurrence("send-" + attempt.Id);
+            var occurrence = receiptId is null ? sentOccurrence is { Status: "AwaitingResponse" } ? sentOccurrence : BeginReceipt(original, attempt, "direct-receipt") :
                 store.ReceiptOccurrence(receiptId) ?? throw new InvalidDataException("Original receipt reservation missing");
             if (occurrence.RequestId != original.Id || occurrence.AttemptId != attempt?.Id) throw new InvalidDataException("Receipt occurrence identity mismatch");
             if (occurrence.Status == "Committed")
@@ -496,7 +498,11 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             if (request.Status is RequestStatus.Accepted or RequestStatus.Rejected or RequestStatus.CancelledBeforeDispatch) return Task.CompletedTask;
             request = request with { Status = RequestStatus.Unknown }; var next = Clone(state); next.Revision++;
             MarkOwner(next, request, reason);
-            store.Commit(next, "OutcomeUnknown", request.OwnerId, "sender", reason, request: request,
+            // A caller reporting no authoritative response (or suppressed handoff) closes
+            // only that send's intake, never another query or already flushed raw receipt.
+            var sending = attempt is null ? null : store.ReceiptOccurrence("send-" + attempt.Id);
+            var noResponse = sending is { Status: "AwaitingResponse" } && !File.Exists(ReceiptFile(sending.Id)) ? sending with { Status = "NoResponse" } : null;
+            store.Commit(next, "OutcomeUnknown", request.OwnerId, "sender", reason, request: request, occurrence: noResponse,
                 attempt: attempt is null ? null : attempt with { EndedAt = Now, Disposition = "Unknown", Error = reason });
             Adopt(next); SyncAlarms();
         }

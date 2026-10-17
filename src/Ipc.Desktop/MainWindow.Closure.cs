@@ -98,8 +98,14 @@ public partial class MainWindow
         (box.SelectedItem as HistoryStatusChoice)?.Value is { } value ? Enum.Parse<T>(value) : null;
     DateTimeOffset? HistoryDate(DatePicker day, TextBox time)
     {
-        if (!string.IsNullOrWhiteSpace(day.Text) && day.SelectedDate is null) throw new ArgumentException("请选择有效日期");
-        return HistoryTimeRange.Parse(day.SelectedDate, time.Text, TimeZoneInfo.Local);
+        DateTime? selectedDay = null;
+        if (!string.IsNullOrWhiteSpace(day.Text))
+        {
+            if (!DateTime.TryParse(day.Text, day.Language.GetSpecificCulture(), DateTimeStyles.AllowWhiteSpaces, out var parsed))
+                throw new ArgumentException("请选择有效日期；无效输入不会沿用上次选中日期");
+            selectedDay = parsed.Date;
+        }
+        return HistoryTimeRange.Parse(selectedDay, time.Text, TimeZoneInfo.Local);
     }
     HistoryQuery BuildHistoryQuery()
     {

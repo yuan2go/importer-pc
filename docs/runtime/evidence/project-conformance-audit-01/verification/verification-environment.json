@@ -1,0 +1,22 @@
+{
+  "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "os": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "os_release": "PRETTY_NAME=\"Ubuntu 24.04.3 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.3 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+  "architecture": "x86_64",
+  "sdk": "10.0.402",
+  "runtime": "10.0.13",
+  "dotnet_root": "/tmp/ipc-audit-dotnet",
+  "nuget_cache": "/tmp/ipc-audit-nuget",
+  "audited_source": "/workspace/scratch/02a55de33070/importer-pc-audit",
+  "build_copy": "/workspace/scratch/02a55de33070/importer-pc-audit-build",
+  "build_log": "logs/build-current.log",
+  "restore_log": "logs/restore-escalated.log",
+  "build_reproduction_command": "dotnet restore ImporterPc.slnx --locked-mode; dotnet build ImporterPc.slnx --no-restore -m:1 -nr:false",
+  "build_command_note": "Equivalent reproduction command; probe and selector exact argv/time/exit records are in verification-results.json and baseline-recheck.json. Root observed the build and architecture tool exit codes 0.",
+  "windows": "NOT_RUN",
+  "real_sdk_wcs_devices": "NOT_RUN",
+  "network": "Self-created literal loopback endpoints only",
+  "production_device_actions": 0,
+  "source_mutations": 0,
+  "verification_binary_sha256": "28e71fcbfd5da2346de88a03c9318466d7dbf8b4ad72938520144898a47a9672"
+}

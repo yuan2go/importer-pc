@@ -1,0 +1,25 @@
+{
+  "Case": "primary-only-control",
+  "PrimaryHealthRequests": 3,
+  "MainService": {
+    "TargetId": "primary-target",
+    "TargetRevision": "1",
+    "Status": "Ready",
+    "ConfirmedAt": "2026-10-17T08:15:58.9091576+00:00",
+    "ValidUntil": "2026-10-17T08:16:03.4091576+00:00",
+    "Source": "integration:primary-target"
+  },
+  "InstanceDiagnostics": [
+    {
+      "InstanceId": "primary",
+      "State": "Available",
+      "InFlight": 0,
+      "LastFailure": null
+    }
+  ],
+  "AdmitReasons": [
+    "IdentityUnavailable",
+    "NoActiveBoxOrCloseBarrier"
+  ],
+  "StartupDiagnostics": []
+}

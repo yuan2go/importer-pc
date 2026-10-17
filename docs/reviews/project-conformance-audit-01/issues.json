@@ -1,0 +1,39 @@
+{
+  "issues": [
+    {
+      "id": "A-01",
+      "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "report_section": "### A-01 · P1 · 同 EvidenceId 的矛盾回执丢失原件和持续核对阻断\n\n**分类：实现不足；确定缺陷，已模拟复现。** 级别依据是已发现的协议矛盾在持久化/重启后不可追溯并放开准入，不依据是否容易修补；发生前提是适配器/对端复用同证据身份给出相反结论。未证明当前合成 Fixture 自发产生此异常，也未证明已发生现场错发。\n\n**场景：** Submit 已 Accepted，接受量为1；后来同一 RequestId/Hash/EvidenceId 给出 Rejected。当前公共 CompleteAsync 实际收到该合法类型化异常输入。生产链中 Reconcile 可并发发起，两个先前已启动的 Unknown 查询可能在第一份终态后返回第二份结果；对端须发生矛盾，不能单靠正常重复回执触发。\n\n**证据（固定 SHA）：** StationApplication.CompleteCore:454–480 检出矛盾并拟保存 Unknown/ConflictingEvidence；Store.Commit:153–158 因同 EvidenceId 内容不同抛 InvalidDataException，整个冲突事务回滚；CompleteCore:479 只锁存内存 ProtocolFailure，再进入 UnknownLocked:489–502；其中494行见原请求 Accepted/Rejected 后直接返回。构造器:35–50 没有恢复这项内存故障。设计 framework §7、operations:120 要求矛盾留证并阻断。[S09]\n\n|探针阶段|请求/作业|接受量|冲突证据和阻断|Admit|\n|---|---|---:|---|---|\n|原 Accepted 后|Accepted|1|无冲突|true|\n|同ID矛盾 Rejected 后|仍 Accepted|1|仅内存 ProtocolFailure；持久 Blocks=[]|false|\n|停止、重开库并恢复合成身份/健康|仍 Accepted|1|RuntimeFaults=[]、RecoveryRequestIds=[]；仍只有原响应|true|\n\n**运行记录：** verification-contradiction-run.log；verification-results.json 的 2026-10-17 08:15:52.320501～08:15:53.187318 UTC，exit 0；请求 c059bd5a1254414c8880b9cd38001a54。探针调用真实应用/SQLite，不开网络、不造设备；源程序和原始数据库均保留。\n\n**影响：** 原接受事实没有被覆盖、也未增加重复数量，这部分正确。但矛盾响应原件、冲突审计、Unknown与持续核对阻断都未落盘，重启后无法从请求链发现仍需核对。若后台脉冲稍后写入一般报警，也不能补回原件或恢复该准入屏障。\n\n**修正方向：** 保留原响应不可变，另以冲突发生身份保存新原件、来源/接收时间、原EvidenceId及摘要；冲突记录与持续阻断同事务持久化。终态不应吞掉新发现的冲突。不得覆盖旧响应、删除唯一约束或用强制成功规避。\n\n**验收条件：** 同ID同内容仍去重；同ID不同内容和不同ID矛盾都保留完整证据；重启后仍能发现原请求需要核对并阻断继续业务；重复证据不增加接受量；再次存储失败保持受控状态，不自动重发。\n\n**阻断：** 不阻塞无关开发；阻塞宣称原请求恢复完整正确的相关合并/交付验收；现场上线前必须关闭。当前 Production 还受外部能力门禁阻断。"
+    },
+    {
+      "id": "A-02",
+      "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "report_section": "### A-02 · P2 · 辅助服务离线被归因成主 WCS 不可用\n\n**分类：实例健康实现不足；确定缺陷，已模拟复现。**\n\n**场景：** 主 requests 目标健康；另一已启用且绑定独立端口的辅助服务拒绝连接。当前健康聚合把主目标写成 Unavailable，同时两个实例都显示 Available/LastFailure=null。\n\n**证据：** IntegrationRuntime.HealthAsync:152–161 对所有 entries.Values 执行布尔 AND；SenderModule:24 把结果交给唯一 SetWcsHealthAsync；StationClosure:117–146 将其绑定到主 config.Integration.Id/Revision；StationApplication:572–575 将主 WCS 不可用加进全站守卫。示例 IntegrationModule:27 的 Diagnostic 只反映生命周期，:87–90 健康异常返回 false 却不更新 LastFailure。WP12:63 要求非关键故障按实际依赖裁决，:107要求实例状态独立；controlled-extensions:29保留辅助端口与各自诊断。[S10]\n\n|隔离 ProductRuntime 案例|主目标投影|实例诊断|健康附加阻断|\n|---|---|---|---|\n|主健康、辅助离线|Unavailable|primary/auxiliary 均 Available，LastFailure=null|WcsUnavailable、WcsHealth:Unavailable|\n|停用辅助的对照|Ready|primary Available|上述两项消失|\n\n**运行记录：** health-evidence/health-result.json、verification-health-run.log；2026-10-17 08:15:57.301563～08:15:59.163309 UTC，exit 0；HealthCalls=6、EffectCalls=0。使用当前源码构建的独立插件和实际 ProductRuntime，只访问自建 loopback 健康端点。两组都未登录/开箱，因此本次证明错误健康归因和额外守卫，不声称完整供包停机或 Windows 已复现。\n\n**影响：** 可选/非关键辅助故障可能扩大为主业务阻断；运维无法从“两个实例都 Available”定位失败目标。即使某部署决定所有启用服务都必需，也应报告失败的实际实例及依赖原因，不能把布尔聚合伪装成主目标自身离线。历史查询懒加载 entry 同样加入健康集合的影响有静态路径支持，未另行动态复现。\n\n**修正方向：** 保存逐实例/目标健康事实、时间及错误，由业务声明所需端口组合计算动作守卫；主请求当前健康与历史查询责任分离。保留真正必需依赖失败的阻断。\n\n**验收条件：** 主健康/辅助失败、主失败/辅助健康、两者恢复、历史查询目标失败分别准确投影；非关键辅助不错误阻断主业务，必需辅助失败显示准确依赖；故障状态不继续显示假 Available。\n\n**阻断：** 不阻塞单实例或无关开发；作为多服务能力后续合并/交付门槛；多服务部署上线前解决。不是生产接口缺失造成的错误。"
+    },
+    {
+      "id": "A-03",
+      "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "report_section": "### A-03 · P2 · 组件页激活读取隐藏维护页的选中状态\n\n**分类：未接线；源码可确定，未动态运行 WPF。**\n\n**场景：** 新窗口取得维护身份，直接进入组件管理，在 Revisions 选中合法 Validated 修订并申请激活。没有先到旧维护页加载/选择 ConfigsList。\n\n**证据：** ExtensionsView.xaml.cs:344–347 正确取自己的 revision，MainWindow.Extensions.cs:43–44 将其ID传给 SendAsync；MainWindow.xaml.cs:118–130 调 CanCommand，:152 却检查旧 ConfigsList.IsEnabled/SelectedItem，而不是传入 revision。身份变化在 MainWindow.Presentation.cs:178–188 禁用旧列表；extensions 导航只刷新自己的列表。后端 StationApplication:258–270 仍按实际 owner/CAS/权限/未决责任校验。[S11]\n\n**影响：** 规定的组件页正常入口不能独立完成激活，需先操作另一页面的无关列表。旧列表若恰有另一个 Validated 项，UI保护依据也与本次对象无关；后端保护仍在，未证明越权或错误配置被静默激活。附带同根差异：UI要求 Session非Closed一律禁止，后端允许无其他责任的Rejected会话，需统一投影语义。\n\n**修正方向：** 把待激活 ConfigRevision、身份和当前上下文作为明确守卫输入，或使用应用提供的动作可用性；两个页面都绑定自己的选择，后端 CAS/权限/实体与原请求屏障继续保留。\n\n**验收条件：** 新启动→维护登录→直接组件页→选Validated→申请激活能到后端并返回PendingActivation或准确拒绝；无选择、Rejected/stale修订、换人、并发保存/激活都正确拒绝；普通维护页不回归。需要实际Windows旅程，helper单测不足。\n\n**阻断：** 不阻塞其他核心开发；阻塞 AC12/13“完整维护 UI”相关后续合并/交付验收。main 已合并事实不等于该验收通过；本审查不撤销历史合并。"
+    },
+    {
+      "id": "A-04",
+      "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "report_section": "### A-04 · P2 · JSON 导入后的扩展草稿被旧 Effective 重置\n\n**分类：重复草稿状态和错误初始化；源码可确定，未动态运行 WPF。**\n\n**场景：** 维护页导入合法统一配置，其中 Packages、Instances、Services、Ports 或参数不同于当前 Effective，然后进入组件页查看/编辑并保存部署。\n\n**证据：** MainWindow.LoadConfigForm:371–379 已将导入 config 写入 draftBase、extensionDraft 和表单；ImportConfigClick:418 又调用 ExtensionsControl.Initialize。该 Initialize:25–30 从 Runtime.Configuration.Extensions（旧Effective）复制 desired；ExtensionsView:340–342 随后把旧 desired交给SaveDeployment；MainWindow.Extensions.cs:28–35用它覆盖刚导入的extensionDraft及目标字段。WP12:99–125与controlled-extensions:31要求同一配置账、统一草稿/生效边界。[S12]\n\n**影响：** 导入后的普通字段与组件页内容不同；跨页保存可能丢失导入扩展意图、回到旧草稿或与新设备绑定冲突后被拒绝。差异确认和后端校验仍存在，不能写成已静默激活、数据库损坏或权限旁路。\n\n**修正方向：** 每窗口只保有一个明确编辑草稿源；导入、设备/实例/端口调整、预览和保存都读写它。Effective 单独只读展示，多个窗口的草稿可各自独立，并保留版本竞争处理。\n\n**验收条件：** 导入含两个设备、多个服务及requests目标变化的配置，全部页面展示一致；导航、编辑ID/参数/角色/端口、保存与重新读取修订保留精确内容；非法导入不破坏原草稿，取消不误清，Effective在受控激活前不变；第二窗口竞争由后端拒绝。\n\n**阻断：** 不阻塞无关业务开发；阻塞宣称统一部署UI闭环的相关后续合并/交付；完整维护现场旅程放行前解决。"
+    },
+    {
+      "id": "R-01",
+      "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "report_section": "### R-01 · 条件 P2 · 保留件连续键盘扫码可能串接\n\n**证据状态：** 源码缺少成功后清空/SelectAll/作业归属复位已确定；Windows与真实扫码器未验证。LaneControl.xaml:27双向绑定RetainedDraft；LaneControl.xaml.cs:63–72发送字符串并吞Enter/Tab；ViewModels.cs:60、88、100–152保留该字符串，Apply不随新作业清空。业务按字符串集合去重。[S13]\n\n**场景与影响：** 当扫码器发送“码+Enter/Tab”、光标停末尾且设备本身不全选时，先A再A可能变AA，A再B可能变AB；合成后端把它们当不同身份，存在错误计数风险。此为条件推演，没有现场重复计数证据，也不能假定真实扫码器一定使用该配置。\n\n**修正方向：** 按同owner、命令revision与输入版本的成功持久回执清空或选中；失败保留待纠正内容，迟到回执不清除用户新输入。**验收：** 实际Windows A/A/B连续扫描、切作业、回执迟到和拒绝；重复A不增加，B独立，Enter/Tab不触发无关动作。**阻断：** 不阻塞无关开发/合并；阻塞宣称W03连续拆包输入已验，相关设备配置上线前须关闭或有反证。"
+    },
+    {
+      "id": "R-02",
+      "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "report_section": "### R-02 · 条件 P2 · 无桌面持续供包没有提示消费者\n\n**证据状态：** 仅静态检查；本轮未为此新增或执行故障探针。StationClosure.cs:16–31产生有界提示队列，容量64，溢出锁存OperatorNotificationBacklog；唯一Peek/Acknowledge消费者在Desktop，Product.Program serve及SupplyAssembly无对应消费者。既有ClosureVerification:151–184测试64/65保护，但该选择器本轮未跑。[S15]\n\n**场景与影响：** 若承诺无桌面的长期供包，65次需提示的状态变化可能使其因无主队列而阻断。队列保护本身合理；若控制台只用于短期验证，此项是需要明确的宿主范围，不应当成桌面已经故障。\n\n**修正方向：** 明确每种宿主的提示交付/确认责任；如支持持续headless，接实际可观测消费者或批准的通知策略，不删除保护换绿灯。**验收：** 连续超过65次事件有真实交付，消费失败仍阻断，无主提示不静默丢弃。**阻断：** 不阻塞桌面/普通核心开发与无关合并；条件阻塞长期headless能力交付。"
+    },
+    {
+      "id": "R-03",
+      "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "report_section": "### R-03 · 条件 P2 · 共享包库卸载只核查一个数据集\n\n**证据状态：** 静态条件路径，未执行跨工位卸载；本期是否承诺同机多数据集仍需确认。MachineRuntimePolicy:18–28采用机器+模式共享库；PackageUseLease:3–5注明多工位共享；Program:47–53和ExtensionManagement:70–76只检查调用方一个station.db；ExtensionStore:227–251另看活动lease和包反向依赖，不覆盖其他已停止数据根。[S16]\n\n**场景与影响：** A数据根仍有Effective/Pending或Unknown原包责任但已停止，B无引用并卸载共享包。A无活动lease，其离线引用可能遗漏；下次恢复缺精确原包需人工重装。没有复现自动重发/伪造接受，精确身份拒绝仍保护业务。\n\n**修正方向：** 若只支持单数据根，持久登记并强制此边界，定义恢复副本；若支持多根，登记包库消费者并检查离线引用，无法读取时不宣称无人引用。**验收：** A已停止但仍有责任，B卸载必须拒绝；A解除责任/绑定后才允许，审计保留。**阻断：** 不作为当前单工位参考开发或无条件合并阻断；承诺共享库多工位/多根恢复时，相关上线前解决。"
+    }
+  ]
+}

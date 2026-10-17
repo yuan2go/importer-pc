@@ -1,29 +1,40 @@
-> CLOSURE-13当前交付补充：最终宿主/工具8cb475b，独立插件1.0.1；[PR12复核与AC13](docs/runtime/arch-extension-closure-13-recheck.md) · [checks](docs/runtime/arch-extension-closure-13-recheck-checks.json)。核心/Mac/WPF交叉构建通过，Windows实际验收统一延期；首轮dc5b405与全部历史证据保留。
-
-> 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入核心实现已提交；Mac参考验证与WPF交叉构建按13报告分项记录，候选交付不代表Windows或现场验收。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](docs/archive/pre-arch-extension-closure-13/README.md)。
-
-> 上一版实施为 [DELIVERY-12](docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)：受控扩展、统一部署及同版候选交付。见 [12报告](docs/runtime/extension-windows-delivery-12.md) 与 [扩展指南](docs/extensions/developer-guide.md)。Windows参考验收与真实现场资格单列；下文11及更早结果保持其原版本含义。
-
 # importer-pc
 
-C#/.NET 10 工位运行基座与供包**独立参考产品**：Generic Host、WPF、多视图共享业务、实际SQLite事务/Outbox/恢复、合成读码源和独立持久接收账。不是旧现场工程迁移，未接入厂商SDK或真实WCS。
+C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、多视图共享业务、真实SQLite事务/Outbox/原请求恢复、合成观察和受控扩展。旧现场工程迁移、真实SDK/WCS和现场资格分别验证。
 
-[当前AC13交付与检查](docs/runtime/arch-extension-closure-13.md) · [运行/发布/维护](docs/runtime/operations.md) · [当前WPF映射与Windows延期](docs/ui/arch-extension-closure-13-mapping.md) · [统一入口](docs/INDEX.md) · [框架设计](docs/design/framework.md)
+## 当前状态与下一步
 
-上一版AUDIT-RECONCILIATION-01从main `856e4de`实施08/10/09，最终运行源码`a08082563bc13b2f146e71c4be9136f0469af9db`。应用历史鉴权、最终配置与实际租约覆盖、配置生效身份、v1.1双通道WPF与受控确认/导航已补齐；关联风险基线和持续双箱参考闭环PASS，完整构建及同版portable/win-x64发布成功。ZIP/模块/配置指纹与包SHA见交付报告。开发分支供main PR审查，不自行合并。
+2026-10-17独立审查固定main **`8cabf06d3c6d53ba551b65e58a13db6cdcaba16a`**（PR12已合并）。必要Linux隔离构建/模拟验证通过，同时复现A-01/A-02，并静态确认A-03/A-04；完整恢复、多实例健康及维护UI仍有缺口。Windows实际验收继承13明确的后置决定，保持 **WINDOWS_NOT_RUN**；真实SDK/WCS/实体/数量/权限/现场仍按对应门禁处理。
 
-REVIEW-FOLLOWUP-11从main `4ae5319`修复PR9两项P2：波次差异固定常显、箱码一次性焦点交接及代次竞争；新增真实Product组合层三故障验证，证明来源未终止时存储/日志与数据/站点/设备租约保留、晚完成后恰一次释放。冻结源码`4edb909e71097a7da61506beaa10ae5db82ec6cb`，定向E11/E07/E08、完整构建与新同版包/解压启动冒烟PASS；旧包与证据保留。
+[独立审查、PDF和问题](docs/reviews/project-conformance-audit-01/README.md) · [原始验证证据](docs/runtime/evidence/project-conformance-audit-01/README.md) · [下一步分析](docs/reviews/project-conformance-audit-01/next-step-analysis.md) · [WP-IPC-CONFORMANCE-FIX-14](docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md) · [Codex提示词](docs/work-packages/Codex-WP-IPC-CONFORMANCE-FIX-14.md)
 
-Windows实际WPF/DPI/双窗/扫码/声音/部署行为 **WINDOWS_NOT_RUN**（按用户决定统一后续验收）；真实SDK/WCS/实体/数量/权限及现场能力 **BLOCKED**。源码/交叉编译不代表Windows或现场验收。Storage3旧库需原格式备份、绑定身份回执和显式升级；Windows需维护安装的指定账户/机级策略。Production缺必需能力继续NotReady。
+**14为待实施工作包，未修复代码。** 本次提交审查材料和执行交接，不把文档入库当作工程缺陷已关闭。修复必须从执行时最新main核对差异，先读有效文档、归档过期当前指引，再按AC14完成工程及必要验证。原报告/失败记录/历史验收保持原身份。
+
+## 开发与运行入口
+
+[统一资料入口](docs/INDEX.md) · [工作约束](AGENTS.md) · [框架设计](docs/design/framework.md) · [决策与批准边界](docs/design/framework-decisions.md) · [受控装配/扩展](docs/design/controlled-extensions.md) · [扩展开发](docs/extensions/developer-guide.md) · [运行、发布与恢复](docs/runtime/operations.md)
 
 ```sh
 # 使用global.json固定的.NET SDK 10.0.402与Python3
 ./scripts/build.sh
 dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --extensions
-# 独立合成接收端，保持运行；桌面/控制台启动见运行说明
+# 独立合成接收端；桌面/控制台的装配与模式见运行说明
 dotnet src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll --url http://127.0.0.1:18743/ --data /tmp/ipc-simulation-receiver
 ```
 
-[实物UI v1.1](docs/ui/ss-ui-vis-001-v1.1/README.md)原源文件保留，PNG为HTML同源导出而非WPF截图。11形成时资料工具单元测试7项PASS；公开总校验存在与原main完全相同的267项源资产问题（PPTX媒体命名及链接标记），详见交付报告，未修改设计原件或放宽工具换PASS。
+上方为既有运行入口，不表示文档发布时重新执行。具体修复仅运行受影响验证；跨平台WPF构建不能替代Windows操作。Production缺必需真实能力继续NotReady。Storage3旧库使用原格式备份、身份回执和显式升级；部署遵循既有指定账户与机级资源/包所有权约束。
 
-仓库public；[公开范围](docs/baseline/PUBLICATION.md)持续有效。只交付获授权通用实现及合成证据，不上传客户原稿、私密来源、凭据、生产数据、SDK或字体。完整客户归档仍为PUBLIC_SUBSET_ONLY；D批准未变，RV-01～17仍OPEN。参考验证不表示旧HTML修复或现场放行；[纠偏前版本](docs/archive/pre-reconciliation-01/README.md)和原失败证据保留。
+## UI与历史交付
+
+[v1.1实物设计及完整交接](docs/ui/ss-ui-vis-001-v1.1/README.md)保留原HTML/CSS/JS/tokens和资产；34张PNG为HTML同源导出，不能作为WPF截图。最新已合并13的[复核记录](docs/runtime/arch-extension-closure-13-recheck.md)、[checks](docs/runtime/arch-extension-closure-13-recheck-checks.json)和[UI映射](docs/ui/arch-extension-closure-13-mapping.md)保留其实际源码、平台与验证范围；本次A/R结论另行追加。
+
+|历史阶段|结果入口|
+|---|---|
+|13架构/扩展收敛，最终宿主8cb475b、插件1.0.1|[原报告](docs/runtime/arch-extension-closure-13.md)、[后续复核](docs/runtime/arch-extension-closure-13-recheck.md)|
+|12受控后装与候选交付|[报告](docs/runtime/extension-windows-delivery-12.md)|
+|11独立复核跟进|[报告](docs/runtime/review-followup-11.md)|
+|08/09/10纠偏、参考验证及UI实现|[参考验证](docs/runtime/reference-validation-09.md)、[UI映射](docs/runtime/ui-baseline-alignment-10.md)|
+
+旧源码、候选与PASS/FAIL/NOT_RUN不迁移成新版本验收。发布前README/INDEX/manifest的原字节见[快照](docs/archive/pre-conformance-audit-01/README.md)。其他历史入口由INDEX保留。
+
+仓库public；[公开范围](docs/baseline/PUBLICATION.md)持续有效，完整客户归档仍为PUBLIC_SUBSET_ONLY。D批准和历史RV-01～17状态不因参考实现或新审查而关闭。只发布本次获授权审查、通用实现与合成证据，不附客户原稿、私密链接、凭据、生产数据或厂商SDK。资料校验的历史源资产错误另有记录，不删除原设计或放松校验器换通过。

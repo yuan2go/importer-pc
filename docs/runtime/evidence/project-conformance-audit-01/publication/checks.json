@@ -1,0 +1,26 @@
+{
+  "task": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01_PUBLICATION",
+  "fixed_audit_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "business_source_changed": false,
+  "business_tests_rerun": false,
+  "original_report_text_pdf_issues_and_runtime_logs_retained": true,
+  "public_markdown_change": "Appended 19 fixed-source reference definitions; exact original text also committed.",
+  "private_metadata_change": "Only Library routing IDs removed from two public coverage derivatives; original hashes retained.",
+  "necessary_document_validation": {
+    "baseline_command": "python tools/verify_archive.py --root . --scope public",
+    "baseline_exit_code": 1,
+    "baseline_errors": 267,
+    "first_publication_errors": 276,
+    "new_initial_errors": 9,
+    "new_initial_root_cause": "Existing parser interprets adjacent S-number locators as Markdown reference links; appended actual frozen-source definitions in public rendition without altering original evidence.",
+    "after_correction_exit_code": 1,
+    "after_correction_errors": 267,
+    "new_errors": 0,
+    "removed_historical_errors": 0,
+    "historical_error_multiset_identical": true,
+    "validator_source_unchanged": true,
+    "overall_archive_status": "FAIL_INHERITED_BASELINE_ASSETS",
+    "new_material_status": "NO_NEW_ERRORS"
+  },
+  "verification": "Original bytes/hashes, all JSON, exact probe DB ZIP CRC, original source clean, business inputs unchanged, git diff --check, and existing archive/link/manifest validator. No new runtime/Windows/device validation."
+}

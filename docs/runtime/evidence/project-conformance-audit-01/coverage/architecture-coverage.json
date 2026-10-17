@@ -1,0 +1,2802 @@
+{
+  "audit": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01",
+  "subscope": "architecture, assembly, platform, extensions and deployment",
+  "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "repository": "/workspace/scratch/02a55de33070/importer-pc-audit",
+  "worktree_clean": true,
+  "published_runtime_input_comparison": {
+    "source": "8cb475b880e6cdd248db42bff74accf443c83519",
+    "current": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "paths": [
+      "src",
+      "config",
+      "scripts",
+      "global.json",
+      "Directory.Build.props",
+      "NuGet.Config",
+      "ImporterPc.slnx",
+      "docs/runtime/operations.md",
+      "docs/extensions/developer-guide.md"
+    ],
+    "difference": "none",
+    "meaning": "byte-identical listed git inputs; historical evidence retains original source identity; not a new runtime or Windows verification"
+  },
+  "counts": {
+    "deep_read": 80,
+    "partial_deep_read": 4,
+    "keyword_scanned": 42,
+    "inventory_only": 418
+  },
+  "files": [
+    {
+      "path": ".gitignore",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "AGENTS.md",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "Directory.Build.props",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "ImporterPc.slnx",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "NuGet.Config",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "README.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "config/compositions.json",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "config/inspection/business.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "config/presentation.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "config/product.reference.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "config/replay.jsonl",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "config/station.simulation.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/README.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/README.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/INDEX.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/design/controlled-extensions.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/design/framework-decisions.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/design/framework.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/extensions/developer-guide.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/manifest.json.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/runtime/operations.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/manifest.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/README.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/README.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/INDEX.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/design/framework-decisions.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/design/framework.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/manifest.json.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/runtime/operations.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/runtime/ui-baseline-alignment-10.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/runtime/windows-06.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/manifest.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-framework-20261016/AGENTS.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-framework-20261016/INDEX.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-framework-20261016/README.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-framework-20261016/README.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/AGENTS.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/README.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/INDEX.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/design/framework-decisions.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/design/framework.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/manifest.json.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/manifest.sha256.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/reviews/main-static-review-02.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/reviews/main-static-review-03-checks.json.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/reviews/main-static-review-03.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/evidence.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/README.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/README.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/INDEX.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/manifest.json.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/manifest.sha256.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/integration-05.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/operations.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/reference-validation-09.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/ui-baseline-alignment-10.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/validation-scenarios-09.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/windows-06.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/evidence.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/baseline/CHANGELOG.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/baseline/CONFLICTS.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/baseline/MISSING.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/baseline/PUBLICATION.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/baseline/artifact-checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/baseline/continuation-checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/design/arch-extension-closure-13.md",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/design/controlled-extensions.md",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/design/framework-checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/design/framework-decisions.md",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/design/framework.md",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/extensions/developer-guide.md",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/manifest.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/manifest.sha256",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/readiness/checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/readiness/decision-pack.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/readiness/revision-and-verification.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/readiness/technical-baseline.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/reviews/STATUS.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/reviews/issues.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/reviews/main-static-review-02.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/reviews/main-static-review-03-checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/reviews/main-static-review-03.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/alignment-01-checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/alignment-01-windows.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/alignment-01.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/arch-extension-closure-13-checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/arch-extension-closure-13-recheck-checks.json",
+      "status": "partial_deep_read",
+      "ranges_or_symbols": [
+        "verification records and acceptance 1-140"
+      ],
+      "method": "relevant symbols only; not full-file audit"
+    },
+    {
+      "path": "docs/runtime/arch-extension-closure-13-recheck.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/arch-extension-closure-13.md",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/runtime/checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/delivery.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/engineering-closure-07-checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/engineering-closure-07.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/WP-IPC-RUNTIME-03-win-x64.zip.sha256",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/ALIGNMENT-01-712446a-win-x64.zip.sha256",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/log-digests.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/native-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/package-verification.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/release-SHA256SUMS.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/release.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/verification-summary.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/archive-comparison.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/archive-current.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/candidate-inventory.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/closure-13.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/compatibility-inputs.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-architecture-accepted.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-architecture-final.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-architecture-first.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-architecture-third.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-baseline.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-e12-diagnostic.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-e12-first.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-e12-second.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-first-build.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-frozen-baseline.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-frozen-extensions.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-frozen-ownership.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-owning-source-build.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-review-followup.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-ui-build.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/inspection-console.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/inspection-publish.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/inspection-restart.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/integration-journey.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-architecture.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-baseline.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-build.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-closure.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-extensions.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-followup.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-package-0.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-package-1.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-package-2.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-package-3.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-review-followup.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-architecture-delivery.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-archive-baseline.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-baseline-current.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-closure.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-composition-tests.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-extensions-final.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-followup.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-legacy12-compatibility-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-published-businesses-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-published-core-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-published-extensions-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-review-current.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-service-health-build.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-tools.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/legacy-custody.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/opening.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/pr11-review.json",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/readback-receipt.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/architecture.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/baseline.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/build.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/cas-baseline.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/closure-13.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/closure.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/extensions.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/architecture.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-baseline.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-before-metadata-cleanup.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-comparison.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-current.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/baseline.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/build.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/candidate-inventory.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/closure-13.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/closure.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/core-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/core-smoke.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extension-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extension-smoke.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extensions.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/followup.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/integration-journey.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-inspection-reference.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-portable.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-supply-assembly.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-win-x64.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/published-businesses.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/remote-readback.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/reproducibility.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/reproducibility.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/review-followup.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/source-freeze-integrity.json",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/tools.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/followup.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/frozen-baseline-cas-failure.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/initial-build-failure.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/integration-journey.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/opening.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/reproducibility-before-final-freeze.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/reproducibility-before-final-freeze.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/review-followup.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/system-python-missing-pillow.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/tools.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/withdrawn-a1c41bc.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/remote-readback.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/source-freeze-integrity.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/supply-assembly-build.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/supply-assembly-console.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/transport-delay-request.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/withdrawn-701ee0d.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/abrupt-process.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/archive-baseline.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/archive-comparison.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/archive-current.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/candidate-inventory.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/environment-and-windows-blocker.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/evidence-identities.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/extension-evidence.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/final-11f0728-build-session.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/final-core-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/final-extension-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-FilesVerified-operations-3db6ae64e4634cf786cf232c1cf50591.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-Prepared-operations-88fb1eea014d4d689df5d7b311bf24a9.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-Published-operations-8bb1a56c25d046cc9957ca2e756e9f22.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-Registered-operations-35dacbf1f1484252ab56a04b70c71821.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-build.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-extensions.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-package-barcode-portable.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-package-barcode-win-x64.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-package-core-portable.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-ae57856-review-followup.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-baseline.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-closure.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-followup.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-review-followup.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-compile-freeze.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-final-worktree.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-first.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-second.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-settled-health.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-final-upgrade-build.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-first-build.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-tools-tests-bundled.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-tools-tests.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/journey.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/remote-readback.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/review-product-ownership.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/source-publication.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/uninstall-interruption-operations-9a25212574b34d99b68e748ffef5d81c.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/uninstall-interruption-operations-fb46364fdc8e40d8b1610d49b79845c9.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/HARDENING-04-2619a7a-win-x64.zip.sha256",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/hardening04-final-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/hardening04-package-verification.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/hardening04-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/release-SHA256SUMS.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/release.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/package-verification.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/archive-current.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/archive-pristine-main.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/archive-tests.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/final-build.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/final-reference.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/first-a01-stop-failure.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/first-h04-failure.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/first-journey-conflict.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/first-wpf-build-failure.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/package-portable.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/package-readback.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/package-win-x64.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/published-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/published-smoke.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/reference-journey.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/unpacked-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/unpacked-smoke.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/release-SHA256SUMS.txt",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/release.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/archive-tests.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/build.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/closure.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/first-archive-failure.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/first-build-failure.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/followup.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/package-portable.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/package-readback.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/package-win-x64.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/product-ownership.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/reference-journey.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/target.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/unpacked-smoke.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/unpacked-smoke.log",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/smoke-final-results.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/evidence/smoke-results.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/extension-windows-delivery-12-checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/extension-windows-delivery-12.md",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/runtime/hardening-04-checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/hardening-04-publication.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/hardening-04.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/implementation.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/integration-05.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/operations.md",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/runtime/publication.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/reference-validation-09-checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/reference-validation-09.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/review-followup-11-checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/review-followup-11.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/ui-baseline-alignment-10.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/validation-scenarios-09.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/validation/closure-13-windows-scenarios.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/validation/reference-windows.workflow.yml",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/runtime/windows-06.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-16-ipc-audit-reconciliation.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-16-ipc-readiness.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-17-ipc-architecture-closure-13.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-17-ipc-extension-delivery-12.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-17-ipc-review-followup-11.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/STATUS.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/arch-extension-closure-13-mapping.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/extension-delivery-12-mapping.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/GALLERY.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/README.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/README.source.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/editable-boards.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/tokens.css",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/tokens.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/prototype/index.html",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.css",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.js",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/publication-checks.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/render-verification.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/01-normal-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/02-camera-offline-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/03-result-unknown-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/04-business-rejected-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/05-no-read-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/06-multiple-barcodes-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/07-storage-failed-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/08-split-unapproved-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/09-split-candidate-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/10-shortage-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/11-records-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/12-record-detail-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/12b-record-detail-attempts-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/13-devices-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/14-login-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/15-recovery-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/16-components-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/17-waiting-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/18-recovered-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/19-alarm-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/20-wcs-offline-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/21-long-content-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/22-no-records-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/23-pending-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/24-maintenance-1920.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/25-long-content-1366.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/26-split-1366.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1093x614.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1280x680.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1280x720.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1366x768.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1536x864.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1920x1080.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-911x512.png",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/source-manifest.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/tools/reexport_screenshots.py",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/供包工作站_高保真交互原型.html",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/界面图册.html",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/tokens/tokens.css",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/ui/tokens/tokens.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/Codex-WP-IPC-ARCH-EXTENSION-CLOSURE-13.md",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/work-packages/Codex-WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-DESIGN-BASELINE-01.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-RUNTIME-03-Codex.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-RUNTIME-03.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-RUNTIME-HARDENING-04.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "examples/BarcodeExtension/BarcodeExtension.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "examples/BarcodeExtension/BarcodeExtension.csproj",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "examples/BarcodeExtension/packages.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "examples/IntegrationExtension/IntegrationExtension.csproj",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "examples/IntegrationExtension/IntegrationModule.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "examples/IntegrationExtension/ReferenceContract.cs",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "examples/IntegrationExtension/packages.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "global.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "scripts/build-extension.py",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "scripts/build.sh",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "scripts/composition.py",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "scripts/package-business.py",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "scripts/package-reference.py",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "scripts/protect-release.ps1",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "scripts/provision-extensions.ps1",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "scripts/provision-runtime.ps1",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "scripts/publish.ps1",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "scripts/seal.py",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "scripts/smoke-extension.py",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "scripts/smoke.py",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "scripts/station.ps1",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "scripts/verify-extension-reproducibility.py",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "scripts/windows-reference-validation.ps1",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Adapters/Ipc.Adapters.csproj",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Adapters/LoopbackIntegration.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Adapters/ObservationSources.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Adapters/SimulationRequestContract.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Adapters/packages.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Adapters/packages.supply.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Adapters/packages.win-x64.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Assembly/InspectionAssembly.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Assembly/Ipc.Assembly.csproj",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Assembly/Program.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Assembly/SupplyAssembly.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.inspection.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.supply.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/App.xaml",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/App.xaml.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Desktop/Confirmation.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/ExtensionDraftEditing.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/HistoryPresentation.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/Ipc.Desktop.csproj",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Desktop/LaneControl.xaml",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.Extensions.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.HistoryExport.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.xaml",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+      "status": "partial_deep_read",
+      "ranges_or_symbols": [
+        "1-105 (owner, construction, refresh)"
+      ],
+      "method": "relevant symbols only; not full-file audit"
+    },
+    {
+      "path": "src/Ipc.Desktop/OperatorNotificationPlayer.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/PresentationPolicy.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/Themes/Workstation.xaml",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/ViewModels.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/ViewRegistry.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Desktop/app.manifest",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.win-x64.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Fixture/Ipc.Fixture.csproj",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Fixture/Program.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Fixture/Receiver.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Fixture/SyntheticSemanticFixture.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Fixture/packages.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Fixture/packages.win-x64.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Inspection/InspectionRuntime.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Inspection/Ipc.Inspection.csproj",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Inspection/packages.inspection.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Inspection/packages.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Platform/AssemblyInfo.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/BusinessAssembly.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/Configuration.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/DeviceCapabilities.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionContractCompatibility.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionContracts.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionLoading.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionPackages.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionPublicContracts.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionStore.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/Ipc.Platform.csproj",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/Lifecycle.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/MachineRuntimePolicy.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/ManagedAssemblyPolicy.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/PackageUseLease.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/RuntimeJournal.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/StationDispatcher.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.inspection.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.supply.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.win-x64.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Product/AssemblyInfo.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Product/ExtensionManagement.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Product/IntegrationRuntime.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Product/Ipc.Product.csproj",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Product/ObservationModule.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Product/ProductRuntime.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Product/Program.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Product/ReferenceProduct.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Product/SenderModule.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Product/SourceConstruction.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Product/packages.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Product/packages.supply.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Product/packages.win-x64.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/ContractRegistration.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/HistoryQueries.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/IntegrationExtensions.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/Model.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/RequestContract.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/StationRuntime.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.supply.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.win-x64.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Supply/ContractForwarders.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Supply/ExtensionMaintenance.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Supply/HistoryQueries.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Supply/Ipc.Supply.csproj",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Supply/Maintenance.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Supply/Model.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Supply/PresentationProtection.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Supply/StationApplication.cs",
+      "status": "partial_deep_read",
+      "ranges_or_symbols": [
+        "Prepare 313-320",
+        "request send guards 548-563",
+        "BaseReasons/GuardFor 565-587",
+        "Receive 321-390 and command paths via symbol search"
+      ],
+      "method": "relevant symbols only; not full-file audit"
+    },
+    {
+      "path": "src/Ipc.Supply/StationClosure.cs",
+      "status": "partial_deep_read",
+      "ranges_or_symbols": [
+        "95-163, including SetWcsHealthCore and projection"
+      ],
+      "method": "relevant symbols only; not full-file audit"
+    },
+    {
+      "path": "src/Ipc.Supply/Store.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "src/Ipc.Supply/SupplyConfiguration.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "src/Ipc.Supply/packages.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Supply/packages.supply.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "src/Ipc.Supply/packages.win-x64.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentCompositionVerification.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentDataVerification.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentRuntimeVerification.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/ArchitectureClosureVerification.cs",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "tests/Ipc.Verification/ClosureVerification.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/ExtensionDraftVerification.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/ExtensionVerification.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/FollowupVerification.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/HardeningVerification.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/Ipc.Verification.csproj",
+      "status": "deep_read",
+      "method": "full source/document read plus call/dependency tracing where relevant"
+    },
+    {
+      "path": "tests/Ipc.Verification/PresentationVerification.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/ProductOwnershipVerification.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/Program.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/ReferenceJourneyVerification.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/SourceConstructionVerification.cs",
+      "status": "keyword_scanned",
+      "method": "repository rg for registration/lifecycle/TODO/default returns; full source not read by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/schema1.sql",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/simulation-v1-request.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/simulation-v1-response.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "tests/Ipc.Verification/packages.lock.json",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "tools/README.md",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "tools/test_composition.py",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "tools/test_verify_archive.py",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    },
+    {
+      "path": "tools/verify_archive.py",
+      "status": "inventory_only",
+      "method": "git/rg file inventory; contents not audited by this subagent"
+    }
+  ],
+  "limitations": [
+    "Customer source material withheld outside git not available to subagent",
+    "UI visuals/production business audit delegated to other auditors",
+    "Package binary runtime and selected tests centralized in parent",
+    "No production WCS or real hardware accessed",
+    "No claim of all-repository line-by-line audit"
+  ],
+  "new_audit_materials": [
+    "audit-work/architecture-findings.md",
+    "audit-work/health-repro/HealthRepro.csproj",
+    "audit-work/health-repro/Program.cs",
+    "audit-work/health-evidence/health-result.json",
+    "audit-work/verification-health-run.log",
+    "audit-work/verification-results.json"
+  ],
+  "new_runtime_verification": {
+    "finding": "A-01",
+    "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "executed_by": "parent auditor; result, command record, log and harness read by architecture subagent",
+    "level": "isolated loopback simulation",
+    "result": "REPRODUCED",
+    "started_at": "2026-10-17T08:15:57.301563+00:00",
+    "ended_at": "2026-10-17T08:15:59.163309+00:00",
+    "exit_code": 0,
+    "observed": "healthy primary plus offline auxiliary produces primary Unavailable and WcsUnavailable while both diagnostics remain Available/null; disabling auxiliary produces primary Ready without WcsUnavailable",
+    "health_calls": 6,
+    "effect_calls": 0,
+    "windows": "NOT_RUN",
+    "device_actions": "NONE",
+    "limitations": [
+      "No login, box admission or business request was attempted; identity and no-active-box guard reasons remain in both cases",
+      "Historical-query-entry impact, auxiliary recovery, Windows UI and real external interfaces were not exercised by this probe",
+      "A-02 remains a static conditional risk; no cross-station uninstall reproduction was run"
+    ]
+  }
+}

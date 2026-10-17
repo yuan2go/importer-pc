@@ -1,0 +1,13 @@
+{
+  "Id": "20012e6f1a674b0bbaf3d9d0c7f6e54e",
+  "PackageSha256": "7C077A10AFB76C43B05CD478261B71554B11349B3BA275D63AD42D4F2EC0CCB7",
+  "Package": {
+    "Id": "audit.integration",
+    "Version": "1.0.0",
+    "ManifestSha256": "3BAE77705311768AD73F151AA8E19014EA0C94E31B7CF00A188480903BEA8FCC"
+  },
+  "State": "Registered",
+  "At": "2026-10-17T08:15:58.0677412+00:00",
+  "Error": null,
+  "Kind": "Install"
+}

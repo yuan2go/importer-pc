@@ -1,0 +1,15 @@
+  Determining projects to restore...
+  Restored /workspace/scratch/02a55de33070/audit-work/health-repro/HealthRepro.csproj (in 431 ms).
+  5 of 6 projects are up-to-date for restore.
+  Ipc.Platform -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
+  HealthRepro -> /workspace/scratch/02a55de33070/audit-work/health-repro/bin/Debug/net10.0/HealthRepro.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.65

@@ -1,0 +1,113 @@
+Build started 10/17/2026 16:11:11.
+Project "/workspace/scratch/02a55de33070/importer-pc-audit-build/ImporterPc.slnx" on node 1 (Restore target(s)).
+ValidateSolutionConfiguration:
+  Building solution configuration "Debug|Any CPU".
+_GetAllRestoreProjectPathItems:
+  Determining projects to restore...
+Project "/workspace/scratch/02a55de33070/importer-pc-audit-build/ImporterPc.slnx" (1) is building "/workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply/Ipc.Supply.csproj" (10:6) on node 1 (_GenerateProjectRestoreGraph target(s)).
+AddPrunePackageReferences:
+  Loading prune package data from PrunePackageData folder
+  Failed to load prune package data from PrunePackageData folder, loading from targeting packs instead
+  Looking for targeting packs in /tmp/ipc-audit-dotnet/packs/Microsoft.NETCore.App.Ref
+  Pack directories found: /tmp/ipc-audit-dotnet/packs/Microsoft.NETCore.App.Ref/10.0.13
+  Found package overrides file /tmp/ipc-audit-dotnet/packs/Microsoft.NETCore.App.Ref/10.0.13/data/PackageOverrides.txt
+Done Building Project "/workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply/Ipc.Supply.csproj" (_GenerateProjectRestoreGraph target(s)).
+Project "/workspace/scratch/02a55de33070/importer-pc-audit-build/ImporterPc.slnx" (1) is building "/workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Desktop/Ipc.Desktop.csproj" (4:5) on node 1 (_GenerateProjectRestoreGraph target(s)).
+AddPrunePackageReferences:
+  Loading prune package data from PrunePackageData folder
+  Failed to load prune package data from PrunePackageData folder, loading from targeting packs instead
+  Looking for targeting packs in /tmp/ipc-audit-dotnet/packs/Microsoft.NETCore.App.Ref
+  Pack directories found: /tmp/ipc-audit-dotnet/packs/Microsoft.NETCore.App.Ref/10.0.13
+  Found package overrides file /tmp/ipc-audit-dotnet/packs/Microsoft.NETCore.App.Ref/10.0.13/data/PackageOverrides.txt
+  Loading prune package data from PrunePackageData folder
+  Failed to load prune package data from PrunePackageData folder, loading from targeting packs instead
+  Looking for targeting packs in /tmp/ipc-audit-dotnet/packs/Microsoft.WindowsDesktop.App.Ref
+  Targeting pack folder /tmp/ipc-audit-dotnet/packs/Microsoft.WindowsDesktop.App.Ref does not exist
+  Failed to load prune package data for WindowsDesktop from targeting packs, loading from framework packages instead
+Done Building Project "/workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Desktop/Ipc.Desktop.csproj" (_GenerateProjectRestoreGraph target(s)).
+Project "/workspace/scratch/02a55de33070/importer-pc-audit-build/ImporterPc.slnx" (1) is building "/workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Fixture/Ipc.Fixture.csproj" (5:5) on node 1 (_GenerateProjectRestoreGraph target(s)).
+AddPrunePackageReferences:
+  Loading prune package data from PrunePackageData folder
+  Failed to load prune package data from PrunePackageData folder, loading from targeting packs instead
+  Looking for targeting packs in /tmp/ipc-audit-dotnet/packs/Microsoft.NETCore.App.Ref
+  Pack directories found: /tmp/ipc-audit-dotnet/packs/Microsoft.NETCore.App.Ref/10.0.13
+  Found package overrides file /tmp/ipc-audit-dotnet/packs/Microsoft.NETCore.App.Ref/10.0.13/data/PackageOverrides.txt
+  Loading prune package data from PrunePackageData folder
+  Failed to load prune package data from PrunePackageData folder, loading from targeting packs instead
+  Looking for targeting packs in /tmp/ipc-audit-dotnet/packs/Microsoft.AspNetCore.App.Ref
+  Pack directories found: /tmp/ipc-audit-dotnet/packs/Microsoft.AspNetCore.App.Ref/10.0.13
+  Found package overrides file /tmp/ipc-audit-dotnet/packs/Microsoft.AspNetCore.App.Ref/10.0.13/data/PackageOverrides.txt
+Done Building Project "/workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Fixture/Ipc.Fixture.csproj" (_GenerateProjectRestoreGraph target(s)).
+Restore:
+  X.509 certificate chain validation will use the fallback certificate bundle at '/tmp/ipc-audit-dotnet/sdk/10.0.402/trustedroots/codesignctl.pem'.
+  X.509 certificate chain validation will use the fallback certificate bundle at '/tmp/ipc-audit-dotnet/sdk/10.0.402/trustedroots/timestampctl.pem'.
+  Restoring packages for /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Assembly/Ipc.Assembly.csproj...
+  Restoring packages for /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Desktop/Ipc.Desktop.csproj...
+    GET https://api.nuget.org/v3/vulnerabilities/index.json
+    OK https://api.nuget.org/v3/vulnerabilities/index.json 27ms
+    GET https://api.nuget.org/v3-vulnerabilities/2026.10.16.05.29.22/vulnerability.base.json
+    GET https://api.nuget.org/v3-vulnerabilities/2026.10.16.05.29.22/2026.10.16.17.29.24/vulnerability.update.json
+    OK https://api.nuget.org/v3-vulnerabilities/2026.10.16.05.29.22/vulnerability.base.json 76ms
+    OK https://api.nuget.org/v3-vulnerabilities/2026.10.16.05.29.22/2026.10.16.17.29.24/vulnerability.update.json 242ms
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Desktop/obj/Ipc.Desktop.csproj.nuget.g.props.
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Assembly/obj/Ipc.Assembly.csproj.nuget.g.props.
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Desktop/obj/Ipc.Desktop.csproj.nuget.g.targets.
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Assembly/obj/Ipc.Assembly.csproj.nuget.g.targets.
+  Writing assets file to disk. Path: /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Assembly/obj/project.assets.json
+  Writing assets file to disk. Path: /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Desktop/obj/project.assets.json
+  Restored /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Desktop/Ipc.Desktop.csproj (in 1.04 sec).
+  Restored /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Assembly/Ipc.Assembly.csproj (in 1.04 sec).
+  Restoring packages for /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Inspection/Ipc.Inspection.csproj...
+  Restoring packages for /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Adapters/Ipc.Adapters.csproj...
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Inspection/obj/Ipc.Inspection.csproj.nuget.g.props.
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Adapters/obj/Ipc.Adapters.csproj.nuget.g.props.
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Adapters/obj/Ipc.Adapters.csproj.nuget.g.targets.
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Inspection/obj/Ipc.Inspection.csproj.nuget.g.targets.
+  Writing assets file to disk. Path: /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Inspection/obj/project.assets.json
+  Writing assets file to disk. Path: /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Adapters/obj/project.assets.json
+  Restored /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Inspection/Ipc.Inspection.csproj (in 10 ms).
+  Restored /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Adapters/Ipc.Adapters.csproj (in 10 ms).
+  Restoring packages for /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Fixture/Ipc.Fixture.csproj...
+  Restoring packages for /workspace/scratch/02a55de33070/importer-pc-audit-build/tests/Ipc.Verification/Ipc.Verification.csproj...
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Fixture/obj/Ipc.Fixture.csproj.nuget.g.props.
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Fixture/obj/Ipc.Fixture.csproj.nuget.g.targets.
+  Writing assets file to disk. Path: /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Fixture/obj/project.assets.json
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/tests/Ipc.Verification/obj/Ipc.Verification.csproj.nuget.g.props.
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/tests/Ipc.Verification/obj/Ipc.Verification.csproj.nuget.g.targets.
+  Writing assets file to disk. Path: /workspace/scratch/02a55de33070/importer-pc-audit-build/tests/Ipc.Verification/obj/project.assets.json
+  Restored /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Fixture/Ipc.Fixture.csproj (in 7 ms).
+  Restored /workspace/scratch/02a55de33070/importer-pc-audit-build/tests/Ipc.Verification/Ipc.Verification.csproj (in 8 ms).
+  Restoring packages for /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply/Ipc.Supply.csproj...
+  Restoring packages for /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj...
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply/obj/Ipc.Supply.csproj.nuget.g.props.
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply.Contracts/obj/Ipc.Supply.Contracts.csproj.nuget.g.props.
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply/obj/Ipc.Supply.csproj.nuget.g.targets.
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply.Contracts/obj/Ipc.Supply.Contracts.csproj.nuget.g.targets.
+  Writing assets file to disk. Path: /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply/obj/project.assets.json
+  Writing assets file to disk. Path: /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply.Contracts/obj/project.assets.json
+  Restored /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj (in 5 ms).
+  Restored /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply/Ipc.Supply.csproj (in 8 ms).
+  Restoring packages for /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Platform/Ipc.Platform.csproj...
+  Restoring packages for /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Product/Ipc.Product.csproj...
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Platform/obj/Ipc.Platform.csproj.nuget.g.props.
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Platform/obj/Ipc.Platform.csproj.nuget.g.targets.
+  Writing assets file to disk. Path: /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Platform/obj/project.assets.json
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Product/obj/Ipc.Product.csproj.nuget.g.props.
+  Generating MSBuild file /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Product/obj/Ipc.Product.csproj.nuget.g.targets.
+  Writing assets file to disk. Path: /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Product/obj/project.assets.json
+  Restored /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Platform/Ipc.Platform.csproj (in 5 ms).
+  Restored /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Product/Ipc.Product.csproj (in 8 ms).
+  
+  NuGet Config files used:
+      /workspace/scratch/02a55de33070/importer-pc-audit-build/NuGet.Config
+      /tmp/ipc-conformance-cli/.nuget/NuGet/NuGet.Config
+  
+  Feeds used:
+      https://api.nuget.org/v3/index.json
+Done Building Project "/workspace/scratch/02a55de33070/importer-pc-audit-build/ImporterPc.slnx" (Restore target(s)).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.56

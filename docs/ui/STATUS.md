@@ -1,6 +1,7 @@
+> 当前判断见 [PR14后复核](../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)，下一实施为 [15工作包](../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)。14已合并且原子问题分项验证；不同接收发生责任、维护/输入与UI仍有残余。本文有效职责/规则继续成立，历次执行结果只按其来源版本理解；本次更新前原字节见 [归档](../archive/pre-audit-reconciliation-publication-01/README.md)。
+
 > 当前实现增量为FIX-14：A-03显式选择激活、A-04本窗唯一草稿、R-01按持久回执/输入版本消费。v1.1原件不变，实际WPF截图0；[14映射/Windows后验](../runtime/validation/conformance-fix-14-windows.md)。下方DELIVERY-12仅历史。
 
-> FIX-14当前指引：本文件下方13及更早“当前/本轮/已完成”保留形成时身份，已由 [14执行基线](../runtime/conformance-fix-14-baseline.md)接管。A-01～04是待修确定缺陷；健康隔离和维护闭环是有效要求，不能按旧完成性表述判通过。Windows沿13决定统一后验，不寻找VM/runner；D/RV、真实SDK/WCS/现场门禁继续。原字节见 [归档](../archive/pre-conformance-fix-14/README.md)。
 
 # UI资料当前状态
 
@@ -24,6 +25,6 @@
 
 本轮包内资源检查另发现原PPTX的265个.png部件实际为SVG字节，已按部件/哈希登记格式不一致，原件未修。它们不计为可解码位图；SVG内部资源继续检查。此归档发现不等于RV-17修复或对当前云端/Windows的验收结论。
 
-## DELIVERY-12当前实现增量
+## DELIVERY-12实现增量（历史）
 
 受控组件与部署维护页、首次Loaded前应用暂停/多窗条件修复见 [12映射](extension-delivery-12-mapping.md) 和 [逐项报告](../runtime/extension-windows-delivery-12.md)。源码与核心策略验证已执行；本包真实WPF截图0，Windows UI/缩放/输入/持续旅程NOT_RUN。原v1.1资产不变，历史HTML导出不是本包Windows证据。

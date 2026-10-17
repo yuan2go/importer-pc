@@ -1,0 +1,1082 @@
+{
+  "audit_id": "WP-IPC-AUDIT-RECONCILIATION-01",
+  "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "design": "SS-UI-VIS-001 v1.1",
+  "work_package_version": "WP-IPC-CONFORMANCE-FIX-14 v1.1 proposal / AC14-01–10",
+  "categories": [
+    "符合设计",
+    "经批准调整",
+    "有合理依据但尚未批准的调整",
+    "未经批准且需要纠正的偏离",
+    "本期应完成但尚未实现",
+    "证据不足",
+    "不属于本期范围"
+  ],
+  "counts": {
+    "confirmed_issues": 11,
+    "confirmed_P1": 1,
+    "confirmed_P2": 9,
+    "confirmed_P3": 1,
+    "conditional_risks": 6,
+    "independent_gates": 3
+  },
+  "disposition_summary": {
+    "retained": "A-01–04、UI-01–07；条件风险保留适用限定。",
+    "downgraded": "本轮无证据将原确定A/UI问题降级。",
+    "withdrawn": "两份同SHA报告的确定问题没有撤销；撤销将更早已修P2继续列为当前待修的判断。",
+    "pending_evidence": "全部Windows、条件触发/适用范围、真实外部与业务批准；详见逐项。"
+  },
+  "deduplication": [
+    {
+      "canonical": "A-01",
+      "sources": [
+        "project:A-01",
+        "ui:A-01"
+      ]
+    },
+    {
+      "canonical": "A-02",
+      "sources": [
+        "project:A-02",
+        "ui:A-02"
+      ]
+    },
+    {
+      "canonical": "A-03",
+      "sources": [
+        "project:A-03",
+        "ui:A-03"
+      ]
+    },
+    {
+      "canonical": "A-04",
+      "sources": [
+        "project:A-04",
+        "ui:A-04"
+      ]
+    },
+    {
+      "canonical": "R-01",
+      "sources": [
+        "project:R-01",
+        "ui:R-01"
+      ]
+    },
+    {
+      "canonical": "G-01",
+      "sources": [
+        "project:G-01",
+        "ui:G-RUNTIME",
+        "ui:G-DPI"
+      ],
+      "note": "UI-R04保留为特定几何条件，不重复计作代码缺陷。"
+    }
+  ],
+  "issues": [
+    {
+      "id": "A-01",
+      "title": "P1 · 同 EvidenceId 矛盾回执缺持续证据与阻断",
+      "kind": "confirmed_issue",
+      "priority": "P1",
+      "primary_category": "本期应完成但尚未实现",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "project",
+          "id": "A-01",
+          "snapshot": "inputs/project-issues.original.json"
+        },
+        {
+          "report": "ui",
+          "id": "A-01",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "SAME_SHA_RUNTIME_RECHECKED",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Supply/StationApplication.cs",
+          "location": "CompleteCore 454–501; UnknownLocked; recovery/guards",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Supply/Store.cs",
+          "location": "T3 153–158",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [
+        "../../runtime/evidence/audit-reconciliation-01/business-evidence-recheck.json",
+        "../../runtime/evidence/audit-reconciliation-01/original-project/logs/verification-contradiction-run.log"
+      ],
+      "root_cause": "实现遗漏：冲突事务回滚后终态短路，持续核对只留内存。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-02",
+        "AC14-08"
+      ],
+      "required_closure": "保留原Accepted及唯一接受账；冲突原件/发生身份与责任持久且原子，重启/恢复/守卫/清理/维护/旧包读者全部可见；实际存储失败不伪保存、重启不静默放行。",
+      "continue_or_block": "优先修复；阻塞恢复完整性和相关上线，不阻塞无关开发。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "A-02",
+      "title": "P2 · 辅助服务离线被归到主 WCS，实例仍显可用",
+      "kind": "confirmed_issue",
+      "priority": "P2",
+      "primary_category": "未经批准且需要纠正的偏离",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "project",
+          "id": "A-02",
+          "snapshot": "inputs/project-issues.original.json"
+        },
+        {
+          "report": "ui",
+          "id": "A-02",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "SAME_SHA_RUNTIME_RECHECKED",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Product/IntegrationRuntime.cs",
+          "location": "HealthAsync 152–161; historical entries",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Product/SenderModule.cs",
+          "location": "24",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Supply/StationClosure.cs",
+          "location": "117–146",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "examples/IntegrationExtension/IntegrationModule.cs",
+          "location": "27,87–91",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [
+        "../../runtime/evidence/audit-reconciliation-01/original-project/probes/health/evidence/health-result.json",
+        "../../runtime/evidence/audit-reconciliation-01/original-project/logs/verification-health-run.log"
+      ],
+      "root_cause": "单实例聚合的临时语义未退出；通信健康、生命周期和业务依赖接错。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-03",
+        "AC14-08"
+      ],
+      "required_closure": "主/辅助/历史目标分别记录健康、时间和失败；按真正必需业务端口守卫，恢复/过期/迟到归属正确，保留原Unknown责任和精确实现。",
+      "continue_or_block": "扩展多实例能力前修；单实例与无关模块继续。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "A-03",
+      "title": "P2 · 组件页激活依赖隐藏维护页的选中项",
+      "kind": "confirmed_issue",
+      "priority": "P2",
+      "primary_category": "未经批准且需要纠正的偏离",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "project",
+          "id": "A-03",
+          "snapshot": "inputs/project-issues.original.json"
+        },
+        {
+          "report": "ui",
+          "id": "A-03",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "SOURCE_CONFIRMED_WINDOWS_NOT_RUN",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "location": "344–347",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Extensions.cs",
+          "location": "43–44",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "location": "118–152",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Supply/StationApplication.cs",
+          "location": "258–270",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "依赖接错：当前激活修订与隐藏旧页面选择分离。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-04",
+        "AC14-10"
+      ],
+      "required_closure": "新窗口维护身份可直接在组件页选修订申请激活；无选择/过期/权限/CAS/未决责任准确拒绝，前后端上下文一致；真实WPF旅程。",
+      "continue_or_block": "优先修现有维护链；不阻塞其他核心。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "A-04",
+      "title": "P2 · JSON 导入的扩展草稿又被旧 Effective 重置",
+      "kind": "confirmed_issue",
+      "priority": "P2",
+      "primary_category": "未经批准且需要纠正的偏离",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "project",
+          "id": "A-04",
+          "snapshot": "inputs/project-issues.original.json"
+        },
+        {
+          "report": "ui",
+          "id": "A-04",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "SOURCE_CONFIRMED_WINDOWS_NOT_RUN",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "location": "371–379,418",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "location": "25–30,340–342",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Extensions.cs",
+          "location": "28–35",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "实现遗漏与错误初始化：导入编辑草稿被旧Effective副本覆盖。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-04",
+        "AC14-10"
+      ],
+      "required_closure": "每窗一个编辑来源；多设备/服务/端口JSON导入、跨页修改、差异、保存、重读一致；非法/取消不破坏，Effective激活前不变，多窗CAS。",
+      "continue_or_block": "优先修现有维护链；不扩大为第二配置框架。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "UI-01",
+      "title": "P2 · 箱级拒绝没有持续的当前结果／原因",
+      "kind": "confirmed_issue",
+      "priority": "P2",
+      "primary_category": "本期应完成但尚未实现",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "ui",
+          "id": "UI-01",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "SOURCE_CONFIRMED_WINDOWS_NOT_RUN",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Supply.Contracts/Model.cs",
+          "location": "50–63,94–103",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Supply/StationApplication.cs",
+          "location": "518–526",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml",
+          "location": "13–17",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "location": "68–80,282–299",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "实现遗漏：已有箱级拒绝回执未接入持续当前结果投影。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-08",
+        "AC14-10"
+      ],
+      "required_closure": "Context/CheckClose/Close三类拒绝的箱/请求/阶段/结果/原因持续显示；刷新/其他通道成功不掩盖，旧箱迟到不污染；真实Active不改假状态。",
+      "continue_or_block": "与核心修复并行，适用操作验收前完成。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "UI-02",
+      "title": "P2 · 默认箱会话把箱码标成 Item 条码",
+      "kind": "confirmed_issue",
+      "priority": "P2",
+      "primary_category": "未经批准且需要纠正的偏离",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "ui",
+          "id": "UI-02",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "SOURCE_CONFIRMED_WINDOWS_NOT_RUN",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Desktop/HistoryPresentation.cs",
+          "location": "14",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml",
+          "location": "41,45",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.HistoryExport.cs",
+          "location": "history export",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "实现遗漏：默认字段回退混用箱与Item实体语义。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-09",
+        "AC14-10"
+      ],
+      "required_closure": "会话/作业对应真实实体字段；箱码000001和Item码000123在列表、详情、复制、导出一致并保留前导零。",
+      "continue_or_block": "追溯模块继续并行修正。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "UI-03",
+      "title": "P2 · 历史列表被空详情压窄，结果列偏到远端",
+      "kind": "confirmed_issue",
+      "priority": "P2",
+      "primary_category": "未经批准且需要纠正的偏离",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "ui",
+          "id": "UI-03",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "SOURCE_CONFIRMED_GEOMETRY_NOT_MEASURED",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml",
+          "location": "40–45",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "location": "156–163",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/HistoryPresentation.cs",
+          "location": "history DTO",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "location": "285–298",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "UI信息组织偏离：空详情占多数空间，技术列/树抢占业务摘要。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-09",
+        "AC14-10"
+      ],
+      "required_closure": "无详情时列表充分使用空间；默认结果/接受量/对象/通道/条码/尝试摘要可辨，完整证据可达；详情返回保留筛选、选择及滚动。",
+      "continue_or_block": "PAGE06局部结构调整；保留双通道主布局。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "UI-04",
+      "title": "P2 · 筛选无可见标签，日期要求手输完整时区格式",
+      "kind": "confirmed_issue",
+      "priority": "P2",
+      "primary_category": "未经批准且需要纠正的偏离",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "ui",
+          "id": "UI-04",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "SOURCE_CONFIRMED_WINDOWS_NOT_RUN",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml",
+          "location": "41–44",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+          "location": "98–104",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "UI实现遗漏：可见标签/日期选择未继承，将协议格式交给操作员。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-09",
+        "AC14-10"
+      ],
+      "required_closure": "可见标签及可访问名称，本地日期时间输入/选择、显式时区、就近范围错误；保留后端严格边界，触控不依赖hover。",
+      "continue_or_block": "追溯模块继续并行修正。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "UI-05",
+      "title": "P2 · 只读详情始终是蓝色主动作，且有重复入口",
+      "kind": "confirmed_issue",
+      "priority": "P2",
+      "primary_category": "未经批准且需要纠正的偏离",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "ui",
+          "id": "UI-05",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "SOURCE_CONFIRMED_WINDOWS_NOT_RUN",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml",
+          "location": "28",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/ViewModels.cs",
+          "location": "148–150",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+          "location": "22–25,57–60,75",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "UI实现遗漏：只换动作文字，未按只读/业务语义改变层级和重复入口。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-09",
+        "AC14-10"
+      ],
+      "required_closure": "动作按语义主次且固定位置；详情不额外发送；去重复时同步当前必要动作的ReviewFits，保留关键字段/动作几何保护。",
+      "continue_or_block": "并行修正；与新增持续反馈/长内容合并实际几何验收。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "UI-06",
+      "title": "P2 · 部分关键灰显按钮只用悬停说明原因",
+      "kind": "confirmed_issue",
+      "priority": "P2",
+      "primary_category": "本期应完成但尚未实现",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "ui",
+          "id": "UI-06",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "SOURCE_CONFIRMED_WINDOWS_NOT_RUN",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "location": "154–159,190–194",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml",
+          "location": "existing DisabledReason",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml",
+          "location": "existing access feedback",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "实现遗漏：部分命令守卫原因只有悬停输出。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-09",
+        "AC14-10"
+      ],
+      "required_closure": "暂停/恢复/关闭/核对等关键动作就近显示具体原因与下一步，触控可知；已存在的通道/组件原因同源保留。",
+      "continue_or_block": "只修实际缺口，不据此宣称全UI无原因。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "UI-07",
+      "title": "P3 · 少量状态语义、字号和图标资源未统一",
+      "kind": "confirmed_issue",
+      "priority": "P3",
+      "primary_category": "未经批准且需要纠正的偏离",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "ui",
+          "id": "UI-07",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "SOURCE_CONFIRMED_READABILITY_NOT_MEASURED",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Desktop/Themes/Workstation.xaml",
+          "location": "state resources/text sizes",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/ViewModels.cs",
+          "location": "colors/status labels",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml",
+          "location": "labels/icons",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "UI资源实现分散；没有实机乱码或整体不可读证据。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-09"
+      ],
+      "required_closure": "随受影响反馈、状态和标签统一现有资源，实际字形/可读性留Windows核验。",
+      "continue_or_block": "可暂缓独立优化，不扩大为全仓主题重写。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "R-01",
+      "title": "条件 P2 · 保留件连续扫码可能串接旧文本",
+      "kind": "conditional_risk",
+      "priority": "CONDITIONAL_P2",
+      "primary_category": "证据不足",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "project",
+          "id": "R-01",
+          "snapshot": "inputs/project-issues.original.json"
+        },
+        {
+          "report": "ui",
+          "id": "R-01",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "STATIC_PATH_TRIGGER_NOT_VALIDATED",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml",
+          "location": "27",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+          "location": "63–72",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/ViewModels.cs",
+          "location": "RetainedDraft/Apply",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "成功输入消费及作业/输入版本所有权缺口；扫码器追加方式未验。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-05",
+        "AC14-10"
+      ],
+      "required_closure": "同owner/命令/输入版本成功后消费；失败留文，迟到不清新输入；A/A/B、Enter/Tab、换作业实测重复不计量且新码独立。",
+      "continue_or_block": "条件阻塞相应连续扫码验收，不阻塞无关模块。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "R-02",
+      "title": "R-02 · 条件 P2 · 无桌面持续供包没有提示消费者",
+      "kind": "conditional_risk",
+      "priority": "CONDITIONAL_P2",
+      "primary_category": "证据不足",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "project",
+          "id": "R-02",
+          "snapshot": "inputs/project-issues.original.json"
+        }
+      ],
+      "evidence_level": "STATIC_PATH_SCOPE_NOT_CONFIRMED",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Supply/StationClosure.cs",
+          "location": "16–31",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/OperatorNotificationPlayer.cs",
+          "location": "notification consumer",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Product/Program.cs",
+          "location": "serve 124–145",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "无桌面宿主的通知交付所有者未接线；长期headless范围未证实。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-05"
+      ],
+      "required_closure": "先核承诺；若支持，超过64/65提示仍有真实可观察消费与失败保护；若仅验证入口则提供既有范围和执行边界证据，不新写限制取消能力。",
+      "continue_or_block": "只条件阻塞长期headless，不阻塞桌面。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "R-03",
+      "title": "R-03 · 条件 P2 · 共享包库卸载只核查一个数据集",
+      "kind": "conditional_risk",
+      "priority": "CONDITIONAL_P2",
+      "primary_category": "证据不足",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "project",
+          "id": "R-03",
+          "snapshot": "inputs/project-issues.original.json"
+        }
+      ],
+      "evidence_level": "STATIC_PATH_SCOPE_NOT_CONFIRMED",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Platform/MachineRuntimePolicy.cs",
+          "location": "18–28",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Platform/PackageUseLease.cs",
+          "location": "3–5",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Platform/ExtensionStore.cs",
+          "location": "227–251",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Product/ExtensionManagement.cs",
+          "location": "70–76",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Product/Program.cs",
+          "location": "47–53",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "共享包库机制与单数据根引用核查边界不一致；多根承诺待核。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-05"
+      ],
+      "required_closure": "适用多根时检查离线Effective/Pending/Unknown及冲突引用和恢复副本；根不可读不能判无引用；受控单根需既有且实际执行证据。",
+      "continue_or_block": "条件阻塞共享多根恢复/卸载，单工位参考开发继续。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "UI-R02",
+      "title": "条件 P2 · 旧接受仍绿，新鲜度提示离当前结果较远",
+      "kind": "conditional_risk",
+      "priority": "CONDITIONAL_P2",
+      "primary_category": "证据不足",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "ui",
+          "id": "UI-R02",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "STATIC_PRESENTATION_RISK_WINDOWS_NOT_RUN",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Desktop/ViewModels.cs",
+          "location": "105–117",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "location": "186–201",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "原接受事实与当前新鲜度失效距离较远；实际误认未验证。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-08",
+        "AC14-10"
+      ],
+      "required_closure": "同时辨认原Accepted、当前来源/投影失效及最后有效时间，保留现有禁止新业务守卫，不改Accepted为Unknown。",
+      "continue_or_block": "与结果/健康投影一同核实，不宣称已发生误发。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "UI-R03",
+      "title": "条件 P2 · 旧组件读取错误可能清掉新选择",
+      "kind": "conditional_risk",
+      "priority": "CONDITIONAL_P2",
+      "primary_category": "证据不足",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "ui",
+          "id": "UI-R03",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "STATIC_ASYNC_PATH_NOT_REPRODUCED",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "location": "PackageSelected 122–137",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "成功有ticket保护，catch遗漏对象和代次检查。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-04",
+        "AC14-10"
+      ],
+      "required_closure": "可控A慢失败/B快成功以及导航/身份/导入后，旧错误不得清当前选择、参数或草稿；实际UI调用保护策略。",
+      "continue_or_block": "与维护上下文一起处理，不另造第二状态层。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "UI-R04",
+      "title": "关键长内容与固定动作可能竞争最小客户区",
+      "kind": "conditional_risk",
+      "priority": "CONDITIONAL_GEOMETRY",
+      "primary_category": "证据不足",
+      "reconciliation_disposition": "保留",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "ui",
+          "id": "UI-R04",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "GEOMETRY_NOT_MEASURED",
+      "source_locations": [
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml",
+          "location": "long content/split state",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+          "location": "ReviewFits",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "location": "work area protection",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "长内容和固定动作共同使用有限客户区；已有Wrap，不能直接推断裁切。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-09",
+        "AC14-10"
+      ],
+      "required_closure": "实测正常支持/只读/保护/未运行四类；新增长原因与动作同时验关键矩形，保持W01原支持/保护矩阵。",
+      "continue_or_block": "只阻塞实际几何资格，不是已复现Windows缺陷。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "G-01",
+      "title": "Windows实际验收",
+      "kind": "gate",
+      "priority": "GATE",
+      "primary_category": "证据不足",
+      "reconciliation_disposition": "保留/归并门禁",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "project",
+          "id": "G-01",
+          "snapshot": "inputs/project-report.original.md.txt"
+        },
+        {
+          "report": "ui",
+          "id": "G-RUNTIME",
+          "snapshot": "inputs/ui-findings.original.json"
+        },
+        {
+          "report": "ui",
+          "id": "G-DPI",
+          "snapshot": "inputs/ui-findings.original.json"
+        }
+      ],
+      "evidence_level": "WINDOWS_NOT_RUN",
+      "source_locations": [
+        {
+          "path": "docs/runtime/windows-06.md",
+          "location": "W01–06",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "docs/runtime/validation/closure-13-windows-scenarios.md",
+          "location": "approved later verification",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "运行环境限制；Linux缺WindowsDesktop不是Windows启动缺陷。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-06",
+        "AC14-10"
+      ],
+      "required_closure": "获授权Windows同版正式客户端启动、DPI/几何、输入/焦点、声音、多窗及权限/候选证据；无环境明确NOT_RUN。",
+      "continue_or_block": "Windows验收后置，现场上线前必须满足适用项。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "G-02",
+      "title": "真实集成资料与能力",
+      "kind": "gate",
+      "priority": "GATE",
+      "primary_category": "证据不足",
+      "reconciliation_disposition": "保留/归并门禁",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "project",
+          "id": "G-02",
+          "snapshot": "inputs/project-report.original.md.txt"
+        }
+      ],
+      "evidence_level": "REAL_INTEGRATION_NOT_VERIFIED",
+      "source_locations": [
+        {
+          "path": "docs/runtime/integration-05.md",
+          "location": "B01–06",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "缺真实SDK/合同/实体/认证证据。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-06",
+        "AC14-07"
+      ],
+      "required_closure": "真实资料、能力、契约和隔离联调逐项验收；缺必需能力Production显式NotReady，不静默模拟。",
+      "continue_or_block": "只阻塞对应真实能力及上线，不阻塞非设备代码。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    },
+    {
+      "id": "G-03",
+      "title": "业务批准",
+      "kind": "gate",
+      "priority": "GATE",
+      "primary_category": "证据不足",
+      "reconciliation_disposition": "保留/归并门禁",
+      "implementation_status": "OPEN_NOT_FIXED_THIS_AUDIT",
+      "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "origins": [
+        {
+          "report": "project",
+          "id": "G-03",
+          "snapshot": "inputs/project-report.original.md.txt"
+        }
+      ],
+      "evidence_level": "BUSINESS_APPROVAL_PENDING",
+      "source_locations": [
+        {
+          "path": "docs/readiness/decision-pack.md",
+          "location": "D01–16",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        },
+        {
+          "path": "docs/readiness/revision-and-verification.md",
+          "location": "D/RV evidence",
+          "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+        }
+      ],
+      "inherited_runtime_evidence": [],
+      "root_cause": "原业务数量、实体、复位、关闭/处置、身份与保留期仍需批准。",
+      "root_cause_basis": "基于设计和调用链的工程归因，不代表已访谈或核实个人决策。",
+      "work_package": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "acceptance_ids": [
+        "AC14-07"
+      ],
+      "required_closure": "相应产品/WCS/设备/现场批准绑定版本、负责人、日期和证据；不以合成策略代替。",
+      "continue_or_block": "对应真实策略待定，未来能力不自动成为本包阻塞。",
+      "windows_reproduced": false,
+      "new_business_tests_run_this_audit": false,
+      "closure_requires": "对应实现与适用验证证据；提交/PR状态或已处理文字不足以关闭。"
+    }
+  ],
+  "historical_issues_removed_from_current_backlog": [
+    {
+      "id": "PR11-package-identity",
+      "evidence": "src/Ipc.Platform/ExtensionStore.cs; 原同SHA architecture 跨卸载/历史/中断/并发/原包重装",
+      "status": "IMPLEMENTED_AND_CORE_VERIFIED; 未扩张Windows资格"
+    },
+    {
+      "id": "PR11-managed-reference-preflight",
+      "evidence": "src/Ipc.Platform/ManagedAssemblyPolicy.cs, ExtensionPackages.cs, ExtensionLoading.cs; 原同SHA architecture真实AssemblyRef正反例及私有依赖加载",
+      "status": "IMPLEMENTED_AND_CORE_VERIFIED"
+    },
+    {
+      "id": "PR12-instance-rename",
+      "evidence": "src/Ipc.Desktop/ExtensionDraftEditing.cs; ExtensionsView实际调用; tests/Ipc.Verification/ExtensionDraftVerification.cs及原同SHA architecture",
+      "status": "IMPLEMENTED_AND_CORE_VERIFIED; WINDOWS_NOT_RUN"
+    }
+  ],
+  "document_action": {
+    "id": "DOC-CURRENT",
+    "not_added_to_code_defect_count": true,
+    "scope": "只处理本包相关过期当前入口和完成性冲突，保留基线与原件；先承接PR13，再三方合并本包。",
+    "acceptance": "AC14-01"
+  }
+}

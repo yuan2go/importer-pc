@@ -1,0 +1,631 @@
+{
+  "audit_id": "WP-IPC-AUDIT-RECONCILIATION-01",
+  "revision": "POST_PR14_20261017",
+  "checked_main": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+  "source_freeze": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+  "design": "SS-UI-VIS-001 v1.1 UNCHANGED",
+  "count": 25,
+  "original_ids": 20,
+  "new_residual_or_document_items": 5,
+  "deduplication": "A01-04/R01 reused in UI audit counted once; R02!=UI-R02 and R03!=UI-R03; original atomic issue closure does not close associated new residual",
+  "issues": [
+    {
+      "id": "A-01",
+      "title": "P1 · 同 EvidenceId 矛盾回执缺持续证据与阻断",
+      "priority": "P1",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "符合设计",
+      "status": "ORIGINAL_REPRO_CORE_CLOSED_ASSOCIATED_RESIDUAL_OPEN",
+      "current_conclusion": "原同EvidenceId冲突已落盘及重放验证，A-01-R1/R2仍阻塞整体恢复关闭",
+      "source_paths": [
+        "src/Ipc.Supply/StationApplication.cs",
+        "src/Ipc.Supply/Store.cs",
+        "src/Ipc.Supply/ResponsePersistence.cs",
+        "tests/Ipc.Verification/ConformanceVerification.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-02"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "A-02",
+      "title": "P2 · 辅助服务离线被归到主 WCS，实例仍显可用",
+      "priority": "P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "符合设计",
+      "status": "CORE_CLOSED",
+      "current_conclusion": "实例/目标/部署/代次/时效与业务依赖分离，真实ProductRuntime及原健康探针v2支持核心关闭",
+      "source_paths": [
+        "src/Ipc.Product/IntegrationRuntime.cs",
+        "src/Ipc.Product/SenderModule.cs",
+        "src/Ipc.Supply/StationClosure.cs",
+        "examples/IntegrationExtension/IntegrationModule.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-03"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "A-03",
+      "title": "P2 · 组件页激活依赖隐藏维护页的选中项",
+      "priority": "P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "符合设计",
+      "status": "CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "current_conclusion": "当前页显式选中修订贯穿共享守卫，实际应用命令核心已验",
+      "source_paths": [
+        "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+        "src/Ipc.Desktop/MainWindow.Extensions.cs",
+        "src/Ipc.Desktop/MainWindow.xaml.cs",
+        "src/Ipc.Supply/StationApplication.cs",
+        "src/Ipc.Desktop/ConfigurationDraft.cs",
+        "src/Ipc.Supply.Contracts/ConfigurationActivation.cs",
+        "tests/Ipc.Verification/ConformanceVerification.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-04"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "A-04",
+      "title": "P2 · JSON 导入的扩展草稿又被旧 Effective 重置",
+      "priority": "P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "符合设计",
+      "status": "ORIGINAL_REPRO_CORE_CLOSED_ASSOCIATED_RESIDUAL_OPEN",
+      "current_conclusion": "每窗同源草稿及保存重读已验；局部编辑新增A-04-R1另计",
+      "source_paths": [
+        "src/Ipc.Desktop/MainWindow.xaml.cs",
+        "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+        "src/Ipc.Desktop/MainWindow.Extensions.cs",
+        "src/Ipc.Desktop/ConfigurationDraft.cs",
+        "src/Ipc.Supply.Contracts/ConfigurationActivation.cs",
+        "tests/Ipc.Verification/ConformanceVerification.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-04"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "UI-01",
+      "title": "P2 · 箱级拒绝没有持续的当前结果／原因",
+      "priority": "P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "本期应完成但尚未实现",
+      "status": "OPEN",
+      "current_conclusion": "Context/CheckClose/Close三类拒绝的箱/请求/阶段/结果/原因持续显示；刷新/其他通道成功不掩盖，旧箱迟到不污染；真实Active不改假状态。",
+      "source_paths": [
+        "src/Ipc.Supply.Contracts/Model.cs",
+        "src/Ipc.Supply/StationApplication.cs",
+        "src/Ipc.Desktop/MainWindow.xaml",
+        "src/Ipc.Desktop/MainWindow.xaml.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-03"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "UI-02",
+      "title": "P2 · 默认箱会话把箱码标成 Item 条码",
+      "priority": "P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "未经批准且需要纠正的偏离",
+      "status": "OPEN",
+      "current_conclusion": "会话/作业对应真实实体字段；箱码000001和Item码000123在列表、详情、复制、导出一致并保留前导零。",
+      "source_paths": [
+        "src/Ipc.Desktop/HistoryPresentation.cs",
+        "src/Ipc.Desktop/MainWindow.xaml",
+        "src/Ipc.Desktop/MainWindow.HistoryExport.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-05"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "UI-03",
+      "title": "P2 · 历史列表被空详情压窄，结果列偏到远端",
+      "priority": "P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "未经批准且需要纠正的偏离",
+      "status": "OPEN",
+      "current_conclusion": "无详情时列表充分使用空间；默认结果/接受量/对象/通道/条码/尝试摘要可辨，完整证据可达；详情返回保留筛选、选择及滚动。",
+      "source_paths": [
+        "src/Ipc.Desktop/MainWindow.xaml",
+        "src/Ipc.Desktop/MainWindow.Presentation.cs",
+        "src/Ipc.Desktop/HistoryPresentation.cs",
+        "src/Ipc.Desktop/MainWindow.xaml.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-05"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "UI-04",
+      "title": "P2 · 筛选无可见标签，日期要求手输完整时区格式",
+      "priority": "P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "未经批准且需要纠正的偏离",
+      "status": "OPEN",
+      "current_conclusion": "可见标签及可访问名称，本地日期时间输入/选择、显式时区、就近范围错误；保留后端严格边界，触控不依赖hover。",
+      "source_paths": [
+        "src/Ipc.Desktop/MainWindow.xaml",
+        "src/Ipc.Desktop/MainWindow.Closure.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-05"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "UI-05",
+      "title": "P2 · 只读详情始终是蓝色主动作，且有重复入口",
+      "priority": "P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "未经批准且需要纠正的偏离",
+      "status": "OPEN",
+      "current_conclusion": "动作按语义主次且固定位置；详情不额外发送；去重复时同步当前必要动作的ReviewFits，保留关键字段/动作几何保护。",
+      "source_paths": [
+        "src/Ipc.Desktop/LaneControl.xaml",
+        "src/Ipc.Desktop/ViewModels.cs",
+        "src/Ipc.Desktop/LaneControl.xaml.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-05"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "UI-06",
+      "title": "P2 · 部分关键灰显按钮只用悬停说明原因",
+      "priority": "P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "本期应完成但尚未实现",
+      "status": "OPEN",
+      "current_conclusion": "暂停/恢复/关闭/核对等关键动作就近显示具体原因与下一步，触控可知；已存在的通道/组件原因同源保留。",
+      "source_paths": [
+        "src/Ipc.Desktop/MainWindow.xaml.cs",
+        "src/Ipc.Desktop/LaneControl.xaml",
+        "src/Ipc.Desktop/ExtensionsView.xaml"
+      ],
+      "acceptance_ids": [
+        "AC15-03"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "UI-07",
+      "title": "P3 · 少量状态语义、字号和图标资源未统一",
+      "priority": "P3",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "未经批准且需要纠正的偏离",
+      "status": "OPEN",
+      "current_conclusion": "随受影响反馈、状态和标签统一现有资源，实际字形/可读性留Windows核验。",
+      "source_paths": [
+        "src/Ipc.Desktop/Themes/Workstation.xaml",
+        "src/Ipc.Desktop/ViewModels.cs",
+        "src/Ipc.Desktop/MainWindow.xaml"
+      ],
+      "acceptance_ids": [
+        "AC15-05"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "R-01",
+      "title": "条件 P2 · 保留件连续扫码可能串接旧文本",
+      "priority": "CONDITIONAL_P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "证据不足",
+      "status": "PARTIAL_CORE_VERIFIED_BUSY_INPUT_CONDITIONAL",
+      "current_conclusion": "持久消费/迟到保护已修；忙态A未消费时B追加及结束键仍需闭合",
+      "source_paths": [
+        "src/Ipc.Desktop/LaneControl.xaml",
+        "src/Ipc.Desktop/LaneControl.xaml.cs",
+        "src/Ipc.Desktop/ViewModels.cs",
+        "src/Ipc.Desktop/ScanInputDraft.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-04"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "R-02",
+      "title": "R-02 · 条件 P2 · 无桌面持续供包没有提示消费者",
+      "priority": "CONDITIONAL_P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "符合设计",
+      "status": "CORE_CLOSED_WINDOWS_NOT_RUN",
+      "current_conclusion": "持续headless适用；核心66次交付确认及发布宿主2次补充证据，失败保留和所有权仍在",
+      "source_paths": [
+        "src/Ipc.Supply/StationClosure.cs",
+        "src/Ipc.Desktop/OperatorNotificationPlayer.cs",
+        "src/Ipc.Product/Program.cs",
+        "src/Ipc.Product/HeadlessNotifications.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-07"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "R-03",
+      "title": "R-03 · 条件 P2 · 共享包库卸载只核查一个数据集",
+      "priority": "CONDITIONAL_P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "符合设计",
+      "status": "CORE_CLOSED_LEGACY_COVERAGE_AND_WINDOWS_DEFERRED",
+      "current_conclusion": "多根适用且离线引用/不可读阻断核心已验；旧覆盖未知与WindowsACL保留门禁",
+      "source_paths": [
+        "src/Ipc.Platform/MachineRuntimePolicy.cs",
+        "src/Ipc.Platform/PackageUseLease.cs",
+        "src/Ipc.Platform/ExtensionStore.cs",
+        "src/Ipc.Product/ExtensionManagement.cs",
+        "src/Ipc.Product/Program.cs",
+        "src/Ipc.Platform/ExtensionConsumers.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-06"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "UI-R02",
+      "title": "条件 P2 · 旧接受仍绿，新鲜度提示离当前结果较远",
+      "priority": "CONDITIONAL_P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "证据不足",
+      "status": "DEFERRED_EVIDENCE_PENDING",
+      "current_conclusion": "同时辨认原Accepted、当前来源/投影失效及最后有效时间，保留现有禁止新业务守卫，不改Accepted为Unknown。",
+      "source_paths": [
+        "src/Ipc.Desktop/ViewModels.cs",
+        "src/Ipc.Desktop/MainWindow.xaml.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-03"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "UI-R03",
+      "title": "条件 P2 · 旧组件读取错误可能清掉新选择",
+      "priority": "CONDITIONAL_P2",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "证据不足",
+      "status": "IMPLEMENTED_TIMING_VALIDATION_PENDING",
+      "current_conclusion": "catch/finally已核选择代次；A慢失败/B快成功动态时序及Windows未验",
+      "source_paths": [
+        "src/Ipc.Desktop/ExtensionsView.xaml.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-04"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "UI-R04",
+      "title": "关键长内容与固定动作可能竞争最小客户区",
+      "priority": "CONDITIONAL_GEOMETRY",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "证据不足",
+      "status": "DEFERRED_EVIDENCE_PENDING",
+      "current_conclusion": "实测正常支持/只读/保护/未运行四类；新增长原因与动作同时验关键矩形，保持W01原支持/保护矩阵。",
+      "source_paths": [
+        "src/Ipc.Desktop/LaneControl.xaml",
+        "src/Ipc.Desktop/LaneControl.xaml.cs",
+        "src/Ipc.Desktop/MainWindow.Presentation.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-07"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "G-01",
+      "title": "Windows实际验收",
+      "priority": "GATE",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "证据不足",
+      "status": "DEFERRED_EVIDENCE_PENDING",
+      "current_conclusion": "获授权Windows同版正式客户端启动、DPI/几何、输入/焦点、声音、多窗及权限/候选证据；无环境明确NOT_RUN。",
+      "source_paths": [
+        "docs/runtime/windows-06.md",
+        "docs/runtime/validation/closure-13-windows-scenarios.md"
+      ],
+      "acceptance_ids": [
+        "AC15-07"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "G-02",
+      "title": "真实集成资料与能力",
+      "priority": "GATE",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "证据不足",
+      "status": "DEFERRED_EVIDENCE_PENDING",
+      "current_conclusion": "真实资料、能力、契约和隔离联调逐项验收；缺必需能力Production显式NotReady，不静默模拟。",
+      "source_paths": [
+        "docs/runtime/integration-05.md"
+      ],
+      "acceptance_ids": [
+        "AC15-08"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "G-03",
+      "title": "业务批准",
+      "priority": "GATE",
+      "origin_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "original_record": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "category": "证据不足",
+      "status": "DEFERRED_EVIDENCE_PENDING",
+      "current_conclusion": "相应产品/WCS/设备/现场批准绑定版本、负责人、日期和证据；不以合成策略代替。",
+      "source_paths": [
+        "docs/readiness/decision-pack.md",
+        "docs/readiness/revision-and-verification.md"
+      ],
+      "acceptance_ids": [
+        "AC15-08"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false,
+      "closure_rule": "Implementation + applicable verification; PR merge/text acknowledgement alone is insufficient"
+    },
+    {
+      "id": "A-01-R1",
+      "title": "不同接收发生的未接管责任可相互覆盖",
+      "priority": "P1_CONDITIONAL",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "category": "未经批准且需要纠正的偏离",
+      "status": "SOURCE_PATH_CONFIRMED_COMBINED_FAULT_INJECTION_PENDING",
+      "root_cause": "实现遗漏：请求级集合/任一raw不足以表达多个接收发生的独立责任",
+      "source_paths": [
+        "src/Ipc.Supply/ResponsePersistence.cs",
+        "src/Ipc.Supply/StationApplication.cs",
+        "src/Ipc.Product/ProductRuntime.cs",
+        "src/Ipc.Product/IntegrationRuntime.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-02"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false
+    },
+    {
+      "id": "A-01-R2",
+      "title": "已完成接收与普通崩溃后保守责任未充分区分",
+      "priority": "P2",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "category": "有合理依据但尚未批准的调整",
+      "status": "LIMITATION_CONFIRMED_IN_ARCHIVED_SQLITE",
+      "root_cause": "保守设计取舍：围栏覆盖历史终态，缺接收窗口粒度及完整恢复可用性验收",
+      "source_paths": [
+        "src/Ipc.Supply/ResponsePersistence.cs",
+        "tests/Ipc.Verification/Program.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-02"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false
+    },
+    {
+      "id": "A-04-R1",
+      "title": "局部模块选择/新建依赖完整配置已合法",
+      "priority": "P2",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "category": "未经批准且需要纠正的偏离",
+      "status": "SOURCE_PATH_CONFIRMED_WINDOWS_NOT_RUN",
+      "root_cause": "依赖接错：默认目标读取调用全量Draft.Build，编辑态异常没有就地处理",
+      "source_paths": [
+        "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+        "src/Ipc.Desktop/ConfigurationDraft.cs"
+      ],
+      "acceptance_ids": [
+        "AC15-04"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false
+    },
+    {
+      "id": "UPG-01",
+      "title": "旧Effective精确1.0.1到新宿主的完整升级旅程待证",
+      "priority": "P2_CONDITIONAL",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "category": "证据不足",
+      "status": "NEGATIVE_COMPATIBILITY_VERIFIED_END_TO_END_MIGRATION_PENDING",
+      "root_cause": "已有安全拒绝，但格式升级与部署迁移之间缺完整操作验证",
+      "source_paths": [
+        "src/Ipc.Product/ProductRuntime.cs",
+        "src/Ipc.Supply/Maintenance.cs",
+        "src/Ipc.Platform/ExtensionPackages.cs",
+        "docs/runtime/operations.md",
+        "docs/extensions/developer-guide.md"
+      ],
+      "acceptance_ids": [
+        "AC15-06"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false
+    },
+    {
+      "id": "DOC-CURRENT",
+      "title": "当前入口含14待实施/13当前候选等冲突",
+      "priority": "P2",
+      "checked_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+      "category": "未经批准且需要纠正的偏离",
+      "status": "CORRECTED_IN_THIS_DOCUMENT_PUBLICATION",
+      "root_cause": "过期文档误导：新阶段说明叠加旧当前段落而未收敛入口",
+      "source_paths": [
+        "README.md",
+        "docs/INDEX.md",
+        "docs/design/framework.md",
+        "docs/runtime/operations.md",
+        "docs/extensions/developer-guide.md"
+      ],
+      "acceptance_ids": [
+        "AC15-01"
+      ],
+      "work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "evidence_locator": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "new_business_tests_run": false,
+      "actual_windows_verified": false
+    }
+  ],
+  "new_business_code_changes": 0,
+  "new_business_tests_run": 0,
+  "windows": "DEFERRED_NOT_RUN",
+  "real_integration": "BLOCKED_PER_CAPABILITY",
+  "site_release": "BLOCKED",
+  "historical_issue_retention": [
+    {
+      "id": "PR11-package-identity",
+      "evidence": "src/Ipc.Platform/ExtensionStore.cs; 原同SHA architecture 跨卸载/历史/中断/并发/原包重装",
+      "status": "IMPLEMENTED_AND_CORE_VERIFIED; 未扩张Windows资格"
+    },
+    {
+      "id": "PR11-managed-reference-preflight",
+      "evidence": "src/Ipc.Platform/ManagedAssemblyPolicy.cs, ExtensionPackages.cs, ExtensionLoading.cs; 原同SHA architecture真实AssemblyRef正反例及私有依赖加载",
+      "status": "IMPLEMENTED_AND_CORE_VERIFIED"
+    },
+    {
+      "id": "PR12-instance-rename",
+      "evidence": "src/Ipc.Desktop/ExtensionDraftEditing.cs; ExtensionsView实际调用; tests/Ipc.Verification/ExtensionDraftVerification.cs及原同SHA architecture",
+      "status": "IMPLEMENTED_AND_CORE_VERIFIED; WINDOWS_NOT_RUN"
+    }
+  ]
+}

@@ -1,0 +1,716 @@
+# 客户端 UI 设计符合性与作业可用性
+## 独立审查报告
+
+**WP-IPC-UI-CONFORMANCE-AUDIT-01**
+
+仓库：yuan2go/importer-pc  
+审查日期：2026-10-17  
+固定 main：**8cabf06d3c6d53ba551b65e58a13db6cdcaba16a**  
+采用设计：**SS-UI-VIS-001 v1.1**
+
+> **结论：核心工作台结构部分遵循已采用设计；当前不能通过真实工位操作验收。**
+
+共享周转箱／波次、并排双通道、当前条码／任务／数量、结果、固定动作和低频抽屉均有实际 WPF 实现。界面绑定到统一应用投影，命令可追到应用守卫、原请求、发送和回执，具有真实参考工程行为。现有成果不应被归类为通用后台、统计大屏或只有点击效果的展示壳。
+
+但当前存在可由源码确认的反馈、字段语义、阅读负担和维护接线缺陷；同 SHA 既有项目审查的恢复与健康问题仍然成立。正式客户端启动尝试在 WindowsDesktop 框架解析阶段失败，未创建窗口。**本轮实际客户端截图为 0，Windows 几何、焦点、输入、声音和连续作业表现未验证。** 不能据设计图宣布最终美观度、适配或实际可用性通过。
+
+|决策项|本轮结论|
+|---|---|
+|是否按设计实现|核心方向和主要页面入口部分符合；局部字段、主次层级、历史布局与操作反馈有实质差异。|
+|是否适合真实供包|当前不能确认适合，也不具备完整工位验收证据；先修明确问题，再做限定 Windows 关键旅程。|
+|是否美观、协调、克制|静态结构克制、无明显装饰性大屏化；真实客户端美观度未验证。历史密度、动作强调和辅助字号仍需修订。|
+|证据充分性|11/11 原源文件身份一致，34/34 设计 PNG 哈希／尺寸／解码通过；13/34 设计图实际视觉查看；客户端运行图 0。|
+
+本次独立报告只审查现有成果。未修改代码、设计、组件或原始图片；未触发部署、工作流或现场业务；没有生成图片代替运行截图。同 SHA 既有报告 A-01～A-04、R-01保留原编号和证据身份，不重复计成新发现，也未重跑后台全量测试。
+
+阅读顺序：第1～2节确定比较基准和运行边界；第3～5节覆盖页面与状态；第6～10节列具体问题及验收；第11～13节给审美、适配和执行顺序；附录给原始设计参考图、证据索引和缺失运行图位置。
+
+[PAGE]
+
+## 1. 比较基准、采用关系与复用规则
+
+### 1.1 版本锁定
+
+当前 main 为 8cabf06d3c6d53ba551b65e58a13db6cdcaba16a，提交时间 2026-10-17 08:01:09 UTC，合并 PR #12。远端复核于 09:16:18 UTC 仍为同一 SHA，工作树干净。运行输入从冻结源 8cb475b880e6cdd248db42bff74accf443c83519 到 main 无 src/config/scripts 等变化；本轮不把旧构建日志扩写成新的 Windows 验证。[V01](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/INDEX.md)[V02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/windows-06.md)
+
+v1.1 源资料在 2579392ddcc0b4302d4aae865d4b2d8b3c083b59（PR #7）归档。仓库 README 明确其为该设计会话最后一次完整交付，UI10 及后续 UI12/13 沿用该组原件。结合现有用户确认记录和版本记录，采用其视觉与交互意图；不混入另一会话未取得原字节的 v2.1，也不依据 Canva 更新时间重建“最终稿”。[D01](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/README.md)[D06](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/ui-baseline-alignment-10.md)[D07](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/extension-delivery-12-mapping.md)
+
+### 1.2 本次读取与核对的材料
+
+|材料|用途与核对结果|
+|---|---|
+|main、AGENTS、INDEX、框架／决策／评审状态及工作包|确认范围、守卫、未批准业务规则和后续扩展授权。|
+|原单文件 HTML、分离 HTML/CSS/JS、tokens、组件和完整交接|确认 PAGE01～08、状态、层级、固定动作、只读字段、颜色／字号与最低空间要求。|
+|editable-boards.json、PPTX、source-manifest|核对可编辑源和归档身份；不声称 PowerPoint/Canva 跨渲染器排版已通过。|
+|34 张关键状态与尺寸 PNG、渲染登记|全量哈希／尺寸／解码核对；13张有实际视觉查看。均为设计 HTML 的 Linux Chromium 导出。|
+|UI10/12/13 实现映射、Windows06、现有发布记录|用于定位实现与已知未验项；映射表不是实际客户端操作证据。|
+|同 SHA 项目独立审查 PDF，23页|全文核对；复用构建／核心模拟验证与 A-01～A-04、R-01，本轮补 UI 差异与依赖影响。|
+
+原源文件 11/11 与仓库来源清单中的 SHA-256 一致；34 张 PNG 也全部一致。本轮没有重新导出设计图。图片虽可作设计参考，**并非原交付 ZIP 中历史 PNG 的原字节，更不是 WPF 图**；本轮也没有重新取得完整客户私密 PRD、未上传附件或另一候选设计。[D01](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/README.md)[D04](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/source-manifest.json)
+
+### 1.3 不能混淆的批准范围
+
+v1.1 的视觉采用不等于旧 HTML 业务逻辑自动获批。D-03/D-04/D-05 等数量、拆包方向、自动提交／实体许可及生产接口仍按原决策状态处理。后续受控组件／部署管理有 WP12/13 授权，但没有 v1.1 最终高保真参考图，应标“参考缺口”，不能据此直接判新增功能违规。组件展示页是设计规范页，无义务成为生产客户端的额外导航页。[D01](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/README.md)[D02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/docs/%E4%BE%9B%E5%8C%85%E5%B7%A5%E4%BD%9C%E7%AB%99_UIUX%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%BC%80%E5%8F%91%E4%BA%A4%E6%8E%A5%E8%AF%B4%E6%98%8E.md)[D07](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/extension-delivery-12-mapping.md)[V03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/design/framework.md)
+
+证据分级：**S**＝源码可直接确认；**P**＝同 SHA 既有模拟证据复用；**R**＝需运行确认的条件风险；**G**＝证据或合同缺口。除明确的 P 项外，本报告没有把静态推导写成已在 Windows 复现。
+
+[PAGE]
+
+## 2. 实际启动尝试与环境记录
+
+### 2.1 正式入口及结果
+
+正式应用为 Ipc.Desktop（net10.0-windows、UseWPF=true）。启动链是 App.OnStartup → ProductHost.Build → host.StartAsync → MainWindow.Show；交付包入口为 station.ps1 -Action Run → Ipc.Desktop.exe。[I01](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/App.xaml.cs)[V02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/windows-06.md)
+
+本轮先在当前克隆尝试不构建／不还原启动，但没有现成 DLL。随后复用既有同 SHA 审查来源关联的 WPF 候选 DLL，发起正式 DLL 入口加载尝试。最终尝试时间为 **2026-10-17 09:11:12 UTC（北京时间17:11:12）**，退出码 **150**，stderr 明确缺少 Microsoft.WindowsDesktop.App 10.0.0 x64。未到 App.OnStartup、没有窗口、没有业务请求，新合成数据根也未创建。原始参数、stdout/stderr、时间与退出码均在证据包中。
+
+|记录项|实际取得值／边界|
+|---|---|
+|系统／架构|Ubuntu 24.04.3 LTS，Linux x86_64，kernel 6.18.44；无 Windows 交互会话。|
+|SDK／运行时|.NET SDK 10.0.402；host 10.0.13；RID linux-x64；只有 NETCore／ASPNetCore 共享框架。|
+|客户端版本|源码固定 main；候选 DLL 关联同 SHA 既有审查，但缺不可变 SourceCommit 证明，见下文。|
+|实际窗口有效尺寸／DPI／缩放|无窗口，全部未取得；不能填入 XAML 默认值或设计图尺寸冒充测量。|
+|实际输入方式／数据来源|没有使用键盘、扫码枪、相机或触控；客户端未运行，无实际业务数据。|
+|显式测试选择|配置为 Simulation、workstation/standard、新独立合成数据根；不指向现场设备。|
+|模拟范围|候选配置为 manual 双路／loopback／SYNTHETIC-KEEP-v1；本轮未启动这些链路或接收夹具。|
+|运行截图|0；保存截图登记和缺失原因，没有空白占位图、HTML替代图或生成图。|
+
+### 2.2 二进制身份限制
+
+候选 DLL SHA-256 为 c99b5dae45889444dc418695e93fdb7ab1e29f9f2dc89f61690d829f02981da1。116 个现存源码、配置及构建输入与 main 逐字节相同，旧构建日志和环境文件指向同 SHA 及该构建路径。然而 DLL InformationalVersion 只有 1.0.0，旧日志未记录原 DLL 哈希；因此只称“来源关联候选”，不凭现存源码相同认定其二进制出处已获得完整证明。
+
+### 2.3 既有运行证据检索
+
+Windows06 与 UI10/12/13 均保留 Windows 未验、实际截图 0。当前 main SHA 与冻结源 SHA 的 GitHub Actions 分别查询均 total_count=0；结论只适用于这两个查询对象。现有预发布 closure13-reference-8cb475b 有12附件，仍明确 WINDOWS_NOT_RUN；本轮未重新下载 ZIP 全部字节。没有检索到可替代本轮缺失的已验证 WPF 状态图。[D06](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/ui-baseline-alignment-10.md)[D07](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/extension-delivery-12-mapping.md)[V02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/windows-06.md)
+
+G-RUNTIME 是工位验收前必须补齐的证据门禁，不等于“全部 UI 代码不合格”。本轮没有安装 Wine／VM、安排未知 Windows runner 或再次执行后台全量验证。
+
+[PAGE]
+
+## 3. 页面覆盖矩阵
+
+本表“实现”仅指入口、绑定与命令可从当前 SHA 定位。**所有行的 Windows 运行状态均为 NOT_RUN**，不能用该矩阵作点击验收单。设计基准见交接 PAGE 映射与图册。[D02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/docs/%E4%BE%9B%E5%8C%85%E5%B7%A5%E4%BD%9C%E7%AB%99_UIUX%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%BC%80%E5%8F%91%E4%BA%A4%E6%8E%A5%E8%AF%B4%E6%98%8E.md)[D03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)
+
+|设计页面|当前实现／入口|缺口或实质差异|
+|---|---|---|
+|PAGE01 启动、NotReady、恢复|EntryOverlay；启动状态、配置／运行所有者／箱及未决摘要；诊断与组件入口|有结构；逐项恢复视觉压为汇总文字，扫描阅读性未验。正式启动 G-RUNTIME。|
+|PAGE02 登录／未登录|模拟身份／角色入口、身份过期、权限守卫|真实账号／WCS认证及其失败状态未形成生产能力；合同缺口，不要求照抄演示密码框。|
+|PAGE03 等待箱／验箱|共享箱区、BoxInput、校验命令、会话状态、波次与总量|验箱拒绝具体原因没有持续当前投影：UI-01。|
+|PAGE03 双相机主工作台|两个 LaneControl；当前条码、SKU／任务／格口、P/D/R、状态／原因、固定动作和近期记录|核心结构保留；详情动作主次错误 UI-05；新鲜度 UI-R02；几何 UI-R04。|
+|PAGE04 拆包|保留／移除／计数／目标、人工扫码输入、清空、确认拆包并供包|参考合成 KEEP 策略；连续扫码 R-01；两步合并为固定对象确认提交，不能宣称生产规则已批准。|
+|PAGE05 结束／少货|CheckClose、原检查身份、总缺失量、勾选／红色强制结束、取消|关闭两阶段有实现；失败原因 UI-01；分 SKU 少货明细合同缺口。|
+|PAGE06 记录列表|箱会话／作业、过滤、空／加载／失败、分页、导出|默认箱码误标 Item（UI-02）；宽度分配 UI-03；筛选可读性 UI-04。|
+|PAGE06 记录详情|箱→作业→请求→尝试→回执／审计／关闭链树|TreeView 为合理原生适配；默认展开与信息分配负担 UI-03；实际长标识未验。|
+|PAGE07 报警／核对／恢复|活动与恢复报警、已读、原请求核对、来源核对、暂停／恢复|已有应用命令；局部禁用原因 UI-06；既有 A-01/A-02；声音及恢复时序未验。|
+|PAGE08 设备／维护|设备诊断、只读政策、配置草稿／差异／修订／激活、高级 JSON|基本入口存在；真实 SDK/UAC/安装旅程未验；标签密度与诊断层级需收敛。|
+|PAGE08 后续组件管理增量|ExtensionsView；包、实例、参数、服务目标、部署修订|后续授权，有实现；A-03/A-04 接线缺陷、UI-R03迟到错误；缺独立最终设计画板。|
+|组件规范／尺寸样例|主题资源、常用控件、紧凑布局、空间保护、多窗|组件展厅无生产页要求；DPI、触控和实际最小客户区 G-DPI。|
+
+实现位置：MainWindow.xaml:5–73、MainWindow.Presentation.cs:40–176、LaneControl.xaml:4–29、MainWindow.Closure.cs:35–202、MainWindow.xaml.cs:205–302、ExtensionsView.xaml:1–24。[I02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml)[I03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Presentation.cs)[I04](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/LaneControl.xaml)[I06](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Closure.cs)[I08](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ExtensionsView.xaml.cs)
+
+不能进入的部分：本环境中整个 WPF 客户端未进入，故包括正常状态在内没有运行覆盖。尚未实现的自动业务提交／车辆发车、生产身份认证、真实设备和分 SKU 关闭明细另列能力／决策缺口，不冒称功能通过，也不统一计作本期已批准漏页。
+
+[PAGE]
+
+## 4. 关键状态与业务操作覆盖矩阵（一）
+
+S＝源码有路径；P＝已有同 SHA 模拟证据；G＝缺合同／批准或运行证据；R＝条件风险。以下全部仍缺实际 Windows 操作和截图。
+
+|状态／操作|设计位置|实现与核对结果|
+|---|---|---|
+|启动／未就绪|PAGE01；15-recovery|S：配置／身份／健康／未决恢复阻断；正式入口未运行 G-RUNTIME。|
+|未登录／过期|PAGE02；14-login|S：模拟角色与8h过期；G：生产认证没有闭环。|
+|等待周转箱|PAGE03；17-waiting|S：新箱入口、字符串输入和单次焦点策略；焦点行为未验。|
+|周转箱校验中|PAGE03；23-pending|S：Context请求、Validating、不能 Item 作业；本地 Persisted 非业务成功。|
+|周转箱校验拒绝|交接异常表|S：状态 Rejected、保留输入；UI-01具体原因未在当前区持续显示。|
+|双路正常读码／新作业|01-normal|S：Observation 来源与 admission、operation 归属；并排双通道。真实相机未验。|
+|无码|05-no-read|S：清当前任务／数量，不继承旧授权；原因单独显示。实际切换未验。|
+|多码／格式异常|06-multiple-barcodes|S：候选码和校验原因；与无码主状态较泛，需现场辨认性验证。|
+|当前结果切换|交接当前／历史规则|S：新 Read 清当前，PreviousConfirmed另存；当前与历史证实分开。|
+|WCS已保存／待发／发送中|23-pending|S：请求阶段映射，未由按钮点击直接变接受；关闭视图不取消发送。|
+|WCS接受|01-normal|S/P：接受账按原请求唯一；业务接受不等于实体离场。Windows呈现未验。|
+|WCS拒绝／波次差异|04-business-rejected|S：作业原因与差异字段存在；只读详情为蓝色主动作 UI-05。|
+|结果待核对／超时|03-result-unknown|S/P：原请求 Unknown／核对、守卫；A-01异常冲突分支未闭环。|
+|投影过期／离线后保留旧结果|02-camera-offline|S：新操作已拒绝；主状态可能仍旧绿，局部新鲜度 UI-R02。|
+|人工供包|01-normal|S：明确 Submit命令、数量／实体／未决校验；普通供包无额外模态。|
+|自动供包／自动发车|交接 ReadyForAutoDispatch|未实现。Validate成功只到 AwaitingAction或SplitRequired；D-03/D-05待批准，不扩成已承诺必做项。|
+|拆包规则未批准|08-split-unapproved|S：Simulation与未批准边界有说明；不能视作现场生产拆包许可。|
+|拆包数量与确认|09-split-candidate／26-split|S：保留／移除／有效／目标量与固定对象确认；只验证参考KEEP，不代替客户数量规则。|
+
+重要区别：发送器自动发送已持久化的意图，不等于应用自动决定供包，更不等于 PLC／车辆动作。创建 Submit 原请求的业务代码只有显式 Submit 分支；Validate 接受后没有自动提交路由。[I10:158–166,536](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationApplication.cs)[I06:63–69](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Closure.cs)
+
+[PAGE]
+
+## 5. 关键状态与业务操作覆盖矩阵（二）
+
+|状态／操作|设计位置|实现与核对结果|
+|---|---|---|
+|保留件连续计数|PAGE04；26-split|S：字符串 HashSet 防同身份重复；R-01文本框残留可能串接，真扫码未验。|
+|清空重扫／取消草稿|PAGE04|S：清业务计数和修订；在途／已接受／未知不得取消；本窗输入未清 R-01。|
+|正常结束检查|PAGE05|S：未决清完且两通道实体Clear才可检查；不能凭点按钮清箱。|
+|零缺失正常结束|PAGE05|S：CloseRemaining已知且为0直接确认，不弹无意义少货框。|
+|少货复核／强制结束|10-shortage|S：显示总量、风险勾选、固定检查对象／revision；G：分SKU明细未提供。|
+|取消少货确认|PAGE05|S：只在AwaitingShortageDecision取消；默认取消，无全局Enter危险确认。|
+|检查结束被拒绝|交接结束反馈|S：ClosingCheck→Active，原箱保留；UI-01当前屏丢本次具体拒绝反馈。|
+|关闭被拒绝|交接结束反馈|S：Closing→Active，不会错误Closed；UI-01原因需主动进详情查找。|
+|关闭中／关闭Unknown|PAGE05／03-unknown|S：固定CloseToken／原请求，不能直接新箱；实际弹窗与后台时序未验。|
+|正常Closed后新箱|PAGE03／PAGE05|S：重新入箱和清lane；旧回执session／owner校验，实际焦点待验。|
+|相机离线|02-camera-offline|S：独立来源健康、禁止新业务；旧事实呈现UI-R02，真实SDK缺口。|
+|WCS离线|20-wcs-offline|S/P：主守卫；A-02辅助故障归因错误。真实网络／协议未验。|
+|存储失败|07-storage-failed|S/P：存储／运行故障及准入阻断；实际状态醒目程度未验。|
+|报警已读／恢复|19-alarm／18-recovered|S：已读不消除活动原因；occurrence稳定；A-01重启证据问题另列。|
+[PAGE]
+
+## 5. 关键状态与业务操作覆盖矩阵（续）
+
+|状态／操作|设计位置|实现与核对结果|
+|---|---|---|
+|暂停／恢复|PAGE07|S：Pause仅软件暂停；Resume只去OperatorPaused，不清其它阻断。|
+|原请求／来源核对|PAGE07／15-recovery|S：固定身份与证据、应用守卫；UI-06局部禁用原因只在Tooltip。|
+|记录空／加载／失败／分页|22-no-records／11-records|S：查询代次与角色，旧读取失败标无效；UI-02～04影响查询辨认。|
+|记录详情／尝试／导出|12-record-detail／12b-attempts|S：真实层级、原响应和审计；冻结对象处置，不借新修订授权旧详情。|
+|维护激活／导入|24-maintenance；WP12/13|S：真实管理服务；A-03错误列表依赖、A-04草稿重置，不能按点击成功验收。|
+|返回／切箱／重启／多窗|交接关键规则|S/P：每窗presentation、共享Runtime；重启Dispatching→Unknown、清身份；A-01、R-01和Windows时序仍待处理。|
+
+### 5.1 沿实际链路核对，而非按按钮外观判定
+
+主链为 MainWindow／LaneControl → ProductRuntime.CommandAsync → StationApplication.ExecuteCore → 持久化原请求 → Sender → CompleteCore → ApplyOwner → Snapshot → UI刷新。busy、CommandId 幂等与全站 revision CAS、operation／session 所有权校验共同约束行为。箱输入走专用文本框，相机走 Observation；没有主屏手改 Item 数量把输入伪装成读取结果。[I05:118–130](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs)[I09:246](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/ProductRuntime.cs)[I10:129–214,454–538](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationApplication.cs)
+
+抽屉关闭只改变显示状态；关闭主程序才进入受控停止。历史／详情异步读取有代次与身份复核；报警已读与故障恢复分离。上述机制应保留，但不能把这些源码路径等同于真实输入、焦点及跨窗口时序已通过。
+
+[PAGE]
+
+## 6. 本轮明确问题：当前操作反馈
+
+### UI-01 · P2 · 箱级拒绝没有持续的当前结果／原因
+
+**证据等级：S。** 位置为共享周转箱区、结束检查与关闭反馈。此问题适用于 Context、CheckClose、Close 三类明确拒绝，不是所有异常都缺反馈。
+
+|证据链|定位|
+|---|---|
+|设计参考|交接57–59、91、118、153、172、176、181、188行：当前箱／结果／异常原因／下一步优先，拒绝持续反馈。|
+|运行截图|缺失：RUN-UI01-CONTEXT、RUN-UI01-CHECKCLOSE、RUN-UI01-CLOSE，均NOT_RUN。|
+|命令入口|MainWindow.xaml.cs:208–224；ProductRuntime.cs:246。|
+|结果投影缺口|StationApplication.cs:518–526仅更新会话状态／上下文／关闭量／token；529–538只给匹配lane作业写op.Reason。|
+|UI与快照|Model.cs:50–63,94–103无当前箱响应原因；MainWindow.xaml.cs:69–80与XAML:13–17没有该字段。|
+|非替代路径|报警603–619、通知StationClosure:16–34没有箱级拒绝事件；EntryOverlay只处理Unknown等；LastResult是本地回执。|
+
+[D02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/docs/%E4%BE%9B%E5%8C%85%E5%B7%A5%E4%BD%9C%E7%AB%99_UIUX%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%BC%80%E5%8F%91%E4%BA%A4%E6%8E%A5%E8%AF%B4%E6%98%8E.md)[I02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml)[I05](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs)[I09](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/ProductRuntime.cs)[I10](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationApplication.cs)[I11](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply.Contracts/Model.cs)[I12](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationClosure.cs)
+
+触发前提：有效模拟身份、健康来源／WCS、无其他故障；关闭前未决已处理、两通道离场复位；返回身份和合同合法的明确 Rejected。SimulationRequestContract 与 Receiver 的拒绝路径允许验证这些场景。[I15](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Adapters/SimulationRequestContract.cs)
+
+|返回类型|应用状态与影响|
+|---|---|
+|验箱拒绝|Validating→Rejected，输入区恢复，仅“已拒绝”及一般未激活守卫；操作者不知道应核对箱码、计划还是站点。|
+|结束检查拒绝|ClosingCheck→Active，可回到“作业中／就绪”；没有持续显示“此次结束检查被拒绝”及原因，易重复点击寻找结果。|
+|关闭拒绝|Closing→Active，原箱正确保留、没有错误宣布Closed；但为何未结束需主动查原关闭链。|
+
+**原始普通拒绝响应并未从数据库消失。** MainWindow.xaml.cs:282–299 的详情树会显示 Response.Reason；缺陷是当前高频操作区漏接反馈。也不应为了显示失败虚构永久阻断，或把真实Active改成假状态。
+
+修订建议：在现有会话投影中保留当前箱请求的固定身份、阶段、结果、原原因和下一步，在共享箱区或持久结果区显示并关联详情。将本地“已保存”与外部“拒绝”明确分开。
+
+**验收条件：** 隔离模拟端分别拒绝三种请求，再做一次正常关闭对照；保存sessionId/requestId及原回执。刷新、关闭／重开抽屉后，当前箱拒绝类型、原因和下一步仍可发现；CheckClose／Close拒绝回Active后，另一通道成功不掩盖该事件。Context尚未激活且明确拒绝时允许纠正或更换箱码重验；已建立活动箱在关闭中／待核对时不开放新箱，明确Closed后才正常换箱；旧箱回执不贴到新箱。长中文拒绝原因和前导零箱码完整可查。
+
+[PAGE]
+
+## 7. 本轮明确问题：记录与操作层级
+
+### UI-02 · P2 · 默认箱会话把箱码标成 Item 条码
+
+**位置／触发：** 首次打开记录，默认“箱会话”，查询返回至少一条。MainWindow.xaml:41默认选0；Closure.cs:106–108查Sessions；HistoryPresentation.cs:14在没有Operation时把Barcode回退为Session.Barcode；XAML:45列头仍固定“Item条码”，旁边又有箱码。[I02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml)[I06](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Closure.cs)[I07](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/HistoryPresentation.cs)
+
+**影响：** 实体类型被错误命名，追溯时会把周转箱标识当商品／包裹标识；这是字段语义问题。设计11-records区分箱与Item；对应运行图RUN-UI02缺失。[D03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)
+
+**修订／验收：** 按查询实体使用对应列，不用箱码填Item列。取箱码000001、Item码000123；会话与作业模式均保留前导零，列表／详情／复制／导出一致，且箱会话没有伪Item字段。
+
+### UI-03 · P2 · 历史列表被空详情压窄，结果列偏到远端
+
+**位置／触发：** 正常支持尺寸打开记录，未选详情；或进入含多次尝试的长详情。设计11-records用整个抽屉做列表，12-record-detail单独呈现详情；当前MainWindow.xaml:40–45在正常支持尺寸下保持5*:6*分栏，空详情也占6/11。抽屉最大1180 DIP，低于1000才上下排列；10列固定宽总1490，初始配置中状态列起点在累计1300之后。扣16外边距估算列表约529 DIP，**不是实际视口测量值**。[D03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)[I02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml)[I03:156–163](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Presentation.cs)
+
+**影响：** 识别条码、数量和结果需要横向寻找；未选详情却占多数宽度。现有DTO的Id／Lane未在列表显示，缺发送次数摘要；详情请求／尝试／响应／审计默认全展开，低频技术内容抢占业务摘要。TreeView自身是合理适配，问题在信息分配。[I05:285–298](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs)[I07](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/HistoryPresentation.cs)
+
+**修订／验收：** 无详情时列表充分使用抽屉，详情可进入／返回或收放；首屏优先对象身份、通道、条码、结果、接受量和尝试摘要，完整标识在详情可复制。目标有效区中辨认作业结果不需横向寻找；返回保留筛选、选中与滚动。运行图RUN-UI03缺失，不声称已测裁切。
+
+### UI-04 · P2 · 筛选无可见标签，日期要求手输完整时区格式
+
+**位置／触发：** 初次查询、触控输入或已有值需要辨认字段。MainWindow.xaml:41–44多文本框仅有ToolTip，Item／SKU／日期还缺定位用自动化名称；三类状态共用一行顺序说明。Closure.cs:98–104要求日期末尾Z或±HH:mm；180 DIP输入框需容纳完整时间。[I02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml)[I06](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Closure.cs)
+
+**影响：** 操作者需记位置或悬停，手输协议式时间增加格式错误；实际字形裁切仍待运行。设计11-records有持续标签和日期选择。[D03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)
+
+**修订／验收：** 每个输入有可见标签和关联可访问名称，提供本地日期／时间选择并明示时区，后台保留严格时区边界。无hover，仅触控完成指定日期＋Item查询；错误范围就近可读，不要求背诵ISO格式。RUN-UI04缺失。
+
+[PAGE]
+
+## 7. 本轮明确问题：记录与操作层级（续）
+
+### UI-05 · P2 · 只读详情始终是蓝色主动作，且有重复入口
+
+设计01-normal中已接受侧“详情”为次操作，待人工侧提交才主强调。LaneControl.xaml:28的PrimaryAction永久Primary样式；ViewModels.cs:148–150只换文字和能力。Accepted、ValidationRejected、Rejected、OutcomeUnknown、SubmitPending、ValidationPending下PrimaryClick都调用ShowDetailAsync(current.Id,current)，旁边“详情”调用相同方法和对象。[D03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)[I04](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/LaneControl.xaml)[I13:147–150](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ViewModels.cs)
+
+**触发／影响：** 有身份且非执行忙态时，一侧接受一侧待供包，两个蓝色区域同样醒目；或只有详情／核对时仍保留强主强调。蓝色不再可靠表示提交动作，重复入口占据空间。CanPrimary与CanDetail的忙态条件不同，不能说任何时刻两者均启用；也不是重复提交漏洞。
+
+**修订／验收：** 按动作语义切主／次样式，保留固定位置；同对象同目的详情只保留一个明确入口。待供包侧主强调，接受／拒绝／未知侧只读入口次强调；切状态后按钮不移位。原请求核对的入口文字须与实际进入的详情页面相符。运行图RUN-UI05缺失。
+
+### UI-06 · P2 · 部分关键灰显按钮只用悬停说明原因
+
+交接153、155、243行要求禁用原因靠近按钮。MainWindow.xaml.cs:190–194给TaggedButtons设IsEnabled和ToolTip，没有统一就近原因。代表为暂停／恢复、结束和原请求核对；CanCommand:154–159包含未选报警、缺原请求、依据不满8字符或过长、暂停状态等条件。[D02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/docs/%E4%BE%9B%E5%8C%85%E5%B7%A5%E4%BD%9C%E7%AB%99_UIUX%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%BC%80%E5%8F%91%E4%BA%A4%E6%8E%A5%E8%AF%B4%E6%98%8E.md)[I02:7,17,60–61](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml)[I05:154–159,190–194](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs)
+
+**触发／影响：** 触控或不悬停时按钮灰显，局部前置条件未必出现在全局状态，操作者不知道该补选择、依据还是权限。通道已有DisabledReason，不能概称所有按钮都缺原因；实际触控长按Tooltip未验证。
+
+**修订／验收：** 关键动作邻近展示当前不可用原因，或提供一直可点击的“为何不可用”；不用hover完成选择原请求→填写依据→提交。分别覆盖无选择、短依据、无权限和状态不允许，用户能从当前页读懂下一步。RUN-UI06缺失。
+
+### UI-07 · P3 · 少量状态语义、字号和图标资源未统一
+
+MainWindow.xaml:20全局左边线固定Accent，刷新只切绿／黄背景；健康摘要整体同色，缺独立本地存储正常项。Lane标题16、原因13，FieldLabel固定12，标准模式与紧凑模式的标签层级不足。状态符号为Unicode文字，颜色RGB在ViewModels重复定义，图标字形依赖Windows字体回退。[I02:10,20](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml)[I05:81](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs)[I06:42–45](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Closure.cs)[I13:21–23](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ViewModels.cs)[I14:19](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/Themes/Workstation.xaml)
+
+**影响／验收：** 辅助与故障语义有维护分散、字号过小的风险，不能据此断言实际方框或不可读。按既有tokens统一资源，区分关键原因与辅助标签；标准／紧凑各取原图确认中文数字基线、无缺字、状态文字／边线／颜色一致。优先级排在结果、追溯与命令修订之后。RUN-UI07缺失。
+
+[PAGE]
+
+## 8. 同 SHA 既有问题复用：恢复与健康
+
+以下沿用 WP-IPC-PROJECT-CONFORMANCE-AUDIT-01_8cabf06d_20261017.pdf 的原编号；该23页报告全文已核对，本轮没有重复实验。引用其模拟结果时明确为P，不伪称客户端实测。
+
+### A-01 · P1 · 同 EvidenceId 矛盾回执缺持续证据与阻断
+
+**来源：既有报告第15页，P＋S。位置／触发：** 已有Accepted或Rejected后，收到相同EvidenceId、内容或结果相矛盾的合法归属回执，然后重启。CompleteCore:454–480尝试保存冲突／Unknown；Store.Commit:153–158遇同ID不同内容抛错并回滚；内存ProtocolFailure虽被设置，UnknownLocked:489–502看到原Accepted/Rejected会返回，构造恢复35–50没有恢复该内存故障。[I10](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationApplication.cs)[I16](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/Store.cs)
+
+**既有模拟结果：** 原Accepted和接受量1保留，冲突后有内存故障但无持久阻断；重启并重新建立有效身份与健康来源后，runtimeFaults和recovery为空、准入重新为true。**没有重复加量，没有把旧Accepted覆盖成新成功，也不是现场已经发生的事故。**
+
+**UI影响：** 异常原件／核对责任不能在重启后可靠呈现，界面可能恢复就绪而失去冲突需要处理的事实；不能靠增加红色提示修复底层证据缺口。
+
+**验收：** 相同ID同内容幂等；相同ID矛盾内容保留原件、原接受账和持久冲突阻断；重启前后详情和恢复页能查到，准入保持受限直到有依据处置；存储失败维持关闭准入。只复测该关键分支及正常重复回执对照。运行图RUN-A01缺失。
+
+### A-02 · P2 · 辅助服务离线被归到主 WCS，实例仍显可用
+
+**来源：既有报告第16页，P＋S。位置／触发：** 主服务健康、辅助服务健康查询失败，查看主屏WCS和组件服务诊断。IntegrationRuntime.HealthAsync:152–161把所有实例结果AND；SenderModule:24向应用写总WcsHealth；StationClosure:117–146把失败映射到主配置Integration；部分诊断生命周期返回false却没有LastFailure。[I17](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/IntegrationRuntime.cs)[I12](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationClosure.cs)[I18](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/examples/IntegrationExtension/IntegrationModule.cs)
+
+**既有模拟结果：** 实际ProductRuntime＋独立插件＋loopback探针，6次健康调用、0次效果调用；辅助失败使主WCS变不可用，而实例诊断仍Available、LastFailure为空；禁用辅助后主状态恢复。未实际执行完整供包停线旅程，不扩写为所有现场作业必然停线。
+
+**UI影响：** 操作者可能定位错设备／网络，主屏和组件详情相互矛盾。修订需按实例、目标和业务依赖表达健康，不能简单隐藏辅助故障或把服务都写成健康。
+
+**验收：** 主故障、辅助故障、分别恢复各一次；主屏与实例名称／状态／原因一致，只有相关业务被正确限制；无故障不能显示错误归因，故障原件可追溯。保留实例层真实可用性与全站准入的区别。RUN-A02缺失。
+
+[PAGE]
+
+## 8. 同 SHA 既有问题复用：维护流程
+
+### A-03 · P2 · 组件页激活依赖隐藏维护页的选中项
+
+**来源：既有报告第17页，S。位置／触发：** 新窗口以维护身份进入组件页，选择本页Validated修订并申请激活，未先去旧维护配置列表选中项目。
+
+ExtensionsView.xaml.cs:344–347正确取本页Revisions选中ID，经MainWindow.Extensions.cs:43–44到SendAsync；MainWindow.xaml.cs:152却以另一控件ConfigsList.IsEnabled／SelectedItem是否Validated决定能否执行。身份变化时该旧列表会被禁用；组件页载入不会同步完成这个旧列表选择。[I08](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ExtensionsView.xaml.cs)[I19](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Extensions.cs)[I05](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs)[I03:178–188](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Presentation.cs)
+
+**影响：** 本页选择合法对象仍被隐藏页状态阻断，维护流程需要无依据的绕路。后台仍按传入修订ID、验证与CAS检查，不能推导为激活了错误配置或突破权限。
+
+**修订／验收：** 激活条件以发起页实际选中的同一修订／身份／版本为准。新窗口直接登录维护→组件→选Validated→申请，后台接到正确ID；无需先访问隐藏列表。未验证、过期、无权限、有实体／未决时仍正确拒绝；完成与拒绝均显示具体结果。RUN-A03缺失。
+
+### A-04 · P2 · JSON 导入的扩展草稿又被旧 Effective 重置
+
+**来源：既有报告第18页，S。位置／触发：** 维护导入含不同扩展部署／设备／服务目标的JSON，然后进入组件页编辑／保存部署草稿。
+
+MainWindow.xaml.cs:371–379把导入内容载入draftBase、extensionDraft和表单；:418接着调用ExtensionsControl.Initialize。后者ExtensionsView.xaml.cs:25–30从Runtime.Configuration.Extensions的旧Effective重建desired；:340–342保存时经MainWindow.Extensions.cs:28–35覆盖本窗extensionDraft与有关参数。[I05](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs)[I08](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ExtensionsView.xaml.cs)[I19](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Extensions.cs)
+
+**影响：** 用户导入意图在跨页编辑时被旧生效值替代，可能得到错误预览或校验拒绝；这是同窗草稿所有权问题。没有证据证明已静默激活、破坏数据库或影响真实设备。
+
+**修订／验收：** 维护表单与组件页共享本窗同一部署草稿，明确Draft与Effective。导入包、设备实例、服务目标、端口／参数后，导航、编辑、预览、保存、重载均保留该意图；只在明确受控激活后改变Effective。第二窗口不得共享可变表单对象，仍须CAS防覆盖。RUN-A04缺失。
+
+### 8.1 修订边界
+
+A-03/A-04不用等待真实WCS规则即可修复，不能全归因于Windows未验；本轮没有修改实现。A-01/A-02的核心行为已有模拟证据，应先修归属／证据根因，再验证当前UI如何表达。视觉整理不能掩盖实际Unknown、未批准、故障和未实现能力。
+
+[PAGE]
+
+## 9. 条件风险：必须以真实输入与当前状态验证
+
+### R-01 · 条件 P2 · 保留件连续扫码可能串接旧文本
+
+沿用既有报告第18页R-01。新增风险采用UI-R02～04，不与旧报告原R-02／R-03混用。LaneControl.xaml:27将RetainedDraft逐字绑定；xaml.cs:63–71只去终止符并发送，成功后无清空／SelectAll；ViewModels没有随作业更换重置该draft。ClearSplit只清业务计数。StationApplication:168–174用字符串长度／HashSet去重。[I04](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/LaneControl.xaml)[I13](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ViewModels.cs)[I10](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationApplication.cs)
+
+**触发／影响：** 若HID扫码器在现有末尾追加，先A再B成AB、重复A成AA；合成策略可能把拼接串当新身份，重复实物也可能增量。没有真实Windows键盘／扫码器复现，不写成已发生重复计数。
+
+**验收：** 真HID分别Enter／Tab，按A、A、B连续扫描，记录每次入账原字符串和计数；失败、忙态、清空、换作业、切通道均不能串接或把旧draft带入新对象。清理必须对应固定作业和已处理输入，迟到回执不能清掉新输入。摄像头输入、箱扫码与人工输入分开记录。RUN-R01缺失。
+
+### UI-R02 · 条件 P2 · 旧接受仍绿，新鲜度提示离当前结果较远
+
+**位置／触发：** 已接受后相机失联，或超过3秒未取得投影。ViewModels.cs:105更新健康文字，但106–117仍按旧Current.Status着色；available参与能力而非结果标题。MainWindow禁用新动作并在全局显示投影失效；通道健康只有12号辅助字，最后观察时间在默认折叠区。[I13](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ViewModels.cs)[I04:4–5,17–18](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/LaneControl.xaml)[I05:186–201](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs)
+
+**影响边界：** 没有证据证明仍可误发，已有守卫禁止新业务；已接受是事实也不应改成Unknown。风险在主要注视区旧绿色可能被理解为当前可继续，需要跨区寻找失效说明。设计02-camera-offline让离线状态优先。[D03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)
+
+**验收：** 在主状态旁表达失效范围、最后有效时间及“原接受事实保留”；接受后断相机／暂停投影的原图同时看到事实和失效、动作原因。健康或投影恢复不得创建新作业、盲重投原Accepted／Unknown请求，或让已过期、代次不匹配的旧许可绕过核对；仍有效的既有作业只按完整守卫恢复。另一通道成功不得掩盖该通道失效。RUN-UIR02缺失。
+
+### 9.1 刷新与声音不是已经证明的缺陷
+
+主窗300ms刷新，但Bindable同值不通知、近期列表比较身份／状态才换ItemsSource；不能仅凭刷新周期断言闪烁。通知900ms间隔、单窗口消费，Accepted／Split／其他使用系统Asterisk／Question／Hand。现场声音主题、可辨性、累积负担未听审；本轮没有播放或记录客户端声音。[I05:20,52,77–78](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs)[I13:14](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ViewModels.cs)[I20](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/OperatorNotificationPlayer.cs)
+
+[PAGE]
+
+## 10. 条件风险：迟到错误与有效视口
+
+### UI-R03 · 条件 P2 · 旧组件读取错误可能清掉新选择
+
+ExtensionsView.xaml.cs:122–137在成功回填时检查packageGeneration和当前选中包；catch路径不检查ticket，直接清selectedManifest、Module、Parameters。Manifest实际读取经ExtensionManagement Task.Run。[I08](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ExtensionsView.xaml.cs)[I21:54–55](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/ExtensionManagement.cs)
+
+**触发／影响：** 选A慢读并最终失败，后选B快成功，A错误最后回填，B当前编辑区可能被清空。是源码支持的时序风险，没有Windows复现，不能说每次切包都失败。
+
+**验收：** 成功与异常都按同一对象／代次守卫回填；构造A慢失败、B先成功，A迟到后B名称、参数和选择不变，错误只记归属A的诊断，不写到B草稿。RUN-UIR03缺失。
+
+### UI-R04／G-DPI · 关键长内容与固定动作可能竞争最小客户区
+
+LaneControl结果和动作区为Auto；长拒绝原因、波次差异增加高度，拆包增加输入和按钮。ReviewFits要求条码、元数据、数量／单位、拆包进度与动作矩形同时完整可见。1280×680只是最低阈值，不是这些状态可核对的几何证明。[I04:13–44](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/LaneControl.xaml)[I03:143–163](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Presentation.cs)
+
+**全局TextBlock隐式样式设置Wrap；本项Reason／DisabledReason和只读值均有换行设置。** 不存在“局部未写TextWrapping所以一定截断”的结论；风险在换行增高后挤压视口。顶部水平StackPanel本身也不会因文字Wrap自动重排，长工位／身份／箱码占位须测。[I14:16,18](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/Themes/Workstation.xaml)[I02:6–7,14](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml)
+
+**验收：** 目标实际客户区分别显示普通人工、长条码／前导零、长中文原因、长箱与Item波次差异、拆包；保存实际几何／ReviewFits／原始图。支持正常作业的格必须完整核对当前结果和对应动作；不足格应可靠保护，扩大后人工恢复、上下文不被重建。若保护触发，记录“保护有效，但该场景正常作业未达标”，不能记适配通过，也不能为通过放宽守卫。RUN-UIR04缺失。
+
+### 10.1 可接受适配与待确认细节
+
+WPF DataGrid／TreeView／ComboBox／确认Window的控件外观与HTML不同可以接受；不要求像素相等。核心判断是字段、状态语义、对象归属、动作后果与可读性。示例品牌、用户名和密码不应被机械复制成生产内容。Accepted后“等待离场复位”文案也应结合实际Occupancy细分，需Windows确认已Clear时不会给相反下一步；这属于状态文案细化，不另造业务规则。
+
+[PAGE]
+
+## 11. 美观度、可读性、操作负担与持续使用
+
+下表基于实际查看的设计参考与实现资源／布局／刷新代码。**不是客户端实图评审，也不是真人疲劳实验。**[D02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/docs/%E4%BE%9B%E5%8C%85%E5%B7%A5%E4%BD%9C%E7%AB%99_UIUX%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%BC%80%E5%8F%91%E4%BA%A4%E6%8E%A5%E8%AF%B4%E6%98%8E.md)[D03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)[I02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml)[I04](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/LaneControl.xaml)[I13](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ViewModels.cs)[I14](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/Themes/Workstation.xaml)
+
+|分项|可支持的结论|修订或现场验证重点|
+|---|---|---|
+|构图与专业性|共享箱＋并排双通道＋当前任务保留，无统计大屏化结构。|不重做仪表盘；实际比例与可视区须Windows原图确认。|
+|主次层级|条码、结果、数量有大字号与固定动作。|UI-05主／次蓝色竞争；UI-01失败缺当前投影；UI-R02新鲜度不能远离结果。|
+|中文与数字|中文系统字体、等宽标识、字符串前导零及复制有落实。|字体回退、字形／数字基线、长码完整核对、最小字号在实际距离下验证。|
+|对齐与留白|中性背景、卡片边界和间距基本沿tokens。|历史空详情占6/11，无效留白挤压关键表；不靠统一增大留白解决。|
+|信息密度|作业区以业务数据为中心，低频信息进入抽屉。|历史横滚＋技术树全展开、维护字段密集；优先摘要与按需技术证据。|
+|颜色／图标|主要颜色接近tokens；源码未发现大量渐变、发光、装饰动画。|状态边线、故障归因与Unicode符号尚不统一；不把颜色柔和等同长期舒适。|
+|操作负担|普通人工供包无额外确认，风险确认固定对象和后果。|UI-04标签／日期格式、UI-06禁用原因、A-03/A-04维护绕路增加负担。|
+|长期高亮／刷新|有同值通知去重、列表身份比较和单声源，方向合理。|持续绿色／黄色、300ms刷新与声音队列的真实注意负担、焦点／滚动／按钮稳定性待测。|
+|“模板感／AI味”|没有无业务意义欢迎语、营销文案、机械统计卡片、霓虹大屏的明确静态证据。|PAGE编号、Operation→Request→Attempt等工程说明进入默认界面，偏工程诊断感；应按角色和频次收敛。|
+
+“AI味”仅描述视觉／文案问题，不能推断作者身份。卡片本身承载两通道作业分区有业务价值，应保留；没有必要简单禁止卡片、浅色或某种主题，也不建议凭“护眼”名义默认换深色。
+
+### 11.1 应明确保留的设计和实现
+
+- 保留共享箱／波次、双通道同时可见、当前条码／任务／格口／数量／原因／下一步和固定动作骨架。
+- 保留未知写“未取得”、条码只读和可复制、前导零、波次差异、当前与历史证实分离；不补造数据让页面显得完整。
+- 保留busy＋命令幂等＋CAS＋实体／数量／未决守卫、原请求核对、普通接受与实体离场独立。
+- 保留零缺失与未知缺失区分、两阶段结束、少货明确风险与默认取消，抽屉关闭不取消在途请求。
+- 保留模拟标识、生产缺能力NotReady、每窗输入／筛选所有权、共享Runtime；低频维护仍在辅助区域。
+
+连续作业尚无真人证据，当前只能评价风险，不能写“全天不疲劳”“不会误触”或“深色更护眼”。
+
+[PAGE]
+
+## 12. 屏幕、DPI、触控与连续作业验证边界
+
+MainWindow声明1600×960 DIP，构造时会按SystemParameters.WorkArea限制初始宽高，不能据默认值直接判小屏超屏。业务最低值为**实际ClientArea 1280×680 DIP**；宽≤1550或高≤880进入紧凑。manifest声明PerMonitorV2，只说明配置存在，不是DPI实测。[I02:1–3](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml)[I05:34–40](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs)[I03:143–163](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Presentation.cs)[I01](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/App.xaml.cs)
+
+### 12.1 原有 W01 目标组合的理论上限
+
+下表仅为物理像素÷缩放倍率，未扣任务栏、标题栏与边框。浏览器等效内容区也不能替代这些 Windows 测量。
+
+|物理屏幕|Windows缩放|全屏DIP理论上限|本轮判断|
+|---|---|---|---|
+|1920×1080|100%|1920×1080|理论有余量；实际布局／操作未验。|
+|1920×1080|125%|1536×864|理论有余量；紧凑模式需实测。|
+|1920×1080|150%|1280×720|宽到最低值，高仅余40；扣系统区域后可能不足，不能判正常通过。|
+|1366×768|100%|1366×768|理论有余量；实际客户区及长内容未验。|
+|1366×768|125%|1092.8×614.4|理论已不足，原设计明确预期保护。|
+|1366×768|150%|910.7×512|理论已不足，原设计明确预期保护。|
+
+交接§8原本把1366在125%／150%列为保护视图；正确进入保护不等于正常作业适配，也不自动是设计偏离。200%不是本期新增必验组合，不扩大无关尺寸遍历。[D02:214–229](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/docs/%E4%BE%9B%E5%8C%85%E5%B7%A5%E4%BD%9C%E7%AB%99_UIUX%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%BC%80%E5%8F%91%E4%BA%A4%E6%8E%A5%E8%AF%B4%E6%98%8E.md)[V02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/windows-06.md)
+
+### 12.2 分开记录四类验证
+
+|类型|本轮状态|后续必须保留的记录|
+|---|---|---|
+|浏览器等效缩放|本轮未执行；现有原型导出仅设计证据|HTML版本／浏览器／内容区，与客户端报告隔离。|
+|Windows实际DPI|未运行|OS build、物理像素、缩放、进程DPI、实际客户区DIP／像素、窗口状态与跨屏情况。|
+|真机触控／扫码|未运行|型号、输入方式、终止符、焦点与每次原字符串、按钮命中与灰显原因理解。|
+|真人连续作业|未执行|批准节拍下代表性双通道作业；观察者、时段／休息、错误／重试、找信息次数、提示声与主观负担。|
+
+建议连续测试覆盖正常高频与少量真实比例异常，记录条码／数字刷新、报警插入、抽屉返回、光标、滚动和按钮位置是否稳定。测试时长／班次与工位负责人按实际节拍确定；先证实基本旅程再延长，不用任意长时间刷成功数据代替真人观察。
+
+[PAGE]
+
+## 13. 必要修订顺序与 Windows 验收步骤
+
+### 13.1 优先级与完成条件
+
+|顺序|项目|可执行完成条件|
+|---|---|---|
+|1：P1|A-01持续冲突证据／阻断|关键矛盾分支和重启保持证据、账与限制；对应UI恢复记录可查。|
+|2：P2功能与语义|UI-01、UI-02、A-02、A-03、A-04|箱拒绝持续反馈、实体列正确、健康归因一致、组件直接激活、导入草稿不丢。|
+|3：P2交互呈现|UI-03～06；R-01及UI-R02～03按验证结果处置|首屏可识别结果、标签／禁用原因可见、主次动作清楚；无串扫／迟到回填污染。|
+|4：验收门禁|G-RUNTIME、G-DPI／UI-R04|完成正式Windows入口、限定关键状态、真实DPI与输入原始证据；保护与正常支持分别结论。|
+|5：P3收尾|UI-07与长期负担|状态资源、字号／图标统一；真人记录支持可读／稳定性结论后再确认持续使用。|
+
+P1为相关实际运行放行前必须解决的高影响缺陷；P2为相关功能完整验收前必须修订或证实关闭；P3为关键功能之后的统一工作。G是证据门禁，不是假设存在的代码缺陷。未获批准的生产规则仍由原决策流程处理，不能通过UI修订顺带“批准”。
+
+### 13.2 正式 Windows 测试准备
+
+在已授权 Windows 11 x64 测试工位，使用当前SHA可追溯包、按交付说明准备machine policy／账号权限和新的测试数据根；通过station.ps1 -Action Run或其正式DLL入口启动。使用明确Simulation组合和隔离接收端，记录core／插件／配置／程序包SHA，禁止混入现场地址。桌面入口支持--config、--data-root、--view、--layout；模式取配置，不使用不存在的--mode参数。[I01](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/App.xaml.cs)[V02](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/windows-06.md)
+
+本轮正式入口加载尝试的命令完整保存在runtime-logs/desktop-same-source-launch.json；它是失败尝试的复现记录，不是经验证可在任意Windows机器直接成功的安装教程。
+
+### 13.3 有限关键旅程（不重跑全量后台）
+
+|步骤|操作与观察|必须关联的原始证据|
+|---|---|---|
+|W1|启动／未就绪→参考身份→等待箱；目标尺寸普通／保护各记录|包／SHA／OS／客户区／DPI，首次焦点及原图。|
+|W2|Context拒绝→改正→成功开箱；左右正常、无码、多码切换|箱／作业／观察身份，当前与历史字段、原因。|
+|W3|同一提交连点；Pending→接受／拒绝／Unknown；关详情后回执到达|命令／原请求数量，状态时间序列，不能以点击效果判接受。|
+|W4|拆包A/A/B扫描、清空重扫；Enter与Tab各一次|每次原文本、计数、焦点；忙态／失败／新作业的draft归属。|
+|W5|CheckClose拒绝、Close拒绝、正常零缺失、少货强制／取消|原检查／关闭请求、总量与勾选、箱未Closed前不新开。|
+|W6|相机／WCS离线、暂停恢复、重启及旧回执晚到|状态／活动原因保留、物理与业务区分、A-01/A-02对应事实。|
+|W7|历史默认会话→作业→详情→返回；触控筛选／禁用解释|真实字段、首屏结果、可复制长码、过滤和滚动保持。|
+|W8|组件直接激活、JSON跨页保存、A慢失败B快成功|被选修订／草稿／有效配置、完成顺序、命令后状态与错误归属。|
+
+在上述旅程中加入一组长条码／前导零／中文长原因／波次差异和代表性双通道连续操作即可；不穷举无关尺寸、后台组合或不存在的业务功能。
+
+[PAGE]
+
+## 附录 A. 设计—实现对照图与证据（1/6）
+
+### 正常双通道：应保留工作台，修正动作主次
+
+**下图是设计参考，非客户端运行截图。** 原文件01-normal-1920.png，v1.1原样HTML于隔离Chromium重导出，原始1920×1080；本报告仅按比例排版，证据包保持原PNG字节。[D03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)
+
+![设计参考：正常双通道](design-reference/01-normal-1920.png)
+
+|设计参考位置|运行截图位置|实现代码|实际影响／判定|
+|---|---|---|---|
+|共享箱／波次、左右当前任务、结果、数量和固定动作|RUN-REF01：缺失，NOT_RUN|MainWindow.xaml:11–24；LaneControl.xaml:4–29|结构部分符合，应保留；实际比例与字形待Windows。|
+|左接受侧详情为次操作、右人工为蓝色主动作|RUN-UI05：缺失|LaneControl.xaml:28；ViewModels:148–150；LaneControl.xaml.cs:57–60,75|只读动作也蓝色且同目的重复，UI-05；不是像素差异。|
+
+对照不追求HTML与WPF逐像素相等。原生按钮轮廓、表格形状或示例品牌替换可接受；不能改变状态和动作含义。
+
+[PAGE]
+
+## 附录 A. 设计—实现对照图与证据（2/6）
+
+### 记录：语义与首屏结果优先
+
+**下图是设计参考，非客户端运行截图。** 原文件11-records-1920.png，1920×1080；原始字节和哈希见证据包。[D03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)
+
+![设计参考：记录列表](design-reference/11-records-1920.png)
+
+|设计参考位置|运行截图位置|实现代码|实际影响／判定|
+|---|---|---|---|
+|有标签筛选／开始结束日期|RUN-UI04：缺失|MainWindow.xaml:41–44；Closure:98–104|无可见标签和手输时区格式形成负担；UI-04。|
+|列表使用抽屉宽度，详情另进入|RUN-UI03：缺失|MainWindow.xaml:40–45；Presentation:156–163|空详情持续占宽；1490列宽与约529估算列表不匹配；UI-03。|
+|箱码与Item对象明确区分|RUN-UI02：缺失|HistoryPresentation:14–15；XAML:41,45|会话默认行把箱码标成Item；UI-02。|
+
+设计图中的示例数据不构成生产字段值或执行结果。本轮只据绑定与配置判语义／结构，具体滚动位置、字体裁切和显示效果留待实测。
+
+[PAGE]
+
+## 附录 A. 设计—实现对照图与证据（3/6）
+
+### 待核对：持续异常与原请求责任
+
+**下图是设计参考，非客户端运行截图。** 原文件03-result-unknown-1920.png，1920×1080。[D03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)
+
+![设计参考：结果待核对](design-reference/03-result-unknown-1920.png)
+
+|设计参考位置|运行截图位置|实现代码|实际影响／判定|
+|---|---|---|---|
+|待核对原因持续及只读查看核对入口|RUN-REF03／A01：缺失|StationApplication:454–538；MainWindow.Presentation:109–124|普通Unknown有实现，异常矛盾证据持久化受A-01限制。|
+|查看／核对与危险提交区分|RUN-UI05／UI06：缺失|LaneControl.xaml:28；MainWindow.xaml:60–61|查看仍主蓝，部分核对灰显原因只Tooltip。|
+
+只有原请求结果和可追溯依据才能解除相应责任；关闭此类视图不应被当成取消在途请求。当前源码对此有明确边界，应保留后再验证Windows时序。
+
+[PAGE]
+
+## 附录 A. 设计—实现对照图与证据（4/6）
+
+### 拆包：固定对象、计数与稳定动作
+
+**下图是设计参考，非客户端运行截图。** 原文件26-split-1366.png，1366×768。[D03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)
+
+![设计参考：紧凑拆包](design-reference/26-split-1366.png)
+
+|设计参考位置|运行截图位置|实现代码|实际影响／判定|
+|---|---|---|---|
+|当前条码、保留／移除／目标、计数与固定确认|RUN-REF04／R01：缺失|LaneControl.xaml:11–15,25–28；xaml.cs:63–74|字段与计数链存在；连续输入draft串接风险R-01。|
+|紧凑模式仍核对关键信息和动作|RUN-UIR04：缺失|LaneControl.xaml.cs:13–44；Presentation:143–163|ReviewFits守卫存在，实际视口几何不能由PNG证明。|
+
+参考KEEP策略不等于真实拆包许可；未批准方向与数量权威仍按D项处理。确认与提交合并可作为当前参考策略差异记录，不能照抄原型逻辑降低实际命令守卫。
+
+[PAGE]
+
+## 附录 A. 设计—实现对照图与证据（5/6）
+
+### 维护：低频诊断与真实草稿流程
+
+**下图是设计参考，非客户端运行截图。** 原文件24-maintenance-1920.png，1920×1080。[D03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)
+
+![设计参考：维护设置](design-reference/24-maintenance-1920.png)
+
+|设计参考位置|运行截图位置|实现代码|实际影响／判定|
+|---|---|---|---|
+|维护标签、政策、生效与诊断|RUN-REF05：缺失|MainWindow.xaml:64–73；MainWindow.xaml.cs:371–418|基本入口有实现；密度、标签、权限与UAC实际未验。|
+|后续组件／部署增量没有此图的精确参考|RUN-A03／A04／R03：缺失|ExtensionsView、MainWindow.Extensions|WP12/13授权，不能因缺v1.1画板认定违规新增；真实接线缺陷另修。|
+
+维护页“点击有变化”不能代替激活正确修订和保留同窗导入草稿；A-03/A-04都有可直接定位的代码链。高级工程词应按维护角色放在适当层次，不能遮蔽运行能力和风险边界。
+
+[PAGE]
+
+## 附录 A. 设计—实现对照图与证据（6/6）
+
+### 长内容：完整核对与空间保护
+
+**下图是设计参考，非客户端运行截图。** 原文件25-long-content-1366.png，1366×768。[D03](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)
+
+![设计参考：紧凑长内容](design-reference/25-long-content-1366.png)
+
+|设计参考位置|运行截图位置|实现代码|实际影响／判定|
+|---|---|---|---|
+|长条码、长原因、波次差异及局部滚动|RUN-UIR04：缺失|Themes:16,18；LaneControl.xaml:3–29；ReviewFits:13–44|已有Wrap，不能武断判截断；换行增高与固定动作争空间须实测。|
+|不足空间保护、扩大后人工恢复|RUN-GDPI：缺失|MainWindow.Presentation:143–176|保护源逻辑存在；正常作业支持与保护有效必须分别验收。|
+
+已实际视觉查看的设计图总计13张：01、02、03、04、10、11、12、15、24、25、26、layout-1280x680、layout-1093x614；其它21张只核身份／尺寸／解码与状态源码范围。以上六张在包内保留原字节，没有加字、裁切或再绘制成客户端图。
+
+[PAGE]
+
+## 附录 B. 证据登记与可复查文件
+
+本报告全部源码定位固定到8cabf06d3c6d53ba551b65e58a13db6cdcaba16a；行号是该SHA位置，不依赖main今后变化。证据包目录明确区分设计参考、运行日志和未取得的运行截图。
+
+|文件／目录|内容与证据类型|
+|---|---|
+|REPORT.md|本报告可搜索文本版；与PDF结论一致。|
+|baseline.json|远端main、时间、采用设计、既有报告身份与复用范围。|
+|design-identity-verification.json|11源文件与34设计PNG哈希／尺寸／解码逐项结果。|
+|runtime-environment.json|系统／SDK／运行尝试／候选二进制／输入对比／DPI边界。|
+|runtime-logs/|失败启动原始日志与参数、既有构建来源关联日志、GitHub精确SHA查询及发布摘要。|
+|runtime-screenshots/README.md|真实运行截图0及原因；没有替代图或假占位PNG。|
+|screenshot-register.json|每个设计参考和拟运行图ID、版本、来源、状态、未测字段。|
+|page-state-coverage.csv|按第3～5节整理的页面／状态矩阵，运行列统一NOT_RUN。|
+|findings.json|UI-01～07、继承A-01～04、条件R-01、UI-R02～04、证据门禁与验收位置索引。|
+|design-reference/|六张未改变字节的v1.1设计PNG，明确非客户端。|
+|source-index.csv|下列D/I/V来源与固定SHA链接，便于直接核对代码。|
+|SHA256SUMS.txt|证据包各文件的SHA-256；清单不自包含。|
+
+继承报告来源：WP-IPC-PROJECT-CONFORMANCE-AUDIT-01_8cabf06d_20261017.pdf，23页，同SHA，A-01第15页、A-02第16页、A-03第17页、A-04及R-01第18页。本轮保留其证据等级，不把旧核心模拟验证改称本轮UI实测；完整旧报告不重复塞入本次证据包。
+
+证据边界仍未关闭：G-RUNTIME正式Windows状态和输入原图；G-DPI真实有效客户区；生产SDK／WCS／认证及D项规则；客户未上传附件／另一候选原件；扩展增量独立最终视觉参考；真人持续作业证据。这些缺口各自影响相应判断，不能用一个“未验证”抹掉已经确认的结构与缺陷。
+
+[PAGE]
+
+## 附录 C. 固定版本来源索引
+
+**D01 · 采用设计与来源边界**
+- [docs/ui/ss-ui-vis-001-v1.1/README.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/README.md)
+
+**D02 · 完整交接、PAGE／组件／状态／尺寸规则**
+- [docs/ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/docs/%E4%BE%9B%E5%8C%85%E5%B7%A5%E4%BD%9C%E7%AB%99_UIUX%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%BC%80%E5%8F%91%E4%BA%A4%E6%8E%A5%E8%AF%B4%E6%98%8E.md)
+
+**D03 · 设计图册、状态与HTML／CSS／JS／tokens**
+- [docs/ui/ss-ui-vis-001-v1.1/GALLERY.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)
+- [docs/ui/ss-ui-vis-001-v1.1/供包工作站_高保真交互原型.html](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/%E4%BE%9B%E5%8C%85%E5%B7%A5%E4%BD%9C%E7%AB%99_%E9%AB%98%E4%BF%9D%E7%9C%9F%E4%BA%A4%E4%BA%92%E5%8E%9F%E5%9E%8B.html)
+- [docs/ui/ss-ui-vis-001-v1.1/prototype/index.html](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/prototype/index.html)
+- [docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.js](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.js)
+- [docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.css](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.css)
+- [docs/ui/ss-ui-vis-001-v1.1/design/tokens.json](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/design/tokens.json)
+- [docs/ui/ss-ui-vis-001-v1.1/design/editable-boards.json](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/design/editable-boards.json)
+
+**D04 · 原件身份与设计导出登记**
+- [docs/ui/ss-ui-vis-001-v1.1/source-manifest.json](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/source-manifest.json)
+- [docs/ui/ss-ui-vis-001-v1.1/render-verification.json](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/render-verification.json)
+- [docs/ui/ss-ui-vis-001-v1.1/publication-checks.json](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/publication-checks.json)
+
+**D06 · UI10基准对齐与交接**
+- [docs/runtime/ui-baseline-alignment-10.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/ui-baseline-alignment-10.md)
+- [docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md)
+
+**D07 · 后续扩展授权与UI映射**
+- [docs/ui/extension-delivery-12-mapping.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/extension-delivery-12-mapping.md)
+- [docs/ui/arch-extension-closure-13-mapping.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/arch-extension-closure-13-mapping.md)
+- [docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)
+- [docs/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)
+
+**V01 · 版本、导航与审查状态**
+- [docs/INDEX.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/INDEX.md)
+- [docs/reviews/STATUS.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/reviews/STATUS.md)
+
+**V02 · Windows证据、正式安装入口与限定验证**
+- [docs/runtime/windows-06.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/windows-06.md)
+- [scripts/station.ps1](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/scripts/station.ps1)
+- [docs/runtime/validation/closure-13-windows-scenarios.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/validation/closure-13-windows-scenarios.md)
+- [docs/runtime/arch-extension-closure-13.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/arch-extension-closure-13.md)
+
+**V03 · 框架、决策与未批准规则**
+- [docs/design/framework.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/design/framework.md)
+- [docs/design/framework-decisions.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/design/framework-decisions.md)
+- [AGENTS.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/AGENTS.md)
+
+**I01 · 桌面项目、启动及DPI声明**
+- [src/Ipc.Desktop/App.xaml.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/App.xaml.cs)
+- [src/Ipc.Desktop/Ipc.Desktop.csproj](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/Ipc.Desktop.csproj)
+- [src/Ipc.Desktop/app.manifest](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/app.manifest)
+
+**I02 · 主窗口布局／字段／抽屉**
+- [src/Ipc.Desktop/MainWindow.xaml](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml)
+
+**I03 · 视图、焦点、窗口布局与权限代次**
+- [src/Ipc.Desktop/MainWindow.Presentation.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Presentation.cs)
+
+**I04 · 通道布局、输入、动作与几何守卫**
+- [src/Ipc.Desktop/LaneControl.xaml](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/LaneControl.xaml)
+- [src/Ipc.Desktop/LaneControl.xaml.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/LaneControl.xaml.cs)
+
+**I05 · 主窗口刷新、命令、关闭与详情**
+- [src/Ipc.Desktop/MainWindow.xaml.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs)
+
+**I06 · 健康／关闭／历史投影与查询**
+- [src/Ipc.Desktop/MainWindow.Closure.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Closure.cs)
+
+**I07 · 历史实体显示与导出**
+- [src/Ipc.Desktop/HistoryPresentation.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/HistoryPresentation.cs)
+- [src/Ipc.Desktop/MainWindow.HistoryExport.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.HistoryExport.cs)
+
+**I08 · 组件页、修订、异步回填与草稿**
+- [src/Ipc.Desktop/ExtensionsView.xaml.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ExtensionsView.xaml.cs)
+- [src/Ipc.Desktop/ExtensionsView.xaml](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ExtensionsView.xaml)
+
+**I09 · 统一Runtime命令入口**
+- [src/Ipc.Product/ProductRuntime.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/ProductRuntime.cs)
+
+**I10 · 业务守卫、请求、响应与持久状态**
+- [src/Ipc.Supply/StationApplication.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationApplication.cs)
+
+**I11 · 会话、作业及快照合同**
+- [src/Ipc.Supply.Contracts/Model.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply.Contracts/Model.cs)
+
+**I12 · 通知、健康投影与关闭扩展**
+- [src/Ipc.Supply/StationClosure.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationClosure.cs)
+
+**I13 · 状态、主次动作、当前／历史绑定**
+- [src/Ipc.Desktop/ViewModels.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ViewModels.cs)
+
+**I14 · 共享字体／控件／颜色资源**
+- [src/Ipc.Desktop/Themes/Workstation.xaml](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/Themes/Workstation.xaml)
+
+**I15 · 模拟请求校验及拒绝夹具**
+- [src/Ipc.Adapters/SimulationRequestContract.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Adapters/SimulationRequestContract.cs)
+- [src/Ipc.Fixture/Receiver.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Fixture/Receiver.cs)
+
+**I16 · 回执冲突事务与SQLite存储**
+- [src/Ipc.Supply/Store.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/Store.cs)
+
+**I17 · 服务健康聚合及传递**
+- [src/Ipc.Product/IntegrationRuntime.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/IntegrationRuntime.cs)
+- [src/Ipc.Product/SenderModule.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/SenderModule.cs)
+
+**I18 · 独立集成实例诊断样例**
+- [examples/IntegrationExtension/IntegrationModule.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/examples/IntegrationExtension/IntegrationModule.cs)
+
+**I19 · 组件与主窗草稿／激活接线**
+- [src/Ipc.Desktop/MainWindow.Extensions.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Extensions.cs)
+
+**I20 · 系统声通知与单消费**
+- [src/Ipc.Desktop/OperatorNotificationPlayer.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/OperatorNotificationPlayer.cs)
+
+**I21 · 组件清单实际读取服务**
+- [src/Ipc.Product/ExtensionManagement.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/ExtensionManagement.cs)
+
+

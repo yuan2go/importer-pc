@@ -1,0 +1,25 @@
+{
+  "task": "WP-IPC-AUDIT-RECONCILIATION-01",
+  "checked_main": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+  "checked_at_utc": "2026-10-17T11:13:44.591822+00:00",
+  "pdf": {
+    "path": "docs/reviews/audit-reconciliation-01/WP-IPC-AUDIT-RECONCILIATION-01_8cabf06d_20261017.pdf",
+    "source": "User-authorized audit/reconciliation deliverable fixed to 8cabf06d; byte-preserved",
+    "sha256": "7586e7c58f37266eea4a27af453a7a48fad86d14d7f225ba2824755ab457d441",
+    "size_bytes": 309806
+  },
+  "original_pdf_byte_identical": true,
+  "snapshot_count": 12,
+  "snapshots_hashes_match": true,
+  "historical_inputs_hashes_match": true,
+  "business_input_changed_paths": [],
+  "new_business_tests": "NOT_RUN",
+  "build": "NOT_RUN",
+  "repackage": "NOT_RUN",
+  "windows": "NOT_RUN",
+  "actual_client_screenshots": 0,
+  "design_baseline": "SS-UI-VIS-001 v1.1 unchanged; only current-navigation/time-scope annotations updated in design documents",
+  "archive_check": "FAIL_HISTORICAL_267_NEW_ERRORS_ZERO",
+  "main_publication": "Prepared against the checked base; published commit identity is the Git commit that contains this record, not an invented self-referential SHA.",
+  "publication_ready": "PDF_ORIGINAL_PRESERVED_DOCS_VERIFIED_SOURCE_UNCHANGED"
+}

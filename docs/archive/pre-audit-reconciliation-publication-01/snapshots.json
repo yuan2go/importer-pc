@@ -1,0 +1,98 @@
+[
+  {
+    "original_path": "README.md",
+    "snapshot_path": "docs/archive/pre-audit-reconciliation-publication-01/README.md.txt",
+    "source_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "sha256": "4c99d893e24f15cd81bf8d2b21e94c2b04d0ff18cb0e5a17a9f5b619f1e93f1b",
+    "size_bytes": 4539,
+    "git_blob": "50ef46d0880c578fad220625a9d4747a4a3b33f9"
+  },
+  {
+    "original_path": "docs/INDEX.md",
+    "snapshot_path": "docs/archive/pre-audit-reconciliation-publication-01/docs/INDEX.md.txt",
+    "source_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "sha256": "fa7a892736c79a8387dc951d6760b90c7b33bd4b12d119a332277a94d08989eb",
+    "size_bytes": 7031,
+    "git_blob": "e8df06172f829e6944b84e12b0976871b27d14d8"
+  },
+  {
+    "original_path": "docs/design/framework.md",
+    "snapshot_path": "docs/archive/pre-audit-reconciliation-publication-01/docs/design/framework.md.txt",
+    "source_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "sha256": "1b8d315c2d84d95b5dd1b65c009547bf026b2f24f085e7708b9ac4774c33ec20",
+    "size_bytes": 38565,
+    "git_blob": "e6fda4cf703c637d48a3e970ddb86919e65a50c9"
+  },
+  {
+    "original_path": "docs/design/framework-decisions.md",
+    "snapshot_path": "docs/archive/pre-audit-reconciliation-publication-01/docs/design/framework-decisions.md.txt",
+    "source_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "sha256": "53c91f230d07a94f80bfc3b0aff7303fa51e58897a9eee82911eda5852c91bfe",
+    "size_bytes": 18576,
+    "git_blob": "18c6517f1ab3642054a8b2387e979cf904197e89"
+  },
+  {
+    "original_path": "docs/design/controlled-extensions.md",
+    "snapshot_path": "docs/archive/pre-audit-reconciliation-publication-01/docs/design/controlled-extensions.md.txt",
+    "source_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "sha256": "a821438a14163d59c841637d5cd6acfc3dc8db6c81d72b018c5f42c71e62fee3",
+    "size_bytes": 7089,
+    "git_blob": "46f15a4fbe5e5fab5c41af3b28d7648b597c73f7"
+  },
+  {
+    "original_path": "docs/extensions/developer-guide.md",
+    "snapshot_path": "docs/archive/pre-audit-reconciliation-publication-01/docs/extensions/developer-guide.md.txt",
+    "source_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "sha256": "b64fc81f8ceaaa6318b15e3fbc44df7f1ab63fae0b8f988402e1981ac7158294",
+    "size_bytes": 13741,
+    "git_blob": "e912dc28f22600211ca0e27accb1f807a0f6034e"
+  },
+  {
+    "original_path": "docs/runtime/operations.md",
+    "snapshot_path": "docs/archive/pre-audit-reconciliation-publication-01/docs/runtime/operations.md.txt",
+    "source_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "sha256": "ae34f3c59b92a45c80ae68ae3ab80a17f52d7b81bf8895f721aba0224a275c79",
+    "size_bytes": 37819,
+    "git_blob": "e7d0907d0feabae1c01979e0bc5239f092ba2b63"
+  },
+  {
+    "original_path": "docs/ui/STATUS.md",
+    "snapshot_path": "docs/archive/pre-audit-reconciliation-publication-01/docs/ui/STATUS.md.txt",
+    "source_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "sha256": "153bc8e1525133773ec084eb29eba376fbbd701065a25a5a6805f417be28e266",
+    "size_bytes": 3257,
+    "git_blob": "13a13931d9429f0980daef2f874f6e9919689183"
+  },
+  {
+    "original_path": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+    "snapshot_path": "docs/archive/pre-audit-reconciliation-publication-01/docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md.txt",
+    "source_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "sha256": "0a120009d22131876f0248389c7b8125f3e1893e7076de08b9b5c9b7669c37d2",
+    "size_bytes": 12345,
+    "git_blob": "e3fac169759ffa351fd0dd2747648caa5e23b5f4"
+  },
+  {
+    "original_path": "docs/work-packages/Codex-WP-IPC-CONFORMANCE-FIX-14.md",
+    "snapshot_path": "docs/archive/pre-audit-reconciliation-publication-01/docs/work-packages/Codex-WP-IPC-CONFORMANCE-FIX-14.md.txt",
+    "source_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "sha256": "95e99e9d2174543e27bb75975657cf497f0518711b0d4838681e419ac0347f1d",
+    "size_bytes": 2655,
+    "git_blob": "67b661dd2e83e9ea16953cb626a43bd725955ded"
+  },
+  {
+    "original_path": "docs/manifest.json",
+    "snapshot_path": "docs/archive/pre-audit-reconciliation-publication-01/docs/manifest.json.txt",
+    "source_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "sha256": "41765197facd0fb852b79a7cb227294441240cd5f5fb562ac637462704cbbdb4",
+    "size_bytes": 535506,
+    "git_blob": "8ad80bbff19c597762ee99fac3cbbccfe4441358"
+  },
+  {
+    "original_path": "docs/manifest.sha256",
+    "snapshot_path": "docs/archive/pre-audit-reconciliation-publication-01/docs/manifest.sha256.txt",
+    "source_commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "sha256": "60184265ce00a2d92212118519829003ace42db5d2128fe5552ab9e2309619b3",
+    "size_bytes": 80,
+    "git_blob": "287aab24039b72784ce9433c6be35280b11bbfea"
+  }
+]

@@ -1,6 +1,7 @@
+> 当前判断见 [PR14后复核](../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)，下一实施为 [15工作包](../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)。14已合并且原子问题分项验证；不同接收发生责任、维护/输入与UI仍有残余。本文有效职责/规则继续成立，历次执行结果只按其来源版本理解；本次更新前原字节见 [归档](../archive/pre-audit-reconciliation-publication-01/README.md)。
+
 > FIX-14当前机制：服务健康以实例/目标/部署/epoch/sequence与时效记录；Supply按requests实际依赖守卫，辅助和历史查询错误不归主WCS。唯一部署草稿贯通维护/组件页，激活带本次修订；共享库卸载扫描持久登记的离线/恢复根及冲突责任，旧库覆盖不明拒绝。旧13完成性表述仅为历史，实际结果见 [14报告](../runtime/conformance-fix-14.md)。
 
-> FIX-14当前指引：本文件下方13及更早“当前/本轮/已完成”保留形成时身份，已由 [14执行基线](../runtime/conformance-fix-14-baseline.md)接管。A-01～04是待修确定缺陷；健康隔离和维护闭环是有效要求，不能按旧完成性表述判通过。Windows沿13决定统一后验，不寻找VM/runner；D/RV、真实SDK/WCS/现场门禁继续。原字节见 [归档](../archive/pre-conformance-fix-14/README.md)。
 
 # CLOSURE-13 受控装配与扩展
 

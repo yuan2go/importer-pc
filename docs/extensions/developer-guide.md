@@ -1,3 +1,5 @@
+> 当前判断见 [PR14后复核](../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)，下一实施为 [15工作包](../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)。14已合并且原子问题分项验证；不同接收发生责任、维护/输入与UI仍有残余。本文有效职责/规则继续成立，历次执行结果只按其来源版本理解；本次更新前原字节见 [归档](../archive/pre-audit-reconciliation-publication-01/README.md)。
+
 # FIX-14 扩展与维护增量
 
 当前 [14报告](../runtime/conformance-fix-14.md)与[操作/恢复规约](../runtime/operations.md)接管本指南下方13历史时态。核心契约仍1；新宿主公共DLL字节/部署指纹不同，新分发参考包为1.0.2，禁止重签1.0.0/1.0.1或删除永久身份。旧精确包若不满足新宿主公共SHA继续拒绝；先以保留的匹配旧宿主/原包核对旧Unknown，再显式迁移，不改原请求Implementation/目标/报文/hash来绕过。原13候选保留。
@@ -14,7 +16,6 @@ Storage4新增冲突原件与恢复语义，保留原SQL/checksum和terminal事�
 
 ---
 
-> FIX-14当前指引：本文件下方13及更早“当前/本轮/已完成”保留形成时身份，已由 [14执行基线](../runtime/conformance-fix-14-baseline.md)接管。A-01～04是待修确定缺陷；健康隔离和维护闭环是有效要求，不能按旧完成性表述判通过。Windows沿13决定统一后验，不寻找VM/runner；D/RV、真实SDK/WCS/现场门禁继续。原字节见 [归档](../archive/pre-conformance-fix-14/README.md)。
 
 # CLOSURE-13 扩展开发、安装与恢复
 

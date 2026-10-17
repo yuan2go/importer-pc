@@ -1,0 +1,16 @@
+{
+  "baseline_error_count": 267,
+  "current_error_count": 267,
+  "new_error_count": 0,
+  "removed_historical_error_count": 0,
+  "status": "FAIL_HISTORICAL_267_NEW_ERRORS_ZERO",
+  "first_draft": {
+    "error_count": 276,
+    "new_error_count": 9,
+    "reason": "Adjacent E source labels parsed as undefined Markdown reference links",
+    "correction": "Use explicit local reference anchors; no validator or exception change"
+  },
+  "validator_changed": false,
+  "business_tests": "NOT_RUN",
+  "checked_file_count": 803
+}

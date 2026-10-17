@@ -1,0 +1,256 @@
+[
+  {
+    "id": "UI-01",
+    "title": "P2 · 箱级拒绝没有持续的当前结果／原因",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "current independent UI audit",
+    "evidence_level": "S",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "D02",
+      "I02",
+      "I05",
+      "I09",
+      "I10",
+      "I11",
+      "I12",
+      "I15"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### UI-01 · P2 · 箱级拒绝没有持续的当前结果／原因\n\n**证据等级：S。** 位置为共享周转箱区、结束检查与关闭反馈。此问题适用于 Context、CheckClose、Close 三类明确拒绝，不是所有异常都缺反馈。\n\n|证据链|定位|\n|---|---|\n|设计参考|交接57–59、91、118、153、172、176、181、188行：当前箱／结果／异常原因／下一步优先，拒绝持续反馈。|\n|运行截图|缺失：RUN-UI01-CONTEXT、RUN-UI01-CHECKCLOSE、RUN-UI01-CLOSE，均NOT_RUN。|\n|命令入口|MainWindow.xaml.cs:208–224；ProductRuntime.cs:246。|\n|结果投影缺口|StationApplication.cs:518–526仅更新会话状态／上下文／关闭量／token；529–538只给匹配lane作业写op.Reason。|\n|UI与快照|Model.cs:50–63,94–103无当前箱响应原因；MainWindow.xaml.cs:69–80与XAML:13–17没有该字段。|\n|非替代路径|报警603–619、通知StationClosure:16–34没有箱级拒绝事件；EntryOverlay只处理Unknown等；LastResult是本地回执。|\n\n【D02】【I02】【I05】【I09】【I10】【I11】【I12】\n\n触发前提：有效模拟身份、健康来源／WCS、无其他故障；关闭前未决已处理、两通道离场复位；返回身份和合同合法的明确 Rejected。SimulationRequestContract 与 Receiver 的拒绝路径允许验证这些场景。【I15】\n\n|返回类型|应用状态与影响|\n|---|---|\n|验箱拒绝|Validating→Rejected，输入区恢复，仅“已拒绝”及一般未激活守卫；操作者不知道应核对箱码、计划还是站点。|\n|结束检查拒绝|ClosingCheck→Active，可回到“作业中／就绪”；没有持续显示“此次结束检查被拒绝”及原因，易重复点击寻找结果。|\n|关闭拒绝|Closing→Active，原箱正确保留、没有错误宣布Closed；但为何未结束需主动查原关闭链。|\n\n**原始普通拒绝响应并未从数据库消失。** MainWindow.xaml.cs:282–299 的详情树会显示 Response.Reason；缺陷是当前高频操作区漏接反馈。也不应为了显示失败虚构永久阻断，或把真实Active改成假状态。\n\n修订建议：在现有会话投影中保留当前箱请求的固定身份、阶段、结果、原原因和下一步，在共享箱区或持久结果区显示并关联详情。将本地“已保存”与外部“拒绝”明确分开。\n\n**验收条件：** 隔离模拟端分别拒绝三种请求，再做一次正常关闭对照；保存sessionId/requestId及原回执。刷新、关闭／重开抽屉后，当前箱拒绝类型、原因和下一步仍可发现；CheckClose／Close拒绝回Active后，另一通道成功不掩盖该事件。Context尚未激活且明确拒绝时允许纠正或更换箱码重验；已建立活动箱在关闭中／待核对时不开放新箱，明确Closed后才正常换箱；旧箱回执不贴到新箱。长中文拒绝原因和前导零箱码完整可查。\n\n[PAGE]"
+  },
+  {
+    "id": "UI-02",
+    "title": "P2 · 默认箱会话把箱码标成 Item 条码",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "current independent UI audit",
+    "evidence_level": "S",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "D03",
+      "I02",
+      "I06",
+      "I07"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### UI-02 · P2 · 默认箱会话把箱码标成 Item 条码\n\n**位置／触发：** 首次打开记录，默认“箱会话”，查询返回至少一条。MainWindow.xaml:41默认选0；Closure.cs:106–108查Sessions；HistoryPresentation.cs:14在没有Operation时把Barcode回退为Session.Barcode；XAML:45列头仍固定“Item条码”，旁边又有箱码。【I02】【I06】【I07】\n\n**影响：** 实体类型被错误命名，追溯时会把周转箱标识当商品／包裹标识；这是字段语义问题。设计11-records区分箱与Item；对应运行图RUN-UI02缺失。【D03】\n\n**修订／验收：** 按查询实体使用对应列，不用箱码填Item列。取箱码000001、Item码000123；会话与作业模式均保留前导零，列表／详情／复制／导出一致，且箱会话没有伪Item字段。"
+  },
+  {
+    "id": "UI-03",
+    "title": "P2 · 历史列表被空详情压窄，结果列偏到远端",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "current independent UI audit",
+    "evidence_level": "S",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "D03",
+      "I02",
+      "I03",
+      "I05",
+      "I07"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### UI-03 · P2 · 历史列表被空详情压窄，结果列偏到远端\n\n**位置／触发：** 正常支持尺寸打开记录，未选详情；或进入含多次尝试的长详情。设计11-records用整个抽屉做列表，12-record-detail单独呈现详情；当前MainWindow.xaml:40–45在正常支持尺寸下保持5*:6*分栏，空详情也占6/11。抽屉最大1180 DIP，低于1000才上下排列；10列固定宽总1490，初始配置中状态列起点在累计1300之后。扣16外边距估算列表约529 DIP，**不是实际视口测量值**。【D03】【I02】【I03:156–163】\n\n**影响：** 识别条码、数量和结果需要横向寻找；未选详情却占多数宽度。现有DTO的Id／Lane未在列表显示，缺发送次数摘要；详情请求／尝试／响应／审计默认全展开，低频技术内容抢占业务摘要。TreeView自身是合理适配，问题在信息分配。【I05:285–298】【I07】\n\n**修订／验收：** 无详情时列表充分使用抽屉，详情可进入／返回或收放；首屏优先对象身份、通道、条码、结果、接受量和尝试摘要，完整标识在详情可复制。目标有效区中辨认作业结果不需横向寻找；返回保留筛选、选中与滚动。运行图RUN-UI03缺失，不声称已测裁切。"
+  },
+  {
+    "id": "UI-04",
+    "title": "P2 · 筛选无可见标签，日期要求手输完整时区格式",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "current independent UI audit",
+    "evidence_level": "S",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "D03",
+      "I02",
+      "I06"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### UI-04 · P2 · 筛选无可见标签，日期要求手输完整时区格式\n\n**位置／触发：** 初次查询、触控输入或已有值需要辨认字段。MainWindow.xaml:41–44多文本框仅有ToolTip，Item／SKU／日期还缺定位用自动化名称；三类状态共用一行顺序说明。Closure.cs:98–104要求日期末尾Z或±HH:mm；180 DIP输入框需容纳完整时间。【I02】【I06】\n\n**影响：** 操作者需记位置或悬停，手输协议式时间增加格式错误；实际字形裁切仍待运行。设计11-records有持续标签和日期选择。【D03】\n\n**修订／验收：** 每个输入有可见标签和关联可访问名称，提供本地日期／时间选择并明示时区，后台保留严格时区边界。无hover，仅触控完成指定日期＋Item查询；错误范围就近可读，不要求背诵ISO格式。RUN-UI04缺失。\n\n[PAGE]"
+  },
+  {
+    "id": "UI-05",
+    "title": "P2 · 只读详情始终是蓝色主动作，且有重复入口",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "current independent UI audit",
+    "evidence_level": "S",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "D03",
+      "I04",
+      "I13"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### UI-05 · P2 · 只读详情始终是蓝色主动作，且有重复入口\n\n设计01-normal中已接受侧“详情”为次操作，待人工侧提交才主强调。LaneControl.xaml:28的PrimaryAction永久Primary样式；ViewModels.cs:148–150只换文字和能力。Accepted、ValidationRejected、Rejected、OutcomeUnknown、SubmitPending、ValidationPending下PrimaryClick都调用ShowDetailAsync(current.Id,current)，旁边“详情”调用相同方法和对象。【D03】【I04】【I13:147–150】\n\n**触发／影响：** 有身份且非执行忙态时，一侧接受一侧待供包，两个蓝色区域同样醒目；或只有详情／核对时仍保留强主强调。蓝色不再可靠表示提交动作，重复入口占据空间。CanPrimary与CanDetail的忙态条件不同，不能说任何时刻两者均启用；也不是重复提交漏洞。\n\n**修订／验收：** 按动作语义切主／次样式，保留固定位置；同对象同目的详情只保留一个明确入口。待供包侧主强调，接受／拒绝／未知侧只读入口次强调；切状态后按钮不移位。原请求核对的入口文字须与实际进入的详情页面相符。运行图RUN-UI05缺失。"
+  },
+  {
+    "id": "UI-06",
+    "title": "P2 · 部分关键灰显按钮只用悬停说明原因",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "current independent UI audit",
+    "evidence_level": "S",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "D02",
+      "I02",
+      "I05"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### UI-06 · P2 · 部分关键灰显按钮只用悬停说明原因\n\n交接153、155、243行要求禁用原因靠近按钮。MainWindow.xaml.cs:190–194给TaggedButtons设IsEnabled和ToolTip，没有统一就近原因。代表为暂停／恢复、结束和原请求核对；CanCommand:154–159包含未选报警、缺原请求、依据不满8字符或过长、暂停状态等条件。【D02】【I02:7,17,60–61】【I05:154–159,190–194】\n\n**触发／影响：** 触控或不悬停时按钮灰显，局部前置条件未必出现在全局状态，操作者不知道该补选择、依据还是权限。通道已有DisabledReason，不能概称所有按钮都缺原因；实际触控长按Tooltip未验证。\n\n**修订／验收：** 关键动作邻近展示当前不可用原因，或提供一直可点击的“为何不可用”；不用hover完成选择原请求→填写依据→提交。分别覆盖无选择、短依据、无权限和状态不允许，用户能从当前页读懂下一步。RUN-UI06缺失。"
+  },
+  {
+    "id": "UI-07",
+    "title": "P3 · 少量状态语义、字号和图标资源未统一",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "current independent UI audit",
+    "evidence_level": "S",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "I02",
+      "I05",
+      "I06",
+      "I13",
+      "I14"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### UI-07 · P3 · 少量状态语义、字号和图标资源未统一\n\nMainWindow.xaml:20全局左边线固定Accent，刷新只切绿／黄背景；健康摘要整体同色，缺独立本地存储正常项。Lane标题16、原因13，FieldLabel固定12，标准模式与紧凑模式的标签层级不足。状态符号为Unicode文字，颜色RGB在ViewModels重复定义，图标字形依赖Windows字体回退。【I02:10,20】【I05:81】【I06:42–45】【I13:21–23】【I14:19】\n\n**影响／验收：** 辅助与故障语义有维护分散、字号过小的风险，不能据此断言实际方框或不可读。按既有tokens统一资源，区分关键原因与辅助标签；标准／紧凑各取原图确认中文数字基线、无缺字、状态文字／边线／颜色一致。优先级排在结果、追溯与命令修订之后。RUN-UI07缺失。\n\n[PAGE]"
+  },
+  {
+    "id": "A-01",
+    "title": "P1 · 同 EvidenceId 矛盾回执缺持续证据与阻断",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "same-SHA prior project report",
+    "evidence_level": "P+S",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "I10",
+      "I16"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### A-01 · P1 · 同 EvidenceId 矛盾回执缺持续证据与阻断\n\n**来源：既有报告第15页，P＋S。位置／触发：** 已有Accepted或Rejected后，收到相同EvidenceId、内容或结果相矛盾的合法归属回执，然后重启。CompleteCore:454–480尝试保存冲突／Unknown；Store.Commit:153–158遇同ID不同内容抛错并回滚；内存ProtocolFailure虽被设置，UnknownLocked:489–502看到原Accepted/Rejected会返回，构造恢复35–50没有恢复该内存故障。【I10】【I16】\n\n**既有模拟结果：** 原Accepted和接受量1保留，冲突后有内存故障但无持久阻断；重启并重新建立有效身份与健康来源后，runtimeFaults和recovery为空、准入重新为true。**没有重复加量，没有把旧Accepted覆盖成新成功，也不是现场已经发生的事故。**\n\n**UI影响：** 异常原件／核对责任不能在重启后可靠呈现，界面可能恢复就绪而失去冲突需要处理的事实；不能靠增加红色提示修复底层证据缺口。\n\n**验收：** 相同ID同内容幂等；相同ID矛盾内容保留原件、原接受账和持久冲突阻断；重启前后详情和恢复页能查到，准入保持受限直到有依据处置；存储失败维持关闭准入。只复测该关键分支及正常重复回执对照。运行图RUN-A01缺失。"
+  },
+  {
+    "id": "A-02",
+    "title": "P2 · 辅助服务离线被归到主 WCS，实例仍显可用",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "same-SHA prior project report",
+    "evidence_level": "P+S",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "I12",
+      "I17",
+      "I18"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### A-02 · P2 · 辅助服务离线被归到主 WCS，实例仍显可用\n\n**来源：既有报告第16页，P＋S。位置／触发：** 主服务健康、辅助服务健康查询失败，查看主屏WCS和组件服务诊断。IntegrationRuntime.HealthAsync:152–161把所有实例结果AND；SenderModule:24向应用写总WcsHealth；StationClosure:117–146把失败映射到主配置Integration；部分诊断生命周期返回false却没有LastFailure。【I17】【I12】【I18】\n\n**既有模拟结果：** 实际ProductRuntime＋独立插件＋loopback探针，6次健康调用、0次效果调用；辅助失败使主WCS变不可用，而实例诊断仍Available、LastFailure为空；禁用辅助后主状态恢复。未实际执行完整供包停线旅程，不扩写为所有现场作业必然停线。\n\n**UI影响：** 操作者可能定位错设备／网络，主屏和组件详情相互矛盾。修订需按实例、目标和业务依赖表达健康，不能简单隐藏辅助故障或把服务都写成健康。\n\n**验收：** 主故障、辅助故障、分别恢复各一次；主屏与实例名称／状态／原因一致，只有相关业务被正确限制；无故障不能显示错误归因，故障原件可追溯。保留实例层真实可用性与全站准入的区别。RUN-A02缺失。\n\n[PAGE]"
+  },
+  {
+    "id": "A-03",
+    "title": "P2 · 组件页激活依赖隐藏维护页的选中项",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "same-SHA prior project report",
+    "evidence_level": "S",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "I03",
+      "I05",
+      "I08",
+      "I19"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### A-03 · P2 · 组件页激活依赖隐藏维护页的选中项\n\n**来源：既有报告第17页，S。位置／触发：** 新窗口以维护身份进入组件页，选择本页Validated修订并申请激活，未先去旧维护配置列表选中项目。\n\nExtensionsView.xaml.cs:344–347正确取本页Revisions选中ID，经MainWindow.Extensions.cs:43–44到SendAsync；MainWindow.xaml.cs:152却以另一控件ConfigsList.IsEnabled／SelectedItem是否Validated决定能否执行。身份变化时该旧列表会被禁用；组件页载入不会同步完成这个旧列表选择。【I08】【I19】【I05】【I03:178–188】\n\n**影响：** 本页选择合法对象仍被隐藏页状态阻断，维护流程需要无依据的绕路。后台仍按传入修订ID、验证与CAS检查，不能推导为激活了错误配置或突破权限。\n\n**修订／验收：** 激活条件以发起页实际选中的同一修订／身份／版本为准。新窗口直接登录维护→组件→选Validated→申请，后台接到正确ID；无需先访问隐藏列表。未验证、过期、无权限、有实体／未决时仍正确拒绝；完成与拒绝均显示具体结果。RUN-A03缺失。"
+  },
+  {
+    "id": "A-04",
+    "title": "P2 · JSON 导入的扩展草稿又被旧 Effective 重置",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "same-SHA prior project report",
+    "evidence_level": "S",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "I05",
+      "I08",
+      "I19"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### A-04 · P2 · JSON 导入的扩展草稿又被旧 Effective 重置\n\n**来源：既有报告第18页，S。位置／触发：** 维护导入含不同扩展部署／设备／服务目标的JSON，然后进入组件页编辑／保存部署草稿。\n\nMainWindow.xaml.cs:371–379把导入内容载入draftBase、extensionDraft和表单；:418接着调用ExtensionsControl.Initialize。后者ExtensionsView.xaml.cs:25–30从Runtime.Configuration.Extensions的旧Effective重建desired；:340–342保存时经MainWindow.Extensions.cs:28–35覆盖本窗extensionDraft与有关参数。【I05】【I08】【I19】\n\n**影响：** 用户导入意图在跨页编辑时被旧生效值替代，可能得到错误预览或校验拒绝；这是同窗草稿所有权问题。没有证据证明已静默激活、破坏数据库或影响真实设备。\n\n**修订／验收：** 维护表单与组件页共享本窗同一部署草稿，明确Draft与Effective。导入包、设备实例、服务目标、端口／参数后，导航、编辑、预览、保存、重载均保留该意图；只在明确受控激活后改变Effective。第二窗口不得共享可变表单对象，仍须CAS防覆盖。RUN-A04缺失。"
+  },
+  {
+    "id": "R-01",
+    "title": "条件 P2 · 保留件连续扫码可能串接旧文本",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "same-SHA prior project report",
+    "evidence_level": "R",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "I04",
+      "I10",
+      "I13"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### R-01 · 条件 P2 · 保留件连续扫码可能串接旧文本\n\n沿用既有报告第18页R-01。新增风险采用UI-R02～04，不与旧报告原R-02／R-03混用。LaneControl.xaml:27将RetainedDraft逐字绑定；xaml.cs:63–71只去终止符并发送，成功后无清空／SelectAll；ViewModels没有随作业更换重置该draft。ClearSplit只清业务计数。StationApplication:168–174用字符串长度／HashSet去重。【I04】【I13】【I10】\n\n**触发／影响：** 若HID扫码器在现有末尾追加，先A再B成AB、重复A成AA；合成策略可能把拼接串当新身份，重复实物也可能增量。没有真实Windows键盘／扫码器复现，不写成已发生重复计数。\n\n**验收：** 真HID分别Enter／Tab，按A、A、B连续扫描，记录每次入账原字符串和计数；失败、忙态、清空、换作业、切通道均不能串接或把旧draft带入新对象。清理必须对应固定作业和已处理输入，迟到回执不能清掉新输入。摄像头输入、箱扫码与人工输入分开记录。RUN-R01缺失。"
+  },
+  {
+    "id": "UI-R02",
+    "title": "条件 P2 · 旧接受仍绿，新鲜度提示离当前结果较远",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "current independent UI audit",
+    "evidence_level": "R",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "D03",
+      "I04",
+      "I05",
+      "I13"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### UI-R02 · 条件 P2 · 旧接受仍绿，新鲜度提示离当前结果较远\n\n**位置／触发：** 已接受后相机失联，或超过3秒未取得投影。ViewModels.cs:105更新健康文字，但106–117仍按旧Current.Status着色；available参与能力而非结果标题。MainWindow禁用新动作并在全局显示投影失效；通道健康只有12号辅助字，最后观察时间在默认折叠区。【I13】【I04:4–5,17–18】【I05:186–201】\n\n**影响边界：** 没有证据证明仍可误发，已有守卫禁止新业务；已接受是事实也不应改成Unknown。风险在主要注视区旧绿色可能被理解为当前可继续，需要跨区寻找失效说明。设计02-camera-offline让离线状态优先。【D03】\n\n**验收：** 在主状态旁表达失效范围、最后有效时间及“原接受事实保留”；接受后断相机／暂停投影的原图同时看到事实和失效、动作原因。健康或投影恢复不得创建新作业、盲重投原Accepted／Unknown请求，或让已过期、代次不匹配的旧许可绕过核对；仍有效的既有作业只按完整守卫恢复。另一通道成功不得掩盖该通道失效。RUN-UIR02缺失。"
+  },
+  {
+    "id": "UI-R03",
+    "title": "条件 P2 · 旧组件读取错误可能清掉新选择",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "current independent UI audit",
+    "evidence_level": "R",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "I08",
+      "I21"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### UI-R03 · 条件 P2 · 旧组件读取错误可能清掉新选择\n\nExtensionsView.xaml.cs:122–137在成功回填时检查packageGeneration和当前选中包；catch路径不检查ticket，直接清selectedManifest、Module、Parameters。Manifest实际读取经ExtensionManagement Task.Run。【I08】【I21:54–55】\n\n**触发／影响：** 选A慢读并最终失败，后选B快成功，A错误最后回填，B当前编辑区可能被清空。是源码支持的时序风险，没有Windows复现，不能说每次切包都失败。\n\n**验收：** 成功与异常都按同一对象／代次守卫回填；构造A慢失败、B先成功，A迟到后B名称、参数和选择不变，错误只记归属A的诊断，不写到B草稿。RUN-UIR03缺失。"
+  },
+  {
+    "id": "UI-R04",
+    "title": "关键长内容与固定动作可能竞争最小客户区",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "origin": "current independent UI audit",
+    "evidence_level": "R",
+    "windows_reproduced": false,
+    "runtime_screenshot": null,
+    "source_ids": [
+      "I02",
+      "I03",
+      "I04",
+      "I14"
+    ],
+    "full_location_trigger_impact_evidence_acceptance": "### UI-R04／G-DPI · 关键长内容与固定动作可能竞争最小客户区\n\nLaneControl结果和动作区为Auto；长拒绝原因、波次差异增加高度，拆包增加输入和按钮。ReviewFits要求条码、元数据、数量／单位、拆包进度与动作矩形同时完整可见。1280×680只是最低阈值，不是这些状态可核对的几何证明。【I04:13–44】【I03:143–163】\n\n**全局TextBlock隐式样式设置Wrap；本项Reason／DisabledReason和只读值均有换行设置。** 不存在“局部未写TextWrapping所以一定截断”的结论；风险在换行增高后挤压视口。顶部水平StackPanel本身也不会因文字Wrap自动重排，长工位／身份／箱码占位须测。【I14:16,18】【I02:6–7,14】\n\n**验收：** 目标实际客户区分别显示普通人工、长条码／前导零、长中文原因、长箱与Item波次差异、拆包；保存实际几何／ReviewFits／原始图。支持正常作业的格必须完整核对当前结果和对应动作；不足格应可靠保护，扩大后人工恢复、上下文不被重建。若保护触发，记录“保护有效，但该场景正常作业未达标”，不能记适配通过，也不能为通过放宽守卫。RUN-UIR04缺失。"
+  },
+  {
+    "id": "G-RUNTIME",
+    "title": "正式Windows运行与截图未取得",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "evidence_level": "G",
+    "windows_reproduced": false,
+    "acceptance_location": "REPORT.md 第12～13节",
+    "runtime_screenshot": null
+  },
+  {
+    "id": "G-DPI",
+    "title": "真实客户区与DPI未测量",
+    "source_commit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "evidence_level": "G",
+    "windows_reproduced": false,
+    "acceptance_location": "REPORT.md 第12～13节",
+    "runtime_screenshot": null
+  }
+]

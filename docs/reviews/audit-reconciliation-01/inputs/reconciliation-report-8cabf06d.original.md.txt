@@ -1,0 +1,306 @@
+# 项目架构与 UI 审查复核、归并及纠偏结论
+
+**任务：WP-IPC-AUDIT-RECONCILIATION-01｜2026-10-17 本轮独立复核**  
+**仓库：yuan2go/importer-pc**  
+**实现基线：8cabf06d3c6d53ba551b65e58a13db6cdcaba16a**  
+**采用 UI：SS-UI-VIS-001 v1.1**  
+**下一阶段：沿用 WP-IPC-CONFORMANCE-FIX-14，补齐 UI 与关联操作闭环**  
+**本轮状态：审查与工作包交付；业务代码、配置和设计基准均未修改。**
+
+本报告是本次用户要求的复核结果，不覆盖仓库中 2026-10-16 已执行的同名历史工作包 `docs/work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md`。历史身份和当前审查身份必须分别保留。
+
+## 1. 直接结论
+
+**项目存在需要纠正的局部偏离和未完成能力，但没有证据表明核心架构已经整体偏离目标。现有架构适合继续开发，无需重新搭建框架。** 最严重的确定问题是 A-01：收到同证据身份的矛盾回执后，冲突原件与持续核对责任没有成功持久化，重启可失去这项阻断。其余主要问题涉及多实例健康归属、维护草稿/激活接线、箱级反馈及追溯操作。严重程度不能由一个总体完成率表达。[S01][S02][S05][S06]
+
+**UI 应保留主工作台，进行关联修正。** 共享周转箱、双通道、当前条码/任务/数量/结果、固定动作和辅助抽屉已落在实际 WPF 中。需要局部结构调整的是记录列表与详情的空间分配；其他主要是状态反馈、字段语义、主次动作、输入和维护流程。没有依据要求更换整个导航、视觉主题或桌面技术。真实 Windows 美观度、DPI、扫码和持续操作负担仍未验证。[S09][S10][S11][S12]
+
+**下一步优先完成既有 FIX-14 的完整软件闭环。** 先修持久冲突与实例健康，再贯通维护草稿、直接激活和异步结果归属，同时修正箱级结果、历史查询和高频操作 UI。真实 SDK、WCS、实体/数量/权限批准并行准备，缺少它们不能阻止这些软件修正；模拟链通过也不能放行生产。[S03][S04][S15]
+
+**发现并承接并行 PR #13。** 它的 head 为 `6406b4fd6304c2825121aedfac9a1c37be69b37b`，本轮核验为 Open，88 个变更文件限于 README/docs，业务源码、测试、配置和脚本无变更。它已发布项目审查及 FIX-14 的 AC14-01～07，状态明确是 PLANNED / NOT_IMPLEMENTED。应复用这些成果并补 UI 范围，不能视为修复已进入 main，也不应另造一个重复的“14”任务。[S03]
+
+### 五个维度的判断
+
+|维度|当前判断|后续行动|
+|---|---|---|
+|核心架构|职责和依赖总体保持；兼容耦合仍在，未见第二业务权威或循环架构。|继续原架构，修具体事实归属和接线，不做广泛改名/分仓/微服务化。|
+|UI|采用版本的主布局和大部分交互方向已继承；局部操作与信息组织偏离。|局部修正；历史/详情局部重排；用同版实际客户端补行为与截图。|
+|本期能力|实际装配、持久化、原请求恢复和后装插件均有运行证据；AC13-04/05/08不能整项全绿。|先交付完整多实例及维护操作链，再叠加依赖它们的功能。|
+|业务与恢复|正常参考链可运行、可追溯；冲突恢复例外明确存在，尚非完整异常闭环。|A-01优先；不覆盖原接受账，不提供无依据通用解锁或自动重发。|
+|真实集成/上线|真实合同、SDK、实体/权限、Windows和现场资格未齐。|分能力待联调；生产上线暂停，保留Production缺能力拒绝。|
+
+## 2. 证据、版本与本轮复核范围
+
+### 2.1 两份报告确实可比较
+
+|证据|项目审查|UI 审查|
+|---|---|---|
+|任务|WP-IPC-PROJECT-CONFORMANCE-AUDIT-01|WP-IPC-UI-CONFORMANCE-AUDIT-01|
+|原 PDF|23页，文件名含8cabf06d与20261017|27页，文件名含8cabf06d与20261017|
+|源码 SHA|8cabf06d3c6d53ba551b65e58a13db6cdcaba16a|同左|
+|采用设计|现行framework/decisions、12/13授权及v1.1；明确采用不等于客户逐项批准|SS-UI-VIS-001 v1.1及UI10/12/13映射，不混入未取得的其他候选|
+|检查环境|Ubuntu 24.04.3/Linux x64；SDK10.0.402、运行时10.0.13|同类Linux环境；无WindowsDesktop/交互桌面|
+|实际范围|关键业务/存储/装配/扩展源码；必要构建、architecture、baseline复验、followup及两项独立探针|WPF源码与完整UI基准、页面/状态矩阵、设计图；复用项目审查A/R，不重跑后台|
+|Windows证据|仅WPF交叉编译；实际Windows未验|正式DLL加载尝试停在框架解析，未创建窗口；客户端实图0|
+|主要限制|未重验全部历史测试、线上ZIP或真实SDK/WCS/设备；受限原稿只按该报告原阅读范围说明|实际DPI、焦点、输入、声音与连续作业均未验；候选DLL来源关联不等于完整二进制溯源证明|
+
+原始输入文件及哈希登记在 `inputs/README.md` 和 `docs/runtime/evidence/audit-reconciliation-01/identity-recheck.json`。本次实际读到原报告全文、结构化问题、相关探针/日志/环境与当前代码；没有重新取得客户受限 PRD 外链、私有接口附件或厂商 SDK，不能把原报告曾读取的资料改称本轮直接读取。
+
+### 2.2 同 SHA 仍核原字节与依赖
+
+本次克隆的 main 与两份报告同一 SHA，且以下身份核验通过：
+
+|本轮核验|结果|能够支持的结论|
+|---|---|---|
+|当前544个受版本管理文件 vs 项目原审查覆盖清单SHA256|544/544相同|旧问题不是借用另一版本；这不是声称本轮逐行重审544文件。|
+|原项目证据包SHA256SUMS|710/710相同|所复用报告、探针、日志、数据库及清单保持原字节。|
+|原UI证据包SHA256SUMS|26/26相同|UI原问题/矩阵/截图登记未被改写。|
+|现用UI源/设计图 vs UI原记录|11份源文件+34张PNG，45/45相同|采用版本没有变化；PNG仍是设计参考，非客户端实图。|
+|冻结源8cb475b到main的运行输入差异|src/tests/config/examples/scripts、根构建输入及运维/扩展指南无变化|可关联历史8cb475b运行输入，但不把历史Mac执行改记成本轮执行。|
+|本次工作树|源码工作树干净；业务修改0、新业务测试运行0|本轮做必要复核与只读数据检查，没有通过改实现来“消除”问题。|
+
+本次没有重复安装 SDK、重跑相同构建或全量选择器。原审查已经有同 SHA 构建及目标风险验证，重复执行不能增加主要结论的证据强度。新增验证集中在原件身份、真实调用链和 A-01 原数据库的只读复查。首次原baseline日志尾部不全的记录保留；后续同SHA完整复验通过，不能将前一次收集缺口升级成当前业务失败。
+
+### 2.3 PR #13 的差异只影响资料承接
+
+PR #13 已整理 README/INDEX、原报告、证据及 FIX-14，尚未合并。它没有修改 A/UI/R 所涉及的业务源码。因此：
+
+- 不重复发布同一份项目审查为“新发现”，不以文档PR合并关闭问题。
+- README/INDEX整理应先承接PR13，不重复重写或覆盖其归档。
+- 本次新增工作包是同一个FIX-14的合并修订稿，执行时与PR13或届时main三方比较；保留原AC14-01～07并补UI相关结果。
+- 旧同名AUDIT-RECONCILIATION-01工作包是历史实施，不能覆盖成这次只读审查。
+
+## 3. 统一分类与目标偏离判断
+
+|统一分类|本项目具体内容|裁定依据及边界|
+|---|---|---|
+|符合设计|单业务所有者、应用契约、多视图共享Runtime；构建选Supply/Inspection；设备/服务实例分型；真实SQLite/Outbox/原请求；保持布局/交互/状态语义的WPF原生控件适配。|源码及同SHA参考运行支持。四部分是职责划分，不要求恰好四个项目/进程；采用版交接已提供WPF组件映射。|
+|经批准调整|缺旧工程时F-02参考工程；受信任离线后装；受控重启激活；公共契约收敛；保留旧专用装配兼容；Windows统一后验。|后续03/12/13明确执行范围，不用更早固定注册/验收时序否定后续要求。|
+|有合理依据但尚未批准的调整|暂无足以确定的独立必改项。参考拆包确认/提交合并的生产沿用仍需产品确认，不能将现有合成实现当作生产批准。|普通WPF适配已获基准允许；扩展页缺专属高保真参考记参考缺口。兼容耦合的进一步拆分需变化成本证明，不据此机械申请控件级批准。|
+|未经批准且需要纠正的偏离|把多实例聚合失败标成主WCS自身离线；激活守卫读取另一页对象；箱码标成Item；只读详情持续主强调；历史空详情挤压结果。|已有职责/对象/字段/动作要求不支持这些行为。纠正实现即可，不需改设计授权这些错误。|
+|本期应完成但尚未实现|冲突持久核对责任、逐实例健康闭环、完整维护入口；箱级拒绝持续投影、合适的追溯与触控反馈。|是完整交付的遗漏；不能用“架构已符合”抵消，也不等于整个功能从未实现。|
+|证据不足|Windows几何/焦点/声音/扫码、实际美观度；条件时序/多根风险；真实SDK/WCS合同与批准。|保留特定待验场景，不据此判全部UI/核心不合格。|
+|不属于本期范围|在线插件市场、任意SDK热插拔、独立第二套完整Inspection WPF、分布式工位平台、无明确承诺的长期headless、多品牌全量驱动、传图/图片存储。|不得把未来扩展变成本期阻塞；当前明确输入为无图片存储需求。已承诺能力不能事后用文案缩范围取消。|
+
+分类描述的是具体对象。A-01属于实现遗漏导致的恢复不符合，A-03/A-04属于已经实现的管理功能中的接线缺陷；二者都不是推翻整体架构的证据。未经单独确认的普通控件细节无需机械申请批准，但新增产品范围或更改客户语义不能由Codex代签。
+
+逐项主分类：A-01、UI-01、UI-06归入“本期应完成但尚未实现”的具体结果缺口；A-02～04、UI-02～05、UI-07归入“未经批准且需要纠正的偏离”，限定为已实现行为、对象或呈现的错误。六项条件风险和G门禁归入“证据不足”并写明触发或适用条件；不能因某一条路径已静态确定就擅自取消其现场/范围限定。完整分类与依据登记在统一问题清单。
+
+### 3.1 主体架构仍保持四部分责任
+
+|用户原职责|当前主要落点|判断|
+|---|---|---|
+|应用基座：安装、组装、流转、基础服务|Ipc.Platform机制；Ipc.Product及Ipc.Assembly装配；配置、租约、扩展安装与生命周期|基座没有接管全部供包业务规则；Product是允许引用具体实现的装配根。|
+|业务线：服务实现及一个或多个UI|Ipc.Supply与Supply.Contracts；Ipc.Desktop页面；Inspection参考业务|Supply拥有状态/事务/命令，UI使用应用契约。多个页面/窗口共享Runtime，切页不创建新作业或发送器。|
+|驱动：硬件交互|Adapters的manual/replay、独立观察扩展、Product来源工厂|参考来源可运行；真实海康/PLC/秤能力仍须实际资料。设备身份/业务角色与服务端口区分。|
+|组件：WCS/RCS/DCS等上游集成|类型化Integration契约、IntegrationRuntime、独立集成扩展|主请求、原请求查询及生命周期真实；A-02说明多实例健康责任尚未完整落地。|
+
+Adapters直接依赖Supply、旧StationConfig留在公共机制中是实际兼容耦合，不能宣传成完全无业务依赖；当前无项目循环或第二状态权威。要不要进一步拆分应由新增真实实现和变化成本证明，当前不值得据此展开无关重构。[S01][S02][S07]
+
+### 3.2 UI是局部修正，历史视图是局部结构调整
+
+主工作台的视线组织与v1.1相近，WPF采用原生DataGrid/TreeView/ComboBox/确认窗口本身合理。历史抽屉固定列表/详情5:6分栏、空详情仍占多数宽度，与基准列表先读、详情按需进入的组织不一致；这部分应调整结构。箱级状态、主次动作、筛选/禁用提示和输入生命周期则在现有控件及应用投影上修正。
+
+静态源码没有明显营销页、霓虹大屏或无业务统计卡片化证据；不能据此给出“全天舒适”或“最终美观已通过”。工程编号和请求技术树过度进入默认阅读层、重复主蓝色和历史结果远置会增加操作负担，应随功能修正收敛；不默认换深色、不重新生成一套图代替客户端。
+
+## 4. 复核后的问题清单与归并规则
+
+**保留原问题编号。** UI报告再次出现的A-01～A-04和R-01是复用，最终各计一次。项目原R-02/R-03与UI-R02/UI-R03不是同一问题，不因编号相近合并。G-RUNTIME和G-DPI纳入G-01的分项证据门禁，避免将“未验”重复计作多个代码缺陷。完整结构化登记见 `findings.json`。
+
+### 4.1 确定问题
+
+|编号/优先级|复核结论与真实定位|根因及应取得的结果|
+|---|---|---|
+|A-01 / P1|保留；同SHA真实应用/SQLite探针已复现。StationApplication.cs:454–501；Store.cs:153–158。|响应身份冲突使T3回滚，终态短路后只余内存故障。保留两份原件与持续核对责任，重启仍可发现，接受账不覆盖/不重复。|
+|A-02 / P2|保留；同SHAProductRuntime健康探针已复现。IntegrationRuntime.cs:152–161；SenderModule.cs:24；StationClosure.cs:117–146；IntegrationModule.cs:27,87–91。|单服务bool聚合掩盖多实例身份。实例健康、目标、时效和业务依赖分开；主/辅助/历史故障正确归因。|
+|A-03 / P2|保留；源码确定，未跑WPF。ExtensionsView.xaml.cs:344–347；MainWindow.Extensions.cs:43–44；MainWindow.xaml.cs:118–152。|新激活入口仍读隐藏ConfigsList。用本次选定修订/身份/版本贯穿前后端，保留CAS与责任屏障。|
+|A-04 / P2|保留；源码确定，未跑WPF。MainWindow.xaml.cs:371–379,418；ExtensionsView.xaml.cs:25–30,340–342；MainWindow.Extensions.cs:28–35。|导入草稿与旧Effective初始化互相覆盖。每窗口一个编辑来源，所有页导入/预览/保存一致。|
+|UI-01 / P2|保留；Context/CheckClose/Close拒绝未投影到当前箱区。Ipc.Supply.Contracts/Model.cs:50–63,94–103；StationApplication.cs:518–526；MainWindow.xaml:13–17。|箱级结果模型/呈现遗漏。保留阶段、原请求、结果、原因与下一步；刷新或其他通道成功不掩盖拒绝。|
+|UI-02 / P2|保留；HistoryPresentation.cs:14将箱码回填Barcode，MainWindow.xaml:45固定标Item条码。|混用实体语义。会话/作业按实体列展示，箱码与Item、复制/详情/导出一致，保留前导零。|
+|UI-03 / P2|保留结构不匹配；MainWindow.xaml:40–45、Presentation.cs:156–163。空详情6/11、列总1490，状态在远端。|列表与详情信息分配偏离；无详情充分显示列表，状态/数量/身份首屏可辨，详情返回保留上下文。实际裁切仍未测。|
+|UI-04 / P2|保留；MainWindow.xaml:41–44、MainWindow.Closure.cs:98–104。标签只Tooltip、日期需完整时区文本。|把技术输入格式交给操作员。可见标签、本地日期时间选择与明确时区，保留后端严格时间边界。|
+|UI-05 / P2|保留；LaneControl.xaml:28、ViewModels.cs:148–150、LaneControl.xaml.cs:57–60,75。|动作文字变而样式不变，多个状态只读详情重复。按动作语义设置主次，保留固定位置及真正必要入口。不是重复提交漏洞。|
+|UI-06 / P2|保留，限定部分按钮；MainWindow.xaml.cs:154–159,190–194。|通用命令原因只接Tooltip。关键动作附近可读当前原因；通道已有DisabledReason不重复判缺。|
+|UI-07 / P3|保留资源维护与可读性风险；Themes/Workstation.xaml、ViewModels.cs、MainWindow.xaml。|字号/图标/颜色局部重复定义。随受影响组件统一现有tokens；不能据源码断言实际缺字或所有字不可读。|
+
+完整路径前缀及固定提交链接见第10节；本表行号对应固定main。证据S代表当前源码确认，P代表复核后继承的同SHA运行，不是本轮重新执行。
+
+### 4.2 条件风险、范围和证据门禁
+
+|编号|处置|准确影响与工作包范围|
+|---|---|---|
+|R-01，条件P2|保留；并入输入生命周期|连续HID在末尾追加时可能把A/A/B串成AA/AB；成功消费和换作业归属缺失是源码事实，实际重复计量未复现。做同对象/输入代次处理并留真扫码待验。|
+|R-02，条件P2|保留；先核长期headless承诺|提示队列容量64，只有Desktop消费。当前Windows工位开发不被此阻塞；若已有持续无桌面运行承诺则补消费者，不删队列保护。|
+|R-03，条件P2|保留；先核共享多数据根承诺|共享包库卸载只查调用者库及活动租约，其他已停根可能仍有引用。相关部署前补离线引用或证明既有单根约束；不启动无依据多工位平台。|
+|UI-R02，条件P2|保留；并入事实/可用性投影|旧Accepted为真实历史事实，当前来源或投影失效提示较远。已有守卫禁新业务，不能宣称仍可误发，也不能把Accepted改成Unknown。|
+|UI-R03，条件P2|保留；与A-03/A-04同一实施组|ExtensionsView.xaml.cs:122–137成功检查代次，catch不检查。A慢失败/B快成功时旧错误可能清新编辑区；需一次可控时序与WPF验证。|
+|UI-R04/G-DPI|保留；局部几何待测|长原因/波次/拆包换行可能竞争关键矩形。已有全局Wrap，不能认定“没有Wrap必截断”。与UI-01/03/04/05布局联合验收。|
+|G-01，合并G-RUNTIME/G-DPI|Windows验收门禁|实际客户端截图0；启动、DPI、输入、声音、UAC/ACL未验。只阻塞Windows相关验收和现场放行，不阻塞核心实现。|
+|G-02|真实集成门禁|SDK/客户WCS/实体/认证无完整证据。仅阻塞对应Production能力，继续显式NotReady。|
+|G-03|业务批准门禁|数量/拆包/自动提交、实体/复位、关闭/处置、身份与保留期仍有D项。记录版本/批准与范围，不能用模拟策略替代。|
+
+### 4.3 保留、降级、撤销与关闭的具体口径
+
+两份同SHA报告在重要事实和证据限定上基本一致，**本轮没有证据将其中A/UI确定问题降级或宣布修复**。UI-03原文已说明529 DIP只是估算；UI-06原文已说明是部分按钮；条件风险原文也已限定，不能把本来正确的限定包装成“撤销旧错误”的新成果。
+
+需要撤销的是把更早三项P2继续当作当前待修的判断：
+
+|历史问题|当前实现与验证反证|当前处置|
+|---|---|---|
+|PR11同ID/version卸载后可换内容|ExtensionStore永久identities、管理锁及历史操作核验；原同SHAarchitecture覆盖跨卸载/退休/中断/并发及原包重装。|从当前待修清单移出；原问题/失败保留。|
+|PR11托管引用闭包预检不足|ManagedAssemblyPolicy、ExtensionPackages与ExtensionLoading使用真实AssemblyRef和精确解析；正反例与合法私有依赖实际加载已有证据。|从当前待修清单移出；不得撤掉相关断言。|
+|PR12改名残留旧实例/端口|ExtensionDraftEditing按originalId替换；ExtensionsView实际调用；原architecture/helper覆盖改名、冲突、新建、禁用等。|核心策略可闭合；Windows交互仍未验。A-03/A-04是另两个入口问题。|
+
+这不是仅凭PR合并关闭问题。关闭依据是对应代码和已核身份的具体验证；不扩张为Windows ACL/UAC、真实SDK或全部维护操作通过。
+
+## 5. 高风险根因与必须联动的修复
+
+### 5.1 A-01：原件身份与冲突发生身份不能混为一个唯一键
+
+当前应用能识别相反回执，但存储层拒绝同EvidenceId不同内容使整个事务回滚。随后UnknownLocked看到原请求已Accepted便返回，内存ProtocolFailure不能跨重启恢复。原探针与只读数据库复查共同确认：请求/作业仍Accepted，响应仅原Accepted，接受量1，尝试1，持久Blocks为空，冲突审计0；重新取得身份/健康后准入恢复。[S05][S06]
+
+**已证明的是证据与隔离责任丢失，没有证明重复加量或已发生现场错发。** 应保留原接受事实，再保存可去重的冲突发生记录、原请求/EvidenceId/来源/时间/原始内容，并让持续核对责任原子持久化。不能通过覆盖Accepted、删除响应唯一约束或普通“重试”修复。
+
+如果原request仍保留Accepted、冲突另存，所有依赖“Unknown”的读者都要纳入：恢复列表、原身份查询、准入/提交/关闭/激活守卫、历史详情/导出/清理、维护预检和精确旧包保留。只增加表而这些读者看不到它，同样没有闭环。存储失败时无法承诺凭空持久化，必须明确失败窗口、启动隔离及可证明恢复依据；不得继续宣称已保存或重启静默放行。
+
+真实矛盾处置合同未确认时，软件可以完整实现持久隔离、原件查看/导出、原身份查询以及准确拒绝；不能新增“备注满8字即清除一切责任”的通用解锁。最终关闭核对责任需要可信新证据或批准SOP，原事实不被抹掉。
+
+### 5.2 A-02：通信健康、生命周期和业务依赖是不同事实
+
+当前所有entries的健康被AND，再投给一个主config.Integration身份；实例Diagnostic的Available又仅表示生命周期。原探针主目标健康、辅助拒绝连接时，主投影Unavailable而两实例Available/null；禁用辅助则主恢复Ready。6次健康访问、0次副作用访问支持错误归因与额外守卫，不能扩写成实测完整停线。[S07]
+
+修复应按实例/目标/部署代次记录健康、时效和失败原因，业务按实际必需端口决定哪些动作受限。历史查询目标与当前主目标分别归属，旧目标失败不伪装成当前主WCS离线，但原Unknown责任仍保留。超时、取消、慢实例、迟到健康和停止所有权需要随新的健康调用结构一起检查；无需预先猜测真实WCS健康API。
+
+### 5.3 A-03/A-04/UI-R03：维护操作要共享同一编辑上下文
+
+激活对象来自组件页，而UI守卫读旧维护页列表；导入值进入MainWindow草稿，组件Initialize又从Effective读取；异步读取成功检查代次，异常分支却清当前内容。这三者共同说明窗口内“当前操作对象/编辑版本”的传递不一致。[S08]
+
+因此应一起贯通：导入/安装包 → 实例、参数、角色/端口 → 同窗草稿 → 差异预览/保存 → 当前页选修订 → PendingActivation → 受控重启 → Effective或失败保旧。两个窗口保有独立草稿，持久CAS/权限/业务责任仍由同一应用裁决。不能改成全局共享可变表单，也不能用CLI绕过坏页面表示UI已完成。
+
+### 5.4 UI-01不能与A-01合并成“回执丢失”
+
+UI-01的普通Context/CheckClose/Close拒绝回执仍存在数据库和详情。缺的是当前箱操作区持续展示阶段、结果和原因。A-01则确有冲突原件未落盘；它们可以共享请求结果投影，但必须保留不同根因和关闭证据。[S05][S09]
+
+箱级拒绝不能仅增加一个Toast，也不能把CheckClose/Close拒绝后真实Active状态改成假阻断。正确结果是同时看到“箱仍Active”与“刚才关闭被拒绝及原因/下一步”，并绑定原箱/原请求；另一通道完成或旧箱迟到回执不能掩盖或污染当前对象。
+
+### 5.5 UI局部美化必须联动可见性守卫
+
+UI-05收敛重复详情时，`LaneControl.xaml.cs:22–25` 的ReviewFits仍无条件要求PrimaryAction和整个SecondaryActions完全可见。直接隐藏次动作组可能让守卫持续失败。应按当前状态真正需要核对的字段/动作调整布局与检查集合，继续保证关键条码、任务、数量和动作可见，不能删除守卫换通过。[S11]
+
+UI-01增加持续原因、UI-04增加标签都会改变高度，必须与UI-R04同一次实际客户区检查。记录首屏应优先对象类型、通道、条码、结果、接受量和尝试摘要；技术请求树按需展开，完整标识可复制。无需另起整套UI设计。
+
+## 6. 模块级继续、暂停与待联调判断
+
+|模块/工作|决定|继续条件或暂停范围|
+|---|---|---|
+|Platform、Product、Assembly主体|继续|继承现有机制和装配。仅随A01/A02/维护闭环修改必要契约或机制。|
+|Supply正常参考业务|继续并行|数量/实体使用明确合成规则；不把它升级为生产批准。|
+|矛盾回执/异常恢复|优先修，暂缓叠加依赖该恢复语义的新功能|A01持久责任、恢复读者和失败保护闭环后，才能宣称恢复完整。|
+|多服务接入与健康展示|先修事实归属再扩展|A02未闭合前不宣称多实例相互独立可用；单实例/无关模块可继续。|
+|组件/驱动维护UI|优先完成现有闭环|A03/A04/UI-R03完成后再增加同类设置页；安装/保存/激活/生效分别显示。|
+|主工作台与箱级反馈|继续并行修|保留主布局，修UI01/UI05/UI06、R01、UI-R02及关联几何。|
+|历史、详情、筛选与导出|继续；局部结构调整|UI02～04实体验证与查询上下文保持，不能只改列头不改值。|
+|UI资源与长时间舒适度|可暂缓独立优化|UI07随已改组件收敛；最终舒适度需真人持续操作证据。|
+|Inspection参考业务|保留已有成果，不新增第二完整WPF产品|受影响装配验证足够，不因供包UI审查扩大为第二套产品开发。|
+|长期headless/共享多根|条件推进|核R02/R03已有承诺/入口；适用才完成保护，不阻塞确定修复。|
+|真实SDK/WCS/生产认证|待资料/合同后分项联调|B01～06逐能力解除；不能伪造方法、接口或生产成功语义。|
+|Windows实际验收|已批准后置|完成现有环境可做的核心/WPF/候选；有已授权环境时执行同版有限关键旅程。|
+|现场上线|暂停|软件确定缺陷、Windows、真实接口/设备、业务批准及现场验收均有证据后再放行。|
+
+## 7. 下一阶段完整纠偏工作包
+
+完整执行文件：`docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md`。本次交付在PR13原AC14-01～07基础上补AC14-08～10，保留原稿快照和来源；范围为完整修复现有软件及UI，不是新框架建设。以下是结果与顺序索引，详细起点、守卫、验收和兼容限制以该文件为准。
+
+|阶段|目标/关联问题|实施依赖|阶段退出结果|
+|---|---|---|---|
+|P0 基线与资料承接|DOC-CURRENT；AC14-01|先核最新main/PR13/工作区，保留原字节和替代关系。|一个明确当前入口，原设计/报告/D/RV不改写；文档清理在业务改动前完成。|
+|P1 持久业务责任|A01；AC14-02|先确定冲突数据与全部读者/迁移影响。|两份原件、持续核对、唯一接受账、重启/查询/清理/旧包责任闭环。|
+|P2 实例健康与业务依赖|A02；AC14-03|健康事实契约稳定后接UI；与P1可按文件边界并行。|当前/辅助/历史目标准确健康及动作守卫，停止/恢复责任完整。|
+|P3 统一维护旅程|A03/A04/UI-R03；AC14-04/10|先建立同窗草稿/选择/读代次边界。|导入/多实例/差异/保存/本页激活/重启生效或失败保旧，CAS不回归。|
+|P4 操作反馈与追溯|UI01～06、R01、UI-R02/UI-R04；AC14-08～10|承接P1/P2读模型；同时调整必要ReviewFits。|完整箱反馈、连续输入、实体正确的历史/详情/筛选和动作主次；UI07按受影响资源收敛。|
+|P5 证据与交付|R02/R03适用结论、G01～03；AC14-05～07/10|实现稳定后只跑受影响风险/构建/启动，Windows独立记录。|逐问题源码+验证+残余门禁，冻结同版候选，开发分支main PR，不自行合并。|
+
+### 7.1 Codex可以自主决定的工程细节
+
+内部类名、文件拆分、记录/表/DTO组织、草稿模型与读取代次、逐实例健康表示、WPF样式/布局实现、最少必要的测试入口以及保持兼容的前向迁移方式，均可由执行者基于当前代码决定。应完成所有关联读者与操作链，不限定一个小helper或固定几行改动。
+
+自主空间受已有职责/协议/身份/证据约束：不能把业务守卫放到平台或页面各写一份，不能新建第二配置权威、让历史请求借当前目标、重签同版本异内容包，或改变生产外部语义。
+
+### 7.2 必须由产品、WCS、设备或现场确认的事项
+
+|责任方|须确认内容|仅阻塞的部分|
+|---|---|---|
+|产品/业务|数量单位与并发归属、自动/人工分支、拆包保留/移除方向、少货关闭、保留期、是否承诺长期headless/共享多根。|对应真实策略/范围；不阻塞错误归因、草稿、反馈及追溯修复。|
+|WCS方|真实版本合同、接受与物理完成的区别、幂等/查询权威、相反回执处置、权限认证、关闭与预留解除、健康及必需端口语义。|真实适配与有权解除责任；合成拒绝/冲突链可先完成。|
+|设备方|型号/SDK/位数/固件、读码与采图、回调/缓冲/停止、双相机到通道/实体、入场/离场/复位权威。|实际SDK/设备/实体动作；参考驱动机制可继续。|
+|现场/运维|工控机OS/账户/ACL、显示DPI、扫码器终止符、触控/声响、作业节拍、数据保留/备份、验收负责人。|Windows设备矩阵和上线资格；不要求为本包寻找VM/runner或扩OAuth。|
+
+原D-01～16与B-01～06仍是批准登记入口；本表不制造新的批准人、固定规则或客户合同。自动提交/自动发车目前未实现，但相应规则未决，不能在本次UI纠偏中随意按HTML照抄，更不能计作FIX-14新增无条件阻塞项。
+
+### 7.3 只运行必要验证
+
+|验证组|必须覆盖|避免的重复/无效证据|
+|---|---|---|
+|持久冲突|同ID同内容、同ID异内容、不同ID矛盾；终态迟到、重启、真实SQLite失败；接受量唯一、恢复/清理/旧包引用。|不以简单mock验证代替事务；不重复整仓无关组合。|
+|实例健康|主好辅坏、反向、分别恢复、时效/迟到、必需/非必需依赖、历史查询目标失败。|复用ProductRuntime+独立本地端点探针；不扩写真实WCS合同。|
+|维护与异步|新窗直接组件激活；JSON含双设备多服务跨页保存重读；非法/取消/换人/CAS；A慢失败B快成功。|测试实际呈现/命令路径，CLI或未接helper不代表WPF通过。|
+|操作/追溯|三种箱拒绝+正常关闭对照；箱/Item前导零；首屏结果/详情返回；可见标签/禁用原因；A/A/B及迟到输入。|同一双箱旅程承载关联检查，不为每字段新造完整端到端套件。|
+|条件范围|R02/R03先核适用；适用时消费/离线引用正反例。|无承诺范围不建设新平台，不用文案撤已有能力。|
+|构建/兼容/发布|受影响项目及WPF构建；若存储/公共契约/包变更，做对应升级/旧读者拒绝/独立插件与同版解压启动。|不反复跑无关全量selector；不把Release标题和PR状态当二进制验证。|
+|Windows|正式客户端有限旅程、实际截图、DPI/客户区/焦点/输入/声音/安装权限与故障恢复。|没有环境保持具体NOT_RUN；不使用HTML导出、静态图或Linux加载失败作Windows故障证据。|
+
+必要验证失败应定位实际根因，修复本次引入或影响交付的问题。不得删有效断言、吞异常、跳关键路径或降低界面保护阈值换PASS。新记录绑定实际SourceCommit、依赖/插件/配置/制品身份、命令、平台、退出码及完整完成标记。
+
+### 7.4 完成后应能运行的三条闭环
+
+1. **原请求恢复闭环：** 启动 → 开箱/读码/提交 → 接受或Unknown → 正常重启原身份查询；矛盾回执则留双原件/持续责任 → 重启仍受限且详情可查 → 按已有可信证据或批准处置决定下一步，不自动重发。
+2. **统一部署闭环：** 导入或安装合法包 → 配置两设备、多服务及端口/参数 → 跨页预览同一草稿 → 保存 → 组件页直接选修订申请激活 → 受控重启 → Effective或失败保旧 → 主屏/实例健康准确；旧请求仍使用旧精确实现。
+3. **实际操作与追溯闭环：** 验箱拒绝后纠正 → 双通道正常/无码/多码/拆包 → 拒绝/Unknown持续可辨 → 模拟离场复位 → 结束检查/关闭拒绝与正常关闭 → 下一箱 → 历史按正确实体筛选/详情/返回/复制/导出。键盘/扫码与真实WPF状态由Windows旅程留证。
+
+“软件闭环可实现/已验证”和“Windows已验证/真实现场已验证”分别给状态。缺处置权威时准确停在可查看、可核对的隔离状态，也是一条完整且真实的受控路径；不能为了让流程回到绿色而编造外部结论。
+
+## 8. 文档清理：先保存证据，后解除过期指导地位
+
+|路径|复核判断|执行动作|
+|---|---|---|
+|README.md、docs/INDEX.md|main仍叠多期入口，PR13已经整理但未合并。|先承接PR13，按最新状态补本次复核/UI与合并版14，不重做已正确归档。|
+|docs/design/framework.md、framework-decisions.md|主体有效，文首说明历史语境；旧“无源码”表已明示形成时基线，不能判为当前源码不存在。|保留目标/ADR，收敛当前导航；确有过期时态才修改并存快照。|
+|docs/design/controlled-extensions.md、docs/extensions/developer-guide.md|健康隔离/统一维护目标有效，当前完成性需与A02～04区分。|保留要求，注明尚未闭合的当前能力与修复后新证据。|
+|docs/runtime/windows-06.md|顶部仍指12/11/09和旧Mac环境，与13后验决定/本轮Linux事实不同。|更新当前候选和延期身份；保留全部W01～06支持矩阵及历史NOT_RUN。|
+|docs/runtime/integration-05.md|当前入口仍绑定09/11；真实B01～06门禁有效。|只更新参考实现入口，不把真实阻塞清成PASS。|
+|docs/ui/STATUS.md、UI10/12/13映射|旧阶段时态与本次UI缺口需衔接；原v1.1不变。|新增本次问题/同版截图/待验映射，不重写原设计适应代码。|
+|docs/readiness/revision-and-verification.md|HARDENING-04“当前”应按历史理解。|明确历史时点、导向当前；D/RV原状态保留。|
+|docs/manifest.json及sha256|历史/当前审查/待实施14身份需一致。|记录新文件与原件替代关系，遵守自校验；不覆盖旧SourceCommit。|
+
+文档处置要求是可复核，不是目录大扫除。只保存将改文件一次原字节/SHA/替代关系，更新当前入口；已有archive、失败、原报告、原SQL/checksum、原设计/tokens和D/RV批准记录不倒写。PR13曾报告原资料校验267项历史问题且新增0；本轮没有重跑该工具，因此不把267扩写成当前新缺陷或要求本包顺带修完，执行时只处理受影响新增项。[S03]
+
+## 9. 交付与关闭证据格式
+
+每个A/UI/R条目应提供：原编号、复核分类、实现文件/符号与commit、实际入口、测试/旅程编号、原始运行记录和截图、残余资格。不能只填“已处理”。建议分开记录 IMPLEMENTED、CORE_VERIFIED、WINDOWS_VERIFIED、FIELD_VERIFIED；不同层级不可互相代替。
+
+核心确定问题修复后，可创建面向main的开发PR供审查；Windows延期并不要求无限等待才提交代码，但相关UI验收不能填写VERIFIED。使用当前版本正式客户端的图/行为验证；无法完成的Windows项保留清晰场景、原因和后续条件。开发分支不得覆盖他人修改、强推或绕过保护，也不自行合并。
+
+本次执行包包含合并版FIX-14、精简Codex提示词、统一问题清单、原报告及工作包快照、关键复核证据与哈希。文件是本次可审查交付物，**未推送至GitHub、未修改PR13、未实施任何业务修复**；执行者应先承接既有资料并三方合并这些文档，再开始代码工作。
+
+## 10. 固定版本来源索引
+
+以下链接对应本轮实际读取的固定源文件或PR13资料；不是依据滚动main猜测行号。原始两份审查及本轮字节/SQL复核分别见inputs和证据目录。
+
+|编号|来源与本轮用途|
+|---|---|
+|S01|[AGENTS.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/AGENTS.md)，职责、原请求、生产隔离与验收纪律。|
+|S02|[framework-decisions.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/design/framework-decisions.md)、[AC13工作包](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)，采用/批准/后续调整。|
+|S03|[PR13](https://github.com/yuan2go/importer-pc/pull/13)、[固定head的FIX-14](https://github.com/yuan2go/importer-pc/blob/6406b4fd6304c2825121aedfac9a1c37be69b37b/docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md)、[下一步分析](https://github.com/yuan2go/importer-pc/blob/6406b4fd6304c2825121aedfac9a1c37be69b37b/docs/reviews/project-conformance-audit-01/next-step-analysis.md)，并行资料承接。|
+|S04|[项目原审查发布稿](https://github.com/yuan2go/importer-pc/blob/6406b4fd6304c2825121aedfac9a1c37be69b37b/docs/reviews/project-conformance-audit-01/report.md)、本包inputs原稿与PDF；代码基线仍8cabf06d。|
+|S05|[StationApplication.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationApplication.cs)，CompleteCore、UnknownLocked、ApplyOwner、守卫。|
+|S06|[Store.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/Store.cs)，事务与响应身份；原矛盾探针/日志和本轮只读SQL见证据目录。|
+|S07|[IntegrationRuntime.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/IntegrationRuntime.cs)、[SenderModule.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/SenderModule.cs)、[StationClosure.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationClosure.cs)、[集成示例](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/examples/IntegrationExtension/IntegrationModule.cs)。|
+|S08|[ExtensionsView.xaml.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ExtensionsView.xaml.cs)、[MainWindow.Extensions.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Extensions.cs)、[MainWindow.xaml.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs)，维护草稿/守卫/异步。|
+|S09|[Model.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply.Contracts/Model.cs)、[MainWindow.xaml](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml)，当前箱、历史布局、标签与动作。|
+|S10|[HistoryPresentation.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/HistoryPresentation.cs)、[MainWindow.Closure.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Closure.cs)、[MainWindow.Presentation.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.Presentation.cs)。|
+|S11|[LaneControl.xaml.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/LaneControl.xaml.cs)、[LaneControl.xaml](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/LaneControl.xaml)、[ViewModels.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ViewModels.cs)，动作、输入、ReviewFits与状态。|
+|S12|[v1.1入口](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/README.md)、[图册](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/ui/ss-ui-vis-001-v1.1/GALLERY.md)、同目录原HTML、prototype、design/tokens.json及完整交接；完整UI原审查在inputs。|
+|S13|[ExtensionDraftEditing.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ExtensionDraftEditing.cs)、[ManagedAssemblyPolicy.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Platform/ManagedAssemblyPolicy.cs)、[ExtensionStore.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Platform/ExtensionStore.cs)，旧P2代码及保留断言。|
+|S14|[ArchitectureClosureVerification.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/tests/Ipc.Verification/ArchitectureClosureVerification.cs)、[ReferenceJourneyVerification.cs](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/tests/Ipc.Verification/ReferenceJourneyVerification.cs)，参考闭环与插件/原身份。|
+|S15|[integration-05.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/integration-05.md)、[windows-06.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/windows-06.md)、[decision-pack.md](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/readiness/decision-pack.md)，B/D/W分层门禁。|
+

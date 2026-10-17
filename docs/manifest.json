@@ -1,18 +1,18 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-CONFORMANCE-FIX-14",
+  "work_package": "WP-IPC-AUDIT-RECONCILIATION-01",
   "created_date": "2026-10-17",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/conformance-fix-14",
+  "branch": "main",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
-  "framework_design_state": "REFERENCE_FIX14_CORE_VERIFIED_WINDOWS_DEFERRED_FIELD_BLOCKED",
+  "framework_design_state": "FIX14_CORE_SUBITEMS_VERIFIED_OPERATION_RESIDUALS_OPEN_WINDOWS_DEFERRED",
   "previous_manifest": {
-    "commit": "feed6e9ce79449e48c667c17e2671939a86fb588",
-    "path": "docs/manifest.json",
-    "git_blob": "5072d8a7135081d37adabece1b71123b44de2c2e",
-    "meaning": "Exact pre-13 manifest retained under pre-arch-extension-closure-13; all prior reports and acceptance preserved."
+    "commit": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "snapshot": "docs/archive/pre-audit-reconciliation-publication-01/docs/manifest.json.txt",
+    "sha256": "41765197facd0fb852b79a7cb227294441240cd5f5fb562ac637462704cbbdb4",
+    "meaning": "Pre-publication original bytes retained; historical implementation/checks/targets unchanged"
   },
   "self_verification": {
     "sha256_file": "manifest.sha256",
@@ -172,15 +172,15 @@
     },
     {
       "path": "README.md",
-      "sha256": "4c99d893e24f15cd81bf8d2b21e94c2b04d0ff18cb0e5a17a9f5b619f1e93f1b",
-      "size_bytes": 4539,
-      "git_blob": "50ef46d0880c578fad220625a9d4747a4a3b33f9",
-      "version": "FIX-14",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "User-authorized publication of fixed-SHA independent audit and next repair work package; no business source changes",
-      "source": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01 / 2026-10-17 publication request",
+      "sha256": "fa0caebbf9099cf2485c42414d1b2cbbce0703855e77f7ad377cf0c0bb14b06b",
+      "size_bytes": 4415,
+      "git_blob": "c07829e6c33d3b945edccffadc730ecfdb6135ad",
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
       "storage_scope": "public_repository",
-      "previous_git_blob": "eb68bbcfff72be7e48f9269f17b96c8f89ac31bd",
+      "previous_git_blob": "50ef46d0880c578fad220625a9d4747a4a3b33f9",
       "prior_closure13_git_blob": "a305391de26301ca46bfee2a7060f69fbb751252",
       "pre_conformance_audit_git_blob": "22bbdf4741bf3df550ec41159f57858b6326f4a4"
     },
@@ -255,15 +255,15 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "fa7a892736c79a8387dc951d6760b90c7b33bd4b12d119a332277a94d08989eb",
-      "size_bytes": 7031,
-      "git_blob": "e8df06172f829e6944b84e12b0976871b27d14d8",
-      "version": "FIX-14",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "User-authorized publication of fixed-SHA independent audit and next repair work package; no business source changes",
-      "source": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01 / 2026-10-17 publication request",
+      "sha256": "05e1ac230468af7801cb79ca2ce9d8a7c681f36a3cfd7e754ea563a01a035f79",
+      "size_bytes": 7200,
+      "git_blob": "8f7e179fde6e464b54a3053d67005cb92a6e6bc0",
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
       "storage_scope": "public_repository",
-      "previous_git_blob": "2ccbd5ea9ead4fde169033511eed2f9ecf712629",
+      "previous_git_blob": "e8df06172f829e6944b84e12b0976871b27d14d8",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
       "pre_conformance_audit_git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc"
     },
@@ -376,6 +376,160 @@
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/README.md",
+      "sha256": "fc06ad078d500990476d1d1d30b62d7a1367a9e1dda51e2c1bd2bb51ae03b608",
+      "size_bytes": 624,
+      "git_blob": "6f2f459ba1ab92e993af79943b34d374f4fe7acc"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/README.md.txt",
+      "sha256": "4c99d893e24f15cd81bf8d2b21e94c2b04d0ff18cb0e5a17a9f5b619f1e93f1b",
+      "size_bytes": 4539,
+      "git_blob": "50ef46d0880c578fad220625a9d4747a4a3b33f9"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/docs/INDEX.md.txt",
+      "sha256": "fa7a892736c79a8387dc951d6760b90c7b33bd4b12d119a332277a94d08989eb",
+      "size_bytes": 7031,
+      "git_blob": "e8df06172f829e6944b84e12b0976871b27d14d8"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/docs/design/controlled-extensions.md.txt",
+      "sha256": "a821438a14163d59c841637d5cd6acfc3dc8db6c81d72b018c5f42c71e62fee3",
+      "size_bytes": 7089,
+      "git_blob": "46f15a4fbe5e5fab5c41af3b28d7648b597c73f7"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/docs/design/framework-decisions.md.txt",
+      "sha256": "53c91f230d07a94f80bfc3b0aff7303fa51e58897a9eee82911eda5852c91bfe",
+      "size_bytes": 18576,
+      "git_blob": "18c6517f1ab3642054a8b2387e979cf904197e89"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/docs/design/framework.md.txt",
+      "sha256": "1b8d315c2d84d95b5dd1b65c009547bf026b2f24f085e7708b9ac4774c33ec20",
+      "size_bytes": 38565,
+      "git_blob": "e6fda4cf703c637d48a3e970ddb86919e65a50c9"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/docs/extensions/developer-guide.md.txt",
+      "sha256": "b64fc81f8ceaaa6318b15e3fbc44df7f1ab63fae0b8f988402e1981ac7158294",
+      "size_bytes": 13741,
+      "git_blob": "e912dc28f22600211ca0e27accb1f807a0f6034e"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/docs/manifest.json.txt",
+      "sha256": "41765197facd0fb852b79a7cb227294441240cd5f5fb562ac637462704cbbdb4",
+      "size_bytes": 535506,
+      "git_blob": "8ad80bbff19c597762ee99fac3cbbccfe4441358"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/docs/manifest.sha256.txt",
+      "sha256": "60184265ce00a2d92212118519829003ace42db5d2128fe5552ab9e2309619b3",
+      "size_bytes": 80,
+      "git_blob": "287aab24039b72784ce9433c6be35280b11bbfea"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/docs/runtime/operations.md.txt",
+      "sha256": "ae34f3c59b92a45c80ae68ae3ab80a17f52d7b81bf8895f721aba0224a275c79",
+      "size_bytes": 37819,
+      "git_blob": "e7d0907d0feabae1c01979e0bc5239f092ba2b63"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/docs/ui/STATUS.md.txt",
+      "sha256": "153bc8e1525133773ec084eb29eba376fbbd701065a25a5a6805f417be28e266",
+      "size_bytes": 3257,
+      "git_blob": "13a13931d9429f0980daef2f874f6e9919689183"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/docs/work-packages/Codex-WP-IPC-CONFORMANCE-FIX-14.md.txt",
+      "sha256": "95e99e9d2174543e27bb75975657cf497f0518711b0d4838681e419ac0347f1d",
+      "size_bytes": 2655,
+      "git_blob": "67b661dd2e83e9ea16953cb626a43bd725955ded"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md.txt",
+      "sha256": "0a120009d22131876f0248389c7b8125f3e1893e7076de08b9b5c9b7669c37d2",
+      "size_bytes": 12345,
+      "git_blob": "e3fac169759ffa351fd0dd2747648caa5e23b5f4"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/archive/pre-audit-reconciliation-publication-01/snapshots.json",
+      "sha256": "ae2a26459cf21dd173968f6fbc890179fe66e2e0cb726e717284c2f3b3a49777",
+      "size_bytes": 4822,
+      "git_blob": "6669c3c478b7db383a3108f27d564ed382a82d21"
     },
     {
       "path": "docs/archive/pre-conformance-audit-01/README.md",
@@ -1194,15 +1348,15 @@
     },
     {
       "path": "docs/design/controlled-extensions.md",
-      "version": "FIX-14",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
       "storage_scope": "public_repository",
-      "sha256": "a821438a14163d59c841637d5cd6acfc3dc8db6c81d72b018c5f42c71e62fee3",
-      "size_bytes": 7089,
-      "git_blob": "46f15a4fbe5e5fab5c41af3b28d7648b597c73f7",
-      "previous_git_blob": "e119e20d6d9f187d7d48e07269bfa0d101e26e25"
+      "sha256": "e83fca3dd56963327d2b7c3bc27df6998548050678e1840ff6273a8c21502fb8",
+      "size_bytes": 7102,
+      "git_blob": "4a1ac86b8cc7c3db36028ec915794829b59ce1d8",
+      "previous_git_blob": "46f15a4fbe5e5fab5c41af3b28d7648b597c73f7"
     },
     {
       "path": "docs/design/framework-checks.json",
@@ -1217,39 +1371,39 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "53c91f230d07a94f80bfc3b0aff7303fa51e58897a9eee82911eda5852c91bfe",
-      "size_bytes": 18576,
-      "git_blob": "18c6517f1ab3642054a8b2387e979cf904197e89",
-      "version": "FIX-14",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "sha256": "8583548664749b4fc5839f5b8a98a26758ab9e49ad4689175bc0b9e1cacb913a",
+      "size_bytes": 18083,
+      "git_blob": "67a2e1007180651a6112c3cd2b58e3f0ad731174",
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
       "storage_scope": "public_repository",
-      "previous_git_blob": "9d8e1938c88116c7198543efe877e628327d6c30"
+      "previous_git_blob": "18c6517f1ab3642054a8b2387e979cf904197e89"
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "1b8d315c2d84d95b5dd1b65c009547bf026b2f24f085e7708b9ac4774c33ec20",
-      "size_bytes": 38565,
-      "git_blob": "e6fda4cf703c637d48a3e970ddb86919e65a50c9",
-      "version": "FIX-14",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "sha256": "43e5195b247a535ed4770d2ac2dbe13be41862a6f312473d4524707112670c4c",
+      "size_bytes": 38072,
+      "git_blob": "42e97b84667b8a49f951bf898faac702dded49f0",
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
       "storage_scope": "public_repository",
-      "previous_git_blob": "d4b51cebb2e0e4e605eeeb006df917f189864009"
+      "previous_git_blob": "e6fda4cf703c637d48a3e970ddb86919e65a50c9"
     },
     {
       "path": "docs/extensions/developer-guide.md",
-      "version": "FIX-14",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
       "storage_scope": "public_repository",
-      "sha256": "b64fc81f8ceaaa6318b15e3fbc44df7f1ab63fae0b8f988402e1981ac7158294",
-      "size_bytes": 13741,
-      "git_blob": "e912dc28f22600211ca0e27accb1f807a0f6034e",
-      "previous_git_blob": "37efd0926ac8791f8bfc700324bcbe9ced026bdb",
+      "sha256": "cfe6c720a6b84df0fc2c4abfec4c20d6b2596a91d4eb03e66a0b581cbb8903ca",
+      "size_bytes": 13754,
+      "git_blob": "1a4d6b3208857f3b1c917268ec7fcc6b3e1a9e34",
+      "previous_git_blob": "e912dc28f22600211ca0e27accb1f807a0f6034e",
       "prior_closure13_git_blob": "920e1ac245b3de720f3607001f510dae0c0a9980"
     },
     {
@@ -1308,6 +1462,128 @@
       "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
       "storage_scope": "public_repository",
       "previous_git_blob": "977044d2379c55fb00fbf72f73f584013375a53a"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+      "sha256": "ad4bb836d42894f435f42ef48955ce9dfad3556bacfe31a3f6432613c60377a2",
+      "size_bytes": 24726,
+      "git_blob": "f35b86232f66aa0348ade62e987923d64ebf18ce",
+      "previous_git_blob": "321446cbf5bd55606ad502d12b09c0b8a3630f2c"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/audit-reconciliation-01/README.md",
+      "sha256": "26d89320a94fe0c7fb979288cf2245aff0548e639c1dcb01cdec5e8509491c62",
+      "size_bytes": 2551,
+      "git_blob": "13d7aed3e245e7c492f9009dc0b023830d56e77a"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/audit-reconciliation-01/WP-IPC-AUDIT-RECONCILIATION-01_8cabf06d_20261017.pdf",
+      "sha256": "7586e7c58f37266eea4a27af453a7a48fad86d14d7f225ba2824755ab457d441",
+      "size_bytes": 309806,
+      "git_blob": "9c1ecc0e061fa7c3f997754246c2f65fdc5cb0a4"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/audit-reconciliation-01/current-findings.json",
+      "sha256": "af55f0eb3db637511954272f9d20ea53541a41e46b8208554f363921936599e7",
+      "size_bytes": 30621,
+      "git_blob": "952519c5fa7692a23904f8316f5224f19168ac16"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/audit-reconciliation-01/historical-inputs.json",
+      "sha256": "4d9e9350f0cd6e0cd6efcc102132fe9f70f09840defa688e632ecb4653ec9ce8",
+      "size_bytes": 2212,
+      "git_blob": "137ab2d83b0f832563ad470523893455581d08db"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+      "sha256": "9812e5163604619fbe266f3d6dd2a765919faf17838cfb3969283a94cf1bb98a",
+      "size_bytes": 45340,
+      "git_blob": "36dc2050dfad50d462b851b9927af10932f7100d"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/audit-reconciliation-01/inputs/proposed-Codex-FIX14-v1.1-8cabf06d.original.md.txt",
+      "sha256": "d4a559dbcc12556aee739887800cc57c05b4c556055c5041670303dae103ce78",
+      "size_bytes": 3801,
+      "git_blob": "5f17905548ade254dbbfc6f38671cf82f926dd4b"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/audit-reconciliation-01/inputs/proposed-FIX14-v1.1-8cabf06d.original.md.txt",
+      "sha256": "efaf6a489af0b2c90e9567f44529e6b731f34bf7486199645eae5c1bd3f6cd1c",
+      "size_bytes": 35812,
+      "git_blob": "31db27f00dfff4cc0cbad10d0d642e837eaca780"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/audit-reconciliation-01/inputs/reconciliation-report-8cabf06d.original.md.txt",
+      "sha256": "df63cc965423fc49f96f9f06a07257c3ddb7e54edfcbb45268ab20d08485873a",
+      "size_bytes": 42063,
+      "git_blob": "de8322eed98be5edf13aab78110bb0a4b53ace0e"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/audit-reconciliation-01/inputs/ui-findings-8cabf06d.original.json",
+      "sha256": "d8fcd9aaab5dad44532b734b5ae062ec2c41cb1e221bc919528cd0c95066064b",
+      "size_bytes": 25751,
+      "git_blob": "d4cb90ad32bcbe8650deacec5c7dc84aebe727b6"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "historical_byte_preserved",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/audit-reconciliation-01/inputs/ui-report-8cabf06d.original.md.txt",
+      "sha256": "16977886cb69cbc9b0a4ccf28ef5236bae3c7b3a92403f56e4d8a4045158c347",
+      "size_bytes": 80532,
+      "git_blob": "457cb26967e2c8811767bd66e14977050068c5e6"
     },
     {
       "path": "docs/reviews/issues.json",
@@ -2836,6 +3112,96 @@
       "storage_scope": "public_repository"
     },
     {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/audit-reconciliation-publication-01/README.md",
+      "sha256": "e982b9c7f04e70b22df5528050a6c228c0ecb9e395329c40d154a3f3b37984c8",
+      "size_bytes": 2280,
+      "git_blob": "a3e72a82c9b49e83f94e8eb888195c93697e167b"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/audit-reconciliation-publication-01/after-t3-readonly-review.json",
+      "sha256": "22c6cc38367a57cdf109741aaa9c9fde0b20c7e2bbe4579eb8efef9d5e97e7c4",
+      "size_bytes": 1231,
+      "git_blob": "c4e2f4004a04d35d1ded6c0443a495a3280241c9"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/audit-reconciliation-publication-01/archive-before.json",
+      "sha256": "087a102185559d14c9d42c705c54bea455ed72f1370d1e537dfcf4d231dbe472",
+      "size_bytes": 59300,
+      "git_blob": "1c58ade111b0fe2b8046cbb1c4e1cb3a8a5cb442"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/audit-reconciliation-publication-01/archive-comparison.json",
+      "sha256": "c04b9f545a87f4281b84af279e8060f9a40b9bddf102dfee09f52eb9ff1e1694",
+      "size_bytes": 520,
+      "git_blob": "0e9e7c41abc5bef3583c0fe6748aa6918eb0736b",
+      "previous_git_blob": "b792b9a49f83605676c48d90098eb558639888cf"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/audit-reconciliation-publication-01/publication-checks.json",
+      "sha256": "e827c4a14e097c7826652d74b276c562c8d1bc3fc044cd1c666fd158512a3652",
+      "size_bytes": 1247,
+      "git_blob": "d841962814a33899a6dcd9f60bd3574f7527af9b",
+      "previous_git_blob": "c6c4da1bf723dd650ea6e2f7f2d30c416049dcc7"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/audit-reconciliation-publication-01/record-identity-review.json",
+      "sha256": "2c22160d3b03c2c0f61440dd880b88ac142d4da8beb2fc1f83260c6eb769556d",
+      "size_bytes": 7594,
+      "git_blob": "d36ef7e16fed1c797cf91c4493c01a7409462f47"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/audit-reconciliation-publication-01/remote-context-before.json",
+      "sha256": "4f48e4adaff18944258de996c8598017f313b7be74a4369884bb365574af0508",
+      "size_bytes": 1073,
+      "git_blob": "be2fcc0ef187d0248e2fe86f5a2922fbe19d72bf"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/audit-reconciliation-publication-01/source-input-review.json",
+      "sha256": "90240e44c0a7f6dded3b6cdc937aa138aa14aa4f768aaf816c57a7bd3d4aaf94",
+      "size_bytes": 32182,
+      "git_blob": "ce985beb6faaebfd300812810cadf6f54226fa47"
+    },
+    {
       "path": "docs/runtime/evidence/conformance-fix-14/README.md",
       "version": "FIX-14",
       "status": "current_reference_implementation_or_evidence",
@@ -3628,50 +3994,6 @@
       "git_blob": "3d48183008fd781f94cc6955dcad43f21bfd26be"
     },
     {
-      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health-v2/HealthRepro.csproj",
-      "version": "FIX-14",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
-      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
-      "storage_scope": "public_repository",
-      "sha256": "b768c63b848c5880bedcfe08d4d3a3b148d2150bed4bad93b83f5e74b8637ea2",
-      "size_bytes": 318,
-      "git_blob": "68de93a4e3b326e11f4a115d3dba01561b07cc3b"
-    },
-    {
-      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health-v2/Program.cs",
-      "version": "FIX-14",
-      "status": "new_evidence_or_current_reference_implementation",
-      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
-      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
-      "storage_scope": "public_repository",
-      "sha256": "de838df5eac312fc16650133a7c1e6bdde6af8ac028143bafbdc81cab4fcc6d8",
-      "size_bytes": 8683,
-      "git_blob": "5ab0855cd24b1cd3a5409e183fbcd3799a939217"
-    },
-    {
-      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health-v2/adaptation.json",
-      "version": "FIX-14",
-      "status": "new_evidence_or_current_reference_implementation",
-      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
-      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
-      "storage_scope": "public_repository",
-      "sha256": "fe6962f3aabeb4946186aeee3bfce27998ea49f5e2fc77a081dc8294444d9f8d",
-      "size_bytes": 618,
-      "git_blob": "74c562b7a69abdc3cc937a0f2b56151f61769c52"
-    },
-    {
-      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health-v2/packages.lock.json",
-      "version": "FIX-14",
-      "status": "new_evidence_or_current_reference_implementation",
-      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
-      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
-      "storage_scope": "public_repository",
-      "sha256": "505429c61887c5e09174ab8a3171bd7f99b057a027f748bbbd542648e3b4c6f1",
-      "size_bytes": 16436,
-      "git_blob": "3d48183008fd781f94cc6955dcad43f21bfd26be"
-    },
-    {
       "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health/HealthRepro.csproj",
       "version": "FIX-14",
       "status": "current_reference_implementation_or_evidence",
@@ -3706,6 +4028,50 @@
     },
     {
       "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health/packages.lock.json",
+      "version": "FIX-14",
+      "status": "new_evidence_or_current_reference_implementation",
+      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
+      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
+      "storage_scope": "public_repository",
+      "sha256": "505429c61887c5e09174ab8a3171bd7f99b057a027f748bbbd542648e3b4c6f1",
+      "size_bytes": 16436,
+      "git_blob": "3d48183008fd781f94cc6955dcad43f21bfd26be"
+    },
+    {
+      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health-v2/HealthRepro.csproj",
+      "version": "FIX-14",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
+      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
+      "storage_scope": "public_repository",
+      "sha256": "b768c63b848c5880bedcfe08d4d3a3b148d2150bed4bad93b83f5e74b8637ea2",
+      "size_bytes": 318,
+      "git_blob": "68de93a4e3b326e11f4a115d3dba01561b07cc3b"
+    },
+    {
+      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health-v2/Program.cs",
+      "version": "FIX-14",
+      "status": "new_evidence_or_current_reference_implementation",
+      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
+      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
+      "storage_scope": "public_repository",
+      "sha256": "de838df5eac312fc16650133a7c1e6bdde6af8ac028143bafbdc81cab4fcc6d8",
+      "size_bytes": 8683,
+      "git_blob": "5ab0855cd24b1cd3a5409e183fbcd3799a939217"
+    },
+    {
+      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health-v2/adaptation.json",
+      "version": "FIX-14",
+      "status": "new_evidence_or_current_reference_implementation",
+      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
+      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
+      "storage_scope": "public_repository",
+      "sha256": "fe6962f3aabeb4946186aeee3bfce27998ea49f5e2fc77a081dc8294444d9f8d",
+      "size_bytes": 618,
+      "git_blob": "74c562b7a69abdc3cc937a0f2b56151f61769c52"
+    },
+    {
+      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health-v2/packages.lock.json",
       "version": "FIX-14",
       "status": "new_evidence_or_current_reference_implementation",
       "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
@@ -5223,17 +5589,6 @@
       "storage_scope": "public_repository"
     },
     {
-      "path": "docs/runtime/evidence/project-conformance-audit-01/publication-provenance.json",
-      "sha256": "b3ac95b1b82d9227292e02ab6e55b69e7a384582d2a813710a0a658c6de2838c",
-      "size_bytes": 228989,
-      "git_blob": "f7e155edb3502536eac32fb7b6bb9165fdb996c5",
-      "version": "project-conformance-audit-01",
-      "status": "independent_audit_or_synthetic_evidence",
-      "purpose": "User-authorized publication of fixed-SHA independent audit and next repair work package; no business source changes",
-      "source": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01 / 2026-10-17 publication request",
-      "storage_scope": "public_repository"
-    },
-    {
       "path": "docs/runtime/evidence/project-conformance-audit-01/publication/checks.json",
       "sha256": "85a66b5c0156e8388b23dc01e7e0b888e29d019c2393199c0370afb22f926062",
       "size_bytes": 1532,
@@ -5271,6 +5626,17 @@
       "sha256": "bb5e4e9f308bdff44cfb07fc124859c0e998e615886048f224d5a6ffef827218",
       "size_bytes": 56823,
       "git_blob": "be008480fa5d3b045f0d90c28cb8113e8c89564b",
+      "version": "project-conformance-audit-01",
+      "status": "independent_audit_or_synthetic_evidence",
+      "purpose": "User-authorized publication of fixed-SHA independent audit and next repair work package; no business source changes",
+      "source": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01 / 2026-10-17 publication request",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/project-conformance-audit-01/publication-provenance.json",
+      "sha256": "b3ac95b1b82d9227292e02ab6e55b69e7a384582d2a813710a0a658c6de2838c",
+      "size_bytes": 228989,
+      "git_blob": "f7e155edb3502536eac32fb7b6bb9165fdb996c5",
       "version": "project-conformance-audit-01",
       "status": "independent_audit_or_synthetic_evidence",
       "purpose": "User-authorized publication of fixed-SHA independent audit and next repair work package; no business source changes",
@@ -5810,15 +6176,15 @@
     },
     {
       "path": "docs/runtime/operations.md",
-      "sha256": "ae34f3c59b92a45c80ae68ae3ab80a17f52d7b81bf8895f721aba0224a275c79",
-      "size_bytes": 37819,
-      "git_blob": "e7d0907d0feabae1c01979e0bc5239f092ba2b63",
-      "version": "FIX-14",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "sha256": "0dd1c15d671842b4986df669ee42bd058c2d6cfd728254db90aeef906a6e4231",
+      "size_bytes": 38261,
+      "git_blob": "fc4d59095ae63b891a93e1a2ea40b63f59c8d458",
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
       "storage_scope": "public_repository",
-      "previous_git_blob": "f13839f03789f2963b18d72f95eb76f9a68f9952",
+      "previous_git_blob": "e7d0907d0feabae1c01979e0bc5239f092ba2b63",
       "prior_closure13_git_blob": "3f36a26f2e70cd3c4a91c4efb498c0954919bbd3"
     },
     {
@@ -5889,17 +6255,6 @@
       "storage_scope": "public_repository"
     },
     {
-      "path": "docs/runtime/validation-scenarios-09.md",
-      "sha256": "2959c8c46c59370fda09f18f1bf981c56261415d7f3b44ecee57aac56cc88b8c",
-      "size_bytes": 9571,
-      "git_blob": "379943809dd4fd797f1735c53d075557e890d564",
-      "version": "REVIEW-FOLLOWUP-11",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
-      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
-    },
-    {
       "path": "docs/runtime/validation/closure-13-windows-scenarios.md",
       "sha256": "5986ed1c64c77084f58c7277e0647c5f634442f4d67d3fac6e0edfc65f70248c",
       "size_bytes": 1458,
@@ -5932,6 +6287,17 @@
       "sha256": "92b7d729bcc54b05bdf2d87c285d985810741aa7204c9f15b21e43c6dd3337c1",
       "size_bytes": 1595,
       "git_blob": "028c86d72e85509fd160b96dbc41910737ea73e4"
+    },
+    {
+      "path": "docs/runtime/validation-scenarios-09.md",
+      "sha256": "2959c8c46c59370fda09f18f1bf981c56261415d7f3b44ecee57aac56cc88b8c",
+      "size_bytes": 9571,
+      "git_blob": "379943809dd4fd797f1735c53d075557e890d564",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/runtime/windows-06.md",
@@ -6004,19 +6370,19 @@
     },
     {
       "path": "docs/ui/STATUS.md",
-      "git_blob": "13a13931d9429f0980daef2f874f6e9919689183",
-      "sha256": "153bc8e1525133773ec084eb29eba376fbbd701065a25a5a6805f417be28e266",
-      "size_bytes": 3257,
-      "version": "FIX-14",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "complete visual/source design baseline for Codex; not production acceptance",
-      "source": "user-requested final UI publication / SS-UI-VIS-001 v1.1",
+      "git_blob": "5b1df7a2d237d81fd1447edcf1ee079e3e0426a7",
+      "sha256": "851a47a19bc990d8dfc4a46023200b518b93be77abdf5ce4b4db6722832cc266",
+      "size_bytes": 3276,
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
       "storage_scope": "public_repository",
       "collected": true,
       "hash_checked": true,
       "authorization_status": "user_explicit_final_generated_ui_upload_request",
       "remote_inclusion": "verify_final_main_after_merge",
-      "previous_git_blob": "4b546db07a91dff9e2fa8728a2e8fc0ad1503e52"
+      "previous_git_blob": "13a13931d9429f0980daef2f874f6e9919689183"
     },
     {
       "path": "docs/ui/arch-extension-closure-13-mapping.md",
@@ -6841,14 +7207,15 @@
     },
     {
       "path": "docs/work-packages/Codex-WP-IPC-CONFORMANCE-FIX-14.md",
-      "sha256": "95e99e9d2174543e27bb75975657cf497f0518711b0d4838681e419ac0347f1d",
-      "size_bytes": 2655,
-      "git_blob": "67b661dd2e83e9ea16953cb626a43bd725955ded",
-      "version": "project-conformance-audit-01",
-      "status": "planned_implementation_handoff",
-      "purpose": "User-authorized publication of fixed-SHA independent audit and next repair work package; no business source changes",
-      "source": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01 / 2026-10-17 publication request",
-      "storage_scope": "public_repository"
+      "sha256": "33c879ba342c85210c9da99b0c6b0d9885cbebf43df3f222eb6654d8c81f2ecb",
+      "size_bytes": 653,
+      "git_blob": "dcfec50997f54dee8d50f15318d3bc1a1982e8ca",
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "67b661dd2e83e9ea16953cb626a43bd725955ded"
     },
     {
       "path": "docs/work-packages/Codex-WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
@@ -6860,6 +7227,17 @@
       "sha256": "d41e3d617bcffe0283fe80be50b8f56d56c32952c5dd15c32b0542bb039c9113",
       "size_bytes": 5146,
       "git_blob": "db2032ecfa65f602890e927fd19b3c56c2da94a0"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/work-packages/Codex-WP-IPC-OPERATION-CLOSURE-15.md",
+      "sha256": "7a97f193f7b5f3f98081585bda49547e2f6a92cb66d81684a522c01811a0310c",
+      "size_bytes": 2482,
+      "git_blob": "b18904ae31ddfcec6f7885e2e7b811ed099a0072"
     },
     {
       "path": "docs/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md",
@@ -6896,14 +7274,15 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
-      "sha256": "0a120009d22131876f0248389c7b8125f3e1893e7076de08b9b5c9b7669c37d2",
-      "size_bytes": 12345,
-      "git_blob": "e3fac169759ffa351fd0dd2747648caa5e23b5f4",
-      "version": "FIX-14",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "User-authorized publication of fixed-SHA independent audit and next repair work package; no business source changes",
-      "source": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01 / 2026-10-17 publication request",
-      "storage_scope": "public_repository"
+      "sha256": "35637ef91e55b3f558e2fb87d566732966cdabc027d0e3ce95c0f56f69d815f6",
+      "size_bytes": 12506,
+      "git_blob": "507b942e6d876a69bffc38b60504158ceb63ba28",
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "e3fac169759ffa351fd0dd2747648caa5e23b5f4"
     },
     {
       "path": "docs/work-packages/WP-IPC-DESIGN-BASELINE-01.md",
@@ -6962,6 +7341,17 @@
       "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
       "storage_scope": "public_repository",
       "previous_git_blob": "d31afb0d705094aad21a59041da4e8b64a4bb6a1"
+    },
+    {
+      "version": "audit-reconciliation-publication-20261017",
+      "status": "current_audit_or_execution_document",
+      "purpose": "Authorized audit PDF, source reconciliation, current entry cleanup, complete next work package and evidence",
+      "source": "User explicit main publication request; public code and synthetic review; no business code or adopted design change",
+      "storage_scope": "public_repository",
+      "path": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "sha256": "40cd43417b37e3becaa8b7e690a6b914249ab8ad5c65e83367c0a02d017b4aff",
+      "size_bytes": 15761,
+      "git_blob": "bc208505172d8b79941137d04b272f3362e3f233"
     },
     {
       "path": "docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md",
@@ -8293,127 +8683,6 @@
       "previous_git_blob": "e4e69a8b8b50a323af3dac0bbc78c0519b49f05d"
     },
     {
-      "path": "src/Ipc.Supply.Contracts/ConfigurationActivation.cs",
-      "version": "FIX-14",
-      "status": "new_evidence_or_current_reference_implementation",
-      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
-      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
-      "storage_scope": "public_repository",
-      "sha256": "79bbaef093d88af591c23b8be8e4edc680f6ab60bc27b2872d39a2cc95ae74ff",
-      "size_bytes": 1206,
-      "git_blob": "9ab20d098265e72d44ea4b074f789425757475d6"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/ContractRegistration.cs",
-      "sha256": "9adad125d189a600144e705437126b92c3ed32e237abe5e1b613f2054ac31c1c",
-      "size_bytes": 206,
-      "git_blob": "020facf862ece4567c2b395f460f83b3f1a761a4",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/HistoryQueries.cs",
-      "sha256": "67615e10f50d880b621c6fc7afb50cf2be20e1e1567b9c97e2b1102c9dc99648",
-      "size_bytes": 1781,
-      "git_blob": "aeb4bebd6b86633af2cd5ef2be5b160134102171",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/IntegrationExtensions.cs",
-      "sha256": "a261ced7c4d54cec68fdf80225ccb0884d418ad16c2c3a623d526a9aea264e41",
-      "size_bytes": 2528,
-      "git_blob": "ad24bcc0cfe3ba0e4dda2d96aae41629cba6979e",
-      "version": "FIX-14",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj",
-      "sha256": "d019bbfecee9662eb5400f49538f46fa662a672ca77a3cec1d1315e145b7a445",
-      "size_bytes": 132,
-      "git_blob": "9cf14155f6ff49b8bb6d0ad2ad07881be8719102",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/Model.cs",
-      "sha256": "2f714e3e2662d966db86362afcd912a3732b4b6daa5f0ead728c987f154f0ecb",
-      "size_bytes": 8930,
-      "git_blob": "4a5868a57290af6ec8a06d4c9958e69403c9dbd1",
-      "version": "FIX-14",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/RequestContract.cs",
-      "sha256": "ed0290d9ab77cf3c0a9aa91b031bab7c144a699f72b515527e74f9f7171f3294",
-      "size_bytes": 697,
-      "git_blob": "9ae57aab2f4b387c807dd2d72c8e8eb105080f4c",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/StationRuntime.cs",
-      "sha256": "db8abbe34516a367bec999bf706b56d13abd32521e2f6aa9e5aab0832e6bc67b",
-      "size_bytes": 2021,
-      "git_blob": "b5cb710ebb737130b0a4434d085fe7f30d82be6e",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/packages.lock.json",
-      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
-      "size_bytes": 13984,
-      "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/packages.supply.lock.json",
-      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
-      "size_bytes": 13984,
-      "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/packages.win-x64.lock.json",
-      "sha256": "086db76ce2df968e62000c68e2c4281ec9f6e58ffb094095a1821f08e4f9b730",
-      "size_bytes": 14238,
-      "git_blob": "0739278a2f642e32d4b45f1939fa1db8778a76be",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
       "path": "src/Ipc.Supply/ContractForwarders.cs",
       "sha256": "5c295e64f710aee45aeaa19ed3742a3ea5692104db9c088724f5aa6df0deec6f",
       "size_bytes": 2749,
@@ -8597,6 +8866,127 @@
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
       "previous_git_blob": "1794e142aa25dc23bf063f44490287b1986bffee"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/ConfigurationActivation.cs",
+      "version": "FIX-14",
+      "status": "new_evidence_or_current_reference_implementation",
+      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
+      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
+      "storage_scope": "public_repository",
+      "sha256": "79bbaef093d88af591c23b8be8e4edc680f6ab60bc27b2872d39a2cc95ae74ff",
+      "size_bytes": 1206,
+      "git_blob": "9ab20d098265e72d44ea4b074f789425757475d6"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/ContractRegistration.cs",
+      "sha256": "9adad125d189a600144e705437126b92c3ed32e237abe5e1b613f2054ac31c1c",
+      "size_bytes": 206,
+      "git_blob": "020facf862ece4567c2b395f460f83b3f1a761a4",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/HistoryQueries.cs",
+      "sha256": "67615e10f50d880b621c6fc7afb50cf2be20e1e1567b9c97e2b1102c9dc99648",
+      "size_bytes": 1781,
+      "git_blob": "aeb4bebd6b86633af2cd5ef2be5b160134102171",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/IntegrationExtensions.cs",
+      "sha256": "a261ced7c4d54cec68fdf80225ccb0884d418ad16c2c3a623d526a9aea264e41",
+      "size_bytes": 2528,
+      "git_blob": "ad24bcc0cfe3ba0e4dda2d96aae41629cba6979e",
+      "version": "FIX-14",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj",
+      "sha256": "d019bbfecee9662eb5400f49538f46fa662a672ca77a3cec1d1315e145b7a445",
+      "size_bytes": 132,
+      "git_blob": "9cf14155f6ff49b8bb6d0ad2ad07881be8719102",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/Model.cs",
+      "sha256": "2f714e3e2662d966db86362afcd912a3732b4b6daa5f0ead728c987f154f0ecb",
+      "size_bytes": 8930,
+      "git_blob": "4a5868a57290af6ec8a06d4c9958e69403c9dbd1",
+      "version": "FIX-14",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/RequestContract.cs",
+      "sha256": "ed0290d9ab77cf3c0a9aa91b031bab7c144a699f72b515527e74f9f7171f3294",
+      "size_bytes": 697,
+      "git_blob": "9ae57aab2f4b387c807dd2d72c8e8eb105080f4c",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/StationRuntime.cs",
+      "sha256": "db8abbe34516a367bec999bf706b56d13abd32521e2f6aa9e5aab0832e6bc67b",
+      "size_bytes": 2021,
+      "git_blob": "b5cb710ebb737130b0a4434d085fe7f30d82be6e",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.lock.json",
+      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
+      "size_bytes": 13984,
+      "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.supply.lock.json",
+      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
+      "size_bytes": 13984,
+      "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.win-x64.lock.json",
+      "sha256": "086db76ce2df968e62000c68e2c4281ec9f6e58ffb094095a1821f08e4f9b730",
+      "size_bytes": 14238,
+      "git_blob": "0739278a2f642e32d4b45f1939fa1db8778a76be",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
     },
     {
       "path": "tests/Ipc.Verification/AlignmentCompositionVerification.cs",
@@ -8971,24 +9361,17 @@
     "implementation_pr_merged": false
   },
   "engineering_versions": {
-    "release": "EXTENSION-WINDOWS-DELIVERY-12",
-    "storage": 3,
-    "minimum_reader": 3,
+    "release": "CONFORMANCE-FIX-14",
+    "storage": 4,
+    "minimum_reader": 4,
     "contract": "SIMULATION-v1",
     "extension_contract": 1,
-    "source_commit": "11f0728e506753dafcdc22fb190c5b268118423d",
-    "source_code_sha256": "ad9a5c5b9c3cab04858b31002c9897887aa1c2bedc9620f7683041c46282ba93",
-    "plugin_source_commit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
-    "binary_built": true,
-    "binary_sha256": {
-      "delivery12-11f0728-core-portable.zip": "98d268bbfee6704e3b503e13fd961427261635445b735398ffb360276160544c",
-      "delivery12-11f0728-barcode-portable.zip": "95a3e3d6a63600a68c3e6ae66067fbd690d842d1cf97e60eb18a12a4b5256293",
-      "delivery12-11f0728-barcode-win-x64.zip": "489563f0bf9b8b854c606b2d3a86b674632d0c6351994b51f28fed856328e50e",
-      "reference.barcode-1.1.0-win-x64.ipcx": "cbdb1c5de231be6b1816b7cb35772682fd39e4029d6a69a806cd86e0572bcfc0",
-      "reference-barcode-source-6507edb.zip": "f466803a1b0e39a445c04c754ddc0683a9e653f7340ebe1f8fba1b92b47331de"
-    },
-    "windows_validation": "NOT_RUN",
-    "note": "Prior 11 engineering versions preserved unchanged under historical_engineering_versions_11."
+    "source_commit": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+    "windows": "DEFERRED_NOT_RUN",
+    "field": "BLOCKED",
+    "production": "NOT_READY",
+    "reference_extension_version": "1.0.2",
+    "meaning": "Current code version; prior candidate bytes unchanged; new document publication is not a new build."
   },
   "ui_design_publication": {
     "version": "SS-UI-VIS-001 v1.1",
@@ -8999,7 +9382,7 @@
     "application_code_changed": false,
     "remote_verification": "read exact main commit and file identities after merge"
   },
-  "next_implementation_work_package": "WP-IPC-WINDOWS-VALIDATION-06",
+  "next_implementation_work_package": "WP-IPC-OPERATION-CLOSURE-15",
   "main_static_review_03": {
     "entry": "docs/reviews/main-static-review-03.md",
     "checks": "docs/reviews/main-static-review-03-checks.json",
@@ -9287,5 +9670,53 @@
     "legacy_consumer_coverage": "UNKNOWN_REFUSES_UNINSTALL",
     "historical_d_rv_unchanged": true,
     "pull_request": "https://github.com/yuan2go/importer-pc/pull/14"
+  },
+  "publication_before_audit_reconciliation_publication_01": {
+    "work_package": "WP-IPC-CONFORMANCE-FIX-14",
+    "branch": "codex/conformance-fix-14",
+    "framework_design_state": "REFERENCE_FIX14_CORE_VERIFIED_WINDOWS_DEFERRED_FIELD_BLOCKED",
+    "previous_manifest": {
+      "commit": "feed6e9ce79449e48c667c17e2671939a86fb588",
+      "path": "docs/manifest.json",
+      "git_blob": "5072d8a7135081d37adabece1b71123b44de2c2e",
+      "meaning": "Exact pre-13 manifest retained under pre-arch-extension-closure-13; all prior reports and acceptance preserved."
+    },
+    "next_implementation_work_package": "WP-IPC-WINDOWS-VALIDATION-06",
+    "engineering_versions": {
+      "release": "EXTENSION-WINDOWS-DELIVERY-12",
+      "storage": 3,
+      "minimum_reader": 3,
+      "contract": "SIMULATION-v1",
+      "extension_contract": 1,
+      "source_commit": "11f0728e506753dafcdc22fb190c5b268118423d",
+      "source_code_sha256": "ad9a5c5b9c3cab04858b31002c9897887aa1c2bedc9620f7683041c46282ba93",
+      "plugin_source_commit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+      "binary_built": true,
+      "binary_sha256": {
+        "delivery12-11f0728-core-portable.zip": "98d268bbfee6704e3b503e13fd961427261635445b735398ffb360276160544c",
+        "delivery12-11f0728-barcode-portable.zip": "95a3e3d6a63600a68c3e6ae66067fbd690d842d1cf97e60eb18a12a4b5256293",
+        "delivery12-11f0728-barcode-win-x64.zip": "489563f0bf9b8b854c606b2d3a86b674632d0c6351994b51f28fed856328e50e",
+        "reference.barcode-1.1.0-win-x64.ipcx": "cbdb1c5de231be6b1816b7cb35772682fd39e4029d6a69a806cd86e0572bcfc0",
+        "reference-barcode-source-6507edb.zip": "f466803a1b0e39a445c04c754ddc0683a9e653f7340ebe1f8fba1b92b47331de"
+      },
+      "windows_validation": "NOT_RUN",
+      "note": "Prior 11 engineering versions preserved unchanged under historical_engineering_versions_11."
+    }
+  },
+  "audit_reconciliation_publication_01": {
+    "reviewed_main": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "historical_pdf_source": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "pdf": "docs/reviews/audit-reconciliation-01/WP-IPC-AUDIT-RECONCILIATION-01_8cabf06d_20261017.pdf",
+    "pdf_sha256": "7586e7c58f37266eea4a27af453a7a48fad86d14d7f225ba2824755ab457d441",
+    "current_review": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "current_findings": "docs/reviews/audit-reconciliation-01/current-findings.json",
+    "next_work_package": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+    "prompt": "docs/work-packages/Codex-WP-IPC-OPERATION-CLOSURE-15.md",
+    "evidence": "docs/runtime/evidence/audit-reconciliation-publication-01/README.md",
+    "source_business_changes": 0,
+    "business_tests_this_publication": "NOT_RUN",
+    "windows": "DEFERRED_NOT_RUN",
+    "site": "BLOCKED",
+    "approval": "User explicitly requested the delivered PDF and current execution documentation on main; no business implementation in this task"
   }
 }

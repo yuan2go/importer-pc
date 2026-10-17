@@ -1,0 +1,30 @@
+{
+  "source_archive": "docs/runtime/evidence/conformance-fix-14/synthetic-databases.zip",
+  "archive_sha256": "bd0ebc3cde2fbb7d2885f521ea5e4e9551a0cfe6cd288f3136bd82cb58dba078",
+  "member": "final-baseline/crash-AfterT3/station.db",
+  "member_sha256": "cc8eed836370ea63f1582fd229406daa28349ec71af30ab68cf39261153b6441",
+  "method": "extracted original into temporary directory; SQLite URI mode=ro and query_only; no application execution",
+  "integrity_check": "ok",
+  "requests": [
+    {
+      "id": "9f091cbc2a0c4927be612af53ddac8b3",
+      "kind": "Context",
+      "status": "Accepted"
+    }
+  ],
+  "acceptance_rows": 0,
+  "accepted_quantity": 0,
+  "conflict_count": 0,
+  "blocks": [
+    {
+      "Code": "ReceiptPersistenceUncertain",
+      "Scope": "request",
+      "Source": "9f091cbc2a0c4927be612af53ddac8b3",
+      "SourceEpoch": "33D69C8525D20A7EDCBFE23D72D3664902705D663D2B95711450246D5C8324E0",
+      "EvidenceVersion": 12,
+      "ClearAuthority": "approved-authoritative-reconciliation",
+      "ExpiresAt": null
+    }
+  ],
+  "evidence_scope": "One Context request survives AfterT3; not Submit acceptance, not proof of continued operation; this confirms conservative blocker, not A-01-R1 combined failure reproduction"
+}

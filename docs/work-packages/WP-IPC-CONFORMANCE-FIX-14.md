@@ -1,10 +1,10 @@
-> 14当前执行结果：核心工程修复及必要验证完成于 `68cdc36`，逐A/R、AC14、精确候选与遗留见 [交付报告](../runtime/conformance-fix-14.md)。Windows仍DEFERRED/NOT_RUN，真实能力BLOCKED；下方PLANNED/NOT_IMPLEMENTED是原任务定义发布时状态，原字节已归档，不改其AC要求。
+> 本包保留原AC要求，不重复执行整包。实际结果见 [14报告](../runtime/conformance-fix-14.md)，关闭范围以 [最新复核](../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md) 为准；下一实施为 [15](WP-IPC-OPERATION-CLOSURE-15.md)。修改前原文见 [归档](../archive/pre-audit-reconciliation-publication-01/README.md)。
 
 # WP-IPC-CONFORMANCE-FIX-14
 
-**项目审查问题修复｜PLANNED / NOT_IMPLEMENTED**
+**原任务定义与已实施结果｜核心分项已验证，关联残余与Windows后验继续**
 
-来源：2026-10-17用户要求将独立审查入库，并形成下一步Codex修复任务；要求工业级完整实现、只做必要测试、代码前详细阅读并清理过期文档。本文件定义后续执行范围，不声称本次文档发布已修代码，也不批准客户未决规则。精简入口：[Codex提示词](Codex-WP-IPC-CONFORMANCE-FIX-14.md)。
+来源：2026-10-17用户要求将独立审查入库，并形成下一步Codex修复任务；要求工业级完整实现、只做必要测试、代码前详细阅读并清理过期文档。本文件保留原AC14-01～07目标；实现冻结68cdc36并已合并main0096。最新复核发现的接收责任与操作残余由15承接，Windows仍NOT_RUN，未决客户规则未批准。精简入口：[Codex提示词](Codex-WP-IPC-CONFORMANCE-FIX-14.md)。
 
 依据：[审查原报告](../reviews/project-conformance-audit-01/report.md)、[问题清单](../reviews/project-conformance-audit-01/issues.json)、[原始证据](../runtime/evidence/project-conformance-audit-01/README.md)和[下一步分析](../reviews/project-conformance-audit-01/next-step-analysis.md)。报告固定源码 `8cabf06d3c6d53ba551b65e58a13db6cdcaba16a`；实施必须从届时最新main核差异，分别记录文档基线、实现源码及验证输入。若材料PR尚未合并，先读取/承接已发布材料，不能把其代码状态算作main实现。
 

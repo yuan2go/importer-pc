@@ -1,0 +1,31 @@
+{
+  "checked_at_utc": "2026-10-17T11:13:43.739Z",
+  "repository": "yuan2go/importer-pc",
+  "main": {
+    "sha": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "protected": false,
+    "protection": {
+      "enabled": false,
+      "required_status_checks": {
+        "enforcement_level": "off",
+        "contexts": [],
+        "checks": []
+      }
+    }
+  },
+  "pr14": {
+    "url": "https://github.com/yuan2go/importer-pc/pull/14",
+    "merged": true,
+    "merged_at": "2026-10-17T10:35:40Z",
+    "merge_commit_sha": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+    "head": "149b050c36b87ac57575bfa149ddd1da0bd46972"
+  },
+  "pr13": {
+    "url": "https://github.com/yuan2go/importer-pc/pull/13",
+    "merged": true,
+    "merged_at": "2026-10-17T10:34:46Z",
+    "merge_commit_sha": "98c3977a08c372bffb9f8a3540b199b5df70e55f"
+  },
+  "authority": "User explicitly requested publishing the delivered PDF and current execution documentation to main; documentation only; ordinary non-forced update with expected base.",
+  "publication_state": "PREPARED_BEFORE_ATOMIC_MAIN_UPDATE"
+}

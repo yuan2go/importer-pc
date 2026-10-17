@@ -1,0 +1,44 @@
+[
+  {
+    "path": "docs/reviews/audit-reconciliation-01/WP-IPC-AUDIT-RECONCILIATION-01_8cabf06d_20261017.pdf",
+    "source": "User-authorized audit/reconciliation deliverable fixed to 8cabf06d; byte-preserved",
+    "sha256": "7586e7c58f37266eea4a27af453a7a48fad86d14d7f225ba2824755ab457d441",
+    "size_bytes": 309806
+  },
+  {
+    "path": "docs/reviews/audit-reconciliation-01/inputs/reconciliation-report-8cabf06d.original.md.txt",
+    "source": "User-authorized audit/reconciliation deliverable fixed to 8cabf06d; byte-preserved",
+    "sha256": "df63cc965423fc49f96f9f06a07257c3ddb7e54edfcbb45268ab20d08485873a",
+    "size_bytes": 42063
+  },
+  {
+    "path": "docs/reviews/audit-reconciliation-01/inputs/findings-8cabf06d.original.json",
+    "source": "User-authorized audit/reconciliation deliverable fixed to 8cabf06d; byte-preserved",
+    "sha256": "9812e5163604619fbe266f3d6dd2a765919faf17838cfb3969283a94cf1bb98a",
+    "size_bytes": 45340
+  },
+  {
+    "path": "docs/reviews/audit-reconciliation-01/inputs/ui-report-8cabf06d.original.md.txt",
+    "source": "User-authorized audit/reconciliation deliverable fixed to 8cabf06d; byte-preserved",
+    "sha256": "16977886cb69cbc9b0a4ccf28ef5236bae3c7b3a92403f56e4d8a4045158c347",
+    "size_bytes": 80532
+  },
+  {
+    "path": "docs/reviews/audit-reconciliation-01/inputs/ui-findings-8cabf06d.original.json",
+    "source": "User-authorized audit/reconciliation deliverable fixed to 8cabf06d; byte-preserved",
+    "sha256": "d8fcd9aaab5dad44532b734b5ae062ec2c41cb1e221bc919528cd0c95066064b",
+    "size_bytes": 25751
+  },
+  {
+    "path": "docs/reviews/audit-reconciliation-01/inputs/proposed-FIX14-v1.1-8cabf06d.original.md.txt",
+    "source": "User-authorized audit/reconciliation deliverable fixed to 8cabf06d; byte-preserved",
+    "sha256": "efaf6a489af0b2c90e9567f44529e6b731f34bf7486199645eae5c1bd3f6cd1c",
+    "size_bytes": 35812
+  },
+  {
+    "path": "docs/reviews/audit-reconciliation-01/inputs/proposed-Codex-FIX14-v1.1-8cabf06d.original.md.txt",
+    "source": "User-authorized audit/reconciliation deliverable fixed to 8cabf06d; byte-preserved",
+    "sha256": "d4a559dbcc12556aee739887800cc57c05b4c556055c5041670303dae103ce78",
+    "size_bytes": 3801
+  }
+]

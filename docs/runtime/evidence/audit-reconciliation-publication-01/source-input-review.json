@@ -1,0 +1,901 @@
+{
+  "base_review_source": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "source_freeze": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+  "checked_main": "0096f3435cc5066a1b50836ef534ec24221a7e6f",
+  "scopes": [
+    "src",
+    "tests",
+    "config",
+    "examples",
+    "scripts",
+    "global.json",
+    "Directory.Build.props",
+    "NuGet.Config",
+    "ImporterPc.slnx",
+    "docs/runtime/operations.md",
+    "docs/extensions/developer-guide.md"
+  ],
+  "base_to_main_changed_paths": [
+    "M\tconfig/compositions.json",
+    "M\tdocs/extensions/developer-guide.md",
+    "M\tdocs/runtime/operations.md",
+    "M\texamples/IntegrationExtension/IntegrationModule.cs",
+    "M\tscripts/package-reference.py",
+    "M\tscripts/provision-extensions.ps1",
+    "M\tscripts/seal.py",
+    "M\tsrc/Ipc.Assembly/SupplyAssembly.cs",
+    "A\tsrc/Ipc.Desktop/ConfigurationDraft.cs",
+    "M\tsrc/Ipc.Desktop/ExtensionsView.xaml",
+    "M\tsrc/Ipc.Desktop/ExtensionsView.xaml.cs",
+    "M\tsrc/Ipc.Desktop/LaneControl.xaml.cs",
+    "M\tsrc/Ipc.Desktop/MainWindow.Extensions.cs",
+    "M\tsrc/Ipc.Desktop/MainWindow.xaml.cs",
+    "A\tsrc/Ipc.Desktop/ScanInputDraft.cs",
+    "M\tsrc/Ipc.Desktop/ViewModels.cs",
+    "A\tsrc/Ipc.Platform/ExtensionConsumers.cs",
+    "M\tsrc/Ipc.Platform/ExtensionStore.cs",
+    "M\tsrc/Ipc.Product/ExtensionManagement.cs",
+    "A\tsrc/Ipc.Product/HeadlessNotifications.cs",
+    "M\tsrc/Ipc.Product/IntegrationRuntime.cs",
+    "M\tsrc/Ipc.Product/ProductRuntime.cs",
+    "M\tsrc/Ipc.Product/Program.cs",
+    "M\tsrc/Ipc.Product/SenderModule.cs",
+    "A\tsrc/Ipc.Supply.Contracts/ConfigurationActivation.cs",
+    "M\tsrc/Ipc.Supply.Contracts/IntegrationExtensions.cs",
+    "M\tsrc/Ipc.Supply.Contracts/Model.cs",
+    "M\tsrc/Ipc.Supply/ExtensionMaintenance.cs",
+    "M\tsrc/Ipc.Supply/HistoryQueries.cs",
+    "A\tsrc/Ipc.Supply/IntegrationHealth.cs",
+    "M\tsrc/Ipc.Supply/Maintenance.cs",
+    "A\tsrc/Ipc.Supply/ResponsePersistence.cs",
+    "M\tsrc/Ipc.Supply/StationApplication.cs",
+    "M\tsrc/Ipc.Supply/Store.cs",
+    "M\ttests/Ipc.Verification/AlignmentDataVerification.cs",
+    "M\ttests/Ipc.Verification/ArchitectureClosureVerification.cs",
+    "A\ttests/Ipc.Verification/ConformanceVerification.cs",
+    "M\ttests/Ipc.Verification/HardeningVerification.cs",
+    "M\ttests/Ipc.Verification/Ipc.Verification.csproj",
+    "M\ttests/Ipc.Verification/Program.cs"
+  ],
+  "source_freeze_to_main_changed_paths": [],
+  "merge_head_to_main_changed_paths": [],
+  "input_count": 167,
+  "inputs": [
+    {
+      "path": "Directory.Build.props",
+      "sha256": "701988993a4f5f3f6b83301e06a2bd2baa86b3e5ccd41eb936d7fc7a59a2bca5",
+      "size_bytes": 345
+    },
+    {
+      "path": "ImporterPc.slnx",
+      "sha256": "2485df13436612a0e052e6da34bf9976259cca81c9c404e46f53767ec4551a7a",
+      "size_bytes": 717
+    },
+    {
+      "path": "NuGet.Config",
+      "sha256": "5956ce561a7bf9ab11ad3bf49fda723e8cfb0cc9999fa32f50cc64348202f510",
+      "size_bytes": 292
+    },
+    {
+      "path": "config/compositions.json",
+      "sha256": "ed9ad3cac23b22851d3508efac94a5e47b578135e046d38511d75e8042281b29",
+      "size_bytes": 4043
+    },
+    {
+      "path": "config/inspection/business.json",
+      "sha256": "7aeb83706db6ee18573b397203ace37b8926785692b703dc5b1b21f8303cf0b4",
+      "size_bytes": 96
+    },
+    {
+      "path": "config/presentation.json",
+      "sha256": "1c99f8e4a95f22f98d2f897e95552a02e0ae275b520f2778de52659824d6a1c2",
+      "size_bytes": 48
+    },
+    {
+      "path": "config/product.reference.json",
+      "sha256": "676394b47abe39e7c990003f1fab096eb024f80fc033c23551ae7931360c855f",
+      "size_bytes": 1482
+    },
+    {
+      "path": "config/replay.jsonl",
+      "sha256": "e8ee63bb8172d46a7b612529741df2bfc259b82af92b996605cdd50069bddf41",
+      "size_bytes": 722
+    },
+    {
+      "path": "config/station.simulation.json",
+      "sha256": "e4eb60b1b7c9eb554b718301edbe86e194a5a698c6a762268c9f1886df44b826",
+      "size_bytes": 670
+    },
+    {
+      "path": "docs/extensions/developer-guide.md",
+      "sha256": "b64fc81f8ceaaa6318b15e3fbc44df7f1ab63fae0b8f988402e1981ac7158294",
+      "size_bytes": 13741
+    },
+    {
+      "path": "docs/runtime/operations.md",
+      "sha256": "ae34f3c59b92a45c80ae68ae3ab80a17f52d7b81bf8895f721aba0224a275c79",
+      "size_bytes": 37819
+    },
+    {
+      "path": "examples/BarcodeExtension/BarcodeExtension.cs",
+      "sha256": "2164f02eda938d1c66a96b4f5550c30cadf87633cd4974a495d9562d1b61bb64",
+      "size_bytes": 4323
+    },
+    {
+      "path": "examples/BarcodeExtension/BarcodeExtension.csproj",
+      "sha256": "8f8845e50dfa256e7dc714b7f5504ba7d7dc7e43fea6a0b8ea2d48333e7532b0",
+      "size_bytes": 598
+    },
+    {
+      "path": "examples/BarcodeExtension/packages.lock.json",
+      "sha256": "a29c6aa8cfb81874ff8bb78dc369d7416f28c9b8cc47e99592bfc019b20c41eb",
+      "size_bytes": 61
+    },
+    {
+      "path": "examples/IntegrationExtension/IntegrationExtension.csproj",
+      "sha256": "aed488373e423782578fdd2f74e184f8a68e42778c6a01e338d4b2466d89f282",
+      "size_bytes": 762
+    },
+    {
+      "path": "examples/IntegrationExtension/IntegrationModule.cs",
+      "sha256": "5eec9828daddcb43f0f697f0079d007980cc3cdfd557a7f747aaaf7c16481a95",
+      "size_bytes": 6649
+    },
+    {
+      "path": "examples/IntegrationExtension/ReferenceContract.cs",
+      "sha256": "124adfcf9c326ef08cb91696fd673777fb4126d64136a4889e47a680673f5f5e",
+      "size_bytes": 4139
+    },
+    {
+      "path": "examples/IntegrationExtension/packages.lock.json",
+      "sha256": "a29c6aa8cfb81874ff8bb78dc369d7416f28c9b8cc47e99592bfc019b20c41eb",
+      "size_bytes": 61
+    },
+    {
+      "path": "global.json",
+      "sha256": "d1bb820bf074027be921b263729d1fba343d34328f0c4b7484d10162287c059e",
+      "size_bytes": 55
+    },
+    {
+      "path": "scripts/build-extension.py",
+      "sha256": "bc954ec15f5dc47c28087db4bfdce0e5ece175af0d650aae0547cce479c7b890",
+      "size_bytes": 8903
+    },
+    {
+      "path": "scripts/build.sh",
+      "sha256": "42fc84a981f9bfbf2d88526cf574ba5812344c08e82d74ded7ce8147cb8cda6f",
+      "size_bytes": 300
+    },
+    {
+      "path": "scripts/composition.py",
+      "sha256": "a2a6d797686e82ef8690df0dddae6bd1967213acfb1240cb9cdf62106a37864c",
+      "size_bytes": 1604
+    },
+    {
+      "path": "scripts/package-business.py",
+      "sha256": "fc86d4e5622ac73a492c326174a2c198b1f5f11f26322d34bf0c889be97796be",
+      "size_bytes": 3282
+    },
+    {
+      "path": "scripts/package-reference.py",
+      "sha256": "de4919615be8959e54b60e6fc9f76a8745724d3a528b6220a15e98fccda2c910",
+      "size_bytes": 7405
+    },
+    {
+      "path": "scripts/protect-release.ps1",
+      "sha256": "6581af6d65edce4d4bbeefb5be71da5d57596db999eae4699ab4f440c9e36adc",
+      "size_bytes": 3097
+    },
+    {
+      "path": "scripts/provision-extensions.ps1",
+      "sha256": "c0e0243d2d4998a6465a3054b7a9c8cd680bd4d6504d035868d7ef711e814364",
+      "size_bytes": 6981
+    },
+    {
+      "path": "scripts/provision-runtime.ps1",
+      "sha256": "3403c8645e84020ab6503868349b4a14b2feeef13e357cda2fbb9025d7e5572e",
+      "size_bytes": 5353
+    },
+    {
+      "path": "scripts/publish.ps1",
+      "sha256": "cb161e752f0ca39ed5e8e739ad81e3975de81b39d8a9917eb84cc2bcf79d021a",
+      "size_bytes": 1039
+    },
+    {
+      "path": "scripts/seal.py",
+      "sha256": "f4a99d7a096432aa537ea3171303be0dc634f0f1ca6c088144522f67b4c33cf4",
+      "size_bytes": 5789
+    },
+    {
+      "path": "scripts/smoke-extension.py",
+      "sha256": "e31cad1b4364dc162601bf24fdd478160a97b042232a8e737e7fdf01376ed27f",
+      "size_bytes": 9085
+    },
+    {
+      "path": "scripts/smoke.py",
+      "sha256": "0e54773debf588c58bd8a78aa25220e5507261fde77de9ef224068b0f2effffd",
+      "size_bytes": 5143
+    },
+    {
+      "path": "scripts/station.ps1",
+      "sha256": "63adcf56fbfec056982f43d88ebb6fbba1d0d7ab029ab5d9ad859640d22d3d93",
+      "size_bytes": 7790
+    },
+    {
+      "path": "scripts/verify-extension-reproducibility.py",
+      "sha256": "e8eef8a46d4d32ba04a0c4b5682e89a004ef928472fd8031521c1580553442d9",
+      "size_bytes": 3209
+    },
+    {
+      "path": "scripts/windows-reference-validation.ps1",
+      "sha256": "e1866d25588ce3b666bb09129f48d84ba9683b7cf582252b911745434ebb670a",
+      "size_bytes": 7910
+    },
+    {
+      "path": "src/Ipc.Adapters/Ipc.Adapters.csproj",
+      "sha256": "3c04c06f9cd4a91d8565d044ae03e80440aa80b55d410ce640eb690a8bfc11c3",
+      "size_bytes": 128
+    },
+    {
+      "path": "src/Ipc.Adapters/LoopbackIntegration.cs",
+      "sha256": "fe98078fef7b19564764efd2fca7101d0d0855430d18900ac1b4242f486997bb",
+      "size_bytes": 2683
+    },
+    {
+      "path": "src/Ipc.Adapters/ObservationSources.cs",
+      "sha256": "fb88e857ce2f1a684ee740a7bad863ee12b15710bb3f13758cae43b197bbb329",
+      "size_bytes": 5605
+    },
+    {
+      "path": "src/Ipc.Adapters/SimulationRequestContract.cs",
+      "sha256": "bc4a26a90fc7f77d92ab6c0bef1c3ff8b1215a2b42f54d07aa2d1bf87859bff5",
+      "size_bytes": 4094
+    },
+    {
+      "path": "src/Ipc.Adapters/packages.lock.json",
+      "sha256": "d35b463dc9c8b863e1a07db2a24ad1fce839584f9ac2a9ecb18170e6cb9e0c3d",
+      "size_bytes": 16171
+    },
+    {
+      "path": "src/Ipc.Adapters/packages.supply.lock.json",
+      "sha256": "d35b463dc9c8b863e1a07db2a24ad1fce839584f9ac2a9ecb18170e6cb9e0c3d",
+      "size_bytes": 16171
+    },
+    {
+      "path": "src/Ipc.Adapters/packages.win-x64.lock.json",
+      "sha256": "ad93de7360f0b4bf10210e77984505fcb2c45a22bdd2dfb3569c7ce08f9a8f89",
+      "size_bytes": 16646
+    },
+    {
+      "path": "src/Ipc.Assembly/InspectionAssembly.cs",
+      "sha256": "61c593973d0cb8ee3455f1b41b42fbffbabd4776c8bbfb2919ba489f6dfc27ce",
+      "size_bytes": 208
+    },
+    {
+      "path": "src/Ipc.Assembly/Ipc.Assembly.csproj",
+      "sha256": "6926f71fb65b35414e78697aec41680a35cbae894720ce75527350e9a8992e0d",
+      "size_bytes": 955
+    },
+    {
+      "path": "src/Ipc.Assembly/Program.cs",
+      "sha256": "6c44ee2980dbe54d8bac6d0d01f4bdf21bc9cf0696a0b94c2ecc9d944b8a9881",
+      "size_bytes": 1369
+    },
+    {
+      "path": "src/Ipc.Assembly/SupplyAssembly.cs",
+      "sha256": "e2edcb0782f9206cdd9a6ae55bf91fcb417cbcbd516ee281baf1c482945a0cef",
+      "size_bytes": 2713
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.inspection.lock.json",
+      "sha256": "4cce0a30d9d0f48e3677f88f0b0ee87e2219936650b72cabfdad7c14bed5879d",
+      "size_bytes": 14120
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.lock.json",
+      "sha256": "505429c61887c5e09174ab8a3171bd7f99b057a027f748bbbd542648e3b4c6f1",
+      "size_bytes": 16436
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.supply.lock.json",
+      "sha256": "505429c61887c5e09174ab8a3171bd7f99b057a027f748bbbd542648e3b4c6f1",
+      "size_bytes": 16436
+    },
+    {
+      "path": "src/Ipc.Desktop/App.xaml",
+      "sha256": "10537e94a832fb37248a115e09a1bb63de8cc27fdd847a88a1caa3f36c9f7fec",
+      "size_bytes": 547
+    },
+    {
+      "path": "src/Ipc.Desktop/App.xaml.cs",
+      "sha256": "e80f4983d02b64083b167f01a910651288ad7092b422dbee69707a4700a8e8b8",
+      "size_bytes": 2636
+    },
+    {
+      "path": "src/Ipc.Desktop/ConfigurationDraft.cs",
+      "sha256": "0774fecac0f5016727d22e0b7fdc7c819e18232bd2e92f3a97ceb9700af4b13a",
+      "size_bytes": 5049
+    },
+    {
+      "path": "src/Ipc.Desktop/Confirmation.cs",
+      "sha256": "fcb23c27b06def280515c6aa2a38d617a581b0a787514222de4b0d075f6644a3",
+      "size_bytes": 2828
+    },
+    {
+      "path": "src/Ipc.Desktop/ExtensionDraftEditing.cs",
+      "sha256": "5b50ace117aebad653f5c5cd847b996ba1c8ab5af0f342054b53609e23dc613b",
+      "size_bytes": 2349
+    },
+    {
+      "path": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "sha256": "7f32027488701fddd897d82599bf6f73975fd3b0c95820377668e1c3ed2f303b",
+      "size_bytes": 8002
+    },
+    {
+      "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+      "sha256": "8dbe189ecfb2749f68eebe4689ac8bb40c7ad9fdfba71e02f3738d4cc918b346",
+      "size_bytes": 26176
+    },
+    {
+      "path": "src/Ipc.Desktop/HistoryPresentation.cs",
+      "sha256": "10f5b7ffe755517912389dd1632bdf3d930f029fb1931301d7b97d9984983ac8",
+      "size_bytes": 1863
+    },
+    {
+      "path": "src/Ipc.Desktop/Ipc.Desktop.csproj",
+      "sha256": "e83209d86f48317d2a0c9e3e854b01a558d44372a70d592e11429043b637cb78",
+      "size_bytes": 371
+    },
+    {
+      "path": "src/Ipc.Desktop/LaneControl.xaml",
+      "sha256": "9bdd822fddc3fd53f40dcd0a269082a2824f0686e7500b636bbead2d5736093d",
+      "size_bytes": 7178
+    },
+    {
+      "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+      "sha256": "b4481b03206e8122bb70ea26e431cce13147e86c79ce6ed901ca20dc909dcc13",
+      "size_bytes": 4775
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+      "sha256": "d466694ac1abbcc84caa2d06b1f1ace0dd5db560aa6f27dbdf453be07b161588",
+      "size_bytes": 13895
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.Extensions.cs",
+      "sha256": "47d3323970b881e34446437a4faf23840c52cdf2b52b0f82d1bf306a1f6d94db",
+      "size_bytes": 2915
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.HistoryExport.cs",
+      "sha256": "51d1a332b04f3f037f7c117869791cd462853b9f4b5ff2416be7e980adf17639",
+      "size_bytes": 3017
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+      "sha256": "b8f947c47fa542c209b4c51889652669d65ddacc63614a8035c294964783ade9",
+      "size_bytes": 14986
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.xaml",
+      "sha256": "36d49be60d2c4bf7f9c62d9e00042cd21dc15c22079253f7e0e2aed773209a9f",
+      "size_bytes": 28794
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+      "sha256": "7336ca8bef148b62f720f593beffe93d6cf3d27363f7576fdc8c5f2a704fb7e4",
+      "size_bytes": 42726
+    },
+    {
+      "path": "src/Ipc.Desktop/OperatorNotificationPlayer.cs",
+      "sha256": "d85b7581dac18ee1d6ca47cef650ffe0f067503d905e7798a0cae525a5ab89b9",
+      "size_bytes": 1529
+    },
+    {
+      "path": "src/Ipc.Desktop/PresentationPolicy.cs",
+      "sha256": "3e70400e3fa1ada743389663e20f7c5384f91bbb21dbb7a61ba1019b4f02c53d",
+      "size_bytes": 2369
+    },
+    {
+      "path": "src/Ipc.Desktop/ScanInputDraft.cs",
+      "sha256": "bca6d25caee409a309957331eacb92658cefb11476803b10729bcba182dcb044",
+      "size_bytes": 993
+    },
+    {
+      "path": "src/Ipc.Desktop/Themes/Workstation.xaml",
+      "sha256": "e0e4e33966e7f8c90b988911d82c34ca18d32bece7f11ea55d31ad0fe5455108",
+      "size_bytes": 6717
+    },
+    {
+      "path": "src/Ipc.Desktop/ViewModels.cs",
+      "sha256": "6e30c6980062711b518f88281728aff51360977dee084eb0345fa3644e52016e",
+      "size_bytes": 24903
+    },
+    {
+      "path": "src/Ipc.Desktop/ViewRegistry.cs",
+      "sha256": "25eb457e2ca2bec8b5f74bf6449b08f51a68c1baf23c840083ca90cc4a218d6e",
+      "size_bytes": 772
+    },
+    {
+      "path": "src/Ipc.Desktop/app.manifest",
+      "sha256": "24c199ddf62f39ece92a528a433a4d588575ed7245bd328305f91b1247460dc2",
+      "size_bytes": 712
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.lock.json",
+      "sha256": "178f40e2656e201fb125b8dda1dae93dfd024cb85953bc141f7b4f14cc1a51e3",
+      "size_bytes": 16447
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.win-x64.lock.json",
+      "sha256": "e3fd232bb62e0d1e4b3c7bb9e0a0a3033bb3e01397a2bd5e1ffd9d1d5fa67b3b",
+      "size_bytes": 16933
+    },
+    {
+      "path": "src/Ipc.Fixture/Ipc.Fixture.csproj",
+      "sha256": "94ff68933a771b581e88ee2aaa465be74225bea171f936abe625378f7c9a1cb6",
+      "size_bytes": 136
+    },
+    {
+      "path": "src/Ipc.Fixture/Program.cs",
+      "sha256": "adcfe74bc7b9c3c955783f780142f7243a731e950880b003fe09a546989d3de6",
+      "size_bytes": 2273
+    },
+    {
+      "path": "src/Ipc.Fixture/Receiver.cs",
+      "sha256": "00679e654ce186544dd8fdc19b9d787fc54e80a8dc68dd147902d7f4f8916e08",
+      "size_bytes": 8154
+    },
+    {
+      "path": "src/Ipc.Fixture/SyntheticSemanticFixture.cs",
+      "sha256": "2b2a343f961470875e75c1973349cf6acd63e596f2b0c6540507f20e2fc00788",
+      "size_bytes": 1271
+    },
+    {
+      "path": "src/Ipc.Fixture/packages.lock.json",
+      "sha256": "4129e27eba8b5df54a1047bb8f36127df740c0653b6c8f1ef339bdae84805d32",
+      "size_bytes": 2443
+    },
+    {
+      "path": "src/Ipc.Fixture/packages.win-x64.lock.json",
+      "sha256": "eb04ff788852fe884691869a0474d76240badfe83c0fffdd184db90d40a89898",
+      "size_bytes": 2695
+    },
+    {
+      "path": "src/Ipc.Inspection/InspectionRuntime.cs",
+      "sha256": "66fe3c120bb94c63d0c23ebfee7e74f982a17516a587ff3cb27aae0e17afafdc",
+      "size_bytes": 5841
+    },
+    {
+      "path": "src/Ipc.Inspection/Ipc.Inspection.csproj",
+      "sha256": "d019bbfecee9662eb5400f49538f46fa662a672ca77a3cec1d1315e145b7a445",
+      "size_bytes": 132
+    },
+    {
+      "path": "src/Ipc.Inspection/packages.inspection.lock.json",
+      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
+      "size_bytes": 13984
+    },
+    {
+      "path": "src/Ipc.Inspection/packages.lock.json",
+      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
+      "size_bytes": 13984
+    },
+    {
+      "path": "src/Ipc.Platform/AssemblyInfo.cs",
+      "sha256": "8569ff12564fee7e80a680d4047a077a5634c7f6691f7ac54639376875ccdf71",
+      "size_bytes": 90
+    },
+    {
+      "path": "src/Ipc.Platform/BusinessAssembly.cs",
+      "sha256": "4705143d56e378f077fd1cf3c901d43c5ac11666f98dbb13381e49013f8cd584",
+      "size_bytes": 1764
+    },
+    {
+      "path": "src/Ipc.Platform/Configuration.cs",
+      "sha256": "55e6c5694e90e3c92683077e094f790af6f140e31365fc3786a39079b058db14",
+      "size_bytes": 11022
+    },
+    {
+      "path": "src/Ipc.Platform/DeviceCapabilities.cs",
+      "sha256": "64c924590f181986ac202aa04d57831592354be371943e86c630ee33b6a81ed4",
+      "size_bytes": 3119
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionConsumers.cs",
+      "sha256": "903867b17a280b162d5edba658e1fe78eed58e6f516b50d80fbb0ce30cda4777",
+      "size_bytes": 3182
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionContractCompatibility.cs",
+      "sha256": "fac548a3ed244735172efdf7b14fe393e22b38b05b63643fd196d729a6f2fc78",
+      "size_bytes": 717
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionContracts.cs",
+      "sha256": "9fb4de85daec84dcb04941ba016c1106e45f636f5f12be5af07d334202da2738",
+      "size_bytes": 9301
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionLoading.cs",
+      "sha256": "739edd6956af5087bf101546a453ab1d3b08933970cbda5993d716a4600a18d7",
+      "size_bytes": 12056
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionPackages.cs",
+      "sha256": "250b7f4964bb90b0ff81391a5949b1e87d824f649078f1eca8c793cb5d684207",
+      "size_bytes": 18055
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionPublicContracts.cs",
+      "sha256": "e1d24d027e21896e06a7425524f9ddcea35c34b0d57e20ef6708f236fa368935",
+      "size_bytes": 1285
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionStore.cs",
+      "sha256": "b9068fd9625bf2d2ac69c9c2e29b6e73567320b6d785f7faddc1aa91cf0f78eb",
+      "size_bytes": 18392
+    },
+    {
+      "path": "src/Ipc.Platform/Ipc.Platform.csproj",
+      "sha256": "18d0e049a72a18433ada359b808c55e24d8a41615c235fdf06d3d2bbfc9cae27",
+      "size_bytes": 143
+    },
+    {
+      "path": "src/Ipc.Platform/Lifecycle.cs",
+      "sha256": "85ead411c3ff61a53c0d8c593499369d90c3cf85c0f9370809e7862e330753d3",
+      "size_bytes": 7539
+    },
+    {
+      "path": "src/Ipc.Platform/MachineRuntimePolicy.cs",
+      "sha256": "d6166e0fce808229c0fcd682bba64d7eefe150db02f57bb1859acb62750c73a7",
+      "size_bytes": 8364
+    },
+    {
+      "path": "src/Ipc.Platform/ManagedAssemblyPolicy.cs",
+      "sha256": "d9eff0ec55dd6be1194837cdd428469c8f684e084546fbc0e040078c356389a7",
+      "size_bytes": 5885
+    },
+    {
+      "path": "src/Ipc.Platform/PackageUseLease.cs",
+      "sha256": "9ada0ecb14c98e711a89c7eab7efa95ec2d2ccdea1d21f7bf691d242cef6af57",
+      "size_bytes": 1508
+    },
+    {
+      "path": "src/Ipc.Platform/RuntimeJournal.cs",
+      "sha256": "f355463e521b126cc095a14d9ffc48bad91c0f451d461993fb34134fb8049646",
+      "size_bytes": 1875
+    },
+    {
+      "path": "src/Ipc.Platform/StationDispatcher.cs",
+      "sha256": "57b39e66dcd914b086c8055284cde8a0bf375017581f19fd5bf92e685db216cc",
+      "size_bytes": 3462
+    },
+    {
+      "path": "src/Ipc.Platform/packages.inspection.lock.json",
+      "sha256": "e446df2678949a9a53f9a4be1309e99c68e2c260bf8b1d9477bbd93da66240aa",
+      "size_bytes": 13864
+    },
+    {
+      "path": "src/Ipc.Platform/packages.lock.json",
+      "sha256": "e446df2678949a9a53f9a4be1309e99c68e2c260bf8b1d9477bbd93da66240aa",
+      "size_bytes": 13864
+    },
+    {
+      "path": "src/Ipc.Platform/packages.supply.lock.json",
+      "sha256": "e446df2678949a9a53f9a4be1309e99c68e2c260bf8b1d9477bbd93da66240aa",
+      "size_bytes": 13864
+    },
+    {
+      "path": "src/Ipc.Platform/packages.win-x64.lock.json",
+      "sha256": "005945e3dff113e3c6ff4932ecc2337c57fecb706ab07b596c1e1d7dcee3ccf8",
+      "size_bytes": 14118
+    },
+    {
+      "path": "src/Ipc.Product/AssemblyInfo.cs",
+      "sha256": "8569ff12564fee7e80a680d4047a077a5634c7f6691f7ac54639376875ccdf71",
+      "size_bytes": 90
+    },
+    {
+      "path": "src/Ipc.Product/ExtensionManagement.cs",
+      "sha256": "f914433d7b0ce76658a4984815c1a61d319496689abd19287638ca5d3059ad2d",
+      "size_bytes": 6083
+    },
+    {
+      "path": "src/Ipc.Product/HeadlessNotifications.cs",
+      "sha256": "87aba9e72961e612d8e42227d36f9df24b5fc7f4516afdc3253020ad274abb50",
+      "size_bytes": 3088
+    },
+    {
+      "path": "src/Ipc.Product/IntegrationRuntime.cs",
+      "sha256": "74a6f4a8995ceeef85fa78573487e15abe7f2dcf12171fd80472cb7798439f02",
+      "size_bytes": 15743
+    },
+    {
+      "path": "src/Ipc.Product/Ipc.Product.csproj",
+      "sha256": "9788bf061d766145f19fa258c179a9796183d8707badfcd9e5921fba578f6cb5",
+      "size_bytes": 191
+    },
+    {
+      "path": "src/Ipc.Product/ObservationModule.cs",
+      "sha256": "6d1edd6dc1af479d71d7e03c35510c2876f3104bb0982bad8b7fd7c9cb57b090",
+      "size_bytes": 10777
+    },
+    {
+      "path": "src/Ipc.Product/ProductRuntime.cs",
+      "sha256": "05ee5113ec8b7676d55f8725a11445f61ac95479e87d03d8f936323f97d6f460",
+      "size_bytes": 32920
+    },
+    {
+      "path": "src/Ipc.Product/Program.cs",
+      "sha256": "da756b171bc1c8b24c2847559675a68d19fd57edb5a6ce4bac73b004cabaaeab",
+      "size_bytes": 13792
+    },
+    {
+      "path": "src/Ipc.Product/ReferenceProduct.cs",
+      "sha256": "fea17d2278391a17f0fccb812582c047e16d6b6d074bc037c1d4ad82341a19a4",
+      "size_bytes": 2665
+    },
+    {
+      "path": "src/Ipc.Product/SenderModule.cs",
+      "sha256": "787bc2968657144cb992801fea221968700a2ac54747a3a99abdb0b8b6cb699f",
+      "size_bytes": 3787
+    },
+    {
+      "path": "src/Ipc.Product/SourceConstruction.cs",
+      "sha256": "f13093fb1139bd4b35c4e81aebdf83a9ce508f6d9baa3cb8926b5edf4ee84bac",
+      "size_bytes": 1367
+    },
+    {
+      "path": "src/Ipc.Product/packages.lock.json",
+      "sha256": "2e80120ae42ade1350411366f45194ce12e070847016492b756b8f77d3a03200",
+      "size_bytes": 16303
+    },
+    {
+      "path": "src/Ipc.Product/packages.supply.lock.json",
+      "sha256": "2e80120ae42ade1350411366f45194ce12e070847016492b756b8f77d3a03200",
+      "size_bytes": 16303
+    },
+    {
+      "path": "src/Ipc.Product/packages.win-x64.lock.json",
+      "sha256": "986dc68cb69654753d81882df1f4e545eda4806f3fd087a5b18a50c8c1a46566",
+      "size_bytes": 16778
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/ConfigurationActivation.cs",
+      "sha256": "79bbaef093d88af591c23b8be8e4edc680f6ab60bc27b2872d39a2cc95ae74ff",
+      "size_bytes": 1206
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/ContractRegistration.cs",
+      "sha256": "9adad125d189a600144e705437126b92c3ed32e237abe5e1b613f2054ac31c1c",
+      "size_bytes": 206
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/HistoryQueries.cs",
+      "sha256": "67615e10f50d880b621c6fc7afb50cf2be20e1e1567b9c97e2b1102c9dc99648",
+      "size_bytes": 1781
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/IntegrationExtensions.cs",
+      "sha256": "a261ced7c4d54cec68fdf80225ccb0884d418ad16c2c3a623d526a9aea264e41",
+      "size_bytes": 2528
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj",
+      "sha256": "d019bbfecee9662eb5400f49538f46fa662a672ca77a3cec1d1315e145b7a445",
+      "size_bytes": 132
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/Model.cs",
+      "sha256": "2f714e3e2662d966db86362afcd912a3732b4b6daa5f0ead728c987f154f0ecb",
+      "size_bytes": 8930
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/RequestContract.cs",
+      "sha256": "ed0290d9ab77cf3c0a9aa91b031bab7c144a699f72b515527e74f9f7171f3294",
+      "size_bytes": 697
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/StationRuntime.cs",
+      "sha256": "db8abbe34516a367bec999bf706b56d13abd32521e2f6aa9e5aab0832e6bc67b",
+      "size_bytes": 2021
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.lock.json",
+      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
+      "size_bytes": 13984
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.supply.lock.json",
+      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
+      "size_bytes": 13984
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.win-x64.lock.json",
+      "sha256": "086db76ce2df968e62000c68e2c4281ec9f6e58ffb094095a1821f08e4f9b730",
+      "size_bytes": 14238
+    },
+    {
+      "path": "src/Ipc.Supply/ContractForwarders.cs",
+      "sha256": "5c295e64f710aee45aeaa19ed3742a3ea5692104db9c088724f5aa6df0deec6f",
+      "size_bytes": 2749
+    },
+    {
+      "path": "src/Ipc.Supply/ExtensionMaintenance.cs",
+      "sha256": "277f3495ac202c72298e257f6ba30ea86ed1c24534ee5257b08b0a2ec1b61fb1",
+      "size_bytes": 3617
+    },
+    {
+      "path": "src/Ipc.Supply/HistoryQueries.cs",
+      "sha256": "24db2a745b20a75e343153a79b7c451eecafe318cfba88b5dbd4e9f415c86f0f",
+      "size_bytes": 9490
+    },
+    {
+      "path": "src/Ipc.Supply/IntegrationHealth.cs",
+      "sha256": "f948a9efcd8f71b187bb32a4b21e650d217904015460c5806c65698af067b3e1",
+      "size_bytes": 3136
+    },
+    {
+      "path": "src/Ipc.Supply/Ipc.Supply.csproj",
+      "sha256": "785fd5e03dd8252228d4baecf6eb71c467b9fa2af56a8842bcd2c45e5b9035fc",
+      "size_bytes": 293
+    },
+    {
+      "path": "src/Ipc.Supply/Maintenance.cs",
+      "sha256": "1b88d20e66ca382b570377b58c3ee0d2e1ba908b6a8446dd6711ded38fdc2f1e",
+      "size_bytes": 16631
+    },
+    {
+      "path": "src/Ipc.Supply/Model.cs",
+      "sha256": "d430cd1312140b19f284a575bb5dc6a000edf9245b8da3e52e2b9bc0ec4e2721",
+      "size_bytes": 546
+    },
+    {
+      "path": "src/Ipc.Supply/PresentationProtection.cs",
+      "sha256": "80f4e456ba3917c6937910937cf39a053f14a51b9fe82b0bea2e9f302c26ebcf",
+      "size_bytes": 1560
+    },
+    {
+      "path": "src/Ipc.Supply/ResponsePersistence.cs",
+      "sha256": "33b172907aaffe1c4b73bb762e1ff3348a704ad0d1d2bc391e03c503d88afa06",
+      "size_bytes": 7394
+    },
+    {
+      "path": "src/Ipc.Supply/StationApplication.cs",
+      "sha256": "842ed2708dd766bf8c11e2ccbbf7780090af5a13ad64132764ddbb9b71d923c8",
+      "size_bytes": 61398
+    },
+    {
+      "path": "src/Ipc.Supply/StationClosure.cs",
+      "sha256": "43489ffa30dfb2d1f7aef4a2aae55095d3544d0cb79c5be3460fa85500b6166f",
+      "size_bytes": 10416
+    },
+    {
+      "path": "src/Ipc.Supply/Store.cs",
+      "sha256": "80e4027fab19486a7db2ee6f5abec87ec7901455487efeaf0adb03e1ea2d9a90",
+      "size_bytes": 20399
+    },
+    {
+      "path": "src/Ipc.Supply/SupplyConfiguration.cs",
+      "sha256": "ad22fd74442a096235b78f5bde896a0af4f63bbbaf1f0a55df019123976cff74",
+      "size_bytes": 2007
+    },
+    {
+      "path": "src/Ipc.Supply/packages.lock.json",
+      "sha256": "cc1182d4cf1f2cac1a31bb73ea2b023d19911283752b4041fff7a59481c16b50",
+      "size_bytes": 15987
+    },
+    {
+      "path": "src/Ipc.Supply/packages.supply.lock.json",
+      "sha256": "cc1182d4cf1f2cac1a31bb73ea2b023d19911283752b4041fff7a59481c16b50",
+      "size_bytes": 15987
+    },
+    {
+      "path": "src/Ipc.Supply/packages.win-x64.lock.json",
+      "sha256": "b1dc8bc7a0a0a4e2dee6e71a4b5335be1760aa29c7c4fd2f42060f2944e84cec",
+      "size_bytes": 16462
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentCompositionVerification.cs",
+      "sha256": "20298801b90e59a30fedae07a8aa3a67a2cfc827f9c6aa7b5ee20c6e7a963404",
+      "size_bytes": 5760
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentDataVerification.cs",
+      "sha256": "6cabf9e367e470444cae035736dbf766f6222e21af68ea010002b573ec5af443",
+      "size_bytes": 18320
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentRuntimeVerification.cs",
+      "sha256": "d8d966884dcda1c705c229be6029838a8fd3e3277e4599e700d53dabaf265a92",
+      "size_bytes": 15928
+    },
+    {
+      "path": "tests/Ipc.Verification/ArchitectureClosureVerification.cs",
+      "sha256": "28cd5db6c881d51cb423267d0d7126923d5dee05d8a5809f3322d2a104e85985",
+      "size_bytes": 40944
+    },
+    {
+      "path": "tests/Ipc.Verification/ClosureVerification.cs",
+      "sha256": "03345bcb4882f595a9de2949dab082463b68ff988a445222a7096e080b4c0d11",
+      "size_bytes": 27381
+    },
+    {
+      "path": "tests/Ipc.Verification/ConformanceVerification.cs",
+      "sha256": "c6eaf8e0d0a4b6aa8116571a4ef52511e559121d8fc28dc132edb1501d572171",
+      "size_bytes": 37557
+    },
+    {
+      "path": "tests/Ipc.Verification/ExtensionDraftVerification.cs",
+      "sha256": "447ba3e995556b31a6cb78f34379cc77f79b91f81ef682aae04a52f09fbb0ca3",
+      "size_bytes": 4646
+    },
+    {
+      "path": "tests/Ipc.Verification/ExtensionVerification.cs",
+      "sha256": "87960e8508131ddb2cf3664936d6d75bd75203ad726f5bd47451dd0f4c698617",
+      "size_bytes": 36015
+    },
+    {
+      "path": "tests/Ipc.Verification/FollowupVerification.cs",
+      "sha256": "67ea66442ecce3989dd7e11b7d8d5369f53fc94cd0b9b0f00080ba5e3c591736",
+      "size_bytes": 16877
+    },
+    {
+      "path": "tests/Ipc.Verification/HardeningVerification.cs",
+      "sha256": "5645c474e8112d3765fae399c1bd54144e771e7a00de855f0f2be28e6a0199d7",
+      "size_bytes": 24395
+    },
+    {
+      "path": "tests/Ipc.Verification/Ipc.Verification.csproj",
+      "sha256": "cb57737518fb3e8c1fc866db2e6c8abe1c62d6444ab34225b9a86b226557e3c3",
+      "size_bytes": 598
+    },
+    {
+      "path": "tests/Ipc.Verification/PresentationVerification.cs",
+      "sha256": "81d3de4539cf1ca9334579bbdf92a86e79e3ba91da44e1ccb62aa85b2631f50f",
+      "size_bytes": 5532
+    },
+    {
+      "path": "tests/Ipc.Verification/ProductOwnershipVerification.cs",
+      "sha256": "9b94a1e93de09d8c1a10a08896cdd046e0407468ffca8e418208300540b9f990",
+      "size_bytes": 13805
+    },
+    {
+      "path": "tests/Ipc.Verification/Program.cs",
+      "sha256": "d24bf119081ab05e166d00502fba1646eb3c1e9b32e52109d0152883c02746f2",
+      "size_bytes": 51477
+    },
+    {
+      "path": "tests/Ipc.Verification/ReferenceJourneyVerification.cs",
+      "sha256": "28f4b88108065fce9251ce26dcf65790efeb9ddc8822a6c9576159102b8f9e74",
+      "size_bytes": 10905
+    },
+    {
+      "path": "tests/Ipc.Verification/SourceConstructionVerification.cs",
+      "sha256": "c43657d35f957e23f5cb94005d6be4c0936b9fe86526c70caa139158d738c6b9",
+      "size_bytes": 3108
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/schema1.sql",
+      "sha256": "d4ced2b811dff4d3d66dc66c431b9dcc8c75f491ca30f10a2e5507aad741c981",
+      "size_bytes": 2049
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/simulation-v1-request.json",
+      "sha256": "e7554eea0a949a116361c199b584f3a5fd3d3f459d0b388d4e38ad44112a0a07",
+      "size_bytes": 1326
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/simulation-v1-response.json",
+      "sha256": "1bd599d1342f2e97c817197467de98dfd356bffb9dbbd797f45ae35386db155c",
+      "size_bytes": 308
+    },
+    {
+      "path": "tests/Ipc.Verification/packages.lock.json",
+      "sha256": "505429c61887c5e09174ab8a3171bd7f99b057a027f748bbbd542648e3b4c6f1",
+      "size_bytes": 16436
+    }
+  ],
+  "verification": "READ_ONLY_GIT_INPUT_IDENTITY; no business tests or build rerun"
+}

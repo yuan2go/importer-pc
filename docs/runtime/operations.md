@@ -1,6 +1,8 @@
+> 当前判断见 [PR14后复核](../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)，下一实施为 [15工作包](../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)。14已合并且原子问题分项验证；不同接收发生责任、维护/输入与UI仍有残余。本文有效职责/规则继续成立，历次执行结果只按其来源版本理解；本次更新前原字节见 [归档](../archive/pre-audit-reconciliation-publication-01/README.md)。
+
 # FIX-14 当前运行与恢复
 
-当前工作包 [14](../work-packages/WP-IPC-CONFORMANCE-FIX-14.md)，实现/证据入口 [14报告](conformance-fix-14.md)。Release=CONFORMANCE-FIX-14；Storage/MinimumReader=4/4，SIMULATION-v1、ExtensionContract1不变；独立参考插件1.0.2。下方旧“当前13/12/11、Storage3”均为历史原文，不能选择旧包替代14候选。
+当前代码所属工作包 [14](../work-packages/WP-IPC-CONFORMANCE-FIX-14.md)，实现/证据入口 [14报告](conformance-fix-14.md)。Release=CONFORMANCE-FIX-14；Storage/MinimumReader=4/4，SIMULATION-v1、ExtensionContract1不变；独立参考插件1.0.2。下方旧“当前13/12/11、Storage3”均为历史原文，不能选择旧包替代14候选。
 
 - **回执与恢复**：原Accepted/Rejected和唯一接受账保持；矛盾原件独立保存到response_conflicts，原EvidenceId不是新原件主键。同事务持久核对责任，终态仍出现在恢复列表、原身份查询、历史详情、准入/提交/关闭/激活、清理/维护和包保留检查中。重复不计量，原请求不可重发。
 - **存储失败窗口**：receipt-ingress先WriteThrough/Flush接管原回执，再T3；失败保留原件，重启验证原合同/原实现后提交。receipt-owner-fence在启用接收前持久建立，保护连原件写入也失败的窗口。正常受控退出删除已完成接收围栏；失败仅保留未完成身份。非正常退出后无法找到原件的终态请求进入ReceiptPersistenceUncertain，原接受事实不变但持续阻断；未存下的原件明确不可恢复，不宣称已保存。没有通用解锁；匹配的后续查询也不擦除矛盾。对端核对/原合同及批准处置不足时继续保留责任。不要删除围栏、ingress或库来“恢复”。
@@ -26,15 +28,19 @@
 
 Windows实际客户端/普通账户/UAC/ACL/输入/听审/W01～06按13决定后验，现场真实SDK/WCS/策略仍BLOCKED。所有本轮运行只用隔离合成根和loopback。
 
+## 当前操作限制与15承接
+
+14的单回执冲突/接管失败核心验证不覆盖同请求多份回执的全部组合窗口。当前接收集合按请求聚合，未保存的一份责任可被后续成功或重放掩盖；普通AfterT3中断也可能留下保守围栏。不要把正常模拟通过、重启或原baseline PASS当作异常恢复整体放行。先完成15的AC15-02，不删除围栏/原件/原账，不提供通用解锁。
+
+旧Effective引用1.0.1时，Storage升4和替换seed不会自动换掉旧部署。须在匹配旧宿主/原包下清偿职责，通过支持的维护流程形成合法过渡部署，再显式备份升级及安装/激活新包；完整旅程尚待AC15-06证据。无法清偿或旧根覆盖未知保持阻塞。14候选原包/随包指南保持原身份；本次更新的仓库文档不是重新打包产物。
+
 ---
 
-> FIX-14当前指引：本文件下方13及更早“当前/本轮/已完成”保留形成时身份，已由 [14执行基线](conformance-fix-14-baseline.md)接管。A-01～04是待修确定缺陷；健康隔离和维护闭环是有效要求，不能按旧完成性表述判通过。Windows沿13决定统一后验，不寻找VM/runner；D/RV、真实SDK/WCS/现场门禁继续。原字节见 [归档](../archive/pre-conformance-fix-14/README.md)。
 
-> 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入核心实现已提交；Mac参考验证与WPF交叉构建按13报告分项记录，候选交付不代表Windows或现场验收。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](../archive/pre-arch-extension-closure-13/README.md)。
 
-## CLOSURE-13 当前运行与候选
+## CLOSURE-13运行记录（历史）
 
-当前[13报告](arch-extension-closure-13.md)/[checks](arch-extension-closure-13-checks.json)登记实际源码/包/hash和远端回读；[扩展指南](../extensions/developer-guide.md)包含观察设备与类型化服务实例、公共契约、签名依赖、安装/参数/生效/原请求/卸载。原12报告、原候选和形成时验收不改写。Windows由用户决定延期：本轮只做Mac核心验证与WPF交叉构建，WINDOWS_NOT_RUN；不寻找或开通VM/runner，不扩OAuth。
+历史[13报告](arch-extension-closure-13.md)/[checks](arch-extension-closure-13-checks.json)登记实际源码/包/hash和远端回读；[扩展指南](../extensions/developer-guide.md)包含观察设备与类型化服务实例、公共契约、签名依赖、安装/参数/生效/原请求/卸载。原12报告、原候选和形成时验收不改写。Windows由用户决定延期：本轮只做Mac核心验证与WPF交叉构建，WINDOWS_NOT_RUN；不寻找或开通VM/runner，不扩OAuth。
 
 ```sh
 # 固定SDK 10.0.402；所有输出使用新目录，先提交实际输入
@@ -52,7 +58,7 @@ python3 scripts/package-business.py --composition supply-assembly --output /new/
 
 ### 继承的运维细节
 
-以下保留前版本的具体存储/恢复/Windows安装政策；旧版本号、旧输出路径和历史测试结果只作原版本参考，当前候选身份以上方13报告为准。
+以下保留前版本的具体存储/恢复/Windows安装政策；旧版本号、旧输出路径和历史测试结果只作原版本参考，13候选身份见13报告；当前14身份见本文首节，15尚待实施。
 
 # 运行、发布与运维
 
@@ -60,17 +66,17 @@ python3 scripts/package-business.py --composition supply-assembly --output /new/
 
 08启动顺序：取得数据根租约→读取最终Effective与待激活修订→核验站点/模式/产品能力→取得最终站点和设备集合租约→创建应用、来源与发送器。seed设备可与Effective不同，实际锁覆盖Effective；不锁seed-B却启动A。非法待激活保留ActivationFailed并使用旧Effective；启源失败记录激活失败，完全停止后下一次受控启动回到旧Effective，不在失败进程里并行启第二套来源。首次成功启动也固定seed为Effective。历史查询全部要求有效模拟身份；无权时Snapshot不查询跨箱最近历史，返回空RecentOperations。当前工位聚合、当前箱及原未决请求/恢复诊断仍可发现；其可见性不授权历史/尝试/回执详情读取。 配置Version是不可复用的修订身份（被拒绝/失败版本也保留，纠正时用新Version）；推广新Effective与旧版Superseded在同一事务。遗留多Effective根据持久ConfigActivation顺序读取，不按草稿插入rowid猜生效顺序，激活审计失败整体回滚保旧。
 
-当前StorageVersion=3、minimum_reader=3；schema1/id2文本保留，追加id3。preflight/backup使用不迁移源库的独立路径；旧format1/2默认启动拒绝，须按07记录显式备份升级。普通Run与升级/回滚均显式选择Release，不使用active-release指针。备份/升级回执和实际新包的操作步骤见07记录；不要从旧发布目录使用旧升级脚本处理新格式。
+13及更早该阶段StorageVersion=3、minimum_reader=3；schema1/id2文本保留，追加id3。preflight/backup使用不迁移源库的独立路径；旧format1/2默认启动拒绝，须按07记录显式备份升级。普通Run与升级/回滚均显式选择Release，不使用active-release指针。备份/升级回执和实际新包的操作步骤见07记录；不要从旧发布目录使用旧升级脚本处理新格式。
 
 Windows首次安装需在提升的维护会话执行新包的 `pwsh ./provision-runtime.ps1 -RuntimeAccount 'MACHINE\station-user'`，指定实际运行账户；之后以该账户运行。程序检查ProgramData下维护方拥有的runtime-policy.json、机级leases目录及ACL；缺策略、账户不符或权限不符即拒绝启动业务，不能回退用户级租约。安装脚本的实际Windows执行为NOT_RUN；固定账户/ACL和跨会话行为仍待Windows验证。
 
 本实现是 F-02 独立参考产品。所有设备、身份、数量策略和外部端点为 **SIMULATION**。核心、SQLite 与恢复为真实代码；没有旧现场工程迁移、厂商驱动或真实 WCS。D/RV 的客户与现场状态不改变。
 
-## DELIVERY-12 当前运行与交付
+## DELIVERY-12运行与交付（历史）
 
 执行原工作包[EXTENSION-WINDOWS-DELIVERY-12](../work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)，设计增量见[controlled-extensions](../design/controlled-extensions.md)，安装/参数/升级/恢复完整步骤见[扩展指南](../extensions/developer-guide.md)。同版身份、实际结果与AC由[12报告](extension-windows-delivery-12.md)统一记录，旧11/09包及PASS不冒称新包结果。
 
-当前ReleaseVersion=EXTENSION-WINDOWS-DELIVERY-12、Storage/MinimumReader=3/3、SIMULATION-v1、ExtensionContract=1。核心原SQL/checksum不变。包集合/实例参数/设备角色组成唯一StationConfig部署；安装不是激活，默认受控重启。带Extensions字段的配置需要12兼容宿主；旧EXE不能凭Storage同号直接读取新配置。回退包不回滚业务数据库，Unknown仍核对原请求。
+12阶段ReleaseVersion=EXTENSION-WINDOWS-DELIVERY-12、Storage/MinimumReader=3/3、SIMULATION-v1、ExtensionContract=1。核心原SQL/checksum不变。包集合/实例参数/设备角色组成唯一StationConfig部署；安装不是激活，默认受控重启。带Extensions字段的配置需要12兼容宿主；旧EXE不能凭Storage同号直接读取新配置。回退包不回滚业务数据库，Unknown仍核对原请求。
 
 普通账户运行，首次提升维护会话保护Program Files/ImporterPc发布目录及父目录、安装指定账户机级策略、经独立离线策略配置Simulation扩展信任；之后组件管理只调用固定受限辅助程序进行OS授权写入。生产信任不包含测试发布者，当前Production缺真实能力继续拒绝。签名/信任/兼容/路径/大小/哈希静态校验早于加载；SDK与Windows驱动前置独立，当前没有真实SDK或系统驱动安装。
 

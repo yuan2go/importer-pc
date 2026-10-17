@@ -79,10 +79,15 @@ static class AlignmentDataVerification
             {
                 Exec(db, Format2Migration); Exec(db, "INSERT INTO schema_history VALUES(2,$a,$b)", Format2Checksum, DateTimeOffset.UtcNow.ToString("O"));
             }
-            if (format == 3)
+            if (format >= 3)
             {
                 Exec(db, "UPDATE storage_format SET version=3,minimum_reader=3 WHERE id=1;");
                 Exec(db, "INSERT INTO schema_history VALUES(3,$a,$b)", Format3Checksum, DateTimeOffset.UtcNow.ToString("O"));
+            }
+            if (format >= 4)
+            {
+                Exec(db, "CREATE TABLE response_conflicts(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),json TEXT NOT NULL); CREATE INDEX response_conflicts_request ON response_conflicts(request); UPDATE storage_format SET version=4,minimum_reader=4 WHERE id=1;");
+                Exec(db, "INSERT INTO schema_history VALUES(4,$a,$b)", ConformanceVerification.Format4Checksum, DateTimeOffset.UtcNow.ToString("O"));
             }
             var sessionText = "{\"Id\":\"" + original.SessionId + "\",\"Barcode\":\"000001\",\"Status\":\"" + (active ? "Active" : "Closed") + "\"}";
             Exec(db, "INSERT INTO sessions VALUES($a,$b)", original.SessionId, sessionText);
@@ -98,7 +103,7 @@ static class AlignmentDataVerification
                 "Original request identity, raw payload/hash, contract and target remain exact");
             Assert(store.Session(original.SessionId)!.Context is null && store.History(null, 0, 100).Single().Task is null && store.History(null, 0, 100).Single().BoxWave is null, "Legacy missing fields remain unknown");
         }
-        foreach (var format in new[] { 1, 2, 3 })
+        foreach (var format in new[] { 1, 2, 3, 4 })
         {
             var source = Legacy("legacy-format" + format, format); var before = Wire.FileHash(source);
             var inspection = SupplyStore.InspectReadOnly(source);

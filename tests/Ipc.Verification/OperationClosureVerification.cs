@@ -65,7 +65,7 @@ static class OperationClosureVerification
             File.WriteAllText(receipts,"AC15 deliberate custody-create failure");
             endpoint.Release[0].SetResult(); await (await Task.WhenAny(q1, q2));
             File.Delete(receipts);
-            endpoint.Release[1].SetResult(); await q2;
+            endpoint.Release[1].SetResult(); await Task.WhenAll(q1, q2);
             var recovery = (await app.SnapshotAsync()).Recovery.Single(x=>x.Request.Id==requestId);
             Assert(recovery.Request.Status==RequestStatus.Accepted && recovery.Receipts.Length==1 && recovery.Receipts[0].Origin=="original-query",
                 "actual concurrent Product/Integration queries retain failed Q1 after Q2 succeeds");

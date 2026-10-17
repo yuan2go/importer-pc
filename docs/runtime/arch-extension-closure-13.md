@@ -1,3 +1,5 @@
+> PR12复核补丁正在形成新候选；下文dc5b405及其验证为首轮冻结记录，保持原身份。补丁源修复选中实例重命名及精确版本打包，实际Windows继续WINDOWS_NOT_RUN；补充结果另行追加。
+
 # CLOSURE-13 实施、验证与候选交付
 
 **本轮授权的核心工程完成，Mac参考验证PASS，WPF交叉构建PASS；Windows实际验收统一延期，WINDOWS_NOT_RUN；真实SDK/WCS/现场资格BLOCKED。** 不以PR状态、交叉构建或HTML图关闭Windows/历史RV。

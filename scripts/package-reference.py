@@ -63,15 +63,16 @@ if bundle:
     publishers = trust['Publishers']
     if trust['SchemaVersion'] != 1 or len(publishers) != 1 or publishers[0]['TestOnly'] is not True:
         raise ValueError('Reference composition requires an explicit separate TEST ONLY publisher')
-    package = output / 'offline-extensions/reference.barcode-1.0.0.ipcx'
+    versions = {c['id']: c['version'] for c in composition['components']}
+    package = output / f"offline-extensions/reference.barcode-{versions['reference.barcode']}.ipcx"
     run('python3', str(root / 'scripts/build-extension.py'), '--contract', str(output / 'app/Ipc.Platform.dll'), '--output', str(package),
-        '--key', str(a.extension_key.resolve()), '--publisher', publishers[0]['Id'], '--trust', str(a.extension_trust.resolve()), '--dotnet', a.dotnet)
+        '--version', versions['reference.barcode'], '--key', str(a.extension_key.resolve()), '--publisher', publishers[0]['Id'], '--trust', str(a.extension_trust.resolve()), '--dotnet', a.dotnet)
     shutil.copyfile(a.extension_trust, output / 'offline-extensions/trust.Simulation.reference.json')
     composition['offline_bundles'] = [json.loads(Path(str(package) + '.identity.json').read_text())]
     if a.composition == 'integration-reference':
-        package = output / 'offline-extensions/reference.integration-1.0.0.ipcx'
+        package = output / f"offline-extensions/reference.integration-{versions['reference.integration']}.ipcx"
         run('python3', str(root / 'scripts/build-extension.py'), '--contract', str(output / 'app/Ipc.Platform.dll'), '--output', str(package),
-            '--kind', 'integration', '--key', str(a.extension_key.resolve()), '--publisher', publishers[0]['Id'], '--trust', str(a.extension_trust.resolve()), '--dotnet', a.dotnet)
+            '--kind', 'integration', '--version', versions['reference.integration'], '--key', str(a.extension_key.resolve()), '--publisher', publishers[0]['Id'], '--trust', str(a.extension_trust.resolve()), '--dotnet', a.dotnet)
         composition['offline_bundles'].append(json.loads(Path(str(package) + '.identity.json').read_text()))
 else:
     composition['offline_bundles'] = []

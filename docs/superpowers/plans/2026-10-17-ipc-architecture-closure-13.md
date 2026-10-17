@@ -18,3 +18,11 @@ User has authorized inline execution and Mac development; Windows acceptance is 
 Commands: pinned SDK10.0.402, `dotnet build ImporterPc.slnx -m:1 -nr:false -p:EnableWindowsTargeting=true`; `dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --architecture` and the affected selectors above; package-reference.py integration-reference and package-business.py inspection-reference/supply-assembly; smoke.py and smoke-extension.py against new outputs.
 
 WINDOWS_NOT_RUN covers all actual WPF/UI/UAC/ACL/DPI/input/listening/Windows continuous-journey acceptance. Production SDK/WCS/field admission remains BLOCKED independently.
+
+## Existing PR12 verification continuation
+
+- [x] Recheck latest main feed6e9c, clean existing PR12 tree and existing work package; preserve original user files and prior evidence.
+- [x] Replace the originally selected service/device and its binding when renaming; reject duplicate IDs/ports; add explicit new-instance action. Exercise the actual UI draft policy on Mac.
+- [x] Repeat six affected verifier selectors and necessary WPF cross-build; preserve initial build and missing-Pillow environment failures.
+- [ ] Freeze patch source, package new candidate with separately versioned exact plugins, actual released-host smoke and full remote readback.
+- [ ] Append current AC13 evidence, refresh manifest, fast-forward existing PR12 without merge or force push.

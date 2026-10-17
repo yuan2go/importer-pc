@@ -62,3 +62,7 @@ Windows候选在Program Files/ImporterPc的受保护发布目录，经同版prot
 --architecture实际覆盖P2身份失败窗口、真实AssemblyRef负例与合法依赖、两个独立包、两类多实例、冻结原请求/改目标/缺旧能力、取消、失败激活、Stop所有权和两个真实业务组合。--extensions保留12中断安装/修复/卸载/升级与来源恢复旅程；--baseline、--followup、--review-followup保护相关T1/T2/T3、双箱及所有权。具体源码、命令与结果只以13报告/checks为准。
 
 package-reference.py integration-reference交付完整供包portable或win-x64未验候选，含两类独立签名包及单独TEST ONLY公钥策略；package-business.py提供inspection-reference和supply-assembly真实裁剪组合。锁、SourceCommit、Release、Storage/MinimumReader、契约、每个独立插件身份、精确文件SHA、ZIP SHA和远端回读均分别记录。Windows包是候选，不能当已验最终版或现场资格。
+
+## PR12补丁的包内容身份
+
+组合中的`reference.barcode`和`reference.integration`已声明补丁版本1.0.1。`package-reference.py`按组合精确版本传给独立构建器，`smoke-extension.py`按发布的`composition.lock.json`选择原包，不扫描最新版。插件源提交仍分别取各自examples目录的最后提交；宿主提交及公共契约SHA另记。换宿主导致manifest公共契约指纹变化时必须使用新包版本；已发布1.0.0及永久ID/version登记不可改写。Production批准与实际Windows接入状态不随参考包版本改变。

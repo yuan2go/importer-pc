@@ -57,6 +57,7 @@ static class ArchitectureClosureVerification
         kind == "integration" ? new() { ["Ipc.Supply.Contracts"] = Wire.FileHash(typeof(IIntegrationExtension).Assembly.Location) } : null);
     public static async Task Run(string root, string url, string workspace)
     {
+        ExtensionDraftVerification.Run();
         var area = Path.Combine(root, "architecture-13"); Directory.CreateDirectory(area);
         var hostDirectory = Path.GetDirectoryName(typeof(ProductRuntime).Assembly.Location)!;
         Dictionary<string, string> Host() => Directory.GetFiles(hostDirectory, "Ipc.*.dll").ToDictionary(x => Path.GetFileName(x)!, Wire.FileHash);

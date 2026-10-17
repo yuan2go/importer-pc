@@ -1,0 +1,36 @@
+  正在确定要还原的项目…
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Fixture/Ipc.Fixture.csproj (用时 1.69 秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Platform/Ipc.Platform.csproj (用时 1.7 秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Inspection/Ipc.Inspection.csproj (用时 1.7 秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj (用时 1.7 秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 1.7 秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 1.7 秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 1.7 秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/tests/Ipc.Verification/Ipc.Verification.csproj (用时 1.7 秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply/Ipc.Supply.csproj (用时 7 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Product/Ipc.Product.csproj (用时 4 毫秒)。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
+  Ipc.Assembly -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Assembly/bin/Debug/net10.0/Ipc.Assembly.dll
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Desktop/ExtensionDraftEditing.cs(15,23): error CS0246: 未能找到类型或命名空间名“InvalidDataException”(是否缺少 using 指令或程序集引用?) [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Desktop/Ipc.Desktop_byqzlgxr_wpftmp.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Desktop/ExtensionDraftEditing.cs(34,53): error CS0246: 未能找到类型或命名空间名“InvalidDataException”(是否缺少 using 指令或程序集引用?) [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Desktop/Ipc.Desktop_byqzlgxr_wpftmp.csproj]
+  Ipc.Fixture -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll
+  Ipc.Inspection -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Inspection/bin/Debug/net10.0/Ipc.Inspection.dll
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/tests/Ipc.Verification/ExtensionDraftVerification.cs(17,90): error CS8604: “bool Enumerable.Any<ServicePortBinding>(IEnumerable<ServicePortBinding> source, Func<ServicePortBinding, bool> predicate)”中的形参“source”可能传入 null 引用实参。 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/tests/Ipc.Verification/ExtensionDraftVerification.cs(19,74): error CS8604: “ServicePortBinding Enumerable.Single<ServicePortBinding>(IEnumerable<ServicePortBinding> source, Func<ServicePortBinding, bool> predicate)”中的形参“source”可能传入 null 引用实参。 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/tests/Ipc.Verification/ExtensionDraftVerification.cs(22,70): error CS8604: “bool Enumerable.Any<ServicePortBinding>(IEnumerable<ServicePortBinding> source, Func<ServicePortBinding, bool> predicate)”中的形参“source”可能传入 null 引用实参。 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/tests/Ipc.Verification/Ipc.Verification.csproj]
+
+生成失败。
+
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Desktop/ExtensionDraftEditing.cs(15,23): error CS0246: 未能找到类型或命名空间名“InvalidDataException”(是否缺少 using 指令或程序集引用?) [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Desktop/Ipc.Desktop_byqzlgxr_wpftmp.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Desktop/ExtensionDraftEditing.cs(34,53): error CS0246: 未能找到类型或命名空间名“InvalidDataException”(是否缺少 using 指令或程序集引用?) [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Desktop/Ipc.Desktop_byqzlgxr_wpftmp.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/tests/Ipc.Verification/ExtensionDraftVerification.cs(17,90): error CS8604: “bool Enumerable.Any<ServicePortBinding>(IEnumerable<ServicePortBinding> source, Func<ServicePortBinding, bool> predicate)”中的形参“source”可能传入 null 引用实参。 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/tests/Ipc.Verification/ExtensionDraftVerification.cs(19,74): error CS8604: “ServicePortBinding Enumerable.Single<ServicePortBinding>(IEnumerable<ServicePortBinding> source, Func<ServicePortBinding, bool> predicate)”中的形参“source”可能传入 null 引用实参。 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/tests/Ipc.Verification/ExtensionDraftVerification.cs(22,70): error CS8604: “bool Enumerable.Any<ServicePortBinding>(IEnumerable<ServicePortBinding> source, Func<ServicePortBinding, bool> predicate)”中的形参“source”可能传入 null 引用实参。 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/tests/Ipc.Verification/Ipc.Verification.csproj]
+    0 个警告
+    5 个错误
+
+已用时间 00:00:07.07

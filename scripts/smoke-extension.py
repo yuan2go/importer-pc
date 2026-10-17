@@ -26,9 +26,11 @@ work = Path(tempfile.mkdtemp(prefix='ipc-frozen-extension-smoke-'))
 app = release / 'app'
 hashes = lambda: {f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in app.glob('Ipc.*') if f.is_file()}
 before = hashes()
-package = release / 'offline-extensions/reference.barcode-1.0.0.ipcx'
+composition = json.loads((release / 'composition.lock.json').read_text())
+versions = {c['id']: c['version'] for c in composition['components']}
+package = release / f"offline-extensions/reference.barcode-{versions['reference.barcode']}.ipcx"
 trust = release / 'offline-extensions/trust.Simulation.reference.json'
-integration_package = release / 'offline-extensions/reference.integration-1.0.0.ipcx'
+integration_package = release / f"offline-extensions/reference.integration-{versions.get('reference.integration', 'not-selected')}.ipcx"
 with zipfile.ZipFile(package) as archive:
     raw_manifest = archive.read('manifest.json')
     manifest = json.loads(raw_manifest)

@@ -14,6 +14,7 @@ public partial class ExtensionsView : UserControl
     IStationRuntime Runtime => owner!.Runtime;
     DeploymentExtensions desired = new([], []);
     ExtensionManifest? selectedManifest;
+    object? editedInstance;
     VerifiedExtension? plan;
     string? planFile;
     long generation, packageGeneration, instanceGeneration;
@@ -122,20 +123,22 @@ public partial class ExtensionsView : UserControl
     {
         if (restoringPackageSelection || owner is null || Packages.SelectedItem is not ExtensionInstallation p || p.Status != "Installed") return;
         instanceGeneration++;
+        editedInstance = null; selectedManifest = null;
         var ticket = ++packageGeneration;
         try
         {
             var manifest = await Runtime.ExtensionManifestAsync(p.Package);
             if (ticket != packageGeneration || (Packages.SelectedItem as ExtensionInstallation)?.Package != p.Package) return;
             selectedManifest = manifest; Module.ItemsSource = manifest.Modules; Module.SelectedIndex = 0;
+            Instances.SelectedItem = null; InstanceId.Clear(); DeviceId.Clear();
             EditorIdentity.Text = "编辑包 " + manifest.Id + " / " + manifest.Version + "；尚未保存部署修订";
             Plan.Text = "已安装签名元数据（安装不代表激活）\n" + Wire.Encode(manifest);
         }
         catch (Exception ex) { Status.Text = "包读取失败，旧详情失效：" + ex.Message; selectedManifest = null; Module.ItemsSource = null; Parameters.Children.Clear(); }
     }
-    void ShowDesired()
+    void ShowDesired(string? selectId = null)
     {
-        var selected = InstanceKey(Instances.SelectedItem);
+        var selected = selectId ?? InstanceKey(Instances.SelectedItem);
         Instances.ItemsSource = desired.Instances.Cast<object>().Concat(desired.Services ?? []).ToArray();
         Instances.SelectedItem = Instances.Items.Cast<object>().FirstOrDefault(x => InstanceKey(x) == selected);
         DesiredPackages.Text = string.Join("\n", desired.Packages.Select(x => x.Id + " / " + x.Version + " / " + x.ManifestSha256));
@@ -172,6 +175,8 @@ public partial class ExtensionsView : UserControl
     });
     static string? InstanceKey(object? value) => value switch { ExtensionInstance device => device.Id, ServiceInstance service => service.Id, _ => null };
     void ModuleSelected(object sender, SelectionChangedEventArgs e)
+        => ResetModuleEditor();
+    void ResetModuleEditor()
     {
         var service = (Module.SelectedItem as ExtensionModule)?.Kind == "integration";
         ServiceTarget.Visibility = service ? Visibility.Visible : Visibility.Collapsed;
@@ -183,8 +188,10 @@ public partial class ExtensionsView : UserControl
     async void InstanceSelected(object sender, SelectionChangedEventArgs e)
     {
         if (owner is null) return;
+        editedInstance = null; ++instanceGeneration;
         if (Instances.SelectedItem is ServiceInstance service) { await SelectService(service); return; }
         if (Instances.SelectedItem is not ExtensionInstance instance) return;
+        selectedManifest = null;
         var reference = desired.Packages.SingleOrDefault(x => x.Id == instance.PackageId); if (reference is null) return;
         packageGeneration++;
         var ticket = ++instanceGeneration;
@@ -197,11 +204,13 @@ public partial class ExtensionsView : UserControl
             InstanceId.Text = instance.Id; DeviceId.Text = instance.DeviceId; EnabledInstance.IsChecked = instance.Enabled;
             var role = owner.ExtensionBindings.FirstOrDefault(x => x.Driver == "extension:" + instance.Id)?.Role;
             Role.SelectedIndex = role == "right" ? 1 : 0; RenderParameters(instance);
+            editedInstance = instance;
         }
         catch (Exception ex) { Status.Text = "实例读取失败：" + ex.Message; }
     }
     async Task SelectService(ServiceInstance service)
     {
+        selectedManifest = null;
         var reference = desired.Packages.SingleOrDefault(x => x.Id == service.PackageId); if (reference is null) return;
         var ticket = ++instanceGeneration; packageGeneration++;
         try
@@ -215,8 +224,19 @@ public partial class ExtensionsView : UserControl
             var target = binding?.Target ?? Runtime.Configuration!.Integration;
             TargetId.Text = target.Id; TargetRevision.Text = target.Revision; TargetContract.Text = target.Contract; TargetEndpoint.Text = target.Endpoint;
             RenderParameters(null, service);
+            EditorIdentity.Text = "编辑服务实例 " + service.Id + " · " + manifest.Id + " / " + manifest.Version;
+            editedInstance = service;
         }
         catch (Exception ex) { Status.Text = "服务实例读取失败：" + ex.Message; }
+    }
+    void NewInstanceClick(object sender, RoutedEventArgs e)
+    {
+        if (busy || !access) return;
+        ++instanceGeneration;
+        Instances.SelectedItem = null; editedInstance = null;
+        InstanceId.Clear(); DeviceId.Clear(); EnabledInstance.IsChecked = true;
+        ResetModuleEditor();
+        EditorIdentity.Text = "新建实例 · 输入新的唯一ID；现有实例保留";
     }
     void RenderParameters(ExtensionInstance? instance, ServiceInstance? service = null)
     {
@@ -281,6 +301,8 @@ public partial class ExtensionsView : UserControl
     async void SaveInstanceClick(object sender, RoutedEventArgs e) => await Execute(() =>
     {
         RequireAccess(); if (selectedManifest is null || Module.SelectedItem is not ExtensionModule module) throw new InvalidOperationException("选择已安装模块");
+        if (editedInstance is ServiceInstance && module.Kind != "integration" || editedInstance is ExtensionInstance && module.Kind != "observation")
+            throw new InvalidOperationException("不能把现有设备和服务相互改型；请使用新建实例并显式停用原实例。");
         if (!desired.Packages.Any(x => x.Id == selectedManifest.Id && x.Version == selectedManifest.Version)) throw new InvalidOperationException("先将该精确包版本加入部署草稿");
         if (module.Kind == "integration")
         {
@@ -289,17 +311,20 @@ public partial class ExtensionsView : UserControl
             if (!ExtensionSchema.IsId(service.Id) || serviceErrors.Length > 0) throw new InvalidDataException(string.Join("；", serviceErrors.Prepend("请核对服务实例身份及参数")));
             var target = new IntegrationBinding(TargetId.Text.Trim(), TargetRevision.Text.Trim(), TargetContract.Text.Trim(), TargetEndpoint.Text.Trim());
             if (service.Enabled && (!ExtensionSchema.IsId(ServicePort.Text) || !Uri.TryCreate(target.Endpoint, UriKind.Absolute, out _))) throw new InvalidDataException("服务端口或目标无效");
-            var ports = (desired.Ports ?? []).Where(x => x.InstanceId != service.Id).ToList();
-            if (service.Enabled) ports.Add(new(ServicePort.Text, service.Id, target));
-            desired = desired with { Services = (desired.Services ?? []).Where(x => x.Id != service.Id).Append(service).ToArray(), Ports = ports.ToArray() };
-            ShowDesired(); Status.Text = "服务参数和目标绑定已写入本窗草稿；尚未保存/生效。"; return Task.CompletedTask;
+            desired = ExtensionDraftEditing.SaveService(desired, (editedInstance as ServiceInstance)?.Id, service,
+                service.Enabled ? new(ServicePort.Text, service.Id, target) : null);
+            editedInstance = service;
+            ShowDesired(service.Id); Status.Text = "服务参数和目标绑定已写入本窗草稿；尚未保存/生效。"; return Task.CompletedTask;
         }
         var instance = new ExtensionInstance(InstanceId.Text, selectedManifest.Id, module.Id, DeviceId.Text, EnabledInstance.IsChecked == true, values.ToDictionary(x => x.Key, x => x.Value()));
         var errors = ExtensionSchema.Validate(module.Parameters, instance.Parameters); if (errors.Length > 0) throw new InvalidDataException(string.Join("；", errors));
         if (!ExtensionSchema.IsId(instance.Id) || string.IsNullOrWhiteSpace(instance.DeviceId)) throw new InvalidDataException("实例与设备身份不完整");
-        desired = desired with { Instances = desired.Instances.Where(x => x.Id != instance.Id).Append(instance).ToArray() };
+        var originalId = (editedInstance as ExtensionInstance)?.Id;
+        var nextDraft = ExtensionDraftEditing.SaveDevice(desired, originalId, instance);
+        if (originalId is not null && originalId != instance.Id) owner!.UnbindExtensionDraft(originalId);
         owner!.BindExtensionDraft(instance, ((ComboBoxItem)Role.SelectedItem).Content.ToString()!);
-        ShowDesired(); Status.Text = "实例和绑定已写本窗草稿，当前来源未改变。"; return Task.CompletedTask;
+        desired = nextDraft; editedInstance = instance;
+        ShowDesired(instance.Id); Status.Text = "实例和绑定已写本窗草稿，当前来源未改变。"; return Task.CompletedTask;
     });
     async void RemoveInstanceClick(object sender, RoutedEventArgs e) => await Execute(() =>
     {

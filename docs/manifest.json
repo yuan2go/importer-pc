@@ -2198,17 +2198,6 @@
       "storage_scope": "public_repository"
     },
     {
-      "path": "docs/runtime/validation/reference-windows.workflow.yml",
-      "version": "delivery-12-reference",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
-      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
-      "storage_scope": "public_repository",
-      "sha256": "92b7d729bcc54b05bdf2d87c285d985810741aa7204c9f15b21e43c6dd3337c1",
-      "size_bytes": 1595,
-      "git_blob": "028c86d72e85509fd160b96dbc41910737ea73e4"
-    },
-    {
       "path": "docs/runtime/validation-scenarios-09.md",
       "sha256": "2959c8c46c59370fda09f18f1bf981c56261415d7f3b44ecee57aac56cc88b8c",
       "size_bytes": 9571,
@@ -2218,6 +2207,17 @@
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/validation/reference-windows.workflow.yml",
+      "version": "delivery-12-reference",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized controlled extension implementation, generic synthetic evidence or delivery documentation",
+      "source": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "92b7d729bcc54b05bdf2d87c285d985810741aa7204c9f15b21e43c6dd3337c1",
+      "size_bytes": 1595,
+      "git_blob": "028c86d72e85509fd160b96dbc41910737ea73e4"
     },
     {
       "path": "docs/runtime/windows-06.md",
@@ -3089,6 +3089,17 @@
       "purpose": "保留原资料/工具；详细用途与版本见previous_manifest对应行",
       "source": "39747a8c35b748da71bf9acfd56a9c9812b199b4:docs/ui/tokens/tokens.json",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/Codex-WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+      "version": "delivery-12-original-execution-input",
+      "status": "historical_original_execution_input",
+      "purpose": "Original user execution prompt retained verbatim; does not override the current no-test publication request",
+      "source": "User-provided docs/Codex-WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md, explicitly requested for repository publication",
+      "storage_scope": "public_repository",
+      "sha256": "d41e3d617bcffe0283fe80be50b8f56d56c32952c5dd15c32b0542bb039c9113",
+      "size_bytes": 5146,
+      "git_blob": "db2032ecfa65f602890e927fd19b3c56c2da94a0"
     },
     {
       "path": "docs/work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md",
@@ -4766,5 +4777,22 @@
       "portable": "f38ad91a43b8244a0e25ca2581821d72a7c231baa0707212b2e82e925e7e99a1",
       "win-x64": "a1d9a00ef06affb87def7598b2f29d81de61b4deac0dafdee9c358dee24b05b5"
     }
+  },
+  "delivery_12_publication_request": {
+    "date": "2026-10-17",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/11",
+    "prepublication_head": "e01b2492594186a816acd0cf1bca41e87d042aea",
+    "host_source_commit": "11f0728e506753dafcdc22fb190c5b268118423d",
+    "plugin_source_commit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+    "tests_build_validators": "NOT_RUN_THIS_PUBLICATION",
+    "windows_acceptance": "OPEN_NOT_RUN_UNCHANGED",
+    "historical_execution_input": "docs/work-packages/Codex-WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+    "original_work_package_alias": {
+      "local_path": "docs/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+      "canonical_path": "docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+      "identity": "EXACT_SAME_BYTES_NO_DUPLICATE_NEEDED"
+    },
+    "remote_artifacts": "https://github.com/yuan2go/importer-pc/releases/tag/delivery-12-reference-11f0728",
+    "current_remote_status": "Read PR and Release records; publication does not close acceptance items"
   }
 }

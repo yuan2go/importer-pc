@@ -334,7 +334,7 @@
       "ipc.adapters": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Supply": "[1.0.0, )"
+          "Ipc.Supply.Contracts": "[1.0.0, )"
         }
       },
       "ipc.platform": {

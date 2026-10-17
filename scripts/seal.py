@@ -6,6 +6,7 @@ import json
 import shutil
 import subprocess
 from pathlib import Path
+from release_documents import SOURCE_PATHS, source_files
 
 p = argparse.ArgumentParser()
 p.add_argument('--require-clean-source', action='store_true')
@@ -58,19 +59,16 @@ manifest = dict(SchemaVersion=1, ProductId=definition['ProductId'], Mode=a.mode,
 (output / 'product.json').write_text(json.dumps(manifest, indent=2) + '\n')
 # Bind generated artifacts to source bytes, even for a reviewed working-tree build.
 source_root = Path(__file__).resolve().parent.parent
-inputs = [source_root / name for name in ('global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx', 'docs/runtime/operations.md', 'docs/extensions/developer-guide.md')]
-for directory in ('src', 'config', 'scripts'):
-    inputs.extend(f for f in (source_root / directory).rglob('*') if f.is_file() and
-                  not {'bin', 'obj', '__pycache__'}.intersection(f.relative_to(source_root).parts))
+inputs = source_files(source_root)
 fingerprint = hashlib.sha256()
 for source in sorted(inputs):
     fingerprint.update(source.relative_to(source_root).as_posix().encode() + b'\0' + source.read_bytes() + b'\0')
 source_commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source_root, text=True).strip()
-source_paths = ['src', 'config', 'scripts', 'global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx', 'docs/runtime/operations.md', 'docs/extensions/developer-guide.md']
+source_paths = SOURCE_PATHS
 source_changes = subprocess.check_output(['git', 'status', '--porcelain', '--', *source_paths], cwd=source_root, text=True).strip()
 if a.require_clean_source and source_changes:
     raise ValueError('Publication requires committed runtime/configuration/packaging inputs')
-release = dict(WorkPackage='WP-IPC-OPERATION-CLOSURE-15', SchemaVersion=1, ReleaseVersion='OPERATION-CLOSURE-15', StorageVersion=5, MinimumReader=5, ContractVersion='SIMULATION-v1', ExtensionContract=1, ProductId=definition['ProductId'], ProductDefinitionSha256=hashlib.sha256(a.product_definition.read_bytes()).hexdigest(), SourceCodeSha256=fingerprint.hexdigest(),
+release = dict(WorkPackage='WP-IPC-UI-MAINTAINABILITY-16', SchemaVersion=1, ReleaseVersion='UI-MAINTAINABILITY-16', StorageVersion=5, MinimumReader=5, ContractVersion='SIMULATION-v1', ExtensionContract=1, ProductId=definition['ProductId'], ProductDefinitionSha256=hashlib.sha256(a.product_definition.read_bytes()).hexdigest(), SourceCodeSha256=fingerprint.hexdigest(),
                SourceCommit=source_commit if not source_changes else None, WorkingTree=bool(source_changes), GitBase=source_commit,
                Mode=a.mode, Target='win-x64' if a.architecture == 'x64' else 'portable-development')
 (a.bin / 'release.json').write_text(json.dumps(release, indent=2) + '\n')

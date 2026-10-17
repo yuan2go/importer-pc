@@ -1,0 +1,1125 @@
+{
+  "Base": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+  "Records": [
+    {
+      "Path": "docs/readiness/checks.json",
+      "Sha256": "9eb80eba64ffa0f4997fec0c63c433ce7f2189b315eecf6903a27b26774cc102",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/readiness/decision-pack.md",
+      "Sha256": "a767a1cce43c74cec5dc97b3b0ee98e33ad1250804e11d0c7f3f952c58bb294f",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/readiness/revision-and-verification.md",
+      "Sha256": "0c13653b5b02eeb1654f0e6d7a41110011ea35fae04d144e25bd256e7fad236f",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/readiness/technical-baseline.json",
+      "Sha256": "6193225e4940240ea68d4510f1bb69c8a4a682b68b54abc7b09a7bdccf5e0312",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/reviews/STATUS.md",
+      "Sha256": "e86ab9c05db0ca8222c19e24366127237fa6678b2131f5327e7be6ad0a3a0a40",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/reviews/issues.json",
+      "Sha256": "a16947ee9ee1a60a16afd35ab2b0e04897d88d24a44c97a1c2249ddeeb9d2ed9",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/README.md",
+      "Sha256": "2925db5834d4ae55cfd960ebedbde941fcc869bed0ff3e4d7609bc9f0861fd91",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/archive-comparison.json",
+      "Sha256": "29178a6d0a9826d05e3c9d4ddab04e7763a4c38dca704e84b12dbe4ddc76cced",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/archive-final.json",
+      "Sha256": "8b4018292aa1efe945e4d77bf472016161965a315201cedfa07c01cd1329f676",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/archive-observed.json",
+      "Sha256": "bf40f18012d3a27ee3a85cbec94c0b675ad2a6edf946b24ad377cdd2f2c3c146",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/candidate-inventory.json",
+      "Sha256": "c1cb4f99591e98b1bf82619c0f7c4b3e6214a3342daa99167aee6858d5eceef4",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/exploration/verify-operation-upgrade-d2b2ca2.py.txt",
+      "Sha256": "5bf13e36d1c888475f1d3aa4a4183374bc38357f76b20af9f3cead228839d4f7",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/legacy13-custody.json",
+      "Sha256": "5cf3fc5efee399ed479630a1874c14a51654db9925da68e26a237ee7970f1b26",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/archive-tool-tests.log",
+      "Sha256": "d7c57811f94c1f511e48d9a019fd1fa3cff17ff561fa20729b3ba14bf3c66dd1",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/client-final-build.log",
+      "Sha256": "133138df31e08ecbd676ebebb3f6d313a5915a140d6671477c4b3643aa653895",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/concurrent-build.log",
+      "Sha256": "28182e58ac3e63ca0e7a0acf30a21e47000926e93ee79ff0f68c4eef323098fb",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/evidence-build.log",
+      "Sha256": "60b1a8156b30f9af7bcd35e9367a6def6c6dde5863b6052e396d8abc0508a34c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/evidence-conformance.log",
+      "Sha256": "fdde2e4a3932e99e1a57db7d97d4ab13c62f9093f83c65ee000d40a137e362be",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/evidence-operation-closure.log",
+      "Sha256": "f12e12d535e386337a423be481751ba39286d900dd567e9a21cd66670b55e457",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-architecture2.log",
+      "Sha256": "af52303fdbb3d0ddb9a3b25194724dc1216aca52667cdc2bee8e7370725bcb6d",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-baseline1.log",
+      "Sha256": "bdbb00b110ff8d58db72ac951c4a5ae6ef18fd2f57d7f77c8430b70a56ef1cbc",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-build1.log",
+      "Sha256": "a039421fa15295aba7adea11c195a42976f5d64a14183f3d97a75593b35f4486",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-build2.log",
+      "Sha256": "7596bffa43ebcd5bb5d56cf350e7b4c881997075cc406a4ac786afbc252d6c2a",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-build3.log",
+      "Sha256": "4cdd1af5c4ea9cb7d77c5bf8a82147fa89b06d8f12cd3559f788be17cb5deab8",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-build4.log",
+      "Sha256": "eee29770dda1e537537537d429ae7dbc28349c1545abf57845747299840244d4",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-build5.log",
+      "Sha256": "82223e3da16b147bcce09baffc87e256d2a4df204b5fa86796876181d7daf2d0",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-build6.log",
+      "Sha256": "3bddcad87a2ab5b60b12be3d18414325ff086eb9fa0e40367dd79a78138969dc",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-build7.log",
+      "Sha256": "f3c9a1289aa80edd42cc19b40f49e0d56233491da53bcaf7bb18b6cba99cb826",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-build8.log",
+      "Sha256": "c4c1c422492e00bf598a10307ca83fbf583348c2a428c42376b5bff27e2eba39",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-closure2.log",
+      "Sha256": "cb92ffa653cb8b8c8d87fd9ba9e04b0da3cc6861b49f978e7858a17f3986fd31",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-conformance1.log",
+      "Sha256": "d7360ae7a550825809a88f7aa7ad81555305cb4694cd0c502287b17e3f6b72d4",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-conformance2.log",
+      "Sha256": "b6a353bf5179cf6fda552e80b72989b491a49bc405eb170861475908d79c7edd",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-followup2.log",
+      "Sha256": "b6ef414ada7c18a576711f1e8fe57be821ec5440ea4c2be68e387f0c4d8c9f36",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-operation2.log",
+      "Sha256": "192ac18a87fed640f529b2fb2f84d4ef1d9a3337331fbf36f0ac50a459ec0dcc",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-operation3.log",
+      "Sha256": "8d2f9cf25d66eaed25b5aa50db15e7485279867ebc0e26ec771e2b756e56a6e1",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-p1.log",
+      "Sha256": "f5368fa178e056b27ce81e660efabd3ced349bef84887d8ef2975b03dfe357ac",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-restore.log",
+      "Sha256": "0c60e45412b2e939784c7e6a8330370939b4d2c3fcc1a877283aaefb162fce25",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/exploration/ipc15-review-followup2.log",
+      "Sha256": "3728b9203e1deb1dbda919f2329e649e657c3542966736d0b604896b127fcaeb",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/final-architecture.log",
+      "Sha256": "1edd8545ce87784d9b310fd2b616c1dcadfe16ec920b84d04a986cfde1669b66",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/final-baseline.log",
+      "Sha256": "bb22beb29c3647698a6d8f21edaffc49dfdd25c2ec1094639c745a7a0177d8c6",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/final-build.log",
+      "Sha256": "47868962f611dd7bc96f3b6c40c81cbad04d60dac5fcad84caaae6857972c95c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/final-closure.log",
+      "Sha256": "81e6375e5642d85810ad39f0311a2fd44e39898ffa5a30d2f593ec0b8e57453e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/final-conformance.log",
+      "Sha256": "c7d01d9d76f598c69ce8f07dd50320bb16faf68664136b36a0e7402c2e3b8df0",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/final-followup.log",
+      "Sha256": "85946b5d643873b206598ab80ca4c7a32e3090ecdcfea7e29500c330d5ae600d",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/final-operation-closure.log",
+      "Sha256": "1f26a5e1c37f9dd985a3eaf1dca7034c8701999f69de3dd5c386416008ee0dd8",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/final-package-portable.log",
+      "Sha256": "9500afc77510b1d5138821700a3098eb72d858e6fb20962456218899055517e6",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/final-package-win.log",
+      "Sha256": "1db9785382c057a7c731f98363a32124044d8c18fbeb71f6e3ce86195acdcf95",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/final-restore.log",
+      "Sha256": "2adc9879551e9dc4bae7d344a72aeaa208e2b663a69fc2007ebff5f97ba8ce4e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/final-review-followup.log",
+      "Sha256": "73f6214e238506576756b88e4a0e47c6ebcca11e941316f7f22918ebf3c6ac40",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/handoff-architecture.log",
+      "Sha256": "38ef725471a0f7332b545585fc1e88e8d7ef6bfda475b9fb54aef725a1f7440a",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/handoff-baseline.log",
+      "Sha256": "97e23a49695a8a8c13285b7dcb7abf0bdd2f60b61c2429c26b4fb15d96b73bea",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/handoff-build.log",
+      "Sha256": "c9833455ed36f13c52a1fcf7c1468486ce67c2d9190bad43a8e47e618c515533",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/handoff-closure.log",
+      "Sha256": "cf0340074d855788595285912acaac59d697db63632d562d879a17216e21a71a",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/handoff-conformance.log",
+      "Sha256": "5e7a57f72b87e92604baacc0847a322e1a5db802d264ebc686b67dba5e43b1d5",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/handoff-followup.log",
+      "Sha256": "10affd994f01d4e2589e21431ab3b6557c4de09ba44545713d7a4044e8d40bf2",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/handoff-operation-closure.log",
+      "Sha256": "8bdc29ca0ff2d5276eeff237586bceedf9266039014e390331756e2941bd6bb4",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/handoff-review-followup.log",
+      "Sha256": "2a9f148a2925367af66bcccdc4e7040c2adce48655d5347d3a46f5895d7b7e5c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/package-portable.log",
+      "Sha256": "cc984441fcec0f45bfe76d228f38746f02dd74ae52634413faa787a897cb1205",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/release-plugin-reproducibility.log",
+      "Sha256": "8c5cc62b54df711056cbe2738dfb3105d616c0c47acb6d905c5d52828bf06535",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/release-portable.log",
+      "Sha256": "16d5f473007024c71965b8b1cf12e8fdd76155d3e1b7c01e235cb8cedba4e825",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/release-smoke-core.log",
+      "Sha256": "6ae0cfd2a1a186015b276acf7a2cad38a9eef70e9e09ec9af2085fe4b0d8bf3d",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/release-smoke-extension.log",
+      "Sha256": "9af0fcf03f05e6f20dcd2385d108c722073b92013f2be6ec9f5d3d4d0443338c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/release-upgrade-journey.log",
+      "Sha256": "7bff2833c2bc71bed7741488c838cf6dd7eefd0060d5d4f422caa04debe6362e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/release-win.log",
+      "Sha256": "5cb9008e9205ff7537a368e5b3f8c6898943a18d4dcdc16787c765ea833fbfab",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/stable-architecture.log",
+      "Sha256": "361e025d709007e2e0e19bd19dc3432e960c306e2c82fec5e60dd90b2343d1e3",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/stable-baseline.log",
+      "Sha256": "cf1c83445461add9030f88b43a0d24ee34a325ca6be2ce2b6c63c162e90bbbad",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/stable-closure.log",
+      "Sha256": "c31494c96a5356960a347f20c0db20c244455f6c23f2911de63f09a6c5bf50b4",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/stable-conformance.log",
+      "Sha256": "a857668597f270526bd0e97f6fdcc61c6512f1a0a1064476c45d982214df3646",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/stable-followup.log",
+      "Sha256": "de285b236149259e132f04f3a1e054aab862e371825ca788a7810004d29e5e91",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/stable-operation-closure.log",
+      "Sha256": "d5193c77c26b5221cf56de2561f914a56b58c9c43bcdc9bd89f2a9ea7efc535f",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/stable-review-followup.log",
+      "Sha256": "6a228816aa6194ab175ec693fcd39b74178ba1ccc90547560911ca972e8740c4",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/upgrade-journey-v2.log",
+      "Sha256": "344927722dde74286045238c930f8046fefe9d90d874bfc3a007688c15b75fc3",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/logs/upgrade-journey.log",
+      "Sha256": "3b634e0c5effd77459ba168ce362e70dbb8b0d7ca9f8ce81d5753eedd3cacad2",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/preserved-inputs.json",
+      "Sha256": "28bb6df9b84a36d385fe60effc7871f556ce755acbc94b605702541188d6175e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/publication-provenance.json",
+      "Sha256": "6c39fecfa05db39f631c4d1f4122ff01f4829b722168ba2c147016958649205a",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/release-plugin-reproducibility.json",
+      "Sha256": "292070a70b9c89dc497ecd49cc308107350289c5855865f1df60fd5993ed7aac",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/release-smoke-core.json",
+      "Sha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/release-smoke-extension.json",
+      "Sha256": "04d61c0a9ff8cfbd8e047dd7641af6b9f187dcb83720d7d669e8cf74ffc9d3ad",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/remote-readback.json",
+      "Sha256": "af3691fc804438b6af5416b8f5db2ec686e94359a13c72ed2ebae64e53ca0760",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/archive-tool-tests.record.json",
+      "Sha256": "38a9883d4da7217f38428977df3ba6332016fcbaac8f48867959b6ffcbdde326",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/client-final-build.record.json",
+      "Sha256": "6cb190175d826e557823af85b6c11379e82a76ed9784bf63ea4fa0cfa4f9c95b",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/concurrent-build.record.json",
+      "Sha256": "fc8549b4bb7926423fdf0f4c6d793d779e6ecea6d70c12b531141a084e4966d0",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/evidence-build.record.json",
+      "Sha256": "f670ff09bc1553931e8e2a2addff0e01e4bbd5d3624e0dd2a67da4bc194616ad",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/evidence-conformance.record.json",
+      "Sha256": "d6172f31ebdcaf9747116363b55cbae9fd44aade2e3769f2eef70575cbfbb312",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+      "Sha256": "6a345bad660c1ca67587040f444951c85208ae939ed3564ba4c7a8b2e6c0b2f7",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/final-architecture.record.json",
+      "Sha256": "824e45c0d81e39f3cc252e54bb77192333fde42ec2995c72f985314d1fcfbc21",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/final-baseline.record.json",
+      "Sha256": "c335c72593536cbb7af14663156422bcd5ca6aea10420706652527a28db2e4f1",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/final-build.record.json",
+      "Sha256": "bbc98b76a27e12822a71a160be28c14d74dee7141efe26adfb24a11167ace344",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/final-closure.record.json",
+      "Sha256": "e974e25576a2cd2f672ad1ff4ef9c0c97b77996c5b003d0f4d23af1d2b4ee5b7",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/final-conformance.record.json",
+      "Sha256": "36057024cbcf0d92fbc6e74db5e336987f465286447757ff469183ef4943e3bb",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/final-followup.record.json",
+      "Sha256": "be0f4409979fc43aa5548884f43a7f3d9fff4a421f4bba916b13fcfbf5a9060d",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/final-operation-closure.record.json",
+      "Sha256": "6cf45b69329167774481a2546cb0a7db29c5d975346a61c5e4732d904fb0d630",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/final-package-portable.record.json",
+      "Sha256": "7cb8cf671dc4443734878ca7c10e0b9ba619137e7a94f38a047929347451f55a",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/final-package-win.record.json",
+      "Sha256": "730ffa47f197ed73ab3390ea29f7a4fc97885dbfc21badf28a3e75978e00591b",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/final-portable-rearchive.record.json",
+      "Sha256": "1961de3c3e0b7630e0a2f9b3c99d0f155c505c159fb7b646b15b5ec18901290a",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/final-restore.record.json",
+      "Sha256": "ef14acf8cc2c0e157f5975a2d6f0bcceb9ab90e679816102cd6a6b2fb948dbda",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/final-review-followup.record.json",
+      "Sha256": "2dc0c7dee32dd419d0fcb3b26eaddc8e6f63c0ec40605de817d20b1a86432aae",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/handoff-architecture.record.json",
+      "Sha256": "f6397161b3225ed281da26b3f7532e89a6eb0b575934fd347a6f2566b99275ad",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/handoff-baseline.record.json",
+      "Sha256": "ec1f852cc1a55c785b8179c16e47e108694bf4cab094f2a8d9ce73bebec2b2ef",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/handoff-build.record.json",
+      "Sha256": "34a18a2282e4b30c78df0bc7bf28ddb58a7f7abce84a240e9c870de32168151e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/handoff-closure.record.json",
+      "Sha256": "ddf65da3de1cf20bb16a0d6fb8830dc459322aadf9467ae2b37e6912ffbb2bf2",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/handoff-conformance.record.json",
+      "Sha256": "4317c1f40560297ca85b30a99338f00119aed61bb4e3efc4f6ae8245289436ac",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/handoff-followup.record.json",
+      "Sha256": "e4800d629b0a26f748a4d23a053b440ccd46be96d7d5414678469b89bb6b979e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/handoff-operation-closure.record.json",
+      "Sha256": "e527b469a03e729f7c02137bd2d9198f9d6f2dcb92bb2527b1acba81ab7f1cbf",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/handoff-review-followup.record.json",
+      "Sha256": "1b11a03862ff0523b96994ec06bb5fe0fbe8112aa600823a3143b5e738523ed1",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/package-portable.record.json",
+      "Sha256": "aa9f69412cec4246db0301efcafcd0f7edb74ae4255d54cc194f420638530faa",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/release-plugin-reproducibility.record.json",
+      "Sha256": "0b569d1ddf4b63a54ea2fede3851505973942622e09c77e742ed07e2a0af7c02",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/release-portable.record.json",
+      "Sha256": "cb76a0bd2abcd22be2e3252d2ace922db88f16976dc3e8441653810d7b811d61",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/release-smoke-core.record.json",
+      "Sha256": "b9070700cd7e65e148696ff935a80ad25c3b1c9ea730c16588ccd108335c34a1",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/release-smoke-extension.record.json",
+      "Sha256": "8815b1b2597529b45e9c082f5b65bb72fba9614cda0725e1a3acc076e74c171c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/release-upgrade-journey.record.json",
+      "Sha256": "16b2d8a986812c8eded518f75fedb6d9b3de9bf282369759d7d1bd864571944c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/release-win.record.json",
+      "Sha256": "c3ab48d86864d6ae077157aceffd3fccdb221d6b37186667104189cae834c9ec",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/stable-architecture.record.json",
+      "Sha256": "5c21933f6e5f8f050898c3c211cbac6105809493952035b0dc733b50fd93bb9c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/stable-baseline.record.json",
+      "Sha256": "214613adebcdfc2e5e0f45f6633941295b35fcf1eea1d45f6594b29f1edb1bb9",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json",
+      "Sha256": "ae71f2603bcb4d5cb1a8377a21af8ab32efe1e3da84a9de9b42622b753104616",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/stable-conformance.record.json",
+      "Sha256": "0896b2b8a4c833f3dc9fc2603fe5f08312b8ae7722b26b14aaea7ac7e47a0f84",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/stable-followup.record.json",
+      "Sha256": "6dd5951fc726539bcef3cac4ff824dc5b0a51acbcb2b9f964937fca516c3f2f2",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/stable-operation-closure.record.json",
+      "Sha256": "71e0e06432feeafa44ee8926794cfb6a895d9c1759fef15542459387e1e73ad8",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/stable-review-followup.record.json",
+      "Sha256": "e0a11e0d6201a89bbe3c664c52dc04ec8e7e1c0805a937d746868ebe04f12a6a",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/upgrade-journey-v2.record.json",
+      "Sha256": "c57cb39b85ef34a63a94a2d4f8d6e1201f225bfdca7aff632ee6912fecc63d03",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/runs/upgrade-journey.record.json",
+      "Sha256": "eddb32d2ad217f0e4218e38529d9c7e03a99f99d0fe70f36aaf94ef1c76c6058",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/source-evidence-comparison.json",
+      "Sha256": "468861a3747fcb3df8dc87898aea5a524a777daec672f9fbead7cc2550f2af78",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/synthetic-custody.json",
+      "Sha256": "24adda74d35eec60ef18dcc3ffd1d28ad5120534487a8aa58f0c69b55fba12a6",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/synthetic-databases.zip",
+      "Sha256": "9d5287b154ffbe38200e14f21e50b15edb02ebe6f8cf11e9a7238d7929b8ee25",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/fixture.log",
+      "Sha256": "fc3422cb08df536aaaf202478d627b6930721bb458ff47b52b1929f282cce106",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/history-000001.json",
+      "Sha256": "fc63ea06a2ec623506e27f92b961cb55c20b78c4b40819d6e72fc6c6476cdbcf",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/history-000002.json",
+      "Sha256": "78f3440b1b975f9eea1039465df52383f94755195bf4466728a27af8c03ac21e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/new-deployment-restart.log",
+      "Sha256": "dea92155de0bd4d1dbbbd3fb3a759a18b6a83b0add91b4230738bf11dca8a56c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/new-final-restart.log",
+      "Sha256": "e260390f714106e35fa55b62c4c09ba6e88cbb7d580f4dce307c7405a75dbd35",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/new-transition-start.log",
+      "Sha256": "e359500eb333d8442be6adcb15308f90e9d1bc2a5dfd7c3a042dab205b5689aa",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/old-deployment-restart.log",
+      "Sha256": "f69c05b291b19003a201c4975eba3487f51fc17d226422a0d919289c8f136414",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/old-reader-refusal.log",
+      "Sha256": "76d205f14900d9b476f1d3fe20235bf2673720b7d85898c753427237a21cbb12",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/old-start.log",
+      "Sha256": "5f1524d9c3c05f02016ee26cc7c0b12a40f11ed0289dde723f22fdacbeb307f2",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/reference.barcode-1.0.1-install.log",
+      "Sha256": "95d1dd8a143caffb83a4c88a0184cef9c4a4cfd703eea45e67ee621821ecc83a",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/reference.barcode-1.0.3-install.log",
+      "Sha256": "b39afb96893c9a218531a06420e065fc7143d39d6c3d8fd07899d6924c1caebe",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/reference.integration-1.0.1-install.log",
+      "Sha256": "354f595fc57c94eee51d9d7b44c736e06850cb8e2cd09a6f9a1f0fd1a88dafc4",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/reference.integration-1.0.3-install.log",
+      "Sha256": "9131a6afcf0228b09d2fcdefd11273a35c5434959fc159b4e84ff099d7e64fc7",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/result.json",
+      "Sha256": "a2a6e54c6af89cba8f9c4296d07c10d306573eb4ca26a1d714d9ba6658f25024",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/transition-without-extensions-restart.log",
+      "Sha256": "75e84ff8ba8a09b5be6efca3746bef87a65fd7725da5715b26324dbfa0ff3eb4",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/trust.Simulation.json",
+      "Sha256": "42964f268105bcef9ec1ced482fe52d9b60e6f9a278e0854cc4a939bdaf73a5f",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/upgrade-collision.log",
+      "Sha256": "af99a8f7fe1a4b4d70b372e24fddb6af234cf72ff38d16c98e39b74b622f5be1",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/upgrade.json",
+      "Sha256": "d342c8989a56457228bfa56bab8f06ccc7be5c6d5c3e24315cc8928ad09f2e28",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/release-upgrade-journey/upgrade.log",
+      "Sha256": "02d4e4e25960248b367e9a73812a039f9517da3de7dea5152445905d26f351cc",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/fixture.log",
+      "Sha256": "52cedc333bd1c644d3c83cf9eab1a9230d9affb026e431feda6e9a7693370c73",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/history-000001.json",
+      "Sha256": "f87664f78f676fbdcda537f13e0a4a6169b4f32ffab0928309c57fe87998cd29",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/history-000002.json",
+      "Sha256": "a4ecdbf497f2d0c707dc2e822cc5aa4a8fe081c3e2e0a3a43d40243bbb4ae77e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/new-deployment-restart.log",
+      "Sha256": "fd9d1c98fa056c346565b38fef2005d4df00a7c66daf0059ef3926f607693474",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/new-final-restart.log",
+      "Sha256": "bcf76ad0c5f607bd37a5a401cb556ea6cfb4af4f76d4a4203a61ec02625d03a9",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/new-transition-start.log",
+      "Sha256": "260448eeb10aff4a694bf3c575e2142e1f69c8b413d795478d16237a1270cc23",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/old-deployment-restart.log",
+      "Sha256": "3c30d61633c4334fcf47cbf916c1926bad2ff32fdb168e0ea130fb1184a169c7",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/old-reader-refusal.log",
+      "Sha256": "76d205f14900d9b476f1d3fe20235bf2673720b7d85898c753427237a21cbb12",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/old-start.log",
+      "Sha256": "0ce4883e27f9d2c3c2735f87a45bf8ab24d6c4bb40f1cd55e8167c65d2a73673",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/reference.barcode-1.0.1-install.log",
+      "Sha256": "f9b3c22ac8feb857daafef5f357670c7fccdab2d773f839483b53ff7fc181432",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/reference.barcode-1.0.3-install.log",
+      "Sha256": "2893c013e8a8ad3b49862c71dd3bebc12bc8a2957fd322ed74f1546fecc0d7eb",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/reference.integration-1.0.1-install.log",
+      "Sha256": "fd2973b275798802ea84ce4b01a6c5b0bcdf85add88056a1d3cb1120cf39a093",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/reference.integration-1.0.3-install.log",
+      "Sha256": "31583eae64132084916aed6ca0bd2b9d16ec36ed700995828a081f086253e862",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/result.json",
+      "Sha256": "8b9f3d1737e14f61392d8beef7e75487999caa3968ee7e1d5b99a890818beda2",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/transition-without-extensions-restart.log",
+      "Sha256": "138c2a3e4918d59ac983235f2832013f0542be24c365c584b38092385422ef35",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/trust.Simulation.json",
+      "Sha256": "42964f268105bcef9ec1ced482fe52d9b60e6f9a278e0854cc4a939bdaf73a5f",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/upgrade-collision.log",
+      "Sha256": "af99a8f7fe1a4b4d70b372e24fddb6af234cf72ff38d16c98e39b74b622f5be1",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/upgrade.json",
+      "Sha256": "d4fc9e2ba1dee6258af9ea4495b46de122c8ce9a277c705daf5fb92af954cd0f",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/upgrade.log",
+      "Sha256": "7a69e5ebc0b71aedb18189e4852446327ea1e87288a542beceb0a653462ea3f9",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey/fixture.log",
+      "Sha256": "a82a63f8ac7f4c1f394777ebcce5fbd17436a23bff208dd7c2fc2fa29187b4bf",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey/reference.barcode-1.0.1-install.log",
+      "Sha256": "c377c5c5a4d3724fa0ce4d117710f3b4e8142f9a2e36badfc6e57b13d197b229",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey/result.json",
+      "Sha256": "799872596fe82a3246b4bdfa4bb42c9f80e2c33347f70f7a68117d756ae11de3",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey/trust.Simulation.json",
+      "Sha256": "42964f268105bcef9ec1ced482fe52d9b60e6f9a278e0854cc4a939bdaf73a5f",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/withdrawn-candidate.json",
+      "Sha256": "c601eaa25577c96b298956343977556536466e66c64c922ebbd01aab96cab56b",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/runtime/evidence/operation-closure-15/withdrawn-d2-candidates.json",
+      "Sha256": "545aa69388247defb566ecc319bc1c9305cfaee5e7929be9e35982c2052cc5e0",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/GALLERY.md",
+      "Sha256": "1f0b2f7807216a3d7522aa565a4e783b4531233df5a749e17c191cf1ecb19b62",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/README.md",
+      "Sha256": "5b4dae9929e0aee49d715fa66b9c55f72f81a0f1f14edc2bc9c431ee7252c9f9",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/README.source.md",
+      "Sha256": "0d6659534ab054403fe3f7cb8f5d8bb38cf94b50058868c8743483e44326ae99",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/design/editable-boards.json",
+      "Sha256": "93febef83f0e69625b8b08f76ee05f7275e505bce8cc8154530eaa54bee7f7a7",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/design/tokens.css",
+      "Sha256": "99ad481832ec36bb901032e597fccc9d36a0f7fa1b77ed5ffbf4c85434b18ec5",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/design/tokens.json",
+      "Sha256": "09bbfe810d571cfd57115729c78f59a3f43ee65974ce317fe08b9bbe8e8efb5e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/prototype/index.html",
+      "Sha256": "0990509ae71265eb9ae85702faba150e11d05c7b4cc42c913076e924d6343d01",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.css",
+      "Sha256": "03987ef6fc3d8b31823e6863d18146a5af4020c48bbe3b0097d13c89c9b3049c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.js",
+      "Sha256": "0d8663f607d7cd4ae360bda2e998376e8fc70d5e266cf3402ab62de3c49d77e3",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/publication-checks.json",
+      "Sha256": "c367fb9c90be77539cd9a35862de113061f8077ee5dad172dbe3e8b72f2adc3c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/render-verification.json",
+      "Sha256": "30c526bb3283fe9294339a35b2119b1162aecdc813f175fae3b851953eefcc10",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/01-normal-1920.png",
+      "Sha256": "cd995e976724445d049d5eea6aab678e3351d14d03530a06e1edcad278dfe66d",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/02-camera-offline-1920.png",
+      "Sha256": "d36a53d2206ef7e8eb95c2b5cf99cefafb029b2313975e94a360b8d707196e19",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/03-result-unknown-1920.png",
+      "Sha256": "ce2fbd3ed4cad5be46471f35a455808d484aa7619e40508db862de8fdaed70fa",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/04-business-rejected-1920.png",
+      "Sha256": "679d2e34f1beda2f58eaab0cc099c6bb4417e1679beccaab928ee19e26da8133",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/05-no-read-1920.png",
+      "Sha256": "90616f3c704dcde7cdf0511c6297f482b21c87eb54f2daeebcfb6ae0a4f85fed",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/06-multiple-barcodes-1920.png",
+      "Sha256": "a35e8bafecc65a9c2c447b274e0f17a335091a1fdb1551e6554ff04a6407f15d",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/07-storage-failed-1920.png",
+      "Sha256": "3ef7236358795ffea2df70adb89de8425f0ffc484b8cbe836ad3088ef73cc184",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/08-split-unapproved-1920.png",
+      "Sha256": "866b4387020f8b3174ce3cc737058ecc292a93ef35148542653a0dfd7c6fa32e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/09-split-candidate-1920.png",
+      "Sha256": "ada9b0593ea39b3ca3c9168e0d677e5bd27f47dde8b7688439a6cae1517fdf47",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/10-shortage-1920.png",
+      "Sha256": "97255488811984fde71b2d6bd54af9823e4639c4b31b4d571f0d415f64549b5e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/11-records-1920.png",
+      "Sha256": "9f85679e32ed2cbd3b7533e8d2b4c6b11d9c22323d5f7ebd008f48148ab27021",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/12-record-detail-1920.png",
+      "Sha256": "e04949df5a23f1ef94a1dac5dd1080e6e6db28dcab0c5b53bddd361bcb6d71fb",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/12b-record-detail-attempts-1920.png",
+      "Sha256": "23e9d5f88b84e0ecd78530b1e57f357c7d5997516c31629ec5091d65e062c076",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/13-devices-1920.png",
+      "Sha256": "54aeef370d4d1a052c14526b0b6cbbdff74d7416d4580ed99a03f0e393ae5cab",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/14-login-1920.png",
+      "Sha256": "c1236dac2faeade8b0b131fbf040d033d1870e8454db20e07e4a60f614762fa1",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/15-recovery-1920.png",
+      "Sha256": "ab50e1e6d080a1d58109ccef13f244835e1dffc0359337528733a3a9abd2a5f6",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/16-components-1920.png",
+      "Sha256": "fb935ede107cea1a8b3f23f226ebe860614b65a2e48bb70661529b59c58f054a",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/17-waiting-1920.png",
+      "Sha256": "26bfcbbc988c88d83a4a4d618c28c449ce0ac641c3a4b58b46ddf0472ace1132",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/18-recovered-1920.png",
+      "Sha256": "0925f87546c3f938e9c2ed03c1623d5ef8aa02804dc32d847ff3c0afeee0eac9",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/19-alarm-1920.png",
+      "Sha256": "3e693da6dbc9aaa18a116e2873dae1b535832bb1f557a2b75c1d02ae91f56a32",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/20-wcs-offline-1920.png",
+      "Sha256": "df6f1e48a093c8bf9be1799a20ae8daae5ba5b91031c7aa79ff1cbb43e726ea5",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/21-long-content-1920.png",
+      "Sha256": "ec32d08a0d98a34111774235a5f59877ab8a4570b0dca92524ef5fac84a5a7f8",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/22-no-records-1920.png",
+      "Sha256": "aa38dc8057a202fc0b03b8d2aed0c4d98bdd53e54cac04e8f2b530cb106204ce",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/23-pending-1920.png",
+      "Sha256": "09578e463ccdf0615b4bf2d585e15320085cecd87f5cd2a0d346291de08ad17a",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/24-maintenance-1920.png",
+      "Sha256": "0dde2d01213a273332be62ca16de4a2a4b767b128e01061a88d4d52dfc63d0a0",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/25-long-content-1366.png",
+      "Sha256": "8a7cfc77d493b57347e7b630ce43c3515ba0d215cae58ccaa0770ca44e608926",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/26-split-1366.png",
+      "Sha256": "1019f6617980d7e3ad37cf2c18b2daba9dc397402d7a08fb368d48ad6c573a7e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1093x614.png",
+      "Sha256": "3c53c18c072b93229a9e358a623a03d4fe3846fb0e22d5e129368f942bc21a30",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1280x680.png",
+      "Sha256": "0336d2dc55c716f06c488f4c3865ff28686140109ff246bff12eadd23ace25f0",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1280x720.png",
+      "Sha256": "1768334814f4f03a2fb4fd5272423a4afbbf271bfad29006ec430d8381b2f427",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1366x768.png",
+      "Sha256": "2acbaf92c706bb6034fb01f840ba7a594fa09a1da37a940a73ae01b4acbd9cb9",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1536x864.png",
+      "Sha256": "6c2aa477a92b8991a0b5b8c278e559274cbd2fa32fb68ecca77687501559f515",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1920x1080.png",
+      "Sha256": "cd995e976724445d049d5eea6aab678e3351d14d03530a06e1edcad278dfe66d",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-911x512.png",
+      "Sha256": "a2847fd66ca563ba2e4d33a536311d735e3e76062f988000a9b876a694c815c6",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/source-manifest.json",
+      "Sha256": "d85e3009070e8c04f30648b4a7f5a71f5e256e26fcf160d90eb31009232c2df3",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/tools/reexport_screenshots.py",
+      "Sha256": "98bc1e6459f0b503a13ad57d539476b1af794e66e4739bbb84f6875b316f310c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md",
+      "Sha256": "bc2f0836c30b57bd3eb058a4abe8126734d3f4fc87b37c17e790112d19ecd3fd",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "Sha256": "35637ef91e55b3f558e2fb87d566732966cdabc027d0e3ce95c0f56f69d815f6",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md",
+      "Sha256": "40cd43417b37e3becaa8b7e690a6b914249ab8ad5c65e83367c0a02d017b4aff",
+      "Unchanged": true
+    },
+    {
+      "Path": "src/Ipc.Supply/Store.cs",
+      "Sql": "SemanticFormatMigration",
+      "Sha256": "6a3634bc3187159475ecd48a7b29f47e6878f6f674c044013b3c7298ebd97f63",
+      "Unchanged": true
+    },
+    {
+      "Path": "src/Ipc.Supply/Store.cs",
+      "Sql": "Schema",
+      "Sha256": "580d7638ee63d4d1fe0bc8f4ee25ef4d0ca6ea6b1d33bb152119f8f861b56f0f",
+      "Unchanged": true
+    },
+    {
+      "Path": "src/Ipc.Supply/Maintenance.cs",
+      "Sql": "ClosureFormatMigration",
+      "Sha256": "77341c9b3c526faaf41c29fe416de7d37e9c9f6a344afb2218dca8fa4f06d544",
+      "Unchanged": true
+    },
+    {
+      "Path": "src/Ipc.Supply/Maintenance.cs",
+      "Sql": "ConformanceFormatMigration",
+      "Sha256": "6568a4cde333e4272509757f1386a9d4348dbf3a84dbc04f3b23e09e00ce877d",
+      "Unchanged": true
+    },
+    {
+      "Path": "src/Ipc.Supply/Maintenance.cs",
+      "Sql": "OperationFormatMigration",
+      "Sha256": "a777ecd157ad0c7a912f0a681bb0eea35921c0ebe577a3028a83e8156ab40db7",
+      "Unchanged": true
+    }
+  ]
+}

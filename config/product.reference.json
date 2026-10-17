@@ -41,7 +41,7 @@
       "Version": "1.0.0",
       "ContractMajor": 1,
       "Dependencies": [
-        "supply"
+        "supply-contracts"
       ],
       "File": "Ipc.Adapters.dll"
     },
@@ -51,6 +51,7 @@
       "Version": "1.0.0",
       "ContractMajor": 1,
       "Dependencies": [
+        "supply",
         "adapters"
       ],
       "File": "Ipc.Product.dll"

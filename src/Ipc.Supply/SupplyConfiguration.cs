@@ -8,7 +8,6 @@ public static class SupplyConfiguration
     {
         var e = ProductValidation.ValidateStationStructure(s).ToList();
         if (s.Devices is null || s.Devices.Any(x => x is null) || s.Integration is null) return e;
-        if (s.Devices is null || s.Devices.Any(x => x is null) || s.Integration is null) return e;
         if (s.Devices.Length != 2 || !s.Devices.Select(x => x.Role).Order().SequenceEqual(new[] { "left", "right" })) e.Add("Supply requires two unique left/right logical bindings");
         var requests = s.Extensions?.Ports?.SingleOrDefault(x => x.Port == "requests");
         if (s.Extensions?.Services?.Any(x => x.Enabled) == true && requests is null) e.Add("Supply requires a requests integration port");

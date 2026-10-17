@@ -1,0 +1,32 @@
+{
+  "Before": {
+    "Scenario": "120 virtual seconds, two Ready sources + one Ready requests service; two occupied lanes; no business observations sampled",
+    "HealthEvents": 360,
+    "ExternalCommitIntervals": 360,
+    "AuditGrowth": 360,
+    "StateRewrites": 360,
+    "OperationRewrites": 720,
+    "SnapshotMedianMs": 0.5329,
+    "SnapshotP95Ms": 0.8097,
+    "SnapshotMaxMs": 4.577,
+    "LogSha256": "9a03487e17230585e0509af1c6b4808a63da027c5491eb6f553512798b8b5082"
+  },
+  "After": {
+    "Scenario": "120 virtual seconds, two Ready sources + one Ready requests service; two occupied lanes; no business observations sampled",
+    "HealthEvents": 360,
+    "ExternalCommitIntervals": 0,
+    "AuditGrowth": 0,
+    "StateRewrites": 0,
+    "OperationRewrites": 0,
+    "SnapshotMedianMs": 0.4899,
+    "SnapshotP95Ms": 0.671,
+    "SnapshotMaxMs": 3.4197,
+    "LogSha256": "cc2395f4d224c482d394706be85c97f417a51f510e618d13de4b8385419cf2d8"
+  },
+  "BaselineSource": "12a40b308e13744eb4be959dff4a62dca473b5d9 health methods unchanged at initial profile build",
+  "Harness": "tests/Ipc.Verification/HealthRenewalVerification.cs Profile method",
+  "Environment": "macOS ARM64; .NET SDK10.0.402; actual SQLite WAL synchronous FULL",
+  "Method": "120 one-second virtual increments; all 360 health calls awaited; external data_version sampled after each call; audit count and temporary SQL triggers count aggregate UPDATEs. Stable window excludes setup/teardown. No observations sampled; two initial Enter events persisted. Latency is machine-specific synthetic evidence, not a site throughput claim.",
+  "ProgramBaselineSha256": "de5ef5ebb6669719f27c1cbb5911e5cbef949196d5615ba65781f5bfcbd4c971",
+  "ProfileMethodSha256": "c2cbff58865d433143fa997d4fee0b99ff4f243200358e3522d3dab2c065b187"
+}

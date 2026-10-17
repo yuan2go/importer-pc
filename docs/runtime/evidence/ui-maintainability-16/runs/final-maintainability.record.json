@@ -1,0 +1,16 @@
+{
+  "Name": "final-maintainability",
+  "SourceCommit": "a0595ed40a471f41a9ee268f0ec8ce339ad19d39",
+  "WorkingTree": true,
+  "Command": [
+    "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--maintainability"
+  ],
+  "StartedAt": "2026-10-17T17:04:58.334432+00:00",
+  "EndedAt": "2026-10-17T17:04:59.335687+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "ExitCode": 0,
+  "LogSha256": "43f2b7e872d8cb31b89a46f67f7cd39e2576c35d509cf45fd34df5b6e38278a1"
+}

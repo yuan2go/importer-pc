@@ -1,0 +1,27 @@
+{
+  "SchemaVersion": 1,
+  "Project": "examples/IntegrationExtension/IntegrationExtension.csproj",
+  "SourceRoots": [
+    "examples/IntegrationExtension"
+  ],
+  "BuildInputs": [
+    "Directory.Build.props",
+    "global.json",
+    "NuGet.Config"
+  ],
+  "Manifest": "examples/IntegrationExtension/manifest.template.json",
+  "Modules": "examples/IntegrationExtension/modules.json",
+  "ParameterSchemas": {
+    "reference-http": "examples/IntegrationExtension/parameters.json"
+  },
+  "Content": [
+    {
+      "Root": "build",
+      "Source": "Ipc.Reference.IntegrationExtension.dll",
+      "Path": "Ipc.Reference.IntegrationExtension.dll"
+    }
+  ],
+  "PublicContracts": [
+    "Ipc.Supply.Contracts"
+  ]
+}

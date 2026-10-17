@@ -29,15 +29,15 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     TaskCompletionSource<CommandReceipt>? overflowReceipt;
     string OverloadMarker => System.IO.Path.Combine(System.IO.Path.GetDirectoryName(store.Path)!, "overload-marker");
     public Func<bool>? InputDrained { private get; set; }
-    public bool IsOverloaded => runtimeFaults.ContainsKey("Overload");
+    public bool IsOverloaded => runtimeFaults.ContainsKey(SupplyReasonCodes.Overload);
     DateTimeOffset Now => clock.GetUtcNow();
     public Guid InstanceId { get; } = Guid.NewGuid();
     public StationApplication(SupplyStore store, StationConfig config, IRequestContract contract, FaultInjection? faults = null, TimeProvider? clock = null, Func<StationConfig, IReadOnlyList<string>>? configurationValidator = null, Func<StationConfig, IDisposable?>? configurationLeaseFactory = null)
     {
         this.configurationValidator = configurationValidator; this.configurationLeaseFactory = configurationLeaseFactory; this.store = store; this.config = config; this.contract = contract; this.clock = clock ?? TimeProvider.System; this.faults = faults ?? new(); state = store.Load();
-        if (File.Exists(OverloadMarker)) runtimeFaults["Overload"] = "Unacknowledged overflow; inspect source/entity evidence";
+        if (File.Exists(OverloadMarker)) runtimeFaults[SupplyReasonCodes.Overload] = "Unacknowledged overflow; inspect source/entity evidence";
         state.Actor = null; state.Stopping = false; state.IntegrationHealth = null; state.IntegrationServiceHealth = null; state.ServiceHealth.Clear();
-        state.Blocks.RemoveAll(x => x.Code == "WindowArea" && x.ClearAuthority == "presentation-owner");
+        state.Blocks.RemoveAll(x => x.Code == SupplyReasonCodes.WindowArea && x.ClearAuthority == "presentation-owner");
         // A released process does not imply unfinished calls were cancelled remotely.
         foreach (var request in store.PendingRequests().Where(x => x.Status == RequestStatus.Dispatching))
         {
@@ -58,7 +58,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                 var uncertain = prepared with { Status = RequestStatus.Unknown }; MarkOwner(state, uncertain, "Restored snapshot may lag external effects"); state.Revision++;
                 store.Commit(state, "RestoredIntentUnknown", prepared.OwnerId, "restore", request: uncertain);
             }
-            state.Revision++; store.Commit(state, "RestoreQuarantine", config.StationId, "runtime");
+            state.Revision++; store.Commit(state, SupplyReasonCodes.RestoreQuarantine, config.StationId, "runtime");
         }
         // Start asynchronous owners only after synchronous recovery commits succeeded.
         owner = new(config.CommandCapacity);
@@ -93,13 +93,13 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     // off the UI thread. Ordinary command rejection shares one bounded evidence writer/task.
     public void Latch(string code, string reason)
     {
-        if (code != "Overload") { runtimeFaults[code] = reason; return; }
+        if (code != SupplyReasonCodes.Overload) { runtimeFaults[code] = reason; return; }
         lock (faultGate) { Interlocked.Increment(ref overloadVersion); runtimeFaults[code] = reason; }
         lock (markerGate) FlushOverflow();
     }
     void FlushOverflow()
     {
-        if (!runtimeFaults.TryGetValue("Overload", out var reason)) return;
+        if (!runtimeFaults.TryGetValue(SupplyReasonCodes.Overload, out var reason)) return;
         try
         {
             using var marker = new FileStream(OverloadMarker, FileMode.Create, FileAccess.Write, FileShare.Read, 4096, FileOptions.WriteThrough);
@@ -110,11 +110,11 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     public Task<CommandReceipt> ExecuteAsync(Command command)
     {
         if (Volatile.Read(ref disposed) != 0) return Task.FromResult(new CommandReceipt("NotReady", "Application disposed; command not admitted", state.Revision));
-        var work = owner.Invoke(() => ExecuteCore(command), priority: command.Kind is "Pause" or "Logout" or "ClearOverload");
+        var work = owner.Invoke(() => ExecuteCore(command), priority: SupplyCommands.IsPriority(command.Kind));
         if (!work.IsFaulted || work.Exception?.InnerException is not QueueAdmissionException) return work;
         lock (faultGate)
         {
-            Interlocked.Increment(ref overloadVersion); runtimeFaults["Overload"] = "Application command queue rejected input; inspect source and explicitly clear overload";
+            Interlocked.Increment(ref overloadVersion); runtimeFaults[SupplyReasonCodes.Overload] = "Application command queue rejected input; inspect source and explicitly clear overload";
             // One shared completion and one coalesced signal, regardless of rejection burst size.
             overflowReceipt ??= new(TaskCreationOptions.RunContinuationsAsynchronously);
             if (!overflowWrites.Writer.TryWrite(true)) overflowReceipt.TrySetResult(new("NotReady", "Application stopping; command not admitted", state.Revision));
@@ -134,30 +134,32 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             string owner = command.OwnerId ?? next.Session?.Id ?? config.StationId;
             try
             {
-                if (command.Kind != "Login") RequireIdentity(next);
-                switch (command.Kind)
+                SupplyCommands.TryParse(command.Kind, out var action);
+                if (action != SupplyAction.Login) RequireIdentity(next);
+                if (SupplyCommands.RequiresMaintenance(action)) Maintenance(next);
+                switch (action)
                 {
-                    case "Login":
+                    case SupplyAction.Login:
                         Require(config.Mode == RunMode.Simulation, "Production identity provider unavailable");
                         Require(command.Value is "operator" or "maintenance", "Select a defined SIMULATION identity");
                         next.Actor = new("SIM-" + command.Value, command.Value == "maintenance" ? SimulationRole.Maintenance : SimulationRole.Operator, Now.AddHours(8)); break;
-                    case "Logout":
+                    case SupplyAction.Logout:
                         next.Actor = null; break; // Prior responsibility is frozen on every request.
-                    case "Pause": SetBlock(next, "OperatorPaused", "station", "operator", "manual", "operator"); break;
-                    case "Resume": Require(!next.Blocks.Any(x => x.Code == "WindowArea"), "An insufficient window still owns presentation protection"); next.Blocks.RemoveAll(x => x.Code == "OperatorPaused"); break;
-                    case "ClearOverload":
-                        Maintenance(next); Require(command.Value?.Length is >= 8 and <= 1000, "Source inspection evidence required");
+                    case SupplyAction.Pause: SetBlock(next, SupplyReasonCodes.OperatorPaused, "station", "operator", "manual", "operator"); break;
+                    case SupplyAction.Resume: Require(!next.Blocks.Any(x => x.Code == SupplyReasonCodes.WindowArea), "An insufficient window still owns presentation protection"); next.Blocks.RemoveAll(x => x.Code == SupplyReasonCodes.OperatorPaused); break;
+                    case SupplyAction.ClearOverload:
+                        Require(command.Value?.Length is >= 8 and <= 1000, "Source inspection evidence required");
                         Require(IsOverloaded, "No active overload to acknowledge");
-                        Require(!runtimeFaults.Keys.Any(x => x != "Overload"), "Resolve runtime evidence/worker faults before overload acknowledgement");
+                        Require(!runtimeFaults.Keys.Any(x => x != SupplyReasonCodes.Overload), "Resolve runtime evidence/worker faults before overload acknowledgement");
                         Require(InputDrained?.Invoke() != false, "Drain admitted observations before overload acknowledgement");
                         Require(!HasUnresolved(), "Reconcile sent/Unknown requests or locally terminate proven undelivered Prepared requests first");
                         break;
-                    case "OpenContext":
-                        Demand(GuardFor(next, "Open")); Require(next.Session is null || next.Session.Status is SessionStatus.Closed or SessionStatus.Rejected, "Existing box must be authoritatively closed");
+                    case SupplyAction.OpenContext:
+                        Demand(GuardFor(next, SupplyGuardAction.Open)); Require(SupplyCommands.SessionReady(action, next.Session), "Existing box must be authoritatively closed");
                         Require(ValidBarcode(command.Value), "Box barcode must be 1–128 ASCII digits; leading zeroes preserved");
                         next.Session = new() { Barcode = command.Value!, Status = SessionStatus.Validating, OpenedBy = next.Actor };
                         next.Lanes.Clear(); owner = next.Session.Id; request = Prepare(next, owner, 1, RequestKind.Context, command.Value!, null, null); break;
-                    case "Submit":
+                    case SupplyAction.Submit:
                     {
                         var op = Operation(next, owner); Demand(OperationGuard(next, op));
                         Require(op.Status is OperationStatus.AwaitingAction or OperationStatus.SplitRequired, "Operation not ready to submit");
@@ -167,67 +169,66 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                         op.Revision++; op.Status = OperationStatus.SubmitPending;
                         request = Prepare(next, op.Id, op.Revision, RequestKind.Submit, op.Barcode, op.Package, op.Supply); break;
                     }
-                    case "ScanRetained":
+                    case SupplyAction.ScanRetained:
                     {
-                        Demand(GuardFor(next, "Submit")); var op = Operation(next, owner);
+                        Demand(GuardFor(next, SupplyGuardAction.Submit)); var op = Operation(next, owner);
                         Require(op.Status == OperationStatus.SplitRequired, "Not a split task");
                         Require(command.Value?.Length is > 0 and <= 128, "Synthetic retained-unit identity required");
                         Require(op.SplitScans.Count < op.Supply || op.SplitScans.Contains(command.Value!), "Target count already reached");
                         op.SplitScans.Add(command.Value!); op.Revision++; break;
                     }
-                    case "ClearSplit":
+                    case SupplyAction.ClearSplit:
                     {
                         var op = Operation(next, owner); Require(op.Status == OperationStatus.SplitRequired, "Split already submitted");
                         Require(command.Value == "CONFIRM", "Explicit clear confirmation required"); op.SplitScans.Clear(); op.Revision++; break;
                     }
-                    case "CancelPrepared":
+                    case SupplyAction.CancelPrepared:
                     {
-                        Maintenance(next); Require(command.Value?.Length is >= 8 and <= 1000, "Local termination inspection evidence required");
+                        Require(command.Value?.Length is >= 8 and <= 1000, "Local termination inspection evidence required");
                         request = store.Request(owner) ?? throw new GuardException("Original request not found");
                         Demand(LocalTerminationGuard(next, request));
                         request = request with { Status = RequestStatus.CancelledBeforeDispatch };
                         // This local fact says nothing about reservations from earlier requests or physical permission.
-                        SetBlock(next, "LocalDispositionRequired", "request", request.Id, request.PayloadHash, "approved-disposition-evidence");
+                        SetBlock(next, SupplyReasonCodes.LocalDispositionRequired, "request", request.Id, request.PayloadHash, "approved-disposition-evidence");
                         var affected = next.Lanes.Values.SingleOrDefault(x => x.Id == request.OwnerId);
                         if (affected is not null) { affected.Status = OperationStatus.AwaitingDisposition; affected.Reason = "Original request locally terminated; prior reservations/entity require disposition"; }
                         else if (next.Session?.Id == request.SessionId) next.Session.Status = SessionStatus.AwaitingDisposition;
                         break;
                     }
-                    case "CancelDraft":
+                    case SupplyAction.CancelDraft:
                     {
                         var op = Operation(next, owner); Require(op.Status is OperationStatus.AwaitingAction or OperationStatus.SplitRequired or OperationStatus.ValidationRejected or OperationStatus.Rejected, "Cannot cancel unknown/in-flight/accepted effect");
                         Require(!store.Requests(op.Id).Any(IsPending), "Pending request must be resolved first"); op.Status = OperationStatus.Cancelled; op.Revision++; break;
                     }
-                    case "CheckClose":
-                        Demand(GuardFor(next, "Close"));
-                        Require(next.Session?.Status == SessionStatus.Active, "Box must be active");
+                    case SupplyAction.CheckClose:
+                        Demand(GuardFor(next, SupplyGuardAction.Close));
+                        Require(next.Session is not null && SupplyCommands.SessionReady(action, next.Session), "Box must be active");
                         next.Session.Status = SessionStatus.ClosingCheck;
                         request = Prepare(next, next.Session.Id, next.Revision + 1, RequestKind.CheckClose, next.Session.Barcode, null, null);
                         next.Session.CloseCheckRequest = request.Id; break;
-                    case "CancelClose":
-                        Require(next.Session?.Status == SessionStatus.AwaitingShortageDecision, "No cancellable shortage check");
+                    case SupplyAction.CancelClose:
+                        Require(next.Session is not null && SupplyCommands.SessionReady(action, next.Session), "No cancellable shortage check");
                         next.Session.Status = SessionStatus.Active; next.Session.CloseCheckRequest = null; next.Session.CloseToken = null; next.Session.CloseRemaining = null; break;
-                    case "ConfirmClose":
-                        Demand(GuardFor(next, "ConfirmClose"));
-                        Require(next.Session?.Status == SessionStatus.AwaitingShortageDecision && next.Session.CloseToken is not null, "Authoritative close check required");
+                    case SupplyAction.ConfirmClose:
+                        Demand(GuardFor(next, SupplyGuardAction.ConfirmClose));
+                        Require(next.Session is not null && SupplyCommands.SessionReady(action, next.Session), "Authoritative close check required");
                         Require(command.OwnerId == next.Session.CloseCheckRequest && command.Value == "CONFIRM", "Confirmation must reference the exact close check");
                         next.Session.Status = SessionStatus.Closing;
                         request = Prepare(next, next.Session.Id, next.Revision + 1, RequestKind.Close, next.Session.Barcode, null, null);
                         next.Session.CloseRequest = request.Id; break;
-                    case "SetFixtureFault":
-                        Require(config.Mode == RunMode.Simulation, "Simulation only"); Maintenance(next);
+                    case SupplyAction.SetFixtureFault:
+                        Require(config.Mode == RunMode.Simulation, "Simulation only");
                         Require(command.Value is "None" or "Drop" or "Delay" or "Reject" or "QueryMissing" or "QueryUnsupported", "Unknown fault"); next.NextFault = command.Value!; break;
-                    case "SetSyntheticBlock":
-                        Maintenance(next); Require(config.Mode == RunMode.Simulation, "Simulation only");
+                    case SupplyAction.SetSyntheticBlock:
+                        Require(config.Mode == RunMode.Simulation, "Simulation only");
                         Require(command.Value is "EntityPermit" or "WcsUnavailable" or "License" or "DeviceFault", "Unknown synthetic block");
                         SetBlock(next, command.Value!, "station", "fixture-control", config.Version, "maintenance"); break;
-                    case "ClearSyntheticBlock":
-                        Maintenance(next); Require(config.Mode == RunMode.Simulation, "Simulation only");
+                    case SupplyAction.ClearSyntheticBlock:
+                        Require(config.Mode == RunMode.Simulation, "Simulation only");
                         Require(command.Value is "EntityPermit" or "WcsUnavailable" or "License" or "DeviceFault", "Only the matching synthetic source may clear");
                         next.Blocks.RemoveAll(x => x.Code == command.Value && x.Source == "fixture-control"); break;
-                    case "ReviewObservations":
+                    case SupplyAction.ReviewObservations:
                     {
-                        Maintenance(next);
                         Require(command.Value is { Length: > 0 and <= 65536 }, "Versioned source review required");
                         ObservationReviewEvidence review;
                         try { review = Wire.Decode<ObservationReviewEvidence>(command.Value!); }
@@ -236,18 +237,18 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                         Require(review.Sources.Distinct().Count() == review.Sources.Length, "Duplicate source selection");
                         foreach (var selection in review.Sources)
                         {
-                            Require(selection is not null && selection.Code == "ObservationReview", "Only observation source evidence can be reviewed here");
+                            Require(selection is not null && selection.Code == SupplyReasonCodes.ObservationReview, "Only observation source evidence can be reviewed here");
                             Require(next.Blocks.Any(b => MatchesReview(b, selection)), "Source evidence changed; inspect the current version");
                         }
                         next.Blocks.RemoveAll(b => review.Sources.Any(x => MatchesReview(b, x)));
                         break;
                     }
-                    case "RecordReconciliation":
-                        Maintenance(next); Require(store.Request(owner) is not null, "Original request required");
+                    case SupplyAction.RecordReconciliation:
+                        Require(store.Request(owner) is not null, "Original request required");
                         Require(command.Value?.Length is >= 8 and <= 1000, "Record authority/source/evidence; notes cannot force success"); break;
-                    case "SaveConfig":
+                    case SupplyAction.SaveConfig:
                     {
-                        Maintenance(next); Require(command.Value is not null, "Configuration JSON required");
+                        Require(command.Value is not null, "Configuration JSON required");
                         var draft = Wire.Decode<StationConfig>(command.Value!);
                         configurationLease = configurationLeaseFactory?.Invoke(draft);
                         var errors = SupplyConfiguration.Validate(draft).Concat(configurationValidator?.Invoke(draft) ?? []).Distinct().ToArray();
@@ -257,11 +258,11 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                         revision = new(Wire.Id(), config.Version, draft, next.Actor!.Id, errors.Length == 0 ? "Validated" : "Rejected", string.Join("; ", errors), Now);
                         owner = revision.Id; break;
                     }
-                    case "ActivateConfig":
+                    case SupplyAction.ActivateConfig:
                     {
-                        Maintenance(next); Require(!HasUnresolved() && (next.Session is null || next.Session.Status is SessionStatus.Closed or SessionStatus.Rejected), "Close box and resolve effects before restart activation");
+                        Require(!HasUnresolved() && (next.Session is null || next.Session.Status is SessionStatus.Closed or SessionStatus.Rejected), "Close box and resolve effects before restart activation");
                         Require(!next.Quarantined && next.Lanes.Values.All(x => x.Occupancy == Occupancy.Clear) &&
-                            !next.Blocks.Any(x => x.Code is "LocalDispositionRequired" or "ConflictingEvidence"), "Entity/recovery responsibilities prevent deployment activation");
+                            !next.Blocks.Any(x => x.Code is SupplyReasonCodes.LocalDispositionRequired or SupplyReasonCodes.ConflictingEvidence), "Entity/recovery responsibilities prevent deployment activation");
                         var draft = store.Configs().FirstOrDefault(x => x.Id == owner) ?? throw new GuardException("Configuration revision not found");
                         Demand(ConfigurationActivation.Evaluate(next, draft, config.Version, HasUnresolved(), Now));
                         configurationLease = configurationLeaseFactory?.Invoke(draft.Content);
@@ -270,12 +271,12 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                         Require(store.CurrentConfig("PendingActivation") is null, "A configuration is already pending controlled restart");
                         Require(SupplyConfiguration.Validate(draft.Content).Concat(configurationValidator?.Invoke(draft.Content) ?? []).Count() == 0, "Configuration capabilities changed; validate draft again");
                         revision = draft with { Status = "PendingActivation" };
-                        SetBlock(next, "ConfigPending", "station", "configuration", revision.Id, "controlled-restart"); break;
+                        SetBlock(next, SupplyReasonCodes.ConfigPending, "station", "configuration", revision.Id, "controlled-restart"); break;
                     }
-                    case "ClearQuarantine":
-                        Maintenance(next); Require(next.Quarantined && !HasUnresolved() && command.Value?.Length >= 8, "Resolve all retained effects and record external inventory evidence first");
+                    case SupplyAction.ClearQuarantine:
+                        Require(next.Quarantined && !HasUnresolved() && command.Value?.Length >= 8, "Resolve all retained effects and record external inventory evidence first");
                         next.Quarantined = false; break;
-                    case "AckAlarm":
+                    case SupplyAction.AckAlarm:
                     {
                         var alarm = store.Alarm(owner) ?? throw new GuardException("Alarm identity not found");
                         acknowledgement = alarm with { AckedBy = next.Actor!.Id, AckedAt = Now }; break;
@@ -288,29 +289,29 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                 string evidence;
                 lock (faultGate)
                 {
-                    if (command.Kind == "ClearOverload") Require(command.EvidenceVersion == overloadVersion, "Overflow evidence changed; inspect current source evidence and retry");
-                    evidence = command.Kind == "ClearOverload" ? $"{command.Value}; version={overloadVersion}; {runtimeFaults.GetValueOrDefault("Overload")}" : command.Value ?? "";
+                    if (action == SupplyAction.ClearOverload) Require(command.EvidenceVersion == overloadVersion, "Overflow evidence changed; inspect current source evidence and retry");
+                    evidence = action == SupplyAction.ClearOverload ? $"{command.Value}; version={overloadVersion}; {runtimeFaults.GetValueOrDefault(SupplyReasonCodes.Overload)}" : command.Value ?? "";
                 }
                 store.Commit(next, command.Kind, owner, next.Actor?.Id ?? state.Actor?.Id ?? "signed-out", evidence, command, receipt, request, config: revision, alarm: acknowledgement);
                 Adopt(next);
-                if (command.Kind == "ClearOverload")
+                if (action == SupplyAction.ClearOverload)
                 {
                     lock (markerGate)
                     {
                         bool current;
-                        lock (faultGate) { current = command.EvidenceVersion == overloadVersion; if (current) runtimeFaults.TryRemove("Overload", out _); }
+                        lock (faultGate) { current = command.EvidenceVersion == overloadVersion; if (current) runtimeFaults.TryRemove(SupplyReasonCodes.Overload, out _); }
                         if (current) File.Delete(OverloadMarker);
                         // A newer overflow during the commit/delete is a separate occurrence.
                         // Rewrite it before releasing marker ownership; never acknowledge it away.
                         FlushOverflow();
                     }
                 }
-                if (command.Kind == "ClearQuarantine") File.Delete(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(store.Path)!, "restore-quarantine"));
+                if (action == SupplyAction.ClearQuarantine) File.Delete(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(store.Path)!, "restore-quarantine"));
                 faults.Hit("AfterT1"); SyncAlarms(); return receipt;
             }
             catch (GuardException ex) { return new("RejectedByGuard", ex.Message, state.Revision, owner); }
         }
-        catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); return new("StorageFailure", "Local save failed; business blocked; inspect diagnostics", state.Revision); }
+        catch (Exception ex) when (IsStorage(ex)) { Latch(SupplyReasonCodes.StorageFailure, ex.Message); return new(SupplyReasonCodes.StorageFailure, "Local save failed; business blocked; inspect diagnostics", state.Revision); }
         finally { try { configurationLease?.Dispose(); } finally { gate.Release(); } }
     }
     BusinessRequest Prepare(StationState next, string owner, long ownerRevision, RequestKind kind, string barcode, int? package, int? quantity)
@@ -338,13 +339,13 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                 switch (observation.Kind)
                 {
                     case "Enter":
-                        Demand(GuardFor(next, "Admit", admittedEvent: true)); Require(!store.HasAdmission(observation.AdmissionId), "Admission identity already consumed");
+                        Demand(GuardFor(next, SupplyGuardAction.Admit, admittedEvent: true)); Require(!store.HasAdmission(observation.AdmissionId), "Admission identity already consumed");
                         Require(op is null || op.Occupancy == Occupancy.Clear, "Previous physical entity not reset");
                         op = new() { BoxBarcode = next.Session!.Barcode, BoxWave = next.Session.Context?.BoxWave, SessionId = next.Session.Id, Lane = binding.Role, AdmissionId = observation.AdmissionId, PermitEpoch = observation.Epoch, PermitExpiresAt = Now.AddMinutes(30), Status = OperationStatus.Observed };
                         next.Lanes[binding.Role] = op; break;
                     case "Read":
                         Require(op is not null && op.AdmissionId == observation.AdmissionId && op.Occupancy == Occupancy.Occupied, "Read requires matching occupied admission");
-                        Demand(GuardFor(next, "Admit", admittedEvent: true));
+                        Demand(GuardFor(next, SupplyGuardAction.Admit, admittedEvent: true));
                         Require(op.Status is OperationStatus.Observed or OperationStatus.ValidationRejected or OperationStatus.Rejected, "Request/result must be resolved before correction");
                         Require(!store.Requests(op.Id).Any(IsPending), "Cannot revise unresolved effect");
                         InvalidateReadInput(op, observation);
@@ -390,13 +391,13 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                     currentOperation.Status = OperationStatus.ValidationRejected; currentOperation.Reason = disposition;
                     next.Devices[binding.Role] = currentDevice with { Sequence = observation.Sequence }; op = currentOperation;
                 }
-                SetBlock(next, "ObservationReview", binding?.Role ?? "station", observation.DeviceId, observation.Epoch, "maintenance");
+                SetBlock(next, SupplyReasonCodes.ObservationReview, binding?.Role ?? "station", observation.DeviceId, observation.Epoch, "maintenance");
             }
             next.Revision++; faults.Hit("T1");
             store.Commit(next, disposition, op?.Id ?? observation.Id, "device:" + observation.DeviceId, Wire.Encode(observation), request: request, observation: observation, operation: op);
             Adopt(next); SyncAlarms();
         }
-        catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); }
+        catch (Exception ex) when (IsStorage(ex)) { Latch(SupplyReasonCodes.StorageFailure, ex.Message); }
         finally { gate.Release(); }
     }
     public Task<(BusinessRequest Request, SendAttempt Attempt)?> ClaimAsync() => owner.Invoke(() => ClaimCore(), priority: false, waitForCapacity: true);
@@ -414,7 +415,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             store.Commit(next, "T2Claim", request.OwnerId, "sender", request.Id, request: request, attempt: attempt); Adopt(next);
             faults.Hit("AfterT2"); return (request, attempt);
         }
-        catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); return null; }
+        catch (Exception ex) when (IsStorage(ex)) { Latch(SupplyReasonCodes.StorageFailure, ex.Message); return null; }
         finally { gate.Release(); }
     }
     public Task<bool> BeforeSendAsync(BusinessRequest request, SendAttempt attempt) => owner.Invoke(() => BeforeSendCore(request, attempt), priority: false, waitForCapacity: true);
@@ -435,7 +436,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                     // Conservative durable authorization boundary. After this, cancellation cannot prove non-delivery.
                     store.Commit(next, "TransportHandoffAuthorized", request.OwnerId, "sender", request.Id,
                         attempt: latest with { Disposition = "TransportHandoff" },
-                        occurrence: new("send-" + attempt.Id, request.Id, attempt.Id, "execute", Now, "AwaitingResponse"));
+                        occurrence: new("send-" + attempt.Id, request.Id, attempt.Id, "execute", Now, ReceiptResponsibilityRules.AwaitingResponse));
                     Adopt(next);
                     bool changedDuringCommit;
                     lock (faultGate) changedDuringCommit = !runtimeFaults.IsEmpty || overloadVersion != authorizedOverflowVersion;
@@ -452,7 +453,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                     request: request with { Status = RequestStatus.Prepared }, attempt: attempt with { EndedAt = Now, Disposition = "NotDelivered" });
                 Adopt(next); return false;
         }
-        catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); return false; }
+        catch (Exception ex) when (IsStorage(ex)) { Latch(SupplyReasonCodes.StorageFailure, ex.Message); return false; }
         finally { gate.Release(); }
     }
     public Task CompleteAsync(BusinessRequest sent, SendAttempt? attempt, IntegrationResponse response, string? receiptId = null) => owner.Invoke(() => CompleteCore(sent, attempt, response, receiptId), priority: false, waitForCapacity: true);
@@ -464,22 +465,22 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             var original = store.Request(sent.Id) ?? throw new InvalidDataException("Response without original request");
             contract.ValidateResponse(original, response);
             var sentOccurrence = attempt is null ? null : store.ReceiptOccurrence("send-" + attempt.Id);
-            var occurrence = receiptId is null ? sentOccurrence is { Status: "AwaitingResponse" } ? sentOccurrence : BeginReceipt(original, attempt, "direct-receipt") :
+            var occurrence = receiptId is null ? sentOccurrence is { Status: ReceiptResponsibilityRules.AwaitingResponse } ? sentOccurrence : BeginReceipt(original, attempt, "direct-receipt") :
                 store.ReceiptOccurrence(receiptId) ?? throw new InvalidDataException("Original receipt reservation missing");
             if (occurrence.RequestId != original.Id || occurrence.AttemptId != attempt?.Id) throw new InvalidDataException("Receipt occurrence identity mismatch");
-            if (occurrence.Status == "Committed")
+            if (occurrence.Status == ReceiptResponsibilityRules.Committed)
             {
                 if (occurrence.Response != response) throw new InvalidDataException("Committed receipt identity reused with different content");
                 return;
             }
-            if (occurrence.Status == "NoResponse") throw new InvalidDataException("Closed no-response identity cannot receive content");
+            if (occurrence.Status == ReceiptResponsibilityRules.NoResponse) throw new InvalidDataException("Closed no-response identity cannot receive content");
             var ingress = CaptureReceipt(original, attempt, response, occurrence);
             PersistResponse(original, attempt, response, ingress);
             faults.Hit("T3Committed");
             File.Delete(ReceiptFile(ingress.Id));
             faults.Hit("AfterT3"); SyncAlarms();
         }
-        catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", "Response received but could not persist: " + ex.Message); }
+        catch (Exception ex) when (IsStorage(ex)) { Latch(SupplyReasonCodes.StorageFailure, "Response received but could not persist: " + ex.Message); }
         catch (InvalidDataException ex) { Latch("ProtocolFailure", ex.Message); await UnknownLocked(sent, attempt, ex.Message); }
         finally { gate.Release(); }
     }
@@ -501,12 +502,12 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             // A caller reporting no authoritative response (or suppressed handoff) closes
             // only that send's intake, never another query or already flushed raw receipt.
             var sending = attempt is null ? null : store.ReceiptOccurrence("send-" + attempt.Id);
-            var noResponse = sending is { Status: "AwaitingResponse" } && !File.Exists(ReceiptFile(sending.Id)) ? sending with { Status = "NoResponse" } : null;
-            store.Commit(next, "OutcomeUnknown", request.OwnerId, "sender", reason, request: request, occurrence: noResponse,
+            var noResponse = sending is { Status: ReceiptResponsibilityRules.AwaitingResponse } && !File.Exists(ReceiptFile(sending.Id)) ? sending with { Status = ReceiptResponsibilityRules.NoResponse } : null;
+            store.Commit(next, SupplyReasonCodes.OutcomeUnknown, request.OwnerId, "sender", reason, request: request, occurrence: noResponse,
                 attempt: attempt is null ? null : attempt with { EndedAt = Now, Disposition = "Unknown", Error = reason });
             Adopt(next); SyncAlarms();
         }
-        catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); }
+        catch (Exception ex) when (IsStorage(ex)) { Latch(SupplyReasonCodes.StorageFailure, ex.Message); }
         return Task.CompletedTask;
     }
     static void MarkOwner(StationState next, BusinessRequest request, string reason)
@@ -553,73 +554,73 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
         RequestAuthority payload;
         try { payload = contract.Authority(request); }
         catch (Exception ex) when (ex is InvalidDataException or IOException or System.Security.Cryptography.CryptographicException or System.Text.Json.JsonException)
-        { return new(false, reasons.Append("OriginalIntegrationUnavailable:" + ex.GetType().Name).Distinct().ToArray()); }
-        if (payload.Actor.ExpiresAt <= Now) reasons.Add("OriginalActorExpired");
-        if (request.Binding != config.Integration) reasons.Add("OriginalBindingNotActive");
+        { return new(false, reasons.Append(SupplyReasonCodes.OriginalIntegrationUnavailable + ":" + ex.GetType().Name).Distinct().ToArray()); }
+        if (payload.Actor.ExpiresAt <= Now) reasons.Add(SupplyReasonCodes.OriginalActorExpired);
+        if (request.Binding != config.Integration) reasons.Add(SupplyReasonCodes.OriginalBindingNotActive);
         if (request.Implementation is not null && request.Implementation.ConfigurationSha256 != contract.Freeze()?.ConfigurationSha256)
-            reasons.Add("OriginalImplementationNotActive");
-        if (s.Session?.Id != request.SessionId) reasons.Add("SessionChanged");
+            reasons.Add(SupplyReasonCodes.OriginalImplementationNotActive);
+        if (s.Session?.Id != request.SessionId) reasons.Add(SupplyReasonCodes.SessionChanged);
         if (request.Kind is RequestKind.Context or RequestKind.Validate or RequestKind.Submit)
             foreach (var device in s.Devices) if (!device.Value.IsValid(Now)) reasons.Add("Device:" + device.Key + ":" + device.Value.ValidityReason(Now));
         if (request.Kind is RequestKind.Validate or RequestKind.Submit)
         {
             var op = s.Lanes.Values.FirstOrDefault(x => x.Id == request.OwnerId);
-            if (op?.Revision != request.OwnerRevision || op.Occupancy != Occupancy.Occupied) reasons.Add("OperationRevisionOrOccupancyChanged");
-            if (s.Session?.Status != SessionStatus.Active) reasons.Add("CloseBarrier");
+            if (op?.Revision != request.OwnerRevision || op.Occupancy != Occupancy.Occupied) reasons.Add(SupplyReasonCodes.OperationRevisionOrOccupancyChanged);
+            if (s.Session?.Status != SessionStatus.Active) reasons.Add(SupplyReasonCodes.CloseBarrier);
             if (op is not null) reasons.AddRange(PermitReasons(s, op));
         }
         return new(reasons.Count == 0, reasons.Distinct().ToArray());
     }
     IEnumerable<string> BaseReasons(StationState s, bool admittedEvent = false)
     {
-        foreach (var f in runtimeFaults.Keys) if (!admittedEvent || f != "Overload") yield return f;
-        if (s.Stopping) yield return "Stopping";
-        if (s.Quarantined) yield return "RestoreQuarantine";
-        if (s.Actor is null || s.Actor.ExpiresAt <= Now) yield return "IdentityUnavailable";
+        foreach (var f in runtimeFaults.Keys) if (!admittedEvent || f != SupplyReasonCodes.Overload) yield return f;
+        if (s.Stopping) yield return SupplyReasonCodes.Stopping;
+        if (s.Quarantined) yield return SupplyReasonCodes.RestoreQuarantine;
+        if (s.Actor is null || s.Actor.ExpiresAt <= Now) yield return SupplyReasonCodes.IdentityUnavailable;
         foreach (var b in s.Blocks) yield return b.Code + ":" + b.Scope;
         var integrationReason = s.IntegrationServiceHealth is { } service ? service.ValidityReason(Now) :
             s.IntegrationHealth is { } legacy ? legacy.ValidityReason(Now) : "Unconfirmed";
-        if (integrationReason is not null) yield return "WcsHealth:" + integrationReason;
+        if (integrationReason is not null) yield return SupplyReasonCodes.WcsHealth + ":" + integrationReason;
         // A live Dispatching intake is not an unknown outcome. It still participates in
         // pending/close/activation barriers; receipt failure latches storage and restart
         // converts interrupted dispatch to Unknown before reconstructing receipt blocks.
         if (store.PendingRequests().Any(x => x.Status == RequestStatus.Unknown ||
-            x.Status is not (RequestStatus.Prepared or RequestStatus.Dispatching) && store.RecoveryRequired(x.Id))) yield return "OutcomeUnknown";
+            x.Status is not (RequestStatus.Prepared or RequestStatus.Dispatching) && store.RecoveryRequired(x.Id))) yield return SupplyReasonCodes.OutcomeUnknown;
     }
-    Guard GuardFor(StationState s, string action, bool admittedEvent = false)
+    Guard GuardFor(StationState s, SupplyGuardAction action, bool admittedEvent = false)
     {
         var reasons = BaseReasons(s, admittedEvent).ToList();
-        if (action is "Open" or "Admit" or "Submit") foreach (var d in s.Devices) if (!d.Value.IsValid(Now)) reasons.Add("Device:" + d.Key + ":" + d.Value.ValidityReason(Now));
-        if (action is "Admit" or "Submit" && s.Session?.Status != SessionStatus.Active) reasons.Add("NoActiveBoxOrCloseBarrier");
-        if (action is "Close" or "ConfirmClose")
+        if (action is SupplyGuardAction.Open or SupplyGuardAction.Admit or SupplyGuardAction.Submit) foreach (var d in s.Devices) if (!d.Value.IsValid(Now)) reasons.Add("Device:" + d.Key + ":" + d.Value.ValidityReason(Now));
+        if (action is SupplyGuardAction.Admit or SupplyGuardAction.Submit && s.Session?.Status != SessionStatus.Active) reasons.Add(SupplyReasonCodes.NoActiveBoxOrCloseBarrier);
+        if (action is SupplyGuardAction.Close or SupplyGuardAction.ConfirmClose)
         {
-            if (store.PendingCount() != 0) reasons.Add("PendingExternalEffect");
-            if (s.Lanes.Values.Any(x => x.Occupancy != Occupancy.Clear)) reasons.Add("PhysicalOccupancyNotClear");
+            if (store.PendingCount() != 0) reasons.Add(SupplyReasonCodes.PendingExternalEffect);
+            if (s.Lanes.Values.Any(x => x.Occupancy != Occupancy.Clear)) reasons.Add(SupplyReasonCodes.PhysicalOccupancyNotClear);
         }
         return new(reasons.Count == 0, reasons.Distinct().ToArray());
     }
     IEnumerable<string> PermitReasons(StationState s, SupplyOperation op)
     {
         if (op.PermitEpoch != s.Devices.GetValueOrDefault(op.Lane)?.Epoch) yield return "EntityEpochChanged: explicit synthetic revalidation required";
-        if (op.PermitExpiresAt <= Now) yield return "EntityPermitExpired";
+        if (op.PermitExpiresAt <= Now) yield return SupplyReasonCodes.EntityPermitExpired;
     }
     Guard OperationGuard(StationState s, SupplyOperation op)
     {
-        var reasons = GuardFor(s, "Submit").Reasons.Concat(PermitReasons(s, op)).ToList();
-        if (op.Status is not (OperationStatus.AwaitingAction or OperationStatus.SplitRequired)) reasons.Add("OperationNotReady");
-        if (op.Occupancy != Occupancy.Occupied) reasons.Add("EntityNotOccupied");
-        if (op.Supply is not > 0 || op.Remaining is not > 0) reasons.Add("QuantityAuthorityMissing");
-        if (op.Status == OperationStatus.SplitRequired && op.SplitScans.Count != op.Supply) reasons.Add("RetainedCountIncomplete");
+        var reasons = GuardFor(s, SupplyGuardAction.Submit).Reasons.Concat(PermitReasons(s, op)).ToList();
+        if (op.Status is not (OperationStatus.AwaitingAction or OperationStatus.SplitRequired)) reasons.Add(SupplyReasonCodes.OperationNotReady);
+        if (op.Occupancy != Occupancy.Occupied) reasons.Add(SupplyReasonCodes.EntityNotOccupied);
+        if (op.Supply is not > 0 || op.Remaining is not > 0) reasons.Add(SupplyReasonCodes.QuantityAuthorityMissing);
+        if (op.Status == OperationStatus.SplitRequired && op.SplitScans.Count != op.Supply) reasons.Add(SupplyReasonCodes.RetainedCountIncomplete);
         return new(reasons.Count == 0, reasons.Distinct().ToArray());
     }
     void SyncAlarms()
     {
-        var blocks = BaseReasons(state).Where(x => x != "IdentityUnavailable")
+        var blocks = BaseReasons(state).Where(x => x != SupplyReasonCodes.IdentityUnavailable)
             .Select(x => (Code: x, Scope: "station", Owner: state.Session?.Id, Source: "runtime", Epoch: InstanceId.ToString())).ToList();
         foreach (var b in state.Blocks)
         {
             blocks.RemoveAll(x => x.Code == b.Code + ":" + b.Scope);
-            blocks.Add((b.Code + ":" + b.Scope, b.Scope, b.Scope == "request" ? b.Source : state.Session?.Id, b.Source, b.Code == "ObservationReview" ? b.SourceEpoch + ":" + b.EvidenceVersion : b.SourceEpoch));
+            blocks.Add((b.Code + ":" + b.Scope, b.Scope, b.Scope == "request" ? b.Source : state.Session?.Id, b.Source, b.Code == SupplyReasonCodes.ObservationReview ? b.SourceEpoch + ":" + b.EvidenceVersion : b.SourceEpoch));
         }
         foreach (var d in state.Devices.Where(x => !x.Value.IsValid(Now))) blocks.Add(("Device:" + d.Value.ValidityReason(Now), d.Key, d.Value.DeviceId, d.Value.DeviceId, d.Value.Epoch));
         foreach (var op in state.Lanes.Values.Where(x => x.Status is OperationStatus.ValidationRejected or OperationStatus.Rejected)) blocks.Add(("OperationRejected", op.Lane, op.Id, "operation", op.Revision.ToString()));
@@ -632,8 +633,8 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     }
     string RecoveryStep(BusinessRequest request)
     {
-        var receipts = store.Receipts(request.Id).Where(x => x.Status is not ("Committed" or "NoResponse")).ToArray();
-        if (receipts.Any(x => x.Status == "RawUnavailable")) return "存在未取得且不可恢复的原件；按接收ID与原请求核对，保留终态与唯一接受事实，无通用解锁或重发";
+        var receipts = store.Receipts(request.Id).Where(ReceiptResponsibilityRules.IsUnresolved).ToArray();
+        if (receipts.Any(x => x.Status == ReceiptResponsibilityRules.RawUnavailable)) return "存在未取得且不可恢复的原件；按接收ID与原请求核对，保留终态与唯一接受事实，无通用解锁或重发";
         if (receipts.Any(x => File.Exists(ReceiptFile(x.Id)))) return "原件已Flush但业务接管未完成；保留原件，受控重启按原身份重放T3，不外呼重发";
         if (receipts.Length != 0) return "本次原查询/接收尚未完成或原件接管失败；等待所属调用，存储失败时保留现场并检查接收ID";
         if (store.HasConflict(request.Id)) return "存在矛盾原件；查询原身份并保留终态/接受账，无通用解锁或重发";
@@ -653,7 +654,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     async Task<StationSnapshot> SnapshotCore()
     {
         await gate.WaitAsync();
-        try { return new StationSnapshot(Clone(state), state.Session is null ? [] : store.RequestsForSession(state.Session.Id), store.ActiveAlarms(), GuardFor(state, "Admit"), GuardFor(state, "Submit"), GuardFor(state, "Close"), state.Lanes.ToDictionary(x => x.Key, x => OperationGuard(state, x.Value)), runtimeFaults.Select(x => x.Key + ": " + x.Value).ToArray(), store.PendingRequests().Select(x => new RequestRecovery(x, SendGuard(state, x), LocalTerminationGuard(state, x), RecoveryStep(x)) { Receipts = store.Receipts(x.Id).Where(r => r.Status is not ("Committed" or "NoResponse")).ToArray() }).ToArray(), store.ActiveAlarmCount(), Interlocked.Read(ref overloadVersion), OverloadRecoveryGuard())
+        try { return new StationSnapshot(Clone(state), state.Session is null ? [] : store.RequestsForSession(state.Session.Id), store.ActiveAlarms(), GuardFor(state, SupplyGuardAction.Admit), GuardFor(state, SupplyGuardAction.Submit), GuardFor(state, SupplyGuardAction.Close), state.Lanes.ToDictionary(x => x.Key, x => OperationGuard(state, x.Value)), runtimeFaults.Select(x => x.Key + ": " + x.Value).ToArray(), store.PendingRequests().Select(x => new RequestRecovery(x, SendGuard(state, x), LocalTerminationGuard(state, x), RecoveryStep(x)) { Receipts = store.Receipts(x.Id).Where(ReceiptResponsibilityRules.IsUnresolved).ToArray() }).ToArray(), store.ActiveAlarmCount(), Interlocked.Read(ref overloadVersion), OverloadRecoveryGuard())
             {
                 BoxResult = CurrentBoxResult(), StationId = config.StationId, NotificationBacklog = notifications.Count, NotificationOverflow = notificationOverflow,
                 ProjectionVersion = Interlocked.Increment(ref projectionVersion), GeneratedAt = Now,
@@ -667,19 +668,19 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     Guard OverloadRecoveryGuard()
     {
         var reasons = new List<string>();
-        if (!IsOverloaded) reasons.Add("NoActiveOverload");
-        reasons.AddRange(runtimeFaults.Keys.Where(x => x != "Overload").Select(x => "UnresolvedRuntimeFault:" + x));
-        if (state.Actor?.Role != SimulationRole.Maintenance || state.Actor.ExpiresAt <= Now) reasons.Add("UnexpiredMaintenanceIdentityRequired");
-        if (InputDrained?.Invoke() == false) reasons.Add("AdmittedObservationsDraining");
-        if (HasUnresolved()) reasons.Add("ReconcileSentOrTerminateProvenUndeliveredPrepared");
+        if (!IsOverloaded) reasons.Add(SupplyReasonCodes.NoActiveOverload);
+        reasons.AddRange(runtimeFaults.Keys.Where(x => x != SupplyReasonCodes.Overload).Select(x => "UnresolvedRuntimeFault:" + x));
+        if (state.Actor?.Role != SimulationRole.Maintenance || state.Actor.ExpiresAt <= Now) reasons.Add(SupplyReasonCodes.UnexpiredMaintenanceIdentityRequired);
+        if (InputDrained?.Invoke() == false) reasons.Add(SupplyReasonCodes.AdmittedObservationsDraining);
+        if (HasUnresolved()) reasons.Add(SupplyReasonCodes.ReconcileSentOrTerminateProvenUndeliveredPrepared);
         return new(reasons.Count == 0, reasons.ToArray());
     }
     Guard LocalTerminationGuard(StationState s, BusinessRequest request)
     {
         var reasons = new List<string>();
-        if (s.Actor?.Role != SimulationRole.Maintenance || s.Actor.ExpiresAt <= Now) reasons.Add("UnexpiredMaintenanceIdentityRequired");
-        if (request.Status != RequestStatus.Prepared) reasons.Add("OnlyPreparedCanTerminateLocally");
-        if (store.Responses(request.Id).Length != 0 || store.Attempts(request.Id).Any(x => x.Disposition != "NotDelivered" || x.EndedAt is null)) reasons.Add("NoDurableNonDeliveryProof");
+        if (s.Actor?.Role != SimulationRole.Maintenance || s.Actor.ExpiresAt <= Now) reasons.Add(SupplyReasonCodes.UnexpiredMaintenanceIdentityRequired);
+        if (request.Status != RequestStatus.Prepared) reasons.Add(SupplyReasonCodes.OnlyPreparedCanTerminateLocally);
+        if (store.Responses(request.Id).Length != 0 || store.Attempts(request.Id).Any(x => x.Disposition != "NotDelivered" || x.EndedAt is null)) reasons.Add(SupplyReasonCodes.NoDurableNonDeliveryProof);
         if (SendGuard(s, request).Allowed) reasons.Add("RequestNotBlocked: pause and inspect first");
         return new(reasons.Count == 0, reasons.ToArray());
     }
@@ -697,14 +698,14 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     { await gate.WaitAsync(); try { RequireIdentity(state); return store.PendingRequests().Where(x => x.Status == RequestStatus.Unknown || store.RecoveryRequired(x.Id)).ToArray(); } finally { gate.Release(); } }
     public Task RecordQueryAsync(string requestId, string evidence) => owner.Invoke(() => RecordQueryCore(requestId, evidence), priority: false, waitForCapacity: true);
     async Task RecordQueryCore(string requestId, string evidence)
-    { await gate.WaitAsync(); try { store.Commit(state, "ReconciliationQuery", store.Request(requestId)!.OwnerId, "reconciler", evidence); } catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); } finally { gate.Release(); } }
+    { await gate.WaitAsync(); try { store.Commit(state, "ReconciliationQuery", store.Request(requestId)!.OwnerId, "reconciler", evidence); } catch (Exception ex) when (IsStorage(ex)) { Latch(SupplyReasonCodes.StorageFailure, ex.Message); } finally { gate.Release(); } }
     public Task FinishConfigurationActivationAsync(ConfigRevision revision, bool success, string evidence) => owner.Invoke(() => FinishConfigurationActivationCore(revision, success, evidence), priority: false, waitForCapacity: true);
     async Task FinishConfigurationActivationCore(ConfigRevision revision, bool success, string evidence)
     {
         await gate.WaitAsync();
         try
         {
-            var next = Clone(state); next.Blocks.RemoveAll(x => x.Code == "ConfigPending"); next.Revision++;
+            var next = Clone(state); next.Blocks.RemoveAll(x => x.Code == SupplyReasonCodes.ConfigPending); next.Revision++;
             store.Commit(next, "ConfigActivation", revision.Id, "runtime", evidence, config: revision with { Status = success ? "Effective" : "ActivationFailed", Reason = evidence }); Adopt(next);
         }
         finally { gate.Release(); }
@@ -714,7 +715,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     { await gate.WaitAsync(); try { RequireIdentity(state); return store.Configs(); } finally { gate.Release(); } }
     public Task BackupAsync(string destination) => owner.Invoke(() => BackupCore(destination), priority: false, waitForCapacity: true);
     async Task BackupCore(string destination)
-    { await gate.WaitAsync(); try { RequireIdentity(state); Maintenance(state); Require(store.IncompleteReceipts().Length == 0 && !runtimeFaults.ContainsKey("StorageFailure"), "Recover receipt/storage responsibility before backup"); store.Backup(destination); } finally { gate.Release(); } }
+    { await gate.WaitAsync(); try { RequireIdentity(state); Maintenance(state); Require(store.IncompleteReceipts().Length == 0 && !runtimeFaults.ContainsKey(SupplyReasonCodes.StorageFailure), "Recover receipt/storage responsibility before backup"); store.Backup(destination); } finally { gate.Release(); } }
     public Task StopAsync() => owner.Invoke(() => StopCore(), priority: true, waitForCapacity: true);
     async Task StopCore()
     {
@@ -725,7 +726,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             state.Stopping = true; var next = Clone(state); next.Revision++;
             faults.Hit("StoppingBarrier"); store.Commit(next, "StoppingBarrier", config.StationId, "runtime"); Adopt(next);
         }
-        catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", "Stop barrier persistence failed: " + ex.GetType().Name); throw; }
+        catch (Exception ex) when (IsStorage(ex)) { Latch(SupplyReasonCodes.StorageFailure, "Stop barrier persistence failed: " + ex.GetType().Name); throw; }
         finally { gate.Release(); }
     }
     public Task<int> PruneHistoryAsync(int retentionDays, string evidence) => owner.Invoke(() => PruneHistoryCore(retentionDays, evidence), priority: false, waitForCapacity: true);
@@ -737,7 +738,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             RequireIdentity(state); Maintenance(state);
             Require(config.Mode == RunMode.Simulation && retentionDays >= 1 && evidence.Length >= 8, "Explicit synthetic retention period and evidence required");
             Require(state.Session is null || state.Session.Status == SessionStatus.Closed, "Close current context before retention");
-            Require(!HasUnresolved() && store.IncompleteReceipts().Length == 0 && !runtimeFaults.ContainsKey("StorageFailure"), "Never prune unresolved or unpersisted evidence");
+            Require(!HasUnresolved() && store.IncompleteReceipts().Length == 0 && !runtimeFaults.ContainsKey(SupplyReasonCodes.StorageFailure), "Never prune unresolved or unpersisted evidence");
             // Keep the current session in the aggregate even if old; its full SQL history is
             // retained until a newer context has replaced it.
             var closed = state.Session?.ClosedAt;
@@ -745,7 +746,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             if (closed < cutoff) cutoff = closed.Value;
             return store.PruneClosedSessions(cutoff, state.Actor!.Id, evidence);
         }
-        catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); throw; }
+        catch (Exception ex) when (IsStorage(ex)) { Latch(SupplyReasonCodes.StorageFailure, ex.Message); throw; }
         finally { gate.Release(); }
     }
     public Task ReviewObservationsAsync(string evidence) => Task.FromException(new GuardException("Select current source/epoch/evidence versions and use the ReviewObservations command"));
@@ -798,7 +799,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     {
         var index = s.Blocks.FindIndex(x => x.Code == code && x.Scope == scope && x.Source == source);
         if (index < 0) s.Blocks.Add(new(code, scope, source, epoch, s.Revision + 1, authority));
-        else if (code == "ObservationReview")
+        else if (code == SupplyReasonCodes.ObservationReview)
             s.Blocks[index] = new(code, scope, source, epoch, Math.Max(s.Revision + 1, s.Blocks[index].EvidenceVersion + 1), authority);
     }
 }

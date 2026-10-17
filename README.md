@@ -2,13 +2,13 @@
 
 C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、多视图共享业务、真实SQLite事务/Outbox/原请求恢复、合成观察和受控扩展。旧现场迁移、真实SDK/WCS和现场资格分别验证。
 
-## 当前状态与下一步
+## 当前工程状态
 
-从执行时main **5548b3f** 建独立开发分支，OPERATION-CLOSURE-15工程实现与必要验证已交付：每次接收独立责任/T3/重启恢复、箱级结果和当前守卫、忙态输入隔离、维护草稿/异步选择、追溯列表/详情/筛选，以及旧1.0.1实际部署到新版本的合成升级旅程。冻结源码 **013862fc2d1769605624f8e10df5cc5b448a7954**。
+最新核验main **12a40b3**（PR15已合并）。本轮实施 **UI-MAINTAINABILITY-16**：报警/历史/维护操作闭环、窗口职责、适配器公共边界和动作/责任/视图规则、声明式独立扩展工具、统一发布入口及健康续期写放大优化。
 
-**当前入口：[15逐项报告](docs/runtime/operation-closure-15.md) · [checks/25问题与AC矩阵](docs/runtime/operation-closure-15-checks.json) · [原始证据](docs/runtime/evidence/operation-closure-15/README.md) · [同版参考候选](https://github.com/yuan2go/importer-pc/releases/tag/operation15-reference-013862f)。** [15任务](docs/work-packages/WP-IPC-OPERATION-CLOSURE-15.md)和[PR14后复核](docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)保留形成时内容；[原PDF](docs/reviews/audit-reconciliation-01/README.md)固定8cab，不改写为新验证。
+当前入口：[16逐项实现与边界](docs/runtime/ui-maintainability-16.md) · [checks/实际证据](docs/runtime/ui-maintainability-16-checks.json) · [首次运行与首条参考作业](docs/runtime/getting-started.md)。版本Storage/MinimumReader=5/5、SIMULATION-v1/扩展契约1；参考包新增不可变1.0.4，原1.0.0～1.0.3/宿主/请求身份保持。旧15结果保留[原报告](docs/runtime/operation-closure-15.md)及[同版候选](https://github.com/yuan2go/importer-pc/releases/tag/operation15-reference-013862f)。
 
-实际WPF截图0；Windows客户端行为/输入/DPI/声音/ACL全部NOT_RUN，[后验清单](docs/runtime/validation/operation-closure-15-windows.md)逐项保留。真实SDK/WCS、实体/数量/权限与现场独立BLOCKED；Production缺能力继续NotReady。核心策略、交叉构建和候选校验不代替上述验收。
+实际WPF截图0；Windows客户端/HID/DPI/双窗/声音/触控/PowerShell/UAC/ACL全部NOT_RUN，[同版后验](docs/runtime/validation/ui-maintainability-16-windows.md)逐项保留。真实SDK/WCS、身份/实体/数量/逐SKU少货与现场按能力BLOCKED，Production缺必需能力NotReady。核心/交叉构建/候选不代替这些验收。
 
 ## 开发与运行入口
 
@@ -21,7 +21,7 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 dotnet src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll --url http://127.0.0.1:18743/ --data /tmp/ipc-simulation-receiver
 ```
 
-现实现Storage/MinimumReader为5/5，参考扩展1.0.3。保留旧SQL1～4并追加5；旧精确1.0.1/1.0.2不重签或伪兼容。旧Effective经清偿、合法过渡、备份显式升级和新部署生效，合成旅程见15报告；真实旧根/备份盘点仍为独立门禁，不能换seed跳过。部署遵循指定账户、机级资源和包所有权；软件暂停不是安全急停。
+现实现Storage/MinimumReader为5/5，参考扩展1.0.4。保留SQL1～5及checksum；旧精确1.0.1/1.0.2不重签或伪兼容。旧Effective经清偿、合法过渡、备份显式升级和新部署生效，合成旅程见15报告；真实旧根/备份盘点仍为独立门禁，不能换seed跳过。部署遵循指定账户、机级资源和包所有权；软件暂停不是安全急停。
 
 ## UI与历史交付
 
@@ -34,6 +34,6 @@ dotnet src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll --url http://127.0.0.1:
 |12受控后装与候选|[报告](docs/runtime/extension-windows-delivery-12.md)|
 |11/08/09/10|[11](docs/runtime/review-followup-11.md)、[09参考验证](docs/runtime/reference-validation-09.md)、[10 UI映射](docs/runtime/ui-baseline-alignment-10.md)|
 
-历史源码、候选和PASS/FAIL/NOT_RUN保留原身份。[本次更新前入口快照](docs/archive/pre-operation-closure-15/README.md)保存原字节；其余历史入口由INDEX保留。
+历史源码、候选和PASS/FAIL/NOT_RUN保留原身份。[本次更新前入口快照](docs/archive/pre-ui-maintainability-16/README.md)保存原字节；其余历史入口由INDEX保留。
 
 仓库public；[公开范围](docs/baseline/PUBLICATION.md)持续有效，完整客户归档仍PUBLIC_SUBSET_ONLY。D批准与RV状态不因参考实现或文档发布关闭。只提交获授权审查、通用实现及合成证据，不附客户原稿、私密链接、凭据、生产数据、SDK或字体文件。历史源资产校验问题保留，不放松校验器换通过。

@@ -14,6 +14,7 @@ public partial class MainWindow
     IInputElement? drawerReturnFocus;
     bool entryRequested, recoveryEntryAcknowledged, layoutPauseRequired, layoutPauseAcknowledged;
     Actor? observedReadActor;
+    long readIdentityGeneration;
     readonly BoxEntryFocusPolicy boxEntryFocus = new();
     long alarmHistoryGeneration;
     bool IsDrawerOpen => DrawerOverlay?.Visibility == Visibility.Visible;
@@ -24,8 +25,8 @@ public partial class MainWindow
     bool ReviewFits(LaneViewModel lane) => !smallArea && (lane == left ? LeftLane : RightLane).ReviewFits;
     static string ConfirmationLabel(string kind) => kind switch
     {
-        "ConfirmClose" => "确认强制结束", "ClearSplit" => "清空并重新计数", "CancelDraft" => "处置未提交草稿",
-        "Pause" => "暂停新入场", "Submit" => "确认拆包并供包", "Logout" => "确认登出", _ => "确认此操作"
+        SupplyCommands.ConfirmClose => "确认强制结束", SupplyCommands.ClearSplit => "清空并重新计数", SupplyCommands.CancelDraft => "处置未提交草稿",
+        SupplyCommands.Pause => "暂停新入场", SupplyCommands.Submit => "确认拆包并供包", SupplyCommands.Logout => "确认登出", _ => "确认此操作"
     };
     void ConfigurePresentationAccess()
     {
@@ -173,7 +174,7 @@ public partial class MainWindow
         var actor=HasIdentity ? snapshot?.State.Actor : null;
         if (Equals(observedReadActor,actor)) return;
         var hadIdentity=observedReadActor is not null;
-        observedReadActor=actor;
+        observedReadActor=actor; readIdentityGeneration++;
         historyGeneration++; detailGeneration++; alarmHistoryGeneration++; loadedHistory=null;
         var feedback=actor is null ? "历史 / 详情访问已失效：未登录、已登出或已过期；可见旧结果仅为既有阅读快照。" : hadIdentity ? "身份已更换；旧结果失效，请重新查询。" : "已取得有效身份；已有结果仍为旧快照，需重新查询。";
         ReadAccessFeedback.Text=HistoryFeedback.Text=AlarmHistoryFeedback.Text=feedback;

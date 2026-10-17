@@ -1,0 +1,54 @@
+SELECT --operation-closure: AC15 independent receipt responsibility Q1/Q2, T3 recovery, current result/input and maintenance/history
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f3b7e3cbbb8f4cbf8ca1499c13ed0010
+PASS AC15 concurrent original queries have independent durable reservations before I/O
+PASS AC15 Q2 completion cannot erase Q1 reservation
+PASS AC15 pending/recovery and business guards retain independently incomplete responsibility
+PASS AC15 restart distinguishes each committed/replayed receipt from missing original custody
+PASS AC15 missing receipt ID remains discoverable beside original request after controlled shutdown and restart
+PASS AC15 terminal/payload/hash/contract/target/attempt retained and Context never counts supply acceptance
+PASS AC15 authorized history exposes original occurrence/source/time/custody without inventing lost bytes
+PASS AC15 matching later delivery cannot clear another missing original; maintenance counts original once; no blind resend
+PASS AC15 concurrent original queries have independent durable reservations before I/O
+PASS AC15 Q1 flushed raw survives actual SQLite T3 rollback without terminal success
+PASS AC15 Q2 completion cannot erase Q1 reservation
+PASS AC15 pending/recovery and business guards retain independently incomplete responsibility
+PASS AC15 restart distinguishes each committed/replayed receipt from missing original custody
+PASS AC15 missing receipt ID remains discoverable beside original request after controlled shutdown and restart
+PASS AC15 terminal/payload/hash/contract/target/attempt retained and Context never counts supply acceptance
+PASS AC15 authorized history exposes original occurrence/source/time/custody without inventing lost bytes
+PASS AC15 matching later delivery cannot clear another missing original; maintenance counts original once; no blind resend
+PASS AC15 real ProductRuntime starts controlled query endpoint
+PASS AC15 actual product command Login
+PASS AC15 actual product command SetFixtureFault
+PASS AC15 actual product command OpenContext
+PASS AC15 actual concurrent Product/Integration queries retain failed Q1 after Q2 succeeds
+PASS AC15 actual Product controlled stop/restart retains missing original without blind resend or resource loss
+PASS AC15 Context rejection is a persistent box result, not a toast
+PASS AC15 rejected CheckClose coexists with true Active state
+PASS AC15 rejected Close preserves original request/reason alongside Active
+PASS AC15 another lane acceptance cannot hide box Close rejection or recount it
+PASS AC15 history summary reads actual request attempts and unique accepted quantity
+PASS AC15 box projection does not grant unauthorized history detail access
+PASS AC15 box result refresh/restart derives from original persisted request and response
+PASS AC15 module/new-instance defaults read incomplete draft without parsing unrelated numbers
+PASS AC15 save/preview reject incomplete numeric draft with exact field identity for focus
+PASS AC15 corrected draft builds without resetting edits from Effective
+PASS AC15 draft/effective comparison tolerates temporary invalid text without mutating effective configuration
+PASS AC15 lifecycle presents saved/Pending/restart/failure-preserves-old independently without changing deployment state
+PASS AC15 actual selection coordinator ignores A slow error/finally after B success
+PASS AC15 selection success and finally cannot mutate newer import
+PASS AC15 selection success and finally cannot mutate newer new-instance
+PASS AC15 selection success and finally cannot mutate newer identity-loss
+PASS AC15 busy scanner refuses additional input/terminator explicitly without appending AB or starting another command
+PASS AC15 failed scan retains editable original for deliberate retry
+PASS AC15 only persisted matching scan consumes original
+PASS AC15 late completion cannot consume changed owner/new draft
+PASS AC15 local date/time converts to explicit UTC bounds preserving exclusive end
+PASS AC15 invalid local time feedback: 25:00
+PASS AC15 invalid local time feedback: 12
+PASS AC15 invalid local time feedback: bogus
+PASS AC15 reversed range rejected before query
+PASS AC15 actual WPF package/instance/default/import handlers use verified coordinator and partial target source; Windows event execution NOT_RUN
+PASS AC15 OPERATION CLOSURE COMPLETE; WINDOWS_NOT_RUN
+PASS selected verification scope --operation-closure; Windows desktop/SDK/field validation NOT_RUN by this core executable
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f3b7e3cbbb8f4cbf8ca1499c13ed0010

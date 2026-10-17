@@ -1,0 +1,9 @@
+[
+  {
+    "Id": "barcode-source",
+    "Assembly": "Ipc.Reference.BarcodeExtension.dll",
+    "EntryType": "Ipc.Reference.BarcodeExtension.BarcodeModule",
+    "Kind": "observation",
+    "MaximumInstances": 8
+  }
+]

@@ -125,10 +125,10 @@ public sealed partial class SupplyStore : IDisposable
     public int AcceptedQuantity(string session) => int.Parse(Scalar("SELECT coalesce(sum(a.quantity),0) FROM acceptance a JOIN requests r ON r.id=a.request WHERE r.session=$a", session) ?? "0");
     public int PendingCount() => PendingRequests().Length;
     public ResponseConflict[] Conflicts(string request) => Read<ResponseConflict>("SELECT json FROM response_conflicts WHERE request=$a ORDER BY rowid", request);
-    public bool RecoveryRequired(string request) => HasConflict(request) || Receipts(request).Any(x => x.Status is not ("Committed" or "NoResponse")) || Load().Blocks.Any(x => x.Code == "ReceiptPersistenceUncertain" && x.Source == request);
+    public bool RecoveryRequired(string request) => HasConflict(request) || Receipts(request).Any(ReceiptResponsibilityRules.IsUnresolved) || Load().Blocks.Any(x => x.Code == "ReceiptPersistenceUncertain" && x.Source == request);
     public bool HasConflict(string request) => Scalar("SELECT id FROM response_conflicts WHERE request=$a LIMIT 1", request) is not null;
     public ReceiptResponsibility[] Receipts(string request) => Read<ReceiptResponsibility>("SELECT json FROM receipt_occurrences WHERE request=$a ORDER BY rowid", request);
-    public ReceiptResponsibility[] IncompleteReceipts() => Read<ReceiptResponsibility>("SELECT json FROM receipt_occurrences WHERE status NOT IN ('Committed','NoResponse') ORDER BY rowid");
+    public ReceiptResponsibility[] IncompleteReceipts() => Read<ReceiptResponsibility>("SELECT json FROM receipt_occurrences WHERE " + ReceiptResponsibilityRules.UnresolvedSql("status") + " ORDER BY rowid");
     public ReceiptResponsibility? ReceiptOccurrence(string id) => Read<ReceiptResponsibility>("SELECT json FROM receipt_occurrences WHERE id=$a", id).SingleOrDefault();
     public void Commit(StationState state, string kind, string owner, string actor, string evidence = "", Command? command = null, CommandReceipt? receipt = null,
         BusinessRequest? request = null, Observation? observation = null, SupplyOperation? operation = null,
@@ -170,7 +170,7 @@ public sealed partial class SupplyStore : IDisposable
         {
             var oldOccurrence = ReceiptOccurrence(occurrence.Id);
             if (oldOccurrence is not null && (oldOccurrence.RequestId != occurrence.RequestId || oldOccurrence.AttemptId != occurrence.AttemptId ||
-                oldOccurrence.Origin != occurrence.Origin || oldOccurrence.StartedAt != occurrence.StartedAt || oldOccurrence.Status is "Committed" or "NoResponse" && oldOccurrence != occurrence))
+                oldOccurrence.Origin != occurrence.Origin || oldOccurrence.StartedAt != occurrence.StartedAt || ReceiptResponsibilityRules.IsFinal(oldOccurrence.Status) && oldOccurrence != occurrence))
                 throw new InvalidDataException("Immutable receipt occurrence changed");
             Exec("INSERT INTO receipt_occurrences VALUES($a,$b,$c,$d) ON CONFLICT(id) DO UPDATE SET status=excluded.status,json=excluded.json", tx,
                 occurrence.Id, occurrence.RequestId, occurrence.Status, Wire.Encode(occurrence));

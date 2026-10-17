@@ -3,7 +3,8 @@
   "dependencies": {
     "net10.0": {
       "Microsoft.Data.Sqlite": {
-        "type": "Transitive",
+        "type": "Direct",
+        "requested": "[10.0.13, )",
         "resolved": "10.0.13",
         "contentHash": "w37nz3WFmDtRfXxWEwIXX2OgqDRiwhD1JGbFwfpFCF8GkCrV/yO6Y2JF5058J2RGoI2sCcdn02wrk0yEcekWcw==",
         "dependencies": {
@@ -12,21 +13,22 @@
           "SQLitePCLRaw.core": "2.1.13"
         }
       },
+      "SQLitePCLRaw.bundle_e_sqlite3": {
+        "type": "Direct",
+        "requested": "[2.1.14, )",
+        "resolved": "2.1.14",
+        "contentHash": "Y6K7m+7ODFmGwAC/ApJY3c68Rq4WPgoIj4GOceagaTow5tLzaJwD9invSWzU8bSMTcKOR101a1ZaU0LQ5SoX/Q==",
+        "dependencies": {
+          "SQLitePCLRaw.lib.e_sqlite3": "2.1.14",
+          "SQLitePCLRaw.provider.e_sqlite3": "2.1.14"
+        }
+      },
       "Microsoft.Data.Sqlite.Core": {
         "type": "Transitive",
         "resolved": "10.0.13",
         "contentHash": "Gge8XsSCOwcbkbdmt2UDAe6kIv9Q0vA6yb3wsTStjjexaMFLTWfc/1gH4kbhJ+zWiXRTRA4lG2sOQNVfir204w==",
         "dependencies": {
           "SQLitePCLRaw.core": "2.1.13"
-        }
-      },
-      "SQLitePCLRaw.bundle_e_sqlite3": {
-        "type": "Transitive",
-        "resolved": "2.1.14",
-        "contentHash": "Y6K7m+7ODFmGwAC/ApJY3c68Rq4WPgoIj4GOceagaTow5tLzaJwD9invSWzU8bSMTcKOR101a1ZaU0LQ5SoX/Q==",
-        "dependencies": {
-          "SQLitePCLRaw.lib.e_sqlite3": "2.1.14",
-          "SQLitePCLRaw.provider.e_sqlite3": "2.1.14"
         }
       },
       "SQLitePCLRaw.core": {
@@ -50,19 +52,11 @@
       "ipc.adapters": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Supply": "[1.0.0, )"
+          "Ipc.Supply.Contracts": "[1.0.0, )"
         }
       },
       "ipc.platform": {
         "type": "Project"
-      },
-      "ipc.supply": {
-        "type": "Project",
-        "dependencies": {
-          "Ipc.Supply.Contracts": "[1.0.0, )",
-          "Microsoft.Data.Sqlite": "[10.0.13, )",
-          "SQLitePCLRaw.bundle_e_sqlite3": "[2.1.14, )"
-        }
       },
       "ipc.supply.contracts": {
         "type": "Project",

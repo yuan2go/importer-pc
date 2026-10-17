@@ -9,6 +9,16 @@ string Get(string key, string fallback) => map.GetValueOrDefault(key, fallback);
 var root = Get("--config", Path.Combine(AppContext.BaseDirectory, "config"));
 var data = Get("--data-root", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data"));
 var action = Get("--action", "snapshot");
+if (action == "extension-check")
+{
+    var allowed = new[] { "--action", "--mode", "--file", "--extension-trust", "--dependency-files" };
+    if (map.Keys.Any(x => !allowed.Contains(x))) throw new ArgumentException("Unsupported static checker argument");
+    var dependencies = map.TryGetValue("--dependency-files", out var dependencyFile)
+        ? Wire.Decode<string[]>(File.ReadAllText(dependencyFile)) : [];
+    Console.WriteLine(Wire.Encode(ExtensionBuildCheck.Inspect(Get("--file", ""), Get("--extension-trust", ""),
+        Enum.Parse<RunMode>(Get("--mode", "Simulation"), ignoreCase: false), dependencies)));
+    return;
+}
 if (action.StartsWith("extension-", StringComparison.Ordinal))
 {
     // This branch never constructs ProductRuntime, loads a plugin, or starts a source/sender.
@@ -159,7 +169,7 @@ try
     await host.StartAsync();
     if (action == "serve")
     {
-        Console.WriteLine("JSON command console. One command per line; snapshot / emit / replay / reconcile / export / quit supported. SIMULATION only.");
+        Console.WriteLine("JSON command console. One command per line; snapshot / configs / extensions / emit / replay / reconcile / export / quit supported. SIMULATION only.");
         if (runtime.Application is not null) runtime.StartHeadlessNotifications((cue, token) =>
         { Console.WriteLine(Wire.Encode(new { Notification = cue, Delivery = "AwaitingExplicitAcknowledgement" })); Console.Out.Flush(); return Task.CompletedTask; });
         string? line;
@@ -167,6 +177,7 @@ try
         {
             try
             {
+                if (line == "configs") { Console.WriteLine(Wire.Encode(await runtime.Application!.ConfigsAsync())); continue; }
                 if (line == "integration-diagnostics") { Console.WriteLine(Wire.Encode(runtime.IntegrationDiagnostics)); continue; }
                 if (line == "extensions") { Console.WriteLine(Wire.Encode(await runtime.ExtensionSnapshotAsync())); continue; }
                 if (line == "snapshot") { Console.WriteLine(Wire.Encode(await runtime.Application!.SnapshotAsync())); continue; }

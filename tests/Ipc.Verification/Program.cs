@@ -41,14 +41,18 @@ if (args.FirstOrDefault() == "--child")
     throw new Exception("Expected crash window was not reached");
 }
 
+if (args.Contains("--help", StringComparer.Ordinal))
+{
+    if (args.Length != 1) throw new ArgumentException("--help must be used alone");
+    Console.WriteLine(VerificationScopes.Help); return;
+}
 var workspace = Path.GetFullPath(args.FirstOrDefault(x => !x.StartsWith("--", StringComparison.Ordinal)) ?? ".");
-var selector = args.FirstOrDefault(x => x.StartsWith("--", StringComparison.Ordinal)) ?? "--reconciliation";
-if (args.Count(x => x.StartsWith("--", StringComparison.Ordinal)) > 1 ||
-    selector is not ("--hardening" or "--alignment" or "--data" or "--baseline" or "--closure" or "--followup" or "--review-followup" or "--extensions" or "--architecture" or "--conformance" or "--operation-closure" or "--reconciliation"))
-    throw new ArgumentException("Select one of --hardening, --alignment, --data, --baseline, --closure, --followup, --review-followup, --extensions, --reconciliation; optional workspace is a separate positional argument");
-var full = selector == "--reconciliation";
-Console.WriteLine("SELECT " + selector + ": " + (full ? "H04 + A01 + E07 + E08 + E11 + E12 + AC/process baseline" : selector switch
-{ "--hardening" => "H04", "--alignment" => "H04 + A01", "--data" => "A01 data/composition/runtime", "--baseline" => "AC/process baseline", "--conformance" => "AC14 A01-A04/R01-R03", "--closure" => "E07", "--extensions" => "E12 controlled extensions + actual Product deployment", "--architecture" => "E13 P2/typed integration/actual selected business assemblies", "--review-followup" => "E11 presentation policies + Product composite ownership", _ => "E08" }));
+var selector = args.FirstOrDefault(x => x.StartsWith("--", StringComparison.Ordinal)) ?? VerificationScopes.Default;
+if (args.Count(x => x.StartsWith("--", StringComparison.Ordinal)) > 1 || args.Count(x => !x.StartsWith("--", StringComparison.Ordinal)) > 1)
+    throw new ArgumentException("Use one selector and at most one positional workspace. Use --help for actual coverage.");
+var selected = VerificationScopes.Select(selector);
+var full = selector == VerificationScopes.Default;
+Console.WriteLine("SELECT " + selector + ": " + selected.Coverage);
 var dotnet = Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") ?? Environment.ProcessPath ?? "dotnet";
 if (!Path.GetFileNameWithoutExtension(dotnet).Equals("dotnet", StringComparison.OrdinalIgnoreCase)) dotnet = "dotnet";
 var root = Path.Combine(Path.GetTempPath(), "ipc-verification-" + Wire.Id()); Directory.CreateDirectory(root);
@@ -61,6 +65,13 @@ using var http = new HttpClient(new SocketsHttpHandler { UseProxy = false }) { T
 try
 {
     await Eventually(async () => { try { return (await http.GetStringAsync(url + "health")) == "SIMULATION-v1"; } catch (HttpRequestException) { return false; } });
+    if (selector == "--maintainability")
+    {
+        await HealthRenewalVerification.Run(root, url);
+        await ArchitectureMaintainabilityVerification.Run(root, url, workspace);
+        await OperationClosureVerification.EditingAndTiming(root, url, workspace);
+    }
+    if (selector == "--health-profile") await HealthRenewalVerification.Profile(root, url);
     if (full || selector is "--hardening" or "--alignment") await HardeningVerification.Run(root, url, workspace);
     if (full || selector is "--alignment" or "--data")
     {

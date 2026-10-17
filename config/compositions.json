@@ -19,7 +19,7 @@
       "version": "1.0.0",
       "contract": 1,
       "dependencies": [
-        "supply"
+        "supply-contracts"
       ],
       "delivery": "core"
     },
@@ -27,12 +27,13 @@
       "version": "1.0.0",
       "contract": 1,
       "dependencies": [
+        "supply",
         "adapters"
       ],
       "delivery": "core"
     },
     "reference.barcode": {
-      "version": "1.0.3",
+      "version": "1.0.4",
       "contract": 1,
       "dependencies": [
         "platform"
@@ -48,7 +49,7 @@
       "delivery": "core"
     },
     "reference.integration": {
-      "version": "1.0.3",
+      "version": "1.0.4",
       "contract": 1,
       "dependencies": [
         "supply-contracts"

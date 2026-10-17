@@ -60,10 +60,26 @@ public sealed class ConfigurationDraft : INotifyPropertyChanged
     }
     // Editing defaults must not parse unrelated temporary numeric fields.
     public IntegrationBinding IntegrationTarget => new(this["TargetId"].Trim(), this["BindingVersion"].Trim(), this["Contract"].Trim(), this["Endpoint"].Trim());
+    public ConfigurationComparison[] Compare(StationConfig effective)
+    {
+        var active = new ConfigurationDraft(); active.Replace(effective);
+        var rows = fields.Select(x => new ConfigurationComparison(x.Key, active[x.Key], x.Value)).ToList();
+        foreach (var device in Devices)
+        {
+            var current = effective.Devices.FirstOrDefault(x => x.Role == device.Role);
+            rows.Add(new("Devices." + device.Role, current is null ? "未配置" : Wire.Encode(current), Wire.Encode(device.Binding())));
+        }
+        rows.Add(new("Extensions", Wire.Encode(effective.Extensions), Wire.Encode(Extensions)));
+        return rows.ToArray();
+    }
     public StationConfig Build()
     {
         var source = basis ?? throw new InvalidOperationException("No configuration to edit");
-        int Number(string key) => int.TryParse(this[key], NumberStyles.Integer, CultureInfo.InvariantCulture, out var value) ? value : throw new InvalidDataException(key + "必须是整数");
+        int Number(string key)
+        {
+            if (int.TryParse(this[key], NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)) return value;
+            var error = new InvalidDataException(key + "必须是整数"); error.Data["ConfigurationField"] = key; throw error;
+        }
         var integration = new IntegrationBinding(this["TargetId"].Trim(), this["BindingVersion"].Trim(), this["Contract"].Trim(), this["Endpoint"].Trim());
         var deployment = extensions;
         if (deployment?.Ports is { } ports) deployment = deployment with { Ports = ports.Select(x => x.Port == "requests" ? x with { Target = integration } : x).ToArray() };
@@ -80,4 +96,9 @@ public sealed class DeviceDraft(DeviceBinding source)
     public string Revision { get; set; } = source.Revision;
     public string? ReplayFile { get; set; } = source.ReplayFile;
     public DeviceBinding Binding() => new(Role, Driver, DeviceId, Revision, string.IsNullOrWhiteSpace(ReplayFile) ? null : ReplayFile);
+}
+
+public sealed record ConfigurationComparison(string Field, string Effective, string Draft)
+{
+    public string State => Effective == Draft ? "与当前有效一致" : "本窗草稿已更改，尚未生效";
 }

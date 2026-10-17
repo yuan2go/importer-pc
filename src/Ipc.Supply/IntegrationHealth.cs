@@ -9,7 +9,7 @@ public sealed partial class StationApplication
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
-            var next = Clone(state); bool changed = false, guardChanged = false;
+            var next = Clone(state); bool changed = false, guardChanged = false, transition = false;
             foreach (var fact in facts)
             {
                 var binding = config.Extensions?.Ports?.SingleOrDefault(x => x.Port == fact.Port);
@@ -20,6 +20,8 @@ public sealed partial class StationApplication
                 if (prior is not null && (prior.Epoch != fact.Epoch || prior.ConfigurationSha256 != fact.ConfigurationSha256 || fact.Sequence <= prior.Sequence || fact.ConfirmedAt <= prior.ConfirmedAt)) continue;
                 changed = true;
                 guardChanged |= prior?.Status != fact.Status || (prior?.ValidUntil > Now) != (fact.ValidUntil > Now);
+                transition |= prior is null || prior.Status != fact.Status || prior.Failure != fact.Failure ||
+                    (prior.ValidUntil > Now) != (fact.ValidUntil > Now);
                 next.ServiceHealth[fact.Port] = fact;
                 // requests is Supply's actual dependency. Other ports have no declared
                 // business consumer; their failures remain independently visible diagnostics.
@@ -40,7 +42,10 @@ public sealed partial class StationApplication
             }
             if (!changed) return;
             if (guardChanged) next.Revision++;
-            store.Commit(next, "IntegrationInstanceHealth", config.StationId, "integration", Wire.Encode(facts)); Adopt(next); SyncAlarms();
+            if (transition) store.Commit(next, "IntegrationInstanceHealth", config.StationId, "integration", Wire.Encode(facts));
+            // All accepted sequences and confirmation times still reach the projection.
+            // Unchanged renewals are volatile authority, invalidated at every startup.
+            Adopt(next); SyncAlarms();
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); }
         finally { gate.Release(); }

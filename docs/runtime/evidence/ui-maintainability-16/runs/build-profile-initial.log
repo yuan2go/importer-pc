@@ -1,0 +1,16 @@
+  Ipc.Platform -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
+  Ipc.Assembly -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Assembly/bin/Debug/net10.0/Ipc.Assembly.dll
+  Ipc.Desktop -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll
+  Ipc.Fixture -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll
+  Ipc.Inspection -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Inspection/bin/Debug/net10.0/Ipc.Inspection.dll
+  Ipc.Verification -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:07.29

@@ -1,0 +1,13 @@
+{
+  "WorkPackage": "WP-IPC-UI-MAINTAINABILITY-16",
+  "Phase": "IMPLEMENTATION_FREEZE_CORE_CHECKS_PASSED_CANDIDATE_NOT_YET_RUN",
+  "Base": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+  "Storage": 5,
+  "MinimumReader": 5,
+  "ExtensionContract": 1,
+  "ReferenceExtensionVersion": "1.0.4",
+  "Windows": "NOT_RUN",
+  "Screenshots": 0,
+  "ProductionCapabilities": "NOT_READY_EXTERNAL_EVIDENCE_BLOCKED",
+  "EvidenceDirectory": "docs/runtime/evidence/ui-maintainability-16"
+}

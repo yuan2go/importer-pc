@@ -1,0 +1,32 @@
+{
+  "WorkPackage": "WP-IPC-UI-MAINTAINABILITY-16",
+  "Command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Python": "3.12.2",
+  "SourceCommit": "a0595ed40a471f41a9ee268f0ec8ce339ad19d39",
+  "WorkingTree": true,
+  "Result": "PASS_15",
+  "WindowsProcessOwnership": "NOT_RUN",
+  "Scope": "15 focused custody/publication/actual POSIX descendant termination/standalone guide link tests; compiler/checker mocked only in boundary tests, no real managed DLL acceptance inferred",
+  "Files": {
+    "scripts/build-extension.py": "887ad5c24afd6ba00b9d76170b958a984683a14497e5f5f36513a33a4cbb6510",
+    "scripts/extension_build.py": "2b3c6ded33e41a93e3ca870033a1b0aeabbf80b36a7672bb2850c7eaa8a3aac2",
+    "scripts/build_process.py": "c378c65b4f347514d4c05e034b4dbd7ae79f3f5e97be31da12e96d095830bec2",
+    "scripts/release_documents.py": "7693252eae0c8e70c6f47e69697b5885b303fea3f4cc9484c91305f9b88f210d",
+    "scripts/test_extension_build.py": "ac70e74ed5fbfa6e940db490b62c151d32df2f24abb30c6e5bc7132436546113",
+    "scripts/test_build_process.py": "1fbc14850d5e39e98d2024463f9f690abf9038575867f933dbf1e88c3ac0344b",
+    "scripts/test_release_documents.py": "2f9a39906039d3fa95e7f23052eb20d1a26f6363b6818fe0613e70a344124ccb"
+  },
+  "LogSha256": "ad1c323d19d54c14aebb7d365da11786e3615203573c9d9e02b96fb038dc2983",
+  "PreservedFailure": "tooling-tests-first-cross-checker-order-fail.log: shared target/checker directory reported checker drift before target drift; target validation restored first, unchanged target integrity assertion retained"
+}

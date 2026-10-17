@@ -1,0 +1,26 @@
+  Ipc.Platform -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Adapters -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Supply -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Product -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
+  Ipc.Assembly -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Assembly/bin/Debug/net10.0/Ipc.Assembly.dll
+  Ipc.Desktop -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll
+/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Receiver.cs(4,17): error CS0234: 命名空间“Microsoft”中不存在类型或命名空间名“Data”(是否缺少程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Ipc.Fixture.csproj]
+/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Receiver.cs(27,27): error CS0246: 未能找到类型或命名空间名“SqliteTransaction”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Ipc.Fixture.csproj]
+/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Receiver.cs(29,39): error CS0246: 未能找到类型或命名空间名“SqliteTransaction”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Ipc.Fixture.csproj]
+/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Receiver.cs(29,5): error CS0246: 未能找到类型或命名空间名“SqliteCommand”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Ipc.Fixture.csproj]
+/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Receiver.cs(12,14): error CS0246: 未能找到类型或命名空间名“SqliteConnection”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Ipc.Fixture.csproj]
+  Ipc.Inspection -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Inspection/bin/Debug/net10.0/Ipc.Inspection.dll
+  Ipc.Verification -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll
+
+生成失败。
+
+/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Receiver.cs(4,17): error CS0234: 命名空间“Microsoft”中不存在类型或命名空间名“Data”(是否缺少程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Ipc.Fixture.csproj]
+/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Receiver.cs(27,27): error CS0246: 未能找到类型或命名空间名“SqliteTransaction”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Ipc.Fixture.csproj]
+/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Receiver.cs(29,39): error CS0246: 未能找到类型或命名空间名“SqliteTransaction”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Ipc.Fixture.csproj]
+/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Receiver.cs(29,5): error CS0246: 未能找到类型或命名空间名“SqliteCommand”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Ipc.Fixture.csproj]
+/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Receiver.cs(12,14): error CS0246: 未能找到类型或命名空间名“SqliteConnection”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/Ipc.Fixture.csproj]
+    0 个警告
+    5 个错误
+
+已用时间 00:00:06.08

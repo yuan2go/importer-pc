@@ -17,7 +17,7 @@ public sealed partial class SupplyStore
         using var command = connection.CreateCommand(); command.Transaction = transaction;
         command.CommandText = "SELECT count(*) FROM requests WHERE status IN ('Prepared','Dispatching','Unknown')" +
             (inspection.FormatVersion >= 4 ? " OR id IN (SELECT request FROM response_conflicts) OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain')" : "");
-        var receiptPredicate = inspection.FormatVersion >= 5 ? " OR id IN (SELECT request FROM receipt_occurrences WHERE status NOT IN ('Committed','NoResponse'))" : "";
+        var receiptPredicate = inspection.FormatVersion >= 5 ? " OR id IN (SELECT request FROM receipt_occurrences WHERE " + ReceiptResponsibilityRules.UnresolvedSql("status") + ")" : "";
         command.CommandText += receiptPredicate;
         var pending = Convert.ToInt64(command.ExecuteScalar()) != 0 || inspection.UpgradeBlockers.Contains("ReceiptPersistenceRecoveryRequired");
         command.CommandText = pending ? "SELECT json FROM configs" : "SELECT json FROM configs WHERE status IN ('Effective','PendingActivation')";

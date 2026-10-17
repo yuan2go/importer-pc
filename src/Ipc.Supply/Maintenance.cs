@@ -126,12 +126,12 @@ public sealed partial class SupplyStore
             while (receipts.Read())
             {
                 var occurrence = Wire.Decode<ReceiptResponsibility>(receipts.GetString(3));
-                if (occurrence.Id != receipts.GetString(0) || occurrence.RequestId != receipts.GetString(1) || occurrence.Status != receipts.GetString(2) || occurrence.Status is not ("AwaitingResponse" or "RawUnavailable" or "Committed" or "NoResponse"))
+                if (occurrence.Id != receipts.GetString(0) || occurrence.RequestId != receipts.GetString(1) || occurrence.Status != receipts.GetString(2) || !ReceiptResponsibilityRules.IsKnown(occurrence.Status))
                     throw new InvalidDataException("Unknown receipt responsibility status; original retained");
             }
             receipts.Close();
             // Count requests once even if many independently unresolved receipts exist.
-            pending = Convert.ToInt32(MaintenanceScalar(connection, "SELECT count(*) FROM requests WHERE status IN ('Prepared','Dispatching','Unknown') OR id IN (SELECT request FROM response_conflicts) OR id IN (SELECT request FROM receipt_occurrences WHERE status NOT IN ('Committed','NoResponse')) OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain')"));
+            pending = Convert.ToInt32(MaintenanceScalar(connection, "SELECT count(*) FROM requests WHERE status IN ('Prepared','Dispatching','Unknown') OR id IN (SELECT request FROM response_conflicts) OR id IN (SELECT request FROM receipt_occurrences WHERE " + ReceiptResponsibilityRules.UnresolvedSql("status") + ") OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain')"));
         }
         command.CommandText = "SELECT o.state,r.status FROM outbox o LEFT JOIN requests r ON r.id=o.request";
         using (var reader = command.ExecuteReader())

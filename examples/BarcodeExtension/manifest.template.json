@@ -1,0 +1,11 @@
+{
+  "SchemaVersion": 1,
+  "Id": "reference.barcode",
+  "Version": "1.0.4",
+  "Runtime": "net10.0",
+  "Rid": "any",
+  "ContractMajor": 1,
+  "Mode": "Simulation",
+  "Dependencies": [],
+  "Prerequisites": []
+}

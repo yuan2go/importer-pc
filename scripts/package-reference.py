@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import zipfile
 from composition import resolve
+from release_documents import SOURCE_PATHS, publish as publish_guides
 from pathlib import Path
 
 p = argparse.ArgumentParser()
@@ -16,6 +17,7 @@ p.add_argument('--output', type=Path, required=True)
 p.add_argument('--composition', choices=['core-reference', 'barcode-reference', 'integration-reference'], default='core-reference')
 p.add_argument('--extension-key', type=Path)
 p.add_argument('--extension-trust', type=Path)
+p.add_argument('--extension-check-host', type=Path, help='Runnable frozen portable Ipc.Product.dll for cross-target static acceptance; public contract hashes must match')
 p.add_argument('--mode', choices=['Simulation', 'Production'], default='Simulation')
 p.add_argument('--product-definition', type=Path, default=Path('config/product.reference.json'))
 p.add_argument('--no-restore', action='store_true')
@@ -31,7 +33,7 @@ if bundle and a.mode != 'Simulation':
 archive = Path(str(output) + '.zip')
 if output.exists() or archive.exists():
     raise FileExistsError('Use a fresh output; prior packages retained')
-source_changes = subprocess.check_output(['git', 'status', '--porcelain', '--', 'src', 'config', 'scripts', 'global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx', 'docs/runtime/operations.md', 'docs/extensions/developer-guide.md'], cwd=root, text=True).strip()
+source_changes = subprocess.check_output(['git', 'status', '--porcelain', '--', *SOURCE_PATHS], cwd=root, text=True).strip()
 if source_changes:
     raise ValueError('Commit runtime/configuration/packaging sources before publication')
 output.mkdir(parents=True)
@@ -52,8 +54,10 @@ for project in projects:
         '--self-contained', 'true' if a.target == 'win-x64' else 'false', *target, '-o', str(destination))
 run('python3', str(root / 'scripts/seal.py'), '--require-clean-source', '--bin', str(output / 'app'),
     '--architecture', 'x64' if a.target == 'win-x64' else 'any', '--mode', a.mode, '--product-definition', str(a.product_definition))
-for source, name in [('scripts/station.ps1', 'station.ps1'), ('scripts/provision-runtime.ps1', 'provision-runtime.ps1'), ('scripts/protect-release.ps1', 'protect-release.ps1'), ('scripts/provision-extensions.ps1', 'provision-extensions.ps1'), ('scripts/windows-reference-validation.ps1', 'windows-reference-validation.ps1'), ('docs/runtime/operations.md', 'OPERATIONS.md'), ('docs/extensions/developer-guide.md','EXTENSIONS.md'), ('global.json', 'global.json')]:
+for source, name in [('scripts/station.ps1', 'station.ps1'), ('scripts/provision-runtime.ps1', 'provision-runtime.ps1'), ('scripts/protect-release.ps1', 'protect-release.ps1'), ('scripts/provision-extensions.ps1', 'provision-extensions.ps1'), ('scripts/windows-reference-validation.ps1', 'windows-reference-validation.ps1'), ('global.json', 'global.json')]:
     shutil.copyfile(root / source, output / name)
+release = json.loads((output / 'app/release.json').read_text())
+publish_guides(root, output, release['SourceCommit'])
 composition['runtime'] = 'net10.0'
 composition['rid'] = a.target
 composition['host'] = json.loads((output / 'app/config/product.json').read_text())['Modules']
@@ -64,15 +68,16 @@ if bundle:
     if trust['SchemaVersion'] != 1 or len(publishers) != 1 or publishers[0]['TestOnly'] is not True:
         raise ValueError('Reference composition requires an explicit separate TEST ONLY publisher')
     versions = {c['id']: c['version'] for c in composition['components']}
+    checker = ['--check-host', str(a.extension_check_host.resolve())] if a.extension_check_host else []
     package = output / f"offline-extensions/reference.barcode-{versions['reference.barcode']}.ipcx"
     run('python3', str(root / 'scripts/build-extension.py'), '--contract', str(output / 'app/Ipc.Platform.dll'), '--output', str(package),
-        '--version', versions['reference.barcode'], '--key', str(a.extension_key.resolve()), '--publisher', publishers[0]['Id'], '--trust', str(a.extension_trust.resolve()), '--dotnet', a.dotnet)
+        '--version', versions['reference.barcode'], '--key', str(a.extension_key.resolve()), '--publisher', publishers[0]['Id'], '--trust', str(a.extension_trust.resolve()), '--dotnet', a.dotnet, *checker)
     shutil.copyfile(a.extension_trust, output / 'offline-extensions/trust.Simulation.reference.json')
     composition['offline_bundles'] = [json.loads(Path(str(package) + '.identity.json').read_text())]
     if a.composition == 'integration-reference':
         package = output / f"offline-extensions/reference.integration-{versions['reference.integration']}.ipcx"
         run('python3', str(root / 'scripts/build-extension.py'), '--contract', str(output / 'app/Ipc.Platform.dll'), '--output', str(package),
-            '--kind', 'integration', '--version', versions['reference.integration'], '--key', str(a.extension_key.resolve()), '--publisher', publishers[0]['Id'], '--trust', str(a.extension_trust.resolve()), '--dotnet', a.dotnet)
+            '--kind', 'integration', '--version', versions['reference.integration'], '--key', str(a.extension_key.resolve()), '--publisher', publishers[0]['Id'], '--trust', str(a.extension_trust.resolve()), '--dotnet', a.dotnet, *checker)
         composition['offline_bundles'].append(json.loads(Path(str(package) + '.identity.json').read_text()))
 else:
     composition['offline_bundles'] = []

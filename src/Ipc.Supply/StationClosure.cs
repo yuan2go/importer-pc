@@ -89,14 +89,25 @@ public sealed partial class StationApplication
                     store.Commit(state, "StaleHealthIgnored", confirmation.DeviceId, "driver", "Non-newer confirmation cannot replace health/validity; no authority changed");
                 return;
             }
-            var next = Clone(state);
             var current = previous with { Health = confirmation.Health, UpdatedAt = previous.Health == confirmation.Health ? previous.UpdatedAt : confirmation.ConfirmedAt,
                 ConfirmedAt = confirmation.ConfirmedAt, ValidUntil = confirmation.ValidUntil, Source = confirmation.Source, Invalidity = null };
             if (current == previous) return;
-            next.Devices[binding.Role] = current;
-            if (previous.Health != current.Health || previous.IsValid(Now) != current.IsValid(Now)) next.Revision++;
-            store.Commit(next, "DeviceHealthConfirmation", confirmation.DeviceId, "driver", Wire.Encode(confirmation));
-            Adopt(next); SyncAlarms();
+            var transition = previous.Health != current.Health || previous.ValidityReason(Now) != current.ValidityReason(Now);
+            if (transition)
+            {
+                var next = Clone(state); next.Devices[binding.Role] = current; next.Revision++;
+                store.Commit(next, "DeviceHealthConfirmation", confirmation.DeviceId, "driver", Wire.Encode(confirmation));
+                Adopt(next);
+            }
+            else
+            {
+                // The serial owner retains every accepted source timestamp/expiry/sequence.
+                // Renewals confer no new business fact and do not need a durable permit:
+                // startup discards all health authority and requires source reconfirmation.
+                // The next business transaction checkpoints the latest current health.
+                state.Devices[binding.Role] = current;
+            }
+            SyncAlarms();
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); throw; }
         finally { gate.Release(); }
@@ -142,7 +153,9 @@ public sealed partial class StationApplication
             next.Blocks.RemoveAll(x => x.Code == "WcsUnavailable" && x.Source == "transport");
             if (!available) SetBlock(next, "WcsUnavailable", "station", "transport", config.Integration.Revision, "transport-health");
             if (had == available || wasValid != available) next.Revision++;
-            store.Commit(next, "IntegrationHealth", config.StationId, "transport", available.ToString());
+            var transition = had == available || wasValid != available ||
+                (typed ? service?.Status != next.IntegrationServiceHealth?.Status : previous?.Health != next.IntegrationHealth?.Health);
+            if (transition) store.Commit(next, "IntegrationHealth", config.StationId, "transport", available.ToString());
             Adopt(next); SyncAlarms();
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); }

@@ -1,0 +1,17 @@
+{
+  "Name": "final-locked-restore",
+  "SourceCommit": "a0595ed40a471f41a9ee268f0ec8ce339ad19d39",
+  "WorkingTree": true,
+  "Command": [
+    "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+    "restore",
+    "ImporterPc.slnx",
+    "--locked-mode",
+    "-p:EnableWindowsTargeting=true"
+  ],
+  "StartedAt": "2026-10-17T17:04:52.317956+00:00",
+  "EndedAt": "2026-10-17T17:04:55.049648+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "ExitCode": 0,
+  "LogSha256": "173e20ecfa8951d2eccd26fa6d9631be86839026a96aa21e4df8e2eff2f52fee"
+}

@@ -127,19 +127,34 @@ try
         Assert(!File.ReadAllText(Path.Combine(root, "metadata-diagnostics.json")).Contains(cfg.Integration.Endpoint), "Diagnostic excludes endpoint");
         await host.StopAsync(); host.Dispose();
         // A failed source activation must retain the previous effective version in the real DB.
+        async Task<CommandReceipt> ReviewedMaintenance(ProductRuntime target, string kind, string? owner = null, string? value = null)
+        {
+            CommandReceipt? receipt = null;
+            await Eventually(async () =>
+            {
+                var snapshot = await target.Application!.SnapshotAsync();
+                receipt = await target.Application.ExecuteAsync(new(Wire.Id(), snapshot.State.Revision, kind, owner, value));
+                // Conflict is an explicit pre-execution rejection. Re-read the projection;
+                // never retry an uncertain result, an exception or a business rejection.
+                return receipt.Status != "Conflict";
+            });
+            return receipt!;
+        }
         async Task Login(ProductRuntime target)
         {
             var snapshot = await target.Application!.SnapshotAsync();
-            var receipt = await target.Application.ExecuteAsync(new(Wire.Id(), snapshot.State.Revision, "Login", Value: "maintenance"));
+            var stale = await target.Application.ExecuteAsync(new(Wire.Id(), snapshot.State.Revision - 1, "Login", Value: "maintenance"));
+            Assert(stale.Status == "Conflict", "Stale maintenance command remains rejected before execution");
+            var receipt = await ReviewedMaintenance(target, "Login", value: "maintenance");
             Assert(receipt.Status == "Persisted", "Startup maintenance identity: " + receipt.Reason);
         }
         async Task Stage(ProductRuntime target, StationConfig draft)
         {
-            var app = target.Application!; await Eventually(async () => !(await app.SnapshotAsync()).State.Blocks.Any(x => x.Source == "transport")); var snap = await app.SnapshotAsync();
-            var login = await app.ExecuteAsync(new(Wire.Id(), snap.State.Revision, "Login", Value: "maintenance")); Assert(login.Status == "Persisted", "Maintenance login");
-            snap = await app.SnapshotAsync(); var saved = await app.ExecuteAsync(new(Wire.Id(), snap.State.Revision, "SaveConfig", Value: Wire.Encode(draft))); Assert(saved.Status == "Persisted", "Draft persisted: " + saved.Status + ": " + saved.Reason);
-            var revision = (await app.ConfigsAsync()).First(); snap = await app.SnapshotAsync();
-            Assert((await app.ExecuteAsync(new(Wire.Id(), snap.State.Revision, "ActivateConfig", revision.Id))).Status == "Persisted", "Restart activation staged");
+            var app = target.Application!; await Eventually(async () => !(await app.SnapshotAsync()).State.Blocks.Any(x => x.Source == "transport"));
+            var login = await ReviewedMaintenance(target, "Login", value: "maintenance"); Assert(login.Status == "Persisted", "Maintenance login");
+            var saved = await ReviewedMaintenance(target, "SaveConfig", value: Wire.Encode(draft)); Assert(saved.Status == "Persisted", "Draft persisted: " + saved.Status + ": " + saved.Reason);
+            var revision = (await app.ConfigsAsync()).First();
+            Assert((await ReviewedMaintenance(target, "ActivateConfig", revision.Id)).Status == "Persisted", "Restart activation staged");
         }
         using (var setup = ProductHost.Build(boot))
         {

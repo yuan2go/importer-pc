@@ -66,3 +66,5 @@ package-reference.py integration-reference交付完整供包portable或win-x64�
 ## PR12补丁的包内容身份
 
 组合中的`reference.barcode`和`reference.integration`已声明补丁版本1.0.1。`package-reference.py`按组合精确版本传给独立构建器，`smoke-extension.py`按发布的`composition.lock.json`选择原包，不扫描最新版。插件源提交仍分别取各自examples目录的最后提交；宿主提交及公共契约SHA另记。换宿主导致manifest公共契约指纹变化时必须使用新包版本；已发布1.0.0及永久ID/version登记不可改写。Production批准与实际Windows接入状态不随参考包版本改变。
+
+重复构建证明：`python3 scripts/verify-extension-reproducibility.py --contract-directory <portable/app> --contract-directory <win-x64/app> --key <external-private-key> --trust <independent-test-policy> --publisher reference-test --version 1.0.1 --dotnet <pinned-dotnet> --output <fresh-evidence.json>`。两种扩展对每个冻结宿主各构建两次，必须有相同原始manifest和payload，宿主字节不变；RSA-PSS签名随机性不要求ZIP原字节相同。macOS临时目录先解析物理路径并映射整个构建根，避免随机/private/var路径进入托管DLL。新输出不可覆盖旧证据；私钥不会进入输出。

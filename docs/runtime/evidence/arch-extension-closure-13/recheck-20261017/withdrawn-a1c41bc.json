@@ -1,0 +1,78 @@
+{
+  "SourceCommit": "a1c41bcb713cf82bb30ce8d434b7970b578d74ec",
+  "Uploaded": false,
+  "Result": "FAIL_DIFFERENT_MANAGED_PLUGIN_BYTES_AT_SAME_VERSION",
+  "Cause": "macOS physical /private/var path absent from old /var PathMap; random temporary build root leaked in CodeView PDB path",
+  "Packages": [
+    {
+      "Id": "reference.barcode",
+      "Version": "1.0.1",
+      "Targets": {
+        "portable": {
+          "ManifestSha256": "7a3d53fc5777bd75577e12462cd591bb5447fe076ceb76d8cec8b106930d35a3",
+          "Files": [
+            {
+              "Path": "Ipc.Reference.BarcodeExtension.dll",
+              "Length": 12288,
+              "Sha256": "F89C08FB19F82637C706FEBA373804FCD227232E2DEBD7F28F19E3EF4A87AA88"
+            }
+          ]
+        },
+        "win-x64": {
+          "ManifestSha256": "133bd22b63a0d566e164a2947fe64e2206c9daba922bb37777bec7fea36ed184",
+          "Files": [
+            {
+              "Path": "Ipc.Reference.BarcodeExtension.dll",
+              "Length": 12288,
+              "Sha256": "CC72841A30BCD9DBEE4F019E02A7E902210F5387B09341C5B35D2A66BA4D8EBF"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "Id": "reference.integration",
+      "Version": "1.0.1",
+      "Targets": {
+        "portable": {
+          "ManifestSha256": "ab21bd115fff8ac08b69886a95b1dff7a3b0fb49e7cf39c03b30bc3634596969",
+          "Files": [
+            {
+              "Path": "Ipc.Reference.IntegrationExtension.dll",
+              "Length": 26112,
+              "Sha256": "31935E4CC6D0CAF1357E93AAC655C881380272439D20CD0F02BB0184B84DE103"
+            }
+          ]
+        },
+        "win-x64": {
+          "ManifestSha256": "92d2f7c2b3f3a2751c5fdc2379025b09c7c08e854750e77381f7fd546df92dc2",
+          "Files": [
+            {
+              "Path": "Ipc.Reference.IntegrationExtension.dll",
+              "Length": 26112,
+              "Sha256": "1999AB337CA18FF5FCD6950B23434F18778E2211BFE96795D3BE3AA7BE2634DA"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "PreservedLocalCandidates": [
+    {
+      "File": "closure13-a1c41bc-inspection.zip",
+      "Sha256": "a129bca2ea072b8fb5e8a5cf87965dfe7299163dba0cff16db0872449ccea8f8"
+    },
+    {
+      "File": "closure13-a1c41bc-integration-portable.zip",
+      "Sha256": "7b17d3b6c302c9c98845ad683abd36b555eee9739b12fcbfdf8ddee5f06fef6d"
+    },
+    {
+      "File": "closure13-a1c41bc-integration-win-x64.zip",
+      "Sha256": "4582b3445bee2b8f31d1455ea42cdf4bdb406713ccadc4b02e90541c0b8328a7"
+    },
+    {
+      "File": "closure13-a1c41bc-supply-assembly.zip",
+      "Sha256": "520c0a3dc7bd4a724a51bf9703427ec632a5fe04ec91d2a16b987dab68166e18"
+    }
+  ]
+}

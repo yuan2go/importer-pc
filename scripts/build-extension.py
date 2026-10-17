@@ -39,7 +39,8 @@ commit = subprocess.check_output(['git', 'log', '-1', '--format=%H', '--', sourc
 if not commit:
     raise ValueError('Commit the independent example sources before building distribution packages')
 with tempfile.TemporaryDirectory(prefix='ipc-extension-build-') as temporary:
-    work = Path(temporary)
+    # macOS exposes /var through /private/var; map the physical compiler path.
+    work = Path(temporary).resolve()
     isolated = work / 'project'
     isolated.mkdir()
     tracked = subprocess.check_output(['git', 'ls-files', '-z', '--', source_scope], cwd=root).decode().split('\0')
@@ -51,7 +52,7 @@ with tempfile.TemporaryDirectory(prefix='ipc-extension-build-') as temporary:
     for name in ('Directory.Build.props', 'global.json', 'NuGet.Config'):
         (work / name).write_bytes((root / name).read_bytes())
     isolated_project = isolated / project.name
-    properties = [f'-p:IpcContractPath={contract}', f'-p:IpcContractDirectory={contract.parent}', f'-p:SourceRevisionId={commit}', f'-p:PathMap={isolated}=/_/reference-barcode']
+    properties = [f'-p:IpcContractPath={contract}', f'-p:IpcContractDirectory={contract.parent}', f'-p:SourceRevisionId={commit}', f'-p:PathMap={work}=/_/reference-extension']
     for command in [
         [a.dotnet, 'restore', str(isolated_project), '--locked-mode', *properties],
         [a.dotnet, 'build', str(isolated_project), '--no-restore', '-c', 'Release', '-m:1', '-nr:false', *properties, f'-p:Version={a.version}', '-o', str(work / 'bin')],

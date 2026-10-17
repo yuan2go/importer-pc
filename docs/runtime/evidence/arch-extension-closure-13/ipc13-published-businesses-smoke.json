@@ -1,0 +1,73 @@
+[
+  {
+    "Profile": "inspection",
+    "Started": {
+      "Business": "inspection",
+      "Presentation": {
+        "Views": [
+          "inspection",
+          "inspection-history"
+        ],
+        "Layouts": [
+          "standard",
+          "compact"
+        ]
+      },
+      "Status": "Started"
+    },
+    "Final": {
+      "RuntimeId": "eee66a9b-1122-48e1-a491-a7551288c2d9",
+      "Revision": 3,
+      "State": "Ready",
+      "Facts": {
+        "Business": "inspection",
+        "Batches": "1",
+        "Samples": "1",
+        "CurrentBatch": "batch-candidate",
+        "CurrentState": "Closed"
+      }
+    },
+    "SharedRuntimeId": "eee66a9b-1122-48e1-a491-a7551288c2d9",
+    "ExitCode": 0,
+    "Result": "PASS",
+    "Windows": "WINDOWS_NOT_RUN"
+  },
+  {
+    "Profile": "supply-assembly",
+    "Started": {
+      "Business": "supply",
+      "Presentation": {
+        "Views": [
+          "workstation",
+          "history",
+          "alarms",
+          "diagnostics",
+          "maintenance",
+          "engineering",
+          "extensions"
+        ],
+        "Layouts": [
+          "standard",
+          "compact"
+        ]
+      },
+      "Status": "Started"
+    },
+    "Final": {
+      "RuntimeId": "da57e274-5ea1-49ed-a9cd-e7d294c68241",
+      "Revision": 8,
+      "State": "Running",
+      "Facts": {
+        "Business": "supply",
+        "AcceptedQuantity": "0",
+        "Session": "",
+        "Admission": "False",
+        "Blocks": "WcsUnavailable:station; WcsHealth:Health:Disconnected; NoActiveBoxOrCloseBarrier"
+      }
+    },
+    "SharedRuntimeId": "da57e274-5ea1-49ed-a9cd-e7d294c68241",
+    "ExitCode": 0,
+    "Result": "PASS",
+    "Windows": "WINDOWS_NOT_RUN"
+  }
+]

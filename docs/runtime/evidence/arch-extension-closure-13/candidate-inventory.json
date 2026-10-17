@@ -1,0 +1,1022 @@
+{
+  "WorkPackage": "WP-IPC-ARCH-EXTENSION-CLOSURE-13",
+  "HostSourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+  "ObservationSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+  "IntegrationSourceCommit": "01038cc5e21d200e4545c0a26594adc05eb62923",
+  "Release": "ARCH-EXTENSION-CLOSURE-13",
+  "Storage": 3,
+  "MinimumReader": 3,
+  "ExtensionContract": 1,
+  "BusinessContract": "SIMULATION-v1",
+  "Windows": "WINDOWS_NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "ActualWpfScreenshots": 0,
+  "TestTrustOnly": true,
+  "PrivateKeyIncluded": false,
+  "Assets": [
+    {
+      "Asset": "closure13-dc5b405-inspection.zip",
+      "Bytes": 879109,
+      "Sha256": "c8d83ac5de25564b1c09d604804157306689db013b0ff784a3be91bd982855bc",
+      "Package": {
+        "SchemaVersion": 1,
+        "Business": "inspection",
+        "Views": [
+          "inspection",
+          "inspection-history"
+        ],
+        "Layouts": [
+          "standard",
+          "compact"
+        ],
+        "EntryPoint": "app/Ipc.Assembly.dll",
+        "SourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+        "Windows": "WINDOWS_NOT_RUN",
+        "Field": "BLOCKED",
+        "Binaries": {
+          "Ipc.Assembly.dll": "7115bd4e93be5bda9deed90595cb5b1284d7c9f1b27e676a2355fbab25a60ddf",
+          "Ipc.Inspection.dll": "1301d639251fb29965428487f2cf51348c1d37d2bff90ee0618fbc5082ae16b2",
+          "Ipc.Platform.dll": "4e8b8eceda06d38aabd74af3d78fde8aedf9769082d05f6964172caa7fbf1afd"
+        }
+      },
+      "CompositionLock": {
+        "schema": 2,
+        "composition": "inspection-reference",
+        "product": {
+          "business": "inspection",
+          "views": [
+            "inspection",
+            "inspection-history"
+          ],
+          "layouts": [
+            "standard",
+            "compact"
+          ]
+        },
+        "definition_sha256": "4de8fd6a1d5c3b48a40a4d2429f754084499941b3867fcf510d9f23029af0132",
+        "components": [
+          {
+            "id": "platform",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [],
+            "delivery": "core"
+          },
+          {
+            "id": "inspection",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "platform"
+            ],
+            "delivery": "core"
+          },
+          {
+            "id": "assembly.inspection",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "inspection"
+            ],
+            "delivery": "core"
+          }
+        ],
+        "binaries": {
+          "Ipc.Assembly.dll": "7115bd4e93be5bda9deed90595cb5b1284d7c9f1b27e676a2355fbab25a60ddf",
+          "Ipc.Inspection.dll": "1301d639251fb29965428487f2cf51348c1d37d2bff90ee0618fbc5082ae16b2",
+          "Ipc.Platform.dll": "4e8b8eceda06d38aabd74af3d78fde8aedf9769082d05f6964172caa7fbf1afd"
+        }
+      },
+      "Sha256SumsSha256": "9cefefe07ce109717251ab2e98711724617ada21b953fb2db15d122d24dfe575",
+      "FileCount": 44,
+      "Extensions": [],
+      "EntryCount": 50,
+      "PublishedInitialFileCountMeaning": "Initial release CANDIDATE FileCount counted files and directories; exact ordinary file count is recorded here and in remote readback."
+    },
+    {
+      "Asset": "closure13-dc5b405-integration-portable.zip",
+      "Bytes": 35471724,
+      "Sha256": "c962796996b02a55298ae53ae3f4f886f9c38b909effa85fcaffa5b8df97d06e",
+      "Package": {
+        "WorkPackage": "WP-IPC-ARCH-EXTENSION-CLOSURE-13",
+        "SourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+        "ReleaseVersion": "ARCH-EXTENSION-CLOSURE-13",
+        "StorageVersion": 3,
+        "ContractVersion": "SIMULATION-v1",
+        "SourceCodeSha256": "4dbf95f1a75724bdc85d849fa392ba85c1f5e502f856909a65f69e7784e77d68",
+        "Target": "portable",
+        "WindowsRuntimeValidation": "NOT_RUN",
+        "PhysicalIntegration": "BLOCKED",
+        "Note": "Portable requires pinned .NET runtime; win-x64 is self-contained and requires Windows validation.",
+        "Composition": "integration-reference",
+        "Mode": "Simulation",
+        "ExtensionContract": 1,
+        "MinimumReader": 3,
+        "CompositionLockSha256": "9f7c9a87abfe16745ba27796b19178351161f2a9a5d291ac3bfe7a08222baccc"
+      },
+      "CompositionLock": {
+        "schema": 2,
+        "composition": "integration-reference",
+        "product": {
+          "business": "supply",
+          "views": [
+            "workstation",
+            "history",
+            "alarms",
+            "diagnostics",
+            "maintenance",
+            "engineering",
+            "extensions"
+          ],
+          "layouts": [
+            "standard",
+            "compact"
+          ]
+        },
+        "definition_sha256": "4de8fd6a1d5c3b48a40a4d2429f754084499941b3867fcf510d9f23029af0132",
+        "components": [
+          {
+            "id": "platform",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [],
+            "delivery": "core"
+          },
+          {
+            "id": "supply-contracts",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "platform"
+            ],
+            "delivery": "core"
+          },
+          {
+            "id": "supply",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "supply-contracts"
+            ],
+            "delivery": "core"
+          },
+          {
+            "id": "adapters",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "supply"
+            ],
+            "delivery": "core"
+          },
+          {
+            "id": "product",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "adapters"
+            ],
+            "delivery": "core"
+          },
+          {
+            "id": "reference.barcode",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "platform"
+            ],
+            "delivery": "offline-bundle"
+          },
+          {
+            "id": "reference.integration",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "supply-contracts"
+            ],
+            "delivery": "offline-bundle"
+          }
+        ],
+        "runtime": "net10.0",
+        "rid": "portable",
+        "host": [
+          {
+            "Id": "platform",
+            "Kind": "platform",
+            "Version": "1.0.0",
+            "ContractMajor": 1,
+            "Dependencies": [],
+            "File": "Ipc.Platform.dll",
+            "Sha256": "4E8B8ECEDA06D38AABD74AF3D78FDE8AEDF9769082D05F6964172CAA7FBF1AFD"
+          },
+          {
+            "Id": "supply-contracts",
+            "Kind": "contracts",
+            "Version": "1.0.0",
+            "ContractMajor": 1,
+            "Dependencies": [
+              "platform"
+            ],
+            "File": "Ipc.Supply.Contracts.dll",
+            "Sha256": "917ABDB121E9DBF063EC24157BDD3D815171A618685D1198F0CC1DF36D423041"
+          },
+          {
+            "Id": "supply",
+            "Kind": "supply",
+            "Version": "1.0.0",
+            "ContractMajor": 1,
+            "Dependencies": [
+              "supply-contracts"
+            ],
+            "File": "Ipc.Supply.dll",
+            "Sha256": "E050141FB97F305252304E1E0A6E13F900010B093CFF40840C104FDB1E94DD51"
+          },
+          {
+            "Id": "adapters",
+            "Kind": "adapters",
+            "Version": "1.0.0",
+            "ContractMajor": 1,
+            "Dependencies": [
+              "supply"
+            ],
+            "File": "Ipc.Adapters.dll",
+            "Sha256": "A55A7F7FF2731F0AE5AE523E63A40E1B04EE033E213F821E4F7B8918042096D5"
+          },
+          {
+            "Id": "product",
+            "Kind": "product",
+            "Version": "1.0.0",
+            "ContractMajor": 1,
+            "Dependencies": [
+              "adapters"
+            ],
+            "File": "Ipc.Product.dll",
+            "Sha256": "4B5AE881F5349226C29C9755A99E7109C201DF0B76EEC091D8C92F0FD9B674AC"
+          }
+        ],
+        "offline_bundles": [
+          {
+            "Package": "reference.barcode-1.0.0.ipcx",
+            "PackageSha256": "5eb836a38cde1a88b925c0f4b6df860658a90ca8fcab010088959032423dcbfb",
+            "PluginSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+            "HostContractSha256": "4e8b8eceda06d38aabd74af3d78fde8aedf9769082d05f6964172caa7fbf1afd",
+            "FrozenHostUnchanged": true,
+            "Publisher": "reference-test",
+            "Version": "1.0.0",
+            "ExtensionContract": 1,
+            "Signature": "RSA-PSS/SHA256",
+            "Mode": "Simulation",
+            "PluginSourceSha256": "cf2864697afb658f858fc5c857081351f8e2099a5c5cb78c7a38afcd913b376e"
+          },
+          {
+            "Package": "reference.integration-1.0.0.ipcx",
+            "PackageSha256": "b89c39c80ece68a51f0c593a002ecff964f5b3a96e6098daf5f542ee4750a38f",
+            "PluginSourceCommit": "01038cc5e21d200e4545c0a26594adc05eb62923",
+            "HostContractSha256": "4e8b8eceda06d38aabd74af3d78fde8aedf9769082d05f6964172caa7fbf1afd",
+            "FrozenHostUnchanged": true,
+            "Publisher": "reference-test",
+            "Version": "1.0.0",
+            "ExtensionContract": 1,
+            "Signature": "RSA-PSS/SHA256",
+            "Mode": "Simulation",
+            "PluginSourceSha256": "1d4535d606c71b907a68d0a791418a414b5010a816acef10b2e3c675ddae3ed5"
+          }
+        ]
+      },
+      "Sha256SumsSha256": "04c90d83ff719380ddecc75ea5cb2179265fa40a8d937a8024bc95935885b939",
+      "FileCount": 158,
+      "Extensions": [
+        {
+          "Package": "reference.barcode-1.0.0.ipcx",
+          "PackageSha256": "5eb836a38cde1a88b925c0f4b6df860658a90ca8fcab010088959032423dcbfb",
+          "Reference": {
+            "Id": "reference.barcode",
+            "Version": "1.0.0",
+            "ManifestSha256": "665308D874EF60C8AA034FFA716166A549E008CAA42E820F9883B3BF7646D9F1"
+          },
+          "Manifest": {
+            "SchemaVersion": 1,
+            "Id": "reference.barcode",
+            "Version": "1.0.0",
+            "Publisher": "reference-test",
+            "Runtime": "net10.0",
+            "Rid": "any",
+            "ContractMajor": 1,
+            "Mode": "Simulation",
+            "SourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+            "Dependencies": [],
+            "Files": [
+              {
+                "Path": "Ipc.Reference.BarcodeExtension.dll",
+                "Length": 12288,
+                "Sha256": "D062C0F4D54A2DA9388440C4972C002D08294D8637578D5CDAD53FD113659153"
+              }
+            ],
+            "Modules": [
+              {
+                "Id": "barcode-source",
+                "Assembly": "Ipc.Reference.BarcodeExtension.dll",
+                "EntryType": "Ipc.Reference.BarcodeExtension.BarcodeModule",
+                "Kind": "observation",
+                "MaximumInstances": 8,
+                "Parameters": [
+                  {
+                    "Key": "health.interval-ms",
+                    "Group": "健康 / 可靠确认",
+                    "Label": "合成心跳间隔",
+                    "Type": "integer",
+                    "Required": true,
+                    "Default": "1000",
+                    "Minimum": 100,
+                    "Maximum": 2000,
+                    "Unit": "ms"
+                  },
+                  {
+                    "Key": "input.prefix",
+                    "Group": "输入 / 合成条码",
+                    "Label": "允许的条码前缀",
+                    "Type": "string",
+                    "Default": "",
+                    "MaximumLength": 32,
+                    "Description": "不匹配时产生无码观察；不沿用旧码。仅合成模式。"
+                  },
+                  {
+                    "Key": "input.labels",
+                    "Group": "输入 / 合成条码",
+                    "Label": "来源标签（每行一项）",
+                    "Type": "string-list",
+                    "Default": "[]",
+                    "MaximumLength": 256,
+                    "MaximumItems": 16
+                  },
+                  {
+                    "Key": "metadata.contract",
+                    "Group": "身份 / 版本",
+                    "Label": "来源契约",
+                    "Type": "string",
+                    "Default": "SIMULATION-OBSERVATION-v1",
+                    "ReadOnly": true
+                  },
+                  {
+                    "Key": "credential.reference",
+                    "Group": "身份 / 凭据引用",
+                    "Label": "凭据引用（不输入密码）",
+                    "Type": "secret-reference",
+                    "Sensitive": true,
+                    "Description": "只存 credential:名称；本合成源不使用或读取生产凭据。"
+                  },
+                  {
+                    "Key": "fault.fail-start",
+                    "Group": "工程 / 显式模拟故障",
+                    "Label": "启动失败注入",
+                    "Type": "boolean",
+                    "Default": "false",
+                    "Description": "只用于参考环境验证升级失败保旧。"
+                  },
+                  {
+                    "Key": "fault.stop-delay-ms",
+                    "Group": "工程 / 显式模拟故障",
+                    "Label": "停止延迟注入",
+                    "Type": "integer",
+                    "Default": "0",
+                    "Minimum": 0,
+                    "Maximum": 20000,
+                    "Unit": "ms",
+                    "Description": "验证Stop未终止时保留依赖和实际资源租约。"
+                  }
+                ]
+              }
+            ],
+            "Prerequisites": [],
+            "HostContractSha256": "4E8B8ECEDA06D38AABD74AF3D78FDE8AEDF9769082D05F6964172CAA7FBF1AFD"
+          }
+        },
+        {
+          "Package": "reference.integration-1.0.0.ipcx",
+          "PackageSha256": "b89c39c80ece68a51f0c593a002ecff964f5b3a96e6098daf5f542ee4750a38f",
+          "Reference": {
+            "Id": "reference.integration",
+            "Version": "1.0.0",
+            "ManifestSha256": "FAEDE76CC7868304B3A95718AB0E7AAF5ABEC17EF1860B924FB643E1C21BE119"
+          },
+          "Manifest": {
+            "SchemaVersion": 1,
+            "Id": "reference.integration",
+            "Version": "1.0.0",
+            "Publisher": "reference-test",
+            "Runtime": "net10.0",
+            "Rid": "any",
+            "ContractMajor": 1,
+            "Mode": "Simulation",
+            "SourceCommit": "01038cc5e21d200e4545c0a26594adc05eb62923",
+            "Dependencies": [],
+            "Files": [
+              {
+                "Path": "Ipc.Reference.IntegrationExtension.dll",
+                "Length": 26112,
+                "Sha256": "4E48198B739ACF691311168ECD818F30009DFC97431EEC800FB388018A8A4199"
+              }
+            ],
+            "Modules": [
+              {
+                "Id": "reference-http",
+                "Assembly": "Ipc.Reference.IntegrationExtension.dll",
+                "EntryType": "Ipc.Reference.IntegrationExtension.IntegrationModule",
+                "Kind": "integration",
+                "MaximumInstances": 8,
+                "Parameters": [
+                  {
+                    "Key": "fault.fail-create",
+                    "Group": "工程 / 模拟故障",
+                    "Label": "构造失败注入",
+                    "Type": "boolean",
+                    "Default": "false"
+                  },
+                  {
+                    "Key": "fault.stop-delay-ms",
+                    "Group": "工程 / 模拟故障",
+                    "Label": "停止延迟",
+                    "Type": "integer",
+                    "Default": "0",
+                    "Minimum": 0,
+                    "Maximum": 30000,
+                    "Unit": "ms"
+                  },
+                  {
+                    "Key": "fault.dispose-delay-ms",
+                    "Group": "工程 / 模拟故障",
+                    "Label": "释放延迟",
+                    "Type": "integer",
+                    "Default": "0",
+                    "Minimum": 0,
+                    "Maximum": 30000,
+                    "Unit": "ms"
+                  },
+                  {
+                    "Key": "metadata.label",
+                    "Group": "服务 / 诊断",
+                    "Label": "实例说明",
+                    "Type": "string",
+                    "Default": "",
+                    "MaximumLength": 128
+                  },
+                  {
+                    "Key": "credential.reference",
+                    "Group": "服务 / 凭据引用",
+                    "Label": "凭据引用",
+                    "Type": "secret-reference",
+                    "Sensitive": true
+                  }
+                ]
+              }
+            ],
+            "Prerequisites": [],
+            "HostContractSha256": "4E8B8ECEDA06D38AABD74AF3D78FDE8AEDF9769082D05F6964172CAA7FBF1AFD",
+            "PublicContracts": {
+              "Ipc.Supply.Contracts": "917ABDB121E9DBF063EC24157BDD3D815171A618685D1198F0CC1DF36D423041"
+            }
+          }
+        }
+      ],
+      "EntryCount": 258,
+      "PublishedInitialFileCountMeaning": "Initial release CANDIDATE FileCount counted files and directories; exact ordinary file count is recorded here and in remote readback."
+    },
+    {
+      "Asset": "closure13-dc5b405-integration-win-x64.zip",
+      "Bytes": 115641051,
+      "Sha256": "7cfedccd3ef402e43059f2823a4196752845d7aaa40e491b65782591c0a17c3d",
+      "Package": {
+        "WorkPackage": "WP-IPC-ARCH-EXTENSION-CLOSURE-13",
+        "SourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+        "ReleaseVersion": "ARCH-EXTENSION-CLOSURE-13",
+        "StorageVersion": 3,
+        "ContractVersion": "SIMULATION-v1",
+        "SourceCodeSha256": "4dbf95f1a75724bdc85d849fa392ba85c1f5e502f856909a65f69e7784e77d68",
+        "Target": "win-x64",
+        "WindowsRuntimeValidation": "NOT_RUN",
+        "PhysicalIntegration": "BLOCKED",
+        "Note": "Portable requires pinned .NET runtime; win-x64 is self-contained and requires Windows validation.",
+        "Composition": "integration-reference",
+        "Mode": "Simulation",
+        "ExtensionContract": 1,
+        "MinimumReader": 3,
+        "CompositionLockSha256": "d563175c2251f9f6f1ea48e09ab46e6ae7d803ac151e4f6080b8316c6bc8053a"
+      },
+      "CompositionLock": {
+        "schema": 2,
+        "composition": "integration-reference",
+        "product": {
+          "business": "supply",
+          "views": [
+            "workstation",
+            "history",
+            "alarms",
+            "diagnostics",
+            "maintenance",
+            "engineering",
+            "extensions"
+          ],
+          "layouts": [
+            "standard",
+            "compact"
+          ]
+        },
+        "definition_sha256": "4de8fd6a1d5c3b48a40a4d2429f754084499941b3867fcf510d9f23029af0132",
+        "components": [
+          {
+            "id": "platform",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [],
+            "delivery": "core"
+          },
+          {
+            "id": "supply-contracts",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "platform"
+            ],
+            "delivery": "core"
+          },
+          {
+            "id": "supply",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "supply-contracts"
+            ],
+            "delivery": "core"
+          },
+          {
+            "id": "adapters",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "supply"
+            ],
+            "delivery": "core"
+          },
+          {
+            "id": "product",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "adapters"
+            ],
+            "delivery": "core"
+          },
+          {
+            "id": "reference.barcode",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "platform"
+            ],
+            "delivery": "offline-bundle"
+          },
+          {
+            "id": "reference.integration",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "supply-contracts"
+            ],
+            "delivery": "offline-bundle"
+          }
+        ],
+        "runtime": "net10.0",
+        "rid": "win-x64",
+        "host": [
+          {
+            "Id": "platform",
+            "Kind": "platform",
+            "Version": "1.0.0",
+            "ContractMajor": 1,
+            "Dependencies": [],
+            "File": "Ipc.Platform.dll",
+            "Sha256": "4E8B8ECEDA06D38AABD74AF3D78FDE8AEDF9769082D05F6964172CAA7FBF1AFD"
+          },
+          {
+            "Id": "supply-contracts",
+            "Kind": "contracts",
+            "Version": "1.0.0",
+            "ContractMajor": 1,
+            "Dependencies": [
+              "platform"
+            ],
+            "File": "Ipc.Supply.Contracts.dll",
+            "Sha256": "917ABDB121E9DBF063EC24157BDD3D815171A618685D1198F0CC1DF36D423041"
+          },
+          {
+            "Id": "supply",
+            "Kind": "supply",
+            "Version": "1.0.0",
+            "ContractMajor": 1,
+            "Dependencies": [
+              "supply-contracts"
+            ],
+            "File": "Ipc.Supply.dll",
+            "Sha256": "E050141FB97F305252304E1E0A6E13F900010B093CFF40840C104FDB1E94DD51"
+          },
+          {
+            "Id": "adapters",
+            "Kind": "adapters",
+            "Version": "1.0.0",
+            "ContractMajor": 1,
+            "Dependencies": [
+              "supply"
+            ],
+            "File": "Ipc.Adapters.dll",
+            "Sha256": "A55A7F7FF2731F0AE5AE523E63A40E1B04EE033E213F821E4F7B8918042096D5"
+          },
+          {
+            "Id": "product",
+            "Kind": "product",
+            "Version": "1.0.0",
+            "ContractMajor": 1,
+            "Dependencies": [
+              "adapters"
+            ],
+            "File": "Ipc.Product.dll",
+            "Sha256": "3AE284A6BBB4673BF8328FE32E190A216E0D9A593137597D122C28AF2D428F88"
+          }
+        ],
+        "offline_bundles": [
+          {
+            "Package": "reference.barcode-1.0.0.ipcx",
+            "PackageSha256": "c4f06334ad547a2ec6e326eca690163bf07109321309fdda510c8fa441500242",
+            "PluginSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+            "HostContractSha256": "4e8b8eceda06d38aabd74af3d78fde8aedf9769082d05f6964172caa7fbf1afd",
+            "FrozenHostUnchanged": true,
+            "Publisher": "reference-test",
+            "Version": "1.0.0",
+            "ExtensionContract": 1,
+            "Signature": "RSA-PSS/SHA256",
+            "Mode": "Simulation",
+            "PluginSourceSha256": "cf2864697afb658f858fc5c857081351f8e2099a5c5cb78c7a38afcd913b376e"
+          },
+          {
+            "Package": "reference.integration-1.0.0.ipcx",
+            "PackageSha256": "79792c25a8837f8b05fe2116993a83d38b7b74864e32a1c4682f4d3bdcc755b7",
+            "PluginSourceCommit": "01038cc5e21d200e4545c0a26594adc05eb62923",
+            "HostContractSha256": "4e8b8eceda06d38aabd74af3d78fde8aedf9769082d05f6964172caa7fbf1afd",
+            "FrozenHostUnchanged": true,
+            "Publisher": "reference-test",
+            "Version": "1.0.0",
+            "ExtensionContract": 1,
+            "Signature": "RSA-PSS/SHA256",
+            "Mode": "Simulation",
+            "PluginSourceSha256": "1d4535d606c71b907a68d0a791418a414b5010a816acef10b2e3c675ddae3ed5"
+          }
+        ]
+      },
+      "Sha256SumsSha256": "7a94de27785f45c665a67a65ed1f6c5927f51cc9a037fb5ac7bd57244e0e5e44",
+      "FileCount": 843,
+      "Extensions": [
+        {
+          "Package": "reference.barcode-1.0.0.ipcx",
+          "PackageSha256": "c4f06334ad547a2ec6e326eca690163bf07109321309fdda510c8fa441500242",
+          "Reference": {
+            "Id": "reference.barcode",
+            "Version": "1.0.0",
+            "ManifestSha256": "2CE260D796C7F0D42AC1986692B20C917BBD407DB8726FD32307E5588DF27F0C"
+          },
+          "Manifest": {
+            "SchemaVersion": 1,
+            "Id": "reference.barcode",
+            "Version": "1.0.0",
+            "Publisher": "reference-test",
+            "Runtime": "net10.0",
+            "Rid": "any",
+            "ContractMajor": 1,
+            "Mode": "Simulation",
+            "SourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+            "Dependencies": [],
+            "Files": [
+              {
+                "Path": "Ipc.Reference.BarcodeExtension.dll",
+                "Length": 12288,
+                "Sha256": "2A3BA4A2426CCA9886187204D3CB69228B70096AB26E675122FBBF40FE45400D"
+              }
+            ],
+            "Modules": [
+              {
+                "Id": "barcode-source",
+                "Assembly": "Ipc.Reference.BarcodeExtension.dll",
+                "EntryType": "Ipc.Reference.BarcodeExtension.BarcodeModule",
+                "Kind": "observation",
+                "MaximumInstances": 8,
+                "Parameters": [
+                  {
+                    "Key": "health.interval-ms",
+                    "Group": "健康 / 可靠确认",
+                    "Label": "合成心跳间隔",
+                    "Type": "integer",
+                    "Required": true,
+                    "Default": "1000",
+                    "Minimum": 100,
+                    "Maximum": 2000,
+                    "Unit": "ms"
+                  },
+                  {
+                    "Key": "input.prefix",
+                    "Group": "输入 / 合成条码",
+                    "Label": "允许的条码前缀",
+                    "Type": "string",
+                    "Default": "",
+                    "MaximumLength": 32,
+                    "Description": "不匹配时产生无码观察；不沿用旧码。仅合成模式。"
+                  },
+                  {
+                    "Key": "input.labels",
+                    "Group": "输入 / 合成条码",
+                    "Label": "来源标签（每行一项）",
+                    "Type": "string-list",
+                    "Default": "[]",
+                    "MaximumLength": 256,
+                    "MaximumItems": 16
+                  },
+                  {
+                    "Key": "metadata.contract",
+                    "Group": "身份 / 版本",
+                    "Label": "来源契约",
+                    "Type": "string",
+                    "Default": "SIMULATION-OBSERVATION-v1",
+                    "ReadOnly": true
+                  },
+                  {
+                    "Key": "credential.reference",
+                    "Group": "身份 / 凭据引用",
+                    "Label": "凭据引用（不输入密码）",
+                    "Type": "secret-reference",
+                    "Sensitive": true,
+                    "Description": "只存 credential:名称；本合成源不使用或读取生产凭据。"
+                  },
+                  {
+                    "Key": "fault.fail-start",
+                    "Group": "工程 / 显式模拟故障",
+                    "Label": "启动失败注入",
+                    "Type": "boolean",
+                    "Default": "false",
+                    "Description": "只用于参考环境验证升级失败保旧。"
+                  },
+                  {
+                    "Key": "fault.stop-delay-ms",
+                    "Group": "工程 / 显式模拟故障",
+                    "Label": "停止延迟注入",
+                    "Type": "integer",
+                    "Default": "0",
+                    "Minimum": 0,
+                    "Maximum": 20000,
+                    "Unit": "ms",
+                    "Description": "验证Stop未终止时保留依赖和实际资源租约。"
+                  }
+                ]
+              }
+            ],
+            "Prerequisites": [],
+            "HostContractSha256": "4E8B8ECEDA06D38AABD74AF3D78FDE8AEDF9769082D05F6964172CAA7FBF1AFD"
+          }
+        },
+        {
+          "Package": "reference.integration-1.0.0.ipcx",
+          "PackageSha256": "79792c25a8837f8b05fe2116993a83d38b7b74864e32a1c4682f4d3bdcc755b7",
+          "Reference": {
+            "Id": "reference.integration",
+            "Version": "1.0.0",
+            "ManifestSha256": "583D395797FD838884CAE06227EF84BE64C741660AF0A90A479D07CF880D92AB"
+          },
+          "Manifest": {
+            "SchemaVersion": 1,
+            "Id": "reference.integration",
+            "Version": "1.0.0",
+            "Publisher": "reference-test",
+            "Runtime": "net10.0",
+            "Rid": "any",
+            "ContractMajor": 1,
+            "Mode": "Simulation",
+            "SourceCommit": "01038cc5e21d200e4545c0a26594adc05eb62923",
+            "Dependencies": [],
+            "Files": [
+              {
+                "Path": "Ipc.Reference.IntegrationExtension.dll",
+                "Length": 26112,
+                "Sha256": "A2033A35E6772C2160F6CDE4DA6F6AA0BCBF27188BCEBE79A2C08109B7692291"
+              }
+            ],
+            "Modules": [
+              {
+                "Id": "reference-http",
+                "Assembly": "Ipc.Reference.IntegrationExtension.dll",
+                "EntryType": "Ipc.Reference.IntegrationExtension.IntegrationModule",
+                "Kind": "integration",
+                "MaximumInstances": 8,
+                "Parameters": [
+                  {
+                    "Key": "fault.fail-create",
+                    "Group": "工程 / 模拟故障",
+                    "Label": "构造失败注入",
+                    "Type": "boolean",
+                    "Default": "false"
+                  },
+                  {
+                    "Key": "fault.stop-delay-ms",
+                    "Group": "工程 / 模拟故障",
+                    "Label": "停止延迟",
+                    "Type": "integer",
+                    "Default": "0",
+                    "Minimum": 0,
+                    "Maximum": 30000,
+                    "Unit": "ms"
+                  },
+                  {
+                    "Key": "fault.dispose-delay-ms",
+                    "Group": "工程 / 模拟故障",
+                    "Label": "释放延迟",
+                    "Type": "integer",
+                    "Default": "0",
+                    "Minimum": 0,
+                    "Maximum": 30000,
+                    "Unit": "ms"
+                  },
+                  {
+                    "Key": "metadata.label",
+                    "Group": "服务 / 诊断",
+                    "Label": "实例说明",
+                    "Type": "string",
+                    "Default": "",
+                    "MaximumLength": 128
+                  },
+                  {
+                    "Key": "credential.reference",
+                    "Group": "服务 / 凭据引用",
+                    "Label": "凭据引用",
+                    "Type": "secret-reference",
+                    "Sensitive": true
+                  }
+                ]
+              }
+            ],
+            "Prerequisites": [],
+            "HostContractSha256": "4E8B8ECEDA06D38AABD74AF3D78FDE8AEDF9769082D05F6964172CAA7FBF1AFD",
+            "PublicContracts": {
+              "Ipc.Supply.Contracts": "917ABDB121E9DBF063EC24157BDD3D815171A618685D1198F0CC1DF36D423041"
+            }
+          }
+        }
+      ],
+      "EntryCount": 861,
+      "PublishedInitialFileCountMeaning": "Initial release CANDIDATE FileCount counted files and directories; exact ordinary file count is recorded here and in remote readback."
+    },
+    {
+      "Asset": "closure13-dc5b405-supply-assembly.zip",
+      "Bytes": 18111602,
+      "Sha256": "b9d87c6887f711eb2e88fbc659aa9105a7aba804eae948d537c22adc46c649a1",
+      "Package": {
+        "SchemaVersion": 1,
+        "Business": "supply",
+        "Views": [
+          "workstation",
+          "history",
+          "alarms",
+          "diagnostics",
+          "maintenance",
+          "engineering",
+          "extensions"
+        ],
+        "Layouts": [
+          "standard",
+          "compact"
+        ],
+        "EntryPoint": "app/Ipc.Assembly.dll",
+        "SourceCommit": "dc5b405f69535df84228199b40ce84048aa153b0",
+        "Windows": "WINDOWS_NOT_RUN",
+        "Field": "BLOCKED",
+        "Binaries": {
+          "Ipc.Adapters.dll": "a55a7f7ff2731f0ae5ae523e63a40e1b04ee033e213f821e4f7b8918042096d5",
+          "Ipc.Assembly.dll": "c0a760499625d6cb0b82b50c2cf3fe920aa70b3dabe270da96a050be5b341fb1",
+          "Ipc.Platform.dll": "4e8b8eceda06d38aabd74af3d78fde8aedf9769082d05f6964172caa7fbf1afd",
+          "Ipc.Product.dll": "4b5ae881f5349226c29c9755a99e7109c201df0b76eec091d8c92f0fd9b674ac",
+          "Ipc.Supply.Contracts.dll": "917abdb121e9dbf063ec24157bdd3d815171a618685d1198f0cc1df36d423041",
+          "Ipc.Supply.dll": "e050141fb97f305252304e1e0a6e13f900010b093cff40840c104fdb1e94dd51"
+        }
+      },
+      "CompositionLock": {
+        "schema": 2,
+        "composition": "supply-assembly",
+        "product": {
+          "business": "supply",
+          "views": [
+            "workstation",
+            "history",
+            "alarms",
+            "diagnostics",
+            "maintenance",
+            "engineering",
+            "extensions"
+          ],
+          "layouts": [
+            "standard",
+            "compact"
+          ]
+        },
+        "definition_sha256": "4de8fd6a1d5c3b48a40a4d2429f754084499941b3867fcf510d9f23029af0132",
+        "components": [
+          {
+            "id": "platform",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [],
+            "delivery": "core"
+          },
+          {
+            "id": "supply-contracts",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "platform"
+            ],
+            "delivery": "core"
+          },
+          {
+            "id": "supply",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "supply-contracts"
+            ],
+            "delivery": "core"
+          },
+          {
+            "id": "adapters",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "supply"
+            ],
+            "delivery": "core"
+          },
+          {
+            "id": "product",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "adapters"
+            ],
+            "delivery": "core"
+          },
+          {
+            "id": "assembly.supply",
+            "version": "1.0.0",
+            "contract": 1,
+            "dependencies": [
+              "product"
+            ],
+            "delivery": "core"
+          }
+        ],
+        "binaries": {
+          "Ipc.Adapters.dll": "a55a7f7ff2731f0ae5ae523e63a40e1b04ee033e213f821e4f7b8918042096d5",
+          "Ipc.Assembly.dll": "c0a760499625d6cb0b82b50c2cf3fe920aa70b3dabe270da96a050be5b341fb1",
+          "Ipc.Platform.dll": "4e8b8eceda06d38aabd74af3d78fde8aedf9769082d05f6964172caa7fbf1afd",
+          "Ipc.Product.dll": "4b5ae881f5349226c29c9755a99e7109c201df0b76eec091d8c92f0fd9b674ac",
+          "Ipc.Supply.Contracts.dll": "917abdb121e9dbf063ec24157bdd3d815171a618685d1198f0cc1df36d423041",
+          "Ipc.Supply.dll": "e050141fb97f305252304e1e0a6e13f900010b093cff40840c104fdb1e94dd51"
+        }
+      },
+      "Sha256SumsSha256": "6a39f2da4a0049b7e52436edd930a7ad78e0710ab04d71a02e04cfb8c8823366",
+      "FileCount": 84,
+      "Extensions": [],
+      "EntryCount": 135,
+      "PublishedInitialFileCountMeaning": "Initial release CANDIDATE FileCount counted files and directories; exact ordinary file count is recorded here and in remote readback."
+    },
+    {
+      "Asset": "reference-barcode-source-6507edb.zip",
+      "Bytes": 3909,
+      "Sha256": "bfb2e80af36afb48edc7298c27f2d9d43f22b7723ee20a3b290de8a448a45f34",
+      "PluginSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9"
+    },
+    {
+      "Asset": "reference-integration-source-01038cc.zip",
+      "Bytes": 5854,
+      "Sha256": "b97957d9975432f8bb9678989ee94b88f53b69422761c448b29d86c4249aca44",
+      "PluginSourceCommit": "01038cc5e21d200e4545c0a26594adc05eb62923"
+    },
+    {
+      "Asset": "closure13-dc5b405-reference.barcode-1.0.0.ipcx",
+      "Bytes": 7626,
+      "Sha256": "5eb836a38cde1a88b925c0f4b6df860658a90ca8fcab010088959032423dcbfb"
+    },
+    {
+      "Asset": "closure13-dc5b405-reference.integration-1.0.0.ipcx",
+      "Bytes": 13264,
+      "Sha256": "b89c39c80ece68a51f0c593a002ecff964f5b3a96e6098daf5f542ee4750a38f"
+    },
+    {
+      "Asset": "closure13-dc5b405-trust.Simulation.reference.json",
+      "Bytes": 775,
+      "Sha256": "a2bf7e63645a6b9fc45e0e05769885cf339411e61a42aba48bf70b1971aed896"
+    }
+  ]
+}

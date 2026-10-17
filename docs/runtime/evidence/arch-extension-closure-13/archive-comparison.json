@@ -1,0 +1,11 @@
+{
+  "BaselineCommit": "feed6e9ce79449e48c667c17e2671939a86fb588",
+  "BaselineStatus": "FAIL",
+  "BaselineErrors": 267,
+  "CurrentStatus": "FAIL",
+  "CurrentErrors": 267,
+  "NewErrors": [],
+  "RemovedErrors": [],
+  "Result": "PASS_NO_NEW_ARCHIVE_ERRORS_BASELINE_267_RETAINED",
+  "RulesWeakened": false
+}

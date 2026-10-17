@@ -1,0 +1,9 @@
+{
+  "Asset": "closure13-READBACK.json",
+  "Sha256": "9e581a5e19b31f08533040f5bf216b543da25a16ec605c74341bc0cf34232efd",
+  "Bytes": 6818,
+  "FullDownloadMatches": true,
+  "TotalReleaseAssets": 12,
+  "PriorElevenAssets": "remote-readback.json",
+  "Windows": "WINDOWS_NOT_RUN"
+}

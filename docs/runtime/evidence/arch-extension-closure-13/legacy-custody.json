@@ -1,0 +1,10 @@
+{
+  "Asset": "delivery12-11f0728-barcode-portable.zip",
+  "DownloadedFrom": "delivery-12-reference-11f0728",
+  "Sha256": "95a3e3d6a63600a68c3e6ae66067fbd690d842d1cf97e60eb18a12a4b5256293",
+  "ExpectedSha256": "95a3e3d6a63600a68c3e6ae66067fbd690d842d1cf97e60eb18a12a4b5256293",
+  "HostContractCompatibility": "259CD65594630D5A48D4EB0CB5E28B9C2603403BBB42D50B63D9696203024E8D",
+  "OriginalPackageUnmodified": true,
+  "Test": "Actual signed package inspection/install/source/business/stop under new frozen published host",
+  "RemoteBytesMatchPublished12": true
+}

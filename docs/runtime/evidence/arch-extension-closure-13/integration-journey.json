@@ -1,38 +1,38 @@
 {
   "Original": {
-    "Id": "46cd62c008f5410383dd633e1d498f6a",
-    "OwnerId": "45ba76164b6c49e08c8db8ba58921f9a",
-    "SessionId": "d1907d442f2d47c7b4a3b054a06d9e02",
+    "Id": "20cbc79433c9488388882f081cd7e391",
+    "OwnerId": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9",
+    "SessionId": "e993e69b0ff74a9eb2329daa3df400a2",
     "Kind": "Submit",
     "OwnerRevision": 3,
-    "IntentKey": "45ba76164b6c49e08c8db8ba58921f9a:Submit:3",
-    "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-9446def801c146b3a898609fceb53f76\u0022,\n  \u0022SessionId\u0022: \u0022d1907d442f2d47c7b4a3b054a06d9e02\u0022,\n  \u0022OwnerId\u0022: \u002245ba76164b6c49e08c8db8ba58921f9a\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T13:12:32.932015\u002B00:00\u0022\n  }\n}",
-    "PayloadHash": "86AE0CBD2041EA248A32B5C5196991F19C63FF705F574182256C5983BFA234CA",
+    "IntentKey": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9:Submit:3",
+    "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-354d986c07044536b17a9a4c46890341\u0022,\n  \u0022SessionId\u0022: \u0022e993e69b0ff74a9eb2329daa3df400a2\u0022,\n  \u0022OwnerId\u0022: \u0022cd9c9afe6d4e49e2a6a0ec06c45d5fe9\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T13:16:26.324469\u002B00:00\u0022\n  }\n}",
+    "PayloadHash": "BAAC5DE53E9A540964B33E10AE38532AD320D6F32A7FF7DD7EE642ABEFF6952D",
     "Binding": {
       "Id": "reference-target-a",
       "Revision": "1",
       "Contract": "SIMULATION-v1",
-      "Endpoint": "http://127.0.0.1:52857/"
+      "Endpoint": "http://127.0.0.1:53194/"
     },
     "Status": "Unknown",
-    "CreatedAt": "2026-10-17T05:12:33.1935+00:00",
+    "CreatedAt": "2026-10-17T05:16:26.622527+00:00",
     "Implementation": {
       "Driver": "extension",
       "Package": {
         "Id": "reference.integration",
         "Version": "1.0.0",
-        "ManifestSha256": "D1B78093F67BBD09DA3BA99C5A3A7413D59D77B9544994D303C4956898605524"
+        "ManifestSha256": "A35E78D4BC08D4376BCA561BD3D755D91992ABD21CEE5EEC51ADB7E711357970"
       },
       "ModuleId": "reference-http",
       "InstanceId": "receiver-a",
       "DeploymentVersion": "E13-DEPLOY-1",
-      "ConfigurationSha256": "BC2EFA49F85C8BE1760C545D7EE1F48797B187E821754E98EEA1B32FC9796C73",
-      "ContractSha256": "F016AA04E122070D77BD7701CD76E12ACFF1292327D5CEA9E8B7BA6A5FCB96F0",
+      "ConfigurationSha256": "ED7F9ABB88471F719CB3AC68041AAC414CA6E498148A0DC1767916F1990EDC15",
+      "ContractSha256": "641EE6C31926FB23C9182EE8CB8CF5EDECFF95EDF709C7C47CFD4BA1264951E1",
       "Target": {
         "Id": "reference-target-a",
         "Revision": "1",
         "Contract": "SIMULATION-v1",
-        "Endpoint": "http://127.0.0.1:52857/"
+        "Endpoint": "http://127.0.0.1:53194/"
       },
       "TimeoutMs": 500,
       "Policy": "SYNTHETIC-KEEP-v1",
@@ -47,39 +47,39 @@
   },
   "Resolved": {
     "Request": {
-      "Id": "46cd62c008f5410383dd633e1d498f6a",
-      "OwnerId": "45ba76164b6c49e08c8db8ba58921f9a",
-      "SessionId": "d1907d442f2d47c7b4a3b054a06d9e02",
+      "Id": "20cbc79433c9488388882f081cd7e391",
+      "OwnerId": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9",
+      "SessionId": "e993e69b0ff74a9eb2329daa3df400a2",
       "Kind": "Submit",
       "OwnerRevision": 3,
-      "IntentKey": "45ba76164b6c49e08c8db8ba58921f9a:Submit:3",
-      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-9446def801c146b3a898609fceb53f76\u0022,\n  \u0022SessionId\u0022: \u0022d1907d442f2d47c7b4a3b054a06d9e02\u0022,\n  \u0022OwnerId\u0022: \u002245ba76164b6c49e08c8db8ba58921f9a\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T13:12:32.932015\u002B00:00\u0022\n  }\n}",
-      "PayloadHash": "86AE0CBD2041EA248A32B5C5196991F19C63FF705F574182256C5983BFA234CA",
+      "IntentKey": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9:Submit:3",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-354d986c07044536b17a9a4c46890341\u0022,\n  \u0022SessionId\u0022: \u0022e993e69b0ff74a9eb2329daa3df400a2\u0022,\n  \u0022OwnerId\u0022: \u0022cd9c9afe6d4e49e2a6a0ec06c45d5fe9\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T13:16:26.324469\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "BAAC5DE53E9A540964B33E10AE38532AD320D6F32A7FF7DD7EE642ABEFF6952D",
       "Binding": {
         "Id": "reference-target-a",
         "Revision": "1",
         "Contract": "SIMULATION-v1",
-        "Endpoint": "http://127.0.0.1:52857/"
+        "Endpoint": "http://127.0.0.1:53194/"
       },
       "Status": "Accepted",
-      "CreatedAt": "2026-10-17T05:12:33.1935+00:00",
+      "CreatedAt": "2026-10-17T05:16:26.622527+00:00",
       "Implementation": {
         "Driver": "extension",
         "Package": {
           "Id": "reference.integration",
           "Version": "1.0.0",
-          "ManifestSha256": "D1B78093F67BBD09DA3BA99C5A3A7413D59D77B9544994D303C4956898605524"
+          "ManifestSha256": "A35E78D4BC08D4376BCA561BD3D755D91992ABD21CEE5EEC51ADB7E711357970"
         },
         "ModuleId": "reference-http",
         "InstanceId": "receiver-a",
         "DeploymentVersion": "E13-DEPLOY-1",
-        "ConfigurationSha256": "BC2EFA49F85C8BE1760C545D7EE1F48797B187E821754E98EEA1B32FC9796C73",
-        "ContractSha256": "F016AA04E122070D77BD7701CD76E12ACFF1292327D5CEA9E8B7BA6A5FCB96F0",
+        "ConfigurationSha256": "ED7F9ABB88471F719CB3AC68041AAC414CA6E498148A0DC1767916F1990EDC15",
+        "ContractSha256": "641EE6C31926FB23C9182EE8CB8CF5EDECFF95EDF709C7C47CFD4BA1264951E1",
         "Target": {
           "Id": "reference-target-a",
           "Revision": "1",
           "Contract": "SIMULATION-v1",
-          "Endpoint": "http://127.0.0.1:52857/"
+          "Endpoint": "http://127.0.0.1:53194/"
         },
         "TimeoutMs": 500,
         "Policy": "SYNTHETIC-KEEP-v1",
@@ -94,20 +94,20 @@
     },
     "Attempts": [
       {
-        "Id": "48a2fad26bd74ff6bbb2ea1183f50ecd",
-        "RequestId": "46cd62c008f5410383dd633e1d498f6a",
+        "Id": "4e8cbac8ff674ef3acfcbec781921f4c",
+        "RequestId": "20cbc79433c9488388882f081cd7e391",
         "Ordinal": 1,
-        "StartedAt": "2026-10-17T05:12:33.272917+00:00",
-        "EndedAt": "2026-10-17T05:12:33.278015+00:00",
+        "StartedAt": "2026-10-17T05:16:26.699643+00:00",
+        "EndedAt": "2026-10-17T05:16:26.732303+00:00",
         "Disposition": "Unknown",
         "Error": "HttpRequestException: transport outcome not authoritative"
       }
     ],
     "Responses": [
       {
-        "RequestId": "46cd62c008f5410383dd633e1d498f6a",
-        "PayloadHash": "86AE0CBD2041EA248A32B5C5196991F19C63FF705F574182256C5983BFA234CA",
-        "EvidenceId": "ac5eb586a7484435be7635e91ed4e454",
+        "RequestId": "20cbc79433c9488388882f081cd7e391",
+        "PayloadHash": "BAAC5DE53E9A540964B33E10AE38532AD320D6F32A7FF7DD7EE642ABEFF6952D",
+        "EvidenceId": "3a667d2dbdbb4d3bba34c72404a870c0",
         "Result": "Accepted",
         "Reason": "SIMULATION accepted",
         "Remaining": 118,
@@ -115,118 +115,118 @@
         "CheckToken": null,
         "Task": {
           "Sku": "SIM-SKU-4403E0E0DC91",
-          "ItemWave": "SIM-ITEM-WAVE-8AA87B4C324C",
-          "TaskId": "SIM-TASK-D53614EE200B",
-          "Destination": "SIM-CHUTE-01",
+          "ItemWave": "SIM-ITEM-WAVE-8C4125F32B30",
+          "TaskId": "SIM-TASK-030480E60441",
+          "Destination": "SIM-CHUTE-02",
           "Unit": "\u4EF6",
           "Provenance": {
             "Source": "Independent synthetic task fixture",
             "Version": "SYNTHETIC-SEMANTICS-v1",
-            "EvidenceId": "ac5eb586a7484435be7635e91ed4e454",
-            "AcquiredAt": "2026-10-17T05:12:33.274721+00:00"
+            "EvidenceId": "3a667d2dbdbb4d3bba34c72404a870c0",
+            "AcquiredAt": "2026-10-17T05:16:26.720131+00:00"
           }
         }
       }
     ],
     "Audit": [
       {
-        "Id": "be7520523eaf4a79b1cd88cf0b73a7f2",
-        "OwnerId": "45ba76164b6c49e08c8db8ba58921f9a",
+        "Id": "60ed42ff3cca447e968805b51be39f0c",
+        "OwnerId": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9",
         "Actor": "device:SIM-E13-A",
         "CommandId": "system",
         "Kind": "Associated",
-        "Evidence": "{\n  \u0022Id\u0022: \u00226d3cea95221a40988553aa6602ef779e\u0022,\n  \u0022DeviceId\u0022: \u0022SIM-E13-A\u0022,\n  \u0022Epoch\u0022: \u00224cd3528f3a974128a50e394b8d03581c\u0022,\n  \u0022SourceEventId\u0022: \u002267a62a2c7b894559a2fdba75d675d0a6\u0022,\n  \u0022Sequence\u0022: 1,\n  \u0022AdmissionId\u0022: \u0022f07ed6f275b04ca29cda3594857bd163\u0022,\n  \u0022Kind\u0022: \u0022Enter\u0022,\n  \u0022Codes\u0022: [],\n  \u0022PackageQuantity\u0022: null,\n  \u0022ObservedAt\u0022: \u00222026-10-17T05:12:33.07939\u002B00:00\u0022\n}",
-        "At": "2026-10-17T05:12:33.084468+00:00"
+        "Evidence": "{\n  \u0022Id\u0022: \u00220284546dccf04be599bc67ef0c642049\u0022,\n  \u0022DeviceId\u0022: \u0022SIM-E13-A\u0022,\n  \u0022Epoch\u0022: \u00220706282a81ea4c4cb19301ddea23978d\u0022,\n  \u0022SourceEventId\u0022: \u002259bbcd1dfab64c4ba54086a795b77152\u0022,\n  \u0022Sequence\u0022: 1,\n  \u0022AdmissionId\u0022: \u00222ac44d16146c41ada283c78ec9961472\u0022,\n  \u0022Kind\u0022: \u0022Enter\u0022,\n  \u0022Codes\u0022: [],\n  \u0022PackageQuantity\u0022: null,\n  \u0022ObservedAt\u0022: \u00222026-10-17T05:16:26.474029\u002B00:00\u0022\n}",
+        "At": "2026-10-17T05:16:26.47942+00:00"
       },
       {
-        "Id": "440bd3d976ef4042be956503d43ced79",
-        "OwnerId": "45ba76164b6c49e08c8db8ba58921f9a",
+        "Id": "8639032ea6e74d38814a47da898e7968",
+        "OwnerId": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9",
         "Actor": "device:SIM-E13-A",
         "CommandId": "system",
         "Kind": "Associated",
-        "Evidence": "{\n  \u0022Id\u0022: \u0022ed92e20d852c4f8295556d5d9ace9208\u0022,\n  \u0022DeviceId\u0022: \u0022SIM-E13-A\u0022,\n  \u0022Epoch\u0022: \u00224cd3528f3a974128a50e394b8d03581c\u0022,\n  \u0022SourceEventId\u0022: \u0022dafb525f1916432b95857a421e60a6b4\u0022,\n  \u0022Sequence\u0022: 2,\n  \u0022AdmissionId\u0022: \u0022f07ed6f275b04ca29cda3594857bd163\u0022,\n  \u0022Kind\u0022: \u0022Read\u0022,\n  \u0022Codes\u0022: [\n    \u0022000123\u0022\n  ],\n  \u0022PackageQuantity\u0022: 2,\n  \u0022ObservedAt\u0022: \u00222026-10-17T05:12:33.0894\u002B00:00\u0022\n}",
-        "At": "2026-10-17T05:12:33.090312+00:00"
+        "Evidence": "{\n  \u0022Id\u0022: \u0022b4d9d9614478452cab2b89043dbdfb48\u0022,\n  \u0022DeviceId\u0022: \u0022SIM-E13-A\u0022,\n  \u0022Epoch\u0022: \u00220706282a81ea4c4cb19301ddea23978d\u0022,\n  \u0022SourceEventId\u0022: \u0022eace32c583224800baefaa4f5400b7df\u0022,\n  \u0022Sequence\u0022: 2,\n  \u0022AdmissionId\u0022: \u00222ac44d16146c41ada283c78ec9961472\u0022,\n  \u0022Kind\u0022: \u0022Read\u0022,\n  \u0022Codes\u0022: [\n    \u0022000123\u0022\n  ],\n  \u0022PackageQuantity\u0022: 2,\n  \u0022ObservedAt\u0022: \u00222026-10-17T05:16:26.507667\u002B00:00\u0022\n}",
+        "At": "2026-10-17T05:16:26.508745+00:00"
       },
       {
-        "Id": "2e645428e77849589168580ad48d8ff1",
-        "OwnerId": "45ba76164b6c49e08c8db8ba58921f9a",
+        "Id": "bbb30eac1d47437fa294eabd09fdd07e",
+        "OwnerId": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9",
         "Actor": "sender",
         "CommandId": "system",
         "Kind": "T2Claim",
-        "Evidence": "9098e83eb595484f9b4413bbb0f56741",
-        "At": "2026-10-17T05:12:33.164582+00:00"
+        "Evidence": "3d8fcd505eba40e1b62a67347ec6af8e",
+        "At": "2026-10-17T05:16:26.571718+00:00"
       },
       {
-        "Id": "b28d60a205de4165a6ac620579d20cb4",
-        "OwnerId": "45ba76164b6c49e08c8db8ba58921f9a",
+        "Id": "77a0e9adef524baa84d9f665a94b12c8",
+        "OwnerId": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9",
         "Actor": "sender",
         "CommandId": "system",
         "Kind": "TransportHandoffAuthorized",
-        "Evidence": "9098e83eb595484f9b4413bbb0f56741",
-        "At": "2026-10-17T05:12:33.16536+00:00"
+        "Evidence": "3d8fcd505eba40e1b62a67347ec6af8e",
+        "At": "2026-10-17T05:16:26.573879+00:00"
       },
       {
-        "Id": "29f327c526784cf5a324872ac04ab4da",
-        "OwnerId": "45ba76164b6c49e08c8db8ba58921f9a",
+        "Id": "300ed8945ad94f0c892a69ca3c678621",
+        "OwnerId": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9",
         "Actor": "integration",
         "CommandId": "system",
         "Kind": "T3Response",
         "Evidence": "SIMULATION accepted",
-        "At": "2026-10-17T05:12:33.169174+00:00"
+        "At": "2026-10-17T05:16:26.580474+00:00"
       },
       {
-        "Id": "60fe563825434f24b06f18e76c324508",
-        "OwnerId": "45ba76164b6c49e08c8db8ba58921f9a",
+        "Id": "4a4de29246bb4896a904d2eb3afc36d8",
+        "OwnerId": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9",
         "Actor": "SIM-maintenance",
-        "CommandId": "ee0d5f6c30044df1af3a78dc28667895",
+        "CommandId": "56426e0ff4b444508d605f9d087ad8a2",
         "Kind": "Submit",
         "Evidence": "",
-        "At": "2026-10-17T05:12:33.19363+00:00"
+        "At": "2026-10-17T05:16:26.622717+00:00"
       },
       {
-        "Id": "823f88b60ea64ea6a7f1180bf21fed5e",
-        "OwnerId": "45ba76164b6c49e08c8db8ba58921f9a",
+        "Id": "61eda3a6006c477e999a0d375a65d4f2",
+        "OwnerId": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9",
         "Actor": "sender",
         "CommandId": "system",
         "Kind": "T2Claim",
-        "Evidence": "46cd62c008f5410383dd633e1d498f6a",
-        "At": "2026-10-17T05:12:33.273072+00:00"
+        "Evidence": "20cbc79433c9488388882f081cd7e391",
+        "At": "2026-10-17T05:16:26.706639+00:00"
       },
       {
-        "Id": "ac0ef1f548cc4d7a9aabce6b8bc126a7",
-        "OwnerId": "45ba76164b6c49e08c8db8ba58921f9a",
+        "Id": "a8e6d76400254ae9a7d6b5d9ba19c7d3",
+        "OwnerId": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9",
         "Actor": "sender",
         "CommandId": "system",
         "Kind": "TransportHandoffAuthorized",
-        "Evidence": "46cd62c008f5410383dd633e1d498f6a",
-        "At": "2026-10-17T05:12:33.273762+00:00"
+        "Evidence": "20cbc79433c9488388882f081cd7e391",
+        "At": "2026-10-17T05:16:26.710506+00:00"
       },
       {
-        "Id": "10949c4f817c40df9869725bcae89477",
-        "OwnerId": "45ba76164b6c49e08c8db8ba58921f9a",
+        "Id": "32537d8c07ea4121a8d071c8a18e1a60",
+        "OwnerId": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9",
         "Actor": "sender",
         "CommandId": "system",
         "Kind": "OutcomeUnknown",
         "Evidence": "HttpRequestException: transport outcome not authoritative",
-        "At": "2026-10-17T05:12:33.278192+00:00"
+        "At": "2026-10-17T05:16:26.732877+00:00"
       },
       {
-        "Id": "99f93f1e3380471e8c455361a5972794",
-        "OwnerId": "45ba76164b6c49e08c8db8ba58921f9a",
+        "Id": "6da1a281d61141109059c1d23fa2e102",
+        "OwnerId": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9",
         "Actor": "integration",
         "CommandId": "system",
         "Kind": "T3Response",
         "Evidence": "SIMULATION accepted",
-        "At": "2026-10-17T05:12:33.392271+00:00"
+        "At": "2026-10-17T05:16:26.993198+00:00"
       },
       {
-        "Id": "72bced102c3b458ba36a91a076051774",
-        "OwnerId": "45ba76164b6c49e08c8db8ba58921f9a",
+        "Id": "79944e57bcf44dcd83f59bcfff5d4417",
+        "OwnerId": "cd9c9afe6d4e49e2a6a0ec06c45d5fe9",
         "Actor": "reconciler",
         "CommandId": "system",
         "Kind": "ReconciliationQuery",
-        "Evidence": "Authoritative SIMULATION receiver evidence ac5eb586a7484435be7635e91ed4e454",
-        "At": "2026-10-17T05:12:33.393756+00:00"
+        "Evidence": "Authoritative SIMULATION receiver evidence 3a667d2dbdbb4d3bba34c72404a870c0",
+        "At": "2026-10-17T05:16:26.99487+00:00"
       }
     ]
   },

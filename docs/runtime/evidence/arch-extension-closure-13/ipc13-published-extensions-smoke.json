@@ -1,0 +1,234 @@
+{
+  "Windows": "NOT_RUN",
+  "PhysicalDevice": "NOT_RUN",
+  "HostBefore": {
+    "Ipc.Supply.pdb": "753b9afe271fd5cb73f2cf439433db36eb80ee791f61a87ce165a5228dffe548",
+    "Ipc.Platform.pdb": "2f5f82ce54ea8d1d8da7d997f5882ba744c8313229623c026e5602d32d784632",
+    "Ipc.Adapters.pdb": "e4cb54b54f3c5be3de6921a47a408c0f64e12711d33152e8ec4bcaee30316e09",
+    "Ipc.Supply.Contracts.dll": "917abdb121e9dbf063ec24157bdd3d815171a618685d1198f0cc1df36d423041",
+    "Ipc.Platform.dll": "4e8b8eceda06d38aabd74af3d78fde8aedf9769082d05f6964172caa7fbf1afd",
+    "Ipc.Product.runtimeconfig.json": "9950d4583cfc9a106857c0d5b8a75b53e8774852b57b80bc3823a74d44a4d87f",
+    "Ipc.Supply.dll": "e050141fb97f305252304e1e0a6e13f900010b093cff40840c104fdb1e94dd51",
+    "Ipc.Adapters.dll": "a55a7f7ff2731f0ae5ae523e63a40e1b04ee033e213f821e4f7b8918042096d5",
+    "Ipc.Supply.Contracts.pdb": "e804f0ed6d1072cdcb4192daaa4fc2a7dc7de6bffe03bd25849f073e29f3af57",
+    "Ipc.Product.pdb": "7f9cfe14c2eb256af9ff4fced76d72155e76c5b4d405b5bb5c4aadeb52f4524c",
+    "Ipc.Product.deps.json": "5cb0127faf112f28ce9a6826ad3695e68f9033998295c2490b46e48596859534",
+    "Ipc.Product": "ce2105cb847b83eebb4a6a541004791c7cf5b792ad2c3b4fc7972d7473994e93",
+    "Ipc.Product.dll": "4b5ae881f5349226c29c9755a99e7109c201df0b76eec091d8c92f0fd9b674ac"
+  },
+  "Package": {
+    "Id": "reference.barcode",
+    "Version": "1.0.0",
+    "ManifestSha256": "665308D874EF60C8AA034FFA716166A549E008CAA42E820F9883B3BF7646D9F1"
+  },
+  "reference.barcode-1.0.0-extension-inspect": "PASS",
+  "reference.barcode-1.0.0-extension-install": "PASS",
+  "reference.integration-1.0.0-extension-inspect": "PASS",
+  "reference.integration-1.0.0-extension-install": "PASS",
+  "TypedIntegration": {
+    "Id": "reference.integration",
+    "Version": "1.0.0",
+    "ManifestSha256": "FAEDE76CC7868304B3A95718AB0E7AAF5ABEC17EF1860B924FB643E1C21BE119"
+  },
+  "ActualExtensionBusinessSource": "PASS",
+  "AcceptedQuantity": 2,
+  "RequestEvidence": [
+    {
+      "Id": "d0d7bc09d47548579fc9cca7f2a6c472",
+      "OwnerId": "a89c1c730afe4cd68ff2f21b99ebccbf",
+      "SessionId": "a89c1c730afe4cd68ff2f21b99ebccbf",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "a89c1c730afe4cd68ff2f21b99ebccbf:Context:1",
+      "Payload": "{\n  \"StationId\": \"SIM-6fcf306429b3460a84631bcd98c814b8\",\n  \"SessionId\": \"a89c1c730afe4cd68ff2f21b99ebccbf\",\n  \"OwnerId\": \"a89c1c730afe4cd68ff2f21b99ebccbf\",\n  \"OwnerRevision\": 1,\n  \"Kind\": \"Context\",\n  \"Barcode\": \"000001\",\n  \"Package\": null,\n  \"Quantity\": null,\n  \"CheckToken\": null,\n  \"Policy\": \"SYNTHETIC-KEEP-v1\",\n  \"InitialDemand\": 120,\n  \"Fault\": \"None\",\n  \"Actor\": {\n    \"Id\": \"SIM-maintenance\",\n    \"Role\": \"Maintenance\",\n    \"ExpiresAt\": \"2026-10-17T13:18:16.972585+00:00\"\n  }\n}",
+      "PayloadHash": "6CFC06548BC79C0BF3A366597B2096541247890479F3BFAD0649B3E37EC3ECC9",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:53549/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T05:18:17.035421+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.0",
+          "ManifestSha256": "FAEDE76CC7868304B3A95718AB0E7AAF5ABEC17EF1860B924FB643E1C21BE119"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "receiver-primary",
+        "DeploymentVersion": "FROZEN-EXTENSION-1",
+        "ConfigurationSha256": "D976F4CE582405938A3062A4EF0FFBD0088033599A9D0831D0B312466948F5B7",
+        "ContractSha256": "917ABDB121E9DBF063EC24157BDD3D815171A618685D1198F0CC1DF36D423041",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:53549/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": "frozen host late integration"
+        }
+      }
+    },
+    {
+      "Id": "fc75eef40e094fd6bb66fd994d4e37a1",
+      "OwnerId": "d2f541883c8841c2966aa84423bd29a2",
+      "SessionId": "a89c1c730afe4cd68ff2f21b99ebccbf",
+      "Kind": "Validate",
+      "OwnerRevision": 2,
+      "IntentKey": "d2f541883c8841c2966aa84423bd29a2:Validate:2",
+      "Payload": "{\n  \"StationId\": \"SIM-6fcf306429b3460a84631bcd98c814b8\",\n  \"SessionId\": \"a89c1c730afe4cd68ff2f21b99ebccbf\",\n  \"OwnerId\": \"d2f541883c8841c2966aa84423bd29a2\",\n  \"OwnerRevision\": 2,\n  \"Kind\": \"Validate\",\n  \"Barcode\": \"000123\",\n  \"Package\": 2,\n  \"Quantity\": null,\n  \"CheckToken\": null,\n  \"Policy\": \"SYNTHETIC-KEEP-v1\",\n  \"InitialDemand\": 120,\n  \"Fault\": \"None\",\n  \"Actor\": {\n    \"Id\": \"SIM-maintenance\",\n    \"Role\": \"Maintenance\",\n    \"ExpiresAt\": \"2026-10-17T13:18:16.972585+00:00\"\n  }\n}",
+      "PayloadHash": "040C93C2F02FF1345C68965185A71EAD78725214CE7F9843CB0DD723BA756B86",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:53549/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T05:18:17.373937+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.0",
+          "ManifestSha256": "FAEDE76CC7868304B3A95718AB0E7AAF5ABEC17EF1860B924FB643E1C21BE119"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "receiver-primary",
+        "DeploymentVersion": "FROZEN-EXTENSION-1",
+        "ConfigurationSha256": "D976F4CE582405938A3062A4EF0FFBD0088033599A9D0831D0B312466948F5B7",
+        "ContractSha256": "917ABDB121E9DBF063EC24157BDD3D815171A618685D1198F0CC1DF36D423041",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:53549/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": "frozen host late integration"
+        }
+      }
+    },
+    {
+      "Id": "f6cba8032e1947f9b6df9085d423b4a6",
+      "OwnerId": "d2f541883c8841c2966aa84423bd29a2",
+      "SessionId": "a89c1c730afe4cd68ff2f21b99ebccbf",
+      "Kind": "Submit",
+      "OwnerRevision": 3,
+      "IntentKey": "d2f541883c8841c2966aa84423bd29a2:Submit:3",
+      "Payload": "{\n  \"StationId\": \"SIM-6fcf306429b3460a84631bcd98c814b8\",\n  \"SessionId\": \"a89c1c730afe4cd68ff2f21b99ebccbf\",\n  \"OwnerId\": \"d2f541883c8841c2966aa84423bd29a2\",\n  \"OwnerRevision\": 3,\n  \"Kind\": \"Submit\",\n  \"Barcode\": \"000123\",\n  \"Package\": 2,\n  \"Quantity\": 2,\n  \"CheckToken\": null,\n  \"Policy\": \"SYNTHETIC-KEEP-v1\",\n  \"InitialDemand\": 120,\n  \"Fault\": \"None\",\n  \"Actor\": {\n    \"Id\": \"SIM-maintenance\",\n    \"Role\": \"Maintenance\",\n    \"ExpiresAt\": \"2026-10-17T13:18:16.972585+00:00\"\n  }\n}",
+      "PayloadHash": "7F599EF3C1747A9738174305514FA1AD1BB7C3CE3D6180553D86F15EED070DBF",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:53549/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T05:18:17.523945+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.0",
+          "ManifestSha256": "FAEDE76CC7868304B3A95718AB0E7AAF5ABEC17EF1860B924FB643E1C21BE119"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "receiver-primary",
+        "DeploymentVersion": "FROZEN-EXTENSION-1",
+        "ConfigurationSha256": "D976F4CE582405938A3062A4EF0FFBD0088033599A9D0831D0B312466948F5B7",
+        "ContractSha256": "917ABDB121E9DBF063EC24157BDD3D815171A618685D1198F0CC1DF36D423041",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:53549/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": "frozen host late integration"
+        }
+      }
+    }
+  ],
+  "DeploymentRevision": "FROZEN-EXTENSION-1",
+  "InputStationCanonicalJsonSha256": "5888f93d7b2b6f8ec5236a0eeefd10cfd1d6a220dd1288aa63157b258265dafc",
+  "DeploymentPhases": [
+    {
+      "Id": "3753a033efa74b518282fcd70250c9ac",
+      "OwnerId": "initial:FROZEN-EXTENSION-1",
+      "Actor": "runtime",
+      "CommandId": "system",
+      "Kind": "DeploymentPhase",
+      "Evidence": "Validated; deployment=8D2A931F41D660B22CCC25233A653C5FFF0F7D607E21E0F7E48BDCCE672A17D1",
+      "At": "2026-10-17T05:18:16.730285+00:00"
+    },
+    {
+      "Id": "9e92f0571547471a97b5df5a81b79ea5",
+      "OwnerId": "initial:FROZEN-EXTENSION-1",
+      "Actor": "runtime",
+      "CommandId": "system",
+      "Kind": "DeploymentPhase",
+      "Evidence": "Final resource and package leases acquired; deployment=8D2A931F41D660B22CCC25233A653C5FFF0F7D607E21E0F7E48BDCCE672A17D1",
+      "At": "2026-10-17T05:18:16.754722+00:00"
+    },
+    {
+      "Id": "f7096905f58643128792bf813e792c2a",
+      "OwnerId": "initial:FROZEN-EXTENSION-1",
+      "Actor": "runtime",
+      "CommandId": "system",
+      "Kind": "DeploymentPhase",
+      "Evidence": "Initializing selected modules; deployment=8D2A931F41D660B22CCC25233A653C5FFF0F7D607E21E0F7E48BDCCE672A17D1",
+      "At": "2026-10-17T05:18:16.802719+00:00"
+    },
+    {
+      "Id": "6093831478944cc8812a8c0a26da71ff",
+      "OwnerId": "initial:FROZEN-EXTENSION-1",
+      "Actor": "runtime",
+      "CommandId": "system",
+      "Kind": "DeploymentPhase",
+      "Evidence": "Selected modules initialized; deployment=8D2A931F41D660B22CCC25233A653C5FFF0F7D607E21E0F7E48BDCCE672A17D1",
+      "At": "2026-10-17T05:18:16.815563+00:00"
+    }
+  ],
+  "ControlledStop": "PASS",
+  "HostAfter": {
+    "Ipc.Supply.pdb": "753b9afe271fd5cb73f2cf439433db36eb80ee791f61a87ce165a5228dffe548",
+    "Ipc.Platform.pdb": "2f5f82ce54ea8d1d8da7d997f5882ba744c8313229623c026e5602d32d784632",
+    "Ipc.Adapters.pdb": "e4cb54b54f3c5be3de6921a47a408c0f64e12711d33152e8ec4bcaee30316e09",
+    "Ipc.Supply.Contracts.dll": "917abdb121e9dbf063ec24157bdd3d815171a618685d1198f0cc1df36d423041",
+    "Ipc.Platform.dll": "4e8b8eceda06d38aabd74af3d78fde8aedf9769082d05f6964172caa7fbf1afd",
+    "Ipc.Product.runtimeconfig.json": "9950d4583cfc9a106857c0d5b8a75b53e8774852b57b80bc3823a74d44a4d87f",
+    "Ipc.Supply.dll": "e050141fb97f305252304e1e0a6e13f900010b093cff40840c104fdb1e94dd51",
+    "Ipc.Adapters.dll": "a55a7f7ff2731f0ae5ae523e63a40e1b04ee033e213f821e4f7b8918042096d5",
+    "Ipc.Supply.Contracts.pdb": "e804f0ed6d1072cdcb4192daaa4fc2a7dc7de6bffe03bd25849f073e29f3af57",
+    "Ipc.Product.pdb": "7f9cfe14c2eb256af9ff4fced76d72155e76c5b4d405b5bb5c4aadeb52f4524c",
+    "Ipc.Product.deps.json": "5cb0127faf112f28ce9a6826ad3695e68f9033998295c2490b46e48596859534",
+    "Ipc.Product": "ce2105cb847b83eebb4a6a541004791c7cf5b792ad2c3b4fc7972d7473994e93",
+    "Ipc.Product.dll": "4b5ae881f5349226c29c9755a99e7109c201df0b76eec091d8c92f0fd9b674ac"
+  },
+  "FrozenHostUnchanged": true,
+  "Result": "PASS_REFERENCE_PUBLISHED_HOST",
+  "EvidenceRoot": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-frozen-extension-smoke-i68ceoqd"
+}

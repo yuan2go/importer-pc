@@ -1,0 +1,23 @@
+{
+  "Name": "unpacked-extension-smoke",
+  "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+  "WorkingTree": true,
+  "Command": [
+    "python3",
+    "scripts/smoke-extension.py",
+    "--release",
+    "/candidate-artifacts/089fd98/unpacked-portable",
+    "--dotnet",
+    "/pinned-dotnet/dotnet",
+    "--output",
+    "docs/runtime/evidence/ui-maintainability-16/extension-smoke.json"
+  ],
+  "StartedAt": "2026-10-17T17:08:47.123291+00:00",
+  "EndedAt": "2026-10-17T17:08:50.341200+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "ExitCode": 0,
+  "LogSha256": "565bfa28fd76088e7c714fb6cdaf8ee43999ad0e8d18b806e73e44c4e17c90c4",
+  "RawLogSha256": "8e4043d7d0dad7c7308b2faa1795827f3760fa650b6464ac8587037ec4136a41",
+  "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+  "RuntimeSourceUnchangedSinceFrozenCommit": true
+}

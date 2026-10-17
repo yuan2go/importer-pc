@@ -1,0 +1,9 @@
+[
+  {
+    "Id": "reference-http",
+    "Assembly": "Ipc.Reference.IntegrationExtension.dll",
+    "EntryType": "Ipc.Reference.IntegrationExtension.IntegrationModule",
+    "Kind": "integration",
+    "MaximumInstances": 8
+  }
+]

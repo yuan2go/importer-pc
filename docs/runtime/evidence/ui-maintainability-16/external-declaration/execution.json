@@ -1,0 +1,202 @@
+{
+  "WorkPackage": "WP-IPC-UI-MAINTAINABILITY-16",
+  "HostSourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+  "PluginSourceCommit": "e7b653fc23fcd092a41d1cca48fb77f885ca96b1",
+  "PluginId": "wp16.external.reader",
+  "PluginVersion": "2.0.0",
+  "PluginRepository": "Separate newly initialized synthetic Git repository; no host ProjectReference",
+  "PluginSourceArchive": "wp16-external-reader-source-e7b653f.zip",
+  "PluginSourceArchiveSha256": "85009fd0403134e007b9ddf916adb1e22e89cf2a87d1c9d9ee1752d3153fa655",
+  "Commands": [
+    [
+      "python3",
+      "scripts/build-extension.py",
+      "--definition",
+      "/external-artifacts/independent-reader/extension.build.json",
+      "--contract",
+      "/candidate-artifacts/089fd98/portable/app/Ipc.Platform.dll",
+      "--output",
+      "/external-artifacts/external-reader-a.ipcx",
+      "--key",
+      "/candidate-artifacts/signing/reference.pem",
+      "--publisher",
+      "reference-test",
+      "--trust",
+      "/candidate-artifacts/signing/trust.Simulation.json",
+      "--dotnet",
+      "/pinned-dotnet/dotnet"
+    ],
+    [
+      "python3",
+      "scripts/build-extension.py",
+      "--definition",
+      "/external-artifacts/independent-reader/extension.build.json",
+      "--contract",
+      "/candidate-artifacts/089fd98/portable/app/Ipc.Platform.dll",
+      "--output",
+      "/external-artifacts/external-reader-b.ipcx",
+      "--key",
+      "/candidate-artifacts/signing/reference.pem",
+      "--publisher",
+      "reference-test",
+      "--trust",
+      "/candidate-artifacts/signing/trust.Simulation.json",
+      "--dotnet",
+      "/pinned-dotnet/dotnet"
+    ],
+    [
+      "python3",
+      "/external-artifacts/external-journey.py",
+      "--release",
+      "/candidate-artifacts/089fd98/portable",
+      "--package",
+      "/external-artifacts/external-reader-a.ipcx",
+      "--trust",
+      "/candidate-artifacts/signing/trust.Simulation.json",
+      "--dotnet",
+      "/pinned-dotnet/dotnet",
+      "--output",
+      "/external-artifacts/journey-b"
+    ]
+  ],
+  "Environment": {
+    "Platform": "macOS-26.5.2-arm64-arm-64bit",
+    "Python": "3.12.2",
+    "DotnetSdk": "10.0.402",
+    "DotnetRuntime": "10.0.13"
+  },
+  "Results": [
+    "PASS two real independent builds plus frozen host static acceptance",
+    "PASS identical raw manifest and DLL payload",
+    "PASS signature/trust/inspect/install",
+    "PASS actual CAS SaveConfig, configs exact revision readback, explicit PendingActivation",
+    "PASS controlled stop and restart promotion to Effective",
+    "PASS schema parameters applied to two real extension source instances",
+    "PASS original reference job accepted quantity2 and controlled stop; frozen host unchanged"
+  ],
+  "Windows": "NOT_RUN",
+  "Production": "NOT_READY; TestOnly trust reference outputs only",
+  "FirstFailure": "journey-a failed harness parser: compact logger State accepted as snapshot State; actual Pending/restart already succeeded. Preserved raw trace and logs. Fixed parser predicate additionally requires Requests, rerun journey-b from fresh roots passed. Frozen runtime source unchanged.",
+  "Evidence": [
+    {
+      "File": "build-a.log",
+      "RawSha256": "7192c0f9fac013ca106a04f510f62f81d986fa5a52f2773848a7289e6767f2d9",
+      "PublishedSha256": "141e440460896810055f556d325bc10d95132f16fddc1c4d71e6775e5774b5f3",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "build-b.log",
+      "RawSha256": "ec365cf0bd4405bdc4fdf3099897c87077fdeec5bf5714fe4b3375b54144cd69",
+      "PublishedSha256": "9d17dc040709575b96741bfb2cb6ad7c2d9759c52c8b517f92d7737e979f041b",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "external-reader-a.ipcx.identity.json",
+      "RawSha256": "12298b51b31a6a2d47e200866b475104c48b7051817c9dad72bc0757981a1473",
+      "PublishedSha256": "12298b51b31a6a2d47e200866b475104c48b7051817c9dad72bc0757981a1473",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "external-reader-b.ipcx.identity.json",
+      "RawSha256": "c93b91f0efe1680fbb2fb7f1ed36d826936830acdc7c76beb76c6a42c089a6e1",
+      "PublishedSha256": "c93b91f0efe1680fbb2fb7f1ed36d826936830acdc7c76beb76c6a42c089a6e1",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "reproducibility.json",
+      "RawSha256": "50e8c838ccbab7fa276e653087db879c0cdb6501a6a0316fad54e3a022691eda",
+      "PublishedSha256": "50e8c838ccbab7fa276e653087db879c0cdb6501a6a0316fad54e3a022691eda",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "journey-a.log",
+      "RawSha256": "d877db0e7a469f63d6757449cf5849336974d9d69f01d2c70048d15713a928d7",
+      "PublishedSha256": "2b429be89b2da319107b48752cd9d8ab4d0eb54b7116616b7faf5755f5dd1020",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "journey-b.log",
+      "RawSha256": "8dd543f6430f8a228ddd3dd09066a3b2d68c98c0ce9aeb2f578079a4ef39d169",
+      "PublishedSha256": "8dd543f6430f8a228ddd3dd09066a3b2d68c98c0ce9aeb2f578079a4ef39d169",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "external-journey-first.py",
+      "RawSha256": "01f14210dec5e6595e66a922fda7f745c584e5c31d0ff7c875b8ea0bc5176d08",
+      "PublishedSha256": "01f14210dec5e6595e66a922fda7f745c584e5c31d0ff7c875b8ea0bc5176d08",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "external-journey.py",
+      "RawSha256": "00401bc70df10fdb9a643817279d99460a520060798c491a034171b494452593",
+      "PublishedSha256": "00401bc70df10fdb9a643817279d99460a520060798c491a034171b494452593",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "journey-a/extension-inspect.log",
+      "RawSha256": "322c40a47db1b83a38396d92d6999af7d07a299d70b4a19b14588a93bd176df0",
+      "PublishedSha256": "322c40a47db1b83a38396d92d6999af7d07a299d70b4a19b14588a93bd176df0",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "journey-a/initial-client.log",
+      "RawSha256": "bf76bc00fbc8a27aeefc23a6bc3eb831241c4d2b12311c37632c2a28b3439e2e",
+      "PublishedSha256": "a3fd6b65ec25074c9b11db87fb542f7ac876c1cdd989610367f65c943cbd86e8",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "journey-a/extension-install.log",
+      "RawSha256": "c27a18f52147aa1bf9e8844ac01ebbfc03e0d5a7d1768fd929155d77fec55e7f",
+      "PublishedSha256": "c27a18f52147aa1bf9e8844ac01ebbfc03e0d5a7d1768fd929155d77fec55e7f",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "journey-a/fixture.log",
+      "RawSha256": "f0b23a0a097a00e95c9d172ef0795facc0d6959e18abc03c46f988a246962e0f",
+      "PublishedSha256": "fbf62422a045fe28ea23631c5f168d9ca735767c906accdd76d679d27dcee627",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "journey-a/activated-client.log",
+      "RawSha256": "a2aaca90b60ccb5c639528682585fe7966581a101114414539ed2ceee16fdd7b",
+      "PublishedSha256": "95d1f1523aeb1db9feff03ba9ce8852fea953320c3d309e15fd96201be0b6f79",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "journey-b/extension-inspect.log",
+      "RawSha256": "4d60843564d777836627256569eec25005ec9a1f37fc8276de4b27342bc10dd7",
+      "PublishedSha256": "4d60843564d777836627256569eec25005ec9a1f37fc8276de4b27342bc10dd7",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "journey-b/initial-client.log",
+      "RawSha256": "71d35035ac9371292f006bb43e550b96f045b6c1ffbf6c1c512edaf9d9a40025",
+      "PublishedSha256": "420edb1635b27c9506defaa756e8be226271c38cccdac32eb96c778495a3c662",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "journey-b/result.json",
+      "RawSha256": "adbcb1b377dfd53b1d3ce300e45a47c67e251c649a976a5b4781b4f074675f14",
+      "PublishedSha256": "adbcb1b377dfd53b1d3ce300e45a47c67e251c649a976a5b4781b4f074675f14",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "journey-b/extension-install.log",
+      "RawSha256": "cd9dc56a20fc145b169cdd12fa3cfdff95bcff8e8a7fa67899ee9e414056887d",
+      "PublishedSha256": "cd9dc56a20fc145b169cdd12fa3cfdff95bcff8e8a7fa67899ee9e414056887d",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "journey-b/fixture.log",
+      "RawSha256": "a6b200a54d342e6ae931453b0620d84500b1a61504b62ef723ec27dad8a822da",
+      "PublishedSha256": "359eb8d55b41ff17b9f7613614286ef3fb210a468e0a699a1d7f59a6bf1ebee0",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    },
+    {
+      "File": "journey-b/activated-client.log",
+      "RawSha256": "5db0ca24975784f0c37e8f43e06edc30cb2991b2730b31930d4ab07c5775d603",
+      "PublishedSha256": "6ad17892c76336c8f8a97adf66f0271af2e847d95763ad693f341fab75548c25",
+      "Transform": "Path aliases only; full text retained; raw files kept outside repository"
+    }
+  ]
+}

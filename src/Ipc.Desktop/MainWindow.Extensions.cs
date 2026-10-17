@@ -26,17 +26,17 @@ public partial class MainWindow
     }
     internal async Task<string> SaveExtensionDeploymentAsync(DeploymentExtensions extensions, string version)
     {
-        if (!CanCommand("SaveConfig", out var reason)) throw new InvalidOperationException(reason);
+        if (!CanCommand(SupplyCommands.SaveConfig, out var reason)) throw new InvalidOperationException(reason);
         var reviewed = MaintenanceReviewToken.Capture(snapshot!.State.Revision, snapshot.State.Actor, DateTimeOffset.UtcNow);
         Draft.Extensions = extensions; Draft["Version"] = version;
         var draft = PreviewDraft();
         var differences = string.Join("\n", ConfigurationDifferences(Runtime.Configuration!, draft));
         if (!Confirmation.Ask(this, differences + "\n保存草稿尚不激活，当前来源与请求保持原版本。", "保存此部署草稿")) return "已取消保存；本窗草稿保留。";
         if (!reviewed.IdentityMatches(snapshot?.State.Actor, DateTimeOffset.UtcNow)) throw new InvalidOperationException("维护身份在确认期间变化或失效；请重新核对草稿");
-        var receipt = await Runtime.CommandAsync(new(Wire.Id(), reviewed.Revision, "SaveConfig", Runtime.Configuration!.Version, Wire.Encode(draft)));
+        var receipt = await Runtime.CommandAsync(new(Wire.Id(), reviewed.Revision, SupplyCommands.SaveConfig, Runtime.Configuration!.Version, Wire.Encode(draft)));
         if (receipt.Status != "Persisted") throw new InvalidOperationException(receipt.Status + ": " + receipt.Reason);
         await RefreshAsync(); return differences + "\n已持久保存；实际校验/待激活/生效状态见回执列表。";
     }
-    internal Task ActivateExtensionDeploymentAsync(ConfigRevision revision) => SendAsync("ActivateConfig", revision.Id, activation: revision,
+    internal Task ActivateExtensionDeploymentAsync(ConfigRevision revision) => SendAsync(SupplyCommands.ActivateConfig, revision.Id, activation: revision,
         confirm: $"部署 {revision.Content.Version} / 原版本 {revision.BaseVersion}\n申请受控重启？只有来源/租约与全部组合初始化成功才生效；失败保留旧Effective，旧请求不重投。");
 }

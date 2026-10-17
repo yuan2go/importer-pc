@@ -11,15 +11,22 @@ public sealed class LoopbackIntegration : IIntegrationPort
     readonly string healthEndpoint;
     public LoopbackIntegration(StationConfig config)
     {
-        if (config.Mode != RunMode.Simulation || SupplyConfiguration.Validate(config).Count != 0) throw new InvalidDataException("Loopback adapter is SIMULATION only");
+        ArgumentNullException.ThrowIfNull(config);
+        if (config.Mode != RunMode.Simulation) throw new InvalidDataException("Loopback adapter is SIMULATION only");
+        if (config.TimeoutMs is < 100 or > 30000) throw new InvalidDataException("Loopback transport timeout must be 100..30000 ms");
+        ValidateBinding(config.Integration);
         healthEndpoint = config.Integration.Endpoint;
         client = new(new SocketsHttpHandler { AllowAutoRedirect = false, UseProxy = false, MaxConnectionsPerServer = 2 }) { Timeout = TimeSpan.FromMilliseconds(config.TimeoutMs) };
     }
-    static Uri Endpoint(BusinessRequest request, string path)
+    static Uri ValidateBinding(IntegrationBinding binding)
     {
-        if (request.Binding.Contract != "SIMULATION-v1" || !Uri.TryCreate(request.Binding.Endpoint, UriKind.Absolute, out var uri) || uri.Host != "127.0.0.1" || uri.Scheme != "http" || uri.AbsolutePath != "/" || uri.UserInfo != "") throw new InvalidDataException("Frozen binding is not an approved loopback contract");
-        return new(uri, path);
+        if (binding is null || binding.Contract != "SIMULATION-v1" ||
+            !Uri.TryCreate(binding.Endpoint, UriKind.Absolute, out var uri) || uri.Host != "127.0.0.1" ||
+            uri.Scheme != "http" || uri.AbsolutePath != "/" || uri.UserInfo != "" || uri.Query != "" || uri.Fragment != "")
+            throw new InvalidDataException("Frozen binding is not an approved loopback contract");
+        return uri;
     }
+    static Uri Endpoint(BusinessRequest request, string path) => new(ValidateBinding(request.Binding), path);
     public async Task<IntegrationResponse> ExecuteAsync(BusinessRequest request, CancellationToken token)
     {
         var envelope = new RequestEnvelope(request.Id, request.PayloadHash, request.Binding.Contract, request.Payload);

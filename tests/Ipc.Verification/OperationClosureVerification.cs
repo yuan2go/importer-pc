@@ -151,13 +151,29 @@ static class OperationClosureVerification
         Assert((await reopened.App.SnapshotAsync()).BoxResult is { RequestId: var id, Status: RequestStatus.Rejected } && id == closeId,
             "box result refresh/restart derives from original persisted request and response");
     }
-    static async Task EditingAndTiming(string root, string url, string workspace)
+    internal static async Task EditingAndTiming(string root, string url, string workspace)
     {
         var draft = new ConfigurationDraft(); draft.Replace(Rig.Config(url));
         draft["Timeout"] = ""; draft["EventCapacity"] = "invalid";
         Assert(draft.IntegrationTarget.Endpoint == Rig.Config(url).Integration.Endpoint, "module/new-instance defaults read incomplete draft without parsing unrelated numbers");
-        try { draft.Build(); throw new Exception("invalid save accepted"); } catch (InvalidDataException) { Assert(true, "save/preview still strictly reject incomplete numeric draft"); }
+        try { draft.Build(); throw new Exception("invalid save accepted"); } catch (InvalidDataException error) { Assert((string?)error.Data["ConfigurationField"] == "Timeout", "save/preview reject incomplete numeric draft with exact field identity for focus"); }
         draft["Timeout"] = "500"; draft["EventCapacity"] = "64"; Assert(draft.Build().TimeoutMs == 500, "corrected draft builds without resetting edits from Effective");
+        var effective = Rig.Config(url);
+        draft["Timeout"] = "";
+        var comparison = draft.Compare(effective).Single(x => x.Field == "Timeout");
+        Assert(comparison.Draft == "" && comparison.Effective == effective.TimeoutMs.ToString() && effective.TimeoutMs > 0,
+            "draft/effective comparison tolerates temporary invalid text without mutating effective configuration");
+        draft["Timeout"] = "500";
+        var invalidFields = effective with { TimeoutMs = 0, EventCapacity = 0, Integration = effective.Integration with { Endpoint = "not-an-endpoint" }, Devices = effective.Devices.Select((x, i) => i == 0 ? x with { DeviceId = "" } : x).ToArray() };
+        var fieldIssues = ConfigurationValidationPresentation.Locate(effective, invalidFields, SupplyConfiguration.Validate(invalidFields), SupplyConfiguration.Validate);
+        Assert(new[] { "Timeout", "EventCapacity", "Endpoint", "Devices.left" }.All(field => fieldIssues.Any(x => x.Field == field)) &&
+            !fieldIssues.Any(x => x.Field == "MinimumFree"),
+            "real configuration validator locates simultaneous timeout/capacity/endpoint/device errors without duplicating rules or blaming unchanged fields");
+        var revision = new ConfigRevision("original-revision", effective.Version, effective with { Version = "next" }, "maintenance", "PendingActivation", "original reason", DateTimeOffset.UtcNow);
+        Assert(DeploymentPresentation.Revision(revision).Contains("重启", StringComparison.Ordinal) &&
+            DeploymentPresentation.Revision(revision with { Status = "ActivationFailed" }).Contains("保留上一有效", StringComparison.Ordinal) &&
+            DeploymentPresentation.Summary([revision]).Contains("已保存 1", StringComparison.Ordinal) && revision.Status == "PendingActivation",
+            "lifecycle presents saved/Pending/restart/failure-preserves-old independently without changing deployment state");
         var selection = new SelectionLoad(); var slow = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
         var seen = ""; var errors = 0; var settled = 0;
         var a = selection.Run(() => slow.Task, value => seen = value, _ => errors++, () => settled++);

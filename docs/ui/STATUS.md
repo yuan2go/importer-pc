@@ -1,4 +1,4 @@
-> 当前工程实现见[15 UI映射](operation-closure-15-mapping.md)、[逐问题/AC报告](../runtime/operation-closure-15.md)与[同版Windows后验](../runtime/validation/operation-closure-15-windows.md)。冻结013862f，v1.1实物保持原字节；15核心投影/策略和WPF交叉构建已验证，实际客户端截图0，UI行为/尺寸/HID/声音仍NOT_RUN。原有效设计与下方历史不因实现而被改写。[更新前字节](../archive/pre-operation-closure-15/README.md)。
+> 当前工程实现见[16 UI映射](ui-maintainability-16-mapping.md)、[逐项报告](../runtime/ui-maintainability-16.md)与[同版Windows后验](../runtime/validation/ui-maintainability-16-windows.md)。v1.1实物保持原字节；WPF实际截图0、行为/DPI/HID/声音/触控仍NOT_RUN，局部核心与交叉构建不关闭原RV。[更新前原字节](../archive/pre-ui-maintainability-16/README.md)。
 
 # UI资料当前状态
 

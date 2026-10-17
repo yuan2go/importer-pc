@@ -1,0 +1,22 @@
+{
+  "Name": "final-build",
+  "SourceCommit": "a0595ed40a471f41a9ee268f0ec8ce339ad19d39",
+  "WorkingTree": true,
+  "Command": [
+    "/pinned-dotnet/dotnet",
+    "build",
+    "ImporterPc.slnx",
+    "--no-restore",
+    "-m:1",
+    "-nr:false",
+    "-p:EnableWindowsTargeting=true"
+  ],
+  "StartedAt": "2026-10-17T17:04:55.101941+00:00",
+  "EndedAt": "2026-10-17T17:04:58.264765+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "ExitCode": 0,
+  "LogSha256": "35ab3bfff75832bfc39a20b0733b9d165dcfa4dd9287841ad87337bf768fd92a",
+  "RawLogSha256": "de7ba0891a165f0dd9d551c6a44c17b2c5e23425a59ee9b82903ac1d1d081488",
+  "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+  "RuntimeSourceUnchangedSinceFrozenCommit": false
+}

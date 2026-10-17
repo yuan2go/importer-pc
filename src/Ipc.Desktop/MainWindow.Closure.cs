@@ -65,7 +65,7 @@ public partial class MainWindow
         if (lane.Current is not { } operation || !ReviewFits(lane) || !IsWorkstationActive) { model.LastResult="请完整核对本通道当前Item、任务和数量"; return; }
         // Capture this owner and station revision before any risk dialog. The application CAS
         // rejects changed observations/owners; normal manual supply needs no repeated dialog.
-        await SendAsync("Submit", operation.Id, confirm: operation.Status == OperationStatus.SplitRequired ?
+        await SendAsync(SupplyCommands.Submit, operation.Id, confirm: operation.Status == OperationStatus.SplitRequired ?
             $"{lane.Label} · 作业 {operation.Id} / r{operation.Revision}\nItem {lane.Barcode}\n{lane.KeyTask}\n{lane.Quantities}\n{lane.SplitProgress} / {lane.Remove}\n已核对实际保留件与移除量，确认按本版拆包结果提交供包？" : null);
     }
     async Task ReviewSelectedSourcesAsync()
@@ -73,7 +73,7 @@ public partial class MainWindow
         var selected = ObservationReviews.SelectedItems.Cast<ObservationReviewRow>().Select(x => x.Selection).ToArray();
         if (selected.Length == 0) { model.LastResult = "请选择已检查的具体来源与证据版本"; return; }
         var evidence = new ObservationReviewEvidence(selected, ReviewEvidence.Text);
-        await SendAsync("ReviewObservations", value: Wire.Encode(evidence),
+        await SendAsync(SupplyCommands.ReviewObservations, value: Wire.Encode(evidence),
             confirm: "仅确认所选来源及当前证据版本已核对？新证据、其它来源、外部预留与实体责任不会被解除。");
     }
     async void ReconnectSourceClick(object sender, RoutedEventArgs e)
@@ -118,6 +118,8 @@ public partial class MainWindow
             RequestStatus: HistoryStatus<RequestStatus>(RequestStatusFilter), Lane: HistoryLaneBox.SelectedIndex switch { 1 => "left", 2 => "right", _ => null },
             FromInclusive: from, UntilExclusive: until, Offset: historyOffset, Limit: 50);
     }
+    sealed record HistoryListBookmark(HistoryQuery Query, string? SelectedId, double Vertical, double Horizontal);
+    HistoryListBookmark? boxHistoryBookmark;
     bool historyDetailOpen;
     void ShowHistoryDetail()
     { historyDetailOpen = true; ApplyHistoryLayout(); }
@@ -160,7 +162,7 @@ public partial class MainWindow
             HistoryFeedback.Text = page.TotalCount == 0 ? "所选条件暂无记录" :
                 $"已取得 {page.Items.Length} / {page.TotalCount} 条 · 偏移 {page.Query.Offset}" +
                 (page.Query.SessionId is null ? "" : " · 限定箱会话 " + page.Query.SessionId) +
-                (HistoryGrid.SelectedItem is null ? "" : "；所选详情保留原阅读快照，可点击记录刷新详情");
+                (HistoryGrid.SelectedItem is null ? "" : "；所选详情保留原阅读快照，可显式打开选中记录刷新详情");
             HistoryPrevious.IsEnabled = page.Query.Offset > 0; HistoryNext.IsEnabled = page.HasNext;
         }
         catch (OperationCanceledException) when (closing) { }
@@ -171,19 +173,52 @@ public partial class MainWindow
             HistoryFeedback.Text = "查询失败：" + ex.Message + "；下方保留的是旧结果，未作为本次查询成功";
         }
     }
-    async void HistoryClick(object sender, RoutedEventArgs e) { historySessionId = null; historyOffset = 0; await LoadHistoryAsync(); }
+    async void HistoryClick(object sender, RoutedEventArgs e) { boxHistoryBookmark = null; BackToBoxHistory.Visibility = Visibility.Collapsed; historySessionId = null; historyOffset = 0; await LoadHistoryAsync(); }
     async void NextClick(object sender, RoutedEventArgs e) { if (loadedHistory?.HasNext != true) return; historyOffset = loadedHistory.Query.Offset + loadedHistory.Query.Limit; await LoadHistoryAsync(loadedHistory.Query with { Offset = historyOffset }); }
     async void PreviousClick(object sender, RoutedEventArgs e) { if (loadedHistory is null) return; historyOffset = Math.Max(0, loadedHistory.Query.Offset - loadedHistory.Query.Limit); await LoadHistoryAsync(loadedHistory.Query with { Offset = historyOffset }); }
-    async void HistorySelected(object sender, SelectionChangedEventArgs e)
+    void HistorySelected(object sender, SelectionChangedEventArgs e)
     {
         if (updatingHistory) return;
-        switch ((sender as DataGrid)?.SelectedItem)
+        // Selecting a row never navigates. It invalidates any in-flight detail for the
+        // prior selection while leaving filters, page, controls and scroll intact.
+        detailGeneration++;
+        if (ReferenceEquals(sender, HistoryGrid))
+            HistoryFeedback.Text = HistoryGrid.SelectedItem is HistoryQueryRow row ?
+                $"已选中{row.EntityType} · {row.ObjectCode}；可打开详情、全部箱作业或箱关闭链" : "请选择记录，再执行对应操作";
+    }
+    async Task OpenSelectedHistoryAsync(DataGrid grid)
+    {
+        switch (grid.SelectedItem)
         {
             case HistoryQueryRow row when row.IsSession: await ShowSessionAsync(row.SessionId); break;
             case HistoryQueryRow row: await ShowDetailAsync(row.Id, row.Operation); break;
             case HistoryRow recent: await ShowDetailAsync(recent.Id, recent.Operation); break;
-            default: detailGeneration++; break;
         }
+    }
+    async void HistoryDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not DataGrid grid || FindParent<DataGridRow>(e.OriginalSource as DependencyObject) is not { } row || row.Item != grid.SelectedItem) return;
+        e.Handled = true; await OpenSelectedHistoryAsync(grid);
+    }
+    async void HistoryKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Enter || Keyboard.Modifiers != ModifierKeys.None || sender is not DataGrid grid ||
+            FindParent<DataGridCell>(e.OriginalSource as DependencyObject) is null) return;
+        e.Handled = true; await OpenSelectedHistoryAsync(grid);
+    }
+    static T? FindParent<T>(DependencyObject? child) where T : DependencyObject
+    {
+        while (child is not null)
+        {
+            if (child is T found) return found;
+            child = child switch
+            {
+                ContentElement content => ContentOperations.GetParent(content) ?? (content as FrameworkContentElement)?.Parent ?? LogicalTreeHelper.GetParent(content),
+                System.Windows.Media.Visual or System.Windows.Media.Media3D.Visual3D => System.Windows.Media.VisualTreeHelper.GetParent(child),
+                _ => LogicalTreeHelper.GetParent(child)
+            };
+        }
+        return null;
     }
     async void SelectedRecordDetailClick(object sender, RoutedEventArgs e)
     {
@@ -192,15 +227,44 @@ public partial class MainWindow
     }
     async void SessionOperationsClick(object sender, RoutedEventArgs e)
     {
-        if (HistoryGrid.SelectedItem is not HistoryQueryRow row) return;
+        if (HistoryGrid.SelectedItem is not HistoryQueryRow row) { HistoryFeedback.Text = "请先选择箱会话或作业"; return; }
+        var scroll = Children<ScrollViewer>(HistoryGrid).FirstOrDefault();
+        if (loadedHistory is { } previous && boxHistoryBookmark is null)
+            boxHistoryBookmark = new(previous.Query, row.Id, scroll?.VerticalOffset ?? 0, scroll?.HorizontalOffset ?? 0);
+        BackToBoxHistory.Visibility = boxHistoryBookmark is null ? Visibility.Collapsed : Visibility.Visible;
         historySessionId = row.SessionId; historyOffset = 0; HistoryEntityBox.SelectedIndex = 1;
         FilterBox.Text = ItemFilter.Text = SkuFilter.Text = TaskFilter.Text = ""; HistoryFromDate.SelectedDate = HistoryUntilDate.SelectedDate = null; HistoryFrom.Text = HistoryUntil.Text = "00:00";
         historyDetailOpen = false; ApplyHistoryLayout();
         SessionStatusFilter.SelectedIndex = OperationStatusFilter.SelectedIndex = RequestStatusFilter.SelectedIndex = HistoryLaneBox.SelectedIndex = 0;
         await LoadHistoryAsync();
     }
+    async void BackToBoxHistoryClick(object sender, RoutedEventArgs e)
+    {
+        if (boxHistoryBookmark is not { } prior) return;
+        var query = prior.Query;
+        historySessionId = query.SessionId; historyOffset = query.Offset;
+        HistoryEntityBox.SelectedIndex = query.Entity == HistoryEntity.Operations ? 1 : 0;
+        FilterBox.Text = query.BoxBarcode ?? ""; ItemFilter.Text = query.ItemBarcode ?? ""; SkuFilter.Text = query.Sku ?? ""; TaskFilter.Text = query.TaskId ?? "";
+        HistoryLaneBox.SelectedIndex = query.Lane switch { "left" => 1, "right" => 2, _ => 0 };
+        void Status<T>(ComboBox control, T? status) where T : struct, Enum => control.SelectedItem = control.Items.Cast<HistoryStatusChoice>().FirstOrDefault(x => x.Value == status?.ToString());
+        Status(SessionStatusFilter, query.SessionStatus); Status(OperationStatusFilter, query.OperationStatus); Status(RequestStatusFilter, query.RequestStatus);
+        void Date(DateTimeOffset? value, DatePicker day, TextBox time)
+        { day.SelectedDate = value?.LocalDateTime.Date; time.Text = value?.ToLocalTime().ToString("HH:mm:ss", CultureInfo.InvariantCulture) ?? "00:00"; }
+        Date(query.FromInclusive, HistoryFromDate, HistoryFrom); Date(query.UntilExclusive, HistoryUntilDate, HistoryUntil);
+        var actor = HasIdentity ? snapshot?.State.Actor : null;
+        var expectedGeneration = historyGeneration + 1;
+        await LoadHistoryAsync(query);
+        if (closing || expectedGeneration != historyGeneration || boxHistoryBookmark != prior || actor is null ||
+            !ReadIdentityMatches(actor) || loadedHistory?.Query != query || !HistoryGrid.IsEnabled) return;
+        updatingHistory = true;
+        try { HistoryGrid.SelectedItem = HistoryGrid.Items.Cast<HistoryQueryRow>().FirstOrDefault(x => x.Id == prior.SelectedId); }
+        finally { updatingHistory = false; }
+        var scroll = Children<ScrollViewer>(HistoryGrid).FirstOrDefault();
+        scroll?.ScrollToVerticalOffset(prior.Vertical); scroll?.ScrollToHorizontalOffset(prior.Horizontal);
+        boxHistoryBookmark = null; BackToBoxHistory.Visibility = Visibility.Collapsed;
+    }
     async void SelectedSessionClick(object sender, RoutedEventArgs e)
-    { if (HistoryGrid.SelectedItem is HistoryQueryRow row) await ShowSessionAsync(row.SessionId); }
+    { if (HistoryGrid.SelectedItem is HistoryQueryRow row) await ShowSessionAsync(row.SessionId); else HistoryFeedback.Text = "请先选择箱会话或作业"; }
     async Task ShowSessionAsync(string sessionId)
     {
         if (Runtime.Application is null || closing) return;

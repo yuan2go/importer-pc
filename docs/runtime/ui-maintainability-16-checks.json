@@ -1,0 +1,517 @@
+{
+  "WorkPackage": "WP-IPC-UI-MAINTAINABILITY-16",
+  "Phase": "ENGINEERING_DELIVERED_REMOTE_VERIFIED_WINDOWS_NOT_RUN",
+  "Base": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+  "Storage": 5,
+  "MinimumReader": 5,
+  "ExtensionContract": 1,
+  "ReferenceExtensionVersion": "1.0.4",
+  "Windows": "NOT_RUN",
+  "Screenshots": 0,
+  "ProductionCapabilities": "NOT_READY_EXTERNAL_EVIDENCE_BLOCKED",
+  "EvidenceDirectory": "docs/runtime/evidence/ui-maintainability-16",
+  "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+  "SourceCodeSha256": "da9073eef8aa647c8e67f3a70b61ae815854f12317709f675a0d3ce9c5b30b1d",
+  "Build": "PASS_0_WARNINGS_0_ERRORS_CROSS_WPF",
+  "Environment": "macOS26.5.2 ARM64 SDK10.0.402 runtime10.0.13",
+  "Commands": [
+    {
+      "Name": "frozen-architecture",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "WorkingTree": true,
+      "Command": [
+        "/pinned-dotnet/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--architecture"
+      ],
+      "StartedAt": "2026-10-17T17:06:50.685876+00:00",
+      "EndedAt": "2026-10-17T17:07:39.220554+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "ExitCode": 0,
+      "LogSha256": "e2b759afc33a1d2b074d2e4e9523b7384925ca3864d6ce70e2e2bc1264026953",
+      "RawLogSha256": "35534728c0ecc15ee8014e2664244d5e00d90f251a2d91da0983c4b6839d51f2",
+      "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+      "RuntimeSourceUnchangedSinceFrozenCommit": true,
+      "Evidence": "docs/runtime/evidence/ui-maintainability-16/runs/frozen-architecture.record.json"
+    },
+    {
+      "Name": "frozen-baseline",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "WorkingTree": true,
+      "Command": [
+        "/pinned-dotnet/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--baseline"
+      ],
+      "StartedAt": "2026-10-17T17:07:58.826151+00:00",
+      "EndedAt": "2026-10-17T17:08:05.923946+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "ExitCode": 0,
+      "LogSha256": "dffbd9f2aa2a2d0154632e451750d36c2ab90b36319dfbb695aebdfb5fe335a9",
+      "RawLogSha256": "7c1c6be384e5c98ef8948a19f968f7bfb292909203cd7a836f1d8e3501ed5072",
+      "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+      "RuntimeSourceUnchangedSinceFrozenCommit": true,
+      "Evidence": "docs/runtime/evidence/ui-maintainability-16/runs/frozen-baseline.record.json"
+    },
+    {
+      "Name": "frozen-build",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "WorkingTree": true,
+      "Command": [
+        "/pinned-dotnet/dotnet",
+        "build",
+        "ImporterPc.slnx",
+        "--no-restore",
+        "-m:1",
+        "-nr:false",
+        "-p:EnableWindowsTargeting=true"
+      ],
+      "StartedAt": "2026-10-17T17:06:47.173344+00:00",
+      "EndedAt": "2026-10-17T17:06:50.633174+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "ExitCode": 0,
+      "LogSha256": "65edacea582f26bd83f25bf69a7c989e5fb035fa2bd21cac04d377f3eb222110",
+      "RawLogSha256": "670b592d889c2ace7b51a30c527d2d77d5e122e6bdfd0a0681e2441bd4c75b35",
+      "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+      "RuntimeSourceUnchangedSinceFrozenCommit": true,
+      "Evidence": "docs/runtime/evidence/ui-maintainability-16/runs/frozen-build.record.json"
+    },
+    {
+      "Name": "frozen-closure",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "WorkingTree": true,
+      "Command": [
+        "/pinned-dotnet/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--closure"
+      ],
+      "StartedAt": "2026-10-17T17:12:30.798380+00:00",
+      "EndedAt": "2026-10-17T17:12:37.816525+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "ExitCode": 0,
+      "LogSha256": "8d54c49f0d64511c0f48e62048dca5c30181066e391e731da77ea594ad74d625",
+      "RawLogSha256": "3a9daa34c05b85167c22d9aac7f620f8d1264a4544afa5d3b8b4f8a5892894c8",
+      "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+      "RuntimeSourceUnchangedSinceFrozenCommit": true,
+      "Evidence": "docs/runtime/evidence/ui-maintainability-16/runs/frozen-closure.record.json"
+    },
+    {
+      "Name": "frozen-conformance",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "WorkingTree": true,
+      "Command": [
+        "/pinned-dotnet/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--conformance"
+      ],
+      "StartedAt": "2026-10-17T17:12:13.195611+00:00",
+      "EndedAt": "2026-10-17T17:12:30.729678+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "ExitCode": 0,
+      "LogSha256": "03ae2055154e2adb6f541b1039cae41b711e95a01232a7f96b0ccaf906e2292e",
+      "RawLogSha256": "3931726978b6e42014bfe76ece7e5b5d5b7b396a556cd6c490a3036bb9a68ecc",
+      "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+      "RuntimeSourceUnchangedSinceFrozenCommit": true,
+      "Evidence": "docs/runtime/evidence/ui-maintainability-16/runs/frozen-conformance.record.json"
+    },
+    {
+      "Name": "frozen-maintainability",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "WorkingTree": true,
+      "Command": [
+        "/pinned-dotnet/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--maintainability"
+      ],
+      "StartedAt": "2026-10-17T17:13:10.358285+00:00",
+      "EndedAt": "2026-10-17T17:13:11.685869+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "ExitCode": 0,
+      "LogSha256": "33f28b656bb15a56c913a47d01c7767d4a24d3b7e592a4dc081227063360c71d",
+      "RawLogSha256": "5fc92c83f85ed047f69e144bb795d2f7655de8cc9d592da06ccd44235cfd9abd",
+      "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+      "RuntimeSourceUnchangedSinceFrozenCommit": true,
+      "Evidence": "docs/runtime/evidence/ui-maintainability-16/runs/frozen-maintainability.record.json"
+    },
+    {
+      "Name": "frozen-operation-closure",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "WorkingTree": true,
+      "Command": [
+        "/pinned-dotnet/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--operation-closure"
+      ],
+      "StartedAt": "2026-10-17T17:12:11.415499+00:00",
+      "EndedAt": "2026-10-17T17:12:13.124295+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "ExitCode": 0,
+      "LogSha256": "5cc4109aae294f04ceeba292046d36f3040029443b462e4a385a0844fa69ecc8",
+      "RawLogSha256": "5d557ba905941d07b2d6a2e41051dc706f561c977869965cb59deb40dcf22785",
+      "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+      "RuntimeSourceUnchangedSinceFrozenCommit": true,
+      "Evidence": "docs/runtime/evidence/ui-maintainability-16/runs/frozen-operation-closure.record.json"
+    },
+    {
+      "Name": "frozen-review-followup",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "WorkingTree": true,
+      "Command": [
+        "/pinned-dotnet/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--review-followup"
+      ],
+      "StartedAt": "2026-10-17T17:12:37.889705+00:00",
+      "EndedAt": "2026-10-17T17:13:00.012959+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "ExitCode": 0,
+      "LogSha256": "ae373837a8af9543c7ab15c74bd5f6f29fdf3371c453e43887edb87c4e7f9526",
+      "RawLogSha256": "3527d32412c154b549ac46c80662136d3b7e77960f1aab0f9e16ac529c0630c5",
+      "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+      "RuntimeSourceUnchangedSinceFrozenCommit": true,
+      "Evidence": "docs/runtime/evidence/ui-maintainability-16/runs/frozen-review-followup.record.json"
+    },
+    {
+      "Name": "package-portable",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "WorkingTree": true,
+      "Command": [
+        "python3",
+        "scripts/package-reference.py",
+        "--target",
+        "portable",
+        "--composition",
+        "integration-reference",
+        "--dotnet",
+        "/pinned-dotnet/dotnet",
+        "--extension-key",
+        "/candidate-artifacts/signing/reference.pem",
+        "--extension-trust",
+        "/candidate-artifacts/signing/trust.Simulation.json",
+        "--output",
+        "/candidate-artifacts/089fd98/portable"
+      ],
+      "StartedAt": "2026-10-17T17:07:57.662764+00:00",
+      "EndedAt": "2026-10-17T17:08:12.458734+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "ExitCode": 0,
+      "LogSha256": "1e584bbce03544bf8e66b1931f74001ef7c605efa1debbbc3182d211ef21a509",
+      "RawLogSha256": "df240e3988658fe19e815c17b5da5f013a44cbb1ebab3415ee39da2d93c94adb",
+      "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+      "RuntimeSourceUnchangedSinceFrozenCommit": true,
+      "Evidence": "docs/runtime/evidence/ui-maintainability-16/runs/package-portable.record.json"
+    },
+    {
+      "Name": "package-win-x64",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "WorkingTree": true,
+      "Command": [
+        "python3",
+        "scripts/package-reference.py",
+        "--target",
+        "win-x64",
+        "--composition",
+        "integration-reference",
+        "--dotnet",
+        "/pinned-dotnet/dotnet",
+        "--extension-check-host",
+        "/candidate-artifacts/089fd98/portable/app/Ipc.Product.dll",
+        "--extension-key",
+        "/candidate-artifacts/signing/reference.pem",
+        "--extension-trust",
+        "/candidate-artifacts/signing/trust.Simulation.json",
+        "--output",
+        "/candidate-artifacts/089fd98/win-x64"
+      ],
+      "StartedAt": "2026-10-17T17:08:40.551254+00:00",
+      "EndedAt": "2026-10-17T17:09:05.210219+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "ExitCode": 0,
+      "LogSha256": "650ce0e8ce0b376e865b996d28b37368803f330c6a294250ee44289aaa31f19c",
+      "RawLogSha256": "d681b96e5949845258666ddb4e30a19aa195c34dfbea446fbd1cf48d1caf7dc8",
+      "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+      "RuntimeSourceUnchangedSinceFrozenCommit": true,
+      "Evidence": "docs/runtime/evidence/ui-maintainability-16/runs/package-win-x64.record.json"
+    },
+    {
+      "Name": "powershell-entry",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "WorkingTree": true,
+      "Command": [
+        "/tmp/ipc-pwsh/pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "/tmp/ipc16-publish-probe.ps1"
+      ],
+      "StartedAt": "2026-10-17T17:10:36.456521+00:00",
+      "EndedAt": "2026-10-17T17:10:37.696678+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "ExitCode": 0,
+      "LogSha256": "5e45ec9b5e1e45e386c12b0b61f858e169cd10ae23090163ddf1a870197d2a44",
+      "RawLogSha256": "5e45ec9b5e1e45e386c12b0b61f858e169cd10ae23090163ddf1a870197d2a44",
+      "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+      "RuntimeSourceUnchangedSinceFrozenCommit": true,
+      "Evidence": "docs/runtime/evidence/ui-maintainability-16/runs/powershell-entry.record.json"
+    },
+    {
+      "Name": "unpacked-core-smoke",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "WorkingTree": true,
+      "Command": [
+        "python3",
+        "scripts/smoke.py",
+        "--product",
+        "/candidate-artifacts/089fd98/unpacked-portable/app",
+        "--fixture",
+        "/candidate-artifacts/089fd98/unpacked-portable/fixture/Ipc.Fixture.dll",
+        "--dotnet",
+        "/pinned-dotnet/dotnet",
+        "--output",
+        "docs/runtime/evidence/ui-maintainability-16/core-smoke.json"
+      ],
+      "StartedAt": "2026-10-17T17:08:42.192750+00:00",
+      "EndedAt": "2026-10-17T17:08:47.060131+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "ExitCode": 0,
+      "LogSha256": "390560da7fbf277848d23bc880ae2ada166c2f88f4cc6000d04cac72c6cf7375",
+      "RawLogSha256": "e51b4365763025740a226adeebef1cfb2b172b20ef5d59ddb6dfc5bf878d9303",
+      "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+      "RuntimeSourceUnchangedSinceFrozenCommit": true,
+      "Evidence": "docs/runtime/evidence/ui-maintainability-16/runs/unpacked-core-smoke.record.json"
+    },
+    {
+      "Name": "unpacked-extension-smoke",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "WorkingTree": true,
+      "Command": [
+        "python3",
+        "scripts/smoke-extension.py",
+        "--release",
+        "/candidate-artifacts/089fd98/unpacked-portable",
+        "--dotnet",
+        "/pinned-dotnet/dotnet",
+        "--output",
+        "docs/runtime/evidence/ui-maintainability-16/extension-smoke.json"
+      ],
+      "StartedAt": "2026-10-17T17:08:47.123291+00:00",
+      "EndedAt": "2026-10-17T17:08:50.341200+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "ExitCode": 0,
+      "LogSha256": "565bfa28fd76088e7c714fb6cdaf8ee43999ad0e8d18b806e73e44c4e17c90c4",
+      "RawLogSha256": "8e4043d7d0dad7c7308b2faa1795827f3760fa650b6464ac8587037ec4136a41",
+      "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+      "RuntimeSourceUnchangedSinceFrozenCommit": true,
+      "Evidence": "docs/runtime/evidence/ui-maintainability-16/runs/unpacked-extension-smoke.record.json"
+    }
+  ],
+  "HealthComparison": {
+    "Before": {
+      "Scenario": "120 virtual seconds, two Ready sources + one Ready requests service; two occupied lanes; no business observations sampled",
+      "HealthEvents": 360,
+      "ExternalCommitIntervals": 360,
+      "AuditGrowth": 360,
+      "StateRewrites": 360,
+      "OperationRewrites": 720,
+      "SnapshotMedianMs": 0.5329,
+      "SnapshotP95Ms": 0.8097,
+      "SnapshotMaxMs": 4.577,
+      "LogSha256": "4562dd1ff9a57f3caca3dc916363439da469c65e5d0aabb720edab5c69fc5c80",
+      "RawLogSha256": "9a03487e17230585e0509af1c6b4808a63da027c5491eb6f553512798b8b5082"
+    },
+    "After": {
+      "Scenario": "120 virtual seconds, two Ready sources + one Ready requests service; two occupied lanes; no business observations sampled",
+      "HealthEvents": 360,
+      "ExternalCommitIntervals": 0,
+      "AuditGrowth": 0,
+      "StateRewrites": 0,
+      "OperationRewrites": 0,
+      "SnapshotMedianMs": 0.4899,
+      "SnapshotP95Ms": 0.671,
+      "SnapshotMaxMs": 3.4197,
+      "LogSha256": "996a8dac392c7068abc239288b535ca556443a69f2a13e33f4813e8e968dd401",
+      "RawLogSha256": "cc2395f4d224c482d394706be85c97f417a51f510e618d13de4b8385419cf2d8"
+    },
+    "BaselineSource": "12a40b308e13744eb4be959dff4a62dca473b5d9 health methods unchanged at initial profile build",
+    "Harness": "tests/Ipc.Verification/HealthRenewalVerification.cs Profile method",
+    "Environment": "macOS ARM64; .NET SDK10.0.402; actual SQLite WAL synchronous FULL",
+    "Method": "120 one-second virtual increments; all 360 health calls awaited; external data_version sampled after each call; audit count and temporary SQL triggers count aggregate UPDATEs. Stable window excludes setup/teardown. No observations sampled; two initial Enter events persisted. Latency is machine-specific synthetic evidence, not a site throughput claim.",
+    "ProgramBaselineSha256": "de5ef5ebb6669719f27c1cbb5911e5cbef949196d5615ba65781f5bfcbd4c971",
+    "ProfileMethodSha256": "c2cbff58865d433143fa997d4fee0b99ff4f243200358e3522d3dab2c065b187"
+  },
+  "CandidateInventory": "docs/runtime/evidence/ui-maintainability-16/candidate-inventory.json",
+  "ExternalDeclaration": "docs/runtime/evidence/ui-maintainability-16/external-declaration/execution.json",
+  "OldPackages": "docs/runtime/evidence/ui-maintainability-16/old-package-compatibility.json",
+  "SourceFreeze": "docs/runtime/evidence/ui-maintainability-16/source-freeze.json",
+  "PreservedInputs": "docs/runtime/evidence/ui-maintainability-16/preserved-inputs.json",
+  "ToolingTests": "docs/runtime/evidence/ui-maintainability-16/tooling-tests.json",
+  "PublicEvidenceTransforms": "docs/runtime/evidence/ui-maintainability-16/evidence-publication.json",
+  "Release": "https://github.com/yuan2go/importer-pc/releases/tag/ui16-reference-089fd98",
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/16",
+  "Acceptance": [
+    {
+      "Id": "16-01",
+      "Implementation": [
+        "a0595ed pre-code documentation",
+        "current INDEX/design/operations/guide"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/ui-maintainability-16/preserved-inputs.json"
+      ],
+      "Status": "VERIFIED_ORIGINALS_PRESERVED",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "Windows": "NOT_APPLICABLE_CORE_ONLY"
+    },
+    {
+      "Id": "16-02",
+      "Implementation": [
+        "MainWindow.Alarms.cs",
+        "MainWindow.Closure.cs",
+        "MainWindow.xaml"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/ui-maintainability-16/runs/frozen-build.record.json",
+        "docs/runtime/evidence/ui-maintainability-16/runs/frozen-maintainability.record.json"
+      ],
+      "Status": "IMPLEMENTED_CORE_BUILD_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "Windows": "NOT_RUN"
+    },
+    {
+      "Id": "16-03",
+      "Implementation": [
+        "ConfigurationDraft/ConfigurationValidationPresentation",
+        "ExtensionsView",
+        "MainWindow.Maintenance"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/ui-maintainability-16/runs/frozen-operation-closure.record.json",
+        "docs/runtime/evidence/ui-maintainability-16/runs/frozen-conformance.record.json"
+      ],
+      "Status": "IMPLEMENTED_CORE_BUILD_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "Windows": "NOT_RUN"
+    },
+    {
+      "Id": "16-04",
+      "Implementation": [
+        "SupplyCommands/ReasonCodes/ReceiptResponsibilityRules/SupplyViews",
+        "Adapters/Product/Fixture explicit dependencies"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/ui-maintainability-16/runs/frozen-maintainability.record.json",
+        "docs/runtime/evidence/ui-maintainability-16/runs/frozen-architecture.record.json"
+      ],
+      "Status": "CORE_VERIFIED",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "Windows": "NOT_APPLICABLE_CORE_ONLY"
+    },
+    {
+      "Id": "16-05",
+      "Implementation": [
+        "scripts/build-extension.py/extension_build.py/build_process.py",
+        "ExtensionBuildCheck",
+        "package-reference.py/publish.ps1 and selector scopes and four guides"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/ui-maintainability-16/tooling-tests.json",
+        "docs/runtime/evidence/ui-maintainability-16/external-declaration/execution.json",
+        "docs/runtime/evidence/ui-maintainability-16/candidate-inventory.json",
+        "docs/runtime/evidence/ui-maintainability-16/runs/powershell-entry.record.json"
+      ],
+      "Status": "VERIFIED_MACOS_WINDOWS_ENTRY_NOT_RUN",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "Windows": "NOT_RUN"
+    },
+    {
+      "Id": "16-06",
+      "Implementation": [
+        "StationClosure/IntegrationHealth"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/ui-maintainability-16/health-comparison.json",
+        "docs/runtime/evidence/ui-maintainability-16/runs/frozen-maintainability.record.json"
+      ],
+      "Status": "VERIFIED_DETERMINISTIC_SQLITE_NOT_SITE_THROUGHPUT",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "Windows": "NOT_APPLICABLE_CORE_ONLY"
+    },
+    {
+      "Id": "16-07",
+      "Implementation": [
+        "affected scopes and same-source candidates"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/ui-maintainability-16/runs/frozen-baseline.record.json",
+        "docs/runtime/evidence/ui-maintainability-16/runs/frozen-operation-closure.record.json",
+        "docs/runtime/evidence/ui-maintainability-16/runs/frozen-conformance.record.json",
+        "docs/runtime/evidence/ui-maintainability-16/runs/frozen-closure.record.json",
+        "docs/runtime/evidence/ui-maintainability-16/runs/frozen-review-followup.record.json",
+        "docs/runtime/evidence/ui-maintainability-16/runs/frozen-architecture.record.json",
+        "docs/runtime/evidence/ui-maintainability-16/core-smoke.json",
+        "docs/runtime/evidence/ui-maintainability-16/extension-smoke.json"
+      ],
+      "Status": "CORE_VERIFIED_WINDOWS_AND_CAPABILITY_GATES_RETAINED",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "Windows": "NOT_RUN"
+    },
+    {
+      "Id": "16-08",
+      "Implementation": [
+        "actual code/docs/matrix/candidates/main PR"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/ui-maintainability-16/candidate-inventory.json",
+        "docs/runtime/evidence/ui-maintainability-16/source-freeze.json",
+        "docs/runtime/evidence/ui-maintainability-16/remote-readback.json"
+      ],
+      "Status": "DELIVERED_MAIN_PR_OPEN_REMOTE_CANDIDATES_VERIFIED",
+      "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+      "Windows": "NOT_RUN"
+    }
+  ],
+  "ExternalBlockers": [
+    {
+      "Capability": "SDK/device",
+      "Status": "BLOCKED",
+      "UnlockEvidence": "Authorized model/firmware/SDK/bitness and callback/stop/trigger contract"
+    },
+    {
+      "Capability": "WCS",
+      "Status": "BLOCKED",
+      "UnlockEvidence": "Versioned authoritative side effects/idempotency/original-query/close/SKU-shortage contract"
+    },
+    {
+      "Capability": "identity/entity/quantity",
+      "Status": "BLOCKED",
+      "UnlockEvidence": "Trusted identity/roles, entity mapping/interlock/reset and quantity/split approvals"
+    },
+    {
+      "Capability": "field",
+      "Status": "BLOCKED",
+      "UnlockEvidence": "Windows/ACL/account/HID/DPI/sound/touch and recovery SOP acceptance"
+    },
+    {
+      "Capability": "legacy shared-store retirement",
+      "Status": "BLOCKED",
+      "UnlockEvidence": "Complete authorized actual old roots/backup inventory and coverage; no bypass"
+    }
+  ],
+  "Archive": {
+    "Status": "PASS_NO_NEW_ERRORS",
+    "WholeStatus": "FAIL_EXISTING_267",
+    "PriorEvidence": "docs/runtime/evidence/operation-closure-15/archive-final.json",
+    "ExistingErrors": 267,
+    "NewErrors": [],
+    "Evidence": "docs/runtime/evidence/ui-maintainability-16/archive-comparison.json"
+  },
+  "PullRequestState": "OPEN_NOT_MERGED",
+  "RemoteReadback": "docs/runtime/evidence/ui-maintainability-16/remote-readback.json"
+}

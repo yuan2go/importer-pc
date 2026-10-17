@@ -1,0 +1,54 @@
+{
+  "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+  "Results": [
+    {
+      "Package": "reference.barcode-1.0.3.ipcx",
+      "Sha256": "4b21f65346743953d897d3700c0ae7d3cf1272a0954b02f63ba3bf2decb7f8f9",
+      "ExitCode": -6,
+      "Status": "EXACT_CONTRACT_REFUSED",
+      "Unchanged": true,
+      "Command": [
+        "/pinned-dotnet/dotnet",
+        "/candidate-artifacts/089fd98/portable/app/Ipc.Product.dll",
+        "--action",
+        "extension-check",
+        "--mode",
+        "Simulation",
+        "--file",
+        "/candidate-artifacts/previous15/reference.barcode-1.0.3.ipcx",
+        "--extension-trust",
+        "/candidate-artifacts/previous15/trust.Simulation.reference.json"
+      ],
+      "Log": "docs/runtime/evidence/ui-maintainability-16/reference.barcode-1.0.3-new-host-compatibility.log",
+      "OriginalHostContractSha256": "C1402A136D79844CC1358F9E9E54A9216A0DBA93AE55A3C2D0D7B922FC470A13",
+      "NewHostContractSha256": "8EB04FEAFAB278260A1FE4412AC4A822CF8B7628DB4EA3C59747AE8E57AB57E8",
+      "ContractBytesDiffer": true,
+      "Error": "Unsupported extension identity/runtime/contract/RID/mode/source"
+    },
+    {
+      "Package": "reference.integration-1.0.3.ipcx",
+      "Sha256": "5e2d649a549a101d9749e95d5f5385a9da3120907baa45c9d2f91908a8bc2095",
+      "ExitCode": -6,
+      "Status": "EXACT_CONTRACT_REFUSED",
+      "Unchanged": true,
+      "Command": [
+        "/pinned-dotnet/dotnet",
+        "/candidate-artifacts/089fd98/portable/app/Ipc.Product.dll",
+        "--action",
+        "extension-check",
+        "--mode",
+        "Simulation",
+        "--file",
+        "/candidate-artifacts/previous15/reference.integration-1.0.3.ipcx",
+        "--extension-trust",
+        "/candidate-artifacts/previous15/trust.Simulation.reference.json"
+      ],
+      "Log": "docs/runtime/evidence/ui-maintainability-16/reference.integration-1.0.3-new-host-compatibility.log",
+      "OriginalHostContractSha256": "C1402A136D79844CC1358F9E9E54A9216A0DBA93AE55A3C2D0D7B922FC470A13",
+      "NewHostContractSha256": "8EB04FEAFAB278260A1FE4412AC4A822CF8B7628DB4EA3C59747AE8E57AB57E8",
+      "ContractBytesDiffer": true,
+      "Error": "Unsupported extension identity/runtime/contract/RID/mode/source"
+    }
+  ],
+  "Scope": "Read-only static original15 packages with their original trust. Does not migrate old requests, old Effective or permit re-signing. No existing deployment changed."
+}

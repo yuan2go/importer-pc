@@ -150,7 +150,7 @@ static class ConformanceVerification
         await h.Command("ActivateConfig", valid.Id);
         Assert((await h.App.ConfigsAsync()).Single(x => x.Id == valid.Id).Status == "PendingActivation", "direct selected revision reaches real activation authority and PendingActivation");
         var code = File.ReadAllText(Path.Combine(workspace, "src/Ipc.Desktop/MainWindow.xaml.cs"));
-        Assert(code.Contains("ConfigurationActivation.Evaluate(snapshot.State, activation") && !code.Contains("kind == \"ActivateConfig\" && (!ConfigsList") && code.Contains("Draft.Build()") &&
+        Assert(code.Contains("ConfigurationActivation.Evaluate(snapshot.State, activation") && !code.Contains("kind == \"ActivateConfig\" && (!ConfigsList") && File.ReadAllText(Path.Combine(workspace, "src/Ipc.Desktop/MainWindow.Maintenance.cs")).Contains("Draft.Build()") &&
             File.ReadAllText(Path.Combine(workspace, "src/Ipc.Desktop/ExtensionsView.xaml.cs")).Contains("get => owner!.Draft.Extensions"), "actual WPF callers are wired to shared activation and draft implementations exercised here");
         // Real ScanRetained commands plus the exact draft-consumption implementation used
         // by LaneControl: duplicate A has no quantity effect; B is a separate retained unit.

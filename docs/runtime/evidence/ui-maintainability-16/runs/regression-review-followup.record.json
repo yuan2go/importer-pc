@@ -1,0 +1,19 @@
+{
+  "Name": "regression-review-followup",
+  "SourceCommit": "a0595ed40a471f41a9ee268f0ec8ce339ad19d39",
+  "WorkingTree": true,
+  "Command": [
+    "/pinned-dotnet/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--review-followup"
+  ],
+  "StartedAt": "2026-10-17T17:06:08.533049+00:00",
+  "EndedAt": "2026-10-17T17:06:30.334809+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "ExitCode": 0,
+  "LogSha256": "5eda708fd6a76cf1a0790fae1e9e0a19193044868575debf16931a61d6c06482",
+  "RawLogSha256": "f183ad69b7550abc6a02efea083ddcd057f5a14d0cdce925c473553c5bb1c0cb",
+  "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+  "RuntimeSourceUnchangedSinceFrozenCommit": false
+}

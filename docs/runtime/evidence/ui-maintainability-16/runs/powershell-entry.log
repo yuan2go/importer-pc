@@ -1,0 +1,25 @@
+{
+  "Status": "PASS",
+  "Scope": "PowerShell7 macOS parser, actual wrapper parameter forwarding and Python failure propagation with synthetic function, no publication invoked",
+  "Windows": "NOT_RUN",
+  "Arguments": [
+    "scripts/package-reference.py",
+    "--target",
+    "win-x64",
+    "--mode",
+    "Simulation",
+    "--output",
+    "/synthetic/new",
+    "--composition",
+    "integration-reference",
+    "--product-definition",
+    "config/product.reference.json",
+    "--extension-key",
+    "/external/private-key",
+    "--extension-trust",
+    "/independent/public-trust",
+    "--extension-check-host",
+    "/portable/app/Ipc.Product.dll",
+    "--no-restore"
+  ]
+}

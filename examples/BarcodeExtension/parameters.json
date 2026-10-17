@@ -1,0 +1,66 @@
+[
+  {
+    "Key": "health.interval-ms",
+    "Group": "健康 / 可靠确认",
+    "Label": "合成心跳间隔",
+    "Type": "integer",
+    "Required": true,
+    "Default": "1000",
+    "Minimum": 100,
+    "Maximum": 2000,
+    "Unit": "ms"
+  },
+  {
+    "Key": "input.prefix",
+    "Group": "输入 / 合成条码",
+    "Label": "允许的条码前缀",
+    "Type": "string",
+    "Default": "",
+    "MaximumLength": 32,
+    "Description": "不匹配时产生无码观察；不沿用旧码。仅合成模式。"
+  },
+  {
+    "Key": "input.labels",
+    "Group": "输入 / 合成条码",
+    "Label": "来源标签（每行一项）",
+    "Type": "string-list",
+    "Default": "[]",
+    "MaximumLength": 256,
+    "MaximumItems": 16
+  },
+  {
+    "Key": "metadata.contract",
+    "Group": "身份 / 版本",
+    "Label": "来源契约",
+    "Type": "string",
+    "Default": "SIMULATION-OBSERVATION-v1",
+    "ReadOnly": true
+  },
+  {
+    "Key": "credential.reference",
+    "Group": "身份 / 凭据引用",
+    "Label": "凭据引用（不输入密码）",
+    "Type": "secret-reference",
+    "Sensitive": true,
+    "Description": "只存 credential:名称；本合成源不使用或读取生产凭据。"
+  },
+  {
+    "Key": "fault.fail-start",
+    "Group": "工程 / 显式模拟故障",
+    "Label": "启动失败注入",
+    "Type": "boolean",
+    "Default": "false",
+    "Description": "只用于参考环境验证升级失败保旧。"
+  },
+  {
+    "Key": "fault.stop-delay-ms",
+    "Group": "工程 / 显式模拟故障",
+    "Label": "停止延迟注入",
+    "Type": "integer",
+    "Default": "0",
+    "Minimum": 0,
+    "Maximum": 20000,
+    "Unit": "ms",
+    "Description": "验证Stop未终止时保留依赖和实际资源租约。"
+  }
+]

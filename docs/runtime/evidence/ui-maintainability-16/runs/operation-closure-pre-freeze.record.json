@@ -1,0 +1,19 @@
+{
+  "Name": "operation-closure-pre-freeze",
+  "SourceCommit": "a0595ed40a471f41a9ee268f0ec8ce339ad19d39",
+  "WorkingTree": true,
+  "Command": [
+    "/pinned-dotnet/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--operation-closure"
+  ],
+  "StartedAt": "2026-10-17T17:02:34.692320+00:00",
+  "EndedAt": "2026-10-17T17:02:36.177454+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "ExitCode": 0,
+  "LogSha256": "2e686d9b93631d0fb7a8aafb18aefe9a58915ad11a41420cbb645e93e24c48aa",
+  "RawLogSha256": "30aba5213ee2731e1177a3692a2d6c8bd31015f7fae6698f1c6ddb5cb6677765",
+  "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+  "RuntimeSourceUnchangedSinceFrozenCommit": false
+}

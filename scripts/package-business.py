@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import zipfile
 from composition import resolve
+from release_documents import SOURCE_PATHS, publish as publish_guides
 
 p = argparse.ArgumentParser()
 p.add_argument('--composition', choices=['inspection-reference', 'supply-assembly'], required=True)
@@ -20,7 +21,7 @@ output = a.output.resolve()
 archive = Path(str(output) + '.zip')
 if output.exists() or archive.exists():
     raise FileExistsError('Retain earlier candidates; choose a new output')
-if subprocess.check_output(['git', 'status', '--porcelain', '--', 'src', 'config', 'scripts', 'global.json', 'Directory.Build.props', 'docs/runtime/operations.md', 'docs/extensions/developer-guide.md'], cwd=root, text=True).strip():
+if subprocess.check_output(['git', 'status', '--porcelain', '--', *SOURCE_PATHS], cwd=root, text=True).strip():
     raise ValueError('Commit build inputs before creating a candidate')
 source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
 business = selected['product']['business']
@@ -42,7 +43,7 @@ selection = dict(SchemaVersion=1, Business=business, Views=selected['product']['
 (output / 'ASSEMBLY.json').write_text(json.dumps(selection, indent=2) + '\n')
 selected['binaries'] = selection['Binaries']
 (output / 'composition.lock.json').write_text(json.dumps(selected, indent=2) + '\n')
-shutil.copyfile(root / 'docs/runtime/operations.md', output / 'OPERATIONS.md')
+publish_guides(root, output, source)
 entries = sorted(f for f in output.rglob('*') if f.is_file())
 (output / 'SHA256SUMS').write_text(''.join(hashlib.sha256(f.read_bytes()).hexdigest() + '  ' + f.relative_to(output).as_posix() + '\n' for f in entries))
 with zipfile.ZipFile(archive, 'x', zipfile.ZIP_DEFLATED) as z:

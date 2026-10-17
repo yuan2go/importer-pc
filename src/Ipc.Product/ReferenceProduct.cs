@@ -12,9 +12,9 @@ public static class ReferenceProduct
         [new("platform", "platform", "1.0.0", 1, [], "Ipc.Platform.dll"),
          new("supply-contracts", "contracts", "1.0.0", 1, ["platform"], "Ipc.Supply.Contracts.dll"),
          new("supply", "supply", "1.0.0", 1, ["supply-contracts"], "Ipc.Supply.dll"),
-         new("adapters", "adapters", "1.0.0", 1, ["supply"], "Ipc.Adapters.dll"),
-         new("product", "product", "1.0.0", 1, ["adapters"], "Ipc.Product.dll")],
-        ["workstation", "history", "alarms", "diagnostics", "maintenance", "engineering", "extensions"], ["standard", "compact"],
+         new("adapters", "adapters", "1.0.0", 1, ["supply-contracts"], "Ipc.Adapters.dll"),
+         new("product", "product", "1.0.0", 1, ["supply", "adapters"], "Ipc.Product.dll")],
+        SupplyViews.Installed.ToArray(), ["standard", "compact"],
         [new("manual", RunMode.Simulation), new("replay", RunMode.Simulation)]);
     static readonly IReadOnlyDictionary<string, Func<DeviceBinding, string, IObservationSource>> sourceFactories =
         new Dictionary<string, Func<DeviceBinding, string, IObservationSource>>(StringComparer.Ordinal)

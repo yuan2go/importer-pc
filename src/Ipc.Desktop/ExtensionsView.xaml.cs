@@ -21,6 +21,8 @@ public partial class ExtensionsView : UserControl
     readonly SelectionLoad selection = new();
     bool busy, access, restoringPackageSelection, changingEditorSelection, selecting;
     readonly Dictionary<string, Func<string>> values = [];
+    readonly Dictionary<string, FrameworkElement> parameterEditors = [];
+    readonly Dictionary<string, TextBlock> parameterErrors = [];
     readonly Dictionary<string, ExtensionManifest> effectiveSchemas = [];
     public ExtensionsView() => InitializeComponent();
     public void Initialize(MainWindow window)
@@ -76,14 +78,20 @@ public partial class ExtensionsView : UserControl
         finally { restoringPackageSelection = false; }
         Operations.ItemsSource = read.Operations;
         IntegrationDiagnostics.ItemsSource = Runtime.IntegrationDiagnostics;
-        Effective.Text = $"当前有效部署 {read.EffectiveDeployment ?? "未启动"} · 指纹 {read.EffectiveFingerprint ?? "未取得"}";
+        Effective.Text = $"当前有效部署 {read.EffectiveDeployment ?? "未启动"} · 本窗草稿 {owner.Draft["Version"]}（尚未保存）";
+        Effective.ToolTip = "有效部署完整指纹：" + (read.EffectiveFingerprint ?? "未取得");
         Status.Text = $"{read.State} · {read.Packages.Count(x => x.Status == "Installed")} 个已安装包 · 尚未激活的包不会启动设备。\n" + string.Join("；", read.Diagnostics.Concat(schemaDiagnostics));
         if (Runtime.Application is { } app && access)
         {
             var identity = (await app.SnapshotAsync()).State.Actor;
             var revisions = await app.ConfigsAsync();
             var current = (await app.SnapshotAsync()).State.Actor;
-            if (ticket == generation && identity is not null && identity == current && current.ExpiresAt > DateTimeOffset.UtcNow && access) Revisions.ItemsSource = revisions;
+            if (ticket == generation && identity is not null && identity == current && current.ExpiresAt > DateTimeOffset.UtcNow && access)
+            {
+                var selectedId = (Revisions.SelectedItem as ConfigRevision)?.Id;
+                Revisions.ItemsSource = revisions; Revisions.SelectedItem = revisions.FirstOrDefault(x => x.Id == selectedId);
+                DeploymentLifecycle.Text = DeploymentPresentation.Summary(revisions);
+            }
         }
     }
     async void RefreshClick(object sender, RoutedEventArgs e) => await Execute(RefreshAsync);
@@ -246,7 +254,7 @@ public partial class ExtensionsView : UserControl
     }
     void RenderParameters(ExtensionInstance? instance, ServiceInstance? service = null)
     {
-        Parameters.Children.Clear(); values.Clear();
+        Parameters.Children.Clear(); values.Clear(); parameterEditors.Clear(); parameterErrors.Clear();
         if (Module.SelectedItem is not ExtensionModule module) return;
         var effective = Runtime.Configuration?.Extensions?.Instances.SingleOrDefault(x => x.Id == instance?.Id);
         var effectiveService = Runtime.Configuration?.Extensions?.Services?.SingleOrDefault(x => x.Id == service?.Id);
@@ -284,7 +292,9 @@ public partial class ExtensionsView : UserControl
                     editor = text;
                 }
                 System.Windows.Automation.AutomationProperties.SetName(editor, field.Label);
-                content.Children.Add(editor);
+                content.Children.Add(editor); parameterEditors[field.Key] = editor;
+                var errorText = new TextBlock { Foreground = (System.Windows.Media.Brush)FindResource("Danger"), TextWrapping = TextWrapping.Wrap, Margin = new Thickness(4), Visibility = Visibility.Collapsed };
+                parameterErrors[field.Key] = errorText; content.Children.Add(errorText);
                 string active;
                 if (service is not null)
                 {
@@ -304,6 +314,31 @@ public partial class ExtensionsView : UserControl
             }
         }
     }
+    void ValidateParameterEditors(ExtensionModule module, IReadOnlyDictionary<string, string> parameters)
+    {
+        foreach (var error in parameterErrors.Values) { error.Text = ""; error.Visibility = Visibility.Collapsed; }
+        var errors = ExtensionSchema.Validate(module.Parameters, parameters);
+        FrameworkElement? first = null;
+        foreach (var message in errors)
+        {
+            var key = module.Parameters.FirstOrDefault(x => message.StartsWith(x.Key + ":", StringComparison.Ordinal))?.Key;
+            if (key is null || !parameterErrors.TryGetValue(key, out var text)) continue;
+            text.Text = message + "；请按上方范围/必填条件修正后重新校验"; text.Visibility = Visibility.Visible;
+            first ??= parameterEditors[key];
+        }
+        if (first is not null) { first.BringIntoView(); first.Focus(); if (first is TextBox box) box.SelectAll(); }
+        if (errors.Length > 0) throw new InvalidDataException(string.Join("；", errors) + "；有效参数保持原值");
+    }
+    static void RequireEditor(bool valid, Control field, string reason)
+    {
+        if (valid) return;
+        field.BringIntoView(); field.Focus(); if (field is TextBox box) box.SelectAll();
+        throw new InvalidDataException(reason);
+    }
+    void RevisionSelected(object sender, SelectionChangedEventArgs e)
+    {
+        if (Revisions.SelectedItem is ConfigRevision row) Difference.Text = DeploymentPresentation.Revision(row) + "\n回执：" + row.Reason;
+    }
     async void SaveInstanceClick(object sender, RoutedEventArgs e) => await Execute(() =>
     {
         RequireAccess(); if (selectedManifest is null || Module.SelectedItem is not ExtensionModule module) throw new InvalidOperationException("选择已安装模块");
@@ -313,18 +348,26 @@ public partial class ExtensionsView : UserControl
         if (module.Kind == "integration")
         {
             var service = new ServiceInstance(InstanceId.Text, selectedManifest.Id, module.Id, EnabledInstance.IsChecked == true, values.ToDictionary(x => x.Key, x => x.Value()));
-            var serviceErrors = ExtensionSchema.Validate(module.Parameters, service.Parameters);
-            if (!ExtensionSchema.IsId(service.Id) || serviceErrors.Length > 0) throw new InvalidDataException(string.Join("；", serviceErrors.Prepend("请核对服务实例身份及参数")));
+            RequireEditor(ExtensionSchema.IsId(service.Id), InstanceId, "服务实例ID无效；请按字段说明修正");
+            ValidateParameterEditors(module, service.Parameters);
             var target = new IntegrationBinding(TargetId.Text.Trim(), TargetRevision.Text.Trim(), TargetContract.Text.Trim(), TargetEndpoint.Text.Trim());
-            if (service.Enabled && (!ExtensionSchema.IsId(ServicePort.Text) || !Uri.TryCreate(target.Endpoint, UriKind.Absolute, out _))) throw new InvalidDataException("服务端口或目标无效");
+            if (service.Enabled)
+            {
+                RequireEditor(ExtensionSchema.IsId(ServicePort.Text), ServicePort, "服务端口无效；请填写业务声明的端口");
+                RequireEditor(Uri.TryCreate(target.Endpoint, UriKind.Absolute, out _), TargetEndpoint, "目标地址无效；请填写完整绝对地址");
+                RequireEditor(!string.IsNullOrWhiteSpace(target.Id), TargetId, "请填写原目标身份");
+                RequireEditor(!string.IsNullOrWhiteSpace(target.Revision), TargetRevision, "请填写目标修订");
+                RequireEditor(!string.IsNullOrWhiteSpace(target.Contract), TargetContract, "请填写目标合同");
+            }
             desired = ExtensionDraftEditing.SaveService(desired, (editedInstance as ServiceInstance)?.Id, service,
                 service.Enabled ? new(ServicePort.Text, service.Id, target) : null);
             editedInstance = service;
             ShowDesired(service.Id); Status.Text = "服务参数和目标绑定已写入本窗草稿；尚未保存/生效。"; return Task.CompletedTask;
         }
         var instance = new ExtensionInstance(InstanceId.Text, selectedManifest.Id, module.Id, DeviceId.Text, EnabledInstance.IsChecked == true, values.ToDictionary(x => x.Key, x => x.Value()));
-        var errors = ExtensionSchema.Validate(module.Parameters, instance.Parameters); if (errors.Length > 0) throw new InvalidDataException(string.Join("；", errors));
-        if (!ExtensionSchema.IsId(instance.Id) || string.IsNullOrWhiteSpace(instance.DeviceId)) throw new InvalidDataException("实例与设备身份不完整");
+        RequireEditor(ExtensionSchema.IsId(instance.Id), InstanceId, "设备实例ID无效；请按字段说明修正");
+        RequireEditor(!string.IsNullOrWhiteSpace(instance.DeviceId), DeviceId, "稳定设备身份未填写");
+        ValidateParameterEditors(module, instance.Parameters);
         var originalId = (editedInstance as ExtensionInstance)?.Id;
         var nextDraft = ExtensionDraftEditing.SaveDevice(desired, originalId, instance);
         if (originalId is not null && originalId != instance.Id) owner!.UnbindExtensionDraft(originalId);

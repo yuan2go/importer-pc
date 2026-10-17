@@ -1,4 +1,4 @@
-> 当前判断见 [PR14后复核](../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)，下一实施为 [15工作包](../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)。14已合并且原子问题分项验证；不同接收发生责任、维护/输入与UI仍有残余。本文有效职责/规则继续成立，历次执行结果只按其来源版本理解；本次更新前原字节见 [归档](../archive/pre-audit-reconciliation-publication-01/README.md)。
+> 当前工程任务为 [UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，基线 main `12a40b3`（PR15已合并）。15的实现及历史证据继续有效；本包只收敛指定UI、维护职责、独立扩展工具和健康续期写放大。有效F/D/RV要求不降低。修改前原字节见 [归档](../archive/pre-ui-maintainability-16/README.md)。
 
 > F-09/F-10实施增量（FIX-14）：追加Storage4，不修改原1/2/3 SQL；冲突原件与核对责任同T3、terminal/接受账不覆写；接收日志和预存围栏保护存储失败。F-03/F-08同窗一个配置草稿和本次修订选择，业务共享守卫；实例健康/历史查询分属原身份。共享库消费者登记是既有多根能力的保护，不新增分布式平台，旧库覆盖未知拒绝卸载。D批准不变，证据见 [14报告](../runtime/conformance-fix-14.md)。
 
@@ -133,3 +133,9 @@ F-09：接收发生与BusinessRequest分开。format5追加receipt_occurrences�
 F-03/F-08：当前箱最后阶段/原请求/结果/原因由持久事实投影，不由Toast或通道更新推断；当前可用性与已发生接受事实分别显示。记录列表优先、详情按需；类型/条码、日期与时区明确；ReviewFits仅检查当前必需事实/动作，隐藏的非必要入口不构成永久拒绝。每窗编辑/筛选/焦点仍不成为第二业务权威。
 
 F-10：局部编辑默认目标只读当前草稿目标，不要求所有临时数值已合法；保存和预览继续严格校验。异步选择的成功、错误、finally同代次；输入使用单条在途隔离，忙态新扫描明确拒收并要求重扫，失败保留原输入，不引入自动提交或猜测实体去重。旧精确部署先经匹配旧宿主清偿及维护过渡Effective，再备份显式升级/安装新精确包/受控激活；seed和schema迁移不能代替部署变更。D/RV及真实合同/实体/权限批准不变，Windows统一后验。
+
+## UI-MAINTAINABILITY-16 工程维护决定
+
+保留已存在的Supply.Contracts公共边界，Adapters不再引用Supply实现；Product/Assembly继续显式装配具体实现，Fixture声明自身数据库依赖。动作内部类型化而wire/audit原字符串不变；维护权限、箱资格、原因、独立接收责任/SQL及所属视图定义按业务所有权共用。页面保有本窗展示状态，业务仍唯一串行所有者。
+
+同状态健康续期是当前来源权威，不逐次重写业务聚合；状态/时效/失败变化仍持久，业务事务保存最新确认，重启清空并重新确认。不降低业务观察、T1/T2/T3/接收责任、过载和停止屏障。独立扩展声明进入已存在签名/安装/配置/激活链，不新建通用UI插件平台。StationConfig现有业务字段不迁移，原格式5/5和SQL/checksum保持。真实结果、取舍和后验见[16报告](../runtime/ui-maintainability-16.md)，外部D批准与RV不改。

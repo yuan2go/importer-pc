@@ -19,6 +19,7 @@ p.add_argument('--trust', type=Path, required=True)
 p.add_argument('--publisher', required=True)
 p.add_argument('--version', required=True)
 p.add_argument('--dotnet', default='dotnet')
+p.add_argument('--check-host', type=Path, help='Runnable frozen static checker for cross-target contract inventories')
 p.add_argument('--output', type=Path, required=True)
 a = p.parse_args()
 root = Path(__file__).resolve().parent.parent
@@ -35,7 +36,7 @@ for kind in ('observation', 'integration'):
                                 '--contract', str(directory.resolve() / 'Ipc.Platform.dll'),
                                 '--output', str(package), '--key', str(a.key.resolve()),
                                 '--publisher', a.publisher, '--trust', str(a.trust.resolve()),
-                                '--version', a.version, '--dotnet', a.dotnet], cwd=root, check=True,
+                                '--version', a.version, '--dotnet', a.dotnet, *(['--check-host', str(a.check_host.resolve())] if a.check_host else [])], cwd=root, check=True,
                                stdout=subprocess.DEVNULL)
                 with zipfile.ZipFile(package) as z:
                     raw = z.read('manifest.json')

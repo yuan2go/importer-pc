@@ -1,0 +1,44 @@
+[
+  {
+    "Key": "fault.fail-create",
+    "Group": "工程 / 模拟故障",
+    "Label": "构造失败注入",
+    "Type": "boolean",
+    "Default": "false"
+  },
+  {
+    "Key": "fault.stop-delay-ms",
+    "Group": "工程 / 模拟故障",
+    "Label": "停止延迟",
+    "Type": "integer",
+    "Default": "0",
+    "Minimum": 0,
+    "Maximum": 30000,
+    "Unit": "ms"
+  },
+  {
+    "Key": "fault.dispose-delay-ms",
+    "Group": "工程 / 模拟故障",
+    "Label": "释放延迟",
+    "Type": "integer",
+    "Default": "0",
+    "Minimum": 0,
+    "Maximum": 30000,
+    "Unit": "ms"
+  },
+  {
+    "Key": "metadata.label",
+    "Group": "服务 / 诊断",
+    "Label": "实例说明",
+    "Type": "string",
+    "Default": "",
+    "MaximumLength": 128
+  },
+  {
+    "Key": "credential.reference",
+    "Group": "服务 / 凭据引用",
+    "Label": "凭据引用",
+    "Type": "secret-reference",
+    "Sensitive": true
+  }
+]

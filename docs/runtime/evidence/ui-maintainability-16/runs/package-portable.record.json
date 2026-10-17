@@ -1,0 +1,29 @@
+{
+  "Name": "package-portable",
+  "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+  "WorkingTree": true,
+  "Command": [
+    "python3",
+    "scripts/package-reference.py",
+    "--target",
+    "portable",
+    "--composition",
+    "integration-reference",
+    "--dotnet",
+    "/pinned-dotnet/dotnet",
+    "--extension-key",
+    "/candidate-artifacts/signing/reference.pem",
+    "--extension-trust",
+    "/candidate-artifacts/signing/trust.Simulation.json",
+    "--output",
+    "/candidate-artifacts/089fd98/portable"
+  ],
+  "StartedAt": "2026-10-17T17:07:57.662764+00:00",
+  "EndedAt": "2026-10-17T17:08:12.458734+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "ExitCode": 0,
+  "LogSha256": "1e584bbce03544bf8e66b1931f74001ef7c605efa1debbbc3182d211ef21a509",
+  "RawLogSha256": "df240e3988658fe19e815c17b5da5f013a44cbb1ebab3415ee39da2d93c94adb",
+  "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+  "RuntimeSourceUnchangedSinceFrozenCommit": true
+}

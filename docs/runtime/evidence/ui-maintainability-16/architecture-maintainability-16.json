@@ -1,0 +1,51 @@
+{
+  "AdapterReferences": [
+    "System.Runtime",
+    "Ipc.Supply.Contracts",
+    "System.Net.Http",
+    "Ipc.Platform",
+    "System.Net.Primitives",
+    "System.Threading",
+    "System.Collections",
+    "System.Text.Json",
+    "System.Net.Http.Json",
+    "System.Linq"
+  ],
+  "CommandNames": [
+    "Login",
+    "Logout",
+    "Pause",
+    "Resume",
+    "ClearOverload",
+    "OpenContext",
+    "Submit",
+    "ScanRetained",
+    "ClearSplit",
+    "CancelPrepared",
+    "CancelDraft",
+    "CheckClose",
+    "CancelClose",
+    "ConfirmClose",
+    "SetFixtureFault",
+    "SetSyntheticBlock",
+    "ClearSyntheticBlock",
+    "ReviewObservations",
+    "RecordReconciliation",
+    "SaveConfig",
+    "ActivateConfig",
+    "ClearQuarantine",
+    "AckAlarm"
+  ],
+  "Views": [
+    "workstation",
+    "history",
+    "alarms",
+    "diagnostics",
+    "maintenance",
+    "engineering",
+    "extensions"
+  ],
+  "StorageFormat": 5,
+  "PublicContractMajor": 1,
+  "Windows": "NOT_RUN"
+}

@@ -1,0 +1,17 @@
+Usage: dotnet Ipc.Verification.dll [workspace] [one selector]
+Default: --reconciliation
+--reconciliation  H04 + A01 + E07 + E08 + E11 + E12 + AC14 + AC15 + AC/process baseline; architecture, maintainability and health-profile are explicit separate scopes [in default]
+--hardening  H04 recovery, original request and overload [in default]
+--alignment  H04 + A01 data/composition/runtime [in default]
+--data  A01 data/composition/runtime [in default]
+--baseline  AC/process crash baseline [in default]
+--closure  E07 sources, health, ownership and shutdown [in default]
+--followup  E08 permissions/configuration/two-box journeys [in default]
+--review-followup  E11 presentation policies + Product composite ownership [in default]
+--extensions  E12 controlled packages, install/recovery and actual Product deployment [in default]
+--architecture  E13 permanent identity, managed AssemblyRef/dependency closure, typed integration, frozen requests, Stop ownership and selected business assemblies [explicit only]
+--conformance  AC14 A01-A04/R01-R03; per-service health, configuration CAS and failure retention [in default]
+--operation-closure  AC15 independent receipt responsibility Q1/Q2, T3 recovery, current result/input and maintenance/history [in default]
+--maintainability  AC16 health renewal, UI operation policies, command/ownership and maintenance risks [explicit only]
+--health-profile  Stable dual-source database write/audit/snapshot latency measurement; explicit diagnostic profile [explicit only]
+--help prints this list without starting a fixture. Core policies/cross-builds do not attest Windows UI or real SDK/WCS acceptance.

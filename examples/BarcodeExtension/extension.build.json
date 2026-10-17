@@ -1,0 +1,25 @@
+{
+  "SchemaVersion": 1,
+  "Project": "examples/BarcodeExtension/BarcodeExtension.csproj",
+  "SourceRoots": [
+    "examples/BarcodeExtension"
+  ],
+  "BuildInputs": [
+    "Directory.Build.props",
+    "global.json",
+    "NuGet.Config"
+  ],
+  "Manifest": "examples/BarcodeExtension/manifest.template.json",
+  "Modules": "examples/BarcodeExtension/modules.json",
+  "ParameterSchemas": {
+    "barcode-source": "examples/BarcodeExtension/parameters.json"
+  },
+  "Content": [
+    {
+      "Root": "build",
+      "Source": "Ipc.Reference.BarcodeExtension.dll",
+      "Path": "Ipc.Reference.BarcodeExtension.dll"
+    }
+  ],
+  "PublicContracts": []
+}

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/external-artifacts/external-journey.py", line 81, in <module>
+    until(lambda s:all(d.get('Health')=='Ready' for d in s['State']['Devices'].values()))
+  File "/external-artifacts/external-journey.py", line 54, in until
+    if predicate(state):return state
+       ^^^^^^^^^^^^^^^^
+  File "/external-artifacts/external-journey.py", line 81, in <lambda>
+    until(lambda s:all(d.get('Health')=='Ready' for d in s['State']['Devices'].values()))
+                                                         ~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'Devices'

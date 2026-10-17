@@ -100,7 +100,7 @@ public sealed partial class SupplyStore
             "(SELECT coalesce(sum(a.quantity),0) FROM acceptance a JOIN requests ar ON ar.id=a.request WHERE " +
             (operations ? "a.operation=o.id" : "ar.session=s.id") + ")," +
             "(SELECT count(*) FROM attempts at JOIN requests rq ON rq.id=at.request WHERE " + (operations ? "rq.owner=o.id" : "rq.session=s.id") + ")," +
-            "(SELECT count(*) FROM receipt_occurrences ro JOIN requests rq ON rq.id=ro.request WHERE ro.status NOT IN ('Committed','NoResponse') AND " + (operations ? "rq.owner=o.id" : "rq.session=s.id") + ") FROM " + source + where +
+            "(SELECT count(*) FROM receipt_occurrences ro JOIN requests rq ON rq.id=ro.request WHERE " + ReceiptResponsibilityRules.UnresolvedSql("ro.status") + " AND " + (operations ? "rq.owner=o.id" : "rq.session=s.id") + ") FROM " + source + where +
             " ORDER BY coalesce(julianday(" + date + "),0) DESC," + id + " ASC LIMIT $limit OFFSET $offset", parameters);
         using var reader = command.ExecuteReader();
         var entries = new List<HistoryEntry>();

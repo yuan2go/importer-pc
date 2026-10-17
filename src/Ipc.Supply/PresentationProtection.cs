@@ -11,14 +11,14 @@ public sealed partial class StationApplication
         try
         {
             var source = "window:" + windowId;
-            var present = state.Blocks.Any(x => x.Code == "WindowArea" && x.Source == source);
+            var present = state.Blocks.Any(x => x.Code == SupplyReasonCodes.WindowArea && x.Source == source);
             if (present == insufficient) return;
             var next = Clone(state);
-            next.Blocks.RemoveAll(x => x.Code == "WindowArea" && x.Source == source);
+            next.Blocks.RemoveAll(x => x.Code == SupplyReasonCodes.WindowArea && x.Source == source);
             if (insufficient)
             {
-                SetBlock(next, "WindowArea", "station", source, InstanceId.ToString("N"), "presentation-owner");
-                SetBlock(next, "OperatorPaused", "station", "operator", "manual", "operator");
+                SetBlock(next, SupplyReasonCodes.WindowArea, "station", source, InstanceId.ToString("N"), "presentation-owner");
+                SetBlock(next, SupplyReasonCodes.OperatorPaused, "station", "operator", "manual", "operator");
             }
             next.Revision++;
             store.Commit(next, "WindowAreaProtection", windowId, "runtime", insufficient ? "Insufficient area; admission paused" : "Area restriction released; explicit Resume still required");

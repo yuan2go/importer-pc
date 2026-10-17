@@ -1,0 +1,72 @@
+[
+  {
+    "Path": "README.md",
+    "SourceCommit": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+    "Sha256": "0c0f8d824f999b9604e78ade5bb3fe548478791d59702bc2f7b82f89cc85b23e",
+    "Snapshot": "docs/archive/pre-ui-maintainability-16/README.md.txt",
+    "Replacement": "README.md"
+  },
+  {
+    "Path": "docs/INDEX.md",
+    "SourceCommit": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+    "Sha256": "fa497e358f145264c8517c4c23f12967a8fa82fac48f15a7cbeb69057c510e40",
+    "Snapshot": "docs/archive/pre-ui-maintainability-16/docs/INDEX.md.txt",
+    "Replacement": "docs/INDEX.md"
+  },
+  {
+    "Path": "docs/design/framework.md",
+    "SourceCommit": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+    "Sha256": "43e5195b247a535ed4770d2ac2dbe13be41862a6f312473d4524707112670c4c",
+    "Snapshot": "docs/archive/pre-ui-maintainability-16/docs/design/framework.md.txt",
+    "Replacement": "docs/design/framework.md"
+  },
+  {
+    "Path": "docs/design/framework-decisions.md",
+    "SourceCommit": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+    "Sha256": "646d8cb5d4f38b27f228fd1f26e22c2ea626682323a66749f826de51f0e46980",
+    "Snapshot": "docs/archive/pre-ui-maintainability-16/docs/design/framework-decisions.md.txt",
+    "Replacement": "docs/design/framework-decisions.md"
+  },
+  {
+    "Path": "docs/design/controlled-extensions.md",
+    "SourceCommit": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+    "Sha256": "e83fca3dd56963327d2b7c3bc27df6998548050678e1840ff6273a8c21502fb8",
+    "Snapshot": "docs/archive/pre-ui-maintainability-16/docs/design/controlled-extensions.md.txt",
+    "Replacement": "docs/design/controlled-extensions.md"
+  },
+  {
+    "Path": "docs/runtime/operations.md",
+    "SourceCommit": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+    "Sha256": "e248349917d0cf9ad4cbe4cca5c175691609e3289d3f1404d2b39fa9470b7431",
+    "Snapshot": "docs/archive/pre-ui-maintainability-16/docs/runtime/operations.md.txt",
+    "Replacement": "docs/runtime/operations.md"
+  },
+  {
+    "Path": "docs/extensions/developer-guide.md",
+    "SourceCommit": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+    "Sha256": "ceae2b43f6299c04dbc0d99ad1ce28f3b05047ab9dc9dfbc66d4dc83595cf5a0",
+    "Snapshot": "docs/archive/pre-ui-maintainability-16/docs/extensions/developer-guide.md.txt",
+    "Replacement": "docs/extensions/developer-guide.md"
+  },
+  {
+    "Path": "docs/ui/STATUS.md",
+    "SourceCommit": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+    "Sha256": "d30da9008e1985025aa87c698584f4b1db766f91eb2424a4cecfabf472ae93e4",
+    "Snapshot": "docs/archive/pre-ui-maintainability-16/docs/ui/STATUS.md.txt",
+    "Replacement": "docs/ui/STATUS.md"
+  },
+  {
+    "Path": "docs/manifest.json",
+    "SourceCommit": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+    "Sha256": "571f299af355990a1a1bd191448266a50f537d891d9f88bc2dfd93c21bc9a64d",
+    "Snapshot": "docs/archive/pre-ui-maintainability-16/docs/manifest.json.txt",
+    "Replacement": "docs/manifest.json"
+  },
+  {
+    "Path": "docs/manifest.sha256",
+    "SourceCommit": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+    "Sha256": "8ef6315cbecf1f945b253b5caec3b3cad8c4bf31104108c78554abd34813f51c",
+    "Snapshot": "docs/archive/pre-ui-maintainability-16/docs/manifest.sha256.txt",
+    "Replacement": "docs/manifest.sha256"
+  }
+]

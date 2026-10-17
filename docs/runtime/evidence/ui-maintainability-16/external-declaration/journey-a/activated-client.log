@@ -1,0 +1,149 @@
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime 1b9a2009-7ea2-4262-b58c-c9f05219ccc0 station EXTERNAL-63e040c6fb104f4396fcd11bf2a13066 configuration EXTERNAL-2 mode Simulation ready for identity/context validation","State":{"Runtime":"1b9a2009-7ea2-4262-b58c-c9f05219ccc0","Station":"EXTERNAL-63e040c6fb104f4396fcd11bf2a13066","Revision":"EXTERNAL-2","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /task-worktree","State":{"ContentRoot":"/task-worktree","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+JSON command console. One command per line; snapshot / configs / extensions / emit / replay / reconcile / export / quit supported. SIMULATION only.
+{
+  "State": {
+    "Revision": 19,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+        "Epoch": "d42f3e91f3db4a9c8256b2b6f61b56db",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:57.289215+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:57.289215+00:00",
+        "ValidUntil": "2026-10-17T17:09:02.289215+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+        "Epoch": "32814769d48d4826abcfbc68a530327b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:57.29011+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:57.29011+00:00",
+        "ValidUntil": "2026-10-17T17:09:02.29011+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [
+      {
+        "Code": "WcsUnavailable",
+        "Scope": "station",
+        "Source": "transport",
+        "SourceEpoch": "SIM-1",
+        "EvidenceVersion": 14,
+        "ClearAuthority": "transport-health",
+        "ExpiresAt": null
+      }
+    ],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Disconnected",
+      "UpdatedAt": "2026-10-17T17:08:57.254401+00:00",
+      "ConfirmedAt": "2026-10-17T17:08:57.254401+00:00",
+      "ValidUntil": "2026-10-17T17:09:01.754401+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {},
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [
+    {
+      "Id": "8c462dc1073f42d19b239209aeedf962",
+      "Code": "WcsUnavailable:station",
+      "Scope": "station",
+      "Source": "transport",
+      "Epoch": "SIM-1",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T17:08:57.262906+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    },
+    {
+      "Id": "bff0621e7eed46c898aa903df20e9067",
+      "Code": "WcsHealth:Health:Disconnected",
+      "Scope": "station",
+      "Source": "runtime",
+      "Epoch": "d5e5242b-53ec-4b3e-89d3-5126251e0773",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T17:08:57.262717+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    },
+    {
+      "Id": "e9e296f788514b03bf591047a1b200ef",
+      "Code": "ConfigPending:station",
+      "Scope": "station",
+      "Source": "configuration",
+      "Epoch": "c7856a01a191402f8ae7db03997bdbe6",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T17:08:56.800469+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    }
+  ],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected"
+    ]
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 3,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+  "BoxResult": null,
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 1,
+  "GeneratedAt": "2026-10-17T17:08:57.306935+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}

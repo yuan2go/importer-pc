@@ -1,0 +1,47 @@
+SELECT --maintainability: AC16 health renewal, UI operation policies, command/ownership and maintenance risks
+Evidence data retained at /tmp/ipc-verification-1031c45dae84447ab92ace88d17022c6
+RUN AC16 health renewal authority, durable transitions and checkpoint/restart
+PASS AC16 health renewal authority, durable transitions and checkpoint/restart
+PASS AC16 architecture: built-in adapters reference public contracts without Supply implementation
+PASS AC16 architecture: business validation continues to refuse invalid Supply configuration
+PASS AC16 architecture: transport validates its own boundary independently of business lane and quantity policy
+PASS AC16 architecture: transport refuses invalid mode/timeout/contract/endpoint before allocating client
+PASS AC16 architecture: transport refuses invalid mode/timeout/contract/endpoint before allocating client
+PASS AC16 architecture: transport refuses invalid mode/timeout/contract/endpoint before allocating client
+PASS AC16 architecture: transport refuses invalid mode/timeout/contract/endpoint before allocating client
+PASS AC16 architecture: transport refuses invalid mode/timeout/contract/endpoint before allocating client
+PASS AC16 architecture: transport refuses invalid mode/timeout/contract/endpoint before allocating client
+PASS AC16 architecture: original serialized command and history strings are preserved
+PASS AC16 architecture: typed dispatch preserves original audit kind and one durable idempotent command receipt
+PASS AC16 architecture: shared maintenance judgment rejects operator commands without saving a deployment draft
+PASS AC16 architecture: unknown case does not alias a privileged command or mutate state
+PASS AC16 architecture: frozen transport binding is validated without reinterpreting or mutating original request
+PASS AC16 architecture: exact legacy action vocabulary rejects numeric enum and case/whitespace aliases
+PASS AC16 architecture: shared session eligibility preserves no-box, terminal-box and close-check barriers
+PASS AC16 architecture: close confirmation requires original authoritative token while cancellation remains available
+PASS AC16 architecture: original shortage authority enables confirmation eligibility without granting other guards
+PASS AC16 architecture: priority uses typed command vocabulary
+PASS AC16 architecture: live predicate and SQL readers retain each nonterminal/unknown receipt independently
+PASS AC16 architecture: business-owned view IDs and concrete module dependencies match shipped assembly registration
+PASS AC15 module/new-instance defaults read incomplete draft without parsing unrelated numbers
+PASS AC15 save/preview reject incomplete numeric draft with exact field identity for focus
+PASS AC15 corrected draft builds without resetting edits from Effective
+PASS AC15 draft/effective comparison tolerates temporary invalid text without mutating effective configuration
+PASS AC15 real configuration validator locates simultaneous timeout/capacity/endpoint/device errors without duplicating rules or blaming unchanged fields
+PASS AC15 lifecycle presents saved/Pending/restart/failure-preserves-old independently without changing deployment state
+PASS AC15 actual selection coordinator ignores A slow error/finally after B success
+PASS AC15 selection success and finally cannot mutate newer import
+PASS AC15 selection success and finally cannot mutate newer new-instance
+PASS AC15 selection success and finally cannot mutate newer identity-loss
+PASS AC15 busy scanner refuses additional input/terminator explicitly without appending AB or starting another command
+PASS AC15 failed scan retains editable original for deliberate retry
+PASS AC15 only persisted matching scan consumes original
+PASS AC15 late completion cannot consume changed owner/new draft
+PASS AC15 local date/time converts to explicit UTC bounds preserving exclusive end
+PASS AC15 invalid local time feedback: 25:00
+PASS AC15 invalid local time feedback: 12
+PASS AC15 invalid local time feedback: bogus
+PASS AC15 reversed range rejected before query
+PASS AC15 actual WPF package/instance/default/import handlers use verified coordinator and partial target source; Windows event execution NOT_RUN
+PASS selected verification scope --maintainability; Windows desktop/SDK/field validation NOT_RUN by this core executable
+Evidence data retained at /tmp/ipc-verification-1031c45dae84447ab92ace88d17022c6

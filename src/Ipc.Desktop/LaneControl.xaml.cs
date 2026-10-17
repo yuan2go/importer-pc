@@ -79,7 +79,7 @@ public partial class LaneControl : UserControl
         Model.SetScanBusy(true);
         try
         {
-            var receipt = await OwnerWindow.SendAsync("ScanRetained", current.Id, sent.Text, commandId: sent.CommandId);
+            var receipt = await OwnerWindow.SendAsync(SupplyCommands.ScanRetained, current.Id, sent.Text, commandId: sent.CommandId);
             var consumed = Model.ScanInput.Consume(sent, sent.CommandId, receipt);
             if (consumed) Model.RaiseScanInput();
             else if (Model.ScanInput.OwnerId == sent.OwnerId && RetainedInput.IsKeyboardFocused) RetainedInput.SelectAll();
@@ -99,8 +99,8 @@ public partial class LaneControl : UserControl
         if (Model.RetainedDraft.Length == 0) return;
         e.Handled = true; await ScanAsync();
     }
-    async void ClearClick(object sender, RoutedEventArgs e) => await OwnerWindow.SendAsync("ClearSplit", Model.Current?.Id, "CONFIRM", $"清空 {Model.Label} / {Model.Current?.Id} / r{Model.Current?.Revision} 的 {Model.SplitCount} 个保留件计数？另一通道、历史与已接受账保留。");
-    async void CancelClick(object sender, RoutedEventArgs e) => await OwnerWindow.SendAsync("CancelDraft", Model.Current?.Id, confirm: $"处置 {Model.Label} / {Model.Current?.Id} / r{Model.Current?.Revision} 未提交草稿？原请求、已接受事实与实体责任继续保留。");
+    async void ClearClick(object sender, RoutedEventArgs e) => await OwnerWindow.SendAsync(SupplyCommands.ClearSplit, Model.Current?.Id, "CONFIRM", $"清空 {Model.Label} / {Model.Current?.Id} / r{Model.Current?.Revision} 的 {Model.SplitCount} 个保留件计数？另一通道、历史与已接受账保留。");
+    async void CancelClick(object sender, RoutedEventArgs e) => await OwnerWindow.SendAsync(SupplyCommands.CancelDraft, Model.Current?.Id, confirm: $"处置 {Model.Label} / {Model.Current?.Id} / r{Model.Current?.Revision} 未提交草稿？原请求、已接受事实与实体责任继续保留。");
     async void DetailClick(object sender, RoutedEventArgs e) { if (Model.Current is not null) await OwnerWindow.ShowDetailAsync(Model.Current.Id, Model.Current); }
     void CopyBarcodeClick(object sender,RoutedEventArgs e)
     {

@@ -11,7 +11,7 @@ public sealed partial class StationApplication
     {
         await gate.WaitAsync();
         try { return BeginReceipt(request, attempt, origin).Id; }
-        catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", "Receipt reservation failed; external call forbidden: " + ex.Message); throw; }
+        catch (Exception ex) when (IsStorage(ex)) { Latch(SupplyReasonCodes.StorageFailure, "Receipt reservation failed; external call forbidden: " + ex.Message); throw; }
         finally { gate.Release(); }
     }, priority: false, waitForCapacity: true);
     ReceiptResponsibility BeginReceipt(BusinessRequest request, SendAttempt? attempt, string origin)
@@ -19,7 +19,7 @@ public sealed partial class StationApplication
         var original = store.Request(request.Id) ?? throw new InvalidDataException("Receipt requires original request");
         if (original with { Status = request.Status } != request || attempt is not null && attempt.RequestId != request.Id)
             throw new InvalidDataException("Receipt reservation original identity mismatch");
-        var occurrence = new ReceiptResponsibility(Wire.Id(), original.Id, attempt?.Id, origin, Now, "AwaitingResponse");
+        var occurrence = new ReceiptResponsibility(Wire.Id(), original.Id, attempt?.Id, origin, Now, ReceiptResponsibilityRules.AwaitingResponse);
         store.Commit(state, "ReceiptReserved", original.Id, "receiver", occurrence.Id, occurrence: occurrence);
         return occurrence;
     }
@@ -31,10 +31,10 @@ public sealed partial class StationApplication
         try
         {
             var occurrence = store.ReceiptOccurrence(id) ?? throw new InvalidDataException("Receipt reservation missing");
-            if (occurrence.Status != "AwaitingResponse" || File.Exists(ReceiptFile(id))) throw new InvalidDataException("Received custody cannot be cancelled");
-            store.Commit(state, "NoResponseReceived", occurrence.RequestId, "receiver", id, occurrence: occurrence with { Status = "NoResponse" });
+            if (occurrence.Status != ReceiptResponsibilityRules.AwaitingResponse || File.Exists(ReceiptFile(id))) throw new InvalidDataException("Received custody cannot be cancelled");
+            store.Commit(state, "NoResponseReceived", occurrence.RequestId, "receiver", id, occurrence: occurrence with { Status = ReceiptResponsibilityRules.NoResponse });
         }
-        catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); throw; }
+        catch (Exception ex) when (IsStorage(ex)) { Latch(SupplyReasonCodes.StorageFailure, ex.Message); throw; }
         finally { gate.Release(); }
     }, priority: false, waitForCapacity: true);
     void RecoverReceiptFence()
@@ -49,7 +49,7 @@ public sealed partial class StationApplication
                 var id = "legacy-" + Wire.Hash(requestId);
                 if (store.ReceiptOccurrence(id) is null)
                     store.Commit(state, "LegacyReceiptCoverageUnknown", requestId, "recovery", id,
-                        occurrence: new(id, requestId, null, "format4-fence-coverage-unknown", Now, "RawUnavailable"));
+                        occurrence: new(id, requestId, null, "format4-fence-coverage-unknown", Now, ReceiptResponsibilityRules.RawUnavailable));
             }
             File.Move(ReceiptFence, ReceiptFence + ".legacy-" + Wire.Id());
         }
@@ -77,10 +77,10 @@ public sealed partial class StationApplication
                 var occurrence = store.ReceiptOccurrence(ingress.Id);
                 if (occurrence is null) // preserved format4 ingress, independently replayable
                 {
-                    occurrence = new(ingress.Id, original.Id, ingress.Attempt?.Id, "format4-raw-replay", ingress.ReceivedAt, "AwaitingResponse");
+                    occurrence = new(ingress.Id, original.Id, ingress.Attempt?.Id, "format4-raw-replay", ingress.ReceivedAt, ReceiptResponsibilityRules.AwaitingResponse);
                     store.Commit(state, "LegacyReceiptRawAcquired", original.Id, "recovery", ingress.Id, occurrence: occurrence);
                 }
-                if (occurrence.Status != "Committed") PersistResponse(original, ingress.Attempt, ingress.Response, ingress);
+                if (occurrence.Status != ReceiptResponsibilityRules.Committed) PersistResponse(original, ingress.Attempt, ingress.Response, ingress);
                 else if (occurrence.Response != ingress.Response) throw new InvalidDataException("Committed receipt and raw custody differ; originals retained");
                 File.Delete(file);
             }
@@ -91,14 +91,14 @@ public sealed partial class StationApplication
             var next = Clone(state);
             SetReceiptBlock(next, occurrence);
             store.Commit(next, "ReceiptRawUnavailable", occurrence.RequestId, "recovery", occurrence.Id + ": raw not acquired; original content unrecoverable",
-                occurrence: occurrence with { Status = "RawUnavailable" });
+                occurrence: occurrence with { Status = ReceiptResponsibilityRules.RawUnavailable });
             Adopt(next);
         }
     }
     static void SetReceiptBlock(StationState next, ReceiptResponsibility occurrence)
     {
-        if (!next.Blocks.Any(x => x.Code == "ReceiptPersistenceUncertain" && x.SourceEpoch == occurrence.Id))
-            next.Blocks.Add(new("ReceiptPersistenceUncertain", "request", occurrence.RequestId, occurrence.Id, 1, "approved-authoritative-reconciliation"));
+        if (!next.Blocks.Any(x => x.Code == SupplyReasonCodes.ReceiptPersistenceUncertain && x.SourceEpoch == occurrence.Id))
+            next.Blocks.Add(new(SupplyReasonCodes.ReceiptPersistenceUncertain, "request", occurrence.RequestId, occurrence.Id, 1, "approved-authoritative-reconciliation"));
     }
     void PersistResponse(BusinessRequest original, SendAttempt? attempt, IntegrationResponse response, ReceiptIngress ingress)
     {
@@ -118,15 +118,15 @@ public sealed partial class StationApplication
             unresolved ? RequestStatus.Unknown : response.Result == "Accepted" ? RequestStatus.Accepted : RequestStatus.Rejected;
         var request = original with { Status = status };
         var custody = store.ReceiptOccurrence(ingress.Id) ?? throw new InvalidDataException("Receipt reservation missing before T3");
-        if (custody.RequestId != original.Id || custody.AttemptId != attempt?.Id || custody.Status is "Committed" or "NoResponse")
+        if (custody.RequestId != original.Id || custody.AttemptId != attempt?.Id || ReceiptResponsibilityRules.IsFinal(custody.Status))
             throw new InvalidDataException("Receipt occurrence does not own this T3");
-        next.Blocks.RemoveAll(x => x.Code == "ReceiptPersistenceUncertain" && x.SourceEpoch == custody.Id);
+        next.Blocks.RemoveAll(x => x.Code == SupplyReasonCodes.ReceiptPersistenceUncertain && x.SourceEpoch == custody.Id);
         ResponseConflict? occurrence = null;
         if (conflict)
         {
             occurrence = new(Wire.Hash(Wire.Encode(new { original.Id, Response = response })), original.Id, attempt?.Id, "integration:" + (original.Implementation?.ConfigurationSha256 ?? original.Binding.Id),
                 ingress.ReceivedAt, response.EvidenceId, Wire.Hash(Wire.Encode(response)), response);
-            SetBlock(next, "ConflictingEvidence", "request", original.Id, original.PayloadHash, "approved-authoritative-reconciliation");
+            SetBlock(next, SupplyReasonCodes.ConflictingEvidence, "request", original.Id, original.PayloadHash, "approved-authoritative-reconciliation");
         }
         if (!unresolved && original.Status is not (RequestStatus.Accepted or RequestStatus.Rejected or RequestStatus.CancelledBeforeDispatch)) ApplyOwner(next, request, response, false);
         else if (unresolved && original.Status is not (RequestStatus.Accepted or RequestStatus.Rejected or RequestStatus.CancelledBeforeDispatch)) MarkOwner(next, request, "Contradictory evidence; original identity requires reconciliation");
@@ -134,8 +134,8 @@ public sealed partial class StationApplication
         store.Commit(next, conflict ? "ConflictingResponse" : "T3Response", request.OwnerId, "integration", response.Reason,
             request: request, response: conflict ? null : response, conflict: occurrence,
             count: !unresolved && request.Kind == RequestKind.Submit && status == RequestStatus.Accepted,
-            occurrence: custody with { Status = "Committed", ContentSha256 = Wire.Hash(Wire.Encode(response)), Response = response },
-            attempt: attempt is null || original.Status is RequestStatus.Accepted or RequestStatus.Rejected or RequestStatus.CancelledBeforeDispatch ? null : attempt with { EndedAt = Now, Disposition = unresolved ? "ConflictingEvidence" : status.ToString() });
+            occurrence: custody with { Status = ReceiptResponsibilityRules.Committed, ContentSha256 = Wire.Hash(Wire.Encode(response)), Response = response },
+            attempt: attempt is null || original.Status is RequestStatus.Accepted or RequestStatus.Rejected or RequestStatus.CancelledBeforeDispatch ? null : attempt with { EndedAt = Now, Disposition = unresolved ? SupplyReasonCodes.ConflictingEvidence : status.ToString() });
         Adopt(next);
     }
 }

@@ -24,5 +24,5 @@ WINDOWS_NOT_RUN covers all actual WPF/UI/UAC/ACL/DPI/input/listening/Windows con
 - [x] Recheck latest main feed6e9c, clean existing PR12 tree and existing work package; preserve original user files and prior evidence.
 - [x] Replace the originally selected service/device and its binding when renaming; reject duplicate IDs/ports; add explicit new-instance action. Exercise the actual UI draft policy on Mac.
 - [x] Repeat six affected verifier selectors and necessary WPF cross-build; preserve initial build and missing-Pillow environment failures.
-- [ ] Freeze patch source, package new candidate with separately versioned exact plugins, actual released-host smoke and full remote readback.
-- [ ] Append current AC13 evidence, refresh manifest, fast-forward existing PR12 without merge or force push.
+- [x] Freeze patch source, package new candidate with separately versioned exact plugins, actual released-host smoke and full remote readback.
+- [x] Append current AC13 evidence, refresh manifest, fast-forward existing PR12 without merge or force push.

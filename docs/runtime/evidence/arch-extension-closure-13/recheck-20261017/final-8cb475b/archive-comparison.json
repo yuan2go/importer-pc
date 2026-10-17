@@ -1,0 +1,12 @@
+{
+  "BaselineCommit": "feed6e9ce79449e48c667c17e2671939a86fb588",
+  "HostSourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+  "BaselineErrors": 267,
+  "CurrentErrors": 267,
+  "NewErrors": [],
+  "RemovedErrors": [],
+  "Result": "PASS_NO_NEW_ERRORS",
+  "ArchiveStatus": "FAIL_INHERITED_267",
+  "ExceptionsAdded": false,
+  "AssertionsWeakened": false
+}

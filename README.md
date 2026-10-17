@@ -1,3 +1,5 @@
+> CLOSURE-13当前交付补充：最终宿主/工具8cb475b，独立插件1.0.1；[PR12复核与AC13](docs/runtime/arch-extension-closure-13-recheck.md) · [checks](docs/runtime/arch-extension-closure-13-recheck-checks.json)。核心/Mac/WPF交叉构建通过，Windows实际验收统一延期；首轮dc5b405与全部历史证据保留。
+
 > 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入核心实现已提交；Mac参考验证与WPF交叉构建按13报告分项记录，候选交付不代表Windows或现场验收。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](docs/archive/pre-arch-extension-closure-13/README.md)。
 
 > 上一版实施为 [DELIVERY-12](docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)：受控扩展、统一部署及同版候选交付。见 [12报告](docs/runtime/extension-windows-delivery-12.md) 与 [扩展指南](docs/extensions/developer-guide.md)。Windows参考验收与真实现场资格单列；下文11及更早结果保持其原版本含义。

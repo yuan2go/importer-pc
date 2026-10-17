@@ -1,0 +1,55 @@
+  正在确定要还原的项目…
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Platform/Ipc.Platform.csproj (用时 420 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj (用时 411 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Product/Ipc.Product.csproj (用时 411 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply/Ipc.Supply.csproj (用时 411 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 411 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 420 毫秒)。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Product/bin/Release/net10.0/win-x64/Ipc.Product.dll
+  Ipc.Desktop -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Desktop/bin/Release/net10.0-windows/win-x64/Ipc.Desktop.dll
+  Ipc.Desktop -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/.artifacts/closure13-8cb475b-integration-win-x64/app/
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Product/bin/Release/net10.0/win-x64/Ipc.Product.dll
+  Ipc.Product -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/.artifacts/closure13-8cb475b-integration-win-x64/app/
+  正在确定要还原的项目…
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Fixture/Ipc.Fixture.csproj (用时 275 毫秒)。
+  4 个项目(共 5 个)是最新的，无法还原。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Fixture -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Fixture/bin/Release/net10.0/win-x64/Ipc.Fixture.dll
+  Ipc.Fixture -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/.artifacts/closure13-8cb475b-integration-win-x64/fixture/
+Sealed Simulation configuration: /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/.artifacts/closure13-8cb475b-integration-win-x64/app/config
+  正在确定要还原的项目…
+  已还原 /private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-extension-build-n5h3pwqn/project/BarcodeExtension.csproj (用时 29 毫秒)。
+  BarcodeExtension -> /private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-extension-build-n5h3pwqn/bin/Ipc.Reference.BarcodeExtension.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.31
+Verified OK
+{"Package": "reference.barcode-1.0.1.ipcx", "PackageSha256": "8198010f9b22e1b68f149bf8b9de235257bc37622c5a681cff65277104d38d50", "PluginSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9", "HostContractSha256": "9b701e6acc709fe1e071021bf25510d87626a8fc8bd159999e46535d109a7c36", "FrozenHostUnchanged": true, "Publisher": "reference-test", "Version": "1.0.1", "ExtensionContract": 1, "Signature": "RSA-PSS/SHA256", "Mode": "Simulation", "PluginSourceSha256": "cf2864697afb658f858fc5c857081351f8e2099a5c5cb78c7a38afcd913b376e"}
+  正在确定要还原的项目…
+  已还原 /private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-extension-build-cjlv9xgb/project/IntegrationExtension.csproj (用时 28 毫秒)。
+  IntegrationExtension -> /private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-extension-build-cjlv9xgb/bin/Ipc.Reference.IntegrationExtension.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.31
+Verified OK
+{"Package": "reference.integration-1.0.1.ipcx", "PackageSha256": "58c55efbaa597ba8fd2195bc2c30051cc8c945f175e6fc289c76d07513d5756b", "PluginSourceCommit": "01038cc5e21d200e4545c0a26594adc05eb62923", "HostContractSha256": "9b701e6acc709fe1e071021bf25510d87626a8fc8bd159999e46535d109a7c36", "FrozenHostUnchanged": true, "Publisher": "reference-test", "Version": "1.0.1", "ExtensionContract": 1, "Signature": "RSA-PSS/SHA256", "Mode": "Simulation", "PluginSourceSha256": "1d4535d606c71b907a68d0a791418a414b5010a816acef10b2e3c675ddae3ed5"}
+{"Package": "/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/.artifacts/closure13-8cb475b-integration-win-x64.zip", "Sha256": "cdae1743cfb206af69ffd1b0d5672fa63ffae31a30ecc5d3453cb3ddf98347b7", "WorkPackage": "WP-IPC-ARCH-EXTENSION-CLOSURE-13", "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519", "ReleaseVersion": "ARCH-EXTENSION-CLOSURE-13", "StorageVersion": 3, "ContractVersion": "SIMULATION-v1", "SourceCodeSha256": "b842e50eb6e87ed65d380a7a55efe5b662d3f977a8d8e6cbe839c4be2343d3ee", "Target": "win-x64", "WindowsRuntimeValidation": "NOT_RUN", "PhysicalIntegration": "BLOCKED", "Note": "Portable requires pinned .NET runtime; win-x64 is self-contained and requires Windows validation.", "Composition": "integration-reference", "Mode": "Simulation", "ExtensionContract": 1, "MinimumReader": 3, "CompositionLockSha256": "f4462c015de152664dbf40f56d54351e1000640446ad061294dd686627cf10cd"}

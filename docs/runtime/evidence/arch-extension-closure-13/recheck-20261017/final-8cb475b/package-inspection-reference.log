@@ -1,0 +1,9 @@
+  正在确定要还原的项目…
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Inspection/Ipc.Inspection.csproj (用时 366 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 366 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Platform/Ipc.Platform.csproj (用时 366 毫秒)。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Inspection -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Inspection/bin/Release/net10.0/Ipc.Inspection.dll
+  Ipc.Assembly -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.dll
+  Ipc.Assembly -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/.artifacts/closure13-8cb475b-inspection/app/
+{"Package": "/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure13-verification/.artifacts/closure13-8cb475b-inspection.zip", "Sha256": "5b3dd15282d3034154b20609187411d56537e409fe30d78d73153f153b165f30", "SchemaVersion": 1, "Business": "inspection", "Views": ["inspection", "inspection-history"], "Layouts": ["standard", "compact"], "EntryPoint": "app/Ipc.Assembly.dll", "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519", "Windows": "WINDOWS_NOT_RUN", "Field": "BLOCKED", "Binaries": {"Ipc.Assembly.dll": "92adbc6a5128fbb49a467594efe20688b2ed00541d5de703784f4244110e1666", "Ipc.Inspection.dll": "1e800e0294c8c12d72a4d10420521eb6a0600ea665f182e7df4b21e21764627d", "Ipc.Platform.dll": "9b701e6acc709fe1e071021bf25510d87626a8fc8bd159999e46535d109a7c36"}}

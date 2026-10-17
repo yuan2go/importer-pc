@@ -172,15 +172,16 @@
     },
     {
       "path": "README.md",
-      "sha256": "5967ff2b1c31dcfb22d6e3a089077b42003f4928a2f38c36282f53f2bbb36bca",
-      "size_bytes": 3861,
-      "git_blob": "a305391de26301ca46bfee2a7060f69fbb751252",
+      "sha256": "9227b2b7ac9edb05ba78fa8ac173eb4a90bc3f3b4563bc4ca70731dd1ccc3e21",
+      "size_bytes": 4202,
+      "git_blob": "22bbdf4741bf3df550ec41159f57858b6326f4a4",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
-      "previous_git_blob": "eb68bbcfff72be7e48f9269f17b96c8f89ac31bd"
+      "previous_git_blob": "eb68bbcfff72be7e48f9269f17b96c8f89ac31bd",
+      "prior_closure13_git_blob": "a305391de26301ca46bfee2a7060f69fbb751252"
     },
     {
       "path": "config/compositions.json",
@@ -189,10 +190,11 @@
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
-      "sha256": "4de8fd6a1d5c3b48a40a4d2429f754084499941b3867fcf510d9f23029af0132",
+      "sha256": "287b3bf39ef95832854606a0fab40228938fc86a173a247925be6ea1343e1395",
       "size_bytes": 4043,
-      "git_blob": "1896d9c2f91ac6d1c8d840733492c11a0499555e",
-      "previous_git_blob": "5697c8c204a26ea51d661bf4cd59fb1ddd5b858b"
+      "git_blob": "d6bcb45a6632d4ad0835935e9e6ff75bae69cca9",
+      "previous_git_blob": "5697c8c204a26ea51d661bf4cd59fb1ddd5b858b",
+      "prior_closure13_git_blob": "1896d9c2f91ac6d1c8d840733492c11a0499555e"
     },
     {
       "path": "config/inspection/business.json",
@@ -252,15 +254,16 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "551d9b1a7f209f6890679f35ee62ea9070d089f9ad92634be8fb9fa09e1a7cba",
-      "size_bytes": 7818,
-      "git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
+      "sha256": "9ebf3d3ff044aae3b75855b8000242385928810bceee066b3f9ee9b1a2ead87a",
+      "size_bytes": 8149,
+      "git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
-      "previous_git_blob": "2ccbd5ea9ead4fde169033511eed2f9ecf712629"
+      "previous_git_blob": "2ccbd5ea9ead4fde169033511eed2f9ecf712629",
+      "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac"
     },
     {
       "path": "docs/archive/pre-arch-extension-closure-13/README.md",
@@ -935,14 +938,15 @@
     },
     {
       "path": "docs/design/arch-extension-closure-13.md",
-      "sha256": "36c19e203fdb14b5bf2a814b883650afb2b1fbb35740cea315feda714b1bdd49",
-      "size_bytes": 1305,
-      "git_blob": "9f6c8703b8a3796169f479c11932016b2623ef0a",
+      "sha256": "ac4c1bcd7a9a621a01f891899c05d5073ec03b06e9d9ecd786ce36fbb3ee12da",
+      "size_bytes": 2831,
+      "git_blob": "94d7ee9591037435081581312887514b8d268375",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "prior_closure13_git_blob": "9f6c8703b8a3796169f479c11932016b2623ef0a"
     },
     {
       "path": "docs/design/controlled-extensions.md",
@@ -998,10 +1002,11 @@
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
-      "sha256": "6df09ecca1b9e7295d404fe998ef2f428d1cec209bfaa81d7c1203d5a33c52a8",
-      "size_bytes": 9400,
-      "git_blob": "920e1ac245b3de720f3607001f510dae0c0a9980",
-      "previous_git_blob": "37efd0926ac8791f8bfc700324bcbe9ced026bdb"
+      "sha256": "57280102006d133d7cfda79b900a256c4c41b506c9ead446b7df8b5f4172195e",
+      "size_bytes": 10639,
+      "git_blob": "52ed197f49538c18cb1306dfff6b403f24c3e0bf",
+      "previous_git_blob": "37efd0926ac8791f8bfc700324bcbe9ced026bdb",
+      "prior_closure13_git_blob": "920e1ac245b3de720f3607001f510dae0c0a9980"
     },
     {
       "path": "docs/readiness/checks.json",
@@ -1139,25 +1144,50 @@
     },
     {
       "path": "docs/runtime/arch-extension-closure-13-checks.json",
-      "sha256": "e6f629d5c6a5d4d9bdad1627f8879cdc8ba2814e2a9502561df269aad4393dc4",
-      "size_bytes": 7438,
-      "git_blob": "dd6aa4527de58a9cb4d763fc3661761650d68cdc",
+      "sha256": "58eaf27c8e6b4b6de57b8e95f208d62ac3b766eca25b48454fd05e27755c6140",
+      "size_bytes": 7792,
+      "git_blob": "98e9d2b5d9dfd70c20616f0baa96a785baa943ee",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "prior_closure13_git_blob": "dd6aa4527de58a9cb4d763fc3661761650d68cdc"
+    },
+    {
+      "path": "docs/runtime/arch-extension-closure-13-recheck-checks.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "0e282844bbeefb1caa9c6af3978ca36037370d57245eb36e7e7fce5ef213c966",
+      "size_bytes": 6788,
+      "git_blob": "d5d8c9e197f25b9e5beccec1c562a21f1c078bc6"
+    },
+    {
+      "path": "docs/runtime/arch-extension-closure-13-recheck.md",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "cca154c48cdcd935c534329311cc70556caa4aaaea42f7483f4c85805aed4437",
+      "size_bytes": 11127,
+      "git_blob": "acdf0befbc54dc98ff5abf3665d4c98f99ceceec",
+      "prior_closure13_git_blob": "df111783e030bac84598057dbc51ea41cdc2aa33"
     },
     {
       "path": "docs/runtime/arch-extension-closure-13.md",
-      "sha256": "a6de2a6eaa7ede4bf481639bb66f506620bbbce7dc097e3a8136aec776b12f19",
-      "size_bytes": 14273,
-      "git_blob": "55ecb6381a3ebf98ce8ba6cf28c4f065740f564a",
+      "sha256": "3d795a8f94c81add3b95c979ee48949db25abe3fc3fb932a29b4e80e35663596",
+      "size_bytes": 14631,
+      "git_blob": "a0b57aa7ff74ae1c14d9f5ea39da66efc3a0a498",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "prior_closure13_git_blob": "55ecb6381a3ebf98ce8ba6cf28c4f065740f564a"
     },
     {
       "path": "docs/runtime/checks.json",
@@ -1876,6 +1906,514 @@
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/architecture.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "029608755211cb03177c6a58a8c0dde1b3b829c577e13444ae2fc048f7dbd8ed",
+      "size_bytes": 7374,
+      "git_blob": "34d13266b0c5822de8b6593f462f6120fdbc5029"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/baseline.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "2bf25f377c6ef997bb537bbb5e7edb83e62594dc527f825d95980af7e4bf4407",
+      "size_bytes": 11774,
+      "git_blob": "31b7d925321569388358b24402d7a421d2f364ac"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/build.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "386fc282f96a98e15d57df45f6b89775013ec99d32b4c918518f42a2061b563c",
+      "size_bytes": 2836,
+      "git_blob": "a645ecf338a15b528642784f1074f662452dec0d"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/cas-baseline.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "d7bd9f93a387e95a59137a17e6bfd2bf5d831cb6b2ffbf45c47cc355e4dcc207",
+      "size_bytes": 11774,
+      "git_blob": "ff4eaa0e93858d7a3bfd2a334a87ffce7c06122c"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/closure-13.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "905538b4d280f40178bcf86b0254193b086fcf0bd0dfe4b01e27964733205896",
+      "size_bytes": 13705,
+      "git_blob": "5c20670248cdcfd099e4fa1287fb24341e828d83"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/closure.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "071e1b9e6cea64781681c3359894a8e21f933d558cee543ec5037382e8cd840c",
+      "size_bytes": 1319,
+      "git_blob": "945be5eaa6e3d67a058e63d2c98636017e92e53e"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/extensions.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "463337ea390e810388f498be89a7c7844bb215a4769fd858f4bbc32932d7e88c",
+      "size_bytes": 2648,
+      "git_blob": "32746981350b2b335ccf82e13be1d2430adb6e22"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/architecture.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "5d774fa44db31d9de7bd320e7a594b0f8cc8e24d0bb96ad682dc1842b9f9b9a5",
+      "size_bytes": 7374,
+      "git_blob": "e5bef438341cb8c08f0910bef137d312c148527f"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-baseline.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "21475b4895dda94ba8bf538c0fc4cc80d800ba27bc5667217e46564c216388c1",
+      "size_bytes": 51161,
+      "git_blob": "7869305f84db1298d3375b3d68f5ec328b956876"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-before-metadata-cleanup.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "5e40e0bcaeb9080da4cf3a257f767affbbd5f6a14ac86f279fe19a397f22828f",
+      "size_bytes": 52189,
+      "git_blob": "6b9e9a6a869e57a1a0f8aec1ea14e005d0c83cdf"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-comparison.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "5ede6b6ba3aaf3a3275a889548d4e114bcb5e4da1d3c1bf5249c2549fb975aaa",
+      "size_bytes": 358,
+      "git_blob": "aa98a4502b15859e5fb9bc6aad0f6e0c3def2177",
+      "prior_closure13_git_blob": "912564b12e48f771f9423b3e4ece9a1014a15622"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-current.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "8d4f0200d416bcb54cf2f56dcc469a8429d96710007f6635fc55019764485a95",
+      "size_bytes": 51852,
+      "git_blob": "c98487003581f41543bd715327c6093fe21b14d4",
+      "prior_closure13_git_blob": "0967ef424bce6791893e9a57bb952f80fd536e93"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/baseline.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "c893091480140bb9e21452659fae7585f657d78f5f5dce595e69455e6834b99a",
+      "size_bytes": 11774,
+      "git_blob": "92f3b79c200b79988dc2c8066723604f774a29f9"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/build.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "c4423984b1acda19ce967f1e7e6469856b3a6285c09df3af5c1e6680f97cc89c",
+      "size_bytes": 3247,
+      "git_blob": "2dae15e65d5d93acafd7d9354f5213d204c045da"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/candidate-inventory.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "259e4a7cfb21766373ee05eab617e7bb59e330e755934ef5cb8fc893da89d009",
+      "size_bytes": 27975,
+      "git_blob": "2703ec958ec37693e95c5efc082c8e076b98006f"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/closure-13.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "79fa4a9990515a3501c85537fc02e3ec44fb1d6afd9d6090a9891403dc5172af",
+      "size_bytes": 13709,
+      "git_blob": "ddddca03397c54edad70d568121c8d61935cabfa"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/closure.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "9901a469b2096c85a35f2af2e3a09b41c2a006de7ed45db12fe931b2423666bb",
+      "size_bytes": 1319,
+      "git_blob": "96f304cfbdf0f76b7cad877c2aa5bc8f07acf540"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/core-smoke.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "size_bytes": 347,
+      "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/core-smoke.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "fdfeb707d0212ce10087d1cfa0882a73470d873060116b995bfa47cea3b24c13",
+      "size_bytes": 432,
+      "git_blob": "f641001b43f397439a81a8d0f5c7334926294442"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extension-smoke.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "a864f9382a9fb5a2f65d0db4553867a41f0d942b68246cb7dde6221dfa0943c1",
+      "size_bytes": 11875,
+      "git_blob": "8b99e338624eab825b1279782b6b9d99f93d3deb"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extension-smoke.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "6d5dede12beab24581ee80a7ce8bf3d23fc000766f8a51e5f124b07e174b6df3",
+      "size_bytes": 10375,
+      "git_blob": "534b96ba276338cf2d90fe5ead12910cde347980"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extensions.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "07d2fcbc88fd6dabdac3af71ff648fb9bd2c8bd161d2f3178d3d569e09697af7",
+      "size_bytes": 2648,
+      "git_blob": "ac8ef5d8a3e29765e3003bfb801235c35abc8060"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/followup.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "39f53d5f591222f2e3795983dd3ff2f3ebe3eacb6fde03aa4b26ba3ee49c92dc",
+      "size_bytes": 1194,
+      "git_blob": "ce8dcb222af997bd5b06aab513a456379723566f"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/integration-journey.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "6fcf6611eabf01217451f19d101a2d7f77e1cef14487cef6788f6ac894b4d869",
+      "size_bytes": 11085,
+      "git_blob": "bce3dfbf0f3889c0ac21d8e7614f94266fc4f31f"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-inspection-reference.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "318f6f41253ad7f41e2d2b9f09c062c12754fd4010fb3ea7c61c4c915c0fadb6",
+      "size_bytes": 1899,
+      "git_blob": "a36713e17fbb16ad9383171de6a75b236caec312"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-portable.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "3676b6007be52c87900ed8e3a21ce10c78b001dfab2e9718cb34296b246bd955",
+      "size_bytes": 6002,
+      "git_blob": "969e18e0870640e71d9b8f75750b711d2688ade9"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-supply-assembly.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "5ffe6e68c35bbaece789c23bd6db65409f748af0fe1672988380045384de36b2",
+      "size_bytes": 3348,
+      "git_blob": "ab8961656ac984db06aa2298ad1d1c22251ea4ed"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-win-x64.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "68a79577a982432c8c4f6ca4cae843c590e9633462ca1d83508ab05353ba2fce",
+      "size_bytes": 7370,
+      "git_blob": "2020aff518cdb4abf604271994a159f155d456c5"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/published-businesses.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "42589b1c838e38cdc0b4e4321d3652bca944681bb4b3989dc19bbceba81389d5",
+      "size_bytes": 2225,
+      "git_blob": "d6b05f9e6af4d460ecb57a8aad8f10963e95a041"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/remote-readback.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "3a4b58dabdde7b8bc8fe5f27d764265e43679cd20658529b899dc96a12e009e8",
+      "size_bytes": 3623,
+      "git_blob": "c603c56355fea874a2bbd7421bfbcdb2885694a3"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/reproducibility.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "a1debdc2133a8527aa4ede784f55474176fe9a9bce746f232f9a787116e0326a",
+      "size_bytes": 4921,
+      "git_blob": "ae2241f86b69cca7cc5cf508d502b6dc3f79eeec"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/reproducibility.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "8c5cc62b54df711056cbe2738dfb3105d616c0c47acb6d905c5d52828bf06535",
+      "size_bytes": 96,
+      "git_blob": "680aa8099f860d8da7dfe3a1429469f46be88e6b"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/review-followup.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "cb935904683dae311f28cc9b53ba9ac2b2e4b26724613c3c625c3c67ad3f4e44",
+      "size_bytes": 1239,
+      "git_blob": "095222a270e4351e19c1b30e56f34fb94252e1d6"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/source-freeze-integrity.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "96ff59a1b8741be9a57554627318432c1da136c7b02a67fa55c1de370ca5de54",
+      "size_bytes": 526,
+      "git_blob": "097badfdb3172ec2586031cc08800902a48e31af"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/tools.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "f76447f7d9c95be3925f41f35ae779d06cd4f7474e1aa517089b02ced4d59e2f",
+      "size_bytes": 1416,
+      "git_blob": "f4762fec370d07b047b3bdf006b6f0bbd264dea8"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/followup.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "12773f456d5942f8b98375c34cbff224370468e4d33ab743abda0eb64346fe1e",
+      "size_bytes": 1194,
+      "git_blob": "7a7831911ca60cf308a995bf31342f27852e5f7e"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/frozen-baseline-cas-failure.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "bd84c0fa1f835bb0f48ac5ddde4408960778796c7f7909968b3dc00eb0293117",
+      "size_bytes": 10778,
+      "git_blob": "39ff1ea42a3bfedf5da3718c3801b88ddb994c37"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/initial-build-failure.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "67f01e2d19996efe2e2d64628c1c35f53e7d75f322ea27ab12abd5748b507133",
+      "size_bytes": 7345,
+      "git_blob": "fbf4884bf3a98e8b49ed6dad0f224183766b1805"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/integration-journey.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "be8bc4b4e9a2014cae3dc74b515ffe8bd585f31f42327d6824683eeef4b2b9d8",
+      "size_bytes": 11079,
+      "git_blob": "a4901d223b554d3ac805c77769c919e395a9ad40"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/opening.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "a313af110ad41dcbeb672bb62c5ab6c6fa20d0189f3ed3e1bab659a640b8f780",
+      "size_bytes": 567,
+      "git_blob": "0ac103297a4a3366793f4c5a8bc892559d8c5079"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/reproducibility-before-final-freeze.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "f33594d6edaf5aada8d4879ec5736da78bb7b24edcdc10e8fd1684b63f0c602a",
+      "size_bytes": 4921,
+      "git_blob": "559a2c1e68b142427372b6c4b3a1beddfc040ef2"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/reproducibility-before-final-freeze.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "8c5cc62b54df711056cbe2738dfb3105d616c0c47acb6d905c5d52828bf06535",
+      "size_bytes": 96,
+      "git_blob": "680aa8099f860d8da7dfe3a1429469f46be88e6b"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/review-followup.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "def32a713801289529c13c6924d4ad24ed870d085e801b05b6c73cd4b47d0d62",
+      "size_bytes": 1239,
+      "git_blob": "8fb208bc234154381583eee5ecde76bf45975729"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/system-python-missing-pillow.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "458f260d300a8ad8531345d9f4d49c221d71cdfae3eebbe4085993250d46f109",
+      "size_bytes": 2087,
+      "git_blob": "2c6b7c1dff836930fbc3839873d594eaf5e28635"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/tools.log",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "fe0d4ea199bd9754ca2a18dd330c2872a592a704521730cc7fa47d582bfdcee9",
+      "size_bytes": 1416,
+      "git_blob": "c2fb186eb9828a3c5d3a3b1775e8318ab7cb06ac"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/withdrawn-a1c41bc.json",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "98a4be0bb54db4f7b23ccc7044409067529e2f392bb1e737026684c24d3abdfc",
+      "size_bytes": 2644,
+      "git_blob": "ac2220d72b946cafc2bc14f5c583a96bc79fe5ed"
     },
     {
       "path": "docs/runtime/evidence/arch-extension-closure-13/remote-readback.json",
@@ -2927,15 +3465,16 @@
     },
     {
       "path": "docs/runtime/operations.md",
-      "sha256": "50896d3d1be47cb386494c70294be881a694c72ab309ada241109c3120196ead",
-      "size_bytes": 31618,
-      "git_blob": "3f36a26f2e70cd3c4a91c4efb498c0954919bbd3",
+      "sha256": "b34a66e93416ee63951af96ef305b85caccca6a9c4b2e18db124e94f9f89a9f0",
+      "size_bytes": 32318,
+      "git_blob": "fe6b7a859d314adc9c63f193c2383962bbe8e399",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
-      "previous_git_blob": "f13839f03789f2963b18d72f95eb76f9a68f9952"
+      "previous_git_blob": "f13839f03789f2963b18d72f95eb76f9a68f9952",
+      "prior_closure13_git_blob": "3f36a26f2e70cd3c4a91c4efb498c0954919bbd3"
     },
     {
       "path": "docs/runtime/publication.md",
@@ -3005,26 +3544,16 @@
       "storage_scope": "public_repository"
     },
     {
-      "path": "docs/runtime/validation-scenarios-09.md",
-      "sha256": "2959c8c46c59370fda09f18f1bf981c56261415d7f3b44ecee57aac56cc88b8c",
-      "size_bytes": 9571,
-      "git_blob": "379943809dd4fd797f1735c53d075557e890d564",
-      "version": "REVIEW-FOLLOWUP-11",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
-      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
-    },
-    {
       "path": "docs/runtime/validation/closure-13-windows-scenarios.md",
-      "sha256": "dad168c6c113f729524e6c104d1fdad77b53d3a88056b110a138a8394f8ec3da",
-      "size_bytes": 997,
-      "git_blob": "7eaa9b8930ebff896dfad67187a8d288cf07da0f",
+      "sha256": "5986ed1c64c77084f58c7277e0647c5f634442f4d67d3fac6e0edfc65f70248c",
+      "size_bytes": 1458,
+      "git_blob": "3d284a50fe3abbf1f8331af82dd73b9186717135",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "prior_closure13_git_blob": "7eaa9b8930ebff896dfad67187a8d288cf07da0f"
     },
     {
       "path": "docs/runtime/validation/reference-windows.workflow.yml",
@@ -3036,6 +3565,17 @@
       "sha256": "92b7d729bcc54b05bdf2d87c285d985810741aa7204c9f15b21e43c6dd3337c1",
       "size_bytes": 1595,
       "git_blob": "028c86d72e85509fd160b96dbc41910737ea73e4"
+    },
+    {
+      "path": "docs/runtime/validation-scenarios-09.md",
+      "sha256": "2959c8c46c59370fda09f18f1bf981c56261415d7f3b44ecee57aac56cc88b8c",
+      "size_bytes": 9571,
+      "git_blob": "379943809dd4fd797f1735c53d075557e890d564",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
     },
     {
       "path": "docs/runtime/windows-06.md",
@@ -3074,14 +3614,15 @@
     },
     {
       "path": "docs/superpowers/plans/2026-10-17-ipc-architecture-closure-13.md",
-      "sha256": "54fd8c7021e66dead4319546e81db75be448d62f2512818a9d13f17bee919b95",
-      "size_bytes": 2825,
-      "git_blob": "84f566b6d02bf008604d5604636d0737220545b6",
+      "sha256": "f2342530c13b99fe2c74aa64c5cd3045c95e01caa4a9f7c165903381adfa1ce7",
+      "size_bytes": 3590,
+      "git_blob": "22ed76b08afe568da0ad457b3f4672db5bf469be",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "prior_closure13_git_blob": "84f566b6d02bf008604d5604636d0737220545b6"
     },
     {
       "path": "docs/superpowers/plans/2026-10-17-ipc-extension-delivery-12.md",
@@ -3123,14 +3664,15 @@
     },
     {
       "path": "docs/ui/arch-extension-closure-13-mapping.md",
-      "sha256": "426d330226a96b362de17660dbef236229b71df89fd6ae289b24a30e7f83a402",
-      "size_bytes": 2545,
-      "git_blob": "c14ff9be16d4249b8cfdfa34a0aa7aa56ab0cc77",
+      "sha256": "62039d8858aec35f0a4b41a8d210d33306fc1ef3b9b7c4a21fbda42616c74e96",
+      "size_bytes": 2999,
+      "git_blob": "0fe14d9517a95793f2857031b60352468afe24d9",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "prior_closure13_git_blob": "c14ff9be16d4249b8cfdfa34a0aa7aa56ab0cc77"
     },
     {
       "path": "docs/ui/extension-delivery-12-mapping.md",
@@ -4217,10 +4759,11 @@
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
-      "sha256": "b1fe3dc9d4cf70742472e1a4aa3906f37e601e286d17a20578eb602c61f1e6f7",
-      "size_bytes": 8816,
-      "git_blob": "2f37d5b7f340699bea1ff63524a1b243f0c73717",
-      "previous_git_blob": "1a0eedd5b22d341a61b6b8f6f6743806aaa3a848"
+      "sha256": "bc954ec15f5dc47c28087db4bfdce0e5ece175af0d650aae0547cce479c7b890",
+      "size_bytes": 8903,
+      "git_blob": "aef27b91f63903c5d4b25cf4996072b36ecae5eb",
+      "previous_git_blob": "1a0eedd5b22d341a61b6b8f6f6743806aaa3a848",
+      "prior_closure13_git_blob": "2f37d5b7f340699bea1ff63524a1b243f0c73717"
     },
     {
       "path": "scripts/build.sh",
@@ -4258,15 +4801,16 @@
     },
     {
       "path": "scripts/package-reference.py",
-      "sha256": "25f688891aefdcd7ce47a8b9ccdb30dbe0e0524362ad055f58e25fff979d6ccd",
-      "size_bytes": 7181,
-      "git_blob": "3a30f115d3fe6c626f640d36ff614289a0bb7294",
+      "sha256": "65256a61bcf6ba171ac42d5bb8247568041c9c926dd55675de137de0560206c6",
+      "size_bytes": 7405,
+      "git_blob": "8a2fc5952617cba6f5a25ccde43d1d461462e136",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
-      "previous_git_blob": "8c76a2ef449c7bb95d16dab1f92ab0b63e26f53c"
+      "previous_git_blob": "8c76a2ef449c7bb95d16dab1f92ab0b63e26f53c",
+      "prior_closure13_git_blob": "3a30f115d3fe6c626f640d36ff614289a0bb7294"
     },
     {
       "path": "scripts/protect-release.ps1",
@@ -4332,10 +4876,11 @@
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
-      "sha256": "08df9786538856a23bd8b2aaddaa4cb6c4859745568fb1ac5c515d8d59e1d8a0",
-      "size_bytes": 8863,
-      "git_blob": "bb20ed2a8117d755f2424fd9223dbff73cd71701",
-      "previous_git_blob": "71a03d13dfe8a96efc9de444b29615db486345da"
+      "sha256": "e31cad1b4364dc162601bf24fdd478160a97b042232a8e737e7fdf01376ed27f",
+      "size_bytes": 9085,
+      "git_blob": "6a0bf662da777fd9b3d269ae6f688665a91a879e",
+      "previous_git_blob": "71a03d13dfe8a96efc9de444b29615db486345da",
+      "prior_closure13_git_blob": "bb20ed2a8117d755f2424fd9223dbff73cd71701"
     },
     {
       "path": "scripts/smoke.py",
@@ -4359,6 +4904,17 @@
       "source": "WP-IPC-ENGINEERING-CLOSURE-07 explicit user authorization after merging PR #5; no tests/build/runtime/publish; no restricted originals or assets",
       "storage_scope": "public_repository",
       "previous_git_blob": "8d34d3da13d63dae1955b48d81d8138805575604"
+    },
+    {
+      "path": "scripts/verify-extension-reproducibility.py",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "e8eef8a46d4d32ba04a0c4b5682e89a004ef928472fd8031521c1580553442d9",
+      "size_bytes": 3209,
+      "git_blob": "5b77fd103d22c204ef7d47c3868c22ac6e91d663"
     },
     {
       "path": "scripts/windows-reference-validation.ps1",
@@ -4567,16 +5123,28 @@
       "previous_git_blob": "f6f626af4d09ca78a6b30ac377ccc425c6a26f24"
     },
     {
+      "path": "src/Ipc.Desktop/ExtensionDraftEditing.cs",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "5b50ace117aebad653f5c5cd847b996ba1c8ab5af0f342054b53609e23dc613b",
+      "size_bytes": 2349,
+      "git_blob": "1a2150a81e4a4eb6ac3c779ccc4cc0eb766fafd3"
+    },
+    {
       "path": "src/Ipc.Desktop/ExtensionsView.xaml",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
-      "sha256": "8f3254a8454a084e9284f10d48fc0152fe533f04bb3cf2a5b60d4c8039c196e9",
-      "size_bytes": 7226,
-      "git_blob": "d77a8b604b204fe83b8fce16590cdadf1898fca3",
-      "previous_git_blob": "e005c8b94d72743ff25e82487765a56a21e9c465"
+      "sha256": "756906ed1328b704fd67c42a91a8dda50f624d7f0c0ec87960d138eda643f938",
+      "size_bytes": 7316,
+      "git_blob": "42c2b6ee30bf753166c7e9fe17c8afa8a38f6a7a",
+      "previous_git_blob": "e005c8b94d72743ff25e82487765a56a21e9c465",
+      "prior_closure13_git_blob": "d77a8b604b204fe83b8fce16590cdadf1898fca3"
     },
     {
       "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
@@ -4585,10 +5153,11 @@
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
-      "sha256": "9d6e6ddd0fc8c2de1f470e4de40554a52ad053b96b50f611a38abc0f1db7622b",
-      "size_bytes": 23479,
-      "git_blob": "3e6f093ae9a61aabe2fc69eb6669450dc8210c3d",
-      "previous_git_blob": "3f5f2b78c5dc4095ba32174c4c60c6526bae86e0"
+      "sha256": "9bb7750040bf6bff34c50c7931f2807a8ae24c57fd8c531e772657b64e5bcdd8",
+      "size_bytes": 24866,
+      "git_blob": "09b8a1098031704c077eee72da15cecbd70fcf9d",
+      "previous_git_blob": "3f5f2b78c5dc4095ba32174c4c60c6526bae86e0",
+      "prior_closure13_git_blob": "3e6f093ae9a61aabe2fc69eb6669450dc8210c3d"
     },
     {
       "path": "src/Ipc.Desktop/HistoryPresentation.cs",
@@ -5302,116 +5871,6 @@
       "previous_git_blob": "e4e69a8b8b50a323af3dac0bbc78c0519b49f05d"
     },
     {
-      "path": "src/Ipc.Supply.Contracts/ContractRegistration.cs",
-      "sha256": "9adad125d189a600144e705437126b92c3ed32e237abe5e1b613f2054ac31c1c",
-      "size_bytes": 206,
-      "git_blob": "020facf862ece4567c2b395f460f83b3f1a761a4",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/HistoryQueries.cs",
-      "sha256": "67615e10f50d880b621c6fc7afb50cf2be20e1e1567b9c97e2b1102c9dc99648",
-      "size_bytes": 1781,
-      "git_blob": "aeb4bebd6b86633af2cd5ef2be5b160134102171",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/IntegrationExtensions.cs",
-      "sha256": "9f15723e558410b7ebcf9b655404b4b9955ae39be5e0c4b800f6119d30f06ba5",
-      "size_bytes": 1901,
-      "git_blob": "d170cbb72608d02174055410cb901408220a370c",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj",
-      "sha256": "d019bbfecee9662eb5400f49538f46fa662a672ca77a3cec1d1315e145b7a445",
-      "size_bytes": 132,
-      "git_blob": "9cf14155f6ff49b8bb6d0ad2ad07881be8719102",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/Model.cs",
-      "sha256": "5d77b4ea8a789d14017e6ec0551d8897f5318ada3ee324b2a41eb081730fa7ea",
-      "size_bytes": 8567,
-      "git_blob": "44304feebc0a7047c3ea93647803fa95be110ec7",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/RequestContract.cs",
-      "sha256": "ed0290d9ab77cf3c0a9aa91b031bab7c144a699f72b515527e74f9f7171f3294",
-      "size_bytes": 697,
-      "git_blob": "9ae57aab2f4b387c807dd2d72c8e8eb105080f4c",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/StationRuntime.cs",
-      "sha256": "db8abbe34516a367bec999bf706b56d13abd32521e2f6aa9e5aab0832e6bc67b",
-      "size_bytes": 2021,
-      "git_blob": "b5cb710ebb737130b0a4434d085fe7f30d82be6e",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/packages.lock.json",
-      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
-      "size_bytes": 13984,
-      "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/packages.supply.lock.json",
-      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
-      "size_bytes": 13984,
-      "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Supply.Contracts/packages.win-x64.lock.json",
-      "sha256": "086db76ce2df968e62000c68e2c4281ec9f6e58ffb094095a1821f08e4f9b730",
-      "size_bytes": 14238,
-      "git_blob": "0739278a2f642e32d4b45f1939fa1db8778a76be",
-      "version": "arch-extension-closure-13",
-      "status": "current_implementation_or_evidence",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
-    },
-    {
       "path": "src/Ipc.Supply/ContractForwarders.cs",
       "sha256": "5c295e64f710aee45aeaa19ed3742a3ea5692104db9c088724f5aa6df0deec6f",
       "size_bytes": 2749,
@@ -5575,6 +6034,116 @@
       "previous_git_blob": "1794e142aa25dc23bf063f44490287b1986bffee"
     },
     {
+      "path": "src/Ipc.Supply.Contracts/ContractRegistration.cs",
+      "sha256": "9adad125d189a600144e705437126b92c3ed32e237abe5e1b613f2054ac31c1c",
+      "size_bytes": 206,
+      "git_blob": "020facf862ece4567c2b395f460f83b3f1a761a4",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/HistoryQueries.cs",
+      "sha256": "67615e10f50d880b621c6fc7afb50cf2be20e1e1567b9c97e2b1102c9dc99648",
+      "size_bytes": 1781,
+      "git_blob": "aeb4bebd6b86633af2cd5ef2be5b160134102171",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/IntegrationExtensions.cs",
+      "sha256": "9f15723e558410b7ebcf9b655404b4b9955ae39be5e0c4b800f6119d30f06ba5",
+      "size_bytes": 1901,
+      "git_blob": "d170cbb72608d02174055410cb901408220a370c",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj",
+      "sha256": "d019bbfecee9662eb5400f49538f46fa662a672ca77a3cec1d1315e145b7a445",
+      "size_bytes": 132,
+      "git_blob": "9cf14155f6ff49b8bb6d0ad2ad07881be8719102",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/Model.cs",
+      "sha256": "5d77b4ea8a789d14017e6ec0551d8897f5318ada3ee324b2a41eb081730fa7ea",
+      "size_bytes": 8567,
+      "git_blob": "44304feebc0a7047c3ea93647803fa95be110ec7",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/RequestContract.cs",
+      "sha256": "ed0290d9ab77cf3c0a9aa91b031bab7c144a699f72b515527e74f9f7171f3294",
+      "size_bytes": 697,
+      "git_blob": "9ae57aab2f4b387c807dd2d72c8e8eb105080f4c",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/StationRuntime.cs",
+      "sha256": "db8abbe34516a367bec999bf706b56d13abd32521e2f6aa9e5aab0832e6bc67b",
+      "size_bytes": 2021,
+      "git_blob": "b5cb710ebb737130b0a4434d085fe7f30d82be6e",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.lock.json",
+      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
+      "size_bytes": 13984,
+      "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.supply.lock.json",
+      "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
+      "size_bytes": 13984,
+      "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.win-x64.lock.json",
+      "sha256": "086db76ce2df968e62000c68e2c4281ec9f6e58ffb094095a1821f08e4f9b730",
+      "size_bytes": 14238,
+      "git_blob": "0739278a2f642e32d4b45f1939fa1db8778a76be",
+      "version": "arch-extension-closure-13",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "tests/Ipc.Verification/AlignmentCompositionVerification.cs",
       "sha256": "20298801b90e59a30fedae07a8aa3a67a2cfc827f9c6aa7b5ee20c6e7a963404",
       "size_bytes": 5760,
@@ -5611,14 +6180,15 @@
     },
     {
       "path": "tests/Ipc.Verification/ArchitectureClosureVerification.cs",
-      "sha256": "43da1894d5da1bfc8b94e32b89cb1c052c1c67a3ee0f224753b9f5e68124f28d",
-      "size_bytes": 40881,
-      "git_blob": "b51efbb76365880a7c85afaa3a4779d74564b81b",
+      "sha256": "4d94d7e10764ecd1eac4d6e38fd54969230695981f220411ef66cb0f3b7eb528",
+      "size_bytes": 40923,
+      "git_blob": "1ace0c1fea43efdf7366da13b0f4ce9a45374fc3",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "prior_closure13_git_blob": "b51efbb76365880a7c85afaa3a4779d74564b81b"
     },
     {
       "path": "tests/Ipc.Verification/ClosureVerification.cs",
@@ -5630,6 +6200,17 @@
       "purpose": "Authorized modular-monolith correction, synthetic reference verification, WPF baseline mapping, source custody or operations; Windows and real integration remain separate",
       "source": "WP-IPC-AUDIT-RECONCILIATION-01 explicit user authorization for engineering and synthetic/reference test/build/start/publication; no production WCS writes or physical actions",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Verification/ExtensionDraftVerification.cs",
+      "version": "closure13-recheck",
+      "status": "current_implementation_or_evidence",
+      "purpose": "Authorized architecture closure verification, synthetic fixtures and retained failures; Windows not accepted",
+      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer assets",
+      "storage_scope": "public_repository",
+      "sha256": "447ba3e995556b31a6cb78f34379cc77f79b91f81ef682aae04a52f09fbb0ca3",
+      "size_bytes": 4646,
+      "git_blob": "1dea16766b095115379f2df453cfc4d56adf7106"
     },
     {
       "path": "tests/Ipc.Verification/ExtensionVerification.cs",
@@ -5668,14 +6249,15 @@
     },
     {
       "path": "tests/Ipc.Verification/Ipc.Verification.csproj",
-      "sha256": "af4275fd27a413f63826b20f9ad15d9b31a9e302f2f138c44817deb59bac67a9",
-      "size_bytes": 297,
-      "git_blob": "972aae5f8aa48a6332e2e1d4baa8bf14becea528",
+      "sha256": "6e25713edf891f314d6c5f46bc938ffebd17f757be0919cf36d37e1050e35e7d",
+      "size_bytes": 404,
+      "git_blob": "25f5ea8ac067cf7d731264c28bbfa40c17e6c680",
       "version": "REVIEW-FOLLOWUP-11",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "prior_closure13_git_blob": "972aae5f8aa48a6332e2e1d4baa8bf14becea528"
     },
     {
       "path": "tests/Ipc.Verification/PresentationVerification.cs",
@@ -5702,15 +6284,16 @@
     },
     {
       "path": "tests/Ipc.Verification/Program.cs",
-      "sha256": "f438fa749164c69b35f062e0b35ff8434be3cbe87c7fcdf1a050c546acda0d16",
-      "size_bytes": 49780,
-      "git_blob": "6f50b2b88223f4f928a6132e158e7fd6e0b0d445",
+      "sha256": "9fd59cdd4bd4f6ac44ffd4486949ac9acc93bb25c0d066f7731098e1cf02820f",
+      "size_bytes": 50535,
+      "git_blob": "85e3f94c9a034387d05fdda7b6f708ac73bbb118",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
-      "previous_git_blob": "bb57b02431acb8eba3a46afee03b5d7cc553b0ff"
+      "previous_git_blob": "bb57b02431acb8eba3a46afee03b5d7cc553b0ff",
+      "prior_closure13_git_blob": "6f50b2b88223f4f928a6132e158e7fd6e0b0d445"
     },
     {
       "path": "tests/Ipc.Verification/ReferenceJourneyVerification.cs",
@@ -6134,11 +6717,17 @@
     "mac": "PASS_REFERENCE",
     "windows": "WINDOWS_NOT_RUN",
     "user_deferred_windows": true,
-    "source_commit": "dc5b405f69535df84228199b40ce84048aa153b0",
+    "source_commit": "8cb475b880e6cdd248db42bff74accf443c83519",
     "test_trust_only": true,
     "private_keys_published": false,
     "customer_assets_added": false,
-    "withdrawn_local_attempt": "701ee0d never uploaded",
-    "pull_request": "https://github.com/yuan2go/importer-pc/pull/12"
+    "withdrawn_local_attempt": "701ee0d and a1c41bc never uploaded",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/12",
+    "previous_source_commit": "dc5b405f69535df84228199b40ce84048aa153b0",
+    "continuation_report": "docs/runtime/arch-extension-closure-13-recheck.md",
+    "continuation_checks": "docs/runtime/arch-extension-closure-13-recheck-checks.json",
+    "candidate_release": "https://github.com/yuan2go/importer-pc/releases/tag/closure13-reference-8cb475b",
+    "plugin_version": "1.0.1",
+    "remote_readback": "PASS_12_FULL_ASSETS"
   }
 }

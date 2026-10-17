@@ -1,0 +1,36 @@
+SELECT --extensions: E12 controlled extensions + actual Product deployment
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-1e346c3380b3490fbe88c8e809d45655
+PASS E12 reject test trust cannot enter Production / InvalidDataException
+PASS E12 reject untrusted publisher / InvalidDataException
+PASS E12 reject changed plan SHA / InvalidDataException
+PASS E12 reject signature / CryptographicException
+PASS E12 reject ZIP path/duplicate ../escape / InvalidDataException
+PASS E12 reject ZIP path/duplicate C:/absolute / InvalidDataException
+PASS E12 reject ZIP path/duplicate aux.txt / InvalidDataException
+PASS E12 reject ZIP path/duplicate x:ads / InvalidDataException
+PASS E12 reject ZIP path/duplicate /root / InvalidDataException
+PASS E12 reject ZIP path/duplicate bad\file / InvalidDataException
+PASS E12 reject ZIP path/duplicate Ipc.Reference.BarcodeExtension.DLL / InvalidDataException
+PASS E12 reject signed wrong file hash / InvalidDataException
+PASS E12 reject RID / InvalidDataException
+PASS E12 reject exact frozen host contract / InvalidDataException
+PASS E12 reject offline missing dependency / InvalidDataException
+PASS E12 reject unsupported schema / InvalidDataException
+PASS E12 reject file quota / InvalidDataException
+PASS E12 reject ZIP symlink / InvalidDataException
+PASS E12 reject installed binary tampering / InvalidDataException
+PASS E12 reject installation interruption Prepared / IOException
+PASS E12 reject installation interruption FilesVerified / IOException
+PASS E12 reject installation interruption Published / IOException
+PASS E12 reject installation interruption Registered / IOException
+PASS E12 reject effective deployment reference / InvalidOperationException
+PASS E12 reject shared active/unterminated package lease / IOException
+PASS E12 reject ambiguous assembly across signed dependency closure / InvalidDataException
+PASS E12 reject reverse package dependency / InvalidOperationException
+PASS E12 reject uninstall after atomic retirement / IOException
+PASS E12 partial source factory failure and concurrent stop ownership
+PASS E12 reject real extension still owns package lease after Stop timeout / IOException
+PASS E12 reject real delayed extension still owns data lease / IOException
+PASS E12 signed offline packages, interruption recovery, independent late extension, deployment/ownership/upgrade/original-request journey
+PASS selected verification scope --extensions; Windows desktop/SDK/field validation NOT_RUN by this core executable
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-1e346c3380b3490fbe88c8e809d45655

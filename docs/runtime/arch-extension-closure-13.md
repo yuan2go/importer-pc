@@ -1,4 +1,4 @@
-> PR12复核补丁正在形成新候选；下文dc5b405及其验证为首轮冻结记录，保持原身份。补丁源修复选中实例重命名及精确版本打包；a1c41bc本地候选因重复构建内容漂移撤销且未上传，修复与失败证据另行追加。实际Windows继续WINDOWS_NOT_RUN。
+> 当前补充交付：[PR12复核报告](arch-extension-closure-13-recheck.md)及[checks](arch-extension-closure-13-recheck-checks.json)，最终宿主/工具源码8cb475b、插件1.0.1，12附件全量回读。以下dc5b405首轮记录及原验收保持原身份；a1c41bc本地尝试未上传，失败原件见补充报告。Windows仍WINDOWS_NOT_RUN。
 
 # CLOSURE-13 实施、验证与候选交付
 

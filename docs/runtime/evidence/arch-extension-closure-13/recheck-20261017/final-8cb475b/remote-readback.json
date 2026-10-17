@@ -1,0 +1,108 @@
+{
+  "Result": "PASS_FULL_REMOTE_READBACK",
+  "Release": "https://github.com/yuan2go/importer-pc/releases/tag/closure13-reference-8cb475b",
+  "Tag": "closure13-reference-8cb475b",
+  "Assets": [
+    {
+      "Asset": "SHA256SUMS",
+      "Bytes": 1118,
+      "Sha256": "bc57e66350b08b3576ce3ebfae0ee3550312d8f9f73b7809c157e2b56c254ad9",
+      "FullDownloadMatches": true
+    },
+    {
+      "Asset": "closure13-8cb475b-CANDIDATE.json",
+      "Bytes": 27975,
+      "Sha256": "259e4a7cfb21766373ee05eab617e7bb59e330e755934ef5cb8fc893da89d009",
+      "FullDownloadMatches": true
+    },
+    {
+      "Asset": "closure13-8cb475b-inspection.zip",
+      "Bytes": 879477,
+      "Sha256": "5b3dd15282d3034154b20609187411d56537e409fe30d78d73153f153b165f30",
+      "FullDownloadMatches": true,
+      "VerifiedZipEntries": 44,
+      "ZipCrc": "PASS",
+      "InnerSha256Sums": "PASS"
+    },
+    {
+      "Asset": "closure13-8cb475b-integration-portable.zip",
+      "Bytes": 35472734,
+      "Sha256": "7d2974d924b82cb397a6b225769e309359ab3136bf159c6559bcf6c3d324e836",
+      "FullDownloadMatches": true,
+      "VerifiedZipEntries": 158,
+      "ZipCrc": "PASS",
+      "InnerSha256Sums": "PASS"
+    },
+    {
+      "Asset": "closure13-8cb475b-integration-win-x64.zip",
+      "Bytes": 115643863,
+      "Sha256": "cdae1743cfb206af69ffd1b0d5672fa63ffae31a30ecc5d3453cb3ddf98347b7",
+      "FullDownloadMatches": true,
+      "VerifiedZipEntries": 843,
+      "ZipCrc": "PASS",
+      "InnerSha256Sums": "PASS"
+    },
+    {
+      "Asset": "closure13-8cb475b-source.zip",
+      "Bytes": 8362108,
+      "Sha256": "e8e0b8f974b4494a5c381b8b75004dc224131d60faff14a5f5e45f71874943e2",
+      "FullDownloadMatches": true,
+      "VerifiedZipEntries": 583,
+      "ZipCrc": "PASS"
+    },
+    {
+      "Asset": "closure13-8cb475b-supply-assembly.zip",
+      "Bytes": 18112046,
+      "Sha256": "8f8bca002ccbd5eadd622b34d37ab20d05b909701d97d4f57a460c089ab0e611",
+      "FullDownloadMatches": true,
+      "VerifiedZipEntries": 84,
+      "ZipCrc": "PASS",
+      "InnerSha256Sums": "PASS"
+    },
+    {
+      "Asset": "closure13-BarcodeExtension-source.zip",
+      "Bytes": 10427,
+      "Sha256": "44e3454528bcf076cd1b547eba91e217afdee11cd0b43cef59952d6a290e5fcc",
+      "FullDownloadMatches": true,
+      "VerifiedZipEntries": 12,
+      "ZipCrc": "PASS"
+    },
+    {
+      "Asset": "closure13-IntegrationExtension-source.zip",
+      "Bytes": 12393,
+      "Sha256": "5c40f9123a84cc49a8b880909ac2a3e5a26285de969b2685903d410fb71d36e4",
+      "FullDownloadMatches": true,
+      "VerifiedZipEntries": 13,
+      "ZipCrc": "PASS"
+    },
+    {
+      "Asset": "reference.barcode-1.0.1.ipcx",
+      "Bytes": 7568,
+      "Sha256": "979a395ca49f7d4017ea3ee88e2b7a341ff49c6ac4fcadc08190d2dfbba6f2c1",
+      "FullDownloadMatches": true,
+      "VerifiedZipEntries": 3,
+      "ZipCrc": "PASS",
+      "ManifestSha256": "1327afa2291f8076e0043a5e24665a67f32ff3ed1991fa1310e2f865efd7104f"
+    },
+    {
+      "Asset": "reference.integration-1.0.1.ipcx",
+      "Bytes": 13203,
+      "Sha256": "9b5433d6279f899538cd6a500918164ff3d3037271f2028a14a04009f1396039",
+      "FullDownloadMatches": true,
+      "VerifiedZipEntries": 3,
+      "ZipCrc": "PASS",
+      "ManifestSha256": "1f5e9272b5e3e8cc97589067a49a63168152f6bed5892c78049b3e02d13337e6"
+    },
+    {
+      "Asset": "trust.Simulation.reference.json",
+      "Bytes": 775,
+      "Sha256": "a2bf7e63645a6b9fc45e0e05769885cf339411e61a42aba48bf70b1971aed896",
+      "FullDownloadMatches": true
+    }
+  ],
+  "TotalAssets": 12,
+  "TotalBytes": 178543687,
+  "Windows": "WINDOWS_NOT_RUN",
+  "ActualWpfScreenshots": 0,
+  "PrivateKeyIncluded": false
+}

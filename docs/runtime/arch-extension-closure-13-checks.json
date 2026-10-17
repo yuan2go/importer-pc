@@ -225,5 +225,11 @@
     "Prior12Acceptance": "UNCHANGED",
     "ReportCommit": "10ca8f4"
   },
-  "ArchiveComparison": "PASS_NO_NEW_ERRORS"
+  "ArchiveComparison": "PASS_NO_NEW_ERRORS",
+  "VerificationContinuation": {
+    "Report": "docs/runtime/arch-extension-closure-13-recheck.md",
+    "Checks": "docs/runtime/arch-extension-closure-13-recheck-checks.json",
+    "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+    "Meaning": "Original command records retain dc5b405 identities; current patch has its own final evidence"
+  }
 }

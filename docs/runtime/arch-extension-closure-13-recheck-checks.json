@@ -1,0 +1,179 @@
+{
+  "WorkPackage": "WP-IPC-ARCH-EXTENSION-CLOSURE-13",
+  "InheritedHead": "451f7f5b3a9e7aace77c6617d05eb15ed69888b1",
+  "Main": "feed6e9ce79449e48c667c17e2671939a86fb588",
+  "HostSourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+  "ObservationSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+  "IntegrationSourceCommit": "01038cc5e21d200e4545c0a26594adc05eb62923",
+  "PluginVersions": "1.0.1",
+  "Engineering": "COMPLETE",
+  "Mac": "PASS_REFERENCE",
+  "Wpf": "BUILD_PASS",
+  "Windows": "WINDOWS_NOT_RUN",
+  "ActualWpfScreenshots": 0,
+  "RealSdkWcsField": "BLOCKED",
+  "PriorAcceptance": "UNCHANGED",
+  "Commands": [
+    {
+      "Id": "V1",
+      "Selector": "build",
+      "Result": "PASS_WPF_CROSS_BUILD_0_WARNINGS_0_ERRORS",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/build.log",
+      "Sha256": "c4423984b1acda19ce967f1e7e6469856b3a6285c09df3af5c1e6680f97cc89c"
+    },
+    {
+      "Id": "V2",
+      "Selector": "architecture",
+      "Result": "PASS_MAC_REFERENCE",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/architecture.log",
+      "Sha256": "5d774fa44db31d9de7bd320e7a594b0f8cc8e24d0bb96ad682dc1842b9f9b9a5"
+    },
+    {
+      "Id": "V3",
+      "Selector": "extensions",
+      "Result": "PASS_MAC_REFERENCE",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extensions.log",
+      "Sha256": "07d2fcbc88fd6dabdac3af71ff648fb9bd2c8bd161d2f3178d3d569e09697af7"
+    },
+    {
+      "Id": "V4",
+      "Selector": "baseline",
+      "Result": "PASS_MAC_REFERENCE",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/baseline.log",
+      "Sha256": "c893091480140bb9e21452659fae7585f657d78f5f5dce595e69455e6834b99a"
+    },
+    {
+      "Id": "V5",
+      "Selector": "followup",
+      "Result": "PASS_MAC_REFERENCE",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/followup.log",
+      "Sha256": "39f53d5f591222f2e3795983dd3ff2f3ebe3eacb6fde03aa4b26ba3ee49c92dc"
+    },
+    {
+      "Id": "V6",
+      "Selector": "review-followup",
+      "Result": "PASS_MAC_REFERENCE",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/review-followup.log",
+      "Sha256": "cb935904683dae311f28cc9b53ba9ac2b2e4b26724613c3c625c3c67ad3f4e44"
+    },
+    {
+      "Id": "V7",
+      "Selector": "closure",
+      "Result": "PASS_MAC_REFERENCE",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/closure.log",
+      "Sha256": "9901a469b2096c85a35f2af2e3a09b41c2a006de7ed45db12fe931b2423666bb"
+    },
+    {
+      "Id": "V8",
+      "Selector": "tools",
+      "Result": "PASS_10",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/tools.log",
+      "Sha256": "f76447f7d9c95be3925f41f35ae779d06cd4f7474e1aa517089b02ced4d59e2f"
+    },
+    {
+      "Id": "V9",
+      "Result": "PASS_REFERENCE",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/candidate-inventory.json",
+      "Sha256": "259e4a7cfb21766373ee05eab617e7bb59e330e755934ef5cb8fc893da89d009"
+    },
+    {
+      "Id": "V10",
+      "Result": "PASS_REFERENCE",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extension-smoke.json",
+      "Sha256": "a864f9382a9fb5a2f65d0db4553867a41f0d942b68246cb7dde6221dfa0943c1"
+    },
+    {
+      "Id": "V11",
+      "Result": "PASS_REFERENCE",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/published-businesses.json",
+      "Sha256": "42589b1c838e38cdc0b4e4321d3652bca944681bb4b3989dc19bbceba81389d5"
+    },
+    {
+      "Id": "V12",
+      "Result": "PASS_REFERENCE",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/reproducibility.json",
+      "Sha256": "a1debdc2133a8527aa4ede784f55474176fe9a9bce746f232f9a787116e0326a"
+    },
+    {
+      "Id": "V13",
+      "Result": "PASS_REFERENCE",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Evidence": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/remote-readback.json",
+      "Sha256": "3a4b58dabdde7b8bc8fe5f27d764265e43679cd20658529b899dc96a12e009e8"
+    }
+  ],
+  "Acceptance": [
+    {
+      "Id": "AC13-01",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Windows": "WINDOWS_NOT_RUN"
+    },
+    {
+      "Id": "AC13-02",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Windows": "WINDOWS_NOT_RUN"
+    },
+    {
+      "Id": "AC13-03",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Windows": "WINDOWS_NOT_RUN"
+    },
+    {
+      "Id": "AC13-04",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Windows": "WINDOWS_NOT_RUN"
+    },
+    {
+      "Id": "AC13-05",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Windows": "WINDOWS_NOT_RUN"
+    },
+    {
+      "Id": "AC13-06",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Windows": "WINDOWS_NOT_RUN"
+    },
+    {
+      "Id": "AC13-07",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Windows": "WINDOWS_NOT_RUN"
+    },
+    {
+      "Id": "AC13-08",
+      "Engineering": "COMPLETE",
+      "Mac": "PASS_REFERENCE",
+      "Windows": "WINDOWS_NOT_RUN"
+    }
+  ],
+  "Delivery": {
+    "Release": "https://github.com/yuan2go/importer-pc/releases/tag/closure13-reference-8cb475b",
+    "Remote": "PASS_12_FULL_ASSETS",
+    "PullRequest": "https://github.com/yuan2go/importer-pc/pull/12",
+    "Merged": false
+  },
+  "WithdrawnLocalCandidate": {
+    "Source": "a1c41bc",
+    "Uploaded": false,
+    "Reason": "Non-reproducible same-version managed plugin content"
+  },
+  "Archive": "FAIL_267_INHERITED_NO_NEW_ERRORS"
+}

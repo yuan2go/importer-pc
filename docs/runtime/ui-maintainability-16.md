@@ -59,3 +59,5 @@ macOS26.5.2 ARM64、SDK10.0.402/runtime10.0.13。SourceCodeSha256 `da9073eef8aa6
 资料校验仍保留历史资产问题；本包新代码/文档/身份/链接的差量结果及远端回读由checks登记，不能把旧267问题改成整体PASS。后续仅文档/证据/manifest变化不冒称重新构建候选；随包四份指南保持冻结字节。
 
 冻结后仅补运维兼容锚点，修复旧加固报告导航；候选OPERATIONS.md仍为089fd98原字节，命令/正文行为完全相同，差异仅锚点，详见source-freeze的PostFreezeDocumentationDelta。没有把该导航修改冒称候选重构建或更改旧报告。
+
+开发分支已提交并创建 [main PR #16](https://github.com/yuan2go/importer-pc/pull/16)，OPEN，未合并。[远端完整回读](evidence/ui-maintainability-16/remote-readback.json)已重新下载11附件，逐字节SHA/大小、ZIP CRC及两运行包内层SHA全部与本地一致。原候选和仓库可见性未改变。

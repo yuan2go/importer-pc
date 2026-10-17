@@ -1077,5 +1077,7 @@
       "code": "private_metadata_marker",
       "path": "docs/ui/ss-ui-vis-001-v1.1/界面图册.html"
     }
-  ]
+  ],
+  "FinalObservedSha256": "77e247939f3a0556698fb456df18ec860fc2cfadccca2b28adb63497611a9e17",
+  "FinalErrorSetSame": true
 }

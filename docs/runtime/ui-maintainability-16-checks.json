@@ -1,6 +1,6 @@
 {
   "WorkPackage": "WP-IPC-UI-MAINTAINABILITY-16",
-  "Phase": "ENGINEERING_VERIFIED_SAME_SOURCE_CANDIDATES_WINDOWS_NOT_RUN",
+  "Phase": "ENGINEERING_DELIVERED_REMOTE_VERIFIED_WINDOWS_NOT_RUN",
   "Base": "12a40b308e13744eb4be959dff4a62dca473b5d9",
   "Storage": 5,
   "MinimumReader": 5,
@@ -354,7 +354,7 @@
   "ToolingTests": "docs/runtime/evidence/ui-maintainability-16/tooling-tests.json",
   "PublicEvidenceTransforms": "docs/runtime/evidence/ui-maintainability-16/evidence-publication.json",
   "Release": "https://github.com/yuan2go/importer-pc/releases/tag/ui16-reference-089fd98",
-  "PullRequest": null,
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/16",
   "Acceptance": [
     {
       "Id": "16-01",
@@ -469,9 +469,10 @@
       ],
       "Evidence": [
         "docs/runtime/evidence/ui-maintainability-16/candidate-inventory.json",
-        "docs/runtime/evidence/ui-maintainability-16/source-freeze.json"
+        "docs/runtime/evidence/ui-maintainability-16/source-freeze.json",
+        "docs/runtime/evidence/ui-maintainability-16/remote-readback.json"
       ],
-      "Status": "DELIVERY_READY_FOR_REMOTE_READBACK",
+      "Status": "DELIVERED_MAIN_PR_OPEN_REMOTE_CANDIDATES_VERIFIED",
       "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
       "Windows": "NOT_RUN"
     }
@@ -510,5 +511,7 @@
     "ExistingErrors": 267,
     "NewErrors": [],
     "Evidence": "docs/runtime/evidence/ui-maintainability-16/archive-comparison.json"
-  }
+  },
+  "PullRequestState": "OPEN_NOT_MERGED",
+  "RemoteReadback": "docs/runtime/evidence/ui-maintainability-16/remote-readback.json"
 }

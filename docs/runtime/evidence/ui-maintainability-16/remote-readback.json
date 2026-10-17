@@ -1,0 +1,95 @@
+{
+  "Status": "PASS_ALL_11_REMOTE_ASSETS_EXACT",
+  "Release": "https://github.com/yuan2go/importer-pc/releases/tag/ui16-reference-089fd98",
+  "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+  "ReadAt": "2026-10-17T17:19:44.273683+00:00",
+  "Command": [
+    "gh",
+    "release",
+    "download",
+    "ui16-reference-089fd98",
+    "--repo",
+    "yuan2go/importer-pc",
+    "--dir",
+    "<fresh-readback-directory>"
+  ],
+  "Assets": [
+    {
+      "Name": "SHA256SUMS",
+      "Size": 943,
+      "Sha256": "088eac62b02b2232006c773691e5e3b00368ae7f4128671f9880c7f5c057b720",
+      "ExactBytesMatch": true
+    },
+    {
+      "Name": "candidate-inventory.json",
+      "Size": 156990,
+      "Sha256": "779d35e5c1f669709bcb1b14af1bdd9b7a770f2afb8800f4d6a8c0e9a9b3cf1f",
+      "ExactBytesMatch": true
+    },
+    {
+      "Name": "external-reader-a.ipcx",
+      "Size": 7577,
+      "Sha256": "088f09eb85fffb6aa45b697138186e8463d2c54d1e8dd197883209ae44c27ae4",
+      "ExactBytesMatch": true
+    },
+    {
+      "Name": "external-reader-a.ipcx.identity.json",
+      "Size": 1190,
+      "Sha256": "12298b51b31a6a2d47e200866b475104c48b7051817c9dad72bc0757981a1473",
+      "ExactBytesMatch": true
+    },
+    {
+      "Name": "importer-pc-runtime-source-089fd98.zip",
+      "Size": 480005,
+      "Sha256": "abd424726d09cbfebbd5e2f306cb1b07d8e96312d402225d5dd07e7c98ca332f",
+      "ExactBytesMatch": true,
+      "ZipCrc": "PASS",
+      "Files": 200
+    },
+    {
+      "Name": "portable.zip",
+      "Size": 35432171,
+      "Sha256": "0abb762a506c61c220bdbf33057432991cda69cf97a8142df1c87914282a6d6a",
+      "ExactBytesMatch": true,
+      "ZipCrc": "PASS",
+      "Files": 158,
+      "InnerSha256Sums": "PASS"
+    },
+    {
+      "Name": "reference.barcode-1.0.4.ipcx",
+      "Size": 7580,
+      "Sha256": "0a47a1e54ab9d86b4ed4fad49ce9dce019c8a43d79312823f5dec3c8b125388a",
+      "ExactBytesMatch": true
+    },
+    {
+      "Name": "reference.integration-1.0.4.ipcx",
+      "Size": 13331,
+      "Sha256": "5d1c3448a304e9456cd9b87e197e611679538fe9da833885a899a49ffa132924",
+      "ExactBytesMatch": true
+    },
+    {
+      "Name": "trust.Simulation.reference.json",
+      "Size": 775,
+      "Sha256": "79cf7218821dbb8e8f41b7b28dc1e941f0b02b1a75f32e0ba143b3ee915dfa9d",
+      "ExactBytesMatch": true
+    },
+    {
+      "Name": "win-x64.zip",
+      "Size": 115629529,
+      "Sha256": "f40d7e28979e4a4bcbd579ddd789f6951e8ce331200014ee62e430803f4c5419",
+      "ExactBytesMatch": true,
+      "ZipCrc": "PASS",
+      "Files": 843,
+      "InnerSha256Sums": "PASS"
+    },
+    {
+      "Name": "wp16-external-reader-source-e7b653f.zip",
+      "Size": 5709,
+      "Sha256": "85009fd0403134e007b9ddf916adb1e22e89cf2a87d1c9d9ee1752d3153fa655",
+      "ExactBytesMatch": true,
+      "ZipCrc": "PASS",
+      "Files": 12
+    }
+  ],
+  "Windows": "NOT_RUN"
+}

@@ -1,0 +1,16 @@
+{
+  "Status": "WITHDRAWN_LOCAL_ONLY",
+  "Reason": "Upgrade harness hash argument corrected after d2 candidate seal; repackage both targets against one frozen source input hash. d2 runtime passed synthetic upgrade but is not final distribution.",
+  "SourceCommit": "d2b2ca268013e7980f435e9cf8d9e48cd06ddc6c",
+  "ReplacementSource": "013862fc2d1769605624f8e10df5cc5b448a7954",
+  "Packages": [
+    {
+      "Name": "operation15-d2b2ca2-portable.zip",
+      "Sha256": "8d20186e99e1062f8787820c34b53a72c179480f8c18022858f6054dd55de5b3"
+    },
+    {
+      "Name": "operation15-d2b2ca2-win-x64.zip",
+      "Sha256": "5881953a9ee243fa589ecf8e89cae1866938761b10c50b2fb4fc8104c00a8ea1"
+    }
+  ]
+}

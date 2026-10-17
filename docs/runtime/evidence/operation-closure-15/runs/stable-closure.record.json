@@ -1,0 +1,23 @@
+{
+  "Name": "stable-closure",
+  "SourceCommit": "110d2b1b9322f391a623cd29d7c98d5a5556a872",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:40:07.072686+00:00",
+  "EndedAt": "2026-10-17T12:40:14.780639+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--closure"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS selected verification scope --closure",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "stable-closure.log",
+  "LogSha256": "c31494c96a5356960a347f20c0db20c244455f6c23f2911de63f09a6c5bf50b4",
+  "RawLogSha256": "e6940074193325168e899a22339efac1cf5df3364a1eaf7635add8c2afc4c950",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

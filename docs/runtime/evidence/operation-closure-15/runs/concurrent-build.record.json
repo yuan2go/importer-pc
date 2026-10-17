@@ -1,0 +1,26 @@
+{
+  "Name": "concurrent-build",
+  "SourceCommit": "110d2b1b9322f391a623cd29d7c98d5a5556a872",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:39:29.600718+00:00",
+  "EndedAt": "2026-10-17T12:39:34.364261+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "build",
+    "ImporterPc.slnx",
+    "--no-restore",
+    "-m:1",
+    "-nr:false",
+    "-p:EnableWindowsTargeting=true"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "0 个错误",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "concurrent-build.log",
+  "LogSha256": "28182e58ac3e63ca0e7a0acf30a21e47000926e93ee79ff0f68c4eef323098fb",
+  "RawLogSha256": "847f834ac9aa8907247acee45b515578e9c450786e9808b1c2b87183379fb164",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

@@ -1,0 +1,26 @@
+{
+  "Name": "handoff-build",
+  "SourceCommit": "8df02afc8799f81973f0bf3fe4375f604332dd99",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:37:13.312141+00:00",
+  "EndedAt": "2026-10-17T12:37:17.383802+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "build",
+    "ImporterPc.slnx",
+    "--no-restore",
+    "-m:1",
+    "-nr:false",
+    "-p:EnableWindowsTargeting=true"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "0 个错误",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "handoff-build.log",
+  "LogSha256": "c9833455ed36f13c52a1fcf7c1468486ce67c2d9190bad43a8e47e618c515533",
+  "RawLogSha256": "93d1699dfe490bcd34f71ec00e2c716d4a34c8cdf6a57ae3d6c749dd13636955",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

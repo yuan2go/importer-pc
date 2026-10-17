@@ -1,0 +1,55 @@
+  正在确定要还原的项目…
+  已还原 /reference/workspace/src/Ipc.Platform/Ipc.Platform.csproj (用时 424 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Supply/Ipc.Supply.csproj (用时 424 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj (用时 424 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 424 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Product/Ipc.Product.csproj (用时 424 毫秒)。
+  1 个项目(共 6 个)是最新的，无法还原。
+  Ipc.Platform -> /reference/workspace/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /reference/workspace/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /reference/workspace/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /reference/workspace/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /reference/workspace/src/Ipc.Product/bin/Release/net10.0/win-x64/Ipc.Product.dll
+  Ipc.Desktop -> /reference/workspace/src/Ipc.Desktop/bin/Release/net10.0-windows/win-x64/Ipc.Desktop.dll
+  Ipc.Desktop -> /reference/operation15-artifacts/candidates/operation15-final-win-x64/app/
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> /reference/workspace/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /reference/workspace/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /reference/workspace/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /reference/workspace/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /reference/workspace/src/Ipc.Product/bin/Release/net10.0/win-x64/Ipc.Product.dll
+  Ipc.Product -> /reference/operation15-artifacts/candidates/operation15-final-win-x64/app/
+  正在确定要还原的项目…
+  已还原 /reference/workspace/src/Ipc.Fixture/Ipc.Fixture.csproj (用时 295 毫秒)。
+  4 个项目(共 5 个)是最新的，无法还原。
+  Ipc.Platform -> /reference/workspace/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /reference/workspace/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /reference/workspace/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /reference/workspace/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Fixture -> /reference/workspace/src/Ipc.Fixture/bin/Release/net10.0/win-x64/Ipc.Fixture.dll
+  Ipc.Fixture -> /reference/operation15-artifacts/candidates/operation15-final-win-x64/fixture/
+Sealed Simulation configuration: /reference/operation15-artifacts/candidates/operation15-final-win-x64/app/config
+  正在确定要还原的项目…
+  已还原 /reference/tmp/ipc-extension-build-2xex1f4y/project/BarcodeExtension.csproj (用时 30 毫秒)。
+  BarcodeExtension -> /reference/tmp/ipc-extension-build-2xex1f4y/bin/Ipc.Reference.BarcodeExtension.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.33
+Verified OK
+{"Package": "reference.barcode-1.0.3.ipcx", "PackageSha256": "9cb44fc5b0919a959819a5b467d066b6f9e94c13a1ef5b26eea3cd0541deeb4b", "PluginSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9", "HostContractSha256": "c1402a136d79844cc1358f9e9e54a9216a0dba93ae55a3c2d0d7b922fc470a13", "FrozenHostUnchanged": true, "Publisher": "closure15-test", "Version": "1.0.3", "ExtensionContract": 1, "Signature": "RSA-PSS/SHA256", "Mode": "Simulation", "PluginSourceSha256": "cf2864697afb658f858fc5c857081351f8e2099a5c5cb78c7a38afcd913b376e"}
+  正在确定要还原的项目…
+  已还原 /reference/tmp/ipc-extension-build-8twrh_1r/project/IntegrationExtension.csproj (用时 31 毫秒)。
+  IntegrationExtension -> /reference/tmp/ipc-extension-build-8twrh_1r/bin/Ipc.Reference.IntegrationExtension.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.35
+Verified OK
+{"Package": "reference.integration-1.0.3.ipcx", "PackageSha256": "c9ccd8422e4cca0f0444bb9d5eeade0a1d77d923249baa6811f9f4838685b387", "PluginSourceCommit": "68cdc36f7821825c1ee9e53d866015be5ecf3044", "HostContractSha256": "c1402a136d79844cc1358f9e9e54a9216a0dba93ae55a3c2d0d7b922fc470a13", "FrozenHostUnchanged": true, "Publisher": "closure15-test", "Version": "1.0.3", "ExtensionContract": 1, "Signature": "RSA-PSS/SHA256", "Mode": "Simulation", "PluginSourceSha256": "c1b94ae58d7210353185cbf8e1b066753ddfe8cbd92b3c48c1d98be28e9c51ea"}
+{"Package": "/reference/operation15-artifacts/candidates/operation15-final-win-x64.zip", "Sha256": "2bdf336c9b694f511501aa6af3fc3a48f57419f0a60344d020e2e9552aa60bbd", "WorkPackage": "WP-IPC-OPERATION-CLOSURE-15", "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954", "ReleaseVersion": "OPERATION-CLOSURE-15", "StorageVersion": 5, "ContractVersion": "SIMULATION-v1", "SourceCodeSha256": "a2b4f5c6d781da3fcc156c55e6cb9f4d9500942dee5a0ae634ef7697aa0ea14c", "Target": "win-x64", "WindowsRuntimeValidation": "NOT_RUN", "PhysicalIntegration": "BLOCKED", "Note": "Portable requires pinned .NET runtime; win-x64 is self-contained and requires Windows validation.", "Composition": "integration-reference", "Mode": "Simulation", "ExtensionContract": 1, "MinimumReader": 5, "CompositionLockSha256": "353069c57f0b35f02ce7650ca8fd0007ad33504da1d7c151615c2cd70947ca83"}

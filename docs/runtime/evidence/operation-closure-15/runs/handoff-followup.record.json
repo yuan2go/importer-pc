@@ -1,0 +1,23 @@
+{
+  "Name": "handoff-followup",
+  "SourceCommit": "8df02afc8799f81973f0bf3fe4375f604332dd99",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:37:44.838689+00:00",
+  "EndedAt": "2026-10-17T12:37:49.459116+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--followup"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS selected verification scope --followup",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "handoff-followup.log",
+  "LogSha256": "10affd994f01d4e2589e21431ab3b6557c4de09ba44545713d7a4044e8d40bf2",
+  "RawLogSha256": "a477fcbdff79b6df7a626b59f19218cdac7d367565cf613bedf9bddec8c3074b",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

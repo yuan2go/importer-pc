@@ -1,0 +1,13 @@
+SELECT --followup: E08
+Evidence data retained at /reference/tmp/ipc-verification-b4223510d53d4cc781cce80a576ff519
+PASS FOLLOWUP-08 history identity=never-logged-in entries=8 allowed=False
+PASS FOLLOWUP-08 history identity=valid-operator entries=8 allowed=True
+PASS FOLLOWUP-08 history identity=logged-out entries=8 allowed=False
+PASS FOLLOWUP-08 history identity=valid-maintenance entries=8 allowed=True
+PASS FOLLOWUP-08 history identity=expired entries=8 allowed=False
+PASS FOLLOWUP-08 Effective/seed/pending/fallback/restored identity/competition/partial resource terminal states
+PASS FOLLOWUP-08 configuration version ABA, activation chronology, unique Effective and failure rollback
+PASS REFERENCE-JOURNEY startup/identity/box/dual-lane/rejection/split/acceptance/Unknown/original-query/physical-simulation-reset/close/new-box/history/restart
+PASS FOLLOWUP-08 all history identities and final configuration ownership
+PASS selected verification scope --followup; Windows desktop/SDK/field validation NOT_RUN by this core executable
+Evidence data retained at /reference/tmp/ipc-verification-b4223510d53d4cc781cce80a576ff519

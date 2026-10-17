@@ -57,7 +57,7 @@ public partial class MainWindow
     async void NavigateToHistoryDetail()
     {
         navigatingDirectDetail = true;
-        try { await NavigateToViewAsync("history"); }
+        try { await NavigateToViewAsync("history"); ShowHistoryDetail(); }
         finally { navigatingDirectDetail = false; }
     }
     public async Task SubmitLaneAsync(LaneViewModel lane)
@@ -92,23 +92,42 @@ public partial class MainWindow
         OperationStatusFilter.ItemsSource = Choices<OperationStatus>(OperatorText.Operation);
         RequestStatusFilter.ItemsSource = Choices<RequestStatus>(OperatorText.Request);
         SessionStatusFilter.SelectedIndex = OperationStatusFilter.SelectedIndex = RequestStatusFilter.SelectedIndex = 0;
+        HistoryTimezone.Text = "本地时区：" + TimeZoneInfo.Local.DisplayName + "；时间范围按所选日期的偏移转换";
     }
     static T? HistoryStatus<T>(ComboBox box) where T : struct, Enum =>
         (box.SelectedItem as HistoryStatusChoice)?.Value is { } value ? Enum.Parse<T>(value) : null;
-    static DateTimeOffset? HistoryDate(TextBox field)
+    DateTimeOffset? HistoryDate(DatePicker day, TextBox time)
     {
-        var text = field.Text.Trim(); if (text.Length == 0) return null;
-        if (!Regex.IsMatch(text, @"(?:Z|[+-]\d{2}:\d{2})$") ||
-            !DateTimeOffset.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
-            throw new ArgumentException("日期必须包含完整日期和时区，例如2026-10-16T00:00:00+08:00");
-        return date;
+        DateTime? selectedDay = null;
+        if (!string.IsNullOrWhiteSpace(day.Text))
+        {
+            if (!DateTime.TryParse(day.Text, day.Language.GetSpecificCulture(), DateTimeStyles.AllowWhiteSpaces, out var parsed))
+                throw new ArgumentException("请选择有效日期；无效输入不会沿用上次选中日期");
+            selectedDay = parsed.Date;
+        }
+        return HistoryTimeRange.Parse(selectedDay, time.Text, TimeZoneInfo.Local);
     }
-    HistoryQuery BuildHistoryQuery() => new(
-        Entity: HistoryEntityBox.SelectedIndex == 1 ? HistoryEntity.Operations : HistoryEntity.Sessions,
-        SessionId: historySessionId, BoxBarcode: FilterBox.Text.Trim(), ItemBarcode: ItemFilter.Text.Trim(), Sku: SkuFilter.Text.Trim(), TaskId: TaskFilter.Text.Trim(),
-        SessionStatus: HistoryStatus<SessionStatus>(SessionStatusFilter), OperationStatus: HistoryStatus<OperationStatus>(OperationStatusFilter),
-        RequestStatus: HistoryStatus<RequestStatus>(RequestStatusFilter), Lane: HistoryLaneBox.SelectedIndex switch { 1 => "left", 2 => "right", _ => null },
-        FromInclusive: HistoryDate(HistoryFrom), UntilExclusive: HistoryDate(HistoryUntil), Offset: historyOffset, Limit: 50);
+    HistoryQuery BuildHistoryQuery()
+    {
+        var from = HistoryDate(HistoryFromDate, HistoryFrom); var until = HistoryDate(HistoryUntilDate, HistoryUntil);
+        HistoryTimeRange.Validate(from, until);
+        return new(
+            Entity: HistoryEntityBox.SelectedIndex == 1 ? HistoryEntity.Operations : HistoryEntity.Sessions,
+            SessionId: historySessionId, BoxBarcode: FilterBox.Text.Trim(), ItemBarcode: ItemFilter.Text.Trim(), Sku: SkuFilter.Text.Trim(), TaskId: TaskFilter.Text.Trim(),
+            SessionStatus: HistoryStatus<SessionStatus>(SessionStatusFilter), OperationStatus: HistoryStatus<OperationStatus>(OperationStatusFilter),
+            RequestStatus: HistoryStatus<RequestStatus>(RequestStatusFilter), Lane: HistoryLaneBox.SelectedIndex switch { 1 => "left", 2 => "right", _ => null },
+            FromInclusive: from, UntilExclusive: until, Offset: historyOffset, Limit: 50);
+    }
+    bool historyDetailOpen;
+    void ShowHistoryDetail()
+    { historyDetailOpen = true; ApplyHistoryLayout(); }
+    void ApplyHistoryLayout()
+    {
+        HistoryList.Visibility = historyDetailOpen ? Visibility.Collapsed : Visibility.Visible;
+        HistoryDetail.Visibility = historyDetailOpen ? Visibility.Visible : Visibility.Collapsed;
+    }
+    void BackToHistoryClick(object sender, RoutedEventArgs e)
+    { detailGeneration++; historyDetailOpen = false; ApplyHistoryLayout(); HistoryGrid.Focus(); }
     async Task LoadHistoryAsync(HistoryQuery? requestedQuery = null)
     {
         if (Runtime.Application is null || closing) return;
@@ -166,11 +185,17 @@ public partial class MainWindow
             default: detailGeneration++; break;
         }
     }
+    async void SelectedRecordDetailClick(object sender, RoutedEventArgs e)
+    {
+        if (HistoryGrid.SelectedItem is not HistoryQueryRow row) { model.LastResult = "请选择记录"; return; }
+        if (row.IsSession) await ShowSessionAsync(row.SessionId); else await ShowDetailAsync(row.Id, row.Operation);
+    }
     async void SessionOperationsClick(object sender, RoutedEventArgs e)
     {
         if (HistoryGrid.SelectedItem is not HistoryQueryRow row) return;
         historySessionId = row.SessionId; historyOffset = 0; HistoryEntityBox.SelectedIndex = 1;
-        FilterBox.Text = ItemFilter.Text = SkuFilter.Text = TaskFilter.Text = HistoryFrom.Text = HistoryUntil.Text = "";
+        FilterBox.Text = ItemFilter.Text = SkuFilter.Text = TaskFilter.Text = ""; HistoryFromDate.SelectedDate = HistoryUntilDate.SelectedDate = null; HistoryFrom.Text = HistoryUntil.Text = "00:00";
+        historyDetailOpen = false; ApplyHistoryLayout();
         SessionStatusFilter.SelectedIndex = OperationStatusFilter.SelectedIndex = RequestStatusFilter.SelectedIndex = HistoryLaneBox.SelectedIndex = 0;
         await LoadHistoryAsync();
     }
@@ -189,8 +214,10 @@ public partial class MainWindow
             RenderDetails(sessionId, null, detail.Requests);
             if (DetailTree.Items[0] is TreeViewItem root)
             {
-                root.Header = $"箱 {detail.Session.Barcode} · {OperatorText.Session(detail.Session.Status)} · {HistoryQueryRow.FormatDate(detail.OpenedAt)}";
-                root.Items.Insert(0, new TextBlock { Text = $"作业 {detail.OperationCount} · 唯一接受量 {detail.AcceptedQuantity}；可导航全部作业，以下为验箱与关闭链。", TextWrapping = TextWrapping.Wrap });
+                root.Header = $"箱会话 · {OperatorText.Session(detail.Session.Status)} · {detail.Session.Barcode}";
+                root.Items.Insert(0, new TextBox { Text = $"箱会话ID {detail.Session.Id}\n箱码 {detail.Session.Barcode}\n箱波次 {OperatorText.Known(detail.Session.Context?.BoxWave)}\n{HistoryQueryRow.FormatDate(detail.OpenedAt)} · 唯一接受量 {detail.AcceptedQuantity}",
+                    Style = (Style)FindResource("ReadonlyValue"), IsTabStop = true, Margin = new Thickness(4) });
+                root.Items.Insert(1, new TextBlock { Text = $"作业 {detail.OperationCount} · 唯一接受量 {detail.AcceptedQuantity}；可导航全部作业，以下为验箱与关闭链。", TextWrapping = TextWrapping.Wrap });
                 var audit = new TreeViewItem { Header = "箱会话审计", IsExpanded = false };
                 foreach (var entry in detail.Audit) audit.Items.Add($"{entry.At:O} · {entry.Kind} · {entry.Actor} · {entry.Evidence}");
                 root.Items.Add(audit);

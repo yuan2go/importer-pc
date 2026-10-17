@@ -1,0 +1,23 @@
+{
+  "Name": "handoff-conformance",
+  "SourceCommit": "8df02afc8799f81973f0bf3fe4375f604332dd99",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:37:44.833502+00:00",
+  "EndedAt": "2026-10-17T12:38:05.069826+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--conformance"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS selected verification scope --conformance",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "handoff-conformance.log",
+  "LogSha256": "5e7a57f72b87e92604baacc0847a322e1a5db802d264ebc686b67dba5e43b1d5",
+  "RawLogSha256": "bbbcb1d37b51dd86ea36e528b2cf865c9ee0836cf8d110f2756b6e278a7a23fa",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

@@ -1,0 +1,49 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> /reference/workspace/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /reference/workspace/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /reference/workspace/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /reference/workspace/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /reference/workspace/src/Ipc.Product/bin/Release/net10.0/Ipc.Product.dll
+  Ipc.Product -> /reference/workspace/.artifacts/operation15/candidates/operation15-d2b2ca2-portable/app/
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> /reference/workspace/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /reference/workspace/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /reference/workspace/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /reference/workspace/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Fixture -> /reference/workspace/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll
+  Ipc.Fixture -> /reference/workspace/.artifacts/operation15/candidates/operation15-d2b2ca2-portable/fixture/
+Sealed Simulation configuration: /reference/workspace/.artifacts/operation15/candidates/operation15-d2b2ca2-portable/app/config
+  正在确定要还原的项目…
+  已还原 /reference/tmp/ipc-extension-build-lbyd1raa/project/BarcodeExtension.csproj (用时 31 毫秒)。
+  BarcodeExtension -> /reference/tmp/ipc-extension-build-lbyd1raa/bin/Ipc.Reference.BarcodeExtension.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.39
+Verified OK
+{"Package": "reference.barcode-1.0.3.ipcx", "PackageSha256": "b90fd1ccc5f4e657774b91609b9b5b4152dc34f395840d8e95a347b11b7319dd", "PluginSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9", "HostContractSha256": "63d35547a9d37d6364a643d4e642ea9451583ad98a34e3b5d23b7ee5aaab3461", "FrozenHostUnchanged": true, "Publisher": "closure15-test", "Version": "1.0.3", "ExtensionContract": 1, "Signature": "RSA-PSS/SHA256", "Mode": "Simulation", "PluginSourceSha256": "cf2864697afb658f858fc5c857081351f8e2099a5c5cb78c7a38afcd913b376e"}
+  正在确定要还原的项目…
+  已还原 /reference/tmp/ipc-extension-build-d7dvx9i4/project/IntegrationExtension.csproj (用时 34 毫秒)。
+  IntegrationExtension -> /reference/tmp/ipc-extension-build-d7dvx9i4/bin/Ipc.Reference.IntegrationExtension.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.45
+Verified OK
+{"Package": "reference.integration-1.0.3.ipcx", "PackageSha256": "7f36f1ce8a65965ea1542c2e6f51aae1148497a32d7bdf09dda800e33a3427a6", "PluginSourceCommit": "68cdc36f7821825c1ee9e53d866015be5ecf3044", "HostContractSha256": "63d35547a9d37d6364a643d4e642ea9451583ad98a34e3b5d23b7ee5aaab3461", "FrozenHostUnchanged": true, "Publisher": "closure15-test", "Version": "1.0.3", "ExtensionContract": 1, "Signature": "RSA-PSS/SHA256", "Mode": "Simulation", "PluginSourceSha256": "c1b94ae58d7210353185cbf8e1b066753ddfe8cbd92b3c48c1d98be28e9c51ea"}
+Traceback (most recent call last):
+  File "/reference/workspace/scripts/package-reference.py", line 101, in <module>
+    z.write(path, path.relative_to(output).as_posix())
+  File "/reference/system-python/lib/python3.12/zipfile/__init__.py", line 1849, in write
+    shutil.copyfileobj(src, dest, 1024*8)
+  File "/reference/system-python/lib/python3.12/shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "/reference/system-python/lib/python3.12/zipfile/__init__.py", line 1208, in write
+    self._fileobj.write(data)
+OSError: [Errno 28] No space left on device

@@ -1,0 +1,13 @@
+{
+  "Package": {
+    "Id": "reference.barcode",
+    "Version": "1.0.1",
+    "ManifestSha256": "1327AFA2291F8076E0043A5E24665A67F32FF3ED1991FA1310E2F865EFD7104F"
+  },
+  "PackageSha256": "979A395CA49F7D4017EA3EE88E2B7A341FF49C6AC4FCADC08190D2DFBBA6F2C1",
+  "TrustSha256": "8A871C85F59E904804BCB8DA8EFA47A71B8BE43B898DF8860F14ABB4BD6C6B28",
+  "OperationId": "4fe1db7118bb489586895e075586ec30",
+  "At": "2026-10-17T12:48:44.282692+00:00",
+  "Status": "Installed",
+  "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
+}

@@ -1,0 +1,593 @@
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime 9bd094f4-5baa-41e9-ba90-f5a9a1183cfb station SIM-STATION-01 configuration SIM-1 mode Simulation ready for identity/context validation","State":{"Runtime":"9bd094f4-5baa-41e9-ba90-f5a9a1183cfb","Station":"SIM-STATION-01","Revision":"SIM-1","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /reference/workspace","State":{"ContentRoot":"/reference/workspace","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+JSON command console. One command per line; snapshot / emit / replay / reconcile / export / quit supported. SIMULATION only.
+{
+  "State": {
+    "Revision": 7,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "81327fdb2cac48a09b159f76b86aa903",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:45.052459+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:45.052459+00:00",
+        "ValidUntil": "2026-10-17T12:48:50.052459+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "af18f16d9441447ea966eaab05ac7176",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:45.053255+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:45.053255+00:00",
+        "ValidUntil": "2026-10-17T12:48:50.053255+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [
+      {
+        "Code": "WcsUnavailable",
+        "Scope": "station",
+        "Source": "transport",
+        "SourceEpoch": "SIM-1",
+        "EvidenceVersion": 2,
+        "ClearAuthority": "transport-health",
+        "ExpiresAt": null
+      }
+    ],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Disconnected",
+      "UpdatedAt": "2026-10-17T12:48:45.038143+00:00",
+      "ConfirmedAt": "2026-10-17T12:48:45.038143+00:00",
+      "ValidUntil": "2026-10-17T12:48:49.538145+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [
+    {
+      "Id": "a5208ee776da4a2689751a23b3f12064",
+      "Code": "WcsUnavailable:station",
+      "Scope": "station",
+      "Source": "transport",
+      "Epoch": "SIM-1",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T12:48:45.045416+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    },
+    {
+      "Id": "6fe899e1bfba4cadb1d26e51d458ed16",
+      "Code": "WcsHealth:Health:Disconnected",
+      "Scope": "station",
+      "Source": "runtime",
+      "Epoch": "f53b16db-a98a-4388-965e-f2daa8b08941",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T12:48:45.044583+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    }
+  ],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected"
+    ]
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 2,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "SIM-STATION-01",
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 1,
+  "GeneratedAt": "2026-10-17T12:48:45.067264+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 8,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "81327fdb2cac48a09b159f76b86aa903",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:45.052459+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:45.052459+00:00",
+        "ValidUntil": "2026-10-17T12:48:50.052459+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "af18f16d9441447ea966eaab05ac7176",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:45.053255+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:45.053255+00:00",
+        "ValidUntil": "2026-10-17T12:48:50.053255+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T12:48:45.123704+00:00",
+      "ConfirmedAt": "2026-10-17T12:48:45.123704+00:00",
+      "ValidUntil": "2026-10-17T12:48:49.623704+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable"
+    ]
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "SIM-STATION-01",
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 2,
+  "GeneratedAt": "2026-10-17T12:48:45.163257+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 8,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "81327fdb2cac48a09b159f76b86aa903",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:45.052459+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:45.052459+00:00",
+        "ValidUntil": "2026-10-17T12:48:50.052459+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "af18f16d9441447ea966eaab05ac7176",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:45.053255+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:45.053255+00:00",
+        "ValidUntil": "2026-10-17T12:48:50.053255+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T12:48:45.123704+00:00",
+      "ConfirmedAt": "2026-10-17T12:48:45.123704+00:00",
+      "ValidUntil": "2026-10-17T12:48:49.623704+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable"
+    ]
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "SIM-STATION-01",
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 3,
+  "GeneratedAt": "2026-10-17T12:48:45.197353+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "Status": "Persisted",
+  "Reason": "Saved locally; external acceptance is separate",
+  "Revision": 9,
+  "OwnerId": "SIM-STATION-01",
+  "RequestId": null
+}
+{
+  "State": {
+    "Revision": 9,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "81327fdb2cac48a09b159f76b86aa903",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:45.052459+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:45.052459+00:00",
+        "ValidUntil": "2026-10-17T12:48:50.052459+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "af18f16d9441447ea966eaab05ac7176",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:45.053255+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:45.053255+00:00",
+        "ValidUntil": "2026-10-17T12:48:50.053255+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-17T20:48:45.234592+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T12:48:45.123704+00:00",
+      "ConfirmedAt": "2026-10-17T12:48:45.123704+00:00",
+      "ValidUntil": "2026-10-17T12:48:49.623704+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload"
+    ]
+  },
+  "StationId": "SIM-STATION-01",
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 4,
+  "GeneratedAt": "2026-10-17T12:48:45.263886+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 9,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "81327fdb2cac48a09b159f76b86aa903",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:45.052459+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:45.052459+00:00",
+        "ValidUntil": "2026-10-17T12:48:50.052459+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "af18f16d9441447ea966eaab05ac7176",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:45.053255+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:45.053255+00:00",
+        "ValidUntil": "2026-10-17T12:48:50.053255+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-17T20:48:45.234592+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T12:48:45.123704+00:00",
+      "ConfirmedAt": "2026-10-17T12:48:45.123704+00:00",
+      "ValidUntil": "2026-10-17T12:48:49.623704+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload"
+    ]
+  },
+  "StationId": "SIM-STATION-01",
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 5,
+  "GeneratedAt": "2026-10-17T12:48:45.291565+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "Status": "Persisted",
+  "Reason": "Validated",
+  "Revision": 10,
+  "OwnerId": "b113eecd65f740f3b084031b8c155157",
+  "RequestId": null
+}
+{
+  "State": {
+    "Revision": 10,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "81327fdb2cac48a09b159f76b86aa903",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:45.052459+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:45.052459+00:00",
+        "ValidUntil": "2026-10-17T12:48:50.052459+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "af18f16d9441447ea966eaab05ac7176",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:45.053255+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:45.053255+00:00",
+        "ValidUntil": "2026-10-17T12:48:50.053255+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-17T20:48:45.234592+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T12:48:45.123704+00:00",
+      "ConfirmedAt": "2026-10-17T12:48:45.123704+00:00",
+      "ValidUntil": "2026-10-17T12:48:49.623704+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload"
+    ]
+  },
+  "StationId": "SIM-STATION-01",
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 6,
+  "GeneratedAt": "2026-10-17T12:48:45.388931+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "Status": "Persisted",
+  "Reason": "PendingActivation",
+  "Revision": 11,
+  "OwnerId": "b113eecd65f740f3b084031b8c155157",
+  "RequestId": null
+}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}

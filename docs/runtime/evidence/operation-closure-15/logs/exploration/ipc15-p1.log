@@ -1,0 +1,22 @@
+SELECT --operation-closure: E08
+Evidence data retained at /reference/tmp/ipc-verification-9619727f0ca0425ebbad71e6b3b4f32b
+PASS AC15 concurrent original queries have independent durable reservations before I/O
+PASS AC15 Q2 completion cannot erase Q1 reservation
+PASS AC15 pending/recovery and business guards retain independently incomplete responsibility
+PASS AC15 restart distinguishes each committed/replayed receipt from missing original custody
+PASS AC15 missing receipt ID remains discoverable beside original request after controlled shutdown and restart
+PASS AC15 terminal/payload/hash/contract/target/attempt retained and Context never counts supply acceptance
+PASS AC15 authorized history exposes original occurrence/source/time/custody without inventing lost bytes
+PASS AC15 matching later delivery cannot clear another missing original; maintenance counts original once; no blind resend
+PASS AC15 concurrent original queries have independent durable reservations before I/O
+PASS AC15 Q1 flushed raw survives actual SQLite T3 rollback without terminal success
+PASS AC15 Q2 completion cannot erase Q1 reservation
+PASS AC15 pending/recovery and business guards retain independently incomplete responsibility
+PASS AC15 restart distinguishes each committed/replayed receipt from missing original custody
+PASS AC15 missing receipt ID remains discoverable beside original request after controlled shutdown and restart
+PASS AC15 terminal/payload/hash/contract/target/attempt retained and Context never counts supply acceptance
+PASS AC15 authorized history exposes original occurrence/source/time/custody without inventing lost bytes
+PASS AC15 matching later delivery cannot clear another missing original; maintenance counts original once; no blind resend
+PASS AC15 OPERATION CLOSURE COMPLETE; WINDOWS_NOT_RUN
+PASS selected verification scope --operation-closure; Windows desktop/SDK/field validation NOT_RUN by this core executable
+Evidence data retained at /reference/tmp/ipc-verification-9619727f0ca0425ebbad71e6b3b4f32b

@@ -1,0 +1,445 @@
+{
+  "Status": "PASS_SYNTHETIC_OLD_DEPLOYMENT_JOURNEY",
+  "Windows": "NOT_RUN",
+  "Field": "BLOCKED",
+  "Commands": [
+    {
+      "Arguments": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "/reference/operation15-artifacts/legacy/release/app/Ipc.Product.dll",
+        "--config",
+        "/reference/operation15-artifacts/legacy/release/app/config",
+        "--data-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/data",
+        "--extension-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/store",
+        "--extension-trust",
+        "/reference/operation15-artifacts/upgrade-journey-v2/trust.Simulation.json",
+        "--action",
+        "extension-install",
+        "--mode",
+        "Simulation",
+        "--file",
+        "/reference/operation15-artifacts/legacy/release/offline-extensions/reference.barcode-1.0.1.ipcx",
+        "--sha256",
+        "979A395CA49F7D4017EA3EE88E2B7A341FF49C6AC4FCADC08190D2DFBBA6F2C1"
+      ],
+      "ExitCode": 0,
+      "Log": "reference.barcode-1.0.1-install.log"
+    },
+    {
+      "Arguments": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "/reference/operation15-artifacts/legacy/release/app/Ipc.Product.dll",
+        "--config",
+        "/reference/operation15-artifacts/legacy/release/app/config",
+        "--data-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/data",
+        "--extension-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/store",
+        "--extension-trust",
+        "/reference/operation15-artifacts/upgrade-journey-v2/trust.Simulation.json",
+        "--action",
+        "extension-install",
+        "--mode",
+        "Simulation",
+        "--file",
+        "/reference/operation15-artifacts/legacy/release/offline-extensions/reference.integration-1.0.1.ipcx",
+        "--sha256",
+        "9B5433D6279F899538CD6A500918164FF3D3037271F2028A14A04009F1396039"
+      ],
+      "ExitCode": 0,
+      "Log": "reference.integration-1.0.1-install.log"
+    },
+    {
+      "Arguments": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "/reference/operation15-artifacts/candidates/unpacked-portable/app/Ipc.Product.dll",
+        "--config",
+        "/reference/operation15-artifacts/candidates/unpacked-portable/app/config",
+        "--data-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/data",
+        "--extension-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/store",
+        "--extension-trust",
+        "/reference/operation15-artifacts/upgrade-journey-v2/trust.Simulation.json",
+        "--action",
+        "upgrade",
+        "--previous-release",
+        "/reference/operation15-artifacts/legacy/release",
+        "--target-release",
+        "/reference/operation15-artifacts/candidates/unpacked-portable",
+        "--file",
+        "/reference/operation15-artifacts/upgrade-journey-v2/occupied-backup.db",
+        "--receipt",
+        "/reference/operation15-artifacts/upgrade-journey-v2/failed-upgrade.json"
+      ],
+      "ExitCode": -6,
+      "Log": "upgrade-collision.log"
+    },
+    {
+      "Arguments": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "/reference/operation15-artifacts/candidates/unpacked-portable/app/Ipc.Product.dll",
+        "--config",
+        "/reference/operation15-artifacts/candidates/unpacked-portable/app/config",
+        "--data-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/data",
+        "--extension-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/store",
+        "--extension-trust",
+        "/reference/operation15-artifacts/upgrade-journey-v2/trust.Simulation.json",
+        "--action",
+        "upgrade",
+        "--previous-release",
+        "/reference/operation15-artifacts/legacy/release",
+        "--target-release",
+        "/reference/operation15-artifacts/candidates/unpacked-portable",
+        "--file",
+        "/reference/operation15-artifacts/upgrade-journey-v2/before-upgrade.db",
+        "--receipt",
+        "/reference/operation15-artifacts/upgrade-journey-v2/upgrade.json"
+      ],
+      "ExitCode": 0,
+      "Log": "upgrade.log"
+    },
+    {
+      "Arguments": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "/reference/operation15-artifacts/legacy/release/app/Ipc.Product.dll",
+        "--config",
+        "/reference/operation15-artifacts/legacy/release/app/config",
+        "--data-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/data",
+        "--extension-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/store",
+        "--extension-trust",
+        "/reference/operation15-artifacts/upgrade-journey-v2/trust.Simulation.json",
+        "--action",
+        "preflight"
+      ],
+      "ExitCode": -6,
+      "Log": "old-reader-refusal.log"
+    },
+    {
+      "Arguments": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "/reference/operation15-artifacts/candidates/unpacked-portable/app/Ipc.Product.dll",
+        "--config",
+        "/reference/operation15-artifacts/candidates/unpacked-portable/app/config",
+        "--data-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/data",
+        "--extension-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/store",
+        "--extension-trust",
+        "/reference/operation15-artifacts/upgrade-journey-v2/trust.Simulation.json",
+        "--action",
+        "extension-install",
+        "--mode",
+        "Simulation",
+        "--file",
+        "/reference/operation15-artifacts/candidates/unpacked-portable/offline-extensions/reference.barcode-1.0.3.ipcx",
+        "--sha256",
+        "B90FD1CCC5F4E657774B91609B9B5B4152DC34F395840D8E95A347B11B7319DD"
+      ],
+      "ExitCode": 0,
+      "Log": "reference.barcode-1.0.3-install.log"
+    },
+    {
+      "Arguments": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "/reference/operation15-artifacts/candidates/unpacked-portable/app/Ipc.Product.dll",
+        "--config",
+        "/reference/operation15-artifacts/candidates/unpacked-portable/app/config",
+        "--data-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/data",
+        "--extension-root",
+        "/reference/operation15-artifacts/upgrade-journey-v2/store",
+        "--extension-trust",
+        "/reference/operation15-artifacts/upgrade-journey-v2/trust.Simulation.json",
+        "--action",
+        "extension-install",
+        "--mode",
+        "Simulation",
+        "--file",
+        "/reference/operation15-artifacts/candidates/unpacked-portable/offline-extensions/reference.integration-1.0.3.ipcx",
+        "--sha256",
+        "7F36F1CE8A65965EA1542C2E6F51AAE1148497A32D7BDF09DDA800E33A3427A6"
+      ],
+      "ExitCode": 0,
+      "Log": "reference.integration-1.0.3-install.log"
+    }
+  ],
+  "Phases": [
+    {
+      "Phase": "old-deployment",
+      "Revision": "9fd1457167984e638d7802b949cdee4e",
+      "Version": "UPGRADE-OLD-1.0.1",
+      "State": "PendingActivation"
+    },
+    {
+      "Phase": "old-deployment",
+      "Effective": "UPGRADE-OLD-1.0.1"
+    },
+    {
+      "Box": "000001",
+      "OriginalRequest": {
+        "Id": "9ca163f95285446cb5f05a3679643e6c",
+        "OwnerId": "961bdd48e7dc4fd5bfc7b05922b78302",
+        "SessionId": "d8c8db12d33e4f5fba3e6a51487000e1",
+        "Kind": "Submit",
+        "OwnerRevision": 3,
+        "IntentKey": "961bdd48e7dc4fd5bfc7b05922b78302:Submit:3",
+        "Payload": "{\n  \"StationId\": \"SIM-STATION-01\",\n  \"SessionId\": \"d8c8db12d33e4f5fba3e6a51487000e1\",\n  \"OwnerId\": \"961bdd48e7dc4fd5bfc7b05922b78302\",\n  \"OwnerRevision\": 3,\n  \"Kind\": \"Submit\",\n  \"Barcode\": \"000123\",\n  \"Package\": 2,\n  \"Quantity\": 2,\n  \"CheckToken\": null,\n  \"Policy\": \"SYNTHETIC-KEEP-v1\",\n  \"InitialDemand\": 120,\n  \"Fault\": \"Drop\",\n  \"Actor\": {\n    \"Id\": \"SIM-maintenance\",\n    \"Role\": \"Maintenance\",\n    \"ExpiresAt\": \"2026-10-17T20:47:29.212019+00:00\"\n  }\n}",
+        "PayloadHash": "E1E988F28F6B0E037C3B861FC2214953BBA4C58B0E403DCB80761B702D38D615",
+        "Binding": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "Status": "Unknown",
+        "CreatedAt": "2026-10-17T12:47:29.836135+00:00",
+        "Implementation": {
+          "Driver": "extension",
+          "Package": {
+            "Id": "reference.integration",
+            "Version": "1.0.1",
+            "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+          },
+          "ModuleId": "reference-http",
+          "InstanceId": "upgrade-receiver",
+          "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+          "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+          "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+          "Target": {
+            "Id": "loopback",
+            "Revision": "SIM-1",
+            "Contract": "SIMULATION-v1",
+            "Endpoint": "http://127.0.0.1:18743/"
+          },
+          "TimeoutMs": 1500,
+          "Policy": "SYNTHETIC-KEEP-v1",
+          "FixtureDemand": 120,
+          "Parameters": {
+            "fault.fail-create": "false",
+            "fault.stop-delay-ms": "0",
+            "fault.dispose-delay-ms": "0",
+            "metadata.label": ""
+          }
+        }
+      },
+      "UniqueAccepted": 2,
+      "ReconciledDrop": true,
+      "ExportSha256": "f87664f78f676fbdcda537f13e0a4a6169b4f32ffab0928309c57fe87998cd29"
+    },
+    {
+      "Phase": "transition-without-extensions",
+      "Revision": "eeb8c119c3834f4dafd9964a1f85e48b",
+      "Version": "UPGRADE-TRANSITION",
+      "State": "PendingActivation"
+    },
+    {
+      "Phase": "transition-without-extensions",
+      "Effective": "UPGRADE-TRANSITION"
+    },
+    {
+      "Phase": "new-deployment",
+      "Revision": "184e51c4c3a3464388eff23d22a5c591",
+      "Version": "UPGRADE-NEW-1.0.3",
+      "State": "PendingActivation"
+    },
+    {
+      "Phase": "new-deployment",
+      "Effective": "UPGRADE-NEW-1.0.3"
+    },
+    {
+      "Box": "000002",
+      "OriginalRequest": {
+        "Id": "3a60631531544a798c96f5c82b475050",
+        "OwnerId": "6920e7bb76644ea3af1a98fcd36af92d",
+        "SessionId": "81ffa0fb3c2b4375b00f341f302882c1",
+        "Kind": "Submit",
+        "OwnerRevision": 3,
+        "IntentKey": "6920e7bb76644ea3af1a98fcd36af92d:Submit:3",
+        "Payload": "{\n  \"StationId\": \"SIM-STATION-01\",\n  \"SessionId\": \"81ffa0fb3c2b4375b00f341f302882c1\",\n  \"OwnerId\": \"6920e7bb76644ea3af1a98fcd36af92d\",\n  \"OwnerRevision\": 3,\n  \"Kind\": \"Submit\",\n  \"Barcode\": \"000123\",\n  \"Package\": 2,\n  \"Quantity\": 2,\n  \"CheckToken\": null,\n  \"Policy\": \"SYNTHETIC-KEEP-v1\",\n  \"InitialDemand\": 120,\n  \"Fault\": \"None\",\n  \"Actor\": {\n    \"Id\": \"SIM-maintenance\",\n    \"Role\": \"Maintenance\",\n    \"ExpiresAt\": \"2026-10-17T20:47:34.817771+00:00\"\n  }\n}",
+        "PayloadHash": "2742E5127E9CD1145DCAEA57B113194874C836D1F65B37F22E0C24F06EC0CC44",
+        "Binding": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "Status": "Accepted",
+        "CreatedAt": "2026-10-17T12:47:35.370292+00:00",
+        "Implementation": {
+          "Driver": "extension",
+          "Package": {
+            "Id": "reference.integration",
+            "Version": "1.0.3",
+            "ManifestSha256": "A4C838BFE0597C86EFFAB8B7D75CAD0C3321BBCA47DA8AEDE090CF0B91654E5D"
+          },
+          "ModuleId": "reference-http",
+          "InstanceId": "upgrade-receiver",
+          "DeploymentVersion": "UPGRADE-NEW-1.0.3",
+          "ConfigurationSha256": "5B8F7DA67055CC6494071F022F73489C567018B2570240A4F3C4F042F66B3537",
+          "ContractSha256": "5C61391E1681D2A5C12BAE39B7CAD910FC8837CF2B21AD701A45E637225A928C",
+          "Target": {
+            "Id": "loopback",
+            "Revision": "SIM-1",
+            "Contract": "SIMULATION-v1",
+            "Endpoint": "http://127.0.0.1:18743/"
+          },
+          "TimeoutMs": 1500,
+          "Policy": "SYNTHETIC-KEEP-v1",
+          "FixtureDemand": 120,
+          "Parameters": {
+            "fault.fail-create": "false",
+            "fault.stop-delay-ms": "0",
+            "fault.dispose-delay-ms": "0",
+            "metadata.label": ""
+          }
+        }
+      },
+      "UniqueAccepted": 2,
+      "ReconciledDrop": false,
+      "ExportSha256": "a4ecdbf497f2d0c707dc2e822cc5aa4a8fe081c3e2e0a3a43d40243bbb4ae77e"
+    }
+  ],
+  "HostSources": {
+    "old": {
+      "WorkPackage": "WP-IPC-ARCH-EXTENSION-CLOSURE-13",
+      "SchemaVersion": 1,
+      "ReleaseVersion": "ARCH-EXTENSION-CLOSURE-13",
+      "StorageVersion": 3,
+      "MinimumReader": 3,
+      "ContractVersion": "SIMULATION-v1",
+      "ExtensionContract": 1,
+      "ProductId": "ipc-reference",
+      "ProductDefinitionSha256": "676394b47abe39e7c990003f1fab096eb024f80fc033c23551ae7931360c855f",
+      "SourceCodeSha256": "b842e50eb6e87ed65d380a7a55efe5b662d3f977a8d8e6cbe839c4be2343d3ee",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "WorkingTree": false,
+      "GitBase": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Mode": "Simulation",
+      "Target": "portable-development"
+    },
+    "new": {
+      "WorkPackage": "WP-IPC-OPERATION-CLOSURE-15",
+      "SchemaVersion": 1,
+      "ReleaseVersion": "OPERATION-CLOSURE-15",
+      "StorageVersion": 5,
+      "MinimumReader": 5,
+      "ContractVersion": "SIMULATION-v1",
+      "ExtensionContract": 1,
+      "ProductId": "ipc-reference",
+      "ProductDefinitionSha256": "676394b47abe39e7c990003f1fab096eb024f80fc033c23551ae7931360c855f",
+      "SourceCodeSha256": "475f4ed6c5d629ce1504be69f2c4096467572ff15625a5856d91f7ed8c561988",
+      "SourceCommit": "d2b2ca268013e7980f435e9cf8d9e48cd06ddc6c",
+      "WorkingTree": false,
+      "GitBase": "d2b2ca268013e7980f435e9cf8d9e48cd06ddc6c",
+      "Mode": "Simulation",
+      "Target": "portable-development"
+    }
+  },
+  "OriginalPackages": [
+    {
+      "Reference": {
+        "Id": "reference.barcode",
+        "Version": "1.0.1",
+        "ManifestSha256": "1327AFA2291F8076E0043A5E24665A67F32FF3ED1991FA1310E2F865EFD7104F"
+      },
+      "Sha256": "979a395ca49f7d4017ea3ee88e2b7a341ff49c6ac4fcadc08190d2dfbba6f2c1"
+    },
+    {
+      "Reference": {
+        "Id": "reference.integration",
+        "Version": "1.0.1",
+        "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+      },
+      "Sha256": "9b5433d6279f899538cd6a500918164ff3d3037271f2028a14a04009f1396039"
+    }
+  ],
+  "NewPackages": [
+    {
+      "Reference": {
+        "Id": "reference.barcode",
+        "Version": "1.0.3",
+        "ManifestSha256": "71F2A7AB90E0AD0D133A705D30ACF4610395CFEF622F635406617115C55F3FF3"
+      },
+      "Sha256": "b90fd1ccc5f4e657774b91609b9b5b4152dc34f395840d8e95a347b11b7319dd"
+    },
+    {
+      "Reference": {
+        "Id": "reference.integration",
+        "Version": "1.0.3",
+        "ManifestSha256": "A4C838BFE0597C86EFFAB8B7D75CAD0C3321BBCA47DA8AEDE090CF0B91654E5D"
+      },
+      "Sha256": "7f36f1ce8a65965ea1542c2e6f51aae1148497a32d7bdf09dda800e33a3427a6"
+    }
+  ],
+  "Database": {
+    "Format": 5,
+    "UniqueAcceptance": 4,
+    "Requests": 10,
+    "OriginalConfigsRetained": 4
+  },
+  "BackupSha256": "b9849a77adc26cc352cb2dc76e5db20f889ef6e4390b4411ab75bb624364f3ad",
+  "UpgradeReceipt": {
+    "OperationId": "cfdc3da3a7c340c8a6a9ab99b5544400",
+    "Status": "ForwardMigrationCommitted",
+    "StartedAt": "2026-10-17T12:47:32.349293+00:00",
+    "Backup": {
+      "BackupId": "4b250bdf1e6a48a789dffd944f1cede5",
+      "Sha256": "B9849A77ADC26CC352CB2DC76E5DB20F889EF6E4390B4411AB75BB624364F3AD",
+      "CreatedAt": "2026-10-17T12:47:32.349121+00:00",
+      "Source": {
+        "FormatVersion": 3,
+        "MinimumReader": 3,
+        "SelectedReader": 5,
+        "SelectedReaderCompatible": false,
+        "ExplicitUpgradeSupported": true,
+        "PendingRequests": 0,
+        "OpenSessions": 0,
+        "Quarantined": false,
+        "UpgradeBlockers": []
+      },
+      "Backup": {
+        "FormatVersion": 3,
+        "MinimumReader": 3,
+        "SelectedReader": 5,
+        "SelectedReaderCompatible": false,
+        "ExplicitUpgradeSupported": true,
+        "PendingRequests": 0,
+        "OpenSessions": 0,
+        "Quarantined": false,
+        "UpgradeBlockers": []
+      }
+    },
+    "PreviousRelease": {
+      "ExecutableSha256": "CE2105CB847B83EEBB4A6A541004791C7CF5B792AD2C3B4FC7972D7473994E93",
+      "ProgramAssemblySha256": "8CB79873DEA04561DFAB3DA863B5D14F3660ACA502F403855F45920A939AD59E",
+      "ReleaseManifestSha256": "5057F8A1A1E6D3BB7A8B8E4E2B83703D95E0D7A58C110F50793B47D5603B05AE",
+      "ConfigurationSha256": {
+        "product.json": "DF90ECFCD92FB7A6CED8B102274C731CE26F8E79E095A19E88D19DF0E97F4068",
+        "station.json": "5B19A4CCD4276C84960AD86BC99C9BC0CA9EB5DABCF899904D2CDFDE25F8A195",
+        "presentation.json": "631B7675CD7AC2982711443908AEE096EBBAE2766790086FAAA9FD6E555E3E2F"
+      }
+    },
+    "SelectedRelease": {
+      "ExecutableSha256": "CE2105CB847B83EEBB4A6A541004791C7CF5B792AD2C3B4FC7972D7473994E93",
+      "ProgramAssemblySha256": "0CA4B9F4FE0DE0BEA36DC0F067327148E9125D22F8BEC38CA35283E0B592C77C",
+      "ReleaseManifestSha256": "EA3BF2037870C3AE73CF2BBAA71692C6A56775793E5C5F37715FB34626A343B1",
+      "ConfigurationSha256": {
+        "product.json": "F90E05C12481B3BC38EF30F23B296EEDEC090EE1442D4AC86073DED064F56DAC",
+        "station.json": "5B19A4CCD4276C84960AD86BC99C9BC0CA9EB5DABCF899904D2CDFDE25F8A195",
+        "presentation.json": "631B7675CD7AC2982711443908AEE096EBBAE2766790086FAAA9FD6E555E3E2F"
+      }
+    },
+    "DestinationFormat": 5,
+    "Failure": null
+  },
+  "OriginalReleaseBytesUnchanged": true,
+  "OldReader": "REFUSED_UNCHANGED",
+  "LegacyConsumerCoverage": "UNVERIFIED_REFUSES_UNINSTALL_NO_OVERRIDE"
+}

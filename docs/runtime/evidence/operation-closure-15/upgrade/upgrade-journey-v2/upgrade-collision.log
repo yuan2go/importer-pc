@@ -1,0 +1,6 @@
+Unhandled exception. System.IO.IOException: Backup destination must be new; source retained
+   at Ipc.Supply.SupplyStore.BackupSnapshot(String source, String destination, Boolean owned) in /reference/workspace/src/Ipc.Supply/Maintenance.cs:line 181
+   at Ipc.Supply.SupplyStore.BackupReadOnly(String source, String destination) in /reference/workspace/src/Ipc.Supply/Maintenance.cs:line 175
+   at Ipc.Supply.SupplyStore.UpgradeVerified(String source, String destinationBackup, String operationReceipt, MaintenanceReleaseIdentity previousRelease, MaintenanceReleaseIdentity selectedRelease) in /reference/workspace/src/Ipc.Supply/Maintenance.cs:line 235
+   at Program.<Main>$(String[] args) in /reference/workspace/src/Ipc.Product/Program.cs:line 111
+   at Program.<Main>(String[] args)

@@ -302,10 +302,19 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
         if (snapshot.State.Actor?.Role != SimulationRole.Maintenance || snapshot.State.Actor.ExpiresAt <= DateTimeOffset.UtcNow) throw new GuardException("Maintenance identity required");
         var request = (await application.UnknownRequestsAsync()).SingleOrDefault(x => x.Id == requestId) ?? throw new GuardException("Select an original unresolved request");
         var port = integrations ?? throw new GuardException("Original integration runtime unavailable");
+        var receiptId = await application.BeginReceiptAsync(request, null, "original-query");
+        IntegrationResponse? response;
+        try { response = await port.QueryAsync(request, CancellationToken.None); }
+        catch (Exception ex) when (ex is HttpRequestException or OperationCanceledException or InvalidDataException or IOException or System.Security.Cryptography.CryptographicException)
+        {
+            await application.NoReceiptAsync(receiptId);
+            await application.RecordQueryAsync(request.Id, "Query unavailable: " + ex.GetType().Name + ": " + ex.Message + "; original reconciliation remains unresolved; terminal facts retained; no resend");
+            return;
+        }
         try
         {
-            var response = await port.QueryAsync(request, CancellationToken.None);
-            if (response is not null) await application.CompleteAsync(request, null, response);
+            if (response is not null) await application.CompleteAsync(request, null, response, receiptId);
+            else await application.NoReceiptAsync(receiptId);
             await application.RecordQueryAsync(request.Id, response is null ? "No authoritative record / query unsupported; reconciliation remains unresolved; terminal facts retained; no resend" : "Authoritative SIMULATION receiver evidence " + response.EvidenceId);
         }
         catch (Exception ex) when (ex is HttpRequestException or OperationCanceledException or InvalidDataException or IOException or System.Security.Cryptography.CryptographicException)
@@ -343,7 +352,7 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
                 Schema = 1, Revision = s.State.Revision, Session = s.State.Session?.Id, SessionState = s.State.Session?.Status.ToString(),
                 Blocks = s.Admit.Reasons, Modules = ModuleStates, FaultCodes = s.RuntimeFaults.Select(x => x.Split(':')[0]).ToArray(),
                 Requests = detail.Select(x => new { x.Request.Id, x.Request.OwnerId, Kind = x.Request.Kind.ToString(), State = x.Request.Status.ToString(), x.Request.PayloadHash, x.Request.Binding.Contract, BindingRevision = x.Request.Binding.Revision, x.Attempts,
-                    Responses = x.Responses.Select(r => new { r.EvidenceId, r.RequestId, r.Result, r.Quantity, r.Remaining }) }) };
+                    Receipts = x.Receipts.Select(r => new { r.Id, r.RequestId, r.AttemptId, r.Origin, r.StartedAt, r.Status, r.ContentSha256 }), Responses = x.Responses.Select(r => new { r.EvidenceId, r.RequestId, r.Result, r.Quantity, r.Remaining }) }) };
         }
         await File.WriteAllTextAsync(destination, Wire.Encode(report));
     }

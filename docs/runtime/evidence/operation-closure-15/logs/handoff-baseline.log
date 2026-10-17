@@ -1,0 +1,51 @@
+SELECT --baseline: AC/process baseline
+Evidence data retained at /reference/tmp/ipc-verification-55296df1509243edb8cae9b867d87c96
+RUN AC-01/10 lifecycle, bounded command queue and ownership
+PASS AC-01/10 lifecycle, bounded command queue and ownership
+RUN AC-01/11 product assembly, modes and strict configuration
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime c615d444-7373-41f5-86f7-16531c6e7118 station SIM-b4c77fae4f494cbe867b0fb4e105878a configuration SIM-1 mode Simulation ready for identity/context validation","State":{"Runtime":"c615d444-7373-41f5-86f7-16531c6e7118","Station":"SIM-b4c77fae4f494cbe867b0fb4e105878a","Revision":"SIM-1","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /reference/workspace","State":{"ContentRoot":"/reference/workspace","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Error","Category":"Ipc.Product.ProductRuntime","Message":"Startup NotReady: IOException: The process cannot access the file \u0027/reference/tmp/ipc-verification-55296df1509243edb8cae9b867d87c96/product-data/Simulation/SIM-b4c77fae4f494cbe867b0fb4e105878a/3549B0028B75D981CDDA2E573E9CB49DEDC200185876DF299F912B79F69DABD8.lease\u0027 because it is being used by another process.","State":{"Type":"IOException","Message":"The process cannot access the file \u0027/reference/tmp/ipc-verification-55296df1509243edb8cae9b867d87c96/product-data/Simulation/SIM-b4c77fae4f494cbe867b0fb4e105878a/3549B0028B75D981CDDA2E573E9CB49DEDC200185876DF299F912B79F69DABD8.lease\u0027 because it is being used by another process.","{OriginalFormat}":"Startup NotReady: {Type}: {Message}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /reference/workspace","State":{"ContentRoot":"/reference/workspace","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime feab1bde-3d72-49a7-ae8a-a4761f8a002f station SIM-b4c77fae4f494cbe867b0fb4e105878a configuration SIM-1 mode Simulation ready for identity/context validation","State":{"Runtime":"feab1bde-3d72-49a7-ae8a-a4761f8a002f","Station":"SIM-b4c77fae4f494cbe867b0fb4e105878a","Revision":"SIM-1","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /reference/workspace","State":{"ContentRoot":"/reference/workspace","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Error","Category":"Ipc.Product.ProductRuntime","Message":"Startup NotReady: InvalidDataException: Replay path must be an installed relative file without links","State":{"Type":"InvalidDataException","Message":"Replay path must be an installed relative file without links","{OriginalFormat}":"Startup NotReady: {Type}: {Message}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /reference/workspace","State":{"ContentRoot":"/reference/workspace","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime f29b7a5b-445e-409f-b8d1-b0f38ad1bb0f station SIM-b4c77fae4f494cbe867b0fb4e105878a configuration SIM-1 mode Simulation ready for identity/context validation","State":{"Runtime":"f29b7a5b-445e-409f-b8d1-b0f38ad1bb0f","Station":"SIM-b4c77fae4f494cbe867b0fb4e105878a","Revision":"SIM-1","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /reference/workspace","State":{"ContentRoot":"/reference/workspace","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime 2ce9f001-1de8-4e07-b639-38cb014c6e1f station SIM-b4c77fae4f494cbe867b0fb4e105878a configuration SIM-3 mode Simulation ready for identity/context validation","State":{"Runtime":"2ce9f001-1de8-4e07-b639-38cb014c6e1f","Station":"SIM-b4c77fae4f494cbe867b0fb4e105878a","Revision":"SIM-3","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /reference/workspace","State":{"ContentRoot":"/reference/workspace","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+PASS AC-01/11 product assembly, modes and strict configuration
+RUN AC-02/07 combined guards and independent alarms
+PASS AC-02/07 combined guards and independent alarms
+RUN AC-03/04/06 continuous same-code entities, correction and unique ledger
+PASS AC-03/04/06 continuous same-code entities, correction and unique ledger
+RUN AC-04/09 split, atomic two-lane demand and close barrier
+Unhandled exception. System.InvalidOperationException: ASSERT: Both prepared before external arbitration
+   at Program.<<Main>$>g__Assert|0_3(Boolean condition, String reason) in /reference/workspace/tests/Ipc.Verification/Program.cs:line 484
+   at Program.<>c__DisplayClass0_1.<<<Main>$>b__15>d.MoveNext() in /reference/workspace/tests/Ipc.Verification/Program.cs:line 255
+--- End of stack trace from previous location ---
+   at Program.<>c__DisplayClass0_1.<<<Main>$>b__15>d.MoveNext() in /reference/workspace/tests/Ipc.Verification/Program.cs:line 263
+--- End of stack trace from previous location ---
+   at Program.<<Main>$>g__Check|0_2(String label, Func`1 run) in /reference/workspace/tests/Ipc.Verification/Program.cs:line 483
+   at Program.<Main>$(String[] args) in /reference/workspace/tests/Ipc.Verification/Program.cs:line 243
+   at Program.<Main>$(String[] args) in /reference/workspace/tests/Ipc.Verification/Program.cs:line 481
+   at Program.<Main>(String[] args)

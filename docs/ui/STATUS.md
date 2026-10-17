@@ -1,7 +1,4 @@
-> 当前判断见 [PR14后复核](../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)，下一实施为 [15工作包](../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)。14已合并且原子问题分项验证；不同接收发生责任、维护/输入与UI仍有残余。本文有效职责/规则继续成立，历次执行结果只按其来源版本理解；本次更新前原字节见 [归档](../archive/pre-audit-reconciliation-publication-01/README.md)。
-
-> 当前实现增量为FIX-14：A-03显式选择激活、A-04本窗唯一草稿、R-01按持久回执/输入版本消费。v1.1原件不变，实际WPF截图0；[14映射/Windows后验](../runtime/validation/conformance-fix-14-windows.md)。下方DELIVERY-12仅历史。
-
+> 当前工程实现见[15 UI映射](operation-closure-15-mapping.md)、[逐问题/AC报告](../runtime/operation-closure-15.md)与[同版Windows后验](../runtime/validation/operation-closure-15-windows.md)。冻结013862f，v1.1实物保持原字节；15核心投影/策略和WPF交叉构建已验证，实际客户端截图0，UI行为/尺寸/HID/声音仍NOT_RUN。原有效设计与下方历史不因实现而被改写。[更新前字节](../archive/pre-operation-closure-15/README.md)。
 
 # UI资料当前状态
 

@@ -1,10 +1,4 @@
-> 当前为14修复后的同版候选待验，继承13用户决定统一后置：WINDOWS_NOT_RUN，截图0，不寻找VM/runner、不扩OAuth。下方09/11/12/环境阻塞表述均是形成时记录。完整W01～06保留；增补直接组件页激活、导入跨页保存/两窗CAS、A/A/B及迟到输入、实例故障/历史归属、消费者停止与离线根保护，见 [14 Windows场景](validation/conformance-fix-14-windows.md)。
-
-> FIX-14当前指引：本文件下方13及更早“当前/本轮/已完成”保留形成时身份，已由 [14执行基线](conformance-fix-14-baseline.md)接管。A-01～04是待修确定缺陷；健康隔离和维护闭环是有效要求，不能按旧完成性表述判通过。Windows沿13决定统一后验，不寻找VM/runner；D/RV、真实SDK/WCS/现场门禁继续。原字节见 [归档](../archive/pre-conformance-fix-14/README.md)。
-
-> DELIVERY-12待验入口：[12报告](extension-windows-delivery-12.md)。当前授权包含Windows参考验证；开工检查无本机/VM/自托管runner/交互桌面。新增远端原生WPF冒烟另列实际结果，不能替代本文件W01～06。原11/09记录保留，不改变支持矩阵；保护拒绝不算正常适配PASS。
-
-> 当前待验版本绑定[REVIEW-FOLLOWUP-11](review-followup-11.md)的新SourceCommit/包SHA。下文上一版边界保持；没有新增Windows/真实集成执行，W01～06 NOT_RUN，B01～06 BLOCKED。
+> 当前同版候选为OPERATION-CLOSURE-15源013862f，见[15报告](operation-closure-15.md)及[实际客户端后验清单](validation/operation-closure-15-windows.md)。实际截图0，W01～06均NOT_RUN；下方09候选和形成时时态是历史，支持/保护矩阵继续有效。不新建VM/runner或扩OAuth。
 
 # WINDOWS-VALIDATION-06 同版待验记录
 
@@ -21,4 +15,4 @@
 
 本轮WPF交叉构建和win-x64发布/文件完整性分别在09登记PASS或FAIL，不扩张为本表PASS。实际客户端截图数量为0，未制造空截图、拼图或将v1.1 PNG更名为WPF。全部格保持NOT_RUN；环境阻塞原因与尚未执行的动作分开登记。
 
-后续必须使用09标明的同一SourceCommit/ZIP SHA及新的合成数据根。记录OS build/CPU/账户会话、物理分辨率/系统缩放/实际DIP、前置/动作/观察/预期、执行者/时间与独立截图/请求证据；改代码后重新形成同版身份。按[06工作包](../work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)逐格执行，不复用旧截图。Windows参考通过也不能关闭[05真实能力](integration-05.md)或现场D/RV。
+后续必须使用本次实际变更对应的SourceCommit/ZIP SHA，09身份仅用于其历史版本及新的合成数据根。记录OS build/CPU/账户会话、物理分辨率/系统缩放/实际DIP、前置/动作/观察/预期、执行者/时间与独立截图/请求证据；改代码后重新形成同版身份。按[06工作包](../work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)逐格执行，不复用旧截图。Windows参考通过也不能关闭[05真实能力](integration-05.md)或现场D/RV。

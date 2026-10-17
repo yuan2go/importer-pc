@@ -1,0 +1,15 @@
+{
+  "SchemaVersion": 1,
+  "Publishers": [
+    {
+      "Id": "reference-test",
+      "PublicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEArZIwGvqNA0CFzE0JgqUQ\nX0JA8zWBdlxJ/CT/CGkJqzXUgg7M9U/OZrNjqpdJPcku25KtjoaJuBbgn7ijbSB5\nBES6g1bMl5meDJLJsu7OnQxSHvGDgE5GgMliW8D0njqt8YKzT4l6rLzgjJPyEB7k\nI1oOUO3cbf1yhPuY6GIYnaSs0UiCXXAMZBe74XNdgzsIhzQqO662FuF8NwZ2NTdG\nLJGL19aPYb1/upu3fPdQZxJRa6KrRv7VDDYSE6gIgyRU+0Wku+Wpax7KGvwTkmaD\nNLiX5eLuwZ7QBeE6WS9zmLBw1RKiVzzb0QSD9V1kCtOYaXhB2lcYnITwyH5guARa\njTGl1zmOaopImEz2V4U9/gblC48GjvadR6NzvCaBCrr6PzxhfmOXT4qATehHANud\nfcPxqtcskqQmoiL4o1s495UxRCdAaRanP9WGy9ZKWaYvMjIr1Jldo7cvODpED+ii\nkTKMekxaovCwrDRjO92OatNRzZjBNoK08Q6ylMAMY0OfAgMBAAE=\n-----END PUBLIC KEY-----\n",
+      "TestOnly": true
+    },
+    {
+      "Id": "closure15-test",
+      "PublicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAt0VS5xf63j25BCUedzWp\nGzHtfxPQKsWUedJYRi6wHf7/oykdgjOiAqqvDNStts9qCVkBou94q0XOgvRigqUv\nk4H0Xc4g/8lCkbLfZkqU8C+CRUSNYIC4FpQBDdSVoRGoMrDSoxVltNNF7bjINr+u\npQWTCjQbBHr1ft9esZUmoj2aDpdZY00XlcOhW8Qn73tAXEjN8ZBseKWDHio4DiH2\nf1YdieGOp/V1Cx1emLqOwdg0fM0etJJ6fYT7N10AjKAwx7H7r8P8O7qT/GCa+HZ+\nlr5YfSouzCxrHgqpTm9j+ghtdcBI4qTH4/AnT17/5ssmBeR0ffaH4iUgTzMKNUen\nG/4a3GHR/qsgHKNomEjFdRTx/hgGMaUWbzuXI8TfYJhq4M02MoLNq91QymyrPE+y\nkU76DXtRDmv4aMS5Dk3ylEYi0TkNrBFOyJq7x0vvOi/nC/e9Bm4tBh8T/E1ENWLO\naONqOvWaUv7jB/PPjq8gJLgQQcjKkYwrbdPudc+aP23rAgMBAAE=\n-----END PUBLIC KEY-----\n",
+      "TestOnly": true
+    }
+  ]
+}

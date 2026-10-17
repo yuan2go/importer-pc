@@ -1,0 +1,27 @@
+{
+  "Name": "release-smoke-extension",
+  "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:48:57.504381+00:00",
+  "EndedAt": "2026-10-17T12:49:00.386928+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "python3",
+    "scripts/smoke-extension.py",
+    "--release",
+    ".artifacts/operation15/candidates/unpacked-final-portable",
+    "--dotnet",
+    "/reference/dotnet-10.0.402/dotnet",
+    "--output",
+    ".artifacts/operation15/release-smoke-extension.json"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS_REFERENCE_PUBLISHED_HOST",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "release-smoke-extension.log",
+  "LogSha256": "9af0fcf03f05e6f20dcd2385d108c722073b92013f2be6ec9f5d3d4d0443338c",
+  "RawLogSha256": "610fb318174709c7273bd59c8848b54c985620e4b1da7f0b0de94e1dfa1883c5",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

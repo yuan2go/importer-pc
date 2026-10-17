@@ -1,21 +1,16 @@
-> 当前判断见 [PR14后复核](../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)，下一实施为 [15工作包](../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)。14已合并且原子问题分项验证；不同接收发生责任、维护/输入与UI仍有残余。本文有效职责/规则继续成立，历次执行结果只按其来源版本理解；本次更新前原字节见 [归档](../archive/pre-audit-reconciliation-publication-01/README.md)。
+# OPERATION-CLOSURE-15 扩展与维护
 
-# FIX-14 扩展与维护增量
+本指南当前增量为15；[运行/受控升级与恢复](../runtime/operations.md)和[15报告](../runtime/operation-closure-15.md)记录同版范围。保持原公共职责、单业务实例、契约1、精确AssemblyRef/依赖闭包、离线独立信任和永久ID/version身份；Storage/reader=5/5，参考扩展1.0.3。旧1.0.0～1.0.2原包与宿主保留，不因新公共DLL指纹重签同版本。
 
-当前 [14报告](../runtime/conformance-fix-14.md)与[操作/恢复规约](../runtime/operations.md)接管本指南下方13历史时态。核心契约仍1；新宿主公共DLL字节/部署指纹不同，新分发参考包为1.0.2，禁止重签1.0.0/1.0.1或删除永久身份。旧精确包若不满足新宿主公共SHA继续拒绝；先以保留的匹配旧宿主/原包核对旧Unknown，再显式迁移，不改原请求Implementation/目标/报文/hash来绕过。原13候选保留。
+每窗唯一配置草稿贯通普通维护和组件管理；局部选模块/新建/目标默认值不依赖完整数值合法，预览/保存仍严格校验。异步包/设备/服务选择的success/error/finally归同一代次；导入、新建、换身份使旧返回失效。当前页显式选修订，CAS/权限/实体/未决责任与精确包租约继续由应用裁决。安装≠激活、保存≠Effective；二进制/参数默认受控重启，失败保旧。
 
-IntegrationRuntime按实例、目标、部署指纹、epoch/sequence记录带有效期健康；Diagnostic另有Lifecycle/Historical/Port/Health及真实错误。当前requests是Supply实际业务依赖，辅助端口不自动变成主WCS；历史查询失败归原目标并保留原请求责任。Health/Query/Stop都计入在途所有权，取消/慢返回不提前释放包。
+每次发送/原查询在网络前登记独立接收发生，原件Flush与T3完成证明按该ID关联。原请求不变、唯一接受量不重计；一份完成不解除另一份原件未取得责任。历史详情/导出显示每次发生及原目标/Attempt，恢复/卸载/维护均读取同一事实。无可信原件保持RawUnavailable隔离，不提供通用解锁；停止和查询/T3尚未终止前保留精确资源及包/依赖。
 
-每窗ConfigurationDraft是普通维护、组件页的唯一编辑源；导入合法统一JSON后，设备/服务/参数/角色/requests目标及普通字段编辑、预览、保存/重读保留一致。Effective只读，CAS由应用检查。激活绑定组件页本次选中ConfigRevision、维护身份和上下文，不读隐藏维护页列表。非法导入不替换旧草稿，迟到schema读取由选择代次隔离，读取期间禁编辑该表单。扫码消费绑定作业/命令/输入版本，Persisted才清自己的输入；重复A不计量，迟到不能清新B。
+旧Effective1.0.1必须先用匹配旧宿主/原包清偿Unknown/实体/箱，按旧维护流程形成合法无旧绑定的过渡Effective，再显式备份升级到5并安装新精确包/编辑保存激活。换seed/只升format均不迁移Effective。完整合成脚本`scripts/verify-operation-upgrade.py`与失败保旧步骤见运维；真实缺原包/合同/实体能力只阻塞对应迁移。共享旧库LegacyConsumersUnverified继续拒绝卸载，须真实原根/备份盘点及批准，不能文案解除或删消费者记录。旧1.0.1和1.0.2与15的兼容边界以实际公共DLL SHA校验结果为准，不泛称所有旧包兼容。
 
-共享安装库支持多数据根。运行、扩展修订保存、有责任的备份/恢复副本先登记消费者；卸载/恢复检查所有离线根的Effective/Pending/Unknown及终态冲突、接收围栏责任。不可读和旧库覆盖未知都阻断，不能把固定账户视为单数据根。消费者记录不因退出删除，不提供强制忽略入口。Windows受保护只读围栏由安装器建立，运行账户只在机级租约目录写登记；详见操作规约。旧库LegacyConsumersUnverified需要完整原根/副本盘点与批准迁移，当前不能宣称已无引用。
-
-Storage4新增冲突原件与恢复语义，保留原SQL/checksum和terminal事实。原始回执日志与业务事务失败可恢复，无法接管原件时以预存围栏保守阻断，不能把日志按钮/内存告警当作落盘。已有精确依赖、签名、AssemblyRef和ALC政策不放宽；Production缺能力继续NotReady。
-
-验证入口新增 `--conformance`，复用原Verifier、两审查探针、实际ProductRuntime/独立HTTP/SQLite/来源/发送链。Windows点击、扫码器和ACL仍NOT_RUN，交叉构建不代替它们。
+WPF管理页面和业务界面实际截图/输入/双窗/DPI/声音/UAC/ACL仍NOT_RUN，待同版Windows客户端；真实SDK/WCS/产品/现场分别BLOCKED，不静默回退模拟。下方13说明保留原机制细节/命令语境，版本号仅指历史；构建当前包须使用组合声明1.0.3及新的输出目录。
 
 ---
-
 
 # CLOSURE-13 扩展开发、安装与恢复
 

@@ -11,7 +11,11 @@ public sealed record HistoryQueryRow(HistoryEntry Entry)
     public SupplyOperation? Operation => Entry.Operation;
     public string Time => FormatDate(Entry.OccurredAt);
     public string Lane => Entry.Operation?.Lane switch { "left" => "左", "right" => "右", null => "会话", var lane => OperatorText.Known(lane) };
-    public string Barcode => OperatorText.Known(Entry.Operation?.Barcode ?? Entry.Session.Barcode);
+    public string EntityType => IsSession ? "箱会话" : "Item作业";
+    public string ObjectCode => IsSession ? Box : Barcode;
+    public string Barcode => Entry.Operation is null ? "—" : OperatorText.Known(Entry.Operation.Barcode);
+    public string Accepted => Entry.AcceptedQuantity.ToString(CultureInfo.InvariantCulture);
+    public string Attempts => $"请求 {Entry.RequestCount} / 尝试 {Entry.AttemptCount}" + (Entry.IncompleteReceiptCount > 0 ? $" / 未接管 {Entry.IncompleteReceiptCount}" : "");
     public string Box => OperatorText.Known(Entry.Session.Barcode);
     public string BoxWave => OperatorText.Known(Entry.Operation?.BoxWave ?? Entry.Session.Context?.BoxWave);
     public string Task => OperatorText.Known(Entry.Operation?.Task?.TaskId);
@@ -22,6 +26,6 @@ public sealed record HistoryQueryRow(HistoryEntry Entry)
     public string Quantity => Entry.Operation is { } operation ?
         $"{operation.Supply?.ToString(CultureInfo.InvariantCulture) ?? "未取得"} {OperatorText.Known(operation.Task?.Unit)}" :
         $"接受账 {Entry.AcceptedQuantity.ToString(CultureInfo.InvariantCulture)}";
-    public string Summary => $"作业 {Entry.OperationCount} · 请求 {Entry.RequestCount} · 接受账 {Entry.AcceptedQuantity}";
+    public string Summary => $"作业 {Entry.OperationCount} · 请求 {Entry.RequestCount} · 尝试 {Entry.AttemptCount} · 接受账 {Entry.AcceptedQuantity} · 未接管 {Entry.IncompleteReceiptCount}";
     public static string FormatDate(DateTimeOffset? date) => date?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz", CultureInfo.InvariantCulture) ?? "未记录日期";
 }

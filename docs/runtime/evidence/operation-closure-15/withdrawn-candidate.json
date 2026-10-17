@@ -1,0 +1,8 @@
+{
+  "File": "operation15-0ccf3fc-portable.zip",
+  "Sha256": "cba99dc45240dfc766eebb7de81db1d32e2b668c8a5c86454d8ea70006ffcded",
+  "SourceCommit": "0ccf3fc0c7b93f798b93a8b5b1f1d275dcfe81ed",
+  "Reason": "Final WPF history detail adds exact copyable SessionId and box code; use final d2b2ca2 candidate",
+  "Uploaded": false,
+  "Installed": false
+}

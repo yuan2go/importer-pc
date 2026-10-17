@@ -92,9 +92,11 @@ public sealed record Audit(string Id, string OwnerId, string Actor, string Comma
 public sealed record Command(string Id, long ExpectedRevision, string Kind, string? OwnerId = null, string? Value = null, int? Quantity = null, long? EvidenceVersion = null);
 public sealed record CommandReceipt(string Status, string Reason, long Revision, string? OwnerId = null, string? RequestId = null);
 public sealed record Guard(bool Allowed, string[] Reasons);
+public sealed record SessionRequestResult(string SessionId, string RequestId, RequestKind Stage, RequestStatus Status, string Reason, DateTimeOffset CreatedAt);
 public sealed record StationSnapshot(StationState State, BusinessRequest[] Requests, Alarm[] Alarms, Guard Admit, Guard Submit, Guard Close, Dictionary<string, Guard> OperationGuards, string[] RuntimeFaults, RequestRecovery[] Recovery, int ActiveAlarmCount, long OverloadVersion, Guard OverloadRecovery)
 {
     public string StationId { get; init; } = "";
+    public SessionRequestResult? BoxResult { get; init; }
     public int NotificationBacklog { get; init; }
     public long NotificationOverflow { get; init; }
     public long ProjectionVersion { get; init; }
@@ -102,12 +104,18 @@ public sealed record StationSnapshot(StationState State, BusinessRequest[] Reque
     public int AcceptedQuantity { get; init; }
     public SupplyOperation[] RecentOperations { get; init; } = [];
 }
-public sealed record RequestRecovery(BusinessRequest Request, Guard Dispatch, Guard LocalTermination, string NextStep);
+public sealed record RequestRecovery(BusinessRequest Request, Guard Dispatch, Guard LocalTermination, string NextStep)
+{
+    public ReceiptResponsibility[] Receipts { get; init; } = [];
+}
 public sealed record ResponseConflict(string Id, string RequestId, string? AttemptId, string Source, DateTimeOffset ReceivedAt,
     string OriginalEvidenceId, string ContentSha256, IntegrationResponse Response);
+public sealed record ReceiptResponsibility(string Id, string RequestId, string? AttemptId, string Origin, DateTimeOffset StartedAt,
+    string Status, string? ContentSha256 = null, IntegrationResponse? Response = null);
 public sealed record RequestDetail(BusinessRequest Request, SendAttempt[] Attempts, IntegrationResponse[] Responses, Audit[] Audit)
 {
     public ResponseConflict[] Conflicts { get; init; } = [];
+    public ReceiptResponsibility[] Receipts { get; init; } = [];
 }
 public sealed record ConfigRevision(string Id, string BaseVersion, StationConfig Content, string Actor, string Status, string Reason, DateTimeOffset At);
 

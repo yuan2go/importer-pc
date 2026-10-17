@@ -1,0 +1,26 @@
+{
+  "Name": "evidence-build",
+  "SourceCommit": "0ccf3fc0c7b93f798b93a8b5b1f1d275dcfe81ed",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:41:26.339003+00:00",
+  "EndedAt": "2026-10-17T12:41:30.600683+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "build",
+    "ImporterPc.slnx",
+    "--no-restore",
+    "-m:1",
+    "-nr:false",
+    "-p:EnableWindowsTargeting=true"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "0 个错误",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "evidence-build.log",
+  "LogSha256": "60b1a8156b30f9af7bcd35e9367a6def6c6dde5863b6052e396d8abc0508a34c",
+  "RawLogSha256": "a2a19cf9d2369f3997a08ac7be6025096c6442562dbe798b4607ae0a1a964107",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

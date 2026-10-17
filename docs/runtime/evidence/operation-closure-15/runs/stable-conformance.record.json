@@ -1,0 +1,23 @@
+{
+  "Name": "stable-conformance",
+  "SourceCommit": "110d2b1b9322f391a623cd29d7c98d5a5556a872",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:40:07.074596+00:00",
+  "EndedAt": "2026-10-17T12:40:26.793634+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--conformance"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS selected verification scope --conformance",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "stable-conformance.log",
+  "LogSha256": "a857668597f270526bd0e97f6fdcc61c6512f1a0a1064476c45d982214df3646",
+  "RawLogSha256": "ae4db3db99818caad47907ef28ad2fbb1572439e118f859b9fa862366b11683d",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

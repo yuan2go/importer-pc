@@ -1,0 +1,54 @@
+{
+  "OperationId": "32e0bfd7cddf4040ab8d5c96ce35192e",
+  "Status": "ForwardMigrationCommitted",
+  "StartedAt": "2026-10-17T12:48:49.128979+00:00",
+  "Backup": {
+    "BackupId": "0d00e9f8a9a744b88f84a831da61d832",
+    "Sha256": "67DABCB10F7F4E6F3944AEF97E05049CBDF106E92ED14CA1D0D1B00CF3BEFC49",
+    "CreatedAt": "2026-10-17T12:48:49.128797+00:00",
+    "Source": {
+      "FormatVersion": 3,
+      "MinimumReader": 3,
+      "SelectedReader": 5,
+      "SelectedReaderCompatible": false,
+      "ExplicitUpgradeSupported": true,
+      "PendingRequests": 0,
+      "OpenSessions": 0,
+      "Quarantined": false,
+      "UpgradeBlockers": []
+    },
+    "Backup": {
+      "FormatVersion": 3,
+      "MinimumReader": 3,
+      "SelectedReader": 5,
+      "SelectedReaderCompatible": false,
+      "ExplicitUpgradeSupported": true,
+      "PendingRequests": 0,
+      "OpenSessions": 0,
+      "Quarantined": false,
+      "UpgradeBlockers": []
+    }
+  },
+  "PreviousRelease": {
+    "ExecutableSha256": "CE2105CB847B83EEBB4A6A541004791C7CF5B792AD2C3B4FC7972D7473994E93",
+    "ProgramAssemblySha256": "8CB79873DEA04561DFAB3DA863B5D14F3660ACA502F403855F45920A939AD59E",
+    "ReleaseManifestSha256": "5057F8A1A1E6D3BB7A8B8E4E2B83703D95E0D7A58C110F50793B47D5603B05AE",
+    "ConfigurationSha256": {
+      "product.json": "DF90ECFCD92FB7A6CED8B102274C731CE26F8E79E095A19E88D19DF0E97F4068",
+      "station.json": "5B19A4CCD4276C84960AD86BC99C9BC0CA9EB5DABCF899904D2CDFDE25F8A195",
+      "presentation.json": "631B7675CD7AC2982711443908AEE096EBBAE2766790086FAAA9FD6E555E3E2F"
+    }
+  },
+  "SelectedRelease": {
+    "ExecutableSha256": "CE2105CB847B83EEBB4A6A541004791C7CF5B792AD2C3B4FC7972D7473994E93",
+    "ProgramAssemblySha256": "A441A743889340BDD3977366200CA0869F5217C8E20DF35106FDA05A73790A68",
+    "ReleaseManifestSha256": "6D4AC324DFF66785C3220780A9E5342CE1EA1EB046E03564D71ACA63D1BCD5B6",
+    "ConfigurationSha256": {
+      "product.json": "34869544C624BB2C93383AA4BEEB6808F1F0A68DE79C80E2AD72B92B4760646E",
+      "station.json": "5B19A4CCD4276C84960AD86BC99C9BC0CA9EB5DABCF899904D2CDFDE25F8A195",
+      "presentation.json": "631B7675CD7AC2982711443908AEE096EBBAE2766790086FAAA9FD6E555E3E2F"
+    }
+  },
+  "DestinationFormat": 5,
+  "Failure": null
+}

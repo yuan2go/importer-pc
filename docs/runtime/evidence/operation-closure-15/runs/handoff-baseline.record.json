@@ -1,0 +1,23 @@
+{
+  "Name": "handoff-baseline",
+  "SourceCommit": "8df02afc8799f81973f0bf3fe4375f604332dd99",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:37:44.826379+00:00",
+  "EndedAt": "2026-10-17T12:37:50.181427+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--baseline"
+  ],
+  "ExitCode": -6,
+  "RequiredMarker": "PASS selected verification scope --baseline",
+  "MarkerPresent": false,
+  "Status": "FAIL",
+  "Log": "handoff-baseline.log",
+  "LogSha256": "97e23a49695a8a8c13285b7dcb7abf0bdd2f60b61c2429c26b4fb15d96b73bea",
+  "RawLogSha256": "160695668febee3eeb454b06ed518f146ea7ff501a91a95e6342eb35c3ee13ee",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

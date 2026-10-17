@@ -90,7 +90,7 @@ identity = dict(WorkPackage=release['WorkPackage'], SourceCommit=release['Source
 identity['Composition'] = a.composition
 identity['Mode'] = a.mode
 identity['ExtensionContract'] = 1
-identity['MinimumReader'] = 4
+identity['MinimumReader'] = release['MinimumReader']
 identity['CompositionLockSha256'] = hashlib.sha256((output / 'composition.lock.json').read_bytes()).hexdigest()
 (output / 'PACKAGE.json').write_text(json.dumps(identity, indent=2) + '\n')
 entries = sorted(path for path in output.rglob('*') if path.is_file())

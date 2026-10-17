@@ -1,0 +1,8 @@
+> 当前为14修复后的同版候选待验，继承13用户决定统一后置：WINDOWS_NOT_RUN，截图0，不寻找VM/runner、不扩OAuth。下方09/11/12/环境阻塞表述均是形成时记录。完整W01～06保留；增补直接组件页激活、导入跨页保存/两窗CAS、A/A/B及迟到输入、实例故障/历史归属、消费者停止与离线根保护，见 [14 Windows场景](validation/conformance-fix-14-windows.md)。
+
+> FIX-14当前指引：本文件下方13及更早“当前/本轮/已完成”保留形成时身份，已由 [14执行基线](conformance-fix-14-baseline.md)接管。A-01～04是待修确定缺陷；健康隔离和维护闭环是有效要求，不能按旧完成性表述判通过。Windows沿13决定统一后验，不寻找VM/runner；D/RV、真实SDK/WCS/现场门禁继续。原字节见 [归档](../archive/pre-conformance-fix-14/README.md)。
+
+> DELIVERY-12待验入口：[12报告](extension-windows-delivery-12.md)。当前授权包含Windows参考验证；开工检查无本机/VM/自托管runner/交互桌面。新增远端原生WPF冒烟另列实际结果，不能替代本文件W01～06。原11/09记录保留，不改变支持矩阵；保护拒绝不算正常适配PASS。
+
+> 当前待验版本绑定[REVIEW-FOLLOWUP-11](review-followup-11.md)的新SourceCommit/包SHA。下文上一版边界保持；没有新增Windows/真实集成执行，W01～06 NOT_RUN，B01～06 BLOCKED。
+

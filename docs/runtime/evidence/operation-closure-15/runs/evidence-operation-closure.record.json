@@ -1,0 +1,23 @@
+{
+  "Name": "evidence-operation-closure",
+  "SourceCommit": "0ccf3fc0c7b93f798b93a8b5b1f1d275dcfe81ed",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:41:49.285245+00:00",
+  "EndedAt": "2026-10-17T12:41:51.003913+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--operation-closure"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS selected verification scope --operation-closure",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "evidence-operation-closure.log",
+  "LogSha256": "f12e12d535e386337a423be481751ba39286d900dd567e9a21cd66670b55e457",
+  "RawLogSha256": "7b96323b36fedc118a2302554231e090788e1562a7d50735c8b403ad9a96f8e1",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

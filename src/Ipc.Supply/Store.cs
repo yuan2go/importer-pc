@@ -10,7 +10,7 @@ public sealed partial class SupplyStore : IDisposable
     SqliteTransaction? current;
     public string Path { get; }
     public Action<object>? Journal { get; set; }
-    public const int CurrentFormatVersion = 4;
+    public const int CurrentFormatVersion = 5;
     // This forward migration intentionally makes schema1 readers refuse new JSON semantics.
     const string SemanticFormatMigration = """
         CREATE TABLE storage_format(id INTEGER PRIMARY KEY CHECK(id=1),version INTEGER NOT NULL,minimum_reader INTEGER NOT NULL);
@@ -92,7 +92,7 @@ public sealed partial class SupplyStore : IDisposable
     public StationSession? Session(string id) => Read<StationSession>("SELECT json FROM sessions WHERE id=$a", id).SingleOrDefault();
     public StationSession[] Sessions(int offset = 0, int limit = 100) => Read<StationSession>("SELECT json FROM sessions ORDER BY rowid DESC LIMIT $a OFFSET $b", Math.Clamp(limit, 1, 200), Math.Max(0, offset));
     public BusinessRequest[] Requests(string? owner = null) => Read<BusinessRequest>(owner is null ? "SELECT json FROM requests ORDER BY rowid" : "SELECT json FROM requests WHERE owner=$a ORDER BY rowid", owner is null ? [] : [owner]);
-    public BusinessRequest[] PendingRequests() => Read<BusinessRequest>("SELECT json FROM requests WHERE status IN ('Prepared','Dispatching','Unknown') OR id IN (SELECT request FROM response_conflicts) OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain') ORDER BY rowid");
+    public BusinessRequest[] PendingRequests() => Read<BusinessRequest>("SELECT json FROM requests WHERE status IN ('Prepared','Dispatching','Unknown') OR id IN (SELECT request FROM response_conflicts) OR id IN (SELECT request FROM receipt_occurrences WHERE status NOT IN ('Committed','NoResponse')) OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain') ORDER BY rowid");
     public BusinessRequest[] RequestsForSession(string session) => Read<BusinessRequest>("SELECT json FROM requests WHERE session=$a ORDER BY rowid", session);
     public BusinessRequest? Request(string id) => Read<BusinessRequest>("SELECT json FROM requests WHERE id=$a", id).SingleOrDefault();
     public SupplyOperation[] History(string? filter, int offset, int limit) => Read<SupplyOperation>("SELECT json FROM operations WHERE $a IS NULL OR json_extract(json,'$.Barcode')=$a OR json_extract(json,'$.BoxBarcode')=$a OR json_extract(json,'$.Task.Sku')=$a OR json_extract(json,'$.Task.TaskId')=$a ORDER BY created DESC,id LIMIT $b OFFSET $c", filter, Math.Clamp(limit, 1, 200), Math.Max(0, offset));
@@ -125,11 +125,14 @@ public sealed partial class SupplyStore : IDisposable
     public int AcceptedQuantity(string session) => int.Parse(Scalar("SELECT coalesce(sum(a.quantity),0) FROM acceptance a JOIN requests r ON r.id=a.request WHERE r.session=$a", session) ?? "0");
     public int PendingCount() => PendingRequests().Length;
     public ResponseConflict[] Conflicts(string request) => Read<ResponseConflict>("SELECT json FROM response_conflicts WHERE request=$a ORDER BY rowid", request);
-    public bool RecoveryRequired(string request) => HasConflict(request) || Load().Blocks.Any(x => x.Code == "ReceiptPersistenceUncertain" && x.Source == request);
+    public bool RecoveryRequired(string request) => HasConflict(request) || Receipts(request).Any(x => x.Status is not ("Committed" or "NoResponse")) || Load().Blocks.Any(x => x.Code == "ReceiptPersistenceUncertain" && x.Source == request);
     public bool HasConflict(string request) => Scalar("SELECT id FROM response_conflicts WHERE request=$a LIMIT 1", request) is not null;
+    public ReceiptResponsibility[] Receipts(string request) => Read<ReceiptResponsibility>("SELECT json FROM receipt_occurrences WHERE request=$a ORDER BY rowid", request);
+    public ReceiptResponsibility[] IncompleteReceipts() => Read<ReceiptResponsibility>("SELECT json FROM receipt_occurrences WHERE status NOT IN ('Committed','NoResponse') ORDER BY rowid");
+    public ReceiptResponsibility? ReceiptOccurrence(string id) => Read<ReceiptResponsibility>("SELECT json FROM receipt_occurrences WHERE id=$a", id).SingleOrDefault();
     public void Commit(StationState state, string kind, string owner, string actor, string evidence = "", Command? command = null, CommandReceipt? receipt = null,
         BusinessRequest? request = null, Observation? observation = null, SupplyOperation? operation = null,
-        SendAttempt? attempt = null, IntegrationResponse? response = null, bool count = false, ConfigRevision? config = null, Alarm? alarm = null, ResponseConflict? conflict = null)
+        SendAttempt? attempt = null, IntegrationResponse? response = null, bool count = false, ConfigRevision? config = null, Alarm? alarm = null, ResponseConflict? conflict = null, ReceiptResponsibility? occurrence = null)
     {
         using var tx = db.BeginTransaction();
         current = tx;
@@ -163,6 +166,15 @@ public sealed partial class SupplyStore : IDisposable
         }
         if (conflict is not null)
             Exec("INSERT OR IGNORE INTO response_conflicts VALUES($a,$b,$c)", tx, conflict.Id, conflict.RequestId, Wire.Encode(conflict));
+        if (occurrence is not null)
+        {
+            var oldOccurrence = ReceiptOccurrence(occurrence.Id);
+            if (oldOccurrence is not null && (oldOccurrence.RequestId != occurrence.RequestId || oldOccurrence.AttemptId != occurrence.AttemptId ||
+                oldOccurrence.Origin != occurrence.Origin || oldOccurrence.StartedAt != occurrence.StartedAt || oldOccurrence.Status is "Committed" or "NoResponse" && oldOccurrence != occurrence))
+                throw new InvalidDataException("Immutable receipt occurrence changed");
+            Exec("INSERT INTO receipt_occurrences VALUES($a,$b,$c,$d) ON CONFLICT(id) DO UPDATE SET status=excluded.status,json=excluded.json", tx,
+                occurrence.Id, occurrence.RequestId, occurrence.Status, Wire.Encode(occurrence));
+        }
         if (config is not null)
         {
             // Exactly one current Effective after promotion. Prior activation facts and
@@ -216,6 +228,8 @@ public sealed partial class SupplyStore : IDisposable
         {
             // Delete only an entire closed aggregate; retained requests/configs/evidence cannot
             // lose their dependencies. Command receipts and the retention audit are tombstones.
+            Exec("DELETE FROM receipt_occurrences WHERE request IN (SELECT id FROM requests WHERE session=$a)", tx, session.Id);
+            Exec("DELETE FROM response_conflicts WHERE request IN (SELECT id FROM requests WHERE session=$a)", tx, session.Id);
             Exec("DELETE FROM acceptance WHERE request IN (SELECT id FROM requests WHERE session=$a)", tx, session.Id);
             Exec("DELETE FROM responses WHERE request IN (SELECT id FROM requests WHERE session=$a)", tx, session.Id);
             Exec("DELETE FROM attempts WHERE request IN (SELECT id FROM requests WHERE session=$a)", tx, session.Id);

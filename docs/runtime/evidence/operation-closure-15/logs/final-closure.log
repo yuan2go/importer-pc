@@ -1,0 +1,16 @@
+SELECT --closure: E07
+Evidence data retained at /reference/tmp/ipc-verification-25df727043cc4c94a9fa29970cdce3e5
+RUN E07 E-01 current input invalidation, legitimate correction and original receipts
+PASS E07 E-01 current input invalidation, legitimate correction and original receipts
+RUN E07 E-03 source/epoch/evidence CAS and Unknown isolation
+PASS E07 E-03 source/epoch/evidence CAS and Unknown isolation
+RUN E07 E-05 source silence, replay/future rejection and controlled reconnect
+PASS E07 E-05 source silence, replay/future rejection and controlled reconnect
+RUN E07 E-06 empty-session close chain, exact queries, paging and retention boundary
+PASS E07 E-06 empty-session close chain, exact queries, paging and retention boundary
+RUN E07 E-08 ordered cue ownership, replay deduplication and bounded overflow
+PASS E07 E-08 ordered cue ownership, replay deduplication and bounded overflow
+RUN E07 E-09 independent stop/dispose failures and retained active ownership
+PASS E07 E-09 independent stop/dispose failures and retained active ownership
+PASS selected verification scope --closure; Windows desktop/SDK/field validation NOT_RUN by this core executable
+Evidence data retained at /reference/tmp/ipc-verification-25df727043cc4c94a9fa29970cdce3e5

@@ -1,0 +1,66 @@
+[
+  {
+    "path": "docs/INDEX.md",
+    "source_commit": "5548b3f962c409079618635d3128830ea7887069",
+    "git_blob": "8f7e179fde6e464b54a3053d67005cb92a6e6bc0",
+    "sha256": "05e1ac230468af7801cb79ca2ce9d8a7c681f36a3cfd7e754ea563a01a035f79",
+    "snapshot": "docs/archive/pre-operation-closure-15/docs/INDEX.md.txt",
+    "replacement": "AC15 current entry and scoped operational responsibilities; historical evidence retained"
+  },
+  {
+    "path": "docs/runtime/operations.md",
+    "source_commit": "5548b3f962c409079618635d3128830ea7887069",
+    "git_blob": "fc4d59095ae63b891a93e1a2ea40b63f59c8d458",
+    "sha256": "0dd1c15d671842b4986df669ee42bd058c2d6cfd728254db90aeef906a6e4231",
+    "snapshot": "docs/archive/pre-operation-closure-15/docs/runtime/operations.md.txt",
+    "replacement": "AC15 current entry and scoped operational responsibilities; historical evidence retained"
+  },
+  {
+    "path": "docs/extensions/developer-guide.md",
+    "source_commit": "5548b3f962c409079618635d3128830ea7887069",
+    "git_blob": "1a4d6b3208857f3b1c917268ec7fcc6b3e1a9e34",
+    "sha256": "cfe6c720a6b84df0fc2c4abfec4c20d6b2596a91d4eb03e66a0b581cbb8903ca",
+    "snapshot": "docs/archive/pre-operation-closure-15/docs/extensions/developer-guide.md.txt",
+    "replacement": "AC15 current entry and scoped operational responsibilities; historical evidence retained"
+  },
+  {
+    "path": "docs/runtime/windows-06.md",
+    "source_commit": "5548b3f962c409079618635d3128830ea7887069",
+    "git_blob": "2fcf8c6855048d98a43ab6c0842d8bd275726431",
+    "sha256": "9f3e76f7bd326e6ccd2ca2139d6ae2e2e05bfd0e84cbe5b9829789790b53f173",
+    "snapshot": "docs/archive/pre-operation-closure-15/docs/runtime/windows-06.md.txt",
+    "replacement": "AC15 current entry and scoped operational responsibilities; historical evidence retained"
+  },
+  {
+    "path": "docs/manifest.json",
+    "source_commit": "5548b3f962c409079618635d3128830ea7887069",
+    "git_blob": "ea6f745755eb1fe497bbf969b6ace770251f5354",
+    "sha256": "ea7ea6878ad2d20a98e93f5942e64ea8fc9a674984987524a87b85b211f10fd8",
+    "snapshot": "docs/archive/pre-operation-closure-15/docs/manifest.json.txt",
+    "replacement": "AC15 current entry and scoped operational responsibilities; historical evidence retained"
+  },
+  {
+    "path": "docs/design/framework-decisions.md",
+    "source_commit": "5548b3f962c409079618635d3128830ea7887069",
+    "git_blob": "67a2e1007180651a6112c3cd2b58e3f0ad731174",
+    "sha256": "8583548664749b4fc5839f5b8a98a26758ab9e49ad4689175bc0b9e1cacb913a",
+    "snapshot": "docs/archive/pre-operation-closure-15/docs/design/framework-decisions.md.txt",
+    "replacement": "AC15 current entry and scoped operational responsibilities; historical evidence retained"
+  },
+  {
+    "path": "README.md",
+    "source_commit": "5548b3f962c409079618635d3128830ea7887069",
+    "git_blob": "c07829e6c33d3b945edccffadc730ecfdb6135ad",
+    "sha256": "fa0caebbf9099cf2485c42414d1b2cbbce0703855e77f7ad377cf0c0bb14b06b",
+    "snapshot": "docs/archive/pre-operation-closure-15/README.md.txt",
+    "replacement": "Final15 implementation/current evidence entry; original valid design and historical results retained; saved before this edit"
+  },
+  {
+    "path": "docs/ui/STATUS.md",
+    "source_commit": "5548b3f962c409079618635d3128830ea7887069",
+    "git_blob": "5b1df7a2d237d81fd1447edcf1ee079e3e0426a7",
+    "sha256": "851a47a19bc990d8dfc4a46023200b518b93be77abdf5ce4b4db6722832cc266",
+    "snapshot": "docs/archive/pre-operation-closure-15/docs/ui/STATUS.md.txt",
+    "replacement": "Final15 implementation/current evidence entry; original valid design and historical results retained; saved before this edit"
+  }
+]

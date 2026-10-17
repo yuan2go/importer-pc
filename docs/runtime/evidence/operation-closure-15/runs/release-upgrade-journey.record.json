@@ -1,0 +1,29 @@
+{
+  "Name": "release-upgrade-journey",
+  "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:48:43.625606+00:00",
+  "EndedAt": "2026-10-17T12:48:53.692924+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "python3",
+    "scripts/verify-operation-upgrade.py",
+    "--old-release",
+    ".artifacts/operation15/legacy/release",
+    "--new-release",
+    ".artifacts/operation15/candidates/unpacked-final-portable",
+    "--dotnet",
+    "/reference/dotnet-10.0.402/dotnet",
+    "--output",
+    ".artifacts/operation15/release-upgrade-journey"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS_SYNTHETIC_OLD_DEPLOYMENT_JOURNEY",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "release-upgrade-journey.log",
+  "LogSha256": "7bff2833c2bc71bed7741488c838cf6dd7eefd0060d5d4f422caa04debe6362e",
+  "RawLogSha256": "d9c01a3888d27ff6e3e7a917c04f62f65b29c5ca2d4495f072f2ad95c4438e24",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

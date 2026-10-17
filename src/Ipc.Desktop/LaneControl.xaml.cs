@@ -22,7 +22,8 @@ public partial class LaneControl : UserControl
             return FullyVisible(BarcodeReview,viewport) && FullyVisible(Metadata,viewport) &&
                 FullyVisible(QuantityPanel,viewport) && FullyVisible(QuantityUnitLabel,viewport) && (!Model.SplitVisible || FullyVisible(SplitReview,viewport)) &&
                 (!Model.HasWaveDifference || FullyVisible(WaveDifferenceReview,this)) &&
-                FullyVisible(PrimaryAction,this) && FullyVisible(SecondaryActions,this);
+                FullyVisible(PrimaryAction,this) && (!Model.ShowDisposition || FullyVisible(SecondaryActions,this)) &&
+                (!Model.SplitVisible || FullyVisible(ScanControls,this));
         }
     }
     static ScrollContentPresenter? FindViewport(DependencyObject parent)
@@ -59,17 +60,43 @@ public partial class LaneControl : UserControl
         if (Model.Current?.Status is OperationStatus.AwaitingAction or OperationStatus.SplitRequired) await OwnerWindow.SubmitLaneAsync(Model);
         else if(Model.Current is { } current) await OwnerWindow.ShowDetailAsync(current.Id,current);
     }
+    void RetainedFocus(object sender, KeyboardFocusChangedEventArgs e) { if (!Model.ScanReadOnly) RetainedInput.SelectAll(); }
     async void ScanClick(object sender, RoutedEventArgs e) => await ScanAsync();
+    void RefuseScan()
+    {
+        Model.ScanFeedback = "本条未接收，请等待当前保存完成并核对本通道后重新扫描；原输入保留";
+        OwnerWindow.ReportInput(Model.ScanFeedback);
+    }
+    void RetainedTextInput(object sender, TextCompositionEventArgs e)
+    { if (Model.ScanReadOnly) { e.Handled = true; RefuseScan(); } }
+    void RetainedPaste(object sender, DataObjectPastingEventArgs e)
+    { if (Model.ScanReadOnly) { e.CancelCommand(); RefuseScan(); } }
     async Task ScanAsync()
     {
-        if (!Model.CanScan || Model.Current is not { } current) return;
-        var sent = Model.ScanInput.Capture(Ipc.Platform.Wire.Id());
-        var receipt = await OwnerWindow.SendAsync("ScanRetained",current.Id,sent.Text,commandId:sent.CommandId);
-        if (Model.ScanInput.Consume(sent, sent.CommandId, receipt)) Model.RaiseScanInput();
+        if (!Model.CanScan || Model.ScanReadOnly || Model.Current is not { } current ||
+            !Model.ScanInput.TryBegin(Ipc.Platform.Wire.Id(), out var submission)) { RefuseScan(); return; }
+        var sent = submission!;
+        Model.SetScanBusy(true);
+        try
+        {
+            var receipt = await OwnerWindow.SendAsync("ScanRetained", current.Id, sent.Text, commandId: sent.CommandId);
+            var consumed = Model.ScanInput.Consume(sent, sent.CommandId, receipt);
+            if (consumed) Model.RaiseScanInput();
+            else if (Model.ScanInput.OwnerId == sent.OwnerId && RetainedInput.IsKeyboardFocused) RetainedInput.SelectAll();
+            if (Model.ScanInput.OwnerId == sent.OwnerId)
+                Model.ScanFeedback = receipt?.Status == "Persisted" ? "本条已保存；可扫描下一条" : "本条未保存；原输入保留，核对原因后重试";
+        }
+        finally
+        {
+            Model.ScanInput.End(sent);
+            OwnerWindow.ReviewGeometryChanged();
+        }
     }
     async void RetainedKeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key is not (Key.Enter or Key.Tab) || Keyboard.Modifiers != ModifierKeys.None || Model.RetainedDraft.Length == 0) return;
+        if (e.Key is not (Key.Enter or Key.Tab) || Keyboard.Modifiers != ModifierKeys.None) return;
+        if (Model.ScanReadOnly) { e.Handled = true; RefuseScan(); return; }
+        if (Model.RetainedDraft.Length == 0) return;
         e.Handled = true; await ScanAsync();
     }
     async void ClearClick(object sender, RoutedEventArgs e) => await OwnerWindow.SendAsync("ClearSplit", Model.Current?.Id, "CONFIRM", $"清空 {Model.Label} / {Model.Current?.Id} / r{Model.Current?.Revision} 的 {Model.SplitCount} 个保留件计数？另一通道、历史与已接受账保留。");

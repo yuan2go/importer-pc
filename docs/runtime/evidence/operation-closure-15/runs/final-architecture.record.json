@@ -1,0 +1,23 @@
+{
+  "Name": "final-architecture",
+  "SourceCommit": "3c36ba33cfe505604d1e11864db17a735d510598",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:35:44.519719+00:00",
+  "EndedAt": "2026-10-17T12:36:40.899661+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--architecture"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS selected verification scope --architecture",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "final-architecture.log",
+  "LogSha256": "1edd8545ce87784d9b310fd2b616c1dcadfe16ec920b84d04a986cfde1669b66",
+  "RawLogSha256": "74559d23113e149a7ee96982fd335c6e5be2b6b240640bbe7234f0459af95065",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

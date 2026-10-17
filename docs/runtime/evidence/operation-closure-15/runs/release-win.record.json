@@ -1,0 +1,33 @@
+{
+  "Name": "release-win",
+  "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:48:05.856241+00:00",
+  "EndedAt": "2026-10-17T12:48:27.698460+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "python3",
+    "scripts/package-reference.py",
+    "--target",
+    "win-x64",
+    "--composition",
+    "integration-reference",
+    "--dotnet",
+    "/reference/dotnet-10.0.402/dotnet",
+    "--extension-key",
+    ".artifacts/operation15/private/closure15.pem",
+    "--extension-trust",
+    ".artifacts/operation15/private/trust.json",
+    "--output",
+    ".artifacts/operation15/candidates/operation15-final-win-x64"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "\"StorageVersion\": 5",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "release-win.log",
+  "LogSha256": "5cb9008e9205ff7537a368e5b3f8c6898943a18d4dcdc16787c765ea833fbfab",
+  "RawLogSha256": "cc18ba1f1a91b4fb14adf546631d61d05126f1556875d885b792b6dfa90c3131",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

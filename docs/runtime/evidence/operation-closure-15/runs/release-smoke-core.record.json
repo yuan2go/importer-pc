@@ -1,0 +1,29 @@
+{
+  "Name": "release-smoke-core",
+  "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:48:53.739933+00:00",
+  "EndedAt": "2026-10-17T12:48:57.456504+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "python3",
+    "scripts/smoke.py",
+    "--product",
+    ".artifacts/operation15/candidates/unpacked-final-portable/app",
+    "--fixture",
+    ".artifacts/operation15/candidates/unpacked-final-portable/fixture/Ipc.Fixture.dll",
+    "--dotnet",
+    "/reference/dotnet-10.0.402/dotnet",
+    "--output",
+    ".artifacts/operation15/release-smoke-core.json"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "\"production_no_fixture_or_business\": \"PASS\"",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "release-smoke-core.log",
+  "LogSha256": "6ae0cfd2a1a186015b276acf7a2cad38a9eef70e9e09ec9af2085fe4b0d8bf3d",
+  "RawLogSha256": "63860373db584865be5e06778a920d4c75a633d190844d934c7ed5da089a66ea",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

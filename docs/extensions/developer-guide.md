@@ -1,3 +1,5 @@
+> FIX-14当前指引：本文件下方13及更早“当前/本轮/已完成”保留形成时身份，已由 [14执行基线](../runtime/conformance-fix-14-baseline.md)接管。A-01～04是待修确定缺陷；健康隔离和维护闭环是有效要求，不能按旧完成性表述判通过。Windows沿13决定统一后验，不寻找VM/runner；D/RV、真实SDK/WCS/现场门禁继续。原字节见 [归档](../archive/pre-conformance-fix-14/README.md)。
+
 # CLOSURE-13 扩展开发、安装与恢复
 
 本指南对应[13工作包](../work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)和ExtensionContract1；[设计与职责](../design/controlled-extensions.md)、[实际结果/候选身份](../runtime/arch-extension-closure-13.md)。12指南[原字节](../archive/pre-arch-extension-closure-13/docs/extensions/developer-guide.md.txt)保留。Windows实际操作、普通账户/UAC/ACL、UI/输入/分辨率/DPI、听审与持续旅程全部WINDOWS_NOT_RUN，不能把下列命令写成实机验收。

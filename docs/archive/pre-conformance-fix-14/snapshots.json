@@ -1,0 +1,106 @@
+[
+  {
+    "path": "README.md",
+    "source_commit": "2c0f3c990c69ec7eda1c86bc01f6456b9104aaab",
+    "sha256": "fdf69a1d365274cebc44e754fd5fca0be9b3782ba86e15b190c720a8b42bf7a3",
+    "git_blob": "1aff1a052aa33422d1b24836e5f97c3a8a31d2f6",
+    "snapshot": "docs/archive/pre-conformance-fix-14/README.md.txt",
+    "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  },
+  {
+    "path": "docs/INDEX.md",
+    "source_commit": "2c0f3c990c69ec7eda1c86bc01f6456b9104aaab",
+    "sha256": "2a1982a30528104a51b9579aa4d69f40463cc4ec46902b186333773e08e132f3",
+    "git_blob": "379f56e3c379c3b89f185f35b7088472410a8859",
+    "snapshot": "docs/archive/pre-conformance-fix-14/docs/INDEX.md.txt",
+    "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  },
+  {
+    "path": "docs/design/framework.md",
+    "source_commit": "2c0f3c990c69ec7eda1c86bc01f6456b9104aaab",
+    "sha256": "5a1b818fea1dd45bd4e90ec0a4c8be0ac9e541c493bf78b9964ef04c16f7d483",
+    "git_blob": "5dd80efb37e04cfcb19b050cbf58589cb98e298b",
+    "snapshot": "docs/archive/pre-conformance-fix-14/docs/design/framework.md.txt",
+    "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  },
+  {
+    "path": "docs/design/framework-decisions.md",
+    "source_commit": "2c0f3c990c69ec7eda1c86bc01f6456b9104aaab",
+    "sha256": "cd0394ef0fed3d95f49a5c59ae8e12cbc911a6c1c5b1ef7fb0df1b7c4ecb469c",
+    "git_blob": "eb9099503d5fac90ebcdf0d522379130c3cef8e8",
+    "snapshot": "docs/archive/pre-conformance-fix-14/docs/design/framework-decisions.md.txt",
+    "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  },
+  {
+    "path": "docs/design/controlled-extensions.md",
+    "source_commit": "2c0f3c990c69ec7eda1c86bc01f6456b9104aaab",
+    "sha256": "9c6998b4f5ce3a0d2476cf9dde34723e70a886a9eb2378c7aa1d5d14630aeafd",
+    "git_blob": "b94b943a1719b0b1ba4c82e575e103aa8bd75720",
+    "snapshot": "docs/archive/pre-conformance-fix-14/docs/design/controlled-extensions.md.txt",
+    "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  },
+  {
+    "path": "docs/extensions/developer-guide.md",
+    "source_commit": "2c0f3c990c69ec7eda1c86bc01f6456b9104aaab",
+    "sha256": "57280102006d133d7cfda79b900a256c4c41b506c9ead446b7df8b5f4172195e",
+    "git_blob": "52ed197f49538c18cb1306dfff6b403f24c3e0bf",
+    "snapshot": "docs/archive/pre-conformance-fix-14/docs/extensions/developer-guide.md.txt",
+    "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  },
+  {
+    "path": "docs/runtime/operations.md",
+    "source_commit": "2c0f3c990c69ec7eda1c86bc01f6456b9104aaab",
+    "sha256": "b34a66e93416ee63951af96ef305b85caccca6a9c4b2e18db124e94f9f89a9f0",
+    "git_blob": "fe6b7a859d314adc9c63f193c2383962bbe8e399",
+    "snapshot": "docs/archive/pre-conformance-fix-14/docs/runtime/operations.md.txt",
+    "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  },
+  {
+    "path": "docs/runtime/windows-06.md",
+    "source_commit": "2c0f3c990c69ec7eda1c86bc01f6456b9104aaab",
+    "sha256": "0fa043153c5865626337e56fde59bacb117c83586c0d8a8a645d4fc429d5a16b",
+    "git_blob": "0e4713c9b8b518247401ba8d28580e839de5ef95",
+    "snapshot": "docs/archive/pre-conformance-fix-14/docs/runtime/windows-06.md.txt",
+    "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  },
+  {
+    "path": "docs/ui/STATUS.md",
+    "source_commit": "2c0f3c990c69ec7eda1c86bc01f6456b9104aaab",
+    "sha256": "b717a57d6a3ecb61f1ac2f172d516e56c60ba678439bf58e244c5e1cacbfe98a",
+    "git_blob": "eea8d9a6efa30508510c58f5b531bcd74eea94e2",
+    "snapshot": "docs/archive/pre-conformance-fix-14/docs/ui/STATUS.md.txt",
+    "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  },
+  {
+    "path": "docs/runtime/integration-05.md",
+    "source_commit": "2c0f3c990c69ec7eda1c86bc01f6456b9104aaab",
+    "sha256": "999f43604dc87e01d4a1fa5108869385590138fc59785cd1f71245ddbaf16fbc",
+    "git_blob": "b7bf6aa0238adee803a64ff8cd6e1003456b493e",
+    "snapshot": "docs/archive/pre-conformance-fix-14/docs/runtime/integration-05.md.txt",
+    "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  },
+  {
+    "path": "docs/readiness/revision-and-verification.md",
+    "source_commit": "2c0f3c990c69ec7eda1c86bc01f6456b9104aaab",
+    "sha256": "f8c6c1e1be3c5b0500585e26badd812f5c19375875bac67c6afaf26366eb0ca5",
+    "git_blob": "b30b095c4b3dac1d5f5ada955d5da2336eb0f03b",
+    "snapshot": "docs/archive/pre-conformance-fix-14/docs/readiness/revision-and-verification.md.txt",
+    "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  },
+  {
+    "path": "docs/manifest.json",
+    "source_commit": "2c0f3c990c69ec7eda1c86bc01f6456b9104aaab",
+    "sha256": "807b853bf4144fa1c0e89ed200118e715e036abf99591ac686a51aa33ec7f223",
+    "git_blob": "04b7d393f5f5d078485c271292f68abdbcd90c85",
+    "snapshot": "docs/archive/pre-conformance-fix-14/docs/manifest.json.txt",
+    "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  },
+  {
+    "path": "docs/manifest.sha256",
+    "source_commit": "2c0f3c990c69ec7eda1c86bc01f6456b9104aaab",
+    "sha256": "575a7fcd7924bc7665e1655504bf984856e4e3aff0ceba7afdfc0fb8242400c0",
+    "git_blob": "6f65568bad3613b034722851a116c056086a0362",
+    "snapshot": "docs/archive/pre-conformance-fix-14/docs/manifest.sha256.txt",
+    "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  }
+]

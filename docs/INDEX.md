@@ -1,3 +1,5 @@
+> 当前执行 WP-IPC-CONFORMANCE-FIX-14：从 main `8cabf06d` 开发；审查材料来自未合并PR13/6406b4f，不能算作main修复。先完成文档清理，再实现A-01～04及适用R项。Windows按13批准后验，真实能力仍NotReady。
+
 # 统一资料与实施入口
 
 ## 当前审查与待实施修复

@@ -1,3 +1,5 @@
+> 当前执行 WP-IPC-CONFORMANCE-FIX-14：从 main `8cabf06d` 开发；审查材料来自未合并PR13/6406b4f，不能算作main修复。先完成文档清理，再实现A-01～04及适用R项。Windows按13批准后验，真实能力仍NotReady。
+
 # importer-pc
 
 C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、多视图共享业务、真实SQLite事务/Outbox/原请求恢复、合成观察和受控扩展。旧现场工程迁移、真实SDK/WCS和现场资格分别验证。

@@ -1,6 +1,8 @@
+> 15实施进行中：[执行基线](../runtime/operation-closure-15-baseline.md)。本文14/13机制是继承起点；维护编辑态、接收责任和旧部署旅程正在15收口，新能力以同版报告为准。
+
 > 当前判断见 [PR14后复核](../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)，下一实施为 [15工作包](../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)。14已合并且原子问题分项验证；不同接收发生责任、维护/输入与UI仍有残余。本文有效职责/规则继续成立，历次执行结果只按其来源版本理解；本次更新前原字节见 [归档](../archive/pre-audit-reconciliation-publication-01/README.md)。
 
-# FIX-14 扩展与维护增量
+# FIX-14 扩展与维护增量（15实施前）
 
 当前 [14报告](../runtime/conformance-fix-14.md)与[操作/恢复规约](../runtime/operations.md)接管本指南下方13历史时态。核心契约仍1；新宿主公共DLL字节/部署指纹不同，新分发参考包为1.0.2，禁止重签1.0.0/1.0.1或删除永久身份。旧精确包若不满足新宿主公共SHA继续拒绝；先以保留的匹配旧宿主/原包核对旧Unknown，再显式迁移，不改原请求Implementation/目标/报文/hash来绕过。原13候选保留。
 

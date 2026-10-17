@@ -9718,5 +9718,12 @@
     "windows": "DEFERRED_NOT_RUN",
     "site": "BLOCKED",
     "approval": "User explicitly requested the delivered PDF and current execution documentation on main; no business implementation in this task"
+  },
+  "operation_closure_15": {
+    "base_main": "5548b3f962c409079618635d3128830ea7887069",
+    "status": "IN_PROGRESS_NOT_VERIFIED",
+    "baseline": "docs/runtime/operation-closure-15-baseline.md",
+    "windows": "NOT_RUN",
+    "field": "BLOCKED"
   }
 }

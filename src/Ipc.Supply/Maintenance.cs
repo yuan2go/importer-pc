@@ -31,6 +31,12 @@ public sealed partial class SupplyStore
         UPDATE storage_format SET version=4,minimum_reader=4 WHERE id=1;
         """;
 
+    const string OperationFormatMigration = """
+        CREATE TABLE receipt_occurrences(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),status TEXT NOT NULL,json TEXT NOT NULL);
+        CREATE INDEX receipt_occurrences_request ON receipt_occurrences(request,status);
+        UPDATE storage_format SET version=5,minimum_reader=5 WHERE id=1;
+        """;
+
     static SqliteConnection OpenMaintenance(string path, SqliteOpenMode mode)
     {
         if (!File.Exists(path) || File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint))
@@ -75,6 +81,11 @@ public sealed partial class SupplyStore
             if (format != 3 || fourth != Wire.Hash(ConformanceFormatMigration)) throw new InvalidDataException("Format4 migration checksum mismatch; original retained");
             format = 4;
         }
+        if (migrations.TryGetValue(5, out var fifth))
+        {
+            if (format != 4 || fifth != Wire.Hash(OperationFormatMigration)) throw new InvalidDataException("Format5 migration checksum mismatch; original retained");
+            format = 5;
+        }
         var hasStorageFormat = MaintenanceScalar(connection, "SELECT name FROM sqlite_master WHERE type='table' AND name='storage_format'") is not null;
         if (format == 1)
         {
@@ -108,6 +119,20 @@ public sealed partial class SupplyStore
             }
         if (format >= 4)
             pending += Convert.ToInt32(MaintenanceScalar(connection, "SELECT count(*) FROM requests WHERE status NOT IN ('Prepared','Dispatching','Unknown') AND (id IN (SELECT request FROM response_conflicts) OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain'))"));
+        if (format >= 5)
+        {
+            command.CommandText = "SELECT id,request,status,json FROM receipt_occurrences";
+            using var receipts = command.ExecuteReader();
+            while (receipts.Read())
+            {
+                var occurrence = Wire.Decode<ReceiptResponsibility>(receipts.GetString(3));
+                if (occurrence.Id != receipts.GetString(0) || occurrence.RequestId != receipts.GetString(1) || occurrence.Status != receipts.GetString(2) || occurrence.Status is not ("AwaitingResponse" or "RawUnavailable" or "Committed" or "NoResponse"))
+                    throw new InvalidDataException("Unknown receipt responsibility status; original retained");
+            }
+            receipts.Close();
+            // Count requests once even if many independently unresolved receipts exist.
+            pending = Convert.ToInt32(MaintenanceScalar(connection, "SELECT count(*) FROM requests WHERE status IN ('Prepared','Dispatching','Unknown') OR id IN (SELECT request FROM response_conflicts) OR id IN (SELECT request FROM receipt_occurrences WHERE status NOT IN ('Committed','NoResponse')) OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain')"));
+        }
         command.CommandText = "SELECT o.state,r.status FROM outbox o LEFT JOIN requests r ON r.id=o.request";
         using (var reader = command.ExecuteReader())
             while (reader.Read())
@@ -186,6 +211,7 @@ public sealed partial class SupplyStore
         if (fromFormat == 1) Apply(2, SemanticFormatMigration);
         if (fromFormat is 1 or 2) Apply(3, ClosureFormatMigration);
         if (fromFormat is 1 or 2 or 3) Apply(4, ConformanceFormatMigration);
+        if (fromFormat is >= 1 and <= 4) Apply(5, OperationFormatMigration);
     }
     static void SaveMaintenanceReceipt(string path, StorageUpgradeReceipt receipt, bool create)
     {

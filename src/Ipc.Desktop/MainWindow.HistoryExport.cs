@@ -32,13 +32,22 @@ public partial class MainWindow
                 query=page.Query with {Offset=page.Query.Offset+page.Items.Length};
             }
             if(rows.Count!=total)throw new InvalidOperationException("历史数量已变化；请重新查询后导出");
+            var exported = new List<object>();
+            foreach (var row in rows)
+            {
+                if (!ReadIdentityMatches(readActor)) throw new GuardException("导出身份已失效；未发布文件");
+                var details = row.Operation is null ? (await Runtime.Application!.SessionDetailsAsync(row.SessionId).WaitAsync(lifetime.Token)).Requests :
+                    await Runtime.Application!.DetailsAsync(row.Id).WaitAsync(lifetime.Token);
+                if (!ReadIdentityMatches(readActor)) throw new GuardException("导出身份已失效；未发布文件");
+                exported.Add(new { Entity = row.Operation is null ? "BoxSession" : "ItemOperation", Entry = row, Requests = details });
+            }
             var temporary=dialog.FileName+"."+Guid.NewGuid().ToString("N")+".new";
             try
             {
-                await File.WriteAllTextAsync(temporary,Wire.Encode(new {Query=selectedQuery,StartedAt=started,CompletedAt=DateTimeOffset.UtcNow,Count=rows.Count,SnapshotSemantics="Bounded parent identities; current child facts read during export, not an immutable database snapshot",Items=rows}),lifetime.Token);
+                await File.WriteAllTextAsync(temporary,Wire.Encode(new {Query=selectedQuery,StartedAt=started,CompletedAt=DateTimeOffset.UtcNow,Count=rows.Count,SnapshotSemantics="Bounded parent identities; current child facts read during export, not an immutable database snapshot",Items=exported}),lifetime.Token);
                 if(!ReadIdentityMatches(readActor))throw new GuardException("导出身份已失效；未发布文件");
                 File.Move(temporary,dialog.FileName,true);
-                HistoryFeedback.Text=$"已导出当前筛选 {rows.Count} 条；原请求详情另见只读追溯。";
+                HistoryFeedback.Text=$"已导出当前筛选 {rows.Count} 条；已包含原请求及每份接收责任；子事实为读取期间的快照。";
             }
             finally { if(File.Exists(temporary))File.Delete(temporary); }
         });

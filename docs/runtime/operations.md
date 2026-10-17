@@ -1,44 +1,55 @@
-> 15实施进行中：[有效基线/执行计划](operation-closure-15-baseline.md)。下方FIX14机制仅描述起点，接收责任聚合和恢复限制尚待15代码/证据替代；不能据历史PASS放行。当前可用产物仍为14冻结候选。
+# OPERATION-CLOSURE-15 运行、部署与恢复
 
-> 当前判断见 [PR14后复核](../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)，下一实施为 [15工作包](../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)。14已合并且原子问题分项验证；不同接收发生责任、维护/输入与UI仍有残余。本文有效职责/规则继续成立，历次执行结果只按其来源版本理解；本次更新前原字节见 [归档](../archive/pre-audit-reconciliation-publication-01/README.md)。
+15实现继承main5548b3f与FIX14，源码/验证/候选身份以[15报告](operation-closure-15.md)和包内release.json为准。Release=OPERATION-CLOSURE-15；Storage/MinimumReader=5/5，SIMULATION-v1、ExtensionContract1保持，当前参考扩展1.0.3。新包需重新安装/保存/激活；旧1.0.0～1.0.2不重签、不删除精确身份。Windows客户端/实际输入/声音/ACL仍NOT_RUN，Production缺真实能力继续NotReady。
 
-# FIX-14运行与恢复（15实施前基线）
+## 每次接收责任与故障恢复
 
-15实施前代码所属工作包 [14](../work-packages/WP-IPC-CONFORMANCE-FIX-14.md)，实现/证据入口 [14报告](conformance-fix-14.md)。Release=CONFORMANCE-FIX-14；Storage/MinimumReader=4/4，SIMULATION-v1、ExtensionContract1不变；独立参考插件1.0.2。下方旧“当前13/12/11、Storage3”均为历史原文，不能选择旧包替代14候选。
+真实发送与原身份查询在网络前通过BeginReceiptAsync持久登记独立接收ID；登记失败禁止该次外呼。每次调用各有身份，原请求ID不变。收到响应后按接收ID写receipt-ingress原件并Flush；T3在同一SQLite事务中保存响应/冲突、原请求终态/唯一接受账和该次Committed证据。内容相同仍分别证明各自接收，冲突按原请求+内容去重。另一接收成功/重放不能清除缺失原件责任。查询明确没有响应则只结束该次NoResponse；业务Unknown仍须核对原请求。
 
-- **回执与恢复**：原Accepted/Rejected和唯一接受账保持；矛盾原件独立保存到response_conflicts，原EvidenceId不是新原件主键。同事务持久核对责任，终态仍出现在恢复列表、原身份查询、历史详情、准入/提交/关闭/激活、清理/维护和包保留检查中。重复不计量，原请求不可重发。
-- **存储失败窗口**：receipt-ingress先WriteThrough/Flush接管原回执，再T3；失败保留原件，重启验证原合同/原实现后提交。receipt-owner-fence在启用接收前持久建立，保护连原件写入也失败的窗口。正常受控退出删除已完成接收围栏；失败仅保留未完成身份。非正常退出后无法找到原件的终态请求进入ReceiptPersistenceUncertain，原接受事实不变但持续阻断；未存下的原件明确不可恢复，不宣称已保存。没有通用解锁；匹配的后续查询也不擦除矛盾。对端核对/原合同及批准处置不足时继续保留责任。不要删除围栏、ingress或库来“恢复”。
-- **备份/升级**：既有format1/2/3普通启动拒绝；先停止原宿主、原身份核对并满足维护预检，再使用14显式备份升级追加id4。id1/2/3 SQL/checksum不变；旧读者拒绝4，未来格式继续拒绝。原根有未恢复接收原件/脏围栏时，离线数据库单文件备份/升级拒绝，先恢复接收责任；应用内备份要求单所有者已排空回执且无存储故障。备份、恢复副本如有包责任在同一共享库登记后才复制；失败登记保留，不能当作无引用。回退仍是匹配旧发布/原格式备份/新根/恢复隔离，不回滚外部事实。
-- **健康**：每个当前服务按实例/目标/部署指纹/epoch/sequence保存确认与有效期；慢辅助检查不串行阻塞主发送。Supply当前真正消费requests，其失败/过期阻断业务；其他命名端口尚无业务消费者，只独立诊断。以后必需端口由业务新增依赖，不由驱动猜关键性。历史查询单列原目标、原精确能力错误，不加入当前主目标健康。WPF和CLI读取同一诊断事实。
-- **维护**：普通维护与组件页共用本窗ConfigurationDraft；导入、字段、设备、服务、参数、角色/端口、版本、预览与保存同源。不同窗口独立草稿，持久保存/激活仍CAS。激活显式传本次选中修订，后台复核权限、版本、实体与未决责任；Rejected箱无其他责任时与后台语义一致。保存≠生效，安装≠激活。
+- 已提交T3但未清理原件：启动核对同ID/响应后清理该原件，不把全部历史终态永久加锁；原请求/Attempt/唯一接受量保持。
+- 已Flush但T3失败：原件保留，启动由原精确合同/实现验证并重放同一次T3，不外呼重发。
+- 已登记但无可信原件：RawUnavailable持续隔离，显示接收ID、原请求、来源、时间及“未取得/不可恢复原内容”。后续匹配查询不等于补回该份原件，没有通用解锁。
+- format4脏围栏无法证明各次接收覆盖，导入legacy责任并原字节保留为receipt-owner-fence.json.legacy-*；不能凭任一raw解除全部责任。格式升级前应先由匹配旧宿主恢复/清偿，不能删除文件绕过预检。
+- 未知/损坏/残留.new原件启动拒绝，保留原件诊断。不要删除围栏、receipt-ingress、接收表、消费者登记或业务库来恢复。
 
-## 无桌面通知交付
+恢复列表、原身份查询、准入/提交/结束/激活、历史详情/筛选导出、清理、维护预检和精确旧包保留都读取同一接收责任。异常退出后先查看原请求/发生ID，明确哪些有原件、哪些不可恢复；未取得批准外部核对依据时继续阻断。查询/校验/T3/审计未终止前保留应用、库、设备/站点/包及依赖租约。软件暂停不是安全急停。
 
-`Ipc.Product --action serve`持续发布 `Notification`（OperationId/Lane/Status/Revision/Sequence）及 `Delivery=AwaitingExplicitAcknowledgement`，stdout完成写入/flush后等待接收者确认，不能假称播音。接收者处理该通知后输入：
+## 当前操作与维护
 
-```json
-{"Action":"notification-ack","Sequence":1}
+当前箱显示状态和最后Context/CheckClose/Close请求阶段、结果、原因、原ID；关闭拒绝而仍Active时分别显示。旧箱迟到回执只更新原记录；通道接受不遮盖箱拒绝。Accepted为已发生事实，当前健康/投影/未决责任及应用守卫理由另列于箱和动作附近。
+
+拆包每通道一次仅处理一条。提交至持久回执及刷新结束前锁定该输入；新字符、粘贴、Enter/Tab在该窗口不接收并持续显示“请等待并重新扫描”，不拼AB、不静默吞码或自动排队提交。成功Persisted且作业/命令/输入版本相同才消费；失败保留并选中原输入供明确重试/替换，切作业或失效身份不消费新草稿。真实HID吞吐/焦点需Windows后验，不把键盘策略当硬件验收。
+
+每窗ConfigurationDraft为普通维护和组件页唯一编辑源。暂空/非法数值可以继续选模块/新建；默认目标只取当前目标草稿，预览/保存仍严格验证。非法导入/取消保留原草稿。包/设备/服务异步选择的成功、错误及finally共同受代次所有权约束；新建、导入和身份失效使旧返回失效。修订从当前页显式选择，保存/激活由应用CAS、身份、实体与原责任裁决；Pending后受控重启成功才Effective，失败保旧。
+
+历史为列表优先，区分箱会话与Item作业，条码字符串/前导零保持。选择记录打开详情，返回列表保留本窗条件、选中、滚动和页码；技术树按需展开。筛选用本地日期+24小时时间，界面显示本地时区；开始含/结束不含，非法/反向/夏令时歧义反馈，不把0/未知合并。导出只使用成功查询的父记录上界，权限与身份全过程复核，包含原请求及每次接收责任；子事实为读取期间快照，不宣称不可变数据库快照。
+
+## 旧精确1.0.1部署到15的受控旅程
+
+1. 保留匹配旧宿主（13/8cb475b）、原1.0.1包、独立信任和所有旧数据根/备份。旧1.0.1或1.0.2不满足新宿主公共DLL指纹时明确拒绝，不重签同版本、不改原RequestId/Implementation/Binding/payload/hash。
+2. 在旧宿主原部署下查询原Unknown、保持唯一接受量；完成实体离场/复位、箱关闭和未决清偿。无合同/原包/实体处置能力则只阻塞该部署升级。
+3. 通过旧维护SaveConfig/ActivateConfig创建合法过渡配置：显式撤销扩展设备/服务绑定和包选择，换回旧宿主已支持的参考能力；受控停止/重启核实过渡Effective。更换seed不替代这一步。不把参考manual过渡当真实现场设备支持。
+4. 停止旧所有者，用15发布宿主执行preflight/backup/upgrade。选择旧/新发布目录、同一数据根，验证两套SHA256SUMS；备份仍为原format，持久升级回执先于写入。format1～4需显式升级到5，旧SQL/checksum保持；未来格式拒绝。portable记录实际无.exe apphost哈希，Windows记录.exe，均不造假文件。
+5. 安装与新宿主匹配的新版本精确包（15参考1.0.3）；通过同一维护配置编辑/预览/保存/激活，受控重启核实Effective，再完成供包、追溯导出、停止和重启。
+6. 任一步失败保留原根/原包/已验证备份和原回执。失败可能发生在schema提交后，应核查实际format；不能只换旧EXE。回退仅匹配旧发布+原format备份+新根+恢复隔离，先核对外部账/实体；不回滚已发生接受事实。
+
+合成完整旅程使用已保留的原包/旧宿主与新的冻结候选：
+
+```sh
+python3 scripts/verify-operation-upgrade.py --old-release <保留的13解压根> --new-release <15解压根> --dotnet <固定10.0.402入口> --output <全新合成证据目录>
 ```
 
-只确认本宿主实际交付的头部序号，乱序/旧序号拒绝；未确认不消费。主CLI输出NotificationAcknowledged。Supply业务装配也持续发布同一通知，使用BusinessCommand `Kind=AcknowledgeNotification, Value="1"`确认。两种宿主都保留64容量、消费错误/积压阻断；无人确认不是静默丢弃。桌面仍由主窗独占声音消费者，副窗不重复播放。消费者停止未终止时继续保留应用、库、站点/设备和包资源；超时不是成功停止。
+该脚本只访问字面loopback与新合成根，原发布目录/seed保持原字节；原Unknown核对、过渡Effective、备份/格式升级、失败保旧、旧读者拒绝、新精确包和实际供包追溯逐步留证。实际执行状态见15报告，脚本存在不代表现场通过。旧库LegacyConsumersUnverified依然需要真实原根/副本盘点与批准，不新增忽略/清除接口；WindowsACL独立。
 
-## 共享包库与离线根
+## 运行与发布入口
 
-每个运行/将保存扩展部署的数据根，以及有包责任的备份/恢复副本，先持久登记consumer。Windows登记位于指定账户可写的机级leases/extension-consumers，受保护库只读consumers.lease用于围栏；便携显式合成库登记在store/consumers。登记不是第二业务账；引用以各根SQLite的Effective/Pending/未决原请求/冲突为准。卸载和卸载恢复在原管理锁、消费者围栏与包独占锁内重新检查所有登记根、原包和反向依赖。根停止不取消责任；不可读/缺失/中断登记拒绝卸载。
+固定.NET10.0.402；现有构建/发布/核心CLI、station.ps1及provision脚本继续。portable用`dotnet app/Ipc.Product.dll --config app/config --data-root <独立合成根> --action serve`，独立Fixture仍为`dotnet fixture/Ipc.Fixture.dll --url http://127.0.0.1:18743/ --data <独立接收账根>`。命令console的snapshot/command/emit/reconcile/export/quit与无桌面notification-ack保持；通知必须实际交付/flush和明确序号确认，64容量/失败保护不撤销。供包装配仍复用同一ProductRuntime，未扩到新Inspection工作。
 
-13及更早安装库没有可证明的离线根覆盖，新安装器/便携注册将其标LegacyConsumersUnverified，Windows须由维护主体用同版provision-extensions脚本或新包安装先建立保护围栏。保留运行/查询与原包，不自动宣布旧库无引用；未经完整原数据根/备份盘点和批准迁移不得卸载。没有删除登记或强制退休的旁路。恢复复制不是更换根绕过包责任。
+必要选择器新增--operation-closure；其余按影响运行--conformance/--baseline/--followup/--closure、展示和实际资源/包链，不循环无关全量。源码/指南提交后用原package-reference.py形成全新portable/win-x64 integration-reference候选；冻结宿主后两类插件独立构建。包的SourceCommit/SourceCodeSha256、Storage5/5、精确插件版本/指纹和ZIP hash分别核对；WPF交叉构建与win-x64发布不证明Windows运行。
 
-Windows实际客户端/普通账户/UAC/ACL/输入/听审/W01～06按13决定后验，现场真实SDK/WCS/策略仍BLOCKED。所有本轮运行只用隔离合成根和loopback。
-
-## 15实施前残余与承接
-
-14的单回执冲突/接管失败核心验证不覆盖同请求多份回执的全部组合窗口。当前接收集合按请求聚合，未保存的一份责任可被后续成功或重放掩盖；普通AfterT3中断也可能留下保守围栏。不要把正常模拟通过、重启或原baseline PASS当作异常恢复整体放行。先完成15的AC15-02，不删除围栏/原件/原账，不提供通用解锁。
-
-旧Effective引用1.0.1时，Storage升4和替换seed不会自动换掉旧部署。须在匹配旧宿主/原包下清偿职责，通过支持的维护流程形成合法过渡部署，再显式备份升级及安装/激活新包；完整旅程尚待AC15-06证据。无法清偿或旧根覆盖未知保持阻塞。14候选原包/随包指南保持原身份；本次更新的仓库文档不是重新打包产物。
+历史操作记录如下，仅按其形成版本使用；不要从旧发布目录执行旧命令处理新format5库。
 
 ---
-
-
 
 ## CLOSURE-13运行记录（历史）
 
@@ -60,7 +71,7 @@ python3 scripts/package-business.py --composition supply-assembly --output /new/
 
 ### 继承的运维细节
 
-以下保留前版本的具体存储/恢复/Windows安装政策；旧版本号、旧输出路径和历史测试结果只作原版本参考，13候选身份见13报告；当前14身份见本文首节，15尚待实施。
+以下保留前版本的具体存储/恢复/Windows安装政策；旧版本号、旧输出路径和历史测试结果只作原版本参考，13候选身份见13报告；15身份见本文首节，旧候选按各自原报告使用。
 
 # 运行、发布与运维
 

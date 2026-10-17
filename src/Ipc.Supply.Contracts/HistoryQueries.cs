@@ -29,7 +29,11 @@ public sealed record HistoryQuery(
     string? ThroughId = null);
 
 public sealed record HistoryEntry(string Id, string SessionId, StationSession Session,
-    SupplyOperation? Operation, DateTimeOffset? OccurredAt, int OperationCount, int RequestCount, int AcceptedQuantity);
+    SupplyOperation? Operation, DateTimeOffset? OccurredAt, int OperationCount, int RequestCount, int AcceptedQuantity)
+{
+    public int AttemptCount { get; init; }
+    public int IncompleteReceiptCount { get; init; }
+}
 
 public sealed record HistoryPage(HistoryQuery Query, HistoryEntry[] Items, int TotalCount)
 {

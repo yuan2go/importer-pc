@@ -69,6 +69,7 @@ public partial class MainWindow : Window
             model.Context = session is null ? "未取得 · 请校验箱码" : $"{session.Barcode}   /   {OperatorText.Known(session.Context?.BoxWave)}   ·   {OperatorText.Session(session.Status)}";
             model.BoxBarcode = OperatorText.Known(session?.Barcode);
             model.BoxWave = session is null || session.Status is SessionStatus.Closed or SessionStatus.Rejected ? "未取得 · 等待新箱校验" : OperatorText.Known(session.Context?.BoxWave);
+            model.BoxResult = snapshot.BoxResult is { } result ? $"{OperatorText.Kind(result.Stage)} · {OperatorText.Request(result.Status)}\n{OperatorText.Reason(result.Reason)}\n原请求 {result.RequestId}" : "尚无箱请求结果";
             model.SessionStatus = session is null ? "等待校验新箱" : OperatorText.Session(session.Status);
             UpdateEntryProjection();
             model.ContextSource = session?.Context?.Provenance is { } p ? $"来源 {p.Source} · 版本 {p.Version} · 证据 {p.EvidenceId} · {p.AcquiredAt:O}" : "箱语义来源 / 版本 / 证据：未取得";
@@ -106,6 +107,7 @@ public partial class MainWindow : Window
         catch (Exception ex) { ready = false; model.GlobalStatus = "状态读取失败 · 未就绪：" + ex.Message; UpdateGuards(); }
         finally { refreshing = false; }
     }
+    public void ReportInput(string reason) => model.LastResult = reason;
     public async Task RunAsync(Func<Task> action)
     {
         if (busy || closing) return;
@@ -204,6 +206,14 @@ public partial class MainWindow : Window
             model.GlobalStatus = "投影已失效 · 新业务暂停，等待重新读取";
             StatusBanner.Background = (System.Windows.Media.Brush)FindResource("WarningBackground");
         }
+        model.BoxAvailability = !Fresh ? "当前不可用 · 投影未取得或已过期；等待重新读取" :
+            busy ? "正在执行 · 等待当前命令结果" : snapshot is null ? "等待当前投影" :
+            "当前入场：" + (snapshot.Admit.Allowed ? "具备条件" : OperatorText.Reasons(snapshot.Admit.Reasons)) +
+            "；结束检查：" + (snapshot.Close.Allowed ? "具备条件" : OperatorText.Reasons(snapshot.Close.Reasons));
+        CanCommand("CheckClose", out var closeWhy); CanCommand("ConfirmClose", out var confirmWhy);
+        model.CommandFeedback = snapshot?.State.Session?.Status == SessionStatus.AwaitingShortageDecision ? confirmWhy : closeWhy;
+        CanCommand("Pause", out var pauseWhy); CanCommand("Resume", out var resumeWhy);
+        model.ControlFeedback = string.Join("；", new[] { pauseWhy, resumeWhy }.Where(x => x.Length > 0).Distinct());
         ApplyReadControlGuards();
     }
     async void OperatorClick(object sender, RoutedEventArgs e) => await SendAsync("Login", value: "operator");
@@ -286,7 +296,7 @@ public partial class MainWindow : Window
         foreach(var detail in details)
         {
             var request=detail.Request;
-            var node=new TreeViewItem { Header=$"请求 · {OperatorText.Kind(request.Kind)} · {OperatorText.Request(request.Status)} · {request.Id}", IsExpanded=true }; root.Items.Add(node);
+            var node=new TreeViewItem { Header=$"请求 · {OperatorText.Kind(request.Kind)} · {OperatorText.Request(request.Status)} · {request.Id}", IsExpanded=false }; root.Items.Add(node);
             Add(node,$"原请求 {request.Id}\n原哈希 {request.PayloadHash}\n合同 {request.Binding.Contract} / 目标版本 {request.Binding.Revision}\n固定目标 {request.Binding.Endpoint}\n创建 {request.CreatedAt:O}");
             var attempts=new TreeViewItem { Header=$"发送尝试 ({detail.Attempts.Length})", IsExpanded=true }; node.Items.Add(attempts);
             foreach(var attempt in detail.Attempts) Add(attempts,$"#{attempt.Ordinal} {attempt.Id}\n{attempt.StartedAt:O} → {attempt.EndedAt?.ToString("O") ?? "未结束"}\n{attempt.Disposition} / {attempt.Error}");
@@ -299,6 +309,8 @@ public partial class MainWindow : Window
                     Add(responses,$"来源 {source!.Source} / 版本 {source.Version}\n语义证据 {source.EvidenceId} / 取得时间 {source.AcquiredAt:O}");
             }
             var audit=new TreeViewItem { Header=$"审计 ({detail.Audit.Length})", IsExpanded=true }; node.Items.Add(audit);
+            var receipts = new TreeViewItem { Header=$"每次接收责任 ({detail.Receipts.Length})", IsExpanded=detail.Receipts.Any(x=>x.Status is not ("Committed" or "NoResponse")) }; node.Items.Add(receipts);
+            foreach(var received in detail.Receipts) Add(receipts,$"接收 {received.Id} · {received.Origin} · {received.StartedAt:O}\n{received.Status} · 原请求 {received.RequestId} / Attempt {received.AttemptId}\n{(received.Response is null ? "未取得原件，不可恢复原内容" : "原件已持久接管 · SHA " + received.ContentSha256)}");
             foreach(var conflict in detail.Conflicts)
                 Add(responses,$"持续核对冲突 {conflict.Id} · 原EvidenceId {conflict.OriginalEvidenceId}\n{conflict.ReceivedAt:O} · 来源 {conflict.Source} · Attempt {conflict.AttemptId}\n{Wire.Encode(conflict.Response)}");
             foreach(var entry in detail.Audit) Add(audit,$"{entry.At:O} · {entry.Actor} · {entry.Kind}\n命令 {entry.CommandId} / {entry.Evidence}");

@@ -154,14 +154,7 @@ public partial class MainWindow
         RecentGrid.Visibility=dense ? Visibility.Collapsed : Visibility.Visible;
         LaneGrid.Margin=new Thickness(dense ? 18 : 24,4,dense ? 18 : 24,8);
         DrawerPanel.Width=Math.Max(320,Math.Min(1180,ClientArea.ActualWidth-70));
-        if (HistoryBody is not null)
-        {
-            var stacked = DrawerPanel.Width<1000;
-            Grid.SetColumn(HistoryDetail,stacked?0:1); Grid.SetRow(HistoryDetail,stacked?1:0);
-            HistoryBody.ColumnDefinitions[1].Width = new GridLength(stacked?0:6,GridUnitType.Star);
-            HistoryBody.RowDefinitions[1].Height=stacked?new GridLength(1,GridUnitType.Star):new GridLength(0);
-            HistoryDetail.Margin=stacked?new Thickness(0,8,0,0):new Thickness(10,0,0,0);
-        }
+        if (HistoryBody is not null) ApplyHistoryLayout();
         LayoutButton.Content=$"{(compact ? "紧凑偏好" : "标准偏好")} · 双通道";
         UpdateGuards();
     }

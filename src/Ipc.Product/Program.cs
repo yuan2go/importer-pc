@@ -130,7 +130,25 @@ MaintenanceReleaseIdentity ReleaseIdentity(string release)
     var configuration = new Dictionary<string, string>();
     foreach (var name in new[] { "product.json", "station.json", "presentation.json" })
         configuration.Add(name, Wire.FileHash(Path.Combine(app, "config", name)));
-    return new(Wire.FileHash(Path.Combine(app, "Ipc.Product.exe")), Wire.FileHash(Path.Combine(app, "Ipc.Product.dll")),
+    var executable = File.Exists(Path.Combine(app, "Ipc.Product.exe")) ? Path.Combine(app, "Ipc.Product.exe") : Path.Combine(app, "Ipc.Product");
+    // Portable published hosts use the native apphost name without .exe. Record its real
+    // bytes, never create a fake Windows executable to get an upgrade receipt.
+    foreach (var line in File.ReadAllLines(Path.Combine(release, "SHA256SUMS")))
+    {
+        if (line.Length < 67 || line.Substring(64, 2) != "  ") throw new InvalidDataException("Invalid release checksum list");
+        var relative = line[66..];
+        if (Path.IsPathRooted(relative) || relative.Split('/','\\').Any(x => x is ".." or "." or "")) throw new InvalidDataException("Unsafe release checksum path");
+        var file = Path.GetFullPath(Path.Combine(release, relative));
+        var cursor = Path.GetFullPath(release);
+        foreach (var part in relative.Split('/','\\'))
+        {
+            cursor = Path.Combine(cursor, part);
+            if (File.GetAttributes(cursor).HasFlag(FileAttributes.ReparsePoint)) throw new InvalidDataException("Linked release checksum path; source retained");
+        }
+        if (!Wire.FileHash(file).Equals(line[..64], StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException("Release checksum mismatch; source retained: " + relative);
+    }
+    return new(Wire.FileHash(executable), Wire.FileHash(Path.Combine(app, "Ipc.Product.dll")),
         Wire.FileHash(Path.Combine(release, "SHA256SUMS")), configuration);
 }
 var host = ProductHost.Build(new(Path.Combine(root, "product.json"), Path.Combine(root, "station.json"), Path.Combine(root, "presentation.json"), data, View: map.GetValueOrDefault("--view"), Layout: map.GetValueOrDefault("--layout"), ExtensionRoot: map.GetValueOrDefault("--extension-root"), ExtensionTrustFile: map.GetValueOrDefault("--extension-trust")));

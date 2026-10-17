@@ -127,18 +127,18 @@ static class AlignmentDataVerification
             var upgraded = SupplyStore.UpgradeVerified(source, upgradeBackup, receiptPath, release, selected);
             var receipt = Wire.Decode<StorageUpgradeReceipt>(File.ReadAllText(receiptPath));
             Assert(Wire.Encode(receipt) == Wire.Encode(upgraded) && receipt.Status == "ForwardMigrationCommitted" && receipt.Backup.Source.FormatVersion == format && receipt.Backup.Sha256 == Wire.FileHash(upgradeBackup), "Durable upgrade identity binds verified original-format backup");
-            Assert(Wire.Encode(receipt.PreviousRelease) == Wire.Encode(release) && Wire.Encode(receipt.SelectedRelease) == Wire.Encode(selected) && receipt.DestinationFormat == 4, "Receipt freezes previous/selected release and configuration identities");
+            Assert(Wire.Encode(receipt.PreviousRelease) == Wire.Encode(release) && Wire.Encode(receipt.SelectedRelease) == Wire.Encode(selected) && receipt.DestinationFormat == 5, "Receipt freezes previous/selected release and configuration identities");
             using (var store = new SupplyStore(source)) Frozen(store);
             using (var db = Open(source))
             {
                 using var command = db.CreateCommand(); command.CommandText = "SELECT id,checksum FROM schema_history ORDER BY id";
-                using var reader = command.ExecuteReader(); var expected = new[] { Schema1Checksum, Format2Checksum, Format3Checksum, ConformanceVerification.Format4Checksum }; var index = 0;
+                using var reader = command.ExecuteReader(); var expected = new[] { Schema1Checksum, Format2Checksum, Format3Checksum, ConformanceVerification.Format4Checksum, OperationClosureVerification.Format5Checksum }; var index = 0;
                 while (reader.Read()) { Assert(reader.GetInt32(0) == index + 1 && reader.GetString(1) == expected[index], "Migration checksum remains pinned at id" + (index + 1)); index++; }
-                Assert(index == 4, "Explicit upgrade preserves id1/2/3 and appends conflict format4"); reader.Close();
+                Assert(index == 5, "Explicit upgrade preserves id1/2/3/4 and appends receipt format5"); reader.Close();
                 command.CommandText = "SELECT count(*) FROM schema_history WHERE id<>1";
-                Assert(Convert.ToInt32(command.ExecuteScalar()) == 3, "Original schema1 reader refuses new migration history");
+                Assert(Convert.ToInt32(command.ExecuteScalar()) == 4, "Original schema1 reader refuses new migration history");
                 command.CommandText = "SELECT count(*) FROM schema_history WHERE id NOT IN (1,2)";
-                Assert(Convert.ToInt32(command.ExecuteScalar()) == 2, "Format2 reader refuses format3/4 history");
+                Assert(Convert.ToInt32(command.ExecuteScalar()) == 3, "Format2 reader refuses format3/4/5 history");
             }
         }
         // A rejected preflight, failed backup destination or failed durable initial receipt

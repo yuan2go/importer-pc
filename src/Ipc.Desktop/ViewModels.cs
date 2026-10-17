@@ -87,7 +87,7 @@ public sealed class LaneViewModel(string lane) : Bindable
     public bool CanClear { get => canClear; private set => Put(ref canClear, value); }
     public bool CanDetail { get => canDetail; private set => Put(ref canDetail, value); }
     public bool CanPrimary { get => canPrimary; private set => Put(ref canPrimary, value); }
-    public string RetainedDraft { get => scanInput.Text; set { scanInput.Text = value; RaiseScanInput(); } }
+    public string RetainedDraft { get => scanInput.Text; set { if (scanInput.TryReceive(value)) RaiseScanInput(); else ScanFeedback = "输入未接收，请等待本条保存后重新扫描"; } }
     public void RaiseScanInput() => Changed(nameof(RetainedDraft));
     public string Sku { get => sku; private set => Put(ref sku, value); }
     public string TaskId { get => taskId; private set => Put(ref taskId, value); }
@@ -95,6 +95,15 @@ public sealed class LaneViewModel(string lane) : Bindable
     public string ItemWave { get => itemWave; private set => Put(ref itemWave, value); }
     public string ObservationSource { get => observationSource; private set => Put(ref observationSource, value); }
     public string Remove { get => remove; private set => Put(ref remove, value); }
+    bool scanReadOnly;
+    public bool ScanReadOnly { get => scanReadOnly; private set => Put(ref scanReadOnly, value); }
+    string scanFeedback = "每次仅接收一条；处理期间请等待，拒收需重新扫描";
+    public string ScanFeedback { get => scanFeedback; set => Put(ref scanFeedback, value); }
+    public void SetScanBusy(bool value) { ScanReadOnly = value; ScanFeedback = value ? "正在保存本条；此期间拒收新扫描，请等待结果后重新扫描" : "本条处理结束；请核对结果后扫描下一条"; }
+    bool showDisposition;
+    public bool ShowDisposition { get => showDisposition; private set => Put(ref showDisposition, value); }
+    bool primaryIsCommand;
+    public bool PrimaryIsCommand { get => primaryIsCommand; private set => Put(ref primaryIsCommand, value); }
     public string ActionLabel { get => actionLabel; private set => Put(ref actionLabel, value); }
     public string ActionSummary { get => actionSummary; private set => Put(ref actionSummary, value); }
     public string SplitPolicy { get => splitPolicy; private set => Put(ref splitPolicy, value); }
@@ -143,20 +152,28 @@ public sealed class LaneViewModel(string lane) : Bindable
         Quantities = $"包装 {Package} / 需求 {Remaining} / 供给或保留 {Supply} {OperatorText.Known(t?.Unit)}";
         PreviousResult = Current?.PreviousConfirmed is { } prior ? $"仅历史证实结果 r{prior.Revision} · Item {prior.Barcode} · SKU {OperatorText.Known(prior.Task?.Sku)} · 数量 {prior.Supply?.ToString() ?? "未取得"}\n此结果不授权当前输入；原请求详情保留。" : "无上次已证实结果";
         var guard = snapshot.OperationGuards.GetValueOrDefault(lane);
-        DisabledReason = !hasIdentity ? "身份未取得或已失效；历史与命令需重新登录" : !available ? "新业务暂停、投影失效、执行中或辅助视图已打开" : !readable ? "必核字段未完整显示，请扩大窗口或收起详情" : guard is null ? "当前无可提交作业" : guard.Allowed ? "已显示当前版本；执行时仍由应用层复核" : OperatorText.Reasons(guard.Reasons);
+        DisabledReason = !hasIdentity ? "身份未取得或已失效；历史与命令需重新登录" : !available ? "当前不可操作：投影失效、执行中、窗口保护或辅助视图已打开；请返回当前有效工作台" : !readable ? "必核字段未完整显示，请扩大窗口或收起详情" : guard is null ? "当前无可提交作业" : guard.Allowed ? "已显示当前版本；执行时仍由应用层复核" : OperatorText.Reasons(guard.Reasons);
+        ScanReadOnly = executing || scanInput.IsInFlight || !hasIdentity || !SplitVisible || !available;
+        ShowDisposition = state is OperationStatus.AwaitingAction or OperationStatus.SplitRequired or OperationStatus.Rejected or OperationStatus.ValidationRejected;
+        PrimaryIsCommand = state is OperationStatus.AwaitingAction or OperationStatus.SplitRequired;
         CanSubmit = available && readable && hasIdentity && guard?.Allowed == true;
         CanScan = available && readable && hasIdentity && SplitVisible && snapshot.Submit.Allowed && Current!.SplitScans.Count < Current.Supply;
         CanClear = available && readable && hasIdentity && SplitVisible;
         CanCancel = hasIdentity && !executing && state is OperationStatus.Rejected or OperationStatus.ValidationRejected or OperationStatus.AwaitingAction or OperationStatus.SplitRequired;
         CanDetail = hasIdentity && Current is not null;
         ActionLabel = state switch { OperationStatus.Accepted => "查看作业详情", OperationStatus.OutcomeUnknown => "查看原请求核对", OperationStatus.ValidationRejected or OperationStatus.Rejected => "查看拒绝详情", OperationStatus.SubmitPending or OperationStatus.ValidationPending => "查看处理详情", OperationStatus.AwaitingDisposition => "查看处置详情", OperationStatus.SplitRequired => "确认拆包并供包", _ => "手动供包" };
-        if (executing) ActionLabel="正在处理…";
+        if (executing && PrimaryIsCommand) ActionLabel="正在处理…";
         CanPrimary = !executing && (state is OperationStatus.AwaitingAction or OperationStatus.SplitRequired ? CanSubmit : CanDetail);
         ActionSummary = CanSubmit ? $"本次 {Supply} {OperatorText.Known(t?.Unit)} · 目标格口 {Destination}" : Next;
     }
 }
 public sealed class StationViewModel : Bindable
 {
+    string boxResult = "尚无箱请求结果", boxAvailability = "等待当前可用性", commandFeedback = "", controlFeedback = "";
+    public string BoxResult { get => boxResult; set => Put(ref boxResult, value); }
+    public string BoxAvailability { get => boxAvailability; set => Put(ref boxAvailability, value); }
+    public string CommandFeedback { get => commandFeedback; set => Put(ref commandFeedback, value); }
+    public string ControlFeedback { get => controlFeedback; set => Put(ref controlFeedback, value); }
     string boxBarcode = "未取得", boxWave = "未取得", sessionStatus = "等待有效箱";
     public string BoxBarcode { get => boxBarcode; set => Put(ref boxBarcode, value); }
     public string BoxWave { get => boxWave; set => Put(ref boxWave, value); }
@@ -185,7 +202,8 @@ public sealed record RequestRecoveryRow(RequestRecovery Recovery)
     public string Id => Recovery.Request.Id;
     public string Status => OperatorText.Request(Recovery.Request.Status);
     public string Reasons => OperatorText.Reasons(Recovery.Dispatch.Reasons.Concat(Recovery.LocalTermination.Reasons).Distinct());
-    public string NextStep => Recovery.Request.Status switch { RequestStatus.Unknown => "查询原请求；继续保留未知结果", RequestStatus.Dispatching => "等待原响应；中断后核对", _ => "恢复许可，或按持久未交付证据终结" };
+    public string NextStep => Recovery.NextStep + (Recovery.Receipts.Length == 0 ? "" : "\n未接管接收：" + string.Join(" / ", Recovery.Receipts.Select(x => x.Id + " · " + x.Status)));
+
 }
 public sealed record HistoryRow(SupplyOperation Operation)
 {

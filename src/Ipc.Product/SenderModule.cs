@@ -27,9 +27,16 @@ sealed class SenderModule(StationApplication application, IIntegrationPort port)
                     if (claimed is null) { await Task.Delay(100, stop.Token); continue; }
                     var (request, attempt) = claimed.Value;
                     if (!await application.BeforeSendAsync(request, attempt)) continue;
-                    try { var response = await port.ExecuteAsync(request, stop.Token); await application.CompleteAsync(request, attempt, response); }
+                    var receiptId = await application.BeginReceiptAsync(request, attempt, "execute");
+                    IntegrationResponse response;
+                    try { response = await port.ExecuteAsync(request, stop.Token); }
                     catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or System.Text.Json.JsonException or InvalidDataException)
-                    { await application.UnknownAsync(request, attempt, ex.GetType().Name + ": transport outcome not authoritative"); }
+                    {
+                        await application.NoReceiptAsync(receiptId);
+                        await application.UnknownAsync(request, attempt, ex.GetType().Name + ": transport outcome not authoritative");
+                        continue;
+                    }
+                    await application.CompleteAsync(request, attempt, response, receiptId);
                 }
             }
             catch (OperationCanceledException) when (stop.IsCancellationRequested) { }

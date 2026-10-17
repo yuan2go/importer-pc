@@ -23,7 +23,7 @@ if (args.FirstOrDefault() == "--extension-interrupt")
 if (args.FirstOrDefault() == "--child")
 {
     var dir = args[1]; var point = args[2]; var cfg = Wire.Decode<StationConfig>(File.ReadAllText(Path.Combine(dir, "config.json")));
-    var injection = new FaultInjection { CrashAt = point is "BeforeT1" or "AfterT1" or "AfterT2" or "AfterT3" ? point : null, FailT3 = point == "T3Failure" };
+    var injection = new FaultInjection { CrashAt = point is "BeforeT1" or "AfterT1" or "AfterT2" or "AfterT3" or "T3Committed" ? point : null, FailT3 = point == "T3Failure" };
     await using var h = await Rig.Open(dir, cfg, injection);
     await h.Command("OpenContext", value: "000001");
     var claim = await h.App.ClaimAsync();
@@ -44,7 +44,7 @@ if (args.FirstOrDefault() == "--child")
 var workspace = Path.GetFullPath(args.FirstOrDefault(x => !x.StartsWith("--", StringComparison.Ordinal)) ?? ".");
 var selector = args.FirstOrDefault(x => x.StartsWith("--", StringComparison.Ordinal)) ?? "--reconciliation";
 if (args.Count(x => x.StartsWith("--", StringComparison.Ordinal)) > 1 ||
-    selector is not ("--hardening" or "--alignment" or "--data" or "--baseline" or "--closure" or "--followup" or "--review-followup" or "--extensions" or "--architecture" or "--conformance" or "--reconciliation"))
+    selector is not ("--hardening" or "--alignment" or "--data" or "--baseline" or "--closure" or "--followup" or "--review-followup" or "--extensions" or "--architecture" or "--conformance" or "--operation-closure" or "--reconciliation"))
     throw new ArgumentException("Select one of --hardening, --alignment, --data, --baseline, --closure, --followup, --review-followup, --extensions, --reconciliation; optional workspace is a separate positional argument");
 var full = selector == "--reconciliation";
 Console.WriteLine("SELECT " + selector + ": " + (full ? "H04 + A01 + E07 + E08 + E11 + E12 + AC/process baseline" : selector switch
@@ -68,6 +68,7 @@ try
         await AlignmentCompositionVerification.Run(root, url, workspace);
         await AlignmentRuntimeVerification.Run(root, url, workspace);
     }
+    if (full || selector == "--operation-closure") await OperationClosureVerification.Run(root, url, workspace);
     if (full || selector == "--conformance") await ConformanceVerification.Run(root, url, workspace);
     if (selector == "--architecture") await ArchitectureClosureVerification.Run(root, url, workspace);
     if (full || selector == "--extensions") await ExtensionVerification.Run(root, url, workspace);
@@ -308,7 +309,7 @@ try
     });
     await Check("AC-05/09 real process crash/restart windows", async () =>
     {
-        foreach (var point in new[] { "BeforeT1", "AfterT1", "AfterT2", "Remote", "T3Failure", "AfterT3" })
+        foreach (var point in new[] { "BeforeT1", "AfterT1", "AfterT2", "Remote", "T3Failure", "AfterT3", "T3Committed" })
         {
             var cfg = Rig.Config(url); var dir = Path.Combine(root, "crash-" + point); Directory.CreateDirectory(dir); File.WriteAllText(Path.Combine(dir, "config.json"), Wire.Encode(cfg));
             using var child = Start(dotnet, Assembly.GetExecutingAssembly().Location, "--child", dir, point);
@@ -317,7 +318,12 @@ try
             var requests = h.Store.Requests();
             if (point == "BeforeT1") Assert(requests.Length == 0, "Before T1 has no intent");
             else if (point == "AfterT1") { Assert(requests.Single().Status == RequestStatus.Prepared, "Prepared survives restart"); await h.Drain(); Assert(h.Store.Requests().Single().Status == RequestStatus.Accepted, "Prepared dispatch rechecks permits"); }
-            else if (point == "AfterT3") Assert(requests.Single().Status == RequestStatus.Accepted, "Committed acceptance survives process death");
+            else if (point is "AfterT3" or "T3Committed")
+            {
+                Assert(requests.Single().Status == RequestStatus.Accepted, "Committed acceptance survives process death");
+                Assert(!h.Store.RecoveryRequired(requests.Single().Id) && h.Store.IncompleteReceipts().Length == 0 &&
+                    (await h.App.SnapshotAsync()).State.Blocks.All(x => x.Code != "ReceiptPersistenceUncertain"), "Completed T3 process death remains operational without a false receipt quarantine");
+            }
             else if (point == "T3Failure")
             {
                 var request = requests.Single();

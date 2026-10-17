@@ -58,6 +58,8 @@ public sealed class ConfigurationDraft : INotifyPropertyChanged
         this["EventCapacity"] = copy.EventCapacity.ToString(CultureInfo.InvariantCulture); this["CommandCapacity"] = copy.CommandCapacity.ToString(CultureInfo.InvariantCulture); this["OutboxCapacity"] = copy.OutboxCapacity.ToString(CultureInfo.InvariantCulture);
         Devices.Clear(); foreach (var device in copy.Devices) Devices.Add(new(device)); Generation++;
     }
+    // Editing defaults must not parse unrelated temporary numeric fields.
+    public IntegrationBinding IntegrationTarget => new(this["TargetId"].Trim(), this["BindingVersion"].Trim(), this["Contract"].Trim(), this["Endpoint"].Trim());
     public StationConfig Build()
     {
         var source = basis ?? throw new InvalidOperationException("No configuration to edit");

@@ -1,0 +1,13 @@
+{
+  "Package": {
+    "Id": "wp16.external.reader",
+    "Version": "2.0.0",
+    "ManifestSha256": "412301E6543B22CEF45585A4F481A23830CCC51E34E1A9166009E7B2F3B6989D"
+  },
+  "PackageSha256": "088F09EB85FFFB6AA45B697138186E8463D2C54D1E8DD197883209AE44C27AE4",
+  "TrustSha256": "602F76F4558E66FF496D7EC9D47B90F0843FF10BFA07A3585163D8B19ECDF9DC",
+  "OperationId": "faaa4dc8188e4d2abc3b61bbcc848d93",
+  "At": "2026-10-17T17:08:55.65943+00:00",
+  "Status": "Installed",
+  "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
+}

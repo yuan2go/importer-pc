@@ -54,5 +54,19 @@
     "Sha256": "d30da9008e1985025aa87c698584f4b1db766f91eb2424a4cecfabf472ae93e4",
     "Snapshot": "docs/archive/pre-ui-maintainability-16/docs/ui/STATUS.md.txt",
     "Replacement": "docs/ui/STATUS.md"
+  },
+  {
+    "Path": "docs/manifest.json",
+    "SourceCommit": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+    "Sha256": "571f299af355990a1a1bd191448266a50f537d891d9f88bc2dfd93c21bc9a64d",
+    "Snapshot": "docs/archive/pre-ui-maintainability-16/docs/manifest.json.txt",
+    "Replacement": "docs/manifest.json"
+  },
+  {
+    "Path": "docs/manifest.sha256",
+    "SourceCommit": "12a40b308e13744eb4be959dff4a62dca473b5d9",
+    "Sha256": "8ef6315cbecf1f945b253b5caec3b3cad8c4bf31104108c78554abd34813f51c",
+    "Snapshot": "docs/archive/pre-ui-maintainability-16/docs/manifest.sha256.txt",
+    "Replacement": "docs/manifest.sha256"
   }
 ]

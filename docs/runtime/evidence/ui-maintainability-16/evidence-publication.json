@@ -1,0 +1,315 @@
+{
+  "Transform": "Only local build/runtime paths replaced by stable aliases. Original raw evidence retained outside Git; no errors, assertions or output content removed.",
+  "Records": [
+    {
+      "Path": "extension-smoke.json",
+      "RawSha256": "3917a76a3d2e65d355d5251d0095d3c42a92da621caac5cbfc32bddc6dcfa321",
+      "PublishedSha256": "72f54fed3c1475141540e55ed8e3fbd77fab9940e7f8ab8e66e523895041ae03"
+    },
+    {
+      "Path": "old-package-compatibility.json",
+      "RawSha256": "e492578ec6e514d429d02837da56eeb5eeb01506270a3b39ec84b9c64621a800",
+      "PublishedSha256": "0f6fd6e85dc403577cb5eea830b34a27fbdfaa964d19f2cbb228a683bb09c6cc"
+    },
+    {
+      "Path": "reference.barcode-1.0.3-new-host-compatibility.log",
+      "RawSha256": "537a62c38503bfe542c3e96557fab0d811926e12e2e40c44ad2d9c684d9c7fd0",
+      "PublishedSha256": "5efc9f2effd09a31c3510bf5048005dc84e2bc2ace4f6456dbb8599cb0ed6efb"
+    },
+    {
+      "Path": "reference.integration-1.0.3-new-host-compatibility.log",
+      "RawSha256": "537a62c38503bfe542c3e96557fab0d811926e12e2e40c44ad2d9c684d9c7fd0",
+      "PublishedSha256": "5efc9f2effd09a31c3510bf5048005dc84e2bc2ace4f6456dbb8599cb0ed6efb"
+    },
+    {
+      "Path": "runs/architecture-build-fixed.log",
+      "RawSha256": "1111e63639e0e1bb8711fd803968c0f02d147029199fb33d41fc0a903ad434c5",
+      "PublishedSha256": "fee1cf07c3061134d6488baa87feba34e91ab126f6b21fca11fc67322e123291"
+    },
+    {
+      "Path": "runs/architecture-build.log",
+      "RawSha256": "2f2efb09626cd798c7710b6b37d63b002545a701770bb9c4cdc8355b377a1db5",
+      "PublishedSha256": "1d3a818970767cb04d7356acb8bac9e77bac09ddeec4ba915645b04f172f79f4"
+    },
+    {
+      "Path": "runs/architecture-final-delta-build.log",
+      "RawSha256": "1df30e1f494bc37a8cd124045bf896561c34bfd316ae7af51a1f0683ee71e668",
+      "PublishedSha256": "8be29c2aa0245f735f6550727c31860f8a0efce97cf3000d55263117569faa77"
+    },
+    {
+      "Path": "runs/architecture-restore-fixture-fix-win-x64.log",
+      "RawSha256": "d82df1306841aeb2f02a1ffa3c2e6a547c656ab4500c660fca674df91927340e",
+      "PublishedSha256": "53684ee37478a5fda2f11965434305e324a927e0aebc833e064467b3f0d67dbd"
+    },
+    {
+      "Path": "runs/architecture-restore-fixture-win-x64.log",
+      "RawSha256": "1a87313e121f0125a3c92044ba5966f0b002a70dffe5559d59f35e027c7e59b9",
+      "PublishedSha256": "62201e856fe3fc7f7fa79b680a769eac920b50f149ed634649f6bf3b3fbc090a"
+    },
+    {
+      "Path": "runs/architecture-restore-locked-fixed.log",
+      "RawSha256": "d9893188c3189c3ab1b83db4c0a2d978ddf3006a918fd6f4a2671be50bc261f4",
+      "PublishedSha256": "5d7d23d938fcbfa1f76f845235c90257563c2c1e20d2ddb5baab54c5ccd66f40"
+    },
+    {
+      "Path": "runs/architecture-restore-locked.log",
+      "RawSha256": "171e35f9ae28d7145fa1581e75ad6e33fba5ca63d85cc32ce1167d673541baeb",
+      "PublishedSha256": "99ccae176492b63a6fc4721e6c3316d082d5bfa378506c51b969255b78b5a751"
+    },
+    {
+      "Path": "runs/architecture-restore-portable-fixed.log",
+      "RawSha256": "8bdb2d12847295fc1dde26bbaeb4296972cb62bf6a42886a3c7778b9652197a1",
+      "PublishedSha256": "94bfe47d1cbb1f3eb2c6129a93f142fc93ef5ccf7c455fd0a20d32ee8ac0cf76"
+    },
+    {
+      "Path": "runs/architecture-restore-portable.log",
+      "RawSha256": "0afe746777ff24f5c838072d870bd351454fc9d7eb86d2ff0d65d4f01d1ea618",
+      "PublishedSha256": "25d16b69c8ccd63a1bdabf54f926909e060690bab426fe890775c3d311367fe2"
+    },
+    {
+      "Path": "runs/architecture-restore-supply.log",
+      "RawSha256": "2351fa443f9e4f18e189efd0dc3ab14dffedf310d1ea51ebaf2e21ed0ec2bea8",
+      "PublishedSha256": "9e51d13ecc15449416164a824c119f1d26d9fb36d9435e331181365006d47ec5"
+    },
+    {
+      "Path": "runs/architecture-restore-win-x64.log",
+      "RawSha256": "4474c8fa476798a04fc406caaa0909d09bf98333c5412658c345e04f9a8db994",
+      "PublishedSha256": "3e6d2d3cbf1975b065f8c987c2f1c2a1fc7e2ef4e32890a44eb57c94b3398b30"
+    },
+    {
+      "Path": "runs/build-health-after.log",
+      "RawSha256": "bdae03ad901b630debd98ac59dc243d91073f6728079f31ba2068c83915acb7e",
+      "PublishedSha256": "c1e72b979c56d1c6f37145a0778a831a97fffad6f0384993c70f64dfed14e511"
+    },
+    {
+      "Path": "runs/build-profile-initial.log",
+      "RawSha256": "2c383889c12485353917f9a6850c58903b878a6f18837691670337dded1ef3c2",
+      "PublishedSha256": "857c0291f5b45446d3a09abb9d82790ad518c6afd65fac0ca073132d90f0208a"
+    },
+    {
+      "Path": "runs/final-build.log",
+      "RawSha256": "de7ba0891a165f0dd9d551c6a44c17b2c5e23425a59ee9b82903ac1d1d081488",
+      "PublishedSha256": "35ab3bfff75832bfc39a20b0733b9d165dcfa4dd9287841ad87337bf768fd92a"
+    },
+    {
+      "Path": "runs/final-build.record.json",
+      "RawSha256": "c6e3352f73d12129f92a91b71183df280ca42144d9f4007639973a07dc7a4871",
+      "PublishedSha256": "b8950b2618ffeadaec3776c9880ad9aa29171e542b607db03aa3bc5476d2be06"
+    },
+    {
+      "Path": "runs/final-locked-restore.log",
+      "RawSha256": "173e20ecfa8951d2eccd26fa6d9631be86839026a96aa21e4df8e2eff2f52fee",
+      "PublishedSha256": "0da1a84ab6fa9e13316aec39aa5be62556a061c38759e29852a45828d83d1e68"
+    },
+    {
+      "Path": "runs/final-locked-restore.record.json",
+      "RawSha256": "b36883c379faaa00d29edb266a7df6972706e5047ff295a93f8c5db1ae270c6b",
+      "PublishedSha256": "a6add5d6bd9aaafcf63966e4e3ab4c24213b24afee320419b0b9f963f0b1f231"
+    },
+    {
+      "Path": "runs/final-maintainability.log",
+      "RawSha256": "43f2b7e872d8cb31b89a46f67f7cd39e2576c35d509cf45fd34df5b6e38278a1",
+      "PublishedSha256": "f4a385c38497342842c47040dac136d54ae2ed68aa1ab2b5a0cfcc1f34c1099a"
+    },
+    {
+      "Path": "runs/final-maintainability.record.json",
+      "RawSha256": "70fefc97014a3881e7242f53f373aff409ad960af6b41c95af2158e6a1b51776",
+      "PublishedSha256": "31153af7c22c725c71bffe933382bb49aee593be9b38b8d4ca486cef148d6135"
+    },
+    {
+      "Path": "runs/frozen-architecture.log",
+      "RawSha256": "35534728c0ecc15ee8014e2664244d5e00d90f251a2d91da0983c4b6839d51f2",
+      "PublishedSha256": "e2b759afc33a1d2b074d2e4e9523b7384925ca3864d6ce70e2e2bc1264026953"
+    },
+    {
+      "Path": "runs/frozen-architecture.record.json",
+      "RawSha256": "bdd2ed0a16299242952e818533d42db0fad6ead60cabbeb924ba4ed4f5087bb6",
+      "PublishedSha256": "6cb1eeebbbbeb089aea7c892dd864de545038a00bdb6699f2332caccaa99eef3"
+    },
+    {
+      "Path": "runs/frozen-baseline.log",
+      "RawSha256": "7c1c6be384e5c98ef8948a19f968f7bfb292909203cd7a836f1d8e3501ed5072",
+      "PublishedSha256": "dffbd9f2aa2a2d0154632e451750d36c2ab90b36319dfbb695aebdfb5fe335a9"
+    },
+    {
+      "Path": "runs/frozen-baseline.record.json",
+      "RawSha256": "67241742c3e44b1be347a79f422c459531bf4e153ddc96f73cc3569b21ad49c8",
+      "PublishedSha256": "16aa99f2cf245277addcc8d710147c33a763cdc2902002d09eadee3ea23ddee6"
+    },
+    {
+      "Path": "runs/frozen-build.log",
+      "RawSha256": "670b592d889c2ace7b51a30c527d2d77d5e122e6bdfd0a0681e2441bd4c75b35",
+      "PublishedSha256": "65edacea582f26bd83f25bf69a7c989e5fb035fa2bd21cac04d377f3eb222110"
+    },
+    {
+      "Path": "runs/frozen-build.record.json",
+      "RawSha256": "cc07021cbd301190a3510557e2b647057ac1b8216b3ffb5b9db4b98c9756df24",
+      "PublishedSha256": "9a7f25106ac2f973cb6293cd971a3e1eda32119b10c044caf3227cd140007d8f"
+    },
+    {
+      "Path": "runs/frozen-closure.log",
+      "RawSha256": "3a9daa34c05b85167c22d9aac7f620f8d1264a4544afa5d3b8b4f8a5892894c8",
+      "PublishedSha256": "8d54c49f0d64511c0f48e62048dca5c30181066e391e731da77ea594ad74d625"
+    },
+    {
+      "Path": "runs/frozen-closure.record.json",
+      "RawSha256": "1dd6835810fe2d422b3d93d3e360fd259a3cd49a2635c271b9c4b6f2fa26c0b7",
+      "PublishedSha256": "b1a0e7866616bc282da4191c2eadcae1f06632ac03a8f2d4f10ee4800f9c6e17"
+    },
+    {
+      "Path": "runs/frozen-conformance.log",
+      "RawSha256": "3931726978b6e42014bfe76ece7e5b5d5b7b396a556cd6c490a3036bb9a68ecc",
+      "PublishedSha256": "03ae2055154e2adb6f541b1039cae41b711e95a01232a7f96b0ccaf906e2292e"
+    },
+    {
+      "Path": "runs/frozen-conformance.record.json",
+      "RawSha256": "ccbc421f9dfc67e8c197a0351a7517efb27c5ca48513d86f2c7ad26b26315008",
+      "PublishedSha256": "9393da5b8fea0998f8ebd90e63ad76f526c1afd00098812d22715ae63a9482e7"
+    },
+    {
+      "Path": "runs/frozen-maintainability.log",
+      "RawSha256": "5fc92c83f85ed047f69e144bb795d2f7655de8cc9d592da06ccd44235cfd9abd",
+      "PublishedSha256": "33f28b656bb15a56c913a47d01c7767d4a24d3b7e592a4dc081227063360c71d"
+    },
+    {
+      "Path": "runs/frozen-maintainability.record.json",
+      "RawSha256": "9de669f0aac4e1fe32b5177b17e94188fee775cc1776a54898a3618f551dd346",
+      "PublishedSha256": "736cac293fcbe17931bea2804cd3989f52d92a30dd4d50c8f36322da9be7da6a"
+    },
+    {
+      "Path": "runs/frozen-operation-closure.log",
+      "RawSha256": "5d557ba905941d07b2d6a2e41051dc706f561c977869965cb59deb40dcf22785",
+      "PublishedSha256": "5cc4109aae294f04ceeba292046d36f3040029443b462e4a385a0844fa69ecc8"
+    },
+    {
+      "Path": "runs/frozen-operation-closure.record.json",
+      "RawSha256": "2ab70002e91a68cd4d5a62f2d9cba93c9815c7b6520e44f0d03e3ab8785ff496",
+      "PublishedSha256": "6951e252872e6447b53cebdbdbf7eaf789b3cf91eb15e35019632904e4663040"
+    },
+    {
+      "Path": "runs/frozen-review-followup.log",
+      "RawSha256": "3527d32412c154b549ac46c80662136d3b7e77960f1aab0f9e16ac529c0630c5",
+      "PublishedSha256": "ae373837a8af9543c7ab15c74bd5f6f29fdf3371c453e43887edb87c4e7f9526"
+    },
+    {
+      "Path": "runs/frozen-review-followup.record.json",
+      "RawSha256": "457a72e521ab5357549116ef6e0202f945a8026875b7f6f7cc5d48eecdb435e8",
+      "PublishedSha256": "82b803665e39753b5d3beccf0c2bf86a599306745d8a850560a86e6aead655fc"
+    },
+    {
+      "Path": "runs/health-after.log",
+      "RawSha256": "cc2395f4d224c482d394706be85c97f417a51f510e618d13de4b8385419cf2d8",
+      "PublishedSha256": "996a8dac392c7068abc239288b535ca556443a69f2a13e33f4813e8e968dd401"
+    },
+    {
+      "Path": "runs/health-before.log",
+      "RawSha256": "9a03487e17230585e0509af1c6b4808a63da027c5491eb6f553512798b8b5082",
+      "PublishedSha256": "4562dd1ff9a57f3caca3dc916363439da469c65e5d0aabb720edab5c69fc5c80"
+    },
+    {
+      "Path": "runs/maintainability-final-delta.log",
+      "RawSha256": "a61f2b7338f59a645d4072273ed302b55bf204a0874350b315d9ec829aa36235",
+      "PublishedSha256": "1da32d62367f7597199aa3a6bceb1f4386ee187dc6e4aa78f3f80f682ccb1865"
+    },
+    {
+      "Path": "runs/maintainability.log",
+      "RawSha256": "156b4f9eb87e2c450489c1011e673c5996c6029b3d04bbacd7bb724dce20ed7b",
+      "PublishedSha256": "41db6e258f5e26795978773fa03e714dd989de3f0d0af8af12172155f9136d77"
+    },
+    {
+      "Path": "runs/operation-closure-pre-freeze.log",
+      "RawSha256": "30aba5213ee2731e1177a3692a2d6c8bd31015f7fae6698f1c6ddb5cb6677765",
+      "PublishedSha256": "2e686d9b93631d0fb7a8aafb18aefe9a58915ad11a41420cbb645e93e24c48aa"
+    },
+    {
+      "Path": "runs/operation-closure-pre-freeze.record.json",
+      "RawSha256": "c57e17b5884a566b260c9d38742ac8ca78d0078c5886dabf0052ed29aaab66eb",
+      "PublishedSha256": "3eac37f77ac1408e899865038aa3e54994e2fcb35c2a8ea8fd55310006ced365"
+    },
+    {
+      "Path": "runs/package-portable.log",
+      "RawSha256": "df240e3988658fe19e815c17b5da5f013a44cbb1ebab3415ee39da2d93c94adb",
+      "PublishedSha256": "1e584bbce03544bf8e66b1931f74001ef7c605efa1debbbc3182d211ef21a509"
+    },
+    {
+      "Path": "runs/package-portable.record.json",
+      "RawSha256": "2043696782eed7dd24677b8de3666a9d56ff6f0892307ea62cfae72bb50f1045",
+      "PublishedSha256": "bd850618073234aaa45c9fe9e25eaba9f4959d8b591f0687c865d2955da21cbe"
+    },
+    {
+      "Path": "runs/package-win-x64.log",
+      "RawSha256": "d681b96e5949845258666ddb4e30a19aa195c34dfbea446fbd1cf48d1caf7dc8",
+      "PublishedSha256": "650ce0e8ce0b376e865b996d28b37368803f330c6a294250ee44289aaa31f19c"
+    },
+    {
+      "Path": "runs/package-win-x64.record.json",
+      "RawSha256": "80a26e22619b9d90105f670b6dd1e05142f1f920be04c0a94d485b476e299e60",
+      "PublishedSha256": "a5a532ac33915018f96c9a1f592d6e973044cee48346ad68d6160a4053ee26c4"
+    },
+    {
+      "Path": "runs/regression-closure.log",
+      "RawSha256": "c332b901eb58feacb4173b83143994f38d4e0af090a667fc8dcd2074f5cfa9e8",
+      "PublishedSha256": "165bbbfb202893b04578b73d258b424617f64b4d1cec7288a59498bb19e8739b"
+    },
+    {
+      "Path": "runs/regression-closure.record.json",
+      "RawSha256": "27b2776682e20afad37832efca5a2ee851414aafe52045d3967876e60ef4dd2f",
+      "PublishedSha256": "db2b92f417574b75a9e468c2bd72899a45f66567c4ce9ce217908f84486a51f3"
+    },
+    {
+      "Path": "runs/regression-conformance.log",
+      "RawSha256": "0c89508072f271c94f2f07d64934bd2eae352fec450f6edea0d2b1c6dc88bc9b",
+      "PublishedSha256": "89a116858030c527072e3cf6be1e3fcd42a03a837ab4f43b3b8547db3cf59b82"
+    },
+    {
+      "Path": "runs/regression-conformance.record.json",
+      "RawSha256": "355fa1505a294cab7844d8eafe40299db2735ec58195192227c3de047b51af08",
+      "PublishedSha256": "e00d89f027e4e3961a9a3784a23e79695cfa72080fe3f38d7e15dce35c6be448"
+    },
+    {
+      "Path": "runs/regression-review-followup.log",
+      "RawSha256": "f183ad69b7550abc6a02efea083ddcd057f5a14d0cdce925c473553c5bb1c0cb",
+      "PublishedSha256": "5eda708fd6a76cf1a0790fae1e9e0a19193044868575debf16931a61d6c06482"
+    },
+    {
+      "Path": "runs/regression-review-followup.record.json",
+      "RawSha256": "e52e8e5676a762ec96f1a1bf97526a01669e459f93bb88ab3be88751f2798de8",
+      "PublishedSha256": "1627ae9b2738f6c3e63cf8a31eb2d59f262a203ac62570be3236cdfc483b996e"
+    },
+    {
+      "Path": "runs/restore-initial.log",
+      "RawSha256": "c2f84c4089e91fb49793bd77fab61201842a396631a4eb2322dbfc0fc0974eaf",
+      "PublishedSha256": "d9d85bf03c10dd614fefbbde68b2fb34a76c32b44395b48121cc632dbb49a6cd"
+    },
+    {
+      "Path": "runs/ui-first-build.log",
+      "RawSha256": "131cefdaa1515760f054e26a99840781aa7630a2f70d68c2650bfdfaf1160dec",
+      "PublishedSha256": "b5616175700c116d0b35961b0c442f5c711a5f6251ab52b98640b33c39e2c72e"
+    },
+    {
+      "Path": "runs/unpacked-core-smoke.log",
+      "RawSha256": "e51b4365763025740a226adeebef1cfb2b172b20ef5d59ddb6dfc5bf878d9303",
+      "PublishedSha256": "390560da7fbf277848d23bc880ae2ada166c2f88f4cc6000d04cac72c6cf7375"
+    },
+    {
+      "Path": "runs/unpacked-core-smoke.record.json",
+      "RawSha256": "cb52b8058f2a5614fbcffd9117551f2dfd7bb6914ca8f26029034d84bace487c",
+      "PublishedSha256": "6b31fdb1673d7f274471c402fbbbc48879fac8d49904ec8575347c618776498f"
+    },
+    {
+      "Path": "runs/unpacked-extension-smoke.log",
+      "RawSha256": "8e4043d7d0dad7c7308b2faa1795827f3760fa650b6464ac8587037ec4136a41",
+      "PublishedSha256": "565bfa28fd76088e7c714fb6cdaf8ee43999ad0e8d18b806e73e44c4e17c90c4"
+    },
+    {
+      "Path": "runs/unpacked-extension-smoke.record.json",
+      "RawSha256": "cee2e8ed5719c9cf678230bf88dbd4903678c4a5a07e3f5d586cee0661b51cd4",
+      "PublishedSha256": "557cb069afd4fb51a1b6999d2b409ae0c7ab1b267168df6d89337ad22080f8d7"
+    },
+    {
+      "Path": "tooling-tests-first-cross-checker-order-fail.log",
+      "RawSha256": "403eb47fed12d3c9f9262a597535a1efd78b83b5b819cffa109655b124caf8cb",
+      "PublishedSha256": "9d7e8743994d9c4a691967e15097a983849e60412fd1f834047f1ae5bcaec53b"
+    }
+  ]
+}

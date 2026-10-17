@@ -1,0 +1,19 @@
+{
+  "Name": "frozen-baseline",
+  "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+  "WorkingTree": true,
+  "Command": [
+    "/pinned-dotnet/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--baseline"
+  ],
+  "StartedAt": "2026-10-17T17:07:58.826151+00:00",
+  "EndedAt": "2026-10-17T17:08:05.923946+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "ExitCode": 0,
+  "LogSha256": "dffbd9f2aa2a2d0154632e451750d36c2ab90b36319dfbb695aebdfb5fe335a9",
+  "RawLogSha256": "7c1c6be384e5c98ef8948a19f968f7bfb292909203cd7a836f1d8e3501ed5072",
+  "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+  "RuntimeSourceUnchangedSinceFrozenCommit": true
+}

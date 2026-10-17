@@ -1,0 +1,169 @@
+{
+  "ExternalSourceCommit": "e7b653fc23fcd092a41d1cca48fb77f885ca96b1",
+  "Package": {
+    "Id": "wp16.external.reader",
+    "Version": "2.0.0",
+    "ManifestSha256": "412301E6543B22CEF45585A4F481A23830CCC51E34E1A9166009E7B2F3B6989D"
+  },
+  "PackageSha256": "088f09eb85fffb6aa45b697138186e8463d2c54d1e8dd197883209ae44c27ae4",
+  "Windows": "NOT_RUN",
+  "extension-inspect": "PASS",
+  "extension-install": "PASS",
+  "SaveConfigReceipt": {
+    "Status": "Persisted",
+    "Reason": "Validated",
+    "Revision": 10,
+    "OwnerId": "edaa636fe1604a5c9d9326f75251809e",
+    "RequestId": null
+  },
+  "SavedRevision": "edaa636fe1604a5c9d9326f75251809e",
+  "SavedStatus": "Validated",
+  "ActivateReceipt": {
+    "Status": "Persisted",
+    "Reason": "PendingActivation",
+    "Revision": 11,
+    "OwnerId": "edaa636fe1604a5c9d9326f75251809e",
+    "RequestId": null
+  },
+  "PendingActivation": "PASS",
+  "EffectiveAfterControlledRestart": "PASS",
+  "AcceptedQuantity": 2,
+  "Requests": [
+    {
+      "Id": "d4a76f9b7ac74bdbbc0b1874f819219b",
+      "OwnerId": "14624b4bec314128b80776e86555cede",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "14624b4bec314128b80776e86555cede:Context:1",
+      "Payload": "{\n  \"StationId\": \"EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\",\n  \"SessionId\": \"14624b4bec314128b80776e86555cede\",\n  \"OwnerId\": \"14624b4bec314128b80776e86555cede\",\n  \"OwnerRevision\": 1,\n  \"Kind\": \"Context\",\n  \"Barcode\": \"000001\",\n  \"Package\": null,\n  \"Quantity\": null,\n  \"CheckToken\": null,\n  \"Policy\": \"SYNTHETIC-KEEP-v1\",\n  \"InitialDemand\": 120,\n  \"Fault\": \"None\",\n  \"Actor\": {\n    \"Id\": \"SIM-maintenance\",\n    \"Role\": \"Maintenance\",\n    \"ExpiresAt\": \"2026-10-18T01:09:37.42887+00:00\"\n  }\n}",
+      "PayloadHash": "D13A9296DCF23FDA612CEDC78F735245AA6F90E8A39C2CE41155B24B64947848",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.504797+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    },
+    {
+      "Id": "ec424c75d80944cb8f4b181d0874f8a9",
+      "OwnerId": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Validate",
+      "OwnerRevision": 2,
+      "IntentKey": "dd2288a05d2c4b87b61dd30ac40c6763:Validate:2",
+      "Payload": "{\n  \"StationId\": \"EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\",\n  \"SessionId\": \"14624b4bec314128b80776e86555cede\",\n  \"OwnerId\": \"dd2288a05d2c4b87b61dd30ac40c6763\",\n  \"OwnerRevision\": 2,\n  \"Kind\": \"Validate\",\n  \"Barcode\": \"000123\",\n  \"Package\": 2,\n  \"Quantity\": null,\n  \"CheckToken\": null,\n  \"Policy\": \"SYNTHETIC-KEEP-v1\",\n  \"InitialDemand\": 120,\n  \"Fault\": \"None\",\n  \"Actor\": {\n    \"Id\": \"SIM-maintenance\",\n    \"Role\": \"Maintenance\",\n    \"ExpiresAt\": \"2026-10-18T01:09:37.42887+00:00\"\n  }\n}",
+      "PayloadHash": "4417E39CB2196D9C0B97C7C8C3A37125AD28E08D456FACD686EABCC81B05F207",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.763141+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    },
+    {
+      "Id": "a2d9f387a1334aef97172e3c8c25467d",
+      "OwnerId": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Submit",
+      "OwnerRevision": 3,
+      "IntentKey": "dd2288a05d2c4b87b61dd30ac40c6763:Submit:3",
+      "Payload": "{\n  \"StationId\": \"EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\",\n  \"SessionId\": \"14624b4bec314128b80776e86555cede\",\n  \"OwnerId\": \"dd2288a05d2c4b87b61dd30ac40c6763\",\n  \"OwnerRevision\": 3,\n  \"Kind\": \"Submit\",\n  \"Barcode\": \"000123\",\n  \"Package\": 2,\n  \"Quantity\": 2,\n  \"CheckToken\": null,\n  \"Policy\": \"SYNTHETIC-KEEP-v1\",\n  \"InitialDemand\": 120,\n  \"Fault\": \"None\",\n  \"Actor\": {\n    \"Id\": \"SIM-maintenance\",\n    \"Role\": \"Maintenance\",\n    \"ExpiresAt\": \"2026-10-18T01:09:37.42887+00:00\"\n  }\n}",
+      "PayloadHash": "ABB78D79A222171506BDB2444865F13839A79C6F7F3BB1F6AF7EF3CB5636288E",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.896777+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    }
+  ],
+  "SchemaParametersApplied": [
+    {
+      "Id": "left-external",
+      "PackageId": "wp16.external.reader",
+      "ModuleId": "barcode-source",
+      "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+      "Enabled": true,
+      "Parameters": {
+        "input.prefix": "000"
+      }
+    },
+    {
+      "Id": "right-external",
+      "PackageId": "wp16.external.reader",
+      "ModuleId": "barcode-source",
+      "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+      "Enabled": true,
+      "Parameters": {
+        "input.prefix": "111"
+      }
+    }
+  ],
+  "ControlledStop": "PASS",
+  "HostUnchanged": true,
+  "Result": "PASS_EXTERNAL_BUILD_INSTALL_CONFIG_ACTIVATE_SOURCE_JOB_STOP"
+}

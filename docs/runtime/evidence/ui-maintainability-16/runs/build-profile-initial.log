@@ -1,13 +1,13 @@
-  Ipc.Platform -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
-  Ipc.Supply.Contracts -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
-  Ipc.Supply -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Supply/bin/Debug/net10.0/Ipc.Supply.dll
-  Ipc.Adapters -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
-  Ipc.Product -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
-  Ipc.Assembly -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Assembly/bin/Debug/net10.0/Ipc.Assembly.dll
-  Ipc.Desktop -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll
-  Ipc.Fixture -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll
-  Ipc.Inspection -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Inspection/bin/Debug/net10.0/Ipc.Inspection.dll
-  Ipc.Verification -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll
+  Ipc.Platform -> /workspace/importer-pc/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /workspace/importer-pc/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /workspace/importer-pc/src/Ipc.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /workspace/importer-pc/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /workspace/importer-pc/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
+  Ipc.Assembly -> /workspace/importer-pc/src/Ipc.Assembly/bin/Debug/net10.0/Ipc.Assembly.dll
+  Ipc.Desktop -> /workspace/importer-pc/src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll
+  Ipc.Fixture -> /workspace/importer-pc/src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll
+  Ipc.Inspection -> /workspace/importer-pc/src/Ipc.Inspection/bin/Debug/net10.0/Ipc.Inspection.dll
+  Ipc.Verification -> /workspace/importer-pc/tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll
 
 已成功生成。
     0 个警告

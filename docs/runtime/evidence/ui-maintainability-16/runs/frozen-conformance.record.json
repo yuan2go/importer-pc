@@ -1,0 +1,19 @@
+{
+  "Name": "frozen-conformance",
+  "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+  "WorkingTree": true,
+  "Command": [
+    "/pinned-dotnet/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--conformance"
+  ],
+  "StartedAt": "2026-10-17T17:12:13.195611+00:00",
+  "EndedAt": "2026-10-17T17:12:30.729678+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "ExitCode": 0,
+  "LogSha256": "03ae2055154e2adb6f541b1039cae41b711e95a01232a7f96b0ccaf906e2292e",
+  "RawLogSha256": "3931726978b6e42014bfe76ece7e5b5d5b7b396a556cd6c490a3036bb9a68ecc",
+  "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+  "RuntimeSourceUnchangedSinceFrozenCommit": true
+}

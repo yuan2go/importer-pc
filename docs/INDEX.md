@@ -2,11 +2,12 @@
 
 ## 当前工程入口
 
-最新核验main **12a40b308e13744eb4be959dff4a62dca473b5d9**，PR15已合并，开工查无开放PR。当前任务为[UI-MAINTAINABILITY-16](work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，[有效基线/计划](runtime/ui-maintainability-16-baseline.md)。15源码/证据/候选保持历史身份；本包结果将写入独立报告。Windows客户端实际验收仍NOT_RUN，真实能力按D/B项BLOCKED。
+最新核验main **12a40b308e13744eb4be959dff4a62dca473b5d9**，PR15已合并，开工查无开放PR。当前任务为[UI-MAINTAINABILITY-16](work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，[有效基线/计划](runtime/ui-maintainability-16-baseline.md)。15源码/证据/候选保持历史身份；本包结果见[16逐项报告](runtime/ui-maintainability-16.md)、[checks](runtime/ui-maintainability-16-checks.json)及[候选](https://github.com/yuan2go/importer-pc/releases/tag/ui16-reference-089fd98)。Windows客户端实际验收仍NOT_RUN，真实能力按D/B项BLOCKED。
 
 |入口|阅读目的|
 |---|---|
-|[最新复核](reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)、[当前问题](reviews/audit-reconciliation-01/current-findings.json)|继承和关闭哪些子项、新增接收责任/操作残余、模块继续/暂停边界。|
+|[16逐项实现/验收](runtime/ui-maintainability-16.md)、[首次参考作业](runtime/getting-started.md)|本包操作、维护性、工具和写放大证据；当前运行入口。|
+|[PR14后历史复核](reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)、[形成时问题](reviews/audit-reconciliation-01/current-findings.json)|按原来源版本理解；15/16分项结果见各自报告，不倒写历史。|
 |[原PDF与归并报告](reviews/audit-reconciliation-01/README.md)|8cab固定审查原字节；不直接沿用旧“14待实施”提示词。|
 |[15完整工作包](work-packages/WP-IPC-OPERATION-CLOSURE-15.md)、[精简Codex提示词](work-packages/Codex-WP-IPC-OPERATION-CLOSURE-15.md)|原任务要求、范围、依赖和验收；形成时PLANNED不是当前实施结论。|
 |[FIX14实施](runtime/conformance-fix-14.md)、[checks](runtime/conformance-fix-14-checks.json)、[证据](runtime/evidence/conformance-fix-14/README.md)|冻结源68cdc36的真实核心验证、原FAIL与复验、候选/兼容及Windows边界。|

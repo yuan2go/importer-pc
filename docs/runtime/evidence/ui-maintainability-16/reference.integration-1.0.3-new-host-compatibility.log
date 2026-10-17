@@ -1,0 +1,6 @@
+Unhandled exception. System.IO.InvalidDataException: Unsupported extension identity/runtime/contract/RID/mode/source
+   at Ipc.Platform.ExtensionPackages.VerifyMetadata(Byte[] manifestBytes, Byte[] signature, ExtensionTrust trust, RunMode mode, String packageHash) in /workspace/importer-pc/src/Ipc.Platform/ExtensionPackages.cs:line 54
+   at Ipc.Platform.ExtensionPackages.Inspect(String archive, ExtensionTrust trust, RunMode mode, Func`2 resolve) in /workspace/importer-pc/src/Ipc.Platform/ExtensionPackages.cs:line 110
+   at Ipc.Product.ExtensionBuildCheck.Inspect(String archive, String trustFile, RunMode mode, String[] dependencyArchives) in /workspace/importer-pc/src/Ipc.Product/ExtensionBuildCheck.cs:line 38
+   at Program.<Main>$(String[] args) in /workspace/importer-pc/src/Ipc.Product/Program.cs:line 18
+   at Program.<Main>(String[] args)

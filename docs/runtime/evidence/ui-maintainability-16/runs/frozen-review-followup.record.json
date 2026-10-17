@@ -1,0 +1,19 @@
+{
+  "Name": "frozen-review-followup",
+  "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+  "WorkingTree": true,
+  "Command": [
+    "/pinned-dotnet/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--review-followup"
+  ],
+  "StartedAt": "2026-10-17T17:12:37.889705+00:00",
+  "EndedAt": "2026-10-17T17:13:00.012959+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "ExitCode": 0,
+  "LogSha256": "ae373837a8af9543c7ab15c74bd5f6f29fdf3371c453e43887edb87c4e7f9526",
+  "RawLogSha256": "3527d32412c154b549ac46c80662136d3b7e77960f1aab0f9e16ac529c0630c5",
+  "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+  "RuntimeSourceUnchangedSinceFrozenCommit": true
+}

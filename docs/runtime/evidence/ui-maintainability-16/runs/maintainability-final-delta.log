@@ -1,5 +1,5 @@
 SELECT --maintainability: AC16 health renewal, UI operation policies, command/ownership and maintenance risks
-Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-45a9830cec8c45dfab1cef7265b20cb0
+Evidence data retained at /tmp/ipc-verification-45a9830cec8c45dfab1cef7265b20cb0
 RUN AC16 health renewal authority, durable transitions and checkpoint/restart
 PASS AC16 health renewal authority, durable transitions and checkpoint/restart
 PASS AC16 architecture: built-in adapters reference public contracts without Supply implementation
@@ -24,4 +24,4 @@ PASS AC16 architecture: priority uses typed command vocabulary
 PASS AC16 architecture: live predicate and SQL readers retain each nonterminal/unknown receipt independently
 PASS AC16 architecture: business-owned view IDs and concrete module dependencies match shipped assembly registration
 PASS selected verification scope --maintainability; Windows desktop/SDK/field validation NOT_RUN by this core executable
-Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-45a9830cec8c45dfab1cef7265b20cb0
+Evidence data retained at /tmp/ipc-verification-45a9830cec8c45dfab1cef7265b20cb0

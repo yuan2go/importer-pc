@@ -1,0 +1,965 @@
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime 61fbe45d-c021-422c-a3ac-399517ca5e63 station EXTERNAL-63e040c6fb104f4396fcd11bf2a13066 configuration SIM-1 mode Simulation ready for identity/context validation","State":{"Runtime":"61fbe45d-c021-422c-a3ac-399517ca5e63","Station":"EXTERNAL-63e040c6fb104f4396fcd11bf2a13066","Revision":"SIM-1","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /task-worktree","State":{"ContentRoot":"/task-worktree","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+JSON command console. One command per line; snapshot / configs / extensions / emit / replay / reconcile / export / quit supported. SIMULATION only.
+{
+  "State": {
+    "Revision": 7,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "5e9b0cc3a93d470b9ec3644a4b5ac7e7",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:56.391146+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:56.391146+00:00",
+        "ValidUntil": "2026-10-17T17:09:01.391146+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "4c3f23790219461c8b6d239b67f7caae",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:56.395627+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:56.395627+00:00",
+        "ValidUntil": "2026-10-17T17:09:01.395627+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [
+      {
+        "Code": "WcsUnavailable",
+        "Scope": "station",
+        "Source": "transport",
+        "SourceEpoch": "SIM-1",
+        "EvidenceVersion": 2,
+        "ClearAuthority": "transport-health",
+        "ExpiresAt": null
+      }
+    ],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Disconnected",
+      "UpdatedAt": "2026-10-17T17:08:56.367142+00:00",
+      "ConfirmedAt": "2026-10-17T17:08:56.367142+00:00",
+      "ValidUntil": "2026-10-17T17:09:00.867144+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {},
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [
+    {
+      "Id": "9aaf3a0c00f84b70a425cf7d957bd9c8",
+      "Code": "WcsUnavailable:station",
+      "Scope": "station",
+      "Source": "transport",
+      "Epoch": "SIM-1",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T17:08:56.382959+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    },
+    {
+      "Id": "4fff11e64f9e4a56a10af5cecf759a9b",
+      "Code": "WcsHealth:Health:Disconnected",
+      "Scope": "station",
+      "Source": "runtime",
+      "Epoch": "10b8ceb2-b5c7-4f34-84e7-dc491921177a",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T17:08:56.381747+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    }
+  ],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected"
+    ]
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 2,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+  "BoxResult": null,
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 1,
+  "GeneratedAt": "2026-10-17T17:08:56.421278+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 7,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "5e9b0cc3a93d470b9ec3644a4b5ac7e7",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:56.391146+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:56.391146+00:00",
+        "ValidUntil": "2026-10-17T17:09:01.391146+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "4c3f23790219461c8b6d239b67f7caae",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:56.395627+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:56.395627+00:00",
+        "ValidUntil": "2026-10-17T17:09:01.395627+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [
+      {
+        "Code": "WcsUnavailable",
+        "Scope": "station",
+        "Source": "transport",
+        "SourceEpoch": "SIM-1",
+        "EvidenceVersion": 2,
+        "ClearAuthority": "transport-health",
+        "ExpiresAt": null
+      }
+    ],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Disconnected",
+      "UpdatedAt": "2026-10-17T17:08:56.367142+00:00",
+      "ConfirmedAt": "2026-10-17T17:08:56.367142+00:00",
+      "ValidUntil": "2026-10-17T17:09:00.867144+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {},
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [
+    {
+      "Id": "9aaf3a0c00f84b70a425cf7d957bd9c8",
+      "Code": "WcsUnavailable:station",
+      "Scope": "station",
+      "Source": "transport",
+      "Epoch": "SIM-1",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T17:08:56.382959+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    },
+    {
+      "Id": "4fff11e64f9e4a56a10af5cecf759a9b",
+      "Code": "WcsHealth:Health:Disconnected",
+      "Scope": "station",
+      "Source": "runtime",
+      "Epoch": "10b8ceb2-b5c7-4f34-84e7-dc491921177a",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T17:08:56.381747+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    }
+  ],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected"
+    ]
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 2,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+  "BoxResult": null,
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 2,
+  "GeneratedAt": "2026-10-17T17:08:56.489946+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 8,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "5e9b0cc3a93d470b9ec3644a4b5ac7e7",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:56.391146+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:56.391146+00:00",
+        "ValidUntil": "2026-10-17T17:09:01.391146+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "4c3f23790219461c8b6d239b67f7caae",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:56.395627+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:56.395627+00:00",
+        "ValidUntil": "2026-10-17T17:09:01.395627+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:08:56.469541+00:00",
+      "ConfirmedAt": "2026-10-17T17:08:56.469541+00:00",
+      "ValidUntil": "2026-10-17T17:09:00.969541+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "SIM-1",
+        "ConfigurationSha256": "1767F973D06A988BF5D30DB203A5C72C272D92D8F7B28FE794B36655D3AD0B55",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56062/"
+        },
+        "Epoch": "10568a24743348079ab1150142d872ea",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:08:56.469541+00:00",
+        "ValidUntil": "2026-10-17T17:09:00.969541+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable"
+    ]
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+  "BoxResult": null,
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 3,
+  "GeneratedAt": "2026-10-17T17:08:56.580134+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 8,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "5e9b0cc3a93d470b9ec3644a4b5ac7e7",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:56.391146+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:56.391146+00:00",
+        "ValidUntil": "2026-10-17T17:09:01.391146+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "4c3f23790219461c8b6d239b67f7caae",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:56.395627+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:56.395627+00:00",
+        "ValidUntil": "2026-10-17T17:09:01.395627+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:08:56.469541+00:00",
+      "ConfirmedAt": "2026-10-17T17:08:56.469541+00:00",
+      "ValidUntil": "2026-10-17T17:09:00.969541+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "SIM-1",
+        "ConfigurationSha256": "1767F973D06A988BF5D30DB203A5C72C272D92D8F7B28FE794B36655D3AD0B55",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56062/"
+        },
+        "Epoch": "10568a24743348079ab1150142d872ea",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:08:56.469541+00:00",
+        "ValidUntil": "2026-10-17T17:09:00.969541+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable"
+    ]
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+  "BoxResult": null,
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 4,
+  "GeneratedAt": "2026-10-17T17:08:56.601802+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "Status": "Persisted",
+  "Reason": "Saved locally; external acceptance is separate",
+  "Revision": 9,
+  "OwnerId": "EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+  "RequestId": null
+}
+{
+  "State": {
+    "Revision": 9,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "5e9b0cc3a93d470b9ec3644a4b5ac7e7",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:56.391146+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:56.391146+00:00",
+        "ValidUntil": "2026-10-17T17:09:01.391146+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "4c3f23790219461c8b6d239b67f7caae",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:56.395627+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:56.395627+00:00",
+        "ValidUntil": "2026-10-17T17:09:01.395627+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-18T01:08:56.63268+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:08:56.469541+00:00",
+      "ConfirmedAt": "2026-10-17T17:08:56.469541+00:00",
+      "ValidUntil": "2026-10-17T17:09:00.969541+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "SIM-1",
+        "ConfigurationSha256": "1767F973D06A988BF5D30DB203A5C72C272D92D8F7B28FE794B36655D3AD0B55",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56062/"
+        },
+        "Epoch": "10568a24743348079ab1150142d872ea",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:08:56.469541+00:00",
+        "ValidUntil": "2026-10-17T17:09:00.969541+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload"
+    ]
+  },
+  "StationId": "EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+  "BoxResult": null,
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 5,
+  "GeneratedAt": "2026-10-17T17:08:56.648957+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "Status": "Persisted",
+  "Reason": "Validated",
+  "Revision": 10,
+  "OwnerId": "c7856a01a191402f8ae7db03997bdbe6",
+  "RequestId": null
+}
+[
+  {
+    "Id": "c7856a01a191402f8ae7db03997bdbe6",
+    "BaseVersion": "SIM-1",
+    "Content": {
+      "SchemaVersion": 1,
+      "StationId": "EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+      "Version": "EXTERNAL-2",
+      "Mode": "Simulation",
+      "Devices": [
+        {
+          "Role": "left",
+          "Driver": "extension:left-external",
+          "DeviceId": "external-left-EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+          "Revision": "EXTERNAL-2",
+          "ReplayFile": null
+        },
+        {
+          "Role": "right",
+          "Driver": "extension:right-external",
+          "DeviceId": "external-right-EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+          "Revision": "EXTERNAL-2",
+          "ReplayFile": null
+        }
+      ],
+      "Integration": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56062/"
+      },
+      "EventCapacity": 64,
+      "CommandCapacity": 32,
+      "OutboxCapacity": 64,
+      "TimeoutMs": 1500,
+      "MinimumFreeMb": 128,
+      "Policy": "SYNTHETIC-KEEP-v1",
+      "FixtureDemand": 120,
+      "MaximumPackage": 1000,
+      "Extensions": {
+        "Packages": [
+          {
+            "Id": "wp16.external.reader",
+            "Version": "2.0.0",
+            "ManifestSha256": "412301E6543B22CEF45585A4F481A23830CCC51E34E1A9166009E7B2F3B6989D"
+          }
+        ],
+        "Instances": [
+          {
+            "Id": "left-external",
+            "PackageId": "wp16.external.reader",
+            "ModuleId": "barcode-source",
+            "DeviceId": "external-left-EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+            "Enabled": true,
+            "Parameters": {
+              "input.prefix": "000"
+            }
+          },
+          {
+            "Id": "right-external",
+            "PackageId": "wp16.external.reader",
+            "ModuleId": "barcode-source",
+            "DeviceId": "external-right-EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+            "Enabled": true,
+            "Parameters": {
+              "input.prefix": "111"
+            }
+          }
+        ]
+      }
+    },
+    "Actor": "SIM-maintenance",
+    "Status": "Validated",
+    "Reason": "",
+    "At": "2026-10-17T17:08:56.70628+00:00"
+  },
+  {
+    "Id": "3fa19b384a074e65a7be9d80794f7d7a",
+    "BaseVersion": "SIM-1",
+    "Content": {
+      "SchemaVersion": 1,
+      "StationId": "EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+      "Version": "SIM-1",
+      "Mode": "Simulation",
+      "Devices": [
+        {
+          "Role": "left",
+          "Driver": "manual",
+          "DeviceId": "SIM-CAMERA-L",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        {
+          "Role": "right",
+          "Driver": "manual",
+          "DeviceId": "SIM-CAMERA-R",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Integration": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56062/"
+      },
+      "EventCapacity": 64,
+      "CommandCapacity": 32,
+      "OutboxCapacity": 64,
+      "TimeoutMs": 1500,
+      "MinimumFreeMb": 128,
+      "Policy": "SYNTHETIC-KEEP-v1",
+      "FixtureDemand": 120,
+      "MaximumPackage": 1000
+    },
+    "Actor": "runtime",
+    "Status": "Effective",
+    "Reason": "Initial configuration and leased resources initialized",
+    "At": "2026-10-17T17:08:56.399752+00:00"
+  }
+]
+{
+  "State": {
+    "Revision": 10,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "5e9b0cc3a93d470b9ec3644a4b5ac7e7",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:56.391146+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:56.391146+00:00",
+        "ValidUntil": "2026-10-17T17:09:01.391146+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "4c3f23790219461c8b6d239b67f7caae",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:08:56.395627+00:00",
+        "ConfirmedAt": "2026-10-17T17:08:56.395627+00:00",
+        "ValidUntil": "2026-10-17T17:09:01.395627+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-18T01:08:56.63268+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:08:56.469541+00:00",
+      "ConfirmedAt": "2026-10-17T17:08:56.469541+00:00",
+      "ValidUntil": "2026-10-17T17:09:00.969541+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "SIM-1",
+        "ConfigurationSha256": "1767F973D06A988BF5D30DB203A5C72C272D92D8F7B28FE794B36655D3AD0B55",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56062/"
+        },
+        "Epoch": "10568a24743348079ab1150142d872ea",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:08:56.469541+00:00",
+        "ValidUntil": "2026-10-17T17:09:00.969541+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload"
+    ]
+  },
+  "StationId": "EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+  "BoxResult": null,
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 6,
+  "GeneratedAt": "2026-10-17T17:08:56.767887+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "Status": "Persisted",
+  "Reason": "PendingActivation",
+  "Revision": 11,
+  "OwnerId": "c7856a01a191402f8ae7db03997bdbe6",
+  "RequestId": null
+}
+[
+  {
+    "Id": "c7856a01a191402f8ae7db03997bdbe6",
+    "BaseVersion": "SIM-1",
+    "Content": {
+      "SchemaVersion": 1,
+      "StationId": "EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+      "Version": "EXTERNAL-2",
+      "Mode": "Simulation",
+      "Devices": [
+        {
+          "Role": "left",
+          "Driver": "extension:left-external",
+          "DeviceId": "external-left-EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+          "Revision": "EXTERNAL-2",
+          "ReplayFile": null
+        },
+        {
+          "Role": "right",
+          "Driver": "extension:right-external",
+          "DeviceId": "external-right-EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+          "Revision": "EXTERNAL-2",
+          "ReplayFile": null
+        }
+      ],
+      "Integration": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56062/"
+      },
+      "EventCapacity": 64,
+      "CommandCapacity": 32,
+      "OutboxCapacity": 64,
+      "TimeoutMs": 1500,
+      "MinimumFreeMb": 128,
+      "Policy": "SYNTHETIC-KEEP-v1",
+      "FixtureDemand": 120,
+      "MaximumPackage": 1000,
+      "Extensions": {
+        "Packages": [
+          {
+            "Id": "wp16.external.reader",
+            "Version": "2.0.0",
+            "ManifestSha256": "412301E6543B22CEF45585A4F481A23830CCC51E34E1A9166009E7B2F3B6989D"
+          }
+        ],
+        "Instances": [
+          {
+            "Id": "left-external",
+            "PackageId": "wp16.external.reader",
+            "ModuleId": "barcode-source",
+            "DeviceId": "external-left-EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+            "Enabled": true,
+            "Parameters": {
+              "input.prefix": "000"
+            }
+          },
+          {
+            "Id": "right-external",
+            "PackageId": "wp16.external.reader",
+            "ModuleId": "barcode-source",
+            "DeviceId": "external-right-EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+            "Enabled": true,
+            "Parameters": {
+              "input.prefix": "111"
+            }
+          }
+        ]
+      }
+    },
+    "Actor": "SIM-maintenance",
+    "Status": "PendingActivation",
+    "Reason": "",
+    "At": "2026-10-17T17:08:56.70628+00:00"
+  },
+  {
+    "Id": "3fa19b384a074e65a7be9d80794f7d7a",
+    "BaseVersion": "SIM-1",
+    "Content": {
+      "SchemaVersion": 1,
+      "StationId": "EXTERNAL-63e040c6fb104f4396fcd11bf2a13066",
+      "Version": "SIM-1",
+      "Mode": "Simulation",
+      "Devices": [
+        {
+          "Role": "left",
+          "Driver": "manual",
+          "DeviceId": "SIM-CAMERA-L",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        {
+          "Role": "right",
+          "Driver": "manual",
+          "DeviceId": "SIM-CAMERA-R",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Integration": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56062/"
+      },
+      "EventCapacity": 64,
+      "CommandCapacity": 32,
+      "OutboxCapacity": 64,
+      "TimeoutMs": 1500,
+      "MinimumFreeMb": 128,
+      "Policy": "SYNTHETIC-KEEP-v1",
+      "FixtureDemand": 120,
+      "MaximumPackage": 1000
+    },
+    "Actor": "runtime",
+    "Status": "Effective",
+    "Reason": "Initial configuration and leased resources initialized",
+    "At": "2026-10-17T17:08:56.399752+00:00"
+  }
+]
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}

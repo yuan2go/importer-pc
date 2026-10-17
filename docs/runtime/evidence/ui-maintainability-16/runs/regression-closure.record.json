@@ -3,7 +3,7 @@
   "SourceCommit": "a0595ed40a471f41a9ee268f0ec8ce339ad19d39",
   "WorkingTree": true,
   "Command": [
-    "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+    "/pinned-dotnet/dotnet",
     "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
     ".",
     "--closure"
@@ -12,5 +12,8 @@
   "EndedAt": "2026-10-17T17:06:08.488842+00:00",
   "Platform": "macOS-26.5.2-arm64-arm-64bit",
   "ExitCode": 0,
-  "LogSha256": "c332b901eb58feacb4173b83143994f38d4e0af090a667fc8dcd2074f5cfa9e8"
+  "LogSha256": "165bbbfb202893b04578b73d258b424617f64b4d1cec7288a59498bb19e8739b",
+  "RawLogSha256": "c332b901eb58feacb4173b83143994f38d4e0af090a667fc8dcd2074f5cfa9e8",
+  "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+  "RuntimeSourceUnchangedSinceFrozenCommit": false
 }

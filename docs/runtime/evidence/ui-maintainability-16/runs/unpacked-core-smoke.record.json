@@ -1,0 +1,25 @@
+{
+  "Name": "unpacked-core-smoke",
+  "SourceCommit": "089fd98028c665c4bc483b28ade236c7f137d267",
+  "WorkingTree": true,
+  "Command": [
+    "python3",
+    "scripts/smoke.py",
+    "--product",
+    "/candidate-artifacts/089fd98/unpacked-portable/app",
+    "--fixture",
+    "/candidate-artifacts/089fd98/unpacked-portable/fixture/Ipc.Fixture.dll",
+    "--dotnet",
+    "/pinned-dotnet/dotnet",
+    "--output",
+    "docs/runtime/evidence/ui-maintainability-16/core-smoke.json"
+  ],
+  "StartedAt": "2026-10-17T17:08:42.192750+00:00",
+  "EndedAt": "2026-10-17T17:08:47.060131+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "ExitCode": 0,
+  "LogSha256": "390560da7fbf277848d23bc880ae2ada166c2f88f4cc6000d04cac72c6cf7375",
+  "RawLogSha256": "e51b4365763025740a226adeebef1cfb2b172b20ef5d59ddb6dfc5bf878d9303",
+  "CommandPaths": "Published path aliases only; original argv/records retained locally and raw/public hashes in evidence-publication.json",
+  "RuntimeSourceUnchangedSinceFrozenCommit": true
+}

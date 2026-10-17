@@ -9,7 +9,8 @@
     "SnapshotMedianMs": 0.5329,
     "SnapshotP95Ms": 0.8097,
     "SnapshotMaxMs": 4.577,
-    "LogSha256": "9a03487e17230585e0509af1c6b4808a63da027c5491eb6f553512798b8b5082"
+    "LogSha256": "4562dd1ff9a57f3caca3dc916363439da469c65e5d0aabb720edab5c69fc5c80",
+    "RawLogSha256": "9a03487e17230585e0509af1c6b4808a63da027c5491eb6f553512798b8b5082"
   },
   "After": {
     "Scenario": "120 virtual seconds, two Ready sources + one Ready requests service; two occupied lanes; no business observations sampled",
@@ -21,7 +22,8 @@
     "SnapshotMedianMs": 0.4899,
     "SnapshotP95Ms": 0.671,
     "SnapshotMaxMs": 3.4197,
-    "LogSha256": "cc2395f4d224c482d394706be85c97f417a51f510e618d13de4b8385419cf2d8"
+    "LogSha256": "996a8dac392c7068abc239288b535ca556443a69f2a13e33f4813e8e968dd401",
+    "RawLogSha256": "cc2395f4d224c482d394706be85c97f417a51f510e618d13de4b8385419cf2d8"
   },
   "BaselineSource": "12a40b308e13744eb4be959dff4a62dca473b5d9 health methods unchanged at initial profile build",
   "Harness": "tests/Ipc.Verification/HealthRenewalVerification.cs Profile method",

@@ -1,5 +1,5 @@
 SELECT --maintainability: AC16 health renewal, UI operation policies, command/ownership and maintenance risks
-Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-1031c45dae84447ab92ace88d17022c6
+Evidence data retained at /tmp/ipc-verification-1031c45dae84447ab92ace88d17022c6
 RUN AC16 health renewal authority, durable transitions and checkpoint/restart
 PASS AC16 health renewal authority, durable transitions and checkpoint/restart
 PASS AC16 architecture: built-in adapters reference public contracts without Supply implementation
@@ -44,4 +44,4 @@ PASS AC15 invalid local time feedback: bogus
 PASS AC15 reversed range rejected before query
 PASS AC15 actual WPF package/instance/default/import handlers use verified coordinator and partial target source; Windows event execution NOT_RUN
 PASS selected verification scope --maintainability; Windows desktop/SDK/field validation NOT_RUN by this core executable
-Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-1031c45dae84447ab92ace88d17022c6
+Evidence data retained at /tmp/ipc-verification-1031c45dae84447ab92ace88d17022c6

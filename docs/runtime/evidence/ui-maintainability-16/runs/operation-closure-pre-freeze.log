@@ -1,5 +1,5 @@
 SELECT --operation-closure: AC15 independent receipt responsibility Q1/Q2, T3 recovery, current result/input and maintenance/history
-Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f3b7e3cbbb8f4cbf8ca1499c13ed0010
+Evidence data retained at /tmp/ipc-verification-f3b7e3cbbb8f4cbf8ca1499c13ed0010
 PASS AC15 concurrent original queries have independent durable reservations before I/O
 PASS AC15 Q2 completion cannot erase Q1 reservation
 PASS AC15 pending/recovery and business guards retain independently incomplete responsibility
@@ -51,4 +51,4 @@ PASS AC15 reversed range rejected before query
 PASS AC15 actual WPF package/instance/default/import handlers use verified coordinator and partial target source; Windows event execution NOT_RUN
 PASS AC15 OPERATION CLOSURE COMPLETE; WINDOWS_NOT_RUN
 PASS selected verification scope --operation-closure; Windows desktop/SDK/field validation NOT_RUN by this core executable
-Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-f3b7e3cbbb8f4cbf8ca1499c13ed0010
+Evidence data retained at /tmp/ipc-verification-f3b7e3cbbb8f4cbf8ca1499c13ed0010

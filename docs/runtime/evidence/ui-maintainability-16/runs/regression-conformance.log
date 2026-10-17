@@ -1,5 +1,5 @@
 SELECT --conformance: AC14 A01-A04/R01-R03; per-service health, configuration CAS and failure retention
-Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-fbd1797e97da4ab299b536e1761a652a
+Evidence data retained at /tmp/ipc-verification-fbd1797e97da4ab299b536e1761a652a
 PASS AC14 same ID/content duplicates preserve unique acceptance without conflict
 PASS AC14 same-ID altered content and different-ID contradiction retain deduplicated raw occurrences and immutable original response
 PASS AC14 late old-box conflict neither adopts old owner into new box nor changes its counter
@@ -130,4 +130,4 @@ PASS AC14 refused unreadable offline consumer cannot be called unreferenced
 PASS AC14 shared-store uninstall succeeds only after every registered root clears responsibility
 PASS AC14 CONFORMANCE COMPLETE: A01-A04/R01-R03 core; WINDOWS_NOT_RUN
 PASS selected verification scope --conformance; Windows desktop/SDK/field validation NOT_RUN by this core executable
-Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-fbd1797e97da4ab299b536e1761a652a
+Evidence data retained at /tmp/ipc-verification-fbd1797e97da4ab299b536e1761a652a

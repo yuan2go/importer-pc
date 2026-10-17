@@ -1,0 +1,3201 @@
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime 7d3c6f38-cf18-4d13-b453-e678f099569c station EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330 configuration EXTERNAL-2 mode Simulation ready for identity/context validation","State":{"Runtime":"7d3c6f38-cf18-4d13-b453-e678f099569c","Station":"EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330","Revision":"EXTERNAL-2","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /task-worktree","State":{"ContentRoot":"/task-worktree","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+JSON command console. One command per line; snapshot / configs / extensions / emit / replay / reconcile / export / quit supported. SIMULATION only.
+{
+  "State": {
+    "Revision": 19,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [
+      {
+        "Code": "WcsUnavailable",
+        "Scope": "station",
+        "Source": "transport",
+        "SourceEpoch": "SIM-1",
+        "EvidenceVersion": 14,
+        "ClearAuthority": "transport-health",
+        "ExpiresAt": null
+      }
+    ],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Disconnected",
+      "UpdatedAt": "2026-10-17T17:09:37.150534+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.150534+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.650534+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {},
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [
+    {
+      "Id": "256ab73f683a44c8a4b26a511bd3c783",
+      "Code": "WcsUnavailable:station",
+      "Scope": "station",
+      "Source": "transport",
+      "Epoch": "SIM-1",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T17:09:37.158458+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    },
+    {
+      "Id": "a2a302ff909c42e29f8c531a455b1743",
+      "Code": "WcsHealth:Health:Disconnected",
+      "Scope": "station",
+      "Source": "runtime",
+      "Epoch": "79bc49c9-662c-4729-aa62-cfe83c586bb8",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T17:09:37.157695+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    },
+    {
+      "Id": "d9ea8710be704918a8b8de0459aae3c1",
+      "Code": "ConfigPending:station",
+      "Scope": "station",
+      "Source": "configuration",
+      "Epoch": "edaa636fe1604a5c9d9326f75251809e",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T17:09:36.740685+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    }
+  ],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected"
+    ]
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 3,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": null,
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 1,
+  "GeneratedAt": "2026-10-17T17:09:37.19997+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 19,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [
+      {
+        "Code": "WcsUnavailable",
+        "Scope": "station",
+        "Source": "transport",
+        "SourceEpoch": "SIM-1",
+        "EvidenceVersion": 14,
+        "ClearAuthority": "transport-health",
+        "ExpiresAt": null
+      }
+    ],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Disconnected",
+      "UpdatedAt": "2026-10-17T17:09:37.150534+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.150534+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.650534+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {},
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [
+    {
+      "Id": "256ab73f683a44c8a4b26a511bd3c783",
+      "Code": "WcsUnavailable:station",
+      "Scope": "station",
+      "Source": "transport",
+      "Epoch": "SIM-1",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T17:09:37.158458+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    },
+    {
+      "Id": "a2a302ff909c42e29f8c531a455b1743",
+      "Code": "WcsHealth:Health:Disconnected",
+      "Scope": "station",
+      "Source": "runtime",
+      "Epoch": "79bc49c9-662c-4729-aa62-cfe83c586bb8",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T17:09:37.157695+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    },
+    {
+      "Id": "d9ea8710be704918a8b8de0459aae3c1",
+      "Code": "ConfigPending:station",
+      "Scope": "station",
+      "Source": "configuration",
+      "Epoch": "edaa636fe1604a5c9d9326f75251809e",
+      "OwnerId": null,
+      "RaisedAt": "2026-10-17T17:09:36.740685+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    }
+  ],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected"
+    ]
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 3,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": null,
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 2,
+  "GeneratedAt": "2026-10-17T17:09:37.281044+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 20,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Epoch": "d5835f3ec7ed46b1804ec8ac0152199e",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+        "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable"
+    ]
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": null,
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 3,
+  "GeneratedAt": "2026-10-17T17:09:37.365598+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 20,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Epoch": "d5835f3ec7ed46b1804ec8ac0152199e",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+        "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable"
+    ]
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": null,
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 4,
+  "GeneratedAt": "2026-10-17T17:09:37.393982+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "Status": "Persisted",
+  "Reason": "Saved locally; external acceptance is separate",
+  "Revision": 21,
+  "OwnerId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "RequestId": null
+}
+[
+  {
+    "Id": "edaa636fe1604a5c9d9326f75251809e",
+    "BaseVersion": "SIM-1",
+    "Content": {
+      "SchemaVersion": 1,
+      "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+      "Version": "EXTERNAL-2",
+      "Mode": "Simulation",
+      "Devices": [
+        {
+          "Role": "left",
+          "Driver": "extension:left-external",
+          "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+          "Revision": "EXTERNAL-2",
+          "ReplayFile": null
+        },
+        {
+          "Role": "right",
+          "Driver": "extension:right-external",
+          "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+          "Revision": "EXTERNAL-2",
+          "ReplayFile": null
+        }
+      ],
+      "Integration": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "EventCapacity": 64,
+      "CommandCapacity": 32,
+      "OutboxCapacity": 64,
+      "TimeoutMs": 1500,
+      "MinimumFreeMb": 128,
+      "Policy": "SYNTHETIC-KEEP-v1",
+      "FixtureDemand": 120,
+      "MaximumPackage": 1000,
+      "Extensions": {
+        "Packages": [
+          {
+            "Id": "wp16.external.reader",
+            "Version": "2.0.0",
+            "ManifestSha256": "412301E6543B22CEF45585A4F481A23830CCC51E34E1A9166009E7B2F3B6989D"
+          }
+        ],
+        "Instances": [
+          {
+            "Id": "left-external",
+            "PackageId": "wp16.external.reader",
+            "ModuleId": "barcode-source",
+            "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+            "Enabled": true,
+            "Parameters": {
+              "input.prefix": "000"
+            }
+          },
+          {
+            "Id": "right-external",
+            "PackageId": "wp16.external.reader",
+            "ModuleId": "barcode-source",
+            "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+            "Enabled": true,
+            "Parameters": {
+              "input.prefix": "111"
+            }
+          }
+        ]
+      }
+    },
+    "Actor": "SIM-maintenance",
+    "Status": "Effective",
+    "Reason": "Modules initialized under new configuration",
+    "At": "2026-10-17T17:09:36.646186+00:00"
+  },
+  {
+    "Id": "ba355fa023e14c50b1c698e8a4d47c07",
+    "BaseVersion": "SIM-1",
+    "Content": {
+      "SchemaVersion": 1,
+      "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+      "Version": "SIM-1",
+      "Mode": "Simulation",
+      "Devices": [
+        {
+          "Role": "left",
+          "Driver": "manual",
+          "DeviceId": "SIM-CAMERA-L",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        {
+          "Role": "right",
+          "Driver": "manual",
+          "DeviceId": "SIM-CAMERA-R",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Integration": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "EventCapacity": 64,
+      "CommandCapacity": 32,
+      "OutboxCapacity": 64,
+      "TimeoutMs": 1500,
+      "MinimumFreeMb": 128,
+      "Policy": "SYNTHETIC-KEEP-v1",
+      "FixtureDemand": 120,
+      "MaximumPackage": 1000
+    },
+    "Actor": "runtime",
+    "Status": "Superseded",
+    "Reason": "Initial configuration and leased resources initialized",
+    "At": "2026-10-17T17:09:36.345628+00:00"
+  }
+]
+{
+  "State": {
+    "Revision": 21,
+    "Session": null,
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Epoch": "d5835f3ec7ed46b1804ec8ac0152199e",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+        "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": null,
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 5,
+  "GeneratedAt": "2026-10-17T17:09:37.477928+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "Status": "Persisted",
+  "Reason": "Saved locally; external acceptance is separate",
+  "Revision": 22,
+  "OwnerId": "14624b4bec314128b80776e86555cede",
+  "RequestId": "d4a76f9b7ac74bdbbc0b1874f819219b"
+}
+{
+  "State": {
+    "Revision": 24,
+    "Session": {
+      "Id": "14624b4bec314128b80776e86555cede",
+      "Barcode": "000001",
+      "Context": null,
+      "Status": "Validating",
+      "CloseCheckRequest": null,
+      "CloseRemaining": null,
+      "CloseToken": null,
+      "CloseRequest": null,
+      "OpenedAt": "2026-10-17T17:09:37.502494+00:00",
+      "ClosedAt": null,
+      "OpenedBy": {
+        "Id": "SIM-maintenance",
+        "Role": "Maintenance",
+        "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+      }
+    },
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Epoch": "d5835f3ec7ed46b1804ec8ac0152199e",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+        "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [
+    {
+      "Id": "d4a76f9b7ac74bdbbc0b1874f819219b",
+      "OwnerId": "14624b4bec314128b80776e86555cede",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "14624b4bec314128b80776e86555cede:Context:1",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "D13A9296DCF23FDA612CEDC78F735245AA6F90E8A39C2CE41155B24B64947848",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Dispatching",
+      "CreatedAt": "2026-10-17T17:09:37.504797+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    }
+  ],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "PendingExternalEffect"
+    ]
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [
+    {
+      "Request": {
+        "Id": "d4a76f9b7ac74bdbbc0b1874f819219b",
+        "OwnerId": "14624b4bec314128b80776e86555cede",
+        "SessionId": "14624b4bec314128b80776e86555cede",
+        "Kind": "Context",
+        "OwnerRevision": 1,
+        "IntentKey": "14624b4bec314128b80776e86555cede:Context:1",
+        "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+        "PayloadHash": "D13A9296DCF23FDA612CEDC78F735245AA6F90E8A39C2CE41155B24B64947848",
+        "Binding": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Status": "Dispatching",
+        "CreatedAt": "2026-10-17T17:09:37.504797+00:00",
+        "Implementation": {
+          "Driver": "builtin.reference",
+          "Package": null,
+          "ModuleId": "simulation-v1",
+          "InstanceId": "builtin.reference",
+          "DeploymentVersion": "EXTERNAL-2",
+          "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+          "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+          "Target": {
+            "Id": "loopback",
+            "Revision": "SIM-1",
+            "Contract": "SIMULATION-v1",
+            "Endpoint": "http://127.0.0.1:56136/"
+          },
+          "TimeoutMs": 1500,
+          "Policy": "SYNTHETIC-KEEP-v1",
+          "FixtureDemand": 120,
+          "Parameters": {}
+        }
+      },
+      "Dispatch": {
+        "Allowed": true,
+        "Reasons": []
+      },
+      "LocalTermination": {
+        "Allowed": false,
+        "Reasons": [
+          "OnlyPreparedCanTerminateLocally",
+          "NoDurableNonDeliveryProof",
+          "RequestNotBlocked: pause and inspect first"
+        ]
+      },
+      "NextStep": "\u672C\u6B21\u539F\u67E5\u8BE2/\u63A5\u6536\u5C1A\u672A\u5B8C\u6210\u6216\u539F\u4EF6\u63A5\u7BA1\u5931\u8D25\uFF1B\u7B49\u5F85\u6240\u5C5E\u8C03\u7528\uFF0C\u5B58\u50A8\u5931\u8D25\u65F6\u4FDD\u7559\u73B0\u573A\u5E76\u68C0\u67E5\u63A5\u6536ID",
+      "Receipts": [
+        {
+          "Id": "send-f43de05b18504190930f17a1054be8e2",
+          "RequestId": "d4a76f9b7ac74bdbbc0b1874f819219b",
+          "AttemptId": "f43de05b18504190930f17a1054be8e2",
+          "Origin": "execute",
+          "StartedAt": "2026-10-17T17:09:37.517062+00:00",
+          "Status": "AwaitingResponse",
+          "ContentSha256": null,
+          "Response": null
+        }
+      ]
+    }
+  ],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "ReconcileSentOrTerminateProvenUndeliveredPrepared"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": {
+    "SessionId": "14624b4bec314128b80776e86555cede",
+    "RequestId": "d4a76f9b7ac74bdbbc0b1874f819219b",
+    "Stage": "Context",
+    "Status": "Dispatching",
+    "Reason": "Await original authoritative response",
+    "CreatedAt": "2026-10-17T17:09:37.504797+00:00"
+  },
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 6,
+  "GeneratedAt": "2026-10-17T17:09:37.534307+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 25,
+    "Session": {
+      "Id": "14624b4bec314128b80776e86555cede",
+      "Barcode": "000001",
+      "Context": {
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "5205f6f25aba41b793f02de2c204ef7f",
+          "AcquiredAt": "2026-10-17T17:09:37.54513+00:00"
+        }
+      },
+      "Status": "Active",
+      "CloseCheckRequest": null,
+      "CloseRemaining": null,
+      "CloseToken": null,
+      "CloseRequest": null,
+      "OpenedAt": "2026-10-17T17:09:37.502494+00:00",
+      "ClosedAt": null,
+      "OpenedBy": {
+        "Id": "SIM-maintenance",
+        "Role": "Maintenance",
+        "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+      }
+    },
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Epoch": "d5835f3ec7ed46b1804ec8ac0152199e",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+        "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [
+    {
+      "Id": "d4a76f9b7ac74bdbbc0b1874f819219b",
+      "OwnerId": "14624b4bec314128b80776e86555cede",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "14624b4bec314128b80776e86555cede:Context:1",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "D13A9296DCF23FDA612CEDC78F735245AA6F90E8A39C2CE41155B24B64947848",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.504797+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    }
+  ],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Submit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Close": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": {
+    "SessionId": "14624b4bec314128b80776e86555cede",
+    "RequestId": "d4a76f9b7ac74bdbbc0b1874f819219b",
+    "Stage": "Context",
+    "Status": "Accepted",
+    "Reason": "SIMULATION accepted",
+    "CreatedAt": "2026-10-17T17:09:37.504797+00:00"
+  },
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 7,
+  "GeneratedAt": "2026-10-17T17:09:37.617747+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 25,
+    "Session": {
+      "Id": "14624b4bec314128b80776e86555cede",
+      "Barcode": "000001",
+      "Context": {
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "5205f6f25aba41b793f02de2c204ef7f",
+          "AcquiredAt": "2026-10-17T17:09:37.54513+00:00"
+        }
+      },
+      "Status": "Active",
+      "CloseCheckRequest": null,
+      "CloseRemaining": null,
+      "CloseToken": null,
+      "CloseRequest": null,
+      "OpenedAt": "2026-10-17T17:09:37.502494+00:00",
+      "ClosedAt": null,
+      "OpenedBy": {
+        "Id": "SIM-maintenance",
+        "Role": "Maintenance",
+        "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+      }
+    },
+    "Lanes": {},
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Epoch": "d5835f3ec7ed46b1804ec8ac0152199e",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+        "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [
+    {
+      "Id": "d4a76f9b7ac74bdbbc0b1874f819219b",
+      "OwnerId": "14624b4bec314128b80776e86555cede",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "14624b4bec314128b80776e86555cede:Context:1",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "D13A9296DCF23FDA612CEDC78F735245AA6F90E8A39C2CE41155B24B64947848",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.504797+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    }
+  ],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Submit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Close": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "OperationGuards": {},
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "AdmittedObservationsDraining"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": {
+    "SessionId": "14624b4bec314128b80776e86555cede",
+    "RequestId": "d4a76f9b7ac74bdbbc0b1874f819219b",
+    "Stage": "Context",
+    "Status": "Accepted",
+    "Reason": "SIMULATION accepted",
+    "CreatedAt": "2026-10-17T17:09:37.504797+00:00"
+  },
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 9,
+  "GeneratedAt": "2026-10-17T17:09:37.650149+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 26,
+    "Session": {
+      "Id": "14624b4bec314128b80776e86555cede",
+      "Barcode": "000001",
+      "Context": {
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "5205f6f25aba41b793f02de2c204ef7f",
+          "AcquiredAt": "2026-10-17T17:09:37.54513+00:00"
+        }
+      },
+      "Status": "Active",
+      "CloseCheckRequest": null,
+      "CloseRemaining": null,
+      "CloseToken": null,
+      "CloseRequest": null,
+      "OpenedAt": "2026-10-17T17:09:37.502494+00:00",
+      "ClosedAt": null,
+      "OpenedBy": {
+        "Id": "SIM-maintenance",
+        "Role": "Maintenance",
+        "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+      }
+    },
+    "Lanes": {
+      "left": {
+        "Id": "dd2288a05d2c4b87b61dd30ac40c6763",
+        "SessionId": "14624b4bec314128b80776e86555cede",
+        "Lane": "left",
+        "AdmissionId": "10e0f644009d4b439e21e300cdb1894a",
+        "Revision": 1,
+        "PermitEpoch": "8b6c8301d60e488cb402e719577cb45a",
+        "PermitRevision": 1,
+        "PermitExpiresAt": "2026-10-17T17:39:37.651946+00:00",
+        "Barcode": "",
+        "BoxBarcode": "000001",
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Task": null,
+        "CurrentInput": null,
+        "PreviousConfirmed": null,
+        "Package": null,
+        "Remaining": null,
+        "Supply": null,
+        "Status": "Observed",
+        "Occupancy": "Occupied",
+        "SplitScans": [],
+        "ObservationIds": [],
+        "Reason": "",
+        "CreatedAt": "2026-10-17T17:09:37.651873+00:00"
+      }
+    },
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 1,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Epoch": "d5835f3ec7ed46b1804ec8ac0152199e",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+        "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [
+    {
+      "Id": "d4a76f9b7ac74bdbbc0b1874f819219b",
+      "OwnerId": "14624b4bec314128b80776e86555cede",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "14624b4bec314128b80776e86555cede:Context:1",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "D13A9296DCF23FDA612CEDC78F735245AA6F90E8A39C2CE41155B24B64947848",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.504797+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    }
+  ],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Submit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "PhysicalOccupancyNotClear"
+    ]
+  },
+  "OperationGuards": {
+    "left": {
+      "Allowed": false,
+      "Reasons": [
+        "OperationNotReady",
+        "QuantityAuthorityMissing"
+      ]
+    }
+  },
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": {
+    "SessionId": "14624b4bec314128b80776e86555cede",
+    "RequestId": "d4a76f9b7ac74bdbbc0b1874f819219b",
+    "Stage": "Context",
+    "Status": "Accepted",
+    "Reason": "SIMULATION accepted",
+    "CreatedAt": "2026-10-17T17:09:37.504797+00:00"
+  },
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 10,
+  "GeneratedAt": "2026-10-17T17:09:37.735486+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": [
+    {
+      "Id": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Lane": "left",
+      "AdmissionId": "10e0f644009d4b439e21e300cdb1894a",
+      "Revision": 1,
+      "PermitEpoch": "8b6c8301d60e488cb402e719577cb45a",
+      "PermitRevision": 1,
+      "PermitExpiresAt": "2026-10-17T17:39:37.651946+00:00",
+      "Barcode": "",
+      "BoxBarcode": "000001",
+      "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+      "Task": null,
+      "CurrentInput": null,
+      "PreviousConfirmed": null,
+      "Package": null,
+      "Remaining": null,
+      "Supply": null,
+      "Status": "Observed",
+      "Occupancy": "Occupied",
+      "SplitScans": [],
+      "ObservationIds": [],
+      "Reason": "",
+      "CreatedAt": "2026-10-17T17:09:37.651873+00:00"
+    }
+  ]
+}
+{
+  "State": {
+    "Revision": 26,
+    "Session": {
+      "Id": "14624b4bec314128b80776e86555cede",
+      "Barcode": "000001",
+      "Context": {
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "5205f6f25aba41b793f02de2c204ef7f",
+          "AcquiredAt": "2026-10-17T17:09:37.54513+00:00"
+        }
+      },
+      "Status": "Active",
+      "CloseCheckRequest": null,
+      "CloseRemaining": null,
+      "CloseToken": null,
+      "CloseRequest": null,
+      "OpenedAt": "2026-10-17T17:09:37.502494+00:00",
+      "ClosedAt": null,
+      "OpenedBy": {
+        "Id": "SIM-maintenance",
+        "Role": "Maintenance",
+        "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+      }
+    },
+    "Lanes": {
+      "left": {
+        "Id": "dd2288a05d2c4b87b61dd30ac40c6763",
+        "SessionId": "14624b4bec314128b80776e86555cede",
+        "Lane": "left",
+        "AdmissionId": "10e0f644009d4b439e21e300cdb1894a",
+        "Revision": 1,
+        "PermitEpoch": "8b6c8301d60e488cb402e719577cb45a",
+        "PermitRevision": 1,
+        "PermitExpiresAt": "2026-10-17T17:39:37.651946+00:00",
+        "Barcode": "",
+        "BoxBarcode": "000001",
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Task": null,
+        "CurrentInput": null,
+        "PreviousConfirmed": null,
+        "Package": null,
+        "Remaining": null,
+        "Supply": null,
+        "Status": "Observed",
+        "Occupancy": "Occupied",
+        "SplitScans": [],
+        "ObservationIds": [],
+        "Reason": "",
+        "CreatedAt": "2026-10-17T17:09:37.651873+00:00"
+      }
+    },
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 1,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Epoch": "d5835f3ec7ed46b1804ec8ac0152199e",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+        "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [
+    {
+      "Id": "d4a76f9b7ac74bdbbc0b1874f819219b",
+      "OwnerId": "14624b4bec314128b80776e86555cede",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "14624b4bec314128b80776e86555cede:Context:1",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "D13A9296DCF23FDA612CEDC78F735245AA6F90E8A39C2CE41155B24B64947848",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.504797+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    }
+  ],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Submit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "PhysicalOccupancyNotClear"
+    ]
+  },
+  "OperationGuards": {
+    "left": {
+      "Allowed": false,
+      "Reasons": [
+        "OperationNotReady",
+        "QuantityAuthorityMissing"
+      ]
+    }
+  },
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "AdmittedObservationsDraining"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": {
+    "SessionId": "14624b4bec314128b80776e86555cede",
+    "RequestId": "d4a76f9b7ac74bdbbc0b1874f819219b",
+    "Stage": "Context",
+    "Status": "Accepted",
+    "Reason": "SIMULATION accepted",
+    "CreatedAt": "2026-10-17T17:09:37.504797+00:00"
+  },
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 12,
+  "GeneratedAt": "2026-10-17T17:09:37.762488+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": [
+    {
+      "Id": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Lane": "left",
+      "AdmissionId": "10e0f644009d4b439e21e300cdb1894a",
+      "Revision": 1,
+      "PermitEpoch": "8b6c8301d60e488cb402e719577cb45a",
+      "PermitRevision": 1,
+      "PermitExpiresAt": "2026-10-17T17:39:37.651946+00:00",
+      "Barcode": "",
+      "BoxBarcode": "000001",
+      "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+      "Task": null,
+      "CurrentInput": null,
+      "PreviousConfirmed": null,
+      "Package": null,
+      "Remaining": null,
+      "Supply": null,
+      "Status": "Observed",
+      "Occupancy": "Occupied",
+      "SplitScans": [],
+      "ObservationIds": [],
+      "Reason": "",
+      "CreatedAt": "2026-10-17T17:09:37.651873+00:00"
+    }
+  ]
+}
+{
+  "State": {
+    "Revision": 30,
+    "Session": {
+      "Id": "14624b4bec314128b80776e86555cede",
+      "Barcode": "000001",
+      "Context": {
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "5205f6f25aba41b793f02de2c204ef7f",
+          "AcquiredAt": "2026-10-17T17:09:37.54513+00:00"
+        }
+      },
+      "Status": "Active",
+      "CloseCheckRequest": null,
+      "CloseRemaining": null,
+      "CloseToken": null,
+      "CloseRequest": null,
+      "OpenedAt": "2026-10-17T17:09:37.502494+00:00",
+      "ClosedAt": null,
+      "OpenedBy": {
+        "Id": "SIM-maintenance",
+        "Role": "Maintenance",
+        "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+      }
+    },
+    "Lanes": {
+      "left": {
+        "Id": "dd2288a05d2c4b87b61dd30ac40c6763",
+        "SessionId": "14624b4bec314128b80776e86555cede",
+        "Lane": "left",
+        "AdmissionId": "10e0f644009d4b439e21e300cdb1894a",
+        "Revision": 2,
+        "PermitEpoch": "8b6c8301d60e488cb402e719577cb45a",
+        "PermitRevision": 1,
+        "PermitExpiresAt": "2026-10-17T17:39:37.651946+00:00",
+        "Barcode": "000123",
+        "BoxBarcode": "000001",
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Task": {
+          "Sku": "SIM-SKU-4403E0E0DC91",
+          "ItemWave": "SIM-ITEM-WAVE-426DD303BB90",
+          "TaskId": "SIM-TASK-3470EBF70FE7",
+          "Destination": "SIM-CHUTE-02",
+          "Unit": "\u4EF6",
+          "Provenance": {
+            "Source": "Independent synthetic task fixture",
+            "Version": "SYNTHETIC-SEMANTICS-v1",
+            "EvidenceId": "9d946b2d23c74e02a601c52da2aca65f",
+            "AcquiredAt": "2026-10-17T17:09:37.773021+00:00"
+          }
+        },
+        "CurrentInput": {
+          "ObservationId": "0da51c2284af4b7b83ca08f1f519dad0",
+          "Codes": [
+            "000123"
+          ],
+          "PackageQuantity": 2,
+          "ObservedAt": "2026-10-17T17:09:37.762059+00:00"
+        },
+        "PreviousConfirmed": null,
+        "Package": 2,
+        "Remaining": 120,
+        "Supply": 2,
+        "Status": "AwaitingAction",
+        "Occupancy": "Occupied",
+        "SplitScans": [],
+        "ObservationIds": [
+          "0da51c2284af4b7b83ca08f1f519dad0"
+        ],
+        "Reason": "SIMULATION accepted",
+        "CreatedAt": "2026-10-17T17:09:37.651873+00:00"
+      }
+    },
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 2,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Epoch": "d5835f3ec7ed46b1804ec8ac0152199e",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+        "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [
+    {
+      "Id": "d4a76f9b7ac74bdbbc0b1874f819219b",
+      "OwnerId": "14624b4bec314128b80776e86555cede",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "14624b4bec314128b80776e86555cede:Context:1",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "D13A9296DCF23FDA612CEDC78F735245AA6F90E8A39C2CE41155B24B64947848",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.504797+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    },
+    {
+      "Id": "ec424c75d80944cb8f4b181d0874f8a9",
+      "OwnerId": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Validate",
+      "OwnerRevision": 2,
+      "IntentKey": "dd2288a05d2c4b87b61dd30ac40c6763:Validate:2",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u0022dd2288a05d2c4b87b61dd30ac40c6763\u0022,\n  \u0022OwnerRevision\u0022: 2,\n  \u0022Kind\u0022: \u0022Validate\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "4417E39CB2196D9C0B97C7C8C3A37125AD28E08D456FACD686EABCC81B05F207",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.763141+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    }
+  ],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Submit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "PhysicalOccupancyNotClear"
+    ]
+  },
+  "OperationGuards": {
+    "left": {
+      "Allowed": true,
+      "Reasons": []
+    }
+  },
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": {
+    "SessionId": "14624b4bec314128b80776e86555cede",
+    "RequestId": "d4a76f9b7ac74bdbbc0b1874f819219b",
+    "Stage": "Context",
+    "Status": "Accepted",
+    "Reason": "SIMULATION accepted",
+    "CreatedAt": "2026-10-17T17:09:37.504797+00:00"
+  },
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 13,
+  "GeneratedAt": "2026-10-17T17:09:37.849551+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": [
+    {
+      "Id": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Lane": "left",
+      "AdmissionId": "10e0f644009d4b439e21e300cdb1894a",
+      "Revision": 2,
+      "PermitEpoch": "8b6c8301d60e488cb402e719577cb45a",
+      "PermitRevision": 1,
+      "PermitExpiresAt": "2026-10-17T17:39:37.651946+00:00",
+      "Barcode": "000123",
+      "BoxBarcode": "000001",
+      "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+      "Task": {
+        "Sku": "SIM-SKU-4403E0E0DC91",
+        "ItemWave": "SIM-ITEM-WAVE-426DD303BB90",
+        "TaskId": "SIM-TASK-3470EBF70FE7",
+        "Destination": "SIM-CHUTE-02",
+        "Unit": "\u4EF6",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "9d946b2d23c74e02a601c52da2aca65f",
+          "AcquiredAt": "2026-10-17T17:09:37.773021+00:00"
+        }
+      },
+      "CurrentInput": {
+        "ObservationId": "0da51c2284af4b7b83ca08f1f519dad0",
+        "Codes": [
+          "000123"
+        ],
+        "PackageQuantity": 2,
+        "ObservedAt": "2026-10-17T17:09:37.762059+00:00"
+      },
+      "PreviousConfirmed": null,
+      "Package": 2,
+      "Remaining": 120,
+      "Supply": 2,
+      "Status": "AwaitingAction",
+      "Occupancy": "Occupied",
+      "SplitScans": [],
+      "ObservationIds": [
+        "0da51c2284af4b7b83ca08f1f519dad0"
+      ],
+      "Reason": "SIMULATION accepted",
+      "CreatedAt": "2026-10-17T17:09:37.651873+00:00"
+    }
+  ]
+}
+{
+  "State": {
+    "Revision": 30,
+    "Session": {
+      "Id": "14624b4bec314128b80776e86555cede",
+      "Barcode": "000001",
+      "Context": {
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "5205f6f25aba41b793f02de2c204ef7f",
+          "AcquiredAt": "2026-10-17T17:09:37.54513+00:00"
+        }
+      },
+      "Status": "Active",
+      "CloseCheckRequest": null,
+      "CloseRemaining": null,
+      "CloseToken": null,
+      "CloseRequest": null,
+      "OpenedAt": "2026-10-17T17:09:37.502494+00:00",
+      "ClosedAt": null,
+      "OpenedBy": {
+        "Id": "SIM-maintenance",
+        "Role": "Maintenance",
+        "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+      }
+    },
+    "Lanes": {
+      "left": {
+        "Id": "dd2288a05d2c4b87b61dd30ac40c6763",
+        "SessionId": "14624b4bec314128b80776e86555cede",
+        "Lane": "left",
+        "AdmissionId": "10e0f644009d4b439e21e300cdb1894a",
+        "Revision": 2,
+        "PermitEpoch": "8b6c8301d60e488cb402e719577cb45a",
+        "PermitRevision": 1,
+        "PermitExpiresAt": "2026-10-17T17:39:37.651946+00:00",
+        "Barcode": "000123",
+        "BoxBarcode": "000001",
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Task": {
+          "Sku": "SIM-SKU-4403E0E0DC91",
+          "ItemWave": "SIM-ITEM-WAVE-426DD303BB90",
+          "TaskId": "SIM-TASK-3470EBF70FE7",
+          "Destination": "SIM-CHUTE-02",
+          "Unit": "\u4EF6",
+          "Provenance": {
+            "Source": "Independent synthetic task fixture",
+            "Version": "SYNTHETIC-SEMANTICS-v1",
+            "EvidenceId": "9d946b2d23c74e02a601c52da2aca65f",
+            "AcquiredAt": "2026-10-17T17:09:37.773021+00:00"
+          }
+        },
+        "CurrentInput": {
+          "ObservationId": "0da51c2284af4b7b83ca08f1f519dad0",
+          "Codes": [
+            "000123"
+          ],
+          "PackageQuantity": 2,
+          "ObservedAt": "2026-10-17T17:09:37.762059+00:00"
+        },
+        "PreviousConfirmed": null,
+        "Package": 2,
+        "Remaining": 120,
+        "Supply": 2,
+        "Status": "AwaitingAction",
+        "Occupancy": "Occupied",
+        "SplitScans": [],
+        "ObservationIds": [
+          "0da51c2284af4b7b83ca08f1f519dad0"
+        ],
+        "Reason": "SIMULATION accepted",
+        "CreatedAt": "2026-10-17T17:09:37.651873+00:00"
+      }
+    },
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 2,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Epoch": "d5835f3ec7ed46b1804ec8ac0152199e",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+        "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [
+    {
+      "Id": "d4a76f9b7ac74bdbbc0b1874f819219b",
+      "OwnerId": "14624b4bec314128b80776e86555cede",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "14624b4bec314128b80776e86555cede:Context:1",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "D13A9296DCF23FDA612CEDC78F735245AA6F90E8A39C2CE41155B24B64947848",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.504797+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    },
+    {
+      "Id": "ec424c75d80944cb8f4b181d0874f8a9",
+      "OwnerId": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Validate",
+      "OwnerRevision": 2,
+      "IntentKey": "dd2288a05d2c4b87b61dd30ac40c6763:Validate:2",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u0022dd2288a05d2c4b87b61dd30ac40c6763\u0022,\n  \u0022OwnerRevision\u0022: 2,\n  \u0022Kind\u0022: \u0022Validate\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "4417E39CB2196D9C0B97C7C8C3A37125AD28E08D456FACD686EABCC81B05F207",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.763141+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    }
+  ],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Submit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "PhysicalOccupancyNotClear"
+    ]
+  },
+  "OperationGuards": {
+    "left": {
+      "Allowed": true,
+      "Reasons": []
+    }
+  },
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": {
+    "SessionId": "14624b4bec314128b80776e86555cede",
+    "RequestId": "d4a76f9b7ac74bdbbc0b1874f819219b",
+    "Stage": "Context",
+    "Status": "Accepted",
+    "Reason": "SIMULATION accepted",
+    "CreatedAt": "2026-10-17T17:09:37.504797+00:00"
+  },
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 14,
+  "GeneratedAt": "2026-10-17T17:09:37.872858+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": [
+    {
+      "Id": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Lane": "left",
+      "AdmissionId": "10e0f644009d4b439e21e300cdb1894a",
+      "Revision": 2,
+      "PermitEpoch": "8b6c8301d60e488cb402e719577cb45a",
+      "PermitRevision": 1,
+      "PermitExpiresAt": "2026-10-17T17:39:37.651946+00:00",
+      "Barcode": "000123",
+      "BoxBarcode": "000001",
+      "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+      "Task": {
+        "Sku": "SIM-SKU-4403E0E0DC91",
+        "ItemWave": "SIM-ITEM-WAVE-426DD303BB90",
+        "TaskId": "SIM-TASK-3470EBF70FE7",
+        "Destination": "SIM-CHUTE-02",
+        "Unit": "\u4EF6",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "9d946b2d23c74e02a601c52da2aca65f",
+          "AcquiredAt": "2026-10-17T17:09:37.773021+00:00"
+        }
+      },
+      "CurrentInput": {
+        "ObservationId": "0da51c2284af4b7b83ca08f1f519dad0",
+        "Codes": [
+          "000123"
+        ],
+        "PackageQuantity": 2,
+        "ObservedAt": "2026-10-17T17:09:37.762059+00:00"
+      },
+      "PreviousConfirmed": null,
+      "Package": 2,
+      "Remaining": 120,
+      "Supply": 2,
+      "Status": "AwaitingAction",
+      "Occupancy": "Occupied",
+      "SplitScans": [],
+      "ObservationIds": [
+        "0da51c2284af4b7b83ca08f1f519dad0"
+      ],
+      "Reason": "SIMULATION accepted",
+      "CreatedAt": "2026-10-17T17:09:37.651873+00:00"
+    }
+  ]
+}
+{
+  "Status": "Persisted",
+  "Reason": "Saved locally; external acceptance is separate",
+  "Revision": 31,
+  "OwnerId": "dd2288a05d2c4b87b61dd30ac40c6763",
+  "RequestId": "a2d9f387a1334aef97172e3c8c25467d"
+}
+{
+  "State": {
+    "Revision": 31,
+    "Session": {
+      "Id": "14624b4bec314128b80776e86555cede",
+      "Barcode": "000001",
+      "Context": {
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "5205f6f25aba41b793f02de2c204ef7f",
+          "AcquiredAt": "2026-10-17T17:09:37.54513+00:00"
+        }
+      },
+      "Status": "Active",
+      "CloseCheckRequest": null,
+      "CloseRemaining": null,
+      "CloseToken": null,
+      "CloseRequest": null,
+      "OpenedAt": "2026-10-17T17:09:37.502494+00:00",
+      "ClosedAt": null,
+      "OpenedBy": {
+        "Id": "SIM-maintenance",
+        "Role": "Maintenance",
+        "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+      }
+    },
+    "Lanes": {
+      "left": {
+        "Id": "dd2288a05d2c4b87b61dd30ac40c6763",
+        "SessionId": "14624b4bec314128b80776e86555cede",
+        "Lane": "left",
+        "AdmissionId": "10e0f644009d4b439e21e300cdb1894a",
+        "Revision": 3,
+        "PermitEpoch": "8b6c8301d60e488cb402e719577cb45a",
+        "PermitRevision": 1,
+        "PermitExpiresAt": "2026-10-17T17:39:37.651946+00:00",
+        "Barcode": "000123",
+        "BoxBarcode": "000001",
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Task": {
+          "Sku": "SIM-SKU-4403E0E0DC91",
+          "ItemWave": "SIM-ITEM-WAVE-426DD303BB90",
+          "TaskId": "SIM-TASK-3470EBF70FE7",
+          "Destination": "SIM-CHUTE-02",
+          "Unit": "\u4EF6",
+          "Provenance": {
+            "Source": "Independent synthetic task fixture",
+            "Version": "SYNTHETIC-SEMANTICS-v1",
+            "EvidenceId": "9d946b2d23c74e02a601c52da2aca65f",
+            "AcquiredAt": "2026-10-17T17:09:37.773021+00:00"
+          }
+        },
+        "CurrentInput": {
+          "ObservationId": "0da51c2284af4b7b83ca08f1f519dad0",
+          "Codes": [
+            "000123"
+          ],
+          "PackageQuantity": 2,
+          "ObservedAt": "2026-10-17T17:09:37.762059+00:00"
+        },
+        "PreviousConfirmed": null,
+        "Package": 2,
+        "Remaining": 120,
+        "Supply": 2,
+        "Status": "SubmitPending",
+        "Occupancy": "Occupied",
+        "SplitScans": [],
+        "ObservationIds": [
+          "0da51c2284af4b7b83ca08f1f519dad0"
+        ],
+        "Reason": "SIMULATION accepted",
+        "CreatedAt": "2026-10-17T17:09:37.651873+00:00"
+      }
+    },
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 2,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Epoch": "d5835f3ec7ed46b1804ec8ac0152199e",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+        "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [
+    {
+      "Id": "d4a76f9b7ac74bdbbc0b1874f819219b",
+      "OwnerId": "14624b4bec314128b80776e86555cede",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "14624b4bec314128b80776e86555cede:Context:1",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "D13A9296DCF23FDA612CEDC78F735245AA6F90E8A39C2CE41155B24B64947848",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.504797+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    },
+    {
+      "Id": "ec424c75d80944cb8f4b181d0874f8a9",
+      "OwnerId": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Validate",
+      "OwnerRevision": 2,
+      "IntentKey": "dd2288a05d2c4b87b61dd30ac40c6763:Validate:2",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u0022dd2288a05d2c4b87b61dd30ac40c6763\u0022,\n  \u0022OwnerRevision\u0022: 2,\n  \u0022Kind\u0022: \u0022Validate\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "4417E39CB2196D9C0B97C7C8C3A37125AD28E08D456FACD686EABCC81B05F207",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.763141+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    },
+    {
+      "Id": "a2d9f387a1334aef97172e3c8c25467d",
+      "OwnerId": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Submit",
+      "OwnerRevision": 3,
+      "IntentKey": "dd2288a05d2c4b87b61dd30ac40c6763:Submit:3",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u0022dd2288a05d2c4b87b61dd30ac40c6763\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "ABB78D79A222171506BDB2444865F13839A79C6F7F3BB1F6AF7EF3CB5636288E",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Prepared",
+      "CreatedAt": "2026-10-17T17:09:37.896777+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    }
+  ],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Submit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "PendingExternalEffect",
+      "PhysicalOccupancyNotClear"
+    ]
+  },
+  "OperationGuards": {
+    "left": {
+      "Allowed": false,
+      "Reasons": [
+        "OperationNotReady"
+      ]
+    }
+  },
+  "RuntimeFaults": [],
+  "Recovery": [
+    {
+      "Request": {
+        "Id": "a2d9f387a1334aef97172e3c8c25467d",
+        "OwnerId": "dd2288a05d2c4b87b61dd30ac40c6763",
+        "SessionId": "14624b4bec314128b80776e86555cede",
+        "Kind": "Submit",
+        "OwnerRevision": 3,
+        "IntentKey": "dd2288a05d2c4b87b61dd30ac40c6763:Submit:3",
+        "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u0022dd2288a05d2c4b87b61dd30ac40c6763\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+        "PayloadHash": "ABB78D79A222171506BDB2444865F13839A79C6F7F3BB1F6AF7EF3CB5636288E",
+        "Binding": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Status": "Prepared",
+        "CreatedAt": "2026-10-17T17:09:37.896777+00:00",
+        "Implementation": {
+          "Driver": "builtin.reference",
+          "Package": null,
+          "ModuleId": "simulation-v1",
+          "InstanceId": "builtin.reference",
+          "DeploymentVersion": "EXTERNAL-2",
+          "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+          "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+          "Target": {
+            "Id": "loopback",
+            "Revision": "SIM-1",
+            "Contract": "SIMULATION-v1",
+            "Endpoint": "http://127.0.0.1:56136/"
+          },
+          "TimeoutMs": 1500,
+          "Policy": "SYNTHETIC-KEEP-v1",
+          "FixtureDemand": 120,
+          "Parameters": {}
+        }
+      },
+      "Dispatch": {
+        "Allowed": true,
+        "Reasons": []
+      },
+      "LocalTermination": {
+        "Allowed": false,
+        "Reasons": [
+          "RequestNotBlocked: pause and inspect first"
+        ]
+      },
+      "NextStep": "\u6062\u590D\u5339\u914D\u8BB8\u53EF\uFF0C\u6216\u6838\u5BF9\u6301\u4E45\u672A\u4EA4\u4ED8\u8BC1\u660E\u540E\u672C\u5730\u7EC8\u7ED3\uFF1B\u539F\u9884\u7559/\u5B9E\u4F53\u4ECD\u4FDD\u7559",
+      "Receipts": []
+    }
+  ],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "ReconcileSentOrTerminateProvenUndeliveredPrepared"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": {
+    "SessionId": "14624b4bec314128b80776e86555cede",
+    "RequestId": "d4a76f9b7ac74bdbbc0b1874f819219b",
+    "Stage": "Context",
+    "Status": "Accepted",
+    "Reason": "SIMULATION accepted",
+    "CreatedAt": "2026-10-17T17:09:37.504797+00:00"
+  },
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 15,
+  "GeneratedAt": "2026-10-17T17:09:37.927662+00:00",
+  "AcceptedQuantity": 0,
+  "RecentOperations": [
+    {
+      "Id": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Lane": "left",
+      "AdmissionId": "10e0f644009d4b439e21e300cdb1894a",
+      "Revision": 3,
+      "PermitEpoch": "8b6c8301d60e488cb402e719577cb45a",
+      "PermitRevision": 1,
+      "PermitExpiresAt": "2026-10-17T17:39:37.651946+00:00",
+      "Barcode": "000123",
+      "BoxBarcode": "000001",
+      "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+      "Task": {
+        "Sku": "SIM-SKU-4403E0E0DC91",
+        "ItemWave": "SIM-ITEM-WAVE-426DD303BB90",
+        "TaskId": "SIM-TASK-3470EBF70FE7",
+        "Destination": "SIM-CHUTE-02",
+        "Unit": "\u4EF6",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "9d946b2d23c74e02a601c52da2aca65f",
+          "AcquiredAt": "2026-10-17T17:09:37.773021+00:00"
+        }
+      },
+      "CurrentInput": {
+        "ObservationId": "0da51c2284af4b7b83ca08f1f519dad0",
+        "Codes": [
+          "000123"
+        ],
+        "PackageQuantity": 2,
+        "ObservedAt": "2026-10-17T17:09:37.762059+00:00"
+      },
+      "PreviousConfirmed": null,
+      "Package": 2,
+      "Remaining": 120,
+      "Supply": 2,
+      "Status": "SubmitPending",
+      "Occupancy": "Occupied",
+      "SplitScans": [],
+      "ObservationIds": [
+        "0da51c2284af4b7b83ca08f1f519dad0"
+      ],
+      "Reason": "SIMULATION accepted",
+      "CreatedAt": "2026-10-17T17:09:37.651873+00:00"
+    }
+  ]
+}
+{
+  "State": {
+    "Revision": 34,
+    "Session": {
+      "Id": "14624b4bec314128b80776e86555cede",
+      "Barcode": "000001",
+      "Context": {
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "5205f6f25aba41b793f02de2c204ef7f",
+          "AcquiredAt": "2026-10-17T17:09:37.54513+00:00"
+        }
+      },
+      "Status": "Active",
+      "CloseCheckRequest": null,
+      "CloseRemaining": null,
+      "CloseToken": null,
+      "CloseRequest": null,
+      "OpenedAt": "2026-10-17T17:09:37.502494+00:00",
+      "ClosedAt": null,
+      "OpenedBy": {
+        "Id": "SIM-maintenance",
+        "Role": "Maintenance",
+        "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+      }
+    },
+    "Lanes": {
+      "left": {
+        "Id": "dd2288a05d2c4b87b61dd30ac40c6763",
+        "SessionId": "14624b4bec314128b80776e86555cede",
+        "Lane": "left",
+        "AdmissionId": "10e0f644009d4b439e21e300cdb1894a",
+        "Revision": 3,
+        "PermitEpoch": "8b6c8301d60e488cb402e719577cb45a",
+        "PermitRevision": 1,
+        "PermitExpiresAt": "2026-10-17T17:39:37.651946+00:00",
+        "Barcode": "000123",
+        "BoxBarcode": "000001",
+        "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+        "Task": {
+          "Sku": "SIM-SKU-4403E0E0DC91",
+          "ItemWave": "SIM-ITEM-WAVE-426DD303BB90",
+          "TaskId": "SIM-TASK-3470EBF70FE7",
+          "Destination": "SIM-CHUTE-02",
+          "Unit": "\u4EF6",
+          "Provenance": {
+            "Source": "Independent synthetic task fixture",
+            "Version": "SYNTHETIC-SEMANTICS-v1",
+            "EvidenceId": "9d946b2d23c74e02a601c52da2aca65f",
+            "AcquiredAt": "2026-10-17T17:09:37.773021+00:00"
+          }
+        },
+        "CurrentInput": {
+          "ObservationId": "0da51c2284af4b7b83ca08f1f519dad0",
+          "Codes": [
+            "000123"
+          ],
+          "PackageQuantity": 2,
+          "ObservedAt": "2026-10-17T17:09:37.762059+00:00"
+        },
+        "PreviousConfirmed": null,
+        "Package": 2,
+        "Remaining": 120,
+        "Supply": 2,
+        "Status": "Accepted",
+        "Occupancy": "Occupied",
+        "SplitScans": [],
+        "ObservationIds": [
+          "0da51c2284af4b7b83ca08f1f519dad0"
+        ],
+        "Reason": "SIMULATION accepted",
+        "CreatedAt": "2026-10-17T17:09:37.651873+00:00"
+      }
+    },
+    "Devices": {
+      "left": {
+        "DeviceId": "external-left-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "8b6c8301d60e488cb402e719577cb45a",
+        "Sequence": 2,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.182619+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.182619+00:00",
+        "Source": "SIMULATION:extension:left-external",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "external-right-EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+        "Epoch": "c1e78486fb7b449a971150bcc090c43b",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ConfirmedAt": "2026-10-17T17:09:37.183536+00:00",
+        "ValidUntil": "2026-10-17T17:09:42.183536+00:00",
+        "Source": "SIMULATION:extension:right-external",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-18T01:09:37.42887+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+      "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "ServiceHealth": {
+      "requests": {
+        "InstanceId": "builtin.reference",
+        "Port": "requests",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "Epoch": "d5835f3ec7ed46b1804ec8ac0152199e",
+        "Sequence": 1,
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T17:09:37.206304+00:00",
+        "ValidUntil": "2026-10-17T17:09:41.706304+00:00",
+        "Failure": null
+      }
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [
+    {
+      "Id": "d4a76f9b7ac74bdbbc0b1874f819219b",
+      "OwnerId": "14624b4bec314128b80776e86555cede",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "14624b4bec314128b80776e86555cede:Context:1",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "D13A9296DCF23FDA612CEDC78F735245AA6F90E8A39C2CE41155B24B64947848",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.504797+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    },
+    {
+      "Id": "ec424c75d80944cb8f4b181d0874f8a9",
+      "OwnerId": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Validate",
+      "OwnerRevision": 2,
+      "IntentKey": "dd2288a05d2c4b87b61dd30ac40c6763:Validate:2",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u0022dd2288a05d2c4b87b61dd30ac40c6763\u0022,\n  \u0022OwnerRevision\u0022: 2,\n  \u0022Kind\u0022: \u0022Validate\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "4417E39CB2196D9C0B97C7C8C3A37125AD28E08D456FACD686EABCC81B05F207",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.763141+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    },
+    {
+      "Id": "a2d9f387a1334aef97172e3c8c25467d",
+      "OwnerId": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Kind": "Submit",
+      "OwnerRevision": 3,
+      "IntentKey": "dd2288a05d2c4b87b61dd30ac40c6763:Submit:3",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330\u0022,\n  \u0022SessionId\u0022: \u002214624b4bec314128b80776e86555cede\u0022,\n  \u0022OwnerId\u0022: \u0022dd2288a05d2c4b87b61dd30ac40c6763\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T01:09:37.42887\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "ABB78D79A222171506BDB2444865F13839A79C6F7F3BB1F6AF7EF3CB5636288E",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:56136/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T17:09:37.896777+00:00",
+      "Implementation": {
+        "Driver": "builtin.reference",
+        "Package": null,
+        "ModuleId": "simulation-v1",
+        "InstanceId": "builtin.reference",
+        "DeploymentVersion": "EXTERNAL-2",
+        "ConfigurationSha256": "53D735ECC51405044152E8B0A4431A0C89E2A9C8A72220F3E5536B4844766DF3",
+        "ContractSha256": "BCB3670FB30D3B7551A26035260DDCF36ABA1904209DE3F09B7DC1B09125F524",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:56136/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {}
+      }
+    }
+  ],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Submit": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "PhysicalOccupancyNotClear"
+    ]
+  },
+  "OperationGuards": {
+    "left": {
+      "Allowed": false,
+      "Reasons": [
+        "OperationNotReady"
+      ]
+    }
+  },
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload"
+    ]
+  },
+  "StationId": "EXTERNAL-d58e0d1bbd984126aafc9d9430fbc330",
+  "BoxResult": {
+    "SessionId": "14624b4bec314128b80776e86555cede",
+    "RequestId": "d4a76f9b7ac74bdbbc0b1874f819219b",
+    "Stage": "Context",
+    "Status": "Accepted",
+    "Reason": "SIMULATION accepted",
+    "CreatedAt": "2026-10-17T17:09:37.504797+00:00"
+  },
+  "NotificationBacklog": 1,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 16,
+  "GeneratedAt": "2026-10-17T17:09:38.047765+00:00",
+  "AcceptedQuantity": 2,
+  "RecentOperations": [
+    {
+      "Id": "dd2288a05d2c4b87b61dd30ac40c6763",
+      "SessionId": "14624b4bec314128b80776e86555cede",
+      "Lane": "left",
+      "AdmissionId": "10e0f644009d4b439e21e300cdb1894a",
+      "Revision": 3,
+      "PermitEpoch": "8b6c8301d60e488cb402e719577cb45a",
+      "PermitRevision": 1,
+      "PermitExpiresAt": "2026-10-17T17:39:37.651946+00:00",
+      "Barcode": "000123",
+      "BoxBarcode": "000001",
+      "BoxWave": "SIM-BOX-WAVE-C131F5DADD49",
+      "Task": {
+        "Sku": "SIM-SKU-4403E0E0DC91",
+        "ItemWave": "SIM-ITEM-WAVE-426DD303BB90",
+        "TaskId": "SIM-TASK-3470EBF70FE7",
+        "Destination": "SIM-CHUTE-02",
+        "Unit": "\u4EF6",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "9d946b2d23c74e02a601c52da2aca65f",
+          "AcquiredAt": "2026-10-17T17:09:37.773021+00:00"
+        }
+      },
+      "CurrentInput": {
+        "ObservationId": "0da51c2284af4b7b83ca08f1f519dad0",
+        "Codes": [
+          "000123"
+        ],
+        "PackageQuantity": 2,
+        "ObservedAt": "2026-10-17T17:09:37.762059+00:00"
+      },
+      "PreviousConfirmed": null,
+      "Package": 2,
+      "Remaining": 120,
+      "Supply": 2,
+      "Status": "Accepted",
+      "Occupancy": "Occupied",
+      "SplitScans": [],
+      "ObservationIds": [
+        "0da51c2284af4b7b83ca08f1f519dad0"
+      ],
+      "Reason": "SIMULATION accepted",
+      "CreatedAt": "2026-10-17T17:09:37.651873+00:00"
+    }
+  ]
+}
+{
+  "Notification": {
+    "Sequence": 1,
+    "OperationId": "dd2288a05d2c4b87b61dd30ac40c6763",
+    "Lane": "left",
+    "Status": "Accepted",
+    "Revision": 3
+  },
+  "Delivery": "AwaitingExplicitAcknowledgement"
+}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}

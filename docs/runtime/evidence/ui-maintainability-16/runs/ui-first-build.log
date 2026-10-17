@@ -1,25 +1,25 @@
   正在确定要还原的项目…
-  已还原 /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 420 毫秒)。
-  已还原 /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj (用时 420 毫秒)。
-  已还原 /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 420 毫秒)。
-  已还原 /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/Ipc.Product.csproj (用时 420 毫秒)。
-  已还原 /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 420 毫秒)。
-  Ipc.Platform -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
-  Ipc.Supply.Contracts -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
-  Ipc.Adapters -> /Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
-/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/ObservationModule.cs(6,32): error CS0246: 未能找到类型或命名空间名“StationApplication”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
-/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/ExtensionBuildCheck.cs(50,64): error CS0509: “ExtensionBuildCheck.MissingDependencyException”: 无法从密封类型“InvalidDataException”派生 [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
-/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/SenderModule.cs(5,27): error CS0246: 未能找到类型或命名空间名“StationApplication”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
-/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/ProductRuntime.cs(36,5): error CS0246: 未能找到类型或命名空间名“SupplyStore”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
-/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/ProductRuntime.cs(38,5): error CS0246: 未能找到类型或命名空间名“StationApplication”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
+  已还原 /workspace/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 420 毫秒)。
+  已还原 /workspace/importer-pc/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj (用时 420 毫秒)。
+  已还原 /workspace/importer-pc/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 420 毫秒)。
+  已还原 /workspace/importer-pc/src/Ipc.Product/Ipc.Product.csproj (用时 420 毫秒)。
+  已还原 /workspace/importer-pc/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 420 毫秒)。
+  Ipc.Platform -> /workspace/importer-pc/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /workspace/importer-pc/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Adapters -> /workspace/importer-pc/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+/workspace/importer-pc/src/Ipc.Product/ObservationModule.cs(6,32): error CS0246: 未能找到类型或命名空间名“StationApplication”(是否缺少 using 指令或程序集引用?) [/workspace/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
+/workspace/importer-pc/src/Ipc.Product/ExtensionBuildCheck.cs(50,64): error CS0509: “ExtensionBuildCheck.MissingDependencyException”: 无法从密封类型“InvalidDataException”派生 [/workspace/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
+/workspace/importer-pc/src/Ipc.Product/SenderModule.cs(5,27): error CS0246: 未能找到类型或命名空间名“StationApplication”(是否缺少 using 指令或程序集引用?) [/workspace/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
+/workspace/importer-pc/src/Ipc.Product/ProductRuntime.cs(36,5): error CS0246: 未能找到类型或命名空间名“SupplyStore”(是否缺少 using 指令或程序集引用?) [/workspace/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
+/workspace/importer-pc/src/Ipc.Product/ProductRuntime.cs(38,5): error CS0246: 未能找到类型或命名空间名“StationApplication”(是否缺少 using 指令或程序集引用?) [/workspace/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
 
 生成失败。
 
-/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/ObservationModule.cs(6,32): error CS0246: 未能找到类型或命名空间名“StationApplication”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
-/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/ExtensionBuildCheck.cs(50,64): error CS0509: “ExtensionBuildCheck.MissingDependencyException”: 无法从密封类型“InvalidDataException”派生 [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
-/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/SenderModule.cs(5,27): error CS0246: 未能找到类型或命名空间名“StationApplication”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
-/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/ProductRuntime.cs(36,5): error CS0246: 未能找到类型或命名空间名“SupplyStore”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
-/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/ProductRuntime.cs(38,5): error CS0246: 未能找到类型或命名空间名“StationApplication”(是否缺少 using 指令或程序集引用?) [/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
+/workspace/importer-pc/src/Ipc.Product/ObservationModule.cs(6,32): error CS0246: 未能找到类型或命名空间名“StationApplication”(是否缺少 using 指令或程序集引用?) [/workspace/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
+/workspace/importer-pc/src/Ipc.Product/ExtensionBuildCheck.cs(50,64): error CS0509: “ExtensionBuildCheck.MissingDependencyException”: 无法从密封类型“InvalidDataException”派生 [/workspace/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
+/workspace/importer-pc/src/Ipc.Product/SenderModule.cs(5,27): error CS0246: 未能找到类型或命名空间名“StationApplication”(是否缺少 using 指令或程序集引用?) [/workspace/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
+/workspace/importer-pc/src/Ipc.Product/ProductRuntime.cs(36,5): error CS0246: 未能找到类型或命名空间名“SupplyStore”(是否缺少 using 指令或程序集引用?) [/workspace/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
+/workspace/importer-pc/src/Ipc.Product/ProductRuntime.cs(38,5): error CS0246: 未能找到类型或命名空间名“StationApplication”(是否缺少 using 指令或程序集引用?) [/workspace/importer-pc/src/Ipc.Product/Ipc.Product.csproj]
     0 个警告
     5 个错误
 

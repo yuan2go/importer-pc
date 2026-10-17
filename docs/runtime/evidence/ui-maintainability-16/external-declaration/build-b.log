@@ -1,0 +1,202 @@
+  正在确定要还原的项目…
+  已还原 /temporary-extension-build/source/BarcodeExtension.csproj (用时 34 毫秒)。
+  BarcodeExtension -> /temporary-extension-build/bin/Ipc.Reference.BarcodeExtension.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.40
+Verified OK
+{
+  "Manifest": {
+    "SchemaVersion": 1,
+    "Id": "wp16.external.reader",
+    "Version": "2.0.0",
+    "Publisher": "reference-test",
+    "Runtime": "net10.0",
+    "Rid": "any",
+    "ContractMajor": 1,
+    "Mode": "Simulation",
+    "SourceCommit": "e7b653fc23fcd092a41d1cca48fb77f885ca96b1",
+    "Dependencies": [],
+    "Files": [
+      {
+        "Path": "Ipc.Reference.BarcodeExtension.dll",
+        "Length": 12288,
+        "Sha256": "9A6981B70BC6550E15BD6011102E889042BF3A18E64F8976EDD97B5CDFCB5587"
+      }
+    ],
+    "Modules": [
+      {
+        "Id": "barcode-source",
+        "Assembly": "Ipc.Reference.BarcodeExtension.dll",
+        "EntryType": "Ipc.Reference.BarcodeExtension.BarcodeModule",
+        "Kind": "observation",
+        "MaximumInstances": 8,
+        "Parameters": [
+          {
+            "Key": "health.interval-ms",
+            "Group": "\u5065\u5EB7 / \u53EF\u9760\u786E\u8BA4",
+            "Label": "\u5408\u6210\u5FC3\u8DF3\u95F4\u9694",
+            "Type": "integer",
+            "Required": true,
+            "Default": "1000",
+            "MaximumLength": 256,
+            "Minimum": 100,
+            "Maximum": 2000,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": "ms",
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "input.prefix",
+            "Group": "\u8F93\u5165 / \u5408\u6210\u6761\u7801",
+            "Label": "\u5141\u8BB8\u7684\u6761\u7801\u524D\u7F00",
+            "Type": "string",
+            "Required": false,
+            "Default": "",
+            "MaximumLength": 32,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": "\u4E0D\u5339\u914D\u65F6\u4EA7\u751F\u65E0\u7801\u89C2\u5BDF\uFF1B\u4E0D\u6CBF\u7528\u65E7\u7801\u3002\u4EC5\u5408\u6210\u6A21\u5F0F\u3002",
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "input.labels",
+            "Group": "\u8F93\u5165 / \u5408\u6210\u6761\u7801",
+            "Label": "\u6765\u6E90\u6807\u7B7E\uFF08\u6BCF\u884C\u4E00\u9879\uFF09",
+            "Type": "string-list",
+            "Required": false,
+            "Default": "[]",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 16
+          },
+          {
+            "Key": "metadata.contract",
+            "Group": "\u8EAB\u4EFD / \u7248\u672C",
+            "Label": "\u6765\u6E90\u5951\u7EA6",
+            "Type": "string",
+            "Required": false,
+            "Default": "SIMULATION-OBSERVATION-v1",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": true,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "credential.reference",
+            "Group": "\u8EAB\u4EFD / \u51ED\u636E\u5F15\u7528",
+            "Label": "\u51ED\u636E\u5F15\u7528\uFF08\u4E0D\u8F93\u5165\u5BC6\u7801\uFF09",
+            "Type": "secret-reference",
+            "Required": false,
+            "Default": null,
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": true,
+            "Description": "\u53EA\u5B58 credential:\u540D\u79F0\uFF1B\u672C\u5408\u6210\u6E90\u4E0D\u4F7F\u7528\u6216\u8BFB\u53D6\u751F\u4EA7\u51ED\u636E\u3002",
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "fault.fail-start",
+            "Group": "\u5DE5\u7A0B / \u663E\u5F0F\u6A21\u62DF\u6545\u969C",
+            "Label": "\u542F\u52A8\u5931\u8D25\u6CE8\u5165",
+            "Type": "boolean",
+            "Required": false,
+            "Default": "false",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": "\u53EA\u7528\u4E8E\u53C2\u8003\u73AF\u5883\u9A8C\u8BC1\u5347\u7EA7\u5931\u8D25\u4FDD\u65E7\u3002",
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "fault.stop-delay-ms",
+            "Group": "\u5DE5\u7A0B / \u663E\u5F0F\u6A21\u62DF\u6545\u969C",
+            "Label": "\u505C\u6B62\u5EF6\u8FDF\u6CE8\u5165",
+            "Type": "integer",
+            "Required": false,
+            "Default": "0",
+            "MaximumLength": 256,
+            "Minimum": 0,
+            "Maximum": 20000,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": "\u9A8C\u8BC1Stop\u672A\u7EC8\u6B62\u65F6\u4FDD\u7559\u4F9D\u8D56\u548C\u5B9E\u9645\u8D44\u6E90\u79DF\u7EA6\u3002",
+            "Unit": "ms",
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          }
+        ]
+      }
+    ],
+    "Prerequisites": [],
+    "HostContractSha256": "8EB04FEAFAB278260A1FE4412AC4A822CF8B7628DB4EA3C59747AE8E57AB57E8"
+  },
+  "ManifestSha256": "412301E6543B22CEF45585A4F481A23830CCC51E34E1A9166009E7B2F3B6989D",
+  "PackageSha256": "B6B85A51EE17B5D49FB0F8590EDBCFA85C831706F96275A3385BA19F02811469",
+  "TrustSha256": "602F76F4558E66FF496D7EC9D47B90F0843FF10BFA07A3585163D8B19ECDF9DC",
+  "VerifiedAt": "2026-10-17T17:08:54.607079+00:00",
+  "TestOnly": true,
+  "Reference": {
+    "Id": "wp16.external.reader",
+    "Version": "2.0.0",
+    "ManifestSha256": "412301E6543B22CEF45585A4F481A23830CCC51E34E1A9166009E7B2F3B6989D"
+  }
+}
+{"Package": "external-reader-b.ipcx", "PackageSha256": "b6b85a51ee17b5d49fb0f8590edbcfa85c831706f96275a3385ba19f02811469", "PluginSourceCommit": "e7b653fc23fcd092a41d1cca48fb77f885ca96b1", "PluginSourceSha256": "c2e9a6c2b454d2a4cbb840f9a255ac3f7cbc9881e33e75b4a9b3f8dafbdf9a74", "DefinitionSha256": "f29b29a9ed4a7ac65230dd8ce67eb3661c41215e68e7aaec13bf6f2c13b97728", "HostContractSha256": "8eb04feafab278260a1fe4412ac4a822cf8b7628db4ea3c59747ae8e57ab57e8", "FrozenHostUnchanged": true, "FrozenCheckerUnchanged": true, "CheckerContractsSha256": {"Ipc.Platform": "8eb04feafab278260a1fe4412ac4a822cf8b7628db4ea3c59747ae8e57ab57e8"}, "Publisher": "reference-test", "Version": "2.0.0", "ExtensionContract": 1, "Signature": "RSA-PSS/SHA256", "Mode": "Simulation", "ManifestSha256": "412301e6543b22cef45585a4f481a23830ccc51e34e1a9166009e7b2f3b6989d", "TrustSha256": "79cf7218821dbb8e8f41b7b28dc1e941f0b02b1a75f32e0ba143b3ee915dfa9d", "PayloadSha256": {"Ipc.Reference.BarcodeExtension.dll": "9a6981b70bc6550e15bd6011102e889042bf3a18e64f8976edd97b5cdfcb5587"}, "DependencyPackages": [], "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"}

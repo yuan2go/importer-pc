@@ -46,6 +46,8 @@ Windows源码桌面`dotnet src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop
 
 新内容必须新ID/version，参考1.0.4不覆盖1.0.0～1.0.3。公共DLL按精确指纹校验，即使ContractMajor=1也不表示旧包普遍兼容。请求T1冻结原实现/包/参数/合同/目标，历史查询只找原能力；缺失明确阻塞，不重定向或默认重发。卸载检查Effective/Pending/所有未决责任/持久消费者根/依赖和实际租约；不可读/旧覆盖未知仍拒绝。不能删identities、消费者登记、原件或库绕过。
 
+<a id="hardening-04-恢复与请求处置"></a>
+
 ## 故障、接收责任与停止
 
 T1事实/意图/Outbox原子保存，T2领取/Attempt，交付前最后守卫授权同事务登记独立接收ID；原查询在网络前单独登记，失败不外呼。每份响应按接收ID写原件并Flush，T3原子保存响应/冲突、原终态/唯一接受账和该次Committed。另一份相同请求响应不清除Q1缺失责任。

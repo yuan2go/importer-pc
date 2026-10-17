@@ -1,0 +1,25 @@
+{
+  "Package": "external-reader-b.ipcx",
+  "PackageSha256": "b6b85a51ee17b5d49fb0f8590edbcfa85c831706f96275a3385ba19f02811469",
+  "PluginSourceCommit": "e7b653fc23fcd092a41d1cca48fb77f885ca96b1",
+  "PluginSourceSha256": "c2e9a6c2b454d2a4cbb840f9a255ac3f7cbc9881e33e75b4a9b3f8dafbdf9a74",
+  "DefinitionSha256": "f29b29a9ed4a7ac65230dd8ce67eb3661c41215e68e7aaec13bf6f2c13b97728",
+  "HostContractSha256": "8eb04feafab278260a1fe4412ac4a822cf8b7628db4ea3c59747ae8e57ab57e8",
+  "FrozenHostUnchanged": true,
+  "FrozenCheckerUnchanged": true,
+  "CheckerContractsSha256": {
+    "Ipc.Platform": "8eb04feafab278260a1fe4412ac4a822cf8b7628db4ea3c59747ae8e57ab57e8"
+  },
+  "Publisher": "reference-test",
+  "Version": "2.0.0",
+  "ExtensionContract": 1,
+  "Signature": "RSA-PSS/SHA256",
+  "Mode": "Simulation",
+  "ManifestSha256": "412301e6543b22cef45585a4f481a23830ccc51e34e1a9166009e7b2f3b6989d",
+  "TrustSha256": "79cf7218821dbb8e8f41b7b28dc1e941f0b02b1a75f32e0ba143b3ee915dfa9d",
+  "PayloadSha256": {
+    "Ipc.Reference.BarcodeExtension.dll": "9a6981b70bc6550e15bd6011102e889042bf3a18e64f8976edd97b5cdfcb5587"
+  },
+  "DependencyPackages": [],
+  "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+}

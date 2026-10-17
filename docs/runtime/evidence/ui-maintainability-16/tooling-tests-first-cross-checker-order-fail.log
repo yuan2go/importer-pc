@@ -21,7 +21,7 @@ ValueError: Frozen checker changed during independent build; no package publishe
 During handling of the above exception, another exception occurred:
 
 Traceback (most recent call last):
-  File "/Users/yuan/.codex/worktrees/ui-maintainability-16/importer-pc/scripts/test_extension_build.py", line 120, in test_checker_failure_and_frozen_host_drift_never_publish
+  File "/workspace/importer-pc/scripts/test_extension_build.py", line 120, in test_checker_failure_and_frozen_host_drift_never_publish
     with patch.object(builder, 'run', side_effect=drift), self.assertRaisesRegex(ValueError, 'Frozen host changed'):
 AssertionError: "Frozen host changed" does not match "Frozen checker changed during independent build; no package published"
 

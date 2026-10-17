@@ -2,7 +2,7 @@
 
 从执行时最新main `5548b3f962c409079618635d3128830ea7887069` 建立隔离分支`codex/operation-closure-15`；实现与同版候选冻结于 **`013862fc2d1769605624f8e10df5cc5b448a7954`**。本包授权工程工作已完成：每次接收独立责任、箱结果/可用性、输入隔离、维护草稿/异步选择、追溯结构和合成旧部署升级。**核心必要验证通过；实际客户端截图0，Windows行为/DPI/HID/声音/触控/PowerShell/ACL为NOT_RUN，真实接口/产品/现场按项BLOCKED。** UI实际资格没有关闭。
 
-[逐问题/AC与checks](operation-closure-15-checks.json) · [完整原始证据](evidence/operation-closure-15/README.md) · [执行基线/计划](operation-closure-15-baseline.md) · [前置原字节](../archive/pre-operation-closure-15/README.md) · [UI映射](../ui/operation-closure-15-mapping.md) · [Windows后验](validation/operation-closure-15-windows.md) · [同版参考候选](https://github.com/yuan2go/importer-pc/releases/tag/operation15-reference-013862f)。提交分支供main PR审阅，不自行合并。
+[逐问题/AC与checks](operation-closure-15-checks.json) · [完整原始证据](evidence/operation-closure-15/README.md) · [执行基线/计划](operation-closure-15-baseline.md) · [前置原字节](../archive/pre-operation-closure-15/README.md) · [UI映射](../ui/operation-closure-15-mapping.md) · [Windows后验](validation/operation-closure-15-windows.md) · [同版参考候选](https://github.com/yuan2go/importer-pc/releases/tag/operation15-reference-013862f)。开发分支已提交，[main PR #15](https://github.com/yuan2go/importer-pc/pull/15)为OPEN，未合并。
 
 ## 基线与责任边界
 

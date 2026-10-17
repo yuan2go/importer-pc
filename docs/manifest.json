@@ -8097,10 +8097,10 @@
       "purpose": "Authorized operation15 generic implementation, synthetic verification, exact historical custody or current evidence",
       "source": "WP-IPC-OPERATION-CLOSURE-15 explicit user request; no restricted customer assets or production data",
       "storage_scope": "public_repository",
-      "sha256": "1d59bb5197173a6889076e722ccdd545e8d1cd8ba2a6a5f47aa5f0a052351844",
-      "size_bytes": 46458,
-      "git_blob": "7dadc8841e88e025a8db713405ae4c825dbc42e4",
-      "previous_git_blob": "c19c8262a5333d2ecf652d042b601f186bef64e4"
+      "sha256": "8320b5534da16f38cd3b7a88097d57222ea8bdaf9b3f8c90ef1420c1bd160b17",
+      "size_bytes": 46561,
+      "git_blob": "1728ab492daddaee9661b7111a1b3af1dcac8465",
+      "previous_git_blob": "7dadc8841e88e025a8db713405ae4c825dbc42e4"
     },
     {
       "path": "docs/runtime/operation-closure-15.md",
@@ -8109,10 +8109,10 @@
       "purpose": "Authorized operation15 generic implementation, synthetic verification, exact historical custody or current evidence",
       "source": "WP-IPC-OPERATION-CLOSURE-15 explicit user request; no restricted customer assets or production data",
       "storage_scope": "public_repository",
-      "sha256": "7360b424528eeb0f82013dd88a8c130096f7e69a999dd2b814e939b78b7404e8",
-      "size_bytes": 11586,
-      "git_blob": "98d8b6ddcf596d8d9e24c1b03d1127d80a916b03",
-      "previous_git_blob": "cf84ce916bc37e94b849e2ccf18ee5aa000383ee"
+      "sha256": "402613d17e078634b64ef2eabb82fcc472e6516e395f46601d05ffc8903364e9",
+      "size_bytes": 11644,
+      "git_blob": "193cb409b6db196edd4a6791039c1c6ee1d017a2",
+      "previous_git_blob": "98d8b6ddcf596d8d9e24c1b03d1127d80a916b03"
     },
     {
       "path": "docs/runtime/operations.md",
@@ -11307,7 +11307,8 @@
     "actual_wpf_screenshots": 0,
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/operation15-reference-013862f",
     "binary_storage": "github_prerelease_assets_not_git",
-    "private_keys_included": false
+    "private_keys_included": false,
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/15"
   },
   "followup_work_packages": [
     "WP-IPC-ENGINEERING-FOLLOWUP-08",
@@ -11753,7 +11754,8 @@
     "actual_client_screenshots": 0,
     "field": "BLOCKED_PER_CAPABILITY",
     "current_findings": "Historical POST_PR14 record unchanged; current disposition is operation15 checks",
-    "release": "https://github.com/yuan2go/importer-pc/releases/tag/operation15-reference-013862f"
+    "release": "https://github.com/yuan2go/importer-pc/releases/tag/operation15-reference-013862f",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/15"
   },
   "publication_before_operation_closure_15": {
     "work_package": "WP-IPC-AUDIT-RECONCILIATION-01",

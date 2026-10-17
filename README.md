@@ -1,3 +1,5 @@
+> 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入正在实施；本段是执行范围，不代表目标已经完成。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](docs/archive/pre-arch-extension-closure-13/README.md)。
+
 > 当前实施为 [DELIVERY-12](docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)：受控扩展、统一部署及同版候选交付。见 [12报告](docs/runtime/extension-windows-delivery-12.md) 与 [扩展指南](docs/extensions/developer-guide.md)。Windows参考验收与真实现场资格单列；下文11及更早结果保持其原版本含义。
 
 # importer-pc

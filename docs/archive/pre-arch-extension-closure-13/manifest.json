@@ -1,0 +1,42 @@
+[
+  {
+    "path": "README.md",
+    "sha256": "2387ed6aefa7428c32625c91024376a46c6e68088d08013bca2b95127236ec2e",
+    "baseline": "feed6e9ce79449e48c667c17e2671939a86fb588"
+  },
+  {
+    "path": "docs/INDEX.md",
+    "sha256": "5d8863382b2a587a7f5a6329ddee946de40dc01daa1cd194903e96d6bdbb62d4",
+    "baseline": "feed6e9ce79449e48c667c17e2671939a86fb588"
+  },
+  {
+    "path": "docs/design/framework.md",
+    "sha256": "c154ea12c31dcb976d1ee94029ee0999c12f7d7b0153b66d0954959939566244",
+    "baseline": "feed6e9ce79449e48c667c17e2671939a86fb588"
+  },
+  {
+    "path": "docs/design/framework-decisions.md",
+    "sha256": "803827623750df4bccc619db4cc9caf97983d7caafe9db08b654a10b7d3c1775",
+    "baseline": "feed6e9ce79449e48c667c17e2671939a86fb588"
+  },
+  {
+    "path": "docs/design/controlled-extensions.md",
+    "sha256": "521006c0523ba7b094d12a2dcc57d7be68d650add38aff4e30bc4ca0fcc80fe3",
+    "baseline": "feed6e9ce79449e48c667c17e2671939a86fb588"
+  },
+  {
+    "path": "docs/extensions/developer-guide.md",
+    "sha256": "5e65f24e11675852075b0ac7fb4d4ce518b3b9bbbcd513b2d325549c7a56339d",
+    "baseline": "feed6e9ce79449e48c667c17e2671939a86fb588"
+  },
+  {
+    "path": "docs/runtime/operations.md",
+    "sha256": "ccc14860d078155e2b1338844f4e2de155e64347a1d4f0960f07682c35bcd1d3",
+    "baseline": "feed6e9ce79449e48c667c17e2671939a86fb588"
+  },
+  {
+    "path": "docs/manifest.json",
+    "sha256": "41a453e187789402d9b8e390609146200d925749a619e4323f8d3fcf54718952",
+    "baseline": "feed6e9ce79449e48c667c17e2671939a86fb588"
+  }
+]

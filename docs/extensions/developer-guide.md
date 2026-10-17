@@ -1,3 +1,5 @@
+> 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入正在实施；本段是执行范围，不代表目标已经完成。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](../archive/pre-arch-extension-closure-13/README.md)。
+
 # 受控扩展开发、安装与恢复
 
 本指南对应EXTENSION-WINDOWS-DELIVERY-12 / ExtensionContract1。宿主源码和包SHA由12报告登记，插件源码身份独立登记。当前新增的后装能力为受信任托管观察来源；既有manual/replay和SIMULATION-v1继续走同一个Product来源/发送器、Supply契约与事务。厂商SDK、系统驱动、真实WCS和新业务不在本期支持声明内，未支持的模块kind/原生导入/元数据语义明确拒绝。

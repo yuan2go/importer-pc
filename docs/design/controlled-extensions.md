@@ -1,3 +1,5 @@
+> 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入正在实施；本段是执行范围，不代表目标已经完成。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](../archive/pre-arch-extension-closure-13/README.md)。
+
 # DELIVERY-12 受控扩展设计增量
 
 本次目标见原字节工作包，起点 main 9f320459。F-04/F-06/F-10在framework-decisions登记；原固定注册仍是宿主核心的可信执行边界，新增受信任后装不是重新seal宿主。

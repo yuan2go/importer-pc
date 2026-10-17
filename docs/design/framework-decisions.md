@@ -1,4 +1,4 @@
-> 当前执行：WP-IPC-EXTENSION-WINDOWS-DELIVERY-12；起点 main `9f320459`，受控构建选装、签名离线后装和统一部署修订正在实施。安装不等于激活，二进制变更受控重启。下文11及更早结果属于其原版本；[原字节](../archive/pre-extension-delivery-12/README.md)保留。正式工作包见 docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md；按 AC12-01～10 分项取证，Windows未验不宣布整包完成。
+> 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入正在实施；本段是执行范围，不代表目标已经完成。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](../archive/pre-arch-extension-closure-13/README.md)。
 
 # 框架决策、讨论来源与适用范围
 

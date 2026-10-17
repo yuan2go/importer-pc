@@ -1,4 +1,4 @@
-> 当前执行：WP-IPC-EXTENSION-WINDOWS-DELIVERY-12；起点 main `9f320459`，受控构建选装、签名离线后装和统一部署修订正在实施。安装不等于激活，二进制变更受控重启。下文11及更早结果属于其原版本；[原字节](archive/pre-extension-delivery-12/README.md)保留。正式工作包见 docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md；按 AC12-01～10 分项取证，Windows未验不宣布整包完成。
+> 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入正在实施；本段是执行范围，不代表目标已经完成。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](archive/pre-arch-extension-closure-13/README.md)。
 
 > 上一版11执行：[REVIEW-FOLLOWUP-11](work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)，起点main `4ae5319`。修复PR9独立复核的两个P2并补Product组合所有权动态证据；结果、同版包及新SHA见[11报告](runtime/review-followup-11.md)与[11 checks](runtime/review-followup-11-checks.json)；[前版本](archive/pre-review-followup-11/README.md)保留。下文09/a080825为上一版证据，不自动代表本次输出；Windows/真实集成仍按06/05分项阻塞。
 

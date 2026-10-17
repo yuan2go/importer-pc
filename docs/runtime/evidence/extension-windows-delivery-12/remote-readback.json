@@ -1,0 +1,88 @@
+{
+  "Status": "PASS_CANDIDATE_DELIVERY",
+  "ObservedUtc": "2026-10-16T19:04:16.399047+00:00",
+  "Repository": "yuan2go/importer-pc",
+  "ReleaseId": "RE_kwDOVLQU8s4YwMx1",
+  "Tag": "delivery-12-reference-11f0728",
+  "Url": "https://github.com/yuan2go/importer-pc/releases/tag/delivery-12-reference-11f0728",
+  "IsPrerelease": true,
+  "HostSourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+  "PluginSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+  "AllAssetsDownloaded": true,
+  "AllShaAndContentMatch": true,
+  "Assets": [
+    {
+      "Name": "delivery12-11f0728-barcode-portable.zip",
+      "Bytes": 35332216,
+      "Sha256": "95a3e3d6a63600a68c3e6ae66067fbd690d842d1cf97e60eb18a12a4b5256293",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/delivery-12-reference-11f0728/delivery12-11f0728-barcode-portable.zip",
+      "AssetId": "RA_kwDOVLQU8s4mpFk0",
+      "DownloadedBytesEqualUploaded": true,
+      "Crc": "PASS",
+      "Files": 139
+    },
+    {
+      "Name": "delivery12-11f0728-barcode-win-x64.zip",
+      "Bytes": 115497761,
+      "Sha256": "489563f0bf9b8b854c606b2d3a86b674632d0c6351994b51f28fed856328e50e",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/delivery-12-reference-11f0728/delivery12-11f0728-barcode-win-x64.zip",
+      "AssetId": "RA_kwDOVLQU8s4mpFk5",
+      "DownloadedBytesEqualUploaded": true,
+      "Crc": "PASS",
+      "Files": 824
+    },
+    {
+      "Name": "delivery12-11f0728-core-portable.zip",
+      "Bytes": 35322731,
+      "Sha256": "98d268bbfee6704e3b503e13fd961427261635445b735398ffb360276160544c",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/delivery-12-reference-11f0728/delivery12-11f0728-core-portable.zip",
+      "AssetId": "RA_kwDOVLQU8s4mpFk1",
+      "DownloadedBytesEqualUploaded": true,
+      "Crc": "PASS",
+      "Files": 136
+    },
+    {
+      "Name": "delivery12-CANDIDATE.json",
+      "Bytes": 5481,
+      "Sha256": "56d18757d3239b97808624bd51de2607de1dd632cbf71c152b66a40143b13e36",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/delivery-12-reference-11f0728/delivery12-CANDIDATE.json",
+      "AssetId": "RA_kwDOVLQU8s4mpFly",
+      "DownloadedBytesEqualUploaded": true,
+      "Crc": null,
+      "Files": null
+    },
+    {
+      "Name": "delivery12-SHA256SUMS.txt",
+      "Bytes": 612,
+      "Sha256": "68f8883796b07c575a9fd719e26bcddb780f47c44f75f5b414ba8f3f1e30eae7",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/delivery-12-reference-11f0728/delivery12-SHA256SUMS.txt",
+      "AssetId": "RA_kwDOVLQU8s4mpFmG",
+      "DownloadedBytesEqualUploaded": true,
+      "Crc": null,
+      "Files": null
+    },
+    {
+      "Name": "reference-barcode-source-6507edb.zip",
+      "Bytes": 13852,
+      "Sha256": "f466803a1b0e39a445c04c754ddc0683a9e653f7340ebe1f8fba1b92b47331de",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/delivery-12-reference-11f0728/reference-barcode-source-6507edb.zip",
+      "AssetId": "RA_kwDOVLQU8s4mpFk3",
+      "DownloadedBytesEqualUploaded": true,
+      "Crc": "PASS",
+      "Files": 9
+    },
+    {
+      "Name": "reference.barcode-1.1.0-win-x64.ipcx",
+      "Bytes": 7630,
+      "Sha256": "cbdb1c5de231be6b1816b7cb35772682fd39e4029d6a69a806cd86e0572bcfc0",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/delivery-12-reference-11f0728/reference.barcode-1.1.0-win-x64.ipcx",
+      "AssetId": "RA_kwDOVLQU8s4mpFk4",
+      "DownloadedBytesEqualUploaded": true,
+      "Crc": "PASS",
+      "Files": 3
+    }
+  ],
+  "WindowsAcceptance": "OPEN_NOT_RUN",
+  "FieldQualification": "BLOCKED",
+  "Note": "Full source is available at release tag; followup report/manifest commits are documentation only. Per-package signature/module/closure inventory is candidate-inventory.json; downloaded identical bytes retain those results."
+}

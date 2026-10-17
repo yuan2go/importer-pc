@@ -1,6 +1,8 @@
+> 当前执行：WP-IPC-EXTENSION-WINDOWS-DELIVERY-12；起点 main `9f320459`，受控构建选装、签名离线后装和统一部署修订正在实施。安装不等于激活，二进制变更受控重启。下文11及更早结果属于其原版本；[原字节](../archive/pre-extension-delivery-12/README.md)保留。正式工作包见 docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md；按 AC12-01～10 分项取证，Windows未验不宣布整包完成。
+
 # 运行、发布与运维
 
-当前执行：[REVIEW-FOLLOWUP-11](../work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)，以[11实施与同版报告](review-followup-11.md)为准；[09上一版检查](reference-validation-09.md)及[10逐页映射](ui-baseline-alignment-10.md)保留各自源提交边界。用户已授权合成/参考测试、构建、启动和发布；历史不测试/NOT_RUN见原报告和[纠偏前快照](../archive/pre-reconciliation-01/README.md)。Windows06与真实能力05继续分别记录。
+上一版记录：[REVIEW-FOLLOWUP-11](../work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)，以[11实施与同版报告](review-followup-11.md)为准；[09上一版检查](reference-validation-09.md)及[10逐页映射](ui-baseline-alignment-10.md)保留各自源提交边界。用户已授权合成/参考测试、构建、启动和发布；历史不测试/NOT_RUN见原报告和[纠偏前快照](../archive/pre-reconciliation-01/README.md)。Windows06与真实能力05继续分别记录。
 
 08启动顺序：取得数据根租约→读取最终Effective与待激活修订→核验站点/模式/产品能力→取得最终站点和设备集合租约→创建应用、来源与发送器。seed设备可与Effective不同，实际锁覆盖Effective；不锁seed-B却启动A。非法待激活保留ActivationFailed并使用旧Effective；启源失败记录激活失败，完全停止后下一次受控启动回到旧Effective，不在失败进程里并行启第二套来源。首次成功启动也固定seed为Effective。历史查询全部要求有效模拟身份；无权时Snapshot不查询跨箱最近历史，返回空RecentOperations。当前工位聚合、当前箱及原未决请求/恢复诊断仍可发现；其可见性不授权历史/尝试/回执详情读取。 配置Version是不可复用的修订身份（被拒绝/失败版本也保留，纠正时用新Version）；推广新Effective与旧版Superseded在同一事务。遗留多Effective根据持久ConfigActivation顺序读取，不按草稿插入rowid猜生效顺序，激活审计失败整体回滚保旧。
 
@@ -9,6 +11,34 @@
 Windows首次安装需在提升的维护会话执行新包的 `pwsh ./provision-runtime.ps1 -RuntimeAccount 'MACHINE\station-user'`，指定实际运行账户；之后以该账户运行。程序检查ProgramData下维护方拥有的runtime-policy.json、机级leases目录及ACL；缺策略、账户不符或权限不符即拒绝启动业务，不能回退用户级租约。安装脚本的实际Windows执行为NOT_RUN；固定账户/ACL和跨会话行为仍待Windows验证。
 
 本实现是 F-02 独立参考产品。所有设备、身份、数量策略和外部端点为 **SIMULATION**。核心、SQLite 与恢复为真实代码；没有旧现场工程迁移、厂商驱动或真实 WCS。D/RV 的客户与现场状态不改变。
+
+## DELIVERY-12 当前运行与交付
+
+执行原工作包[EXTENSION-WINDOWS-DELIVERY-12](../work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)，设计增量见[controlled-extensions](../design/controlled-extensions.md)，安装/参数/升级/恢复完整步骤见[扩展指南](../extensions/developer-guide.md)。同版身份、实际结果与AC由[12报告](extension-windows-delivery-12.md)统一记录，旧11/09包及PASS不冒称新包结果。
+
+当前ReleaseVersion=EXTENSION-WINDOWS-DELIVERY-12、Storage/MinimumReader=3/3、SIMULATION-v1、ExtensionContract=1。核心原SQL/checksum不变。包集合/实例参数/设备角色组成唯一StationConfig部署；安装不是激活，默认受控重启。带Extensions字段的配置需要12兼容宿主；旧EXE不能凭Storage同号直接读取新配置。回退包不回滚业务数据库，Unknown仍核对原请求。
+
+普通账户运行，首次提升维护会话保护Program Files/ImporterPc发布目录及父目录、安装指定账户机级策略、经独立离线策略配置Simulation扩展信任；之后组件管理只调用固定受限辅助程序进行OS授权写入。生产信任不包含测试发布者，当前Production缺真实能力继续拒绝。签名/信任/兼容/路径/大小/哈希静态校验早于加载；SDK与Windows驱动前置独立，当前没有真实SDK或系统驱动安装。
+
+开发/参考验证：
+
+```sh
+./scripts/build.sh
+dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --extensions
+# 配置/来源/生命周期改变时的相关继承范围：
+dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --baseline
+dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --followup
+dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --review-followup
+```
+
+两种构建组合，输出全新目录、签名私钥不随包：
+
+```sh
+python3 scripts/package-reference.py --target portable --composition core-reference --output .artifacts/delivery12-core-portable
+python3 scripts/package-reference.py --target win-x64 --composition barcode-reference --output .artifacts/delivery12-barcode-win-x64 --extension-key /private/build-only/reference.pem --extension-trust /independent-policy/trust.Simulation.json
+```
+
+core-reference不带可选扩展字节；barcode-reference在宿主冻结后独立构建并携带离线签名来源包，不自动信任或激活。composition.lock.json锁定依赖、版本和实际核心/扩展SHA。安装并激活后才是运行组合；独立插件有自己的源码提交。当前包是未验候选，实际Windows11六格矩阵、普通账户/扫码/触控/听审/持续旅程按06逐项取证。仓库Windows runner脚本只提供实际WPF启动/管理入口冒烟，Server/admin会话不能替代完整06。
 
 ## 环境与构建
 
@@ -157,7 +187,7 @@ python3 scripts/smoke.py --product .artifacts/native-smoke-final --fixture src/I
 
 应用读写由StationDispatcher的单个后台消费者拥有；UI读取不写报警，状态变化/维护脉冲更新报警。投影有独立版本与生成时间，超过3秒/读取失败阻断UI输入，后台命令仍查当前状态。设备健康回调只入队；原观察拒收marker保留H04同步持久性，其文件I/O受磁盘时延影响，真实SDK需单独验证。所有实际SQLite和网络工作均不在UI/设备回调执行。
 
-ALIGNMENT-01原版本为Storage2；当前元数据为REVIEW-FOLLOWUP-11 / Storage3 / SIMULATION-v1，旧EXE因未知id3拒绝当前库，回退必须原格式备份+匹配旧EXE/配置+新根+恢复隔离。桌面内全库备份需要有效维护身份；离线运维使用数据租约和本机账户权限。
+ALIGNMENT-01原版本为Storage2；11形成时元数据为REVIEW-FOLLOWUP-11 / Storage3 / SIMULATION-v1，旧EXE因未知id3拒绝当前库，回退必须原格式备份+匹配旧EXE/配置+新根+恢复隔离。桌面内全库备份需要有效维护身份；离线运维使用数据租约和本机账户权限。
 
 `--alignment`保留H04+A01的兼容范围；07/08及持续参考旅程使用明确的新选择器。旧迁移断言已按显式升级及3:3对齐，原SQL/checksum不变。上一版分项运行结果见09，当前11结果见11报告；Windows按06绑定当前同版包，不能复用07或旧包截图。
 

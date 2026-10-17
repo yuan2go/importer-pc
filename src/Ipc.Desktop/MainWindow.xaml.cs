@@ -20,6 +20,7 @@ public partial class MainWindow : Window
     readonly LaneViewModel left = new("left"), right = new("right");
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(300) };
     readonly CancellationTokenSource lifetime = new();
+    readonly string windowIdentity = Wire.Id();
     bool busy, ready, smallArea;
     long detailGeneration;
     readonly ObservableCollection<DeviceDraft> deviceDrafts = [];
@@ -45,12 +46,13 @@ public partial class MainWindow : Window
         LeftLane.DataContext = left; RightLane.DataContext = right; AlarmGrid.ItemsSource = alarms;
         InitializeHistoryFilters();
         LoadConfigForm(runtime.Configuration);
+        ExtensionsControl.Initialize(this);
         DriverColumn.ItemsSource = runtime.InstalledDrivers;
         compact = runtime.Presentation.Layout == "compact"; currentView = runtime.Presentation.View;
         ConfigurePresentationAccess();
         timer.Tick += async (_, _) => { UpdateGuards(); await RefreshAsync(); };
         Loaded += async (_, _) => { ApplyLayout(); timer.Start(); StartNotificationPlayer(); await RefreshAsync(); if (currentView != "workstation") await NavigateToViewAsync(currentView); };
-        Closed += (_, _) => { closing = true; timer.Stop(); soundStop.Cancel(); lifetime.Cancel(); lifetime.Dispose(); };
+        Closed += async (_, _) => { closing = true; timer.Stop(); soundStop.Cancel(); lifetime.Cancel(); lifetime.Dispose(); if (!ownsLifetime) try { await Runtime.SetWindowAreaAsync(windowIdentity, false); } catch (Exception ex) { Runtime.Diagnostics.Add("Closed window protection retained: " + ex.Message); } };
     }
     async Task RefreshAsync()
     {
@@ -58,6 +60,7 @@ public partial class MainWindow : Window
         try
         {
             if (Runtime.Application is null) { model.GlobalStatus = "NotReady · " + string.Join("; ", Runtime.Diagnostics); UpdateEntryProjection(); return; }
+            await Runtime.SetWindowAreaAsync(windowIdentity, smallArea).WaitAsync(lifetime.Token);
             var next = await Runtime.Application.SnapshotAsync().WaitAsync(lifetime.Token);
             if (closing) return;
             snapshot = next; ready = true; ObserveReadIdentity(); UpdateGuards();
@@ -192,6 +195,7 @@ public partial class MainWindow : Window
             ToolTipService.SetShowOnDisabled(button,true);
         }
         EngineeringControls.IsEnabled = HasIdentity && !smallArea;
+        ExtensionsControl.SetAccess(HasIdentity && !busy && snapshot?.State.Actor?.Role == SimulationRole.Maintenance);
         if (!Fresh && snapshot is not null)
         {
             model.GlobalStatus = "投影已失效 · 新业务暂停，等待重新读取";
@@ -380,7 +384,7 @@ public partial class MainWindow : Window
         DeviceConfigGrid.CommitEdit(DataGridEditingUnit.Cell,true); DeviceConfigGrid.CommitEdit(DataGridEditingUnit.Row,true);
         var source=draftBase ?? throw new InvalidOperationException("没有有效配置可编辑");
         int Number(TextBox field,string label) => int.TryParse(field.Text,out var number)?number:throw new InvalidDataException(label+"必须是整数");
-        return source with { StationId=StationIdField.Text.Trim(),Version=VersionField.Text.Trim(),Integration=source.Integration with {Endpoint=EndpointField.Text.Trim(),Revision=BindingVersionField.Text.Trim()},TimeoutMs=Number(TimeoutField,"超时"),EventCapacity=Number(EventCapacityField,"观察队列容量"),CommandCapacity=Number(CommandCapacityField,"命令队列容量"),OutboxCapacity=Number(OutboxCapacityField,"待决请求容量"),MinimumFreeMb=Number(MinimumFreeField,"磁盘低水位"),FixtureDemand=Number(FixtureDemandField,"合成初始需求"),MaximumPackage=Number(MaximumPackageField,"合成包装上限"),Devices=deviceDrafts.Select(x=>x.Binding()).ToArray() };
+        return source with { StationId=StationIdField.Text.Trim(),Version=VersionField.Text.Trim(),Integration=source.Integration with {Endpoint=EndpointField.Text.Trim(),Revision=BindingVersionField.Text.Trim()},TimeoutMs=Number(TimeoutField,"超时"),EventCapacity=Number(EventCapacityField,"观察队列容量"),CommandCapacity=Number(CommandCapacityField,"命令队列容量"),OutboxCapacity=Number(OutboxCapacityField,"待决请求容量"),MinimumFreeMb=Number(MinimumFreeField,"磁盘低水位"),FixtureDemand=Number(FixtureDemandField,"合成初始需求"),MaximumPackage=Number(MaximumPackageField,"合成包装上限"),Devices=deviceDrafts.Select(x=>x.Binding()).ToArray(),Extensions=extensionDraft ?? source.Extensions };
     }
     StationConfig PreviewDraft()
     {

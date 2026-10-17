@@ -1,0 +1,21 @@
+{
+  "Status": "PASS_SOURCE_REMOTE_READBACK",
+  "PullRequest": {
+    "baseRefName": "main",
+    "headRefOid": "9a21616ff62ae331ebf4a19ec1aa0506a6c81959",
+    "isDraft": true,
+    "number": 11,
+    "state": "OPEN",
+    "url": "https://github.com/yuan2go/importer-pc/pull/11"
+  },
+  "VerifiedDocumentationCommit": "9a21616ff62ae331ebf4a19ec1aa0506a6c81959",
+  "RuntimeSourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+  "PluginSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+  "RemoteTreeSha": "9a21616ff62ae331ebf4a19ec1aa0506a6c81959",
+  "TreeFiles": 374,
+  "EveryTrackedBlobMatches": true,
+  "ManifestAndChecksumRemoteMatch": true,
+  "WorkPackageExactBlobRemoteMatch": true,
+  "NoMergePerformed": true,
+  "FollowupDocumentationOnly": true
+}

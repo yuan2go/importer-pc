@@ -41,6 +41,14 @@ static class PresentationVerification
         Assert(race.TryTake(true, out var retryTicket), "Current return queues one handoff");
         race.Retry(retryTicket); Assert(race.TryTake(true) && !race.TryTake(true), "Unavailable callback retries only its own current handoff");
         Console.WriteLine("PASS E11 box focus login/new-box/identity/defer/repeated-projection/window isolation policies (Windows focus NOT_RUN)");
+        var now = DateTimeOffset.UtcNow;
+        var maintenance = new Actor("SIM-maintenance", SimulationRole.Maintenance, now.AddMinutes(5));
+        var review = MaintenanceReviewToken.Capture(42, maintenance, now);
+        Assert(review.Revision == 42 && review.IdentityMatches(maintenance, now.AddMinutes(1)), "Reviewed deployment retains its original revision across later projections");
+        Assert(!review.IdentityMatches(maintenance with { Id = "SIM-other-maintenance" }, now) && !review.IdentityMatches(null, now) && !review.IdentityMatches(maintenance, now.AddMinutes(6)), "Identity replacement/logout/expiry invalidate an outstanding maintenance review");
+        try { _ = MaintenanceReviewToken.Capture(43, actor, now); throw new InvalidOperationException("Operator review must fail"); }
+        catch (GuardException) { }
+        Console.WriteLine("PASS E12 deployment confirmation freezes reviewed revision and identity (actual WPF modal NOT_RUN)");
     }
     static void Assert(bool value, string reason) { if (!value) throw new InvalidOperationException("E11 presentation: " + reason); }
 }

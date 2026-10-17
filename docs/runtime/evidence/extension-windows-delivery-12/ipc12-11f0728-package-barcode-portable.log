@@ -1,0 +1,27 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> $WORKTREE/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply -> $WORKTREE/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> $WORKTREE/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> $WORKTREE/src/Ipc.Product/bin/Release/net10.0/Ipc.Product.dll
+  Ipc.Product -> $WORKTREE/.artifacts/delivery12-11f0728-barcode-portable/app/
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> $WORKTREE/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply -> $WORKTREE/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> $WORKTREE/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Fixture -> $WORKTREE/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll
+  Ipc.Fixture -> $WORKTREE/.artifacts/delivery12-11f0728-barcode-portable/fixture/
+Sealed Simulation configuration: $WORKTREE/.artifacts/delivery12-11f0728-barcode-portable/app/config
+  正在确定要还原的项目…
+  已还原 $RETAINED_TEMP/BarcodeExtension.csproj (用时 51 毫秒)。
+  BarcodeExtension -> $RETAINED_TEMP/Ipc.Reference.BarcodeExtension.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.89
+Verified OK
+{"Package": "reference.barcode-1.0.0.ipcx", "PackageSha256": "2a8c8f60b17926c4370b96678e43f84b89eee700a78bc2a90df9d671d5999d22", "PluginSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9", "HostContractSha256": "259cd65594630d5a48d4eb0cb5e28b9c2603403bbb42d50b63d9696203024e8d", "FrozenHostUnchanged": true, "Publisher": "reference-test", "Version": "1.0.0", "ExtensionContract": 1, "Signature": "RSA-PSS/SHA256", "Mode": "Simulation", "PluginSourceSha256": "cf2864697afb658f858fc5c857081351f8e2099a5c5cb78c7a38afcd913b376e"}
+{"Package": "$WORKTREE/.artifacts/delivery12-11f0728-barcode-portable.zip", "Sha256": "95a3e3d6a63600a68c3e6ae66067fbd690d842d1cf97e60eb18a12a4b5256293", "WorkPackage": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12", "SourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d", "ReleaseVersion": "EXTENSION-WINDOWS-DELIVERY-12", "StorageVersion": 3, "ContractVersion": "SIMULATION-v1", "SourceCodeSha256": "ad9a5c5b9c3cab04858b31002c9897887aa1c2bedc9620f7683041c46282ba93", "Target": "portable", "WindowsRuntimeValidation": "NOT_RUN", "PhysicalIntegration": "BLOCKED", "Note": "Portable requires pinned .NET runtime; win-x64 is self-contained and requires Windows validation.", "Composition": "barcode-reference", "Mode": "Simulation", "ExtensionContract": 1, "MinimumReader": 3, "CompositionLockSha256": "2f9d2acf85f73235c75a62f6ae5aaac6bb233d6066c3d8e2b85fe3737803c4a4"}

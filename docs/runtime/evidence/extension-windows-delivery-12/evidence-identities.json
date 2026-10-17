@@ -1,0 +1,226 @@
+[
+  {
+    "Evidence": "ipc12-first-build.log",
+    "OriginalSha256": "df0ef7a066654b2b269869106b63714b9fc07eff108dd64c72106070b06a164f",
+    "PublicSha256": "d290fd22fa8ba502e8041cc345bfb4021cf78ca3e20779d4b9b9d548960d78fd",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-extensions-first.log",
+    "OriginalSha256": "e257977af39cce39b891aec10c98c4afd753208ceaa096a2cf5044fd232cde00",
+    "PublicSha256": "baf816e6254ea7ff835363048533165d08ac3d4bbc76a386566e20628fa0b4a4",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-extensions-second.log",
+    "OriginalSha256": "469e22e63b86f012d11e16b6d06454e4722544a76538fc8ac05babb36079170e",
+    "PublicSha256": "30e518ea40253961b1b83d192e473c2908db240193320f99cc21d614096feb19",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-extensions-final-worktree.log",
+    "OriginalSha256": "381ff0262be01a1ee238b83d03ddaeed8c059cdb30c51a3ca6b8e5010c3fff29",
+    "PublicSha256": "0ad5cfa226fe184d817997bca40c2f8cff2c96c1a6f2ec0eeb0b815cd6271907",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-extensions-settled-health.log",
+    "OriginalSha256": "75184f97616f7d90e63bcfbc76f3c097e0ba6f6e9e6790cac946e6f95ebead22",
+    "PublicSha256": "13cd38c29e5043055a88728273a4a35a7d2779e8360acc6cf2b7eb1fe95e0d73",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-compile-freeze.log",
+    "OriginalSha256": "8a96aa85a82d4533aace2f15eda7c35910f50f9f068f2d1aeca69260066430bf",
+    "PublicSha256": "c7715d9fadf8bf51edabd7d17340137853d20d760ff40535898b019a925065df",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-tools-tests.log",
+    "OriginalSha256": "56af45a44daa736599d3498bed0f42a787b2b8f3816631c7bae7e03c65f3cbbb",
+    "PublicSha256": "6fe4608533cf8457770bc78bc287945fb3858608b5ec9b51b1ac0a53eab43ac6",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-tools-tests-bundled.log",
+    "OriginalSha256": "9f244fb2cd145cad87f7ca8ff27a3a58256968acbf575efffaf719a2649e4dfa",
+    "PublicSha256": "9f244fb2cd145cad87f7ca8ff27a3a58256968acbf575efffaf719a2649e4dfa",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-11f0728-build.log",
+    "OriginalSha256": "10e8c3b13ba4791c7817f8efd731c3693bfa54ef7ac36f5c06dbe7025a5665c3",
+    "PublicSha256": "34b8e15def994f4de778e8c951a2c4d91272042f6be0ce305b26b8385536c32a",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-11f0728-extensions.log",
+    "OriginalSha256": "e0dec54f685014529c06e3fbf39dcf76d0cf3fe8a128caab4e0777416fa61866",
+    "PublicSha256": "18b378acbe359e623bc3469536280a050b6299661141452019facfebee988296",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-ae57856-review-followup.log",
+    "OriginalSha256": "e12a47b832e13ebccbda2450b20ff642a474244c0b82cad48dd2cffa94dcef6c",
+    "PublicSha256": "7c98641f9b6c3326ec8ae180a65cb157abad7aa5b3a3847b82404a276c88f8b7",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-b4c88bd-baseline.log",
+    "OriginalSha256": "83217ae4b1862226144aed798a6cabd8123ef043d96a163b0cb0130cba921de3",
+    "PublicSha256": "f6f987226b9ffa9911efd8927926d8ce56db2c96064b90fa35400a9ba8d601ed",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-b4c88bd-followup.log",
+    "OriginalSha256": "f17c4828027f2fa3c74028265c06d0360d5028a8da10658f75b2c924bfeef662",
+    "PublicSha256": "f4133dcc877b6c81671e6deccd90b98b88723fe145cc9f50614f5b167b0bf2de",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-b4c88bd-closure.log",
+    "OriginalSha256": "67d07d738f3898648ea4b7c35ff8979d72e09a0e966ab8700c93c73809b02339",
+    "PublicSha256": "6684da39330d565ecb51034b47a627b8afe4d4c0ad41fa303256797d089be2e6",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-b4c88bd-review-followup.log",
+    "OriginalSha256": "554bbc139dbfdd1086fbe225c43d049abfd586d7f5ed15c916c093848cc8255b",
+    "PublicSha256": "1a4bdffe1494ac062345991e366d8958c2bab941f2fff832422789a05ef8698f",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-final-upgrade-build.log",
+    "OriginalSha256": "733c58544ad3c4115d91fcfb39bb3b6c374e9b1a3ad692b41b26993924092b3b",
+    "PublicSha256": "0d7f5304535b5397b3c259c13b180bb6e4fad2838d7ea72fc1ddf095ab3ec12f",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-11f0728-package-core-portable.log",
+    "OriginalSha256": "e782cfc6954e099b0c7f0ff0f7b083a1500e4aa98da1a133c78cd91e7d963a9f",
+    "PublicSha256": "e53ca70d6ab4cd736cf3d7d8f73cc255c7c9859ebc436af4c5c13b66a1ef5500",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-11f0728-package-barcode-portable.log",
+    "OriginalSha256": "681a1987d0f607b7243e37ae5b67af612bd507c0c22f4d195dd0aed6efa1b515",
+    "PublicSha256": "1ec6326f70aad1d11c266aa9df7fdbd0f915520d58912df3e0e0b9c55a87648c",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "ipc12-11f0728-package-barcode-win-x64.log",
+    "OriginalSha256": "d781e1ab0a47892f5f316a9195b1577349c5991a62c4ab3fd2adfac159cb42eb",
+    "PublicSha256": "ec223a2964a82c6afc8acb5df647e83dba830025973795d1641555ac1995edab",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "final-core-smoke.json",
+    "OriginalSha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+    "PublicSha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "final-extension-smoke.json",
+    "OriginalSha256": "e4c6cefeb45238f99372bb79aa2115e977da5401129d49f1a75d255f65dea722",
+    "PublicSha256": "ea971bb10bada372e1ac7b46c8285da2dcc7a7d8dd28fa9ba990eaf8d2752c92",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "final-11f0728-build-session.json",
+    "OriginalSha256": "5238103870cf3609ab03f03912cda11565bede5a952f4e98d03a0cddffb99049",
+    "PublicSha256": "5238103870cf3609ab03f03912cda11565bede5a952f4e98d03a0cddffb99049",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "journey.json",
+    "OriginalSha256": "bbc2aa4f18f6d2bf848af4850a50087ee30260584ab8f4707b0228763513659c",
+    "PublicSha256": "bbc2aa4f18f6d2bf848af4850a50087ee30260584ab8f4707b0228763513659c",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "review-product-ownership.json",
+    "OriginalSha256": "280294066b3fcd51e85401dd02fc8168b8ae981994303b778fa975c552c89fa5",
+    "PublicSha256": "6a958079fdd0ce395065d54b87ab3d60cea82932fbbd9fb9e944153aff024983",
+    "Redaction": "local account/worktree/temp path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "extension-evidence.json",
+    "OriginalSha256": "06756b655f14e227728bc4f4ce287080efeb6568b336ecb4d594e348221708f2",
+    "PublicSha256": "437b5a05b595acfcb3bec71782cb0caa2bc2662a50400af77a7300c32d529b32",
+    "Redaction": "local path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "abrupt-process.log",
+    "OriginalSha256": "bd2b9a0f7d8e052765bf9746da48d354250d2e191b6fe376354598fd75652c20",
+    "PublicSha256": "bd2b9a0f7d8e052765bf9746da48d354250d2e191b6fe376354598fd75652c20",
+    "Redaction": "local path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "interrupted-FilesVerified-operations-3db6ae64e4634cf786cf232c1cf50591.json",
+    "OriginalSha256": "0aa127ae05e9a9ef13fbd0cc3c297533b2bfaa068ecfe697fc5b65016f1a1bf9",
+    "PublicSha256": "0aa127ae05e9a9ef13fbd0cc3c297533b2bfaa068ecfe697fc5b65016f1a1bf9",
+    "Redaction": "local path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "interrupted-Published-operations-8bb1a56c25d046cc9957ca2e756e9f22.json",
+    "OriginalSha256": "c2c4dceb3fbd52d2b7705bf6c1b031e5f539eca47cf53e45e38db1ee1fac0c50",
+    "PublicSha256": "c2c4dceb3fbd52d2b7705bf6c1b031e5f539eca47cf53e45e38db1ee1fac0c50",
+    "Redaction": "local path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "interrupted-Registered-operations-35dacbf1f1484252ab56a04b70c71821.json",
+    "OriginalSha256": "0381a50b5474a4459873aeea02b41a7386e93f652ec22d3aba19849f3c5b5e6e",
+    "PublicSha256": "0381a50b5474a4459873aeea02b41a7386e93f652ec22d3aba19849f3c5b5e6e",
+    "Redaction": "local path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "interrupted-Prepared-operations-88fb1eea014d4d689df5d7b311bf24a9.json",
+    "OriginalSha256": "7bd541d9a968427a08883eb53800294c05fe7e15eedcf727931d31eabf35a5d4",
+    "PublicSha256": "7bd541d9a968427a08883eb53800294c05fe7e15eedcf727931d31eabf35a5d4",
+    "Redaction": "local path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "uninstall-interruption-operations-9a25212574b34d99b68e748ffef5d81c.json",
+    "OriginalSha256": "c27e0caa33775b0f4abebb42ae2f550e06ed48fd2d66d6298059253184d3be57",
+    "PublicSha256": "c27e0caa33775b0f4abebb42ae2f550e06ed48fd2d66d6298059253184d3be57",
+    "Redaction": "local path only",
+    "OriginalRetained": true
+  },
+  {
+    "Evidence": "uninstall-interruption-operations-fb46364fdc8e40d8b1610d49b79845c9.json",
+    "OriginalSha256": "0ecd6436805ee3a3089eae8d43bcc114863da88cf79eab1f0514c42c5ccc9cfc",
+    "PublicSha256": "0ecd6436805ee3a3089eae8d43bcc114863da88cf79eab1f0514c42c5ccc9cfc",
+    "Redaction": "local path only",
+    "OriginalRetained": true
+  }
+]

@@ -1,0 +1,366 @@
+{
+  "Result": "PASS_REFERENCE",
+  "HostBefore": {
+    "Ipc.Platform.dll": "F40C29A4421C30FD65BD7D409C2D33D42B86C36EF9A896D10CB8549CAD6E8765",
+    "Ipc.Supply.dll": "11C4BADE728D7AE9BBCB98B8A24F70B70016BE9A70E65F1C68E18F35D888DEBF",
+    "Ipc.Adapters.dll": "DBB45F9EDAC19AC3C1E8CFAB79D97E42AE05AD9EF887011769F3244A7574BDDC",
+    "Ipc.Verification.dll": "FA22022566CFCD11F1BB64174F370FCA8A142C43C624F4E4590CEBD4382AD8EB",
+    "Ipc.Product.dll": "DFBC2E95587EB46DAA1C41B55C0559A7E235B53A3E0072B3FD76B773BA228EC5"
+  },
+  "HostAfter": {
+    "Ipc.Platform.dll": "F40C29A4421C30FD65BD7D409C2D33D42B86C36EF9A896D10CB8549CAD6E8765",
+    "Ipc.Supply.dll": "11C4BADE728D7AE9BBCB98B8A24F70B70016BE9A70E65F1C68E18F35D888DEBF",
+    "Ipc.Adapters.dll": "DBB45F9EDAC19AC3C1E8CFAB79D97E42AE05AD9EF887011769F3244A7574BDDC",
+    "Ipc.Verification.dll": "FA22022566CFCD11F1BB64174F370FCA8A142C43C624F4E4590CEBD4382AD8EB",
+    "Ipc.Product.dll": "DFBC2E95587EB46DAA1C41B55C0559A7E235B53A3E0072B3FD76B773BA228EC5"
+  },
+  "IndependentContract": "$WORKTREE/tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Platform.dll",
+  "PluginSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9",
+  "PluginBinarySha256": "1C2E551F32AA36AFFF2C7207E63A5CB96DF4BD3BDE0D6F13DA73BFE2966B735F",
+  "Installation": {
+    "Package": {
+      "Id": "reference.barcode",
+      "Version": "1.0.0",
+      "ManifestSha256": "4D9842343B11B04E3CAD13EEC0B9BA7BF4790ACD6F5B5DED0D671ECDCED7DE59"
+    },
+    "PackageSha256": "7301D7287B6D2E01836AA8CD3C66D8165FBB495F1B30D604DCEBDAAAC283C159",
+    "TrustSha256": "98F30C1743DE950A313A77FB084920C229FEEFD9676B5797B66A8E0284AED246",
+    "OperationId": "4d8d64980735449780c11dae751790de",
+    "At": "2026-10-16T18:58:10.406087+00:00",
+    "Status": "Installed",
+    "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
+  },
+  "Upgrade": {
+    "Package": {
+      "Id": "reference.barcode",
+      "Version": "1.1.0",
+      "ManifestSha256": "5F7706FC48E421DE07921129C6B3F2A2AF2A6A7040DFEE00DA5AC2ABB6EDFBD5"
+    },
+    "PackageSha256": "C78F28A86B5172D1126645041EE15278598E955ADD6C41A9D034760EC37FDBE2",
+    "TrustSha256": "98F30C1743DE950A313A77FB084920C229FEEFD9676B5797B66A8E0284AED246",
+    "OperationId": "e76c20d17df1451c82d25f60bbe5c1dc",
+    "At": "2026-10-16T18:58:10.983031+00:00",
+    "Status": "Installed",
+    "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
+  },
+  "Trust": {
+    "TestOnly": true,
+    "PolicySha256": "98F30C1743DE950A313A77FB084920C229FEEFD9676B5797B66A8E0284AED246",
+    "OnlineRevocation": "NOT_RUN"
+  },
+  "Journey": {
+    "Original": {
+      "Id": "9a2d3086d5e6469ea69937df2ecb5ad9",
+      "OwnerId": "638806cb912f449c9f9c44d7bc76d6ca",
+      "SessionId": "b92ecf03a4a84d55976077cd09bd9bae",
+      "Kind": "Submit",
+      "OwnerRevision": 3,
+      "IntentKey": "638806cb912f449c9f9c44d7bc76d6ca:Submit:3",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-0fd0d3fb0c7a4184909f9101a7b26e83\u0022,\n  \u0022SessionId\u0022: \u0022b92ecf03a4a84d55976077cd09bd9bae\u0022,\n  \u0022OwnerId\u0022: \u0022638806cb912f449c9f9c44d7bc76d6ca\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T02:58:27.476559\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "9A2CDCEC7593884244018913FC30F3E2E7AF031FD85564B0FE0FE3C17620C558",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:54969/"
+      },
+      "Status": "Unknown",
+      "CreatedAt": "2026-10-16T18:58:27.9261+00:00"
+    },
+    "Resolved": {
+      "Request": {
+        "Id": "9a2d3086d5e6469ea69937df2ecb5ad9",
+        "OwnerId": "638806cb912f449c9f9c44d7bc76d6ca",
+        "SessionId": "b92ecf03a4a84d55976077cd09bd9bae",
+        "Kind": "Submit",
+        "OwnerRevision": 3,
+        "IntentKey": "638806cb912f449c9f9c44d7bc76d6ca:Submit:3",
+        "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-0fd0d3fb0c7a4184909f9101a7b26e83\u0022,\n  \u0022SessionId\u0022: \u0022b92ecf03a4a84d55976077cd09bd9bae\u0022,\n  \u0022OwnerId\u0022: \u0022638806cb912f449c9f9c44d7bc76d6ca\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T02:58:27.476559\u002B00:00\u0022\n  }\n}",
+        "PayloadHash": "9A2CDCEC7593884244018913FC30F3E2E7AF031FD85564B0FE0FE3C17620C558",
+        "Binding": {
+          "Id": "loopback",
+          "Revision": "1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:54969/"
+        },
+        "Status": "Accepted",
+        "CreatedAt": "2026-10-16T18:58:27.9261+00:00"
+      },
+      "Attempts": [
+        {
+          "Id": "e7ac5c9509114a0cb68a7e46171d1180",
+          "RequestId": "9a2d3086d5e6469ea69937df2ecb5ad9",
+          "Ordinal": 1,
+          "StartedAt": "2026-10-16T18:58:27.983585+00:00",
+          "EndedAt": "2026-10-16T18:58:27.999176+00:00",
+          "Disposition": "Unknown",
+          "Error": "HttpRequestException: transport outcome not authoritative"
+        }
+      ],
+      "Responses": [
+        {
+          "RequestId": "9a2d3086d5e6469ea69937df2ecb5ad9",
+          "PayloadHash": "9A2CDCEC7593884244018913FC30F3E2E7AF031FD85564B0FE0FE3C17620C558",
+          "EvidenceId": "618f4a4c1d934987ace26955ad3b0258",
+          "Result": "Accepted",
+          "Reason": "SIMULATION accepted",
+          "Remaining": 118,
+          "Quantity": 2,
+          "CheckToken": null,
+          "Task": {
+            "Sku": "SIM-SKU-4403E0E0DC91",
+            "ItemWave": "SIM-ITEM-WAVE-6E9A5DC4593C",
+            "TaskId": "SIM-TASK-EC87CA6519B4",
+            "Destination": "SIM-CHUTE-07",
+            "Unit": "\u4EF6",
+            "Provenance": {
+              "Source": "Independent synthetic task fixture",
+              "Version": "SYNTHETIC-SEMANTICS-v1",
+              "EvidenceId": "618f4a4c1d934987ace26955ad3b0258",
+              "AcquiredAt": "2026-10-16T18:58:27.989233+00:00"
+            }
+          }
+        }
+      ],
+      "Audit": [
+        {
+          "Id": "8d91a5715c6c48b0a1cbf51e039321cf",
+          "OwnerId": "638806cb912f449c9f9c44d7bc76d6ca",
+          "Actor": "device:SIM-EXT-L",
+          "CommandId": "system",
+          "Kind": "Associated",
+          "Evidence": "{\n  \u0022Id\u0022: \u00222905d65b091e4d238fcf0d73ddca22a2\u0022,\n  \u0022DeviceId\u0022: \u0022SIM-EXT-L\u0022,\n  \u0022Epoch\u0022: \u0022985f7ef63e684b97b427d71910daa1c8\u0022,\n  \u0022SourceEventId\u0022: \u002264c8ef172b03438994c4cd897fe73bdc\u0022,\n  \u0022Sequence\u0022: 1,\n  \u0022AdmissionId\u0022: \u002288c1892a371e47e7aec39906dc1abe79\u0022,\n  \u0022Kind\u0022: \u0022Enter\u0022,\n  \u0022Codes\u0022: [],\n  \u0022PackageQuantity\u0022: null,\n  \u0022ObservedAt\u0022: \u00222026-10-16T18:58:27.70008\u002B00:00\u0022\n}",
+          "At": "2026-10-16T18:58:27.71004+00:00"
+        },
+        {
+          "Id": "01a742318b754c8cbe1a299a711e6a79",
+          "OwnerId": "638806cb912f449c9f9c44d7bc76d6ca",
+          "Actor": "device:SIM-EXT-L",
+          "CommandId": "system",
+          "Kind": "Associated",
+          "Evidence": "{\n  \u0022Id\u0022: \u0022d63a84e58aa74ec997005e5b9cf2fdec\u0022,\n  \u0022DeviceId\u0022: \u0022SIM-EXT-L\u0022,\n  \u0022Epoch\u0022: \u0022985f7ef63e684b97b427d71910daa1c8\u0022,\n  \u0022SourceEventId\u0022: \u00220a1fc01fcdf34909ab71b4a65c370d27\u0022,\n  \u0022Sequence\u0022: 2,\n  \u0022AdmissionId\u0022: \u002288c1892a371e47e7aec39906dc1abe79\u0022,\n  \u0022Kind\u0022: \u0022Read\u0022,\n  \u0022Codes\u0022: [\n    \u0022000123\u0022\n  ],\n  \u0022PackageQuantity\u0022: 2,\n  \u0022ObservedAt\u0022: \u00222026-10-16T18:58:27.745015\u002B00:00\u0022\n}",
+          "At": "2026-10-16T18:58:27.747492+00:00"
+        },
+        {
+          "Id": "422a0093fe3e480fa799f99b8505655e",
+          "OwnerId": "638806cb912f449c9f9c44d7bc76d6ca",
+          "Actor": "sender",
+          "CommandId": "system",
+          "Kind": "T2Claim",
+          "Evidence": "38c88fbdba63409b9bc27bf521ef5c02",
+          "At": "2026-10-16T18:58:27.838149+00:00"
+        },
+        {
+          "Id": "902076d25e614adfbd327337694c7a70",
+          "OwnerId": "638806cb912f449c9f9c44d7bc76d6ca",
+          "Actor": "sender",
+          "CommandId": "system",
+          "Kind": "TransportHandoffAuthorized",
+          "Evidence": "38c88fbdba63409b9bc27bf521ef5c02",
+          "At": "2026-10-16T18:58:27.842915+00:00"
+        },
+        {
+          "Id": "b96fa4d10b1249b08c6fb3eaaca824ed",
+          "OwnerId": "638806cb912f449c9f9c44d7bc76d6ca",
+          "Actor": "integration",
+          "CommandId": "system",
+          "Kind": "T3Response",
+          "Evidence": "SIMULATION accepted",
+          "At": "2026-10-16T18:58:27.869233+00:00"
+        },
+        {
+          "Id": "a620f50ea1d84c5a952eae3fb80cc48d",
+          "OwnerId": "638806cb912f449c9f9c44d7bc76d6ca",
+          "Actor": "SIM-maintenance",
+          "CommandId": "4d86e9677ebc489f9bc6b3e4d9479569",
+          "Kind": "Submit",
+          "Evidence": "",
+          "At": "2026-10-16T18:58:27.92624+00:00"
+        },
+        {
+          "Id": "8d0487025ed74ebfa0eb46bb09b17e64",
+          "OwnerId": "638806cb912f449c9f9c44d7bc76d6ca",
+          "Actor": "sender",
+          "CommandId": "system",
+          "Kind": "T2Claim",
+          "Evidence": "9a2d3086d5e6469ea69937df2ecb5ad9",
+          "At": "2026-10-16T18:58:27.984453+00:00"
+        },
+        {
+          "Id": "9ce4195f23fc49cd9ff010c3724ef75f",
+          "OwnerId": "638806cb912f449c9f9c44d7bc76d6ca",
+          "Actor": "sender",
+          "CommandId": "system",
+          "Kind": "TransportHandoffAuthorized",
+          "Evidence": "9a2d3086d5e6469ea69937df2ecb5ad9",
+          "At": "2026-10-16T18:58:27.985907+00:00"
+        },
+        {
+          "Id": "e3155d84c2b148099547ed0f98326d80",
+          "OwnerId": "638806cb912f449c9f9c44d7bc76d6ca",
+          "Actor": "sender",
+          "CommandId": "system",
+          "Kind": "OutcomeUnknown",
+          "Evidence": "HttpRequestException: transport outcome not authoritative",
+          "At": "2026-10-16T18:58:27.99951+00:00"
+        },
+        {
+          "Id": "40414d4595974212804abae0e87f1f41",
+          "OwnerId": "638806cb912f449c9f9c44d7bc76d6ca",
+          "Actor": "integration",
+          "CommandId": "system",
+          "Kind": "T3Response",
+          "Evidence": "SIMULATION accepted",
+          "At": "2026-10-16T18:58:28.174379+00:00"
+        },
+        {
+          "Id": "4443440b51cc47e5b91ccd2bfa15df9b",
+          "OwnerId": "638806cb912f449c9f9c44d7bc76d6ca",
+          "Actor": "reconciler",
+          "CommandId": "system",
+          "Kind": "ReconciliationQuery",
+          "Evidence": "Authoritative SIMULATION receiver evidence 618f4a4c1d934987ace26955ad3b0258",
+          "At": "2026-10-16T18:58:28.175792+00:00"
+        }
+      ]
+    },
+    "AcceptedQuantity": 2,
+    "FailedActivationPreservedEffective": true,
+    "SuccessfulUpgradeAndDisableUninstall": true,
+    "WindowAreaMultipleOwners": true,
+    "HostSource": "$WORKTREE/tests/Ipc.Verification/bin/Debug/net10.0"
+  },
+  "Operations": [
+    {
+      "Id": "024958d500a646a384635e5bfd6c13cd",
+      "PackageSha256": "7301D7287B6D2E01836AA8CD3C66D8165FBB495F1B30D604DCEBDAAAC283C159",
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.0.0",
+        "ManifestSha256": "4D9842343B11B04E3CAD13EEC0B9BA7BF4790ACD6F5B5DED0D671ECDCED7DE59"
+      },
+      "State": "UninstallRecoveryRequired",
+      "At": "2026-10-16T18:58:43.781001+00:00",
+      "Error": "IOException: The process cannot access the file \u0027$RETAINED_TEMP/4D9842343B11B04E3CAD13EEC0B9BA7BF4790ACD6F5B5DED0D671ECDCED7DE59.lease\u0027 because it is being used by another process.",
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "14f552734fc64029adec29e3edef888a",
+      "PackageSha256": "7301D7287B6D2E01836AA8CD3C66D8165FBB495F1B30D604DCEBDAAAC283C159",
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.0.0",
+        "ManifestSha256": "4D9842343B11B04E3CAD13EEC0B9BA7BF4790ACD6F5B5DED0D671ECDCED7DE59"
+      },
+      "State": "UninstallRecoveryRequired",
+      "At": "2026-10-16T18:58:11.844584+00:00",
+      "Error": "InvalidOperationException: Reverse package dependency prevents uninstall: reference.dependent",
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "19942e07af044c6d8275d23ee55b25be",
+      "PackageSha256": "C78F28A86B5172D1126645041EE15278598E955ADD6C41A9D034760EC37FDBE2",
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.1.0",
+        "ManifestSha256": "5F7706FC48E421DE07921129C6B3F2A2AF2A6A7040DFEE00DA5AC2ABB6EDFBD5"
+      },
+      "State": "Uninstalled",
+      "At": "2026-10-16T18:58:28.65495+00:00",
+      "Error": null,
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "2d0ca2ca9f6a47ffb5e666072483eebd",
+      "PackageSha256": "6905DDAA89EEDB6CF04ABB9255F35544E3CD190930627E756456813CFAA71E2E",
+      "Package": {
+        "Id": "reference.dependent",
+        "Version": "1.0.0",
+        "ManifestSha256": "46AEF286C1C7125FD11D31E6D4DC9FE7EAFC8AFF92BF7AE9AD10A88193DEB996"
+      },
+      "State": "Registered",
+      "At": "2026-10-16T18:58:11.80275+00:00",
+      "Error": null,
+      "Kind": "Install"
+    },
+    {
+      "Id": "4d8d64980735449780c11dae751790de",
+      "PackageSha256": "7301D7287B6D2E01836AA8CD3C66D8165FBB495F1B30D604DCEBDAAAC283C159",
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.0.0",
+        "ManifestSha256": "4D9842343B11B04E3CAD13EEC0B9BA7BF4790ACD6F5B5DED0D671ECDCED7DE59"
+      },
+      "State": "Registered",
+      "At": "2026-10-16T18:58:10.345513+00:00",
+      "Error": null,
+      "Kind": "Install"
+    },
+    {
+      "Id": "57176a1a899647fda690c4f83e27992b",
+      "PackageSha256": "7301D7287B6D2E01836AA8CD3C66D8165FBB495F1B30D604DCEBDAAAC283C159",
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.0.0",
+        "ManifestSha256": "4D9842343B11B04E3CAD13EEC0B9BA7BF4790ACD6F5B5DED0D671ECDCED7DE59"
+      },
+      "State": "UninstallRecoveryRequired",
+      "At": "2026-10-16T18:58:11.763489+00:00",
+      "Error": "InvalidOperationException: Effective/pending deployment or original request still references this package",
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "65f0364c366045029705b703e2ffe229",
+      "PackageSha256": "7301D7287B6D2E01836AA8CD3C66D8165FBB495F1B30D604DCEBDAAAC283C159",
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.0.0",
+        "ManifestSha256": "4D9842343B11B04E3CAD13EEC0B9BA7BF4790ACD6F5B5DED0D671ECDCED7DE59"
+      },
+      "State": "UninstallRecoveryRequired",
+      "At": "2026-10-16T18:58:11.77725+00:00",
+      "Error": "IOException: The process cannot access the file \u0027$RETAINED_TEMP/4D9842343B11B04E3CAD13EEC0B9BA7BF4790ACD6F5B5DED0D671ECDCED7DE59.lease\u0027 because it is being used by another process.",
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "75b0c9707d8748bbbe9dd9f1baecb5cd",
+      "PackageSha256": "6905DDAA89EEDB6CF04ABB9255F35544E3CD190930627E756456813CFAA71E2E",
+      "Package": {
+        "Id": "reference.dependent",
+        "Version": "1.0.0",
+        "ManifestSha256": "46AEF286C1C7125FD11D31E6D4DC9FE7EAFC8AFF92BF7AE9AD10A88193DEB996"
+      },
+      "State": "Uninstalled",
+      "At": "2026-10-16T18:58:11.85462+00:00",
+      "Error": null,
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "d349be2d023e4b75a91be06ef754d664",
+      "PackageSha256": "7301D7287B6D2E01836AA8CD3C66D8165FBB495F1B30D604DCEBDAAAC283C159",
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.0.0",
+        "ManifestSha256": "4D9842343B11B04E3CAD13EEC0B9BA7BF4790ACD6F5B5DED0D671ECDCED7DE59"
+      },
+      "State": "Registered",
+      "At": "2026-10-16T18:58:10.60077+00:00",
+      "Error": null,
+      "Kind": "Repair"
+    },
+    {
+      "Id": "e76c20d17df1451c82d25f60bbe5c1dc",
+      "PackageSha256": "C78F28A86B5172D1126645041EE15278598E955ADD6C41A9D034760EC37FDBE2",
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.1.0",
+        "ManifestSha256": "5F7706FC48E421DE07921129C6B3F2A2AF2A6A7040DFEE00DA5AC2ABB6EDFBD5"
+      },
+      "State": "Registered",
+      "At": "2026-10-16T18:58:10.904924+00:00",
+      "Error": null,
+      "Kind": "Install"
+    }
+  ],
+  "Windows": "NOT_RUN"
+}

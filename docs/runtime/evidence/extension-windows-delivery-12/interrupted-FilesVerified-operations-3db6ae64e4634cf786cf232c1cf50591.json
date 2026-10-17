@@ -1,0 +1,13 @@
+{
+  "Id": "3db6ae64e4634cf786cf232c1cf50591",
+  "PackageSha256": "C78F28A86B5172D1126645041EE15278598E955ADD6C41A9D034760EC37FDBE2",
+  "Package": {
+    "Id": "reference.barcode",
+    "Version": "1.1.0",
+    "ManifestSha256": "5F7706FC48E421DE07921129C6B3F2A2AF2A6A7040DFEE00DA5AC2ABB6EDFBD5"
+  },
+  "State": "Registered",
+  "At": "2026-10-16T18:58:10.728851+00:00",
+  "Error": null,
+  "Kind": "Install"
+}

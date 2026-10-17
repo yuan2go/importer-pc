@@ -8,6 +8,53 @@ string Get(string key, string fallback) => map.GetValueOrDefault(key, fallback);
 var root = Get("--config", Path.Combine(AppContext.BaseDirectory, "config"));
 var data = Get("--data-root", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data"));
 var action = Get("--action", "snapshot");
+if (action.StartsWith("extension-", StringComparison.Ordinal))
+{
+    // This branch never constructs ProductRuntime, loads a plugin, or starts a source/sender.
+    var allowed = new[] { "--action", "--mode", "--file", "--sha256", "--operation", "--manifest-hash", "--config", "--data-root", "--extension-root", "--extension-trust" };
+    if (map.Keys.Any(x => !allowed.Contains(x))) throw new ArgumentException("Unsupported installer argument");
+    var mode = Enum.Parse<RunMode>(Get("--mode", "Simulation"), ignoreCase: false);
+    if (!Enum.IsDefined(mode)) throw new InvalidDataException("Invalid mode");
+    var paths = MachineRuntimePolicy.ExtensionPaths(mode, map.GetValueOrDefault("--extension-root"), map.GetValueOrDefault("--extension-trust"));
+    var trust = Wire.Decode<ExtensionTrust>(File.ReadAllText(paths.TrustFile));
+    // Inspection is read-only; mutation authority and the protected lease policy are
+    // rechecked in the elevated branch before any filesystem transaction.
+    var leaseRoot = action == "extension-inspect" && OperatingSystem.IsWindows()
+        ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc", "leases")
+        : MachineRuntimePolicy.InstallerLeaseRoot(Path.Combine(paths.Root, "leases"));
+    var extensions = new ExtensionStore(paths.Root, trust, mode, leaseRoot);
+    if (action == "extension-inspect") Console.WriteLine(Wire.Encode(extensions.Plan(Get("--file", ""))));
+    else
+    {
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        MachineRuntimePolicy.RequireProtectedInstaller(AppContext.BaseDirectory);
+        if (action == "extension-install") Console.WriteLine(Wire.Encode(extensions.Install(Get("--file", ""), Get("--sha256", ""))));
+        else if (action == "extension-recover")
+        {
+            var originalId = Get("--operation", "");
+            var original = extensions.Operations().Single(x => x.Id == originalId);
+            Func<PackageReference[]>? references = null;
+            if (original.Kind == "Uninstall")
+            {
+                var station = Wire.Decode<StationConfig>(File.ReadAllText(Path.Combine(root, "station.json")));
+                if (station.Mode != mode) throw new InvalidDataException("Station/extension mode mismatch");
+                references = () => SupplyStore.InspectRequiredExtensionPackages(Path.Combine(data, mode.ToString(), station.StationId, "station.db"));
+            }
+            Console.WriteLine(Wire.Encode(extensions.Recover(originalId, refreshReferences: references)));
+        }
+        else if (action == "extension-uninstall")
+        {
+            var station = Wire.Decode<StationConfig>(File.ReadAllText(Path.Combine(root, "station.json")));
+            if (station.Mode != mode) throw new InvalidDataException("Station/extension mode mismatch");
+            var db = Path.Combine(data, mode.ToString(), station.StationId, "station.db");
+            var package = extensions.Inventory().Single(x => x.Package.ManifestSha256 == Get("--manifest-hash", "") && x.Status == "Installed").Package;
+            extensions.Uninstall(package, () => SupplyStore.InspectRequiredExtensionPackages(db));
+            Console.WriteLine(Wire.Encode(new { Status = "Uninstalled", Package = package }));
+        }
+        else throw new ArgumentException("Unknown extension action");
+    }
+    return;
+}
 if (action is "backup" or "preflight" or "restore" or "upgrade")
 {
     // Maintenance must obey the same fixed Windows account and protected machine policy
@@ -66,7 +113,7 @@ MaintenanceReleaseIdentity ReleaseIdentity(string release)
     return new(Wire.FileHash(Path.Combine(app, "Ipc.Product.exe")), Wire.FileHash(Path.Combine(app, "Ipc.Product.dll")),
         Wire.FileHash(Path.Combine(release, "SHA256SUMS")), configuration);
 }
-var host = ProductHost.Build(new(Path.Combine(root, "product.json"), Path.Combine(root, "station.json"), Path.Combine(root, "presentation.json"), data, View: map.GetValueOrDefault("--view"), Layout: map.GetValueOrDefault("--layout")));
+var host = ProductHost.Build(new(Path.Combine(root, "product.json"), Path.Combine(root, "station.json"), Path.Combine(root, "presentation.json"), data, View: map.GetValueOrDefault("--view"), Layout: map.GetValueOrDefault("--layout"), ExtensionRoot: map.GetValueOrDefault("--extension-root"), ExtensionTrustFile: map.GetValueOrDefault("--extension-trust")));
 var runtime = host.Services.GetRequiredService<ProductRuntime>();
 Exception? operationFailure = null;
 try

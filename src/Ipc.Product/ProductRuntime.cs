@@ -8,8 +8,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Ipc.Product;
 
-public sealed record BootOptions(string Manifest, string Station, string Presentation, string DataRoot, string? InstallRoot = null, string? LeaseRoot = null, string? View = null, string? Layout = null);
-public sealed class ProductRuntime : IHostedService, IAsyncDisposable, IDisposable
+public sealed record BootOptions(string Manifest, string Station, string Presentation, string DataRoot, string? InstallRoot = null, string? LeaseRoot = null, string? View = null, string? Layout = null, string? ExtensionRoot = null, string? ExtensionTrustFile = null);
+public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, IDisposable
 {
     readonly BootOptions options;
     readonly ILogger<ProductRuntime> logger;
@@ -29,9 +29,9 @@ public sealed class ProductRuntime : IHostedService, IAsyncDisposable, IDisposab
     readonly SemaphoreSlim shutdownGate = new(1, 1);
     public string[] AllowedViews => allowedViews.ToArray();
     public string[] AllowedLayouts => ReferenceProduct.Definition.Layouts.ToArray();
-    public string[] InstalledDrivers => ReferenceProduct.Definition.Drivers.Where(x => x.Mode == Mode).Select(x => x.Id).ToArray();
+    public string[] InstalledDrivers => ReferenceProduct.Definition.Drivers.Where(x => x.Mode == Mode).Select(x => x.Id).Concat(Configuration?.Extensions?.Instances.Select(x => "extension:" + x.Id) ?? []).ToArray();
     public IReadOnlyList<string> ValidateConfiguration(StationConfig draft) => manifest is null ? ["Product not initialized"] : draft.Devices is null ? ["Incomplete device bindings"] :
-        SupplyConfiguration.Validate(draft).Concat(draft.Devices.Where(x => !ReferenceProduct.Definition.Drivers.Any(d => d.Id == x.Driver && d.Mode == draft.Mode)).Select(x => "Unregistered installed driver: " + x.Driver)).Distinct().ToArray();
+        SupplyConfiguration.Validate(draft).Concat(ExtensionDeployment.Validate(draft.Extensions, draft.Devices, extensionStore)).Concat(draft.Devices.Where(x => !x.Driver.StartsWith("extension:", StringComparison.Ordinal) && !ReferenceProduct.Definition.Drivers.Any(d => d.Id == x.Driver && d.Mode == draft.Mode)).Select(x => "Unregistered installed driver: " + x.Driver)).Distinct().ToArray();
     SupplyStore? store;
     ModuleCatalog? catalog;
     StationApplication? application;
@@ -47,18 +47,32 @@ public sealed class ProductRuntime : IHostedService, IAsyncDisposable, IDisposab
     public string? DataDirectory { get; private set; }
     public Guid RuntimeId { get; } = Guid.NewGuid();
     ObservationModule? observationModule;
-    public Task StartAsync(CancellationToken token) => Task.Run(() => StartCore(token), token);
+    Task? startupTask;
+    readonly CancellationTokenSource startupStop = new();
+    IObservationSource[] constructionSources = [];
+    readonly Dictionary<IObservationSource, Task> constructionStops = [], constructionDisposals = [];
+    public Task StartAsync(CancellationToken token)
+    {
+        if (startupTask is not null) throw new InvalidOperationException("Runtime startup is single-use");
+        return startupTask = Task.Run(async () =>
+        {
+            using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, startupStop.Token);
+            await StartCore(linked.Token).ConfigureAwait(false);
+        }, CancellationToken.None);
+    }
     async Task StartCore(CancellationToken token)
     {
         try
         {
-            manifest = Wire.Decode<ProductManifest>(File.ReadAllText(options.Manifest)); allowedViews = manifest.Views;
+            manifest = Wire.Decode<ProductManifest>(File.ReadAllText(options.Manifest)); allowedViews = manifest.Views.Append("extensions").Distinct().ToArray();
             var seed = Wire.Decode<StationConfig>(File.ReadAllText(options.Station)); Mode = seed.Mode;
             Presentation = Wire.Decode<PresentationSettings>(File.ReadAllText(options.Presentation));
             Presentation = new(options.View ?? Presentation.View, options.Layout ?? Presentation.Layout);
             install = options.InstallRoot ?? AppContext.BaseDirectory;
-            var errors = ReferenceProduct.Validate(manifest, seed, Presentation, install);
-            if (errors.Count != 0) { Diagnostics.AddRange(errors); return; }
+            InitializeExtensionManagement(seed.Mode);
+            // Seed does not override persisted Effective, but its core identity must be valid.
+            var errors = ReferenceProduct.Validate(manifest, seed, Presentation, install, ExtensionDriverIds(seed)).ToArray();
+            if (errors.Length != 0) { Diagnostics.AddRange(errors); return; }
             var leaseRoot = MachineRuntimePolicy.ResolveLeaseRoot(options.LeaseRoot);
             DataDirectory = Path.GetFullPath(Path.Combine(options.DataRoot, seed.Mode.ToString(), seed.StationId));
             if (DataDirectory.StartsWith(Path.GetFullPath(install).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, StringComparison.Ordinal)) throw new InvalidDataException("Data must be outside install directory");
@@ -88,6 +102,7 @@ public sealed class ProductRuntime : IHostedService, IAsyncDisposable, IDisposab
                 var state = store.Load(); var activationErrors = ValidateStartupConfiguration(pending.Content, seed).ToList();
                 if (pending.BaseVersion != selected.Version) activationErrors.Add("Config base version mismatch");
                 if (store.PendingCount() != 0 || state.Session is { Status: not (SessionStatus.Closed or SessionStatus.Rejected) }) activationErrors.Add("Outstanding business prevents activation");
+                if (state.Quarantined || state.Lanes.Values.Any(x => x.Occupancy != Occupancy.Clear) || state.Blocks.Any(x => x.Code is "LocalDispositionRequired" or "ConflictingEvidence")) activationErrors.Add("Entity/recovery responsibilities prevent activation");
                 var succeeded = activationErrors.Count == 0;
                 if (succeeded) { selected = pending.Content; activating = pending; }
                 else
@@ -100,17 +115,33 @@ public sealed class ProductRuntime : IHostedService, IAsyncDisposable, IDisposab
             // Acquire the FINAL set atomically (partial acquisition unwinds internally).
             // No application owner, source factory, epoch registration or callback starts
             // before these exact station/device resources have been acquired.
+            var activationOwner = activating?.Id ?? effective?.Id ?? "initial:" + selected.Version;
+            var fingerprint = Wire.Hash(Wire.Encode(selected));
+            store.Commit(store.Load(), "DeploymentPhase", activationOwner, "runtime", "Validated; deployment=" + fingerprint);
             resourceLease = new(leaseRoot, ConfigurationResources(selected));
+            if (selected.Extensions is { Packages.Length: > 0 } extensions)
+            {
+                extensionLease = extensionStore!.AcquireUse(extensions.Packages);
+                // Revalidate under the package leases before running any extension code.
+                var changed = ExtensionDeployment.Validate(selected.Extensions, selected.Devices, extensionStore);
+                if (changed.Length != 0) throw new InvalidDataException(string.Join("; ", changed));
+                extensionLoading = new(extensionStore);
+            }
             Configuration = selected;
-            application = new(store, selected, new SimulationRequestContract(selected), configurationValidator: ValidateConfiguration);
+            store.Commit(store.Load(), "DeploymentPhase", activationOwner, "runtime", "Final resource and package leases acquired; deployment=" + fingerprint);
+            application = new(store, selected, new SimulationRequestContract(selected), configurationValidator: ValidateConfiguration, configurationLeaseFactory: AcquireDeploymentValidationLease);
             await application.SetWcsHealthAsync(false);
             var drive = new DriveInfo(Path.GetPathRoot(DataDirectory)!);
             if (drive.AvailableFreeSpace < selected.MinimumFreeMb * 1024L * 1024) application.Latch("StorageCapacity", "Free disk space below configured low-water mark");
             var configDirectory = Path.GetDirectoryName(Path.GetFullPath(options.Station))!;
             var sources = await CreateSourcesAsync(selected, configDirectory);
+            token.ThrowIfCancellationRequested();
             observationModule = new(application, sources, selected.EventCapacity);
             catalog = new(new IRuntimeModule[] { observationModule, new SenderModule(application, new LoopbackIntegration(selected)) });
+            constructionSources = []; // Complete ownership transfer; catalog now retains all returned sources.
+            await application.RecordDeploymentPhaseAsync(activationOwner, "Initializing selected modules; deployment=" + fingerprint);
             await catalog.StartAsync(token);
+            await application.RecordDeploymentPhaseAsync(activationOwner, "Selected modules initialized; deployment=" + fingerprint);
             if (activating is not null) { await application.FinishConfigurationActivationAsync(activating, true, "Modules initialized under new configuration"); activating = null; }
             else if (effective is null)
             {
@@ -143,23 +174,38 @@ public sealed class ProductRuntime : IHostedService, IAsyncDisposable, IDisposab
         }
     }
     IReadOnlyList<string> ValidateStartupConfiguration(StationConfig selected, StationConfig seed) =>
-        ReferenceProduct.Validate(manifest!, selected, Presentation, install)
+        ReferenceProduct.Validate(manifest!, selected, Presentation, install, ExtensionDriverIds(selected))
+            .Concat(ExtensionDeployment.Validate(selected.Extensions, selected.Devices, extensionStore))
             .Concat(selected.StationId != seed.StationId || selected.Mode != seed.Mode ? ["Config station/mode does not match the owned data root"] : Array.Empty<string>()).ToArray();
     internal static string[] ConfigurationResources(StationConfig selected) =>
-        new[] { $"{selected.Mode}:station:{selected.StationId}" }.Concat(selected.Devices.Select(x => $"{selected.Mode}:device:{x.DeviceId}")).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
+        new[] { $"{selected.Mode}:station:{selected.StationId}" }.Concat(selected.Devices.SelectMany(x => new[] { $"{selected.Mode}:device:{x.DeviceId}", $"device:{x.DeviceId}" })).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
     async Task<IObservationSource[]> CreateSourcesAsync(StationConfig selected, string directory)
     {
         List<IObservationSource> sources = [];
         try
         {
-            foreach (var binding in selected.Devices) sources.Add(sourceFactory(binding, directory));
+            foreach (var binding in selected.Devices)
+            {
+                startupStop.Token.ThrowIfCancellationRequested();
+                IObservationSource source;
+                if (!binding.Driver.StartsWith("extension:", StringComparison.Ordinal)) source = sourceFactory(binding, directory);
+                else
+                {
+                    var instance = selected.Extensions!.Instances.Single(x => "extension:" + x.Id == binding.Driver);
+                    var package = selected.Extensions.Packages.Single(x => x.Id == instance.PackageId);
+                    var module = extensionStore!.VerifyInstalled(package).Manifest.Modules.Single(x => x.Id == instance.ModuleId);
+                    source = extensionLoading!.Create(package, module, instance);
+                }
+                sources.Add(source); constructionSources = sources.ToArray();
+                if (source.DeviceId != binding.DeviceId || source is not IControlledObservationSource controlled || string.IsNullOrWhiteSpace(controlled.ConfirmationSource))
+                    throw new InvalidDataException("Source returned incompatible identity/confirmation contract");
+            }
             return sources.ToArray();
         }
         catch (Exception creation)
         {
             List<Exception> failures = [creation];
-            foreach (var source in sources.AsEnumerable().Reverse())
-                try { await source.DisposeAsync().ConfigureAwait(false); } catch (Exception cleanup) { failures.Add(cleanup); }
+            try { await CleanupConstructionAsync().ConfigureAwait(false); } catch (Exception cleanup) { failures.Add(cleanup); }
             if (failures.Count > 1) throw new AggregateException("Source creation and independent cleanup failed", failures);
             throw;
         }
@@ -173,6 +219,7 @@ public sealed class ProductRuntime : IHostedService, IAsyncDisposable, IDisposab
     }
     async Task StopCore(CancellationToken token)
     {
+        startupStop.Cancel();
         var errors = new List<Exception>();
         try
         {
@@ -183,7 +230,11 @@ public sealed class ProductRuntime : IHostedService, IAsyncDisposable, IDisposab
             }
         }
         catch (Exception ex) { errors.Add(ex); }
-        try { if (catalog is not null) await catalog.StopAsync(token); } catch (Exception ex) { errors.Add(ex); }
+        if (startupTask is { IsCompleted: false })
+            try { await startupTask.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+        if (startupTask is not { IsCompleted: false })
+            try { if (catalog is not null) await catalog.StopAsync(token); } catch (Exception ex) { errors.Add(ex); }
+        else errors.Add(new InvalidOperationException("Startup/factory has not terminated; all resources retained"));
         if (catalog?.HasActiveWork == true) Diagnostics.AddRange(catalog.OwnershipDiagnostics);
         if (errors.Count != 0) throw new AggregateException("Controlled stop completed with retained diagnostic failures", errors);
     }
@@ -194,9 +245,14 @@ public sealed class ProductRuntime : IHostedService, IAsyncDisposable, IDisposab
         var snap = await application.SnapshotAsync();
         if (snap.State.Actor is null || snap.State.Actor.ExpiresAt <= DateTimeOffset.UtcNow) throw new GuardException("SIMULATION identity required");
         var binding = Configuration.Devices.Single(x => x.Role == lane);
-        if (observationModule.Sources.Single(x => x.DeviceId == binding.DeviceId) is not ManualObservationSource source) throw new GuardException("Selected lane uses file replay; advance the file instead");
+        var source = observationModule.Sources.Single(x => x.DeviceId == binding.DeviceId);
         var admission = kind == "Enter" ? Wire.Id() : snap.State.Lanes.GetValueOrDefault(lane)?.AdmissionId ?? throw new GuardException("Explicit Enter required");
-        if (!await observationModule.ExecuteSourceAsync(() => source.Emit(kind, admission, codes, quantity, sourceEventId))) throw new InvalidOperationException("Observation queue full: event not admitted; inspect source/entity");
+        if (!await observationModule.ExecuteSourceAsync(() => source switch
+            {
+                ManualObservationSource manual => manual.Emit(kind, admission, codes, quantity, sourceEventId),
+                ISyntheticObservationInput extension => extension.Emit(kind, admission, codes ?? [], quantity, sourceEventId ?? Wire.Id()),
+                _ => throw new GuardException("Selected source has no typed synthetic input; use its declared input contract")
+            })) throw new InvalidOperationException("Observation queue full: event not admitted; inspect source/entity");
     }
     public async Task ReplayAsync(string lane)
     {
@@ -277,8 +333,12 @@ public sealed class ProductRuntime : IHostedService, IAsyncDisposable, IDisposab
             List<Exception> errors = [];
             try { await StopCore(CancellationToken.None).ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
             // Module disposal attempts every independent source/port even after one failure.
-            try { if (catalog is not null) await catalog.DisposeAsync().ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
-            var active = catalog?.HasActiveWork == true || applicationStop is { IsCompleted: false };
+            if (startupTask is not { IsCompleted: false })
+            {
+                try { if (catalog is not null) await catalog.DisposeAsync().ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+                try { await CleanupConstructionAsync().ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
+            }
+            var active = startupTask is { IsCompleted: false } || constructionSources.Length != 0 || catalog?.HasActiveWork == true || applicationStop is { IsCompleted: false };
             if (active)
             {
                 if (catalog is not null) Diagnostics.AddRange(catalog.OwnershipDiagnostics);
@@ -307,6 +367,7 @@ public sealed class ProductRuntime : IHostedService, IAsyncDisposable, IDisposab
                     if (!journalDisposed) try { if (journal is not null) await journal.DisposeAsync().ConfigureAwait(false); journalDisposed = true; } catch (Exception ex) { errors.Add(ex); }
                     if (storeDisposed && journalDisposed && catalog?.HasUnreleasedResources != true)
                     {
+                        try { extensionLoading?.Dispose(); extensionLoading = null; extensionLease?.Dispose(); extensionLease = null; } catch (Exception ex) { errors.Add(ex); }
                         try { resourceLease?.Dispose(); resourceLease = null; } catch (Exception ex) { errors.Add(ex); }
                         try { dataLease?.Dispose(); dataLease = null; } catch (Exception ex) { errors.Add(ex); }
                     }

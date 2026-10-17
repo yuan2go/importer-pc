@@ -19,3 +19,7 @@
 原PRD九图、原产品HTML七个CDN文件已在续作取得，新增本地离线阅读副本与历史降级副本分别保留。原v1.1 HTML/CSS/JS及业务逻辑未修复；旧28项检查/44场景和最小窗口假设仅属历史有限证据。PPTX原件18页、画板18页不证明最新云端身份或跨渲染器验收。
 
 本轮包内资源检查另发现原PPTX的265个.png部件实际为SVG字节，已按部件/哈希登记格式不一致，原件未修。它们不计为可解码位图；SVG内部资源继续检查。此归档发现不等于RV-17修复或对当前云端/Windows的验收结论。
+
+## DELIVERY-12当前实现增量
+
+受控组件与部署维护页、首次Loaded前应用暂停/多窗条件修复见 [12映射](extension-delivery-12-mapping.md) 和 [逐项报告](../runtime/extension-windows-delivery-12.md)。源码与核心策略验证已执行；本包真实WPF截图0，Windows UI/缩放/输入/持续旅程NOT_RUN。原v1.1资产不变，历史HTML导出不是本包Windows证据。

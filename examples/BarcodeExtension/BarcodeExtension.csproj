@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup><TargetFramework>net10.0</TargetFramework><AssemblyName>Ipc.Reference.BarcodeExtension</AssemblyName><Version>1.0.0</Version></PropertyGroup>
+ <ItemGroup><Reference Include="Ipc.Platform"><HintPath>$(IpcContractPath)</HintPath><Private>false</Private></Reference></ItemGroup>
+ <Target Name="RequireFrozenContract" BeforeTargets="ResolveReferences"><Error Condition="'$(IpcContractPath)' == '' Or !Exists('$(IpcContractPath)')" Text="Provide IpcContractPath from a frozen host delivery. No host ProjectReference is permitted."/></Target>
+</Project>

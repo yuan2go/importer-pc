@@ -1,0 +1,35 @@
+{
+  "ObservedDate": "2026-10-17",
+  "Host": "macOS arm64",
+  "DotnetSdk": "10.0.402",
+  "PythonVerification": "3.12.14 Pillow 12.3.0 (bundled runtime)",
+  "OpenSsl": "3.6.4",
+  "AuthorizedLocalWindows": "NOT_AVAILABLE",
+  "VmTools": "No existing Parallels/VMware/UTM or VM CLI observed",
+  "InteractiveWindowsSession": "NOT_AVAILABLE",
+  "SelfHostedRunners": {
+    "total_count": 0,
+    "runners": []
+  },
+  "RemoteRuns": [],
+  "ParallelOpenPrsAtSourceFreeze": [],
+  "MainAtStartAndFreeze": "9f320459969ee4398dc602ae037ecdcb3685996c",
+  "ActualWpfScreenshots": 0,
+  "Scanner": "NOT_RUN",
+  "Touch": "NOT_RUN",
+  "AcousticListening": "NOT_RUN",
+  "ProductionWcs": "NOT_RUN",
+  "WorkflowPush": {
+    "Status": "REFUSED",
+    "Reason": "OAuth credential lacks workflow scope",
+    "ObservedRemoteMessage": "refusing to allow an OAuth App to create or update workflow `.github/workflows/reference-windows.yml` without `workflow` scope",
+    "PreservedTemplate": "docs/runtime/validation/reference-windows.workflow.yml",
+    "ScopeChanged": false
+  },
+  "W01": "NOT_RUN",
+  "W02": "NOT_RUN",
+  "W03": "NOT_RUN",
+  "W04": "NOT_RUN",
+  "W05": "NOT_RUN",
+  "W06": "NOT_RUN"
+}

@@ -1,0 +1,449 @@
+{
+  "Mode": "SIMULATION",
+  "Cases": [
+    {
+      "Failure": "stop-throws",
+      "RuntimeId": "fb4e5000-5430-423f-bac3-3e3a9f2440a4",
+      "StationId": "SIM-02be9a38a7254d268de7385ee0c41ae1",
+      "DataDirectory": "$RETAINED_TEMP/SIM-02be9a38a7254d268de7385ee0c41ae1",
+      "Resources": [
+        "Simulation:device:L-b4b2db055b2446a99a9d114e370dd53b",
+        "Simulation:device:R-ca9a06aa6f4a424d8eace21ef5595729",
+        "Simulation:station:SIM-02be9a38a7254d268de7385ee0c41ae1",
+        "device:L-b4b2db055b2446a99a9d114e370dd53b",
+        "device:R-ca9a06aa6f4a424d8eace21ef5595729"
+      ],
+      "OriginalRequest": {
+        "Id": "a166d6a09e2d43d1a1f92cbf962742b8",
+        "OwnerId": "d4ba064193fe43008be7f7a2962c8140",
+        "SessionId": "d4ba064193fe43008be7f7a2962c8140",
+        "Kind": "Context",
+        "OwnerRevision": 1,
+        "IntentKey": "d4ba064193fe43008be7f7a2962c8140:Context:1",
+        "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-02be9a38a7254d268de7385ee0c41ae1\u0022,\n  \u0022SessionId\u0022: \u0022d4ba064193fe43008be7f7a2962c8140\u0022,\n  \u0022OwnerId\u0022: \u0022d4ba064193fe43008be7f7a2962c8140\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T02:50:49.404719\u002B00:00\u0022\n  }\n}",
+        "PayloadHash": "4CB9481274A5C0BFD5059A794EA71DF31F3B74D5F02758D5A77F8D2646F4CC25",
+        "Binding": {
+          "Id": "loopback",
+          "Revision": "1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:53496/"
+        },
+        "Status": "Unknown",
+        "CreatedAt": "2026-10-16T18:50:49.427989+00:00"
+      },
+      "Error": "System.AggregateException: Runtime cleanup failures; active ownership is retained until safe termination (Controlled stop completed with retained diagnostic failures (Module shutdown failures; ownership retained where still active (Stop: observations))) (Module disposal failures (Module shutdown failures; ownership retained where still active (Stop: observations)) (Dispose: observations)) (Application/store/journal/device and data leases retained: runtime work has not terminated)\n ---\u003E System.AggregateException: Controlled stop completed with retained diagnostic failures (Module shutdown failures; ownership retained where still active (Stop: observations))\n ---\u003E System.AggregateException: Module shutdown failures; ownership retained where still active (Stop: observations)\n ---\u003E System.InvalidOperationException: Stop: observations\n ---\u003E System.AggregateException: Observation shutdown failures (Source stop failed; registration retained: L-b4b2db055b2446a99a9d114e370dd53b)\n ---\u003E System.InvalidOperationException: Source stop failed; registration retained: L-b4b2db055b2446a99a9d114e370dd53b\n ---\u003E System.InvalidOperationException: SIMULATION Product source stop failure L-b4b2db055b2446a99a9d114e370dd53b\n   at ProductProbeSource.StopAsync(CancellationToken token) in $WORKTREE/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 151\n   at Ipc.Product.ObservationModule.StopSourceAsync(IObservationSource source, CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 521\n   at Ipc.Product.ObservationModule.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 536\n   --- End of inner exception stack trace ---\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ObservationModule.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 546\n   at Ipc.Platform.ModuleCatalog.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 57\n   --- End of inner exception stack trace ---\n   --- End of inner exception stack trace ---\n   at Ipc.Platform.ModuleCatalog.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 60\n   at Ipc.Product.ProductRuntime.StopCore(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 236\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ProductRuntime.StopCore(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 239\n   at Ipc.Product.ProductRuntime.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 334\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ProductRuntime.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 381\n   at ProductOwnershipVerification.Capture(Func\u00601 action) in $WORKTREE/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 125\n ---\u003E (Inner Exception #1) System.AggregateException: Module disposal failures (Module shutdown failures; ownership retained where still active (Stop: observations)) (Dispose: observations)\n ---\u003E System.AggregateException: Module shutdown failures; ownership retained where still active (Stop: observations)\n ---\u003E System.InvalidOperationException: Stop: observations\n ---\u003E System.AggregateException: Observation shutdown failures (Source stop failed; registration retained: L-b4b2db055b2446a99a9d114e370dd53b)\n ---\u003E System.InvalidOperationException: Source stop failed; registration retained: L-b4b2db055b2446a99a9d114e370dd53b\n ---\u003E System.InvalidOperationException: SIMULATION Product source stop failure L-b4b2db055b2446a99a9d114e370dd53b\n   at ProductProbeSource.StopAsync(CancellationToken token) in $WORKTREE/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 151\n   at Ipc.Product.ObservationModule.StopSourceAsync(IObservationSource source, CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 521\n   at Ipc.Product.ObservationModule.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 536\n   --- End of inner exception stack trace ---\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ObservationModule.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 546\n   at Ipc.Platform.ModuleCatalog.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 57\n   --- End of inner exception stack trace ---\n   --- End of inner exception stack trace ---\n   at Ipc.Platform.ModuleCatalog.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 60\n   at Ipc.Platform.ModuleCatalog.DisposeAsync() in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 65\n   --- End of inner exception stack trace ---\n   at Ipc.Platform.ModuleCatalog.DisposeAsync() in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 82\n   at Ipc.Product.ProductRuntime.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 338\n ---\u003E (Inner Exception #1) System.InvalidOperationException: Dispose: observations\n ---\u003E System.AggregateException: Observation disposal failures (Observation shutdown failures (Source stop failed; registration retained: L-b4b2db055b2446a99a9d114e370dd53b)) (Source disposal deferred while callbacks may remain: L-b4b2db055b2446a99a9d114e370dd53b)\n ---\u003E System.AggregateException: Observation shutdown failures (Source stop failed; registration retained: L-b4b2db055b2446a99a9d114e370dd53b)\n ---\u003E System.InvalidOperationException: Source stop failed; registration retained: L-b4b2db055b2446a99a9d114e370dd53b\n ---\u003E System.InvalidOperationException: SIMULATION Product source stop failure L-b4b2db055b2446a99a9d114e370dd53b\n   at ProductProbeSource.StopAsync(CancellationToken token) in $WORKTREE/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 151\n   at Ipc.Product.ObservationModule.StopSourceAsync(IObservationSource source, CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 521\n   at Ipc.Product.ObservationModule.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 536\n   --- End of inner exception stack trace ---\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ObservationModule.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 546\n   at Ipc.Product.ObservationModule.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 551\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ObservationModule.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 574\n   at Ipc.Platform.ModuleCatalog.DisposeAsync() in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 73\n ---\u003E (Inner Exception #1) System.InvalidOperationException: Source disposal deferred while callbacks may remain: L-b4b2db055b2446a99a9d114e370dd53b\u003C---\n\n   --- End of inner exception stack trace ---\u003C---\n\u003C---\n\n ---\u003E (Inner Exception #2) System.InvalidOperationException: Application/store/journal/device and data leases retained: runtime work has not terminated\u003C---\n",
+      "HeldStopCount": 4,
+      "HeldDisposeCount": 1,
+      "IndependentStopCount": 1,
+      "IndependentDisposeCount": 1,
+      "OriginalReceiverSendCount": 1,
+      "ResolvedDetail": {
+        "Request": {
+          "Id": "a166d6a09e2d43d1a1f92cbf962742b8",
+          "OwnerId": "d4ba064193fe43008be7f7a2962c8140",
+          "SessionId": "d4ba064193fe43008be7f7a2962c8140",
+          "Kind": "Context",
+          "OwnerRevision": 1,
+          "IntentKey": "d4ba064193fe43008be7f7a2962c8140:Context:1",
+          "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-02be9a38a7254d268de7385ee0c41ae1\u0022,\n  \u0022SessionId\u0022: \u0022d4ba064193fe43008be7f7a2962c8140\u0022,\n  \u0022OwnerId\u0022: \u0022d4ba064193fe43008be7f7a2962c8140\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T02:50:49.404719\u002B00:00\u0022\n  }\n}",
+          "PayloadHash": "4CB9481274A5C0BFD5059A794EA71DF31F3B74D5F02758D5A77F8D2646F4CC25",
+          "Binding": {
+            "Id": "loopback",
+            "Revision": "1",
+            "Contract": "SIMULATION-v1",
+            "Endpoint": "http://127.0.0.1:53496/"
+          },
+          "Status": "Accepted",
+          "CreatedAt": "2026-10-16T18:50:49.427989+00:00"
+        },
+        "Attempts": [
+          {
+            "Id": "497d9fa6d5e141df9e9089b70405899b",
+            "RequestId": "a166d6a09e2d43d1a1f92cbf962742b8",
+            "Ordinal": 1,
+            "StartedAt": "2026-10-16T18:50:49.519512+00:00",
+            "EndedAt": "2026-10-16T18:50:49.617037+00:00",
+            "Disposition": "Unknown",
+            "Error": "HttpRequestException: transport outcome not authoritative"
+          }
+        ],
+        "Responses": [
+          {
+            "RequestId": "a166d6a09e2d43d1a1f92cbf962742b8",
+            "PayloadHash": "4CB9481274A5C0BFD5059A794EA71DF31F3B74D5F02758D5A77F8D2646F4CC25",
+            "EvidenceId": "ddfc335637014d159ec243a619f44ee4",
+            "Result": "Accepted",
+            "Reason": "SIMULATION accepted",
+            "Remaining": 120,
+            "Quantity": null,
+            "CheckToken": null,
+            "Context": {
+              "BoxWave": "SIM-BOX-WAVE-113913B0C038",
+              "Provenance": {
+                "Source": "Independent synthetic task fixture",
+                "Version": "SYNTHETIC-SEMANTICS-v1",
+                "EvidenceId": "ddfc335637014d159ec243a619f44ee4",
+                "AcquiredAt": "2026-10-16T18:50:49.589065+00:00"
+              }
+            }
+          }
+        ],
+        "Audit": [
+          {
+            "Id": "6f1b4be5f07b4c3fba6eb422d70cae42",
+            "OwnerId": "d4ba064193fe43008be7f7a2962c8140",
+            "Actor": "SIM-maintenance",
+            "CommandId": "9b4a4eddc68a482eb21b31043917f210",
+            "Kind": "OpenContext",
+            "Evidence": "000001",
+            "At": "2026-10-16T18:50:49.437825+00:00"
+          },
+          {
+            "Id": "6e2e84d6346c4c12800592eef3dd93d3",
+            "OwnerId": "d4ba064193fe43008be7f7a2962c8140",
+            "Actor": "sender",
+            "CommandId": "system",
+            "Kind": "T2Claim",
+            "Evidence": "a166d6a09e2d43d1a1f92cbf962742b8",
+            "At": "2026-10-16T18:50:49.521579+00:00"
+          },
+          {
+            "Id": "901ef71c923841339951a2bc97a42f0e",
+            "OwnerId": "d4ba064193fe43008be7f7a2962c8140",
+            "Actor": "sender",
+            "CommandId": "system",
+            "Kind": "TransportHandoffAuthorized",
+            "Evidence": "a166d6a09e2d43d1a1f92cbf962742b8",
+            "At": "2026-10-16T18:50:49.524566+00:00"
+          },
+          {
+            "Id": "0d5194e7e6f943f7806c9a4b4bfbf1f1",
+            "OwnerId": "d4ba064193fe43008be7f7a2962c8140",
+            "Actor": "sender",
+            "CommandId": "system",
+            "Kind": "OutcomeUnknown",
+            "Evidence": "HttpRequestException: transport outcome not authoritative",
+            "At": "2026-10-16T18:50:49.617683+00:00"
+          },
+          {
+            "Id": "08192e321b7443be8557b4111e5a19a6",
+            "OwnerId": "d4ba064193fe43008be7f7a2962c8140",
+            "Actor": "integration",
+            "CommandId": "system",
+            "Kind": "T3Response",
+            "Evidence": "SIMULATION accepted",
+            "At": "2026-10-16T18:50:49.777121+00:00"
+          },
+          {
+            "Id": "332fdfbbd313432a83dac81bfab8f156",
+            "OwnerId": "d4ba064193fe43008be7f7a2962c8140",
+            "Actor": "reconciler",
+            "CommandId": "system",
+            "Kind": "ReconciliationQuery",
+            "Evidence": "Authoritative SIMULATION receiver evidence ddfc335637014d159ec243a619f44ee4",
+            "At": "2026-10-16T18:50:49.792603+00:00"
+          }
+        ]
+      },
+      "FinalResources": [],
+      "Result": "PASS"
+    },
+    {
+      "Failure": "stop-pending",
+      "RuntimeId": "f65102e9-8f53-45b7-b4bd-761a774a2cfc",
+      "StationId": "SIM-fc84505f679f438a8186e1a17015a432",
+      "DataDirectory": "$RETAINED_TEMP/SIM-fc84505f679f438a8186e1a17015a432",
+      "Resources": [
+        "Simulation:device:L-cb20adfdbc814e128911628033145fe9",
+        "Simulation:device:R-ed9ff60a215441c18d943e9a1062a1f3",
+        "Simulation:station:SIM-fc84505f679f438a8186e1a17015a432",
+        "device:L-cb20adfdbc814e128911628033145fe9",
+        "device:R-ed9ff60a215441c18d943e9a1062a1f3"
+      ],
+      "OriginalRequest": {
+        "Id": "715ac9c0d8234dd2ad4af5dd8c65c307",
+        "OwnerId": "c442c45ed5344f2cba2d50add96e363f",
+        "SessionId": "c442c45ed5344f2cba2d50add96e363f",
+        "Kind": "Context",
+        "OwnerRevision": 1,
+        "IntentKey": "c442c45ed5344f2cba2d50add96e363f:Context:1",
+        "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-fc84505f679f438a8186e1a17015a432\u0022,\n  \u0022SessionId\u0022: \u0022c442c45ed5344f2cba2d50add96e363f\u0022,\n  \u0022OwnerId\u0022: \u0022c442c45ed5344f2cba2d50add96e363f\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T02:50:50.042236\u002B00:00\u0022\n  }\n}",
+        "PayloadHash": "48513E63AE04773E131233E21C5B66DDD3800BAFE01101B85D0D986D9FAF5F09",
+        "Binding": {
+          "Id": "loopback",
+          "Revision": "1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:53496/"
+        },
+        "Status": "Unknown",
+        "CreatedAt": "2026-10-16T18:50:50.050061+00:00"
+      },
+      "Error": "System.AggregateException: Runtime cleanup failures; active ownership is retained until safe termination (Controlled stop completed with retained diagnostic failures (Module shutdown failures; ownership retained where still active (Stop: observations))) (Module disposal failures (Module shutdown failures; ownership retained where still active (Stop: observations)) (Dispose: observations)) (Application/store/journal/device and data leases retained: runtime work has not terminated)\n ---\u003E System.AggregateException: Controlled stop completed with retained diagnostic failures (Module shutdown failures; ownership retained where still active (Stop: observations))\n ---\u003E System.AggregateException: Module shutdown failures; ownership retained where still active (Stop: observations)\n ---\u003E System.InvalidOperationException: Stop: observations\n ---\u003E System.AggregateException: Observation shutdown failures (Source stop failed; registration retained: L-cb20adfdbc814e128911628033145fe9)\n ---\u003E System.InvalidOperationException: Source stop failed; registration retained: L-cb20adfdbc814e128911628033145fe9\n ---\u003E System.TimeoutException: The operation has timed out.\n   at Ipc.Product.ObservationModule.StopSourceAsync(IObservationSource source, CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 521\n   at Ipc.Product.ObservationModule.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 536\n   --- End of inner exception stack trace ---\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ObservationModule.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 546\n   at Ipc.Platform.ModuleCatalog.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 57\n   --- End of inner exception stack trace ---\n   --- End of inner exception stack trace ---\n   at Ipc.Platform.ModuleCatalog.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 60\n   at Ipc.Product.ProductRuntime.StopCore(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 236\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ProductRuntime.StopCore(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 239\n   at Ipc.Product.ProductRuntime.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 334\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ProductRuntime.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 381\n   at ProductOwnershipVerification.Capture(Func\u00601 action) in $WORKTREE/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 125\n ---\u003E (Inner Exception #1) System.AggregateException: Module disposal failures (Module shutdown failures; ownership retained where still active (Stop: observations)) (Dispose: observations)\n ---\u003E System.AggregateException: Module shutdown failures; ownership retained where still active (Stop: observations)\n ---\u003E System.InvalidOperationException: Stop: observations\n ---\u003E System.AggregateException: Observation shutdown failures (Source stop failed; registration retained: L-cb20adfdbc814e128911628033145fe9)\n ---\u003E System.InvalidOperationException: Source stop failed; registration retained: L-cb20adfdbc814e128911628033145fe9\n ---\u003E System.TimeoutException: The operation has timed out.\n   at Ipc.Product.ObservationModule.StopSourceAsync(IObservationSource source, CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 521\n   at Ipc.Product.ObservationModule.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 536\n   --- End of inner exception stack trace ---\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ObservationModule.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 546\n   at Ipc.Platform.ModuleCatalog.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 57\n   --- End of inner exception stack trace ---\n   --- End of inner exception stack trace ---\n   at Ipc.Platform.ModuleCatalog.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 60\n   at Ipc.Platform.ModuleCatalog.DisposeAsync() in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 65\n   --- End of inner exception stack trace ---\n   at Ipc.Platform.ModuleCatalog.DisposeAsync() in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 82\n   at Ipc.Product.ProductRuntime.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 338\n ---\u003E (Inner Exception #1) System.InvalidOperationException: Dispose: observations\n ---\u003E System.AggregateException: Observation disposal failures (Observation shutdown failures (Source stop failed; registration retained: L-cb20adfdbc814e128911628033145fe9)) (Source disposal deferred while callbacks may remain: L-cb20adfdbc814e128911628033145fe9)\n ---\u003E System.AggregateException: Observation shutdown failures (Source stop failed; registration retained: L-cb20adfdbc814e128911628033145fe9)\n ---\u003E System.InvalidOperationException: Source stop failed; registration retained: L-cb20adfdbc814e128911628033145fe9\n ---\u003E System.TimeoutException: The operation has timed out.\n   at Ipc.Product.ObservationModule.StopSourceAsync(IObservationSource source, CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 521\n   at Ipc.Product.ObservationModule.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 536\n   --- End of inner exception stack trace ---\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ObservationModule.StopAsync(CancellationToken token) in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 546\n   at Ipc.Product.ObservationModule.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 551\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ObservationModule.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 574\n   at Ipc.Platform.ModuleCatalog.DisposeAsync() in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 73\n ---\u003E (Inner Exception #1) System.InvalidOperationException: Source disposal deferred while callbacks may remain: L-cb20adfdbc814e128911628033145fe9\u003C---\n\n   --- End of inner exception stack trace ---\u003C---\n\u003C---\n\n ---\u003E (Inner Exception #2) System.InvalidOperationException: Application/store/journal/device and data leases retained: runtime work has not terminated\u003C---\n",
+      "HeldStopCount": 1,
+      "HeldDisposeCount": 1,
+      "IndependentStopCount": 1,
+      "IndependentDisposeCount": 1,
+      "OriginalReceiverSendCount": 1,
+      "ResolvedDetail": {
+        "Request": {
+          "Id": "715ac9c0d8234dd2ad4af5dd8c65c307",
+          "OwnerId": "c442c45ed5344f2cba2d50add96e363f",
+          "SessionId": "c442c45ed5344f2cba2d50add96e363f",
+          "Kind": "Context",
+          "OwnerRevision": 1,
+          "IntentKey": "c442c45ed5344f2cba2d50add96e363f:Context:1",
+          "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-fc84505f679f438a8186e1a17015a432\u0022,\n  \u0022SessionId\u0022: \u0022c442c45ed5344f2cba2d50add96e363f\u0022,\n  \u0022OwnerId\u0022: \u0022c442c45ed5344f2cba2d50add96e363f\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T02:50:50.042236\u002B00:00\u0022\n  }\n}",
+          "PayloadHash": "48513E63AE04773E131233E21C5B66DDD3800BAFE01101B85D0D986D9FAF5F09",
+          "Binding": {
+            "Id": "loopback",
+            "Revision": "1",
+            "Contract": "SIMULATION-v1",
+            "Endpoint": "http://127.0.0.1:53496/"
+          },
+          "Status": "Accepted",
+          "CreatedAt": "2026-10-16T18:50:50.050061+00:00"
+        },
+        "Attempts": [
+          {
+            "Id": "0f6826cc6d67464697e98025b8287559",
+            "RequestId": "715ac9c0d8234dd2ad4af5dd8c65c307",
+            "Ordinal": 1,
+            "StartedAt": "2026-10-16T18:50:50.158108+00:00",
+            "EndedAt": "2026-10-16T18:50:50.212309+00:00",
+            "Disposition": "Unknown",
+            "Error": "HttpRequestException: transport outcome not authoritative"
+          }
+        ],
+        "Responses": [
+          {
+            "RequestId": "715ac9c0d8234dd2ad4af5dd8c65c307",
+            "PayloadHash": "48513E63AE04773E131233E21C5B66DDD3800BAFE01101B85D0D986D9FAF5F09",
+            "EvidenceId": "dc16eb29f2cf4437ada7dde957f2ecde",
+            "Result": "Accepted",
+            "Reason": "SIMULATION accepted",
+            "Remaining": 120,
+            "Quantity": null,
+            "CheckToken": null,
+            "Context": {
+              "BoxWave": "SIM-BOX-WAVE-D551394B338A",
+              "Provenance": {
+                "Source": "Independent synthetic task fixture",
+                "Version": "SYNTHETIC-SEMANTICS-v1",
+                "EvidenceId": "dc16eb29f2cf4437ada7dde957f2ecde",
+                "AcquiredAt": "2026-10-16T18:50:50.205346+00:00"
+              }
+            }
+          }
+        ],
+        "Audit": [
+          {
+            "Id": "086a225ef1a04c2aa05a6d80ec952e84",
+            "OwnerId": "c442c45ed5344f2cba2d50add96e363f",
+            "Actor": "SIM-maintenance",
+            "CommandId": "2f82d0ab120748cdb74cfcdf6f8bf948",
+            "Kind": "OpenContext",
+            "Evidence": "000001",
+            "At": "2026-10-16T18:50:50.05022+00:00"
+          },
+          {
+            "Id": "32af93b640724a9b8ca18ef92ccb0be8",
+            "OwnerId": "c442c45ed5344f2cba2d50add96e363f",
+            "Actor": "sender",
+            "CommandId": "system",
+            "Kind": "T2Claim",
+            "Evidence": "715ac9c0d8234dd2ad4af5dd8c65c307",
+            "At": "2026-10-16T18:50:50.166832+00:00"
+          },
+          {
+            "Id": "95e77100c6c449daa6ce70e8d115ae55",
+            "OwnerId": "c442c45ed5344f2cba2d50add96e363f",
+            "Actor": "sender",
+            "CommandId": "system",
+            "Kind": "TransportHandoffAuthorized",
+            "Evidence": "715ac9c0d8234dd2ad4af5dd8c65c307",
+            "At": "2026-10-16T18:50:50.188985+00:00"
+          },
+          {
+            "Id": "8f398f1f3fba477d8d8098999e0a66b3",
+            "OwnerId": "c442c45ed5344f2cba2d50add96e363f",
+            "Actor": "sender",
+            "CommandId": "system",
+            "Kind": "OutcomeUnknown",
+            "Evidence": "HttpRequestException: transport outcome not authoritative",
+            "At": "2026-10-16T18:50:50.212868+00:00"
+          },
+          {
+            "Id": "fbb10d3a600146309cf2302f2348a148",
+            "OwnerId": "c442c45ed5344f2cba2d50add96e363f",
+            "Actor": "integration",
+            "CommandId": "system",
+            "Kind": "T3Response",
+            "Evidence": "SIMULATION accepted",
+            "At": "2026-10-16T18:51:05.296981+00:00"
+          },
+          {
+            "Id": "4fa8ea04b02e424f8c42f5ed347a718a",
+            "OwnerId": "c442c45ed5344f2cba2d50add96e363f",
+            "Actor": "reconciler",
+            "CommandId": "system",
+            "Kind": "ReconciliationQuery",
+            "Evidence": "Authoritative SIMULATION receiver evidence dc16eb29f2cf4437ada7dde957f2ecde",
+            "At": "2026-10-16T18:51:05.297863+00:00"
+          }
+        ]
+      },
+      "FinalResources": [],
+      "Result": "PASS"
+    },
+    {
+      "Failure": "dispose-pending",
+      "RuntimeId": "68d9ebf3-037c-46a0-a628-c332625898cd",
+      "StationId": "SIM-cab7164dc69449c7a2fa86a309144548",
+      "DataDirectory": "$RETAINED_TEMP/SIM-cab7164dc69449c7a2fa86a309144548",
+      "Resources": [
+        "Simulation:device:L-1ce166c23d9b41d7ac8db2687f0333ed",
+        "Simulation:device:R-d11289cb7dfe477fbae3eeb4bb873dc8",
+        "Simulation:station:SIM-cab7164dc69449c7a2fa86a309144548",
+        "device:L-1ce166c23d9b41d7ac8db2687f0333ed",
+        "device:R-d11289cb7dfe477fbae3eeb4bb873dc8"
+      ],
+      "OriginalRequest": {
+        "Id": "dc51d49eb8b54517b81b36124f205526",
+        "OwnerId": "e8efd33b1e7f491c8d2d173bb9e12ed3",
+        "SessionId": "e8efd33b1e7f491c8d2d173bb9e12ed3",
+        "Kind": "Context",
+        "OwnerRevision": 1,
+        "IntentKey": "e8efd33b1e7f491c8d2d173bb9e12ed3:Context:1",
+        "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-cab7164dc69449c7a2fa86a309144548\u0022,\n  \u0022SessionId\u0022: \u0022e8efd33b1e7f491c8d2d173bb9e12ed3\u0022,\n  \u0022OwnerId\u0022: \u0022e8efd33b1e7f491c8d2d173bb9e12ed3\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T02:51:05.461877\u002B00:00\u0022\n  }\n}",
+        "PayloadHash": "23DDCA595065250A08840718F325148B02E2F396F5B83E912939130B77D76CDA",
+        "Binding": {
+          "Id": "loopback",
+          "Revision": "1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:53496/"
+        },
+        "Status": "Unknown",
+        "CreatedAt": "2026-10-16T18:51:05.464035+00:00"
+      },
+      "Error": "System.AggregateException: Runtime cleanup failures; active ownership is retained until safe termination (Module disposal failures (Dispose: observations)) (Application/store/journal/device and data leases retained: runtime work has not terminated)\n ---\u003E System.AggregateException: Module disposal failures (Dispose: observations)\n ---\u003E System.InvalidOperationException: Dispose: observations\n ---\u003E System.AggregateException: Observation disposal failures (Source disposal failed: L-1ce166c23d9b41d7ac8db2687f0333ed)\n ---\u003E System.InvalidOperationException: Source disposal failed: L-1ce166c23d9b41d7ac8db2687f0333ed\n ---\u003E System.TimeoutException: The operation has timed out.\n   at Ipc.Product.ObservationModule.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 563\n   --- End of inner exception stack trace ---\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ObservationModule.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 574\n   at Ipc.Platform.ModuleCatalog.DisposeAsync() in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 73\n   --- End of inner exception stack trace ---\n   --- End of inner exception stack trace ---\n   at Ipc.Platform.ModuleCatalog.DisposeAsync() in $WORKTREE/src/Ipc.Platform/Lifecycle.cs:line 82\n   at Ipc.Product.ProductRuntime.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 338\n   --- End of inner exception stack trace ---\n   at Ipc.Product.ProductRuntime.DisposeAsync() in $WORKTREE/src/Ipc.Product/ProductRuntime.cs:line 381\n   at ProductOwnershipVerification.Capture(Func\u00601 action) in $WORKTREE/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 125\n ---\u003E (Inner Exception #1) System.InvalidOperationException: Application/store/journal/device and data leases retained: runtime work has not terminated\u003C---\n",
+      "HeldStopCount": 1,
+      "HeldDisposeCount": 1,
+      "IndependentStopCount": 1,
+      "IndependentDisposeCount": 1,
+      "OriginalReceiverSendCount": 1,
+      "ResolvedDetail": {
+        "Request": {
+          "Id": "dc51d49eb8b54517b81b36124f205526",
+          "OwnerId": "e8efd33b1e7f491c8d2d173bb9e12ed3",
+          "SessionId": "e8efd33b1e7f491c8d2d173bb9e12ed3",
+          "Kind": "Context",
+          "OwnerRevision": 1,
+          "IntentKey": "e8efd33b1e7f491c8d2d173bb9e12ed3:Context:1",
+          "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-cab7164dc69449c7a2fa86a309144548\u0022,\n  \u0022SessionId\u0022: \u0022e8efd33b1e7f491c8d2d173bb9e12ed3\u0022,\n  \u0022OwnerId\u0022: \u0022e8efd33b1e7f491c8d2d173bb9e12ed3\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T02:51:05.461877\u002B00:00\u0022\n  }\n}",
+          "PayloadHash": "23DDCA595065250A08840718F325148B02E2F396F5B83E912939130B77D76CDA",
+          "Binding": {
+            "Id": "loopback",
+            "Revision": "1",
+            "Contract": "SIMULATION-v1",
+            "Endpoint": "http://127.0.0.1:53496/"
+          },
+          "Status": "Accepted",
+          "CreatedAt": "2026-10-16T18:51:05.464035+00:00"
+        },
+        "Attempts": [
+          {
+            "Id": "19f269c07ee6489d8c784b4e1d3dda50",
+            "RequestId": "dc51d49eb8b54517b81b36124f205526",
+            "Ordinal": 1,
+            "StartedAt": "2026-10-16T18:51:05.538816+00:00",
+            "EndedAt": "2026-10-16T18:51:05.541725+00:00",
+            "Disposition": "Unknown",
+            "Error": "HttpRequestException: transport outcome not authoritative"
+          }
+        ],
+        "Responses": [
+          {
+            "RequestId": "dc51d49eb8b54517b81b36124f205526",
+            "PayloadHash": "23DDCA595065250A08840718F325148B02E2F396F5B83E912939130B77D76CDA",
+            "EvidenceId": "22f191db0be4492a8c611d692a4c8dd1",
+            "Result": "Accepted",
+            "Reason": "SIMULATION accepted",
+            "Remaining": 120,
+            "Quantity": null,
+            "CheckToken": null,
+            "Context": {
+              "BoxWave": "SIM-BOX-WAVE-A5AA5CD25360",
+              "Provenance": {
+                "Source": "Independent synthetic task fixture",
+                "Version": "SYNTHETIC-SEMANTICS-v1",
+                "EvidenceId": "22f191db0be4492a8c611d692a4c8dd1",
+                "AcquiredAt": "2026-10-16T18:51:05.541042+00:00"
+              }
+            }
+          }
+        ],
+        "Audit": [
+          {
+            "Id": "82205ac095a5424cb599728f47532b1d",
+            "OwnerId": "e8efd33b1e7f491c8d2d173bb9e12ed3",
+            "Actor": "SIM-maintenance",
+            "CommandId": "1ffd3d854872461fb4e0cab6add5c36a",
+            "Kind": "OpenContext",
+            "Evidence": "000001",
+            "At": "2026-10-16T18:51:05.464159+00:00"
+          },
+          {
+            "Id": "e41851e1911a485cbbc14fbe54bb6abf",
+            "OwnerId": "e8efd33b1e7f491c8d2d173bb9e12ed3",
+            "Actor": "sender",
+            "CommandId": "system",
+            "Kind": "T2Claim",
+            "Evidence": "dc51d49eb8b54517b81b36124f205526",
+            "At": "2026-10-16T18:51:05.539161+00:00"
+          },
+          {
+            "Id": "7c0c84badf1949738d5ab974b7ddfe30",
+            "OwnerId": "e8efd33b1e7f491c8d2d173bb9e12ed3",
+            "Actor": "sender",
+            "CommandId": "system",
+            "Kind": "TransportHandoffAuthorized",
+            "Evidence": "dc51d49eb8b54517b81b36124f205526",
+            "At": "2026-10-16T18:51:05.539922+00:00"
+          },
+          {
+            "Id": "5bef262556314bbeb05f0f6d51288977",
+            "OwnerId": "e8efd33b1e7f491c8d2d173bb9e12ed3",
+            "Actor": "sender",
+            "CommandId": "system",
+            "Kind": "OutcomeUnknown",
+            "Evidence": "HttpRequestException: transport outcome not authoritative",
+            "At": "2026-10-16T18:51:05.541823+00:00"
+          },
+          {
+            "Id": "c004053551314ba6b4b0fa4702d65ec3",
+            "OwnerId": "e8efd33b1e7f491c8d2d173bb9e12ed3",
+            "Actor": "integration",
+            "CommandId": "system",
+            "Kind": "T3Response",
+            "Evidence": "SIMULATION accepted",
+            "At": "2026-10-16T18:51:10.567721+00:00"
+          },
+          {
+            "Id": "ec296741a86442f48740fcfb11ddab46",
+            "OwnerId": "e8efd33b1e7f491c8d2d173bb9e12ed3",
+            "Actor": "reconciler",
+            "CommandId": "system",
+            "Kind": "ReconciliationQuery",
+            "Evidence": "Authoritative SIMULATION receiver evidence 22f191db0be4492a8c611d692a4c8dd1",
+            "At": "2026-10-16T18:51:10.570124+00:00"
+          }
+        ]
+      },
+      "FinalResources": [],
+      "Result": "PASS"
+    }
+  ],
+  "Result": "PASS",
+  "Windows": "NOT_RUN",
+  "RealSdk": "BLOCKED"
+}

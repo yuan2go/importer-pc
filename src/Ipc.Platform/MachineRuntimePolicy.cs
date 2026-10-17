@@ -7,6 +7,61 @@ namespace Ipc.Platform;
 // data. The first reference deployment supports exactly one designated runtime account.
 public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccountSid, string LeaseRoot)
 {
+    public static (string Root, string TrustFile) ExtensionPaths(RunMode mode, string? requestedRoot = null, string? requestedTrust = null)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            var root = requestedRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "extensions", mode.ToString());
+            return (Path.GetFullPath(root), requestedTrust ?? Path.Combine(root, "trust.json"));
+        }
+        if (requestedRoot is not null || requestedTrust is not null) throw new InvalidDataException("Windows extensions require protected machine paths; user overrides forbidden");
+        var machine = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
+        var directory = Path.Combine(machine, "extensions", mode.ToString());
+        var trust = Path.Combine(machine, "extension-trust." + mode + ".json");
+        foreach (var path in new[] { machine, Path.Combine(machine, "extensions"), directory })
+        {
+            if (!Directory.Exists(path)) throw new InvalidDataException("Extension directory must be provisioned by maintenance");
+            RejectLinks(path); RequireProtectedAcl(new DirectoryInfo(path), null);
+        }
+        if (!File.Exists(trust)) throw new InvalidDataException("Independent offline trust policy not provisioned");
+        RejectLinks(trust); RequireProtectedAcl(new FileInfo(trust), null);
+        return (directory, trust);
+    }
+    public static void RequireExtensionInstallerAuthority()
+    {
+        if (!OperatingSystem.IsWindows()) return; // Explicit development/test paths only on portable hosts.
+        using var identity = WindowsIdentity.GetCurrent();
+        if (!new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator))
+            throw new UnauthorizedAccessException("Extension writes require a separate elevated installer; ordinary runtime is read-only");
+    }
+    public static string InstallerLeaseRoot(string portableRoot)
+    {
+        if (!OperatingSystem.IsWindows()) return portableRoot;
+        RequireExtensionInstallerAuthority();
+        var machine = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
+        var file = Path.Combine(machine, "runtime-policy.json");
+        RejectLinks(machine); RejectLinks(file); RequireProtectedAcl(new DirectoryInfo(machine), null); RequireProtectedAcl(new FileInfo(file), null);
+        var policy = Wire.Decode<MachineRuntimePolicy>(File.ReadAllText(file));
+        var leases = Path.Combine(machine, "leases");
+        if (policy.SchemaVersion != 1 || Path.GetFullPath(policy.LeaseRoot) != Path.GetFullPath(leases)) throw new InvalidDataException("Installer machine lease policy mismatch");
+        RejectLinks(leases); RequireProtectedAcl(new DirectoryInfo(leases), policy.RuntimeAccountSid);
+        return leases;
+    }
+    public static void RequireProtectedInstaller(string installRoot)
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        var root = Path.GetFullPath(installRoot).TrimEnd(Path.DirectorySeparatorChar);
+        var programFiles = Path.GetFullPath(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)).TrimEnd(Path.DirectorySeparatorChar);
+        var vendor = Path.Combine(programFiles, "ImporterPc");
+        if (!root.StartsWith(vendor + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+            throw new UnauthorizedAccessException("Elevated extension helper must come from a maintenance-protected Program Files/ImporterPc release");
+        for (var current = new DirectoryInfo(root); current is not null && !string.Equals(current.FullName, programFiles, StringComparison.OrdinalIgnoreCase); current = current.Parent)
+        { RejectLinks(current.FullName); RequireProtectedAcl(current, null); }
+        foreach (var name in new[] { "Ipc.Product.exe", "Ipc.Product.dll", "Ipc.Platform.dll", "Ipc.Supply.dll", "Ipc.Adapters.dll" })
+        {
+            var path = Path.Combine(root, name); RejectLinks(path); RequireProtectedAcl(new FileInfo(path), null);
+        }
+    }
     public static string ResolveLeaseRoot(string? requestedRoot)
     {
         if (!OperatingSystem.IsWindows())

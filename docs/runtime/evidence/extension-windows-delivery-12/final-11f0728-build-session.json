@@ -1,0 +1,69 @@
+{
+  "FrozenSourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+  "HEADUnchangedAcrossAllBuilds": true,
+  "Packages": [
+    {
+      "name": "core-portable",
+      "identity": {
+        "WorkPackage": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12",
+        "SourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+        "ReleaseVersion": "EXTENSION-WINDOWS-DELIVERY-12",
+        "StorageVersion": 3,
+        "ContractVersion": "SIMULATION-v1",
+        "SourceCodeSha256": "ad9a5c5b9c3cab04858b31002c9897887aa1c2bedc9620f7683041c46282ba93",
+        "Target": "portable",
+        "WindowsRuntimeValidation": "NOT_RUN",
+        "PhysicalIntegration": "BLOCKED",
+        "Note": "Portable requires pinned .NET runtime; win-x64 is self-contained and requires Windows validation.",
+        "Composition": "core-reference",
+        "Mode": "Simulation",
+        "ExtensionContract": 1,
+        "MinimumReader": 3,
+        "CompositionLockSha256": "a088a12b5fb0b78a068b54105a75b45bf2243c1906a74282bc4486d5146e9369"
+      },
+      "zip_sha256": "98d268bbfee6704e3b503e13fd961427261635445b735398ffb360276160544c"
+    },
+    {
+      "name": "barcode-portable",
+      "identity": {
+        "WorkPackage": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12",
+        "SourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+        "ReleaseVersion": "EXTENSION-WINDOWS-DELIVERY-12",
+        "StorageVersion": 3,
+        "ContractVersion": "SIMULATION-v1",
+        "SourceCodeSha256": "ad9a5c5b9c3cab04858b31002c9897887aa1c2bedc9620f7683041c46282ba93",
+        "Target": "portable",
+        "WindowsRuntimeValidation": "NOT_RUN",
+        "PhysicalIntegration": "BLOCKED",
+        "Note": "Portable requires pinned .NET runtime; win-x64 is self-contained and requires Windows validation.",
+        "Composition": "barcode-reference",
+        "Mode": "Simulation",
+        "ExtensionContract": 1,
+        "MinimumReader": 3,
+        "CompositionLockSha256": "2f9d2acf85f73235c75a62f6ae5aaac6bb233d6066c3d8e2b85fe3737803c4a4"
+      },
+      "zip_sha256": "95a3e3d6a63600a68c3e6ae66067fbd690d842d1cf97e60eb18a12a4b5256293"
+    },
+    {
+      "name": "barcode-win-x64",
+      "identity": {
+        "WorkPackage": "WP-IPC-EXTENSION-WINDOWS-DELIVERY-12",
+        "SourceCommit": "11f0728e506753dafcdc22fb190c5b268118423d",
+        "ReleaseVersion": "EXTENSION-WINDOWS-DELIVERY-12",
+        "StorageVersion": 3,
+        "ContractVersion": "SIMULATION-v1",
+        "SourceCodeSha256": "ad9a5c5b9c3cab04858b31002c9897887aa1c2bedc9620f7683041c46282ba93",
+        "Target": "win-x64",
+        "WindowsRuntimeValidation": "NOT_RUN",
+        "PhysicalIntegration": "BLOCKED",
+        "Note": "Portable requires pinned .NET runtime; win-x64 is self-contained and requires Windows validation.",
+        "Composition": "barcode-reference",
+        "Mode": "Simulation",
+        "ExtensionContract": 1,
+        "MinimumReader": 3,
+        "CompositionLockSha256": "6a93ae03dfacf4c1783c0ea89fe54847fcce208d5dcdee3486eb710475fee8c9"
+      },
+      "zip_sha256": "489563f0bf9b8b854c606b2d3a86b674632d0c6351994b51f28fed856328e50e"
+    }
+  ]
+}

@@ -13,7 +13,7 @@ public static class ReferenceProduct
          new("supply", "supply", "1.0.0", 1, ["platform"], "Ipc.Supply.dll"),
          new("adapters", "adapters", "1.0.0", 1, ["supply"], "Ipc.Adapters.dll"),
          new("product", "product", "1.0.0", 1, ["adapters"], "Ipc.Product.dll")],
-        ["workstation", "history", "alarms", "diagnostics", "maintenance", "engineering"], ["standard", "compact"],
+        ["workstation", "history", "alarms", "diagnostics", "maintenance", "engineering", "extensions"], ["standard", "compact"],
         [new("manual", RunMode.Simulation), new("replay", RunMode.Simulation)]);
     static readonly IReadOnlyDictionary<string, Func<DeviceBinding, string, IObservationSource>> sourceFactories =
         new Dictionary<string, Func<DeviceBinding, string, IObservationSource>>(StringComparer.Ordinal)
@@ -21,8 +21,8 @@ public static class ReferenceProduct
             ["manual"] = (binding, _) => new ManualObservationSource(binding.DeviceId),
             ["replay"] = (binding, directory) => new FileReplaySource(binding.DeviceId, ResolveReplay(binding.ReplayFile, directory))
         };
-    public static IReadOnlyList<string> Validate(ProductManifest manifest, StationConfig station, PresentationSettings presentation, string installRoot) =>
-        ProductValidation.Validate(Definition, manifest, station, presentation, installRoot).Concat(SupplyConfiguration.Validate(station)).Distinct().ToArray();
+    public static IReadOnlyList<string> Validate(ProductManifest manifest, StationConfig station, PresentationSettings presentation, string installRoot, string[]? verifiedExtensionDrivers = null) =>
+        ProductValidation.Validate(Definition with { Drivers = Definition.Drivers.Concat((verifiedExtensionDrivers ?? []).Select(x => new DriverRegistration(x, station.Mode))).ToArray() }, manifest, station, presentation, installRoot).Concat(SupplyConfiguration.Validate(station)).Distinct().ToArray();
     public static IObservationSource CreateSource(DeviceBinding binding, string configurationDirectory)
     {
         if (!sourceFactories.TryGetValue(binding.Driver, out var create)) throw new InvalidDataException("Unregistered installed driver");

@@ -9,7 +9,7 @@
     {"Id":"adapters","Kind":"adapters","Version":"1.0.0","ContractMajor":1,"Dependencies":["supply"],"File":"Ipc.Adapters.dll"},
     {"Id":"product","Kind":"product","Version":"1.0.0","ContractMajor":1,"Dependencies":["adapters"],"File":"Ipc.Product.dll"}
   ],
-  "Views": ["workstation","history","alarms","diagnostics","maintenance","engineering"],
+  "Views": ["workstation","history","alarms","diagnostics","maintenance","engineering","extensions"],
   "Layouts": ["standard","compact"],
   "Drivers": [{"Id":"manual","Mode":"Simulation"},{"Id":"replay","Mode":"Simulation"}]
 }

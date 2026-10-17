@@ -10,6 +10,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     readonly StationConfig config;
     readonly IRequestContract contract;
     readonly Func<StationConfig, IReadOnlyList<string>>? configurationValidator;
+    readonly Func<StationConfig, IDisposable?>? configurationLeaseFactory;
     readonly SemaphoreSlim gate = new(1, 1);
     readonly StationDispatcher owner;
     readonly CancellationTokenSource maintenanceStop = new();
@@ -31,11 +32,12 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     public bool IsOverloaded => runtimeFaults.ContainsKey("Overload");
     DateTimeOffset Now => clock.GetUtcNow();
     public Guid InstanceId { get; } = Guid.NewGuid();
-    public StationApplication(SupplyStore store, StationConfig config, IRequestContract contract, FaultInjection? faults = null, TimeProvider? clock = null, Func<StationConfig, IReadOnlyList<string>>? configurationValidator = null)
+    public StationApplication(SupplyStore store, StationConfig config, IRequestContract contract, FaultInjection? faults = null, TimeProvider? clock = null, Func<StationConfig, IReadOnlyList<string>>? configurationValidator = null, Func<StationConfig, IDisposable?>? configurationLeaseFactory = null)
     {
-        this.configurationValidator = configurationValidator; this.store = store; this.config = config; this.contract = contract; this.clock = clock ?? TimeProvider.System; this.faults = faults ?? new(); state = store.Load();
+        this.configurationValidator = configurationValidator; this.configurationLeaseFactory = configurationLeaseFactory; this.store = store; this.config = config; this.contract = contract; this.clock = clock ?? TimeProvider.System; this.faults = faults ?? new(); state = store.Load();
         if (File.Exists(OverloadMarker)) runtimeFaults["Overload"] = "Unacknowledged overflow; inspect source/entity evidence";
         state.Actor = null; state.Stopping = false; state.IntegrationHealth = null;
+        state.Blocks.RemoveAll(x => x.Code == "WindowArea" && x.ClearAuthority == "presentation-owner");
         // A released process does not imply unfinished calls were cancelled remotely.
         foreach (var request in store.PendingRequests().Where(x => x.Status == RequestStatus.Dispatching))
         {
@@ -121,6 +123,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     async Task<CommandReceipt> ExecuteCore(Command command)
     {
         await gate.WaitAsync();
+        IDisposable? configurationLease = null;
         try
         {
             var previous = store.Receipt(command); if (previous is not null) return previous;
@@ -139,7 +142,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                     case "Logout":
                         next.Actor = null; break; // Prior responsibility is frozen on every request.
                     case "Pause": SetBlock(next, "OperatorPaused", "station", "operator", "manual", "operator"); break;
-                    case "Resume": next.Blocks.RemoveAll(x => x.Code == "OperatorPaused"); break;
+                    case "Resume": Require(!next.Blocks.Any(x => x.Code == "WindowArea"), "An insufficient window still owns presentation protection"); next.Blocks.RemoveAll(x => x.Code == "OperatorPaused"); break;
                     case "ClearOverload":
                         Maintenance(next); Require(command.Value?.Length is >= 8 and <= 1000, "Source inspection evidence required");
                         Require(IsOverloaded, "No active overload to acknowledge");
@@ -243,7 +246,10 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                     case "SaveConfig":
                     {
                         Maintenance(next); Require(command.Value is not null, "Configuration JSON required");
-                        var draft = Wire.Decode<StationConfig>(command.Value!); var errors = SupplyConfiguration.Validate(draft).Concat(configurationValidator?.Invoke(draft) ?? []).Distinct().ToArray();
+                        var draft = Wire.Decode<StationConfig>(command.Value!);
+                        configurationLease = configurationLeaseFactory?.Invoke(draft);
+                        var errors = SupplyConfiguration.Validate(draft).Concat(configurationValidator?.Invoke(draft) ?? []).Distinct().ToArray();
+                        Require(command.OwnerId is null || command.OwnerId == config.Version, "Deployment base version changed");
                         Require(draft.StationId == config.StationId && draft.Mode == config.Mode && draft.Version != config.Version, "Station/mode fixed; revision must change");
                         Require(!store.ConfigVersionExists(draft.Version), "Configuration version already used; create a new immutable revision identity");
                         revision = new(Wire.Id(), config.Version, draft, next.Actor!.Id, errors.Length == 0 ? "Validated" : "Rejected", string.Join("; ", errors), Now);
@@ -252,7 +258,10 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                     case "ActivateConfig":
                     {
                         Maintenance(next); Require(!HasUnresolved() && (next.Session is null || next.Session.Status is SessionStatus.Closed or SessionStatus.Rejected), "Close box and resolve effects before restart activation");
+                        Require(!next.Quarantined && next.Lanes.Values.All(x => x.Occupancy == Occupancy.Clear) &&
+                            !next.Blocks.Any(x => x.Code is "LocalDispositionRequired" or "ConflictingEvidence"), "Entity/recovery responsibilities prevent deployment activation");
                         var draft = store.Configs().FirstOrDefault(x => x.Id == owner) ?? throw new GuardException("Configuration revision not found");
+                        configurationLease = configurationLeaseFactory?.Invoke(draft.Content);
                         Require(draft.Status == "Validated" && draft.BaseVersion == config.Version, "Stale/invalid configuration draft");
                         Require(!store.ConfigVersionExists(draft.Content.Version, draft.Id), "Configuration version reused in retained history; create a new draft");
                         Require(store.CurrentConfig("PendingActivation") is null, "A configuration is already pending controlled restart");
@@ -299,7 +308,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             catch (GuardException ex) { return new("RejectedByGuard", ex.Message, state.Revision, owner); }
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); return new("StorageFailure", "Local save failed; business blocked; inspect diagnostics", state.Revision); }
-        finally { gate.Release(); }
+        finally { try { configurationLease?.Dispose(); } finally { gate.Release(); } }
     }
     BusinessRequest Prepare(StationState next, string owner, long ownerRevision, RequestKind kind, string barcode, int? package, int? quantity)
     {

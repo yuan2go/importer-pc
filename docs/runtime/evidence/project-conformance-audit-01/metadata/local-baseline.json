@@ -1,0 +1,83 @@
+{
+  "utc": "2026-10-17T08:07:54.513777+00:00",
+  "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "status": "## HEAD (no branch)\n",
+  "refs": [
+    {
+      "ref": "origin",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "main_only_branch_only": "0\t0"
+    },
+    {
+      "ref": "origin/codex/arch-extension-closure-13",
+      "sha": "0364b07cd56f8eb61775cac13b5f1620d620bec8",
+      "main_only_branch_only": "1\t0"
+    },
+    {
+      "ref": "origin/codex/ipc-readiness-02",
+      "sha": "bab1a88f5262fc7a89ee832b9b6068215b37e6a2",
+      "main_only_branch_only": "75\t0"
+    },
+    {
+      "ref": "origin/codex/wp-ipc-arch-ui-alignment-01",
+      "sha": "c77f7eabb3ee0e98ff340c9cc0c2dcd1f734cfaf",
+      "main_only_branch_only": "59\t0"
+    },
+    {
+      "ref": "origin/codex/wp-ipc-audit-reconciliation-01",
+      "sha": "02b255e1cddcfb53307ebc769f345c0fe38aa8d8",
+      "main_only_branch_only": "30\t0"
+    },
+    {
+      "ref": "origin/codex/wp-ipc-engineering-closure-07",
+      "sha": "ca4f0bfe64dfb738153da4d0a78ea277a969189d",
+      "main_only_branch_only": "48\t0"
+    },
+    {
+      "ref": "origin/codex/wp-ipc-extension-windows-delivery-12",
+      "sha": "2116c3b90b6fe7c729d0888452b6a1ca4d3bd7f5",
+      "main_only_branch_only": "13\t0"
+    },
+    {
+      "ref": "origin/codex/wp-ipc-main-review-02",
+      "sha": "76dff7a7fb49fbe3f4c451fd59030ebeed6df9ab",
+      "main_only_branch_only": "57\t0"
+    },
+    {
+      "ref": "origin/codex/wp-ipc-main-review-03",
+      "sha": "340109cb6119f5b5323300eafde95900e40b2a71",
+      "main_only_branch_only": "43\t0"
+    },
+    {
+      "ref": "origin/codex/wp-ipc-review-followup-11",
+      "sha": "0961b3e6f78f1c6c6ae77a44750922312e40973d",
+      "main_only_branch_only": "25\t0"
+    },
+    {
+      "ref": "origin/codex/wp-ipc-runtime-03",
+      "sha": "a7a3d874dd3223135ebe7077965a6fa6bb1b7bfc",
+      "main_only_branch_only": "70\t0"
+    },
+    {
+      "ref": "origin/codex/wp-ipc-runtime-hardening-04",
+      "sha": "26af6e544189e288c00c4596d8b861dcc0cb91f6",
+      "main_only_branch_only": "64\t0"
+    },
+    {
+      "ref": "origin/docs/final-ui-assets-20261016",
+      "sha": "35ee540b7b1b69f795881c14b75631c5af254071",
+      "main_only_branch_only": "47\t8"
+    },
+    {
+      "ref": "origin/docs/ui-assets-20261016",
+      "sha": "3edb3747d7183d38adf1118989e7d36b2390ffba",
+      "main_only_branch_only": "63\t1"
+    },
+    {
+      "ref": "origin/main",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "main_only_branch_only": "0\t0"
+    }
+  ],
+  "file_count": 544
+}

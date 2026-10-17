@@ -1,0 +1,56 @@
+{
+  "SchemaVersion": 1,
+  "Id": "audit.integration",
+  "Version": "1.0.0",
+  "Publisher": "audit-local",
+  "Runtime": "net10.0",
+  "Rid": "any",
+  "ContractMajor": 1,
+  "Mode": "Simulation",
+  "SourceCommit": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "Dependencies": [],
+  "Files": [
+    {
+      "Path": "Ipc.Reference.IntegrationExtension.dll",
+      "Length": 26112,
+      "Sha256": "20258D45361CCBDE7D2861F36FB52AE5A287AF6B1414BE46F84D0E35E348822B"
+    }
+  ],
+  "Modules": [
+    {
+      "Id": "reference-http",
+      "Assembly": "Ipc.Reference.IntegrationExtension.dll",
+      "EntryType": "Ipc.Reference.IntegrationExtension.IntegrationModule",
+      "Kind": "integration",
+      "MaximumInstances": 8,
+      "Parameters": [
+        {
+          "Key": "metadata.label",
+          "Group": "Service",
+          "Label": "Label",
+          "Type": "string",
+          "Required": false,
+          "Default": "",
+          "MaximumLength": 256,
+          "Minimum": null,
+          "Maximum": null,
+          "Choices": null,
+          "Sensitive": false,
+          "Description": null,
+          "Unit": null,
+          "ReadOnly": false,
+          "ApplyLevel": "Restart",
+          "EditRole": "Maintenance",
+          "RequiredWhenKey": null,
+          "RequiredWhenEquals": null,
+          "MaximumItems": 32
+        }
+      ]
+    }
+  ],
+  "Prerequisites": [],
+  "HostContractSha256": "E5F8D3848453579F97969F3613F67FE9E9D35DE19830355E5D2EA755ABCCEFCD",
+  "PublicContracts": {
+    "Ipc.Supply.Contracts": "CE85AC8BB9E43013A13B4CE8DCC11513AFDF90A9E7C9B767500C40AD3251CC80"
+  }
+}

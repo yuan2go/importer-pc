@@ -1,52 +1,49 @@
-> CLOSURE-13当前交付补充：最终宿主/工具8cb475b，独立插件1.0.1；[PR12复核与AC13](runtime/arch-extension-closure-13-recheck.md) · [checks](runtime/arch-extension-closure-13-recheck-checks.json)。核心/Mac/WPF交叉构建通过，Windows实际验收统一延期；首轮dc5b405与全部历史证据保留。
-
-> 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入核心实现已提交；Mac参考验证与WPF交叉构建按13报告分项记录，候选交付不代表Windows或现场验收。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](archive/pre-arch-extension-closure-13/README.md)。
-
-## CLOSURE-13 当前入口
-
-[13工作包](work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md) · [职责/装配/扩展设计](design/controlled-extensions.md) · [开发安装与恢复](extensions/developer-guide.md) · [逐AC13报告](runtime/arch-extension-closure-13.md) · [checks](runtime/arch-extension-closure-13-checks.json) · [WPF增量与Windows延期](ui/arch-extension-closure-13-mapping.md)。供包/非供包真实业务选装、两个P2、独立观察/集成包、多实例服务目标、原请求精确实现冻结和查询/停止所有权为当前实现范围；逐项验证以报告为准。核心工程、Mac参考、WPF构建、实际Windows与现场资格分别判断。
-
-以下12及更早段落保留其形成时身份，不能拿旧候选/旧PASS替代13证据。
-
-> 上一版11执行：[REVIEW-FOLLOWUP-11](work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)，起点main `4ae5319`。修复PR9独立复核的两个P2并补Product组合所有权动态证据；结果、同版包及新SHA见[11报告](runtime/review-followup-11.md)与[11 checks](runtime/review-followup-11-checks.json)；[前版本](archive/pre-review-followup-11/README.md)保留。下文09/a080825为上一版证据，不自动代表本次输出；Windows/真实集成仍按06/05分项阻塞。
-
-## DELIVERY-12 历史交付入口
-
-[原工作包](work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md) · [受控扩展设计](design/controlled-extensions.md) · [扩展开发与安装/恢复](extensions/developer-guide.md) · [12实施/AC/候选交付](runtime/extension-windows-delivery-12.md)。从main 9f320459起开发；原11证据、SQL/请求/设计原件和D/RV保留。核心验证与Windows参考验收、远端候选和真实现场资格分别判断，未验不关闭整包。
-
 # 统一资料与实施入口
 
-2026-10-16形成；上一版执行 **[WP-IPC-AUDIT-RECONCILIATION-01](work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)**，基准main `856e4de73f09a1c4f12af798c4d21e8631a6a86f`。用户本次授权08/10及09合成/参考环境必要测试、构建、启动和发布验证；生产WCS写入与真实设备动作未授权。[纠偏前原字节快照](archive/pre-reconciliation-01/README.md)保留原报告、工作包、入口、manifest及blob/SHA，历史不测试/NOT_RUN按形成时含义保留。
+## 当前审查与待实施修复
 
-## 上一版实现与证据（a080825）
+最新独立审查：**WP-IPC-PROJECT-CONFORMANCE-AUDIT-01**，固定main `8cabf06d3c6d53ba551b65e58a13db6cdcaba16a`，2026-10-17，PR12已合并。实际参考链可运行，A-01～04仍待修；R-01～03保持条件风险。审查材料提交不等于源码修复。后续 **WP-IPC-CONFORMANCE-FIX-14为PLANNED / NOT_IMPLEMENTED**。
 
-- [09实际验证与同版交付](runtime/reference-validation-09.md)：SourceCommit、运行日志、持续双箱旅程、Release/Storage/Contract、模块/配置指纹与ZIP SHA；[检查JSON](runtime/reference-validation-09-checks.json)。源码路径、合成运行、Windows操作和现场准入分别记录。
-- [10逐页UI映射](runtime/ui-baseline-alignment-10.md)：v1.1实物到PAGE01～08、双通道、数量/拆包、确认及低频抽屉；实际Windows截图与行为另按[06待验](runtime/windows-06.md)。不能以HTML图或交叉编译替代WPF验收。
-- [运行/发布/维护](runtime/operations.md)：固定SDK、实际选择器、控制台与桌面、同版打包、旧格式只读检查/备份/显式升级/回退隔离、固定运行账户与机级租约。
-- [05真实能力边界](runtime/integration-05.md)：B-01～06分别记录SDK/旧工程、WCS、实体、数量、身份和现场缺项。Production继续NotReady，不用模拟成功回退。
+|入口|阅读目的|
+|---|---|
+|[完整审查、PDF与结构化结果](reviews/project-conformance-audit-01/README.md)|main能力、工作包矩阵、架构/业务证据、确定缺陷、风险和验证缺口。|
+|[原始证据](runtime/evidence/project-conformance-audit-01/README.md)|固定SHA日志、首次失败/复验、实际探针、合成数据库、覆盖和远端记录。|
+|[下一步分析](reviews/project-conformance-audit-01/next-step-analysis.md)|修复顺序、文档清理对象、兼容影响和范围判断。|
+|[14修复工作包](work-packages/WP-IPC-CONFORMANCE-FIX-14.md)|代码前阅读/清理与AC14-01～07结果约束。|
+|[精简Codex提示词](work-packages/Codex-WP-IPC-CONFORMANCE-FIX-14.md)|交给执行Codex，不替代完整工作包和设计阅读。|
 
-08统一旧新历史/详情读取的应用层有效身份检查；当前故障快照保持可发现，退出/过期后桌面旧阅读结果明确失效。启动在取得数据根租约后选定最终Effective/Pending配置、核验站点/模式，再锁定实际站点/设备资源，最后创建应用/来源/发送器；失败激活保留旧Effective，不并行重建第二套框架。
+Windows实际WPF、DPI、扫码、声音和部署按13用户决定统一后验，保持WINDOWS_NOT_RUN；真实SDK/WCS/实体/数量/身份和现场按独立门禁。Linux/Mac运行、WPF交叉构建、Windows实际验收分别记录。执行修复时重新核远端main、工作区和并行PR，不把本审查SHA自动当成新基线。
 
-09保留schema1/id2/id3 SQL/checksum、原请求字节/目标/合同、旧读者及未来格式拒绝和失败保旧断言。双箱旅程使用真实ProductRuntime来源队列、合成心跳、后台发送器、SQLite与独立loopback接收账；接受事实和模拟实体离场/复位分开。实际分项结果以检查JSON为准，不以本段描述代替证据。
+## 代码前必读
 
-## 页面开发实物基线
+1. [AGENTS](../AGENTS.md)、14工作包、完整审查及相关原始证据。
+2. [框架架构](design/framework.md)、[决策记录](design/framework-decisions.md)、[受控装配与扩展](design/controlled-extensions.md)。有效职责/事务/身份/生命周期要求继续成立；各文件旧“当前执行”须按14先归档纠偏，不能改弱设计来消除缺陷。
+3. [13工作包](work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)、[原始执行要求](work-packages/Codex-WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)、[13首轮](runtime/arch-extension-closure-13.md)、[最终复核](runtime/arch-extension-closure-13-recheck.md)及[checks](runtime/arch-extension-closure-13-recheck-checks.json)；按改动再读[12工作包](work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)与[交付](runtime/extension-windows-delivery-12.md)。保留后续明确批准的调整，不以更早建议否定受控后装或Windows延期。
+4. [运行/发布/维护](runtime/operations.md)、[扩展开发安装与恢复](extensions/developer-guide.md)，结合实际入口、配置、依赖和源码核对。
+5. [D决策确认](readiness/decision-pack.md)、[技术基线](readiness/technical-baseline.json)、[历史RV状态](reviews/STATUS.md)和[完整RV问题原表](reviews/issues.json)。采用不等于客户批准；新审查A/R另表，历史RV不因本轮局部修复自动关闭。
+6. [公开范围](baseline/PUBLICATION.md)、[资料缺失](baseline/MISSING.md)、[冲突](baseline/CONFLICTS.md)与[manifest](manifest.json)。原稿、私密链接、SDK等限制不因报告发布扩大。
 
-[SS-UI-VIS-001 v1.1入口](ui/ss-ui-vis-001-v1.1/README.md) · [34张独立状态图](ui/ss-ui-vis-001-v1.1/GALLERY.md) · [原交互HTML](ui/ss-ui-vis-001-v1.1/供包工作站_高保真交互原型.html) · [完整UI交接](ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md)。PPTX、画板JSON、tokens和分离HTML/CSS/JS均实际入库。11份源文件保留原字节，PNG是同源重新导出，均不是Windows客户端截图。本次WPF增量继承专业信息层级，不复制旧HTML已知业务缺陷；原设计不因代码取舍被重写。
+## UI实物与分层验收
 
-该组生成资产已有用户限定公开授权，不扩张为其他客户资料许可。完整客户材料归档仍为 **PUBLIC_SUBSET_ONLY**。
+[v1.1入口](ui/ss-ui-vis-001-v1.1/README.md) · [34张状态图](ui/ss-ui-vis-001-v1.1/GALLERY.md) · [原HTML](ui/ss-ui-vis-001-v1.1/供包工作站_高保真交互原型.html) · [完整UI交接](ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md) · [UI资料状态](ui/STATUS.md)。源文件、PPTX、画板、tokens、分离HTML/CSS/JS及PNG都有实际资料；PNG为同源重新导出，未变成Windows截图。修改页面前实际阅读实物，不照抄原型已知业务缺陷。
 
-## 必读设计与原问题
+[13 UI映射](ui/arch-extension-closure-13-mapping.md) · [12 UI映射](ui/extension-delivery-12-mapping.md) · [10 UI实施](runtime/ui-baseline-alignment-10.md) · [Windows06](runtime/windows-06.md) · [06工作包](work-packages/WP-IPC-WINDOWS-VALIDATION-06.md) · [真实集成05](runtime/integration-05.md) · [05工作包](work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)。旧“当前候选/环境阻塞”只表示形成时状态，14开工前按最新有效要求清理；W01～06和B01～06本身不能作为过期要求删除。
 
-1. [框架架构](design/framework.md)与[决策依据](design/framework-decisions.md)：目标模块化单体、基座/业务/UI/适配器边界、单业务所有者和多视图；F-02是独立参考技术路线，不是旧现场迁移完成。
-2. [复核02](reviews/main-static-review-02.md)、[复核03](reviews/main-static-review-03.md)及[03 checks](reviews/main-static-review-03-checks.json)：保留形成时问题证据。03当时E-06/E-10残留由08补齐、UI差异由10实施、运行债务由09承接；历史报告不倒写为新验收。
-3. 实际工作包：[08](work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md)、[10](work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md)、[09](work-packages/WP-IPC-REFERENCE-VALIDATION-09.md)、[06](work-packages/WP-IPC-WINDOWS-VALIDATION-06.md)、[05](work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)。本次结果由纠偏包统一绑定，原不测试要求只作为历史记录保留。
-4. [D决策确认包](readiness/decision-pack.md)、[技术基线](readiness/technical-baseline.json)、[RV状态](reviews/STATUS.md)与[完整历史issues](reviews/issues.json)：D批准未变，RV-01～17仍OPEN；参考运行不能关闭客户/现场验收。
-5. [当前manifest](manifest.json)、[公开范围](baseline/PUBLICATION.md)、[缺失资料](baseline/MISSING.md)与[冲突](baseline/CONFLICTS.md)：不上传未许可客户原稿、私密链接、凭据、生产数据、SDK或字体。
+## 历史实施、评审与工作包
 
-## 历史实施与资料归档
+|阶段|完整入口|
+|---|---|
+|11复核跟进|[工作包](work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)、[报告](runtime/review-followup-11.md)、[checks](runtime/review-followup-11-checks.json)|
+|08/09/10纠偏与参考验证|[纠偏工作包](work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)、[08](work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md)、[09](work-packages/WP-IPC-REFERENCE-VALIDATION-09.md)、[10](work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md)、[09报告](runtime/reference-validation-09.md)、[checks](runtime/reference-validation-09-checks.json)|
+|07工程闭环|[工作包](work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md)、[报告](runtime/engineering-closure-07.md)|
+|03/04及架构UI对齐|[03工作包](work-packages/WP-IPC-RUNTIME-03.md)、[实施](runtime/implementation.md)、[交付](runtime/delivery.md)、[04](work-packages/WP-IPC-RUNTIME-HARDENING-04.md)、[04结果](runtime/hardening-04.md)、[对齐包](work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md)、[结果](runtime/alignment-01.md)|
+|旧独立复核|[02](reviews/main-static-review-02.md)、[03](reviews/main-static-review-03.md)、[03 checks](reviews/main-static-review-03-checks.json)|
+|资料与准备阶段|[BASELINE-01](work-packages/WP-IPC-DESIGN-BASELINE-01.md)、[READINESS计划](superpowers/plans/2026-10-16-ipc-readiness.md)、[修订与验证建议](readiness/revision-and-verification.md)|
 
-[RUNTIME-03实施](runtime/implementation.md)、[历史交付](runtime/delivery.md)、[HARDENING-04](runtime/hardening-04.md)、[ALIGNMENT-01](runtime/alignment-01.md)和[07实施](runtime/engineering-closure-07.md)保留形成时范围与检查，不能用旧包或旧PASS替代当前源提交。PR #2～#8合并历史与各次OPEN_AT_CREATION分别理解，实时PR状态以GitHub为准。
+历史PR状态以其记录时间理解，实时状态读取GitHub；不把历史OPEN_AT_CREATION当作仍未合并。历史“不测试”仅限原任务，当前必要验证按14执行；旧候选/旧PASS不代替新SHA证据。完整客户归档继续PUBLIC_SUBSET_ONLY。
 
-[BASELINE-01](work-packages/WP-IPC-DESIGN-BASELINE-01.md)全量归档尚未关闭；九张PRD图/七个HTML依赖已取得但未公开，新的Canva完整导出及部分历史截图仍缺。不能以README、目录或摘要冒充原字节交付。[历史入口](archive/pre-framework-20261016/README.md)、[READINESS准备](superpowers/plans/2026-10-16-ipc-readiness.md)和旧检查保留，不重新施加“永久只能归档”。
+## 原字节归档与资料检查
 
-资料校验见[工具说明](../tools/README.md)；其PASS只证明所覆盖资料，不代表业务、Windows或现场通过。
+[本次入口前版本](archive/pre-conformance-audit-01/README.md) · [13前](archive/pre-arch-extension-closure-13/README.md) · [12前](archive/pre-extension-delivery-12/README.md) · [11前](archive/pre-review-followup-11/README.md) · [纠偏前](archive/pre-reconciliation-01/README.md) · [框架前](archive/pre-framework-20261016/README.md)。归档保存形成时文件身份，不作为当前命令；不复制整仓或清空旧证据来减少文件。
+
+[资料校验工具](../tools/README.md)只证明它覆盖的资料/链接/身份，不代表业务或现场通过。已知源资产问题与本次新增材料校验分开，保持原件和失败记录。

@@ -1,0 +1,487 @@
+# 项目符合性独立审查报告
+
+**任务：WP-IPC-PROJECT-CONFORMANCE-AUDIT-01**
+
+**仓库：yuan2go/importer-pc**  
+**固定源码：8cabf06d3c6d53ba551b65e58a13db6cdcaba16a**  
+**审查日期：2026-10-17；所有代码证据均对应此 SHA，另有注明的除外。**
+
+## 1. 结论与当前可交付边界
+
+**当前 main 已形成有真实持久化、原请求恢复和受控扩展的供包参考产品；尚不能宣布“完整桌面维护闭环完成”，也不具备真实工位上线资格。** 本次确认了两个已模拟复现的缺陷和两个静态可确定的 UI 接线缺陷，并另列三个条件风险。没有把原型、目录、历史 PASS、提交数量或已合并事实当成能力验收。
+
+可以继续参考工程开发。建议把 A-01～A-04 作为相关恢复、多服务和维护 UI 闭环的后续交付门槛。现有 main 已合并，不存在本审查替它执行撤销、修改或合并的动作。Windows 实际验收在后续任务中被明确批准延期；延期不阻止核心继续开发，也不构成 Windows 已通过。真实 SDK、客户 WCS、生产身份与实体/数量规则仍独立阻塞对应生产路径。[S01][S02][S03]
+
+### 1.1 main 实际能做什么
+
+- 从明确的产品清单、最终 Effective/Pending 配置和资源租约启动一个 ProductRuntime；一个 StationApplication 维护供包状态，多个页面/窗口共享该应用。
+- 使用 manual、文件 replay、受信任的独立托管观察插件产生合成事件；通过设备身份、Epoch、Sequence、SourceEventId 和 Admission 关联实体与业务作业。
+- 在参考语义下完成模拟登录、验箱、识别、数量核验、保留件拆包、提交、模拟实体离场/复位、结束供包、报警和记录追溯。
+- 使用真实 SQLite 保存会话、作业、观察、请求、尝试、回执、接受账和审计；T1/T2/T3 与 Outbox 路径实际可达。HTTP 接收端使用自己的数据库，未用客户端假状态替代远端结果。
+- 遇到发送后结果不明时保留原 RequestId、报文/hash、目标、契约和精确实现，查询原请求；对查无记录、查询不支持、超时不默认重发。恢复备份进入隔离。
+- 构建/打包选择 Supply 或 Inspection；后者有真实 CLI 命令、持久批次、查询和重启恢复。签名包安装、精确依赖、受控激活和多数停止/卸载所有权路径已有实质实现。[S04][S05][S06][S07]
+
+以上核心判断有本 SHA 的隔离构建和必要模拟验证支持，UI 操作部分仍只是源码核验。Inspection 的视图注册不等于已经交付第二套完整 WPF 产品。
+
+### 1.2 main 不能据此声称完成什么
+
+|能力或交付声明|当前事实|
+|---|---|
+|真实相机连接、触发及 SDK 回调正确|没有厂商 SDK 适配和实际设备证据；当前观察源是 manual/replay/合成托管插件。|
+|生产登录和权限策略落定|只有模拟角色和有效期策略；真实 WCS→WES 认证及权限尚未接入/批准。|
+|真实发车、实体完成或 PLC 控制|参考 Submit Accepted 与占位 Clear 分离；离场/复位是显式模拟事件，没有真实动作完成权威接线。|
+|数量、拆包及少货规则获批准|现用 SYNTHETIC-KEEP-v1；原 PRD 内部数量分支有冲突，D-03/04 等仍未决。|
+|所有恢复边界都正确|A-01 已复现：同 EvidenceId 矛盾结果的原件与持续阻断未保存，重启后准入恢复。|
+|多服务状态彼此独立|A-02 已复现：辅助离线被投影为主 WCS 不可用，各实例诊断却仍为 Available。|
+|组件管理 UI 全旅程可用|A-03/A-04 静态确认激活入口依赖错误列表、导入草稿被旧 Effective 覆盖。|
+|Windows 页面、DPI、焦点、扫码器和声音验收通过|本轮 Linux 环境仅交叉编译 WPF，没有 Windows 启动或交互；W01～06 继续 NOT_RUN。|
+|长期无桌面供包、任意 SDK/原生插件、多工位共享库恢复均已验|分别存在 R-02 范围缺口、明确原生拒绝边界及 R-03 条件风险，不能扩张交付声明。|
+|已完成客户现场验收或生产准入|没有真实接口/设备联调或现场验收证据；Production 校验明确拒绝缺失能力。|
+
+## 2. 固定基线、远端进度与工作区隔离
+
+### 2.1 版本身份
+
+|项目|本次独立取得的事实|
+|---|---|
+|main SHA|8cabf06d3c6d53ba551b65e58a13db6cdcaba16a|
+|main 提交时间|2026-10-17 08:01:09 UTC／16:01:09 UTC+08；合并 PR #12。|
+|首次远端记录|2026-10-17 08:05:27.223 UTC，见 remote-baseline.json。|
+|隔离源码状态记录|2026-10-17 08:07:54.513777 UTC，detached HEAD；git status --porcelain 为空。|
+|结束前远端复核|2026-10-17T08:49:43.416Z；main 仍为上述 SHA，打开的 PR 为 0。|
+|PR #12|已合并；head 0364b07cd56f8eb61775cac13b5f1620d620bec8，不能继续按“未合并实现”处理。|
+|PR #1～#12|本次远端列表均为已合并；没有待合并实现被计入 main。|
+|本 SHA 的 GitHub Actions|查询返回 total_count=0；这只说明没有取得该 SHA 的 Actions 运行记录，不否定别处历史执行，也不补出 Windows 证据。|
+|审查源码树|importer-pc-audit，始终未修改；单独的 importer-pc-audit-build 承担 restore/build/验证。|
+|原始证据保留|未修改 README、设计、业务代码、测试断言、旧报告或旧候选；未提交、未创建修复 PR、未合并。|
+
+主线有 544 个受版本管理的文件：src 106、tests 19、config 6、examples 7、scripts 15、tools 4、docs 380，以及 7 个根文件。src 中有 66 个 C# 文件。此数字用于说明盘点范围，**不用于计算完成率**。详见 inventory.json 与逐文件 coverage.json。
+
+### 2.2 分支与本地改动必须分开
+
+|远端分支|tip 简写|main 外独有提交|判断|
+|---|---|---:|---|
+|main|8cabf06d|0|固定审查基线。|
+|codex/arch-extension-closure-13|0364b07c|0|已由 PR12 合并。|
+|codex/ipc-readiness-02|bab1a88f|0|历史已整合。|
+|codex/wp-ipc-runtime-03|a7a3d874|0|历史已整合。|
+|codex/wp-ipc-runtime-hardening-04|26af6e54|0|历史已整合。|
+|codex/wp-ipc-arch-ui-alignment-01|c77f7eab|0|历史已整合。|
+|codex/wp-ipc-main-review-02|76dff7a7|0|历史已整合。|
+|codex/wp-ipc-engineering-closure-07|ca4f0bfe|0|历史已整合。|
+|codex/wp-ipc-main-review-03|340109cb|0|历史已整合。|
+|codex/wp-ipc-audit-reconciliation-01|02b255e1|0|历史已整合。|
+|codex/wp-ipc-review-followup-11|0961b3e6|0|历史已整合。|
+|codex/wp-ipc-extension-windows-delivery-12|2116c3b9|0|历史已整合。|
+|docs/final-ui-assets-20261016|35ee540b|8|保留的资产/合并历史；主要 UI 实物已在 main。不能把独有提交数直接当作未交付功能。|
+|docs/ui-assets-20261016|3edb3747|1|较早资料分支，已被后续资产整理替代，没有活动 PR。|
+
+完整 SHA 与 ahead/behind 数量保存在 local-baseline.json。两个 docs 分支与 main 的差异经只读对照，未发现只有这些分支才具备的当前运行功能。
+
+另找到一个此前工作树：/workspace/scratch/85125af0d927/importer-pc，HEAD 为 451f7f5b3a9e7aace77c6617d05eb15ed69888b1，处于 codex/arch-extension-closure-13；有 6 个受跟踪文件改动，以及实例编辑文档、源码、测试和 WPF 临时文件等未跟踪项。其状态原样保留在 preexisting-working-tree.json，**没有被本轮合入、覆盖或当作 main 的实现证据**。还保留了旧 feed6e9 快照；本轮隔离构建产生的 bin/obj/WPF 临时文件也不属于用户业务改动。
+
+### 2.3 候选、main 与历史运行的关系
+
+远端确实存在预发布 closure13-reference-8cb475b（2026-10-17 07:56:03 UTC），带供包、Inspection、portable/win-x64 包、源码、1.0.1 两类插件和 SHA256SUMS；早期 dc5b405/1.0.0 候选也保留。见 remote-releases.json。[S18]
+
+独立 Git 对比证明：8cb475b880e6cdd248db42bff74accf443c83519 与本次 main 在 src、config、scripts、global.json、Directory.Build.props、NuGet.Config、ImporterPc.slnx、运维及扩展开发说明上无差异。故历史 Mac 结果关联相同的这些运行输入，但其 SourceCommit 仍是 8cb475b，不能改写成本轮结果。本轮从 main 新建隔离构建；没有重新下载并逐字节复核全部线上候选 ZIP，因此不另行宣称线上二进制已被本轮重新认证。
+
+## 3. 需求与设计权威：采用不等于批准
+
+本次先读项目指令与索引，再核对设计/决策/工作包和实现；并额外读取可取得的原始 PRD、详细设计、开发说明和 UI 输入。报告不以最新文件日期裁决批准关系。
+
+|证据类型|查得状态|本轮使用方式|
+|---|---|---|
+|用户明确方向|基座机制、业务线、所属 UI、设备驱动与上游集成职责分开；打包选业务、参数选 UI、配置选驱动。后续 WP03/12/13 有实际执行要求。|作为当前架构符合性依据，不把最初讨论中的全部细节倒推为逐项批准。|
+|后续明确调整|WP03 授权在缺旧 C# 工程时建立 F-02 新参考产品；WP12 授权受控后装；WP13 收敛公共契约和类型化集成，并批准先核心开发/验证、WPF 交叉构建、Windows 后验。|承认调整，不用更早“固定注册”或 WP12 原 Windows 时序否定后续授权。[S01][S02]|
+|现用工程设计|framework-decisions 第21行明确“采用”代表本轮参考设计取舍，不表示用户/客户逐项批准；F-01～12 与实现要求相互引用。|可评审工程实现，不据此关闭 D 项或生产验收。[S03]|
+|原始 PRD v1.1|全文 284 行已读；包括双相机、箱与 Item 校验、拆包/发车/结束供包、三类声音、3个月明细、无图片存储。未读其外链图片及私有接口附件。|保留明确需求；标出内部冲突，缺少合同处不自行补定义。|
+|SS-DESIGN-001 v1.0|开头明确是“设计评审稿”，不是已批准接口基线/上线证明；除引用来源外架构、类、状态、表、契约多为推荐。|按已读取章节评估，不把示例目录、HTTP 方法、数据库表名强制套成批准设计。|
+|开发实施说明|开头注明未读现有 C# 仓库，目录/接口/伪代码属推荐；后文“按已批准设计”是待执行提示词，不是签署回执。|用来追踪实施意图，不能证明旧生产工程已按该方案实现。|
+|原始 UI 输入与公开 v1.1 交接|PAGE01～08、任务核对、状态语义、触控、声音等有具体规定；公开 HTML/CSS/JS 是设计原型。|以任务语义和当前要求核 WPF；不把原型 JS 当主程序，也不把原型图当 Windows 截图。|
+|D-01～16 / RV-01～17|当前 D 记录仍为未决，批准记录未取得；RV 仍 OPEN，指向历史原型及评审问题。|不自行关闭；也不直接把全部历史 RV 当成当前 C# 的 17 个故障。[S14]|
+|历史报告/旧状态|“无源码”“不执行测试”“某包待实现”等有形成时的 SHA/范围；当前已有后续代码和授权。|历史原文保留，不迁移为当前事实、不反向限制本轮已授权验证。|
+
+原始详设/开发说明中的 WP-SS-00～11 是从原型到最终现场的初始目标；后续 IPC03/12/13 是获准的参考工程及扩展阶段。两套编号不能互相冒充完成，后者合并不代表所有原始现场目标已经达到。
+
+### 3.1 尚无最终裁决的关键冲突
+
+1. **数量自动/人工分支：** 原 PRD 高层描述为包装量小于或等于剩余量可以整包，但详细流程又区分等于与小于时的自动/人工行为。D-03 未提供最终批准。影响自动提交、按钮守卫及双相机并发需求裁决；参考实现不能替客户做最终选择。
+2. **拆包方向与单位：** 原描述中保留件扫描、移除数量、一次供给量的表达需要统一；D-04 未决。当前 SYNTHETIC-KEEP-v1 只保证其自身的字符串身份去重和参考计量，不证明现场方向、单位或预留规则正确。
+3. **“发车成功”语义：** 识别成功、WCS 接受、控制命令成功及物品实际离开不能混为一层。D-02/05/06/07 仍需接口/设备权威与 SOP。当前代码有意区分 Accepted 与 Occupancy/Depart/Reset，属于保护边界。
+4. **保留期：** PRD 明确要求明细保存3个月；“自然月还是90天、边界时区、哪些附件/审计同步保留、容量与备份”尚需 D-13 明确。当前 PruneHistoryAsync 是可调用的维护能力，不是已经落实并验收的生产3个月策略。
+5. **历史声音编号笔误：** 原详设 REQ-025 指外部 WCS→WES 上报，REQ-027 才是三类声音。历史 main-static-review-02 中把声音指向 REQ-025 的编号不可继承；此为旧定位笔误，不另列当前运行缺陷。
+
+## 4. 实际架构与七项符合性判断
+
+### 4.1 实际项目依赖
+
+以下为当前 csproj 的直接方向；程序集传递可见性不等于每个页面都调用具体实现。
+
+|项目|直接依赖/职责|
+|---|---|
+|Ipc.Platform|公共业务装配、生命周期、队列/租约、配置和受信包机制；不引用 Supply/Product/Desktop。NuGet Hosting 10.0.13。|
+|Ipc.Supply.Contracts|仅依赖 Platform；供包 DTO、应用与类型化请求/集成契约。没有 WPF/SQLite。|
+|Ipc.Supply|依赖 Supply.Contracts；业务状态机、命令、守卫、SQLite T1/T2/T3、历史与恢复。Microsoft.Data.Sqlite 10.0.13、SQLitePCLRaw.bundle_e_sqlite3 2.1.14。|
+|Ipc.Adapters|依赖 Supply；内置 manual/replay 与 Loopback。仍复用业务配置校验，属于受控兼容耦合。|
+|Ipc.Product|依赖 Adapters；具体装配根、来源工厂、发送器、集成路由、管理和生命周期所有权。|
+|Ipc.Desktop|依赖 Product；App 创建 Host，MainWindow/页面用 IStationRuntime/IStationApplication。目标 net10.0-windows、UseWPF。|
+|Ipc.Assembly|公共 Program+Platform；BusinessModule=Supply 时编入 SupplyAssembly→Product，Inspection 时编入 InspectionAssembly→Inspection。|
+|Ipc.Inspection|仅依赖 Platform；独立的合成批次/采样与持久恢复，不引用供包模块。|
+|独立插件示例|Barcode 引用冻结 Platform DLL；Integration 引用冻结 Platform+Supply.Contracts DLL；不以宿主项目引用偷带插件。|
+
+构建锁定 SDK 10.0.402、rollForward=disable、锁文件及 warnings-as-errors。Windows 发布目标是 win-x64；本轮运行身份是 Linux x64/.NET 10.0.13。没有把跨平台编译写成位数、原生 SDK 或 Windows 兼容已验。[S04][S05]
+
+### 4.2 七项边界逐项判断
+
+|检查项|结论（按任务指定分类）|实际依据与限定|
+|---|---|---|
+|1. 基座/业务/UI/驱动/上游/契约职责与依赖|符合设计；旧契约及入口经批准兼容|项目依赖无环；业务规则在 Supply；UI 不自行构造 SQLite/WCS/设备 SDK；新插件只见公共契约。WP13 明确保留旧 StationConfig 形状和旧入口；Adapters→Supply 是现存实现耦合，无循环，未形成第二业务权威，不声称该具体依赖获得逐项批准。|
+|2. 业务、UI、驱动选择与装配|符合设计|业务编译/打包期条件选择；页面/布局由 allowlist 和参数选择；驱动/服务按最终配置在启动或受控重启时装配。独立发布验证确认未选供包程序集从 Inspection 产物剔除。没有宣称任意业务或驱动热插拔。|
+|3. 多 UI 共享服务与状态|符合设计（源码）；Windows 行为证据不足|App 只创建一个 Runtime；第二窗传入同一 IStationRuntime，草稿/查询代次为本窗呈现状态。当前设计不要求所有 UI 必须同时运行。A-04 是同窗草稿重复的问题，不是第二套业务数据库。|
+|4. 注册、校验、启停、取消、异常、释放与恢复|主体符合设计；部分本期尚未实现|先选最终配置再拿实际设备租约；来源/发送/核对在途工作停止前保留资源；失败激活保旧。A-01 持续冲突阻断与 A-02 健康隔离不足，不能宣布全部闭环。|
+|5. SDK/扩展版本、位数和加载/部署|托管参考范围符合设计；真实 SDK 不属于本期；实际 Windows 证据不足|包签名/信任、ID/version 内容身份、AssemblyRef、精确依赖、RID和受控 ALC 均有真实路径；原生/PInvoke及未批准 SDK 前置条件明确拒绝。ALC 是依赖隔离而非安全沙箱。未见任意可写目录 DLL 扫描。|
+|6. 事件→业务→持久化→请求→回执→UI|参考链符合设计；真实接口证据不足|下节逐层追踪，来源、T1/T2/T3、后台发送和读模型可达。健康与矛盾回执的已发现例外单列，不能用整体图掩盖。|
+|7. 并行架构、重复服务与不必要复杂度|符合设计；旧专用入口经批准兼容|旧 ProductHost 与新的 SupplyAssembly 最终共用 ProductRuntime；未见并行业务状态机、循环项目引用、额外分布式平台。Fixture 是隔离验证接收端。未用的 BoundedExecutor 辅助类是残留，不在主生产链。|
+
+**未发现足够证据把本次主体架构判为“未经批准整体改造”。** 具体缺陷归因为实现不足或未接线；不把修正实现所需的工作包装成重新批准业务规则。R-03 的共享包库范围仍须确认。[S01][S03][S06]
+
+### 4.3 选择发生在什么时候
+
+|维度|实现时点与运行入口|不应扩大成的能力|
+|---|---|---|
+|业务线|Ipc.Assembly.csproj 条件 Compile/ProjectReference；package-business.py 选择实际发布组合。|任意业务运行时热装、完整第二客户产品。|
+|业务所属页面/布局|ViewRegistry、manifest AllowedViews、PresentationSettings、MainWindow 导航。|切页创建另一个业务状态机；跨进程多 UI 同时控制。|
+|设备来源|ReferenceProduct 注册 manual/replay；ProductRuntime.CreateSource 按 Driver 或 extension:instance 构造。|未知 SDK 自动兼容、任意 DLL 搜索。|
+|上游集成|IntegrationRuntime 解析 Services/Ports，主 requests 绑定真实类型化实现；历史请求使用原 Implementation。|所有辅助端口已有完整业务消费者；忽略不同实例的健康依赖。|
+|扩展版本/参数|离线导入→可信安装登记→统一部署草稿→待激活→受控停止/重启→最终 Effective。|安装即生效、保存即生效、Unload 返回即原生资源全部退出。|
+
+## 5. 关键生产路径的真实调用与事务
+
+### 5.1 启动与唯一所有者
+
+Desktop.App 或 Product CLI 创建 Generic Host。ProductRuntime.StartCore 校验清单、模式、配置和数据格式，先取得数据根租约，再选择数据库 Effective/Pending；然后核对最终站点/模式与真实配置资源，取得设备及包使用租约，创建 IntegrationRuntime、SupplyStore、一个 StationApplication 和来源。ModuleCatalog 启动 ObservationModule、SenderModule。失败激活保存失败回执并保留旧 Effective；不会在原来源尚未退出时并行启第二套设备所有者。[S06]
+
+### 5.2 设备观察、读码与作业
+
+来源 StartControlledAsync 注册 Epoch；回调先经过 ObservationModule 的有界队列，再进入应用单所有者。ReceiveCore 用 device/epoch/sourceEventId 去重，以 Sequence 拒绝过时/异常事件。Enter 建立 Admission 与 Operation，Read 必须匹配当前占位 Admission；无码、多码和修订先使当前输入失效，历史已确认结果另存。不是简单按条码全局去重：同码的新实体在完成旧实体离场/复位后可合法重新入场。[S07]
+
+双相机在代码中是两独立设备/逻辑位，业务串行协调、接收端事务化需求裁决。是否对应现场一个或两个物理位置、如何把真实触发/回调去重身份映射进来，仍待设备合同；合成 Enter/Read 的成功不能证明厂商 SDK 缓冲区、回调线程和实体映射正确。
+
+### 5.3 T1、T2、T3 与结果权威
+
+|边界|真实行为|证据|
+|---|---|---|
+|T1：业务意图落盘|Prepare 冻结 RequestId、Owner/Revision、Payload/Hash、Binding、Contract、IntegrationImplementation；同事务保存作业、请求/Outbox、观察、审计和命令回执。|StationApplication.cs:313–320；Store.cs:130–171。|
+|T2：每次发送尝试|Claim 创建独立 Attempt；BeforeSend 再核原操作者、许可、作业/占位和原实现，持久保存 TransportHandoff 后才允许外部调用。|StationApplication.cs:399–450；SenderModule.cs:24–31。|
+|网络/适配器|发送在数据库事务和业务协调锁外；IntegrationRuntime 选择绑定实现。独立 Fixture 通过 HTTP 和自己的 SQLite 接受账裁决。|IntegrationRuntime.cs:110–150；Receiver.cs:42–87。|
+|T3：结果处理|ValidateResponse 核原 RequestId/Hash 和语义；保存原回执与终态，按唯一 Request 防止接受量重复；仅匹配的 Session/Operation Revision 可更新当前 owner。|StationApplication.cs:454–538；Store.cs:153–158。A-01 是该异常边界的缺陷。|
+|不明结果|超时/连接/协议异常保留 Unknown；查无记录/不支持不是未交付证明；核对原精确实现及目标。|SenderModule.cs:30–31；ProductRuntime.cs:281–307。|
+|UI/追溯|页面读快照与数据库历史，Persisted 表示本地命令已提交，不等于 WCS 接受；Accepted 不自动 Clear 实体占位。|IStationApplication；MainWindow、HistoryQueries；ApplyOwner 和 Depart/Reset。|
+
+“识别成功”“WCS 接受”“实体完成”在主模型中区分正确。正常业务拒绝产生 Rejected；无法确定结果产生 Unknown；T2 前有持久未交付证据时才允许同 RequestId 的另一 Attempt。没有观察到把所有异常都变成失败后新 ID 重发的主链。A-01 则说明其冲突分支仍不能承诺恢复完整。
+
+### 5.4 关闭、取消和恢复
+
+CheckClose 需要空位和无未决责任，生成带剩余量/版本的关闭检查；ConfirmClose 绑定该检查，并区分正常关闭和显式少货确认。迟到回执不直接打开另一个箱。Dispatching 重启转 Unknown；恢复旧备份时 Prepared 也可能已在远端产生效果，因此进入隔离并查询，而非重播。
+
+CancelPrepared 只适用于可证明未发送的责任，并进入 AwaitingDisposition/LocalDispositionRequired。当前没有无依据的通用“解除一切”命令；释放预留、处置实体和重新授权需要真实合同/SOP。此为明确受控缺口，不应为了使演示闭环而补默认成功。[S08]
+
+停止路径先建立停止屏障并取消/停止来源，等待后台发送和原请求核对，必要时保留 Store、加载上下文、包/设备租约至在途工作和 Dispose 真正完成。相关超时与故意延迟的托管插件所有权已在本轮 --architecture 模拟验证；未涉及真实厂商原生句柄。
+
+## 6. 工作包完成矩阵
+
+范围标签只取“本期必做／后续规划／待确认”；实现只取“未实现／部分实现／已实现”；验证只取“仅静态检查／模拟验证／真实接口或设备联调／现场验收”。“模拟验证”包含真实进程、SQLite、本地 HTTP 和合成插件，但不升级为客户接口联调。
+
+下表评价当前目标的相关实现，不用历史任务文字“完成”代替核验。细粒度业务矩阵见下一节。
+
+|工作包/需求与范围|设计依据|实现位置与运行入口|实现／验证／剩余缺口|
+|---|---|---|---|
+|DESIGN-BASELINE-01；本期必做的基线辨别|PUBLICATION、MISSING、CONFLICTS、INDEX；原始PRD与详设|docs/baseline、docs/design、公开UI实物；外部原稿只读|部分实现／仅静态检查。公开子集与原始资料身份明确；外链图片、客户HTML及完整私有合同/批准仍未检查，不能宣称全量原稿归档完成。|
+|READINESS-02 / D决策；本期必做核查，决策待确认|decision-pack、technical-baseline|SupplyConfiguration.Validate、integration-05 的能力门禁|部分实现／仅静态检查。准备资料及失败关闭存在；D项无最终批准，真实准入未完成。|
+|RUNTIME-03；本期必做参考链|F-02、WP03 AC01～11|ProductHost、StationApplication、Sender、Store、Desktop|部分实现／模拟验证。主要参考链可运行；A-01 恢复边缘、A-03/04后续维护UI不足；真实能力另列。|
+|RUNTIME-HARDENING-04；本期必做|F-09、H04、framework §7～9|Claim/BeforeSend/Complete、Unknown、Backup/Restore|部分实现／模拟验证。T1/T2/T3、崩溃恢复及恢复隔离通过所选用例；矛盾同证据ID分支未闭环。|
+|ARCH-UI-ALIGNMENT-01；本期必做|framework §10、后续 UI10|ViewRegistry、MainWindow.Presentation、LaneControl|已实现／仅静态检查，WPF编译通过。职责和双通道呈现已接线；Windows 几何/交互未验。|
+|ENGINEERING-CLOSURE-07；本期必做|E01～10、MAIN-REVIEW02/03、framework|StationClosure、历史查询、来源核对、通知和恢复入口|已实现（本轮所核E项）／相关项模拟验证。来源核对、通知、旧新结果与历史读取已接线；本轮未跑完整--closure。Windows与条件风险另列，不把未验证直接判作代码未实现。|
+|ENGINEERING-FOLLOWUP-08；本期必做|E06/E10与最终配置所有权要求|HistoryQueries、身份检查、ProductRuntime最终资源装配|已实现／模拟验证。--followup有持续双箱/身份及配置所有权证据；不延伸为Windows全部交互通过。|
+|AUDIT-RECONCILIATION-01；本期必做的历史纠偏|09/10与历史证据身份边界|INDEX、归档、运行/候选脚本；新报告各自SHA|已实现（所核身份和入口）／仅静态检查。当前报告仍独立验证，不重写旧PASS/NOT_RUN。|
+|REFERENCE-VALIDATION-09；本期必做必要核心验证|09分层退出条件|Ipc.Verification --baseline/--followup等；独立Fixture|已实现（核心验证器与交付入口）／模拟验证。本轮只跑风险相关选择器；Windows/真实/现场分层验收另列06/05，历史全量统计不继承，不以验收未完成直接判核心代码缺失。|
+|UI-BASELINE-ALIGNMENT-10；本期必做|v1.1交接、PAGE01～08|App、MainWindow、LaneControl、历史/报警/维护|部分实现／仅静态检查。业务语义主要接线；新增维护整合有A-03/04，实际显示输入待验。|
+|REVIEW-FOLLOWUP-11；本期必做的已承接修正|11任务及旧P2|PresentationPolicy、Product资源所有权；当前后续实现|已实现（所读修正）／模拟验证覆盖相关所有权。未独立重跑整个--review-followup，不用历史P2当当前未修。|
+|EXTENSION-WINDOWS-DELIVERY-12；本期核心必做，Windows后续规划|WP12 S1～S6；后续13调整|ExtensionStore/Loading/Schema、Product管理、ExtensionsView|部分实现／模拟验证。安装/依赖/部署机制真实，UI A-03/04和状态隔离A-02未完整；Windows按后续批准延期。|
+|ARCH-EXTENSION-CLOSURE-13 AC01～03；本期必做|13原任务与AC表|业务条件构建；ExtensionStore身份；ManagedAssemblyPolicy|已实现／模拟验证。两项历史包P2修复在main，--architecture有对应用例。|
+|ARCH-EXTENSION-CLOSURE-13 AC04～06；本期必做|类型化集成、多实例、原请求与所有权|IntegrationRuntime、Contracts、统一部署、停止/恢复|部分实现／模拟验证。主请求、原查询、取消/停止真实，旧实例改名已修；A-02健康独立和A-03/04维护入口不足。|
+|ARCH-EXTENSION-CLOSURE-13 AC07～08；本期核心必做|冻结宿主、独立插件、候选/WPF身份|验证器、package-business/reference、Release资产与WPF|部分实现／模拟验证及WPF交叉构建。验证/打包入口已实现；AC08维护旅程仍有A-03/04。全部线上ZIP未重新复核和Windows未验属独立验证缺口，不用来替代实现判断。|
+|WINDOWS-VALIDATION-06；后续规划（已批准延期）|W01～06、13明确后置|Desktop及Windows打包/安装脚本、验收场景文档|未实现实际验收活动／仅静态检查。没有Windows截图、扫码器、触控、听审或目标工控机运行证据。|
+|INTEGRATION-BOUNDARY-05；后续规划，业务合同待确认|B01～06、D01～16、原PRD|明确Production NotReady；预留驱动/集成契约|未实现真实能力／仅静态检查。真实SDK、WCS、实体、数量、身份、现场均缺相应证据。|
+
+### 6.1 当前 13 工作包的推进结论
+
+职责收敛、两个真实业务构建、两项历史包安全问题、独立观察/集成插件、原请求冻结、精确查询、失败激活保旧及在途所有权，均有当前源码和相关模拟运行支持。不是“只有扩展目录”。
+
+AC13-05/08 的实际维护 UI 与 AC13-04 的实例健康闭环不能按整包全绿。A-03/04 不依赖真实设备或 Windows 新规则即可从源码确定，A-02 已有真实 ProductRuntime 模拟复现。Windows 延期是一项已批准的验证顺序调整；当前缺陷不应被这项延期遮蔽。
+
+## 7. 业务逐项闭环矩阵
+
+|业务与范围|实现状态|入口/数据去向|验证层级与缺口|
+|---|---|---|---|
+|启动自检；本期必做|已实现参考自检|App→Host→ProductRuntime.StartCore；清单/配置/数据库/租约/模块诊断|模拟验证；WPF交叉构建。Windows真正启动及硬件自检未验。|
+|登录；参考本期，生产待确认|部分实现|Login/Logout→身份/权限/有效期；原请求操作者固定|模拟验证。无生产认证提供者；可否跳过登录和操作角色需D项。|
+|相机连接；参考本期，厂商后续|部分实现|manual/replay/独立观察源→RegisterEpoch/Health→队列|模拟验证。SDK、触发源、迟到回调及真实双相机映射待设备联调。|
+|周转箱校验；本期参考必做|已实现|OpenContext→T1/T2→Context回执→Active|模拟验证。真实波次/楼层/箱合法性服务语义未取得。|
+|Item识别/无码/多码；本期必做|已实现参考路径|ReceiveCore→当前输入失效→Validate→任务/数量投影|模拟验证。同实体修订与合法新实体区分；真实回调身份质量未验。|
+|数量处理；参考本期，生产待确认|部分实现|Validate/Submit、接收端事务需求裁决与唯一接受账|模拟验证。PRD“≤/=”等冲突、单位/共享需求/并发分配仍需批准。|
+|拆包；参考本期，生产待确认|部分实现|ScanRetained/ClearSplit/Submit；SYNTHETIC-KEEP-v1|模拟验证后端；UI仅静态。保留/移除方向待D04，连续键盘扫码R-01待Windows验证。|
+|发车；参考提交本期，实体后续|部分实现|Submit→Accepted；另由Depart/Reset改变实体占位|模拟验证。没有真实发车/PLC/AGV完成权威。|
+|结束供包；本期参考必做|已实现参考路径|CheckClose快照→显式确认→Close；Unknown保持屏障|模拟验证。真实关闭权限和WCS合同仍待确认。|
+|报警；本期必做|已实现主要路径|持久报警/活动状态、AckAlarm、版本化源核对；桌面提示队列|相关模拟验证，UI仅静态；A-01丢冲突证据，R-02无桌面消费范围、实际三类声音听审未验。|
+|记录追溯；本期必做|已实现主要路径|会话→作业→原请求→尝试→回执→审计，分页/筛选/导出|模拟验证。A-01异常原件遗漏；3个月保留政策/容量尚未生产验收。|
+|异常/重启恢复；本期必做|部分实现|Unknown、精确原查询、备份隔离、来源证据、配置失败保旧|模拟验证。A-01确定缺陷；本地终结后的实体/预留处置无通用解锁，属待合同的明确缺口。|
+
+### 7.1 重点反例核对结果
+
+- **去重与重扫：** 按来源事件身份去重，同码新Admission可合法供包；真实跨相机和物理映射仍待合同。
+- **迟到与切箱：** Owner/Revision、Session与原报文绑定；Unknown和关闭屏障保留旧责任，不拿新箱覆盖。
+- **数量：** 接受账按请求唯一，接收端事务裁决双通道需求。A-01复现证据/阻断丢失，没有重复加量。
+- **本地失败：** 已选用例覆盖SQLite回滚、T3失败、子进程崩溃和恢复旧Prepared；不推广为全部故障组合。
+- **模式：** Production明确拒绝缺能力，不回退模拟；SYNTHETIC参考规则仍未获生产批准。
+
+## 8. 问题分级与确定缺陷
+
+本报告按后果分级：P0 为正在发生的严重现场/系统失控证据，本轮无此证据；P1 为破坏持久事实或恢复准入可靠性的高影响缺陷；P2 为明确阻断规定旅程、错误状态/可用性或有条件功能风险；P3 为低影响改进。修改工作量不参与分级。模拟复现不称现场事故，静态确定不称 Windows 已运行。
+
+### A-01 · P1 · 同 EvidenceId 的矛盾回执丢失原件和持续核对阻断
+
+**分类：实现不足；确定缺陷，已模拟复现。** 级别依据是已发现的协议矛盾在持久化/重启后不可追溯并放开准入，不依据是否容易修补；发生前提是适配器/对端复用同证据身份给出相反结论。未证明当前合成 Fixture 自发产生此异常，也未证明已发生现场错发。
+
+**场景：** Submit 已 Accepted，接受量为1；后来同一 RequestId/Hash/EvidenceId 给出 Rejected。当前公共 CompleteAsync 实际收到该合法类型化异常输入。生产链中 Reconcile 可并发发起，两个先前已启动的 Unknown 查询可能在第一份终态后返回第二份结果；对端须发生矛盾，不能单靠正常重复回执触发。
+
+**证据（固定 SHA）：** StationApplication.CompleteCore:454–480 检出矛盾并拟保存 Unknown/ConflictingEvidence；Store.Commit:153–158 因同 EvidenceId 内容不同抛 InvalidDataException，整个冲突事务回滚；CompleteCore:479 只锁存内存 ProtocolFailure，再进入 UnknownLocked:489–502；其中494行见原请求 Accepted/Rejected 后直接返回。构造器:35–50 没有恢复这项内存故障。设计 framework §7、operations:120 要求矛盾留证并阻断。[S09]
+
+|探针阶段|请求/作业|接受量|冲突证据和阻断|Admit|
+|---|---|---:|---|---|
+|原 Accepted 后|Accepted|1|无冲突|true|
+|同ID矛盾 Rejected 后|仍 Accepted|1|仅内存 ProtocolFailure；持久 Blocks=[]|false|
+|停止、重开库并恢复合成身份/健康|仍 Accepted|1|RuntimeFaults=[]、RecoveryRequestIds=[]；仍只有原响应|true|
+
+**运行记录：** verification-contradiction-run.log；verification-results.json 的 2026-10-17 08:15:52.320501～08:15:53.187318 UTC，exit 0；请求 c059bd5a1254414c8880b9cd38001a54。探针调用真实应用/SQLite，不开网络、不造设备；源程序和原始数据库均保留。
+
+**影响：** 原接受事实没有被覆盖、也未增加重复数量，这部分正确。但矛盾响应原件、冲突审计、Unknown与持续核对阻断都未落盘，重启后无法从请求链发现仍需核对。若后台脉冲稍后写入一般报警，也不能补回原件或恢复该准入屏障。
+
+**修正方向：** 保留原响应不可变，另以冲突发生身份保存新原件、来源/接收时间、原EvidenceId及摘要；冲突记录与持续阻断同事务持久化。终态不应吞掉新发现的冲突。不得覆盖旧响应、删除唯一约束或用强制成功规避。
+
+**验收条件：** 同ID同内容仍去重；同ID不同内容和不同ID矛盾都保留完整证据；重启后仍能发现原请求需要核对并阻断继续业务；重复证据不增加接受量；再次存储失败保持受控状态，不自动重发。
+
+**阻断：** 不阻塞无关开发；阻塞宣称原请求恢复完整正确的相关合并/交付验收；现场上线前必须关闭。当前 Production 还受外部能力门禁阻断。
+
+### A-02 · P2 · 辅助服务离线被归因成主 WCS 不可用
+
+**分类：实例健康实现不足；确定缺陷，已模拟复现。**
+
+**场景：** 主 requests 目标健康；另一已启用且绑定独立端口的辅助服务拒绝连接。当前健康聚合把主目标写成 Unavailable，同时两个实例都显示 Available/LastFailure=null。
+
+**证据：** IntegrationRuntime.HealthAsync:152–161 对所有 entries.Values 执行布尔 AND；SenderModule:24 把结果交给唯一 SetWcsHealthAsync；StationClosure:117–146 将其绑定到主 config.Integration.Id/Revision；StationApplication:572–575 将主 WCS 不可用加进全站守卫。示例 IntegrationModule:27 的 Diagnostic 只反映生命周期，:87–90 健康异常返回 false 却不更新 LastFailure。WP12:63 要求非关键故障按实际依赖裁决，:107要求实例状态独立；controlled-extensions:29保留辅助端口与各自诊断。[S10]
+
+|隔离 ProductRuntime 案例|主目标投影|实例诊断|健康附加阻断|
+|---|---|---|---|
+|主健康、辅助离线|Unavailable|primary/auxiliary 均 Available，LastFailure=null|WcsUnavailable、WcsHealth:Unavailable|
+|停用辅助的对照|Ready|primary Available|上述两项消失|
+
+**运行记录：** health-evidence/health-result.json、verification-health-run.log；2026-10-17 08:15:57.301563～08:15:59.163309 UTC，exit 0；HealthCalls=6、EffectCalls=0。使用当前源码构建的独立插件和实际 ProductRuntime，只访问自建 loopback 健康端点。两组都未登录/开箱，因此本次证明错误健康归因和额外守卫，不声称完整供包停机或 Windows 已复现。
+
+**影响：** 可选/非关键辅助故障可能扩大为主业务阻断；运维无法从“两个实例都 Available”定位失败目标。即使某部署决定所有启用服务都必需，也应报告失败的实际实例及依赖原因，不能把布尔聚合伪装成主目标自身离线。历史查询懒加载 entry 同样加入健康集合的影响有静态路径支持，未另行动态复现。
+
+**修正方向：** 保存逐实例/目标健康事实、时间及错误，由业务声明所需端口组合计算动作守卫；主请求当前健康与历史查询责任分离。保留真正必需依赖失败的阻断。
+
+**验收条件：** 主健康/辅助失败、主失败/辅助健康、两者恢复、历史查询目标失败分别准确投影；非关键辅助不错误阻断主业务，必需辅助失败显示准确依赖；故障状态不继续显示假 Available。
+
+**阻断：** 不阻塞单实例或无关开发；作为多服务能力后续合并/交付门槛；多服务部署上线前解决。不是生产接口缺失造成的错误。
+
+### A-03 · P2 · 组件页激活读取隐藏维护页的选中状态
+
+**分类：未接线；源码可确定，未动态运行 WPF。**
+
+**场景：** 新窗口取得维护身份，直接进入组件管理，在 Revisions 选中合法 Validated 修订并申请激活。没有先到旧维护页加载/选择 ConfigsList。
+
+**证据：** ExtensionsView.xaml.cs:344–347 正确取自己的 revision，MainWindow.Extensions.cs:43–44 将其ID传给 SendAsync；MainWindow.xaml.cs:118–130 调 CanCommand，:152 却检查旧 ConfigsList.IsEnabled/SelectedItem，而不是传入 revision。身份变化在 MainWindow.Presentation.cs:178–188 禁用旧列表；extensions 导航只刷新自己的列表。后端 StationApplication:258–270 仍按实际 owner/CAS/权限/未决责任校验。[S11]
+
+**影响：** 规定的组件页正常入口不能独立完成激活，需先操作另一页面的无关列表。旧列表若恰有另一个 Validated 项，UI保护依据也与本次对象无关；后端保护仍在，未证明越权或错误配置被静默激活。附带同根差异：UI要求 Session非Closed一律禁止，后端允许无其他责任的Rejected会话，需统一投影语义。
+
+**修正方向：** 把待激活 ConfigRevision、身份和当前上下文作为明确守卫输入，或使用应用提供的动作可用性；两个页面都绑定自己的选择，后端 CAS/权限/实体与原请求屏障继续保留。
+
+**验收条件：** 新启动→维护登录→直接组件页→选Validated→申请激活能到后端并返回PendingActivation或准确拒绝；无选择、Rejected/stale修订、换人、并发保存/激活都正确拒绝；普通维护页不回归。需要实际Windows旅程，helper单测不足。
+
+**阻断：** 不阻塞其他核心开发；阻塞 AC12/13“完整维护 UI”相关后续合并/交付验收。main 已合并事实不等于该验收通过；本审查不撤销历史合并。
+
+### A-04 · P2 · JSON 导入后的扩展草稿被旧 Effective 重置
+
+**分类：重复草稿状态和错误初始化；源码可确定，未动态运行 WPF。**
+
+**场景：** 维护页导入合法统一配置，其中 Packages、Instances、Services、Ports 或参数不同于当前 Effective，然后进入组件页查看/编辑并保存部署。
+
+**证据：** MainWindow.LoadConfigForm:371–379 已将导入 config 写入 draftBase、extensionDraft 和表单；ImportConfigClick:418 又调用 ExtensionsControl.Initialize。该 Initialize:25–30 从 Runtime.Configuration.Extensions（旧Effective）复制 desired；ExtensionsView:340–342 随后把旧 desired交给SaveDeployment；MainWindow.Extensions.cs:28–35用它覆盖刚导入的extensionDraft及目标字段。WP12:99–125与controlled-extensions:31要求同一配置账、统一草稿/生效边界。[S12]
+
+**影响：** 导入后的普通字段与组件页内容不同；跨页保存可能丢失导入扩展意图、回到旧草稿或与新设备绑定冲突后被拒绝。差异确认和后端校验仍存在，不能写成已静默激活、数据库损坏或权限旁路。
+
+**修正方向：** 每窗口只保有一个明确编辑草稿源；导入、设备/实例/端口调整、预览和保存都读写它。Effective 单独只读展示，多个窗口的草稿可各自独立，并保留版本竞争处理。
+
+**验收条件：** 导入含两个设备、多个服务及requests目标变化的配置，全部页面展示一致；导航、编辑ID/参数/角色/端口、保存与重新读取修订保留精确内容；非法导入不破坏原草稿，取消不误清，Effective在受控激活前不变；第二窗口竞争由后端拒绝。
+
+**阻断：** 不阻塞无关业务开发；阻塞宣称统一部署UI闭环的相关后续合并/交付；完整维护现场旅程放行前解决。
+
+## 9. 条件风险：不与已复现故障混记
+
+### R-01 · 条件 P2 · 保留件连续键盘扫码可能串接
+
+**证据状态：** 源码缺少成功后清空/SelectAll/作业归属复位已确定；Windows与真实扫码器未验证。LaneControl.xaml:27双向绑定RetainedDraft；LaneControl.xaml.cs:63–72发送字符串并吞Enter/Tab；ViewModels.cs:60、88、100–152保留该字符串，Apply不随新作业清空。业务按字符串集合去重。[S13]
+
+**场景与影响：** 当扫码器发送“码+Enter/Tab”、光标停末尾且设备本身不全选时，先A再A可能变AA，A再B可能变AB；合成后端把它们当不同身份，存在错误计数风险。此为条件推演，没有现场重复计数证据，也不能假定真实扫码器一定使用该配置。
+
+**修正方向：** 按同owner、命令revision与输入版本的成功持久回执清空或选中；失败保留待纠正内容，迟到回执不清除用户新输入。**验收：** 实际Windows A/A/B连续扫描、切作业、回执迟到和拒绝；重复A不增加，B独立，Enter/Tab不触发无关动作。**阻断：** 不阻塞无关开发/合并；阻塞宣称W03连续拆包输入已验，相关设备配置上线前须关闭或有反证。
+
+### R-02 · 条件 P2 · 无桌面持续供包没有提示消费者
+
+**证据状态：** 仅静态检查；本轮未为此新增或执行故障探针。StationClosure.cs:16–31产生有界提示队列，容量64，溢出锁存OperatorNotificationBacklog；唯一Peek/Acknowledge消费者在Desktop，Product.Program serve及SupplyAssembly无对应消费者。既有ClosureVerification:151–184测试64/65保护，但该选择器本轮未跑。[S15]
+
+**场景与影响：** 若承诺无桌面的长期供包，65次需提示的状态变化可能使其因无主队列而阻断。队列保护本身合理；若控制台只用于短期验证，此项是需要明确的宿主范围，不应当成桌面已经故障。
+
+**修正方向：** 明确每种宿主的提示交付/确认责任；如支持持续headless，接实际可观测消费者或批准的通知策略，不删除保护换绿灯。**验收：** 连续超过65次事件有真实交付，消费失败仍阻断，无主提示不静默丢弃。**阻断：** 不阻塞桌面/普通核心开发与无关合并；条件阻塞长期headless能力交付。
+
+### R-03 · 条件 P2 · 共享包库卸载只核查一个数据集
+
+**证据状态：** 静态条件路径，未执行跨工位卸载；本期是否承诺同机多数据集仍需确认。MachineRuntimePolicy:18–28采用机器+模式共享库；PackageUseLease:3–5注明多工位共享；Program:47–53和ExtensionManagement:70–76只检查调用方一个station.db；ExtensionStore:227–251另看活动lease和包反向依赖，不覆盖其他已停止数据根。[S16]
+
+**场景与影响：** A数据根仍有Effective/Pending或Unknown原包责任但已停止，B无引用并卸载共享包。A无活动lease，其离线引用可能遗漏；下次恢复缺精确原包需人工重装。没有复现自动重发/伪造接受，精确身份拒绝仍保护业务。
+
+**修正方向：** 若只支持单数据根，持久登记并强制此边界，定义恢复副本；若支持多根，登记包库消费者并检查离线引用，无法读取时不宣称无人引用。**验收：** A已停止但仍有责任，B卸载必须拒绝；A解除责任/绑定后才允许，审计保留。**阻断：** 不作为当前单工位参考开发或无条件合并阻断；承诺共享库多工位/多根恢复时，相关上线前解决。
+
+## 10. 准入缺口与设计自身未决事项
+
+这些是能力/证据缺口，不应伪装成现有函数写错，也不能用“未来规划”掩盖最终产品尚未达标。
+
+|编号与级别|场景、证据及影响|修正方向与验收条件|阻断边界|
+|---|---|---|---|
+|G-01；Windows验收门禁，非代码缺陷|W01～06、WP13明确后置；当前无Windows实际启动、DPI、扫码、触控、声音、UAC/ACL证据。交叉编译不能证明目标窗口正常作业。[S01][S17]|在已授权Windows环境运行同版客户端，记录1920×1080、1366×768各DPI、跨屏、多窗、输入、听审、安装与故障持续显示；分别写作业可用/只读/保护拒绝，后者不能当正常适配PASS。|不阻塞核心开发和无关合并；阻塞Windows工位参考版验收及现场放行。|
+|G-02；真实集成准入门禁，非代码缺陷|SupplyConfiguration:23拒绝Production；integration-05 B01～06缺SDK/客户WCS/实体/身份/现场证据。没有真实相机/PLC/秤/WCS联调。[S08][S14]|取得获授权SDK、位数/版本/驱动前置、真实合同与测试端；以类型化适配接入并核对失败/超时/取消/停止/资源；真实设备和接口分项联调，再由现场负责人验收。|不阻塞参考工程继续；阻塞对应生产功能和现场上线，不能靠移除NotReady解决。|
+|G-03；业务批准缺口，非代码缺陷|D02～08/10～13等与原PRD数量/拆包/实体/权限/保留期存在未决；LocalDispositionRequired无已批准释放流程。[S03][S08][S14]|按每D项保存批准人/日期/输入版本/规则版本、影响REQ/BR/CAPI及验证边界；先补对需求语义的决定，再实现真实处置、认证和保留策略。|不阻塞与未决语义无关的架构/UI修正；阻塞把合成规则固化成生产默认及相关现场准入。|
+
+原PRD3个月明细应明确进入后续真实产品验收；不是因为当前有PruneHistoryAsync就自动完成。无图片存储是现有明确输入，不能凭平台扩展能力擅自新增相机图像留存产品范围。
+
+## 11. 必要验证结果与限制
+
+### 11.1 环境与执行纪律
+
+源码来自固定main的隔离副本。Ubuntu 24.04 / Linux x64；SDK10.0.402、运行时10.0.13；使用锁定NuGet依赖、原验证器和原断言。数据/插件/接收端位于独立临时路径，网络只使用自建字面量loopback，未调用生产WCS、设备SDK或真实动作。只有两个针对具体风险的小型外部探针，未给仓库新增测试工程。
+
+首次受限执行不能完成dotnet启动/restore，仅有初始化输出；保持原失败记录，在获允许的隔离执行环境中重跑相同必要构建。该首轮是执行环境限制，不算源码构建失败。没有改代码、删断言、跳过失败或静默降级。
+
+|执行|当前SHA结果|证据及能够证明的范围|
+|---|---|---|
+|locked restore|通过|restore-escalated.log；0警告、0错误。|
+|整个现有解决方案build（含WPF目标）|通过|build-current.log；0警告、0错误，15.46秒。仅WPF交叉编译，非Windows启动。|
+|--architecture|通过，有最终scope PASS|verification-architecture.log。真实条件发布的Supply/Inspection进程；独立插件；包内容身份/精确AssemblyRef；原查询；失败激活保旧；取消/Stop/Dispose和租约保留。|
+|--baseline第一次|退出0，但stdout尾部缺失；不单凭该记录判完整通过|verification-baseline.log及verification-results.json。末用例工件和停止审计存在，不能反推“程序在日志末行早退”。|
+|--baseline针对性复验|通过，有最终scope PASS，stderr0|verification-baseline-recheck.stdout.log/.stderr.log/.json；08:22:56.944822～08:23:06.072357 UTC，9.127秒。与首次相同未改验证器，改用pipe捕获；包含后续备份/恢复Prepared/来源停止用例。|
+|--followup|通过，有最终scope PASS|verification-followup.log；3.684秒。持续双箱、历史读取身份、最终配置/资源所有权等。|
+|矛盾回执探针|成功复现A-01|真实应用/SQLite，无网络/设备；verification-contradiction-run.log及原数据库。|
+|辅助健康探针|成功复现A-02|实际ProductRuntime+独立插件+隔离HTTP；6健康请求、0副作用请求。|
+|Windows/真实SDK/客户WCS/现场|未运行|没有相应运行环境/接口/设备证据；不把上列模拟执行迁移成联调或验收。|
+
+首次baseline日志尾部缺失原因未最终定位；复验取得完整通过证据，所以不登记为业务失败，也不抹去原始异常记录。其输出收集完整性应在后续自动验收中通过退出码、最终scope标记和版本身份共同检查。
+
+本轮未盲目执行全量--reconciliation，也未重新跑--closure、--review-followup、--extensions等所有选择器；只有在它们的风险被所跑选择器覆盖时引用对应证据。历史Mac全套PASS仅按其原SHA登记。已选测试通过与A-01/A-02复现并不矛盾：现有用例没有覆盖这两个具体边界；纯helper测试也不能覆盖A-03/A-04跨页状态。
+
+### 11.2 对历史声称完成的独立复核
+
+- 当前代码和--architecture支持旧PR11两个P2已修：同ID/version跨卸载仍保持内容身份；静态AssemblyRef与精确签名依赖闭包/运行加载相符。
+- PR12旧“改实例ID残留旧实例/端口”已有a1c41bc修复，ExtensionDraftEditing使用originalId替换并拒绝冲突；当前选择器包含相应helper校验。未将旧评论原封不动列为未修。
+- 同主机哈希不变、独立插件、原请求查询/在途所有权是本轮实际跑过的架构路径，不是根据报告标题推断。
+- 不能复核为“全部完成”的是完整维护UI、独立实例健康、所有冲突恢复、Windows实际运行与真实现场；本报告明确了缺陷和证据缺口，不替历史报告重写结论。[S19]
+
+## 12. 阅读范围与盲区
+
+### 12.1 覆盖方法
+
+inventory.json记录全部544文件的路径、大小、行数和Git blob。coverage.json逐文件记录本轮实际深度和审阅来源；各分审的原始覆盖JSON保留。深读指阅读完整文件或明确列出的相关符号并追踪调用/数据；扫描只说明做过结构/关键词/依赖搜索，不等于逐行审计。
+
+聚合覆盖：完整文件深读155份；定向深读5份；定向读取/扫描4份；关键词扫描23份；看图4份；仅盘点353份。各路径实际深度与审阅来源见coverage.json，统计见coverage-summary.json；不以覆盖数量推出无缺陷。全仓并未逐行审计。
+
+### 12.2 深入阅读
+
+- AGENTS、INDEX、framework/decisions/controlled-extensions、当前13原指令与工作包、12完整范围、03/04/05～13及相关纠偏/评审、D/RV、公开/缺失/冲突说明。
+- Supply全部业务/存储及Supply.Contracts、Adapters的业务相关C#；Product的实例创建、来源队列、发送、原查询、配置激活和停止所有权。
+- Platform的扩展包信任/身份/依赖/加载、部署校验、schema、租约/生命周期与业务装配；Assembly/Inspection真实选择、命令/持久查询/恢复；相关构建/打包脚本和配置。
+- Desktop全部15个C#、5份XAML及工程/manifest；按钮/键盘/选中事件逐一追踪到处理器和Runtime/Application。没有普通业务按钮仅写日志/空调用的广泛占位证据，但发现A-03/04具体入口错误。
+- UI v1.1完整交接、tokens JSON、README/GALLERY；原HTML与分离CSS/JS的关键渲染、扫码、关闭路径定向读取，拆分文本与原内嵌内容比对一致。
+- 原始PRD全文284行；详设1–150、653–793、841–985；开发说明1–150、570–602、671–812、861–974；UI输入文字全文250行。未读的详设/开发章节不冒称已全读。
+
+### 12.3 只扫描或未检查
+
+测试工程对实际运行选择器及关键断言做定向阅读，未逐行审全部测试。大量archive、旧checks、manifest和历史日志只做索引/关键字段扫描，未把所有旧结论重新执行一遍。
+
+34张公开UI状态PNG只实际看了4张：normal 1920、split 1366、record detail 1920、devices 1920；其余30张仅盘点。没有完整打开PPTX/画板JSON验证可编辑性，没有运行原型浏览器，更没有把它们当WPF截图。
+
+未检查原PRD外链的9张图片、客户原HTML/外链合同、真实SDK二进制/固件/生产数据、完整生产权限和现场SOP；未使用Windows交互桌面、扫码器、触控或声卡。外部原始文档只作私有只读依据，证据包不复制客户原文、名称、私有链接或图片。未把第三方内部资料发布到GitHub。
+
+## 13. 下一步顺序与放行条件
+
+1. **先修A-01持续证据/阻断。** 最小改动应围绕冲突原件独立身份与同事务持久阻断；用相同/不同EvidenceId、重启和存储失败边界验收，保留唯一接受账及原请求。
+2. **将A-02的实例健康事实与业务依赖裁决分开。** 验证主/辅助/历史目标三类影响，不能只把bool改成永远true或隐藏辅助故障。
+3. **一次解决A-03/A-04的维护草稿与动作对象传递。** 同窗一个草稿源、明确选定修订、后端CAS持续保留；验收必须覆盖导入→组件→保存→直接激活的跨页旅程。
+4. **确认R-02/R-03是否属于承诺支持场景。** 决定是否支持长期headless和共享库多数据根；若支持则落实消费者/离线引用，若不支持则以实际约束证明边界，不能只加文案。
+5. **Windows阶段验证R-01与完整W01～06。** 用同版产物、具体DPI/输入设备/声音配置取得截图、事件轨迹和失败证据；允许分项未通过，不以保护拒绝替代正常作业。
+6. **按G-02/G-03推进真实集成和业务批准。** 取得原始合同/SDK/数量实体和身份决策后实施对应适配及SOP，再做真实接口/设备联调、现场验收；参考代码继续保持Production缺能力拒绝。
+
+完成判据不是“PR已合并”或“所有选择器退出0”，而是每项规定旅程入口可达、真实所有者和持久事实正确、特定边界有同SHA证据、外部批准/Windows/现场资格分别成立。本轮未执行上述修复或改变设计。
+
+## 14. 证据索引
+
+所有S编号链接固定到本次main，除S18的远端预发布元数据。运行记录均在配套证据ZIP，完整命令/时间/环境/覆盖和SHA256SUMS可用于复核。
+
+|编号|固定SHA源码/设计证据|
+|---|---|
+|S01|[13工作包与批准延期](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md#L3-L18)；同目录Codex原始执行指令。|
+|S02|[12工作包与受控扩展范围](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md#L11-L24)。|
+|S03|[决策权威与F项](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/design/framework-decisions.md#L21-L70)。|
+|S04|[业务条件构建](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Assembly/Ipc.Assembly.csproj#L2-L7)；global.json、Directory.Build.props及各csproj。|
+|S05|[受控加载与原生拒绝](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Platform/ExtensionLoading.cs#L11-L83)。|
+|S06|[实际启动与配置/资源装配](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/ProductRuntime.cs#L57-L157)；同文件:281–307、347–418。|
+|S07|[来源队列入口](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/ObservationModule.cs#L46-L105)；StationApplication:313–450。|
+|S08|[Production拒绝](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/SupplyConfiguration.cs#L16-L23)；[恢复/处置边界](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/operations.md#L112-L138)。|
+|S09|[A-01冲突与Unknown路径](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationApplication.cs#L454-L502)；[Store冲突事务](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/Store.cs#L153-L158)。|
+|S10|[A-02聚合健康](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/IntegrationRuntime.cs#L152-L161)；SenderModule:24；StationClosure:117–146；examples/IntegrationExtension/IntegrationModule.cs:27、87–90。|
+|S11|[A-03错误UI守卫](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs#L118-L152)；ExtensionsView.xaml.cs:344–347；MainWindow.Extensions.cs:43–44；MainWindow.Presentation.cs:178–188。|
+|S12|[A-04初始化旧Effective](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ExtensionsView.xaml.cs#L25-L30)；MainWindow.xaml.cs:371–379、418；MainWindow.Extensions.cs:28–40。|
+|S13|[R-01扫码输入](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/LaneControl.xaml.cs#L63-L72)；ViewModels.cs:60、88、100–152。|
+|S14|[D项与批准要求](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/readiness/decision-pack.md#L39-L111)；[真实能力缺口](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/integration-05.md#L5-L14)。|
+|S15|[R-02通知队列](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationClosure.cs#L16-L31)；Product/Program.cs:124–145；Assembly/SupplyAssembly.cs:21–28；ClosureVerification:151–184。|
+|S16|[R-03卸载引用](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/ExtensionManagement.cs#L70-L76)；Platform/MachineRuntimePolicy.cs:18–28；PackageUseLease.cs:3–5；ExtensionStore.cs:227–251。|
+|S17|[Windows后续验收](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/windows-06.md)。|
+|S18|[8cb475b参考候选](https://github.com/yuan2go/importer-pc/releases/tag/closure13-reference-8cb475b)；本次远端原始元数据在remote-releases.json。|
+|S19|[旧实例改名修复](https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ExtensionDraftEditing.cs#L10-L40)；Platform/ExtensionStore.cs:90–104；ManagedAssemblyPolicy.cs:41–90。|
+
+外部原始输入：供包台功能PRD.md（v1.1，全文284行）；供包台详细设计说明书.md（SS-DESIGN-001 v1.0，所读范围见第12节）；供包台开发实施说明书.md；供包台UI设计输入包.md。读取身份和行段登记在external-input-coverage.json。其批准地位按第3节限定，原文和私有链接不附带复制。
+
+证据包包括：本报告可检索Markdown、固定main/分支/PR/工作树记录、完整文件盘点/覆盖、本轮build与选择器原日志、初次异常日志及复验、两个探针源代码和结构化输出、原始合成数据库/运行工件、文件哈希清单。所有文件都保留各自来源身份；数据库/日志仅来自本轮合成环境。
+
+
+<!-- Publication-only reference definitions. Original audit bytes: report.original.md.txt. Findings and original SHA unchanged. -->
+[S01]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md#L3-L18
+[S02]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md#L11-L24
+[S03]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/design/framework-decisions.md#L21-L70
+[S04]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Assembly/Ipc.Assembly.csproj#L2-L7
+[S05]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Platform/ExtensionLoading.cs#L11-L83
+[S06]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/ProductRuntime.cs#L57-L157
+[S07]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/ObservationModule.cs#L46-L105
+[S08]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/SupplyConfiguration.cs#L16-L23
+[S09]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationApplication.cs#L454-L502
+[S10]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/IntegrationRuntime.cs#L152-L161
+[S11]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/MainWindow.xaml.cs#L118-L152
+[S12]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ExtensionsView.xaml.cs#L25-L30
+[S13]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/LaneControl.xaml.cs#L63-L72
+[S14]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/readiness/decision-pack.md#L39-L111
+[S15]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Supply/StationClosure.cs#L16-L31
+[S16]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Product/ExtensionManagement.cs#L70-L76
+[S17]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/docs/runtime/windows-06.md
+[S18]: https://github.com/yuan2go/importer-pc/releases/tag/closure13-reference-8cb475b
+[S19]: https://github.com/yuan2go/importer-pc/blob/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/src/Ipc.Desktop/ExtensionDraftEditing.cs#L10-L40

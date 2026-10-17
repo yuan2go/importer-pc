@@ -1,0 +1,71 @@
+{
+  "task": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01",
+  "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "audit_date": "2026-10-17",
+  "overall": "REFERENCE_IMPLEMENTED_WITH_CONFIRMED_DEFECTS_AND_SEPARATE_ACCEPTANCE_GAPS",
+  "verified_platform": "Ubuntu 24.04 Linux x64",
+  "sdk": "10.0.402",
+  "runtime": "10.0.13",
+  "verification": {
+    "locked_restore": "PASS",
+    "solution_including_wpf_cross_build": "PASS_0_WARNINGS_0_ERRORS",
+    "architecture": "PASS_FINAL_SCOPE_PRESENT",
+    "followup": "PASS_FINAL_SCOPE_PRESENT",
+    "baseline_initial": "EXIT_0_STDOUT_TAIL_INCOMPLETE_NOT_SUFFICIENT_ALONE",
+    "baseline_recheck": "PASS_FINAL_SCOPE_PRESENT_STDERR_EMPTY",
+    "contradiction_probe": "A01_REPRODUCED_REAL_SQLITE_NO_NETWORK",
+    "health_probe": "A02_REPRODUCED_REAL_RUNTIME_6_LOOPBACK_HEALTH_0_EFFECTS",
+    "windows_runtime": "NOT_RUN_USER_DEFERRED",
+    "real_sdk_wcs_devices": "NOT_RUN",
+    "field": "NOT_RUN"
+  },
+  "confirmed_defects": [
+    {
+      "id": "A-01",
+      "severity": "P1",
+      "evidence": "SIMULATED_REPRODUCED",
+      "status": "OPEN"
+    },
+    {
+      "id": "A-02",
+      "severity": "P2",
+      "evidence": "SIMULATED_REPRODUCED",
+      "status": "OPEN"
+    },
+    {
+      "id": "A-03",
+      "severity": "P2",
+      "evidence": "STATIC_CONFIRMED_WPF_NOT_RUN",
+      "status": "OPEN"
+    },
+    {
+      "id": "A-04",
+      "severity": "P2",
+      "evidence": "STATIC_CONFIRMED_WPF_NOT_RUN",
+      "status": "OPEN"
+    }
+  ],
+  "conditional_risks": [
+    "R-01",
+    "R-02",
+    "R-03"
+  ],
+  "separate_gates": [
+    "G-01",
+    "G-02",
+    "G-03"
+  ],
+  "coverage_summary": "../../runtime/evidence/project-conformance-audit-01/coverage/coverage-summary.json",
+  "next_work_package": "WP-IPC-CONFORMANCE-FIX-14",
+  "next_implementation": "PLANNED_NOT_IMPLEMENTED",
+  "publication": {
+    "business_source_changed": false,
+    "tests_or_assertions_changed": false,
+    "historical_evidence_changed": false,
+    "business_tests_rerun": false,
+    "scope": "Audit/results and next implementation handoff only",
+    "original_report_text_and_pdf_retained_byte_identical": true,
+    "rendered_report_md": "Original body plus frozen-source Markdown reference definitions; no finding changes",
+    "document_validation": "../../runtime/evidence/project-conformance-audit-01/publication/checks.json"
+  }
+}

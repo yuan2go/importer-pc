@@ -1,0 +1,16 @@
+  Ipc.Platform -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
+  Ipc.Assembly -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Assembly/bin/Debug/net10.0/Ipc.Assembly.dll
+  Ipc.Desktop -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll
+  Ipc.Fixture -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll
+  Ipc.Inspection -> /workspace/scratch/02a55de33070/importer-pc-audit-build/src/Ipc.Inspection/bin/Debug/net10.0/Ipc.Inspection.dll
+  Ipc.Verification -> /workspace/scratch/02a55de33070/importer-pc-audit-build/tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:15.46

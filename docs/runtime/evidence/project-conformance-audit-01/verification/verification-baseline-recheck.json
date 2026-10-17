@@ -1,0 +1,18 @@
+{
+  "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "command": [
+    "/tmp/ipc-audit-dotnet/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--baseline"
+  ],
+  "cwd": "/workspace/scratch/02a55de33070/importer-pc-audit-build",
+  "reason": "The first zero-exit run lacks the final stdout completion marker, although final-case artifacts exist. Repeat the unchanged selected scope with pipe capture to establish completion independently.",
+  "started_at": "2026-10-17T08:22:56.944822+00:00",
+  "exit_code": 0,
+  "seconds": 9.127,
+  "stdout_bytes": 11274,
+  "stderr_bytes": 0,
+  "final_pass_marker": true,
+  "ended_at": "2026-10-17T08:23:06.072357+00:00"
+}

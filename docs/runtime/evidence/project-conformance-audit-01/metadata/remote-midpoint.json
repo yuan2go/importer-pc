@@ -1,0 +1,126 @@
+{
+  "retrieved_at": "2026-10-17T08:25:03.943Z",
+  "results": [
+    {
+      "i": 0,
+      "status": "fulfilled",
+      "data": {
+        "name": "main",
+        "commit": {
+          "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+          "node_id": "C_kwDOVLQU8toAKDhjYWJmMDZkM2M2ZDUzYmE1NTFiNjVlNThhMTNkYjZjZGNhYmExNmE",
+          "commit": {
+            "author": {
+              "name": "yuan2go",
+              "email": "96060646+yuan2go@users.noreply.github.com",
+              "date": "2026-10-17T08:01:09Z"
+            },
+            "committer": {
+              "name": "GitHub",
+              "email": "noreply@github.com",
+              "date": "2026-10-17T08:01:09Z"
+            },
+            "message": "Merge pull request #12 from yuan2go/codex/arch-extension-closure-13\n\nfeat: close architecture and typed extension ownership (AC13)",
+            "tree": {
+              "sha": "f7f4f30c2adde9c731eef4c4b09d7c27c9263f26",
+              "url": "https://api.github.com/repos/yuan2go/importer-pc/git/trees/f7f4f30c2adde9c731eef4c4b09d7c27c9263f26"
+            },
+            "url": "https://api.github.com/repos/yuan2go/importer-pc/git/commits/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+            "comment_count": 0,
+            "verification": {
+              "verified": true,
+              "reason": "valid",
+              "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJq0ytFCRC1aQ7uu5UhlAAA4xYQAIjH8qo1j4HnFSbMcasNUfxp\n+D2PJ76auEohcUgM7E7ngNJqjnpE0o9YbV1G29EfadWZEtk+bTKNaRTmJkuPNZZn\nO4QRlGcSAkwY3WR1vUJ3TIZyXrUBosfP9H/ih26lKdhuOufxLjTQLo65YEeDPbeg\nkB+mnPG7NCt8k6qnvTAXwPVhRuxd+m/ZgjLsHTtXlN8Kj6OKYF+ojJ7Vf+tlUkJR\nMC2Gz9rpek/tcu0LxrDhIHQpabw9ugCdA4MLTb5EgugiNiIM3GwYT0ak1DCt+eWI\nkxv+XGJjU+fw1fsp7ND6zPDp3KfqUJeO03SuqEB0cnoPXgiSBq0lCRkqhBb/7mWN\nROnZqdn5S2zyaa8Xysvhi7+28mr4CPUmlCEIFmTHwCRcSBEnQmdTDGIsIP6BhFco\nW76QW+S+fzoCMYt6YTiHkjrfkxTSn45eoQ2RrjgMke/z15+U8D4tcEqJCNp41S0p\n3AsUixFabvVVuy2E9RoQelJCNCjCxs4VieqdKyLtHPp5SOSLh+QCMp/hZ2RlNuz3\noHrt+98cml1pQFvV23LLT0gmdJcZVw+peiEEtdpTN3IHr6hnwkYezRRvY3V/NUjt\nPQ3CUtHH2NTT6UjH7C8TPqPkZUKkflsGuTiLeBz3EVo8Fxq+L+vMpfkoQx4fMNFw\n5k2GnScbLVy2fcugKOYb\n=jm8c\n-----END PGP SIGNATURE-----\n",
+              "payload": "tree f7f4f30c2adde9c731eef4c4b09d7c27c9263f26\nparent feed6e9ce79449e48c667c17e2671939a86fb588\nparent 0364b07cd56f8eb61775cac13b5f1620d620bec8\nauthor yuan2go <96060646+yuan2go@users.noreply.github.com> 1792224069 +0800\ncommitter GitHub <noreply@github.com> 1792224069 +0800\n\nMerge pull request #12 from yuan2go/codex/arch-extension-closure-13\n\nfeat: close architecture and typed extension ownership (AC13)",
+              "verified_at": "2026-10-17T08:01:09Z"
+            }
+          },
+          "url": "https://api.github.com/repos/yuan2go/importer-pc/commits/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+          "html_url": "https://github.com/yuan2go/importer-pc/commit/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+          "comments_url": "https://api.github.com/repos/yuan2go/importer-pc/commits/8cabf06d3c6d53ba551b65e58a13db6cdcaba16a/comments",
+          "author": {
+            "login": "yuan2go",
+            "id": 96060646,
+            "node_id": "U_kgDOBbnE5g",
+            "avatar_url": "https://avatars.githubusercontent.com/u/96060646?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/yuan2go",
+            "html_url": "https://github.com/yuan2go",
+            "followers_url": "https://api.github.com/users/yuan2go/followers",
+            "following_url": "https://api.github.com/users/yuan2go/following{/other_user}",
+            "gists_url": "https://api.github.com/users/yuan2go/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/yuan2go/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/yuan2go/subscriptions",
+            "organizations_url": "https://api.github.com/users/yuan2go/orgs",
+            "repos_url": "https://api.github.com/users/yuan2go/repos",
+            "events_url": "https://api.github.com/users/yuan2go/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/yuan2go/received_events",
+            "type": "User",
+            "user_view_type": "public",
+            "site_admin": false
+          },
+          "committer": {
+            "login": "web-flow",
+            "id": 19864447,
+            "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+            "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/web-flow",
+            "html_url": "https://github.com/web-flow",
+            "followers_url": "https://api.github.com/users/web-flow/followers",
+            "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+            "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+            "organizations_url": "https://api.github.com/users/web-flow/orgs",
+            "repos_url": "https://api.github.com/users/web-flow/repos",
+            "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/web-flow/received_events",
+            "type": "User",
+            "user_view_type": "public",
+            "site_admin": false
+          },
+          "parents": [
+            {
+              "sha": "feed6e9ce79449e48c667c17e2671939a86fb588",
+              "url": "https://api.github.com/repos/yuan2go/importer-pc/commits/feed6e9ce79449e48c667c17e2671939a86fb588",
+              "html_url": "https://github.com/yuan2go/importer-pc/commit/feed6e9ce79449e48c667c17e2671939a86fb588"
+            },
+            {
+              "sha": "0364b07cd56f8eb61775cac13b5f1620d620bec8",
+              "url": "https://api.github.com/repos/yuan2go/importer-pc/commits/0364b07cd56f8eb61775cac13b5f1620d620bec8",
+              "html_url": "https://github.com/yuan2go/importer-pc/commit/0364b07cd56f8eb61775cac13b5f1620d620bec8"
+            }
+          ]
+        },
+        "_links": {
+          "self": "https://api.github.com/repos/yuan2go/importer-pc/branches/main",
+          "html": "https://github.com/yuan2go/importer-pc/tree/main"
+        },
+        "protected": false,
+        "protection": {
+          "enabled": false,
+          "required_status_checks": {
+            "enforcement_level": "off",
+            "contexts": [],
+            "checks": []
+          }
+        },
+        "protection_url": "https://api.github.com/repos/yuan2go/importer-pc/branches/main/protection"
+      }
+    },
+    {
+      "i": 1,
+      "status": "fulfilled",
+      "data": []
+    },
+    {
+      "i": 2,
+      "status": "fulfilled",
+      "data": {
+        "total_count": 0,
+        "workflow_runs": []
+      }
+    }
+  ]
+}

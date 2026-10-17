@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup><AssemblyName>Ipc.Reference.IntegrationExtension</AssemblyName><EnableDefaultCompileItems>true</EnableDefaultCompileItems></PropertyGroup>
+ <ItemGroup>
+  <Reference Include="Ipc.Platform"><HintPath>$(IpcContractDirectory)/Ipc.Platform.dll</HintPath><Private>false</Private></Reference>
+  <Reference Include="Ipc.Supply.Contracts"><HintPath>$(IpcContractDirectory)/Ipc.Supply.Contracts.dll</HintPath><Private>false</Private></Reference>
+ </ItemGroup>
+ <Target Name="RequireFrozenContract" BeforeTargets="ResolveAssemblyReferences" Condition="!Exists('$(IpcContractDirectory)/Ipc.Supply.Contracts.dll')"><Error Text="Supply only the frozen public contracts directory; do not build the host."/></Target>
+</Project>

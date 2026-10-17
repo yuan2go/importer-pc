@@ -1,0 +1,98 @@
+{
+  "read_date": "2026-10-17",
+  "repository_sha_for_comparison": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "note": "Original external texts are not copied into this evidence bundle. Stable file IDs and observed version labels are retained; null version_id is not an invented immutable version.",
+  "sources": [
+    {
+      "document": "供包台功能PRD.md",
+      "version_label": "v1.1",
+      "document_updated_date": "2026-06-10",
+      "size_bytes": 16653,
+      "total_lines": 284,
+      "version_id": null,
+      "level": "deep_read_by_root",
+      "line_ranges": [
+        [
+          1,
+          284
+        ]
+      ],
+      "unread": "embedded/external images and private WCS/WES/PLC contract links not opened",
+      "approval": "original requirement input; conflicting details require D resolution; not evidence of later approvals"
+    },
+    {
+      "document": "SS-DESIGN-001",
+      "version_label": "1.0",
+      "date": "2026-10-15",
+      "size_bytes": 103080,
+      "total_lines": 985,
+      "version_id": null,
+      "modified_at": "2026-10-15T14:55:53.117095Z",
+      "level": "targeted_read",
+      "line_ranges": [
+        [
+          1,
+          150
+        ],
+        [
+          653,
+          793
+        ],
+        [
+          841,
+          985
+        ]
+      ],
+      "other_coverage": "标题/批准关键词索引；其他章节未全文读",
+      "approval": "明示设计评审稿，除P/H/U外均推荐；D关闭需要后续实际批准"
+    },
+    {
+      "document": "SS-DEV-001",
+      "version_label": "1.0",
+      "date": "2026-10-15",
+      "size_bytes": 65850,
+      "total_lines": 974,
+      "version_id": null,
+      "modified_at": "2026-10-15T14:56:00.426339Z",
+      "level": "targeted_read",
+      "line_ranges": [
+        [
+          1,
+          150
+        ],
+        [
+          570,
+          602
+        ],
+        [
+          671,
+          812
+        ],
+        [
+          861,
+          974
+        ]
+      ],
+      "other_coverage": "标题/批准关键词索引；伪代码/底层实现章节未全文读",
+      "approval": "实施建议，缺SDK/合同/规则冻结；执行提示词不是批准记录"
+    },
+    {
+      "document": "SS-UI-001",
+      "version_label": "1.0",
+      "date": "2026-10-15",
+      "size_bytes": 21995,
+      "total_lines": 250,
+      "version_id": null,
+      "modified_at": "2026-10-15T14:56:06.261502Z",
+      "level": "deep_read",
+      "line_ranges": [
+        [
+          1,
+          250
+        ]
+      ],
+      "approval": "UI评审输入，继承REQ/BR/D；候选页面/屏幕/实体和数量规则不能擅自冻结"
+    }
+  ],
+  "publication_note": "Public reading record; private Library routing identifiers omitted. Original bytes and SHA-256 remain in the original evidence bundle; reading scope and findings unchanged."
+}

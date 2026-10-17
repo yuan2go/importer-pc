@@ -1,0 +1,4818 @@
+{
+  "task": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01",
+  "axis": "design_approval_scope_and_desktop_ui",
+  "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "recorded_at_utc": "2026-10-17T08:27:51.936173+00:00",
+  "root": "/workspace/scratch/02a55de33070/importer-pc-audit",
+  "limitations": [
+    "本文件仅记分审覆盖；不能据此称全仓逐行审计",
+    "没有WPF/Windows/真实WCS/SDK/设备运行",
+    "原始客户HTML和外部图片未读",
+    "原文有待决/推荐标记；表格/执行模板不代表真实批准"
+  ],
+  "repo_files": [
+    {
+      "path": ".gitignore",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "Directory.Build.props",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "ImporterPc.slnx",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "NuGet.Config",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "README.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "config/compositions.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "config/inspection/business.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "config/presentation.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "config/product.reference.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "config/replay.jsonl",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "config/station.simulation.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/README.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/README.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/INDEX.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/design/controlled-extensions.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/design/framework-decisions.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/design/framework.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/extensions/developer-guide.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/manifest.json.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/docs/runtime/operations.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-arch-extension-closure-13/manifest.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/README.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/README.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/INDEX.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/design/framework-decisions.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/design/framework.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/manifest.json.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/runtime/operations.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/runtime/ui-baseline-alignment-10.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/docs/runtime/windows-06.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-extension-delivery-12/manifest.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-framework-20261016/AGENTS.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-framework-20261016/INDEX.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-framework-20261016/README.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-framework-20261016/README.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/AGENTS.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/README.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/INDEX.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/design/framework-decisions.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/design/framework.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/manifest.json.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/manifest.sha256.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/reviews/main-static-review-02.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/reviews/main-static-review-03-checks.json.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/reviews/main-static-review-03.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-reconciliation-01/evidence.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/README.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/README.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/INDEX.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/manifest.json.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/manifest.sha256.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/integration-05.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/operations.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/reference-validation-09.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/ui-baseline-alignment-10.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/validation-scenarios-09.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/runtime/windows-06.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/archive/pre-review-followup-11/evidence.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/baseline/CHANGELOG.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/baseline/CONFLICTS.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/baseline/MISSING.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/baseline/PUBLICATION.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/baseline/artifact-checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/baseline/continuation-checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/design/arch-extension-closure-13.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/design/controlled-extensions.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/design/framework-checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/design/framework-decisions.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/design/framework.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/extensions/developer-guide.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/manifest.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/manifest.sha256",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/readiness/checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/readiness/decision-pack.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/readiness/revision-and-verification.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/readiness/technical-baseline.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/reviews/STATUS.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/reviews/issues.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/reviews/main-static-review-02.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/reviews/main-static-review-03-checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/reviews/main-static-review-03.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/runtime/alignment-01-checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/alignment-01-windows.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/alignment-01.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/arch-extension-closure-13-checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/arch-extension-closure-13-recheck-checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/arch-extension-closure-13-recheck.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/runtime/arch-extension-closure-13.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/delivery.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/engineering-closure-07-checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/engineering-closure-07.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/WP-IPC-RUNTIME-03-win-x64.zip.sha256",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/ALIGNMENT-01-712446a-win-x64.zip.sha256",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/log-digests.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/native-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/package-verification.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/release-SHA256SUMS.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/release.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/alignment-01/verification-summary.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/archive-comparison.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/archive-current.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/candidate-inventory.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/closure-13.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/compatibility-inputs.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-architecture-accepted.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-architecture-final.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-architecture-first.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-architecture-third.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-baseline.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-e12-diagnostic.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-e12-first.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-e12-second.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-first-build.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-frozen-baseline.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-frozen-extensions.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-frozen-ownership.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-owning-source-build.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-review-followup.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-ui-build.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/inspection-console.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/inspection-publish.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/inspection-restart.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/integration-journey.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-architecture.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-baseline.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-build.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-closure.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-extensions.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-followup.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-package-0.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-package-1.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-package-2.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-package-3.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-review-followup.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-architecture-delivery.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-archive-baseline.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-baseline-current.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-closure.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-composition-tests.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-extensions-final.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-followup.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-legacy12-compatibility-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-published-businesses-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-published-core-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-published-extensions-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-review-current.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-service-health-build.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-tools.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/legacy-custody.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/opening.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/pr11-review.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/readback-receipt.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/architecture.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/baseline.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/build.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/cas-baseline.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/closure-13.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/closure.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/extensions.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/architecture.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-baseline.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-before-metadata-cleanup.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-comparison.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-current.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/baseline.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/build.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/candidate-inventory.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/closure-13.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/closure.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/core-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/core-smoke.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extension-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extension-smoke.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extensions.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/followup.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/integration-journey.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-inspection-reference.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-portable.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-supply-assembly.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-win-x64.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/published-businesses.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/remote-readback.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/reproducibility.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/reproducibility.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/review-followup.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/source-freeze-integrity.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/tools.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/followup.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/frozen-baseline-cas-failure.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/initial-build-failure.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/integration-journey.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/opening.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/reproducibility-before-final-freeze.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/reproducibility-before-final-freeze.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/review-followup.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/system-python-missing-pillow.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/tools.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/withdrawn-a1c41bc.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/remote-readback.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/source-freeze-integrity.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/supply-assembly-build.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/supply-assembly-console.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/transport-delay-request.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/arch-extension-closure-13/withdrawn-701ee0d.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/abrupt-process.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/archive-baseline.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/archive-comparison.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/archive-current.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/candidate-inventory.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/environment-and-windows-blocker.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/evidence-identities.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/extension-evidence.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/final-11f0728-build-session.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/final-core-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/final-extension-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-FilesVerified-operations-3db6ae64e4634cf786cf232c1cf50591.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-Prepared-operations-88fb1eea014d4d689df5d7b311bf24a9.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-Published-operations-8bb1a56c25d046cc9957ca2e756e9f22.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-Registered-operations-35dacbf1f1484252ab56a04b70c71821.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-build.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-extensions.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-package-barcode-portable.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-package-barcode-win-x64.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-package-core-portable.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-ae57856-review-followup.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-baseline.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-closure.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-followup.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-review-followup.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-compile-freeze.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-final-worktree.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-first.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-second.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-settled-health.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-final-upgrade-build.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-first-build.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-tools-tests-bundled.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-tools-tests.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/journey.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/remote-readback.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/review-product-ownership.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/source-publication.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/uninstall-interruption-operations-9a25212574b34d99b68e748ffef5d81c.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/extension-windows-delivery-12/uninstall-interruption-operations-fb46364fdc8e40d8b1610d49b79845c9.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/HARDENING-04-2619a7a-win-x64.zip.sha256",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/hardening04-final-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/hardening04-package-verification.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/hardening04-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/release-SHA256SUMS.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/hardening-04/release.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/package-verification.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/archive-current.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/archive-pristine-main.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/archive-tests.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/final-build.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/final-reference.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/first-a01-stop-failure.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/first-h04-failure.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/first-journey-conflict.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/first-wpf-build-failure.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/package-portable.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/package-readback.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/package-win-x64.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/published-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/published-smoke.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/reference-journey.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/unpacked-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/reconciliation-01/unpacked-smoke.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/release-SHA256SUMS.txt",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/release.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/archive-tests.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/build.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/closure.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/first-archive-failure.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/first-build-failure.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/followup.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/package-portable.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/package-readback.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/package-win-x64.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/product-ownership.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/reference-journey.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/target.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/unpacked-smoke.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/review-followup-11/unpacked-smoke.log",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/smoke-final-results.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/evidence/smoke-results.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/extension-windows-delivery-12-checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/extension-windows-delivery-12.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/hardening-04-checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/hardening-04-publication.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/hardening-04.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/implementation.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/integration-05.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/operations.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "targeted_read",
+      "line_ranges": [
+        [
+          1,
+          135
+        ]
+      ],
+      "purpose": "当前运行/维护路径定向阅读，个别长输出有截断，不声称全文"
+    },
+    {
+      "path": "docs/runtime/publication.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/reference-validation-09-checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/reference-validation-09.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/review-followup-11-checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/review-followup-11.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/ui-baseline-alignment-10.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/runtime/validation-scenarios-09.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/validation/closure-13-windows-scenarios.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/validation/reference-windows.workflow.yml",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/runtime/windows-06.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-16-ipc-audit-reconciliation.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-16-ipc-readiness.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-17-ipc-architecture-closure-13.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-17-ipc-extension-delivery-12.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-17-ipc-review-followup-11.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/ui/STATUS.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "scanned",
+      "purpose": "当前来源与公开状态索引"
+    },
+    {
+      "path": "docs/ui/arch-extension-closure-13-mapping.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/ui/extension-delivery-12-mapping.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/GALLERY.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/README.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/README.source.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/editable-boards.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/tokens.css",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "scanned",
+      "purpose": "主题标记扫描"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/tokens.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/prototype/index.html",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "scanned",
+      "purpose": "完整单行装配入口读过，但不据此声称原型运行"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.css",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "targeted_read",
+      "purpose": "主要布局/语义扫描及与原HTML内嵌字节比对"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.js",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "targeted_read",
+      "purpose": "reset/accept/quantity/render/action/dispatch/close/keydown路径定向阅读；输出局部截断"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/publication-checks.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "scanned",
+      "purpose": "公开材料索引，不判断业务通过"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/render-verification.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "scanned",
+      "purpose": "历史结果索引，不转移为当前验收"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/01-normal-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "visual_inspection",
+      "scope": "被动查看现有HTML导出PNG，非WPF"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/02-camera-offline-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/03-result-unknown-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/04-business-rejected-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/05-no-read-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/06-multiple-barcodes-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/07-storage-failed-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/08-split-unapproved-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/09-split-candidate-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/10-shortage-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/11-records-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/12-record-detail-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "visual_inspection",
+      "scope": "被动查看现有HTML导出PNG，非WPF"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/12b-record-detail-attempts-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/13-devices-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "visual_inspection",
+      "scope": "被动查看现有HTML导出PNG，非WPF"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/14-login-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/15-recovery-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/16-components-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/17-waiting-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/18-recovered-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/19-alarm-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/20-wcs-offline-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/21-long-content-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/22-no-records-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/23-pending-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/24-maintenance-1920.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/25-long-content-1366.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/26-split-1366.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "visual_inspection",
+      "scope": "被动查看现有HTML导出PNG，非WPF"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1093x614.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1280x680.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1280x720.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1366x768.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1536x864.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1920x1080.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-911x512.png",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/source-manifest.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "scanned",
+      "purpose": "身份/路径盘点，未全面逐字段复核"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/tools/reexport_screenshots.py",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/供包工作站_高保真交互原型.html",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "targeted_read",
+      "purpose": "结构、主要render/动作/扫码/关闭路径；minified输出局部截断，不声称全源逐行读"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/界面图册.html",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "docs/ui/tokens/tokens.css",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/ui/tokens/tokens.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "docs/work-packages/Codex-WP-IPC-ARCH-EXTENSION-CLOSURE-13.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/Codex-WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-DESIGN-BASELINE-01.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-RUNTIME-03-Codex.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-RUNTIME-03.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-RUNTIME-HARDENING-04.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "examples/BarcodeExtension/BarcodeExtension.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "examples/BarcodeExtension/BarcodeExtension.csproj",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "examples/BarcodeExtension/packages.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "examples/IntegrationExtension/IntegrationExtension.csproj",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "examples/IntegrationExtension/IntegrationModule.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "examples/IntegrationExtension/ReferenceContract.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "examples/IntegrationExtension/packages.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "global.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/build-extension.py",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/build.sh",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/composition.py",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/package-business.py",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/package-reference.py",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/protect-release.ps1",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/provision-extensions.ps1",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/provision-runtime.ps1",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/publish.ps1",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/seal.py",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/smoke-extension.py",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/smoke.py",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/station.ps1",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/verify-extension-reproducibility.py",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "scripts/windows-reference-validation.ps1",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Adapters/Ipc.Adapters.csproj",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Adapters/LoopbackIntegration.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Adapters/ObservationSources.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Adapters/SimulationRequestContract.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Adapters/packages.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Adapters/packages.supply.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Adapters/packages.win-x64.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Assembly/InspectionAssembly.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Assembly/Ipc.Assembly.csproj",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Assembly/Program.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Assembly/SupplyAssembly.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.inspection.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Assembly/packages.supply.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Desktop/App.xaml",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/App.xaml.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/Confirmation.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/ExtensionDraftEditing.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/HistoryPresentation.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/Ipc.Desktop.csproj",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/LaneControl.xaml",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.Extensions.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.HistoryExport.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.xaml",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/OperatorNotificationPlayer.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/PresentationPolicy.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/Themes/Workstation.xaml",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/ViewModels.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/ViewRegistry.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/app.manifest",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "src/Ipc.Desktop/packages.win-x64.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "inventory_only",
+      "scope": "路径/目录盘点；不声称视觉或内容验证"
+    },
+    {
+      "path": "src/Ipc.Fixture/Ipc.Fixture.csproj",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Fixture/Program.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Fixture/Receiver.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Fixture/SyntheticSemanticFixture.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Fixture/packages.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Fixture/packages.win-x64.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Inspection/InspectionRuntime.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Inspection/Ipc.Inspection.csproj",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Inspection/packages.inspection.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Inspection/packages.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/AssemblyInfo.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/BusinessAssembly.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/Configuration.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/DeviceCapabilities.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionContractCompatibility.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionContracts.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionLoading.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionPackages.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionPublicContracts.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/ExtensionStore.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/Ipc.Platform.csproj",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/Lifecycle.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/MachineRuntimePolicy.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/ManagedAssemblyPolicy.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/PackageUseLease.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/RuntimeJournal.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/StationDispatcher.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.inspection.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.supply.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Platform/packages.win-x64.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Product/AssemblyInfo.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Product/ExtensionManagement.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Product/IntegrationRuntime.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Product/Ipc.Product.csproj",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Product/ObservationModule.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Product/ProductRuntime.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Product/Program.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "targeted_read",
+      "purpose": "产品装配/入口关键词及调用扫描，不是全文阅读"
+    },
+    {
+      "path": "src/Ipc.Product/ReferenceProduct.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Product/SenderModule.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Product/SourceConstruction.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Product/packages.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Product/packages.supply.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Product/packages.win-x64.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/ContractRegistration.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/HistoryQueries.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/IntegrationExtensions.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/Model.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/RequestContract.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/StationRuntime.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "deep_read",
+      "scope": "完整文本深入阅读"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.supply.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/packages.win-x64.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply/ContractForwarders.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply/ExtensionMaintenance.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply/HistoryQueries.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply/Ipc.Supply.csproj",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply/Maintenance.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply/Model.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply/PresentationProtection.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply/StationApplication.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "targeted_read",
+      "line_ranges": [
+        [
+          145,
+          186
+        ],
+        [
+          240,
+          274
+        ]
+      ],
+      "purpose": "UI命令到业务入口的守卫/保留件/配置接线；业务主体由其他分审覆盖"
+    },
+    {
+      "path": "src/Ipc.Supply/StationClosure.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply/Store.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply/SupplyConfiguration.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply/packages.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply/packages.supply.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "src/Ipc.Supply/packages.win-x64.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentCompositionVerification.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentDataVerification.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/AlignmentRuntimeVerification.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/ArchitectureClosureVerification.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/ClosureVerification.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/ExtensionDraftVerification.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/ExtensionVerification.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/FollowupVerification.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/HardeningVerification.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/Ipc.Verification.csproj",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/PresentationVerification.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/ProductOwnershipVerification.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/Program.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/ReferenceJourneyVerification.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/SourceConstructionVerification.cs",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/schema1.sql",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/simulation-v1-request.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/fixtures/simulation-v1-response.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tests/Ipc.Verification/packages.lock.json",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tools/README.md",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tools/test_composition.py",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tools/test_verify_archive.py",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    },
+    {
+      "path": "tools/verify_archive.py",
+      "sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+      "level": "not_checked_by_this_subaudit",
+      "scope": "其他审查轴或未检查；主审合并覆盖前不得等同全仓已读"
+    }
+  ],
+  "external_sources": [
+    {
+      "document": "SS-DESIGN-001",
+      "version_label": "1.0",
+      "date": "2026-10-15",
+      "size_bytes": 103080,
+      "total_lines": 985,
+      "version_id": null,
+      "modified_at": "2026-10-15T14:55:53.117095Z",
+      "level": "targeted_read",
+      "line_ranges": [
+        [
+          1,
+          150
+        ],
+        [
+          653,
+          793
+        ],
+        [
+          841,
+          985
+        ]
+      ],
+      "other_coverage": "标题/批准关键词索引；其他章节未全文读",
+      "approval": "明示设计评审稿，除P/H/U外均推荐；D关闭需要后续实际批准"
+    },
+    {
+      "document": "SS-DEV-001",
+      "version_label": "1.0",
+      "date": "2026-10-15",
+      "size_bytes": 65850,
+      "total_lines": 974,
+      "version_id": null,
+      "modified_at": "2026-10-15T14:56:00.426339Z",
+      "level": "targeted_read",
+      "line_ranges": [
+        [
+          1,
+          150
+        ],
+        [
+          570,
+          602
+        ],
+        [
+          671,
+          812
+        ],
+        [
+          861,
+          974
+        ]
+      ],
+      "other_coverage": "标题/批准关键词索引；伪代码/底层实现章节未全文读",
+      "approval": "实施建议，缺SDK/合同/规则冻结；执行提示词不是批准记录"
+    },
+    {
+      "document": "SS-UI-001",
+      "version_label": "1.0",
+      "date": "2026-10-15",
+      "size_bytes": 21995,
+      "total_lines": 250,
+      "version_id": null,
+      "modified_at": "2026-10-15T14:56:06.261502Z",
+      "level": "deep_read",
+      "line_ranges": [
+        [
+          1,
+          250
+        ]
+      ],
+      "approval": "UI评审输入，继承REQ/BR/D；候选页面/屏幕/实体和数量规则不能擅自冻结"
+    },
+    {
+      "document": "原始供包台功能PRD v1.1",
+      "level": "read_by_root_not_this_subaudit",
+      "scope": "主审已报告读完284行；不算入本分审独立逐行覆盖"
+    }
+  ],
+  "static_observations": {
+    "head_matches": true,
+    "git_status_porcelain": "",
+    "html_sha256": "d46b0ed9b057cda6779012ecdc6981d0799ba8c3de73e9be22d92b61d4860b6c",
+    "html_embedded_css_equals_separate": true,
+    "html_embedded_js_equals_separate": true,
+    "ui_direct_constructors_search": "未发现Desktop直接构造HttpClient/LoopbackIntegration/SupplyStore/StationApplication；App为Product装配根",
+    "retained_draft_reset_search": "RetainedDraft仅VM字段/属性、XAML绑定与LaneControl扫描读取，无成功后重置/选中/切作业归属逻辑",
+    "desktop_cs_count": 15,
+    "desktop_xaml_count": 5,
+    "note": "数量仅用于覆盖声明，不作为完成率/验收证据"
+  },
+  "xaml_entry_points": [
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "Button",
+      "name_or_content": "刷新包与操作记录",
+      "event": "Click",
+      "handler": "RefreshClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 81
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "Button",
+      "name_or_content": "选择离线扩展包",
+      "event": "Click",
+      "handler": "ChooseClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 82
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "Button",
+      "name_or_content": "Install",
+      "event": "Click",
+      "handler": "InstallClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 94
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "Button",
+      "name_or_content": "恢复选中安装操作（OS授权）",
+      "event": "Click",
+      "handler": "RecoverClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 99
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "Button",
+      "name_or_content": "卸载选中未引用包（OS授权）",
+      "event": "Click",
+      "handler": "UninstallClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 104
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "DataGrid",
+      "name_or_content": "Packages",
+      "event": "SelectionChanged",
+      "handler": "PackageSelected",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 122
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "Button",
+      "name_or_content": "选中包加入/升级部署草稿",
+      "event": "Click",
+      "handler": "UsePackageClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 148
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "Button",
+      "name_or_content": "从部署草稿移出选中包",
+      "event": "Click",
+      "handler": "RemovePackageClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 170
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "ListBox",
+      "name_or_content": "Instances",
+      "event": "SelectionChanged",
+      "handler": "InstanceSelected",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 188
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "ComboBox",
+      "name_or_content": "Module",
+      "event": "SelectionChanged",
+      "handler": "ModuleSelected",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 177
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "Button",
+      "name_or_content": "新建另一个实例（保留现有实例）",
+      "event": "Click",
+      "handler": "NewInstanceClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 232
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "Button",
+      "name_or_content": "校验并写入本窗部署草稿",
+      "event": "Click",
+      "handler": "SaveInstanceClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 301
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "Button",
+      "name_or_content": "停用/移除选中实例的草稿绑定",
+      "event": "Click",
+      "handler": "RemoveInstanceClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 329
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "Button",
+      "name_or_content": "校验差异并保存部署草稿",
+      "event": "Click",
+      "handler": "SaveDeploymentClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 340
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/ExtensionsView.xaml",
+      "element": "Button",
+      "name_or_content": "选中修订申请受控重启激活",
+      "event": "Click",
+      "handler": "ActivateClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 344
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 432
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/LaneControl.xaml",
+      "element": "Button",
+      "name_or_content": "复制",
+      "event": "Click",
+      "handler": "CopyBarcodeClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+          "line": 76
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/LaneControl.xaml",
+      "element": "Button",
+      "name_or_content": "清空重扫",
+      "event": "Click",
+      "handler": "ClearClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+          "line": 73
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/LaneControl.xaml",
+      "element": "Button",
+      "name_or_content": "计入保留件",
+      "event": "Click",
+      "handler": "ScanClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+          "line": 62
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/LaneControl.xaml",
+      "element": "TextBox",
+      "name_or_content": "",
+      "event": "KeyDown",
+      "handler": "RetainedKeyDown",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+          "line": 68
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/LaneControl.xaml",
+      "element": "Button",
+      "name_or_content": "PrimaryAction",
+      "event": "Click",
+      "handler": "PrimaryClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+          "line": 57
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/LaneControl.xaml",
+      "element": "Button",
+      "name_or_content": "详情",
+      "event": "Click",
+      "handler": "DetailClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+          "line": 75
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/LaneControl.xaml",
+      "element": "Button",
+      "name_or_content": "处置",
+      "event": "Click",
+      "handler": "CancelClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+          "line": 74
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Window",
+      "name_or_content": "",
+      "event": "Closing",
+      "handler": "WindowClosing",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 455
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Window",
+      "name_or_content": "",
+      "event": "SizeChanged",
+      "handler": "WindowSizeChanged",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 234
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "NavHistory",
+      "event": "Click",
+      "handler": "OpenHistoryClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 89
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "NavRecovery",
+      "event": "Click",
+      "handler": "OpenRecoveryClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 90
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "NavDevices",
+      "event": "Click",
+      "handler": "OpenDevicesClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 95
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "暂停入场",
+      "event": "Click",
+      "handler": "PauseClick",
+      "command_tag": "Pause",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 209
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "恢复入场",
+      "event": "Click",
+      "handler": "ResumeClick",
+      "command_tag": "Resume",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 210
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "{Binding Identity}",
+      "event": "Click",
+      "handler": "OpenIdentityClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 99
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "登出",
+      "event": "Click",
+      "handler": "LogoutClick",
+      "command_tag": "Logout",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 207
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "TextBox",
+      "name_or_content": "BoxInput",
+      "event": "KeyDown",
+      "handler": "BoxKeyDown",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 226
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "校验周转箱",
+      "event": "Click",
+      "handler": "OpenClick",
+      "command_tag": "OpenContext",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 208
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "CloseButton",
+      "event": "Click",
+      "handler": "CheckClick",
+      "command_tag": "CheckClose",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 211
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "CloseDecisionButton",
+      "event": "Click",
+      "handler": "ConfirmCloseClick",
+      "command_tag": "ConfirmClose",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 213
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "查看全部作业记录",
+      "event": "Click",
+      "handler": "OpenHistoryClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 89
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "DataGrid",
+      "name_or_content": "RecentGrid",
+      "event": "SelectionChanged",
+      "handler": "HistorySelected",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+          "line": 158
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "以模拟操作员登录",
+      "event": "Click",
+      "handler": "OperatorClick",
+      "command_tag": "Login",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 205
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "以模拟维护员登录",
+      "event": "Click",
+      "handler": "MaintenanceClick",
+      "command_tag": "Login",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 206
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "查看诊断",
+      "event": "Click",
+      "handler": "OpenDevicesClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 95
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "组件管理与恢复",
+      "event": "Click",
+      "handler": "OpenExtensionsClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 97
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "EntryRecoveryButton",
+      "event": "Click",
+      "handler": "OpenRecoveryClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 90
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "EntryContinueButton",
+      "event": "Click",
+      "handler": "ContinueEntryClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 100
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "组件管理与恢复",
+      "event": "Click",
+      "handler": "OpenExtensionsClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 97
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "最大化窗口",
+      "event": "Click",
+      "handler": "MaximizeClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 105
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "DrawerClose",
+      "event": "Click",
+      "handler": "CloseDrawerClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 78
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "TabControl",
+      "name_or_content": "Pages",
+      "event": "SelectionChanged",
+      "handler": "TabChanged",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 236
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "查询",
+      "event": "Click",
+      "handler": "HistoryClick",
+      "command_tag": "ReadHistory",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+          "line": 155
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "导出当前筛选",
+      "event": "Click",
+      "handler": "ExportHistoryClick",
+      "command_tag": "ReadHistory",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.HistoryExport.cs",
+          "line": 11
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "DataGrid",
+      "name_or_content": "HistoryGrid",
+      "event": "SelectionChanged",
+      "handler": "HistorySelected",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+          "line": 158
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "HistoryPrevious",
+      "event": "Click",
+      "handler": "PreviousClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+          "line": 157
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "HistoryNext",
+      "event": "Click",
+      "handler": "NextClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+          "line": 156
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "查看选中箱的全部作业",
+      "event": "Click",
+      "handler": "SessionOperationsClick",
+      "command_tag": "ReadHistory",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+          "line": 169
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "查看选中作业的箱关闭链",
+      "event": "Click",
+      "handler": "SelectedSessionClick",
+      "command_tag": "ReadHistory",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+          "line": 177
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "DataGrid",
+      "name_or_content": "AlarmGrid",
+      "event": "SelectionChanged",
+      "handler": "AlarmSelected",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 304
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "刷新历史",
+      "event": "Click",
+      "handler": "AlarmHistoryClick",
+      "command_tag": "ReadHistory",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 352
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "上一页",
+      "event": "Click",
+      "handler": "AlarmPreviousClick",
+      "command_tag": "ReadHistory",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 354
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "下一页",
+      "event": "Click",
+      "handler": "AlarmNextClick",
+      "command_tag": "ReadHistory",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 353
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "DataGrid",
+      "name_or_content": "AlarmHistoryGrid",
+      "event": "SelectionChanged",
+      "handler": "AlarmSelected",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 304
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "DataGrid",
+      "name_or_content": "RecoveryGrid",
+      "event": "SelectionChanged",
+      "handler": "RecoverySelected",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 355
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "查询原请求结果",
+      "event": "Click",
+      "handler": "ReconcileClick",
+      "command_tag": "Reconcile",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 335
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "CancelPreparedButton",
+      "event": "Click",
+      "handler": "CancelPreparedClick",
+      "command_tag": "CancelPrepared",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 360
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "已读选中报警",
+      "event": "Click",
+      "handler": "AckClick",
+      "command_tag": "AckAlarm",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 336
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "查看关联详情",
+      "event": "Click",
+      "handler": "AlarmDetailClick",
+      "command_tag": "ReadHistory",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 322
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "当前关闭详情",
+      "event": "Click",
+      "handler": "CloseDetailClick",
+      "command_tag": "ReadHistory",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 365
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "记录核对依据",
+      "event": "Click",
+      "handler": "RecordEvidenceClick",
+      "command_tag": "RecordReconciliation",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 366
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "取消少货关闭",
+      "event": "Click",
+      "handler": "CancelCloseClick",
+      "command_tag": "CancelClose",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 212
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "确认当前检查并关闭",
+      "event": "Click",
+      "handler": "ConfirmCloseClick",
+      "command_tag": "ConfirmClose",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 213
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "设备与连接",
+      "event": "Click",
+      "handler": "OpenDevicesClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 95
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "维护配置",
+      "event": "Click",
+      "handler": "OpenMaintenanceClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 96
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "组件与部署",
+      "event": "Click",
+      "handler": "OpenExtensionsClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 97
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "预览差异与校验",
+      "event": "Click",
+      "handler": "PreviewConfigClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 417
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "验证并保存草稿",
+      "event": "Click",
+      "handler": "SaveConfigClick",
+      "command_tag": "SaveConfig",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 419
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "刷新修订记录",
+      "event": "Click",
+      "handler": "ConfigsClick",
+      "command_tag": "ReadHistory",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 431
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "激活选中修订 · 待重启",
+      "event": "Click",
+      "handler": "ActivateClick",
+      "command_tag": "ActivateConfig",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+          "line": 344
+        },
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 432
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "将 JSON 导入表单并校验",
+      "event": "Click",
+      "handler": "ImportConfigClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 418
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "设备与连接",
+      "event": "Click",
+      "handler": "OpenDevicesClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 95
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "维护配置",
+      "event": "Click",
+      "handler": "OpenMaintenanceClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 96
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "组件与部署",
+      "event": "Click",
+      "handler": "OpenExtensionsClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 97
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "导出脱敏诊断",
+      "event": "Click",
+      "handler": "ExportClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 442
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "一致性备份",
+      "event": "Click",
+      "handler": "BackupClick",
+      "command_tag": "Backup",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 447
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "来源观察核对完成",
+      "event": "Click",
+      "handler": "ReviewClick",
+      "command_tag": "ReviewObservations",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 452
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "OverloadButton",
+      "event": "Click",
+      "handler": "OverloadClick",
+      "command_tag": "ClearOverload",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 453
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "解除恢复隔离（有依据）",
+      "event": "Click",
+      "handler": "QuarantineClick",
+      "command_tag": "ClearQuarantine",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 454
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "切换模拟身份入口",
+      "event": "Click",
+      "handler": "OpenIdentityClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 99
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "TextBox",
+      "name_or_content": "EngineeringBarcode",
+      "event": "KeyDown",
+      "handler": "EngineeringKeyDown",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 434
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "实体入场",
+      "event": "Click",
+      "handler": "EventClick",
+      "command_tag": "Enter",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 433
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "读码",
+      "event": "Click",
+      "handler": "EventClick",
+      "command_tag": "Read",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 433
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "无码",
+      "event": "Click",
+      "handler": "EventClick",
+      "command_tag": "NoCode",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 433
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "多码",
+      "event": "Click",
+      "handler": "EventClick",
+      "command_tag": "MultiCode",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 433
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "实体离场",
+      "event": "Click",
+      "handler": "EventClick",
+      "command_tag": "Depart",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 433
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "核对实体许可",
+      "event": "Click",
+      "handler": "EventClick",
+      "command_tag": "Revalidate",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 433
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "实体复位",
+      "event": "Click",
+      "handler": "EventClick",
+      "command_tag": "Reset",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 433
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "推进回放",
+      "event": "Click",
+      "handler": "ReplayClick",
+      "command_tag": "Replay",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 441
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "重连模拟来源",
+      "event": "Click",
+      "handler": "ReconnectSourceClick",
+      "command_tag": "ReconnectSource",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+          "line": 79
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "下个请求故障",
+      "event": "Click",
+      "handler": "FaultClick",
+      "command_tag": "SetFixtureFault",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 368
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "设置模拟阻断",
+      "event": "Click",
+      "handler": "BlockClick",
+      "command_tag": "SetSyntheticBlock",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 369
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "解除模拟阻断",
+      "event": "Click",
+      "handler": "UnblockClick",
+      "command_tag": "ClearSyntheticBlock",
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 370
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "NavEngineering",
+      "event": "Click",
+      "handler": "OpenEngineeringClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+          "line": 98
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "第二窗口",
+      "event": "Click",
+      "handler": "SecondViewClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 227
+        }
+      ]
+    },
+    {
+      "xaml": "src/Ipc.Desktop/MainWindow.xaml",
+      "element": "Button",
+      "name_or_content": "LayoutButton",
+      "event": "Click",
+      "handler": "LayoutClick",
+      "command_tag": null,
+      "declaration_candidates": [
+        {
+          "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+          "line": 228
+        }
+      ]
+    }
+  ],
+  "findings": [
+    "UI-A01",
+    "UI-A02",
+    "UI-R01"
+  ],
+  "report": "ui-design-findings.md",
+  "publication_note": "Public reading record; private Library routing identifiers omitted. Original bytes and SHA-256 remain in the original evidence bundle; reading scope and findings unchanged."
+}

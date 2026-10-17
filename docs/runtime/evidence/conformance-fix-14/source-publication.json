@@ -1,0 +1,10 @@
+{
+  "commit": "976365a6b377c49c132562c8d53bfa354aa8b0f1",
+  "source_frozen": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+  "checked_at": "2026-10-17T10:17:03.391969+00:00",
+  "status": "PASS_FULL_GIT_TREE_BLOB_READBACK",
+  "blob_count": 767,
+  "main": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "pull_request": "https://github.com/yuan2go/importer-pc/pull/14",
+  "comparison_note": "Initial non-NUL git listing C-quoted four Chinese filenames; failed comparison was not accepted. NUL listing compares exact Unicode paths, all modes and hashes unchanged."
+}

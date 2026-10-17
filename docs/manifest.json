@@ -1540,9 +1540,9 @@
       "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
       "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
       "storage_scope": "public_repository",
-      "sha256": "9fc6b96eb7e33bd6d0407ba260f0f03dc9288cb9d3759ba2acadb8fffcd235b1",
-      "size_bytes": 17306,
-      "git_blob": "c697fb30a293973be006827b72971d053041967d"
+      "sha256": "0ebdab72b294a01b62cbc5e4a85bc2a4a68ec8eb3729a8ed6638c32e6b73b1fa",
+      "size_bytes": 17444,
+      "git_blob": "ad78861620d749762aae6729561cd5f74b0fd6d2"
     },
     {
       "path": "docs/runtime/conformance-fix-14.md",
@@ -1551,9 +1551,9 @@
       "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
       "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
       "storage_scope": "public_repository",
-      "sha256": "15513f3b669f8d2798bcc105b78a79fde5e1d2574047a908b1e4e881b51af155",
-      "size_bytes": 14122,
-      "git_blob": "e54d7d3352a66184b5eb19cf9bb5ca7b0753e4dc"
+      "sha256": "22f3983e035954dc4578a2bc937b1b0beeaf6e0a70e9d4cab1bf67ccd3ad2ada",
+      "size_bytes": 14445,
+      "git_blob": "45937d8644a662e2949ef2cf9b6c5c38636096c6"
     },
     {
       "path": "docs/runtime/delivery.md",
@@ -2853,9 +2853,9 @@
       "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
       "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
       "storage_scope": "public_repository",
-      "sha256": "a82a326c55d4d89ed9d5de9a3c9f07a2de049c72d9c109f953aab00f6c5dbcff",
-      "size_bytes": 10535,
-      "git_blob": "80e617bd155b9bb5bc03062b54d75f59046531fe"
+      "sha256": "9d5664d887488f9432f25cd9dba162f6f2ad8a6643b268b74ac55c06e7f77855",
+      "size_bytes": 10625,
+      "git_blob": "8d3d19cff1401070b1c1505b63d454ed366918c0"
     },
     {
       "path": "docs/runtime/evidence/conformance-fix-14/archive-comparison.json",
@@ -4033,6 +4033,17 @@
       "sha256": "cf89283ff12d068aa1fc4df638d33aedd6ee1de183031ae95764cd31501bcff4",
       "size_bytes": 420,
       "git_blob": "e2162ba2f86fec0c9623c513e02b1eeb177cd782"
+    },
+    {
+      "path": "docs/runtime/evidence/conformance-fix-14/source-publication.json",
+      "version": "FIX-14",
+      "status": "new_evidence_or_current_reference_implementation",
+      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
+      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
+      "storage_scope": "public_repository",
+      "sha256": "00c263b59bc03d1bd0c26de1c05971eaa09b8197916d0f58344988aced5465ff",
+      "size_bytes": 560,
+      "git_blob": "2d947749b719030c57f36ffce9316abef0082fdf"
     },
     {
       "path": "docs/runtime/evidence/conformance-fix-14/synthetic-custody.json",
@@ -8884,7 +8895,8 @@
     "production": "NOT_READY",
     "actual_wpf_screenshots": 0,
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/conformance14-reference-68cdc36",
-    "remote_assets": "PASS_ALL_12_DOWNLOADED_VERIFIED"
+    "remote_assets": "PASS_ALL_12_DOWNLOADED_VERIFIED",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/14"
   },
   "followup_work_packages": [
     "WP-IPC-ENGINEERING-FOLLOWUP-08",
@@ -9273,6 +9285,7 @@
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/conformance14-reference-68cdc36",
     "remote_assets": "PASS_ALL_12_DOWNLOADED_VERIFIED",
     "legacy_consumer_coverage": "UNKNOWN_REFUSES_UNINSTALL",
-    "historical_d_rv_unchanged": true
+    "historical_d_rv_unchanged": true,
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/14"
   }
 }

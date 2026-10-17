@@ -30,7 +30,7 @@
 |04|A-03/A-04实际页面调用同一选择/守卫/草稿，实际应用保存/CAS/激活路径+WPF交叉构建。|**IMPLEMENTED / VERIFIED核心**，**DEFERRED Windows**点击/显示/输入。|
 |05|R-01输入所有权；R-02已支持headless的明确消费；R-03已支持多根的离线检查和覆盖未知拒绝。|**VERIFIED** 核心保护；旧库完整盘点与实际Windows边界分别BLOCKED/DEFERRED，不撤能力换关闭。|
 |06|固定SHA必要五选择器、两原探针副本、locked restore/WPF构建、原读者/精确插件边界、独立插件重复构建、同版解压启动/Production防伪，全部新日志。|**VERIFIED** Mac参考；Windows/SDK/现场未运行。|
-|07|本报告逐A/R/AC、操作/扩展/设计/配置/版本/manifest；独立源码、测试公钥、三候选与远端逐字节回读，开发分支面向main PR。|源码/候选已交付；PR与资料对账回执以下方最终记录为准。|
+|07|本报告逐A/R/AC、操作/扩展/设计/配置/版本/manifest；独立源码、测试公钥、三候选与远端逐字节回读，开发分支面向main PR。|**VERIFIED** 核心交付；PR14 OPEN，Windows/现场门禁单列。|
 
 ## 必要验证与同版身份
 
@@ -73,3 +73,5 @@ Release=CONFORMANCE-FIX-14；Storage/MinimumReader=4/4；业务合同SIMULATION-
 发布宿主追加证据：[真实控制台通知/确认](evidence/conformance-fix-14/published-notification.json)，两次交付/明确序号确认，接受2、Backlog0、进程退出0。首轮额外脚本将Host日志的State误当业务Snapshot并受本机代理影响，失败/原脚本保留；v2仅限定ProjectionVersion快照及loopback禁代理，未修改产品。
 
 资料校验：10项工具测试通过。固定main归档与本轮均保留267项历史资产错误（PPTX媒体类型及原UI私密元数据标记），新增错误0，未加豁免、未降低断言；[逐项对账](evidence/conformance-fix-14/archive-comparison.json)。它们不被改写为业务测试失败或资料全PASS。公开证据仅做个人路径别名映射，原字节/公开字节SHA与完整顺序保留在provenance；没有复制受限客户材料。
+
+开发分支报告/证据提交 `976365a6b377c49c132562c8d53bfa354aa8b0f1` 已推送，面向main的 [PR #14](https://github.com/yuan2go/importer-pc/pull/14) 为OPEN，创建时CLEAN，未合并、未强推。最终远端main复核仍8cabf06d；文档/manifest追加不改变68cdc36冻结运行/配置/构建/操作指南输入。

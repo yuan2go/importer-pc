@@ -430,7 +430,7 @@
     }
   ],
   "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/conformance14-reference-68cdc36",
-  "pull_request": "PENDING_CREATION",
+  "pull_request": "https://github.com/yuan2go/importer-pc/pull/14",
   "d_rv_unchanged": true,
   "remote_readback": "PASS_12_ASSETS_INCLUDING_RECEIPT",
   "document_tools": {
@@ -438,5 +438,7 @@
     "archive": "FAIL_HISTORICAL_267",
     "new_archive_errors": 0,
     "assertions_weakened": false
-  }
+  },
+  "pull_request_state": "OPEN_NOT_MERGED",
+  "evidence_commit": "976365a6b377c49c132562c8d53bfa354aa8b0f1"
 }

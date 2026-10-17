@@ -1,0 +1,14 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> /reference/workspace/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /reference/workspace/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /reference/workspace/src/Ipc.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /reference/workspace/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /reference/workspace/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
+  Ipc.Verification -> /reference/workspace/tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:01.36

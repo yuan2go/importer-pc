@@ -1,0 +1,7 @@
+{
+  "original_source": "docs/runtime/evidence/project-conformance-audit-01/probes/health/Program.cs",
+  "original_sha256": "1069e58a6f9e6c93cefee8089c52b7de00d043159c94428ec0d76b75ad0d9c49",
+  "adapted_sha256": "de838df5eac312fc16650133a7c1e6bdde6af8ac028143bafbdc81cab4fcc6d8",
+  "changes": "Map project path and record actual verification SHA; health verdict tests corrected attribution instead of reproduced defect. Scenario and actual Product/SQLite/HTTP path retained.",
+  "additional_change": "Wait for independent auxiliary probe completion; primary request count no longer implies slow auxiliary completed."
+}

@@ -1,0 +1,110 @@
+SELECT --conformance: E08
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-29752e4a2c354aab95ba0be6502348a8
+PASS AC14 same ID/content duplicates preserve unique acceptance without conflict
+PASS AC14 same-ID altered content and different-ID contradiction retain deduplicated raw occurrences and immutable original response
+PASS AC14 late old-box conflict neither adopts old owner into new box nor changes its counter
+PASS AC14 terminal request/payload/hash/binding/acceptance fact remain exact
+PASS AC14 restart rediscovers terminal request reconciliation through real recovery readers and all business guards
+PASS AC14 restart replays receipt custody atomically without rewriting or recounting acceptance
+PASS AC14 history carries original raw evidence identity/source/time/hash
+PASS AC14 maintenance and retention cannot omit terminal unresolved responsibility
+PASS AC14 a later matching query does not erase contradiction or provide a generic unlock
+PASS AC14 same ID/content duplicates preserve unique acceptance without conflict
+PASS AC14 actual SQLite rollback is not reported as durable conflict or success
+PASS AC14 failed T3 retains flushed raw receipt custody and blocks dispatch
+PASS AC14 terminal request/payload/hash/binding/acceptance fact remain exact
+PASS AC14 restart rediscovers terminal request reconciliation through real recovery readers and all business guards
+PASS AC14 restart replays receipt custody atomically without rewriting or recounting acceptance
+PASS AC14 history carries original raw evidence identity/source/time/hash
+PASS AC14 maintenance and retention cannot omit terminal unresolved responsibility
+PASS AC14 a later matching query does not erase contradiction or provide a generic unlock
+PASS AC14 import/cross-page fields/requests target/preview/save/readback use one draft; Effective remains unchanged
+PASS AC14 activation uses this selection and current business context without hidden-page state
+PASS AC14 two-window CAS rejects reviewed activation after competing save
+PASS AC14 direct selected revision reaches real activation authority and PendingActivation
+PASS AC14 actual WPF callers are wired to shared activation and draft implementations exercised here
+PASS AC14 persisted scan consumes only its own Enter/Tab input A
+PASS AC14 persisted scan consumes only its own Enter/Tab input A
+PASS AC14 persisted scan consumes only its own Enter/Tab input B
+PASS AC14 A/A/B counts two identities through actual application
+PASS AC14 late receipt cannot clear newer input
+PASS AC14 rejection retains scan draft
+PASS AC14 switching jobs detaches old input and late acknowledgement
+PASS AC14 headless delivered current operation 0
+PASS AC14 headless delivered current operation 1
+PASS AC14 headless delivered current operation 2
+PASS AC14 headless delivered current operation 3
+PASS AC14 headless delivered current operation 4
+PASS AC14 headless delivered current operation 5
+PASS AC14 headless delivered current operation 6
+PASS AC14 headless delivered current operation 7
+PASS AC14 headless delivered current operation 8
+PASS AC14 headless delivered current operation 9
+PASS AC14 headless delivered current operation 10
+PASS AC14 headless delivered current operation 11
+PASS AC14 headless delivered current operation 12
+PASS AC14 headless delivered current operation 13
+PASS AC14 headless delivered current operation 14
+PASS AC14 headless delivered current operation 15
+PASS AC14 headless delivered current operation 16
+PASS AC14 headless delivered current operation 17
+PASS AC14 headless delivered current operation 18
+PASS AC14 headless delivered current operation 19
+PASS AC14 headless delivered current operation 20
+PASS AC14 headless delivered current operation 21
+PASS AC14 headless delivered current operation 22
+PASS AC14 headless delivered current operation 23
+PASS AC14 headless delivered current operation 24
+PASS AC14 headless delivered current operation 25
+PASS AC14 headless delivered current operation 26
+PASS AC14 headless delivered current operation 27
+PASS AC14 headless delivered current operation 28
+PASS AC14 headless delivered current operation 29
+PASS AC14 headless delivered current operation 30
+PASS AC14 headless delivered current operation 31
+PASS AC14 headless delivered current operation 32
+PASS AC14 headless delivered current operation 33
+PASS AC14 headless delivered current operation 34
+PASS AC14 headless delivered current operation 35
+PASS AC14 headless delivered current operation 36
+PASS AC14 headless delivered current operation 37
+PASS AC14 headless delivered current operation 38
+PASS AC14 headless delivered current operation 39
+PASS AC14 headless delivered current operation 40
+PASS AC14 headless delivered current operation 41
+PASS AC14 headless delivered current operation 42
+PASS AC14 headless delivered current operation 43
+PASS AC14 headless delivered current operation 44
+PASS AC14 headless delivered current operation 45
+PASS AC14 headless delivered current operation 46
+PASS AC14 headless delivered current operation 47
+PASS AC14 headless delivered current operation 48
+PASS AC14 headless delivered current operation 49
+PASS AC14 headless delivered current operation 50
+PASS AC14 headless delivered current operation 51
+PASS AC14 headless delivered current operation 52
+PASS AC14 headless delivered current operation 53
+PASS AC14 headless delivered current operation 54
+PASS AC14 headless delivered current operation 55
+PASS AC14 headless delivered current operation 56
+PASS AC14 headless delivered current operation 57
+PASS AC14 headless delivered current operation 58
+PASS AC14 headless delivered current operation 59
+PASS AC14 headless delivered current operation 60
+PASS AC14 headless delivered current operation 61
+PASS AC14 headless delivered current operation 62
+PASS AC14 headless delivered current operation 63
+PASS AC14 headless delivered current operation 64
+PASS AC14 headless delivered current operation 65
+PASS AC14 explicit delivery+sequence ack sustains beyond 64/65 without dropping queue protection
+PASS AC14 consumer failure retains unacknowledged cue and blocks new work
+Unhandled exception. System.IO.InvalidDataException: Unsupported extension identity/runtime/contract/RID/mode/source
+   at Ipc.Platform.ExtensionPackages.VerifyMetadata(Byte[] manifestBytes, Byte[] signature, ExtensionTrust trust, RunMode mode, String packageHash) in /reference/workspace/src/Ipc.Platform/ExtensionPackages.cs:line 54
+   at Ipc.Platform.ExtensionPackages.Inspect(String archive, ExtensionTrust trust, RunMode mode, Func`2 resolve) in /reference/workspace/src/Ipc.Platform/ExtensionPackages.cs:line 110
+   at Ipc.Platform.ExtensionStore.Plan(String file) in /reference/workspace/src/Ipc.Platform/ExtensionStore.cs:line 81
+   at Ipc.Platform.ExtensionStore.Install(String archive, String expectedPackageSha256) in /reference/workspace/src/Ipc.Platform/ExtensionStore.cs:line 126
+   at ConformanceVerification.HealthAndConsumers(String root, String url, String workspace) in /reference/workspace/tests/Ipc.Verification/ConformanceVerification.cs:line 182
+   at ConformanceVerification.Run(String root, String url, String workspace) in /reference/workspace/tests/Ipc.Verification/ConformanceVerification.cs:line 32
+   at Program.<Main>$(String[] args) in /reference/workspace/tests/Ipc.Verification/Program.cs:line 71
+   at Program.<Main>$(String[] args) in /reference/workspace/tests/Ipc.Verification/Program.cs:line 466
+   at Program.<Main>(String[] args)

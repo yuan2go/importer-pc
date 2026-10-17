@@ -1,0 +1,28 @@
+{
+  "name": "final-package-supply-assembly",
+  "source_commit": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+  "started_at": "2026-10-17T10:03:03.829641+00:00",
+  "ended_at": "2026-10-17T10:03:09.073092+00:00",
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "machine": "arm64",
+  "command": [
+    "python3",
+    "scripts/package-business.py",
+    "--composition",
+    "supply-assembly",
+    "--dotnet",
+    "/reference/dotnet-10.0.402/dotnet",
+    "--output",
+    ".artifacts/conformance-14/candidates/fix14-68cdc36-supply-assembly"
+  ],
+  "exit_code": 0,
+  "required_completion_marker": "\"Business\": \"supply\"",
+  "completion_marker_present": true,
+  "status": "PASS",
+  "log": "final-package-supply-assembly.log",
+  "log_sha256": "5b8026b9fa47c0f65a3cc9a750e9bec0373a6cd7b43331969f26b82f75f6ff88",
+  "windows": "NOT_RUN",
+  "field": "BLOCKED",
+  "raw_log_sha256": "28510c050255b08fbe03f6c592bf7223f61bbf4a9ffb9094bf34e994a310ba1e",
+  "log_publication": "path-alias mapping only; complete event text retained"
+}

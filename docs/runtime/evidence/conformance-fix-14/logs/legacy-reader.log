@@ -1,0 +1,6 @@
+Unhandled exception. System.IO.InvalidDataException: Unknown schema or checksum; original retained
+   at Ipc.Supply.SupplyStore.ReadFormat(SqliteConnection connection) in /reference/volume/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply/Maintenance.cs:line 55
+   at Ipc.Supply.SupplyStore.InspectConnection(SqliteConnection connection, String sourcePath) in /reference/volume/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply/Maintenance.cs:line 83
+   at Ipc.Supply.SupplyStore.InspectReadOnly(String path) in /reference/volume/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Supply/Maintenance.cs:line 131
+   at Program.<Main>$(String[] args) in /reference/volume/Development/Workspace/worktrees/importer-pc-closure13-verification/src/Ipc.Product/Program.cs:line 84
+   at Program.<Main>(String[] args)

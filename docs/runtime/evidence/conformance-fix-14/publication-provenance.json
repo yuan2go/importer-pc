@@ -1,0 +1,408 @@
+{
+  "SourceCommit": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+  "transformation": "Only personal absolute path prefixes are mapped; raw private originals and hashes retained in local .artifacts. No event/result/exit/status assertion removed.",
+  "aliases": [
+    {
+      "alias": "/reference/workspace",
+      "meaning": "task workspace, pinned SDK or local user path"
+    },
+    {
+      "alias": "/reference/dotnet-10.0.402",
+      "meaning": "task workspace, pinned SDK or local user path"
+    },
+    {
+      "alias": "/reference/user",
+      "meaning": "task workspace, pinned SDK or local user path"
+    },
+    {
+      "alias": "/reference/volume",
+      "meaning": "task workspace, pinned SDK or local user path"
+    }
+  ],
+  "files": [
+    {
+      "path": "legacy-compatibility.json",
+      "original_sha256": "d9bc7d69514188a48754964ef0abcfab0d1dd9e5ab34c34d3371dc59543370d8",
+      "public_sha256": "1aa62794e6bd92846825ead6ce056a26c66523ed50abd1a942c144b980bc1ea8",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "probes/published-notification.py",
+      "original_sha256": "9c1173db30962a8b93bfd9c2f2ab166bc0c70301981d5b79943901655f4a10fe",
+      "public_sha256": "8da8bfeba0b92da111bbd1569e514f069ae27ebc3a196f179c9d89489b762861",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "probes/published-notification-v2.py",
+      "original_sha256": "b5238793f61b7f5f92d862b0ce1dcbe31a972b960417b08bb50c690f14001244",
+      "public_sha256": "39d5055b386cc5ddb61868ed3e2cc2384ac4a91b2f99e015a702e3bd6d2316e8",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/final-package-portable.log",
+      "original_sha256": "14a88eb1a105639a0408c93113babbba2169acc968b301942043a09b167ef1b1",
+      "public_sha256": "1ab0f9597896c6f576bc7cb7e971fe6d0157cd7264a66a80a158536c0214778c",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/tests-build-5.log",
+      "original_sha256": "b28817748a931cf6d98a06f84bbb44e2d2920ec37504591ede3fe416cf70c6ff",
+      "public_sha256": "7de4d9fcef158b58f78abfb23428863d3a9ddbfae67b00be0de8cdf81740178c",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/tests-build-4.log",
+      "original_sha256": "49871aedf4123334b2ec349e1a73c4491dee15e4f6cd82ac2c5fb7331801a283",
+      "public_sha256": "e1a91a6952858cb17a4c1c069336a438925597dd8a42211d5cc902ce4f93e851",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/tests-build-6.log",
+      "original_sha256": "b33c7aa9e6293ae3b5c2dd1af1c84c14e94e086a2e1a39e1929ac2eb3e0b3772",
+      "public_sha256": "b23d71ea83f25295bd4436ddee139912b56578cfa2626a5befcf3c62588fa880",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/published-client.log",
+      "original_sha256": "e60a4866fe5180912dcec819eab2e0a6661ebd6617c194ce72ad40d71a7e864a",
+      "public_sha256": "275e0e2450d0f32c908676f59406e9a55b8d1ecc6764a6fed1f3dbce19879ef5",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/tests-build-7.log",
+      "original_sha256": "e1dff7c5527c5575392c823e064ba968df0c125b41cb20f5a14a0738db397043",
+      "public_sha256": "668bc3fa7e48da69838a3ccc0f97df1545a245d7fa5bb55cb34394bceb326675",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/final-probe-contradiction.log",
+      "original_sha256": "1bc2e1b0aafa62d2c64fc937ccf476e1058ca5bec9804ee6d4585e42a32d926e",
+      "public_sha256": "674fa2a56af18a0616ee7ceb6ffbd1a2ba3bfdd8c7256039bf5c8be2afb57689",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/reference.barcode-1.0.1.ipcx.inspection.log",
+      "original_sha256": "eeec3e57223316b5572bc2bda889f579e6aa091d7aaa9220db68e310a00845d0",
+      "public_sha256": "0bd915044e68878a6a3fdd9febb9f64d209a0d57bdfd676b77ca6ec477886f2f",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/ui-build.log",
+      "original_sha256": "ddcf29e38e83a966f12480dc90171208de9d13de6fa7256c6f0f73b671b502a9",
+      "public_sha256": "223348ef6f11e48812180883707b0acd502ab0f5d62c4b131f880e34b1888a44",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/tests-build-3.log",
+      "original_sha256": "bbd69768425157c9e1a9a6da4e2c6a1fbef3e8274d7a32cc95f990963cd7c2dc",
+      "public_sha256": "97904baa2bd000f61b3e0bc43dec4c99a4926b087ccf81a1dde93e5551796e90",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/baseline-1.log",
+      "original_sha256": "316671fc0d301111816f59e50e77e9eab5116e1f155a546cf3cd8d4df51b934f",
+      "public_sha256": "7b516719f408b1c9ae1f27d7abdac9790cc8d1e4836770cec38c9c063ae9b805",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/tests-build-2.log",
+      "original_sha256": "9da60ddfb5494d43d987f73efdb3e7763ffe7beebea14147391ee8f6bbe6915b",
+      "public_sha256": "4fb5f2d32b2cb05e25091046cb3cb8eb054ff1f3a2f8d7c151a4d82616cf9f73",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/final-restore.log",
+      "original_sha256": "9f8d5bfea142974821079c904c42a988504211a0b4c677249215e6e6b30f4ac9",
+      "public_sha256": "5bbbd3930149f67766efad76e032175dc0b68c8e51df5494d8815ad8924cb95f",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/baseline-3.log",
+      "original_sha256": "cc4ab8daa05c32039fbef52ad8c39c42288257d51fcabcf909ceb9fabd5a3c1b",
+      "public_sha256": "8f48b5e65e4bfc9000f26624fac7eb03c2888e5f706d700b64b1ca5feda59242",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/baseline-2.log",
+      "original_sha256": "1ed53fce62d7e9175d1673658bc021c91c35db318f4610ff03a28c4ae6b2cb0f",
+      "public_sha256": "05d089c11400578c011f3520f98b5df889c0b1c8f3c941ded1f7881fd9544632",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/legacy-reader.log",
+      "original_sha256": "16259faa93e155275cac6a8653d31e228a055752e0e91b28b53b7a4826ac1ddc",
+      "public_sha256": "cfe9bbae58ecc0a69fcce5ffe1e469889936c9122c1982ee5a07547584d210f1",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/conformance-2.log",
+      "original_sha256": "92b538258a25788616c84f7a5b038f17adf125d03ee9e5de8662e823f99c241f",
+      "public_sha256": "7ac8e6379ef69db3470eb8090d29bcc5b6b41d2ae2890acfc6c00b3bbe9ca775",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/conformance-3.log",
+      "original_sha256": "4a54ff69e89ec83ead637c4014f34ca19214abca4d91f83c8588cf6aea8a3687",
+      "public_sha256": "d3d115f14be814e0e8f4ae58d8a77905b2f1b27fbde64a39da4379982c83fae8",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/probe-health-build-v2.log",
+      "original_sha256": "a235b0f96e99a59b7691a0720f42161d86fc493df1202f89b0339afc311abd86",
+      "public_sha256": "96fef46fe70a91741edfa3778a66e0c16cb3d5276a0c96b93a82abc2ac75f92f",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/probe-contradiction-build.log",
+      "original_sha256": "c427d06f8b9abbf7f2737a92e6c949c23eaed3f6a38c135a7fa569f1006f6392",
+      "public_sha256": "23bcf7e878b4a8e99e32cbd3499bd067d95375c7855d76e007f3a96cd7ac6f8a",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/conformance-4.log",
+      "original_sha256": "bbe7d491834a898327468f314d7467200be13f561d58012a429637c9da289a4f",
+      "public_sha256": "5d5ac41feb98a21f9cd78c5a2b94a8482fabf150e3b9ddfe8df0e7e47d17679c",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/tests-build-10.log",
+      "original_sha256": "d01350a64eafc23e8f1c34921775618d3da8d83bf27d596e2ab24221e96364fc",
+      "public_sha256": "52f83f239c9a5851f84367b8656b6e52d02ebec66f918c86d957a5709182c5c8",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/conformance-5.log",
+      "original_sha256": "0a8ad8cbc803816473389316a70098cabea368142da404873a94284f0471db94",
+      "public_sha256": "cfe4156afa5b04ebededb813d57ead7896cc65796e2f52cd25eeb2aea8f7fb3a",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/published-fixture.log",
+      "original_sha256": "1d47557fe6076134b8389bf5a921478c2eb5b0ac4b64e5754c60a4a945471051",
+      "public_sha256": "8da07a9d72ba029da67f0502012751e2aa8228e19c88102dab814dbff473f0d4",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/final-build.log",
+      "original_sha256": "476f1097bff04f3fc95c2a7d76ead0253b96dfb950b1fa9fa020465b1669c10a",
+      "public_sha256": "67929756e05dc665451951d7c09ba104502c4197f5a888b6f2ae26c19d8afa7a",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/tests-build.log",
+      "original_sha256": "1db7a2a0173f68327930cc16ed79eb5225ceb53cda1176c82acd84a59fd6442c",
+      "public_sha256": "922d5211319ce60450477d70b49ac80babe5540cbe9bdcd53542a33590df2847",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/reference.integration-1.0.1.ipcx.inspection.log",
+      "original_sha256": "eeec3e57223316b5572bc2bda889f579e6aa091d7aaa9220db68e310a00845d0",
+      "public_sha256": "0bd915044e68878a6a3fdd9febb9f64d209a0d57bdfd676b77ca6ec477886f2f",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/final-package-win-x64.log",
+      "original_sha256": "71bce4a0223c8301173ce351dcdef224a25344e448b292c6a83f2d110cef151e",
+      "public_sha256": "58c84ae2ae5dcfd15462f1d962f3f5587da7db1e0512bc4cfbe0ea4b1df353f3",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/final-package-supply-assembly.log",
+      "original_sha256": "28510c050255b08fbe03f6c592bf7223f61bbf4a9ffb9094bf34e994a310ba1e",
+      "public_sha256": "5b8026b9fa47c0f65a3cc9a750e9bec0373a6cd7b43331969f26b82f75f6ff88",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/build-3.log",
+      "original_sha256": "2c7323013e99b902aec8aba586b20e073806c5aa58241b06137fc2927232d963",
+      "public_sha256": "016071b904b25654457ffccd4464c2f2c33d03772b25248c7a4bfe20cbe735a4",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/final-published-notification.log",
+      "original_sha256": "915af5cf0e81ed0ed7dbf026762e4bf5c7edebfc7a3c10ea0b9c8d9cdbe25e07",
+      "public_sha256": "a7b295fc32c076f8f022da824ed1f22f8f445b9e8c15e0b9afa43f714a0bf628",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/baseline-contradiction.log",
+      "original_sha256": "fe4d582af93bfb6869c977f2eeb8f69e8798e43829a72a862329a66da15b51c9",
+      "public_sha256": "ecb1a21dc81135cc5fcbd94484b6984544213f9f9f9030287edae846d5220e22",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/build-2.log",
+      "original_sha256": "b0dfc14069da08f6fbdd62000ef25cd90db977cdaf817f44ec94a192d0099167",
+      "public_sha256": "c848914a96b76243456741e5d76d15eca2160927c71043beebe986f34c30a605",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/conformance-first.log",
+      "original_sha256": "6efe930744942361eb004c4c62e4167f0f70c6b9bce946359d53f492c83fcc44",
+      "public_sha256": "1b4f687abb95ffc9f5c394dd71ba3f328d2dbe5d4adaada1fef6384013a33b16",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/build-5.log",
+      "original_sha256": "4c8c2013af9c347e0d5fb25d8f525473d83b6680c3fa96c6d76e42c2c6022510",
+      "public_sha256": "f367cf7f71261bd84d9cf71bf39635350d0dc7cd26a9d7af4eea2f630874872d",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/probe-health-build.log",
+      "original_sha256": "1334d352587cc1e218e11f120dc39ad13f5961d621cf3ad32dd70ea18d563ca9",
+      "public_sha256": "21ee90b3b6d348604128afbdd559aa476153687d4cf5b19b1435d1bcbf91a304",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/final-baseline.log",
+      "original_sha256": "f1a82e6f33c881c6be709b9c58d4c57b58b160b24986abb5f51c289aa332c914",
+      "public_sha256": "00d6a509cae34840617bee9c8a524bdb371a117fbae09a2c2a419dbdcf322206",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/build-4.log",
+      "original_sha256": "5e098e974d22e1dca78ec6b01079cd8c6fe0d441ecb4137fa1f829469aaa9a07",
+      "public_sha256": "007c0b8937d4d5e304294f6c5ddf72260be99b52b2538f3c8f6e2fed39070b11",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/a01-build.log",
+      "original_sha256": "6d424c3c80cd134b280fb3803092d9913adea6ce22e0171fad3489f77a49eacc",
+      "public_sha256": "bbdcb55036b23b91a93f291835cff17eb6ba17872bfa7a07e65c8fd13cec925d",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/tests-build-9.log",
+      "original_sha256": "bbd69768425157c9e1a9a6da4e2c6a1fbef3e8274d7a32cc95f990963cd7c2dc",
+      "public_sha256": "97904baa2bd000f61b3e0bc43dec4c99a4926b087ccf81a1dde93e5551796e90",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "logs/tests-build-8.log",
+      "original_sha256": "b1684a46d69939e4ea2b0b1bfc5108b95fe5567f8fd198b4f85ef667dffc662e",
+      "public_sha256": "eeb7e43928262d75bf20000f3b1983967c5bf4b760d77abd7fdffa1f2eea2ec3",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-closure.record.json",
+      "original_sha256": "c9dfe27ad253046a418ee517f96c2add32414d7a456981cf46c9e4740e29a59b",
+      "public_sha256": "2c4206b32fd6c6f88678efcdfd748698a6a313abf5093ac1addc268d7b0c8564",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-probe-health.record.json",
+      "original_sha256": "d71d5ae157bb0a7d63ab64f1a4bf0d85d24acf54f915aa4a58d28fb3ce38c523",
+      "public_sha256": "9e787f20b0c9ba98e4a4da732e8f45793c7fa1e323cbdeed6f32e7b4b1d796a3",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-probe-health-v2.record.json",
+      "original_sha256": "3fff7ebf915d214e0c4a0dd2fedb1a978c8112ad0d2f9e8c41d963ffba670028",
+      "public_sha256": "7cb85ba70e0249615ddfaf67a61e9ec0b70d54f6d4c758008a9389b8ed68ef9c",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-conformance.record.json",
+      "original_sha256": "cf84372ad28243f47a4f379409fb008b6cc95076fb55e00a7e3292da1c1a90f4",
+      "public_sha256": "708a322d1e70b28c720ac000f4d6146a81a8d996a45aeb5d339e9e2d01e4e96d",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-package-portable.record.json",
+      "original_sha256": "43d31a3f3be2bafb1dff92d80533d170f967d0577860631682d96ce0a3865e65",
+      "public_sha256": "8b1c3723c87bf97a1d743f58feddb5631cf92d9fd8b89a4951980013bbe03218",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-probe-contradiction.record.json",
+      "original_sha256": "7ae5338ed6002d32a03215153f00447a1f501da0dc58a1c20d3a5706eb13b8fb",
+      "public_sha256": "9f2eafc54406c819742123dce968ea8982bd6668d1cd505850c1266bb69161e8",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-build.record.json",
+      "original_sha256": "f0c2e091214d3f5837b62a9d03509f4c8cc4a7186622a02404bc3a876d060519",
+      "public_sha256": "d32d0214ab6d9a5e1ce08d43fa7222c4399cd66bb3d51740694ab3f21541c7dd",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-architecture.record.json",
+      "original_sha256": "09f00ae3ae980034f296e058a1da4bb8f6fd86a182635f894c1493c2bbbd68d9",
+      "public_sha256": "08478b08ba736f2a56a50e17b42d9b1a042b7e7e0a9dd03b2739cf2e0172515a",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-package-supply-assembly.record.json",
+      "original_sha256": "a4ee443b8f1c61d833e03a9f6761bfd641b22715352ba0add9c3569978369468",
+      "public_sha256": "f9dd535cdb31b321a0ce024a6291a0c8cd88522426e1d2f054c08fb3523ccecc",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-restore.record.json",
+      "original_sha256": "5e414f1f26ae4ae7980b0db4517fac5fb0881f23ac5a092fd94867ba03773e1b",
+      "public_sha256": "d8a31bd8456667b7cee68e1ce6f53fc38322186392fd54a0ec1e301b94dcf065",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-package-win-x64.record.json",
+      "original_sha256": "453d38fa7be004764d7b0b8dd705224a7f1f9ac841899a3dfb3acd96352eb6f2",
+      "public_sha256": "ea9d12b05aa0db8f456766297f0f3f713be5a9cd0358e2bd62c46a592cc45913",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-followup.record.json",
+      "original_sha256": "fb126a754800d636327e763270b782154be6c68fe413641d5c441bbb280a8c82",
+      "public_sha256": "3d05be72ff50051223cbc616ce7b852c21951e906797c4673de7766c46a1297f",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-plugin-reproducibility.record.json",
+      "original_sha256": "8952848943a40fcfe66381566f05ac33827ef476b3ded010c82cf51a9a89552f",
+      "public_sha256": "cb1a00fcd3673fd9e5b77c0c7e74d1274d337fe9628fe23103eb99e20cdc0b71",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-smoke-core-evaluated.record.json",
+      "original_sha256": "1eea3250fa81ca29d8c1599bce53ec0b63621b5b916710df8b7dfc62203bcf54",
+      "public_sha256": "041f0fa881100f8b0fdee464cf546a9addccb1a0e927fa9568fc9950ebc1c53f",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-baseline.record.json",
+      "original_sha256": "38e42bdf8dd5456d0aa3856433b6d87b4e9152b2287b5fbc3a4c1629a00f468e",
+      "public_sha256": "411f2ab69697912299a879cf90ddc6c0972012b4e11ab0bb9159312d91c93816",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-smoke-extensions.record.json",
+      "original_sha256": "193983e19f9eee1645acf0553eeae19adfd2123b4e13baf8dc4612f93c7853d7",
+      "public_sha256": "c3910eaa04c33171428ea330d7e6337029acaa7bd55a75885c9ad2b900cbac84",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "runs/final-smoke-core.record.json",
+      "original_sha256": "f9a65adea7f87f0129c4eefcf87845133494fc3d564d5ae9ee2e26ea5c429a93",
+      "public_sha256": "1002bcf3fd8504dc9710689fd6efa4a2a223e0fb4d25c81f32436ea9cd862de9",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "probes/adapted-health/HealthRepro.csproj",
+      "original_sha256": "2dff8f32a56536d41195391d7d0f3db42637ce01298ec8ff3cc3ae43f761dcc4",
+      "public_sha256": "b768c63b848c5880bedcfe08d4d3a3b148d2150bed4bad93b83f5e74b8637ea2",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "probes/adapted-contradiction/ContradictionProbe.csproj",
+      "original_sha256": "2dff8f32a56536d41195391d7d0f3db42637ce01298ec8ff3cc3ae43f761dcc4",
+      "public_sha256": "b768c63b848c5880bedcfe08d4d3a3b148d2150bed4bad93b83f5e74b8637ea2",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    },
+    {
+      "path": "probes/adapted-health-v2/HealthRepro.csproj",
+      "original_sha256": "2dff8f32a56536d41195391d7d0f3db42637ce01298ec8ff3cc3ae43f761dcc4",
+      "public_sha256": "b768c63b848c5880bedcfe08d4d3a3b148d2150bed4bad93b83f5e74b8637ea2",
+      "transformation": "Replace only user/workspace/SDK absolute path prefixes; original bytes retained locally"
+    }
+  ]
+}

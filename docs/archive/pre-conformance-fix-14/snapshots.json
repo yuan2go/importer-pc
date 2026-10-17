@@ -102,5 +102,14 @@
     "git_blob": "6f65568bad3613b034722851a116c056086a0362",
     "snapshot": "docs/archive/pre-conformance-fix-14/docs/manifest.sha256.txt",
     "replacement": "WP-IPC-CONFORMANCE-FIX-14 current guidance; original requirements retained"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+    "source_commit": "6406b4f",
+    "sha256": "2d754d8bd0f323a75b827eb79e3056606e9843a1a656550a9b5be9821aa3cd42",
+    "git_blob": "e724e735bdd26902ff35f45293554fb8f049dbf3",
+    "snapshot": "docs/archive/pre-conformance-fix-14/docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md.txt",
+    "replacement": "Completion annotation only; original AC definition and all historical audit/12/13 records unchanged",
+    "snapshot_phase": "Before first completion annotation, after implementation freeze"
   }
 ]

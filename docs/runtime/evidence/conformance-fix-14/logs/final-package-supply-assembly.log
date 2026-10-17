@@ -1,0 +1,16 @@
+  正在确定要还原的项目…
+  已还原 /reference/workspace/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 574 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Platform/Ipc.Platform.csproj (用时 574 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj (用时 574 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Supply/Ipc.Supply.csproj (用时 574 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Product/Ipc.Product.csproj (用时 574 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 574 毫秒)。
+  Ipc.Platform -> /reference/workspace/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /reference/workspace/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /reference/workspace/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /reference/workspace/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /reference/workspace/src/Ipc.Product/bin/Release/net10.0/Ipc.Product.dll
+  Ipc.Assembly -> /reference/workspace/src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.dll
+  Ipc.Assembly -> /reference/workspace/.artifacts/conformance-14/candidates/fix14-68cdc36-supply-assembly/app/
+Sealed Simulation configuration: /reference/workspace/.artifacts/conformance-14/candidates/fix14-68cdc36-supply-assembly/app/config
+{"Package": "/reference/workspace/.artifacts/conformance-14/candidates/fix14-68cdc36-supply-assembly.zip", "Sha256": "87ecfbbf1dc223f2feff7371011640209bdc4967033df673dad60a3c16639f05", "SchemaVersion": 1, "Business": "supply", "Views": ["workstation", "history", "alarms", "diagnostics", "maintenance", "engineering", "extensions"], "Layouts": ["standard", "compact"], "EntryPoint": "app/Ipc.Assembly.dll", "SourceCommit": "68cdc36f7821825c1ee9e53d866015be5ecf3044", "Windows": "WINDOWS_NOT_RUN", "Field": "BLOCKED", "Binaries": {"Ipc.Adapters.dll": "2c28afcdf8da420437e2c2371aa2ae49093e8ceaa5dc6c4717ac9610119d071a", "Ipc.Assembly.dll": "8483059f0bd0813cd337fda3fdfb899541b73579185638c28df87ae0ee41a6da", "Ipc.Platform.dll": "96ab8f18f81748895f33021273d1f29167895bdb78d33c00659187f623ff6ba4", "Ipc.Product.dll": "0baad4def8067d82cea4e5f850574eae685db8da5cf0ffcb1aa7ecd0e540730d", "Ipc.Supply.Contracts.dll": "115e7f874fb1d65ac02c3d355d7c6012b723f30a853201e0c14554b3bed8d8e2", "Ipc.Supply.dll": "8f003e2ee9c6988cb9e653c34c2630f0046b8643d01a093dee096e2c91cf7925"}}

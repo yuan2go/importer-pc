@@ -1,0 +1,45 @@
+  正在确定要还原的项目…
+  已还原 /reference/workspace/src/Ipc.Product/Ipc.Product.csproj (用时 622 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj (用时 622 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 623 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Platform/Ipc.Platform.csproj (用时 619 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Supply/Ipc.Supply.csproj (用时 623 毫秒)。
+  Ipc.Platform -> /reference/workspace/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /reference/workspace/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /reference/workspace/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /reference/workspace/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /reference/workspace/src/Ipc.Product/bin/Release/net10.0/Ipc.Product.dll
+  Ipc.Product -> /reference/workspace/.artifacts/conformance-14/candidates/fix14-68cdc36-integration-portable/app/
+  正在确定要还原的项目…
+  已还原 /reference/workspace/src/Ipc.Fixture/Ipc.Fixture.csproj (用时 305 毫秒)。
+  4 个项目(共 5 个)是最新的，无法还原。
+  Ipc.Platform -> /reference/workspace/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /reference/workspace/src/Ipc.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /reference/workspace/src/Ipc.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /reference/workspace/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Fixture -> /reference/workspace/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll
+  Ipc.Fixture -> /reference/workspace/.artifacts/conformance-14/candidates/fix14-68cdc36-integration-portable/fixture/
+Sealed Simulation configuration: /reference/workspace/.artifacts/conformance-14/candidates/fix14-68cdc36-integration-portable/app/config
+  正在确定要还原的项目…
+  已还原 /private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-extension-build-q5lwxeoy/project/BarcodeExtension.csproj (用时 34 毫秒)。
+  BarcodeExtension -> /private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-extension-build-q5lwxeoy/bin/Ipc.Reference.BarcodeExtension.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.39
+Verified OK
+{"Package": "reference.barcode-1.0.2.ipcx", "PackageSha256": "f01191b6d51f47ed8905a6340ed7fd0bf896e5592278642fd656deb4f9fdc824", "PluginSourceCommit": "6507edb4c10699df3bdeb8f91da3bf31f81b94f9", "HostContractSha256": "96ab8f18f81748895f33021273d1f29167895bdb78d33c00659187f623ff6ba4", "FrozenHostUnchanged": true, "Publisher": "reference-test", "Version": "1.0.2", "ExtensionContract": 1, "Signature": "RSA-PSS/SHA256", "Mode": "Simulation", "PluginSourceSha256": "cf2864697afb658f858fc5c857081351f8e2099a5c5cb78c7a38afcd913b376e"}
+  正在确定要还原的项目…
+  已还原 /private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-extension-build-4xr6eguj/project/IntegrationExtension.csproj (用时 38 毫秒)。
+  IntegrationExtension -> /private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-extension-build-4xr6eguj/bin/Ipc.Reference.IntegrationExtension.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.40
+Verified OK
+{"Package": "reference.integration-1.0.2.ipcx", "PackageSha256": "b40d887629bd1518bd6e9beeb3e8dcea8b9d221db77861d1369b89096edffa2d", "PluginSourceCommit": "68cdc36f7821825c1ee9e53d866015be5ecf3044", "HostContractSha256": "96ab8f18f81748895f33021273d1f29167895bdb78d33c00659187f623ff6ba4", "FrozenHostUnchanged": true, "Publisher": "reference-test", "Version": "1.0.2", "ExtensionContract": 1, "Signature": "RSA-PSS/SHA256", "Mode": "Simulation", "PluginSourceSha256": "c1b94ae58d7210353185cbf8e1b066753ddfe8cbd92b3c48c1d98be28e9c51ea"}
+{"Package": "/reference/workspace/.artifacts/conformance-14/candidates/fix14-68cdc36-integration-portable.zip", "Sha256": "c51b548d957357d65bfba3e8e57910d8c1bdeeeb1e4e253ac3f13d6b3a8fe0b3", "WorkPackage": "WP-IPC-CONFORMANCE-FIX-14", "SourceCommit": "68cdc36f7821825c1ee9e53d866015be5ecf3044", "ReleaseVersion": "CONFORMANCE-FIX-14", "StorageVersion": 4, "ContractVersion": "SIMULATION-v1", "SourceCodeSha256": "5e7a155dd8412847b7850faae9a7ba5f0d00289dfe0fe7b87d91165c1176e890", "Target": "portable", "WindowsRuntimeValidation": "NOT_RUN", "PhysicalIntegration": "BLOCKED", "Note": "Portable requires pinned .NET runtime; win-x64 is self-contained and requires Windows validation.", "Composition": "integration-reference", "Mode": "Simulation", "ExtensionContract": 1, "MinimumReader": 4, "CompositionLockSha256": "232913ca45fcb1af42cb326377ab8b6028aa61beb7c2d5ebe180dbcfc5e272bf"}

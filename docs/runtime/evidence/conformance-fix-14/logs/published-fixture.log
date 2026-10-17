@@ -1,0 +1,90 @@
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:56878
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /reference/workspace
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:56878/health - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /health'
+info: Microsoft.AspNetCore.Http.Result.ContentResult[2]
+      Write content with HTTP Response ContentType of text/plain; charset=utf-8
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /health'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:56878/health - 200 13 text/plain;+charset=utf-8 38.9386ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:56878/health - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /health'
+info: Microsoft.AspNetCore.Http.Result.ContentResult[2]
+      Write content with HTTP Response ContentType of text/plain; charset=utf-8
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /health'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:56878/health - 200 13 text/plain;+charset=utf-8 0.7701ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:56878/requests - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /requests'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'IntegrationResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /requests'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:56878/requests - 200 - application/json;+charset=utf-8 31.7126ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:56878/requests - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /requests'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'IntegrationResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /requests'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:56878/requests - 200 - application/json;+charset=utf-8 2.2795ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:56878/requests - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /requests'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'IntegrationResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /requests'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:56878/requests - 200 - application/json;+charset=utf-8 1.3533ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:56878/requests - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /requests'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'IntegrationResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /requests'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:56878/requests - 200 - application/json;+charset=utf-8 2.4835ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://127.0.0.1:56878/requests - application/json;+charset=utf-8 -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: POST /requests'
+info: Microsoft.AspNetCore.Http.Result.JsonResult[3]
+      Writing value of type 'IntegrationResponse' as Json.
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: POST /requests'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://127.0.0.1:56878/requests - 200 - application/json;+charset=utf-8 1.1376ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:56878/health - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'HTTP: GET /health'
+info: Microsoft.AspNetCore.Http.Result.ContentResult[2]
+      Write content with HTTP Response ContentType of text/plain; charset=utf-8
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'HTTP: GET /health'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:56878/health - 200 13 text/plain;+charset=utf-8 0.2182ms
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...

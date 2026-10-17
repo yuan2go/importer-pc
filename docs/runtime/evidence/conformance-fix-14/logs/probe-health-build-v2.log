@@ -1,0 +1,19 @@
+  正在确定要还原的项目…
+  已还原 /reference/workspace/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj (用时 446 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Platform/Ipc.Platform.csproj (用时 446 毫秒)。
+  已还原 /reference/workspace/.artifacts/conformance-14/adapted-health-v2/HealthRepro.csproj (用时 446 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Supply/Ipc.Supply.csproj (用时 446 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Product/Ipc.Product.csproj (用时 446 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 446 毫秒)。
+  Ipc.Platform -> /reference/workspace/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /reference/workspace/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /reference/workspace/src/Ipc.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /reference/workspace/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /reference/workspace/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
+  HealthRepro -> /reference/workspace/.artifacts/conformance-14/adapted-health-v2/bin/Debug/net10.0/HealthRepro.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:01.97

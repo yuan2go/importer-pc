@@ -1,0 +1,82 @@
+{
+  "SourceCommit": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+  "release": "https://github.com/yuan2go/importer-pc/releases/tag/conformance14-reference-68cdc36",
+  "checked_at": "2026-10-17T10:08:44.177479+00:00",
+  "Status": "PASS_ALL_11_ASSETS_DOWNLOADED_VERIFIED",
+  "assets": [
+    {
+      "name": "SHA256SUMS",
+      "size": 983,
+      "sha256": "6d8d2daef16e09f2ec76bf8c89a130bf0a7bed46d669372907c222dc3e799a64",
+      "exact_remote_bytes": true
+    },
+    {
+      "name": "fix14-68cdc36-integration-portable.zip",
+      "size": 35506798,
+      "sha256": "c51b548d957357d65bfba3e8e57910d8c1bdeeeb1e4e253ac3f13d6b3a8fe0b3",
+      "exact_remote_bytes": true,
+      "verified_inner_files": 158
+    },
+    {
+      "name": "fix14-68cdc36-integration-win-x64.zip",
+      "size": 115682927,
+      "sha256": "24c3b1a9209b5035d0fe34282a7564141cb65bff28a348101f5afe5e4f90ecbf",
+      "exact_remote_bytes": true,
+      "verified_inner_files": 843
+    },
+    {
+      "name": "fix14-68cdc36-source.zip",
+      "size": 9337998,
+      "sha256": "82cbeb99c6b1151a62ac5e3bf4b0e10f438abd0a36a49bac5546057d7383b84a",
+      "exact_remote_bytes": true,
+      "source_archive_entries": 765
+    },
+    {
+      "name": "fix14-68cdc36-supply-assembly.zip",
+      "size": 18133008,
+      "sha256": "87ecfbbf1dc223f2feff7371011640209bdc4967033df673dad60a3c16639f05",
+      "exact_remote_bytes": true,
+      "verified_inner_files": 84
+    },
+    {
+      "name": "fix14-BarcodeExtension-source.zip",
+      "size": 11062,
+      "sha256": "d0157fe48a6dbd69152d5b962d3a74af826518b23c8f7eb1c01005e4aa29e4eb",
+      "exact_remote_bytes": true,
+      "source_archive_entries": 11
+    },
+    {
+      "name": "fix14-CANDIDATE.json",
+      "size": 132614,
+      "sha256": "49a5c90557f71fb66e8f5e7642467edcb6a0f114c73de46ce4092eb08d5ae35f",
+      "exact_remote_bytes": true
+    },
+    {
+      "name": "fix14-IntegrationExtension-source.zip",
+      "size": 13086,
+      "sha256": "5f5e6494795db77a11b5828afe21a88762f902528877b6f990c60eaec1e8d020",
+      "exact_remote_bytes": true,
+      "source_archive_entries": 12
+    },
+    {
+      "name": "reference.barcode-1.0.2.ipcx",
+      "size": 7573,
+      "sha256": "f01191b6d51f47ed8905a6340ed7fd0bf896e5592278642fd656deb4f9fdc824",
+      "exact_remote_bytes": true
+    },
+    {
+      "name": "reference.integration-1.0.2.ipcx",
+      "size": 13323,
+      "sha256": "b40d887629bd1518bd6e9beeb3e8dcea8b9d221db77861d1369b89096edffa2d",
+      "exact_remote_bytes": true
+    },
+    {
+      "name": "trust.Simulation.reference.json",
+      "size": 775,
+      "sha256": "49773137d1018b731f9503154eb01ea906a74267148a902b10861fecf7455496",
+      "exact_remote_bytes": true
+    }
+  ],
+  "Windows": "NOT_RUN",
+  "Field": "BLOCKED"
+}

@@ -1,0 +1,156 @@
+{
+  "AuditSha": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+  "Result": "FIX_VERIFIED",
+  "PrimaryUrl": "http://127.0.0.1:55929/",
+  "AuxiliaryUrl": "http://127.0.0.1:55928/",
+  "Cases": [
+    {
+      "Case": "auxiliary-enabled-offline",
+      "PrimaryHealthRequests": 2,
+      "MainService": {
+        "TargetId": "primary-target",
+        "TargetRevision": "1",
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T10:05:06.325744+00:00",
+        "ValidUntil": "2026-10-17T10:05:10.825744+00:00",
+        "Source": "integration:primary"
+      },
+      "InstanceDiagnostics": [
+        {
+          "InstanceId": "primary",
+          "State": "Ready",
+          "InFlight": 0,
+          "LastFailure": null,
+          "Target": {
+            "Id": "primary-target",
+            "Revision": "1",
+            "Contract": "SIMULATION-v1",
+            "Endpoint": "http://127.0.0.1:55929/"
+          },
+          "DeploymentVersion": "audit-health-1",
+          "ConfigurationSha256": "8B672DA0D0EB03F67E9F0BE85A5BDDAAAE0D15C2D8C3DD2DD3E91006D5B3EF7F",
+          "Port": "requests",
+          "Lifecycle": "Available",
+          "Historical": false,
+          "Health": {
+            "InstanceId": "primary",
+            "Port": "requests",
+            "DeploymentVersion": "audit-health-1",
+            "ConfigurationSha256": "8B672DA0D0EB03F67E9F0BE85A5BDDAAAE0D15C2D8C3DD2DD3E91006D5B3EF7F",
+            "Target": {
+              "Id": "primary-target",
+              "Revision": "1",
+              "Contract": "SIMULATION-v1",
+              "Endpoint": "http://127.0.0.1:55929/"
+            },
+            "Epoch": "db89747ecec54b23adf1193fbad8e0ce",
+            "Sequence": 2,
+            "Status": "Ready",
+            "ConfirmedAt": "2026-10-17T10:05:06.325744+00:00",
+            "ValidUntil": "2026-10-17T10:05:10.825744+00:00",
+            "Failure": null
+          }
+        },
+        {
+          "InstanceId": "auxiliary",
+          "State": "Unavailable",
+          "InFlight": 0,
+          "LastFailure": "TaskCanceledException: A task was canceled.",
+          "Target": {
+            "Id": "auxiliary-target",
+            "Revision": "1",
+            "Contract": "SIMULATION-v1",
+            "Endpoint": "http://127.0.0.1:55928/"
+          },
+          "DeploymentVersion": "audit-health-1",
+          "ConfigurationSha256": "542D6321BE6130A7A54BE32F681D913B18D7CACD287FD82A3F8893560B8F44BC",
+          "Port": "auxiliary-status",
+          "Lifecycle": "Available",
+          "Historical": false,
+          "Health": {
+            "InstanceId": "auxiliary",
+            "Port": "auxiliary-status",
+            "DeploymentVersion": "audit-health-1",
+            "ConfigurationSha256": "542D6321BE6130A7A54BE32F681D913B18D7CACD287FD82A3F8893560B8F44BC",
+            "Target": {
+              "Id": "auxiliary-target",
+              "Revision": "1",
+              "Contract": "SIMULATION-v1",
+              "Endpoint": "http://127.0.0.1:55928/"
+            },
+            "Epoch": "45b034526d5b47d6a66a1fe8a7819145",
+            "Sequence": 1,
+            "Status": "Unavailable",
+            "ConfirmedAt": "2026-10-17T10:05:06.798812+00:00",
+            "ValidUntil": "2026-10-17T10:05:11.298812+00:00",
+            "Failure": "TaskCanceledException: A task was canceled."
+          }
+        }
+      ],
+      "AdmitReasons": [
+        "IdentityUnavailable",
+        "NoActiveBoxOrCloseBarrier"
+      ],
+      "StartupDiagnostics": []
+    },
+    {
+      "Case": "primary-only-control",
+      "PrimaryHealthRequests": 2,
+      "MainService": {
+        "TargetId": "primary-target",
+        "TargetRevision": "1",
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T10:05:07.920762+00:00",
+        "ValidUntil": "2026-10-17T10:05:12.420762+00:00",
+        "Source": "integration:primary"
+      },
+      "InstanceDiagnostics": [
+        {
+          "InstanceId": "primary",
+          "State": "Ready",
+          "InFlight": 0,
+          "LastFailure": null,
+          "Target": {
+            "Id": "primary-target",
+            "Revision": "1",
+            "Contract": "SIMULATION-v1",
+            "Endpoint": "http://127.0.0.1:55929/"
+          },
+          "DeploymentVersion": "audit-health-1",
+          "ConfigurationSha256": "8B672DA0D0EB03F67E9F0BE85A5BDDAAAE0D15C2D8C3DD2DD3E91006D5B3EF7F",
+          "Port": "requests",
+          "Lifecycle": "Available",
+          "Historical": false,
+          "Health": {
+            "InstanceId": "primary",
+            "Port": "requests",
+            "DeploymentVersion": "audit-health-1",
+            "ConfigurationSha256": "8B672DA0D0EB03F67E9F0BE85A5BDDAAAE0D15C2D8C3DD2DD3E91006D5B3EF7F",
+            "Target": {
+              "Id": "primary-target",
+              "Revision": "1",
+              "Contract": "SIMULATION-v1",
+              "Endpoint": "http://127.0.0.1:55929/"
+            },
+            "Epoch": "30a4e6f871e84d1f8c415e3284067f3a",
+            "Sequence": 2,
+            "Status": "Ready",
+            "ConfirmedAt": "2026-10-17T10:05:07.920762+00:00",
+            "ValidUntil": "2026-10-17T10:05:12.420762+00:00",
+            "Failure": null
+          }
+        }
+      ],
+      "AdmitReasons": [
+        "IdentityUnavailable",
+        "NoActiveBoxOrCloseBarrier"
+      ],
+      "StartupDiagnostics": []
+    }
+  ],
+  "HealthCalls": 4,
+  "EffectCalls": 0,
+  "Windows": "NOT_RUN",
+  "DeviceActions": "NONE",
+  "RepositoryMutations": "NONE"
+}

@@ -1,4 +1,4 @@
-> 当前执行 WP-IPC-CONFORMANCE-FIX-14：从 main `8cabf06d` 开发；审查材料来自未合并PR13/6406b4f，不能算作main修复。先完成文档清理，再实现A-01～04及适用R项。Windows按13批准后验，真实能力仍NotReady。
+> FIX-14当前交付：源码 `68cdc36` 完成A-01～04及适用R项的核心修复/必要验证，Storage4，WPF交叉构建PASS；[逐A/R与AC14报告](runtime/conformance-fix-14.md)。Windows沿13批准后验，NOT_RUN；真实SDK/WCS/现场仍BLOCKED。以下8cabf06d审查结论及13资料保留其原版本含义，不能冒称main已包含本分支修复。
 
 # 统一资料与实施入口
 

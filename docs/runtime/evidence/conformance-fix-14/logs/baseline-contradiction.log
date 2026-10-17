@@ -1,0 +1,168 @@
+{
+  "Audit": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01",
+  "SourceSha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "Mode": "SYNTHETIC_APPLICATION_API_NO_NETWORK_NO_DEVICE",
+  "Database": "/reference/workspace/.artifacts/conformance-14/baseline-contradiction/station.db",
+  "RequestId": "3fadccdfb6b143ab8a731f9faad6efc1",
+  "AcceptedProjection": {
+    "SessionStatus": "Active",
+    "OperationStatus": "Accepted",
+    "RequestStatus": "Accepted",
+    "AcceptedQuantity": 1,
+    "RuntimeFaults": [],
+    "Blocks": [],
+    "RecoveryRequestIds": [],
+    "Admit": {
+      "Allowed": true,
+      "Reasons": []
+    }
+  },
+  "AfterContradictorySameEvidence": {
+    "SessionStatus": "Active",
+    "OperationStatus": "Accepted",
+    "RequestStatus": "Accepted",
+    "AcceptedQuantity": 1,
+    "RuntimeFaults": [
+      "ProtocolFailure: Conflicting evidence identity"
+    ],
+    "Blocks": [],
+    "RecoveryRequestIds": [],
+    "Admit": {
+      "Allowed": false,
+      "Reasons": [
+        "ProtocolFailure"
+      ]
+    }
+  },
+  "StoredAfterContradiction": {
+    "Request": {
+      "Id": "3fadccdfb6b143ab8a731f9faad6efc1",
+      "OwnerId": "a6fdf588880244c089d56cddc8dcbfa9",
+      "SessionId": "14b9b75a7dc445fb84c94e1e440e1ddb",
+      "Kind": "Submit",
+      "OwnerRevision": 3,
+      "IntentKey": "a6fdf588880244c089d56cddc8dcbfa9:Submit:3",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-AUDIT-CONTRADICTION\u0022,\n  \u0022SessionId\u0022: \u002214b9b75a7dc445fb84c94e1e440e1ddb\u0022,\n  \u0022OwnerId\u0022: \u0022a6fdf588880244c089d56cddc8dcbfa9\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000099\u0022,\n  \u0022Package\u0022: 1,\n  \u0022Quantity\u0022: 1,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T17:38:47.60418\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "E878296CDDB36A16C59CABE02682A4F5BCFF7D09AD74C39B8755BDFB49B6E0D8",
+      "Binding": {
+        "Id": "audit-fixture",
+        "Revision": "r1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:65530/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T09:38:47.645138+00:00"
+    },
+    "Responses": [
+      {
+        "RequestId": "3fadccdfb6b143ab8a731f9faad6efc1",
+        "PayloadHash": "E878296CDDB36A16C59CABE02682A4F5BCFF7D09AD74C39B8755BDFB49B6E0D8",
+        "EvidenceId": "audit-evidence-Submit",
+        "Result": "Accepted",
+        "Reason": "AUDIT synthetic accepted Submit",
+        "Remaining": null,
+        "Quantity": 1,
+        "CheckToken": null
+      }
+    ],
+    "Audits": [
+      {
+        "Id": "f3c9bd7c70fd418a916e1efbf8e489cf",
+        "OwnerId": "a6fdf588880244c089d56cddc8dcbfa9",
+        "Actor": "device:AUDIT-CAM-L",
+        "CommandId": "system",
+        "Kind": "Associated",
+        "Evidence": "{\n  \u0022Id\u0022: \u0022audit-enter\u0022,\n  \u0022DeviceId\u0022: \u0022AUDIT-CAM-L\u0022,\n  \u0022Epoch\u0022: \u0022left-original\u0022,\n  \u0022SourceEventId\u0022: \u0022audit-source-enter\u0022,\n  \u0022Sequence\u0022: 1,\n  \u0022AdmissionId\u0022: \u0022audit-admission\u0022,\n  \u0022Kind\u0022: \u0022Enter\u0022,\n  \u0022Codes\u0022: [],\n  \u0022PackageQuantity\u0022: null,\n  \u0022ObservedAt\u0022: \u00222026-10-17T09:38:47.633642\u002B00:00\u0022\n}",
+        "At": "2026-10-17T09:38:47.637858+00:00"
+      },
+      {
+        "Id": "9575e3621d264884b58f992378c7935d",
+        "OwnerId": "a6fdf588880244c089d56cddc8dcbfa9",
+        "Actor": "device:AUDIT-CAM-L",
+        "CommandId": "system",
+        "Kind": "Associated",
+        "Evidence": "{\n  \u0022Id\u0022: \u0022audit-read\u0022,\n  \u0022DeviceId\u0022: \u0022AUDIT-CAM-L\u0022,\n  \u0022Epoch\u0022: \u0022left-original\u0022,\n  \u0022SourceEventId\u0022: \u0022audit-source-read\u0022,\n  \u0022Sequence\u0022: 2,\n  \u0022AdmissionId\u0022: \u0022audit-admission\u0022,\n  \u0022Kind\u0022: \u0022Read\u0022,\n  \u0022Codes\u0022: [\n    \u0022000099\u0022\n  ],\n  \u0022PackageQuantity\u0022: 1,\n  \u0022ObservedAt\u0022: \u00222026-10-17T09:38:47.638236\u002B00:00\u0022\n}",
+        "At": "2026-10-17T09:38:47.641176+00:00"
+      },
+      {
+        "Id": "4bae755b4cca412190cf6f45a8130863",
+        "OwnerId": "a6fdf588880244c089d56cddc8dcbfa9",
+        "Actor": "sender",
+        "CommandId": "system",
+        "Kind": "T2Claim",
+        "Evidence": "59643a700aaa4aa88d2a55b41e847d31",
+        "At": "2026-10-17T09:38:47.642706+00:00"
+      },
+      {
+        "Id": "de847f62955248a7bc576287b9f8e487",
+        "OwnerId": "a6fdf588880244c089d56cddc8dcbfa9",
+        "Actor": "sender",
+        "CommandId": "system",
+        "Kind": "TransportHandoffAuthorized",
+        "Evidence": "59643a700aaa4aa88d2a55b41e847d31",
+        "At": "2026-10-17T09:38:47.643199+00:00"
+      },
+      {
+        "Id": "7ad6688e929f4593ba93f2b6558172c1",
+        "OwnerId": "a6fdf588880244c089d56cddc8dcbfa9",
+        "Actor": "integration",
+        "CommandId": "system",
+        "Kind": "T3Response",
+        "Evidence": "AUDIT synthetic accepted Validate",
+        "At": "2026-10-17T09:38:47.643657+00:00"
+      },
+      {
+        "Id": "cfb04b4201234f9da4d6d510ffa2e255",
+        "OwnerId": "a6fdf588880244c089d56cddc8dcbfa9",
+        "Actor": "SIM-maintenance",
+        "CommandId": "a37c8b6171d14af7ae0de8042d4acc17",
+        "Kind": "Submit",
+        "Evidence": "",
+        "At": "2026-10-17T09:38:47.645255+00:00"
+      },
+      {
+        "Id": "bf23a0bccb434ad48d11694474026d25",
+        "OwnerId": "a6fdf588880244c089d56cddc8dcbfa9",
+        "Actor": "sender",
+        "CommandId": "system",
+        "Kind": "T2Claim",
+        "Evidence": "3fadccdfb6b143ab8a731f9faad6efc1",
+        "At": "2026-10-17T09:38:47.645867+00:00"
+      },
+      {
+        "Id": "012035cd2e8e4a82b5f6e03fd7a90cca",
+        "OwnerId": "a6fdf588880244c089d56cddc8dcbfa9",
+        "Actor": "sender",
+        "CommandId": "system",
+        "Kind": "TransportHandoffAuthorized",
+        "Evidence": "3fadccdfb6b143ab8a731f9faad6efc1",
+        "At": "2026-10-17T09:38:47.64631+00:00"
+      },
+      {
+        "Id": "8a6668ce89054ca9ae92ad9693d39dcd",
+        "OwnerId": "a6fdf588880244c089d56cddc8dcbfa9",
+        "Actor": "integration",
+        "CommandId": "system",
+        "Kind": "T3Response",
+        "Evidence": "AUDIT synthetic accepted Submit",
+        "At": "2026-10-17T09:38:47.646665+00:00"
+      }
+    ],
+    "DurableBlocks": [],
+    "DurableOperationStatus": "Accepted",
+    "AcceptedQuantity": 1
+  },
+  "RestartedAfterFreshSyntheticIdentityAndHealth": {
+    "SessionStatus": "Active",
+    "OperationStatus": "Accepted",
+    "RequestStatus": "Accepted",
+    "AcceptedQuantity": 1,
+    "RuntimeFaults": [],
+    "Blocks": [],
+    "RecoveryRequestIds": [],
+    "Admit": {
+      "Allowed": true,
+      "Reasons": []
+    }
+  }
+}

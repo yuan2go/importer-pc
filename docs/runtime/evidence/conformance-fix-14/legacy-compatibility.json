@@ -1,0 +1,59 @@
+{
+  "SourceCommit": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+  "old_reader_source": "8cb475b880e6cdd248db42bff74accf443c83519",
+  "old_reader_command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    ".artifacts/conformance-14/legacy13/unpacked/app/Ipc.Product.dll",
+    "--config",
+    ".artifacts/conformance-14/legacy13/unpacked/app/config",
+    "--data-root",
+    ".artifacts/conformance-14/old-reader-check",
+    "--action",
+    "preflight"
+  ],
+  "old_reader_exit": -6,
+  "new_format": 4,
+  "database_sha256_before_and_after": "179b665332735ad35cada88a1524488a34e5c82c71003a5fc7677b9f783fde45",
+  "old_reader": "REFUSED_UNCHANGED",
+  "old_plugins": [
+    {
+      "command": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll",
+        "--action",
+        "extension-inspect",
+        "--mode",
+        "Simulation",
+        "--file",
+        ".artifacts/conformance-14/legacy13/reference.barcode-1.0.1.ipcx",
+        "--extension-root",
+        ".artifacts/conformance-14/legacy-inspection-store",
+        "--extension-trust",
+        ".artifacts/conformance-14/legacy13/trust.Simulation.reference.json"
+      ],
+      "exit_code": -6,
+      "original_file_sha256": "979a395ca49f7d4017ea3ee88e2b7a341ff49c6ac4fcadc08190d2dfbba6f2c1",
+      "status": "REFUSED_EXACT_CONTRACT_MISMATCH"
+    },
+    {
+      "command": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll",
+        "--action",
+        "extension-inspect",
+        "--mode",
+        "Simulation",
+        "--file",
+        ".artifacts/conformance-14/legacy13/reference.integration-1.0.1.ipcx",
+        "--extension-root",
+        ".artifacts/conformance-14/legacy-inspection-store",
+        "--extension-trust",
+        ".artifacts/conformance-14/legacy13/trust.Simulation.reference.json"
+      ],
+      "exit_code": -6,
+      "original_file_sha256": "9b5433d6279f899538cd6a500918164ff3d3037271f2028a14a04009f1396039",
+      "status": "REFUSED_EXACT_CONTRACT_MISMATCH"
+    }
+  ],
+  "meaning": "Keep original matching host and packages for old requests; new host does not forge cross-fingerprint compatibility."
+}

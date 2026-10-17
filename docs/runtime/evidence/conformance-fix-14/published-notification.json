@@ -1,0 +1,10 @@
+{
+  "SourceCommit": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+  "Status": "PASS",
+  "PublishedConsoleDeliveryAndExplicitAck": 2,
+  "AcceptedQuantity": 2,
+  "Backlog": 0,
+  "ControlledStopExit": 0,
+  "EvidenceRoot": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc14-console-i8wnscxe",
+  "Windows": "NOT_RUN"
+}

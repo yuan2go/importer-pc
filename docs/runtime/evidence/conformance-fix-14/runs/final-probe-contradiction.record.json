@@ -1,0 +1,23 @@
+{
+  "name": "final-probe-contradiction",
+  "source_commit": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+  "started_at": "2026-10-17T10:02:45.407439+00:00",
+  "ended_at": "2026-10-17T10:02:46.324543+00:00",
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "machine": "arm64",
+  "command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    ".artifacts/conformance-14/adapted-contradiction/bin/Debug/net10.0/ContradictionProbe.dll",
+    ".artifacts/conformance-14/probe-fixed-contradiction"
+  ],
+  "exit_code": 0,
+  "required_completion_marker": "RestartedAfterFreshSyntheticIdentityAndHealth",
+  "completion_marker_present": true,
+  "status": "PASS",
+  "log": "final-probe-contradiction.log",
+  "log_sha256": "674fa2a56af18a0616ee7ceb6ffbd1a2ba3bfdd8c7256039bf5c8be2afb57689",
+  "windows": "NOT_RUN",
+  "field": "BLOCKED",
+  "raw_log_sha256": "1bc2e1b0aafa62d2c64fc937ccf476e1058ca5bec9804ee6d4585e42a32d926e",
+  "log_publication": "path-alias mapping only; complete event text retained"
+}

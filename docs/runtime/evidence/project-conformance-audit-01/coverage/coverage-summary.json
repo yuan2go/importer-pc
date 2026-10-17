@@ -1,0 +1,48 @@
+{
+  "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "tracked_files": 544,
+  "counts": {
+    "inventory_only": 353,
+    "deep_read": 155,
+    "targeted_read": 5,
+    "targeted_or_scanned": 4,
+    "scanned": 23,
+    "visual_inspection": 4
+  },
+  "by_area": {
+    "src": {
+      "deep_read": 80,
+      "inventory_only": 26
+    },
+    "tests": {
+      "scanned": 11,
+      "deep_read": 2,
+      "targeted_or_scanned": 1,
+      "targeted_read": 1,
+      "inventory_only": 4
+    },
+    "config": {
+      "deep_read": 6
+    },
+    "examples": {
+      "deep_read": 3,
+      "inventory_only": 4
+    },
+    "scripts": {
+      "deep_read": 9,
+      "scanned": 6
+    },
+    "tools": {
+      "inventory_only": 4
+    },
+    "docs": {
+      "deep_read": 49,
+      "inventory_only": 314,
+      "targeted_read": 4,
+      "targeted_or_scanned": 3,
+      "scanned": 6,
+      "visual_inspection": 4
+    }
+  },
+  "source_cs_without_deep_read": []
+}

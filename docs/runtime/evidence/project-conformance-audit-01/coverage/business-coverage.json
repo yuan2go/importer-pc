@@ -1,0 +1,419 @@
+{
+  "audit": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01",
+  "scope": "business_persistence",
+  "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "source_root": "/workspace/scratch/02a55de33070/importer-pc-audit",
+  "runtime_execution_by_this_subreview": false,
+  "probe_generated": "audit-work/contradiction-probe/Program.cs",
+  "probe_execution": "Root executed on 2026-10-17T08:15:52Z; exit 0; B-F01 reproduced; subreview reread complete JSON and persisted state evidence.",
+  "entries": [
+    {
+      "path": "AGENTS.md",
+      "depth": "deep_full",
+      "lines": 16,
+      "sha256": "11a1cc84db7901e3d0a3fb017d8d87c4898b9c6f4a18c68bd30956aa28949fb9"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "depth": "deep_full",
+      "lines": 52,
+      "sha256": "9ebf3d3ff044aae3b75855b8000242385928810bceee066b3f9ee9b1a2ead87a"
+    },
+    {
+      "path": "docs/design/framework-decisions.md",
+      "depth": "deep_full",
+      "lines": 123,
+      "sha256": "cd0394ef0fed3d95f49a5c59ae8e12cbc911a6c1c5b1ef7fb0df1b7c4ecb469c"
+    },
+    {
+      "path": "docs/design/framework.md",
+      "depth": "deep_full",
+      "lines": 336,
+      "sha256": "5a1b818fea1dd45bd4e90ec0a4c8be0ac9e541c493bf78b9964ef04c16f7d483"
+    },
+    {
+      "path": "docs/readiness/decision-pack.md",
+      "depth": "deep_full",
+      "lines": 111,
+      "sha256": "a767a1cce43c74cec5dc97b3b0ee98e33ad1250804e11d0c7f3f952c58bb294f"
+    },
+    {
+      "path": "docs/runtime/integration-05.md",
+      "depth": "deep_full",
+      "lines": 18,
+      "sha256": "999f43604dc87e01d4a1fa5108869385590138fc59785cd1f71245ddbaf16fbc"
+    },
+    {
+      "path": "docs/work-packages/Codex-WP-IPC-ARCH-EXTENSION-CLOSURE-13.md",
+      "depth": "deep_full",
+      "lines": 23,
+      "sha256": "a3a502ef887b4ad56c99b9ee1d9ba175d870652d00029083902f6a3811ad8c26"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md",
+      "depth": "deep_full",
+      "lines": 18,
+      "sha256": "bc2f0836c30b57bd3eb058a4abe8126734d3f4fc87b37c17e790112d19ecd3fd"
+    },
+    {
+      "path": "src/Ipc.Adapters/Ipc.Adapters.csproj",
+      "depth": "deep_full",
+      "lines": 1,
+      "sha256": "3c04c06f9cd4a91d8565d044ae03e80440aa80b55d410ce640eb690a8bfc11c3"
+    },
+    {
+      "path": "src/Ipc.Adapters/LoopbackIntegration.cs",
+      "depth": "deep_full",
+      "lines": 43,
+      "sha256": "fe98078fef7b19564764efd2fca7101d0d0855430d18900ac1b4242f486997bb"
+    },
+    {
+      "path": "src/Ipc.Adapters/ObservationSources.cs",
+      "depth": "deep_full",
+      "lines": 100,
+      "sha256": "fb88e857ce2f1a684ee740a7bad863ee12b15710bb3f13758cae43b197bbb329"
+    },
+    {
+      "path": "src/Ipc.Adapters/SimulationRequestContract.cs",
+      "depth": "deep_full",
+      "lines": 55,
+      "sha256": "bc4a26a90fc7f77d92ab6c0bef1c3ff8b1215a2b42f54d07aa2d1bf87859bff5"
+    },
+    {
+      "path": "src/Ipc.Assembly/Program.cs",
+      "depth": "deep_full",
+      "lines": 18,
+      "sha256": "6c44ee2980dbe54d8bac6d0d01f4bdf21bc9cf0696a0b94c2ecc9d944b8a9881"
+    },
+    {
+      "path": "src/Ipc.Assembly/SupplyAssembly.cs",
+      "depth": "deep_full",
+      "lines": 30,
+      "sha256": "57e91705703768bf73937e357f13d551da140566baeca3cf82903eedb0749fcf"
+    },
+    {
+      "path": "src/Ipc.Fixture/Program.cs",
+      "depth": "deep_full",
+      "lines": 32,
+      "sha256": "adcfe74bc7b9c3c955783f780142f7243a731e950880b003fe09a546989d3de6"
+    },
+    {
+      "path": "src/Ipc.Fixture/Receiver.cs",
+      "depth": "deep_full",
+      "lines": 108,
+      "sha256": "00679e654ce186544dd8fdc19b9d787fc54e80a8dc68dd147902d7f4f8916e08"
+    },
+    {
+      "path": "src/Ipc.Fixture/SyntheticSemanticFixture.cs",
+      "depth": "deep_full",
+      "lines": 21,
+      "sha256": "2b2a343f961470875e75c1973349cf6acd63e596f2b0c6540507f20e2fc00788"
+    },
+    {
+      "path": "src/Ipc.Platform/Configuration.cs",
+      "depth": "deep_full",
+      "lines": 137,
+      "sha256": "55e6c5694e90e3c92683077e094f790af6f140e31365fc3786a39079b058db14"
+    },
+    {
+      "path": "src/Ipc.Platform/RuntimeJournal.cs",
+      "depth": "deep_full",
+      "lines": 36,
+      "sha256": "f355463e521b126cc095a14d9ffc48bad91c0f451d461993fb34134fb8049646"
+    },
+    {
+      "path": "src/Ipc.Product/ExtensionManagement.cs",
+      "depth": "deep_full",
+      "lines": 78,
+      "sha256": "ad38aa9e8f336600c2ea7351409e3fcad844e953a834e4535ce59c78aeff488f"
+    },
+    {
+      "path": "src/Ipc.Product/IntegrationRuntime.cs",
+      "depth": "deep_full",
+      "lines": 191,
+      "sha256": "92203595626b4820129823b0c0734ab0558e2d2ec057d9f0ead2e4ea86b39115"
+    },
+    {
+      "path": "src/Ipc.Product/Ipc.Product.csproj",
+      "depth": "deep_full",
+      "lines": 1,
+      "sha256": "9788bf061d766145f19fa258c179a9796183d8707badfcd9e5921fba578f6cb5"
+    },
+    {
+      "path": "src/Ipc.Product/ObservationModule.cs",
+      "depth": "deep_full",
+      "lines": 195,
+      "sha256": "6d1edd6dc1af479d71d7e03c35510c2876f3104bb0982bad8b7fd7c9cb57b090"
+    },
+    {
+      "path": "src/Ipc.Product/ProductRuntime.cs",
+      "depth": "deep_full",
+      "lines": 433,
+      "sha256": "5b8ea6066319120fc2dfd283052a24f0cd66cb88aece0bf21f3cf770fb38af42"
+    },
+    {
+      "path": "src/Ipc.Product/ReferenceProduct.cs",
+      "depth": "deep_full",
+      "lines": 37,
+      "sha256": "fea17d2278391a17f0fccb812582c047e16d6b6d074bc037c1d4ad82341a19a4"
+    },
+    {
+      "path": "src/Ipc.Product/SenderModule.cs",
+      "depth": "deep_full",
+      "lines": 64,
+      "sha256": "e55b4dc9aaf3f8bf32fc428515466df98eb6a396abe258985df91f04c609bead"
+    },
+    {
+      "path": "src/Ipc.Product/SourceConstruction.cs",
+      "depth": "deep_full",
+      "lines": 26,
+      "sha256": "f13093fb1139bd4b35c4e81aebdf83a9ce508f6d9baa3cb8926b5edf4ee84bac"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/ContractRegistration.cs",
+      "depth": "deep_full",
+      "lines": 7,
+      "sha256": "9adad125d189a600144e705437126b92c3ed32e237abe5e1b613f2054ac31c1c"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/HistoryQueries.cs",
+      "depth": "deep_full",
+      "lines": 41,
+      "sha256": "67615e10f50d880b621c6fc7afb50cf2be20e1e1567b9c97e2b1102c9dc99648"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/IntegrationExtensions.cs",
+      "depth": "deep_full",
+      "lines": 28,
+      "sha256": "9f15723e558410b7ebcf9b655404b4b9955ae39be5e0c4b800f6119d30f06ba5"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj",
+      "depth": "deep_full",
+      "lines": 1,
+      "sha256": "d019bbfecee9662eb5400f49538f46fa662a672ca77a3cec1d1315e145b7a445"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/Model.cs",
+      "depth": "deep_full",
+      "lines": 130,
+      "sha256": "5d77b4ea8a789d14017e6ec0551d8897f5318ada3ee324b2a41eb081730fa7ea"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/RequestContract.cs",
+      "depth": "deep_full",
+      "lines": 13,
+      "sha256": "ed0290d9ab77cf3c0a9aa91b031bab7c144a699f72b515527e74f9f7171f3294"
+    },
+    {
+      "path": "src/Ipc.Supply.Contracts/StationRuntime.cs",
+      "depth": "deep_full",
+      "lines": 40,
+      "sha256": "db8abbe34516a367bec999bf706b56d13abd32521e2f6aa9e5aab0832e6bc67b"
+    },
+    {
+      "path": "src/Ipc.Supply/ContractForwarders.cs",
+      "depth": "deep_full",
+      "lines": 44,
+      "sha256": "5c295e64f710aee45aeaa19ed3742a3ea5692104db9c088724f5aa6df0deec6f"
+    },
+    {
+      "path": "src/Ipc.Supply/ExtensionMaintenance.cs",
+      "depth": "deep_full",
+      "lines": 41,
+      "sha256": "cc755c44d5ba9fb71076c7d572c9ce7e255e7c3988da45fb8d83bc2d787443ab"
+    },
+    {
+      "path": "src/Ipc.Supply/HistoryQueries.cs",
+      "depth": "deep_full",
+      "lines": 144,
+      "sha256": "35119d528261d8a765a3d811fe31ca5366b0a83c2737cab7eecf51d41f1b785c"
+    },
+    {
+      "path": "src/Ipc.Supply/Ipc.Supply.csproj",
+      "depth": "deep_full",
+      "lines": 1,
+      "sha256": "785fd5e03dd8252228d4baecf6eb71c467b9fa2af56a8842bcd2c45e5b9035fc"
+    },
+    {
+      "path": "src/Ipc.Supply/Maintenance.cs",
+      "depth": "deep_full",
+      "lines": 217,
+      "sha256": "8f2d30a0a81cbfa6d075b76ac3a6d657c448745eb28e543de8a536ee169078e6"
+    },
+    {
+      "path": "src/Ipc.Supply/Model.cs",
+      "depth": "deep_full",
+      "lines": 16,
+      "sha256": "d430cd1312140b19f284a575bb5dc6a000edf9245b8da3e52e2b9bc0ec4e2721"
+    },
+    {
+      "path": "src/Ipc.Supply/PresentationProtection.cs",
+      "depth": "deep_full",
+      "lines": 30,
+      "sha256": "80f4e456ba3917c6937910937cf39a053f14a51b9fe82b0bea2e9f302c26ebcf"
+    },
+    {
+      "path": "src/Ipc.Supply/StationApplication.cs",
+      "depth": "deep_full",
+      "lines": 773,
+      "sha256": "4f5571dc16bd304e367429e1acc254bf85de8eaeaba56031a3e7c4be764a7f59"
+    },
+    {
+      "path": "src/Ipc.Supply/StationClosure.cs",
+      "depth": "deep_full",
+      "lines": 163,
+      "sha256": "43489ffa30dfb2d1f7aef4a2aae55095d3544d0cb79c5be3460fa85500b6166f"
+    },
+    {
+      "path": "src/Ipc.Supply/Store.cs",
+      "depth": "deep_full",
+      "lines": 227,
+      "sha256": "3c1868a83077a0585946f673a5c2414a0e3405a542f8d3ca9e07d5ae6a76b793"
+    },
+    {
+      "path": "src/Ipc.Supply/SupplyConfiguration.cs",
+      "depth": "deep_full",
+      "lines": 26,
+      "sha256": "ad22fd74442a096235b78f5bde896a0af4f63bbbaf1f0a55df019123976cff74"
+    },
+    {
+      "path": "docs/runtime/arch-extension-closure-13-recheck.md",
+      "depth": "partial_or_scan",
+      "note": "Searched current identity/boundary references only.",
+      "lines": 59,
+      "sha256": "cca154c48cdcd935c534329311cc70556caa4aaaea42f7483f4c85805aed4437"
+    },
+    {
+      "path": "docs/runtime/arch-extension-closure-13.md",
+      "depth": "partial_or_scan",
+      "note": "Inspected AC13 business/integration claims and source-bound validation boundary; not every attached evidence file read.",
+      "lines": 79,
+      "sha256": "3d795a8f94c81add3b95c979ee48949db25abe3fc3fb932a29b4e80e35663596"
+    },
+    {
+      "path": "docs/runtime/engineering-closure-07.md",
+      "depth": "partial_or_scan",
+      "note": "Inspected relevant E-01/E-03/E-08 business/source/notification declarations; other content scanned.",
+      "lines": 59,
+      "sha256": "0ba02c001b5761121bff98855a4b53d73e02a51fedb7ca3869a0c81dec90d3db"
+    },
+    {
+      "path": "docs/runtime/hardening-04.md",
+      "depth": "partial_or_scan",
+      "note": "Searched relevant recovery/termination claims; not fully read.",
+      "lines": 49,
+      "sha256": "d77a213c4015b74b4ab1cec00e7955d3a387dcc661580cbf1d4f8928a79d89b8"
+    },
+    {
+      "path": "docs/runtime/implementation.md",
+      "depth": "partial_or_scan",
+      "note": "Searched relevant business/persistence/recovery claims; not fully read.",
+      "lines": 43,
+      "sha256": "92a14c2353a0a2731209e1899b5fbba263f2feb3375238d0ac1898451a3f78b8"
+    },
+    {
+      "path": "docs/runtime/operations.md",
+      "depth": "partial_or_scan",
+      "note": "Deeply inspected business flow/semantics lines 83-143 plus current console contract line 196; other sections scanned for current scope, known limitations and historical-version notices.",
+      "lines": 249,
+      "sha256": "b34a66e93416ee63951af96ef305b85caccca6a9c4b2e18db124e94f9f89a9f0"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md",
+      "depth": "partial_or_scan",
+      "note": "Inspected relevant notification ownership/current-state and source review portions.",
+      "lines": 103,
+      "sha256": "981176ffa1ae25e9d62352abc87b1ee1d676b992e8e44992623d16de759dca00"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md",
+      "depth": "partial_or_scan",
+      "note": "Inspected historical identity gap evidence reference only.",
+      "lines": 48,
+      "sha256": "0c9f66f302b9ec3c35671b5532a18a2732b754ebfc13c7f78f904e4723fb7110"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+      "depth": "partial_or_scan",
+      "note": "Inspected UI/notification ownership references and extension-boundary scope only.",
+      "lines": 199,
+      "sha256": "2aacec8c135b9c92737ed206d408a56d8aed0d690420dda9676de70a5ae5390c"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md",
+      "depth": "partial_or_scan",
+      "note": "Inspected relevant source/notification verification scope only.",
+      "lines": 50,
+      "sha256": "f4efa582e65b7a98bdedaf14b5a539a62260fb33fbca1c2460bd2b847339e1aa"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-RUNTIME-03.md",
+      "depth": "partial_or_scan",
+      "note": "Inspected S2/S3 and AC definitions via searches; not every paragraph independently read.",
+      "lines": 116,
+      "sha256": "80e9465ebfe25e306adafae6fdf34d039b6dab293d9be777137f02f295096942"
+    },
+    {
+      "path": "src/Ipc.Product/Program.cs",
+      "depth": "partial_or_scan",
+      "note": "Inspected lines 105-164; serve command dispatch and final shutdown. Offline CLI 1-104 not deeply read.",
+      "lines": 164,
+      "sha256": "be6c4fae0755a731649330af87d5c20d3ae2859bc9e35b596e628ad914af30ff"
+    },
+    {
+      "path": "tests/Ipc.Verification/ClosureVerification.cs",
+      "depth": "partial_or_scan",
+      "note": "Deeply read Notifications lines 151-184; other test sections searched only.",
+      "lines": 288,
+      "sha256": "03345bcb4882f595a9de2949dab082463b68ff988a445222a7096e080b4c0d11"
+    },
+    {
+      "path": "tests/Ipc.Verification/Program.cs",
+      "depth": "partial_or_scan",
+      "note": "Deeply read dispatch/selectors lines 1-95, baseline backup/quarantine/retention/final markers 296-490, Rig helper 490-560; inspected additional middle baseline scenarios via targeted search. Not whole verifier.",
+      "lines": 561,
+      "sha256": "9fd59cdd4bd4f6ac44ffd4486949ac9acc93bb25c0d066f7731098e1cf02820f"
+    },
+    {
+      "path": "src/Ipc.Platform/Lifecycle.cs",
+      "depth": "partial_or_scan",
+      "note": "Searched and read ResourceLease file-handle ownership and BoundedExecutor only while investigating stdout tail loss; overall lifecycle audited by architecture reviewer.",
+      "lines": 143,
+      "sha256": "85ead411c3ff61a53c0d8c593499369d90c3cf85c0f9370809e7862e330753d3"
+    }
+  ],
+  "not_examined_in_assigned_cs_scope": [
+    "src/Ipc.Product/AssemblyInfo.cs"
+  ],
+  "out_of_subreview_scope": [
+    "Full WPF/UI asset inspection",
+    "Platform package safety, leases, lifecycle and other platform files not expressly listed",
+    "All old tests/evidence attachment bytes",
+    "Real hardware SDK/WCS/PLC and customer private source/contracts",
+    "Windows runtime and onsite acceptance"
+  ],
+  "notes": [
+    "There is no src/Ipc.Persistence project at this SHA. Actual persistence resides in Ipc.Supply/Store.cs, Maintenance.cs and HistoryQueries.cs; absence of that project name is not a missing implementation.",
+    "Full-file read indicates source inspection, not execution or proof of all branches.",
+    "No repository business source or design was changed. No commits or merges were performed."
+  ],
+  "dynamic_evidence_read": [
+    {
+      "path": "/workspace/scratch/02a55de33070/audit-work/verification-contradiction-run.log",
+      "sha256": "7cf80fa7c2bd3921293ecd7640ceadb1c76aefa0b17b6c9fc11bb9306d213722"
+    },
+    {
+      "path": "/workspace/scratch/02a55de33070/audit-work/verification-results.json",
+      "sha256": "1c9321700b51e2aa73f373c0c18db09b7c30cbe474382f7bf77e5c8000771a47"
+    },
+    {
+      "path": "/workspace/scratch/02a55de33070/audit-work/health-evidence/health-result.json",
+      "sha256": "2bd406308d4e30486c9efbf180e0441a25a4cbede7130cb8b3311d7993442abb"
+    },
+    {
+      "path": "/workspace/scratch/02a55de33070/audit-work/verification-baseline.log",
+      "sha256": "3022be066ce0683e65222def1080a51f174c834b4bacda55f2d3aa5d27e7867e"
+    }
+  ]
+}

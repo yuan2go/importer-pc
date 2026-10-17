@@ -1,0 +1,104 @@
+[
+  {
+    "name": "baseline",
+    "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "command": [
+      "/tmp/ipc-audit-dotnet/dotnet",
+      "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+      ".",
+      "--baseline"
+    ],
+    "cwd": "/workspace/scratch/02a55de33070/importer-pc-audit-build",
+    "started_at": "2026-10-17T08:15:28.485867+00:00",
+    "exit_code": 0,
+    "seconds": 10.293,
+    "log": "/workspace/scratch/02a55de33070/audit-work/verification-baseline.log",
+    "ended_at": "2026-10-17T08:15:38.778749+00:00"
+  },
+  {
+    "name": "followup",
+    "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "command": [
+      "/tmp/ipc-audit-dotnet/dotnet",
+      "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+      ".",
+      "--followup"
+    ],
+    "cwd": "/workspace/scratch/02a55de33070/importer-pc-audit-build",
+    "started_at": "2026-10-17T08:15:38.779628+00:00",
+    "exit_code": 0,
+    "seconds": 3.684,
+    "log": "/workspace/scratch/02a55de33070/audit-work/verification-followup.log",
+    "ended_at": "2026-10-17T08:15:42.463900+00:00"
+  },
+  {
+    "name": "contradiction-build",
+    "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "command": [
+      "/tmp/ipc-audit-dotnet/dotnet",
+      "build",
+      "/workspace/scratch/02a55de33070/audit-work/contradiction-probe/ContradictionProbe.csproj",
+      "-m:1",
+      "-nr:false",
+      "--verbosity",
+      "minimal"
+    ],
+    "cwd": "/workspace/scratch/02a55de33070/importer-pc-audit-build",
+    "started_at": "2026-10-17T08:15:42.464291+00:00",
+    "exit_code": 0,
+    "seconds": 9.855,
+    "log": "/workspace/scratch/02a55de33070/audit-work/verification-contradiction-build.log",
+    "ended_at": "2026-10-17T08:15:52.319753+00:00"
+  },
+  {
+    "name": "contradiction-run",
+    "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "command": [
+      "/tmp/ipc-audit-dotnet/dotnet",
+      "/workspace/scratch/02a55de33070/audit-work/contradiction-probe/bin/Debug/net10.0/ContradictionProbe.dll",
+      "/workspace/scratch/02a55de33070/audit-work/contradiction-evidence"
+    ],
+    "cwd": "/workspace/scratch/02a55de33070/importer-pc-audit-build",
+    "started_at": "2026-10-17T08:15:52.320501+00:00",
+    "exit_code": 0,
+    "seconds": 0.867,
+    "log": "/workspace/scratch/02a55de33070/audit-work/verification-contradiction-run.log",
+    "ended_at": "2026-10-17T08:15:53.187318+00:00"
+  },
+  {
+    "name": "health-build",
+    "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "command": [
+      "/tmp/ipc-audit-dotnet/dotnet",
+      "build",
+      "/workspace/scratch/02a55de33070/audit-work/health-repro/HealthRepro.csproj",
+      "-m:1",
+      "-nr:false",
+      "--verbosity",
+      "minimal"
+    ],
+    "cwd": "/workspace/scratch/02a55de33070/importer-pc-audit-build",
+    "started_at": "2026-10-17T08:15:53.187713+00:00",
+    "exit_code": 0,
+    "seconds": 4.113,
+    "log": "/workspace/scratch/02a55de33070/audit-work/verification-health-build.log",
+    "ended_at": "2026-10-17T08:15:57.301099+00:00"
+  },
+  {
+    "name": "health-run",
+    "source_sha": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+    "command": [
+      "/tmp/ipc-audit-dotnet/dotnet",
+      "/workspace/scratch/02a55de33070/audit-work/health-repro/bin/Debug/net10.0/HealthRepro.dll",
+      "/workspace/scratch/02a55de33070/audit-work/health-evidence",
+      "/tmp/ipc-verification-cf2127e2bc384237aa0efc7df06dcdae/architecture-13/IntegrationExtension/output/Ipc.Reference.IntegrationExtension.dll",
+      "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a"
+    ],
+    "cwd": "/workspace/scratch/02a55de33070/importer-pc-audit-build",
+    "started_at": "2026-10-17T08:15:57.301563+00:00",
+    "exit_code": 0,
+    "seconds": 1.862,
+    "log": "/workspace/scratch/02a55de33070/audit-work/verification-health-run.log",
+    "ended_at": "2026-10-17T08:15:59.163309+00:00"
+  }
+]

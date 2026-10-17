@@ -1,0 +1,64 @@
+SELECT --baseline: AC/process baseline
+Evidence data retained at /tmp/ipc-verification-5196288f106e4297921541875d951214
+RUN AC-01/10 lifecycle, bounded command queue and ownership
+PASS AC-01/10 lifecycle, bounded command queue and ownership
+RUN AC-01/11 product assembly, modes and strict configuration
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime 8976f17d-1973-4fb1-8561-c8ac8c74e7db station SIM-6831f7782c814065b87a26d57a9d33d8 configuration SIM-1 mode Simulation ready for identity/context validation","State":{"Runtime":"8976f17d-1973-4fb1-8561-c8ac8c74e7db","Station":"SIM-6831f7782c814065b87a26d57a9d33d8","Revision":"SIM-1","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /workspace/scratch/02a55de33070/importer-pc-audit-build","State":{"ContentRoot":"/workspace/scratch/02a55de33070/importer-pc-audit-build","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Error","Category":"Ipc.Product.ProductRuntime","Message":"Startup NotReady: IOException: The process cannot access the file \u0027/tmp/ipc-verification-5196288f106e4297921541875d951214/product-data/Simulation/SIM-6831f7782c814065b87a26d57a9d33d8/3549B0028B75D981CDDA2E573E9CB49DEDC200185876DF299F912B79F69DABD8.lease\u0027 because it is being used by another process.","State":{"Type":"IOException","Message":"The process cannot access the file \u0027/tmp/ipc-verification-5196288f106e4297921541875d951214/product-data/Simulation/SIM-6831f7782c814065b87a26d57a9d33d8/3549B0028B75D981CDDA2E573E9CB49DEDC200185876DF299F912B79F69DABD8.lease\u0027 because it is being used by another process.","{OriginalFormat}":"Startup NotReady: {Type}: {Message}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /workspace/scratch/02a55de33070/importer-pc-audit-build","State":{"ContentRoot":"/workspace/scratch/02a55de33070/importer-pc-audit-build","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime e2e28812-b37a-48e2-9ad0-c22495ea328e station SIM-6831f7782c814065b87a26d57a9d33d8 configuration SIM-1 mode Simulation ready for identity/context validation","State":{"Runtime":"e2e28812-b37a-48e2-9ad0-c22495ea328e","Station":"SIM-6831f7782c814065b87a26d57a9d33d8","Revision":"SIM-1","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /workspace/scratch/02a55de33070/importer-pc-audit-build","State":{"ContentRoot":"/workspace/scratch/02a55de33070/importer-pc-audit-build","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Error","Category":"Ipc.Product.ProductRuntime","Message":"Startup NotReady: InvalidDataException: Replay path must be an installed relative file without links","State":{"Type":"InvalidDataException","Message":"Replay path must be an installed relative file without links","{OriginalFormat}":"Startup NotReady: {Type}: {Message}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /workspace/scratch/02a55de33070/importer-pc-audit-build","State":{"ContentRoot":"/workspace/scratch/02a55de33070/importer-pc-audit-build","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime 556dcd62-06b8-46c5-9de4-5d142e1bd3d7 station SIM-6831f7782c814065b87a26d57a9d33d8 configuration SIM-1 mode Simulation ready for identity/context validation","State":{"Runtime":"556dcd62-06b8-46c5-9de4-5d142e1bd3d7","Station":"SIM-6831f7782c814065b87a26d57a9d33d8","Revision":"SIM-1","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /workspace/scratch/02a55de33070/importer-pc-audit-build","State":{"ContentRoot":"/workspace/scratch/02a55de33070/importer-pc-audit-build","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime 400384a7-36f9-42d1-8569-6e849764d8fa station SIM-6831f7782c814065b87a26d57a9d33d8 configuration SIM-3 mode Simulation ready for identity/context validation","State":{"Runtime":"400384a7-36f9-42d1-8569-6e849764d8fa","Station":"SIM-6831f7782c814065b87a26d57a9d33d8","Revision":"SIM-3","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /workspace/scratch/02a55de33070/importer-pc-audit-build","State":{"ContentRoot":"/workspace/scratch/02a55de33070/importer-pc-audit-build","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}
+PASS AC-01/11 product assembly, modes and strict configuration
+RUN AC-02/07 combined guards and independent alarms
+PASS AC-02/07 combined guards and independent alarms
+RUN AC-03/04/06 continuous same-code entities, correction and unique ledger
+PASS AC-03/04/06 continuous same-code entities, correction and unique ledger
+RUN AC-04/09 split, atomic two-lane demand and close barrier
+PASS AC-04/09 split, atomic two-lane demand and close barrier
+RUN AC-05/06/09 dropped/late response, original binding and close Unknown
+PASS AC-05/06/09 dropped/late response, original binding and close Unknown
+RUN AC-05 query absent/unsupported is not proof of non-delivery; delayed receipts
+PASS AC-05 query absent/unsupported is not proof of non-delivery; delayed receipts
+RUN AC-05 actual SQLite rollback and T3 storage failure
+PASS AC-05 actual SQLite rollback and T3 storage failure
+RUN AC-05/09 real process crash/restart windows
+PASS AC-05/09 real process crash/restart windows
+RUN AC-02/05/06 durable T3 failure, stale commands, entity permit restart
+PASS AC-02/05/06 durable T3 failure, stale commands, entity permit restart
+RUN AC-10 actual observation queue full preserves accepted events and overflow marker
+PASS AC-10 actual observation queue full preserves accepted events and overflow marker
+RUN AC-04/06 guarded pre-network cancellation allows same-ID second attempt
+PASS AC-04/06 guarded pre-network cancellation allows same-ID second attempt
+RUN AC-01/06/09 config validation/activation and backup quarantine
+PASS AC-01/06/09 config validation/activation and backup quarantine
+RUN AC-09 restored Prepared may already exist remotely, retention preserves current aggregate
+PASS AC-09 restored Prepared may already exist remotely, retention preserves current aggregate
+RUN AC-01/03/10 source replacement, capacity and resource stop
+PASS AC-01/03/10 source replacement, capacity and resource stop
+PASS selected verification scope --baseline; Windows desktop/SDK/field validation NOT_RUN by this core executable
+Evidence data retained at /tmp/ipc-verification-5196288f106e4297921541875d951214

@@ -1,0 +1,3266 @@
+[
+  {
+    "path": ".gitignore",
+    "bytes": 92,
+    "lines": 10,
+    "git_blob": "3910d328e7f04fa3712bab862c35d7357046da14"
+  },
+  {
+    "path": "AGENTS.md",
+    "bytes": 3319,
+    "lines": 16,
+    "git_blob": "fbedc31d3fc8cc0c7194abdbabf63e0316988145"
+  },
+  {
+    "path": "Directory.Build.props",
+    "bytes": 345,
+    "lines": 10,
+    "git_blob": "561b0c76d7de0536761e33343237995247ad013f"
+  },
+  {
+    "path": "ImporterPc.slnx",
+    "bytes": 717,
+    "lines": 16,
+    "git_blob": "dee3afad614c139a4d10f07f89fa8f0618db91a4"
+  },
+  {
+    "path": "NuGet.Config",
+    "bytes": 292,
+    "lines": 2,
+    "git_blob": "f9ceff9c69f46b3a14cfc96118216e0485ab063f"
+  },
+  {
+    "path": "README.md",
+    "bytes": 4202,
+    "lines": 29,
+    "git_blob": "22bbdf4741bf3df550ec41159f57858b6326f4a4"
+  },
+  {
+    "path": "config/compositions.json",
+    "bytes": 4043,
+    "lines": 215,
+    "git_blob": "d6bcb45a6632d4ad0835935e9e6ff75bae69cca9"
+  },
+  {
+    "path": "config/inspection/business.json",
+    "bytes": 96,
+    "lines": 1,
+    "git_blob": "a2c8feef0643f22be17b1b6affe730a341d4a3f4"
+  },
+  {
+    "path": "config/presentation.json",
+    "bytes": 48,
+    "lines": 1,
+    "git_blob": "f0085571782fa100aa84093e267c44adaf9ad4a9"
+  },
+  {
+    "path": "config/product.reference.json",
+    "bytes": 1482,
+    "lines": 82,
+    "git_blob": "af6dc53044fa6bc314594384fa0316999773c2f0"
+  },
+  {
+    "path": "config/replay.jsonl",
+    "bytes": 722,
+    "lines": 6,
+    "git_blob": "53b39a594aef7657fcbf37f87a3dfa5495f2db2f"
+  },
+  {
+    "path": "config/station.simulation.json",
+    "bytes": 670,
+    "lines": 19,
+    "git_blob": "8004d379971f90d0fdd2f1e6b4b1f77eb22a83bd"
+  },
+  {
+    "path": "docs/INDEX.md",
+    "bytes": 8149,
+    "lines": 52,
+    "git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc"
+  },
+  {
+    "path": "docs/archive/pre-arch-extension-closure-13/README.md",
+    "bytes": 171,
+    "lines": 3,
+    "git_blob": "cce6ef73702eb42df22c60f70dbcb1a569de0734"
+  },
+  {
+    "path": "docs/archive/pre-arch-extension-closure-13/README.md.txt",
+    "bytes": 3305,
+    "lines": 25,
+    "git_blob": "eb68bbcfff72be7e48f9269f17b96c8f89ac31bd"
+  },
+  {
+    "path": "docs/archive/pre-arch-extension-closure-13/docs/INDEX.md.txt",
+    "bytes": 6986,
+    "lines": 44,
+    "git_blob": "2ccbd5ea9ead4fde169033511eed2f9ecf712629"
+  },
+  {
+    "path": "docs/archive/pre-arch-extension-closure-13/docs/design/controlled-extensions.md.txt",
+    "bytes": 2786,
+    "lines": 15,
+    "git_blob": "e119e20d6d9f187d7d48e07269bfa0d101e26e25"
+  },
+  {
+    "path": "docs/archive/pre-arch-extension-closure-13/docs/design/framework-decisions.md.txt",
+    "bytes": 16260,
+    "lines": 115,
+    "git_blob": "9d8e1938c88116c7198543efe877e628327d6c30"
+  },
+  {
+    "path": "docs/archive/pre-arch-extension-closure-13/docs/design/framework.md.txt",
+    "bytes": 36447,
+    "lines": 328,
+    "git_blob": "d4b51cebb2e0e4e605eeeb006df917f189864009"
+  },
+  {
+    "path": "docs/archive/pre-arch-extension-closure-13/docs/extensions/developer-guide.md.txt",
+    "bytes": 13664,
+    "lines": 95,
+    "git_blob": "37efd0926ac8791f8bfc700324bcbe9ced026bdb"
+  },
+  {
+    "path": "docs/archive/pre-arch-extension-closure-13/docs/manifest.json.txt",
+    "bytes": 269412,
+    "lines": 4798,
+    "git_blob": "5072d8a7135081d37adabece1b71123b44de2c2e"
+  },
+  {
+    "path": "docs/archive/pre-arch-extension-closure-13/docs/runtime/operations.md.txt",
+    "bytes": 28634,
+    "lines": 221,
+    "git_blob": "f13839f03789f2963b18d72f95eb76f9a68f9952"
+  },
+  {
+    "path": "docs/archive/pre-arch-extension-closure-13/manifest.json",
+    "bytes": 1525,
+    "lines": 42,
+    "git_blob": "3c637ceccc099174f21956564dd83b4d9e85228b"
+  },
+  {
+    "path": "docs/archive/pre-extension-delivery-12/README.md",
+    "bytes": 286,
+    "lines": 3,
+    "git_blob": "8c9c4e9ff5314e29cf6da367829b6a7dec98a066"
+  },
+  {
+    "path": "docs/archive/pre-extension-delivery-12/README.md.txt",
+    "bytes": 2929,
+    "lines": 23,
+    "git_blob": "b1f81aadd1e2aea3459d395ca2f65e23a4556971"
+  },
+  {
+    "path": "docs/archive/pre-extension-delivery-12/docs/INDEX.md.txt",
+    "bytes": 6024,
+    "lines": 38,
+    "git_blob": "294ff71ff19d7300f1f372049a6170542342711c"
+  },
+  {
+    "path": "docs/archive/pre-extension-delivery-12/docs/design/framework-decisions.md.txt",
+    "bytes": 15487,
+    "lines": 113,
+    "git_blob": "c65b8951d6c0d18fc07127227c1316ccc364210a"
+  },
+  {
+    "path": "docs/archive/pre-extension-delivery-12/docs/design/framework.md.txt",
+    "bytes": 35210,
+    "lines": 322,
+    "git_blob": "e375fa2ef34c0c8ae12895d2d5256ec0a16561cb"
+  },
+  {
+    "path": "docs/archive/pre-extension-delivery-12/docs/manifest.json.txt",
+    "bytes": 212339,
+    "lines": 3781,
+    "git_blob": "6d595a5196875e54ea8262f953b42e86c18ba3cd"
+  },
+  {
+    "path": "docs/archive/pre-extension-delivery-12/docs/runtime/operations.md.txt",
+    "bytes": 25335,
+    "lines": 191,
+    "git_blob": "2f8f787a11e399a1eb0487ea6093ab4e992cbae9"
+  },
+  {
+    "path": "docs/archive/pre-extension-delivery-12/docs/runtime/ui-baseline-alignment-10.md.txt",
+    "bytes": 14262,
+    "lines": 72,
+    "git_blob": "e79f5c656491688e85ecf770e3761bdf8d3db9b9"
+  },
+  {
+    "path": "docs/archive/pre-extension-delivery-12/docs/runtime/windows-06.md.txt",
+    "bytes": 2348,
+    "lines": 18,
+    "git_blob": "3ea4822ca3bf57ee54c6a77f736d046e137df35b"
+  },
+  {
+    "path": "docs/archive/pre-extension-delivery-12/manifest.json",
+    "bytes": 1821,
+    "lines": 53,
+    "git_blob": "c97f50686fbd19a4cd83f610115af2a24e29b469"
+  },
+  {
+    "path": "docs/archive/pre-framework-20261016/AGENTS.md.txt",
+    "bytes": 1958,
+    "lines": 11,
+    "git_blob": "9b6abe72ecad925e79ad7d8f63421b980a68a822"
+  },
+  {
+    "path": "docs/archive/pre-framework-20261016/INDEX.md.txt",
+    "bytes": 2992,
+    "lines": 33,
+    "git_blob": "456a136c7ae38aee81bc0a1cbe8f112ed222be07"
+  },
+  {
+    "path": "docs/archive/pre-framework-20261016/README.md",
+    "bytes": 842,
+    "lines": 11,
+    "git_blob": "176c9a54dc4abfe53807dd8028a283fb3a281ae1"
+  },
+  {
+    "path": "docs/archive/pre-framework-20261016/README.md.txt",
+    "bytes": 1013,
+    "lines": 9,
+    "git_blob": "62d7ad85cc2f869d9f23ae8649fb0aaadd929668"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/AGENTS.md.txt",
+    "bytes": 3319,
+    "lines": 16,
+    "git_blob": "fbedc31d3fc8cc0c7194abdbabf63e0316988145"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/README.md",
+    "bytes": 321,
+    "lines": 3,
+    "git_blob": "bd1f88115fbd58e79e33e18fcbd1cbc277d42106"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/docs/INDEX.md.txt",
+    "bytes": 7617,
+    "lines": 53,
+    "git_blob": "fcae321a8aedd4d0358521e6d385c2b18c698971"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/docs/design/framework-decisions.md.txt",
+    "bytes": 15198,
+    "lines": 111,
+    "git_blob": "a3b067adb9a2f94533469519fd28ed7c3186b6af"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/docs/design/framework.md.txt",
+    "bytes": 34921,
+    "lines": 320,
+    "git_blob": "691fc106ad31ec0ee9837afa3ec06cd784999ec2"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/docs/manifest.json.txt",
+    "bytes": 150116,
+    "lines": 2800,
+    "git_blob": "526e9aea908cb365e1e6cc48a69fa1eff3213bda"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/docs/manifest.sha256.txt",
+    "bytes": 80,
+    "lines": 1,
+    "git_blob": "703087e69e5aa9a90a90c35ebf20bdd66b34591b"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/docs/reviews/main-static-review-02.md.txt",
+    "bytes": 20549,
+    "lines": 154,
+    "git_blob": "d520bed1117eb5632b265d34cf3412bd5c97aec8"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/docs/reviews/main-static-review-03-checks.json.txt",
+    "bytes": 10064,
+    "lines": 243,
+    "git_blob": "06b9b1a396d9a2ed155ba8addb647229f797bb73"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/docs/reviews/main-static-review-03.md.txt",
+    "bytes": 16856,
+    "lines": 112,
+    "git_blob": "7ccb963bd0e5ad8f6e947b33edab439e6e026535"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md.txt",
+    "bytes": 5033,
+    "lines": 41,
+    "git_blob": "81d722bc92df713de8defef4c95a8e4e4150ac12"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md.txt",
+    "bytes": 7792,
+    "lines": 62,
+    "git_blob": "d31afb0d705094aad21a59041da4e8b64a4bb6a1"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md.txt",
+    "bytes": 5328,
+    "lines": 41,
+    "git_blob": "02bdfce98d720ff0f881bf5079687e4730b62244"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md.txt",
+    "bytes": 4002,
+    "lines": 32,
+    "git_blob": "685d1168cd3045c8b2e2f163862110890c220d71"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md.txt",
+    "bytes": 5300,
+    "lines": 44,
+    "git_blob": "8cacbed21bb1fa7b7f2fb339081d944595a91438"
+  },
+  {
+    "path": "docs/archive/pre-reconciliation-01/evidence.json",
+    "bytes": 4682,
+    "lines": 103,
+    "git_blob": "5053bb5521f213723d4569c63224e452a251e5e2"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/README.md",
+    "bytes": 362,
+    "lines": 3,
+    "git_blob": "56ca36f525f13d9f265d573f07e7a6d064974143"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/README.md.txt",
+    "bytes": 2490,
+    "lines": 21,
+    "git_blob": "6bc402ffafe8abf8b14548860afb934b2fdc70b3"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/docs/INDEX.md.txt",
+    "bytes": 5512,
+    "lines": 36,
+    "git_blob": "cf38377ef5eadbeb4ae763ea85a131ab2291eb44"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/docs/manifest.json.txt",
+    "bytes": 193305,
+    "lines": 3366,
+    "git_blob": "3d7dcc00ea88ce27a56d77200c8982353be731f5"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/docs/manifest.sha256.txt",
+    "bytes": 80,
+    "lines": 1,
+    "git_blob": "0b13fe5869e7799c5e98944e147069aae578abd0"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/docs/runtime/integration-05.md.txt",
+    "bytes": 2761,
+    "lines": 16,
+    "git_blob": "c09221351b2160a874eb5841245dbab82d46e42f"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/docs/runtime/operations.md.txt",
+    "bytes": 22985,
+    "lines": 173,
+    "git_blob": "4281056be777da091e593382092733eb3afc3382"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/docs/runtime/reference-validation-09.md.txt",
+    "bytes": 11657,
+    "lines": 78,
+    "git_blob": "5ff29b8ed71202d8835d8f08fabc422d39596006"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/docs/runtime/ui-baseline-alignment-10.md.txt",
+    "bytes": 12882,
+    "lines": 62,
+    "git_blob": "7f180d103e5c54a2fb2be9ae489f881dd13c9bb1"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/docs/runtime/validation-scenarios-09.md.txt",
+    "bytes": 7503,
+    "lines": 62,
+    "git_blob": "6069fb697ef94e6af464e5ff8378bb3122b543b0"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/docs/runtime/windows-06.md.txt",
+    "bytes": 2140,
+    "lines": 16,
+    "git_blob": "6281a4d8ed2144a9b7d724b74761758240a2c527"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md.txt",
+    "bytes": 5904,
+    "lines": 48,
+    "git_blob": "dfef8e0e56147d85aa4b89e28098bc58f7a81619"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md.txt",
+    "bytes": 4581,
+    "lines": 39,
+    "git_blob": "c004be21f8092501390d4460314c8596b27768cf"
+  },
+  {
+    "path": "docs/archive/pre-review-followup-11/evidence.json",
+    "bytes": 3914,
+    "lines": 89,
+    "git_blob": "2881dd0bdf51cb61be3a66607bdbced9d08e164d"
+  },
+  {
+    "path": "docs/baseline/CHANGELOG.md",
+    "bytes": 4868,
+    "lines": 39,
+    "git_blob": "b6e3a78f284f441e2cb6674fce25623a0922721b"
+  },
+  {
+    "path": "docs/baseline/CONFLICTS.md",
+    "bytes": 1699,
+    "lines": 16,
+    "git_blob": "7e37f4143be025c00e63d959ef74828f7113bf5a"
+  },
+  {
+    "path": "docs/baseline/MISSING.md",
+    "bytes": 3659,
+    "lines": 25,
+    "git_blob": "0d62957e2be885a9d6732a628cf4622803f6aaea"
+  },
+  {
+    "path": "docs/baseline/PUBLICATION.md",
+    "bytes": 3548,
+    "lines": 34,
+    "git_blob": "bb962dcc3b5048fe782eb886b217c047eff45381"
+  },
+  {
+    "path": "docs/baseline/artifact-checks.json",
+    "bytes": 761,
+    "lines": 24,
+    "git_blob": "7e2cd21b0bcbb3ca2ec3b3bba8e8fd8f65c02edb"
+  },
+  {
+    "path": "docs/baseline/continuation-checks.json",
+    "bytes": 2728,
+    "lines": 79,
+    "git_blob": "da0f92c16915bc56d587bf199e4f0aaa63554df9"
+  },
+  {
+    "path": "docs/design/arch-extension-closure-13.md",
+    "bytes": 2831,
+    "lines": 19,
+    "git_blob": "94d7ee9591037435081581312887514b8d268375"
+  },
+  {
+    "path": "docs/design/controlled-extensions.md",
+    "bytes": 6193,
+    "lines": 39,
+    "git_blob": "b94b943a1719b0b1ba4c82e575e103aa8bd75720"
+  },
+  {
+    "path": "docs/design/framework-checks.json",
+    "bytes": 1454,
+    "lines": 31,
+    "git_blob": "d987ebd1f017be42825a472da562d5897b76b3fa"
+  },
+  {
+    "path": "docs/design/framework-decisions.md",
+    "bytes": 17610,
+    "lines": 123,
+    "git_blob": "eb9099503d5fac90ebcdf0d522379130c3cef8e8"
+  },
+  {
+    "path": "docs/design/framework.md",
+    "bytes": 37797,
+    "lines": 336,
+    "git_blob": "5dd80efb37e04cfcb19b050cbf58589cb98e298b"
+  },
+  {
+    "path": "docs/extensions/developer-guide.md",
+    "bytes": 10639,
+    "lines": 70,
+    "git_blob": "52ed197f49538c18cb1306dfff6b403f24c3e0bf"
+  },
+  {
+    "path": "docs/manifest.json",
+    "bytes": 386657,
+    "lines": 6733,
+    "git_blob": "1d87f2d96c615e772fccb0cf3cbf8b376e8f31cb"
+  },
+  {
+    "path": "docs/manifest.sha256",
+    "bytes": 80,
+    "lines": 1,
+    "git_blob": "1a985d6558329600ae4329f056d47546fd6a1b3e"
+  },
+  {
+    "path": "docs/readiness/checks.json",
+    "bytes": 2802,
+    "lines": 95,
+    "git_blob": "a3d13d093ecd1d10d9bd49db4aa69403238d4348"
+  },
+  {
+    "path": "docs/readiness/decision-pack.md",
+    "bytes": 8272,
+    "lines": 111,
+    "git_blob": "8199de86adce0d9676b15844ec322264d77dbbe9"
+  },
+  {
+    "path": "docs/readiness/revision-and-verification.md",
+    "bytes": 7469,
+    "lines": 56,
+    "git_blob": "b30b095c4b3dac1d5f5ada955d5da2336eb0f03b"
+  },
+  {
+    "path": "docs/readiness/technical-baseline.json",
+    "bytes": 14967,
+    "lines": 561,
+    "git_blob": "3f19a7623e3c13cad1748f59d1751bafb9747368"
+  },
+  {
+    "path": "docs/reviews/STATUS.md",
+    "bytes": 1992,
+    "lines": 17,
+    "git_blob": "b9782c9003ba8650ca8b87dd5906f76c7e615201"
+  },
+  {
+    "path": "docs/reviews/issues.json",
+    "bytes": 26928,
+    "lines": 240,
+    "git_blob": "a80f71cf1cc385a754f5bca31cd3d20e3a106b24"
+  },
+  {
+    "path": "docs/reviews/main-static-review-02.md",
+    "bytes": 20549,
+    "lines": 154,
+    "git_blob": "d520bed1117eb5632b265d34cf3412bd5c97aec8"
+  },
+  {
+    "path": "docs/reviews/main-static-review-03-checks.json",
+    "bytes": 10064,
+    "lines": 243,
+    "git_blob": "06b9b1a396d9a2ed155ba8addb647229f797bb73"
+  },
+  {
+    "path": "docs/reviews/main-static-review-03.md",
+    "bytes": 16856,
+    "lines": 112,
+    "git_blob": "7ccb963bd0e5ad8f6e947b33edab439e6e026535"
+  },
+  {
+    "path": "docs/runtime/alignment-01-checks.json",
+    "bytes": 8102,
+    "lines": 172,
+    "git_blob": "f236636e790bdcd94a3d7bc403eeb7ea01d5c320"
+  },
+  {
+    "path": "docs/runtime/alignment-01-windows.md",
+    "bytes": 3597,
+    "lines": 22,
+    "git_blob": "af4e192ec56febf0a1f28aefa6587db1d3ef2f35"
+  },
+  {
+    "path": "docs/runtime/alignment-01.md",
+    "bytes": 9118,
+    "lines": 60,
+    "git_blob": "73f29f5c789859855d8af0f34d63bb3964247eb2"
+  },
+  {
+    "path": "docs/runtime/arch-extension-closure-13-checks.json",
+    "bytes": 7792,
+    "lines": 235,
+    "git_blob": "98e9d2b5d9dfd70c20616f0baa96a785baa943ee"
+  },
+  {
+    "path": "docs/runtime/arch-extension-closure-13-recheck-checks.json",
+    "bytes": 6788,
+    "lines": 179,
+    "git_blob": "d5d8c9e197f25b9e5beccec1c562a21f1c078bc6"
+  },
+  {
+    "path": "docs/runtime/arch-extension-closure-13-recheck.md",
+    "bytes": 11127,
+    "lines": 59,
+    "git_blob": "acdf0befbc54dc98ff5abf3665d4c98f99ceceec"
+  },
+  {
+    "path": "docs/runtime/arch-extension-closure-13.md",
+    "bytes": 14631,
+    "lines": 79,
+    "git_blob": "a0b57aa7ff74ae1c14d9f5ea39da66efc3a0a498"
+  },
+  {
+    "path": "docs/runtime/checks.json",
+    "bytes": 4218,
+    "lines": 89,
+    "git_blob": "f7b0c529c7eca98fd1fc0d1f6829c2e56c6e9b17"
+  },
+  {
+    "path": "docs/runtime/delivery.md",
+    "bytes": 6088,
+    "lines": 52,
+    "git_blob": "c9d4edc60ea1d2ac779fc49ea177b990df58444f"
+  },
+  {
+    "path": "docs/runtime/engineering-closure-07-checks.json",
+    "bytes": 5869,
+    "lines": 177,
+    "git_blob": "9748d65ade10277f639508b94adfd09a8ff90a24"
+  },
+  {
+    "path": "docs/runtime/engineering-closure-07.md",
+    "bytes": 10065,
+    "lines": 59,
+    "git_blob": "1e4ebc17f74d92c9d77a9eb4389032f0c9154899"
+  },
+  {
+    "path": "docs/runtime/evidence/WP-IPC-RUNTIME-03-win-x64.zip.sha256",
+    "bytes": 96,
+    "lines": 1,
+    "git_blob": "1c1e7d68bcd2aa62f26ce9a3d7b78897c23d8b98"
+  },
+  {
+    "path": "docs/runtime/evidence/alignment-01/ALIGNMENT-01-712446a-win-x64.zip.sha256",
+    "bytes": 99,
+    "lines": 1,
+    "git_blob": "1df0ffaf8e55307a9e18bb5d5a9489af581fb7fe"
+  },
+  {
+    "path": "docs/runtime/evidence/alignment-01/log-digests.json",
+    "bytes": 781,
+    "lines": 26,
+    "git_blob": "049bfe158d012ddcfa74ca3d441c2d2208b4627d"
+  },
+  {
+    "path": "docs/runtime/evidence/alignment-01/native-smoke.json",
+    "bytes": 347,
+    "lines": 10,
+    "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+  },
+  {
+    "path": "docs/runtime/evidence/alignment-01/package-verification.json",
+    "bytes": 1010,
+    "lines": 30,
+    "git_blob": "b52f4b0b55e9c790d6c8ca97a5898c92688db923"
+  },
+  {
+    "path": "docs/runtime/evidence/alignment-01/release-SHA256SUMS.txt",
+    "bytes": 85431,
+    "lines": 813,
+    "git_blob": "e77f83326b14bb872b45e1900a0ee6f430c8cf96"
+  },
+  {
+    "path": "docs/runtime/evidence/alignment-01/release.json",
+    "bytes": 493,
+    "lines": 13,
+    "git_blob": "b49c54c754e909bf1b3bfae63fde81c6e224a44c"
+  },
+  {
+    "path": "docs/runtime/evidence/alignment-01/verification-summary.txt",
+    "bytes": 5347,
+    "lines": 76,
+    "git_blob": "0346ed2c6807dbb9e381ccac72bfacce0fa7ae97"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/archive-comparison.json",
+    "bytes": 303,
+    "lines": 11,
+    "git_blob": "6e808d54c9f6656256a8f24212bb862978d3813f"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/archive-current.json",
+    "bytes": 51172,
+    "lines": 1200,
+    "git_blob": "ba23895700c439280598ac16b14a45495b9cd49a"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/candidate-inventory.json",
+    "bytes": 37251,
+    "lines": 1022,
+    "git_blob": "0968f5d05cc507d218da435c6cc756589d9e8e59"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/closure-13.json",
+    "bytes": 13710,
+    "lines": 318,
+    "git_blob": "02b672710e719904f36e76396c8c1f44b7ba6aba"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/compatibility-inputs.json",
+    "bytes": 1325,
+    "lines": 32,
+    "git_blob": "049f89d928f8b74211cc7d4918988241710f894b"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-architecture-accepted.log",
+    "bytes": 2896,
+    "lines": 25,
+    "git_blob": "71a139029ad69f58bd26632fa3c177a9da4659b0"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-architecture-final.log",
+    "bytes": 5045,
+    "lines": 45,
+    "git_blob": "d4c42b985da7705594adfa8da32e284a746040b6"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-architecture-first.log",
+    "bytes": 3995,
+    "lines": 16,
+    "git_blob": "007c7016c8a3e17d25fde2455a2d74273ffdeb51"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-architecture-third.log",
+    "bytes": 4171,
+    "lines": 37,
+    "git_blob": "0302eb37c20af10c887ce21089fedc0dd2c88c5f"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-baseline.log",
+    "bytes": 1382,
+    "lines": 13,
+    "git_blob": "6a8dfc4153a8f8eff4b1ba3420ad07d6bab6b9ac"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-e12-diagnostic.log",
+    "bytes": 3471,
+    "lines": 40,
+    "git_blob": "cb3a26aa8d46fcf841c0789b9cfa86707400f53f"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-e12-first.log",
+    "bytes": 1371,
+    "lines": 10,
+    "git_blob": "308ede5f22c7b1d777801b94ae5366baeb6f7bed"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-e12-second.log",
+    "bytes": 3155,
+    "lines": 38,
+    "git_blob": "842653881cffcb9ac45aa43eb7c1115bc2e7510f"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-first-build.log",
+    "bytes": 2094,
+    "lines": 21,
+    "git_blob": "bf13d4f6d7f1c4f7c37bcda822b00c2bf0fe722f"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-frozen-baseline.log",
+    "bytes": 11056,
+    "lines": 48,
+    "git_blob": "8533785613a53fc04b0907365708bfa3822af7a5"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-frozen-extensions.log",
+    "bytes": 3481,
+    "lines": 40,
+    "git_blob": "b3f42d2471e9c6db13abd1cf46be87dc96b29a10"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-frozen-ownership.log",
+    "bytes": 2122,
+    "lines": 15,
+    "git_blob": "ab75b5462de8801d11eadce057f15d2e95c91cf2"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-owning-source-build.log",
+    "bytes": 6846,
+    "lines": 34,
+    "git_blob": "559c070203c2d67a28125df9fac6f596f12216a9"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-review-followup.log",
+    "bytes": 2276,
+    "lines": 16,
+    "git_blob": "235e24d860d9941c928bb6b2dcef1cf1d89d4419"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/initial-failures/ipc13-ui-build.log",
+    "bytes": 2127,
+    "lines": 19,
+    "git_blob": "cf49645fd1d88091dd080c0a33e061901faf4963"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/inspection-console.log",
+    "bytes": 1119,
+    "lines": 63,
+    "git_blob": "70fbed293ca35c39fbf9df9b21083dcf8ec27166"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/inspection-publish.log",
+    "bytes": 1061,
+    "lines": 8,
+    "git_blob": "43758fb2332f7dd167c83c518ed80bc7280e785e"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/inspection-restart.log",
+    "bytes": 450,
+    "lines": 26,
+    "git_blob": "db5a17e574a86b466c46857b335e84ac4d5d70d2"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/integration-journey.json",
+    "bytes": 11084,
+    "lines": 248,
+    "git_blob": "bd6ef2c25688ed157599bcb1919caaaa278a1355"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-architecture.log",
+    "bytes": 6365,
+    "lines": 72,
+    "git_blob": "91ae0cfcc02553a3fef05a7c1e0cf5d3c7ffa52e"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-baseline.log",
+    "bytes": 11630,
+    "lines": 64,
+    "git_blob": "8aa9ad64b5c28675d95402aced291ad7c10eec98"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-build.log",
+    "bytes": 2912,
+    "lines": 27,
+    "git_blob": "a9194889155ce1623339fb16b3ca581db846013a"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-closure.log",
+    "bytes": 1319,
+    "lines": 16,
+    "git_blob": "db12efaf7017ee4c0afdbdd721e5ffe6ae63caa0"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-extensions.log",
+    "bytes": 2648,
+    "lines": 36,
+    "git_blob": "46a4931da78f80b4536ed295983459d74c5a5aee"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-followup.log",
+    "bytes": 1194,
+    "lines": 13,
+    "git_blob": "756962eca65c4c656f0dbc2f07840915d6c61265"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-package-0.log",
+    "bytes": 1803,
+    "lines": 9,
+    "git_blob": "31ddb192b1c17b1a56d51e077b1e30b7c6f22d71"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-package-1.log",
+    "bytes": 3168,
+    "lines": 16,
+    "git_blob": "b4ba802e445c985ed0ebda09a6be967c989d833a"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-package-2.log",
+    "bytes": 5730,
+    "lines": 45,
+    "git_blob": "ceef84c45f5d863e26a4723d726a02d2df896caf"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-package-3.log",
+    "bytes": 7002,
+    "lines": 55,
+    "git_blob": "e06cdf69a5e683d498a1b985cd30882172d73241"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-accepted-review-followup.log",
+    "bytes": 1239,
+    "lines": 10,
+    "git_blob": "8948b898b7b8b20c9e673e35127f60e10269da94"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-architecture-delivery.log",
+    "bytes": 6365,
+    "lines": 72,
+    "git_blob": "94ca9c3a044e8e9f6db1dd495481b261c616eb9e"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-archive-baseline.json",
+    "bytes": 51161,
+    "lines": 1200,
+    "git_blob": "7869305f84db1298d3375b3d68f5ec328b956876"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-baseline-current.log",
+    "bytes": 11630,
+    "lines": 64,
+    "git_blob": "db31861b5f5508444ece71e34e4b4d55e69b5fa0"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-closure.log",
+    "bytes": 1319,
+    "lines": 16,
+    "git_blob": "089677432827e1d553e1e970ffe349848630ea2f"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-composition-tests.log",
+    "bytes": 101,
+    "lines": 5,
+    "git_blob": "e76e6ef1231205ea3615ca8be6eccbd2883891b0"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-extensions-final.log",
+    "bytes": 2648,
+    "lines": 36,
+    "git_blob": "737d04dfcf35ef75ee1937f263453a514ad33ed4"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-followup.log",
+    "bytes": 1194,
+    "lines": 13,
+    "git_blob": "0f065f4de10ec1605ef64be855c9ea7537884e03"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-legacy12-compatibility-smoke.json",
+    "bytes": 10564,
+    "lines": 201,
+    "git_blob": "81d4a96b6a1cde7573cf88b33d9d8133f30efe87"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-published-businesses-smoke.json",
+    "bytes": 1688,
+    "lines": 73,
+    "git_blob": "4e8c95612b60c570bd22ea13e9abc4e30b8c521a"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-published-core-smoke.json",
+    "bytes": 347,
+    "lines": 10,
+    "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-published-extensions-smoke.json",
+    "bytes": 11877,
+    "lines": 234,
+    "git_blob": "d63cca1f18a816d50fdba589fb0f1efebe35e46f"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-review-current.log",
+    "bytes": 1239,
+    "lines": 10,
+    "git_blob": "84526c8977852ddcedad84122902cafc07066650"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-service-health-build.log",
+    "bytes": 1609,
+    "lines": 18,
+    "git_blob": "d91232f5ada0c21d0663d362949e3b575c8dfd78"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/ipc13-tools.log",
+    "bytes": 1416,
+    "lines": 15,
+    "git_blob": "d7135b5990563dc68fc931280036378a2b4c330d"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/legacy-custody.json",
+    "bytes": 560,
+    "lines": 10,
+    "git_blob": "78a3ac7858cb28e7695cae24c93ad141f1efb41f"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/opening.json",
+    "bytes": 502,
+    "lines": 13,
+    "git_blob": "1682f2e408d1cba15cc4fe1996fb651e36e25cd6"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/pr11-review.json",
+    "bytes": 4189,
+    "lines": 1,
+    "git_blob": "40f3afabef7601f6c4ee3dbd5a4bfe13ffe5a668"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/readback-receipt.json",
+    "bytes": 276,
+    "lines": 9,
+    "git_blob": "02ed065f7bb0b110bd28150a20113fb5502a96f5"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/architecture.log",
+    "bytes": 7374,
+    "lines": 86,
+    "git_blob": "34d13266b0c5822de8b6593f462f6120fdbc5029"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/baseline.log",
+    "bytes": 11774,
+    "lines": 64,
+    "git_blob": "31b7d925321569388358b24402d7a421d2f364ac"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/build.log",
+    "bytes": 2836,
+    "lines": 25,
+    "git_blob": "a645ecf338a15b528642784f1074f662452dec0d"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/cas-baseline.log",
+    "bytes": 11774,
+    "lines": 64,
+    "git_blob": "ff4eaa0e93858d7a3bfd2a334a87ffce7c06122c"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/closure-13.json",
+    "bytes": 13705,
+    "lines": 318,
+    "git_blob": "5c20670248cdcfd099e4fa1287fb24341e828d83"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/closure.log",
+    "bytes": 1319,
+    "lines": 16,
+    "git_blob": "945be5eaa6e3d67a058e63d2c98636017e92e53e"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/extensions.log",
+    "bytes": 2648,
+    "lines": 36,
+    "git_blob": "32746981350b2b335ccf82e13be1d2430adb6e22"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/architecture.log",
+    "bytes": 7374,
+    "lines": 86,
+    "git_blob": "e5bef438341cb8c08f0910bef137d312c148527f"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-baseline.json",
+    "bytes": 51161,
+    "lines": 1200,
+    "git_blob": "7869305f84db1298d3375b3d68f5ec328b956876"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-before-metadata-cleanup.json",
+    "bytes": 52189,
+    "lines": 1224,
+    "git_blob": "6b9e9a6a869e57a1a0f8aec1ea14e005d0c83cdf"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-comparison.json",
+    "bytes": 358,
+    "lines": 12,
+    "git_blob": "aa98a4502b15859e5fb9bc6aad0f6e0c3def2177"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/archive-current.json",
+    "bytes": 51852,
+    "lines": 1216,
+    "git_blob": "c98487003581f41543bd715327c6093fe21b14d4"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/baseline.log",
+    "bytes": 11774,
+    "lines": 64,
+    "git_blob": "92f3b79c200b79988dc2c8066723604f774a29f9"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/build.log",
+    "bytes": 3247,
+    "lines": 27,
+    "git_blob": "2dae15e65d5d93acafd7d9354f5213d204c045da"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/candidate-inventory.json",
+    "bytes": 27975,
+    "lines": 801,
+    "git_blob": "2703ec958ec37693e95c5efc082c8e076b98006f"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/closure-13.json",
+    "bytes": 13709,
+    "lines": 318,
+    "git_blob": "ddddca03397c54edad70d568121c8d61935cabfa"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/closure.log",
+    "bytes": 1319,
+    "lines": 16,
+    "git_blob": "96f304cfbdf0f76b7cad877c2aa5bc8f07acf540"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/core-smoke.json",
+    "bytes": 347,
+    "lines": 10,
+    "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/core-smoke.log",
+    "bytes": 432,
+    "lines": 2,
+    "git_blob": "f641001b43f397439a81a8d0f5c7334926294442"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extension-smoke.json",
+    "bytes": 11875,
+    "lines": 234,
+    "git_blob": "8b99e338624eab825b1279782b6b9d99f93d3deb"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extension-smoke.log",
+    "bytes": 10375,
+    "lines": 1,
+    "git_blob": "534b96ba276338cf2d90fe5ead12910cde347980"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/extensions.log",
+    "bytes": 2648,
+    "lines": 36,
+    "git_blob": "ac8ef5d8a3e29765e3003bfb801235c35abc8060"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/followup.log",
+    "bytes": 1194,
+    "lines": 13,
+    "git_blob": "ce8dcb222af997bd5b06aab513a456379723566f"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/integration-journey.json",
+    "bytes": 11085,
+    "lines": 248,
+    "git_blob": "bce3dfbf0f3889c0ac21d8e7614f94266fc4f31f"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-inspection-reference.log",
+    "bytes": 1899,
+    "lines": 9,
+    "git_blob": "a36713e17fbb16ad9383171de6a75b236caec312"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-portable.log",
+    "bytes": 6002,
+    "lines": 45,
+    "git_blob": "969e18e0870640e71d9b8f75750b711d2688ade9"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-supply-assembly.log",
+    "bytes": 3348,
+    "lines": 16,
+    "git_blob": "ab8961656ac984db06aa2298ad1d1c22251ea4ed"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/package-win-x64.log",
+    "bytes": 7370,
+    "lines": 55,
+    "git_blob": "2020aff518cdb4abf604271994a159f155d456c5"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/published-businesses.json",
+    "bytes": 2225,
+    "lines": 97,
+    "git_blob": "d6b05f9e6af4d460ecb57a8aad8f10963e95a041"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/remote-readback.json",
+    "bytes": 3623,
+    "lines": 108,
+    "git_blob": "c603c56355fea874a2bbd7421bfbcdb2885694a3"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/reproducibility.json",
+    "bytes": 4921,
+    "lines": 111,
+    "git_blob": "ae2241f86b69cca7cc5cf508d502b6dc3f79eeec"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/reproducibility.log",
+    "bytes": 96,
+    "lines": 1,
+    "git_blob": "680aa8099f860d8da7dfe3a1429469f46be88e6b"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/review-followup.log",
+    "bytes": 1239,
+    "lines": 10,
+    "git_blob": "095222a270e4351e19c1b30e56f34fb94252e1d6"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/source-freeze-integrity.json",
+    "bytes": 526,
+    "lines": 21,
+    "git_blob": "097badfdb3172ec2586031cc08800902a48e31af"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/final-8cb475b/tools.log",
+    "bytes": 1416,
+    "lines": 15,
+    "git_blob": "f4762fec370d07b047b3bdf006b6f0bbd264dea8"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/followup.log",
+    "bytes": 1194,
+    "lines": 13,
+    "git_blob": "7a7831911ca60cf308a995bf31342f27852e5f7e"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/frozen-baseline-cas-failure.log",
+    "bytes": 10778,
+    "lines": 43,
+    "git_blob": "39ff1ea42a3bfedf5da3718c3801b88ddb994c37"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/initial-build-failure.log",
+    "bytes": 7345,
+    "lines": 36,
+    "git_blob": "fbf4884bf3a98e8b49ed6dad0f224183766b1805"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/integration-journey.json",
+    "bytes": 11079,
+    "lines": 248,
+    "git_blob": "a4901d223b554d3ac805c77769c919e395a9ad40"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/opening.json",
+    "bytes": 567,
+    "lines": 14,
+    "git_blob": "0ac103297a4a3366793f4c5a8bc892559d8c5079"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/reproducibility-before-final-freeze.json",
+    "bytes": 4921,
+    "lines": 111,
+    "git_blob": "559a2c1e68b142427372b6c4b3a1beddfc040ef2"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/reproducibility-before-final-freeze.log",
+    "bytes": 96,
+    "lines": 1,
+    "git_blob": "680aa8099f860d8da7dfe3a1429469f46be88e6b"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/review-followup.log",
+    "bytes": 1239,
+    "lines": 10,
+    "git_blob": "8fb208bc234154381583eee5ecde76bf45975729"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/system-python-missing-pillow.log",
+    "bytes": 2087,
+    "lines": 23,
+    "git_blob": "2c6b7c1dff836930fbc3839873d594eaf5e28635"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/tools.log",
+    "bytes": 1416,
+    "lines": 15,
+    "git_blob": "c2fb186eb9828a3c5d3a3b1775e8318ab7cb06ac"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/recheck-20261017/withdrawn-a1c41bc.json",
+    "bytes": 2644,
+    "lines": 78,
+    "git_blob": "ac2220d72b946cafc2bc14f5c583a96bc79fe5ed"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/remote-readback.json",
+    "bytes": 6818,
+    "lines": 175,
+    "git_blob": "7ee016ca04b4fa0a7155c13f690d7ec1fcb972f7"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/source-freeze-integrity.json",
+    "bytes": 592,
+    "lines": 20,
+    "git_blob": "fa6e19b3afa6ce24be3ec0223eb50abfc9440a6c"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/supply-assembly-build.log",
+    "bytes": 1930,
+    "lines": 14,
+    "git_blob": "1fae31f8d9da4c13db9fdbcfe1e2644220e59263"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/supply-assembly-console.log",
+    "bytes": 623,
+    "lines": 31,
+    "git_blob": "1050fe6655d73c5c61a5bb5ae436b43f917bd030"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/transport-delay-request.json",
+    "bytes": 2299,
+    "lines": 46,
+    "git_blob": "ebf20171315e20633174d71984d40ee3c30076ae"
+  },
+  {
+    "path": "docs/runtime/evidence/arch-extension-closure-13/withdrawn-701ee0d.json",
+    "bytes": 1429,
+    "lines": 30,
+    "git_blob": "2b2d3215317585225ad62f5fe2c352f81a94be51"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/abrupt-process.log",
+    "bytes": 12,
+    "lines": 2,
+    "git_blob": "c9dcbe4cdf6ec2f5ee3b6e894128712d0991046d"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/archive-baseline.json",
+    "bytes": 50507,
+    "lines": 1184,
+    "git_blob": "342b07df218aed1b4199a9f145359dde11803ecb"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/archive-comparison.json",
+    "bytes": 740,
+    "lines": 15,
+    "git_blob": "492240ff4f5976dfe869b63f68b70b449ea27032"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/archive-current.json",
+    "bytes": 50993,
+    "lines": 1196,
+    "git_blob": "3d4226fcc09b0a08b8fc465362546a8f59724cc8"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/candidate-inventory.json",
+    "bytes": 5110,
+    "lines": 122,
+    "git_blob": "c663feb72f01cdd0a2a0e73d403ce0913d3358fb"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/environment-and-windows-blocker.json",
+    "bytes": 1168,
+    "lines": 35,
+    "git_blob": "dd72bc69eb51d32b4205b05c0e79b948295cb44e"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/evidence-identities.json",
+    "bytes": 10385,
+    "lines": 226,
+    "git_blob": "85b3d2e8b344a562de075ce70c43ee088a2b3d32"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/extension-evidence.json",
+    "bytes": 17242,
+    "lines": 366,
+    "git_blob": "0b0fb0ce680d2fa5bab48e3451576ff7b8b115ed"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/final-11f0728-build-session.json",
+    "bytes": 3099,
+    "lines": 69,
+    "git_blob": "3436e5d4b9af4e106e27697ea495620341ccd269"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/final-core-smoke.json",
+    "bytes": 347,
+    "lines": 10,
+    "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/final-extension-smoke.json",
+    "bytes": 7880,
+    "lines": 139,
+    "git_blob": "18adb48cc73be4cf66c03e45de5e38c65bb28f06"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-FilesVerified-operations-3db6ae64e4634cf786cf232c1cf50591.json",
+    "bytes": 404,
+    "lines": 13,
+    "git_blob": "1f6ac2ca6eb3de61fc44f25dd9d3d7f66abf1851"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-Prepared-operations-88fb1eea014d4d689df5d7b311bf24a9.json",
+    "bytes": 404,
+    "lines": 13,
+    "git_blob": "36564dcf2a76559762206e6785a111f8644a0f7c"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-Published-operations-8bb1a56c25d046cc9957ca2e756e9f22.json",
+    "bytes": 404,
+    "lines": 13,
+    "git_blob": "7014d9ad0005a5490343bc179e5d1e0badc81745"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/interrupted-Registered-operations-35dacbf1f1484252ab56a04b70c71821.json",
+    "bytes": 404,
+    "lines": 13,
+    "git_blob": "b1b6d57957cb111bb255493463a1d9917ba62710"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-build.log",
+    "bytes": 1374,
+    "lines": 23,
+    "git_blob": "620743929dc282ed64d92479bb5f126745c164e9"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-extensions.log",
+    "bytes": 2489,
+    "lines": 35,
+    "git_blob": "799213a95b19373538cd734b9442fb38988dabca"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-package-barcode-portable.log",
+    "bytes": 2736,
+    "lines": 27,
+    "git_blob": "8762df1b6b3b5d8d9ae52b7c2e5ed0f24e034fb9"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-package-barcode-win-x64.log",
+    "bytes": 3771,
+    "lines": 40,
+    "git_blob": "5b83d667b98c44df4827e0ad17fab2184757cdff"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-11f0728-package-core-portable.log",
+    "bytes": 1918,
+    "lines": 16,
+    "git_blob": "822cd94f535f917661556ceaecb91d2384b13f0f"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-ae57856-review-followup.log",
+    "bytes": 1171,
+    "lines": 10,
+    "git_blob": "885f5440387836a0c28bf56f954cc1ea85b89827"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-baseline.log",
+    "bytes": 10540,
+    "lines": 64,
+    "git_blob": "3559ba607a7d2cad38e0a7bfbc4546e3da4c2014"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-closure.log",
+    "bytes": 1251,
+    "lines": 16,
+    "git_blob": "ba9f048ade4826462e5271b7fe79aae97bd3ad92"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-followup.log",
+    "bytes": 1126,
+    "lines": 13,
+    "git_blob": "8df2e3c03233e823e773a27a6996937b800d023f"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-b4c88bd-review-followup.log",
+    "bytes": 1072,
+    "lines": 9,
+    "git_blob": "9c204c76f4056225bcd88d4cb1b5c81e36de94d7"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-compile-freeze.log",
+    "bytes": 983,
+    "lines": 17,
+    "git_blob": "d49b7d60460f0d13dd7c70cbea80ae337428be67"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-final-worktree.log",
+    "bytes": 2895,
+    "lines": 37,
+    "git_blob": "2c012ee03831aedb663642b1bb25270255681c8d"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-first.log",
+    "bytes": 888,
+    "lines": 10,
+    "git_blob": "6e931fcfc843b7dc59764c6cbecfda78ca7b9cb0"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-second.log",
+    "bytes": 2377,
+    "lines": 31,
+    "git_blob": "69c69c8720ffa3a760c520a7b0b444daf584c7fc"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-extensions-settled-health.log",
+    "bytes": 2416,
+    "lines": 34,
+    "git_blob": "08c81941985e465c8b277a57413046575db0b18b"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-final-upgrade-build.log",
+    "bytes": 811,
+    "lines": 11,
+    "git_blob": "e9025c7a624db17584d816026010a508aa95f1c1"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-first-build.log",
+    "bytes": 1600,
+    "lines": 19,
+    "git_blob": "1cfdd57c3e714095ab85fee7eb6afccabb9c4fbc"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-tools-tests-bundled.log",
+    "bytes": 1286,
+    "lines": 14,
+    "git_blob": "a09b0dfaa81f4675d1ca1184b90cbeef8c3c6b86"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/ipc12-tools-tests.log",
+    "bytes": 1884,
+    "lines": 22,
+    "git_blob": "38dd73a48c99aa1534099a59c09858b88195a2c1"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/journey.json",
+    "bytes": 345346,
+    "lines": 7627,
+    "git_blob": "a4813196c67039304ebe5efef83e3519e7ef0e62"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/remote-readback.json",
+    "bytes": 3883,
+    "lines": 88,
+    "git_blob": "ce39f0033711d3221142a1b0addeabd7869e236e"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/review-product-ownership.json",
+    "bytes": 37723,
+    "lines": 449,
+    "git_blob": "76f949e07e4287e1e95339771efd4722c892b557"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/source-publication.json",
+    "bytes": 761,
+    "lines": 21,
+    "git_blob": "ef6ab402ee954d10764d8fbf9243bffdad448871"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/uninstall-interruption-operations-9a25212574b34d99b68e748ffef5d81c.json",
+    "bytes": 407,
+    "lines": 13,
+    "git_blob": "bdb7cf9dfa78f585ef8f61e36a8cd77b90bec4d3"
+  },
+  {
+    "path": "docs/runtime/evidence/extension-windows-delivery-12/uninstall-interruption-operations-fb46364fdc8e40d8b1610d49b79845c9.json",
+    "bytes": 404,
+    "lines": 13,
+    "git_blob": "7dd9212156b222f27677d15ded25d6cb06bace8a"
+  },
+  {
+    "path": "docs/runtime/evidence/hardening-04/HARDENING-04-2619a7a-win-x64.zip.sha256",
+    "bytes": 99,
+    "lines": 1,
+    "git_blob": "2e7b64d9f3bf654efb3178c90f9e514ef24f95cb"
+  },
+  {
+    "path": "docs/runtime/evidence/hardening-04/hardening04-final-smoke.json",
+    "bytes": 347,
+    "lines": 10,
+    "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+  },
+  {
+    "path": "docs/runtime/evidence/hardening-04/hardening04-package-verification.json",
+    "bytes": 590,
+    "lines": 21,
+    "git_blob": "be8633e666c79a609b7b941a308d9352e30fdc2f"
+  },
+  {
+    "path": "docs/runtime/evidence/hardening-04/hardening04-smoke.json",
+    "bytes": 347,
+    "lines": 10,
+    "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+  },
+  {
+    "path": "docs/runtime/evidence/hardening-04/release-SHA256SUMS.txt",
+    "bytes": 85330,
+    "lines": 812,
+    "git_blob": "ccf6cb8b98a18536e4e80414dd0f2430a3feb23f"
+  },
+  {
+    "path": "docs/runtime/evidence/hardening-04/release.json",
+    "bytes": 267,
+    "lines": 8,
+    "git_blob": "445811666ed7c19a0ed8a986f062525d73e5f21e"
+  },
+  {
+    "path": "docs/runtime/evidence/package-verification.json",
+    "bytes": 466,
+    "lines": 15,
+    "git_blob": "d5aac509996e9e3c04aa860f44c8300445d34d29"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/archive-current.json",
+    "bytes": 50188,
+    "lines": 1176,
+    "git_blob": "1cc2773d2b638d7ef119e8f56ae57922ef8b01e6"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/archive-pristine-main.json",
+    "bytes": 50188,
+    "lines": 1176,
+    "git_blob": "4b3c77641652d4f96c1c2c04eb6b716c9374e88f"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/archive-tests.log",
+    "bytes": 1048,
+    "lines": 12,
+    "git_blob": "84b2c3c3e011661169d73391b56a970048644987"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/final-build.log",
+    "bytes": 892,
+    "lines": 17,
+    "git_blob": "2fcf2b5a9ccaccf2675251a8b361a8863b6a9cf1"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/final-reference.log",
+    "bytes": 17254,
+    "lines": 135,
+    "git_blob": "a6cc5c8a14bf300d77b4c5850aa70d12d22b2916"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/first-a01-stop-failure.log",
+    "bytes": 6978,
+    "lines": 65,
+    "git_blob": "277cb28ebd9340ebf5ac12d8155584d6c931b17b"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/first-h04-failure.log",
+    "bytes": 2887,
+    "lines": 36,
+    "git_blob": "17def32d0c328b695a2a652cde5e5942f0a991d3"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/first-journey-conflict.log",
+    "bytes": 1634,
+    "lines": 17,
+    "git_blob": "d67e1ccc2c0d4fc318da0fdcd71fee354349fff1"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/first-wpf-build-failure.log",
+    "bytes": 1222,
+    "lines": 17,
+    "git_blob": "479dd45b632b7205ec0a7eecaa0c9ee438c8e837"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/package-portable.log",
+    "bytes": 1673,
+    "lines": 16,
+    "git_blob": "040e3f43efb29b1f55bc2215f0c326b98649c8c7"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/package-readback.json",
+    "bytes": 4032,
+    "lines": 120,
+    "git_blob": "8f17cfc5e0a210a48696c11931f0cb32f9717f17"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/package-win-x64.log",
+    "bytes": 2717,
+    "lines": 29,
+    "git_blob": "e64b03158066bfede29e47b58e85362b9cd12423"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/published-smoke.json",
+    "bytes": 347,
+    "lines": 10,
+    "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/published-smoke.log",
+    "bytes": 432,
+    "lines": 2,
+    "git_blob": "38e05c5a2bbebe4a84126a6fcd418609095f6e59"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/reference-journey.json",
+    "bytes": 345222,
+    "lines": 7627,
+    "git_blob": "6a1d5433daf0116258b93fdae9db343036469bd2"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/unpacked-smoke.json",
+    "bytes": 347,
+    "lines": 10,
+    "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+  },
+  {
+    "path": "docs/runtime/evidence/reconciliation-01/unpacked-smoke.log",
+    "bytes": 432,
+    "lines": 2,
+    "git_blob": "d4e518afae98a9caff2c454f6d8fd4dd1bb31829"
+  },
+  {
+    "path": "docs/runtime/evidence/release-SHA256SUMS.txt",
+    "bytes": 85148,
+    "lines": 810,
+    "git_blob": "3272e7f909c98689e79fb4ceea9a7fb613a17088"
+  },
+  {
+    "path": "docs/runtime/evidence/release.json",
+    "bytes": 257,
+    "lines": 8,
+    "git_blob": "02a25a3f599a0979512fc15152a22d44d683702b"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/archive-tests.log",
+    "bytes": 1048,
+    "lines": 12,
+    "git_blob": "d89f1e42de400b91db8eecaccefe7990af0247b4"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/build.log",
+    "bytes": 892,
+    "lines": 17,
+    "git_blob": "4fca826824f14d13fd0e61d8414f31732f539d5b"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/closure.log",
+    "bytes": 1319,
+    "lines": 16,
+    "git_blob": "54657fdea70c9897e3b75ab1e143ff8f9c7fb02a"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/first-archive-failure.json",
+    "bytes": 50597,
+    "lines": 1188,
+    "git_blob": "33cf197e660f2446f8776307d41ce5c5c033c414"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/first-build-failure.log",
+    "bytes": 998,
+    "lines": 17,
+    "git_blob": "90b45c458872c0327327bc9500f3dd7aa06196d7"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/followup.log",
+    "bytes": 1194,
+    "lines": 13,
+    "git_blob": "ecf86c29e7fda89a347747403f71f33d13111e7c"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/package-portable.log",
+    "bytes": 1716,
+    "lines": 16,
+    "git_blob": "d09f44d00fae7ea78bb4eb26743c477411bc7211"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/package-readback.json",
+    "bytes": 5492,
+    "lines": 158,
+    "git_blob": "26c575c43ade4e6545db9f6a6054c90de6b830f3"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/package-win-x64.log",
+    "bytes": 2751,
+    "lines": 29,
+    "git_blob": "9e5616f48bfa63125fe5a7456b7c921f65d6afa6"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/product-ownership.json",
+    "bytes": 37871,
+    "lines": 443,
+    "git_blob": "1503841759a010079d0da424282c8e571209ccd5"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/reference-journey.json",
+    "bytes": 345277,
+    "lines": 7627,
+    "git_blob": "e7789e20957ccdde0f4efee60b74970b6fc2e496"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/target.log",
+    "bytes": 1140,
+    "lines": 9,
+    "git_blob": "9d0831f1a1ff932ce2eab14d0e1f4923ddb4baae"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/unpacked-smoke.json",
+    "bytes": 347,
+    "lines": 10,
+    "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+  },
+  {
+    "path": "docs/runtime/evidence/review-followup-11/unpacked-smoke.log",
+    "bytes": 432,
+    "lines": 2,
+    "git_blob": "f863b69d9634613d3f278ce214271a3ff7470e1b"
+  },
+  {
+    "path": "docs/runtime/evidence/smoke-final-results.json",
+    "bytes": 347,
+    "lines": 10,
+    "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+  },
+  {
+    "path": "docs/runtime/evidence/smoke-results.json",
+    "bytes": 347,
+    "lines": 10,
+    "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
+  },
+  {
+    "path": "docs/runtime/extension-windows-delivery-12-checks.json",
+    "bytes": 8392,
+    "lines": 198,
+    "git_blob": "d6baaaed4939e46ced7ca5602aa16dcfff9b5365"
+  },
+  {
+    "path": "docs/runtime/extension-windows-delivery-12.md",
+    "bytes": 10729,
+    "lines": 52,
+    "git_blob": "58fb279f52581a618c4984e6cd860342396061ac"
+  },
+  {
+    "path": "docs/runtime/hardening-04-checks.json",
+    "bytes": 6415,
+    "lines": 154,
+    "git_blob": "86393ccbc8b3cb6a85a39b8eacee81c16468854a"
+  },
+  {
+    "path": "docs/runtime/hardening-04-publication.md",
+    "bytes": 2932,
+    "lines": 25,
+    "git_blob": "b3e8a72d2032e3b4c6a38525893b8b12805ae146"
+  },
+  {
+    "path": "docs/runtime/hardening-04.md",
+    "bytes": 6213,
+    "lines": 49,
+    "git_blob": "d97e001ecdac718ebd81b2475435233a03404a2a"
+  },
+  {
+    "path": "docs/runtime/implementation.md",
+    "bytes": 5935,
+    "lines": 43,
+    "git_blob": "2a37a7816e0b6f4ca659485bffbf9165f42d87d5"
+  },
+  {
+    "path": "docs/runtime/integration-05.md",
+    "bytes": 2969,
+    "lines": 18,
+    "git_blob": "b7bf6aa0238adee803a64ff8cd6e1003456b493e"
+  },
+  {
+    "path": "docs/runtime/operations.md",
+    "bytes": 32318,
+    "lines": 249,
+    "git_blob": "fe6b7a859d314adc9c63f193c2383962bbe8e399"
+  },
+  {
+    "path": "docs/runtime/publication.md",
+    "bytes": 2642,
+    "lines": 23,
+    "git_blob": "d6bce942df601d3e78431ac12f59b2656e035def"
+  },
+  {
+    "path": "docs/runtime/reference-validation-09-checks.json",
+    "bytes": 32893,
+    "lines": 864,
+    "git_blob": "d103e8f1923af0b1462f0943c8e86aadc7f31bd9"
+  },
+  {
+    "path": "docs/runtime/reference-validation-09.md",
+    "bytes": 11917,
+    "lines": 80,
+    "git_blob": "7a90a156b5913c542ebc6a706e0a8863165fc531"
+  },
+  {
+    "path": "docs/runtime/review-followup-11-checks.json",
+    "bytes": 25564,
+    "lines": 593,
+    "git_blob": "4930320ca971ece0442c3af2123be5034a3cb77f"
+  },
+  {
+    "path": "docs/runtime/review-followup-11.md",
+    "bytes": 10721,
+    "lines": 98,
+    "git_blob": "9aa921fcd98d0425b31733cbbab1f8e09ecec240"
+  },
+  {
+    "path": "docs/runtime/ui-baseline-alignment-10.md",
+    "bytes": 14262,
+    "lines": 72,
+    "git_blob": "e79f5c656491688e85ecf770e3761bdf8d3db9b9"
+  },
+  {
+    "path": "docs/runtime/validation-scenarios-09.md",
+    "bytes": 9571,
+    "lines": 77,
+    "git_blob": "379943809dd4fd797f1735c53d075557e890d564"
+  },
+  {
+    "path": "docs/runtime/validation/closure-13-windows-scenarios.md",
+    "bytes": 1458,
+    "lines": 11,
+    "git_blob": "3d284a50fe3abbf1f8331af82dd73b9186717135"
+  },
+  {
+    "path": "docs/runtime/validation/reference-windows.workflow.yml",
+    "bytes": 1595,
+    "lines": 38,
+    "git_blob": "028c86d72e85509fd160b96dbc41910737ea73e4"
+  },
+  {
+    "path": "docs/runtime/windows-06.md",
+    "bytes": 2685,
+    "lines": 20,
+    "git_blob": "0e4713c9b8b518247401ba8d28580e839de5ef95"
+  },
+  {
+    "path": "docs/superpowers/plans/2026-10-16-ipc-audit-reconciliation.md",
+    "bytes": 3604,
+    "lines": 32,
+    "git_blob": "5bbb4f58b23087eed17e6f9cfdeefb245f7a16b6"
+  },
+  {
+    "path": "docs/superpowers/plans/2026-10-16-ipc-readiness.md",
+    "bytes": 4823,
+    "lines": 65,
+    "git_blob": "2c23a82ad65459aafe7cafb525ac4e5df8b584c3"
+  },
+  {
+    "path": "docs/superpowers/plans/2026-10-17-ipc-architecture-closure-13.md",
+    "bytes": 3590,
+    "lines": 28,
+    "git_blob": "22ed76b08afe568da0ad457b3f4672db5bf469be"
+  },
+  {
+    "path": "docs/superpowers/plans/2026-10-17-ipc-extension-delivery-12.md",
+    "bytes": 1988,
+    "lines": 17,
+    "git_blob": "7acff963ad7afdbba6a09ab963e6e32b6ed0c4c1"
+  },
+  {
+    "path": "docs/superpowers/plans/2026-10-17-ipc-review-followup-11.md",
+    "bytes": 5296,
+    "lines": 51,
+    "git_blob": "7e1b9cdd23f9e99c176574fa7b0dd0f9c0fc70ea"
+  },
+  {
+    "path": "docs/ui/STATUS.md",
+    "bytes": 2524,
+    "lines": 25,
+    "git_blob": "eea8d9a6efa30508510c58f5b531bcd74eea94e2"
+  },
+  {
+    "path": "docs/ui/arch-extension-closure-13-mapping.md",
+    "bytes": 2999,
+    "lines": 17,
+    "git_blob": "0fe14d9517a95793f2857031b60352468afe24d9"
+  },
+  {
+    "path": "docs/ui/extension-delivery-12-mapping.md",
+    "bytes": 3006,
+    "lines": 15,
+    "git_blob": "169ccfe980ff8327558b8061eab4a2711672009e"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/GALLERY.md",
+    "bytes": 4683,
+    "lines": 141,
+    "git_blob": "f92a26f9e1a4f7270bc236a55fef6da227a8e271"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/README.md",
+    "bytes": 4431,
+    "lines": 45,
+    "git_blob": "255fd75b95fc870be895489cc423c7e5b9f62a9e"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/README.source.md",
+    "bytes": 3437,
+    "lines": 39,
+    "git_blob": "670d0cf0ab6c690b4e0d01ddc40328bca9207b73"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/design/editable-boards.json",
+    "bytes": 1073550,
+    "lines": 1,
+    "git_blob": "d9ee759630af88f55cd8944e63481854dcb66dfb"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/design/tokens.css",
+    "bytes": 629,
+    "lines": 24,
+    "git_blob": "7b0c3ea4663a61357625d7520a3ecb7b05cc23f0"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/design/tokens.json",
+    "bytes": 1779,
+    "lines": 98,
+    "git_blob": "6c19c3e90a8829d58acb9d6d8ed2617d7c6cb30a"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx",
+    "bytes": 3975627,
+    "lines": 1604,
+    "git_blob": "e2ed3647d5355b41eaf041a1a4632c05b9a3209e"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md",
+    "bytes": 32953,
+    "lines": 319,
+    "git_blob": "d2a12bd3e5f87739f3e703c1d99a34d0482657cf"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/prototype/index.html",
+    "bytes": 645,
+    "lines": 1,
+    "git_blob": "45bc7698d2a377e2fb5d16f4a62d82fd7ac3b2c4"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.css",
+    "bytes": 20713,
+    "lines": 9,
+    "git_blob": "8997fb0040204c85ac253bf97f5ecb7882e593dc"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.js",
+    "bytes": 63623,
+    "lines": 81,
+    "git_blob": "87e7cafdd7b191da11055c2036ffbb20e63f1b56"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/publication-checks.json",
+    "bytes": 802,
+    "lines": 21,
+    "git_blob": "2b6b889ae2f0a8b5beb17112dca41bf8a12bd1ef"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/render-verification.json",
+    "bytes": 9396,
+    "lines": 357,
+    "git_blob": "3d0a9d826e53759a696dddefcc2011f4bdd9b4ab"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/01-normal-1920.png",
+    "bytes": 210993,
+    "lines": 1271,
+    "git_blob": "6fbc98816c5974db9bf2dccd2c37248825aeed45"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/02-camera-offline-1920.png",
+    "bytes": 217097,
+    "lines": 1410,
+    "git_blob": "1d8c8921c2844a719d33895ab9bd9061619db239"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/03-result-unknown-1920.png",
+    "bytes": 217480,
+    "lines": 1381,
+    "git_blob": "ccb7c8e353ed58572a7ca0c1235aa51f269e0b3d"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/04-business-rejected-1920.png",
+    "bytes": 211779,
+    "lines": 1280,
+    "git_blob": "24784d2ff514bc4dc6edeb8d2d3234b179b3cbd2"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/05-no-read-1920.png",
+    "bytes": 210758,
+    "lines": 1206,
+    "git_blob": "f04963fb064cdd49aba023ca5b41ef1a3037dcbe"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/06-multiple-barcodes-1920.png",
+    "bytes": 231114,
+    "lines": 1358,
+    "git_blob": "091689c086e5f83a8d77f1327ce237c4e6c42152"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/07-storage-failed-1920.png",
+    "bytes": 216287,
+    "lines": 1413,
+    "git_blob": "0bc099e0b5d8f9532bb387908074f038fc7c4c0d"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/08-split-unapproved-1920.png",
+    "bytes": 218102,
+    "lines": 1362,
+    "git_blob": "e4a2d2e4fc7203510f4a7fcaa45c355a72d1e8cf"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/09-split-candidate-1920.png",
+    "bytes": 216813,
+    "lines": 1295,
+    "git_blob": "b9521495c3831df0530db7ade0924cb780368b82"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/10-shortage-1920.png",
+    "bytes": 254694,
+    "lines": 1707,
+    "git_blob": "7945dc713488ee80adc34ec43879b6df00710772"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/11-records-1920.png",
+    "bytes": 216576,
+    "lines": 1355,
+    "git_blob": "b0ca81ad4e9b125042badc38a19c85299b28bfbc"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/12-record-detail-1920.png",
+    "bytes": 277634,
+    "lines": 1819,
+    "git_blob": "5944bef20e5cbb28e20c0bc85b5b757b8e1531b6"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/12b-record-detail-attempts-1920.png",
+    "bytes": 278162,
+    "lines": 1790,
+    "git_blob": "94e1538d81053e4575592feeb00925e707a94b4e"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/13-devices-1920.png",
+    "bytes": 272050,
+    "lines": 1800,
+    "git_blob": "54e6f37aad5bb89c3b83bc77774693683e1d8b8c"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/14-login-1920.png",
+    "bytes": 66093,
+    "lines": 513,
+    "git_blob": "3acdbf88c3af10700ebd1bbdb1d5264a3b5a35a3"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/15-recovery-1920.png",
+    "bytes": 107982,
+    "lines": 699,
+    "git_blob": "4102dab611a724eca418ee818724218669597a73"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/16-components-1920.png",
+    "bytes": 237612,
+    "lines": 1579,
+    "git_blob": "0f5bfa5d7dac6bc993010274fb2a09a572081123"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/17-waiting-1920.png",
+    "bytes": 159557,
+    "lines": 1071,
+    "git_blob": "cae8928b240f43026462dc6a6b8491d7f5790545"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/18-recovered-1920.png",
+    "bytes": 199614,
+    "lines": 1226,
+    "git_blob": "11426e3c04c24e3a90d2f445b7db4dfe4172e8e1"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/19-alarm-1920.png",
+    "bytes": 245699,
+    "lines": 1553,
+    "git_blob": "2ac25f5e0267be2bf129e2769ad6e5283ce7a497"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/20-wcs-offline-1920.png",
+    "bytes": 214237,
+    "lines": 1338,
+    "git_blob": "bf10dea3985968332db96a87393e1161657e526f"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/21-long-content-1920.png",
+    "bytes": 267989,
+    "lines": 1676,
+    "git_blob": "796aff760f0600af6c21b4bde9a4f7381cb5871d"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/22-no-records-1920.png",
+    "bytes": 167972,
+    "lines": 1101,
+    "git_blob": "4a20676e69b7d5edb88636c386c4621522c0bd6d"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/23-pending-1920.png",
+    "bytes": 206804,
+    "lines": 1243,
+    "git_blob": "dd01402a54d5824622832b9072a3f6c0c6cb27ce"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/24-maintenance-1920.png",
+    "bytes": 218284,
+    "lines": 1446,
+    "git_blob": "7924b656d66987b24a71a0a7ea052a6f1039559c"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/25-long-content-1366.png",
+    "bytes": 199479,
+    "lines": 1339,
+    "git_blob": "051c94393d7b68b58fa5976975bf3a2729e89b8d"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/26-split-1366.png",
+    "bytes": 180777,
+    "lines": 1227,
+    "git_blob": "7d76d529f09c68f4afbb2547d8737cfe99282e2d"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1093x614.png",
+    "bytes": 64287,
+    "lines": 500,
+    "git_blob": "75582a52384c244b18542709bc0291c55d0bbd63"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1280x680.png",
+    "bytes": 147342,
+    "lines": 925,
+    "git_blob": "f96c306127410481585ff52ff576dd9bccc0a9d0"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1280x720.png",
+    "bytes": 150810,
+    "lines": 987,
+    "git_blob": "759653c78b3231145ef1e4ae7d26845fd23ba4f2"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1366x768.png",
+    "bytes": 161200,
+    "lines": 1153,
+    "git_blob": "b4b9a822b9bf8132f4b66801f9a82d74bb7d0068"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1536x864.png",
+    "bytes": 163825,
+    "lines": 962,
+    "git_blob": "da49d08d59c9f3ae1e5f16048ce7cdddfd8eb946"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1920x1080.png",
+    "bytes": 210993,
+    "lines": 1271,
+    "git_blob": "6fbc98816c5974db9bf2dccd2c37248825aeed45"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-911x512.png",
+    "bytes": 62558,
+    "lines": 376,
+    "git_blob": "a5bf346c075f04d86391cf1990598c238fb6a1e6"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/source-manifest.json",
+    "bytes": 3498,
+    "lines": 89,
+    "git_blob": "82329afc3e8c907b84f801d9ac9084d9ba2302ea"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/tools/reexport_screenshots.py",
+    "bytes": 4504,
+    "lines": 69,
+    "git_blob": "472b7da5a134a02b940275c0a3e655d4650e11d5"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/供包工作站_高保真交互原型.html",
+    "bytes": 84945,
+    "lines": 91,
+    "git_blob": "56e719dbe845ca66add73e15b227a2b0578729c9"
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/界面图册.html",
+    "bytes": 7486,
+    "lines": 1,
+    "git_blob": "0ba2fa079727f97d86d148a85ae066d5cc524bde"
+  },
+  {
+    "path": "docs/ui/tokens/tokens.css",
+    "bytes": 629,
+    "lines": 24,
+    "git_blob": "7b0c3ea4663a61357625d7520a3ecb7b05cc23f0"
+  },
+  {
+    "path": "docs/ui/tokens/tokens.json",
+    "bytes": 1779,
+    "lines": 98,
+    "git_blob": "6c19c3e90a8829d58acb9d6d8ed2617d7c6cb30a"
+  },
+  {
+    "path": "docs/work-packages/Codex-WP-IPC-ARCH-EXTENSION-CLOSURE-13.md",
+    "bytes": 5364,
+    "lines": 23,
+    "git_blob": "f7d4602dd1f1789fc1111725aa1476ad1dd774b6"
+  },
+  {
+    "path": "docs/work-packages/Codex-WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+    "bytes": 5146,
+    "lines": 23,
+    "git_blob": "db2032ecfa65f602890e927fd19b3c56c2da94a0"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md",
+    "bytes": 3116,
+    "lines": 18,
+    "git_blob": "11e43abaeb86119ac0186389d50db435f21f6e43"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-ARCH-UI-ALIGNMENT-01.md",
+    "bytes": 5750,
+    "lines": 35,
+    "git_blob": "d18be6f0fdde10019d57fea1366abfe5255903b3"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md",
+    "bytes": 2100,
+    "lines": 16,
+    "git_blob": "2718c7a3f8bb3fccb41086c532d0d7a0be3d3165"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-DESIGN-BASELINE-01.md",
+    "bytes": 2892,
+    "lines": 28,
+    "git_blob": "75e80e26d44ec8d2c98473270db56b7ae4fba76e"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-ENGINEERING-CLOSURE-07.md",
+    "bytes": 13437,
+    "lines": 103,
+    "git_blob": "952f28db8c5b5f62239ad63995891f2351d5d44a"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-ENGINEERING-FOLLOWUP-08.md",
+    "bytes": 5577,
+    "lines": 48,
+    "git_blob": "bde1e895f46decb4d7fb525e8a07030e3ffba82e"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+    "bytes": 25624,
+    "lines": 199,
+    "git_blob": "2841ac8c74ae1a4d2a9a601eca954e31055b4203"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md",
+    "bytes": 8323,
+    "lines": 69,
+    "git_blob": "5f7af91c1ecbc6eee8a0da4a79517ebd04894e9c"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md",
+    "bytes": 6218,
+    "lines": 50,
+    "git_blob": "1361745f554c6792248d5c268041e57003605ab0"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md",
+    "bytes": 2045,
+    "lines": 14,
+    "git_blob": "d2d131535c5185fa4c48fd54f33cae8e4e97513c"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-RUNTIME-03-Codex.md",
+    "bytes": 3451,
+    "lines": 16,
+    "git_blob": "fef11744b9233d3082edfbb71e42552cec64f42b"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-RUNTIME-03.md",
+    "bytes": 13502,
+    "lines": 116,
+    "git_blob": "964b821b5b13144e8cc42a4a6eebae6c156c3fc6"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-RUNTIME-HARDENING-04.md",
+    "bytes": 2544,
+    "lines": 21,
+    "git_blob": "95de8b55857c1d9bbf302e2b6c99b6a30c4e888f"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md",
+    "bytes": 4895,
+    "lines": 41,
+    "git_blob": "1dbb64062f806765818692eda9a475460cb817eb"
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-WINDOWS-VALIDATION-06.md",
+    "bytes": 5853,
+    "lines": 51,
+    "git_blob": "ea2f1e130c686194add32b7efaccce0f47bf2c68"
+  },
+  {
+    "path": "examples/BarcodeExtension/BarcodeExtension.cs",
+    "bytes": 4323,
+    "lines": 76,
+    "git_blob": "5fc6309bb7b732401ba83527da4ecb50d66ef94e"
+  },
+  {
+    "path": "examples/BarcodeExtension/BarcodeExtension.csproj",
+    "bytes": 598,
+    "lines": 5,
+    "git_blob": "16d1344f7242f310d72bd1584589e182f323e510"
+  },
+  {
+    "path": "examples/BarcodeExtension/packages.lock.json",
+    "bytes": 61,
+    "lines": 6,
+    "git_blob": "4a91a8cd78fbfd79345585bb9bdbb8099ec40383"
+  },
+  {
+    "path": "examples/IntegrationExtension/IntegrationExtension.csproj",
+    "bytes": 762,
+    "lines": 8,
+    "git_blob": "09e9bb7789daebcb75d58d316fc6a206dc6aac57"
+  },
+  {
+    "path": "examples/IntegrationExtension/IntegrationModule.cs",
+    "bytes": 6438,
+    "lines": 113,
+    "git_blob": "b57315e2f5be7fcccf20f6fed1d32e09ade9e7de"
+  },
+  {
+    "path": "examples/IntegrationExtension/ReferenceContract.cs",
+    "bytes": 4139,
+    "lines": 55,
+    "git_blob": "e399dd1fc6c89a839f4f5a28cfe311f9af14da9d"
+  },
+  {
+    "path": "examples/IntegrationExtension/packages.lock.json",
+    "bytes": 61,
+    "lines": 6,
+    "git_blob": "4a91a8cd78fbfd79345585bb9bdbb8099ec40383"
+  },
+  {
+    "path": "global.json",
+    "bytes": 55,
+    "lines": 1,
+    "git_blob": "98fe74ec314e54eb8678787d3d58fc83abdad96c"
+  },
+  {
+    "path": "scripts/build-extension.py",
+    "bytes": 8903,
+    "lines": 107,
+    "git_blob": "aef27b91f63903c5d4b25cf4996072b36ecae5eb"
+  },
+  {
+    "path": "scripts/build.sh",
+    "bytes": 300,
+    "lines": 7,
+    "git_blob": "99ade6c4f51ed2cee2e973d93c50a03581a7a95c"
+  },
+  {
+    "path": "scripts/composition.py",
+    "bytes": 1604,
+    "lines": 36,
+    "git_blob": "eba270eeea4fc21304afaf3464e2216d547b3dd2"
+  },
+  {
+    "path": "scripts/package-business.py",
+    "bytes": 3282,
+    "lines": 51,
+    "git_blob": "7e3423f27bc05c03c0c03458e19c21f8e9ca697a"
+  },
+  {
+    "path": "scripts/package-reference.py",
+    "bytes": 7405,
+    "lines": 102,
+    "git_blob": "8a2fc5952617cba6f5a25ccde43d1d461462e136"
+  },
+  {
+    "path": "scripts/protect-release.ps1",
+    "bytes": 3097,
+    "lines": 34,
+    "git_blob": "209adfed382a940205a68c6f34bf5abb74d6358b"
+  },
+  {
+    "path": "scripts/provision-extensions.ps1",
+    "bytes": 5661,
+    "lines": 63,
+    "git_blob": "8e403d714d58c1358140ccbbedad83514d504645"
+  },
+  {
+    "path": "scripts/provision-runtime.ps1",
+    "bytes": 5353,
+    "lines": 77,
+    "git_blob": "f7b199d1a90d8c54f75485ba7a26c5d068aceb34"
+  },
+  {
+    "path": "scripts/publish.ps1",
+    "bytes": 1039,
+    "lines": 18,
+    "git_blob": "a3b834c15ae15d60a10fe4a634c0ef9b97a29ac9"
+  },
+  {
+    "path": "scripts/seal.py",
+    "bytes": 5803,
+    "lines": 92,
+    "git_blob": "d4274fbbf0eb35b76e3a6d017aa34f2e50924f61"
+  },
+  {
+    "path": "scripts/smoke-extension.py",
+    "bytes": 9085,
+    "lines": 170,
+    "git_blob": "6a0bf662da777fd9b3d269ae6f688665a91a879e"
+  },
+  {
+    "path": "scripts/smoke.py",
+    "bytes": 5143,
+    "lines": 118,
+    "git_blob": "38f8365ed582e3058d4380de4b95b23333bdaf8e"
+  },
+  {
+    "path": "scripts/station.ps1",
+    "bytes": 7790,
+    "lines": 95,
+    "git_blob": "e54e439072fef12099b2172f31f7448a1cc5125d"
+  },
+  {
+    "path": "scripts/verify-extension-reproducibility.py",
+    "bytes": 3209,
+    "lines": 57,
+    "git_blob": "5b77fd103d22c204ef7d47c3868c22ac6e91d663"
+  },
+  {
+    "path": "scripts/windows-reference-validation.ps1",
+    "bytes": 7910,
+    "lines": 98,
+    "git_blob": "5afa819ba34d7fef118c4ef3b769e918d0f86bd8"
+  },
+  {
+    "path": "src/Ipc.Adapters/Ipc.Adapters.csproj",
+    "bytes": 128,
+    "lines": 1,
+    "git_blob": "a9ba62b503b1474db08c164f2b64dce9b9722e4b"
+  },
+  {
+    "path": "src/Ipc.Adapters/LoopbackIntegration.cs",
+    "bytes": 2683,
+    "lines": 43,
+    "git_blob": "011558ca721bb016fde792697a74ca74b05c954d"
+  },
+  {
+    "path": "src/Ipc.Adapters/ObservationSources.cs",
+    "bytes": 5605,
+    "lines": 100,
+    "git_blob": "3eb612e1f78b93eb4aa1de4bf65a55c17d8ecbb1"
+  },
+  {
+    "path": "src/Ipc.Adapters/SimulationRequestContract.cs",
+    "bytes": 4094,
+    "lines": 55,
+    "git_blob": "24e9c19d2be2e1675836dfb954e82b3a62714678"
+  },
+  {
+    "path": "src/Ipc.Adapters/packages.lock.json",
+    "bytes": 16171,
+    "lines": 356,
+    "git_blob": "76e782f2431feba570629f95f486dba041975403"
+  },
+  {
+    "path": "src/Ipc.Adapters/packages.supply.lock.json",
+    "bytes": 16171,
+    "lines": 356,
+    "git_blob": "76e782f2431feba570629f95f486dba041975403"
+  },
+  {
+    "path": "src/Ipc.Adapters/packages.win-x64.lock.json",
+    "bytes": 16646,
+    "lines": 368,
+    "git_blob": "7686d7e8ef57fc34fd70dc46a0f09acfecf905b1"
+  },
+  {
+    "path": "src/Ipc.Assembly/InspectionAssembly.cs",
+    "bytes": 208,
+    "lines": 7,
+    "git_blob": "248d60a2bcaaf8050520fef4bdc86f827d4d8ac7"
+  },
+  {
+    "path": "src/Ipc.Assembly/Ipc.Assembly.csproj",
+    "bytes": 955,
+    "lines": 7,
+    "git_blob": "e905c025243d628f2341ed9caa03da12d11ff1bd"
+  },
+  {
+    "path": "src/Ipc.Assembly/Program.cs",
+    "bytes": 1369,
+    "lines": 18,
+    "git_blob": "43c45d5e30b84fcfb1c9a0925118a4e7f281cc6a"
+  },
+  {
+    "path": "src/Ipc.Assembly/SupplyAssembly.cs",
+    "bytes": 2066,
+    "lines": 30,
+    "git_blob": "128e8de2d7c7c70b65750bd772e7d74f0881a561"
+  },
+  {
+    "path": "src/Ipc.Assembly/packages.inspection.lock.json",
+    "bytes": 14120,
+    "lines": 303,
+    "git_blob": "e106063c601ecc30fdf46da46ae9c9ae1cee8ef2"
+  },
+  {
+    "path": "src/Ipc.Assembly/packages.lock.json",
+    "bytes": 16436,
+    "lines": 368,
+    "git_blob": "3d48183008fd781f94cc6955dcad43f21bfd26be"
+  },
+  {
+    "path": "src/Ipc.Assembly/packages.supply.lock.json",
+    "bytes": 16436,
+    "lines": 368,
+    "git_blob": "3d48183008fd781f94cc6955dcad43f21bfd26be"
+  },
+  {
+    "path": "src/Ipc.Desktop/App.xaml",
+    "bytes": 547,
+    "lines": 3,
+    "git_blob": "a4206f49a8388333e35f6a4ddad64503252cbc7b"
+  },
+  {
+    "path": "src/Ipc.Desktop/App.xaml.cs",
+    "bytes": 2636,
+    "lines": 49,
+    "git_blob": "b289e66a2a4f02fda352dc840afeb27e0dc3c60d"
+  },
+  {
+    "path": "src/Ipc.Desktop/Confirmation.cs",
+    "bytes": 2828,
+    "lines": 32,
+    "git_blob": "f695a52bf1915fe6276ba294032accb710b692d5"
+  },
+  {
+    "path": "src/Ipc.Desktop/ExtensionDraftEditing.cs",
+    "bytes": 2349,
+    "lines": 42,
+    "git_blob": "1a2150a81e4a4eb6ac3c779ccc4cc0eb766fafd3"
+  },
+  {
+    "path": "src/Ipc.Desktop/ExtensionsView.xaml",
+    "bytes": 7316,
+    "lines": 24,
+    "git_blob": "42c2b6ee30bf753166c7e9fe17c8afa8a38f6a7a"
+  },
+  {
+    "path": "src/Ipc.Desktop/ExtensionsView.xaml.cs",
+    "bytes": 24866,
+    "lines": 349,
+    "git_blob": "09b8a1098031704c077eee72da15cecbd70fcf9d"
+  },
+  {
+    "path": "src/Ipc.Desktop/HistoryPresentation.cs",
+    "bytes": 1863,
+    "lines": 27,
+    "git_blob": "1265f580cb077657352b2dc2ca145d8fa8e35edf"
+  },
+  {
+    "path": "src/Ipc.Desktop/Ipc.Desktop.csproj",
+    "bytes": 371,
+    "lines": 1,
+    "git_blob": "064d0147707121c27423c673154b5b4a1b0fa2db"
+  },
+  {
+    "path": "src/Ipc.Desktop/LaneControl.xaml",
+    "bytes": 7178,
+    "lines": 33,
+    "git_blob": "4273c8390a47a47eb64d347e1117fa9fd5c13050"
+  },
+  {
+    "path": "src/Ipc.Desktop/LaneControl.xaml.cs",
+    "bytes": 4610,
+    "lines": 81,
+    "git_blob": "957178431a4e9b241322c62c11e68286a18bc21f"
+  },
+  {
+    "path": "src/Ipc.Desktop/MainWindow.Closure.cs",
+    "bytes": 13895,
+    "lines": 203,
+    "git_blob": "df46d14529c026012d63768284041a588fa22d16"
+  },
+  {
+    "path": "src/Ipc.Desktop/MainWindow.Extensions.cs",
+    "bytes": 3181,
+    "lines": 45,
+    "git_blob": "eb22e1386df053c9557314d6ff3e7b7f48c664af"
+  },
+  {
+    "path": "src/Ipc.Desktop/MainWindow.HistoryExport.cs",
+    "bytes": 3017,
+    "lines": 46,
+    "git_blob": "b6ae5d4849e99d84aea56f7670b86aa7d78a304d"
+  },
+  {
+    "path": "src/Ipc.Desktop/MainWindow.Presentation.cs",
+    "bytes": 14986,
+    "lines": 214,
+    "git_blob": "b3fa3ef236d30f7fabb426ef0faa6a39aa349cd1"
+  },
+  {
+    "path": "src/Ipc.Desktop/MainWindow.xaml",
+    "bytes": 28794,
+    "lines": 83,
+    "git_blob": "9bb7026251b149f972edf85f8043c1766ceb6986"
+  },
+  {
+    "path": "src/Ipc.Desktop/MainWindow.xaml.cs",
+    "bytes": 43795,
+    "lines": 475,
+    "git_blob": "4329b0b092a791413ffd0badf9e0cee8636fc71e"
+  },
+  {
+    "path": "src/Ipc.Desktop/OperatorNotificationPlayer.cs",
+    "bytes": 1529,
+    "lines": 32,
+    "git_blob": "196695e9cac21476099d778c0b33fe7fc7973651"
+  },
+  {
+    "path": "src/Ipc.Desktop/PresentationPolicy.cs",
+    "bytes": 2369,
+    "lines": 51,
+    "git_blob": "0f66be3d2d1e5d1c7edec45480550495cb8cc197"
+  },
+  {
+    "path": "src/Ipc.Desktop/Themes/Workstation.xaml",
+    "bytes": 6717,
+    "lines": 23,
+    "git_blob": "3a321fa7ff05419aa519f32f86ec720b895e574b"
+  },
+  {
+    "path": "src/Ipc.Desktop/ViewModels.cs",
+    "bytes": 24612,
+    "lines": 213,
+    "git_blob": "b50d7c4c5c99a94d56f2d9a6135951ea2e03afa5"
+  },
+  {
+    "path": "src/Ipc.Desktop/ViewRegistry.cs",
+    "bytes": 772,
+    "lines": 13,
+    "git_blob": "3444e2f33775fb6085c3e5b84865689c44b560b1"
+  },
+  {
+    "path": "src/Ipc.Desktop/app.manifest",
+    "bytes": 712,
+    "lines": 13,
+    "git_blob": "98ee819e7178b6e08ee1b7e81a9097a92e0f7e89"
+  },
+  {
+    "path": "src/Ipc.Desktop/packages.lock.json",
+    "bytes": 16447,
+    "lines": 368,
+    "git_blob": "1113d1599d05e750b8ab1a746fec1f8220ce4d0e"
+  },
+  {
+    "path": "src/Ipc.Desktop/packages.win-x64.lock.json",
+    "bytes": 16933,
+    "lines": 380,
+    "git_blob": "1394596af07bd38fcc5488a4041951d2a61e41ca"
+  },
+  {
+    "path": "src/Ipc.Fixture/Ipc.Fixture.csproj",
+    "bytes": 136,
+    "lines": 1,
+    "git_blob": "ad97d421fc7594a6b696b39ae70b52b6b6f92276"
+  },
+  {
+    "path": "src/Ipc.Fixture/Program.cs",
+    "bytes": 2273,
+    "lines": 32,
+    "git_blob": "9a46fd4e3e1a75035a99515dc8dac9172f9c24c0"
+  },
+  {
+    "path": "src/Ipc.Fixture/Receiver.cs",
+    "bytes": 8154,
+    "lines": 108,
+    "git_blob": "35a0582d5ad831fa40cc955faab57ca20c5eb9ef"
+  },
+  {
+    "path": "src/Ipc.Fixture/SyntheticSemanticFixture.cs",
+    "bytes": 1271,
+    "lines": 21,
+    "git_blob": "17785645004103ad3e9a8af7139717e271515a93"
+  },
+  {
+    "path": "src/Ipc.Fixture/packages.lock.json",
+    "bytes": 2443,
+    "lines": 75,
+    "git_blob": "262bb9428cb4dd511bee91e2d033b6267bac4791"
+  },
+  {
+    "path": "src/Ipc.Fixture/packages.win-x64.lock.json",
+    "bytes": 2695,
+    "lines": 82,
+    "git_blob": "5398cc4b5f1a8e54314a05ee265264754290d56a"
+  },
+  {
+    "path": "src/Ipc.Inspection/InspectionRuntime.cs",
+    "bytes": 5841,
+    "lines": 86,
+    "git_blob": "28cc09caca0e1334103651341c7582559392d03c"
+  },
+  {
+    "path": "src/Ipc.Inspection/Ipc.Inspection.csproj",
+    "bytes": 132,
+    "lines": 1,
+    "git_blob": "9cf14155f6ff49b8bb6d0ad2ad07881be8719102"
+  },
+  {
+    "path": "src/Ipc.Inspection/packages.inspection.lock.json",
+    "bytes": 13984,
+    "lines": 297,
+    "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec"
+  },
+  {
+    "path": "src/Ipc.Inspection/packages.lock.json",
+    "bytes": 13984,
+    "lines": 297,
+    "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec"
+  },
+  {
+    "path": "src/Ipc.Platform/AssemblyInfo.cs",
+    "bytes": 90,
+    "lines": 2,
+    "git_blob": "929d47d23f060b051e740dee210a1ed9a5be16f8"
+  },
+  {
+    "path": "src/Ipc.Platform/BusinessAssembly.cs",
+    "bytes": 1764,
+    "lines": 31,
+    "git_blob": "80b6d324557ffdea9cba102ca6523b881b7dc54a"
+  },
+  {
+    "path": "src/Ipc.Platform/Configuration.cs",
+    "bytes": 11022,
+    "lines": 137,
+    "git_blob": "9e8399c069483c3a9e59de123ee8c2d4937b90c8"
+  },
+  {
+    "path": "src/Ipc.Platform/DeviceCapabilities.cs",
+    "bytes": 3119,
+    "lines": 49,
+    "git_blob": "dcc50220b6e953985391b931d5c2cb540ddfd6b6"
+  },
+  {
+    "path": "src/Ipc.Platform/ExtensionContractCompatibility.cs",
+    "bytes": 717,
+    "lines": 10,
+    "git_blob": "ea78b43c64e80f657af7afe39b1b88e614e020e4"
+  },
+  {
+    "path": "src/Ipc.Platform/ExtensionContracts.cs",
+    "bytes": 9301,
+    "lines": 130,
+    "git_blob": "4725b9c81b19016cc290b852919e99b94cb8eab2"
+  },
+  {
+    "path": "src/Ipc.Platform/ExtensionLoading.cs",
+    "bytes": 12056,
+    "lines": 163,
+    "git_blob": "09897610c9145aa138806358f5ab06548d18d591"
+  },
+  {
+    "path": "src/Ipc.Platform/ExtensionPackages.cs",
+    "bytes": 18055,
+    "lines": 223,
+    "git_blob": "ced555efbe973daf9446651da47697356252e1d3"
+  },
+  {
+    "path": "src/Ipc.Platform/ExtensionPublicContracts.cs",
+    "bytes": 1285,
+    "lines": 25,
+    "git_blob": "79b49dca0745da8aff9531461407cbc4a0f70d1a"
+  },
+  {
+    "path": "src/Ipc.Platform/ExtensionStore.cs",
+    "bytes": 17681,
+    "lines": 266,
+    "git_blob": "fd15f90dc33b6b23c25df3e1b021505437ef8de7"
+  },
+  {
+    "path": "src/Ipc.Platform/Ipc.Platform.csproj",
+    "bytes": 143,
+    "lines": 1,
+    "git_blob": "52ecca764ab3ab87a66bdcc9808bf9829e2442bc"
+  },
+  {
+    "path": "src/Ipc.Platform/Lifecycle.cs",
+    "bytes": 7539,
+    "lines": 143,
+    "git_blob": "3902212f004b273bf64ca35b0474eee1b56df5b9"
+  },
+  {
+    "path": "src/Ipc.Platform/MachineRuntimePolicy.cs",
+    "bytes": 8364,
+    "lines": 113,
+    "git_blob": "ff7519ee4aaa1c566d32a441751ef521551e961a"
+  },
+  {
+    "path": "src/Ipc.Platform/ManagedAssemblyPolicy.cs",
+    "bytes": 5885,
+    "lines": 92,
+    "git_blob": "479de4dc6d1f9cf507f64743d9e6058ac687af2a"
+  },
+  {
+    "path": "src/Ipc.Platform/PackageUseLease.cs",
+    "bytes": 1508,
+    "lines": 32,
+    "git_blob": "1d409983eb4fb29a71bd40e84a72e33cc35acc84"
+  },
+  {
+    "path": "src/Ipc.Platform/RuntimeJournal.cs",
+    "bytes": 1875,
+    "lines": 36,
+    "git_blob": "b7dddfcc9402f24c7ce46894ac4f5e7ad5fa2a04"
+  },
+  {
+    "path": "src/Ipc.Platform/StationDispatcher.cs",
+    "bytes": 3462,
+    "lines": 60,
+    "git_blob": "75cc2cd6069774f1e0cf972319e2f9c81dc6c093"
+  },
+  {
+    "path": "src/Ipc.Platform/packages.inspection.lock.json",
+    "bytes": 13864,
+    "lines": 292,
+    "git_blob": "73f2ec83ec34b76d9ae5d949c6c5be1ecdf432f6"
+  },
+  {
+    "path": "src/Ipc.Platform/packages.lock.json",
+    "bytes": 13864,
+    "lines": 292,
+    "git_blob": "73f2ec83ec34b76d9ae5d949c6c5be1ecdf432f6"
+  },
+  {
+    "path": "src/Ipc.Platform/packages.supply.lock.json",
+    "bytes": 13864,
+    "lines": 292,
+    "git_blob": "73f2ec83ec34b76d9ae5d949c6c5be1ecdf432f6"
+  },
+  {
+    "path": "src/Ipc.Platform/packages.win-x64.lock.json",
+    "bytes": 14118,
+    "lines": 299,
+    "git_blob": "7780a32b38781a33197ef287595788456870f39f"
+  },
+  {
+    "path": "src/Ipc.Product/AssemblyInfo.cs",
+    "bytes": 90,
+    "lines": 2,
+    "git_blob": "929d47d23f060b051e740dee210a1ed9a5be16f8"
+  },
+  {
+    "path": "src/Ipc.Product/ExtensionManagement.cs",
+    "bytes": 5765,
+    "lines": 78,
+    "git_blob": "c0fd1ee4ac62eee9b400f3a2c740bdb608cf689d"
+  },
+  {
+    "path": "src/Ipc.Product/IntegrationRuntime.cs",
+    "bytes": 12325,
+    "lines": 191,
+    "git_blob": "7513601e9cb3fb4dd21941262159d2b7477c8e8f"
+  },
+  {
+    "path": "src/Ipc.Product/Ipc.Product.csproj",
+    "bytes": 191,
+    "lines": 1,
+    "git_blob": "3b021c17df6a929f451634b2d86a5b8e4bb44c71"
+  },
+  {
+    "path": "src/Ipc.Product/ObservationModule.cs",
+    "bytes": 10777,
+    "lines": 195,
+    "git_blob": "4f8d78f12a3d93e7151d3b3e37fb7cc5eea391e4"
+  },
+  {
+    "path": "src/Ipc.Product/ProductRuntime.cs",
+    "bytes": 32229,
+    "lines": 433,
+    "git_blob": "acde4dce517d85268daf3c3249eb0884d24b26ed"
+  },
+  {
+    "path": "src/Ipc.Product/Program.cs",
+    "bytes": 12032,
+    "lines": 164,
+    "git_blob": "854c24adf09bb501d0eb23631a2eb4ee33fab48b"
+  },
+  {
+    "path": "src/Ipc.Product/ReferenceProduct.cs",
+    "bytes": 2665,
+    "lines": 37,
+    "git_blob": "e466adb43f81a4ffb2bc8f2f20db066cfbb6fb72"
+  },
+  {
+    "path": "src/Ipc.Product/SenderModule.cs",
+    "bytes": 3631,
+    "lines": 64,
+    "git_blob": "4b591d183bddc6f64a2f812d8c4115099dd4f65f"
+  },
+  {
+    "path": "src/Ipc.Product/SourceConstruction.cs",
+    "bytes": 1367,
+    "lines": 26,
+    "git_blob": "393d78b074cea3aa49251e555e629b221009fc33"
+  },
+  {
+    "path": "src/Ipc.Product/packages.lock.json",
+    "bytes": 16303,
+    "lines": 362,
+    "git_blob": "87ba41dd2fd69e2f6fd0cc441824d1f6e25035e9"
+  },
+  {
+    "path": "src/Ipc.Product/packages.supply.lock.json",
+    "bytes": 16303,
+    "lines": 362,
+    "git_blob": "87ba41dd2fd69e2f6fd0cc441824d1f6e25035e9"
+  },
+  {
+    "path": "src/Ipc.Product/packages.win-x64.lock.json",
+    "bytes": 16778,
+    "lines": 374,
+    "git_blob": "949d1998f8fb3a2e09b389709d9f2c280f30cc09"
+  },
+  {
+    "path": "src/Ipc.Supply.Contracts/ContractRegistration.cs",
+    "bytes": 206,
+    "lines": 7,
+    "git_blob": "020facf862ece4567c2b395f460f83b3f1a761a4"
+  },
+  {
+    "path": "src/Ipc.Supply.Contracts/HistoryQueries.cs",
+    "bytes": 1781,
+    "lines": 41,
+    "git_blob": "aeb4bebd6b86633af2cd5ef2be5b160134102171"
+  },
+  {
+    "path": "src/Ipc.Supply.Contracts/IntegrationExtensions.cs",
+    "bytes": 1901,
+    "lines": 28,
+    "git_blob": "d170cbb72608d02174055410cb901408220a370c"
+  },
+  {
+    "path": "src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj",
+    "bytes": 132,
+    "lines": 1,
+    "git_blob": "9cf14155f6ff49b8bb6d0ad2ad07881be8719102"
+  },
+  {
+    "path": "src/Ipc.Supply.Contracts/Model.cs",
+    "bytes": 8567,
+    "lines": 130,
+    "git_blob": "44304feebc0a7047c3ea93647803fa95be110ec7"
+  },
+  {
+    "path": "src/Ipc.Supply.Contracts/RequestContract.cs",
+    "bytes": 697,
+    "lines": 13,
+    "git_blob": "9ae57aab2f4b387c807dd2d72c8e8eb105080f4c"
+  },
+  {
+    "path": "src/Ipc.Supply.Contracts/StationRuntime.cs",
+    "bytes": 2021,
+    "lines": 40,
+    "git_blob": "b5cb710ebb737130b0a4434d085fe7f30d82be6e"
+  },
+  {
+    "path": "src/Ipc.Supply.Contracts/packages.lock.json",
+    "bytes": 13984,
+    "lines": 297,
+    "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec"
+  },
+  {
+    "path": "src/Ipc.Supply.Contracts/packages.supply.lock.json",
+    "bytes": 13984,
+    "lines": 297,
+    "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec"
+  },
+  {
+    "path": "src/Ipc.Supply.Contracts/packages.win-x64.lock.json",
+    "bytes": 14238,
+    "lines": 304,
+    "git_blob": "0739278a2f642e32d4b45f1939fa1db8778a76be"
+  },
+  {
+    "path": "src/Ipc.Supply/ContractForwarders.cs",
+    "bytes": 2749,
+    "lines": 44,
+    "git_blob": "1d5b01292fac6a3c80e5917949615111d2ed9db2"
+  },
+  {
+    "path": "src/Ipc.Supply/ExtensionMaintenance.cs",
+    "bytes": 2310,
+    "lines": 41,
+    "git_blob": "85184dc8d807fc7bb893b1cd03a3c27dd617e3cc"
+  },
+  {
+    "path": "src/Ipc.Supply/HistoryQueries.cs",
+    "bytes": 9452,
+    "lines": 144,
+    "git_blob": "f8472914fd9e2ede2ab28d83179856b3090f9101"
+  },
+  {
+    "path": "src/Ipc.Supply/Ipc.Supply.csproj",
+    "bytes": 293,
+    "lines": 1,
+    "git_blob": "38525a6fb12733c65ff2ea968c8b2474cad00700"
+  },
+  {
+    "path": "src/Ipc.Supply/Maintenance.cs",
+    "bytes": 14355,
+    "lines": 217,
+    "git_blob": "366c6d7ed891570d968e6f3b215cd272ba7b6659"
+  },
+  {
+    "path": "src/Ipc.Supply/Model.cs",
+    "bytes": 546,
+    "lines": 16,
+    "git_blob": "a12ad72e08b32eac57df0e6403fbf759c1e67313"
+  },
+  {
+    "path": "src/Ipc.Supply/PresentationProtection.cs",
+    "bytes": 1560,
+    "lines": 30,
+    "git_blob": "6ac03efb0fe85d176c00b081215f068355acce30"
+  },
+  {
+    "path": "src/Ipc.Supply/StationApplication.cs",
+    "bytes": 62067,
+    "lines": 773,
+    "git_blob": "b643a500b77443d57d88d876fa21b03c062c596f"
+  },
+  {
+    "path": "src/Ipc.Supply/StationClosure.cs",
+    "bytes": 10416,
+    "lines": 163,
+    "git_blob": "17b1c1c4629b269775ddd2b30406237ff2cd1b0f"
+  },
+  {
+    "path": "src/Ipc.Supply/Store.cs",
+    "bytes": 19405,
+    "lines": 227,
+    "git_blob": "22dbb26ba1ca61cf7afd6b3f3fa7a97b3b2b9a73"
+  },
+  {
+    "path": "src/Ipc.Supply/SupplyConfiguration.cs",
+    "bytes": 2007,
+    "lines": 26,
+    "git_blob": "13d4bd1fd3abb36722b070f1079570b609708deb"
+  },
+  {
+    "path": "src/Ipc.Supply/packages.lock.json",
+    "bytes": 15987,
+    "lines": 350,
+    "git_blob": "7334a94e32d756d871e8ab910582850827201bd9"
+  },
+  {
+    "path": "src/Ipc.Supply/packages.supply.lock.json",
+    "bytes": 15987,
+    "lines": 350,
+    "git_blob": "7334a94e32d756d871e8ab910582850827201bd9"
+  },
+  {
+    "path": "src/Ipc.Supply/packages.win-x64.lock.json",
+    "bytes": 16462,
+    "lines": 362,
+    "git_blob": "b1f649a3f5ccb1d2d10bd2a91cbb4c05ecade570"
+  },
+  {
+    "path": "tests/Ipc.Verification/AlignmentCompositionVerification.cs",
+    "bytes": 5760,
+    "lines": 49,
+    "git_blob": "d08d7d8b2b19bb23f79de2805b11197a62accdc0"
+  },
+  {
+    "path": "tests/Ipc.Verification/AlignmentDataVerification.cs",
+    "bytes": 17979,
+    "lines": 183,
+    "git_blob": "7a8c64d4b12014b6267f48270a12f121a644a6bd"
+  },
+  {
+    "path": "tests/Ipc.Verification/AlignmentRuntimeVerification.cs",
+    "bytes": 15928,
+    "lines": 168,
+    "git_blob": "c8c9b80a4d3f3d4c8747a0be16ff4b9b2b02a5c6"
+  },
+  {
+    "path": "tests/Ipc.Verification/ArchitectureClosureVerification.cs",
+    "bytes": 40923,
+    "lines": 375,
+    "git_blob": "1ace0c1fea43efdf7366da13b0f4ce9a45374fc3"
+  },
+  {
+    "path": "tests/Ipc.Verification/ClosureVerification.cs",
+    "bytes": 27381,
+    "lines": 288,
+    "git_blob": "051dc45234151ce6c9d6bf2dfc8bf538b7f78109"
+  },
+  {
+    "path": "tests/Ipc.Verification/ExtensionDraftVerification.cs",
+    "bytes": 4646,
+    "lines": 47,
+    "git_blob": "1dea16766b095115379f2df453cfc4d56adf7106"
+  },
+  {
+    "path": "tests/Ipc.Verification/ExtensionVerification.cs",
+    "bytes": 36015,
+    "lines": 326,
+    "git_blob": "8e3e441bde9b9946d05168b1e95031eee6918947"
+  },
+  {
+    "path": "tests/Ipc.Verification/FollowupVerification.cs",
+    "bytes": 16877,
+    "lines": 193,
+    "git_blob": "5da17c3bc001d327b13b2a659852345dc09b91dd"
+  },
+  {
+    "path": "tests/Ipc.Verification/HardeningVerification.cs",
+    "bytes": 24405,
+    "lines": 261,
+    "git_blob": "f84f74ca337e6bff3677a99e20ef5a4ee6d2e542"
+  },
+  {
+    "path": "tests/Ipc.Verification/Ipc.Verification.csproj",
+    "bytes": 404,
+    "lines": 1,
+    "git_blob": "25f5ea8ac067cf7d731264c28bbfa40c17e6c680"
+  },
+  {
+    "path": "tests/Ipc.Verification/PresentationVerification.cs",
+    "bytes": 5532,
+    "lines": 54,
+    "git_blob": "126eeef5b5ab932ed1fd78e73cbfc562e0d50c82"
+  },
+  {
+    "path": "tests/Ipc.Verification/ProductOwnershipVerification.cs",
+    "bytes": 13805,
+    "lines": 162,
+    "git_blob": "a38688212690cb103ff9f0d13ce271ea2377a1d9"
+  },
+  {
+    "path": "tests/Ipc.Verification/Program.cs",
+    "bytes": 50535,
+    "lines": 561,
+    "git_blob": "85e3f94c9a034387d05fdda7b6f708ac73bbb118"
+  },
+  {
+    "path": "tests/Ipc.Verification/ReferenceJourneyVerification.cs",
+    "bytes": 10905,
+    "lines": 125,
+    "git_blob": "cdaa24c5b53632005777e50dcfb85c90b8991d20"
+  },
+  {
+    "path": "tests/Ipc.Verification/SourceConstructionVerification.cs",
+    "bytes": 3108,
+    "lines": 45,
+    "git_blob": "7ce96859db3dc177757395307c1c3c8ca1f96e57"
+  },
+  {
+    "path": "tests/Ipc.Verification/fixtures/schema1.sql",
+    "bytes": 2049,
+    "lines": 20,
+    "git_blob": "7757913dbac5fae64d0bf1e6d26a618cdb3ab797"
+  },
+  {
+    "path": "tests/Ipc.Verification/fixtures/simulation-v1-request.json",
+    "bytes": 1326,
+    "lines": 18,
+    "git_blob": "c041a87f446a94f68626a1084fc97c8511fa849c"
+  },
+  {
+    "path": "tests/Ipc.Verification/fixtures/simulation-v1-response.json",
+    "bytes": 308,
+    "lines": 10,
+    "git_blob": "d7e39f487289280abcbc33d1338629e8ef77ab10"
+  },
+  {
+    "path": "tests/Ipc.Verification/packages.lock.json",
+    "bytes": 16436,
+    "lines": 368,
+    "git_blob": "3d48183008fd781f94cc6955dcad43f21bfd26be"
+  },
+  {
+    "path": "tools/README.md",
+    "bytes": 2784,
+    "lines": 27,
+    "git_blob": "76c25e21784f62f355018e201ce9ae296bb048fb"
+  },
+  {
+    "path": "tools/test_composition.py",
+    "bytes": 2231,
+    "lines": 45,
+    "git_blob": "c390c59e348d187b58813045237a1090395f89f4"
+  },
+  {
+    "path": "tools/test_verify_archive.py",
+    "bytes": 7224,
+    "lines": 125,
+    "git_blob": "864d4af2fe10c6d15f2e83abb7d4fca3333c5934"
+  },
+  {
+    "path": "tools/verify_archive.py",
+    "bytes": 18782,
+    "lines": 376,
+    "git_blob": "40129d10bb70cda0f15c21e0de3a1cf8289edaf2"
+  }
+]

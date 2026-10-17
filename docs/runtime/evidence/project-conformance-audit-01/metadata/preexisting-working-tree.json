@@ -1,0 +1,6 @@
+{
+  "path": "/workspace/scratch/85125af0d927/importer-pc",
+  "head": "451f7f5b3a9e7aace77c6617d05eb15ed69888b1",
+  "status": "## codex/arch-extension-closure-13...origin/codex/arch-extension-closure-13 [behind 3]\n M src/Ipc.Desktop/ExtensionsView.xaml\n M src/Ipc.Desktop/ExtensionsView.xaml.cs\n M src/Ipc.Desktop/MainWindow.Extensions.cs\n M src/Ipc.Desktop/MainWindow.xaml.cs\n M tests/Ipc.Verification/Ipc.Verification.csproj\n M tests/Ipc.Verification/Program.cs\n?? docs/runtime/evidence/pr12-instance-edit/\n?? docs/runtime/pr12-instance-edit.md\n?? docs/runtime/validation/pr12-instance-edit-windows-scenarios.md\n?? src/Ipc.Desktop/ExtensionDraftEditor.cs\n?? src/Ipc.Desktop/Ipc.Desktop_erxfblqd_wpftmp.csproj\n?? tests/Ipc.Verification/DeploymentEditingVerification.cs\n",
+  "stat": " src/Ipc.Desktop/ExtensionsView.xaml            |   2 +-\n src/Ipc.Desktop/ExtensionsView.xaml.cs         | 192 ++++++++++++++++++-------\n src/Ipc.Desktop/MainWindow.Extensions.cs       |  51 ++++---\n src/Ipc.Desktop/MainWindow.xaml.cs             |   7 +-\n tests/Ipc.Verification/Ipc.Verification.csproj |   2 +-\n tests/Ipc.Verification/Program.cs              |   8 +-\n 6 files changed, 188 insertions(+), 74 deletions(-)\n"
+}

@@ -1,0 +1,10 @@
+{
+  "SchemaVersion": 1,
+  "Publishers": [
+    {
+      "Id": "audit-local",
+      "PublicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAox5OTRUWfDjjXG7pfudL\n1WHhyE1L4Kw9d/WaYFEg4GbHDPmpP0KpvWBvvBiVzQrOZR0KEbsCR2H\u002BqG4LdcDo\nM/yvCaEryazFRQZ3kMSdS367PkCCakoE5moB2c2BchK7\u002B51Ls09tfadGzcCAD/qp\nVsiVcAXW/9TBwjxwei3ic09gM/5gMtxJJgWc8/lcUqu61wg2MMnO36OSsl0SBqoI\noYwMIB8NwgGptA7kP4BTfowVzagyrPDIGupTLylu3RBLPF80nRMiEBPHenmXJJYA\nqJuTKZbRB1iDwaEgBAUeZrOe72gxXH05QovyZZCE0cPWijK498Dj7i\u002BRxi\u002BozDEq\njKgxdiH4kaXhUYRp01Y0C0mkKQry7zjILkagLFIzR2DyV57ZZ2M9TI46gMIbirkg\n0x2S20EB/VSlPx2z7SvWXBPNtGh5vxBTDYBCM7DxytTtcU3vVqGB3QK5FWXQRkTH\nXW/b0d/y59ZNR68B1EnPQ1f9Y59pgnPjFr1dK7rIY2W3AgMBAAE=\n-----END PUBLIC KEY-----",
+      "TestOnly": true
+    }
+  ]
+}

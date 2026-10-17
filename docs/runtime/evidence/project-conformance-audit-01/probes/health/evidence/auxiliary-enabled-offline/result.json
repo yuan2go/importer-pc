@@ -1,0 +1,33 @@
+{
+  "Case": "auxiliary-enabled-offline",
+  "PrimaryHealthRequests": 3,
+  "MainService": {
+    "TargetId": "primary-target",
+    "TargetRevision": "1",
+    "Status": "Unavailable",
+    "ConfirmedAt": "2026-10-17T08:15:58.4169069+00:00",
+    "ValidUntil": "2026-10-17T08:16:02.916907+00:00",
+    "Source": "integration:primary-target"
+  },
+  "InstanceDiagnostics": [
+    {
+      "InstanceId": "primary",
+      "State": "Available",
+      "InFlight": 0,
+      "LastFailure": null
+    },
+    {
+      "InstanceId": "auxiliary",
+      "State": "Available",
+      "InFlight": 0,
+      "LastFailure": null
+    }
+  ],
+  "AdmitReasons": [
+    "IdentityUnavailable",
+    "WcsUnavailable:station",
+    "WcsHealth:Health:Unavailable",
+    "NoActiveBoxOrCloseBarrier"
+  ],
+  "StartupDiagnostics": []
+}

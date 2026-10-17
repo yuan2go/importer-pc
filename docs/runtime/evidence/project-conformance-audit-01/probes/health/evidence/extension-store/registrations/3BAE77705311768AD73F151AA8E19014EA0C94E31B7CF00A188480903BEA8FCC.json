@@ -1,0 +1,13 @@
+{
+  "Package": {
+    "Id": "audit.integration",
+    "Version": "1.0.0",
+    "ManifestSha256": "3BAE77705311768AD73F151AA8E19014EA0C94E31B7CF00A188480903BEA8FCC"
+  },
+  "PackageSha256": "7C077A10AFB76C43B05CD478261B71554B11349B3BA275D63AD42D4F2EC0CCB7",
+  "TrustSha256": "4DC995F71990D4B7C37B7A8E53D54EDAD4C29EDF3A58BCE6942F8517D1133C83",
+  "OperationId": "20012e6f1a674b0bbaf3d9d0c7f6e54e",
+  "At": "2026-10-17T08:15:58.1002165+00:00",
+  "Status": "Installed",
+  "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
+}

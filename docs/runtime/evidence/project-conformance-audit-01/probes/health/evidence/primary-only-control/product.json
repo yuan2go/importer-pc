@@ -1,0 +1,72 @@
+{
+  "SchemaVersion": 1,
+  "ProductId": "ipc-reference",
+  "Mode": "Simulation",
+  "Runtime": "net10.0",
+  "Architecture": "any",
+  "BusinessModule": "supply",
+  "Views": [
+    "workstation",
+    "history",
+    "alarms",
+    "diagnostics",
+    "maintenance",
+    "engineering",
+    "extensions"
+  ],
+  "Modules": [
+    {
+      "Id": "platform",
+      "Kind": "platform",
+      "Version": "1.0.0",
+      "ContractMajor": 1,
+      "Dependencies": [],
+      "File": "Ipc.Platform.dll",
+      "Sha256": "E5F8D3848453579F97969F3613F67FE9E9D35DE19830355E5D2EA755ABCCEFCD"
+    },
+    {
+      "Id": "supply-contracts",
+      "Kind": "contracts",
+      "Version": "1.0.0",
+      "ContractMajor": 1,
+      "Dependencies": [
+        "platform"
+      ],
+      "File": "Ipc.Supply.Contracts.dll",
+      "Sha256": "CE85AC8BB9E43013A13B4CE8DCC11513AFDF90A9E7C9B767500C40AD3251CC80"
+    },
+    {
+      "Id": "supply",
+      "Kind": "supply",
+      "Version": "1.0.0",
+      "ContractMajor": 1,
+      "Dependencies": [
+        "supply-contracts"
+      ],
+      "File": "Ipc.Supply.dll",
+      "Sha256": "49A5343912C102733DFAC5C7D9E38D8CFC9AF57FF461D69C9E04926F14ABF302"
+    },
+    {
+      "Id": "adapters",
+      "Kind": "adapters",
+      "Version": "1.0.0",
+      "ContractMajor": 1,
+      "Dependencies": [
+        "supply"
+      ],
+      "File": "Ipc.Adapters.dll",
+      "Sha256": "67C57E951569571108736B91B59BCA0DCBA270532077603544206E3BBBEAC373"
+    },
+    {
+      "Id": "product",
+      "Kind": "product",
+      "Version": "1.0.0",
+      "ContractMajor": 1,
+      "Dependencies": [
+        "adapters"
+      ],
+      "File": "Ipc.Product.dll",
+      "Sha256": "8CC507082258465080F127FB4F2C161350119F388E1041B18284CBE1405EFB40"
+    }
+  ]
+}

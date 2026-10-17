@@ -1,0 +1,88 @@
+{
+  "SchemaVersion": 1,
+  "StationId": "SIM-AUDIT-HEALTH",
+  "Version": "audit-health-1",
+  "Mode": "Simulation",
+  "Devices": [
+    {
+      "Role": "left",
+      "Driver": "manual",
+      "DeviceId": "SIM-AUDIT-LEFT",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    {
+      "Role": "right",
+      "Driver": "manual",
+      "DeviceId": "SIM-AUDIT-RIGHT",
+      "Revision": "1",
+      "ReplayFile": null
+    }
+  ],
+  "Integration": {
+    "Id": "primary-target",
+    "Revision": "1",
+    "Contract": "SIMULATION-v1",
+    "Endpoint": "http://127.0.0.1:39287/"
+  },
+  "EventCapacity": 64,
+  "CommandCapacity": 32,
+  "OutboxCapacity": 64,
+  "TimeoutMs": 1500,
+  "MinimumFreeMb": 1,
+  "Policy": "SYNTHETIC-KEEP-v1",
+  "FixtureDemand": 120,
+  "MaximumPackage": 1000,
+  "Extensions": {
+    "Packages": [
+      {
+        "Id": "audit.integration",
+        "Version": "1.0.0",
+        "ManifestSha256": "3BAE77705311768AD73F151AA8E19014EA0C94E31B7CF00A188480903BEA8FCC"
+      }
+    ],
+    "Instances": [],
+    "Services": [
+      {
+        "Id": "primary",
+        "PackageId": "audit.integration",
+        "ModuleId": "reference-http",
+        "Enabled": true,
+        "Parameters": {
+          "metadata.label": "primary"
+        }
+      },
+      {
+        "Id": "auxiliary",
+        "PackageId": "audit.integration",
+        "ModuleId": "reference-http",
+        "Enabled": true,
+        "Parameters": {
+          "metadata.label": "auxiliary"
+        }
+      }
+    ],
+    "Ports": [
+      {
+        "Port": "requests",
+        "InstanceId": "primary",
+        "Target": {
+          "Id": "primary-target",
+          "Revision": "1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:39287/"
+        }
+      },
+      {
+        "Port": "auxiliary-status",
+        "InstanceId": "auxiliary",
+        "Target": {
+          "Id": "auxiliary-target",
+          "Revision": "1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:43039/"
+        }
+      }
+    ]
+  }
+}

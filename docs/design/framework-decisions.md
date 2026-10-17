@@ -1,4 +1,4 @@
-> 当前判断见 [PR14后复核](../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)，下一实施为 [15工作包](../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)。14已合并且原子问题分项验证；不同接收发生责任、维护/输入与UI仍有残余。本文有效职责/规则继续成立，历次执行结果只按其来源版本理解；本次更新前原字节见 [归档](../archive/pre-audit-reconciliation-publication-01/README.md)。
+> 当前工程任务为 [UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，基线 main `12a40b3`（PR15已合并）。15的实现及历史证据继续有效；本包只收敛指定UI、维护职责、独立扩展工具和健康续期写放大。有效F/D/RV要求不降低。修改前原字节见 [归档](../archive/pre-ui-maintainability-16/README.md)。
 
 > F-09/F-10实施增量（FIX-14）：追加Storage4，不修改原1/2/3 SQL；冲突原件与核对责任同T3、terminal/接受账不覆写；接收日志和预存围栏保护存储失败。F-03/F-08同窗一个配置草稿和本次修订选择，业务共享守卫；实例健康/历史查询分属原身份。共享库消费者登记是既有多根能力的保护，不新增分布式平台，旧库覆盖未知拒绝卸载。D批准不变，证据见 [14报告](../runtime/conformance-fix-14.md)。
 

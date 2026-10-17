@@ -1,4 +1,4 @@
-> 当前判断见 [PR14后复核](../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)，下一实施为 [15工作包](../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)。14已合并且原子问题分项验证；不同接收发生责任、维护/输入与UI仍有残余。本文有效职责/规则继续成立，历次执行结果只按其来源版本理解；本次更新前原字节见 [归档](../archive/pre-audit-reconciliation-publication-01/README.md)。
+> 当前工程任务为 [UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，基线 main `12a40b3`（PR15已合并）。15的实现及历史证据继续有效；本包只收敛指定UI、维护职责、独立扩展工具和健康续期写放大。有效F/D/RV要求不降低。修改前原字节见 [归档](../archive/pre-ui-maintainability-16/README.md)。
 
 > FIX-14工程增量：冲突与原终态正交、持续核对贯穿读者/守卫/保留；逐实例健康按业务实际依赖裁决；每窗统一草稿、显式激活选择；无桌面交付确认及离线根围栏。目标与F-01～12不降低，实际机制见 [14操作](../runtime/operations.md)。
 

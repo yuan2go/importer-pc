@@ -214,8 +214,10 @@ public partial class MainWindow
             RenderDetails(sessionId, null, detail.Requests);
             if (DetailTree.Items[0] is TreeViewItem root)
             {
-                root.Header = $"箱 {detail.Session.Barcode} · {OperatorText.Session(detail.Session.Status)} · {HistoryQueryRow.FormatDate(detail.OpenedAt)}";
-                root.Items.Insert(0, new TextBlock { Text = $"作业 {detail.OperationCount} · 唯一接受量 {detail.AcceptedQuantity}；可导航全部作业，以下为验箱与关闭链。", TextWrapping = TextWrapping.Wrap });
+                root.Header = $"箱会话 · {OperatorText.Session(detail.Session.Status)} · {detail.Session.Barcode}";
+                root.Items.Insert(0, new TextBox { Text = $"箱会话ID {detail.Session.Id}\n箱码 {detail.Session.Barcode}\n箱波次 {OperatorText.Known(detail.Session.Context?.BoxWave)}\n{HistoryQueryRow.FormatDate(detail.OpenedAt)} · 唯一接受量 {detail.AcceptedQuantity}",
+                    Style = (Style)FindResource("ReadonlyValue"), IsTabStop = true, Margin = new Thickness(4) });
+                root.Items.Insert(1, new TextBlock { Text = $"作业 {detail.OperationCount} · 唯一接受量 {detail.AcceptedQuantity}；可导航全部作业，以下为验箱与关闭链。", TextWrapping = TextWrapping.Wrap });
                 var audit = new TreeViewItem { Header = "箱会话审计", IsExpanded = false };
                 foreach (var entry in detail.Audit) audit.Items.Add($"{entry.At:O} · {entry.Kind} · {entry.Actor} · {entry.Evidence}");
                 root.Items.Add(audit);

@@ -13,7 +13,7 @@ User has authorized inline execution and Mac development; Windows acceptance is 
 - [x] WPF maintenance edits service instances/ports/targets/schema alongside devices; business presentation facade and common management contracts; config CAS and pending/effective retained.
 - [x] Final affected verification: --architecture, --extensions, --baseline, --followup, --review-followup; necessary WPF cross-build and lock verification. Preserve failures and repair actual causes.
 - [x] Commit inputs, freeze portable/Windows hosts; independently build/sign both plugin kinds; actual published-host and neutral assembly startup smoke; candidate inventory and remote full-byte readback.
-- [ ] Update current docs, developer/install/recovery guide, manifest, AC13 report/checks, Windows affected matrix; commit, push and create main PR without merging.
+- [x] Update current docs, developer/install/recovery guide, manifest, AC13 report/checks, Windows affected matrix; commit, push and create main PR without merging.
 
 Commands: pinned SDK10.0.402, `dotnet build ImporterPc.slnx -m:1 -nr:false -p:EnableWindowsTargeting=true`; `dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --architecture` and the affected selectors above; package-reference.py integration-reference and package-business.py inspection-reference/supply-assembly; smoke.py and smoke-extension.py against new outputs.
 

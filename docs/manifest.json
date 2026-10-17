@@ -172,9 +172,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "bfa9e6e8f0e03c8c7df417cb6e5276dcb0e538330eb0508549b59115cc307974",
-      "size_bytes": 3818,
-      "git_blob": "28edfb7ac3305d5a738ebc4f9c69eda3af3f509c",
+      "sha256": "5967ff2b1c31dcfb22d6e3a089077b42003f4928a2f38c36282f53f2bbb36bca",
+      "size_bytes": 3861,
+      "git_blob": "a305391de26301ca46bfee2a7060f69fbb751252",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
@@ -1139,9 +1139,9 @@
     },
     {
       "path": "docs/runtime/arch-extension-closure-13-checks.json",
-      "sha256": "adc5b8b26ea7e7e9f7a711e366e7febe596f77f0d9fd019729f230a2dbe87257",
-      "size_bytes": 7377,
-      "git_blob": "ca8f1e1a2cb2ef0ab75c33185bfba7817a206b1e",
+      "sha256": "e6f629d5c6a5d4d9bdad1627f8879cdc8ba2814e2a9502561df269aad4393dc4",
+      "size_bytes": 7438,
+      "git_blob": "dd6aa4527de58a9cb4d763fc3661761650d68cdc",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
@@ -1150,9 +1150,9 @@
     },
     {
       "path": "docs/runtime/arch-extension-closure-13.md",
-      "sha256": "bec26bb44bf794bbfbdcf272b1ee55cc8096268eb1154759f1fc837aae68f4ee",
-      "size_bytes": 14108,
-      "git_blob": "251ae3594f6cadcb5bed29db2918a92a871a1a89",
+      "sha256": "a6de2a6eaa7ede4bf481639bb66f506620bbbce7dc097e3a8136aec776b12f19",
+      "size_bytes": 14273,
+      "git_blob": "55ecb6381a3ebf98ce8ba6cf28c4f065740f564a",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
@@ -3074,9 +3074,9 @@
     },
     {
       "path": "docs/superpowers/plans/2026-10-17-ipc-architecture-closure-13.md",
-      "sha256": "fb0891117ea109a1ba4fea464f0bcceb5f27dcbcf1362915307ce97461c1ec8b",
+      "sha256": "54fd8c7021e66dead4319546e81db75be448d62f2512818a9d13f17bee919b95",
       "size_bytes": 2825,
-      "git_blob": "e721f48dc44f7fed78d72ca4e2451ab679314650",
+      "git_blob": "84f566b6d02bf008604d5604636d0737220545b6",
       "version": "arch-extension-closure-13",
       "status": "current_implementation_or_evidence",
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
@@ -5842,7 +5842,8 @@
     "windows_execution": "WINDOWS_NOT_RUN",
     "field_qualification": "BLOCKED",
     "actual_wpf_screenshots": 0,
-    "current_remote_status": "PASS_ALL_12_ASSETS_DOWNLOADED_AND_VERIFIED"
+    "current_remote_status": "PASS_ALL_12_ASSETS_DOWNLOADED_AND_VERIFIED",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/12"
   },
   "followup_work_packages": [
     "WP-IPC-ENGINEERING-FOLLOWUP-08",
@@ -6137,6 +6138,7 @@
     "test_trust_only": true,
     "private_keys_published": false,
     "customer_assets_added": false,
-    "withdrawn_local_attempt": "701ee0d never uploaded"
+    "withdrawn_local_attempt": "701ee0d never uploaded",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/12"
   }
 }

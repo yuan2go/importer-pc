@@ -218,11 +218,12 @@
   "Delivery": {
     "Release": "https://github.com/yuan2go/importer-pc/releases/tag/closure13-reference-dc5b405",
     "Remote": "PASS_11_FULL_ASSETS_PLUS_12TH_READBACK_RECEIPT",
-    "Pr": "PENDING_CREATION",
+    "Pr": "https://github.com/yuan2go/importer-pc/pull/12",
     "Merged": false,
     "PhysicalQualification": "BLOCKED",
     "HistoricalRv": "UNCHANGED_OPEN",
-    "Prior12Acceptance": "UNCHANGED"
+    "Prior12Acceptance": "UNCHANGED",
+    "ReportCommit": "10ca8f4"
   },
   "ArchiveComparison": "PASS_NO_NEW_ERRORS"
 }

@@ -6,6 +6,8 @@
 
 前置提交`2c04d69`在业务修改前保存[原当前指引/manifest原字节](../archive/pre-arch-extension-closure-13/README.md)，更新职责和Windows延期范围；12工作包/报告/checks/原始证据、D/RV、原UI/HTML/tokens均未倒写。P2原审查见[PR11原始回读](evidence/arch-extension-closure-13/pr11-review.json)。Windows延期来自用户决定，本轮没有寻找VM/runner、开通环境或扩大OAuth权限。
 
+开发分支已创建面向main的[PR #12](https://github.com/yuan2go/importer-pc/pull/12)，未合并；报告/manifest提交`10ca8f4`承接冻结宿主dc5b405。
+
 ## 冻结身份
 
 |对象|身份|

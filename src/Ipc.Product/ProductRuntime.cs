@@ -90,7 +90,10 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
             Presentation = new(options.View ?? Presentation.View, options.Layout ?? Presentation.Layout);
             if (!allowedViews.Contains(Presentation.View) || !AllowedLayouts.Contains(Presentation.Layout)) throw new InvalidDataException("Requested View/layout not installed");
             journal = new(Path.Combine(DataDirectory, "logs"), reason => { application?.Latch("DiagnosticLogFailure", reason); logger.LogError("{Reason}", reason); });
+            if (seed.Extensions?.Packages.Length > 0 || extensionStore?.Inventory().Length > 0)
+                extensionStore!.RegisterConsumer(Path.Combine(DataDirectory, "station.db"));
             store = new(Path.Combine(DataDirectory, "station.db")) { Journal = journal.Write };
+            if (extensionStore is not null) store.RegisterRecoveryCopy = destination => { if (store.RequiredExtensionPackages().Length > 0) extensionStore.RegisterConsumer(destination); };
             // Effective/pending revisions live in the owned database. Failed activation never
             // replaces the last effective configuration; all changes require controlled restart.
             var effective = store.CurrentConfig("Effective");
@@ -235,6 +238,8 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
             }
         }
         catch (Exception ex) { errors.Add(ex); }
+        if (headlessNotifications is not null)
+            try { await headlessNotifications.StopAsync().ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
         if (startupTask is { IsCompleted: false })
             try { await startupTask.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
         if (startupTask is not { IsCompleted: false })
@@ -295,16 +300,16 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
         if (application is null || Configuration is null) throw new GuardException("Runtime unavailable");
         var snapshot = await application.SnapshotAsync();
         if (snapshot.State.Actor?.Role != SimulationRole.Maintenance || snapshot.State.Actor.ExpiresAt <= DateTimeOffset.UtcNow) throw new GuardException("Maintenance identity required");
-        var request = (await application.UnknownRequestsAsync()).SingleOrDefault(x => x.Id == requestId) ?? throw new GuardException("Select an Unknown request");
+        var request = (await application.UnknownRequestsAsync()).SingleOrDefault(x => x.Id == requestId) ?? throw new GuardException("Select an original unresolved request");
         var port = integrations ?? throw new GuardException("Original integration runtime unavailable");
         try
         {
             var response = await port.QueryAsync(request, CancellationToken.None);
             if (response is not null) await application.CompleteAsync(request, null, response);
-            await application.RecordQueryAsync(request.Id, response is null ? "No authoritative record / query unsupported; outcome remains Unknown; no resend" : "Authoritative SIMULATION receiver evidence " + response.EvidenceId);
+            await application.RecordQueryAsync(request.Id, response is null ? "No authoritative record / query unsupported; reconciliation remains unresolved; terminal facts retained; no resend" : "Authoritative SIMULATION receiver evidence " + response.EvidenceId);
         }
         catch (Exception ex) when (ex is HttpRequestException or OperationCanceledException or InvalidDataException or IOException or System.Security.Cryptography.CryptographicException)
-        { await application.RecordQueryAsync(request.Id, "Query unavailable: " + ex.GetType().Name + ": " + ex.Message + "; original effect remains Unknown; no resend"); }
+        { await application.RecordQueryAsync(request.Id, "Query unavailable: " + ex.GetType().Name + ": " + ex.Message + "; original reconciliation remains unresolved; terminal facts retained; no resend"); }
     }
     public async Task SavePresentationAsync(PresentationSettings settings)
     {
@@ -358,7 +363,7 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
                 try { if (catalog is not null) await catalog.DisposeAsync().ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
                 try { await CleanupConstructionAsync().ConfigureAwait(false); } catch (Exception ex) { errors.Add(ex); }
             }
-            var active = startupTask is { IsCompleted: false } || constructionSources.Length != 0 || catalog?.HasActiveWork == true || applicationStop is { IsCompleted: false };
+            var active = headlessNotifications?.Worker is { IsCompleted: false } || startupTask is { IsCompleted: false } || constructionSources.Length != 0 || catalog?.HasActiveWork == true || applicationStop is { IsCompleted: false };
             if (active)
             {
                 if (catalog is not null) Diagnostics.AddRange(catalog.OwnershipDiagnostics);

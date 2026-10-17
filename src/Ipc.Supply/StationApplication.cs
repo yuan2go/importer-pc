@@ -36,7 +36,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     {
         this.configurationValidator = configurationValidator; this.configurationLeaseFactory = configurationLeaseFactory; this.store = store; this.config = config; this.contract = contract; this.clock = clock ?? TimeProvider.System; this.faults = faults ?? new(); state = store.Load();
         if (File.Exists(OverloadMarker)) runtimeFaults["Overload"] = "Unacknowledged overflow; inspect source/entity evidence";
-        state.Actor = null; state.Stopping = false; state.IntegrationHealth = null; state.IntegrationServiceHealth = null;
+        state.Actor = null; state.Stopping = false; state.IntegrationHealth = null; state.IntegrationServiceHealth = null; state.ServiceHealth.Clear();
         state.Blocks.RemoveAll(x => x.Code == "WindowArea" && x.ClearAuthority == "presentation-owner");
         // A released process does not imply unfinished calls were cancelled remotely.
         foreach (var request in store.PendingRequests().Where(x => x.Status == RequestStatus.Dispatching))
@@ -47,6 +47,8 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             store.Commit(state, "RecoveryUnknown", request.OwnerId, "recovery", request.Id, request: unknown, attempt: interrupted);
         }
         foreach (var binding in config.Devices) state.Devices[binding.Role] = new(binding.DeviceId, "not-connected", 0, DeviceHealth.Unknown, Now);
+        RecoverReceiptFence();
+        RecoverReceiptIngress();
         state.Revision++; store.Commit(state, "Startup", state.Session?.Id ?? config.StationId, "runtime", "Identity reset; devices must reconnect");
         if (state.Quarantined || File.Exists(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(store.Path)!, "restore-quarantine")))
         {
@@ -261,6 +263,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
                         Require(!next.Quarantined && next.Lanes.Values.All(x => x.Occupancy == Occupancy.Clear) &&
                             !next.Blocks.Any(x => x.Code is "LocalDispositionRequired" or "ConflictingEvidence"), "Entity/recovery responsibilities prevent deployment activation");
                         var draft = store.Configs().FirstOrDefault(x => x.Id == owner) ?? throw new GuardException("Configuration revision not found");
+                        Demand(ConfigurationActivation.Evaluate(next, draft, config.Version, HasUnresolved(), Now));
                         configurationLease = configurationLeaseFactory?.Invoke(draft.Content);
                         Require(draft.Status == "Validated" && draft.BaseVersion == config.Version, "Stale/invalid configuration draft");
                         Require(!store.ConfigVersionExists(draft.Content.Version, draft.Id), "Configuration version reused in retained history; create a new draft");
@@ -459,21 +462,11 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
         {
             var original = store.Request(sent.Id) ?? throw new InvalidDataException("Response without original request");
             contract.ValidateResponse(original, response);
-            var next = Clone(state);
-            var matchedOperation = next.Lanes.Values.FirstOrDefault(x => x.Id == original.OwnerId);
-            bool semanticConflict = original.Kind == RequestKind.Submit && matchedOperation is { } currentOperation && currentOperation.Revision == original.OwnerRevision && currentOperation.Task is { } task && response.Task is { } incoming &&
-                (task.Sku != incoming.Sku || task.ItemWave != incoming.ItemWave || task.TaskId != incoming.TaskId || task.Destination != incoming.Destination || task.Unit != incoming.Unit);
-            bool conflicting = semanticConflict || original.Status == RequestStatus.CancelledBeforeDispatch || store.Responses(original.Id).Any(x => x.Result != response.Result || x.Quantity != response.Quantity || x.Remaining != response.Remaining || x.CheckToken != response.CheckToken || x.Context != response.Context || x.Task != response.Task);
-            var status = conflicting ? RequestStatus.Unknown : response.Result == "Accepted" ? RequestStatus.Accepted : RequestStatus.Rejected;
-            var request = original with { Status = status };
-            bool count = !conflicting && request.Kind == RequestKind.Submit && status == RequestStatus.Accepted;
-            if (conflicting) SetBlock(next, "ConflictingEvidence", "station", "response", response.EvidenceId, "reconciliation");
-            if (original.Status is not (RequestStatus.Accepted or RequestStatus.Rejected) || conflicting) ApplyOwner(next, request, response, conflicting);
-            next.Revision++; faults.Hit("T3");
-            store.Commit(next, conflicting ? "ConflictingResponse" : "T3Response", request.OwnerId, "integration", response.Reason,
-                request: request, response: response, count: count,
-                attempt: attempt is null ? null : attempt with { EndedAt = Now, Disposition = status.ToString() });
-            Adopt(next); faults.Hit("AfterT3"); SyncAlarms();
+            incompleteReceipts.Add(original.Id);
+            var ingress = CaptureReceipt(original, attempt, response);
+            PersistResponse(original, attempt, response, ingress);
+            File.Delete(ReceiptFile(ingress.Id)); incompleteReceipts.Remove(original.Id);
+            faults.Hit("AfterT3"); SyncAlarms();
         }
         catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", "Response received but could not persist: " + ex.Message); }
         catch (InvalidDataException ex) { Latch("ProtocolFailure", ex.Message); await UnknownLocked(sent, attempt, ex.Message); }
@@ -572,7 +565,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
         var integrationReason = s.IntegrationServiceHealth is { } service ? service.ValidityReason(Now) :
             s.IntegrationHealth is { } legacy ? legacy.ValidityReason(Now) : "Unconfirmed";
         if (integrationReason is not null) yield return "WcsHealth:" + integrationReason;
-        if (store.PendingRequests().Any(x => x.Status == RequestStatus.Unknown)) yield return "OutcomeUnknown";
+        if (store.PendingRequests().Any(x => x.Status == RequestStatus.Unknown || store.RecoveryRequired(x.Id))) yield return "OutcomeUnknown";
     }
     Guard GuardFor(StationState s, string action, bool admittedEvent = false)
     {
@@ -611,7 +604,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
         }
         foreach (var d in state.Devices.Where(x => !x.Value.IsValid(Now))) blocks.Add(("Device:" + d.Value.ValidityReason(Now), d.Key, d.Value.DeviceId, d.Value.DeviceId, d.Value.Epoch));
         foreach (var op in state.Lanes.Values.Where(x => x.Status is OperationStatus.ValidationRejected or OperationStatus.Rejected)) blocks.Add(("OperationRejected", op.Lane, op.Id, "operation", op.Revision.ToString()));
-        foreach (var request in store.PendingRequests().Where(x => x.Status == RequestStatus.Unknown)) blocks.Add(("UnknownRequest", "request", request.Id, request.Binding.Id, request.Binding.Revision));
+        foreach (var request in store.PendingRequests().Where(x => x.Status == RequestStatus.Unknown || store.RecoveryRequired(x.Id))) blocks.Add(("UnknownRequest", "request", request.Id, request.Binding.Id, request.Binding.Revision));
         var active = store.ActiveAlarms();
         foreach (var alarm in active)
             if (!blocks.Any(x => x.Code == alarm.Code && x.Scope == alarm.Scope && x.Owner == alarm.OwnerId && x.Source == alarm.Source && x.Epoch == alarm.Epoch)) store.SaveAlarm(alarm with { ClearedAt = Now });
@@ -622,7 +615,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     async Task<StationSnapshot> SnapshotCore()
     {
         await gate.WaitAsync();
-        try { return new StationSnapshot(Clone(state), state.Session is null ? [] : store.RequestsForSession(state.Session.Id), store.ActiveAlarms(), GuardFor(state, "Admit"), GuardFor(state, "Submit"), GuardFor(state, "Close"), state.Lanes.ToDictionary(x => x.Key, x => OperationGuard(state, x.Value)), runtimeFaults.Select(x => x.Key + ": " + x.Value).ToArray(), store.PendingRequests().Select(x => new RequestRecovery(x, SendGuard(state, x), LocalTerminationGuard(state, x), x.Status == RequestStatus.Unknown ? "Query original binding; never resend" : x.Status == RequestStatus.Dispatching ? "Await original response; interrupted handoff becomes Unknown" : "Restore matching guards or inspect and locally terminate; prior reservations/entity remain held")).ToArray(), store.ActiveAlarmCount(), Interlocked.Read(ref overloadVersion), OverloadRecoveryGuard())
+        try { return new StationSnapshot(Clone(state), state.Session is null ? [] : store.RequestsForSession(state.Session.Id), store.ActiveAlarms(), GuardFor(state, "Admit"), GuardFor(state, "Submit"), GuardFor(state, "Close"), state.Lanes.ToDictionary(x => x.Key, x => OperationGuard(state, x.Value)), runtimeFaults.Select(x => x.Key + ": " + x.Value).ToArray(), store.PendingRequests().Select(x => new RequestRecovery(x, SendGuard(state, x), LocalTerminationGuard(state, x), store.HasConflict(x.Id) ? "Unresolved contradictory evidence; query original identity, preserve terminal acceptance, no generic unlock or resend" : store.RecoveryRequired(x.Id) ? "Receipt persistence uncertain; query original identity; raw receipt unavailable, terminal fact retained; approved evidence required, no generic unlock" : x.Status == RequestStatus.Unknown ? "Query original binding; never resend" : x.Status == RequestStatus.Dispatching ? "Await original response; interrupted handoff becomes Unknown" : "Restore matching guards or inspect and locally terminate; prior reservations/entity remain held")).ToArray(), store.ActiveAlarmCount(), Interlocked.Read(ref overloadVersion), OverloadRecoveryGuard())
             {
                 StationId = config.StationId, NotificationBacklog = notifications.Count, NotificationOverflow = notificationOverflow,
                 ProjectionVersion = Interlocked.Increment(ref projectionVersion), GeneratedAt = Now,
@@ -660,10 +653,10 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     { await gate.WaitAsync(); try { RequireIdentity(state); return store.History(filter, offset, limit); } finally { gate.Release(); } }
     public Task<RequestDetail[]> DetailsAsync(string ownerId) => owner.Invoke(() => DetailsCore(ownerId), priority: false, waitForCapacity: false);
     async Task<RequestDetail[]> DetailsCore(string ownerId)
-    { await gate.WaitAsync(); try { RequireIdentity(state); var request = store.Request(ownerId); return (request is null ? store.Requests(ownerId) : [request]).Select(x => new RequestDetail(x, store.Attempts(x.Id), store.Responses(x.Id), store.Audits(x.OwnerId).Concat(store.Audits(x.Id)).DistinctBy(a => a.Id).OrderBy(a => a.At).ToArray())).ToArray(); } finally { gate.Release(); } }
+    { await gate.WaitAsync(); try { RequireIdentity(state); var request = store.Request(ownerId); return (request is null ? store.Requests(ownerId) : [request]).Select(x => new RequestDetail(x, store.Attempts(x.Id), store.Responses(x.Id), store.Audits(x.OwnerId).Concat(store.Audits(x.Id)).DistinctBy(a => a.Id).OrderBy(a => a.At).ToArray()) { Conflicts = store.Conflicts(x.Id) }).ToArray(); } finally { gate.Release(); } }
     public Task<BusinessRequest[]> UnknownRequestsAsync() => owner.Invoke(() => UnknownRequestsCore(), priority: false, waitForCapacity: true);
     async Task<BusinessRequest[]> UnknownRequestsCore()
-    { await gate.WaitAsync(); try { RequireIdentity(state); return store.PendingRequests().Where(x => x.Status == RequestStatus.Unknown).ToArray(); } finally { gate.Release(); } }
+    { await gate.WaitAsync(); try { RequireIdentity(state); return store.PendingRequests().Where(x => x.Status == RequestStatus.Unknown || store.RecoveryRequired(x.Id)).ToArray(); } finally { gate.Release(); } }
     public Task RecordQueryAsync(string requestId, string evidence) => owner.Invoke(() => RecordQueryCore(requestId, evidence), priority: false, waitForCapacity: true);
     async Task RecordQueryCore(string requestId, string evidence)
     { await gate.WaitAsync(); try { store.Commit(state, "ReconciliationQuery", store.Request(requestId)!.OwnerId, "reconciler", evidence); } catch (Exception ex) when (IsStorage(ex)) { Latch("StorageFailure", ex.Message); } finally { gate.Release(); } }
@@ -683,7 +676,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
     { await gate.WaitAsync(); try { RequireIdentity(state); return store.Configs(); } finally { gate.Release(); } }
     public Task BackupAsync(string destination) => owner.Invoke(() => BackupCore(destination), priority: false, waitForCapacity: true);
     async Task BackupCore(string destination)
-    { await gate.WaitAsync(); try { RequireIdentity(state); Maintenance(state); store.Backup(destination); } finally { gate.Release(); } }
+    { await gate.WaitAsync(); try { RequireIdentity(state); Maintenance(state); Require(incompleteReceipts.Count == 0 && !runtimeFaults.ContainsKey("StorageFailure"), "Recover receipt/storage responsibility before backup"); store.Backup(destination); } finally { gate.Release(); } }
     public Task StopAsync() => owner.Invoke(() => StopCore(), priority: true, waitForCapacity: true);
     async Task StopCore()
     {
@@ -706,7 +699,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             RequireIdentity(state); Maintenance(state);
             Require(config.Mode == RunMode.Simulation && retentionDays >= 1 && evidence.Length >= 8, "Explicit synthetic retention period and evidence required");
             Require(state.Session is null || state.Session.Status == SessionStatus.Closed, "Close current context before retention");
-            Require(!HasUnresolved(), "Never prune unresolved evidence");
+            Require(!HasUnresolved() && incompleteReceipts.Count == 0 && !runtimeFaults.ContainsKey("StorageFailure"), "Never prune unresolved or unpersisted evidence");
             // Keep the current session in the aggregate even if old; its full SQL history is
             // retained until a newer context has replaced it.
             var closed = state.Session?.ClosedAt;
@@ -739,6 +732,7 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
             try { await overflowWriter.ConfigureAwait(false); overflowStopped = true; } catch (Exception ex) { errors.Add(ex); }
             if (maintenance.IsCompleted && ownerStopped && overflowStopped)
             {
+                CloseReceiptFence();
                 maintenanceStop.Dispose(); gate.Dispose(); disposalComplete = true;
             }
             if (errors.Count != 0) throw new AggregateException("Application cleanup retained failures", errors);

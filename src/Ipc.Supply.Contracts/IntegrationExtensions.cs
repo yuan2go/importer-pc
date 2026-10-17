@@ -14,7 +14,18 @@ public sealed record IntegrationImplementation(string Driver, PackageReference? 
 }
 public sealed record IntegrationExtensionContext(string InstanceId, RunMode Mode, IntegrationBinding Target,
     int TimeoutMs, string Policy, int FixtureDemand, IReadOnlyDictionary<string, string> Parameters);
-public sealed record IntegrationDiagnostic(string InstanceId, string State, int InFlight, string? LastFailure);
+public sealed record IntegrationHealthFact(string InstanceId, string Port, string DeploymentVersion, string ConfigurationSha256,
+    IntegrationBinding Target, string Epoch, long Sequence, ServiceStatus Status, DateTimeOffset ConfirmedAt, DateTimeOffset ValidUntil, string? Failure);
+public sealed record IntegrationDiagnostic(string InstanceId, string State, int InFlight, string? LastFailure)
+{
+    public IntegrationBinding? Target { get; init; }
+    public string? DeploymentVersion { get; init; }
+    public string? ConfigurationSha256 { get; init; }
+    public string? Port { get; init; }
+    public string? Lifecycle { get; init; }
+    public bool Historical { get; init; }
+    public IntegrationHealthFact? Health { get; init; }
+}
 public interface IIntegrationExtension
 {
     IControlledIntegration Create(IntegrationExtensionContext context);

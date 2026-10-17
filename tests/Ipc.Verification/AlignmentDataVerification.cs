@@ -58,7 +58,7 @@ static class AlignmentDataVerification
     internal const string Format3Checksum = "AF01C0A2D5AE4FEB3481E4E703C0BC544CC746FD044736CD8A5B3D86B661FD25";
     const string Format2Migration = "CREATE TABLE storage_format(id INTEGER PRIMARY KEY CHECK(id=1),version INTEGER NOT NULL,minimum_reader INTEGER NOT NULL);\nINSERT INTO storage_format VALUES(1,2,2);";
 
-    static Task LegacyMigration(string root, string workspace)
+    public static Task LegacyMigration(string root, string workspace)
     {
         var fixtures = Path.Combine(workspace, "tests/Ipc.Verification/fixtures");
         var schema = File.ReadAllText(Path.Combine(fixtures, "schema1.sql"));
@@ -75,9 +75,14 @@ static class AlignmentDataVerification
             using var db = Open(path);
             Exec(db, schema); Exec(db, "CREATE TABLE schema_history(id INTEGER PRIMARY KEY,checksum TEXT NOT NULL,applied TEXT NOT NULL)");
             Exec(db, "INSERT INTO schema_history VALUES(1,$a,$b)", Schema1Checksum, DateTimeOffset.UtcNow.ToString("O"));
-            if (format == 2)
+            if (format >= 2)
             {
                 Exec(db, Format2Migration); Exec(db, "INSERT INTO schema_history VALUES(2,$a,$b)", Format2Checksum, DateTimeOffset.UtcNow.ToString("O"));
+            }
+            if (format == 3)
+            {
+                Exec(db, "UPDATE storage_format SET version=3,minimum_reader=3 WHERE id=1;");
+                Exec(db, "INSERT INTO schema_history VALUES(3,$a,$b)", Format3Checksum, DateTimeOffset.UtcNow.ToString("O"));
             }
             var sessionText = "{\"Id\":\"" + original.SessionId + "\",\"Barcode\":\"000001\",\"Status\":\"" + (active ? "Active" : "Closed") + "\"}";
             Exec(db, "INSERT INTO sessions VALUES($a,$b)", original.SessionId, sessionText);
@@ -93,7 +98,7 @@ static class AlignmentDataVerification
                 "Original request identity, raw payload/hash, contract and target remain exact");
             Assert(store.Session(original.SessionId)!.Context is null && store.History(null, 0, 100).Single().Task is null && store.History(null, 0, 100).Single().BoxWave is null, "Legacy missing fields remain unknown");
         }
-        foreach (var format in new[] { 1, 2 })
+        foreach (var format in new[] { 1, 2, 3 })
         {
             var source = Legacy("legacy-format" + format, format); var before = Wire.FileHash(source);
             var inspection = SupplyStore.InspectReadOnly(source);
@@ -122,18 +127,18 @@ static class AlignmentDataVerification
             var upgraded = SupplyStore.UpgradeVerified(source, upgradeBackup, receiptPath, release, selected);
             var receipt = Wire.Decode<StorageUpgradeReceipt>(File.ReadAllText(receiptPath));
             Assert(Wire.Encode(receipt) == Wire.Encode(upgraded) && receipt.Status == "ForwardMigrationCommitted" && receipt.Backup.Source.FormatVersion == format && receipt.Backup.Sha256 == Wire.FileHash(upgradeBackup), "Durable upgrade identity binds verified original-format backup");
-            Assert(Wire.Encode(receipt.PreviousRelease) == Wire.Encode(release) && Wire.Encode(receipt.SelectedRelease) == Wire.Encode(selected) && receipt.DestinationFormat == 3, "Receipt freezes previous/selected release and configuration identities");
+            Assert(Wire.Encode(receipt.PreviousRelease) == Wire.Encode(release) && Wire.Encode(receipt.SelectedRelease) == Wire.Encode(selected) && receipt.DestinationFormat == 4, "Receipt freezes previous/selected release and configuration identities");
             using (var store = new SupplyStore(source)) Frozen(store);
             using (var db = Open(source))
             {
                 using var command = db.CreateCommand(); command.CommandText = "SELECT id,checksum FROM schema_history ORDER BY id";
-                using var reader = command.ExecuteReader(); var expected = new[] { Schema1Checksum, Format2Checksum, Format3Checksum }; var index = 0;
+                using var reader = command.ExecuteReader(); var expected = new[] { Schema1Checksum, Format2Checksum, Format3Checksum, ConformanceVerification.Format4Checksum }; var index = 0;
                 while (reader.Read()) { Assert(reader.GetInt32(0) == index + 1 && reader.GetString(1) == expected[index], "Migration checksum remains pinned at id" + (index + 1)); index++; }
-                Assert(index == 3, "Explicit upgrade retains three historical migrations"); reader.Close();
+                Assert(index == 4, "Explicit upgrade preserves id1/2/3 and appends conflict format4"); reader.Close();
                 command.CommandText = "SELECT count(*) FROM schema_history WHERE id<>1";
-                Assert(Convert.ToInt32(command.ExecuteScalar()) == 2, "Original schema1 reader refuses new migration history");
+                Assert(Convert.ToInt32(command.ExecuteScalar()) == 3, "Original schema1 reader refuses new migration history");
                 command.CommandText = "SELECT count(*) FROM schema_history WHERE id NOT IN (1,2)";
-                Assert(Convert.ToInt32(command.ExecuteScalar()) == 1, "Format2 reader refuses format3 history");
+                Assert(Convert.ToInt32(command.ExecuteScalar()) == 2, "Format2 reader refuses format3/4 history");
             }
         }
         // A rejected preflight, failed backup destination or failed durable initial receipt

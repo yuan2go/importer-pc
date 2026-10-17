@@ -63,7 +63,9 @@ public partial class LaneControl : UserControl
     async Task ScanAsync()
     {
         if (!Model.CanScan || Model.Current is not { } current) return;
-        await OwnerWindow.SendAsync("ScanRetained",current.Id,Model.RetainedDraft.TrimEnd('\r','\n','\t'));
+        var sent = Model.ScanInput.Capture(Ipc.Platform.Wire.Id());
+        var receipt = await OwnerWindow.SendAsync("ScanRetained",current.Id,sent.Text,commandId:sent.CommandId);
+        if (Model.ScanInput.Consume(sent, sent.CommandId, receipt)) Model.RaiseScanInput();
     }
     async void RetainedKeyDown(object sender, KeyEventArgs e)
     {

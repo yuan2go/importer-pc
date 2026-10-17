@@ -1,3 +1,5 @@
+> F-09/F-10实施增量（FIX-14）：追加Storage4，不修改原1/2/3 SQL；冲突原件与核对责任同T3、terminal/接受账不覆写；接收日志和预存围栏保护存储失败。F-03/F-08同窗一个配置草稿和本次修订选择，业务共享守卫；实例健康/历史查询分属原身份。共享库消费者登记是既有多根能力的保护，不新增分布式平台，旧库覆盖未知拒绝卸载。D批准不变，证据见 [14报告](../runtime/conformance-fix-14.md)。
+
 > FIX-14当前指引：本文件下方13及更早“当前/本轮/已完成”保留形成时身份，已由 [14执行基线](../runtime/conformance-fix-14-baseline.md)接管。A-01～04是待修确定缺陷；健康隔离和维护闭环是有效要求，不能按旧完成性表述判通过。Windows沿13决定统一后验，不寻找VM/runner；D/RV、真实SDK/WCS/现场门禁继续。原字节见 [归档](../archive/pre-conformance-fix-14/README.md)。
 
 > 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入核心实现已提交；Mac参考验证与WPF交叉构建按13报告分项记录，候选交付不代表Windows或现场验收。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](../archive/pre-arch-extension-closure-13/README.md)。

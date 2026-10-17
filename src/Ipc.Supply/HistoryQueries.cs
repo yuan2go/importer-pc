@@ -121,7 +121,7 @@ public sealed partial class SupplyStore
         var opened = Scalar("SELECT json_extract(json,'$.OpenedAt') FROM sessions WHERE id=$a", sessionId);
         var requests = Read<BusinessRequest>("SELECT json FROM requests WHERE session=$a AND owner=$a ORDER BY coalesce(julianday(json_extract(json,'$.CreatedAt')),0),id", sessionId);
         var details = requests.Select(request => new RequestDetail(request, Attempts(request.Id), Responses(request.Id),
-            Audits(request.OwnerId).Concat(Audits(request.Id)).DistinctBy(a => a.Id).OrderBy(a => a.At).ThenBy(a => a.Id, StringComparer.Ordinal).ToArray())).ToArray();
+            Audits(request.OwnerId).Concat(Audits(request.Id)).DistinctBy(a => a.Id).OrderBy(a => a.At).ThenBy(a => a.Id, StringComparer.Ordinal).ToArray()) { Conflicts = Conflicts(request.Id) }).ToArray();
         var operations = int.Parse(Scalar("SELECT count(*) FROM operations WHERE session=$a", sessionId)!, CultureInfo.InvariantCulture);
         return new(session, HistoryDate(opened), details,
             Audits(sessionId).OrderBy(a => a.At).ThenBy(a => a.Id, StringComparer.Ordinal).ToArray(), operations, AcceptedQuantity(sessionId));

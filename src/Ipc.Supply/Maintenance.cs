@@ -25,6 +25,12 @@ public sealed partial class SupplyStore
         UPDATE storage_format SET version=3,minimum_reader=3 WHERE id=1;
         """;
 
+    const string ConformanceFormatMigration = """
+        CREATE TABLE response_conflicts(id TEXT PRIMARY KEY,request TEXT NOT NULL REFERENCES requests(id),json TEXT NOT NULL);
+        CREATE INDEX response_conflicts_request ON response_conflicts(request);
+        UPDATE storage_format SET version=4,minimum_reader=4 WHERE id=1;
+        """;
+
     static SqliteConnection OpenMaintenance(string path, SqliteOpenMode mode)
     {
         if (!File.Exists(path) || File.GetAttributes(path).HasFlag(FileAttributes.ReparsePoint))
@@ -64,6 +70,11 @@ public sealed partial class SupplyStore
             if (format != 2 || third != Wire.Hash(ClosureFormatMigration)) throw new InvalidDataException("Format3 migration checksum mismatch; original retained");
             format = 3;
         }
+        if (migrations.TryGetValue(4, out var fourth))
+        {
+            if (format != 3 || fourth != Wire.Hash(ConformanceFormatMigration)) throw new InvalidDataException("Format4 migration checksum mismatch; original retained");
+            format = 4;
+        }
         var hasStorageFormat = MaintenanceScalar(connection, "SELECT name FROM sqlite_master WHERE type='table' AND name='storage_format'") is not null;
         if (format == 1)
         {
@@ -95,6 +106,8 @@ public sealed partial class SupplyStore
                 if (request.Status != status || !Enum.IsDefined(request.Kind)) throw new InvalidDataException("Request status/kind evidence invalid");
                 if (status is RequestStatus.Prepared or RequestStatus.Dispatching or RequestStatus.Unknown) pending++;
             }
+        if (format >= 4)
+            pending += Convert.ToInt32(MaintenanceScalar(connection, "SELECT count(*) FROM requests WHERE status NOT IN ('Prepared','Dispatching','Unknown') AND (id IN (SELECT request FROM response_conflicts) OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain'))"));
         command.CommandText = "SELECT o.state,r.status FROM outbox o LEFT JOIN requests r ON r.id=o.request";
         using (var reader = command.ExecuteReader())
             while (reader.Read())
@@ -121,6 +134,10 @@ public sealed partial class SupplyStore
             throw new InvalidDataException("Unrecognized operation state; maintenance compatibility unknown");
         if (state.Lanes.Values.Any(x => x.Occupancy != Occupancy.Clear)) blockers.Add("EntityDispositionRequired");
         if (quarantined) blockers.Add("RestoreQuarantine");
+        var receiptFence = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(sourcePath))!, "receipt-owner-fence.json");
+        if (File.Exists(receiptFence) && Wire.Decode<string[]>(File.ReadAllText(receiptFence)).Length > 0) blockers.Add("ReceiptPersistenceRecoveryRequired");
+        var ingress = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(sourcePath))!, "receipt-ingress");
+        if (Directory.Exists(ingress) && Directory.EnumerateFiles(ingress).Any()) blockers.Add("ReceiptPersistenceRecoveryRequired");
         return new(format, format, CurrentFormatVersion, format == CurrentFormatVersion, format < CurrentFormatVersion,
             pending, open, quarantined, blockers.ToArray());
     }
@@ -130,7 +147,8 @@ public sealed partial class SupplyStore
         // No CREATE/UPDATE, journal-mode change, initialization or migration is reachable here.
         return InspectConnection(connection, path);
     }
-    public static StorageBackupReceipt BackupReadOnly(string source, string destination)
+    public static StorageBackupReceipt BackupReadOnly(string source, string destination) => BackupSnapshot(source, destination, false);
+    static StorageBackupReceipt BackupSnapshot(string source, string destination, bool owned)
     {
         var fullSource = System.IO.Path.GetFullPath(source);
         var fullDestination = System.IO.Path.GetFullPath(destination);
@@ -138,6 +156,9 @@ public sealed partial class SupplyStore
             throw new IOException("Backup destination must be new; source retained");
         using var connection = OpenMaintenance(fullSource, SqliteOpenMode.ReadOnly);
         var inspection = InspectConnection(connection, fullSource);
+        var rawCustody = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(fullSource)!, "receipt-ingress");
+        if ((!owned && inspection.UpgradeBlockers.Contains("ReceiptPersistenceRecoveryRequired")) || Directory.Exists(rawCustody) && Directory.EnumerateFiles(rawCustody).Any())
+            throw new InvalidOperationException("Recover receipt custody in its original data root before database-only backup; evidence files must not be omitted");
         var directory = System.IO.Path.GetDirectoryName(fullDestination)!; Directory.CreateDirectory(directory);
         var temporary = System.IO.Path.Combine(directory, "." + System.IO.Path.GetFileName(fullDestination) + "." + Wire.Id() + ".unverified");
         // A failure leaves any partial output explicitly named unverified and retains source.
@@ -164,6 +185,7 @@ public sealed partial class SupplyStore
         }
         if (fromFormat == 1) Apply(2, SemanticFormatMigration);
         if (fromFormat is 1 or 2) Apply(3, ClosureFormatMigration);
+        if (fromFormat is 1 or 2 or 3) Apply(4, ConformanceFormatMigration);
     }
     static void SaveMaintenanceReceipt(string path, StorageUpgradeReceipt receipt, bool create)
     {

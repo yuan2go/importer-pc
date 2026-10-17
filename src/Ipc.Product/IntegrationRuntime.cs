@@ -17,6 +17,12 @@ sealed class IntegrationRuntime(StationConfig configuration, ExtensionStore? sto
         public PackageUseLease? Lease = lease;
         public Task? Stop, Disposal;
         public bool Disposed;
+        public string? CurrentPort;
+        public readonly string Epoch = Wire.Id();
+        public long Sequence;
+        public IntegrationHealthFact? Health;
+        public Task? Probe;
+        public string? QueryFailure;
     }
     readonly object gate = new();
     readonly Dictionary<string, Entry> entries = [];
@@ -30,8 +36,21 @@ sealed class IntegrationRuntime(StationConfig configuration, ExtensionStore? sto
     static IntegrationImplementation Seal(IntegrationImplementation identity) => identity with { ConfigurationSha256 = Fingerprint(identity) };
     public IntegrationDiagnostic[] Diagnostics
     {
-        get { lock (gate) return entries.Values.Select(x => x.Port is IControlledIntegration controlled ? controlled.Diagnostic : new(x.Identity.InstanceId, disposed ? "Disposed" : stopping.IsCancellationRequested ? "Stopping" : "Available", active, null)).ToArray(); }
+        get
+        {
+            lock (gate) return entries.Values.Select(x =>
+            {
+                var lifecycle = x.Port is IControlledIntegration controlled ? controlled.Diagnostic :
+                    new IntegrationDiagnostic(x.Identity.InstanceId, disposed ? "Disposed" : stopping.IsCancellationRequested ? "Stopping" : "Running", active, null);
+                var health = x.Health;
+                var state = x.CurrentPort is null ? "HistoricalQuery" : health is null ? "Unconfirmed" : health.ValidUntil <= DateTimeOffset.UtcNow ? "Expired" : health.Status.ToString();
+                return new IntegrationDiagnostic(x.Identity.InstanceId, state, lifecycle.InFlight, x.QueryFailure ?? health?.Failure ?? lifecycle.LastFailure)
+                { Target = x.Identity.Target, DeploymentVersion = x.Identity.DeploymentVersion, ConfigurationSha256 = x.Identity.ConfigurationSha256,
+                    Port = x.CurrentPort, Historical = x.CurrentPort is null, Lifecycle = lifecycle.State, Health = health };
+            }).ToArray();
+        }
     }
+
     public void Initialize()
     {
         lock (gate)
@@ -47,7 +66,7 @@ sealed class IntegrationRuntime(StationConfig configuration, ExtensionStore? sto
                     .ToDictionary(x => x.Key, x => service.Parameters.GetValueOrDefault(x.Key) ?? x.Default!);
                 var identity = Seal(new("extension", package, module.Id, service.Id, configuration.Version, "",
                     manifest.PublicContracts!["Ipc.Supply.Contracts"], binding.Target, configuration.TimeoutMs, configuration.Policy, configuration.FixtureDemand, parameters));
-                var entry = Resolve(identity);
+                var entry = Resolve(identity); entry.CurrentPort = binding.Port;
                 if (binding.Port == "requests") current = entry;
             }
             if (current is null)
@@ -56,6 +75,7 @@ sealed class IntegrationRuntime(StationConfig configuration, ExtensionStore? sto
                 current = Resolve(Seal(new("builtin.reference", null, "simulation-v1", "builtin.reference", configuration.Version, "",
                     Wire.FileHash(typeof(SimulationRequestContract).Assembly.Location), configuration.Integration, configuration.TimeoutMs, configuration.Policy, configuration.FixtureDemand, [])));
             }
+            current.CurrentPort = "requests";
         }
     }
     Entry Resolve(IntegrationImplementation identity)
@@ -68,7 +88,7 @@ sealed class IntegrationRuntime(StationConfig configuration, ExtensionStore? sto
         {
             if (identity.ContractSha256 != Wire.FileHash(typeof(SimulationRequestContract).Assembly.Location))
                 throw new InvalidDataException("OriginalIntegrationUnavailable: builtin implementation bytes changed");
-            var original = configuration with { Integration = identity.Target, TimeoutMs = identity.TimeoutMs, Policy = identity.Policy, FixtureDemand = identity.FixtureDemand };
+            var original = configuration with { Extensions = null, Integration = identity.Target, TimeoutMs = identity.TimeoutMs, Policy = identity.Policy, FixtureDemand = identity.FixtureDemand };
             var result = new Entry(identity, new LoopbackIntegration(original), new SimulationRequestContract(original));
             entries.Add(key, result); return result;
         }
@@ -147,19 +167,55 @@ sealed class IntegrationRuntime(StationConfig configuration, ExtensionStore? sto
     {
         Entry entry; lock (gate) entry = Original(request);
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, stopping.Token); linked.CancelAfter(entry.Identity.TimeoutMs);
-        return await entry.Port.QueryAsync(request, linked.Token).ConfigureAwait(false);
-    });
-    public Task<bool> HealthAsync(CancellationToken token) => Invoke(async () =>
-    {
-        Entry[] ports; lock (gate) ports = entries.Values.ToArray();
-        bool healthy = true;
-        foreach (var entry in ports)
+        try
         {
-            using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, stopping.Token); linked.CancelAfter(entry.Identity.TimeoutMs);
-            healthy &= await entry.Port.HealthAsync(linked.Token).ConfigureAwait(false);
+            var result = await entry.Port.QueryAsync(request, linked.Token).ConfigureAwait(false);
+            lock (gate) entry.QueryFailure = result is null ? "No authoritative original record or query unsupported" : null;
+            return result;
+        }
+        catch (Exception ex) { lock (gate) entry.QueryFailure = "Original query: " + ex.GetType().Name + ": " + ex.Message; throw; }
+    });
+    // Each configured instance owns one probe. Slow auxiliary ports do not serialize
+    // the sender or renew the primary timestamp; historical query-only ports never join.
+    public Task<IntegrationHealthFact[]> RefreshHealthAsync(CancellationToken token)
+    {
+        lock (gate)
+        {
+            if (disposed || stopping.IsCancellationRequested) throw new OperationCanceledException("Integration stopping");
+            foreach (var entry in entries.Values.Where(x => x.CurrentPort is not null))
+                if (entry.Probe is not { IsCompleted: false } && (entry.Health is null || entry.Health.ConfirmedAt < DateTimeOffset.UtcNow.AddSeconds(-1)))
+                    entry.Probe = Probe(entry, token);
+            return Task.FromResult(entries.Values.Where(x => x.CurrentPort is not null && x.Health is not null).Select(x => x.Health!).ToArray());
+        }
+    }
+    Task Probe(Entry entry, CancellationToken token) => Invoke(async () =>
+    {
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, stopping.Token); linked.CancelAfter(entry.Identity.TimeoutMs);
+        var sequence = ++entry.Sequence;
+        bool healthy = false; string? failure = null;
+        try
+        {
+            healthy = await entry.Port.HealthAsync(linked.Token).ConfigureAwait(false);
+            if (!healthy) failure = (entry.Port as IControlledIntegration)?.Diagnostic.LastFailure ?? "Health endpoint rejected contract or reported unavailable";
+        }
+        catch (Exception ex) { failure = ex.GetType().Name + ": " + ex.Message; }
+        lock (gate)
+        {
+            if (!stopping.IsCancellationRequested && sequence == entry.Sequence)
+            {
+                var now = DateTimeOffset.UtcNow;
+                entry.Health = new(entry.Identity.InstanceId, entry.CurrentPort!, entry.Identity.DeploymentVersion, entry.Identity.ConfigurationSha256,
+                    entry.Identity.Target, entry.Epoch, sequence, healthy ? ServiceStatus.Ready : ServiceStatus.Unavailable,
+                    now, now.AddMilliseconds(entry.Identity.TimeoutMs + 3000), failure);
+            }
         }
         return healthy;
     });
+    public async Task<bool> HealthAsync(CancellationToken token)
+    {
+        var facts = await RefreshHealthAsync(token).ConfigureAwait(false);
+        return facts.SingleOrDefault(x => x.Port == "requests") is { } primary && primary.Status == ServiceStatus.Ready && primary.ValidUntil > DateTimeOffset.UtcNow;
+    }
     public async Task StopAsync(CancellationToken token)
     {
         Task drain; Entry[] ports;

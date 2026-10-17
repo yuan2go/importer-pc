@@ -1,0 +1,30 @@
+{
+  "SourceCommit": "701ee0d2577e042c9106d01da183927b8bc34c99",
+  "Published": false,
+  "Assets": [
+    {
+      "File": "closure13-701ee0d-integration-win-x64.zip",
+      "Sha256": "a9e92a94fc49a97bb385d6b72fedc502063dd6f599a8077c45bd3df0d6a5badf",
+      "Status": "WITHDRAWN_LOCAL_ONLY",
+      "Reason": "Legacy healthy state incorrectly treated as unconfirmed; original baseline assertion exposed regression; never uploaded"
+    },
+    {
+      "File": "closure13-701ee0d-inspection.zip",
+      "Sha256": "52d841d9056e9de7ad30d6492e69f8a742aca10041f55d6180515a1d97c1c46a",
+      "Status": "WITHDRAWN_LOCAL_ONLY",
+      "Reason": "Legacy healthy state incorrectly treated as unconfirmed; original baseline assertion exposed regression; never uploaded"
+    },
+    {
+      "File": "closure13-701ee0d-integration-portable.zip",
+      "Sha256": "3bf002b6f7b3594f71733c0994d92e6252b22be84675ab9378bd9844452de169",
+      "Status": "WITHDRAWN_LOCAL_ONLY",
+      "Reason": "Legacy healthy state incorrectly treated as unconfirmed; original baseline assertion exposed regression; never uploaded"
+    },
+    {
+      "File": "closure13-701ee0d-supply-assembly.zip",
+      "Sha256": "852a23862109c0cfebb9cbdc87b6e122ca9f68f6f53ca199fb140bf93a735853",
+      "Status": "WITHDRAWN_LOCAL_ONLY",
+      "Reason": "Legacy healthy state incorrectly treated as unconfirmed; original baseline assertion exposed regression; never uploaded"
+    }
+  ]
+}

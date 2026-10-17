@@ -569,7 +569,8 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
         if (s.Quarantined) yield return "RestoreQuarantine";
         if (s.Actor is null || s.Actor.ExpiresAt <= Now) yield return "IdentityUnavailable";
         foreach (var b in s.Blocks) yield return b.Code + ":" + b.Scope;
-        var integrationReason = s.IntegrationServiceHealth is { } service ? service.ValidityReason(Now) : s.IntegrationHealth?.ValidityReason(Now) ?? "Unconfirmed";
+        var integrationReason = s.IntegrationServiceHealth is { } service ? service.ValidityReason(Now) :
+            s.IntegrationHealth is { } legacy ? legacy.ValidityReason(Now) : "Unconfirmed";
         if (integrationReason is not null) yield return "WcsHealth:" + integrationReason;
         if (store.PendingRequests().Any(x => x.Status == RequestStatus.Unknown)) yield return "OutcomeUnknown";
     }

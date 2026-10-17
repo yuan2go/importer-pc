@@ -1,0 +1,15 @@
+SELECT --review-followup: E11 presentation policies + Product composite ownership
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-c5f679553dd5487e9adfe0d053eb64f7
+PASS E11 current wave identity/unknown/difference and persistent XAML visibility (not WPF runtime)
+PASS E11 box focus login/new-box/identity/defer/repeated-projection/window isolation policies (Windows focus NOT_RUN)
+PASS E12 deployment confirmation freezes reviewed revision and identity (actual WPF modal NOT_RUN)
+Unhandled exception. System.InvalidOperationException: E11 Product: OpenContext: RejectedByGuard: WcsHealth:Unconfirmed
+   at ProductOwnershipVerification.Assert(Boolean value, String reason) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 126
+   at ProductOwnershipVerification.<>c__DisplayClass1_1.<<Exercise>g__Command|4>d.MoveNext() in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 47
+--- End of stack trace from previous location ---
+   at ProductOwnershipVerification.Exercise(String root, String url, String failure) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 49
+   at ProductOwnershipVerification.Exercise(String root, String url, String failure) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 111
+   at ProductOwnershipVerification.Run(String root, String url) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 13
+   at Program.<Main>$(String[] args) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Program.cs:line 78
+   at Program.<Main>$(String[] args) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Program.cs:line 450
+   at Program.<Main>(String[] args)

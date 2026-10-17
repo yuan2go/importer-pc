@@ -1,0 +1,1042 @@
+{
+  "WorkPackage": "WP-IPC-OPERATION-CLOSURE-15",
+  "BaseMain": "5548b3f962c409079618635d3128830ea7887069",
+  "PreCodeArchiveCommit": "882ec3f",
+  "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+  "SourceCodeSha256": "a2b4f5c6d781da3fcc156c55e6cb9f4d9500942dee5a0ae634ef7697aa0ea14c",
+  "Storage": 5,
+  "MinimumReader": 5,
+  "Contract": "SIMULATION-v1",
+  "ExtensionContract": 1,
+  "ReferencePackages": "1.0.3",
+  "Platform": "macOS26.5.2 ARM64; SDK10.0.402/runtime10.0.13",
+  "Core": "PASS_AFFECTED_SCOPES_AND_PUBLISHED_JOURNEY",
+  "Wpf": "CROSS_BUILD_ONLY",
+  "Windows": "NOT_RUN",
+  "ActualClientScreenshots": 0,
+  "Production": "NOT_READY",
+  "Field": "BLOCKED_PER_CAPABILITY",
+  "Release": "https://github.com/yuan2go/importer-pc/releases/tag/operation15-reference-013862f",
+  "SourceEvidenceRule": "Checks retain actual source SHA. Runtime identical to 110d2b1; test-only correction at0ccf3fc, UI detail atd2, upgrade hash at013. Exact diffs in source-evidence-comparison.json; do not pretend all selectors reran at013.",
+  "Checks": [
+    {
+      "Name": "final-restore",
+      "SourceCommit": "3c36ba33cfe505604d1e11864db17a735d510598",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:35:37.011978+00:00",
+      "EndedAt": "2026-10-17T12:35:39.219456+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "restore",
+        "ImporterPc.slnx",
+        "--locked-mode",
+        "-p:EnableWindowsTargeting=true"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "final-restore.log",
+      "LogSha256": "2adc9879551e9dc4bae7d344a72aeaa208e2b663a69fc2007ebff5f97ba8ce4e",
+      "RawLogSha256": "971924e5cea9bea57a1335ad67f140514d39cf64b03e2884349b2666b4a400cc",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "stable-baseline",
+      "SourceCommit": "110d2b1b9322f391a623cd29d7c98d5a5556a872",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:39:50.720287+00:00",
+      "EndedAt": "2026-10-17T12:39:58.059398+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--baseline"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "PASS selected verification scope --baseline",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "stable-baseline.log",
+      "LogSha256": "cf1c83445461add9030f88b43a0d24ee34a325ca6be2ce2b6c63c162e90bbbad",
+      "RawLogSha256": "6d444477747c6946f23683379b71a28b6e3671cfedb14edbd1a7a6510c004873",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "stable-followup",
+      "SourceCommit": "110d2b1b9322f391a623cd29d7c98d5a5556a872",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:40:07.078287+00:00",
+      "EndedAt": "2026-10-17T12:40:11.273723+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--followup"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "PASS selected verification scope --followup",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "stable-followup.log",
+      "LogSha256": "de285b236149259e132f04f3a1e054aab862e371825ca788a7810004d29e5e91",
+      "RawLogSha256": "f54a05d081b0b405d128b4e9a12a055d2fc34eb496e45017a63026be226415fa",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "stable-closure",
+      "SourceCommit": "110d2b1b9322f391a623cd29d7c98d5a5556a872",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:40:07.072686+00:00",
+      "EndedAt": "2026-10-17T12:40:14.780639+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--closure"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "PASS selected verification scope --closure",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "stable-closure.log",
+      "LogSha256": "c31494c96a5356960a347f20c0db20c244455f6c23f2911de63f09a6c5bf50b4",
+      "RawLogSha256": "e6940074193325168e899a22339efac1cf5df3364a1eaf7635add8c2afc4c950",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "stable-review-followup",
+      "SourceCommit": "110d2b1b9322f391a623cd29d7c98d5a5556a872",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:40:07.070467+00:00",
+      "EndedAt": "2026-10-17T12:40:29.307640+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--review-followup"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "PASS selected verification scope --review-followup",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "stable-review-followup.log",
+      "LogSha256": "6a228816aa6194ab175ec693fcd39b74178ba1ccc90547560911ca972e8740c4",
+      "RawLogSha256": "3530fb3ea28daf274cbfd04e95b55f6d1160d6da2f90b02dbf53fd0da36e462f",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "stable-architecture",
+      "SourceCommit": "110d2b1b9322f391a623cd29d7c98d5a5556a872",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:40:07.070467+00:00",
+      "EndedAt": "2026-10-17T12:41:02.804607+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--architecture"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "PASS selected verification scope --architecture",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "stable-architecture.log",
+      "LogSha256": "361e025d709007e2e0e19bd19dc3432e960c306e2c82fec5e60dd90b2343d1e3",
+      "RawLogSha256": "b0ac2d9926785432913843ab05362f61a0c9011bb95bef319664b62a8b369f8b",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "evidence-build",
+      "SourceCommit": "0ccf3fc0c7b93f798b93a8b5b1f1d275dcfe81ed",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:41:26.339003+00:00",
+      "EndedAt": "2026-10-17T12:41:30.600683+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "build",
+        "ImporterPc.slnx",
+        "--no-restore",
+        "-m:1",
+        "-nr:false",
+        "-p:EnableWindowsTargeting=true"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "0 个错误",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "evidence-build.log",
+      "LogSha256": "60b1a8156b30f9af7bcd35e9367a6def6c6dde5863b6052e396d8abc0508a34c",
+      "RawLogSha256": "a2a19cf9d2369f3997a08ac7be6025096c6442562dbe798b4607ae0a1a964107",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "evidence-operation-closure",
+      "SourceCommit": "0ccf3fc0c7b93f798b93a8b5b1f1d275dcfe81ed",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:41:49.285245+00:00",
+      "EndedAt": "2026-10-17T12:41:51.003913+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--operation-closure"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "PASS selected verification scope --operation-closure",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "evidence-operation-closure.log",
+      "LogSha256": "f12e12d535e386337a423be481751ba39286d900dd567e9a21cd66670b55e457",
+      "RawLogSha256": "7b96323b36fedc118a2302554231e090788e1562a7d50735c8b403ad9a96f8e1",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "evidence-conformance",
+      "SourceCommit": "0ccf3fc0c7b93f798b93a8b5b1f1d275dcfe81ed",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:41:50.447920+00:00",
+      "EndedAt": "2026-10-17T12:42:09.147697+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+        ".",
+        "--conformance"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "PASS selected verification scope --conformance",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "evidence-conformance.log",
+      "LogSha256": "fdde2e4a3932e99e1a57db7d97d4ab13c62f9093f83c65ee000d40a137e362be",
+      "RawLogSha256": "222ed3d6556328d5d5b2090902addb2b8d2d6defd6c5bedfca94c5e4ffde0d7e",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "client-final-build",
+      "SourceCommit": "d2b2ca268013e7980f435e9cf8d9e48cd06ddc6c",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:43:27.601642+00:00",
+      "EndedAt": "2026-10-17T12:43:35.932870+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "build",
+        "ImporterPc.slnx",
+        "--no-restore",
+        "-m:1",
+        "-nr:false",
+        "-p:EnableWindowsTargeting=true"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "0 个错误",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "client-final-build.log",
+      "LogSha256": "133138df31e08ecbd676ebebb3f6d313a5915a140d6671477c4b3643aa653895",
+      "RawLogSha256": "0d9d964761e07b0fb4434d8f63dace96683bc76c59878c368752dc27fec48e7e",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "release-portable",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:47:51.543498+00:00",
+      "EndedAt": "2026-10-17T12:48:05.808506+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "python3",
+        "scripts/package-reference.py",
+        "--target",
+        "portable",
+        "--composition",
+        "integration-reference",
+        "--dotnet",
+        "/reference/dotnet-10.0.402/dotnet",
+        "--extension-key",
+        ".artifacts/operation15/private/closure15.pem",
+        "--extension-trust",
+        ".artifacts/operation15/private/trust.json",
+        "--output",
+        ".artifacts/operation15/candidates/operation15-final-portable"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "\"StorageVersion\": 5",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "release-portable.log",
+      "LogSha256": "16d5f473007024c71965b8b1cf12e8fdd76155d3e1b7c01e235cb8cedba4e825",
+      "RawLogSha256": "bd4196dcb274373876c5d41ebc427be0dbd2e18db714ca86f10b7e1eda8b79b3",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "release-win",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:48:05.856241+00:00",
+      "EndedAt": "2026-10-17T12:48:27.698460+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "python3",
+        "scripts/package-reference.py",
+        "--target",
+        "win-x64",
+        "--composition",
+        "integration-reference",
+        "--dotnet",
+        "/reference/dotnet-10.0.402/dotnet",
+        "--extension-key",
+        ".artifacts/operation15/private/closure15.pem",
+        "--extension-trust",
+        ".artifacts/operation15/private/trust.json",
+        "--output",
+        ".artifacts/operation15/candidates/operation15-final-win-x64"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "\"StorageVersion\": 5",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "release-win.log",
+      "LogSha256": "5cb9008e9205ff7537a368e5b3f8c6898943a18d4dcdc16787c765ea833fbfab",
+      "RawLogSha256": "cc18ba1f1a91b4fb14adf546631d61d05126f1556875d885b792b6dfa90c3131",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "release-upgrade-journey",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:48:43.625606+00:00",
+      "EndedAt": "2026-10-17T12:48:53.692924+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "python3",
+        "scripts/verify-operation-upgrade.py",
+        "--old-release",
+        ".artifacts/operation15/legacy/release",
+        "--new-release",
+        ".artifacts/operation15/candidates/unpacked-final-portable",
+        "--dotnet",
+        "/reference/dotnet-10.0.402/dotnet",
+        "--output",
+        ".artifacts/operation15/release-upgrade-journey"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "PASS_SYNTHETIC_OLD_DEPLOYMENT_JOURNEY",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "release-upgrade-journey.log",
+      "LogSha256": "7bff2833c2bc71bed7741488c838cf6dd7eefd0060d5d4f422caa04debe6362e",
+      "RawLogSha256": "d9c01a3888d27ff6e3e7a917c04f62f65b29c5ca2d4495f072f2ad95c4438e24",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "release-smoke-core",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:48:53.739933+00:00",
+      "EndedAt": "2026-10-17T12:48:57.456504+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "python3",
+        "scripts/smoke.py",
+        "--product",
+        ".artifacts/operation15/candidates/unpacked-final-portable/app",
+        "--fixture",
+        ".artifacts/operation15/candidates/unpacked-final-portable/fixture/Ipc.Fixture.dll",
+        "--dotnet",
+        "/reference/dotnet-10.0.402/dotnet",
+        "--output",
+        ".artifacts/operation15/release-smoke-core.json"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "\"production_no_fixture_or_business\": \"PASS\"",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "release-smoke-core.log",
+      "LogSha256": "6ae0cfd2a1a186015b276acf7a2cad38a9eef70e9e09ec9af2085fe4b0d8bf3d",
+      "RawLogSha256": "63860373db584865be5e06778a920d4c75a633d190844d934c7ed5da089a66ea",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "release-smoke-extension",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:48:57.504381+00:00",
+      "EndedAt": "2026-10-17T12:49:00.386928+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "python3",
+        "scripts/smoke-extension.py",
+        "--release",
+        ".artifacts/operation15/candidates/unpacked-final-portable",
+        "--dotnet",
+        "/reference/dotnet-10.0.402/dotnet",
+        "--output",
+        ".artifacts/operation15/release-smoke-extension.json"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "PASS_REFERENCE_PUBLISHED_HOST",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "release-smoke-extension.log",
+      "LogSha256": "9af0fcf03f05e6f20dcd2385d108c722073b92013f2be6ec9f5d3d4d0443338c",
+      "RawLogSha256": "610fb318174709c7273bd59c8848b54c985620e4b1da7f0b0de94e1dfa1883c5",
+      "Publication": "path aliases only; complete raw log retained locally"
+    },
+    {
+      "Name": "release-plugin-reproducibility",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "WorkingTree": false,
+      "StartedAt": "2026-10-17T12:48:59.403269+00:00",
+      "EndedAt": "2026-10-17T12:49:13.045731+00:00",
+      "Platform": "macOS-26.5.2-arm64-arm-64bit",
+      "Machine": "arm64",
+      "Command": [
+        "python3",
+        "scripts/verify-extension-reproducibility.py",
+        "--contract-directory",
+        ".artifacts/operation15/candidates/operation15-final-portable/app",
+        "--contract-directory",
+        ".artifacts/operation15/candidates/operation15-final-win-x64/app",
+        "--key",
+        ".artifacts/operation15/private/closure15.pem",
+        "--trust",
+        ".artifacts/operation15/private/trust.json",
+        "--publisher",
+        "closure15-test",
+        "--version",
+        "1.0.3",
+        "--dotnet",
+        "/reference/dotnet-10.0.402/dotnet",
+        "--output",
+        ".artifacts/operation15/release-plugin-reproducibility.json"
+      ],
+      "ExitCode": 0,
+      "RequiredMarker": "PASS two kinds",
+      "MarkerPresent": true,
+      "Status": "PASS",
+      "Log": "release-plugin-reproducibility.log",
+      "LogSha256": "8c5cc62b54df711056cbe2738dfb3105d616c0c47acb6d905c5d52828bf06535",
+      "RawLogSha256": "8c5cc62b54df711056cbe2738dfb3105d616c0c47acb6d905c5d52828bf06535",
+      "Publication": "path aliases only; complete raw log retained locally"
+    }
+  ],
+  "Acceptance": [
+    {
+      "Id": "AC15-01",
+      "Description": "Pre-code source/version/parallel PR review, exact-byte archive and scoped guide cleanup",
+      "Issues": [
+        "DOC-CURRENT"
+      ],
+      "Status": "PASS_ENGINEERING_WITH_EXPLICIT_EXTERNAL_GATES",
+      "Evidence": "operation-closure-15.md and per-issue matrix; no actual client UI qualification"
+    },
+    {
+      "Id": "AC15-02",
+      "Description": "Per-occurrence custody/T3/replay and original identities",
+      "Issues": [
+        "A-01",
+        "A-01-R1",
+        "A-01-R2"
+      ],
+      "Status": "PASS_ENGINEERING_WITH_EXPLICIT_EXTERNAL_GATES",
+      "Evidence": "operation-closure-15.md and per-issue matrix; no actual client UI qualification"
+    },
+    {
+      "Id": "AC15-03",
+      "Description": "Box request results/current availability",
+      "Issues": [
+        "UI-01",
+        "UI-06",
+        "UI-R02",
+        "A-02"
+      ],
+      "Status": "CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "Evidence": "operation-closure-15.md and per-issue matrix; no actual client UI qualification"
+    },
+    {
+      "Id": "AC15-04",
+      "Description": "Busy input/partial drafts/selection lifecycle",
+      "Issues": [
+        "R-01",
+        "A-03",
+        "A-04",
+        "A-04-R1",
+        "UI-R03"
+      ],
+      "Status": "CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "Evidence": "operation-closure-15.md and per-issue matrix; no actual client UI qualification"
+    },
+    {
+      "Id": "AC15-05",
+      "Description": "History semantics/filter/list/detail/action/geometry guard",
+      "Issues": [
+        "UI-02",
+        "UI-03",
+        "UI-04",
+        "UI-05",
+        "UI-07",
+        "UI-R04"
+      ],
+      "Status": "CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "Evidence": "operation-closure-15.md and per-issue matrix; no actual client UI qualification"
+    },
+    {
+      "Id": "AC15-06",
+      "Description": "Preserved old1.0.1 actual Effective -> transition -> backup/upgrade -> new Effective -> supply/history/restart",
+      "Issues": [
+        "UPG-01",
+        "R-03"
+      ],
+      "Status": "PASS_ENGINEERING_WITH_EXPLICIT_EXTERNAL_GATES",
+      "Evidence": "operation-closure-15.md and per-issue matrix; no actual client UI qualification"
+    },
+    {
+      "Id": "AC15-07",
+      "Description": "Directed recovery/concurrency/resource/build and published smoke; Windows separate",
+      "Issues": [
+        "G-01",
+        "G-02",
+        "G-03",
+        "R-02"
+      ],
+      "Status": "CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "Evidence": "operation-closure-15.md and per-issue matrix; no actual client UI qualification"
+    },
+    {
+      "Id": "AC15-08",
+      "Description": "Runnable candidates, current guide/manifest/evidence and main PR",
+      "Issues": [
+        "DOC-CURRENT"
+      ],
+      "Status": "PASS_ENGINEERING_WITH_EXPLICIT_EXTERNAL_GATES",
+      "Evidence": "operation-closure-15.md and per-issue matrix; no actual client UI qualification"
+    }
+  ],
+  "Issues": [
+    {
+      "Id": "A-01",
+      "Title": "P1 · 同 EvidenceId 矛盾回执缺持续证据与阻断",
+      "PriorStatus": "ORIGINAL_REPRO_CORE_CLOSED_ASSOCIATED_RESIDUAL_OPEN",
+      "Status": "CORE_VERIFIED",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Supply/ResponsePersistence.cs",
+        "src/Ipc.Supply/Store.cs",
+        "src/Ipc.Supply/Maintenance.cs",
+        "src/Ipc.Supply/ExtensionMaintenance.cs",
+        "src/Ipc.Supply/HistoryQueries.cs",
+        "src/Ipc.Product/ProductRuntime.cs",
+        "src/Ipc.Product/SenderModule.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-baseline.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-conformance.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-architecture.record.json"
+      ],
+      "Residual": "Missing original raw remains RawUnavailable and blocks by its own occurrence; no generic unlock. Real WCS contradiction authority/production reconciliation policy BLOCKED independently."
+    },
+    {
+      "Id": "A-02",
+      "Title": "P2 · 辅助服务离线被归到主 WCS，实例仍显可用",
+      "PriorStatus": "CORE_CLOSED",
+      "Status": "INHERITED_FIX14_CORE_WITH_AFFECTED_REGRESSION",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Product/IntegrationRuntime.cs",
+        "src/Ipc.Supply/StationClosure.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-conformance.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-architecture.record.json"
+      ],
+      "Residual": "Original instance-health semantics retained; Windows display/real integration independently unverified."
+    },
+    {
+      "Id": "A-03",
+      "Title": "P2 · 组件页激活依赖隐藏维护页的选中项",
+      "PriorStatus": "CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Desktop/ScanInputDraft.cs",
+        "src/Ipc.Desktop/LaneControl.xaml.cs",
+        "src/Ipc.Desktop/ConfigurationDraft.cs",
+        "src/Ipc.Desktop/SelectionLoad.cs",
+        "src/Ipc.Desktop/MainWindow.Extensions.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-conformance.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/release-upgrade-journey.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "A-04",
+      "Title": "P2 · JSON 导入的扩展草稿又被旧 Effective 重置",
+      "PriorStatus": "ORIGINAL_REPRO_CORE_CLOSED_ASSOCIATED_RESIDUAL_OPEN",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Desktop/ScanInputDraft.cs",
+        "src/Ipc.Desktop/LaneControl.xaml.cs",
+        "src/Ipc.Desktop/ConfigurationDraft.cs",
+        "src/Ipc.Desktop/SelectionLoad.cs",
+        "src/Ipc.Desktop/MainWindow.Extensions.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-conformance.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/release-upgrade-journey.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "UI-01",
+      "Title": "P2 · 箱级拒绝没有持续的当前结果／原因",
+      "PriorStatus": "OPEN",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Supply.Contracts/Model.cs",
+        "src/Ipc.Supply/StationApplication.cs",
+        "src/Ipc.Desktop/ViewModels.cs",
+        "src/Ipc.Desktop/MainWindow.xaml",
+        "src/Ipc.Desktop/MainWindow.Closure.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "UI-02",
+      "Title": "P2 · 默认箱会话把箱码标成 Item 条码",
+      "PriorStatus": "OPEN",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Desktop/HistoryPresentation.cs",
+        "src/Ipc.Desktop/HistoryTimeRange.cs",
+        "src/Ipc.Desktop/MainWindow.Closure.cs",
+        "src/Ipc.Desktop/MainWindow.HistoryExport.cs",
+        "src/Ipc.Desktop/MainWindow.Presentation.cs",
+        "src/Ipc.Desktop/LaneControl.xaml.cs",
+        "src/Ipc.Desktop/LaneControl.xaml"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/client-final-build.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "UI-03",
+      "Title": "P2 · 历史列表被空详情压窄，结果列偏到远端",
+      "PriorStatus": "OPEN",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Desktop/HistoryPresentation.cs",
+        "src/Ipc.Desktop/HistoryTimeRange.cs",
+        "src/Ipc.Desktop/MainWindow.Closure.cs",
+        "src/Ipc.Desktop/MainWindow.HistoryExport.cs",
+        "src/Ipc.Desktop/MainWindow.Presentation.cs",
+        "src/Ipc.Desktop/LaneControl.xaml.cs",
+        "src/Ipc.Desktop/LaneControl.xaml"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/client-final-build.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "UI-04",
+      "Title": "P2 · 筛选无可见标签，日期要求手输完整时区格式",
+      "PriorStatus": "OPEN",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Desktop/HistoryPresentation.cs",
+        "src/Ipc.Desktop/HistoryTimeRange.cs",
+        "src/Ipc.Desktop/MainWindow.Closure.cs",
+        "src/Ipc.Desktop/MainWindow.HistoryExport.cs",
+        "src/Ipc.Desktop/MainWindow.Presentation.cs",
+        "src/Ipc.Desktop/LaneControl.xaml.cs",
+        "src/Ipc.Desktop/LaneControl.xaml"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/client-final-build.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "UI-05",
+      "Title": "P2 · 只读详情始终是蓝色主动作，且有重复入口",
+      "PriorStatus": "OPEN",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Desktop/HistoryPresentation.cs",
+        "src/Ipc.Desktop/HistoryTimeRange.cs",
+        "src/Ipc.Desktop/MainWindow.Closure.cs",
+        "src/Ipc.Desktop/MainWindow.HistoryExport.cs",
+        "src/Ipc.Desktop/MainWindow.Presentation.cs",
+        "src/Ipc.Desktop/LaneControl.xaml.cs",
+        "src/Ipc.Desktop/LaneControl.xaml"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/client-final-build.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "UI-06",
+      "Title": "P2 · 部分关键灰显按钮只用悬停说明原因",
+      "PriorStatus": "OPEN",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Supply.Contracts/Model.cs",
+        "src/Ipc.Supply/StationApplication.cs",
+        "src/Ipc.Desktop/ViewModels.cs",
+        "src/Ipc.Desktop/MainWindow.xaml",
+        "src/Ipc.Desktop/MainWindow.Closure.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "UI-07",
+      "Title": "P3 · 少量状态语义、字号和图标资源未统一",
+      "PriorStatus": "OPEN",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Desktop/HistoryPresentation.cs",
+        "src/Ipc.Desktop/HistoryTimeRange.cs",
+        "src/Ipc.Desktop/MainWindow.Closure.cs",
+        "src/Ipc.Desktop/MainWindow.HistoryExport.cs",
+        "src/Ipc.Desktop/MainWindow.Presentation.cs",
+        "src/Ipc.Desktop/LaneControl.xaml.cs",
+        "src/Ipc.Desktop/LaneControl.xaml"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/client-final-build.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "R-01",
+      "Title": "条件 P2 · 保留件连续扫码可能串接旧文本",
+      "PriorStatus": "PARTIAL_CORE_VERIFIED_BUSY_INPUT_CONDITIONAL",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Desktop/ScanInputDraft.cs",
+        "src/Ipc.Desktop/LaneControl.xaml.cs",
+        "src/Ipc.Desktop/ConfigurationDraft.cs",
+        "src/Ipc.Desktop/SelectionLoad.cs",
+        "src/Ipc.Desktop/MainWindow.Extensions.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-conformance.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/release-upgrade-journey.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "R-02",
+      "Title": "R-02 · 条件 P2 · 无桌面持续供包没有提示消费者",
+      "PriorStatus": "CORE_CLOSED_WINDOWS_NOT_RUN",
+      "Status": "INHERITED_CORE_WITH_RESOURCE_REGRESSION_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Product/ProductRuntime.cs",
+        "src/Ipc.Platform/ExtensionStore.cs",
+        "src/Ipc.Supply/ExtensionMaintenance.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/stable-architecture.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-review-followup.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/release-upgrade-journey.record.json"
+      ],
+      "Residual": "Windows notification/ACL NOT_RUN; legacy actual roots/backups coverage requires inventory and authority, remains UNVERIFIED/refuses uninstall."
+    },
+    {
+      "Id": "R-03",
+      "Title": "R-03 · 条件 P2 · 共享包库卸载只核查一个数据集",
+      "PriorStatus": "CORE_CLOSED_LEGACY_COVERAGE_AND_WINDOWS_DEFERRED",
+      "Status": "INHERITED_CORE_WITH_RESOURCE_REGRESSION_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Product/ProductRuntime.cs",
+        "src/Ipc.Platform/ExtensionStore.cs",
+        "src/Ipc.Supply/ExtensionMaintenance.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/stable-architecture.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-review-followup.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/release-upgrade-journey.record.json"
+      ],
+      "Residual": "Windows notification/ACL NOT_RUN; legacy actual roots/backups coverage requires inventory and authority, remains UNVERIFIED/refuses uninstall."
+    },
+    {
+      "Id": "UI-R02",
+      "Title": "条件 P2 · 旧接受仍绿，新鲜度提示离当前结果较远",
+      "PriorStatus": "DEFERRED_EVIDENCE_PENDING",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Supply.Contracts/Model.cs",
+        "src/Ipc.Supply/StationApplication.cs",
+        "src/Ipc.Desktop/ViewModels.cs",
+        "src/Ipc.Desktop/MainWindow.xaml",
+        "src/Ipc.Desktop/MainWindow.Closure.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "UI-R03",
+      "Title": "条件 P2 · 旧组件读取错误可能清掉新选择",
+      "PriorStatus": "IMPLEMENTED_TIMING_VALIDATION_PENDING",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Desktop/ScanInputDraft.cs",
+        "src/Ipc.Desktop/LaneControl.xaml.cs",
+        "src/Ipc.Desktop/ConfigurationDraft.cs",
+        "src/Ipc.Desktop/SelectionLoad.cs",
+        "src/Ipc.Desktop/MainWindow.Extensions.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-conformance.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/release-upgrade-journey.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "UI-R04",
+      "Title": "关键长内容与固定动作可能竞争最小客户区",
+      "PriorStatus": "DEFERRED_EVIDENCE_PENDING",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Desktop/HistoryPresentation.cs",
+        "src/Ipc.Desktop/HistoryTimeRange.cs",
+        "src/Ipc.Desktop/MainWindow.Closure.cs",
+        "src/Ipc.Desktop/MainWindow.HistoryExport.cs",
+        "src/Ipc.Desktop/MainWindow.Presentation.cs",
+        "src/Ipc.Desktop/LaneControl.xaml.cs",
+        "src/Ipc.Desktop/LaneControl.xaml"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/client-final-build.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "G-01",
+      "Title": "Windows实际验收",
+      "PriorStatus": "DEFERRED_EVIDENCE_PENDING",
+      "Status": "NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "docs/runtime/validation/operation-closure-15-windows.md"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/client-final-build.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/release-win.record.json"
+      ],
+      "Residual": "No existing authorized Windows environment; screenshots=0. Full W01-06/support/protection matrix retained, cross-build is not client acceptance."
+    },
+    {
+      "Id": "G-02",
+      "Title": "真实集成资料与能力",
+      "PriorStatus": "DEFERRED_EVIDENCE_PENDING",
+      "Status": "BLOCKED_PER_CAPABILITY",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "docs/readiness/decision-pack.md",
+        "docs/runtime/integration-05.md"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/release-smoke-core.record.json"
+      ],
+      "Residual": "Real SDK/device/WCS contract/identity/quantity/permissions and site approval evidence absent. D/RV unchanged; Production NotReady with zero fixture business."
+    },
+    {
+      "Id": "G-03",
+      "Title": "业务批准",
+      "PriorStatus": "DEFERRED_EVIDENCE_PENDING",
+      "Status": "BLOCKED_PER_CAPABILITY",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "docs/readiness/decision-pack.md",
+        "docs/runtime/integration-05.md"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/release-smoke-core.record.json"
+      ],
+      "Residual": "Real SDK/device/WCS contract/identity/quantity/permissions and site approval evidence absent. D/RV unchanged; Production NotReady with zero fixture business."
+    },
+    {
+      "Id": "A-01-R1",
+      "Title": "不同接收发生的未接管责任可相互覆盖",
+      "PriorStatus": "SOURCE_PATH_CONFIRMED_COMBINED_FAULT_INJECTION_PENDING",
+      "Status": "CORE_VERIFIED",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Supply/ResponsePersistence.cs",
+        "src/Ipc.Supply/Store.cs",
+        "src/Ipc.Supply/Maintenance.cs",
+        "src/Ipc.Supply/ExtensionMaintenance.cs",
+        "src/Ipc.Supply/HistoryQueries.cs",
+        "src/Ipc.Product/ProductRuntime.cs",
+        "src/Ipc.Product/SenderModule.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-baseline.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-conformance.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-architecture.record.json"
+      ],
+      "Residual": "Missing original raw remains RawUnavailable and blocks by its own occurrence; no generic unlock. Real WCS contradiction authority/production reconciliation policy BLOCKED independently."
+    },
+    {
+      "Id": "A-01-R2",
+      "Title": "已完成接收与普通崩溃后保守责任未充分区分",
+      "PriorStatus": "LIMITATION_CONFIRMED_IN_ARCHIVED_SQLITE",
+      "Status": "CORE_VERIFIED",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Supply/ResponsePersistence.cs",
+        "src/Ipc.Supply/Store.cs",
+        "src/Ipc.Supply/Maintenance.cs",
+        "src/Ipc.Supply/ExtensionMaintenance.cs",
+        "src/Ipc.Supply/HistoryQueries.cs",
+        "src/Ipc.Product/ProductRuntime.cs",
+        "src/Ipc.Product/SenderModule.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-baseline.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-conformance.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-architecture.record.json"
+      ],
+      "Residual": "Missing original raw remains RawUnavailable and blocks by its own occurrence; no generic unlock. Real WCS contradiction authority/production reconciliation policy BLOCKED independently."
+    },
+    {
+      "Id": "A-04-R1",
+      "Title": "局部模块选择/新建依赖完整配置已合法",
+      "PriorStatus": "SOURCE_PATH_CONFIRMED_WINDOWS_NOT_RUN",
+      "Status": "IMPLEMENTED_CORE_VERIFIED_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "src/Ipc.Desktop/ScanInputDraft.cs",
+        "src/Ipc.Desktop/LaneControl.xaml.cs",
+        "src/Ipc.Desktop/ConfigurationDraft.cs",
+        "src/Ipc.Desktop/SelectionLoad.cs",
+        "src/Ipc.Desktop/MainWindow.Extensions.cs"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-operation-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-conformance.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/stable-closure.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/release-upgrade-journey.record.json"
+      ],
+      "Residual": "Actual same-candidate WPF behavior/screenshots, long content/client area/DPI and applicable input/ACL checks NOT_RUN; see validation/operation-closure-15-windows.md"
+    },
+    {
+      "Id": "UPG-01",
+      "Title": "旧Effective精确1.0.1到新宿主的完整升级旅程待证",
+      "PriorStatus": "NEGATIVE_COMPATIBILITY_VERIFIED_END_TO_END_MIGRATION_PENDING",
+      "Status": "PASS_SYNTHETIC_OLD_DEPLOYMENT_JOURNEY_WINDOWS_NOT_RUN",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "scripts/verify-operation-upgrade.py",
+        "src/Ipc.Product/Program.cs",
+        "src/Ipc.Supply/Maintenance.cs",
+        "docs/runtime/operations.md",
+        "docs/extensions/developer-guide.md"
+      ],
+      "Evidence": [
+        "docs/runtime/evidence/operation-closure-15/runs/release-upgrade-journey.record.json",
+        "docs/runtime/evidence/operation-closure-15/runs/evidence-conformance.record.json"
+      ],
+      "Residual": "Actual old1.0.1 source/packages retained; real customer roots/backup inventory and authority BLOCKED; Windows ACL/PowerShell NOT_RUN. No consumer fence bypass."
+    },
+    {
+      "Id": "DOC-CURRENT",
+      "Title": "当前入口含14待实施/13当前候选等冲突",
+      "PriorStatus": "CORRECTED_IN_THIS_DOCUMENT_PUBLICATION",
+      "Status": "CORRECTED_ORIGINALS_ARCHIVED",
+      "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+      "Implementation": [
+        "docs/INDEX.md",
+        "README.md",
+        "docs/ui/STATUS.md",
+        "docs/archive/pre-operation-closure-15/snapshots.json"
+      ],
+      "Evidence": [],
+      "Residual": "Original PDF8cab/old reports/issues/SQL/D/RV/v1.1 preserved. Historical findings remain source records; this matrix supersedes current engineering disposition only."
+    }
+  ],
+  "Archive": {
+    "WholeStatus": "FAIL_EXISTING_267",
+    "Delta": "PASS_NO_NEW_ERRORS",
+    "Evidence": "docs/runtime/evidence/operation-closure-15/archive-comparison.json",
+    "ToolFixtures": "PASS_10_TESTS"
+  }
+}

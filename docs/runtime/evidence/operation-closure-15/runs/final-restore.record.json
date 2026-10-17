@@ -1,0 +1,24 @@
+{
+  "Name": "final-restore",
+  "SourceCommit": "3c36ba33cfe505604d1e11864db17a735d510598",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:35:37.011978+00:00",
+  "EndedAt": "2026-10-17T12:35:39.219456+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "restore",
+    "ImporterPc.slnx",
+    "--locked-mode",
+    "-p:EnableWindowsTargeting=true"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "final-restore.log",
+  "LogSha256": "2adc9879551e9dc4bae7d344a72aeaa208e2b663a69fc2007ebff5f97ba8ce4e",
+  "RawLogSha256": "971924e5cea9bea57a1335ad67f140514d39cf64b03e2884349b2666b4a400cc",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

@@ -1,0 +1,23 @@
+{
+  "Name": "final-followup",
+  "SourceCommit": "3c36ba33cfe505604d1e11864db17a735d510598",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:35:44.520769+00:00",
+  "EndedAt": "2026-10-17T12:35:49.470210+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--followup"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS selected verification scope --followup",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "final-followup.log",
+  "LogSha256": "85946b5d643873b206598ab80ca4c7a32e3090ecdcfea7e29500c330d5ae600d",
+  "RawLogSha256": "644c315f672026afcb070236226961e365129838ff7e2eaace7a8c9ea940ee8d",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

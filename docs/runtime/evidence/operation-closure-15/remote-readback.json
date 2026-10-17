@@ -1,0 +1,58 @@
+{
+  "Status": "PASS_FULL_REMOTE_BYTE_READBACK",
+  "Tag": "operation15-reference-013862f",
+  "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+  "ReadAt": "2026-10-17T12:53:38.838239+00:00",
+  "Assets": [
+    {
+      "Name": "importer-pc-source-013862f.zip",
+      "Size": 11880109,
+      "Sha256": "4d897bae00cfbc895a50f159152767da979cc00c4f7875c92065c0ff70d7492a",
+      "LocalRemoteBytes": "IDENTICAL",
+      "ZipCRC": "PASS",
+      "FileCount": 954
+    },
+    {
+      "Name": "operation15-final-portable.zip",
+      "Size": 35522885,
+      "Sha256": "d5bfe897360e74c84041e55b4f076eefa9c406b89dedf9bfd8734ce53a713dea",
+      "LocalRemoteBytes": "IDENTICAL",
+      "ZipCRC": "PASS",
+      "FileCount": 158,
+      "ExactFileSetAndEveryInnerSha256": "PASS"
+    },
+    {
+      "Name": "operation15-final-win-x64.zip",
+      "Size": 115706239,
+      "Sha256": "2bdf336c9b694f511501aa6af3fc3a48f57419f0a60344d020e2e9552aa60bbd",
+      "LocalRemoteBytes": "IDENTICAL",
+      "ZipCRC": "PASS",
+      "FileCount": 843,
+      "ExactFileSetAndEveryInnerSha256": "PASS"
+    },
+    {
+      "Name": "reference.barcode-1.0.3.ipcx",
+      "Size": 7580,
+      "Sha256": "4b21f65346743953d897d3700c0ae7d3cf1272a0954b02f63ba3bf2decb7f8f9",
+      "LocalRemoteBytes": "IDENTICAL",
+      "ZipCRC": "PASS",
+      "FileCount": 3
+    },
+    {
+      "Name": "reference.integration-1.0.3.ipcx",
+      "Size": 13325,
+      "Sha256": "5e2d649a549a101d9749e95d5f5385a9da3120907baa45c9d2f91908a8bc2095",
+      "LocalRemoteBytes": "IDENTICAL",
+      "ZipCRC": "PASS",
+      "FileCount": 3
+    },
+    {
+      "Name": "trust.Simulation.reference.json",
+      "Size": 775,
+      "Sha256": "a3a346da7effd4ee078f4ab5cdb769058ee6fc4b1040dc4bdcec58bfe9ff2da8",
+      "LocalRemoteBytes": "IDENTICAL"
+    }
+  ],
+  "Windows": "NOT_RUN",
+  "ActualClientScreenshots": 0
+}

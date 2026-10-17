@@ -1,0 +1,1779 @@
+{"EventId":0,"LogLevel":"Information","Category":"Ipc.Product.ProductRuntime","Message":"Runtime eea52d84-84e9-4477-8dd4-9b93e1e1237b station SIM-STATION-01 configuration UPGRADE-TRANSITION mode Simulation ready for identity/context validation","State":{"Runtime":"eea52d84-84e9-4477-8dd4-9b93e1e1237b","Station":"SIM-STATION-01","Revision":"UPGRADE-TRANSITION","Mode":"Simulation","{OriginalFormat}":"Runtime {Runtime} station {Station} configuration {Revision} mode {Mode} ready for identity/context validation"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: ReferenceProduct","State":{"EnvName":"ReferenceProduct","{OriginalFormat}":"Hosting environment: {EnvName}"}}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /reference/workspace","State":{"ContentRoot":"/reference/workspace","{OriginalFormat}":"Content root path: {ContentRoot}"}}
+JSON command console. One command per line; snapshot / emit / replay / reconcile / export / quit supported. SIMULATION only.
+{
+  "State": {
+    "Revision": 56,
+    "Session": {
+      "Id": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Barcode": "000001",
+      "Context": {
+        "BoxWave": "SIM-BOX-WAVE-D9B3EEB3380D",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "52d15c301ec9490fbab22058331f319a",
+          "AcquiredAt": "2026-10-17T12:48:46.215545+00:00"
+        }
+      },
+      "Status": "Closed",
+      "CloseCheckRequest": "9e036234d96c4bf2bf0d7688837f70c7",
+      "CloseRemaining": 118,
+      "CloseToken": "87fc14e3e79040799184adbff77abe59",
+      "CloseRequest": "dcc00ecd3491450ba90675c78a74f447",
+      "OpenedAt": "2026-10-17T12:48:46.138698+00:00",
+      "ClosedAt": "2026-10-17T12:48:47.17365+00:00",
+      "OpenedBy": {
+        "Id": "SIM-maintenance",
+        "Role": "Maintenance",
+        "ExpiresAt": "2026-10-17T20:48:46.010726+00:00"
+      }
+    },
+    "Lanes": {
+      "left": {
+        "Id": "f0e1609c5b34419499c6e753331a4fb3",
+        "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+        "Lane": "left",
+        "AdmissionId": "0fca172372ef468d8047146b0faa823b",
+        "Revision": 5,
+        "PermitEpoch": "ef20e335b72d461694ac1f4fe833d8a0",
+        "PermitRevision": 1,
+        "PermitExpiresAt": "2026-10-17T13:18:46.298075+00:00",
+        "Barcode": "000123",
+        "BoxBarcode": "000001",
+        "BoxWave": "SIM-BOX-WAVE-D9B3EEB3380D",
+        "Task": {
+          "Sku": "SIM-SKU-4403E0E0DC91",
+          "ItemWave": "SIM-ITEM-WAVE-792369BDB1F2",
+          "TaskId": "SIM-TASK-E4FCEC49CC5C",
+          "Destination": "SIM-CHUTE-04",
+          "Unit": "\u4EF6",
+          "Provenance": {
+            "Source": "Independent synthetic task fixture",
+            "Version": "SYNTHETIC-SEMANTICS-v1",
+            "EvidenceId": "7ce7040eee0b4f1b94044d25605722b7",
+            "AcquiredAt": "2026-10-17T12:48:46.440586+00:00"
+          }
+        },
+        "CurrentInput": {
+          "ObservationId": "fbde120ad00c4dbb81b05f9f4b9eb5ba",
+          "Codes": [
+            "000123"
+          ],
+          "PackageQuantity": 2,
+          "ObservedAt": "2026-10-17T12:48:46.413495+00:00"
+        },
+        "PreviousConfirmed": null,
+        "Package": 2,
+        "Remaining": 120,
+        "Supply": 2,
+        "Status": "Accepted",
+        "Occupancy": "Clear",
+        "SplitScans": [],
+        "ObservationIds": [
+          "fbde120ad00c4dbb81b05f9f4b9eb5ba"
+        ],
+        "Reason": "SIMULATION accepted",
+        "CreatedAt": "2026-10-17T12:48:46.298+00:00"
+      }
+    },
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "d2da7ed1b91e4db5a026c24086b7e1f4",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:47.714959+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:47.714959+00:00",
+        "ValidUntil": "2026-10-17T12:48:52.714959+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "8fb6b81d2da7444396da2dccea85d6f6",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:47.715902+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:47.715902+00:00",
+        "ValidUntil": "2026-10-17T12:48:52.715902+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [
+      {
+        "Code": "WcsUnavailable",
+        "Scope": "station",
+        "Source": "transport",
+        "SourceEpoch": "SIM-1",
+        "EvidenceVersion": 51,
+        "ClearAuthority": "transport-health",
+        "ExpiresAt": null
+      }
+    ],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Disconnected",
+      "UpdatedAt": "2026-10-17T12:48:47.700865+00:00",
+      "ConfirmedAt": "2026-10-17T12:48:47.700865+00:00",
+      "ValidUntil": "2026-10-17T12:48:52.200865+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [
+    {
+      "Id": "3c2cae7c9eb94e01aabb8373924faab7",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "d2d75c968ab54e04856ee2b3d58845a5:Context:1",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "0FFBB68E428676D933059BDE2E557639BB95BB732305FC158C26106E3240E3C3",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.142631+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "1b50704ceec549299c7de0468cdec933",
+      "OwnerId": "f0e1609c5b34419499c6e753331a4fb3",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Validate",
+      "OwnerRevision": 2,
+      "IntentKey": "f0e1609c5b34419499c6e753331a4fb3:Validate:2",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022f0e1609c5b34419499c6e753331a4fb3\u0022,\n  \u0022OwnerRevision\u0022: 2,\n  \u0022Kind\u0022: \u0022Validate\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "DD2AFFB69625B2AF6C59F1E7CA344F4E2111284E8A850E277E331F949C7A25A2",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.414327+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "ba34f9e7280d4d79a4a1c8ddd0033e54",
+      "OwnerId": "f0e1609c5b34419499c6e753331a4fb3",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Submit",
+      "OwnerRevision": 3,
+      "IntentKey": "f0e1609c5b34419499c6e753331a4fb3:Submit:3",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022f0e1609c5b34419499c6e753331a4fb3\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "264C71ABA12D5158D1770C2D44ED4A8E158EB0B11624691F1E75A6A74385B4E6",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.6412+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "9e036234d96c4bf2bf0d7688837f70c7",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "CheckClose",
+      "OwnerRevision": 39,
+      "IntentKey": "d2d75c968ab54e04856ee2b3d58845a5:CheckClose:39",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerRevision\u0022: 39,\n  \u0022Kind\u0022: \u0022CheckClose\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "A3271C29352EA740216FE4D956630301EA93DDC559A9BE08451986C4DF32E5D9",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.963362+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "dcc00ecd3491450ba90675c78a74f447",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Close",
+      "OwnerRevision": 43,
+      "IntentKey": "d2d75c968ab54e04856ee2b3d58845a5:Close:43",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerRevision\u0022: 43,\n  \u0022Kind\u0022: \u0022Close\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: \u002287fc14e3e79040799184adbff77abe59\u0022,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "7B0783636E041DE261363E7B67E9DA6042515AFCFDA463CC0F50AD281D83F1FC",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:47.147102+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    }
+  ],
+  "Alarms": [
+    {
+      "Id": "17819652cd574c3e954318286411b536",
+      "Code": "WcsUnavailable:station",
+      "Scope": "station",
+      "Source": "transport",
+      "Epoch": "SIM-1",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "RaisedAt": "2026-10-17T12:48:47.709067+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    },
+    {
+      "Id": "744cbd64c1e1425d9996bea4f9b9ff24",
+      "Code": "WcsHealth:Health:Disconnected",
+      "Scope": "station",
+      "Source": "runtime",
+      "Epoch": "2f9be2e6-25fa-40fb-9217-6d278e533c00",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "RaisedAt": "2026-10-17T12:48:47.708231+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    },
+    {
+      "Id": "19be815bb29047a9999ba3b8346f4378",
+      "Code": "ConfigPending:station",
+      "Scope": "station",
+      "Source": "configuration",
+      "Epoch": "429db996a78d421c8c36ece3028b2305",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "RaisedAt": "2026-10-17T12:48:47.306174+00:00",
+      "AckedBy": null,
+      "AckedAt": null,
+      "ClearedAt": null
+    }
+  ],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "WcsUnavailable:station",
+      "WcsHealth:Health:Disconnected"
+    ]
+  },
+  "OperationGuards": {
+    "left": {
+      "Allowed": false,
+      "Reasons": [
+        "IdentityUnavailable",
+        "WcsUnavailable:station",
+        "WcsHealth:Health:Disconnected",
+        "NoActiveBoxOrCloseBarrier",
+        "EntityEpochChanged: explicit synthetic revalidation required",
+        "OperationNotReady",
+        "EntityNotOccupied"
+      ]
+    }
+  },
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 3,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "SIM-STATION-01",
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 1,
+  "GeneratedAt": "2026-10-17T12:48:47.731602+00:00",
+  "AcceptedQuantity": 2,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 57,
+    "Session": {
+      "Id": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Barcode": "000001",
+      "Context": {
+        "BoxWave": "SIM-BOX-WAVE-D9B3EEB3380D",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "52d15c301ec9490fbab22058331f319a",
+          "AcquiredAt": "2026-10-17T12:48:46.215545+00:00"
+        }
+      },
+      "Status": "Closed",
+      "CloseCheckRequest": "9e036234d96c4bf2bf0d7688837f70c7",
+      "CloseRemaining": 118,
+      "CloseToken": "87fc14e3e79040799184adbff77abe59",
+      "CloseRequest": "dcc00ecd3491450ba90675c78a74f447",
+      "OpenedAt": "2026-10-17T12:48:46.138698+00:00",
+      "ClosedAt": "2026-10-17T12:48:47.17365+00:00",
+      "OpenedBy": {
+        "Id": "SIM-maintenance",
+        "Role": "Maintenance",
+        "ExpiresAt": "2026-10-17T20:48:46.010726+00:00"
+      }
+    },
+    "Lanes": {
+      "left": {
+        "Id": "f0e1609c5b34419499c6e753331a4fb3",
+        "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+        "Lane": "left",
+        "AdmissionId": "0fca172372ef468d8047146b0faa823b",
+        "Revision": 5,
+        "PermitEpoch": "ef20e335b72d461694ac1f4fe833d8a0",
+        "PermitRevision": 1,
+        "PermitExpiresAt": "2026-10-17T13:18:46.298075+00:00",
+        "Barcode": "000123",
+        "BoxBarcode": "000001",
+        "BoxWave": "SIM-BOX-WAVE-D9B3EEB3380D",
+        "Task": {
+          "Sku": "SIM-SKU-4403E0E0DC91",
+          "ItemWave": "SIM-ITEM-WAVE-792369BDB1F2",
+          "TaskId": "SIM-TASK-E4FCEC49CC5C",
+          "Destination": "SIM-CHUTE-04",
+          "Unit": "\u4EF6",
+          "Provenance": {
+            "Source": "Independent synthetic task fixture",
+            "Version": "SYNTHETIC-SEMANTICS-v1",
+            "EvidenceId": "7ce7040eee0b4f1b94044d25605722b7",
+            "AcquiredAt": "2026-10-17T12:48:46.440586+00:00"
+          }
+        },
+        "CurrentInput": {
+          "ObservationId": "fbde120ad00c4dbb81b05f9f4b9eb5ba",
+          "Codes": [
+            "000123"
+          ],
+          "PackageQuantity": 2,
+          "ObservedAt": "2026-10-17T12:48:46.413495+00:00"
+        },
+        "PreviousConfirmed": null,
+        "Package": 2,
+        "Remaining": 120,
+        "Supply": 2,
+        "Status": "Accepted",
+        "Occupancy": "Clear",
+        "SplitScans": [],
+        "ObservationIds": [
+          "fbde120ad00c4dbb81b05f9f4b9eb5ba"
+        ],
+        "Reason": "SIMULATION accepted",
+        "CreatedAt": "2026-10-17T12:48:46.298+00:00"
+      }
+    },
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "d2da7ed1b91e4db5a026c24086b7e1f4",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:47.714959+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:47.714959+00:00",
+        "ValidUntil": "2026-10-17T12:48:52.714959+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "8fb6b81d2da7444396da2dccea85d6f6",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:47.715902+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:47.715902+00:00",
+        "ValidUntil": "2026-10-17T12:48:52.715902+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T12:48:47.736694+00:00",
+      "ConfirmedAt": "2026-10-17T12:48:47.736694+00:00",
+      "ValidUntil": "2026-10-17T12:48:52.236694+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [
+    {
+      "Id": "3c2cae7c9eb94e01aabb8373924faab7",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "d2d75c968ab54e04856ee2b3d58845a5:Context:1",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "0FFBB68E428676D933059BDE2E557639BB95BB732305FC158C26106E3240E3C3",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.142631+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "1b50704ceec549299c7de0468cdec933",
+      "OwnerId": "f0e1609c5b34419499c6e753331a4fb3",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Validate",
+      "OwnerRevision": 2,
+      "IntentKey": "f0e1609c5b34419499c6e753331a4fb3:Validate:2",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022f0e1609c5b34419499c6e753331a4fb3\u0022,\n  \u0022OwnerRevision\u0022: 2,\n  \u0022Kind\u0022: \u0022Validate\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "DD2AFFB69625B2AF6C59F1E7CA344F4E2111284E8A850E277E331F949C7A25A2",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.414327+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "ba34f9e7280d4d79a4a1c8ddd0033e54",
+      "OwnerId": "f0e1609c5b34419499c6e753331a4fb3",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Submit",
+      "OwnerRevision": 3,
+      "IntentKey": "f0e1609c5b34419499c6e753331a4fb3:Submit:3",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022f0e1609c5b34419499c6e753331a4fb3\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "264C71ABA12D5158D1770C2D44ED4A8E158EB0B11624691F1E75A6A74385B4E6",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.6412+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "9e036234d96c4bf2bf0d7688837f70c7",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "CheckClose",
+      "OwnerRevision": 39,
+      "IntentKey": "d2d75c968ab54e04856ee2b3d58845a5:CheckClose:39",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerRevision\u0022: 39,\n  \u0022Kind\u0022: \u0022CheckClose\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "A3271C29352EA740216FE4D956630301EA93DDC559A9BE08451986C4DF32E5D9",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.963362+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "dcc00ecd3491450ba90675c78a74f447",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Close",
+      "OwnerRevision": 43,
+      "IntentKey": "d2d75c968ab54e04856ee2b3d58845a5:Close:43",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerRevision\u0022: 43,\n  \u0022Kind\u0022: \u0022Close\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: \u002287fc14e3e79040799184adbff77abe59\u0022,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "7B0783636E041DE261363E7B67E9DA6042515AFCFDA463CC0F50AD281D83F1FC",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:47.147102+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    }
+  ],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable"
+    ]
+  },
+  "OperationGuards": {
+    "left": {
+      "Allowed": false,
+      "Reasons": [
+        "IdentityUnavailable",
+        "NoActiveBoxOrCloseBarrier",
+        "EntityEpochChanged: explicit synthetic revalidation required",
+        "OperationNotReady",
+        "EntityNotOccupied"
+      ]
+    }
+  },
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "SIM-STATION-01",
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 2,
+  "GeneratedAt": "2026-10-17T12:48:47.799349+00:00",
+  "AcceptedQuantity": 2,
+  "RecentOperations": []
+}
+{
+  "State": {
+    "Revision": 57,
+    "Session": {
+      "Id": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Barcode": "000001",
+      "Context": {
+        "BoxWave": "SIM-BOX-WAVE-D9B3EEB3380D",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "52d15c301ec9490fbab22058331f319a",
+          "AcquiredAt": "2026-10-17T12:48:46.215545+00:00"
+        }
+      },
+      "Status": "Closed",
+      "CloseCheckRequest": "9e036234d96c4bf2bf0d7688837f70c7",
+      "CloseRemaining": 118,
+      "CloseToken": "87fc14e3e79040799184adbff77abe59",
+      "CloseRequest": "dcc00ecd3491450ba90675c78a74f447",
+      "OpenedAt": "2026-10-17T12:48:46.138698+00:00",
+      "ClosedAt": "2026-10-17T12:48:47.17365+00:00",
+      "OpenedBy": {
+        "Id": "SIM-maintenance",
+        "Role": "Maintenance",
+        "ExpiresAt": "2026-10-17T20:48:46.010726+00:00"
+      }
+    },
+    "Lanes": {
+      "left": {
+        "Id": "f0e1609c5b34419499c6e753331a4fb3",
+        "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+        "Lane": "left",
+        "AdmissionId": "0fca172372ef468d8047146b0faa823b",
+        "Revision": 5,
+        "PermitEpoch": "ef20e335b72d461694ac1f4fe833d8a0",
+        "PermitRevision": 1,
+        "PermitExpiresAt": "2026-10-17T13:18:46.298075+00:00",
+        "Barcode": "000123",
+        "BoxBarcode": "000001",
+        "BoxWave": "SIM-BOX-WAVE-D9B3EEB3380D",
+        "Task": {
+          "Sku": "SIM-SKU-4403E0E0DC91",
+          "ItemWave": "SIM-ITEM-WAVE-792369BDB1F2",
+          "TaskId": "SIM-TASK-E4FCEC49CC5C",
+          "Destination": "SIM-CHUTE-04",
+          "Unit": "\u4EF6",
+          "Provenance": {
+            "Source": "Independent synthetic task fixture",
+            "Version": "SYNTHETIC-SEMANTICS-v1",
+            "EvidenceId": "7ce7040eee0b4f1b94044d25605722b7",
+            "AcquiredAt": "2026-10-17T12:48:46.440586+00:00"
+          }
+        },
+        "CurrentInput": {
+          "ObservationId": "fbde120ad00c4dbb81b05f9f4b9eb5ba",
+          "Codes": [
+            "000123"
+          ],
+          "PackageQuantity": 2,
+          "ObservedAt": "2026-10-17T12:48:46.413495+00:00"
+        },
+        "PreviousConfirmed": null,
+        "Package": 2,
+        "Remaining": 120,
+        "Supply": 2,
+        "Status": "Accepted",
+        "Occupancy": "Clear",
+        "SplitScans": [],
+        "ObservationIds": [
+          "fbde120ad00c4dbb81b05f9f4b9eb5ba"
+        ],
+        "Reason": "SIMULATION accepted",
+        "CreatedAt": "2026-10-17T12:48:46.298+00:00"
+      }
+    },
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "d2da7ed1b91e4db5a026c24086b7e1f4",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:47.714959+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:47.714959+00:00",
+        "ValidUntil": "2026-10-17T12:48:52.714959+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "8fb6b81d2da7444396da2dccea85d6f6",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:47.715902+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:47.715902+00:00",
+        "ValidUntil": "2026-10-17T12:48:52.715902+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": null,
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T12:48:47.736694+00:00",
+      "ConfirmedAt": "2026-10-17T12:48:47.736694+00:00",
+      "ValidUntil": "2026-10-17T12:48:52.236694+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [
+    {
+      "Id": "3c2cae7c9eb94e01aabb8373924faab7",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "d2d75c968ab54e04856ee2b3d58845a5:Context:1",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "0FFBB68E428676D933059BDE2E557639BB95BB732305FC158C26106E3240E3C3",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.142631+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "1b50704ceec549299c7de0468cdec933",
+      "OwnerId": "f0e1609c5b34419499c6e753331a4fb3",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Validate",
+      "OwnerRevision": 2,
+      "IntentKey": "f0e1609c5b34419499c6e753331a4fb3:Validate:2",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022f0e1609c5b34419499c6e753331a4fb3\u0022,\n  \u0022OwnerRevision\u0022: 2,\n  \u0022Kind\u0022: \u0022Validate\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "DD2AFFB69625B2AF6C59F1E7CA344F4E2111284E8A850E277E331F949C7A25A2",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.414327+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "ba34f9e7280d4d79a4a1c8ddd0033e54",
+      "OwnerId": "f0e1609c5b34419499c6e753331a4fb3",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Submit",
+      "OwnerRevision": 3,
+      "IntentKey": "f0e1609c5b34419499c6e753331a4fb3:Submit:3",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022f0e1609c5b34419499c6e753331a4fb3\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "264C71ABA12D5158D1770C2D44ED4A8E158EB0B11624691F1E75A6A74385B4E6",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.6412+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "9e036234d96c4bf2bf0d7688837f70c7",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "CheckClose",
+      "OwnerRevision": 39,
+      "IntentKey": "d2d75c968ab54e04856ee2b3d58845a5:CheckClose:39",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerRevision\u0022: 39,\n  \u0022Kind\u0022: \u0022CheckClose\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "A3271C29352EA740216FE4D956630301EA93DDC559A9BE08451986C4DF32E5D9",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.963362+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "dcc00ecd3491450ba90675c78a74f447",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Close",
+      "OwnerRevision": 43,
+      "IntentKey": "d2d75c968ab54e04856ee2b3d58845a5:Close:43",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerRevision\u0022: 43,\n  \u0022Kind\u0022: \u0022Close\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: \u002287fc14e3e79040799184adbff77abe59\u0022,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "7B0783636E041DE261363E7B67E9DA6042515AFCFDA463CC0F50AD281D83F1FC",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:47.147102+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    }
+  ],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable",
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": false,
+    "Reasons": [
+      "IdentityUnavailable"
+    ]
+  },
+  "OperationGuards": {
+    "left": {
+      "Allowed": false,
+      "Reasons": [
+        "IdentityUnavailable",
+        "NoActiveBoxOrCloseBarrier",
+        "EntityEpochChanged: explicit synthetic revalidation required",
+        "OperationNotReady",
+        "EntityNotOccupied"
+      ]
+    }
+  },
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload",
+      "UnexpiredMaintenanceIdentityRequired"
+    ]
+  },
+  "StationId": "SIM-STATION-01",
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 3,
+  "GeneratedAt": "2026-10-17T12:48:47.83453+00:00",
+  "AcceptedQuantity": 2,
+  "RecentOperations": []
+}
+{
+  "Status": "Persisted",
+  "Reason": "Saved locally; external acceptance is separate",
+  "Revision": 58,
+  "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+  "RequestId": null
+}
+{
+  "State": {
+    "Revision": 58,
+    "Session": {
+      "Id": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Barcode": "000001",
+      "Context": {
+        "BoxWave": "SIM-BOX-WAVE-D9B3EEB3380D",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "52d15c301ec9490fbab22058331f319a",
+          "AcquiredAt": "2026-10-17T12:48:46.215545+00:00"
+        }
+      },
+      "Status": "Closed",
+      "CloseCheckRequest": "9e036234d96c4bf2bf0d7688837f70c7",
+      "CloseRemaining": 118,
+      "CloseToken": "87fc14e3e79040799184adbff77abe59",
+      "CloseRequest": "dcc00ecd3491450ba90675c78a74f447",
+      "OpenedAt": "2026-10-17T12:48:46.138698+00:00",
+      "ClosedAt": "2026-10-17T12:48:47.17365+00:00",
+      "OpenedBy": {
+        "Id": "SIM-maintenance",
+        "Role": "Maintenance",
+        "ExpiresAt": "2026-10-17T20:48:46.010726+00:00"
+      }
+    },
+    "Lanes": {
+      "left": {
+        "Id": "f0e1609c5b34419499c6e753331a4fb3",
+        "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+        "Lane": "left",
+        "AdmissionId": "0fca172372ef468d8047146b0faa823b",
+        "Revision": 5,
+        "PermitEpoch": "ef20e335b72d461694ac1f4fe833d8a0",
+        "PermitRevision": 1,
+        "PermitExpiresAt": "2026-10-17T13:18:46.298075+00:00",
+        "Barcode": "000123",
+        "BoxBarcode": "000001",
+        "BoxWave": "SIM-BOX-WAVE-D9B3EEB3380D",
+        "Task": {
+          "Sku": "SIM-SKU-4403E0E0DC91",
+          "ItemWave": "SIM-ITEM-WAVE-792369BDB1F2",
+          "TaskId": "SIM-TASK-E4FCEC49CC5C",
+          "Destination": "SIM-CHUTE-04",
+          "Unit": "\u4EF6",
+          "Provenance": {
+            "Source": "Independent synthetic task fixture",
+            "Version": "SYNTHETIC-SEMANTICS-v1",
+            "EvidenceId": "7ce7040eee0b4f1b94044d25605722b7",
+            "AcquiredAt": "2026-10-17T12:48:46.440586+00:00"
+          }
+        },
+        "CurrentInput": {
+          "ObservationId": "fbde120ad00c4dbb81b05f9f4b9eb5ba",
+          "Codes": [
+            "000123"
+          ],
+          "PackageQuantity": 2,
+          "ObservedAt": "2026-10-17T12:48:46.413495+00:00"
+        },
+        "PreviousConfirmed": null,
+        "Package": 2,
+        "Remaining": 120,
+        "Supply": 2,
+        "Status": "Accepted",
+        "Occupancy": "Clear",
+        "SplitScans": [],
+        "ObservationIds": [
+          "fbde120ad00c4dbb81b05f9f4b9eb5ba"
+        ],
+        "Reason": "SIMULATION accepted",
+        "CreatedAt": "2026-10-17T12:48:46.298+00:00"
+      }
+    },
+    "Devices": {
+      "left": {
+        "DeviceId": "SIM-CAMERA-L",
+        "Epoch": "d2da7ed1b91e4db5a026c24086b7e1f4",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:47.714959+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:47.714959+00:00",
+        "ValidUntil": "2026-10-17T12:48:52.714959+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      },
+      "right": {
+        "DeviceId": "SIM-CAMERA-R",
+        "Epoch": "8fb6b81d2da7444396da2dccea85d6f6",
+        "Sequence": 0,
+        "Health": "Ready",
+        "UpdatedAt": "2026-10-17T12:48:47.715902+00:00",
+        "ConfirmedAt": "2026-10-17T12:48:47.715902+00:00",
+        "ValidUntil": "2026-10-17T12:48:52.715902+00:00",
+        "Source": "SIMULATION:manual",
+        "Invalidity": null
+      }
+    },
+    "Blocks": [],
+    "Actor": {
+      "Id": "SIM-maintenance",
+      "Role": "Maintenance",
+      "ExpiresAt": "2026-10-17T20:48:47.878067+00:00"
+    },
+    "IntegrationHealth": {
+      "DeviceId": "loopback",
+      "Epoch": "SIM-1",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-17T12:48:47.736694+00:00",
+      "ConfirmedAt": "2026-10-17T12:48:47.736694+00:00",
+      "ValidUntil": "2026-10-17T12:48:52.236694+00:00",
+      "Source": "SIMULATION:loopback-health",
+      "Invalidity": null
+    },
+    "Quarantined": false,
+    "Stopping": false,
+    "NextFault": "None"
+  },
+  "Requests": [
+    {
+      "Id": "3c2cae7c9eb94e01aabb8373924faab7",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Context",
+      "OwnerRevision": 1,
+      "IntentKey": "d2d75c968ab54e04856ee2b3d58845a5:Context:1",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "0FFBB68E428676D933059BDE2E557639BB95BB732305FC158C26106E3240E3C3",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.142631+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "1b50704ceec549299c7de0468cdec933",
+      "OwnerId": "f0e1609c5b34419499c6e753331a4fb3",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Validate",
+      "OwnerRevision": 2,
+      "IntentKey": "f0e1609c5b34419499c6e753331a4fb3:Validate:2",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022f0e1609c5b34419499c6e753331a4fb3\u0022,\n  \u0022OwnerRevision\u0022: 2,\n  \u0022Kind\u0022: \u0022Validate\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "DD2AFFB69625B2AF6C59F1E7CA344F4E2111284E8A850E277E331F949C7A25A2",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.414327+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "ba34f9e7280d4d79a4a1c8ddd0033e54",
+      "OwnerId": "f0e1609c5b34419499c6e753331a4fb3",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Submit",
+      "OwnerRevision": 3,
+      "IntentKey": "f0e1609c5b34419499c6e753331a4fb3:Submit:3",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022f0e1609c5b34419499c6e753331a4fb3\u0022,\n  \u0022OwnerRevision\u0022: 3,\n  \u0022Kind\u0022: \u0022Submit\u0022,\n  \u0022Barcode\u0022: \u0022000123\u0022,\n  \u0022Package\u0022: 2,\n  \u0022Quantity\u0022: 2,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Drop\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "264C71ABA12D5158D1770C2D44ED4A8E158EB0B11624691F1E75A6A74385B4E6",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.6412+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "9e036234d96c4bf2bf0d7688837f70c7",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "CheckClose",
+      "OwnerRevision": 39,
+      "IntentKey": "d2d75c968ab54e04856ee2b3d58845a5:CheckClose:39",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerRevision\u0022: 39,\n  \u0022Kind\u0022: \u0022CheckClose\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "A3271C29352EA740216FE4D956630301EA93DDC559A9BE08451986C4DF32E5D9",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:46.963362+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    },
+    {
+      "Id": "dcc00ecd3491450ba90675c78a74f447",
+      "OwnerId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Kind": "Close",
+      "OwnerRevision": 43,
+      "IntentKey": "d2d75c968ab54e04856ee2b3d58845a5:Close:43",
+      "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-STATION-01\u0022,\n  \u0022SessionId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerId\u0022: \u0022d2d75c968ab54e04856ee2b3d58845a5\u0022,\n  \u0022OwnerRevision\u0022: 43,\n  \u0022Kind\u0022: \u0022Close\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: \u002287fc14e3e79040799184adbff77abe59\u0022,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022None\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-maintenance\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T20:48:46.010726\u002B00:00\u0022\n  }\n}",
+      "PayloadHash": "7B0783636E041DE261363E7B67E9DA6042515AFCFDA463CC0F50AD281D83F1FC",
+      "Binding": {
+        "Id": "loopback",
+        "Revision": "SIM-1",
+        "Contract": "SIMULATION-v1",
+        "Endpoint": "http://127.0.0.1:18743/"
+      },
+      "Status": "Accepted",
+      "CreatedAt": "2026-10-17T12:48:47.147102+00:00",
+      "Implementation": {
+        "Driver": "extension",
+        "Package": {
+          "Id": "reference.integration",
+          "Version": "1.0.1",
+          "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+        },
+        "ModuleId": "reference-http",
+        "InstanceId": "upgrade-receiver",
+        "DeploymentVersion": "UPGRADE-OLD-1.0.1",
+        "ConfigurationSha256": "BF5C7F27E27ACEBA4FB73369393A91E61925225564BEA1AC2E69C8C236476F9E",
+        "ContractSha256": "2FCFBD711A9D91F257AE84A256F23E49C96A2EFF583DFA87AD1C998DA99CF733",
+        "Target": {
+          "Id": "loopback",
+          "Revision": "SIM-1",
+          "Contract": "SIMULATION-v1",
+          "Endpoint": "http://127.0.0.1:18743/"
+        },
+        "TimeoutMs": 1500,
+        "Policy": "SYNTHETIC-KEEP-v1",
+        "FixtureDemand": 120,
+        "Parameters": {
+          "fault.fail-create": "false",
+          "fault.stop-delay-ms": "0",
+          "fault.dispose-delay-ms": "0",
+          "metadata.label": ""
+        }
+      }
+    }
+  ],
+  "Alarms": [],
+  "Admit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Submit": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveBoxOrCloseBarrier"
+    ]
+  },
+  "Close": {
+    "Allowed": true,
+    "Reasons": []
+  },
+  "OperationGuards": {
+    "left": {
+      "Allowed": false,
+      "Reasons": [
+        "NoActiveBoxOrCloseBarrier",
+        "EntityEpochChanged: explicit synthetic revalidation required",
+        "OperationNotReady",
+        "EntityNotOccupied"
+      ]
+    }
+  },
+  "RuntimeFaults": [],
+  "Recovery": [],
+  "ActiveAlarmCount": 0,
+  "OverloadVersion": 0,
+  "OverloadRecovery": {
+    "Allowed": false,
+    "Reasons": [
+      "NoActiveOverload"
+    ]
+  },
+  "StationId": "SIM-STATION-01",
+  "NotificationBacklog": 0,
+  "NotificationOverflow": 0,
+  "ProjectionVersion": 4,
+  "GeneratedAt": "2026-10-17T12:48:47.898561+00:00",
+  "AcceptedQuantity": 2,
+  "RecentOperations": [
+    {
+      "Id": "f0e1609c5b34419499c6e753331a4fb3",
+      "SessionId": "d2d75c968ab54e04856ee2b3d58845a5",
+      "Lane": "left",
+      "AdmissionId": "0fca172372ef468d8047146b0faa823b",
+      "Revision": 5,
+      "PermitEpoch": "ef20e335b72d461694ac1f4fe833d8a0",
+      "PermitRevision": 1,
+      "PermitExpiresAt": "2026-10-17T13:18:46.298075+00:00",
+      "Barcode": "000123",
+      "BoxBarcode": "000001",
+      "BoxWave": "SIM-BOX-WAVE-D9B3EEB3380D",
+      "Task": {
+        "Sku": "SIM-SKU-4403E0E0DC91",
+        "ItemWave": "SIM-ITEM-WAVE-792369BDB1F2",
+        "TaskId": "SIM-TASK-E4FCEC49CC5C",
+        "Destination": "SIM-CHUTE-04",
+        "Unit": "\u4EF6",
+        "Provenance": {
+          "Source": "Independent synthetic task fixture",
+          "Version": "SYNTHETIC-SEMANTICS-v1",
+          "EvidenceId": "7ce7040eee0b4f1b94044d25605722b7",
+          "AcquiredAt": "2026-10-17T12:48:46.440586+00:00"
+        }
+      },
+      "CurrentInput": {
+        "ObservationId": "fbde120ad00c4dbb81b05f9f4b9eb5ba",
+        "Codes": [
+          "000123"
+        ],
+        "PackageQuantity": 2,
+        "ObservedAt": "2026-10-17T12:48:46.413495+00:00"
+      },
+      "PreviousConfirmed": null,
+      "Package": 2,
+      "Remaining": 120,
+      "Supply": 2,
+      "Status": "Accepted",
+      "Occupancy": "Clear",
+      "SplitScans": [],
+      "ObservationIds": [
+        "fbde120ad00c4dbb81b05f9f4b9eb5ba"
+      ],
+      "Reason": "SIMULATION accepted",
+      "CreatedAt": "2026-10-17T12:48:46.298+00:00"
+    }
+  ]
+}
+{
+  "State": "Available",
+  "Diagnostics": [],
+  "Packages": [
+    {
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.0.1",
+        "ManifestSha256": "1327AFA2291F8076E0043A5E24665A67F32FF3ED1991FA1310E2F865EFD7104F"
+      },
+      "PackageSha256": "979A395CA49F7D4017EA3EE88E2B7A341FF49C6AC4FCADC08190D2DFBBA6F2C1",
+      "TrustSha256": "8A871C85F59E904804BCB8DA8EFA47A71B8BE43B898DF8860F14ABB4BD6C6B28",
+      "OperationId": "4fe1db7118bb489586895e075586ec30",
+      "At": "2026-10-17T12:48:44.282692+00:00",
+      "Status": "Installed",
+      "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
+    },
+    {
+      "Package": {
+        "Id": "reference.integration",
+        "Version": "1.0.1",
+        "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+      },
+      "PackageSha256": "9B5433D6279F899538CD6A500918164FF3D3037271F2028A14A04009F1396039",
+      "TrustSha256": "8A871C85F59E904804BCB8DA8EFA47A71B8BE43B898DF8860F14ABB4BD6C6B28",
+      "OperationId": "2259a0efc92740a0ab418a44d0b94d89",
+      "At": "2026-10-17T12:48:44.724306+00:00",
+      "Status": "Installed",
+      "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
+    }
+  ],
+  "Operations": [
+    {
+      "Id": "2259a0efc92740a0ab418a44d0b94d89",
+      "PackageSha256": "9B5433D6279F899538CD6A500918164FF3D3037271F2028A14A04009F1396039",
+      "Package": {
+        "Id": "reference.integration",
+        "Version": "1.0.1",
+        "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+      },
+      "State": "Registered",
+      "At": "2026-10-17T12:48:44.642059+00:00",
+      "Error": null,
+      "Kind": "Install"
+    },
+    {
+      "Id": "4fe1db7118bb489586895e075586ec30",
+      "PackageSha256": "979A395CA49F7D4017EA3EE88E2B7A341FF49C6AC4FCADC08190D2DFBBA6F2C1",
+      "Package": {
+        "Id": "reference.barcode",
+        "Version": "1.0.1",
+        "ManifestSha256": "1327AFA2291F8076E0043A5E24665A67F32FF3ED1991FA1310E2F865EFD7104F"
+      },
+      "State": "Registered",
+      "At": "2026-10-17T12:48:44.211697+00:00",
+      "Error": null,
+      "Kind": "Install"
+    }
+  ],
+  "EffectiveDeployment": "UPGRADE-TRANSITION",
+  "EffectiveFingerprint": "918508E1727FD91EBECE3FB311DC3F33872F5DED7C766170C3FC42221E7F270F"
+}
+{"EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."}}

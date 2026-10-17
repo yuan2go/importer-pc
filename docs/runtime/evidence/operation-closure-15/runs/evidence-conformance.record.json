@@ -1,0 +1,23 @@
+{
+  "Name": "evidence-conformance",
+  "SourceCommit": "0ccf3fc0c7b93f798b93a8b5b1f1d275dcfe81ed",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:41:50.447920+00:00",
+  "EndedAt": "2026-10-17T12:42:09.147697+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--conformance"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS selected verification scope --conformance",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "evidence-conformance.log",
+  "LogSha256": "fdde2e4a3932e99e1a57db7d97d4ab13c62f9093f83c65ee000d40a137e362be",
+  "RawLogSha256": "222ed3d6556328d5d5b2090902addb2b8d2d6defd6c5bedfca94c5e4ffde0d7e",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

@@ -1,0 +1,26 @@
+{
+  "Name": "final-build",
+  "SourceCommit": "3c36ba33cfe505604d1e11864db17a735d510598",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:35:17.899565+00:00",
+  "EndedAt": "2026-10-17T12:35:24.602792+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "build",
+    "ImporterPc.slnx",
+    "--no-restore",
+    "-m:1",
+    "-nr:false",
+    "-p:EnableWindowsTargeting=true"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "0 个错误",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "final-build.log",
+  "LogSha256": "47868962f611dd7bc96f3b6c40c81cbad04d60dac5fcad84caaae6857972c95c",
+  "RawLogSha256": "2db157d30e074fc31ce4567955d0f1926b1e7774a15a4e9a6eecbe2c6bee61d9",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

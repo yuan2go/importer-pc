@@ -1,0 +1,29 @@
+{
+  "Name": "upgrade-journey-v2",
+  "SourceCommit": "d2b2ca268013e7980f435e9cf8d9e48cd06ddc6c",
+  "WorkingTree": true,
+  "StartedAt": "2026-10-17T12:47:25.714918+00:00",
+  "EndedAt": "2026-10-17T12:47:36.934128+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "python3",
+    "scripts/verify-operation-upgrade.py",
+    "--old-release",
+    ".artifacts/operation15/legacy/release",
+    "--new-release",
+    ".artifacts/operation15/candidates/unpacked-portable",
+    "--dotnet",
+    "/reference/dotnet-10.0.402/dotnet",
+    "--output",
+    ".artifacts/operation15/upgrade-journey-v2"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS_SYNTHETIC_OLD_DEPLOYMENT_JOURNEY",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "upgrade-journey-v2.log",
+  "LogSha256": "344927722dde74286045238c930f8046fefe9d90d874bfc3a007688c15b75fc3",
+  "RawLogSha256": "f13a85e336810f0eea22ee2fce923f18f8a0949f48363b3f61e3e28c0bf30390",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

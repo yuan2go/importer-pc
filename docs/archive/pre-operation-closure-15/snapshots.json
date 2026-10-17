@@ -46,5 +46,21 @@
     "sha256": "8583548664749b4fc5839f5b8a98a26758ab9e49ad4689175bc0b9e1cacb913a",
     "snapshot": "docs/archive/pre-operation-closure-15/docs/design/framework-decisions.md.txt",
     "replacement": "AC15 current entry and scoped operational responsibilities; historical evidence retained"
+  },
+  {
+    "path": "README.md",
+    "source_commit": "5548b3f962c409079618635d3128830ea7887069",
+    "git_blob": "c07829e6c33d3b945edccffadc730ecfdb6135ad",
+    "sha256": "fa0caebbf9099cf2485c42414d1b2cbbce0703855e77f7ad377cf0c0bb14b06b",
+    "snapshot": "docs/archive/pre-operation-closure-15/README.md.txt",
+    "replacement": "Final15 implementation/current evidence entry; original valid design and historical results retained; saved before this edit"
+  },
+  {
+    "path": "docs/ui/STATUS.md",
+    "source_commit": "5548b3f962c409079618635d3128830ea7887069",
+    "git_blob": "5b1df7a2d237d81fd1447edcf1ee079e3e0426a7",
+    "sha256": "851a47a19bc990d8dfc4a46023200b518b93be77abdf5ce4b4db6722832cc266",
+    "snapshot": "docs/archive/pre-operation-closure-15/docs/ui/STATUS.md.txt",
+    "replacement": "Final15 implementation/current evidence entry; original valid design and historical results retained; saved before this edit"
   }
 ]

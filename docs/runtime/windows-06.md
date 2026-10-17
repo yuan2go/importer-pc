@@ -1,4 +1,4 @@
-> 当前由[15工作包](../work-packages/WP-IPC-OPERATION-CLOSURE-15.md)承接。Windows实际截图0，W01～06均NOT_RUN；14核心分项关闭及残余以[PR14后复核](../reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)为准。旧候选/待修时态见[原字节归档](../archive/pre-operation-closure-15/README.md)。未缩减支持矩阵，不新建VM/runner或扩OAuth。
+> 当前同版候选为OPERATION-CLOSURE-15源013862f，见[15报告](operation-closure-15.md)及[实际客户端后验清单](validation/operation-closure-15-windows.md)。实际截图0，W01～06均NOT_RUN；下方09候选和形成时时态是历史，支持/保护矩阵继续有效。不新建VM/runner或扩OAuth。
 
 # WINDOWS-VALIDATION-06 同版待验记录
 

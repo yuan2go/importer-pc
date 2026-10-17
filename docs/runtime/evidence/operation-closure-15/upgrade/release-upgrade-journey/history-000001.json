@@ -1,0 +1,76 @@
+{
+  "RuntimeId": "0db73260-efdb-444b-8d50-ddf5481b570a",
+  "Mode": "Simulation",
+  "StationId": "SIM-STATION-01",
+  "Version": "UPGRADE-OLD-1.0.1",
+  "Schema": 1,
+  "Revision": 36,
+  "Session": "d2d75c968ab54e04856ee2b3d58845a5",
+  "SessionState": "Active",
+  "Blocks": [],
+  "Modules": {
+    "observations": "Ready",
+    "sender": "Ready"
+  },
+  "FaultCodes": [],
+  "Requests": [
+    {
+      "Id": "1b50704ceec549299c7de0468cdec933",
+      "OwnerId": "f0e1609c5b34419499c6e753331a4fb3",
+      "Kind": "Validate",
+      "State": "Accepted",
+      "PayloadHash": "DD2AFFB69625B2AF6C59F1E7CA344F4E2111284E8A850E277E331F949C7A25A2",
+      "Contract": "SIMULATION-v1",
+      "BindingRevision": "SIM-1",
+      "Attempts": [
+        {
+          "Id": "a31361e524e44190b6db4d06975e7a28",
+          "RequestId": "1b50704ceec549299c7de0468cdec933",
+          "Ordinal": 1,
+          "StartedAt": "2026-10-17T12:48:46.438658+00:00",
+          "EndedAt": "2026-10-17T12:48:46.442356+00:00",
+          "Disposition": "Accepted",
+          "Error": null
+        }
+      ],
+      "Responses": [
+        {
+          "EvidenceId": "7ce7040eee0b4f1b94044d25605722b7",
+          "RequestId": "1b50704ceec549299c7de0468cdec933",
+          "Result": "Accepted",
+          "Quantity": 2,
+          "Remaining": 120
+        }
+      ]
+    },
+    {
+      "Id": "ba34f9e7280d4d79a4a1c8ddd0033e54",
+      "OwnerId": "f0e1609c5b34419499c6e753331a4fb3",
+      "Kind": "Submit",
+      "State": "Accepted",
+      "PayloadHash": "264C71ABA12D5158D1770C2D44ED4A8E158EB0B11624691F1E75A6A74385B4E6",
+      "Contract": "SIMULATION-v1",
+      "BindingRevision": "SIM-1",
+      "Attempts": [
+        {
+          "Id": "7235953a79244b1082762a6d90f97ad9",
+          "RequestId": "ba34f9e7280d4d79a4a1c8ddd0033e54",
+          "Ordinal": 1,
+          "StartedAt": "2026-10-17T12:48:46.646464+00:00",
+          "EndedAt": "2026-10-17T12:48:46.654137+00:00",
+          "Disposition": "Unknown",
+          "Error": "HttpRequestException: transport outcome not authoritative"
+        }
+      ],
+      "Responses": [
+        {
+          "EvidenceId": "d1ceeebc3e8c4356b32ca2cdc5939256",
+          "RequestId": "ba34f9e7280d4d79a4a1c8ddd0033e54",
+          "Result": "Accepted",
+          "Quantity": 2,
+          "Remaining": 118
+        }
+      ]
+    }
+  ]
+}

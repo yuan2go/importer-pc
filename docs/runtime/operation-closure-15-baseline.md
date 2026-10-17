@@ -26,42 +26,44 @@
 
 文件：Supply/ResponsePersistence、Store/Maintenance/HistoryQueries/ExtensionMaintenance；Supply.Contracts/Model；Product/SenderModule、ProductRuntime；Verifier。
 
-- [ ] 新增前向format5接收发生表，旧1～4 SQL/checksum不改。BeginReceiptAsync在真实Execute/Query前持久预登记；失败则不外呼。原件按发生ID接管；Complete携带同ID，T3原子保存响应/冲突/完成证据；无响应显式结束该次接收，外部结果Unknown仍独立保留。
-- [ ] 重启逐次重放，已提交T3可确认完成，缺原件的真正不确定接收持久隔离并给原请求/发生诊断；旧围栏作为legacy未知证据保留，不推测所有接收已取得。读者/清理/维护/包保留均同源。
-- [ ] 确定性Q1创建失败/Q2成功，Q1Flush+SQLite回滚/Q2创建失败；重启、AfterT3中断、真正无raw、并发Product查询与停止所有权。保留同EvidenceId冲突/迟到/唯一接受原断言。
+- [x] 新增前向format5接收发生表，旧1～4 SQL/checksum不改。BeginReceiptAsync在真实Execute/Query前持久预登记；失败则不外呼。原件按发生ID接管；Complete携带同ID，T3原子保存响应/冲突/完成证据；无响应显式结束该次接收，外部结果Unknown仍独立保留。
+- [x] 重启逐次重放，已提交T3可确认完成，缺原件的真正不确定接收持久隔离并给原请求/发生诊断；旧围栏作为legacy未知证据保留，不推测所有接收已取得。读者/清理/维护/包保留均同源。
+- [x] 确定性Q1创建失败/Q2成功，Q1Flush+SQLite回滚/Q2创建失败；重启、AfterT3中断、真正无raw、并发Product查询与停止所有权。保留同EvidenceId冲突/迟到/唯一接受原断言。
 
 ### P2 箱反馈与可用性
 
 文件：Contracts/Model、Supply投影；Desktop/ViewModels、MainWindow.xaml/.cs/Closure。
 
-- [ ] 持久箱级Context/CheckClose/Close结果及身份/原因，匹配原Session；当前状态与最后结果分别显示。应用Guard理由、主服务/来源/投影时效就近可见，Accepted事实不改。
-- [ ] 验证三类拒绝、旧箱/两通道交错与重启归属、权限和过期策略。
+- [x] 持久箱级Context/CheckClose/Close结果及身份/原因，匹配原Session；当前状态与最后结果分别显示。应用Guard理由、主服务/来源/投影时效就近可见，Accepted事实不改。
+- [x] 验证三类拒绝、旧箱/两通道交错与重启归属、权限和过期策略。
 
 ### P3 输入与维护
 
 文件：Desktop/ScanInputDraft、LaneControl、ConfigurationDraft、ExtensionsView/MainWindow.Extensions。
 
-- [ ] 有限接收隔离：当前请求期间禁止向已提交文本追加，新的输入保持独立草稿；结束符明确反馈且不自动提交；失败保持可重试、迟到不能消费新草稿/新作业。实际SendAsync完成路径调用同一策略。
-- [ ] 局部目标读取不Build整草稿，保存/预览严格校验不放松；选择代次覆盖成功/错误/finally、导入/新建/身份失效。验证A慢失败/B快成功以及多实例导入编辑/保存/CAS/直接激活/重启。
+- [x] 有限接收隔离：当前请求期间禁止向已提交文本追加，忙态输入显式拒收并提示重扫，不自动排队；结束符明确反馈且不自动提交；失败保持可重试、迟到不能消费新草稿/新作业。实际SendAsync完成路径调用同一策略。
+- [x] 局部目标读取不Build整草稿，保存/预览严格校验不放松；选择代次覆盖成功/错误/finally、导入/新建/身份失效。验证A慢失败/B快成功以及多实例导入编辑/保存/CAS/直接激活/重启。
 
 ### P4 追溯与动作
 
 文件：Desktop/HistoryPresentation、MainWindow.xaml/Closure/HistoryExport/Presentation、LaneControl/Themes。
 
-- [ ] 会话与Item字段分开；列表占全宽，详情按需并可返回，保留本窗条件/选区/滚动/分页和迟到保护。
-- [ ] 可见筛选标签、本地日期时间/显式时区、严格范围反馈；默认列先显示结果/接受量/对象/码/尝试摘要，技术详情按需展开。
-- [ ] 详情改次动作、移除重复入口，ReviewFits只检查当前必要事实/动作，关键矩形不可见仍保护；复用tokens/字体。
+- [x] 会话与Item字段分开；列表占全宽，详情按需并可返回，保留本窗条件/选区/滚动/分页和迟到保护。
+- [x] 可见筛选标签、本地日期时间/显式时区、严格范围反馈；默认列先显示结果/接受量/对象/码/尝试摘要，技术详情按需展开。
+- [x] 详情改次动作、移除重复入口，ReviewFits只检查当前必要事实/动作，关键矩形不可见仍保护；复用tokens/字体。
 
 ### P5 旧部署
 
 文件：实际支持配置/维护路径、必要脚本和指南；Verifier或独立合成旅程。
 
-- [ ] 保留13匹配宿主/1.0.1原包；清偿责任、维护停用形成合法过渡Effective，备份显式升级、安装新精确包/保存激活/启动、供包追溯停止重启；失败保旧、旧读者拒绝。无授权/能力时只阻塞实际缺口。
+- [x] 保留13匹配宿主/1.0.1原包；清偿责任、维护停用形成合法过渡Effective，备份显式升级、安装新精确包/保存激活/启动、供包追溯停止重启；失败保旧、旧读者拒绝。无授权/能力时只阻塞实际缺口。
 
 ### P6 同版验证和交付
 
-- [ ] 定向--operation-closure新反例；受影响--baseline/--conformance/--followup/--closure与必要资源/包检查；locked restore、单节点构建含WPF。
-- [ ] 源码冻结后生成portable/win-x64必要同版候选并解压核心/插件冒烟，记录完整命令/日志/标记/hash。公共DLL变化须新包版本，不重签旧包。
-- [ ] 逐AC/问题矩阵、UI映射、部署/恢复、manifest及Windows后验场景；实际客户端缺环境逐项NOT_RUN。提交推送并创建main PR，不合并。
+- [x] 定向--operation-closure新反例；受影响--baseline/--conformance/--followup/--closure与必要资源/包检查；locked restore、单节点构建含WPF。
+- [x] 源码冻结后生成portable/win-x64必要同版候选并解压核心/插件冒烟，记录完整命令/日志/标记/hash。公共DLL变化须新包版本，不重签旧包。
+- [x] 逐AC/问题矩阵、UI映射、部署/恢复、manifest及Windows后验场景；实际客户端缺环境逐项NOT_RUN。提交推送并创建main PR，不合并。
 
 执行中只因证据调整细节；不新增第二业务权威、通用解锁、自动重发或模拟生产成功。必要检查失败定位修复并保留原输出，不反复跑无关全量。
+
+实施与实际证据见[15报告](operation-closure-15.md)。勾选表示本切片授权工程工作及证据登记已完成，Windows实际后验仍NOT_RUN，外部能力按项BLOCKED，PR不自行合并。

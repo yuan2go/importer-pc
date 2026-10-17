@@ -1,0 +1,14 @@
+{
+  "Status": "PASS_NO_NEW_ARCHIVE_ERRORS",
+  "WholeArchiveStatus": "FAIL",
+  "ExistingErrors": 267,
+  "NewErrors": [],
+  "RemovedHistoricalErrors": [],
+  "PriorEvidence": "docs/runtime/evidence/audit-reconciliation-publication-01/archive-before.json",
+  "PriorSha256": "087a102185559d14c9d42c705c54bea455ed72f1370d1e537dfcf4d231dbe472",
+  "ObservedRawSha256": "bf40f18012d3a27ee3a85cbec94c0b675ad2a6edf946b24ad377cdd2f2c3c146",
+  "Meaning": "265 original PPTX media type mismatches and 2 private metadata markers retained unchanged; no new content/link/manifest errors; no validator weakening",
+  "FinalObserved": "archive-final.json",
+  "FinalObservedSha256": "8b4018292aa1efe945e4d77bf472016161965a315201cedfa07c01cd1329f676",
+  "FinalErrorSetSame": true
+}

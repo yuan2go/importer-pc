@@ -1,0 +1,23 @@
+{
+  "Name": "final-baseline",
+  "SourceCommit": "3c36ba33cfe505604d1e11864db17a735d510598",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:35:44.508265+00:00",
+  "EndedAt": "2026-10-17T12:35:56.075872+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--baseline"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS selected verification scope --baseline",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "final-baseline.log",
+  "LogSha256": "bb22beb29c3647698a6d8f21edaffc49dfdd25c2ec1094639c745a7a0177d8c6",
+  "RawLogSha256": "26d44a6b1f7d06db942e3faf52255e27b02d9ae01103bb818a7a069468e35b9b",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

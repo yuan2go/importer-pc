@@ -1,0 +1,8 @@
+{
+  "Status": "PASS_REARCHIVE_VERIFIED_SEALED_TREE",
+  "SourceCommit": "d2b2ca268013e7980f435e9cf8d9e48cd06ddc6c",
+  "Archive": ".artifacts/operation15/candidates/operation15-d2b2ca2-portable.zip",
+  "Sha256": "8d20186e99e1062f8787820c34b53a72c179480f8c18022858f6054dd55de5b3",
+  "CompletedAt": "2026-10-17T12:46:58.403884+00:00",
+  "Input": "All sealed SHA256SUMS verified after incomplete ZIP retained; no source/build/config changed"
+}

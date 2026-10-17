@@ -2,18 +2,18 @@
 
 ## 当前代码、审查与下一实施包
 
-2026-10-17核查main **0096f3435cc5066a1b50836ef534ec24221a7e6f**；PR13/14已合并，FIX14冻结实现68cdc36。原A01同ID冲突、A02/A03/A04原路径及R02/R03核心有实现/验证；接收责任聚合残余、维护/输入与UI问题尚待收口。**OPERATION-CLOSURE-15正在隔离分支实施，尚无新验证/候选结论。** [执行基线及计划](runtime/operation-closure-15-baseline.md)。
+执行起点main **5548b3f962c409079618635d3128830ea7887069**，原工作区/其他工作树保留。15冻结实现 **013862f**，当前结论以[15报告](runtime/operation-closure-15.md)、[checks与逐问题/AC](runtime/operation-closure-15-checks.json)、[完整证据](runtime/evidence/operation-closure-15/README.md)及[候选](https://github.com/yuan2go/importer-pc/releases/tag/operation15-reference-013862f)为准。每次接收责任与合成旧部署升级已验证；UI实现已交叉构建，实际Windows后验未执行。
 
 |入口|阅读目的|
 |---|---|
 |[最新复核](reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)、[当前问题](reviews/audit-reconciliation-01/current-findings.json)|继承和关闭哪些子项、新增接收责任/操作残余、模块继续/暂停边界。|
 |[原PDF与归并报告](reviews/audit-reconciliation-01/README.md)|8cab固定审查原字节；不直接沿用旧“14待实施”提示词。|
-|[15完整工作包](work-packages/WP-IPC-OPERATION-CLOSURE-15.md)、[精简Codex提示词](work-packages/Codex-WP-IPC-OPERATION-CLOSURE-15.md)|下一步结果、范围、依赖、自主/确认项、功能/UI/必要测试及交付。|
+|[15完整工作包](work-packages/WP-IPC-OPERATION-CLOSURE-15.md)、[精简Codex提示词](work-packages/Codex-WP-IPC-OPERATION-CLOSURE-15.md)|原任务要求、范围、依赖和验收；形成时PLANNED不是当前实施结论。|
 |[FIX14实施](runtime/conformance-fix-14.md)、[checks](runtime/conformance-fix-14-checks.json)、[证据](runtime/evidence/conformance-fix-14/README.md)|冻结源68cdc36的真实核心验证、原FAIL与复验、候选/兼容及Windows边界。|
 |[14原任务](work-packages/WP-IPC-CONFORMANCE-FIX-14.md)、[原项目审查](reviews/project-conformance-audit-01/README.md)|原AC14-01～07与形成时8cab证据，作为历史及受影响回归依据。|
 |[本轮核验](runtime/evidence/audit-reconciliation-publication-01/README.md)、[前置归档](archive/pre-audit-reconciliation-publication-01/README.md)|输入身份、原PDF、日志SHA、文档校验、原字节/替代关系。|
 
-Windows实际WPF、DPI、HID、声音和部署沿13批准后验，保持NOT_RUN；真实SDK/WCS/实体/数量/身份及现场按独立门禁。Linux/Mac运行、交叉构建、Windows实际验收分开。当前源/配置/测试未因本次文档发布改变，15目标不能写成现有能力。
+Windows实际WPF、DPI、HID、声音和部署沿13批准后验，保持NOT_RUN；真实SDK/WCS/实体/数量/身份及现场按独立门禁。Linux/Mac运行、交叉构建、Windows实际验收分开。15已实现与验证范围见报告；实际客户端/现场能力不得由参考实现推定。
 
 ## 代码前必读
 
@@ -28,7 +28,7 @@ Windows实际WPF、DPI、HID、声音和部署沿13批准后验，保持NOT_RUN�
 
 [v1.1入口](ui/ss-ui-vis-001-v1.1/README.md) · [34张状态图](ui/ss-ui-vis-001-v1.1/GALLERY.md) · [原HTML](ui/ss-ui-vis-001-v1.1/供包工作站_高保真交互原型.html) · [完整UI交接](ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md) · [UI资料状态](ui/STATUS.md)。源文件、PPTX、画板、tokens、分离HTML/CSS/JS及PNG都有实际资料；PNG为同源重新导出，未变成Windows截图。修改页面前实际阅读实物，不照抄原型已知业务缺陷。
 
-[13 UI映射](ui/arch-extension-closure-13-mapping.md) · [12 UI映射](ui/extension-delivery-12-mapping.md) · [10 UI实施](runtime/ui-baseline-alignment-10.md) · [Windows06](runtime/windows-06.md) · [06工作包](work-packages/WP-IPC-WINDOWS-VALIDATION-06.md) · [真实集成05](runtime/integration-05.md) · [05工作包](work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)。旧“当前候选/环境阻塞”只表示形成时状态，15开工前按最新有效要求核对；W01～06和B01～06本身不能作为过期要求删除。
+[15 UI映射](ui/operation-closure-15-mapping.md) · [15 Windows后验](runtime/validation/operation-closure-15-windows.md) · [13 UI映射](ui/arch-extension-closure-13-mapping.md) · [12 UI映射](ui/extension-delivery-12-mapping.md) · [10 UI实施](runtime/ui-baseline-alignment-10.md) · [Windows06](runtime/windows-06.md) · [06工作包](work-packages/WP-IPC-WINDOWS-VALIDATION-06.md) · [真实集成05](runtime/integration-05.md) · [05工作包](work-packages/WP-IPC-INTEGRATION-BOUNDARY-05.md)。旧“当前候选/环境阻塞”只表示形成时状态，15开工前按最新有效要求核对；W01～06和B01～06本身不能作为过期要求删除。
 
 ## 历史实施、评审与工作包
 
@@ -45,6 +45,6 @@ Windows实际WPF、DPI、HID、声音和部署沿13批准后验，保持NOT_RUN�
 
 ## 原字节归档与资料检查
 
-[本次入口前版本](archive/pre-audit-reconciliation-publication-01/README.md) · [14实施前](archive/pre-conformance-fix-14/README.md) · [原项目审查发布前](archive/pre-conformance-audit-01/README.md) · [13前](archive/pre-arch-extension-closure-13/README.md) · [12前](archive/pre-extension-delivery-12/README.md) · [11前](archive/pre-review-followup-11/README.md) · [纠偏前](archive/pre-reconciliation-01/README.md) · [框架前](archive/pre-framework-20261016/README.md)。归档保存形成时文件身份，不作为当前命令；不复制整仓或清空旧证据来减少文件。
+[15前原字节](archive/pre-operation-closure-15/README.md) · [上轮入口前版本](archive/pre-audit-reconciliation-publication-01/README.md) · [14实施前](archive/pre-conformance-fix-14/README.md) · [原项目审查发布前](archive/pre-conformance-audit-01/README.md) · [13前](archive/pre-arch-extension-closure-13/README.md) · [12前](archive/pre-extension-delivery-12/README.md) · [11前](archive/pre-review-followup-11/README.md) · [纠偏前](archive/pre-reconciliation-01/README.md) · [框架前](archive/pre-framework-20261016/README.md)。归档保存形成时文件身份，不作为当前命令；不复制整仓或清空旧证据来减少文件。
 
 [资料校验工具](../tools/README.md)只证明它覆盖的资料/链接/身份，不代表业务或现场通过。已知源资产问题与本次新增材料校验分开，保持原件和失败记录。

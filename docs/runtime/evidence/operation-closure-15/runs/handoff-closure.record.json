@@ -1,0 +1,23 @@
+{
+  "Name": "handoff-closure",
+  "SourceCommit": "8df02afc8799f81973f0bf3fe4375f604332dd99",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:37:44.836471+00:00",
+  "EndedAt": "2026-10-17T12:37:53.228927+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--closure"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS selected verification scope --closure",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "handoff-closure.log",
+  "LogSha256": "cf0340074d855788595285912acaac59d697db63632d562d879a17216e21a71a",
+  "RawLogSha256": "c4779fb7b570298233af2f58eeddcc0596222f6c401041867a6ebb812fd4e7d2",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

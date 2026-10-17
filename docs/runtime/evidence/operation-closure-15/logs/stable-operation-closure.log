@@ -1,0 +1,32 @@
+SELECT --operation-closure: E08
+Evidence data retained at /reference/tmp/ipc-verification-259355d768b7403e81dd525b1cdd4528
+PASS AC15 concurrent original queries have independent durable reservations before I/O
+PASS AC15 Q2 completion cannot erase Q1 reservation
+PASS AC15 pending/recovery and business guards retain independently incomplete responsibility
+PASS AC15 restart distinguishes each committed/replayed receipt from missing original custody
+PASS AC15 missing receipt ID remains discoverable beside original request after controlled shutdown and restart
+PASS AC15 terminal/payload/hash/contract/target/attempt retained and Context never counts supply acceptance
+PASS AC15 authorized history exposes original occurrence/source/time/custody without inventing lost bytes
+PASS AC15 matching later delivery cannot clear another missing original; maintenance counts original once; no blind resend
+PASS AC15 concurrent original queries have independent durable reservations before I/O
+PASS AC15 Q1 flushed raw survives actual SQLite T3 rollback without terminal success
+PASS AC15 Q2 completion cannot erase Q1 reservation
+PASS AC15 pending/recovery and business guards retain independently incomplete responsibility
+PASS AC15 restart distinguishes each committed/replayed receipt from missing original custody
+PASS AC15 missing receipt ID remains discoverable beside original request after controlled shutdown and restart
+PASS AC15 terminal/payload/hash/contract/target/attempt retained and Context never counts supply acceptance
+PASS AC15 authorized history exposes original occurrence/source/time/custody without inventing lost bytes
+PASS AC15 matching later delivery cannot clear another missing original; maintenance counts original once; no blind resend
+PASS AC15 real ProductRuntime starts controlled query endpoint
+PASS AC15 actual product command Login
+PASS AC15 actual product command SetFixtureFault
+PASS AC15 actual product command OpenContext
+Unhandled exception. System.Exception: AC15 actual concurrent Product/Integration queries retain failed Q1 after Q2 succeeds
+   at OperationClosureVerification.Assert(Boolean condition, String text) in /reference/workspace/tests/Ipc.Verification/OperationClosureVerification.cs:line 20
+   at OperationClosureVerification.ConcurrentProductQueries(String root, String url) in /reference/workspace/tests/Ipc.Verification/OperationClosureVerification.cs:line 70
+   at OperationClosureVerification.ConcurrentProductQueries(String root, String url) in /reference/workspace/tests/Ipc.Verification/OperationClosureVerification.cs:line 73
+   at OperationClosureVerification.ConcurrentProductQueries(String root, String url) in /reference/workspace/tests/Ipc.Verification/OperationClosureVerification.cs:line 77
+   at OperationClosureVerification.Run(String root, String url, String workspace) in /reference/workspace/tests/Ipc.Verification/OperationClosureVerification.cs:line 27
+   at Program.<Main>$(String[] args) in /reference/workspace/tests/Ipc.Verification/Program.cs:line 71
+   at Program.<Main>$(String[] args) in /reference/workspace/tests/Ipc.Verification/Program.cs:line 481
+   at Program.<Main>(String[] args)

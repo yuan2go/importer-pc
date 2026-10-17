@@ -1,0 +1,12 @@
+  Ipc.Platform -> /reference/workspace/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /reference/workspace/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+/reference/workspace/src/Ipc.Supply/ResponsePersistence.cs(81,90): error CS0103: 当前上下文中不存在名称“response” [/reference/workspace/src/Ipc.Supply/Ipc.Supply.csproj]
+  Ipc.Inspection -> /reference/workspace/src/Ipc.Inspection/bin/Debug/net10.0/Ipc.Inspection.dll
+
+生成失败。
+
+/reference/workspace/src/Ipc.Supply/ResponsePersistence.cs(81,90): error CS0103: 当前上下文中不存在名称“response” [/reference/workspace/src/Ipc.Supply/Ipc.Supply.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:03.06

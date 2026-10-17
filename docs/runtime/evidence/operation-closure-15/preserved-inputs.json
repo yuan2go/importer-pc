@@ -1,0 +1,319 @@
+{
+  "Base": "5548b3f962c409079618635d3128830ea7887069",
+  "Records": [
+    {
+      "Path": "docs/reviews/issues.json",
+      "OriginalSha256": "a16947ee9ee1a60a16afd35ab2b0e04897d88d24a44c97a1c2249ddeeb9d2ed9",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/readiness/decision-pack.md",
+      "OriginalSha256": "a767a1cce43c74cec5dc97b3b0ee98e33ad1250804e11d0c7f3f952c58bb294f",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/readiness/technical-baseline.json",
+      "OriginalSha256": "6193225e4940240ea68d4510f1bb69c8a4a682b68b54abc7b09a7bdccf5e0312",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",
+      "OriginalSha256": "35637ef91e55b3f558e2fb87d566732966cdabc027d0e3ce95c0f56f69d815f6",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md",
+      "OriginalSha256": "bc2f0836c30b57bd3eb058a4abe8126734d3f4fc87b37c17e790112d19ecd3fd",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+      "OriginalSha256": "2aacec8c135b9c92737ed206d408a56d8aed0d690420dda9676de70a5ae5390c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/reviews/audit-reconciliation-01/WP-IPC-AUDIT-RECONCILIATION-01_8cabf06d_20261017.pdf",
+      "OriginalSha256": "7586e7c58f37266eea4a27af453a7a48fad86d14d7f225ba2824755ab457d441",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/source-manifest.json",
+      "OriginalSha256": "d85e3009070e8c04f30648b4a7f5a71f5e256e26fcf160d90eb31009232c2df3",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/publication-checks.json",
+      "OriginalSha256": "c367fb9c90be77539cd9a35862de113061f8077ee5dad172dbe3e8b72f2adc3c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/供包工作站_高保真交互原型.html",
+      "OriginalSha256": "d46b0ed9b057cda6779012ecdc6981d0799ba8c3de73e9be22d92b61d4860b6c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/界面图册.html",
+      "OriginalSha256": "513e0fd177b5f58d1c90ff799d9f20fe093f72b485a43b75dc3aadf5d57e8786",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/GALLERY.md",
+      "OriginalSha256": "1f0b2f7807216a3d7522aa565a4e783b4531233df5a749e17c191cf1ecb19b62",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/README.md",
+      "OriginalSha256": "5b4dae9929e0aee49d715fa66b9c55f72f81a0f1f14edc2bc9c431ee7252c9f9",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/render-verification.json",
+      "OriginalSha256": "30c526bb3283fe9294339a35b2119b1162aecdc813f175fae3b851953eefcc10",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/README.source.md",
+      "OriginalSha256": "0d6659534ab054403fe3f7cb8f5d8bb38cf94b50058868c8743483e44326ae99",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/design/tokens.css",
+      "OriginalSha256": "99ad481832ec36bb901032e597fccc9d36a0f7fa1b77ed5ffbf4c85434b18ec5",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx",
+      "OriginalSha256": "88a71e35bc9e97c7995d63ee8369868a6f18c576c93c1aed21276ef259c34dda",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/design/editable-boards.json",
+      "OriginalSha256": "93febef83f0e69625b8b08f76ee05f7275e505bce8cc8154530eaa54bee7f7a7",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/design/tokens.json",
+      "OriginalSha256": "09bbfe810d571cfd57115729c78f59a3f43ee65974ce317fe08b9bbe8e8efb5e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/tools/reexport_screenshots.py",
+      "OriginalSha256": "98bc1e6459f0b503a13ad57d539476b1af794e66e4739bbb84f6875b316f310c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/prototype/index.html",
+      "OriginalSha256": "0990509ae71265eb9ae85702faba150e11d05c7b4cc42c913076e924d6343d01",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.css",
+      "OriginalSha256": "03987ef6fc3d8b31823e6863d18146a5af4020c48bbe3b0097d13c89c9b3049c",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/prototype/workstation.js",
+      "OriginalSha256": "0d8663f607d7cd4ae360bda2e998376e8fc70d5e266cf3402ab62de3c49d77e3",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/docs/供包工作站_UIUX设计与开发交接说明.md",
+      "OriginalSha256": "4e0b59865d326b7297e06dee76e72c8bd11cfd22377a7dca497e091d1f32c599",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/21-long-content-1920.png",
+      "OriginalSha256": "ec32d08a0d98a34111774235a5f59877ab8a4570b0dca92524ef5fac84a5a7f8",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1920x1080.png",
+      "OriginalSha256": "cd995e976724445d049d5eea6aab678e3351d14d03530a06e1edcad278dfe66d",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/20-wcs-offline-1920.png",
+      "OriginalSha256": "df6f1e48a093c8bf9be1799a20ae8daae5ba5b91031c7aa79ff1cbb43e726ea5",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/07-storage-failed-1920.png",
+      "OriginalSha256": "3ef7236358795ffea2df70adb89de8425f0ffc484b8cbe836ad3088ef73cc184",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/11-records-1920.png",
+      "OriginalSha256": "9f85679e32ed2cbd3b7533e8d2b4c6b11d9c22323d5f7ebd008f48148ab27021",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/25-long-content-1366.png",
+      "OriginalSha256": "8a7cfc77d493b57347e7b630ce43c3515ba0d215cae58ccaa0770ca44e608926",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/13-devices-1920.png",
+      "OriginalSha256": "54aeef370d4d1a052c14526b0b6cbbdff74d7416d4580ed99a03f0e393ae5cab",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/12-record-detail-1920.png",
+      "OriginalSha256": "e04949df5a23f1ef94a1dac5dd1080e6e6db28dcab0c5b53bddd361bcb6d71fb",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/17-waiting-1920.png",
+      "OriginalSha256": "26bfcbbc988c88d83a4a4d618c28c449ce0ac641c3a4b58b46ddf0472ace1132",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/02-camera-offline-1920.png",
+      "OriginalSha256": "d36a53d2206ef7e8eb95c2b5cf99cefafb029b2313975e94a360b8d707196e19",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/03-result-unknown-1920.png",
+      "OriginalSha256": "ce2fbd3ed4cad5be46471f35a455808d484aa7619e40508db862de8fdaed70fa",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/23-pending-1920.png",
+      "OriginalSha256": "09578e463ccdf0615b4bf2d585e15320085cecd87f5cd2a0d346291de08ad17a",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/09-split-candidate-1920.png",
+      "OriginalSha256": "ada9b0593ea39b3ca3c9168e0d677e5bd27f47dde8b7688439a6cae1517fdf47",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/24-maintenance-1920.png",
+      "OriginalSha256": "0dde2d01213a273332be62ca16de4a2a4b767b128e01061a88d4d52dfc63d0a0",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/18-recovered-1920.png",
+      "OriginalSha256": "0925f87546c3f938e9c2ed03c1623d5ef8aa02804dc32d847ff3c0afeee0eac9",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-911x512.png",
+      "OriginalSha256": "a2847fd66ca563ba2e4d33a536311d735e3e76062f988000a9b876a694c815c6",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/12b-record-detail-attempts-1920.png",
+      "OriginalSha256": "23e9d5f88b84e0ecd78530b1e57f357c7d5997516c31629ec5091d65e062c076",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1536x864.png",
+      "OriginalSha256": "6c2aa477a92b8991a0b5b8c278e559274cbd2fa32fb68ecca77687501559f515",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/14-login-1920.png",
+      "OriginalSha256": "c1236dac2faeade8b0b131fbf040d033d1870e8454db20e07e4a60f614762fa1",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/10-shortage-1920.png",
+      "OriginalSha256": "97255488811984fde71b2d6bd54af9823e4639c4b31b4d571f0d415f64549b5e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/16-components-1920.png",
+      "OriginalSha256": "fb935ede107cea1a8b3f23f226ebe860614b65a2e48bb70661529b59c58f054a",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/06-multiple-barcodes-1920.png",
+      "OriginalSha256": "a35e8bafecc65a9c2c447b274e0f17a335091a1fdb1551e6554ff04a6407f15d",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1280x720.png",
+      "OriginalSha256": "1768334814f4f03a2fb4fd5272423a4afbbf271bfad29006ec430d8381b2f427",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/19-alarm-1920.png",
+      "OriginalSha256": "3e693da6dbc9aaa18a116e2873dae1b535832bb1f557a2b75c1d02ae91f56a32",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1280x680.png",
+      "OriginalSha256": "0336d2dc55c716f06c488f4c3865ff28686140109ff246bff12eadd23ace25f0",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/04-business-rejected-1920.png",
+      "OriginalSha256": "679d2e34f1beda2f58eaab0cc099c6bb4417e1679beccaab928ee19e26da8133",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1366x768.png",
+      "OriginalSha256": "2acbaf92c706bb6034fb01f840ba7a594fa09a1da37a940a73ae01b4acbd9cb9",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/08-split-unapproved-1920.png",
+      "OriginalSha256": "866b4387020f8b3174ce3cc737058ecc292a93ef35148542653a0dfd7c6fa32e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/01-normal-1920.png",
+      "OriginalSha256": "cd995e976724445d049d5eea6aab678e3351d14d03530a06e1edcad278dfe66d",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/22-no-records-1920.png",
+      "OriginalSha256": "aa38dc8057a202fc0b03b8d2aed0c4d98bdd53e54cac04e8f2b530cb106204ce",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/15-recovery-1920.png",
+      "OriginalSha256": "ab50e1e6d080a1d58109ccef13f244835e1dffc0359337528733a3a9abd2a5f6",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/26-split-1366.png",
+      "OriginalSha256": "1019f6617980d7e3ad37cf2c18b2daba9dc397402d7a08fb368d48ad6c573a7e",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/layout-1093x614.png",
+      "OriginalSha256": "3c53c18c072b93229a9e358a623a03d4fe3846fb0e22d5e129368f942bc21a30",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/ui/ss-ui-vis-001-v1.1/screens/05-no-read-1920.png",
+      "OriginalSha256": "90616f3c704dcde7cdf0511c6297f482b21c87eb54f2daeebcfb6ae0a4f85fed",
+      "Unchanged": true
+    },
+    {
+      "Path": "src/Ipc.Supply/Store.cs",
+      "Literal": "Schema",
+      "OriginalSha256": "1aaa135ee0bb1dc2ea9caac4098ed3ee5eb113fa4fae6e02672d4a26fdee02dc",
+      "Unchanged": true
+    },
+    {
+      "Path": "src/Ipc.Supply/Store.cs",
+      "Literal": "SemanticFormatMigration",
+      "OriginalSha256": "40f8ccf145f7b9f0f5e5eb8f7c7b6b00689038a7e09dc974fc0f0b778881a9ae",
+      "Unchanged": true
+    },
+    {
+      "Path": "src/Ipc.Supply/Maintenance.cs",
+      "Literal": "ClosureFormatMigration",
+      "OriginalSha256": "5ce28f0747524f3ef6d94a53a6a95733e3aa127dfd6aaeedde469b8cf871612f",
+      "Unchanged": true
+    },
+    {
+      "Path": "src/Ipc.Supply/Maintenance.cs",
+      "Literal": "ConformanceFormatMigration",
+      "OriginalSha256": "3721bb8c86449b46b25cc312af7243af5803f2c8c26889bd4fb76e9fd85a360f",
+      "Unchanged": true
+    }
+  ]
+}

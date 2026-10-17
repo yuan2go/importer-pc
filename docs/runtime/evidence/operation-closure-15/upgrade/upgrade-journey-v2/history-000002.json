@@ -1,0 +1,98 @@
+{
+  "RuntimeId": "9ddaa493-683c-42b2-9c7c-de41228354e6",
+  "Mode": "Simulation",
+  "StationId": "SIM-STATION-01",
+  "Version": "UPGRADE-NEW-1.0.3",
+  "Schema": 1,
+  "Revision": 92,
+  "Session": "81ffa0fb3c2b4375b00f341f302882c1",
+  "SessionState": "Active",
+  "Blocks": [],
+  "Modules": {
+    "observations": "Ready",
+    "sender": "Ready"
+  },
+  "FaultCodes": [],
+  "Requests": [
+    {
+      "Id": "65b33e1c5e71498895901e144b702bd7",
+      "OwnerId": "6920e7bb76644ea3af1a98fcd36af92d",
+      "Kind": "Validate",
+      "State": "Accepted",
+      "PayloadHash": "7F0AF3A1CEBFEB9AF41C3279E60570A8B5E1DA4386FEBCA3079CF4726AFF6954",
+      "Contract": "SIMULATION-v1",
+      "BindingRevision": "SIM-1",
+      "Attempts": [
+        {
+          "Id": "b2ca7de7bce3400cace7303fec5c695b",
+          "RequestId": "65b33e1c5e71498895901e144b702bd7",
+          "Ordinal": 1,
+          "StartedAt": "2026-10-17T12:47:35.241527+00:00",
+          "EndedAt": "2026-10-17T12:47:35.250845+00:00",
+          "Disposition": "Accepted",
+          "Error": null
+        }
+      ],
+      "Receipts": [
+        {
+          "Id": "send-b2ca7de7bce3400cace7303fec5c695b",
+          "RequestId": "65b33e1c5e71498895901e144b702bd7",
+          "AttemptId": "b2ca7de7bce3400cace7303fec5c695b",
+          "Origin": "execute",
+          "StartedAt": "2026-10-17T12:47:35.24237+00:00",
+          "Status": "Committed",
+          "ContentSha256": "B3CA2085B068080695362F6D1ED2936E19C6D7EFAD25B739CD57C4C73E6DA2CE"
+        }
+      ],
+      "Responses": [
+        {
+          "EvidenceId": "4366a7cf7cf24bbea1ca4e8a86435d54",
+          "RequestId": "65b33e1c5e71498895901e144b702bd7",
+          "Result": "Accepted",
+          "Quantity": 2,
+          "Remaining": 120
+        }
+      ]
+    },
+    {
+      "Id": "3a60631531544a798c96f5c82b475050",
+      "OwnerId": "6920e7bb76644ea3af1a98fcd36af92d",
+      "Kind": "Submit",
+      "State": "Accepted",
+      "PayloadHash": "2742E5127E9CD1145DCAEA57B113194874C836D1F65B37F22E0C24F06EC0CC44",
+      "Contract": "SIMULATION-v1",
+      "BindingRevision": "SIM-1",
+      "Attempts": [
+        {
+          "Id": "6f5bbaf3fa244895aeee580776110cfa",
+          "RequestId": "3a60631531544a798c96f5c82b475050",
+          "Ordinal": 1,
+          "StartedAt": "2026-10-17T12:47:35.456287+00:00",
+          "EndedAt": "2026-10-17T12:47:35.467936+00:00",
+          "Disposition": "Accepted",
+          "Error": null
+        }
+      ],
+      "Receipts": [
+        {
+          "Id": "send-6f5bbaf3fa244895aeee580776110cfa",
+          "RequestId": "3a60631531544a798c96f5c82b475050",
+          "AttemptId": "6f5bbaf3fa244895aeee580776110cfa",
+          "Origin": "execute",
+          "StartedAt": "2026-10-17T12:47:35.457128+00:00",
+          "Status": "Committed",
+          "ContentSha256": "2C88AC011872F6AA846E57F602054DA70EA840C6F758CD27B52D088FD36F22CF"
+        }
+      ],
+      "Responses": [
+        {
+          "EvidenceId": "8d9d7cd6878b47a8a944057b1b15e3bc",
+          "RequestId": "3a60631531544a798c96f5c82b475050",
+          "Result": "Accepted",
+          "Quantity": 2,
+          "Remaining": 118
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "Name": "handoff-architecture",
+  "SourceCommit": "8df02afc8799f81973f0bf3fe4375f604332dd99",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:37:44.828631+00:00",
+  "EndedAt": "2026-10-17T12:38:42.336509+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--architecture"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "PASS selected verification scope --architecture",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "handoff-architecture.log",
+  "LogSha256": "38ef725471a0f7332b545585fc1e88e8d7ef6bfda475b9fb54aef725a1f7440a",
+  "RawLogSha256": "034a08e0e307ce9496abb5c8ed99106788f968355ac562a0e47a167653bd1332",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

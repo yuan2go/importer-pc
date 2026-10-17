@@ -1,0 +1,105 @@
+{
+  "Status": "FAIL",
+  "Windows": "NOT_RUN",
+  "Field": "BLOCKED",
+  "Commands": [
+    {
+      "Arguments": [
+        "/reference/dotnet-10.0.402/dotnet",
+        "/reference/operation15-artifacts/legacy/release/app/Ipc.Product.dll",
+        "--config",
+        "/reference/operation15-artifacts/legacy/release/app/config",
+        "--data-root",
+        "/reference/operation15-artifacts/upgrade-journey/data",
+        "--extension-root",
+        "/reference/operation15-artifacts/upgrade-journey/store",
+        "--extension-trust",
+        "/reference/operation15-artifacts/upgrade-journey/trust.Simulation.json",
+        "--action",
+        "extension-install",
+        "--mode",
+        "Simulation",
+        "--file",
+        "/reference/operation15-artifacts/legacy/release/offline-extensions/reference.barcode-1.0.1.ipcx",
+        "--sha256",
+        "979a395ca49f7d4017ea3ee88e2b7a341ff49c6ac4fcadc08190d2dfbba6f2c1"
+      ],
+      "ExitCode": -6,
+      "Log": "reference.barcode-1.0.1-install.log"
+    }
+  ],
+  "Phases": [],
+  "HostSources": {
+    "old": {
+      "WorkPackage": "WP-IPC-ARCH-EXTENSION-CLOSURE-13",
+      "SchemaVersion": 1,
+      "ReleaseVersion": "ARCH-EXTENSION-CLOSURE-13",
+      "StorageVersion": 3,
+      "MinimumReader": 3,
+      "ContractVersion": "SIMULATION-v1",
+      "ExtensionContract": 1,
+      "ProductId": "ipc-reference",
+      "ProductDefinitionSha256": "676394b47abe39e7c990003f1fab096eb024f80fc033c23551ae7931360c855f",
+      "SourceCodeSha256": "b842e50eb6e87ed65d380a7a55efe5b662d3f977a8d8e6cbe839c4be2343d3ee",
+      "SourceCommit": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "WorkingTree": false,
+      "GitBase": "8cb475b880e6cdd248db42bff74accf443c83519",
+      "Mode": "Simulation",
+      "Target": "portable-development"
+    },
+    "new": {
+      "WorkPackage": "WP-IPC-OPERATION-CLOSURE-15",
+      "SchemaVersion": 1,
+      "ReleaseVersion": "OPERATION-CLOSURE-15",
+      "StorageVersion": 5,
+      "MinimumReader": 5,
+      "ContractVersion": "SIMULATION-v1",
+      "ExtensionContract": 1,
+      "ProductId": "ipc-reference",
+      "ProductDefinitionSha256": "676394b47abe39e7c990003f1fab096eb024f80fc033c23551ae7931360c855f",
+      "SourceCodeSha256": "475f4ed6c5d629ce1504be69f2c4096467572ff15625a5856d91f7ed8c561988",
+      "SourceCommit": "d2b2ca268013e7980f435e9cf8d9e48cd06ddc6c",
+      "WorkingTree": false,
+      "GitBase": "d2b2ca268013e7980f435e9cf8d9e48cd06ddc6c",
+      "Mode": "Simulation",
+      "Target": "portable-development"
+    }
+  },
+  "OriginalPackages": [
+    {
+      "Reference": {
+        "Id": "reference.barcode",
+        "Version": "1.0.1",
+        "ManifestSha256": "1327AFA2291F8076E0043A5E24665A67F32FF3ED1991FA1310E2F865EFD7104F"
+      },
+      "Sha256": "979a395ca49f7d4017ea3ee88e2b7a341ff49c6ac4fcadc08190d2dfbba6f2c1"
+    },
+    {
+      "Reference": {
+        "Id": "reference.integration",
+        "Version": "1.0.1",
+        "ManifestSha256": "1F5E9272B5E3E8CC97589067A49A63168152F6BED5892C78049B3E02D13337E6"
+      },
+      "Sha256": "9b5433d6279f899538cd6a500918164ff3d3037271f2028a14a04009f1396039"
+    }
+  ],
+  "NewPackages": [
+    {
+      "Reference": {
+        "Id": "reference.barcode",
+        "Version": "1.0.3",
+        "ManifestSha256": "71F2A7AB90E0AD0D133A705D30ACF4610395CFEF622F635406617115C55F3FF3"
+      },
+      "Sha256": "b90fd1ccc5f4e657774b91609b9b5b4152dc34f395840d8e95a347b11b7319dd"
+    },
+    {
+      "Reference": {
+        "Id": "reference.integration",
+        "Version": "1.0.3",
+        "ManifestSha256": "A4C838BFE0597C86EFFAB8B7D75CAD0C3321BBCA47DA8AEDE090CF0B91654E5D"
+      },
+      "Sha256": "7f36f1ce8a65965ea1542c2e6f51aae1148497a32d7bdf09dda800e33a3427a6"
+    }
+  ],
+  "Failure": "AssertionError: reference.barcode-1.0.1-install: Unhandled exception. System.IO.InvalidDataException: Installation plan/input changed\n   at Ipc.Platform.ExtensionStore.Install(String archive, String expectedPackageSha256) in /reference/legacy13-source/src/Ipc.Platform/ExtensionStore.cs:line 127\n   at Program.<Main>$(String[] args) in /reference/legacy13-source/src/Ipc.Product/Program.cs:line 33\n   at Program.<Main>(String[] args)\n"
+}

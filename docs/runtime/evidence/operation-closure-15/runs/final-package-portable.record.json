@@ -1,0 +1,11 @@
+{
+  "Status": "FAIL_ENVIRONMENT_DISK_FULL",
+  "SourceCommit": "d2b2ca268013e7980f435e9cf8d9e48cd06ddc6c",
+  "ExitCode": 1,
+  "Log": "final-package-portable.log",
+  "LogSha256": "9500afc77510b1d5138821700a3098eb72d858e6fb20962456218899055517e6",
+  "RecordRecovered": true,
+  "Reason": "Packaging zip failed ENOSPC; runner record write also failed; start time unavailable",
+  "RawLogSha256": "43064ff0ed47b0d3e6a0b462236a258531f25be980845e535dc817076cb370da",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

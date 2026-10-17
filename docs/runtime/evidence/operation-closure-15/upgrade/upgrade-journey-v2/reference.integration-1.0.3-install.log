@@ -1,0 +1,13 @@
+{
+  "Package": {
+    "Id": "reference.integration",
+    "Version": "1.0.3",
+    "ManifestSha256": "A4C838BFE0597C86EFFAB8B7D75CAD0C3321BBCA47DA8AEDE090CF0B91654E5D"
+  },
+  "PackageSha256": "7F36F1CE8A65965EA1542C2E6F51AAE1148497A32D7BDF09DDA800E33A3427A6",
+  "TrustSha256": "8A871C85F59E904804BCB8DA8EFA47A71B8BE43B898DF8860F14ABB4BD6C6B28",
+  "OperationId": "7fc36f56a43a4581870ac63f4becf8cd",
+  "At": "2026-10-17T12:47:33.355093+00:00",
+  "Status": "Installed",
+  "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
+}

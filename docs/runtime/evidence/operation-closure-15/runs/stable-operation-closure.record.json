@@ -1,0 +1,23 @@
+{
+  "Name": "stable-operation-closure",
+  "SourceCommit": "110d2b1b9322f391a623cd29d7c98d5a5556a872",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:39:51.870233+00:00",
+  "EndedAt": "2026-10-17T12:39:53.338484+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "/reference/dotnet-10.0.402/dotnet",
+    "tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll",
+    ".",
+    "--operation-closure"
+  ],
+  "ExitCode": -6,
+  "RequiredMarker": "PASS selected verification scope --operation-closure",
+  "MarkerPresent": false,
+  "Status": "FAIL",
+  "Log": "stable-operation-closure.log",
+  "LogSha256": "d5193c77c26b5221cf56de2561f914a56b58c9c43bcdc9bd89f2a9ea7efc535f",
+  "RawLogSha256": "a8cd72c167e763361918019d780a619f479f330bb95759b5389b321ec3f4b515",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

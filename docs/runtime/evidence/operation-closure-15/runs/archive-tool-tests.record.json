@@ -1,0 +1,26 @@
+{
+  "Name": "archive-tool-tests",
+  "SourceCommit": "013862fc2d1769605624f8e10df5cc5b448a7954",
+  "Command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools",
+    "-p",
+    "test_*.py",
+    "-v"
+  ],
+  "Python": "bundled CPython3.12.14 with Pillow12.3.0",
+  "Status": "PASS",
+  "ExitCode": 0,
+  "RequiredMarker": "Ran 10 tests; OK",
+  "MarkerPresent": true,
+  "StartedAt": "NOT_RECORDED_BY_SIMPLE_REDIRECTION",
+  "CompletedAt": "2026-10-17T12:55:21.588361+00:00",
+  "Log": "archive-tool-tests.log",
+  "LogSha256": "d7c57811f94c1f511e48d9a019fd1fa3cff17ff561fa20729b3ba14bf3c66dd1",
+  "RawLogSha256": "d7c57811f94c1f511e48d9a019fd1fa3cff17ff561fa20729b3ba14bf3c66dd1",
+  "Scope": "unchanged archive tool fixture tests; verifies generated exclusions/links/checksums still strict"
+}

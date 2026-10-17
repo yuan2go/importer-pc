@@ -1,0 +1,33 @@
+{
+  "Name": "package-portable",
+  "SourceCommit": "0ccf3fc0c7b93f798b93a8b5b1f1d275dcfe81ed",
+  "WorkingTree": false,
+  "StartedAt": "2026-10-17T12:41:51.587465+00:00",
+  "EndedAt": "2026-10-17T12:42:07.770642+00:00",
+  "Platform": "macOS-26.5.2-arm64-arm-64bit",
+  "Machine": "arm64",
+  "Command": [
+    "python3",
+    "scripts/package-reference.py",
+    "--target",
+    "portable",
+    "--composition",
+    "integration-reference",
+    "--dotnet",
+    "/reference/dotnet-10.0.402/dotnet",
+    "--extension-key",
+    ".artifacts/operation15/private/closure15.pem",
+    "--extension-trust",
+    ".artifacts/operation15/private/trust.json",
+    "--output",
+    ".artifacts/operation15/candidates/operation15-0ccf3fc-portable"
+  ],
+  "ExitCode": 0,
+  "RequiredMarker": "\"SourceCommit\": \"0ccf3fc0c7b93f798b93a8b5b1f1d275dcfe81ed\"",
+  "MarkerPresent": true,
+  "Status": "PASS",
+  "Log": "package-portable.log",
+  "LogSha256": "cc984441fcec0f45bfe76d228f38746f02dd74ae52634413faa787a897cb1205",
+  "RawLogSha256": "300c9626e208c8ee47c841cb99c8836e93bd5899519e676407bd88e351733ff6",
+  "Publication": "path aliases only; complete raw log retained locally"
+}

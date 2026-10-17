@@ -1,0 +1,922 @@
+{
+  "Transformation": "Only absolute path aliases in text; synthetic databases preserve exact bytes",
+  "Aliases": [
+    "/reference/operation15-artifacts",
+    "/reference/workspace",
+    "/reference/dotnet-10.0.402",
+    "/reference/legacy13-source",
+    "/reference/tmp",
+    "/reference/tmp",
+    "/reference/nuget",
+    "/reference/other-worktrees",
+    "/reference/system-python"
+  ],
+  "Files": [
+    {
+      "Path": "logs/client-final-build.log",
+      "RawSha256": "0d9d964761e07b0fb4434d8f63dace96683bc76c59878c368752dc27fec48e7e",
+      "PublishedSha256": "133138df31e08ecbd676ebebb3f6d313a5915a140d6671477c4b3643aa653895",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/concurrent-build.log",
+      "RawSha256": "847f834ac9aa8907247acee45b515578e9c450786e9808b1c2b87183379fb164",
+      "PublishedSha256": "28182e58ac3e63ca0e7a0acf30a21e47000926e93ee79ff0f68c4eef323098fb",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/evidence-build.log",
+      "RawSha256": "a2a19cf9d2369f3997a08ac7be6025096c6442562dbe798b4607ae0a1a964107",
+      "PublishedSha256": "60b1a8156b30f9af7bcd35e9367a6def6c6dde5863b6052e396d8abc0508a34c",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/evidence-conformance.log",
+      "RawSha256": "222ed3d6556328d5d5b2090902addb2b8d2d6defd6c5bedfca94c5e4ffde0d7e",
+      "PublishedSha256": "fdde2e4a3932e99e1a57db7d97d4ab13c62f9093f83c65ee000d40a137e362be",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/evidence-operation-closure.log",
+      "RawSha256": "7b96323b36fedc118a2302554231e090788e1562a7d50735c8b403ad9a96f8e1",
+      "PublishedSha256": "f12e12d535e386337a423be481751ba39286d900dd567e9a21cd66670b55e457",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/final-architecture.log",
+      "RawSha256": "74559d23113e149a7ee96982fd335c6e5be2b6b240640bbe7234f0459af95065",
+      "PublishedSha256": "1edd8545ce87784d9b310fd2b616c1dcadfe16ec920b84d04a986cfde1669b66",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/final-baseline.log",
+      "RawSha256": "26d44a6b1f7d06db942e3faf52255e27b02d9ae01103bb818a7a069468e35b9b",
+      "PublishedSha256": "bb22beb29c3647698a6d8f21edaffc49dfdd25c2ec1094639c745a7a0177d8c6",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/final-build.log",
+      "RawSha256": "2db157d30e074fc31ce4567955d0f1926b1e7774a15a4e9a6eecbe2c6bee61d9",
+      "PublishedSha256": "47868962f611dd7bc96f3b6c40c81cbad04d60dac5fcad84caaae6857972c95c",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/final-closure.log",
+      "RawSha256": "f8fa320f786358bdf71fadedec251100a8d3658fdf83d6fee18496be815c6df3",
+      "PublishedSha256": "81e6375e5642d85810ad39f0311a2fd44e39898ffa5a30d2f593ec0b8e57453e",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/final-conformance.log",
+      "RawSha256": "9b7a3ed1f590c1432f3576029ce3431462fb0086ac2ab2790315bda22f857324",
+      "PublishedSha256": "c7d01d9d76f598c69ce8f07dd50320bb16faf68664136b36a0e7402c2e3b8df0",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/final-followup.log",
+      "RawSha256": "644c315f672026afcb070236226961e365129838ff7e2eaace7a8c9ea940ee8d",
+      "PublishedSha256": "85946b5d643873b206598ab80ca4c7a32e3090ecdcfea7e29500c330d5ae600d",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/final-operation-closure.log",
+      "RawSha256": "3625a674974a9f6294fea4d0de782f23e46bf93000ef0885e63ace24c311d6da",
+      "PublishedSha256": "1f26a5e1c37f9dd985a3eaf1dca7034c8701999f69de3dd5c386416008ee0dd8",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/final-package-portable.log",
+      "RawSha256": "43064ff0ed47b0d3e6a0b462236a258531f25be980845e535dc817076cb370da",
+      "PublishedSha256": "9500afc77510b1d5138821700a3098eb72d858e6fb20962456218899055517e6",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/final-package-win.log",
+      "RawSha256": "1b2d6892cd74463d3107753f6dda3bd023979319934a60ca576e86bf6e5742ea",
+      "PublishedSha256": "1db9785382c057a7c731f98363a32124044d8c18fbeb71f6e3ce86195acdcf95",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/final-restore.log",
+      "RawSha256": "971924e5cea9bea57a1335ad67f140514d39cf64b03e2884349b2666b4a400cc",
+      "PublishedSha256": "2adc9879551e9dc4bae7d344a72aeaa208e2b663a69fc2007ebff5f97ba8ce4e",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/final-review-followup.log",
+      "RawSha256": "fc25412dbca61db54d4a8ae82f784c8a861abd02400b7a1cef356af417e2d32e",
+      "PublishedSha256": "73f6214e238506576756b88e4a0e47c6ebcca11e941316f7f22918ebf3c6ac40",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/handoff-architecture.log",
+      "RawSha256": "034a08e0e307ce9496abb5c8ed99106788f968355ac562a0e47a167653bd1332",
+      "PublishedSha256": "38ef725471a0f7332b545585fc1e88e8d7ef6bfda475b9fb54aef725a1f7440a",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/handoff-baseline.log",
+      "RawSha256": "160695668febee3eeb454b06ed518f146ea7ff501a91a95e6342eb35c3ee13ee",
+      "PublishedSha256": "97e23a49695a8a8c13285b7dcb7abf0bdd2f60b61c2429c26b4fb15d96b73bea",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/handoff-build.log",
+      "RawSha256": "93d1699dfe490bcd34f71ec00e2c716d4a34c8cdf6a57ae3d6c749dd13636955",
+      "PublishedSha256": "c9833455ed36f13c52a1fcf7c1468486ce67c2d9190bad43a8e47e618c515533",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/handoff-closure.log",
+      "RawSha256": "c4779fb7b570298233af2f58eeddcc0596222f6c401041867a6ebb812fd4e7d2",
+      "PublishedSha256": "cf0340074d855788595285912acaac59d697db63632d562d879a17216e21a71a",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/handoff-conformance.log",
+      "RawSha256": "bbbcb1d37b51dd86ea36e528b2cf865c9ee0836cf8d110f2756b6e278a7a23fa",
+      "PublishedSha256": "5e7a57f72b87e92604baacc0847a322e1a5db802d264ebc686b67dba5e43b1d5",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/handoff-followup.log",
+      "RawSha256": "a477fcbdff79b6df7a626b59f19218cdac7d367565cf613bedf9bddec8c3074b",
+      "PublishedSha256": "10affd994f01d4e2589e21431ab3b6557c4de09ba44545713d7a4044e8d40bf2",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/handoff-operation-closure.log",
+      "RawSha256": "2f5decf651622b366b74314c3b0f8af7800f99d8877d45b7b9782ed281e5281d",
+      "PublishedSha256": "8bdc29ca0ff2d5276eeff237586bceedf9266039014e390331756e2941bd6bb4",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/handoff-review-followup.log",
+      "RawSha256": "344c564c13dc7dd0db06dff84d928326e53d8fa77eb61510f83d24c3759ec68d",
+      "PublishedSha256": "2a9f148a2925367af66bcccdc4e7040c2adce48655d5347d3a46f5895d7b7e5c",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/package-portable.log",
+      "RawSha256": "300c9626e208c8ee47c841cb99c8836e93bd5899519e676407bd88e351733ff6",
+      "PublishedSha256": "cc984441fcec0f45bfe76d228f38746f02dd74ae52634413faa787a897cb1205",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/release-plugin-reproducibility.log",
+      "RawSha256": "8c5cc62b54df711056cbe2738dfb3105d616c0c47acb6d905c5d52828bf06535",
+      "PublishedSha256": "8c5cc62b54df711056cbe2738dfb3105d616c0c47acb6d905c5d52828bf06535",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "logs/release-portable.log",
+      "RawSha256": "bd4196dcb274373876c5d41ebc427be0dbd2e18db714ca86f10b7e1eda8b79b3",
+      "PublishedSha256": "16d5f473007024c71965b8b1cf12e8fdd76155d3e1b7c01e235cb8cedba4e825",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/release-smoke-core.log",
+      "RawSha256": "63860373db584865be5e06778a920d4c75a633d190844d934c7ed5da089a66ea",
+      "PublishedSha256": "6ae0cfd2a1a186015b276acf7a2cad38a9eef70e9e09ec9af2085fe4b0d8bf3d",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/release-smoke-extension.log",
+      "RawSha256": "610fb318174709c7273bd59c8848b54c985620e4b1da7f0b0de94e1dfa1883c5",
+      "PublishedSha256": "9af0fcf03f05e6f20dcd2385d108c722073b92013f2be6ec9f5d3d4d0443338c",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/release-upgrade-journey.log",
+      "RawSha256": "d9c01a3888d27ff6e3e7a917c04f62f65b29c5ca2d4495f072f2ad95c4438e24",
+      "PublishedSha256": "7bff2833c2bc71bed7741488c838cf6dd7eefd0060d5d4f422caa04debe6362e",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/release-win.log",
+      "RawSha256": "cc18ba1f1a91b4fb14adf546631d61d05126f1556875d885b792b6dfa90c3131",
+      "PublishedSha256": "5cb9008e9205ff7537a368e5b3f8c6898943a18d4dcdc16787c765ea833fbfab",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/stable-architecture.log",
+      "RawSha256": "b0ac2d9926785432913843ab05362f61a0c9011bb95bef319664b62a8b369f8b",
+      "PublishedSha256": "361e025d709007e2e0e19bd19dc3432e960c306e2c82fec5e60dd90b2343d1e3",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/stable-baseline.log",
+      "RawSha256": "6d444477747c6946f23683379b71a28b6e3671cfedb14edbd1a7a6510c004873",
+      "PublishedSha256": "cf1c83445461add9030f88b43a0d24ee34a325ca6be2ce2b6c63c162e90bbbad",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/stable-closure.log",
+      "RawSha256": "e6940074193325168e899a22339efac1cf5df3364a1eaf7635add8c2afc4c950",
+      "PublishedSha256": "c31494c96a5356960a347f20c0db20c244455f6c23f2911de63f09a6c5bf50b4",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/stable-conformance.log",
+      "RawSha256": "ae4db3db99818caad47907ef28ad2fbb1572439e118f859b9fa862366b11683d",
+      "PublishedSha256": "a857668597f270526bd0e97f6fdcc61c6512f1a0a1064476c45d982214df3646",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/stable-followup.log",
+      "RawSha256": "f54a05d081b0b405d128b4e9a12a055d2fc34eb496e45017a63026be226415fa",
+      "PublishedSha256": "de285b236149259e132f04f3a1e054aab862e371825ca788a7810004d29e5e91",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/stable-operation-closure.log",
+      "RawSha256": "a8cd72c167e763361918019d780a619f479f330bb95759b5389b321ec3f4b515",
+      "PublishedSha256": "d5193c77c26b5221cf56de2561f914a56b58c9c43bcdc9bd89f2a9ea7efc535f",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/stable-review-followup.log",
+      "RawSha256": "3530fb3ea28daf274cbfd04e95b55f6d1160d6da2f90b02dbf53fd0da36e462f",
+      "PublishedSha256": "6a228816aa6194ab175ec693fcd39b74178ba1ccc90547560911ca972e8740c4",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/upgrade-journey-v2.log",
+      "RawSha256": "f13a85e336810f0eea22ee2fce923f18f8a0949f48363b3f61e3e28c0bf30390",
+      "PublishedSha256": "344927722dde74286045238c930f8046fefe9d90d874bfc3a007688c15b75fc3",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/upgrade-journey.log",
+      "RawSha256": "39dfbae1e8de2c5ed6f8a1cbec5c51bcd3476a70143cdc43fff2b7cc421056c6",
+      "PublishedSha256": "3b634e0c5effd77459ba168ce362e70dbb8b0d7ca9f8ce81d5753eedd3cacad2",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-architecture2.log",
+      "RawSha256": "d50358687477089217e1d6d852d023ed89b585a5952c928f7ef6888951eb7039",
+      "PublishedSha256": "af52303fdbb3d0ddb9a3b25194724dc1216aca52667cdc2bee8e7370725bcb6d",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-baseline1.log",
+      "RawSha256": "c7b5c5c1081bd7eb0221246add3925ea6ff83ae2d756571022537179dccbebae",
+      "PublishedSha256": "bdbb00b110ff8d58db72ac951c4a5ae6ef18fd2f57d7f77c8430b70a56ef1cbc",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-build1.log",
+      "RawSha256": "c22901120a09450095d7d3319ee80a81a1319111a28ba1b40841736ee3e02e58",
+      "PublishedSha256": "a039421fa15295aba7adea11c195a42976f5d64a14183f3d97a75593b35f4486",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-build2.log",
+      "RawSha256": "9dc89688f1f81c90034a6d2f30c5b41363ed6205e67faab3aad625d741f62ae6",
+      "PublishedSha256": "7596bffa43ebcd5bb5d56cf350e7b4c881997075cc406a4ac786afbc252d6c2a",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-build3.log",
+      "RawSha256": "0ba49cbed89da5e0ad3950c9c789c9a0baa4f57fe9a5814f921d65e8aff69f29",
+      "PublishedSha256": "4cdd1af5c4ea9cb7d77c5bf8a82147fa89b06d8f12cd3559f788be17cb5deab8",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-build4.log",
+      "RawSha256": "944c3cdcc9c8e1ccd02cc234cdbd17c3389e3d111cdbbe6920adb1df983dbf67",
+      "PublishedSha256": "eee29770dda1e537537537d429ae7dbc28349c1545abf57845747299840244d4",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-build5.log",
+      "RawSha256": "3da34320d2ef15da6112a82abe3ac215fbb6a65ee7626910658306e10f3b355a",
+      "PublishedSha256": "82223e3da16b147bcce09baffc87e256d2a4df204b5fa86796876181d7daf2d0",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-build6.log",
+      "RawSha256": "462ac961e88825b0f3afcb46382440d4ed52bff18ddb617b983ec4be16bab21c",
+      "PublishedSha256": "3bddcad87a2ab5b60b12be3d18414325ff086eb9fa0e40367dd79a78138969dc",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-build7.log",
+      "RawSha256": "ffdd5a9ec57fb8bcd6b8b696bc415cc053722634bfc33dad1a9fec942f580766",
+      "PublishedSha256": "f3c9a1289aa80edd42cc19b40f49e0d56233491da53bcaf7bb18b6cba99cb826",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-build8.log",
+      "RawSha256": "0a1cd0cefa55b1cf18b59d29f52d63f99a2d0fd3d6ecd38a2ea370198cf1335c",
+      "PublishedSha256": "c4c1c422492e00bf598a10307ca83fbf583348c2a428c42376b5bff27e2eba39",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-closure2.log",
+      "RawSha256": "a4c33f214fb90c9afc10bce2635f891a12f2d651c3eff022c0e6d9397d2e272e",
+      "PublishedSha256": "cb92ffa653cb8b8c8d87fd9ba9e04b0da3cc6861b49f978e7858a17f3986fd31",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-conformance1.log",
+      "RawSha256": "da2190d6fdc7ee7c68e3946b1a15cfb3b911717c1abebb044bfbbb441710d167",
+      "PublishedSha256": "d7360ae7a550825809a88f7aa7ad81555305cb4694cd0c502287b17e3f6b72d4",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-conformance2.log",
+      "RawSha256": "0c6901cc654dfcccc1e7d14e79b6fdeba2498b847f5c8c7c2d648be68733729e",
+      "PublishedSha256": "b6a353bf5179cf6fda552e80b72989b491a49bc405eb170861475908d79c7edd",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-followup2.log",
+      "RawSha256": "4b8b6097d46f4d87761f3cc607e32b308978a5a5679381e6cc8b009af8f1899d",
+      "PublishedSha256": "b6ef414ada7c18a576711f1e8fe57be821ec5440ea4c2be68e387f0c4d8c9f36",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-operation2.log",
+      "RawSha256": "b1250ebc8e5dc2cf728886e45db7d5f1aac2f39b00a315bbe34efd8f3bcd09dc",
+      "PublishedSha256": "192ac18a87fed640f529b2fb2f84d4ef1d9a3337331fbf36f0ac50a459ec0dcc",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-operation3.log",
+      "RawSha256": "95defbbb0b4866730a93ac43d55488e9b6cc419ba6bacd823b3634951b4c6f49",
+      "PublishedSha256": "8d2f9cf25d66eaed25b5aa50db15e7485279867ebc0e26ec771e2b756e56a6e1",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-p1.log",
+      "RawSha256": "91da6939b8b5caf5416b767cdd7935b8b6fd5b9df2302131fa5362263e137686",
+      "PublishedSha256": "f5368fa178e056b27ce81e660efabd3ced349bef84887d8ef2975b03dfe357ac",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-restore.log",
+      "RawSha256": "e258f9a3dc984749182e8e46eeb324d242f15ada4e5be76bad0207ee7adccd2d",
+      "PublishedSha256": "0c60e45412b2e939784c7e6a8330370939b4d2c3fcc1a877283aaefb162fce25",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "logs/exploration/ipc15-review-followup2.log",
+      "RawSha256": "2612cb6b3023a9b2bad191053996a3f0b8b13b48b5ae5a58b73ca478c378f90c",
+      "PublishedSha256": "3728b9203e1deb1dbda919f2329e649e657c3542966736d0b604896b127fcaeb",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/client-final-build.record.json",
+      "RawSha256": "c73c1f3acba5586e80876a6e2c8be16a901521d44b51c7030885bb4a3c97d983",
+      "PublishedSha256": "6cb190175d826e557823af85b6c11379e82a76ed9784bf63ea4fa0cfa4f9c95b",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/concurrent-build.record.json",
+      "RawSha256": "82d1d469f1706f05fdad27980eb48429de96a13a072c04f856ef553d485b5d20",
+      "PublishedSha256": "fc8549b4bb7926423fdf0f4c6d793d779e6ecea6d70c12b531141a084e4966d0",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/evidence-build.record.json",
+      "RawSha256": "ce3c92426a07c1aafc5e92bb3149bfb3c3f021b10cf096d052591dbd7ed152c5",
+      "PublishedSha256": "f670ff09bc1553931e8e2a2addff0e01e4bbd5d3624e0dd2a67da4bc194616ad",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/evidence-conformance.record.json",
+      "RawSha256": "b56cbd226ac939265b482ecadce4eb4fbefddafcc03e1f76f4f06d5868fe6b03",
+      "PublishedSha256": "d6172f31ebdcaf9747116363b55cbae9fd44aade2e3769f2eef70575cbfbb312",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/evidence-operation-closure.record.json",
+      "RawSha256": "cd2572cc398410d0864b77727823a297700ce06aec6a375e3055feb7ce7f303a",
+      "PublishedSha256": "6a345bad660c1ca67587040f444951c85208ae939ed3564ba4c7a8b2e6c0b2f7",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/final-architecture.record.json",
+      "RawSha256": "79f1d1f3ef3611d11d0002baa70bce0dde547b60c2d87f0df1e438f754459c41",
+      "PublishedSha256": "824e45c0d81e39f3cc252e54bb77192333fde42ec2995c72f985314d1fcfbc21",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/final-baseline.record.json",
+      "RawSha256": "b466949474d3fb4935e0d83e28510c30c9d435a21651f7d4be8c9516eb35d197",
+      "PublishedSha256": "c335c72593536cbb7af14663156422bcd5ca6aea10420706652527a28db2e4f1",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/final-build.record.json",
+      "RawSha256": "cfea4740da81eea1eefc18c45f06e257b3b6d175b891c4ef515491ed26c24e7e",
+      "PublishedSha256": "bbc98b76a27e12822a71a160be28c14d74dee7141efe26adfb24a11167ace344",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/final-closure.record.json",
+      "RawSha256": "4caa39adfe5ba5937b8636e8fa48ae7b81d5d62891979425fb091e04b117d436",
+      "PublishedSha256": "e974e25576a2cd2f672ad1ff4ef9c0c97b77996c5b003d0f4d23af1d2b4ee5b7",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/final-conformance.record.json",
+      "RawSha256": "c0c9b7b50533a27c6b4e504d405a3550bf41393cb8ef8bb8c0a7cb3489499b3a",
+      "PublishedSha256": "36057024cbcf0d92fbc6e74db5e336987f465286447757ff469183ef4943e3bb",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/final-followup.record.json",
+      "RawSha256": "a643101f115f0bba606d4aafeeb7d4e55785f87eff5fb9c02c1d384d040add3b",
+      "PublishedSha256": "be0f4409979fc43aa5548884f43a7f3d9fff4a421f4bba916b13fcfbf5a9060d",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/final-operation-closure.record.json",
+      "RawSha256": "006d3ea15e10906d48806e3d2bf2227c5c348eb33eb23c4f092c340d7efcdedd",
+      "PublishedSha256": "6cf45b69329167774481a2546cb0a7db29c5d975346a61c5e4732d904fb0d630",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/final-package-portable.record.json",
+      "RawSha256": "5a8dfa4a362a67761581cf254e8c14e1996419c8f474342ace297a076de88b6c",
+      "PublishedSha256": "7cb8cf671dc4443734878ca7c10e0b9ba619137e7a94f38a047929347451f55a",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/final-package-win.record.json",
+      "RawSha256": "1342956866f71b243d5b22060c6acde0bd753f72340dd9cb62f7244133a162f1",
+      "PublishedSha256": "730ffa47f197ed73ab3390ea29f7a4fc97885dbfc21badf28a3e75978e00591b",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/final-portable-rearchive.record.json",
+      "RawSha256": "1961de3c3e0b7630e0a2f9b3c99d0f155c505c159fb7b646b15b5ec18901290a",
+      "PublishedSha256": "1961de3c3e0b7630e0a2f9b3c99d0f155c505c159fb7b646b15b5ec18901290a",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "runs/final-restore.record.json",
+      "RawSha256": "74a058dafa9e0536db721e7b252629875af354c565d14e4152d8d3ab834a280e",
+      "PublishedSha256": "ef14acf8cc2c0e157f5975a2d6f0bcceb9ab90e679816102cd6a6b2fb948dbda",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/final-review-followup.record.json",
+      "RawSha256": "814d90a43392fae391d5a69bad70af6de31e5e3594ef3c94c64bd977491ebae9",
+      "PublishedSha256": "2dc0c7dee32dd419d0fcb3b26eaddc8e6f63c0ec40605de817d20b1a86432aae",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/handoff-architecture.record.json",
+      "RawSha256": "4db0ec370562f1b30701d72d18054872b50d0dfe00bc9257617dc106a66188db",
+      "PublishedSha256": "f6397161b3225ed281da26b3f7532e89a6eb0b575934fd347a6f2566b99275ad",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/handoff-baseline.record.json",
+      "RawSha256": "1c39a71c44dc52737609b153dce72787ba2be5a4afb0f7eafa5cdaefb0932281",
+      "PublishedSha256": "ec1f852cc1a55c785b8179c16e47e108694bf4cab094f2a8d9ce73bebec2b2ef",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/handoff-build.record.json",
+      "RawSha256": "659e6ddd9a034359b74f14866019c2346f849b856a30eb428e63749e364136da",
+      "PublishedSha256": "34a18a2282e4b30c78df0bc7bf28ddb58a7f7abce84a240e9c870de32168151e",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/handoff-closure.record.json",
+      "RawSha256": "bb01923a6cdf28eed23b96f8c6389dc3b0726c770f423c8bd73dd414fb32f3eb",
+      "PublishedSha256": "ddf65da3de1cf20bb16a0d6fb8830dc459322aadf9467ae2b37e6912ffbb2bf2",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/handoff-conformance.record.json",
+      "RawSha256": "142326c8a1097140c33c5a36bd31588859d3ec800bfc342c5dccb97db35e23e7",
+      "PublishedSha256": "4317c1f40560297ca85b30a99338f00119aed61bb4e3efc4f6ae8245289436ac",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/handoff-followup.record.json",
+      "RawSha256": "9c2b36fdbe97c543c5f28fc3114ed4807f57042c4106df39fc29e8fd6c56f89c",
+      "PublishedSha256": "e4800d629b0a26f748a4d23a053b440ccd46be96d7d5414678469b89bb6b979e",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/handoff-operation-closure.record.json",
+      "RawSha256": "4976d3565d97dc14a5cf02d02b6232a946b265ebd77c88624ac0186a31cc0bdc",
+      "PublishedSha256": "e527b469a03e729f7c02137bd2d9198f9d6f2dcb92bb2527b1acba81ab7f1cbf",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/handoff-review-followup.record.json",
+      "RawSha256": "63b937653f51bd50bc2eed449451c0db493c984058b373ebb667e80789dc842f",
+      "PublishedSha256": "1b11a03862ff0523b96994ec06bb5fe0fbe8112aa600823a3143b5e738523ed1",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/package-portable.record.json",
+      "RawSha256": "168c77247e153d29208c97a40481877d0815fb5e334224d16988fb7e615ab031",
+      "PublishedSha256": "aa9f69412cec4246db0301efcafcd0f7edb74ae4255d54cc194f420638530faa",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/release-plugin-reproducibility.record.json",
+      "RawSha256": "24d5d3858e2ebafd8b2c67fb165da67bcb1235d719fc2b47bdef461404a819c5",
+      "PublishedSha256": "0b569d1ddf4b63a54ea2fede3851505973942622e09c77e742ed07e2a0af7c02",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/release-portable.record.json",
+      "RawSha256": "c06aa4d1597ecd0ac0ebae65510eac444c250cd42a40609aa525aeaf1f5d5fc2",
+      "PublishedSha256": "cb76a0bd2abcd22be2e3252d2ace922db88f16976dc3e8441653810d7b811d61",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/release-smoke-core.record.json",
+      "RawSha256": "f053b47933fea1234bd32c0a4073e57afbc7aed04d6e2ce3e921da8dff9baf45",
+      "PublishedSha256": "b9070700cd7e65e148696ff935a80ad25c3b1c9ea730c16588ccd108335c34a1",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/release-smoke-extension.record.json",
+      "RawSha256": "5023eede447736af21fccb9adc2ae9cdc73a055a701fe083fb29f1277b613996",
+      "PublishedSha256": "8815b1b2597529b45e9c082f5b65bb72fba9614cda0725e1a3acc076e74c171c",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/release-upgrade-journey.record.json",
+      "RawSha256": "31ffe6e3c1e5930aacf3d3d302ee72ce795c9fcfe166ae1d6d53ce8484ebb912",
+      "PublishedSha256": "16b2d8a986812c8eded518f75fedb6d9b3de9bf282369759d7d1bd864571944c",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/release-win.record.json",
+      "RawSha256": "2e62b69f033d874ac4443bce5727af4e02a4d5554028f018163a6082a2af5628",
+      "PublishedSha256": "c3ab48d86864d6ae077157aceffd3fccdb221d6b37186667104189cae834c9ec",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/stable-architecture.record.json",
+      "RawSha256": "38697bbfe243b64effb5758553367539d1cf7faecbceef65b5f5cbe51ea6496d",
+      "PublishedSha256": "5c21933f6e5f8f050898c3c211cbac6105809493952035b0dc733b50fd93bb9c",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/stable-baseline.record.json",
+      "RawSha256": "a0ab15058d394586ceedeca56e7ffc96ceaf4f90bd81b10b8e15b98a97e1cb81",
+      "PublishedSha256": "214613adebcdfc2e5e0f45f6633941295b35fcf1eea1d45f6594b29f1edb1bb9",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/stable-closure.record.json",
+      "RawSha256": "3ee0f4558b4b06feb62d45ed9c49589e0ddcb3fd4962fb29aa0a06e04e11e6b7",
+      "PublishedSha256": "ae71f2603bcb4d5cb1a8377a21af8ab32efe1e3da84a9de9b42622b753104616",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/stable-conformance.record.json",
+      "RawSha256": "79c6dd67bbed75ef2e5ea1eea232382b14febb2a3834ed15971ad96559bf5946",
+      "PublishedSha256": "0896b2b8a4c833f3dc9fc2603fe5f08312b8ae7722b26b14aaea7ac7e47a0f84",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/stable-followup.record.json",
+      "RawSha256": "09a2d737cdbf35034b6124e99eeb595412034fc508bb90ad3044375691fb9a66",
+      "PublishedSha256": "6dd5951fc726539bcef3cac4ff824dc5b0a51acbcb2b9f964937fca516c3f2f2",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/stable-operation-closure.record.json",
+      "RawSha256": "2851e679743cc16682713c1e6673b1c1d8b007527151c20648c81e14ba721de7",
+      "PublishedSha256": "71e0e06432feeafa44ee8926794cfb6a895d9c1759fef15542459387e1e73ad8",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/stable-review-followup.record.json",
+      "RawSha256": "aaa3a59d1dabe4c9bcf9f36dc207f4e08c4249a64948c20a4ab6419bbbb4e946",
+      "PublishedSha256": "e0a11e0d6201a89bbe3c664c52dc04ec8e7e1c0805a937d746868ebe04f12a6a",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/upgrade-journey-v2.record.json",
+      "RawSha256": "22ed715be208ecc034a16a876058f93643de4287db79c2d8f25b537f87bb5871",
+      "PublishedSha256": "c57cb39b85ef34a63a94a2d4f8d6e1201f225bfdca7aff632ee6912fecc63d03",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "runs/upgrade-journey.record.json",
+      "RawSha256": "f80fbf0371c9c4aff9e509ca6a22258007f3bbe2a3fc487c3519380c36a39a82",
+      "PublishedSha256": "eddb32d2ad217f0e4218e38529d9c7e03a99f99d0fe70f36aaf94ef1c76c6058",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "candidate-inventory.json",
+      "RawSha256": "c1cb4f99591e98b1bf82619c0f7c4b3e6214a3342daa99167aee6858d5eceef4",
+      "PublishedSha256": "c1cb4f99591e98b1bf82619c0f7c4b3e6214a3342daa99167aee6858d5eceef4",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "preserved-inputs.json",
+      "RawSha256": "28bb6df9b84a36d385fe60effc7871f556ce755acbc94b605702541188d6175e",
+      "PublishedSha256": "28bb6df9b84a36d385fe60effc7871f556ce755acbc94b605702541188d6175e",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "release-smoke-core.json",
+      "RawSha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "PublishedSha256": "a73cdff24cc5d1ed941f7dab26d9684f2bfa26a7c8ee848e5847d4fd973a3ab8",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "release-smoke-extension.json",
+      "RawSha256": "07d042f699a177f0d2282c39d0cbfe4dad0066d49db03d024848b294d48e1477",
+      "PublishedSha256": "04d61c0a9ff8cfbd8e047dd7641af6b9f187dcb83720d7d669e8cf74ffc9d3ad",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "release-plugin-reproducibility.json",
+      "RawSha256": "292070a70b9c89dc497ecd49cc308107350289c5855865f1df60fd5993ed7aac",
+      "PublishedSha256": "292070a70b9c89dc497ecd49cc308107350289c5855865f1df60fd5993ed7aac",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "withdrawn-candidate.json",
+      "RawSha256": "c601eaa25577c96b298956343977556536466e66c64c922ebbd01aab96cab56b",
+      "PublishedSha256": "c601eaa25577c96b298956343977556536466e66c64c922ebbd01aab96cab56b",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "withdrawn-d2-candidates.json",
+      "RawSha256": "545aa69388247defb566ecc319bc1c9305cfaee5e7929be9e35982c2052cc5e0",
+      "PublishedSha256": "545aa69388247defb566ecc319bc1c9305cfaee5e7929be9e35982c2052cc5e0",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "legacy13-custody.json",
+      "RawSha256": "5cf3fc5efee399ed479630a1874c14a51654db9925da68e26a237ee7970f1b26",
+      "PublishedSha256": "5cf3fc5efee399ed479630a1874c14a51654db9925da68e26a237ee7970f1b26",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/upgrade-journey/result.json",
+      "RawSha256": "0b22141e8cbc7264669134e40f0bfd8ab8cc5684e473af60e244ab534d765c3d",
+      "PublishedSha256": "799872596fe82a3246b4bdfa4bb42c9f80e2c33347f70f7a68117d756ae11de3",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/upgrade-journey/fixture.log",
+      "RawSha256": "258271a86dd07eef25a2e22203d0fb66f6b83f90d7ca653e79abc975f35945b7",
+      "PublishedSha256": "a82a63f8ac7f4c1f394777ebcce5fbd17436a23bff208dd7c2fc2fa29187b4bf",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/upgrade-journey/trust.Simulation.json",
+      "RawSha256": "42964f268105bcef9ec1ced482fe52d9b60e6f9a278e0854cc4a939bdaf73a5f",
+      "PublishedSha256": "42964f268105bcef9ec1ced482fe52d9b60e6f9a278e0854cc4a939bdaf73a5f",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/upgrade-journey/reference.barcode-1.0.1-install.log",
+      "RawSha256": "ffd6c8ff12175ca252b7fb13d6f9e6863230e87b3902878a7ed1f12136cbe60b",
+      "PublishedSha256": "c377c5c5a4d3724fa0ce4d117710f3b4e8142f9a2e36badfc6e57b13d197b229",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/old-deployment-restart.log",
+      "RawSha256": "c71ae038581f1c1cbbb064ab21664754fbf441281c1ef18d3d9d8c909a4aa70b",
+      "PublishedSha256": "3c30d61633c4334fcf47cbf916c1926bad2ff32fdb168e0ea130fb1184a169c7",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/old-reader-refusal.log",
+      "RawSha256": "16259faa93e155275cac6a8653d31e228a055752e0e91b28b53b7a4826ac1ddc",
+      "PublishedSha256": "76d205f14900d9b476f1d3fe20235bf2673720b7d85898c753427237a21cbb12",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/history-000001.json",
+      "RawSha256": "f87664f78f676fbdcda537f13e0a4a6169b4f32ffab0928309c57fe87998cd29",
+      "PublishedSha256": "f87664f78f676fbdcda537f13e0a4a6169b4f32ffab0928309c57fe87998cd29",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/new-deployment-restart.log",
+      "RawSha256": "7530dbb509427f1f2a20729309d26cac1c88f09dd3d4490ac26e2163fdf6c90e",
+      "PublishedSha256": "fd9d1c98fa056c346565b38fef2005d4df00a7c66daf0059ef3926f607693474",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/old-start.log",
+      "RawSha256": "ea0f7a783eaa9d979dbc33451682dec3908ee2003baa3d141133a58e5abb381d",
+      "PublishedSha256": "0ce4883e27f9d2c3c2735f87a45bf8ab24d6c4bb40f1cd55e8167c65d2a73673",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/result.json",
+      "RawSha256": "c134c86ee1ba0568b7b720926f31c074dc456dc366ff7f0dcd8501c0b0a38b9e",
+      "PublishedSha256": "8b9f3d1737e14f61392d8beef7e75487999caa3968ee7e1d5b99a890818beda2",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/transition-without-extensions-restart.log",
+      "RawSha256": "7c0996821ea01761059050071aff7d091eddfbd3b608eba6e9df6bee922dc28a",
+      "PublishedSha256": "138c2a3e4918d59ac983235f2832013f0542be24c365c584b38092385422ef35",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/reference.integration-1.0.3-install.log",
+      "RawSha256": "31583eae64132084916aed6ca0bd2b9d16ec36ed700995828a081f086253e862",
+      "PublishedSha256": "31583eae64132084916aed6ca0bd2b9d16ec36ed700995828a081f086253e862",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/reference.barcode-1.0.3-install.log",
+      "RawSha256": "2893c013e8a8ad3b49862c71dd3bebc12bc8a2957fd322ed74f1546fecc0d7eb",
+      "PublishedSha256": "2893c013e8a8ad3b49862c71dd3bebc12bc8a2957fd322ed74f1546fecc0d7eb",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/upgrade.log",
+      "RawSha256": "7a69e5ebc0b71aedb18189e4852446327ea1e87288a542beceb0a653462ea3f9",
+      "PublishedSha256": "7a69e5ebc0b71aedb18189e4852446327ea1e87288a542beceb0a653462ea3f9",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/new-final-restart.log",
+      "RawSha256": "25f3b878674e635749070ea7c809f9e36fdab738e169b6d670707d45fa538e96",
+      "PublishedSha256": "bcf76ad0c5f607bd37a5a401cb556ea6cfb4af4f76d4a4203a61ec02625d03a9",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/fixture.log",
+      "RawSha256": "49b98331f8f5de3396368a07df73c02559022cb187c9a0846ba0502c959cb940",
+      "PublishedSha256": "52cedc333bd1c644d3c83cf9eab1a9230d9affb026e431feda6e9a7693370c73",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/upgrade.json",
+      "RawSha256": "d4fc9e2ba1dee6258af9ea4495b46de122c8ce9a277c705daf5fb92af954cd0f",
+      "PublishedSha256": "d4fc9e2ba1dee6258af9ea4495b46de122c8ce9a277c705daf5fb92af954cd0f",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/trust.Simulation.json",
+      "RawSha256": "42964f268105bcef9ec1ced482fe52d9b60e6f9a278e0854cc4a939bdaf73a5f",
+      "PublishedSha256": "42964f268105bcef9ec1ced482fe52d9b60e6f9a278e0854cc4a939bdaf73a5f",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/upgrade-collision.log",
+      "RawSha256": "a27513a7d1d065c6c871ff596e54d589134ae66c2d0c1f9e607c088f6c8e78ce",
+      "PublishedSha256": "af99a8f7fe1a4b4d70b372e24fddb6af234cf72ff38d16c98e39b74b622f5be1",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/new-transition-start.log",
+      "RawSha256": "13c4f8423610e06e806f7b7564fee209dd1b7803e6e87dce8fe28150838642ed",
+      "PublishedSha256": "260448eeb10aff4a694bf3c575e2142e1f69c8b413d795478d16237a1270cc23",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/history-000002.json",
+      "RawSha256": "a4ecdbf497f2d0c707dc2e822cc5aa4a8fe081c3e2e0a3a43d40243bbb4ae77e",
+      "PublishedSha256": "a4ecdbf497f2d0c707dc2e822cc5aa4a8fe081c3e2e0a3a43d40243bbb4ae77e",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/reference.barcode-1.0.1-install.log",
+      "RawSha256": "f9b3c22ac8feb857daafef5f357670c7fccdab2d773f839483b53ff7fc181432",
+      "PublishedSha256": "f9b3c22ac8feb857daafef5f357670c7fccdab2d773f839483b53ff7fc181432",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/upgrade-journey-v2/reference.integration-1.0.1-install.log",
+      "RawSha256": "fd2973b275798802ea84ce4b01a6c5b0bcdf85add88056a1d3cb1120cf39a093",
+      "PublishedSha256": "fd2973b275798802ea84ce4b01a6c5b0bcdf85add88056a1d3cb1120cf39a093",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/old-deployment-restart.log",
+      "RawSha256": "6a50ed0ad04a1a915495b560d5fbe9e8961df12f7e78a1212b1c84568cfe4982",
+      "PublishedSha256": "f69c05b291b19003a201c4975eba3487f51fc17d226422a0d919289c8f136414",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/old-reader-refusal.log",
+      "RawSha256": "16259faa93e155275cac6a8653d31e228a055752e0e91b28b53b7a4826ac1ddc",
+      "PublishedSha256": "76d205f14900d9b476f1d3fe20235bf2673720b7d85898c753427237a21cbb12",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/history-000001.json",
+      "RawSha256": "fc63ea06a2ec623506e27f92b961cb55c20b78c4b40819d6e72fc6c6476cdbcf",
+      "PublishedSha256": "fc63ea06a2ec623506e27f92b961cb55c20b78c4b40819d6e72fc6c6476cdbcf",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/new-deployment-restart.log",
+      "RawSha256": "ae638ac9f290267afe81070b9d837e666daf65fc4b2f3e019dfbb180334607e2",
+      "PublishedSha256": "dea92155de0bd4d1dbbbd3fb3a759a18b6a83b0add91b4230738bf11dca8a56c",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/old-start.log",
+      "RawSha256": "7e4eab833644e41d8a9ad0174a792f728658dec09635a2770c69c8c48d9dbe30",
+      "PublishedSha256": "5f1524d9c3c05f02016ee26cc7c0b12a40f11ed0289dde723f22fdacbeb307f2",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/result.json",
+      "RawSha256": "1ca4ffce524adb15195d0ba7b37a4a48fff7f128aab174f60296cf3c3fd0d1ea",
+      "PublishedSha256": "a2a6e54c6af89cba8f9c4296d07c10d306573eb4ca26a1d714d9ba6658f25024",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/transition-without-extensions-restart.log",
+      "RawSha256": "b32f97c70717e94821bd29a88362e36d891a86c9997385fa30893b976b83ad60",
+      "PublishedSha256": "75e84ff8ba8a09b5be6efca3746bef87a65fd7725da5715b26324dbfa0ff3eb4",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/reference.integration-1.0.3-install.log",
+      "RawSha256": "9131a6afcf0228b09d2fcdefd11273a35c5434959fc159b4e84ff099d7e64fc7",
+      "PublishedSha256": "9131a6afcf0228b09d2fcdefd11273a35c5434959fc159b4e84ff099d7e64fc7",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/reference.barcode-1.0.3-install.log",
+      "RawSha256": "b39afb96893c9a218531a06420e065fc7143d39d6c3d8fd07899d6924c1caebe",
+      "PublishedSha256": "b39afb96893c9a218531a06420e065fc7143d39d6c3d8fd07899d6924c1caebe",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/upgrade.log",
+      "RawSha256": "02d4e4e25960248b367e9a73812a039f9517da3de7dea5152445905d26f351cc",
+      "PublishedSha256": "02d4e4e25960248b367e9a73812a039f9517da3de7dea5152445905d26f351cc",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/new-final-restart.log",
+      "RawSha256": "e417c2ef8aab5f5f55112759364b062b4afab826b2803a4b45b7172df0c6fb90",
+      "PublishedSha256": "e260390f714106e35fa55b62c4c09ba6e88cbb7d580f4dce307c7405a75dbd35",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/fixture.log",
+      "RawSha256": "a784464ed5af8fcb08efac16b331fb13a974b6b088498765b0e69f92c4332920",
+      "PublishedSha256": "fc3422cb08df536aaaf202478d627b6930721bb458ff47b52b1929f282cce106",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/upgrade.json",
+      "RawSha256": "d342c8989a56457228bfa56bab8f06ccc7be5c6d5c3e24315cc8928ad09f2e28",
+      "PublishedSha256": "d342c8989a56457228bfa56bab8f06ccc7be5c6d5c3e24315cc8928ad09f2e28",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/trust.Simulation.json",
+      "RawSha256": "42964f268105bcef9ec1ced482fe52d9b60e6f9a278e0854cc4a939bdaf73a5f",
+      "PublishedSha256": "42964f268105bcef9ec1ced482fe52d9b60e6f9a278e0854cc4a939bdaf73a5f",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/upgrade-collision.log",
+      "RawSha256": "a27513a7d1d065c6c871ff596e54d589134ae66c2d0c1f9e607c088f6c8e78ce",
+      "PublishedSha256": "af99a8f7fe1a4b4d70b372e24fddb6af234cf72ff38d16c98e39b74b622f5be1",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/new-transition-start.log",
+      "RawSha256": "0d1016fe3b586931a421b078ac0c09464408ef2aa21f73b81c51d46855ba0734",
+      "PublishedSha256": "e359500eb333d8442be6adcb15308f90e9d1bc2a5dfd7c3a042dab205b5689aa",
+      "Transformation": "PATH_ALIASES"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/history-000002.json",
+      "RawSha256": "78f3440b1b975f9eea1039465df52383f94755195bf4466728a27af8c03ac21e",
+      "PublishedSha256": "78f3440b1b975f9eea1039465df52383f94755195bf4466728a27af8c03ac21e",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/reference.barcode-1.0.1-install.log",
+      "RawSha256": "95d1dd8a143caffb83a4c88a0184cef9c4a4cfd703eea45e67ee621821ecc83a",
+      "PublishedSha256": "95d1dd8a143caffb83a4c88a0184cef9c4a4cfd703eea45e67ee621821ecc83a",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "upgrade/release-upgrade-journey/reference.integration-1.0.1-install.log",
+      "RawSha256": "354f595fc57c94eee51d9d7b44c736e06850cb8e2cd09a6f9a1f0fd1a88dafc4",
+      "PublishedSha256": "354f595fc57c94eee51d9d7b44c736e06850cb8e2cd09a6f9a1f0fd1a88dafc4",
+      "Transformation": "IDENTICAL"
+    },
+    {
+      "Path": "exploration/verify-operation-upgrade-d2b2ca2.py.txt",
+      "RawSha256": "5bf13e36d1c888475f1d3aa4a4183374bc38357f76b20af9f3cead228839d4f7",
+      "PublishedSha256": "5bf13e36d1c888475f1d3aa4a4183374bc38357f76b20af9f3cead228839d4f7",
+      "Transformation": "IDENTICAL"
+    }
+  ]
+}

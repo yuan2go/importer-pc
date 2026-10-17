@@ -1,0 +1,26 @@
+{
+  "tag": "closure13-reference-8cb475b",
+  "purpose": "unchanged prior reader and exact plugin compatibility boundary",
+  "verified": [
+    {
+      "name": "closure13-8cb475b-integration-portable.zip",
+      "sha256": "7d2974d924b82cb397a6b225769e309359ab3136bf159c6559bcf6c3d324e836",
+      "size": 35472734
+    },
+    {
+      "name": "reference.integration-1.0.1.ipcx",
+      "sha256": "9b5433d6279f899538cd6a500918164ff3d3037271f2028a14a04009f1396039",
+      "size": 13203
+    },
+    {
+      "name": "reference.barcode-1.0.1.ipcx",
+      "sha256": "979a395ca49f7d4017ea3ee88e2b7a341ff49c6ac4fcadc08190d2dfbba6f2c1",
+      "size": 7568
+    },
+    {
+      "name": "trust.Simulation.reference.json",
+      "sha256": "a2bf7e63645a6b9fc45e0e05769885cf339411e61a42aba48bf70b1971aed896",
+      "size": 775
+    }
+  ]
+}

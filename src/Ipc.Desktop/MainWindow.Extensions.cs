@@ -30,6 +30,8 @@ public partial class MainWindow
         if (!CanCommand("SaveConfig", out var reason)) throw new InvalidOperationException(reason);
         var reviewed = MaintenanceReviewToken.Capture(snapshot!.State.Revision, snapshot.State.Actor, DateTimeOffset.UtcNow);
         extensionDraft = extensions; VersionField.Text = version;
+        var target = extensions.Ports?.SingleOrDefault(x => x.Port == "requests")?.Target;
+        if (target is not null) { EndpointField.Text = target.Endpoint; BindingVersionField.Text = target.Revision; ContractField.Text = target.Contract; }
         var draft = PreviewDraft();
         var differences = string.Join("\n", ConfigurationDifferences(Runtime.Configuration!, draft));
         if (!Confirmation.Ask(this, differences + "\n保存草稿尚不激活，当前来源与请求保持原版本。", "保存此部署草稿")) return "已取消保存；本窗草稿保留。";

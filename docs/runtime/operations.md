@@ -1,5 +1,27 @@
 > 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入正在实施；本段是执行范围，不代表目标已经完成。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](../archive/pre-arch-extension-closure-13/README.md)。
 
+## CLOSURE-13 当前运行与候选
+
+当前[13报告](arch-extension-closure-13.md)/[checks](arch-extension-closure-13-checks.json)登记实际源码/包/hash和远端回读；[扩展指南](../extensions/developer-guide.md)包含观察设备与类型化服务实例、公共契约、签名依赖、安装/参数/生效/原请求/卸载。原12报告、原候选和形成时验收不改写。Windows由用户决定延期：本轮只做Mac核心验证与WPF交叉构建，WINDOWS_NOT_RUN；不寻找或开通VM/runner，不扩OAuth。
+
+```sh
+# 固定SDK 10.0.402；所有输出使用新目录，先提交实际输入
+python3 scripts/package-reference.py --target portable --composition integration-reference --extension-key /private/build/reference.pem --extension-trust /independent/trust.json --output /new/closure13-supply-portable
+python3 scripts/package-reference.py --target win-x64 --composition integration-reference --extension-key /private/build/reference.pem --extension-trust /independent/trust.json --output /new/closure13-supply-win-x64
+python3 scripts/package-business.py --composition inspection-reference --output /new/closure13-inspection
+python3 scripts/package-business.py --composition supply-assembly --output /new/closure13-supply-assembly
+```
+
+通用装配使用`dotnet app/Ipc.Assembly.dll --config app/config --data-root /reference/data --view inspection-history --layout compact`（inspection组合）或供包所属页面（supply-assembly组合）。每行snapshot或BusinessCommand JSON；quit受控停止。Inspection只有明确合成模式，持久BeginBatch/RecordSample/CloseBatch、命令去重/CAS、重启查询；不是客户新业务。Supply装配转交同一个ProductRuntime，原Ipc.Product/WPF入口继续可用。未知业务/所属页面/布局拒绝。
+
+新服务实例在Services/Ports中，无DeviceId；供包requests端口目标与原Integration必须一致。管理页、CLI配置命令共用SaveConfig/ActivateConfig。原请求冻结集成实现/参数/目标，改当前包或地址不会改写历史路由。发送停止后，在其它资源仍未终止时允许原身份查询；最终释放须排空整个查询/T3/审计再Dispose。未终止继续持有实际包/设备/站点/库租约。
+
+必要验证选择器：--architecture（13新增风险及两个真实业务组合）、--extensions（12后装与部署旅程）、--baseline（T1/T2/T3/进程恢复）、--followup（配置/权限/双箱旅程）、--review-followup（展示及Product所有权）；只按受影响范围执行，原断言和失败证据保留。smoke.py/smoke-extension.py必须对实际解压的新候选运行，两种插件都在冻结发布宿主后独立构建，宿主前后hash不变。
+
+### 继承的运维细节
+
+以下保留前版本的具体存储/恢复/Windows安装政策；旧版本号、旧输出路径和历史测试结果只作原版本参考，当前候选身份以上方13报告为准。
+
 # 运行、发布与运维
 
 上一版记录：[REVIEW-FOLLOWUP-11](../work-packages/WP-IPC-REVIEW-FOLLOWUP-11.md)，以[11实施与同版报告](review-followup-11.md)为准；[09上一版检查](reference-validation-09.md)及[10逐页映射](ui-baseline-alignment-10.md)保留各自源提交边界。用户已授权合成/参考测试、构建、启动和发布；历史不测试/NOT_RUN见原报告和[纠偏前快照](../archive/pre-reconciliation-01/README.md)。Windows06与真实能力05继续分别记录。

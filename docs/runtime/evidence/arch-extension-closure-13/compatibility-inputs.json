@@ -1,0 +1,32 @@
+[
+  {
+    "Path": "src/Ipc.Supply/Store.cs",
+    "MainSha256": "3c1868a83077a0585946f673a5c2414a0e3405a542f8d3ca9e07d5ae6a76b793",
+    "CurrentSha256": "3c1868a83077a0585946f673a5c2414a0e3405a542f8d3ca9e07d5ae6a76b793",
+    "Unchanged": true
+  },
+  {
+    "Path": "src/Ipc.Supply/Maintenance.cs",
+    "MainSha256": "8f2d30a0a81cbfa6d075b76ac3a6d657c448745eb28e543de8a536ee169078e6",
+    "CurrentSha256": "8f2d30a0a81cbfa6d075b76ac3a6d657c448745eb28e543de8a536ee169078e6",
+    "Unchanged": true
+  },
+  {
+    "Path": "tests/Ipc.Verification/fixtures/schema1.sql",
+    "MainSha256": "d4ced2b811dff4d3d66dc66c431b9dcc8c75f491ca30f10a2e5507aad741c981",
+    "CurrentSha256": "d4ced2b811dff4d3d66dc66c431b9dcc8c75f491ca30f10a2e5507aad741c981",
+    "Unchanged": true
+  },
+  {
+    "Path": "tests/Ipc.Verification/fixtures/simulation-v1-request.json",
+    "MainSha256": "e7554eea0a949a116361c199b584f3a5fd3d3f459d0b388d4e38ad44112a0a07",
+    "CurrentSha256": "e7554eea0a949a116361c199b584f3a5fd3d3f459d0b388d4e38ad44112a0a07",
+    "Unchanged": true
+  },
+  {
+    "Path": "tests/Ipc.Verification/fixtures/simulation-v1-response.json",
+    "MainSha256": "1bd599d1342f2e97c817197467de98dfd356bffb9dbbd797f45ae35386db155c",
+    "CurrentSha256": "1bd599d1342f2e97c817197467de98dfd356bffb9dbbd797f45ae35386db155c",
+    "Unchanged": true
+  }
+]

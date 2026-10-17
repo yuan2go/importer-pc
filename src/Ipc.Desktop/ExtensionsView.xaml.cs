@@ -3,7 +3,6 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using Ipc.Platform;
-using Ipc.Product;
 using Ipc.Supply;
 using Microsoft.Win32;
 
@@ -12,7 +11,7 @@ namespace Ipc.Desktop;
 public partial class ExtensionsView : UserControl
 {
     MainWindow? owner;
-    ProductRuntime Runtime => owner!.Runtime;
+    IStationRuntime Runtime => owner!.Runtime;
     DeploymentExtensions desired = new([], []);
     ExtensionManifest? selectedManifest;
     VerifiedExtension? plan;
@@ -67,6 +66,7 @@ public partial class ExtensionsView : UserControl
         }
         finally { restoringPackageSelection = false; }
         Operations.ItemsSource = read.Operations;
+        IntegrationDiagnostics.ItemsSource = Runtime.IntegrationDiagnostics;
         Effective.Text = $"当前有效部署 {read.EffectiveDeployment ?? "未启动"} · 指纹 {read.EffectiveFingerprint ?? "未取得"}";
         Status.Text = $"{read.State} · {read.Packages.Count(x => x.Status == "Installed")} 个已安装包 · 尚未激活的包不会启动设备。\n" + string.Join("；", read.Diagnostics.Concat(schemaDiagnostics));
         if (Runtime.Application is { } app && access)
@@ -135,9 +135,9 @@ public partial class ExtensionsView : UserControl
     }
     void ShowDesired()
     {
-        var selected = (Instances.SelectedItem as ExtensionInstance)?.Id;
-        Instances.ItemsSource = desired.Instances;
-        Instances.SelectedItem = desired.Instances.FirstOrDefault(x => x.Id == selected);
+        var selected = InstanceKey(Instances.SelectedItem);
+        Instances.ItemsSource = desired.Instances.Cast<object>().Concat(desired.Services ?? []).ToArray();
+        Instances.SelectedItem = Instances.Items.Cast<object>().FirstOrDefault(x => InstanceKey(x) == selected);
         DesiredPackages.Text = string.Join("\n", desired.Packages.Select(x => x.Id + " / " + x.Version + " / " + x.ManifestSha256));
     }
     void RequireAccess()
@@ -167,13 +167,24 @@ public partial class ExtensionsView : UserControl
     async void RemovePackageClick(object sender, RoutedEventArgs e) => await Execute(() =>
     {
         RequireAccess(); if (Packages.SelectedItem is not ExtensionInstallation p) throw new InvalidOperationException("请选择包");
-        if (desired.Instances.Any(x => x.PackageId == p.Package.Id)) throw new InvalidOperationException("先从草稿停用/移除该包的实例及绑定");
+        if (desired.Instances.Any(x => x.PackageId == p.Package.Id) || (desired.Services ?? []).Any(x => x.PackageId == p.Package.Id)) throw new InvalidOperationException("先从草稿停用/移除该包的实例及绑定");
         desired = desired with { Packages = desired.Packages.Where(x => x.Id != p.Package.Id).ToArray() }; ShowDesired(); return Task.CompletedTask;
     });
-    void ModuleSelected(object sender, SelectionChangedEventArgs e) => RenderParameters(null);
+    static string? InstanceKey(object? value) => value switch { ExtensionInstance device => device.Id, ServiceInstance service => service.Id, _ => null };
+    void ModuleSelected(object sender, SelectionChangedEventArgs e)
+    {
+        var service = (Module.SelectedItem as ExtensionModule)?.Kind == "integration";
+        ServiceTarget.Visibility = service ? Visibility.Visible : Visibility.Collapsed;
+        DeviceId.IsEnabled = Role.IsEnabled = !service;
+        if (service && Runtime.Configuration is { } config)
+        { TargetId.Text = config.Integration.Id; TargetRevision.Text = config.Integration.Revision; TargetContract.Text = config.Integration.Contract; TargetEndpoint.Text = config.Integration.Endpoint; }
+        RenderParameters(null);
+    }
     async void InstanceSelected(object sender, SelectionChangedEventArgs e)
     {
-        if (owner is null || Instances.SelectedItem is not ExtensionInstance instance) return;
+        if (owner is null) return;
+        if (Instances.SelectedItem is ServiceInstance service) { await SelectService(service); return; }
+        if (Instances.SelectedItem is not ExtensionInstance instance) return;
         var reference = desired.Packages.SingleOrDefault(x => x.Id == instance.PackageId); if (reference is null) return;
         packageGeneration++;
         var ticket = ++instanceGeneration;
@@ -189,11 +200,30 @@ public partial class ExtensionsView : UserControl
         }
         catch (Exception ex) { Status.Text = "实例读取失败：" + ex.Message; }
     }
-    void RenderParameters(ExtensionInstance? instance)
+    async Task SelectService(ServiceInstance service)
+    {
+        var reference = desired.Packages.SingleOrDefault(x => x.Id == service.PackageId); if (reference is null) return;
+        var ticket = ++instanceGeneration; packageGeneration++;
+        try
+        {
+            var manifest = await Runtime.ExtensionManifestAsync(reference);
+            if (ticket != instanceGeneration || InstanceKey(Instances.SelectedItem) != service.Id) return;
+            selectedManifest = manifest; Module.ItemsSource = manifest.Modules; Module.SelectedItem = manifest.Modules.Single(x => x.Id == service.ModuleId);
+            InstanceId.Text = service.Id; EnabledInstance.IsChecked = service.Enabled;
+            var binding = (desired.Ports ?? []).SingleOrDefault(x => x.InstanceId == service.Id);
+            ServicePort.Text = binding?.Port ?? "requests";
+            var target = binding?.Target ?? Runtime.Configuration!.Integration;
+            TargetId.Text = target.Id; TargetRevision.Text = target.Revision; TargetContract.Text = target.Contract; TargetEndpoint.Text = target.Endpoint;
+            RenderParameters(null, service);
+        }
+        catch (Exception ex) { Status.Text = "服务实例读取失败：" + ex.Message; }
+    }
+    void RenderParameters(ExtensionInstance? instance, ServiceInstance? service = null)
     {
         Parameters.Children.Clear(); values.Clear();
         if (Module.SelectedItem is not ExtensionModule module) return;
         var effective = Runtime.Configuration?.Extensions?.Instances.SingleOrDefault(x => x.Id == instance?.Id);
+        var effectiveService = Runtime.Configuration?.Extensions?.Services?.SingleOrDefault(x => x.Id == service?.Id);
         var groups = new Dictionary<string, StackPanel>();
         StackPanel GroupPanel(string path)
         {
@@ -209,7 +239,7 @@ public partial class ExtensionsView : UserControl
             var content = GroupPanel(group.Key);
             foreach (var field in group)
             {
-                var value = instance?.Parameters.GetValueOrDefault(field.Key) ?? field.Default ?? "";
+                var value = instance?.Parameters.GetValueOrDefault(field.Key) ?? service?.Parameters.GetValueOrDefault(field.Key) ?? field.Default ?? "";
                 content.Children.Add(new TextBlock { Text = field.Label + (field.Required ? " *" : "") + (field.Unit is null ? "" : " / " + field.Unit), Margin = new Thickness(4, 8, 4, 0), FontWeight = FontWeights.SemiBold });
                 FrameworkElement editor;
                 if (field.Type is "choice" or "boolean")
@@ -230,7 +260,12 @@ public partial class ExtensionsView : UserControl
                 System.Windows.Automation.AutomationProperties.SetName(editor, field.Label);
                 content.Children.Add(editor);
                 string active;
-                if (effective is null) active = "未生效";
+                if (service is not null)
+                {
+                    active = effectiveService is null ? "未生效" : effectiveService.Parameters.GetValueOrDefault(field.Key) ??
+                        effectiveSchemas.GetValueOrDefault(effectiveService.PackageId)?.Modules.SingleOrDefault(x => x.Id == effectiveService.ModuleId)?.Parameters.SingleOrDefault(x => x.Key == field.Key)?.Default ?? "未设置";
+                }
+                else if (effective is null) active = "未生效";
                 else if (!effectiveSchemas.TryGetValue(effective.PackageId, out var schema)) active = "有效schema未取得";
                 else
                 {
@@ -247,6 +282,18 @@ public partial class ExtensionsView : UserControl
     {
         RequireAccess(); if (selectedManifest is null || Module.SelectedItem is not ExtensionModule module) throw new InvalidOperationException("选择已安装模块");
         if (!desired.Packages.Any(x => x.Id == selectedManifest.Id && x.Version == selectedManifest.Version)) throw new InvalidOperationException("先将该精确包版本加入部署草稿");
+        if (module.Kind == "integration")
+        {
+            var service = new ServiceInstance(InstanceId.Text, selectedManifest.Id, module.Id, EnabledInstance.IsChecked == true, values.ToDictionary(x => x.Key, x => x.Value()));
+            var serviceErrors = ExtensionSchema.Validate(module.Parameters, service.Parameters);
+            if (!ExtensionSchema.IsId(service.Id) || serviceErrors.Length > 0) throw new InvalidDataException(string.Join("；", serviceErrors.Prepend("请核对服务实例身份及参数")));
+            var target = new IntegrationBinding(TargetId.Text.Trim(), TargetRevision.Text.Trim(), TargetContract.Text.Trim(), TargetEndpoint.Text.Trim());
+            if (service.Enabled && (!ExtensionSchema.IsId(ServicePort.Text) || !Uri.TryCreate(target.Endpoint, UriKind.Absolute, out _))) throw new InvalidDataException("服务端口或目标无效");
+            var ports = (desired.Ports ?? []).Where(x => x.InstanceId != service.Id).ToList();
+            if (service.Enabled) ports.Add(new(ServicePort.Text, service.Id, target));
+            desired = desired with { Services = (desired.Services ?? []).Where(x => x.Id != service.Id).Append(service).ToArray(), Ports = ports.ToArray() };
+            ShowDesired(); Status.Text = "服务参数和目标绑定已写入本窗草稿；尚未保存/生效。"; return Task.CompletedTask;
+        }
         var instance = new ExtensionInstance(InstanceId.Text, selectedManifest.Id, module.Id, DeviceId.Text, EnabledInstance.IsChecked == true, values.ToDictionary(x => x.Key, x => x.Value()));
         var errors = ExtensionSchema.Validate(module.Parameters, instance.Parameters); if (errors.Length > 0) throw new InvalidDataException(string.Join("；", errors));
         if (!ExtensionSchema.IsId(instance.Id) || string.IsNullOrWhiteSpace(instance.DeviceId)) throw new InvalidDataException("实例与设备身份不完整");
@@ -256,7 +303,13 @@ public partial class ExtensionsView : UserControl
     });
     async void RemoveInstanceClick(object sender, RoutedEventArgs e) => await Execute(() =>
     {
-        RequireAccess(); if (Instances.SelectedItem is not ExtensionInstance i) throw new InvalidOperationException("选择实例");
+        RequireAccess();
+        if (Instances.SelectedItem is ServiceInstance service)
+        {
+            desired = desired with { Services = (desired.Services ?? []).Where(x => x.Id != service.Id).ToArray(), Ports = (desired.Ports ?? []).Where(x => x.InstanceId != service.Id).ToArray() };
+            ShowDesired(); return Task.CompletedTask;
+        }
+        if (Instances.SelectedItem is not ExtensionInstance i) throw new InvalidOperationException("选择实例");
         owner!.UnbindExtensionDraft(i.Id); desired = desired with { Instances = desired.Instances.Where(x => x.Id != i.Id).ToArray() }; ShowDesired(); return Task.CompletedTask;
     });
     async void SaveDeploymentClick(object sender, RoutedEventArgs e) => await Execute(async () =>

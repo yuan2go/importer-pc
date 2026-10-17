@@ -1,0 +1,26 @@
+{
+  "Business": "inspection",
+  "Presentation": {
+    "Views": [
+      "inspection",
+      "inspection-history"
+    ],
+    "Layouts": [
+      "standard",
+      "compact"
+    ]
+  },
+  "Status": "Started"
+}
+{
+  "RuntimeId": "f41f79e1-e202-442f-adcf-e93cf500ce14",
+  "Revision": 3,
+  "State": "Ready",
+  "Facts": {
+    "Business": "inspection",
+    "Batches": "1",
+    "Samples": "1",
+    "CurrentBatch": "batch-one",
+    "CurrentState": "Closed"
+  }
+}

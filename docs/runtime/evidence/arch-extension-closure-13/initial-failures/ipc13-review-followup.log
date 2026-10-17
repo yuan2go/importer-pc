@@ -1,0 +1,16 @@
+SELECT --review-followup: E11 presentation policies + Product composite ownership
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-6a7d258bc51d405f801ccbd0735c5334
+PASS E11 current wave identity/unknown/difference and persistent XAML visibility (not WPF runtime)
+PASS E11 box focus login/new-box/identity/defer/repeated-projection/window isolation policies (Windows focus NOT_RUN)
+PASS E12 deployment confirmation freezes reviewed revision and identity (actual WPF modal NOT_RUN)
+PASS E11 Product stop-throws: live store/journal + data/station/device leases retained; independent cleanup; original query; late terminal release/restart
+PASS E11 Product stop-pending: live store/journal + data/station/device leases retained; independent cleanup; original query; late terminal release/restart
+Unhandled exception. System.InvalidOperationException: Integration runtime is stopping
+   at Ipc.Product.IntegrationRuntime.Invoke[T](Func`1 action) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Product/IntegrationRuntime.cs:line 134
+   at Ipc.Product.ProductRuntime.ReconcileAsync(String requestId) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Product/ProductRuntime.cs:line 289
+   at ProductOwnershipVerification.Exercise(String root, String url, String failure) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 80
+   at ProductOwnershipVerification.Exercise(String root, String url, String failure) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 111
+   at ProductOwnershipVerification.Run(String root, String url) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ProductOwnershipVerification.cs:line 13
+   at Program.<Main>$(String[] args) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Program.cs:line 76
+   at Program.<Main>$(String[] args) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Program.cs:line 448
+   at Program.<Main>(String[] args)

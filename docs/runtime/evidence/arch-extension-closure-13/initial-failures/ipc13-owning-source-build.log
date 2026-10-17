@@ -1,0 +1,34 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
+  Ipc.Assembly -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Assembly/bin/Debug/net10.0/Ipc.Assembly.dll
+  Ipc.Desktop -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll
+  Ipc.Fixture -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll
+  Ipc.Inspection -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/src/Ipc.Inspection/bin/Debug/net10.0/Ipc.Inspection.dll
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(313,71): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(313,104): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(313,201): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(314,162): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(315,134): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(316,61): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(318,73): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(319,20): error CS0136: 无法在此范围中声明名为“failure”的局部变量或参数，因为该名称在封闭局部范围中用于定义局部变量或参数 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+
+生成失败。
+
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(313,71): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(313,104): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(313,201): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(314,162): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(315,134): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(316,61): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(318,73): error CS0841: 本地变量“failure”在声明之前无法使用 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs(319,20): error CS0136: 无法在此范围中声明名为“failure”的局部变量或参数，因为该名称在封闭局部范围中用于定义局部变量或参数 [/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Ipc.Verification.csproj]
+    0 个警告
+    8 个错误
+
+已用时间 00:00:03.74

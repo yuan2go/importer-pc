@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup><OutputType>Exe</OutputType><BusinessModule Condition="'$(BusinessModule)' == ''">Supply</BusinessModule><EnableDefaultCompileItems>false</EnableDefaultCompileItems></PropertyGroup>
+ <ItemGroup><Compile Include="Program.cs"/><ProjectReference Include="../Ipc.Platform/Ipc.Platform.csproj"/></ItemGroup>
+ <ItemGroup Condition="'$(BusinessModule)' == 'Supply'"><Compile Include="SupplyAssembly.cs"/><ProjectReference Include="../Ipc.Product/Ipc.Product.csproj"/></ItemGroup>
+ <ItemGroup Condition="'$(BusinessModule)' == 'Inspection'"><Compile Include="InspectionAssembly.cs"/><ProjectReference Include="../Ipc.Inspection/Ipc.Inspection.csproj"/></ItemGroup>
+ <Target Name="CheckBusinessSelection" BeforeTargets="PrepareForBuild" Condition="'$(BusinessModule)' != 'Supply' And '$(BusinessModule)' != 'Inspection'"><Error Text="Choose a registered BusinessModule: Supply or Inspection"/></Target>
+</Project>

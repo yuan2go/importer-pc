@@ -1,15 +1,215 @@
 {
-  "schema": 1,
+  "schema": 2,
   "components": {
-    "platform": {"version":"1.0.0","contract":1,"dependencies":[],"delivery":"core"},
-    "supply": {"version":"1.0.0","contract":1,"dependencies":["platform"],"delivery":"core"},
-    "adapters": {"version":"1.0.0","contract":1,"dependencies":["supply"],"delivery":"core"},
-    "product": {"version":"1.0.0","contract":1,"dependencies":["adapters"],"delivery":"core"},
-    "reference.barcode": {"version":"1.0.0","contract":1,"dependencies":["platform"],"delivery":"offline-bundle"}
+    "platform": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [],
+      "delivery": "core"
+    },
+    "supply": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "supply-contracts"
+      ],
+      "delivery": "core"
+    },
+    "adapters": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "supply"
+      ],
+      "delivery": "core"
+    },
+    "product": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "adapters"
+      ],
+      "delivery": "core"
+    },
+    "reference.barcode": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform"
+      ],
+      "delivery": "offline-bundle"
+    },
+    "supply-contracts": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform"
+      ],
+      "delivery": "core"
+    },
+    "reference.integration": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "supply-contracts"
+      ],
+      "delivery": "offline-bundle"
+    },
+    "inspection": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform"
+      ],
+      "delivery": "core"
+    },
+    "assembly.inspection": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "inspection"
+      ],
+      "delivery": "core"
+    },
+    "assembly.supply": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "product"
+      ],
+      "delivery": "core"
+    }
   },
   "compositions": {
-    "core-reference": ["product"],
-    "barcode-reference": ["product","reference.barcode"]
+    "core-reference": [
+      "product"
+    ],
+    "barcode-reference": [
+      "product",
+      "reference.barcode"
+    ],
+    "integration-reference": [
+      "product",
+      "reference.barcode",
+      "reference.integration"
+    ],
+    "inspection-reference": [
+      "assembly.inspection"
+    ],
+    "supply-assembly": [
+      "assembly.supply"
+    ]
   },
-  "required": ["platform","supply","adapters","product"]
+  "required": {
+    "core-reference": [
+      "platform",
+      "supply-contracts",
+      "supply",
+      "adapters",
+      "product"
+    ],
+    "barcode-reference": [
+      "platform",
+      "supply-contracts",
+      "supply",
+      "adapters",
+      "product"
+    ],
+    "integration-reference": [
+      "platform",
+      "supply-contracts",
+      "supply",
+      "adapters",
+      "product"
+    ],
+    "inspection-reference": [
+      "platform",
+      "inspection",
+      "assembly.inspection"
+    ],
+    "supply-assembly": [
+      "platform",
+      "supply-contracts",
+      "supply",
+      "adapters",
+      "product"
+    ]
+  },
+  "products": {
+    "core-reference": {
+      "business": "supply",
+      "views": [
+        "workstation",
+        "history",
+        "alarms",
+        "diagnostics",
+        "maintenance",
+        "engineering",
+        "extensions"
+      ],
+      "layouts": [
+        "standard",
+        "compact"
+      ]
+    },
+    "barcode-reference": {
+      "business": "supply",
+      "views": [
+        "workstation",
+        "history",
+        "alarms",
+        "diagnostics",
+        "maintenance",
+        "engineering",
+        "extensions"
+      ],
+      "layouts": [
+        "standard",
+        "compact"
+      ]
+    },
+    "integration-reference": {
+      "business": "supply",
+      "views": [
+        "workstation",
+        "history",
+        "alarms",
+        "diagnostics",
+        "maintenance",
+        "engineering",
+        "extensions"
+      ],
+      "layouts": [
+        "standard",
+        "compact"
+      ]
+    },
+    "inspection-reference": {
+      "business": "inspection",
+      "views": [
+        "inspection",
+        "inspection-history"
+      ],
+      "layouts": [
+        "standard",
+        "compact"
+      ]
+    },
+    "supply-assembly": {
+      "business": "supply",
+      "views": [
+        "workstation",
+        "history",
+        "alarms",
+        "diagnostics",
+        "maintenance",
+        "engineering",
+        "extensions"
+      ],
+      "layouts": [
+        "standard",
+        "compact"
+      ]
+    }
+  }
 }

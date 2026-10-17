@@ -1,5 +1,13 @@
 > 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入正在实施；本段是执行范围，不代表目标已经完成。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](../archive/pre-arch-extension-closure-13/README.md)。
 
+## CLOSURE-13 当前职责与决定
+
+完整当前映射见[受控装配与扩展](controlled-extensions.md)，实现/验证入口为[13报告](../runtime/arch-extension-closure-13.md)。基座负责机制，业务及其公共契约拥有状态/规则/数据/页面，设备拥有采集，集成拥有外部协议，Product和构建选装根可引用具体实现。Ipc.Assembly通用路径不解释Supply/left-right/loopback；编译注册选择一个业务及所属views/layouts，UI复用业务应用契约。
+
+F-03/F-04：Supply与功能完整的Inspection参考业务实际装配，旧专用ProductHost保留，非任意业务热插。F-05/F-06：两类受信扩展分别使用设备身份/业务角色与服务实例/目标端口；实际AssemblyRef、精确依赖闭包及运行解析同一政策，ID/version跨退休不可变。F-09/F-10：原StationConfig唯一部署修订，新请求T1冻结实际集成包/参数/合同/目标；历史核对原身份，缺能力明确阻断，不默认重发。公共契约无DB/UI/根容器。
+
+本轮Mac开发与WPF交叉构建获用户授权；Windows实际验收统一延期，WINDOWS_NOT_RUN，不开通VM/runner或扩OAuth。D/RV和12历史验收不倒写。下文保留原设计/历次实施的形成时语境；旧“当前/下一阶段”不取代本节。
+
 # 框架决策、讨论来源与适用范围
 
 > 先前纠偏入口（历史）：[AUDIT-RECONCILIATION-01](../work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)。目标设计和下文历史实施/不测试记录保持形成时含义；当前08/10/09实施及验证以该包的同版报告为准。原字节已归档，D/RV不变。

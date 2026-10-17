@@ -70,6 +70,8 @@ public sealed class StationState
     public List<BlockReason> Blocks { get; set; } = [];
     public Actor? Actor { get; set; }
     public DeviceState? IntegrationHealth { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ServiceState? IntegrationServiceHealth { get; set; }
     public bool Quarantined { get; set; }
     public bool Stopping { get; set; }
     public string NextFault { get; set; } = "None";

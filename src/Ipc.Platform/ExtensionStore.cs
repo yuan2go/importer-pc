@@ -60,21 +60,47 @@ public sealed class ExtensionStore(string root, ExtensionTrust trust, RunMode mo
             return Wire.Decode<ExtensionInstallOperation>(File.ReadAllText(safe));
         }).ToArray();
     }
+    [ThreadStatic] static HashSet<string>? verifying;
     public VerifiedExtension VerifyInstalled(PackageReference package)
+    {
+        verifying ??= [];
+        if (!verifying.Add(package.ManifestSha256)) throw new InvalidDataException("Cyclic installed package dependency");
+        try { return VerifyInstalledCore(package); }
+        finally { verifying.Remove(package.ManifestSha256); }
+    }
+    VerifiedExtension VerifyInstalledCore(PackageReference package)
     {
         var registration = Inventory().SingleOrDefault(x => x.Package == package && x.Status == "Installed")
             ?? throw new InvalidDataException("Exact extension is not installed: " + package.Id);
-        var verified = ExtensionPackages.VerifyDirectory(PackageDirectory(package), trust, mode, registration.PackageSha256);
+        var verified = ExtensionPackages.VerifyDirectory(PackageDirectory(package), trust, mode, registration.PackageSha256, ResolveDependency);
         if (verified.Reference != package) throw new InvalidDataException("Installed manifest identity mismatch");
         return verified;
     }
     public VerifiedExtension Plan(string file)
     {
-        var verified = ExtensionPackages.Inspect(file, trust, mode);
+        var verified = ExtensionPackages.Inspect(file, trust, mode, ResolveDependency);
         foreach (var dependency in verified.Manifest.Dependencies) VerifyInstalled(dependency);
-        if (Inventory().Any(x => x.Status == "Installed" && x.Package.Id == verified.Manifest.Id && x.Package.Version == verified.Manifest.Version && x.Package != verified.Reference))
+        ValidateIdentity(verified.Reference);
+        if (Inventory().Any(x => x.Package.Id == verified.Manifest.Id && x.Package.Version == verified.Manifest.Version && x.Package != verified.Reference))
             throw new InvalidDataException("Package ID/version is already bound to different signed bytes");
         return verified;
+    }
+    (VerifiedExtension Package, string Directory) ResolveDependency(PackageReference reference) =>
+        (VerifyInstalled(reference), PackageDirectory(reference));
+    void ValidateIdentity(PackageReference reference)
+    {
+        ValidateReference(reference);
+        var retained = Inventory().Select(x => x.Package).Concat(Operations().Select(x => x.Package));
+        var identityFile = Directory.Exists(Root) ? FilePath($"identities/{reference.Id}/{reference.Version}.json") : "";
+        if (File.Exists(identityFile)) retained = retained.Append(Wire.Decode<PackageReference>(File.ReadAllText(identityFile)));
+        if (retained.Any(x => x.Id == reference.Id && x.Version == reference.Version && x != reference))
+            throw new InvalidDataException("Package ID/version is permanently bound to different signed content, including retired/interrupted history");
+    }
+    void ReserveIdentity(PackageReference reference)
+    {
+        ValidateIdentity(reference); // Called under the management lease, including recovery and repair.
+        var file = FilePath($"identities/{reference.Id}/{reference.Version}.json");
+        if (!File.Exists(file)) AtomicWrite(file, reference);
     }
     FileStream Mutation()
     {
@@ -99,6 +125,7 @@ public sealed class ExtensionStore(string root, ExtensionTrust trust, RunMode mo
         using var mutation = Mutation(); Budget();
         var plan = Plan(archive);
         if (plan.PackageSha256 != expectedPackageSha256) throw new InvalidDataException("Installation plan/input changed");
+        ReserveIdentity(plan.Reference);
         var prior = Inventory().SingleOrDefault(x => x.Package == plan.Reference && x.Status == "Installed");
         var repair = false;
         if (prior is not null)
@@ -135,6 +162,7 @@ public sealed class ExtensionStore(string root, ExtensionTrust trust, RunMode mo
     ExtensionInstallation Complete(ExtensionInstallOperation operation)
     {
         ValidateReference(operation.Package);
+        ReserveIdentity(operation.Package);
         EnsureUsage(operation.Package);
         using var repairLease = operation.Kind == "Repair" ? AcquireMutation([operation.Package]) : null;
         var archive = FilePath("incoming/" + operation.Id + ".ipcx");
@@ -145,7 +173,7 @@ public sealed class ExtensionStore(string root, ExtensionTrust trust, RunMode mo
         {
             if (operation.Kind == "Repair" && Directory.Exists(destination))
             {
-                try { ExtensionPackages.VerifyDirectory(destination, trust, mode, operation.PackageSha256); }
+                try { ExtensionPackages.VerifyDirectory(destination, trust, mode, operation.PackageSha256, ResolveDependency); }
                 catch (Exception ex) when (ex is IOException or InvalidDataException or CryptographicException or System.Text.Json.JsonException)
                 {
                     var damaged = FilePath("damaged/" + operation.Id);
@@ -157,20 +185,20 @@ public sealed class ExtensionStore(string root, ExtensionTrust trust, RunMode mo
             {
                 if (Directory.Exists(stage))
                 {
-                    try { ExtensionPackages.VerifyDirectory(stage, trust, mode, operation.PackageSha256); }
+                    try { ExtensionPackages.VerifyDirectory(stage, trust, mode, operation.PackageSha256, ResolveDependency); }
                     catch (Exception ex) when (ex is IOException or InvalidDataException or System.Text.Json.JsonException or System.Security.Cryptography.CryptographicException)
                     { Directory.Move(stage, stage + ".interrupted-" + Wire.Id()); }
                 }
                 if (!Directory.Exists(stage))
                 {
-                    Directory.CreateDirectory(stage); ExtensionPackages.ExtractVerified(archive, stage, trust, mode, operation.PackageSha256);
+                    Directory.CreateDirectory(stage); ExtensionPackages.ExtractVerified(archive, stage, trust, mode, operation.PackageSha256, ResolveDependency);
                 }
                 Save(operation with { State = "FilesVerified", Error = null });
                 PhaseBoundary?.Invoke("FilesVerified");
                 Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
                 Directory.Move(stage, destination); // Atomic same-volume publish; no replacement.
             }
-            var installed = ExtensionPackages.VerifyDirectory(destination, trust, mode, operation.PackageSha256);
+            var installed = ExtensionPackages.VerifyDirectory(destination, trust, mode, operation.PackageSha256, ResolveDependency);
             if (installed.Reference != operation.Package) throw new InvalidDataException("Published identity mismatch");
             Save(operation with { State = "Published", Error = null });
             PhaseBoundary?.Invoke("Published");
@@ -210,12 +238,12 @@ public sealed class ExtensionStore(string root, ExtensionTrust trust, RunMode mo
         {
             if (Directory.Exists(directory))
             {
-                var verified = ExtensionPackages.VerifyDirectory(directory, trust, mode, operation.PackageSha256);
+                var verified = ExtensionPackages.VerifyDirectory(directory, trust, mode, operation.PackageSha256, ResolveDependency);
                 if (verified.Reference != package) throw new InvalidDataException("Uninstall package identity changed");
                 Directory.CreateDirectory(Path.GetDirectoryName(retained)!); Directory.Move(directory, retained);
             }
             else if (!Directory.Exists(retained)) throw new DirectoryNotFoundException("Original and retired package both missing; inspect before recovery");
-            var retired = ExtensionPackages.VerifyDirectory(retained, trust, mode, operation.PackageSha256);
+            var retired = ExtensionPackages.VerifyDirectory(retained, trust, mode, operation.PackageSha256, ResolveDependency);
             if (retired.Reference != package) throw new InvalidDataException("Retired package identity changed");
             Save(operation with { State = "UninstallRetired", Error = null }); PhaseBoundary?.Invoke("UninstallRetired");
             var previous = Inventory().Single(x => x.Package == package);

@@ -10,7 +10,8 @@ public static class ReferenceProduct
     // compositions without introducing a second customer implementation.
     public static ProductDefinition Definition { get; } = new("ipc-reference", "net10.0", "supply", [RunMode.Simulation, RunMode.Production],
         [new("platform", "platform", "1.0.0", 1, [], "Ipc.Platform.dll"),
-         new("supply", "supply", "1.0.0", 1, ["platform"], "Ipc.Supply.dll"),
+         new("supply-contracts", "contracts", "1.0.0", 1, ["platform"], "Ipc.Supply.Contracts.dll"),
+         new("supply", "supply", "1.0.0", 1, ["supply-contracts"], "Ipc.Supply.dll"),
          new("adapters", "adapters", "1.0.0", 1, ["supply"], "Ipc.Adapters.dll"),
          new("product", "product", "1.0.0", 1, ["adapters"], "Ipc.Product.dll")],
         ["workstation", "history", "alarms", "diagnostics", "maintenance", "engineering", "extensions"], ["standard", "compact"],

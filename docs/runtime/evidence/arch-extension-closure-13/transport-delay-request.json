@@ -1,0 +1,46 @@
+{
+  "Id": "cb2a25f3515d41b0bfd8ebc17016f907",
+  "OwnerId": "5b36e6e74cc94c1b9db71298847504ad",
+  "SessionId": "5b36e6e74cc94c1b9db71298847504ad",
+  "Kind": "Context",
+  "OwnerRevision": 1,
+  "IntentKey": "5b36e6e74cc94c1b9db71298847504ad:Context:1",
+  "Payload": "{\n  \u0022StationId\u0022: \u0022SIM-9446def801c146b3a898609fceb53f76-transport\u0022,\n  \u0022SessionId\u0022: \u00225b36e6e74cc94c1b9db71298847504ad\u0022,\n  \u0022OwnerId\u0022: \u00225b36e6e74cc94c1b9db71298847504ad\u0022,\n  \u0022OwnerRevision\u0022: 1,\n  \u0022Kind\u0022: \u0022Context\u0022,\n  \u0022Barcode\u0022: \u0022000001\u0022,\n  \u0022Package\u0022: null,\n  \u0022Quantity\u0022: null,\n  \u0022CheckToken\u0022: null,\n  \u0022Policy\u0022: \u0022SYNTHETIC-KEEP-v1\u0022,\n  \u0022InitialDemand\u0022: 120,\n  \u0022Fault\u0022: \u0022Delay\u0022,\n  \u0022Actor\u0022: {\n    \u0022Id\u0022: \u0022SIM-transport-verifier\u0022,\n    \u0022Role\u0022: \u0022Maintenance\u0022,\n    \u0022ExpiresAt\u0022: \u00222026-10-17T05:17:33.563538\u002B00:00\u0022\n  }\n}",
+  "PayloadHash": "1629C41255D05A7C180140A343115EB302F2F3A4C08FBACD0A3FE16D11F1D52C",
+  "Binding": {
+    "Id": "reference-target-a",
+    "Revision": "1",
+    "Contract": "SIMULATION-v1",
+    "Endpoint": "http://127.0.0.1:52857/"
+  },
+  "Status": "Dispatching",
+  "CreatedAt": "2026-10-17T05:12:33.564646+00:00",
+  "Implementation": {
+    "Driver": "extension",
+    "Package": {
+      "Id": "reference.integration",
+      "Version": "1.0.0",
+      "ManifestSha256": "D1B78093F67BBD09DA3BA99C5A3A7413D59D77B9544994D303C4956898605524"
+    },
+    "ModuleId": "reference-http",
+    "InstanceId": "receiver-a",
+    "DeploymentVersion": "E13-DEPLOY-1",
+    "ConfigurationSha256": "7D56247B4B14860D19A7FFD232E682771EF8C9C5834FCB6FA873CFD7B0CF92FD",
+    "ContractSha256": "F016AA04E122070D77BD7701CD76E12ACFF1292327D5CEA9E8B7BA6A5FCB96F0",
+    "Target": {
+      "Id": "reference-target-a",
+      "Revision": "1",
+      "Contract": "SIMULATION-v1",
+      "Endpoint": "http://127.0.0.1:52857/"
+    },
+    "TimeoutMs": 5000,
+    "Policy": "SYNTHETIC-KEEP-v1",
+    "FixtureDemand": 120,
+    "Parameters": {
+      "metadata.label": "primary",
+      "fault.fail-create": "false",
+      "fault.stop-delay-ms": "0",
+      "fault.dispose-delay-ms": "0"
+    }
+  }
+}

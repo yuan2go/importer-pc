@@ -7,14 +7,13 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Ipc.Platform;
-using Ipc.Product;
 using Ipc.Supply;
 using Microsoft.Win32;
 
 namespace Ipc.Desktop;
 public partial class MainWindow : Window
 {
-    public ProductRuntime Runtime { get; }
+    public IStationRuntime Runtime { get; }
     readonly bool ownsLifetime;
     readonly StationViewModel model = new();
     readonly LaneViewModel left = new("left"), right = new("right");
@@ -32,7 +31,7 @@ public partial class MainWindow : Window
     int historyOffset, alarmHistoryOffset;
     Alarm? selectedAlarm;
 
-    public MainWindow(ProductRuntime runtime, bool ownsLifetime = false)
+    public MainWindow(IStationRuntime runtime, bool ownsLifetime = false)
     {
         Runtime = runtime; this.ownsLifetime = ownsLifetime; InitializeComponent(); DataContext = model;
         // WPF dimensions are effective units. Fit the initial window to the available work
@@ -42,7 +41,7 @@ public partial class MainWindow : Window
         Title = "供包参考工位 · " + (runtime.Mode?.ToString() ?? "NotReady");
         RuntimeIdentity.Text = $"运行实例 {runtime.RuntimeId} · 所有窗口共享此业务实例与发送器";
         ModeBadge.Text = runtime.Mode == RunMode.Simulation ? "SIMULATION" : "PRODUCTION · 未就绪";
-        if (runtime.Application is null) model.GlobalStatus = "未就绪 · " + string.Join("；", runtime.Diagnostics);
+        if (runtime.Application is null) model.GlobalStatus = "未就绪 · " + string.Join("；", runtime.RuntimeDiagnostics);
         LeftLane.DataContext = left; RightLane.DataContext = right; AlarmGrid.ItemsSource = alarms;
         InitializeHistoryFilters();
         LoadConfigForm(runtime.Configuration);
@@ -52,14 +51,14 @@ public partial class MainWindow : Window
         ConfigurePresentationAccess();
         timer.Tick += async (_, _) => { UpdateGuards(); await RefreshAsync(); };
         Loaded += async (_, _) => { ApplyLayout(); timer.Start(); StartNotificationPlayer(); await RefreshAsync(); if (currentView != "workstation") await NavigateToViewAsync(currentView); };
-        Closed += async (_, _) => { closing = true; timer.Stop(); soundStop.Cancel(); lifetime.Cancel(); lifetime.Dispose(); if (!ownsLifetime) try { await Runtime.SetWindowAreaAsync(windowIdentity, false); } catch (Exception ex) { Runtime.Diagnostics.Add("Closed window protection retained: " + ex.Message); } };
+        Closed += async (_, _) => { closing = true; timer.Stop(); soundStop.Cancel(); lifetime.Cancel(); lifetime.Dispose(); if (!ownsLifetime) try { await Runtime.SetWindowAreaAsync(windowIdentity, false); } catch (Exception ex) { Runtime.ReportPresentationDiagnostic("Closed window protection retained: " + ex.Message); } };
     }
     async Task RefreshAsync()
     {
         if (refreshing || closing) return; refreshing = true;
         try
         {
-            if (Runtime.Application is null) { model.GlobalStatus = "NotReady · " + string.Join("; ", Runtime.Diagnostics); UpdateEntryProjection(); return; }
+            if (Runtime.Application is null) { model.GlobalStatus = "NotReady · " + string.Join("; ", Runtime.RuntimeDiagnostics); UpdateEntryProjection(); return; }
             await Runtime.SetWindowAreaAsync(windowIdentity, smallArea).WaitAsync(lifetime.Token);
             var next = await Runtime.Application.SnapshotAsync().WaitAsync(lifetime.Token);
             if (closing) return;
@@ -372,7 +371,7 @@ public partial class MainWindow : Window
     void LoadConfigForm(StationConfig? config)
     {
         if(config is null) return;
-        draftBase=config; StationIdField.Text=config.StationId; VersionField.Text=config.Version; EndpointField.Text=config.Integration.Endpoint;
+        draftBase=config; extensionDraft=config.Extensions; StationIdField.Text=config.StationId; VersionField.Text=config.Version; EndpointField.Text=config.Integration.Endpoint;
         BindingVersionField.Text=config.Integration.Revision; ContractField.Text=config.Integration.Contract; TimeoutField.Text=config.TimeoutMs.ToString();
         MinimumFreeField.Text=config.MinimumFreeMb.ToString(); FixtureDemandField.Text=config.FixtureDemand.ToString(); MaximumPackageField.Text=config.MaximumPackage.ToString(); PolicyField.Text=config.Policy;
         EventCapacityField.Text=config.EventCapacity.ToString(); CommandCapacityField.Text=config.CommandCapacity.ToString(); OutboxCapacityField.Text=config.OutboxCapacity.ToString();
@@ -383,8 +382,11 @@ public partial class MainWindow : Window
     {
         DeviceConfigGrid.CommitEdit(DataGridEditingUnit.Cell,true); DeviceConfigGrid.CommitEdit(DataGridEditingUnit.Row,true);
         var source=draftBase ?? throw new InvalidOperationException("没有有效配置可编辑");
+        var extensions = extensionDraft ?? source.Extensions;
+        var integration = (extensions?.Ports?.SingleOrDefault(x => x.Port == "requests")?.Target ?? source.Integration) with { Endpoint = EndpointField.Text.Trim(), Revision = BindingVersionField.Text.Trim() };
+        if (extensions?.Ports is { } ports) extensions = extensions with { Ports = ports.Select(x => x.Port == "requests" ? x with { Target = integration } : x).ToArray() };
         int Number(TextBox field,string label) => int.TryParse(field.Text,out var number)?number:throw new InvalidDataException(label+"必须是整数");
-        return source with { StationId=StationIdField.Text.Trim(),Version=VersionField.Text.Trim(),Integration=source.Integration with {Endpoint=EndpointField.Text.Trim(),Revision=BindingVersionField.Text.Trim()},TimeoutMs=Number(TimeoutField,"超时"),EventCapacity=Number(EventCapacityField,"观察队列容量"),CommandCapacity=Number(CommandCapacityField,"命令队列容量"),OutboxCapacity=Number(OutboxCapacityField,"待决请求容量"),MinimumFreeMb=Number(MinimumFreeField,"磁盘低水位"),FixtureDemand=Number(FixtureDemandField,"合成初始需求"),MaximumPackage=Number(MaximumPackageField,"合成包装上限"),Devices=deviceDrafts.Select(x=>x.Binding()).ToArray(),Extensions=extensionDraft ?? source.Extensions };
+        return source with { StationId=StationIdField.Text.Trim(),Version=VersionField.Text.Trim(),Integration=integration,TimeoutMs=Number(TimeoutField,"超时"),EventCapacity=Number(EventCapacityField,"观察队列容量"),CommandCapacity=Number(CommandCapacityField,"命令队列容量"),OutboxCapacity=Number(OutboxCapacityField,"待决请求容量"),MinimumFreeMb=Number(MinimumFreeField,"磁盘低水位"),FixtureDemand=Number(FixtureDemandField,"合成初始需求"),MaximumPackage=Number(MaximumPackageField,"合成包装上限"),Devices=deviceDrafts.Select(x=>x.Binding()).ToArray(),Extensions=extensions };
     }
     StationConfig PreviewDraft()
     {
@@ -413,7 +415,7 @@ public partial class MainWindow : Window
         return changes.Length==0 ? ["没有配置差异"] : new[]{"生效时机：受控重启成功后；失败保留当前有效配置。"}.Concat(changes).ToArray();
     }
     void PreviewConfigClick(object sender,RoutedEventArgs e) { try{PreviewDraft();}catch(Exception ex){ConfigFeedback.Text=ex.Message;} }
-    void ImportConfigClick(object sender,RoutedEventArgs e) { try{var draft=Wire.Decode<StationConfig>(ConfigDraft.Text); var errors=Runtime.ValidateConfiguration(draft); if(errors.Count>0) throw new InvalidDataException(string.Join("；",errors)); LoadConfigForm(draft); ConfigFeedback.Text="已导入表单；尚未保存或激活。";}catch(Exception ex){ConfigFeedback.Text="导入失败，保留表单："+ex.Message;} }
+    void ImportConfigClick(object sender,RoutedEventArgs e) { try{var draft=Wire.Decode<StationConfig>(ConfigDraft.Text); var errors=Runtime.ValidateConfiguration(draft); if(errors.Count>0) throw new InvalidDataException(string.Join("；",errors)); LoadConfigForm(draft); ExtensionsControl.Initialize(this); ConfigFeedback.Text="已导入表单；尚未保存或激活。";}catch(Exception ex){ConfigFeedback.Text="导入失败，保留表单："+ex.Message;} }
     async void SaveConfigClick(object sender, RoutedEventArgs e) { try{var draft=PreviewDraft();await SendAsync("SaveConfig",value:Wire.Encode(draft));await LoadConfigs();}catch(Exception ex){ConfigFeedback.Text=ex.Message;} }
     async Task LoadConfigs()
     {

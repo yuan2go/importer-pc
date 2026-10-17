@@ -1,0 +1,45 @@
+SELECT --architecture: E13 P2/typed integration/actual selected business assemblies
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-c8a8def52b114c70826c0339e5bd8d72
+PASS E13 two independent plugins build against frozen public contracts without changing host hashes
+PASS E13 both independent kinds install without executing factories
+PASS E13 refused P2-01 different content after uninstall / InvalidDataException
+PASS E13 refused P2-01 different content cannot bypass installation / InvalidDataException
+PASS E13 P2-01 exact original can reinstall with retired bytes/audit retained
+PASS E13 refused P2-01 prepared interruption / IOException
+PASS E13 refused P2-01 interrupted identity reservation / InvalidDataException
+PASS E13 P2-01 recovery preserves original operation identity
+PASS E13 P2-01 concurrent different-content install has one immutable winner
+PASS E13 refused P2-02 actual undeclared managed reference absent from signed closure / InvalidDataException
+PASS E13 P2-02 inspection and rejected installation never execute plugin constructors
+PASS E13 P2-02 legal exact dependency enters actual runtime resolution only after install and lease
+PASS E13 refused P2-02 System.* is not a framework allowlist / InvalidDataException
+PASS E13 P2-02 signed private System-named assembly requires exact bytes rather than blanket denial or allow
+PASS E13 refused P2-02 managed AssemblyRef exact version conflict / InvalidDataException
+PASS E13 refused P2-02 local and dependency assembly ambiguity / InvalidDataException
+PASS E13 P2-02 all negative static preflights leave constructor marker absent
+PASS E13 two device and two service instances have separate identity/binding/parameter validation
+PASS E13 duplicate service ports are rejected by real management validation
+PASS E13 both installed extension kinds start actual Product / 
+PASS E13 two real integration instances participate in health and diagnostics
+PASS E13 integration journey Login / Persisted: Saved locally; external acceptance is separate
+PASS E13 integration journey OpenContext / Persisted: Saved locally; external acceptance is separate
+PASS E13 first T1 persist freezes actual package, instance, parameters, contract and target
+PASS E13 device parameters isolate actual business streams
+PASS E13 integration journey SetFixtureFault / Persisted: Saved locally; external acceptance is separate
+PASS E13 integration journey Submit / Persisted: Saved locally; external acceptance is separate
+PASS E13 refused original Unknown and actual service lease protect integration uninstall / IOException
+PASS E13 integration journey Login / Persisted: Saved locally; external acceptance is separate
+PASS E13 restart queries original integration identity and unique receiver acceptance, without new ID/bytes/attempt
+PASS E13 tampered original parameter fingerprint blocks routing without mutating persisted identity
+PASS E13 old query uses original installed implementation/parameters/receiver despite changed active target and package
+PASS E13 refused historical query pins the original package lease independently of the new active package / IOException
+PASS E13 missing exact historical capability blocks query instead of selecting new target or default implementation
+PASS E13 typed integration forwards caller cancellation across actual in-flight HTTP delivery
+Unhandled exception. System.Exception: E13: cancelled transport may already be accepted; original query resolves without resend
+   at ArchitectureClosureVerification.Assert(Boolean value, String reason) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs:line 12
+   at ArchitectureClosureVerification.FrozenRoutingAndCancellation(String area, StationConfig configuration, ExtensionStore manager, BusinessRequest original, String archive, RSA key, ExtensionManifest manifest, String binary) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs:line 293
+   at ArchitectureClosureVerification.IntegrationJourney(String area, String url, ExtensionStore manager, String trustFile, PackageReference observation, PackageReference integration, String archive, RSA key, ExtensionManifest manifest, String binary) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs:line 223
+   at ArchitectureClosureVerification.Run(String root, String url, String workspace) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/ArchitectureClosureVerification.cs:line 101
+   at Program.<Main>$(String[] args) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Program.cs:line 69
+   at Program.<Main>$(String[] args) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-closure-13/tests/Ipc.Verification/Program.cs:line 448
+   at Program.<Main>(String[] args)

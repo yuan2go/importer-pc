@@ -22,7 +22,7 @@ static class ExtensionVerification
         var limit = Stopwatch.StartNew();
         while (!await predicate()) { if (limit.Elapsed > TimeSpan.FromSeconds(15)) throw new TimeoutException("E12 condition"); await Task.Delay(30); }
     }
-    static async Task Build(string workspace, string output, string contract)
+    static async Task Build(string workspace, string output, string contract, string? assemblyName = null)
     {
         var isolated = output + "-source"; Directory.CreateDirectory(isolated);
         var original = Path.Combine(workspace, "examples/BarcodeExtension");
@@ -39,6 +39,7 @@ static class ExtensionVerification
             var start = new ProcessStartInfo(dotnet) { WorkingDirectory = workspace, RedirectStandardOutput = true, RedirectStandardError = true };
             foreach (var arg in new[] { command, Path.Combine(isolated, "BarcodeExtension.csproj"), "-p:IpcContractPath=" + contract,
                 "-p:SourceRevisionId=" + pluginCommit, "-p:PathMap=" + isolated + "=/_/reference-barcode" }) start.ArgumentList.Add(arg);
+            if (assemblyName is not null) start.ArgumentList.Add("-p:AssemblyName=" + assemblyName);
             foreach (var arg in command == "restore" ? new[] { "--locked-mode" } : new[] { "--no-restore", "-c", "Release", "-m:1", "-nr:false", "-o", output }) start.ArgumentList.Add(arg);
             using var process = Process.Start(start)!;
             var stdout = process.StandardOutput.ReadToEndAsync(); var stderr = process.StandardError.ReadToEndAsync(); await process.WaitForExitAsync();
@@ -54,7 +55,7 @@ static class ExtensionVerification
         if (corruptSignature) signature[0] ^= 1;
         using var zip = ZipFile.Open(path, ZipArchiveMode.Create);
         void Add(string name, byte[] content) { using var output = zip.CreateEntry(name).Open(); output.Write(content); }
-        Add("manifest.json", bytes); Add("manifest.sig", signature); Add("Ipc.Reference.BarcodeExtension.dll", binary); extra?.Invoke(zip); return path;
+        Add("manifest.json", bytes); Add("manifest.sig", signature); Add(manifest.Files[0].Path, binary); extra?.Invoke(zip); return path;
     }
     public static async Task Run(string root, string url, string workspace)
     {
@@ -138,8 +139,15 @@ static class ExtensionVerification
         Refuse(() => manager.Uninstall(installation.Package, [installation.Package]), "effective deployment reference");
         using (manager.AcquireUse([installation.Package]))
         using (manager.AcquireUse([installation.Package])) Refuse(() => manager.Uninstall(installation.Package, []), "shared active/unterminated package lease");
-        var dependencyManifest = manifest with { Id = "reference.dependent", Dependencies = [installation.Package] };
-        var depFile = Package(Path.Combine(area, "dependent.ipcx"), dependencyManifest, key, binary);
+        // A declared dependency may not shadow another signed assembly in its closure.
+        var shadowManifest = manifest with { Id = "reference.shadow", Dependencies = [installation.Package] };
+        Refuse(() => manager.Plan(Package(Path.Combine(area, "shadow.ipcx"), shadowManifest, key, binary)), "ambiguous assembly across signed dependency closure");
+        await Build(workspace, Path.Combine(area, "dependent-build"), contract, "Ipc.Reference.Dependent");
+        var dependentBytes = File.ReadAllBytes(Path.Combine(area, "dependent-build/Ipc.Reference.Dependent.dll"));
+        var dependencyManifest = manifest with { Id = "reference.dependent", Dependencies = [installation.Package],
+            Files = [new("Ipc.Reference.Dependent.dll", dependentBytes.Length, Convert.ToHexString(SHA256.HashData(dependentBytes)))],
+            Modules = [manifest.Modules[0] with { Assembly = "Ipc.Reference.Dependent.dll" }] };
+        var depFile = Package(Path.Combine(area, "dependent.ipcx"), dependencyManifest, key, dependentBytes);
         var dependent = manager.Install(depFile, Wire.FileHash(depFile));
         Refuse(() => manager.Uninstall(installation.Package, []), "reverse package dependency");
         manager.Uninstall(dependent.Package, []);
@@ -215,7 +223,11 @@ static class ExtensionVerification
         await runtime.SetWindowAreaAsync(windowA, false); await runtime.SetWindowAreaAsync(windowB, false);
         Assert((await runtime.Application.SnapshotAsync()).State.Blocks.Any(x => x.Code == "OperatorPaused"), "Enlarging/closing windows does not automatically resume admission");
         await Command("Resume"); await Command("OpenContext", value: "000001");
-        await Wait(async () => (await runtime.Application.SnapshotAsync()).State.Session?.Status == SessionStatus.Active);
+        await Wait(async () => {
+            var snapshot = await runtime.Application.SnapshotAsync();
+            if (snapshot.RuntimeFaults.Length > 0) throw new InvalidOperationException("Runtime failure: " + string.Join("; ", snapshot.RuntimeFaults));
+            return snapshot.State.Session?.Status == SessionStatus.Active;
+        });
         await runtime.EmitAsync("left", "Enter"); await Wait(async () => (await runtime.Application.SnapshotAsync()).State.Lanes.ContainsKey("left")); await runtime.EmitAsync("left", "Read", ["000123"], 2);
         await Wait(async () => (await runtime.Application.SnapshotAsync()).State.Lanes.GetValueOrDefault("left")?.Status == OperationStatus.AwaitingAction);
         await runtime.EmitAsync("right", "Enter"); await Wait(async () => (await runtime.Application.SnapshotAsync()).State.Lanes.ContainsKey("right")); await runtime.EmitAsync("right", "Read", ["000123"], 2);

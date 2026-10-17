@@ -62,4 +62,3 @@ sealed class SenderModule(StationApplication application, IIntegrationPort port)
         if (errors.Count != 0) throw new AggregateException("Sender disposal failures", errors);
     }
 }
-

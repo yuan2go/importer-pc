@@ -193,4 +193,3 @@ sealed class ObservationModule(StationApplication application, IObservationSourc
         if (errors.Count != 0) throw new AggregateException("Observation disposal failures", errors);
     }
 }
-

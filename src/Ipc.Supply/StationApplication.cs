@@ -580,7 +580,11 @@ public sealed partial class StationApplication : IStationApplication, IAsyncDisp
         var integrationReason = s.IntegrationServiceHealth is { } service ? service.ValidityReason(Now) :
             s.IntegrationHealth is { } legacy ? legacy.ValidityReason(Now) : "Unconfirmed";
         if (integrationReason is not null) yield return "WcsHealth:" + integrationReason;
-        if (store.PendingRequests().Any(x => x.Status == RequestStatus.Unknown || store.RecoveryRequired(x.Id))) yield return "OutcomeUnknown";
+        // A live Dispatching intake is not an unknown outcome. It still participates in
+        // pending/close/activation barriers; receipt failure latches storage and restart
+        // converts interrupted dispatch to Unknown before reconstructing receipt blocks.
+        if (store.PendingRequests().Any(x => x.Status == RequestStatus.Unknown ||
+            x.Status is not (RequestStatus.Prepared or RequestStatus.Dispatching) && store.RecoveryRequired(x.Id))) yield return "OutcomeUnknown";
     }
     Guard GuardFor(StationState s, string action, bool admittedEvent = false)
     {

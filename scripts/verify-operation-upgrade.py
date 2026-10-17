@@ -219,7 +219,7 @@ try:
     stream = (work/'fixture.log').open('w'); logs.append(stream)
     fixture = subprocess.Popen([a.dotnet,str(old/'fixture/Ipc.Fixture.dll'),'--url',endpoint,'--data',str(work/'receiver')],stdout=stream,stderr=subprocess.STDOUT,env=env)
     for f,_ in old_packages:
-        run([*common(old),'--action','extension-install','--mode','Simulation','--file',str(f),'--sha256',sha(f)],f.stem+'-install')
+        run([*common(old),'--action','extension-install','--mode','Simulation','--file',str(f),'--sha256',sha(f).upper()],f.stem+'-install')
     start(old,'old-start')
     deploy(old,extension_config(old_packages,'UPGRADE-OLD-1.0.1'),'old-deployment')
     supply('000001',drop=True)
@@ -242,7 +242,7 @@ try:
     if refused.returncode == 0 or sha(database)!=upgraded_hash:
         raise AssertionError('old reader did not refuse unchanged new format')
     for f,_ in new_packages:
-        run([*common(new),'--action','extension-install','--mode','Simulation','--file',str(f),'--sha256',sha(f)],f.stem+'-install')
+        run([*common(new),'--action','extension-install','--mode','Simulation','--file',str(f),'--sha256',sha(f).upper()],f.stem+'-install')
     start(new,'new-transition-start')
     deploy(new,extension_config(new_packages,'UPGRADE-NEW-1.0.3'),'new-deployment')
     supply('000002')

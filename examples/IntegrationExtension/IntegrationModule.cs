@@ -106,6 +106,8 @@ sealed class ReferenceIntegration : IControlledIntegration
     public async ValueTask DisposeAsync()
     {
         await StopAsync(CancellationToken.None).ConfigureAwait(false);
+        var delay = int.Parse(context.Parameters.GetValueOrDefault("fault.dispose-delay-ms", "0"), System.Globalization.CultureInfo.InvariantCulture);
+        if (delay > 0) await Task.Delay(delay).ConfigureAwait(false);
         lock (gate) { if (disposed) return; client.Dispose(); stopping.Dispose(); disposed = true; }
     }
 }

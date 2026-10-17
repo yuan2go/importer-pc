@@ -44,11 +44,11 @@ if (args.FirstOrDefault() == "--child")
 var workspace = Path.GetFullPath(args.FirstOrDefault(x => !x.StartsWith("--", StringComparison.Ordinal)) ?? ".");
 var selector = args.FirstOrDefault(x => x.StartsWith("--", StringComparison.Ordinal)) ?? "--reconciliation";
 if (args.Count(x => x.StartsWith("--", StringComparison.Ordinal)) > 1 ||
-    selector is not ("--hardening" or "--alignment" or "--data" or "--baseline" or "--closure" or "--followup" or "--review-followup" or "--extensions" or "--architecture" or "--reconciliation"))
+    selector is not ("--hardening" or "--alignment" or "--data" or "--baseline" or "--closure" or "--followup" or "--review-followup" or "--extensions" or "--architecture" or "--conformance" or "--reconciliation"))
     throw new ArgumentException("Select one of --hardening, --alignment, --data, --baseline, --closure, --followup, --review-followup, --extensions, --reconciliation; optional workspace is a separate positional argument");
 var full = selector == "--reconciliation";
 Console.WriteLine("SELECT " + selector + ": " + (full ? "H04 + A01 + E07 + E08 + E11 + E12 + AC/process baseline" : selector switch
-{ "--hardening" => "H04", "--alignment" => "H04 + A01", "--data" => "A01 data/composition/runtime", "--baseline" => "AC/process baseline", "--closure" => "E07", "--extensions" => "E12 controlled extensions + actual Product deployment", "--architecture" => "E13 P2/typed integration/actual selected business assemblies", "--review-followup" => "E11 presentation policies + Product composite ownership", _ => "E08" }));
+{ "--hardening" => "H04", "--alignment" => "H04 + A01", "--data" => "A01 data/composition/runtime", "--baseline" => "AC/process baseline", "--conformance" => "AC14 A01-A04/R01-R03", "--closure" => "E07", "--extensions" => "E12 controlled extensions + actual Product deployment", "--architecture" => "E13 P2/typed integration/actual selected business assemblies", "--review-followup" => "E11 presentation policies + Product composite ownership", _ => "E08" }));
 var dotnet = Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") ?? Environment.ProcessPath ?? "dotnet";
 if (!Path.GetFileNameWithoutExtension(dotnet).Equals("dotnet", StringComparison.OrdinalIgnoreCase)) dotnet = "dotnet";
 var root = Path.Combine(Path.GetTempPath(), "ipc-verification-" + Wire.Id()); Directory.CreateDirectory(root);
@@ -68,6 +68,7 @@ try
         await AlignmentCompositionVerification.Run(root, url, workspace);
         await AlignmentRuntimeVerification.Run(root, url, workspace);
     }
+    if (full || selector == "--conformance") await ConformanceVerification.Run(root, url, workspace);
     if (selector == "--architecture") await ArchitectureClosureVerification.Run(root, url, workspace);
     if (full || selector == "--extensions") await ExtensionVerification.Run(root, url, workspace);
     if (full || selector == "--closure") await ClosureVerification.Run(root, url, workspace);
@@ -317,6 +318,14 @@ try
             if (point == "BeforeT1") Assert(requests.Length == 0, "Before T1 has no intent");
             else if (point == "AfterT1") { Assert(requests.Single().Status == RequestStatus.Prepared, "Prepared survives restart"); await h.Drain(); Assert(h.Store.Requests().Single().Status == RequestStatus.Accepted, "Prepared dispatch rechecks permits"); }
             else if (point == "AfterT3") Assert(requests.Single().Status == RequestStatus.Accepted, "Committed acceptance survives process death");
+            else if (point == "T3Failure")
+            {
+                var request = requests.Single();
+                Assert(request.Status == RequestStatus.Accepted && h.Store.Responses(request.Id).Length == 1 && await h.App.ClaimAsync() is null,
+                    "Flushed raw receipt custody completes T3 on restart without a network resend");
+                Assert(await h.Port.QueryAsync(request, CancellationToken.None) == h.Store.Responses(request.Id).Single() && h.Store.Attempts(request.Id).Length == 1,
+                    "Custody recovery matches independent receiver and preserves original attempt");
+            }
             else
             {
                 var request = requests.Single(); Assert(request.Status == RequestStatus.Unknown && await h.App.ClaimAsync() is null, "Interrupted claim restored Unknown without resend");
@@ -368,7 +377,8 @@ try
         }
         await using (var h = await Rig.Open(directory, cfg))
         {
-            var request = h.Store.Request(requestId)!; Assert(request.Status == RequestStatus.Unknown && request.Payload == frozen, "Interrupted T3 recovers immutable original");
+            var request = h.Store.Request(requestId)!; Assert(request.Status == RequestStatus.Accepted && request.Payload == frozen && h.Store.Responses(request.Id).Length == 1 && await h.App.ClaimAsync() is null,
+                "Interrupted T3 completes from durable raw custody with immutable original and no resend");
             await h.App.CompleteAsync(request, null, (await h.Port.QueryAsync(request, CancellationToken.None))!);
             Assert(h.Store.AcceptedQuantity(request.SessionId) == 1, "Actual SQL failure reconciles once from independent remote ledger");
         }

@@ -1,0 +1,40 @@
+{
+  "name": "final-smoke-core",
+  "source_commit": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+  "started_at": "2026-10-17T10:03:26.443083+00:00",
+  "ended_at": "2026-10-17T10:03:30.358136+00:00",
+  "platform": "macOS-26.5.2-arm64-arm-64bit",
+  "machine": "arm64",
+  "command": [
+    "python3",
+    "scripts/smoke.py",
+    "--product",
+    ".artifacts/conformance-14/candidates/unpacked/fix14-68cdc36-integration-portable/app",
+    "--fixture",
+    ".artifacts/conformance-14/candidates/unpacked/fix14-68cdc36-integration-portable/fixture/Ipc.Fixture.dll",
+    "--dotnet",
+    "/reference/dotnet-10.0.402/dotnet",
+    "--output",
+    ".artifacts/conformance-14/smoke-core.json"
+  ],
+  "exit_code": 0,
+  "required_completion_marker": "\"production_no_fixture_or_business\": \"PASS\"",
+  "completion_marker_present": true,
+  "status": "PASS",
+  "log": "final-smoke-core.log",
+  "log_sha256": "a3b3a43ecbec94364bb58121f4d8853e36727770a1d11f6f785ce8475103e8c6",
+  "windows": "NOT_RUN",
+  "field": "BLOCKED",
+  "structured_result": {
+    "published_native_start": "PASS",
+    "second_process_ownership": "PASS",
+    "published_backup_preflight_restore_quarantine": "PASS",
+    "metadata_export": "PASS",
+    "unwritable_storage_not_ready": "PASS",
+    "changed_module_not_ready": "PASS",
+    "production_no_fixture_or_business": "PASS",
+    "windows_desktop_runtime": "BLOCKED_ON_NON_WINDOWS"
+  },
+  "original_collector_record": "final-smoke-core.record.json",
+  "collector_correction": "Original expected a nonexistent status field; original log/exit0 and all seven structured results prove complete smoke. No execution repeated."
+}

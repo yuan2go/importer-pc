@@ -34,7 +34,12 @@ public sealed partial class ProductRuntime
     {
         if (config.Extensions?.Packages is not { Length: > 0 } packages) return null;
         if (packages.Any(x => x is null)) return null; // Declarative validation records malformed draft; do not dereference it here.
-        try { return (extensionStore ?? throw new InvalidDataException("Extension store unavailable")).AcquireUse(packages); }
+        try
+        {
+            var manager = extensionStore ?? throw new InvalidDataException("Extension store unavailable");
+            manager.RegisterConsumer(store!.Path);
+            return manager.AcquireUse(packages);
+        }
         catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException)
         { throw new GuardException("Deployment package is unavailable or under maintenance; re-read before saving/activating: " + ex.Message); }
     }
@@ -65,7 +70,7 @@ public sealed partial class ProductRuntime
         var operation = store.Operations().Single(x => x.Id == originalOperationId);
         if (operation.Kind == "Uninstall") _ = await (application ?? throw new GuardException("Uninstall recovery needs station inspection")).RequiredExtensionPackagesAsync().ConfigureAwait(false);
         return await Task.Run(() => store.Recover(originalOperationId, refreshReferences: operation.Kind == "Uninstall"
-            ? () => application!.RequiredExtensionPackagesAsync().GetAwaiter().GetResult() : null)).ConfigureAwait(false);
+            ? () => store.InspectConsumers(SupplyStore.InspectRequiredExtensionPackages).Concat(application!.RequiredExtensionPackagesAsync().GetAwaiter().GetResult()).Distinct().ToArray() : null)).ConfigureAwait(false);
     }
     public async Task UninstallExtensionAsync(PackageReference package)
     {
@@ -73,6 +78,6 @@ public sealed partial class ProductRuntime
         _ = await application.RequiredExtensionPackagesAsync().ConfigureAwait(false);
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         await Task.Run(() => (extensionStore ?? throw new InvalidOperationException("Extension store unavailable")).Uninstall(package,
-            () => application.RequiredExtensionPackagesAsync().GetAwaiter().GetResult())).ConfigureAwait(false);
+            () => extensionStore!.InspectConsumers(SupplyStore.InspectRequiredExtensionPackages).Concat(application.RequiredExtensionPackagesAsync().GetAwaiter().GetResult()).Distinct().ToArray())).ConfigureAwait(false);
     }
 }

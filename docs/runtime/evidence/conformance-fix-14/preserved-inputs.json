@@ -1,0 +1,47 @@
+[
+  {
+    "path": "tests/Ipc.Verification/fixtures/schema1.sql",
+    "sha256": "d4ced2b811dff4d3d66dc66c431b9dcc8c75f491ca30f10a2e5507aad741c981",
+    "unchanged": true
+  },
+  {
+    "path": "tests/Ipc.Verification/fixtures/simulation-v1-request.json",
+    "sha256": "e7554eea0a949a116361c199b584f3a5fd3d3f459d0b388d4e38ad44112a0a07",
+    "unchanged": true
+  },
+  {
+    "path": "tests/Ipc.Verification/fixtures/simulation-v1-response.json",
+    "sha256": "1bd599d1342f2e97c817197467de98dfd356bffb9dbbd797f45ae35386db155c",
+    "unchanged": true
+  },
+  {
+    "path": "docs/reviews/issues.json",
+    "sha256": "a16947ee9ee1a60a16afd35ab2b0e04897d88d24a44c97a1c2249ddeeb9d2ed9",
+    "unchanged": true
+  },
+  {
+    "path": "docs/reviews/STATUS.md",
+    "sha256": "e86ab9c05db0ca8222c19e24366127237fa6678b2131f5327e7be6ad0a3a0a40",
+    "unchanged": true
+  },
+  {
+    "path": "docs/readiness/decision-pack.md",
+    "sha256": "a767a1cce43c74cec5dc97b3b0ee98e33ad1250804e11d0c7f3f952c58bb294f",
+    "unchanged": true
+  },
+  {
+    "path": "docs/ui/ss-ui-vis-001-v1.1/供包工作站_高保真交互原型.html",
+    "sha256": "d46b0ed9b057cda6779012ecdc6981d0799ba8c3de73e9be22d92b61d4860b6c",
+    "unchanged": true
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md",
+    "sha256": "2aacec8c135b9c92737ed206d408a56d8aed0d690420dda9676de70a5ae5390c",
+    "unchanged": true
+  },
+  {
+    "path": "docs/work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md",
+    "sha256": "bc2f0836c30b57bd3eb058a4abe8126734d3f4fc87b37c17e790112d19ecd3fd",
+    "unchanged": true
+  }
+]

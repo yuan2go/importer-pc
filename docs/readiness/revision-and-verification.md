@@ -1,3 +1,7 @@
+> 当前参考工程修复与验证见 [FIX-14](../runtime/conformance-fix-14.md)，13/12和HARDENING-04保留形成时证据。以下是READINESS-02的历史规划及客户D/RV交接，不是当前“只有准备资料/04当前加固”。D/RV仍待对应批准/现场证据。
+
+> FIX-14当前指引：本文件下方13及更早“当前/本轮/已完成”保留形成时身份，已由 [14执行基线](../runtime/conformance-fix-14-baseline.md)接管。A-01～04是待修确定缺陷；健康隔离和维护闭环是有效要求，不能按旧完成性表述判通过。Windows沿13决定统一后验，不寻找VM/runner；D/RV、真实SDK/WCS/现场门禁继续。原字节见 [归档](../archive/pre-conformance-fix-14/README.md)。
+
 # 修订顺序与验证交接
 
 工作包：WP-IPC-READINESS-02；日期：2026-10-16；状态：准备材料，未实施业务修订。

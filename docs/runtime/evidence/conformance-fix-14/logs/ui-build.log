@@ -1,0 +1,29 @@
+  正在确定要还原的项目…
+  已还原 /reference/workspace/src/Ipc.Inspection/Ipc.Inspection.csproj (用时 167 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Platform/Ipc.Platform.csproj (用时 167 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj (用时 167 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Product/Ipc.Product.csproj (用时 167 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 172 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Fixture/Ipc.Fixture.csproj (用时 167 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 167 毫秒)。
+  已还原 /reference/workspace/tests/Ipc.Verification/Ipc.Verification.csproj (用时 167 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Supply/Ipc.Supply.csproj (用时 10 毫秒)。
+  已还原 /reference/workspace/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 10 毫秒)。
+  Ipc.Platform -> /reference/workspace/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Supply.Contracts -> /reference/workspace/src/Ipc.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Supply -> /reference/workspace/src/Ipc.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Adapters -> /reference/workspace/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Product -> /reference/workspace/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
+  Ipc.Assembly -> /reference/workspace/src/Ipc.Assembly/bin/Debug/net10.0/Ipc.Assembly.dll
+/reference/workspace/src/Ipc.Desktop/ConfigurationDraft.cs(49,146): error CS0246: 未能找到类型或命名空间名“InvalidDataException”(是否缺少 using 指令或程序集引用?) [/reference/workspace/src/Ipc.Desktop/Ipc.Desktop_xh2twat3_wpftmp.csproj]
+  Ipc.Fixture -> /reference/workspace/src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll
+  Ipc.Inspection -> /reference/workspace/src/Ipc.Inspection/bin/Debug/net10.0/Ipc.Inspection.dll
+  Ipc.Verification -> /reference/workspace/tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll
+
+生成失败。
+
+/reference/workspace/src/Ipc.Desktop/ConfigurationDraft.cs(49,146): error CS0246: 未能找到类型或命名空间名“InvalidDataException”(是否缺少 using 指令或程序集引用?) [/reference/workspace/src/Ipc.Desktop/Ipc.Desktop_xh2twat3_wpftmp.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:05.46

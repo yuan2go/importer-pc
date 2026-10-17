@@ -1,0 +1,6 @@
+{
+  "original_source": "docs/runtime/evidence/project-conformance-audit-01/probes/health/Program.cs",
+  "original_sha256": "1069e58a6f9e6c93cefee8089c52b7de00d043159c94428ec0d76b75ad0d9c49",
+  "adapted_sha256": "25eb943178fb932d8845642605be1f9d7f4e3a23ab909d5c65af2cbd66c5a243",
+  "changes": "Map project path and record actual verification SHA; health verdict tests corrected attribution instead of reproduced defect. Scenario and actual Product/SQLite/HTTP path retained."
+}

@@ -7,7 +7,7 @@ public sealed record ExtensionInstallOperation(string Id, string PackageSha256, 
     string State, DateTimeOffset At, string? Error = null, string Kind = "Install");
 
 // Filesystem transaction log. It never executes an entry point, script, MSI or SDK installer.
-public sealed class ExtensionStore(string root, ExtensionTrust trust, RunMode mode, string leaseRoot)
+public sealed partial class ExtensionStore(string root, ExtensionTrust trust, RunMode mode, string leaseRoot)
 {
     internal Action<string>? PhaseBoundary { get; set; }
     public string Root { get; } = Path.GetFullPath(root);
@@ -122,7 +122,7 @@ public sealed class ExtensionStore(string root, ExtensionTrust trust, RunMode mo
     }
     public ExtensionInstallation Install(string archive, string expectedPackageSha256)
     {
-        using var mutation = Mutation(); Budget();
+        using var mutation = Mutation(); EnsureConsumerFence(); Budget();
         var plan = Plan(archive);
         if (plan.PackageSha256 != expectedPackageSha256) throw new InvalidDataException("Installation plan/input changed");
         ReserveIdentity(plan.Reference);
@@ -227,7 +227,13 @@ public sealed class ExtensionStore(string root, ExtensionTrust trust, RunMode mo
     void CompleteUninstall(ExtensionInstallOperation operation, Func<PackageReference[]> refreshReferences)
     {
         var package = operation.Package;
+        if (File.GetAttributes(ConsumerFence).HasFlag(FileAttributes.ReparsePoint)) throw new InvalidDataException("Linked consumer fence refused");
+        using var consumers = new FileStream(ConsumerFence, FileMode.Open, FileAccess.Read, FileShare.None);
+        using var consumerReader = new StreamReader(consumers, leaveOpen: true);
+        var coverage = consumerReader.ReadToEnd();
         using var use = AcquireMutation([package]); // Must precede the fresh DB reference snapshot.
+        if (coverage.StartsWith("LegacyConsumersUnverified", StringComparison.Ordinal))
+            throw new InvalidOperationException("Offline consumer coverage is incomplete for this legacy store; retain exact packages and inventory every original data root before approved migration");
         PhaseBoundary?.Invoke("UninstallLocked");
         var deploymentReferences = refreshReferences();
         if (deploymentReferences.Contains(package)) throw new InvalidOperationException("Effective/pending deployment or original request still references this package");

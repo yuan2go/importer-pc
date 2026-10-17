@@ -12,27 +12,33 @@ public partial class ExtensionsView : UserControl
 {
     MainWindow? owner;
     IStationRuntime Runtime => owner!.Runtime;
-    DeploymentExtensions desired = new([], []);
+    DeploymentExtensions desired { get => owner!.Draft.Extensions; set => owner!.Draft.Extensions = value; }
     ExtensionManifest? selectedManifest;
     object? editedInstance;
     VerifiedExtension? plan;
     string? planFile;
     long generation, packageGeneration, instanceGeneration;
-    bool busy, access, restoringPackageSelection;
+    bool busy, access, restoringPackageSelection, selecting;
     readonly Dictionary<string, Func<string>> values = [];
     readonly Dictionary<string, ExtensionManifest> effectiveSchemas = [];
     public ExtensionsView() => InitializeComponent();
     public void Initialize(MainWindow window)
     {
         owner = window;
-        desired = Wire.Decode<DeploymentExtensions>(Wire.Encode(Runtime.Configuration?.Extensions ?? new([], [])));
-        Revision.Text = "DEPLOY-" + DateTimeOffset.UtcNow.ToString("yyyyMMddHHmmss");
+        Revision.SetBinding(TextBox.TextProperty, new System.Windows.Data.Binding("[Version]") { Source = window.Draft, Mode = System.Windows.Data.BindingMode.TwoWay, UpdateSourceTrigger = System.Windows.Data.UpdateSourceTrigger.PropertyChanged });
         ShowDesired(); SetAccess(false);
+    }
+    public void ResetDraft()
+    {
+        generation++; packageGeneration++; instanceGeneration++;
+        selecting = false; editedInstance = null; selectedManifest = null; Instances.SelectedItem = null; Module.ItemsSource = null; Parameters.Children.Clear();
+        ShowDesired();
     }
     public void SetAccess(bool allowed)
     {
-        access = allowed; Editor.IsEnabled = allowed && !busy;
+        access = allowed; Editor.IsEnabled = allowed && !busy && !selecting;
         Revisions.IsEnabled = allowed && !busy;
+        if (!allowed) { generation++; Revisions.SelectedItem = null; Revisions.ItemsSource = null; }
         AccessFeedback.Text = allowed ? "有效维护身份 · 参数仍为草稿；安装/卸载另需OS授权。" : "参数与部署只读 · 请取得有效维护身份；核心包读取/恢复仍可达，写入需OS授权。";
         // Installation/recovery remain OS-authorized core functions without a business login.
     }
@@ -124,7 +130,7 @@ public partial class ExtensionsView : UserControl
         if (restoringPackageSelection || owner is null || Packages.SelectedItem is not ExtensionInstallation p || p.Status != "Installed") return;
         instanceGeneration++;
         editedInstance = null; selectedManifest = null;
-        var ticket = ++packageGeneration;
+        var ticket = ++packageGeneration; selecting = true; SetAccess(access);
         try
         {
             var manifest = await Runtime.ExtensionManifestAsync(p.Package);
@@ -134,7 +140,8 @@ public partial class ExtensionsView : UserControl
             EditorIdentity.Text = "编辑包 " + manifest.Id + " / " + manifest.Version + "；尚未保存部署修订";
             Plan.Text = "已安装签名元数据（安装不代表激活）\n" + Wire.Encode(manifest);
         }
-        catch (Exception ex) { Status.Text = "包读取失败，旧详情失效：" + ex.Message; selectedManifest = null; Module.ItemsSource = null; Parameters.Children.Clear(); }
+        catch (Exception ex) { if (ticket == packageGeneration) { Status.Text = "包读取失败，旧详情失效：" + ex.Message; selectedManifest = null; Module.ItemsSource = null; Parameters.Children.Clear(); } }
+        finally { if (ticket == packageGeneration) { selecting = false; SetAccess(access); } }
     }
     void ShowDesired(string? selectId = null)
     {
@@ -148,6 +155,7 @@ public partial class ExtensionsView : UserControl
     async void UsePackageClick(object sender, RoutedEventArgs e) => await Execute(async () =>
     {
         RequireAccess();
+        var draftGeneration = owner!.Draft.Generation;
         if (Packages.SelectedItem is not ExtensionInstallation p || p.Status != "Installed") throw new InvalidOperationException("先选择已安装版本");
         var result = desired.Packages.Where(x => x.Id != p.Package.Id).ToList(); result.Add(p.Package);
         var visiting = new HashSet<string>(); var seen = new HashSet<string>();
@@ -165,6 +173,7 @@ public partial class ExtensionsView : UserControl
             visiting.Remove(reference.Id); seen.Add(reference.Id);
         }
         await AddDependencies(p.Package);
+        if (draftGeneration != owner!.Draft.Generation) throw new InvalidOperationException("草稿已变化，请重新选择包");
         desired = desired with { Packages = result.ToArray() }; ShowDesired(); Status.Text = "精确版本已加入本窗草稿，尚未保存或生效。";
     });
     async void RemovePackageClick(object sender, RoutedEventArgs e) => await Execute(() =>
@@ -181,20 +190,20 @@ public partial class ExtensionsView : UserControl
         var service = (Module.SelectedItem as ExtensionModule)?.Kind == "integration";
         ServiceTarget.Visibility = service ? Visibility.Visible : Visibility.Collapsed;
         DeviceId.IsEnabled = Role.IsEnabled = !service;
-        if (service && Runtime.Configuration is { } config)
+        if (service && owner!.Draft.Build() is { } config)
         { TargetId.Text = config.Integration.Id; TargetRevision.Text = config.Integration.Revision; TargetContract.Text = config.Integration.Contract; TargetEndpoint.Text = config.Integration.Endpoint; }
         RenderParameters(null);
     }
     async void InstanceSelected(object sender, SelectionChangedEventArgs e)
     {
         if (owner is null) return;
-        editedInstance = null; ++instanceGeneration;
+        editedInstance = null; ++instanceGeneration; selecting = false; SetAccess(access);
         if (Instances.SelectedItem is ServiceInstance service) { await SelectService(service); return; }
         if (Instances.SelectedItem is not ExtensionInstance instance) return;
         selectedManifest = null;
         var reference = desired.Packages.SingleOrDefault(x => x.Id == instance.PackageId); if (reference is null) return;
         packageGeneration++;
-        var ticket = ++instanceGeneration;
+        var ticket = ++instanceGeneration; selecting = true; SetAccess(access);
         try
         {
             var manifest = await Runtime.ExtensionManifestAsync(reference);
@@ -206,13 +215,14 @@ public partial class ExtensionsView : UserControl
             Role.SelectedIndex = role == "right" ? 1 : 0; RenderParameters(instance);
             editedInstance = instance;
         }
-        catch (Exception ex) { Status.Text = "实例读取失败：" + ex.Message; }
+        catch (Exception ex) { if (ticket == instanceGeneration) Status.Text = "实例读取失败：" + ex.Message; }
+        finally { if (ticket == instanceGeneration) { selecting = false; SetAccess(access); } }
     }
     async Task SelectService(ServiceInstance service)
     {
         selectedManifest = null;
         var reference = desired.Packages.SingleOrDefault(x => x.Id == service.PackageId); if (reference is null) return;
-        var ticket = ++instanceGeneration; packageGeneration++;
+        var ticket = ++instanceGeneration; packageGeneration++; selecting = true; SetAccess(access);
         try
         {
             var manifest = await Runtime.ExtensionManifestAsync(reference);
@@ -221,18 +231,19 @@ public partial class ExtensionsView : UserControl
             InstanceId.Text = service.Id; EnabledInstance.IsChecked = service.Enabled;
             var binding = (desired.Ports ?? []).SingleOrDefault(x => x.InstanceId == service.Id);
             ServicePort.Text = binding?.Port ?? "requests";
-            var target = binding?.Target ?? Runtime.Configuration!.Integration;
+            var target = binding?.Target ?? owner!.Draft.Build().Integration;
             TargetId.Text = target.Id; TargetRevision.Text = target.Revision; TargetContract.Text = target.Contract; TargetEndpoint.Text = target.Endpoint;
             RenderParameters(null, service);
             EditorIdentity.Text = "编辑服务实例 " + service.Id + " · " + manifest.Id + " / " + manifest.Version;
             editedInstance = service;
         }
-        catch (Exception ex) { Status.Text = "服务实例读取失败：" + ex.Message; }
+        catch (Exception ex) { if (ticket == instanceGeneration) Status.Text = "服务实例读取失败：" + ex.Message; }
+        finally { if (ticket == instanceGeneration) { selecting = false; SetAccess(access); } }
     }
     void NewInstanceClick(object sender, RoutedEventArgs e)
     {
         if (busy || !access) return;
-        ++instanceGeneration;
+        ++instanceGeneration; ++packageGeneration; selecting = false; SetAccess(access);
         Instances.SelectedItem = null; editedInstance = null;
         InstanceId.Clear(); DeviceId.Clear(); EnabledInstance.IsChecked = true;
         ResetModuleEditor();

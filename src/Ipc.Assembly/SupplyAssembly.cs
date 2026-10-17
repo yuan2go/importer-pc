@@ -15,11 +15,18 @@ sealed class SupplyAssembly(BusinessLaunch launch) : IBusinessRuntime, IBusiness
     public string[] Dependencies => [];
     public BusinessPresentation Presentation => new(ReferenceProduct.Definition.Views, ReferenceProduct.Definition.Layouts);
     public IBusinessApplication Application => this;
-    public async Task StartAsync(CancellationToken token) { await runtime.StartAsync(token); if (runtime.Diagnostics.Count > 0) throw new InvalidDataException(string.Join("; ", runtime.Diagnostics)); }
+    public async Task StartAsync(CancellationToken token) { await runtime.StartAsync(token); if (runtime.Diagnostics.Count > 0) throw new InvalidDataException(string.Join("; ", runtime.Diagnostics));
+        runtime.StartHeadlessNotifications((cue, cancellation) => { Console.WriteLine(Wire.Encode(new { Notification = cue, Delivery = "AwaitingExplicitAcknowledgement" })); Console.Out.Flush(); return Task.CompletedTask; }); }
     public Task StopAsync(CancellationToken token) => runtime.StopAsync(token);
     public ValueTask DisposeAsync() => runtime.DisposeAsync();
     public async Task<BusinessReceipt> CommandAsync(BusinessCommand command)
-    { var result = await runtime.CommandAsync(new(command.Id, command.ExpectedRevision, command.Kind, command.Owner, command.Value)); return new(result.Status, result.Reason, result.Revision); }
+    { if (command.Kind == "AcknowledgeNotification")
+        {
+            if (!long.TryParse(command.Value, out var sequence)) throw new GuardException("Notification sequence required");
+            await runtime.AcknowledgeHeadlessNotificationAsync(sequence);
+            return new("Persisted", "Notification acknowledged by console receiver", (await runtime.Application!.SnapshotAsync()).State.Revision);
+        }
+        var result = await runtime.CommandAsync(new(command.Id, command.ExpectedRevision, command.Kind, command.Owner, command.Value)); return new(result.Status, result.Reason, result.Revision); }
     public async Task<BusinessProjection> QueryAsync()
     {
         var state = await runtime.Application!.SnapshotAsync();

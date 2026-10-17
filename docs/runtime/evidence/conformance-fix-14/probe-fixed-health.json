@@ -1,0 +1,139 @@
+{
+  "AuditSha": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+  "Result": "FIX_FAILED",
+  "PrimaryUrl": "http://127.0.0.1:55552/",
+  "AuxiliaryUrl": "http://127.0.0.1:55551/",
+  "Cases": [
+    {
+      "Case": "auxiliary-enabled-offline",
+      "PrimaryHealthRequests": 2,
+      "MainService": {
+        "TargetId": "primary-target",
+        "TargetRevision": "1",
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T10:03:08.217448+00:00",
+        "ValidUntil": "2026-10-17T10:03:12.717448+00:00",
+        "Source": "integration:primary"
+      },
+      "InstanceDiagnostics": [
+        {
+          "InstanceId": "primary",
+          "State": "Ready",
+          "InFlight": 0,
+          "LastFailure": null,
+          "Target": {
+            "Id": "primary-target",
+            "Revision": "1",
+            "Contract": "SIMULATION-v1",
+            "Endpoint": "http://127.0.0.1:55552/"
+          },
+          "DeploymentVersion": "audit-health-1",
+          "ConfigurationSha256": "0AC65D2A45A0B54788634AC7D3184125E1288AE52329EF6247DFDA809216B975",
+          "Port": "requests",
+          "Lifecycle": "Available",
+          "Historical": false,
+          "Health": {
+            "InstanceId": "primary",
+            "Port": "requests",
+            "DeploymentVersion": "audit-health-1",
+            "ConfigurationSha256": "0AC65D2A45A0B54788634AC7D3184125E1288AE52329EF6247DFDA809216B975",
+            "Target": {
+              "Id": "primary-target",
+              "Revision": "1",
+              "Contract": "SIMULATION-v1",
+              "Endpoint": "http://127.0.0.1:55552/"
+            },
+            "Epoch": "71cad15066c741b7ac2e3f3f92474859",
+            "Sequence": 2,
+            "Status": "Ready",
+            "ConfirmedAt": "2026-10-17T10:03:08.217448+00:00",
+            "ValidUntil": "2026-10-17T10:03:12.717448+00:00",
+            "Failure": null
+          }
+        },
+        {
+          "InstanceId": "auxiliary",
+          "State": "Unconfirmed",
+          "InFlight": 1,
+          "LastFailure": null,
+          "Target": {
+            "Id": "auxiliary-target",
+            "Revision": "1",
+            "Contract": "SIMULATION-v1",
+            "Endpoint": "http://127.0.0.1:55551/"
+          },
+          "DeploymentVersion": "audit-health-1",
+          "ConfigurationSha256": "35CDE7847A0CAE08C39F5A424285EFC37B61444D330698C52EF13E2A59D98DCF",
+          "Port": "auxiliary-status",
+          "Lifecycle": "Available",
+          "Historical": false,
+          "Health": null
+        }
+      ],
+      "AdmitReasons": [
+        "IdentityUnavailable",
+        "NoActiveBoxOrCloseBarrier"
+      ],
+      "StartupDiagnostics": []
+    },
+    {
+      "Case": "primary-only-control",
+      "PrimaryHealthRequests": 2,
+      "MainService": {
+        "TargetId": "primary-target",
+        "TargetRevision": "1",
+        "Status": "Ready",
+        "ConfirmedAt": "2026-10-17T10:03:09.468609+00:00",
+        "ValidUntil": "2026-10-17T10:03:13.968609+00:00",
+        "Source": "integration:primary"
+      },
+      "InstanceDiagnostics": [
+        {
+          "InstanceId": "primary",
+          "State": "Ready",
+          "InFlight": 0,
+          "LastFailure": null,
+          "Target": {
+            "Id": "primary-target",
+            "Revision": "1",
+            "Contract": "SIMULATION-v1",
+            "Endpoint": "http://127.0.0.1:55552/"
+          },
+          "DeploymentVersion": "audit-health-1",
+          "ConfigurationSha256": "0AC65D2A45A0B54788634AC7D3184125E1288AE52329EF6247DFDA809216B975",
+          "Port": "requests",
+          "Lifecycle": "Available",
+          "Historical": false,
+          "Health": {
+            "InstanceId": "primary",
+            "Port": "requests",
+            "DeploymentVersion": "audit-health-1",
+            "ConfigurationSha256": "0AC65D2A45A0B54788634AC7D3184125E1288AE52329EF6247DFDA809216B975",
+            "Target": {
+              "Id": "primary-target",
+              "Revision": "1",
+              "Contract": "SIMULATION-v1",
+              "Endpoint": "http://127.0.0.1:55552/"
+            },
+            "Epoch": "a97830834d964861a286eef22cc0e394",
+            "Sequence": 2,
+            "Status": "Ready",
+            "ConfirmedAt": "2026-10-17T10:03:09.468609+00:00",
+            "ValidUntil": "2026-10-17T10:03:13.968609+00:00",
+            "Failure": null
+          }
+        }
+      ],
+      "AdmitReasons": [
+        "IdentityUnavailable",
+        "NoActiveBoxOrCloseBarrier"
+      ],
+      "StartupDiagnostics": []
+    }
+  ],
+  "HealthCalls": 4,
+  "EffectCalls": 0,
+  "Windows": "NOT_RUN",
+  "DeviceActions": "NONE",
+  "RepositoryMutations": "NONE"
+}

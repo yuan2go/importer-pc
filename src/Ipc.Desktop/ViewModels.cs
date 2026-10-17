@@ -57,7 +57,9 @@ public sealed class LaneViewModel(string lane) : Bindable
     public bool HasWaveDifference { get => hasWaveDifference; private set => Put(ref hasWaveDifference, value); }
     public string WaveDifference { get => waveDifference; private set => Put(ref waveDifference, value); }
     double splitCount, splitTarget = 1;
-    string retainedDraft = "", disabledReason = "等待业务投影";
+    readonly ScanInputDraft scanInput = new();
+    public ScanInputDraft ScanInput => scanInput;
+    string disabledReason = "等待业务投影";
     Brush statusBrush = Brushes.SteelBlue, statusBackground = new SolidColorBrush(Color.FromRgb(238,244,255));
     public string KeyTask { get => keyTask; private set => Put(ref keyTask, value); }
     public string Quantities { get => quantities; private set => Put(ref quantities, value); }
@@ -85,7 +87,8 @@ public sealed class LaneViewModel(string lane) : Bindable
     public bool CanClear { get => canClear; private set => Put(ref canClear, value); }
     public bool CanDetail { get => canDetail; private set => Put(ref canDetail, value); }
     public bool CanPrimary { get => canPrimary; private set => Put(ref canPrimary, value); }
-    public string RetainedDraft { get => retainedDraft; set => Put(ref retainedDraft, value); }
+    public string RetainedDraft { get => scanInput.Text; set { scanInput.Text = value; RaiseScanInput(); } }
+    public void RaiseScanInput() => Changed(nameof(RetainedDraft));
     public string Sku { get => sku; private set => Put(ref sku, value); }
     public string TaskId { get => taskId; private set => Put(ref taskId, value); }
     public string Destination { get => destination; private set => Put(ref destination, value); }
@@ -100,6 +103,7 @@ public sealed class LaneViewModel(string lane) : Bindable
     public void Apply(StationSnapshot snapshot, bool available, bool hasIdentity, bool readable, bool executing)
     {
         Current = snapshot.State.Lanes.GetValueOrDefault(lane);
+        var scanOwner = scanInput.OwnerId; scanInput.SelectOwner(Current?.Id); if (scanOwner != scanInput.OwnerId) RaiseScanInput();
         var now = DateTimeOffset.UtcNow;
         var d = snapshot.State.Devices.GetValueOrDefault(lane);
         Health = d is not null && !d.IsValid(now) ? "! 未就绪 · " + d.ValidityReason(now) : d?.Health switch { DeviceHealth.Ready => "● 采集就绪", DeviceHealth.Connecting => "连接中", DeviceHealth.Reconnecting => "重连中", DeviceHealth.Disconnected => "已断开", DeviceHealth.Faulted => "设备故障", DeviceHealth.Stopping => "停止中", DeviceHealth.Stopped => "已停止", _ => "状态未取得" };

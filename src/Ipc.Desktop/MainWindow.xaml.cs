@@ -22,8 +22,8 @@ public partial class MainWindow : Window
     readonly string windowIdentity = Wire.Id();
     bool busy, ready, smallArea;
     long detailGeneration;
-    readonly ObservableCollection<DeviceDraft> deviceDrafts = [];
-    StationConfig? draftBase;
+    internal ConfigurationDraft Draft { get; } = new();
+    ObservableCollection<DeviceDraft> deviceDrafts => Draft.Devices;
     string currentView = "workstation";
     readonly ObservableCollection<Alarm> alarms = [];
     StationSnapshot? snapshot;
@@ -115,22 +115,22 @@ public partial class MainWindow : Window
         catch (Exception ex) { if (!closing) model.LastResult = "操作未完成：" + ex.Message; }
         finally { busy = false; if (!closing) { await RefreshAsync(); UpdateGuards(); } }
     }
-    public async Task SendAsync(string kind, string? owner = null, string? value = null, string? confirm = null, long? expectedRevision = null)
+    public async Task<CommandReceipt?> SendAsync(string kind, string? owner = null, string? value = null, string? confirm = null, long? expectedRevision = null, ConfigRevision? activation = null, string? commandId = null)
     {
-        if (busy || closing) return;
+        if (busy || closing) return null;
         if (kind is "Submit" or "ScanRetained" or "ClearSplit" && (LaneForOwner(owner) is not { } reviewed || !ReviewFits(reviewed) || !IsWorkstationActive))
-        { model.LastResult = "请先在当前通道完整核对条码、任务和数量；区域不足时扩大窗口"; return; }
-        if (!CanCommand(kind, out var reason)) { model.LastResult = "当前不能执行：" + reason; return; }
+        { model.LastResult = "请先在当前通道完整核对条码、任务和数量；区域不足时扩大窗口"; return null; }
+        if (!CanCommand(kind, out var reason, activation)) { model.LastResult = "当前不能执行：" + reason; return null; }
         var revision = expectedRevision ?? snapshot?.State.Revision ?? 0;
         var evidenceVersion = kind == "ClearOverload" ? snapshot?.OverloadVersion : null;
-        if (confirm is not null && !Confirmation.Ask(this, confirm, ConfirmationLabel(kind), kind == "ConfirmClose" || kind == "Submit")) return;
+        if (confirm is not null && !Confirmation.Ask(this, confirm, ConfirmationLabel(kind), kind == "ConfirmClose" || kind == "Submit")) return null;
         busy = true; UpdateGuards(); model.LastResult = "正在执行，请勿重复操作…";
-        try { var receipt = await Runtime.CommandAsync(new(Wire.Id(), revision, kind, owner, value, EvidenceVersion:evidenceVersion)); if (kind == "Resume" && receipt.Status == "Persisted") layoutPauseRequired = false; if (!closing) model.LastResult = $"{(receipt.Status == "Persisted" ? "已处理" : "命令反馈")} · {receipt.Status} · {OperatorText.Reason(receipt.Reason)}"; }
-        catch (Exception ex) { if (!closing) model.LastResult = "命令失败：" + ex.Message; }
+        try { var receipt = await Runtime.CommandAsync(new(commandId ?? Wire.Id(), revision, kind, owner, value, EvidenceVersion:evidenceVersion)); if (kind == "Resume" && receipt.Status == "Persisted") layoutPauseRequired = false; if (!closing) model.LastResult = $"{(receipt.Status == "Persisted" ? "已处理" : "命令反馈")} · {receipt.Status} · {OperatorText.Reason(receipt.Reason)}"; return receipt; }
+        catch (Exception ex) { if (!closing) model.LastResult = "命令失败：" + ex.Message; return null; }
         finally { busy = false; if (!closing) { await RefreshAsync(); UpdateGuards(); } }
     }
     bool Fresh => ready && snapshot is not null && DateTimeOffset.UtcNow - snapshot.GeneratedAt < TimeSpan.FromSeconds(3);
-    bool CanCommand(string kind, out string reason)
+    bool CanCommand(string kind, out string reason, ConfigRevision? activation = null)
     {
         reason = "";
         if (closing || busy) reason = "正在执行或关闭";
@@ -149,7 +149,11 @@ public partial class MainWindow : Window
             if (kind is "CancelClose" or "ConfirmClose" && session?.Status != SessionStatus.AwaitingShortageDecision) reason = "当前没有可确认的少货关闭检查";
             if (kind == "CancelPrepared" && (RecoveryGrid.SelectedItem as RequestRecoveryRow)?.Recovery.LocalTermination.Allowed != true) reason = "需选择具备持久未交付证明的原请求";
             if (kind == "ClearOverload" && !snapshot.OverloadRecovery.Allowed) reason = OperatorText.Reasons(snapshot.OverloadRecovery.Reasons);
-            if (kind == "ActivateConfig" && (!ConfigsList.IsEnabled || (ConfigsList.SelectedItem as ConfigRevision)?.Status != "Validated" || session is not null && session.Status != SessionStatus.Closed)) reason = "需选中有效草稿，并先关闭当前箱";
+            if (kind == "ActivateConfig")
+            {
+                var guard = ConfigurationActivation.Evaluate(snapshot.State, activation, Runtime.Configuration!.Version, snapshot.Recovery.Length != 0, DateTimeOffset.UtcNow);
+                if (!guard.Allowed) reason = string.Join("；", guard.Reasons);
+            }
             if (kind is "Enter" or "Read" or "NoCode" or "MultiCode" or "Depart" or "Reset" or "Replay" or "Revalidate" or "ReconnectSource" && Runtime.Mode != RunMode.Simulation) reason = "仅模拟模式允许工程事件";
             if(kind == "AckAlarm" && (selectedAlarm is null || selectedAlarm.AckedBy is not null))reason="请选择尚未已读的报警";
             if(kind == "Reconcile" && RequestIdBox.Text.Trim().Length==0)reason="请选择或输入原请求身份";
@@ -189,7 +193,7 @@ public partial class MainWindow : Window
         }
         foreach (var button in Children<Button>(this).Where(x=>x.Tag is string))
         {
-            button.IsEnabled = CanCommand((string)button.Tag, out var why);
+            button.IsEnabled = CanCommand((string)button.Tag, out var why, (string)button.Tag == "ActivateConfig" && ConfigsList.IsEnabled ? ConfigsList.SelectedItem as ConfigRevision : null);
             button.ToolTip = button.IsEnabled ? "执行时由应用层复核身份、对象和版本" : why;
             ToolTipService.SetShowOnDisabled(button,true);
         }
@@ -295,6 +299,8 @@ public partial class MainWindow : Window
                     Add(responses,$"来源 {source!.Source} / 版本 {source.Version}\n语义证据 {source.EvidenceId} / 取得时间 {source.AcquiredAt:O}");
             }
             var audit=new TreeViewItem { Header=$"审计 ({detail.Audit.Length})", IsExpanded=true }; node.Items.Add(audit);
+            foreach(var conflict in detail.Conflicts)
+                Add(responses,$"持续核对冲突 {conflict.Id} · 原EvidenceId {conflict.OriginalEvidenceId}\n{conflict.ReceivedAt:O} · 来源 {conflict.Source} · Attempt {conflict.AttemptId}\n{Wire.Encode(conflict.Response)}");
             foreach(var entry in detail.Audit) Add(audit,$"{entry.At:O} · {entry.Actor} · {entry.Kind}\n命令 {entry.CommandId} / {entry.Evidence}");
             var payload=new TreeViewItem { Header="高级诊断 · 原始固定报文", IsExpanded=false }; payload.Items.Add(new TextBox {Text=request.Payload,IsReadOnly=true,AcceptsReturn=true,TextWrapping=TextWrapping.Wrap,MaxWidth=700,MaxHeight=220,VerticalScrollBarVisibility=ScrollBarVisibility.Auto}); node.Items.Add(payload);
         }
@@ -371,22 +377,18 @@ public partial class MainWindow : Window
     void LoadConfigForm(StationConfig? config)
     {
         if(config is null) return;
-        draftBase=config; extensionDraft=config.Extensions; StationIdField.Text=config.StationId; VersionField.Text=config.Version; EndpointField.Text=config.Integration.Endpoint;
-        BindingVersionField.Text=config.Integration.Revision; ContractField.Text=config.Integration.Contract; TimeoutField.Text=config.TimeoutMs.ToString();
-        MinimumFreeField.Text=config.MinimumFreeMb.ToString(); FixtureDemandField.Text=config.FixtureDemand.ToString(); MaximumPackageField.Text=config.MaximumPackage.ToString(); PolicyField.Text=config.Policy;
-        EventCapacityField.Text=config.EventCapacity.ToString(); CommandCapacityField.Text=config.CommandCapacity.ToString(); OutboxCapacityField.Text=config.OutboxCapacity.ToString();
-        deviceDrafts.Clear(); foreach(var d in config.Devices) deviceDrafts.Add(new(d)); DeviceConfigGrid.ItemsSource=deviceDrafts;
-        ConfigDraft.Text=Wire.Encode(config);
+        Draft.Replace(config);
+        foreach (var pair in new (TextBox Field, string Key)[] { (StationIdField,"StationId"),(VersionField,"Version"),(EndpointField,"Endpoint"),
+            (BindingVersionField,"BindingVersion"),(ContractField,"Contract"),(TimeoutField,"Timeout"),(MinimumFreeField,"MinimumFree"),
+            (FixtureDemandField,"FixtureDemand"),(MaximumPackageField,"MaximumPackage"),(PolicyField,"Policy"),(EventCapacityField,"EventCapacity"),
+            (CommandCapacityField,"CommandCapacity"),(OutboxCapacityField,"OutboxCapacity") })
+            pair.Field.SetBinding(TextBox.TextProperty, new System.Windows.Data.Binding("["+pair.Key+"]") { Source=Draft,Mode=System.Windows.Data.BindingMode.TwoWay,UpdateSourceTrigger=System.Windows.Data.UpdateSourceTrigger.PropertyChanged });
+        DeviceConfigGrid.ItemsSource=deviceDrafts; ConfigDraft.Text=Wire.Encode(config);
     }
     StationConfig BuildDraft()
     {
         DeviceConfigGrid.CommitEdit(DataGridEditingUnit.Cell,true); DeviceConfigGrid.CommitEdit(DataGridEditingUnit.Row,true);
-        var source=draftBase ?? throw new InvalidOperationException("没有有效配置可编辑");
-        var extensions = extensionDraft ?? source.Extensions;
-        var integration = (extensions?.Ports?.SingleOrDefault(x => x.Port == "requests")?.Target ?? source.Integration) with { Endpoint = EndpointField.Text.Trim(), Revision = BindingVersionField.Text.Trim() };
-        if (extensions?.Ports is { } ports) extensions = extensions with { Ports = ports.Select(x => x.Port == "requests" ? x with { Target = integration } : x).ToArray() };
-        int Number(TextBox field,string label) => int.TryParse(field.Text,out var number)?number:throw new InvalidDataException(label+"必须是整数");
-        return source with { StationId=StationIdField.Text.Trim(),Version=VersionField.Text.Trim(),Integration=integration,TimeoutMs=Number(TimeoutField,"超时"),EventCapacity=Number(EventCapacityField,"观察队列容量"),CommandCapacity=Number(CommandCapacityField,"命令队列容量"),OutboxCapacity=Number(OutboxCapacityField,"待决请求容量"),MinimumFreeMb=Number(MinimumFreeField,"磁盘低水位"),FixtureDemand=Number(FixtureDemandField,"合成初始需求"),MaximumPackage=Number(MaximumPackageField,"合成包装上限"),Devices=deviceDrafts.Select(x=>x.Binding()).ToArray(),Extensions=extensions };
+        return Draft.Build();
     }
     StationConfig PreviewDraft()
     {
@@ -415,7 +417,7 @@ public partial class MainWindow : Window
         return changes.Length==0 ? ["没有配置差异"] : new[]{"生效时机：受控重启成功后；失败保留当前有效配置。"}.Concat(changes).ToArray();
     }
     void PreviewConfigClick(object sender,RoutedEventArgs e) { try{PreviewDraft();}catch(Exception ex){ConfigFeedback.Text=ex.Message;} }
-    void ImportConfigClick(object sender,RoutedEventArgs e) { try{var draft=Wire.Decode<StationConfig>(ConfigDraft.Text); var errors=Runtime.ValidateConfiguration(draft); if(errors.Count>0) throw new InvalidDataException(string.Join("；",errors)); LoadConfigForm(draft); ExtensionsControl.Initialize(this); ConfigFeedback.Text="已导入表单；尚未保存或激活。";}catch(Exception ex){ConfigFeedback.Text="导入失败，保留表单："+ex.Message;} }
+    void ImportConfigClick(object sender,RoutedEventArgs e) { try{Draft.Import(ConfigDraft.Text, Runtime.ValidateConfiguration); DriverColumn.ItemsSource = Runtime.InstalledDrivers.Concat(Draft.Devices.Select(x=>x.Driver)).Distinct().ToArray(); ExtensionsControl.ResetDraft(); ConfigFeedback.Text="已导入表单；尚未保存或激活。";}catch(Exception ex){ConfigFeedback.Text="导入失败，保留表单："+ex.Message;} }
     async void SaveConfigClick(object sender, RoutedEventArgs e) { try{var draft=PreviewDraft();await SendAsync("SaveConfig",value:Wire.Encode(draft));await LoadConfigs();}catch(Exception ex){ConfigFeedback.Text=ex.Message;} }
     async Task LoadConfigs()
     {
@@ -429,7 +431,7 @@ public partial class MainWindow : Window
         catch(Exception ex) { if(!closing) { ConfigsList.IsEnabled=false; ConfigFeedback.Text="修订读取失败："+ex.Message+"；已有列表为旧快照"; } }
     }
     async void ConfigsClick(object sender, RoutedEventArgs e) => await LoadConfigs();
-    async void ActivateClick(object sender, RoutedEventArgs e) { if (ConfigsList.SelectedItem is ConfigRevision revision) { await SendAsync("ActivateConfig", revision.Id, confirm: "将选中修订标记为待激活？需要受控退出和重启。失败保留原有效配置，原请求仍绑定原合同与目标。"); await LoadConfigs(); } }
+    async void ActivateClick(object sender, RoutedEventArgs e) { if (ConfigsList.SelectedItem is ConfigRevision revision) { await SendAsync("ActivateConfig", revision.Id, activation: revision, confirm: "将选中修订标记为待激活？需要受控退出和重启。失败保留原有效配置，原请求仍绑定原合同与目标。"); await LoadConfigs(); } }
     async void EventClick(object sender,RoutedEventArgs e) => await EmitEventAsync((string)((Button)sender).Tag);
     async void EngineeringKeyDown(object sender,KeyEventArgs e) { if(e.Key is Key.Enter or Key.Tab && Keyboard.Modifiers == ModifierKeys.None && EngineeringBarcode.Text.Length>0){e.Handled=true;await EmitEventAsync("Read");} }
     async Task EmitEventAsync(string kind)
@@ -466,10 +468,4 @@ public partial class MainWindow : Window
             model.GlobalStatus = "停止或清理失败，业务保持阻断，保留诊断：" + ex.Message;
         }
     }
-}
-
-public sealed class DeviceDraft(DeviceBinding source)
-{
-    public string Role {get;set;}=source.Role; public string Driver {get;set;}=source.Driver; public string DeviceId {get;set;}=source.DeviceId; public string Revision {get;set;}=source.Revision; public string? ReplayFile {get;set;}=source.ReplayFile;
-    public DeviceBinding Binding()=>new(Role,Driver,DeviceId,Revision,string.IsNullOrWhiteSpace(ReplayFile)?null:ReplayFile);
 }

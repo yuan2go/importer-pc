@@ -1,0 +1,9 @@
+{
+  "release": "conformance14-reference-68cdc36",
+  "receipt_asset": "fix14-READBACK.json",
+  "sha256": "3e4e43e6870448e299f40a02cd2016ed59c1c3dab93cd6ce61f62e05a7188c13",
+  "verified_bytes": 2738,
+  "status": "PASS_RECEIPT_PUBLISHED_DOWNLOADED_MATCHED",
+  "total_assets_verified": 12,
+  "at": "2026-10-17T10:11:22.290102+00:00"
+}

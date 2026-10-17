@@ -30,7 +30,7 @@ static class ArchitectureClosureVerification
         var text = await output + await error; File.WriteAllText(log, text);
         if (child.ExitCode != 0) throw new Exception("E13 command failed: " + string.Join(' ', arguments) + "\n" + text);
     }
-    static async Task<string> Build(string workspace, string area, string example)
+    public static async Task<string> Build(string workspace, string area, string example)
     {
         var isolated = Path.Combine(area, example); Directory.CreateDirectory(isolated);
         foreach (var name in new[] { "global.json", "Directory.Build.props", "NuGet.Config" }) File.Copy(Path.Combine(workspace, name), Path.Combine(area, name), true);
@@ -40,7 +40,7 @@ static class ArchitectureClosureVerification
             "-p:IpcContractPath=" + contract, "-p:IpcContractDirectory=" + Path.GetDirectoryName(contract), "-o", Path.Combine(isolated, "output"));
         return Path.Combine(isolated, "output", "Ipc.Reference." + example + ".dll");
     }
-    static string Package(string area, string name, ExtensionManifest manifest, RSA key, params string[] files)
+    public static string Package(string area, string name, ExtensionManifest manifest, RSA key, params string[] files)
     {
         var path = Path.Combine(area, name + ".ipcx");
         using var zip = ZipFile.Open(path, ZipArchiveMode.Create);
@@ -50,7 +50,7 @@ static class ArchitectureClosureVerification
         return path;
     }
     static ExtensionFile FileIdentity(string file) => new(Path.GetFileName(file), new FileInfo(file).Length, Wire.FileHash(file));
-    static ExtensionManifest Manifest(string id, string file, string entry, string kind, string source) => new(1, id, "1.0.0", "reference-test", "net10.0", "any", 1, RunMode.Simulation,
+    public static ExtensionManifest Manifest(string id, string file, string entry, string kind, string source) => new(1, id, "1.0.0", "reference-test", "net10.0", "any", 1, RunMode.Simulation,
         source, [], [FileIdentity(file)], [new(kind == "observation" ? "barcode-source" : "reference-http", Path.GetFileName(file), entry, kind, 8,
             kind == "observation" ? [new("health.interval-ms", "Health", "Heartbeat", "integer", Default: "100", Minimum: 100, Maximum: 2000), new("input.prefix", "Input", "Prefix", "string", Default: "")]
             : [new("metadata.label", "Service", "Label", "string", Default: ""), new("fault.fail-create", "Fault", "Constructor", "boolean", Default: "false"), new("fault.stop-delay-ms", "Fault", "Stop delay", "integer", Default: "0", Minimum: 0, Maximum: 30000), new("fault.dispose-delay-ms", "Fault", "Dispose delay", "integer", Default: "0", Minimum: 0, Maximum: 30000)])], [], Wire.FileHash(typeof(IObservationExtension).Assembly.Location),

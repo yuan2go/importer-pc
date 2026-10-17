@@ -1,0 +1,11 @@
+SELECT --conformance: E08
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-ae6b6a69470f4be7a6e2afeadde41c66
+PASS AC14 same ID/content duplicates preserve unique acceptance without conflict
+Unhandled exception. System.Exception: AC14: same-ID altered content and different-ID contradiction retain deduplicated raw occurrences and immutable original response
+   at ConformanceVerification.Assert(Boolean value, String reason) in /reference/workspace/tests/Ipc.Verification/ConformanceVerification.cs:line 20
+   at ConformanceVerification.Conflicts(String root, String url) in /reference/workspace/tests/Ipc.Verification/ConformanceVerification.cs:line 75
+   at ConformanceVerification.Conflicts(String root, String url) in /reference/workspace/tests/Ipc.Verification/ConformanceVerification.cs:line 79
+   at ConformanceVerification.Run(String root, String url, String workspace) in /reference/workspace/tests/Ipc.Verification/ConformanceVerification.cs:line 29
+   at Program.<Main>$(String[] args) in /reference/workspace/tests/Ipc.Verification/Program.cs:line 71
+   at Program.<Main>$(String[] args) in /reference/workspace/tests/Ipc.Verification/Program.cs:line 466
+   at Program.<Main>(String[] args)

@@ -72,6 +72,7 @@ public sealed class StationState
     public DeviceState? IntegrationHealth { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ServiceState? IntegrationServiceHealth { get; set; }
+    public Dictionary<string, IntegrationHealthFact> ServiceHealth { get; set; } = [];
     public bool Quarantined { get; set; }
     public bool Stopping { get; set; }
     public string NextFault { get; set; } = "None";
@@ -102,7 +103,12 @@ public sealed record StationSnapshot(StationState State, BusinessRequest[] Reque
     public SupplyOperation[] RecentOperations { get; init; } = [];
 }
 public sealed record RequestRecovery(BusinessRequest Request, Guard Dispatch, Guard LocalTermination, string NextStep);
-public sealed record RequestDetail(BusinessRequest Request, SendAttempt[] Attempts, IntegrationResponse[] Responses, Audit[] Audit);
+public sealed record ResponseConflict(string Id, string RequestId, string? AttemptId, string Source, DateTimeOffset ReceivedAt,
+    string OriginalEvidenceId, string ContentSha256, IntegrationResponse Response);
+public sealed record RequestDetail(BusinessRequest Request, SendAttempt[] Attempts, IntegrationResponse[] Responses, Audit[] Audit)
+{
+    public ResponseConflict[] Conflicts { get; init; } = [];
+}
 public sealed record ConfigRevision(string Id, string BaseVersion, StationConfig Content, string Actor, string Status, string Reason, DateTimeOffset At);
 
 public interface IIntegrationPort : IAsyncDisposable

@@ -1,0 +1,12 @@
+{
+  "main_base": "8cabf06d3c6d53ba551b65e58a13db6cdcaba16a",
+  "source_commit": "68cdc36f7821825c1ee9e53d866015be5ecf3044",
+  "baseline_status": "FAIL",
+  "current_status": "FAIL",
+  "baseline_errors": 267,
+  "current_errors": 267,
+  "new_errors": [],
+  "removed_errors": [],
+  "assertions_weakened": false,
+  "meaning": "Existing historical asset errors retained; no new errors, no added exception or lowered validation"
+}

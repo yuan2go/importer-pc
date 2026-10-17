@@ -54,6 +54,20 @@ foreach ($directory in @((Join-Path $machineRoot 'extensions'),(Join-Path $machi
     $acl.AddAccessRule([Security.AccessControl.FileSystemAccessRule]::new($runtimeSid,[Security.AccessControl.FileSystemRights]::ReadAndExecute,$inherit,[Security.AccessControl.PropagationFlags]::None,$allow))
     Set-Acl -LiteralPath $directory -AclObject $acl
 }
+# FIX-14: a protected read-only fence serializes consumer registration with retirement.
+# A pre-registration store has unknown offline consumers and cannot be declared empty.
+$storeRoot = Join-Path $machineRoot "extensions/$Mode"
+$usageRoot = Join-Path $storeRoot 'usage'
+if (-not (Test-Path -LiteralPath $usageRoot)) { New-Item -ItemType Directory -Path $usageRoot | Out-Null }
+if ((Get-Item -LiteralPath $usageRoot -Force).Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'Linked consumer fence directory refused' }
+$consumerFence = Join-Path $usageRoot 'consumers.lease'
+if (-not (Test-Path -LiteralPath $consumerFence)) {
+    $registrations = Join-Path $storeRoot 'registrations'
+    $legacy = (Test-Path -LiteralPath $registrations) -and @((Get-ChildItem -LiteralPath $registrations -File -Filter '*.json')).Count -gt 0
+    $coverage = if ($legacy) { 'LegacyConsumersUnverified: offline consumer scope predates registration; uninstall refused' } else { 'Extension consumer registration and inspection fence v1' }
+    $fenceStream = [IO.FileStream]::new($consumerFence,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
+    try { $bytes = [Text.UTF8Encoding]::new($false).GetBytes($coverage); $fenceStream.Write($bytes); $fenceStream.Flush($true) } finally { $fenceStream.Dispose() }
+}
 $stream = [IO.FileStream]::new($target,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
 try { $bytes = [Text.UTF8Encoding]::new($false).GetBytes($raw); $stream.Write($bytes); $stream.Flush($true) } finally { $stream.Dispose() }
 # Trust file inherits the already-protected machine parent; enforce its exact file ACL too.

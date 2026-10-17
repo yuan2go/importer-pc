@@ -10,7 +10,7 @@ public sealed partial class SupplyStore : IDisposable
     SqliteTransaction? current;
     public string Path { get; }
     public Action<object>? Journal { get; set; }
-    public const int CurrentFormatVersion = 3;
+    public const int CurrentFormatVersion = 4;
     // This forward migration intentionally makes schema1 readers refuse new JSON semantics.
     const string SemanticFormatMigration = """
         CREATE TABLE storage_format(id INTEGER PRIMARY KEY CHECK(id=1),version INTEGER NOT NULL,minimum_reader INTEGER NOT NULL);
@@ -92,11 +92,12 @@ public sealed partial class SupplyStore : IDisposable
     public StationSession? Session(string id) => Read<StationSession>("SELECT json FROM sessions WHERE id=$a", id).SingleOrDefault();
     public StationSession[] Sessions(int offset = 0, int limit = 100) => Read<StationSession>("SELECT json FROM sessions ORDER BY rowid DESC LIMIT $a OFFSET $b", Math.Clamp(limit, 1, 200), Math.Max(0, offset));
     public BusinessRequest[] Requests(string? owner = null) => Read<BusinessRequest>(owner is null ? "SELECT json FROM requests ORDER BY rowid" : "SELECT json FROM requests WHERE owner=$a ORDER BY rowid", owner is null ? [] : [owner]);
-    public BusinessRequest[] PendingRequests() => Read<BusinessRequest>("SELECT json FROM requests WHERE status IN ('Prepared','Dispatching','Unknown') ORDER BY rowid");
+    public BusinessRequest[] PendingRequests() => Read<BusinessRequest>("SELECT json FROM requests WHERE status IN ('Prepared','Dispatching','Unknown') OR id IN (SELECT request FROM response_conflicts) OR id IN (SELECT json_extract(b.value,'$.Source') FROM state,json_each(state.json,'$.Blocks') b WHERE json_extract(b.value,'$.Code')='ReceiptPersistenceUncertain') ORDER BY rowid");
     public BusinessRequest[] RequestsForSession(string session) => Read<BusinessRequest>("SELECT json FROM requests WHERE session=$a ORDER BY rowid", session);
     public BusinessRequest? Request(string id) => Read<BusinessRequest>("SELECT json FROM requests WHERE id=$a", id).SingleOrDefault();
     public SupplyOperation[] History(string? filter, int offset, int limit) => Read<SupplyOperation>("SELECT json FROM operations WHERE $a IS NULL OR json_extract(json,'$.Barcode')=$a OR json_extract(json,'$.BoxBarcode')=$a OR json_extract(json,'$.Task.Sku')=$a OR json_extract(json,'$.Task.TaskId')=$a ORDER BY created DESC,id LIMIT $b OFFSET $c", filter, Math.Clamp(limit, 1, 200), Math.Max(0, offset));
     public SendAttempt[] Attempts(string id) => Read<SendAttempt>("SELECT json FROM attempts WHERE request=$a ORDER BY ordinal", id);
+    public IntegrationResponse? ResponseByEvidence(string id) => Read<IntegrationResponse>("SELECT json FROM responses WHERE id=$a", id).SingleOrDefault();
     public IntegrationResponse[] Responses(string id) => Read<IntegrationResponse>("SELECT json FROM responses WHERE request=$a ORDER BY rowid", id);
     public Audit[] Audits(string id) => Read<Audit>("SELECT json FROM audit WHERE owner=$a ORDER BY rowid", id);
     public Alarm[] ActiveAlarms() => Read<Alarm>("SELECT json FROM alarms WHERE active=1 ORDER BY rowid DESC");
@@ -122,10 +123,13 @@ public sealed partial class SupplyStore : IDisposable
     public bool HasObservation(Observation x) => Scalar("SELECT id FROM observations WHERE device=$a AND epoch=$b AND source=$c", x.DeviceId, x.Epoch, x.SourceEventId) is not null;
     public bool HasAdmission(string id) => Scalar("SELECT id FROM admissions WHERE id=$a", id) is not null;
     public int AcceptedQuantity(string session) => int.Parse(Scalar("SELECT coalesce(sum(a.quantity),0) FROM acceptance a JOIN requests r ON r.id=a.request WHERE r.session=$a", session) ?? "0");
-    public int PendingCount() => int.Parse(Scalar("SELECT count(*) FROM requests WHERE status IN ('Prepared','Dispatching','Unknown')")!);
+    public int PendingCount() => PendingRequests().Length;
+    public ResponseConflict[] Conflicts(string request) => Read<ResponseConflict>("SELECT json FROM response_conflicts WHERE request=$a ORDER BY rowid", request);
+    public bool RecoveryRequired(string request) => HasConflict(request) || Load().Blocks.Any(x => x.Code == "ReceiptPersistenceUncertain" && x.Source == request);
+    public bool HasConflict(string request) => Scalar("SELECT id FROM response_conflicts WHERE request=$a LIMIT 1", request) is not null;
     public void Commit(StationState state, string kind, string owner, string actor, string evidence = "", Command? command = null, CommandReceipt? receipt = null,
         BusinessRequest? request = null, Observation? observation = null, SupplyOperation? operation = null,
-        SendAttempt? attempt = null, IntegrationResponse? response = null, bool count = false, ConfigRevision? config = null, Alarm? alarm = null)
+        SendAttempt? attempt = null, IntegrationResponse? response = null, bool count = false, ConfigRevision? config = null, Alarm? alarm = null, ResponseConflict? conflict = null)
     {
         using var tx = db.BeginTransaction();
         current = tx;
@@ -157,6 +161,8 @@ public sealed partial class SupplyStore : IDisposable
             Exec("INSERT OR IGNORE INTO responses VALUES($a,$b,$c)", tx, response.EvidenceId, response.RequestId, Wire.Encode(response));
             if (count) Exec("INSERT OR IGNORE INTO acceptance VALUES($a,$b,$c,$d)", tx, response.RequestId, response.EvidenceId, request!.OwnerId, response.Quantity);
         }
+        if (conflict is not null)
+            Exec("INSERT OR IGNORE INTO response_conflicts VALUES($a,$b,$c)", tx, conflict.Id, conflict.RequestId, Wire.Encode(conflict));
         if (config is not null)
         {
             // Exactly one current Effective after promotion. Prior activation facts and
@@ -198,11 +204,13 @@ public sealed partial class SupplyStore : IDisposable
         using var restored = new SupplyStore(destination); var state = restored.Load(); state.Quarantined = true; state.Revision++;
         restored.Commit(state, "RestoreIsolation", state.Session?.Id ?? "station", "offline-restore", "External ledger/inventory reconciliation required; source backup retained in original format");
     }
-    public void Backup(string destination) => BackupReadOnly(Path, destination);
+    public Action<string>? RegisterRecoveryCopy { get; set; }
+    public void Backup(string destination)
+    { RegisterRecoveryCopy?.Invoke(destination); BackupSnapshot(Path, destination, true); }
     public int PruneClosedSessions(DateTimeOffset before, string actor, string evidence)
     {
         var eligible = Read<StationSession>("SELECT json FROM sessions").Where(x => x.Status == SessionStatus.Closed && x.ClosedAt < before)
-            .Where(x => !Requests().Any(r => r.SessionId == x.Id && r.Status is RequestStatus.Prepared or RequestStatus.Dispatching or RequestStatus.Unknown)).ToArray();
+            .Where(x => !PendingRequests().Any(r => r.SessionId == x.Id)).ToArray();
         using var tx = db.BeginTransaction();
         foreach (var session in eligible)
         {

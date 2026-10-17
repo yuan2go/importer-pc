@@ -1,3 +1,7 @@
+> 当前实现增量为FIX-14：A-03显式选择激活、A-04本窗唯一草稿、R-01按持久回执/输入版本消费。v1.1原件不变，实际WPF截图0；[14映射/Windows后验](../runtime/validation/conformance-fix-14-windows.md)。下方DELIVERY-12仅历史。
+
+> FIX-14当前指引：本文件下方13及更早“当前/本轮/已完成”保留形成时身份，已由 [14执行基线](../runtime/conformance-fix-14-baseline.md)接管。A-01～04是待修确定缺陷；健康隔离和维护闭环是有效要求，不能按旧完成性表述判通过。Windows沿13决定统一后验，不寻找VM/runner；D/RV、真实SDK/WCS/现场门禁继续。原字节见 [归档](../archive/pre-conformance-fix-14/README.md)。
+
 # UI资料当前状态
 
 2026-10-16：依据用户明确要求，新增 [最终完整交付v1.1实物](ss-ui-vis-001-v1.1/README.md)。原HTML、分离源码、18页PPTX/JSON、tokens和完整UI交接已保存；34张PNG由同源重新导出，不是历史PNG或WPF截图。

@@ -1,3 +1,21 @@
+# FIX-14 扩展与维护增量
+
+当前 [14报告](../runtime/conformance-fix-14.md)与[操作/恢复规约](../runtime/operations.md)接管本指南下方13历史时态。核心契约仍1；新宿主公共DLL字节/部署指纹不同，新分发参考包为1.0.2，禁止重签1.0.0/1.0.1或删除永久身份。旧精确包若不满足新宿主公共SHA继续拒绝；先以保留的匹配旧宿主/原包核对旧Unknown，再显式迁移，不改原请求Implementation/目标/报文/hash来绕过。原13候选保留。
+
+IntegrationRuntime按实例、目标、部署指纹、epoch/sequence记录带有效期健康；Diagnostic另有Lifecycle/Historical/Port/Health及真实错误。当前requests是Supply实际业务依赖，辅助端口不自动变成主WCS；历史查询失败归原目标并保留原请求责任。Health/Query/Stop都计入在途所有权，取消/慢返回不提前释放包。
+
+每窗ConfigurationDraft是普通维护、组件页的唯一编辑源；导入合法统一JSON后，设备/服务/参数/角色/requests目标及普通字段编辑、预览、保存/重读保留一致。Effective只读，CAS由应用检查。激活绑定组件页本次选中ConfigRevision、维护身份和上下文，不读隐藏维护页列表。非法导入不替换旧草稿，迟到schema读取由选择代次隔离，读取期间禁编辑该表单。扫码消费绑定作业/命令/输入版本，Persisted才清自己的输入；重复A不计量，迟到不能清新B。
+
+共享安装库支持多数据根。运行、扩展修订保存、有责任的备份/恢复副本先登记消费者；卸载/恢复检查所有离线根的Effective/Pending/Unknown及终态冲突、接收围栏责任。不可读和旧库覆盖未知都阻断，不能把固定账户视为单数据根。消费者记录不因退出删除，不提供强制忽略入口。Windows受保护只读围栏由安装器建立，运行账户只在机级租约目录写登记；详见操作规约。旧库LegacyConsumersUnverified需要完整原根/副本盘点与批准迁移，当前不能宣称已无引用。
+
+Storage4新增冲突原件与恢复语义，保留原SQL/checksum和terminal事实。原始回执日志与业务事务失败可恢复，无法接管原件时以预存围栏保守阻断，不能把日志按钮/内存告警当作落盘。已有精确依赖、签名、AssemblyRef和ALC政策不放宽；Production缺能力继续NotReady。
+
+验证入口新增 `--conformance`，复用原Verifier、两审查探针、实际ProductRuntime/独立HTTP/SQLite/来源/发送链。Windows点击、扫码器和ACL仍NOT_RUN，交叉构建不代替它们。
+
+---
+
+> FIX-14当前指引：本文件下方13及更早“当前/本轮/已完成”保留形成时身份，已由 [14执行基线](../runtime/conformance-fix-14-baseline.md)接管。A-01～04是待修确定缺陷；健康隔离和维护闭环是有效要求，不能按旧完成性表述判通过。Windows沿13决定统一后验，不寻找VM/runner；D/RV、真实SDK/WCS/现场门禁继续。原字节见 [归档](../archive/pre-conformance-fix-14/README.md)。
+
 # CLOSURE-13 扩展开发、安装与恢复
 
 本指南对应[13工作包](../work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)和ExtensionContract1；[设计与职责](../design/controlled-extensions.md)、[实际结果/候选身份](../runtime/arch-extension-closure-13.md)。12指南[原字节](../archive/pre-arch-extension-closure-13/docs/extensions/developer-guide.md.txt)保留。Windows实际操作、普通账户/UAC/ACL、UI/输入/分辨率/DPI、听审与持续旅程全部WINDOWS_NOT_RUN，不能把下列命令写成实机验收。

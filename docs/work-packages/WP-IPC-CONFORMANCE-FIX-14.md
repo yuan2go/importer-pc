@@ -1,3 +1,5 @@
+> 14当前执行结果：核心工程修复及必要验证完成于 `68cdc36`，逐A/R、AC14、精确候选与遗留见 [交付报告](../runtime/conformance-fix-14.md)。Windows仍DEFERRED/NOT_RUN，真实能力BLOCKED；下方PLANNED/NOT_IMPLEMENTED是原任务定义发布时状态，原字节已归档，不改其AC要求。
+
 # WP-IPC-CONFORMANCE-FIX-14
 
 **项目审查问题修复｜PLANNED / NOT_IMPLEMENTED**

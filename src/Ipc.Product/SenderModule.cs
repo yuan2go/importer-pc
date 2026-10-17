@@ -21,7 +21,8 @@ sealed class SenderModule(StationApplication application, IIntegrationPort port)
             {
                 while (!stop.IsCancellationRequested)
                 {
-                    await application.SetWcsHealthAsync(await port.HealthAsync(stop.Token));
+                    if (port is IntegrationRuntime runtime) await application.SetIntegrationHealthAsync(await runtime.RefreshHealthAsync(stop.Token));
+                    else await application.SetWcsHealthAsync(await port.HealthAsync(stop.Token));
                     var claimed = await application.ClaimAsync();
                     if (claimed is null) { await Task.Delay(100, stop.Token); continue; }
                     var (request, attempt) = claimed.Value;

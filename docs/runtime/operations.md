@@ -1,3 +1,35 @@
+# FIX-14 当前运行与恢复
+
+当前工作包 [14](../work-packages/WP-IPC-CONFORMANCE-FIX-14.md)，实现/证据入口 [14报告](conformance-fix-14.md)。Release=CONFORMANCE-FIX-14；Storage/MinimumReader=4/4，SIMULATION-v1、ExtensionContract1不变；独立参考插件1.0.2。下方旧“当前13/12/11、Storage3”均为历史原文，不能选择旧包替代14候选。
+
+- **回执与恢复**：原Accepted/Rejected和唯一接受账保持；矛盾原件独立保存到response_conflicts，原EvidenceId不是新原件主键。同事务持久核对责任，终态仍出现在恢复列表、原身份查询、历史详情、准入/提交/关闭/激活、清理/维护和包保留检查中。重复不计量，原请求不可重发。
+- **存储失败窗口**：receipt-ingress先WriteThrough/Flush接管原回执，再T3；失败保留原件，重启验证原合同/原实现后提交。receipt-owner-fence在启用接收前持久建立，保护连原件写入也失败的窗口。正常受控退出删除已完成接收围栏；失败仅保留未完成身份。非正常退出后无法找到原件的终态请求进入ReceiptPersistenceUncertain，原接受事实不变但持续阻断；未存下的原件明确不可恢复，不宣称已保存。没有通用解锁；匹配的后续查询也不擦除矛盾。对端核对/原合同及批准处置不足时继续保留责任。不要删除围栏、ingress或库来“恢复”。
+- **备份/升级**：既有format1/2/3普通启动拒绝；先停止原宿主、原身份核对并满足维护预检，再使用14显式备份升级追加id4。id1/2/3 SQL/checksum不变；旧读者拒绝4，未来格式继续拒绝。原根有未恢复接收原件/脏围栏时，离线数据库单文件备份/升级拒绝，先恢复接收责任；应用内备份要求单所有者已排空回执且无存储故障。备份、恢复副本如有包责任在同一共享库登记后才复制；失败登记保留，不能当作无引用。回退仍是匹配旧发布/原格式备份/新根/恢复隔离，不回滚外部事实。
+- **健康**：每个当前服务按实例/目标/部署指纹/epoch/sequence保存确认与有效期；慢辅助检查不串行阻塞主发送。Supply当前真正消费requests，其失败/过期阻断业务；其他命名端口尚无业务消费者，只独立诊断。以后必需端口由业务新增依赖，不由驱动猜关键性。历史查询单列原目标、原精确能力错误，不加入当前主目标健康。WPF和CLI读取同一诊断事实。
+- **维护**：普通维护与组件页共用本窗ConfigurationDraft；导入、字段、设备、服务、参数、角色/端口、版本、预览与保存同源。不同窗口独立草稿，持久保存/激活仍CAS。激活显式传本次选中修订，后台复核权限、版本、实体与未决责任；Rejected箱无其他责任时与后台语义一致。保存≠生效，安装≠激活。
+
+## 无桌面通知交付
+
+`Ipc.Product --action serve`持续发布 `Notification`（OperationId/Lane/Status/Revision/Sequence）及 `Delivery=AwaitingExplicitAcknowledgement`，stdout完成写入/flush后等待接收者确认，不能假称播音。接收者处理该通知后输入：
+
+```json
+{"Action":"notification-ack","Sequence":1}
+```
+
+只确认本宿主实际交付的头部序号，乱序/旧序号拒绝；未确认不消费。主CLI输出NotificationAcknowledged。Supply业务装配也持续发布同一通知，使用BusinessCommand `Kind=AcknowledgeNotification, Value="1"`确认。两种宿主都保留64容量、消费错误/积压阻断；无人确认不是静默丢弃。桌面仍由主窗独占声音消费者，副窗不重复播放。消费者停止未终止时继续保留应用、库、站点/设备和包资源；超时不是成功停止。
+
+## 共享包库与离线根
+
+每个运行/将保存扩展部署的数据根，以及有包责任的备份/恢复副本，先持久登记consumer。Windows登记位于指定账户可写的机级leases/extension-consumers，受保护库只读consumers.lease用于围栏；便携显式合成库登记在store/consumers。登记不是第二业务账；引用以各根SQLite的Effective/Pending/未决原请求/冲突为准。卸载和卸载恢复在原管理锁、消费者围栏与包独占锁内重新检查所有登记根、原包和反向依赖。根停止不取消责任；不可读/缺失/中断登记拒绝卸载。
+
+13及更早安装库没有可证明的离线根覆盖，新安装器/便携注册将其标LegacyConsumersUnverified，Windows须由维护主体用同版provision-extensions脚本或新包安装先建立保护围栏。保留运行/查询与原包，不自动宣布旧库无引用；未经完整原数据根/备份盘点和批准迁移不得卸载。没有删除登记或强制退休的旁路。恢复复制不是更换根绕过包责任。
+
+Windows实际客户端/普通账户/UAC/ACL/输入/听审/W01～06按13决定后验，现场真实SDK/WCS/策略仍BLOCKED。所有本轮运行只用隔离合成根和loopback。
+
+---
+
+> FIX-14当前指引：本文件下方13及更早“当前/本轮/已完成”保留形成时身份，已由 [14执行基线](conformance-fix-14-baseline.md)接管。A-01～04是待修确定缺陷；健康隔离和维护闭环是有效要求，不能按旧完成性表述判通过。Windows沿13决定统一后验，不寻找VM/runner；D/RV、真实SDK/WCS/现场门禁继续。原字节见 [归档](../archive/pre-conformance-fix-14/README.md)。
+
 > 当前执行：WP-IPC-ARCH-EXTENSION-CLOSURE-13，基线 main `feed6e9c`。职责、装配、两项P2及类型化设备/集成接入核心实现已提交；Mac参考验证与WPF交叉构建按13报告分项记录，候选交付不代表Windows或现场验收。Mac核心验证与WPF交叉构建在本轮，Windows/W01～06、实际UI与现场统一延期，状态保持 `WINDOWS_NOT_RUN`；不寻找VM/runner，不扩OAuth。原当前指引见 [归档](../archive/pre-arch-extension-closure-13/README.md)。
 
 ## CLOSURE-13 当前运行与候选

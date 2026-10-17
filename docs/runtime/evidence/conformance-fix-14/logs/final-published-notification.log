@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/reference/workspace/.artifacts/conformance-14/published-notification.py", line 43, in <module>
+    wait(lambda x: x['State']['IntegrationHealth'] and x['State']['IntegrationHealth']['Health']=='Ready')
+  File "/reference/workspace/.artifacts/conformance-14/published-notification.py", line 37, in wait
+    if predicate(current):return current
+       ^^^^^^^^^^^^^^^^^^
+  File "/reference/workspace/.artifacts/conformance-14/published-notification.py", line 43, in <lambda>
+    wait(lambda x: x['State']['IntegrationHealth'] and x['State']['IntegrationHealth']['Health']=='Ready')
+                   ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'IntegrationHealth'

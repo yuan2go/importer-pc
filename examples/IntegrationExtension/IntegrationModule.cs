@@ -86,8 +86,14 @@ sealed class ReferenceIntegration : IControlledIntegration
     }
     public Task<bool> HealthAsync(CancellationToken token) => Invoke(async cancellation =>
     {
-        try { return await client.GetStringAsync(Endpoint(context.Target, "health"), cancellation) == Contract; }
-        catch (Exception ex) when (ex is HttpRequestException or OperationCanceledException) { return false; }
+        try
+        {
+            var healthy = await client.GetStringAsync(Endpoint(context.Target, "health"), cancellation) == Contract;
+            lock (gate) failure = healthy ? null : "Health contract mismatch";
+            return healthy;
+        }
+        catch (Exception ex) when (ex is HttpRequestException or OperationCanceledException)
+        { lock (gate) failure = ex.GetType().Name + ": " + ex.Message; return false; }
     }, token);
     public Task StopAsync(CancellationToken token)
     {

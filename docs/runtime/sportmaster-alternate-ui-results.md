@@ -85,3 +85,22 @@ PR创建后main合入PR26到9a5d87a；本分支再次正常整合，保留其资
 收尾再次继承main `baac260214f910dca9ae4628ba6449b25188e2ac`（PR28，仅文档发布回执）；相对9a5d87a无src/scripts/config变化。正常合并保留双方入口和manifest，无需重建已冻结7ed7862运行候选；上述最终验证仍绑定7ed7862。全库资料校验对照见[最终记录](evidence/sportmaster-alternate-ui/final-archive-comparison.json)，历史FAIL与本次新增分开。PR27保持OPEN，不合并。
 
 最新main baac260的完整扫描为268项（267项历史设计资产问题加1项manifest校验和）；合并后重新生成manifest校验和，当前267项历史问题保持，新增0、移除1项校验和错误。完整资料状态仍FAIL。
+
+## PR27独立审查后四项P2整改（2026-10-19）
+
+独立审查固定head7d47a19、main baac260，原4项P2保持原审查身份；[审查与整改复核](../reviews/pr27-ui-independent-review.md)分别列出源码修复、参考验证和Windows未验项。用户授权后冻结修复源码 `bf16bd1079128b4d235819878af18443a848943a`；后续报告/manifest提交不改变此运行源码。7ed7862的[检查回执](evidence/sportmaster-alternate-ui/pre-p2-7ed7862-checks.json)、[候选回执](evidence/sportmaster-alternate-ui/pre-p2-7ed7862-package-verification.json)及原日志/候选保留，不重新赋予新修复结论。
+
+四项修复：所有桌面快照读取共用默认行为不变的扩展点，新UI在相关失败时标旧并退休旧轮询；诊断区132/96 DIP局部滚动保留全部原原因；小客户区1280×680边界以下保护并调用既有Pause，恢复空间后需有效暂停快照与人工确认，Resume保持显式；失效最后读取时间常驻。主窗关闭同时有界等待保护Pause。业务Flow、Runtime、应用契约、SQL、驱动、协议、配置相对baac260无差异。
+
+最终参考验证：UI86、架构62、配置确认32、质量复审32断言PASS；Sportmaster、DirectPlc/WcsToPlc（使用现有锁定文件）及Windows烟测工程编译均0警告0错误；指南2项、发布辅助3项PASS。修复前新增时间断言确实失败，保留[失败回执](evidence/sportmaster-alternate-ui/p2-pre-fix-last-read-failure.log)。复核另发现“旧轮询成功覆盖较新Pause读取失败”，已补失效退休及Pause/ConfirmConfiguration两条回归；[独立原探针](evidence/sportmaster-alternate-ui/p2-independent-ordering-probe.log)复跑保持Fresh/CanAdmit为false。其余日志为同目录p2前缀，路径已规范化。
+
+|目标|新ZIP|SHA256|字节|
+|---|---|---|---|
+|portable|`sportmaster-portable.zip`|`3db6057bb6fd49423b265e90d054c2a1687f048de58b0f4b0a85467894d240c1`|18373853|
+|win-x64|`sportmaster-win-x64.zip`|`85a9c73720672bbbbb0b2c5dea05f71d2c3ee3cfdaf46ae15c844a87918e5f86`|104114359|
+
+新产物目录 `Workspace/artifacts/importer-pc/sportmaster-alternate-ui/pr27-p2-bf16bd1/`。[实际解包/资源/宿主启动检查](evidence/sportmaster-alternate-ui/package-verification.json)27项PASS，含portable双位原WCS链、一次原请求和正常停止；不将其称为Windows运行。原生烟测新增50条合成诊断、长原因与固定动作几何检查，以及小客户区保护/人工确认，但Windows实际执行、DPI/多屏/触控/截图依然NOT_RUN，真实SDK/WCS/设备/现场依然BLOCKED；D/RV不变。
+
+[同一main PR27](https://github.com/yuan2go/importer-pc/pull/27)继续用于本次修复审查，不合并。原HTML没有进入提交或候选。全库资料保持历史设计资产FAIL，最终对照见[资料回执](evidence/sportmaster-alternate-ui/final-archive-comparison.json)；当前逐文件身份与新日志随manifest更新。
+
+本次工作目录资料扫描因新烟测工程的ignored bin/obj生成物额外报告164项（109未登记、51二进制、4生成路径标记），见[工作区扫描记录](evidence/sportmaster-alternate-ui/p2-worktree-build-output-scan.json)。这些文件不进入Git/候选公开清单。公开资料对照另在Git文件加待提交非忽略新增文件的精确源码快照执行，校验器与例外政策未改，不用工作区生成物结果冒充公开源码校验。

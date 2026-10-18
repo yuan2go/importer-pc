@@ -2,7 +2,7 @@
   "Status": "REFERENCE_PASS_WINDOWS_NOT_RUN",
   "BaselineMain": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
   "Date": "2026-10-19",
-  "SportmasterUiAssertions": 66,
+  "SportmasterUiAssertions": 86,
   "Architecture22Assertions": 62,
   "Builds": {
     "SportmasterWpf": "PASS",
@@ -15,28 +15,42 @@
   "WindowsUi": "NOT_RUN",
   "RealSdkWcsField": "BLOCKED",
   "OriginalHtmlUploaded": false,
-  "SourceCommit": "7ed7862d4ab3a3f5bdcb88cd19633d4d75ce6806",
-  "FinalUiAssertions": 66,
+  "SourceCommit": "bf16bd1079128b4d235819878af18443a848943a",
+  "FinalUiAssertions": 86,
   "PackageChecks": 27,
   "Packages": [
     {
       "Target": "portable",
       "Zip": "sportmaster-portable.zip",
-      "Sha256": "08dbe011e71dcee97785d29129c84d54b3fe595801dd94089a15db215788882e",
-      "Size": 18373128
+      "Sha256": "3db6057bb6fd49423b265e90d054c2a1687f048de58b0f4b0a85467894d240c1",
+      "Size": 18373853
     },
     {
       "Target": "win-x64",
       "Zip": "sportmaster-win-x64.zip",
-      "Sha256": "564ac7bab158b3ee7f24d65c9136292fb0eda25350f8ca75081ff26886fb87a9",
-      "Size": 104110127
+      "Sha256": "85a9c73720672bbbbb0b2c5dea05f71d2c3ee3cfdaf46ae15c844a87918e5f86",
+      "Size": 104114359
     }
   ],
-  "IntegratedMain": "9a5d87ad41e3e936f56a7e58ec60de8f7aa53458",
+  "IntegratedMain": "baac260214f910dca9ae4628ba6449b25188e2ac",
   "QualityReviewClosureAssertions": 32,
   "WholeArchiveStatus": "FAIL_INHERITED_267_UNCHANGED",
   "NewArchiveErrors": 0,
   "ConfigurationConfirmationAssertions": 32,
   "PullRequest": "https://github.com/yuan2go/importer-pc/pull/27",
-  "Merged": false
+  "Merged": false,
+  "ReviewedHead": "7d47a19e057586a8c704700ac9cfb7adf349c703",
+  "P2Fixes": {
+    "P2-01": "SOURCE_FIXED_REFERENCE_VERIFIED",
+    "P2-02": "SOURCE_FIXED_WPF_CROSSBUILD_WINDOWS_NOT_RUN",
+    "P2-03": "SOURCE_FIXED_REFERENCE_VERIFIED_WINDOWS_NOT_RUN",
+    "P2-04": "SOURCE_FIXED_REFERENCE_VERIFIED_WINDOWS_NOT_RUN"
+  },
+  "IndependentOrderingProbe": "PASS",
+  "ShippedGuideTests": 2,
+  "PackageHelperTests": 3,
+  "NativeLayoutGeometryAssertions": "WINDOWS_NOT_RUN",
+  "ArchiveValidationScope": "Git tracked files plus pending non-ignored additions; public source snapshot",
+  "WorktreeGeneratedOutputErrors": 164,
+  "NewPublicSourceErrors": 0
 }

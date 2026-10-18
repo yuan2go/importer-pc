@@ -1,0 +1,42 @@
+{
+  "Status": "REFERENCE_PASS_WINDOWS_NOT_RUN",
+  "BaselineMain": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "Date": "2026-10-19",
+  "SportmasterUiAssertions": 66,
+  "Architecture22Assertions": 62,
+  "Builds": {
+    "SportmasterWpf": "PASS",
+    "DirectPlcWpfCompatibility": "PASS",
+    "WcsToPlcWpfCompatibility": "PASS",
+    "WindowsWpfSmokeHarnessCrossBuild": "PASS"
+  },
+  "ProductionDependenciesAdded": 0,
+  "BusinessLogicChanged": false,
+  "WindowsUi": "NOT_RUN",
+  "RealSdkWcsField": "BLOCKED",
+  "OriginalHtmlUploaded": false,
+  "SourceCommit": "7ed7862d4ab3a3f5bdcb88cd19633d4d75ce6806",
+  "FinalUiAssertions": 66,
+  "PackageChecks": 27,
+  "Packages": [
+    {
+      "Target": "portable",
+      "Zip": "sportmaster-portable.zip",
+      "Sha256": "08dbe011e71dcee97785d29129c84d54b3fe595801dd94089a15db215788882e",
+      "Size": 18373128
+    },
+    {
+      "Target": "win-x64",
+      "Zip": "sportmaster-win-x64.zip",
+      "Sha256": "564ac7bab158b3ee7f24d65c9136292fb0eda25350f8ca75081ff26886fb87a9",
+      "Size": 104110127
+    }
+  ],
+  "IntegratedMain": "9a5d87ad41e3e936f56a7e58ec60de8f7aa53458",
+  "QualityReviewClosureAssertions": 32,
+  "WholeArchiveStatus": "FAIL_INHERITED_267_UNCHANGED",
+  "NewArchiveErrors": 0,
+  "ConfigurationConfirmationAssertions": 32,
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/27",
+  "Merged": false
+}

@@ -1,6 +1,7 @@
 {
   "BaselineMain": "baac260214f910dca9ae4628ba6449b25188e2ac",
-  "RuntimeSource": "7ed7862d4ab3a3f5bdcb88cd19633d4d75ce6806",
+  "RuntimeSource": "bf16bd1079128b4d235819878af18443a848943a",
+  "Scope": "Git tracked files and pending non-ignored additions, excluding local ignored build outputs",
   "BaselineStatus": "FAIL",
   "CurrentStatus": "FAIL",
   "BaselineErrorCount": 268,
@@ -16,6 +17,6 @@
       "path": "docs/manifest.sha256"
     }
   ],
-  "WholeArchive": "FAIL retained; 267 inherited design-asset failures unchanged. Regenerated manifest checksum also resolves the latest main checksum mismatch. Scoped changes add no errors.",
+  "WholeArchive": "267 inherited design-asset errors remain; no new scoped errors. Regenerated manifest checksum resolves main checksum mismatch.",
   "OriginalHtmlUploaded": false
 }

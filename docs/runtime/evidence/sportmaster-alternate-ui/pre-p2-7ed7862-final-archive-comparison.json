@@ -1,0 +1,21 @@
+{
+  "BaselineMain": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "RuntimeSource": "7ed7862d4ab3a3f5bdcb88cd19633d4d75ce6806",
+  "BaselineStatus": "FAIL",
+  "CurrentStatus": "FAIL",
+  "BaselineErrorCount": 268,
+  "CurrentErrorCount": 267,
+  "ErrorKinds": {
+    "private_metadata_marker": 2,
+    "pptx_media_type_mismatch": 265
+  },
+  "NewErrors": [],
+  "RemovedErrors": [
+    {
+      "code": "manifest_checksum",
+      "path": "docs/manifest.sha256"
+    }
+  ],
+  "WholeArchive": "FAIL retained; 267 inherited design-asset failures unchanged. Regenerated manifest checksum also resolves the latest main checksum mismatch. Scoped changes add no errors.",
+  "OriginalHtmlUploaded": false
+}

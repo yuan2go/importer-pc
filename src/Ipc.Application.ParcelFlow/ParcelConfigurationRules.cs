@@ -3,13 +3,15 @@ using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
 // Shared format/shape rules only. The three Applications retain their business rules.
-public static class ParcelConfigurationRules
+public static partial class ParcelConfigurationRules
 {
     public static string[] Validate(ParcelConfiguration c, string application, string[] positionRoles)
     {
         List<string> e = [];
         if (c.Reader is null || c.Weight is null || c.CapabilityInstances?.Any(x => x is null) == true || c.Images is { Camera: null })
             return ["Malformed configuration: missing reader/weight/camera or null capability inventory"];
+        e.AddRange(ValidateCapabilityInventory(c));
+        if (e.Count != 0) return e.ToArray(); // No topology/binding deduplication may hide invalid originals.
         if (c.SchemaVersion is not (1 or 2 or 3) || c.ApplicationId != application || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode)) e.Add("Invalid application/station/schema/mode");
         if (c.SchemaVersion == 1 && c.WeightValidity is not null || c.SchemaVersion >= 2 && (c.WeightValidity is null || !Enum.IsDefined(c.WeightValidity.Value))) e.Add("Weight validity requires explicit configuration schema 2; legacy schema 1 retains UntilDispatch");
         if (c.QueueCapacity is < 1 or > 4096 || c.TimeoutMs is < 100 or > 30000 || c.MaximumOperations is < 1 or > 100000) e.Add("Invalid resource/time/retention budget");
@@ -24,14 +26,6 @@ public static class ParcelConfigurationRules
         }
         if (c.Images is { } images && (images.Camera is null || images.MaximumBytes is < 1 or > 4194304 || !Enum.IsDefined(images.Strategy) || images.TotalBytes < images.MaximumBytes || images.TotalBytes > 268435456 || images.MaximumPending is < 1 or > 256)) e.Add("Image capture requires a binding and a bounded byte quota");
         e.AddRange(ValidateTopology(c, positionRoles));
-        var roleBindings = new[] { c.Scale, c.Wcs, c.Plc, c.Login, c.MaintenanceLogin, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
-        if (roleBindings.Select(x => x.InstanceId).Distinct().Count() != roleBindings.Length) e.Add("Capability roles cannot reuse the same instance identity");
-        var bindings = ParcelBindings.All(c);
-        if (bindings.Select(x => x.InstanceId).Distinct().Count() != bindings.Length) e.Add("Capability instances must be independent");
-        foreach (var b in bindings)
-            if (!ExtensionSchema.IsId(b.InstanceId) || !ExtensionSchema.IsVersion(b.Version) || string.IsNullOrWhiteSpace(b.Target) ||
-                string.IsNullOrWhiteSpace(b.Contract) || string.IsNullOrWhiteSpace(b.Implementation) || b.Parameters is null ||
-                b.Package is not null && (!ExtensionSchema.IsHash(b.Package.ManifestSha256) || string.IsNullOrWhiteSpace(b.Module))) e.Add("Incomplete exact capability identity");
         if (c.Scale is not null && c.Scale.Kind != "weight" || c.Plc is not null && c.Plc.Kind != "plc" || c.Wcs is not null && c.Wcs.Kind != "integration") e.Add("Wrong capability binding kind");
         if (c.MaintenanceLogin is not null && c.MaintenanceLogin.Kind != "login" || c.Login is not null && c.Login.Kind != "login" || c.Images is { } i && (i.Camera?.Kind != "camera" || i.Uploader is not null && i.Uploader.Kind != "upload")) e.Add("Wrong optional capability kind");
         if (c.SessionLifetimeMs is < 100 or > 86400000) e.Add("Invalid session lifetime");
@@ -68,8 +62,6 @@ public static class ParcelConfigurationRules
                 if (used.Select(x => x.Target).Distinct().Count() != used.Length || used.Select(x => x.InstanceId).Distinct().Count() != used.Length) errors.Add("Physical camera/scale cannot be shared across independent positions");
             }
         }
-        var roles = new[] { c.Scale, c.Wcs, c.Plc, c.Login, c.MaintenanceLogin, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
-        if (roles.Select(x => x.InstanceId).Distinct().Count() != roles.Length || c.CapabilityInstances is { } inventory && (inventory.Select(x => x.InstanceId).Distinct().Count() != inventory.Length || roles.Any(b => inventory.Any(i => i.InstanceId == b.InstanceId && Wire.Encode(i) != Wire.Encode(b))))) errors.Add("Capability instance identity has contradictory bindings");
         return errors.ToArray();
     }
 

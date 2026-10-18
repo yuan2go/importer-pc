@@ -82,6 +82,7 @@ static partial class ArchitectureQuality
             }
         }
         await PendingOnlyBackupCheck(packageFile, trustFile, trust);
+        await LegacyInventoryUninstallChecks(packageFile, trustFile, trust);
         if (failures != 0) throw new Exception("AQ extension failures: " + failures);
         Console.WriteLine("PASS AQ EXTENSIONS COMPLETE");
     }

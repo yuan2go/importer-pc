@@ -66,6 +66,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
     public void Validate(ParcelConfiguration c) => _ = ValidateDeployment(c);
     DeploymentQualification? ValidateDeployment(ParcelConfiguration c)
     {
+        var inventoryErrors = ParcelConfigurationRules.ValidateCapabilityInventory(c);
+        if (inventoryErrors.Length != 0) throw new InvalidDataException(string.Join("; ", inventoryErrors));
         RegisterContracts();
         if (store is not null && mode != c.Mode) throw new InvalidDataException("Cannot change the extension store mode within a running owner");
         mode = c.Mode;
@@ -126,11 +128,6 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         if (deviceCapabilities.GroupBy(b => b.Target).Any(g => g.Count() > 1) || deviceCapabilities.Any(b => b.Kind != "camera" && ParcelBindings.Readers(c).Any(r => r.DeviceId == b.Target)))
             throw new InvalidDataException("Physical device cannot be occupied by incompatible capability roles");
         if (bound.Any(x => !x.Enabled)) throw new InvalidDataException("A bound provider must be enabled");
-        if (c.CapabilityInstances is { } instances)
-        {
-            if (instances.Length > 64 || instances.Select(x => x.InstanceId).Distinct().Count() != instances.Length) throw new InvalidDataException("Invalid bounded capability instance inventory");
-            if (bound.Any(b => !instances.Any(i => Wire.Encode(i) == Wire.Encode(b)))) throw new InvalidDataException("Bound provider differs from the same authoritative instance inventory");
-        }
         foreach (var b in bindings.Concat(c.CapabilityInstances ?? []).DistinctBy(x => x.InstanceId))
         {
             if (c.Mode == RunMode.Production && b.Enabled && b.Package is null) throw new InvalidDataException("Production NotReady: reference capability " + b.InstanceId);

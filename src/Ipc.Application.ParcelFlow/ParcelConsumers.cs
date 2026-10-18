@@ -75,23 +75,8 @@ public sealed partial class ParcelRepository
         if (application == "sportmaster" ? configuration.Wcs is null || configuration.Plc is not null :
             configuration.Plc is null || application == "direct-plc" && configuration.Wcs is not null || application == "wcs-to-plc" && configuration.Wcs is null)
             throw new InvalidDataException("Consumer main capability ownership differs from declared Application");
-        if (configuration.CapabilityInstances is { } inventory && (inventory.Length > 64 || ParcelBindings.Bound(configuration).Any(b => !inventory.Any(i => Wire.Encode(i) == Wire.Encode(b)))))
-            throw new InvalidDataException("Incomplete authoritative consumer capability inventory");
         var deployment = configuration.Extensions;
-        var bindings = ParcelBindings.All(configuration);
         var readers = ParcelBindings.Readers(configuration);
-        if (deployment is not null && (deployment.Packages is null || deployment.Instances is null || deployment.Packages.Length > 64 || deployment.Instances.Length > 64 ||
-            deployment.Packages.Any(p => p is null || !ExtensionSchema.IsId(p.Id) || !ExtensionSchema.IsVersion(p.Version) || !ExtensionSchema.IsHash(p.ManifestSha256)) ||
-            deployment.Packages.Select(p => p.Id).Distinct().Count() != deployment.Packages.Length ||
-            deployment.Instances.Any(i => i is null || !ExtensionSchema.IsId(i.Id) || !ExtensionSchema.IsId(i.ModuleId) || i.Parameters is null) ||
-            deployment.Instances.Select(i => i.Id).Distinct().Count() != deployment.Instances.Length ||
-            deployment.Services is { Length: > 0 } || deployment.Ports is { Length: > 0 }))
-            throw new InvalidDataException("Unknown/invalid consumer extension closure; retain packages");
-        foreach (var binding in bindings)
-            if (binding.Package is { } package
-                ? deployment?.Packages.Contains(package) != true || binding.Version != package.Version || !ExtensionSchema.IsId(binding.Module) || binding.Implementation != "extension:" + package.Id + "/" + binding.Module
-                : binding.Module is not null || binding.Implementation.StartsWith("extension:", StringComparison.Ordinal))
-                throw new InvalidDataException("Dangling/contradictory exact capability package reference; retain packages");
         foreach (var reader in readers)
         {
             if (reader.Driver == "manual") continue;

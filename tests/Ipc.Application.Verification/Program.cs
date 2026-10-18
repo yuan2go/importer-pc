@@ -15,6 +15,7 @@ Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--configuration-crash-child")) { var i = Array.IndexOf(args, "--configuration-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], args[i + 2]); return; }
 if (args.Contains("--quality-extensions")) { var i = Array.IndexOf(args, "--quality-extensions"); await ArchitectureQuality.ExtensionChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
+if (args.Contains("--inventory-closure")) { await ArchitectureQuality.InventoryClosureChecks(workspace, root); return; }
 if (args.Contains("--review-closure")) { await ArchitectureQuality.ReviewClosureChecks(workspace, root); return; }
 if (args.Contains("--architecture-quality")) { await ArchitectureQuality.Run(workspace, root); return; }
 if (args.Contains("--acquisition-lifecycle")) { await AcquisitionLifecycle.Run(workspace, root); return; }

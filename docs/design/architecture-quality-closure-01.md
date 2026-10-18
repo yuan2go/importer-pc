@@ -102,8 +102,10 @@ AQD-05补差：实际签名包复现仅Pending含包、重启激活被旧件屏�
 
 目标：闭合剩余R03，并保持合法兼容配置的完整引用与只读证据。技术栈.NET10.0.402/SQLite，分支codex/architecture-quality-closure-01；沿现有计划逐项执行，无需新业务实例或通用框架。
 
-- [ ] 先保存独立复审原报告/合成探针和旧入口字节；修正README/INDEX/指南的当前状态，提交文档治理。
-- [ ] 新增定向--inventory-closure：schema1/2（及schema3控制组）分别覆盖Effective/Pending/未结Frozen；同ID相同/不同内容、角色镜像矛盾、悬挂包/模块/版本/未知kind必须拒绝且DB/config原bytes不改。合法旧schema/完整镜像/精确包引用须仍可读并保有未结包。先记录修复前失败。
-- [ ] 在ParcelConfigurationRules新增统一原库存校验，先于All/ValidateTopology；删除schema3专属重复实现与离线重复绑定校验，Factory入口复用；保持reader专属校验与真实安装资格机制。
-- [ ] 只做受影响定向验证：--inventory-closure、--review-closure，必要真实Assembly/Product构建；按风险核配置验证和卸载原入口，不无差别全量测试/重打旧候选。
-- [ ] 固定源码、命令/返回码、原失败与只读hash证据；更新同一PR供复审，核main未变，Windows/SDK/现场及原PDF缺件继续NOT_RUN/BLOCKED。
+- [x] 先保存独立复审原报告/合成探针和旧入口字节；修正README/INDEX/指南的当前状态，提交文档治理。
+- [x] 新增定向--inventory-closure：schema1/2（及schema3控制组）分别覆盖Effective/Pending/未结Frozen；同ID相同/不同内容、角色镜像矛盾、悬挂包/模块/版本/未知kind必须拒绝且DB/config原bytes不改。合法旧schema/完整镜像/精确包引用须仍可读并保有未结包。先记录修复前失败。
+- [x] 在ParcelConfigurationRules新增统一原库存校验，先于All/ValidateTopology；删除schema3专属重复实现与离线重复绑定校验，Factory入口复用；保持reader专属校验与真实安装资格机制。
+- [x] 只做受影响定向验证：--inventory-closure、--review-closure，必要真实Assembly/Product构建；按风险核配置验证和卸载原入口，不无差别全量测试/重打旧候选。
+- [x] 固定源码、命令/返回码、原失败与只读hash证据；更新同一PR供复审，核main未变，Windows/SDK/现场及原PDF缺件继续NOT_RUN/BLOCKED。
+
+固定源码445e1f62bf01fe21e5f13576d2f483292571b709；执行及同PR交付结果见[本轮记录](../runtime/architecture-quality-closure-01-r03-results.md)。参考验证完成，独立复审/Windows/现场资格另行判定。

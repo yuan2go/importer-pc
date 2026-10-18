@@ -1,4 +1,4 @@
-> PR24 R03兼容库存整改进行中：[现行设计/计划](design/architecture-quality-closure-01.md#aqd-08-r03兼容库存校验闭环)。3f6f762独立复审保留R03一项P2，前轮PASS不关闭新反例。
+> PR24剩余R03代码整改与必要参考验证完成，待独立复审：[固定源码/结果/边界](runtime/architecture-quality-closure-01-r03-results.md)。3f6f762原审查CHANGES_REQUIRED及历史失败保留；旧候选不取得新源码资格。
 
 > PR24本轮交付：[五项整改、固定源码与复审证据](runtime/architecture-quality-closure-01-rereview-results.md)，供复审、不合并main。原候选与历史失败保持身份。
 

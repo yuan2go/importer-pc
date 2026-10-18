@@ -1,0 +1,62 @@
+{
+  "source_commit": "445e1f62bf01fe21e5f13576d2f483292571b709",
+  "reason": "Exact frozen checker contracts for signed package; both outputs built from same source",
+  "overlays": [
+    {
+      "file": "Ipc.Components.dll",
+      "test_build_sha256": "af57bf0d587d400d666d87f062732f9e5fb72161b6ff48c43c9f7c13414d51b8",
+      "frozen_host_sha256": "72ad62531ea9d83e3778972346fb77b8672824b468197e7784bfde41eecc6158"
+    },
+    {
+      "file": "Ipc.Application.ParcelFlow.dll",
+      "test_build_sha256": "0c473fecea692e0fc5529d52877dbcbcf06d2b959c698fd144d59a1e037b4bf3",
+      "frozen_host_sha256": "317ce02210d4354f8ad1e2618f8f0f9ee5ead422f4de62615f9b9ff7ebc970b7"
+    },
+    {
+      "file": "Ipc.Supply.Contracts.dll",
+      "test_build_sha256": "344149969e8267ecdc0b09b32358387323c9b3366196e92a70305a932683c8fc",
+      "frozen_host_sha256": "30a22d6a0396e1eb84c8b3e8913c88d15445012b2bcd78a3bb2174b86b072806"
+    },
+    {
+      "file": "Ipc.Platform.dll",
+      "test_build_sha256": "a2fc538f23834010f051d947d68ee53869460f72d4ba980ad1195b393ba9e3e4",
+      "frozen_host_sha256": "2e5eb45db2f8782a424ff572a4032b1bfebfa187dd1d6b3d8bb5e83b08ab7480"
+    },
+    {
+      "file": "Ipc.Reference.Protocol.dll",
+      "test_build_sha256": "ce31ab17248943e2701990765cdb1bd143078436756169281eb2254fc2b5cab0",
+      "frozen_host_sha256": "dad3e57aa979e025882c345b3744f7a2cc99cb76b6b194df1c3a5e75aa3bf6f0"
+    },
+    {
+      "file": "Ipc.Drivers.dll",
+      "test_build_sha256": "028a44ec77e1c4f8ee4727e69c089036006804d75cd0e82f94f2ef0c9ba94eac",
+      "frozen_host_sha256": "e4a1d90c1148d1643bb1c54c25c530151275a0cd39207057a7c522fbd4a8278b"
+    },
+    {
+      "file": "Ipc.Integrations.dll",
+      "test_build_sha256": "2088e9b49cb9355d0b786e0579a2a1405254be0a27c220fab917e5c7c6389860",
+      "frozen_host_sha256": "fcbbc5bc1893715ae26593770b10f5876743809c46dc40a3d94d2f4b17243e43"
+    },
+    {
+      "file": "Ipc.Supply.dll",
+      "test_build_sha256": "72cc4ca4da78a5aeab695ad19078f13f855d8441b44eadab28895d798530a870",
+      "frozen_host_sha256": "1398cdf64f7b8aae77b4eab4dd43592a712b34a977dee2a4453fe9f5c3ff4303"
+    },
+    {
+      "file": "Ipc.Platform.Storage.dll",
+      "test_build_sha256": "f169f5cb59156c1af9e7c5d420111309c34bef0ba13c459351452e7cfb619416",
+      "frozen_host_sha256": "30ba8cc75b861c48fd77b35d01acc50eacea830a68a38a14582cb798bbcfd313"
+    },
+    {
+      "file": "Ipc.Application.Contracts.dll",
+      "test_build_sha256": "af452693a5a3427b83f66d680c12ff7bafed79e305b980c8a222e4c1b7ab425b",
+      "frozen_host_sha256": "98ef1f5fef865189495395b2942ce83f644616711e95cc2aa8192ee152bc7660"
+    },
+    {
+      "file": "Ipc.Application.Sportmaster.dll",
+      "test_build_sha256": "084cc1a51fa550a8151d3c2441c171618c7deb4927b2bb9935d544a245a12015",
+      "frozen_host_sha256": "c00d1238e17b732b94821fbdec97d4027c7d0fd08baaac125ec3619ca07d68a0"
+    }
+  ],
+  "verification_dll_sha256": "a54fdffa50d27a7fbced3e3869e31abb818a1de9d2bb60e8d53a244af37fec17"
+}

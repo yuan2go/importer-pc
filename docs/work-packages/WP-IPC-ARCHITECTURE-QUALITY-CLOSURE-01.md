@@ -40,3 +40,5 @@ PR24独立审查输入a2e987a的R01～R05于本轮完成整改，文档治理b59
 
 
 3f6f762独立复审剩余R03已由用户授权继续整改，见AQD-08方案/计划：所有支持schema在去重前校验原库存，覆盖Effective/Pending/未结Frozen；前轮结果、原件及失败不改写，不合并main。
+
+本次剩余R03闭环：先治理4b94c3f7905dd794ce72d82e9f4ce5064865a03f，业务/测试固定445e1f62bf01fe21e5f13576d2f483292571b709；所有支持schema统一去重前库存校验，schema1/2三类消费者及真实签名卸载验证通过。见[本轮证据/边界](../runtime/architecture-quality-closure-01-r03-results.md)。保持原件、29项修复前失败及旧候选身份，更新同PR24待复审，不合并main。

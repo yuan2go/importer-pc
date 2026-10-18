@@ -8,7 +8,7 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 
 当前实施为[质量闭环01](docs/runtime/architecture-quality-closure-01.md)，继承Application22三条独立主流程与19/20可靠性约束。Sportmaster为左右两个独立投递位，DirectPlc及WcsToPlc各一个顺序位；Parcel数据库4提供历史归档/分页/永久身份，客户端提供双位结果和完整候选维护。Windows实际NOT_RUN，真实SDK/协议/现场BLOCKED。
 
-PR24最新独立复审固定3f6f762，R01/R02/R04/R05在参考范围内未发现剩余阻断，R03兼容schema库存歧义仍需修复。本轮按[已确认方案与计划](docs/design/architecture-quality-closure-01.md#aqd-08-r03兼容库存校验闭环)整改；前轮结果保持原身份，不能代替本轮验证。
+PR24剩余R03已在445e1f62bf01fe21e5f13576d2f483292571b709统一去重前库存校验，schema1/2三类消费者及真实卸载定向验证通过，待独立复审；见[本轮结果/兼容与边界](docs/runtime/architecture-quality-closure-01-r03-results.md)。原3f6f762审查失败和旧候选保持身份，不合并main。
 
 ## 继承的PR20/21整合基线
 

@@ -1,4 +1,4 @@
-> PR24最新复审固定3f6f762，R03兼容schema1/2原库存校验尚未闭合；本轮先于去重统一规则，见[现行设计](../design/architecture-quality-closure-01.md#aqd-08-r03兼容库存校验闭环)。原候选/失败保持身份，Windows/真实现场边界不变。
+> PR24 R03在445e1f62bf01fe21e5f13576d2f483292571b709完成schema1/2/3去重前统一库存校验；三类消费者及真实卸载验证通过，待独立复审，见[本轮结果](architecture-quality-closure-01-r03-results.md)。原审查/候选/失败保持身份，Windows/真实现场边界不变。
 
 # 质量闭环01 · 运行、维护与兼容
 

@@ -1,0 +1,13 @@
+{
+  "status": "UNCHANGED_HISTORICAL_FAILURE_SET",
+  "tool_exit_code": 1,
+  "tool_status": "FAIL",
+  "baseline": "docs/runtime/evidence/acquisition-lifecycle-p2/archive-checks.json",
+  "baseline_error_count": 267,
+  "current_error_count": 267,
+  "added": [],
+  "removed": [],
+  "comparison": "exact (code,path) set; no tool/assertion changes",
+  "raw_scan_sha256": "0a9858e4b8d48cedcb157ea068b31bcf24f74f4b8a048a33d580e6d958af9694",
+  "source_commit": "445e1f62bf01fe21e5f13576d2f483292571b709"
+}

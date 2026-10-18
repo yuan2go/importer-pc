@@ -1,0 +1,27 @@
+{
+  "review_head": "3f6f762d31655ef0fe8d6562ed413beed682e2f9",
+  "decision": "CHANGES_REQUIRED_R03_P2",
+  "files": [
+    {
+      "file": "independent-review.original.json",
+      "sha256": "dd5fc3270779dbff692fbfa3717fd45358fcf9ac6499cf457b16e31bba004b7e",
+      "bytes_unchanged": true
+    },
+    {
+      "file": "independent-review.original.md",
+      "sha256": "f62de4858e382fa657611a6cbc027609e1719cec39ba35ded98882af69719d2d",
+      "bytes_unchanged": true
+    },
+    {
+      "file": "inventory-probe.original.cs",
+      "sha256": "584099e27dd272bf454a2616b5b0c741d00f029244a5ff9b8c903b041905ead4",
+      "bytes_unchanged": true
+    },
+    {
+      "file": "inventory-probe-results.original.log",
+      "sha256": "4cda0cf3210b1795f6e361b79bf0e2e1383f337944a2fdbe2879a392392de790",
+      "bytes_unchanged": true
+    }
+  ],
+  "pdf_01": "BLOCKED_NOT_OBTAINED; this input is JSON/Markdown, not original PDF"
+}

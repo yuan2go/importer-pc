@@ -108,4 +108,4 @@ CLI夹具原两个失败为合成HTTP对端误读请求字段barcode（实际请
 
 源码、配置、脚本和原报告均进入同一Git历史，不创建第二套框架/配置/扩展平台。原D/RV编号与批准状态不倒写。发布参考媒介不是Production交付批准。
 
-最终public archive差集：起始267、当前267、新增0/删除0；[差集回执](evidence/parallel-task-reconciliation-01/archive-error-delta.json)。历史FAIL保持，新增入口与清单没有新增错误。
+收尾第一次public archive为268：新增WPF命令摘要含本机绝对路径；保留原回执/SHA，公开副本改为明确变量的命令模板，未放宽校验器。修正后差集为起始267、当前267、新增0/删除0；[差集回执](evidence/parallel-task-reconciliation-01/archive-error-delta.json)。历史FAIL保持，新增入口与清单没有新增错误。

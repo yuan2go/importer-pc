@@ -1,38 +1,43 @@
-[
-  {
-    "Application": "direct-plc",
-    "Command": [
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
-      "build",
-      "src/Ipc.Desktop/Ipc.Desktop.csproj",
-      "-m:1",
-      "-nr:false",
-      "-p:EnableWindowsTargeting=true",
-      "-p:RestoreLockedMode=true",
-      "-p:Application=DirectPlc",
-      "-p:NuGetLockFilePath=packages.direct-plc.lock.json",
-      "--artifacts-path",
-      "/Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/parallel-reconciliation-01/21e6cae/wpf-direct-plc"
-    ],
-    "ExitCode": 0,
-    "Windows": "NOT_RUN"
-  },
-  {
-    "Application": "wcs-to-plc",
-    "Command": [
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
-      "build",
-      "src/Ipc.Desktop/Ipc.Desktop.csproj",
-      "-m:1",
-      "-nr:false",
-      "-p:EnableWindowsTargeting=true",
-      "-p:RestoreLockedMode=true",
-      "-p:Application=WcsToPlc",
-      "-p:NuGetLockFilePath=packages.wcs-to-plc.lock.json",
-      "--artifacts-path",
-      "/Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/parallel-reconciliation-01/21e6cae/wpf-wcs-to-plc"
-    ],
-    "ExitCode": 0,
-    "Windows": "NOT_RUN"
-  }
-]
+{
+  "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+  "OriginalRecordSha256": "626d1bd35ef735fa583cbc0c7c2d951541025a0458d059f224a1b0429fee6a8a",
+  "Projection": "Only machine paths replaced by explicit command-template variables; original private receipt unchanged",
+  "Builds": [
+    {
+      "Application": "direct-plc",
+      "Command": [
+        "DOTNET",
+        "build",
+        "src/Ipc.Desktop/Ipc.Desktop.csproj",
+        "-m:1",
+        "-nr:false",
+        "-p:EnableWindowsTargeting=true",
+        "-p:RestoreLockedMode=true",
+        "-p:Application=DirectPlc",
+        "-p:NuGetLockFilePath=packages.direct-plc.lock.json",
+        "--artifacts-path",
+        "ARTIFACT_ROOT/wpf-direct-plc"
+      ],
+      "ExitCode": 0,
+      "Windows": "NOT_RUN"
+    },
+    {
+      "Application": "wcs-to-plc",
+      "Command": [
+        "DOTNET",
+        "build",
+        "src/Ipc.Desktop/Ipc.Desktop.csproj",
+        "-m:1",
+        "-nr:false",
+        "-p:EnableWindowsTargeting=true",
+        "-p:RestoreLockedMode=true",
+        "-p:Application=WcsToPlc",
+        "-p:NuGetLockFilePath=packages.wcs-to-plc.lock.json",
+        "--artifacts-path",
+        "ARTIFACT_ROOT/wpf-wcs-to-plc"
+      ],
+      "ExitCode": 0,
+      "Windows": "NOT_RUN"
+    }
+  ]
+}

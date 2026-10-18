@@ -2,19 +2,15 @@
   "status": "FAIL",
   "scope": "public",
   "counts": {
-    "files": 3008,
-    "references": 1300,
-    "json": 895,
+    "files": 3011,
+    "references": 1301,
+    "json": 898,
     "boards": 18,
     "slides": 18,
     "pptx": 1,
     "images": 34
   },
   "errors": [
-    {
-      "code": "private_metadata_marker",
-      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/qualified-wpf-builds.json"
-    },
     {
       "code": "private_metadata_marker",
       "path": "docs/ui/ss-ui-vis-001-v1.1/README.source.md"

@@ -277,8 +277,9 @@
     },
     {
       "File": "qualified-wpf-builds.json",
-      "Bytes": 1136,
-      "Sha256": "626d1bd35ef735fa583cbc0c7c2d951541025a0458d059f224a1b0429fee6a8a"
+      "Bytes": 1270,
+      "Sha256": "41f75633bcffbd6aa103e8a30b5d7068e11f53a198545d67089c84828ecaba3f",
+      "OriginalRecordSha256": "626d1bd35ef735fa583cbc0c7c2d951541025a0458d059f224a1b0429fee6a8a"
     },
     {
       "File": "qualified-wpf-direct-plc.log",

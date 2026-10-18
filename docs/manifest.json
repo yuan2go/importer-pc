@@ -18569,9 +18569,20 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "b52f19fb6a0d77def10cb7f3787f6a6d69d30da32e8d09f6c02f8e46b7a6e3be",
-      "size_bytes": 435,
-      "git_blob": "7aa7efac4c938d659ed8dde8f0c32d1a6663fba5"
+      "sha256": "cdf1673c37ca7c15c77dce65072b1a32e44482fdf0e42f165f932ca2ccd52d47",
+      "size_bytes": 283,
+      "git_blob": "4af70cdc97bd17017cea09492f285ca0ebc948ed"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/archive-public-path-before-fix.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "bb3927080c7a8f433e23cf5584cb6c73f61daa5dba52217e0dd0266dedcc7884",
+      "size_bytes": 94701,
+      "git_blob": "be07b3eae5926d919ce36638685f0e5fc71f1dbe"
     },
     {
       "path": "docs/runtime/evidence/parallel-task-reconciliation-01/late-final-build.log",
@@ -19020,9 +19031,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "bb3927080c7a8f433e23cf5584cb6c73f61daa5dba52217e0dd0266dedcc7884",
-      "size_bytes": 94701,
-      "git_blob": "be07b3eae5926d919ce36638685f0e5fc71f1dbe"
+      "sha256": "dd421bd1697f43b004ca1626db750abe675c4554b1a9084eb21b8f401f539a51",
+      "size_bytes": 94551,
+      "git_blob": "8dc18482af281f094abdadb72ca9051cf748ca5b"
     },
     {
       "path": "docs/runtime/evidence/parallel-task-reconciliation-01/qualified-barcode.ipcx.identity.json",
@@ -19075,9 +19086,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "b79ff3466b4482cc1cb390913e1dd0f74bbf049f048be5dbde05fe55f87b6ff8",
-      "size_bytes": 16272,
-      "git_blob": "ec823d92bc87220cddce204c26ffeee92b834f5b"
+      "sha256": "1676647553cf25ae5fa3cb76bdc99fb93effae7f015686fb894befae24fe5774",
+      "size_bytes": 16370,
+      "git_blob": "7be69b63d55d7ecf741dca46bc844e056178f1de"
     },
     {
       "path": "docs/runtime/evidence/parallel-task-reconciliation-01/qualified-exact--quality-extensions.log",
@@ -19592,9 +19603,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "626d1bd35ef735fa583cbc0c7c2d951541025a0458d059f224a1b0429fee6a8a",
-      "size_bytes": 1136,
-      "git_blob": "1aa98a95b253c3b70cbc547e37bfa81d3b2289a1"
+      "sha256": "41f75633bcffbd6aa103e8a30b5d7068e11f53a198545d67089c84828ecaba3f",
+      "size_bytes": 1270,
+      "git_blob": "6b04d7b1678a947addf452bd7eecef09ccd3a4c7"
     },
     {
       "path": "docs/runtime/evidence/parallel-task-reconciliation-01/qualified-wpf-direct-plc.log",
@@ -26511,9 +26522,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "a977b89ca8def4e5fb6250078413ef8c94b659e90bf6da934344dd7fa42e1ce4",
-      "size_bytes": 22174,
-      "git_blob": "22a99cca0a52e38ded24eca3d5acab5656573cc2"
+      "sha256": "ff9acc56eb856cf40388998df5cce427e682abc91c45030b625f0badb9f1010b",
+      "size_bytes": 22337,
+      "git_blob": "384d1151f2da9a7029f07126dc0d482b8925a833"
     },
     {
       "path": "docs/runtime/parcel-recovery-p2.md",

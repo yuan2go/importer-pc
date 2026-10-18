@@ -12,7 +12,10 @@ static partial class ArchitectureQuality
     // Application; historical-release fixtures are verified separately, never relabelled.
     static void SyntheticDb4(string file) => Sql(file,"DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version=5");
     static Dictionary<string,string> CustodyFiles(string name,ParcelConfiguration c) => Directory.EnumerateFiles(DirectoryFor(name,c),"*",SearchOption.AllDirectories)
-        .Where(p=>!p.EndsWith("-wal")&&!p.EndsWith("-shm")&&!p.Contains("diagnostics")&&!p.EndsWith(".lock"))
+        .Where(p=>!p.EndsWith("-wal")&&!p.EndsWith("-shm")&&!p.Contains("diagnostics")&&!p.EndsWith(".lock") &&
+            // ResourceLease rewrites only this root control file with the current PID;
+            // it is not original business custody. Nested image/raw files remain checked.
+            !(Path.GetDirectoryName(p)==DirectoryFor(name,c)&&p.EndsWith(".lease",StringComparison.Ordinal)))
         .ToDictionary(p=>p,Wire.FileHash);
     static async Task RefuseDb4(string name,ParcelConfiguration c,bool historical=false)
     {

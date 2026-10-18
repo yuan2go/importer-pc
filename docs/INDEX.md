@@ -1,4 +1,4 @@
-> 采集身份P2修复当前入口：[工作包与设计](work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)。PR #22已合并main `2126ac2`；下述22开发基线、分支和候选均按形成时读取。
+> 采集身份P2修复当前入口：[工作包与设计](work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)。[修复结果与证据](runtime/acquisition-lifecycle-p2.md)。PR #22已合并main `2126ac2`；下述22开发基线、分支和候选均按形成时读取。
 
 > 22现行拓扑、状态作用域、版本与交付：[Application架构22](design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
 

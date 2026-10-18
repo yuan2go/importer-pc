@@ -21,3 +21,5 @@
 ## 验收边界
 
 参考合成设备与macOS验证不等于Windows实际、真实相机SDK/WCS/PLC或现场验收。Production缺真实能力仍拒绝。只交授权通用实现和合成证据，不带客户原稿、SDK、字体、生产数据或凭据。
+
+实现及验证已完成，见[结果报告](../runtime/acquisition-lifecycle-p2.md)。源码固定`ca35b16a0ef883126b39640c19ea6f840e5a9716`；最后远端PR交付另记，未授权合并main。

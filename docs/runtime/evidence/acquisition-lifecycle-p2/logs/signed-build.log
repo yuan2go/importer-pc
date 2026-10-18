@@ -1,0 +1,641 @@
+  正在确定要还原的项目…
+  已还原 /private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-extension-build-hkqh7lzs/source/examples/ParcelCapabilitiesExtension/ParcelCapabilitiesExtension.csproj (用时 36 毫秒)。
+  ParcelCapabilitiesExtension -> /private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-extension-build-hkqh7lzs/bin/Ipc.Reference.ParcelCapabilitiesExtension.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.59
+Verified OK
+{
+  "Manifest": {
+    "SchemaVersion": 1,
+    "Id": "reference.parcel-capabilities",
+    "Version": "1.5.0",
+    "Publisher": "p2-test-only",
+    "Runtime": "net10.0",
+    "Rid": "any",
+    "ContractMajor": 1,
+    "Mode": "Simulation",
+    "SourceCommit": "ca35b16a0ef883126b39640c19ea6f840e5a9716",
+    "Dependencies": [],
+    "Files": [
+      {
+        "Path": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+        "Length": 43008,
+        "Sha256": "B2AC0397E4DDBEF582C0F9F48B0124CE3A8D9165A194C99B27C67C2B8C9BF178"
+      }
+    ],
+    "Modules": [
+      {
+        "Id": "parcel-weight",
+        "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+        "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.WeightFactory",
+        "Kind": "weight",
+        "MaximumInstances": 4,
+        "Parameters": [],
+        "Requirements": {
+          "MeasuredWeight": false,
+          "ImageAddress": false,
+          "Query": false,
+          "PhysicalConfirmation": false,
+          "BusinessAcceptance": true,
+          "CompletesOnSubmit": false
+        },
+        "ContractIdentity": "PARCEL-REFERENCE-v1",
+        "Assurance": {
+          "SchemaVersion": 1,
+          "Simulation": true,
+          "ProtocolEvidence": "PARCEL-REFERENCE-v1"
+        }
+      },
+      {
+        "Id": "parcel-plc",
+        "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+        "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.PlcFactory",
+        "Kind": "plc",
+        "MaximumInstances": 4,
+        "Parameters": [
+          {
+            "Key": "peer-root",
+            "Group": "\u53C2\u8003\u7AEF / \u6301\u4E45\u5316",
+            "Label": "\u72EC\u7ACB\u5408\u6210\u63A5\u6536\u8D26\u7EDD\u5BF9\u76EE\u5F55",
+            "Type": "string",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 1024,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "decision",
+            "Group": "\u53C2\u8003\u7AEF / \u7ED3\u679C",
+            "Label": "\u6A21\u62DF\u4E1A\u52A1\u7ED3\u679C",
+            "Type": "choice",
+            "Required": false,
+            "Default": "accept",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": [
+              "accept",
+              "reject"
+            ],
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "reply-mode",
+            "Group": "\u53C2\u8003\u7AEF / \u6545\u969C",
+            "Label": "\u56DE\u6267\u6A21\u5F0F",
+            "Type": "choice",
+            "Required": false,
+            "Default": "normal",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": [
+              "normal",
+              "lose-after-commit"
+            ],
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "complete-on-query",
+            "Group": "\u53C2\u8003\u7AEF / \u7269\u7406\u9636\u6BB5",
+            "Label": "\u539F\u67E5\u8BE2\u65F6\u6A21\u62DF\u7269\u7406\u5B8C\u6210",
+            "Type": "boolean",
+            "Required": false,
+            "Default": "false",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          }
+        ],
+        "Requirements": {
+          "MeasuredWeight": false,
+          "ImageAddress": false,
+          "Query": true,
+          "PhysicalConfirmation": true,
+          "BusinessAcceptance": true,
+          "CompletesOnSubmit": false
+        },
+        "ContractIdentity": "PARCEL-REFERENCE-v1",
+        "Assurance": {
+          "SchemaVersion": 1,
+          "Simulation": true,
+          "ProtocolEvidence": "PARCEL-REFERENCE-v1"
+        }
+      },
+      {
+        "Id": "parcel-integration",
+        "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+        "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.WcsFactory",
+        "Kind": "integration",
+        "MaximumInstances": 4,
+        "Parameters": [
+          {
+            "Key": "peer-root",
+            "Group": "\u53C2\u8003\u7AEF / \u6301\u4E45\u5316",
+            "Label": "\u72EC\u7ACB\u5408\u6210\u63A5\u6536\u8D26\u7EDD\u5BF9\u76EE\u5F55",
+            "Type": "string",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 1024,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "decision",
+            "Group": "\u53C2\u8003\u7AEF / \u7ED3\u679C",
+            "Label": "\u6A21\u62DF\u4E1A\u52A1\u7ED3\u679C",
+            "Type": "choice",
+            "Required": false,
+            "Default": "accept",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": [
+              "accept",
+              "reject"
+            ],
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "reply-mode",
+            "Group": "\u53C2\u8003\u7AEF / \u6545\u969C",
+            "Label": "\u56DE\u6267\u6A21\u5F0F",
+            "Type": "choice",
+            "Required": false,
+            "Default": "normal",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": [
+              "normal",
+              "lose-after-commit"
+            ],
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "slot",
+            "Group": "\u53C2\u8003\u7AEF / \u683C\u53E3",
+            "Label": "\u5408\u6210\u683C\u53E3",
+            "Type": "string",
+            "Required": false,
+            "Default": "REFERENCE-07",
+            "MaximumLength": 64,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          }
+        ],
+        "Requirements": {
+          "MeasuredWeight": false,
+          "ImageAddress": false,
+          "Query": true,
+          "PhysicalConfirmation": false,
+          "BusinessAcceptance": true,
+          "CompletesOnSubmit": false
+        },
+        "ContractIdentity": "PARCEL-REFERENCE-v1",
+        "Assurance": {
+          "SchemaVersion": 1,
+          "Simulation": true,
+          "ProtocolEvidence": "PARCEL-REFERENCE-v1"
+        }
+      },
+      {
+        "Id": "parcel-login",
+        "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+        "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.LoginFactory",
+        "Kind": "login",
+        "MaximumInstances": 4,
+        "Parameters": [
+          {
+            "Key": "subjects",
+            "Group": "reference",
+            "Label": "Synthetic subjects",
+            "Type": "string",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 1024,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "reply-mode",
+            "Group": "reference",
+            "Label": "Reference reply",
+            "Type": "choice",
+            "Required": false,
+            "Default": "normal",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": [
+              "normal",
+              "unavailable"
+            ],
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          }
+        ],
+        "Requirements": {
+          "MeasuredWeight": false,
+          "ImageAddress": false,
+          "Query": false,
+          "PhysicalConfirmation": false,
+          "BusinessAcceptance": true,
+          "CompletesOnSubmit": false
+        },
+        "ContractIdentity": "PARCEL-REFERENCE-v1",
+        "Assurance": {
+          "SchemaVersion": 1,
+          "Simulation": true,
+          "ProtocolEvidence": "PARCEL-REFERENCE-v1"
+        }
+      },
+      {
+        "Id": "parcel-camera",
+        "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+        "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.CameraFactory",
+        "Kind": "camera",
+        "MaximumInstances": 4,
+        "Parameters": [
+          {
+            "Key": "decision",
+            "Group": "reference",
+            "Label": "Reference decision",
+            "Type": "choice",
+            "Required": false,
+            "Default": "accept",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": [
+              "accept",
+              "reject"
+            ],
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "reply-mode",
+            "Group": "reference",
+            "Label": "Reference reply",
+            "Type": "choice",
+            "Required": false,
+            "Default": "normal",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": [
+              "normal",
+              "lose-after-commit"
+            ],
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          }
+        ],
+        "Requirements": {
+          "MeasuredWeight": false,
+          "ImageAddress": false,
+          "Query": true,
+          "PhysicalConfirmation": false,
+          "BusinessAcceptance": true,
+          "CompletesOnSubmit": false
+        },
+        "ContractIdentity": "PARCEL-REFERENCE-v1",
+        "Assurance": {
+          "SchemaVersion": 1,
+          "Simulation": true,
+          "ProtocolEvidence": "PARCEL-REFERENCE-v1"
+        }
+      },
+      {
+        "Id": "parcel-upload",
+        "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+        "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.UploadFactory",
+        "Kind": "upload",
+        "MaximumInstances": 4,
+        "Parameters": [
+          {
+            "Key": "decision",
+            "Group": "reference",
+            "Label": "Reference decision",
+            "Type": "choice",
+            "Required": false,
+            "Default": "accept",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": [
+              "accept",
+              "reject"
+            ],
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "reply-mode",
+            "Group": "reference",
+            "Label": "Reference reply",
+            "Type": "choice",
+            "Required": false,
+            "Default": "normal",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": [
+              "normal",
+              "lose-after-commit"
+            ],
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "peer-root",
+            "Group": "reference",
+            "Label": "Independent receiver directory",
+            "Type": "string",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 2048,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          }
+        ],
+        "Requirements": {
+          "MeasuredWeight": false,
+          "ImageAddress": false,
+          "Query": true,
+          "PhysicalConfirmation": false,
+          "BusinessAcceptance": true,
+          "CompletesOnSubmit": false
+        },
+        "ContractIdentity": "PARCEL-REFERENCE-v1",
+        "Assurance": {
+          "SchemaVersion": 1,
+          "Simulation": true,
+          "ProtocolEvidence": "PARCEL-REFERENCE-v1"
+        }
+      },
+      {
+        "Id": "strict-wcs",
+        "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+        "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.WcsFactory",
+        "Kind": "integration",
+        "MaximumInstances": 4,
+        "Parameters": [
+          {
+            "Key": "peer-root",
+            "Group": "\u53C2\u8003\u7AEF / \u6301\u4E45\u5316",
+            "Label": "\u72EC\u7ACB\u5408\u6210\u63A5\u6536\u8D26\u7EDD\u5BF9\u76EE\u5F55",
+            "Type": "string",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 1024,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "decision",
+            "Group": "\u53C2\u8003\u7AEF / \u7ED3\u679C",
+            "Label": "\u6A21\u62DF\u4E1A\u52A1\u7ED3\u679C",
+            "Type": "choice",
+            "Required": false,
+            "Default": "accept",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": [
+              "accept",
+              "reject"
+            ],
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "reply-mode",
+            "Group": "\u53C2\u8003\u7AEF / \u6545\u969C",
+            "Label": "\u56DE\u6267\u6A21\u5F0F",
+            "Type": "choice",
+            "Required": false,
+            "Default": "normal",
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": [
+              "normal",
+              "lose-after-commit"
+            ],
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "slot",
+            "Group": "\u53C2\u8003\u7AEF / \u683C\u53E3",
+            "Label": "\u5408\u6210\u683C\u53E3",
+            "Type": "string",
+            "Required": false,
+            "Default": "REFERENCE-07",
+            "MaximumLength": 64,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          }
+        ],
+        "Requirements": {
+          "MeasuredWeight": true,
+          "ImageAddress": true,
+          "Query": true,
+          "PhysicalConfirmation": false,
+          "BusinessAcceptance": true,
+          "CompletesOnSubmit": false
+        },
+        "ContractIdentity": "PARCEL-REFERENCE-v1",
+        "Assurance": {
+          "SchemaVersion": 1,
+          "Simulation": true,
+          "ProtocolEvidence": "PARCEL-REFERENCE-v1"
+        }
+      }
+    ],
+    "Prerequisites": [],
+    "HostContractSha256": "27618E46C7F6901A3918183FA1BCCB679D8B6439545714991C07014C155BBEA4",
+    "PublicContracts": {
+      "Ipc.Application.Contracts": "C1E2C8408BBB10EEDBC246F3665B264AD919A9D6477A8DBCF6D68EF04C1F5F19"
+    }
+  },
+  "ManifestSha256": "0D78AB1908DF3FCBDA6E1EB249FF6CCA7240CDF01DBDE3A32D610F7F981A09F6",
+  "PackageSha256": "5830F492D2A3E057A74CAE380DC3F3C058629891A8FA675C8D24F02B0C72CF6E",
+  "TrustSha256": "B6DB8A314BB7073870E089D7086FC81E5F4FC22EB981AAE37AF4F71B07162D39",
+  "VerifiedAt": "2026-10-18T12:08:31.085268+00:00",
+  "TestOnly": true,
+  "Reference": {
+    "Id": "reference.parcel-capabilities",
+    "Version": "1.5.0",
+    "ManifestSha256": "0D78AB1908DF3FCBDA6E1EB249FF6CCA7240CDF01DBDE3A32D610F7F981A09F6"
+  }
+}
+{"Package": "capabilities-1.5.0.ipcx", "PackageSha256": "5830f492d2a3e057a74cae380dc3f3c058629891a8fa675c8d24f02b0c72cf6e", "PluginSourceCommit": "ca35b16a0ef883126b39640c19ea6f840e5a9716", "PluginSourceSha256": "08b6ff9e792f9e79dac6e9be64a9dc6066742ec868fed152f2a3ca03f52cec7d", "DefinitionSha256": "423531ba15536fb965eb960b28885b82d6c80f8ae263583365927877b89f73f8", "HostContractSha256": "27618e46c7f6901a3918183fa1bccb679d8b6439545714991c07014c155bbea4", "FrozenHostUnchanged": true, "FrozenCheckerUnchanged": true, "CheckerContractsSha256": {"Ipc.Platform": "27618e46c7f6901a3918183fa1bccb679d8b6439545714991c07014c155bbea4", "Ipc.Application.Contracts": "c1e2c8408bbb10eedbc246f3665b264ad919a9d6477a8dbcf6d68ef04c1f5f19"}, "Publisher": "p2-test-only", "Version": "1.5.0", "ExtensionContract": 1, "Signature": "RSA-PSS/SHA256", "Mode": "Simulation", "ManifestSha256": "0d78ab1908df3fcbda6e1eb249ff6cca7240cdf01dbde3a32d610f7f981a09f6", "TrustSha256": "dd5168d142e3211d0c17d9fce732fa58fcf24cf6cc267f8d5677f0d40638c89c", "PayloadSha256": {"Ipc.Reference.ParcelCapabilitiesExtension.dll": "b2ac0397e4ddbef582c0f9f48b0124ce3a8d9165a194c99b27c67c2b8c9bf178"}, "DependencyPackages": [], "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"}

@@ -1,0 +1,23 @@
+[
+  {
+    "candidate": "sportmaster-portable",
+    "sha256": "5098fbe17462f35b10a85c45fb3cb0d878cfd9e7c7535e3dccaa01b06f991597",
+    "independent_unzip_hash_readback": "PASS"
+  },
+  {
+    "candidate": "direct-plc-portable",
+    "sha256": "4d7455d841f5cb392425eb2f0a8aebf6a2211c8dab9306181257ccc6c96c8e3f",
+    "independent_unzip_hash_readback": "PASS"
+  },
+  {
+    "candidate": "wcs-to-plc-portable",
+    "sha256": "82db18ac7568c8639968c04800bd7f354e8ff0b855649aebdeed70e48b8ddd5c",
+    "independent_unzip_hash_readback": "PASS"
+  },
+  {
+    "candidate": "sportmaster-win-x64",
+    "sha256": "844541e8f2519ad4d5a8ededd1dd838d2273f12234fc7986403d9eea1d5d2ff9",
+    "independent_unzip_hash_readback": "PASS",
+    "WindowsExecution": "NOT_RUN"
+  }
+]

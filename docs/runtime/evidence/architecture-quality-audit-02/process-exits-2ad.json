@@ -1,0 +1,82 @@
+{
+  "source_commit": "2ad633578141db4ef34e255217bc8815634ffd0a",
+  "results": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "core",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "windows",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "capabilities",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "barcode",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "checker",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "selected",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "quality",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "extensions",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "signed",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "journey",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "smokes",
+        "exit_code": 0
+      }
+    }
+  ]
+}

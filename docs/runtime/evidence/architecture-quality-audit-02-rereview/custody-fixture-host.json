@@ -1,0 +1,114 @@
+{
+  "RuntimeMetadataCommit": "e914e75a109672cd1d52be91c40459f09231ea57",
+  "Meaning": "Same frozen runtime/Release inputs; verification-only maintenance availability wait and result printing captured by exact patch and test source hashes. No business assertions removed.",
+  "Binaries": {
+    "Ipc.Application.Verification.dll": "f8f2c0db69972076b0471a582322e1212caff72d2887b9d64c355ef5d72135f5",
+    "Ipc.Platform.dll": "73383ac1dd554832c9343ed41821560bcf0a7139fbc4afb30e4453142f6b8aeb",
+    "Ipc.Application.Contracts.dll": "c04206db69f8c4b6156d5e77a05c12e64e236d4340060ad5a3a8088a6de619d3"
+  },
+  "TestSources": [
+    {
+      "Path": "tests/Ipc.Application.Verification/AcquisitionLifecycle.cs",
+      "Sha256": "9c51863f97836a2a3f382cfb61b1d5c9a467463efce625c5868af86f7b11cc3b"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ApplicationArchitecture.cs",
+      "Sha256": "fb38e82b3a14be3875d8a4575302a7c120f70a77008c66b830c63683a677536e"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ArchitectureQuality.Activation.cs",
+      "Sha256": "11752316205b3b13a756fc51db1d2d694e2131bbab5943fed5696e4993608b3c"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ArchitectureQuality.ConfigurationConfirmation.cs",
+      "Sha256": "e88b4783ea614e3e372efc92f73262a3555a9884d9146abbf538ba3823507450"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs",
+      "Sha256": "c82ca7a296b97ebb00ef922104d79811a8fb1ac4ac26b0d5afd5fe02204a7843"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ArchitectureQuality.Extensions.cs",
+      "Sha256": "7a5fd09f4ab5771b8dc627dd748f24ff92b187bcef5e7249d1c997e2e6e8e221"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ArchitectureQuality.Http.cs",
+      "Sha256": "3981b0254ebbc5b107769b8f25fd4f256e0882b633ee516b6f7c9a78764f5f0a"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ArchitectureQuality.Isolation.cs",
+      "Sha256": "b013d60ceead0d61a1023fae8e2d882980be3c21953f3a1860f28bc9208e06f5"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ArchitectureQuality.LegacyCustody05.cs",
+      "Sha256": "31979539ae842fa4524b76b47ca4da15b4343aa5742a3c983679fff009885a7e"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ArchitectureQuality.PriorCustody05.cs",
+      "Sha256": "0503e45648bb353a43a544b87a45c7729a4afcaaa552f1db970f564c32330265"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ArchitectureQuality.Recovery02.cs",
+      "Sha256": "45c7beaa3bf86b0147cb7df681520f87d0f6bc0044f09282ebdc79559e4e13b4"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ArchitectureQuality.Responsibility.cs",
+      "Sha256": "11bb8f08aafbee441c49ce15e4b4ed8fa6ec2188df0753358968a67889eb8b48"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ArchitectureQuality.cs",
+      "Sha256": "e88e35d40e05587b825767d9d2afc22f2b7ccb6e6cc943598862dddcd99f56d9"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/BackupHealthRecovery.cs",
+      "Sha256": "5ba7889bb4d8d9db79a1b08875215865eb27f65134a16099d2197b360272fe17"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/CapabilityClosure.cs",
+      "Sha256": "5d8544f60f1f88034ced6b14606b7d43bbce7c3e8551b215972a8a21d6b7eff4"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/InventoryClosure.cs",
+      "Sha256": "267a322ff257c473946cf8e45934c530bf314d685c7e51e7ad1cd8b2a17ce7fa"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/OptionalCapabilities.cs",
+      "Sha256": "da0f1a2cf7210f1215354ae290972f2910de1e3cc5b0100b135dcbb5227bf9a4"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/Program.cs",
+      "Sha256": "fe9c05bc18c634101f87c1c8671ed507bff1dd93cc364a0819ec1ef151f0a0ad"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/QualificationVerification.cs",
+      "Sha256": "cf14a768864243b957718d438244ffb48f27fd67061d03df993a6c68a2805b13"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ReliabilityClosure.cs",
+      "Sha256": "039bd0bcc598173f644ed59c8cbba048814987640de2bc861661778e5c731b44"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ResourceRisks.cs",
+      "Sha256": "bf73074c27cc7580f9e622386ba3ce4a2c755788e0011b9bd5ffd2e7a4ae9593"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ReviewClosure.cs",
+      "Sha256": "1aeb3e261736af3848bfca3f857abea76313c06d02c6024e4a66f66ba3680133"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/ReviewRegressions.cs",
+      "Sha256": "8ffa50481fabd5ca3e11e191429e5deef724a40f03dd742ad9d0d03886daec13"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/SignedCapabilities.cs",
+      "Sha256": "8a0b9e21643afc0fcc06e2b714d24bfefee8afb59bccfa690e268bbf02ead175"
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/VisibilityShim.cs",
+      "Sha256": "c3a26a14634dbcd3598241fae24a895dd21b8e2ba7a070ae0fde4a86da9f2ea8"
+    }
+  ],
+  "PublicContractBytesEqualRelease": true,
+  "ExitCode": 0,
+  "Log": "logs/ipc-pr26-custody-drain-final.log"
+}

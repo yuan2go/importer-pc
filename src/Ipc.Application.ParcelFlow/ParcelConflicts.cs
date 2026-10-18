@@ -4,6 +4,25 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRepository
 {
+    public void RecoverLegacyConflicts(string[] positions)
+    {
+        using var c = db.CreateCommand(); c.CommandText = "SELECT seq,at,detail FROM parcel_audit WHERE event='IdentityConflict' ORDER BY seq";
+        List<(long Seq, string At, string Detail)> legacy = [];
+        using (var r = c.ExecuteReader()) while (r.Read()) legacy.Add((r.GetInt64(0),r.GetString(1),r.GetString(2)));
+        foreach (var row in legacy)
+        {
+            string? recordedId = null;
+            try { using var json = System.Text.Json.JsonDocument.Parse(row.Detail); if (json.RootElement.ValueKind == System.Text.Json.JsonValueKind.Object && json.RootElement.TryGetProperty("Id", out var id)) recordedId = id.GetString(); }
+            catch (System.Text.Json.JsonException) { }
+            var legacyId = Wire.Hash("legacy-identity-conflict:" + row.Seq + ":" + row.At + ":" + row.Detail)[..32].ToLowerInvariant();
+            using var exists = db.CreateCommand(); exists.CommandText = "SELECT count(*) FROM parcel_identity_conflicts WHERE id=$id OR id=$legacy";
+            exists.Parameters.AddWithValue("$id", recordedId ?? ""); exists.Parameters.AddWithValue("$legacy", legacyId);
+            if ((long)exists.ExecuteScalar()! != 0) continue; // Acknowledged rows still retain their original identity.
+            var fact = new IdentityConflict(legacyId, "legacy-audit:" + row.Seq, positions,
+                "Legacy conflict scope/entity was not recorded; inspect all possible positions. Original=" + row.Detail, DateTimeOffset.Parse(row.At, System.Globalization.CultureInfo.InvariantCulture));
+            Commit(null, "LegacyIdentityConflictRecovered", Wire.Encode(new { OriginalSequence = row.Seq, row.At, row.Detail, Responsibility = fact }), paused: true, identityConflict: fact);
+        }
+    }
     public IdentityConflict[] LoadConflicts()
     {
         using var c = db.CreateCommand(); c.CommandText = "SELECT body FROM parcel_identity_conflicts WHERE acknowledged=0";

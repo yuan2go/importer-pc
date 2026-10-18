@@ -1,0 +1,59 @@
+[
+  {
+    "Name": "sport-core",
+    "ZipSha256": "4cf65a3a9ef9f46523fbd9d3bee532ccb8a9cd50f93d76d2de7db58d1e53f135",
+    "SourceCommit": "e914e75a109672cd1d52be91c40459f09231ea57",
+    "Target": "portable",
+    "OfflineBundles": [],
+    "VerifiedEntries": 94,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "Name": "sport-selected",
+    "ZipSha256": "2944b98f8ef991a6809f8ab9974d54e99c377d2b19a157fdb4eecd4dcb8f2ac9",
+    "SourceCommit": "e914e75a109672cd1d52be91c40459f09231ea57",
+    "Target": "portable",
+    "OfflineBundles": [
+      {
+        "Id": "reference.barcode",
+        "Version": "1.1.1",
+        "ManifestSha256": "3D700E5AC0DE6ECEDD55B22A82488C7D8DE19041132EABB5059848A11FFA7627",
+        "PackageSha256": "54BABB6C5AF3BA03C2DA7908D8BE637E805B441F01687698FB09ED0CEE7F2919",
+        "File": "offline-extensions/reference.barcode-1.1.1.ipcx",
+        "Mode": "Simulation",
+        "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
+        "Installed": false,
+        "Activated": false,
+        "PublicContracts": {}
+      },
+      {
+        "Id": "reference.parcel-capabilities",
+        "Version": "1.8.1",
+        "ManifestSha256": "950E13B06DCFF9A8B3C6AFD3EC303C049BEA8B5E343A8FFF3557D5B59C7A01B5",
+        "PackageSha256": "40BEEFFA73BFE897C7D7A8759807710BF2587FFFBC6D4633AB3DA2A232CEE254",
+        "File": "offline-extensions/reference.parcel-capabilities-1.8.1.ipcx",
+        "Mode": "Simulation",
+        "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
+        "Installed": false,
+        "Activated": false,
+        "PublicContracts": {
+          "Ipc.Application.Contracts": "C04206DB69F8C4B6156D5E77A05C12E64E236D4340060AD5A3A8088A6DE619D3"
+        }
+      }
+    ],
+    "VerifiedEntries": 97,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "Name": "sport-win",
+    "ZipSha256": "09ce344bb949e023ee2d107858e417a4929f33c9c650aef38dded0078b162439",
+    "SourceCommit": "e914e75a109672cd1d52be91c40459f09231ea57",
+    "Target": "win-x64",
+    "OfflineBundles": [],
+    "VerifiedEntries": 727,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  }
+]

@@ -11,6 +11,11 @@ public sealed class DirectPlcFlow : FlowDefinition
     public override ParcelStage[] ReconciliationStages(ParcelOperation op) =>
         op.Plc?.State == StageState.Unknown || op.Plc?.State == StageState.Accepted && !op.Plc.Replies.Any(x => x.PhysicalCompleted == true) ? [ParcelStage.Plc] : [];
     public override bool MainSettled(ParcelOperation op) => op.State is ParcelState.PhysicalCompleted or ParcelState.PlcRejected;
+    public override ParcelOperation RestoreMainProjection(ParcelOperation op)
+    {
+        if (op.Plc is not { State: StageState.Accepted or StageState.Rejected } plc) return op;
+        return op with { State = FlowResults.PlcState(plc), Reason = plc.State == StageState.Accepted ? null : plc.Replies.Last(x => x.BusinessAccepted is not null).Evidence };
+    }
     public override async Task AdvanceAsync(IParcelExecution e, ParcelOperation op)
     {
         op = e.Current(op.Id);

@@ -1,0 +1,12 @@
+{
+  "Case": "unknownPending",
+  "Status": "ACCEPTED",
+  "ReturnedReferences": [],
+  "BytesUnchanged": true
+}
+{
+  "Case": "danglingBinding",
+  "Status": "ACCEPTED",
+  "ReturnedReferences": [],
+  "BytesUnchanged": true
+}

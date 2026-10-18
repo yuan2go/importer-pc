@@ -1,14 +1,13 @@
-> 当前整改：[WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01](docs/work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)。实际路径见[质量闭环运行指南](docs/runtime/architecture-quality-closure-01.md)，22及旧报告PASS仅覆盖原身份；本包验证与剩余边界按同包结果读取。
-
 # importer-pc
 
-C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、多视图共享业务、真实SQLite事务/Outbox/原请求恢复、合成观察和受控扩展。旧现场迁移、真实SDK/WCS和现场资格分别验证。
+C#/.NET 10工位运行基座及独立Application/供包参考产品：WPF、多视图共享业务、真实SQLite事务/Outbox/原请求恢复、合成观察和受控扩展。旧现场迁移、真实SDK/WCS和现场资格分别验证。
 
 ## 当前工程状态
 
-当前实施为[质量闭环01](docs/runtime/architecture-quality-closure-01.md)，继承Application22三条独立主流程与19/20可靠性约束。Sportmaster为左右两个独立投递位，DirectPlc及WcsToPlc各一个顺序位；Parcel数据库4提供历史归档/分页/永久身份，客户端提供双位结果和完整候选维护。Windows实际NOT_RUN，真实SDK/协议/现场BLOCKED。
+三个独立Application按[架构22](docs/design/application-architecture-22.md)选装，Parcel当前数据库5、配置schema3，Application.Contracts ABI1.6.0；DB3/4属于历史发布。保留PR23采集所有权和PR24归档、双位、完整配置与两阶段激活；PR26复核修复继承PR24后续原回复身份、消费者、维护围栏及R03去重前原库存校验；PR24由独立授权合并，本任务只同步最新main，不代合并其他PR。开工main基线为b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d，同步main为4afe2afacde9e2acab7648fff3440fa3cc331b6e；当前交付的继承提交、源码、包和验证身份统一读取[本次结果](docs/runtime/architecture-quality-audit-02-results.md)。N01–N07针对[独立审查02](docs/reviews/architecture-quality-audit-02/README.md)，与审查01 AQ编号和缺PDF记录分开。
 
-PR24固定f862c2ae2ad00ab79ceff5e2013c2a5593d05234独立复审在限定参考范围内未发现剩余代码阻断，R03及R01～R05参考回归通过；[原报告与证据归档](docs/reviews/pr24-independent-rereview-f862c2a/README.md)。2026-10-19用户授权归档后按精确head合并，身份以PR记录为准；本轮不重复测试或打包。原审查失败、旧候选及Windows/真实现场门禁保留。
+先按[首次运行](docs/runtime/getting-started.md)选产品。新Application使用Assembly/ParcelConfiguration；[维护指南](docs/runtime/architecture-quality-closure-01.md)统一配置确认、恢复、容量及扩展路线；Supply的Product/StationConfig、箱/数量规则仅在[Supply指南](docs/runtime/operations.md)适用。Windows实际NOT_RUN，真实SDK/协议/现场BLOCKED。
+PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。限定参考范围独立复审与原证据见[归档](docs/reviews/pr24-independent-rereview-f862c2a/README.md)、[R01～R05结果](docs/runtime/architecture-quality-closure-01-rereview-results.md)及[R03结果](docs/runtime/architecture-quality-closure-01-r03-results.md)。这些历史PASS及原包身份不替代PR26新验证，也不关闭Windows/真实现场门禁。
 
 ## 继承的PR20/21整合基线
 
@@ -20,7 +19,7 @@ PR24固定f862c2ae2ad00ab79ceff5e2013c2a5593d05234独立复审在限定参考范
 
 ## 开发与运行入口
 
-[统一资料入口](docs/INDEX.md) · [工作约束](AGENTS.md) · [框架设计](docs/design/framework.md) · [决策与批准边界](docs/design/framework-decisions.md) · [受控装配/扩展](docs/design/controlled-extensions.md) · [扩展开发](docs/extensions/developer-guide.md) · [运行、发布与恢复](docs/runtime/operations.md)
+[统一资料入口](docs/INDEX.md) · [工作约束](AGENTS.md) · [框架设计](docs/design/framework.md) · [决策与批准边界](docs/design/framework-decisions.md) · [受控装配/扩展](docs/design/controlled-extensions.md) · [扩展开发](docs/extensions/developer-guide.md) · [Application运行、发布与恢复](docs/runtime/architecture-quality-closure-01.md) · [Supply运行维护](docs/runtime/operations.md)
 
 ```sh
 # 使用global.json固定的.NET SDK10.0.402与Python3；按本包影响选择验证
@@ -46,4 +45,4 @@ Supply兼容Storage/MinimumReader为5/5；17冻结参考读码1.0.5与场地能�
 
 仓库public；[公开范围](docs/baseline/PUBLICATION.md)持续有效，完整客户归档仍PUBLIC_SUBSET_ONLY。D批准与RV状态不因参考实现或文档发布关闭。只提交获授权审查、通用实现及合成证据，不附客户原稿、私密链接、凭据、生产数据、SDK或字体文件。历史源资产校验问题保留，不放松校验器换通过。
 
-本包交付及原候选身份：[质量闭环01结果](docs/runtime/architecture-quality-closure-01-results.md)。22结果保留原阶段范围。
+历史22交付：[22结果与候选身份](docs/runtime/application-architecture-22-results.md)；本次继承[PR24结果](docs/runtime/architecture-quality-closure-01-results.md)，新验证见[本次N01–N07交付](docs/runtime/architecture-quality-audit-02-results.md)。

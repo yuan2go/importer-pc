@@ -1,0 +1,13 @@
+PASS_LINK_RENDER docs/runtime/getting-started.md
+PASS_LINK_RENDER docs/runtime/architecture-quality-closure-01.md
+PASS_LINK_RENDER docs/runtime/validation/architecture-quality-closure-01-windows.md
+PASS_LINK_RENDER docs/runtime/application-architecture-22.md
+PASS_LINK_RENDER docs/design/application-architecture-22.md
+PASS_LINK_RENDER docs/extensions/developer-guide.md
+PASS_CONFLICT_AND_STATE README.md
+PASS_CONFLICT_AND_STATE docs/INDEX.md
+PASS_CONFLICT_AND_STATE docs/design/architecture-quality-closure-01.md
+PASS_CONFLICT_AND_STATE docs/extensions/developer-guide.md
+PASS_CONFLICT_AND_STATE docs/runtime/architecture-quality-closure-01.md
+PASS_CONFLICT_AND_STATE docs/runtime/validation/architecture-quality-closure-01-windows.md
+PASS_SIX_DOCUMENT_RESOLUTIONS_KEEP_DB5_AND_MAIN_R03

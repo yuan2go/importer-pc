@@ -1,0 +1,25 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-02/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 1.28 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-02/importer-pc/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 1.28 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-02/importer-pc/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 1.28 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-02/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 1.28 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-02/importer-pc/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 1.28 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-02/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 5 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-02/importer-pc/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 7 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-02/importer-pc/src/Ipc.Components/Ipc.Components.csproj (用时 5 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-02/importer-pc/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 1.28 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-02/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 1.28 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-02/importer-pc/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 1.28 秒)。
+  Ipc.Platform -> /Users/yuan/.codex/artifacts/ipc-architecture-quality-02-20261018/final/sport-core/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Users/yuan/.codex/artifacts/ipc-architecture-quality-02-20261018/final/sport-core/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /Users/yuan/.codex/artifacts/ipc-architecture-quality-02-20261018/final/sport-core/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /Users/yuan/.codex/artifacts/ipc-architecture-quality-02-20261018/final/sport-core/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /Users/yuan/.codex/artifacts/ipc-architecture-quality-02-20261018/final/sport-core/build-intermediates/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> /Users/yuan/.codex/artifacts/ipc-architecture-quality-02-20261018/final/sport-core/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Users/yuan/.codex/artifacts/ipc-architecture-quality-02-20261018/final/sport-core/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /Users/yuan/.codex/artifacts/ipc-architecture-quality-02-20261018/final/sport-core/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /Users/yuan/.codex/artifacts/ipc-architecture-quality-02-20261018/final/sport-core/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /Users/yuan/.codex/artifacts/ipc-architecture-quality-02-20261018/final/sport-core/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> /Users/yuan/.codex/artifacts/ipc-architecture-quality-02-20261018/final/sport-core/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> /Users/yuan/.codex/artifacts/ipc-architecture-quality-02-20261018/final/sport-core/app/
+{"Package": "/Users/yuan/.codex/artifacts/ipc-architecture-quality-02-20261018/final/sport-core.zip", "Sha256": "3738b23a7b2e8fe84d19b1979d453310924625ecc5c8c31ad607480f23bd42d3", "SourceCommit": "2ad633578141db4ef34e255217bc8815634ffd0a", "Application": "sportmaster", "Target": "portable"}

@@ -1,0 +1,716 @@
+{
+  "Business": "sportmaster",
+  "Presentation": {
+    "Views": [
+      "sportmaster",
+      "sportmaster-history",
+      "sportmaster-maintenance"
+    ],
+    "Layouts": [
+      "standard",
+      "compact"
+    ]
+  },
+  "Status": "Started"
+}
+{
+  "RuntimeId": "1e63bea4-7aad-4a64-9ed6-41c9cddf50a7",
+  "ApplicationId": "sportmaster",
+  "Revision": 10,
+  "State": "PartiallyReady",
+  "Paused": false,
+  "BlockingReasons": [
+    "Original stage outcome or receipt responsibility is unresolved"
+  ],
+  "Operations": [
+    {
+      "Id": "71fa0532b0204d87bb6919a734d036a8",
+      "AdmissionId": "genuine-crash-admission",
+      "ParcelCode": "00017",
+      "ObservationId": "41828F5B6C5240E0F88F469BF59434C54DD5FC1CCE7732DC5EF52ACF54E5AEE4",
+      "ObservedAt": "2026-10-18T15:48:31.486074+00:00",
+      "ConfigurationHash": "387F6F0F4FB23A92C3E972793D2710398A24427334ABCA8494281C2FA4B6F52D",
+      "FrozenConfiguration": {
+        "SchemaVersion": 3,
+        "ApplicationId": "sportmaster",
+        "StationId": "reference-17",
+        "Mode": "Simulation",
+        "Weight": {
+          "Source": "Disabled",
+          "Unit": "Kg",
+          "Precision": 3,
+          "ConfiguredValue": null,
+          "MaximumAgeMs": 3000,
+          "WaitTimeoutMs": 15000
+        },
+        "Reader": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "Scale": null,
+        "Wcs": {
+          "Kind": "integration",
+          "Implementation": "reference-integration",
+          "Version": "1.0.0",
+          "InstanceId": "sportmaster.integration",
+          "Target": "reference://integration/sportmaster",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "slot": "REFERENCE-07",
+            "peer-root": "/Users/yuan/.codex/artifacts/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "Plc": null,
+        "Extensions": null,
+        "QueueCapacity": 64,
+        "TimeoutMs": 1500,
+        "MaximumOperations": 10000,
+        "Images": {
+          "Camera": {
+            "Kind": "camera",
+            "Implementation": "reference-camera",
+            "Version": "1.0.0",
+            "InstanceId": "bridge.camera.left",
+            "Target": "sportmaster.camera.left",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {},
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "Uploader": {
+            "Kind": "upload",
+            "Implementation": "reference-upload",
+            "Version": "1.0.0",
+            "InstanceId": "bridge.upload",
+            "Target": "reference://upload/bridge",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "reply-mode": "lose-after-commit",
+              "peer-root": "/Users/yuan/.codex/artifacts/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "MaximumBytes": 4194304,
+          "Strategy": "Attached",
+          "TotalBytes": 33554432,
+          "MaximumPending": 32
+        },
+        "SessionLifetimeMs": 28800000,
+        "CapabilityInstances": [
+          {
+            "Kind": "integration",
+            "Implementation": "reference-integration",
+            "Version": "1.0.0",
+            "InstanceId": "sportmaster.integration",
+            "Target": "reference://integration/sportmaster",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "slot": "REFERENCE-07",
+              "peer-root": "/Users/yuan/.codex/artifacts/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          {
+            "Kind": "login",
+            "Implementation": "reference-login",
+            "Version": "1.0.0",
+            "InstanceId": "maintenance",
+            "Target": "reference://maintenance",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "subjects": "maintenance"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          {
+            "Kind": "camera",
+            "Implementation": "reference-camera",
+            "Version": "1.0.0",
+            "InstanceId": "bridge.camera.left",
+            "Target": "sportmaster.camera.left",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {},
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          {
+            "Kind": "camera",
+            "Implementation": "reference-camera",
+            "Version": "1.0.0",
+            "InstanceId": "bridge.camera.right",
+            "Target": "sportmaster.camera.right",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {},
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          {
+            "Kind": "upload",
+            "Implementation": "reference-upload",
+            "Version": "1.0.0",
+            "InstanceId": "bridge.upload",
+            "Target": "reference://upload/bridge",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "reply-mode": "lose-after-commit",
+              "peer-root": "/Users/yuan/.codex/artifacts/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          }
+        ],
+        "MaintenanceLogin": {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "InstanceId": "maintenance",
+          "Target": "reference://maintenance",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "subjects": "maintenance"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "WeightValidity": "UntilDispatch",
+        "Topology": {
+          "Readers": [
+            {
+              "Role": "parcel-reader",
+              "Driver": "manual",
+              "DeviceId": "sportmaster.camera.left",
+              "Revision": "1",
+              "ReplayFile": null
+            },
+            {
+              "Role": "parcel-reader",
+              "Driver": "manual",
+              "DeviceId": "sportmaster.camera.right",
+              "Revision": "1",
+              "ReplayFile": null
+            }
+          ],
+          "Positions": [
+            {
+              "Id": "left",
+              "ReaderDeviceId": "sportmaster.camera.left",
+              "CameraInstanceId": null,
+              "ScaleInstanceId": null
+            },
+            {
+              "Id": "right",
+              "ReaderDeviceId": "sportmaster.camera.right",
+              "CameraInstanceId": "bridge.camera.right",
+              "ScaleInstanceId": null
+            }
+          ]
+        }
+      },
+      "ImplementationHashes": {
+        "sportmaster.integration": "0EFE210A20D763A84021239F4EB397C66B07ECCDBDB92E13F08260C61AB459D4",
+        "bridge.camera.left": "90BE0135F709F2C79BDBFBD6D873C6D8621770954C9D5F66B2D8BE6DB654B8B4",
+        "bridge.camera.right": "90BE0135F709F2C79BDBFBD6D873C6D8621770954C9D5F66B2D8BE6DB654B8B4",
+        "bridge.upload": "FECADF8B161F167A390AFDA4004A15EBB69BD7CD91EFC9A514CFA018ACEB48E9",
+        "maintenance": "FECADF8B161F167A390AFDA4004A15EBB69BD7CD91EFC9A514CFA018ACEB48E9"
+      },
+      "WeightPolicy": {
+        "Source": "Disabled",
+        "Unit": "Kg",
+        "Precision": 3,
+        "ConfiguredValue": null,
+        "MaximumAgeMs": 3000,
+        "WaitTimeoutMs": 15000
+      },
+      "Weight": null,
+      "State": "Blocked",
+      "Slot": "REFERENCE-07",
+      "Wcs": {
+        "Request": {
+          "Id": "8a71c9f5b3d143df8f86c3722f3ee4c7",
+          "ApplicationId": "sportmaster",
+          "OperationId": "71fa0532b0204d87bb6919a734d036a8",
+          "AdmissionId": "genuine-crash-admission",
+          "Stage": "wcs-slot",
+          "Binding": {
+            "Kind": "integration",
+            "Implementation": "reference-integration",
+            "Version": "1.0.0",
+            "InstanceId": "sportmaster.integration",
+            "Target": "reference://integration/sportmaster",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "slot": "REFERENCE-07",
+              "peer-root": "/Users/yuan/.codex/artifacts/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "ImplementationHash": "0EFE210A20D763A84021239F4EB397C66B07ECCDBDB92E13F08260C61AB459D4",
+          "ConfigurationHash": "387F6F0F4FB23A92C3E972793D2710398A24427334ABCA8494281C2FA4B6F52D",
+          "Payload": "{\n  \u0022ParcelCode\u0022: \u002200017\u0022,\n  \u0022AdmissionId\u0022: \u0022genuine-crash-admission\u0022,\n  \u0022Weight\u0022: null,\n  \u0022Slot\u0022: null,\n  \u0022WcsRequestId\u0022: null,\n  \u0022Image\u0022: {\n    \u0022CaptureRequestId\u0022: \u0022a23ed3f2ce1144d4a76864e411870980\u0022,\n    \u0022AdmissionId\u0022: \u0022genuine-crash-admission\u0022,\n    \u0022RelativeFile\u0022: \u0022images/9419EC7CF2BAEF44F197FB9E47163C52F78F17891196582FF7B3B5B7D38C3414/a23ed3f2ce1144d4a76864e411870980.png\u0022,\n    \u0022MediaType\u0022: \u0022image/png\u0022,\n    \u0022Length\u0022: 67,\n    \u0022Sha256\u0022: \u0022D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807\u0022,\n    \u0022UploadedUri\u0022: null,\n    \u0022Acquisition\u0022: {\n      \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\n      \u0022Epoch\u0022: \u0022f79e7631a50142c6a027039506b26156\u0022,\n      \u0022SourceEventId\u0022: \u0022genuine-crash-observation\u0022,\n      \u0022AdmissionId\u0022: \u0022genuine-crash-admission\u0022,\n      \u0022ObservedAt\u0022: \u00222026-10-18T15:48:31.486074\u002B00:00\u0022\n    }\n  },\n  \u0022Acquisition\u0022: {\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\n    \u0022Epoch\u0022: \u0022f79e7631a50142c6a027039506b26156\u0022,\n    \u0022SourceEventId\u0022: \u0022genuine-crash-observation\u0022,\n    \u0022AdmissionId\u0022: \u0022genuine-crash-admission\u0022,\n    \u0022ObservedAt\u0022: \u00222026-10-18T15:48:31.486074\u002B00:00\u0022\n  },\n  \u0022PositionId\u0022: \u0022left\u0022,\n  \u0022ReaderBinding\u0022: {\n    \u0022Role\u0022: \u0022parcel-reader\u0022,\n    \u0022Driver\u0022: \u0022manual\u0022,\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\n    \u0022Revision\u0022: \u00221\u0022,\n    \u0022ReplayFile\u0022: null\n  }\n}",
+          "PayloadHash": "8DBF1A4533FA2B3877105A39D6BE0BE8DADB94A7C0B732D7CBBF0FD0B08336DB",
+          "PreparedAt": "2026-10-18T15:48:31.533295+00:00"
+        },
+        "State": "Accepted",
+        "Attempts": 1,
+        "Replies": [
+          {
+            "Id": "fe164b03c3ab4d5db2d2045bc36caf4c",
+            "RequestId": "8a71c9f5b3d143df8f86c3722f3ee4c7",
+            "PayloadHash": "8DBF1A4533FA2B3877105A39D6BE0BE8DADB94A7C0B732D7CBBF0FD0B08336DB",
+            "TransportSucceeded": true,
+            "ProtocolAcknowledged": true,
+            "BusinessAccepted": true,
+            "PhysicalCompleted": null,
+            "Slot": "REFERENCE-07",
+            "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+            "At": "2026-10-18T15:48:31.535224+00:00"
+          }
+        ],
+        "Failure": null
+      },
+      "Plc": null,
+      "Reason": "RawUnavailable:1e637e066a674876966810edabec17b6",
+      "Image": {
+        "CaptureRequestId": "a23ed3f2ce1144d4a76864e411870980",
+        "AdmissionId": "genuine-crash-admission",
+        "RelativeFile": "images/9419EC7CF2BAEF44F197FB9E47163C52F78F17891196582FF7B3B5B7D38C3414/a23ed3f2ce1144d4a76864e411870980.png",
+        "MediaType": "image/png",
+        "Length": 67,
+        "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+        "UploadedUri": null,
+        "Acquisition": {
+          "DeviceId": "sportmaster.camera.left",
+          "Epoch": "f79e7631a50142c6a027039506b26156",
+          "SourceEventId": "genuine-crash-observation",
+          "AdmissionId": "genuine-crash-admission",
+          "ObservedAt": "2026-10-18T15:48:31.486074+00:00"
+        }
+      },
+      "Capture": {
+        "Request": {
+          "Id": "a23ed3f2ce1144d4a76864e411870980",
+          "ApplicationId": "sportmaster",
+          "OperationId": "71fa0532b0204d87bb6919a734d036a8",
+          "AdmissionId": "genuine-crash-admission",
+          "Stage": "image-capture",
+          "Binding": {
+            "Kind": "camera",
+            "Implementation": "reference-camera",
+            "Version": "1.0.0",
+            "InstanceId": "bridge.camera.left",
+            "Target": "sportmaster.camera.left",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {},
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "ImplementationHash": "90BE0135F709F2C79BDBFBD6D873C6D8621770954C9D5F66B2D8BE6DB654B8B4",
+          "ConfigurationHash": "387F6F0F4FB23A92C3E972793D2710398A24427334ABCA8494281C2FA4B6F52D",
+          "Payload": "{\n  \u0022ParcelCode\u0022: \u002200017\u0022,\n  \u0022AdmissionId\u0022: \u0022genuine-crash-admission\u0022,\n  \u0022Weight\u0022: null,\n  \u0022Slot\u0022: null,\n  \u0022WcsRequestId\u0022: null,\n  \u0022Acquisition\u0022: {\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\n    \u0022Epoch\u0022: \u0022f79e7631a50142c6a027039506b26156\u0022,\n    \u0022SourceEventId\u0022: \u0022genuine-crash-observation\u0022,\n    \u0022AdmissionId\u0022: \u0022genuine-crash-admission\u0022,\n    \u0022ObservedAt\u0022: \u00222026-10-18T15:48:31.486074\u002B00:00\u0022\n  },\n  \u0022PositionId\u0022: \u0022left\u0022,\n  \u0022ReaderBinding\u0022: {\n    \u0022Role\u0022: \u0022parcel-reader\u0022,\n    \u0022Driver\u0022: \u0022manual\u0022,\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\n    \u0022Revision\u0022: \u00221\u0022,\n    \u0022ReplayFile\u0022: null\n  }\n}",
+          "PayloadHash": "66FAADF5E69D2C2E7351479877FDBC2177A8CEEE11216032976D5F57EB8CC4F9",
+          "PreparedAt": "2026-10-18T15:48:31.507109+00:00"
+        },
+        "State": "Accepted",
+        "Attempts": 1,
+        "Replies": [
+          {
+            "Id": "162abfe6c7bc49a28258d9dbfd43f48c",
+            "RequestId": "a23ed3f2ce1144d4a76864e411870980",
+            "PayloadHash": "66FAADF5E69D2C2E7351479877FDBC2177A8CEEE11216032976D5F57EB8CC4F9",
+            "TransportSucceeded": true,
+            "ProtocolAcknowledged": true,
+            "BusinessAccepted": true,
+            "PhysicalCompleted": null,
+            "Slot": null,
+            "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+            "At": "2026-10-18T15:48:31.520392+00:00",
+            "Image": {
+              "CaptureRequestId": "a23ed3f2ce1144d4a76864e411870980",
+              "AdmissionId": "genuine-crash-admission",
+              "RelativeFile": "images/9419EC7CF2BAEF44F197FB9E47163C52F78F17891196582FF7B3B5B7D38C3414/a23ed3f2ce1144d4a76864e411870980.png",
+              "MediaType": "image/png",
+              "Length": 67,
+              "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+              "UploadedUri": null,
+              "Acquisition": {
+                "DeviceId": "sportmaster.camera.left",
+                "Epoch": "f79e7631a50142c6a027039506b26156",
+                "SourceEventId": "genuine-crash-observation",
+                "AdmissionId": "genuine-crash-admission",
+                "ObservedAt": "2026-10-18T15:48:31.486074+00:00"
+              }
+            }
+          }
+        ],
+        "Failure": null
+      },
+      "Upload": {
+        "Request": {
+          "Id": "992d86b4dec541a0aebac75784d00f41",
+          "ApplicationId": "sportmaster",
+          "OperationId": "71fa0532b0204d87bb6919a734d036a8",
+          "AdmissionId": "genuine-crash-admission",
+          "Stage": "image-upload",
+          "Binding": {
+            "Kind": "upload",
+            "Implementation": "reference-upload",
+            "Version": "1.0.0",
+            "InstanceId": "bridge.upload",
+            "Target": "reference://upload/bridge",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "reply-mode": "lose-after-commit",
+              "peer-root": "/Users/yuan/.codex/artifacts/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "ImplementationHash": "FECADF8B161F167A390AFDA4004A15EBB69BD7CD91EFC9A514CFA018ACEB48E9",
+          "ConfigurationHash": "387F6F0F4FB23A92C3E972793D2710398A24427334ABCA8494281C2FA4B6F52D",
+          "Payload": "{\n  \u0022ParcelCode\u0022: \u002200017\u0022,\n  \u0022AdmissionId\u0022: \u0022genuine-crash-admission\u0022,\n  \u0022Weight\u0022: null,\n  \u0022Slot\u0022: null,\n  \u0022WcsRequestId\u0022: null,\n  \u0022Image\u0022: {\n    \u0022CaptureRequestId\u0022: \u0022a23ed3f2ce1144d4a76864e411870980\u0022,\n    \u0022AdmissionId\u0022: \u0022genuine-crash-admission\u0022,\n    \u0022RelativeFile\u0022: \u0022images/9419EC7CF2BAEF44F197FB9E47163C52F78F17891196582FF7B3B5B7D38C3414/a23ed3f2ce1144d4a76864e411870980.png\u0022,\n    \u0022MediaType\u0022: \u0022image/png\u0022,\n    \u0022Length\u0022: 67,\n    \u0022Sha256\u0022: \u0022D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807\u0022,\n    \u0022UploadedUri\u0022: null,\n    \u0022Acquisition\u0022: {\n      \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\n      \u0022Epoch\u0022: \u0022f79e7631a50142c6a027039506b26156\u0022,\n      \u0022SourceEventId\u0022: \u0022genuine-crash-observation\u0022,\n      \u0022AdmissionId\u0022: \u0022genuine-crash-admission\u0022,\n      \u0022ObservedAt\u0022: \u00222026-10-18T15:48:31.486074\u002B00:00\u0022\n    }\n  },\n  \u0022Acquisition\u0022: {\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\n    \u0022Epoch\u0022: \u0022f79e7631a50142c6a027039506b26156\u0022,\n    \u0022SourceEventId\u0022: \u0022genuine-crash-observation\u0022,\n    \u0022AdmissionId\u0022: \u0022genuine-crash-admission\u0022,\n    \u0022ObservedAt\u0022: \u00222026-10-18T15:48:31.486074\u002B00:00\u0022\n  },\n  \u0022PositionId\u0022: \u0022left\u0022,\n  \u0022ReaderBinding\u0022: {\n    \u0022Role\u0022: \u0022parcel-reader\u0022,\n    \u0022Driver\u0022: \u0022manual\u0022,\n    \u0022DeviceId\u0022: \u0022sportmaster.camera.left\u0022,\n    \u0022Revision\u0022: \u00221\u0022,\n    \u0022ReplayFile\u0022: null\n  }\n}",
+          "PayloadHash": "8DBF1A4533FA2B3877105A39D6BE0BE8DADB94A7C0B732D7CBBF0FD0B08336DB",
+          "PreparedAt": "2026-10-18T15:48:31.53127+00:00"
+        },
+        "State": "Unknown",
+        "Attempts": 1,
+        "Replies": [],
+        "Failure": "Interrupted startup: reconcile the original identity"
+      },
+      "Acquisition": {
+        "DeviceId": "sportmaster.camera.left",
+        "Epoch": "f79e7631a50142c6a027039506b26156",
+        "SourceEventId": "genuine-crash-observation",
+        "AdmissionId": "genuine-crash-admission",
+        "ObservedAt": "2026-10-18T15:48:31.486074+00:00"
+      },
+      "PositionId": "left",
+      "ReaderBinding": {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "sportmaster.camera.left",
+        "Revision": "1",
+        "ReplayFile": null
+      }
+    }
+  ],
+  "Health": [
+    {
+      "InstanceId": "sportmaster.integration",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T15:48:52.880337+00:00",
+      "ValidUntil": "2026-10-18T15:48:55.880337+00:00",
+      "Detail": "SIMULATION: durable reference peer"
+    },
+    {
+      "InstanceId": "bridge.camera.left",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T15:48:52.880451+00:00",
+      "ValidUntil": "2026-10-18T15:48:55.880451+00:00",
+      "Detail": "SIMULATION: durable reference peer"
+    },
+    {
+      "InstanceId": "bridge.upload",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T15:48:52.880472+00:00",
+      "ValidUntil": "2026-10-18T15:48:55.880472+00:00",
+      "Detail": "SIMULATION: durable reference peer"
+    },
+    {
+      "InstanceId": "bridge.camera.right",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T15:48:52.880537+00:00",
+      "ValidUntil": "2026-10-18T15:48:55.880537+00:00",
+      "Detail": "SIMULATION: durable reference peer"
+    },
+    {
+      "InstanceId": "sportmaster.camera.left",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T15:48:52.877945+00:00",
+      "ValidUntil": "2026-10-18T15:48:57.877945+00:00",
+      "Detail": "SIMULATION:manual"
+    },
+    {
+      "InstanceId": "sportmaster.camera.right",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T15:48:52.878205+00:00",
+      "ValidUntil": "2026-10-18T15:48:57.878205+00:00",
+      "Detail": "SIMULATION:manual"
+    }
+  ],
+  "Configuration": {
+    "Revision": 0,
+    "Effective": {
+      "SchemaVersion": 3,
+      "ApplicationId": "sportmaster",
+      "StationId": "reference-17",
+      "Mode": "Simulation",
+      "Weight": {
+        "Source": "Disabled",
+        "Unit": "Kg",
+        "Precision": 3,
+        "ConfiguredValue": null,
+        "MaximumAgeMs": 3000,
+        "WaitTimeoutMs": 15000
+      },
+      "Reader": {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "sportmaster.camera.left",
+        "Revision": "1",
+        "ReplayFile": null
+      },
+      "Scale": null,
+      "Wcs": {
+        "Kind": "integration",
+        "Implementation": "reference-integration",
+        "Version": "1.0.0",
+        "InstanceId": "sportmaster.integration",
+        "Target": "reference://integration/sportmaster",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "slot": "REFERENCE-07",
+          "peer-root": "/Users/yuan/.codex/artifacts/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "Plc": null,
+      "Extensions": null,
+      "QueueCapacity": 64,
+      "TimeoutMs": 1500,
+      "MaximumOperations": 10000,
+      "Images": {
+        "Camera": {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "InstanceId": "bridge.camera.left",
+          "Target": "sportmaster.camera.left",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {},
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "Uploader": {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "InstanceId": "bridge.upload",
+          "Target": "reference://upload/bridge",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "reply-mode": "lose-after-commit",
+            "peer-root": "/Users/yuan/.codex/artifacts/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "MaximumBytes": 4194304,
+        "Strategy": "Attached",
+        "TotalBytes": 33554432,
+        "MaximumPending": 32
+      },
+      "SessionLifetimeMs": 28800000,
+      "CapabilityInstances": [
+        {
+          "Kind": "integration",
+          "Implementation": "reference-integration",
+          "Version": "1.0.0",
+          "InstanceId": "sportmaster.integration",
+          "Target": "reference://integration/sportmaster",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "slot": "REFERENCE-07",
+            "peer-root": "/Users/yuan/.codex/artifacts/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "InstanceId": "maintenance",
+          "Target": "reference://maintenance",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "subjects": "maintenance"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "InstanceId": "bridge.camera.left",
+          "Target": "sportmaster.camera.left",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {},
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "InstanceId": "bridge.camera.right",
+          "Target": "sportmaster.camera.right",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {},
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "InstanceId": "bridge.upload",
+          "Target": "reference://upload/bridge",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "reply-mode": "lose-after-commit",
+            "peer-root": "/Users/yuan/.codex/artifacts/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        }
+      ],
+      "MaintenanceLogin": {
+        "Kind": "login",
+        "Implementation": "reference-login",
+        "Version": "1.0.0",
+        "InstanceId": "maintenance",
+        "Target": "reference://maintenance",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "subjects": "maintenance"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "WeightValidity": "UntilDispatch",
+      "Topology": {
+        "Readers": [
+          {
+            "Role": "parcel-reader",
+            "Driver": "manual",
+            "DeviceId": "sportmaster.camera.left",
+            "Revision": "1",
+            "ReplayFile": null
+          },
+          {
+            "Role": "parcel-reader",
+            "Driver": "manual",
+            "DeviceId": "sportmaster.camera.right",
+            "Revision": "1",
+            "ReplayFile": null
+          }
+        ],
+        "Positions": [
+          {
+            "Id": "left",
+            "ReaderDeviceId": "sportmaster.camera.left",
+            "CameraInstanceId": null,
+            "ScaleInstanceId": null
+          },
+          {
+            "Id": "right",
+            "ReaderDeviceId": "sportmaster.camera.right",
+            "CameraInstanceId": "bridge.camera.right",
+            "ScaleInstanceId": null
+          }
+        ]
+      }
+    },
+    "Pending": null,
+    "Status": "Effective",
+    "Failure": null
+  },
+  "CurrentOperator": null,
+  "Availability": {
+    "Admit": true,
+    "Resume": true,
+    "Configure": false,
+    "ContinuePrepared": [],
+    "ContinueUpload": [],
+    "AbandonUnsubmitted": []
+  },
+  "Positions": [
+    {
+      "Id": "left",
+      "ReaderDeviceId": "sportmaster.camera.left",
+      "Admit": false,
+      "CurrentOperation": "71fa0532b0204d87bb6919a734d036a8",
+      "BlockingReasons": [
+        "Position dependency/health or original responsibility blocked",
+        "Current entity main result is incomplete"
+      ],
+      "MainResultComplete": false,
+      "BackgroundComplete": false
+    },
+    {
+      "Id": "right",
+      "ReaderDeviceId": "sportmaster.camera.right",
+      "Admit": true,
+      "CurrentOperation": null,
+      "BlockingReasons": [],
+      "MainResultComplete": true,
+      "BackgroundComplete": true
+    }
+  ],
+  "Devices": [
+    {
+      "DeviceId": "sportmaster.camera.left",
+      "Epoch": "3811f1a15f934dc4b1cb796c441b5427",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-18T15:48:52.877945+00:00",
+      "ConfirmedAt": "2026-10-18T15:48:52.877945+00:00",
+      "ValidUntil": "2026-10-18T15:48:57.877945+00:00",
+      "Source": "SIMULATION:manual",
+      "Invalidity": null
+    },
+    {
+      "DeviceId": "sportmaster.camera.right",
+      "Epoch": "2789fe62f15948dfa569356686ad17a4",
+      "Sequence": 0,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-18T15:48:52.878205+00:00",
+      "ConfirmedAt": "2026-10-18T15:48:52.878205+00:00",
+      "ValidUntil": "2026-10-18T15:48:57.878205+00:00",
+      "Source": "SIMULATION:manual",
+      "Invalidity": null
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+diff --git a/tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs b/tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs
+index f27e777..e68a825 100644
+--- a/tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs
++++ b/tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs
+@@ -45,7 +45,12 @@ static partial class ArchitectureQuality
+         File.Delete(Path.Combine(directory,"receipts",occurrence+".json"));
+         await using(var a=await Open(c,name))
+         {
+-            await Maintenance(a);var outcome=await Command(a,"ReconcileReceipt",occurrence,"Original receiver outcome checked; absent local original remains independent");
++            await Maintenance(a);
++            // Periodic health also holds the external-call fence. Obtain the public
++            // maintenance availability before this test expects a query to execute.
++            await Wait(a,s=>s.Availability?.Configure==true);
++            var outcome=await Command(a,"ReconcileReceipt",occurrence,"Original receiver outcome checked; absent local original remains independent");
++            Console.WriteLine("Receipt custody query result: "+Wire.Encode(outcome));
+             Check(outcome.Status=="OutcomeKnownRawMissing"&&!(await a.OperationAsync(original.Id))!.ImageReleased,"authoritative Query confirms outcome but cannot release original missing raw/image custody");
+             await Command(a,"ArchiveHistory",value:"Do not archive missing original custody");using var repo=new ParcelRepository(directory,c.ApplicationId);
+             Check(repo.PendingReceipts().Any(x=>x.Id==occurrence)&&repo.Load().Any(o=>o.Id==original.Id)&&repo.ReceiptById(occurrence)!.QueryOccurrence is not null,"pending original, active owner and separate Query basis remain after attempted archive");

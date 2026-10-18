@@ -1,0 +1,146 @@
+{
+  "SourceCommit": "bab9c3012652c3b8aae1d90627953734a1de29b8",
+  "FinalQualityLog": "logs/quality-commit.log",
+  "FinalReleaseChecks": [
+    "logs/aa22-release.log",
+    "logs/resources-release.log",
+    "logs/extensions.log",
+    "logs/signed-capabilities.log"
+  ],
+  "Logs": [
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/aa22-release.log",
+      "Sha256": "d2199bc73bf6ead96d4f1a24714b27d9ee98b3003c9f0ff98b4ad34db794ac01",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/build-final.log",
+      "Sha256": "0edbd72a8ea28b6e760ad5ab0cd95ff42384945c5b2c4591fb52e0c166374ee3",
+      "Status": "FAIL_PRESERVED_TEST_FIXTURE_OR_BUILD"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/build-receipts.log",
+      "Sha256": "c0ac60767fad320276b6874813b1ff2a83c9de08f30653324c0c63b5b315a34f",
+      "Status": "FAIL_PRESERVED_TEST_FIXTURE_OR_BUILD"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/build-verified.log",
+      "Sha256": "77f47382d88b32a5781e9a55aadbfff38b92f297c666d9765936ffd67a552167",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/bundles.log",
+      "Sha256": "de448226b464fc32fd64116d33db01e88b210373ad535c68eee53bbce8faad8c",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/checker-build.log",
+      "Sha256": "309d419f000185ea5f53c5f059a3b54a94342dfa34520874ca06d3248333ff68",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/core-commit.log",
+      "Sha256": "ff528f42113f11b2c0542cf36b43f49ef86f7ef755c77554e666afeb7e507155",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/extensions.log",
+      "Sha256": "a707c50591ceb46b429f8c125a632e9a721fa0f5a1342a66f01aee641cae4068",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/fixture-build.log",
+      "Sha256": "91e16d8f7ece084d0919dad0bd2d4e48b14ad1d3a06d914b73455767cb263821",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/guides.log",
+      "Sha256": "bfdb78c32b8c6a4ad94f651eff184f1597b3860ecd390d5983be7056527cbddd",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/package-core.log",
+      "Sha256": "6cfc7f8ac6bc8a8c724f51775e94ca67fc05e270153a69a64e693d2c1b94fcc9",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/package-selected.log",
+      "Sha256": "4c0a16b3de0f1dec1a80b84086232488f2e3af0189f628b470afb6c2c543460b",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/package-win.log",
+      "Sha256": "958a7eb5a8895a31e121261cebe04c46d7bb4c70d9f4608036b1810c43b7b202",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/quality-commit.log",
+      "Sha256": "36d32407ca9f8e2bf8a75ced59cd4b7ef1ee6c7af2efd8782af7ca398cfa01f4",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/quality-final.log",
+      "Sha256": "2a8e3adad56cf9c21c7b1f139d74fd504b0ec78b64aabe24dff403931d6c976f",
+      "Status": "NOT_FINAL_STALE_ENTRY_AFTER_BUILD_FAILURE"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/quality-receipts.log",
+      "Sha256": "8345d1658b98f059cd79adda1abcd431f55dbb0bef7724084a7da3c9037f835b",
+      "Status": "NOT_FINAL_STALE_ENTRY_AFTER_BUILD_FAILURE"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/quality.log",
+      "Sha256": "08be1b50873400a8fd96cfe561e4607d7a942a4a94918e8da9c7a34250e56a84",
+      "Status": "FAIL_PRESERVED_TEST_FIXTURE_OR_BUILD"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/resources-release.log",
+      "Sha256": "1505da745f1ccfe668cd65fa3b8feb3c331813a853e0430cd6b462ba31e3d6e0",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/selected-journey.log",
+      "Sha256": "a9c8fb8a6d98eca3ecc5e877b9c8a235005bc7d298095b8528301d8c879cde45",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/signed-barcode.log",
+      "Sha256": "f3c46e816b0e6d7c7b1b84220fde47030d62db01dfe80c9c302d5eca5f18c91d",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/signed-capabilities.log",
+      "Sha256": "35f05b3075556e05c81e7bd408329eb5293b03df9cf47124167b8f6588ab31f3",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/signed-parcel.log",
+      "Sha256": "eb91d70133765f03efa95268854eb56773a110ff1c2e4cbc310b5c341aca15d9",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/smoke-core.log",
+      "Sha256": "1fd69c8a39ca69ea595b336798f966cec9508c1380cd7a0230dfea1c3f4a3f16",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/smoke-http.log",
+      "Sha256": "fd40eedd022db2f3831b107183329fd6441b99391edc0abf1c1a7e77daeb4e3e",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/wpf-verified.log",
+      "Sha256": "bf42999f0212358d5737050453baf36a57a32c48fae80e75bbcb4f5e32cde141",
+      "Status": "PASS"
+    },
+    {
+      "Log": "docs/runtime/evidence/architecture-quality-audit-02/logs/expected-driver-start-failure.log",
+      "Sha256": "0b7559098c2e0d539e969013d1fe1632f89d993b8676aa8885a9eb176729e6af",
+      "Status": "EXPECTED_FAILURE_CANDIDATE_STARTUP_PRIOR_EFFECTIVE_RETAINED"
+    }
+  ],
+  "WindowsActual": "NOT_RUN",
+  "SdkProtocolSite": "BLOCKED",
+  "Production": "NOT_READY",
+  "NewAcceptanceFramework": false
+}

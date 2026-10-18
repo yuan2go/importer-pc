@@ -1,0 +1,11 @@
+{
+  "Probe": "SharedWcsReconnectFence",
+  "ReconnectStillRunning": true,
+  "CallsDuringReconnect": 2,
+  "Query": "SlotResolved",
+  "MainAfterQuery": "SlotResolved",
+  "CanResume": true,
+  "Resume": "Persisted",
+  "NewOperationAccepted": true,
+  "DefectReproduced": true
+}

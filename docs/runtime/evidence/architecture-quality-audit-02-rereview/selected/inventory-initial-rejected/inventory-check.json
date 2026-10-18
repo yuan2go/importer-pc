@@ -1,0 +1,121 @@
+{
+  "Status": "FAIL",
+  "SourceCommit": "e914e75a109672cd1d52be91c40459f09231ea57",
+  "Scope": "Actual shipped ValidateConfiguration entry, schema1/2/3 original capability inventory; not the full offline-consumer matrix",
+  "Windows": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "Cases": [
+    {
+      "Name": "schema1-legal-role-mirror",
+      "Configuration": {
+        "SchemaVersion": 1,
+        "ApplicationId": "sportmaster",
+        "StationId": "reference-17",
+        "Mode": "Simulation",
+        "Weight": {
+          "Source": "Disabled",
+          "Unit": "Kg",
+          "Precision": 3,
+          "ConfiguredValue": null,
+          "MaximumAgeMs": 3000,
+          "WaitTimeoutMs": 15000
+        },
+        "Reader": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "Scale": null,
+        "Wcs": {
+          "Kind": "integration",
+          "Implementation": "reference-integration",
+          "Version": "1.0.0",
+          "InstanceId": "sportmaster.integration",
+          "Target": "reference://integration/sportmaster",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "slot": "REFERENCE-07",
+            "peer-root": "${LOCAL_ARTIFACTS}/ipc-pr26-selected-journey-20261019/final-e914e75-inventory-01/data/Simulation/reference-peers"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "Plc": null,
+        "Extensions": null,
+        "QueueCapacity": 64,
+        "TimeoutMs": 1500,
+        "MaximumOperations": 10000,
+        "SessionLifetimeMs": 28800000,
+        "MaintenanceLogin": {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "InstanceId": "maintenance",
+          "Target": "reference://maintenance",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "subjects": "maintenance"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "WeightValidity": null,
+        "Topology": null,
+        "Retention": {
+          "ResidentHistory": 200,
+          "MinimumFreeBytes": 67108864
+        },
+        "CapabilityInstances": [
+          {
+            "Kind": "integration",
+            "Implementation": "reference-integration",
+            "Version": "1.0.0",
+            "InstanceId": "sportmaster.integration",
+            "Target": "reference://integration/sportmaster",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "slot": "REFERENCE-07",
+              "peer-root": "${LOCAL_ARTIFACTS}/ipc-pr26-selected-journey-20261019/final-e914e75-inventory-01/data/Simulation/reference-peers"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          {
+            "Kind": "login",
+            "Implementation": "reference-login",
+            "Version": "1.0.0",
+            "InstanceId": "maintenance",
+            "Target": "reference://maintenance",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "subjects": "maintenance"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          }
+        ]
+      },
+      "Response": {
+        "Status": "Rejected",
+        "Reason": "Topology schema flattening forbidden",
+        "Revision": 0
+      },
+      "ExpectedStatus": "Validated"
+    }
+  ],
+  "Failure": "AssertionError(('schema1-legal-role-mirror', {'Status': 'Rejected', 'Reason': 'Topology schema flattening forbidden', 'Revision': 0}))",
+  "Traceback": "Traceback (most recent call last):\n  File \"${LOCAL_ARTIFACTS}/ipc-pr26-selected-journey-20261019/release-inventory-check.py\", line 35, in <module>\n    check(f'schema{schema}-legal-role-mirror',c,'Validated')\n  File \"${LOCAL_ARTIFACTS}/ipc-pr26-selected-journey-20261019/release-inventory-check.py\", line 24, in check\n    log.append(dict(Name=name,Configuration=c,Response=response,ExpectedStatus=expect));assert response['Status']==expect,(name,response)\n                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ('schema1-legal-role-mirror', {'Status': 'Rejected', 'Reason': 'Topology schema flattening forbidden', 'Revision': 0})\n",
+  "ProcessExitCode": 0,
+  "ScriptSha256": "611439a17f8f18c505b0150abce8a9adf85590b66e35b3303437b947a3bfdf83",
+  "PublicProjection": {
+    "OriginalSha256": "84ab7757f4708c09c5959f2d4ccbea57f38021754eac6a0fb4b1ea80d1a43c52",
+    "OnlyLocalPathsReplaced": true,
+    "NotFrozenRequestOrReplayInput": true
+  }
+}

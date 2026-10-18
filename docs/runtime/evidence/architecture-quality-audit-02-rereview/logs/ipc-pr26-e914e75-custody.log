@@ -1,0 +1,15 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-f071a9b01480465590b2f76f79deab38
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-73e8e8a2e3984118bade1bbcf3a735b0
+PASS AQ: real process dies after original upload raw file flush and before raw-durable/T3 transaction
+PASS AQ: pre-T3 original bytes belong to the original Awaiting occurrence
+PASS AQ: explicit maintenance grant obtained
+FAIL AQ: authoritative Query confirms outcome but cannot release original missing raw/image custody
+FAIL AQ: pending original, active owner and separate Query basis remain after attempted archive
+PASS AQ: complete recovery set restores actual original bytes; local T3 clears only that occurrence and releases image by original policy
+PASS AQ: restoring original raw never resubmits WCS or upload
+PASS AQ: reactivated archived owner can rearchive without losing or duplicating original raw BLOBs
+PASS AQ: rearchive survives restart without another upload
+Unhandled exception. System.Exception: Receipt custody failures: 2
+   at ArchitectureQuality.CustodyChecks(String source, String evidence) in /_/src/tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs:line 69
+   at Program.<Main>$(String[] args) in /_/src/tests/Ipc.Application.Verification/Program.cs:line 22
+   at Program.<Main>(String[] args)

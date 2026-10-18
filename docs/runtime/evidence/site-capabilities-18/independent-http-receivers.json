@@ -1,0 +1,454 @@
+{
+  "SourceCommit": "08595e9243ccd9981fc419b8074f67c836644248",
+  "Status": "PASS",
+  "Facts": [
+    {
+      "Application": "sportmaster",
+      "OperationId": "e4f46f5c3a604df5a109122de405f76b",
+      "State": "SlotResolved",
+      "OriginalOperator": {
+        "Subject": "alice",
+        "DisplayName": "alice",
+        "Authority": "reference://login/smoke",
+        "SessionId": "2d58b57b4572411faccaa9ba7bde5b65",
+        "AuthenticatedAt": "2026-10-18T04:25:25.38768+00:00",
+        "Simulation": true
+      },
+      "Slot": "REFERENCE-07",
+      "ReceiverFacts": [
+        {
+          "Stage": "Upload",
+          "RequestId": "11b8eb9433aa4becb7757d69303b1cca",
+          "PayloadHash": "9BC5096F0AB3F22925AC1A7A1630278E73874D57833D4B47F0E1A28787C4187E",
+          "Target": "reference://upload/smoke",
+          "Attempts": 1,
+          "Executions": 1,
+          "ReceiverRecordSha256": "c78d40032ca291f48d2046f6857af634d64984fde757bdd3f6cc20c1871fa660",
+          "Payload": {
+            "ParcelCode": "000000917",
+            "AdmissionId": "unpacked-parcel",
+            "Weight": {
+              "Value": 2.345,
+              "Unit": "Kg",
+              "Precision": 3,
+              "Source": "Measured",
+              "MeasurementId": "aa98012180184e4b924d2e97ade30ca4",
+              "Evidence": "reference://weight/smoke:Valid"
+            },
+            "Slot": null,
+            "WcsRequestId": null,
+            "Operator": {
+              "Subject": "alice",
+              "DisplayName": "alice",
+              "Authority": "reference://login/smoke",
+              "SessionId": "2d58b57b4572411faccaa9ba7bde5b65",
+              "AuthenticatedAt": "2026-10-18T04:25:25.38768+00:00",
+              "Simulation": true
+            },
+            "Image": {
+              "CaptureRequestId": "5611d940a6944ef9b538a0da3d2ef2ed",
+              "AdmissionId": "unpacked-parcel",
+              "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/5611d940a6944ef9b538a0da3d2ef2ed.png",
+              "MediaType": "image/png",
+              "Length": 67,
+              "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+              "UploadedUri": null
+            }
+          },
+          "Reply": {
+            "Id": "bd191c6e3fab4765b081388f51d0bbb6",
+            "RequestId": "11b8eb9433aa4becb7757d69303b1cca",
+            "PayloadHash": "9BC5096F0AB3F22925AC1A7A1630278E73874D57833D4B47F0E1A28787C4187E",
+            "TransportSucceeded": true,
+            "ProtocolAcknowledged": true,
+            "BusinessAccepted": true,
+            "PhysicalCompleted": null,
+            "Slot": null,
+            "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+            "At": "2026-10-18T04:25:25.575715+00:00",
+            "Image": {
+              "CaptureRequestId": "5611d940a6944ef9b538a0da3d2ef2ed",
+              "AdmissionId": "unpacked-parcel",
+              "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/5611d940a6944ef9b538a0da3d2ef2ed.png",
+              "MediaType": "image/png",
+              "Length": 67,
+              "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+              "UploadedUri": "reference://images/11b8eb9433aa4becb7757d69303b1cca"
+            }
+          },
+          "ActualImageBytes": 67,
+          "ActualImageSha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807"
+        },
+        {
+          "Stage": "Wcs",
+          "RequestId": "0b9b2a83a5c14a7b85e0c688438a5f5b",
+          "PayloadHash": "6C8AC59F0B9BE384A11D047E5A916310E933D1827C954A5E870FED435B790FC2",
+          "Target": "reference://integration/sportmaster",
+          "Attempts": 1,
+          "Executions": 1,
+          "ReceiverRecordSha256": "653cf763212cf8a7756b75d2f576be8573ea3344e9c50208d3202e396065e706",
+          "Payload": {
+            "ParcelCode": "000000917",
+            "AdmissionId": "unpacked-parcel",
+            "Weight": {
+              "Value": 2.345,
+              "Unit": "Kg",
+              "Precision": 3,
+              "Source": "Measured",
+              "MeasurementId": "aa98012180184e4b924d2e97ade30ca4",
+              "Evidence": "reference://weight/smoke:Valid"
+            },
+            "Slot": null,
+            "WcsRequestId": null,
+            "Operator": {
+              "Subject": "alice",
+              "DisplayName": "alice",
+              "Authority": "reference://login/smoke",
+              "SessionId": "2d58b57b4572411faccaa9ba7bde5b65",
+              "AuthenticatedAt": "2026-10-18T04:25:25.38768+00:00",
+              "Simulation": true
+            },
+            "Image": {
+              "CaptureRequestId": "5611d940a6944ef9b538a0da3d2ef2ed",
+              "AdmissionId": "unpacked-parcel",
+              "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/5611d940a6944ef9b538a0da3d2ef2ed.png",
+              "MediaType": "image/png",
+              "Length": 67,
+              "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+              "UploadedUri": "reference://images/11b8eb9433aa4becb7757d69303b1cca"
+            }
+          },
+          "Reply": {
+            "Id": "1d654f1e222a4a989a288c9649b060ff",
+            "RequestId": "0b9b2a83a5c14a7b85e0c688438a5f5b",
+            "PayloadHash": "6C8AC59F0B9BE384A11D047E5A916310E933D1827C954A5E870FED435B790FC2",
+            "TransportSucceeded": true,
+            "ProtocolAcknowledged": true,
+            "BusinessAccepted": true,
+            "PhysicalCompleted": null,
+            "Slot": "REFERENCE-07",
+            "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+            "At": "2026-10-18T04:25:25.937162+00:00"
+          }
+        }
+      ],
+      "ServiceLogSha256": "89dc48f9a283247cd8a62f2b8da9f182df03bd76f94111e793758a5dbe3ee1c7"
+    },
+    {
+      "Application": "wcs-to-plc",
+      "OperationId": "3c348cf9d994484a8c31328a62a8a72a",
+      "State": "PlcAccepted",
+      "OriginalOperator": {
+        "Subject": "alice",
+        "DisplayName": "alice",
+        "Authority": "reference://login/smoke",
+        "SessionId": "3cb5ac5d74dd4a00b72bf2a2391922bd",
+        "AuthenticatedAt": "2026-10-18T04:25:39.800578+00:00",
+        "Simulation": true
+      },
+      "Slot": "REFERENCE-07",
+      "ReceiverFacts": [
+        {
+          "Stage": "Upload",
+          "RequestId": "aad7bbd245ec4e6082d899c60d8ea376",
+          "PayloadHash": "764FCD10DA3961F762638FA6A65BD0F638321CE81B1E81EFF75EC5DE416BC029",
+          "Target": "reference://upload/smoke",
+          "Attempts": 1,
+          "Executions": 1,
+          "ReceiverRecordSha256": "4484d82ce2ca4ec7343ce1e8d9422501d5665265e75c34ee946d00ca228a71f0",
+          "Payload": {
+            "ParcelCode": "000000917",
+            "AdmissionId": "unpacked-parcel",
+            "Weight": {
+              "Value": 2.345,
+              "Unit": "Kg",
+              "Precision": 3,
+              "Source": "Measured",
+              "MeasurementId": "0c1177d97f2e4b18a7a8378b41e39840",
+              "Evidence": "reference://weight/smoke:Valid"
+            },
+            "Slot": null,
+            "WcsRequestId": null,
+            "Operator": {
+              "Subject": "alice",
+              "DisplayName": "alice",
+              "Authority": "reference://login/smoke",
+              "SessionId": "3cb5ac5d74dd4a00b72bf2a2391922bd",
+              "AuthenticatedAt": "2026-10-18T04:25:39.800578+00:00",
+              "Simulation": true
+            },
+            "Image": {
+              "CaptureRequestId": "6e8b6ff9881c49daacbfefe7e9cd9bfa",
+              "AdmissionId": "unpacked-parcel",
+              "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/6e8b6ff9881c49daacbfefe7e9cd9bfa.png",
+              "MediaType": "image/png",
+              "Length": 67,
+              "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+              "UploadedUri": null
+            }
+          },
+          "Reply": {
+            "Id": "4c0537a49f8e49289b3f4ad6b30ae186",
+            "RequestId": "aad7bbd245ec4e6082d899c60d8ea376",
+            "PayloadHash": "764FCD10DA3961F762638FA6A65BD0F638321CE81B1E81EFF75EC5DE416BC029",
+            "TransportSucceeded": true,
+            "ProtocolAcknowledged": true,
+            "BusinessAccepted": true,
+            "PhysicalCompleted": null,
+            "Slot": null,
+            "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+            "At": "2026-10-18T04:25:39.917062+00:00",
+            "Image": {
+              "CaptureRequestId": "6e8b6ff9881c49daacbfefe7e9cd9bfa",
+              "AdmissionId": "unpacked-parcel",
+              "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/6e8b6ff9881c49daacbfefe7e9cd9bfa.png",
+              "MediaType": "image/png",
+              "Length": 67,
+              "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+              "UploadedUri": "reference://images/aad7bbd245ec4e6082d899c60d8ea376"
+            }
+          },
+          "ActualImageBytes": 67,
+          "ActualImageSha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807"
+        },
+        {
+          "Stage": "Wcs",
+          "RequestId": "2f202c867e77438fa9b9a9a0c4c463c7",
+          "PayloadHash": "099C8A655B042CC52253C5278DCD7C55ADA5A4AD4FB151DD4B129673D9CB858F",
+          "Target": "reference://integration/wcs-to-plc",
+          "Attempts": 1,
+          "Executions": 1,
+          "ReceiverRecordSha256": "23724708edb5d97e98dd57b800be36d8f3398638faf26cec52f1f1f664f5aa78",
+          "Payload": {
+            "ParcelCode": "000000917",
+            "AdmissionId": "unpacked-parcel",
+            "Weight": {
+              "Value": 2.345,
+              "Unit": "Kg",
+              "Precision": 3,
+              "Source": "Measured",
+              "MeasurementId": "0c1177d97f2e4b18a7a8378b41e39840",
+              "Evidence": "reference://weight/smoke:Valid"
+            },
+            "Slot": null,
+            "WcsRequestId": null,
+            "Operator": {
+              "Subject": "alice",
+              "DisplayName": "alice",
+              "Authority": "reference://login/smoke",
+              "SessionId": "3cb5ac5d74dd4a00b72bf2a2391922bd",
+              "AuthenticatedAt": "2026-10-18T04:25:39.800578+00:00",
+              "Simulation": true
+            },
+            "Image": {
+              "CaptureRequestId": "6e8b6ff9881c49daacbfefe7e9cd9bfa",
+              "AdmissionId": "unpacked-parcel",
+              "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/6e8b6ff9881c49daacbfefe7e9cd9bfa.png",
+              "MediaType": "image/png",
+              "Length": 67,
+              "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+              "UploadedUri": "reference://images/aad7bbd245ec4e6082d899c60d8ea376"
+            }
+          },
+          "Reply": {
+            "Id": "2dfd3a6257cd41a19cabc7fe65976c00",
+            "RequestId": "2f202c867e77438fa9b9a9a0c4c463c7",
+            "PayloadHash": "099C8A655B042CC52253C5278DCD7C55ADA5A4AD4FB151DD4B129673D9CB858F",
+            "TransportSucceeded": true,
+            "ProtocolAcknowledged": true,
+            "BusinessAccepted": true,
+            "PhysicalCompleted": null,
+            "Slot": "REFERENCE-07",
+            "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+            "At": "2026-10-18T04:25:40.796208+00:00"
+          }
+        },
+        {
+          "Stage": "Plc",
+          "RequestId": "0f12b651d421456a8b8ec4ad20a926fa",
+          "PayloadHash": "5EE5802B3829750B7CEAEAAF072576E8F7C0260FAC5D256E3CFA4A1FF64558F5",
+          "Target": "reference://plc/wcs-to-plc",
+          "Attempts": 1,
+          "Executions": 1,
+          "ReceiverRecordSha256": "82e5937df5e47eb564cfb718469944ac9047417cb1f1e5ffebcc3c6226bb7724",
+          "Payload": {
+            "ParcelCode": "000000917",
+            "AdmissionId": "unpacked-parcel",
+            "Weight": {
+              "Value": 2.345,
+              "Unit": "Kg",
+              "Precision": 3,
+              "Source": "Measured",
+              "MeasurementId": "0c1177d97f2e4b18a7a8378b41e39840",
+              "Evidence": "reference://weight/smoke:Valid"
+            },
+            "Slot": "REFERENCE-07",
+            "WcsRequestId": "2f202c867e77438fa9b9a9a0c4c463c7",
+            "Operator": {
+              "Subject": "alice",
+              "DisplayName": "alice",
+              "Authority": "reference://login/smoke",
+              "SessionId": "3cb5ac5d74dd4a00b72bf2a2391922bd",
+              "AuthenticatedAt": "2026-10-18T04:25:39.800578+00:00",
+              "Simulation": true
+            },
+            "Image": {
+              "CaptureRequestId": "6e8b6ff9881c49daacbfefe7e9cd9bfa",
+              "AdmissionId": "unpacked-parcel",
+              "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/6e8b6ff9881c49daacbfefe7e9cd9bfa.png",
+              "MediaType": "image/png",
+              "Length": 67,
+              "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+              "UploadedUri": "reference://images/aad7bbd245ec4e6082d899c60d8ea376"
+            }
+          },
+          "Reply": {
+            "Id": "27f516f0537e4017a795c988930696d8",
+            "RequestId": "0f12b651d421456a8b8ec4ad20a926fa",
+            "PayloadHash": "5EE5802B3829750B7CEAEAAF072576E8F7C0260FAC5D256E3CFA4A1FF64558F5",
+            "TransportSucceeded": true,
+            "ProtocolAcknowledged": true,
+            "BusinessAccepted": true,
+            "PhysicalCompleted": false,
+            "Slot": "REFERENCE-07",
+            "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+            "At": "2026-10-18T04:25:40.811312+00:00"
+          }
+        }
+      ],
+      "ServiceLogSha256": "6894e4b7860a918b0161852118d0b04bdf72e6c1883ce9640c14bb40eedc72bf"
+    },
+    {
+      "Application": "direct-plc",
+      "OperationId": "5f62bafa2a4f4bf8b15ada39854929e3",
+      "State": "PlcAccepted",
+      "OriginalOperator": {
+        "Subject": "alice",
+        "DisplayName": "alice",
+        "Authority": "reference://login/smoke",
+        "SessionId": "69a1b6d58176409da7de242b14cb9d83",
+        "AuthenticatedAt": "2026-10-18T04:25:32.424308+00:00",
+        "Simulation": true
+      },
+      "Slot": null,
+      "ReceiverFacts": [
+        {
+          "Stage": "Upload",
+          "RequestId": "9d91f5a96fb04955a883f31bf182f074",
+          "PayloadHash": "E61822D7D12315AD7E42C3FE645F9F2AC6598FE20A4C5BFE3C0ADFD52A59C1E5",
+          "Target": "reference://upload/smoke",
+          "Attempts": 1,
+          "Executions": 1,
+          "ReceiverRecordSha256": "23b7a36bd410423892d665238b7b655fbc6ae54dc38a59fdb390433b311ed7ca",
+          "Payload": {
+            "ParcelCode": "000000917",
+            "AdmissionId": "unpacked-parcel",
+            "Weight": {
+              "Value": 2.345,
+              "Unit": "Kg",
+              "Precision": 3,
+              "Source": "Measured",
+              "MeasurementId": "9e88fa9e9018449e89826454a568e371",
+              "Evidence": "reference://weight/smoke:Valid"
+            },
+            "Slot": null,
+            "WcsRequestId": null,
+            "Operator": {
+              "Subject": "alice",
+              "DisplayName": "alice",
+              "Authority": "reference://login/smoke",
+              "SessionId": "69a1b6d58176409da7de242b14cb9d83",
+              "AuthenticatedAt": "2026-10-18T04:25:32.424308+00:00",
+              "Simulation": true
+            },
+            "Image": {
+              "CaptureRequestId": "2a881c372aff4a9fb3f6986cca7d0657",
+              "AdmissionId": "unpacked-parcel",
+              "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/2a881c372aff4a9fb3f6986cca7d0657.png",
+              "MediaType": "image/png",
+              "Length": 67,
+              "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+              "UploadedUri": null
+            }
+          },
+          "Reply": {
+            "Id": "cb2b8346977b4d55b1ad86a54c022f36",
+            "RequestId": "9d91f5a96fb04955a883f31bf182f074",
+            "PayloadHash": "E61822D7D12315AD7E42C3FE645F9F2AC6598FE20A4C5BFE3C0ADFD52A59C1E5",
+            "TransportSucceeded": true,
+            "ProtocolAcknowledged": true,
+            "BusinessAccepted": true,
+            "PhysicalCompleted": null,
+            "Slot": null,
+            "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+            "At": "2026-10-18T04:25:32.53417+00:00",
+            "Image": {
+              "CaptureRequestId": "2a881c372aff4a9fb3f6986cca7d0657",
+              "AdmissionId": "unpacked-parcel",
+              "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/2a881c372aff4a9fb3f6986cca7d0657.png",
+              "MediaType": "image/png",
+              "Length": 67,
+              "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+              "UploadedUri": "reference://images/9d91f5a96fb04955a883f31bf182f074"
+            }
+          },
+          "ActualImageBytes": 67,
+          "ActualImageSha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807"
+        },
+        {
+          "Stage": "Plc",
+          "RequestId": "3f6d9e19897d4cbfa3f799c3adb00b8c",
+          "PayloadHash": "49EBF889320A879DD157BE43C8DEAC7A5A607A5DBBD086186856A26BAA814C8F",
+          "Target": "reference://plc/direct-plc",
+          "Attempts": 1,
+          "Executions": 1,
+          "ReceiverRecordSha256": "ade97658dd8b4db16bad39a151706d8cd36d566b528d3e5f99147ccee9646787",
+          "Payload": {
+            "ParcelCode": "000000917",
+            "AdmissionId": "unpacked-parcel",
+            "Weight": {
+              "Value": 2.345,
+              "Unit": "Kg",
+              "Precision": 3,
+              "Source": "Measured",
+              "MeasurementId": "9e88fa9e9018449e89826454a568e371",
+              "Evidence": "reference://weight/smoke:Valid"
+            },
+            "Slot": null,
+            "WcsRequestId": null,
+            "Operator": {
+              "Subject": "alice",
+              "DisplayName": "alice",
+              "Authority": "reference://login/smoke",
+              "SessionId": "69a1b6d58176409da7de242b14cb9d83",
+              "AuthenticatedAt": "2026-10-18T04:25:32.424308+00:00",
+              "Simulation": true
+            },
+            "Image": {
+              "CaptureRequestId": "2a881c372aff4a9fb3f6986cca7d0657",
+              "AdmissionId": "unpacked-parcel",
+              "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/2a881c372aff4a9fb3f6986cca7d0657.png",
+              "MediaType": "image/png",
+              "Length": 67,
+              "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+              "UploadedUri": "reference://images/9d91f5a96fb04955a883f31bf182f074"
+            }
+          },
+          "Reply": {
+            "Id": "403c5879c1304d6aae36bdd0d85aba6b",
+            "RequestId": "3f6d9e19897d4cbfa3f799c3adb00b8c",
+            "PayloadHash": "49EBF889320A879DD157BE43C8DEAC7A5A607A5DBBD086186856A26BAA814C8F",
+            "TransportSucceeded": true,
+            "ProtocolAcknowledged": true,
+            "BusinessAccepted": true,
+            "PhysicalCompleted": false,
+            "Slot": null,
+            "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+            "At": "2026-10-18T04:25:32.887418+00:00"
+          }
+        }
+      ],
+      "ServiceLogSha256": "82735f35565803758b243c8ae9dd52233894cd22fbe519e83f6058c29430f86f"
+    }
+  ]
+}

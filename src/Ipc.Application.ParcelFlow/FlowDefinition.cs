@@ -22,18 +22,20 @@ public abstract class FlowDefinition
             if ((w.Source == WeightSource.Measured) != (c.Scale is not null)) e.Add("Measured weight requires exactly one scale binding");
         }
         if (RequiresWcs != (c.Wcs is not null) || RequiresPlc != (c.Plc is not null)) e.Add("Application capability dependencies do not match the flow");
-        var bindings = new[] { c.Scale, c.Wcs, c.Plc }.OfType<CapabilityBinding>().ToArray();
+        if (c.Images is { } images && (images.Camera is null || images.Uploader is null || images.MaximumBytes is < 68 or > 4194304)) e.Add("Image capture and upload require both bindings and a bounded byte quota");
+        var bindings = new[] { c.Scale, c.Wcs, c.Plc, c.Login, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
         if (bindings.Select(x => x.InstanceId).Distinct().Count() != bindings.Length) e.Add("Capability instances must be independent");
         foreach (var b in bindings)
             if (!ExtensionSchema.IsId(b.InstanceId) || !ExtensionSchema.IsVersion(b.Version) || string.IsNullOrWhiteSpace(b.Target) ||
                 string.IsNullOrWhiteSpace(b.Contract) || string.IsNullOrWhiteSpace(b.Implementation) || b.Parameters is null ||
                 b.Package is not null && (!ExtensionSchema.IsHash(b.Package.ManifestSha256) || string.IsNullOrWhiteSpace(b.Module))) e.Add("Incomplete exact capability identity");
         if (c.Scale is not null && c.Scale.Kind != "weight" || c.Plc is not null && c.Plc.Kind != "plc" || c.Wcs is not null && c.Wcs.Kind != "integration") e.Add("Wrong capability binding kind");
+        if (c.Login is not null && c.Login.Kind != "login" || c.Images is { } i && (i.Camera?.Kind != "camera" || i.Uploader?.Kind != "upload")) e.Add("Wrong optional capability kind");
         e.AddRange(ValidateBusiness(c)); return e.ToArray();
     }
 }
 public sealed record ParcelPorts(IControlledObservationSource Reader, IWeightSource? Weight, IWcsPort? Wcs, IPlcPort? Plc,
-    IReadOnlyDictionary<string, string> ImplementationHashes);
+    IReadOnlyDictionary<string, string> ImplementationHashes, IOperatorAuthenticator? Login = null, IImageCamera? Camera = null, IImageUploader? Uploader = null);
 public interface IParcelCapabilityFactory : IAsyncDisposable
 {
     ParcelConfiguration Normalize(ParcelConfiguration configuration);

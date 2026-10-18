@@ -11,7 +11,7 @@ Directory.CreateDirectory(data);
 using var lease = new ResourceLease(data, ["fixture"]);
 using var receiver = new Receiver(Path.Combine(data, "receiver.db"));
 var builder = WebApplication.CreateBuilder(); builder.WebHost.UseUrls(url); builder.Services.ConfigureHttpJsonOptions(o => { o.SerializerOptions.PropertyNamingPolicy = null; o.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()); });
-var app = builder.Build(); app.Use(async (context, next) => { if (context.Request.ContentLength > 64000) { context.Response.StatusCode = 413; return; } await next(context); });
+var app = builder.Build(); app.Use(async (context, next) => { if (context.Request.ContentLength > (context.Request.Path.StartsWithSegments("/parcel-reference") ? 6000000 : 64000)) { context.Response.StatusCode = 413; return; } await next(context); });
 app.MapGet("/health", () => Results.Text("SIMULATION-v1"));
 app.MapGet("/statistics", () => receiver.Statistics());
 app.MapGet("/requests/{id}", (string id) =>
@@ -29,4 +29,5 @@ app.MapPost("/requests", async (RequestEnvelope envelope, HttpContext context) =
     if (payload.Fault == "Delay") await Task.Delay(3000); // Commit first; may outlive the client's timeout/cancellation.
     return Results.Json(response, Wire.Json);
 });
+ParcelPeerEndpoints.Map(app, Path.Combine(data, "parcel-peers"));
 await app.RunAsync();

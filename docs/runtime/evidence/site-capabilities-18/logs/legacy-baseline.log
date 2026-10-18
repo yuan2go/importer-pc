@@ -1,0 +1,9 @@
+SELECT --baseline: AC/process crash baseline
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-194a7b26ef824412bc78777a7de25a32
+Unhandled exception. System.ComponentModel.Win32Exception (2): An error occurred trying to start process 'dotnet' with working directory '/isolated-source'. No such file or directory
+   at System.Diagnostics.Process.ForkAndExecProcess(ProcessStartInfo startInfo, String resolvedFilename, String[] argv, String[] envp, String cwd, Boolean setCredentials, UInt32 userId, UInt32 groupId, UInt32[] groups, Int32& stdinFd, Int32& stdoutFd, Int32& stderrFd, Boolean usesTerminal, Boolean throwOnNoExec)
+   at System.Diagnostics.Process.StartCore(ProcessStartInfo startInfo)
+   at System.Diagnostics.Process.Start(ProcessStartInfo startInfo)
+   at Program.<<Main>$>g__Start|0_6(String dotnet, String[] args) in /isolated-source/tests/Ipc.Verification/Program.cs:line 504
+   at Program.<Main>$(String[] args) in /isolated-source/tests/Ipc.Verification/Program.cs:line 63
+   at Program.<Main>(String[] args)

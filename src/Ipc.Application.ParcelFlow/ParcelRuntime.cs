@@ -21,9 +21,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     DeviceState? readerHealth;
     string registeredEpoch = Wire.Id();
     long sequence;
-    int accepting, overload;
+    int accepting, overload, pendingObservations;
+    sealed record ParcelObservation(Observation Observation, OperatorIdentity? Operator);
     bool started, stopped, disposed;
     string? failure;
+    OperatorIdentity? currentOperator;
     internal Action<string>? Boundary { get; set; }
     Exception? terminalWorkerFailure;
     public string Id => definition.Id;
@@ -51,6 +53,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json"))) repository.Commit(null, "RestoredIsolated", "Original recovery set loaded; operator must reconcile external effects", paused: true);
         foreach (var op in repository.Load()) operations.Add(op.Id, op);
         repository.ValidateRawInventory();
+        foreach (var op in operations.Values.Where(x => x.Image is not null)) _ = ReadImage(op, op.Image!);
         RecoverLocalFacts();
         var priorEffective = configuration.Current.Effective;
         try
@@ -83,11 +86,19 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             throw; // Caller must fully stop/dispose the failed candidate before a new owner starts.
         }
     }
-    IEnumerable<ICapabilityPort> CapabilityPorts() => new ICapabilityPort?[] { ports?.Weight, ports?.Wcs, ports?.Plc }.OfType<ICapabilityPort>();
+    IEnumerable<ICapabilityPort> CapabilityPorts() => new ICapabilityPort?[] { ports?.Weight, ports?.Wcs, ports?.Plc, ports?.Login, ports?.Camera, ports?.Uploader }.OfType<ICapabilityPort>();
     bool Enqueue(object item)
     {
         if (Volatile.Read(ref accepting) == 0 || Volatile.Read(ref overload) != 0) return false;
+        var observation = item as Observation;
+        if (observation is not null)
+        {
+            var identity = Volatile.Read(ref currentOperator);
+            if (Effective.Login is not null && identity is null) return false;
+            item = new ParcelObservation(observation, identity); Interlocked.Increment(ref pendingObservations);
+        }
         if (ingress!.Writer.TryWrite(item)) return true;
+        if (observation is not null) Interlocked.Decrement(ref pendingObservations);
         Interlocked.Exchange(ref overload, 1);
         // Small durable independent marker: a full queue must not hide callback loss.
         try { ExtensionStore.AtomicWrite(overloadMarker!, new { At = DateTimeOffset.UtcNow, Reason = "Callback queue full; inspect the same physical parcel before resuming" }); }
@@ -103,18 +114,18 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 await gate.WaitAsync().ConfigureAwait(false);
                 try
                 {
-                    if (item is Observation o) await ObserveAsync(o).ConfigureAwait(false);
+                    if (item is ParcelObservation o) await ObserveAsync(o.Observation, o.Operator).ConfigureAwait(false);
                     else if (item is WeightMeasurement m) await MeasureAsync(m).ConfigureAwait(false);
                 }
-                finally { gate.Release(); }
+                finally { if (item is ParcelObservation) Interlocked.Decrement(ref pendingObservations); gate.Release(); }
             }
         }
         catch (Exception ex)
         { failure = "Application worker failed: " + ex.GetType().Name + ": " + ex.Message; Interlocked.Exchange(ref accepting, 0); throw; }
     }
-    async Task ObserveAsync(Observation o)
+    async Task ObserveAsync(Observation o, OperatorIdentity? admittedOperator)
     {
-        if (repository!.Paused || failure is not null || operations.Values.Any(NeedsReconciliation))
+        if (repository!.Paused || failure is not null || operations.Values.Any(NeedsReconciliation) || Effective.Login is not null && admittedOperator is null)
         { repository.Commit(null, "ObservationBlocked", "Paused/faulted/unresolved responsibility; source event=" + o.SourceEventId); return; }
         if (o.DeviceId != Effective.Reader.DeviceId || o.Epoch != registeredEpoch || o.Sequence <= sequence ||
             o.Kind != "Read" || o.Codes.Length != 1 || o.Codes[0] is not { Length: > 0 and <= 256 } || o.Codes[0].Any(char.IsControl) ||
@@ -136,7 +147,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         var op = new ParcelOperation(Wire.Id(), o.AdmissionId, o.Codes[0], observationId, o.ObservedAt,
             Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes),
             Effective.Weight, weight, Effective.Weight.Source == WeightSource.Measured ? ParcelState.WaitingWeight : ParcelState.Prepared,
-            null, null, null, Effective.Weight.Source == WeightSource.Measured ? "Waiting for a valid measurement of this same parcel" : null);
+            null, null, null, Effective.Weight.Source == WeightSource.Measured ? "Waiting for a valid measurement of this same parcel" : null,
+            Operator: admittedOperator);
         Save(op, "ParcelObserved", "One admitted parcel; code is not entity identity");
         if (op.State != ParcelState.WaitingWeight) await AdvanceAsync(op).ConfigureAwait(false);
     }
@@ -153,28 +165,34 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     }
     void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null)
     { repository!.Commit(op, eventName, detail, occurrence: occurrence); operations[op.Id] = op; journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision }); }
-    static bool NeedsReconciliation(ParcelOperation op) => op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.Blocked;
-    static bool IsSettled(ParcelOperation op) => op.State is ParcelState.SlotResolved or ParcelState.PhysicalCompleted or ParcelState.WcsRejected or ParcelState.PlcRejected;
+    static bool NeedsReconciliation(ParcelOperation op) => op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.ImageUnknown or ParcelState.Blocked;
+    static bool IsSettled(ParcelOperation op) => op.State is ParcelState.SlotResolved or ParcelState.PhysicalCompleted or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.ImageRejected;
     FrozenRequest Prepare(ParcelOperation op, string stage, CapabilityBinding binding, string? slot, string? wcsRequest)
     {
-        var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest));
+        var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest, op.Operator, op.Image));
         return new(Wire.Id(), Id, op.Id, op.AdmissionId, stage, binding, op.ImplementationHashes[binding.InstanceId],
             op.ConfigurationHash, payload, Wire.Hash(payload), DateTimeOffset.UtcNow);
     }
     async Task AdvanceAsync(ParcelOperation op)
     {
-        if (stopping.IsCancellationRequested || Volatile.Read(ref overload) != 0 || repository!.Paused) return;
+        if (!CanDispatch(op)) return;
+        if (op.FrozenConfiguration.Images is not null)
+        {
+            op = await AdvanceImagesAsync(op).ConfigureAwait(false);
+            if (op.Upload?.State != StageState.Accepted) return;
+        }
         if (definition.RequiresWcs && op.Wcs is null)
         {
             var request = Prepare(op, "wcs-slot", op.FrozenConfiguration.Wcs!, null, null);
             op = op with { Wcs = new(request, StageState.Prepared, 0, []), State = ParcelState.ResolvingWcs };
             Save(op, "WcsPrepared", "T1: frozen original WCS intent");
-            op = await ExecuteStageAsync(op, true, false).ConfigureAwait(false);
         }
+        if (op.Wcs is { State: StageState.Prepared, Attempts: 0 })
+            op = await ExecuteStageAsync(op, ParcelStage.Wcs, false).ConfigureAwait(false);
         if (definition.RequiresPlc && (op.Wcs is null || op.Wcs.State == StageState.Accepted) && op.Plc is null)
         { op = PreparePlc(op); Save(op, "PlcPrepared", "T1: original PLC command linked to accepted WCS result"); }
         if (op.Plc?.State == StageState.Prepared && !stopping.IsCancellationRequested)
-            await ExecuteStageAsync(op, false, false).ConfigureAwait(false);
+            await ExecuteStageAsync(op, ParcelStage.Plc, false).ConfigureAwait(false);
     }
     ParcelOperation PreparePlc(ParcelOperation op) => op with
     {

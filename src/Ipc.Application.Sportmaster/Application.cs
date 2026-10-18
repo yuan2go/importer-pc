@@ -8,7 +8,7 @@ public sealed class SportmasterFlow : FlowDefinition
     public override string Id => "sportmaster";
     public override bool RequiresWcs => true;
     public override bool RequiresPlc => false;
-    public override string[] ValidateBusiness(ParcelConfiguration c) { return c.Weight.Source != WeightSource.Disabled ? ["Sportmaster does not participate in weight or PLC"] : []; }
+    public override string[] ValidateBusiness(ParcelConfiguration c) { return []; }
 }
 public static class SportmasterApplication
 {

@@ -2,9 +2,13 @@
 
 ## 当前工程入口
 
-最新核验main **6e9c890a7483c3006b3448c203570ef2ca19ed25**，PR16已合并，开工查无开放PR。当前工作包为[APPLICATION-CONVERGENCE-17](work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)：有效设计、兼容映射和17-01～08验收在此集中定义；16及更早报告保持原形成时结论。[前置原字节及替代关系](archive/pre-application-convergence-17/README.md)。Windows实际客户端NOT_RUN，真实SDK/PLC/WCS合同及现场BLOCKED。
+本轮基线 **d3a757d6314a2d690bcfc4e7763cfd4849b97319**，PR17已合并，开工无开放PR；当前交付[PR #18](https://github.com/yuan2go/importer-pc/pull/18)待审，任务[场地能力18](work-packages/WP-IPC-SITE-CAPABILITIES-18.md)。[18能力矩阵与运行指南](runtime/site-capabilities-18.md)；下方17入口及6e9c890指17开工时基线，不能当作当前远端状态。
+
+17开工时main **6e9c890a7483c3006b3448c203570ef2ca19ed25**，PR16当时已合并；17原工作包为[APPLICATION-CONVERGENCE-17](work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)：有效设计、兼容映射和17-01～08验收在此集中定义；16及更早报告保持原形成时结论。[前置原字节及替代关系](archive/pre-application-convergence-17/README.md)。Windows实际客户端NOT_RUN，真实SDK/PLC/WCS合同及现场BLOCKED。
 
 |入口|阅读目的|
+|---|---|
+|[18结果](runtime/site-capabilities-18-results.md)、[能力/配置](runtime/site-capabilities-18.md)、[证据](runtime/evidence/site-capabilities-18/README.md)|24组合及三独立HTTP链，原身份/图像恢复，Windows NOT_RUN、真实能力BLOCKED。|
 |[17完成矩阵](runtime/application-convergence-17-results.md)、[checks](runtime/application-convergence-17-checks.json)及[候选](https://github.com/yuan2go/importer-pc/releases/tag/application17-reference-f184a6b)|最终源码/三链/扩展/包验证；Windows NOT_RUN、真实能力BLOCKED。|
 |[17实际职责/运行/接入/恢复](runtime/application-convergence-17.md)、[Windows后验](runtime/validation/application-convergence-17-windows.md)|三个Application和实际WPF选择、重量/原阶段恢复；Supply/Inspection兼容边界。|
 |---|---|

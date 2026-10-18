@@ -47,5 +47,7 @@
   "Extensions": null,
   "QueueCapacity": 64,
   "TimeoutMs": 1500,
-  "MaximumOperations": 10000
+  "MaximumOperations": 10000,
+  "Login": null,
+  "Images": null
 }

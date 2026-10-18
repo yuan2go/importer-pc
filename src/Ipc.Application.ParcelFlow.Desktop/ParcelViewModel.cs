@@ -1,4 +1,5 @@
 using System.IO;
+using System.Windows;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -16,16 +17,27 @@ public class ParcelViewModel(IParcelApplication application, string title, strin
     ParcelSnapshot? snapshot;
     ParcelOperation? selected;
     string message = "等待相机读码；模拟工程不操作真实设备。";
-    public ParcelSnapshot? Snapshot { get => snapshot; private set { snapshot = value; Changed(); Changed(nameof(Operations)); Changed(nameof(Current)); Changed(nameof(BlockingReasons)); Changed(nameof(Status)); Changed(nameof(CurrentWeight)); Changed(nameof(CurrentStage)); Changed(nameof(CurrentSlot)); Changed(nameof(Health)); Changed(nameof(ConfigurationState)); } }
+    public ParcelSnapshot? Snapshot { get => snapshot; private set { snapshot = value; Changed(); Changed(nameof(Operations)); Changed(nameof(Current)); Changed(nameof(BlockingReasons)); Changed(nameof(Status)); Changed(nameof(CurrentWeight)); Changed(nameof(CurrentStage)); Changed(nameof(CurrentSlot)); Changed(nameof(Health)); Changed(nameof(ConfigurationState)); Changed(nameof(LoginVisibility)); Changed(nameof(Session)); Changed(nameof(OperationOperator)); Changed(nameof(CurrentImage)); } }
     public ParcelOperation[] Operations => Snapshot?.Operations ?? [];
     public ParcelOperation? Current => Snapshot?.Operations.FirstOrDefault();
     public string BlockingReasons => string.Join("\n", Snapshot?.BlockingReasons ?? []);
     public string Status => Snapshot?.State ?? "正在初始化";
     public string Health => string.Join("   ·   ", Snapshot?.Health.Select(x => x.InstanceId + " " + (x.Ready ? "参考就绪" : "未就绪") + " " + x.ConfirmedAt.ToLocalTime().ToString("HH:mm:ss")) ?? []);
+    public Visibility LoginVisibility => Snapshot?.Configuration.Effective.Login is null ? Visibility.Collapsed : Visibility.Visible;
+    public string OperatorSubject { get; set; } = "alice";
+    public string Session => Snapshot?.Configuration.Effective.Login is null ? "登录未启用" : Snapshot.CurrentOperator is { } user ? "当前操作员：" + user.DisplayName + " · 模拟身份" : "等待操作员认证";
+    public string OperationOperator => Current?.Operator is { } user ? "原作业操作员：" + user.DisplayName + " · " + user.SessionId : "原作业没有登录身份";
+    public string CurrentImage => Current?.Image is { } image ? (image.UploadedUri is null ? "图像已采集，上传未确认" : "图像已上传 · " + image.UploadedUri) : Snapshot?.Configuration.Effective.Images is null ? "传图未启用" : "图像尚未取得";
+    public async Task LoginAsync(string proof) { var r = await application.LoginAsync(OperatorSubject, proof); Message = r.Status + " · " + r.Reason; }
+    public async Task LogoutAsync() { var r = await application.LogoutAsync(); Message = r.Status + " · " + r.Reason; }
     public string CurrentSlot => Current?.Slot ?? "未取得";
     public string CurrentWeight => Current?.Weight is { } w ? w.Value.ToString("F" + w.Precision, CultureInfo.InvariantCulture) + " " + w.Unit + " · " + (w.Source == WeightSource.Measured ? "实测参考输入" : "配置补全") : "未参与或未取得；见当前重量策略";
     public string CurrentStage => Current is null ? "等待包裹入场" : Current.State switch
     {
+        ParcelState.ImageUnknown => "图像阶段待核对 · 禁止重传或重复放货",
+        ParcelState.ImageRejected => "图像阶段拒绝 · 后续业务未发送",
+        ParcelState.CapturingImage => "正在采集当前包裹图像",
+        ParcelState.UploadingImage => "正在上传原图像",
         ParcelState.WaitingWeight => "等待同一包裹的有效重量",
         ParcelState.SlotResolved => "WCS 格口已取得",
         ParcelState.PlcAccepted => "PLC 业务已接受 · 物理完成待核对",
@@ -84,6 +96,7 @@ public class ParcelViewModel(IParcelApplication application, string title, strin
     { if (Snapshot is null) return; var r = await application.StageConfigurationAsync(Snapshot.Configuration.Revision, Wire.Decode<ParcelConfiguration>(ConfigurationDraft)); Message = r.Status + " · " + r.Reason; }
     public async Task ReconcileAsync()
     { var op = Selected ?? Current ?? throw new InvalidOperationException("选择原作业"); var r = await application.ReconcileAsync(op.Id); Message = r.Status + " · " + r.Reason; }
+    public async Task ContinueAsync() { var op = Selected ?? Current ?? throw new InvalidOperationException("选择原作业"); await CommandAsync("ContinuePrepared", op.Id); }
     public async Task ReconnectAsync() { var r = await application.ReconnectAsync(); Message = r.Status + " · " + r.Reason; }
     public async Task BackupAsync() { var r = await application.BackupAsync(BackupPath); Message = r.Status + " · " + r.Reason; }
     protected void Changed([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new(name));

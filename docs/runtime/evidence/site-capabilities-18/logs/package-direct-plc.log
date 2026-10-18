@@ -1,0 +1,21 @@
+  正在确定要还原的项目…
+  已还原 /isolated-source/src/Ipc.Platform/Ipc.Platform.csproj (用时 519 毫秒)。
+  已还原 /isolated-source/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 519 毫秒)。
+  已还原 /isolated-source/src/Ipc.Components/Ipc.Components.csproj (用时 519 毫秒)。
+  已还原 /isolated-source/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 519 毫秒)。
+  已还原 /isolated-source/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 519 毫秒)。
+  已还原 /isolated-source/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 519 毫秒)。
+  已还原 /isolated-source/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 519 毫秒)。
+  已还原 /isolated-source/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 519 毫秒)。
+  已还原 /isolated-source/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 4 毫秒)。
+  Ipc.Platform -> /isolated-source/.artifacts/site18-08595e9/direct-plc/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /isolated-source/.artifacts/site18-08595e9/direct-plc/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /isolated-source/.artifacts/site18-08595e9/direct-plc/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /isolated-source/.artifacts/site18-08595e9/direct-plc/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> /isolated-source/.artifacts/site18-08595e9/direct-plc/build-intermediates/bin/Ipc.Application.DirectPlc/release/Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> /isolated-source/.artifacts/site18-08595e9/direct-plc/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /isolated-source/.artifacts/site18-08595e9/direct-plc/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /isolated-source/.artifacts/site18-08595e9/direct-plc/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Assembly -> /isolated-source/.artifacts/site18-08595e9/direct-plc/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> /isolated-source/.artifacts/site18-08595e9/direct-plc/app/
+{"Package": "/isolated-source/.artifacts/site18-08595e9/direct-plc.zip", "Sha256": "969d315efd2cf58ffe9d075921d84e7f996d92466464737754a100e923cdbac2", "SourceCommit": "08595e9243ccd9981fc419b8074f67c836644248", "Application": "direct-plc", "Target": "portable"}

@@ -1,0 +1,79 @@
+{
+  "SchemaVersion": 1,
+  "ApplicationId": "direct-plc",
+  "StationId": "reference-18",
+  "Mode": "Simulation",
+  "Weight": {
+    "Source": "Measured",
+    "Unit": "Kg",
+    "Precision": 3,
+    "ConfiguredValue": null,
+    "MaximumAgeMs": 3000
+  },
+  "Reader": {
+    "Role": "parcel-reader",
+    "Driver": "manual",
+    "DeviceId": "direct-plc.camera",
+    "Revision": "1",
+    "ReplayFile": null
+  },
+  "Scale": {
+    "Kind": "weight",
+    "Implementation": "reference-weight",
+    "Version": "1.0.0",
+    "InstanceId": "direct-plc.weight",
+    "Target": "reference://weight/direct-plc",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {}
+  },
+  "Wcs": null,
+  "Plc": {
+    "Kind": "plc",
+    "Implementation": "reference-plc",
+    "Version": "1.0.0",
+    "InstanceId": "direct-plc.plc",
+    "Target": "reference://plc/direct-plc",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {
+      "complete-on-query": "true"
+    },
+    "Package": null,
+    "Module": null
+  },
+  "Extensions": null,
+  "QueueCapacity": 64,
+  "TimeoutMs": 1500,
+  "MaximumOperations": 10000,
+  "Login": {
+    "Kind": "login",
+    "Implementation": "reference-login",
+    "Version": "1.0.0",
+    "InstanceId": "direct-plc.login",
+    "Target": "reference://login/direct-plc",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {
+      "subjects": "alice,bob"
+    }
+  },
+  "Images": {
+    "Camera": {
+      "Kind": "camera",
+      "Implementation": "reference-camera",
+      "Version": "1.0.0",
+      "InstanceId": "direct-plc.camera",
+      "Target": "reference://camera/direct-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    },
+    "Uploader": {
+      "Kind": "upload",
+      "Implementation": "reference-upload",
+      "Version": "1.0.0",
+      "InstanceId": "direct-plc.upload",
+      "Target": "reference://upload/direct-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    },
+    "MaximumBytes": 4194304
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "SourceCommit": "08595e9243ccd9981fc419b8074f67c836644248",
+  "Logs": [
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/baseline.log",
+      "OriginalSha256": "5975a942af6efa2bf8cf7e70d19f8dc74fc3f0cd23b54e36f488a701c3eed674",
+      "PublicSha256": "5975a942af6efa2bf8cf7e70d19f8dc74fc3f0cd23b54e36f488a701c3eed674",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/first-build.log",
+      "OriginalSha256": "374d90755d3cdd9122d023dda36310828124451fc4d3e857748d6a2ee5789a10",
+      "PublicSha256": "9a454fbc7ca2b43fc86a888c7dafc38857fc55b743e3e3dc1750b14dd3dd9196",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/optional-first.log",
+      "OriginalSha256": "8a2414ca9de13eeb4f51fd3f9b721c32547979e26a3c86cce91bcb75aa2a30c5",
+      "PublicSha256": "0c26c241535e137d5d696f435a4c994718a87182f75cb2d84bf8d633c606ad15",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/optional-final.log",
+      "OriginalSha256": "d07d15fd28f1b4d4268b30f263f9aa67d2c565978cdbdae23f19b75dd8658a0d",
+      "PublicSha256": "d07d15fd28f1b4d4268b30f263f9aa67d2c565978cdbdae23f19b75dd8658a0d",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/legacy-baseline.log",
+      "OriginalSha256": "75411e3beef1b96ed8054d5b70c5dc8f7daf439bafc86b40fc8550e2458bf6fc",
+      "PublicSha256": "da95faf8c9d543d911af2c812042de474b083eba4fad44f78d8c65884a74f803",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/optional-admission-final.log",
+      "OriginalSha256": "d3abc292522d5574329a2efb4a2d654018e409319a814bd68231d1c203a3d31d",
+      "PublicSha256": "d3abc292522d5574329a2efb4a2d654018e409319a814bd68231d1c203a3d31d",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/core-serial-build.log",
+      "OriginalSha256": "37e9041e00858397e88914b1eb3b509a35fc37815480b61951b1b4191a1153d6",
+      "PublicSha256": "275af915657d1f50177ef1eeb1071248eb1273934ebd2f418129a1f62bd1e118",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/optional-serial.log",
+      "OriginalSha256": "cf6b01afc7bf9099fc2e91e91272809a322fac1586456bf67a483480246592f7",
+      "PublicSha256": "cf6b01afc7bf9099fc2e91e91272809a322fac1586456bf67a483480246592f7",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/application-serial.log",
+      "OriginalSha256": "bad590462bea871c3acc2aab35c13d9cd7944aee0cbe5444c30273c4761e15a4",
+      "PublicSha256": "bad590462bea871c3acc2aab35c13d9cd7944aee0cbe5444c30273c4761e15a4",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/fixture-final.log",
+      "OriginalSha256": "b1db6744ae69ba9868f9c8ae5b6b557f8ddc1105efe426cc6a9f077d143b9cf6",
+      "PublicSha256": "8f58a76073e93dc677a13a8415e63a89beb1ff3f454aab82db06ee4f63bd1c9f",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/legacy-baseline-final.log",
+      "OriginalSha256": "834bb92c2a4e68741ff3bce7e7da331ece47c09b3c50959ca83f2f88cf73972f",
+      "PublicSha256": "a77e61773ca80ee99e17a98560fbc479a8964899055061b271fd336f9bd9d0de",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/legacy-architecture-final.log",
+      "OriginalSha256": "a8d6d4a538658bfcccf928357f5dd5ec97a6ced3001d55588c0b5dc119f8cdd2",
+      "PublicSha256": "a8d6d4a538658bfcccf928357f5dd5ec97a6ced3001d55588c0b5dc119f8cdd2",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/packaging-tests.log",
+      "OriginalSha256": "4c33006f16d44d2376e8eb4c68ae2105d5e1fed7cbb00f21afe9331ceaf1d2f5",
+      "PublicSha256": "4c33006f16d44d2376e8eb4c68ae2105d5e1fed7cbb00f21afe9331ceaf1d2f5",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/wpf-sportmaster-final.log",
+      "OriginalSha256": "1400088b8955da561a926490b29808fff6987046eb9306ae7889177c896c675e",
+      "PublicSha256": "303953eeb940b76618d00e2f996bbcc2cea63f4695902f3e9726b772157ffdce",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/wpf-direct-plc-final.log",
+      "OriginalSha256": "e42e40c99730648df9ccef8bf9658a50316fd1f962fad827a0a9b5f54a6a17b8",
+      "PublicSha256": "01cf24aceb794ff036e807e352fca7ea634c1910e9df6888a035f2d1aa3a593d",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/wpf-wcs-to-plc-final.log",
+      "OriginalSha256": "9817dd726f1d12b81abd56573c0ceda6ae9eb82de2ff4cc629c4be44208c6bf0",
+      "PublicSha256": "73fc6b600cf9f675bb02fc5b2b3a6813591db4db98437b5c6d48f1cfc4d27bca",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/restore-sportmaster-windows.log",
+      "OriginalSha256": "6760e4972aef1bfb0d7db1f5ca71ef997f701773c250c3a517bd8b8e8b4b9bcb",
+      "PublicSha256": "6612803564d0977ad3f8072809d3943196c6174fb7f01eb0577ea322ceb25a6c",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/restore-direct-plc-windows.log",
+      "OriginalSha256": "aa88a89ea213a8b877b32eb5802200ea2e7ebf36ef4f1c5d8a5fa4e4a4d9e7d6",
+      "PublicSha256": "4e02b80b0df6ca75c88b0948dc5ab6243ea765d0ab3b4346a608d9e99bae72b8",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/restore-wcs-to-plc-windows.log",
+      "OriginalSha256": "4c88acfc4e517555b2798be7b440092de2fe9cc167d0679ddf75651bab63304f",
+      "PublicSha256": "4091ac1710e6995120d26f8c709918b280ce0bd4523845c34c15dd5bae65a4d4",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/package-sportmaster.log",
+      "OriginalSha256": "0ebbcd6807dbe4042e85d7240b3512a06b97ea842d2d7ed595ddbe9d620eaf3b",
+      "PublicSha256": "eb22b7380eb260987cb5ab66858ea6edfa2d7d9bd0b9984659f1663144babd9a",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/package-direct-plc.log",
+      "OriginalSha256": "f5aae7f9f4bf4037ca5476e06fd50d9d0f0a3893e1cea6cc1d4451ffa030a2a5",
+      "PublicSha256": "538037ee83e0832296480699c49302df9aec2bb9c664fad36ebeb387b7f7f896",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/package-wcs-to-plc.log",
+      "OriginalSha256": "b11e40a2d79d95b8a6cb3d643cfc7c25c63370cd8e4e1a99372ed645f09bd320",
+      "PublicSha256": "4b41c8e12f850b53c1ff570c3299efedb13d07ceeaac217163603deada01ad5e",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/smoke-sportmaster-default.log",
+      "OriginalSha256": "65356f05ede0a837af8716bd2ba649bef240a08b7e9b1e9ba85c53ed6389a591",
+      "PublicSha256": "65356f05ede0a837af8716bd2ba649bef240a08b7e9b1e9ba85c53ed6389a591",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/smoke-sportmaster-options-http.log",
+      "OriginalSha256": "b9d59629b43d0436b91fbfd362c4b583699643d201b16601b0fa1600ee37d0a3",
+      "PublicSha256": "b9d59629b43d0436b91fbfd362c4b583699643d201b16601b0fa1600ee37d0a3",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/smoke-direct-plc-default.log",
+      "OriginalSha256": "4db88f3517cb86b374366c7c54714768b1c840eb957cffb33b6dbf2fb3f124e6",
+      "PublicSha256": "4db88f3517cb86b374366c7c54714768b1c840eb957cffb33b6dbf2fb3f124e6",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/smoke-direct-plc-options-http.log",
+      "OriginalSha256": "4ed8f171394d64528d15478eed5f194746714bd1a47fb8c67a6f65ad5cdd7017",
+      "PublicSha256": "4ed8f171394d64528d15478eed5f194746714bd1a47fb8c67a6f65ad5cdd7017",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/smoke-wcs-to-plc-default.log",
+      "OriginalSha256": "ecf44e90d1d6d43de0d85aea8d85ca243597abea57df0ebab07c82f371f2864e",
+      "PublicSha256": "ecf44e90d1d6d43de0d85aea8d85ca243597abea57df0ebab07c82f371f2864e",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/smoke-wcs-to-plc-options-http.log",
+      "OriginalSha256": "aed9a1ec568632321ca14de1bf2b45c2cd7e622ecaac86951d8e0dc0eec8757c",
+      "PublicSha256": "aed9a1ec568632321ca14de1bf2b45c2cd7e622ecaac86951d8e0dc0eec8757c",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/image-recovery-build.log",
+      "OriginalSha256": "5d1fc565626dd6150d10f25213f27cd2738b0d39d770c50c16b000a90ca976f4",
+      "PublicSha256": "5ae15a98c6bac288f4d212aea261a5b71dc06644a8b1b894fd681bb3c778aec6",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/image-recovery-final.log",
+      "OriginalSha256": "59b985c96a03ba6e870a6a86f8a77e23ed5cda7fa58856b2be90394809ae7eec",
+      "PublicSha256": "59b985c96a03ba6e870a6a86f8a77e23ed5cda7fa58856b2be90394809ae7eec",
+      "Sanitization": "Replace only worktree and SDK absolute paths"
+    },
+    {
+      "Path": "docs/runtime/evidence/site-capabilities-18/logs/archive-tests.log",
+      "OriginalSha256": "8e18e448c03b3d66ed25c520c79b849c89a9d4ff7b8fb3d50ce62745fbd8dbcd",
+      "PublicSha256": "8e18e448c03b3d66ed25c520c79b849c89a9d4ff7b8fb3d50ce62745fbd8dbcd",
+      "Sanitization": "Replace only worktree absolute path"
+    }
+  ]
+}

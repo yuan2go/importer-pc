@@ -1,0 +1,5 @@
+MSBUILD : error MSB4166: 子节点“6”过早退出。正在关闭。可以在“/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/MSBuildTempJcwOm8/”中的文件中找到诊断信息，并将其命名为 MSBuild_*.failure.txt。通过将 MSBUILDDEBUGPATH 环境变量设为其他目录，可更改此位置。
+MSBUILD : error MSB4166: 子节点“5”过早退出。正在关闭。可以在“/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/MSBuildTempJcwOm8/”中的文件中找到诊断信息，并将其命名为 MSBuild_*.failure.txt。通过将 MSBUILDDEBUGPATH 环境变量设为其他目录，可更改此位置。
+MSBUILD : error MSB4166: 子节点“7”过早退出。正在关闭。可以在“/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/MSBuildTempJcwOm8/”中的文件中找到诊断信息，并将其命名为 MSBuild_*.failure.txt。通过将 MSBUILDDEBUGPATH 环境变量设为其他目录，可更改此位置。
+
+生成失败。请修复生成错误并重新运行。

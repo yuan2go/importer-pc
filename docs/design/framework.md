@@ -1,3 +1,5 @@
+> 当前任务：[SITE-CAPABILITIES-18](../work-packages/WP-IPC-SITE-CAPABILITIES-18.md)，基线 main `d3a757d`（PR17已合并）。独立复核并增量补齐三场景可选登录、称重、采图上传；17原实现/证据按形成时解释。原字节见[归档](../archive/pre-site-capabilities-18/README.md)。真实协议/现场及Windows边界不变。
+
 > 当前任务：[APPLICATION-CONVERGENCE-17](../work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)，基线main `6e9c890`。17替代16当前任务指引；Supply专属箱/双通道/数量不推广到其他Application。历史正文保留形成时语境，原字节见[归档](../archive/pre-application-convergence-17/README.md)。
 
 > 16形成时任务为 [UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，基线 main `12a40b3`（PR15已合并）。15的实现及历史证据继续有效；本包只收敛指定UI、维护职责、独立扩展工具和健康续期写放大。有效F/D/RV要求不降低。修改前原字节见 [归档](../archive/pre-ui-maintainability-16/README.md)。

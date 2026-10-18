@@ -1,6 +1,6 @@
-> PR24剩余R03代码整改与必要参考验证完成，待独立复审：[固定源码/结果/边界](runtime/architecture-quality-closure-01-r03-results.md)。3f6f762原审查CHANGES_REQUIRED及历史失败保留；旧候选不取得新源码资格。
+> PR24独立复审已归档：[固定head原报告、证据和未验证边界](reviews/pr24-independent-rereview-f862c2a/README.md)。f862c2a限定参考范围无剩余代码阻断；2026-10-19用户授权归档后精确head合并，本轮不重复测试或打包，合并身份读取PR。
 
-> PR24本轮交付：[五项整改、固定源码与复审证据](runtime/architecture-quality-closure-01-rereview-results.md)，供复审、不合并main。原候选与历史失败保持身份。
+> 前轮历史结果：[五项整改证据](runtime/architecture-quality-closure-01-rereview-results.md)及[R03修复记录](runtime/architecture-quality-closure-01-r03-results.md)。原报告、候选与历史失败保持形成时身份，Windows/真实SDK/协议/现场门禁不因合并关闭。
 
 > 当前整改：[质量闭环01](work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)及[运行/迁移/扩展指南](runtime/architecture-quality-closure-01.md)。[整改前入口原字节](archive/pre-architecture-quality-closure-01/README.md)。不以22旧PASS关闭新审查问题。
 

@@ -1,4 +1,4 @@
-> PR24 R03在445e1f62bf01fe21e5f13576d2f483292571b709完成schema1/2/3去重前统一库存校验；三类消费者及真实卸载验证通过，待独立复审，见[本轮结果](architecture-quality-closure-01-r03-results.md)。原审查/候选/失败保持身份，Windows/真实现场边界不变。
+> PR24固定f862c2ae2ad00ab79ceff5e2013c2a5593d05234独立复审在限定参考范围未发现剩余代码阻断，R03和R01～R05回归通过，见[独立原报告/证据](../reviews/pr24-independent-rereview-f862c2a/README.md)。2026-10-19用户授权归档后按精确head合并；本轮不重复测试/打包，Windows及真实现场边界不变。
 
 # 质量闭环01 · 运行、维护与兼容
 

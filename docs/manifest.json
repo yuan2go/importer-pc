@@ -172,9 +172,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "20de7425f1a2640d2b0f149504050233691d2ec7c7e03fddbf9d80b1f11956c1",
-      "size_bytes": 5808,
-      "git_blob": "eed20e1f654024cc0b35605cdfcf551272b0cd88",
+      "sha256": "0e74c632a1bf14fb36dfd7069ff53ec7caa1a5cf59246d41ddf60cd3e152f687",
+      "size_bytes": 5895,
+      "git_blob": "9276be024073d0039a52b5364df3993a26942b81",
       "version": "architecture-quality-closure-01",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
@@ -327,9 +327,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "e9a68a03a2c61e8f4884784dfea32c61dacd3bb2df3d03f18e969153f369af5b",
-      "size_bytes": 9627,
-      "git_blob": "eb5505163d42ad80ee4562726c1d97e37ad475a6",
+      "sha256": "d46f95655596e10bf7a6243892129c6e3cb176c28d5cc56254db4cb989ce4b9a",
+      "size_bytes": 9764,
+      "git_blob": "c9a9221efaae91d087846663c01c622a7a10cec7",
       "version": "architecture-quality-closure-01",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
@@ -2714,9 +2714,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
       "path": "docs/design/architecture-quality-closure-01.md",
-      "sha256": "9f8392bc89f25fce1b6bb33a7f00523ba67b79dc39a0682b22fd60e53e5b28fe",
-      "size_bytes": 17055,
-      "git_blob": "ae622a43999debcdff9f55270b66f484b85296dd"
+      "sha256": "844cfb9e0c489285ab057e7b66272b5f38afa0a6cfef04c81a9b6faf49c81797",
+      "size_bytes": 17508,
+      "git_blob": "9256d0a8e5680f25d13209d009f156fe7177a729"
     },
     {
       "path": "docs/design/capability-reliability-20.md",
@@ -3068,6 +3068,226 @@
       "storage_scope": "public_repository"
     },
     {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/README.md",
+      "sha256": "e4f01fc1597cd9b0d51eec4ab3c440a1b80d3d774923e57878d79b318e7cea71",
+      "size_bytes": 3867,
+      "git_blob": "25f31e0c60095d346ce63058d95b77c82d3255ae"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/archive-identity.json",
+      "sha256": "d9ad751cf4aa240050525138022a1d6f08311f3e4e34fe11bea4f7beba5ae19c",
+      "size_bytes": 4668,
+      "git_blob": "e2a88885894d70513fef6024c27bf9543d2fa228"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/host-custody.json",
+      "sha256": "04d71c9489f1acec5f6f9b25229a2cb24a9606ddbb0b0758d089f59f2db71347",
+      "size_bytes": 47185,
+      "git_blob": "8a324257b883358b6e3825c1aa95c10c7e98d155"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/merge-preparation.json",
+      "sha256": "99af638e00892442f69c1822c595f99a6590f5a4fb1054bc88570bd5b3c1ed1c",
+      "size_bytes": 1268,
+      "git_blob": "f1ba6ca31e585c42ba2ee56f9ea4fa6b2b6f7c54"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/REPORT.md",
+      "sha256": "6274263d0eab8d512d9cd82b3814c26d3b5a286c92e8a2a8d2de170038851577",
+      "size_bytes": 8478,
+      "git_blob": "a53f8d6ea0e4d1bff4a429d8e03dde9429cb6ec0"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/SHA256SUMS",
+      "sha256": "a14b5143432876e14765b1d95c779b2d31cf67be47aa654a47277b3c1a096b40",
+      "size_bytes": 1285,
+      "git_blob": "4ddd51ea2e1ca08a584f4235774b0bba2a0ce265"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/build.log",
+      "sha256": "93a275ccf7d2d5b095bfd6577af232af9d22d6e1f6776fd17710d046c2a7d0c8",
+      "size_bytes": 4881,
+      "git_blob": "2fcae31bf00da8c50906565476b3cee303dc5eed"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/capabilities-1.6.11-independent.ipcx.identity.json",
+      "sha256": "3913984ba51a4ebd254cbf0d22cc2997f2d240f6fe6cf069b010e041e454db45",
+      "size_bytes": 1320,
+      "git_blob": "273cea64366dfe2c077fbac0670478247a76dce1"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/extensions.log",
+      "sha256": "a1c3dbb5036d861992fd3d0e97bc3c6cf1b8a0120b57258dcfe770f05768624c",
+      "size_bytes": 4435,
+      "git_blob": "19cae4415d03e3c66ba7b091d40a70e6e9abfb66"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/host-build.log",
+      "sha256": "430324fa29c0a3421e8d40540ee03ac21bcec70448684f30a6f7079b3e4505fe",
+      "size_bytes": 4183,
+      "git_blob": "67a736c15791d7e7f6848d44980f3a75e202c956"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/inventory.log",
+      "sha256": "43144c03fe9fa81e3e629103755182e9f7d1b5ce945b1808cddd5f9364330502",
+      "size_bytes": 14087,
+      "git_blob": "580760a8cb4491ae29c303647db352a31e6ff226"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/probe/Probe.csproj",
+      "sha256": "fa067a38a481a8e3acc20d0a993146699575d74fd1c526aa264d68d3ff71fc4e",
+      "size_bytes": 311,
+      "git_blob": "87d81719b5f68d3325cd5c4f7ab76013af502602"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/probe/Program.cs",
+      "sha256": "460d4feb800846d9f2ffbd072f316f3335475c1d07c2668887f7ff90d6e7d3f8",
+      "size_bytes": 3420,
+      "git_blob": "1e725b41f0c426d93439ce171f988e6d56b01697"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/probe-build.log",
+      "sha256": "daa1ea2eb84846777ae53673687f0ea4f645c8945efb7d609a83c0c5a3a26b23",
+      "size_bytes": 352,
+      "git_blob": "bea9c8e5b9e4e781dc7be0ffa7c1c97a0e4e8cfb"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/probe-results.log",
+      "sha256": "07130b688b3b7549efc4bec393914db2144f6e2d6250dc9d80f3cc746cd234f5",
+      "size_bytes": 72994,
+      "git_blob": "6c7c6fa327cbe7e968c5e11e2073e7b88b20f5b7"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/review-result.json",
+      "sha256": "13299aaf02e5b621705bc012b5e083b499af0fa3d4e1be35ce09a9152aa2e5e9",
+      "size_bytes": 6047,
+      "git_blob": "893d592a0170fc5e49eefff06830760ff06bc22d"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/review.log",
+      "sha256": "744281b1031c69af5d84bfc262566f0a18dfa48fb914135611f29e35302df79f",
+      "size_bytes": 2947,
+      "git_blob": "01674fc61fc582287c97ce7050c7e6afa34cb215"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/signed-build.log",
+      "sha256": "2feb87566177ce87c9e84c4e8a301f7238c5bb4e1427b8f5dc2b303c53e0c24c",
+      "size_bytes": 21906,
+      "git_blob": "69ce2191874937765c429496e89d9921e60243c0"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original/signed-tests-overlay.json",
+      "sha256": "1542e14a5037c260f71f0b7831c9b1911527071cdfd582757f473cdb17082c92",
+      "size_bytes": 2510,
+      "git_blob": "67f15efd01c3d5a31125f996a1e3244883c52704"
+    },
+    {
+      "version": "architecture-quality-closure-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/reviews/pr24-independent-rereview-f862c2a/original-fixture-custody.json",
+      "sha256": "c502e4d5c3dfda9a861166370922a1ccb12097e6bd3cb17850cc266a3cabb978",
+      "size_bytes": 347778,
+      "git_blob": "f79f56344fddee14770dacc52145cbf1a0292573"
+    },
+    {
       "path": "docs/reviews/project-conformance-audit-01/README.md",
       "sha256": "dcc7c782f0b22b437267731094b974dd3bf20f8005517a94e8f09633bfcec707",
       "size_bytes": 3716,
@@ -3334,9 +3554,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/architecture-quality-closure-01-r03-results.md",
-      "sha256": "1d758a6e01841eaac64c21a5ad0d0db3cd6ec7ae4bb2ab442b0bd2ca3c77e724",
-      "size_bytes": 7003,
-      "git_blob": "666a53428228a43041c3b5540f479e0d04fcae21"
+      "sha256": "b6f3e049c691f92071629a1f619d7e5617da657184fc3ad4f0ada9620ef07682",
+      "size_bytes": 7345,
+      "git_blob": "ddb10733dcdbec759b9a88ef6c03e84f9add1abe"
     },
     {
       "version": "architecture-quality-closure-01",
@@ -3367,9 +3587,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/architecture-quality-closure-01.md",
-      "sha256": "1acd24f6727b5ed7df537ce58886bc3241613595b08f5be17a63f180333939ea",
-      "size_bytes": 12943,
-      "git_blob": "fd14e87679d8622be9b2a5f441f5e56b7b87ac9a"
+      "sha256": "176d92c53c1ba5ee20576ee522e4da7a413af4db8c3b6a49770f741e1c081acd",
+      "size_bytes": 12991,
+      "git_blob": "85e59def531798d353330310dc2d84bff6ad3bba"
     },
     {
       "path": "docs/runtime/backup-health-recovery.md",
@@ -18890,9 +19110,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
       "path": "docs/work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md",
-      "sha256": "41298aa26849bc02ae4c7f37b6f78b0cbea132b25a1986ca15b3be1422cabddc",
-      "size_bytes": 4778,
-      "git_blob": "315ebab2bc45a5f94070f32a262f57ebcf94a040"
+      "sha256": "17a442c1c0c2f5bc50753a620b1cf0a1b3baf93b8dd397aa1c7b7da6f01c838e",
+      "size_bytes": 5144,
+      "git_blob": "c64715d20418ef79e2e7c8dda37dfa9d1df3e121"
     },
     {
       "path": "docs/work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md",
@@ -24720,7 +24940,6 @@
     "windows": "NOT_RUN",
     "real_equipment_protocol_site": "BLOCKED",
     "original_pdf": "BLOCKED_NOT_OBTAINED",
-    "business_merged_main": false,
     "private_keys_included": false,
     "pull_request": "https://github.com/yuan2go/importer-pc/pull/24",
     "publication_receipt": "docs/runtime/evidence/architecture-quality-closure-01-r03/publication-receipt.json",
@@ -24738,7 +24957,7 @@
     },
     "independent_review_input": "3f6f762d31655ef0fe8d6562ed413beed682e2f9",
     "documentation_governance": "4b94c3f7905dd794ce72d82e9f4ce5064865a03f",
-    "rereview_state": "R03_CODE_REMEDIATED_REFERENCE_VERIFIED_PENDING_INDEPENDENT_REVIEW",
+    "rereview_state": "INDEPENDENT_REFERENCE_REVIEW_COMPLETE_USER_AUTHORIZED_EXACT_HEAD_MERGE",
     "prior_delivery_before_remaining_r03": {
       "baseline": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
       "implementation_source": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
@@ -24765,7 +24984,19 @@
     },
     "candidate_status": "HISTORICAL_PRE_R03_NOT_CURRENT_SOURCE_QUALIFICATION",
     "r03_verification_sample": "1.6.10",
-    "new_product_candidate": "NOT_BUILT_THIS_ROUND"
+    "new_product_candidate": "NOT_BUILT_THIS_ROUND",
+    "independent_rereview": "docs/reviews/pr24-independent-rereview-f862c2a/README.md",
+    "independent_rereview_source": "f862c2ae2ad00ab79ceff5e2013c2a5593d05234",
+    "independent_rereview_result": "NO_REMAINING_CONFIRMED_CODE_BLOCKER_IN_REVIEWED_REFERENCE_SCOPE",
+    "independent_rereview_original": "docs/reviews/pr24-independent-rereview-f862c2a/original/review-result.json",
+    "archive_turn_tests": "NOT_RUN_BY_USER_REQUEST",
+    "archive_turn_build_package": "NOT_RUN_BY_USER_REQUEST",
+    "business_merge": {
+      "authorization_date_shanghai": "2026-10-19",
+      "receipt": "GitHub PR24 mergeCommit and mergedAt",
+      "record_timing": "ARCHIVED_BEFORE_USER_AUTHORIZED_EXACT_HEAD_MERGE",
+      "business_and_test_source_unchanged_from_review": true
+    }
   },
   "architecture_quality_audit_02_publication": {
     "review_main_sha": "2126ac2c06a0c352d96afbbf13ec1a719c352738",

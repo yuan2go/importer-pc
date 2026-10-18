@@ -109,3 +109,5 @@ AQD-05补差：实际签名包复现仅Pending含包、重启激活被旧件屏�
 - [x] 固定源码、命令/返回码、原失败与只读hash证据；更新同一PR供复审，核main未变，Windows/SDK/现场及原PDF缺件继续NOT_RUN/BLOCKED。
 
 固定源码445e1f62bf01fe21e5f13576d2f483292571b709；执行及同PR交付结果见[本轮记录](../runtime/architecture-quality-closure-01-r03-results.md)。参考验证完成，独立复审/Windows/现场资格另行判定。
+
+2026-10-19归档/合并授权：独立复审固定f862c2ae2ad00ab79ceff5e2013c2a5593d05234，限定参考范围无剩余代码阻断。原报告及证据见[归档](../reviews/pr24-independent-rereview-f862c2a/README.md)。用户授权仅归档及精确head合并，不重复测试/打包，不改业务/测试/配置/构建输入，不关闭Windows/真实SDK/协议/现场或PDF缺件门禁。前述“不合并”保留各次任务形成时范围。

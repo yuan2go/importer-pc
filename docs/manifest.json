@@ -22254,9 +22254,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "68fe494cb276c7e9b11e76b41d12248cf4452b559edd167569fba59414ef4dc6",
-      "size_bytes": 8264,
-      "git_blob": "fa24f87196741f3137699b098e11874d3fb149ad"
+      "sha256": "dfc5b7f4b9a74071b2d677787918418a4f5721c415a78d6d8d87730e92bb1a9b",
+      "size_bytes": 8634,
+      "git_blob": "1a175f01c3996ff5c6e9a5e878aafb38cc6b05b0"
     },
     {
       "path": "docs/runtime/parcel-recovery-p2.md",

@@ -42,7 +42,7 @@ static class ParcelCli
             {
                 Console.WriteLine(Wire.Encode(ParcelLegacyReceiptRecovery.RecoverAsync(map["--file"],map["--sha256"],map["--destination"],map["--occurrence"],map["--original-release"],map["--reason"],ParcelAssembly.Definition(),
                     (json,config,data,t)=>OriginalParcelQuery.QueryAsync(map["--original-release"],json,"image-upload",config,data,t),
-                    (backup,c)=>{factory.Normalize(c);factory.RegisterBackup(backup,c);},cancellation.Token,map.GetValueOrDefault("--wal-sha256")).GetAwaiter().GetResult())); return true;
+                    (backup,c)=>{factory.Normalize(c);factory.RegisterBackup(backup,c);},cancellation.Token,map.GetValueOrDefault("--wal-sha256"),targetStorageVersion:6).GetAwaiter().GetResult())); return true;
             }
             finally {factory.DisposeAsync().AsTask().GetAwaiter().GetResult();}
         }

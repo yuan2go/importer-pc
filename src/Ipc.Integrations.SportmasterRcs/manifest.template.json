@@ -1,0 +1,11 @@
+{
+  "SchemaVersion": 1,
+  "Id": "sportmaster.rcs-task",
+  "Version": "1.0.1",
+  "Runtime": "net10.0",
+  "Rid": "any",
+  "ContractMajor": 1,
+  "Mode": "Simulation",
+  "Dependencies": [],
+  "Prerequisites": []
+}

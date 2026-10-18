@@ -5,6 +5,12 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRepository
 {
+    public long OperationSequence(string id)
+    {
+        using var c = db.CreateCommand(); c.CommandText = "SELECT seq FROM parcel_history_index WHERE id=$id";
+        c.Parameters.AddWithValue("$id", id);
+        return c.ExecuteScalar() is long sequence ? sequence : throw new InvalidDataException("Persist admission before preparing an external request");
+    }
     public string? OriginalReplyHash(string request, string reply)
     {
         if (StorageVersion < 4) return LegacyOriginalReplyHash(request, reply);

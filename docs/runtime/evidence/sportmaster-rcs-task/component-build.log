@@ -1,0 +1,13 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 2.24 秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj (用时 2.24 秒)。
+  1 个项目(共 3 个)是最新的，无法还原。
+  Ipc.Platform -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Application.Contracts/bin/Debug/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Integrations.SportmasterRcs -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Integrations.SportmasterRcs/bin/Debug/net10.0/Ipc.Integrations.SportmasterRcs.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:06.76

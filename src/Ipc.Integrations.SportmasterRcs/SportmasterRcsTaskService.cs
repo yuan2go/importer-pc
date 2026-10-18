@@ -1,0 +1,134 @@
+using System.Net;
+using System.Net.Http.Headers;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using Ipc.Application.Contracts;
+using Ipc.Platform;
+
+namespace Ipc.Integrations.SportmasterRcs;
+
+public sealed class SportmasterRcsTaskExtension : IWcsExtension
+{
+    public IWcsPort Create(CapabilityBinding binding) => new SportmasterRcsTaskService(binding);
+}
+
+/// <summary>RCS destination requests only. No query, retry, physical control or completion is implied.</summary>
+public sealed class SportmasterRcsTaskService : IWcsPort, IWcsRequestPreparer
+{
+    public const string Contract = "SPORTMASTER-RCS-SORTER-v1";
+    public const int MaximumResponseBytes = 262144;
+    readonly RcsTaskOptions options;
+    readonly HttpClient client;
+    readonly object lifecycle = new();
+    bool running, disposed;
+    int active;
+    TaskCompletionSource? drained;
+    public string InstanceId => options.Binding.InstanceId;
+
+    public SportmasterRcsTaskService(CapabilityBinding binding)
+    {
+        options = new(binding);
+        client = new(new SocketsHttpHandler
+        {
+            AllowAutoRedirect = false, UseCookies = false, UseProxy = false,
+            AutomaticDecompression = DecompressionMethods.None, MaxConnectionsPerServer = 8,
+            ConnectTimeout = TimeSpan.FromSeconds(10), PooledConnectionLifetime = TimeSpan.FromMinutes(5)
+        }) { Timeout = Timeout.InfiniteTimeSpan };
+    }
+    public Task StartAsync(CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+        lock (lifecycle) { ObjectDisposedException.ThrowIf(disposed, this); running = true; }
+        return Task.CompletedTask;
+    }
+    public Task<CapabilityHealth> HealthAsync(CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested(); var now = DateTimeOffset.UtcNow;
+        lock (lifecycle) return Task.FromResult(new CapabilityHealth(InstanceId, running && !disposed, now, now.AddSeconds(3),
+            "RCS client local lifecycle/configuration readiness only; upstream health endpoint is not supplied"));
+    }
+    public async Task ReconnectAsync(CancellationToken token)
+    { await StopAsync(token).ConfigureAwait(false); await StartAsync(token).ConfigureAwait(false); }
+    public PreparedIntegrationRequest PrepareRequest(FrozenRequest request, long operationSequence) => RcsDestinationProtocol.Prepare(options, request, operationSequence);
+    public Task<StageReply> ResolveSlotAsync(FrozenRequest request, CancellationToken token) => RequestDestinationAsync(request, token);
+    public Task<StageReply?> QueryAsync(FrozenRequest original, CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+        // Query capability is false in the signed module. Never substitute POST for query.
+        return Task.FromResult<StageReply?>(null);
+    }
+    public async Task<StageReply> RequestDestinationAsync(FrozenRequest request, CancellationToken token)
+    {
+        options.ValidateOriginal(request);
+        var frozen = request.IntegrationRequest ?? throw new InvalidDataException("Persist the RCS wire intent before delivery");
+        if (frozen.RequestId <= options.RequestIdBase || frozen.ContentType != "application/json" ||
+            Wire.Hash(frozen.Body) != frozen.BodyHash || Encoding.UTF8.GetByteCount(frozen.Body) > 65536 ||
+            PrepareRequest(request, frozen.RequestId - options.RequestIdBase) != frozen)
+            throw new InvalidDataException("RCS frozen wire intent differs from original payload/configuration");
+        lock (lifecycle)
+        {
+            if (!running || disposed) throw new IOException("RCS client is stopped");
+            if (active++ == 0) drained = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        }
+        try
+        {
+            using var message = new HttpRequestMessage(HttpMethod.Post, options.Endpoint)
+            {
+                Version = HttpVersion.Version11, VersionPolicy = HttpVersionPolicy.RequestVersionExact,
+                Content = new ByteArrayContent(Encoding.UTF8.GetBytes(frozen.Body))
+            };
+            message.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            HttpResponseMessage response;
+            try { response = await client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false); }
+            catch (HttpRequestException e) { throw new IOException("RCS HTTP delivery/outcome is unknown", e); }
+            using (response)
+            {
+                var (bytes, complete) = await ReadBoundedAsync(response.Content, token).ConfigureAwait(false);
+                var original = new IntegrationHttpResponse((int)response.StatusCode, Convert.ToBase64String(bytes), Convert.ToHexString(SHA256.HashData(bytes)), complete);
+                StageReply Unknown(string detail) => new(Wire.Id(), request.Id, request.PayloadHash, true, null, null, null, null, detail,
+                    DateTimeOffset.UtcNow, HttpResponse: original);
+                if (!complete) return Unknown("RCS response incomplete or exceeds quota; retained bytes are a prefix, outcome unknown");
+                if (!response.IsSuccessStatusCode) return Unknown("RCS HTTP " + (int)response.StatusCode + "; no authoritative business outcome");
+                try
+                {
+                    var (accepted, slot, destination) = RcsDestinationProtocol.Parse(bytes, frozen);
+                    return new(Wire.Id(), request.Id, request.PayloadHash, true, true, accepted, null, slot,
+                        accepted ? "RCS destination assigned; physical completion is unconfirmed" : "RCS " + destination.Code + ": " + destination.Message,
+                        DateTimeOffset.UtcNow, Destination: destination, HttpResponse: original);
+                }
+                catch (Exception e) when (e is JsonException or InvalidDataException or InvalidOperationException or KeyNotFoundException or FormatException or OverflowException)
+                { return Unknown("Invalid/unmatched RCS response: " + e.GetType().Name + "; original response retained, outcome unknown"); }
+            }
+        }
+        finally { lock (lifecycle) if (--active == 0) drained!.TrySetResult(); }
+    }
+    static async Task<(byte[] Bytes, bool Complete)> ReadBoundedAsync(HttpContent content, CancellationToken token)
+    {
+        using var bytes = new MemoryStream();
+        try
+        {
+            await using var stream = await content.ReadAsStreamAsync(token).ConfigureAwait(false);
+            var buffer = new byte[8192];
+            while (bytes.Length <= MaximumResponseBytes)
+            {
+                var read = await stream.ReadAsync(buffer.AsMemory(0, (int)Math.Min(buffer.Length, MaximumResponseBytes + 1L - bytes.Length)), token).ConfigureAwait(false);
+                if (read == 0) return (bytes.ToArray(), true);
+                bytes.Write(buffer, 0, read);
+            }
+        }
+        catch (Exception e) when (e is IOException or HttpRequestException or OperationCanceledException)
+        { return (bytes.ToArray(), false); }
+        return (bytes.ToArray(), false);
+    }
+    public async Task StopAsync(CancellationToken token)
+    {
+        Task wait; lock (lifecycle) { running = false; wait = active == 0 ? Task.CompletedTask : drained!.Task; }
+        await wait.WaitAsync(token).ConfigureAwait(false);
+    }
+    public async ValueTask DisposeAsync()
+    {
+        await StopAsync(CancellationToken.None).ConfigureAwait(false);
+        lock (lifecycle) { if (disposed) return; disposed = true; client.Dispose(); }
+    }
+}

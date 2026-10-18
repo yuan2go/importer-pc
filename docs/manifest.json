@@ -149,9 +149,9 @@
     },
     {
       "path": "ImporterPc.slnx",
-      "sha256": "a09a8236e681977ef4758c9c375f515c02164d7e3054b480b4a54f2e322c8e4b",
-      "size_bytes": 2075,
-      "git_blob": "39d198613ec17e95d6df1a6dac45af8d38363e03",
+      "sha256": "0c26e7f2381b983ef72a14e61ade75608eaa3e928435ef3a08aaca93d9b5b648",
+      "size_bytes": 2173,
+      "git_blob": "9dde0f6ddd51a827b174f026c8721dc725c4cd30",
       "version": "site-capabilities-18",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
@@ -172,9 +172,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "259b2001d0de4411ccb918b976f86bf6624fae968aef50528179203b324e3282",
+      "sha256": "fa7f0ff361d2d067d3aca57b8dfb8b919800e6ff8b7d9f9e7c03c2aaad0ac287",
       "size_bytes": 7302,
-      "git_blob": "fc60b56b37b787258fca533207887a02b417a460",
+      "git_blob": "6967f87c6d4ea37ca83c4028317d2a53db5e170d",
       "version": "architecture-quality-audit-02-rereview",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
@@ -191,9 +191,9 @@
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "365a835cd60d6a798190342f41b725970e98df2230c499fa385aaa54b794d992",
+      "sha256": "1057ba8672da10e7c7b3ab93892c1973775da7ea4bc7a80dd10d6d7285681e6e",
       "size_bytes": 7746,
-      "git_blob": "d1dc747bc271b5287b81bcc566d1a105a1a2685a",
+      "git_blob": "cc97790e7be4e2e945a799fa47fc63dad2beb8b4",
       "previous_git_blob": "4cd784e0404ca5afd64566dfe56625fe843c6313",
       "prior_closure13_git_blob": "1896d9c2f91ac6d1c8d840733492c11a0499555e"
     },
@@ -303,6 +303,17 @@
       "previous_git_blob": "2374e8f493e1b6bcb47bfce0ddcee8a2f5ddba9e"
     },
     {
+      "path": "config/sportmaster/rcs.parameters.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9f2272641844a24eb1a4f1abff24407f73dfc26603814370ad24a263bfc6c710",
+      "size_bytes": 372,
+      "git_blob": "eefe48eb3a83c4ab8feb7cecc87304bd210cd91c"
+    },
+    {
       "path": "config/station.simulation.json",
       "sha256": "e4eb60b1b7c9eb554b718301edbe86e194a5a698c6a762268c9f1886df44b826",
       "size_bytes": 670,
@@ -327,9 +338,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "07cb52cc1f56de0ec9327d054334fe7242b7ef9ce362cb070fbbdae9c3ceb7ca",
-      "size_bytes": 10818,
-      "git_blob": "7c50187feb6b76a489b623cf71fbbbd19bf23311",
+      "sha256": "1816ba0b7606c3dd9334f0bd2422c41163d9d6272a5ca9ddb5e9aa87c4929d8b",
+      "size_bytes": 11170,
+      "git_blob": "de8a5dfc45265daff013c652078e8ad17615bae6",
       "version": "publication-2026-10-19",
       "status": "publication_receipt_NOT_RUN",
       "purpose": "User-authorized no-test publication receipt and navigation",
@@ -2540,6 +2551,83 @@
       "git_blob": "d44ce1020d0f4e74f28fcae645d67ea3e33275fe"
     },
     {
+      "path": "docs/archive/pre-rcs-main-baac/README.md",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "442289a89853f6e5d30df1528bd87d0bed0ef12307e8a28d8615142123372965",
+      "size_bytes": 235,
+      "git_blob": "cfdd6e13f74e039a9a76553111937b235b4f5b5d"
+    },
+    {
+      "path": "docs/archive/pre-rcs-main-baac/docs/INDEX.md.txt",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "80d6e5c175b94c9dcfe45eee3acf3aae30ecbc6a8adc82ee7cb1d6ed55cf5224",
+      "size_bytes": 10181,
+      "git_blob": "52db5d3c61363cbf5f7ec036ca0fef7c7fc33fa8"
+    },
+    {
+      "path": "docs/archive/pre-rcs-main-baac/docs/manifest.json.txt",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "22f39dfe068edaabae8a4a95fd1decc38e865a80eab1d1ea2c60ceccb462ccd7",
+      "size_bytes": 1645505,
+      "git_blob": "44131d1d6611f1123be47fd2c00b4fc757a22054"
+    },
+    {
+      "path": "docs/archive/pre-rcs-main-baac/docs/manifest.sha256.txt",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "fc27c48ed027df1d47f370c02d6dce9d0be27600049124455d2a62e3c0c6f1e2",
+      "size_bytes": 85,
+      "git_blob": "074de1de924b33943635d409dcd6a42c171ed2fd"
+    },
+    {
+      "path": "docs/archive/pre-rcs-main-baac/docs/runtime/application-architecture-22.md.txt",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c2fe40c515b8a4debbc623e3c1a29484464f2cf132a8b9f977695cc74eaef571",
+      "size_bytes": 9511,
+      "git_blob": "b9d785359f165b55ff34e14d80ff7af0e430bd43"
+    },
+    {
+      "path": "docs/archive/pre-rcs-main-baac/docs/runtime/architecture-quality-closure-01.md.txt",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "218889c45199a6aa928ff07d34585e363e75a5ce48038f2eec087515e1fdfe19",
+      "size_bytes": 21117,
+      "git_blob": "0e1b2d55d18c6db1f19b992a6875e8a23dc0f3ba"
+    },
+    {
+      "path": "docs/archive/pre-rcs-main-baac/docs/runtime/getting-started.md.txt",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "fd4e65f6b900f62f6e966e7ee8b36e5ff40067526ede57896bcf9b5df00c81ce",
+      "size_bytes": 3269,
+      "git_blob": "b3c74419c8d2fd625eadcd328d8676209fb700e6"
+    },
+    {
       "path": "docs/archive/pre-reconciliation-01/AGENTS.md.txt",
       "sha256": "11a1cc84db7901e3d0a3fb017d8d87c4898b9c6f4a18c68bd30956aa28949fb9",
       "size_bytes": 3319,
@@ -2959,6 +3047,83 @@
       "git_blob": "b141d9507dc9241588e90259ef6518b7ea483d92"
     },
     {
+      "path": "docs/archive/pre-sportmaster-rcs-task/README.md",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "358d4e76398261631efd408e25f50f9baf820a3b6bbc824e05777b17cce0b582",
+      "size_bytes": 264,
+      "git_blob": "810210dc207b13aa1548b11929c644814cae088f"
+    },
+    {
+      "path": "docs/archive/pre-sportmaster-rcs-task/docs/INDEX.md.txt",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d46f95655596e10bf7a6243892129c6e3cb176c28d5cc56254db4cb989ce4b9a",
+      "size_bytes": 9764,
+      "git_blob": "c9a9221efaae91d087846663c01c622a7a10cec7"
+    },
+    {
+      "path": "docs/archive/pre-sportmaster-rcs-task/docs/design/framework-decisions.md.txt",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "4f6d3f5a412a3a6bc0af8a26dd1e0a24d09041cca48bb2904cf9ffc51bbecde4",
+      "size_bytes": 20366,
+      "git_blob": "3c1513ae2eb804defc61c07d02fd5d7e353322bd"
+    },
+    {
+      "path": "docs/archive/pre-sportmaster-rcs-task/docs/design/framework.md.txt",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d4ff5c0c2ff77827dc48faed68d278a0d8cd2c0d2019b9eccb198c86423c0faa",
+      "size_bytes": 38078,
+      "git_blob": "62a8869c78b2fd56e1f03d29456ff1601fdbda64"
+    },
+    {
+      "path": "docs/archive/pre-sportmaster-rcs-task/docs/extensions/developer-guide.md.txt",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f9326e52d239440520632abc522a24defd0cba7167fe3e08cc3e86e4879b2a48",
+      "size_bytes": 13661,
+      "git_blob": "bd6eba36bbdf32f05ffc7965a9bfb8c75619935e"
+    },
+    {
+      "path": "docs/archive/pre-sportmaster-rcs-task/docs/manifest.json.txt",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6bffc8907b802f4940c6ba5a7dc3a623d0df38736ef56c123cc539d94b4e25cf",
+      "size_bytes": 1452559,
+      "git_blob": "19ee915e1788adf5cd655b5f924a0e35f6f5f26c"
+    },
+    {
+      "path": "docs/archive/pre-sportmaster-rcs-task/docs/manifest.sha256.txt",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "4137b2c39ea0d15e8528292634cb2e92076e11aa92e25b46dc46699cb253f262",
+      "size_bytes": 80,
+      "git_blob": "90c1c7ea0819737bff6a3fbcb583357eb2908197"
+    },
+    {
       "path": "docs/archive/pre-ui-maintainability-16/README.md",
       "version": "UI-MAINTAINABILITY-16",
       "status": "current_implementation_or_boundary_record",
@@ -3251,9 +3416,9 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "4f6d3f5a412a3a6bc0af8a26dd1e0a24d09041cca48bb2904cf9ffc51bbecde4",
-      "size_bytes": 20366,
-      "git_blob": "3c1513ae2eb804defc61c07d02fd5d7e353322bd",
+      "sha256": "fe9dd860ae4a1c870489ae08d6f91396f629d9eabd89c7261f3abafd6693fc98",
+      "size_bytes": 20812,
+      "git_blob": "4240dd54fbdbea3714d681026e879effd75a14ea",
       "version": "architecture-quality-closure-01",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
@@ -3263,9 +3428,9 @@
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "d4ff5c0c2ff77827dc48faed68d278a0d8cd2c0d2019b9eccb198c86423c0faa",
-      "size_bytes": 38078,
-      "git_blob": "62a8869c78b2fd56e1f03d29456ff1601fdbda64",
+      "sha256": "9ab08c91da2e0f3ba139db36f262e31af5a1b4aaa84d2c4fc8e665dac4fd68b1",
+      "size_bytes": 38524,
+      "git_blob": "e63b9792f23f571408da33bc9b217f767f4cd0f8",
       "version": "architecture-quality-closure-01",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
@@ -3274,15 +3439,26 @@
       "previous_git_blob": "4a45d3fe92abb5622d9849a2047488a1bd106d52"
     },
     {
+      "path": "docs/design/sportmaster-rcs-task.md",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f3ec99fd4de42d814f92ab0f2d4eeb1bdaeaaa48f795c8ac9b74b63ccf106114",
+      "size_bytes": 4127,
+      "git_blob": "3db4b51b451163f8f0359ddaac49b54b62c38b90"
+    },
+    {
       "path": "docs/extensions/developer-guide.md",
       "version": "architecture-quality-audit-02-rereview",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "626dd3ad1ac412d1483de8d9f57791267b712aadddb63773685de85ba9f0ec2f",
-      "size_bytes": 10888,
-      "git_blob": "ba360ad6c3197476ed08999e75bc34cfb2b5c6e1",
+      "sha256": "39422aa67d71aadc855c77559630c979961b46d0d88032fd3e5ca4c60e8b16fe",
+      "size_bytes": 11241,
+      "git_blob": "25650150574dff4c00f137fcc7035d07ed87bb31",
       "previous_git_blob": "aab8c404037f93f8aeff309c0ef3fefa8cbdc952",
       "prior_closure13_git_blob": "920e1ac245b3de720f3607001f510dae0c0a9980"
     },
@@ -4364,9 +4540,9 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "c2fe40c515b8a4debbc623e3c1a29484464f2cf132a8b9f977695cc74eaef571",
-      "size_bytes": 9511,
-      "git_blob": "b9d785359f165b55ff34e14d80ff7af0e430bd43",
+      "sha256": "e0b8607f2ad7b002a2434f9bf1aa5da4e1d1bf110c0b631e20ddfd1572121306",
+      "size_bytes": 9837,
+      "git_blob": "cef9742f1d70bc8d85b8b50c79d3bf4449f7e6cb",
       "previous_git_blob": "97a01f46e39cecd837254898492d31cd0c5f7474"
     },
     {
@@ -4539,9 +4715,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/architecture-quality-closure-01.md",
-      "sha256": "c050e622bc3e4a5b6d9d78baa395bd71a2904844c28ee25a84a7c30efe9476cc",
-      "size_bytes": 22662,
-      "git_blob": "721b3d337f7391f66d88bc099afbcfec95cf31a9",
+      "sha256": "9e072fef5655f9bf656242c6ac9ade1a83ebcc7e0f46506ac1729d71d38bba4e",
+      "size_bytes": 23064,
+      "git_blob": "48ac96f53efeafde41d0f4362d92bb4094415ea5",
       "previous_git_blob": "5697e9a5891f1c8c281f0d9dbe84108e63fb0db2"
     },
     {
@@ -17947,6 +18123,171 @@
       "git_blob": "d5aac509996e9e3c04aa860f44c8300445d34d29"
     },
     {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-combined--configuration-confirmation.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "bebcbbb5b52d85daa3de6b2d4cd35940daae884a8c59a0ad9a334f05f36cb2c8",
+      "size_bytes": 3066,
+      "git_blob": "c50e73790dad4680b6ef6baa7ae3ed7e8399edd6"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-combined--parcel-recovery-p2.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "3634a0c2a6055fa8a9595ede8e7dfdfb4c153a02b5edcd2b9b2e0338174b074b",
+      "size_bytes": 8175,
+      "git_blob": "87043769e6c463a5d5bdf78f6728e5db5a128114"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-combined--receipt-custody.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "25c9c2b68975135fd9befd4553310e488c227b1f12c66afaf76889cda5c97a0a",
+      "size_bytes": 2147,
+      "git_blob": "8cdaaf13335c10b0542f2ab1512aea7e28d58656"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-combined--sportmaster-rcs.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "02940f4dce10fdaaf9351b1ca49b95481d682c5bcc3419ec53ae3ca501ee235c",
+      "size_bytes": 10466,
+      "git_blob": "ca38b2739b113410f963bcb33448576f2b44e78d"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-combined--upgrade-conflict-closure.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0d9bf68dd4bd97f6359516bef63a6264b3cacb5ae65f38c48b32ddb50112eb12",
+      "size_bytes": 5460,
+      "git_blob": "5be51983e7bd45328d68e85112c8978ff14eb0eb"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-combined-build.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "04ac2b5cf0a6eebe93b721c3167491d6631e81adb91406645e1e84a1ee276fcc",
+      "size_bytes": 2675,
+      "git_blob": "05c37a0cbc0817c90e0f496ffa4f52b6819a56ee"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-combined-summary.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "3a8f4c5678b3c5e473b9bc4902cc83c0cae9ba2e51b1db31196dadea2943c73f",
+      "size_bytes": 1289,
+      "git_blob": "5fc07112a1033d4045a94748075949b77fa6da75"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-final--parcel-recovery-p2.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e65e3b248bc3f19e278c63c37b1e9a17142d693c9d943b794006f21cba91723f",
+      "size_bytes": 8175,
+      "git_blob": "eb74d6f17e35f02d7d565e20913fa37f58b2d29c"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-final--sportmaster-rcs.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "5637cf19302e7576c3702dc66472088b3419b7c4ec5ef40995c3e5f298dacd22",
+      "size_bytes": 9762,
+      "git_blob": "ccbba87ace221cc7ff64b9769e765053d4eaec66"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-final--upgrade-conflict-closure.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "78ebebf6a9dc8589d6eb29615de5f4726d2d0919c3cad6ce1091f7c19bdfa49a",
+      "size_bytes": 5460,
+      "git_blob": "a871cd2f379b8692334273639ed2f95e89c42091"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-final-build.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0b37520f56e51d81243f27db1cadc7c4a1d87dad23910c8f142087bda272344c",
+      "size_bytes": 2591,
+      "git_blob": "e2aca1c80caa79b21a397234b61a6dd1eafa454a"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-final-summary.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "92d525a0775207dfe84896f1097751818ce7a624e5848c1581f3be0160c1d20d",
+      "size_bytes": 761,
+      "git_blob": "8e2caafd8e9c2e917e31489ce91fd2d73335058e"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-merge-build.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "be125b935af5a5a98982b8b25f9da9f50a84fa69a0f04d6d48536aeec7f1fdbe",
+      "size_bytes": 4455,
+      "git_blob": "6b4c14bc9f3d3270df0fd80615f0bf92ab060b53"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-upgrade-pre-adaptation.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "51c652ea0ef666630ea0064d2ea2903ffd1dd4f52aed7e6ad10cd8e460ba4d41",
+      "size_bytes": 1396,
+      "git_blob": "1fa8ae99f8b566f91a7c14434104f3833f341df2"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr30-validation.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "8306410b780e73c444aa77368974ee212af3dcdabd757322ecdc53d71e2de0f8",
+      "size_bytes": 2491,
+      "git_blob": "0131434d340a703d4a52220a00cd3c4a16963413"
+    },
+    {
       "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr32-combined--parcel-recovery-p2.log",
       "version": "parallel-reconciliation-01",
       "status": "current_navigation_or_verification",
@@ -20998,6 +21339,611 @@
       "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
     },
     {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/README.md",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "8f8ec8f421b558ad1c98d73dc4bf6b61c385ff66bb2ce01aafed76533934ebf8",
+      "size_bytes": 2130,
+      "git_blob": "d2e44810ee0a3753fba32f02ad0d6d73bb7a96f6"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/archive-tool-tests.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c32360c9889fb73150140ed697398865297943429bb2a7190a323ee926113ab9",
+      "size_bytes": 1416,
+      "git_blob": "18b0ddd29e776603c9c0c16130b894e19250fbd2"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/baseline-aa22.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d9679e598695e979ec68483ec1dca29427d78cdd37ebb9b5a97d020ce4c6c879",
+      "size_bytes": 5137,
+      "git_blob": "5fb68dfdea75ba1ade92f2f27f8e92c6d9568237"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/baseline-build.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9e2433802a8cabdaee3d56e8b5a05f73fe92a0592afbc30f7053c6fe35d2939c",
+      "size_bytes": 2168,
+      "git_blob": "b881e2ee1e45311952512f5df612f9e7573b91bb"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/checks.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d146343b200a5a5c3c8a8f50238ef14ad7399ec18de549586009c01a2c8f17c8",
+      "size_bytes": 1299,
+      "git_blob": "89fec92be8b972d590c0ff8aa031b2e94ae2b0eb"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/cli-config-check.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "11d6675f08718d8fe627a5cda2fc49f7f0d9cbdceef83691cfff8e7c0594373f",
+      "size_bytes": 364,
+      "git_blob": "10a470f2c58e501107c80382e8e80d5c05250f98"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/component-build.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "55748633a77e4076f3a243867ca622b24092870ede7fbcb2c3e02b03c1aedcd9",
+      "size_bytes": 989,
+      "git_blob": "f2043de0bac96a0edccbcb7ef1dc0b39e06ab382"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/delivery.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "80ba0ffb719ba35e761039bdf6ed8cc58f03a6c91e6f7c0f3b4456d8222fb9f4",
+      "size_bytes": 2593,
+      "git_blob": "637b2b54169a2ae32d9fbcfc1c683bcd85530044"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/diagnostic-cli-lowercase-hash.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7395884cabcface029f4f2e85fcbe7b236fd233655c51878cd0d6e4647e34cb6",
+      "size_bytes": 448,
+      "git_blob": "e2dc951c78d9a792a3915aec96dc5e6187b95374"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/diagnostic-focused-01.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6a466eccc2a587ae25a90e83c262df048fe558d0c27760b7313f46a7ef67e2f7",
+      "size_bytes": 10815,
+      "git_blob": "4a8cae3cf000819df6eecc3bfc6be2486ab2ba44"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/diagnostic-focused-02.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "74ad9d485319e3a7cd9967eb95b71c67b7523c15aaf623784b9b8971f6b51c9f",
+      "size_bytes": 5497,
+      "git_blob": "53dd312656ec72afafc4864d14ab0da9d53f540b"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/diagnostic-system-python-tools.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "935cf322babb66269bbf24be18ca99f3e0814993b8b813855e152e50c9c85d4b",
+      "size_bytes": 2066,
+      "git_blob": "a1fb62853e2c4970ec9a6d44b340376847b28964"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/extension-build.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "8124faa90f9e214c9fa45dc2eaeb45d2b4053ff1f75cf10fb2c3a5e3192d6366",
+      "size_bytes": 13087,
+      "git_blob": "4713b2968f97704d87597269727cc09ab9678235"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/focused-build.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "71112ebf2afe50988199751c21220286e76ab1bbbf3cd2067d155bda478d4353",
+      "size_bytes": 2501,
+      "git_blob": "2a808f3caa3ad1d04fe893379daad36b7a139c02"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/focused.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "b999b990fbc0588236303d00f99a13ab9887859feb9396fd93b025433b2777a9",
+      "size_bytes": 9031,
+      "git_blob": "3f9c383290274be82306a51ff76c16a6aaf46390"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/guide-tests.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "dabfa34189fa8d1d3e0f9cc40f23f2da4796e82a45f547e9e4ecb6dcc74f5bb4",
+      "size_bytes": 420,
+      "git_blob": "3b4d202bd9bd3b6648d61adea5cbeca47b999c4f"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/README.md",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ad94fe68664011073d142d50ffc9ac9709f40478183bd4623ddfb61562bfdf27",
+      "size_bytes": 2286,
+      "git_blob": "a9bdab56a28906595fc72d1c9c9cb96a0701d083"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/aa22.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "09628d4571817002d258ad95c451574d1d06df527928a99060ddaceb120be52b",
+      "size_bytes": 5170,
+      "git_blob": "846a4c5944bb0ae4868426ffab8daf5cac0d57ee"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/architecture-quality.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "563b867e43aff620b88293cadc13f86b3423ea2993fd497730cc6e2fd50ace76",
+      "size_bytes": 9208,
+      "git_blob": "ca3de0675afab28dc8350acb6f428c8f8493c20a"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/archive-comparison.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "836eba592ef385f09d32ae6be1c1b0ee44686529b5c8fd3fb79eac156679a76f",
+      "size_bytes": 478,
+      "git_blob": "80d99202fcd08f57c8e0b4746fa0936f167435bd"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/build.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "17c7ee07b392d0c1994026cda1ec475ff1e0f08a689f77c8b4ec170349bff9f2",
+      "size_bytes": 2501,
+      "git_blob": "de12a581dab5d876ca99e88788cd39bf1710e38c"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/checks.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d31d02f5a23df62bfab16f2ef3a0d453ef097975dab4857b4177033c797829fe",
+      "size_bytes": 1371,
+      "git_blob": "b7dabfc014804526fdcab02e566b515e36987b6b"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/cli-config-check.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "08da2677212cc3d4a0100bb1b036d2204770a9d6757e50a9f68ed5da761e255a",
+      "size_bytes": 321,
+      "git_blob": "f533b98d05d7bf293c0b64dac8002b2e6d089ffc"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/configuration-confirmation.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ea1fd1e2a35c10a54e7a9f66c9bfc673283d637d270cdefd5e55773b10b29853",
+      "size_bytes": 3066,
+      "git_blob": "557fcb4ed06137cfce07c052363b1fd9712af629"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/delivery.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "4a02770696e3aaa4520385b492acf867a526051e7aed7704434c7743d33ca840",
+      "size_bytes": 1534,
+      "git_blob": "ba685823a57746565bdede1a1b1c7c2e608adf4a"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/diagnostic-custody-precondition.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "b6abcd83c073c9ded51b8b5085af7abb9091f488cdd0a6ec6003e7588d314b54",
+      "size_bytes": 9389,
+      "git_blob": "0323a909f87afa1e12b06a598d52e53b2ca3aa37"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/diagnostic-rcs-02.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "183dbfbf7ba902f5529873d0a989d8fe4cfd5f437eaefd482c09ae96cf8ecb80",
+      "size_bytes": 9015,
+      "git_blob": "b7872e12531081375951a9717da92901836a151f"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/diagnostic-rcs-03.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "1ac0ddf9a86329a8e0bbd5738e66ed004e1f2cdc7bbbd52976ecd12eabe2d702",
+      "size_bytes": 10019,
+      "git_blob": "0204f5d458abeec09542039a524a864bc4fe5ca6"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/final-extension-build.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "175562012464cf0a6dff4690e507868d0c8447cc49cf2bba3299efdd39e6d0a6",
+      "size_bytes": 13094,
+      "git_blob": "51b6d48c71b8d910e5c5afb498f4814557cf9c7a"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/final-package-portable.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9b74ddbd7c02b028165c0270f418b0b8f49bffd7c05746e0241ec12a20498e63",
+      "size_bytes": 4712,
+      "git_blob": "aafc999cc3e535d567e5c6710fe4a835d75f5813"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/final-package-win-x64.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "19529370c79e2e70683d05af8e69dfb4c4c5348df61c66b7e75d1de60bf4e06f",
+      "size_bytes": 8577,
+      "git_blob": "5375482e153291e08db1fe72c7eb43567ad34af9"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/final-signed-host-custody.public.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "01779be46c90f650e1063dcb885b1d505fad7c720ebd4e4eadda925979ebeb48",
+      "size_bytes": 6387,
+      "git_blob": "b942c02da61349c77914bebe00241ade48941e07"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/final-signed.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "fdcbe431378036ee401d535534c2987cb2841b0ac65359cf3638450f9e9e8311",
+      "size_bytes": 7579,
+      "git_blob": "574d28eb35e086afb567f89e80cb78bdbbf26ed9"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/final-smoke.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "37f29fc84e77e35d29dc0ceab24c6752a42065ac49a349780039fee74d28c733",
+      "size_bytes": 560,
+      "git_blob": "e63a99da876aaf9be403f98f178fecb7ceb0d417"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/publication.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "1048a31d3abe62a7cdeec85269b684a5bfb7f3d3b3eccad7a75911798b6d2e0b",
+      "size_bytes": 795,
+      "git_blob": "2463a2984cca0f10a51f2dd853e75e7512b44774"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/rcs.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9fa6dfe02e9037a7c343e2f729227571076a312b6ab3bf6d19ddc0e056000214",
+      "size_bytes": 9641,
+      "git_blob": "3df9165a1a5897eba1a16c8a87933058ebf10376"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/receipt-custody.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "4c1dadcab52e3e73d4bf81376c551c2156b6e0906c27e8883c6b6146891ba734",
+      "size_bytes": 1282,
+      "git_blob": "e7e946e041e9f5f0d7faf1271a36599fa47b5203"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/review-closure.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "36d2f82c2402014f166882b7eeeb05ba4f570420e3defff0fb2950bb360272ee",
+      "size_bytes": 2947,
+      "git_blob": "abfce288bfa94e1bf67156f7cbd913a714758942"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/script-tests.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "bf8c69dccfd5645eac3dc66396e1b3cf6da0881f05ad28977ca4e13c5a23d6a8",
+      "size_bytes": 4316,
+      "git_blob": "af531ace6179d6bb00be7cd671d59a37a4fe33d0"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/smoke-sportmaster.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "78ef5f3073e7a59f84f7446476d7fd5a8f091d088393732bf160c4fcb9958455",
+      "size_bytes": 616,
+      "git_blob": "d98ed73d8f7f9441ca6aa33b4718d07b83987989"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/sportmaster-rcs-task-1.0.1.ipcx.identity.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c9c1e43d71c92ee3fb08ed5ef54d140deb9fd1289ed3032ae9140d02499bec77",
+      "size_bytes": 1307,
+      "git_blob": "4fa21a09cf45ad63da64c634c56c1bb8ea331ed9"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/tools-tests.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f54c7cef846ebb612c09fe9615741bdb0c251713d6aef08f5232cc4d0deacf70",
+      "size_bytes": 1416,
+      "git_blob": "8510a253fe62b1fcfd35004d17350827a4c388f0"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/windows-candidate-check.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "237dfd34bec87eeace387256490bc484f02d1aa14f8583f1bf6dbe7bb88fe4fd",
+      "size_bytes": 1027,
+      "git_blob": "6515dc62ef24ad2b3b124b190af8e49f54cd069f"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/package-portable.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c5b172d8b2f2d4d61c93c7fe0f47d10cf2189601f4d9a085f1f0dff864a7636c",
+      "size_bytes": 4765,
+      "git_blob": "8ded9e5570a46b3a65d04f55dd94f45e4a9c4dbb"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/package-win-x64.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c8b4b0b2b7551385bb82d8ed6a4bb7bbceb50091de3ed46b363203170e59e002",
+      "size_bytes": 8688,
+      "git_blob": "79c620de349c9f4b092fcdd722a6d21c213e277f"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/regression-aa22.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f02a267feaa6b8dfdf657b224121ca1987146dc4986a582556b6fcb6a3b4fadd",
+      "size_bytes": 5144,
+      "git_blob": "369661a67703d2d26b2191c82a1342c69a2221df"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/regression-architecture-quality.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0a86fad326677eeee86b866df5ae0a0f00dd5c7464bb032a80a3501d0b7e21d1",
+      "size_bytes": 6322,
+      "git_blob": "04dad786ed99196d505d15d1002eb7f1de376aed"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/regression-review-closure.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "3d7b4faffcd23e5405a6c45c5d3b8054003a3bf342fe564fe5f9129bf8283981",
+      "size_bytes": 2947,
+      "git_blob": "9eadf523c1e7e814e1535addc05d3448ddc83e53"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/signed-host-custody.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "71260ab9d5937f6916da228edb76b369c5d76fac3ddae0d39cdc32d0ba56d211",
+      "size_bytes": 6370,
+      "git_blob": "4914b0d91f45783c23d5e8322388e02f281532a3"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/signed.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "827b5d8c07359257c3d78980e6f4bb30184d0c6a5057ca2feceb0673c1cbfd14",
+      "size_bytes": 8783,
+      "git_blob": "e8215f2da1056235c48e9403557ef5540626bc41"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/smoke-sportmaster.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f6f27151109c33f89911e920dd0a2304f4e8fa8056201bd9259cb63095f285e9",
+      "size_bytes": 616,
+      "git_blob": "a7440a274b440cfec275106a6f4d6a7a630e740a"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/smoke.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "2c12ef78ef1b7f6c2d65061a9b02c0d470130f7af0e427c374e5f35c437962d8",
+      "size_bytes": 560,
+      "git_blob": "bc5f1671ac0477c543c333ce2e0b534d56dc9c09"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/sportmaster-rcs-task.ipcx.identity.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "a83d923ad0ae1f8e6de8d27930421049dd3bc3063d3ec36af6049a8863b0fed2",
+      "size_bytes": 1301,
+      "git_blob": "835639ea6d336288c2b66fc6c1ebf83248b4a5c3"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/windows-candidate-check.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "72dd27885755b705f0940928c6359dca99d502112097d6b01cf31706a1a87ca9",
+      "size_bytes": 1027,
+      "git_blob": "cb7353747126e12f7626c9613488b5cd1cc8dd3c"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/wpf-cross-build.log",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "90f36bfaf05a3ed56536740a3c1705de2ed614cc54701cb3d4e8963533afcb38",
+      "size_bytes": 4993,
+      "git_blob": "8eaa8477750cbc674bd4376f7c4365963f6d3cda"
+    },
+    {
       "path": "docs/runtime/evidence/ui-maintainability-16/README.md",
       "version": "UI-MAINTAINABILITY-16",
       "status": "current_implementation_or_boundary_record",
@@ -22137,9 +23083,9 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "fd4e65f6b900f62f6e966e7ee8b36e5ff40067526ede57896bcf9b5df00c81ce",
-      "size_bytes": 3269,
-      "git_blob": "b3c74419c8d2fd625eadcd328d8676209fb700e6",
+      "sha256": "70f1718fd4951aad3460e57e58c8e4b0b415cb1ec58ca1b7cb7ead3378e83fd7",
+      "size_bytes": 3334,
+      "git_blob": "fe3a793df7ccd9e5a8b3c14b6c9bc57875bdabdf",
       "previous_git_blob": "2e72810ecbe43f36491f6604066cfcea19de943d"
     },
     {
@@ -22254,9 +23200,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "dfc5b7f4b9a74071b2d677787918418a4f5721c415a78d6d8d87730e92bb1a9b",
-      "size_bytes": 8634,
-      "git_blob": "1a175f01c3996ff5c6e9a5e878aafb38cc6b05b0"
+      "sha256": "0ab4fb625939af7c97608bf15173f820ebef7dece62446783b955b887958e10f",
+      "size_bytes": 10093,
+      "git_blob": "0964d13ee9bb558d60901e354272eddd85aab107"
     },
     {
       "path": "docs/runtime/parcel-recovery-p2.md",
@@ -22403,6 +23349,17 @@
       "sha256": "a0d075af8c882e4cb9ac2ce179107811c3a8d7549456102fcefb59f0b680317f",
       "size_bytes": 10374,
       "git_blob": "91eb1ac7648c97bf1a2d2b272c2407ee2b4f7c5d"
+    },
+    {
+      "path": "docs/runtime/sportmaster-rcs-task.md",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6b86b3351a990bfab6c80f5381b6c7e6641f2da3006a25e5e08fa670b958b2fa",
+      "size_bytes": 7527,
+      "git_blob": "15a838da992c9754eca008eb801679cd665df53f"
     },
     {
       "version": "audit02-implementation",
@@ -22662,6 +23619,17 @@
       "sha256": "dc5b117c40ff19abb828ff7e7965ef3c6ee3e234fd7580121db513d9a15c5d2b",
       "size_bytes": 1947,
       "git_blob": "24f1e34a11100fdf693b8d5efddaec4f147b9177"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-19-sportmaster-rcs-task.md",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "175d60b9a77ad259f358bc63f23c20c7c9509983d2ccde9b98e5df889e9a1d9d",
+      "size_bytes": 3353,
+      "git_blob": "a8d0b565df66522196ee63864f96e90bae825c4b"
     },
     {
       "path": "docs/ui/STATUS.md",
@@ -23840,6 +24808,17 @@
       "git_blob": "4a879e0a71b096bd2800b85cd61c1e2280717d0c"
     },
     {
+      "path": "docs/work-packages/WP-IPC-SPORTMASTER-RCS-TASK-01.md",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d0ca832ae378fe09ee91f6e4c0d7c02d0ec46aa4ab00a8a7aa1d49d489f518f5",
+      "size_bytes": 367,
+      "git_blob": "14f9b0dab38cd588a9cefdf6dd37685cb8b3dcd9"
+    },
+    {
       "path": "docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md",
       "sha256": "a52ab025be9ad97b66217722770c7d748892aba9b5a96dac1f1e04a017f6e76c",
       "size_bytes": 4895,
@@ -24247,6 +25226,17 @@
       "previous_git_blob": "d48f796effb2c0ff852e7c31428055c2d4d913c3"
     },
     {
+      "path": "scripts/configure-sportmaster-rcs.py",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ed8b92f505f9e85252a7d10dd830eb0859c869f0e08a09665de9816287fd8f9e",
+      "size_bytes": 3074,
+      "git_blob": "d996841d597169a2ceb7d9963a1fc1c5cf38234d"
+    },
+    {
       "path": "scripts/extension_build.py",
       "version": "architecture-quality-audit-02-rereview",
       "status": "current_implementation_or_boundary_record",
@@ -24346,9 +25336,9 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "8233532e6da4a827a40d814d4ce6b5109f1c53a8d336d4d3142b9920937166f1",
-      "size_bytes": 3053,
-      "git_blob": "e08387466fe4b32140fae0b0cbfd443789b45ee7",
+      "sha256": "05f7ccb4d646bbfb1237393f7b2efb97d73432fbe64e2a88386906373ae685e7",
+      "size_bytes": 3196,
+      "git_blob": "0c89b7ced15bac49f0bac616aef2be2a0ef41d3c",
       "previous_git_blob": "0058dccea46049f016ee6f8abd40ae1f26e2a2b1"
     },
     {
@@ -24576,9 +25566,9 @@
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "cc22ed481830ede28316d23aa4b2daa1c063f51beaa0efb4c0c6450e695c700a",
+      "sha256": "8238a3381b5f6414290f3239e4f10e7d749cb9177f840883082e3968ba567bc1",
       "size_bytes": 187,
-      "git_blob": "1a3d6c2cdd876e61f896bdb7f0150b9281395894",
+      "git_blob": "cd37f1ae0fd3919ed2f0ef8d71ac03cb49cda840",
       "previous_git_blob": "f25ab42340afcea98589f6c3b1a14cada8ef706c"
     },
     {
@@ -24600,9 +25590,9 @@
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "d628f8dfe625099a69e8ef824bbcd98fc82f5d3c263db1945f5265e6af04ff16",
-      "size_bytes": 7666,
-      "git_blob": "4d6163db76e567550bd3925576420aeb89894d5e",
+      "sha256": "8108f7a8560db64d3df6da9b97b162d401aa2729236fb38155ee19417cd16690",
+      "size_bytes": 8053,
+      "git_blob": "ef75fd936fbc4585fcbde4a0ca03479720d7d359",
       "previous_git_blob": "20231c91dbcb2a073363a7fc7782cc00a0950a7b"
     },
     {
@@ -24626,6 +25616,17 @@
       "sha256": "35b02b7c8d9d0da83fda27777f3132ab2001463a1dc6a4e3b3b7e2600c57b086",
       "size_bytes": 2596,
       "git_blob": "9ec1f408548865516b8bb3a4397a02f2b2b03c72"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/WcsDestination.cs",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "3d869e445d7954f6c25ecc5e283de5ac739cc2a95b470bf07d4716de790f8e32",
+      "size_bytes": 1098,
+      "git_blob": "3a9ee8517ebaa4961f9aac450319fc60f83e669d"
     },
     {
       "path": "src/Ipc.Application.Contracts/packages.direct-plc.lock.json",
@@ -25077,9 +26078,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow/ParcelHistory.cs",
-      "sha256": "55fd4f3b74cc87a078075575e7ccc6a89dbebc74305114f4b5bf0d60bef15728",
-      "size_bytes": 11061,
-      "git_blob": "2f4d25fdf5f98de23e6913b1cfd53acd12726e45",
+      "sha256": "46f7ff86df737c1ebc1cfcba39929b3b8b3093cf45207b3dc89cb524240900d5",
+      "size_bytes": 11428,
+      "git_blob": "85394df0f6ab75fc7855bf8fa3f785bad24983c3",
       "previous_git_blob": "58711873938c78ab2c33ee76b4618ad986ca2fe3"
     },
     {
@@ -25112,9 +26113,9 @@
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
       "storage_scope": "public_repository",
-      "sha256": "48b6435c167c25de4abcf7ad940e57edfed7c668e38cae02e40caa1ae1e9e11b",
-      "size_bytes": 14520,
-      "git_blob": "fb8c1a64dc239eb6f56ac40b57daf505ee0b5fac"
+      "sha256": "3252afe3db950a24f88fa17b420957fc2104078bbe55aa9bee991af940e7b414",
+      "size_bytes": 14748,
+      "git_blob": "a351b75e7b7208eb84891e37e287599e73793a8a"
     },
     {
       "version": "architecture-quality-audit-02-rereview",
@@ -25123,9 +26124,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow/ParcelLegacyRecovery.cs",
-      "sha256": "6002119c09ba4423f622d74fca876e67f9dd6694e51682239563b090a85487de",
-      "size_bytes": 6299,
-      "git_blob": "b9dfe6de73e77bf5fe64bba0fae96f36f07f9efb",
+      "sha256": "8d6f8acd0547ea1e4ccbd9438cd7f06b58cebaf1da4eb484695d56576ed1f2a3",
+      "size_bytes": 6301,
+      "git_blob": "9f1340ea9fce10869194c04a51e4aa344257a7a8",
       "previous_git_blob": "9ba5d69efe22b48664dd268a674973e1c46e696c"
     },
     {
@@ -25158,9 +26159,9 @@
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
       "storage_scope": "public_repository",
-      "sha256": "44ad45748fcd203b784abeb47cf43be9945e8f229b276ed7aea1c3f356dddcbc",
-      "size_bytes": 9466,
-      "git_blob": "688c31a59bf6048aba507e83db83d1f49e568922"
+      "sha256": "9ecb783f2e13f25aaaec99324ccf39566b1937ce54f30811f12ae8e7bc44a208",
+      "size_bytes": 9649,
+      "git_blob": "3d1b6be3654927181ca9b6bd07dd8722adfa82d0"
     },
     {
       "version": "architecture-quality-audit-02-rereview",
@@ -25205,9 +26206,9 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "c88fd2d7a6feac54e679a9fcec87bf540f4509cf4d0b51c414695928b2bbdf12",
-      "size_bytes": 25274,
-      "git_blob": "f3269172e40798c3d4f942cd36f0ad4cf392506e",
+      "sha256": "30c41f2b87f0fe0c7d4386a48d701f0d38edf29f0df71318a0f64aeaa07d4efe",
+      "size_bytes": 25589,
+      "git_blob": "b38b0ed332019870be3b7f7f05275330ed0ee839",
       "previous_git_blob": "2477f1e147faa0ececc08ad12146914e3b1a038c"
     },
     {
@@ -25217,9 +26218,9 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "c118884583e4bb079eafd2d30ef3684b6d547a94207ef314db34178a38b4b45b",
-      "size_bytes": 25081,
-      "git_blob": "151be6a6b81ada73cda1280e4ab6d809dd26c5b9",
+      "sha256": "c1c002f9b1d9e5317b435fa755a9b692bbbc153fe3057da47abcbd7eca9b8115",
+      "size_bytes": 26319,
+      "git_blob": "ac706752654687d26c5f0fd191065a3398936b29",
       "previous_git_blob": "b25bcbfb544447fd06a6d8371a28e5e8819ee857"
     },
     {
@@ -25229,9 +26230,9 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "c074466fb1dd64e08f50816a08f6d57374a89522ba10ffa5280e02871507e30b",
-      "size_bytes": 17236,
-      "git_blob": "d3d5e09924e40fca42d5e3b9d957ab4d9f6f9bb1",
+      "sha256": "867d86b631630298efa9310dca0db37a1b8bf1f61d342c639e8b162c7b5362b8",
+      "size_bytes": 17681,
+      "git_blob": "9e4b650a207da0cebe0391814fae52c4426d65eb",
       "previous_git_blob": "d8ade6e508099c41703c9d3ab8595c78bc08e868"
     },
     {
@@ -25443,9 +26444,9 @@
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "0157d89f9aa4f2d274f3cdfc97d6d814ba843c688e4264c43988e919b7d15534",
-      "size_bytes": 13027,
-      "git_blob": "adfc83e114a8a6fcee2d8107aa57996029b26320",
+      "sha256": "2d5f0825380df0df0746bd0dd85e1e12bface703e82e96306b6e5bf70a320dc8",
+      "size_bytes": 15207,
+      "git_blob": "faddc8c63dda0220222dc9f8b257286a86a3b3d6",
       "previous_git_blob": "14b4eb55e1f5ad5dd06016e157b0216521884144"
     },
     {
@@ -25556,9 +26557,9 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "8677084b523b2b9ff16a8f957ee11266e5610153e143def8729dae34a25fcc5e",
-      "size_bytes": 2445,
-      "git_blob": "41c0517358f540b92cffc525e99b1c0b9f4bd7c3",
+      "sha256": "fb5a64c96964919348d53b9f87181bf5e70832fff301d43bc528e03605c226e2",
+      "size_bytes": 2677,
+      "git_blob": "8e93f798d4c4e3966a5b95d5ac0831026864fe3e",
       "previous_git_blob": "4501eb8fef9a0d084a984e1a40e41e0a62f168f4"
     },
     {
@@ -26653,9 +27654,9 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "ac7c72aa4bb85a4b07b48c6297fce15b9d7f1bbba0c468f67b00ee6be608e015",
-      "size_bytes": 10501,
-      "git_blob": "2977248cd8044b6b3cdea096f03bb997634dc301",
+      "sha256": "19d7429e21063532e021d128bfb3a20bdca82b806ae9e2d0fd0668ebe53fa9e3",
+      "size_bytes": 10524,
+      "git_blob": "2cb038e92ac0418ff362ae8220fd622b7f52eb8b",
       "previous_git_blob": "6ee96f682e627afc5ee0729fe4b19444ba5d293d"
     },
     {
@@ -27458,6 +28459,116 @@
       "size_bytes": 14684,
       "git_blob": "e75642c36f64c7f9bae4d6c8d8962cb452d121ff",
       "previous_git_blob": "7501643b71568c24aa63550d29a90e64be8b36e9"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "78635a9c5471bc7408a449638ec47debafb9944c2392e5d4d2db7c0737b58c76",
+      "size_bytes": 755,
+      "git_blob": "78de5c75a6438e82f36b81bae3a750e3f0b94305"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/RcsDestinationProtocol.cs",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "dee050b54ecfaa2db0c041c3e5ec0c2798eb9e4493b4167009ff2eeafb023ea7",
+      "size_bytes": 5975,
+      "git_blob": "2a746421ec2ce8ee77fdea9457f99b0d066695d7"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/RcsTaskOptions.cs",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "3a90a84042841ceaf10d025134531194cc2ff95f0efc64e3d55df187f6efe44e",
+      "size_bytes": 4390,
+      "git_blob": "8ebcb05de2d10045e9a2c353687c4ff9d153b8a2"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "3430cf91523076a4062f4ab10d6b6ea51d25b175cbf707a180c32a734ab404eb",
+      "size_bytes": 7612,
+      "git_blob": "6931c78928c9c6d7f439729ebd45bcaf04c0cc7e"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/extension.build.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "4be6d5f4b46b72225b10af722fb9e6f1066536be285db802a68e380ceb62dc60",
+      "size_bytes": 747,
+      "git_blob": "fd284a1646b94f83fa83f6be678f265916804fc8"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/manifest.template.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "51eb5298954065b7c3bd09b407a6278a4e295d3a41f6771fcede3e26301098d7",
+      "size_bytes": 210,
+      "git_blob": "46eb8eec00f15d710fecc586407914ce562f5ff5"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/modules.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "36375399803c4e968037fb0a1e62795dc40ad0cd23d4a171b81671180c54a7dd",
+      "size_bytes": 590,
+      "git_blob": "ba8eb8d8a108292bfbb3a722f8f88bfefe8e195a"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/packages.extension.lock.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "a29c6aa8cfb81874ff8bb78dc369d7416f28c9b8cc47e99592bfc019b20c41eb",
+      "size_bytes": 61,
+      "git_blob": "4a91a8cd78fbfd79345585bb9bdbb8099ec40383"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/packages.lock.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "339dea873394b90cb7defc9290a39ddd72d5fc2c0e9b13c0f523065a5241a64c",
+      "size_bytes": 14131,
+      "git_blob": "c0e7655e1bb452c8d8b352f67b59e85c5a141985"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/parameters.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e085f0ae402d7f734b913664112a7d63b0703c33de3e8fe767ac0a2d29c28360",
+      "size_bytes": 2652,
+      "git_blob": "3952c6886fc10064a140a98905b66ba44e823daf"
     },
     {
       "path": "src/Ipc.Platform/ApplicationRelease.cs",
@@ -28279,9 +29390,9 @@
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "fb38e82b3a14be3875d8a4575302a7c120f70a77008c66b830c63683a677536e",
-      "size_bytes": 31520,
-      "git_blob": "7cdb8e5a7486d5a8213ec97e931297641482e51f",
+      "sha256": "09b5ed0dd9840db89f2c0455acba13bb9f5bf2ebcd78e2df6160135e1373ca8a",
+      "size_bytes": 31547,
+      "git_blob": "a50b917ba96d9d04a964890017fed7f811fcaf80",
       "previous_git_blob": "367817770a8fbf577ba622fe739dc1e31257df08"
     },
     {
@@ -28359,9 +29470,9 @@
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
       "storage_scope": "public_repository",
-      "sha256": "31979539ae842fa4524b76b47ca4da15b4343aa5742a3c983679fff009885a7e",
-      "size_bytes": 6651,
-      "git_blob": "24582b3ae5824bb0e9eb5a5678386b2eaa668466"
+      "sha256": "1440d4d8e5a1a9b73f7119bfd36496f5e4b15f5d04ad4acf8319604137048798",
+      "size_bytes": 6653,
+      "git_blob": "68e3f6f76efa3898d0d2010250ecae8a986ec62c"
     },
     {
       "path": "tests/Ipc.Application.Verification/ArchitectureQuality.PriorCustody05.cs",
@@ -28370,9 +29481,9 @@
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
       "storage_scope": "public_repository",
-      "sha256": "ae9207627bb6a195fba4c62e6fb6742dacbf1372e370a92e8c719d712432184a",
-      "size_bytes": 6281,
-      "git_blob": "6a4911efcaae7ca3129d7e71e60c4600eae4cc2a"
+      "sha256": "197fb358ee5566dcddf766e13fe4c518b34598eb5014e1e95b6377c0ddf278f7",
+      "size_bytes": 6304,
+      "git_blob": "5c581089e8515332569b16e9d00fe01509a0c597"
     },
     {
       "version": "architecture-quality-audit-02-rereview",
@@ -28381,9 +29492,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "tests/Ipc.Application.Verification/ArchitectureQuality.Recovery02.cs",
-      "sha256": "5833b662e32ef9193b31299fe00cfe2c1fec594b228e5d905f8212d1c6a37ce6",
-      "size_bytes": 19323,
-      "git_blob": "7c6d4a1cc0b160bb3bdff9ad5900e64a81d35879",
+      "sha256": "efb8f30d9c65eb7d81525ffcc8dac636f3b6d9b9251436075df739fb6c72208e",
+      "size_bytes": 22445,
+      "git_blob": "f7959e38c2d5168c9fa8af8e9ad30b0599df3ff9",
       "previous_git_blob": "66d52de20574b243502d26a6654e854dea19142c"
     },
     {
@@ -28393,9 +29504,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "636c0b02bbcffd5f99ec66b9f99dc8fa1932ab14a6f5fd0983fbe797079bd31f",
-      "size_bytes": 13286,
-      "git_blob": "1bde113287f1598327c1c1e597bf85f369cab620"
+      "sha256": "430b9948614a96effe1e88323347a9d4a936ee417493d259304c4704f31a3811",
+      "size_bytes": 13544,
+      "git_blob": "a0ce34858d3a8b41326a44339521db4a7f45272c"
     },
     {
       "version": "architecture-quality-audit-02-rereview",
@@ -28416,9 +29527,9 @@
       "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
       "source": "User-authorized PR26 P1/P2 closure on baac260",
       "storage_scope": "public_repository",
-      "sha256": "4020a366c674fa0107d1708675a1d4ae6fb896ffb2eb91db84d5690f723bf8ac",
-      "size_bytes": 13595,
-      "git_blob": "bd299e337fdbf33b3d06c215acad89b15a2e3ee5"
+      "sha256": "0538db171a7d2d027fcbb7f773cce6d865a1eb51af7da334edee3ecf365d27f8",
+      "size_bytes": 14391,
+      "git_blob": "e6495c0b5e28a7e6133b1051ab67f8b7f76a8075"
     },
     {
       "version": "audit02-implementation",
@@ -28471,9 +29582,9 @@
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "0e53de85bf6648df4162b33f8798efa9c7cb9c5a5d609d4daeca7aa65158fba4",
-      "size_bytes": 1414,
-      "git_blob": "272030905bc006397678ba61fd587f19554ab9b6",
+      "sha256": "5afc4a87dbc27b79668522495fcab7c59ada6a989a7554b558d456263fa6c1a8",
+      "size_bytes": 1526,
+      "git_blob": "bc324f02ca5614fc5ba22d34cd5d5a252f76bc5a",
       "previous_git_blob": "63f0f0969192e8ada3a8436104c7b42d3ea6302d"
     },
     {
@@ -28495,9 +29606,9 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "3baf2439ef0dad5c0cd0e60c3a80e37b564501bcd49ece0ef3a6c4baefa28a34",
-      "size_bytes": 16288,
-      "git_blob": "1c735427a6c8d43d4ff6bc4eea4c004f485d50e0",
+      "sha256": "1d83569f70d8353daf0c0d873e5532d7997fd48d2754cd496443a41346022350",
+      "size_bytes": 16614,
+      "git_blob": "ef130caad0364c91a0ab99bd0593a501259731b5",
       "previous_git_blob": "ec3161f509796fb2deda47f3eb553448d7c74c4f"
     },
     {
@@ -28570,6 +29681,28 @@
       "previous_git_blob": "fb2506761dbb00c69bdf13f597b2d1f4125fd0f8"
     },
     {
+      "path": "tests/Ipc.Application.Verification/SportmasterRcs.cs",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "678c3707ba2cb8536d0e3b186ca3e1826b238fda3689556bee0a6e7c4ade17cb",
+      "size_bytes": 41109,
+      "git_blob": "1f4c8d57a7aa840904eba8fdd301df6d9974686f"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/SportmasterRcsPresentation.cs",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e731f4c9359700bc4c389c2fed26d0f2c141f8e94af8052e6bde24092c25e085",
+      "size_bytes": 2373,
+      "git_blob": "f54d42fc78430a148550041d7710be15cfd769b6"
+    },
+    {
       "path": "tests/Ipc.Application.Verification/VisibilityShim.cs",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
@@ -28620,9 +29753,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "b746a7bc633353fb6d61d17fbb1d715aec9d1256023137a9a0ab04c116b5f8ba",
-      "size_bytes": 17840,
-      "git_blob": "111fe512ecff0faf0b1cbbf59a02b08902a79a9d",
+      "sha256": "3fc92f825745589e260bbe9266ec19d7c8e598a4ad5063263d95b50e6c51246e",
+      "size_bytes": 18006,
+      "git_blob": "9f7c4c9611699d6cccb3b50599e554648ad07c97",
       "previous_git_blob": "3c215db40091c455932498b6feb82be4e7471eaa"
     },
     {
@@ -28926,9 +30059,9 @@
     },
     {
       "path": "tools/test_verify_archive.py",
-      "sha256": "84d4ea0f46c5a5b73316868e3a800f7be3e25fa2d53cd31ff2181fad79f9d28e",
-      "size_bytes": 7323,
-      "git_blob": "37ccc6ded6df7482dab9b60469b5ce04ad8e245c",
+      "sha256": "1c867a638ef53c83d3b94593e1771e111d7377c3788a76723f45a9a12cea3de8",
+      "size_bytes": 7358,
+      "git_blob": "056c5dfea3b7f9422fd9ed7b75940418ce793973",
       "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
@@ -28938,9 +30071,9 @@
     },
     {
       "path": "tools/verify_archive.py",
-      "sha256": "f1e540a789e0542503e680da805c9420dd7f30aadca917aaa6c99e87c6fee1b8",
-      "size_bytes": 19514,
-      "git_blob": "787809c69bf14c9c7b2284054c7eb63054b70212",
+      "sha256": "2dbffcc147f4d12bf714e6918decaa80d5b5a10bc530e37b2c1f595da176fefb",
+      "size_bytes": 19557,
+      "git_blob": "279cd4a09188c4068e8a9aa710f00fdc2a4a6acb",
       "version": "site-capabilities-18",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
@@ -29917,5 +31050,24 @@
     "Windows": "NOT_RUN",
     "RealEquipment": "BLOCKED",
     "PublicSourceArchive": "Inherited design asset failures retained; compare error set, not blanket PASS"
+  },
+  "sportmaster_rcs_task": {
+    "baseline_main": "4afe2afacde9e2acab7648fff3440fa3cc331b6e",
+    "parallel_pr": 26,
+    "name": "SportmasterRcsTaskService",
+    "contract": "SPORTMASTER-RCS-SORTER-v1",
+    "application_contract": "1.7.0",
+    "parcel_database": 6,
+    "runtime": "docs/runtime/sportmaster-rcs-task.md",
+    "checks": "docs/runtime/evidence/sportmaster-rcs-task/integration/checks.json",
+    "public_source": "New authorized implementation and synthetic fixtures only; original user interface examples and restricted material not republished",
+    "windows_actual": "NOT_RUN",
+    "real_rcs_device_field": "BLOCKED",
+    "integration_main": "baac260214f910dca9ae4628ba6449b25188e2ac",
+    "initial_candidate_source": "4c9d51c2c017b7be74cc45156c9df9cd97a5fae9",
+    "initial_candidate_package_version": "1.0.0",
+    "final_package_version": "1.0.1",
+    "component_version": "1.0.1",
+    "current_results": "docs/runtime/evidence/sportmaster-rcs-task/integration/README.md"
   }
 }

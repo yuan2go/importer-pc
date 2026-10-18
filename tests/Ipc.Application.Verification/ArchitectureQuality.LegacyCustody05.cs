@@ -27,7 +27,7 @@ static partial class ArchitectureQuality
         var calls=0;var dbFile=LegacyDatabase(cut);
         var result=await ParcelLegacyReceiptRecovery.RecoverAsync(dbFile,Wire.FileHash(dbFile),Path.Combine(cut,"retry.backup.db"),occurrence,release,"Recover exact locally durable Query before custody upgrade",new SportmasterFlow(),
             (_,_,_,_)=>{calls++;throw new Exception("A new external query must not replace the locally durable original query");},expectedWalHash:WalHash(dbFile));
-        using(var repo=new ParcelRepository(Path.GetDirectoryName(dbFile)!,"sportmaster"))
+        using(var repo=new ParcelRepository(Path.GetDirectoryName(dbFile)!,"sportmaster",5))
         {
             var op=repo.Load().Single();
             Check(calls==0&&ParcelRepository.ReadStorageVersion(dbFile,"sportmaster")==5,"retry finishes original Query locally and upgrades without another external call");

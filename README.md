@@ -8,7 +8,7 @@ C#/.NET 10工位运行基座及独立Application/供包参考产品：WPF、多�
 
 本次[并发整合](docs/runtime/parallel-task-reconciliation-01.md)固定起始main713f23d，统一PR27/29/30/32及最新恢复成果；有效要求和执行状态以该报告及[本包](docs/work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-01.md)为入口。最终组合验证和合并尚在进行，历史候选/PASS不代替本轮结果。
 
-三个独立Application按[架构22](docs/design/application-architecture-22.md)选装，Parcel DB5、配置schema1/2/3、Application.Contracts ABI1.6.0。PR23采集、PR24质量闭环及PR26有效整改已由main继承。本轮修复DB4升级前责任判定、schema1/2实际main位冲突恢复与Pending激活屏障；原SQL/请求/回执和历史失败保留，未结责任不通过升级或换配置清除。旧N01–N07候选身份及结果见[历史交付](docs/runtime/architecture-quality-audit-02-results.md)，不代替本轮验证。
+三个独立Application按[架构22](docs/design/application-architecture-22.md)选装，Parcel DB6、配置schema1/2/3、Application.Contracts ABI1.7.0。PR23采集、PR24质量闭环及PR26有效整改已由main继承。本轮修复DB4升级前责任判定、schema1/2实际main位冲突恢复与Pending激活屏障；原SQL/请求/回执和历史失败保留，未结责任不通过升级或换配置清除。旧N01–N07候选身份及结果见[历史交付](docs/runtime/architecture-quality-audit-02-results.md)，不代替本轮验证。
 
 恢复永久身份/持久Query依据与custody确定性验证见[修复结果](docs/runtime/parcel-recovery-p2.md)。
 

@@ -1,0 +1,16 @@
+{
+  "baseline_main": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "source_commit": "9050bdd53e7f60882a9418c1c04e04307a1b8f1d",
+  "baseline_status": "FAIL",
+  "baseline_errors": 268,
+  "current_status": "FAIL",
+  "current_errors": 267,
+  "new_errors": [],
+  "removed_errors": [
+    {
+      "code": "manifest_checksum",
+      "path": "docs/manifest.sha256"
+    }
+  ],
+  "boundary": "Remaining historical source metadata/PPTX errors are preserved; no global archive PASS claim"
+}

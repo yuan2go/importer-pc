@@ -30,14 +30,15 @@ static partial class ArchitectureQuality
             catch(Exception ex){Check(false,$"P2 DB{version} local={local}: {ex.GetType().Name}: {ex.Message}");}
         }
         foreach(var local in new[]{false,true}) await OfflineIdentityP2(sourceDirectory,c,4,local,sameBytes:true);
+        await OfflineIdentityP2(sourceDirectory,c,5,false,sameBytes:true,targetStorageVersion:6);
         try { await DurableBasisP2(c,originalOccurrence); }
         catch(Exception ex){Check(false,"P2 durable basis: "+ex);}
         if(failures!=0)throw new Exception("Recovery P2 failures: "+failures);
         Console.WriteLine("PASS RECOVERY P2 COMPLETE");
     }
-    static async Task OfflineIdentityP2(string source,ParcelConfiguration c,int version,bool local,bool sameBytes=false)
+    static async Task OfflineIdentityP2(string source,ParcelConfiguration c,int version,bool local,bool sameBytes=false,int targetStorageVersion=5)
     {
-        var name=$"p2-identity-v{version}-local{local}-same{sameBytes}";var directory=DirectoryFor(name,c);Directory.CreateDirectory(directory);
+        var name=$"p2-identity-v{version}-local{local}-same{sameBytes}-target{targetStorageVersion}";var directory=DirectoryFor(name,c);Directory.CreateDirectory(directory);
         ParcelOperation op;using(var repo=new ParcelRepository(source,c.ApplicationId))op=repo.Load().Single();
         ExtensionStore.AtomicWrite(Path.Combine(directory,"configuration.json"),new ConfigurationRevision<ParcelConfiguration>(1,c,null,"Effective",null));
         var image=op.Image!;var imageFile=Path.Combine(directory,image.RelativeFile);Directory.CreateDirectory(Path.GetDirectoryName(imageFile)!);File.Copy(Path.Combine(source,image.RelativeFile),imageFile);
@@ -63,13 +64,13 @@ static partial class ArchitectureQuality
         }
         var calls=0;var database=Path.Combine(directory,c.ApplicationId+".db");var backup=Path.Combine(root,name+".backup.db");
         var result=await ParcelLegacyReceiptRecovery.RecoverAsync(database,Wire.FileHash(database),backup,original,"/synthetic/original-release", "Controlled duplicate identity investigation",new SportmasterFlow(),
-            (_,_,_,_)=>{calls++;return Task.FromResult<StageReply?>(changed);},expectedWalHash:WalHash(database));
-        using(var repo=new ParcelRepository(directory,c.ApplicationId,sameBytes?5:version))
+            (_,_,_,_)=>{calls++;return Task.FromResult<StageReply?>(changed);},expectedWalHash:WalHash(database),targetStorageVersion:targetStorageVersion);
+        using(var repo=new ParcelRepository(directory,c.ApplicationId,sameBytes?targetStorageVersion:version))
         {
             var after=repo.Load().Single();repo.ValidateRawInventory();
             if(sameBytes)
             {
-                Check(Wire.Encode(result).Contains("UpgradedCustodyRetained")&&after.Upload!.State==StageState.Accepted&&repo.PendingReceipts().Length==1&&repo.HasReceiptOutcomeBasis(original)&&calls==(local?0:1),$"P2 same-ID/same-bytes local={local} remains idempotent and upgrades with original missing raw retained");
+                Check(repo.StorageVersion==targetStorageVersion&&Wire.Encode(result).Contains("UpgradedCustodyRetained")&&after.Upload!.State==StageState.Accepted&&repo.PendingReceipts().Length==1&&repo.HasReceiptOutcomeBasis(original)&&calls==(local?0:1),$"P2 same-ID/same-bytes local={local} remains idempotent and upgrades with original missing raw retained");
                 return;
             }
             Check(Wire.Encode(result).Contains("Conflict")&&after.Upload!.State==StageState.Conflict&&repo.StorageVersion==version,$"P2 DB{version} local={local} rejects changed permanent identity before acceptance/upgrade");

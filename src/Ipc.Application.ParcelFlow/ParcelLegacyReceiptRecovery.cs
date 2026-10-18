@@ -8,8 +8,9 @@ namespace Ipc.Application.ParcelFlow;
 public static class ParcelLegacyReceiptRecovery
 {
     internal static Action<string>? Boundary;
-    public static async Task<object> RecoverAsync(string database,string expectedHash,string backup,string occurrence,string originalRelease,string reason,FlowDefinition definition,Func<string,string,string,CancellationToken,Task<StageReply?>> originalQuery,Action<string,ParcelConfiguration>? registerBackup=null,CancellationToken token=default,string? expectedWalHash=null)
+    public static async Task<object> RecoverAsync(string database,string expectedHash,string backup,string occurrence,string originalRelease,string reason,FlowDefinition definition,Func<string,string,string,CancellationToken,Task<StageReply?>> originalQuery,Action<string,ParcelConfiguration>? registerBackup=null,CancellationToken token=default,string? expectedWalHash=null,int targetStorageVersion=5)
     {
+        if (targetStorageVersion is not (5 or 6)) throw new ArgumentOutOfRangeException(nameof(targetStorageVersion));
         database=Path.GetFullPath(database);backup=Path.GetFullPath(backup);
         RecoveryFiles.RequireOrdinaryAncestors(database);RecoveryFiles.RequireOrdinaryAncestors(backup);
         var directory=Path.GetDirectoryName(database)!;
@@ -101,9 +102,9 @@ public static class ParcelLegacyReceiptRecovery
             }
             Boundary?.Invoke("BeforeLegacyUpgrade");
         }
-        ParcelRepository.UpgradeCustodyOnly(directory,definition.Id);
-        using var readback=new ParcelRepository(directory,definition.Id);
-        return new{Status="UpgradedCustodyRetained",DatabaseVersion=5,OriginalOccurrence=occurrence,Raw=readback.ReceiptById(occurrence),Pending=readback.PendingReceipts().Length,Backup=backup,OriginalQueryOnly=true,OriginalSubmitAttemptsUnchanged=true};
+        ParcelRepository.UpgradeCustodyOnly(directory,definition.Id,targetStorageVersion);
+        using var readback=new ParcelRepository(directory,definition.Id,Math.Max(version,targetStorageVersion));
+        return new{Status="UpgradedCustodyRetained",DatabaseVersion=readback.StorageVersion,OriginalOccurrence=occurrence,Raw=readback.ReceiptById(occurrence),Pending=readback.PendingReceipts().Length,Backup=backup,OriginalQueryOnly=true,OriginalSubmitAttemptsUnchanged=true};
     }
     static string OutcomeDetail(string original,string query,ParcelOperation before,string reason,string backup,string release) =>
         Wire.Encode(new{OriginalOccurrence=original,QueryOccurrence=query,Original=before,Actor=Environment.UserName,Reason=reason,Backup=backup,OriginalRelease=Path.GetFullPath(release)});

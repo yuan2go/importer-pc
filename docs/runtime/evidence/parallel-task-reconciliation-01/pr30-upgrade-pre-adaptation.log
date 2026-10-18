@@ -1,0 +1,8 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-4b9d4c5c61ab4e6c865b367821447fcc
+Unhandled exception. System.IO.InvalidDataException: Unknown/changed original database; matching maintenance reader required
+   at Ipc.Application.ParcelFlow.ParcelRepository.ReadStorageVersion(String database, String application) in /Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/src/Ipc.Application.ParcelFlow/ParcelLegacyRecovery.cs:line 17
+   at ArchitectureQuality.RefuseDb4(String name, ParcelConfiguration c, Boolean historical) in /Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs:line 26
+   at ArchitectureQuality.UpgradePreflightChecks() in /Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs:line 47
+   at ArchitectureQuality.UpgradeConflictClosureChecks(String source, String evidence) in /Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs:line 135
+   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 17
+   at Program.<Main>(String[] args)

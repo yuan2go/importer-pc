@@ -43,3 +43,11 @@
 ## PR32组合验证
 
 代码`271e8d2`继承起始main和PR32。LegacyReceiptRecovery保留PR31 OutcomeReconciled归档分支，Awaiting本地/外查统一传Repository做永久ID核对。构建0警告/0错误；恢复P2、升级冲突及receipt-custody三组exit0，见[准确命令及指纹](evidence/parallel-task-reconciliation-01/pr32-validation.json)。原FAIL日志原字节含历史行尾空白，未为格式检查改写原件。
+
+## C01的显式SQL6迁移边界（编码前裁决）
+
+普通启动对DB2–5的未结业务/原件继续在读写打开和配置写入前拒绝；不能通过SQL6绕过PR31。原recover-legacy-receipt直调API默认保留已确认的DB5目标；最终CLI额外显式选择当前格式6，仍先取得Owner、原SHA、全备份和主/上传终态及持久Query依据，随后使用同一UpgradeCustodyOnly执行。无新Query权限、无清原raw责任。这样保留原调用兼容性，又避免旧库经窄迁移到5后被6普通启动永久挡住。新字段只在内部维护API末尾可选，不增公共Contracts接口。合成DB4夹具必须真正移除SQL5/6的新增表及标记，不能把DB6误称DB4。
+
+## PR30整合中的原失败与修复
+
+文本自动合并会在配置写入前先打开DB5、随后再打开DB6，已改为单次DB6预检打开，继承PR31读写前门禁。原SQL6测试允许“未知SQL5直接升级”，与新确认的旧读者保护相冲突，实际组合运行被LegacyUnsettled拒绝（原FAIL保留）。现改为验证未知原件拒绝且DB/raw/责任原字节保留，并独立验证已终结SQL5升级6的原请求、结果及SQL1–5 checksum保持；未删除原责任断言。DB4夹具原只删SQL5标记，组合下残留SQL6导致Unknown/changed，现真正移除5/6增量对象和标记，原失败保留。另加DB5未知拒绝与DB5已具Query依据显式6迁移，API默认5的原回归继续适用。

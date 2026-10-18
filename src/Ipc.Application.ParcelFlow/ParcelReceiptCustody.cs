@@ -94,17 +94,18 @@ public sealed partial class ParcelRepository
         c.Parameters.AddWithValue("$op",operation);
         using var r = c.ExecuteReader(); while (r.Read()) yield return r.GetString(0);
     }
-    public static void UpgradeCustodyOnly(string directory,string application)
+    public static void UpgradeCustodyOnly(string directory,string application,int targetStorageVersion=5)
     {
         // Caller holds the application owner and has created a full backup. No sources
         // are constructed here. Ordinary startup does not opt into this old-reader transition.
+        if (targetStorageVersion is not (5 or 6)) throw new ArgumentOutOfRangeException(nameof(targetStorageVersion));
         var file=Path.Combine(directory,application+".db");var version=ReadStorageVersion(file,application);
         using(var original=new ParcelRepository(directory,application,version))
         {
             original.ValidateRawInventory();
             if(!original.LegacyCustodyUpgradeEligible(application))throw new InvalidDataException("Legacy external/custody proof incomplete; original reader marker retained");
         }
-        using var upgraded=new ParcelRepository(directory,application,5,allowCustodyUpgrade:true);
+        using var upgraded=new ParcelRepository(directory,application,Math.Max(version,targetStorageVersion),allowCustodyUpgrade:true);
         upgraded.ValidateRawInventory();
         foreach(var pending in upgraded.PendingReceipts())
             if (!upgraded.HasReceiptOutcomeBasis(pending.Id)) throw new InvalidDataException("Unproved legacy original; preserve matching old reader and custody");

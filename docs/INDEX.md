@@ -1,5 +1,7 @@
 > [PR31独立复审归档与授权合并](reviews/pr31-independent-rereview-f068156/README.md)：原审head `f068156ed9d4a0ffe4feee94b5c11e966aaa366b`、原基线main `baac260214f910dca9ae4628ba6449b25188e2ac`。本次仅归档/合并，不重跑验证；原结论和所有未验证边界保持。
 
+> RCS增量01：[Sportmaster RCS分拣任务服务](runtime/sportmaster-rcs-task.md)。已继承main PR26/28；公共契约1.7.0、Parcel数据库6（SQL1–5原样继承），旧请求/接收责任仍按获授权核对恢复链保留。初轮4c9d51c候选与最终整合候选分别记录；Windows实际NOT_RUN，真实RCS/设备/现场BLOCKED。
+
 > [2026-10-19不测试发布与合并回执](runtime/publication-20261019.md)：PR26已合并，8个既有参考产物已上传；Windows/真实集成边界不变。
 
 # 统一资料与实施入口
@@ -8,7 +10,7 @@
 
 本轮执行[并发任务整合工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-01.md)，[调查、裁决与最终交付](runtime/parallel-task-reconciliation-01.md)统一源任务、当前设计与证据范围。起始main713f23d；历史PR“不合并”由本次明确合并授权更新。
 
-[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。本轮以PR26合并后的main baac260复核；PR24/26的历史源码、候选及PASS保留其原范围。Parcel DB5、旧schema1/2单main和schema3独立位共同支持；DB2/3/4升级前责任判定与资料专用迁移见维护指南。Supply Storage5保持单独契约。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。本轮以PR26合并后的main baac260复核；PR24/26的历史源码、候选及PASS保留其原范围。Parcel DB6、旧schema1/2单main和schema3独立位共同支持；DB2/3/4/5升级前责任判定与资料专用迁移见维护指南。Supply Storage5保持单独契约。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
 恢复永久身份/持久Query依据与custody确定性验证见[修复结果](runtime/parcel-recovery-p2.md)。
 

@@ -1,0 +1,43 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-84c56551c08f47da9fa774e18db69775
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-28bcc63fff8e41108fc47ec105359f41
+PASS AQ: real process dies after original upload raw file flush and before raw-durable/T3 transaction
+PASS AQ: pre-T3 original bytes belong to the original Awaiting occurrence
+PASS AQ: explicit maintenance grant obtained
+Custody monitor held: {
+  "Observed": {
+    "Admit": false,
+    "Resume": true,
+    "Configure": true,
+    "ContinuePrepared": [],
+    "ContinueUpload": [],
+    "AbandonUnsubmitted": []
+  },
+  "Held": {
+    "Admit": false,
+    "Resume": true,
+    "Configure": false,
+    "ContinuePrepared": [],
+    "ContinueUpload": [],
+    "AbandonUnsubmitted": []
+  },
+  "Receipt": {
+    "Status": "Rejected",
+    "Reason": "Pause, authenticate maintenance, select the original receipt occurrence and provide an inspection reason",
+    "Revision": 13
+  }
+}
+PASS AQ: actual Monitor reservation after Configure=true safely refuses maintenance without revision change
+PASS AQ: held Monitor rejection creates no Query and preserves original Awaiting, owner, image and frozen requests
+PASS AQ: same Monitor probe drains before successful maintenance; no unknown external call retried
+Receipt custody query result: {
+  "Status": "OutcomeKnownRawMissing",
+  "Reason": "Original occurrence retained; inspect ReceiptResponsibilities and ReceiptOutcomeKnown audit. A query never supplies the old raw.",
+  "Revision": 14
+}
+PASS AQ: authoritative Query confirms outcome but cannot release original missing raw/image custody
+PASS AQ: pending original, active owner and separate Query basis remain after attempted archive
+PASS AQ: complete recovery set restores actual original bytes; local T3 clears only that occurrence and releases image by original policy
+PASS AQ: restoring original raw never resubmits WCS or upload
+PASS AQ: reactivated archived owner can rearchive without losing or duplicating original raw BLOBs
+PASS AQ: rearchive survives restart without another upload
+PASS RECEIPT CUSTODY COMPLETE

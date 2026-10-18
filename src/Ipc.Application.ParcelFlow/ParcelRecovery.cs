@@ -15,7 +15,7 @@ public static class ParcelRecovery
         if (File.GetAttributes(source).HasFlag(FileAttributes.ReparsePoint)) throw new InvalidDataException("Linked database backup is unsafe");
         var recovery = source + ".recovery";
         var manifestPath = RecoveryFiles.Resolve(recovery, "COMPLETED.json");
-        if (new FileInfo(manifestPath).Length > 32 * 1024 * 1024) throw new InvalidDataException("Recovery manifest quota exceeded");
+        if (new FileInfo(manifestPath).Length > RecoveryFiles.MaximumManifestBytes) throw new InvalidDataException("Recovery manifest quota exceeded");
         var json = File.ReadAllText(manifestPath);
         using var document = JsonDocument.Parse(json);
         // Validate raw keys before Dictionary deserialization can collapse duplicates.

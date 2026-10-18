@@ -6,6 +6,7 @@ namespace Ipc.Application.ParcelFlow;
 internal static class RecoveryFiles
 {
     public const int MaximumFiles = 100000;
+    public const int MaximumManifestBytes = 32 * 1024 * 1024;
     public static string FromNative(string root, string file) => Path.GetRelativePath(root, file).Replace(Path.DirectorySeparatorChar, '/');
     public static string Resolve(string root, string name)
     {

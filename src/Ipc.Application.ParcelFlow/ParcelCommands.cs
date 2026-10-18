@@ -139,7 +139,11 @@ public sealed partial class ParcelRuntime
                 Directory.CreateDirectory(Path.GetDirectoryName(target)!); RecoveryFiles.CopyVerified(original, target, expectedFiles[name]);
             }
             var files = RecoveryFiles.Inventory(recovery);
-            ExtensionStore.AtomicWrite(Path.Combine(recovery, "COMPLETED.json"), new { Application = Id, Database = Path.GetFileName(destination), DatabaseHash = Wire.FileHash(destination), Files = files, At = DateTimeOffset.UtcNow, Recovery = "Isolated original-deployment restore; reconcile external effects before admission" });
+            var manifest = new ParcelRecoveryManifest(Id, Path.GetFileName(destination), Wire.FileHash(destination), files, DateTimeOffset.UtcNow,
+                "Isolated original-deployment restore; reconcile external effects before admission");
+            if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(manifest)) > RecoveryFiles.MaximumManifestBytes)
+                throw new InvalidDataException("Recovery manifest quota exceeded; incomplete backup retained");
+            ExtensionStore.AtomicWrite(Path.Combine(recovery, "COMPLETED.json"), manifest);
             return new("BackupCreated", "Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set", repository.Revision);
         }
         finally { gate.Release(); }

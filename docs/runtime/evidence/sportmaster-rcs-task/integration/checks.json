@@ -38,5 +38,10 @@
     "Reference-only test factory retains fixed1.0.0 while real component is1.0.1",
     "Attached image test supplies full authoritative capability inventory",
     "Offline custody test waits for genuine unrelated image cleanup; original missing left bytes/custody retained; no assertions removed"
-  ]
+  ],
+  "runtime_source_commit": "9050bdd53e7f60882a9418c1c04e04307a1b8f1d",
+  "signed_exact_candidate_application": "PASS",
+  "portable_actual_extracted_smoke": "PASS",
+  "cli_install_candidate_preflight_no_overwrite": "PASS",
+  "win_x64_archive_and_contract_parity": "PASS"
 }

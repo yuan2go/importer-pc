@@ -1,0 +1,12 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "9050bdd53e7f60882a9418c1c04e04307a1b8f1d",
+  "Version": "1.0.1",
+  "CLIInstallation": "Installed",
+  "CandidateGenerator": "CandidateOnly",
+  "DeploymentCheck": "PreflightPassed",
+  "NoOverwrite": true,
+  "ExternalCalls": 0,
+  "WindowsActual": "NOT_RUN",
+  "RealRcs": "BLOCKED"
+}

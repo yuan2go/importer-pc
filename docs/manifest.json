@@ -19706,9 +19706,9 @@
       "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
       "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
       "storage_scope": "public_repository",
-      "sha256": "f756545749f90051d95cde45ca61199d48488d95688cbc0faa2d9fb902c8b55a",
-      "size_bytes": 938,
-      "git_blob": "6305e38c9fa67f2f09c5c9e5c69b8993b885a45f"
+      "sha256": "37c4f3c6bf1fb200ffb8f5c0af2557bf88e863221f16b41ec6dec1486cb012e2",
+      "size_bytes": 2039,
+      "git_blob": "821d6df67656eb8b8d8f9984656238c0f5d4f63a"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/aa22.log",
@@ -19733,6 +19733,17 @@
       "git_blob": "ca3de0675afab28dc8350acb6f428c8f8493c20a"
     },
     {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/archive-comparison.json",
+      "version": "rcs-task-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
+      "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
+      "storage_scope": "public_repository",
+      "sha256": "836eba592ef385f09d32ae6be1c1b0ee44686529b5c8fd3fb79eac156679a76f",
+      "size_bytes": 478,
+      "git_blob": "80d99202fcd08f57c8e0b4746fa0936f167435bd"
+    },
+    {
       "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/build.log",
       "version": "rcs-task-01",
       "status": "current_navigation_or_verification",
@@ -19750,9 +19761,20 @@
       "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
       "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
       "storage_scope": "public_repository",
-      "sha256": "bab20469ddeb3bf26314515ad4dfceff363078fe6c1c97cc2f792ab0c55639f6",
-      "size_bytes": 1100,
-      "git_blob": "a3f931bf6240fe281d6426dca9a55d3fa5a1bd99"
+      "sha256": "d31d02f5a23df62bfab16f2ef3a0d453ef097975dab4857b4177033c797829fe",
+      "size_bytes": 1371,
+      "git_blob": "b7dabfc014804526fdcab02e566b515e36987b6b"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/cli-config-check.json",
+      "version": "rcs-task-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
+      "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
+      "storage_scope": "public_repository",
+      "sha256": "08da2677212cc3d4a0100bb1b036d2204770a9d6757e50a9f68ed5da761e255a",
+      "size_bytes": 321,
+      "git_blob": "f533b98d05d7bf293c0b64dac8002b2e6d089ffc"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/configuration-confirmation.log",
@@ -19764,6 +19786,17 @@
       "sha256": "ea1fd1e2a35c10a54e7a9f66c9bfc673283d637d270cdefd5e55773b10b29853",
       "size_bytes": 3066,
       "git_blob": "557fcb4ed06137cfce07c052363b1fd9712af629"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/delivery.json",
+      "version": "rcs-task-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
+      "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
+      "storage_scope": "public_repository",
+      "sha256": "4a02770696e3aaa4520385b492acf867a526051e7aed7704434c7743d33ca840",
+      "size_bytes": 1534,
+      "git_blob": "ba685823a57746565bdede1a1b1c7c2e608adf4a"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/diagnostic-custody-precondition.log",
@@ -19797,6 +19830,72 @@
       "sha256": "1ac0ddf9a86329a8e0bbd5738e66ed004e1f2cdc7bbbd52976ecd12eabe2d702",
       "size_bytes": 10019,
       "git_blob": "0204f5d458abeec09542039a524a864bc4fe5ca6"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/final-extension-build.log",
+      "version": "rcs-task-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
+      "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
+      "storage_scope": "public_repository",
+      "sha256": "175562012464cf0a6dff4690e507868d0c8447cc49cf2bba3299efdd39e6d0a6",
+      "size_bytes": 13094,
+      "git_blob": "51b6d48c71b8d910e5c5afb498f4814557cf9c7a"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/final-package-portable.log",
+      "version": "rcs-task-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
+      "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
+      "storage_scope": "public_repository",
+      "sha256": "9b74ddbd7c02b028165c0270f418b0b8f49bffd7c05746e0241ec12a20498e63",
+      "size_bytes": 4712,
+      "git_blob": "aafc999cc3e535d567e5c6710fe4a835d75f5813"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/final-package-win-x64.log",
+      "version": "rcs-task-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
+      "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
+      "storage_scope": "public_repository",
+      "sha256": "19529370c79e2e70683d05af8e69dfb4c4c5348df61c66b7e75d1de60bf4e06f",
+      "size_bytes": 8577,
+      "git_blob": "5375482e153291e08db1fe72c7eb43567ad34af9"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/final-signed-host-custody.public.json",
+      "version": "rcs-task-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
+      "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
+      "storage_scope": "public_repository",
+      "sha256": "01779be46c90f650e1063dcb885b1d505fad7c720ebd4e4eadda925979ebeb48",
+      "size_bytes": 6387,
+      "git_blob": "b942c02da61349c77914bebe00241ade48941e07"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/final-signed.log",
+      "version": "rcs-task-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
+      "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
+      "storage_scope": "public_repository",
+      "sha256": "fdcbe431378036ee401d535534c2987cb2841b0ac65359cf3638450f9e9e8311",
+      "size_bytes": 7579,
+      "git_blob": "574d28eb35e086afb567f89e80cb78bdbbf26ed9"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/final-smoke.log",
+      "version": "rcs-task-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
+      "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
+      "storage_scope": "public_repository",
+      "sha256": "37f29fc84e77e35d29dc0ceab24c6752a42065ac49a349780039fee74d28c733",
+      "size_bytes": 560,
+      "git_blob": "e63a99da876aaf9be403f98f178fecb7ceb0d417"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/rcs.log",
@@ -19843,6 +19942,28 @@
       "git_blob": "af531ace6179d6bb00be7cd671d59a37a4fe33d0"
     },
     {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/smoke-sportmaster.json",
+      "version": "rcs-task-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
+      "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
+      "storage_scope": "public_repository",
+      "sha256": "78ef5f3073e7a59f84f7446476d7fd5a8f091d088393732bf160c4fcb9958455",
+      "size_bytes": 616,
+      "git_blob": "d98ed73d8f7f9441ca6aa33b4718d07b83987989"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/sportmaster-rcs-task-1.0.1.ipcx.identity.json",
+      "version": "rcs-task-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
+      "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
+      "storage_scope": "public_repository",
+      "sha256": "c9c1e43d71c92ee3fb08ed5ef54d140deb9fd1289ed3032ae9140d02499bec77",
+      "size_bytes": 1307,
+      "git_blob": "4fa21a09cf45ad63da64c634c56c1bb8ea331ed9"
+    },
+    {
       "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/tools-tests.log",
       "version": "rcs-task-01",
       "status": "current_navigation_or_verification",
@@ -19852,6 +19973,17 @@
       "sha256": "f54c7cef846ebb612c09fe9615741bdb0c251713d6aef08f5232cc4d0deacf70",
       "size_bytes": 1416,
       "git_blob": "8510a253fe62b1fcfd35004d17350827a4c388f0"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/windows-candidate-check.json",
+      "version": "rcs-task-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
+      "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
+      "storage_scope": "public_repository",
+      "sha256": "237dfd34bec87eeace387256490bc484f02d1aa14f8583f1bf6dbe7bb88fe4fd",
+      "size_bytes": 1027,
+      "git_blob": "6515dc62ef24ad2b3b124b190af8e49f54cd069f"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-rcs-task/package-portable.log",
@@ -19915,9 +20047,9 @@
       "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
       "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
       "storage_scope": "public_repository",
-      "sha256": "5796fa2986af2e84aac5a782dc02e06c01a35170030db42faf100dd4fe1f77dd",
-      "size_bytes": 7607,
-      "git_blob": "6e5fe1b117957a4f5a8378620a90068567498646"
+      "sha256": "71260ab9d5937f6916da228edb76b369c5d76fac3ddae0d39cdc32d0ba56d211",
+      "size_bytes": 6370,
+      "git_blob": "4914b0d91f45783c23d5e8322388e02f281532a3"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-rcs-task/signed.log",

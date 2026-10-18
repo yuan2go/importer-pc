@@ -3,99 +3,102 @@
   "assemblies": [
     {
       "name": "Ipc.Application.Contracts.dll",
-      "source": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Application.Contracts.dll",
+      "source": ".artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Application.Contracts.dll",
       "source_sha256": "f7a2e2dae013feabbfe1cffb3a8d48702d1fd658fef7c92264cfea017ed6c042",
-      "destination": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-signed-test-host/Ipc.Application.Contracts.dll",
+      "destination": ".artifacts/rcs-signed-test-host/Ipc.Application.Contracts.dll",
       "destination_sha256": "f7a2e2dae013feabbfe1cffb3a8d48702d1fd658fef7c92264cfea017ed6c042",
       "prior_testhost_sha256": "40a29d103eff9be11e55dd1aef2c1800f4c9887e520d55528d9f3e1f5f11cbae"
     },
     {
       "name": "Ipc.Application.ParcelFlow.dll",
-      "source": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Application.ParcelFlow.dll",
+      "source": ".artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Application.ParcelFlow.dll",
       "source_sha256": "819b17b8b6063b6997c256f3d10e24573b2244cd89f6da4c65f576fb388f27c7",
-      "destination": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-signed-test-host/Ipc.Application.ParcelFlow.dll",
+      "destination": ".artifacts/rcs-signed-test-host/Ipc.Application.ParcelFlow.dll",
       "destination_sha256": "819b17b8b6063b6997c256f3d10e24573b2244cd89f6da4c65f576fb388f27c7",
       "prior_testhost_sha256": "d158ae64546d99b268b31f9a9f3e5b13dfcb0fc6c45901a3eaa6a4e107e7d527"
     },
     {
       "name": "Ipc.Application.Sportmaster.dll",
-      "source": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Application.Sportmaster.dll",
+      "source": ".artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Application.Sportmaster.dll",
       "source_sha256": "8e3331be4116ab5bd7c0002e7628d6d8521f0bc5c756c67c4c0ce9dd007482c0",
-      "destination": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-signed-test-host/Ipc.Application.Sportmaster.dll",
+      "destination": ".artifacts/rcs-signed-test-host/Ipc.Application.Sportmaster.dll",
       "destination_sha256": "8e3331be4116ab5bd7c0002e7628d6d8521f0bc5c756c67c4c0ce9dd007482c0",
       "prior_testhost_sha256": "68739eb1d58c38bc8f2cd440d7fac44164ec11093a49c548f2fda77aad173e3c"
     },
     {
       "name": "Ipc.Assembly.dll",
-      "source": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Assembly.dll",
+      "source": ".artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Assembly.dll",
       "source_sha256": "af2e26956d96cb04eacac9642222c0552ac486a496588ea20dfe300bc176a281",
-      "destination": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-signed-test-host/Ipc.Assembly.dll",
+      "destination": ".artifacts/rcs-signed-test-host/Ipc.Assembly.dll",
       "destination_sha256": "af2e26956d96cb04eacac9642222c0552ac486a496588ea20dfe300bc176a281",
       "prior_testhost_sha256": null
     },
     {
       "name": "Ipc.Components.dll",
-      "source": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Components.dll",
+      "source": ".artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Components.dll",
       "source_sha256": "0dc5169af19dffc86bb375ba30ed64df8b7eb33db4cf3ba896bcc4ab6ad9e9c1",
-      "destination": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-signed-test-host/Ipc.Components.dll",
+      "destination": ".artifacts/rcs-signed-test-host/Ipc.Components.dll",
       "destination_sha256": "0dc5169af19dffc86bb375ba30ed64df8b7eb33db4cf3ba896bcc4ab6ad9e9c1",
       "prior_testhost_sha256": "aa7674d405b29c7ae9d587dd24108b9e7b98463171324be068cf0fb23bc8ebc6"
     },
     {
       "name": "Ipc.Drivers.dll",
-      "source": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Drivers.dll",
+      "source": ".artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Drivers.dll",
       "source_sha256": "88de3f0c5489b608ec1d6fc99c50318c78d68a70c90be3d20c200f9bf5dc4b22",
-      "destination": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-signed-test-host/Ipc.Drivers.dll",
+      "destination": ".artifacts/rcs-signed-test-host/Ipc.Drivers.dll",
       "destination_sha256": "88de3f0c5489b608ec1d6fc99c50318c78d68a70c90be3d20c200f9bf5dc4b22",
       "prior_testhost_sha256": "3b2ad53a745f5c74aa86d53b36f674618064b2d76428df14b76774e371fffcd8"
     },
     {
       "name": "Ipc.Integrations.dll",
-      "source": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Integrations.dll",
+      "source": ".artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Integrations.dll",
       "source_sha256": "f74584a0ecc3af4a9308c14cd123605912327bbc9af5079bf906078ce258976a",
-      "destination": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-signed-test-host/Ipc.Integrations.dll",
+      "destination": ".artifacts/rcs-signed-test-host/Ipc.Integrations.dll",
       "destination_sha256": "f74584a0ecc3af4a9308c14cd123605912327bbc9af5079bf906078ce258976a",
       "prior_testhost_sha256": "54f5d0234e67b1d4f21f82ca95a1c1536b0dc43ae1b6217a3186f59b425bd677"
     },
     {
       "name": "Ipc.Platform.Storage.dll",
-      "source": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Platform.Storage.dll",
+      "source": ".artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Platform.Storage.dll",
       "source_sha256": "2aa6f3c606595fa957a01d766a3eec9a71a55f58f94471db28cb0000748a88c0",
-      "destination": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-signed-test-host/Ipc.Platform.Storage.dll",
+      "destination": ".artifacts/rcs-signed-test-host/Ipc.Platform.Storage.dll",
       "destination_sha256": "2aa6f3c606595fa957a01d766a3eec9a71a55f58f94471db28cb0000748a88c0",
       "prior_testhost_sha256": "cf39c8b25446f8a18b9dbcaf086431c59148deee0c7d8410d00902937b481d52"
     },
     {
       "name": "Ipc.Platform.dll",
-      "source": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Platform.dll",
+      "source": ".artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Platform.dll",
       "source_sha256": "ad862d8d5d0bc3fe5ab1e8a5a000421acb28f5bf34467f320ebe22fe6fc75178",
-      "destination": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-signed-test-host/Ipc.Platform.dll",
+      "destination": ".artifacts/rcs-signed-test-host/Ipc.Platform.dll",
       "destination_sha256": "ad862d8d5d0bc3fe5ab1e8a5a000421acb28f5bf34467f320ebe22fe6fc75178",
       "prior_testhost_sha256": "f9e794fc4bf3f5a96e2450ad6acb0f51290c06a2d0e7098ea4caa41e4bf26808"
     },
     {
       "name": "Ipc.Reference.Protocol.dll",
-      "source": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Reference.Protocol.dll",
+      "source": ".artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Reference.Protocol.dll",
       "source_sha256": "655bfbcc1585c8a0c80adbda425a2d24a34ba9ff9e01038ebf0693f88db9e35a",
-      "destination": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-signed-test-host/Ipc.Reference.Protocol.dll",
+      "destination": ".artifacts/rcs-signed-test-host/Ipc.Reference.Protocol.dll",
       "destination_sha256": "655bfbcc1585c8a0c80adbda425a2d24a34ba9ff9e01038ebf0693f88db9e35a",
       "prior_testhost_sha256": "bb9a1c4f402b9393c800b697900ceb52d51f032e1bd39188ec96d4aaaff832bc"
     },
     {
       "name": "Ipc.Supply.Contracts.dll",
-      "source": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Supply.Contracts.dll",
+      "source": ".artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Supply.Contracts.dll",
       "source_sha256": "c1154b52089980ccd0b1889995c06a826abf92584bd8c35a4715be5a443bb71e",
-      "destination": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-signed-test-host/Ipc.Supply.Contracts.dll",
+      "destination": ".artifacts/rcs-signed-test-host/Ipc.Supply.Contracts.dll",
       "destination_sha256": "c1154b52089980ccd0b1889995c06a826abf92584bd8c35a4715be5a443bb71e",
       "prior_testhost_sha256": "afa1610f9f138ae48f7200d41cf4b29a85d9bd79971d36f3207322590e891a8d"
     },
     {
       "name": "Ipc.Supply.dll",
-      "source": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Supply.dll",
+      "source": ".artifacts/rcs-delivery/sportmaster-portable/app/Ipc.Supply.dll",
       "source_sha256": "228527c0c7d51fa251f36194f60c9180d8fcd15f9fd461cc0ab818c8bc2ceb20",
-      "destination": "/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-signed-test-host/Ipc.Supply.dll",
+      "destination": ".artifacts/rcs-signed-test-host/Ipc.Supply.dll",
       "destination_sha256": "228527c0c7d51fa251f36194f60c9180d8fcd15f9fd461cc0ab818c8bc2ceb20",
       "prior_testhost_sha256": "8d5c285439915e6e476ca725fd959b3194e6313b615994ed03c734e6a3acea3c"
     }
-  ]
+  ],
+  "public_path_projection": true,
+  "original_record_sha256": "5796fa2986af2e84aac5a782dc02e06c01a35170030db42faf100dd4fe1f77dd",
+  "original_record_retained": "Outside Git; raw absolute paths preserved locally; no checks or hash identities changed"
 }

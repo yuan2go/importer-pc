@@ -1,0 +1,25 @@
+{
+  "OriginalCode": "e0f5303ff80c48f1a7ecf6964916cb21c13a7327",
+  "Cases": [
+    {
+      "Case": "peer-process",
+      "OriginalRecordSha256": "FFFBBB75B2BFB442C203E93E23A8EA8281CB550A603C00606029BA76C723CF6B",
+      "EventsUnchanged": true,
+      "OriginalVerifier": "PASS",
+      "CurrentDefault": "REJECTED: Legacy schema command/qualification was not input-bound; independently trusted original record SHA256 required",
+      "CurrentOriginalAnchor": "REJECTED: Legacy schema command/qualification was not input-bound; independently trusted original record SHA256 required",
+      "CurrentEvenWithMutantAnchor": "REJECTED: External peer process must match every actual reference endpoint"
+    },
+    {
+      "Case": "qualification",
+      "OriginalRecordSha256": "FFFBBB75B2BFB442C203E93E23A8EA8281CB550A603C00606029BA76C723CF6B",
+      "EventsUnchanged": true,
+      "OriginalVerifier": "PASS",
+      "CurrentDefault": "REJECTED: Legacy schema command/qualification was not input-bound; independently trusted original record SHA256 required",
+      "CurrentOriginalAnchor": "REJECTED: Legacy schema command/qualification was not input-bound; independently trusted original record SHA256 required",
+      "CurrentEvenWithMutantAnchor": "REJECTED: Portable reference qualification cannot claim Windows or real equipment acceptance"
+    }
+  ],
+  "OriginalUntamperedLegacyWithAnchor": "PASS",
+  "HistoricalSourceAndEventsUnmodified": true
+}

@@ -1,0 +1,16 @@
+{
+  "CodeCommit": "e9e0097a687435a3a175bd5be4a121c1f7fe3419",
+  "Build": "0 warnings, 0 errors",
+  "PythonScriptTests": 41,
+  "EvidenceTests": 15,
+  "Groups": [
+    "version-compatibility",
+    "sportmaster-rcs",
+    "configuration-confirmation"
+  ],
+  "AllFinalExitCodes": 0,
+  "RedGreen": "pr29-residual-red-green.json",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED",
+  "FinalExactSignedRelease": "Pending final UI combination; no old package relabelled"
+}

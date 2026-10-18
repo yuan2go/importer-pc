@@ -1,0 +1,43 @@
+test_business_version_matches_every_declared_composition (test_application_compatibility.CompatibilityTests.test_business_version_matches_every_declared_composition) ... ok
+test_configuration_and_business_record_tampering_rejected (test_application_compatibility.CompatibilityTests.test_configuration_and_business_record_tampering_rejected) ... ok
+test_exact_candidate_configuration_events_and_provider_identity (test_application_compatibility.CompatibilityTests.test_exact_candidate_configuration_events_and_provider_identity) ... ok
+test_failure_and_interruption_never_become_pass (test_application_compatibility.CompatibilityTests.test_failure_and_interruption_never_become_pass) ... ok
+test_finish_does_not_issue_pass_without_snapshot (test_application_compatibility.CompatibilityTests.test_finish_does_not_issue_pass_without_snapshot) ... ok
+test_input_and_run_identity_cannot_be_relabelled_independently (test_application_compatibility.CompatibilityTests.test_input_and_run_identity_cannot_be_relabelled_independently) ... ok
+test_input_event_cannot_be_dropped_by_record_schema_downgrade (test_application_compatibility.CompatibilityTests.test_input_event_cannot_be_dropped_by_record_schema_downgrade) ... ok
+test_legacy_record_keeps_original_bytes_and_requires_matching_snapshot (test_application_compatibility.CompatibilityTests.test_legacy_record_keeps_original_bytes_and_requires_matching_snapshot) ... ok
+test_original_snapshot_is_required_even_with_rehashed_events (test_application_compatibility.CompatibilityTests.test_original_snapshot_is_required_even_with_rehashed_events) ... ok
+test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) ... 
+  test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) (field='OptionalFeatures') ... FAIL
+  test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) (field='AttachedUpload') ... FAIL
+test_schema2_preserves_valid_before_main_and_attached_journeys (test_application_compatibility.CompatibilityTests.test_schema2_preserves_valid_before_main_and_attached_journeys) ... ok
+test_self_consistent_configuration_relabelling_cannot_reuse_events (test_application_compatibility.CompatibilityTests.test_self_consistent_configuration_relabelling_cannot_reuse_events) ... ok
+
+======================================================================
+FAIL: test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) (field='OptionalFeatures')
+----------------------------------------------------------------------
+ValueError: Recorded input/candidate identity differs from original run input event
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/scripts/test_application_compatibility.py", line 123, in test_scenario_and_result_must_be_observed
+    with self.assertRaisesRegex(ValueError,'scenario|result'): verify_record(output,root)
+AssertionError: "scenario|result" does not match "Recorded input/candidate identity differs from original run input event"
+
+======================================================================
+FAIL: test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) (field='AttachedUpload')
+----------------------------------------------------------------------
+ValueError: Recorded input/candidate identity differs from original run input event
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/scripts/test_application_compatibility.py", line 123, in test_scenario_and_result_must_be_observed
+    with self.assertRaisesRegex(ValueError,'scenario|result'): verify_record(output,root)
+AssertionError: "scenario|result" does not match "Recorded input/candidate identity differs from original run input event"
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.063s
+
+FAILED (failures=2)

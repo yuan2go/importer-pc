@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 2,
+  "SchemaVersion": 3,
   "ApplicationId": "sportmaster",
   "StationId": "reference-18",
   "Mode": "Simulation",
@@ -13,7 +13,7 @@
   "Reader": {
     "Role": "parcel-reader",
     "Driver": "manual",
-    "DeviceId": "sportmaster.camera",
+    "DeviceId": "sportmaster.camera.left",
     "Revision": "1",
     "ReplayFile": null
   },
@@ -60,8 +60,8 @@
       "Kind": "camera",
       "Implementation": "reference-camera",
       "Version": "1.0.0",
-      "InstanceId": "sportmaster.camera",
-      "Target": "reference://camera/sportmaster",
+      "InstanceId": "sportmaster.capture.left",
+      "Target": "sportmaster.camera.left",
       "Contract": "PARCEL-REFERENCE-v1",
       "Parameters": {}
     },
@@ -87,5 +87,119 @@
       "subjects": "maintenance"
     }
   },
-  "WeightValidity": "AtAssociation"
+  "WeightValidity": "AtAssociation",
+  "Topology": {
+    "Readers": [
+      {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "sportmaster.camera.left",
+        "Revision": "1",
+        "ReplayFile": null
+      },
+      {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "sportmaster.camera.right",
+        "Revision": "1",
+        "ReplayFile": null
+      }
+    ],
+    "Positions": [
+      {
+        "Id": "left",
+        "ReaderDeviceId": "sportmaster.camera.left",
+        "CameraInstanceId": "sportmaster.capture.left",
+        "ScaleInstanceId": "sportmaster.weight"
+      },
+      {
+        "Id": "right",
+        "ReaderDeviceId": "sportmaster.camera.right",
+        "CameraInstanceId": "sportmaster.capture.right",
+        "ScaleInstanceId": "sportmaster.weight.right"
+      }
+    ]
+  },
+  "CapabilityInstances": [
+    {
+      "Kind": "weight",
+      "Implementation": "reference-weight",
+      "Version": "1.0.0",
+      "InstanceId": "sportmaster.weight",
+      "Target": "reference://weight/sportmaster",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    },
+    {
+      "Kind": "weight",
+      "Implementation": "reference-weight",
+      "Version": "1.0.0",
+      "InstanceId": "sportmaster.weight.right",
+      "Target": "reference://weight/sportmaster/right",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    },
+    {
+      "Kind": "integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "InstanceId": "sportmaster.integration",
+      "Target": "reference://integration/sportmaster",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "slot": "REFERENCE-07"
+      },
+      "Package": null,
+      "Module": null
+    },
+    {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "sportmaster.login",
+      "Target": "reference://login/sportmaster",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "alice,bob"
+      }
+    },
+    {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      }
+    },
+    {
+      "Kind": "camera",
+      "Implementation": "reference-camera",
+      "Version": "1.0.0",
+      "InstanceId": "sportmaster.capture.left",
+      "Target": "sportmaster.camera.left",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    },
+    {
+      "Kind": "camera",
+      "Implementation": "reference-camera",
+      "Version": "1.0.0",
+      "InstanceId": "sportmaster.capture.right",
+      "Target": "sportmaster.camera.right",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    },
+    {
+      "Kind": "upload",
+      "Implementation": "reference-upload",
+      "Version": "1.0.0",
+      "InstanceId": "sportmaster.upload",
+      "Target": "reference://upload/sportmaster",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    }
+  ]
 }

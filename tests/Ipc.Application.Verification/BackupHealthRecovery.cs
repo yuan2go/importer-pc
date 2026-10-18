@@ -103,9 +103,9 @@ static class BackupHealthRecovery
 
         await Case("custody", async () =>
         {
-            var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/optional/sportmaster/business.json")));
+            var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "tests/Ipc.Application.Verification/fixtures/sportmaster-schema2-optional.json")));
             c = c with { Login = null, Weight = new(WeightSource.Disabled, WeightUnit.Kg, 3), Scale = null,
-                Images = c.Images! with { Uploader = c.Images.Uploader with { Parameters = new() { ["reply-mode"] = "lose-after-commit" } } } };
+                Images = c.Images! with { Uploader = c.Images.Uploader! with { Parameters = new() { ["reply-mode"] = "lose-after-commit" } } } };
             var (app, launch) = Create(c, "custody"); await using var owned = app; await app.StartAsync(CancellationToken.None);
             Check(app.EmitReference("original-parcel", "00001", "original-event"), "original image observation admitted");
             var s = await Wait(app, x => x.Operations.SingleOrDefault()?.Upload?.State == StageState.Unknown); var op = s.Operations.Single();

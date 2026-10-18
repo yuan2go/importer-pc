@@ -65,6 +65,12 @@ if a.optional_features:
     c['Scale'] = binding('weight')
     c['Images'] = dict(Camera=binding('camera'), Uploader=binding('upload'), MaximumBytes=4194304, Strategy='Attached' if a.attached_upload else 'BeforeMain')
     c['Images']['Uploader']['Parameters'] = {'reply-mode':'lose-after-commit'}
+    if len(c.get('Topology', {}).get('Positions', [])) == 2:
+        camera_right = dict(c['Images']['Camera'], InstanceId='camera.smoke.right', Target='reference://camera/smoke/right')
+        scale_right = dict(c['Scale'], InstanceId='weight.smoke.right', Target='reference://weight/smoke/right')
+        c['Topology']['Positions'][0].update(CameraInstanceId=c['Images']['Camera']['InstanceId'], ScaleInstanceId=c['Scale']['InstanceId'])
+        c['Topology']['Positions'][1].update(CameraInstanceId=camera_right['InstanceId'], ScaleInstanceId=scale_right['InstanceId'])
+        c['CapabilityInstances'] = [b for b in [c['Scale'], scale_right, c['Wcs'], c['Plc'], c['Login'], c['MaintenanceLogin'], c['Images']['Camera'], camera_right, c['Images']['Uploader']] if b]
     if peer_url:
         for bound in [c['Wcs'], c['Plc'], c['Images']['Uploader']]:
             if bound: bound['Parameters']['endpoint'] = peer_url+'parcel-reference/'
@@ -120,10 +126,18 @@ try:
     expected = 'SlotResolved' if identity['product']['business'] == 'sportmaster' else 'PlcAccepted'
     if not a.optional_features and operation['State'] != expected: raise ValueError('Incomplete actual reference chain: ' + operation['State'])
     if operation['ParcelCode'] != '000000917': raise ValueError('Original code changed')
+    if not a.optional_features and identity['product']['business'] == 'sportmaster':
+        second = send(process, messages, dict(Id=uuid.uuid4().hex, ExpectedRevision=0, Kind='EmitReferenceAt', Owner='unpacked-right', Value=json.dumps(dict(PositionId='right', Code='000000917'))))
+        if second['Status'] != 'Enqueued': raise ValueError('Second physical reader input rejected')
+        for _ in range(60):
+            snapshot = send(process, messages, 'snapshot')
+            if len(snapshot['Operations']) == 2 and all(op['State'] == 'SlotResolved' for op in snapshot['Operations']): break
+            time.sleep(.05)
+        if {op.get('PositionId') for op in snapshot['Operations']} != {'left', 'right'} or any(op['Plc'] for op in snapshot['Operations']): raise ValueError('Packaged dual-position flow incomplete')
     stop(process)
     process, messages = start()
     restarted = send(process, messages, 'snapshot')
-    recovered = restarted['Operations'][0]
+    recovered = next(op for op in restarted['Operations'] if op['Id'] == operation['Id'])
     if recovered['Id'] != operation['Id'] or recovered['Wcs'] != operation['Wcs'] or recovered['Plc'] != operation['Plc']: raise ValueError('Restart changed frozen original phases')
     if a.optional_features:
         if recovered['Upload']['Request'] != operation['Upload']['Request'] or restarted['CurrentOperator'] is not None: raise ValueError('Restart changed upload or revived a session')
@@ -159,7 +173,7 @@ except BaseException:
     if process.poll() is None: process.kill(); process.wait()
     raise
 result = dict(Status='PASS', SourceCommit=identity['SourceCommit'], Application=identity['product']['business'], Target='portable',
-              Checks=['candidate file hashes', 'actual selected assembly startup', 'camera-to-final-reference-chain', 'persistent original phases on restart', 'orderly stop'],
+              Checks=['candidate file hashes', 'actual selected assembly startup', 'camera-to-final-reference-chain', 'persistent original phases on restart', 'orderly stop', 'both packaged physical readers' if identity['product']['business'] == 'sportmaster' and not a.optional_features else 'selected topology'],
               AttachedUpload=a.attached_upload, ExternalPeerProcess=bool(a.peer_fixture), OptionalFeatures=a.optional_features, OptionalChecks=['authenticated admission', 'same-entity measured weight', 'actual PNG upload bytes', 'attached upload independent from main' if a.attached_upload else 'lost pre-main upload blocks PLC', 'process restart original query', 'independent upload reconciliation keeps original operator' if a.attached_upload else 'explicit continuation original operator', 'one execution per independent receiver'] if a.optional_features else [],
               State=operation['State'], OperationId=operation['Id'], Windows='NOT_RUN', RealEquipment='BLOCKED')
 a.output.write_text(json.dumps(result, indent=2) + '\n')

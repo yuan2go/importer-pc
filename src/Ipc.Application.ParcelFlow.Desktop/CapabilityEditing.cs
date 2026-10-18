@@ -85,6 +85,11 @@ public partial class ParcelViewModel
         var catalog = await application.CapabilitiesAsync();
         InstalledPackages = "已安装签名包：" + string.Join(" · ", catalog.InstalledPackages); Changed(nameof(InstalledPackages));
         CapabilityDrafts.Clear();
+        if (c.SchemaVersion >= 3 || c.Topology is not null)
+        {
+            Message = "schema3设备拓扑为只读；请通过版本化完整配置及应用CAS接口维护，旧单Reader表单禁止保存";
+            return;
+        }
         var bound = new[] { c.Login, c.MaintenanceLogin, c.Scale, c.Wcs, c.Plc, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
         var instances = c.CapabilityInstances ?? bound;
         CapabilityBinding readerBinding;
@@ -108,6 +113,11 @@ public partial class ParcelViewModel
     public async Task SaveCapabilitiesAsync()
     {
         if (Snapshot is null) return;
+        if (Snapshot.Configuration.Effective.SchemaVersion >= 3 || Snapshot.Configuration.Pending?.SchemaVersion >= 3 || Snapshot.Configuration.Effective.Topology is not null)
+        {
+            Message = "拒绝保存：此表单不能编辑完整schema3拓扑，原配置及设备绑定保持不变";
+            return;
+        }
         var instances = CapabilityDrafts.Where(x => x.Kind != "observation").Select(x => x.Build()).ToArray();
         CapabilityBinding? Selected(string kind) => CapabilityDrafts.Where(x => x.Role == kind && x.Bound).Select(x => x.Build()).SingleOrDefault();
         var reader = Selected("observation") ?? throw new InvalidOperationException("读码来源必须绑定");

@@ -1,0 +1,34 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-ce35b77ad86b4355be582b28b453660d
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: right input enters while left WCS is slow
+PASS AA22: real dual consumers interleave; same barcode has two distinct entities and reader bindings
+PASS AA22: T1 freezes original position/device/acquisition in delivered semantics
+PASS AA22: duplicate original does not create another request
+PASS AA22: single-side reconnect while other original remains owned
+PASS AA22: other reader epoch unchanged by single-side reconnect
+PASS AA22: old registration callback is fenced after reconnect
+PASS AA22: resume does not resend original stages
+PASS AA22: reader disconnect blocks only its position
+PASS AA22: complete topology staged using original configuration CAS
+PASS AA22: stale configuration CAS rejected
+PASS AA22: Pending/Effective preserve both bindings and separate activation
+PASS AA22: real legacy ViewModel rejects flattening schema3, authority unchanged
+PASS AA22: multi-device original set backed up through actual application
+PASS AA22: restart activates full revision while old parcels retain original configuration
+PASS AA22: direct-plc sequential position cannot admit next parcel on PLC acceptance alone
+PASS AA22: direct-plc preserves own main chain/delivery object without WCS leakage or repeats
+PASS AA22: wcs-to-plc sequential position cannot admit next parcel on PLC acceptance alone
+PASS AA22: wcs-to-plc preserves own main chain/delivery object without WCS leakage or repeats
+PASS AA22: configured login refuses unauthenticated admission
+PASS AA22: same physical reader reuses controlled original capture; capture-only waits for this weight without uploader
+PASS AA22: enabled scale rejects zero instead of missing-weight fallback
+Unhandled exception. System.Exception: FAIL AA22: account switch cannot change admitted identity or dispatch old parcel
+   at ApplicationArchitecture.Check(Boolean pass, String reason) in /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/tests/Ipc.Application.Verification/ApplicationArchitecture.cs:line 13
+   at ApplicationArchitecture.Run(String workspace, String root) in /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/tests/Ipc.Application.Verification/ApplicationArchitecture.cs:line 102
+   at ApplicationArchitecture.Run(String workspace, String root) in /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/tests/Ipc.Application.Verification/ApplicationArchitecture.cs:line 108
+   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 16
+   at Program.<Main>(String[] args)

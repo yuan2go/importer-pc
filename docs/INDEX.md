@@ -1,6 +1,12 @@
+> 22现行拓扑、状态作用域、版本与交付：[Application架构22](design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
+
 # 统一资料与实施入口
 
 ## 当前工程入口
+
+[22工作包](work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md) · [22设计](design/application-architecture-22.md) · [22运行/配置/升级](runtime/application-architecture-22.md)。最新main基线ea881293，开发分支codex/application-architecture-22；本包完成情况以22结果及实际源码/候选身份读取。Sportmaster两个独立投递位由用户确认；不把旧Supply共享箱/数量/AGV规则套入新Application。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+
+## 继承的整合与历史证据
 
 当前工程入口：[PR20/21整合记录](runtime/pr20-21-integration.md)。开工main `08286542`（PR19已合并）；最终运行源码`d5c8b79`，三项评审修复、交叉恢复整合及定向参考验证完成。PR状态和main合并身份读取GitHub及整合回执；旧报告的OPEN与候选身份按形成时读取。
 
@@ -41,3 +47,5 @@
 [15前原字节](archive/pre-operation-closure-15/README.md) · [上轮入口前版本](archive/pre-audit-reconciliation-publication-01/README.md) · [14实施前](archive/pre-conformance-fix-14/README.md) · [原项目审查发布前](archive/pre-conformance-audit-01/README.md) · [13前](archive/pre-arch-extension-closure-13/README.md) · [12前](archive/pre-extension-delivery-12/README.md) · [11前](archive/pre-review-followup-11/README.md) · [纠偏前](archive/pre-reconciliation-01/README.md) · [框架前](archive/pre-framework-20261016/README.md)。归档保存形成时文件身份，不作为当前命令；不复制整仓或清空旧证据来减少文件。
 
 [资料校验工具](../tools/README.md)只证明它覆盖的资料/链接/身份，不代表业务或现场通过。已知源资产问题与本次新增材料校验分开，保持原件和失败记录。
+
+本包实际交付：[22结果与候选身份](runtime/application-architecture-22-results.md)。

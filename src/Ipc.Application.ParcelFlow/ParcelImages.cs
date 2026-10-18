@@ -9,15 +9,14 @@ public sealed partial class ParcelRuntime
     { ParcelStage.Capture => op.Capture, ParcelStage.Upload => op.Upload, ParcelStage.Wcs => op.Wcs, _ => op.Plc };
     static ParcelOperation SetStage(ParcelOperation op, ParcelStage kind, StageFact fact) => kind switch
     { ParcelStage.Capture => op with { Capture = fact }, ParcelStage.Upload => op with { Upload = fact }, ParcelStage.Wcs => op with { Wcs = fact }, _ => op with { Plc = fact } };
-    static CapabilityBinding? BindingFor(ParcelConfiguration c, ParcelStage kind) => kind switch
-    { ParcelStage.Capture => c.Images?.Camera, ParcelStage.Upload => c.Images?.Uploader, ParcelStage.Wcs => c.Wcs, _ => c.Plc };
-    ICapabilityPort PortFor(ParcelStage kind) => kind switch
-    { ParcelStage.Capture => ports!.Camera!, ParcelStage.Upload => ports!.Uploader!, ParcelStage.Wcs => ports!.Wcs!, _ => ports!.Plc! };
+    static CapabilityBinding? BindingFor(ParcelConfiguration c, ParcelStage kind, string? position) => kind switch
+    { ParcelStage.Capture => ParcelBindings.Camera(c, position), ParcelStage.Upload => c.Images?.Uploader, ParcelStage.Wcs => c.Wcs, _ => c.Plc };
+    ICapabilityPort PortFor(ParcelOperation op, ParcelStage kind) => Capability(GetStage(op, kind)!.Request.Binding.InstanceId);
     static ParcelState UnknownState(ParcelStage kind) => kind switch
     { ParcelStage.Wcs => ParcelState.WcsUnknown, ParcelStage.Plc => ParcelState.PlcUnknown, _ => ParcelState.ImageUnknown };
     static ParcelStage ParseStage(string stage) => stage switch
     { "image-capture" => ParcelStage.Capture, "image-upload" => ParcelStage.Upload, "wcs-slot" => ParcelStage.Wcs, "plc-submit" => ParcelStage.Plc, _ => throw new InvalidDataException("Unknown original stage") };
-    bool CanDispatch(ParcelOperation op) => !WeightExpired(op) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested && failure is null && overload == 0 && !repository!.Paused &&
+    bool CanDispatch(ParcelOperation op) => !WeightExpired(op) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested && failure is null && (overload == 0 || Effective.SchemaVersion >= 3 && !overloadedPositions.ContainsKey(op.PositionId ?? "main")) && !repository!.Paused &&
         SessionValid && (Effective.Login is null || currentOperator?.Subject == op.Operator?.Subject && currentOperator is not null) &&
         !repository.PendingReceipts().Any(x => x.Operation == op.Id && !(op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Stage == "image-upload")) &&
         Enum.GetValues<ParcelStage>().Where(kind => !(kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached))
@@ -27,17 +26,17 @@ public sealed partial class ParcelRuntime
     {
         ParcelStage.Capture => true,
         ParcelStage.Upload => op.Capture?.State == StageState.Accepted,
-        _ => (op.FrozenConfiguration.Images is null || op.Capture?.State == StageState.Accepted && (op.FrozenConfiguration.Images.Strategy == UploadStrategy.Attached || op.Upload?.State == StageState.Accepted)) && definition.PredecessorsAccepted(op, kind)
+        _ => (op.FrozenConfiguration.Images is null || op.Capture?.State == StageState.Accepted && (op.FrozenConfiguration.Images.Uploader is null || op.FrozenConfiguration.Images.Strategy == UploadStrategy.Attached || op.Upload?.State == StageState.Accepted)) && definition.PredecessorsAccepted(op, kind)
     };
     async Task<ParcelOperation> CaptureOriginalAsync(ParcelOperation op)
     {
         if (op.Capture is null)
         {
-            op = op with { Capture = new(Prepare(op, "image-capture", op.FrozenConfiguration.Images!.Camera, null, null), StageState.Prepared, 0, []) };
+            op = op with { Capture = new(Prepare(op, "image-capture", ParcelBindings.Camera(op.FrozenConfiguration, op.PositionId)!, null, null), StageState.Prepared, 0, []) };
             Save(op, "CapturePrepared", "T1: capture bound to original observation/admission before any weight wait");
         }
         if (op.Capture is { State: StageState.Prepared, Attempts: 0 }) op = await ExecuteStageAsync(op, ParcelStage.Capture, false).ConfigureAwait(false);
-        if (op.Capture?.State == StageState.Accepted && op.Upload is null)
+        if (op.FrozenConfiguration.Images!.Uploader is not null && op.Capture?.State == StageState.Accepted && op.Upload is null)
         {
             var prepared = PrepareUploadIfReady(op);
             if (prepared != op) { op = prepared; Save(op, "UploadPrepared", "Required upload inputs are ready; freeze original upload intent"); }
@@ -49,7 +48,7 @@ public sealed partial class ParcelRuntime
     {
         op = await CaptureOriginalAsync(op).ConfigureAwait(false);
         if (op.Capture?.State != StageState.Accepted) return op;
-        if (WeightReady(op) && op.FrozenConfiguration.Images!.Strategy == UploadStrategy.BeforeMain && op.Upload is { State: StageState.Prepared, Attempts: 0 } && CanDispatch(op))
+        if (WeightReady(op) && op.FrozenConfiguration.Images!.Uploader is not null && op.FrozenConfiguration.Images!.Strategy == UploadStrategy.BeforeMain && op.Upload is { State: StageState.Prepared, Attempts: 0 } && CanDispatch(op))
             op = await ExecuteStageAsync(op, ParcelStage.Upload, false).ConfigureAwait(false);
         return operations[op.Id];
     }
@@ -81,7 +80,7 @@ public sealed partial class ParcelRuntime
     }
     bool ValidImageReply(ParcelOperation op, ParcelStage kind, ParcelImage? image)
     {
-        if (image is null) return false;
+        if (image is null || op.FrozenConfiguration.SchemaVersion >= 3 && image.Acquisition != op.Acquisition) return false;
         try { _ = ReadImage(op, image); }
         catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException) { return false; }
         return kind == ParcelStage.Capture ? image.UploadedUri is null : op.Image is { } captured &&
@@ -94,12 +93,13 @@ public sealed partial class ParcelRuntime
         op = op with { Image = reply.Image };
         if (op.State is ParcelState.ImageUnknown or ParcelState.CapturingImage or ParcelState.UploadingImage)
             op = op with { State = op.WeightPolicy.Source == WeightSource.Measured && op.Weight is null ? ParcelState.WaitingWeight : ParcelState.Prepared, Reason = null };
-        if (kind == ParcelStage.Capture && op.Upload is null) op = PrepareUploadIfReady(op);
+        if (kind == ParcelStage.Capture && op.Upload is null && op.FrozenConfiguration.Images!.Uploader is not null) op = PrepareUploadIfReady(op);
         return op;
     }
     ParcelOperation PrepareUploadIfReady(ParcelOperation op)
     {
         var binding = op.FrozenConfiguration.Images!.Uploader;
+        if (binding is null) return op;
         if (factory.Requirements(binding).MeasuredWeight && !WeightReady(op)) return op;
         return op with { Upload = new(Prepare(op, "image-upload", binding, null, null), StageState.Prepared, 0, []) };
     }
@@ -118,7 +118,7 @@ public sealed partial class ParcelRuntime
     void ReleaseCompletedImages()
     {
         foreach (var original in operations.Values.Where(x => x.FrozenConfiguration.Images is not null && !x.ImageReleased &&
-            (x.Upload?.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled ||
+            (x.FrozenConfiguration.Images!.Uploader is null && MainTerminated(x) || x.Upload?.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled ||
              x.Image is null && (x.Capture?.State is StageState.Rejected or StageState.Cancelled || x.Capture is null && x.State == ParcelState.Abandoned))).ToArray())
         {
             if (original.Capture?.State is StageState.Unknown or StageState.Conflict or StageState.Dispatching ||

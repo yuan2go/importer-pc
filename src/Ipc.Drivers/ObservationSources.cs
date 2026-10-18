@@ -1,14 +1,17 @@
 using Ipc.Platform;
+using Ipc.Application.Contracts;
+using Ipc.Drivers;
 
 namespace Ipc.Adapters;
 
-public sealed class ManualObservationSource(string deviceId, string confirmationSource = "SIMULATION:manual") : IControlledObservationSource, ISyntheticObservationInput
+public sealed class ManualObservationSource(string deviceId, string confirmationSource = "SIMULATION:manual") : IControlledObservationSource, ISyntheticObservationInput, IReaderImageCapture
 {
     Func<Observation, bool>? receive;
     Action<DeviceHealthConfirmation>? health;
     CancellationTokenSource? heartbeatStop;
     Task? heartbeat;
     long sequence;
+    readonly Dictionary<string, AcquisitionIdentity> acquisitions = [];
     readonly object callbackGate = new();
     public string DeviceId { get; } = deviceId;
     public string Epoch { get; private set; } = Wire.Id();
@@ -51,9 +54,31 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
         lock (callbackGate)
         {
             var callback = receive ?? throw new InvalidOperationException("Source stopped");
-            return callback(new(Wire.Id(), DeviceId, Epoch, sourceId ?? Wire.Id(), Interlocked.Increment(ref sequence), admissionId,
-                kind, codes ?? [], quantity, DateTimeOffset.UtcNow));
+            var observation = new Observation(Wire.Id(), DeviceId, Epoch, sourceId ?? Wire.Id(), Interlocked.Increment(ref sequence), admissionId,
+                kind, codes ?? [], quantity, DateTimeOffset.UtcNow);
+            acquisitions.TryAdd(observation.Epoch + ":" + observation.SourceEventId, new(DeviceId, observation.Epoch, observation.SourceEventId, admissionId, observation.ObservedAt));
+            if (acquisitions.Count > 4096) acquisitions.Remove(acquisitions.Keys.First());
+            return callback(observation);
         }
+    }
+    public IImageCamera BindCapture(CapabilityBinding binding, string temporaryDirectory) => new AcquisitionView(this, new ReferenceImageCamera(binding, temporaryDirectory));
+    sealed class AcquisitionView(ManualObservationSource owner, IImageCamera port) : IImageCamera
+    {
+        public string InstanceId => port.InstanceId;
+        public Task StartAsync(CancellationToken t) => port.StartAsync(t);
+        public Task<CapabilityHealth> HealthAsync(CancellationToken t) => port.HealthAsync(t);
+        public Task ReconnectAsync(CancellationToken t) => port.ReconnectAsync(t);
+        public Task<StageReply> CaptureAsync(FrozenRequest request, CancellationToken t)
+        {
+            var acquisition = Wire.Decode<ParcelPayload>(request.Payload).Acquisition;
+            lock (owner.callbackGate)
+                if (acquisition is null || !owner.acquisitions.TryGetValue(acquisition.Epoch + ":" + acquisition.SourceEventId, out var original) || original != acquisition)
+                    throw new IOException("Original acquisition unavailable; latest frame substitution forbidden");
+            return port.CaptureAsync(request, t);
+        }
+        public Task<StageReply?> QueryAsync(FrozenRequest request, CancellationToken t) => port.QueryAsync(request, t);
+        public Task StopAsync(CancellationToken t) => port.StopAsync(t);
+        public ValueTask DisposeAsync() => port.DisposeAsync();
     }
     public async Task StopAsync(CancellationToken token)
     {

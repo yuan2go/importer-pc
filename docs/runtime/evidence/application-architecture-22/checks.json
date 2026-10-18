@@ -1,0 +1,107 @@
+{
+  "source": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+  "baseline": "ea881293c888a824f26c9f9fa07352a22786206b",
+  "checks": [
+    {
+      "log": "core-build.log",
+      "status": "PASS",
+      "scope": "build tests/Ipc.Application.Verification locked SDK10.0.402"
+    },
+    {
+      "log": "aa.log",
+      "status": "PASS",
+      "scope": "--application-architecture; 60 assertions + complete marker"
+    },
+    {
+      "log": "reliability.log",
+      "status": "PASS",
+      "scope": "--reliability-closure; 50 PASS lines"
+    },
+    {
+      "log": "backup.log",
+      "status": "PASS",
+      "scope": "--backup-health-recovery; 57 PASS lines"
+    },
+    {
+      "log": "capability.log",
+      "status": "PASS",
+      "scope": "--capability-closure; 49 PASS lines"
+    },
+    {
+      "log": "extension-tools.log",
+      "status": "PASS",
+      "scope": "14 Python build tool tests"
+    },
+    {
+      "log": "guide-tools.log",
+      "status": "PASS",
+      "scope": "2 shipped-guide tests"
+    },
+    {
+      "log": "signed-capabilities.log",
+      "status": "PASS",
+      "scope": "new immutable 1.4.0 TestOnly signature, install, typed factories, actual Application activation"
+    },
+    {
+      "log": "review-regressions.log",
+      "status": "PASS",
+      "scope": "PR20/21 static signature/evidence regressions"
+    },
+    {
+      "log": "smoke-sportmaster.log",
+      "status": "PASS",
+      "scope": "unpacked actual dual readers plus process restart"
+    },
+    {
+      "log": "smoke-direct-plc.log",
+      "status": "PASS",
+      "scope": "unpacked selected chain and restart, no WCS binary"
+    },
+    {
+      "log": "smoke-wcs-to-plc.log",
+      "status": "PASS",
+      "scope": "unpacked selected chain and restart"
+    },
+    {
+      "log": "smoke-wcs-before.log",
+      "status": "PASS",
+      "scope": "independent HTTP receiver, original upload unknown/query/continue"
+    },
+    {
+      "log": "smoke-wcs-attached.log",
+      "status": "PASS",
+      "scope": "independent HTTP receiver, attached unknown/query/physical completion"
+    },
+    {
+      "log": "wpf-direct-plc.log",
+      "status": "PASS_CROSS_BUILD",
+      "scope": "existing UI compatibility only"
+    },
+    {
+      "log": "wpf-wcs-to-plc.log",
+      "status": "PASS_CROSS_BUILD",
+      "scope": "existing UI compatibility only"
+    },
+    {
+      "log": "package-sportmaster-win.log",
+      "status": "PASS_CROSS_PACKAGE",
+      "scope": "win-x64 candidate, all ZIP hashes checked; actual Windows NOT_RUN"
+    },
+    {
+      "log": "legacy-resource-final.log",
+      "status": "PASS",
+      "scope": "final source AC17 default and resource regression"
+    }
+  ],
+  "Windows": "NOT_RUN",
+  "realSdkProtocolsSite": "BLOCKED",
+  "productionDeviceCalls": 0,
+  "archive": {
+    "status": "FAIL_INHERITED",
+    "errors": 267,
+    "newErrors": 0,
+    "baseline": "pr20-21-integration/archive-checks.json",
+    "python": "bundled runtime with Pillow",
+    "initialEnvironmentFailureRetained": "archive-environment-initial.json"
+  }
+}

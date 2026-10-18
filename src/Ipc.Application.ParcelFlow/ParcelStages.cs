@@ -14,13 +14,13 @@ public sealed partial class ParcelRuntime
         var stage = GetStage(op, kind)!;
         var attached = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached;
         if (stage.Replies.Length >= 64) return op with { Reason = "Receipt retention budget requires controlled archive before further queries" };
-        var binding = BindingFor(Effective, kind);
+        var binding = BindingFor(Effective, kind, op.PositionId);
         if (binding is null || Wire.Encode(binding) != Wire.Encode(stage.Request.Binding) ||
             ports!.ImplementationHashes.GetValueOrDefault(binding.InstanceId) != stage.Request.ImplementationHash)
         { op = op with { State = ParcelState.Blocked, Reason = "OriginalCapabilityUnavailable: preserve original request, package, target and implementation" }; Save(op, "OriginalCapabilityBlocked", op.Reason); return op; }
         if (query && !factory.Requirements(stage.Request.Binding).Query)
         { op = op with { Reason = "Provider declares no authoritative query capability; preserve unknown and original responsibility" }; Save(op, "QueryUnsupported", op.Reason); return op; }
-        var port = PortFor(kind);
+        var port = PortFor(op, kind);
         CapabilityHealth health;
         try { health = await ExternalAsync(() => ProbeHealthAsync(port, stopping.Token)).ConfigureAwait(false); }
         catch (OperationCanceledException) when (stopping.IsCancellationRequested)
@@ -48,7 +48,7 @@ public sealed partial class ParcelRuntime
             {
                 ParcelStage.Wcs => query ? await ports.Wcs!.QueryAsync(stage.Request, budget.Token).ConfigureAwait(false) : await ports.Wcs!.ResolveSlotAsync(stage.Request, budget.Token).ConfigureAwait(false),
                 ParcelStage.Plc => query ? await ports.Plc!.QueryAsync(stage.Request, budget.Token).ConfigureAwait(false) : await ports.Plc!.SubmitAsync(stage.Request, budget.Token).ConfigureAwait(false),
-                ParcelStage.Capture => query ? await ports.Camera!.QueryAsync(stage.Request, budget.Token).ConfigureAwait(false) : await ports.Camera!.CaptureAsync(stage.Request, budget.Token).ConfigureAwait(false),
+                ParcelStage.Capture => query ? await ((IImageCamera)port).QueryAsync(stage.Request, budget.Token).ConfigureAwait(false) : await ((IImageCamera)port).CaptureAsync(stage.Request, budget.Token).ConfigureAwait(false),
                 ParcelStage.Upload => query ? await ports.Uploader!.QueryAsync(stage.Request, budget.Token).ConfigureAwait(false) : await ports.Uploader!.UploadAsync(stage.Request, ReadImage(op, op.Image!), budget.Token).ConfigureAwait(false),
                 _ => throw new InvalidOperationException("Unregistered stage")
             }).ConfigureAwait(false);
@@ -154,7 +154,7 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
-            if (stopped || ports is null || externalWaits != 0 || !operations.TryGetValue(operationId, out var op)) return new("NotReady", "Original operation unavailable", repository?.Revision ?? 0);
+            if (stopped || ports is null || !operations.TryGetValue(operationId, out var op)) return new("NotReady", "Original operation unavailable", repository?.Revision ?? 0);
             if (repository!.PendingReceipts().Any(x => x.Operation == operationId)) return new("Blocked", "Original raw receipt responsibility must be recovered first", repository.Revision);
             if (op.Capture?.State == StageState.Unknown) op = await ExecuteStageAsync(op, ParcelStage.Capture, true).ConfigureAwait(false);
             if (op.Upload?.State == StageState.Unknown) op = await ExecuteStageAsync(op, ParcelStage.Upload, true).ConfigureAwait(false);

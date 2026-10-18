@@ -6,6 +6,7 @@ namespace Ipc.Application.Sportmaster;
 public sealed class SportmasterFlow : FlowDefinition
 {
     public override string Id => "sportmaster";
+    public override string[] PositionRoles => ["left", "right"];
     public override string[] ValidateBusiness(ParcelConfiguration c) => c.Wcs is null || c.Plc is not null ? ["Sportmaster capability dependencies do not match its flow"] : [];
     public override bool PredecessorsAccepted(ParcelOperation op, ParcelStage stage) => stage == ParcelStage.Wcs;
     public override ParcelStage[] ReconciliationStages(ParcelOperation op) =>

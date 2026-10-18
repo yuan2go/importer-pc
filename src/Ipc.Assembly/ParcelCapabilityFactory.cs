@@ -18,6 +18,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
     ResourceLease? devices;
     readonly List<IAsyncDisposable> constructed = [];
     readonly List<FileStream> prerequisiteHolds = [];
+    internal Action<string>? Boundary { get; set; }
     bool transferred;
     RunMode mode = RunMode.Simulation;
     ExtensionTrust? trustPolicy;
@@ -68,8 +69,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         RegisterContracts();
         if (store is not null && mode != c.Mode) throw new InvalidDataException("Cannot change the extension store mode within a running owner");
         mode = c.Mode;
-        if (c.Mode == RunMode.Production && (c.Reader.Driver == "manual" || c.MaintenanceLogin is null || c.SchemaVersion != 2))
-            throw new InvalidDataException("Production NotReady: real reader, maintenance authenticator and explicit schema2 policy are required");
+        if (c.Mode == RunMode.Production && (ParcelBindings.Readers(c).Any(r => r.Driver == "manual") || c.MaintenanceLogin is null || c.SchemaVersion != 3))
+            throw new InvalidDataException("Production NotReady: real reader, maintenance authenticator and explicit schema3 topology policy are required");
         if (c.Extensions is { } malformed && (malformed.Packages is null || malformed.Instances is null || malformed.Packages.Any(x => x is null) || malformed.Instances.Any(x => x is null)))
             throw new InvalidDataException("Malformed application extension deployment");
         DeploymentQualification? candidateQualification = null;
@@ -79,19 +80,20 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
             var hash = Wire.Hash(Wire.Encode(c));
             candidateQualification = DeploymentQualifications.Read(Path.Combine(Path.GetDirectoryName(trustFile!)!, "deployment-qualification." + hash + ".json"), trustPolicy!, mode, hash, Wire.FileHash(typeof(IParcelApplication).Assembly.Location));
         }
-        var bound = new[] { c.Scale, c.Wcs, c.Plc, c.Login, c.MaintenanceLogin, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
+        var bound = ParcelBindings.Bound(c);
         var bindings = bound.Concat(c.CapabilityInstances ?? []).DistinctBy(x => x.InstanceId).ToArray();
-        if (c.Reader.Driver != "manual" && !c.Reader.Driver.StartsWith("extension:", StringComparison.Ordinal)) throw new InvalidDataException("No approved reader implementation: " + c.Reader.Driver);
+        foreach (var r in ParcelBindings.Readers(c))
+            if (r.Driver != "manual" && !r.Driver.StartsWith("extension:", StringComparison.Ordinal)) throw new InvalidDataException("No approved reader implementation: " + r.Driver);
         if (c.Extensions is not null)
         {
             if (c.Extensions.Packages is null || c.Extensions.Instances is null || c.Extensions.Packages.Any(x => x is null) || c.Extensions.Instances.Any(x => x is null) ||
                 c.Extensions.Packages.Length > 64 || c.Extensions.Instances.Length > 64 || c.Extensions.Packages.Select(x => x.Id).Distinct().Count() != c.Extensions.Packages.Length)
                 throw new InvalidDataException("Malformed or oversized application extension deployment");
             if (c.Extensions.Services is { Length: > 0 } || c.Extensions.Ports is { Length: > 0 }) throw new InvalidDataException("Parcel capabilities are owned by their typed bindings; duplicate service binding authority is forbidden");
-            var readerBindings = c.Reader.Driver == "manual" ? Array.Empty<DeviceBinding>() : [c.Reader];
+            var readerBindings = ParcelBindings.Readers(c).Where(r => r.Driver != "manual").ToArray();
             // Existing validator checks signatures/closure/reader role. New device kinds have
             // their own typed bindings below, never counterfeit observation DeviceIds.
-            var observationInstances = c.Extensions.Instances.Where(x => c.Reader.Driver == "extension:" + x.Id).ToArray();
+            var observationInstances = c.Extensions.Instances.Where(x => readerBindings.Any(r => r.Driver == "extension:" + x.Id)).ToArray();
             var observationDeployment = c.Extensions with { Instances = observationInstances };
             var errors = ExtensionDeployment.Validate(observationDeployment, readerBindings, Store(), p => DeploymentQualifications.RequirePrerequisites(candidateQualification, p));
             if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
@@ -109,7 +111,20 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
                     !c.Extensions.Packages.Any(x => Store().VerifyInstalled(x).Manifest.Dependencies.Contains(package)))
                     throw new InvalidDataException("Unbound package in application deployment");
         }
-        else if (c.Reader.Driver != "manual" || bindings.Any(x => x.Package is not null)) throw new InvalidDataException("Extension binding requires an exact deployment");
+        else if (ParcelBindings.Readers(c).Any(r => r.Driver != "manual") || bindings.Any(x => x.Package is not null)) throw new InvalidDataException("Extension binding requires an exact deployment");
+        foreach (var camera in bound.Where(b => b.Kind == "camera"))
+        {
+            var position = ParcelBindings.Positions(c).SingleOrDefault(p => ParcelBindings.Camera(c, p.Id)?.InstanceId == camera.InstanceId);
+            var sharedReader = ParcelBindings.Readers(c).SingleOrDefault(r => r.DeviceId == camera.Target);
+            if (sharedReader is null) continue;
+            if (position?.ReaderDeviceId != sharedReader.DeviceId) throw new InvalidDataException("Capture cannot borrow another position's physical reader");
+            if (sharedReader.Driver == "manual" && camera.Package is not null || sharedReader.Driver != "manual" &&
+                c.Extensions!.Instances.Single(x => "extension:" + x.Id == sharedReader.Driver).PackageId != camera.Package?.Id)
+                throw new InvalidDataException("Shared capture implementation must belong to the same exact reader package");
+        }
+        var deviceCapabilities = bound.Where(b => b.Kind is "weight" or "plc" or "camera").ToArray();
+        if (deviceCapabilities.GroupBy(b => b.Target).Any(g => g.Count() > 1) || deviceCapabilities.Any(b => b.Kind != "camera" && ParcelBindings.Readers(c).Any(r => r.DeviceId == b.Target)))
+            throw new InvalidDataException("Physical device cannot be occupied by incompatible capability roles");
         if (bound.Any(x => !x.Enabled)) throw new InvalidDataException("A bound provider must be enabled");
         if (c.CapabilityInstances is { } instances)
         {
@@ -119,7 +134,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         foreach (var b in bindings.Concat(c.CapabilityInstances ?? []).DistinctBy(x => x.InstanceId))
         {
             if (c.Mode == RunMode.Production && b.Enabled && b.Package is null) throw new InvalidDataException("Production NotReady: reference capability " + b.InstanceId);
-            if (b.Package is null && (!Uri.TryCreate(b.Target, UriKind.Absolute, out var target) || target.Scheme != "reference")) throw new InvalidDataException("Reference capability target must use explicit reference:// identity");
+            if (b.Package is null && !(b.Kind == "camera" && ParcelBindings.Readers(c).Any(r => r.DeviceId == b.Target)) && (!Uri.TryCreate(b.Target, UriKind.Absolute, out var target) || target.Scheme != "reference")) throw new InvalidDataException("Reference capability target must use explicit reference:// identity");
             if (b.Package is null && b.Parameters.TryGetValue("endpoint", out var endpoint) &&
                 (b.Kind is not ("integration" or "plc" or "upload") || !Uri.TryCreate(endpoint, UriKind.Absolute, out var peerUri) || peerUri.Scheme != "http" || peerUri.Host != "127.0.0.1" || peerUri.AbsolutePath != "/parcel-reference/" || peerUri.UserInfo.Length != 0 || peerUri.Query.Length != 0 || peerUri.Fragment.Length != 0))
                 throw new InvalidDataException("Controlled reference HTTP peer must be literal loopback with an exact path");
@@ -185,7 +200,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
             throw new InvalidDataException("Declared inputs create an impossible pre-capture/authentication or self-upload dependency");
         if (requirements.MeasuredWeight && c.Weight.Source != WeightSource.Measured)
             throw new InvalidDataException("Selected protocol requires an actual same-parcel measurement");
-        if (requirements.ImageAddress && (c.Images is null || c.Images.Strategy != UploadStrategy.BeforeMain))
+        if (requirements.ImageAddress && (c.Images?.Uploader is null || c.Images.Strategy != UploadStrategy.BeforeMain))
             throw new InvalidDataException("Selected protocol requires a confirmed image address before main flow");
     }
     public CapabilityRequirements Requirements(CapabilityBinding binding)
@@ -232,36 +247,47 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
                 if (!string.Equals(DeploymentQualifications.FileHash(evidence.Path), evidence.Sha256, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Qualified installed prerequisite changed during acquisition");
             }
         var resourceRoot = MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
-        devices = new(resourceRoot, new[] { "reader:" + c.Reader.DeviceId }.Concat(new[] { c.Scale, c.Plc, c.Images?.Camera }.OfType<CapabilityBinding>().Select(x => x.Kind + ":" + x.Target)));
+        var deviceIds = ParcelBindings.Readers(c).SelectMany(x => new[] { "device:" + x.DeviceId, "reader:" + x.DeviceId })
+            .Concat(ParcelBindings.Bound(c).Where(x => x.Kind is "weight" or "plc" or "camera").SelectMany(x => new[] { "device:" + x.Target, x.Kind + ":" + x.Target })).Distinct();
+        devices = new(resourceRoot, deviceIds);
         if (c.Extensions is { Packages.Length: > 0 } deployment)
         {
             Store().RegisterConsumer(Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, c.ApplicationId + ".db"));
             use = Store().AcquireUse(deployment.Packages); loading = new(Store());
         }
-        IControlledObservationSource reader;
-        if (c.Reader.Driver == "manual") reader = new ManualObservationSource(c.Reader.DeviceId);
-        else
+        Dictionary<string, IControlledObservationSource> readers = [];
+        foreach (var binding in ParcelBindings.Readers(c))
         {
-            var instance = c.Extensions!.Instances.Single(x => "extension:" + x.Id == c.Reader.Driver);
-            var package = c.Extensions.Packages.Single(x => x.Id == instance.PackageId);
-            reader = loading!.Create(package, Store().VerifyInstalled(package).Manifest.Modules.Single(x => x.Id == instance.ModuleId), instance);
+            IControlledObservationSource source;
+            if (binding.Driver == "manual") source = new ManualObservationSource(binding.DeviceId);
+            else
+            {
+                var instance = c.Extensions!.Instances.Single(x => "extension:" + x.Id == binding.Driver);
+                var package = c.Extensions.Packages.Single(x => x.Id == instance.PackageId);
+                source = loading!.Create(package, Store().VerifyInstalled(package).Manifest.Modules.Single(x => x.Id == instance.ModuleId), instance);
+            }
+            constructed.Add(source); Boundary?.Invoke("ReaderConstructed:" + binding.DeviceId);
+            if (source.DeviceId != binding.DeviceId) throw new InvalidDataException("Reader returned the wrong stable identity");
+            readers.Add(binding.DeviceId, source);
         }
-        constructed.Add(reader);
-        if (reader.DeviceId != c.Reader.DeviceId) throw new InvalidDataException("Reader returned the wrong stable identity");
+        var reader = readers[c.Reader.DeviceId];
         Dictionary<string, string> hashes = [];
         T Own<T>(CapabilityBinding b, Func<T> builtIn, Func<ExtensionLoading, ExtensionModule, T> external) where T : class, ICapabilityPort
         {
             T value;
-            if (b.Package is null) { value = builtIn(); hashes.Add(b.InstanceId, BuiltInFingerprint(value.GetType())); }
+            if (b.Package is null) { value = builtIn(); constructed.Add(value); hashes.Add(b.InstanceId, BuiltInFingerprint(value.GetType())); }
             else
             {
                 var module = Store().VerifyInstalled(b.Package).Manifest.Modules.Single(x => x.Id == b.Module);
-                value = external(loading!, module);
+                value = external(loading!, module); constructed.Add(value);
                 hashes.Add(b.InstanceId, Wire.Hash(b.Package.ManifestSha256 + ":" + Wire.FileHash(typeof(IParcelApplication).Assembly.Location) + ":" + Wire.FileHash(typeof(ExtensionStore).Assembly.Location)));
             }
-            constructed.Add(value); if (value.InstanceId != b.InstanceId) throw new InvalidDataException("Capability returned a mismatched identity"); return value;
+            if (value.InstanceId != b.InstanceId) throw new InvalidDataException("Capability returned a mismatched identity"); return value;
         }
-        var weight = c.Scale is { } s ? Own<IWeightSource>(s, () => new ReferenceWeightSource(s), (l, m) => l.CreateFactory<IWeightExtension>(s.Package!, m, "weight").Create(s)) : null;
+        Dictionary<string, ICapabilityPort> devicePorts = [];
+        foreach (var scaleBinding in ParcelBindings.Bound(c).Where(b => b.Kind == "weight"))
+            devicePorts.Add(scaleBinding.InstanceId, Own<IWeightSource>(scaleBinding, () => new ReferenceWeightSource(scaleBinding), (l, m) => l.CreateFactory<IWeightExtension>(scaleBinding.Package!, m, "weight").Create(scaleBinding)));
+        var weight = c.Scale is null ? null : (IWeightSource)devicePorts[c.Scale.InstanceId];
         #if DIRECTPLC
         IWcsPort? wcs = null;
         #else
@@ -269,16 +295,27 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         #endif
         var plc = c.Plc is { } p ? Own<IPlcPort>(p, () => new ReferencePlc(p, p.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IPlcExtension>(p.Package!, m, "plc").Create(p)) : null;
         var login = c.Login is { } a ? Own<IOperatorAuthenticator>(a, () => new ReferenceOperatorAuthenticator(a), (l, m) => l.CreateFactory<ILoginExtension>(a.Package!, m, "login").Create(a)) : null;
-        var camera = c.Images is { } i ? Own<IImageCamera>(i.Camera, () => new ReferenceImageCamera(i.Camera, Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId)), (l, m) => l.CreateFactory<ICameraExtension>(i.Camera.Package!, m, "camera").Create(i.Camera, Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId))) : null;
-        var uploader = c.Images is { } j ? Own<IImageUploader>(j.Uploader, () => new ReferenceImageUploader(j.Uploader, j.Uploader.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IUploadExtension>(j.Uploader.Package!, m, "upload").Create(j.Uploader)) : null;
+        foreach (var cameraBinding in ParcelBindings.Bound(c).Where(b => b.Kind == "camera"))
+        {
+            var path = Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId);
+            var sameReader = readers.GetValueOrDefault(cameraBinding.Target);
+            var imagePort = Own<IImageCamera>(cameraBinding,
+                () => sameReader is not null ? BindReader(sameReader, cameraBinding, path) : new ReferenceImageCamera(cameraBinding, path),
+                (l, m) => sameReader is not null ? BindReader(sameReader, cameraBinding, path) : l.CreateFactory<ICameraExtension>(cameraBinding.Package!, m, "camera").Create(cameraBinding, path));
+            devicePorts.Add(cameraBinding.InstanceId, imagePort);
+        }
+        var camera = c.Images is null ? null : (IImageCamera)devicePorts[c.Images.Camera.InstanceId];
+        var uploader = c.Images?.Uploader is { } u ? Own<IImageUploader>(u, () => new ReferenceImageUploader(u, u.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IUploadExtension>(u.Package!, m, "upload").Create(u)) : null;
         // Legacy simulation configurations retain their explicit reference maintenance
         // boundary. New deployments select this authenticator in the same revision.
         if (c.Mode == RunMode.Production && c.MaintenanceLogin is null) throw new InvalidDataException("Production maintenance authenticator missing");
         var maintenanceBinding = c.MaintenanceLogin ?? new("login", "reference-login", "1.0.0", "maintenance", "reference://maintenance", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "maintenance" });
         var maintenance = Own<IOperatorAuthenticator>(maintenanceBinding, () => new ReferenceOperatorAuthenticator(maintenanceBinding),
             (l, m) => l.CreateFactory<ILoginExtension>(maintenanceBinding.Package!, m, "login").Create(maintenanceBinding));
-        transferred = true; return new(reader, weight, wcs, plc, hashes, login, camera, uploader, maintenance);
+        transferred = true; return new(reader, weight, wcs, plc, hashes, login, camera, uploader, maintenance, readers, devicePorts);
     }
+    static IImageCamera BindReader(IControlledObservationSource source, CapabilityBinding binding, string directory) => source is IReaderImageCapture provider
+        ? provider.BindCapture(binding, directory) : throw new InvalidDataException("Reader does not expose controlled original-acquisition capture; a second connection is forbidden");
     static string BuiltInFingerprint(Type implementation)
     {
         Dictionary<string, string> closure = [];
@@ -296,7 +333,12 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
     public async ValueTask DisposeAsync()
     {
         if (!transferred)
-            foreach (var resource in constructed.AsEnumerable().Reverse()) await resource.DisposeAsync().ConfigureAwait(false);
+        {
+            List<Exception> failures = [];
+            foreach (var resource in constructed.ToArray().Reverse())
+                try { await resource.DisposeAsync().ConfigureAwait(false); constructed.Remove(resource); } catch (Exception ex) { failures.Add(ex); }
+            if (failures.Count != 0) throw new AggregateException("Partial construction cleanup failed; device/package leases retained", failures);
+        }
         loading?.Dispose(); use?.Dispose(); devices?.Dispose();
         foreach (var hold in prerequisiteHolds) hold.Dispose(); prerequisiteHolds.Clear();
     }

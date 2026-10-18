@@ -15,7 +15,7 @@ public sealed class ReferencePlc(CapabilityBinding binding, string peerRoot) : I
     public Task StopAsync(CancellationToken token) => peer.StopAsync(token);
     public ValueTask DisposeAsync() => peer.DisposeAsync();
 }
-public sealed class ReferenceWeightSource(CapabilityBinding binding) : IWeightSource, ISyntheticWeightInput
+public sealed class ReferenceWeightSource(CapabilityBinding binding) : IControlledWeightSource, ISyntheticWeightInput
 {
     readonly object gate = new();
     Func<WeightMeasurement, bool>? receive;
@@ -25,6 +25,11 @@ public sealed class ReferenceWeightSource(CapabilityBinding binding) : IWeightSo
     { token.ThrowIfCancellationRequested(); lock (gate) { ObjectDisposedException.ThrowIf(disposed, this); running = true; } return Task.CompletedTask; }
     public Task StartMeasurementsAsync(Func<WeightMeasurement, bool> receiver, CancellationToken token)
     { token.ThrowIfCancellationRequested(); lock (gate) { if (!running || receive is not null) throw new InvalidOperationException("Scale is stopped/already registered"); receive = receiver; } return Task.CompletedTask; }
+    public Task StartControlledMeasurementsAsync(string registeredEpoch, Func<WeightObservation, bool> receiver, CancellationToken token)
+    {
+        long sequence = 0;
+        return StartMeasurementsAsync(m => receiver(new(registeredEpoch, Interlocked.Increment(ref sequence), m)), token);
+    }
     public bool Emit(WeightMeasurement measurement)
     { lock (gate) { return running && measurement.DeviceId == binding.Target && receive?.Invoke(measurement) == true; } }
     public Task<CapabilityHealth> HealthAsync(CancellationToken token)

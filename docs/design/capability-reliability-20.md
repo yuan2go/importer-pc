@@ -1,3 +1,5 @@
+> 22现行拓扑、状态作用域、版本与交付：[Application架构22](../design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
+
 # 能力可靠性现行增量 · 20
 
 执行基线08286542bbd007433d85be2cb8d129b366b007e0，PR19已合并。本文件在业务编码前收敛本包设计；19分层、三个独立Application、T1/T2/T3、签名精确加载与多页面单实例继续有效。[原指导](../archive/pre-capability-reliability-20/README.md)。本轮附件未随任务提供，按用户列明故障及实际源码复核，不从历史问题反造客户合同。

@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 2,
+  "SchemaVersion": 3,
   "ApplicationId": "wcs-to-plc",
   "StationId": "reference-17",
   "Mode": "Simulation",
@@ -61,5 +61,22 @@
       "subjects": "maintenance"
     }
   },
-  "WeightValidity": "UntilDispatch"
+  "WeightValidity": "UntilDispatch",
+  "Topology": {
+    "Readers": [
+      {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "wcs-to-plc.camera",
+        "Revision": "1",
+        "ReplayFile": null
+      }
+    ],
+    "Positions": [
+      {
+        "Id": "main",
+        "ReaderDeviceId": "wcs-to-plc.camera"
+      }
+    ]
+  }
 }

@@ -3,6 +3,21 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
+    async Task MonitorAsync(ICapabilityPort port)
+    {
+        try
+        {
+            while (!stopping.IsCancellationRequested)
+            {
+                await Task.Delay(100, stopping.Token).ConfigureAwait(false);
+                var health = await ProbeHealthAsync(port, stopping.Token).ConfigureAwait(false);
+                await gate.WaitAsync(stopping.Token).ConfigureAwait(false);
+                try { capabilityHealth[port.InstanceId] = health; } finally { gate.Release(); }
+            }
+        }
+        catch (OperationCanceledException) when (stopping.IsCancellationRequested) { }
+        catch (Exception ex) { failure = "Capability monitor failed: " + port.InstanceId + ": " + ex.Message; Interlocked.Exchange(ref accepting, 0); }
+    }
     // Only this boundary knows both the configured budget and the lifecycle token.
     // A port receives one token and must not guess why that token was cancelled.
     async Task<CapabilityHealth> ProbeHealthAsync(ICapabilityPort port, CancellationToken caller)

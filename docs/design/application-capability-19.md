@@ -1,3 +1,5 @@
+> 22现行拓扑、状态作用域、版本与交付：[Application架构22](../design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
+
 > 20可靠性/部署增量已生效：[现行指南](../runtime/capability-reliability-20.md)及[设计](../design/capability-reliability-20.md)。下文19阶段策略/版本/保守恢复说明按形成时范围保留；冲突处以20为准，原字节已归档。
 
 # Application及公共能力现行设计 · 19

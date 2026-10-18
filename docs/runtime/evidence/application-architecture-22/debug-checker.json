@@ -1,0 +1,17 @@
+{
+  "source": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+  "purpose": "Independent static checker, public contracts match actual verification host; Release candidates unmodified",
+  "files": {
+    "Ipc.Components.dll": "895a4156b4bb3af4b9a2b55dd02ba9bdcea65786f99a27f0d82f5e2bf6dc4bd2",
+    "Ipc.Application.ParcelFlow.dll": "8f1c3bbe90f04849e664e64e5b40b9168a3d2fe4f1d90d181f4b8d1127407b97",
+    "Ipc.Supply.Contracts.dll": "e294ce80068fd99c7c1fbbb63c0daa81923f945ab1ac1e50688e2de8d5a3af07",
+    "Ipc.Platform.dll": "3c791829904cd19cfff0a22c3a3c1466227372a9e7935039bc35f9b4f2c15696",
+    "Ipc.Reference.Protocol.dll": "4906a54951ce8587990c365d27a64c6442b952cd09af220cea7b9ebb19f52833",
+    "Ipc.Drivers.dll": "f0fb20dc7dedef69f50f41238681f9f3048a32951531f64ff58e413caed8088b",
+    "Ipc.Integrations.dll": "7e1b3d5515e2d2f89e3571d471dbb223d4ad24ba7785c7858260723e27fc5923",
+    "Ipc.Application.WcsToPlc.dll": "fb92b1d8b4ad19ec03ebc7e537c288fd85a4d760666e28e257854e445be92aba",
+    "Ipc.Platform.Storage.dll": "8b0646677109ca952b57608ad5ea1844ab9427d1792e977777968595854c0031",
+    "Ipc.Application.Contracts.dll": "93a7633bab322bf2dd160b697576d18819c521b970e62412226fd0a92fdf5409",
+    "Ipc.Assembly.dll": "b41b07b0f7d75639510fe1732537921c7e69e928b2d5c174a0aa305564fff1cf"
+  }
+}

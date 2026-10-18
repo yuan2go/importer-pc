@@ -1,0 +1,30 @@
+[
+  {
+    "name": "sportmaster-portable",
+    "sha256": "504609fae1daa723db05f5fd1fdd5fb9a52b45bdbae98a9eff6d42637842ad40",
+    "source": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+    "unpackedFilesVerified": true,
+    "windowsActual": "NOT_RUN"
+  },
+  {
+    "name": "direct-plc-portable",
+    "sha256": "4ad8dc55e04cfe58b67d5a73588b8c8cd67175f684b75963c7d97a4987432556",
+    "source": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+    "unpackedFilesVerified": true,
+    "windowsActual": "NOT_RUN"
+  },
+  {
+    "name": "wcs-to-plc-portable",
+    "sha256": "4d537bdf4a386781d754259dd48b827a011f9b3a9c5895ef233546d974f8275a",
+    "source": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+    "unpackedFilesVerified": true,
+    "windowsActual": "NOT_RUN"
+  },
+  {
+    "name": "sportmaster-win-x64",
+    "sha256": "998a837a41d6df26ed140179caf17c8a57df5a5433dceffdb90e54bfb99d0b00",
+    "source": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+    "unpackedFilesVerified": true,
+    "windowsActual": "NOT_RUN"
+  }
+]

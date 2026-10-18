@@ -19,6 +19,7 @@ if(args.Contains("--prior-custody-migration")){var i=Array.IndexOf(args,"--prior
 if(args.Contains("--legacy-cut-child")){var i=Array.IndexOf(args,"--legacy-cut-child");await ArchitectureQuality.LegacyCutChild(args[i+1],args[i+2],args[i+3]);return;}
 if(args.Contains("--legacy-custody-upgrade")){var i=Array.IndexOf(args,"--legacy-custody-upgrade");await ArchitectureQuality.LegacyCustodyChecks(workspace,root,Path.GetFullPath(args[i+1]),Path.GetFullPath(args[i+2]));return;}
 if (args.Contains("--raw-custody-child")) { var i=Array.IndexOf(args,"--raw-custody-child"); await ArchitectureQuality.RawCustodyChild(workspace,args[i+1]); return; }
+if (args.Contains("--parcel-recovery-p2")) { await ArchitectureQuality.RecoveryP2Checks(workspace,root); return; }
 if (args.Contains("--receipt-custody")) { await ArchitectureQuality.CustodyChecks(workspace,root); return; }
 if (args.Contains("--upload-crash-child")) { var i = Array.IndexOf(args, "--upload-crash-child"); await ArchitectureQuality.UploadCrashChild(workspace, args[i + 1]); return; }
 if (args.Contains("--configuration-crash-child")) { var i = Array.IndexOf(args, "--configuration-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], args[i + 2]); return; }

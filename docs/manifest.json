@@ -2766,9 +2766,9 @@
       "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
       "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "5b74683a583ea3fde617588f39cca1e0e2e2b741e943a6ef6a41a6abd0248beb",
-      "size_bytes": 7403,
-      "git_blob": "dbc0ef7963a1d275775f5f643caf14192e176bfa"
+      "sha256": "68e4c4fd707445b39ddaf96fd538fce241987e0b5ae1c5dbfa3557441d6c0b65",
+      "size_bytes": 7792,
+      "git_blob": "89c46e4c4e13cc32ed786d9be0212fe1d71b34c2"
     },
     {
       "path": "docs/runtime/application-architecture-22.md",
@@ -3113,6 +3113,17 @@
       "git_blob": "3eaa592513ff1a29ad576b7bda0132002968564e"
     },
     {
+      "path": "docs/runtime/evidence/application-architecture-22/archive-checks.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ce94cd563f5d82debd433bb65a37e4de98059988cab6a7aa09ab64d720522212",
+      "size_bytes": 75251,
+      "git_blob": "0ea009d87a2fe8270d650684ef383942bbb52fae"
+    },
+    {
       "path": "docs/runtime/evidence/application-architecture-22/archive-environment-initial.json",
       "version": "application-architecture-22",
       "status": "current_reference_implementation_or_evidence",
@@ -3141,9 +3152,9 @@
       "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
       "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "89346f041d18866afaa00e717da016f48ded008f6eabd513f01bab8450ddad26",
-      "size_bytes": 2746,
-      "git_blob": "008bc2c49b82ad40842506f3b6ab6623e3f0a525"
+      "sha256": "9dab20bb19af04531075aa5577fef2d0d1c3a0fdca7659c9043afb7bee3257da",
+      "size_bytes": 3017,
+      "git_blob": "714b402afa90dfc2b5eafbd46f98775ed8844801"
     },
     {
       "path": "docs/runtime/evidence/application-architecture-22/debug-checker.json",
@@ -3496,6 +3507,17 @@
       "sha256": "cedb98010693fe8ce39c5cfbc771798c7bb396075959f7ff47de82cc62c43b29",
       "size_bytes": 427,
       "git_blob": "a24ed152998ecca849241d2a24053c99aa9eadc5"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/publication-receipt.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f9878cd8a76a2df538f0377cdaad8ad321d3052ebc0c66ce01129e1ba49178b4",
+      "size_bytes": 493,
+      "git_blob": "399628b6f950d67d9c61ce1c0bab4a306a4e0d13"
     },
     {
       "path": "docs/runtime/evidence/application-architecture-22/smoke-direct-plc.json",
@@ -15116,9 +15138,9 @@
       "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
       "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "953c949774ecf7d64d0d0f2696048aa8f58489202cbb37d1ed7531f5bb920928",
-      "size_bytes": 1777,
-      "git_blob": "e06a4d8a9bbc16f00e870209206f6bddb4a007e6"
+      "sha256": "7fca2ca25509fe2247b179129693dd835f681eecbcc991e5dda766aa3d40a8d2",
+      "size_bytes": 1949,
+      "git_blob": "0da9b6f58168ec34bd996575c868e257646f9563"
     },
     {
       "path": "docs/work-packages/WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19.md",

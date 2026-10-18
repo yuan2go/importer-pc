@@ -10,8 +10,10 @@
 - [x] 可选能力：仅取图、原采集复用、后台上传、终态释放；登录/重量原件及协议守卫继承。
 - [x] 兼容/交付：追加SQL3/迁移前屏障，CAS配置完整性、备份恢复、原扩展新版本；默认/可选配置及随包指南同步。
 - [x] 验证：新增Architecture22宿主选择器及受影响19/20/资源回归；必要WPF构建和三真实选装包解压进程冒烟。
-- [ ] 记录实际源码/包/日志SHA及剩余边界，提交推送并创建main PR，不合并。
+- [x] 记录实际源码/包/日志SHA及剩余边界，提交推送并创建main PR，不合并。
 
 文件边界：Application.Contracts拥有拓扑和实体事实；ParcelFlow拥有调度/业务账与原件；Platform通用设备会话；Assembly拥有具体工厂；Drivers/扩展提供采集能力；既有UI只加结构编辑保护。目标/实现/模拟/现场分别报告。原SQL/checksum、历史报告、发布身份、REQ/BR/CAPI/D/RV保持。
 
 实现和参考验证见[22结果](../runtime/application-architecture-22-results.md)，运行闭包固定8981d54；最终PR单独回执，不改历史证据。
+
+已创建并读回[PR #22](https://github.com/yuan2go/importer-pc/pull/22)，OPEN，未合并main。候选和运行闭包保持8981d54；后续仅交付回执/manifest。

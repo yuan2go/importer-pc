@@ -1,0 +1,16 @@
+{
+  "repository": "yuan2go/importer-pc",
+  "pullRequest": 22,
+  "url": "https://github.com/yuan2go/importer-pc/pull/22",
+  "stateAtReadback": "OPEN",
+  "base": "main",
+  "baseCommit": "ea881293c888a824f26c9f9fa07352a22786206b",
+  "creationHead": "16591f7",
+  "runtimeCommit": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+  "sourceCommitsBeforeReceipt": 3,
+  "candidateZips": 4,
+  "publishedRelease": false,
+  "merged": false,
+  "WindowsActual": "NOT_RUN",
+  "realSdkProtocolsSite": "BLOCKED"
+}

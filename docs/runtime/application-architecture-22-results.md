@@ -55,4 +55,4 @@ dotnet /new/unpacked/app/Ipc.Assembly.dll --config /new/unpacked/app/config --da
 
 只交获授权通用源码、合成配置/证据及候选身份；不提交二进制、私钥、客户原稿、生产数据、SDK/字体或私密链接。资料校验保持267项历史FAIL（265项原PPTX媒体类型、2项原UI元数据），与PR20/21原错误集合完全一致，新增文件/hash/链接错误0。首次系统Python缺Pillow以及清单/本报告本地路径检查失败另存原输出，改用已有依赖运行时并修正新文档/清单后复验；不修改原资产或豁免换PASS。原REQ/BR/CAPI/D/RV及历史失败保持。
 
-PR由最终交付回执链接，创建后不合并main。
+交付[PR #22](https://github.com/yuan2go/importer-pc/pull/22)已创建并读回OPEN，创建时HEAD16591f7；未合并main。随后仅补本回执和manifest，运行/打包闭包及候选仍固定8981d54。

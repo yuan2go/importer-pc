@@ -36,6 +36,14 @@
     {
       "path": "README.md",
       "sha256": "522f1d40c9ecaabfdff68fcda14adcc7ad79af7d3e7c8eedd26740e0688f4f0b"
+    },
+    {
+      "path": "docs/manifest.json",
+      "sha256": "7a8ea1b140e0207aa6594ef5c1c2bcb251c7a9cddf026ef7a39c2a6d132ee7fb"
+    },
+    {
+      "path": "docs/manifest.sha256",
+      "sha256": "dbe410040167e54103f6c919c583d219d1bc3cbec52817a49600ba4b73812735"
     }
   ]
 }

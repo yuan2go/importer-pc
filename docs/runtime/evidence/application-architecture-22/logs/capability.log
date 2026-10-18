@@ -1,0 +1,50 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-431a19679a174a1c9bc385c36633f40c
+PASS AC19: common capabilities live in Platform with released full names/constructor and no Application assembly dependency
+PASS AC19: sportmaster public entry refuses admission without session
+PASS AC19: sportmaster captures original before waiting for actual weight
+PASS AC19: sportmaster capture uses immutable source event/admission/time rather than latest frame
+PASS AC19: sportmaster waiting weight retains intact original bytes
+PASS AC19: sportmaster adapter-bound original payload retains operator, measurement and acquisition
+PASS AC19: sportmaster terminal upload releases bounded temporary bytes with durable release marker
+PASS AC19: direct-plc public entry refuses admission without session
+PASS AC19: direct-plc captures original before waiting for actual weight
+PASS AC19: direct-plc capture uses immutable source event/admission/time rather than latest frame
+PASS AC19: direct-plc waiting weight retains intact original bytes
+PASS AC19: direct-plc adapter-bound original payload retains operator, measurement and acquisition
+PASS AC19: direct-plc terminal upload releases bounded temporary bytes with durable release marker
+PASS AC19: wcs-to-plc public entry refuses admission without session
+PASS AC19: wcs-to-plc captures original before waiting for actual weight
+PASS AC19: wcs-to-plc capture uses immutable source event/admission/time rather than latest frame
+PASS AC19: wcs-to-plc waiting weight retains intact original bytes
+PASS AC19: wcs-to-plc adapter-bound original payload retains operator, measurement and acquisition
+PASS AC19: wcs-to-plc adapter-bound original payload retains operator, measurement and acquisition
+PASS AC19: wcs-to-plc terminal upload releases bounded temporary bytes with durable release marker
+PASS AC19: uploader declaring measured input captures first but cannot prematurely freeze or send weightless upload
+PASS AC19: required measured upload input is frozen only when same-parcel measurement is ready
+PASS AC19: attached unknown has independent responsibility and does not block WCS/PLC or delete original
+PASS AC19: restart preserves attached unknown and original main requests without automatic replay
+PASS AC19: original query proves upload and physical facts independently without another execution
+PASS AC19: released historical images never make restart require deleted files
+PASS AC19: attached reject remains independent of main acceptance
+PASS AC19: attached lose-after-commit remains independent of main acceptance
+PASS AC19: temporary cache admission enforces total/backlog bounds and projects same guard to client
+PASS AC19: quota exhaustion preserves unknown upload original
+PASS AC19: crash injection preserves byte evidence after committed release marker
+PASS AC19: startup completes interrupted release cleanup without requiring released history bytes
+PASS AC19: wcs external wait does not block snapshot or software pause
+PASS AC19: wcs stop timeout retains original in-flight ownership
+PASS AC19: upload external wait does not block snapshot or software pause
+PASS AC19: upload stop timeout retains original in-flight ownership
+PASS AC19: late measurement after same-parcel deadline cannot restore or submit
+PASS AC19: Resume cannot bypass weight deadline
+PASS AC19: explicit inspected disposition only abandons a parcel with no WCS/PLC intent
+PASS AC19: next parcel requires explicit reset after disposition
+PASS AC19: next same-code parcel has new identity and new measurement association
+PASS AC19: interrupted association cannot leave an orphaned measurement dedup row
+PASS AC19: original sample survives restart and duplicate sample cannot cause another PLC attempt
+PASS AC19: expired session refuses admission without inventing an authenticated default
+PASS AC19: software pause alone grants no maintenance authority
+PASS AC19: separate reference maintenance provider authenticates explicit maintenance grant
+PASS AC19: authenticated configuration forms pending revision and leaves original effective and parcel frozen
+PASS AC19: expired session replacement preserves admitted operator snapshot
+PASS AC19 COMPLETE: independent entrances, weight/session guards, original images, two upload strategies, cleanup and nonblocking recovery

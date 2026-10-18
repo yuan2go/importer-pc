@@ -1,18 +1,18 @@
 {
   "schema_version": "1.2",
-  "work_package": "PR20-21-INTEGRATION-20261018",
+  "work_package": "WP-IPC-APPLICATION-ARCHITECTURE-22",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/capability-reliability-closure-20",
+  "branch": "codex/application-architecture-22",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
-  "framework_design_state": "REFERENCE_INTEGRATION_WINDOWS_NOT_RUN_REAL_INTERFACES_BLOCKED",
+  "framework_design_state": "APPLICATION_ARCHITECTURE_REFERENCE_VERIFIED_WINDOWS_NOT_RUN_REAL_BLOCKED",
   "previous_manifest": {
-    "commit": "08286542bbd007433d85be2cb8d129b366b007e0",
-    "snapshot": "docs/archive/pre-capability-reliability-20/docs/manifest.json.txt",
-    "sha256": "af12af26d7c459af6c94d3430b74ea0b0d3bf1fd397ebe6ddf3be9f597111c08",
-    "meaning": "Before20 original manifest; preserve historical evidence, publication identity and D/RV"
+    "commit": "ea881293c888a824f26c9f9fa07352a22786206b",
+    "snapshot": "docs/archive/pre-application-architecture-22/docs/manifest.json.txt",
+    "sha256": "7a8ea1b140e0207aa6594ef5c1c2bcb251c7a9cddf026ef7a39c2a6d132ee7fb",
+    "meaning": "Original pre22 manifest, source/report/package custody unchanged"
   },
   "self_verification": {
     "sha256_file": "manifest.sha256",
@@ -172,9 +172,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "522f1d40c9ecaabfdff68fcda14adcc7ad79af7d3e7c8eedd26740e0688f4f0b",
-      "size_bytes": 4588,
-      "git_blob": "c1df09a289cbcc668d71fb822dea98131be3259a",
+      "sha256": "770aa4c2cd27e8797b2c91ec17627e2ec505fcaca98e56c27bece44471e75159",
+      "size_bytes": 5219,
+      "git_blob": "a5253a5970278b3330d22372395b37d338e5ba05",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
@@ -191,9 +191,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "84ed221118ae64353dc28099a6e3c9d7e55dcff3f3f425cff735daac6a567018",
+      "sha256": "a7beedb86522c49905f04c10f0750dce1c08954f22c79106e7471668fcb21516",
       "size_bytes": 7744,
-      "git_blob": "2afc579e5a271318be1aa972cfdf37eefb52ea46",
+      "git_blob": "ea9956fb8421191f0b6396a764ef3baf607a35af",
       "previous_git_blob": "4cd784e0404ca5afd64566dfe56625fe843c6313",
       "prior_closure13_git_blob": "1896d9c2f91ac6d1c8d840733492c11a0499555e"
     },
@@ -204,9 +204,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "9a89a7f00efcf4523c43b47446f17ead370d973ed59c17110ba286fc37cf3f04",
-      "size_bytes": 1209,
-      "git_blob": "a8649b1768e84030ecc3bdf83f6f662e21168d91",
+      "sha256": "58d81ec2b579f0b0f990d3dfd9d19e4bb5d022d3ced37c3973d446aabd699e41",
+      "size_bytes": 1533,
+      "git_blob": "4cf853438d8106ab01a1ab598370138efcb375ba",
       "previous_git_blob": "42efb2cfec43c2b820dda91ef26fe2b666f398d6"
     },
     {
@@ -227,9 +227,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "b719c6071a1ff45a3be5f394c02f85e1e1bfa42110bb4edb590a810043f380b1",
-      "size_bytes": 2281,
-      "git_blob": "7278976c2f95842f8267c933cc5cae7ec11fcbb9",
+      "sha256": "5cfc349d84903412a036907f9b7d003de27438c0b6d12599c654c140ca324685",
+      "size_bytes": 2605,
+      "git_blob": "8d7af8d31a590362ce7d3b4e899cc8f5599fe142",
       "previous_git_blob": "1cb5bdb2c7d4ec467044ebbc02ee7d3bf497e14e"
     },
     {
@@ -239,9 +239,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "ad1f77f29a063187323020332af466a0292737d2e313da10b6233574bd0e34b5",
-      "size_bytes": 2320,
-      "git_blob": "1ead2a514d935016d9a6d169eb642e56921faa31",
+      "sha256": "a6833989d445e317fcd45b4d71481924ccd338b698482d599563a0e391251c08",
+      "size_bytes": 5458,
+      "git_blob": "227b84d0a913aad3716f80f3e0b1531490e6f9a5",
       "previous_git_blob": "57b8acaabdc02f2b6c9398791ab0b5d5513b0598"
     },
     {
@@ -251,9 +251,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "5ebe9e4f9472330b02fab3b492c32a7c484b47ab2ae3117f0f152755527336a0",
-      "size_bytes": 2611,
-      "git_blob": "658c412cba8fb9dc425ab8b2b3e65fb5154cec0d",
+      "sha256": "058ee8c363b600287eff7d4055a90f633e72ff720ed48f48dba2d9a880546075",
+      "size_bytes": 2935,
+      "git_blob": "1a3470526e6c3357a34d4be31be44fb3ebc5ba41",
       "previous_git_blob": "370f7de6276b9f56cf6319cba9b69eeea2c5fa62"
     },
     {
@@ -297,9 +297,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "07da0a3a09a4472c79e213bed0b7a8f0e8344627cb164658dea1f9cf72ee3c57",
-      "size_bytes": 1238,
-      "git_blob": "ab93a7956be71cc3b3a454910c2f5f26c31376d6",
+      "sha256": "871e73eab94fd38acdbe9a7c201f1eb726f3f388fb24cb885aba6ba36232050a",
+      "size_bytes": 1850,
+      "git_blob": "1162a5013ae0123cda00807a4933e4ea864b566f",
       "previous_git_blob": "2374e8f493e1b6bcb47bfce0ddcee8a2f5ddba9e"
     },
     {
@@ -320,16 +320,16 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "fcfc9b9e4ba978189890b8eaed0632f2e19a25d4057b4b4b77f84055a3483126",
-      "size_bytes": 1539,
-      "git_blob": "05e338fd316a18611b45009a3ba94dc627cccd81",
+      "sha256": "4981f9d6f44b7ddea0a3ef53a5e3045936819d5f165248fba08fcc8445095ff2",
+      "size_bytes": 1863,
+      "git_blob": "87e3821502ffda29251d0ad689fcc8270d530000",
       "previous_git_blob": "02631364da920898ebf9bcb7a561b1a1df11fe06"
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "0090c03b1893aab03c14127e3d7e1fe4831d3806a3665cd690e48c9497b2535b",
-      "size_bytes": 7014,
-      "git_blob": "961e4c67aebbdc6d7d8aa6b980c5d52fda53557b",
+      "sha256": "4b3d2b58e65178792d6849891d8f363b5c95ac319cfc50170ed74bf1afc26e2c",
+      "size_bytes": 7860,
+      "git_blob": "0daf3a56543290ea16f608416dac43e90e40ccbf",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
@@ -338,6 +338,149 @@
       "previous_git_blob": "c9883745a559c3d542522dba17e094d9bc007c77",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
       "pre_conformance_audit_git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc"
+    },
+    {
+      "path": "docs/archive/pre-application-architecture-22/README.md",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "5452c723c8dd2cd84327f7069c4036b73627d8e9a92f97805af2ed40e63cd77e",
+      "size_bytes": 206,
+      "git_blob": "a48f32ce127c6ae4f1dc18d534579ade46f480f5"
+    },
+    {
+      "path": "docs/archive/pre-application-architecture-22/README.md.txt",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "522f1d40c9ecaabfdff68fcda14adcc7ad79af7d3e7c8eedd26740e0688f4f0b",
+      "size_bytes": 4588,
+      "git_blob": "c1df09a289cbcc668d71fb822dea98131be3259a"
+    },
+    {
+      "path": "docs/archive/pre-application-architecture-22/docs/INDEX.md.txt",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0090c03b1893aab03c14127e3d7e1fe4831d3806a3665cd690e48c9497b2535b",
+      "size_bytes": 7014,
+      "git_blob": "961e4c67aebbdc6d7d8aa6b980c5d52fda53557b"
+    },
+    {
+      "path": "docs/archive/pre-application-architecture-22/docs/design/application-capability-19.md.txt",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c7b0516b2ce8338bd0018fac5120cf064913ad7ba9766c5c370bd23ce17a5c8b",
+      "size_bytes": 4468,
+      "git_blob": "2d4a1a84313308ba0dc98f51b54efb0b2eb0f4a9"
+    },
+    {
+      "path": "docs/archive/pre-application-architecture-22/docs/design/capability-reliability-20.md.txt",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "b7f71f035832c25e54320b2dd060b9635b2b90334ee1d489ae7cd7d8c7afc5d8",
+      "size_bytes": 3946,
+      "git_blob": "0ebfb0f325231f7088ea6102a815ee2590b5ec77"
+    },
+    {
+      "path": "docs/archive/pre-application-architecture-22/docs/design/controlled-extensions.md.txt",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ac4cf13a3ddb49c6e2cde6f611e7776c715c4f19c78eb0254e286ae4638a2f26",
+      "size_bytes": 6546,
+      "git_blob": "1cb9b575fb3ba5ecc1a0a5d1e15241243c8543cf"
+    },
+    {
+      "path": "docs/archive/pre-application-architecture-22/docs/design/framework-decisions.md.txt",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9a91fa8406f2d87430ad31f800bcd444384179bb2c5b0cd10494344e9153a98b",
+      "size_bytes": 19954,
+      "git_blob": "9742e1d4a7395d2af98fdd46d2cc007fa39e8a35"
+    },
+    {
+      "path": "docs/archive/pre-application-architecture-22/docs/design/framework.md.txt",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "023722d6411ca2b12b74ec5f5fee4555cc3d9905f1d094299c72e2538a91c579",
+      "size_bytes": 37666,
+      "git_blob": "c57140361d7f147157d9206c6c023bd075508698"
+    },
+    {
+      "path": "docs/archive/pre-application-architecture-22/docs/extensions/developer-guide.md.txt",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "3a4fb68820a41854820b51826fae39d40b79e7bc5dabdaceb092d40ef80c8deb",
+      "size_bytes": 11503,
+      "git_blob": "5134e9c7b378cd063980a95694052f8e36bba383"
+    },
+    {
+      "path": "docs/archive/pre-application-architecture-22/docs/manifest.json.txt",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7a8ea1b140e0207aa6594ef5c1c2bcb251c7a9cddf026ef7a39c2a6d132ee7fb",
+      "size_bytes": 1163350,
+      "git_blob": "2e72ac235b4cf7b1b3913f9d1b21b83050565897"
+    },
+    {
+      "path": "docs/archive/pre-application-architecture-22/docs/manifest.sha256.txt",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "dbe410040167e54103f6c919c583d219d1bc3cbec52817a49600ba4b73812735",
+      "size_bytes": 80,
+      "git_blob": "9b4b5fe05712eb14e81ca0fa59a173c27f72bdb5"
+    },
+    {
+      "path": "docs/archive/pre-application-architecture-22/docs/runtime/operations.md.txt",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "976f339159d830d84f7ef562558eacc5fa273c39ae5490eff2d07bdf03ea4545",
+      "size_bytes": 11905,
+      "git_blob": "2bfd1c448d9ef944520922bc0811ceb6c25e142a"
+    },
+    {
+      "path": "docs/archive/pre-application-architecture-22/manifest.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c6293c57bf04a521aa09adc9a3a0abb1a8ae2692552462f667d9921ee139bd7b",
+      "size_bytes": 1624,
+      "git_blob": "0a187ce4aac3b5e9fd4b0bcb0054aa79925124ce"
     },
     {
       "path": "docs/archive/pre-application-capability-19/README.md",
@@ -2178,15 +2321,26 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/design/application-architecture-22.md",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "3f00ab4f0fe3f97d6ee11c0af5cf5f966f032aa51f938b357b38b3c0bebb2a19",
+      "size_bytes": 5187,
+      "git_blob": "47615fe5ad48305b3410160261c62fdb9c13476c"
+    },
+    {
       "path": "docs/design/application-capability-19.md",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "c7b0516b2ce8338bd0018fac5120cf064913ad7ba9766c5c370bd23ce17a5c8b",
-      "size_bytes": 4468,
-      "git_blob": "2d4a1a84313308ba0dc98f51b54efb0b2eb0f4a9",
+      "sha256": "76de5be823a3ad4b65e46aa78ada5152258df75c9c97508738c15348d64ba96a",
+      "size_bytes": 4677,
+      "git_blob": "e0483c4f5df0b5dbdd9adc969c78cd53b40dd1c7",
       "previous_git_blob": "94618968078e70476b96fa1cf6242a7838a33266"
     },
     {
@@ -2208,9 +2362,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "b7f71f035832c25e54320b2dd060b9635b2b90334ee1d489ae7cd7d8c7afc5d8",
-      "size_bytes": 3946,
-      "git_blob": "0ebfb0f325231f7088ea6102a815ee2590b5ec77"
+      "sha256": "ca45cf5a9bcf7a4130269f1f3f49cc2cf3432702f6318df9010f2f5b4b4e996e",
+      "size_bytes": 4155,
+      "git_blob": "242c6ec85cd94f8619f793ebb60e7013ef5ef8a2"
     },
     {
       "path": "docs/design/controlled-extensions.md",
@@ -2219,9 +2373,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "ac4cf13a3ddb49c6e2cde6f611e7776c715c4f19c78eb0254e286ae4638a2f26",
-      "size_bytes": 6546,
-      "git_blob": "1cb9b575fb3ba5ecc1a0a5d1e15241243c8543cf",
+      "sha256": "f6120184a0d9efb0a1204f2c43981269044e8ff539d744a9b376c6957d9846ab",
+      "size_bytes": 6755,
+      "git_blob": "70116c37c65be4243d4aac8b937ddceb46b5a6d3",
       "previous_git_blob": "346e4df98fcfd8f6f550ee52aaed0c4868f1e1f2"
     },
     {
@@ -2237,9 +2391,9 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "9a91fa8406f2d87430ad31f800bcd444384179bb2c5b0cd10494344e9153a98b",
-      "size_bytes": 19954,
-      "git_blob": "9742e1d4a7395d2af98fdd46d2cc007fa39e8a35",
+      "sha256": "57996d706044c547447e333c6147f5b14664dcf6688ac36e51bc675d1b88e767",
+      "size_bytes": 20163,
+      "git_blob": "5317e02a5807289a21be272b55c412f507567e1c",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
@@ -2249,9 +2403,9 @@
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "023722d6411ca2b12b74ec5f5fee4555cc3d9905f1d094299c72e2538a91c579",
-      "size_bytes": 37666,
-      "git_blob": "c57140361d7f147157d9206c6c023bd075508698",
+      "sha256": "732d9bb79367d35356cc4b31df529cfc0d7cc7eced00e72d92f7557d0c317f63",
+      "size_bytes": 37875,
+      "git_blob": "998405f2091f0e20d4b95a799d89c2b2f5b77645",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
@@ -2266,9 +2420,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "3a4fb68820a41854820b51826fae39d40b79e7bc5dabdaceb092d40ef80c8deb",
-      "size_bytes": 11503,
-      "git_blob": "5134e9c7b378cd063980a95694052f8e36bba383",
+      "sha256": "74e4d1e4f16b01b0273cbb0dae28e1bb4905f32ebb3df95b1706f50cea01b6b2",
+      "size_bytes": 11712,
+      "git_blob": "97de4fe44e344579520696baa1d2d07b9d7bd0ab",
       "previous_git_blob": "9ceb8f1d4b3d1f5ba2754715802428c25e048f84",
       "prior_closure13_git_blob": "920e1ac245b3de720f3607001f510dae0c0a9980"
     },
@@ -2606,6 +2760,28 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/runtime/application-architecture-22-results.md",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "5b74683a583ea3fde617588f39cca1e0e2e2b741e943a6ef6a41a6abd0248beb",
+      "size_bytes": 7403,
+      "git_blob": "dbc0ef7963a1d275775f5f643caf14192e176bfa"
+    },
+    {
+      "path": "docs/runtime/application-architecture-22.md",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f1b252ec4dd2e3b7ec89c164e918e7a5243aa65baee790e27ac205c7f786e5b5",
+      "size_bytes": 8513,
+      "git_blob": "2d3b33c212f86b0b78c96054f2133613033436c0"
+    },
+    {
       "path": "docs/runtime/application-capability-19-checks.json",
       "version": "application-capability-19",
       "status": "current_navigation_or_verification",
@@ -2924,6 +3100,457 @@
       "purpose": "Authorized generic architecture, task lineage, workstation and bounded background implementation or its verification",
       "source": "WP-IPC-ARCH-UI-ALIGNMENT-01 explicit user authorization; synthetic data only",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/README.md",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d795536b0e53a61f2a2c07ba7a07c3b08cde19b2f21eb89fd23453fcfcd58d5d",
+      "size_bytes": 1155,
+      "git_blob": "3eaa592513ff1a29ad576b7bda0132002968564e"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/archive-environment-initial.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f07e937370f2b8a7dd6c5b99afc3752d7a307303f2c99f1ed25d357f9e9b729d",
+      "size_bytes": 33603,
+      "git_blob": "4f3544511b4b24f064b989bbabc70ac9a6ee11ee"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/candidates.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c2cab48aa8e0788cc431b8a9bd7d79a89828ea482e5c5897ff6853466a5c1b3e",
+      "size_bytes": 1004,
+      "git_blob": "19621e5a0d46cb83ef2f1846af4cd0ddd77fa2ce"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/checks.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "89346f041d18866afaa00e717da016f48ded008f6eabd513f01bab8450ddad26",
+      "size_bytes": 2746,
+      "git_blob": "008bc2c49b82ad40842506f3b6ab6623e3f0a525"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/debug-checker.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9ff53f505795ce1df49c84ba1d6cb3bc89a1480fe6afc85de0d6e9ccf3b69faa",
+      "size_bytes": 1281,
+      "git_blob": "2a599532beba98a06eea338203a952842555b6f6"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/extension-identity.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7f126c42c43be851b6baf22d5ce26d2bd5f818bbdd82d8d00f55da6b1ba2465b",
+      "size_bytes": 1331,
+      "git_blob": "db6ec9b3a33d35f22193ea072c46bc45246fbaaa"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/frozen-source.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c1f5eee2d45caed1bd57f9e5e30a7ae219c043232df535e9b77937ddb44308a0",
+      "size_bytes": 63857,
+      "git_blob": "2f3c18256cafaa4eb6a15a0440ff6c42b9e8ed82"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/aa.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "80e3728f688d10cc908410287499594a687beab9e68d792b576e6fe9e33bf8a6",
+      "size_bytes": 4906,
+      "git_blob": "4668f5759c9794a331781ae3a780202dd8a60445"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/backup.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7132c34907dea679556913c4f18a8ce26ade366beb63b6078d57c706add02a7c",
+      "size_bytes": 5065,
+      "git_blob": "e7d05cafc3586937278436e408466d0103b7aaf0"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/capability.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "4a0c66a9d981aa8864f4dbeedabd8f83823e514f4d3bb93eb19493c221a55627",
+      "size_bytes": 4334,
+      "git_blob": "a4b4d77f30270169323879556985194eed7261d4"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/core-build.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "208eb534085a35e99369d561e418720d2990296b929cd372fe17aee02a0511f5",
+      "size_bytes": 2337,
+      "git_blob": "65f74d34c03a2e63d8ebe2b6ec95825a231b818b"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/extension-tools.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "a092cbbd2ee5b5eb782e39a63ae4961f7d168933251a07d447a6dff27059036a",
+      "size_bytes": 113,
+      "git_blob": "9e9e1a7bd166ac4a07cdcabaee76d556fad7122c"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/fixture-build.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "5c343bc52636fe6851e5b6210f0b0e9a76956b494b39df288dd48a33b8131918",
+      "size_bytes": 2567,
+      "git_blob": "007d3755ede9b4a4b308823d367b2a85ca32213f"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/guide-tools.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "dec5673ee7ead0e86a249ea046dba60aab31a8206a43fedeb035ab8449b4e26d",
+      "size_bytes": 100,
+      "git_blob": "84ccb04487e74a67adb5dfb8956b951ba0f8e32e"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/initial-ipc22-aa-first.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f698a04a996d43ba6f5fd593d5683e6e0f0f7bc0502c5cac1120c31c9713533a",
+      "size_bytes": 3123,
+      "git_blob": "c61a35b9dc41da49c9665904130fbde8ec70eef2"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/initial-ipc22-build4.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f464bddfc19bdc29c90550469d2788e4e7329fe496a50976fe2bcad86f2f8959",
+      "size_bytes": 7032,
+      "git_blob": "c8d5e13c1097f39ea3f8c779e6612dab326d4255"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/initial-ipc22-first-build.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "68127871dfaf6e7b7903cd82db9595fc8d1152322cf10cb5a485d42600947497",
+      "size_bytes": 6122,
+      "git_blob": "c35d52fbde9d946e1aba6a741e67a511b379137f"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/initial-ipc22-reliability-first.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "68179e818a10fef0bdeb9720b916c9e0eae5df40427179f81e47b30a1432414e",
+      "size_bytes": 4675,
+      "git_blob": "307577936a6fbede3247f3293da4e3b8657bed4c"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/legacy-resource-final.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "21058fafa6b0c5b3cc5c59b29e2205c2c7891fb137b0681a80eb8e328b4e0e00",
+      "size_bytes": 5745,
+      "git_blob": "a00ac7dbee23de44bf6f5b709d4984920456d539"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/legacy-resource-prior.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "01e7ad4d628f582fd49c5b53baf9a5adcd7e97ca98b4409600879377d2f3d717",
+      "size_bytes": 5745,
+      "git_blob": "1ecd7eaec3fd36d027686ee9b742eaf6072b5035"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/package-direct-plc.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0fa263751586df74918be40dbe9dc38fcd89b57d67e67fbd718c80ce2adc9a97",
+      "size_bytes": 3512,
+      "git_blob": "6673a815e07a1c0cc761eb62a3913b4ce1ea3264"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/package-sportmaster-win.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f27dfaa954c80323628838cb8c6e554566a44ef08fa5ec820c2cb7490af580c5",
+      "size_bytes": 7728,
+      "git_blob": "98c78244e30589af46467d282ab98498b7c025f4"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/package-sportmaster.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f52b0798f716c9c1e41dfa74c2c81ee909249ff7373a272c48bcb5ff5b5ce66e",
+      "size_bytes": 4262,
+      "git_blob": "074f5bcb0a30c8a3d261e6aed8fc9736a3503eb7"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/package-wcs-to-plc.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0ed877c238c6b603ccfc220d53fbff0ceb5383bb86f0aa615f533f79bc37539c",
+      "size_bytes": 4231,
+      "git_blob": "f5bf2da01cdece9955df86ca78468dcdac54e400"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/reliability.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "83184550bb9a3dd5182270edd9b777d67582858cf37a3b84959ab96cf4284849",
+      "size_bytes": 4415,
+      "git_blob": "3056c255d0f8fe68b682a53a38e54e9b4290599b"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/review-regressions.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "942192ef7ebdb8d4c9513c0dbbae8c92f14c6341e55c79e39bafb25fd6638a65",
+      "size_bytes": 2313,
+      "git_blob": "8c95cab8bf9941e637e3bd9d15fd5fa414d6a51f"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/signed-capabilities.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f697c53b6af652b15af7674dd0bf67d58a0b73508da11e12d2406619d69bcc18",
+      "size_bytes": 1201,
+      "git_blob": "c60e899e3b7d9d7c69af2985f80fc3c61f43b9c3"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/signed-extension-build.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "944d83412f03569a1952c6efd0942e1cd80cf8ef4daf16ae1f5a01c0ec4b06bc",
+      "size_bytes": 21923,
+      "git_blob": "7f097c5fe9bdc8a78ac892b3345dc0876fba0b50"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/smoke-direct-plc.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "da1e7d446ebd9e7703efd5497c5e4cab6eb6fd5561c74ba742abee439985e071",
+      "size_bytes": 545,
+      "git_blob": "3cfb366f7c7ed271cebb2efcdf728b0603349d93"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/smoke-sportmaster.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "fab3ffaeffdf6ac9602bcbe833d223f443d387d1d44bacb3d38c06ef7257a475",
+      "size_bytes": 560,
+      "git_blob": "07da45bd854de8a8cfe303c2e94d43c619ce2010"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/smoke-wcs-attached.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "138febf9cad5b5c6adc52c775893d249cd319b8e153b28cf48084685f0f2370b",
+      "size_bytes": 809,
+      "git_blob": "473eb318db1bd62159a506386acf5cb213a356a4"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/smoke-wcs-before.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "a3d3617f95ece8a17e2ee3bedf802a432d7918fce092d9ffde8776373b35f544",
+      "size_bytes": 780,
+      "git_blob": "8347bd6df2287b1afddce317dca815aae41aef65"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/smoke-wcs-to-plc.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "26a0e29079a11f7e9506ff4efa4f6cda6c021a97e2d27367f71a041aa100c87c",
+      "size_bytes": 545,
+      "git_blob": "01741e4bf69c222b9cae62e5ac685c85c01efe59"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/wpf-direct-plc.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0e0f8ace77b459920ddf55bd37e00ab6d48dda47e1bc4ff9ae598e0ebc007b7f",
+      "size_bytes": 3997,
+      "git_blob": "de259ad988a4d2f34b82e25d0d0494e796ec7498"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/logs/wpf-wcs-to-plc.log",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "da25754594ac90ee0a9ed0112c0bc5643e1fcd3ce102783868e63b12bdc0cbf0",
+      "size_bytes": 4652,
+      "git_blob": "02e600030a8c850ae0ec61d8dd57df5c7bbd980d"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/migration-custody.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "cedb98010693fe8ce39c5cfbc771798c7bb396075959f7ff47de82cc62c43b29",
+      "size_bytes": 427,
+      "git_blob": "a24ed152998ecca849241d2a24053c99aa9eadc5"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/smoke-direct-plc.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "bcdf699c254167a5562321417428473a5d32ca17db5b3d54b3462dcc23d4bea9",
+      "size_bytes": 601,
+      "git_blob": "1c63506a45bf14f1b1f8add866aa3423561b96f2"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/smoke-sportmaster.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "14f4a78fe5cc4db81fca297f11a880dbca7874d4794d72b83200a86b4347a6a9",
+      "size_bytes": 616,
+      "git_blob": "0dd265e3026be7123688d238ee123e8d37e542db"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/smoke-wcs-attached.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "486b9f92c12a3f8ecdd06fc8e6560c178e22ceb2b3dfeb9752949cfdb9c9a333",
+      "size_bytes": 897,
+      "git_blob": "e586749ab8e63898223ad4f24f52d97b08b513cb"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/smoke-wcs-before.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d8edc36bafd7daaced564f18b0d78f95ab06194a1e2c091509612db1ac2a1bc7",
+      "size_bytes": 868,
+      "git_blob": "28263301efc842c28103bcb046046ee19a23fa77"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/smoke-wcs-to-plc.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "1a94a6b06373e9dde44d650d1b20e5ab407f00bf7895df58260789f78e8e795c",
+      "size_bytes": 601,
+      "git_blob": "4a5d4d7c23b0d2a02f56ccbb15fd1c173fda5e89"
     },
     {
       "path": "docs/runtime/evidence/application-capability-19/README.md",
@@ -13274,9 +13901,9 @@
     },
     {
       "path": "docs/runtime/operations.md",
-      "sha256": "976f339159d830d84f7ef562558eacc5fa273c39ae5490eff2d07bdf03ea4545",
-      "size_bytes": 11905,
-      "git_blob": "2bfd1c448d9ef944520922bc0811ceb6c25e142a",
+      "sha256": "e8939c49ad2b8bedc8d2f4cf3d53b2f0cde9445bedb46c61d804df624e947781",
+      "size_bytes": 12114,
+      "git_blob": "f4d5ec2a8547db6f9b5ab4419489a30143c0d52e",
       "version": "application-capability-19",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
@@ -14483,6 +15110,17 @@
       "git_blob": "b18904ae31ddfcec6f7885e2e7b811ed099a0072"
     },
     {
+      "path": "docs/work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "953c949774ecf7d64d0d0f2696048aa8f58489202cbb37d1ed7531f5bb920928",
+      "size_bytes": 1777,
+      "git_blob": "e06a4d8a9bbc16f00e870209206f6bddb4a007e6"
+    },
+    {
       "path": "docs/work-packages/WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19.md",
       "version": "application-capability-19",
       "status": "current_navigation_or_verification",
@@ -14783,9 +15421,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "8c90e4fa8b5d53a0fb7331263491f0bdfa6d2725d27f16ad11c248cb8218ebce",
+      "sha256": "c84e4d175b82b31492bbc842202f560550dd9116a297e6175fd74707e1b02fc4",
       "size_bytes": 207,
-      "git_blob": "4a46de136c49127038df3a0fa3aa5223fb173bb8"
+      "git_blob": "d54712891969dd99c4e6249771ffe43eae3dff64"
     },
     {
       "path": "examples/BarcodeExtension/modules.json",
@@ -14871,9 +15509,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "effe32cddb83a0a322f164a0f6de655bd66cf57c134891acbb21e8ec4a40a996",
+      "sha256": "8262060c72dd986c809e34d1fa97419bb76252fa76a91292a57025e36eecb07e",
       "size_bytes": 211,
-      "git_blob": "9c5504a4ecfee9ac0699449ff6892dd8672b34ea"
+      "git_blob": "c9975497cc2f3c1abae63c9e01735a74ee831ef7"
     },
     {
       "path": "examples/IntegrationExtension/modules.json",
@@ -14984,9 +15622,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "e7e05a1a221c2e6a781b9f65f2d86b772e75e5726864ab6c62190ee67d93f963",
+      "sha256": "508bbe294e3a73533d34836e99b19138a8b1dedae9b15c7e71b47c157357bba3",
       "size_bytes": 219,
-      "git_blob": "9a65787cb041ee3e95b831c2c3faa12ea13eb449",
+      "git_blob": "fd5e5c0190738498a9404123bf03dbe57f59ae76",
       "previous_git_blob": "506f835f3946d73c56c9f1a486b64f34837f5119"
     },
     {
@@ -15203,9 +15841,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "06c05ca1298ed839dbc6a3c158ef8b0d76c4e6df4e9400a71745402348ca0362",
-      "size_bytes": 2625,
-      "git_blob": "460e0ed0ec92cf65747da99e460da20d0a04bf45",
+      "sha256": "25f34973cdc8007ea8d4bcfce84d592eb59e321e75d8cf28fdf11b8a68026f0f",
+      "size_bytes": 2770,
+      "git_blob": "94f73f258e545a3fff99dda8b716f74109a073c7",
       "previous_git_blob": "0058dccea46049f016ee6f8abd40ae1f26e2a2b1"
     },
     {
@@ -15238,9 +15876,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "83ef3cc269099c94af9cbd7e708934145578f0f704a940d1ad1528f7f57a9e36",
-      "size_bytes": 12451,
-      "git_blob": "b552af72f476b5c7a2bdf7b0289e50d0b683facc",
+      "sha256": "c9ce890d0dba16ed6903a8d7a659fa10ba9fd7914d5002c01452969e7f6c3144",
+      "size_bytes": 14231,
+      "git_blob": "fde365a11b42194a09132a7643c9afdb61ee4bc2",
       "previous_git_blob": "8fd217169b8e75890e16440b0c36a6ae3a8d6eeb"
     },
     {
@@ -15421,9 +16059,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "0bdda97e0e981f2f4cdd9e1a8feb28cb36a83909f54635253e13062174453c90",
+      "sha256": "8a27b832bd8f222d5e39e4bbcb43de44d54aff9e2e310b63a1b8cd951dc6e153",
       "size_bytes": 187,
-      "git_blob": "a497ff8e7ea0188ea08d30bc5cceb6dc16269289",
+      "git_blob": "3fdbcc64740f26f9c694d2c22c8cc8c844c83bf7",
       "previous_git_blob": "f25ab42340afcea98589f6c3b1a14cada8ef706c"
     },
     {
@@ -15433,9 +16071,9 @@
       "purpose": "Authorized general site capability implementation, public baseline custody or synthetic verification",
       "source": "WP-IPC-SITE-CAPABILITIES-18 explicit user scope; no customer source, SDK or production data",
       "storage_scope": "public_repository",
-      "sha256": "e625803b1cfe6032b36d0d6ad46ebd3e710d359f7059a07c47b97a31ed5a0d92",
-      "size_bytes": 991,
-      "git_blob": "8f93da32f13f6575c29153fa7cc41f9bd4bdf305",
+      "sha256": "6f80c932611ab1a3b3c00650deaa1e7882ea69df8c758ed935a91a67dcc1527e",
+      "size_bytes": 1033,
+      "git_blob": "e1a5be98bdf3baf51ddf518d49e33fa8866160ae",
       "previous_git_blob": "291b933a6eb2561d9c63ce4f8f4a7e904c90c10c"
     },
     {
@@ -15445,10 +16083,21 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "9f04b1a19cff7cf24cd2b6cc2138b623ea6463f1bd35dc16659122a6da8332e0",
-      "size_bytes": 6190,
-      "git_blob": "caebe92881b06683b8c5c07dfa65b78a47a3365d",
+      "sha256": "f418fa60523d81cd99f370a9e66994228c3e71852130a2969f2ec912cec9ef65",
+      "size_bytes": 6965,
+      "git_blob": "f7b5b333a9b2690910787d4ff3e5d5fbbd9c40fa",
       "previous_git_blob": "20231c91dbcb2a073363a7fc7782cc00a0950a7b"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/ParcelTopology.cs",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "27cf493a8b5539fe6246a06f06a9111365eff970ba7bd33b30f75cef50124f03",
+      "size_bytes": 2199,
+      "git_blob": "46b8bb7dae899f9528b5b989953d187b014242e6"
     },
     {
       "path": "src/Ipc.Application.Contracts/packages.direct-plc.lock.json",
@@ -15739,9 +16388,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "56634db3fb2fcc6686ba4ff414a1800831bcb12664239800445b87b17e32ac62",
-      "size_bytes": 10372,
-      "git_blob": "14b1d7b6c90349eeddc375be61ee40a01a6f9291",
+      "sha256": "fce1d70c18c0b84dc55577213417445ac3aa383288160384e51cf61815e45357",
+      "size_bytes": 10952,
+      "git_blob": "6b854fe9ae0f94221cba57e5269a66d6ed970c93",
       "previous_git_blob": "0fea57cc3d8bf097e155be308c62c57b2be87660"
     },
     {
@@ -15932,9 +16581,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "c7ad59d1e373abc4e4508abbe48a213cd451610866a0a85a9279ef58f776cbb9",
-      "size_bytes": 7025,
-      "git_blob": "155ff8de75960c68b5a32de7231f72c7d4468189",
+      "sha256": "4781120bad7dfd8cdf74f9729883ca7454085c2aa8fc6aaaa94cca2736753533",
+      "size_bytes": 11433,
+      "git_blob": "1d6a2b13aef24efdd6e47705f27e3e3320a698fd",
       "previous_git_blob": "4dbcefd41083111f48a69e835ad397b3860f7dbb"
     },
     {
@@ -15966,9 +16615,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "1386e2ad968147473d302fd8cffce19d2c4373388e68f6185ee33b3d500ff2be",
-      "size_bytes": 16092,
-      "git_blob": "75d48bccc2b6af8496870871de67d28634dfa2b5",
+      "sha256": "83a260e1829d42b902373730b4126fef565e20dca7d61060ac628bf008425fe1",
+      "size_bytes": 19167,
+      "git_blob": "40637cb23360dec81650b8a70eec171a8eaa4aa2",
       "previous_git_blob": "f5999e17dc64db282aa9aa99741203407317f0d7"
     },
     {
@@ -15978,9 +16627,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "7621d76782d0462ebbfee126fd1d2e76f237f304365e1c0458c4ffce0226a302",
-      "size_bytes": 5490,
-      "git_blob": "c8796538e6db4a2394a37f014d475cd126ce2c2e",
+      "sha256": "fc30132434d0e6abf2034f4396cfcf6e72cf802ba2d3c3039e41e2d52b80d6c4",
+      "size_bytes": 6887,
+      "git_blob": "92d45dc8a5806a7bb181fcc728a9e674044b8410",
       "previous_git_blob": "cec33200d82be5247470f5e79fb8e7498571efa8"
     },
     {
@@ -15990,9 +16639,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "5c7339af99c160a05071bc6f7e33180bd8555ae681f1134d10fbe93abb68cde7",
-      "size_bytes": 1576,
-      "git_blob": "f9a5f9f882d6f56890e1b9e0072a843ed864631e"
+      "sha256": "874ae883aa03f7b853b6e5e2a466a361c3233dd1d9599e14f2ba3d3c6a68b623",
+      "size_bytes": 2337,
+      "git_blob": "dc67797ffee1d23c7ba9fdf180b76c2f52687e38"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelImages.cs",
@@ -16001,9 +16650,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "5ebe0e6f38c6f84ccfa66e2f01554a4e9a789e764b1fda31128cbd74177b9b34",
-      "size_bytes": 10294,
-      "git_blob": "cb7a4f491248cb8ebba083fa049b7eb8cb7468f7",
+      "sha256": "4be34919bf283318f97dd1c004f1e32757e95954fad1f9d3eb1463e77d8371f1",
+      "size_bytes": 10790,
+      "git_blob": "94f8a94cef636d71e4f90fe8326452b680fb7fdb",
       "previous_git_blob": "75d397632f4dd9966eedae2fbb40bfbdf0bed02b"
     },
     {
@@ -16037,9 +16686,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "d7498ae4117b27072fe2be9a338be5fa0e6528bb8bc00296086b71e500d9229d",
-      "size_bytes": 13024,
-      "git_blob": "bef56fc37fd100d1afe27c206e5dc18376b782f2",
+      "sha256": "b4aeb512fa7132604699548fe83efe4906b41efdb6b81e0feef4670d94055fb4",
+      "size_bytes": 13569,
+      "git_blob": "b8402ba545fff6ee3d76b473866f5c1f1191055e",
       "previous_git_blob": "b2110e8e9a4e62271cfe577ce4da1d19e49c2aaa"
     },
     {
@@ -16049,9 +16698,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "692f80632e020c95ebd0bf668c619fd69be3a1a32662bee950bec25866bbb291",
-      "size_bytes": 17186,
-      "git_blob": "59cba674919b19e99f20ec04fa04b0e47dde107c",
+      "sha256": "2afae5bf8e70628ad79ae34fa72b3fda77b6f64969e7fd61fcc83b5559ca4e21",
+      "size_bytes": 21864,
+      "git_blob": "b97d27c0448e51678eb0fbce4eba33f32c4bf86a",
       "previous_git_blob": "eb07c177c7f05e363ff0c7321bf0d27901577573"
     },
     {
@@ -16061,9 +16710,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "258382aca588cf36d0911beb56a360fcf04ccde3c357f37a36968afa382044bb",
-      "size_bytes": 13336,
-      "git_blob": "32ccba3baba818ffee40d8245206681479705ac5",
+      "sha256": "df5b7ccd8c428e62fd01829c3a827df0946b37a25ba2e1b73afb937505c6ecdd",
+      "size_bytes": 13347,
+      "git_blob": "119361148252905de13ce4f137f906c4223c9cbd",
       "previous_git_blob": "787d6f84c7af2ede8979e50ba2203bb63912ef4b"
     },
     {
@@ -16242,9 +16891,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "36c1b4842e8244e84b10ec1cc173fb7e4b551ba6c3ca43bd832d4596bd4e89f9",
-      "size_bytes": 1854,
-      "git_blob": "fdf806b46d81340839772aa1e0d5e014233260b5",
+      "sha256": "888584a750d1c5fc1cd068a6ec65fbf9603e49d35c5e00f3affc3259e972754f",
+      "size_bytes": 1919,
+      "git_blob": "a831e55f1c8a82859a0bef87c5a627f310f374eb",
       "previous_git_blob": "4501eb8fef9a0d084a984e1a40e41e0a62f168f4"
     },
     {
@@ -17134,9 +17783,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "6a339cd990b7e4b3962d8d0e62f06ceb92d523ba0f1d2d2af52a17875c3ef1e5",
-      "size_bytes": 27064,
-      "git_blob": "77340a4e22cbbd572e60c40ff4523d0347427fd0",
+      "sha256": "25930ebeaaecdf0ecc47b34eacbd5825987dac2f32eea5180c881db1b105367b",
+      "size_bytes": 30496,
+      "git_blob": "f52bc8c1520d2fc02e294770ddbde966cb3d5d3a",
       "previous_git_blob": "be626120f23830bb97c144699e76f4ca5d4e380b"
     },
     {
@@ -17146,9 +17795,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "20a51a5eaf3e10e2e7b932d45cc7c8148c3012b356bd21169012a54e4176fa22",
-      "size_bytes": 6220,
-      "git_blob": "f14c843073a24d361964a580b07ace31b68b07ca",
+      "sha256": "c5e882b481d2f4be2e8e73e0b892741f3697d357ef436e0b5088bba9968d5940",
+      "size_bytes": 6810,
+      "git_blob": "5fca5ea5bd2949c36e23d2d9aff0bd30c6c746f8",
       "previous_git_blob": "eb4130217114c4b3dbfbe1826190df752bc6ae56"
     },
     {
@@ -17601,9 +18250,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "33dd49f9f0e4a01c93fbfd0e8db71727b1c6d2305c368e18a0bc9fc8d7eb3607",
-      "size_bytes": 5615,
-      "git_blob": "8fe2c0b8294a3b60239ef84173291c039f5f892a"
+      "sha256": "0bc20e9f8b7dd4f8ac9d6669f84c7565fb148eca635a4b5dbbabcfecf31dd520",
+      "size_bytes": 7512,
+      "git_blob": "185566c2a0bc048e704a1c0d7b2c6f6ba7eb854a"
     },
     {
       "path": "src/Ipc.Drivers/ParcelDevices.cs",
@@ -17612,9 +18261,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "4334b9592becab015564b4efb7856682ea9d56e027045db23aac9906fb42f1a5",
-      "size_bytes": 2727,
-      "git_blob": "b9761b5e1ab072a8564656ab213fd5d5f0227e30",
+      "sha256": "d34a08227ad4c5927b342d67e02316f6e45c84379675c67c90c2f41516ebcef7",
+      "size_bytes": 3037,
+      "git_blob": "7debe2252011d310b4ffc6bbd5fffb1d98cacfbf",
       "previous_git_blob": "cdce8192b562971568983a3e4557c1419891da30"
     },
     {
@@ -18103,9 +18752,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "84b443034400d1398362c157491c3b80862d2f288a5eec8a2c6d329e8aa2eb44",
-      "size_bytes": 1930,
-      "git_blob": "0959836898357d2ec8ee11ad59465cf4d1a8df01",
+      "sha256": "ae5a33df8f67344116f8525074e03539e6b9eff3e901fed7da235181b60a7fd6",
+      "size_bytes": 2223,
+      "git_blob": "a28ae3db1e46b7b8cb1b96b7cf1f0c870324f986",
       "previous_git_blob": "e9b2756746089d5468cfac7fe0e0bb6f2cbb9b77"
     },
     {
@@ -18291,6 +18940,17 @@
       "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "src/Ipc.Platform/ObservationSession.cs",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "302d28b512894f3509af0f23fec8880c6dd71a9d6c8c16fd07ad70157216adbe",
+      "size_bytes": 1778,
+      "git_blob": "35ce0948aa7607004d08f5b10c9cb24679cf60c6"
     },
     {
       "path": "src/Ipc.Platform/PackageUseLease.cs",
@@ -18625,9 +19285,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "dda1b962ed380b5591dd458d5e626fb2bcd427770fbc0b8e38695940b31faf80",
-      "size_bytes": 12390,
-      "git_blob": "408c6b0ee80c8312b49d5c2de813ab4c341854eb",
+      "sha256": "013e19642c91e9e88cbd6345ea5f8486304b5c3e532e0afe0b7a4a18c5ba74e4",
+      "size_bytes": 12424,
+      "git_blob": "2de84b1820bcd0c473017aebd373deb35c4b4b57",
       "previous_git_blob": "6f37ba9c384abcb20a16823b20b208827a378dc0"
     },
     {
@@ -18730,15 +19390,26 @@
       "git_blob": "fc5df22665b11329e079729645b95b84e0c71285"
     },
     {
+      "path": "tests/Ipc.Application.Verification/ApplicationArchitecture.cs",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6a746811fd92f666bf7ac2699c62cb64e26366f32c198dad0f51acee03002956",
+      "size_bytes": 30877,
+      "git_blob": "65d14ab3f9f5cefb33f8e6b81c0730c50c9c8d81"
+    },
+    {
       "path": "tests/Ipc.Application.Verification/BackupHealthRecovery.cs",
       "version": "BACKUP-HEALTH-RECOVERY",
       "status": "reference_implementation_or_evidence_not_site_acceptance",
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "508e1833a9fc4538167dbb87e885356b97f932fffae3635870f5a0d0df86cffb",
-      "size_bytes": 33022,
-      "git_blob": "49b0589b5c137ad2c79a07b87baa814b0517e66f"
+      "sha256": "5ba7889bb4d8d9db79a1b08875215865eb27f65134a16099d2197b360272fe17",
+      "size_bytes": 33059,
+      "git_blob": "811f39e2c3b4d3806aa799452d2666000e4e20df"
     },
     {
       "path": "tests/Ipc.Application.Verification/CapabilityClosure.cs",
@@ -18747,9 +19418,9 @@
       "purpose": "Authorized generic implementation, reference evidence or preserved pre-19 source bytes",
       "source": "WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19 explicit user authorization; no customer raw source or private credentials",
       "storage_scope": "public_repository",
-      "sha256": "b9db78f976154247ea79ad12a180d3f98248201429a48acb4933fa8c9a82114e",
-      "size_bytes": 22100,
-      "git_blob": "9b08599b27f8bfac6f7a863623f3c77e92b60ebf"
+      "sha256": "2606988a06317251a949cf2acc053b70b8c40b650eb67c62280129e4432c99ec",
+      "size_bytes": 22144,
+      "git_blob": "c0cb1e953baf0625a72ae21d2da95df798757140"
     },
     {
       "path": "tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj",
@@ -18770,9 +19441,9 @@
       "purpose": "Authorized general site capability implementation, public baseline custody or synthetic verification",
       "source": "WP-IPC-SITE-CAPABILITIES-18 explicit user scope; no customer source, SDK or production data",
       "storage_scope": "public_repository",
-      "sha256": "1d6fb26c1b09dc58aeeee209fddef70b2b409cf81fdfbeecbdcf64d81e0bcc17",
-      "size_bytes": 18972,
-      "git_blob": "59d39bb7b958ebf50512b78a5df63cb02258255d",
+      "sha256": "6d0b0f4e8681dda021b4173d1d2ed5112915cea0d9c4fd1ed4ca3625521f9707",
+      "size_bytes": 19018,
+      "git_blob": "dc18c5187c5e3b302942a773b23789460249c5bf",
       "previous_git_blob": "676f5177d5facaa3368f8ffa668ddd7a8af44d77"
     },
     {
@@ -18782,9 +19453,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "b7e9a77a7349b1c42529a5f601a6ec55ae5efea8c88b763b0f16291dba9eddc9",
-      "size_bytes": 13291,
-      "git_blob": "88757f1fe6c84e01c61ab7c904e05c46852aebce",
+      "sha256": "3a945e02fc480ef71721b2d4c9c353d56aa84ae38351541aec9a0ca0dc2c6e08",
+      "size_bytes": 13448,
+      "git_blob": "eddcee09bcdf62c31d6f08199c53ca455ecfeece",
       "previous_git_blob": "e479415f5dc73b9f48b8ae4f402faa8f4ae18604"
     },
     {
@@ -18805,9 +19476,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "7f8790393235a988e155ce8351ec2dde918ac7fdee6584e1ffc1cf6b3607814d",
-      "size_bytes": 18928,
-      "git_blob": "372d340b25241bd0319d095e03308b695cfa2005",
+      "sha256": "fa8aabb49674bec6ae92fc02a377292c8d177abfbcb1099b7cad721be723583b",
+      "size_bytes": 19013,
+      "git_blob": "bc7c6d50c7c33fc3e16a9d597c953141ac4039b0",
       "previous_git_blob": "8c012d89786d15be29175662355c9f7412c5933d"
     },
     {
@@ -18855,6 +19526,39 @@
       "sha256": "c3a26a14634dbcd3598241fae24a895dd21b8e2ba7a070ae0fde4a86da9f2ea8",
       "size_bytes": 192,
       "git_blob": "3f76fd39ef88fc57754d3f3bcc86dce67327d81a"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/fixtures/direct-plc-schema2-optional.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "b719c6071a1ff45a3be5f394c02f85e1e1bfa42110bb4edb590a810043f380b1",
+      "size_bytes": 2281,
+      "git_blob": "7278976c2f95842f8267c933cc5cae7ec11fcbb9"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/fixtures/sportmaster-schema2-optional.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ad1f77f29a063187323020332af466a0292737d2e313da10b6233574bd0e34b5",
+      "size_bytes": 2320,
+      "git_blob": "1ead2a514d935016d9a6d169eb642e56921faa31"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/fixtures/wcs-to-plc-schema2-optional.json",
+      "version": "application-architecture-22",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
+      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "5ebe9e4f9472330b02fab3b492c32a7c484b47ab2ae3117f0f152755527336a0",
+      "size_bytes": 2611,
+      "git_blob": "658c412cba8fb9dc425ab8b2b3e65fb5154cec0d"
     },
     {
       "path": "tests/Ipc.Application.Verification/packages.lock.json",

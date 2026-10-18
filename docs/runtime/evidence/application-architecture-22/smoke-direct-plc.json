@@ -1,0 +1,22 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+  "Application": "direct-plc",
+  "Target": "portable",
+  "Checks": [
+    "candidate file hashes",
+    "actual selected assembly startup",
+    "camera-to-final-reference-chain",
+    "persistent original phases on restart",
+    "orderly stop",
+    "selected topology"
+  ],
+  "AttachedUpload": false,
+  "ExternalPeerProcess": false,
+  "OptionalFeatures": false,
+  "OptionalChecks": [],
+  "State": "PlcAccepted",
+  "OperationId": "68881eccf85644a6ba2a31204945f2d4",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED"
+}

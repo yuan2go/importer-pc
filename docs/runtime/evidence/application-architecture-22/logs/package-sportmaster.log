@@ -1,0 +1,25 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 1.41 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 1.41 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 1.41 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 1.41 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Components/Ipc.Components.csproj (用时 1.41 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 1.44 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 1.41 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 1.41 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 6 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 16 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 26 毫秒)。
+  Ipc.Platform -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/sportmaster-portable/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/sportmaster-portable/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/sportmaster-portable/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/sportmaster-portable/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/sportmaster-portable/build-intermediates/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/sportmaster-portable/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/sportmaster-portable/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/sportmaster-portable/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/sportmaster-portable/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/sportmaster-portable/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/sportmaster-portable/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/sportmaster-portable/app/
+{"Package": "/Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/sportmaster-portable.zip", "Sha256": "504609fae1daa723db05f5fd1fdd5fb9a52b45bdbae98a9eff6d42637842ad40", "SourceCommit": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7", "Application": "sportmaster", "Target": "portable"}

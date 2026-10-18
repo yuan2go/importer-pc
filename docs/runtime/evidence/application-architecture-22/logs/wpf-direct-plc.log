@@ -1,0 +1,31 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 252 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 245 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 245 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Components/Ipc.Components.csproj (用时 252 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.DirectPlc.Desktop/Ipc.Application.DirectPlc.Desktop.csproj (用时 252 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 245 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 245 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 245 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 9 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 12 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 9 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 16 毫秒)。
+  Ipc.Platform -> /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.Contracts/bin/Debug/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Platform.Storage/bin/Debug/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.ParcelFlow/bin/Debug/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.DirectPlc/bin/Debug/net10.0/Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Reference.Protocol/bin/Debug/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Components/bin/Debug/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Drivers/bin/Debug/net10.0/Ipc.Drivers.dll
+  Ipc.Assembly -> /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Assembly/bin/Debug/net10.0/Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.ParcelFlow.Desktop/bin/Debug/net10.0-windows/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.DirectPlc.Desktop -> /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.DirectPlc.Desktop/bin/Debug/net10.0-windows/Ipc.Application.DirectPlc.Desktop.dll
+  Ipc.Desktop -> /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:05.14

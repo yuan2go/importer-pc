@@ -1,0 +1,21 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 1.26 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 1.26 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 1.26 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 1.26 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 1.27 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Components/Ipc.Components.csproj (用时 1.26 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 1.26 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 1.26 秒)。
+  已还原 /Users/yuan/.codex/worktrees/application-architecture-22/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 5 毫秒)。
+  Ipc.Platform -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/direct-plc-portable/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/direct-plc-portable/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/direct-plc-portable/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/direct-plc-portable/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/direct-plc-portable/build-intermediates/bin/Ipc.Application.DirectPlc/release/Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/direct-plc-portable/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/direct-plc-portable/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/direct-plc-portable/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Assembly -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/direct-plc-portable/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> /Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/direct-plc-portable/app/
+{"Package": "/Users/yuan/.codex/artifacts/ipc-application-architecture-22-8981d54/direct-plc-portable.zip", "Sha256": "4ad8dc55e04cfe58b67d5a73588b8c8cd67175f684b75963c7d97a4987432556", "SourceCommit": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7", "Application": "direct-plc", "Target": "portable"}

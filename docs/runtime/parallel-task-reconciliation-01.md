@@ -39,3 +39,7 @@
 ## 最终验证与交付
 
 待组合实现和验证后，在此登记固定源码、要求—位置—来源—结果、每PR实际合并身份及统计截止点。源码核实、自动化、参考进程、Windows实机和真实设备现场分别列明；本次调查不是现场PASS。
+
+## PR32组合验证
+
+代码`271e8d2`继承起始main和PR32。LegacyReceiptRecovery保留PR31 OutcomeReconciled归档分支，Awaiting本地/外查统一传Repository做永久ID核对。构建0警告/0错误；恢复P2、升级冲突及receipt-custody三组exit0，见[准确命令及指纹](evidence/parallel-task-reconciliation-01/pr32-validation.json)。原FAIL日志原字节含历史行尾空白，未为格式检查改写原件。

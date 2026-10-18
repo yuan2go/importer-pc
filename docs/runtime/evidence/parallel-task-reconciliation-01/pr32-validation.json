@@ -1,0 +1,28 @@
+{
+  "CodeCommit": "271e8d2e28844e4f8500113e5b716655466da07d",
+  "Tests": [
+    {
+      "Command": "pr32-combined-build.log",
+      "ExitCode": 0,
+      "Sha256": "ff0c449ff271f41712d7def65da0606cc5da2e83279dba48f5853bce4a251f7d"
+    },
+    {
+      "Command": "pr32-combined--parcel-recovery-p2.log",
+      "ExitCode": 0,
+      "Sha256": "5259129ea8e80a7a0dc6f654d455467a74f5f5870ff3f5d162ba80108a496705"
+    },
+    {
+      "Command": "pr32-combined--upgrade-conflict-closure.log",
+      "ExitCode": 0,
+      "Sha256": "ec5beb84c5078c349ae7bd00d94c99c4f22a3509342c2575be14985a1bf9347b"
+    },
+    {
+      "Command": "pr32-combined--receipt-custody.log",
+      "ExitCode": 0,
+      "Sha256": "4ca24fca58a6c66b689e1f3eb74fb7247f902ae241ddbd5243aeae90587466f6"
+    }
+  ],
+  "Scope": "PR31 preflight plus PR32 permanent identity/persistent Query and deterministic custody; reference only",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED"
+}

@@ -36,4 +36,4 @@ Files: tests/Ipc.Application.Verification/SportmasterRcs.cs, Program.cs, csproj;
 - [x] Add `--sportmaster-rcs` covering real loopback HTTP through application, three business replies, malformed/correlated/HTTP failure, timeout, parallel positions, restart no retry, frozen request/response and DB compatibility.
 - [x] Build necessary host/WPF, commit source, use frozen host to build/check/sign extension, verify signed application assembly, portable package and extraction startup.
 - [x] Record exact source/package hashes and PASS/NOT_RUN/BLOCKED; update navigation/manifest and commit source.
-- [ ] Push final branch and create main PR; do not merge.
+- [x] Push final branch and create main PR #30; do not merge.

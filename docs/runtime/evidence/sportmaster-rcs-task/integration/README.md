@@ -11,3 +11,5 @@
 源main baac260的全量资料检查为268项历史问题：265项PPTX媒体类型、2项来源元数据、1项manifest checksum。当前清单重建修复checksum；历史资产不改，新材料使用相对路径公开投影，原绝对路径JSON只在Git外按SHA保管，验证器规则未放松。当前267项历史资产问题继续FAIL，不宣称全量资料通过。
 
 合并时main原始initial-probes/original-output.log的一处尾空白原字节保留；只对本分支相对整合main的修改执行diff检查。旧日志不为满足格式检查被重写。
+
+已创建并读回[main PR #30](https://github.com/yuan2go/importer-pc/pull/30)，OPEN/CLEAN/MERGEABLE，未合并。[公开回执](publication.json)绑定创建时head与固定运行源码；后续回执提交不改变9050bdd运行/包身份。

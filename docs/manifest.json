@@ -19706,9 +19706,9 @@
       "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
       "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
       "storage_scope": "public_repository",
-      "sha256": "37c4f3c6bf1fb200ffb8f5c0af2557bf88e863221f16b41ec6dec1486cb012e2",
-      "size_bytes": 2039,
-      "git_blob": "821d6df67656eb8b8d8f9984656238c0f5d4f63a"
+      "sha256": "ad94fe68664011073d142d50ffc9ac9709f40478183bd4623ddfb61562bfdf27",
+      "size_bytes": 2286,
+      "git_blob": "a9bdab56a28906595fc72d1c9c9cb96a0701d083"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/aa22.log",
@@ -19896,6 +19896,17 @@
       "sha256": "37f29fc84e77e35d29dc0ceab24c6752a42065ac49a349780039fee74d28c733",
       "size_bytes": 560,
       "git_blob": "e63a99da876aaf9be403f98f178fecb7ceb0d417"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/publication.json",
+      "version": "rcs-task-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
+      "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
+      "storage_scope": "public_repository",
+      "sha256": "1048a31d3abe62a7cdeec85269b684a5bfb7f3d3b3eccad7a75911798b6d2e0b",
+      "size_bytes": 795,
+      "git_blob": "2463a2984cca0f10a51f2dd853e75e7512b44774"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-rcs-task/integration/rcs.log",
@@ -21757,9 +21768,9 @@
       "purpose": "Sportmaster RCS component, synthetic verification, operations or preserved custody",
       "source": "WP-IPC-SPORTMASTER-RCS-TASK-01 explicit user authorization; original customer examples/assets excluded",
       "storage_scope": "public_repository",
-      "sha256": "f995281baa6ddd2857a4a1bc1994485938c3f00bf3e50b46564cc517e3aa80f7",
-      "size_bytes": 3349,
-      "git_blob": "69b7879e930fb9042498c8eb5630f8992e3f4560"
+      "sha256": "175d60b9a77ad259f358bc63f23c20c7c9509983d2ccde9b98e5df889e9a1d9d",
+      "size_bytes": 3353,
+      "git_blob": "a8d0b565df66522196ee63864f96e90bae825c4b"
     },
     {
       "path": "docs/ui/STATUS.md",

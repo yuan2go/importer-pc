@@ -1,6 +1,6 @@
 # 并发任务整合报告
 
-工作包[WP-IPC-PARALLEL-TASK-RECONCILIATION-01](../work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-01.md)。开工2026-10-19 01:08:15 +08:00，main **713f23d7c39743762adb884fdffa18745cad08f8**。本节为代码修改前的调查/裁决，最终SHA、验证和统计在交付时补入；当前不宣称整合完成。
+工作包[WP-IPC-PARALLEL-TASK-RECONCILIATION-01](../work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-01.md)。开工2026-10-19 01:08:15 +08:00，main **713f23d7c39743762adb884fdffa18745cad08f8**。调查、冲突修复、最终组合验证与4个源PR实际合并完成；本报告由整合PR交付。固定运行源码21e6cae3c9e20f34fc9429812e48e7f95e455fb9，Git统计截止点见文末，不用候选或启用auto-merge代替实际合并状态。
 
 ## 成果保护与调查证据
 
@@ -109,3 +109,20 @@ CLI夹具原两个失败为合成HTTP对端误读请求字段barcode（实际请
 源码、配置、脚本和原报告均进入同一Git历史，不创建第二套框架/配置/扩展平台。原D/RV编号与批准状态不倒写。发布参考媒介不是Production交付批准。
 
 收尾第一次public archive为268：新增WPF命令摘要含本机绝对路径；保留原回执/SHA，公开副本改为明确变量的命令模板，未放宽校验器。修正后差集为起始267、当前267、新增0/删除0；[差集回执](evidence/parallel-task-reconciliation-01/archive-error-delta.json)。历史FAIL保持，新增入口与清单没有新增错误。
+
+## 实际合并与交付统计截止点
+
+依赖顺序为PR32（永久恢复，先继承PR31）→PR30（SQL6/RCS）→PR29（版本/证据）→PR27（UI与最终组合）。每次按最新main核对并追加源分支修复，匹配实际HEAD串行merge，未force、squash、rebase、关闭或supersede任何源PR。开始4个Open均非Draft，现4个均GitHub **MERGED**，源码祖先关系和产物均已核实。原评审形成时提交保持；PR27两项、PR29维护门禁、PR30数字ID问题的对应修复和原RED见C08/证据，不把旧评论视为已验当前版本。main未保护、rulesets空、无必需检查/批准要求，当前实际评审为COMMENTED，合并没有绕过门禁。
+
+|PR|原任务末HEAD|合并前实际HEAD|GitHub实际merge|
+|---|---|---|---|
+|[32](https://github.com/yuan2go/importer-pc/pull/32)|0aac91922dfd04539f6015f7bc8dbf820a23d782|1b68ce5b10a534781bd567c6a7a172317e16a3e5|845df3648b29b22d8178d3d5c98d8ca11ed8583b|
+|[30](https://github.com/yuan2go/importer-pc/pull/30)|822ce92f01e01487fdf037eca9219a601250d458|32e45e3961a5de27d0ea59b313b67e0708b2b0be|8a93d9672f81e4bcf0664615f63c3a37ffa598b8|
+|[29](https://github.com/yuan2go/importer-pc/pull/29)|e0f5303ff80c48f1a7ecf6964916cb21c13a7327|5961c1f02fe7ecabe7a105a2f49cf854bd0a84a8|2a5376b12a149f85388f28b95d37ebb382923e98|
+|[27](https://github.com/yuan2go/importer-pc/pull/27)|a4ecfd1c2a687caca9d52f2cfc08ee4fce9ff91e|de93f85997dee6e65cbeb23c4750dedc466d98d4|d985df84db38acd59a2702b52392b22280c870d8|
+
+统计截止main **d985df84db38acd59a2702b52392b22280c870d8**，UTC 2026-10-18T17:53:30.127143+00:00；`git rev-list --count 713f23d7c39743762adb884fdffa18745cad08f8..d985df84db38acd59a2702b52392b22280c870d8` = **56**。其中纳入既有任务唯一38笔（初始PR27 e86d664之后作者补a4ecfd1也属既有任务），本任务新建18笔：内容10、合并8。按实际父节点数量分类，含冲突修复的双亲提交仍算merge；不把各分支ahead相加。原4个任务HEAD均为最终main祖先，无squash/rebase映射损失。完整唯一SHA集合见[统计回执](evidence/parallel-task-reconciliation-01/merge-statistics-cutoff.json)。本报告自身提交及本次整合PR的随后merge不在此截止集合，最终回复与整合PR正文会在最后实际merge后重新计算最终main和总数，避免自引用SHA。
+
+收尾复查6个任务均idle，原26树可访问，233份待保护文件SHA全同；本次额外隔离树为唯一写入点。4源PR合并后Open为0，无本次相关新增PR/作者新增写入遗漏；本报告随后创建唯一整合PR。原私有备份/refs bundle和原失败库继续可恢复，不删除共享工作树。
+
+[13份已发布参考资产/远端digest回读](evidence/parallel-task-reconciliation-01/published-artifacts.json)逐项与本地SHA/尺寸相同：[参考Release](https://github.com/yuan2go/importer-pc/releases/tag/reference-reconciliation-20261019-21e6cae)，包括5ZIP、3IPCX、3精确身份、ARTIFACTS和SHA256SUMS。当前[核心源码](../../src/Ipc.Application.ParcelFlow/ParcelRuntime.cs)、[统一文档入口](../INDEX.md)、[历史入口原件](../archive/pre-parallel-task-reconciliation-01/README.md)、[原PDF02](../reviews/architecture-quality-audit-02/WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02.pdf)、[原审计整合PDF](../reviews/audit-reconciliation-01/WP-IPC-AUDIT-RECONCILIATION-01_8cabf06d_20261017.pdf)、[原符合性PDF](../reviews/project-conformance-audit-01/WP-IPC-PROJECT-CONFORMANCE-AUDIT-01_8cabf06d_20261017.pdf)均保留。未发布私钥/trust、生产数据、SDK/字体、客户原稿或本机配置；下游需自有授权publisher/trust。

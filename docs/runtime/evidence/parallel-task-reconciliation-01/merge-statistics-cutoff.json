@@ -1,0 +1,395 @@
+{
+  "At": "2026-10-18T17:53:30.127143+00:00",
+  "StartMain": "713f23d7c39743762adb884fdffa18745cad08f8",
+  "CutoffMain": "d985df84db38acd59a2702b52392b22280c870d8",
+  "CodeSource": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+  "RangeCount": 56,
+  "ExistingTaskUnique": 38,
+  "NewUnique": 18,
+  "NewContent": 10,
+  "NewMerge": 8,
+  "InitialPRs": 4,
+  "InitialPRsMerged": 4,
+  "IntegrationPR": "This report commit and its future PR merge are outside this cutoff; final reply and PR receipt recompute after actual merge",
+  "NoSquashOrRebase": true,
+  "PRs": [
+    {
+      "headRefOid": "1b68ce5b10a534781bd567c6a7a172317e16a3e5",
+      "mergeCommit": {
+        "oid": "845df3648b29b22d8178d3d5c98d8ca11ed8583b"
+      },
+      "mergedAt": "2026-10-18T17:13:47Z",
+      "state": "MERGED",
+      "url": "https://github.com/yuan2go/importer-pc/pull/32",
+      "number": 32
+    },
+    {
+      "headRefOid": "32e45e3961a5de27d0ea59b313b67e0708b2b0be",
+      "mergeCommit": {
+        "oid": "8a93d9672f81e4bcf0664615f63c3a37ffa598b8"
+      },
+      "mergedAt": "2026-10-18T17:16:52Z",
+      "state": "MERGED",
+      "url": "https://github.com/yuan2go/importer-pc/pull/30",
+      "number": 30
+    },
+    {
+      "headRefOid": "5961c1f02fe7ecabe7a105a2f49cf854bd0a84a8",
+      "mergeCommit": {
+        "oid": "2a5376b12a149f85388f28b95d37ebb382923e98"
+      },
+      "mergedAt": "2026-10-18T17:20:57Z",
+      "state": "MERGED",
+      "url": "https://github.com/yuan2go/importer-pc/pull/29",
+      "number": 29
+    },
+    {
+      "headRefOid": "de93f85997dee6e65cbeb23c4750dedc466d98d4",
+      "mergeCommit": {
+        "oid": "d985df84db38acd59a2702b52392b22280c870d8"
+      },
+      "mergedAt": "2026-10-18T17:52:34Z",
+      "state": "MERGED",
+      "url": "https://github.com/yuan2go/importer-pc/pull/27",
+      "number": 27
+    }
+  ],
+  "Commits": [
+    {
+      "Sha": "925e9028a2e5a29ed1f404a5122d795cbb21e324",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: approve Sportmaster alternate UI scope and implementation plan"
+    },
+    {
+      "Sha": "b60a516e64bc2c653159e391014ecdff48e9376e",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "feat: add selectable native Sportmaster supply station UI"
+    },
+    {
+      "Sha": "911ed2433fc403a43189c00218e095dddbaff7a8",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "fix: describe uncertainty across original image stages"
+    },
+    {
+      "Sha": "36b16ad59a2eee5fe08c97677d5be5a06bef2911",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: define business version compatibility and evidence boundaries"
+    },
+    {
+      "Sha": "77db0f330ecfdc5fa4a4cb2592f9463908e81d88",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: preserve verified UI candidates before latest main integration"
+    },
+    {
+      "Sha": "f71ffc7b1a66c164730768142f046d0bae792b6a",
+      "Source": "existing-task",
+      "Kind": "merge",
+      "Subject": "merge: inherit current main contracts and adapt alternate UI navigation"
+    },
+    {
+      "Sha": "6f84b0b28ccabe3f7b06d18e80b8ee6ce84708d4",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: record approved Sportmaster RCS component design and execution plan"
+    },
+    {
+      "Sha": "8bdfaa9b9b6bedfdb0faab590416124765d5f7a9",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "feat: bind business versions and compatible providers to application releases"
+    },
+    {
+      "Sha": "fcc0581b0b699c897390935ba363fecdb263d6c7",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "test: retain signed business combination activation evidence"
+    },
+    {
+      "Sha": "07e3d8c3a6cbdb2da44cb675ec7767e938393192",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "fix: complete alternate UI guards against current main contracts"
+    },
+    {
+      "Sha": "deacd170d569162c9a3c8a9311c73540d71ff919",
+      "Source": "existing-task",
+      "Kind": "merge",
+      "Subject": "merge: inherit main PR23 and PR24 without weakening version checks"
+    },
+    {
+      "Sha": "a698651df32ca750a86845fb7f6246713d28e23d",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: record integrated UI candidates and scoped verification evidence"
+    },
+    {
+      "Sha": "7ed7862d4ab3a3f5bdcb88cd19633d4d75ce6806",
+      "Source": "existing-task",
+      "Kind": "merge",
+      "Subject": "merge: inherit newly merged PR26 while preserving selectable Sportmaster UI"
+    },
+    {
+      "Sha": "4c9d51c2c017b7be74cc45156c9df9cd97a5fae9",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "feat: integrate Sportmaster RCS destination requests with durable recovery"
+    },
+    {
+      "Sha": "c4e131968964458467c3a03eddf90832ef85b309",
+      "Source": "existing-task",
+      "Kind": "merge",
+      "Subject": "merge: inherit PR26 selected delivery and preserve immutable version evidence"
+    },
+    {
+      "Sha": "bce04d045beb0e11bc12c48c9e21e37ddc18de96",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: preserve initial RCS candidate and verification custody"
+    },
+    {
+      "Sha": "fbd4c900e3dce3ed246f7c60033260b8bfda3509",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: record final PR26 integration validation and candidate identities"
+    },
+    {
+      "Sha": "7d47a19e057586a8c704700ac9cfb7adf349c703",
+      "Source": "existing-task",
+      "Kind": "merge",
+      "Subject": "Merge main publication receipts and finalize UI delivery evidence"
+    },
+    {
+      "Sha": "436aeb026b3a45e721a6f52ff5ea2d26bc8c91f4",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "test: wait for maintenance drain before architecture backup assertion"
+    },
+    {
+      "Sha": "c3c83411247a03adef4060d1e6857c844b65f6f2",
+      "Source": "existing-task",
+      "Kind": "merge",
+      "Subject": "merge: preserve latest main publication receipts"
+    },
+    {
+      "Sha": "9050bdd53e7f60882a9418c1c04e04307a1b8f1d",
+      "Source": "existing-task",
+      "Kind": "merge",
+      "Subject": "merge: inherit main recovery and integrate RCS SQL6 semantics"
+    },
+    {
+      "Sha": "1570b32f04d887347f4dbcc7dc74cf612a21c2b5",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: publish frozen version compatibility results and combination records"
+    },
+    {
+      "Sha": "d954ba6bac2610592512405eee9a96bfc5b9bcb3",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: confirm PR29 publication and frozen runtime identity"
+    },
+    {
+      "Sha": "c168a30833784df06709ad9b29c91d6bb2fb4fea",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: bind final RCS 1.0.1 release and verification evidence"
+    },
+    {
+      "Sha": "822ce92f01e01487fdf037eca9219a601250d458",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: record RCS main PR publication receipt"
+    },
+    {
+      "Sha": "4247a4e689e3b2a06aa42645f57f255f63e03035",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: record approved PR27 P2 repair plan and independent review"
+    },
+    {
+      "Sha": "bf16bd1079128b4d235819878af18443a848943a",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "fix: close four Sportmaster UI review P2 issues"
+    },
+    {
+      "Sha": "04ac845619ff7a9bb11d1c38d8a823b2c7317780",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: converge durable recovery and custody validation before fixes"
+    },
+    {
+      "Sha": "f0abce6dc5e6a51eda8750b2d477c4a48e85750b",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: preserve root readme bytes separately from archive index"
+    },
+    {
+      "Sha": "226ac9bfdde08a99f5ce93e55c4eb0a0d277b7fa",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: record PR27 P2 regression review and frozen candidates"
+    },
+    {
+      "Sha": "fe4a4a2198874a8a5250ce67d50c849ba833c7c0",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "fix: retain permanent recovery identity and durable query evidence"
+    },
+    {
+      "Sha": "5e3282b02616d905a628a6cbeeb9a7fbe4228a79",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "fix: bind combination evidence to runtime snapshots and repair maintenance release validation"
+    },
+    {
+      "Sha": "0aac91922dfd04539f6015f7bc8dbf820a23d782",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: retain recovery failures and verify immutable selected media"
+    },
+    {
+      "Sha": "e0f5303ff80c48f1a7ecf6964916cb21c13a7327",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: preserve PR29 regression evidence and bounded release verification"
+    },
+    {
+      "Sha": "dff0ca8922437991cda24d422b1dc7cfbc1d3923",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: record approved PR27 asynchronous rereview repair plan"
+    },
+    {
+      "Sha": "ee56123402cba4d284186a06aa61c7a478193560",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "fix: order snapshot outcomes by read identity and preserve closed window lifetime"
+    },
+    {
+      "Sha": "e86d664c78418d82bdd49b1abaacc148f38c2d35",
+      "Source": "existing-task",
+      "Kind": "merge",
+      "Subject": "merge: inherit PR31 recovery closure while preserving PR27 concurrency fixes"
+    },
+    {
+      "Sha": "a4ecfd1c2a687caca9d52f2cfc08ee4fce9ff91e",
+      "Source": "existing-task",
+      "Kind": "content",
+      "Subject": "docs: record final read-order and window-close regression evidence"
+    },
+    {
+      "Sha": "2d5b9c7a64ad5f9d1546cac7fa9655fd6c416983",
+      "Source": "new-reconciliation",
+      "Kind": "content",
+      "Subject": "docs: govern parallel task reconciliation and preserve source evidence before integration"
+    },
+    {
+      "Sha": "271e8d2e28844e4f8500113e5b716655466da07d",
+      "Source": "new-reconciliation",
+      "Kind": "merge",
+      "Subject": "merge: preserve PR31 preflight and PR32 permanent recovery evidence together"
+    },
+    {
+      "Sha": "d31b5343a80b058ab516119b2a8ede2d603da674",
+      "Source": "new-reconciliation",
+      "Kind": "content",
+      "Subject": "docs: bind PR32 combined recovery validation to source and retained failures"
+    },
+    {
+      "Sha": "1b68ce5b10a534781bd567c6a7a172317e16a3e5",
+      "Source": "new-reconciliation",
+      "Kind": "content",
+      "Subject": "docs: keep pending task source links resolvable before serial merges"
+    },
+    {
+      "Sha": "845df3648b29b22d8178d3d5c98d8ca11ed8583b",
+      "Source": "new-reconciliation",
+      "Kind": "merge",
+      "Subject": "Merge pull request #32 from yuan2go/codex/parcel-recovery-p2"
+    },
+    {
+      "Sha": "fe74a3672e9eb20129a650b305d2c96d23b23797",
+      "Source": "new-reconciliation",
+      "Kind": "merge",
+      "Subject": "merge: reconcile RCS SQL6 with preflight, permanent custody and explicit recovery targets"
+    },
+    {
+      "Sha": "32e45e3961a5de27d0ea59b313b67e0708b2b0be",
+      "Source": "new-reconciliation",
+      "Kind": "content",
+      "Subject": "docs: preserve SQL6 merge failures and combined RCS recovery verification"
+    },
+    {
+      "Sha": "8a93d9672f81e4bcf0664615f63c3a37ffa598b8",
+      "Source": "new-reconciliation",
+      "Kind": "merge",
+      "Subject": "Merge pull request #30 from yuan2go/codex/sportmaster-rcs-task"
+    },
+    {
+      "Sha": "e9e0097a687435a3a175bd5be4a121c1f7fe3419",
+      "Source": "new-reconciliation",
+      "Kind": "merge",
+      "Subject": "merge: bind release execution evidence and declare the final RCS provider combination"
+    },
+    {
+      "Sha": "5961c1f02fe7ecabe7a105a2f49cf854bd0a84a8",
+      "Source": "new-reconciliation",
+      "Kind": "content",
+      "Subject": "docs: retain PR29 metadata counterexamples and combined compatibility results"
+    },
+    {
+      "Sha": "2a5376b12a149f85388f28b95d37ebb382923e98",
+      "Source": "new-reconciliation",
+      "Kind": "merge",
+      "Subject": "Merge pull request #29 from yuan2go/codex/version-compatibility"
+    },
+    {
+      "Sha": "d4d448a393332b7dcc8ddb74fba97e0fa42c6c8d",
+      "Source": "new-reconciliation",
+      "Kind": "merge",
+      "Subject": "merge: preserve selectable UI lifecycle and share typed RCS outcome projection"
+    },
+    {
+      "Sha": "254bce79995bfc7816ea298dad074205a469465f",
+      "Source": "new-reconciliation",
+      "Kind": "content",
+      "Subject": "fix: bind publication binary inventories to shipped files and retain superseded candidates"
+    },
+    {
+      "Sha": "ed514f65199a76443d3c8e832c040fa5f01d5475",
+      "Source": "new-reconciliation",
+      "Kind": "content",
+      "Subject": "docs: synchronize current ABI, explicit migration and final signing requirements"
+    },
+    {
+      "Sha": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+      "Source": "new-reconciliation",
+      "Kind": "content",
+      "Subject": "fix: preserve RCS numeric allocation custody and clear recovered UI read errors"
+    },
+    {
+      "Sha": "cdc055abff121bdf58eef557d8c36827ee4b2d9a",
+      "Source": "new-reconciliation",
+      "Kind": "content",
+      "Subject": "docs: bind final reconciliation evidence to frozen 1.2.4 release media"
+    },
+    {
+      "Sha": "de93f85997dee6e65cbeb23c4750dedc466d98d4",
+      "Source": "new-reconciliation",
+      "Kind": "content",
+      "Subject": "docs: publish portable command projection and retain original archive diagnostics"
+    },
+    {
+      "Sha": "d985df84db38acd59a2702b52392b22280c870d8",
+      "Source": "new-reconciliation",
+      "Kind": "merge",
+      "Subject": "Merge pull request #27 from yuan2go/codex/sportmaster-alternate-ui"
+    }
+  ]
+}

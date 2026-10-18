@@ -18662,6 +18662,17 @@
       "git_blob": "8998d8abad86721e061f20ebc47a91205edec2bc"
     },
     {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/merge-statistics-cutoff.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "40bfed50160d601ea07b97ba2c3b0910fb72c6e258b116465e166b5129418a05",
+      "size_bytes": 14066,
+      "git_blob": "ea1a34404a2f914bf16a10ea74595c219ee20800"
+    },
+    {
       "path": "docs/runtime/evidence/parallel-task-reconciliation-01/pr29-all-script-tests.log",
       "version": "parallel-reconciliation-01",
       "status": "current_navigation_or_verification",
@@ -19001,6 +19012,17 @@
       "sha256": "0e07f0a715f3585961e498430c6c0da58f778b45e2b00a9c35eb8ef4fa5f06cc",
       "size_bytes": 6194,
       "git_blob": "f0027536e7457abb0d38864e853eb63af33f0de4"
+    },
+    {
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/published-artifacts.json",
+      "version": "parallel-reconciliation-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "storage_scope": "public_repository",
+      "sha256": "cafad76b102cc26c7941526cc4d04cbede1324ffef2e9ac0dc60288c77c6c523",
+      "size_bytes": 4545,
+      "git_blob": "f0d5e586d252efed3b36aa2d41f416fd65393b0f"
     },
     {
       "path": "docs/runtime/evidence/parallel-task-reconciliation-01/published-maintenance-probe.cs.txt",
@@ -26522,9 +26544,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "ff9acc56eb856cf40388998df5cce427e682abc91c45030b625f0badb9f1010b",
-      "size_bytes": 22337,
-      "git_blob": "384d1151f2da9a7029f07126dc0d482b8925a833"
+      "sha256": "5bd6c29353870c7c4d04c042aa5655ebc672a8a92097fa1c90ec883fd6de08be",
+      "size_bytes": 26118,
+      "git_blob": "97398538fcba087b5c72574caaba421e64b2745d"
     },
     {
       "path": "docs/runtime/parcel-recovery-p2.md",
@@ -28146,9 +28168,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "02b85bf582341ec299af26443aa45dbf9e975ffb9e3bb5fcf83dd5007ff954bc",
-      "size_bytes": 3007,
-      "git_blob": "c60b47e82d30a05a29de0224cba07efc81964a62"
+      "sha256": "fe8823e35b44937a751761875d278e204833890500207e53602b2da1448660ff",
+      "size_bytes": 3258,
+      "git_blob": "21b7a90988299fd0ca9530acb2860537c050b3d7"
     },
     {
       "path": "docs/work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md",

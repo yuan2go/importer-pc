@@ -39,6 +39,9 @@ public partial class ShellWindow : Window
     async void Pause_Click(object s, RoutedEventArgs e) => await vm.RunAsync(() => vm.CommandAsync("Pause"));
     async void Resume_Click(object s, RoutedEventArgs e) => await vm.RunAsync(() => vm.CommandAsync("Resume"));
     async void Reconcile_Click(object s, RoutedEventArgs e) => await vm.RunAsync(vm.ReconcileAsync);
+    async void Login_Click(object s, RoutedEventArgs e) { var proof = LoginProof.Password; LoginProof.Clear(); await vm.RunAsync(() => vm.LoginAsync(proof)); }
+    async void Logout_Click(object s, RoutedEventArgs e) => await vm.RunAsync(vm.LogoutAsync);
+    async void Continue_Click(object s, RoutedEventArgs e) => await vm.RunAsync(vm.ContinueAsync);
     async void ClosingOwner(object? sender, CancelEventArgs e)
     {
         if (closeReady || StopOwnerAsync is null) return;

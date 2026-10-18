@@ -11,7 +11,7 @@
   <Compile Include="ParcelAssembly.cs"/><Compile Include="ParcelCapabilityFactory.cs"/><Compile Include="ParcelCli.cs"/>
   <Compile Include="../Ipc.Product/ExtensionBuildCheck.cs" Link="ExtensionBuildCheck.cs"/>
   <ProjectReference Include="../Ipc.Application.$(BusinessModule)/Ipc.Application.$(BusinessModule).csproj"/>
-  <ProjectReference Include="../Ipc.Drivers/Ipc.Drivers.csproj"/><ProjectReference Include="../Ipc.Integrations/Ipc.Integrations.csproj" Condition="'$(BusinessModule)' != 'DirectPlc'"/>
+  <ProjectReference Include="../Ipc.Components/Ipc.Components.csproj"/><ProjectReference Include="../Ipc.Drivers/Ipc.Drivers.csproj"/><ProjectReference Include="../Ipc.Integrations/Ipc.Integrations.csproj" Condition="'$(BusinessModule)' != 'DirectPlc'"/>
  </ItemGroup>
  <Target Name="CheckBusinessSelection" BeforeTargets="PrepareForBuild" Condition="'$(BusinessModule)' != 'Supply' And '$(BusinessModule)' != 'Inspection' And '$(BusinessModule)' != 'Sportmaster' And '$(BusinessModule)' != 'DirectPlc' And '$(BusinessModule)' != 'WcsToPlc'"><Error Text="Choose Supply, Inspection, Sportmaster, DirectPlc or WcsToPlc"/></Target>
 </Project>

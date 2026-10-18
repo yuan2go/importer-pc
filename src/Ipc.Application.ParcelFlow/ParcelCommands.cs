@@ -13,6 +13,7 @@ public sealed partial class ParcelRuntime
             List<string> reasons = [];
             if (failure is not null) reasons.Add(failure);
             if (overload != 0) reasons.Add("Overload: rejected callback; inspect parcel and acknowledge while paused");
+            if (Effective.Login is not null && currentOperator is null) reasons.Add("Operator authentication required for new admission");
             if (repository.Paused) reasons.Add("Software admission paused; this is not an emergency stop");
             if (readerHealth?.IsValid(DateTimeOffset.UtcNow) != true) reasons.Add("Reader confirmation missing/expired");
             if (operations.Values.Any(NeedsReconciliation)) reasons.Add("Original stage outcome or receipt responsibility is unresolved");
@@ -27,7 +28,7 @@ public sealed partial class ParcelRuntime
                 if (!h.Ready || h.ValidUntil <= DateTimeOffset.UtcNow) reasons.Add("Capability unavailable: " + h.InstanceId);
             }
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : "Blocked", repository.Paused,
-                reasons.ToArray(), operations.Values.Reverse().ToArray(), health.ToArray(), configuration.Current);
+                reasons.ToArray(), operations.Values.Reverse().ToArray(), health.ToArray(), configuration.Current, currentOperator);
             return Wire.Decode<ParcelSnapshot>(Wire.Encode(projection));
         }
         finally { gate.Release(); }
@@ -50,15 +51,15 @@ public sealed partial class ParcelRuntime
             switch (command.Kind)
             {
                 case "Pause": repository.Commit(null, "AdmissionPaused", "Software pause only", paused: true, command: command); break;
-                case "Resume" when failure is null && overload == 0 && !operations.Values.Any(NeedsReconciliation) && readerHealth?.IsValid(DateTimeOffset.UtcNow) == true:
+                case "Resume" when (Effective.Login is null || currentOperator is not null) && failure is null && overload == 0 && !operations.Values.Any(NeedsReconciliation) && readerHealth?.IsValid(DateTimeOffset.UtcNow) == true:
                     repository.Commit(null, "AdmissionResumed", "Other stage guards remain independent", paused: false, command: command); break;
                 case "AcknowledgeOverload" when repository.Paused && overload != 0 && ingress?.Reader.Count == 0:
                     if (File.Exists(overloadMarker)) File.Delete(overloadMarker);
                     Interlocked.Exchange(ref overload, 0); repository.Commit(null, "OverloadAcknowledged", "Paused operator inspection acknowledged", command: command); break;
-                case "ContinuePrepared" when command.Owner is not null && !repository.Paused && overload == 0 && operations.TryGetValue(command.Owner, out var observed) && observed is { State: ParcelState.Prepared, Wcs: null, Plc: null }:
-                    await AdvanceAsync(observed).ConfigureAwait(false); break;
-                case "ContinuePrepared" when command.Owner is not null && !repository.Paused && overload == 0 && operations.TryGetValue(command.Owner, out var op) && op.Plc is { State: StageState.Prepared, Attempts: 0 }:
-                    await ExecuteStageAsync(op, false, false).ConfigureAwait(false); break;
+                case "ContinuePrepared" when command.Owner is not null && operations.TryGetValue(command.Owner, out var op) &&
+                    CanDispatch(op) && (op.State == ParcelState.Prepared && op.Wcs is null && op.Plc is null ||
+                    Enum.GetValues<ParcelStage>().Any(kind => GetStage(op, kind) is { State: StageState.Prepared, Attempts: 0 })):
+                    await AdvanceAsync(op).ConfigureAwait(false); break;
                 default: return new("Rejected", "Unsupported command or an application guard is closed", repository.Revision);
             }
             var receipt = new BusinessReceipt("Persisted", "Application command committed", repository.Revision);
@@ -120,6 +121,15 @@ public sealed partial class ParcelRuntime
             File.Copy(Path.Combine(directory!, "configuration.json"), Path.Combine(recovery, "configuration.json"));
             var receipts = Path.Combine(recovery, "receipts"); Directory.CreateDirectory(receipts);
             foreach (var file in Directory.EnumerateFiles(Path.Combine(directory!, "receipts"))) File.Copy(file, Path.Combine(receipts, Path.GetFileName(file)));
+            var images = Path.Combine(directory!, "images");
+            if (Directory.Exists(images))
+                foreach (var file in Directory.EnumerateFiles(images, "*", SearchOption.AllDirectories))
+                {
+                    if (Path.GetExtension(file) == ".lease" && ExtensionSchema.IsHash(Path.GetFileNameWithoutExtension(file))) continue; // Live ownership is reacquired, never backed up.
+                    var relative = Path.GetRelativePath(directory!, file);
+                    if (!ProductValidation.IsSafeRelativeFile(directory!, relative, out var original)) throw new InvalidDataException("Unsafe image custody path");
+                    var target = Path.Combine(recovery, relative); Directory.CreateDirectory(Path.GetDirectoryName(target)!); File.Copy(original, target);
+                }
             if (File.Exists(overloadMarker)) File.Copy(overloadMarker, Path.Combine(recovery, "overload.json"));
             var files = Directory.EnumerateFiles(recovery, "*", SearchOption.AllDirectories).ToDictionary(x => Path.GetRelativePath(recovery, x), Wire.FileHash);
             ExtensionStore.AtomicWrite(Path.Combine(recovery, "COMPLETED.json"), new { Application = Id, Database = Path.GetFileName(destination), DatabaseHash = Wire.FileHash(destination), Files = files, At = DateTimeOffset.UtcNow, Recovery = "Isolated original-deployment restore; reconcile external effects before admission" });

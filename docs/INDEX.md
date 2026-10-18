@@ -2,7 +2,7 @@
 
 ## 当前工程入口
 
-本轮基线 **d3a757d6314a2d690bcfc4e7763cfd4849b97319**，PR17已合并，无开放PR；当前任务[场地能力18](work-packages/WP-IPC-SITE-CAPABILITIES-18.md)。下方17入口及6e9c890指17开工时基线，不能当作当前远端状态。
+本轮基线 **d3a757d6314a2d690bcfc4e7763cfd4849b97319**，PR17已合并，无开放PR；当前任务[场地能力18](work-packages/WP-IPC-SITE-CAPABILITIES-18.md)。[18能力矩阵与运行指南](runtime/site-capabilities-18.md)；下方17入口及6e9c890指17开工时基线，不能当作当前远端状态。
 
 最新核验main **6e9c890a7483c3006b3448c203570ef2ca19ed25**，PR16已合并，开工查无开放PR。当前工作包为[APPLICATION-CONVERGENCE-17](work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)：有效设计、兼容映射和17-01～08验收在此集中定义；16及更早报告保持原形成时结论。[前置原字节及替代关系](archive/pre-application-convergence-17/README.md)。Windows实际客户端NOT_RUN，真实SDK/PLC/WCS合同及现场BLOCKED。
 

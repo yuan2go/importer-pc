@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Ipc.Platform;
 namespace Ipc.Application.Contracts;
 
@@ -13,11 +14,14 @@ public sealed record CapabilityBinding(string Kind, string Implementation, strin
 public sealed record CapabilityHealth(string InstanceId, bool Ready, DateTimeOffset ConfirmedAt, DateTimeOffset ValidUntil, string Detail);
 public sealed record FrozenRequest(string Id, string ApplicationId, string OperationId, string AdmissionId, string Stage,
     CapabilityBinding Binding, string ImplementationHash, string ConfigurationHash, string Payload, string PayloadHash, DateTimeOffset PreparedAt);
-public sealed record ParcelPayload(string ParcelCode, string AdmissionId, ParcelWeight? Weight, string? Slot, string? WcsRequestId);
+public sealed record ParcelPayload(string ParcelCode, string AdmissionId, ParcelWeight? Weight, string? Slot, string? WcsRequestId,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] OperatorIdentity? Operator = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelImage? Image = null);
 // Facts deliberately independent: delivery != protocol acknowledgement != business acceptance
 // != physical completion. Null is unknown, never a successful fallback.
 public sealed record StageReply(string Id, string RequestId, string PayloadHash, bool TransportSucceeded,
-    bool? ProtocolAcknowledged, bool? BusinessAccepted, bool? PhysicalCompleted, string? Slot, string Evidence, DateTimeOffset At);
+    bool? ProtocolAcknowledged, bool? BusinessAccepted, bool? PhysicalCompleted, string? Slot, string Evidence, DateTimeOffset At,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelImage? Image = null);
 public interface ICapabilityPort : IAsyncDisposable
 {
     string InstanceId { get; }
@@ -47,19 +51,27 @@ public interface ISyntheticWeightInput { bool Emit(WeightMeasurement measurement
 
 public sealed record ParcelConfiguration(int SchemaVersion, string ApplicationId, string StationId, RunMode Mode,
     WeightPolicy Weight, DeviceBinding Reader, CapabilityBinding? Scale, CapabilityBinding? Wcs, CapabilityBinding? Plc,
-    DeploymentExtensions? Extensions = null, int QueueCapacity = 64, int TimeoutMs = 1500, int MaximumOperations = 10000);
-public enum ParcelState { WaitingWeight, Prepared, ResolvingWcs, WcsUnknown, WcsRejected, SlotResolved, SubmittingPlc, PlcUnknown, PlcRejected, PlcAccepted, PhysicalCompleted, Blocked }
+    DeploymentExtensions? Extensions = null, int QueueCapacity = 64, int TimeoutMs = 1500, int MaximumOperations = 10000,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] CapabilityBinding? Login = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ImagePolicy? Images = null);
+public enum ParcelState { WaitingWeight, Prepared, ResolvingWcs, WcsUnknown, WcsRejected, SlotResolved, SubmittingPlc, PlcUnknown, PlcRejected, PlcAccepted, PhysicalCompleted, Blocked, CapturingImage, UploadingImage, ImageUnknown, ImageRejected }
 public enum StageState { Prepared, Dispatching, Unknown, Rejected, Accepted, Conflict }
 public sealed record StageFact(FrozenRequest Request, StageState State, int Attempts, StageReply[] Replies, string? Failure = null);
 public sealed record ParcelOperation(string Id, string AdmissionId, string ParcelCode, string ObservationId,
     DateTimeOffset ObservedAt, string ConfigurationHash, ParcelConfiguration FrozenConfiguration, Dictionary<string, string> ImplementationHashes, WeightPolicy WeightPolicy, ParcelWeight? Weight,
-    ParcelState State, string? Slot, StageFact? Wcs, StageFact? Plc, string? Reason);
+    ParcelState State, string? Slot, StageFact? Wcs, StageFact? Plc, string? Reason,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] OperatorIdentity? Operator = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelImage? Image = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] StageFact? Capture = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] StageFact? Upload = null);
 public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long Revision, string State, bool Paused,
     string[] BlockingReasons, ParcelOperation[] Operations, CapabilityHealth[] Health,
-    ConfigurationRevision<ParcelConfiguration> Configuration);
+    ConfigurationRevision<ParcelConfiguration> Configuration, OperatorIdentity? CurrentOperator = null);
 public interface IParcelApplication : IBusinessApplication
 {
     Task<ParcelSnapshot> SnapshotAsync();
+    Task<BusinessReceipt> LoginAsync(string subject, string proof);
+    Task<BusinessReceipt> LogoutAsync();
     Task<BusinessReceipt> StageConfigurationAsync(long expectedRevision, ParcelConfiguration candidate);
     Task<BusinessReceipt> ReconcileAsync(string operationId);
     Task<BusinessReceipt> ReconnectAsync();

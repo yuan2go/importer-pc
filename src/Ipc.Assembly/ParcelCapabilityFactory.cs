@@ -2,6 +2,7 @@ using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Adapters;
 using Ipc.Drivers;
+using Ipc.Components;
 #if !DIRECTPLC
 using Ipc.Integrations;
 #endif
@@ -43,18 +44,18 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
     {
         CapabilityBinding? Resolve(CapabilityBinding? b)
         {
-            if (b is null || b.Kind == "weight" || b.Package is not null) return b;
+            if (b is null || b.Kind is "weight" or "login" or "camera" || b.Package is not null || b.Parameters.ContainsKey("endpoint")) return b;
             var parameters = new Dictionary<string, string>(b.Parameters);
             parameters.TryAdd("peer-root", Path.GetFullPath(Path.Combine(launch.DataRoot, "Simulation", "reference-peers")));
             return b with { Parameters = parameters };
         }
-        return configuration with { Wcs = Resolve(configuration.Wcs), Plc = Resolve(configuration.Plc) };
+        return configuration with { Wcs = Resolve(configuration.Wcs), Plc = Resolve(configuration.Plc), Images = configuration.Images is { } i ? i with { Uploader = Resolve(i.Uploader)! } : null };
     }
     public void Validate(ParcelConfiguration c)
     {
         RegisterContracts();
         if (c.Mode != RunMode.Simulation) throw new InvalidDataException("Production capabilities require approved SDK/protocol/native prerequisite evidence; reference ports cannot satisfy Production");
-        var bindings = new[] { c.Scale, c.Wcs, c.Plc }.OfType<CapabilityBinding>().ToArray();
+        var bindings = new[] { c.Scale, c.Wcs, c.Plc, c.Login, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
         if (c.Reader.Driver != "manual" && !c.Reader.Driver.StartsWith("extension:", StringComparison.Ordinal)) throw new InvalidDataException("No approved reader implementation: " + c.Reader.Driver);
         if (c.Extensions is not null)
         {
@@ -79,6 +80,21 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         foreach (var b in bindings)
         {
             if (!Uri.TryCreate(b.Target, UriKind.Absolute, out var target) || target.Scheme != "reference") throw new InvalidDataException("Reference capability target must use explicit reference:// identity");
+            if (b.Parameters.TryGetValue("endpoint", out var endpoint) &&
+                (b.Kind is not ("integration" or "plc" or "upload") || !Uri.TryCreate(endpoint, UriKind.Absolute, out var peerUri) || peerUri.Scheme != "http" || peerUri.Host != "127.0.0.1" || peerUri.AbsolutePath != "/parcel-reference/" || peerUri.UserInfo.Length != 0 || peerUri.Query.Length != 0 || peerUri.Fragment.Length != 0))
+                throw new InvalidDataException("Controlled reference HTTP peer must be literal loopback with an exact path");
+            if (b.Kind is "login" or "camera" or "upload")
+            {
+                if (b.Package is not null || b.Implementation != "reference-" + b.Kind || b.Version != "1.0.0" || b.Contract != "PARCEL-REFERENCE-v1")
+                    throw new InvalidDataException("Optional capability only has an explicit reference implementation; signed real provider binding requires approved policy/contract");
+                var optionalAllowed = b.Kind == "login" ? new[] { "subjects", "reply-mode" } : b.Kind == "camera" ? new[] { "decision", "reply-mode" } : new[] { "decision", "reply-mode", "peer-root", "endpoint" };
+                if (b.Parameters.Keys.Any(x => !optionalAllowed.Contains(x)) ||
+                    b.Kind == "login" && (b.Parameters.GetValueOrDefault("subjects") is not { Length: > 0 and <= 1024 } subjects || subjects.Split(',').Any(x => !ExtensionSchema.IsId(x)) || b.Parameters.GetValueOrDefault("reply-mode", "normal") is not ("normal" or "unavailable")) ||
+                    b.Kind != "login" && (b.Parameters.GetValueOrDefault("decision", "accept") is not ("accept" or "reject") || b.Parameters.GetValueOrDefault("reply-mode", "normal") is not ("normal" or "lose-after-commit")) ||
+                    b.Kind == "upload" && !b.Parameters.ContainsKey("endpoint") && (!b.Parameters.TryGetValue("peer-root", out var peer) || !Path.IsPathFullyQualified(peer)))
+                    throw new InvalidDataException("Invalid bounded reference optional capability parameters");
+                continue;
+            }
             if (b.Package is not null)
             {
                 if (c.Extensions?.Packages.Contains(b.Package) != true) throw new InvalidDataException("Capability package absent from exact deployment");
@@ -92,7 +108,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
             else
             {
                 if (b.Implementation != "reference-" + b.Kind || b.Version != "1.0.0" || b.Contract != "PARCEL-REFERENCE-v1") throw new InvalidDataException("No approved exact capability implementation/contract");
-                var allowed = b.Kind == "weight" ? Array.Empty<string>() : b.Kind == "plc" ? ["decision", "reply-mode", "complete-on-query", "peer-root"] : ["decision", "reply-mode", "slot", "peer-root"];
+                var allowed = b.Kind == "weight" ? Array.Empty<string>() : b.Kind == "plc" ? ["decision", "reply-mode", "complete-on-query", "peer-root", "endpoint"] : ["decision", "reply-mode", "slot", "peer-root", "endpoint"];
                 if (b.Kind != "weight" && b.Parameters.TryGetValue("peer-root", out var peerRoot) && !Path.IsPathFullyQualified(peerRoot)) throw new InvalidDataException("Reference peer location must be an explicit absolute frozen parameter");
                 if (b.Parameters.Keys.Any(x => !allowed.Contains(x)) || b.Parameters.GetValueOrDefault("decision", "accept") is not ("accept" or "reject") ||
                     b.Parameters.GetValueOrDefault("reply-mode", "normal") is not ("normal" or "lose-after-commit") ||
@@ -106,7 +122,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
     {
         Validate(c);
         var resourceRoot = MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
-        devices = new(resourceRoot, new[] { "reader:" + c.Reader.DeviceId }.Concat(new[] { c.Scale, c.Plc }.OfType<CapabilityBinding>().Select(x => x.Kind + ":" + x.Target)));
+        devices = new(resourceRoot, new[] { "reader:" + c.Reader.DeviceId }.Concat(new[] { c.Scale, c.Plc, c.Images?.Camera }.OfType<CapabilityBinding>().Select(x => x.Kind + ":" + x.Target)));
         if (c.Extensions is { Packages.Length: > 0 } deployment)
         {
             Store().RegisterConsumer(Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, c.ApplicationId + ".db"));
@@ -139,10 +155,13 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         #if DIRECTPLC
         IWcsPort? wcs = null;
         #else
-        var wcs = c.Wcs is { } w ? Own<IWcsPort>(w, () => new ReferenceWcs(w, w.Parameters["peer-root"]), (l, m) => l.CreateFactory<IWcsExtension>(w.Package!, m, "integration").Create(w)) : null;
+        var wcs = c.Wcs is { } w ? Own<IWcsPort>(w, () => new ReferenceWcs(w, w.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IWcsExtension>(w.Package!, m, "integration").Create(w)) : null;
         #endif
-        var plc = c.Plc is { } p ? Own<IPlcPort>(p, () => new ReferencePlc(p, p.Parameters["peer-root"]), (l, m) => l.CreateFactory<IPlcExtension>(p.Package!, m, "plc").Create(p)) : null;
-        transferred = true; return new(reader, weight, wcs, plc, hashes);
+        var plc = c.Plc is { } p ? Own<IPlcPort>(p, () => new ReferencePlc(p, p.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IPlcExtension>(p.Package!, m, "plc").Create(p)) : null;
+        var login = c.Login is { } a ? Own<IOperatorAuthenticator>(a, () => new ReferenceOperatorAuthenticator(a), (_, _) => throw new InvalidDataException("Reference-only optional capability")) : null;
+        var camera = c.Images is { } i ? Own<IImageCamera>(i.Camera, () => new ReferenceImageCamera(i.Camera, Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId)), (_, _) => throw new InvalidDataException("Reference-only optional capability")) : null;
+        var uploader = c.Images is { } j ? Own<IImageUploader>(j.Uploader, () => new ReferenceImageUploader(j.Uploader, j.Uploader.Parameters.GetValueOrDefault("peer-root", "")), (_, _) => throw new InvalidDataException("Reference-only optional capability")) : null;
+        transferred = true; return new(reader, weight, wcs, plc, hashes, login, camera, uploader);
     }
     public async ValueTask DisposeAsync()
     {

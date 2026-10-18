@@ -97,7 +97,8 @@
       "dependencies": [
         "application.sportmaster",
         "drivers",
-        "integrations"
+        "integrations",
+        "optional-components"
       ],
       "delivery": "core"
     },
@@ -115,7 +116,8 @@
       "contract": 1,
       "dependencies": [
         "application.direct-plc",
-        "drivers"
+        "drivers",
+        "optional-components"
       ],
       "delivery": "core"
     },
@@ -134,7 +136,8 @@
       "dependencies": [
         "application.wcs-to-plc",
         "drivers",
-        "integrations"
+        "integrations",
+        "optional-components"
       ],
       "delivery": "core"
     },
@@ -147,7 +150,7 @@
       "delivery": "core"
     },
     "application-contracts": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "contract": 1,
       "dependencies": [
         "platform"
@@ -176,6 +179,14 @@
       "dependencies": [
         "reference-protocol",
         "supply-contracts"
+      ],
+      "delivery": "core"
+    },
+    "optional-components": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "reference-protocol"
       ],
       "delivery": "core"
     }

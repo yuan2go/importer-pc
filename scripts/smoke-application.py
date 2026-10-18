@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Run the actual unpacked portable Application and verify its durable reference journey."""
 import argparse
+import atexit
+import socket
+import urllib.request
 import hashlib
 import json
 from pathlib import Path
@@ -14,7 +17,9 @@ import uuid
 p = argparse.ArgumentParser()
 p.add_argument('--package', type=Path, required=True)
 p.add_argument('--dotnet', default='dotnet')
+p.add_argument('--peer-fixture', type=Path, help='Run independent loopback WCS/PLC/upload receiver process; requires --optional-features')
 p.add_argument('--output', type=Path, required=True)
+p.add_argument('--optional-features', action='store_true', help='Authenticate, wait for correlated weight, capture/upload, restart after lost upload reply, then explicitly continue')
 a = p.parse_args()
 root = a.package.resolve()
 identity = json.loads((root / 'ASSEMBLY.json').read_text())
@@ -23,10 +28,49 @@ for row in (root / 'SHA256SUMS').read_text().splitlines():
     expected, relative = row.split('  ', 1)
     if hashlib.sha256((root / relative).read_bytes()).hexdigest() != expected: raise ValueError('Candidate changed: ' + relative)
 data = Path(tempfile.mkdtemp(prefix='ipc17-unpacked-'))
+peer_root = None
+peer_url = None
+if a.peer_fixture:
+    if not a.optional_features: raise ValueError('--peer-fixture requires --optional-features')
+    listener = socket.socket(); listener.bind(('127.0.0.1', 0)); port = listener.getsockname()[1]; listener.close()
+    peer_url = 'http://127.0.0.1:'+str(port)+'/'
+    peer_root = data / 'external-peer'
+    peer_log = open(data / 'external-peer.log', 'w')
+    peer_process = subprocess.Popen([a.dotnet, str(a.peer_fixture.resolve()), '--url', peer_url, '--data', str(peer_root)], stdout=peer_log, stderr=subprocess.STDOUT)
+    def close_peer():
+        if peer_process.poll() is None:
+            peer_process.terminate()
+            try: peer_process.wait(timeout=10)
+            except subprocess.TimeoutExpired: peer_process.kill(); peer_process.wait()
+        peer_log.close()
+    atexit.register(close_peer)
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    for _ in range(100):
+        try:
+            if opener.open(peer_url+'parcel-reference/health', timeout=1).read() == b'PARCEL-REFERENCE-v1': break
+        except OSError: pass
+        if peer_process.poll() is not None: raise ValueError('Independent reference service failed; see '+str(data/'external-peer.log'))
+        time.sleep(.05)
+    else: raise TimeoutError('Independent reference service did not start')
+config = root / 'app/config'
+if a.optional_features:
+    config = data / 'config'; config.mkdir()
+    c = json.loads((root / 'app/config/business.json').read_text())
+    def binding(kind):
+        return dict(Kind=kind, Implementation='reference-'+kind, Version='1.0.0', InstanceId=kind+'.smoke', Target='reference://'+kind+'/smoke', Contract='PARCEL-REFERENCE-v1', Parameters={})
+    c['Login'] = binding('login'); c['Login']['Parameters'] = {'subjects':'alice,bob'}
+    c['Weight'] = dict(Source='Measured', Unit='Kg', Precision=3, ConfiguredValue=None, MaximumAgeMs=3000)
+    c['Scale'] = binding('weight')
+    c['Images'] = dict(Camera=binding('camera'), Uploader=binding('upload'), MaximumBytes=4194304)
+    c['Images']['Uploader']['Parameters'] = {'reply-mode':'lose-after-commit'}
+    if peer_url:
+        for bound in [c['Wcs'], c['Plc'], c['Images']['Uploader']]:
+            if bound: bound['Parameters']['endpoint'] = peer_url+'parcel-reference/'
+    (config / 'business.json').write_text(json.dumps(c))
 outputs = []
 
 def start():
-    process = subprocess.Popen([a.dotnet, str(root / 'app/Ipc.Assembly.dll'), '--config', str(root / 'app/config'), '--data-root', str(data)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen([a.dotnet, str(root / 'app/Ipc.Assembly.dll'), '--config', str(config), '--data-root', str(data)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     messages = queue.Queue()
     def read():
         buffer = ''; decoder = json.JSONDecoder()
@@ -51,6 +95,9 @@ def stop(process):
 
 process, messages = start()
 try:
+    if a.optional_features:
+        login = send(process, messages, dict(Id=uuid.uuid4().hex, ExpectedRevision=0, Kind='Login', Owner='alice', Value='SIMULATION_ONLY'))
+        if login['Status'] != 'Authenticated': raise ValueError('Selected authentication component did not authenticate')
     result = send(process, messages, dict(Id=uuid.uuid4().hex, ExpectedRevision=0, Kind='EmitReference', Owner='unpacked-parcel', Value='000000917'))
     if result['Status'] != 'Enqueued': raise ValueError('Reference camera was not admitted')
     for _ in range(60):
@@ -58,20 +105,48 @@ try:
         if snapshot['Operations']: break
         time.sleep(.05)
     operation = snapshot['Operations'][0]
+    if a.optional_features:
+        if operation['State'] != 'WaitingWeight' or operation['Wcs'] is not None or operation['Plc'] is not None: raise ValueError('Weight wait guard failed')
+        measurement = dict(Id=uuid.uuid4().hex, AdmissionId=operation['AdmissionId'], DeviceId=c['Scale']['Target'], Value=2.345, Unit='Kg', Precision=3, Quality='Valid', Stable=True, MeasuredAt=__import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat())
+        send(process, messages, dict(Id=uuid.uuid4().hex, ExpectedRevision=snapshot['Revision'], Kind='EmitWeight', Value=json.dumps(measurement)))
+        for _ in range(60):
+            snapshot = send(process, messages, 'snapshot'); operation = snapshot['Operations'][0]
+            if operation['State'] == 'ImageUnknown': break
+            time.sleep(.05)
+        if operation['State'] != 'ImageUnknown' or operation['Wcs'] is not None or operation['Plc'] is not None: raise ValueError('Lost upload must block downstream effects')
     expected = 'SlotResolved' if identity['product']['business'] == 'sportmaster' else 'PlcAccepted'
-    if operation['State'] != expected: raise ValueError('Incomplete actual reference chain: ' + operation['State'])
+    if not a.optional_features and operation['State'] != expected: raise ValueError('Incomplete actual reference chain: ' + operation['State'])
     if operation['ParcelCode'] != '000000917': raise ValueError('Original code changed')
     stop(process)
     process, messages = start()
     restarted = send(process, messages, 'snapshot')
     recovered = restarted['Operations'][0]
     if recovered['Id'] != operation['Id'] or recovered['Wcs'] != operation['Wcs'] or recovered['Plc'] != operation['Plc']: raise ValueError('Restart changed frozen original phases')
+    if a.optional_features:
+        if recovered['Upload']['Request'] != operation['Upload']['Request'] or restarted['CurrentOperator'] is not None: raise ValueError('Restart changed upload or revived a session')
+        def command(kind, owner=None, value=None):
+            snap = send(process, messages, 'snapshot')
+            return send(process, messages, dict(Id=uuid.uuid4().hex, ExpectedRevision=snap['Revision'], Kind=kind, Owner=owner, Value=value))
+        if command('Reconcile', operation['Id'])['Status'] != 'Prepared': raise ValueError('Original upload query did not recover')
+        snap = send(process, messages, 'snapshot')
+        if snap['Operations'][0]['Plc'] is not None or snap['Operations'][0]['Wcs'] is not None: raise ValueError('Query dispatched downstream')
+        if command('Login', 'alice', 'SIMULATION_ONLY')['Status'] != 'Authenticated': raise ValueError('Original subject could not reauthenticate')
+        if command('ContinuePrepared', operation['Id'])['Status'] != 'Persisted': raise ValueError('Original continuation rejected')
+        final = send(process, messages, 'snapshot')['Operations'][0]
+        if final['State'] != expected or final['Operator'] != operation['Operator'] or final['Upload']['Attempts'] != 1 or final['Capture']['Attempts'] != 1: raise ValueError('Continuation changed identity or repeated image stage')
+        for stage in [final['Upload'], *([final['Wcs']] if final['Wcs'] else []), *([final['Plc']] if final['Plc'] else [])]:
+            request = stage['Request']; peer = (peer_root/'parcel-peers' if peer_root else Path(request['Binding']['Parameters']['peer-root'])) / hashlib.sha256(request['Binding']['Target'].encode()).hexdigest().upper()
+            ledger = json.loads((peer / (request['Id']+'.json')).read_text())
+            if ledger['Executions'] != 1 or ledger['Request'] != request: raise ValueError('Independent receiver execution/identity differs')
+            if stage == final['Upload'] and hashlib.sha256((peer/(request['Id']+'.png')).read_bytes()).hexdigest().upper() != final['Image']['Sha256']: raise ValueError('Uploaded image bytes differ')
+        operation = final
     stop(process)
 except BaseException:
     if process.poll() is None: process.kill(); process.wait()
     raise
 result = dict(Status='PASS', SourceCommit=identity['SourceCommit'], Application=identity['product']['business'], Target='portable',
               Checks=['candidate file hashes', 'actual selected assembly startup', 'camera-to-final-reference-chain', 'persistent original phases on restart', 'orderly stop'],
+              ExternalPeerProcess=bool(a.peer_fixture), OptionalFeatures=a.optional_features, OptionalChecks=['authenticated admission', 'same-entity measured weight', 'actual PNG upload bytes', 'lost upload blocks PLC', 'process restart original query', 'explicit continuation original operator', 'one execution per independent receiver'] if a.optional_features else [],
               State=operation['State'], OperationId=operation['Id'], Windows='NOT_RUN', RealEquipment='BLOCKED')
 a.output.write_text(json.dumps(result, indent=2) + '\n')
 print(json.dumps(result))

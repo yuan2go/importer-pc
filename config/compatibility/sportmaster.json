@@ -1,0 +1,242 @@
+{
+  "SchemaVersion": 1,
+  "ApplicationId": "sportmaster",
+  "ProviderSets": [
+    {
+      "Id": "builtin-reference",
+      "Providers": [
+        {
+          "Kind": "observation",
+          "Implementation": "manual",
+          "Version": "1.0.0",
+          "Contract": "CONTROLLED-OBSERVATION-v1"
+        },
+        {
+          "Kind": "weight",
+          "Implementation": "reference-weight",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "reference-integration",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        }
+      ]
+    },
+    {
+      "Id": "signed-reference",
+      "Providers": [
+        {
+          "Kind": "observation",
+          "Implementation": "manual",
+          "Version": "1.0.0",
+          "Contract": "CONTROLLED-OBSERVATION-v1"
+        },
+        {
+          "Kind": "weight",
+          "Implementation": "reference-weight",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "reference-integration",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "weight",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-weight",
+          "Version": "2.1.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "login",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-login",
+          "Version": "2.1.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-camera",
+          "Version": "2.1.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-upload",
+          "Version": "2.1.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-integration",
+          "Version": "2.1.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "extension:reference.parcel-capabilities/strict-wcs",
+          "Version": "2.1.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "observation",
+          "Implementation": "extension:reference.barcode/barcode-source",
+          "Version": "1.2.0",
+          "Contract": "CONTROLLED-OBSERVATION-v1"
+        }
+      ]
+    },
+    {
+      "Id": "sportmaster-rcs-builtin-reference",
+      "Providers": [
+        {
+          "Kind": "observation",
+          "Implementation": "manual",
+          "Version": "1.0.0",
+          "Contract": "CONTROLLED-OBSERVATION-v1"
+        },
+        {
+          "Kind": "weight",
+          "Implementation": "reference-weight",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
+          "Version": "1.0.2",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
+        }
+      ]
+    },
+    {
+      "Id": "sportmaster-rcs-signed-reference",
+      "Providers": [
+        {
+          "Kind": "observation",
+          "Implementation": "manual",
+          "Version": "1.0.0",
+          "Contract": "CONTROLLED-OBSERVATION-v1"
+        },
+        {
+          "Kind": "weight",
+          "Implementation": "reference-weight",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "weight",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-weight",
+          "Version": "2.1.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "login",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-login",
+          "Version": "2.1.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-camera",
+          "Version": "2.1.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-upload",
+          "Version": "2.1.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "observation",
+          "Implementation": "extension:reference.barcode/barcode-source",
+          "Version": "1.2.0",
+          "Contract": "CONTROLLED-OBSERVATION-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
+          "Version": "1.0.2",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
+        }
+      ]
+    }
+  ]
+}

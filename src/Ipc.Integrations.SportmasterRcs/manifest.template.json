@@ -1,7 +1,7 @@
 {
   "SchemaVersion": 1,
   "Id": "sportmaster.rcs-task",
-  "Version": "1.0.1",
+  "Version": "1.0.2",
   "Runtime": "net10.0",
   "Rid": "any",
   "ContractMajor": 1,

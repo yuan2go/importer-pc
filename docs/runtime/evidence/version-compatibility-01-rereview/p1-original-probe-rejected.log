@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/version-compatibility/importer-pc/scripts/application_compatibility.py", line 205, in <module>
+    verified = verify_record(a.record, a.package, json.loads(a.configuration.read_bytes()) if a.configuration else None)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/yuan/.codex/worktrees/version-compatibility/importer-pc/scripts/application_compatibility.py", line 195, in verify_record
+    verify_run_events(r, record_path.parent/r['EventsFile'])
+  File "/Users/yuan/.codex/worktrees/version-compatibility/importer-pc/scripts/application_compatibility.py", line 96, in verify_run_events
+    raise ValueError('Recorded effective configuration differs from original run snapshot')
+ValueError: Recorded effective configuration differs from original run snapshot

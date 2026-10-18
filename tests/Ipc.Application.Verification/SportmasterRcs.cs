@@ -17,7 +17,7 @@ static class SportmasterRcs
 {
     static void Check(bool value, string message)
     { if (!value) throw new Exception("FAIL RCS20: " + message); Console.WriteLine("PASS RCS20: " + message); }
-    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.0.1", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
+    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.0.2", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
     {
         ["source"] = "TEST_READER", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83", ["quantity"] = "1",
         ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "100000",
@@ -145,7 +145,7 @@ static class SportmasterRcs
             ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), config);
             ExtensionStore.AtomicWrite(Path.Combine(directory, "extension-store.json"), new ParcelExtensionStoreConfiguration(store.Root, trustFile));
             var launch = new BusinessLaunch(directory, Path.Combine(root, run, "data"), null, null);
-            var factory = new ParcelCapabilityFactory(launch);
+            var factory = new ParcelCapabilityFactory(launch, BusinessCompatibility.Read(typeof(SportmasterFlow).Assembly), typeof(SportmasterFlow).Assembly);
             Check(factory.Catalog().Providers.Single(x => x.Package == installed.Package && x.Module == module.Id).Requirements.Query == false, "installed exact signed module is discoverable with Query=false");
             var app = SportmasterApplication.Create(launch, factory);
             try { await app.StartAsync(CancellationToken.None); return app; } catch { await app.DisposeAsync(); throw; }

@@ -1,3 +1,5 @@
+> 当前版本声明和新发行清单见[版本管理指南](version-compatibility-01.md)；以下22/P2版本均按历史候选身份读取，现行公共契约继承质量闭环01。
+
 # Application架构22 · 运行和兼容指南
 
 [现行设计](../design/application-architecture-22.md) · [工作包](../work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md)。22原阶段开工main ea881293c888a824f26c9f9fa07352a22786206b及PR20/21属于形成时身份；本页操作已随PR26复核修复更新，当前源码与证据见[交付记录](architecture-quality-audit-02-results.md)。参考装配为独立F-02工程，不是旧现场迁移。Windows实际NOT_RUN；真实SDK/认证/WCS/PLC/采集关联/离场复位及现场BLOCKED。软件暂停不等于安全急停。

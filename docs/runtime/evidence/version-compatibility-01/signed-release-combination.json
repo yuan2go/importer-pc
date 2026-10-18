@@ -1,0 +1,275 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "SignedHostVerification",
+  "RunId": "cc3eecd5290646299fd3deef6aa4a980",
+  "Status": "PASS",
+  "StartedAt": "2026-10-18T16:25:39.405502+00:00",
+  "FinishedAt": "2026-10-18T16:25:41.20271+00:00",
+  "ApplicationId": "wcs-to-plc",
+  "BusinessVersion": "1.2.1",
+  "BusinessAssemblySha256": "D68947D64F981C942E8F70C4EDF008DE5567F2E054F25506E99ECB14DE4EC78F",
+  "CompatibilitySha256": "CBBCEDEFBB77D4E59D7FF9CA3179AE4BC0072A619D11B39F34E292D8CDFE4542",
+  "HostContractSha256": "479FA735BFB559A7428CB312CAEEC93C5398EEA0FBF43F68372DA727EA72AA32",
+  "ApplicationContractSha256": "3AA8541BC1B06630F7467A712583FF2CD8A8F3CB5A213BCA9F7F4DFE7182F86F",
+  "Package": {
+    "Id": "reference.parcel-capabilities",
+    "Version": "2.0.1",
+    "ManifestSha256": "57A5820223B55CC4893DF5BA416CB1467BBADF30EF6BA18068EFF72427CD150C"
+  },
+  "PackageSha256": "46B60E3485AD1CA33534CD805D90133C337F9BAC1EABC80AB90BF28264AF618F",
+  "Configuration": {
+    "SchemaVersion": 3,
+    "ApplicationId": "wcs-to-plc",
+    "StationId": "reference-17",
+    "Mode": "Simulation",
+    "Weight": {
+      "Source": "Measured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": null,
+      "MaximumAgeMs": 3000,
+      "WaitTimeoutMs": 15000
+    },
+    "Reader": {
+      "Role": "parcel-reader",
+      "Driver": "manual",
+      "DeviceId": "wcs-to-plc.camera",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    "Scale": {
+      "Kind": "weight",
+      "Implementation": "extension:reference.parcel-capabilities/parcel-weight",
+      "Version": "2.0.1",
+      "InstanceId": "weight.signed",
+      "Target": "reference://signed/weight",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {},
+      "Package": {
+        "Id": "reference.parcel-capabilities",
+        "Version": "2.0.1",
+        "ManifestSha256": "57A5820223B55CC4893DF5BA416CB1467BBADF30EF6BA18068EFF72427CD150C"
+      },
+      "Module": "parcel-weight",
+      "Enabled": true
+    },
+    "Wcs": {
+      "Kind": "integration",
+      "Implementation": "extension:reference.parcel-capabilities/strict-wcs",
+      "Version": "2.0.1",
+      "InstanceId": "integration.signed",
+      "Target": "reference://signed/integration",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "peer-root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-b5e6ee25270e4b55b13f27b59b6021d3/external-peers"
+      },
+      "Package": {
+        "Id": "reference.parcel-capabilities",
+        "Version": "2.0.1",
+        "ManifestSha256": "57A5820223B55CC4893DF5BA416CB1467BBADF30EF6BA18068EFF72427CD150C"
+      },
+      "Module": "strict-wcs",
+      "Enabled": true
+    },
+    "Plc": {
+      "Kind": "plc",
+      "Implementation": "extension:reference.parcel-capabilities/parcel-plc",
+      "Version": "2.0.1",
+      "InstanceId": "plc.signed",
+      "Target": "reference://signed/plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "peer-root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-b5e6ee25270e4b55b13f27b59b6021d3/external-peers",
+        "complete-on-query": "true"
+      },
+      "Package": {
+        "Id": "reference.parcel-capabilities",
+        "Version": "2.0.1",
+        "ManifestSha256": "57A5820223B55CC4893DF5BA416CB1467BBADF30EF6BA18068EFF72427CD150C"
+      },
+      "Module": "parcel-plc",
+      "Enabled": true
+    },
+    "Extensions": {
+      "Packages": [
+        {
+          "Id": "reference.parcel-capabilities",
+          "Version": "2.0.1",
+          "ManifestSha256": "57A5820223B55CC4893DF5BA416CB1467BBADF30EF6BA18068EFF72427CD150C"
+        }
+      ],
+      "Instances": []
+    },
+    "QueueCapacity": 64,
+    "TimeoutMs": 1500,
+    "MaximumOperations": 10000,
+    "Login": {
+      "Kind": "login",
+      "Implementation": "extension:reference.parcel-capabilities/parcel-login",
+      "Version": "2.0.1",
+      "InstanceId": "login.signed",
+      "Target": "reference://signed/login",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "alice,bob"
+      },
+      "Package": {
+        "Id": "reference.parcel-capabilities",
+        "Version": "2.0.1",
+        "ManifestSha256": "57A5820223B55CC4893DF5BA416CB1467BBADF30EF6BA18068EFF72427CD150C"
+      },
+      "Module": "parcel-login",
+      "Enabled": true
+    },
+    "Images": {
+      "Camera": {
+        "Kind": "camera",
+        "Implementation": "extension:reference.parcel-capabilities/parcel-camera",
+        "Version": "2.0.1",
+        "InstanceId": "camera.signed",
+        "Target": "reference://signed/camera",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {},
+        "Package": {
+          "Id": "reference.parcel-capabilities",
+          "Version": "2.0.1",
+          "ManifestSha256": "57A5820223B55CC4893DF5BA416CB1467BBADF30EF6BA18068EFF72427CD150C"
+        },
+        "Module": "parcel-camera",
+        "Enabled": true
+      },
+      "Uploader": {
+        "Kind": "upload",
+        "Implementation": "extension:reference.parcel-capabilities/parcel-upload",
+        "Version": "2.0.1",
+        "InstanceId": "upload.signed",
+        "Target": "reference://signed/upload",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "peer-root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-b5e6ee25270e4b55b13f27b59b6021d3/external-peers"
+        },
+        "Package": {
+          "Id": "reference.parcel-capabilities",
+          "Version": "2.0.1",
+          "ManifestSha256": "57A5820223B55CC4893DF5BA416CB1467BBADF30EF6BA18068EFF72427CD150C"
+        },
+        "Module": "parcel-upload",
+        "Enabled": true
+      },
+      "MaximumBytes": 4194304,
+      "Strategy": "BeforeMain",
+      "TotalBytes": 33554432,
+      "MaximumPending": 32
+    },
+    "SessionLifetimeMs": 28800000,
+    "MaintenanceLogin": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "WeightValidity": "UntilDispatch",
+    "Topology": {
+      "Readers": [
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "wcs-to-plc.camera",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Positions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "wcs-to-plc.camera",
+          "CameraInstanceId": null,
+          "ScaleInstanceId": null
+        }
+      ]
+    },
+    "Retention": {
+      "ResidentHistory": 200,
+      "MinimumFreeBytes": 67108864
+    }
+  },
+  "ConfigurationHash": "0FB0C89503C36FDCE4C844281CD3D29AFB1386C06A91A3FFB093F345BAD5CAE6",
+  "Providers": [
+    {
+      "Kind": "weight",
+      "Implementation": "extension:reference.parcel-capabilities/parcel-weight",
+      "Version": "2.0.1",
+      "Contract": "PARCEL-REFERENCE-v1"
+    },
+    {
+      "Kind": "integration",
+      "Implementation": "extension:reference.parcel-capabilities/strict-wcs",
+      "Version": "2.0.1",
+      "Contract": "PARCEL-REFERENCE-v1"
+    },
+    {
+      "Kind": "plc",
+      "Implementation": "extension:reference.parcel-capabilities/parcel-plc",
+      "Version": "2.0.1",
+      "Contract": "PARCEL-REFERENCE-v1"
+    },
+    {
+      "Kind": "login",
+      "Implementation": "extension:reference.parcel-capabilities/parcel-login",
+      "Version": "2.0.1",
+      "Contract": "PARCEL-REFERENCE-v1"
+    },
+    {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1"
+    },
+    {
+      "Kind": "camera",
+      "Implementation": "extension:reference.parcel-capabilities/parcel-camera",
+      "Version": "2.0.1",
+      "Contract": "PARCEL-REFERENCE-v1"
+    },
+    {
+      "Kind": "upload",
+      "Implementation": "extension:reference.parcel-capabilities/parcel-upload",
+      "Version": "2.0.1",
+      "Contract": "PARCEL-REFERENCE-v1"
+    },
+    {
+      "Kind": "observation",
+      "Implementation": "manual",
+      "Version": "1.0.0",
+      "Contract": "CONTROLLED-OBSERVATION-v1"
+    }
+  ],
+  "ImplementationHashes": {
+    "weight.signed": "990A8D4DC30B5E645D1C4A3B7FFD9DE93D6836B7F8635F611D9A4B51EA341F82",
+    "integration.signed": "990A8D4DC30B5E645D1C4A3B7FFD9DE93D6836B7F8635F611D9A4B51EA341F82",
+    "plc.signed": "990A8D4DC30B5E645D1C4A3B7FFD9DE93D6836B7F8635F611D9A4B51EA341F82",
+    "login.signed": "990A8D4DC30B5E645D1C4A3B7FFD9DE93D6836B7F8635F611D9A4B51EA341F82",
+    "camera.signed": "990A8D4DC30B5E645D1C4A3B7FFD9DE93D6836B7F8635F611D9A4B51EA341F82",
+    "upload.signed": "990A8D4DC30B5E645D1C4A3B7FFD9DE93D6836B7F8635F611D9A4B51EA341F82",
+    "maintenance": "2F8AC00201F83C42B5A5EDE59B912A81FBA5C6B5E22BB674F1554AF06C52EEAF"
+  },
+  "Checks": [
+    "signature and exact dependencies",
+    "compiled business compatibility",
+    "provider requirements",
+    "actual login/capture/weight/upload/WCS/PLC",
+    "original physical query",
+    "orderly stop"
+  ],
+  "Assurance": "SIMULATION_REFERENCE_ONLY",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED"
+}

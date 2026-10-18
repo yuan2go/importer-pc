@@ -1,0 +1,12 @@
+{
+  "SchemaVersion": 1,
+  "ObservedAtUtc": "2026-10-18T16:33:23.017857+00:00",
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/29",
+  "State": "OPEN",
+  "Base": "main",
+  "VerifiedCreatedHead": "1570b32f04d887347f4dbcc7dc74cf612a21c2b5",
+  "Mergeable": "MERGEABLE",
+  "RuntimeSourceCommit": "c4e131968964458467c3a03eddf90832ef85b309",
+  "ReceiptScope": "Documentation-only follow-up; never replaces source/candidate identity",
+  "MainMerged": false
+}

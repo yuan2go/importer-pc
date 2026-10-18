@@ -1,0 +1,172 @@
+{
+  "RuntimeSourceCommit": "5e3282b02616d905a628a6cbeeb9a7fbe4228a79",
+  "OriginalReviewCustody": "PASS_ALL_ORIGINAL_BYTES_UNCHANGED",
+  "Files": [
+    {
+      "Path": "README.md",
+      "Sha256": "59b21109834c687117bc604ab54d2e475c1859a581895ddae75a3027ddfab5af"
+    },
+    {
+      "Path": "archive-checks.json",
+      "Sha256": "accb67f7278b8320369f8e43ee15789f5e4b9c0b9ff3be24fe003fba03012f76"
+    },
+    {
+      "Path": "archive-comparison.json",
+      "Sha256": "e7ab81b8b9840191413ac1a020e73421d033740024a2bb90f49e95f0a1fff343"
+    },
+    {
+      "Path": "candidates.json",
+      "Sha256": "6783a85587bdcdc087fde224d0dd5d861e601a53d0b990cab86a39754069f08d"
+    },
+    {
+      "Path": "combination-index.json",
+      "Sha256": "09f7a8cfbfa1f8c6793c0f90059bb05eae990e1b160ed22c18606ccc771c4908"
+    },
+    {
+      "Path": "csharp-green-build.log",
+      "Sha256": "f790754ba0f256145552e22b674a7dd8d44a831f9cba0fdeabe3da6034fa0e51"
+    },
+    {
+      "Path": "csharp-green.log",
+      "Sha256": "d88cfd81d54a49d70cc6e2518e47d485cf2921fe48ef9486dd3dc0252d75cfd7"
+    },
+    {
+      "Path": "csharp-red-build.log",
+      "Sha256": "dbf014e53b8c590b50e0e5b019c7cb0934b323cd99ab6abdb93d26cc5d9b9a92"
+    },
+    {
+      "Path": "csharp-red.log",
+      "Sha256": "189f97c896e2a033f80d54957cccfebbe9d7ed2d22d8026576de1ce3bd132326"
+    },
+    {
+      "Path": "direct-plc-wpf-locked-build.log",
+      "Sha256": "9b3ad9ce78e64ec085a1ecef80a2e4e034f5c3a3d81963ef5653871074ed536d"
+    },
+    {
+      "Path": "directplc-wpf-build.log",
+      "Sha256": "f04e66c89b78f07db39927d70907b3c53f9479b9dd6d247fc02d2fbf57c8a6a6"
+    },
+    {
+      "Path": "historical-record-reverification.json",
+      "Sha256": "5bf4846efb8898e9c8adc5211218ebf96f886297d703d270a28835030534208b"
+    },
+    {
+      "Path": "maintenance-il-build.log",
+      "Sha256": "5937c6ce9abd3f81b211e6a771f501bd6ab29bd81a4a0d0a048a000de8a848eb"
+    },
+    {
+      "Path": "maintenance-il-probe.cs.txt",
+      "Sha256": "00de2850092d9f9561e071db95c009875e7a02c3ecca6e9878a5d8631e616974"
+    },
+    {
+      "Path": "maintenance-il-probe.csproj.txt",
+      "Sha256": "38e201f047792df530db8c7d157c2b6b19d1ed2e4134dba5da5c59e97d3b0da2"
+    },
+    {
+      "Path": "maintenance-il.json",
+      "Sha256": "22bd61f4ab44c70393b8c4f73814dd2e67d29ac2a02877e07473cb4fb41def7f"
+    },
+    {
+      "Path": "original-review-custody.json",
+      "Sha256": "d275bed37c26732af1405c7fdb5c2f5d03c70c26f54728e426b543947a173741"
+    },
+    {
+      "Path": "p1-original-probe-rejected.log",
+      "Sha256": "dc46507b4b138a1fa8f489d619c283a8f5494370b1fb28643075741db12fcfd5"
+    },
+    {
+      "Path": "published-maintenance-portable-build.log",
+      "Sha256": "57fff2b44e2520cc03ed9afbe61816afcf9f48b03c419407091e0ebba45d173e"
+    },
+    {
+      "Path": "published-maintenance-portable.json",
+      "Sha256": "b83fb81a8ba35a144091969b3c2f4678f16854f4111b1bd2b84e2209328b765d"
+    },
+    {
+      "Path": "python-all-final.log",
+      "Sha256": "891b1e58f4ece9b3520b3c354a8a49cc9ac31c10d251782daa8e659192325d48"
+    },
+    {
+      "Path": "python-all.log",
+      "Sha256": "5eaad23529eb025f49742d207f5af1614b974472aa1a5eb9e5441ecc4fa2e3af"
+    },
+    {
+      "Path": "python-green.log",
+      "Sha256": "5c4b07ae11d236167a6a4b09ebc6cf5e28e215ecb8ff3c7d03e0d1ae269aa993"
+    },
+    {
+      "Path": "python-red.log",
+      "Sha256": "3a63b8919ce7c3322bf425cea6cd421ec4416b19e8b481516241b74ff23f9dcf"
+    },
+    {
+      "Path": "sportmaster-win-x64-package.log",
+      "Sha256": "5a14dc8e3c9d520e414de139a2454c9d9c91a4050566ac372db9027b25130a7a"
+    },
+    {
+      "Path": "sportmaster-wpf-build.log",
+      "Sha256": "29303f4bf3d0cc40823eee6a094dad4765e0944021f53a945d852a16d083b593"
+    },
+    {
+      "Path": "sportmaster-wpf-locked-build.log",
+      "Sha256": "a9e4d8dd13ab86a32887ddda7a9ea47edbb25fcb0ca0dcf14d49a5bd1db490bb"
+    },
+    {
+      "Path": "wcs-attached.json",
+      "Sha256": "513936adb3627c91d55a5c782272c85c0772e6098869b187c7245d62d8a77cb5"
+    },
+    {
+      "Path": "wcs-attached.json.events.jsonl",
+      "Sha256": "cb3aad66af2d9f12311250f983274449db20f39255f6bb1f0f38a759138b0ab6"
+    },
+    {
+      "Path": "wcs-attached.log",
+      "Sha256": "92612730811ad8d67cf761052553a198874b965de1c4705e50c0cbc3f3ca2097"
+    },
+    {
+      "Path": "wcs-before-main.json",
+      "Sha256": "7783999972910ff5c94fbfedb15486fcdfd03e9e963b54b950f710533429c60f"
+    },
+    {
+      "Path": "wcs-before-main.json.events.jsonl",
+      "Sha256": "f5fdeddd2288b2724615b6f1f4165b203c6329ee33866f0b2602619cba7701bf"
+    },
+    {
+      "Path": "wcs-before-main.log",
+      "Sha256": "877877ad9d8a94392ed6acd0fdab4af45f0aafae88acea3b80d8043fa1799dda"
+    },
+    {
+      "Path": "wcs-default.json",
+      "Sha256": "70ef4026829c9ea1e377b67ec2fad5483a1161a8102cefec67e05107f9da1e66"
+    },
+    {
+      "Path": "wcs-default.json.events.jsonl",
+      "Sha256": "bce68c741e5652831570270ac11b71a23edc191f13d2bd1bea6ee2ddfb33ff85"
+    },
+    {
+      "Path": "wcs-default.log",
+      "Sha256": "5e4133b490901ef608b3dcacab639f6a023b9b00621d9716803e2630e7c0af24"
+    },
+    {
+      "Path": "wcs-to-plc-package.log",
+      "Sha256": "dfd7f42d94980d2b5214dcdcf2746ba1a78a3d688af50c3e2e3fd57a2e836ede"
+    },
+    {
+      "Path": "wcs-to-plc-wpf-locked-build.log",
+      "Sha256": "e2b24befb8cb200e302d5b7f861dfca16471b9d78cc6674b1474db73498bb653"
+    },
+    {
+      "Path": "wcstoplc-wpf-build.log",
+      "Sha256": "df97b9b21ce36e6df421e0dd3728dcd3524aa0d49ab1beed6701640667615921"
+    },
+    {
+      "Path": "windows-load-attempt.json",
+      "Sha256": "6cbcd9faa64eae23ef01e60f23918b0db71bb44aa0f30d584a2e87e9f3cff835"
+    },
+    {
+      "Path": "windows-load-confirmation.log",
+      "Sha256": "aebe831d8c70d7faf7762bd71e695a391bf0d713953d7da72b15eb931b3a8a9d"
+    }
+  ],
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED"
+}

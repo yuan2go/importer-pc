@@ -1,0 +1,92 @@
+test_business_version_matches_every_declared_composition (test_application_compatibility.CompatibilityTests.test_business_version_matches_every_declared_composition) ... ok
+test_configuration_and_business_record_tampering_rejected (test_application_compatibility.CompatibilityTests.test_configuration_and_business_record_tampering_rejected) ... ok
+test_exact_candidate_configuration_events_and_provider_identity (test_application_compatibility.CompatibilityTests.test_exact_candidate_configuration_events_and_provider_identity) ... ok
+test_failure_and_interruption_never_become_pass (test_application_compatibility.CompatibilityTests.test_failure_and_interruption_never_become_pass) ... ok
+test_finish_does_not_issue_pass_without_snapshot (test_application_compatibility.CompatibilityTests.test_finish_does_not_issue_pass_without_snapshot) ... FAIL
+test_input_event_cannot_be_dropped_by_record_schema_downgrade (test_application_compatibility.CompatibilityTests.test_input_event_cannot_be_dropped_by_record_schema_downgrade) ... FAIL
+test_legacy_record_keeps_original_bytes_and_requires_matching_snapshot (test_application_compatibility.CompatibilityTests.test_legacy_record_keeps_original_bytes_and_requires_matching_snapshot) ... FAIL
+test_original_snapshot_is_required_even_with_rehashed_events (test_application_compatibility.CompatibilityTests.test_original_snapshot_is_required_even_with_rehashed_events) ... FAIL
+test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) ... 
+  test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) (field='OptionalFeatures') ... FAIL
+  test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) (field='AttachedUpload') ... FAIL
+  test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) (field='OperationId') ... FAIL
+  test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) (field='State') ... FAIL
+test_self_consistent_configuration_relabelling_cannot_reuse_events (test_application_compatibility.CompatibilityTests.test_self_consistent_configuration_relabelling_cannot_reuse_events) ... FAIL
+
+======================================================================
+FAIL: test_finish_does_not_issue_pass_without_snapshot (test_application_compatibility.CompatibilityTests.test_finish_does_not_issue_pass_without_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/version-compatibility/importer-pc/scripts/test_application_compatibility.py", line 137, in test_finish_does_not_issue_pass_without_snapshot
+    with self.assertRaisesRegex(ValueError,'snapshot'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_input_event_cannot_be_dropped_by_record_schema_downgrade (test_application_compatibility.CompatibilityTests.test_input_event_cannot_be_dropped_by_record_schema_downgrade)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/version-compatibility/importer-pc/scripts/test_application_compatibility.py", line 146, in test_input_event_cannot_be_dropped_by_record_schema_downgrade
+    r=json.loads(output.read_bytes()); self.assertEqual(r['SchemaVersion'],2)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_legacy_record_keeps_original_bytes_and_requires_matching_snapshot (test_application_compatibility.CompatibilityTests.test_legacy_record_keeps_original_bytes_and_requires_matching_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/version-compatibility/importer-pc/scripts/test_application_compatibility.py", line 163, in test_legacy_record_keeps_original_bytes_and_requires_matching_snapshot
+    with self.assertRaisesRegex(ValueError,'snapshot'): verify_record(output,root)
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_original_snapshot_is_required_even_with_rehashed_events (test_application_compatibility.CompatibilityTests.test_original_snapshot_is_required_even_with_rehashed_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/version-compatibility/importer-pc/scripts/test_application_compatibility.py", line 129, in test_original_snapshot_is_required_even_with_rehashed_events
+    with self.assertRaisesRegex(ValueError,'snapshot'): verify_record(output,root)
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) (field='OptionalFeatures')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/version-compatibility/importer-pc/scripts/test_application_compatibility.py", line 118, in test_scenario_and_result_must_be_observed
+    with self.assertRaisesRegex(ValueError,'scenario|result'): verify_record(output,root)
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) (field='AttachedUpload')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/version-compatibility/importer-pc/scripts/test_application_compatibility.py", line 118, in test_scenario_and_result_must_be_observed
+    with self.assertRaisesRegex(ValueError,'scenario|result'): verify_record(output,root)
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) (field='OperationId')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/version-compatibility/importer-pc/scripts/test_application_compatibility.py", line 118, in test_scenario_and_result_must_be_observed
+    with self.assertRaisesRegex(ValueError,'scenario|result'): verify_record(output,root)
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_scenario_and_result_must_be_observed (test_application_compatibility.CompatibilityTests.test_scenario_and_result_must_be_observed) (field='State')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/version-compatibility/importer-pc/scripts/test_application_compatibility.py", line 118, in test_scenario_and_result_must_be_observed
+    with self.assertRaisesRegex(ValueError,'scenario|result'): verify_record(output,root)
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_self_consistent_configuration_relabelling_cannot_reuse_events (test_application_compatibility.CompatibilityTests.test_self_consistent_configuration_relabelling_cannot_reuse_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/version-compatibility/importer-pc/scripts/test_application_compatibility.py", line 106, in test_self_consistent_configuration_relabelling_cannot_reuse_events
+    with self.assertRaisesRegex(ValueError,'input|snapshot'): verify_record(output,root,r['EffectiveConfiguration'])
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.053s
+
+FAILED (failures=9)

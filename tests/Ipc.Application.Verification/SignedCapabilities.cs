@@ -9,7 +9,7 @@ using System.Text;
 
 static class SignedCapabilities
 {
-    public static async Task Run(string workspace, string root, string packageFile, string trustFile, bool qualifyPrerequisite = false)
+    public static async Task Run(string workspace, string root, string packageFile, string trustFile, bool qualifyPrerequisite = false, bool declaredCompatibility = false)
     {
         void Pass(bool condition, string reason) { if (!condition) throw new Exception("FAIL AC19 signed: " + reason); Console.WriteLine("PASS AC19 signed: " + reason); }
         using var signer = qualifyPrerequisite ? RSA.Create(3072) : null;
@@ -48,7 +48,8 @@ static class SignedCapabilities
         {
             Login = B("login"), Scale = B("weight"), Wcs = B("integration"), Plc = B("plc"), Weight = new(WeightSource.Measured, WeightUnit.Kg, 3), Images = new(B("camera"), B("upload")), Extensions = new([package.Package], [])
         };
-        var factory = new ParcelCapabilityFactory(launch);
+        var factory = new ParcelCapabilityFactory(launch, declaredCompatibility ? BusinessCompatibility.Read(typeof(WcsToPlcFlow).Assembly) : null);
+        if (declaredCompatibility) Pass(true, "actual signed providers checked against compiled business compatibility declaration");
         void Qualify(ParcelConfiguration selected)
         {
             if (signer is null) return;
@@ -79,6 +80,9 @@ static class SignedCapabilities
         var catalog = factory.Catalog(); Pass(catalog.Providers.Count(x => x.Package == package.Package) == 7 && catalog.InstalledPackages.Length == 1, "installed providers discoverable before any enable or binding");
         Qualify(strict);
         ExtensionStore.AtomicWrite(Path.Combine(directory, "business.json"), strict);
+        var runId = Wire.Id(); var startedAt = DateTimeOffset.UtcNow;
+        var combinationFile = Path.Combine(root, "signed-business-combination.json");
+        if (declaredCompatibility) ExtensionStore.AtomicWrite(combinationFile, new { SchemaVersion = 1, Kind = "SignedHostVerification", RunId = runId, Status = "RUNNING", StartedAt = startedAt, Package = package.Package });
         await using (var app = WcsToPlcApplication.Create(launch, factory))
         {
             await app.StartAsync(CancellationToken.None);
@@ -93,6 +97,20 @@ static class SignedCapabilities
             Pass(op.State == ParcelState.PlcAccepted && op.Upload?.State == StageState.Accepted && op.Wcs?.State == StageState.Accepted, "installed/enabled/bound providers actually execute image upload, measured WCS and original PLC chain");
             await app.ReconcileAsync(op.Id);
             Pass((await app.SnapshotAsync()).Operations.Single().State == ParcelState.PhysicalCompleted, "signed declaration and original query prove only the reference peer physical fact");
+            if (declaredCompatibility)
+            {
+                var actual = (await app.SnapshotAsync()).Configuration.Effective;
+                await app.StopAsync(CancellationToken.None);
+                await app.DisposeAsync();
+                ExtensionStore.AtomicWrite(combinationFile, new { SchemaVersion = 1, Kind = "SignedHostVerification", RunId = runId, Status = "PASS", StartedAt = startedAt, FinishedAt = DateTimeOffset.UtcNow,
+                    ApplicationId = actual.ApplicationId, BusinessVersion = BusinessCompatibility.VersionOf(typeof(WcsToPlcFlow).Assembly),
+                    BusinessAssemblySha256 = Wire.FileHash(typeof(WcsToPlcFlow).Assembly.Location), CompatibilitySha256 = BusinessCompatibility.Fingerprint(typeof(WcsToPlcFlow).Assembly),
+                    HostContractSha256 = Wire.FileHash(typeof(ExtensionStore).Assembly.Location), ApplicationContractSha256 = Wire.FileHash(typeof(IParcelApplication).Assembly.Location),
+                    Package = package.Package, PackageSha256 = Wire.FileHash(packageFile), Configuration = actual, ConfigurationHash = Wire.Hash(Wire.Encode(actual)),
+                    Providers = factory.SelectedProviders(actual), op.ImplementationHashes, Checks = new[] { "signature and exact dependencies", "compiled business compatibility", "provider requirements", "actual login/capture/weight/upload/WCS/PLC", "original physical query", "orderly stop" },
+                    Assurance = "SIMULATION_REFERENCE_ONLY", Windows = "NOT_RUN", RealEquipment = "BLOCKED" });
+                Console.WriteLine("SignedBusinessCombination=" + combinationFile);
+            }
         }
         Console.WriteLine("PASS AC19 SIGNED COMPLETE: one exact package, seven modules, parameter/requirement guards and real application activation");
     }

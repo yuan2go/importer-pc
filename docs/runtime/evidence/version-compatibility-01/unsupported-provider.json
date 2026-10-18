@@ -1,0 +1,112 @@
+{
+  "SchemaVersion": 1,
+  "RunId": "e8192758a91543118e34e56234380881",
+  "Status": "FAIL",
+  "StartedAt": "2026-10-18T16:27:05.252356+00:00",
+  "Command": [
+    "dotnet",
+    "Ipc.Assembly.dll",
+    "--config",
+    "unsupported-provider-config"
+  ],
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED",
+  "Assurance": "SIMULATION_REFERENCE_ONLY",
+  "Application": "direct-plc",
+  "BusinessVersion": "1.2.1",
+  "SourceCommit": "c4e131968964458467c3a03eddf90832ef85b309",
+  "Target": "portable",
+  "CandidateFilesSha256": "0E4EBC146AE112151FF61F2B542C383A68BEC8153D08B2881CE5741F77EE9A28",
+  "ReleaseSha256": "59FB4ADBD1396DB14869C378A323825B7399FC7FD758F297129B12B571E282D7",
+  "AssemblyManifestSha256": "C55819BE97AD851CFE880278377106D1781FD7DDF6A5F5EEF207ECCB94DDCD70",
+  "CompatibilitySha256": "B41B01A040E2C99E0AC5C11BA16B850F05B81A52A5467BA71F4EBA51755E849C",
+  "InputConfiguration": {
+    "SchemaVersion": 3,
+    "ApplicationId": "direct-plc",
+    "StationId": "reference-17",
+    "Mode": "Simulation",
+    "Weight": {
+      "Source": "Configured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": 1.25,
+      "MaximumAgeMs": 3000
+    },
+    "Reader": {
+      "Role": "parcel-reader",
+      "Driver": "manual",
+      "DeviceId": "direct-plc.camera",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    "Scale": null,
+    "Wcs": null,
+    "Plc": {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "9.0.0",
+      "InstanceId": "direct-plc.plc",
+      "Target": "reference://plc/direct-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "complete-on-query": "true"
+      },
+      "Package": null,
+      "Module": null
+    },
+    "Extensions": null,
+    "QueueCapacity": 64,
+    "TimeoutMs": 1500,
+    "MaximumOperations": 10000,
+    "Login": null,
+    "Images": null,
+    "MaintenanceLogin": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      }
+    },
+    "WeightValidity": "UntilDispatch",
+    "Topology": {
+      "Readers": [
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "direct-plc.camera",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Positions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "direct-plc.camera"
+        }
+      ]
+    },
+    "Retention": {
+      "ResidentHistory": 200,
+      "MinimumFreeBytes": 67108864
+    }
+  },
+  "InputConfigurationSha256": "FB35284084AFF4E6656741041FA111037A4E446C87C76B8B1BBEA5B1CEE3A74A",
+  "FinishedAt": "2026-10-18T16:27:05.802244+00:00",
+  "EventsSha256": "280C7E6A52DC5FB6C1576E7D4BEC6A80CEEB907151CF1EDE3157C7E22DF16476",
+  "EventsFile": "unsupported-provider.json.events.jsonl",
+  "Failure": {
+    "Type": "ValueError",
+    "Message": "Actual startup rejected unsupported provider version before device construction"
+  },
+  "PublicProjection": {
+    "OriginalRecordSha256": "2a4ed8049dfb6cda4ad4817047711c08ddaffceb80b7d4296b7db2df2523bf6f",
+    "ChangedFields": [
+      "Command local path arguments only"
+    ],
+    "Reason": "Replace local user paths with role aliases; original local bytes retained; configuration and event digests unchanged"
+  }
+}

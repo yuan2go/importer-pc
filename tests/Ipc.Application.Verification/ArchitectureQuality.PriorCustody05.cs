@@ -23,6 +23,14 @@ static partial class ArchitectureQuality
             "Verify historical Query and preserve prior false raw disposition",new Ipc.Application.Sportmaster.SportmasterFlow(),
             (_,_,_,_)=>{queryCalls++;throw new Exception("Prior proved outcome must not call another Query");},expectedWalHash:WalHash(originalDb));
         Check(queryCalls==0&&File.Exists(Path.Combine(root,"prior-custody.backup.db.recovery/COMPLETED.json")),"prior OutcomeReconciled uses complete backup and existing original Query without any external call");
+        using(var auditDb=new Microsoft.Data.Sqlite.SqliteConnection("Data Source="+originalDb))
+        {
+            auditDb.Open();using var command=auditDb.CreateCommand();command.CommandText="SELECT detail FROM parcel_audit WHERE event='LegacyPriorCustodyUpgradePrepared'";
+            using var detail=System.Text.Json.JsonDocument.Parse((string)command.ExecuteScalar()!);var entry=detail.RootElement;
+            Check(entry.GetProperty("OriginalOccurrence").GetString()==occurrence && entry.GetProperty("Reason").GetString()=="Verify historical Query and preserve prior false raw disposition" &&
+                entry.GetProperty("Actor").GetString()==Environment.UserName && entry.GetProperty("Backup").GetString()==Path.Combine(root,"prior-custody.backup.db"),
+                "prior custody migration retains maintenance actor/reason/original occurrence and immutable backup identity");
+        }
         files=Directory.EnumerateFiles(Path.Combine(target,"receipts"),"*.json").ToDictionary(p=>p,Wire.FileHash);
         ParcelConfiguration config;using(var repo=new ParcelRepository(target,"sportmaster"))
         {

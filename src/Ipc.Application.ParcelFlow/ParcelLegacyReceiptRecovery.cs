@@ -44,6 +44,8 @@ public static class ParcelLegacyReceiptRecovery
                     throw new InvalidDataException("Prior outcome custody proof incomplete; original reader marker retained");
                 repository.ValidateRawInventory();
                 await BackupAsync(repository,directory,backup,envelope,registerBackup).ConfigureAwait(false);
+                repository.Commit(null,"LegacyPriorCustodyUpgradePrepared",
+                    OutcomeDetail(occurrence,original.QueryOccurrence!,prior,reason,backup,originalRelease),paused:true);
                 // Full-set eligibility, including other owners, is checked below while
                 // the old marker remains intact. This path makes no external call.
             }

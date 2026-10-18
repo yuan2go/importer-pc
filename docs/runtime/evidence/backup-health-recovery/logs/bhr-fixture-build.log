@@ -1,0 +1,18 @@
+  正在确定要还原的项目…
+  已还原 WORKTREE/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 197 毫秒)。
+  已还原 WORKTREE/src/Ipc.Fixture/Ipc.Fixture.csproj (用时 192 毫秒)。
+  6 个项目(共 8 个)是最新的，无法还原。
+  Ipc.Platform -> WORKTREE/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> WORKTREE/src/Ipc.Application.Contracts/bin/Debug/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Reference.Protocol -> WORKTREE/src/Ipc.Reference.Protocol/bin/Debug/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Drivers -> WORKTREE/src/Ipc.Drivers/bin/Debug/net10.0/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> WORKTREE/src/Ipc.Application.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> WORKTREE/src/Ipc.Integrations/bin/Debug/net10.0/Ipc.Integrations.dll
+  Ipc.Adapters -> WORKTREE/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Fixture -> WORKTREE/src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:02.76

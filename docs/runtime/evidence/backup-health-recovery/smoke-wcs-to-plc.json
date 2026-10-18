@@ -1,0 +1,21 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "c78746a8f4417136f8244b514326a83bba58345d",
+  "Application": "wcs-to-plc",
+  "Target": "portable",
+  "Checks": [
+    "candidate file hashes",
+    "actual selected assembly startup",
+    "camera-to-final-reference-chain",
+    "persistent original phases on restart",
+    "orderly stop"
+  ],
+  "AttachedUpload": false,
+  "ExternalPeerProcess": false,
+  "OptionalFeatures": false,
+  "OptionalChecks": [],
+  "State": "PlcAccepted",
+  "OperationId": "bbe28a71eaca4925913baa717e1d9e63",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED"
+}

@@ -1,0 +1,26 @@
+{
+  "Status": "FAIL_INHERITED_ASSET_ISSUES",
+  "Scope": "public",
+  "Counts": {
+    "files": 1587,
+    "references": 885,
+    "json": 541,
+    "boards": 18,
+    "slides": 18,
+    "pptx": 1,
+    "images": 34
+  },
+  "InheritedErrorCounts": {
+    "private_metadata_marker": 2,
+    "pptx_media_type_mismatch": 265
+  },
+  "AffectedHistoricalFilesUnchangedFromBaseMain": [
+    "docs/ui/ss-ui-vis-001-v1.1/README.source.md",
+    "docs/ui/ss-ui-vis-001-v1.1/design/供包工作站_可编辑UI画板_v1.1.pptx",
+    "docs/ui/ss-ui-vis-001-v1.1/界面图册.html"
+  ],
+  "NewFileHashLinkErrors": 0,
+  "ValidatorUnchanged": true,
+  "Source": "tools/verify_archive.py with bundled Python/Pillow; raw local report /tmp/bhr-archive.json",
+  "BusinessAcceptance": "NOT_ESTABLISHED_BY_ARCHIVE_CHECK"
+}

@@ -1,0 +1,25 @@
+  正在确定要还原的项目…
+  已还原 WORKTREE/src/Ipc.Platform/Ipc.Platform.csproj (用时 686 毫秒)。
+  已还原 WORKTREE/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 687 毫秒)。
+  已还原 WORKTREE/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 687 毫秒)。
+  已还原 WORKTREE/src/Ipc.Components/Ipc.Components.csproj (用时 687 毫秒)。
+  已还原 WORKTREE/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 687 毫秒)。
+  已还原 WORKTREE/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 687 毫秒)。
+  已还原 WORKTREE/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 687 毫秒)。
+  已还原 WORKTREE/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 687 毫秒)。
+  已还原 WORKTREE/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 7 毫秒)。
+  已还原 WORKTREE/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 7 毫秒)。
+  已还原 WORKTREE/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 7 毫秒)。
+  Ipc.Platform -> WORKTREE/.artifacts/bhr-c78746a/wcs-to-plc/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> WORKTREE/.artifacts/bhr-c78746a/wcs-to-plc/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> WORKTREE/.artifacts/bhr-c78746a/wcs-to-plc/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> WORKTREE/.artifacts/bhr-c78746a/wcs-to-plc/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> WORKTREE/.artifacts/bhr-c78746a/wcs-to-plc/build-intermediates/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> WORKTREE/.artifacts/bhr-c78746a/wcs-to-plc/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> WORKTREE/.artifacts/bhr-c78746a/wcs-to-plc/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> WORKTREE/.artifacts/bhr-c78746a/wcs-to-plc/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> WORKTREE/.artifacts/bhr-c78746a/wcs-to-plc/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> WORKTREE/.artifacts/bhr-c78746a/wcs-to-plc/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> WORKTREE/.artifacts/bhr-c78746a/wcs-to-plc/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> WORKTREE/.artifacts/bhr-c78746a/wcs-to-plc/app/
+{"Package": "WORKTREE/.artifacts/bhr-c78746a/wcs-to-plc.zip", "Sha256": "7f9b2d6b5d51065c38e842514cc0d465fff2569415c4bbfe69c6bd609c43db84", "SourceCommit": "c78746a8f4417136f8244b514326a83bba58345d", "Application": "wcs-to-plc", "Target": "portable"}

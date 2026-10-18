@@ -15,7 +15,9 @@
 - [x] 在现有`tests/Ipc.Application.Verification`增加`--backup-health-recovery`风险选择器；实际TCP延迟headers/body、取消和恢复篡改负例先跑main基线，保留失败。Windows路径通过同一BackupAsync旅程在Windows复验，本机不冒称实机复现。
 - [x] 新增ParcelFlow内部恢复文件规范组件；`ParcelCommands.BackupAsync`和`ParcelRecovery.Restore`复用路径/清单检查，保留失败残件和原始业务数据。
 - [x] 统一ParcelRuntime健康探测入口并修改启动、巡检、阶段调用；ReferencePeer限制健康响应读取，不吞调用取消。停机在发送前保留Prepared、发送后保留Unknown，不把停机视为worker故障。
-- [ ] 运行新增选择器、受影响17/18/19参考恢复测试及必要构建；发布portable解压启动冒烟。若无需UI修改不做UI重构或全量测试。
-- [ ] 保存实际日志/hash/命令和源码SHA，更新运行说明与manifest，开发分支提交并创建main PR，不合并。
+- [x] 运行新增选择器、受影响17/18/19参考恢复测试及必要构建；发布portable解压启动冒烟。若无需UI修改不做UI重构或全量测试。
+- [x] 保存实际日志/hash/命令和源码SHA，更新运行说明与manifest，开发分支提交并创建main PR，不合并。
 
 Windows实机NOT_RUN；真实SDK/设备/协议/现场BLOCKED，Production仍拒绝。原评审线程的GitHub状态不由局部PASS自动关闭；历史失败和D/RV不倒写。
+
+交付：[PR #20](https://github.com/yuan2go/importer-pc/pull/20)，运行源码c78746a；[实际结果](../runtime/backup-health-recovery.md)。只提交main PR，不合并。

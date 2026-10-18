@@ -31,6 +31,8 @@ public sealed partial class ParcelRuntime
         if (!query && ((!attached && !CanDispatch(op) || attached && !CanSendUpload(op)) ||
             !PredecessorsAccepted(op, kind) || (kind is ParcelStage.Wcs or ParcelStage.Plc || kind == ParcelStage.Upload && factory.Requirements(stage.Request.Binding).MeasuredWeight) && !WeightReady(op))) return op;
         if (stopping.IsCancellationRequested) return op;
+        // Adapter dictionaries are mutable; never expose the owned original intent.
+        var deliveryRequest = Wire.Decode<FrozenRequest>(Wire.Encode(stage.Request));
         if (!query)
         {
             if (stage.State != StageState.Prepared || stage.Attempts != 0) throw new InvalidOperationException("Only a never-attempted prepared intent can be dispatched");
@@ -45,10 +47,10 @@ public sealed partial class ParcelRuntime
         {
             reply = await ExternalAsync(() => PortCallAsync(port, async () => kind switch
             {
-                ParcelStage.Wcs => query ? await ports.Wcs!.QueryAsync(stage.Request, budget.Token).ConfigureAwait(false) : await ports.Wcs!.ResolveSlotAsync(stage.Request, budget.Token).ConfigureAwait(false),
-                ParcelStage.Plc => query ? await ports.Plc!.QueryAsync(stage.Request, budget.Token).ConfigureAwait(false) : await ports.Plc!.SubmitAsync(stage.Request, budget.Token).ConfigureAwait(false),
-                ParcelStage.Capture => query ? await ((IImageCamera)port).QueryAsync(stage.Request, budget.Token).ConfigureAwait(false) : await ((IImageCamera)port).CaptureAsync(stage.Request, budget.Token).ConfigureAwait(false),
-                ParcelStage.Upload => query ? await ports.Uploader!.QueryAsync(stage.Request, budget.Token).ConfigureAwait(false) : await ports.Uploader!.UploadAsync(stage.Request, ReadImage(op, op.Image!), budget.Token).ConfigureAwait(false),
+                ParcelStage.Wcs => query ? await ports.Wcs!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Wcs!.ResolveSlotAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
+                ParcelStage.Plc => query ? await ports.Plc!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Plc!.SubmitAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
+                ParcelStage.Capture => query ? await ((IImageCamera)port).QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ((IImageCamera)port).CaptureAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
+                ParcelStage.Upload => query ? await ports.Uploader!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Uploader!.UploadAsync(deliveryRequest, ReadImage(op, op.Image!), budget.Token).ConfigureAwait(false),
                 _ => throw new InvalidOperationException("Unregistered stage")
             }, budget.Token)).ConfigureAwait(false);
             op = operations[op.Id];

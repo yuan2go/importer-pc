@@ -155,6 +155,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         {
             var identity = currentOperator;
             if (!SessionValid) return false;
+            // Driver buffers remain driver-owned after callback return.
+            observation = observation with { Codes = observation.Codes?.ToArray() ?? [] };
             item = new ParcelObservation(observation, identity); Interlocked.Increment(ref pendingObservations);
         }
         if (positionQueues[positionId].Writer.TryWrite(item)) return true;

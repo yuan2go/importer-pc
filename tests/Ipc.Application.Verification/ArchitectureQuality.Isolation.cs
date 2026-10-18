@@ -51,8 +51,27 @@ static partial class ArchitectureQuality
             Check(op.State == ParcelState.PhysicalCompleted && op.Reason is null && op.Upload!.Failure!.StartsWith("RawUnavailable:") && !op.ImageReleased, "restart assigns missing raw upload occurrence to attached responsibility, preserving completed main facts");
         }
         await QueryHistoryChecks();
+        await BoundaryOwnershipChecks();
         await DeviceChecks();
         await HttpChecks();
+    }
+    static async Task BoundaryOwnershipChecks()
+    {
+        FaultFactory? producer = null;
+        await using (var app = await Open(Config("sportmaster"), "observation-copy", f => producer = new(f) { MutateObservation = true, HoldFirstObservation = true }))
+        {
+            app.EmitReferenceAt("left", "hold-array", "001", "first-array-source"); await producer!.Entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+            app.EmitReferenceAt("left", "array-original", "002", "second-array-source"); producer.Release.TrySetResult();
+            var s = await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "array-original" && o.State == ParcelState.SlotResolved));
+            Check(s.Operations.Single(o => o.AdmissionId == "array-original").ParcelCode == "002", "driver buffer reuse after callback cannot change the queued admitted barcode");
+        }
+        await using (var app = await Open(Config("sportmaster"), "request-copy", f => new FaultFactory(f) { MutateRequest = true }))
+        {
+            app.EmitReferenceAt("left", "immutable-request", "003", "immutable-request-source");
+            var op = (await Wait(app, s => s.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved)).Operations.Single();
+            Check(!op.Wcs!.Request.Binding.Parameters.ContainsKey("provider-annotation") && !op.FrozenConfiguration.Wcs!.Parameters.ContainsKey("provider-annotation") && Wire.Hash(Wire.Encode(op.FrozenConfiguration)) == op.ConfigurationHash,
+                "adapter mutation of detached request parameters cannot alter original intent or frozen configuration");
+        }
     }
     static async Task DeviceChecks()
     {
@@ -95,7 +114,7 @@ static partial class ArchitectureQuality
         public Task<StageReply> SubmitAsync(FrozenRequest r, CancellationToken t) => inner.SubmitAsync(r, t);
         public async Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t)
         {
-            var reply = await inner.QueryAsync(r, t); var count = Interlocked.Increment(ref confirmations);
+            var reply = await inner.QueryAsync(r, t); var count = Interlocked.Increment(ref confirmations); r.Binding.Parameters["provider-query-annotation"] = "adapter-owned";
             return reply is null ? null : reply with { Id = Wire.Id(), PhysicalCompleted = count > 70, At = DateTimeOffset.UtcNow, Evidence = "Synthetic delayed authority confirmation " + count };
         }
         public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
@@ -103,7 +122,7 @@ static partial class ArchitectureQuality
     }
     sealed class FaultFactory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory
     {
-        public bool WrongHealth, ExpireHealth, EmptyUploadQuery, BlockCapture, ReaderStopped;
+        public bool WrongHealth, ExpireHealth, EmptyUploadQuery, BlockCapture, ReaderStopped, MutateObservation, HoldFirstObservation, MutateRequest;
         public TaskCompletionSource Entered = new(TaskCreationOptions.RunContinuationsAsynchronously), Release = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void Validate(ParcelConfiguration c) => inner.Validate(c);
@@ -113,6 +132,11 @@ static partial class ArchitectureQuality
             var p = inner.Create(c);
             if (p.Wcs is { } w) p = p with { Wcs = new Wcs(w, this) };
             if (p.Uploader is { } u) p = p with { Uploader = new Upload(u, this) };
+            if (MutateObservation)
+            {
+                var wrapped = p.Readers!.ToDictionary(x => x.Key, x => (IControlledObservationSource)new Reader(x.Value, this));
+                p = p with { Reader = wrapped[p.Reader.DeviceId], Readers = wrapped };
+            }
             if (BlockCapture)
             {
                 var reader = new Reader(p.Reader, this); var camera = new Camera(p.Camera!, this);
@@ -134,7 +158,11 @@ static partial class ArchitectureQuality
             var h = await inner.HealthAsync(t); return h with { InstanceId = f.WrongHealth ? "wrong.port" : h.InstanceId, ValidUntil = f.ExpireHealth ? h.ConfirmedAt.AddMilliseconds(50) : h.ValidUntil };
         }
         public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
-        public Task<StageReply> ResolveSlotAsync(FrozenRequest r, CancellationToken t) => inner.ResolveSlotAsync(r, t);
+        public async Task<StageReply> ResolveSlotAsync(FrozenRequest r, CancellationToken t)
+        {
+            if (f.HoldFirstObservation && r.AdmissionId == "hold-array") { f.Entered.TrySetResult(); await f.Release.Task; }
+            var reply = await inner.ResolveSlotAsync(r, t); if (f.MutateRequest) r.Binding.Parameters["provider-annotation"] = "adapter-owned"; return reply;
+        }
         public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t) => inner.QueryAsync(r, t);
         public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
         public ValueTask DisposeAsync() => inner.DisposeAsync();
@@ -168,7 +196,8 @@ static partial class ArchitectureQuality
         public string ConfirmationSource => inner.ConfirmationSource;
         public Task StartAsync(Func<Observation, bool> r, Action<string, string, DeviceHealth> h, CancellationToken t) => inner.StartAsync(r, h, t);
         public Task StartControlledAsync(string e, Func<Observation, bool> r, Action<DeviceHealthConfirmation> h, CancellationToken t) => inner.StartControlledAsync(e, r, h, t);
-        public bool Emit(string k, string a, string[] c, int? n, string s) => ((ISyntheticObservationInput)inner).Emit(k, a, c, n, s);
+        public bool Emit(string k, string a, string[] c, int? n, string s)
+        { var accepted = ((ISyntheticObservationInput)inner).Emit(k, a, c, n, s); if (f.MutateObservation && a == "array-original") c[0] = "999"; return accepted; }
         public Task StopAsync(CancellationToken t) { f.ReaderStopped = true; return inner.StopAsync(t); }
         public ValueTask DisposeAsync() => inner.DisposeAsync();
         public IImageCamera BindCapture(CapabilityBinding b, string d) => ((IReaderImageCapture)inner).BindCapture(b, d);

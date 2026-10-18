@@ -2,7 +2,7 @@
 
 ## 当前工程入口
 
-PR #19已合并至执行基线main **08286542bbd007433d85be2cb8d129b366b007e0**。当前工作包：[CAPABILITY-RELIABILITY-CLOSURE-20](work-packages/WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20.md)；[20设计](design/capability-reliability-20.md)补充[19职责设计](design/application-capability-19.md)。开放PR #20为独立备份/健康恢复工作，重叠文件合并时需复核，不覆盖其修改。[19运行](runtime/application-capability-19.md)、[19历史结果](runtime/application-capability-19-results.md)和c213aad六候选保留原身份；Windows实际NOT_RUN。[本轮前原字节](archive/pre-capability-reliability-20/README.md)。
+PR #19已合并至执行基线main **08286542bbd007433d85be2cb8d129b366b007e0**。当前工作包：[CAPABILITY-RELIABILITY-CLOSURE-20](work-packages/WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20.md)；[20设计](design/capability-reliability-20.md)、[20运行/部署](runtime/capability-reliability-20.md)、[实施回执](runtime/capability-reliability-20-results.md)补充[19职责设计](design/application-capability-19.md)。开放PR #20为独立备份/健康恢复工作，重叠文件合并时需复核，不覆盖其修改。[19运行](runtime/application-capability-19.md)、[19历史结果](runtime/application-capability-19-results.md)和c213aad六候选保留原身份；Windows实际NOT_RUN。[本轮前原字节](archive/pre-capability-reliability-20/README.md)。
 
 [17实施](runtime/application-convergence-17.md)、[17结果](runtime/application-convergence-17-results.md)、[18实施](runtime/site-capabilities-18.md)、[18结果](runtime/site-capabilities-18-results.md)按其原SHA和形成时范围读取，不作为本轮完成证据。Supply/Inspection兼容机制、D/RV和公开范围继续有效。Windows实际运行NOT_RUN；真实SDK/协议/现场BLOCKED。
 

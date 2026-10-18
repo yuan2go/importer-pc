@@ -19,11 +19,11 @@ public sealed partial class ParcelRuntime
             var identity = await ExternalAsync(() => ports.Login.AuthenticateAsync(subject, proof, budget.Token)).ConfigureAwait(false);
             if (identity is null) return new("Rejected", "Authentication rejected; no operator changed", repository.Revision);
             if (identity.Subject != subject || string.IsNullOrWhiteSpace(identity.DisplayName) || identity.DisplayName.Length > 128 ||
-                identity.DisplayName.Any(char.IsControl) || identity.Authority != Effective.Login!.Target || !identity.Simulation || identity.ExpiresAt <= DateTimeOffset.UtcNow ||
+                identity.DisplayName.Any(char.IsControl) || identity.Authority != Effective.Login!.Target || identity.Simulation != factory.SimulationIdentity(Effective.Login!) || identity.ExpiresAt <= DateTimeOffset.UtcNow ||
                 !Guid.TryParseExact(identity.SessionId, "N", out _) || identity.AuthenticatedAt > DateTimeOffset.UtcNow || DateTimeOffset.UtcNow - identity.AuthenticatedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs))
                 return new("Rejected", "Authentication evidence is invalid", repository.Revision);
             repository.Commit(null, "OperatorAuthenticated", Wire.Encode(identity)); session.Set(Wire.Decode<OperatorIdentity>(Wire.Encode(identity)));
-            return new("Authenticated", "SIMULATION identity; frozen only when a parcel is admitted", repository.Revision);
+            return new("Authenticated", identity.Simulation ? "SIMULATION identity; frozen only when a parcel is admitted" : "Authenticated provider identity; frozen only at admission", repository.Revision);
         }
         catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException)
         { return new("Unavailable", "Authentication unavailable: " + ex.GetType().Name, repository?.Revision ?? 0); }
@@ -54,10 +54,10 @@ public sealed partial class ParcelRuntime
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token); budget.CancelAfter(Effective.TimeoutMs);
             var identity = await ExternalAsync(() => ports.Maintenance.AuthenticateAsync(subject, proof, budget.Token)).ConfigureAwait(false);
             if (identity is null || identity.Subject != subject || identity.Authority != (Effective.MaintenanceLogin?.Target ?? "reference://maintenance") ||
-                !Guid.TryParseExact(identity.SessionId, "N", out _) || identity.AuthenticatedAt > DateTimeOffset.UtcNow || identity.ExpiresAt is null || !identity.Simulation || identity.Grants?.Contains("maintenance") != true || identity.ExpiresAt <= DateTimeOffset.UtcNow)
+                !Guid.TryParseExact(identity.SessionId, "N", out _) || identity.AuthenticatedAt > DateTimeOffset.UtcNow || identity.ExpiresAt is null || identity.Simulation != (Effective.MaintenanceLogin is null || factory.SimulationIdentity(Effective.MaintenanceLogin)) || identity.Grants?.Contains("maintenance") != true || identity.ExpiresAt <= DateTimeOffset.UtcNow)
                 return new("Rejected", "Maintenance authentication rejected", repository.Revision);
             maintenanceSession.Set(identity); repository.Commit(null, "MaintenanceAuthenticated", Wire.Encode(identity));
-            return new("Authorized", "SIMULATION maintenance grant; pause alone provides no authorization", repository.Revision);
+            return new("Authorized", identity.Simulation ? "SIMULATION maintenance grant; pause alone provides no authorization" : "Authenticated maintenance grant; pause alone provides no authorization", repository.Revision);
         }
         finally { gate.Release(); }
     }

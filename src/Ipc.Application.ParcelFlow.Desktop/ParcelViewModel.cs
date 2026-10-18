@@ -13,19 +13,21 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public event PropertyChangedEventHandler? PropertyChanged;
     public IParcelApplication Application => application;
     public string Title => title;
+    public Visibility SimulationVisibility => Snapshot?.Configuration.Effective.Mode == RunMode.Simulation ? Visibility.Visible : Visibility.Collapsed;
+    public string EnvironmentStatus => Snapshot?.Configuration.Effective.Mode == RunMode.Production ? "Production · 软件暂停不是安全急停 · 资格不代替现场安全联锁" : "Simulation · 软件暂停不是安全急停 · 不操作真实设备";
     public string Flow => flow;
     ParcelSnapshot? snapshot;
     ParcelOperation? selected;
     string message = "等待相机读码；模拟工程不操作真实设备。";
-    public ParcelSnapshot? Snapshot { get => snapshot; private set { snapshot = value; Changed(); Changed(nameof(Operations)); Changed(nameof(Current)); Changed(nameof(BlockingReasons)); Changed(nameof(Status)); Changed(nameof(CurrentWeight)); Changed(nameof(CurrentStage)); Changed(nameof(CurrentSlot)); Changed(nameof(Health)); Changed(nameof(ConfigurationState)); Changed(nameof(LoginVisibility)); Changed(nameof(Session)); Changed(nameof(OperationOperator)); Changed(nameof(CurrentImage)); Changed(nameof(UploadState)); Changed(nameof(CanAdmit)); Changed(nameof(CanResume)); Changed(nameof(CanContinue)); Changed(nameof(CanContinueUpload)); Changed(nameof(CanAbandon)); Changed(nameof(CanConfigure)); } }
+    public ParcelSnapshot? Snapshot { get => snapshot; private set { snapshot = value; Changed(); Changed(nameof(Operations)); Changed(nameof(Current)); Changed(nameof(BlockingReasons)); Changed(nameof(Status)); Changed(nameof(CurrentWeight)); Changed(nameof(CurrentStage)); Changed(nameof(CurrentSlot)); Changed(nameof(Health)); Changed(nameof(ConfigurationState)); Changed(nameof(LoginVisibility)); Changed(nameof(Session)); Changed(nameof(SimulationVisibility)); Changed(nameof(EnvironmentStatus)); Changed(nameof(OperationOperator)); Changed(nameof(CurrentImage)); Changed(nameof(UploadState)); Changed(nameof(CaptureState)); Changed(nameof(CanAdmit)); Changed(nameof(CanResume)); Changed(nameof(CanContinue)); Changed(nameof(CanContinueUpload)); Changed(nameof(CanAbandon)); Changed(nameof(CanConfigure)); } }
     public ParcelOperation[] Operations => Snapshot?.Operations ?? [];
     public ParcelOperation? Current => Snapshot?.Operations.FirstOrDefault();
     public string BlockingReasons => string.Join("\n", Snapshot?.BlockingReasons ?? []);
     public string Status => Snapshot?.State ?? "正在初始化";
-    public string Health => string.Join("   ·   ", Snapshot?.Health.Select(x => x.InstanceId + " " + (x.Ready ? "参考就绪" : "未就绪") + " " + x.ConfirmedAt.ToLocalTime().ToString("HH:mm:ss")) ?? []);
+    public string Health => string.Join("   ·   ", Snapshot?.Health.Select(x => x.InstanceId + " " + (x.Ready ? "就绪" : "未就绪") + " " + x.ConfirmedAt.ToLocalTime().ToString("HH:mm:ss")) ?? []);
     public Visibility LoginVisibility => Snapshot?.Configuration.Effective.Login is null ? Visibility.Collapsed : Visibility.Visible;
     public string OperatorSubject { get; set; } = "alice";
-    public string Session => Snapshot?.Configuration.Effective.Login is null ? "登录未启用" : Snapshot.CurrentOperator is { } user ? "当前操作员：" + user.DisplayName + " · 模拟身份" : "等待操作员认证";
+    public string Session => Snapshot?.Configuration.Effective.Login is null ? "登录未启用" : Snapshot.CurrentOperator is { } user ? "当前操作员：" + user.DisplayName + (user.Simulation ? " · 模拟身份" : " · " + user.Authority) : "等待操作员认证";
     public string OperationOperator => Current?.Operator is { } user ? "原作业操作员：" + user.DisplayName + " · " + user.SessionId : "原作业没有登录身份";
     public bool CanAdmit => Snapshot?.Availability?.Admit == true;
     public bool CanResume => Snapshot?.Availability?.Resume == true;
@@ -33,12 +35,13 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public bool CanContinue => Snapshot?.Availability?.ContinuePrepared.Contains((Selected ?? Current)?.Id ?? "") == true;
     public bool CanContinueUpload => Snapshot?.Availability?.ContinueUpload.Contains((Selected ?? Current)?.Id ?? "") == true;
     public bool CanAbandon => Snapshot?.Availability?.AbandonUnsubmitted.Contains((Selected ?? Current)?.Id ?? "") == true;
+    public string CaptureState => "采集：" + (Current?.Capture?.State.ToString() ?? "未准备") + " · " + Current?.Capture?.Failure;
     public string UploadState => Current?.Upload is { } upload ? "附加/前置上传：" + upload.State + " · 尝试 " + upload.Attempts + " · " + upload.Failure : "上传未准备";
     public string CurrentImage => Current?.Image is { } image ? (image.UploadedUri is null ? "图像已采集，上传未确认" : "图像已上传 · " + image.UploadedUri + (Current.ImageReleased ? " · 临时原件已释放" : "")) : Snapshot?.Configuration.Effective.Images is null ? "传图未启用" : "图像尚未取得";
     public async Task LoginAsync(string proof) { var r = await application.LoginAsync(OperatorSubject, proof); Message = r.Status + " · " + r.Reason; }
     public async Task LogoutAsync() { var r = await application.LogoutAsync(); Message = r.Status + " · " + r.Reason; }
     public string CurrentSlot => Current?.Slot ?? "未取得";
-    public string CurrentWeight => Current?.Weight is { } w ? w.Value.ToString("F" + w.Precision, CultureInfo.InvariantCulture) + " " + w.Unit + " · " + (w.Source == WeightSource.Measured ? "实测参考输入" : "配置补全") : "未参与或未取得；见当前重量策略";
+    public string CurrentWeight => Current?.Weight is { } w ? w.Value.ToString("F" + w.Precision, CultureInfo.InvariantCulture) + " " + w.Unit + " · " + (w.Source == WeightSource.Measured ? "实测" : "配置补全") : "未参与或未取得；见当前重量策略";
     public string CurrentStage => Current is null ? "等待包裹入场" : Current.State switch
     {
         ParcelState.ImageUnknown => "图像阶段待核对 · 禁止重传或重复放货",
@@ -46,11 +49,11 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         ParcelState.CapturingImage => "正在采集当前包裹图像",
         ParcelState.UploadingImage => "正在上传原图像",
         ParcelState.WeightTimedOut => "本件称重超时 · 暂停并检查实体后处置",
-        ParcelState.Abandoned => "未提交作业已处置 · 原上传责任单独保留",
+        ParcelState.Abandoned => "未发送意图已处置 · 原接受与上传事实保留",
         ParcelState.WaitingWeight => "等待同一包裹的有效重量",
         ParcelState.SlotResolved => "WCS 格口已取得",
         ParcelState.PlcAccepted => "PLC 业务已接受 · 物理完成待核对",
-        ParcelState.PhysicalCompleted => "参考端报告物理完成",
+        ParcelState.PhysicalCompleted => "组件报告物理完成 · 见原回执",
         ParcelState.PlcUnknown or ParcelState.WcsUnknown => "结果待核对 · 请勿重复放货",
         ParcelState.WcsRejected or ParcelState.PlcRejected => "业务拒绝 · 查看原始原因",
         ParcelState.Blocked => "作业阻断 · 保留现场包裹",
@@ -66,10 +69,14 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public string MeasurementValue { get; set; } = "1.250";
     public string BackupPath { get; set; } = "";
     public bool Busy { get; private set; }
+    long refreshGeneration;
     public async Task RefreshAsync()
     {
         var currentId = Selected?.Id;
-        Snapshot = await application.SnapshotAsync();
+        var generation = Interlocked.Increment(ref refreshGeneration);
+        var next = await application.SnapshotAsync();
+        if (generation != Volatile.Read(ref refreshGeneration) || Snapshot is { } previous && next.RuntimeId == previous.RuntimeId && next.Revision < previous.Revision) return;
+        Snapshot = next;
         if (currentId is not null) Selected = Operations.FirstOrDefault(x => x.Id == currentId);
     }
     public void LoadConfigurationDraft() { if (Snapshot is not null) { ConfigurationDraft = Wire.Encode(Snapshot.Configuration.Pending ?? Snapshot.Configuration.Effective); Changed(nameof(ConfigurationDraft)); } }
@@ -80,6 +87,22 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         try { await action(); await RefreshAsync(); }
         catch (Exception ex) { Message = ex.GetType().Name + ": " + ex.Message; }
         finally { Busy = false; Changed(nameof(Busy)); }
+    }
+    public async Task PauseAsync()
+    {
+        // Independent control lane: ordinary write mutual exclusion cannot hide Pause.
+        try
+        {
+            for (var retry = 0; retry < 3; retry++)
+            {
+                var s = await application.SnapshotAsync();
+                var r = await application.CommandAsync(new(Wire.Id(), s.Revision, "Pause"));
+                if (r.Status == "Conflict") continue;
+                Message = r.Status + " · " + r.Reason; await RefreshAsync(); return;
+            }
+            Message = "暂停遇到连续修订冲突，请重试；状态仍由应用服务确认。";
+        }
+        catch (Exception ex) { Message = "暂停失败：" + ex.Message; }
     }
     public async Task CommandAsync(string kind, string? owner = null)
     {

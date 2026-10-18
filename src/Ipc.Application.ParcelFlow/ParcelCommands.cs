@@ -11,6 +11,7 @@ public sealed partial class ParcelRuntime
         {
             if (configuration is null || repository is null) throw new InvalidOperationException("Application has not started");
             List<string> reasons = [];
+            if (factory.AdmissionFailure(Effective) is { } qualificationFailure) reasons.Add(qualificationFailure);
             if (failure is not null) reasons.Add(failure);
             if (overload != 0) reasons.Add("Overload: rejected callback; inspect parcel and acknowledge while paused");
             if (!SessionValid) reasons.Add("Operator authentication required for new admission");
@@ -18,7 +19,7 @@ public sealed partial class ParcelRuntime
             if (readerHealth?.IsValid(DateTimeOffset.UtcNow) != true) reasons.Add("Reader confirmation missing/expired");
             if (!ImageCapacityAvailable()) reasons.Add("Temporary image capacity/backlog exhausted; existing originals retained");
             if (operations.Values.Any(NeedsReconciliation)) reasons.Add("Original stage outcome or receipt responsibility is unresolved");
-            foreach (var op in operations.Values.Where(x => x.State == ParcelState.WeightTimedOut || x.Weight is not null && !WeightReady(x) && !definition.MainSettled(x)))
+            foreach (var op in operations.Values.Where(x => x.State == ParcelState.WeightTimedOut || WeightExpired(x) || x.Weight is not null && !WeightReady(x) && !MainTerminated(x)))
                 reasons.Add("Measurement missing/expired for admission " + op.AdmissionId);
             List<CapabilityHealth> health = [.. capabilityHealth.Values.Where(x => x.InstanceId != ports?.Maintenance?.InstanceId)];
             if (readerHealth is { } reader) health.Add(new(reader.DeviceId, reader.IsValid(DateTimeOffset.UtcNow), reader.ConfirmedAt ?? reader.UpdatedAt, reader.ValidUntil ?? reader.UpdatedAt, reader.ValidityReason(DateTimeOffset.UtcNow) ?? reader.Source));
@@ -60,9 +61,10 @@ public sealed partial class ParcelRuntime
                 case "AbandonUnsubmitted" when command.Owner is not null && operations.TryGetValue(command.Owner, out var abandoned) && CanAbandon(abandoned) &&
                     !string.IsNullOrWhiteSpace(command.Value):
                     Save(abandoned with { State = ParcelState.Abandoned,
+                        Wcs = CancelUnsent(abandoned.Wcs), Plc = CancelUnsent(abandoned.Plc),
                         Upload = abandoned.Upload is { State: StageState.Prepared, Attempts: 0 } u ? u with { State = StageState.Cancelled, Failure = "Local cancellation before any external upload attempt" } : abandoned.Upload,
                         Capture = abandoned.Capture is { State: StageState.Prepared, Attempts: 0 } c ? c with { State = StageState.Cancelled, Failure = "Local cancellation before acquisition" } : abandoned.Capture,
-                        Reason = "Unsubmitted parcel inspected and removed: " + command.Value }, "Abandoned", "No WCS or PLC intent existed; original image/upload responsibility retained"); break;
+                        Reason = "Unsubmitted parcel inspected and removed: " + command.Value }, "Abandoned", "Unsent intentions cancelled locally; original accepted WCS/slot and all request identities retained; no physical completion asserted"); ReleaseCompletedImages(); break;
                 default: return new("Rejected", "Unsupported command or an application guard is closed", repository.Revision);
             }
             var receipt = new BusinessReceipt("Persisted", "Application command committed", repository.Revision);
@@ -71,6 +73,8 @@ public sealed partial class ParcelRuntime
         }
         finally { gate.Release(); }
     }
+    static StageFact? CancelUnsent(StageFact? stage) => stage is { State: StageState.Prepared, Attempts: 0 }
+        ? stage with { State = StageState.Cancelled, Failure = "Inspected local cancellation before any external attempt" } : stage;
     public async Task<BusinessReceipt> StageConfigurationAsync(long expectedRevision, ParcelConfiguration candidate)
     {
         await gate.WaitAsync().ConfigureAwait(false);

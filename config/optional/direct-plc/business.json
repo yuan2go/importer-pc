@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 1,
+  "SchemaVersion": 2,
   "ApplicationId": "direct-plc",
   "StationId": "reference-18",
   "Mode": "Simulation",
@@ -86,5 +86,6 @@
     "Parameters": {
       "subjects": "maintenance"
     }
-  }
+  },
+  "WeightValidity": "AtAssociation"
 }

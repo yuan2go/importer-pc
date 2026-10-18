@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 1,
+  "SchemaVersion": 2,
   "ApplicationId": "wcs-to-plc",
   "StationId": "reference-18",
   "Mode": "Simulation",
@@ -98,5 +98,6 @@
     "Parameters": {
       "subjects": "maintenance"
     }
-  }
+  },
+  "WeightValidity": "AtAssociation"
 }

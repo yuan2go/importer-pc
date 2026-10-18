@@ -98,11 +98,19 @@ def host_inventory(directory):
 
 def validate_module(module):
     required = {'Id', 'Assembly', 'EntryType', 'Kind', 'MaximumInstances'}
-    if not isinstance(module, dict) or not required <= set(module) or set(module) - required - {'Requirements', 'ContractIdentity'}:
+    if not isinstance(module, dict) or not required <= set(module) or set(module) - required - {'Requirements', 'ContractIdentity', 'Assurance'}:
         raise ValueError('Module declaration fields are invalid; schema is supplied separately')
     requirements = module.get('Requirements', {})
-    if not isinstance(requirements, dict) or set(requirements) - {'MeasuredWeight', 'ImageAddress', 'Query', 'PhysicalConfirmation'} or any(type(value) is not bool for value in requirements.values()):
+    if not isinstance(requirements, dict) or set(requirements) - {'MeasuredWeight', 'ImageAddress', 'Query', 'PhysicalConfirmation', 'BusinessAcceptance', 'CompletesOnSubmit'} or any(type(value) is not bool for value in requirements.values()):
         raise ValueError('Invalid typed capability requirements')
+    assurance = module.get('Assurance')
+    if assurance is not None and (not isinstance(assurance, dict) or set(assurance) != {'SchemaVersion', 'Simulation', 'ProtocolEvidence'} or
+                                  type(assurance['SchemaVersion']) is not int or assurance['SchemaVersion'] != 1 or type(assurance['Simulation']) is not bool or
+                                  not isinstance(assurance['ProtocolEvidence'], str) or not 1 <= len(assurance['ProtocolEvidence']) <= 256 or
+                                  any(ord(c) < 32 for c in assurance['ProtocolEvidence'])):
+        raise ValueError('Invalid versioned provider assurance')
+    if requirements.get('CompletesOnSubmit') and not requirements.get('PhysicalConfirmation'):
+        raise ValueError('Completion on submit requires declared physical confirmation')
     contract = module.get('ContractIdentity')
     if contract is not None and (not isinstance(contract, str) or not 1 <= len(contract) <= 128 or not contract.strip() or any(ord(c) < 32 for c in contract)):
         raise ValueError('Invalid bounded provider contract identity')

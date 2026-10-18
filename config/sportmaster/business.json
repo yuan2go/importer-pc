@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 1,
+  "SchemaVersion": 2,
   "ApplicationId": "sportmaster",
   "StationId": "reference-17",
   "Mode": "Simulation",
@@ -48,5 +48,6 @@
     "Parameters": {
       "subjects": "maintenance"
     }
-  }
+  },
+  "WeightValidity": "UntilDispatch"
 }

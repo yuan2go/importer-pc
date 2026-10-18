@@ -18,6 +18,9 @@ public sealed class ParcelRepository : IDisposable
         CREATE TABLE parcel_commands(id TEXT PRIMARY KEY,hash TEXT NOT NULL,receipt TEXT NOT NULL);
         CREATE TABLE parcel_receipts(id TEXT PRIMARY KEY,operation TEXT NOT NULL,stage TEXT NOT NULL,request TEXT NOT NULL,source TEXT NOT NULL,state TEXT NOT NULL,raw_hash TEXT);
         CREATE TABLE parcel_measurements(id TEXT PRIMARY KEY,admission TEXT NOT NULL,body TEXT NOT NULL);
+        """), new(2, """
+        CREATE TABLE parcel_semantics(version INTEGER PRIMARY KEY CHECK(version=2),description TEXT NOT NULL);
+        INSERT INTO parcel_semantics VALUES(2,'Independent weight/capture/upload guards; schema2 weight validity; local unsent disposition');
         """)];
     public long Revision { get; private set; }
     public bool Paused { get; private set; }

@@ -14,7 +14,8 @@ public abstract class FlowDefinition
     public string[] Validate(ParcelConfiguration c)
     {
         List<string> e = [];
-        if (c.SchemaVersion != 1 || c.ApplicationId != Id || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode)) e.Add("Invalid application/station/schema/mode");
+        if (c.SchemaVersion is not (1 or 2) || c.ApplicationId != Id || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode)) e.Add("Invalid application/station/schema/mode");
+        if (c.SchemaVersion == 1 && c.WeightValidity is not null || c.SchemaVersion == 2 && (c.WeightValidity is null || !Enum.IsDefined(c.WeightValidity.Value))) e.Add("Weight validity requires explicit configuration schema 2; legacy schema 1 retains UntilDispatch");
         if (c.QueueCapacity is < 1 or > 4096 || c.TimeoutMs is < 100 or > 30000 || c.MaximumOperations is < 1 or > 100000) e.Add("Invalid resource/time/retention budget");
         if (c.Reader is null || string.IsNullOrWhiteSpace(c.Reader.DeviceId) || c.Reader.Role != "parcel-reader" || string.IsNullOrWhiteSpace(c.Reader.Driver) || string.IsNullOrWhiteSpace(c.Reader.Revision)) e.Add("A stable parcel reader binding is required");
         if (c.Weight is not { } w || !Enum.IsDefined(w.Source) || !Enum.IsDefined(w.Unit) || w.Precision is < 0 or > 6 || w.MaximumAgeMs is < 100 or > 60000 || w.WaitTimeoutMs is < 100 or > 300000) e.Add("Invalid weight policy");
@@ -42,6 +43,8 @@ public sealed record ParcelPorts(IControlledObservationSource Reader, IWeightSou
 public interface IParcelCapabilityFactory : IAsyncDisposable
 {
     CapabilityRequirements Requirements(CapabilityBinding binding) => new(Query: true);
+    bool SimulationIdentity(CapabilityBinding binding) => true;
+    string? AdmissionFailure(ParcelConfiguration configuration) => null;
     CapabilityCatalog Catalog() => new([], []);
     Task<BusinessReceipt> InstallAsync(string file, string sha256) => throw new InvalidOperationException("Installation unavailable");
     ParcelConfiguration Normalize(ParcelConfiguration configuration);

@@ -25,7 +25,7 @@ public partial class ShellWindow : Window
     }
     async void Refresh(object? sender, EventArgs e)
     {
-        if (refreshing || vm.Busy) return;
+        if (refreshing) return;
         refreshing = true;
         try { await vm.RefreshAsync(); } catch (Exception ex) { vm.Message = "状态读取失败：" + ex.Message; }
         finally { refreshing = false; }
@@ -36,7 +36,7 @@ public partial class ShellWindow : Window
     void Window_Click(object s, RoutedEventArgs e) => new ShellWindow(newViewModel(), newViewModel, workstation, layout: compact ? "compact" : "standard") { Owner = this }.Show();
     void Layout_Click(object s, RoutedEventArgs e) { compact = !compact; ApplyLayout(); }
     void ApplyLayout() { FontSize = compact ? 14 : 16; PageHost.Margin = new Thickness(0, compact ? 8 : 12, 0, compact ? 8 : 12); }
-    async void Pause_Click(object s, RoutedEventArgs e) => await vm.RunAsync(() => vm.CommandAsync("Pause"));
+    async void Pause_Click(object s, RoutedEventArgs e) => await vm.PauseAsync();
     async void Resume_Click(object s, RoutedEventArgs e) => await vm.RunAsync(() => vm.CommandAsync("Resume"));
     async void Reconcile_Click(object s, RoutedEventArgs e) => await vm.RunAsync(vm.ReconcileAsync);
     async void Login_Click(object s, RoutedEventArgs e) { var proof = LoginProof.Password; LoginProof.Clear(); await vm.RunAsync(() => vm.LoginAsync(proof)); }

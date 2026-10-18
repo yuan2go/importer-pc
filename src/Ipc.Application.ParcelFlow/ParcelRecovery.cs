@@ -17,7 +17,7 @@ public static class ParcelRecovery
             manifest.Files is null || !manifest.Files.ContainsKey("configuration.json") || manifest.Files.Count > 100000)
             throw new InvalidDataException("Incomplete or changed backup custody manifest");
         var config = Wire.Decode<ConfigurationRevision<Ipc.Application.Contracts.ParcelConfiguration>>(File.ReadAllText(Path.Combine(recovery, "configuration.json")));
-        if (config.Effective.ApplicationId != manifest.Application || Path.GetFileName(target) != manifest.Application || config.Effective.Mode != RunMode.Simulation)
+        if (config.Effective.ApplicationId != manifest.Application || Path.GetFileName(target) != manifest.Application || !Enum.IsDefined(config.Effective.Mode))
             throw new InvalidDataException("Original application/mode/directory identity must be preserved");
         foreach (var file in manifest.Files)
             if (!ProductValidation.IsSafeRelativeFile(recovery, file.Key, out var path) || Wire.FileHash(path) != file.Value)

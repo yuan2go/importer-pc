@@ -11,9 +11,27 @@ static class ParcelCli
         if (!args.Contains("--action")) return false;
         ParcelCapabilityFactory.RegisterContracts();
         var map = args.Chunk(2).ToDictionary(x => x[0], x => x.Length == 2 ? x[1] : throw new ArgumentException("Missing value"));
-        if (map.Keys.Any(x => x is not ("--action" or "--mode" or "--file" or "--extension-trust" or "--dependency-files" or "--extension-root" or "--sha256" or "--destination"))) throw new ArgumentException("Unknown extension option");
+        if (map.Keys.Any(x => x is not ("--action" or "--mode" or "--file" or "--extension-trust" or "--dependency-files" or "--extension-root" or "--sha256" or "--destination" or "--data-root"))) throw new ArgumentException("Unknown extension option");
         var mode = Enum.Parse<RunMode>(map.GetValueOrDefault("--mode", "Simulation"));
-        if (mode != RunMode.Simulation) throw new InvalidDataException("Production reference management is blocked");
+        if (!Enum.IsDefined(mode)) throw new InvalidDataException("Unknown extension management mode");
+        if (map["--action"] is "deployment-identity" or "deployment-check")
+        {
+            var file = Path.GetFullPath(map["--file"]);
+            var launch = new BusinessLaunch(Path.GetDirectoryName(file)!, map.GetValueOrDefault("--data-root", Path.Combine(Path.GetDirectoryName(file)!, "data")), null, null);
+            var factory = new ParcelCapabilityFactory(launch);
+            try
+            {
+                var c = factory.Normalize(Wire.Decode<ParcelConfiguration>(File.ReadAllText(file)));
+                var errors = ParcelAssembly.Definition().Validate(c);
+                if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
+                if (map["--action"] == "deployment-check") factory.Validate(c);
+                Console.WriteLine(Wire.Encode(new { Status = map["--action"] == "deployment-check" ? "PreflightPassed" : "IdentityOnly", ConfigurationHash = Wire.Hash(Wire.Encode(c)),
+                    HostContractSha256 = Wire.FileHash(typeof(ExtensionStore).Assembly.Location), ApplicationContractSha256 = Wire.FileHash(typeof(IParcelApplication).Assembly.Location),
+                    NormalizedConfiguration = c, ExternalCalls = 0, PhysicalReadiness = "NOT_VERIFIED" }));
+                return true;
+            }
+            finally { factory.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+        }
         if (map["--action"] == "restore")
         {
             ParcelRecovery.Restore(map["--file"], map["--destination"]);

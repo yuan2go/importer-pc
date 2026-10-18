@@ -4,6 +4,14 @@ namespace Ipc.Assembly;
 
 public static class ParcelAssembly
 {
+    public static Ipc.Application.ParcelFlow.FlowDefinition Definition() =>
+#if SPORTMASTER
+        new Ipc.Application.Sportmaster.SportmasterFlow();
+#elif DIRECTPLC
+        new Ipc.Application.DirectPlc.DirectPlcFlow();
+#else
+        new Ipc.Application.WcsToPlc.WcsToPlcFlow();
+#endif
     public static IBusinessRuntime Create(BusinessLaunch launch)
     {
         ParcelCapabilityFactory.RegisterContracts();

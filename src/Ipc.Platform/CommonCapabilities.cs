@@ -14,7 +14,7 @@ public interface IImageUploader<TRequest, TReply> : ICapabilityPort
     Task<TReply?> QueryAsync(TRequest original, CancellationToken token);
 }
 public sealed record CapabilityRequirements(bool MeasuredWeight = false, bool ImageAddress = false,
-    bool Query = false, bool PhysicalConfirmation = false);
+    bool Query = false, bool PhysicalConfirmation = false, bool BusinessAcceptance = true, bool CompletesOnSubmit = false);
 public sealed record CapabilityDescriptor(string Kind, string Implementation, string Version, string Contract,
     ParameterField[] Parameters, CapabilityRequirements Requirements, PackageReference? Package = null, string? Module = null);
 public sealed record CapabilityCatalog(CapabilityDescriptor[] Providers, string[] InstalledPackages);

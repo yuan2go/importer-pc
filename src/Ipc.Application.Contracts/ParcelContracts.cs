@@ -29,13 +29,15 @@ public interface IPlcExtension { IPlcPort Create(CapabilityBinding binding); }
 public interface IWcsExtension { IWcsPort Create(CapabilityBinding binding); }
 public interface ISyntheticWeightInput { bool Emit(WeightMeasurement measurement); }
 
+public enum WeightValidity { UntilDispatch, AtAssociation }
 public sealed record ParcelConfiguration(int SchemaVersion, string ApplicationId, string StationId, RunMode Mode,
     WeightPolicy Weight, DeviceBinding Reader, CapabilityBinding? Scale, CapabilityBinding? Wcs, CapabilityBinding? Plc,
     DeploymentExtensions? Extensions = null, int QueueCapacity = 64, int TimeoutMs = 1500, int MaximumOperations = 10000,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] CapabilityBinding? Login = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ImagePolicy? Images = null, int SessionLifetimeMs = 28800000,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] CapabilityBinding[]? CapabilityInstances = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] CapabilityBinding? MaintenanceLogin = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] CapabilityBinding? MaintenanceLogin = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] WeightValidity? WeightValidity = null);
 public enum ParcelState { WaitingWeight, Prepared, ResolvingWcs, WcsUnknown, WcsRejected, SlotResolved, SubmittingPlc, PlcUnknown, PlcRejected, PlcAccepted, PhysicalCompleted, Blocked, CapturingImage, UploadingImage, ImageUnknown, ImageRejected, WeightTimedOut, Abandoned }
 public enum StageState { Prepared, Dispatching, Unknown, Rejected, Accepted, Conflict, Cancelled }
 public sealed record StageFact(FrozenRequest Request, StageState State, int Attempts, StageReply[] Replies, string? Failure = null);

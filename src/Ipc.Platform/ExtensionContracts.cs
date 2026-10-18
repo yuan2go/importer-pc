@@ -15,7 +15,8 @@ public sealed record ParameterField(string Key, string Group, string Label, stri
 public sealed record ExtensionModule(string Id, string Assembly, string EntryType, string Kind,
     int MaximumInstances, ParameterField[] Parameters,
     [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] CapabilityRequirements? Requirements = null,
-    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? ContractIdentity = null);
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? ContractIdentity = null,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] ProviderAssurance? Assurance = null);
 [method: System.Text.Json.Serialization.JsonConstructor]
 public sealed record ExtensionManifest(int SchemaVersion, string Id, string Version, string Publisher,
     string Runtime, string Rid, int ContractMajor, RunMode Mode, string SourceCommit,

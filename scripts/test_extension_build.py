@@ -14,6 +14,9 @@ class ExtensionBuildTests(unittest.TestCase):
         module = dict(Id='camera', Assembly='Provider.dll', EntryType='Provider.Camera', Kind='camera', MaximumInstances=1,
                       ContractIdentity='CAPTURE-v1', Requirements={'Query': True, 'ImageAddress': False})
         builder.validate_module(module)
+        builder.validate_module(dict(module, Assurance=dict(SchemaVersion=1, Simulation=False, ProtocolEvidence='A' * 64), Requirements=dict(PhysicalConfirmation=True, CompletesOnSubmit=True, BusinessAcceptance=True)))
+        with self.assertRaises(ValueError): builder.validate_module(dict(module, Assurance=dict(SchemaVersion=2, Simulation=False, ProtocolEvidence='test')))
+        with self.assertRaises(ValueError): builder.validate_module(dict(module, Requirements=dict(CompletesOnSubmit=True)))
         for patch_value in [{'Requirements': {'Query': 'true'}}, {'Requirements': {'AnyCommand': True}}, {'ContractIdentity': 'x' * 129}, {'Parameters': []}]:
             with self.assertRaises(ValueError): builder.validate_module(dict(module, **patch_value))
 

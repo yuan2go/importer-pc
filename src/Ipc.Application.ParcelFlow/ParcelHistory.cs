@@ -12,7 +12,29 @@ public sealed partial class ParcelRepository
         return c.ExecuteScalar() is long sequence ? sequence : throw new InvalidDataException("Persist admission before preparing an external request");
     }
     public string? OriginalReplyHash(string request, string reply)
-    { if(StorageVersion<4) return null; using var c = db.CreateCommand(); c.CommandText = "SELECT hash FROM parcel_reply_identities WHERE request=$request AND id=$id"; c.Parameters.AddWithValue("$request", request); c.Parameters.AddWithValue("$id", reply); return c.ExecuteScalar() as string; }
+    {
+        if (StorageVersion < 4) return LegacyOriginalReplyHash(request, reply);
+        using var c = db.CreateCommand(); c.CommandText = "SELECT hash FROM parcel_reply_identities WHERE request=$request AND id=$id";
+        c.Parameters.AddWithValue("$request", request); c.Parameters.AddWithValue("$id", reply); return c.ExecuteScalar() as string;
+    }
+    string? LegacyOriginalReplyHash(string request, string reply)
+    {
+        // Old readers have no index. Read their existing occurrence authority in
+        // durable order; never let the bounded projection redefine an original ID.
+        using var c = db.CreateCommand();
+        c.CommandText = "SELECT id,raw_hash FROM parcel_receipts WHERE request=$request ORDER BY rowid";
+        c.Parameters.AddWithValue("$request", request); using var rows = c.ExecuteReader();
+        while (rows.Read())
+        {
+            var file = Path.Combine(rawRoot, rows.GetString(0) + ".json");
+            if (!File.Exists(file)) continue; // Missing Awaiting raw is independently retained.
+            var bytes = File.ReadAllBytes(file); var hash = Convert.ToHexString(SHA256.HashData(bytes));
+            if (!rows.IsDBNull(1) && rows.GetString(1) != hash) throw new InvalidDataException("Original reply hash differs: " + rows.GetString(0));
+            var original = Wire.Decode<StageReply>(System.Text.Encoding.UTF8.GetString(bytes));
+            if (original.Id == reply) return Wire.Hash(Wire.Encode(original));
+        }
+        return null;
+    }
     public long ArchivedCount
     { get { using var c = db.CreateCommand(); c.CommandText = "SELECT count(*) FROM parcel_archives"; return (long)c.ExecuteScalar()!; } }
     public bool HasOverloadAcknowledgement(string identity)

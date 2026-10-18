@@ -1,0 +1,9 @@
+{
+  "Status": "FAIL_EXISTING_UNCHANGED",
+  "Baseline": "architecture-quality-audit-02-rereview/archive-checks.json",
+  "BaselineErrors": 267,
+  "CurrentErrors": 267,
+  "NewErrors": [],
+  "GuardOrExceptionsChanged": false,
+  "Scope": "public"
+}

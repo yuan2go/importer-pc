@@ -1,0 +1,111 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-9009323216ef427fb9bc103f128cb3c4
+PASS AQ: AQ03 recovered WaitingWeight accepts original measurement without automatically sending PLC
+PASS AQ: explicit continuation preserves admission and makes one first attempt
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: AQ01 rejects cross mode/station restore before creating target
+PASS AQ: AQ01 rejects cross mode/station restore before creating target
+PASS AQ: AQ04 settled history does not consume unresolved admission capacity
+PASS AQ: AQ04 capacity archive permits next real main chain without deleting history
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: activation crash probe saves complete audited candidate BeforeCreate
+PASS AQ: process exit before resource confirmation retains prior Effective and original Pending BeforeCreate
+PASS AQ: restart retains interrupted attempt without automatically retrying candidate BeforeCreate
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: maintenance can explicitly restage interrupted candidate with current CAS BeforeCreate
+PASS AQ: explicit restaging creates a new confirmed attempt only after real resource startup BeforeCreate
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: activation crash probe saves complete audited candidate AfterCreate
+PASS AQ: process exit before resource confirmation retains prior Effective and original Pending AfterCreate
+PASS AQ: restart retains interrupted attempt without automatically retrying candidate AfterCreate
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: maintenance can explicitly restage interrupted candidate with current CAS AfterCreate
+PASS AQ: explicit restaging creates a new confirmed attempt only after real resource startup AfterCreate
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: activation crash probe saves complete audited candidate AfterPortStart
+PASS AQ: process exit before resource confirmation retains prior Effective and original Pending AfterPortStart
+PASS AQ: restart retains interrupted attempt without automatically retrying candidate AfterPortStart
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: maintenance can explicitly restage interrupted candidate with current CAS AfterPortStart
+PASS AQ: explicit restaging creates a new confirmed attempt only after real resource startup AfterPortStart
+PASS AQ: bounded keyset pages include every original archived/resident operation exactly once
+PASS AQ: repeated real main chains keep resident work bounded while archived history grows
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: restart deduplicates permanent archived admission and retains original JSON/request bytes
+PASS AQ: actual backup/isolated restore retains full paged history and identity index
+PASS AQ: cross-position identity conflict durably blocks both affected positions and preserves original entity
+PASS AQ: identity conflict remains a stable responsibility after restart
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: authorized identity disposition recovers affected positions without resending original WCS
+PASS AQ: actual disk reserve policy shares admission/Resume/projection without filling or deleting the disk
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: AQ02 real SQLITE_BUSY preserves original marker byte-for-byte before acknowledgement commit
+PASS AQ: failed acknowledgement cannot clear in-memory overload responsibility
+PASS AQ: post-commit interruption retains marker for deterministic restart cleanup
+PASS AQ: restart cleans only durably acknowledged marker and retains original command receipt
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: full topology candidate can be validated without saving or activating
+PASS AQ: interrupted save retains authoritative Pending and durable audit intention
+PASS AQ: controlled restart activates complete original candidate
+PASS AQ: restart closes configuration audit with original maintenance actor/reason, before/after revisions and exact hashes
+PASS AQ: configuration CAS still rejects a stale full editor after activation
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: automatic UI refresh cannot replace the full draft CAS revision and overwrite another window's saved candidate
+PASS AQ: two real window VMs retain conflicting draft and preserve the complete other position/instance topology
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: legacy parameter form also preserves loaded draft CAS instead of borrowing refreshed server revision
+PASS AQ: DB3 unresolved originals retain matching old-release settlement path before DB4 migration
+PASS AQ: rejected DB3 upgrade leaves original JSON readable by unchanged DB3 reader
+PASS AQ: DB3 rejection preserves original migration identity instead of stranding unknown responsibility
+PASS AQ: settled DB3 upgrade retains original history under additive DB4 facilities
+PASS AQ: AQ06 wrong health instance cannot assert readiness for configured WCS
+PASS AQ: AQ06 expired source confirmation keeps timestamps but projects unavailable in actual ViewModel
+PASS AQ: actual ViewModel separates displayed position/current command owner from selected history detail
+PASS AQ: refresh preserves independent window targets and projects both Sportmaster results
+PASS AQ: attached transport loss owns upload Failure without contaminating accepted main reason or PLC fact
+PASS AQ: independent main query reaches authoritative physical completion while attached query remains unknown and retains image
+PASS AQ: restart assigns missing raw upload occurrence to attached responsibility, preserving completed main facts
+PASS AQ: more than 64 authoritative queries retain every raw receipt, bound stage projection and reach completion without another submit
+PASS AQ: driver buffer reuse after callback cannot change the queued admitted barcode
+PASS AQ: adapter mutation of detached request parameters cannot alter original intent or frozen configuration
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: same-device reconnect waits for in-flight capture while snapshot and software pause remain responsive
+PASS AQ: capture returns original acquisition before underlying reader session is replaced with new epoch
+PASS AQ: HTTP submit enforces streamed response quota without Content-Length
+PASS AQ: HTTP header/body reads share caller cancellation without successful fallback
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-cee688b9f566483b97ae6781c420bc8b
+PASS AQ: real process stops inside upload after independent receiver commit and before response custody
+PASS AQ: Dispatching interruption preserves accepted main state/reason and the original upload/image responsibility
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: in-flight health fences original recovery before Query without changing receipt custody, upload facts or image ownership
+AQ original receipt recovery after health drain: {
+  "Status": "Unresolved",
+  "Reason": "Original occurrence retained; inspect ReceiptResponsibilities and ReceiptOutcomeKnown audit. A query never supplies the old raw.",
+  "Revision": 14
+}
+PASS AQ: drained explicit recovery executes exactly one original upload Query
+PASS AQ: inconclusive original Query never dispositions missing raw or releases its image
+PASS AQ: unrelated position continues while old attachment retains one original WCS attempt
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: old polluted Blocked projection is recovered from original committed main raw without rewriting requests
+PASS AQ: missing receipt recovery requires paused authenticated maintenance
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: explicit recovery links business outcome to its own Query/T3 while original raw responsibility remains
+PASS AQ: known business outcome does not release missing original raw/image custody
+PASS AQ: original Awaiting remains pending with absent raw; distinct query has its own durable raw
+PASS AQ: original missing raw keeps image bytes and upload is never resubmitted
+PASS AQ: archive keeps frozen original request after outcome recovery
+PASS AQ: independent missing raw/image custody survives restart after outcome query
+PASS AQ: offline old-schema repair creates a full original recovery set before changing derived main projection
+PASS AQ: DB3 repair preserves original schema, source requests and missing upload custody barrier
+PASS AQ: projection repair cannot authorize incompatible old capability or migrate unresolved responsibility
+PASS AQ: new-volume restore plan uses measured complete recovery bytes plus explicit reserve before creating target
+PASS AQ: whole-history relocation preserves both positions, unresolved image/raw and starts isolated
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: unscoped historical conflict audit becomes explicit inspection responsibility rather than silently cleared history
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: legacy unknown-scope conflict has an authorized audited release path
+PASS AQ: acknowledged legacy audit identity is not re-armed on every restart
+PASS AQ: same-position durable conflict isolates left while unrelated right retains admission
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: backup capacity preflight rejects before creating any incomplete recovery set
+PASS AQ COMPLETE

@@ -311,16 +311,42 @@ static class SportmasterRcs
             awaiting = original.BeginReceipt(operation, stage, "Query"); frozen = Wire.Encode(original.Load().Single());
         }
         var priorHistory = SqlHistory(); var raw = Path.Combine(directory, "receipts", durable + ".json"); var originalBytes = File.ReadAllBytes(raw);
-        using (var upgraded = new ParcelRepository(directory, "sportmaster"))
+        var database = Path.Combine(directory,"sportmaster.db"); var databaseHash=Wire.FileHash(database);
+        try { using var refused=new ParcelRepository(directory,"sportmaster"); throw new Exception("Unknown SQL5 original upgraded without matching release"); }
+        catch (InvalidDataException ex)
         {
-            Check(upgraded.StorageVersion == 6 && Wire.Encode(upgraded.Load().Single()) == frozen && upgraded.Load().Single().Wcs!.Request.IntegrationRequest is null,
-                "valid SQL5 unknown original upgrades to SQL6 without rewriting request, stage, nullable integration fields or business responsibility");
-            Check(upgraded.PendingReceipts().Length == 2 && upgraded.ReceiptById(durable) is { State: "RawDurable" } && upgraded.ReceiptById(awaiting) is { State: "Awaiting", RawHash: null } &&
-                File.ReadAllBytes(raw).SequenceEqual(originalBytes), "SQL5-to6 transition preserves exact durable reply bytes/hash and each independent pending custody occurrence");
+            Check(ex.Message.Contains("LegacyUnsettled")&&Wire.FileHash(database)==databaseHash&&SqlHistory().Keys.Max()==5,
+                "SQL5 unknown original refuses before SQL6 marker and preserves matching old reader bytes");
         }
-        Check(priorHistory.All(x => SqlHistory().GetValueOrDefault(x.Key) == x.Value) && SqlHistory().Keys.Max() == 6, "SQL6 append preserves every genuine main SQL1-5 checksum");
-        try { using var rejected = new ParcelRepository(directory, "sportmaster", 5); throw new Exception("Old reader accepted SQL6"); }
-        catch (InvalidDataException) { Check(SqlHistory().Keys.Max() == 6, "old SQL5 reader rejects future SQL6 without modifying the original database"); }
+        using (var original = new ParcelRepository(directory,"sportmaster",5))
+        {
+            Check(Wire.Encode(original.Load().Single())==frozen&&original.Load().Single().Wcs!.Request.IntegrationRequest is null,
+                "refused SQL5 original retains exact legacy request, stage and absent optional integration fields");
+            Check(original.PendingReceipts().Length==2&&original.ReceiptById(durable) is { State:"RawDurable" }&&original.ReceiptById(awaiting) is { State:"Awaiting",RawHash:null }&&File.ReadAllBytes(raw).SequenceEqual(originalBytes),
+                "refused SQL5 original retains both independent custody occurrences and exact raw bytes");
+        }
+        // A separately explicit synthetic terminal original proves the eligible
+        // migration. It does not claim the unknown fixture was externally settled.
+        var settledDirectory=Path.Combine(root,"rcs-sql5-settled");
+        var terminalReply=reply with { BusinessAccepted=true,ProtocolAcknowledged=true,Slot="SYNTHETIC-09" };
+        var terminal=operation with {State=ParcelState.SlotResolved,Slot=terminalReply.Slot,Wcs=stage with{State=StageState.Accepted,Replies=[terminalReply],Failure=null}};
+        string terminalRaw;
+        using(var original=new ParcelRepository(settledDirectory,"sportmaster",5))
+        {
+            original.Commit(terminal,"SyntheticTerminalOriginal","Separate explicit terminal SQL5 fixture");
+            terminalRaw=original.BeginReceipt(terminal,terminal.Wcs!,"Submit"); original.StoreRaw(terminalRaw,terminalReply);original.Commit(terminal,"SyntheticTerminalCustody","Committed original raw",occurrence:terminalRaw);
+        }
+        using(var upgraded=new ParcelRepository(settledDirectory,"sportmaster"))
+            Check(upgraded.StorageVersion==6&&Wire.Encode(upgraded.Load().Single())==Wire.Encode(terminal)&&Wire.Decode<StageReply>(File.ReadAllText(Path.Combine(settledDirectory,"receipts",terminalRaw+".json")))==terminalReply,
+                "settled SQL5 original upgrades to SQL6 preserving exact request/result/committed raw");
+        using(var db=new SqliteConnection("Data Source="+Path.Combine(settledDirectory,"sportmaster.db")))
+        {
+            db.Open();using var q=db.CreateCommand();q.CommandText="SELECT version,sha FROM platform_migrations ORDER BY version";
+            using var r=q.ExecuteReader();Dictionary<long,string> history=[];while(r.Read())history.Add(r.GetInt64(0),r.GetString(1));
+            Check(priorHistory.All(x=>history.GetValueOrDefault(x.Key)==x.Value)&&history.Keys.Max()==6,"SQL6 append preserves every original SQL1-5 checksum");
+        }
+        try { using var rejected=new ParcelRepository(settledDirectory,"sportmaster",5);throw new Exception("Old reader accepted SQL6"); }
+        catch(InvalidDataException){Check(true,"old SQL5 reader rejects settled future SQL6 without downgrade");}
         var malformed = Path.Combine(root, "rcs-sql5-malformed"); using (var original = new ParcelRepository(malformed, "sportmaster", 5)) { }
         var stray = Path.Combine(malformed, "receipts", Wire.Id() + ".json"); File.WriteAllText(stray, Wire.Encode(reply));
         try { using var rejected = new ParcelRepository(malformed, "sportmaster"); throw new Exception("Malformed SQL5 raw inventory accepted"); }

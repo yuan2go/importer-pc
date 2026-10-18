@@ -1,3 +1,5 @@
+> [PR31独立复审归档与授权合并](reviews/pr31-independent-rereview-f068156/README.md)：原审head `f068156ed9d4a0ffe4feee94b5c11e966aaa366b`、原基线main `baac260214f910dca9ae4628ba6449b25188e2ac`。本次仅归档/合并，不重跑验证；原结论和所有未验证边界保持。
+
 > RCS增量01：[Sportmaster RCS分拣任务服务](runtime/sportmaster-rcs-task.md)。已继承main PR26/28；公共契约1.7.0、Parcel数据库6（SQL1–5原样继承），旧请求/接收责任仍按获授权核对恢复链保留。初轮4c9d51c候选与最终整合候选分别记录；Windows实际NOT_RUN，真实RCS/设备/现场BLOCKED。
 
 > [2026-10-19不测试发布与合并回执](runtime/publication-20261019.md)：PR26已合并，8个既有参考产物已上传；Windows/真实集成边界不变。
@@ -6,7 +8,11 @@
 
 ## 当前工程入口
 
-[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。本次N01–N07开工main基线b2dc55b，最新同步main为4afe2af；PR24已由独立授权合并，本任务不代合并其他PR。继承PR23/24及后续有效修复的准确提交见本次结果；新结果不冒充main能力或历史PASS。本分支新Application使用schema3/Parcel DB6（SQL1–5继承main），DB3/4为历史发布；Supply的Storage5和Product命令单独适用。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+本轮执行[并发任务整合工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-01.md)，[调查、裁决与最终交付](runtime/parallel-task-reconciliation-01.md)统一源任务、当前设计与证据范围。起始main713f23d；历史PR“不合并”由本次明确合并授权更新。
+
+[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。本轮以PR26合并后的main baac260复核；PR24/26的历史源码、候选及PASS保留其原范围。Parcel DB6、旧schema1/2单main和schema3独立位共同支持；DB2/3/4/5升级前责任判定与资料专用迁移见维护指南。Supply Storage5保持单独契约。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+
+恢复永久身份/持久Query依据与custody确定性验证见[修复结果](runtime/parcel-recovery-p2.md)。
 
 [N01–N07交付、PR26复核修复及验证边界](runtime/architecture-quality-audit-02-results.md)。缺raw资料责任、旧发布Query到DB5、旧配置账确认和维护围栏的实际步骤见维护指南；[复核前原字节](archive/pre-pr26-rereview/README.md)保留前次结论，前次PASS不作为全闭环证据。
 
@@ -27,7 +33,7 @@ PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c
 
 ## 代码前必读
 
-1. [AGENTS](../AGENTS.md)、[本包](work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)及[整改设计](design/architecture-quality-closure-01.md)、22拓扑及19/20可靠性、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
+1. [AGENTS](../AGENTS.md)、[本包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-01.md)及[整改设计](design/architecture-quality-closure-01.md)、22拓扑及19/20可靠性、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
 2. [框架架构](design/framework.md)、[决策记录](design/framework-decisions.md)、[受控装配与扩展](design/controlled-extensions.md)。职责/事务/身份/生命周期要求继续有效，不能改弱目标消除缺陷。
 3. [14任务](work-packages/WP-IPC-CONFORMANCE-FIX-14.md)、[实施](runtime/conformance-fix-14.md)/证据，以及[13任务](work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)/[复核](runtime/arch-extension-closure-13-recheck.md)、按影响再读[12任务](work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)/[交付](runtime/extension-windows-delivery-12.md)。保留后续批准的后装与Windows后验，勿重复实施已闭子项。
 4. [Application运行/发布/维护](runtime/architecture-quality-closure-01.md)、[Supply运行维护](runtime/operations.md)、[扩展开发安装恢复](extensions/developer-guide.md)，核实际入口、配置、依赖和源码。

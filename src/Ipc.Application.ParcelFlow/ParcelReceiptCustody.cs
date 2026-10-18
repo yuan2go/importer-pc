@@ -10,7 +10,7 @@ public sealed partial class ParcelRepository
     {
         using var c = db.CreateCommand();
         c.CommandText = StorageVersion >= 5 ? "SELECT query_occurrence FROM parcel_receipt_custody WHERE occurrence=$id" :
-            "SELECT json_extract(detail,'$.QueryOccurrence') FROM parcel_audit WHERE event='ReceiptOutcomeKnown' AND json_valid(detail) AND json_extract(detail,'$.OriginalOccurrence')=$id ORDER BY seq DESC LIMIT 1";
+            "SELECT json_extract(detail,'$.QueryOccurrence') FROM parcel_audit WHERE event IN ('ReceiptOutcomeKnown','ReceiptOutcomeReconciled') AND json_valid(detail) AND json_extract(detail,'$.OriginalOccurrence')=$id ORDER BY seq DESC LIMIT 1";
         c.Parameters.AddWithValue("$id",occurrence); return c.ExecuteScalar() as string;
     }
     public bool HasReceiptOutcomeBasis(string occurrence)
@@ -33,9 +33,24 @@ public sealed partial class ParcelRepository
         var reply=Wire.Decode<StageReply>(System.Text.Encoding.UTF8.GetString(bytes));
         var op=StorageVersion<4 ? Load().SingleOrDefault(x=>x.Id==operation) : ReadOperation(operation);
         var fact=stage switch { "image-upload"=>op?.Upload,"image-capture"=>op?.Capture,"wcs-slot"=>op?.Wcs,"plc-submit"=>op?.Plc,_=>null };
-        return fact is not null && fact.Request.Id==request && reply.RequestId==request && reply.PayloadHash==fact.Request.PayloadHash &&
-            reply.TransportSucceeded && reply.ProtocolAcknowledged==true && reply.BusinessAccepted is not null &&
-            fact.State==(reply.BusinessAccepted==true?StageState.Accepted:StageState.Rejected) && fact.Replies.Any(r=>Wire.Encode(r)==Wire.Encode(reply));
+        if (op is null || fact is null) return false;
+        var frozen=fact.Request;
+        // The committed Query raw is the evidence. Replies is a bounded UI/recovery
+        // projection; eviction must not turn a proven outcome back into unknown.
+        if (frozen.Id!=request || frozen.Stage!=stage || frozen.OperationId!=op.Id || frozen.AdmissionId!=op.AdmissionId ||
+            frozen.ApplicationId!=op.FrozenConfiguration.ApplicationId || frozen.ConfigurationHash!=op.ConfigurationHash || op.ConfigurationHash!=Wire.Hash(Wire.Encode(op.FrozenConfiguration)) ||
+            Wire.Hash(frozen.Payload)!=frozen.PayloadHash || reply.RequestId!=request || reply.PayloadHash!=frozen.PayloadHash ||
+            !Guid.TryParseExact(reply.Id,"N",out _) || string.IsNullOrWhiteSpace(reply.Evidence) || reply.At<frozen.PreparedAt || reply.At>DateTimeOffset.UtcNow.AddSeconds(1) ||
+            OriginalReplyHash(request,reply.Id)!=Wire.Hash(Wire.Encode(reply)) || !reply.TransportSucceeded || reply.ProtocolAcknowledged!=true || reply.BusinessAccepted is null ||
+            fact.State!=(reply.BusinessAccepted==true?StageState.Accepted:StageState.Rejected)) return false;
+        // Retained terminal facts remain a consistency guard, never an existence test.
+        if (fact.Replies.Any(r=>r.BusinessAccepted is not null && (r.BusinessAccepted!=reply.BusinessAccepted || r.Slot!=reply.Slot || Wire.Encode(r.Image)!=Wire.Encode(reply.Image))) ||
+            stage!="plc-submit" && reply.PhysicalCompleted==true) return false;
+        if (stage=="wcs-slot" && reply.BusinessAccepted==true && (string.IsNullOrWhiteSpace(reply.Slot) || reply.Slot!=op.Slot)) return false;
+        if (stage is "image-capture" or "image-upload" && reply.BusinessAccepted==true && (op.Image is null || reply.Image is null ||
+            reply.Image with{UploadedUri=null}!=op.Image with{UploadedUri=null} || stage=="image-upload" &&
+            (reply.Image.UploadedUri!=op.Image.UploadedUri || !Uri.TryCreate(reply.Image.UploadedUri,UriKind.Absolute,out var uri) || uri.Scheme is not ("reference" or "http" or "https") || !string.IsNullOrEmpty(uri.UserInfo)))) return false;
+        return true;
     }
     internal bool CustodyOnly(ParcelOperation op, string application)
     {
@@ -47,20 +62,50 @@ public sealed partial class ParcelRepository
     static bool ExternalWorkComplete(ParcelOperation op,string application) => !op.RecoveryRequired &&
         (op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted || application=="sportmaster" && op.State==ParcelState.SlotResolved) &&
         new[]{op.Wcs,op.Plc,op.Capture,op.Upload}.OfType<StageFact>().All(s=>s.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled);
-    bool LegacyCustodyUpgradeEligible(string application) => Load().All(op=>
-        ExternalWorkComplete(op,application) && ((op.FrozenConfiguration.Images is null || op.ImageReleased) && !PendingReceipts().Any(x=>x.Operation==op.Id) || CustodyOnly(op,application))) &&
-        PendingReceipts().All(x=>Load().Any(op=>op.Id==x.Operation));
-    public static void UpgradeCustodyOnly(string directory,string application)
+    bool LegacyCustodyUpgradeEligible(string application)
+    {
+        using var states = db.CreateCommand();
+        states.CommandText = "SELECT count(*) FROM parcel_receipts WHERE state NOT IN ('Awaiting','RawDurable','OutcomeReconciled','Committed','NoReply')";
+        if ((long)states.ExecuteScalar()! != 0) return false;
+        // Stream history and each owner's outstanding occurrences: total historical
+        // queries do not become an unbounded in-memory upgrade inventory.
+        foreach (var op in UpgradeOperations())
+        {
+            if (!ExternalWorkComplete(op,application)) return false;
+            var hasCustody = false;
+            foreach (var id in UpgradeReceiptIds(op.Id))
+            {
+                if (!hasCustody && (op.FrozenConfiguration.Images?.Strategy != UploadStrategy.Attached || !HasMainReceiptCustody(op))) return false;
+                hasCustody = true;
+                if (ReceiptById(id) is not { Stage: "image-upload", RawHash: null } ||
+                    File.Exists(Path.Combine(rawRoot,id+".json")) || !HasReceiptOutcomeBasis(id)) return false;
+            }
+            if (!hasCustody && op.FrozenConfiguration.Images is not null && !op.ImageReleased) return false;
+        }
+        using var orphan = db.CreateCommand();
+        orphan.CommandText = "SELECT count(*) FROM parcel_receipts r WHERE state IN ('Awaiting','RawDurable','OutcomeReconciled') AND NOT EXISTS(SELECT 1 FROM parcel_operations o WHERE o.id=r.operation)" +
+            (StorageVersion >= 4 ? " AND NOT EXISTS(SELECT 1 FROM parcel_archives a WHERE a.id=r.operation)" : "");
+        return (long)orphan.ExecuteScalar()! == 0;
+    }
+    IEnumerable<string> UpgradeReceiptIds(string operation)
+    {
+        using var c = db.CreateCommand();
+        c.CommandText = "SELECT id FROM parcel_receipts WHERE operation=$op AND state IN ('Awaiting','RawDurable','OutcomeReconciled')";
+        c.Parameters.AddWithValue("$op",operation);
+        using var r = c.ExecuteReader(); while (r.Read()) yield return r.GetString(0);
+    }
+    public static void UpgradeCustodyOnly(string directory,string application,int targetStorageVersion=5)
     {
         // Caller holds the application owner and has created a full backup. No sources
         // are constructed here. Ordinary startup does not opt into this old-reader transition.
+        if (targetStorageVersion is not (5 or 6)) throw new ArgumentOutOfRangeException(nameof(targetStorageVersion));
         var file=Path.Combine(directory,application+".db");var version=ReadStorageVersion(file,application);
         using(var original=new ParcelRepository(directory,application,version))
         {
             original.ValidateRawInventory();
             if(!original.LegacyCustodyUpgradeEligible(application))throw new InvalidDataException("Legacy external/custody proof incomplete; original reader marker retained");
         }
-        using var upgraded=new ParcelRepository(directory,application,Math.Max(version,5),allowCustodyUpgrade:true);
+        using var upgraded=new ParcelRepository(directory,application,Math.Max(version,targetStorageVersion),allowCustodyUpgrade:true);
         upgraded.ValidateRawInventory();
         foreach(var pending in upgraded.PendingReceipts())
             if (!upgraded.HasReceiptOutcomeBasis(pending.Id)) throw new InvalidDataException("Unproved legacy original; preserve matching old reader and custody");
@@ -69,7 +114,7 @@ public sealed partial class ParcelRepository
 }
 public sealed partial class ParcelRuntime
 {
-    bool ConfigurationResponsibilitiesClear() => operations.Values.All(op=>IsSettled(op)||repository!.CustodyOnly(op,Id)) &&
+    bool ConfigurationResponsibilitiesClear() => identityConflicts.Count == 0 && operations.Values.All(op=>IsSettled(op)||repository!.CustodyOnly(op,Id)) &&
         repository!.PendingReceipts().All(x=>repository.HasReceiptOutcomeBasis(x.Id));
     bool RequiresOriginalExecution(ParcelOperation op) => !IsSettled(op) && !repository!.CustodyOnly(op,Id);
 }

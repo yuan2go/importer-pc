@@ -1,0 +1,118 @@
+{
+  "FinalLogSha256": "d8e25e9f73284341fcffb7b9ff6357cc39d5028b24d4ff8eeca712e158e9a861",
+  "IdentityFixtures": [
+    {
+      "Fixture": "p2-identity-v3-localFalse-sameFalse",
+      "Version": 3,
+      "UploadState": "Conflict",
+      "Attempts": 1,
+      "ImageHeld": true,
+      "ReceiptStates": [
+        [
+          "Awaiting",
+          1
+        ],
+        [
+          "Committed",
+          66
+        ]
+      ]
+    },
+    {
+      "Fixture": "p2-identity-v3-localTrue-sameFalse",
+      "Version": 3,
+      "UploadState": "Conflict",
+      "Attempts": 1,
+      "ImageHeld": true,
+      "ReceiptStates": [
+        [
+          "Awaiting",
+          1
+        ],
+        [
+          "Committed",
+          66
+        ]
+      ]
+    },
+    {
+      "Fixture": "p2-identity-v4-localFalse-sameFalse",
+      "Version": 4,
+      "UploadState": "Conflict",
+      "Attempts": 1,
+      "ImageHeld": true,
+      "ReceiptStates": [
+        [
+          "Awaiting",
+          1
+        ],
+        [
+          "Committed",
+          66
+        ]
+      ]
+    },
+    {
+      "Fixture": "p2-identity-v4-localFalse-sameTrue",
+      "Version": 5,
+      "UploadState": "Accepted",
+      "Attempts": 1,
+      "ImageHeld": true,
+      "ReceiptStates": [
+        [
+          "Awaiting",
+          1
+        ],
+        [
+          "Committed",
+          66
+        ]
+      ]
+    },
+    {
+      "Fixture": "p2-identity-v4-localTrue-sameFalse",
+      "Version": 4,
+      "UploadState": "Conflict",
+      "Attempts": 1,
+      "ImageHeld": true,
+      "ReceiptStates": [
+        [
+          "Awaiting",
+          1
+        ],
+        [
+          "Committed",
+          66
+        ]
+      ]
+    },
+    {
+      "Fixture": "p2-identity-v4-localTrue-sameTrue",
+      "Version": 5,
+      "UploadState": "Accepted",
+      "Attempts": 1,
+      "ImageHeld": true,
+      "ReceiptStates": [
+        [
+          "Awaiting",
+          1
+        ],
+        [
+          "Committed",
+          66
+        ]
+      ]
+    }
+  ],
+  "BasisAfterActualRestart": {
+    "Originals": 67,
+    "OriginalsRemainAwaitingWithNullRaw": true,
+    "LinkedQueriesCommittedWithExactSha": true,
+    "UploadState": "Accepted",
+    "ProjectionReplies": 63,
+    "ImageHeld": true,
+    "UploadAttempts": 1,
+    "WcsAttempts": 1,
+    "ConfigurationStatus": "Effective"
+  }
+}

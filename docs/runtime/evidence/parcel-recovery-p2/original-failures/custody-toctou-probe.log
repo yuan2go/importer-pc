@@ -1,0 +1,62 @@
+[CAUSE] command Pause {
+  "Status": "Persisted",
+  "Reason": "Application command committed",
+  "Revision": 12
+}
+[CAUSE] authorize {
+  "Status": "Authorized",
+  "Reason": "SIMULATION maintenance grant; pause alone provides no authorization",
+  "Revision": 13
+}
+[CAUSE] OBSERVED Configure=true revision=13 before monitor window; mirrors fixture Wait predicate
+[CAUSE] MONITOR health entered sportmaster.integration
+[CAUSE] HELD externalWaits=1 availability={
+  "Admit": false,
+  "Resume": true,
+  "Configure": false,
+  "ContinuePrepared": [],
+  "ContinueUpload": [],
+  "AbandonUnsubmitted": []
+}
+[CAUSE] command ReconcileReceipt {
+  "Status": "Rejected",
+  "Reason": "Pause, authenticate maintenance, select the original receipt occurrence and provide an inspection reason",
+  "Revision": 13
+}
+[CAUSE] held original={
+  "Id": "94f479c2915942c281ae40f8322a6c39",
+  "Operation": "827b5635a81144f6bbec5a90c0d51841",
+  "Stage": "image-upload",
+  "Request": "957668a066ba4cc9b02055ffb7b2f86b",
+  "Source": "Submit",
+  "State": "Awaiting",
+  "RawHash": null,
+  "QueryOccurrence": null,
+  "Custody": "OriginalRawMissing"
+} op=SlotResolved
+[CAUSE] MONITOR health released sportmaster.integration
+[CAUSE] RELEASED externalWaits=0 availability={
+  "Admit": false,
+  "Resume": true,
+  "Configure": true,
+  "ContinuePrepared": [],
+  "ContinueUpload": [],
+  "AbandonUnsubmitted": []
+}
+[CAUSE] command ReconcileReceipt {
+  "Status": "OutcomeKnownRawMissing",
+  "Reason": "Original occurrence retained; inspect ReceiptResponsibilities and ReceiptOutcomeKnown audit. A query never supplies the old raw.",
+  "Revision": 14
+}
+[CAUSE] after query original={
+  "Id": "94f479c2915942c281ae40f8322a6c39",
+  "Operation": "827b5635a81144f6bbec5a90c0d51841",
+  "Stage": "image-upload",
+  "Request": "957668a066ba4cc9b02055ffb7b2f86b",
+  "Source": "Submit",
+  "State": "Awaiting",
+  "RawHash": null,
+  "QueryOccurrence": "0b0b3b97d8654c18bc463626525ca64f",
+  "Custody": "OriginalRawMissing"
+} imageReleased=False
+[CAUSE] PASS deterministic blocked-monitor then released original-query sequence

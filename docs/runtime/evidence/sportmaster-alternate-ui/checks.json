@@ -14,5 +14,22 @@
   "BusinessLogicChanged": false,
   "WindowsUi": "NOT_RUN",
   "RealSdkWcsField": "BLOCKED",
-  "OriginalHtmlUploaded": false
+  "OriginalHtmlUploaded": false,
+  "SourceCommit": "911ed2433fc403a43189c00218e095dddbaff7a8",
+  "FinalUiAssertions": 52,
+  "PackageChecks": 27,
+  "Packages": [
+    {
+      "Target": "portable",
+      "Zip": "ipc-sportmaster-ui-911ed24-portable.zip",
+      "Sha256": "afe723bb841c62c0005ab20186e0e3ec77e88054f32e06be33dd21b43ff545ec",
+      "Size": 18216418
+    },
+    {
+      "Target": "win-x64",
+      "Zip": "ipc-sportmaster-ui-911ed24-win-x64.zip",
+      "Sha256": "744eabbfbe39a02063b60c51d72b3cefaabbd3504516d0a5201b354735f69038",
+      "Size": 103761346
+    }
+  ]
 }

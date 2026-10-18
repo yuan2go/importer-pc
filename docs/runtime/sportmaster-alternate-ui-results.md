@@ -20,7 +20,24 @@
 
 ## 候选与交付身份
 
-实际候选在冻结本报告及运行源码后生成，候选生成完成后追加确切SourceCommit、ZIP SHA-256和解包/启动结果。此形成时状态不声称候选已经通过。
+最新main整合前的已验证运行/候选源码：`911ed2433fc403a43189c00218e095dddbaff7a8`。该提交仅在前一实现基础上澄清图像未知阶段文案，最终UI定向52断言重新通过；两类候选按该冻结SHA重新构建，均0警告0错误。后续报告/manifest/PR回执不改变运行源码。
+
+|目标|本地候选ZIP|SHA-256|字节|
+|---|---|---|---|
+|portable|`ipc-sportmaster-ui-911ed24-portable.zip`|`afe723bb841c62c0005ab20186e0e3ec77e88054f32e06be33dd21b43ff545ec`|18216418|
+|win-x64|`ipc-sportmaster-ui-911ed24-win-x64.zip`|`744eabbfbe39a02063b60c51d72b3cefaabbd3504516d0a5201b354735f69038`|103761346|
+
+27项[实际解包与启动检查](evidence/sportmaster-alternate-ui/package-verification.json)通过：SHA256SUMS、各release文件hash/业务/源码身份、两套BAML及本位/主题资源、随包指南/启动参数；portable解包后的实际宿主用双位同码不同Admission完成两条WCS链，均一次原请求且无PLC，正常排空退出。此处的启动指portable参考控制台，Windows桌面启动仍NOT_RUN。
+
+复验入口为[同版探针](evidence/sportmaster-alternate-ui/verify-packages.py)：`--portable <ZIP> --windows <ZIP> --source 911ed2433fc403a43189c00218e095dddbaff7a8 --dotnet <固定dotnet> --report <JSON>`。
+
+前一源码b60a516的候选/解包结果保留在[superseded记录](evidence/sportmaster-alternate-ui/superseded-b60a516-package-verification.json)，属于已通过但被本次文案修订替代的历史候选；没有用新SHA覆盖旧身份。
+
+## 最新main整合
+
+收尾时发现main已更新到 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`（PR23及PR24）。以上911ed24候选和52/60/27项结果保持形成时身份；下一步将整合最新main并重验受影响契约/UI/实际候选，不把旧PASS套用到新源码。
+
+全库资料校验与开工main b2dc55b对照：267个历史问题完全一致（265个PPTX媒体类型与2个元数据标记），本次新增0。未修改原资产或把全库FAIL记为PASS；详见[对照](evidence/sportmaster-alternate-ui/archive-comparison-b2dc55b.json)。
 
 ## 未执行与受阻
 

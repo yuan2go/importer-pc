@@ -1,0 +1,14 @@
+{
+  "BaselineMain": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "BaselineStatus": "FAIL",
+  "CurrentStatus": "FAIL",
+  "BaselineErrorCount": 267,
+  "CurrentErrorCount": 267,
+  "NewErrors": [],
+  "ResolvedErrors": [],
+  "ErrorKinds": {
+    "pptx_media_type_mismatch": 265,
+    "private_metadata_marker": 2
+  },
+  "Meaning": "Whole-archive check retains historical design-asset failures; no new error is a scoped comparison, not whole-archive PASS"
+}

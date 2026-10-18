@@ -1,4 +1,4 @@
-> Sportmaster第二套UI实施入口：[已批准设计](superpowers/specs/2026-10-18-sportmaster-alternate-ui-design.md)、[工作包与计划](work-packages/WP-IPC-SPORTMASTER-ALTERNATE-UI.md)。仅扩展桌面展示与启动参数，架构22业务规则继续有效；原HTML不上传，Windows/真实接口分项验收。
+> Sportmaster第二套UI实施入口：[已批准设计](superpowers/specs/2026-10-18-sportmaster-alternate-ui-design.md)、[运行/参数](runtime/sportmaster-alternate-ui.md)、[结果](runtime/sportmaster-alternate-ui-results.md)及[工作包与计划](work-packages/WP-IPC-SPORTMASTER-ALTERNATE-UI.md)。仅扩展桌面展示与启动参数，架构22业务规则继续有效；原HTML不上传，Windows/真实接口分项验收。
 
 > 22现行拓扑、状态作用域、版本与交付：[Application架构22](design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
 

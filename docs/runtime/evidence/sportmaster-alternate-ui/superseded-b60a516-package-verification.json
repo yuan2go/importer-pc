@@ -1,0 +1,49 @@
+{
+  "SourceCommit": "b60a516e64bc2c653159e391014ecdff48e9376e",
+  "Checks": [
+    "portable archive paths safe",
+    "portable all shipped SHA256SUMS verified after extraction",
+    "portable frozen source identity",
+    "portable/app original business registration",
+    "portable/app all release file identities verified",
+    "portable shipped UI and Windows guides",
+    "portable package has no WPF binary claim",
+    "win-x64 archive paths safe",
+    "win-x64 all shipped SHA256SUMS verified after extraction",
+    "win-x64 frozen source identity",
+    "win-x64/app original business registration",
+    "win-x64/app all release file identities verified",
+    "win-x64/desktop original business registration",
+    "win-x64/desktop all release file identities verified",
+    "win-x64 shipped UI and Windows guides",
+    "win-x64 startup instructions include selectable UI",
+    "win-x64 embedded resource workstation.baml",
+    "win-x64 embedded resource supplystationwindow.baml",
+    "win-x64 embedded resource supplystationposition.baml",
+    "win-x64 embedded resource supplystationtheme.baml",
+    "original HTML absent from desktop package",
+    "actual unpacked portable host startup",
+    "packaged left observation admitted",
+    "packaged right observation admitted",
+    "packaged same-owner dual-position identity preserved",
+    "packaged WCS-only chain preserves leading zeros and one original attempt",
+    "packaged host drains and exits successfully"
+  ],
+  "Packages": [
+    {
+      "Target": "portable",
+      "Zip": "ipc-sportmaster-ui-b60a516-portable.zip",
+      "Sha256": "2fd1a473424fa2c36d894ab9faea19bd439f813da6bbaccf2fbe94634245b549",
+      "Size": 18216435
+    },
+    {
+      "Target": "win-x64",
+      "Zip": "ipc-sportmaster-ui-b60a516-win-x64.zip",
+      "Sha256": "877b8e32c18e7abc0f75e03a45cc5c04bffdc6eca62c1ddecfe67eadf520d998",
+      "Size": 103761419
+    }
+  ],
+  "WindowsUi": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "Status": "PASS"
+}

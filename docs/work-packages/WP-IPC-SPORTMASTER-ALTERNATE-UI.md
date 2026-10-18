@@ -10,7 +10,7 @@
 - [x] 2. WPF接线：新增SupplyStationWindow及Position控件、主题；Presentation按参数选择窗口；主窗拥有Stop回调，辅助窗共享Application；复用历史与维护页面。原型不支持的业务按钮不进入运行路径。
 - [x] 3. 定向验证：执行 `dotnet run --project tests/Ipc.Application.Verification -- <repo> --sportmaster-ui`。断言 `Parse([], "sportmaster").Ui == "classic"`，两位同码不同实体/原请求不混合，VM共享真实RuntimeId，旧schema无伪双位，Unknown不冒充格口取得，刷新过期不开放命令。
 - [x] 4. 构建与回归：必要Sportmaster/DirectPlc/WcsToPlc WPF编译；既有 `--application-architecture` 受影响验证。固定dotnet SDK10.0.402，构建 `-m:1 -nr:false`。
-- [ ] 5. 发布：先提交冻结源代码及随包指南，再用 `scripts/package-application.py --application sportmaster --target win-x64` 生成实际WPF候选及portable参考包；核对解包hash、两套资源、参数说明与真实控制台启动冒烟。
+- [x] 5. 发布：先提交冻结源代码及随包指南，再用 `scripts/package-application.py --application sportmaster --target win-x64` 生成实际WPF候选及portable参考包；核对解包hash、两套资源、参数说明与真实控制台启动冒烟。
 - [ ] 6. 同步报告、manifest、Windows后验，保留原证据；提交推送、创建并读回main PR，不合并。
 
 ## 文件职责

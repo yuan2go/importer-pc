@@ -327,13 +327,13 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "0f22d8f1c98088a69989ffcee9dc76b214a8edb2c0a5b260354754f5cf65bc4b",
-      "size_bytes": 8286,
-      "git_blob": "15d6fb561ba97d0c66a10d0e08c9c098e25ba469",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "sha256": "b29fe9fb36e7303299cbd2be35a89b7025a92e438b37539fd5099c4b51a3e1a9",
+      "size_bytes": 8724,
+      "git_blob": "22008adbd5c2329046ffdf2e1360f4fe8d83b748",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
       "previous_git_blob": "c9883745a559c3d542522dba17e094d9bc007c77",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
@@ -2112,6 +2112,72 @@
       "git_blob": "b141d9507dc9241588e90259ef6518b7ea483d92"
     },
     {
+      "path": "docs/archive/pre-sportmaster-alternate-ui/README.md",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "a8b9a41a0e71b86dee2e051b0470f27a17068d4fd8febc583359b258210148ba",
+      "size_bytes": 452,
+      "git_blob": "13b817571933cb6d515e55dbb9d83f55a4d86cd9"
+    },
+    {
+      "path": "docs/archive/pre-sportmaster-alternate-ui/docs/INDEX.md.txt",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "0f22d8f1c98088a69989ffcee9dc76b214a8edb2c0a5b260354754f5cf65bc4b",
+      "size_bytes": 8286,
+      "git_blob": "15d6fb561ba97d0c66a10d0e08c9c098e25ba469"
+    },
+    {
+      "path": "docs/archive/pre-sportmaster-alternate-ui/docs/baseline/PUBLICATION.md.txt",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "68db14d88bb1772689f7fd8740dc145c0177037b36b753162a0f260e9b8ca906",
+      "size_bytes": 3548,
+      "git_blob": "bb962dcc3b5048fe782eb886b217c047eff45381"
+    },
+    {
+      "path": "docs/archive/pre-sportmaster-alternate-ui/docs/manifest.json.txt",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "19a235c06401a6efc41a64aedd26431ae9500728719f4fb84e7caaf1f6851d6b",
+      "size_bytes": 1210345,
+      "git_blob": "d93b8530a98f86dfb1ed318de62cb583a6af69a7"
+    },
+    {
+      "path": "docs/archive/pre-sportmaster-alternate-ui/docs/manifest.sha256.txt",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "4b10ad95fb13b853a322e9d82dcb75633a9c520d2dd8dc631899666e197f0b18",
+      "size_bytes": 80,
+      "git_blob": "2416af047787e71daf5fde181b6bee57909eda94"
+    },
+    {
+      "path": "docs/archive/pre-sportmaster-alternate-ui/docs/runtime/application-architecture-22.md.txt",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "f1b252ec4dd2e3b7ec89c164e918e7a5243aa65baee790e27ac205c7f786e5b5",
+      "size_bytes": 8513,
+      "git_blob": "2d3b33c212f86b0b78c96054f2133613033436c0"
+    },
+    {
       "path": "docs/archive/pre-ui-maintainability-16/README.md",
       "version": "UI-MAINTAINABILITY-16",
       "status": "current_implementation_or_boundary_record",
@@ -2284,13 +2350,13 @@
     },
     {
       "path": "docs/baseline/PUBLICATION.md",
-      "git_blob": "bb962dcc3b5048fe782eb886b217c047eff45381",
-      "sha256": "68db14d88bb1772689f7fd8740dc145c0177037b36b753162a0f260e9b8ca906",
-      "size_bytes": 3548,
-      "version": "ui-publication-20261016",
-      "status": "current_baseline_control",
-      "purpose": "complete visual/source design baseline for Codex; not production acceptance",
-      "source": "user-requested final UI publication / SS-UI-VIS-001 v1.1",
+      "git_blob": "662ebfa935eaf80da85f26ef21ea2d91cefe5def",
+      "sha256": "dfe58c9fd4c8c6825be25cd5f4bf890872edf31f59dac8b719585ca0fc0ad729",
+      "size_bytes": 4070,
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
       "collected": true,
       "hash_checked": true,
@@ -2482,6 +2548,39 @@
       "source": "WP-IPC-RUNTIME-03 explicit user authorization; no restricted customer source or assets",
       "storage_scope": "public_repository",
       "previous_git_blob": "977044d2379c55fb00fbf72f73f584013375a53a"
+    },
+    {
+      "path": "docs/reviews/architecture-quality-audit-02/Codex-next-phase.md",
+      "version": "architecture-quality-audit-02-publication",
+      "status": "independent_audit_or_implementation_handoff",
+      "purpose": "User-authorized publication of the unchanged fixed-SHA audit PDF and next-phase Codex instructions; no runtime changes",
+      "source": "2026-10-18 user PDF publication and next-phase prompt request",
+      "storage_scope": "public_repository",
+      "sha256": "70c96957740b3595b55e2043c0979ce92cf4deb971f0a4cba30477f3d082a80e",
+      "size_bytes": 5971,
+      "git_blob": "ec2aeeabde31fc9e1a2f2736a7c104d87be711e5"
+    },
+    {
+      "path": "docs/reviews/architecture-quality-audit-02/README.md",
+      "version": "architecture-quality-audit-02-publication",
+      "status": "independent_audit_or_implementation_handoff",
+      "purpose": "User-authorized publication of the unchanged fixed-SHA audit PDF and next-phase Codex instructions; no runtime changes",
+      "source": "2026-10-18 user PDF publication and next-phase prompt request",
+      "storage_scope": "public_repository",
+      "sha256": "e5d2e40e7ca49e1640070290dae756c44ead414092f02a10057f9c60e4beebb1",
+      "size_bytes": 13101,
+      "git_blob": "f4fd27a195b02a9b4d58c4bb83b7b96fee85db14"
+    },
+    {
+      "path": "docs/reviews/architecture-quality-audit-02/WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02.pdf",
+      "version": "architecture-quality-audit-02-publication",
+      "status": "independent_audit_or_implementation_handoff",
+      "purpose": "User-authorized publication of the unchanged fixed-SHA audit PDF and next-phase Codex instructions; no runtime changes",
+      "source": "2026-10-18 user PDF publication and next-phase prompt request",
+      "storage_scope": "public_repository",
+      "sha256": "dce6b0e235c44e414cc14a976dbd3cea0d24f634aab1276be894b6b69b62283d",
+      "size_bytes": 325136,
+      "git_blob": "68c7416b64398a4d4a98488e537442cba4c2a5a5"
     },
     {
       "version": "APPLICATION-CONVERGENCE-17",
@@ -2772,14 +2871,14 @@
     },
     {
       "path": "docs/runtime/application-architecture-22.md",
-      "version": "application-architecture-22",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
-      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "f1b252ec4dd2e3b7ec89c164e918e7a5243aa65baee790e27ac205c7f786e5b5",
-      "size_bytes": 8513,
-      "git_blob": "2d3b33c212f86b0b78c96054f2133613033436c0"
+      "sha256": "15fb5f02a7271e7a88bb5cbe31e67f1f2732708c49e61658140a4064ad86658c",
+      "size_bytes": 8743,
+      "git_blob": "e5bf9e7a8c78cbd49ca7aaaad007901bb901f0cb"
     },
     {
       "path": "docs/runtime/application-capability-19-checks.json",
@@ -3518,6 +3617,17 @@
       "sha256": "f9878cd8a76a2df538f0377cdaad8ad321d3052ebc0c66ce01129e1ba49178b4",
       "size_bytes": 493,
       "git_blob": "399628b6f950d67d9c61ce1c0bab4a306a4e0d13"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
+      "version": "APPLICATION-ARCHITECTURE-22-publication",
+      "status": "publication_receipt_not_acceptance",
+      "purpose": "User-authorized upload of existing synthetic reference packages; publication tests, builds and validators NOT_RUN",
+      "source": "2026-10-18 explicit no-test publication request",
+      "storage_scope": "public_repository",
+      "sha256": "44b9be428ef905f16c3df4263f75560419a034e9d8bfb01dba625d319ac5ac57",
+      "size_bytes": 3920,
+      "git_blob": "4a2e327af5a6e4919c56ebc4891cf944f88e2ef1"
     },
     {
       "path": "docs/runtime/evidence/application-architecture-22/smoke-direct-plc.json",
@@ -12686,6 +12796,105 @@
       "git_blob": "5190a2a7dfb6a0ac328b341eeb84c26e294662c2"
     },
     {
+      "path": "docs/runtime/evidence/sportmaster-alternate-ui/architecture22-regression.log",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "f5301e94dc7593101426097d6a05d012b0d7c499294c6e11ae7db0025a6754a5",
+      "size_bytes": 4813,
+      "git_blob": "40cb476a99266e554149436e910bf3187ce3458b"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-alternate-ui/checks.json",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "97b09d9dcb6dd14d31c4e65739f4ca7240b9a3a65b4fa6366a61ded7c8c2e14a",
+      "size_bytes": 539,
+      "git_blob": "e4e421cd9ff290d827c70dcadabeb1bdd59edd2f"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-alternate-ui/directplc-compat-build.log",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "67f7d3b26e1e3a9fe36f9e990708a5530e2e92488cdc46aac001ad91bb74671a",
+      "size_bytes": 1755,
+      "git_blob": "864998bf164d355fc5f2ec1bf0cd51aecc848997"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-alternate-ui/sportmaster-wpf-build.log",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "bbae17947ebb68c9b2e94bcb5641e778f9a85c151715c1529edc7ff9823c7465",
+      "size_bytes": 669,
+      "git_blob": "a8ea1a8f0a7fb07dd0151691b9a5eb8cee8f6f35"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-alternate-ui/ui-verification-build.log",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "bd6c04d03a305b0d9d37008b5c6bb4e119ce74e1b03d990e53912d573f532a74",
+      "size_bytes": 1447,
+      "git_blob": "85d6119e8bb77e1e90e739979cc319c0562022bf"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-alternate-ui/ui-verification.log",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "7edebbe29b2cd31ade8544ae0e2ad3615e5870761ed6dfe037a314004a484688",
+      "size_bytes": 4439,
+      "git_blob": "de1a8b5916c673ff444be78c872d8e1d50d7008c"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-alternate-ui/verify-packages.py",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "04d1ce99bc628ab2d57246d90c48f75c41d87d77962af74dd52ad82b17bb453b",
+      "size_bytes": 5373,
+      "git_blob": "546b5b1782209c300d9493298e361f6e25bfee9f"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-alternate-ui/wcstoplc-compat-build.log",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "a92081a78c1ab66d6b9680539b9ab2c690cc7eec4ae8bf55ef890a61fff93440",
+      "size_bytes": 2026,
+      "git_blob": "0b1affc8ff7866079f3658c87b3fd20b7d5bc42d"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-alternate-ui/windows-smoke-build.log",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "5dd4d10f8a56e9a3dfe6a25fbd32de7848b9066d4019282a81258a14bff54f96",
+      "size_bytes": 651,
+      "git_blob": "105ea16c27f15740cb3144a553837c4a0aeb1476"
+    },
+    {
       "path": "docs/runtime/evidence/ui-maintainability-16/README.md",
       "version": "UI-MAINTAINABILITY-16",
       "status": "current_implementation_or_boundary_record",
@@ -14037,6 +14246,28 @@
       "git_blob": "91eb1ac7648c97bf1a2d2b272c2407ee2b4f7c5d"
     },
     {
+      "path": "docs/runtime/sportmaster-alternate-ui-results.md",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "2d4e488029b2eb2c5313563b8c145286d8dfff7959974960d6e09c36e1afe5af",
+      "size_bytes": 2746,
+      "git_blob": "13f305b23ba043ab365fb889e44220f0779c1f97"
+    },
+    {
+      "path": "docs/runtime/sportmaster-alternate-ui.md",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "d07b53cccbe74de04be488817f54ad52978573d4353639ab776cda9d0bfa1a34",
+      "size_bytes": 5704,
+      "git_blob": "873bd242c9a97e9ba959d0552cc67e2dfd7b84b9"
+    },
+    {
       "path": "docs/runtime/ui-baseline-alignment-10.md",
       "sha256": "356e0c4f19871372265a16d4d19c28e9a458dc232e65e14f7a40df458c7482a9",
       "size_bytes": 14262,
@@ -14159,6 +14390,17 @@
       "git_blob": "c553d3c23340b90538d857f54f2a35526c2f27a1"
     },
     {
+      "path": "docs/runtime/validation/sportmaster-alternate-ui-windows.md",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "9abedd589a2e0d6d903374e86b5cd3dd900bb700df059695f62002543438c075",
+      "size_bytes": 2928,
+      "git_blob": "0cf6df2b018082a28ecb67814d294983217dfeca"
+    },
+    {
       "path": "docs/runtime/validation/ui-maintainability-16-windows.md",
       "version": "UI-MAINTAINABILITY-16",
       "status": "current_implementation_or_boundary_record",
@@ -14237,6 +14479,17 @@
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
       "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-10-18-sportmaster-alternate-ui-design.md",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "df7160bb13f3b14d3f850240100659ebd16637455dd2eaa4c78b52427d769bbf",
+      "size_bytes": 8917,
+      "git_blob": "cc8de89e583283a93e045de193272628c9be4311"
     },
     {
       "path": "docs/ui/STATUS.md",
@@ -15370,6 +15623,17 @@
       "git_blob": "4a879e0a71b096bd2800b85cd61c1e2280717d0c"
     },
     {
+      "path": "docs/work-packages/WP-IPC-SPORTMASTER-ALTERNATE-UI.md",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "e5d34709a3c189c47b00f795c24500248fa3bfbafa97388c3501249938272886",
+      "size_bytes": 2544,
+      "git_blob": "3565af0d6a9a129eb9682452044c13d8848c8a1e"
+    },
+    {
       "path": "docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md",
       "sha256": "a52ab025be9ad97b66217722770c7d748892aba9b5a96dac1f1e04a017f6e76c",
       "size_bytes": 4895,
@@ -15777,14 +16041,14 @@
     },
     {
       "path": "scripts/package-application.py",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "c6d5d5394986f92be98a8f2ae4060a9e6155091ad8312467c89d0faec2b16b88",
-      "size_bytes": 5642,
-      "git_blob": "8cbe165db5fc41b5e4b39faf2e263093196965ef",
+      "sha256": "ed8d790bc4735051f9488eef6ef03f303330e37aa72a01c0a406885789f10cfd",
+      "size_bytes": 5958,
+      "git_blob": "8b388697f36beff021bd0754e459986ed9399442",
       "previous_git_blob": "b72e519039baa98e7fcc04fa133c5f893a62d28a"
     },
     {
@@ -15858,14 +16122,14 @@
     },
     {
       "path": "scripts/release_documents.py",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "25f34973cdc8007ea8d4bcfce84d592eb59e321e75d8cf28fdf11b8a68026f0f",
-      "size_bytes": 2770,
-      "git_blob": "94f73f258e545a3fff99dda8b716f74109a073c7",
+      "sha256": "98eef13dea9805caff39099b6372a0600a41d7d741b6041a976d6550a6012aa6",
+      "size_bytes": 2935,
+      "git_blob": "8e21b7609efc511e705ba279239de42fa3d890eb",
       "previous_git_blob": "0058dccea46049f016ee6f8abd40ae1f26e2a2b1"
     },
     {
@@ -16838,15 +17102,81 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/Presentation.cs",
-      "version": "application-capability-19",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "fbf77e75fe6e01b4f594fcb7a4e1c5ff7abbc67cf0e3382fdd6cc17d03b37641",
-      "size_bytes": 644,
-      "git_blob": "c0476fb9537d74b36bc96b4d88b8f765e63c7692",
+      "sha256": "e9c4d4c3176681a5edadb4fce9d36488667179711da1c6e8d3ab892b4a5d8800",
+      "size_bytes": 942,
+      "git_blob": "618b82c8d8bef1d7d635c9796df052331673133f",
       "previous_git_blob": "77af8575b0833458388d36ec4a5fb04178a31133"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "f1f6717a85317a8e8796ac4da4d75fe815de1656c72a790c26b1eeda3131e392",
+      "size_bytes": 5678,
+      "git_blob": "30d0f86942886bf27c52c6aa325df263848a0c39"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml.cs",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "26f941075822bc2d0c9ee457286e318869edab8964bcfa9e7ed14fdaa850f2aa",
+      "size_bytes": 1139,
+      "git_blob": "ef39efd147b9d16d40a5bd8a55e2d9d090a30d78"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationTheme.xaml",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "9af61788095a58c5323d1302d8dee30456e34b784c4e6475863157a43dfe962b",
+      "size_bytes": 1596,
+      "git_blob": "205d6946b43c84877e5ce8122210bb6688108306"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "d5e72c72fb9f98e7e7fb611b22c84268eab774677f64d7a9dfe65a9c8a45bac4",
+      "size_bytes": 9781,
+      "git_blob": "0a38071a7031a0079b422cce0cfc38ab6c1f4f8b"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "9780fa5b23e5ef112c11aa4e2fa7a5ded906281605ee2bea8b6f7b3278e48c79",
+      "size_bytes": 3981,
+      "git_blob": "d5eb8fcf5a7e9b27f63bcc51f52c4dca6a427e5d"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "e3013853c3c571228f57148dbf9a99657f4575fc3f78ca49fe608526e39822a4",
+      "size_bytes": 5229,
+      "git_blob": "67f9a4ffe9806c02580469e04f343e9f6ffc75c0"
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/Workstation.xaml",
@@ -18091,14 +18421,25 @@
       "previous_git_blob": "1fcdc312da344419eb096e6e7a4faf5bc1c305ed"
     },
     {
+      "path": "src/Ipc.Desktop/DesktopLaunchOptions.cs",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "c15c8860d985af33f0aca6cf6ac7038e20aa4276baf37f8b8d1721e8c924c08a",
+      "size_bytes": 1644,
+      "git_blob": "89198f22511323d57cd520eebeb2214419be56be"
+    },
+    {
       "path": "src/Ipc.Desktop/Ipc.Desktop.csproj",
-      "sha256": "f94f1aac1a69127617bff16cf5d69185195714af999cccf34f98df8decdab50a",
-      "size_bytes": 2363,
-      "git_blob": "c93ddc57b996ca0ecf11b7c431355a7b67da2ce2",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "sha256": "443f9f6871e6740dc3dafb0d3a7e1995fdbd6b97e7f1552dbc54259b19f49582",
+      "size_bytes": 2407,
+      "git_blob": "f2e18a242dae36007b48201cd70c4a25ff37e8a9",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
       "previous_git_blob": "6d113dbf390c79b3a55103b82c84e535cffc1ab6"
     },
@@ -18115,14 +18456,14 @@
     },
     {
       "path": "src/Ipc.Desktop/ParcelApp.xaml.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "6e60df6e30374d3540f71b3eba0bed7804859ea3db8cc9f11b2517bd9f4329a9",
-      "size_bytes": 2594,
-      "git_blob": "87ccaee6e8129c43b90416cef1ea0bffc36b56a5"
+      "sha256": "d5cc46ff4e7ad84eb3507a5292a9853244c35511995c9ea259e84a06c83d4bc4",
+      "size_bytes": 2307,
+      "git_blob": "58fc5eaf4bfff81059e5a5bb5a8362853bec2048"
     },
     {
       "path": "src/Ipc.Desktop/Themes/Workstation.xaml",
@@ -19446,14 +19787,14 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "e2ef79dc6823adf3ddb2c42b941000e8319b8b0d8942eba8a19ad73fc1c6be93",
-      "size_bytes": 999,
-      "git_blob": "53d4583c715f2c93168d241e2b3e09d862513d49",
+      "sha256": "0b00ed38893ca548c38ff557cedee17b08a839152056ba9684c5a85c13c19c76",
+      "size_bytes": 1239,
+      "git_blob": "d0107adf133e508f5e97d40b85e82dd402bd5725",
       "previous_git_blob": "0220a0f3fdb009c7f36392a12565d1a9c1bc3034"
     },
     {
@@ -19470,14 +19811,14 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Program.cs",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "3a945e02fc480ef71721b2d4c9c353d56aa84ae38351541aec9a0ca0dc2c6e08",
-      "size_bytes": 13448,
-      "git_blob": "eddcee09bcdf62c31d6f08199c53ca455ecfeece",
+      "sha256": "d840630cdf71f64a7410af3472e4e1b7e2fc73610858ae0a8ceedfb4e92779f6",
+      "size_bytes": 13541,
+      "git_blob": "63e06f7c7fc45d6d6ffdef38642238aed58ac71a",
       "previous_git_blob": "e479415f5dc73b9f48b8ae4f402faa8f4ae18604"
     },
     {
@@ -19539,6 +19880,17 @@
       "previous_git_blob": "fb2506761dbb00c69bdf13f597b2d1f4125fd0f8"
     },
     {
+      "path": "tests/Ipc.Application.Verification/SportmasterUi.cs",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "e74af67341a7d39b9bb127366d4942003b18c65a59026121af4d31cc7b64d27c",
+      "size_bytes": 23795,
+      "git_blob": "acf7fd021522ff3944243977dc3529646eee4007"
+    },
+    {
       "path": "tests/Ipc.Application.Verification/VisibilityShim.cs",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
@@ -19593,6 +19945,39 @@
       "size_bytes": 17653,
       "git_blob": "3c215db40091c455932498b6feb82be4e7471eaa",
       "previous_git_blob": "6f6fe574c7c1bb0e2feb0090180e02f2b61056e9"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "f00450f4a838adf60a783e955c02c8c1f32eab2b49e199f108f59852c7e509a3",
+      "size_bytes": 996,
+      "git_blob": "772c980c3f0d8378867af245d015aa1fe8f7288d"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "fe4a78046f4bff7277b47e9635ae38707aeb81b74da15fa6847e0f8f952841a7",
+      "size_bytes": 5551,
+      "git_blob": "d613c20dae6f6e64ccbf23f6bc517b442f6ecdb8"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/packages.sportmaster.lock.json",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "fc810b1c78d5b37e5160c7c227f9132b49c635e91e34affdf0aa948be1daf0a1",
+      "size_bytes": 17691,
+      "git_blob": "c7da363c97eaadea74ca4574b213bb6b599feb65"
     },
     {
       "path": "tests/Ipc.Verification/AlignmentCompositionVerification.cs",
@@ -19916,50 +20301,6 @@
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
       "previous_git_blob": "5fd7c8a345b61de980764da8e0f9d250fc48ab63"
-    },
-    {
-      "path": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
-      "version": "APPLICATION-ARCHITECTURE-22-publication",
-      "status": "publication_receipt_not_acceptance",
-      "purpose": "User-authorized upload of existing synthetic reference packages; publication tests, builds and validators NOT_RUN",
-      "source": "2026-10-18 explicit no-test publication request",
-      "storage_scope": "public_repository",
-      "sha256": "44b9be428ef905f16c3df4263f75560419a034e9d8bfb01dba625d319ac5ac57",
-      "size_bytes": 3920,
-      "git_blob": "4a2e327af5a6e4919c56ebc4891cf944f88e2ef1"
-    },
-    {
-      "path": "docs/reviews/architecture-quality-audit-02/Codex-next-phase.md",
-      "version": "architecture-quality-audit-02-publication",
-      "status": "independent_audit_or_implementation_handoff",
-      "purpose": "User-authorized publication of the unchanged fixed-SHA audit PDF and next-phase Codex instructions; no runtime changes",
-      "source": "2026-10-18 user PDF publication and next-phase prompt request",
-      "storage_scope": "public_repository",
-      "sha256": "70c96957740b3595b55e2043c0979ce92cf4deb971f0a4cba30477f3d082a80e",
-      "size_bytes": 5971,
-      "git_blob": "ec2aeeabde31fc9e1a2f2736a7c104d87be711e5"
-    },
-    {
-      "path": "docs/reviews/architecture-quality-audit-02/README.md",
-      "version": "architecture-quality-audit-02-publication",
-      "status": "independent_audit_or_implementation_handoff",
-      "purpose": "User-authorized publication of the unchanged fixed-SHA audit PDF and next-phase Codex instructions; no runtime changes",
-      "source": "2026-10-18 user PDF publication and next-phase prompt request",
-      "storage_scope": "public_repository",
-      "sha256": "e5d2e40e7ca49e1640070290dae756c44ead414092f02a10057f9c60e4beebb1",
-      "size_bytes": 13101,
-      "git_blob": "f4fd27a195b02a9b4d58c4bb83b7b96fee85db14"
-    },
-    {
-      "path": "docs/reviews/architecture-quality-audit-02/WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02.pdf",
-      "version": "architecture-quality-audit-02-publication",
-      "status": "independent_audit_or_implementation_handoff",
-      "purpose": "User-authorized publication of the unchanged fixed-SHA audit PDF and next-phase Codex instructions; no runtime changes",
-      "source": "2026-10-18 user PDF publication and next-phase prompt request",
-      "storage_scope": "public_repository",
-      "sha256": "dce6b0e235c44e414cc14a976dbd3cea0d24f634aab1276be894b6b69b62283d",
-      "size_bytes": 325136,
-      "git_blob": "68c7416b64398a4d4a98488e537442cba4c2a5a5"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -20695,5 +21036,17 @@
       "includes_pr23": true,
       "evidence_level": "STATIC_CODE_AND_BRANCH_RECORDS_READ_NOT_INDEPENDENT_RERUN"
     }
+  },
+  "sportmaster_alternate_ui": {
+    "work_package": "WP-IPC-SPORTMASTER-ALTERNATE-UI",
+    "source_commit": "911ed2433fc403a43189c00218e095dddbaff7a8",
+    "approved_design": "docs/superpowers/specs/2026-10-18-sportmaster-alternate-ui-design.md",
+    "runtime": "docs/runtime/sportmaster-alternate-ui.md",
+    "results": "docs/runtime/sportmaster-alternate-ui-results.md",
+    "public_derivative_wpf_authorized": true,
+    "original_html_uploaded": false,
+    "business_logic_changed": false,
+    "windows": "NOT_RUN",
+    "real_interfaces_field": "BLOCKED"
   }
 }

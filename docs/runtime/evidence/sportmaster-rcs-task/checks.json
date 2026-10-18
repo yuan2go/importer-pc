@@ -16,6 +16,12 @@
   "diagnostics": {
     "focused-01": "Fixture timeout200ms could reject cold-JIT observations; use existing1500ms budget and intentional peer2500ms timeout",
     "focused-02": "Invalid dotnet run argument ordering treated -m:1 as workspace; changed to explicit serial build then DLL execution",
-    "system-python-tools": "Pillow unavailable; original failure preserved and rerun passed with bundled Python. No assertions removed."
-  }
+    "system-python-tools": "Pillow unavailable; original failure preserved and rerun passed with bundled Python. No assertions removed.",
+    "cli_lowercase_hash": "Existing extension-install contract requires uppercase expected SHA256; corrected caller value, original rejection preserved, no store policy changed"
+  },
+  "runtime_source_commit": "4c9d51c2c017b7be74cc45156c9df9cd97a5fae9",
+  "signed_extension": "PASS",
+  "portable_package_smoke": "PASS",
+  "cli_install_and_candidate": "PASS",
+  "win_candidate": "PASS_CROSS_BUILD_ARCHIVE_ONLY"
 }

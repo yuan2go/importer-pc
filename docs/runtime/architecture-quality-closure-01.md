@@ -1,3 +1,5 @@
+> PR24独立复审整改进行中：R01～R05以[现行设计/执行计划](../design/architecture-quality-closure-01.md#aqd-07-pr24独立复审整改)为目标，以下前轮能力须结合本轮验证读取。旧源码/候选身份和失败记录保留。
+
 # 质量闭环01 · 运行、维护与兼容
 
 [工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md) · [编码前设计](../design/architecture-quality-closure-01.md)。本页描述本分支实际路径；最终源码/验证/PR身份见[结果](architecture-quality-closure-01-results.md)。22的三条独立主流程、19/20原请求规则和旧Supply/Inspection继续适用。Windows实机NOT_RUN，真实SDK/协议/现场BLOCKED。软件暂停不是安全急停。
@@ -44,7 +46,7 @@ dotnet app/Ipc.Assembly.dll --action extension-uninstall --package '{"Id":"appro
 
 运行维护经IParcelApplication.ManageCapabilityAsync（桌面安装管理/CLI ManageExtension），需暂停/维护认证/外呼排空；Windows调用受保护runas帮助程序再读回原操作/登记。Windows实际UAC/ACL仍NOT_RUN。安装中断按原操作恢复；永久ID/version不覆盖。
 
-消费者读者由Parcel拥有，检查精确迁移checksum、当前Effective/Pending、所有未结业务/图像/回执及已注册离线根；包租约和反向依赖沿ExtensionStore。Backup在开始复制前分别检查Effective和Pending并登记离线消费者（包括只存在于被拒激活Pending的包），不完整或缺失备份保持阻断，COMPLETED后按原hash检查。已有备份中的Effective仍引用原包，因此仅移除当前绑定不足以卸载。未知/Supply/未来/损坏消费者均保守拒绝，不能返回空引用；Supply兼容主程序仍使用自己的读者。混合旧根的统一管理读者尚未交付，必须保留原包并使用匹配维护发布盘点，不能声称支持跨业务任意卸载。
+消费者读者由Parcel拥有，检查精确迁移checksum、当前Effective/Pending、所有未结业务/图像/回执及已注册离线根；包租约和反向依赖沿ExtensionStore。Backup在开始复制前分别检查Effective和Pending并登记离线消费者（包括只存在于被拒激活Pending的包），不完整或缺失备份保持阻断，COMPLETED后按原hash检查。已有备份中的Effective仍引用原包，因此仅移除当前绑定不足以卸载。未来/损坏/未知消费者必须保守拒绝，不能返回空引用。本轮补齐装配的Supply/Parcel只读格式分派，两个管理入口均使用各自业务读者；不认识的其他业务/未来格式仍阻断。具体已验证范围见本轮结果，不把前轮“统一读者未交付”当作已关闭要求。
 
 ## 升级、回退与验证
 

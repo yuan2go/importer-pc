@@ -1,4 +1,4 @@
-> 路径边界：下文Supply/Product命令和消费者SQL属于旧Supply兼容链；不得用于证明Parcel卸载安全。新Application的安装恢复/消费者/备份及安全卸载使用[质量闭环01运行指南](../runtime/architecture-quality-closure-01.md)，混合未知旧根继续阻断。精确契约及原包身份不放宽。
+> 路径边界：业务SQL及状态语义仍由各业务维护读者拥有。本轮PR24整改由装配分派已知Supply/Parcel消费者；不认识、未来、损坏或身份不一致的根必须阻断。新Application的安装恢复/消费者/备份及安全卸载见[质量闭环01运行指南](../runtime/architecture-quality-closure-01.md)。不得把错误格式当零引用；原包身份不放宽。
 
 > 采集生命周期P2：复用reader采图的提供者须实现`IReaderImageCapture`新增的RetainAcquisition/ReleaseAcquisition所有者协议，且回调前暂存观察所有者、拒收/异常撤销，Stop/重连保有在途，采图实际返回前不得释放底层资源。业务拥有释放时机，不得按缓存条数或时间逐出。Application.Contracts及参考能力包进入新不可变1.5.0，须对新宿主精确契约重新构建/签名；历史1.4.0包与请求不覆盖。详情见[本次工作包](../work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)。
 

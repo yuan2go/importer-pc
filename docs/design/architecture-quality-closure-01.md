@@ -59,3 +59,27 @@ Parcel拥有自己的只读消费者检查：Effective/Pending、未结作业原
 旧无尝试字段配置可读；新字段可缺省。保留原Activate供Supply兼容，Parcel采用两阶段入口；旧Activate只识别PendingRestart，因此不会重试ActivationInProgress。不得用旧程序原地回退活动尝试，仍走完整备份/原发布恢复。最终候选须在本修复后新建精确包，先前产物身份保留。
 
 AQD-05补差：实际签名包复现仅Pending含包、重启激活被旧件屏障拒绝时，未初始化Store的Effective不能作为备份登记依据。备份复制前分别登记Effective和Pending，备份读者继续核对原COMPLETED及配置hash；清偿live后该离线Pending仍必须阻卸载。
+
+## AQD-07 PR24独立复审整改
+
+2026-10-18用户已授权修复五项并更新同一PR，不合并main。本轮基线PR a2e987a8d15eb397ad1a40cf1a303bdad4ec397b、main b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d；原审查探针和输出保持原身份，前轮3d69607候选及PASS不改写为新实现资格。
+
+选择复用现有事务、业务读者及维护机制：不提高回复上限、不清原raw/未知责任、不把业务SQL放入Platform，也不因混合消费者加载SDK或业务运行实例。
+
+1. R01：StoreRaw与RecoverRaw共享“发生元数据+回复ID/hash”事务。恢复同ID不同内容时保留最早已知hash，让正常ApplyReply转Conflict；旧DB4已经恢复却未建索引的原件，启动从全部持久raw/归档BLOB按原发生顺序补齐校验，冲突原件拒绝启动，不依赖有界Stage.Replies，不改SQL1～4或原响应字节。
+2. R02：Attached Dispatching→Unknown仅更新Upload.Failure，保持主State及Reason；Prepared从未发送仍保留显式继续门禁。
+3. R03：离线读者先验证Effective、Pending、未结FrozenConfiguration版本/核心身份和包绑定闭包；未知枚举、未来schema、悬挂包/模块/reader或矛盾实例均保守拒绝，校验不启动端口、不要求包仍安装，不以零引用替代不确定性。
+4. R04：装配根按只读数据库格式身份选择Supply或Parcel各自既有读者；混合/歧义/未知格式拒绝。Supply与Parcel管理入口都用该分派。为离线维护显式包含对方读者依赖，不创建对方Application实例、不引入对方主流程、不执行扩展代码；数据库语义继续由各业务拥有。
+5. R05：维护登记使用规范化物理设备键及服务实例键。登记先于释放聚合锁；依赖该资源的准入、首次发送、继续上传及查询均拒绝/保留原意图，其他位/服务仍可运行。设备维护等待原采集，服务维护先检查原外呼排空；预算取消但提供者未返回时仍保持围栏/租约。完成后清除围栏并要求当前健康，回执准确记录实际暂停状态，不谎称全局仍暂停。
+
+## 本轮执行计划（writing-plans，按序执行）
+
+目标：闭合R01～R05并用真实Application/Factory/SQLite及精确签名包定向验证。技术栈仍.NET10.0.402/SQLite；业务分支codex/architecture-quality-closure-01，保留数据库4、Supply5、Application.Contracts1.6.0语义及原不可变包。
+
+- [ ] 回执/Attached：修改ParcelRepository.StoreRaw/RecoverRaw/ValidateRawInventory及ParcelStages恢复原因；新增ReviewClosure回执落盘中断、65次后续回复/同ID篡改Conflict、旧DB4索引补齐/矛盾原件、Attached已完成主链重启断言。发生和身份均在事务内提交，永不重发Submit。
+- [ ] 维护围栏：ParcelDeviceLifecycle新增资源占用查询，ParcelGuards、ParcelStages及健康投影使用同一围栏；以延迟WCS重连和左右独立设备维护验证Resume/已准备意图/新件/原Query被正确隔离、无关位继续、停止和超时保有资源。
+- [ ] 离线维护：ParcelConsumers验证完整配置及冻结责任；Ipc.Assembly/ExtensionConsumerReaders显式分派并接到Factory/CLI/Product入口；测试未来Pending、悬挂绑定/冻结包、未知根、真实混合Supply/Parcel数据库以及仅Pending离线备份。所有异常保留包和消费者登记。
+- [ ] 交付：锁文件按实际新增维护依赖更新，不升级NuGet；新精确宿主单独构建不可变签名样例，真实安装/恢复/卸载旅程；必要核心/WPF及旧产品编译、选装依赖和参考进程冒烟。新候选不覆盖原产物；Windows/SDK/现场及原审查01 PDF缺件继续保留。
+- [ ] 按固定源码登记必要命令、宿主/包/候选hash及原失败；资料工具与既有267项错误集核差，提交推送同PR24供复审，不合并main。
+
+关键命令：`dotnet build tests/Ipc.Application.Verification -p:RestoreLockedMode=true -m:1 -nr:false`；`dotnet Ipc.Application.Verification.dll . --review-closure`（本轮定向入口）；受影响`--architecture-quality`、`--application-architecture`及签名`--quality-extensions`，以实际风险决定。每步先保留复现失败，再记录修复后结果；不运行无差别全量测试。

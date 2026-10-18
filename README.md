@@ -6,7 +6,9 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 
 ## 当前工程状态
 
-当前实施为[Application架构22](docs/runtime/application-architecture-22.md)：一个主流程一个构建选装Application，Sportmaster两相机/两独立投递位，DirectPlc及WcsToPlc各一个顺序投递位；完整schema3配置、每设备注册及每位有界执行、仅取图/上传分离、数据库3升级前未结屏障。既有UI仅保护配置契约，不新增页面/预览。验证与交付记录在本包报告；Windows实际NOT_RUN，真实SDK/协议/现场BLOCKED。
+当前实施为[质量闭环01](docs/runtime/architecture-quality-closure-01.md)，继承Application22三条独立主流程与19/20可靠性约束。Sportmaster为左右两个独立投递位，DirectPlc及WcsToPlc各一个顺序位；Parcel数据库4提供历史归档/分页/永久身份，客户端提供双位结果和完整候选维护。Windows实际NOT_RUN，真实SDK/协议/现场BLOCKED。
+
+PR24独立复审固定a2e987a，发现回执身份恢复、Attached原因、消费者校验、混合读者和维护发送围栏五项问题；本轮按[整改设计与计划](docs/design/architecture-quality-closure-01.md#aqd-07-pr24独立复审整改)实施，验收状态以本轮结果为准，旧PASS不关闭新问题。
 
 ## 继承的PR20/21整合基线
 
@@ -44,4 +46,4 @@ Supply兼容Storage/MinimumReader为5/5；17冻结参考读码1.0.5与场地能�
 
 仓库public；[公开范围](docs/baseline/PUBLICATION.md)持续有效，完整客户归档仍PUBLIC_SUBSET_ONLY。D批准与RV状态不因参考实现或文档发布关闭。只提交获授权审查、通用实现及合成证据，不附客户原稿、私密链接、凭据、生产数据、SDK或字体文件。历史源资产校验问题保留，不放松校验器换通过。
 
-本包实际交付：[22结果与候选身份](docs/runtime/application-architecture-22-results.md)。
+本包交付及原候选身份：[质量闭环01结果](docs/runtime/architecture-quality-closure-01-results.md)。22结果保留原阶段范围。

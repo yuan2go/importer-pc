@@ -56,4 +56,4 @@
 
 [资料校验工具](../tools/README.md)只证明它覆盖的资料/链接/身份，不代表业务或现场通过。已知源资产问题与本次新增材料校验分开，保持原件和失败记录。
 
-本包实际交付：[22结果与候选身份](runtime/application-architecture-22-results.md)。
+本包交付：[质量闭环01结果](runtime/architecture-quality-closure-01-results.md)。本轮独立复审五项按[设计与计划](design/architecture-quality-closure-01.md#aqd-07-pr24独立复审整改)补差；旧22/前轮参考PASS保留形成时范围。

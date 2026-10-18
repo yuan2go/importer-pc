@@ -1,0 +1,18 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-e5c7c207103a4f20a8547aa27312a392
+PASS AQ: historical input retains actual PR24 DB4 migration identity
+DB4 preflight: {
+  "name": "historical-pr24-db4",
+  "refusal": "LegacyUnsettled: preserve original schema; reconcile originals with the matching old release and create a consistent backup before upgrade",
+  "Version": 4,
+  "Changed": [
+    "038616CEC9A6D841DF0FC387BA4F65776B425AE12B3ABBA82803CF39AF50692F.lease"
+  ]
+}
+PASS AQ: historical-pr24-db4: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+FAIL AQ: historical-pr24-db4: refusal preserves original DB/config/raw/image bytes
+PASS AQ: historical-pr24-db4: matching DB4 reader remains usable
+PASS AQ: historical source directory remains byte-identical; probe changed only an independent copy
+Unhandled exception. System.Exception: Historical DB4 upgrade failures: 1
+   at ArchitectureQuality.HistoricalDb4UpgradeChecks(String source, String evidence, String fixture) in /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs:line 127
+   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 16
+   at Program.<Main>(String[] args)

@@ -1,0 +1,10 @@
+{
+  "head": "f068156ed9d4a0ffe4feee94b5c11e966aaa366b",
+  "baseline": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "verified_git_blobs": 2480,
+  "source_mismatches": [],
+  "sql1_to_5_identical": true,
+  "original_aq_failure_sha256": "74a4e7aef8c6428691c78455521c2b1b3b21adb784bdd380bb1f7d98381fdbde",
+  "original_aq_failure_byte_identical": true,
+  "guard_source_unchanged_from_main": true
+}

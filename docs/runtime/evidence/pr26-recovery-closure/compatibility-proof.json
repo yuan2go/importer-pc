@@ -1,0 +1,12 @@
+{
+  "baseline": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "source": "0b6fe6a11fb53640cadddc86009293883bb77d71",
+  "sql1_to_5_byte_identical": true,
+  "migration_declaration_sha256": "356453fa024f4a16fee108bf0b128a438e45101a72a52a3e83ad8cda5d5648ea",
+  "changed_public_contract_sources": [],
+  "configuration_schema_changed": false,
+  "abi": "1.6.0",
+  "db_current": 5,
+  "ordinary_db4_unsettled_policy": "refuse_before_writable_open_and_configuration_confirmation",
+  "custody_only_transition": "offline backup + original Query proof; no new Submit"
+}

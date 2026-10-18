@@ -169,7 +169,7 @@ class CompatibilityTests(unittest.TestCase):
             output.write_text(json.dumps(r))
             with self.assertRaisesRegex(ValueError,'snapshot'): verify_record(output,root,trusted_record_sha256=sha(output))
 
-    def test_schema2_preserves_valid_before_main_and_attached_journeys(self):
+    def test_schema3_preserves_valid_before_main_and_attached_journeys(self):
         config=json.loads((Path(__file__).resolve().parent.parent/'config/optional/direct-plc/business.json').read_bytes())
         for strategy in ['BeforeMain','Attached']:
             with self.subTest(strategy=strategy), tempfile.TemporaryDirectory() as temporary:

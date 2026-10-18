@@ -82,7 +82,7 @@ dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Veri
 
 ## 审查02实际维护命令
 
-以下为选中Application的Assembly入口。先停止旧应用并取得原目录所有权，核对数据库及非空WAL的SHA256，保留完整匹配原发布、原配置/信任/包/图像/回执；备份目标必须全新且与原目录分离。recover-legacy-receipt是旧Attached缺raw到当前DB6的窄维护入口；原发布目录应包含原application-release.json及其Files完整文件（通常为原媒介app目录）。工具不接纳新件。Awaiting分支只Query冻结原上传请求；旧DB4 OutcomeReconciled分支只验证已经持久的独立Query、主链raw及全部归档/未结责任，不调用新的Query，先建立完整备份和包含主体/原因/原发生/备份身份的迁移意图审计，再受控写SQL5。任一旧Query原件、hash、owner或终态依据不完整则保留DB4，不能由已归档或历史ImageReleased掩盖。恢复进程中断后可用当前DB/WAL新指纹及新备份目标重试，先本地完成已持久Query再决定是否需要外查。repair-main-projection仅修主投影，不能代替该升级流程。
+以下为选中Application的Assembly入口。先停止旧应用并取得原目录所有权，核对数据库及非空WAL的SHA256，保留完整匹配原发布、原配置/信任/包/图像/回执；备份目标必须全新且与原目录分离。recover-legacy-receipt是旧Attached缺raw到当前DB6的窄维护入口；原发布目录应包含原application-release.json及其Files完整文件（通常为原媒介app目录）。工具不接纳新件。Awaiting分支只Query冻结原上传请求；旧DB4 OutcomeReconciled分支只验证已经持久的独立Query、主链raw及全部归档/未结责任，不调用新的Query，先建立完整备份和包含主体/原因/原发生/备份身份的迁移意图审计，再受控写SQL5/6（CLI选择6，旧API默认5）。任一旧Query原件、hash、owner或终态依据不完整则保留DB4，不能由已归档或历史ImageReleased掩盖。恢复进程中断后可用当前DB/WAL新指纹及新备份目标重试，先本地完成已持久Query再决定是否需要外查。repair-main-projection仅修主投影，不能代替该升级流程。
 
 同请求回复ID须比较永久首次原hash，旧格式读取原occurrence原件；最近64条投影裁剪不移除该核验。不同字节进入LegacyQueryConflict并保有原责任、矛盾raw和旧版本；持久Query依据不要求仍在展示列表。
 
@@ -94,7 +94,7 @@ dotnet app/Ipc.Assembly.dll --action recovery-plan --file /backup/full.db --dest
 dotnet app/Ipc.Assembly.dll --action restore --file /backup/full.db --destination /larger-volume/runtime/Simulation/reference-17/sportmaster
 ```
 
-含扩展的离线修复须在原Application目录保有extension-store.json（Windows使用已配置机器策略），备份Effective与Pending均登记；未配置/未知消费者拒绝，不返回空引用。旧主结果恢复不代表旧实现升级已完成。recover-legacy-receipt成功输出UpgradedCustodyRetained及DatabaseVersion=5，仍需核对原Awaiting/raw_hash=null、Query关联、发送次数和完整备份；持久Query依据读取独立Committed原件及SHA、原请求和当前终结事实，不依赖最近64条展示列表；裁剪不应令已核对责任重新变成未知。原raw资料责任持续阻止图像释放、归档及原包退休。新运行输入需按旧账确认流程维护确认；若需改新精确实现，沿完整候选/CAS和受控重启，仅在外部业务已被证明终结后过渡。
+含扩展的离线修复须在原Application目录保有extension-store.json（Windows使用已配置机器策略），备份Effective与Pending均登记；未配置/未知消费者拒绝，不返回空引用。旧主结果恢复不代表旧实现升级已完成。recover-legacy-receipt当前CLI成功输出UpgradedCustodyRetained及DatabaseVersion=6（旧API默认5），仍需核对原Awaiting/raw_hash=null、Query关联、发送次数和完整备份；持久Query依据读取独立Committed原件及SHA、原请求和当前终结事实，不依赖最近64条展示列表；裁剪不应令已核对责任重新变成未知。原raw资料责任持续阻止图像释放、归档及原包退休。新运行输入需按旧账确认流程维护确认；若需改新精确实现，沿完整候选/CAS和受控重启，仅在外部业务已被证明终结后过渡。
 
 ## 标准发行的可选Driver/Component集合
 

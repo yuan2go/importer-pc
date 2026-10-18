@@ -3874,9 +3874,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "0b872f90fdb907c20773bd576e375cb13d835782f1075b386f1d500ff25ce513",
+      "sha256": "3814654c36cd3d38e2ee380f47eb6d7db6414e0c6c5c0e7934eab9a0cc5c71a2",
       "size_bytes": 7491,
-      "git_blob": "5a1e514dadd1b696a2b42806a017c669a8c95e11"
+      "git_blob": "379156cee6b2273515101f35d0e10a0f671216c1"
     },
     {
       "path": "docs/extensions/developer-guide.md",
@@ -3885,9 +3885,9 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "a3918e7cd3a85e78755cc1019318d3686651d8befb5b5300075585996d25e49d",
-      "size_bytes": 11405,
-      "git_blob": "b35c05526bceb207c7b6843bb315aab6a859e8e4",
+      "sha256": "0eb72dd600c900e407f8c8e110cacce8ead941ff653fb0e25ee5dfd453bbdf51",
+      "size_bytes": 11455,
+      "git_blob": "c3b1f2fdb9833eca2900e7647cde35f511fbdac4",
       "previous_git_blob": "aab8c404037f93f8aeff309c0ef3fefa8cbdc952",
       "prior_closure13_git_blob": "920e1ac245b3de720f3607001f510dae0c0a9980"
     },
@@ -5155,9 +5155,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/architecture-quality-closure-01.md",
-      "sha256": "c14c531fd273a11ed57691313b2681b4862af8987b6a8187db03f1cadc2d4c49",
-      "size_bytes": 23076,
-      "git_blob": "bdae883db3cb202779bcae8724e95c94c4044b58",
+      "sha256": "bd962d4d333c6ef82101fcb6b2a7b1e6029cb9ba756b3e1700d5a9a90cf4aef7",
+      "size_bytes": 23138,
+      "git_blob": "0545db41180400903ee2a7ae5cd44d079f1693e2",
       "previous_git_blob": "5697e9a5891f1c8c281f0d9dbe84108e63fb0db2"
     },
     {
@@ -26142,9 +26142,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "a7fab7dcf70b939e9c332d063c1fdc9a20bfbd7a35239c2c97006c84f67cd0f6",
+      "sha256": "8b3d8b4b6892fd833a49ab252cb6cc8884a1151c9c48ae484aeb8b26e6295ad1",
       "size_bytes": 5521,
-      "git_blob": "f5484610959a826dce7d01aa260b0146160be757"
+      "git_blob": "fd32728110c944f114cf0a5bc27de042ec152003"
     },
     {
       "path": "docs/runtime/windows-06.md",
@@ -28125,9 +28125,9 @@
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "3a2b313ecd6ba10d2eabae0a3373644499a464cf1872289dfd12cb1aa54f475b",
+      "sha256": "a545e2f893d5439920df362b0b42f26aa333aedafa2dc650d0b60c14d53ff66b",
       "size_bytes": 17045,
-      "git_blob": "bbc6ef1cb0fe6ea63fbdb347e5153e39f0b1b42c"
+      "git_blob": "717ed6b6853b66cdcacfa754ee088689d110e7d3"
     },
     {
       "path": "scripts/test_build_process.py",

@@ -229,7 +229,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
             foreach (var evidence in decision.ApprovalEvidence.Concat(decision.Prerequisites.SelectMany(x => x.Files)).DistinctBy(x => x.Path))
             {
                 prerequisiteHolds.Add(new FileStream(evidence.Path, FileMode.Open, FileAccess.Read, FileShare.Read));
-                if (DeploymentQualifications.FileHash(evidence.Path) != evidence.Sha256) throw new InvalidDataException("Qualified installed prerequisite changed during acquisition");
+                if (!string.Equals(DeploymentQualifications.FileHash(evidence.Path), evidence.Sha256, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Qualified installed prerequisite changed during acquisition");
             }
         var resourceRoot = MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
         devices = new(resourceRoot, new[] { "reader:" + c.Reader.DeviceId }.Concat(new[] { c.Scale, c.Plc, c.Images?.Camera }.OfType<CapabilityBinding>().Select(x => x.Kind + ":" + x.Target)));

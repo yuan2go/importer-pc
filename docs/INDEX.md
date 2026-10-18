@@ -1,10 +1,12 @@
+> 版本管理现行增量：[版本与兼容](design/version-compatibility-01.md) · [工作包](work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md) · [运行](runtime/version-compatibility-01.md)。22拓扑与19/20机制继续有效。
+
 > 22现行拓扑、状态作用域、版本与交付：[Application架构22](design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
 
 # 统一资料与实施入口
 
 ## 当前工程入口
 
-[22工作包](work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md) · [22设计](design/application-architecture-22.md) · [22运行/配置/升级](runtime/application-architecture-22.md)。最新main基线ea881293，开发分支codex/application-architecture-22；本包完成情况以22结果及实际源码/候选身份读取。Sportmaster两个独立投递位由用户确认；不把旧Supply共享箱/数量/AGV规则套入新Application。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+[22工作包](work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md) · [22设计](design/application-architecture-22.md) · [22运行/配置/升级](runtime/application-architecture-22.md)。22历史开工基线ea881293；该包已合并，历史候选以22结果原身份读取。Sportmaster两个独立投递位由用户确认；不把旧Supply共享箱/数量/AGV规则套入新Application。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
 ## 最新独立审查与下一阶段交接
 

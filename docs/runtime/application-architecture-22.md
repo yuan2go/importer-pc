@@ -46,7 +46,7 @@ StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保
 
 ## 版本升级与原件
 
-公共Application.Contracts版本1.4.0；新参考能力包manifest版本1.4.0，仍必须使用目标宿主的精确Platform/Application契约SHA重新构建及独立签名。保留旧1.3.1/更早包与全部ID/version登记，不能覆盖原版本。ContractMajor相同不代表精确契约兼容。包构建/签名/安装/资格沿[扩展指南](../extensions/developer-guide.md)，不允许任意DLL扫描或热换Application。
+22原候选的Application.Contracts和参考能力包为1.4.0。当前业务版本、发行schema及兼容声明见[版本管理指南](version-compatibility-01.md)；扩展仍必须按目标宿主的精确Platform/Application契约SHA重新构建为新不可变版本并独立签名。保留旧1.3.1/更早包与全部ID/version登记，不能覆盖原版本。ContractMajor相同不代表精确契约兼容。包构建/签名/安装/资格沿[扩展指南](../extensions/developer-guide.md)，不允许任意DLL扫描或热换Application。
 
 配置schema1/2保持显式单Reader历史兼容模式，不猜成左右位；默认种子和当前目标使用schema3。已有schema2站必须通过完整拓扑候选/CAS显式迁移。测试中的schema2兼容夹具只保护原机制，不证明新双位。
 

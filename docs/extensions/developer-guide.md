@@ -1,3 +1,5 @@
+> Parcel业务版本与允许提供者声明见[版本管理指南](../runtime/version-compatibility-01.md)。下文Supply参考版本及命令只适用于相应冻结宿主；不得将旧包版本重签给新契约。
+
 > 22现行拓扑、状态作用域、版本与交付：[Application架构22](../design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
 
 > 现行三Application职责、公共能力与可选策略：[19职责设计](../design/application-capability-19.md)及[20可靠性增量](../design/capability-reliability-20.md)。本页保留仍有效的基础机制及Supply兼容说明；17/18阶段限制已由19替代。原字节见[归档](../archive/pre-application-capability-19/README.md)。

@@ -44,7 +44,8 @@ public sealed class LoopbackIntegration : IIntegrationPort
     public async Task<bool> HealthAsync(CancellationToken token)
     {
         try { using var response = await client.GetAsync(new Uri(new Uri(healthEndpoint), "health"), token); return response.IsSuccessStatusCode && (await response.Content.ReadAsStringAsync(token)).Contains("SIMULATION-v1", StringComparison.Ordinal); }
-        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException) { return false; }
+        catch (HttpRequestException) { token.ThrowIfCancellationRequested(); return false; }
+        catch (OperationCanceledException) when (!token.IsCancellationRequested) { return false; }
     }
     public ValueTask DisposeAsync() { client.Dispose(); return ValueTask.CompletedTask; }
 }

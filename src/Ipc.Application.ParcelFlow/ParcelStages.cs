@@ -20,30 +20,26 @@ public sealed partial class ParcelRuntime
         { op = op with { State = ParcelState.Blocked, Reason = "OriginalCapabilityUnavailable: preserve original request, package, target and implementation" }; Save(op, "OriginalCapabilityBlocked", op.Reason); return op; }
         if (query && !factory.Requirements(stage.Request.Binding).Query)
         { op = op with { Reason = "Provider declares no authoritative query capability; preserve unknown and original responsibility" }; Save(op, "QueryUnsupported", op.Reason); return op; }
-        using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token);
-        budget.CancelAfter(Effective.TimeoutMs);
         var port = PortFor(kind);
         CapabilityHealth health;
-        try { health = await ExternalAsync(() => port.HealthAsync(budget.Token)).ConfigureAwait(false); }
-        catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException)
-        {
-            op = operations[op.Id]; stage = GetStage(op, kind)!;
-            var detail = "Capability health unavailable: " + ex.GetType().Name;
-            capabilityHealth[port.InstanceId] = new(port.InstanceId, false, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow, detail);
-            op = SetStage(op, kind, stage with { Failure = detail }) with { State = attached ? op.State : ParcelState.Blocked, Reason = attached ? op.Reason : detail };
-            Save(op, "CapabilityHealthUnavailable", detail); return op;
-        }
+        try { health = await ExternalAsync(() => ProbeHealthAsync(port, stopping.Token)).ConfigureAwait(false); }
+        catch (OperationCanceledException) when (stopping.IsCancellationRequested)
+        { return operations[op.Id]; } // No delivery occurred, no failed health fact is invented on shutdown.
+        capabilityHealth[port.InstanceId] = health;
         op = operations[op.Id];
         if (!health.Ready || health.ValidUntil <= DateTimeOffset.UtcNow || health.ConfirmedAt > DateTimeOffset.UtcNow)
         { op = SetStage(op, kind, stage with { Failure = "Original capability is not healthy" }) with { State = attached ? op.State : ParcelState.Blocked, Reason = attached ? op.Reason : "Original capability is not healthy; reconnect and reconcile" }; Save(op, "CapabilityNotReady", "Original capability is not healthy"); return op; }
         if (!query && ((!attached && !CanDispatch(op) || attached && (stopping.IsCancellationRequested || repository!.Paused || failure is not null)) ||
             !PredecessorsAccepted(op, kind) || (kind is ParcelStage.Wcs or ParcelStage.Plc || kind == ParcelStage.Upload && factory.Requirements(stage.Request.Binding).MeasuredWeight) && !WeightReady(op))) return op;
+        if (stopping.IsCancellationRequested) return op;
         if (!query)
         {
             if (stage.State != StageState.Prepared || stage.Attempts != 0) throw new InvalidOperationException("Only a never-attempted prepared intent can be dispatched");
             stage = stage with { State = StageState.Dispatching, Attempts = 1 };
             op = SetStage(op, kind, stage); Save(op, "Dispatching", "T2: attempt persisted before external call");
         }
+        using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token);
+        budget.CancelAfter(Effective.TimeoutMs);
         var occurrence = repository!.BeginReceipt(op, stage, query ? "Query" : "Submit");
         StageReply? reply;
         try
@@ -62,9 +58,13 @@ public sealed partial class ParcelRuntime
         {
             repository.NoReply(occurrence);
             op = operations[op.Id];
-            stage = stage with { State = StageState.Unknown, Failure = ex.GetType().Name + ": " + ex.Message };
-            op = SetStage(op, kind, stage) with { State = attached ? op.State : UnknownState(kind),
-                Reason = "Delivery/outcome unknown; original request must be reconciled, never resent" };
+            // A failed confirmation query supplies no contrary evidence about an
+            // already accepted/rejected command. Keep that fact and its original reply.
+            var knownOutcome = stage.State is StageState.Accepted or StageState.Rejected;
+            stage = stage with { State = knownOutcome ? stage.State : StageState.Unknown, Failure = ex.GetType().Name + ": " + ex.Message };
+            op = SetStage(op, kind, stage) with { State = attached || knownOutcome ? op.State : UnknownState(kind),
+                Reason = knownOutcome ? "Original query unavailable; prior outcome retained, physical completion needs evidence" :
+                    "Delivery/outcome unknown; original request must be reconciled, never resent" };
             Save(op, "OutcomeUnknown", stage.Failure!); return op;
         }
         if (reply is null)

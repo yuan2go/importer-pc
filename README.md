@@ -1,54 +1,32 @@
-> [PR31独立复审报告、证据归档与授权合并](docs/reviews/pr31-independent-rereview-f068156/README.md)：被审head `f068156ed9d4a0ffe4feee94b5c11e966aaa366b`。用户本轮授权归档后按精确head合并；测试/构建/打包均不重跑，原件、历史失败及Windows/真实现场门禁保持。
-
 # importer-pc
 
-C#/.NET 10工位运行基座及独立Application/供包参考产品：WPF、多视图共享业务、真实SQLite事务/Outbox/原请求恢复、合成观察和受控扩展。旧现场迁移、真实SDK/WCS和现场资格分别验证。
+C#/.NET 10工位运行基座及独立Application参考工程。Platform负责机制，Application拥有状态和守卫，Driver适配设备，Component适配外部服务。一个Application运行实例可服务多个页面和布局。
 
-## 当前工程状态
+## 当前运行与组合
 
-本次[并发整合](docs/runtime/parallel-task-reconciliation-01.md)固定起始main713f23d，统一PR27/29/30/32及最新恢复成果；有效要求和执行状态以该报告及[本包](docs/work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-01.md)为入口。最终组合验证和合并尚在进行，历史候选/PASS不代替本轮结果。
+业务版本1.2.4、Application.Contracts1.7.0、Parcel DB6（SQL1–5原样保留）、配置schema1/2/3；Supply另用Storage5和原操作契约。三个主流程保持独立：Sportmaster左右两个独立reader/投递位，扫码取得WCS格口，不下PLC；DirectPlc与WcsToPlc各单reader/顺序位，分别PLC与WCS→PLC。登录/称重/采图/上传按已确认策略选装，DirectPlc完整UI继续延期。
 
-三个独立Application按[架构22](docs/design/application-architecture-22.md)选装，Parcel DB6、配置schema1/2/3、Application.Contracts ABI1.7.0。PR23采集、PR24质量闭环及PR26有效整改已由main继承。本轮修复DB4升级前责任判定、schema1/2实际main位冲突恢复与Pending激活屏障；原SQL/请求/回执和历史失败保留，未结责任不通过升级或换配置清除。旧N01–N07候选身份及结果见[历史交付](docs/runtime/architecture-quality-audit-02-results.md)，不代替本轮验证。
+Sportmaster支持 `--ui classic`（默认）和 `--ui supply-station`，导航与辅助窗共享Application、连接和原作业。RCS组件 `sportmaster.rcs-task` 1.0.4只实现 `sorter.task.dest_request`；正常、NEED_UNPACK、拒绝和Unknown分别处理，不自动重发、不提供未确认的拆包提交。图片展示与长期图库不在范围。
 
-恢复永久身份/持久Query依据与custody确定性验证见[修复结果](docs/runtime/parcel-recovery-p2.md)。
+[并发整合报告](docs/runtime/parallel-task-reconciliation-01.md)统一PR27/29/30/32、PR31恢复基线、冲突裁决及最终组合验证；历史候选、原失败与形成时结论保持原身份。新精确参考扩展为能力包2.1.2与reader1.2.2，按实际目标公共DLL构建，版本号本身不构成加载/Production资格。
 
-先按[首次运行](docs/runtime/getting-started.md)选产品。新Application使用Assembly/ParcelConfiguration；[维护指南](docs/runtime/architecture-quality-closure-01.md)统一配置确认、恢复、容量及扩展路线；Supply的Product/StationConfig、箱/数量规则仅在[Supply指南](docs/runtime/operations.md)适用。Windows实际NOT_RUN，真实SDK/协议/现场BLOCKED。
-PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。限定参考范围独立复审与原证据见[归档](docs/reviews/pr24-independent-rereview-f862c2a/README.md)、[R01～R05结果](docs/runtime/architecture-quality-closure-01-rereview-results.md)及[R03结果](docs/runtime/architecture-quality-closure-01-r03-results.md)。这些历史PASS及原包身份不替代PR26新验证，也不关闭Windows/真实现场门禁。
+## 开发、发布与维护
 
-## 继承的PR20/21整合基线
-
-当前工程入口：[PR20/21协调整合](docs/runtime/pr20-21-integration.md)。最终运行/打包源码 **d5c8b7981ba8e4c8b9daf22df1cb686243815f3b**；三个评审问题及Create二次证据比较已修复，交叉恢复/资源/迁移、签名资格与5条解包进程旅程完成定向参考验证。Windows实际NOT_RUN，真实SDK/设备/WCS/PLC/现场BLOCKED。
-
-[PR20](https://github.com/yuan2go/importer-pc/pull/20)已正常合并为`fa1d25211be454cd3cf49da40eb7d8d92e323652`；[PR21](https://github.com/yuan2go/importer-pc/pull/21)已纳入该main并保持经验证运行树，最终合并状态及提交读取GitHub和整合回执。能力可靠性与备份/健康设计共同生效：[20增量设计](docs/design/capability-reliability-20.md)、[备份恢复工作包](docs/work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md)，补充19职责。[既有运行/部署](docs/runtime/capability-reliability-20.md)继续适用；旧报告及a147eac候选保持形成时身份。[整合前入口原字节](docs/archive/pre-pr20-21-integration/README.md)。
-
-[19结果](docs/runtime/application-capability-19-results.md)中的c213aad候选与PASS保持形成时范围，本轮复核已发现组合可靠性、客户端和打包缺口，不能由旧PASS认定已关闭。Windows实际客户端/交互/UAC/ACL NOT_RUN；真实SDK/协议/设备/现场按所选提供者的证据分别准入，现有参考提供者不能满足Production。
-
-## 开发与运行入口
-
-[统一资料入口](docs/INDEX.md) · [工作约束](AGENTS.md) · [框架设计](docs/design/framework.md) · [决策与批准边界](docs/design/framework-decisions.md) · [受控装配/扩展](docs/design/controlled-extensions.md) · [扩展开发](docs/extensions/developer-guide.md) · [Application运行、发布与恢复](docs/runtime/architecture-quality-closure-01.md) · [Supply运行维护](docs/runtime/operations.md)
+先读[统一入口](docs/INDEX.md)、[工作约束](AGENTS.md)、[首次运行](docs/runtime/getting-started.md)、[配置/恢复/扩展维护](docs/runtime/architecture-quality-closure-01.md)、[版本与组合证据](docs/runtime/version-compatibility-01.md)及[扩展开发](docs/extensions/developer-guide.md)。
 
 ```sh
-# 使用global.json固定的.NET SDK10.0.402与Python3；按本包影响选择验证
+# global.json固定SDK 10.0.402，需Python3；按受影响范围验证
 ./scripts/build.sh
-# 独立合成接收端；桌面/控制台的装配与模式见运行说明
-dotnet src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll --url http://127.0.0.1:18743/ --data /tmp/ipc-simulation-receiver
+# 最终媒介/精确源码及运行回执见整合报告
+python3 scripts/package-application.py --application sportmaster --target portable --output /new/immutable/output
 ```
 
-Supply兼容Storage/MinimumReader为5/5；17冻结参考读码1.0.5与场地能力包1.0.0属于其原发布；19使用Application.Contracts及场地能力示例1.2.0、新观察/集成参考包1.0.6精确身份，旧签名包不覆盖。保留SQL1～5及checksum；旧精确1.0.1/1.0.2不重签或伪兼容。旧Effective经清偿、合法过渡、备份显式升级和新部署生效，合成旅程见15报告；真实旧根/备份盘点仍为独立门禁，不能换seed跳过。部署遵循指定账户、机级资源和包所有权；软件暂停不是安全急停。
+旧DB2–5普通升级先只读核未结责任，不能通过升级消除Unknown或原件责任。窄维护CLI `recover-legacy-receipt` 要求原DB/WAL SHA、全备份、原目标Query和永久身份/原件依据，显式选择当前DB6；内部API旧调用默认DB5兼容。配置沿同一CAS/Pending/Effective账，资源成功后确认；停止失败保持资源与包租约。软件暂停不是安全急停。
 
-## UI与历史交付
+## 证据与边界
 
-[v1.1实物设计及完整交接](docs/ui/ss-ui-vis-001-v1.1/README.md)保持原HTML/CSS/JS/tokens和资产；34张PNG是HTML同源导出，非客户端实图。主工作台局部修正，记录列表/详情局部结构调整；[UI当前状态](docs/ui/STATUS.md)分清已实现、待修和未验。
+[UI实物与完整交接](docs/ui/ss-ui-vis-001-v1.1/README.md)保留原HTML/CSS/JS、PPTX及34张同源导出PNG；这些不是Windows截图。[UI当前状态](docs/ui/STATUS.md)与[Windows后验](docs/runtime/validation/sportmaster-alternate-ui-windows.md)区分源码/跨构建/事件替身和实机。
 
-|历史阶段|结果入口|
-|---|---|
-|14一致性修复，冻结68cdc36、Storage4、参考包1.0.2|[实施报告](docs/runtime/conformance-fix-14.md)、[checks](docs/runtime/conformance-fix-14-checks.json)、[原工作包](docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md)|
-|13架构/扩展收敛，冻结8cb475b、参考包1.0.1|[原报告](docs/runtime/arch-extension-closure-13.md)、[后续复核](docs/runtime/arch-extension-closure-13-recheck.md)|
-|12受控后装与候选|[报告](docs/runtime/extension-windows-delivery-12.md)|
-|11/08/09/10|[11](docs/runtime/review-followup-11.md)、[09参考验证](docs/runtime/reference-validation-09.md)、[10 UI映射](docs/runtime/ui-baseline-alignment-10.md)|
+Windows真实交互、Dispatcher/HWND、DPI/触控、UAC/ACL及维护流程NOT_RUN；真实SDK、RCS/WCS/PLC合同、设备/实体/权限与现场BLOCKED，Production缺能力拒绝。审查01原PDF仍缺失；[审查02原PDF与复核](docs/reviews/architecture-quality-audit-02/README.md)、[PR24](docs/reviews/pr24-independent-rereview-f862c2a/README.md)、[PR31](docs/reviews/pr31-independent-rereview-f068156/README.md)及历史FAIL不改写。
 
-历史源码、候选和PASS/FAIL/NOT_RUN保留原身份。[本次更新前入口快照](docs/archive/pre-ui-maintainability-16/README.md)保存原字节；其余历史入口由INDEX保留。
-
-仓库public；[公开范围](docs/baseline/PUBLICATION.md)持续有效，完整客户归档仍PUBLIC_SUBSET_ONLY。D批准与RV状态不因参考实现或文档发布关闭。只提交获授权审查、通用实现及合成证据，不附客户原稿、私密链接、凭据、生产数据、SDK或字体文件。历史源资产校验问题保留，不放松校验器换通过。
-
-历史22交付：[22结果与候选身份](docs/runtime/application-architecture-22-results.md)；本次继承[PR24结果](docs/runtime/architecture-quality-closure-01-results.md)，新验证见[本次N01–N07交付](docs/runtime/architecture-quality-audit-02-results.md)。
+仓库public，[公开范围](docs/baseline/PUBLICATION.md)持续有效。只提交获授权通用代码、WPF衍生UI和合成证据；客户原HTML/PRD、私密链接、凭据、生产数据、SDK/字体保留本地。全量资料PUBLIC_SUBSET_ONLY，D批准及历史RV不因本轮参考PASS关闭。此前入口原字节见[归档](docs/archive/pre-parallel-task-reconciliation-01/README.md)。

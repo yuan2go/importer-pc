@@ -1,0 +1,401 @@
+{
+  "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+  "BusinessVersion": "1.2.4",
+  "ApplicationContracts": "1.7.0",
+  "ParcelStorage": 6,
+  "Environment": "Darwin arm64 25.5.0; .NET10.0.402; Python3.12 and bundled Pillow runtime",
+  "PublicLogFiles": [
+    {
+      "File": "late-final-build.log",
+      "Bytes": 5030,
+      "Sha256": "1bec07482718a5acbafd31f12f5e4a471c1a4e4ac6448a809a79a6a73b336b08"
+    },
+    {
+      "File": "late-final-script-tests.log",
+      "Bytes": 140,
+      "Sha256": "2c53f9e61238e26b09cf7030238a7546a917c611ab2c7494d6faf180f60c01f9"
+    },
+    {
+      "File": "late-findings-green-summary.json",
+      "Bytes": 1040,
+      "Sha256": "d42ee51212993cb3169f4d038c2846a09ae0b56fcf9c4ce7fe1a99bd6afc2cdc"
+    },
+    {
+      "File": "late-findings-red--sportmaster-rcs.log",
+      "Bytes": 11486,
+      "Sha256": "550c3d2de45b21ed5f01541e0b5ebc2e2a666e389f95bb8b81199b18ff7bb520"
+    },
+    {
+      "File": "late-findings-red--sportmaster-ui.log",
+      "Bytes": 4542,
+      "Sha256": "1af87dc38d8ac3e13962917a6d90c67d090d271b3f715ad512b244d8aa1a0a15"
+    },
+    {
+      "File": "late-findings-red-summary.json",
+      "Bytes": 506,
+      "Sha256": "9a6c56aa0c5538a04667a0301b5d2d0ca5f96e313620262b6013c4806e1fc2c6"
+    },
+    {
+      "File": "preservation-end.json",
+      "Bytes": 6194,
+      "Sha256": "0e07f0a715f3585961e498430c6c0da58f778b45e2b00a9c35eb8ef4fa5f06cc"
+    },
+    {
+      "File": "qualified-actual-metadata-maintenance.json",
+      "Bytes": 1695,
+      "Sha256": "c1248753f97827fb2e6ec6138b32d90af5509b3a8e263a712a13eb51ed9f4c26"
+    },
+    {
+      "File": "qualified-build-summary.json",
+      "Bytes": 841,
+      "Sha256": "1468361bdb07d8491d1c2c40a335b03bf99510564abfccb0647ae48e79e5ba52"
+    },
+    {
+      "File": "qualified-direct-plc-core.log",
+      "Bytes": 5366,
+      "Sha256": "7fd7a7778dedf5bb921507725975ac5034550181cd70a58018585541ca039613"
+    },
+    {
+      "File": "qualified-exact--quality-extensions.log",
+      "Bytes": 4435,
+      "Sha256": "db79032130ce30cd787f38bea4235b8bd93436b3632b5b1f740e44ec8544ca7f"
+    },
+    {
+      "File": "qualified-exact--signed-business-compatibility.log",
+      "Bytes": 1471,
+      "Sha256": "bda53d95a6bb950777b7d3bf95af66d0cdb8a0d540488330d7e7d638c830cc58"
+    },
+    {
+      "File": "qualified-exact--sportmaster-rcs-signed.log",
+      "Bytes": 1157,
+      "Sha256": "e0f43b782b55cb382780b65ee62954704587a3cb1b3631242ad5724a4f0b0d17"
+    },
+    {
+      "File": "qualified-extension-barcode.log",
+      "Bytes": 8554,
+      "Sha256": "005ffd7e1b462decd72eca9c116c684321dad5c1967a03915410e4a84eeebbc6"
+    },
+    {
+      "File": "qualified-extension-capabilities.log",
+      "Bytes": 21916,
+      "Sha256": "499a778ac2ba2be82520ab50b50d5716e51c939ba92076aeb37b391983007882"
+    },
+    {
+      "File": "qualified-extension-rcs.log",
+      "Bytes": 13096,
+      "Sha256": "404c5545ad506c7c5c4ce9869e1bdf726eb12b3a59e501e6c7b5755f8e5c2a8c"
+    },
+    {
+      "File": "qualified-fixture-build.log",
+      "Bytes": 2783,
+      "Sha256": "b9f5de08a78538d0c05118c83973f17ddcf681b2670d6ba949e04effde8b5368"
+    },
+    {
+      "File": "qualified-frozen--acquisition-lifecycle.log",
+      "Bytes": 2471,
+      "Sha256": "9759b594b98a958ac682a9f28c87f3c106d7e2a7e7d39160dca0778dff14acba"
+    },
+    {
+      "File": "qualified-frozen--application-architecture.log",
+      "Bytes": 5341,
+      "Sha256": "8595d950116d8bf576280ca4ed433d15994737a2b18b6e13e3ddb37655c03e1c"
+    },
+    {
+      "File": "qualified-frozen--architecture-quality.log",
+      "Bytes": 9656,
+      "Sha256": "3036fc70ff2ec9206bf482a418a822fab5d63b3c934b0ffa35af5b4d01e10457"
+    },
+    {
+      "File": "qualified-frozen--configuration-confirmation.log",
+      "Bytes": 3066,
+      "Sha256": "455d65a3e28f1bca76b0fb9c59c30007efc6cd977238b0e39b21d243d348bedd"
+    },
+    {
+      "File": "qualified-frozen--parcel-recovery-p2.log",
+      "Bytes": 8175,
+      "Sha256": "a5413318608c221c12f356ddf36994c847ef67a77471fc4eb71e45c0230f3b75"
+    },
+    {
+      "File": "qualified-frozen--receipt-custody.log",
+      "Bytes": 2147,
+      "Sha256": "8a9234d838e9b6946c05ed775ccdd52ef5e2a7d65ad1b59bb14b09fb4f2125f8"
+    },
+    {
+      "File": "qualified-frozen--review-closure.log",
+      "Bytes": 2947,
+      "Sha256": "cd51ddd56f34bf311e1b15ec506e2be593a0e29abf8f011c0378e171e7acbb8c"
+    },
+    {
+      "File": "qualified-frozen--sportmaster-rcs.log",
+      "Bytes": 10714,
+      "Sha256": "1a0676ebaa650f01cdd9eb1b1e1c9fc281d923158dc962ec36aa09dcd8a476c1"
+    },
+    {
+      "File": "qualified-frozen--sportmaster-ui.log",
+      "Bytes": 8536,
+      "Sha256": "8b8490a92c1b965ac53304e820b6d65f3480b08facace2422e4565e228f82c46"
+    },
+    {
+      "File": "qualified-frozen--sportmaster-window-lifecycle.log",
+      "Bytes": 1428,
+      "Sha256": "b10ea849aad859053c9cbd399a180d652c4d5375d53569b466f9e89e923d0435"
+    },
+    {
+      "File": "qualified-frozen--upgrade-conflict-closure.log",
+      "Bytes": 5460,
+      "Sha256": "101a2560e500b031d0ddf7a79bdd19af8e12177ac320800f100202e2a1add2f3"
+    },
+    {
+      "File": "qualified-frozen--version-compatibility.log",
+      "Bytes": 3954,
+      "Sha256": "923b0449407522cc2ec537cf80d575c2061678e6b2524c292413652fa39baa13"
+    },
+    {
+      "File": "qualified-journeys-index.json",
+      "Bytes": 2414,
+      "Sha256": "11e4280c3194d62560ae646e69dfa472c4ec72af28d03347865059e22fa71000"
+    },
+    {
+      "File": "qualified-maintenance-il-probe-build.log",
+      "Bytes": 432,
+      "Sha256": "0b02a7de97dffc91353987cdb1c2d9bd55005f02900cb4ce83d1e714a60e9614"
+    },
+    {
+      "File": "qualified-maintenance-il.json",
+      "Bytes": 81613,
+      "Sha256": "8c9ebc84f385e1cebd3178e5b1f48144f2072d8e69b1b99a25978cf663c2d107"
+    },
+    {
+      "File": "qualified-media-verification.json",
+      "Bytes": 1899,
+      "Sha256": "5d7ea9be176c0e10c3dfa56326b3e3c850f3525c539a10800e8f28ce01c4cf76"
+    },
+    {
+      "File": "qualified-published-maintenance-probe-build.log",
+      "Bytes": 446,
+      "Sha256": "9e04494ba73357fde00f4cd4869d4602f3faa0b6ee9e420440b6715a2928c222"
+    },
+    {
+      "File": "qualified-reverify-direct-plc-default.log",
+      "Bytes": 121,
+      "Sha256": "c81eaddac64fc5368c440875b3389c77c99382bc39e6dfe30d8c8341ac56e119"
+    },
+    {
+      "File": "qualified-reverify-sportmaster-default.log",
+      "Bytes": 122,
+      "Sha256": "2fb0784d57107b0be870faff890213cd209875465322cb8ea1b317fb5707e171"
+    },
+    {
+      "File": "qualified-reverify-wcs-attached.log",
+      "Bytes": 121,
+      "Sha256": "edf86926c5ea7e4438f558f835d42e94d675bd20e1b501d2a7bf109bb369f24e"
+    },
+    {
+      "File": "qualified-reverify-wcs-before-external.log",
+      "Bytes": 121,
+      "Sha256": "190da6e709351d6c143345dd2ca7dbba4646053373a75633852f213dfa953385"
+    },
+    {
+      "File": "qualified-reverify-wcs-before-local.log",
+      "Bytes": 121,
+      "Sha256": "42b1491850919a15ae7f8e00b180e390c6e5e83e93c0fb639c968cb243323f39"
+    },
+    {
+      "File": "qualified-reverify-wcs-default.log",
+      "Bytes": 121,
+      "Sha256": "fd3caf3a1809c05d98f2dea81d42e585faeb8a849676ef937ef750602deeda75"
+    },
+    {
+      "File": "qualified-selected-cli.log",
+      "Bytes": 594,
+      "Sha256": "c87da4e092f3e05b884eff573641717ff897abec8bf3bb334548d9f18473b28e"
+    },
+    {
+      "File": "qualified-selected-portable.log",
+      "Bytes": 44645,
+      "Sha256": "e51a92378bc8a29b4dcd8587f04cd7d726f8ff02f74e61f3e669a98db5d966c5"
+    },
+    {
+      "File": "qualified-selected-win-x64.log",
+      "Bytes": 49067,
+      "Sha256": "450835399547c97c84266b5f9f315755bc3d2544a65a69c0dde096385aeefe95"
+    },
+    {
+      "File": "qualified-smoke-direct-plc-default.log",
+      "Bytes": 545,
+      "Sha256": "3942eb32a915fecc5ea829b4f133e8d4c1f19d4dc0383383638028a6148feb4d"
+    },
+    {
+      "File": "qualified-smoke-sportmaster-default.log",
+      "Bytes": 560,
+      "Sha256": "b83281733e80436d5349b499faf663ac367aed09d91563f7c3990bdd292f1eca"
+    },
+    {
+      "File": "qualified-smoke-wcs-attached.log",
+      "Bytes": 810,
+      "Sha256": "b7a9d278348cff526e46fea5405e24f63676a7f401f955d7dab8c2019556a3ae"
+    },
+    {
+      "File": "qualified-smoke-wcs-before-external.log",
+      "Bytes": 780,
+      "Sha256": "e92737f157459bcd75784b69dab247e2f1d5a57cae91f6a31c340463b5ff0181"
+    },
+    {
+      "File": "qualified-smoke-wcs-before-local.log",
+      "Bytes": 781,
+      "Sha256": "aa2b0696d876e6b220fd9c6715227ea5d14fc570619372c4d95ced68bd9f6279"
+    },
+    {
+      "File": "qualified-smoke-wcs-default.log",
+      "Bytes": 545,
+      "Sha256": "c53bb7e669e83c4bc512f05a697da570bce92e91edfc2a77985c316c87dfd9ee"
+    },
+    {
+      "File": "qualified-sportmaster-core.log",
+      "Bytes": 5814,
+      "Sha256": "938f6aae8b611edc78977dad77bb99d241f96536a19bf9d2b879b5eca7e3db1f"
+    },
+    {
+      "File": "qualified-tool-tests-with-pillow.log",
+      "Bytes": 109,
+      "Sha256": "a04571687dc231666d8b41fc4aa04fd19b03d473b6120118cf6ff1b26a3027e4"
+    },
+    {
+      "File": "qualified-tool-tests.log",
+      "Bytes": 763,
+      "Sha256": "ac50348fd399f45850643ebbc57e450be66cfd3b6e2a9ee7037de6cbf0d7b9b1"
+    },
+    {
+      "File": "qualified-verification-summary.json",
+      "Bytes": 3815,
+      "Sha256": "fb870bfdadb6db1d41de3ddf8ec29548b2e7e3df0ba2f975c105a67b91a2b16e"
+    },
+    {
+      "File": "qualified-wcs-to-plc-core.log",
+      "Bytes": 5768,
+      "Sha256": "495c7f7832389d4204dd8a05b032ae6c46b4437dc80fce545acbc3f5142b064f"
+    },
+    {
+      "File": "qualified-wpf-builds.json",
+      "Bytes": 1270,
+      "Sha256": "41f75633bcffbd6aa103e8a30b5d7068e11f53a198545d67089c84828ecaba3f",
+      "OriginalRecordSha256": "626d1bd35ef735fa583cbc0c7c2d951541025a0458d059f224a1b0429fee6a8a"
+    },
+    {
+      "File": "qualified-wpf-direct-plc.log",
+      "Bytes": 5046,
+      "Sha256": "2b1633fab8ba40e2e03e39a0b6bed5fe321aba24909e360bb86968ce5f6947c6"
+    },
+    {
+      "File": "qualified-wpf-wcs-to-plc.log",
+      "Bytes": 5366,
+      "Sha256": "0afb83a0177395dac25c461f29fe278bc8b2c22d816f079739f1173730127ba2"
+    },
+    {
+      "File": "sql-custody.json",
+      "Bytes": 634,
+      "Sha256": "e3d483f24f1a0967884afbd3e2147450f78f1758a9ed8e1c814cb24215c420c2"
+    }
+  ],
+  "ReleaseTestHarnessSha256": "fe2c5f496e33b4ba6dcdeaff06c1adc476d7e42e6ed17a89e6f51c5d85f58701",
+  "ReleasePublicBinaries": {
+    "Ipc.Components.dll": "4222a4cd0030de8f5f4c8e050ca95a53f0983db386597137e0584ac03640862e",
+    "Ipc.Application.Verification.dll": "fe2c5f496e33b4ba6dcdeaff06c1adc476d7e42e6ed17a89e6f51c5d85f58701",
+    "Ipc.Application.ParcelFlow.dll": "cd15fb856aeb1ae895937cc8055824b3ae1e939d91eaa834d667e69f741624a7",
+    "Ipc.Application.DirectPlc.dll": "1a8d7d6344b814ed3bb64069ccd0a33ca3460bba3916b8d68ab8aadfd1815d36",
+    "Ipc.Supply.Contracts.dll": "ba0f8ef577315741e5a62b954fc0da50828d264927068aba799c96cca86de882",
+    "Ipc.Platform.dll": "b9ccd38d945d021c6786f45b943d2e0e94f2d7b6c953faa5f3d2aa71f325b54f",
+    "Ipc.Reference.Protocol.dll": "51fb5b5bf5b65035686bf53201fd74a5cab95de8dea679f639b9174aa05cc92a",
+    "Ipc.Drivers.dll": "cc9dd6c7347fbf1ee7bd6b279f5108f81339bf3373bde4a72b63d5896b0e5d8d",
+    "Ipc.Integrations.dll": "883dc72b09f11f23d4db50cda2f13984e69c232be18c4c335acd7421f1531ad4",
+    "Ipc.Supply.dll": "bb652ed44a54e5bd7ff020847e3a06f6b98d19b2dc679247e67cb871698626c3",
+    "Ipc.Integrations.SportmasterRcs.dll": "0f6e9165c5a2a8f9abc37337f8b1fd9be5faac32c20fddc16c3fb809536ff6f2",
+    "Ipc.Application.WcsToPlc.dll": "76bc0a52e57bc9f08deb2994a4c891a34ae1df68d3e6bfb845b0560cc0d0813c",
+    "Ipc.Platform.Storage.dll": "d0de4e0b0ad618d2694c48b89cc84de3bcdd39ec510185ec3b1c5db000f3025a",
+    "Ipc.Application.Contracts.dll": "0be18b8dcf75107d3def818b8dceb9e892f968835099f40f98b46bfa8d8b09fa",
+    "Ipc.Application.Sportmaster.dll": "0313adfa3d494e8605f978ec30998b4e1ec64e1f982ed1ab5d11fb82b100ef38",
+    "Ipc.Assembly.dll": "2a18738fe0e4b1bff25a8821372a4c0d763202b8076d8d2d4fb02a2d598dacbc"
+  },
+  "SignedPackages": [
+    {
+      "Package": "capabilities.ipcx",
+      "PackageSha256": "ae975413b30ab35c7a448381e48f5022038fc82e76ebb0422df0016cb36ed96f",
+      "PluginSourceCommit": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+      "PluginSourceSha256": "759bddb4f1ebf8384c5b37bba5f62559de4d2abda0d9e73652d67b43c1645626",
+      "DefinitionSha256": "423531ba15536fb965eb960b28885b82d6c80f8ae263583365927877b89f73f8",
+      "HostContractSha256": "b9ccd38d945d021c6786f45b943d2e0e94f2d7b6c953faa5f3d2aa71f325b54f",
+      "FrozenHostUnchanged": true,
+      "FrozenCheckerUnchanged": true,
+      "CheckerContractsSha256": {
+        "Ipc.Platform": "b9ccd38d945d021c6786f45b943d2e0e94f2d7b6c953faa5f3d2aa71f325b54f",
+        "Ipc.Application.Contracts": "0be18b8dcf75107d3def818b8dceb9e892f968835099f40f98b46bfa8d8b09fa"
+      },
+      "Publisher": "parallel-reconciliation-test-only",
+      "Version": "2.1.2",
+      "ExtensionContract": 1,
+      "Signature": "RSA-PSS/SHA256",
+      "Mode": "Simulation",
+      "ManifestSha256": "96a2240a46899d32152ca568c443047d3b051c91062f85e79a3427beb40ff1b4",
+      "TrustSha256": "ca5f77d3fc673c2e822fc44c35ba39f3797205c4fe63ee1e857473cf91ed04d9",
+      "PayloadSha256": {
+        "Ipc.Reference.ParcelCapabilitiesExtension.dll": "b0dae5ccdcf5fc0938e2e9a4708a262ab6913c53373872334a2c10d35dfe5686"
+      },
+      "DependencyPackages": [],
+      "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+    },
+    {
+      "Package": "barcode.ipcx",
+      "PackageSha256": "9a6573816d66e36225cc379b7ebe3c84671f5b46d6d6c6595beaddbf80f1d14e",
+      "PluginSourceCommit": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+      "PluginSourceSha256": "9dd0901d9f4bee8b540db0a72f3a768dc40d9da615a517a41aa6c82a972ed45d",
+      "DefinitionSha256": "1bcfe58954716d7b1b6714e58209c667147fe11cd4927a05bcf4fd6c7410f9ad",
+      "HostContractSha256": "b9ccd38d945d021c6786f45b943d2e0e94f2d7b6c953faa5f3d2aa71f325b54f",
+      "FrozenHostUnchanged": true,
+      "FrozenCheckerUnchanged": true,
+      "CheckerContractsSha256": {
+        "Ipc.Platform": "b9ccd38d945d021c6786f45b943d2e0e94f2d7b6c953faa5f3d2aa71f325b54f"
+      },
+      "Publisher": "parallel-reconciliation-test-only",
+      "Version": "1.2.2",
+      "ExtensionContract": 1,
+      "Signature": "RSA-PSS/SHA256",
+      "Mode": "Simulation",
+      "ManifestSha256": "44ded8d49d6551558b55aaa82bb9922910d450bdcf1c5a0b7481f2072da8a281",
+      "TrustSha256": "ca5f77d3fc673c2e822fc44c35ba39f3797205c4fe63ee1e857473cf91ed04d9",
+      "PayloadSha256": {
+        "Ipc.Reference.BarcodeExtension.dll": "924209605ac0c982372d35d92bd60bed5b0c908f12f907f0d588ff314358d74d"
+      },
+      "DependencyPackages": [],
+      "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+    },
+    {
+      "Package": "rcs.ipcx",
+      "PackageSha256": "14f791c836d4aeeb7227a6d6f726f54b7a826188e2d443e44fb2a220f33da496",
+      "PluginSourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+      "PluginSourceSha256": "f5f72f851f9160457238c4e595b44436a2d1f34de051c25aa8f5fa64956e3b7b",
+      "DefinitionSha256": "4be6d5f4b46b72225b10af722fb9e6f1066536be285db802a68e380ceb62dc60",
+      "HostContractSha256": "b9ccd38d945d021c6786f45b943d2e0e94f2d7b6c953faa5f3d2aa71f325b54f",
+      "FrozenHostUnchanged": true,
+      "FrozenCheckerUnchanged": true,
+      "CheckerContractsSha256": {
+        "Ipc.Platform": "b9ccd38d945d021c6786f45b943d2e0e94f2d7b6c953faa5f3d2aa71f325b54f",
+        "Ipc.Application.Contracts": "0be18b8dcf75107d3def818b8dceb9e892f968835099f40f98b46bfa8d8b09fa"
+      },
+      "Publisher": "parallel-reconciliation-test-only",
+      "Version": "1.0.4",
+      "ExtensionContract": 1,
+      "Signature": "RSA-PSS/SHA256",
+      "Mode": "Simulation",
+      "ManifestSha256": "efc18228c1d8b2e020283925874ece6b7c0ebbb5735ec751d7d55adbbe5495d9",
+      "TrustSha256": "ca5f77d3fc673c2e822fc44c35ba39f3797205c4fe63ee1e857473cf91ed04d9",
+      "PayloadSha256": {
+        "Ipc.Integrations.SportmasterRcs.dll": "3a845697b4392dddc9ed7e04c369248f3055efd0e58edd1df54aaf960919d64f"
+      },
+      "DependencyPackages": [],
+      "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+    }
+  ],
+  "RawEvidencePolicy": "Full configs, event streams, stores, DBs, session prompts, snapshots and private signing inputs remain outside Git; original hashes retained. Public summaries do not alter or relabel them.",
+  "Windows": "NOT_RUN",
+  "SdkServiceDevicesSite": "BLOCKED"
+}

@@ -13,22 +13,30 @@ public partial class App : System.Windows.Application
         base.OnStartup(e);
         try
         {
-            var map = e.Args.Chunk(2).ToDictionary(x => x[0], x => x.Length == 2 ? x[1] : throw new ArgumentException("启动参数缺值"));
-            if (map.Keys.Any(x => x is not ("--config" or "--data-root" or "--view" or "--layout"))) throw new ArgumentException("启动参数无效");
-            var launch = new BusinessLaunch(map.GetValueOrDefault("--config", System.IO.Path.Combine(AppContext.BaseDirectory, "config")),
-                map.GetValueOrDefault("--data-root", System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data")), map.GetValueOrDefault("--view"), map.GetValueOrDefault("--layout"));
+#if SPORTMASTER
+            const string applicationId = "sportmaster";
+#elif DIRECTPLC
+            const string applicationId = "direct-plc";
+#else
+            const string applicationId = "wcs-to-plc";
+#endif
+            var options = DesktopLaunchOptions.Parse(e.Args, applicationId);
+            var launch = options.Business;
             runtime = ParcelAssembly.Create(launch);
             if (launch.View is not null && !runtime.Presentation.Views.Contains(launch.View) || launch.Layout is not null && !runtime.Presentation.Layouts.Contains(launch.Layout)) throw new InvalidDataException("页面或布局不属于本次选定业务");
             await runtime.StartAsync(CancellationToken.None);
             var application = (IParcelApplication)runtime.Application;
 #if SPORTMASTER
-            var window = Ipc.Application.Sportmaster.Desktop.Presentation.Create(application, launch.View, launch.Layout);
+            var window = Ipc.Application.Sportmaster.Desktop.Presentation.Create(application, launch.View, launch.Layout, options.Ui, StopAsync);
 #elif DIRECTPLC
             var window = Ipc.Application.DirectPlc.Desktop.Presentation.Create(application, launch.View, launch.Layout);
 #else
             var window = Ipc.Application.WcsToPlc.Desktop.Presentation.Create(application, launch.View, launch.Layout);
 #endif
-            window.StopOwnerAsync = StopAsync; MainWindow = window; window.Show();
+#if !SPORTMASTER
+            window.StopOwnerAsync = StopAsync;
+#endif
+            MainWindow = window; window.Show();
         }
         catch (Exception ex)
         {

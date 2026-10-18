@@ -1,0 +1,23 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 493 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 493 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 494 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 495 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/src/Ipc.Fixture/Ipc.Fixture.csproj (用时 487 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 494 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 493 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 494 毫秒)。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/parallel-reconciliation-01/21e6cae/fixture-build/bin/Ipc.Platform/debug/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/parallel-reconciliation-01/21e6cae/fixture-build/bin/Ipc.Application.Contracts/debug/Ipc.Application.Contracts.dll
+  Ipc.Reference.Protocol -> /Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/parallel-reconciliation-01/21e6cae/fixture-build/bin/Ipc.Reference.Protocol/debug/Ipc.Reference.Protocol.dll
+  Ipc.Drivers -> /Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/parallel-reconciliation-01/21e6cae/fixture-build/bin/Ipc.Drivers/debug/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/parallel-reconciliation-01/21e6cae/fixture-build/bin/Ipc.Application.Supply.Contracts/debug/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/parallel-reconciliation-01/21e6cae/fixture-build/bin/Ipc.Integrations/debug/Ipc.Integrations.dll
+  Ipc.Adapters -> /Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/parallel-reconciliation-01/21e6cae/fixture-build/bin/Ipc.Adapters/debug/Ipc.Adapters.dll
+  Ipc.Fixture -> /Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/parallel-reconciliation-01/21e6cae/fixture-build/bin/Ipc.Fixture/debug/Ipc.Fixture.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:02.89

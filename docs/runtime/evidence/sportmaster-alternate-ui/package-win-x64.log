@@ -1,0 +1,45 @@
+  正在确定要还原的项目…
+  已还原 <REPO>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 2.37 秒)。
+  已还原 <REPO>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 2.37 秒)。
+  已还原 <REPO>/src/Ipc.Components/Ipc.Components.csproj (用时 2.38 秒)。
+  已还原 <REPO>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 2.37 秒)。
+  已还原 <REPO>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 2.41 秒)。
+  已还原 <REPO>/src/Ipc.Platform/Ipc.Platform.csproj (用时 2.37 秒)。
+  已还原 <REPO>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 2.37 秒)。
+  已还原 <REPO>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 2.39 秒)。
+  已还原 <REPO>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 33 毫秒)。
+  已还原 <REPO>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 71 毫秒)。
+  已还原 <REPO>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 72 毫秒)。
+  Ipc.Platform -> <BUILD_OUTPUT>
+  Ipc.Application.Contracts -> <BUILD_OUTPUT>
+  Ipc.Platform.Storage -> <BUILD_OUTPUT>
+  Ipc.Application.ParcelFlow -> <BUILD_OUTPUT>
+  Ipc.Application.Sportmaster -> <BUILD_OUTPUT>
+  Ipc.Reference.Protocol -> <BUILD_OUTPUT>
+  Ipc.Components -> <BUILD_OUTPUT>
+  Ipc.Drivers -> <BUILD_OUTPUT>
+  Ipc.Application.Supply.Contracts -> <BUILD_OUTPUT>
+  Ipc.Integrations -> <BUILD_OUTPUT>
+  Ipc.Assembly -> <BUILD_OUTPUT>
+  Ipc.Assembly -> <BUILD_OUTPUT>
+  正在确定要还原的项目…
+  已还原 <REPO>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 5.2 秒)。
+  已还原 <REPO>/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj (用时 5.16 秒)。
+  已还原 <REPO>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 5.26 秒)。
+  11 个项目(共 14 个)是最新的，无法还原。
+  Ipc.Platform -> <BUILD_OUTPUT>
+  Ipc.Application.Contracts -> <BUILD_OUTPUT>
+  Ipc.Platform.Storage -> <BUILD_OUTPUT>
+  Ipc.Application.ParcelFlow -> <BUILD_OUTPUT>
+  Ipc.Application.Sportmaster -> <BUILD_OUTPUT>
+  Ipc.Reference.Protocol -> <BUILD_OUTPUT>
+  Ipc.Components -> <BUILD_OUTPUT>
+  Ipc.Drivers -> <BUILD_OUTPUT>
+  Ipc.Application.Supply.Contracts -> <BUILD_OUTPUT>
+  Ipc.Integrations -> <BUILD_OUTPUT>
+  Ipc.Assembly -> <BUILD_OUTPUT>
+  Ipc.Application.ParcelFlow.Desktop -> <BUILD_OUTPUT>
+  Ipc.Application.Sportmaster.Desktop -> <BUILD_OUTPUT>
+  Ipc.Desktop -> <BUILD_OUTPUT>
+  Ipc.Desktop -> <BUILD_OUTPUT>
+{"Package": "<BUILD_OUTPUT> "Sha256": "744eabbfbe39a02063b60c51d72b3cefaabbd3504516d0a5201b354735f69038", "SourceCommit": "911ed2433fc403a43189c00218e095dddbaff7a8", "Application": "sportmaster", "Target": "win-x64"}

@@ -1,0 +1,67 @@
+[
+  {
+    "File": "direct-plc-core.zip",
+    "Bytes": 18361549,
+    "Sha256": "94B295AD49974E0ABA0AFD4C73E2DE3F012DD4B991C5821308D5CFD0CF2DACFD",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "BusinessVersion": "1.2.4",
+    "Target": "portable",
+    "Files": 95,
+    "Binaries": 11,
+    "OfflinePackages": 0,
+    "Status": "PASS",
+    "Errors": []
+  },
+  {
+    "File": "sportmaster-core.zip",
+    "Bytes": 18393632,
+    "Sha256": "387D1669FE89DFE6CA8485301E7F6A7B5AA8E90D78A7109819DD31EB11206641",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "BusinessVersion": "1.2.4",
+    "Target": "portable",
+    "Files": 101,
+    "Binaries": 12,
+    "OfflinePackages": 0,
+    "Status": "PASS",
+    "Errors": []
+  },
+  {
+    "File": "sportmaster-selected-portable.zip",
+    "Bytes": 18441584,
+    "Sha256": "FB57A6ECB8D92D4789DC5C96778E6E2435AFEAAD24096EE2C68BBFAF361C7F2C",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "BusinessVersion": "1.2.4",
+    "Target": "portable",
+    "Files": 105,
+    "Binaries": 12,
+    "OfflinePackages": 3,
+    "Status": "PASS",
+    "Errors": []
+  },
+  {
+    "File": "sportmaster-selected-win-x64.zip",
+    "Bytes": 104170521,
+    "Sha256": "54CE02ECE4E88DD352687F446D72448F4FDA2CABC16CF9E11E47A616E01C97A1",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "BusinessVersion": "1.2.4",
+    "Target": "win-x64",
+    "Files": 740,
+    "Binaries": 27,
+    "OfflinePackages": 3,
+    "Status": "PASS",
+    "Errors": []
+  },
+  {
+    "File": "wcs-to-plc-core.zip",
+    "Bytes": 18383028,
+    "Sha256": "7C4350430AF3092155A73DD1A444640549B7BA8C1DE80D2BF4FBC343BBD2BC93",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "BusinessVersion": "1.2.4",
+    "Target": "portable",
+    "Files": 97,
+    "Binaries": 12,
+    "OfflinePackages": 0,
+    "Status": "PASS",
+    "Errors": []
+  }
+]

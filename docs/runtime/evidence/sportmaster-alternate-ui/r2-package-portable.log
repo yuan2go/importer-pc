@@ -1,0 +1,27 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 562 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 562 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 562 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 562 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 562 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 562 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 562 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 562 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 8 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 9 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 9 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 10 毫秒)。
+  Ipc.Platform -> <CANDIDATE>/sportmaster-portable/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> <CANDIDATE>/sportmaster-portable/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> <CANDIDATE>/sportmaster-portable/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> <CANDIDATE>/sportmaster-portable/build-intermediates/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> <CANDIDATE>/sportmaster-portable/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> <CANDIDATE>/sportmaster-portable/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> <CANDIDATE>/sportmaster-portable/build-intermediates/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> <CANDIDATE>/sportmaster-portable/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <CANDIDATE>/sportmaster-portable/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> <CANDIDATE>/sportmaster-portable/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Integrations -> <CANDIDATE>/sportmaster-portable/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> <CANDIDATE>/sportmaster-portable/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> <CANDIDATE>/sportmaster-portable/app/
+{"Package": "<CANDIDATE>/sportmaster-portable.zip", "Sha256": "054c8acb9165f3608347fd3d20dcaf56613e0efe7c2e64750a5bf092c7e90110", "SourceCommit": "e86d664c78418d82bdd49b1abaacc148f38c2d35", "Application": "sportmaster", "Target": "portable"}

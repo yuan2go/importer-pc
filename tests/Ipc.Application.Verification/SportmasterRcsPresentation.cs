@@ -1,6 +1,7 @@
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow;
 using Ipc.Application.ParcelFlow.Desktop;
+using Ipc.Application.Sportmaster.Desktop;
 using Ipc.Platform;
 
 static class SportmasterRcsPresentation
@@ -22,6 +23,12 @@ static class SportmasterRcsPresentation
         Check(view.Details.Contains("任务 SYNTH-TASK · SKU SYNTH-SKU · 格口 SYNTH-CHUTE", StringComparison.Ordinal) &&
             view.Details.Contains("长度 未取得 · 宽度 未取得 · 高度 未取得 · 重量 未取得", StringComparison.Ordinal) &&
             view.Details.EndsWith(Wire.Encode(assigned), StringComparison.Ordinal), "assigned task, SKU and unknown measurements stay distinct from fabricated zero values");
+        var alternate = new SupplyStationViewModel(app);
+        await alternate.RefreshAsync();
+        Check(alternate.Left.Status=="需拆包 · 本位等待检查处置" && alternate.Left.ResultReason.Contains("剩余 0 · 阶段 ASSIGNED",StringComparison.Ordinal) && alternate.Left.Slot=="未取得",
+            "alternate UI keeps NEED_UNPACK explicit with zero remaining and no fabricated destination");
+        Check(alternate.Right.ResultReason.Contains("任务 SYNTH-TASK · SKU SYNTH-SKU · 格口 SYNTH-CHUTE",StringComparison.Ordinal) && alternate.Right.ResultReason.Contains("重量 未取得",StringComparison.Ordinal) && alternate.Left.RequestId!=alternate.Right.RequestId,
+            "alternate UI reuses complete original RCS projection while keeping both position/request identities separate");
         var destination = unpack.Wcs!.Replies.Single().Destination!;
         var changed = destination with { Unpack = destination.Unpack! with { Chutes = [.. destination.Unpack.Chutes, new("SYNTH-CHUTE-2", "SYNTH-ORDER-2", 2, "FUTURE_PHASE")] } };
         view.Selected = unpack with { Wcs = unpack.Wcs with { Replies = [unpack.Wcs.Replies.Single() with { Destination = changed }] } };

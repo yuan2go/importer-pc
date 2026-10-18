@@ -1,0 +1,56 @@
+[
+  {
+    "RunId": "e95e6b1fc0c44ef582f08a540a8bdf28",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "Scenario": "sportmaster-default",
+    "RecordSha256": "8c198d407bb30a470a4dfb4414c86101f043a21c36902c82b34eb45deefe236c",
+    "EventsSha256": "555e437ea3f568b6a9d522bd91f683513096c2058e140984a123511028f0c1ee",
+    "Status": "PASS",
+    "CommandAndQualificationInputBound": true
+  },
+  {
+    "RunId": "0eb9ab53797541cb9be85d64ca1d3544",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "Scenario": "direct-plc-default",
+    "RecordSha256": "4ab75cb7bc6ca43ddf1c671b620ec0e8482df1b876e085b22c33a375e0f230b3",
+    "EventsSha256": "405d0c9798abd0c3bf94f0c4872074928ec4c3204656d45718f74a4015a32b13",
+    "Status": "PASS",
+    "CommandAndQualificationInputBound": true
+  },
+  {
+    "RunId": "9734f0737d6b442bbd3cac0503e317ed",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "Scenario": "wcs-default",
+    "RecordSha256": "f50a58580c37cd3c27adf883e9adf441b35c400d6bbad67ebb863dfeb95507fb",
+    "EventsSha256": "da22437658ed4316e6ad745626b30ee094ee191a81ae996aa93e38ebdc9e1792",
+    "Status": "PASS",
+    "CommandAndQualificationInputBound": true
+  },
+  {
+    "RunId": "d662db293bb14a7c9b5464896f8a32b0",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "Scenario": "wcs-before-local",
+    "RecordSha256": "64346f398e390029e899166ea0080b24781e61eae6d0a8a765de9b648772ec0d",
+    "EventsSha256": "8331f8acc17e96844f5d48a83510f5cb076c18e11900f65e8b6a228aba44bae4",
+    "Status": "PASS",
+    "CommandAndQualificationInputBound": true
+  },
+  {
+    "RunId": "322b56cc37364a6390b5edea1e056b87",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "Scenario": "wcs-before-external",
+    "RecordSha256": "b2eb4751e1deff6ddbfb217dd7d13ee40aea866bc6bcf8a618f8c2c32e1a7ec2",
+    "EventsSha256": "ca62d05a2493679b3060c55852d072cb4c647e6d9ee691f4c7ece3afdf58353f",
+    "Status": "PASS",
+    "CommandAndQualificationInputBound": true
+  },
+  {
+    "RunId": "bce2afab13754d8ebf1641a9434786dd",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "Scenario": "wcs-attached",
+    "RecordSha256": "f2b5dc8c2c215c6d13552eeff30213184324d547fcbd9404ae421126d7c6381c",
+    "EventsSha256": "7105974893cb65326fbff937fd55b265f6450222b9053bf4ea5fac5ddcf6d849",
+    "Status": "PASS",
+    "CommandAndQualificationInputBound": true
+  }
+]

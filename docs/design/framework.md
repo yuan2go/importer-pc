@@ -1,12 +1,4 @@
-> RCS增量01：[Sportmaster RCS分拣任务服务](../runtime/sportmaster-rcs-task.md)。首项真实HTTP协议组件与参考夹具验证分别记录；公共契约1.7.0、Parcel数据库6，继承main PR26的旧原件核对/责任保留与版本屏障。旧1.6.0/SQL4与无真实协议的说明按形成时读取，原字节见[归档](../archive/pre-sportmaster-rcs-task/README.md)。Windows实际NOT_RUN，真实RCS/设备/现场BLOCKED。
-
-> 业务版本及兼容管理按[版本管理增量](version-compatibility-01.md)；已合并质量闭环和原D/RV保持。
-
-> 本包整改权威：[质量闭环设计](architecture-quality-closure-01.md)。22拓扑、19/20可靠性、框架F决策共同继承；本文中的历史实施和版本记录保持形成时范围。
-
-> 22现行拓扑、状态作用域、版本与交付：[Application架构22](../design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
-
-> 现行三Application职责、公共能力与可选策略：[19职责设计](../design/application-capability-19.md)及[20可靠性增量](../design/capability-reliability-20.md)。本页保留仍有效的基础机制及Supply兼容说明；17/18阶段限制已由19替代。原字节见[归档](../archive/pre-application-capability-19/README.md)。
+> 当前设计阅读顺序：[框架F决策](framework-decisions.md)与19/20职责可靠性 → [22独立Application拓扑](application-architecture-22.md) → [质量/恢复](architecture-quality-closure-01.md) → [RCS](sportmaster-rcs-task.md)与[版本兼容](version-compatibility-01.md)。[并发整合报告](../runtime/parallel-task-reconciliation-01.md)记录差额、来源和验证，不替代原D/RV或降低目标。当前业务1.2.4、Contracts1.7.0、Parcel DB6；下文历次版本/阶段说明保持形成时语境，历史原件见归档。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
 # 从CLOSURE-13继承的职责与决定
 

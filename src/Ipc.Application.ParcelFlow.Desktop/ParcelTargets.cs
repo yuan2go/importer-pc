@@ -83,7 +83,7 @@ public partial class ParcelViewModel
     {
         if (confirmationRevision is not { } revision || confirmationRuntimeId is not { } runtime || confirmationEffectiveHash is null)
             throw new InvalidOperationException("先读取并核对待确认原账");
-        var current = await application.SnapshotAsync();
+        var (_, current) = await ReadSnapshotWithIdAsync();
         if (current.RuntimeId != runtime) throw new InvalidOperationException("运行实例已改变；重新读取原账，不自动推进旧确认资料");
         var receipt = await application.CommandAsync(new(Wire.Id(), current.Revision, "ConfirmConfiguration", runtime.ToString("N") + ":" + revision + ":" + confirmationEffectiveHash, ConfigurationConfirmationReason));
         Message = receipt.Status + " · " + receipt.Reason;

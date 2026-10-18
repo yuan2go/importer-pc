@@ -88,7 +88,9 @@ for directory in [output / 'app', output / 'desktop']:
 selection.update(SourceCommit=source, Target=a.target, EntryPoint='app/Ipc.Assembly.dll',
                  DesktopEntryPoint='desktop/Ipc.Desktop.exe' if a.target == 'win-x64' else None,
                  Windows='NOT_RUN', PhysicalIntegration='BLOCKED',
-                 Binaries={str(f.relative_to(output)): hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(output.rglob('Ipc.*.dll'))})
+                 Binaries={str(f.relative_to(output)): hashlib.sha256(f.read_bytes()).hexdigest()
+                           for directory in [output / 'app', output / 'desktop'] if directory.exists()
+                           for f in sorted(directory.rglob('Ipc.*.dll'))})
 (output / 'composition.lock.json').write_text(json.dumps(selection, indent=2) + '\n')
 (output / 'ASSEMBLY.json').write_text(json.dumps(selection, indent=2) + '\n')
 publish_guides(build_source, output, source, a.application)
@@ -100,6 +102,7 @@ shutil.rmtree(build_source)
 (output / 'APPLICATION-START.txt').write_text(
     'SIMULATION REFERENCE ONLY\nConsole: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'
     + ('Windows: desktop/Ipc.Desktop.exe --config desktop/config --data-root <new-isolated-root>\n' if a.target == 'win-x64' else '')
+    + ('Sportmaster alternate native UI: desktop/Ipc.Desktop.exe --ui supply-station --config desktop/config --data-root <new-isolated-root>\nClassic default: omit --ui, or use --ui classic. Use SPORTMASTER-UI.md and SPORTMASTER-UI-WINDOWS.md.\n' if a.target == 'win-x64' and a.application == 'sportmaster' else '')
     + 'Use APPLICATIONS.md for reference camera/weight input, original-stage reconciliation and recovery.\n')
 entries = sorted(f for f in output.rglob('*') if f.is_file())
 (output / 'SHA256SUMS').write_text(''.join(hashlib.sha256(f.read_bytes()).hexdigest() + '  ' + f.relative_to(output).as_posix() + '\n' for f in entries))

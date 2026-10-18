@@ -1,0 +1,26 @@
+{
+  "Package": "rcs.ipcx",
+  "PackageSha256": "14f791c836d4aeeb7227a6d6f726f54b7a826188e2d443e44fb2a220f33da496",
+  "PluginSourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+  "PluginSourceSha256": "f5f72f851f9160457238c4e595b44436a2d1f34de051c25aa8f5fa64956e3b7b",
+  "DefinitionSha256": "4be6d5f4b46b72225b10af722fb9e6f1066536be285db802a68e380ceb62dc60",
+  "HostContractSha256": "b9ccd38d945d021c6786f45b943d2e0e94f2d7b6c953faa5f3d2aa71f325b54f",
+  "FrozenHostUnchanged": true,
+  "FrozenCheckerUnchanged": true,
+  "CheckerContractsSha256": {
+    "Ipc.Platform": "b9ccd38d945d021c6786f45b943d2e0e94f2d7b6c953faa5f3d2aa71f325b54f",
+    "Ipc.Application.Contracts": "0be18b8dcf75107d3def818b8dceb9e892f968835099f40f98b46bfa8d8b09fa"
+  },
+  "Publisher": "parallel-reconciliation-test-only",
+  "Version": "1.0.4",
+  "ExtensionContract": 1,
+  "Signature": "RSA-PSS/SHA256",
+  "Mode": "Simulation",
+  "ManifestSha256": "efc18228c1d8b2e020283925874ece6b7c0ebbb5735ec751d7d55adbbe5495d9",
+  "TrustSha256": "ca5f77d3fc673c2e822fc44c35ba39f3797205c4fe63ee1e857473cf91ed04d9",
+  "PayloadSha256": {
+    "Ipc.Integrations.SportmasterRcs.dll": "3a845697b4392dddc9ed7e04c369248f3055efd0e58edd1df54aaf960919d64f"
+  },
+  "DependencyPackages": [],
+  "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+}

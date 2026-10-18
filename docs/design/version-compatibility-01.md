@@ -44,4 +44,4 @@ P2：安装/恢复/卸载共用一个发行读取与验证方法，均传实际�
 
 最新独立复审发现执行方式/验收资格可改标，本包修复既有记录器：新记录schema3在原输入事件绑定实际命令、三项场景布尔值及Windows/真实设备/Assurance；输入在启动前冻结。独立对端必须由实际Popen/健康成功事件、PID、夹具SHA与配置endpoint共同证明，不由结果字段自行声称。参考portable记录只能NOT_RUN/BLOCKED/SIMULATION_REFERENCE_ONLY。原schema1/2因没有命令冻结，保留原字节和历史结论；当前重验必须额外提供来自独立可信索引的原记录SHA，不能把自带hash冒充发布者信任。原事件配置/结果关联仍要验证，不补造旧事件。
 
-最终业务版本1.2.2，Application.Contracts1.7.0/DB6。更新原ProviderSets为新宿主的reference.parcel-capabilities2.1.0和barcode1.2.0，并增Sportmaster RCS1.0.2允许组合，保留其他同组可选能力。旧1.2.1/2.0.1/RCS1.0.1候选及PASS不改，不重签覆盖。业务发布、内嵌声明、composition、维护和同一打包入口同步。
+最终业务版本1.2.3，Application.Contracts1.7.0/DB6。更新原ProviderSets为新宿主的reference.parcel-capabilities2.1.1和barcode1.2.1，并增Sportmaster RCS1.0.3允许组合，保留其他同组可选能力。旧1.2.1/2.0.1/RCS1.0.1候选及PASS不改，不重签覆盖。业务发布、内嵌声明、composition、维护和同一打包入口同步。

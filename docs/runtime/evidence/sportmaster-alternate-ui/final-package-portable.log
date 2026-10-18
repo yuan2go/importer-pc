@@ -1,0 +1,27 @@
+  正在确定要还原的项目…
+  已还原 <REPO>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 3 秒)。
+  已还原 <REPO>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 3 秒)。
+  已还原 <REPO>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 3.01 秒)。
+  已还原 <REPO>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 3 秒)。
+  已还原 <REPO>/src/Ipc.Components/Ipc.Components.csproj (用时 3 秒)。
+  已还原 <REPO>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 3.01 秒)。
+  已还原 <REPO>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 3.02 秒)。
+  已还原 <REPO>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 3 秒)。
+  已还原 <REPO>/src/Ipc.Platform/Ipc.Platform.csproj (用时 7 毫秒)。
+  已还原 <REPO>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 9 毫秒)。
+  已还原 <REPO>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 16 毫秒)。
+  已还原 <REPO>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 45 毫秒)。
+  Ipc.Platform -> <CANDIDATE_OUTPUT>
+  Ipc.Application.Supply.Contracts -> <CANDIDATE_OUTPUT>
+  Ipc.Platform.Storage -> <CANDIDATE_OUTPUT>
+  Ipc.Application.Supply -> <CANDIDATE_OUTPUT>
+  Ipc.Application.Contracts -> <CANDIDATE_OUTPUT>
+  Ipc.Application.ParcelFlow -> <CANDIDATE_OUTPUT>
+  Ipc.Application.Sportmaster -> <CANDIDATE_OUTPUT>
+  Ipc.Reference.Protocol -> <CANDIDATE_OUTPUT>
+  Ipc.Components -> <CANDIDATE_OUTPUT>
+  Ipc.Drivers -> <CANDIDATE_OUTPUT>
+  Ipc.Integrations -> <CANDIDATE_OUTPUT>
+  Ipc.Assembly -> <CANDIDATE_OUTPUT>
+  Ipc.Assembly -> <CANDIDATE_OUTPUT>
+{"Package": "<CANDIDATE_OUTPUT> "Sha256": "08dbe011e71dcee97785d29129c84d54b3fe595801dd94089a15db215788882e", "SourceCommit": "7ed7862d4ab3a3f5bdcb88cd19633d4d75ce6806", "Application": "sportmaster", "Target": "portable"}

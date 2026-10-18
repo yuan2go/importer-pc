@@ -1,0 +1,13 @@
+....F.....
+======================================================================
+FAIL: test_images_pptx_relations_and_public_secrets_fail (test_verify_archive.ArchiveTests.test_images_pptx_relations_and_public_secrets_fail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/parallel-reconciliation-01/importer-pc/tools/test_verify_archive.py", line 120, in test_images_pptx_relations_and_public_secrets_fail
+    self.assertTrue({'UnidentifiedImageError', 'secret_marker', 'pptx_external_relationship', 'embedded_font',
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.072s
+
+FAILED (failures=1)

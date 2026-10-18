@@ -6,7 +6,7 @@
 
 新Application使用Ipc.Assembly、ParcelConfiguration和StageConfiguration；Supply的StationConfig/SaveConfig/ActivateConfig操作在[Supply扩展指南](supply-guide.md)。包格式、签名、精确公共DLL、不可变ID/version与Store机制共用。Driver拥有读码/称重/采图/PLC端口，Component拥有认证/WCS/上传端口；Application决定主流程，UI只调用契约。
 
-当前Application.Contracts ABI1.6.0，能力示例须以显式新版本按精确目标Release构建；历史1.7.0/1.7.2包不可复用身份，包含PR23的IReaderImageCapture.Retain/Release。观察、作业、活动采集各自保有原Acquisition；拒收撤销观察、消费finally释放观察、安全持久终态释放作业，Unknown/Conflict/原回执责任仍保有。不得取最新帧替代原件。包版本与ABI独立，PR24的Debug1.6.6/Release1.6.7属于其精确宿主；新公共DLL字节须新不可变包，不覆盖历史身份。
+当前Application.Contracts ABI1.7.0，能力示例须以显式新版本按精确目标Release构建；历史1.7.0/1.7.2包不可复用身份，包含PR23的IReaderImageCapture.Retain/Release。观察、作业、活动采集各自保有原Acquisition；拒收撤销观察、消费finally释放观察、安全持久终态释放作业，Unknown/Conflict/原回执责任仍保有。不得取最新帧替代原件。包版本与ABI独立，PR24的Debug1.6.6/Release1.6.7属于其精确宿主；新公共DLL字节须新不可变包，不覆盖历史身份。
 
 ## 一个独立工程的声明
 
@@ -37,7 +37,7 @@
 
 ## 构建、静态检查与签名
 
-先取得本次冻结宿主（Parcel使用`Ipc.Assembly.dll`，Supply使用`Ipc.Product.dll`静态入口），使用目标宿主相邻的`Ipc.Platform.dll`；Parcel类型化能力还需相邻`Ipc.Application.Contracts.dll`，在PublicContracts声明；Supply兼容集成才使用Ipc.Supply.Contracts。独立私钥放构建者私有目录，信任政策从独立渠道取得，SchemaVersion=1，Publishers为Id/PublicKeyPem/TestOnly；包内公钥不会自动入信。Simulation接受明确TestOnly信任，Production拒绝测试根；通过静态检查不授予生产能力。
+先取得本次冻结宿主（Parcel使用`Ipc.Assembly.dll`，Supply使用`Ipc.Product.dll`静态入口），使用目标宿主相邻的`Ipc.Platform.dll`；Parcel类型化能力还需相邻`Ipc.Application.Contracts.dll`，在PublicContracts声明；Supply兼容集成才使用Ipc.Supply.Contracts。RSA签名密钥至少3072位，使用SHA256/PSS；独立私钥放构建者私有目录，信任政策从独立渠道取得，SchemaVersion=1，Publishers为Id/PublicKeyPem/TestOnly；包内公钥不会自动入信。Simulation接受明确TestOnly信任，Production拒绝测试根；通过静态检查不授予生产能力。
 
 ```sh
 python3 scripts/build-extension.py \

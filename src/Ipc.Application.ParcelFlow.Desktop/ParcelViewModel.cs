@@ -61,8 +61,16 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         _ => "正在处理 · " + Current.State
     };
     public ParcelOperation? Selected { get => selected; set { selected = value; Changed(); NotifyTargets(); } }
-    public string Details => Selected is null ? "选择一条作业查看原阶段、目标、报文和回执。" : DestinationDetails(Selected) + Wire.Encode(Selected);
-    static string DestinationDetails(ParcelOperation operation)
+    public string Details
+    {
+        get
+        {
+            if (Selected is null) return "选择一条作业查看原阶段、目标、报文和回执。";
+            var summary = DestinationSummary(Selected);
+            return (summary.Length == 0 ? "" : summary + "\n\n原作业、请求与回执完整快照：\n") + Wire.Encode(Selected);
+        }
+    }
+    public static string DestinationSummary(ParcelOperation operation)
     {
         var reply = operation.Wcs?.Replies.LastOrDefault(r => r.Destination is not null);
         if (reply?.Destination is not { } result) return "";
@@ -89,7 +97,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
                 lines.Add("格口 " + chute.ChuteNo + " · 订单 " + chute.OrderNo + " · 剩余 " + chute.Remaining.ToString(CultureInfo.InvariantCulture) + " · 阶段 " + chute.Phase);
             lines.Add("本接口未提供拆包提交；暂停并检查移除原实体后，使用已有受守卫的本地处置。");
         }
-        return string.Join("\n", lines) + "\n\n原作业、请求与回执完整快照：\n";
+        return string.Join("\n", lines);
     }
     public string Message { get => message; set { message = value; Changed(); } }
     public string ConfigurationState => Snapshot is null ? "未加载" : Snapshot.Configuration.Status + " · 修订 " + Snapshot.Configuration.Revision + (Snapshot.Configuration.Failure is { } f ? "\n" + f : "");
@@ -100,12 +108,29 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public string BackupPath { get; set; } = "";
     public bool Busy { get; private set; }
     long refreshGeneration;
+    long snapshotReadId;
+    // A presentation may observe read failures; the default preserves the classic path.
+    protected virtual Task<ParcelSnapshot> ReadSnapshotAsync() => application.SnapshotAsync();
+    protected virtual void SnapshotReadSucceeded(long id) { }
+    protected virtual void SnapshotReadFailed(long id, Exception error) { }
+    protected virtual bool CanApplySnapshot(long id) => true;
+    protected virtual void ReportCommandFailure(Exception error,string prefix) => Message=prefix+error.Message;
+    async Task<(long Id, ParcelSnapshot Snapshot)> ReadSnapshotWithIdAsync()
+    {
+        var id = Interlocked.Increment(ref snapshotReadId);
+        try
+        {
+            var result = await ReadSnapshotAsync();
+            SnapshotReadSucceeded(id); return (id, result);
+        }
+        catch (Exception error) { SnapshotReadFailed(id, error); throw; }
+    }
     public async Task RefreshAsync()
     {
         var currentId = Selected?.Id;
         var generation = Interlocked.Increment(ref refreshGeneration);
-        var next = await application.SnapshotAsync();
-        if (generation != Volatile.Read(ref refreshGeneration) || Snapshot is { } previous && next.RuntimeId == previous.RuntimeId && next.Revision < previous.Revision) return;
+        var (readId, next) = await ReadSnapshotWithIdAsync();
+        if (generation != Volatile.Read(ref refreshGeneration) || !CanApplySnapshot(readId) || Snapshot is { } previous && next.RuntimeId == previous.RuntimeId && next.Revision < previous.Revision) return;
         Snapshot = next;
         if (!PositionIds.Contains(SelectedPositionId)) SelectedPositionId = PositionIds.FirstOrDefault() ?? "main";
         NotifyTargets();
@@ -130,7 +155,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         if (Busy) { Message = "已有操作进行中，请等待。"; return; }
         Busy = true; Changed(nameof(Busy));
         try { await action(); await RefreshAsync(); }
-        catch (Exception ex) { Message = ex.GetType().Name + ": " + ex.Message; }
+        catch (Exception ex) { ReportCommandFailure(ex,ex.GetType().Name+": "); }
         finally { Busy = false; Changed(nameof(Busy)); }
     }
     public async Task PauseAsync()
@@ -140,14 +165,14 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         {
             for (var retry = 0; retry < 3; retry++)
             {
-                var s = await application.SnapshotAsync();
+                var (_, s) = await ReadSnapshotWithIdAsync();
                 var r = await application.CommandAsync(new(Wire.Id(), s.Revision, "Pause"));
                 if (r.Status == "Conflict") continue;
                 Message = r.Status + " · " + r.Reason; await RefreshAsync(); return;
             }
             Message = "暂停遇到连续修订冲突，请重试；状态仍由应用服务确认。";
         }
-        catch (Exception ex) { Message = "暂停失败：" + ex.Message; }
+        catch (Exception ex) { ReportCommandFailure(ex,"暂停失败："); }
     }
     public async Task CommandAsync(string kind, string? owner = null)
     {

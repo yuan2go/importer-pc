@@ -1,3 +1,4 @@
-// Only the WPF visibility enum is replaced on macOS; actual production ViewModel sources are linked unchanged.
+// Projection tests replace the visibility enum. WindowEventShim separately supplies
+// an event/timer boundary for close-control tests; neither represents native WPF.
 namespace System.Windows;
 public enum Visibility { Visible, Hidden, Collapsed }

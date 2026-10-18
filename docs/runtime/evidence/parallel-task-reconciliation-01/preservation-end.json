@@ -1,0 +1,216 @@
+{
+  "At": "2026-10-18T17:49:43.462254+00:00",
+  "Rows": [
+    {
+      "Name": "primary",
+      "Accessible": true,
+      "Head": "713f23d7c39743762adb884fdffa18745cad08f8",
+      "OriginalFiles": 198,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 198
+    },
+    {
+      "Name": "acquisition-lifecycle-p2",
+      "Accessible": true,
+      "Head": "966ec6aa17dfe29b96fc9b9113f3037ba586f6a0",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "application-architecture-22",
+      "Accessible": true,
+      "Head": "199be19db2cb4c1b0bfe3a69f47e8b6a92dce70e",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "application-capability-19",
+      "Accessible": true,
+      "Head": "c377f2b78d8f7222cf3998c5c47e19259345d441",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "application-convergence-17",
+      "Accessible": true,
+      "Head": "9d28cba6fa13b575d1b35eeb9f70b3af724f7fe3",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "architecture-quality-02",
+      "Accessible": true,
+      "Head": "78298b5dc7ccdcb7bb08e857d2d94f3681182fde",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "architecture-quality-audit-02",
+      "Accessible": true,
+      "Head": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "architecture-quality-closure-01",
+      "Accessible": true,
+      "Head": "f531d3a6882891cfc7870f5dcccfe985009d6be4",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "backup-health-recovery",
+      "Accessible": true,
+      "Head": "ecdbddc6640249347c7821cf3b1e58ccd7c22f83",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "ipc-arch-ui-alignment-01",
+      "Accessible": true,
+      "Head": "c77f7eabb3ee0e98ff340c9cc0c2dcd1f734cfaf",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "ipc-audit-reconciliation-01",
+      "Accessible": true,
+      "Head": "0961b3e6f78f1c6c6ae77a44750922312e40973d",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "ipc-baseline-continuation",
+      "Accessible": true,
+      "Head": "8090914e752d724b3e67b09227609830030d9510",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "ipc-conformance-fix-14",
+      "Accessible": true,
+      "Head": "149b050c36b87ac57575bfa149ddd1da0bd46972",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "ipc-operation-closure-15",
+      "Accessible": true,
+      "Head": "cf875d5a5206fa0b54941216e0aa265b9cdf63b2",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "main-static-review",
+      "Accessible": true,
+      "Head": "340109cb6119f5b5323300eafde95900e40b2a71",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "parcel-recovery-p2",
+      "Accessible": true,
+      "Head": "0aac91922dfd04539f6015f7bc8dbf820a23d782",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "pr20-21-integration",
+      "Accessible": true,
+      "Head": "36408c843cff92aa2732180366e8346161ac3d83",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "pr26-recovery-closure",
+      "Accessible": true,
+      "Head": "da9233d78cd47a4addaf5bc78268494f81725368",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "site-capabilities-18",
+      "Accessible": true,
+      "Head": "aa97a531040501edac075c0b1648d890ff9b0f2b",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "sportmaster-alternate-ui",
+      "Accessible": true,
+      "Head": "a4ecfd1c2a687caca9d52f2cfc08ee4fce9ff91e",
+      "OriginalFiles": 35,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "sportmaster-rcs-task",
+      "Accessible": true,
+      "Head": "822ce92f01e01487fdf037eca9219a601250d458",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "ui-maintainability-16",
+      "Accessible": true,
+      "Head": "d323287e9454e50d9e040d55bdd289857a8dfd2c",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "version-compatibility",
+      "Accessible": true,
+      "Head": "e0f5303ff80c48f1a7ecf6964916cb21c13a7327",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "worktrees",
+      "Accessible": true,
+      "Head": "e49249c2a5148544cdc5b7d8bf0a74a69c015026",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "worktrees",
+      "Accessible": true,
+      "Head": "451f7f5b3a9e7aace77c6617d05eb15ed69888b1",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    },
+    {
+      "Name": "worktrees",
+      "Accessible": true,
+      "Head": "0364b07cd56f8eb61775cac13b5f1620d620bec8",
+      "OriginalFiles": 0,
+      "OriginalBytesUnchanged": true,
+      "StatusEntryCount": 0
+    }
+  ],
+  "ChangedOriginalFiles": [],
+  "TaskWriters": "six acknowledged idle; integration worktree sole writer",
+  "PrivateOriginals": "primary untracked/restricted originals retained outside publication"
+}

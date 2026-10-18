@@ -1,0 +1,14 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-ecd6976835ce4247a26db27d183b4551
+PASS AC19 signed: signature and exact contract policy admits all six registered provider kinds
+PASS AC19 signed: actual signed providers checked against compiled business compatibility declaration
+PASS AC19 signed: signed component owns its target identity (no external call)
+PASS AC19 signed: signed protocol measured-weight/image-address requirements reject incompatible configuration
+PASS AC19 signed: signed protocol measured-weight/image-address requirements reject incompatible configuration
+PASS AC19 signed: provider-owned parameter schema rejects unknown protocol fields
+PASS AC19 signed: installed providers discoverable before any enable or binding
+PASS AC19 signed: signed external login factory creates the common authenticator
+PASS AC19 signed: signed camera factory captures original acquisition through the installed module
+PASS AC19 signed: installed/enabled/bound providers actually execute image upload, measured WCS and original PLC chain
+PASS AC19 signed: signed declaration and original query prove only the reference peer physical fact
+SignedBusinessCombination=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-ecd6976835ce4247a26db27d183b4551/signed-business-combination.json
+PASS AC19 SIGNED COMPLETE: one exact package, seven modules, parameter/requirement guards and real application activation

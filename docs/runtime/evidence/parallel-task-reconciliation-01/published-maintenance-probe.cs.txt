@@ -1,0 +1,14 @@
+using Ipc.Platform;
+using System.Reflection;
+using System.Runtime.Loader;
+using System.Text.Json;
+var root = Path.GetFullPath(args[0]);
+AssemblyLoadContext.Default.Resolving += (context, name) => File.Exists(Path.Combine(root,name.Name+".dll")) ? context.LoadFromAssemblyPath(Path.Combine(root,name.Name+".dll")) : null;
+var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(root,"application-release.json")));
+var business = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(root,release.BusinessAssembly!));
+var host = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(root,"Ipc.Assembly.dll"));
+var type = host.GetType("Ipc.Assembly.ParcelCapabilityFactory",true)!;
+await using var factory = (IAsyncDisposable)Activator.CreateInstance(type, new object?[] {new BusinessLaunch(Path.Combine(root,"config"),Path.Combine(root,"UNUSED-NO-DEVICE-START"),null,null), BusinessCompatibility.Read(business),business})!;
+var method = type.GetMethod("ReadPublishedRelease",BindingFlags.NonPublic|BindingFlags.Instance)!;
+var actual = (ApplicationRelease)method.Invoke(factory,new object[] {root})!;
+Console.WriteLine(JsonSerializer.Serialize(new {Status="PASS", Gate="Published ReadPublishedRelease", actual.SchemaVersion,actual.BusinessVersion,actual.SourceCommit,ActualAssemblyVersion=business.GetName().Version!.ToString(),InformationalVersion=business.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion,FactoryAssemblySha256=Wire.FileHash(host.Location),BusinessAssemblySha256=Wire.FileHash(business.Location),Windows="NOT_RUN",DevicesConstructed=0}));

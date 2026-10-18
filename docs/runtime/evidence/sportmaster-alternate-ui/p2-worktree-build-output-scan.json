@@ -1,0 +1,12 @@
+{
+  "Scope": "working directory including ignored native-smoke build outputs",
+  "Status": "FAIL",
+  "Errors": 431,
+  "NewGeneratedOutputErrors": 164,
+  "NewErrorKinds": {
+    "unlisted_file": 109,
+    "excluded_binary": 51,
+    "private_metadata_marker": 4
+  },
+  "PublicSourceScan": "run separately on exact Git files plus pending non-ignored additions; no checker exceptions changed"
+}

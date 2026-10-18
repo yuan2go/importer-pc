@@ -1,0 +1,17 @@
+{
+  "BaselineMain": "713f23d7c39743762adb884fdffa18745cad08f8",
+  "RuntimeSource": "e86d664c78418d82bdd49b1abaacc148f38c2d35",
+  "Scope": "Git tracked files and pending non-ignored additions; public source snapshot",
+  "BaselineStatus": "FAIL",
+  "CurrentStatus": "FAIL",
+  "BaselineErrorCount": 267,
+  "CurrentErrorCount": 267,
+  "ErrorKinds": {
+    "private_metadata_marker": 2,
+    "pptx_media_type_mismatch": 265
+  },
+  "NewErrors": [],
+  "RemovedErrors": [],
+  "WholeArchive": "267 inherited design-asset errors remain unchanged; no new scoped errors; original files and checker exceptions unchanged",
+  "OriginalHtmlUploaded": false
+}

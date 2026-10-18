@@ -1,0 +1,78 @@
+{
+  "SelectedExtensionJourney": {
+    "Status": "PASS",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "CorePackages": 0,
+    "SelectedPackages": [
+      {
+        "Id": "reference.parcel-capabilities",
+        "Version": "2.1.2",
+        "ManifestSha256": "96A2240A46899D32152CA568C443047D3B051C91062F85E79A3427BEB40FF1B4",
+        "PackageSha256": "AE975413B30AB35C7A448381E48F5022038FC82E76EBB0422DF0016CB36ED96F",
+        "File": "offline-extensions/reference.parcel-capabilities-2.1.2.ipcx",
+        "Mode": "Simulation",
+        "TrustSha256": "CA5F77D3FC673C2E822FC44C35BA39F3797205C4FE63EE1E857473CF91ED04D9",
+        "Installed": false,
+        "Activated": false,
+        "PublicContracts": {
+          "Ipc.Application.Contracts": "0BE18B8DCF75107D3DEF818B8DCEB9E892F968835099F40F98B46BFA8D8B09FA"
+        }
+      },
+      {
+        "Id": "reference.barcode",
+        "Version": "1.2.2",
+        "ManifestSha256": "44DED8D49D6551558B55AAA82BB9922910D450BDCF1C5A0B7481F2072DA8A281",
+        "PackageSha256": "9A6573816D66E36225CC379B7EBE3C84671F5B46D6D6C6595BEADDBF80F1D14E",
+        "File": "offline-extensions/reference.barcode-1.2.2.ipcx",
+        "Mode": "Simulation",
+        "TrustSha256": "CA5F77D3FC673C2E822FC44C35BA39F3797205C4FE63EE1E857473CF91ED04D9",
+        "Installed": false,
+        "Activated": false,
+        "PublicContracts": {}
+      },
+      {
+        "Id": "sportmaster.rcs-task",
+        "Version": "1.0.4",
+        "ManifestSha256": "EFC18228C1D8B2E020283925874ECE6B7C0EBBB5735EC751D7D55ADBBE5495D9",
+        "PackageSha256": "14F791C836D4AEEB7227A6D6F726F54B7A826188E2D443E44FB2A220F33DA496",
+        "File": "offline-extensions/sportmaster.rcs-task-1.0.4.ipcx",
+        "Mode": "Simulation",
+        "TrustSha256": "CA5F77D3FC673C2E822FC44C35BA39F3797205C4FE63EE1E857473CF91ED04D9",
+        "Installed": false,
+        "Activated": false,
+        "PublicContracts": {
+          "Ipc.Application.Contracts": "0BE18B8DCF75107D3DEF818B8DCEB9E892F968835099F40F98B46BFA8D8B09FA"
+        }
+      }
+    ],
+    "InstalledActivatedRetired": true,
+    "Positions": [
+      "left",
+      "right"
+    ],
+    "FailedStartupRetainedPriorEffective": true,
+    "OriginalWcsAttempts": [
+      1,
+      1
+    ],
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED",
+    "OriginalRecordSha256": "f2cc311aa6ec6cae2a504f93c00d700f34ca634cc4f5069a95a8472e331e4f07"
+  },
+  "RcsJourney": {
+    "Status": "PASS",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "Requests": 2,
+    "NumericRequestIds": [
+      1000000000001,
+      1000000000004
+    ],
+    "RawBodiesAndResponsesVerified": true,
+    "RestartQueryReconnectResent": false,
+    "UnpackZeroRemainingRetained": true,
+    "RunningAndReasonlessDispositionRejected": true,
+    "GuardedLocalDispositionRetainsOriginalRcsReply": true,
+    "Windows": "NOT_RUN",
+    "RealRcs": "BLOCKED"
+  }
+}

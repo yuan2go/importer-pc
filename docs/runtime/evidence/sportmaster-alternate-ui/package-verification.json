@@ -1,0 +1,49 @@
+{
+  "SourceCommit": "e86d664c78418d82bdd49b1abaacc148f38c2d35",
+  "Checks": [
+    "portable archive paths safe",
+    "portable all shipped SHA256SUMS verified after extraction",
+    "portable frozen source identity",
+    "portable/app original business registration",
+    "portable/app all release file identities verified",
+    "portable shipped UI and Windows guides",
+    "portable package has no WPF binary claim",
+    "win-x64 archive paths safe",
+    "win-x64 all shipped SHA256SUMS verified after extraction",
+    "win-x64 frozen source identity",
+    "win-x64/app original business registration",
+    "win-x64/app all release file identities verified",
+    "win-x64/desktop original business registration",
+    "win-x64/desktop all release file identities verified",
+    "win-x64 shipped UI and Windows guides",
+    "win-x64 startup instructions include selectable UI",
+    "win-x64 embedded resource workstation.baml",
+    "win-x64 embedded resource supplystationwindow.baml",
+    "win-x64 embedded resource supplystationposition.baml",
+    "win-x64 embedded resource supplystationtheme.baml",
+    "original HTML absent from desktop package",
+    "actual unpacked portable host startup",
+    "packaged left observation admitted",
+    "packaged right observation admitted",
+    "packaged same-owner dual-position identity preserved",
+    "packaged WCS-only chain preserves leading zeros and one original attempt",
+    "packaged host drains and exits successfully"
+  ],
+  "Packages": [
+    {
+      "Target": "portable",
+      "Zip": "sportmaster-portable.zip",
+      "Sha256": "054c8acb9165f3608347fd3d20dcaf56613e0efe7c2e64750a5bf092c7e90110",
+      "Size": 18377583
+    },
+    {
+      "Target": "win-x64",
+      "Zip": "sportmaster-win-x64.zip",
+      "Sha256": "e64cdee3ffcc5797cc40641917ba7c6bd000d8947aeebe6fc78a87c589dd1b6c",
+      "Size": 104121535
+    }
+  ],
+  "WindowsUi": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "Status": "PASS"
+}

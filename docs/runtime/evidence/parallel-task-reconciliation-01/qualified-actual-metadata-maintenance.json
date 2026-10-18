@@ -1,0 +1,41 @@
+[
+  {
+    "Status": "PASS",
+    "Gate": "Published ReadPublishedRelease",
+    "SchemaVersion": 2,
+    "BusinessVersion": "1.2.4",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "ActualAssemblyVersion": "1.2.4.0",
+    "InformationalVersion": "1.2.4+21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "FactoryAssemblySha256": "979641B45A958C26D603CAF480DDA2358E73B5E5E4D63CC4C8119C9D47F1036E",
+    "BusinessAssemblySha256": "0313ADFA3D494E8605F978EC30998B4E1EC64E1F982ED1AB5D11FB82B100EF38",
+    "Windows": "NOT_RUN",
+    "DevicesConstructed": 0
+  },
+  {
+    "Status": "PASS",
+    "Gate": "Published ReadPublishedRelease",
+    "SchemaVersion": 2,
+    "BusinessVersion": "1.2.4",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "ActualAssemblyVersion": "1.2.4.0",
+    "InformationalVersion": "1.2.4+21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "FactoryAssemblySha256": "4395A3F9EF15851DF8D719659E32DBFEDEF8AC2EB672C606263C8A0F6D40431F",
+    "BusinessAssemblySha256": "1A8D7D6344B814ED3BB64069CCD0A33CA3460BBA3916B8D68AB8AADFD1815D36",
+    "Windows": "NOT_RUN",
+    "DevicesConstructed": 0
+  },
+  {
+    "Status": "PASS",
+    "Gate": "Published ReadPublishedRelease",
+    "SchemaVersion": 2,
+    "BusinessVersion": "1.2.4",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "ActualAssemblyVersion": "1.2.4.0",
+    "InformationalVersion": "1.2.4+21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "FactoryAssemblySha256": "2A18738FE0E4B1BFF25A8821372A4C0D763202B8076D8D2D4FB02A2D598DACBC",
+    "BusinessAssemblySha256": "76BC0A52E57BC9F08DEB2994A4C891A34AE1DF68D3E6BFB845B0560CC0D0813C",
+    "Windows": "NOT_RUN",
+    "DevicesConstructed": 0
+  }
+]

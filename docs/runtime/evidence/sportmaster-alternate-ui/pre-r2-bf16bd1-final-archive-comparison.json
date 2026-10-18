@@ -1,0 +1,22 @@
+{
+  "BaselineMain": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "RuntimeSource": "bf16bd1079128b4d235819878af18443a848943a",
+  "Scope": "Git tracked files and pending non-ignored additions, excluding local ignored build outputs",
+  "BaselineStatus": "FAIL",
+  "CurrentStatus": "FAIL",
+  "BaselineErrorCount": 268,
+  "CurrentErrorCount": 267,
+  "ErrorKinds": {
+    "private_metadata_marker": 2,
+    "pptx_media_type_mismatch": 265
+  },
+  "NewErrors": [],
+  "RemovedErrors": [
+    {
+      "code": "manifest_checksum",
+      "path": "docs/manifest.sha256"
+    }
+  ],
+  "WholeArchive": "267 inherited design-asset errors remain; no new scoped errors. Regenerated manifest checksum resolves main checksum mismatch.",
+  "OriginalHtmlUploaded": false
+}

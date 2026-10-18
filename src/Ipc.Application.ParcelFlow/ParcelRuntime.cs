@@ -314,6 +314,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 if (prepared.RequestId <= 0 || prepared.ContentType != "application/json" || string.IsNullOrWhiteSpace(prepared.Body) ||
                     System.Text.Encoding.UTF8.GetByteCount(prepared.Body) > 65536 || Wire.Hash(prepared.Body) != prepared.BodyHash)
                     throw new InvalidDataException("Invalid external request preparation; no delivery permitted");
+                repository.RequireNewIntegrationRequestId(prepared.RequestId);
                 request = request with { IntegrationRequest = prepared };
             }
             catch (Exception e) when (e is InvalidDataException or ArgumentException or OverflowException)

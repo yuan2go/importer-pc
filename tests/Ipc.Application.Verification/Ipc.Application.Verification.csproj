@@ -8,4 +8,7 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs" Link="Client/ParcelTargets.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs" Link="Client/ParcelViewModel.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs" Link="Client/CapabilityEditing.cs"/>
+ <Compile Include="../../src/Ipc.Desktop/DesktopLaunchOptions.cs" Link="Client/DesktopLaunchOptions.cs"/>
+ <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs" Link="Client/SupplyStationViewModel.cs"/>
+ <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs" Link="Client/SupplyStationWindow.xaml.cs"/>
 </ItemGroup></Project>

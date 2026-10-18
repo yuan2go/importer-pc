@@ -1,0 +1,20 @@
+  Ipc.Platform -> <BUILD_OUTPUT>
+  Ipc.Application.Supply.Contracts -> <BUILD_OUTPUT>
+  Ipc.Platform.Storage -> <BUILD_OUTPUT>
+  Ipc.Application.Supply -> <BUILD_OUTPUT>
+  Ipc.Application.Contracts -> <BUILD_OUTPUT>
+  Ipc.Application.ParcelFlow -> <BUILD_OUTPUT>
+  Ipc.Application.Sportmaster -> <BUILD_OUTPUT>
+  Ipc.Reference.Protocol -> <BUILD_OUTPUT>
+  Ipc.Components -> <BUILD_OUTPUT>
+  Ipc.Drivers -> <BUILD_OUTPUT>
+  Ipc.Integrations -> <BUILD_OUTPUT>
+  Ipc.Application.ParcelFlow.Desktop -> <BUILD_OUTPUT>
+  Ipc.Application.Sportmaster.Desktop -> <BUILD_OUTPUT>
+  Ipc.Desktop.UiVerification -> <BUILD_OUTPUT>
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:22.13

@@ -118,6 +118,8 @@ public sealed partial class ParcelRuntime
         {
             if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0) return new("Rejected", "Pause before reference maintenance backup", repository?.Revision ?? 0);
             destination = Path.GetFullPath(destination);
+            RecoveryFiles.RequireOrdinaryAncestors(directory!);
+            RecoveryFiles.RequireOrdinaryAncestors(destination);
             var relativeDestination = Path.GetRelativePath(directory!, destination);
             if (!Path.IsPathRooted(relativeDestination) && relativeDestination != ".." && !relativeDestination.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal))
                 throw new IOException("Backup must be outside the live application directory");
@@ -132,6 +134,8 @@ public sealed partial class ParcelRuntime
             var expectedFiles = names.ToDictionary(x => x, x => Wire.FileHash(RecoveryFiles.Resolve(directory!, x)), StringComparer.Ordinal);
             // Preserve any interrupted set; only COMPLETED.json makes a set restorable.
             Directory.CreateDirectory(recovery);
+            RecoveryFiles.RequireOrdinaryAncestors(recovery);
+            RecoveryFiles.RequireOrdinaryAncestors(destination);
             repository.Backup(destination);
             foreach (var name in names)
             {

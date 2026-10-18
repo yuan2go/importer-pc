@@ -7,6 +7,23 @@ internal static class RecoveryFiles
 {
     public const int MaximumFiles = 100000;
     public const int MaximumManifestBytes = 32 * 1024 * 1024;
+    // Custody destinations must be ordinary paths. Inspect ancestors even when
+    // the leaf does not exist: File/Directory.Exists hide dangling links.
+    public static void RequireOrdinaryAncestors(string path)
+    {
+        var full = Path.GetFullPath(path); var root = Path.GetPathRoot(full)!;
+        var current = root;
+        foreach (var part in full[root.Length..].Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries))
+        {
+            current = Path.Combine(current, part);
+            FileAttributes attributes;
+            try { attributes = File.GetAttributes(current); }
+            catch (FileNotFoundException) { break; }
+            catch (DirectoryNotFoundException) { break; }
+            if ((attributes & FileAttributes.ReparsePoint) != 0)
+                throw new IOException("Linked/reparse backup path or ancestor refused: " + current);
+        }
+    }
     public static string FromNative(string root, string file) => Path.GetRelativePath(root, file).Replace(Path.DirectorySeparatorChar, '/');
     public static string Resolve(string root, string name)
     {

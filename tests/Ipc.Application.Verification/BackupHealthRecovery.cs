@@ -21,6 +21,8 @@ static class BackupHealthRecovery
     }
     public static async Task Run(string workspace, string root)
     {
+        // macOS temp aliases are links; use the physical test root for custody paths.
+        if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
         List<string> failures = [];
         async Task Case(string name, Func<Task> test)
         {
@@ -36,6 +38,42 @@ static class BackupHealthRecovery
         }
         async Task<BusinessReceipt> Command(ParcelRuntime app, string kind, string? owner = null)
         { var s = await app.SnapshotAsync(); return await app.CommandAsync(new(Wire.Id(), s.Revision, kind, owner)); }
+
+        await Case("backup-destination-ancestors", async () =>
+        {
+            var c = Config(); var (app, launch) = Create(c, "backup-links"); await using var owned = app;
+            await app.StartAsync(CancellationToken.None); await Command(app, "Pause");
+            await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
+            var live = Path.Combine(launch.DataRoot, "Simulation", c.StationId, c.ApplicationId);
+            async Task Reject(string destination, string detail)
+            {
+                try { await app.BackupAsync(destination); throw new Exception("Aliased backup accepted: " + detail); }
+                catch (IOException) { Check(!File.Exists(destination) && !Directory.Exists(destination + ".recovery"), detail + " rejected before any custody output"); }
+            }
+            var alias = Path.Combine(root, "live-alias"); Directory.CreateSymbolicLink(alias, live);
+            try
+            {
+                await Reject(Path.Combine(alias, "alias.db"), "linked destination parent into live application");
+                await Reject(Path.Combine(alias, "not-created", "nested.db"), "linked ancestor above nonexistent destination parents");
+            }
+            finally { Directory.Delete(alias); }
+            await Reject(Path.Combine(live, "inside.db"), "lexical live descendant");
+            var dangling = Path.Combine(root, "dangling-alias"); Directory.CreateSymbolicLink(dangling, Path.Combine(live, "missing"));
+            try { await Reject(Path.Combine(dangling, "dangling.db"), "dangling destination ancestor"); }
+            finally { File.Delete(dangling); }
+            Check((await app.BackupAsync(Path.Combine(root, "external", "new", "ordinary.db"))).Status == "BackupCreated", "ordinary external destination with new parents remains supported");
+            if (OperatingSystem.IsWindows())
+            {
+                var junction = Path.Combine(root, "live-junction");
+                var start = new ProcessStartInfo("cmd.exe") { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
+                foreach (var argument in new[] { "/c", "mklink", "/J", junction, live }) start.ArgumentList.Add(argument);
+                using var process = Process.Start(start)!; await process.WaitForExitAsync();
+                if (process.ExitCode != 0) throw new Exception("Junction fixture creation failed: " + await process.StandardError.ReadToEndAsync());
+                try { await Reject(Path.Combine(junction, "junction.db"), "Windows Junction destination ancestor"); }
+                finally { Directory.Delete(junction); }
+            }
+            else Console.WriteLine("BHR Windows Junction destination: NOT_RUN");
+        });
 
         await Case("custody", async () =>
         {

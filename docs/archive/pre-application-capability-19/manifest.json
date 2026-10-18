@@ -1,0 +1,12 @@
+{
+  "SourceCommit": "08b8067aa6cba6a148252296c7a5b18a27b3be65",
+  "Files": {
+    "README.md": "7bd4eb8c0916ccac66a62a9e6626878526a38344bce446a5c5331235d10411fc",
+    "docs/INDEX.md": "8d479d412117d2173000a368fa3410f8fe07df462a671e735cf89aa35844329e",
+    "docs/design/framework.md": "660afe5628ec2e52c696a5ac6846ced7bdc943375e51ab32be4e192b8483aed5",
+    "docs/design/framework-decisions.md": "3f303e966dae762ccb81eba346d132488ad0c61a2a0142b2afdc57e2e9e03845",
+    "docs/design/controlled-extensions.md": "8e5c50f8417fbfc4869e59d625943764a4785a86f661bdaa96690c469a8ca84e",
+    "docs/extensions/developer-guide.md": "927523185de14921976de3f8eaebbe6cafdda65d32a05b3aef782784166f034e",
+    "docs/runtime/operations.md": "d6d49568ebe10d38bb96bed4710d779832f6b2f8f6c3a05a3cfeecf5971a2d11"
+  }
+}

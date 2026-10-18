@@ -4,13 +4,11 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 
 ## 当前工程状态
 
-执行基线main **d3a757d**（PR17已合并）。当前交付 **三场地能力18**：继承17的Sportmaster/DirectPlc/WcsToPlc，补齐每场景可选登录/身份快照、Sportmaster重量参与、相机采图/组件上传与原阶段恢复。运行源 **08595e9**。
+当前实施任务 **WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19**；最新main基线 **08b8067aa6cba6a148252296c7a5b18a27b3be65**，PR #18 已合并，开工无开放PR。
 
-[18实际能力矩阵与运行方法](docs/runtime/site-capabilities-18.md) · [完成结果](docs/runtime/site-capabilities-18-results.md) · [checks](docs/runtime/site-capabilities-18-checks.json) · [合成执行证据](docs/runtime/evidence/site-capabilities-18/README.md)。24种组合、三ZIP默认链及三独立HTTP进程链、图像原回执/未知恢复与备份、必要旧范围回归和三个WPF交叉构建通过。
+[19现行设计与职责](docs/design/application-capability-19.md) · [工作包及计划](docs/work-packages/WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19.md)。实施和验证状态在本包交付时逐项登记；不把计划宣称为已实现。
 
-**Windows实际客户端/截图/交互/ACL/UAC NOT_RUN；真实身份/读码/相机/秤/传图/PLC/WCS及现场BLOCKED；Production NotReady。** 新可选功能仅有显式参考适配器，接口不代表真实协议资格。Supply/Inspection原行为、旧公共身份与Supply 5/5 SQL保留，D/RV不改。
-
-17的[历史完成矩阵](docs/runtime/application-convergence-17-results.md)、[六候选与独立扩展源](https://github.com/yuan2go/importer-pc/releases/tag/application17-reference-f184a6b)继续固定f184a6b；其形成时main6e9c890与版本说明不作为18当前身份。
+17/18实现、原SHA与验证保留为[17历史结果](docs/runtime/application-convergence-17-results.md)、[18历史结果](docs/runtime/site-capabilities-18-results.md)。Windows实际客户端/SDK/现场边界仍分别为NOT_RUN/BLOCKED，Production缺必需能力拒绝。
 
 ## 开发与运行入口
 

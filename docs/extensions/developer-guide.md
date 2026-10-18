@@ -1,6 +1,4 @@
-> 新场地业务运行与接入见[Application17指南](../runtime/application-convergence-17.md)。下文为Supply兼容路径，旧候选版本只按其形成时记录理解。
-
-> 当前任务：[APPLICATION-CONVERGENCE-17](../work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)，基线main `6e9c890`。17替代16当前任务指引；Supply专属箱/双通道/数量不推广到其他Application。历史正文保留形成时语境，原字节见[归档](../archive/pre-application-convergence-17/README.md)。
+> 现行三Application职责、公共能力与可选策略：[19唯一设计](../design/application-capability-19.md)。本页保留仍有效的基础机制及Supply兼容说明；17/18阶段限制已由19替代。原字节见[归档](../archive/pre-application-capability-19/README.md)。
 
 # 受控扩展开发、构建与安装
 

@@ -1,0 +1,46 @@
+NATURAL fresh child exit75: original Submit Awaiting, no prior Query; 66 BeginReceipt Query cuts before any accepted Query; resolve original Submit first
+PAUSE {
+  "Status": "Persisted",
+  "Reason": "Application command committed",
+  "Revision": 78
+}
+AUTH {
+  "Status": "Authorized",
+  "Reason": "SIMULATION maintenance grant; pause alone provides no authorization",
+  "Revision": 79
+}
+{
+  "Originals": 67,
+  "ValidBases": 63,
+  "LostBases": [
+    "7c8fa142b6f34b838ecb4d6be60bf806",
+    "11621fe4e41e44c2af6827ea414b7c3f",
+    "4424fb63e4be4d7db66ba35389f229ef",
+    "d4de0b05dbcb459b9c0b773e69ff5299"
+  ],
+  "Pending": 67,
+  "ReplyProjection": 63,
+  "FirstLost": {
+    "Id": "2a7895f1ef4743d8a3bd3c96f376274a",
+    "Operation": "70ca82ef159142fcac4a3ed860030e39",
+    "Stage": "image-upload",
+    "Request": "93f81774c0f14f6c99683c7c0e758645",
+    "Source": "Submit",
+    "State": "Awaiting",
+    "RawHash": null,
+    "QueryOccurrence": "c6f3ac8941bb450c8c2afb22e0d2d41b",
+    "Custody": "OriginalRawMissing"
+  },
+  "QueryRawCommitted": "Committed"
+}
+STAGED {
+  "Status": "PendingRestart",
+  "Reason": "Saved; Effective unchanged until controlled restart and application barriers",
+  "Revision": 149
+}
+RESTART {
+  "Status": "ActivationFailed",
+  "Failure": "InvalidOperationException: Application activation barrier is closed",
+  "PendingStillRetained": true,
+  "Operation": "RawUnavailable:d4de0b05dbcb459b9c0b773e69ff5299"
+}

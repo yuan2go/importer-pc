@@ -172,15 +172,15 @@
     },
     {
       "path": "README.md",
-      "sha256": "ae3414932c0d02210c0da17f0d5ccade8d0b06a320e9bf2b0c4d649dbbb437f3",
-      "size_bytes": 6826,
-      "git_blob": "b51d9063b6ba70bc5d958e4246bbd835829c8ae1",
-      "version": "architecture-quality-audit-02-rereview",
+      "sha256": "9e0fbe397dcb477e9f45015a518c81b2d6258dc610b3f61aed0ae6bf70ab2b25",
+      "size_bytes": 6586,
+      "git_blob": "bcb1372ed24e25f46c1301043c2eee5f57c3263a",
+      "version": "parcel-recovery-p2",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "previous_git_blob": "25d9064e52b188fafd59b0ecbc910b2ec7860265",
+      "previous_git_blob": "b51d9063b6ba70bc5d958e4246bbd835829c8ae1",
       "prior_closure13_git_blob": "a305391de26301ca46bfee2a7060f69fbb751252",
       "pre_conformance_audit_git_blob": "22bbdf4741bf3df550ec41159f57858b6326f4a4"
     },
@@ -327,15 +327,15 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "80d6e5c175b94c9dcfe45eee3acf3aae30ecbc6a8adc82ee7cb1d6ed55cf5224",
-      "size_bytes": 10181,
-      "git_blob": "52db5d3c61363cbf5f7ec036ca0fef7c7fc33fa8",
-      "version": "publication-2026-10-19",
-      "status": "publication_receipt_NOT_RUN",
+      "sha256": "da05ff91cc02cb5827032bdd9d31798c04b7dfece09a47de52a897f60ced84f4",
+      "size_bytes": 10250,
+      "git_blob": "2a062f60ddeede044565dfd7a0b7bc71b4aa4afc",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "User-authorized no-test publication receipt and navigation",
       "source": "2026-10-19 explicit user publication and merge request",
       "storage_scope": "public_repository",
-      "previous_git_blob": "f13c84ec32982cc0a88103086a7e0f908b7b919e",
+      "previous_git_blob": "52db5d3c61363cbf5f7ec036ca0fef7c7fc33fa8",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
       "pre_conformance_audit_git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc"
     },
@@ -1957,6 +1957,72 @@
       "git_blob": "5ec630748ce690497da5ab4d4d971bc163b80956"
     },
     {
+      "path": "docs/archive/pre-parcel-recovery-p2/README.md",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "346942ccda8545674396735dccf2e53a108d4cfcb6ba5b520406640adcd2b4bf",
+      "size_bytes": 843,
+      "git_blob": "98e3158eac5bc93f05a09ca9e626e37c428b880e"
+    },
+    {
+      "path": "docs/archive/pre-parcel-recovery-p2/docs/INDEX.md.txt",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "80d6e5c175b94c9dcfe45eee3acf3aae30ecbc6a8adc82ee7cb1d6ed55cf5224",
+      "size_bytes": 10181,
+      "git_blob": "52db5d3c61363cbf5f7ec036ca0fef7c7fc33fa8"
+    },
+    {
+      "path": "docs/archive/pre-parcel-recovery-p2/docs/design/architecture-quality-closure-01.md.txt",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "b6bb4cc3cc62bdc3dd0b764a18b031f9475199ebb34e5a1e58bdfed94290b550",
+      "size_bytes": 24328,
+      "git_blob": "a7ee6f5dc8d88a053c341bb35319430554ba07e1"
+    },
+    {
+      "path": "docs/archive/pre-parcel-recovery-p2/docs/runtime/architecture-quality-audit-02-results.md.txt",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "3a66b8659d9c185eacd7e0a57f05ab079ca72a63600d67dff8f4f5f328f882fe",
+      "size_bytes": 10259,
+      "git_blob": "a094c14c41cd4bdebf0f96362b967a7d8a83dbfa"
+    },
+    {
+      "path": "docs/archive/pre-parcel-recovery-p2/docs/runtime/architecture-quality-closure-01.md.txt",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "218889c45199a6aa928ff07d34585e363e75a5ce48038f2eec087515e1fdfe19",
+      "size_bytes": 21117,
+      "git_blob": "0e1b2d55d18c6db1f19b992a6875e8a23dc0f3ba"
+    },
+    {
+      "path": "docs/archive/pre-parcel-recovery-p2/source/README.md.txt",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "ae3414932c0d02210c0da17f0d5ccade8d0b06a320e9bf2b0c4d649dbbb437f3",
+      "size_bytes": 6826,
+      "git_blob": "b51d9063b6ba70bc5d958e4246bbd835829c8ae1"
+    },
+    {
       "path": "docs/archive/pre-pr20-21-integration/README.md",
       "version": "pr20-21-integration-20261018",
       "status": "authorized_generic_integration",
@@ -2918,16 +2984,16 @@
       "prior_closure13_git_blob": "9f6c8703b8a3796169f479c11932016b2623ef0a"
     },
     {
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "parcel-recovery-p2",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/design/architecture-quality-closure-01.md",
-      "sha256": "b6bb4cc3cc62bdc3dd0b764a18b031f9475199ebb34e5a1e58bdfed94290b550",
-      "size_bytes": 24328,
-      "git_blob": "a7ee6f5dc8d88a053c341bb35319430554ba07e1",
-      "previous_git_blob": "dc4f20f985685903dd8239cf5f3304618e1a3b40"
+      "sha256": "5e92e3fdaa07c8d30bbe91fc6e49f4fe51e966073bd8e057f18142df7a1ed062",
+      "size_bytes": 25754,
+      "git_blob": "71478f967bbf64b98b7f74e971dc8be0932efa3d",
+      "previous_git_blob": "a7ee6f5dc8d88a053c341bb35319430554ba07e1"
     },
     {
       "path": "docs/design/capability-reliability-20.md",
@@ -3772,16 +3838,16 @@
       "prior_closure13_git_blob": "55ecb6381a3ebf98ce8ba6cf28c4f065740f564a"
     },
     {
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "parcel-recovery-p2",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/architecture-quality-audit-02-results.md",
-      "sha256": "3a66b8659d9c185eacd7e0a57f05ab079ca72a63600d67dff8f4f5f328f882fe",
-      "size_bytes": 10259,
-      "git_blob": "a094c14c41cd4bdebf0f96362b967a7d8a83dbfa",
-      "previous_git_blob": "7bf48bc7c21a271d7da68e071e472a346c7996d8"
+      "sha256": "c43e986795d9a67929bfca15c8603e243f770ef0c60352968e6c83e2fdf59918",
+      "size_bytes": 10493,
+      "git_blob": "1d70141c82a313d0bdbbd206c0981b0332a8f60a",
+      "previous_git_blob": "a094c14c41cd4bdebf0f96362b967a7d8a83dbfa"
     },
     {
       "version": "architecture-quality-closure-01",
@@ -3818,16 +3884,16 @@
       "previous_git_blob": "0abf652a38b83b8a1b9369ec7f4381a9dfd0e051"
     },
     {
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "parcel-recovery-p2",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/architecture-quality-closure-01.md",
-      "sha256": "218889c45199a6aa928ff07d34585e363e75a5ce48038f2eec087515e1fdfe19",
-      "size_bytes": 21117,
-      "git_blob": "0e1b2d55d18c6db1f19b992a6875e8a23dc0f3ba",
-      "previous_git_blob": "5697e9a5891f1c8c281f0d9dbe84108e63fb0db2"
+      "sha256": "cdf497ccd3ec1a0c0d2a84ad7bc8851bce48805ed27b3eb65cbf363bb72b9f30",
+      "size_bytes": 21635,
+      "git_blob": "29e6244542a53c40db372cda41a8c8d0768bd185",
+      "previous_git_blob": "0e1b2d55d18c6db1f19b992a6875e8a23dc0f3ba"
     },
     {
       "path": "docs/runtime/backup-health-recovery.md",
@@ -17232,6 +17298,447 @@
       "git_blob": "d5aac509996e9e3c04aa860f44c8300445d34d29"
     },
     {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/README.md",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "fcc47bbcb65d4886ec080684da13154248fb02ea96c8d08197b278f61cf1b3d6",
+      "size_bytes": 2214,
+      "git_blob": "3a26241b277997bb415ce35f37f5fedc22b6fcab",
+      "previous_git_blob": "54cb5abb8b87267e71468d21c97e6c2f9d6b67c5"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/application-architecture.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "9897d734500320ac44d1938b9e396fbdbf0bab830fc781258575eeec311086b3",
+      "size_bytes": 5143,
+      "git_blob": "e073e94fd21fa622b7f7cddf17f2802878599b1d"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/architecture-quality.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "fed050f07f27ce2f9991b2b387375760504dd0396de25a22df1b267464b410d7",
+      "size_bytes": 8944,
+      "git_blob": "e8434459a5d8b61da05ce68d1ce90a0ec6bdc2a6"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/archive-checks.json",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery fix and synthetic evidence; historical FAIL retained",
+      "source": "Recovery P2 after PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "aef10e757a01c2c1b61db666ed90deb5b6f1836f543587434577e2932f1c14fe",
+      "size_bytes": 88139,
+      "git_blob": "ed3e38906cc06c11c0268299e86343f628a4e248"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/archive-comparison.json",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery fix and synthetic evidence; historical FAIL retained",
+      "source": "Recovery P2 after PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "ae6f383c6035b58f1ebc0475a4f512e939947cf5250465eab4ad822484718a92",
+      "size_bytes": 244,
+      "git_blob": "a4a67f507a07ea8f59dd359e8e033896d9e36191"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/build-final.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "e7f9d6d9bf965e3256354e4a4310ba0ba535bbefcd568b95b29b685eaa286e45",
+      "size_bytes": 2324,
+      "git_blob": "9e702d2b631059fac645a5ad72c51ef66587a55b"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/build-frozen.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "f0eabf7ee4110fe5263b6c123f69866ccf1075886cc31b01c8c7b4e96b51a8cf",
+      "size_bytes": 4484,
+      "git_blob": "7b334b206bf120a752c90d8e96db3b2b2f4c9f52"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/build-green-2.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "f1f45c990e2251ab771a3af063d828f478260e466b731bb522bdba3f43334317",
+      "size_bytes": 2324,
+      "git_blob": "bb30756ae56aed20b267ad7410fc4d296fcd3940"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/build-green.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "f3abaffee9bbc387d64728073595624987ab6d19131772d494290128060aaa99",
+      "size_bytes": 3851,
+      "git_blob": "05a5466f7a15f2e3099de70b019931c877e08796"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/configuration.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "6cf608c2000a5f3a2abbf5633bd97a738f6a4bff0074cd54521b866ef58ebc8a",
+      "size_bytes": 3066,
+      "git_blob": "e4f5c83852192a9602f00ff387b377097e587189"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/core-attached-smoke.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "a3c8e5c42e12cba92bcf0ab374d95d8178a012c3818b98f47ac95baefc7f82f3",
+      "size_bytes": 806,
+      "git_blob": "b34444cc899d08244d0af101ac8d0afd47958b5f"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/custody-concurrent.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "0065621b29db7b02348f43969d630f5d17a016cfec093a64b2e5d5020fac5c5f",
+      "size_bytes": 2147,
+      "git_blob": "6852e3ee55409c1b57ce1797ad9b6c2ee1b3f2f3"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/custody-controlled.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "b8991d24fb4158ea5b4308299c39345c9592904832feb5495e197530145cd676",
+      "size_bytes": 2147,
+      "git_blob": "8780a4561cd6db5c715177029eb6bf7ee0b1bbdd"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/extensions.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "fd96dd9f5aecff443c791045a3fad9c660ba8a364cf4eba7bd2bd8c0bc3f4023",
+      "size_bytes": 4435,
+      "git_blob": "4a358610fcbecc6484b2ff1bad1d118796527baa"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/genuine-delivery.json",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "60bb312e0d48343beddc145a223d149c903bd5adf0940325f37e7d67402a67fb",
+      "size_bytes": 3413,
+      "git_blob": "ba8dd87fe44a53c7153d74b610747edd1c1b85a8"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/genuine-delivery.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "eac83ea0408b61a8be62168d84c28ef6b7c4db7c28bb5e7fb740f576301ae866",
+      "size_bytes": 200,
+      "git_blob": "ac455b0a1b9e8223025a38af24ff834c6d00c94a"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/genuine-delivery.original.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "e0af787e3bdeeebdc615db5f6017e3521f352cb49d88ba1faf209436997a5b6d",
+      "size_bytes": 3396,
+      "git_blob": "b3a1e32edee1d008bea015631892eb9639f48cab"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/legacy.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "276a0f55e6b2817c3a1ec2945564578cab4bc534c07077443b948df78c2f0df4",
+      "size_bytes": 1696,
+      "git_blob": "16236432863f12bb3376ddcc4b02d5f502f8b42d"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/original-failures/custody-toctou-probe.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "47e82ebb1972fed040fea8be2a8c04b2bf85696b49a5013cf8ef60affdd56aab",
+      "size_bytes": 2067,
+      "git_blob": "612c00d7e13cbb6336a55b82acdecab963a15dc3"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/original-failures/identity.json",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "cfd80451a0d815e0cfdb05be555654c5a586ddcd7b2e920cfc680343c7bd0206",
+      "size_bytes": 896,
+      "git_blob": "80e798cc18b45fbff0b39261b8ef66a6299e0411"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/original-failures/permanent-id-v2-run.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "48739ec453dfe9b96cfb2e269345ec5959624d1fd494f8d77576487625c6ebab",
+      "size_bytes": 838,
+      "git_blob": "722503cac8a3aef026be263058afafbc9ea0b06c"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/original-failures/persistent-basis-natural.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "be001a8a57df43d8eebfd9d52e811f2608ed496fa123075eb41241af4ee1d11a",
+      "size_bytes": 1429,
+      "git_blob": "a2acfa1963a101bb84abd1845511e2c410d77028"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/original-failures/pr26-concurrent-fail.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "9f2b79663b4ce0b04d80087447dce90ba002d9ca38012b3f5639c33e384f10c3",
+      "size_bytes": 1381,
+      "git_blob": "ee6ce985cb2d87e5f415960890b4b70e5e676e1b"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/original-failures/pr26-isolated-pass.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "7036ec6fc8addbbda0ee325732869b64211ad9b312bc0014256ae734e901c93f",
+      "size_bytes": 1049,
+      "git_blob": "87206f4938138f06bb2c2c12d91735a433fb058a"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/original-failures/pr26-wait-only-pass.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "12551a7bd2f1695db6b968ad2ebd8cd26542b090d3148d626bcf7bb0b2a2d7af",
+      "size_bytes": 1282,
+      "git_blob": "27b1e84e8300751957b0e5377eeed3910a36cadd"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/p2-final.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "d8e25e9f73284341fcffb7b9ff6357cc39d5028b24d4ff8eeca712e158e9a861",
+      "size_bytes": 8004,
+      "git_blob": "3e8d8b34e9524a02bd3e5c94ef2109c774e0580d"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/p2-green-first.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "d85a511f97394734b2ff3dc5cf066f5f107b8cf1471d9874775e3a4921b1c040",
+      "size_bytes": 7728,
+      "git_blob": "eefd83f016a5386e172572b29d1dc98e1292c5ad"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/package-barcode.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "4386b9eae8bad22fe1676dff499ecfef3a20e211791c168e679b77e9a268bdc1",
+      "size_bytes": 8528,
+      "git_blob": "3c9e39cff4e3066177566fed9873f42aa85fa15d"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/package-core.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "56b4a977f75a3e07f1e2fe2ac062e73f77d720e52ab456a69b3a06c283cfae7b",
+      "size_bytes": 4164,
+      "git_blob": "aa06d0e4ee42aa3b7f13a9485a9a7eacfa67b038"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/package-parcel.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "0dd5e2a3f8aa17337674808d8583b759614a5bd933dbeae828d039e0950b3087",
+      "size_bytes": 21884,
+      "git_blob": "2a9d7e6b99e6b8a93e194bd19f084ae03b9e1414"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/package-selected.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "0c2bb416c55019b60b15ff7fc4ca721ce5497c502679dd55f6540c6476c440f9",
+      "size_bytes": 31334,
+      "git_blob": "4650c9b3f3769e22c52129bc3eb899afc6ec8b48"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/package-windows.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "2ca8b1023afd86151559ab94d9df6b5812a7cf510f660891e0d65810fb5d4c89",
+      "size_bytes": 34897,
+      "git_blob": "5078add469cb0bb21f7aa6b635e2de48cb85fc59"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/raw-output-sha256.json",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "74182b20ba5f5dcdaa4253596a0fd17ce13abc764c27d7870f9a0686699afb50",
+      "size_bytes": 2313,
+      "git_blob": "6f323290c8739d30926398f4c7736ac9104224a1"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/red.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "258069fa9ac338f766e81686f43159e4c16e18b761c8f5d6079ae86eb32a9ccd",
+      "size_bytes": 7728,
+      "git_blob": "e7de1ff412e057306cad9a4691082176bacc17de"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/regression-readback.json",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "1bebbdf257ade23cece45e0b6d0224a89964655376bdb2c1ded5d94a0c537caa",
+      "size_bytes": 2308,
+      "git_blob": "a1eab31bc33f376a03224572af279ae2035cbda7"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/release-identity.json",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "f4962a349196f8b2d69b610ee479f8a2552f380ef16cbc822e7bd5e40d6f0257",
+      "size_bytes": 6997,
+      "git_blob": "c6124ee1507001e2a26814f0112abe48002f0ff5"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/review.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "2b949bafc94675975ad52e2bebddbf983fecbda1e2d6999157cd80fb78388a7e",
+      "size_bytes": 2947,
+      "git_blob": "482f03200c5b7e10d1e573c04c4a808247be2ef0"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/selected-journey.json",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "8f3b6cb591081598b1e30c073c8a53f14acdde6e31a273f4ea11b442c505021f",
+      "size_bytes": 96300,
+      "git_blob": "605a541d5b29f1d461cb1ede6fc90d8761e63880"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/selected-journey.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "ee5b57735b015438e26190eee01c26d673ce25424492200f17ddd191cd92dcc6",
+      "size_bytes": 165,
+      "git_blob": "81adce958bd10742f7bde535321fc7c0daa34d1c"
+    },
+    {
+      "path": "docs/runtime/evidence/parcel-recovery-p2/selected-journey.original.log",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "0248c7e289595d05902724d7a4588852b4c8756040f528b69ef5a5a8684d0bf2",
+      "size_bytes": 92554,
+      "git_blob": "22359af27f868975f628a26d99c3621c416c9a3a"
+    },
+    {
       "path": "docs/runtime/evidence/pr20-21-integration/README.md",
       "version": "pr20-21-integration-20261018",
       "status": "authorized_generic_integration",
@@ -20598,6 +21105,18 @@
       "prior_closure13_git_blob": "3f36a26f2e70cd3c4a91c4efb498c0954919bbd3"
     },
     {
+      "path": "docs/runtime/parcel-recovery-p2.md",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "b565dbb62398c7396d90e5b42f4f7b5aa3ae70d58a1cedb1c496aab342371f01",
+      "size_bytes": 7601,
+      "git_blob": "b6f6a9780cd6af73827485415f46f9a3abd08c18",
+      "previous_git_blob": "3fbbfcd77c9302e42db30ea6d6f67ac4875d2845"
+    },
+    {
       "path": "docs/runtime/pr20-21-integration.md",
       "version": "pr20-21-integration-20261018",
       "status": "authorized_generic_integration",
@@ -20968,6 +21487,18 @@
       "size_bytes": 1917,
       "git_blob": "e502c781ca823d68ce73be2488724d31ceb5d4e6",
       "previous_git_blob": "b161c3193c3912bce413a628b40fab6436564896"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-19-parcel-recovery-p2.md",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "dc5b117c40ff19abb828ff7e7965ef3c6ee3e234fd7580121db513d9a15c5d2b",
+      "size_bytes": 1947,
+      "git_blob": "24f1e34a11100fdf693b8d5efddaec4f147b9177",
+      "previous_git_blob": "dfa64f426fe98dae1c926c9d76a027fc3e3fa3ed"
     },
     {
       "path": "docs/ui/STATUS.md",
@@ -23538,27 +24069,27 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelHealth.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "parcel-recovery-p2",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "4e044dbb31fb2aac6a7abe8af63de9b0ce574b27b7eb3a442c3b9b1a57382766",
-      "size_bytes": 3180,
-      "git_blob": "65947cf6891a7dcfb41e66ef1969044f8469449e",
-      "previous_git_blob": "9c31268d751713d976343c40adcfef7de00248fe"
+      "sha256": "9467d5871ddd12cd3cf801af92e008f86f993b7cf413b8fa4f9033d1afe4d8d4",
+      "size_bytes": 3409,
+      "git_blob": "fa284b2c6b4f1275f834e4e5e76a7caffaaccd4f",
+      "previous_git_blob": "65947cf6891a7dcfb41e66ef1969044f8469449e"
     },
     {
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "parcel-recovery-p2",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow/ParcelHistory.cs",
-      "sha256": "32b839e9c36352999973c2fcc545b3eb10eb6c6457b63deb1fd1092f60afa783",
-      "size_bytes": 9842,
-      "git_blob": "e8630274c4198eae43de5b1f250e22ee799fe87b",
-      "previous_git_blob": "58711873938c78ab2c33ee76b4618ad986ca2fe3"
+      "sha256": "55fd4f3b74cc87a078075575e7ccc6a89dbebc74305114f4b5bf0d60bef15728",
+      "size_bytes": 11061,
+      "git_blob": "2f4d25fdf5f98de23e6913b1cfd53acd12726e45",
+      "previous_git_blob": "e8630274c4198eae43de5b1f250e22ee799fe87b"
     },
     {
       "version": "architecture-quality-closure-01",
@@ -23585,14 +24116,15 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelLegacyReceiptRecovery.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "parcel-recovery-p2",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
       "storage_scope": "public_repository",
-      "sha256": "b1cc12a16975d5b555abd0fa8de323e1ea6c5c225aac2e7603a6de73200b446a",
-      "size_bytes": 12411,
-      "git_blob": "ed200ddcb957b4952ef049b2fba5d02012f9c84a"
+      "sha256": "5ade37c735471cad3d7a96c9a57fb1963d96fa9306229326e4371a5a0cce20eb",
+      "size_bytes": 12597,
+      "git_blob": "2fb44fd17a96f76d959029d4ed65c6bfe77b27e3",
+      "previous_git_blob": "ed200ddcb957b4952ef049b2fba5d02012f9c84a"
     },
     {
       "version": "architecture-quality-audit-02-rereview",
@@ -23631,14 +24163,15 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelReceiptCustody.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "parcel-recovery-p2",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
       "storage_scope": "public_repository",
-      "sha256": "b938abdc730f9c2f63c893fa0406fa859747bef27cd8a452045de3ef1527ebff",
-      "size_bytes": 5918,
-      "git_blob": "b0d1ce6405f1728c2957c291f27777dfffd14fc6"
+      "sha256": "8240edcf11ffddf2290f99771ee17d3f7faf1c6239bd7f4556703bf66e0b001e",
+      "size_bytes": 7688,
+      "git_blob": "71f0bd17af62bcd20fb69801e74e18221f39efa1",
+      "previous_git_blob": "b0d1ce6405f1728c2957c291f27777dfffd14fc6"
     },
     {
       "version": "architecture-quality-audit-02-rereview",
@@ -23690,15 +24223,15 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "parcel-recovery-p2",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "008e9910ec4508eff421f3691caaba55c882e994db5cef42c29953afa8a21ea4",
-      "size_bytes": 24788,
-      "git_blob": "ae81a89b5ab59bb3f9c25f8b8b06080cd82544f0",
-      "previous_git_blob": "b25bcbfb544447fd06a6d8371a28e5e8819ee857"
+      "sha256": "31b1b90b60b6c533f458ae45bf55d5254d5c222a6de7b77ed090447fbdcdf833",
+      "size_bytes": 24873,
+      "git_blob": "899b03664053fdd7b51794ee41dba1d2b6874d57",
+      "previous_git_blob": "ae81a89b5ab59bb3f9c25f8b8b06080cd82544f0"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
@@ -26592,15 +27125,15 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "parcel-recovery-p2",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
       "storage_scope": "public_repository",
-      "sha256": "c82ca7a296b97ebb00ef922104d79811a8fb1ac4ac26b0d5afd5fe02204a7843",
-      "size_bytes": 7900,
-      "git_blob": "e68a825961908151dac3506c0416a8280c6f5b64",
-      "previous_git_blob": "f27e7779cacb1b2dc39d4e86895bab4837bd9b0d"
+      "sha256": "a4b86b09047be5ce595ab3c833a356485b54b924ca1dac8ac9661b9e0a7f0cec",
+      "size_bytes": 11621,
+      "git_blob": "5fa2cf0ba3ee8e75d1452e59d04ccf708450879c",
+      "previous_git_blob": "e68a825961908151dac3506c0416a8280c6f5b64"
     },
     {
       "version": "architecture-quality-audit-02-rereview",
@@ -26671,6 +27204,17 @@
       "previous_git_blob": "66d52de20574b243502d26a6654e854dea19142c"
     },
     {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.RecoveryP2.cs",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic recovery patch or synthetic verification evidence; historical originals retained",
+      "source": "User authorized recovery P2 patch after merged PR26; latest main baac2602 inherited",
+      "storage_scope": "public_repository",
+      "sha256": "636c0b02bbcffd5f99ec66b9f99dc8fa1932ab14a6f5fd0983fbe797079bd31f",
+      "size_bytes": 13286,
+      "git_blob": "1bde113287f1598327c1c1e597bf85f369cab620"
+    },
+    {
       "version": "architecture-quality-audit-02-rereview",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
@@ -26683,15 +27227,16 @@
       "previous_git_blob": "9e3601c5bd0978264ab8f584c413200be76725f2"
     },
     {
-      "version": "audit02-implementation",
-      "status": "current_navigation_or_verification",
+      "version": "parcel-recovery-p2",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "tests/Ipc.Application.Verification/ArchitectureQuality.cs",
-      "sha256": "e88e35d40e05587b825767d9d2afc22f2b7ccb6e6cc943598862dddcd99f56d9",
-      "size_bytes": 5849,
-      "git_blob": "d63b21a760fff5cf8abe0ca32a2269201502f7d2"
+      "sha256": "f89c6071002c99b65179c63395902c2d7cbce36db8d36d0765cff5a54b758b7c",
+      "size_bytes": 5918,
+      "git_blob": "6394ea4dcfa11d2321d7f92fe0146340143401b1",
+      "previous_git_blob": "d63b21a760fff5cf8abe0ca32a2269201502f7d2"
     },
     {
       "path": "tests/Ipc.Application.Verification/BackupHealthRecovery.cs",
@@ -26752,15 +27297,15 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Program.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "parcel-recovery-p2",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "fe9c05bc18c634101f87c1c8671ed507bff1dd93cc364a0819ec1ef151f0a0ad",
-      "size_bytes": 15829,
-      "git_blob": "3a51f2e281898c0fd7da1656380167e55e32043b",
-      "previous_git_blob": "ec3161f509796fb2deda47f3eb553448d7c74c4f"
+      "sha256": "4bb0b8a44af8379e6c42ea7edab7e05c630d116740c5dc1c0f8ed2c6ee28b266",
+      "size_bytes": 15944,
+      "git_blob": "d1d0352f6082c7f658812c618c9295962e064bab",
+      "previous_git_blob": "3a51f2e281898c0fd7da1656380167e55e32043b"
     },
     {
       "path": "tests/Ipc.Application.Verification/QualificationVerification.cs",
@@ -27903,7 +28448,7 @@
     "candidates": "docs/runtime/evidence/capability-reliability-20/candidate-inventory.json",
     "reference_verification": "PASS"
   },
-  "runtime_source_commit": "e914e75a109672cd1d52be91c40459f09231ea57",
+  "runtime_source_commit": "fe4a4a2198874a8a5250ce67d50c849ba833c7c0",
   "application_architecture_22_publication": {
     "receipt": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/architecture22-reference-8981d54",
@@ -28129,5 +28674,23 @@
     "release": "https://github.com/yuan2go/importer-pc/releases/tag/audit02-rereview-reference-e914e75",
     "release_assets": 8,
     "pr26_merge": "9a5d87ad41e3e936f56a7e58ec60de8f7aa53458"
+  },
+  "prior_runtime_source_before_parcel_recovery_p2": "e914e75a109672cd1d52be91c40459f09231ea57",
+  "parcel_recovery_p2": {
+    "baseline_main": "baac260214f910dca9ae4628ba6449b25188e2ac",
+    "runtime_source": "fe4a4a2198874a8a5250ce67d50c849ba833c7c0",
+    "results": "docs/runtime/parcel-recovery-p2.md",
+    "evidence": "docs/runtime/evidence/parcel-recovery-p2/README.md",
+    "scope": "S1/Q1 permanent reply identity, durable Query basis and deterministic custody contention",
+    "sql_1_to_5_unchanged": true,
+    "public_contracts_unchanged": true,
+    "prior_fail_preserved": true,
+    "capability_package": "1.8.2",
+    "barcode_package": "1.1.2",
+    "extension_source": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+    "windows_actual": "NOT_RUN",
+    "sdk_protocol_site": "BLOCKED",
+    "production_device_used": false,
+    "merged": false
   }
 }

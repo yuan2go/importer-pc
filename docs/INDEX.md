@@ -4,7 +4,7 @@
 
 ## 当前工程入口
 
-[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。当前main `baac2602` 已继承PR23/24/26；历史N01–N07的源码和证据按原结果读取。新Application使用schema3/Parcel DB5，DB3/4为历史发布；Supply单独适用。恢复P2及custody并发修复见[计划](superpowers/plans/2026-10-19-parcel-recovery-p2.md)，[前版本原字节](archive/pre-parcel-recovery-p2/README.md)保留形成时结论。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。当前main `baac2602` 已继承PR23/24/26；历史N01–N07的源码和证据按原结果读取。新Application使用schema3/Parcel DB5，DB3/4为历史发布；Supply单独适用。恢复P2及custody并发修复见[结果与证据](runtime/parcel-recovery-p2.md)（[先行计划](superpowers/plans/2026-10-19-parcel-recovery-p2.md)），[前版本原字节](archive/pre-parcel-recovery-p2/README.md)保留形成时结论。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
 [N01–N07交付、PR26复核修复及验证边界](runtime/architecture-quality-audit-02-results.md)。缺raw资料责任、旧发布Query到DB5、旧配置账确认和维护围栏的实际步骤见维护指南；[复核前原字节](archive/pre-pr26-rereview/README.md)保留前次结论，前次PASS不作为全闭环证据。
 

@@ -10,3 +10,5 @@
 6. 记录源码/产物SHA和原始输出、更新manifest、复核diff，推送新codex分支并建main PR，不合并。
 
 实现文件：ParcelReplyIdentities/ParcelHistory、ParcelLegacyReceiptRecovery、ParcelReceiptCustody；测试沿ArchitectureQuality分部与Program选择器，不建新验收框架。测试数据为新合成原件，不改真实旧库版本伪装历史发布。
+
+执行记录：步骤1～5已完成，结果与原始证据见[交付记录](../../runtime/parcel-recovery-p2.md)。步骤6在本分支整理manifest并创建PR，不合并；源码冻结fe4a4a2，Windows/真实集成边界保持原状态。

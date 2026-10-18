@@ -2,7 +2,7 @@
 
 新Application使用Ipc.Assembly、ParcelConfiguration和StageConfiguration；Supply的StationConfig/SaveConfig/ActivateConfig操作在[Supply扩展指南](supply-guide.md)。包格式、签名、精确公共DLL、不可变ID/version与Store机制共用。Driver拥有读码/称重/采图/PLC端口，Component拥有认证/WCS/上传端口；Application决定主流程，UI只调用契约。
 
-当前Application.Contracts ABI1.6.0，能力示例新包1.7.0（精确目标Release检查后分发），包含PR23的IReaderImageCapture.Retain/Release。观察、作业、活动采集各自保有原Acquisition；拒收撤销观察、消费finally释放观察、安全持久终态释放作业，Unknown/Conflict/原回执责任仍保有。不得取最新帧替代原件。包版本与ABI独立，PR24的Debug1.6.6/Release1.6.7属于其精确宿主；新公共DLL字节须新不可变包，不覆盖历史身份。
+当前Application.Contracts ABI1.6.0，能力示例须以显式新版本按精确目标Release构建；历史1.7.0/1.7.2包不可复用身份，包含PR23的IReaderImageCapture.Retain/Release。观察、作业、活动采集各自保有原Acquisition；拒收撤销观察、消费finally释放观察、安全持久终态释放作业，Unknown/Conflict/原回执责任仍保有。不得取最新帧替代原件。包版本与ABI独立，PR24的Debug1.6.6/Release1.6.7属于其精确宿主；新公共DLL字节须新不可变包，不覆盖历史身份。
 
 ## 一个独立工程的声明
 
@@ -45,7 +45,7 @@ python3 scripts/build-extension.py \
   --dotnet /pinned/dotnet
 ```
 
-有包依赖时，为完整闭包重复指定`--dependency-package /original/dependency.ipcx`，顺序不限。`--kind observation|integration`保留兼容快捷入口，只选择对应示例的声明，不再内嵌两套模块/schema/打包规则；不传kind和definition时选观察示例。Parcel能力使用上方模板版本或显式新--version；所选媒介的实际版本和精确身份读取composition.lock.json及identity，旧Supply快捷示例不能替代Parcel类型化能力。
+有包依赖时，为完整闭包重复指定`--dependency-package /original/dependency.ipcx`，顺序不限。`--kind observation|integration`保留兼容快捷入口，只选择对应示例的声明，不再内嵌两套模块/schema/打包规则；不传kind和definition时选观察示例。所有示例必须提供显式新--version，模板不提供可重复使用的默认版本；所选媒介的实际版本和精确身份读取composition.lock.json及identity，旧Supply快捷示例不能替代Parcel类型化能力。
 
 构建器记录声明/源码字节hash与最后实际输入提交；从隔离源码确定性编译，绑定精确公共DLL指纹，签名后调用同冻结宿主`extension-check`。该入口复用`ExtensionPackages.Inspect/ExtractVerified`验证签名、配额、实际托管元数据/入口、依赖闭包和schema，仅在临时目录校验依赖，不注册/安装包、不修改信任、不启动业务或加载插件。多余、缺少、冲突、循环、变更的依赖拒绝。宿主全文件前后hash与插件输入再次核验后，才独占发布完整`.ipcx`及`.identity.json`。失败/取消不产生成功包；原输出存在就拒绝覆盖。RSA-PSS签名随机；可复现性比较原始manifest和payload，不要求ZIP签名字节一致。
 

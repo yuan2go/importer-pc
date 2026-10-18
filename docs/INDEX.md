@@ -4,7 +4,7 @@
 
 [首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。本次N01–N07执行main b2dc55b，继承未合并PR24 a2e987a（包含PR23 966ec6a），新结果不冒充main能力或历史PASS。新Application使用schema3/Parcel DB4，Supply的Storage5和Product命令单独适用。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
-[本次N01–N07交付](runtime/architecture-quality-audit-02-results.md)。
+[前次N01–N07交付及复核边界](runtime/architecture-quality-audit-02-results.md)。PR26独立复核5项P1/2项P2正在修复，当前恢复目标见整改设计；前次PASS不作为全闭环结论。
 
 [N01前操作指引原字节](archive/pre-architecture-quality-02/README.md)。19职责、20可靠性、22拓扑及[质量闭环设计](design/architecture-quality-closure-01.md)按适用范围共同生效；阶段工作包和原候选作为历史来源保留。
 ## 最新独立审查与下一阶段交接

@@ -18,7 +18,7 @@ Capacity统一投影未结/工作集/归档量、磁盘可用及保留阈值。�
 
 即使数据库格式未变，端口构造后、所有来源Start前仍核对全部未结原件的精确实现指纹；缺原实现即拒绝启动业务，要求匹配原发布清偿，不能先在另一位制造混合版本责任。任一重启未结责任使软件暂停；主链未结还带RecoveryRequired。重量可按原Admission关联，不能自动首次发送。先显式Resume，再对原Owner以ContinuePrepared提交检查说明；若期限/健康/原件屏障未满足仍拒绝。说明表示操作者检查记录，不假造物理传感器许可。所有原ID/payload/hash/配置/实现/接受事实保留。已经返回且持久的raw仅本地T3恢复。
 
-Attached上传失败/Unknown/无结果/原能力缺失只进入Upload.State/Failure和AuxiliaryReasons。主链Reason、WCS格口、PLC接受/物理完成不被上传覆盖。ReconcileAsync(operationId,stage?)可选择原stage字符串（wcs-slot、plc-submit、image-capture、image-upload）；默认先主链后独立上传。仅同阶段未清原接收阻挡该阶段，另一查询不能代偿缺失原件。维护页“异常与恢复”或CLI的ReceiptResponsibilities（Owner=原OperationId）列出原发生ID/阶段/请求/来源/资料状态；ReconcileReceipt（Owner=原发生ID、Value=检查说明、ExpectedRevision=当前应用Revision）要求暂停和维护认证，仅适用于Awaiting且raw_hash为空、无原文件。只调用冻结原实现/原目标的Query，不Submit。原查询无结果、错误、不支持或冲突仍保留原发生、原图和包责任；有效权威终态才把旧发生标为OutcomeReconciled，并在同一T3审计关联新的Committed Query发生。旧ID/Source/空raw_hash及缺口证据永久保留，不能将新raw称为丢失旧raw；RawDurable原件已丢失仍须恢复原字节，不能使用该命令清除。Production须实际提供者支持权威原Query，缺合同仍BLOCKED。
+Attached上传失败/Unknown/无结果/原能力缺失只进入Upload.State/Failure和AuxiliaryReasons。主链Reason、WCS格口、PLC接受/物理完成不被上传覆盖。ReconcileAsync(operationId,stage?)可选择原stage字符串（wcs-slot、plc-submit、image-capture、image-upload）；默认先主链后独立上传。仅同阶段未清原接收阻挡该阶段，另一查询不能代偿缺失原件。维护页“异常与恢复”或CLI的ReceiptResponsibilities（Owner=原OperationId）列出原发生ID/阶段/请求/来源/资料状态；ReconcileReceipt（Owner=原发生ID、Value=检查说明、ExpectedRevision=当前应用Revision）要求暂停和维护认证，仅适用于Awaiting且raw_hash为空、无原文件。只调用冻结原实现/原目标的Query，不Submit。原查询无结果、错误、不支持或冲突仍保留原发生、原图和包责任；有效权威终态只确认上传结果并关联新的Committed Query发生；旧发生保留缺raw资料责任，仍阻原图释放、归档及原包退休。已有OutcomeReconciled旧行须恢复资料索引。真正原文件仅从完整恢复集按原发生/清单hash恢复后本地T3清偿；缺原字节和合同处置依据时责任持续可见，不提供强制清除。Production须实际提供者支持权威原Query，缺合同仍BLOCKED。
 
 旧版Attached曾把已接受主链写成Blocked/ImageUnknown：启动依据已Committed且hash匹配的主链raw恢复其派生主状态，恢复前完整旧JSON写审计，不改变WCS/PLC原请求/回复。旧DB2/3未结仍不自动升级；可离线运行repair-main-projection，在原库租约下验证原DB hash、先保存完整恢复集，再仅修复可证明的主投影，保持原schema/未结屏障。无原实现/旧raw仍须匹配发布和原件，不能借投影修复放行升级。
 
@@ -56,7 +56,7 @@ dotnet app/Ipc.Assembly.dll --action extension-uninstall --package '{"Id":"appro
 
 Parcel数据库4，SQL1～3/checksum逐字节保留，新增历史/原响应保有/身份冲突/过载确认/配置审计设施。DB3→4的迁移SQL不重写旧业务JSON；正常重启恢复追加恢复标记，原冻结请求及hash不变；DB1/2/3均在迁移标记升级前拒绝未结，先以匹配旧发布清偿并备份，不能以追加表结构冒充精确实现兼容。旧程序拒读DB4。升级前通过匹配发布做完整备份并保存原二进制、配置、信任与包；回退只能使用匹配原发布/升级前备份，并先核对期间外部动作，不能倒退业务账或盲重发。
 
-Application.Contracts仍为ABI1.6.0；PR24能力包1.6.6/1.6.7保留原身份，本次能力示例新不可变1.7.0；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包采用新1.0.10。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
+Application.Contracts仍为ABI1.6.0；PR24能力包1.6.6/1.6.7保留原身份，本次能力示例使用每次显式指定的新不可变版本；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包同样使用显式新版本。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
 
 必要构建与定向选择器：
 
@@ -64,7 +64,7 @@ Application.Contracts仍为ABI1.6.0；PR24能力包1.6.6/1.6.7保留原身份，
 dotnet build tests/Ipc.Application.Verification -p:RestoreLockedMode=true -m:1 -nr:false
 dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --architecture-quality
 # signed package按本宿主精确合同独立构建后：
-dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --quality-extensions /new/1.6.6.ipcx /independent/trust.json
+dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --quality-extensions /new/selected-version.ipcx /independent/trust.json
 ```
 
 只根据变更执行AA22/AC19/AC20/BHR/AC17资源组和必要WPF构建/参考包进程，不循环全部历史候选。真实SDK、WCS/PLC字段/地址/握手、身份/原件关联、复位/联锁及现场BLOCKED；[Windows及现场后验](validation/architecture-quality-closure-01-windows.md)不能由合成验证关闭。

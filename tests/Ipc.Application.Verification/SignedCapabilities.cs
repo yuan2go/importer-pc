@@ -30,8 +30,13 @@ static class SignedCapabilities
         };
         var factory = new ParcelCapabilityFactory(launch);
         factory.Validate(c);
-        factory.Validate(c with { Wcs = c.Wcs! with { Target = "site-wcs://line/one", Parameters = new() { ["endpoint"] = "https://service.example.invalid/site/v7/resolve" } } });
-        Pass(true, "actual signed component schema/address is validated without imposing reference loopback routing (no external call)");
+        factory.Validate(c with { Wcs = c.Wcs! with { Target = "site-wcs://line/one" } });
+        Pass(true, "signed component owns its target identity (no external call)");
+        if (verified.Manifest.Modules.Single(x => x.Id == "parcel-integration").Parameters.Any(x => x.Key == "endpoint"))
+        {
+            factory.Validate(c with { Wcs = c.Wcs! with { Parameters = new(c.Wcs.Parameters) { ["endpoint"] = "https://service.example.invalid/site/v7/resolve" } } });
+            Pass(true, "actual signed component endpoint schema is validated without imposing reference loopback routing (no external call)");
+        }
         var strict = c with { Wcs = B("integration", "strict-wcs") };
         foreach (var bad in new[] { strict with { Weight = strict.Weight with { Source = WeightSource.Disabled }, Scale = null }, strict with { Images = strict.Images! with { Strategy = UploadStrategy.Attached } } })
         {

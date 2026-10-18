@@ -54,7 +54,7 @@ protect-release覆盖ImporterPc父目录及发布闭包，运行账户只有读/
 
 参考内置参数才受reference://目标、127.0.0.1/parcel-reference/限制。签名组件schema和自身协议负责地址、字段、单位、编码、认证及回执映射，宿主不替它规定现场报文。继续用.ipcx签名、原ExtensionStore、ALC精确加载、包/设备/数据租约及Stop屏障。SDK/native直接P/Invoke及任意原生DLL加载仍未获批准；可用受控托管组件或已批准桥接，但缺厂商协议/SDK资料的具体适配仍BLOCKED。
 
-新Application.Contracts=1.3.0；参考能力包1.3.0、观察/集成参考包1.0.7。所有示例Assurance.Simulation=true。旧精确包/SQL不覆盖、不重签；需要新不可变版本。旧未决用匹配旧发布清偿后再升级。Parcel SQL追加迁移2作为新语义读取门槛，SQL1及Supply SQL1～5/checksum不改；旧宿主拒绝未来迁移。升级前用匹配旧发布创建一致备份，旧件FrozenConfiguration及原请求仍按旧语义读取；不能回滚新DB让旧程序误读。
+新Application.Contracts=1.3.0；参考能力包1.3.1、观察/集成参考包1.0.8。所有示例Assurance.Simulation=true。旧精确包/SQL不覆盖、不重签；需要新不可变版本。旧未决用匹配旧发布清偿后再升级。Parcel SQL追加迁移2作为新语义读取门槛，SQL1及Supply SQL1～5/checksum不改；旧宿主拒绝未来迁移。发现schema1未结作业或独立回执时，在追加迁移2前拒绝启动并保持schema1，让匹配旧发布仍能清偿；禁止先迁移再把原件锁在旧宿主无法读取的库中。升级前用匹配旧发布创建一致备份，旧件FrozenConfiguration及原请求仍按旧语义读取；不能回滚新DB让旧程序误读。
 
 真实提供者须签名声明Assurance={SchemaVersion:1,Simulation:false,ProtocolEvidence:批准协议证据文件的SHA256}、ContractIdentity及Requirements。Production要求真实读码、维护认证、schema2策略和所有已绑定能力可满足交付条件。独立签名资格绑定**完整规范配置hash、宿主/业务契约hash、有效期、批准证据文件hash，以及每个SDK/system-driver前置的精确包/声明/实际文件hash**；测试发布者不能签生产资格。不是删除门禁，也不是所有真实提供者永久NotReady。
 

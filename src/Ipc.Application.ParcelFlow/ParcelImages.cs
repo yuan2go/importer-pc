@@ -124,7 +124,9 @@ public sealed partial class ParcelRuntime
             if (original.Capture?.State is StageState.Unknown or StageState.Conflict or StageState.Dispatching ||
                 original.Upload?.State is StageState.Unknown or StageState.Conflict or StageState.Dispatching ||
                 activeStages.Any(x => x.StartsWith(original.Id + ":", StringComparison.Ordinal)) || repository!.PendingReceipts().Any(x => x.Operation == original.Id)) continue;
-            var op = original with { ImageReleased = true }; Save(op, "ImageReleased", "No remaining image responsibility; durable release precedes temporary byte deletion"); Boundary?.Invoke("AfterImageReleaseDurable"); if (op.Image is not null) DeleteImage(op);
+            var op = original with { ImageReleased = true }; Save(op, "ImageReleased", "No remaining image responsibility; durable release precedes temporary byte deletion"); Boundary?.Invoke("AfterImageReleaseDurable");
+            ReleaseOperationAcquisition(op);
+            if (op.Image is not null) DeleteImage(op);
         }
     }
     void DeleteImage(ParcelOperation op)

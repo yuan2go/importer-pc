@@ -1,0 +1,7 @@
+SELECT --closure: E07 sources, health, ownership and shutdown
+Evidence data retained at /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-verification-415c7c1d171c438584260a936d61048e
+Unhandled exception. System.TimeoutException: Fixture failed to start
+   at Program.<<Main>$>g__Eventually|0_5(Func`1 condition) in /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/tests/Ipc.Verification/Program.cs:line 498
+   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/tests/Ipc.Verification/Program.cs:line 67
+   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/tests/Ipc.Verification/Program.cs:line 492
+   at Program.<Main>(String[] args)

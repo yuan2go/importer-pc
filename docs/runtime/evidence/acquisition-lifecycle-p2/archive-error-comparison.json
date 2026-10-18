@@ -1,0 +1,7 @@
+{
+  "status": "PASS_UNCHANGED_HISTORICAL_ERRORS",
+  "baseline_report": "docs/runtime/evidence/application-architecture-22/archive-checks.json",
+  "historical_error_count": 267,
+  "new_errors": 0,
+  "error_sets_identical": true
+}

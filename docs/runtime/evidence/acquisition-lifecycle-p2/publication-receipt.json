@@ -1,0 +1,19 @@
+{
+  "observed_pr": {
+    "baseRefName": "main",
+    "headRefName": "codex/acquisition-lifecycle-p2",
+    "headRefOid": "8415e9c6182de2bd4c15f00cd872548c80876913",
+    "mergeable": "MERGEABLE",
+    "number": 23,
+    "state": "OPEN",
+    "statusCheckRollup": [],
+    "url": "https://github.com/yuan2go/importer-pc/pull/23"
+  },
+  "runtime_source": "ca35b16a0ef883126b39640c19ea6f840e5a9716",
+  "evidence_commit": "8415e9c6182de2bd4c15f00cd872548c80876913",
+  "main_at_publication": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
+  "merged": false,
+  "Windows": "NOT_RUN",
+  "RealSDK_WCS_PLC_Field": "BLOCKED",
+  "note": "Observed after creating PR; this receipt is added in a subsequent documentation-only commit. Runtime candidates remain bound to runtime_source."
+}

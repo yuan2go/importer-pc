@@ -1,0 +1,69 @@
+[
+  {
+    "Application": "sportmaster",
+    "Target": "portable",
+    "SourceCommit": "2efb7b6dfde3a999d5f5775d21b6c58dff961fae",
+    "Archive": ".artifacts/bhr-2efb7b6/sportmaster.zip",
+    "Sha256": "f3c3005b6a5ec4d15471ff8f30426f7a34907e2f2bc35964216518570bd6e901",
+    "SizeBytes": 18157549,
+    "Binaries": {
+      "app/Ipc.Application.Contracts.dll": "05359910613205a4384c539ee17164933a18b70f36cb43c93646ae4ffa16de74",
+      "app/Ipc.Application.ParcelFlow.dll": "0ea8b9e176d63eb230baa47f88ae3f69b186e56b883dceffbce55923de8dad95",
+      "app/Ipc.Application.Sportmaster.dll": "440512aa46dd9f0aadf69d9ae631c237961a483b300f810713c415c935ae9ec3",
+      "app/Ipc.Assembly.dll": "d27f883c44a4c4b9e396b7f9c30a6a1fb8d07a8ea445383f5fb8d0bcbbf070f8",
+      "app/Ipc.Components.dll": "980a2387292fbcb498a2eb171c8ec352b00e8f953d614b0cfbba0f393266092b",
+      "app/Ipc.Drivers.dll": "ae0ff86bc7b1ab43ab288a437646e4d97fbc1c8394f9d01af0f7f1a844ed7bcf",
+      "app/Ipc.Integrations.dll": "e64d3fd328c7d9219a742154d976e197698eedf01889fae68e6ba4f738243f27",
+      "app/Ipc.Platform.Storage.dll": "2f4941cd9951e532a890102a741dc1cf028f4aa3a41d59cd5ad7d49ae313e185",
+      "app/Ipc.Platform.dll": "2db2c0719c860483613391aacf0f3fd6ca099214e235c5dfb82ea084a7a9a119",
+      "app/Ipc.Reference.Protocol.dll": "4f678bd5c04a94804f1b83a66273e42ef6883dd9106d0a0ee7a42146dd6487e1",
+      "app/Ipc.Supply.Contracts.dll": "abb7f2b5cad91c2a94ed79a92a08d06fc4cbab08660d74e5a38f11e09e13ab4a"
+    },
+    "UnpackedSmoke": "smoke-sportmaster.json",
+    "Storage": "LOCAL_ONLY_NOT_RELEASE_ASSETS"
+  },
+  {
+    "Application": "direct-plc",
+    "Target": "portable",
+    "SourceCommit": "2efb7b6dfde3a999d5f5775d21b6c58dff961fae",
+    "Archive": ".artifacts/bhr-2efb7b6/direct-plc.zip",
+    "Sha256": "916a512e73a6470fe17505b9eee7889106d855d7d9628e6139bdeb849111b72d",
+    "SizeBytes": 18075126,
+    "Binaries": {
+      "app/Ipc.Application.Contracts.dll": "05359910613205a4384c539ee17164933a18b70f36cb43c93646ae4ffa16de74",
+      "app/Ipc.Application.DirectPlc.dll": "1c33bc0461851f6c6d846eb6faf86d81645cda4f95bffd885d9e365e414735b3",
+      "app/Ipc.Application.ParcelFlow.dll": "0ea8b9e176d63eb230baa47f88ae3f69b186e56b883dceffbce55923de8dad95",
+      "app/Ipc.Assembly.dll": "2d43784f39f4fc697569c4a654c259ae2e5fdb54aa5a7ed9d225c1f3f353770b",
+      "app/Ipc.Components.dll": "980a2387292fbcb498a2eb171c8ec352b00e8f953d614b0cfbba0f393266092b",
+      "app/Ipc.Drivers.dll": "ae0ff86bc7b1ab43ab288a437646e4d97fbc1c8394f9d01af0f7f1a844ed7bcf",
+      "app/Ipc.Platform.Storage.dll": "2f4941cd9951e532a890102a741dc1cf028f4aa3a41d59cd5ad7d49ae313e185",
+      "app/Ipc.Platform.dll": "2db2c0719c860483613391aacf0f3fd6ca099214e235c5dfb82ea084a7a9a119",
+      "app/Ipc.Reference.Protocol.dll": "4f678bd5c04a94804f1b83a66273e42ef6883dd9106d0a0ee7a42146dd6487e1"
+    },
+    "UnpackedSmoke": "smoke-direct-plc.json",
+    "Storage": "LOCAL_ONLY_NOT_RELEASE_ASSETS"
+  },
+  {
+    "Application": "wcs-to-plc",
+    "Target": "portable",
+    "SourceCommit": "2efb7b6dfde3a999d5f5775d21b6c58dff961fae",
+    "Archive": ".artifacts/bhr-2efb7b6/wcs-to-plc.zip",
+    "Sha256": "0f282f75c924c563c61d74962be83fdae4c28b7bf7577a4b951ff56f0dba0243",
+    "SizeBytes": 18159993,
+    "Binaries": {
+      "app/Ipc.Application.Contracts.dll": "05359910613205a4384c539ee17164933a18b70f36cb43c93646ae4ffa16de74",
+      "app/Ipc.Application.ParcelFlow.dll": "0ea8b9e176d63eb230baa47f88ae3f69b186e56b883dceffbce55923de8dad95",
+      "app/Ipc.Application.WcsToPlc.dll": "93c86c9b2a747f7f5e6ae26374af8f77cbf7ac9e80a983d9d76a8f209a9d342f",
+      "app/Ipc.Assembly.dll": "f2ed12ce2df61a9a29aa4baef9c8ca71d6371e97707610dec572d59cf3655277",
+      "app/Ipc.Components.dll": "980a2387292fbcb498a2eb171c8ec352b00e8f953d614b0cfbba0f393266092b",
+      "app/Ipc.Drivers.dll": "ae0ff86bc7b1ab43ab288a437646e4d97fbc1c8394f9d01af0f7f1a844ed7bcf",
+      "app/Ipc.Integrations.dll": "e64d3fd328c7d9219a742154d976e197698eedf01889fae68e6ba4f738243f27",
+      "app/Ipc.Platform.Storage.dll": "2f4941cd9951e532a890102a741dc1cf028f4aa3a41d59cd5ad7d49ae313e185",
+      "app/Ipc.Platform.dll": "2db2c0719c860483613391aacf0f3fd6ca099214e235c5dfb82ea084a7a9a119",
+      "app/Ipc.Reference.Protocol.dll": "4f678bd5c04a94804f1b83a66273e42ef6883dd9106d0a0ee7a42146dd6487e1",
+      "app/Ipc.Supply.Contracts.dll": "abb7f2b5cad91c2a94ed79a92a08d06fc4cbab08660d74e5a38f11e09e13ab4a"
+    },
+    "UnpackedSmoke": "smoke-wcs-to-plc.json",
+    "Storage": "LOCAL_ONLY_NOT_RELEASE_ASSETS"
+  }
+]

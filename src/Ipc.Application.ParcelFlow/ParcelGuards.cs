@@ -56,11 +56,7 @@ public sealed partial class ParcelRuntime
                 finally { gate.Release(); }
                 foreach (var p in CapabilityPorts())
                 {
-                    CapabilityHealth h;
-                    using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token); budget.CancelAfter(Effective.TimeoutMs);
-                    try { h = await p.HealthAsync(budget.Token).ConfigureAwait(false); }
-                    catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException)
-                    { var now = DateTimeOffset.UtcNow; h = new(p.InstanceId, false, now, now, "Health unavailable: " + ex.GetType().Name); }
+                    var h = await ProbeHealthAsync(p, stopping.Token).ConfigureAwait(false);
                     await gate.WaitAsync().ConfigureAwait(false);
                     try { capabilityHealth[p.InstanceId] = h; } finally { gate.Release(); }
                 }

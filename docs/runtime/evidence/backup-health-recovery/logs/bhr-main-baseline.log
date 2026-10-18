@@ -1,0 +1,35 @@
+EvidenceRoot=SYNTHETIC_TEMP_ROOT
+PASS BHR: original image observation admitted
+PASS BHR: actual BackupAsync includes unreleased nested image and receipt custody
+PASS BHR: manifest keys are slash paths and live leases are excluded
+PASS BHR: restore preserves original image bytes
+PASS BHR: isolated restore retains original unknown upload identity/attempt, no login or automatic resend, source unchanged
+PASS BHR: restored query resolves independent upload ledger with exactly one external execution
+PASS BHR: path-1BA7343C rejected before target creation; original custody preserved
+PASS BHR: path-B21164E2 rejected before target creation; original custody preserved
+PASS BHR: path-C646F356 rejected before target creation; original custody preserved
+PASS BHR: path-6941CC19 rejected before target creation; original custody preserved
+PASS BHR: path-E88D5E48 rejected before target creation; original custody preserved
+PASS BHR: path-644B962F rejected before target creation; original custody preserved
+PASS BHR: path-076E3742 rejected before target creation; original custody preserved
+FAIL BHR: custody: FileNotFoundException: Could not find file 'SYNTHETIC_TEMP_ROOT/custody.db.recovery/images/AUX.png'.
+FAIL BHR: startup-StallHeaders: TaskCanceledException: The operation was canceled.
+FAIL BHR: startup-StallBody: TaskCanceledException: The operation was canceled.
+PASS BHR: real startup cancellation propagates
+PASS BHR: ReferencePeer preserves caller cancellation because a single token does not identify its source
+PASS BHR: stage health observation queued
+PASS BHR: pre-send timeout retains Prepared identity and zero attempts without killing ingress
+PASS BHR: explicit continuation can reach healthy provider without replacing original intent
+PASS BHR: shutdown test observation queued
+FAIL BHR: shutdown-before-send: Exception: shutdown during first pre-send health drains ownership without inventing device failure or delivery
+PASS BHR: shutdown after external commit retains Unknown and original single attempt
+PASS BHR: restart after delivery cancellation preserves frozen request, no resend
+PASS BHR: original query resolves cancelled delivery with exactly one independent execution
+FAIL BHR: invalid-health-OversizedDeclared: TaskCanceledException: The operation was canceled.
+PASS BHR: bounded health rejects OversizedChunked without buffering or waiting for a huge body
+PASS BHR: bounded health rejects InvalidMarker without buffering or waiting for a huge body
+PASS BHR: bounded health rejects Unavailable without buffering or waiting for a huge body
+Unhandled exception. System.Exception: BHR failures: custody: FileNotFoundException: Could not find file 'SYNTHETIC_TEMP_ROOT/custody.db.recovery/images/AUX.png'. | startup-StallHeaders: TaskCanceledException: The operation was canceled. | startup-StallBody: TaskCanceledException: The operation was canceled. | shutdown-before-send: Exception: shutdown during first pre-send health drains ownership without inventing device failure or delivery | invalid-health-OversizedDeclared: TaskCanceledException: The operation was canceled.
+   at BackupHealthRecovery.Run(String workspace, String root) in BASELINE_WORKTREE/tests/Ipc.Application.Verification/BackupHealthRecovery.cs:line 202
+   at Program.<Main>$(String[] args) in BASELINE_WORKTREE/tests/Ipc.Application.Verification/Program.cs:line 14
+   at Program.<Main>(String[] args)

@@ -121,25 +121,37 @@ public sealed partial class ParcelRuntime
         try
         {
             if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0) return new("Rejected", "Pause before reference maintenance backup", repository?.Revision ?? 0);
+            destination = Path.GetFullPath(destination);
+            RecoveryFiles.RequireOrdinaryAncestors(directory!);
+            RecoveryFiles.RequireOrdinaryAncestors(destination);
+            var relativeDestination = Path.GetRelativePath(directory!, destination);
+            if (!Path.IsPathRooted(relativeDestination) && relativeDestination != ".." && !relativeDestination.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+                throw new IOException("Backup must be outside the live application directory");
             var recovery = destination + ".recovery";
-            if (Directory.Exists(recovery) || File.Exists(destination)) throw new IOException("Backup destination must be new");
+            if (Directory.Exists(recovery) || File.Exists(recovery) || File.Exists(destination) || Directory.Exists(destination)) throw new IOException("Backup destination must be new");
+            var names = new List<string> { "configuration.json" };
+            names.AddRange(RecoveryFiles.Enumerate(directory!, "receipts"));
+            names.AddRange(RecoveryFiles.Enumerate(directory!, "images", skipImageLeases: true));
+            if (File.Exists(overloadMarker)) names.Add("overload.json");
+            RecoveryFiles.ValidateNames(directory!, names);
+            foreach (var op in operations.Values.Where(x => x.Image is not null && !x.ImageReleased)) _ = ReadImage(op, op.Image!);
+            var expectedFiles = names.ToDictionary(x => x, x => Wire.FileHash(RecoveryFiles.Resolve(directory!, x)), StringComparer.Ordinal);
+            // Preserve any interrupted set; only COMPLETED.json makes a set restorable.
             Directory.CreateDirectory(recovery);
+            RecoveryFiles.RequireOrdinaryAncestors(recovery);
+            RecoveryFiles.RequireOrdinaryAncestors(destination);
             repository.Backup(destination);
-            File.Copy(Path.Combine(directory!, "configuration.json"), Path.Combine(recovery, "configuration.json"));
-            var receipts = Path.Combine(recovery, "receipts"); Directory.CreateDirectory(receipts);
-            foreach (var file in Directory.EnumerateFiles(Path.Combine(directory!, "receipts"))) File.Copy(file, Path.Combine(receipts, Path.GetFileName(file)));
-            var images = Path.Combine(directory!, "images");
-            if (Directory.Exists(images))
-                foreach (var file in Directory.EnumerateFiles(images, "*", SearchOption.AllDirectories))
-                {
-                    if (Path.GetExtension(file) == ".lease" && ExtensionSchema.IsHash(Path.GetFileNameWithoutExtension(file))) continue; // Live ownership is reacquired, never backed up.
-                    var relative = Path.GetRelativePath(directory!, file);
-                    if (!ProductValidation.IsSafeRelativeFile(directory!, relative, out var original)) throw new InvalidDataException("Unsafe image custody path");
-                    var target = Path.Combine(recovery, relative); Directory.CreateDirectory(Path.GetDirectoryName(target)!); File.Copy(original, target);
-                }
-            if (File.Exists(overloadMarker)) File.Copy(overloadMarker, Path.Combine(recovery, "overload.json"));
-            var files = Directory.EnumerateFiles(recovery, "*", SearchOption.AllDirectories).ToDictionary(x => Path.GetRelativePath(recovery, x), Wire.FileHash);
-            ExtensionStore.AtomicWrite(Path.Combine(recovery, "COMPLETED.json"), new { Application = Id, Database = Path.GetFileName(destination), DatabaseHash = Wire.FileHash(destination), Files = files, At = DateTimeOffset.UtcNow, Recovery = "Isolated original-deployment restore; reconcile external effects before admission" });
+            foreach (var name in names)
+            {
+                var original = RecoveryFiles.Resolve(directory!, name); var target = RecoveryFiles.Resolve(recovery, name);
+                Directory.CreateDirectory(Path.GetDirectoryName(target)!); RecoveryFiles.CopyVerified(original, target, expectedFiles[name]);
+            }
+            var files = RecoveryFiles.Inventory(recovery);
+            var manifest = new ParcelRecoveryManifest(Id, Path.GetFileName(destination), Wire.FileHash(destination), files, DateTimeOffset.UtcNow,
+                "Isolated original-deployment restore; reconcile external effects before admission");
+            if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(manifest)) > RecoveryFiles.MaximumManifestBytes)
+                throw new InvalidDataException("Recovery manifest quota exceeded; incomplete backup retained");
+            ExtensionStore.AtomicWrite(Path.Combine(recovery, "COMPLETED.json"), manifest);
             return new("BackupCreated", "Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set", repository.Revision);
         }
         finally { gate.Release(); }

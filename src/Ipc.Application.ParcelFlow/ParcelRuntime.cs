@@ -90,7 +90,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 if (h.DeviceId == Effective.Reader.DeviceId && h.Epoch == registeredEpoch)
                     Volatile.Write(ref readerHealth, new(h.DeviceId, h.Epoch, 0, h.Health, h.ConfirmedAt, h.ConfirmedAt, h.ValidUntil, h.Source));
             }, token).ConfigureAwait(false);
-            foreach (var port in CapabilityPorts()) capabilityHealth[port.InstanceId] = await port.HealthAsync(token).ConfigureAwait(false);
+            foreach (var port in CapabilityPorts()) capabilityHealth[port.InstanceId] = await ProbeHealthAsync(port, token).ConfigureAwait(false);
             Volatile.Write(ref accepting, 1);
             maintenanceWorker = Task.Run(MaintainAsync, CancellationToken.None);
         }

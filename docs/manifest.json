@@ -1,13 +1,13 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20",
+  "work_package": "PR20-21-INTEGRATION-20261018",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/capability-reliability-closure-20",
+  "branch": "codex/pr20-21-integration",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
-  "framework_design_state": "REFERENCE_RELIABILITY_VERIFIED_WINDOWS_NOT_RUN_REAL_ADAPTERS_BLOCKED",
+  "framework_design_state": "REFERENCE_INTEGRATION_WINDOWS_NOT_RUN_REAL_INTERFACES_BLOCKED",
   "previous_manifest": {
     "commit": "08286542bbd007433d85be2cb8d129b366b007e0",
     "snapshot": "docs/archive/pre-capability-reliability-20/docs/manifest.json.txt",
@@ -327,9 +327,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "e566a2b9bd0ae706973a15c9ffd2bd6f5eae0b16ee19d506b0bd8b7bdfe3a4c6",
-      "size_bytes": 6834,
-      "git_blob": "83c0403924fed4c63f88a1744de11dda4d29d38c",
+      "sha256": "7239c4480a92a267216288a0bfd2593cc99c1e2a17ed886581ef808f17d0cb69",
+      "size_bytes": 6900,
+      "git_blob": "731739a6c18260f666624f1ebb2c2691a9bf5e97",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
@@ -844,6 +844,50 @@
       "sha256": "ae2a26459cf21dd173968f6fbc890179fe66e2e0cb726e717284c2f3b3a49777",
       "size_bytes": 4822,
       "git_blob": "6669c3c478b7db383a3108f27d564ed382a82d21"
+    },
+    {
+      "path": "docs/archive/pre-backup-health-recovery/README.md",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "d8bb09f74d56469a1758f43226f725d3132f2a5f806e8cbe75d1bab794b4559d",
+      "size_bytes": 350,
+      "git_blob": "f199749d964d9f22f16fc48c0b703b7f60e1c3c1"
+    },
+    {
+      "path": "docs/archive/pre-backup-health-recovery/docs/INDEX.md.txt",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "913409ed32274f5df492eb802f2a6e9de7caa796e62d8679c6a73f4ded49c1fe",
+      "size_bytes": 6620,
+      "git_blob": "014c5706ec2a3aaf30f16d564d48c3aa94935543"
+    },
+    {
+      "path": "docs/archive/pre-backup-health-recovery/docs/manifest.json.txt",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "af12af26d7c459af6c94d3430b74ea0b0d3bf1fd397ebe6ddf3be9f597111c08",
+      "size_bytes": 1072338,
+      "git_blob": "df4e0bbce1c69d3e7ce3dd279669b51cf1276e10"
+    },
+    {
+      "path": "docs/archive/pre-backup-health-recovery/docs/runtime/application-capability-19.md.txt",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "725471af69558714d749623cf260788d5570d6887a4a56a607befbd6c72a5dc1",
+      "size_bytes": 11744,
+      "git_blob": "0793dd08c79c0ac65d280c3fd1f3c7197519002e"
     },
     {
       "path": "docs/archive/pre-capability-reliability-20/README.md",
@@ -2570,9 +2614,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "76ea1c0cb59f4a1bc8fa43972ec893f90c1ad99a6cc7d99660836b1a0cfe1c14",
-      "size_bytes": 12010,
-      "git_blob": "e5d70f1b54ecd7d028ae3db70ffd2606285b72d6",
+      "sha256": "bdb490d363337fc658a46522b049a84b5bf04669d915d95d9d4662614742dddb",
+      "size_bytes": 14404,
+      "git_blob": "e5178f812061a93d9b1a70b316e984f5b59cb777",
       "previous_git_blob": "0793dd08c79c0ac65d280c3fd1f3c7197519002e"
     },
     {
@@ -2655,6 +2699,17 @@
       "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
       "storage_scope": "public_repository",
       "prior_closure13_git_blob": "55ecb6381a3ebf98ce8ba6cf28c4f065740f564a"
+    },
+    {
+      "path": "docs/runtime/backup-health-recovery.md",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "7f5a04a45e81de546d71f5b99b501024af86f979d81fb35ff424253b6e7e531e",
+      "size_bytes": 5945,
+      "git_blob": "99fec105b2128694fd655ef8c8abd395ecd67c43"
     },
     {
       "path": "docs/runtime/capability-reliability-20-results.md",
@@ -5538,6 +5593,303 @@
       "git_blob": "ce985beb6faaebfd300812810cadf6f54226fa47"
     },
     {
+      "path": "docs/runtime/evidence/backup-health-recovery/README.md",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "93a9a319c799a08b975c37add7b3ccd46cc2b3ebc964ff1e072b3c9e5a03c4a4",
+      "size_bytes": 1719,
+      "git_blob": "ae94f80d189829900222afd661a66b28abb94499"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/archive-checks.json",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted repair and synthetic verification or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "0d1246e5dcfe42c2804db1d0c0a30a46d9c05ec0ee4803847d5ec464e10971e6",
+      "size_bytes": 798,
+      "git_blob": "cf20f5b1a6daf49e1e6bc68a546b73b08598eb77"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/candidates.json",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "eb6b2af039fdd822a93acc256d9a1f3cbcf2fd97ad003101cac84dbad2eae2a6",
+      "size_bytes": 4488,
+      "git_blob": "b1bfc02c3ba885ff4cd76ccc2beef86a095847e6"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/checks.json",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "06bd49eaaffc1b161dc25688c1943ca4aac3b116a6f9809deaa9e73f4e27b3cc",
+      "size_bytes": 4818,
+      "git_blob": "5faa36629f07ae03cabe6e865c88be6aa31b023e"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-fixture-build.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "d6f79746b392622ef4a7178df6dc0043e205321040384a48d597d8a8fc3a6068",
+      "size_bytes": 917,
+      "git_blob": "c885c6938161a5d4be72a95916b86986c5a2fec8"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-frozen-build.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "bf460f83c5ab548e42dfd705cfaa33a3c46a623b9dcecdcb234d7b950b37a285",
+      "size_bytes": 1557,
+      "git_blob": "d93185978a0e5e3008bf6928562082efccbfa4a3"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-frozen-core17.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "50341ec3b1b318ffa7530c684d9fd28f50c760d5f29a7cf7e5f2023ed9c0ddaf",
+      "size_bytes": 5656,
+      "git_blob": "5a1f2dd26ee030de4de490b1ec617303b6df5a61"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-frozen-core18.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "e60f4b109325745531e38ddfb4f618641eeb5c766b94cf8faa7b672295838ddf",
+      "size_bytes": 25151,
+      "git_blob": "091a0e43901648389c4bbe18473732d247812c0a"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-frozen-core19.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "03ef6d5e3e10edd71598d8205275602b32a9607f2f93bea8229e67a3a172e55a",
+      "size_bytes": 4245,
+      "git_blob": "6b18e4bbf40397305676c559c24fb253c3d49494"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-frozen-targeted.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "21f240b1ba69360ec31d0f8710d9f4094cf3639a4acc6d47d6e916c83b79a925",
+      "size_bytes": 4304,
+      "git_blob": "7de138d6c2f9560a997b8cb43fcdb3e645c0b135"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-main-baseline-build.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "06d008d1e157e0e9a812802e58fa268d31580d9f8fb2658e553e539734022aea",
+      "size_bytes": 3040,
+      "git_blob": "2d0d00807bcc154656c3073962a4adb0029dc48f"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-main-baseline.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "6c1c9299f3c18f1c1573d65933437331cd257b7e9c76600c7ad7cd8979946b00",
+      "size_bytes": 3401,
+      "git_blob": "a7775b62b52a313afedc29d50cb672ef8d14c84b"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-main-core17-baseline.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "7c942b302ae9d6bbb5eaa08c2a9f5510df0878d23777179a370d8af9de0b1464",
+      "size_bytes": 1066,
+      "git_blob": "464daceca65f623840c4db58c9903c41d72ecd07"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-package-direct-plc.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "ae3108b6434d655093ae38aa7f431d5fe1b64c7d0c49065317e601026f7a5130",
+      "size_bytes": 2482,
+      "git_blob": "e5672bc3459e63de073944cd99a67b3303b4cf5b"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-package-sportmaster.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "ed3b5d176a78788621a2ef8a6156b919b114e7c6ff5b9b6d1dda78732f43b4fa",
+      "size_bytes": 3018,
+      "git_blob": "3f4a236a8298dcff1f7ead83d02906fbdd695286"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-package-wcs-to-plc.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "b4de281fceee15e63de1397859141129427666b3b0727b93fed4fb0dd0f31e29",
+      "size_bytes": 2989,
+      "git_blob": "ddf90fe02f0395a70994a2ada575a0d6538476f7"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-related-red2.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "f8359689e7c903d16b9561550600ef2fde8b0d28ad5c9602268fc67bce3fdee6",
+      "size_bytes": 4834,
+      "git_blob": "c31e880b8f1c7e06d520c239800d4b5f3c96aaeb"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-smoke-attached.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "6e35392cfd4e6db4f8cc5e51e21e5f435bcb73fa0379c5dfb5033b9180bedb68",
+      "size_bytes": 788,
+      "git_blob": "974a0d9aa68aa6915614c63e3c5befb930b9efbd"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-smoke-before-main.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "795a7e06ec49d2360bb2d016838afd0d090e2ed29cfcd9e1d9c5af4ae78da4cc",
+      "size_bytes": 759,
+      "git_blob": "ab97ff333a10e4adcfb2196a0769adbeb1e8bc9c"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-smoke-direct-plc.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "b89c270de47124449750b50c83eb8d478f1dbff003a3bd1e4b397ea8c41f3a8c",
+      "size_bytes": 524,
+      "git_blob": "96ce45a50a1acc72128b1fddf3d4c9a12fbdca97"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-smoke-sportmaster.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "da6faeddf6c16c894f7c1defbfffd2d260a60311fce5a93eecc0a336922efe30",
+      "size_bytes": 526,
+      "git_blob": "ad954996467dffd93d67488f4ad934c470e2a0c8"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-smoke-wcs-to-plc.log",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "186b5428adec9b6c855ace0d772106c7c58b27dc2121847ad021a91e5f4ce731",
+      "size_bytes": 524,
+      "git_blob": "d644bb0d647a042d0b899a51b0beda75e182b56b"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/smoke-attached.json",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "4a596fa3efc53bba23a0f6694b5e3cedf07e095883030c3b30c5c30e11df1778",
+      "size_bytes": 872,
+      "git_blob": "e87138cb8cc56dfc3c18809119f698d843c59be6"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/smoke-before-main.json",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "8b25bd32fe169142a68b52ecd7e3b754dac3048a85c6ca6b563c59ffa1562264",
+      "size_bytes": 843,
+      "git_blob": "85c8071056f81268142388611c53442d45d10acd"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/smoke-direct-plc.json",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "e0ffe689979d9c64561afbb7355e1fa07a8d5e9f7fb3a187a9eb53ae026ca363",
+      "size_bytes": 576,
+      "git_blob": "326329f899e92a2ab1f669d427718816d7401cc7"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/smoke-sportmaster.json",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "47c731046ca88346ea061cd3650eba46c92f3b8ee0ce940df1e1199902877e2a",
+      "size_bytes": 578,
+      "git_blob": "c4bf36d7325413590db81f86c10b8c8d8d66400d"
+    },
+    {
+      "path": "docs/runtime/evidence/backup-health-recovery/smoke-wcs-to-plc.json",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "cb7219dee1a8bfbf2ff241667ff63845a1571d6749d42818163b2a4a4f7ab534",
+      "size_bytes": 576,
+      "git_blob": "85fee22f5f1c90d8875e0fb60ba663f321e3f185"
+    },
+    {
       "path": "docs/runtime/evidence/capability-reliability-20/README.md",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
@@ -6806,50 +7158,6 @@
       "git_blob": "3d48183008fd781f94cc6955dcad43f21bfd26be"
     },
     {
-      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health/HealthRepro.csproj",
-      "version": "FIX-14",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
-      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
-      "storage_scope": "public_repository",
-      "sha256": "b768c63b848c5880bedcfe08d4d3a3b148d2150bed4bad93b83f5e74b8637ea2",
-      "size_bytes": 318,
-      "git_blob": "68de93a4e3b326e11f4a115d3dba01561b07cc3b"
-    },
-    {
-      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health/Program.cs",
-      "version": "FIX-14",
-      "status": "new_evidence_or_current_reference_implementation",
-      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
-      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
-      "storage_scope": "public_repository",
-      "sha256": "25eb943178fb932d8845642605be1f9d7f4e3a23ab909d5c65af2cbd66c5a243",
-      "size_bytes": 8429,
-      "git_blob": "fff6442bf74ccd5199eb5c23042efb77cdc88a86"
-    },
-    {
-      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health/adaptation.json",
-      "version": "FIX-14",
-      "status": "new_evidence_or_current_reference_implementation",
-      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
-      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
-      "storage_scope": "public_repository",
-      "sha256": "b09c2df7fcb38e8ed20a703999a4df5adc492e6c444a3a45ae7d879d23b525ca",
-      "size_bytes": 477,
-      "git_blob": "5ed0333d83c672b779fd3c2148fd44f15fa537e7"
-    },
-    {
-      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health/packages.lock.json",
-      "version": "FIX-14",
-      "status": "new_evidence_or_current_reference_implementation",
-      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
-      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
-      "storage_scope": "public_repository",
-      "sha256": "505429c61887c5e09174ab8a3171bd7f99b057a027f748bbbd542648e3b4c6f1",
-      "size_bytes": 16436,
-      "git_blob": "3d48183008fd781f94cc6955dcad43f21bfd26be"
-    },
-    {
       "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health-v2/HealthRepro.csproj",
       "version": "FIX-14",
       "status": "current_reference_implementation_or_evidence",
@@ -6884,6 +7192,50 @@
     },
     {
       "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health-v2/packages.lock.json",
+      "version": "FIX-14",
+      "status": "new_evidence_or_current_reference_implementation",
+      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
+      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
+      "storage_scope": "public_repository",
+      "sha256": "505429c61887c5e09174ab8a3171bd7f99b057a027f748bbbd542648e3b4c6f1",
+      "size_bytes": 16436,
+      "git_blob": "3d48183008fd781f94cc6955dcad43f21bfd26be"
+    },
+    {
+      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health/HealthRepro.csproj",
+      "version": "FIX-14",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
+      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
+      "storage_scope": "public_repository",
+      "sha256": "b768c63b848c5880bedcfe08d4d3a3b148d2150bed4bad93b83f5e74b8637ea2",
+      "size_bytes": 318,
+      "git_blob": "68de93a4e3b326e11f4a115d3dba01561b07cc3b"
+    },
+    {
+      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health/Program.cs",
+      "version": "FIX-14",
+      "status": "new_evidence_or_current_reference_implementation",
+      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
+      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
+      "storage_scope": "public_repository",
+      "sha256": "25eb943178fb932d8845642605be1f9d7f4e3a23ab909d5c65af2cbd66c5a243",
+      "size_bytes": 8429,
+      "git_blob": "fff6442bf74ccd5199eb5c23042efb77cdc88a86"
+    },
+    {
+      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health/adaptation.json",
+      "version": "FIX-14",
+      "status": "new_evidence_or_current_reference_implementation",
+      "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
+      "source": "WP-IPC-CONFORMANCE-FIX-14 explicit execution authorization; no restricted customer materials",
+      "storage_scope": "public_repository",
+      "sha256": "b09c2df7fcb38e8ed20a703999a4df5adc492e6c444a3a45ae7d879d23b525ca",
+      "size_bytes": 477,
+      "git_blob": "5ed0333d83c672b779fd3c2148fd44f15fa537e7"
+    },
+    {
+      "path": "docs/runtime/evidence/conformance-fix-14/probes/adapted-health/packages.lock.json",
       "version": "FIX-14",
       "status": "new_evidence_or_current_reference_implementation",
       "purpose": "Authorized conformance repair, synthetic verification, original-byte custody or current navigation",
@@ -9261,50 +9613,6 @@
       "git_blob": "b717eec3b2c86d762f84dab449ce3f0c83957349"
     },
     {
-      "path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey/fixture.log",
-      "version": "operation-closure-15",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized operation15 generic implementation, synthetic verification, exact historical custody or current evidence",
-      "source": "WP-IPC-OPERATION-CLOSURE-15 explicit user request; no restricted customer assets or production data",
-      "storage_scope": "public_repository",
-      "sha256": "a82a63f8ac7f4c1f394777ebcce5fbd17436a23bff208dd7c2fc2fa29187b4bf",
-      "size_bytes": 404,
-      "git_blob": "ff2dec87847eede45d129ae76a44d0c6fc631561"
-    },
-    {
-      "path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey/reference.barcode-1.0.1-install.log",
-      "version": "operation-closure-15",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized operation15 generic implementation, synthetic verification, exact historical custody or current evidence",
-      "source": "WP-IPC-OPERATION-CLOSURE-15 explicit user request; no restricted customer assets or production data",
-      "storage_scope": "public_repository",
-      "sha256": "c377c5c5a4d3724fa0ce4d117710f3b4e8142f9a2e36badfc6e57b13d197b229",
-      "size_bytes": 385,
-      "git_blob": "5a685d5b7d5989265c540f61b664d542c2aede07"
-    },
-    {
-      "path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey/result.json",
-      "version": "operation-closure-15",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized operation15 generic implementation, synthetic verification, exact historical custody or current evidence",
-      "source": "WP-IPC-OPERATION-CLOSURE-15 explicit user request; no restricted customer assets or production data",
-      "storage_scope": "public_repository",
-      "sha256": "799872596fe82a3246b4bdfa4bb42c9f80e2c33347f70f7a68117d756ae11de3",
-      "size_bytes": 4160,
-      "git_blob": "7bff2c1b4257e12b56d680ce54d8552a000d7e36"
-    },
-    {
-      "path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey/trust.Simulation.json",
-      "version": "operation-closure-15",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized operation15 generic implementation, synthetic verification, exact historical custody or current evidence",
-      "source": "WP-IPC-OPERATION-CLOSURE-15 explicit user request; no restricted customer assets or production data",
-      "storage_scope": "public_repository",
-      "sha256": "42964f268105bcef9ec1ced482fe52d9b60e6f9a278e0854cc4a939bdaf73a5f",
-      "size_bytes": 1503,
-      "git_blob": "78b972580f8a6bfe2cceb22c810c3c9d5110d021"
-    },
-    {
       "path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey-v2/fixture.log",
       "version": "operation-closure-15",
       "status": "current_implementation_or_boundary_record",
@@ -9514,6 +9822,50 @@
       "git_blob": "11bd49c6105ca1e07523229322e4cc93a6e85e79"
     },
     {
+      "path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey/fixture.log",
+      "version": "operation-closure-15",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized operation15 generic implementation, synthetic verification, exact historical custody or current evidence",
+      "source": "WP-IPC-OPERATION-CLOSURE-15 explicit user request; no restricted customer assets or production data",
+      "storage_scope": "public_repository",
+      "sha256": "a82a63f8ac7f4c1f394777ebcce5fbd17436a23bff208dd7c2fc2fa29187b4bf",
+      "size_bytes": 404,
+      "git_blob": "ff2dec87847eede45d129ae76a44d0c6fc631561"
+    },
+    {
+      "path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey/reference.barcode-1.0.1-install.log",
+      "version": "operation-closure-15",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized operation15 generic implementation, synthetic verification, exact historical custody or current evidence",
+      "source": "WP-IPC-OPERATION-CLOSURE-15 explicit user request; no restricted customer assets or production data",
+      "storage_scope": "public_repository",
+      "sha256": "c377c5c5a4d3724fa0ce4d117710f3b4e8142f9a2e36badfc6e57b13d197b229",
+      "size_bytes": 385,
+      "git_blob": "5a685d5b7d5989265c540f61b664d542c2aede07"
+    },
+    {
+      "path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey/result.json",
+      "version": "operation-closure-15",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized operation15 generic implementation, synthetic verification, exact historical custody or current evidence",
+      "source": "WP-IPC-OPERATION-CLOSURE-15 explicit user request; no restricted customer assets or production data",
+      "storage_scope": "public_repository",
+      "sha256": "799872596fe82a3246b4bdfa4bb42c9f80e2c33347f70f7a68117d756ae11de3",
+      "size_bytes": 4160,
+      "git_blob": "7bff2c1b4257e12b56d680ce54d8552a000d7e36"
+    },
+    {
+      "path": "docs/runtime/evidence/operation-closure-15/upgrade/upgrade-journey/trust.Simulation.json",
+      "version": "operation-closure-15",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized operation15 generic implementation, synthetic verification, exact historical custody or current evidence",
+      "source": "WP-IPC-OPERATION-CLOSURE-15 explicit user request; no restricted customer assets or production data",
+      "storage_scope": "public_repository",
+      "sha256": "42964f268105bcef9ec1ced482fe52d9b60e6f9a278e0854cc4a939bdaf73a5f",
+      "size_bytes": 1503,
+      "git_blob": "78b972580f8a6bfe2cceb22c810c3c9d5110d021"
+    },
+    {
       "path": "docs/runtime/evidence/operation-closure-15/withdrawn-candidate.json",
       "version": "operation-closure-15",
       "status": "current_implementation_or_boundary_record",
@@ -9545,6 +9897,61 @@
       "sha256": "68e107ea0c3a8a31a7dd4ae58f3c23fd457e2da54e47fb4df36d06d3368195ac",
       "size_bytes": 466,
       "git_blob": "d5aac509996e9e3c04aa860f44c8300445d34d29"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/README.md",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "5642c7cb706b927ec36930448825bee15f3e537bb5448cec90e2cb8333b5ad3d",
+      "size_bytes": 829,
+      "git_blob": "3f7ed26213d3bfa4c47afcae3bc78d3865470d85"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/pr20-build.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "a3fee661ed6518325a4bc37e7c58b748a7f0855a8dc6987b1a121dbc4c8a8178",
+      "size_bytes": 2233,
+      "git_blob": "cecff68daeb88f1c4b2a4c5a4765bcfad88718f2"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/pr20-fixture-cleanup-failure.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "49df9996cd6c9e82ab4c1acf3081213db24167297f01510d58a12a394245f660",
+      "size_bytes": 5489,
+      "git_blob": "e7b82f308ecf29fd54137d8f9d1485f566db49f8"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/pr20-green.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "73c11a3c475b1c1584efba979a54aa6c5980fa9548072815b1c1642ce77ee6a6",
+      "size_bytes": 4838,
+      "git_blob": "f7b251124a28f74b09a1f58b06ca228bdde32b4c"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/pr20-red.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "501d0222ccb5bbde70cc6b27044a360e95d0d41fa0e73c7d114c1e224c4d76ca",
+      "size_bytes": 4943,
+      "git_blob": "6def5fba9de7bf00ef635d1fddd2aff18ee69d7b"
     },
     {
       "path": "docs/runtime/evidence/project-conformance-audit-01/README.md",
@@ -10185,6 +10592,17 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/runtime/evidence/project-conformance-audit-01/publication-provenance.json",
+      "sha256": "b3ac95b1b82d9227292e02ab6e55b69e7a384582d2a813710a0a658c6de2838c",
+      "size_bytes": 228989,
+      "git_blob": "f7e155edb3502536eac32fb7b6bb9165fdb996c5",
+      "version": "project-conformance-audit-01",
+      "status": "independent_audit_or_synthetic_evidence",
+      "purpose": "User-authorized publication of fixed-SHA independent audit and next repair work package; no business source changes",
+      "source": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01 / 2026-10-17 publication request",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/runtime/evidence/project-conformance-audit-01/publication/checks.json",
       "sha256": "85a66b5c0156e8388b23dc01e7e0b888e29d019c2393199c0370afb22f926062",
       "size_bytes": 1532,
@@ -10222,17 +10640,6 @@
       "sha256": "bb5e4e9f308bdff44cfb07fc124859c0e998e615886048f224d5a6ffef827218",
       "size_bytes": 56823,
       "git_blob": "be008480fa5d3b045f0d90c28cb8113e8c89564b",
-      "version": "project-conformance-audit-01",
-      "status": "independent_audit_or_synthetic_evidence",
-      "purpose": "User-authorized publication of fixed-SHA independent audit and next repair work package; no business source changes",
-      "source": "WP-IPC-PROJECT-CONFORMANCE-AUDIT-01 / 2026-10-17 publication request",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "docs/runtime/evidence/project-conformance-audit-01/publication-provenance.json",
-      "sha256": "b3ac95b1b82d9227292e02ab6e55b69e7a384582d2a813710a0a658c6de2838c",
-      "size_bytes": 228989,
-      "git_blob": "f7e155edb3502536eac32fb7b6bb9165fdb996c5",
       "version": "project-conformance-audit-01",
       "status": "independent_audit_or_synthetic_evidence",
       "purpose": "User-authorized publication of fixed-SHA independent audit and next repair work package; no business source changes",
@@ -11388,6 +11795,17 @@
       "git_blob": "efbffa7ea89a5fc26232e1f7be95f7385fd7aa90"
     },
     {
+      "path": "docs/runtime/evidence/ui-maintainability-16/external-declaration/journey-a.log",
+      "version": "UI-MAINTAINABILITY-16",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic code, synthetic evidence, current operations or original-byte custody",
+      "source": "WP-IPC-UI-MAINTAINABILITY-16 user authorization; historical source metadata retained where unchanged",
+      "storage_scope": "public_repository",
+      "sha256": "2b429be89b2da319107b48752cd9d8ab4d0eb54b7116616b7faf5755f5dd1020",
+      "size_bytes": 585,
+      "git_blob": "a4fcf4a0c469222993c2aea957815e0a5b736a7e"
+    },
+    {
       "path": "docs/runtime/evidence/ui-maintainability-16/external-declaration/journey-a/activated-client.log",
       "version": "UI-MAINTAINABILITY-16",
       "status": "current_implementation_or_boundary_record",
@@ -11443,15 +11861,15 @@
       "git_blob": "fb8c30be45b9fc376dd1a8fb70908971324856ed"
     },
     {
-      "path": "docs/runtime/evidence/ui-maintainability-16/external-declaration/journey-a.log",
+      "path": "docs/runtime/evidence/ui-maintainability-16/external-declaration/journey-b.log",
       "version": "UI-MAINTAINABILITY-16",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic code, synthetic evidence, current operations or original-byte custody",
       "source": "WP-IPC-UI-MAINTAINABILITY-16 user authorization; historical source metadata retained where unchanged",
       "storage_scope": "public_repository",
-      "sha256": "2b429be89b2da319107b48752cd9d8ab4d0eb54b7116616b7faf5755f5dd1020",
-      "size_bytes": 585,
-      "git_blob": "a4fcf4a0c469222993c2aea957815e0a5b736a7e"
+      "sha256": "8dd543f6430f8a228ddd3dd09066a3b2d68c98c0ce9aeb2f578079a4ef39d169",
+      "size_bytes": 60,
+      "git_blob": "f190bb35fa75e68a1f17a48ec3827457d9d53275"
     },
     {
       "path": "docs/runtime/evidence/ui-maintainability-16/external-declaration/journey-b/activated-client.log",
@@ -11518,17 +11936,6 @@
       "sha256": "adbcb1b377dfd53b1d3ce300e45a47c67e251c649a976a5b4781b4f074675f14",
       "size_bytes": 7445,
       "git_blob": "0863747a5e976bddd3b51b87693615d3a919beba"
-    },
-    {
-      "path": "docs/runtime/evidence/ui-maintainability-16/external-declaration/journey-b.log",
-      "version": "UI-MAINTAINABILITY-16",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic code, synthetic evidence, current operations or original-byte custody",
-      "source": "WP-IPC-UI-MAINTAINABILITY-16 user authorization; historical source metadata retained where unchanged",
-      "storage_scope": "public_repository",
-      "sha256": "8dd543f6430f8a228ddd3dd09066a3b2d68c98c0ce9aeb2f578079a4ef39d169",
-      "size_bytes": 60,
-      "git_blob": "f190bb35fa75e68a1f17a48ec3827457d9d53275"
     },
     {
       "path": "docs/runtime/evidence/ui-maintainability-16/external-declaration/reproducibility.json",
@@ -12461,6 +12868,17 @@
       "prior_closure13_git_blob": "3f36a26f2e70cd3c4a91c4efb498c0954919bbd3"
     },
     {
+      "path": "docs/runtime/pr20-21-integration.md",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "87e780669710692954f23ef8a88b59e0b5756585e615528f13b1230f800c43b6",
+      "size_bytes": 2826,
+      "git_blob": "f4c8f166a3a9df348a120c88ae82789d3160e64c"
+    },
+    {
       "path": "docs/runtime/publication.md",
       "version": "runtime-publication-1.0",
       "status": "current_navigation_or_verification",
@@ -12596,6 +13014,17 @@
       "git_blob": "d084147b0b04e0f53608c4791913ee456cccc97c"
     },
     {
+      "path": "docs/runtime/validation-scenarios-09.md",
+      "sha256": "2959c8c46c59370fda09f18f1bf981c56261415d7f3b44ecee57aac56cc88b8c",
+      "size_bytes": 9571,
+      "git_blob": "379943809dd4fd797f1735c53d075557e890d564",
+      "version": "REVIEW-FOLLOWUP-11",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
+      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/runtime/validation/application-convergence-17-windows.md",
       "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
@@ -12672,17 +13101,6 @@
       "sha256": "0337b146c2c5ef5171b7626ffc0767712eb1e9a6a1980af56552b62f894acf39",
       "size_bytes": 2520,
       "git_blob": "6c8110ef373c8fa9f9c5cee05832f6633afffd08"
-    },
-    {
-      "path": "docs/runtime/validation-scenarios-09.md",
-      "sha256": "2959c8c46c59370fda09f18f1bf981c56261415d7f3b44ecee57aac56cc88b8c",
-      "size_bytes": 9571,
-      "git_blob": "379943809dd4fd797f1735c53d075557e890d564",
-      "version": "REVIEW-FOLLOWUP-11",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
-      "source": "WP-IPC-REVIEW-FOLLOWUP-11 explicit user authorization; no restricted customer materials",
-      "storage_scope": "public_repository"
     },
     {
       "path": "docs/runtime/windows-06.md",
@@ -13703,6 +14121,17 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "e4c464ce1dc1ee3fabe50787b8f1b2e9c1839bd733938a3bb4713a2566f6935b",
+      "size_bytes": 3235,
+      "git_blob": "df5f4b945d2310e5cd8970854df47193ddb340c6"
+    },
+    {
       "path": "docs/work-packages/WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20.md",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
@@ -14703,64 +15132,6 @@
       "git_blob": "0739278a2f642e32d4b45f1939fa1db8778a76be"
     },
     {
-      "path": "src/Ipc.Application.DirectPlc/Application.cs",
-      "version": "application-capability-19",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "44c08ad0b4681720dcedb27fd5474aa92d98a567a6406199acb396de42c32d68",
-      "size_bytes": 1755,
-      "git_blob": "e883e583b32aad94f9b61e12314504f42835a237",
-      "previous_git_blob": "f85a921c4adce1c78120b93893139313bd7a52f0"
-    },
-    {
-      "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "3c760e7e7caca937ef1907e56029902f18657c2928038d98f76a8d6fc5c742a5",
-      "size_bytes": 160,
-      "git_blob": "417f3a563f7340473749bc81335a7995aac06ac9"
-    },
-    {
-      "path": "src/Ipc.Application.DirectPlc/packages.direct-plc.lock.json",
-      "version": "application-capability-19",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "2abfe7a4f47d75c6f67a809477d4eaee5631ac1a269ade04205c4664d420ac41",
-      "size_bytes": 16386,
-      "git_blob": "bd927abff40fcacec7a465745556a90225c25223",
-      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
-    },
-    {
-      "path": "src/Ipc.Application.DirectPlc/packages.direct-plc.win-x64.lock.json",
-      "version": "application-capability-19",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "03e5da34d679496d27b239f419d76e5f5415d7ffdda8af94c259a5e7995a5a3a",
-      "size_bytes": 16861,
-      "git_blob": "72df4adbf5348175c7c3961c7e5f0d54d63a9f2e",
-      "previous_git_blob": "d5238067778bb83556bed1e7c0bbce0a768b9a8a"
-    },
-    {
-      "path": "src/Ipc.Application.DirectPlc/packages.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "8ac24e3477f4108510e73cd9f8d827031a92a238ec2176cb920340ff4e32a088",
-      "size_bytes": 16386,
-      "git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
-    },
-    {
       "path": "src/Ipc.Application.DirectPlc.Desktop/Ipc.Application.DirectPlc.Desktop.csproj",
       "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
@@ -14842,6 +15213,64 @@
       "git_blob": "9b51a3fed16d85aae58b00a98640f1dd4d0005fa"
     },
     {
+      "path": "src/Ipc.Application.DirectPlc/Application.cs",
+      "version": "application-capability-19",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "44c08ad0b4681720dcedb27fd5474aa92d98a567a6406199acb396de42c32d68",
+      "size_bytes": 1755,
+      "git_blob": "e883e583b32aad94f9b61e12314504f42835a237",
+      "previous_git_blob": "f85a921c4adce1c78120b93893139313bd7a52f0"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "3c760e7e7caca937ef1907e56029902f18657c2928038d98f76a8d6fc5c742a5",
+      "size_bytes": 160,
+      "git_blob": "417f3a563f7340473749bc81335a7995aac06ac9"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc/packages.direct-plc.lock.json",
+      "version": "application-capability-19",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "2abfe7a4f47d75c6f67a809477d4eaee5631ac1a269ade04205c4664d420ac41",
+      "size_bytes": 16386,
+      "git_blob": "bd927abff40fcacec7a465745556a90225c25223",
+      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc/packages.direct-plc.win-x64.lock.json",
+      "version": "application-capability-19",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "03e5da34d679496d27b239f419d76e5f5415d7ffdda8af94c259a5e7995a5a3a",
+      "size_bytes": 16861,
+      "git_blob": "72df4adbf5348175c7c3961c7e5f0d54d63a9f2e",
+      "previous_git_blob": "d5238067778bb83556bed1e7c0bbce0a768b9a8a"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc/packages.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "8ac24e3477f4108510e73cd9f8d827031a92a238ec2176cb920340ff4e32a088",
+      "size_bytes": 16386,
+      "git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+    },
+    {
       "path": "src/Ipc.Application.Inspection/InspectionRuntime.cs",
       "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
@@ -14884,224 +15313,6 @@
       "sha256": "c62def2778ecb2d8133c24e08472cfd90474be5ac528fbc4c78c79b8b588dda3",
       "size_bytes": 13984,
       "git_blob": "84ed5166ec262a3e36eb0c10ed60935b7bbc3eec"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/AssemblyInfo.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "08e1fa91be49598578b4a43abdf71de4fc258b9915bea3acb2b96f37f7d71796",
-      "size_bytes": 102,
-      "git_blob": "986449b42c45a1be5d2f501dbbf11a9e0b498a90"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/FlowDefinition.cs",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
-      "storage_scope": "public_repository",
-      "sha256": "c7ad59d1e373abc4e4508abbe48a213cd451610866a0a85a9279ef58f776cbb9",
-      "size_bytes": 7025,
-      "git_blob": "155ff8de75960c68b5a32de7231f72c7d4468189",
-      "previous_git_blob": "4dbcefd41083111f48a69e835ad397b3860f7dbb"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/FlowResults.cs",
-      "version": "application-capability-19",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized generic implementation, reference evidence or preserved pre-19 source bytes",
-      "source": "WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19 explicit user authorization; no customer raw source or private credentials",
-      "storage_scope": "public_repository",
-      "sha256": "c61d7b5c175ddaef8a2f889783d663e6ca3e10cb2a26f17aa10265eb366b5f99",
-      "size_bytes": 567,
-      "git_blob": "dd324e5bd1b236c8b671eec13ff2dc259153e232"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "4ba425c965e2f623457c4960938563452f2dfcba47419dfa238828f6270fa868",
-      "size_bytes": 239,
-      "git_blob": "a1c292a4cf07f8aa035b44be729909fa35fdab24"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
-      "storage_scope": "public_repository",
-      "sha256": "a6ae68e94b96f519697c82c298aaff7bc1ab8efeb3d7d8d423fc211ecd98a420",
-      "size_bytes": 15466,
-      "git_blob": "e349b17beea841077c3fe76313be8623c3888503",
-      "previous_git_blob": "f5999e17dc64db282aa9aa99741203407317f0d7"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
-      "storage_scope": "public_repository",
-      "sha256": "46b0063dd202fa9ce5e922ba2891e99cffc2885eb6b1405c42a39bc1e1009761",
-      "size_bytes": 5928,
-      "git_blob": "fb7a46d592adc9a8780e141c0ff5073b51b0e910",
-      "previous_git_blob": "cec33200d82be5247470f5e79fb8e7498571efa8"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/ParcelImages.cs",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
-      "storage_scope": "public_repository",
-      "sha256": "5ebe0e6f38c6f84ccfa66e2f01554a4e9a789e764b1fda31128cbd74177b9b34",
-      "size_bytes": 10294,
-      "git_blob": "cb7a4f491248cb8ebba083fa049b7eb8cb7468f7",
-      "previous_git_blob": "75d397632f4dd9966eedae2fbb40bfbdf0bed02b"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/ParcelOperators.cs",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
-      "storage_scope": "public_repository",
-      "sha256": "42b855d8785f6e475de3b1a7da60497b8ad927ad5bcee75f95ec821259a679a7",
-      "size_bytes": 6277,
-      "git_blob": "c5c7d853f6a42ecbaeb87f69f76ad2d3d1f0deeb",
-      "previous_git_blob": "65ae8080871ea0d17c85a7281957d8c604c7cb70"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/ParcelRecovery.cs",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
-      "storage_scope": "public_repository",
-      "sha256": "39717d9bb7ed0237df557e50e80291a6fa73d6dda2ae80d02050eff36c0f9118",
-      "size_bytes": 2982,
-      "git_blob": "c6238dee82b1341462985d3f510e3f827a8a33b4",
-      "previous_git_blob": "905aea1054561d9f18b36abc3030b37fa1491c89"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
-      "storage_scope": "public_repository",
-      "sha256": "d7498ae4117b27072fe2be9a338be5fa0e6528bb8bc00296086b71e500d9229d",
-      "size_bytes": 13024,
-      "git_blob": "bef56fc37fd100d1afe27c206e5dc18376b782f2",
-      "previous_git_blob": "b2110e8e9a4e62271cfe577ce4da1d19e49c2aaa"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
-      "storage_scope": "public_repository",
-      "sha256": "14d5cad42ffac6c59b921dfc88c67fea2bd23a461182acf0abfcd2bef391f465",
-      "size_bytes": 17180,
-      "git_blob": "c2d46182188adc5e0ce2f6656c9fc4c01de2584c",
-      "previous_git_blob": "eb07c177c7f05e363ff0c7321bf0d27901577573"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
-      "storage_scope": "public_repository",
-      "sha256": "b5224780e898886aea30e4882395c5555c978b84790bdbaca0d9d66521fc0621",
-      "size_bytes": 13235,
-      "git_blob": "90f88092b7007e68d6c818fb6b843bec9cbdc2a5",
-      "previous_git_blob": "787d6f84c7af2ede8979e50ba2203bb63912ef4b"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/packages.direct-plc.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "1d9dc2314f0dfd8745339a74c1983732b486e75b45c466eebd1bf4e39baefe58",
-      "size_bytes": 16178,
-      "git_blob": "5e6503b9d086b78643c86f54348547e489122f16"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/packages.direct-plc.win-x64.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "1b75097891b2b0a1e44d6734a76555eff86cf993ca67bad2d660e3fb4b0858c2",
-      "size_bytes": 16653,
-      "git_blob": "278a0c4e019b0251236fcc7b4ccb1394c32c7690"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/packages.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "1d9dc2314f0dfd8745339a74c1983732b486e75b45c466eebd1bf4e39baefe58",
-      "size_bytes": 16178,
-      "git_blob": "5e6503b9d086b78643c86f54348547e489122f16"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/packages.sportmaster.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "1d9dc2314f0dfd8745339a74c1983732b486e75b45c466eebd1bf4e39baefe58",
-      "size_bytes": 16178,
-      "git_blob": "5e6503b9d086b78643c86f54348547e489122f16"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/packages.sportmaster.win-x64.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "1b75097891b2b0a1e44d6734a76555eff86cf993ca67bad2d660e3fb4b0858c2",
-      "size_bytes": 16653,
-      "git_blob": "278a0c4e019b0251236fcc7b4ccb1394c32c7690"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/packages.wcs-to-plc.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "1d9dc2314f0dfd8745339a74c1983732b486e75b45c466eebd1bf4e39baefe58",
-      "size_bytes": 16178,
-      "git_blob": "5e6503b9d086b78643c86f54348547e489122f16"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/packages.wcs-to-plc.win-x64.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "1b75097891b2b0a1e44d6734a76555eff86cf993ca67bad2d660e3fb4b0858c2",
-      "size_bytes": 16653,
-      "git_blob": "278a0c4e019b0251236fcc7b4ccb1394c32c7690"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs",
@@ -15286,62 +15497,244 @@
       "git_blob": "903521c26cc20fcaab919764bd7a6e9e49022944"
     },
     {
-      "path": "src/Ipc.Application.Sportmaster/Application.cs",
-      "version": "application-capability-19",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "36c1b4842e8244e84b10ec1cc173fb7e4b551ba6c3ca43bd832d4596bd4e89f9",
-      "size_bytes": 1854,
-      "git_blob": "fdf806b46d81340839772aa1e0d5e014233260b5",
-      "previous_git_blob": "4501eb8fef9a0d084a984e1a40e41e0a62f168f4"
-    },
-    {
-      "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
+      "path": "src/Ipc.Application.ParcelFlow/AssemblyInfo.cs",
       "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "3c760e7e7caca937ef1907e56029902f18657c2928038d98f76a8d6fc5c742a5",
-      "size_bytes": 160,
-      "git_blob": "417f3a563f7340473749bc81335a7995aac06ac9"
+      "sha256": "08e1fa91be49598578b4a43abdf71de4fc258b9915bea3acb2b96f37f7d71796",
+      "size_bytes": 102,
+      "git_blob": "986449b42c45a1be5d2f501dbbf11a9e0b498a90"
     },
     {
-      "path": "src/Ipc.Application.Sportmaster/packages.lock.json",
+      "path": "src/Ipc.Application.ParcelFlow/FlowDefinition.cs",
+      "version": "capability-reliability-20",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
+      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c7ad59d1e373abc4e4508abbe48a213cd451610866a0a85a9279ef58f776cbb9",
+      "size_bytes": 7025,
+      "git_blob": "155ff8de75960c68b5a32de7231f72c7d4468189",
+      "previous_git_blob": "4dbcefd41083111f48a69e835ad397b3860f7dbb"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/FlowResults.cs",
+      "version": "application-capability-19",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic implementation, reference evidence or preserved pre-19 source bytes",
+      "source": "WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19 explicit user authorization; no customer raw source or private credentials",
+      "storage_scope": "public_repository",
+      "sha256": "c61d7b5c175ddaef8a2f889783d663e6ca3e10cb2a26f17aa10265eb366b5f99",
+      "size_bytes": 567,
+      "git_blob": "dd324e5bd1b236c8b671eec13ff2dc259153e232"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj",
       "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "8ac24e3477f4108510e73cd9f8d827031a92a238ec2176cb920340ff4e32a088",
-      "size_bytes": 16386,
-      "git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+      "sha256": "4ba425c965e2f623457c4960938563452f2dfcba47419dfa238828f6270fa868",
+      "size_bytes": 239,
+      "git_blob": "a1c292a4cf07f8aa035b44be729909fa35fdab24"
     },
     {
-      "path": "src/Ipc.Application.Sportmaster/packages.sportmaster.lock.json",
-      "version": "application-capability-19",
+      "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
+      "version": "capability-reliability-20",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
+      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "1386e2ad968147473d302fd8cffce19d2c4373388e68f6185ee33b3d500ff2be",
+      "size_bytes": 16092,
+      "git_blob": "75d48bccc2b6af8496870871de67d28634dfa2b5",
+      "previous_git_blob": "f5999e17dc64db282aa9aa99741203407317f0d7"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
+      "version": "capability-reliability-20",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
+      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7621d76782d0462ebbfee126fd1d2e76f237f304365e1c0458c4ffce0226a302",
+      "size_bytes": 5490,
+      "git_blob": "c8796538e6db4a2394a37f014d475cd126ce2c2e",
+      "previous_git_blob": "cec33200d82be5247470f5e79fb8e7498571efa8"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelHealth.cs",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "5c7339af99c160a05071bc6f7e33180bd8555ae681f1134d10fbe93abb68cde7",
+      "size_bytes": 1576,
+      "git_blob": "f9a5f9f882d6f56890e1b9e0072a843ed864631e"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelImages.cs",
+      "version": "capability-reliability-20",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
+      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "5ebe0e6f38c6f84ccfa66e2f01554a4e9a789e764b1fda31128cbd74177b9b34",
+      "size_bytes": 10294,
+      "git_blob": "cb7a4f491248cb8ebba083fa049b7eb8cb7468f7",
+      "previous_git_blob": "75d397632f4dd9966eedae2fbb40bfbdf0bed02b"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelOperators.cs",
+      "version": "capability-reliability-20",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
+      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "42b855d8785f6e475de3b1a7da60497b8ad927ad5bcee75f95ec821259a679a7",
+      "size_bytes": 6277,
+      "git_blob": "c5c7d853f6a42ecbaeb87f69f76ad2d3d1f0deeb",
+      "previous_git_blob": "65ae8080871ea0d17c85a7281957d8c604c7cb70"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRecovery.cs",
+      "version": "capability-reliability-20",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
+      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "bff097505d4d1e638fb9b75ca385c1943d342ec66bed6560de51098f4f62b0b6",
+      "size_bytes": 4193,
+      "git_blob": "8d3e45447b5f20b7e1896033a6acf0bd53c490d7",
+      "previous_git_blob": "905aea1054561d9f18b36abc3030b37fa1491c89"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
+      "version": "capability-reliability-20",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
+      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d7498ae4117b27072fe2be9a338be5fa0e6528bb8bc00296086b71e500d9229d",
+      "size_bytes": 13024,
+      "git_blob": "bef56fc37fd100d1afe27c206e5dc18376b782f2",
+      "previous_git_blob": "b2110e8e9a4e62271cfe577ce4da1d19e49c2aaa"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+      "version": "capability-reliability-20",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
+      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "692f80632e020c95ebd0bf668c619fd69be3a1a32662bee950bec25866bbb291",
+      "size_bytes": 17186,
+      "git_blob": "59cba674919b19e99f20ec04fa04b0e47dde107c",
+      "previous_git_blob": "eb07c177c7f05e363ff0c7321bf0d27901577573"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
+      "version": "capability-reliability-20",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
+      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "258382aca588cf36d0911beb56a360fcf04ccde3c357f37a36968afa382044bb",
+      "size_bytes": 13336,
+      "git_blob": "32ccba3baba818ffee40d8245206681479705ac5",
+      "previous_git_blob": "787d6f84c7af2ede8979e50ba2203bb63912ef4b"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/RecoveryFiles.cs",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "6fda6254c8c74a763d021cc2ea5e8410cf3a344444a0603bcc70dca1984a7f72",
+      "size_bytes": 6069,
+      "git_blob": "f6d69f6f5703b70622beff721539a31186d350a1"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.direct-plc.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "2abfe7a4f47d75c6f67a809477d4eaee5631ac1a269ade04205c4664d420ac41",
-      "size_bytes": 16386,
-      "git_blob": "bd927abff40fcacec7a465745556a90225c25223",
-      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+      "sha256": "1d9dc2314f0dfd8745339a74c1983732b486e75b45c466eebd1bf4e39baefe58",
+      "size_bytes": 16178,
+      "git_blob": "5e6503b9d086b78643c86f54348547e489122f16"
     },
     {
-      "path": "src/Ipc.Application.Sportmaster/packages.sportmaster.win-x64.lock.json",
-      "version": "application-capability-19",
+      "path": "src/Ipc.Application.ParcelFlow/packages.direct-plc.win-x64.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "03e5da34d679496d27b239f419d76e5f5415d7ffdda8af94c259a5e7995a5a3a",
-      "size_bytes": 16861,
-      "git_blob": "72df4adbf5348175c7c3961c7e5f0d54d63a9f2e",
-      "previous_git_blob": "d5238067778bb83556bed1e7c0bbce0a768b9a8a"
+      "sha256": "1b75097891b2b0a1e44d6734a76555eff86cf993ca67bad2d660e3fb4b0858c2",
+      "size_bytes": 16653,
+      "git_blob": "278a0c4e019b0251236fcc7b4ccb1394c32c7690"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "1d9dc2314f0dfd8745339a74c1983732b486e75b45c466eebd1bf4e39baefe58",
+      "size_bytes": 16178,
+      "git_blob": "5e6503b9d086b78643c86f54348547e489122f16"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.sportmaster.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "1d9dc2314f0dfd8745339a74c1983732b486e75b45c466eebd1bf4e39baefe58",
+      "size_bytes": 16178,
+      "git_blob": "5e6503b9d086b78643c86f54348547e489122f16"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.sportmaster.win-x64.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "1b75097891b2b0a1e44d6734a76555eff86cf993ca67bad2d660e3fb4b0858c2",
+      "size_bytes": 16653,
+      "git_blob": "278a0c4e019b0251236fcc7b4ccb1394c32c7690"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.wcs-to-plc.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "1d9dc2314f0dfd8745339a74c1983732b486e75b45c466eebd1bf4e39baefe58",
+      "size_bytes": 16178,
+      "git_blob": "5e6503b9d086b78643c86f54348547e489122f16"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/packages.wcs-to-plc.win-x64.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "1b75097891b2b0a1e44d6734a76555eff86cf993ca67bad2d660e3fb4b0858c2",
+      "size_bytes": 16653,
+      "git_blob": "278a0c4e019b0251236fcc7b4ccb1394c32c7690"
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj",
@@ -15425,180 +15818,62 @@
       "previous_git_blob": "d1af7683805b2bdd5e3d7b1db46e02bcd396bafa"
     },
     {
-      "path": "src/Ipc.Application.Supply/ContractForwarders.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
+      "path": "src/Ipc.Application.Sportmaster/Application.cs",
+      "version": "application-capability-19",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "5c295e64f710aee45aeaa19ed3742a3ea5692104db9c088724f5aa6df0deec6f",
-      "size_bytes": 2749,
-      "git_blob": "1d5b01292fac6a3c80e5917949615111d2ed9db2"
+      "sha256": "36c1b4842e8244e84b10ec1cc173fb7e4b551ba6c3ca43bd832d4596bd4e89f9",
+      "size_bytes": 1854,
+      "git_blob": "fdf806b46d81340839772aa1e0d5e014233260b5",
+      "previous_git_blob": "4501eb8fef9a0d084a984e1a40e41e0a62f168f4"
     },
     {
-      "path": "src/Ipc.Application.Supply/ExtensionMaintenance.cs",
+      "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
       "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "bca167a54a56c5c9a73b1a937985110225e84109ae748dcacd1b6e7e6a59b8f4",
-      "size_bytes": 3903,
-      "git_blob": "32ddb588980c19d8c5d336b227362774b7495ed0"
+      "sha256": "3c760e7e7caca937ef1907e56029902f18657c2928038d98f76a8d6fc5c742a5",
+      "size_bytes": 160,
+      "git_blob": "417f3a563f7340473749bc81335a7995aac06ac9"
     },
     {
-      "path": "src/Ipc.Application.Supply/HistoryQueries.cs",
+      "path": "src/Ipc.Application.Sportmaster/packages.lock.json",
       "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "769a3391b2940c6867202ccddaf2a4a9592d9b72cf5cd8c5163a75350af89fc3",
-      "size_bytes": 9991,
-      "git_blob": "8c77fbc2352830c5dc0edd7d21f1302b084cbb1b"
+      "sha256": "8ac24e3477f4108510e73cd9f8d827031a92a238ec2176cb920340ff4e32a088",
+      "size_bytes": 16386,
+      "git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
     },
     {
-      "path": "src/Ipc.Application.Supply/IntegrationHealth.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
+      "path": "src/Ipc.Application.Sportmaster/packages.sportmaster.lock.json",
+      "version": "application-capability-19",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "ca1415d99209eeeeef060bfd3a9c7ee5227827ce6ed1abe5f0919f5b97220e9e",
-      "size_bytes": 3545,
-      "git_blob": "ffa57d07a303576c064b5aaf9c2b92cf7b16f94d"
+      "sha256": "2abfe7a4f47d75c6f67a809477d4eaee5631ac1a269ade04205c4664d420ac41",
+      "size_bytes": 16386,
+      "git_blob": "bd927abff40fcacec7a465745556a90225c25223",
+      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
     },
     {
-      "path": "src/Ipc.Application.Supply/Ipc.Application.Supply.csproj",
-      "version": "APPLICATION-CONVERGENCE-17",
+      "path": "src/Ipc.Application.Sportmaster/packages.sportmaster.win-x64.lock.json",
+      "version": "application-capability-19",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "2796e7df2b0b32709e3a6b67b4eed7d0d96836be2a94f553dee5bf96f78ffc05",
-      "size_bytes": 323,
-      "git_blob": "a318263f2ab4a9d0acf7742b6db18a48dc979c00"
-    },
-    {
-      "path": "src/Ipc.Application.Supply/Maintenance.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "4b60499569da5991e2c6b987f6c308362e8727e5a78e1bfe6ee7357f6344052a",
-      "size_bytes": 18427,
-      "git_blob": "3eb9f0237ff955fe1444fa8272dbe997d6b535c7"
-    },
-    {
-      "path": "src/Ipc.Application.Supply/Model.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "d430cd1312140b19f284a575bb5dc6a000edf9245b8da3e52e2b9bc0ec4e2721",
-      "size_bytes": 546,
-      "git_blob": "a12ad72e08b32eac57df0e6403fbf759c1e67313"
-    },
-    {
-      "path": "src/Ipc.Application.Supply/PresentationProtection.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "9d4d9f215253eb2acbff1eba8b5e203abc9cca291ed41c3812d29771b591ba44",
-      "size_bytes": 1624,
-      "git_blob": "a8475b23f126bd384f0a16e941cac457159e362d"
-    },
-    {
-      "path": "src/Ipc.Application.Supply/ResponsePersistence.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "748ff09ffad8d49a5ce6eb8276e21c08c438465fe2ccc58215b5ada51f1d6c0a",
-      "size_bytes": 10975,
-      "git_blob": "ea0c8b9234a87af570d49952306a886353f3a1e9"
-    },
-    {
-      "path": "src/Ipc.Application.Supply/StationApplication.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "351acf4ed294fafec3c001e502d09a0b58fc3ec10fc6f3eafda79661a6a49581",
-      "size_bytes": 66381,
-      "git_blob": "bfdf4340190db37e649730b156a3574bea5e28f1"
-    },
-    {
-      "path": "src/Ipc.Application.Supply/StationClosure.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "0925fc1d9c276339b616d160f69af5db1e29222f99987684e21c6a3ec554a3bc",
-      "size_bytes": 11202,
-      "git_blob": "60543123a30f33caac97d09bdc09004ef55c66e9"
-    },
-    {
-      "path": "src/Ipc.Application.Supply/Store.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "fc5911f60c5773c194ba78bb6727b78a8613e2358888907eab73dcbe955c7ee4",
-      "size_bytes": 22032,
-      "git_blob": "942eca22e3b052e4c6cb600894b060057c5f6dcf"
-    },
-    {
-      "path": "src/Ipc.Application.Supply/SupplyConfiguration.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "0dc29bb70b6838c9ff3482185058b045add0f00096678b78e3ac8f257fb9634b",
-      "size_bytes": 1908,
-      "git_blob": "582e92505d1c066c60b7cb4ed16201498db1a2b9"
-    },
-    {
-      "path": "src/Ipc.Application.Supply/packages.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "4178048503ab33ba0db4e7c633930f7918f7def088623214590b5b0c75c906c0",
-      "size_bytes": 16173,
-      "git_blob": "f6418045f5540e074d49d45f20c930409040d2e4"
-    },
-    {
-      "path": "src/Ipc.Application.Supply/packages.supply.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "4178048503ab33ba0db4e7c633930f7918f7def088623214590b5b0c75c906c0",
-      "size_bytes": 16173,
-      "git_blob": "f6418045f5540e074d49d45f20c930409040d2e4"
-    },
-    {
-      "path": "src/Ipc.Application.Supply/packages.win-x64.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "457e25a2310796a6a91dd8f570d9cf91e2ee511f3dd1a6765e50045e81d89b20",
-      "size_bytes": 16648,
-      "git_blob": "6f50fa01598d2f4b0ae5136d0456aba07cae0d8e"
+      "sha256": "03e5da34d679496d27b239f419d76e5f5415d7ffdda8af94c259a5e7995a5a3a",
+      "size_bytes": 16861,
+      "git_blob": "72df4adbf5348175c7c3961c7e5f0d54d63a9f2e",
+      "previous_git_blob": "d5238067778bb83556bed1e7c0bbce0a768b9a8a"
     },
     {
       "path": "src/Ipc.Application.Supply.Contracts/ConfigurationActivation.cs",
@@ -16085,62 +16360,180 @@
       "git_blob": "2cf28e06172e9992a0e3d8509894f9bfceb27308"
     },
     {
-      "path": "src/Ipc.Application.WcsToPlc/Application.cs",
-      "version": "application-capability-19",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "5e3211dbdcdc7313dc915e1cbcab434043a14807f2728e752b49d16a1c15aabb",
-      "size_bytes": 2857,
-      "git_blob": "989790acf6b63cfdb401fde03701145511ee10c6",
-      "previous_git_blob": "d77069cbbb5e7593b7c816c6038626b5596a8a53"
-    },
-    {
-      "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
+      "path": "src/Ipc.Application.Supply/ContractForwarders.cs",
       "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "3c760e7e7caca937ef1907e56029902f18657c2928038d98f76a8d6fc5c742a5",
-      "size_bytes": 160,
-      "git_blob": "417f3a563f7340473749bc81335a7995aac06ac9"
+      "sha256": "5c295e64f710aee45aeaa19ed3742a3ea5692104db9c088724f5aa6df0deec6f",
+      "size_bytes": 2749,
+      "git_blob": "1d5b01292fac6a3c80e5917949615111d2ed9db2"
     },
     {
-      "path": "src/Ipc.Application.WcsToPlc/packages.lock.json",
+      "path": "src/Ipc.Application.Supply/ExtensionMaintenance.cs",
       "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "8ac24e3477f4108510e73cd9f8d827031a92a238ec2176cb920340ff4e32a088",
-      "size_bytes": 16386,
-      "git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+      "sha256": "bca167a54a56c5c9a73b1a937985110225e84109ae748dcacd1b6e7e6a59b8f4",
+      "size_bytes": 3903,
+      "git_blob": "32ddb588980c19d8c5d336b227362774b7495ed0"
     },
     {
-      "path": "src/Ipc.Application.WcsToPlc/packages.wcs-to-plc.lock.json",
-      "version": "application-capability-19",
+      "path": "src/Ipc.Application.Supply/HistoryQueries.cs",
+      "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "2abfe7a4f47d75c6f67a809477d4eaee5631ac1a269ade04205c4664d420ac41",
-      "size_bytes": 16386,
-      "git_blob": "bd927abff40fcacec7a465745556a90225c25223",
-      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+      "sha256": "769a3391b2940c6867202ccddaf2a4a9592d9b72cf5cd8c5163a75350af89fc3",
+      "size_bytes": 9991,
+      "git_blob": "8c77fbc2352830c5dc0edd7d21f1302b084cbb1b"
     },
     {
-      "path": "src/Ipc.Application.WcsToPlc/packages.wcs-to-plc.win-x64.lock.json",
-      "version": "application-capability-19",
+      "path": "src/Ipc.Application.Supply/IntegrationHealth.cs",
+      "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "03e5da34d679496d27b239f419d76e5f5415d7ffdda8af94c259a5e7995a5a3a",
-      "size_bytes": 16861,
-      "git_blob": "72df4adbf5348175c7c3961c7e5f0d54d63a9f2e",
-      "previous_git_blob": "d5238067778bb83556bed1e7c0bbce0a768b9a8a"
+      "sha256": "ca1415d99209eeeeef060bfd3a9c7ee5227827ce6ed1abe5f0919f5b97220e9e",
+      "size_bytes": 3545,
+      "git_blob": "ffa57d07a303576c064b5aaf9c2b92cf7b16f94d"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/Ipc.Application.Supply.csproj",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "2796e7df2b0b32709e3a6b67b4eed7d0d96836be2a94f553dee5bf96f78ffc05",
+      "size_bytes": 323,
+      "git_blob": "a318263f2ab4a9d0acf7742b6db18a48dc979c00"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/Maintenance.cs",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "4b60499569da5991e2c6b987f6c308362e8727e5a78e1bfe6ee7357f6344052a",
+      "size_bytes": 18427,
+      "git_blob": "3eb9f0237ff955fe1444fa8272dbe997d6b535c7"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/Model.cs",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "d430cd1312140b19f284a575bb5dc6a000edf9245b8da3e52e2b9bc0ec4e2721",
+      "size_bytes": 546,
+      "git_blob": "a12ad72e08b32eac57df0e6403fbf759c1e67313"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/PresentationProtection.cs",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "9d4d9f215253eb2acbff1eba8b5e203abc9cca291ed41c3812d29771b591ba44",
+      "size_bytes": 1624,
+      "git_blob": "a8475b23f126bd384f0a16e941cac457159e362d"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/ResponsePersistence.cs",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "748ff09ffad8d49a5ce6eb8276e21c08c438465fe2ccc58215b5ada51f1d6c0a",
+      "size_bytes": 10975,
+      "git_blob": "ea0c8b9234a87af570d49952306a886353f3a1e9"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/StationApplication.cs",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "351acf4ed294fafec3c001e502d09a0b58fc3ec10fc6f3eafda79661a6a49581",
+      "size_bytes": 66381,
+      "git_blob": "bfdf4340190db37e649730b156a3574bea5e28f1"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/StationClosure.cs",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "0925fc1d9c276339b616d160f69af5db1e29222f99987684e21c6a3ec554a3bc",
+      "size_bytes": 11202,
+      "git_blob": "60543123a30f33caac97d09bdc09004ef55c66e9"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/Store.cs",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "fc5911f60c5773c194ba78bb6727b78a8613e2358888907eab73dcbe955c7ee4",
+      "size_bytes": 22032,
+      "git_blob": "942eca22e3b052e4c6cb600894b060057c5f6dcf"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/SupplyConfiguration.cs",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "0dc29bb70b6838c9ff3482185058b045add0f00096678b78e3ac8f257fb9634b",
+      "size_bytes": 1908,
+      "git_blob": "582e92505d1c066c60b7cb4ed16201498db1a2b9"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/packages.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "4178048503ab33ba0db4e7c633930f7918f7def088623214590b5b0c75c906c0",
+      "size_bytes": 16173,
+      "git_blob": "f6418045f5540e074d49d45f20c930409040d2e4"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/packages.supply.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "4178048503ab33ba0db4e7c633930f7918f7def088623214590b5b0c75c906c0",
+      "size_bytes": 16173,
+      "git_blob": "f6418045f5540e074d49d45f20c930409040d2e4"
+    },
+    {
+      "path": "src/Ipc.Application.Supply/packages.win-x64.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "457e25a2310796a6a91dd8f570d9cf91e2ee511f3dd1a6765e50045e81d89b20",
+      "size_bytes": 16648,
+      "git_blob": "6f50fa01598d2f4b0ae5136d0456aba07cae0d8e"
     },
     {
       "path": "src/Ipc.Application.WcsToPlc.Desktop/Ipc.Application.WcsToPlc.Desktop.csproj",
@@ -16222,6 +16615,64 @@
       "size_bytes": 14576,
       "git_blob": "6f81acd282c62814399bf036c682366e3e5b5c11",
       "previous_git_blob": "d1af7683805b2bdd5e3d7b1db46e02bcd396bafa"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/Application.cs",
+      "version": "application-capability-19",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "5e3211dbdcdc7313dc915e1cbcab434043a14807f2728e752b49d16a1c15aabb",
+      "size_bytes": 2857,
+      "git_blob": "989790acf6b63cfdb401fde03701145511ee10c6",
+      "previous_git_blob": "d77069cbbb5e7593b7c816c6038626b5596a8a53"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "3c760e7e7caca937ef1907e56029902f18657c2928038d98f76a8d6fc5c742a5",
+      "size_bytes": 160,
+      "git_blob": "417f3a563f7340473749bc81335a7995aac06ac9"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/packages.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "8ac24e3477f4108510e73cd9f8d827031a92a238ec2176cb920340ff4e32a088",
+      "size_bytes": 16386,
+      "git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/packages.wcs-to-plc.lock.json",
+      "version": "application-capability-19",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "2abfe7a4f47d75c6f67a809477d4eaee5631ac1a269ade04205c4664d420ac41",
+      "size_bytes": 16386,
+      "git_blob": "bd927abff40fcacec7a465745556a90225c25223",
+      "previous_git_blob": "6c5bc156c64d4bf595a0158a5876c16bd0509cad"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/packages.wcs-to-plc.win-x64.lock.json",
+      "version": "application-capability-19",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "03e5da34d679496d27b239f419d76e5f5415d7ffdda8af94c259a5e7995a5a3a",
+      "size_bytes": 16861,
+      "git_blob": "72df4adbf5348175c7c3961c7e5f0d54d63a9f2e",
+      "previous_git_blob": "d5238067778bb83556bed1e7c0bbce0a768b9a8a"
     },
     {
       "path": "src/Ipc.Assembly/InspectionAssembly.cs",
@@ -16965,9 +17416,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "c358cb7712867de6aa55ad410f9695c73e2840cc6ff1cc80b426d50310dc75e3",
-      "size_bytes": 3038,
-      "git_blob": "d99346f26837e7816b0837a22417484d0d1a0935"
+      "sha256": "37571d1661f2556e5576bd103dceed167b0c37464fecb8e18ded9f979575cdd0",
+      "size_bytes": 3124,
+      "git_blob": "64b5f50db59442747d0cefacf688287c9b8d428a"
     },
     {
       "path": "src/Ipc.Integrations/ParcelWcs.cs",
@@ -17072,6 +17523,127 @@
       "sha256": "f7f3204232f48700cc0c177d1d5e5172d583b4c6c27c921a8f4255d9d751d57b",
       "size_bytes": 14684,
       "git_blob": "7501643b71568c24aa63550d29a90e64be8b36e9"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/Database.cs",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "3d3eb7df983041d7245843700619981e8d8436d0a2b1ff632c5395e1776538b0",
+      "size_bytes": 3597,
+      "git_blob": "7db9d5fea15c703547fe8a34c4e0a835c57df7ec"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "9bace06842bde0daa9a6e73a40c22c25e513425c42ab260f29c3ddd1823aeb85",
+      "size_bytes": 277,
+      "git_blob": "bae270b3a6229b5d13b40e11474c287b0280b93e"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.direct-plc.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "fd934dc702ccb6831839b7b401ffc597dc7be54d5186c5c2a7518dfdefa51e19",
+      "size_bytes": 15845,
+      "git_blob": "60c525aff0ec0f14f3fb710f625a9d640c57d598"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.direct-plc.win-x64.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "87eae07d48e5154e51ed59715da3cba24f2d504867fbec598fb1ff22a5689d35",
+      "size_bytes": 16320,
+      "git_blob": "1794e142aa25dc23bf063f44490287b1986bffee"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "fd934dc702ccb6831839b7b401ffc597dc7be54d5186c5c2a7518dfdefa51e19",
+      "size_bytes": 15845,
+      "git_blob": "60c525aff0ec0f14f3fb710f625a9d640c57d598"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.sportmaster.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "fd934dc702ccb6831839b7b401ffc597dc7be54d5186c5c2a7518dfdefa51e19",
+      "size_bytes": 15845,
+      "git_blob": "60c525aff0ec0f14f3fb710f625a9d640c57d598"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.sportmaster.win-x64.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "87eae07d48e5154e51ed59715da3cba24f2d504867fbec598fb1ff22a5689d35",
+      "size_bytes": 16320,
+      "git_blob": "1794e142aa25dc23bf063f44490287b1986bffee"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.supply.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "fd934dc702ccb6831839b7b401ffc597dc7be54d5186c5c2a7518dfdefa51e19",
+      "size_bytes": 15845,
+      "git_blob": "60c525aff0ec0f14f3fb710f625a9d640c57d598"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.wcs-to-plc.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "fd934dc702ccb6831839b7b401ffc597dc7be54d5186c5c2a7518dfdefa51e19",
+      "size_bytes": 15845,
+      "git_blob": "60c525aff0ec0f14f3fb710f625a9d640c57d598"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.wcs-to-plc.win-x64.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "87eae07d48e5154e51ed59715da3cba24f2d504867fbec598fb1ff22a5689d35",
+      "size_bytes": 16320,
+      "git_blob": "1794e142aa25dc23bf063f44490287b1986bffee"
+    },
+    {
+      "path": "src/Ipc.Platform.Storage/packages.win-x64.lock.json",
+      "version": "APPLICATION-CONVERGENCE-17",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
+      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "storage_scope": "public_repository",
+      "sha256": "87eae07d48e5154e51ed59715da3cba24f2d504867fbec598fb1ff22a5689d35",
+      "size_bytes": 16320,
+      "git_blob": "1794e142aa25dc23bf063f44490287b1986bffee"
     },
     {
       "path": "src/Ipc.Platform/ApplicationRelease.cs",
@@ -17446,127 +18018,6 @@
       "storage_scope": "public_repository"
     },
     {
-      "path": "src/Ipc.Platform.Storage/Database.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "3d3eb7df983041d7245843700619981e8d8436d0a2b1ff632c5395e1776538b0",
-      "size_bytes": 3597,
-      "git_blob": "7db9d5fea15c703547fe8a34c4e0a835c57df7ec"
-    },
-    {
-      "path": "src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "9bace06842bde0daa9a6e73a40c22c25e513425c42ab260f29c3ddd1823aeb85",
-      "size_bytes": 277,
-      "git_blob": "bae270b3a6229b5d13b40e11474c287b0280b93e"
-    },
-    {
-      "path": "src/Ipc.Platform.Storage/packages.direct-plc.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "fd934dc702ccb6831839b7b401ffc597dc7be54d5186c5c2a7518dfdefa51e19",
-      "size_bytes": 15845,
-      "git_blob": "60c525aff0ec0f14f3fb710f625a9d640c57d598"
-    },
-    {
-      "path": "src/Ipc.Platform.Storage/packages.direct-plc.win-x64.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "87eae07d48e5154e51ed59715da3cba24f2d504867fbec598fb1ff22a5689d35",
-      "size_bytes": 16320,
-      "git_blob": "1794e142aa25dc23bf063f44490287b1986bffee"
-    },
-    {
-      "path": "src/Ipc.Platform.Storage/packages.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "fd934dc702ccb6831839b7b401ffc597dc7be54d5186c5c2a7518dfdefa51e19",
-      "size_bytes": 15845,
-      "git_blob": "60c525aff0ec0f14f3fb710f625a9d640c57d598"
-    },
-    {
-      "path": "src/Ipc.Platform.Storage/packages.sportmaster.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "fd934dc702ccb6831839b7b401ffc597dc7be54d5186c5c2a7518dfdefa51e19",
-      "size_bytes": 15845,
-      "git_blob": "60c525aff0ec0f14f3fb710f625a9d640c57d598"
-    },
-    {
-      "path": "src/Ipc.Platform.Storage/packages.sportmaster.win-x64.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "87eae07d48e5154e51ed59715da3cba24f2d504867fbec598fb1ff22a5689d35",
-      "size_bytes": 16320,
-      "git_blob": "1794e142aa25dc23bf063f44490287b1986bffee"
-    },
-    {
-      "path": "src/Ipc.Platform.Storage/packages.supply.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "fd934dc702ccb6831839b7b401ffc597dc7be54d5186c5c2a7518dfdefa51e19",
-      "size_bytes": 15845,
-      "git_blob": "60c525aff0ec0f14f3fb710f625a9d640c57d598"
-    },
-    {
-      "path": "src/Ipc.Platform.Storage/packages.wcs-to-plc.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "fd934dc702ccb6831839b7b401ffc597dc7be54d5186c5c2a7518dfdefa51e19",
-      "size_bytes": 15845,
-      "git_blob": "60c525aff0ec0f14f3fb710f625a9d640c57d598"
-    },
-    {
-      "path": "src/Ipc.Platform.Storage/packages.wcs-to-plc.win-x64.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "87eae07d48e5154e51ed59715da3cba24f2d504867fbec598fb1ff22a5689d35",
-      "size_bytes": 16320,
-      "git_blob": "1794e142aa25dc23bf063f44490287b1986bffee"
-    },
-    {
-      "path": "src/Ipc.Platform.Storage/packages.win-x64.lock.json",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository",
-      "sha256": "87eae07d48e5154e51ed59715da3cba24f2d504867fbec598fb1ff22a5689d35",
-      "size_bytes": 16320,
-      "git_blob": "1794e142aa25dc23bf063f44490287b1986bffee"
-    },
-    {
       "path": "src/Ipc.Product/AssemblyInfo.cs",
       "sha256": "8569ff12564fee7e80a680d4047a077a5634c7f6691f7ac54639376875ccdf71",
       "size_bytes": 90,
@@ -17756,9 +18207,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "e89ba571327a19292ca785d86758be85358eb2e138114b3de9996bdfdb06302a",
-      "size_bytes": 11291,
-      "git_blob": "c0915af2144eacb667ccad7557991b4db5cce37d",
+      "sha256": "dda1b962ed380b5591dd458d5e626fb2bcd427770fbc0b8e38695940b31faf80",
+      "size_bytes": 12390,
+      "git_blob": "408c6b0ee80c8312b49d5c2de813ab4c341854eb",
       "previous_git_blob": "6f37ba9c384abcb20a16823b20b208827a378dc0"
     },
     {
@@ -17861,6 +18312,17 @@
       "git_blob": "fc5df22665b11329e079729645b95b84e0c71285"
     },
     {
+      "path": "tests/Ipc.Application.Verification/BackupHealthRecovery.cs",
+      "version": "BACKUP-HEALTH-RECOVERY",
+      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
+      "source": "2026-10-18 user authorized repair from main 0828654",
+      "storage_scope": "public_repository",
+      "sha256": "fe357ed6dd2bce012f2b212de0feacb29653a63dd24d66f2b2415bea71cfcdda",
+      "size_bytes": 30398,
+      "git_blob": "2cf955dfb77bb93a7808293e1ef89a90950603cf"
+    },
+    {
       "path": "tests/Ipc.Application.Verification/CapabilityClosure.cs",
       "version": "application-capability-19",
       "status": "current_navigation_or_verification",
@@ -17902,9 +18364,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "0f004de9bb9f03c6d6fa4fbe77cfc11e1fd432406ca014a787a075f12f6b2c01",
-      "size_bytes": 12335,
-      "git_blob": "0e7c115fd9cea4d78ee9a7c404fd7af84e71832d",
+      "sha256": "469b80e6889f0e3f09d053c47ab498da7aaef40c755ba20eaa93d97d028409e1",
+      "size_bytes": 12787,
+      "git_blob": "6d81d14e2dc10ca8f5e2f4ee48cad76b10722ad2",
       "previous_git_blob": "e479415f5dc73b9f48b8ae4f402faa8f4ae18604"
     },
     {

@@ -67,6 +67,23 @@ T1冻结请求/参数/转换实现hash，T2持久尝试及接收责任后才外�
 
 ContinuePrepared保留原守卫，只发送从未尝试的原意图；重启Prepared/Dispatching保守转Unknown。查询无记录仍Unknown，组件不声明Query时不调用权威查询。传输、协议确认、业务接受和物理完成分开；WCS接受/原格口/原PLC意图仍同事务。备份是在线SQLite+配置/原回执/未释放原图的集合，恢复隔离暂停且无登录，不回滚外部接收账。
 
+## 备份路径与健康预算修复
+
+PR19合并后的增量见[本轮工作包](../work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md)。`ParcelRuntime.BackupAsync`保持暂停、维护认证和外部排空守卫，目标必须在运行目录之外且全新。`.recovery/COMPLETED.json`的Files键统一为`/`；仅本机文件枚举转换分隔符，输入清单的反斜杠不自动改写。配置、原回执和未释放图像在受限目录内枚举；排除实时租约，检查链接、大小写别名、Windows保留名、重复JSON键、完整集合及SHA256，复制后Flush并再次验hash。缺完成标记或失败残件保持不可恢复，不删除原数据或自动重做备份。
+
+恢复只进入全新同Application隔离目录。校验在创建目标前完成；复制中断保留RESTORE-INCOMPLETE，成功才发布RESTORED-ISOLATED；重启暂停、不复活登录、不重传未知请求。以前含反斜杠的非规范清单仍明确拒绝，保留原件；不能手改原清单/原图或当成已核验恢复。对旧有效发布清偿未决后，使用修复版生成新备份，不能改旧请求实施hash来强行升级。清单hash不是签名，备份需授权受控保存。
+
+启动、后台巡检和每阶段健康探测分别使用TimeoutMs预算；阶段通过健康守卫后，发送/查询有独立TimeoutMs预算。预算耗尽返回NotReady，真正启动取消/停机取消继续传播；发送前停机不产生发送尝试，发送后取消保留Unknown和原身份。对已接受PLC的确认查询失败不擦除既有接受事实，实体完成仍需独立证据。ReferencePeer的健康响应按固定标记长度有限读取；旧Supply loopback自身HTTP超时报不可用，外部取消继续传播。多页面/快照仍不承担网络探测，不改变Production拒绝或SDK/现场资格。
+
+固定SDK下的新增定向验证：
+
+```sh
+dotnet build tests/Ipc.Application.Verification -p:RestoreLockedMode=true -m:1 -nr:false
+dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --backup-health-recovery
+```
+
+Windows必须另跑同一实际采图备份/恢复旅程、ACL/重解析点和普通账户验证；本次macOS验证不构成Windows验收。符号链接负例需要测试账户有创建链接权限。旧签名包仍按精确公共契约和原实现绑定检查，本轮不覆写包或迁移SQL。
+
 ## 新签名提供者
 
 示例examples/ParcelCapabilitiesExtension新增login/camera/upload工厂和strict-wcs输入要求，继续使用原build-extension.py和.ipcx格式。新Application.Contracts=1.2.0，示例包使用新不可变1.2.0；Platform精确指纹变化也要求新观察/集成参考包1.0.6。旧包不覆盖、不重签为兼容；旧未决用匹配旧发布清偿。

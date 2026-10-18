@@ -327,9 +327,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "4b3d2b58e65178792d6849891d8f363b5c95ac319cfc50170ed74bf1afc26e2c",
-      "size_bytes": 7860,
-      "git_blob": "0daf3a56543290ea16f608416dac43e90e40ccbf",
+      "sha256": "0f22d8f1c98088a69989ffcee9dc76b214a8edb2c0a5b260354754f5cf65bc4b",
+      "size_bytes": 8286,
+      "git_blob": "15d6fb561ba97d0c66a10d0e08c9c098e25ba469",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
@@ -19927,6 +19927,39 @@
       "sha256": "44b9be428ef905f16c3df4263f75560419a034e9d8bfb01dba625d319ac5ac57",
       "size_bytes": 3920,
       "git_blob": "4a2e327af5a6e4919c56ebc4891cf944f88e2ef1"
+    },
+    {
+      "path": "docs/reviews/architecture-quality-audit-02/Codex-next-phase.md",
+      "version": "architecture-quality-audit-02-publication",
+      "status": "independent_audit_or_implementation_handoff",
+      "purpose": "User-authorized publication of the unchanged fixed-SHA audit PDF and next-phase Codex instructions; no runtime changes",
+      "source": "2026-10-18 user PDF publication and next-phase prompt request",
+      "storage_scope": "public_repository",
+      "sha256": "353f7b06118b93a3891cf5500ccab813619e10af3f865f10c93f9660a3b2a130",
+      "size_bytes": 5851,
+      "git_blob": "eeadd94264ae4b8da33871d97d43149990639fd9"
+    },
+    {
+      "path": "docs/reviews/architecture-quality-audit-02/README.md",
+      "version": "architecture-quality-audit-02-publication",
+      "status": "independent_audit_or_implementation_handoff",
+      "purpose": "User-authorized publication of the unchanged fixed-SHA audit PDF and next-phase Codex instructions; no runtime changes",
+      "source": "2026-10-18 user PDF publication and next-phase prompt request",
+      "storage_scope": "public_repository",
+      "sha256": "d112c54a420bfcd9e03448ede338d024d4a92b4c2312f62a2810cc432c5bb4d4",
+      "size_bytes": 7020,
+      "git_blob": "d6e171646ddf4499a9eeac78eabadd7907e0c940"
+    },
+    {
+      "path": "docs/reviews/architecture-quality-audit-02/WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02.pdf",
+      "version": "architecture-quality-audit-02-publication",
+      "status": "independent_audit_or_implementation_handoff",
+      "purpose": "User-authorized publication of the unchanged fixed-SHA audit PDF and next-phase Codex instructions; no runtime changes",
+      "source": "2026-10-18 user PDF publication and next-phase prompt request",
+      "storage_scope": "public_repository",
+      "sha256": "dce6b0e235c44e414cc14a976dbd3cea0d24f634aab1276be894b6b69b62283d",
+      "size_bytes": 325136,
+      "git_blob": "68c7416b64398a4d4a98488e537442cba4c2a5a5"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -20636,5 +20669,22 @@
     "binary_storage": "github_prerelease_assets_not_git",
     "repackaged": false,
     "private_key_included": false
+  },
+  "architecture_quality_audit_02_publication": {
+    "review_main_sha": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
+    "review_runtime_sha": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+    "published_on": "2026-10-18",
+    "entry": "docs/reviews/architecture-quality-audit-02/README.md",
+    "pdf": "docs/reviews/architecture-quality-audit-02/WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02.pdf",
+    "pdf_sha256": "dce6b0e235c44e414cc14a976dbd3cea0d24f634aab1276be894b6b69b62283d",
+    "pdf_bytes_unchanged": true,
+    "next_phase_prompt": "docs/reviews/architecture-quality-audit-02/Codex-next-phase.md",
+    "implementation_state": "NOT_IMPLEMENTED_BY_THIS_PUBLICATION",
+    "parallel_pr_at_preparation": {
+      "number": 23,
+      "state": "OPEN",
+      "head_sha": "966ec6aa17dfe29b96fc9b9113f3037ba586f6a0",
+      "included_in_main": false
+    }
   }
 }

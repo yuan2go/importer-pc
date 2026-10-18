@@ -1,0 +1,12 @@
+{
+  "SourceCommit": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+  "Binaries": {
+    "Ipc.Application.Verification.dll": "1915355886e98ab4d5c3e1d5083acafebb06765336b075b65da4087b37afa5de",
+    "Ipc.Platform.dll": "ee7414420122710d49f95228eb3d1e886216f0307b091be2326d6f9af1f6acab",
+    "Ipc.Application.Contracts.dll": "3fa9f3c1f01981c5b750e9f4de83bcc425175c5d5036ffdba5dfb57927c6ff1b",
+    "Ipc.Application.ParcelFlow.dll": "d88045983e41fd19dc7cc499e8ea095777154ab54eefc1f29e182bc7443ce3b6"
+  },
+  "ReleasePublicContractsEqual": true,
+  "Dotnet": "10.0.402",
+  "PathMap": true
+}

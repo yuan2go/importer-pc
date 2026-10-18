@@ -1,0 +1,26 @@
+{
+  "Package": "parcel-1.8.1.ipcx",
+  "PackageSha256": "40beeffa73bfe897c7d7a8759807710bf2587fffbc6d4633ab3da2a232cee254",
+  "PluginSourceCommit": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+  "PluginSourceSha256": "759bddb4f1ebf8384c5b37bba5f62559de4d2abda0d9e73652d67b43c1645626",
+  "DefinitionSha256": "423531ba15536fb965eb960b28885b82d6c80f8ae263583365927877b89f73f8",
+  "HostContractSha256": "73383ac1dd554832c9343ed41821560bcf0a7139fbc4afb30e4453142f6b8aeb",
+  "FrozenHostUnchanged": true,
+  "FrozenCheckerUnchanged": true,
+  "CheckerContractsSha256": {
+    "Ipc.Platform": "73383ac1dd554832c9343ed41821560bcf0a7139fbc4afb30e4453142f6b8aeb",
+    "Ipc.Application.Contracts": "c04206db69f8c4b6156d5e77a05c12e64e236d4340060ad5a3a8088a6de619d3"
+  },
+  "Publisher": "audit02-reference",
+  "Version": "1.8.1",
+  "ExtensionContract": 1,
+  "Signature": "RSA-PSS/SHA256",
+  "Mode": "Simulation",
+  "ManifestSha256": "950e13b06dcff9a8b3c6afd3ec303c049bea8b5e343a8fff3557d5b59c7a01b5",
+  "TrustSha256": "a7ba985341dbd2b21fbb579a5ed776f3fd3cda8be42074a3654aa292efef37c2",
+  "PayloadSha256": {
+    "Ipc.Reference.ParcelCapabilitiesExtension.dll": "cfc1c9d3248732fdee62efb3466910f722c70284e909f04693f8577e4bec57ca"
+  },
+  "DependencyPackages": [],
+  "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+}

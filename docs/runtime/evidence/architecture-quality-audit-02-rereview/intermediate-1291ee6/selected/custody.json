@@ -1,0 +1,42 @@
+{
+  "Status": "PASS",
+  "OuterExitCode": 0,
+  "SourceCommit": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+  "ScriptSha256": "a92956c5053921ea08579571aaf628635228016d78013565951f132817c49ec0",
+  "OriginalResultSha256": "593767ce2eefccf3b2bf13e5f85c4f9af073cfa5011fdffa940077512ac580e7",
+  "ExpectedStartupFailureExitCode": -6,
+  "FailureScope": "Synthetic reader fail-start; expected nonzero child; previous Effective and Pending read back exactly",
+  "SelectedVersions": {
+    "reference.barcode": "1.1.0",
+    "reference.parcel-capabilities": "1.8.0"
+  },
+  "Windows": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "Files": {
+    "final-run-01/selected-journey.json": "593767ce2eefccf3b2bf13e5f85c4f9af073cfa5011fdffa940077512ac580e7",
+    "final-run-01/selected-runtime/action-000-extension-install.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-run-01/selected-runtime/action-000-extension-install.stdout.log": "58215f44c6b38b845c18332d5b401fadfbdd46e6522b48cbf2b57a0f8470caf4",
+    "final-run-01/selected-runtime/action-001-extension-recover.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-run-01/selected-runtime/action-001-extension-recover.stdout.log": "9cf4f917d1bf38585b5e452aab41b9c961c56835072eaa022d116f2bfb4bbdce",
+    "final-run-01/selected-runtime/action-002-extension-install.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-run-01/selected-runtime/action-002-extension-install.stdout.log": "55d2310f22617e5d64efd1a256b9a2d9972baad1c56b6ac06c92c4e3d81c4387",
+    "final-run-01/selected-runtime/action-003-extension-recover.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-run-01/selected-runtime/action-003-extension-recover.stdout.log": "b099c7b96a096177affc3fa565109a78ed9d1751e4d7b7e4f64a82de84b59f0f",
+    "final-run-01/selected-runtime/expected-failed-start.stderr.log": "f52a810822345d027880a7aa73e372c836a9ef9576a3e32342f281fe866068ac",
+    "final-run-01/selected-runtime/expected-failed-start.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-run-01/selected-runtime/process-0.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-run-01/selected-runtime/process-0.stdin.jsonl": "26ece8024b021df217f62572e0d4071bf68824db13adad9dc53e9fac59bf39d1",
+    "final-run-01/selected-runtime/process-0.stdout.log": "bfe8716952e4cfc42ecf76d2b164adfa62d7210f6b48d7f437dac6a0e39e04ba",
+    "final-run-01/selected-runtime/process-1.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-run-01/selected-runtime/process-1.stdin.jsonl": "ebe4f5ea9eaaaf9c916d9d513aced3ae3d330b6e8502b5d17959a9eedd05c83a",
+    "final-run-01/selected-runtime/process-1.stdout.log": "9f959760e60d1e034cf6abd976aba90d192aa9099958d781a415de2ac86540ef",
+    "final-run-01/selected-runtime/process-2.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-run-01/selected-runtime/process-2.stdin.jsonl": "82c454316bdf1e7e0503b54be77832a90bb24033a80586f68756b6a1ba50b195",
+    "final-run-01/selected-runtime/process-2.stdout.log": "350f3ebfa7b50c92f792be1504f3e94cdb34d68e1a41f03a3132874acd5250a6",
+    "final-run-01/selected-runtime/process-3.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-run-01/selected-runtime/process-3.stdin.jsonl": "4465110e089fdd3719fde317b2d46764bde3fd445473daa4e8db5035876519b8",
+    "final-run-01/selected-runtime/process-3.stdout.log": "faac9dfa1e3586b963cadfdb34be78472d95a8dadd24856b5a2a66d98b088034",
+    "final-run-01.log": "ee5b57735b015438e26190eee01c26d673ce25424492200f17ddd191cd92dcc6",
+    "selected-release-journey.py": "a92956c5053921ea08579571aaf628635228016d78013565951f132817c49ec0"
+  }
+}

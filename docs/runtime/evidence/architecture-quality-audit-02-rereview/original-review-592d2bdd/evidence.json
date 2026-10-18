@@ -1,0 +1,100 @@
+{
+  "ReviewedAtUTC": "20261018T152559Z",
+  "Repository": "yuan2go/importer-pc",
+  "PR": 26,
+  "Head": "592d2bdd1b4d4525926684968a48ab4f375bf503",
+  "Main": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "InheritedPR24": "a2e987a8d15eb397ad1a40cf1a303bdad4ec397b",
+  "LivePR24": "3f6f762d31655ef0fe8d6562ed413beed682e2f9",
+  "PR23": "966ec6aa17dfe29b96fc9b9113f3037ba586f6a0",
+  "ReleaseSource": "2ad633578141db4ef34e255217bc8815634ffd0a",
+  "RuntimeSource": "bab9c3012652c3b8aae1d90627953734a1de29b8",
+  "FinalInputFilesChecked": 441,
+  "FinalInputMismatches": [],
+  "RecordedRawLogsChecked": 39,
+  "RecordedRawLogMismatches": [],
+  "ReferenceDllSHA256": {
+    "Ipc.Components.dll": "facf271971b01c23b2df1395df7a158d2a6ab2969e8adf45d6ae344ac21fbbaf",
+    "Ipc.Application.ParcelFlow.dll": "525dc49454a0b1e369b9b09e2458371c94209d38369bd86b1891cde87f1381e7",
+    "Ipc.Supply.Contracts.dll": "7158083ebd19b77a654d438caed2191270a0f41db4a237f41fb64f42d4f61288",
+    "Ipc.Platform.dll": "1b4560d495cdf646bb54a05d9cd138235b29aead7d9f71f8435ad3b0d6b1570c",
+    "Ipc.Reference.Protocol.dll": "0125675089afe47aa3092fa741160098b36de4c3be76019ad62afbae87686d18",
+    "Ipc.Drivers.dll": "96361e04e92e5f98d8813c6049775097537573d44471b25a984e3f658daecc82",
+    "Ipc.Integrations.dll": "962f2cfd18a73155729010a2116c730386c46cf8059a140452cec28217f12785",
+    "Ipc.Platform.Storage.dll": "b46c9d4ad3768135daf6884ec34bb55c7576ea736c968d640e3d17d55532a782",
+    "Ipc.Application.Contracts.dll": "50c693c0d07e2bd314816310ee8510dedc78a90aab9ac0f293e97da492df1efa",
+    "Ipc.Application.Sportmaster.dll": "fb0fdc3cfa2e8cb9a1951d77c02b450ee862008c47605426530b93f49b597b60",
+    "Ipc.Assembly.dll": "ca389975742cebd1b58d46151b1c828f24be04bc17c9013170905e38168ebaaa"
+  },
+  "Media": [
+    {
+      "Name": "sport-core",
+      "ZipSHA256": "3738b23a7b2e8fe84d19b1979d453310924625ecc5c8c31ad607480f23bd42d3",
+      "SourceCommit": "2ad633578141db4ef34e255217bc8815634ffd0a",
+      "FilesVerified": 92,
+      "Mismatches": [],
+      "OfflineBundles": []
+    },
+    {
+      "Name": "sport-selected",
+      "ZipSHA256": "e70d8197844f959717e4e88dab33d8238cb8e3ece4b9173561023c30ebdebbbc",
+      "SourceCommit": "2ad633578141db4ef34e255217bc8815634ffd0a",
+      "FilesVerified": 95,
+      "Mismatches": [],
+      "OfflineBundles": [
+        {
+          "Id": "reference.parcel-capabilities",
+          "Version": "1.7.2",
+          "ManifestSha256": "666CC5714E94C6D98C49C4C9DD1D1C1EC0732100C66526A19755E31C6FD95361",
+          "PackageSha256": "7D3DCEE34249CB441522E028B2CC87E4BF257D956B848817A6B90006CCA90F62",
+          "File": "offline-extensions/reference.parcel-capabilities-1.7.2.ipcx",
+          "Mode": "Simulation",
+          "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
+          "Installed": false,
+          "Activated": false,
+          "PublicContracts": {
+            "Ipc.Application.Contracts": "50C693C0D07E2BD314816310EE8510DEDC78A90AAB9AC0F293E97DA492DF1EFA"
+          }
+        },
+        {
+          "Id": "reference.barcode",
+          "Version": "1.0.12",
+          "ManifestSha256": "6DE713A58DDD7B50FE638FBFFA16D31B91FB25DF63247CB460EC129353A38DAE",
+          "PackageSha256": "7F9ACEC09CB4DA5AEF296F2CBC336FA7030065BB2BE0BBBDA4B8D7A786DC5BF3",
+          "File": "offline-extensions/reference.barcode-1.0.12.ipcx",
+          "Mode": "Simulation",
+          "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
+          "Installed": false,
+          "Activated": false,
+          "PublicContracts": {}
+        }
+      ]
+    },
+    {
+      "Name": "sport-win",
+      "ZipSHA256": "ce7580cfaaefca0f324f445133d944af51702adce5336a275735e5f9fb7adb3e",
+      "SourceCommit": "2ad633578141db4ef34e255217bc8815634ffd0a",
+      "FilesVerified": 723,
+      "Mismatches": [],
+      "OfflineBundles": []
+    }
+  ],
+  "IndependentProbeProcessExits": {
+    "consumer-reader": 0,
+    "recovered-identity": 0,
+    "identity-eviction": 0,
+    "maintenance": 0,
+    "legacy-failed-start": 0,
+    "initial-native-load-environment-error": 134
+  },
+  "SourceEdits": false,
+  "ExistingArtifactsModified": false,
+  "Windows": "NOT_RUN",
+  "RealSDKProtocolSite": "NOT_RUN",
+  "Notes": [
+    "New probes compile only external /tmp source against exact existing Release DLLs; no repository build or broad suite rerun.",
+    "Initial external probe omitted native sqlite loader path; retained original failure, copied matching osx-arm64 native library into external probe output and reran.",
+    "DefectReproduced true means the reviewed candidate violates the asserted requirement; process exit 0 only means probe finished.",
+    "Media and log/hash verification are this review new readbacks. Existing final-quality and selected-journey logs remain PR26 author evidence, not independent new reruns."
+  ]
+}

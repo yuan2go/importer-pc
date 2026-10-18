@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/version-compatibility/importer-pc/scripts/package-application.py", line 27, in <module>
+    raise ValueError('Commit exact runtime, configuration, packaging and shipped guides before publication')
+ValueError: Commit exact runtime, configuration, packaging and shipped guides before publication

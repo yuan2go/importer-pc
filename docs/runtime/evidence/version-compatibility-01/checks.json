@@ -1,0 +1,136 @@
+{
+  "SchemaVersion": 1,
+  "Status": "REFERENCE_PASS",
+  "SourceCommit": "c4e131968964458467c3a03eddf90832ef85b309",
+  "TestOnlyDelta": "ApplicationArchitecture backup fixture awaits existing public maintenance availability; runtime guard unchanged",
+  "Checks": [
+    {
+      "Name": "version",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/version.log",
+      "Sha256": "ba674ae2bcc2abc0855275997f87d63154f6966a3a70b65d8cc6c76f265e0c68"
+    },
+    {
+      "Name": "capability",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/capability.log",
+      "Sha256": "52ed39e01f0295061f5b2ef4ddcba894c6f52d6f42cb2fd7a3741b1fd531a76d"
+    },
+    {
+      "Name": "architecture-final",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/architecture-final.log",
+      "Sha256": "8a63c4fd9e291b320c995acfb51ae01f41036afc812bc4010a206f75b7870453"
+    },
+    {
+      "Name": "acquisition",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/acquisition.log",
+      "Sha256": "2e5617b2fd9d6a3f1bd219c27d51b0811a68e57bf9c66e4548dd2a5cc0621ec7"
+    },
+    {
+      "Name": "inventory",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/inventory.log",
+      "Sha256": "1d5c3edf9752dc4c3895c376d3244f5d611c9fcb82776fd30a61701dad2eacc6"
+    },
+    {
+      "Name": "configuration-confirmation",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/configuration-confirmation.log",
+      "Sha256": "81103b3824a440cc8009056c8a13b5c5ce37043c643b02887a46edb2ec01bca1"
+    },
+    {
+      "Name": "signed-release-build",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/signed-release-build.log",
+      "Sha256": "62fdc263e8c2342dff6cdd1083c581a498c1caad4104f5c4ee38f744a9470677"
+    },
+    {
+      "Name": "signed-release-activation",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/signed-release-activation.log",
+      "Sha256": "8dc7fbaf58d1133949c28331f8f487bded6b6741253a150faa8abe1184ee67bc"
+    },
+    {
+      "Name": "python-version",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/python-version.log",
+      "Sha256": "84f95f4f559b605a3b01cec6ece7642402c61750487926343036ddfeae0c6fe6"
+    },
+    {
+      "Name": "python-guides",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/python-guides.log",
+      "Sha256": "bfdb78c32b8c6a4ad94f651eff184f1597b3860ecd390d5983be7056527cbddd"
+    },
+    {
+      "Name": "python-bundles",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/python-bundles.log",
+      "Sha256": "4ff19e8b6a2c30258d190002cf74b2fe7fc0a82dd0425b77eeeb736c339e9701"
+    },
+    {
+      "Name": "direct-plc-wpf-build",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/direct-plc-wpf-build.log",
+      "Sha256": "8c546503fc0e23fa666aff95af7f96262d79525087901a3f28e8a09af7745b7c"
+    },
+    {
+      "Name": "wcs-to-plc-wpf-build",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/wcs-to-plc-wpf-build.log",
+      "Sha256": "ece0818fd9393620e91d2164592672de936ac69eaf51457c96d3ec72ba194d1e"
+    },
+    {
+      "Name": "sportmaster-portable-package",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/sportmaster-portable-package.log",
+      "Sha256": "a8e4498c82569871f09a6b7f063462683af154c505ac0bc6bd5874c037871a60"
+    },
+    {
+      "Name": "direct-plc-portable-package",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/direct-plc-portable-package.log",
+      "Sha256": "b0a8b498a1caba8facb2b7b6e1aa00a9c44abee02795ad5c9a14af01103e1e1c"
+    },
+    {
+      "Name": "wcs-to-plc-portable-package",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/wcs-to-plc-portable-package.log",
+      "Sha256": "21943407a33c0fb2f3420b46256ea03e0f23767aba54ec50b5a00b70779a74fa"
+    },
+    {
+      "Name": "sportmaster-win-x64-package",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "logs/sportmaster-win-x64-package.log",
+      "Sha256": "99185e6f0aa85b86c9b77895ef125e262d1d2bf449065cb1398cf0d237592543"
+    }
+  ],
+  "InitialFailures": [
+    "SDK source glob exclusion: fixed source snapshot directory",
+    "AA22 local backup guard rejection: fixed test scheduling; full backup and restore assertions retained",
+    "system Python lacks Pillow: use bundled runtime",
+    "source cleanliness gate rejected generated lock files: remove only task-generated files and use existing lock names"
+  ],
+  "Windows": "NOT_RUN",
+  "Production": "NOT_READY",
+  "RealEquipment": "BLOCKED"
+}

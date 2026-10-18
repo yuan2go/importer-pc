@@ -53,6 +53,9 @@ public sealed partial class ParcelRuntime
             if (command.ExpectedRevision != repository.Revision) return new("Conflict", "Refresh the current application projection", repository.Revision);
             switch (command.Kind)
             {
+                case "ReceiptResponsibilities" when command.Owner is not null:
+                    return new("ReceiptResponsibilities", Wire.Encode(repository.ReceiptResponsibilities(command.Owner)), repository.Revision);
+                case "ReconcileReceipt": return await ReconcileReceiptAsync(command).ConfigureAwait(false);
                 case "Pause": repository.Commit(null, "AdmissionPaused", "Software pause only", paused: true, command: command); break;
                 case "Resume" when CanResume():
                     repository.Commit(null, "AdmissionResumed", "Other stage guards remain independent", paused: false, command: command); break;
@@ -151,6 +154,9 @@ public sealed partial class ParcelRuntime
             RecoveryFiles.ValidateNames(directory!, names);
             foreach (var op in operations.Values.Where(x => x.Image is not null && !x.ImageReleased)) _ = ReadImage(op, op.Image!);
             var expectedFiles = names.ToDictionary(x => x, x => Wire.FileHash(RecoveryFiles.Resolve(directory!, x)), StringComparer.Ordinal);
+            var backupBytes = checked(repository.StorageBytes + names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory!, n)).Length) + RecoveryFiles.MaximumManifestBytes);
+            if (!ParcelStorageVolume.Plan(destination, backupBytes, Retention.MinimumFreeBytes).Fits)
+                throw new IOException("Backup requires measured database/custody capacity plus manifest and configured reserve; choose a volume with sufficient space");
             // Preserve any interrupted set; only COMPLETED.json makes a set restorable.
             Directory.CreateDirectory(recovery);
             RecoveryFiles.RequireOrdinaryAncestors(recovery);

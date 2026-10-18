@@ -76,7 +76,7 @@ public sealed partial class ParcelRepository : IDisposable
         using var r = cmd.ExecuteReader(); List<ParcelOperation> result = [];
         while (r.Read()) result.Add(Wire.Decode<ParcelOperation>(r.GetString(0))); return result.ToArray();
     }
-    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null)
+    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null)
     {
         using var tx = db.BeginTransaction();
         if (measurement is not null)
@@ -140,6 +140,22 @@ public sealed partial class ParcelRepository : IDisposable
         {
             using var receipt = db.CreateCommand(); receipt.Transaction = tx; receipt.CommandText = "UPDATE parcel_receipts SET state='Committed' WHERE id=$id AND state='RawDurable'";
             receipt.Parameters.AddWithValue("$id", occurrence); if (receipt.ExecuteNonQuery() != 1) throw new InvalidDataException("Receipt occurrence is not raw-durable");
+        }
+        if (reconciledOccurrence is not null)
+        {
+            // Outcome resolution is linked to a distinct durable authoritative Query.
+            // The original occurrence remains present with NULL raw_hash: no old raw is fabricated.
+            using var resolve = db.CreateCommand(); resolve.Transaction = tx;
+            resolve.CommandText = """
+                UPDATE parcel_receipts SET state='OutcomeReconciled'
+                WHERE id=$old AND state='Awaiting' AND raw_hash IS NULL
+                AND EXISTS(SELECT 1 FROM parcel_receipts q WHERE q.id=$query AND q.state='Committed'
+                    AND q.source='Query' AND q.operation=parcel_receipts.operation
+                    AND q.request=parcel_receipts.request AND q.stage=parcel_receipts.stage)
+                """;
+            resolve.Parameters.AddWithValue("$old", reconciledOccurrence);
+            resolve.Parameters.AddWithValue("$query", occurrence ?? throw new InvalidOperationException("Resolution requires its own committed Query"));
+            if (resolve.ExecuteNonQuery() != 1) throw new InvalidDataException("Original missing-raw occurrence or authoritative Query changed");
         }
         if (command is not null)
         {
@@ -231,6 +247,14 @@ public sealed partial class ParcelRepository : IDisposable
     {
         using var cmd = db.CreateCommand(); cmd.CommandText = "INSERT INTO parcel_commands VALUES($id,$hash,$receipt)";
         cmd.Parameters.AddWithValue("$id", c.Id); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(c))); cmd.Parameters.AddWithValue("$receipt", Wire.Encode(result)); cmd.ExecuteNonQuery();
+    }
+    public long StorageBytes
+    {
+        get
+        {
+            using var c = db.CreateCommand(); c.CommandText = "PRAGMA page_count"; var pages = (long)c.ExecuteScalar()!;
+            c.CommandText = "PRAGMA page_size"; return checked(pages * (long)c.ExecuteScalar()!);
+        }
     }
     public void Backup(string destination) => Database.Backup(db, destination);
     public void Dispose() => db.Dispose();

@@ -1,6 +1,6 @@
 # Supply兼容产品：首次运行与首条参考作业
 
-当前工程入口对应[UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，无需沿历次工作包寻找启动命令。[运行/部署/恢复](operations.md)、[独立扩展开发](../extensions/developer-guide.md)分别提供正式维护路径。这里仅使用获授权合成数据、本机SIMULATION-v1接收端；不控制真实设备，不宣称SDK/WCS或现场通过。
+当前工程入口对应[UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，无需沿历次工作包寻找启动命令。[运行/部署/恢复](operations.md)、[独立扩展开发](../extensions/supply-guide.md)分别提供正式维护路径。这里仅使用获授权合成数据、本机SIMULATION-v1接收端；不控制真实设备，不宣称SDK/WCS或现场通过。
 
 ## 从源码首次启动
 

@@ -2,7 +2,7 @@
 
 新Application使用Ipc.Assembly、ParcelConfiguration和StageConfiguration；Supply的StationConfig/SaveConfig/ActivateConfig操作在[Supply扩展指南](supply-guide.md)。包格式、签名、精确公共DLL、不可变ID/version与Store机制共用。Driver拥有读码/称重/采图/PLC端口，Component拥有认证/WCS/上传端口；Application决定主流程，UI只调用契约。
 
-当前Application.Contracts ABI1.6.0，包含PR23的IReaderImageCapture.Retain/Release。观察、作业、活动采集各自保有原Acquisition；拒收撤销观察、消费finally释放观察、安全持久终态释放作业，Unknown/Conflict/原回执责任仍保有。不得取最新帧替代原件。包版本与ABI独立，PR24的Debug1.6.6/Release1.6.7属于其精确宿主；新公共DLL字节须新不可变包，不覆盖历史身份。
+当前Application.Contracts ABI1.6.0，能力示例新包1.7.0（精确目标Release检查后分发），包含PR23的IReaderImageCapture.Retain/Release。观察、作业、活动采集各自保有原Acquisition；拒收撤销观察、消费finally释放观察、安全持久终态释放作业，Unknown/Conflict/原回执责任仍保有。不得取最新帧替代原件。包版本与ABI独立，PR24的Debug1.6.6/Release1.6.7属于其精确宿主；新公共DLL字节须新不可变包，不覆盖历史身份。
 
 ## 一个独立工程的声明
 
@@ -38,7 +38,7 @@
 ```sh
 python3 scripts/build-extension.py \
   --definition /independent/reader/packaging/extension.build.json \
-  --contract /frozen/app/Ipc.Platform.dll \
+  --contract /frozen/app/Ipc.Platform.dll --check-host /frozen/app/Ipc.Assembly.dll \
   --output /new-packages/example.reader-2.0.0.ipcx \
   --version 2.0.0 --publisher approved-publisher \
   --key /private/build/publisher.pem --trust /independent/trust.json \

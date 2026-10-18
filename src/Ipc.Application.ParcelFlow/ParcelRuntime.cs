@@ -74,6 +74,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         configuration.RecoverInterruptedActivation();
         repository = new(directory, Id, 4) { Boundary = point => Boundary?.Invoke(point) };
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
+        repository.RecoverLegacyConflicts(definition.PositionRoles);
         foreach (var conflict in repository.LoadConflicts()) identityConflicts.Add(conflict.Id, conflict);
         RefreshStorageCapacity();
         RecoverOverloadAcknowledgement();

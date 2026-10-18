@@ -1,11 +1,3 @@
-> 路径边界：下文Supply/Product命令和消费者SQL属于旧Supply兼容链；不得用于证明Parcel卸载安全。新Application的安装恢复/消费者/备份及安全卸载使用[质量闭环01运行指南](../runtime/architecture-quality-closure-01.md)，混合未知旧根继续阻断。精确契约及原包身份不放宽。
-
-> 采集生命周期P2：复用reader采图的提供者须实现`IReaderImageCapture`新增的RetainAcquisition/ReleaseAcquisition所有者协议，且回调前暂存观察所有者、拒收/异常撤销，Stop/重连保有在途，采图实际返回前不得释放底层资源。业务拥有释放时机，不得按缓存条数或时间逐出。Application.Contracts及参考能力包进入新不可变1.5.0，须对新宿主精确契约重新构建/签名；历史1.4.0包与请求不覆盖。详情见[本次工作包](../work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)。
-
-> 22现行拓扑、状态作用域、版本与交付：[Application架构22](../design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
-
-> 现行三Application职责、公共能力与可选策略：[19职责设计](../design/application-capability-19.md)及[20可靠性增量](../design/capability-reliability-20.md)。本页保留仍有效的基础机制及Supply兼容说明；17/18阶段限制已由19替代。原字节见[归档](../archive/pre-application-capability-19/README.md)。
-
 # 受控扩展开发、构建与安装
 
 Supply兼容扩展指南对应[UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)。[原15及13指南原字节](../archive/pre-ui-maintainability-16/docs/extensions/developer-guide.md.txt)保留历史命令与版本，当前操作以本页和[运行指南](../runtime/operations.md)为准。Storage/MinimumReader=5/5、ExtensionContract=1；本包参考扩展使用新不可变版本1.0.4。原1.0.0～1.0.3包、身份登记、历史宿主和请求保持，不重签覆盖。

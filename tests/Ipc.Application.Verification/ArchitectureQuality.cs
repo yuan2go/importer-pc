@@ -68,6 +68,7 @@ static partial class ArchitectureQuality
         await ActivationCrashChecks();
         await ResponsibilityChecks();
         await IsolationChecks();
+        await Recovery02Checks();
         if (failures != 0) throw new Exception("Architecture quality failures: " + failures);
         Console.WriteLine("PASS AQ COMPLETE");
     }

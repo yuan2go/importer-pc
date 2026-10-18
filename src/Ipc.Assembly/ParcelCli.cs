@@ -11,7 +11,7 @@ static class ParcelCli
         if (!args.Contains("--action")) return false;
         ParcelCapabilityFactory.RegisterContracts();
         var map = args.Chunk(2).ToDictionary(x => x[0], x => x.Length == 2 ? x[1] : throw new ArgumentException("Missing value"));
-        if (map.Keys.Any(x => x is not ("--action" or "--mode" or "--file" or "--extension-trust" or "--dependency-files" or "--extension-root" or "--sha256" or "--destination" or "--data-root" or "--package" or "--operation"))) throw new ArgumentException("Unknown extension option");
+        if (map.Keys.Any(x => x is not ("--action" or "--mode" or "--file" or "--extension-trust" or "--dependency-files" or "--extension-root" or "--sha256" or "--destination" or "--data-root" or "--package" or "--operation" or "--reason"))) throw new ArgumentException("Unknown extension option");
         var mode = Enum.Parse<RunMode>(map.GetValueOrDefault("--mode", "Simulation"));
         if (!Enum.IsDefined(mode)) throw new InvalidDataException("Unknown extension management mode");
         if (map["--action"] is "deployment-identity" or "deployment-check")
@@ -32,6 +32,18 @@ static class ParcelCli
             }
             finally { factory.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
         }
+        if (map["--action"] == "repair-main-projection")
+        {
+            var sourceDirectory = Path.GetDirectoryName(Path.GetFullPath(map["--file"]))!;
+            var dataRoot = Directory.GetParent(sourceDirectory)!.Parent!.Parent!.FullName;
+            var launch = new BusinessLaunch(sourceDirectory, dataRoot, null, null);
+            var factory = new ParcelCapabilityFactory(launch);
+            try { Console.WriteLine(Wire.Encode(new { Status = "MainProjectionRepair", Repaired = ParcelRepository.RepairLegacyMain(map["--file"], map["--sha256"], map["--destination"], ParcelAssembly.Definition(), map["--reason"], (database, config) => { factory.Normalize(config); factory.RegisterBackup(database, config); }), ExternalCalls = 0 })); }
+            finally { factory.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+            return true;
+        }
+        if (map["--action"] == "recovery-plan")
+        { Console.WriteLine(Wire.Encode(ParcelRecovery.PlanRestore(map["--file"], map["--destination"]))); return true; }
         if (map["--action"] == "restore")
         {
             ParcelRecovery.Restore(map["--file"], map["--destination"]);

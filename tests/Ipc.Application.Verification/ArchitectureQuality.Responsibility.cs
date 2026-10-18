@@ -63,10 +63,14 @@ static partial class ArchitectureQuality
         await using var app = await Open(Config("sportmaster"), "ui-draft-cas"); await Maintenance(app);
         var vm = new ParcelViewModel(app, "Quality", "Sportmaster"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
         var loaded = vm.Snapshot!; var oldDraft = Wire.Decode<ParcelConfiguration>(vm.ConfigurationDraft);
-        await app.StageConfigurationAsync(loaded.Configuration.Revision, loaded.Configuration.Effective with { TimeoutMs = 1801 }, "Synthetic concurrent maintenance window");
+        var secondWindow = new ParcelViewModel(app, "Quality B", "Sportmaster"); await secondWindow.RefreshAsync(); await secondWindow.LoadCapabilitiesAsync();
+        secondWindow.ConfigurationDraft = Wire.Encode(loaded.Configuration.Effective with { TimeoutMs = 1801 }); secondWindow.ConfigurationReason = "Second actual VM maintenance window";
+        await secondWindow.SaveConfigurationAsync();
         await vm.RefreshAsync(); vm.ConfigurationDraft = Wire.Encode(oldDraft with { TimeoutMs = 1802 }); vm.ConfigurationReason = "Synthetic older editor after automatic refresh";
         await vm.SaveConfigurationAsync(); var after = await app.SnapshotAsync();
         Check(after.Configuration.Revision == loaded.Configuration.Revision + 1 && after.Configuration.Pending!.TimeoutMs == 1801 && vm.Message.StartsWith("Rejected") && vm.Message.Contains("revision conflict", StringComparison.OrdinalIgnoreCase), "automatic UI refresh cannot replace the full draft CAS revision and overwrite another window's saved candidate");
+        Check(secondWindow.Message.StartsWith("PendingRestart") && Wire.Encode(after.Configuration.Pending) == Wire.Encode(loaded.Configuration.Effective with { TimeoutMs = 1801 }) && vm.ConfigurationDraft == Wire.Encode(oldDraft with { TimeoutMs = 1802 }),
+            "two real window VMs retain conflicting draft and preserve the complete other position/instance topology");
         var legacy = Config("sportmaster") with { SchemaVersion = 2, Topology = null };
         await using var oldFormApp = await Open(legacy, "legacy-ui-cas"); await Maintenance(oldFormApp);
         var oldVm = new ParcelViewModel(oldFormApp, "Quality", "Legacy compatibility"); await oldVm.RefreshAsync(); await oldVm.LoadCapabilitiesAsync(); var oldLoaded = oldVm.Snapshot!;

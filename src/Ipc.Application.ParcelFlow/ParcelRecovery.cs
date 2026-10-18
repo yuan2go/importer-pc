@@ -8,7 +8,9 @@ public static class ParcelRecovery
 {
     // Offline, new isolated application directory only. A backup never rolls back a peer's
     // action. On first startup all interrupted intents retain their original identities.
-    public static void Restore(string databaseBackup, string newApplicationDirectory)
+    public static void Restore(string databaseBackup, string newApplicationDirectory) => RestoreCore(databaseBackup, newApplicationDirectory, false);
+    public static ParcelRecoveryCapacity PlanRestore(string databaseBackup, string newApplicationDirectory) => RestoreCore(databaseBackup, newApplicationDirectory, true);
+    static ParcelRecoveryCapacity RestoreCore(string databaseBackup, string newApplicationDirectory, bool planOnly)
     {
         var source = Path.GetFullPath(databaseBackup); var target = Path.GetFullPath(newApplicationDirectory);
         if (Directory.Exists(target) || File.Exists(target)) throw new IOException("Restore requires a new isolated application directory");
@@ -38,6 +40,13 @@ public static class ParcelRecovery
             Directory.GetParent(target)?.Parent?.Name != config.Effective.Mode.ToString() ||
             config.Pending is { } pending && (pending.ApplicationId != config.Effective.ApplicationId || pending.StationId != config.Effective.StationId || pending.Mode != config.Effective.Mode))
             throw new InvalidDataException("Original application/mode/directory identity must be preserved");
+        RecoveryFiles.RequireOrdinaryAncestors(target);
+        var bytes = checked(new FileInfo(source).Length + new FileInfo(manifestPath).Length +
+            manifest.Files.Sum(f => new FileInfo(RecoveryFiles.Resolve(recovery, f.Key)).Length));
+        var reserve = config.Effective.Retention?.MinimumFreeBytes ?? 67108864;
+        var capacity = ParcelStorageVolume.Plan(target, bytes, reserve);
+        if (planOnly) return capacity;
+        if (!capacity.Fits) throw new IOException("Restore capacity insufficient: " + Wire.Encode(capacity));
         Directory.CreateDirectory(target);
         ExtensionStore.AtomicWrite(Path.Combine(target, "RESTORE-INCOMPLETE.json"), manifest);
         RecoveryFiles.CopyVerified(source, Path.Combine(target, manifest.Application + ".db"), manifest.DatabaseHash);
@@ -47,5 +56,6 @@ public static class ParcelRecovery
             RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(recovery, file.Key), destination, file.Value);
         }
         File.Move(Path.Combine(target, "RESTORE-INCOMPLETE.json"), Path.Combine(target, "RESTORED-ISOLATED.json"));
+        return capacity;
     }
 }

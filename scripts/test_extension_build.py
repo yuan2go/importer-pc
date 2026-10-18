@@ -10,6 +10,13 @@ import extension_build as builder
 
 
 class ExtensionBuildTests(unittest.TestCase):
+    def test_typed_provider_requirements_are_bounded_and_not_arbitrary_metadata(self):
+        module = dict(Id='camera', Assembly='Provider.dll', EntryType='Provider.Camera', Kind='camera', MaximumInstances=1,
+                      ContractIdentity='CAPTURE-v1', Requirements={'Query': True, 'ImageAddress': False})
+        builder.validate_module(module)
+        for patch_value in [{'Requirements': {'Query': 'true'}}, {'Requirements': {'AnyCommand': True}}, {'ContractIdentity': 'x' * 129}, {'Parameters': []}]:
+            with self.assertRaises(ValueError): builder.validate_module(dict(module, **patch_value))
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix='ipc-build-tool-test-')
         self.addCleanup(self.temp.cleanup)

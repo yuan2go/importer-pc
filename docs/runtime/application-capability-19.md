@@ -70,7 +70,7 @@ ContinuePrepared保留原守卫，只发送从未尝试的原意图；重启Prep
 示例examples/ParcelCapabilitiesExtension新增login/camera/upload工厂和strict-wcs输入要求，继续使用原build-extension.py和.ipcx格式。新Application.Contracts=1.2.0，示例包使用新不可变1.2.0；Platform精确指纹变化也要求新观察/集成参考包1.0.6。旧包不覆盖、不重签为兼容；旧未决用匹配旧发布清偿。
 
 ```sh
-python3 scripts/build-extension.py --definition examples/ParcelCapabilitiesExtension/extension.build.json --contract <冻结宿主>/Ipc.Platform.dll --output <新路径>/capabilities-1.2.0.ipcx --version 1.2.0 --publisher <获准发布者> --key <私钥路径> --trust <独立信任文件> --dotnet <固定dotnet>
+python3 scripts/build-extension.py --definition examples/ParcelCapabilitiesExtension/extension.build.json --contract <冻结宿主>/Ipc.Platform.dll --check-host <冻结宿主>/Ipc.Assembly.dll --output <新路径>/capabilities-1.2.0.ipcx --version 1.2.0 --publisher <获准发布者> --key <私钥路径> --trust <独立信任文件> --dotnet <固定dotnet>
 dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --signed-capabilities <签名包> <独立信任文件>
 ```
 

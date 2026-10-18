@@ -11,4 +11,3 @@ public interface IImageUploader : Ipc.Platform.IImageUploader<FrozenRequest, Sta
 public interface ILoginExtension { IOperatorAuthenticator Create(CapabilityBinding binding); }
 public interface ICameraExtension { IImageCamera Create(CapabilityBinding binding, string temporaryDirectory); }
 public interface IUploadExtension { IImageUploader Create(CapabilityBinding binding); }
-public interface ICapabilityDeclaration { CapabilityRequirements Requirements { get; } }

@@ -12,6 +12,7 @@ public sealed partial class ParcelRuntime
         {
         op = operations[op.Id];
         var stage = GetStage(op, kind)!;
+        var attached = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached;
         if (stage.Replies.Length >= 64) return op with { Reason = "Receipt retention budget requires controlled archive before further queries" };
         var binding = BindingFor(Effective, kind);
         if (binding is null || Wire.Encode(binding) != Wire.Encode(stage.Request.Binding) ||
@@ -25,11 +26,16 @@ public sealed partial class ParcelRuntime
         CapabilityHealth health;
         try { health = await ExternalAsync(() => port.HealthAsync(budget.Token)).ConfigureAwait(false); }
         catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException)
-        { return operations[op.Id]; }
+        {
+            op = operations[op.Id]; stage = GetStage(op, kind)!;
+            var detail = "Capability health unavailable: " + ex.GetType().Name;
+            capabilityHealth[port.InstanceId] = new(port.InstanceId, false, DateTimeOffset.UtcNow, DateTimeOffset.UtcNow, detail);
+            op = SetStage(op, kind, stage with { Failure = detail }) with { State = attached ? op.State : ParcelState.Blocked, Reason = attached ? op.Reason : detail };
+            Save(op, "CapabilityHealthUnavailable", detail); return op;
+        }
         op = operations[op.Id];
         if (!health.Ready || health.ValidUntil <= DateTimeOffset.UtcNow || health.ConfirmedAt > DateTimeOffset.UtcNow)
-        { op = op with { State = ParcelState.Blocked, Reason = "Original capability is not healthy; reconnect and reconcile" }; Save(op, "CapabilityNotReady", op.Reason); return op; }
-        var attached = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached;
+        { op = SetStage(op, kind, stage with { Failure = "Original capability is not healthy" }) with { State = attached ? op.State : ParcelState.Blocked, Reason = attached ? op.Reason : "Original capability is not healthy; reconnect and reconcile" }; Save(op, "CapabilityNotReady", "Original capability is not healthy"); return op; }
         if (!query && ((!attached && !CanDispatch(op) || attached && (stopping.IsCancellationRequested || repository!.Paused || failure is not null)) ||
             !PredecessorsAccepted(op, kind) || kind is ParcelStage.Wcs or ParcelStage.Plc && !WeightReady(op))) return op;
         if (!query)

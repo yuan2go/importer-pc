@@ -79,7 +79,7 @@ dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Veri
 
 ## 审查02实际维护命令
 
-以下为选中Application的Assembly入口。先停止旧应用并取得原目录所有权，核对数据库及非空WAL的SHA256，保留完整匹配原发布、原配置/信任/包/图像/回执；备份目标必须全新且与原目录分离。recover-legacy-receipt是旧Attached缺raw到DB5的窄维护入口；原发布目录应包含原application-release.json及其Files完整文件（通常为原媒介app目录）。工具不接纳新件，只Query冻结原上传请求；恢复进程中断后可用当前DB/WAL新指纹及新备份目标重试，先本地完成已持久Query再决定是否需要外查。repair-main-projection仅修主投影，不能代替该升级流程。
+以下为选中Application的Assembly入口。先停止旧应用并取得原目录所有权，核对数据库及非空WAL的SHA256，保留完整匹配原发布、原配置/信任/包/图像/回执；备份目标必须全新且与原目录分离。recover-legacy-receipt是旧Attached缺raw到DB5的窄维护入口；原发布目录应包含原application-release.json及其Files完整文件（通常为原媒介app目录）。工具不接纳新件，只Query冻结原上传请求；恢复进程中断后可用当前DB/WAL新指纹及新备份目标重试，先本地校验并完成已持久Query再决定是否需要外查。同请求回复ID按永久首次原hash核对（旧无索引格式读取原occurrence原件），包括已离开最近64条投影的ID；重用ID但改变字节时输出Conflict，数据库不升级，原缺raw/图像和矛盾Query均保留。停止普通升级，沿原备份和LegacyQueryConflict审计调查，不删除责任解锁。repair-main-projection仅修主投影，不能代替该升级流程。
 
 ```sh
 # 如原库有非空-wal，为recover-legacy-receipt增加 --wal-sha256 ORIGINAL_UPPERCASE_WAL_SHA256
@@ -89,7 +89,7 @@ dotnet app/Ipc.Assembly.dll --action recovery-plan --file /backup/full.db --dest
 dotnet app/Ipc.Assembly.dll --action restore --file /backup/full.db --destination /larger-volume/runtime/Simulation/reference-17/sportmaster
 ```
 
-含扩展的离线修复须在原Application目录保有extension-store.json（Windows使用已配置机器策略），备份Effective与Pending均登记；未配置/未知消费者拒绝，不返回空引用。旧主结果恢复不代表旧实现升级已完成。recover-legacy-receipt成功输出UpgradedCustodyRetained及DatabaseVersion=5，仍需核对原Awaiting/raw_hash=null、Query关联、发送次数和完整备份；原raw资料责任持续阻止图像释放、归档及原包退休。新运行输入需按旧账确认流程维护确认；若需改新精确实现，沿完整候选/CAS和受控重启，仅在外部业务已被证明终结后过渡。
+含扩展的离线修复须在原Application目录保有extension-store.json（Windows使用已配置机器策略），备份Effective与Pending均登记；未配置/未知消费者拒绝，不返回空引用。旧主结果恢复不代表旧实现升级已完成。recover-legacy-receipt成功输出UpgradedCustodyRetained及DatabaseVersion=5，仍需核对原Awaiting/raw_hash=null、Query关联、发送次数和完整备份；持久Query依据读取独立Committed原件及SHA、原请求和当前终结事实，不依赖最近64条展示列表；裁剪不应令已核对责任重新变成未知。原raw资料责任持续阻止图像释放、归档及原包退休。新运行输入需按旧账确认流程维护确认；若需改新精确实现，沿完整候选/CAS和受控重启，仅在外部业务已被证明终结后过渡。
 
 ## 标准发行的可选Driver/Component集合
 

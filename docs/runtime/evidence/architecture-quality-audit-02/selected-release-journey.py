@@ -1,4 +1,4 @@
-# Parameterized public reproduction of executed workflow; original script SHA256 24bf0b4934a50a2f15b4ab43a5ace7035820a6bdd55d8a1cf75a6e3319d82dc1
+# Parameterized public reproduction; original executed script SHA256 164ad8138757c545e85a6884bee79b51be14fbf6fef67ebe01c531e576dbed11
 import json,zipfile,hashlib,subprocess,queue,threading,uuid,time,copy
 from pathlib import Path
 import sys
@@ -12,7 +12,7 @@ for name in ['sport-core','sport-selected']:
  root=target
 lock=json.loads((root/'composition.lock.json').read_text()); assert len(lock['offline_bundles'])==2
 assert not (base/'sport-core-unpacked/offline-extensions').exists()
-assert sorted(p.name for p in (root/'offline-extensions').glob('*.ipcx'))==['reference.barcode-1.0.11.ipcx','reference.parcel-capabilities-1.7.0.ipcx']
+assert sorted(p.name for p in (root/'offline-extensions').glob('*.ipcx'))==['reference.barcode-1.0.12.ipcx','reference.parcel-capabilities-1.7.2.ipcx']
 run=base/'selected-runtime'; run.mkdir(); config=run/'config'; config.mkdir(); seed=json.loads((root/'app/config/business.json').read_text()); (config/'business.json').write_text(json.dumps(seed))
 store=run/'store'; trust=base/'private/trust.json'; (config/'extension-store.json').write_text(json.dumps({'Root':str(store),'TrustFile':str(trust)}))
 app=root/'app/Ipc.Assembly.dll'; log=[]; installed={}; modules={}

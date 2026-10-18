@@ -3279,9 +3279,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/architecture-quality-audit-02-results.md",
-      "sha256": "43c537dd63632a42fa78a7a01cd5dcfb1226b35955977c0e0225d9a24cbff8c8",
-      "size_bytes": 10958,
-      "git_blob": "833a4eee7d7acae52ffc38801d88f57d21120f7e"
+      "sha256": "834babb57c0633e51fb4a73cd8a743404bd752add30c67846a5c9b88117c0346",
+      "size_bytes": 11723,
+      "git_blob": "5064d72bbe8636072ae2bfbf49359b9c2d68dced"
     },
     {
       "version": "architecture-quality-closure-01",
@@ -6994,9 +6994,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/evidence/architecture-quality-audit-02/README.md",
-      "sha256": "1ee7fbed3a539a6089ea19d69c7313956a6ee2f3abcb4bffd7479ce111d5d2d4",
-      "size_bytes": 1765,
-      "git_blob": "706cbf6581c15b9f824a1a3b847ac91d32950467"
+      "sha256": "c79e788499c56fef2d259c1a8b6e461febbb9ecc5f3e74f40c5399f594f28505",
+      "size_bytes": 2067,
+      "git_blob": "5ec3f80de84c591ac2e279d0ee43cebe68e92d07"
     },
     {
       "version": "audit02-implementation",
@@ -7008,6 +7008,28 @@
       "sha256": "fa689b9b6c96e84d13bfc2a90db914cfc51991f41104223a7539347ed1d6d0d4",
       "size_bytes": 81077,
       "git_blob": "b6ebe753a2e344bb3eb1082e19cf3eb40b0842e5"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/archive-checks.json",
+      "sha256": "1be5fed1b8916152d04083157ea967b2b105703d5a06ffbcc5b4693180346883",
+      "size_bytes": 80659,
+      "git_blob": "1394a4397f97f9c4d22b785a605c1bf60b56dad4"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/archive-error-comparison.json",
+      "sha256": "e7efd8663662c3adaadf15462a14dfbbef5bdd07a27e745f1fec723e45442f2f",
+      "size_bytes": 402,
+      "git_blob": "679b73627253852262857326cc1e274dcf93348a"
     },
     {
       "version": "audit02-implementation",
@@ -7037,6 +7059,17 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/barcode-1.0.12.ipcx.identity.json",
+      "sha256": "6ca7ac6ce0b6cbef57f2e7ea2f981ea64360c07c744d5d377e3fd56e5f30f983",
+      "size_bytes": 1191,
+      "git_blob": "2ed788690bdfccb62de773b01c30a749aab8c282"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
       "path": "docs/runtime/evidence/architecture-quality-audit-02/baseline-custody.json",
       "sha256": "eb2553ab1d1b3ab58c281403f16a2cfd7805f3d2f142195eebcd008e0219c6a7",
       "size_bytes": 7377,
@@ -7048,7 +7081,7 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "path": "docs/runtime/evidence/architecture-quality-audit-02/candidate-readback.json",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/candidate-readback-bab9.original.json",
       "sha256": "73c1242399b0aad3fba7848b019a565c3360aca6a519bf1810e610b5b618cdd7",
       "size_bytes": 2038,
       "git_blob": "d13a7c5ecefce7c70975f3698d28b3c0e29655d2"
@@ -7059,10 +7092,43 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "path": "docs/runtime/evidence/architecture-quality-audit-02/checks.json",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/candidate-readback.json",
+      "sha256": "f1f1d33b714c0b0003c1be6f33b9d1c39c6d20a3584a4ccf90de1eaded20bfa1",
+      "size_bytes": 2038,
+      "git_blob": "15a6fdd0f4b70a1569f01b9684cebe57a5f64191"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/checks-bab9.original.json",
       "sha256": "c6f7c2984a620e4e9076d38827578cd662f90740c1cb710c49ccf0a54fbadb0b",
       "size_bytes": 6124,
       "git_blob": "055cc05c13d123063af5d219959a18aed3edbcf0"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/checks.json",
+      "sha256": "de6028b180fac0b614766540802dceab9fb546659cb9efb6c122e87c57af5225",
+      "size_bytes": 12246,
+      "git_blob": "19d4264bd512d97a4af527ad2896864c5dbd7aca"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/final-source-files.json",
+      "sha256": "c437554cdcbd0e04411fa4d21fd90457490ad24cd5d12b95e6073487574e84f4",
+      "size_bytes": 55080,
+      "git_blob": "0609b401648059726b16b4207e19ccb4d55f26d0"
     },
     {
       "version": "audit02-implementation",
@@ -7162,6 +7228,149 @@
       "sha256": "a707c50591ceb46b429f8c125a632e9a721fa0f5a1342a66f01aee641cae4068",
       "size_bytes": 2892,
       "git_blob": "d27a850f40ed3970b5d77b5f4ae6a0679665c2f4"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/logs/final-checker.log",
+      "sha256": "5e0cc13f38a32d473cc05c2f9672565d721cd945d508f087ae11aa1b3a72ef2c",
+      "size_bytes": 4405,
+      "git_blob": "2b23a7d374af0f004ae248f144af95f87b223585"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/logs/final-expected-driver-start-failure.log",
+      "sha256": "0b7559098c2e0d539e969013d1fe1632f89d993b8676aa8885a9eb176729e6af",
+      "size_bytes": 751,
+      "git_blob": "ba320cbb8f8fac208c68461f478d4d590596f0fb"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/logs/final-extensions.log",
+      "sha256": "222427e4846fef678d92877820d44b56e6ef16c62e988e3a5783ee494afaa4af",
+      "size_bytes": 2892,
+      "git_blob": "e2837abca2dee068e7f775bb8c8adad7b3528e1d"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/logs/final-package-core.log",
+      "sha256": "009fb792abbf3453317c338fe9a9976cb1feb0893a1b949b5250e4ad76447b90",
+      "size_bytes": 4125,
+      "git_blob": "fefb5721b090bf79e20d12221344fccf419cb325"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/logs/final-package-selected.log",
+      "sha256": "e4570d0eb38e4fa18bdb2f996ae657cb649b01f786d587da1d13509a6345dce8",
+      "size_bytes": 31274,
+      "git_blob": "14152708f2ba43f133ed621771c1837599e878af"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/logs/final-package-win.log",
+      "sha256": "15103dbc2f88ab23d2cc933b880f7f4c27c0007e66007948a14d050e72800761",
+      "size_bytes": 7481,
+      "git_blob": "bf929ba188d2f8c596e928501106c0f723ff0e7c"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/logs/final-quality.log",
+      "sha256": "3af729522d30f11d3e2d275ff13cf836fd2e50ff37d98e4d29052f8c4c1190c7",
+      "size_bytes": 8871,
+      "git_blob": "e3e5ff6111258897a1e37a4a3331a79b8847c9b1"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/logs/final-selected-journey.log",
+      "sha256": "a9c8fb8a6d98eca3ecc5e877b9c8a235005bc7d298095b8528301d8c879cde45",
+      "size_bytes": 159,
+      "git_blob": "634c264530d60bf5af47166833b9fffc9d7a37a7"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/logs/final-signed-barcode.log",
+      "sha256": "6052bdf57ca1812990370eb0826919206ee98fbcb4b9e79b9bead32574d79b1e",
+      "size_bytes": 8532,
+      "git_blob": "4db2443c1b02055a738760a11405ebaa6deaa434"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/logs/final-signed-capabilities.log",
+      "sha256": "d4ecafdfc7e374f56a0de7f746080773669e9a977440d43e5693f8c84658ea39",
+      "size_bytes": 1201,
+      "git_blob": "6182c1b44087d23c72100742f40632532ec96c5c"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/logs/final-signed-parcel.log",
+      "sha256": "a85354e638ce4c45347b5a4b420c683a3205215eef80ee75ec2da46f123cfa15",
+      "size_bytes": 21884,
+      "git_blob": "f7d236df3d3dedcf7b059b4dab17671758b7a36c"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/logs/final-smoke-core.log",
+      "sha256": "b9891c9e5a6b8f7be0728805d2cb02ea7d073e0441f6eb22cd9c4d64f188ec35",
+      "size_bytes": 560,
+      "git_blob": "d8709506037baa71f53cb3ada28a5eb1c8d19c6f"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/logs/final-smoke-http.log",
+      "sha256": "e4479fc9dc66d4af2435fe4977e6b617764ca6f6e52381e3b3bea6b3220cfc7f",
+      "size_bytes": 805,
+      "git_blob": "d13bbbac2838f4eaafc0c0a12d7c694c1aa6e8e0"
     },
     {
       "version": "audit02-implementation",
@@ -7378,6 +7587,28 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/parcel-1.7.2.ipcx.identity.json",
+      "sha256": "bcbfe14b1a1cedf7652eab9fc65ba9604d5466f5afd5b2b013243e0b3a948b50",
+      "size_bytes": 1300,
+      "git_blob": "f8e9157ad3fbfdc624b6880795ec2fb1c0f556ff"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/process-exits-2ad.json",
+      "sha256": "1bf6f7ceea354ef66c3e274f037f5fe12a7f80ff00f019327e3debd207cad993",
+      "size_bytes": 1376,
+      "git_blob": "81200aae85ab0e7f142965eae51ac8b11923c480"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
       "path": "docs/runtime/evidence/architecture-quality-audit-02/process-exits.json",
       "sha256": "ccc29442344d052e0663ec6e45a47dc53295886f873b9786c0b9c61a9bda4e84",
       "size_bytes": 1815,
@@ -7389,10 +7620,21 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "path": "docs/runtime/evidence/architecture-quality-audit-02/recovery-cli.json",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/recovery-cli-bab9.original.json",
       "sha256": "446737503f0e695342b5f18db283c2d7a27cb5be516383ada61d30f4556c784c",
       "size_bytes": 672,
       "git_blob": "371551fd94200e25de882a9637ff4ea210cbaeed"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/recovery-cli.json",
+      "sha256": "1da43a2c3e943bda3ea3e1552320aaa78e037b81270a32f3a6c26a9fdf56c5d8",
+      "size_bytes": 672,
+      "git_blob": "624afef7fc7a234a95c4dabcc68c395c9219786e"
     },
     {
       "version": "audit02-implementation",
@@ -7411,7 +7653,7 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "path": "docs/runtime/evidence/architecture-quality-audit-02/selected-journey.json",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/selected-journey-bab9.original.json",
       "sha256": "ed6aaf13dd59858bc0bb08b20590b6f66d82719ec90ad8d2370efc2a73dea4c9",
       "size_bytes": 30612,
       "git_blob": "fd98ae301a2ec51d72658dd9c5e1aa11b44c4c1e"
@@ -7422,10 +7664,10 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "path": "docs/runtime/evidence/architecture-quality-audit-02/selected-release-journey.py",
-      "sha256": "770dd098314430294b049391d9d3f01fcb1d0b42f8482da2b8951226daabbdce",
-      "size_bytes": 7966,
-      "git_blob": "8086e7030da44752c729c09eb49aadddeba2a18c"
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/selected-journey.json",
+      "sha256": "c676fcdd80b9d2435ad05c6a78e424e5c6d86fb2d72db38911f2e08c6c126b41",
+      "size_bytes": 30565,
+      "git_blob": "496ccbe356be8531a64b970e4617aa92b6c87a02"
     },
     {
       "version": "audit02-implementation",
@@ -7433,7 +7675,18 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "path": "docs/runtime/evidence/architecture-quality-audit-02/smoke-core.json",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/selected-release-journey.py",
+      "sha256": "d160038630fc1beef5136432013e00dfb5b3f281432f649fd81d7de27269428a",
+      "size_bytes": 7954,
+      "git_blob": "d06dd70d57d84944df8f2249c64e34bddfc27352"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/smoke-core-bab9.original.json",
       "sha256": "c5b8ecb4cf951743f096a0fb753180c69f8f9369e609fd4ec5b7819b9d2b05b6",
       "size_bytes": 616,
       "git_blob": "2debd1cd554a2bedaa1ea46fe77182e5ee7ce714"
@@ -7444,7 +7697,18 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "path": "docs/runtime/evidence/architecture-quality-audit-02/smoke-http-attached.json",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/smoke-core.json",
+      "sha256": "095ea1d0dee551634cc5d1d74aadc382e667d2d315bf473ca1702f08b8dc817b",
+      "size_bytes": 616,
+      "git_blob": "87298ad4358cef707adf67b21a2416af515ade10"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/smoke-http-attached-bab9.original.json",
       "sha256": "101051f4e16934c5b9d1793d145de390e1c8d94e73e44937f33299fb9bc2489e",
       "size_bytes": 893,
       "git_blob": "106fa5e2dd62aec80d0fa077d353d2eb82b90a3c"
@@ -7455,10 +7719,32 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "path": "docs/runtime/evidence/architecture-quality-audit-02/test-host.json",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/smoke-http-attached.json",
+      "sha256": "bd74dcec484a7138310a112dbc944f08aade89ee8e43aafb4a0b97dce56be82b",
+      "size_bytes": 893,
+      "git_blob": "85a0beaddceeb72b1b392736667140fd4fe8d291"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/test-host-bab9.original.json",
       "sha256": "f380c01af29f86e6be98c2853420331ab9dc84cdd916c78fe3ad7aaf3db620bb",
       "size_bytes": 1774,
       "git_blob": "a669dd0a917c2d47f795516c16148641f076c943"
+    },
+    {
+      "version": "audit02-implementation",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
+      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "storage_scope": "public_repository",
+      "path": "docs/runtime/evidence/architecture-quality-audit-02/test-host.json",
+      "sha256": "6f36491388206f2a4bde2bec33a60c7119223d41e137eb3caf69d11369723b2f",
+      "size_bytes": 1749,
+      "git_blob": "fa9d2dd89b504d724bea9bfc4f59ca3b47e531b7"
     },
     {
       "version": "architecture-quality-closure-01",
@@ -23213,7 +23499,7 @@
     "entry": "docs/runtime/architecture-quality-audit-02-results.md",
     "operations": "docs/runtime/architecture-quality-closure-01.md",
     "checks": "docs/runtime/evidence/architecture-quality-audit-02/checks.json",
-    "source_commit": "bab9c3012652c3b8aae1d90627953734a1de29b8",
+    "source_commit": "2ad633578141db4ef34e255217bc8815634ffd0a",
     "parcel_storage": 4,
     "supply_storage": 5,
     "supply_minimum_reader": 5,
@@ -23226,7 +23512,8 @@
     "field": "BLOCKED_PER_CAPABILITY",
     "production": "NOT_READY",
     "actual_wpf_screenshots": 0,
-    "private_keys_included": false
+    "private_keys_included": false,
+    "business_code_commit": "bab9c3012652c3b8aae1d90627953734a1de29b8"
   },
   "followup_work_packages": [
     "WP-IPC-ENGINEERING-FOLLOWUP-08",
@@ -23898,7 +24185,7 @@
     "candidates": "docs/runtime/evidence/capability-reliability-20/candidate-inventory.json",
     "reference_verification": "PASS"
   },
-  "runtime_source_commit": "bab9c3012652c3b8aae1d90627953734a1de29b8",
+  "runtime_source_commit": "2ad633578141db4ef34e255217bc8815634ffd0a",
   "application_architecture_22_publication": {
     "receipt": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/architecture22-reference-8981d54",
@@ -23986,14 +24273,15 @@
     "execution_main": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
     "inherited_pr24": "a2e987a8d15eb397ad1a40cf1a303bdad4ec397b",
     "inherited_pr23": "966ec6aa17dfe29b96fc9b9113f3037ba586f6a0",
-    "source": "bab9c3012652c3b8aae1d90627953734a1de29b8",
+    "source": "2ad633578141db4ef34e255217bc8815634ffd0a",
     "results": "docs/runtime/architecture-quality-audit-02-results.md",
     "work": "PDF section11 N01-N07",
     "business_merged_main": false,
     "windows_actual": "NOT_RUN",
     "sdk_protocol_site": "BLOCKED",
-    "release_capability_package": "1.7.0",
-    "release_observation_package": "1.0.11",
-    "private_keys_included": false
+    "release_capability_package": "1.7.2",
+    "release_observation_package": "1.0.12",
+    "private_keys_included": false,
+    "business_code_commit": "bab9c3012652c3b8aae1d90627953734a1de29b8"
   }
 }

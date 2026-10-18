@@ -1,6 +1,6 @@
 {
   "Status": "PASS",
-  "SourceCommit": "bab9c3012652c3b8aae1d90627953734a1de29b8",
+  "SourceCommit": "2ad633578141db4ef34e255217bc8815634ffd0a",
   "Application": "sportmaster",
   "Target": "portable",
   "Checks": [
@@ -24,7 +24,7 @@
     "one execution per independent receiver"
   ],
   "State": "SlotResolved",
-  "OperationId": "1cc87027af58479ba1c690b531e269c4",
+  "OperationId": "31dbeac21bf242bf94e256b47f69d8e3",
   "Windows": "NOT_RUN",
   "RealEquipment": "BLOCKED"
 }

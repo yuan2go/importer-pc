@@ -1,24 +1,24 @@
 {
-  "SourceCommit": "bab9c3012652c3b8aae1d90627953734a1de29b8",
-  "Compiler": "SDK10.0.402; locked restore; serial build",
+  "BuildCommit": "2ad633578141db4ef34e255217bc8815634ffd0a",
+  "BusinessCodeCommit": "bab9c3012652c3b8aae1d90627953734a1de29b8",
+  "SameSrcTestsConfigScriptsExamplesAsBab9": true,
   "ReleaseHost": {
-    "Ipc.Components.dll": "6abceb05bad9e6aee5b29fa50335f5ffb786f9e03ab41e27ee0ba16323aba05b",
-    "Ipc.Application.Verification.dll": "3e50b673e8657511a8d63094870b49905399c8579657ea2651f906c0332916cc",
-    "Ipc.Application.ParcelFlow.dll": "93ec77080b241073cdf98ccf9586020c94b561179dae7fda4b119237ac1c4b8f",
-    "Ipc.Application.DirectPlc.dll": "6f1e8c816fc9702230328ff946a783102aa0f01e025a926f1278af856c8cb519",
-    "Ipc.Supply.Contracts.dll": "c4e2c40775cd2082e2ada6690d57fd37d254c8899a0b39c1d519700c95d9944f",
-    "Ipc.Platform.dll": "da5ad9cbf9231d4c0aa3cb2724b66da141466ddbe046b79cc461888f29f1d100",
-    "Ipc.Reference.Protocol.dll": "1d6f47c971efbe6c1abc35b4e1d6ed43dd729c1552e31d9736e694d2751e3e24",
-    "Ipc.Drivers.dll": "d334fa79b83e7f8b6a94ea7c9d28f3a8f46274d427cd4f1c905a6d4955f7990d",
-    "Ipc.Integrations.dll": "3adc3d9d9035125a0678fcf5b3150f7c5238bb6403533b2d840b9e5a9d4ea5bb",
-    "Ipc.Application.WcsToPlc.dll": "5fa85d58525b96636d68e7d0909cb91a1f8e686f9d59aecea0d0fc1062ff1cb9",
-    "Ipc.Platform.Storage.dll": "7affb673f6a7201e9ebf00739ceb9c0a975773ebd0d0b7fd8f9f7ee121f8cf9f",
-    "Ipc.Application.Contracts.dll": "79eef06bfadb76146a7c8b5a7887c692a4e7b5ffdce249f94d2b2ba2cef4b71e",
-    "Ipc.Application.Sportmaster.dll": "622b986602a69438272ee592356915d896b9aa805971666b417c1136fcf031a3"
+    "Ipc.Components.dll": "facf271971b01c23b2df1395df7a158d2a6ab2969e8adf45d6ae344ac21fbbaf",
+    "Ipc.Application.Verification.dll": "b89243030f8db5a0d217d394a6cb3cc62f8f12bc14b723a91806684ff72d1513",
+    "Ipc.Application.ParcelFlow.dll": "525dc49454a0b1e369b9b09e2458371c94209d38369bd86b1891cde87f1381e7",
+    "Ipc.Application.DirectPlc.dll": "8c4c7100f25654856af4d8be5e76eac9ac42cbfeb495f0e96234c43f9c777615",
+    "Ipc.Supply.Contracts.dll": "7158083ebd19b77a654d438caed2191270a0f41db4a237f41fb64f42d4f61288",
+    "Ipc.Platform.dll": "1b4560d495cdf646bb54a05d9cd138235b29aead7d9f71f8435ad3b0d6b1570c",
+    "Ipc.Reference.Protocol.dll": "0125675089afe47aa3092fa741160098b36de4c3be76019ad62afbae87686d18",
+    "Ipc.Drivers.dll": "96361e04e92e5f98d8813c6049775097537573d44471b25a984e3f658daecc82",
+    "Ipc.Integrations.dll": "962f2cfd18a73155729010a2116c730386c46cf8059a140452cec28217f12785",
+    "Ipc.Application.WcsToPlc.dll": "f401f8017a7e0ef7d0012cd30a301d168b3d539cf8ec4c75fe5862c9cc5839fb",
+    "Ipc.Platform.Storage.dll": "b46c9d4ad3768135daf6884ec34bb55c7576ea736c968d640e3d17d55532a782",
+    "Ipc.Application.Contracts.dll": "50c693c0d07e2bd314816310ee8510dedc78a90aab9ac0f293e97da492df1efa",
+    "Ipc.Application.Sportmaster.dll": "fb0fdc3cfa2e8cb9a1951d77c02b450ee862008c47605426530b93f49b597b60"
   },
   "CandidatePublicContracts": {
-    "Ipc.Platform.dll": "da5ad9cbf9231d4c0aa3cb2724b66da141466ddbe046b79cc461888f29f1d100",
-    "Ipc.Application.Contracts.dll": "79eef06bfadb76146a7c8b5a7887c692a4e7b5ffdce249f94d2b2ba2cef4b71e"
-  },
-  "DebugEntry": "199c86971ea45f37f93ed1af521041de1b0a1db67ed9e7c899b0f81bc5a7aa2c"
+    "Ipc.Platform.dll": "1b4560d495cdf646bb54a05d9cd138235b29aead7d9f71f8435ad3b0d6b1570c",
+    "Ipc.Application.Contracts.dll": "50c693c0d07e2bd314816310ee8510dedc78a90aab9ac0f293e97da492df1efa"
+  }
 }

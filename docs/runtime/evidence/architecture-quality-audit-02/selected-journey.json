@@ -1,28 +1,28 @@
 {
   "Status": "PASS",
-  "SourceCommit": "bab9c3012652c3b8aae1d90627953734a1de29b8",
+  "SourceCommit": "2ad633578141db4ef34e255217bc8815634ffd0a",
   "CorePackages": 0,
   "SelectedPackages": [
     {
       "Id": "reference.parcel-capabilities",
-      "Version": "1.7.0",
-      "ManifestSha256": "564CAAB329B9FA6F2AE51660CB7F4298AB442CC9D9003873DBF83138A9FBB23B",
-      "PackageSha256": "36120062AF32C1C89BB3913683534FBF1169CC137FC376A16A002CC10B8FE1D5",
-      "File": "offline-extensions/reference.parcel-capabilities-1.7.0.ipcx",
+      "Version": "1.7.2",
+      "ManifestSha256": "666CC5714E94C6D98C49C4C9DD1D1C1EC0732100C66526A19755E31C6FD95361",
+      "PackageSha256": "7D3DCEE34249CB441522E028B2CC87E4BF257D956B848817A6B90006CCA90F62",
+      "File": "offline-extensions/reference.parcel-capabilities-1.7.2.ipcx",
       "Mode": "Simulation",
       "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
       "Installed": false,
       "Activated": false,
       "PublicContracts": {
-        "Ipc.Application.Contracts": "79EEF06BFADB76146A7C8B5A7887C692A4E7B5FFDCE249F94D2B2BA2CEF4B71E"
+        "Ipc.Application.Contracts": "50C693C0D07E2BD314816310EE8510DEDC78A90AAB9AC0F293E97DA492DF1EFA"
       }
     },
     {
       "Id": "reference.barcode",
-      "Version": "1.0.11",
-      "ManifestSha256": "D9F551D4EB4CE80D8BD95E9686BC2730E98B9C70F119C16BB7D2959A9B8C6C4D",
-      "PackageSha256": "6FD66753958DC844A77F8E77F7503695046FE21F8382DC55DDA0C37CEF62D0A5",
-      "File": "offline-extensions/reference.barcode-1.0.11.ipcx",
+      "Version": "1.0.12",
+      "ManifestSha256": "6DE713A58DDD7B50FE638FBFFA16D31B91FB25DF63247CB460EC129353A38DAE",
+      "PackageSha256": "7F9ACEC09CB4DA5AEF296F2CBC336FA7030065BB2BE0BBBDA4B8D7A786DC5BF3",
+      "File": "offline-extensions/reference.barcode-1.0.12.ipcx",
       "Mode": "Simulation",
       "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
       "Installed": false,
@@ -48,13 +48,13 @@
       "result": {
         "Package": {
           "Id": "reference.parcel-capabilities",
-          "Version": "1.7.0",
-          "ManifestSha256": "564CAAB329B9FA6F2AE51660CB7F4298AB442CC9D9003873DBF83138A9FBB23B"
+          "Version": "1.7.2",
+          "ManifestSha256": "666CC5714E94C6D98C49C4C9DD1D1C1EC0732100C66526A19755E31C6FD95361"
         },
-        "PackageSha256": "36120062AF32C1C89BB3913683534FBF1169CC137FC376A16A002CC10B8FE1D5",
+        "PackageSha256": "7D3DCEE34249CB441522E028B2CC87E4BF257D956B848817A6B90006CCA90F62",
         "TrustSha256": "FCF34746A66868691CE37B9595F2F6719AF1291C759E3E5A375AC82283E7927F",
-        "OperationId": "b7d9f78f648a4587b7948bfed6f7f829",
-        "At": "2026-10-18T14:53:15.922312+00:00",
+        "OperationId": "8a9702fa22fd405b8a97d18a7be10e3c",
+        "At": "2026-10-18T15:02:32.43747+00:00",
         "Status": "Installed",
         "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
       }
@@ -64,13 +64,13 @@
       "result": {
         "Package": {
           "Id": "reference.parcel-capabilities",
-          "Version": "1.7.0",
-          "ManifestSha256": "564CAAB329B9FA6F2AE51660CB7F4298AB442CC9D9003873DBF83138A9FBB23B"
+          "Version": "1.7.2",
+          "ManifestSha256": "666CC5714E94C6D98C49C4C9DD1D1C1EC0732100C66526A19755E31C6FD95361"
         },
-        "PackageSha256": "36120062AF32C1C89BB3913683534FBF1169CC137FC376A16A002CC10B8FE1D5",
+        "PackageSha256": "7D3DCEE34249CB441522E028B2CC87E4BF257D956B848817A6B90006CCA90F62",
         "TrustSha256": "FCF34746A66868691CE37B9595F2F6719AF1291C759E3E5A375AC82283E7927F",
-        "OperationId": "b7d9f78f648a4587b7948bfed6f7f829",
-        "At": "2026-10-18T14:53:16.288215+00:00",
+        "OperationId": "8a9702fa22fd405b8a97d18a7be10e3c",
+        "At": "2026-10-18T15:02:32.809264+00:00",
         "Status": "Installed",
         "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
       }
@@ -80,13 +80,13 @@
       "result": {
         "Package": {
           "Id": "reference.barcode",
-          "Version": "1.0.11",
-          "ManifestSha256": "D9F551D4EB4CE80D8BD95E9686BC2730E98B9C70F119C16BB7D2959A9B8C6C4D"
+          "Version": "1.0.12",
+          "ManifestSha256": "6DE713A58DDD7B50FE638FBFFA16D31B91FB25DF63247CB460EC129353A38DAE"
         },
-        "PackageSha256": "6FD66753958DC844A77F8E77F7503695046FE21F8382DC55DDA0C37CEF62D0A5",
+        "PackageSha256": "7F9ACEC09CB4DA5AEF296F2CBC336FA7030065BB2BE0BBBDA4B8D7A786DC5BF3",
         "TrustSha256": "FCF34746A66868691CE37B9595F2F6719AF1291C759E3E5A375AC82283E7927F",
-        "OperationId": "f941cbc58567418d9cf7e23258e4d570",
-        "At": "2026-10-18T14:53:16.669321+00:00",
+        "OperationId": "ce24b304bd4d4a48862478c637051d02",
+        "At": "2026-10-18T15:02:33.195911+00:00",
         "Status": "Installed",
         "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
       }
@@ -96,13 +96,13 @@
       "result": {
         "Package": {
           "Id": "reference.barcode",
-          "Version": "1.0.11",
-          "ManifestSha256": "D9F551D4EB4CE80D8BD95E9686BC2730E98B9C70F119C16BB7D2959A9B8C6C4D"
+          "Version": "1.0.12",
+          "ManifestSha256": "6DE713A58DDD7B50FE638FBFFA16D31B91FB25DF63247CB460EC129353A38DAE"
         },
-        "PackageSha256": "6FD66753958DC844A77F8E77F7503695046FE21F8382DC55DDA0C37CEF62D0A5",
+        "PackageSha256": "7F9ACEC09CB4DA5AEF296F2CBC336FA7030065BB2BE0BBBDA4B8D7A786DC5BF3",
         "TrustSha256": "FCF34746A66868691CE37B9595F2F6719AF1291C759E3E5A375AC82283E7927F",
-        "OperationId": "f941cbc58567418d9cf7e23258e4d570",
-        "At": "2026-10-18T14:53:17.031139+00:00",
+        "OperationId": "ce24b304bd4d4a48862478c637051d02",
+        "At": "2026-10-18T15:02:33.545838+00:00",
         "Status": "Installed",
         "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
       }
@@ -259,12 +259,12 @@
             "Sequence": 5,
             "Archived": false,
             "Operation": {
-              "Id": "3aecc50b5b584b9f923537a90bec4afa",
+              "Id": "9d685642ef4d4b16a478e93bb663935e",
               "AdmissionId": "selected-right",
               "ParcelCode": "000right",
-              "ObservationId": "F74462C751209ED422A2082F5BD0D1D32ECC8C176F4DF821A7B784EC283EF678",
-              "ObservedAt": "2026-10-18T14:53:18.456236+00:00",
-              "ConfigurationHash": "113D37134E383E3FB8B977063AE3C58454482FD345F5959628B38A07B6D520F6",
+              "ObservationId": "E856E1999F798613673C85839C67D5D225792049BCE04FF5613116D0B09A12E3",
+              "ObservedAt": "2026-10-18T15:02:35.235491+00:00",
+              "ConfigurationHash": "F3A9FE3F9FD627E96EF2E547DF451656F5AA127DA74BEEAFD6B3D4218CAAFBA2",
               "FrozenConfiguration": {
                 "SchemaVersion": 3,
                 "ApplicationId": "sportmaster",
@@ -289,7 +289,7 @@
                 "Wcs": {
                   "Kind": "integration",
                   "Implementation": "extension:reference.parcel-capabilities/parcel-integration",
-                  "Version": "1.7.0",
+                  "Version": "1.7.2",
                   "InstanceId": "sportmaster.integration",
                   "Target": "reference://selected/wcs",
                   "Contract": "PARCEL-REFERENCE-v1",
@@ -299,8 +299,8 @@
                   },
                   "Package": {
                     "Id": "reference.parcel-capabilities",
-                    "Version": "1.7.0",
-                    "ManifestSha256": "564CAAB329B9FA6F2AE51660CB7F4298AB442CC9D9003873DBF83138A9FBB23B"
+                    "Version": "1.7.2",
+                    "ManifestSha256": "666CC5714E94C6D98C49C4C9DD1D1C1EC0732100C66526A19755E31C6FD95361"
                   },
                   "Module": "parcel-integration",
                   "Enabled": true
@@ -310,13 +310,13 @@
                   "Packages": [
                     {
                       "Id": "reference.barcode",
-                      "Version": "1.0.11",
-                      "ManifestSha256": "D9F551D4EB4CE80D8BD95E9686BC2730E98B9C70F119C16BB7D2959A9B8C6C4D"
+                      "Version": "1.0.12",
+                      "ManifestSha256": "6DE713A58DDD7B50FE638FBFFA16D31B91FB25DF63247CB460EC129353A38DAE"
                     },
                     {
                       "Id": "reference.parcel-capabilities",
-                      "Version": "1.7.0",
-                      "ManifestSha256": "564CAAB329B9FA6F2AE51660CB7F4298AB442CC9D9003873DBF83138A9FBB23B"
+                      "Version": "1.7.2",
+                      "ManifestSha256": "666CC5714E94C6D98C49C4C9DD1D1C1EC0732100C66526A19755E31C6FD95361"
                     }
                   ],
                   "Instances": [
@@ -409,8 +409,8 @@
                 }
               },
               "ImplementationHashes": {
-                "sportmaster.integration": "88EC9BF0CCEBD7485A9F6E239DAB53017EF4D5AF94C87ED77405C4C062309562",
-                "maintenance": "0E894395E00524F44F668BA2A20E733AB5AF38729270703437FDA54FD234779B"
+                "sportmaster.integration": "DE523EB4EE8293317AAFB3432A58EC52D71D8F8944E837671A6DCAEE699F09AA",
+                "maintenance": "4C8AA336DBE7DA3160848D0527C839C95D70452A2616560E222A6B5474A5B981"
               },
               "WeightPolicy": {
                 "Source": "Disabled",
@@ -425,15 +425,15 @@
               "Slot": "SELECTED-07",
               "Wcs": {
                 "Request": {
-                  "Id": "497263408af44e0798caea2546a4bf1d",
+                  "Id": "ef23092e94bc4b1cbc10616c1be9021f",
                   "ApplicationId": "sportmaster",
-                  "OperationId": "3aecc50b5b584b9f923537a90bec4afa",
+                  "OperationId": "9d685642ef4d4b16a478e93bb663935e",
                   "AdmissionId": "selected-right",
                   "Stage": "wcs-slot",
                   "Binding": {
                     "Kind": "integration",
                     "Implementation": "extension:reference.parcel-capabilities/parcel-integration",
-                    "Version": "1.7.0",
+                    "Version": "1.7.2",
                     "InstanceId": "sportmaster.integration",
                     "Target": "reference://selected/wcs",
                     "Contract": "PARCEL-REFERENCE-v1",
@@ -443,32 +443,32 @@
                     },
                     "Package": {
                       "Id": "reference.parcel-capabilities",
-                      "Version": "1.7.0",
-                      "ManifestSha256": "564CAAB329B9FA6F2AE51660CB7F4298AB442CC9D9003873DBF83138A9FBB23B"
+                      "Version": "1.7.2",
+                      "ManifestSha256": "666CC5714E94C6D98C49C4C9DD1D1C1EC0732100C66526A19755E31C6FD95361"
                     },
                     "Module": "parcel-integration",
                     "Enabled": true
                   },
-                  "ImplementationHash": "88EC9BF0CCEBD7485A9F6E239DAB53017EF4D5AF94C87ED77405C4C062309562",
-                  "ConfigurationHash": "113D37134E383E3FB8B977063AE3C58454482FD345F5959628B38A07B6D520F6",
-                  "Payload": "{\n  \"ParcelCode\": \"000right\",\n  \"AdmissionId\": \"selected-right\",\n  \"Weight\": null,\n  \"Slot\": null,\n  \"WcsRequestId\": null,\n  \"Acquisition\": {\n    \"DeviceId\": \"sportmaster.camera.right\",\n    \"Epoch\": \"d597d369729947049c66fd2fc8936419\",\n    \"SourceEventId\": \"4c751b6612664debabee89b2acb58e35\",\n    \"AdmissionId\": \"selected-right\",\n    \"ObservedAt\": \"2026-10-18T14:53:18.456236+00:00\"\n  },\n  \"PositionId\": \"right\",\n  \"ReaderBinding\": {\n    \"Role\": \"parcel-reader\",\n    \"Driver\": \"extension:selected.reader.1\",\n    \"DeviceId\": \"sportmaster.camera.right\",\n    \"Revision\": \"1\",\n    \"ReplayFile\": null\n  }\n}",
-                  "PayloadHash": "98797F9BA6083F98423CE5B60078D5149940F9F29631B0F410C316D5460734BB",
-                  "PreparedAt": "2026-10-18T14:53:18.456975+00:00"
+                  "ImplementationHash": "DE523EB4EE8293317AAFB3432A58EC52D71D8F8944E837671A6DCAEE699F09AA",
+                  "ConfigurationHash": "F3A9FE3F9FD627E96EF2E547DF451656F5AA127DA74BEEAFD6B3D4218CAAFBA2",
+                  "Payload": "{\n  \"ParcelCode\": \"000right\",\n  \"AdmissionId\": \"selected-right\",\n  \"Weight\": null,\n  \"Slot\": null,\n  \"WcsRequestId\": null,\n  \"Acquisition\": {\n    \"DeviceId\": \"sportmaster.camera.right\",\n    \"Epoch\": \"096a464e0b62432a99b8d41a4c9f6b60\",\n    \"SourceEventId\": \"5571919dfc5843f8a5d5b0589bb0b5ba\",\n    \"AdmissionId\": \"selected-right\",\n    \"ObservedAt\": \"2026-10-18T15:02:35.235491+00:00\"\n  },\n  \"PositionId\": \"right\",\n  \"ReaderBinding\": {\n    \"Role\": \"parcel-reader\",\n    \"Driver\": \"extension:selected.reader.1\",\n    \"DeviceId\": \"sportmaster.camera.right\",\n    \"Revision\": \"1\",\n    \"ReplayFile\": null\n  }\n}",
+                  "PayloadHash": "10040E2C0B148D25CF8C147C4D05146D32B333AB7A98F80FA4523927FC4B8FC2",
+                  "PreparedAt": "2026-10-18T15:02:35.23634+00:00"
                 },
                 "State": "Accepted",
                 "Attempts": 1,
                 "Replies": [
                   {
-                    "Id": "2b3c999da4bd4af1b22c095c5774c9b1",
-                    "RequestId": "497263408af44e0798caea2546a4bf1d",
-                    "PayloadHash": "98797F9BA6083F98423CE5B60078D5149940F9F29631B0F410C316D5460734BB",
+                    "Id": "c0ca1ece71b74ecdadffa8a1f22d635c",
+                    "RequestId": "ef23092e94bc4b1cbc10616c1be9021f",
+                    "PayloadHash": "10040E2C0B148D25CF8C147C4D05146D32B333AB7A98F80FA4523927FC4B8FC2",
                     "TransportSucceeded": true,
                     "ProtocolAcknowledged": true,
                     "BusinessAccepted": true,
                     "PhysicalCompleted": null,
                     "Slot": "SELECTED-07",
                     "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
-                    "At": "2026-10-18T14:53:18.460199+00:00"
+                    "At": "2026-10-18T15:02:35.242146+00:00"
                   }
                 ],
                 "Failure": null
@@ -477,10 +477,10 @@
               "Reason": null,
               "Acquisition": {
                 "DeviceId": "sportmaster.camera.right",
-                "Epoch": "d597d369729947049c66fd2fc8936419",
-                "SourceEventId": "4c751b6612664debabee89b2acb58e35",
+                "Epoch": "096a464e0b62432a99b8d41a4c9f6b60",
+                "SourceEventId": "5571919dfc5843f8a5d5b0589bb0b5ba",
                 "AdmissionId": "selected-right",
-                "ObservedAt": "2026-10-18T14:53:18.456236+00:00"
+                "ObservedAt": "2026-10-18T15:02:35.235491+00:00"
               },
               "PositionId": "right",
               "ReaderBinding": {
@@ -496,12 +496,12 @@
             "Sequence": 1,
             "Archived": false,
             "Operation": {
-              "Id": "053f9f441df04535a4668bd4c288ce85",
+              "Id": "dafcf4c98c924327983acb249dcf6faf",
               "AdmissionId": "selected-left",
               "ParcelCode": "000left",
-              "ObservationId": "7E7B50D810554751C971802CFBE57868BBFEBC558DA5B88DC98D7C7F2A35C07E",
-              "ObservedAt": "2026-10-18T14:53:18.380805+00:00",
-              "ConfigurationHash": "113D37134E383E3FB8B977063AE3C58454482FD345F5959628B38A07B6D520F6",
+              "ObservationId": "AD6175EA1F8FE5D8FB395D65801ECE7D1A9AEDC000EE264DD7F6C2E934BB0F9A",
+              "ObservedAt": "2026-10-18T15:02:35.163916+00:00",
+              "ConfigurationHash": "F3A9FE3F9FD627E96EF2E547DF451656F5AA127DA74BEEAFD6B3D4218CAAFBA2",
               "FrozenConfiguration": {
                 "SchemaVersion": 3,
                 "ApplicationId": "sportmaster",
@@ -526,7 +526,7 @@
                 "Wcs": {
                   "Kind": "integration",
                   "Implementation": "extension:reference.parcel-capabilities/parcel-integration",
-                  "Version": "1.7.0",
+                  "Version": "1.7.2",
                   "InstanceId": "sportmaster.integration",
                   "Target": "reference://selected/wcs",
                   "Contract": "PARCEL-REFERENCE-v1",
@@ -536,8 +536,8 @@
                   },
                   "Package": {
                     "Id": "reference.parcel-capabilities",
-                    "Version": "1.7.0",
-                    "ManifestSha256": "564CAAB329B9FA6F2AE51660CB7F4298AB442CC9D9003873DBF83138A9FBB23B"
+                    "Version": "1.7.2",
+                    "ManifestSha256": "666CC5714E94C6D98C49C4C9DD1D1C1EC0732100C66526A19755E31C6FD95361"
                   },
                   "Module": "parcel-integration",
                   "Enabled": true
@@ -547,13 +547,13 @@
                   "Packages": [
                     {
                       "Id": "reference.barcode",
-                      "Version": "1.0.11",
-                      "ManifestSha256": "D9F551D4EB4CE80D8BD95E9686BC2730E98B9C70F119C16BB7D2959A9B8C6C4D"
+                      "Version": "1.0.12",
+                      "ManifestSha256": "6DE713A58DDD7B50FE638FBFFA16D31B91FB25DF63247CB460EC129353A38DAE"
                     },
                     {
                       "Id": "reference.parcel-capabilities",
-                      "Version": "1.7.0",
-                      "ManifestSha256": "564CAAB329B9FA6F2AE51660CB7F4298AB442CC9D9003873DBF83138A9FBB23B"
+                      "Version": "1.7.2",
+                      "ManifestSha256": "666CC5714E94C6D98C49C4C9DD1D1C1EC0732100C66526A19755E31C6FD95361"
                     }
                   ],
                   "Instances": [
@@ -646,8 +646,8 @@
                 }
               },
               "ImplementationHashes": {
-                "sportmaster.integration": "88EC9BF0CCEBD7485A9F6E239DAB53017EF4D5AF94C87ED77405C4C062309562",
-                "maintenance": "0E894395E00524F44F668BA2A20E733AB5AF38729270703437FDA54FD234779B"
+                "sportmaster.integration": "DE523EB4EE8293317AAFB3432A58EC52D71D8F8944E837671A6DCAEE699F09AA",
+                "maintenance": "4C8AA336DBE7DA3160848D0527C839C95D70452A2616560E222A6B5474A5B981"
               },
               "WeightPolicy": {
                 "Source": "Disabled",
@@ -662,15 +662,15 @@
               "Slot": "SELECTED-07",
               "Wcs": {
                 "Request": {
-                  "Id": "812527ecd01d48d6aaee0c2dacaae2d4",
+                  "Id": "6e2ca8d0d4a949bcac6eec9b3b3faa0b",
                   "ApplicationId": "sportmaster",
-                  "OperationId": "053f9f441df04535a4668bd4c288ce85",
+                  "OperationId": "dafcf4c98c924327983acb249dcf6faf",
                   "AdmissionId": "selected-left",
                   "Stage": "wcs-slot",
                   "Binding": {
                     "Kind": "integration",
                     "Implementation": "extension:reference.parcel-capabilities/parcel-integration",
-                    "Version": "1.7.0",
+                    "Version": "1.7.2",
                     "InstanceId": "sportmaster.integration",
                     "Target": "reference://selected/wcs",
                     "Contract": "PARCEL-REFERENCE-v1",
@@ -680,32 +680,32 @@
                     },
                     "Package": {
                       "Id": "reference.parcel-capabilities",
-                      "Version": "1.7.0",
-                      "ManifestSha256": "564CAAB329B9FA6F2AE51660CB7F4298AB442CC9D9003873DBF83138A9FBB23B"
+                      "Version": "1.7.2",
+                      "ManifestSha256": "666CC5714E94C6D98C49C4C9DD1D1C1EC0732100C66526A19755E31C6FD95361"
                     },
                     "Module": "parcel-integration",
                     "Enabled": true
                   },
-                  "ImplementationHash": "88EC9BF0CCEBD7485A9F6E239DAB53017EF4D5AF94C87ED77405C4C062309562",
-                  "ConfigurationHash": "113D37134E383E3FB8B977063AE3C58454482FD345F5959628B38A07B6D520F6",
-                  "Payload": "{\n  \"ParcelCode\": \"000left\",\n  \"AdmissionId\": \"selected-left\",\n  \"Weight\": null,\n  \"Slot\": null,\n  \"WcsRequestId\": null,\n  \"Acquisition\": {\n    \"DeviceId\": \"sportmaster.camera.left\",\n    \"Epoch\": \"281192a88bcb420999aff12c287eef8c\",\n    \"SourceEventId\": \"cf33ded514864459ab7f89c9b6e85c63\",\n    \"AdmissionId\": \"selected-left\",\n    \"ObservedAt\": \"2026-10-18T14:53:18.380805+00:00\"\n  },\n  \"PositionId\": \"left\",\n  \"ReaderBinding\": {\n    \"Role\": \"parcel-reader\",\n    \"Driver\": \"extension:selected.reader.0\",\n    \"DeviceId\": \"sportmaster.camera.left\",\n    \"Revision\": \"1\",\n    \"ReplayFile\": null\n  }\n}",
-                  "PayloadHash": "61433C3A2E7960E9F8839489746ED624907740AD7A17AF5C775886D28E940DA4",
-                  "PreparedAt": "2026-10-18T14:53:18.39022+00:00"
+                  "ImplementationHash": "DE523EB4EE8293317AAFB3432A58EC52D71D8F8944E837671A6DCAEE699F09AA",
+                  "ConfigurationHash": "F3A9FE3F9FD627E96EF2E547DF451656F5AA127DA74BEEAFD6B3D4218CAAFBA2",
+                  "Payload": "{\n  \"ParcelCode\": \"000left\",\n  \"AdmissionId\": \"selected-left\",\n  \"Weight\": null,\n  \"Slot\": null,\n  \"WcsRequestId\": null,\n  \"Acquisition\": {\n    \"DeviceId\": \"sportmaster.camera.left\",\n    \"Epoch\": \"69f3388c5bc64ef589450f3bd5623316\",\n    \"SourceEventId\": \"b5ac2cb6ad74460eabfe694e6d508a0b\",\n    \"AdmissionId\": \"selected-left\",\n    \"ObservedAt\": \"2026-10-18T15:02:35.163916+00:00\"\n  },\n  \"PositionId\": \"left\",\n  \"ReaderBinding\": {\n    \"Role\": \"parcel-reader\",\n    \"Driver\": \"extension:selected.reader.0\",\n    \"DeviceId\": \"sportmaster.camera.left\",\n    \"Revision\": \"1\",\n    \"ReplayFile\": null\n  }\n}",
+                  "PayloadHash": "9FF0D2408065AC456FE71057D16384979364897335E56154CC32978C18B53063",
+                  "PreparedAt": "2026-10-18T15:02:35.172593+00:00"
                 },
                 "State": "Accepted",
                 "Attempts": 1,
                 "Replies": [
                   {
-                    "Id": "97a5e1f7a70c4d2b88af4489640b3a0b",
-                    "RequestId": "812527ecd01d48d6aaee0c2dacaae2d4",
-                    "PayloadHash": "61433C3A2E7960E9F8839489746ED624907740AD7A17AF5C775886D28E940DA4",
+                    "Id": "4093004d01834137ba012a0df144123d",
+                    "RequestId": "6e2ca8d0d4a949bcac6eec9b3b3faa0b",
+                    "PayloadHash": "9FF0D2408065AC456FE71057D16384979364897335E56154CC32978C18B53063",
                     "TransportSucceeded": true,
                     "ProtocolAcknowledged": true,
                     "BusinessAccepted": true,
                     "PhysicalCompleted": null,
                     "Slot": "SELECTED-07",
                     "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
-                    "At": "2026-10-18T14:53:18.401922+00:00"
+                    "At": "2026-10-18T15:02:35.18417+00:00"
                   }
                 ],
                 "Failure": null
@@ -714,10 +714,10 @@
               "Reason": null,
               "Acquisition": {
                 "DeviceId": "sportmaster.camera.left",
-                "Epoch": "281192a88bcb420999aff12c287eef8c",
-                "SourceEventId": "cf33ded514864459ab7f89c9b6e85c63",
+                "Epoch": "69f3388c5bc64ef589450f3bd5623316",
+                "SourceEventId": "b5ac2cb6ad74460eabfe694e6d508a0b",
                 "AdmissionId": "selected-left",
-                "ObservedAt": "2026-10-18T14:53:18.380805+00:00"
+                "ObservedAt": "2026-10-18T15:02:35.163916+00:00"
               },
               "PositionId": "left",
               "ReaderBinding": {
@@ -735,8 +735,8 @@
     }
   ],
   "PublicProjection": {
-    "Meaning": "Local artifact paths projected for public portability; do not replay projected request/configuration objects as originals",
-    "OriginalJsonSha256": "188990caf5c1b775b8ce7e17978e9f06d937c69c8383a477e5e888a44c5f757b",
-    "OriginalBytesRetained": "local authorized Codex artifact; selected-journey.json"
+    "Meaning": "Artifact paths projected; not original replayable request/configuration JSON",
+    "OriginalJsonSha256": "0b4019812d4262f73290a6561c1357d046e87447a966c35eb25c9bbf6de15a4b",
+    "OriginalBytesRetained": "local authorized final artifact; selected-journey.json"
   }
 }

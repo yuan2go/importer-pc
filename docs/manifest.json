@@ -327,13 +327,13 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "1133dddc61366f7fe0daf8e20568bef05c13d684c056778b11c3ce66ef4527d7",
-      "size_bytes": 10014,
-      "git_blob": "e70415194bcf929a36dfa74c4c0b310f8ee1d1bf",
-      "version": "architecture-quality-audit-02-rereview",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
-      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "sha256": "80d6e5c175b94c9dcfe45eee3acf3aae30ecbc6a8adc82ee7cb1d6ed55cf5224",
+      "size_bytes": 10181,
+      "git_blob": "52db5d3c61363cbf5f7ec036ca0fef7c7fc33fa8",
+      "version": "publication-2026-10-19",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "User-authorized no-test publication receipt and navigation",
+      "source": "2026-10-19 explicit user publication and merge request",
       "storage_scope": "public_repository",
       "previous_git_blob": "f13c84ec32982cc0a88103086a7e0f908b7b919e",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
@@ -20609,6 +20609,28 @@
       "git_blob": "35baba6fe745f640d680c18ead8b870daf3a9924"
     },
     {
+      "path": "docs/runtime/publication-20261019.json",
+      "sha256": "8be986f6c5f7382a5d27b1810f54281103c3292f4d8b895993d86749d404e1ec",
+      "size_bytes": 5049,
+      "git_blob": "d95c91a1c4b3648f0f739e608b2fb57b8c180e4d",
+      "version": "publication-2026-10-19",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "User-authorized no-test publication receipt and navigation",
+      "source": "2026-10-19 explicit user publication and merge request",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/publication-20261019.md",
+      "sha256": "0b24789af1ed5df4daf2f8f0625c1ed1c79525dacbc8ef1eb5bbee0db10d5189",
+      "size_bytes": 2594,
+      "git_blob": "08cb15dc37dd50222c94ab4498d800c4459c9804",
+      "version": "publication-2026-10-19",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "User-authorized no-test publication receipt and navigation",
+      "source": "2026-10-19 explicit user publication and merge request",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/runtime/publication.md",
       "version": "runtime-publication-1.0",
       "status": "current_navigation_or_verification",
@@ -28099,5 +28121,13 @@
     "release_observation_package": "1.0.12",
     "private_keys_included": false,
     "business_code_commit": "bab9c3012652c3b8aae1d90627953734a1de29b8"
+  },
+  "publication_20261019": {
+    "receipt": "docs/runtime/publication-20261019.json",
+    "report": "docs/runtime/publication-20261019.md",
+    "tests": "NOT_RUN_BY_USER_REQUEST",
+    "release": "https://github.com/yuan2go/importer-pc/releases/tag/audit02-rereview-reference-e914e75",
+    "release_assets": 8,
+    "pr26_merge": "9a5d87ad41e3e936f56a7e58ec60de8f7aa53458"
   }
 }

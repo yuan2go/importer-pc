@@ -1,6 +1,6 @@
 # Application架构22 · 运行和兼容指南
 
-[现行设计](../design/application-architecture-22.md) · [工作包](../work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md)。开工main ea881293c888a824f26c9f9fa07352a22786206b，继承PR20/21，不自动合并本PR。参考装配为独立F-02工程，不是旧现场迁移。Windows实际NOT_RUN；真实SDK/认证/WCS/PLC/采集关联/离场复位及现场BLOCKED。软件暂停不等于安全急停。
+[现行设计](../design/application-architecture-22.md) · [工作包](../work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md)。22原阶段开工main ea881293c888a824f26c9f9fa07352a22786206b及PR20/21属于形成时身份；本页操作已随PR26复核修复更新，当前源码与证据见[交付记录](architecture-quality-audit-02-results.md)。参考装配为独立F-02工程，不是旧现场迁移。Windows实际NOT_RUN；真实SDK/认证/WCS/PLC/采集关联/离场复位及现场BLOCKED。软件暂停不等于安全急停。
 
 ## 构建、选装与运行
 
@@ -14,7 +14,7 @@ python3 scripts/package-application.py --application sportmaster --target portab
 dotnet /new/unpacked/app/Ipc.Assembly.dll --config /new/unpacked/app/config --data-root /new/isolated/runtime
 ```
 
-DirectPlc、WcsToPlc使用相同脚本分别--application direct-plc/wcs-to-plc。Windows候选--target win-x64包含原有WPF页面和受保护安装/部署脚本；交叉构建不等于Windows运行。本包不新增DirectPlc UI、页面、图片区域或预览能力。portable包只含所选业务控制台闭包；DirectPlc不带Ipc.Integrations。
+DirectPlc、WcsToPlc使用相同脚本分别--application direct-plc/wcs-to-plc。Windows候选--target win-x64包含原有WPF页面和受保护安装/部署脚本；交叉构建不等于Windows运行。DirectPlc完整UI按批准延期；Sportmaster已有双位结果及共享历史/维护页，不新增图片区域。portable包只含所选业务控制台闭包；DirectPlc不带Ipc.Integrations。
 
 默认schema3配置为config/{application}/business.json。Sportmaster显式左右两个reader和投递位，两个独立主链；DirectPlc/WcsToPlc一个main顺序位。config/optional/{application}/business.json为完整认证/实测/采图/上传可选配置：Sportmaster左右分别绑定独立秤和复用各自reader的采集，服务组件可共享。启用秤、上传或认证但缺失/失效必须拒绝；不回退关闭或模拟成功。启用Production须独立真实资格及真实提供者，模拟配置不能直接改Mode成为生产。
 
@@ -32,7 +32,7 @@ Platform.ObservationSession为每个reader固定epoch、来源sequence和健康�
 
 每行snapshot读取不可变ParcelSnapshot（RuntimeId、配置修订、Positions、Devices、Operations、独立主链/采集/上传事实）。Positions.Admit只表示软件准入守卫，不能当离场传感器/物理许可。主业务结果、可否下一件、后台是否清偿分别投影。PLC接受但未获权威PhysicalCompleted时，顺序位拒绝下一件；Sportmaster终点是有效格口结果，不发送PLC。
 
-每条JSON使用唯一Id；有CAS的命令取对应最新Revision。合成左侧输入示例：
+每条JSON使用唯一Id；应用命令ExpectedRevision取提交时应用Revision，配置草稿与旧账确认必须保留加载时配置Revision及运行实例，不能由自动刷新改写其检查身份。合成左侧输入示例：
 
 ```json
 {"Id":"11111111111111111111111111111111","ExpectedRevision":0,"Kind":"EmitReferenceAt","Owner":"synthetic-parcel-1","Value":"{\"PositionId\":\"left\",\"Code\":\"000000917\"}"}
@@ -42,15 +42,14 @@ Platform.ObservationSession为每个reader固定epoch、来源sequence和健康�
 
 IParcelApplication.EmitReferenceAt(positionId, admissionId, code, sourceEventId)和ReconnectDeviceAsync(deviceId)为实际契约，CLI对应EmitReferenceAt/ReconnectDevice。单侧重连要求软件暂停和维护认证，只替换该reader注册，不改另一位epoch或重发原请求。认证与维护仍走已选组件；有未结责任时保护原操作员，不在切页/换班时篡改原件。其他Pause/Resume/Reconcile/ContinuePrepared/ContinueUpload/AbandonUnsubmitted/Backup保持原守卫。
 
-StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保存PendingRestart；原Effective不变。在途未清偿、上传未结/未知或原回执责任未完时激活拒绝。二进制/设备/拓扑/参数一次修订受控重启生效，不给扩展另建配置权威。既有WPF单Reader表单遇schema3明确只读，并在保存方法再次拒绝，禁止降为schema2/丢失右侧或改绑；通过上述完整接口维护。
+StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保存PendingRestart；原Effective不变。主链或外部动作未结/未知时激活拒绝；仅当本件外部业务已终结、每个缺raw发生均有已Committed的原Query权威依据时，可在保留独立资料责任的条件下过渡配置。该例外不释放原图、不归档作业、不退休原包；无依据的缺raw仍阻激活。二进制/设备/拓扑/参数一次修订受控重启生效，不给扩展另建配置权威。WPF维护页提供完整schema3 JSON编辑/校验/保存及加载时修订CAS；旧单Reader参数表仍拒绝schema3保存，禁止降版/丢失右位。
 
 ## 版本升级与原件
 
-P2增量的公共Application.Contracts版本1.5.0；新参考能力包manifest版本1.5.0（22原候选1.4.0保留），仍必须使用目标宿主的精确Platform/Application契约SHA重新构建及独立签名。保留旧1.3.1/更早包与全部ID/version登记，不能覆盖原版本。ContractMajor相同不代表精确契约兼容。包构建/签名/安装/资格沿[扩展指南](../extensions/developer-guide.md)，不允许任意DLL扫描或热换Application。
-
+当前Application.Contracts ABI1.6.0，继承PR23 1.5.0的Retain/Release；包版本与ABI分别读取。PR24最终Debug1.6.6/Release1.6.7仅匹配其精确公共DLL。本次如公共字节改变必须新不可变包；不覆盖旧ID/version。按[扩展指南](../extensions/developer-guide.md)使用目标Release宿主和独立信任构建、预检、安装、绑定与激活。
 配置schema1/2保持显式单Reader历史兼容模式，不猜成左右位；默认种子和当前目标使用schema3。已有schema2站必须通过完整拓扑候选/CAS显式迁移。测试中的schema2兼容夹具只保护原机制，不证明新双位。
 
-本宿主数据库版本3，原迁移1/2的SQL/checksum逐字节保留，追加parcel_topology_semantics。不因旧配置仍为schema2就隐瞒新宿主的存储版本。数据库1/2在新增版本前检查所有未结主链、原图/上传、Awaiting/RawDurable回执；任何未结抛LegacyUnsettled且原迁移历史/业务JSON不变。先用匹配旧发布/包/配置清偿，再做完整备份，最后升级。已结原件不回填Position/Reader，也不改原payload/hash/目标/实现身份。
+Parcel当前数据库5，SQL1～4及checksum保留；DB3为22历史拓扑版本，DB4为前次归档/永久去重/冲突/配置审计版本。SQL5追加缺raw资料与Query关联索引及旧归档版本保有，并将历史OutcomeReconciled恢复为Awaiting资料责任。不因旧配置仍为schema2就隐瞒当前存储版本。旧库普通启动仍先检查未结，不能自动把未知外部动作迁到新实现。旧DB2/3 Attached主状态已污染且上传缺raw时，按[维护指南](architecture-quality-closure-01.md)的recover-legacy-receipt离线使用完整匹配旧发布，仅Query原请求；确认外部业务已终结后显式升级DB5，原Awaiting、原图和原包责任持续保留。其他旧未结仍需匹配发布清偿、完整备份后升级。原payload/hash/目标/实现及SQL1～4原字节不改；旧代码已释放的历史图像不能由迁移伪造恢复。
 
 不得用改库、删除原件或强改迁移表作为部署升级步骤。新备份通过应用BackupAsync，包含完整配置、SQLite一致快照、原回执与尚存原图及完成清单；恢复到全新隔离目录，首次启动暂停。原请求、原WCS格口及PLC意图继续同T3事务，Unknown只查询原目标/实现，不盲重发。
 

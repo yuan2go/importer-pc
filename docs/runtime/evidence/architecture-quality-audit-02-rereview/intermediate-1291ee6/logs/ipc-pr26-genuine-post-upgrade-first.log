@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/tmp/ipc-pr26-genuine-post-upgrade.py", line 21, in <module>
+    started=get();assert started['Status']=='Started',started
+            ^^^^^
+  File "/tmp/ipc-pr26-genuine-post-upgrade.py", line 14, in get
+    value=messages.get(timeout=12);events.append(value);return value
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/yuan/.pyenv/versions/3.12.13/lib/python3.12/queue.py", line 179, in get
+    raise Empty
+_queue.Empty

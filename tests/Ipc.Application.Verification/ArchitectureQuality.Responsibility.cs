@@ -63,10 +63,14 @@ static partial class ArchitectureQuality
         await using var app = await Open(Config("sportmaster"), "ui-draft-cas"); await Maintenance(app);
         var vm = new ParcelViewModel(app, "Quality", "Sportmaster"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
         var loaded = vm.Snapshot!; var oldDraft = Wire.Decode<ParcelConfiguration>(vm.ConfigurationDraft);
-        await app.StageConfigurationAsync(loaded.Configuration.Revision, loaded.Configuration.Effective with { TimeoutMs = 1801 }, "Synthetic concurrent maintenance window");
+        var secondWindow = new ParcelViewModel(app, "Quality B", "Sportmaster"); await secondWindow.RefreshAsync(); await secondWindow.LoadCapabilitiesAsync();
+        secondWindow.ConfigurationDraft = Wire.Encode(loaded.Configuration.Effective with { TimeoutMs = 1801 }); secondWindow.ConfigurationReason = "Second actual VM maintenance window";
+        await secondWindow.SaveConfigurationAsync();
         await vm.RefreshAsync(); vm.ConfigurationDraft = Wire.Encode(oldDraft with { TimeoutMs = 1802 }); vm.ConfigurationReason = "Synthetic older editor after automatic refresh";
         await vm.SaveConfigurationAsync(); var after = await app.SnapshotAsync();
         Check(after.Configuration.Revision == loaded.Configuration.Revision + 1 && after.Configuration.Pending!.TimeoutMs == 1801 && vm.Message.StartsWith("Rejected") && vm.Message.Contains("revision conflict", StringComparison.OrdinalIgnoreCase), "automatic UI refresh cannot replace the full draft CAS revision and overwrite another window's saved candidate");
+        Check(secondWindow.Message.StartsWith("PendingRestart") && Wire.Encode(after.Configuration.Pending) == Wire.Encode(loaded.Configuration.Effective with { TimeoutMs = 1801 }) && vm.ConfigurationDraft == Wire.Encode(oldDraft with { TimeoutMs = 1802 }),
+            "two real window VMs retain conflicting draft and preserve the complete other position/instance topology");
         var legacy = Config("sportmaster") with { SchemaVersion = 2, Topology = null };
         await using var oldFormApp = await Open(legacy, "legacy-ui-cas"); await Maintenance(oldFormApp);
         var oldVm = new ParcelViewModel(oldFormApp, "Quality", "Legacy compatibility"); await oldVm.RefreshAsync(); await oldVm.LoadCapabilitiesAsync(); var oldLoaded = oldVm.Snapshot!;
@@ -131,9 +135,11 @@ static partial class ArchitectureQuality
     static async Task ConfigurationChecks()
     {
         var c = Config("sportmaster");
+        long beforeConfigurationRevision = -1;
         await using (var app = await Open(c, "config-audit"))
         {
             await Maintenance(app); var s = await app.SnapshotAsync();
+            beforeConfigurationRevision=s.Configuration.Revision;
             var candidate = s.Configuration.Effective with { TimeoutMs = 1800 };
             Check((await app.ValidateConfigurationAsync(candidate)).Status == "Validated" && (await app.SnapshotAsync()).Configuration.Pending is null, "full topology candidate can be validated without saving or activating");
             app.Boundary = p => { if (p == "AfterConfigurationStaged") throw new IOException("Synthetic envelope/audit interruption"); };
@@ -145,7 +151,7 @@ static partial class ArchitectureQuality
             var s = await app.SnapshotAsync(); Check(s.Configuration.Effective.TimeoutMs == 1800, "controlled restart activates complete original candidate");
             using var db = new SqliteConnection("Data Source=" + Path.Combine(DirectoryFor("config-audit", c), "sportmaster.db")); db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT body FROM parcel_configuration_audit";
             var audit = Wire.Decode<ConfigurationChangeAudit>((string)q.ExecuteScalar()!);
-            Check(audit.Actor?.Subject == "maintenance" && audit.Status == "Activated" && audit.BeforeRevision == 0 && audit.AfterRevision == 3 && s.Configuration.Revision == 3 && s.Configuration.Activation?.Outcome == "Activated" && audit.BeforeHash != audit.CandidateHash && audit.Reason.Contains("timeout"), "restart closes configuration audit with original maintenance actor/reason, before/after revisions and exact hashes");
+            Check(audit.Actor?.Subject == "maintenance" && audit.Status == "Activated" && audit.BeforeRevision == beforeConfigurationRevision && audit.AfterRevision == beforeConfigurationRevision+3 && s.Configuration.Revision == beforeConfigurationRevision+3 && s.Configuration.Activation?.Outcome == "Activated" && audit.BeforeHash != audit.CandidateHash && audit.Reason.Contains("timeout"), "restart closes configuration audit with original maintenance actor/reason, before/after revisions and exact hashes");
             await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
             Check((await app.StageConfigurationAsync(0, s.Configuration.Effective, "Stale synthetic editor")).Status == "Rejected", "configuration CAS still rejects a stale full editor after activation");
         }

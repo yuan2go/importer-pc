@@ -1,0 +1,30 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-9edfbc21cea7439db4607fed7fc5defe
+PASS AQ: input is actual old-release DB3, not a downgraded current database
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-ee80b848ae084cebbeba0cc0330335bd
+PASS AQ: real maintenance child terminates after original-release Query raw-durable and before T3
+PASS AQ: retry finishes original Query locally and upgrades without another external call
+PASS AQ: DB5 preserves original missing Submit raw, image, query basis and completed main
+PASS AQ: maintenance interruption never resubmits WCS or upload
+PASS AQ: complete raw inventory failure retains original schema before Query and migration
+PASS AQ: invalid original response commits raw and Conflict without a future reader marker
+PASS AQ: existing Conflict refuses retry before provider call and preserves original schema
+PASS LEGACY CUSTODY COMPLETE {
+  "Status": "UpgradedCustodyRetained",
+  "DatabaseVersion": 5,
+  "OriginalOccurrence": "1e637e066a674876966810edabec17b6",
+  "Raw": {
+    "Id": "1e637e066a674876966810edabec17b6",
+    "Operation": "71fa0532b0204d87bb6919a734d036a8",
+    "Stage": "image-upload",
+    "Request": "992d86b4dec541a0aebac75784d00f41",
+    "Source": "Submit",
+    "State": "Awaiting",
+    "RawHash": null,
+    "QueryOccurrence": "f4469ba00cf44f1d802d772b8f5ed23b",
+    "Custody": "OriginalRawMissing"
+  },
+  "Pending": 1,
+  "Backup": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-9edfbc21cea7439db4607fed7fc5defe/legacy-query-cut/retry.backup.db",
+  "OriginalQueryOnly": true,
+  "OriginalSubmitAttemptsUnchanged": true
+}

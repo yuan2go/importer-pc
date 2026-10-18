@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "<stdin>", line 8, in <module>
+  File "/Users/yuan/.codex/worktrees/architecture-quality-02/importer-pc/scripts/release_documents.py", line 38, in render
+    raise ValueError('Guide links require a frozen source commit')
+ValueError: Guide links require a frozen source commit

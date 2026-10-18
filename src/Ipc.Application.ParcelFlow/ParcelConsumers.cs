@@ -45,7 +45,7 @@ public sealed partial class ParcelRepository
         if (Convert.ToInt64(c.ExecuteScalar()) != 0) throw new InvalidDataException("Unknown consumer receipt responsibility; use matching release");
         c.CommandText = "SELECT operation FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable')";
         HashSet<string> pendingReceipts = []; using (var r = c.ExecuteReader()) while (r.Read()) pendingReceipts.Add(r.GetString(0));
-        c.CommandText = "SELECT body FROM parcel_operations";
+        c.CommandText = version >= 4 ? "SELECT body FROM parcel_operations UNION ALL SELECT body FROM parcel_archives WHERE id IN (SELECT operation FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable'))" : "SELECT body FROM parcel_operations";
         using (var r = c.ExecuteReader()) while (r.Read())
         {
             var op = Wire.Decode<ParcelOperation>(r.GetString(0));

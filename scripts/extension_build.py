@@ -154,14 +154,17 @@ def build(args):
     if 'PRIVATE KEY' in publisher['PublicKeyPem']:
         raise ValueError('Trust policy must contain public keys only')
     manifest = decode_json(sources[declaration['Manifest']])
-    expected_manifest = {'SchemaVersion', 'Id', 'Version', 'Runtime', 'Rid', 'ContractMajor', 'Mode', 'Dependencies', 'Prerequisites'}
-    if set(manifest) != expected_manifest or manifest['SchemaVersion'] != 1 or manifest['Mode'] not in ('Simulation', 'Production'):
+    expected_manifest = {'SchemaVersion', 'Id', 'Runtime', 'Rid', 'ContractMajor', 'Mode', 'Dependencies', 'Prerequisites'}
+    if set(manifest) - {'Version'} != expected_manifest or manifest['SchemaVersion'] != 1 or manifest['Mode'] not in ('Simulation', 'Production'):
         raise ValueError('Manifest template must declare exact package metadata without generated identities')
     if manifest['Mode'] == 'Production' and publisher['TestOnly']:
         raise ValueError('TestOnly publisher is forbidden for a Production package')
-    version = args.version or manifest['Version']
-    if not re.fullmatch(r'(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)', version):
-        raise ValueError('An immutable three-part package version is required')
+    # Examples intentionally omit Version: publishing against a new frozen host
+    # must choose a new immutable identity instead of recycling a template default.
+    # Preserve independent declarations that already own an explicit version.
+    version = args.version if args.version is not None else manifest.get('Version')
+    if not isinstance(version, str) or not re.fullmatch(r'(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)', version):
+        raise ValueError('An immutable three-part package version is required; supply --version for an unversioned template')
     dependencies = [p.resolve(strict=True) for p in args.dependency_package]
     dependency_before = {str(p): digest(p) for p in dependencies}
     dependency_dlls = {}

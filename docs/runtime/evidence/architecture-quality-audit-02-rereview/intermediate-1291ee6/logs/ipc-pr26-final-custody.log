@@ -1,0 +1,12 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-a2192e6934f0470c89a950641d06bc48
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-e71537fce281455c893105d11fa7f136
+PASS AQ: real process dies after original upload raw file flush and before raw-durable/T3 transaction
+PASS AQ: pre-T3 original bytes belong to the original Awaiting occurrence
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: authoritative Query confirms outcome but cannot release original missing raw/image custody
+PASS AQ: pending original, active owner and separate Query basis remain after attempted archive
+PASS AQ: complete recovery set restores actual original bytes; local T3 clears only that occurrence and releases image by original policy
+PASS AQ: restoring original raw never resubmits WCS or upload
+PASS AQ: reactivated archived owner can rearchive without losing or duplicating original raw BLOBs
+PASS AQ: rearchive survives restart without another upload
+PASS RECEIPT CUSTODY COMPLETE

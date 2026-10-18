@@ -1,0 +1,9 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-86ea625ec46f45a9b9fe47f0f00eab0b
+PASS AQ: prior input is actual 2ad DB4 produced by the original flawed receipt-outcome test
+PASS AQ: SQL5 restores prior cleared raw responsibility and preserves its separate verified Query basis
+PASS AQ: previously archived owner is visible again; historical already-released image fact is preserved without inventing bytes
+PASS AQ: custody migration preserves every remaining original raw byte
+PASS AQ: prior missing raw is a current auxiliary responsibility, not falsely complete background history
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: history recovery retains original identity and permanent missing occurrence
+PASS PRIOR CUSTODY MIGRATION COMPLETE

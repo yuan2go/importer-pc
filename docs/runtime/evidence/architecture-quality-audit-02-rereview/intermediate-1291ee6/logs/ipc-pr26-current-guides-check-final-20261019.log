@@ -1,0 +1,12 @@
+LINK_RENDER_REFERENCE 80b8f6ae6f0b4eaedd6219e74d2ef1acabf7cfbd CURRENT_WORKING_GUIDES_NOT_A_CANDIDATE
+PASS_GUIDE_LINKS docs/runtime/supply-getting-started.md 7755
+PASS_GUIDE_LINKS docs/runtime/operations.md 11879
+PASS_GUIDE_LINKS docs/extensions/supply-guide.md 11667
+PASS_GUIDE_LINKS docs/runtime/validation/ui-maintainability-16-windows.md 2520
+PASS_GUIDE_LINKS docs/runtime/getting-started.md 3403
+PASS_GUIDE_LINKS docs/runtime/architecture-quality-closure-01.md 19683
+PASS_GUIDE_LINKS docs/runtime/validation/architecture-quality-closure-01-windows.md 3835
+PASS_GUIDE_LINKS docs/runtime/application-architecture-22.md 9729
+PASS_GUIDE_LINKS docs/design/application-architecture-22.md 5618
+PASS_GUIDE_LINKS docs/extensions/developer-guide.md 9769
+PASS_CURRENT_PARCEL_DB5_AND_GUIDE_LINKS

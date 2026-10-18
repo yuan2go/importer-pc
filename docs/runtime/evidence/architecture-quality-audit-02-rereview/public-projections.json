@@ -1,0 +1,95 @@
+{
+  "Meaning": "Public path-only projection, never original frozen payload or replay bytes. Original outputs retained locally; logs are unmodified.",
+  "Files": [
+    {
+      "Path": "intermediate-1291ee6/old-release-journey/delivery-1291ee6-custody-facts-process.json",
+      "OriginalSha256": "c0d682ba8a1c039a5c6344494f2bb3415bfaa31c79377ba17ea0fe448e0b5ff9",
+      "PublicSha256": "74227bd422b1fb3019f4f66350c3e1ae0b480d36670b03f94a6b7c6eff38a316",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/intermediate-1291ee6/old-release-journey/delivery-1291ee6-custody-facts-process.json"
+    },
+    {
+      "Path": "intermediate-1291ee6/old-release-journey/genuine-delivery-journey.py",
+      "OriginalSha256": "2f89d7c3fd28e21146cfe1d8c9d6bb3f6a085de8bc2e2ec176f6e76eac252799",
+      "PublicSha256": "b13bfebb2afc5c57fea582ff9793e33395bb582ee0aee0449bac368ba7c2d1bb",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/intermediate-1291ee6/old-release-journey/genuine-delivery-journey.py"
+    },
+    {
+      "Path": "intermediate-1291ee6/old-release-journey/genuine-evidence.json",
+      "OriginalSha256": "60de90ef4e30dcd8cfe976a7d95bd2fd8055e2c2f43420f135ce37bdd699b84d",
+      "PublicSha256": "266f8e222bcbc32348fbdecf0e75121ee6677f09fb9d4d448217d4e52769d8b0",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/intermediate-1291ee6/old-release-journey/genuine-evidence.json"
+    },
+    {
+      "Path": "intermediate-1291ee6/old-release-journey/result.json",
+      "OriginalSha256": "078cc5b46dd0cfbd7222bccdd18677ae6e5403998f58048325958b09bcda7add",
+      "PublicSha256": "dada5e9b6744a13fe4b1b06de1f44f6fb95544765c29ebc9a9bddf12a2ed9675",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/intermediate-1291ee6/old-release-journey/result.json"
+    },
+    {
+      "Path": "intermediate-1291ee6/selected/selected-journey.json",
+      "OriginalSha256": "593767ce2eefccf3b2bf13e5f85c4f9af073cfa5011fdffa940077512ac580e7",
+      "PublicSha256": "c18c494a201bbed8223cae4873ef38fe9bed816f9994d3c57f182ee65529ed5f",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/intermediate-1291ee6/selected/selected-journey.json"
+    },
+    {
+      "Path": "old-release-journey/delivery-e914e75-process.json",
+      "OriginalSha256": "ad9b3c943b6b36a3ad4fd2d8d345d7cad3361fad0ebceb25a46914d0f4679208",
+      "PublicSha256": "a71020d023fb54040f1bda2b545ef19f14ac416cf4d2a76fb354f6fabbf1937c",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/old-release-journey/delivery-e914e75-process.json"
+    },
+    {
+      "Path": "old-release-journey/genuine-delivery-journey.py",
+      "OriginalSha256": "2f89d7c3fd28e21146cfe1d8c9d6bb3f6a085de8bc2e2ec176f6e76eac252799",
+      "PublicSha256": "b13bfebb2afc5c57fea582ff9793e33395bb582ee0aee0449bac368ba7c2d1bb",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/old-release-journey/genuine-delivery-journey.py"
+    },
+    {
+      "Path": "old-release-journey/result.json",
+      "OriginalSha256": "ad1ef0af9fc7f403af0ccc157882d8006d4c780bdc6914069a8d198e8b0cb197",
+      "PublicSha256": "573a23eb8d8aad9b8cb862b772162fecb6ccdf30b362a5a566523907ec50b8b6",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/old-release-journey/result.json"
+    },
+    {
+      "Path": "original-review-592d2bdd/consumer-reader/execution.json",
+      "OriginalSha256": "63217020194061cfdfe7ad80f17bff306ccdff450963c044e1cfe4a2eaa7fe92",
+      "PublicSha256": "7869be1e776aeeb7b1f06e5977ef08e31395c4ad745a0521defdfb47c907cc12",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/original-review-592d2bdd/consumer-reader/execution.json"
+    },
+    {
+      "Path": "selected/custody.json",
+      "OriginalSha256": "fa6d244b544308e586e26a509ab08225e857f5e4b0313c31e1ff044aa8e0f5fd",
+      "PublicSha256": "be7c6ab71660566f1fda8d8a3a647dcba5c70fc6714685364efa90783ad2aeb1",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/selected/custody.json"
+    },
+    {
+      "Path": "selected/inventory-initial-rejected/inventory-check.json",
+      "OriginalSha256": "84ab7757f4708c09c5959f2d4ccbea57f38021754eac6a0fb4b1ea80d1a43c52",
+      "PublicSha256": "ec5d264d97e33ac645a22e8b16f403fbe221db5031fc8958fcc46141943e04c5",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/selected/inventory-initial-rejected/inventory-check.json"
+    },
+    {
+      "Path": "selected/inventory-schema1/inventory-check.json",
+      "OriginalSha256": "c063fd0defb224bd8588e3e42cc89012c19bc03a486aaeb18ddb9707fe3acddd",
+      "PublicSha256": "503a5bc8a07946899bc30bc99e0d208ec89b459941eb37973384a3d2d6c32189",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/selected/inventory-schema1/inventory-check.json"
+    },
+    {
+      "Path": "selected/inventory-schema2/inventory-check.json",
+      "OriginalSha256": "fc0670241afc10bc4cf052f1ba4bf9f255dc8f202889527c68a88fe3c4b3f48d",
+      "PublicSha256": "b72638dc02b1bf9da4a63fa9337138dee365dd2b28e94855bcdc3511ca35c75e",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/selected/inventory-schema2/inventory-check.json"
+    },
+    {
+      "Path": "selected/inventory-schema3/inventory-check.json",
+      "OriginalSha256": "76934c57b47890c25aa85c71e92e9c337c2425bed9bf0805ac546c554f2b5152",
+      "PublicSha256": "e7ae88ee089282eb71a1cc5365860a253af8eb44bf595bde888548c71c0716ea",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/selected/inventory-schema3/inventory-check.json"
+    },
+    {
+      "Path": "selected/selected-journey.json",
+      "OriginalSha256": "e3c07f8321186df20886be3ea9f500f692efe8a9e56a38f99e40e757029e16e3",
+      "PublicSha256": "1fa73f617be741eff021568f23f56becfb5e508a4f86f0c7a7a93adc123531cf",
+      "OriginalLocalArtifactRelative": "ipc-pr26-publication-raw-20261019/selected/selected-journey.json"
+    }
+  ]
+}

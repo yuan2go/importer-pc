@@ -1,0 +1,107 @@
+{
+  "Status": "PASS",
+  "OuterJourneyExitCode": 0,
+  "SourceCommit": "e914e75a109672cd1d52be91c40459f09231ea57",
+  "PluginSourceCommits": {
+    "reference.barcode": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+    "reference.parcel-capabilities": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389"
+  },
+  "PluginSourceCommitMeaning": "Last commit touching each independently declared source scope; not rewritten to host source",
+  "ExpectedStartupFailureExitCode": -6,
+  "SelectedVersions": {
+    "reference.barcode": "1.1.1",
+    "reference.parcel-capabilities": "1.8.1"
+  },
+  "Media": {
+    "sport-core": {
+      "File": "${LOCAL_ARTIFACTS}/ipc-pr26-rereview-delivery-e914e75/sport-core.zip",
+      "Sha256": "4cf65a3a9ef9f46523fbd9d3bee532ccb8a9cd50f93d76d2de7db58d1e53f135",
+      "VerifiedFiles": 94
+    },
+    "sport-selected": {
+      "File": "${LOCAL_ARTIFACTS}/ipc-pr26-rereview-delivery-e914e75/sport-selected.zip",
+      "Sha256": "2944b98f8ef991a6809f8ab9974d54e99c377d2b19a157fdb4eecd4dcb8f2ac9",
+      "VerifiedFiles": 97
+    }
+  },
+  "InventoryChecks": [
+    {
+      "Schema": 1,
+      "Result": "final-e914e75-inventory-schema1-01/inventory-check.json",
+      "Cases": 5,
+      "Status": "PASS"
+    },
+    {
+      "Schema": 2,
+      "Result": "final-e914e75-inventory-schema2-01/inventory-check.json",
+      "Cases": 5,
+      "Status": "PASS"
+    },
+    {
+      "Schema": 3,
+      "Result": "final-e914e75-inventory-schema3-01/inventory-check.json",
+      "Cases": 5,
+      "Status": "PASS"
+    }
+  ],
+  "PreservedInitialProbeFailure": {
+    "Path": "final-e914e75-inventory-01/inventory-check.json",
+    "Cause": "Probe incorrectly attempted schema3-to-schema1 downgrade; existing topology flattening guard correctly rejected; corrected to independent schema1/2/3 seed roots"
+  },
+  "Windows": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "Files": {
+    "final-e914e75-inventory-01/inventory-check.json": "84ab7757f4708c09c5959f2d4ccbea57f38021754eac6a0fb4b1ea80d1a43c52",
+    "final-e914e75-inventory-01/process.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-e914e75-inventory-01/process.stdin.jsonl": "e489d85bfd332d39d68520354228e2f4c29bb7532c65888289757f851b435d48",
+    "final-e914e75-inventory-01/process.stdout.log": "e772329819b1e5639081a45aa0774824382f53343d18667cf8d37e3dd0ced5cf",
+    "final-e914e75-inventory-01.log": "4d3f196424281e8d4b2f3cf10bf016d1033025643e063d2d61da76c629a0b3eb",
+    "final-e914e75-inventory-schema1-01/inventory-check.json": "c063fd0defb224bd8588e3e42cc89012c19bc03a486aaeb18ddb9707fe3acddd",
+    "final-e914e75-inventory-schema1-01/process.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-e914e75-inventory-schema1-01/process.stdin.jsonl": "1612aa04ade6cdcab4f793d27331374ecf93b99aa2d47f8526e8fd18ae657afe",
+    "final-e914e75-inventory-schema1-01/process.stdout.log": "f032264cc47f94600d8c77cd649e3d6c85cfa07107a4c19016896e5874d90384",
+    "final-e914e75-inventory-schema1-01.log": "c5ff7f7062c32f70086233909b086a0dd25f89e562e9ca2786d6e651ffa520f7",
+    "final-e914e75-inventory-schema2-01/inventory-check.json": "fc0670241afc10bc4cf052f1ba4bf9f255dc8f202889527c68a88fe3c4b3f48d",
+    "final-e914e75-inventory-schema2-01/process.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-e914e75-inventory-schema2-01/process.stdin.jsonl": "43097e74901923d8ad7a94b6d18c08235efdeca7e7504542225f8f638fb2366a",
+    "final-e914e75-inventory-schema2-01/process.stdout.log": "04e3acc9f11326fc155b7eb3cb1700e68b3612aabb2c291686af66f22471cb29",
+    "final-e914e75-inventory-schema2-01.log": "72bd2f06b2d511a3b02138d3601e2594ed01beeecc4b821f71f61cdcdad9ffb1",
+    "final-e914e75-inventory-schema3-01/inventory-check.json": "76934c57b47890c25aa85c71e92e9c337c2425bed9bf0805ac546c554f2b5152",
+    "final-e914e75-inventory-schema3-01/process.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-e914e75-inventory-schema3-01/process.stdin.jsonl": "041ba9a004d478db71f285a3ee73fe6c6ae1afa71733be50a7d72a7bd9f00561",
+    "final-e914e75-inventory-schema3-01/process.stdout.log": "6b59a5c1a49ede4c35d8296468f69795ac0aa38fe28ded77f9b439561fbf0bb8",
+    "final-e914e75-inventory-schema3-01.log": "f4c2ed288a61b264b4801344431141ad99336a8488ae1436324861fa505c27f4",
+    "final-e914e75-run-01/selected-journey.json": "e3c07f8321186df20886be3ea9f500f692efe8a9e56a38f99e40e757029e16e3",
+    "final-e914e75-run-01/selected-runtime/action-000-extension-install.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-e914e75-run-01/selected-runtime/action-000-extension-install.stdout.log": "36e1e17f85b913c864c41a88e6377d720a0414c69d9f1a838a995849c0752cf9",
+    "final-e914e75-run-01/selected-runtime/action-001-extension-recover.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-e914e75-run-01/selected-runtime/action-001-extension-recover.stdout.log": "521f15e65ec39f03ee81a15c186984e9eeb01c7277dc2e8250b09c96aae506f8",
+    "final-e914e75-run-01/selected-runtime/action-002-extension-install.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-e914e75-run-01/selected-runtime/action-002-extension-install.stdout.log": "7bd7a6d694980a863df4e131e5e0ae551b7ca600683163d02bb0b08f45a9ebb7",
+    "final-e914e75-run-01/selected-runtime/action-003-extension-recover.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-e914e75-run-01/selected-runtime/action-003-extension-recover.stdout.log": "f30adc4f3d68001c59265e25977b185b85ac184b4e05f45aa51266f9dcc215e8",
+    "final-e914e75-run-01/selected-runtime/expected-failed-start.stderr.log": "f52a810822345d027880a7aa73e372c836a9ef9576a3e32342f281fe866068ac",
+    "final-e914e75-run-01/selected-runtime/expected-failed-start.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-e914e75-run-01/selected-runtime/process-0.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-e914e75-run-01/selected-runtime/process-0.stdin.jsonl": "3b666c07b6d5a2b505de68709bdd27cb8c4be3d298b9b78936b4eca916428c23",
+    "final-e914e75-run-01/selected-runtime/process-0.stdout.log": "ffca1151e6008a6264b85581f9689b44cdaa091186d27b7ae9cd9486c2cc3361",
+    "final-e914e75-run-01/selected-runtime/process-1.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-e914e75-run-01/selected-runtime/process-1.stdin.jsonl": "db5e98f5320f74b9f928e58b3f97b8d0415a89d0df175e85d4ae731c345a5a8b",
+    "final-e914e75-run-01/selected-runtime/process-1.stdout.log": "b04ecd10e127ba92150c713d02d10afcd34e6a9f022e95b52210dc70af82b589",
+    "final-e914e75-run-01/selected-runtime/process-2.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-e914e75-run-01/selected-runtime/process-2.stdin.jsonl": "a75f06760e2071008a6911237a1d774fa813b69ec62967f694a1e481bb97e110",
+    "final-e914e75-run-01/selected-runtime/process-2.stdout.log": "e733bdb02197cd12aa73b35e5309faeec12f57d7a3d7a709ae691583112414ce",
+    "final-e914e75-run-01/selected-runtime/process-3.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-e914e75-run-01/selected-runtime/process-3.stdin.jsonl": "46839e049312f095d6d2437f2986ed4bb5b1b721d302ae547289ad6c91c48f60",
+    "final-e914e75-run-01/selected-runtime/process-3.stdout.log": "53b729d32b415aadcdd2e7579582f832e77ffb6aceefd49eb836a3b1c9deb5ea",
+    "final-e914e75-run-01.log": "ee5b57735b015438e26190eee01c26d673ce25424492200f17ddd191cd92dcc6",
+    "release-inventory-check.py": "c41d375d81246282439231b4a29254b0729c3df3f80cb5f20cef10bcbf84fddb",
+    "release-inventory-check.v1-original.py": "611439a17f8f18c505b0150abce8a9adf85590b66e35b3303437b947a3bfdf83",
+    "selected-release-journey.py": "a92956c5053921ea08579571aaf628635228016d78013565951f132817c49ec0"
+  },
+  "PublicProjection": {
+    "OriginalSha256": "fa6d244b544308e586e26a509ab08225e857f5e4b0313c31e1ff044aa8e0f5fd",
+    "OnlyLocalPathsReplaced": true,
+    "NotFrozenRequestOrReplayInput": true
+  }
+}

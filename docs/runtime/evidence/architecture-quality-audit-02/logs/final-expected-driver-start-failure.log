@@ -1,0 +1,7 @@
+Unhandled exception. System.InvalidOperationException: Explicit synthetic extension startup fault
+   at Ipc.Reference.BarcodeExtension.BarcodeSource.StartControlledAsync(String registeredEpoch, Func`2 receive, Action`1 health, CancellationToken token)
+   at Ipc.Platform.ObservationSession.StartAsync(Func`2 receive, CancellationToken token) in /_/src/src/Ipc.Platform/ObservationSession.cs:line 23
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartAsync(CancellationToken token) in /_/src/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 118
+   at Program.<Main>$(String[] args) in /_/src/src/Ipc.Assembly/Program.cs:line 13
+   at Program.<Main>$(String[] args) in /_/src/src/Ipc.Assembly/Program.cs:line 27
+   at Program.<Main>(String[] args)

@@ -6,7 +6,7 @@
 
 独立审查的仓库外REPORT.md和FINDINGS.json固定同一main，列AQ-01～06；当前取得的是Markdown/JSON和合成探针。原PDF尚未取得，不转换Markdown生成“原始PDF”，该归档项BLOCKED，待原件才能校验及单独提交main。所有问题都要复核源码及当前试验，不继承旧PASS。
 
-开放PR #23（开工head 966ec6aa17dfe29b96fc9b9113f3037ba586f6a0）修复采集保有，尚未合并main。继承其实现并标明来源，不重建第二套保有协议；本包分支纳入该依赖，禁止修改对方工作树或替对方合并main。公共契约1.5.0来自该PR，本次新增契约使用新不可变版本。
+形成时依赖PR #23（开工head 966ec6aa17dfe29b96fc9b9113f3037ba586f6a0）修复采集保有，当时尚未合并；其有效成果现已随PR24进入main。继承其实现并标明来源，不重建第二套保有协议；本包分支纳入该依赖，禁止修改对方工作树或替对方合并main。公共契约1.5.0来自该PR，本次新增契约使用新不可变版本。
 
 比较三个方向：仅加守卫不能解决容量和维护闭环；重建通用工作流/服务框架会扩大迁移面；采用现有业务共享层的定向责任闭环。三个Application继续独立声明流程、先决和完成，Platform只提供设施。Sportmaster左右独立且只取WCS格口；另两条主流程各main顺序位。旧Supply/Inspection保持原SQL/协议和运行根。
 
@@ -62,6 +62,8 @@ AQD-05补差：实际签名包复现仅Pending含包、重启激活被旧件屏�
 
 ## AQD-07 PR24独立复审整改
 
+以下为PR24形成时设计及执行记录，保留原基线、任务范围和证据；其数据库4与旧样例版本仅描述该阶段。现行PR26操作使用DB5及下文独立资料/旧账确认规则，合并身份见本节末尾。
+
 2026-10-18用户已授权修复五项并更新同一PR，不合并main。本轮基线PR a2e987a8d15eb397ad1a40cf1a303bdad4ec397b、main b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d；原审查探针和输出保持原身份，前轮3d69607候选及PASS不改写为新实现资格。
 
 选择复用现有事务、业务读者及维护机制：不提高回复上限、不清原raw/未知责任、不把业务SQL放入Platform，也不因混合消费者加载SDK或业务运行实例。
@@ -72,7 +74,7 @@ AQD-05补差：实际签名包复现仅Pending含包、重启激活被旧件屏�
 4. R04：装配根按只读数据库格式身份选择Supply或Parcel各自既有读者；混合/歧义/未知格式拒绝。Supply与Parcel管理入口都用该分派。为离线维护显式包含对方读者依赖，不创建对方Application实例、不引入对方主流程、不执行扩展代码；数据库语义继续由各业务拥有。
 5. R05：维护登记使用规范化物理设备键及服务实例键。登记先于释放聚合锁；依赖该资源的准入、首次发送、继续上传及查询均拒绝/保留原意图，其他位/服务仍可运行。设备维护等待原采集，服务维护先检查原外呼排空；预算取消但提供者未返回时仍保持围栏/租约。完成后清除围栏并要求当前健康，回执准确记录实际暂停状态，不谎称全局仍暂停。
 
-## 本轮执行计划（writing-plans，按序执行）
+### PR24五项整改执行记录（历史）
 
 目标：闭合R01～R05并用真实Application/Factory/SQLite及精确签名包定向验证。技术栈仍.NET10.0.402/SQLite；业务分支codex/architecture-quality-closure-01，保留数据库4、Supply5、Application.Contracts1.6.0语义及原不可变包。
 
@@ -85,7 +87,7 @@ AQD-05补差：实际签名包复现仅Pending含包、重启激活被旧件屏�
 关键命令：`dotnet build tests/Ipc.Application.Verification -p:RestoreLockedMode=true -m:1 -nr:false`；`dotnet Ipc.Application.Verification.dll . --review-closure`（本轮定向入口）；受影响`--architecture-quality`、`--application-architecture`及签名`--quality-extensions`，以实际风险决定。每步先保留复现失败，再记录修复后结果；不运行无差别全量测试。
 
 
-本轮固定实现与候选7850fcc02b04d1b572fcb89215945ee0f60be28c，实际定向结果及失败保留见[复审结果](../runtime/architecture-quality-closure-01-rereview-results.md)。本轮结论为参考验证通过、待独立复审；不变更D/RV或Windows/现场状态。
+本轮固定实现与候选7850fcc02b04d1b572fcb89215945ee0f60be28c，实际定向结果及失败保留见[复审结果](../runtime/architecture-quality-closure-01-rereview-results.md)。形成时结论为参考验证通过、待独立复审；后续独立复审与合并身份见本节末尾；不变更D/RV或Windows/现场状态。
 
 
 ## AQD-08 R03兼容库存校验闭环
@@ -98,7 +100,7 @@ AQD-05补差：实际签名包复现仅Pending含包、重启激活被旧件屏�
 
 没有新的数据库/配置/公共契约/扩展协议版本；不修改FrozenConfiguration或其hash、原SQL、原包或旧请求。非法原件保留并明确阻卸载，合法旧schema与合法角色/库存镜像继续读取。现有旧候选与1.6.8/1.6.9精确包维持原源码/二进制身份，不能标成本轮候选；本轮不重复打包整个产品。
 
-### 执行计划（writing-plans）
+### PR24 R03执行记录（历史）
 
 目标：闭合剩余R03，并保持合法兼容配置的完整引用与只读证据。技术栈.NET10.0.402/SQLite，分支codex/architecture-quality-closure-01；沿现有计划逐项执行，无需新业务实例或通用框架。
 
@@ -108,6 +110,34 @@ AQD-05补差：实际签名包复现仅Pending含包、重启激活被旧件屏�
 - [x] 只做受影响定向验证：--inventory-closure、--review-closure，必要真实Assembly/Product构建；按风险核配置验证和卸载原入口，不无差别全量测试/重打旧候选。
 - [x] 固定源码、命令/返回码、原失败与只读hash证据；更新同一PR供复审，核main未变，Windows/SDK/现场及原PDF缺件继续NOT_RUN/BLOCKED。
 
-固定源码445e1f62bf01fe21e5f13576d2f483292571b709；执行及同PR交付结果见[本轮记录](../runtime/architecture-quality-closure-01-r03-results.md)。参考验证完成，独立复审/Windows/现场资格另行判定。
+固定源码445e1f62bf01fe21e5f13576d2f483292571b709；执行及同PR交付结果见[本轮记录](../runtime/architecture-quality-closure-01-r03-results.md)。形成时参考验证完成；后续独立复审已归档，Windows/现场资格仍另行判定。
 
 2026-10-19归档/合并授权：独立复审固定f862c2ae2ad00ab79ceff5e2013c2a5593d05234，限定参考范围无剩余代码阻断。原报告及证据见[归档](../reviews/pr24-independent-rereview-f862c2a/README.md)。用户授权仅归档及精确head合并，不重复测试/打包，不改业务/测试/配置/构建输入，不关闭Windows/真实SDK/协议/现场或PDF缺件门禁。前述“不合并”保留各次任务形成时范围。
+
+PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。完整[独立复审归档](../reviews/pr24-independent-rereview-f862c2a/README.md)及历史失败不改；以下PR26差额继续使用DB5及独立资料责任，不以PR24当时DB4或历史包版本作为当前发行指令。
+
+## 审查02 N01–N07差额设计（本次实施范围）
+
+审查02固定2126ac2，执行main b2dc55b，继承PR24 a2e987a（含PR23 966ec6a），两PR开工均OPEN。审查01 AQ与其缺PDF记录保留原身份；审查02原PDF已在main，hash dce6b0e235c44e414cc14a976dbd3cea0d24f634aab1276be894b6b69b62283d。本节是具体差额设计，不替换原始审查或D/RV。
+
+- N01/A09：整合README/INDEX、现有22运行、扩展和UI STATUS；Supply操作单独标识，随包按产品选择。替代操作原字节见pre-architecture-quality-02，设计22/19/20仍有效内容不归档删除。
+- N02/A01：复用已有Begin/Confirm、Interrupted尝试和原三断进程测试；不增加配置账。核部分资源失败排空及显式restage。旧无尝试配置只作为历史输入，成功Start才有当前运行确认，不能声称已找回旧程序遗失值。
+- N03/A02/A04：修Attached重启主Reason；依据持久且验hash的主链原回复恢复旧Blocked投影，恢复前完整JSON写原审计。原请求/原回复不改。维护暂停及认证后，允许对缺raw的原Awaiting执行原Query；查询产生自己的原件和T3，只有有效权威终态才关联独立Query的结果依据；旧raw缺口仍作为独立资料责任保有。原发生ID/Source/空raw_hash保留，审计保存新查询发生及检查说明，绝不制造旧raw或清RawDurable丢件。Query无结果/冲突/无原能力保持隔离。旧DB升级屏障和匹配旧发布清偿继续执行，离线局部投影修复不授权控制动作。
+- N04/A03：复用DB4工作集/事务归档/永久去重/分页/raw和备份。补完整恢复集搬迁至新卷的容量预检和实际恢复入口，按实际字节加配置磁盘保留计算，保留原集、不自动删历史；不设客户保留期。新卷恢复仍隔离，旧根停止后才能启用。
+- N05/A05/A06：继承双位目标与完整编辑器。使用两个实际ParcelViewModel同时加载/编辑/自动刷新/保存验证CAS和另一位/实例不丢；Windows双窗交互单独NOT_RUN。
+- N06/A07/A08：继承Store恢复/卸载与Pending备份测试；包选装采用compositions闭包加重复--extension-package输入，校验完整依赖/目标精确公共DLL，实际只复制所选.ipcx及身份锁，不夹带私钥/信任策略。随包提供安装指引，安装/绑定/激活沿原入口；Release签名旅程核验宿主匹配。
+- N07：沿打包工作复用产品映射/指南集合，沿恢复工作将主结果解释留给各Flow；不全量改名、不新建恢复/插件框架。未改变公共契约就保留ABI，公共字节变化则新不可变包。
+
+采用现有设施定向修补。仅加阻断不能解决恢复，另建通用框架会扩大责任；本方案补既有对象的完成路径。验证以已有architecture-quality、AA22、资源/扩展组和必要打包启动为主，原失败输出保留，Windows/SDK/协议/现场分层。
+
+## PR26独立复核修复设计（业务代码前）
+
+本轮开工main b2dc55b，PR26原头592d2bdd；PR24后续3f6f762的b82b8d0/7850fcc及最终R03原库存校验已评审继承，永久回复身份、严格消费者读者及维护围栏保持其原证据身份。PR24已由独立授权以f531d3a合并为main 4afe2af，本任务同步该main，不代合并其他PR。原审查5项P1/2项P2及旧操作字节见pre-pr26-rereview归档和本次证据输入；前次PASS仅表示当时断言，不证明新缺口关闭。
+
+- 原结果与原资料分开：Query只确认业务结果，不清原Awaiting。追加Parcel DB5资料索引，保留SQL1～4、原发生、原raw hash和查询关联；OutcomeReconciled旧行恢复为缺raw资料责任，已释放历史如实登记资料缺口，不能制造原图。未清资料持续保有原图、原包、容量与归档守卫；原目标权威Query无结果不变更原事实。真正原文件由完整恢复集恢复后沿本地T3清偿；没有原字节或合同处置依据则持续可见，禁止通用清除。
+- 旧DB2/3 Attached主状态污染：离线取得原应用所有权及完整备份。使用经逐文件校验的匹配原发布，只启动原上传端口并Query冻结原请求，验证原实现指纹和原结果；不Start reader、不Submit、不换配置。主结果依据原Committed主raw恢复。权威上传终态与独立Query原件提交后，允许显式将只剩资料责任的旧库升级DB5，保持资料索引、原图/包引用和隔离；普通启动仍拒绝未明旧业务。新配置只有业务已终结且每个缺raw均有可信Query依据才可显式过渡，原资料责任不因此归档/消失，旧未知外部动作仍需匹配发布核对。
+- 旧无确认配置账：在同一envelope保留原JSON/hash，标记确认未知。资源启动失败/中断持久记录；成功启动仅开放暂停维护入口，需维护身份、当前CAS和说明显式确认。新种子首次启动及新候选只有资源成功才确认；旧账遗失值不由seed猜补。Supply原路径保持。
+- 维护围栏沿PR24：按所选资源跟踪在途外呼，重连期间禁止该资源新Query/Submit/认证及相关位接纳；不相关位独立。取消未返回仍保有资源，维护epoch阻旧健康污染。
+- 当前指南与模板不再把已占用历史版本作为可重复构建默认。示例构建必须显式指定新不可变版本，发行物以composition.lock/identity和目标公共DLL为准；最终新候选使用新版本，不覆盖1.7.0/1.7.2、1.0.10/1.0.12及PR24身份。
+
+验证顺序：先保存前次原始反例及针对新增缺口的RED，再继承PR24修复，完成DB4缺raw独立责任/本地原件恢复、真实旧发布Query到显式升级、旧账确认失败/中断/CAS、原回复65次淘汰与维护并发定向验证。必要AA22/资源/扩展、WPF构建及新选装Release旅程；Windows实机NOT_RUN、真实SDK/协议/现场BLOCKED。不得为PASS删除有效守卫或原断言，错误旧断言保留原版本并改为验证独立责任。

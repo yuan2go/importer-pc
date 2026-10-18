@@ -43,17 +43,38 @@ static partial class ArchitectureQuality
         foreach(var n in names){var target=RecoveryFiles.Resolve(recovery,n);Directory.CreateDirectory(Path.GetDirectoryName(target)!);RecoveryFiles.CopyVerified(RecoveryFiles.Resolve(directory,n),target,hashes[n]);}
         ExtensionStore.AtomicWrite(Path.Combine(recovery,"COMPLETED.json"),new ParcelRecoveryManifest(c.ApplicationId,Path.GetFileName(backup),Wire.FileHash(backup),hashes,DateTimeOffset.UtcNow,"Synthetic recovery set containing actual original pre-T3 upload bytes"));
         File.Delete(Path.Combine(directory,"receipts",occurrence+".json"));
-        await using(var a=await Open(c,name))
+        using var monitorPermit=new SemaphoreSlim(0,1);
+        ControlledHealthFactory? health=null;
+        await using(var a=await Open(c,name,f=>health=new ControlledHealthFactory(f),a=>
+            a.BeforeMonitorProbe=(instance,t)=>instance==c.Wcs!.InstanceId?monitorPermit.WaitAsync(t):Task.Delay(Timeout.Infinite,t)))
         {
             await Maintenance(a);
-            // Periodic health also holds the external-call fence. Obtain the public
-            // maintenance availability before this test expects a query to execute.
-            await Wait(a,s=>s.Availability?.Configure==true);
+            var ready=await Wait(a,s=>s.Availability?.Configure==true);
+            ParcelReceiptResponsibility[] beforeRows;string beforeOperation;
+            using(var repo=new ParcelRepository(directory,c.ApplicationId))
+            {beforeRows=repo.ReceiptResponsibilities(original.Id);beforeOperation=Wire.Encode(repo.ReadOperation(original.Id));}
+            // One actual Monitor probe may reserve the external-call fence after
+            // Configure=true was observed. All subsequent probes park before reservation.
+            monitorPermit.Release();
+            try
+            {
+                await health!.Entered.Task.WaitAsync(TimeSpan.FromSeconds(3));
+                var held=await a.SnapshotAsync();var rejected=await a.CommandAsync(new(Wire.Id(),held.Revision,"ReconcileReceipt",occurrence,"Controlled monitor contention; no Query authorized"));
+                Console.WriteLine("Custody monitor held: "+Wire.Encode(new{Observed=ready.Availability,Held=held.Availability,Receipt=rejected}));
+                using var repo=new ParcelRepository(directory,c.ApplicationId);
+                Check(held.Availability?.Configure==false&&rejected.Status=="Rejected"&&rejected.Revision==ready.Revision&&repo.Revision==ready.Revision,
+                    "actual Monitor reservation after Configure=true safely refuses maintenance without revision change");
+                Check(Wire.Encode(repo.ReceiptResponsibilities(original.Id))==Wire.Encode(beforeRows)&&Wire.Encode(repo.ReadOperation(original.Id))==beforeOperation,
+                    "held Monitor rejection creates no Query and preserves original Awaiting, owner, image and frozen requests");
+            }
+            finally {health!.Release.TrySetResult();}
+            var drained=await Wait(a,s=>s.Availability?.Configure==true);
+            Check(drained.Revision==ready.Revision,"same Monitor probe drains before successful maintenance; no unknown external call retried");
             var outcome=await Command(a,"ReconcileReceipt",occurrence,"Original receiver outcome checked; absent local original remains independent");
             Console.WriteLine("Receipt custody query result: "+Wire.Encode(outcome));
             Check(outcome.Status=="OutcomeKnownRawMissing"&&!(await a.OperationAsync(original.Id))!.ImageReleased,"authoritative Query confirms outcome but cannot release original missing raw/image custody");
-            await Command(a,"ArchiveHistory",value:"Do not archive missing original custody");using var repo=new ParcelRepository(directory,c.ApplicationId);
-            Check(repo.PendingReceipts().Any(x=>x.Id==occurrence)&&repo.Load().Any(o=>o.Id==original.Id)&&repo.ReceiptById(occurrence)!.QueryOccurrence is not null,"pending original, active owner and separate Query basis remain after attempted archive");
+            await Command(a,"ArchiveHistory",value:"Do not archive missing original custody");using var archiveRepo=new ParcelRepository(directory,c.ApplicationId);
+            Check(archiveRepo.PendingReceipts().Any(x=>x.Id==occurrence)&&archiveRepo.Load().Any(o=>o.Id==original.Id)&&archiveRepo.ReceiptById(occurrence)!.QueryOccurrence is not null,"pending original, active owner and separate Query basis remain after attempted archive");
         }
         var restored=DirectoryFor("actual-original-restored",c);ParcelRecovery.Restore(backup,restored);
         await using(var a=await Open(c,"actual-original-restored"))
@@ -73,4 +94,23 @@ static partial class ArchitectureQuality
         await using(var a=await Open(c,"actual-original-restored")) Check((await a.OperationAsync(original.Id))!.Upload!.Attempts==1,"rearchive survives restart without another upload");
         if(failures!=0)throw new Exception("Receipt custody failures: "+failures);Console.WriteLine("PASS RECEIPT CUSTODY COMPLETE");
     }
+    sealed class ControlledHealthFactory(ParcelCapabilityFactory inner):IParcelCapabilityFactory
+    {
+        public TaskCompletionSource Entered=new(TaskCreationOptions.RunContinuationsAsynchronously),Release=new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public ParcelConfiguration Normalize(ParcelConfiguration c)=>inner.Normalize(c);public void Validate(ParcelConfiguration c)=>inner.Validate(c);public CapabilityRequirements Requirements(CapabilityBinding b)=>inner.Requirements(b);
+        public ParcelPorts Create(ParcelConfiguration c){var p=inner.Create(c);return p with{Wcs=new ControlledWcsHealth(p.Wcs!,this)};}public ValueTask DisposeAsync()=>inner.DisposeAsync();
+    }
+    sealed class ControlledWcsHealth(IWcsPort inner,ControlledHealthFactory f):IWcsPort
+    {
+        int calls;
+        public string InstanceId=>inner.InstanceId;public Task StartAsync(CancellationToken t)=>inner.StartAsync(t);public Task StopAsync(CancellationToken t)=>inner.StopAsync(t);public Task ReconnectAsync(CancellationToken t)=>inner.ReconnectAsync(t);public ValueTask DisposeAsync()=>inner.DisposeAsync();
+        public async Task<CapabilityHealth> HealthAsync(CancellationToken t)
+        {
+            // Startup is the first call. The schedule admits exactly one Monitor call.
+            if(Interlocked.Increment(ref calls)==2){f.Entered.TrySetResult();await f.Release.Task.WaitAsync(t);}
+            return await inner.HealthAsync(t);
+        }
+        public Task<StageReply> ResolveSlotAsync(FrozenRequest r,CancellationToken t)=>inner.ResolveSlotAsync(r,t);public Task<StageReply?> QueryAsync(FrozenRequest r,CancellationToken t)=>inner.QueryAsync(r,t);
+    }
+
 }

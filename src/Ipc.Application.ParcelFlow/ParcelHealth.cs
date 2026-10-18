@@ -10,6 +10,8 @@ public sealed partial class ParcelRuntime
             while (!stopping.IsCancellationRequested)
             {
                 await Task.Delay(100, stopping.Token).ConfigureAwait(false);
+                // Test scheduling seam before reservation; production always follows the same fence.
+                if (BeforeMonitorProbe is { } schedule) await schedule(port.InstanceId, stopping.Token).ConfigureAwait(false);
                 await gate.WaitAsync(stopping.Token).ConfigureAwait(false);
                 try
                 {

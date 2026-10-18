@@ -42,6 +42,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     int externalWaits;
     TaskCompletionSource? externalDrained;
     internal Action<string>? Boundary { get; set; }
+    internal Func<string, CancellationToken, Task>? BeforeMonitorProbe { get; set; }
     Exception? terminalWorkerFailure;
     public string Id => definition.Id;
     public string[] Dependencies => [];

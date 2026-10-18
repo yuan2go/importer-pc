@@ -1,0 +1,26 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> /Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/build/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/build/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/build/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/build/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/build/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> /Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/build/bin/Ipc.Application.DirectPlc/release/Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> /Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/build/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> /Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/build/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/build/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/build/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/build/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/build/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Application.Supply -> /Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/build/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+/Users/yuan/.codex/worktrees/parcel-recovery-p2/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs(54,23): error CS0136: 无法在此范围中声明名为“repo”的局部变量或参数，因为该名称在封闭局部范围中用于定义局部变量或参数 [/Users/yuan/.codex/worktrees/parcel-recovery-p2/importer-pc/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj]
+/Users/yuan/.codex/worktrees/parcel-recovery-p2/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs(64,27): error CS0136: 无法在此范围中声明名为“repo”的局部变量或参数，因为该名称在封闭局部范围中用于定义局部变量或参数 [/Users/yuan/.codex/worktrees/parcel-recovery-p2/importer-pc/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj]
+
+生成失败。
+
+/Users/yuan/.codex/worktrees/parcel-recovery-p2/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs(54,23): error CS0136: 无法在此范围中声明名为“repo”的局部变量或参数，因为该名称在封闭局部范围中用于定义局部变量或参数 [/Users/yuan/.codex/worktrees/parcel-recovery-p2/importer-pc/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj]
+/Users/yuan/.codex/worktrees/parcel-recovery-p2/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.Custody05.cs(64,27): error CS0136: 无法在此范围中声明名为“repo”的局部变量或参数，因为该名称在封闭局部范围中用于定义局部变量或参数 [/Users/yuan/.codex/worktrees/parcel-recovery-p2/importer-pc/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj]
+    0 个警告
+    2 个错误
+
+已用时间 00:00:04.54

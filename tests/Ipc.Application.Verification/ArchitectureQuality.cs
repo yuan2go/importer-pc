@@ -13,12 +13,12 @@ static partial class ArchitectureQuality
     static void Check(bool condition, string reason)
     { Console.WriteLine((condition ? "PASS AQ: " : "FAIL AQ: ") + reason); if (!condition) failures++; }
     static ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
-    static async Task<ParcelRuntime> Open(ParcelConfiguration c, string name, Func<ParcelCapabilityFactory, IParcelCapabilityFactory>? wrap = null)
+    static async Task<ParcelRuntime> Open(ParcelConfiguration c, string name, Func<ParcelCapabilityFactory, IParcelCapabilityFactory>? wrap = null, Action<ParcelRuntime>? beforeStart = null)
     {
         var path = Path.Combine(root, name); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c);
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null); var factory = new ParcelCapabilityFactory(launch);
         var app = new ParcelRuntime(launch, c.ApplicationId == "sportmaster" ? new SportmasterFlow() : new DirectPlcFlow(), wrap?.Invoke(factory) ?? factory);
-        try { await app.StartAsync(default); return app; } catch { await app.DisposeAsync(); throw; }
+        try { beforeStart?.Invoke(app); await app.StartAsync(default); return app; } catch { await app.DisposeAsync(); throw; }
     }
     static async Task<ParcelSnapshot> Wait(ParcelRuntime app, Func<ParcelSnapshot, bool> predicate)
     {

@@ -1,0 +1,11 @@
+EvidenceRoot=<TEMP>/ipc17-verification-db230f4b4159490393c635a1bd81ce67
+PASS AC19 signed: signature and exact contract policy admits all six registered provider kinds
+PASS AC19 signed: signed protocol measured-weight/image-address requirements reject incompatible configuration
+PASS AC19 signed: signed protocol measured-weight/image-address requirements reject incompatible configuration
+PASS AC19 signed: provider-owned parameter schema rejects unknown protocol fields
+PASS AC19 signed: installed providers discoverable before any enable or binding
+PASS AC19 signed: signed external login factory creates the common authenticator
+PASS AC19 signed: signed camera factory captures original acquisition through the installed module
+PASS AC19 signed: installed/enabled/bound providers actually execute image upload, measured WCS and original PLC chain
+PASS AC19 signed: signed declaration and original query prove only the reference peer physical fact
+PASS AC19 SIGNED COMPLETE: one exact package, seven modules, parameter/requirement guards and real application activation

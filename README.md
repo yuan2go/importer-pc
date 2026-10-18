@@ -4,11 +4,11 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 
 ## 当前工程状态
 
-当前实施任务 **WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19**；最新main基线 **08b8067aa6cba6a148252296c7a5b18a27b3be65**，PR #18 已合并，开工无开放PR。
+已完成 **WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19** 的实施与参考资格验证。开工main **08b8067aa6cba6a148252296c7a5b18a27b3be65**（PR18已合并）；最终运行/六候选源码 **c213aad54f5d48687efc0b56428991b6bf4f3537**。
 
-[19现行设计与职责](docs/design/application-capability-19.md) · [工作包及计划](docs/work-packages/WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19.md)。实施和验证状态在本包交付时逐项登记；不把计划宣称为已实现。
+[19结果及能力矩阵](docs/runtime/application-capability-19-results.md) · [现行职责设计](docs/design/application-capability-19.md) · [配置/客户端/部署/恢复](docs/runtime/application-capability-19.md) · [证据及完整身份](docs/runtime/evidence/application-capability-19/README.md)。三Application独立编排、公共会话/能力、称重守卫、两类上传与有界原图、签名提供者及结构化客户端已实施；三个portable解压9条进程旅程、精确Release签包激活、三个Windows候选交叉构建/解压通过。
 
-17/18实现、原SHA与验证保留为[17历史结果](docs/runtime/application-convergence-17-results.md)、[18历史结果](docs/runtime/site-capabilities-18-results.md)。Windows实际客户端/SDK/现场边界仍分别为NOT_RUN/BLOCKED，Production缺必需能力拒绝。
+**Windows实际客户端/交互/截图/ACL/UAC NOT_RUN；真实SDK/协议/设备/现场BLOCKED，Production继续NotReady。** Supply/Inspection行为与原SQL、D/RV和公开边界保持。17/18结果按其原SHA与形成时范围保留。
 
 ## 开发与运行入口
 
@@ -21,7 +21,7 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 dotnet src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll --url http://127.0.0.1:18743/ --data /tmp/ipc-simulation-receiver
 ```
 
-Supply兼容Storage/MinimumReader为5/5；17冻结参考读码1.0.5与场地能力包1.0.0属于其原发布；18新增Application.Contracts及场地能力示例1.1.0使用新精确指纹，旧签名包不覆盖。保留SQL1～5及checksum；旧精确1.0.1/1.0.2不重签或伪兼容。旧Effective经清偿、合法过渡、备份显式升级和新部署生效，合成旅程见15报告；真实旧根/备份盘点仍为独立门禁，不能换seed跳过。部署遵循指定账户、机级资源和包所有权；软件暂停不是安全急停。
+Supply兼容Storage/MinimumReader为5/5；17冻结参考读码1.0.5与场地能力包1.0.0属于其原发布；19使用Application.Contracts及场地能力示例1.2.0、新观察/集成参考包1.0.6精确身份，旧签名包不覆盖。保留SQL1～5及checksum；旧精确1.0.1/1.0.2不重签或伪兼容。旧Effective经清偿、合法过渡、备份显式升级和新部署生效，合成旅程见15报告；真实旧根/备份盘点仍为独立门禁，不能换seed跳过。部署遵循指定账户、机级资源和包所有权；软件暂停不是安全急停。
 
 ## UI与历史交付
 

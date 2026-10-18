@@ -1,0 +1,130 @@
+{
+  "Candidates": [
+    {
+      "Archive": "capability19-9eeee39/direct-plc-windows.zip",
+      "SourceCommit": "9eeee39bd0cb1f7487378787e2138401c6291986",
+      "Sha256": "4892e2fabf558a2ce03eba93a87bc1120dcd2df4b0ab2835ff44ae8143b9de6c",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-9eeee39/direct-plc.zip",
+      "SourceCommit": "9eeee39bd0cb1f7487378787e2138401c6291986",
+      "Sha256": "d37ffb804c5962d29fc234041a2c986340f1f0659ed56f5aa19b97b9e154077d",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-9eeee39/sportmaster-windows.zip",
+      "SourceCommit": "9eeee39bd0cb1f7487378787e2138401c6291986",
+      "Sha256": "d249cf19d4e8a7b5ad5f2e2deba3dc1ca7a6469b09a4dee8aadcddd1019a30ec",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-9eeee39/sportmaster.zip",
+      "SourceCommit": "9eeee39bd0cb1f7487378787e2138401c6291986",
+      "Sha256": "4e64a6ca95005ec13b31dfbb74f51cc7b000bc155a9440eb78a58536f032aacc",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-9eeee39/wcs-to-plc-windows.zip",
+      "SourceCommit": "9eeee39bd0cb1f7487378787e2138401c6291986",
+      "Sha256": "2abecc590b031a02f27a181d31692f7ec6ed8af785cf8a9dde49d12699d06898",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-9eeee39/wcs-to-plc.zip",
+      "SourceCommit": "9eeee39bd0cb1f7487378787e2138401c6291986",
+      "Sha256": "7e78ce36ad9963f0d502c9aaab48cf614f430856e771a29a33f7e14792174b7e",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-final/direct-plc-windows.zip",
+      "SourceCommit": "19c6ed6586a688ee26d700458172fbc985c41e1d",
+      "Sha256": "3294f3b30c89ef160dd89f2eac028c2bdb5bb9fa8153dddc90d907a0f7a9c40e",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-final/direct-plc.zip",
+      "SourceCommit": "19c6ed6586a688ee26d700458172fbc985c41e1d",
+      "Sha256": "0e7c8fb565739b78414fbfd9e71097caf1133b5633fba8665ee3813af9f45468",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-final/sportmaster-windows.zip",
+      "SourceCommit": "19c6ed6586a688ee26d700458172fbc985c41e1d",
+      "Sha256": "9a9d288fe3afe39fe0347a1973f4f292604de02735cbf93a86d86fb980b119b7",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-final/sportmaster.zip",
+      "SourceCommit": "19c6ed6586a688ee26d700458172fbc985c41e1d",
+      "Sha256": "739e6a28fe0364015364c77d4cc12759015b5f7edc51a827ddb1de33882caca8",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-final/wcs-to-plc-windows.zip",
+      "SourceCommit": "19c6ed6586a688ee26d700458172fbc985c41e1d",
+      "Sha256": "818122f481359c66a172067b122b2676a0a406816acb90895a616f8143229c12",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-final/wcs-to-plc.zip",
+      "SourceCommit": "19c6ed6586a688ee26d700458172fbc985c41e1d",
+      "Sha256": "08b14f1430f396e36c7faa9ca3b5e64dd2f6d07f414d8909866af8fd9e7d327e",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-delivery/direct-plc-windows.zip",
+      "SourceCommit": "4806790f19bdd3cc19f4edcf50b94255fe50aa6c",
+      "Sha256": "2b68586919c198da7f419df8386989b973a87e083712df58199339021b16b0d5",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-delivery/direct-plc.zip",
+      "SourceCommit": "4806790f19bdd3cc19f4edcf50b94255fe50aa6c",
+      "Sha256": "e0d9958461c07468c938889e83fb4a82fc5edee2c42a4310246530aad7795eb9",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-delivery/sportmaster-windows.zip",
+      "SourceCommit": "4806790f19bdd3cc19f4edcf50b94255fe50aa6c",
+      "Sha256": "d49fa9a7f8826899e1de9c5cd63258c19e37b19996ee8ec8d70a1836726427e8",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-delivery/sportmaster.zip",
+      "SourceCommit": "4806790f19bdd3cc19f4edcf50b94255fe50aa6c",
+      "Sha256": "4e5ea1498d1f2c582321f5bf71cd43e238e0089d4fb59a743257b0603553f068",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-delivery/wcs-to-plc-windows.zip",
+      "SourceCommit": "4806790f19bdd3cc19f4edcf50b94255fe50aa6c",
+      "Sha256": "64aed55dd82a889acd5d9cc822f290bd04a553b1bc23ed0383f0ce819c5ab55a",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    },
+    {
+      "Archive": "capability19-delivery/wcs-to-plc.zip",
+      "SourceCommit": "4806790f19bdd3cc19f4edcf50b94255fe50aa6c",
+      "Sha256": "b1eb344a4627e42777fa73d81a14a010f68ebd74c51c92baeccac19cc54a0399",
+      "Status": "SUPERSEDED_LOCAL_NOT_DELIVERED",
+      "Reason": "Subsequent declared-input/confirmation guards and preservation of disabled UI instance parameters; originals retained without replacement"
+    }
+  ]
+}

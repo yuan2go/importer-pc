@@ -1,0 +1,29 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 847 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 847 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 847 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 847 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 847 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 847 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 839 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 847 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 8 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 5 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 9 毫秒)。
+  Ipc.Platform -> <WORKTREE>/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <WORKTREE>/src/Ipc.Application.Contracts/bin/Debug/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <WORKTREE>/src/Ipc.Platform.Storage/bin/Debug/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <WORKTREE>/src/Ipc.Application.ParcelFlow/bin/Debug/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> <WORKTREE>/src/Ipc.Application.WcsToPlc/bin/Debug/net10.0/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> <WORKTREE>/src/Ipc.Reference.Protocol/bin/Debug/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <WORKTREE>/src/Ipc.Components/bin/Debug/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> <WORKTREE>/src/Ipc.Drivers/bin/Debug/net10.0/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <WORKTREE>/src/Ipc.Application.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <WORKTREE>/src/Ipc.Integrations/bin/Debug/net10.0/Ipc.Integrations.dll
+  Ipc.Assembly -> <WORKTREE>/src/Ipc.Assembly/bin/Debug/net10.0/Ipc.Assembly.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:03.95

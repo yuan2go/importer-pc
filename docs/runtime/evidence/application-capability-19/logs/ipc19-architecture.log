@@ -1,0 +1,7 @@
+SELECT --architecture: E13 permanent identity, managed AssemblyRef/dependency closure, typed integration, frozen requests, Stop ownership and selected business assemblies
+Evidence data retained at <TEMP>/ipc-verification-967258862dff45a0af92f81a3d199a3e
+Unhandled exception. System.TimeoutException: Fixture failed to start
+   at Program.<<Main>$>g__Eventually|0_5(Func`1 condition) in <WORKTREE>/tests/Ipc.Verification/Program.cs:line 498
+   at Program.<Main>$(String[] args) in <WORKTREE>/tests/Ipc.Verification/Program.cs:line 67
+   at Program.<Main>$(String[] args) in <WORKTREE>/tests/Ipc.Verification/Program.cs:line 492
+   at Program.<Main>(String[] args)

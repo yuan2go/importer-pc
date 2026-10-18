@@ -1,0 +1,18 @@
+  正在确定要还原的项目…
+  已还原 /private<TEMP>/ipc-extension-build-srqncren/source/examples/ParcelCapabilitiesExtension/ParcelCapabilitiesExtension.csproj (用时 67 毫秒)。
+  ParcelCapabilitiesExtension -> /private<TEMP>/ipc-extension-build-srqncren/bin/Ipc.Reference.ParcelCapabilitiesExtension.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.59
+Traceback (most recent call last):
+  File "<WORKTREE>/scripts/build-extension.py", line 35, in <module>
+    main()
+  File "<WORKTREE>/scripts/build-extension.py", line 31, in main
+    print(json.dumps(build(args)))
+                     ^^^^^^^^^^^
+  File "<WORKTREE>/scripts/extension_build.py", line 205, in build
+    raise ValueError('Module declaration fields are invalid; schema is supplied separately')
+ValueError: Module declaration fields are invalid; schema is supplied separately

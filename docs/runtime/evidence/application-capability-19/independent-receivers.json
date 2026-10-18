@@ -1,0 +1,568 @@
+{
+  "Cases": [
+    {
+      "Application": "sportmaster",
+      "Strategy": "before-main",
+      "SourceCommit": "c213aad54f5d48687efc0b56428991b6bf4f3537",
+      "Operation": "6c7e07db92bd4babbfc87db1feec4a1e",
+      "Admission": "unpacked-parcel",
+      "Operator": {
+        "Subject": "alice",
+        "DisplayName": "alice",
+        "Authority": "reference://login/smoke",
+        "SessionId": "a919ed71365840799a8202688e0ea2c2",
+        "AuthenticatedAt": "2026-10-18T06:38:41.651892+00:00",
+        "Simulation": true,
+        "ExpiresAt": "2026-10-18T14:38:41.651892+00:00",
+        "Grants": []
+      },
+      "Weight": {
+        "Value": 2.345,
+        "Unit": "Kg",
+        "Precision": 3,
+        "Source": "Measured",
+        "MeasurementId": "12e7d5a3ca5644d9bbb01d9f01ed129e",
+        "Evidence": "reference://weight/smoke:Valid",
+        "MeasuredAt": "2026-10-18T06:38:41.776304+00:00"
+      },
+      "Acquisition": {
+        "DeviceId": "sportmaster.camera",
+        "Epoch": "efef5548f0964d56bb9328e256f907e7",
+        "SourceEventId": "7344de5391224a39a51a9549ac9dc608",
+        "AdmissionId": "unpacked-parcel",
+        "ObservedAt": "2026-10-18T06:38:41.659519+00:00"
+      },
+      "CapturedImage": {
+        "CaptureRequestId": "0e9c4c8e79be4e1997bd01575868fe51",
+        "AdmissionId": "unpacked-parcel",
+        "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/0e9c4c8e79be4e1997bd01575868fe51.png",
+        "MediaType": "image/png",
+        "Length": 67,
+        "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+        "UploadedUri": "reference://images/c1d8d465eccd4e03ad89e2c3fe0b00fe"
+      },
+      "ImageReleased": true,
+      "PendingOriginalReceiptOccurrences": 0,
+      "DatabaseSha256": "a87e116a20bd91db1be8af3b9438e7f47fd140f973e763f775a23455ba636b59",
+      "ReceiverFacts": [
+        {
+          "Stage": "Upload",
+          "RequestId": "c1d8d465eccd4e03ad89e2c3fe0b00fe",
+          "PayloadHash": "3F567F06AD1160A77EE50BF5716279382EDF7B52761A44088C3EBA1EA4E595A7",
+          "ConfigurationHash": "76EF77ADDA99DFD9A4D2162B46C89CA14B1210BE04A1E63AEAD86BC4FEABE6FB",
+          "ImplementationHash": "67630B377100E96AD3D778570C4D94F3965EA27CDF7EC2318FD1D1CEC9218A8A",
+          "ReceiverLedgerSha256": "2631f766b7734eb5b7a4e881864c542907b8e350c97a44d8f0ad5dc0f2799758",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": null,
+          "OriginalSlot": null,
+          "OriginalWcsRequestId": null,
+          "ImageCaptureRequestId": "0e9c4c8e79be4e1997bd01575868fe51",
+          "WeightInFrozenRequest": null
+        },
+        {
+          "Stage": "Wcs",
+          "RequestId": "fe95c3ea9ab44195bed42935fea2e828",
+          "PayloadHash": "00CD7BA42FEDC8EC82E882A59FA85F6CB022FD8E8E3050058C846CB2D4AF2171",
+          "ConfigurationHash": "76EF77ADDA99DFD9A4D2162B46C89CA14B1210BE04A1E63AEAD86BC4FEABE6FB",
+          "ImplementationHash": "AAEA339506EB14C79D3B1C5F342C38434BA78586D38E53217DE475DB65F76E5D",
+          "ReceiverLedgerSha256": "64b75aef2d6880b9eaaab45033336053e05eb7db2471b9eb37e416fbd0b726e8",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": null,
+          "OriginalSlot": null,
+          "OriginalWcsRequestId": null,
+          "ImageCaptureRequestId": "0e9c4c8e79be4e1997bd01575868fe51",
+          "WeightInFrozenRequest": {
+            "Value": 2.345,
+            "Unit": "Kg",
+            "Precision": 3,
+            "Source": "Measured",
+            "MeasurementId": "12e7d5a3ca5644d9bbb01d9f01ed129e",
+            "Evidence": "reference://weight/smoke:Valid",
+            "MeasuredAt": "2026-10-18T06:38:41.776304+00:00"
+          }
+        }
+      ],
+      "Status": "PASS"
+    },
+    {
+      "Application": "sportmaster",
+      "Strategy": "attached",
+      "SourceCommit": "c213aad54f5d48687efc0b56428991b6bf4f3537",
+      "Operation": "ea6d90f9b23f46ce84ba1a5effb514c8",
+      "Admission": "unpacked-parcel",
+      "Operator": {
+        "Subject": "alice",
+        "DisplayName": "alice",
+        "Authority": "reference://login/smoke",
+        "SessionId": "aa3e94ca0d6f4b0b8de0ea2cbc48c65f",
+        "AuthenticatedAt": "2026-10-18T06:38:43.43032+00:00",
+        "Simulation": true,
+        "ExpiresAt": "2026-10-18T14:38:43.43032+00:00",
+        "Grants": []
+      },
+      "Weight": {
+        "Value": 2.345,
+        "Unit": "Kg",
+        "Precision": 3,
+        "Source": "Measured",
+        "MeasurementId": "9cf7fb943e894c5cba2747826883b063",
+        "Evidence": "reference://weight/smoke:Valid",
+        "MeasuredAt": "2026-10-18T06:38:43.563444+00:00"
+      },
+      "Acquisition": {
+        "DeviceId": "sportmaster.camera",
+        "Epoch": "99412d6618ce435f8712dd4322406af0",
+        "SourceEventId": "9875fa31cabf48ee98b5252cf120a96f",
+        "AdmissionId": "unpacked-parcel",
+        "ObservedAt": "2026-10-18T06:38:43.438477+00:00"
+      },
+      "CapturedImage": {
+        "CaptureRequestId": "87ba87b744754c7398acc8d55685f504",
+        "AdmissionId": "unpacked-parcel",
+        "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/87ba87b744754c7398acc8d55685f504.png",
+        "MediaType": "image/png",
+        "Length": 67,
+        "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+        "UploadedUri": "reference://images/c44d1a63a161433ca935280adaa1d235"
+      },
+      "ImageReleased": true,
+      "PendingOriginalReceiptOccurrences": 0,
+      "DatabaseSha256": "4679a10a0b9a4b9070be52727a0319651a984645b7b3f866428792da6394e106",
+      "ReceiverFacts": [
+        {
+          "Stage": "Upload",
+          "RequestId": "c44d1a63a161433ca935280adaa1d235",
+          "PayloadHash": "6E7D5200B7D017E1B6524AC10B83A772EDC86E1FD6394CF56DA1C8F12CB843B5",
+          "ConfigurationHash": "85E8D6650E3DA42F67B5AF9DC8CDB83441A82A600B5201A7F333BFA319EBCAAA",
+          "ImplementationHash": "67630B377100E96AD3D778570C4D94F3965EA27CDF7EC2318FD1D1CEC9218A8A",
+          "ReceiverLedgerSha256": "7d6c48aa449ce595b738d3362853e1e00101bbbee750b87877079a3504d30681",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": null,
+          "OriginalSlot": null,
+          "OriginalWcsRequestId": null,
+          "ImageCaptureRequestId": "87ba87b744754c7398acc8d55685f504",
+          "WeightInFrozenRequest": null
+        },
+        {
+          "Stage": "Wcs",
+          "RequestId": "90138fe7dc094a4b8592f68a5d5baa30",
+          "PayloadHash": "A6E10FD2044BE4FCA5DD50A0E4B22C38FF644D73366C2D007C7DA0E1E084DB60",
+          "ConfigurationHash": "85E8D6650E3DA42F67B5AF9DC8CDB83441A82A600B5201A7F333BFA319EBCAAA",
+          "ImplementationHash": "AAEA339506EB14C79D3B1C5F342C38434BA78586D38E53217DE475DB65F76E5D",
+          "ReceiverLedgerSha256": "be81dba479c8c55c8291f9405eecca57a40bdd9a3e357352427a88845ec06b6b",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": null,
+          "OriginalSlot": null,
+          "OriginalWcsRequestId": null,
+          "ImageCaptureRequestId": "87ba87b744754c7398acc8d55685f504",
+          "WeightInFrozenRequest": {
+            "Value": 2.345,
+            "Unit": "Kg",
+            "Precision": 3,
+            "Source": "Measured",
+            "MeasurementId": "9cf7fb943e894c5cba2747826883b063",
+            "Evidence": "reference://weight/smoke:Valid",
+            "MeasuredAt": "2026-10-18T06:38:43.563444+00:00"
+          }
+        }
+      ],
+      "Status": "PASS"
+    },
+    {
+      "Application": "direct-plc",
+      "Strategy": "before-main",
+      "SourceCommit": "c213aad54f5d48687efc0b56428991b6bf4f3537",
+      "Operation": "31ccef9ac8dd4a9b8a4c0af431ad1911",
+      "Admission": "unpacked-parcel",
+      "Operator": {
+        "Subject": "alice",
+        "DisplayName": "alice",
+        "Authority": "reference://login/smoke",
+        "SessionId": "ea363fa0af064e9091ea7349b39f716a",
+        "AuthenticatedAt": "2026-10-18T06:38:54.3811+00:00",
+        "Simulation": true,
+        "ExpiresAt": "2026-10-18T14:38:54.3811+00:00",
+        "Grants": []
+      },
+      "Weight": {
+        "Value": 2.345,
+        "Unit": "Kg",
+        "Precision": 3,
+        "Source": "Measured",
+        "MeasurementId": "f6d18f4e5f2343c79354ab0a5c72b891",
+        "Evidence": "reference://weight/smoke:Valid",
+        "MeasuredAt": "2026-10-18T06:38:54.514504+00:00"
+      },
+      "Acquisition": {
+        "DeviceId": "direct-plc.camera",
+        "Epoch": "70d26bd7ff354b958c15ca766c238b5a",
+        "SourceEventId": "50a259af6bcb46d083c592400a0ed6aa",
+        "AdmissionId": "unpacked-parcel",
+        "ObservedAt": "2026-10-18T06:38:54.388108+00:00"
+      },
+      "CapturedImage": {
+        "CaptureRequestId": "85f5f9b6e3f9477cb6d425023e10ade3",
+        "AdmissionId": "unpacked-parcel",
+        "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/85f5f9b6e3f9477cb6d425023e10ade3.png",
+        "MediaType": "image/png",
+        "Length": 67,
+        "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+        "UploadedUri": "reference://images/619beb6e3d224fc1a71825c8c3ffc1be"
+      },
+      "ImageReleased": true,
+      "PendingOriginalReceiptOccurrences": 0,
+      "DatabaseSha256": "3f45f185f3821ab15a029525c9bad15ba8427ba8f973526cbc3359573f0929be",
+      "ReceiverFacts": [
+        {
+          "Stage": "Upload",
+          "RequestId": "619beb6e3d224fc1a71825c8c3ffc1be",
+          "PayloadHash": "205B0B5ECA49B109C2FA9C3007B1CA38A2B478E2C5AB27F8A5ADD55F7A7184F7",
+          "ConfigurationHash": "E32ACF66C4D517CFD84D12D9034DCCD1ADF80D4BF8559900D2EBA0C93DB6A7D4",
+          "ImplementationHash": "67630B377100E96AD3D778570C4D94F3965EA27CDF7EC2318FD1D1CEC9218A8A",
+          "ReceiverLedgerSha256": "36d10a6f44433876f2f07feab6b5a5318a12a9ee35482f8b0fbaf704a12ed9af",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": null,
+          "OriginalSlot": null,
+          "OriginalWcsRequestId": null,
+          "ImageCaptureRequestId": "85f5f9b6e3f9477cb6d425023e10ade3",
+          "WeightInFrozenRequest": null
+        },
+        {
+          "Stage": "Plc",
+          "RequestId": "df9e1456ddea45d7903fa3cd0825e5b3",
+          "PayloadHash": "9A8AA3643ED5114D8260692C3E737678BACF69E59F76ADC03C6628480B715F9E",
+          "ConfigurationHash": "E32ACF66C4D517CFD84D12D9034DCCD1ADF80D4BF8559900D2EBA0C93DB6A7D4",
+          "ImplementationHash": "30931BB9ADA0A0D6FE1E53CFDA52FD28CBE90EF78623EE3F6EDEA413DC67199A",
+          "ReceiverLedgerSha256": "f8e7c865e405cbd9193167780eb2ebd7e62a9fdc0485fde8952779f2aae99faa",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": false,
+          "OriginalSlot": null,
+          "OriginalWcsRequestId": null,
+          "ImageCaptureRequestId": "85f5f9b6e3f9477cb6d425023e10ade3",
+          "WeightInFrozenRequest": {
+            "Value": 2.345,
+            "Unit": "Kg",
+            "Precision": 3,
+            "Source": "Measured",
+            "MeasurementId": "f6d18f4e5f2343c79354ab0a5c72b891",
+            "Evidence": "reference://weight/smoke:Valid",
+            "MeasuredAt": "2026-10-18T06:38:54.514504+00:00"
+          }
+        }
+      ],
+      "Status": "PASS"
+    },
+    {
+      "Application": "direct-plc",
+      "Strategy": "attached",
+      "SourceCommit": "c213aad54f5d48687efc0b56428991b6bf4f3537",
+      "Operation": "056c4d1b6c3746e2b359f177f103d696",
+      "Admission": "unpacked-parcel",
+      "Operator": {
+        "Subject": "alice",
+        "DisplayName": "alice",
+        "Authority": "reference://login/smoke",
+        "SessionId": "c8368212f99545bea37b28540a3855f5",
+        "AuthenticatedAt": "2026-10-18T06:38:55.926904+00:00",
+        "Simulation": true,
+        "ExpiresAt": "2026-10-18T14:38:55.926905+00:00",
+        "Grants": []
+      },
+      "Weight": {
+        "Value": 2.345,
+        "Unit": "Kg",
+        "Precision": 3,
+        "Source": "Measured",
+        "MeasurementId": "e241819b3498452faa2688d664d22285",
+        "Evidence": "reference://weight/smoke:Valid",
+        "MeasuredAt": "2026-10-18T06:38:56.059499+00:00"
+      },
+      "Acquisition": {
+        "DeviceId": "direct-plc.camera",
+        "Epoch": "e5f25da6ee7642d7895a2ca87048970f",
+        "SourceEventId": "449f16f801184ebe88852d9f168ac284",
+        "AdmissionId": "unpacked-parcel",
+        "ObservedAt": "2026-10-18T06:38:55.933887+00:00"
+      },
+      "CapturedImage": {
+        "CaptureRequestId": "1ecd7510a65840abb6993faf063c5476",
+        "AdmissionId": "unpacked-parcel",
+        "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/1ecd7510a65840abb6993faf063c5476.png",
+        "MediaType": "image/png",
+        "Length": 67,
+        "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+        "UploadedUri": "reference://images/ada9ec29bdd2447282d862e07bfdc2a1"
+      },
+      "ImageReleased": true,
+      "PendingOriginalReceiptOccurrences": 0,
+      "DatabaseSha256": "f5585c95197f424cbfa14e6be31e1cb538f6397e6c443a173ec90ae65d34f8cd",
+      "ReceiverFacts": [
+        {
+          "Stage": "Upload",
+          "RequestId": "ada9ec29bdd2447282d862e07bfdc2a1",
+          "PayloadHash": "F0887E7EC7FBB237F2E799356FC953F0BEB2F4B0C5FF579DA59AA5FBA719F386",
+          "ConfigurationHash": "24F82B86D6AA43B528CE08668225744CB6C4B9787B870F6817AD750CE82CFE18",
+          "ImplementationHash": "67630B377100E96AD3D778570C4D94F3965EA27CDF7EC2318FD1D1CEC9218A8A",
+          "ReceiverLedgerSha256": "638a28d38a444acf4e21620857fde384982a1bbf32d7157b08543f3168041d44",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": null,
+          "OriginalSlot": null,
+          "OriginalWcsRequestId": null,
+          "ImageCaptureRequestId": "1ecd7510a65840abb6993faf063c5476",
+          "WeightInFrozenRequest": null
+        },
+        {
+          "Stage": "Plc",
+          "RequestId": "19d1a52fb15d4899aabd8e3c1cc39e9e",
+          "PayloadHash": "B1EA1D349628C7F31BA7DDA7CD2208A0DE400875C710450240F18EC55E99BF4F",
+          "ConfigurationHash": "24F82B86D6AA43B528CE08668225744CB6C4B9787B870F6817AD750CE82CFE18",
+          "ImplementationHash": "30931BB9ADA0A0D6FE1E53CFDA52FD28CBE90EF78623EE3F6EDEA413DC67199A",
+          "ReceiverLedgerSha256": "e08e773ad48716794eafe89016b2fa16d665a4201f70d5e2099e3071d6b1cacb",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": true,
+          "OriginalSlot": null,
+          "OriginalWcsRequestId": null,
+          "ImageCaptureRequestId": "1ecd7510a65840abb6993faf063c5476",
+          "WeightInFrozenRequest": {
+            "Value": 2.345,
+            "Unit": "Kg",
+            "Precision": 3,
+            "Source": "Measured",
+            "MeasurementId": "e241819b3498452faa2688d664d22285",
+            "Evidence": "reference://weight/smoke:Valid",
+            "MeasuredAt": "2026-10-18T06:38:56.059499+00:00"
+          }
+        }
+      ],
+      "Status": "PASS"
+    },
+    {
+      "Application": "wcs-to-plc",
+      "Strategy": "before-main",
+      "SourceCommit": "c213aad54f5d48687efc0b56428991b6bf4f3537",
+      "Operation": "f8f71f26cb924228ad108fde9881b963",
+      "Admission": "unpacked-parcel",
+      "Operator": {
+        "Subject": "alice",
+        "DisplayName": "alice",
+        "Authority": "reference://login/smoke",
+        "SessionId": "de68623412cf4e83b44dd38dff0faa19",
+        "AuthenticatedAt": "2026-10-18T06:39:05.478003+00:00",
+        "Simulation": true,
+        "ExpiresAt": "2026-10-18T14:39:05.478003+00:00",
+        "Grants": []
+      },
+      "Weight": {
+        "Value": 2.345,
+        "Unit": "Kg",
+        "Precision": 3,
+        "Source": "Measured",
+        "MeasurementId": "2caf9a190ac54644a67c62a9f65df042",
+        "Evidence": "reference://weight/smoke:Valid",
+        "MeasuredAt": "2026-10-18T06:39:05.690992+00:00"
+      },
+      "Acquisition": {
+        "DeviceId": "wcs-to-plc.camera",
+        "Epoch": "b11d2ae4daed406cad29034f6a229689",
+        "SourceEventId": "caf885f53b6f4d418ee0df5477f73f19",
+        "AdmissionId": "unpacked-parcel",
+        "ObservedAt": "2026-10-18T06:39:05.486908+00:00"
+      },
+      "CapturedImage": {
+        "CaptureRequestId": "4b671a570bb04f6b9005cf0c615c0b7f",
+        "AdmissionId": "unpacked-parcel",
+        "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/4b671a570bb04f6b9005cf0c615c0b7f.png",
+        "MediaType": "image/png",
+        "Length": 67,
+        "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+        "UploadedUri": "reference://images/3e3002438ee440a38124b62c1ea5e8da"
+      },
+      "ImageReleased": true,
+      "PendingOriginalReceiptOccurrences": 0,
+      "DatabaseSha256": "15ada04c0414af89ba6b58fe26a8e5a9262fbc8b5022175b4165ad1af908f8db",
+      "ReceiverFacts": [
+        {
+          "Stage": "Upload",
+          "RequestId": "3e3002438ee440a38124b62c1ea5e8da",
+          "PayloadHash": "8AAB97AB1D22D99060759F879E878F70FBCDE65062B297F67B7B8DC1027E8E5D",
+          "ConfigurationHash": "3AB811DB707A101B6B6DCB2D94F156608E308E37F08DBFF34E47C857A869B248",
+          "ImplementationHash": "67630B377100E96AD3D778570C4D94F3965EA27CDF7EC2318FD1D1CEC9218A8A",
+          "ReceiverLedgerSha256": "e2d47c7a450a4868ace18f0ba6060d116f972f286e5371697e7007e3e26aab50",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": null,
+          "OriginalSlot": null,
+          "OriginalWcsRequestId": null,
+          "ImageCaptureRequestId": "4b671a570bb04f6b9005cf0c615c0b7f",
+          "WeightInFrozenRequest": null
+        },
+        {
+          "Stage": "Wcs",
+          "RequestId": "37a72779b5654e4d9521a13d9548afbe",
+          "PayloadHash": "E12ABB68077105DA37804540AF96186F72E381586D3C03060AB7D441E8AAE0E1",
+          "ConfigurationHash": "3AB811DB707A101B6B6DCB2D94F156608E308E37F08DBFF34E47C857A869B248",
+          "ImplementationHash": "AAEA339506EB14C79D3B1C5F342C38434BA78586D38E53217DE475DB65F76E5D",
+          "ReceiverLedgerSha256": "580383931a29f319e3bf430e479c7fad7449aaab7a43fc0553bafcc62bfe3bfe",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": null,
+          "OriginalSlot": null,
+          "OriginalWcsRequestId": null,
+          "ImageCaptureRequestId": "4b671a570bb04f6b9005cf0c615c0b7f",
+          "WeightInFrozenRequest": {
+            "Value": 2.345,
+            "Unit": "Kg",
+            "Precision": 3,
+            "Source": "Measured",
+            "MeasurementId": "2caf9a190ac54644a67c62a9f65df042",
+            "Evidence": "reference://weight/smoke:Valid",
+            "MeasuredAt": "2026-10-18T06:39:05.690992+00:00"
+          }
+        },
+        {
+          "Stage": "Plc",
+          "RequestId": "6ca13528c28e4620b611b57a9b664ab3",
+          "PayloadHash": "6EE54E071EE08F9DC932A28B7DF5B44C2CB51E2476507334F0FEBD347DD1EAAE",
+          "ConfigurationHash": "3AB811DB707A101B6B6DCB2D94F156608E308E37F08DBFF34E47C857A869B248",
+          "ImplementationHash": "30931BB9ADA0A0D6FE1E53CFDA52FD28CBE90EF78623EE3F6EDEA413DC67199A",
+          "ReceiverLedgerSha256": "3d5d680e8aa8b54b443f6f20960de6c0e4d1f9fb1aabd26851108b1767dbb670",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": false,
+          "OriginalSlot": "REFERENCE-07",
+          "OriginalWcsRequestId": "37a72779b5654e4d9521a13d9548afbe",
+          "ImageCaptureRequestId": "4b671a570bb04f6b9005cf0c615c0b7f",
+          "WeightInFrozenRequest": {
+            "Value": 2.345,
+            "Unit": "Kg",
+            "Precision": 3,
+            "Source": "Measured",
+            "MeasurementId": "2caf9a190ac54644a67c62a9f65df042",
+            "Evidence": "reference://weight/smoke:Valid",
+            "MeasuredAt": "2026-10-18T06:39:05.690992+00:00"
+          }
+        }
+      ],
+      "Status": "PASS"
+    },
+    {
+      "Application": "wcs-to-plc",
+      "Strategy": "attached",
+      "SourceCommit": "c213aad54f5d48687efc0b56428991b6bf4f3537",
+      "Operation": "a1904ee442f14a588c6c1a91bb74dbb6",
+      "Admission": "unpacked-parcel",
+      "Operator": {
+        "Subject": "alice",
+        "DisplayName": "alice",
+        "Authority": "reference://login/smoke",
+        "SessionId": "875ab026c2c142848de4ec1b544b5d31",
+        "AuthenticatedAt": "2026-10-18T06:39:07.210942+00:00",
+        "Simulation": true,
+        "ExpiresAt": "2026-10-18T14:39:07.210942+00:00",
+        "Grants": []
+      },
+      "Weight": {
+        "Value": 2.345,
+        "Unit": "Kg",
+        "Precision": 3,
+        "Source": "Measured",
+        "MeasurementId": "aafc27bb0ed74e919fb57e9a611033a4",
+        "Evidence": "reference://weight/smoke:Valid",
+        "MeasuredAt": "2026-10-18T06:39:07.341838+00:00"
+      },
+      "Acquisition": {
+        "DeviceId": "wcs-to-plc.camera",
+        "Epoch": "79ef3e87a65442bb98ba28d7e2c90f81",
+        "SourceEventId": "67ca2b9bbf27448bb47e60dbb4cc15f3",
+        "AdmissionId": "unpacked-parcel",
+        "ObservedAt": "2026-10-18T06:39:07.217705+00:00"
+      },
+      "CapturedImage": {
+        "CaptureRequestId": "e8cc0dd7db074d998f4936d6a0f9d663",
+        "AdmissionId": "unpacked-parcel",
+        "RelativeFile": "images/DF28319AB605A500A015EBC8820EA43F50DB12E09255A5230B1585BE40F73339/e8cc0dd7db074d998f4936d6a0f9d663.png",
+        "MediaType": "image/png",
+        "Length": 67,
+        "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+        "UploadedUri": "reference://images/7e2621e88e764cdca007896afcaa56ac"
+      },
+      "ImageReleased": false,
+      "PendingOriginalReceiptOccurrences": 0,
+      "DatabaseSha256": "4eec848a73451da25a03272b1bf2c9989c7f3080d504faa07e86f1fa94e2dad2",
+      "ReceiverFacts": [
+        {
+          "Stage": "Upload",
+          "RequestId": "7e2621e88e764cdca007896afcaa56ac",
+          "PayloadHash": "68AD6A015CF9B164A57E69B023597A8DE37F6FDCBEFA4FF1953243C634AF7A78",
+          "ConfigurationHash": "EE52044E23F9167F2AA7D133688F7CDB88012CB2FBABAB886BB4049DBC8A67AD",
+          "ImplementationHash": "67630B377100E96AD3D778570C4D94F3965EA27CDF7EC2318FD1D1CEC9218A8A",
+          "ReceiverLedgerSha256": "bb7e3d5cf89686e777530d2f9cafb9e68bc0e0a1df17ff8aca332b1150dadeca",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": null,
+          "OriginalSlot": null,
+          "OriginalWcsRequestId": null,
+          "ImageCaptureRequestId": "e8cc0dd7db074d998f4936d6a0f9d663",
+          "WeightInFrozenRequest": null
+        },
+        {
+          "Stage": "Wcs",
+          "RequestId": "909010ae4df8471a837f4a53e2e8602d",
+          "PayloadHash": "BD2D6B7709F490219A6557DF852C0F6E23447C418D47EBF63F198D141FD158F5",
+          "ConfigurationHash": "EE52044E23F9167F2AA7D133688F7CDB88012CB2FBABAB886BB4049DBC8A67AD",
+          "ImplementationHash": "AAEA339506EB14C79D3B1C5F342C38434BA78586D38E53217DE475DB65F76E5D",
+          "ReceiverLedgerSha256": "5c7eb961f9a311e548e8f73aeb26e2b58481f9d17b05fa600d5d67ad7e7660ac",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": null,
+          "OriginalSlot": null,
+          "OriginalWcsRequestId": null,
+          "ImageCaptureRequestId": "e8cc0dd7db074d998f4936d6a0f9d663",
+          "WeightInFrozenRequest": {
+            "Value": 2.345,
+            "Unit": "Kg",
+            "Precision": 3,
+            "Source": "Measured",
+            "MeasurementId": "aafc27bb0ed74e919fb57e9a611033a4",
+            "Evidence": "reference://weight/smoke:Valid",
+            "MeasuredAt": "2026-10-18T06:39:07.341838+00:00"
+          }
+        },
+        {
+          "Stage": "Plc",
+          "RequestId": "f5373ebae5c144ebad2257d34be1e907",
+          "PayloadHash": "4B928D3BBB9632F48C0D3E38EE7322AAA5F54E89E8F14D7382ABEBB813B3E1B2",
+          "ConfigurationHash": "EE52044E23F9167F2AA7D133688F7CDB88012CB2FBABAB886BB4049DBC8A67AD",
+          "ImplementationHash": "30931BB9ADA0A0D6FE1E53CFDA52FD28CBE90EF78623EE3F6EDEA413DC67199A",
+          "ReceiverLedgerSha256": "9051ae9727f73be415cc6208f89c29bc80300a0e548c652813e5673332b32c53",
+          "Executions": 1,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": true,
+          "OriginalSlot": "REFERENCE-07",
+          "OriginalWcsRequestId": "909010ae4df8471a837f4a53e2e8602d",
+          "ImageCaptureRequestId": "e8cc0dd7db074d998f4936d6a0f9d663",
+          "WeightInFrozenRequest": {
+            "Value": 2.345,
+            "Unit": "Kg",
+            "Precision": 3,
+            "Source": "Measured",
+            "MeasurementId": "aafc27bb0ed74e919fb57e9a611033a4",
+            "Evidence": "reference://weight/smoke:Valid",
+            "MeasuredAt": "2026-10-18T06:39:07.341838+00:00"
+          }
+        }
+      ],
+      "Status": "PASS"
+    }
+  ],
+  "Note": "Default uploader may freeze before measurement because it declares no measured input; main WCS/PLC carry the required measurement. Required-weight upload is separately verified by AC19.",
+  "Boundary": "Independent reference HTTP processes and synthetic pixels only"
+}

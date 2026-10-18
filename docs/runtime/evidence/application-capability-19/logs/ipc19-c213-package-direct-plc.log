@@ -1,0 +1,21 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 749 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 748 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 750 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 750 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 749 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 750 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 749 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 748 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 7 毫秒)。
+  Ipc.Platform -> <WORKTREE>/.artifacts/capability19-c213aad/direct-plc/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <WORKTREE>/.artifacts/capability19-c213aad/direct-plc/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <WORKTREE>/.artifacts/capability19-c213aad/direct-plc/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <WORKTREE>/.artifacts/capability19-c213aad/direct-plc/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> <WORKTREE>/.artifacts/capability19-c213aad/direct-plc/build-intermediates/bin/Ipc.Application.DirectPlc/release/Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> <WORKTREE>/.artifacts/capability19-c213aad/direct-plc/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <WORKTREE>/.artifacts/capability19-c213aad/direct-plc/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> <WORKTREE>/.artifacts/capability19-c213aad/direct-plc/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Assembly -> <WORKTREE>/.artifacts/capability19-c213aad/direct-plc/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> <WORKTREE>/.artifacts/capability19-c213aad/direct-plc/app/
+{"Package": "<WORKTREE>/.artifacts/capability19-c213aad/direct-plc.zip", "Sha256": "16223afdb344b36461e9d2ba6260d93fcbec64874d8ee37cb1c83812a2d04765", "SourceCommit": "c213aad54f5d48687efc0b56428991b6bf4f3537", "Application": "direct-plc", "Target": "portable"}

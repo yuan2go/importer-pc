@@ -7,6 +7,7 @@
     "docs/design/framework-decisions.md": "3f303e966dae762ccb81eba346d132488ad0c61a2a0142b2afdc57e2e9e03845",
     "docs/design/controlled-extensions.md": "8e5c50f8417fbfc4869e59d625943764a4785a86f661bdaa96690c469a8ca84e",
     "docs/extensions/developer-guide.md": "927523185de14921976de3f8eaebbe6cafdda65d32a05b3aef782784166f034e",
-    "docs/runtime/operations.md": "d6d49568ebe10d38bb96bed4710d779832f6b2f8f6c3a05a3cfeecf5971a2d11"
+    "docs/runtime/operations.md": "d6d49568ebe10d38bb96bed4710d779832f6b2f8f6c3a05a3cfeecf5971a2d11",
+    "docs/manifest.json": "869339a348b9b0695526ec9c6ca4db79c93e2123616bb3c38164a9a0a41b8a1b"
   }
 }

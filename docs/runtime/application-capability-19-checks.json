@@ -1,0 +1,68 @@
+{
+  "WorkPackage": "WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19",
+  "RuntimeSourceCommit": "c213aad54f5d48687efc0b56428991b6bf4f3537",
+  "BaselineMain": "08b8067aa6cba6a148252296c7a5b18a27b3be65",
+  "SDK": "10.0.402",
+  "Status": "REFERENCE_IMPLEMENTATION_AND_VERIFICATION_COMPLETE",
+  "Checks": [
+    {
+      "Id": "AC19-A",
+      "Status": "PASS_REFERENCE",
+      "Evidence": [
+        "evidence/application-capability-19/logs/ipc19-c213-core19.log"
+      ]
+    },
+    {
+      "Id": "AC19-B/C",
+      "Status": "PASS_REFERENCE",
+      "Evidence": [
+        "evidence/application-capability-19/logs/ipc19-c213-core19.log",
+        "evidence/application-capability-19/logs/ipc19-c213-core18.log"
+      ]
+    },
+    {
+      "Id": "AC19-D/F",
+      "Status": "PASS_REFERENCE",
+      "Evidence": [
+        "evidence/application-capability-19/independent-receivers.json",
+        "evidence/application-capability-19/logs/ipc19-c213-core17.log"
+      ]
+    },
+    {
+      "Id": "AC19-E",
+      "Status": "IMPLEMENTED_REFERENCE_PASS_WINDOWS_NOT_RUN",
+      "Evidence": [
+        "evidence/application-capability-19/signed-release-journey.json",
+        "evidence/application-capability-19/logs/ipc19-c213-signed-debug.log"
+      ]
+    },
+    {
+      "Id": "AC19-V",
+      "Status": "PASS_REFERENCE",
+      "Evidence": [
+        "evidence/application-capability-19/candidate-inventory.json",
+        "evidence/application-capability-19/logs/ipc19-c213-baseline.log",
+        "evidence/application-capability-19/logs/ipc19-c213-architecture.log"
+      ]
+    }
+  ],
+  "LegacySourcesAndSql": "UNCHANGED",
+  "WindowsActual": "NOT_RUN",
+  "RealSdkProtocolsAndField": "BLOCKED",
+  "Production": "REJECTS_MISSING_REQUIRED_CAPABILITIES",
+  "DAndRv": "UNCHANGED",
+  "ArchiveValidation": {
+    "Status": "FAIL_HISTORICAL_ASSETS",
+    "Counts": {
+      "private_metadata_marker": 2,
+      "pptx_media_type_mismatch": 265
+    },
+    "NewFileHashLinkErrors": 0,
+    "Evidence": "evidence/application-capability-19/archive-validation.json"
+  },
+  "Publication": {
+    "Branch": "codex/application-capability-closure-19",
+    "State": "PENDING_PR",
+    "AutoMerge": false
+  }
+}

@@ -1,0 +1,45 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 685 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 685 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 685 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 685 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 687 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 687 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 685 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 685 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 21 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 27 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 25 毫秒)。
+  Ipc.Platform -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Assembly/release_win-x64/Ipc.Assembly.dll
+  Ipc.Assembly -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/app/
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 488 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj (用时 488 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 461 毫秒)。
+  11 个项目(共 14 个)是最新的，无法还原。
+  Ipc.Platform -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Assembly/release_win-x64/Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Application.ParcelFlow.Desktop/release/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Application.Sportmaster.Desktop/release/Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/build-intermediates/bin/Ipc.Desktop/release_win-x64/Ipc.Desktop.dll
+  Ipc.Desktop -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows/desktop/
+{"Package": "<WORKTREE>/.artifacts/capability19-delivery/sportmaster-windows.zip", "Sha256": "d49fa9a7f8826899e1de9c5cd63258c19e37b19996ee8ec8d70a1836726427e8", "SourceCommit": "4806790f19bdd3cc19f4edcf50b94255fe50aa6c", "Application": "sportmaster", "Target": "win-x64"}

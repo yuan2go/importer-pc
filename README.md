@@ -1,4 +1,4 @@
-> PR26独立复审P1/P2整改基线main `baac260214f910dca9ae4628ba6449b25188e2ac`；[本轮结果与未验边界](docs/runtime/pr26-recovery-closure-results.md)。独立分支供复审，不合并main。
+> [PR31独立复审报告、证据归档与授权合并](docs/reviews/pr31-independent-rereview-f068156/README.md)：被审head `f068156ed9d4a0ffe4feee94b5c11e966aaa366b`。用户本轮授权归档后按精确head合并；测试/构建/打包均不重跑，原件、历史失败及Windows/真实现场门禁保持。
 
 # importer-pc
 

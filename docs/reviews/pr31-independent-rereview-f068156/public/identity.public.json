@@ -1,0 +1,11 @@
+{
+  "source_file": "identity.json",
+  "original_sha256": "10a525cddba0a1fec09b7cb4740ac095b34e44ad053bfcfb2bc422ada5dc1ef2",
+  "publication_transform": "Explicit local artifact path mapping; original unchanged and locally retained",
+  "data": {
+    "head": "f068156ed9d4a0ffe4feee94b5c11e966aaa366b",
+    "main": "baac260214f910dca9ae4628ba6449b25188e2ac",
+    "source": "local-artifact:ipc-pr31-independent-review-f068156-20261019/source",
+    "review_only": true
+  }
+}

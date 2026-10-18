@@ -172,9 +172,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "e0dde7cf510d8d857d36845755360f8a1a4aa068251ab724837f8abc8b885e26",
-      "size_bytes": 6724,
-      "git_blob": "fe324b08dded44973a5fba582a491d3538fc8d85",
+      "sha256": "58c8b7a6257f4ea90e1cfbbe23f43a0a1a8a0f8838cb72f2ad9e7d27bf6967d5",
+      "size_bytes": 6836,
+      "git_blob": "24e10626ead954da72f9a340ee36e4ad00998612",
       "version": "architecture-quality-audit-02-rereview",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
@@ -327,9 +327,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "4a63436127b5b7618203d7e61753040786b0afd96e0988fd22db6adc64ed76df",
-      "size_bytes": 10415,
-      "git_blob": "463e8bc17bb9db62a11fab6fabc50b57829396a8",
+      "sha256": "7629fd15498f55ffe9eddde2504b057520d00ad512862772e4b478c6fd76a326",
+      "size_bytes": 10398,
+      "git_blob": "22cbdb421815885945d09e2d6fee05be1a0a0112",
       "version": "publication-2026-10-19",
       "status": "publication_receipt_NOT_RUN",
       "purpose": "User-authorized no-test publication receipt and navigation",
@@ -3707,6 +3707,314 @@
       "sha256": "a8e4629563e50b5a9e1de936dd46689c9140067501d435a7a4a868d87a4f467a",
       "size_bytes": 3301,
       "git_blob": "0689f687eebe19c53c9f4ff51c5a9a73786fbf55"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/README.md",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9c16a788b42dc4b874a030073a1b5086dc5b92386ac2c25ce482333c7e24f135",
+      "size_bytes": 3863,
+      "git_blob": "8ca7b25b53928989d193cc6121ca26bd35f48847"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/archive-identity.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "899962088bde5d7591090a790accfd2b301293f5c024233841d478d27dd6603f",
+      "size_bytes": 10340,
+      "git_blob": "b386127d9401e7f62bd6cafc495a16a73084322e"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original-fixture-custody.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f2eb2267c76885d3629b8583da94b750078054299731cebd440b5991b0a29a94",
+      "size_bytes": 256209,
+      "git_blob": "f178291f7c1d56c58ca3adafb8b3f317ae128a15"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/REPORT.md",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "911d83e4c4e2ce7cc571f87f3010d4e243b0138ccc5797e583bcb25d2e20da8e",
+      "size_bytes": 8041,
+      "git_blob": "8134a830cf32fb68e7eb80475b3f8cdffe85b6dc"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/SHA256SUMS",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "2ddc88afe0bc63ea01efcf5dca8bcd914869a3986d6091e844066cc7468e8a44",
+      "size_bytes": 2201,
+      "git_blob": "793f0dee4981c323207c0dfc302240f72651f949"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/architecture-quality.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "size_bytes": 5267,
+      "git_blob": "5382ba6b216b03f2041b5c2704c82e43ca5c28d4"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/architecture-quality.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0f0635fb3a379912b2783cf7738f39f6007eef5f98fd9b64bbcb140d9f366d5c",
+      "size_bytes": 9392,
+      "git_blob": "52691d429258a6fd83acbd6c643729e59a7f3359"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/build.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "eed4701b2e7b31d72ad4e4e36cce22902a21321509412911226a2fa2719d2a58",
+      "size_bytes": 4834,
+      "git_blob": "7750f97f0d2133b2fe6d8ef712135224fd40a151"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/configuration-confirmation.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "size_bytes": 5267,
+      "git_blob": "5382ba6b216b03f2041b5c2704c82e43ca5c28d4"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/configuration-confirmation.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "576f099a4c304c2273c3f76268379c232713a376088213ec02769692c684eb1f",
+      "size_bytes": 3066,
+      "git_blob": "fa35e45d0c54dcb6a230ca5521a0fa3848244123"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/historical-db4-upgrade.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "size_bytes": 5267,
+      "git_blob": "5382ba6b216b03f2041b5c2704c82e43ca5c28d4"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/historical-db4-upgrade.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "bebea2eaf283babc7aebb98bd074f26ca83827d367046ea10ad4d65d303ddc80",
+      "size_bytes": 829,
+      "git_blob": "3238350665781ec48cf1ccfa0f3d13eae0c3f52e"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/legacy-custody-upgrade.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7f2ebb711799c8ce075069cd6b2c7fc84d6d7fb9a9cbb119be2d1c590d96ebee",
+      "size_bytes": 64,
+      "git_blob": "2948d924f829f15ee93a76e6e3f00191e39f3972"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/legacy-custody-upgrade.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c36375e9aef3f3ed4f63c6db91f943fb5e02b503516c45ecf8dc6e3e6ee868bf",
+      "size_bytes": 1696,
+      "git_blob": "6a258a35543c6f34405954dd7b42add037c1e91f"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/negative-probe/Probe.csproj",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "b07e1ad504e35a28c867372f7e7f895d8b673f6b73101e15823352c1651f69e1",
+      "size_bytes": 11411,
+      "git_blob": "ed9f893c5effdcf0ca90544a294d4fe413718650"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/negative-probe/Program.cs",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "25ba7e3524e54e95e9340905e1afa46171ccb3acd04d0abf7416d167891d55cf",
+      "size_bytes": 3475,
+      "git_blob": "ebb374ccb9134bef83baeb5e6851ce0971ff0213"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/negative-probe/build.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "b956ac950da9399063c588689f6c216b4e328938b21fbb410a0c74939092d35e",
+      "size_bytes": 366,
+      "git_blob": "f71c32a97611ad27e5f1eb0de2cefc3ef32a8373"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/negative-probe/results.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ffa7edc1ead47542ad4632ad3e393c9f38886fc2cea2e4b2b07f6f78c1cabc41",
+      "size_bytes": 1932,
+      "git_blob": "238cba672dd639bedb0bf8868f7d5ec9849682d9"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/prior-custody-migration.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7f2ebb711799c8ce075069cd6b2c7fc84d6d7fb9a9cbb119be2d1c590d96ebee",
+      "size_bytes": 64,
+      "git_blob": "2948d924f829f15ee93a76e6e3f00191e39f3972"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/prior-custody-migration.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "87d88782461003ec08f5653c8d5196feeb8e760aceb2d18f8aaf96190b842f61",
+      "size_bytes": 1084,
+      "git_blob": "0596cfa9df25abd4d790c1b0652ad634e610af3d"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/receipt-custody.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "size_bytes": 5267,
+      "git_blob": "5382ba6b216b03f2041b5c2704c82e43ca5c28d4"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/receipt-custody.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6741ea4ce86005ab71bbec7b6a3b00882d798b86ca6e8a273902f959a3e77d48",
+      "size_bytes": 1282,
+      "git_blob": "4a76523fe9a1c9e59fce831f251f491cfb4b9a93"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/review-result.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "50dda23775a18ccd9eb3839e50db0fb2b7ba928073e22caa5fb46b613aaf0159",
+      "size_bytes": 1550,
+      "git_blob": "21fa96c3bd56d968eea12f4c7b18dbcab3d290bb"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/source-custody.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "dd395c44777a75236fc46438da0b4f6d80f2f11013755922f9f78467b1c6d5a5",
+      "size_bytes": 393,
+      "git_blob": "8d3c74d82a5cdebe378d7dd938f954920f14d22d"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/upgrade-conflict-closure.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "size_bytes": 5267,
+      "git_blob": "5382ba6b216b03f2041b5c2704c82e43ca5c28d4"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/upgrade-conflict-closure.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "19d7929c8c0a7c3f0ab1772c5bd2424cba63ecfe24c04e68a871967f5738e1d9",
+      "size_bytes": 4991,
+      "git_blob": "b4c916195598dabfb8f7470583bb34018e9807ae"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/public/identity.public.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "47e9b0a068f911e0f46bd4bd2637fedec48f0d72f38f91d4c2b061b03d9213f1",
+      "size_bytes": 471,
+      "git_blob": "9c275e61eefd9ac18d588114cf685dc55a936eac"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/public/runtime-custody.public.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "67d6119c989f3b65492b9e6d1db06257a6116ff9b062d03a68f6e28f6e4b2fee",
+      "size_bytes": 2395,
+      "git_blob": "ea837549e9305ad27fd64824444af74cc3044687"
     },
     {
       "path": "docs/reviews/project-conformance-audit-01/README.md",
@@ -21242,9 +21550,9 @@
       "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
       "source": "User-authorized PR26 P1/P2 closure on baac260",
       "storage_scope": "public_repository",
-      "sha256": "cecf83f728a970a67cbe97351ccd87a8b23e2ff538d075b5d8c4f23f059e47f0",
-      "size_bytes": 10018,
-      "git_blob": "8877507f8a6f7da490295a35dc9105b37e0cea1b"
+      "sha256": "1e56389638f5e9838df15b26615a0d71bb880d8e628a3b2b1c0e69db5aff92b7",
+      "size_bytes": 10260,
+      "git_blob": "2c2814d47c4e39d0a7aad9d66525e099ecd74f4b"
     },
     {
       "path": "docs/runtime/publication-20261019.json",
@@ -22701,9 +23009,9 @@
       "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
       "source": "User-authorized PR26 P1/P2 closure on baac260",
       "storage_scope": "public_repository",
-      "sha256": "ab650b0b40fef97b6253714be41e6d55f4d33ec91b61c0ef871518ed7c3a9680",
-      "size_bytes": 2976,
-      "git_blob": "08798281f1441fa6c7471cb989963f68aa410cfe"
+      "sha256": "0240911ce723135baea51375fe802e97c916b095607699f54db799a576cca1ed",
+      "size_bytes": 3218,
+      "git_blob": "b4b507659435be8aebd92e08950ff3f72584ace3"
     },
     {
       "path": "docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md",
@@ -28802,5 +29110,17 @@
     "windows": "NOT_RUN",
     "sdk_protocol_field": "BLOCKED",
     "new_package": "NOT_RUN"
+  },
+  "pr31_independent_review_archive": {
+    "reviewed_head": "f068156ed9d4a0ffe4feee94b5c11e966aaa366b",
+    "baseline_main": "baac260214f910dca9ae4628ba6449b25188e2ac",
+    "archive": "docs/reviews/pr31-independent-rereview-f068156/README.md",
+    "identity": "docs/reviews/pr31-independent-rereview-f068156/archive-identity.json",
+    "user_authorized_merge": true,
+    "archive_turn_tests_build_package": "NOT_RUN_BY_USER_REQUEST",
+    "business_test_config_changed": false,
+    "windows": "NOT_RUN",
+    "real_sdk_protocol_field": "BLOCKED",
+    "historical_failures": "RETAINED"
   }
 }

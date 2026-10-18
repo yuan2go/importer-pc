@@ -1,3 +1,5 @@
+> 后续独立复审及用户授权归档/合并见[PR31归档](../reviews/pr31-independent-rereview-f068156/README.md)。本页原实施阶段的不合并范围和历史PASS保留形成时含义；本次不重复测试、构建或打包。
+
 # WP-IPC-PR26-RECOVERY-CLOSURE
 
 基线main **baac260214f910dca9ae4628ba6449b25188e2ac**。用户授权修复PR26独立复审P1/P2并查明architecture-quality失败，独立分支提交新PR，不合并。PR27及其他工作树、主树未跟踪资料均保留。

@@ -1,4 +1,4 @@
-> [PR26独立复审P1/P2整改](work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)与[本轮结果](runtime/pr26-recovery-closure-results.md)：main基线 `baac260214f910dca9ae4628ba6449b25188e2ac`，独立分支供复审，不合并。[原报告与失败](reviews/pr26-independent-78298b5/README.md)保持原身份。
+> [PR31独立复审归档与授权合并](reviews/pr31-independent-rereview-f068156/README.md)：原审head `f068156ed9d4a0ffe4feee94b5c11e966aaa366b`、原基线main `baac260214f910dca9ae4628ba6449b25188e2ac`。本次仅归档/合并，不重跑验证；原结论和所有未验证边界保持。
 
 > [2026-10-19不测试发布与合并回执](runtime/publication-20261019.md)：PR26已合并，8个既有参考产物已上传；Windows/真实集成边界不变。
 

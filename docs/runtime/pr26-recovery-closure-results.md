@@ -1,3 +1,5 @@
+> 后续独立复审及用户授权归档/合并见[PR31归档](../reviews/pr31-independent-rereview-f068156/README.md)。本页原实施阶段的不合并范围和历史PASS保留形成时含义；本次不重复测试、构建或打包。
+
 # PR26独立复审P1/P2整改结果
 
 基线main **baac260214f910dca9ae4628ba6449b25188e2ac**；最终业务/测试源码 **0b6fe6a11fb53640cadddc86009293883bb77d71**。文档治理先行提交 **f38162c**，后续交付提交仅文档和证据。独立分支 `codex/pr26-recovery-closure`，提交新PR供复审，不合并main。原审查固定head 78298b5、指定PR24基线4afe2af，见[原报告及失败](../reviews/pr26-independent-78298b5/README.md)；不把旧报告的后续main未审范围伪称已审。

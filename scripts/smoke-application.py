@@ -128,8 +128,12 @@ try:
     if a.optional_features:
         if recovered['Upload']['Request'] != operation['Upload']['Request'] or restarted['CurrentOperator'] is not None: raise ValueError('Restart changed upload or revived a session')
         def command(kind, owner=None, value=None):
-            snap = send(process, messages, 'snapshot')
-            return send(process, messages, dict(Id=uuid.uuid4().hex, ExpectedRevision=snap['Revision'], Kind=kind, Owner=owner, Value=value))
+            command_id = uuid.uuid4().hex
+            for attempt in range(3):
+                snap = send(process, messages, 'snapshot')
+                result = send(process, messages, dict(Id=command_id, ExpectedRevision=snap['Revision'], Kind=kind, Owner=owner, Value=value))
+                if result['Status'] != 'Conflict': return result
+            return result  # Only explicit local CAS rejection permits refresh; never retry an uncertain send.
         reconciled = command('Reconcile', operation['Id'])
         if a.attached_upload:
             if reconciled['Status'] not in ('SlotResolved','PlcAccepted','PhysicalCompleted'): raise ValueError('Attached original reconciliation failed')

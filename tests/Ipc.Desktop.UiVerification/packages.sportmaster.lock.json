@@ -340,14 +340,14 @@
       "ipc.application.parcelflow": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.4.0, )",
+          "Ipc.Application.Contracts": "[1.6.0, )",
           "Ipc.Platform.Storage": "[1.0.0, )"
         }
       },
       "ipc.application.parcelflow.desktop": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.4.0, )"
+          "Ipc.Application.Contracts": "[1.6.0, )"
         }
       },
       "ipc.application.sportmaster": {
@@ -398,7 +398,14 @@
       "ipc.reference.protocol": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.4.0, )"
+          "Ipc.Application.Contracts": "[1.6.0, )"
+        }
+      },
+      "Ipc.Supply": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Platform.Storage": "[1.0.0, )",
+          "Ipc.Supply.Contracts": "[1.0.0, )"
         }
       },
       "Ipc.Supply.Contracts": {

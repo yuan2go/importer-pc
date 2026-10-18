@@ -24,9 +24,9 @@ static class Program
         desktop.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Desktop.UiVerification;component/Themes/Workstation.xaml", UriKind.Relative) });
         desktop.Startup += async (_, _) =>
         {
-            try { await Verify(root, evidence, lines); desktop.Shutdown(0); }
+            try { await Verify(root, evidence, lines).WaitAsync(TimeSpan.FromSeconds(45)); desktop.Shutdown(0); }
             catch (Exception ex) { lines.Add("FAIL " + ex); desktop.Shutdown(1); }
-            finally { File.WriteAllLines(Path.Combine(evidence, "WINDOWS-WPF.log"), lines); File.WriteAllText(Path.Combine(root, "WINDOWS-WPF-EVIDENCE.txt"), evidence); }
+            finally { File.WriteAllLines(Path.Combine(evidence, "WINDOWS-WPF.log"), lines); Directory.CreateDirectory(Path.Combine(root, ".artifacts")); File.WriteAllText(Path.Combine(root, ".artifacts/WINDOWS-WPF-EVIDENCE.txt"), evidence); }
         };
         return desktop.Run();
     }
@@ -46,6 +46,19 @@ static class Program
             Check(classic is ShellWindow && alternate.ViewModel.Fresh, "classic and alternate native windows load actual resources and snapshots");
             Check(ReferenceEquals(((ParcelViewModel)classic.DataContext).Application, alternate.ViewModel.Application), "two UI choices share the same actual Application");
             Check(Descendants(alternate).OfType<SupplyStationPosition>().Count() == 2, "both native position controls load their own theme dictionaries");
+            await alternate.ViewModel.EmitPositionAsync(alternate.ViewModel.Left);
+            await alternate.ViewModel.EmitPositionAsync(alternate.ViewModel.Right);
+            for (var i = 0; i < 100; i++)
+            {
+                await alternate.ViewModel.RefreshDisplayAsync();
+                if (alternate.ViewModel.Snapshot!.Operations.Length == 2 && alternate.ViewModel.Snapshot.Operations.All(x => x.State == ParcelState.SlotResolved)) break;
+                await Task.Delay(50);
+            }
+            Check(alternate.ViewModel.Snapshot!.Operations.Length == 2 && alternate.ViewModel.Snapshot.Operations.All(x => x.State == ParcelState.SlotResolved), "native window reads actual two-position operations");
+            await alternate.ShowDetailsAsync(alternate.ViewModel.Left.Operation!);
+            Check(alternate.ViewModel.SelectedHistory?.Operation.Id == alternate.ViewModel.Left.Operation!.Id, "left details and selected history identity agree");
+            await alternate.ShowDetailsAsync(alternate.ViewModel.Right.Operation!);
+            Check(alternate.ViewModel.SelectedHistory?.Operation.Id == alternate.ViewModel.Right.Operation!.Id, "right details replace both selected row and command target");
             Click(alternate, "作业记录");
             Check(((ContentControl)alternate.FindName("PageHost")).Content is HistoryPage, "history navigation uses installed native page");
             Click(alternate, "设备与维护"); await Task.Delay(200);

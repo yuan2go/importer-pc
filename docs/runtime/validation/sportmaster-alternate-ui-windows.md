@@ -4,13 +4,13 @@
 
 ## 可执行原生烟测
 
-在有 .NET SDK10.0.402 及Windows Desktop运行时的Windows上，从源码根执行：
+先按仓库现行部署指南由维护者配置受保护机器策略/租约目录，并使用指定运行账户；不跳过MachineRuntimePolicy或ACL守卫。具备 .NET SDK10.0.402 及Windows Desktop运行时后，从源码根执行：
 
 ```powershell
 dotnet run --project tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj -- .
 ```
 
-此工程使用真实SportmasterApplication/ParcelCapabilityFactory和真实WPF资源，检查两套窗口创建/主题资源、历史与维护导航、辅助窗口共享Application/独立VM、关闭辅助窗不停止业务、关闭主窗只停止一次并关闭子窗。通过后输出 `WINDOWS-WPF-EVIDENCE.txt` 指向临时证据根，其中有实际WPF截图及 `WINDOWS-WPF.log`。该工程已在Mac交叉编译；实际执行NOT_RUN，不能据源代码把此节记PASS。截图仅在Windows实际运行后生成。
+此工程使用真实SportmasterApplication/ParcelCapabilityFactory和真实WPF资源，检查两套窗口创建/主题资源、历史与维护导航、辅助窗口共享Application/独立VM、关闭辅助窗不停止业务、关闭主窗只停止一次并关闭子窗。通过后输出 `.artifacts/WINDOWS-WPF-EVIDENCE.txt` 指向临时证据根，其中有实际WPF截图及 `WINDOWS-WPF.log`。该工程已在Mac交叉编译；实际执行NOT_RUN，不能据源代码把此节记PASS。截图仅在Windows实际运行后生成。
 
 ## 候选交互验收
 

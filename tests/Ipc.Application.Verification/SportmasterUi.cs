@@ -95,6 +95,15 @@ static class SportmasterUi
                 Check(payload.PositionId == op.PositionId && payload.AdmissionId == op.AdmissionId && payload.ParcelCode == op.ParcelCode && payload.ReaderBinding == op.ReaderBinding,
                     op.PositionId + " actual receiver keeps original business payload and reader binding");
             }
+            await ui.OpenHistoryAsync(left.Id);
+            Check(ui.HistoryItems.Length == 2 && ui.SelectedHistory?.Operation.Id == left.Id && ui.Selected?.Id == left.Id,
+                "alternate history loads actual paginated records and selects the originating left operation");
+            await ui.OpenHistoryAsync(right.Id);
+            Check(ui.SelectedHistory?.Operation.Id == right.Id && ui.Selected?.Id == right.Id,
+                "opening right history replaces left detail and highlighted selection together");
+            await ui.OpenHistoryAsync();
+            Check(ui.SelectedHistory is null && ui.Selected is null && ui.HistoryItems.Length == 2,
+                "opening general history clears previous operation highlight and detail");
             await ui.EmitPositionAsync(ui.Left); await ui.EmitPositionAsync(ui.Right); await Task.Delay(80);
             Check((await app.SnapshotAsync()).Operations.Length == 2 && (await app.SnapshotAsync()).Operations.All(o => Peer(o.Wcs!).Executions == 1),
                 "repeated reference clicks retain admission identity and cannot repeat original requests");
@@ -114,12 +123,20 @@ static class SportmasterUi
             var accepted = await Wait(app, s => s.Operations.Length == 2 && s.Operations.All(o => o.State == ParcelState.SlotResolved));
             await ui.RefreshDisplayAsync(); var old = ui.Left.Operation!; var right = ui.Right.Operation!;
             Check(ui.Left.Slot == old.Slot && old.Slot is not null, "accepted prior left slot is shown before next entity");
+            ui.Left.InspectionReason = "SYNTHETIC inspection of previous left entity";
+            ui.Right.InspectionReason = "SYNTHETIC separate right entity inspection";
+            await ui.RefreshDisplayAsync();
+            Check(ui.Left.Operation!.Id == old.Id && ui.Left.InspectionReason == "SYNTHETIC inspection of previous left entity" &&
+                ui.Right.InspectionReason == "SYNTHETIC separate right entity inspection",
+                "same-operation refresh retains each position's own inspection draft");
             ui.Left.NewParcel(); await ui.EmitPositionAsync(ui.Left);
             var unknown = await Wait(app, s => s.Operations.Length == 3 && s.Operations.Any(o => o.PositionId == "left" && o.State == ParcelState.WcsUnknown));
             await ui.RefreshDisplayAsync(); var current = ui.Left.Operation!;
             Check(current.Id != old.Id && current.State == ParcelState.WcsUnknown && ui.Left.Slot == "未取得" && ui.Left.Status.Contains("待核对") && !ui.Left.CanAdmit &&
                 ui.Left.Recent.Any(o => o.Id == old.Id && o.Slot == old.Slot) && ui.Right.Operation!.Id == right.Id && ui.Right.Slot == right.Slot && ui.Right.CanAdmit,
                 "latest left Unknown clears displayed old slot, retains historical acceptance and leaves right position independent");
+            Check(ui.Left.InspectionReason == "" && ui.Right.InspectionReason == "SYNTHETIC separate right entity inspection",
+                "new left operation clears previous entity inspection without clearing unchanged right draft");
             var originalRequest = Wire.Encode(current.Wcs!.Request);
             Check(current.Wcs.Attempts == 1 && Peer(current.Wcs).Executions == 1, "lost reply follows a real independent receiver commit");
             await ui.ReconcilePositionAsync(ui.Left); await ui.RefreshDisplayAsync();
@@ -145,6 +162,62 @@ static class SportmasterUi
             await ui.EmitPositionAsync(ui.Right); await Task.Delay(40);
             Check(ui.Left.Operation is not null && ui.Right.Operation is null && ui.Right.Recent.Length == 0 && (await app.SnapshotAsync()).Operations.Length == 1,
                 "legacy UI never mirrors one operation into a second physical position or admits right");
+        }
+        var leftScale = new CapabilityBinding("weight", "reference-weight", "1.0.0", "smui.weight.left", "reference://weight/smui/left", "PARCEL-REFERENCE-v1", []);
+        var rightScale = leftScale with { InstanceId = "smui.weight.right", Target = "reference://weight/smui/right" };
+        var measured = configuration with
+        {
+            Weight = new(WeightSource.Measured, WeightUnit.Kg, 3), Scale = leftScale,
+            CapabilityInstances = [leftScale, rightScale, configuration.Wcs!, configuration.MaintenanceLogin!],
+            Topology = configuration.Topology! with { Positions = configuration.Topology.Positions.Select(p => p with { ScaleInstanceId = p.Id == "left" ? leftScale.InstanceId : rightScale.InstanceId }).ToArray() }
+        };
+        string recoveryLeft, recoveryRight;
+        await using (var app = await Open(measured, "ui-recovery"))
+        {
+            Check(app.EmitReferenceAt("left", "smui-recovery-left", "00011", "smui-left-source") &&
+                app.EmitReferenceAt("right", "smui-recovery-right", "00022", "smui-right-source"), "real dual weight recovery setup admits both original entities");
+            var waiting = await Wait(app, x => x.Operations.Length == 2 && x.Operations.All(o => o.State == ParcelState.WaitingWeight));
+            recoveryLeft = waiting.Operations.Single(o => o.PositionId == "left").Id;
+            recoveryRight = waiting.Operations.Single(o => o.PositionId == "right").Id;
+        }
+        await using (var app = await Open(measured, "ui-recovery"))
+        {
+            var probe = new SnapshotProbe(app); var ui = new SupplyStationViewModel(probe); await ui.RefreshDisplayAsync();
+            Check(ui.Left.Operation?.Id == recoveryLeft && ui.Right.Operation?.Id == recoveryRight &&
+                ui.Left.Operation.RecoveryRequired && ui.Right.Operation.RecoveryRequired && ui.Snapshot!.Paused && !ui.Left.CanContinue && !ui.Right.CanContinue,
+                "restart projects each real recovery responsibility and software pause closes continue guards");
+            await ui.RunAsync(() => ui.CommandAsync("Resume"));
+            Check(!ui.Snapshot!.Paused && ui.Left.CanContinue && ui.Right.CanContinue,
+                "explicit software resume opens continuation without confirming either original entity");
+            ui.Selected = ui.Right.Operation;
+            await ui.ContinuePositionAsync(ui.Left);
+            Check(ui.Left.Operation!.RecoveryRequired && ui.Left.Operation.Wcs is null && ui.Message.Contains("inspection reason"),
+                "blank inspection cannot clear original recovery responsibility or send WCS");
+            ui.Left.InspectionReason = "SYNTHETIC: original left parcel inspected and retained";
+            ui.Right.InspectionReason = "SYNTHETIC: separate right draft";
+            var displayedRevision = ui.Snapshot!.Revision;
+            var concurrent = await app.SnapshotAsync();
+            await app.CommandAsync(new(Wire.Id(), concurrent.Revision, "Pause"));
+            concurrent = await app.SnapshotAsync();
+            await app.CommandAsync(new(Wire.Id(), concurrent.Revision, "Resume"));
+            await ui.ContinuePositionAsync(ui.Left);
+            Check(probe.Commands.Last().ExpectedRevision == displayedRevision && ui.Message.Contains("Conflict") && ui.Left.Operation!.RecoveryRequired,
+                "concurrent revision change rejects displayed CAS instead of silently authorizing stale inspection");
+            var expectedRevision = ui.Snapshot!.Revision;
+            await ui.ContinuePositionAsync(ui.Left);
+            var command = probe.Commands.Last(); var resumed = await app.SnapshotAsync();
+            Check(command.Kind == "ContinuePrepared" && command.Owner == recoveryLeft && command.Value == ui.Left.InspectionReason && command.ExpectedRevision == expectedRevision,
+                "left continuation forwards displayed revision, original target and inspection reason despite right history selection");
+            Check(!resumed.Operations.Single(o => o.Id == recoveryLeft).RecoveryRequired && resumed.Operations.Single(o => o.Id == recoveryRight).RecoveryRequired &&
+                resumed.Operations.All(o => o.Wcs is null && o.Weight is null),
+                "confirmed left recovery neither confirms right nor invents weight or a WCS send");
+            var now = DateTimeOffset.UtcNow;
+            Check(app.EmitReferenceWeight(new(Wire.Id(), "smui-recovery-left", leftScale.Target, 1.234m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, now)),
+                "actual left measurement enters original recovery chain");
+            var settled = await Wait(app, x => x.Operations.Single(o => o.Id == recoveryLeft).State == ParcelState.SlotResolved);
+            var op = settled.Operations.Single(o => o.Id == recoveryLeft);
+            Check(op.Wcs is { Attempts: 1 } && Peer(op.Wcs).Executions == 1 && settled.Operations.Single(o => o.Id == recoveryRight) is { Weight: null, Wcs: null, RecoveryRequired: true },
+                "continued original left completes WCS once while unconfirmed right remains untouched");
         }
         ExtensionStore.AtomicWrite(Path.Combine(root, "sportmaster-ui-verification.json"), new
         {
@@ -258,16 +331,21 @@ static class SportmasterUi
     {
         public Func<Task<ParcelSnapshot>>? Read;
         public int Writes;
+        public List<BusinessCommand> Commands { get; } = [];
         public Task<ParcelSnapshot> SnapshotAsync() => Read?.Invoke() ?? inner.SnapshotAsync();
-        public Task<BusinessReceipt> CommandAsync(BusinessCommand command) { Writes++; return inner.CommandAsync(command); }
+        public Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50) => inner.HistoryAsync(beforeSequence, limit);
+        public Task<ParcelOperation?> OperationAsync(string id) => inner.OperationAsync(id);
+        public Task<BusinessReceipt> CommandAsync(BusinessCommand command) { Writes++; Commands.Add(command); return inner.CommandAsync(command); }
         public Task<BusinessProjection> QueryAsync() => inner.QueryAsync();
         public Task<BusinessReceipt> LoginAsync(string subject, string proof) { Writes++; return inner.LoginAsync(subject, proof); }
         public Task<BusinessReceipt> LogoutAsync() { Writes++; return inner.LogoutAsync(); }
         public Task<BusinessReceipt> AuthorizeMaintenanceAsync(string subject, string proof) { Writes++; return inner.AuthorizeMaintenanceAsync(subject, proof); }
         public Task<CapabilityCatalog> CapabilitiesAsync() => inner.CapabilitiesAsync();
+        public Task<BusinessReceipt> ManageCapabilityAsync(string action, string identity) { Writes++; return inner.ManageCapabilityAsync(action, identity); }
+        public Task<BusinessReceipt> ValidateConfigurationAsync(ParcelConfiguration candidate) => inner.ValidateConfigurationAsync(candidate);
         public Task<BusinessReceipt> InstallCapabilityAsync(string file, string sha256) { Writes++; return inner.InstallCapabilityAsync(file, sha256); }
-        public Task<BusinessReceipt> StageConfigurationAsync(long revision, ParcelConfiguration candidate) { Writes++; return inner.StageConfigurationAsync(revision, candidate); }
-        public Task<BusinessReceipt> ReconcileAsync(string operationId) { Writes++; return inner.ReconcileAsync(operationId); }
+        public Task<BusinessReceipt> StageConfigurationAsync(long revision, ParcelConfiguration candidate, string? reason = null) { Writes++; return inner.StageConfigurationAsync(revision, candidate, reason); }
+        public Task<BusinessReceipt> ReconcileAsync(string operationId, string? stage = null) { Writes++; return inner.ReconcileAsync(operationId, stage); }
         public Task<BusinessReceipt> ReconnectAsync() { Writes++; return inner.ReconnectAsync(); }
         public Task<BusinessReceipt> BackupAsync(string destination) { Writes++; return inner.BackupAsync(destination); }
         public bool EmitReference(string admission, string code, string source) { Writes++; return inner.EmitReference(admission, code, source); }

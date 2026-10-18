@@ -90,7 +90,7 @@ public partial class SupplyStationWindow : Window
         if (closing) return;
         closing = true;
         var affected = stopOwner is null ? new[] { this } : windows.ToArray();
-        foreach (var window in affected) { window.timer.Stop(); window.IsEnabled = false; }
+        foreach (var window in affected) { window.closing = true; window.timer.Stop(); window.IsEnabled = false; }
         try
         {
             await Task.WhenAll(affected.Select(x => x.pendingRefresh)).WaitAsync(TimeSpan.FromSeconds(5));
@@ -102,7 +102,7 @@ public partial class SupplyStationWindow : Window
         catch (Exception ex)
         {
             ViewModel.Message = "停止未完成，仍持有资源：" + ex.Message; closing = false;
-            foreach (var window in affected) { window.IsEnabled = true; window.timer.Start(); }
+            foreach (var window in affected) { window.closing = false; window.IsEnabled = true; window.timer.Start(); }
         }
     }
 }

@@ -69,11 +69,11 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     public async Task ContinuePositionAsync(SupplyStationPositionViewModel position)
     {
         var op = position.Operation;
-        if (!Fresh || op is null || !position.CanContinue) { Message = "当前原阶段不可继续"; return; }
+        if (!Fresh || op is null || !position.CanContinue || Snapshot is not { } displayed) { Message = "当前原阶段不可继续"; return; }
+        var inspection = position.InspectionReason;
         await RunAsync(async () =>
         {
-            var snapshot = await Application.SnapshotAsync();
-            var result = await Application.CommandAsync(new(Wire.Id(), snapshot.Revision, "ContinuePrepared", op.Id, position.InspectionReason));
+            var result = await Application.CommandAsync(new(Wire.Id(), displayed.Revision, "ContinuePrepared", op.Id, inspection));
             Message = result.Status + " · " + result.Reason;
         });
     }
@@ -140,8 +140,10 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         ReaderId = binding?.ReaderDeviceId ?? "未配置";
         Recent = snapshot?.Operations.Where(x => (x.PositionId ?? "main") == PositionId)
             .OrderByDescending(x => x.ObservedAt).ThenByDescending(x => x.Id, StringComparer.Ordinal).ToArray() ?? [];
+        var previousOperation = Operation?.Id;
         // A named current operation must match both identities. Never fall back to another parcel.
         Operation = position?.CurrentOperation is { } id ? Recent.FirstOrDefault(x => x.Id == id) : Recent.FirstOrDefault();
+        if (Operation?.Id != previousOperation) InspectionReason = "";
         var device = snapshot?.Devices?.SingleOrDefault(x => x.DeviceId == ReaderId);
         DeviceStatus = !fresh ? "设备旧状态已失效" : device is null ? "设备状态未取得" : device.IsValid(now) ? "读码就绪 · " + device.ConfirmedAt?.ToLocalTime().ToString("HH:mm:ss") : "未就绪 · " + device.ValidityReason(now);
         CanAdmit = fresh && binding is not null && position?.Admit == true;

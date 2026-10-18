@@ -89,3 +89,7 @@ Ipc.Desktop.exe --ui supply-station --view sportmaster-history --layout compact
 2. `docs/baseline/PUBLICATION.md` 把原产品HTML及衍生资产列为受限。本次用户进一步明确允许本次由该原稿衍生的WPF UI代码提交当前公开仓库。原HTML仍保持本地不上传。
 
 本文件为编码前确认的设计；实际完成情况以运行报告、源码提交及PR为准。
+
+## 最新main继承说明（2026-10-19）
+
+实施期间main已合入PR23/24到4afe2af。本UI在开发分支正常整合该main，继承新分页历史、容量/附加责任、原实体检查说明及已展示修订CAS；不另改业务规则。早期无分页接口的计划描述按其形成时读取，本增量使用已经存在的新接口。旧候选/测试以原SHA保留，整合后的实际验证另记结果。

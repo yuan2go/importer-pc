@@ -81,7 +81,20 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         NotifyTargets();
         if (currentId is not null) Selected = Operations.FirstOrDefault(x => x.Id == currentId) ?? Selected;
     }
-    public void LoadConfigurationDraft() { if (Snapshot is not null) { ConfigurationDraft = Wire.Encode(Snapshot.Configuration.Pending ?? Snapshot.Configuration.Effective); Changed(nameof(ConfigurationDraft)); } }
+    long? draftConfigurationRevision;
+    Guid? draftRuntimeId;
+    public string DraftRevisionState => draftConfigurationRevision is { } revision ? "本窗草稿基于配置修订 " + revision + "；自动刷新不改变草稿CAS" : "尚未读取草稿修订";
+    void SetConfigurationDraft(ParcelConfiguration value, long revision, Guid runtime)
+    { ConfigurationDraft = Wire.Encode(value); draftConfigurationRevision = revision; draftRuntimeId = runtime; Changed(nameof(ConfigurationDraft)); Changed(nameof(DraftRevisionState)); }
+    public void LoadConfigurationDraft()
+    { var loaded = Snapshot; if (loaded is not null) SetConfigurationDraft(loaded.Configuration.Pending ?? loaded.Configuration.Effective, loaded.Configuration.Revision, loaded.RuntimeId); }
+    long RequireDraftRevision()
+    {
+        if (draftConfigurationRevision is not { } revision || Snapshot?.RuntimeId != draftRuntimeId) throw new InvalidOperationException("先读取本运行实例的完整修订，再编辑保存；自动刷新不会更新旧草稿的CAS");
+        return revision;
+    }
+    void AdvanceOwnDraftRevision(long expected, BusinessReceipt receipt)
+    { if (receipt.Status == "PendingRestart") { draftConfigurationRevision = expected + 1; Changed(nameof(DraftRevisionState)); } }
     public async Task RunAsync(Func<Task> action)
     {
         if (Busy) { Message = "已有操作进行中，请等待。"; return; }
@@ -127,7 +140,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
             ? "模拟测量已排队，等待应用关联和校验。" : "测量未接纳；原作业仍保留。";
     }
     public async Task SaveConfigurationAsync()
-    { if (Snapshot is null) return; var r = await application.StageConfigurationAsync(Snapshot.Configuration.Revision, Wire.Decode<ParcelConfiguration>(ConfigurationDraft), ConfigurationReason); Message = r.Status + " · " + r.Reason; }
+    { if (Snapshot is null) return; var expected = RequireDraftRevision(); var r = await application.StageConfigurationAsync(expected, Wire.Decode<ParcelConfiguration>(ConfigurationDraft), ConfigurationReason); AdvanceOwnDraftRevision(expected, r); Message = r.Status + " · " + r.Reason; }
     public async Task ReconcileAsync()
     { var op = Current ?? throw new InvalidOperationException("当前投递位没有作业"); var r = await application.ReconcileAsync(op.Id); Message = r.Status + " · " + r.Reason; }
     public async Task ContinueAsync() { var op = Current ?? throw new InvalidOperationException("当前投递位没有作业"); var r = await application.CommandAsync(new(Wire.Id(), Snapshot!.Revision, "ContinuePrepared", op.Id, InspectionReason)); Message = r.Status + " · " + r.Reason; }

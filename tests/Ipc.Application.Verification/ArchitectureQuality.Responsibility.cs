@@ -55,7 +55,25 @@ static partial class ArchitectureQuality
         }
         await OverloadChecks();
         await ConfigurationChecks();
+        await UiDraftCasChecks();
         Migration3Checks();
+    }
+    static async Task UiDraftCasChecks()
+    {
+        await using var app = await Open(Config("sportmaster"), "ui-draft-cas"); await Maintenance(app);
+        var vm = new ParcelViewModel(app, "Quality", "Sportmaster"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
+        var loaded = vm.Snapshot!; var oldDraft = Wire.Decode<ParcelConfiguration>(vm.ConfigurationDraft);
+        await app.StageConfigurationAsync(loaded.Configuration.Revision, loaded.Configuration.Effective with { TimeoutMs = 1801 }, "Synthetic concurrent maintenance window");
+        await vm.RefreshAsync(); vm.ConfigurationDraft = Wire.Encode(oldDraft with { TimeoutMs = 1802 }); vm.ConfigurationReason = "Synthetic older editor after automatic refresh";
+        await vm.SaveConfigurationAsync(); var after = await app.SnapshotAsync();
+        Check(after.Configuration.Revision == loaded.Configuration.Revision + 1 && after.Configuration.Pending!.TimeoutMs == 1801 && vm.Message.StartsWith("Rejected") && vm.Message.Contains("revision conflict", StringComparison.OrdinalIgnoreCase), "automatic UI refresh cannot replace the full draft CAS revision and overwrite another window's saved candidate");
+        var legacy = Config("sportmaster") with { SchemaVersion = 2, Topology = null };
+        await using var oldFormApp = await Open(legacy, "legacy-ui-cas"); await Maintenance(oldFormApp);
+        var oldVm = new ParcelViewModel(oldFormApp, "Quality", "Legacy compatibility"); await oldVm.RefreshAsync(); await oldVm.LoadCapabilitiesAsync(); var oldLoaded = oldVm.Snapshot!;
+        await oldFormApp.StageConfigurationAsync(oldLoaded.Configuration.Revision, oldLoaded.Configuration.Effective with { TimeoutMs = 1801 }, "Synthetic concurrent legacy editor");
+        await oldVm.RefreshAsync(); oldVm.DraftWaitMs += 1; oldVm.ConfigurationReason = "Synthetic older legacy form after refresh"; await oldVm.SaveCapabilitiesAsync();
+        var oldAfter = await oldFormApp.SnapshotAsync();
+        Check(oldAfter.Configuration.Revision == oldLoaded.Configuration.Revision + 1 && oldAfter.Configuration.Pending!.TimeoutMs == 1801 && oldVm.Message.StartsWith("Rejected") && oldVm.Message.Contains("revision conflict", StringComparison.OrdinalIgnoreCase), "legacy parameter form also preserves loaded draft CAS instead of borrowing refreshed server revision");
     }
     static void Migration3Checks()
     {

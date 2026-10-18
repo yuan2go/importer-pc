@@ -21,7 +21,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     string message = "等待相机读码；模拟工程不操作真实设备。";
     public ParcelSnapshot? Snapshot { get => snapshot; private set { snapshot = value; Changed(); Changed(nameof(Operations)); Changed(nameof(Current)); Changed(nameof(BlockingReasons)); Changed(nameof(Status)); Changed(nameof(CurrentWeight)); Changed(nameof(CurrentStage)); Changed(nameof(CurrentSlot)); Changed(nameof(Health)); Changed(nameof(ConfigurationState)); Changed(nameof(LoginVisibility)); Changed(nameof(Session)); Changed(nameof(SimulationVisibility)); Changed(nameof(EnvironmentStatus)); Changed(nameof(OperationOperator)); Changed(nameof(CurrentImage)); Changed(nameof(UploadState)); Changed(nameof(CaptureState)); Changed(nameof(CanAdmit)); Changed(nameof(CanResume)); Changed(nameof(CanContinue)); Changed(nameof(CanContinueUpload)); Changed(nameof(CanAbandon)); Changed(nameof(CanConfigure)); } }
     public ParcelOperation[] Operations => Snapshot?.Operations ?? [];
-    public ParcelOperation? Current => Snapshot?.Operations.FirstOrDefault();
+    public ParcelOperation? Current => Snapshot?.Operations.FirstOrDefault(x => (x.PositionId ?? "main") == SelectedPositionId);
     public string BlockingReasons => string.Join("\n", Snapshot?.BlockingReasons ?? []);
     public string Status => Snapshot?.State ?? "正在初始化";
     public string Health => string.Join("   ·   ", Snapshot?.Health.Select(x => x.InstanceId + " " + (x.Ready ? "就绪" : "未就绪") + " " + x.ConfirmedAt.ToLocalTime().ToString("HH:mm:ss")) ?? []);
@@ -32,9 +32,9 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public bool CanAdmit => Snapshot?.Availability?.Admit == true;
     public bool CanResume => Snapshot?.Availability?.Resume == true;
     public bool CanConfigure => Snapshot?.Availability?.Configure == true;
-    public bool CanContinue => Snapshot?.Availability?.ContinuePrepared.Contains((Selected ?? Current)?.Id ?? "") == true;
-    public bool CanContinueUpload => Snapshot?.Availability?.ContinueUpload.Contains((Selected ?? Current)?.Id ?? "") == true;
-    public bool CanAbandon => Snapshot?.Availability?.AbandonUnsubmitted.Contains((Selected ?? Current)?.Id ?? "") == true;
+    public bool CanContinue => Snapshot?.Availability?.ContinuePrepared.Contains(Current?.Id ?? "") == true;
+    public bool CanContinueUpload => Snapshot?.Availability?.ContinueUpload.Contains(Selected?.Id ?? "") == true;
+    public bool CanAbandon => Snapshot?.Availability?.AbandonUnsubmitted.Contains(Selected?.Id ?? "") == true;
     public string CaptureState => "采集：" + (Current?.Capture?.State.ToString() ?? "未准备") + " · " + Current?.Capture?.Failure;
     public string UploadState => Current?.Upload is { } upload ? "附加/前置上传：" + upload.State + " · 尝试 " + upload.Attempts + " · " + upload.Failure : "上传未准备";
     public string CurrentImage => Current?.Image is { } image ? (image.UploadedUri is null ? "图像已采集，上传未确认" : "图像已上传 · " + image.UploadedUri + (Current.ImageReleased ? " · 临时原件已释放" : "")) : Snapshot?.Configuration.Effective.Images is null ? "传图未启用" : "图像尚未取得";
@@ -59,7 +59,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         ParcelState.Blocked => "作业阻断 · 保留现场包裹",
         _ => "正在处理 · " + Current.State
     };
-    public ParcelOperation? Selected { get => selected; set { selected = value; Changed(); Changed(nameof(Details)); Changed(nameof(CanContinue)); Changed(nameof(CanContinueUpload)); Changed(nameof(CanAbandon)); } }
+    public ParcelOperation? Selected { get => selected; set { selected = value; Changed(); NotifyTargets(); } }
     public string Details => Selected is null ? "选择一条作业查看原阶段、目标、报文和回执。" : Wire.Encode(Selected);
     public string Message { get => message; set { message = value; Changed(); } }
     public string ConfigurationState => Snapshot is null ? "未加载" : Snapshot.Configuration.Status + " · 修订 " + Snapshot.Configuration.Revision + (Snapshot.Configuration.Failure is { } f ? "\n" + f : "");
@@ -77,7 +77,9 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         var next = await application.SnapshotAsync();
         if (generation != Volatile.Read(ref refreshGeneration) || Snapshot is { } previous && next.RuntimeId == previous.RuntimeId && next.Revision < previous.Revision) return;
         Snapshot = next;
-        if (currentId is not null) Selected = Operations.FirstOrDefault(x => x.Id == currentId);
+        if (!PositionIds.Contains(SelectedPositionId)) SelectedPositionId = PositionIds.FirstOrDefault() ?? "main";
+        NotifyTargets();
+        if (currentId is not null) Selected = Operations.FirstOrDefault(x => x.Id == currentId) ?? Selected;
     }
     public void LoadConfigurationDraft() { if (Snapshot is not null) { ConfigurationDraft = Wire.Encode(Snapshot.Configuration.Pending ?? Snapshot.Configuration.Effective); Changed(nameof(ConfigurationDraft)); } }
     public async Task RunAsync(Func<Task> action)
@@ -106,12 +108,12 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     }
     public async Task CommandAsync(string kind, string? owner = null)
     {
-        var s = await application.SnapshotAsync();
+        var s = Snapshot ?? throw new InvalidOperationException("先刷新当前投影");
         var r = await application.CommandAsync(new(Wire.Id(), s.Revision, kind, owner)); Message = r.Status + " · " + r.Reason;
     }
     public void Emit()
     {
-        Message = application.EmitReference(AdmissionId, ParcelCode, Wire.Id()) ? "模拟观察已排队；状态由应用服务更新。" : "未接纳观察；检查暂停、过载或设备状态。";
+        Message = application.EmitReferenceAt(SelectedPositionId, AdmissionId, ParcelCode, Wire.Id()) ? "模拟观察已排队；状态由应用服务更新。" : "未接纳观察；检查暂停、过载或设备状态。";
         // The same admission is deliberately retained until the operator explicitly selects
         // a new parcel. Repeated clicking cannot invent a new physical entity.
     }
@@ -120,15 +122,15 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     {
         var op = Current ?? throw new InvalidOperationException("尚无包裹");
         if (!decimal.TryParse(MeasurementValue, NumberStyles.Number, CultureInfo.InvariantCulture, out var value)) throw new InvalidDataException("重量数值无效");
-        var scale = op.FrozenConfiguration.Scale ?? throw new InvalidOperationException("当前业务未启用实测重量");
+        var scale = ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId) ?? throw new InvalidOperationException("当前业务未启用实测重量");
         Message = application.EmitReferenceWeight(new(Wire.Id(), op.AdmissionId, scale.Target, value, op.WeightPolicy.Unit, op.WeightPolicy.Precision, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow))
             ? "模拟测量已排队，等待应用关联和校验。" : "测量未接纳；原作业仍保留。";
     }
     public async Task SaveConfigurationAsync()
-    { if (Snapshot is null) return; var r = await application.StageConfigurationAsync(Snapshot.Configuration.Revision, Wire.Decode<ParcelConfiguration>(ConfigurationDraft)); Message = r.Status + " · " + r.Reason; }
+    { if (Snapshot is null) return; var r = await application.StageConfigurationAsync(Snapshot.Configuration.Revision, Wire.Decode<ParcelConfiguration>(ConfigurationDraft), ConfigurationReason); Message = r.Status + " · " + r.Reason; }
     public async Task ReconcileAsync()
-    { var op = Selected ?? Current ?? throw new InvalidOperationException("选择原作业"); var r = await application.ReconcileAsync(op.Id); Message = r.Status + " · " + r.Reason; }
-    public async Task ContinueAsync() { var op = Selected ?? Current ?? throw new InvalidOperationException("选择原作业"); await CommandAsync("ContinuePrepared", op.Id); }
+    { var op = Current ?? throw new InvalidOperationException("当前投递位没有作业"); var r = await application.ReconcileAsync(op.Id); Message = r.Status + " · " + r.Reason; }
+    public async Task ContinueAsync() { var op = Current ?? throw new InvalidOperationException("当前投递位没有作业"); var r = await application.CommandAsync(new(Wire.Id(), Snapshot!.Revision, "ContinuePrepared", op.Id, InspectionReason)); Message = r.Status + " · " + r.Reason; }
     public async Task ReconnectAsync() { var r = await application.ReconnectAsync(); Message = r.Status + " · " + r.Reason; }
     public async Task BackupAsync() { var r = await application.BackupAsync(BackupPath); Message = r.Status + " · " + r.Reason; }
     protected void Changed([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new(name));

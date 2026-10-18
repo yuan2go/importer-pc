@@ -1,4 +1,4 @@
-> 当前整改：[WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01](docs/work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)。状态为实施中，22及旧报告PASS仅覆盖原身份；本包未验证的能力不作已完成声明。
+> 当前整改：[WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01](docs/work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)。实际路径见[质量闭环运行指南](docs/runtime/architecture-quality-closure-01.md)，22及旧报告PASS仅覆盖原身份；本包验证与剩余边界按同包结果读取。
 
 # importer-pc
 

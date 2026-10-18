@@ -135,12 +135,13 @@ public sealed class ReferencePeer(CapabilityBinding binding, string root, string
     {
         Require(request);
         using var body = new StringContent(Wire.Encode(new ReferenceExchange(request, content.IsEmpty ? null : Convert.ToBase64String(content.Span))), System.Text.Encoding.UTF8, "application/json");
-        using var response = await remote!.PostAsync(action, body, token).ConfigureAwait(false);
+        using var message = new HttpRequestMessage(HttpMethod.Post, action) { Content = body };
+        using var response = await remote!.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode) throw new IOException("Reference HTTP outcome unavailable: " + (int)response.StatusCode);
         if (response.Content.Headers.ContentLength > 65536) throw new InvalidDataException("Reference reply quota exceeded");
         await using var stream = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
         using var limited = new MemoryStream(); var buffer = new byte[4096]; int read;
-        while ((read = await stream.ReadAsync(buffer, token).ConfigureAwait(false)) != 0)
+        while ((read = await stream.ReadAsync(buffer.AsMemory(0, (int)Math.Min(buffer.Length, 65537 - limited.Length)), token).ConfigureAwait(false)) != 0)
         { if (limited.Length + read > 65536) throw new InvalidDataException("Reference reply quota exceeded"); await limited.WriteAsync(buffer.AsMemory(0, read), token).ConfigureAwait(false); }
         var json = System.Text.Encoding.UTF8.GetString(limited.ToArray());
         return json.Trim() == "null" ? null : Wire.Decode<StageReply>(json);

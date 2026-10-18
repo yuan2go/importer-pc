@@ -10,9 +10,11 @@ public sealed partial class ParcelRuntime
         try
         {
             if (configuration is null || repository is null) throw new InvalidOperationException("Application has not started");
-            List<string> reasons = [];
+            List<string> reasons = []; List<string> auxiliaryReasons = []; var now = DateTimeOffset.UtcNow;
             if (factory.AdmissionFailure(Effective) is { } qualificationFailure) reasons.Add(qualificationFailure);
             if (failure is not null) reasons.Add(failure);
+            if (!CapacityAvailable) reasons.Add(storageCapacityFailure ?? "Unresolved operation capacity exhausted; original responsibilities cannot be archived");
+            foreach (var conflict in identityConflicts.Values) reasons.Add("IdentityConflict:" + conflict.Id + "; positions=" + string.Join(",", conflict.Positions));
             if (overload != 0) reasons.Add("Overload: rejected callback; inspect parcel and acknowledge while paused");
             if (!SessionValid) reasons.Add("Operator authentication required for new admission");
             if (repository.Paused) reasons.Add("Software admission paused; this is not an emergency stop");
@@ -21,11 +23,15 @@ public sealed partial class ParcelRuntime
             if (operations.Values.Any(NeedsReconciliation)) reasons.Add("Original stage outcome or receipt responsibility is unresolved");
             foreach (var op in operations.Values.Where(x => x.State == ParcelState.WeightTimedOut || WeightExpired(x) || x.Weight is not null && !WeightReady(x) && !MainTerminated(x)))
                 reasons.Add("Measurement missing/expired for admission " + op.AdmissionId);
-            List<CapabilityHealth> health = [.. capabilityHealth.Values.Where(x => x.InstanceId != ports?.Maintenance?.InstanceId)];
+            List<CapabilityHealth> health = [.. capabilityHealth.Values.Where(x => x.InstanceId != ports?.Maintenance?.InstanceId).Select(h =>
+                h with { Ready = h.Ready && h.ConfirmedAt <= now && h.ValidUntil > now && h.ValidUntil > h.ConfirmedAt })];
             foreach (var reader in readers.Values.Select(r => r.Health).OfType<DeviceState>()) health.Add(new(reader.DeviceId, reader.IsValid(DateTimeOffset.UtcNow), reader.ConfirmedAt ?? reader.UpdatedAt, reader.ValidUntil ?? reader.UpdatedAt, reader.ValidityReason(DateTimeOffset.UtcNow) ?? reader.Source));
-            foreach (var h in health.Where(x => !x.Ready || x.ValidUntil <= DateTimeOffset.UtcNow)) reasons.Add("Capability unavailable: " + h.InstanceId);
+            foreach (var h in health.Where(x => !x.Ready))
+                (Effective.Images?.Strategy == UploadStrategy.Attached && h.InstanceId == Effective.Images.Uploader?.InstanceId ? auxiliaryReasons : reasons).Add("Capability unavailable: " + h.InstanceId);
+            if (repository.ArchiveCleanupFailure is { } cleanup) auxiliaryReasons.Add(cleanup);
+            auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : Effective.SchemaVersion >= 3 && CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
-                reasons.ToArray(), operations.Values.Reverse().ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), PositionSnapshots(), readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray());
+                reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(p => repository.Latest(p)).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), PositionSnapshots(), readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray());
             return Wire.Decode<ParcelSnapshot>(Wire.Encode(projection));
         }
         finally { gate.Release(); }
@@ -51,10 +57,21 @@ public sealed partial class ParcelRuntime
                 case "Resume" when CanResume():
                     repository.Commit(null, "AdmissionResumed", "Other stage guards remain independent", paused: false, command: command); break;
                 case "AcknowledgeOverload" when repository.Paused && overload != 0 && positionQueues.Values.All(q => q.Reader.Count == 0):
-                    if (File.Exists(overloadMarker)) File.Delete(overloadMarker);
-                    overloadedPositions.Clear(); Interlocked.Exchange(ref overload, 0); repository.Commit(null, "OverloadAcknowledged", "Paused operator inspection acknowledged", command: command); break;
+                    var originalOverload = OverloadIdentity();
+                    repository.Commit(null, "OverloadAcknowledged", "Paused operator inspection acknowledged; original=" + originalOverload, command: command, acknowledgedOverload: originalOverload);
+                    Boundary?.Invoke("AfterOverloadAcknowledged"); RecoverOverloadAcknowledgement(); break;
+                case "AcknowledgeIdentityConflict" when CanConfigure && command.Owner is not null && identityConflicts.ContainsKey(command.Owner) && !string.IsNullOrWhiteSpace(command.Value):
+                    repository.Commit(null, "IdentityConflictAcknowledged", "Maintenance=" + maintenanceSession.Identity!.Subject + "; original=" + command.Owner + "; " + command.Value, command: command, clearConflict: command.Owner);
+                    identityConflicts.Remove(command.Owner); break;
+                case "ArchiveHistory" when CanConfigure && !string.IsNullOrWhiteSpace(command.Value):
+                    ArchiveSettled(true, "Maintenance=" + maintenanceSession.Identity?.Subject + "; " + command.Value); break;
                 case "ContinuePrepared" when command.Owner is not null && operations.TryGetValue(command.Owner, out var op) &&
                     CanContinue(op):
+                    if (op.RecoveryRequired)
+                    {
+                        if (string.IsNullOrWhiteSpace(command.Value)) return new("Rejected", "Explicit original-entity inspection reason is required after restart", repository.Revision);
+                        op = op with { RecoveryRequired = false }; Save(op, "RecoveryConfirmed", command.Value);
+                    }
                     await AdvanceAsync(op).ConfigureAwait(false); break;
                 case "ContinueUpload" when command.Owner is not null && operations.TryGetValue(command.Owner, out var imageOp) && CanContinueUpload(imageOp):
                     ScheduleAttached(imageOp); break;
@@ -75,70 +92,44 @@ public sealed partial class ParcelRuntime
     }
     static StageFact? CancelUnsent(StageFact? stage) => stage is { State: StageState.Prepared, Attempts: 0 }
         ? stage with { State = StageState.Cancelled, Failure = "Inspected local cancellation before any external attempt" } : stage;
-    public async Task<BusinessReceipt> StageConfigurationAsync(long expectedRevision, ParcelConfiguration candidate)
+    public async Task<BusinessReceipt> StageConfigurationAsync(long expectedRevision, ParcelConfiguration candidate, string? reason = null)
     {
         await gate.WaitAsync().ConfigureAwait(false);
+        ConfigurationChangeAudit? audit = null;
         try
         {
-            if (stopped || configuration is null || (repository?.Paused != true || !MaintenanceAuthorized || externalWaits != 0)) return new("Rejected", "Pause and authenticate maintenance before configuration", repository?.Revision ?? 0);
+            if (stopped || configuration is null || !CanConfigure) return new("Rejected", "Pause and authenticate maintenance before configuration", repository?.Revision ?? 0);
+            if (string.IsNullOrWhiteSpace(reason) || reason.Length > 1024) return new("Rejected", "A maintenance change reason of 1..1024 characters is required", repository!.Revision);
             candidate = Wire.Decode<ParcelConfiguration>(Wire.Encode(candidate));
-            if (Effective.SchemaVersion >= 3 && candidate.SchemaVersion < 3)
-                return new("Rejected", "Topology schema downgrade/flattening is forbidden; preserve the full authoritative revision", repository.Revision);
+            audit = new(Wire.Id(), DateTimeOffset.UtcNow, maintenanceSession.Identity, reason, configuration.Current.Revision, configuration.Current.Revision,
+                Wire.Hash(Wire.Encode(Effective)), Wire.Hash(Wire.Encode(candidate)), "Prepared", BeforeEffective: Effective, BeforePending: configuration.Current.Pending, Candidate: candidate);
+            repository!.Commit(null, "ConfigurationChangePrepared", Wire.Encode(audit), configurationAudit: audit);
+            if (Effective.SchemaVersion >= 3 && candidate.SchemaVersion < 3) throw new InvalidDataException("Topology schema downgrade/flattening is forbidden");
             var errors = definition.Validate(candidate);
-            if (errors.Length != 0) return new("Rejected", string.Join("; ", errors), repository.Revision);
-            candidate = factory.Normalize(candidate);
-            if (candidate.ApplicationId != Effective.ApplicationId || candidate.StationId != Effective.StationId || candidate.Mode != Effective.Mode)
-                return new("Rejected", "Application/data ownership identity requires a separate deployment", repository.Revision);
+            if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
+            RequireSameIdentity(Effective, candidate); candidate = factory.Normalize(candidate);
+            using var configurationUse = factory.ProtectConfiguration(candidate);
+            audit = audit with { CandidateHash = Wire.Hash(Wire.Encode(candidate)), Candidate = candidate };
+            repository.Commit(null, "ConfigurationCandidateNormalized", Wire.Encode(audit), configurationAudit: audit);
             factory.Validate(candidate); configuration.Stage(expectedRevision, candidate);
+            Boundary?.Invoke("AfterConfigurationStaged");
+            audit = audit with { AfterRevision = configuration.Current.Revision, Status = "PendingRestart", Result = "Validated and saved; Effective retained" };
+            repository.Commit(null, "ConfigurationPendingRestart", Wire.Encode(audit), configurationAudit: audit);
             return new("PendingRestart", "Saved; Effective unchanged until controlled restart and application barriers", repository.Revision);
         }
         catch (Exception ex) when (ex is InvalidDataException or InvalidOperationException)
-        { return new("Rejected", ex.Message, repository?.Revision ?? 0); }
-        finally { gate.Release(); }
-    }
-    public async Task<BusinessReceipt> ReconnectAsync()
-    {
-        await gate.WaitAsync().ConfigureAwait(false);
-        try
         {
-            if (stopped || ports is null || (repository?.Paused != true || !MaintenanceAuthorized || externalWaits != 0)) return new("Rejected", "Pause and authenticate maintenance before reconnect", repository?.Revision ?? 0);
-            foreach (var port in CapabilityPorts())
-            { using var budget = new CancellationTokenSource(Effective.TimeoutMs); await port.ReconnectAsync(budget.Token).ConfigureAwait(false); }
-            foreach (var scale in CapabilityPorts().OfType<IWeightSource>())
-            { await scale.StopAsync(CancellationToken.None).ConfigureAwait(false); await scale.StartAsync(CancellationToken.None).ConfigureAwait(false); await RegisterScaleAsync(scale, CancellationToken.None).ConfigureAwait(false); }
-            foreach (var reader in readers.Values) await reader.ReconnectAsync(Enqueue, CancellationToken.None).ConfigureAwait(false);
-            repository.Commit(null, "Reconnected", "Old requests are not resent");
-            return new("Reconnected", "New reader epoch registered; admission remains paused", repository.Revision);
-        }
-        finally { gate.Release(); }
-    }
-    public async Task<BusinessReceipt> ReconnectDeviceAsync(string deviceId)
-    {
-        await gate.WaitAsync().ConfigureAwait(false);
-        try
-        {
-            if (stopped || stopping.IsCancellationRequested || repository?.Paused != true || !MaintenanceAuthorized)
-                return new("Rejected", "Pause and authorize maintenance before device reconnect", repository?.Revision ?? 0);
-            var reader = readers.GetValueOrDefault(deviceId);
-            var scale = CapabilityPorts().OfType<IWeightSource>().SingleOrDefault(p => p.InstanceId == deviceId || ParcelBindings.All(Effective).Any(b => b.InstanceId == p.InstanceId && b.Target == deviceId));
-            if (reader is null && scale is null) return new("Rejected", "Unknown input device identity", repository.Revision);
-            using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token); budget.CancelAfter(Effective.TimeoutMs);
-            await ExternalAsync(async () =>
+            if (audit is not null)
             {
-                if (reader is not null) await reader.ReconnectAsync(Enqueue, budget.Token).ConfigureAwait(false);
-                else
-                {
-                    await scale!.StopAsync(budget.Token).ConfigureAwait(false);
-                    await scale.StartAsync(budget.Token).ConfigureAwait(false);
-                    await RegisterScaleAsync(scale, budget.Token).ConfigureAwait(false);
-                }
-                return true;
-            }).ConfigureAwait(false);
-            repository.Commit(null, "DeviceReconnected", "Device=" + deviceId + "; new epoch only for this reader, no original resend");
-            return new("Reconnected", "Selected device registration replaced; other device epochs retained", repository.Revision);
+                audit = audit with { AfterRevision = configuration!.Current.Revision, Status = "Rejected", Result = ex.GetType().Name + ": " + ex.Message };
+                repository!.Commit(null, "ConfigurationRejected", Wire.Encode(audit), configurationAudit: audit);
+            }
+            return new("Rejected", ex.Message, repository?.Revision ?? 0);
         }
         finally { gate.Release(); }
     }
+    public Task<BusinessReceipt> ReconnectAsync() => MaintainDevicesAsync(null);
+    public Task<BusinessReceipt> ReconnectDeviceAsync(string deviceId) => MaintainDevicesAsync(deviceId);
     public async Task<BusinessReceipt> BackupAsync(string destination)
     {
         await gate.WaitAsync().ConfigureAwait(false);
@@ -164,6 +155,7 @@ public sealed partial class ParcelRuntime
             Directory.CreateDirectory(recovery);
             RecoveryFiles.RequireOrdinaryAncestors(recovery);
             RecoveryFiles.RequireOrdinaryAncestors(destination);
+            factory.RegisterBackup(destination, Effective);
             repository.Backup(destination);
             foreach (var name in names)
             {
@@ -191,8 +183,8 @@ public sealed partial class ParcelRuntime
             foreach (var source in ReaderPorts().Cast<object>().Concat(CapabilityPorts().OfType<IWeightSource>()))
                 try
                 {
-                    if (source is IControlledObservationSource reader) await reader.StopAsync(token).ConfigureAwait(false);
-                    else await ((IWeightSource)source).StopAsync(token).ConfigureAwait(false);
+                    if (source is IControlledObservationSource reader) await DeviceCallAsync(reader.DeviceId, () => reader.StopAsync(token), token).ConfigureAwait(false);
+                    else await DeviceCallAsync(DeviceKey((IWeightSource)source), () => ((IWeightSource)source).StopAsync(token), token).ConfigureAwait(false);
                 }
                 catch (Exception ex) { sourceFailures.Add(ex); }
             if (sourceFailures.Count != 0)
@@ -220,9 +212,9 @@ public sealed partial class ParcelRuntime
             // A reconnect already in flight when Stop began may finish after the first
             // source stop. External drain has now fenced all registrations.
             foreach (var reader in ReaderPorts())
-                try { await reader.StopAsync(token).ConfigureAwait(false); } catch (Exception ex) { portFailures.Add(ex); }
+                try { await DeviceCallAsync(reader.DeviceId, () => reader.StopAsync(token), token).ConfigureAwait(false); } catch (Exception ex) { portFailures.Add(ex); }
             foreach (var port in CapabilityPorts())
-                try { await port.StopAsync(token).ConfigureAwait(false); } catch (Exception ex) { portFailures.Add(ex); }
+                try { await DeviceCallAsync(DeviceKey(port), () => port.StopAsync(token), token).ConfigureAwait(false); } catch (Exception ex) { portFailures.Add(ex); }
             if (portFailures.Count != 0) throw new AggregateException("Capability stop failures; ownership retained", portFailures);
             stopped = true;
             if (terminalWorkerFailure is not null) throw new InvalidOperationException("Terminal worker failed; sources and ports are stopped, disposal is still required", terminalWorkerFailure);

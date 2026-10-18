@@ -237,6 +237,53 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         RegisterContracts(); var installed = Store().Install(file, sha256);
         return new(installed.Status, installed.Reason, 0);
     }
+    public IDisposable? ProtectConfiguration(ParcelConfiguration c)
+    {
+        if (c.Extensions is not { Packages.Length: > 0 }) return null;
+        Store().RegisterConsumer(Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId, c.ApplicationId + ".db"));
+        return Store().AcquireUse(c.Extensions.Packages);
+    }
+    public void RegisterBackup(string database, ParcelConfiguration c)
+    {
+        if (store is not null || c.Extensions is { Packages.Length: > 0 }) Store().RegisterConsumer(database);
+    }
+    public async Task<BusinessReceipt> ManageAsync(string action, string identity)
+    {
+        if (action is not ("extension-recover" or "extension-uninstall")) throw new InvalidDataException("Unsupported controlled extension maintenance");
+        if (OperatingSystem.IsWindows())
+        {
+            var appRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "app"));
+            var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(appRoot, "application-release.json")));
+            ApplicationReleaseValidation.ValidateIfPublished(appRoot, release.ApplicationId, new(release.Views, release.Layouts));
+            MachineRuntimePolicy.RequireProtectedApplicationInstaller(appRoot, release.Files.Keys.Append("application-release.json").ToArray());
+            var start = new System.Diagnostics.ProcessStartInfo(Path.Combine(appRoot, "Ipc.Assembly.exe")) { UseShellExecute = true, Verb = "runas", WorkingDirectory = appRoot };
+            foreach (var arg in new[] { "--action", action, "--mode", mode.ToString(), action == "extension-recover" ? "--operation" : "--package", identity }) start.ArgumentList.Add(arg);
+            using var process = System.Diagnostics.Process.Start(start) ?? throw new IOException("Protected maintenance helper did not start");
+            await process.WaitForExitAsync().ConfigureAwait(false);
+            if (process.ExitCode != 0) throw new IOException("Protected maintenance failed; preserve original operation journal");
+            if (action == "extension-recover")
+            {
+                var op = Store().Operations().Single(x => x.Id == identity);
+                return new(op.State, op.Error ?? "Original operation read back", 0);
+            }
+            var package = Wire.Decode<PackageReference>(identity);
+            var result = Store().Inventory().Single(x => x.Package == package);
+            if (result.Status != "Uninstalled") throw new IOException("Uninstall was not confirmed by original registration");
+            return new(result.Status, result.Reason, 0);
+        }
+        return await Task.Run(() =>
+        {
+            var manager = Store();
+            if (action == "extension-recover")
+            {
+                var result = manager.Recover(identity, refreshReferences: () => manager.InspectConsumers(ParcelRepository.InspectRequiredPackages));
+                return new BusinessReceipt(result.Status, result.Reason, 0);
+            }
+            var package = Wire.Decode<PackageReference>(identity);
+            manager.Uninstall(package, () => manager.InspectConsumers(ParcelRepository.InspectRequiredPackages));
+            return new BusinessReceipt("Uninstalled", "Exact package retired; immutable identity retained", 0);
+        }).ConfigureAwait(false);
+    }
     public ParcelPorts Create(ParcelConfiguration c)
     {
         qualification = ValidateDeployment(c);

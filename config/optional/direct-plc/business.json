@@ -104,5 +104,9 @@
         "ReaderDeviceId": "direct-plc.camera"
       }
     ]
+  },
+  "Retention": {
+    "ResidentHistory": 200,
+    "MinimumFreeBytes": 67108864
   }
 }

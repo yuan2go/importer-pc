@@ -1,0 +1,22 @@
+{
+  "baseline": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
+  "available_input_kind": "Independent Markdown/JSON, not original PDF",
+  "original_pdf": "BLOCKED_NOT_OBTAINED",
+  "inputs": [
+    {
+      "name": "REPORT.md",
+      "bytes": 57551,
+      "sha256": "6b75bcd50089ac4aec2902dc2285e9c05b836ce5bd41d57b8381e76dd61e3b00"
+    },
+    {
+      "name": "FINDINGS.json",
+      "bytes": 2179,
+      "sha256": "e94b79c32e8c530271408833666c0ac1d2a60f055d90ed28f2ebe07e2117e09a"
+    },
+    {
+      "name": "READING.md",
+      "bytes": 4838,
+      "sha256": "ab0a222f48715653a88241873fb642ae71fa4b16e5894eb0c8b05eb256c4bca4"
+    }
+  ]
+}

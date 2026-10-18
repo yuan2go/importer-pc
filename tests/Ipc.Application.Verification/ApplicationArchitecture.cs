@@ -66,10 +66,10 @@ static class ApplicationArchitecture
             Check((await app.SnapshotAsync()).Positions!.All(p => !p.Admit), "shared WCS health failure blocks both positions without rewriting originals");
             blocked.Unavailable = false; await Wait(app, x => x.Health.Any(h => h.InstanceId == sport.Wcs!.InstanceId && h.Ready));
             await Command(app, "Pause"); s = await app.SnapshotAsync();
-            Check((await app.StageConfigurationAsync(s.Configuration.Revision, s.Configuration.Effective with { SchemaVersion = 2, Topology = null })).Status == "Rejected", "application API rejects schema3 flattening, beyond UI protection");
+            Check((await app.StageConfigurationAsync(s.Configuration.Revision, s.Configuration.Effective with { SchemaVersion = 2, Topology = null }, "Synthetic directed configuration verification")).Status == "Rejected", "application API rejects schema3 flattening, beyond UI protection");
             var candidate = s.Configuration.Effective with { TimeoutMs = 1700 };
-            Check((await app.StageConfigurationAsync(s.Configuration.Revision, candidate)).Status == "PendingRestart", "complete topology staged using original configuration CAS");
-            Check((await app.StageConfigurationAsync(s.Configuration.Revision, candidate)).Status == "Rejected", "stale configuration CAS rejected");
+            Check((await app.StageConfigurationAsync(s.Configuration.Revision, candidate, "Synthetic directed configuration verification")).Status == "PendingRestart", "complete topology staged using original configuration CAS");
+            Check((await app.StageConfigurationAsync(s.Configuration.Revision, candidate, "Synthetic directed configuration verification")).Status == "Rejected", "stale configuration CAS rejected");
             s = await app.SnapshotAsync(); Check(s.Configuration.Pending!.Topology!.Readers.Length == 2 && s.Configuration.Effective.TimeoutMs != 1700, "Pending/Effective preserve both bindings and separate activation");
             var vm = new ParcelViewModel(app, "22", "22"); await vm.RefreshAsync(); var before = Wire.Encode((await app.SnapshotAsync()).Configuration);
             await vm.LoadCapabilitiesAsync(); await vm.SaveCapabilitiesAsync();
@@ -90,7 +90,7 @@ static class ApplicationArchitecture
         await using (var app = await Open(legacy, "configuration-upgrade"))
         {
             await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); var s = await app.SnapshotAsync();
-            Check((await app.StageConfigurationAsync(s.Configuration.Revision, sport)).Status == "PendingRestart" && (await app.SnapshotAsync()).Configuration.Effective.Topology is null,
+            Check((await app.StageConfigurationAsync(s.Configuration.Revision, sport, "Synthetic directed configuration verification")).Status == "PendingRestart" && (await app.SnapshotAsync()).Configuration.Effective.Topology is null,
                 "schema2 config is never guessed into two positions; full explicit schema3 candidate staged");
         }
         await using (var app = await Open(legacy, "configuration-upgrade"))
@@ -163,7 +163,9 @@ static class ApplicationArchitecture
         Check(!overloadApp.HasUnreleasedResources, "Stop retry drains all positions before final resource release");
         await using (var app = await Open(sport, "dual-overload"))
         {
-            var s = await app.SnapshotAsync(); Check(s.Positions!.Single(p => p.Id == "right").Admit && !s.Positions!.Single(p => p.Id == "left").Admit, "restart preserves durable scoped overload and original uncertainty");
+            var s = await app.SnapshotAsync(); Check(s.Paused && s.Positions!.All(p => !p.Admit), "restart explicitly pauses all new admission while preserving scoped original responsibility");
+            await Command(app, "Resume"); s = await app.SnapshotAsync();
+            Check(s.Positions!.Single(p => p.Id == "right").Admit && !s.Positions!.Single(p => p.Id == "left").Admit, "explicit resume preserves durable scoped overload and original uncertainty");
         }
         BlockingFactory? partial = null;
         var failedPath = Path.Combine(root, "partial-start"); Directory.CreateDirectory(failedPath); ExtensionStore.AtomicWrite(Path.Combine(failedPath, "business.json"), sport);
@@ -225,7 +227,7 @@ static class ApplicationArchitecture
         using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db")))
         {
             db.Open(); using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)cmd.ExecuteScalar()! == 3, "settled database2 upgrades with appended SQL3");
+            Check((long)cmd.ExecuteScalar()! == 4, "settled database2 upgrades with unchanged SQL1-3 and appended archive/audit SQL4");
         }
         await Task.CompletedTask;
     }

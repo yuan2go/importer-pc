@@ -201,5 +201,9 @@
       "Contract": "PARCEL-REFERENCE-v1",
       "Parameters": {}
     }
-  ]
+  ],
+  "Retention": {
+    "ResidentHistory": 200,
+    "MinimumFreeBytes": 67108864
+  }
 }

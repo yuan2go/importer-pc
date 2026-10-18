@@ -5,7 +5,7 @@ using Microsoft.Data.Sqlite;
 namespace Ipc.Application.ParcelFlow;
 
 // Application owns SQL, aggregate semantics and the T1/T2/T3 transaction boundaries.
-public sealed class ParcelRepository : IDisposable
+public sealed partial class ParcelRepository : IDisposable
 {
     internal Action<string>? Boundary { get; set; }
     readonly SqliteConnection db;
@@ -24,18 +24,30 @@ public sealed class ParcelRepository : IDisposable
         """), new(3, """
         CREATE TABLE parcel_topology_semantics(version INTEGER PRIMARY KEY CHECK(version=3),description TEXT NOT NULL);
         INSERT INTO parcel_topology_semantics VALUES(3,'Position-scoped admission and frozen device topology; independent bounded execution');
+        """), new(4, """
+        CREATE TABLE parcel_history_index(seq INTEGER PRIMARY KEY AUTOINCREMENT,id TEXT NOT NULL UNIQUE,admission TEXT NOT NULL UNIQUE,observation TEXT NOT NULL UNIQUE,position TEXT NOT NULL);
+        INSERT INTO parcel_history_index(id,admission,observation,position) SELECT id,admission,observation,coalesce(json_extract(body,'$.PositionId'),'main') FROM parcel_operations ORDER BY rowid;
+        CREATE TABLE parcel_archives(id TEXT PRIMARY KEY,admission TEXT NOT NULL UNIQUE,observation TEXT NOT NULL UNIQUE,body TEXT NOT NULL,body_hash TEXT NOT NULL,archived_at TEXT NOT NULL);
+        CREATE TABLE parcel_reply_identities(request TEXT NOT NULL,id TEXT NOT NULL,hash TEXT NOT NULL,PRIMARY KEY(request,id));
+        CREATE TABLE parcel_archived_receipts(id TEXT PRIMARY KEY,body BLOB NOT NULL,raw_hash TEXT NOT NULL);
+        CREATE INDEX parcel_receipts_operation ON parcel_receipts(operation);
+        CREATE INDEX parcel_history_position ON parcel_history_index(position,seq);
+        CREATE TABLE parcel_overload_ack(identity TEXT PRIMARY KEY,command TEXT NOT NULL);
+        CREATE TABLE parcel_identity_conflicts(id TEXT PRIMARY KEY,body TEXT NOT NULL,acknowledged INTEGER NOT NULL DEFAULT 0);
+        CREATE TABLE parcel_configuration_audit(id TEXT PRIMARY KEY,body TEXT NOT NULL);
+        CREATE INDEX parcel_receipts_pending ON parcel_receipts(state,operation,stage);
         """)];
     public long Revision { get; private set; }
     public bool Paused { get; private set; }
-    public ParcelRepository(string directory, string application, int storageVersion = 3)
+    public ParcelRepository(string directory, string application, int storageVersion = 4)
     {
-        if (storageVersion is not (2 or 3)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
+        if (storageVersion is not (2 or 3 or 4)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
         Directory.CreateDirectory(directory); rawRoot = Path.Combine(directory, "receipts"); Directory.CreateDirectory(rawRoot);
         db = Database.Open(Path.Combine(directory, application + ".db"));
         try
         {
             RequireLegacySettlement(application, storageVersion);
-            Database.Migrate(db, application, storageVersion >= 3 ? migrations : migrations.Take(2).ToArray());
+            Database.Migrate(db, application, migrations.Take(storageVersion).ToArray());
             using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT revision,paused FROM parcel_meta WHERE id=1";
             using var r = cmd.ExecuteReader(); if (!r.Read()) throw new InvalidDataException("Missing parcel metadata");
             Revision = r.GetInt64(0); Paused = r.GetBoolean(1);
@@ -48,7 +60,7 @@ public sealed class ParcelRepository : IDisposable
         exists.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='platform_migrations'";
         if ((long)exists.ExecuteScalar()! == 0) return;
         using var version = db.CreateCommand(); version.CommandText = "SELECT max(version) FROM platform_migrations WHERE application=$app"; version.Parameters.AddWithValue("$app", application);
-        if (version.ExecuteScalar() is not long legacy || legacy >= storageVersion) return;
+        if (version.ExecuteScalar() is not long legacy || legacy >= storageVersion || legacy >= 3) return;
         // Do not strand old unresolved originals behind a future-reader marker. They need
         // their matching old host/implementation; refuse BEFORE adding any future-reader migration.
         using var pending = db.CreateCommand(); pending.CommandText = "SELECT count(*) FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable')";
@@ -64,7 +76,7 @@ public sealed class ParcelRepository : IDisposable
         using var r = cmd.ExecuteReader(); List<ParcelOperation> result = [];
         while (r.Read()) result.Add(Wire.Decode<ParcelOperation>(r.GetString(0))); return result.ToArray();
     }
-    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null)
+    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null)
     {
         using var tx = db.BeginTransaction();
         if (measurement is not null)
@@ -75,9 +87,40 @@ public sealed class ParcelRepository : IDisposable
             sample.Parameters.AddWithValue("$body", Wire.Encode(measurement)); sample.ExecuteNonQuery();
             Boundary?.Invoke("AfterMeasurementInsert");
         }
+        if (configurationAudit is not null)
+        {
+            using var change = db.CreateCommand(); change.Transaction = tx;
+            change.CommandText = "INSERT INTO parcel_configuration_audit VALUES($id,$body) ON CONFLICT(id) DO UPDATE SET body=excluded.body";
+            change.Parameters.AddWithValue("$id", configurationAudit.Id); change.Parameters.AddWithValue("$body", Wire.Encode(configurationAudit)); change.ExecuteNonQuery();
+        }
+        if (identityConflict is not null)
+        {
+            using var conflict = db.CreateCommand(); conflict.Transaction = tx; conflict.CommandText = "INSERT INTO parcel_identity_conflicts(id,body) VALUES($id,$body)";
+            conflict.Parameters.AddWithValue("$id", identityConflict.Id); conflict.Parameters.AddWithValue("$body", Wire.Encode(identityConflict)); conflict.ExecuteNonQuery();
+        }
+        if (clearConflict is not null)
+        {
+            using var clear = db.CreateCommand(); clear.Transaction = tx; clear.CommandText = "UPDATE parcel_identity_conflicts SET acknowledged=1 WHERE id=$id AND acknowledged=0";
+            clear.Parameters.AddWithValue("$id", clearConflict); if (clear.ExecuteNonQuery() != 1) throw new InvalidOperationException("Conflict acknowledgement identity changed");
+        }
+        if (acknowledgedOverload is not null)
+        {
+            using var ack = db.CreateCommand(); ack.Transaction = tx;
+            ack.CommandText = "INSERT INTO parcel_overload_ack VALUES($identity,$command)";
+            ack.Parameters.AddWithValue("$identity", acknowledgedOverload); ack.Parameters.AddWithValue("$command", command!.Id); ack.ExecuteNonQuery();
+        }
         if (operation is not null)
         {
             using var save = db.CreateCommand(); save.Transaction = tx;
+            using var indexed = db.CreateCommand(); indexed.Transaction = tx;
+            indexed.CommandText = "INSERT INTO parcel_history_index(id,admission,observation,position) VALUES($id,$admission,$observation,$position) ON CONFLICT(id) DO NOTHING";
+            // Old-version repositories exist only for explicit migration verification.
+            using var versionCheck = db.CreateCommand(); versionCheck.Transaction = tx; versionCheck.CommandText = "SELECT count(*) FROM sqlite_master WHERE name='parcel_history_index'";
+            if ((long)versionCheck.ExecuteScalar()! != 0)
+            {
+                indexed.Parameters.AddWithValue("$id", operation.Id); indexed.Parameters.AddWithValue("$admission", operation.AdmissionId);
+                indexed.Parameters.AddWithValue("$observation", operation.ObservationId); indexed.Parameters.AddWithValue("$position", operation.PositionId ?? "main"); indexed.ExecuteNonQuery();
+            }
             save.CommandText = "INSERT INTO parcel_operations VALUES($id,$admission,$observation,$body) ON CONFLICT(id) DO UPDATE SET body=excluded.body";
             save.Parameters.AddWithValue("$id", operation.Id); save.Parameters.AddWithValue("$admission", operation.AdmissionId);
             save.Parameters.AddWithValue("$observation", operation.ObservationId); save.Parameters.AddWithValue("$body", Wire.Encode(operation)); save.ExecuteNonQuery();
@@ -117,9 +160,13 @@ public sealed class ParcelRepository : IDisposable
     public void StoreRaw(string occurrence, StageReply reply)
     {
         ExtensionStore.AtomicWrite(Path.Combine(rawRoot, occurrence + ".json"), reply);
-        using var cmd = db.CreateCommand(); cmd.CommandText = "UPDATE parcel_receipts SET state='RawDurable',raw_hash=$hash WHERE id=$id AND state='Awaiting'";
+        using var tx = db.BeginTransaction();
+        using var cmd = db.CreateCommand(); cmd.Transaction = tx; cmd.CommandText = "UPDATE parcel_receipts SET state='RawDurable',raw_hash=$hash WHERE id=$id AND state='Awaiting'";
         cmd.Parameters.AddWithValue("$id", occurrence); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply)));
         if (cmd.ExecuteNonQuery() != 1) throw new InvalidDataException("Receipt occurrence cannot be reused");
+        using var identity = db.CreateCommand(); identity.Transaction = tx; identity.CommandText = "INSERT INTO parcel_reply_identities VALUES($request,$id,$hash) ON CONFLICT(request,id) DO NOTHING";
+        identity.Parameters.AddWithValue("$request", reply.RequestId); identity.Parameters.AddWithValue("$id", reply.Id); identity.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply))); identity.ExecuteNonQuery();
+        tx.Commit();
     }
     public void NoReply(string occurrence)
     {
@@ -128,18 +175,23 @@ public sealed class ParcelRepository : IDisposable
     }
     public void ValidateRawInventory()
     {
-        using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT id,state,raw_hash FROM parcel_receipts";
-        using var r = cmd.ExecuteReader(); Dictionary<string, (string State, string? Hash)> known = [];
-        while (r.Read()) known.Add(r.GetString(0), (r.GetString(1), r.IsDBNull(2) ? null : r.GetString(2)));
+        // Streaming inventory: history growth cannot allocate a dictionary of every receipt.
         foreach (var file in Directory.EnumerateFiles(rawRoot))
         {
             var id = Path.GetFileNameWithoutExtension(file);
-            if (Path.GetExtension(file) != ".json" || !Guid.TryParseExact(id, "N", out _) || !known.TryGetValue(id, out var entry))
-                throw new InvalidDataException("Unknown/interrupted original raw custody file; preserve and investigate");
-            if (entry.Hash is not null && Wire.Hash(File.ReadAllText(file)) != entry.Hash) throw new InvalidDataException("Original raw receipt hash differs");
+            if (Path.GetExtension(file) != ".json" || !Guid.TryParseExact(id, "N", out _)) throw new InvalidDataException("Unknown/interrupted original raw custody file");
+            using var c = db.CreateCommand(); c.CommandText = "SELECT raw_hash FROM parcel_receipts WHERE id=$id"; c.Parameters.AddWithValue("$id", id);
+            using var r = c.ExecuteReader(); if (!r.Read()) throw new InvalidDataException("Unknown original receipt file");
+            if (!r.IsDBNull(0) && Wire.FileHash(file) != r.GetString(0)) throw new InvalidDataException("Original raw receipt hash differs");
         }
-        foreach (var entry in known.Where(x => x.Value.State is "Committed" or "RawDurable"))
-            if (!File.Exists(Path.Combine(rawRoot, entry.Key + ".json"))) throw new InvalidDataException("Durable original raw receipt is missing");
+        using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT id,raw_hash FROM parcel_receipts WHERE state IN ('Committed','RawDurable')";
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            var id = reader.GetString(0); if (File.Exists(Path.Combine(rawRoot, id + ".json"))) continue;
+            if (!HasArchivedRaw(id, reader.GetString(1))) throw new InvalidDataException("Durable original raw receipt is missing");
+        }
+        CleanupArchivedRawFiles();
     }
     public (string Id, string Operation, string Stage, string Request, StageReply? Reply)[] PendingReceipts()
     {

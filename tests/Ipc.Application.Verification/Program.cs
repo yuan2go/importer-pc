@@ -13,6 +13,8 @@ var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--quality-extensions")) { var i = Array.IndexOf(args, "--quality-extensions"); await ArchitectureQuality.ExtensionChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
+if (args.Contains("--architecture-quality")) { await ArchitectureQuality.Run(workspace, root); return; }
 if (args.Contains("--acquisition-lifecycle")) { await AcquisitionLifecycle.Run(workspace, root); return; }
 if (args.Contains("--application-architecture")) { await ApplicationArchitecture.Run(workspace, root); return; }
 if (args.Contains("--qualified-capabilities")) { var i = Array.IndexOf(args, "--qualified-capabilities"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2]), true); return; }
@@ -63,7 +65,7 @@ foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
     Pass((await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY")).Status == "Authorized", id + " maintenance authentication explicitly confirmed");
     var prior = (await app.SnapshotAsync()).Configuration;
     var invalid = prior.Effective with { Weight = prior.Effective.Weight with { Precision = 99 } };
-    Pass((await app.StageConfigurationAsync(prior.Revision, invalid)).Status == "Rejected" && Wire.Encode((await app.SnapshotAsync()).Configuration) == Wire.Encode(prior), id + " invalid configuration leaves old authority byte-equivalent");
+    Pass((await app.StageConfigurationAsync(prior.Revision, invalid, "Synthetic directed configuration verification")).Status == "Rejected" && Wire.Encode((await app.SnapshotAsync()).Configuration) == Wire.Encode(prior), id + " invalid configuration leaves old authority byte-equivalent");
     var backup = Path.Combine(root, id + ".backup.db"); Pass((await app.BackupAsync(backup)).Status == "BackupCreated" && File.Exists(backup), id + " online backup actually created");
     var restoreData = Path.Combine(root, id + "-restored");
     ParcelRecovery.Restore(backup, Path.Combine(restoreData, "Simulation", "reference-17", id));
@@ -105,7 +107,7 @@ await using (var app = await Open(lost, "lost"))
     Pass(original.Wcs?.State == StageState.Accepted && original.Plc?.Attempts == 1 && original.Slot == "REFERENCE-07", "WCS acceptance and original PLC intention survive lost PLC reply");
     await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); s = await app.SnapshotAsync();
     var changed = s.Configuration.Effective with { Plc = s.Configuration.Effective.Plc! with { Target = "reference://plc/new-target" } };
-    Pass((await app.StageConfigurationAsync(s.Configuration.Revision, changed)).Status == "PendingRestart", "changed target saved only as pending");
+    Pass((await app.StageConfigurationAsync(s.Configuration.Revision, changed, "Synthetic directed configuration verification")).Status == "PendingRestart", "changed target saved only as pending");
 }
 await using (var app = await Open(lost, "lost"))
 {

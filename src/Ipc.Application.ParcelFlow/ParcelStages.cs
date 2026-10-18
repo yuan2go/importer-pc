@@ -13,13 +13,12 @@ public sealed partial class ParcelRuntime
         op = operations[op.Id];
         var stage = GetStage(op, kind)!;
         var attached = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached;
-        if (stage.Replies.Length >= 64) return op with { Reason = "Receipt retention budget requires controlled archive before further queries" };
         var binding = BindingFor(Effective, kind, op.PositionId);
         if (binding is null || Wire.Encode(binding) != Wire.Encode(stage.Request.Binding) ||
             ports!.ImplementationHashes.GetValueOrDefault(binding.InstanceId) != stage.Request.ImplementationHash)
-        { op = op with { State = ParcelState.Blocked, Reason = "OriginalCapabilityUnavailable: preserve original request, package, target and implementation" }; Save(op, "OriginalCapabilityBlocked", op.Reason); return op; }
+        { op = StageFailure(op, kind, stage, "OriginalCapabilityUnavailable: preserve original request, package, target and implementation"); Save(op, "OriginalCapabilityBlocked", GetStage(op, kind)!.Failure!); return op; }
         if (query && !factory.Requirements(stage.Request.Binding).Query)
-        { op = op with { Reason = "Provider declares no authoritative query capability; preserve unknown and original responsibility" }; Save(op, "QueryUnsupported", op.Reason); return op; }
+        { op = StageFailure(op, kind, stage, "Provider declares no authoritative query capability; preserve unknown and original responsibility"); Save(op, "QueryUnsupported", GetStage(op, kind)!.Failure!); return op; }
         var port = PortFor(op, kind);
         CapabilityHealth health;
         try { health = await ExternalAsync(() => ProbeHealthAsync(port, stopping.Token)).ConfigureAwait(false); }
@@ -28,7 +27,7 @@ public sealed partial class ParcelRuntime
         capabilityHealth[port.InstanceId] = health;
         op = operations[op.Id];
         if (!health.Ready || health.ValidUntil <= DateTimeOffset.UtcNow || health.ConfirmedAt > DateTimeOffset.UtcNow)
-        { op = SetStage(op, kind, stage with { Failure = "Original capability is not healthy" }) with { State = attached ? op.State : ParcelState.Blocked, Reason = attached ? op.Reason : "Original capability is not healthy; reconnect and reconcile" }; Save(op, "CapabilityNotReady", "Original capability is not healthy"); return op; }
+        { op = StageFailure(op, kind, stage, "Original capability is not healthy; reconnect and reconcile"); Save(op, "CapabilityNotReady", "Original capability is not healthy"); return op; }
         if (!query && ((!attached && !CanDispatch(op) || attached && !CanSendUpload(op)) ||
             !PredecessorsAccepted(op, kind) || (kind is ParcelStage.Wcs or ParcelStage.Plc || kind == ParcelStage.Upload && factory.Requirements(stage.Request.Binding).MeasuredWeight) && !WeightReady(op))) return op;
         if (stopping.IsCancellationRequested) return op;
@@ -44,14 +43,14 @@ public sealed partial class ParcelRuntime
         StageReply? reply;
         try
         {
-            reply = await ExternalAsync(async () => kind switch
+            reply = await ExternalAsync(() => PortCallAsync(port, async () => kind switch
             {
                 ParcelStage.Wcs => query ? await ports.Wcs!.QueryAsync(stage.Request, budget.Token).ConfigureAwait(false) : await ports.Wcs!.ResolveSlotAsync(stage.Request, budget.Token).ConfigureAwait(false),
                 ParcelStage.Plc => query ? await ports.Plc!.QueryAsync(stage.Request, budget.Token).ConfigureAwait(false) : await ports.Plc!.SubmitAsync(stage.Request, budget.Token).ConfigureAwait(false),
                 ParcelStage.Capture => query ? await ((IImageCamera)port).QueryAsync(stage.Request, budget.Token).ConfigureAwait(false) : await ((IImageCamera)port).CaptureAsync(stage.Request, budget.Token).ConfigureAwait(false),
                 ParcelStage.Upload => query ? await ports.Uploader!.QueryAsync(stage.Request, budget.Token).ConfigureAwait(false) : await ports.Uploader!.UploadAsync(stage.Request, ReadImage(op, op.Image!), budget.Token).ConfigureAwait(false),
                 _ => throw new InvalidOperationException("Unregistered stage")
-            }).ConfigureAwait(false);
+            }, budget.Token)).ConfigureAwait(false);
             op = operations[op.Id];
         }
         catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException)
@@ -63,8 +62,7 @@ public sealed partial class ParcelRuntime
             var knownOutcome = stage.State is StageState.Accepted or StageState.Rejected;
             stage = stage with { State = knownOutcome ? stage.State : StageState.Unknown, Failure = ex.GetType().Name + ": " + ex.Message };
             op = SetStage(op, kind, stage) with { State = attached || knownOutcome ? op.State : UnknownState(kind),
-                Reason = knownOutcome ? "Original query unavailable; prior outcome retained, physical completion needs evidence" :
-                    "Delivery/outcome unknown; original request must be reconciled, never resent" };
+                Reason = attached || knownOutcome ? op.Reason : "Delivery/outcome unknown; original request must be reconciled, never resent" };
             Save(op, "OutcomeUnknown", stage.Failure!); return op;
         }
         if (reply is null)
@@ -72,8 +70,8 @@ public sealed partial class ParcelRuntime
             repository.NoReply(occurrence);
             // Query absence does not prove no side effect.
             if (stage.State is not (StageState.Accepted or StageState.Rejected)) stage = stage with { State = StageState.Unknown };
-            op = SetStage(op, kind, stage) with { Reason = "Original query has no authoritative result; no resend is permitted" };
-            Save(op, "QueryInconclusive", op.Reason); return op;
+            op = StageFailure(SetStage(op, kind, stage), kind, stage, "Original query has no authoritative result; no resend is permitted");
+            Save(op, "QueryInconclusive", GetStage(op, kind)!.Failure!); return op;
         }
         // If persistence fails here, the Awaiting occurrence remains independently visible.
         // Do not reclassify a returned-but-unrecorded reply as an ordinary transport failure.
@@ -90,7 +88,7 @@ public sealed partial class ParcelRuntime
         var independentUpload = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached;
         var stage = GetStage(op, kind)!;
         var prior = stage.Replies.FirstOrDefault(x => x.Id == reply.Id);
-        var inconsistent = reply.RequestId != stage.Request.Id || reply.PayloadHash != stage.Request.PayloadHash ||
+        var inconsistent = repository!.OriginalReplyHash(stage.Request.Id, reply.Id) is { } originalHash && originalHash != Wire.Hash(Wire.Encode(reply)) || reply.RequestId != stage.Request.Id || reply.PayloadHash != stage.Request.PayloadHash ||
             !Guid.TryParseExact(reply.Id, "N", out _) || string.IsNullOrWhiteSpace(reply.Evidence) || reply.At < stage.Request.PreparedAt || reply.At > DateTimeOffset.UtcNow.AddSeconds(1) ||
             reply.BusinessAccepted is not null && (!reply.TransportSucceeded || reply.ProtocolAcknowledged != true) ||
             kind == ParcelStage.Plc && factory.Requirements(stage.Request.Binding) is { Query: false, CompletesOnSubmit: true } && reply.BusinessAccepted == true && reply.PhysicalCompleted != true ||
@@ -100,22 +98,22 @@ public sealed partial class ParcelRuntime
             kind is ParcelStage.Capture or ParcelStage.Upload && reply.BusinessAccepted == true && !ValidImageReply(op, kind, reply.Image);
         var terminal = stage.Replies.LastOrDefault(x => x.BusinessAccepted is not null);
         inconsistent |= terminal is not null && reply.BusinessAccepted is not null &&
-            (terminal.BusinessAccepted != reply.BusinessAccepted || terminal.Slot != reply.Slot || Wire.Encode(terminal.Image) != Wire.Encode(reply.Image) || terminal.PhysicalCompleted == true && reply.PhysicalCompleted == false);
+            (terminal.BusinessAccepted != reply.BusinessAccepted || terminal.Slot != reply.Slot || Wire.Encode(terminal.Image) != Wire.Encode(reply.Image) || stage.Replies.Any(x => x.PhysicalCompleted == true) && reply.PhysicalCompleted == false);
         if (inconsistent)
         {
-            stage = stage with { State = StageState.Conflict, Replies = stage.Replies.Append(reply).ToArray(), Failure = "Contradictory or invalid original-stage receipt" };
+            stage = stage with { State = StageState.Conflict, Replies = RetainReplyFacts(stage.Replies.Append(reply).ToArray()), Failure = "Contradictory or invalid original-stage receipt" };
             return SetStage(op, kind, stage) with { State = independentUpload ? op.State : ParcelState.Blocked, Reason = independentUpload ? op.Reason : stage.Failure };
         }
-        if (prior is null) stage = stage with { Replies = stage.Replies.Append(reply).ToArray() };
+        if (prior is null) stage = stage with { Replies = RetainReplyFacts(stage.Replies.Append(reply).ToArray()) };
         if (stage.State == StageState.Conflict) return SetStage(op, kind, stage) with { State = independentUpload ? op.State : ParcelState.Blocked, Reason = independentUpload ? op.Reason : "Receipt conflict remains isolated" };
         if (reply.BusinessAccepted is null)
         {
             if (terminal is not null) return SetStage(op, kind, stage); // Less information cannot erase a terminal fact.
             return SetStage(op, kind, stage with { State = StageState.Unknown }) with
-                { State = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached ? op.State : UnknownState(kind), Reason = "Transport/protocol facts do not establish business acceptance" };
+                { State = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached ? op.State : UnknownState(kind), Reason = independentUpload ? op.Reason : "Transport/protocol facts do not establish business acceptance" };
         }
         stage = stage with { State = reply.BusinessAccepted == true ? StageState.Accepted : StageState.Rejected, Failure = null };
-        op = SetStage(op, kind, stage) with { Reason = reply.BusinessAccepted == true ? null : reply.Evidence };
+        op = SetStage(op, kind, stage) with { Reason = independentUpload ? op.Reason : reply.BusinessAccepted == true ? null : reply.Evidence };
         if (kind is ParcelStage.Capture or ParcelStage.Upload) return ApplyImageReply(op, kind, reply);
         return definition.ApplyBusinessReply(this, op, kind, reply);
     }
@@ -124,6 +122,11 @@ public sealed partial class ParcelRuntime
         foreach (var op0 in operations.Values.ToArray())
         {
             var op = op0;
+            if (!IsSettled(op))
+            {
+                op = op with { RecoveryRequired = !MainTerminated(op) };
+                repository!.Commit(null, "RestartUnsettled", "Original entity/responsibility requires explicit operator recovery; no automatic dispatch", paused: true);
+            }
             foreach (var kind in Enum.GetValues<ParcelStage>())
             {
                 var stage = GetStage(op, kind);
@@ -142,24 +145,47 @@ public sealed partial class ParcelRuntime
         {
             if (!operations.TryGetValue(item.Operation, out var op)) throw new InvalidDataException("Receipt occurrence has no original operation");
             if (item.Reply is null)
-            { Save(op with { State = ParcelState.Blocked, Reason = "RawUnavailable:" + item.Id }, "ReceiptResponsibility", "Original receipt missing; a new query cannot clear this occurrence"); continue; }
+            {
+                var missingKind = ParseStage(item.Stage);
+                op = StageFailure(op, missingKind, GetStage(op, missingKind)!, "RawUnavailable:" + item.Id);
+                if (!(missingKind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached)) op = op with { State = ParcelState.Blocked };
+                Save(op, "ReceiptResponsibility", "Original receipt missing; a new query cannot clear this occurrence"); continue;
+            }
             var kind = ParseStage(item.Stage);
             if (GetStage(op, kind)?.Request.Id != item.Request) throw new InvalidDataException("Original receipt stage mismatch");
             repository.RecoverRaw(item.Id, item.Reply);
             Save(ApplyReply(op, kind, item.Reply), "ReceiptRecovered", "Original durable raw replayed locally without an external call", item.Id);
         }
     }
-    public async Task<BusinessReceipt> ReconcileAsync(string operationId)
+    static StageReply[] RetainReplyFacts(StageReply[] replies)
+    {
+        if (replies.Length <= 64) return replies;
+        var essential = new[] { replies.FirstOrDefault(r => r.BusinessAccepted is not null), replies.LastOrDefault(r => r.PhysicalCompleted == true) }.OfType<StageReply>();
+        // Complete raw response history and reply-ID hashes remain in durable custody.
+        return essential.Concat(replies.TakeLast(62)).DistinctBy(r => r.Id).ToArray();
+    }
+    ParcelOperation StageFailure(ParcelOperation op, ParcelStage kind, StageFact stage, string reason)
+    {
+        var attached = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached;
+        return SetStage(op, kind, stage with { Failure = reason }) with { State = attached || stage.State is StageState.Accepted or StageState.Rejected or StageState.Unknown or StageState.Conflict ? op.State : ParcelState.Blocked, Reason = attached || stage.State is StageState.Accepted or StageState.Rejected ? op.Reason : reason };
+    }
+    public async Task<BusinessReceipt> ReconcileAsync(string operationId, string? stage = null)
     {
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
-            if (stopped || ports is null || !operations.TryGetValue(operationId, out var op)) return new("NotReady", "Original operation unavailable", repository?.Revision ?? 0);
-            if (repository!.PendingReceipts().Any(x => x.Operation == operationId)) return new("Blocked", "Original raw receipt responsibility must be recovered first", repository.Revision);
-            if (op.Capture?.State == StageState.Unknown) op = await ExecuteStageAsync(op, ParcelStage.Capture, true).ConfigureAwait(false);
-            if (op.Upload?.State == StageState.Unknown) op = await ExecuteStageAsync(op, ParcelStage.Upload, true).ConfigureAwait(false);
-            foreach (var stage in definition.ReconciliationStages(op)) op = await ExecuteStageAsync(op, stage, true).ConfigureAwait(false);
-            return new(op.State.ToString(), op.Reason ?? "Original stage reconciled; physical completion is independent", repository.Revision);
+            if (stopped || ports is null || !operations.TryGetValue(operationId, out var op)) return new("NotReady", "Original active operation unavailable; archived originals are read-only", repository?.Revision ?? 0);
+            var requested = stage is null ? (ParcelStage?)null : ParseStage(stage);
+            // Main dependencies first. An independent upload's missing raw never blocks a PLC/WCS query.
+            var stages = new[] { ParcelStage.Capture }.Where(k => op.Capture?.State == StageState.Unknown)
+                .Concat(definition.ReconciliationStages(op)).Concat(op.Upload?.State == StageState.Unknown ? new[] { ParcelStage.Upload } : []).Distinct().ToArray();
+            foreach (var kind in stages.Where(k => requested is null || requested == k))
+            {
+                var original = GetStage(op, kind)!;
+                if (repository!.PendingReceipts().Any(x => x.Operation == operationId && x.Stage == original.Request.Stage)) continue;
+                op = await ExecuteStageAsync(op, kind, true).ConfigureAwait(false);
+            }
+            return new(op.State.ToString(), requested is { } selected ? GetStage(op, selected)?.Failure ?? "Original stage inspected" : op.Reason ?? "Original main facts retained; attached responsibility is independent", repository!.Revision);
         }
         finally { gate.Release(); }
     }

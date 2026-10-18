@@ -35,7 +35,7 @@
       "delivery": "core"
     },
     "reference.barcode": {
-      "version": "1.0.9",
+      "version": "1.0.10",
       "contract": 1,
       "dependencies": [
         "platform"
@@ -51,7 +51,7 @@
       "delivery": "core"
     },
     "reference.integration": {
-      "version": "1.0.9",
+      "version": "1.0.10",
       "contract": 1,
       "dependencies": [
         "supply-contracts"
@@ -150,7 +150,7 @@
       "delivery": "core"
     },
     "application-contracts": {
-      "version": "1.5.0",
+      "version": "1.6.0",
       "contract": 1,
       "dependencies": [
         "platform"

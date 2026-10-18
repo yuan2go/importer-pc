@@ -40,7 +40,7 @@ static class ResourceRisks
             await first.StartAsync(CancellationToken.None); var initial = await first.SnapshotAsync();
             await first.CommandAsync(new(Wire.Id(), initial.Revision, "Pause")); await first.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); initial = await first.SnapshotAsync();
             var candidate = initial.Configuration.Effective with { Wcs = initial.Configuration.Effective.Wcs! with { Parameters = new(initial.Configuration.Effective.Wcs.Parameters) { ["decision"] = "reject" } } };
-            Pass((await first.StageConfigurationAsync(initial.Configuration.Revision, candidate)).Status == "PendingRestart", "valid candidate is saved separately before construction");
+            Pass((await first.StageConfigurationAsync(initial.Configuration.Revision, candidate, "Synthetic directed configuration verification")).Status == "PendingRestart", "valid candidate is saved separately before construction");
         }
         var failed = new ParcelRuntime(activationLaunch, new WcsToPlcFlow(), new FailingFactory(new(activationLaunch)));
         try { await failed.StartAsync(CancellationToken.None); throw new Exception("candidate constructor unexpectedly succeeded"); }

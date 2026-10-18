@@ -1,0 +1,24 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 1.84 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 1.84 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 1.84 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 1.85 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 1.85 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 1.84 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Components/Ipc.Components.csproj (用时 1.85 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 1.85 秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 12 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 16 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 25 毫秒)。
+  Ipc.Platform -> /tmp/ipc-aq-delivery-debug-intermediate/bin/Ipc.Platform/debug/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /tmp/ipc-aq-delivery-debug-intermediate/bin/Ipc.Application.Contracts/debug/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /tmp/ipc-aq-delivery-debug-intermediate/bin/Ipc.Platform.Storage/debug/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /tmp/ipc-aq-delivery-debug-intermediate/bin/Ipc.Application.ParcelFlow/debug/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /tmp/ipc-aq-delivery-debug-intermediate/bin/Ipc.Application.Sportmaster/debug/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> /tmp/ipc-aq-delivery-debug-intermediate/bin/Ipc.Reference.Protocol/debug/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /tmp/ipc-aq-delivery-debug-intermediate/bin/Ipc.Components/debug/Ipc.Components.dll
+  Ipc.Drivers -> /tmp/ipc-aq-delivery-debug-intermediate/bin/Ipc.Drivers/debug/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-aq-delivery-debug-intermediate/bin/Ipc.Application.Supply.Contracts/debug/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /tmp/ipc-aq-delivery-debug-intermediate/bin/Ipc.Integrations/debug/Ipc.Integrations.dll
+  Ipc.Assembly -> /tmp/ipc-aq-delivery-debug-intermediate/bin/Ipc.Assembly/debug/Ipc.Assembly.dll
+  Ipc.Assembly -> /tmp/ipc-aq-delivery-check-host/

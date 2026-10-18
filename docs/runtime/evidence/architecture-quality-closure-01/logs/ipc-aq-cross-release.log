@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/docs/runtime/evidence/architecture-quality-closure-01/cross-release-probe.py", line 44, in <module>
+    before=snapshot_until(proc,messages,lambda s: bool(s['Operations']) and s['Operations'][0]['State']=='PlcAccepted')['Operations'][0];stop(proc)
+                                                                                                                                         ^^^^^^^^^^
+  File "/Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/docs/runtime/evidence/architecture-quality-closure-01/cross-release-probe.py", line 39, in stop
+    proc.stdin.write('stop\n');proc.stdin.flush();proc.wait(timeout=15);assert proc.returncode==0,proc.stderr.read()
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.2_1/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py", line 1264, in wait
+    return self._wait(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.2_1/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py", line 2043, in _wait
+    raise TimeoutExpired(self.args, timeout)
+subprocess.TimeoutExpired: Command '['/Users/yuan/.local/share/ipc-dotnet/dotnet', '/Users/yuan/.codex/artifacts/ipc-architecture-quality-closure-01/wcs-to-plc-portable-readback/app/Ipc.Assembly.dll', '--config', '/Users/yuan/.codex/artifacts/ipc-architecture-quality-closure-01/wcs-to-plc-portable-readback/app/config', '--data-root', '/private/tmp/ipc-aq-cross-release-jo7q3_6k']' timed out after 15 seconds

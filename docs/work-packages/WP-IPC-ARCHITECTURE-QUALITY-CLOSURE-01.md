@@ -32,3 +32,5 @@
 本包实际实现、固定源码及参考PASS见[交付结果](../runtime/architecture-quality-closure-01-results.md)。原PDF仍未取得，归档项BLOCKED；Windows NOT_RUN、真实SDK/协议/现场BLOCKED，D/RV不改。
 
 已推送并创建[PR #24](https://github.com/yuan2go/importer-pc/pull/24)，未合并main。PDF归档项保持BLOCKED，不以参考整改通过关闭该缺失原件。
+
+最终源码/候选3d6960756bfd843a1cb78c6648687b45f2da9f1c；增补DB3/同格式精确实现升级屏障、双窗口草稿CAS、驱动/适配器可变数据所有权、资源成功后配置确认及仅Pending含包的备份消费者。原PDF归档仍未完成，整包不标记全部验收完成。

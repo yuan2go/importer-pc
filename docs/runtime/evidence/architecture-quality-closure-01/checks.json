@@ -1,194 +1,231 @@
 {
   "baseline": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
-  "runtime_code_commit": "cad129f4fac2c1969c2bd80985caa2c6a0b785f0",
-  "candidate_source_commit": "e1fcff0fdd3434d4bc7d4a50323dd233d822bb15",
+  "runtime_code_commit": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+  "candidate_source_commit": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
   "runs": [
     {
-      "name": "dependency-build",
+      "name": "activation-red",
+      "exit_code": 134,
+      "status": "EXPECTED_THREE_CRASH_WINDOWS_REPRODUCED",
+      "source_scope": "ee59989 plus process probes",
+      "log": "logs/ipc-aq-activation-red.log",
+      "log_sha256": "9b4978cc3dd89060539f27bc1be5443898df9b0c47cb340943c2e5003609e58b"
+    },
+    {
+      "name": "activation-first-green",
+      "exit_code": 134,
+      "status": "FAIL_PRESERVED_OLD_REVISION_ASSERTION",
+      "source_scope": "two-phase implementation before explicit attempt-revision assertion update",
+      "log": "logs/ipc-aq-activation-green.log",
+      "log_sha256": "ace95220fbe100a1447bfbcd2094aa4978933450b9dcbede8f64ff0750ea9823"
+    },
+    {
+      "name": "pending-backup-probe-initial",
+      "exit_code": 134,
+      "status": "FAIL_PRESERVED_UNUSED_PACKAGE_DECLARATION_REJECTED",
+      "source_scope": "ee59989 runtime + initial candidate probe",
+      "log": "logs/ipc-aq-pending-backup-red.log",
+      "log_sha256": "ea488382a3a34be39d915e16a8c2f8a6efe2b2a63bc66e3ebe82896b72e69646"
+    },
+    {
+      "name": "pending-backup-red",
+      "exit_code": 134,
+      "status": "EXPECTED_PENDING_ONLY_BACKUP_DEFECT_REPRODUCED",
+      "source_scope": "ee59989 exact core/package + new candidate probe",
+      "log": "logs/ipc-aq-pending-backup-red2.log",
+      "log_sha256": "514c7c0d9f018025c4f96b73c8b6db95631bd72429f09505a13f5c55121c536a"
+    },
+    {
+      "name": "delivery-build",
       "command": "dotnet build tests/Ipc.Application.Verification -p:RestoreLockedMode=true -m:1 -nr:false",
       "exit_code": 0,
       "status": "PASS_REFERENCE",
-      "log": "logs/dependency-build.log",
-      "log_sha256": "ff59d755b12e45e4885aee09b8f9a04964fb38f51e9dfbf35e84947d7d64d98b"
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-build.log",
+      "log_sha256": "2bcba90d5d5e397423aa0088d9eccfa855ca20c7bc8a9d9d1198453ed0c2973b"
     },
     {
-      "name": "pr23-acquisition",
-      "command": "dotnet Ipc.Application.Verification.dll . --acquisition-lifecycle",
-      "exit_code": 0,
-      "status": "PASS_REFERENCE",
-      "log": "logs/dependency-acquisition.log",
-      "log_sha256": "a847181a8099e468365adb1acf9b3dca30e379263ccf620da11d2b89004de3bb"
-    },
-    {
-      "name": "red-core",
+      "name": "delivery-quality",
       "command": "dotnet Ipc.Application.Verification.dll . --architecture-quality",
-      "exit_code": 134,
-      "status": "EXPECTED_DEFECTS_REPRODUCED",
-      "log": "logs/red-before-fixes.log",
-      "log_sha256": "2310ad76fc53f7e950e804579b26c219a26deb3424ed2e3bae084fd9fd47ab6d"
-    },
-    {
-      "name": "frozen-quality",
-      "command": "exact command/time/host hashes in frozen-quality-run.json",
       "exit_code": 0,
       "status": "PASS_REFERENCE",
-      "log": "logs/frozen-quality.log",
-      "log_sha256": "33f754f0d87ad70e72aeefca27c4c9bf3ce441ac910ab6306669d76b81520467"
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-quality.log",
+      "log_sha256": "7c73da80e62c77d6d8ff9eb348dd171bd154c1d0641059a1693ae100fd4fe53f"
     },
     {
-      "name": "aa22",
+      "name": "delivery-aa22",
       "command": "dotnet Ipc.Application.Verification.dll . --application-architecture",
       "exit_code": 0,
       "status": "PASS_REFERENCE",
-      "log": "logs/frozen-aa22.log",
-      "log_sha256": "dbe9ebf802c08fdb27b089a08b08e5b19a127a5f0f1f6c14f9b225d632792d6c"
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-aa22.log",
+      "log_sha256": "87e55ba3519a530947c6d57c2a112d7715a7e27c5aace87029ef73cff5b86ccd"
     },
     {
-      "name": "ac19",
-      "command": "dotnet Ipc.Application.Verification.dll . --capability-closure",
-      "exit_code": 0,
-      "status": "PASS_REFERENCE",
-      "log": "logs/ac19.log",
-      "log_sha256": "6af8a4ab24e3854f0dbf1ffba44699b9f36e4f9197e1ea4c9cac25a0ffab6aee"
-    },
-    {
-      "name": "ac20-initial",
-      "command": "dotnet Ipc.Application.Verification.dll . --reliability-closure",
-      "exit_code": 134,
-      "status": "FAIL_PRESERVED_OLD_FIXTURES",
-      "log": "logs/ac20.log",
-      "log_sha256": "5582af7b9a8f957e2ce5949f892373247812c3356feeeee1f0c0dbea825b8879"
-    },
-    {
-      "name": "ac20-fixed",
-      "command": "dotnet Ipc.Application.Verification.dll . --reliability-closure",
-      "exit_code": 0,
-      "status": "PASS_REFERENCE",
-      "log": "logs/ac20-fixed.log",
-      "log_sha256": "9f53a3d0783665c8f4d8cb9202149caa79f7be44851938665cc52f8930c52717"
-    },
-    {
-      "name": "backup-health-initial",
-      "command": "dotnet Ipc.Application.Verification.dll . --backup-health-recovery",
-      "exit_code": 134,
-      "status": "FAIL_PRESERVED_STAGE_HEALTH_STATE",
-      "log": "logs/bhr.log",
-      "log_sha256": "1314d2a83c931da6b1a2a5086022af3af369fb97e8c4f0d3a63c34de10d7ef57"
-    },
-    {
-      "name": "backup-health-fixed",
+      "name": "delivery-bhr",
       "command": "dotnet Ipc.Application.Verification.dll . --backup-health-recovery",
       "exit_code": 0,
       "status": "PASS_REFERENCE",
-      "log": "logs/bhr-fixed.log",
-      "log_sha256": "d82b139201ad857c2496563201548011b5d6df3eb485e536f18b674ea8f0f12e"
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-bhr.log",
+      "log_sha256": "f5d51a0e59791c87180bacaeb922f86c3f4266da456b9dab17a36efd082cdb8c"
     },
     {
-      "name": "resources",
-      "command": "dotnet Ipc.Application.Verification.dll .",
+      "name": "delivery-resources",
+      "command": "dotnet Ipc.Application.Verification.dll . (AC17/resource selector)",
       "exit_code": 0,
       "status": "PASS_REFERENCE",
-      "log": "logs/resources.log",
-      "log_sha256": "17939598c9014af8ced9c5af04fa452660f6601e9f142779840e046ef90e50d0"
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-resources.log",
+      "log_sha256": "c07d166b14b6dff16123a8f424e2da45b50213c185781585c5b07ae014dc4cff"
     },
     {
-      "name": "frozen-debug",
-      "command": "dotnet build tests/Ipc.Application.Verification -p:RestoreLockedMode=true -m:1 -nr:false",
+      "name": "delivery-checker-build",
+      "command": "dotnet publish selected Sportmaster Debug to isolated checker",
       "exit_code": 0,
-      "status": "BUILD_PASS",
-      "log": "logs/frozen-debug-build.log",
-      "log_sha256": "357df3c0898f5d353556ac95e1240f7a2501d6a4fbdcc41a9f0fd0180dc0a80c"
+      "status": "PASS_REFERENCE",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-checker-build.log",
+      "log_sha256": "683b35909e050f5ebcab8213e0c93d09b31e31b8b0e5c1131ab11b0bfe144495"
     },
     {
-      "name": "extensions-initial",
-      "command": "dotnet Ipc.Application.Verification.dll . --quality-extensions PACKAGE TRUST",
-      "exit_code": 134,
-      "status": "FAIL_PRESERVED_MISSING_EXPLICIT_RESUME_IN_JOURNEY",
-      "log": "logs/extensions.log",
-      "log_sha256": "9256dc2431f19468553407369e0954b09487ab507951a8dcd831cbdfb900939c"
-    },
-    {
-      "name": "extensions-fixed",
-      "command": "dotnet Ipc.Application.Verification.dll . --quality-extensions PACKAGE TRUST",
+      "name": "delivery-signed-build",
+      "command": "build-extension.py version 1.6.6 against frozen Debug checker",
       "exit_code": 0,
-      "status": "PASS_REAL_SIGNED_APPLICATION",
-      "log": "logs/extensions-fixed.log",
-      "log_sha256": "4f5d18720a0180ac47da16422f78e6c0929786ea8f8a3f6a4be863660e4c7b3b"
+      "status": "PASS_REFERENCE",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-signed-build.log",
+      "log_sha256": "f4bc5168d27257790f819d4d76f0ede9a80969d5e0c9c75f158f7a519fc24daf"
     },
     {
-      "name": "signed-debug-build",
-      "command": "build-extension.py --definition examples/ParcelCapabilitiesExtension/extension.build.json --version 1.6.0 against frozen Debug checker",
+      "name": "delivery-extensions",
+      "command": "dotnet signed-test-host/Ipc.Application.Verification.dll . --quality-extensions 1.6.6 TRUST",
       "exit_code": 0,
-      "status": "PASS_FROZEN_STATIC_CHECK",
-      "log": "logs/signed-build.log",
-      "log_sha256": "8b039f3a81e05e37d4eb6c13ca9c634f21bcbd80dd726a6f631ba664ac8687c4"
+      "status": "PASS_REFERENCE",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-extensions.log",
+      "log_sha256": "34b861ee15d3dc1d6576644664f0b6bf20d894a1e10b1e317679e41198d8cbaa"
     },
     {
-      "name": "signed-release-build",
-      "command": "build-extension.py --definition examples/ParcelCapabilitiesExtension/extension.build.json --version 1.6.1 against frozen unpacked Release checker",
+      "name": "delivery-seven-signed",
+      "command": "dotnet signed-test-host/Ipc.Application.Verification.dll . --signed-capabilities 1.6.6 TRUST",
       "exit_code": 0,
-      "status": "PASS_FROZEN_STATIC_CHECK",
-      "log": "logs/release-signed-build.log",
-      "log_sha256": "f8988f9af1e7f9dc2d0b5da9fe1d9b18c22a4d73ed096b62a0b557a5deb6afd9"
+      "status": "PASS_REFERENCE",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-seven-signed.log",
+      "log_sha256": "a1870069f165f4f268380c794f66124df924bceba9d7768f7586606320d99d73"
     },
     {
-      "name": "wpf",
-      "command": "dotnet build src/Ipc.Desktop/Ipc.Desktop.csproj -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.win-x64.lock.json -p:EnableWindowsTargeting=true -p:RestoreLockedMode=true -r win-x64 --artifacts-path ISOLATED -m:1 -nr:false",
+      "name": "delivery-wpf",
+      "command": "dotnet build src/Ipc.Desktop -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.win-x64.lock.json -p:EnableWindowsTargeting=true -p:RestoreLockedMode=true -r win-x64 --artifacts-path ISOLATED -m:1 -nr:false",
       "exit_code": 0,
       "status": "CROSS_BUILD_PASS_WINDOWS_NOT_RUN",
-      "log": "logs/final-wpf.log",
-      "log_sha256": "0f8400b162780b85134ce323d15e8dce4818093e113fe294737afb045f19386c"
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-wpf.log",
+      "log_sha256": "96d0ffacc0897d74ba09e5dc32a514d462957edb01361399bd4d416f9552ca10"
     },
     {
-      "name": "guides",
-      "command": "python3 -m unittest discover -s scripts -p test_release_documents.py -v",
-      "exit_code": 0,
-      "status": "PASS",
-      "log": "logs/guides.log",
-      "log_sha256": "bfdb78c32b8c6a4ad94f651eff184f1597b3860ecd390d5983be7056527cbddd"
-    },
-    {
-      "name": "sport-package",
+      "name": "delivery-package-sport",
       "command": "package-application.py --application sportmaster --target portable",
       "exit_code": 0,
-      "status": "PASS_IMMUTABLE_CANDIDATE",
-      "log": "logs/package-sport.log",
-      "log_sha256": "b74cb95bc17af589963c024cff7fd5a61b065b6e36f866530cc7abd4e1e62e59"
+      "status": "PASS_REFERENCE",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-package-sport.log",
+      "log_sha256": "9444da004d688cec6a61df0618682c7f5f6a149c71d32179d1c1783c852f1f8f"
     },
     {
-      "name": "wcs-package",
+      "name": "delivery-package-wcs",
       "command": "package-application.py --application wcs-to-plc --target portable",
       "exit_code": 0,
-      "status": "PASS_IMMUTABLE_CANDIDATE",
-      "log": "logs/package-wcs.log",
-      "log_sha256": "68bc178b25e279a7a804ac4eb5f369d02ba4088b89721eb3c38db96b3a7cd0d8"
+      "status": "PASS_REFERENCE",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-package-wcs.log",
+      "log_sha256": "d7a31ab53a2b084dad0bc7cd349d44632c38af41fdfb138112dae7043e15f713"
     },
     {
-      "name": "sport-smoke",
-      "command": "smoke-application.py --package independent-readback --output smoke-sport.json",
+      "name": "delivery-smoke-sport",
+      "command": "smoke-application.py --package sportmaster-portable-delivery-readback",
       "exit_code": 0,
-      "status": "PASS_ACTUAL_PROCESS",
-      "log": "logs/smoke-sport.log",
-      "log_sha256": "503a68dde6f26b22e197cb9825fc25540a9d7dae9da6530028120f22584be1f5"
+      "status": "PASS_REFERENCE",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-smoke-sport.log",
+      "log_sha256": "3420d98e886ed39ecb45c99d8aa849c3c488f8f18eb4ed73e49ce7c9eb70838e"
     },
     {
-      "name": "wcs-attached-smoke",
-      "command": "smoke-application.py --package independent-readback --peer-fixture independently-built-Ipc.Fixture.dll --optional-features --attached-upload",
+      "name": "delivery-smoke-wcs-attached",
+      "command": "smoke-application.py --optional-features --attached-upload --peer-fixture independently frozen Ipc.Fixture.dll",
       "exit_code": 0,
-      "status": "PASS_INDEPENDENT_HTTP_PROCESS",
-      "log": "logs/smoke-wcs-attached.log",
-      "log_sha256": "7f4b3f9ca40101da69e0b65c8a12546e8ad27a575a84cfbd3748ad74282d2dff"
+      "status": "PASS_REFERENCE",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-smoke-wcs-attached.log",
+      "log_sha256": "b8884889f5e1e3ffda229c93631a2a4363120261ae2ed5b92c97d85af81081db"
     },
     {
-      "name": "wcs-before-smoke",
-      "command": "smoke-application.py --package independent-readback --peer-fixture independently-built-Ipc.Fixture.dll --optional-features",
+      "name": "delivery-smoke-wcs-before",
+      "command": "smoke-application.py --optional-features --peer-fixture independently frozen Ipc.Fixture.dll",
       "exit_code": 0,
-      "status": "PASS_INDEPENDENT_HTTP_PROCESS",
-      "log": "logs/smoke-wcs-before.log",
-      "log_sha256": "c09849f7514d4511fe58bceb72f201b94668fa9103ce3cf51cafbcd21761d05a"
+      "status": "PASS_REFERENCE",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-smoke-wcs-before.log",
+      "log_sha256": "bda5631579d099f676ebb1df244ed8f1cff3dab42b2dfa9f4764a8fcb79b6740"
+    },
+    {
+      "name": "delivery-cross-release",
+      "command": "cross-release-probe.py old e1fcff0 / new 3d69607",
+      "exit_code": 0,
+      "status": "PASS_REFERENCE",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-cross-release.log",
+      "log_sha256": "55a46ae158a69e1159e86505ef8bae3554c4231f96dcc8826593c4646d3968e4"
+    },
+    {
+      "name": "delivery-release-signed-build",
+      "command": "build-extension.py version 1.6.7 against unpacked frozen Release checker",
+      "exit_code": 0,
+      "status": "PASS_REFERENCE",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-release-signed-build.log",
+      "log_sha256": "44dfb88835a7d488e9864a7bd4dc4c95a97956352c9ca4186e9c3c2ac80ae257"
+    },
+    {
+      "name": "delivery-cli",
+      "command": "unpacked Release1.6.7 CLI install/recover/uninstall/operations",
+      "exit_code": 0,
+      "status": "PASS_REFERENCE",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-cli.log",
+      "log_sha256": "7bc6d4a631402069badea86f20bdfce1b2b472c3a8293399fee0411b559b7d5e"
+    },
+    {
+      "name": "delivery-guides",
+      "command": "python3 -m unittest discover -s scripts -p test_release_documents.py -v",
+      "exit_code": 0,
+      "status": "PASS_REFERENCE",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-guides.log",
+      "log_sha256": "080180b1faaac399146df1f517ff6f2be44a56e7312972aaab8561af5c6c1199"
+    },
+    {
+      "name": "delivery-supply-compat",
+      "command": "dotnet build src/Ipc.Product -p:RestoreLockedMode=true --artifacts-path ISOLATED -m:1 -nr:false",
+      "exit_code": 0,
+      "status": "BUILD_PASS_RUNTIME_NOT_RUN",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-supply-compat.log",
+      "log_sha256": "0e265026db69676c3ae81c07d1c4e6873b0456222e5846cd64d00219e64a3127"
+    },
+    {
+      "name": "delivery-inspection-compat",
+      "command": "dotnet build src/Ipc.Application.Inspection -p:RestoreLockedMode=true --artifacts-path ISOLATED -m:1 -nr:false",
+      "exit_code": 0,
+      "status": "BUILD_PASS_RUNTIME_NOT_RUN",
+      "source_scope": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+      "log": "logs/ipc-aq-delivery-inspection-compat.log",
+      "log_sha256": "16d12fd26a77091d3086f97ae108770793ba6b4e0c4d3df8541255a2903f4eed"
     }
   ],
-  "release_cli_management": "release-cli-management.json",
+  "release_cli_management": "delivery-cli-management.json",
   "boundaries": {
     "original_audit_pdf": "BLOCKED_NOT_OBTAINED",
     "windows_actual": "NOT_RUN",
@@ -202,5 +239,15 @@
     "new_errors": 0,
     "comparison": "archive-error-comparison.json",
     "private_metadata_fixed_without_rule_changes": true
+  },
+  "earlier_runs": [
+    "checks-before-final.original.json",
+    "checks-ee59989.original.json"
+  ],
+  "earlier_source_scope": "cad/e1 historical AC19/AC20; ee59989 runs retained separately; final 3d69607 AQ/AA22/BHR/AC17/resources and exact signed lifecycle/seven-module checks all repeated after final fixes",
+  "fixture": {
+    "source": "e1fcff0fdd3434d4bc7d4a50323dd233d822bb15",
+    "sha256": "fe5f537084475d98efcfdf7d177296f4c63fa590ee2f9cdee4f2ff64c8038beb",
+    "role": "Independent reference HTTP receiver; wire protocol unchanged"
   }
 }

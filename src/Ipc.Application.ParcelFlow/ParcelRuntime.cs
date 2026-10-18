@@ -98,6 +98,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         {
             factory.Validate(Effective);
             ports = factory.Create(Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective))); // Factory owns partial construction if any step fails.
+            var incompatibleOriginals = operations.Values.Where(op => !IsSettled(op) && op.ImplementationHashes.Any(original =>
+                ports.ImplementationHashes.GetValueOrDefault(original.Key) != original.Value)).Select(op => op.Id).ToArray();
+            if (incompatibleOriginals.Length != 0)
+                throw new InvalidDataException("OriginalCapabilityUnavailable: settle unresolved originals using the matching release before changing host/implementation; no source started: " + string.Join(",", incompatibleOriginals));
             foreach (var binding in ParcelBindings.Positions(Effective))
             {
                 positions.Add(binding.Id, binding);

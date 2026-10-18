@@ -8985,9 +8985,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/evidence/architecture-quality-closure-01-r03/publication-receipt.json",
-      "sha256": "81a78213e68e9b3f0f9d35b2ab11cb1640ea7917e0f0cad803c1eb4beacc1b1f",
-      "size_bytes": 323,
-      "git_blob": "1fb4110282c346f3f65ce25078e1a5535ee7119e"
+      "sha256": "0d89b3c26c6ad6c91d6cfdebfba2f38b1ec871fbb53b5944fab999a43a6f588c",
+      "size_bytes": 831,
+      "git_blob": "a00bce59d352ef441501c5f388c8bf1ac96774e7"
     },
     {
       "version": "architecture-quality-closure-01",

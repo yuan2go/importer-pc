@@ -1,9 +1,9 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02",
+  "work_package": "WP-IPC-PR26-RECOVERY-CLOSURE",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/architecture-quality-02",
+  "branch": "codex/pr26-recovery-closure",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
@@ -172,9 +172,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "ae3414932c0d02210c0da17f0d5ccade8d0b06a320e9bf2b0c4d649dbbb437f3",
-      "size_bytes": 6826,
-      "git_blob": "b51d9063b6ba70bc5d958e4246bbd835829c8ae1",
+      "sha256": "58c8b7a6257f4ea90e1cfbbe23f43a0a1a8a0f8838cb72f2ad9e7d27bf6967d5",
+      "size_bytes": 6836,
+      "git_blob": "24e10626ead954da72f9a340ee36e4ad00998612",
       "version": "architecture-quality-audit-02-rereview",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
@@ -327,9 +327,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "02d1ba146522753539a7ca1d413e8eaf0f34bcfe7eff7ca4a8d3c1748ab55666",
-      "size_bytes": 10693,
-      "git_blob": "00da1a155f2e3f13e1396f1ae858a8c08c2115e3",
+      "sha256": "b420441d2d8ca52067348261a7a6bc6fa9646a1bbd6363fac056507d8b766827",
+      "size_bytes": 10910,
+      "git_blob": "e9fe2234b2e653cf20c1b10cd9e262862cca62bf",
       "version": "sportmaster-alternate-ui",
       "status": "implementation_or_scoped_reference_evidence",
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
@@ -2166,6 +2166,105 @@
       "git_blob": "d6e85fb25b781b32e2aa2b4aa67f54b628569baa"
     },
     {
+      "path": "docs/archive/pre-pr26-recovery-closure/README.md",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "1b798a3b0e26990cecc2d42d0604b97d95d9061a317009f4986f4243d8690afc",
+      "size_bytes": 184,
+      "git_blob": "8987a054b2a7f3445111785cbc486df938e1e34b"
+    },
+    {
+      "path": "docs/archive/pre-pr26-recovery-closure/README.md.txt",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "ae3414932c0d02210c0da17f0d5ccade8d0b06a320e9bf2b0c4d649dbbb437f3",
+      "size_bytes": 6826,
+      "git_blob": "b51d9063b6ba70bc5d958e4246bbd835829c8ae1"
+    },
+    {
+      "path": "docs/archive/pre-pr26-recovery-closure/docs__INDEX.md.txt",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "80d6e5c175b94c9dcfe45eee3acf3aae30ecbc6a8adc82ee7cb1d6ed55cf5224",
+      "size_bytes": 10181,
+      "git_blob": "52db5d3c61363cbf5f7ec036ca0fef7c7fc33fa8"
+    },
+    {
+      "path": "docs/archive/pre-pr26-recovery-closure/docs__design__architecture-quality-closure-01.md.txt",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "b6bb4cc3cc62bdc3dd0b764a18b031f9475199ebb34e5a1e58bdfed94290b550",
+      "size_bytes": 24328,
+      "git_blob": "a7ee6f5dc8d88a053c341bb35319430554ba07e1"
+    },
+    {
+      "path": "docs/archive/pre-pr26-recovery-closure/docs__manifest.json.txt",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "22f39dfe068edaabae8a4a95fd1decc38e865a80eab1d1ea2c60ceccb462ccd7",
+      "size_bytes": 1645505,
+      "git_blob": "44131d1d6611f1123be47fd2c00b4fc757a22054"
+    },
+    {
+      "path": "docs/archive/pre-pr26-recovery-closure/docs__manifest.sha256.txt",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "fc27c48ed027df1d47f370c02d6dce9d0be27600049124455d2a62e3c0c6f1e2",
+      "size_bytes": 85,
+      "git_blob": "074de1de924b33943635d409dcd6a42c171ed2fd"
+    },
+    {
+      "path": "docs/archive/pre-pr26-recovery-closure/docs__runtime__architecture-quality-audit-02-results.md.txt",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "3a66b8659d9c185eacd7e0a57f05ab079ca72a63600d67dff8f4f5f328f882fe",
+      "size_bytes": 10259,
+      "git_blob": "a094c14c41cd4bdebf0f96362b967a7d8a83dbfa"
+    },
+    {
+      "path": "docs/archive/pre-pr26-recovery-closure/docs__runtime__architecture-quality-closure-01.md.txt",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "218889c45199a6aa928ff07d34585e363e75a5ce48038f2eec087515e1fdfe19",
+      "size_bytes": 21117,
+      "git_blob": "0e1b2d55d18c6db1f19b992a6875e8a23dc0f3ba"
+    },
+    {
+      "path": "docs/archive/pre-pr26-recovery-closure/manifest.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "f16b804eb89df090d99b8d19ce74e5399351393afbad2af01858ad338da6bbb6",
+      "size_bytes": 1491,
+      "git_blob": "28c57b16fc6848ceec32f1456c088a34923be011"
+    },
+    {
       "path": "docs/archive/pre-pr26-rereview/README.md",
       "version": "architecture-quality-audit-02-rereview",
       "status": "current_implementation_or_boundary_record",
@@ -2990,9 +3089,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/design/architecture-quality-closure-01.md",
-      "sha256": "b6bb4cc3cc62bdc3dd0b764a18b031f9475199ebb34e5a1e58bdfed94290b550",
-      "size_bytes": 24328,
-      "git_blob": "a7ee6f5dc8d88a053c341bb35319430554ba07e1",
+      "sha256": "339bb1b8277e709913eb6fc7af53515ef484cb294abd2345dbeb6b061204a970",
+      "size_bytes": 26087,
+      "git_blob": "8592631052a15ca1ca687a32980808d0219c33b2",
       "previous_git_blob": "dc4f20f985685903dd8239cf5f3304618e1a3b40"
     },
     {
@@ -3577,15 +3676,422 @@
       "git_blob": "67f15efd01c3d5a31125f996a1e3244883c52704"
     },
     {
+      "path": "docs/reviews/pr26-independent-78298b5/README.md",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "4a2495dbc79f6b57a8a64c289607e318d6d9117af0c4abef539460996b2aed52",
+      "size_bytes": 513,
+      "git_blob": "3e03782561e000875eb325bc937ce5720ded1a37"
+    },
+    {
+      "path": "docs/reviews/pr26-independent-78298b5/REPORT.md",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "a3f58d8b8805c944e94b8d059b56e809f59acf55d6c03423626a4d39bef77b3d",
+      "size_bytes": 7968,
+      "git_blob": "dd3d78cac2f7bfbd22d6d3b66312108a7aa12c28"
+    },
+    {
+      "path": "docs/reviews/pr26-independent-78298b5/SHA256SUMS",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "a3329bf2b949a390dd047713e4e4692ce79c5f087f37d967fb928e809e7e5f17",
+      "size_bytes": 687,
+      "git_blob": "2b6c18a5f256d1d2648a9724372f1c3179fea73c"
+    },
+    {
+      "path": "docs/reviews/pr26-independent-78298b5/e914-evidence/architecture-quality.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "74a4e7aef8c6428691c78455521c2b1b3b21adb784bdd380bb1f7d98381fdbde",
+      "size_bytes": 9422,
+      "git_blob": "78f23b0badfb366684f2d39a1ddf8602f2027fbb"
+    },
+    {
+      "path": "docs/reviews/pr26-independent-78298b5/migration-probe/original-source-custody.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "9fd2ce32e9c24f6dd78f706afad411f34cc527b1fe9c5bfc0b85791cdba703c9",
+      "size_bytes": 3153,
+      "git_blob": "73c920bd63c33b6f1af6ec8eef525ba3a882826a"
+    },
+    {
+      "path": "docs/reviews/pr26-independent-78298b5/migration-probe/prior-reader-refusal.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "535cc0ee811f646f18d211afa5c356ac80ee74fe85ff2e7f3877b4145740850e",
+      "size_bytes": 153,
+      "git_blob": "21aab6feff59e1b58d45d61a37a6c1fe877140d8"
+    },
+    {
+      "path": "docs/reviews/pr26-independent-78298b5/migration-probe/results.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "3d7b0fe39e0d466079d19ae3b4f0d58d0f370e9fc4b2223b6a2079aca4258c78",
+      "size_bytes": 690,
+      "git_blob": "e22f163d870ec6e1f0814052099413f1f737cdce"
+    },
+    {
+      "path": "docs/reviews/pr26-independent-78298b5/review-result.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "2c20357a1a8bf879d7551b4d077d10d410002e9f9fcd88d0b4d9edae08554c0f",
+      "size_bytes": 4180,
+      "git_blob": "e552f58aa1289e0149a2ec88c147f7ccdb29b5b8"
+    },
+    {
+      "path": "docs/reviews/pr26-independent-78298b5/standards-probe/legacy-conflict-proof.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "a8e4629563e50b5a9e1de936dd46689c9140067501d435a7a4a868d87a4f467a",
+      "size_bytes": 3301,
+      "git_blob": "0689f687eebe19c53c9f4ff51c5a9a73786fbf55"
+    },
+    {
       "path": "docs/reviews/pr27-ui-independent-review.md",
       "version": "sportmaster-alternate-ui",
       "status": "implementation_or_scoped_reference_evidence",
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "299218455d0618ec837a6c973726cafbdbbb583645fd8bc5e799551132ecfa3a",
-      "size_bytes": 3294,
-      "git_blob": "ea5f030689bc7153eca831089796272e94b9c61a"
+      "sha256": "98401729635b934dfd4b82f436afa6a8d73069d048a3c7e1c95decd895aa6a9e",
+      "size_bytes": 5146,
+      "git_blob": "51b29f8f942fea589ec4d52520daa206331c698e"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/README.md",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9c16a788b42dc4b874a030073a1b5086dc5b92386ac2c25ce482333c7e24f135",
+      "size_bytes": 3863,
+      "git_blob": "8ca7b25b53928989d193cc6121ca26bd35f48847"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/archive-identity.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "899962088bde5d7591090a790accfd2b301293f5c024233841d478d27dd6603f",
+      "size_bytes": 10340,
+      "git_blob": "b386127d9401e7f62bd6cafc495a16a73084322e"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original-fixture-custody.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f2eb2267c76885d3629b8583da94b750078054299731cebd440b5991b0a29a94",
+      "size_bytes": 256209,
+      "git_blob": "f178291f7c1d56c58ca3adafb8b3f317ae128a15"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/REPORT.md",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "911d83e4c4e2ce7cc571f87f3010d4e243b0138ccc5797e583bcb25d2e20da8e",
+      "size_bytes": 8041,
+      "git_blob": "8134a830cf32fb68e7eb80475b3f8cdffe85b6dc"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/SHA256SUMS",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "2ddc88afe0bc63ea01efcf5dca8bcd914869a3986d6091e844066cc7468e8a44",
+      "size_bytes": 2201,
+      "git_blob": "793f0dee4981c323207c0dfc302240f72651f949"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/architecture-quality.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "size_bytes": 5267,
+      "git_blob": "5382ba6b216b03f2041b5c2704c82e43ca5c28d4"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/architecture-quality.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0f0635fb3a379912b2783cf7738f39f6007eef5f98fd9b64bbcb140d9f366d5c",
+      "size_bytes": 9392,
+      "git_blob": "52691d429258a6fd83acbd6c643729e59a7f3359"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/build.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "eed4701b2e7b31d72ad4e4e36cce22902a21321509412911226a2fa2719d2a58",
+      "size_bytes": 4834,
+      "git_blob": "7750f97f0d2133b2fe6d8ef712135224fd40a151"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/configuration-confirmation.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "size_bytes": 5267,
+      "git_blob": "5382ba6b216b03f2041b5c2704c82e43ca5c28d4"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/configuration-confirmation.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "576f099a4c304c2273c3f76268379c232713a376088213ec02769692c684eb1f",
+      "size_bytes": 3066,
+      "git_blob": "fa35e45d0c54dcb6a230ca5521a0fa3848244123"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/historical-db4-upgrade.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "size_bytes": 5267,
+      "git_blob": "5382ba6b216b03f2041b5c2704c82e43ca5c28d4"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/historical-db4-upgrade.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "bebea2eaf283babc7aebb98bd074f26ca83827d367046ea10ad4d65d303ddc80",
+      "size_bytes": 829,
+      "git_blob": "3238350665781ec48cf1ccfa0f3d13eae0c3f52e"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/legacy-custody-upgrade.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7f2ebb711799c8ce075069cd6b2c7fc84d6d7fb9a9cbb119be2d1c590d96ebee",
+      "size_bytes": 64,
+      "git_blob": "2948d924f829f15ee93a76e6e3f00191e39f3972"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/legacy-custody-upgrade.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c36375e9aef3f3ed4f63c6db91f943fb5e02b503516c45ecf8dc6e3e6ee868bf",
+      "size_bytes": 1696,
+      "git_blob": "6a258a35543c6f34405954dd7b42add037c1e91f"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/negative-probe/Probe.csproj",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "b07e1ad504e35a28c867372f7e7f895d8b673f6b73101e15823352c1651f69e1",
+      "size_bytes": 11411,
+      "git_blob": "ed9f893c5effdcf0ca90544a294d4fe413718650"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/negative-probe/Program.cs",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "25ba7e3524e54e95e9340905e1afa46171ccb3acd04d0abf7416d167891d55cf",
+      "size_bytes": 3475,
+      "git_blob": "ebb374ccb9134bef83baeb5e6851ce0971ff0213"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/negative-probe/build.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "b956ac950da9399063c588689f6c216b4e328938b21fbb410a0c74939092d35e",
+      "size_bytes": 366,
+      "git_blob": "f71c32a97611ad27e5f1eb0de2cefc3ef32a8373"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/negative-probe/results.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ffa7edc1ead47542ad4632ad3e393c9f38886fc2cea2e4b2b07f6f78c1cabc41",
+      "size_bytes": 1932,
+      "git_blob": "238cba672dd639bedb0bf8868f7d5ec9849682d9"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/prior-custody-migration.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7f2ebb711799c8ce075069cd6b2c7fc84d6d7fb9a9cbb119be2d1c590d96ebee",
+      "size_bytes": 64,
+      "git_blob": "2948d924f829f15ee93a76e6e3f00191e39f3972"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/prior-custody-migration.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "87d88782461003ec08f5653c8d5196feeb8e760aceb2d18f8aaf96190b842f61",
+      "size_bytes": 1084,
+      "git_blob": "0596cfa9df25abd4d790c1b0652ad634e610af3d"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/receipt-custody.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "size_bytes": 5267,
+      "git_blob": "5382ba6b216b03f2041b5c2704c82e43ca5c28d4"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/receipt-custody.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6741ea4ce86005ab71bbec7b6a3b00882d798b86ca6e8a273902f959a3e77d48",
+      "size_bytes": 1282,
+      "git_blob": "4a76523fe9a1c9e59fce831f251f491cfb4b9a93"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/review-result.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "50dda23775a18ccd9eb3839e50db0fb2b7ba928073e22caa5fb46b613aaf0159",
+      "size_bytes": 1550,
+      "git_blob": "21fa96c3bd56d968eea12f4c7b18dbcab3d290bb"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/source-custody.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "dd395c44777a75236fc46438da0b4f6d80f2f11013755922f9f78467b1c6d5a5",
+      "size_bytes": 393,
+      "git_blob": "8d3c74d82a5cdebe378d7dd938f954920f14d22d"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/upgrade-conflict-closure.exit.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "size_bytes": 5267,
+      "git_blob": "5382ba6b216b03f2041b5c2704c82e43ca5c28d4"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/original/upgrade-conflict-closure.log",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "19d7929c8c0a7c3f0ab1772c5bd2424cba63ecfe24c04e68a871967f5738e1d9",
+      "size_bytes": 4991,
+      "git_blob": "b4c916195598dabfb8f7470583bb34018e9807ae"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/public/identity.public.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "47e9b0a068f911e0f46bd4bd2637fedec48f0d72f38f91d4c2b061b03d9213f1",
+      "size_bytes": 471,
+      "git_blob": "9c275e61eefd9ac18d588114cf685dc55a936eac"
+    },
+    {
+      "path": "docs/reviews/pr31-independent-rereview-f068156/public/runtime-custody.public.json",
+      "version": "pr31-independent-review-archive-20261019",
+      "status": "historical_review_evidence",
+      "purpose": "User-authorized independent review archival; no new qualification",
+      "source": "PR31 fixed-head independent review and explicit archive/merge authorization",
+      "storage_scope": "public_repository",
+      "sha256": "67d6119c989f3b65492b9e6d1db06257a6116ff9b062d03a68f6e28f6e4b2fee",
+      "size_bytes": 2395,
+      "git_blob": "ea837549e9305ad27fd64824444af74cc3044687"
     },
     {
       "path": "docs/reviews/project-conformance-audit-01/README.md",
@@ -3855,9 +4361,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/architecture-quality-audit-02-results.md",
-      "sha256": "3a66b8659d9c185eacd7e0a57f05ab079ca72a63600d67dff8f4f5f328f882fe",
-      "size_bytes": 10259,
-      "git_blob": "a094c14c41cd4bdebf0f96362b967a7d8a83dbfa",
+      "sha256": "b45e35aed617f703245c477df44b08d15b652acffe0490ceca9637d1a5772204",
+      "size_bytes": 10559,
+      "git_blob": "67bb1b3ebdab6b621910195773f5b11d1eed3066",
       "previous_git_blob": "7bf48bc7c21a271d7da68e071e472a346c7996d8"
     },
     {
@@ -3901,9 +4407,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/architecture-quality-closure-01.md",
-      "sha256": "218889c45199a6aa928ff07d34585e363e75a5ce48038f2eec087515e1fdfe19",
-      "size_bytes": 21117,
-      "git_blob": "0e1b2d55d18c6db1f19b992a6875e8a23dc0f3ba",
+      "sha256": "7aa13cc9b3cce864a8d564ac2950d15c9f29f7f5a9a2fd1f94a123d7dbf7c941",
+      "size_bytes": 22230,
+      "git_blob": "f39155e851230cfee26058668324d38c0b87322f",
       "previous_git_blob": "5697e9a5891f1c8c281f0d9dbe84108e63fb0db2"
     },
     {
@@ -17760,6 +18266,435 @@
       "git_blob": "a564be6f19ef19bb70a10564205942fc237a4b1c"
     },
     {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/README.md",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "2c8269d576ef8e242473dd1911a1ededd6b252bba9f76b7153b8cccca3449895",
+      "size_bytes": 1836,
+      "git_blob": "089a8794a269aaf6c78d0e9a22f3a401f348d61f"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/SHA256SUMS",
+      "sha256": "b4cb5fdabab06014950650e0d300c99ac40751fc75851c3558d167489a9a6689",
+      "size_bytes": 3715,
+      "git_blob": "b4b62f50e3e4177182a702553a212dc0681ed435",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Evidence custody inventory",
+      "source": "User-authorized P1/P2 recovery closure",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/architecture-quality-0b6fe6a.exit.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "82608e6b83ed5e8c489ee5527f275a2432bc98a2f65f1de4af222ed76877f407",
+      "size_bytes": 5269,
+      "git_blob": "29ebe66dacb0be62cd1a53284b8074c1f243a0b6"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/architecture-quality-0b6fe6a.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "1d9577aec2701076b66873694d4bc6bd5dbb808771cd5782300dd387e170a903",
+      "size_bytes": 9392,
+      "git_blob": "77c90208a71d79442e93af553056bc3bcd80774d"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/archive-comparison.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Generic recovery closure evidence",
+      "source": "User-authorized PR26 closure",
+      "storage_scope": "public_repository",
+      "sha256": "1ded7af0ee7ce6a1aacedafdf59cc18d86635d78e81894284da451280d61a476",
+      "size_bytes": 218,
+      "git_blob": "1034c2d479a4be83aa7d0ad8d41c98299321d3d3"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/assembly-build.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "57d983bb572520d5e9b1854819a732fc278038edfd86bdeb441beb7c96161a01",
+      "size_bytes": 3823,
+      "git_blob": "f5ff12be2d074c51a641424b647ae40cf7cb93cd"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/assembly-prior-offline.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "ed538352c31c58cd9b74f671ae21050d27695623c57fbde218d0dc76b36a11a0",
+      "size_bytes": 683,
+      "git_blob": "04de5c9cef5cbc8acdb548e4d47b3d1bbc0bdb7b"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/assembly-smoke-result.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "a08e29edefcab3993746a799c0783cb2c554d7dac8c4acdc34ea1acb52a548b5",
+      "size_bytes": 453,
+      "git_blob": "ae5f1a5f4a226728a8ebe53494e56cffaff49b77"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/assembly-smoke.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "8c43c53d6bb896b5af02c01605580be24c46a63e42cf67fa7946585da5843503",
+      "size_bytes": 41030,
+      "git_blob": "1686e2219ca4c1d05dd11058a7a0fae6f6dbbb2b"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/build-0b6fe6a.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "ed1e2109b2fbdfecc04180d8d9c3d3cbee34a8578e47bdd386db111209e3a126",
+      "size_bytes": 2410,
+      "git_blob": "a0375b5d94f6418d2b906f326d82a65bc6c621b4"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/compatibility-proof.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "9a47a46f986d2686e420f474cfdfc34e3ba6978051df704fb1e1b319c7742a28",
+      "size_bytes": 556,
+      "git_blob": "af894a8fd9ada7ccc6c35ceb164df9f4135b2c68"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/configuration-confirmation-0b6fe6a.exit.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "82608e6b83ed5e8c489ee5527f275a2432bc98a2f65f1de4af222ed76877f407",
+      "size_bytes": 5269,
+      "git_blob": "29ebe66dacb0be62cd1a53284b8074c1f243a0b6"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/configuration-confirmation-0b6fe6a.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "1d30bacb672d6164d9046f9d11fc96e09385c4d9933ef046037fc6f75759b798",
+      "size_bytes": 3066,
+      "git_blob": "a0dc59d10b951852084ae382925c74f6d5e1a8ff"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/diagnosis/DIAGNOSIS.md",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "ae319326f36df3127598ff129112480e9a3ce3b430ea7e2938c6f54076509933",
+      "size_bytes": 2265,
+      "git_blob": "c0766611f1b60430d354d07d18be4e43fe3fd6d8"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/diagnosis/Probe.csproj",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "9e5b751433c7d6dca625d7ffb5949a151782702b1cbed6461272c3b844eb6970",
+      "size_bytes": 11456,
+      "git_blob": "8dd9630d90c79ddffc7c10bac3f2abbb55cd7555"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/diagnosis/Program.cs",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "ea9d6af9f0aa99a995707fe79d662aa0e64a72bb17873471c4cf2e4bfd4b9dff",
+      "size_bytes": 6210,
+      "git_blob": "9f8088737e5f511f27aada9b25517109afcfabb3"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/diagnosis/initial-native-resolution-failure.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "44b30459a664335576f4023ad1185f8c3740ff94bd7adf22df249e002d9a392d",
+      "size_bytes": 7629,
+      "git_blob": "bd39791f3d4e36cc33fc413985f3dca3cdcfbe68"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/diagnosis/original-failure-facts.public.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Generic recovery closure evidence",
+      "source": "User-authorized PR26 closure",
+      "storage_scope": "public_repository",
+      "sha256": "6a2d6814767e280e14a51488cf686292a11e8539496ac48c1755f7eeb434de66",
+      "size_bytes": 1430,
+      "git_blob": "adcaf879df20f745f67d0570b44df6ff2f39ab11"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/diagnosis/results.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "6bc4b93ebea672af6977aa0993f5cef93bab9ee7c30d6f5877bc441a535931b3",
+      "size_bytes": 2647,
+      "git_blob": "79e49eafe029d6097c3731b59ae3da215ed22a8a"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/historical-db4-upgrade-0b6fe6a.exit.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "59cf446449165baaaa9f39f098d88c3ead69030fe871ecd46da91b3d7bf1d4ba",
+      "size_bytes": 199,
+      "git_blob": "b1d8089581379080a8aa84fdbb0db248cc555730"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/historical-db4-upgrade-0b6fe6a.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "d8e46a5f68543eacf1312b53edfce308e4fee789a6c95c4ccc18348b6682e524",
+      "size_bytes": 829,
+      "git_blob": "296fb8eda0aa59aa731c2607f601d8db1ec8f8b3"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/historical-db4-upgrade-8039121.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "81adef7efb1993b3c655c0552b1fa283da360e0fd491c916f4ff28fa15da7c16",
+      "size_bytes": 1396,
+      "git_blob": "f1a0dfc2832e517184e9c97c753e21c340654fe1"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/inventory-closure-8039121.exit.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "49ae1dc73363020fd66f60966305c56d0d2d67768ed4688361d182f65ba020e9",
+      "size_bytes": 66,
+      "git_blob": "a52d5845acd159fa9a7535d1f25e9491bd18d00a"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/inventory-closure-8039121.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "1e17e564a56ca7457e583e0dfacbcd8139edd0933342c705679911e83ceeea7f",
+      "size_bytes": 14087,
+      "git_blob": "f61e6a64d79f837890e8f9c9685928628a069f76"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/legacy-custody-upgrade-0b6fe6a.exit.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "7652f20b4b2bf67912c4da21fa8ac058cffa53e849fbe3e6e71b50b778b8f090",
+      "size_bytes": 199,
+      "git_blob": "9df7a9fe428024a377a2cc048e422dc56385e73e"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/legacy-custody-upgrade-0b6fe6a.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "181a55da08ef8541158f32f6f6c54a44aa3776d5f35e764281186577a10af649",
+      "size_bytes": 1696,
+      "git_blob": "6ba5a86c4f4ad47df541161fb9110476dd272f4f"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/local-evidence-catalog.public.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Generic recovery closure evidence",
+      "source": "User-authorized PR26 closure",
+      "storage_scope": "public_repository",
+      "sha256": "0ba1cee42ea6324f1e51bf669f958436cd16b0709f4466585a8547f7bd5e1240",
+      "size_bytes": 10262,
+      "git_blob": "c8ed05d7c4c6b180296f773279a8b7bf845de2dd"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/pr26-recovery-closure-build-red.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "747f5d2aaa385c486990e3a3cffbbae5050e7d4931c08bcad502c2c99b626ba2",
+      "size_bytes": 6832,
+      "git_blob": "222ffd5c620cc88599cf7390fd137cac0e93a4ab"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/pr26-recovery-closure-build-red2.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "87679d5b31d40f5bdb4d7af8b3dfad5df247d91df7e9bd18a5f37539211c6c04",
+      "size_bytes": 2897,
+      "git_blob": "0e9bd5deddb2efe16f51a0e27fe01a6a0a33e7d2"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/pr26-recovery-closure-red3.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "bca1beacd5f1fe36861bcf1d3aa8ef5dfb0d4e6c29d95fa729c5173b38b2dadb",
+      "size_bytes": 4560,
+      "git_blob": "d9f0321df8af1a2bc2f3b81f18b498edf87a517c"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/prior-custody-migration-0b6fe6a.exit.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "547d734ef36b4e686a7372109f46296a894192aecda585262be14ef01d9117d9",
+      "size_bytes": 200,
+      "git_blob": "ac1ce9e5112dd447b0ead3ab033e4846b97a69a6"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/prior-custody-migration-0b6fe6a.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "647f2c9ca083d5653562380037d2a37f7326d104535263b26b1e618d6fe36c90",
+      "size_bytes": 1084,
+      "git_blob": "a54b4bd6275b3e6d10a6f1eeffb75223e19f1312"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/receipt-custody-0b6fe6a.exit.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "82608e6b83ed5e8c489ee5527f275a2432bc98a2f65f1de4af222ed76877f407",
+      "size_bytes": 5269,
+      "git_blob": "29ebe66dacb0be62cd1a53284b8074c1f243a0b6"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/receipt-custody-0b6fe6a.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "4fde53535457820af6aab2b987b6bfb02c2d42210cb8b836a620b36c664099d7",
+      "size_bytes": 1282,
+      "git_blob": "616b711057af100b0ad0574b41730b7f2653226b"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/review-closure-0b6fe6a.exit.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "82608e6b83ed5e8c489ee5527f275a2432bc98a2f65f1de4af222ed76877f407",
+      "size_bytes": 5269,
+      "git_blob": "29ebe66dacb0be62cd1a53284b8074c1f243a0b6"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/review-closure-0b6fe6a.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "2ff4f8eea0f71ed896ab7521b5396dd2f026252cf35fb51c9ab4e4be77df24de",
+      "size_bytes": 2947,
+      "git_blob": "20751dddf854a35ae12a586f509b05f2b7adfdc2"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/runtime-custody.public.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Generic recovery closure evidence",
+      "source": "User-authorized PR26 closure",
+      "storage_scope": "public_repository",
+      "sha256": "ad062732a6c5f82da9036f2b3d6561db630ee704b854d05e21c7d266da6e788f",
+      "size_bytes": 6631,
+      "git_blob": "88b7dcead3a9e3a864b4580b9a5d2f1bf41378ed"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/upgrade-conflict-closure-0b6fe6a.exit.json",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "03747480490cfca17321d6951cee483ae0774f94cc3336c66e884441d4e4023d",
+      "size_bytes": 201,
+      "git_blob": "66613d46bafa421ab3dd6f5c0c8b7a5fff24db09"
+    },
+    {
+      "path": "docs/runtime/evidence/pr26-recovery-closure/upgrade-conflict-closure-0b6fe6a.log",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "dcc839be99e1274b703c1c35ecb1f08a867fa202534c01aac28e21a432ff7e61",
+      "size_bytes": 4991,
+      "git_blob": "c2bfee75eaafbda0b19a80cbe5f4d506c96be849"
+    },
+    {
       "path": "docs/runtime/evidence/project-conformance-audit-01/README.md",
       "sha256": "1f31667ea48ac3e6e2de54c552abd7b4bb8ae1ac486c56fe8d3ae1bd9532a7fe",
       "size_bytes": 4070,
@@ -21324,6 +22259,17 @@
       "git_blob": "35baba6fe745f640d680c18ead8b870daf3a9924"
     },
     {
+      "path": "docs/runtime/pr26-recovery-closure-results.md",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "1e56389638f5e9838df15b26615a0d71bb880d8e628a3b2b1c0e69db5aff92b7",
+      "size_bytes": 10260,
+      "git_blob": "2c2814d47c4e39d0a7aad9d66525e099ecd74f4b"
+    },
+    {
       "path": "docs/runtime/publication-20261019.json",
       "sha256": "8be986f6c5f7382a5d27b1810f54281103c3292f4d8b895993d86749d404e1ec",
       "size_bytes": 5049,
@@ -21454,9 +22400,9 @@
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "a254a777ae0385dc79df0e050bdfbb75c15f9cb108d9a563016e822528a53319",
-      "size_bytes": 6814,
-      "git_blob": "ea1a3a5dc6a0962e6544db9103ae94b13db95902"
+      "sha256": "9daeeb6cf1632744cb2c831d1d34c35c2296c2107e1cc7a4c4b621bfe6900aab",
+      "size_bytes": 7438,
+      "git_blob": "d50a83fd6ff146f8f13f53c49b27afbad07d250c"
     },
     {
       "version": "audit02-implementation",
@@ -21610,9 +22556,9 @@
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "bc42a82337555b3d92c2436d081a052c1d0194565c4093377aa7a01ae08a4aab",
-      "size_bytes": 3785,
-      "git_blob": "c84e7529159ef6c35458826d955050677c638085"
+      "sha256": "10cff2e2837313a42ad028c1a4cf611521c23c22b032c0bec1921d84fde96cb9",
+      "size_bytes": 4339,
+      "git_blob": "20f026daead1b5ecb7ccd4c45bc26b7568cf948a"
     },
     {
       "path": "docs/runtime/validation/ui-maintainability-16-windows.md",
@@ -21727,6 +22673,17 @@
       "sha256": "ad1947a080b5298bfa8d9d587116b850e3691c880a3b56354491ab4bfc791f89",
       "size_bytes": 2543,
       "git_blob": "b33e6366e4b5c133bf93df0caaa1f346cf6ef9cb"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-19-sportmaster-ui-rereview-p2.md",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "5e51abe96122b624d2f320d500b5e3ed8c4be36ae82dfcef957515e92f2687d0",
+      "size_bytes": 2301,
+      "git_blob": "50fcd7b00a5d08d76502b870b9b24ed5986b386c"
     },
     {
       "path": "docs/superpowers/specs/2026-10-18-sportmaster-alternate-ui-design.md",
@@ -22825,6 +23782,17 @@
       "sha256": "40cd43417b37e3becaa8b7e690a6b914249ab8ad5c65e83367c0a02d017b4aff",
       "size_bytes": 15761,
       "git_blob": "bc208505172d8b79941137d04b272f3362e3f233"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "0240911ce723135baea51375fe802e97c916b095607699f54db799a576cca1ed",
+      "size_bytes": 3218,
+      "git_blob": "b4b507659435be8aebd92e08950ff3f72584ace3"
     },
     {
       "path": "docs/work-packages/WP-IPC-REFERENCE-VALIDATION-09.md",
@@ -24051,9 +25019,9 @@
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs",
-      "sha256": "9ae04fb3f575c24e27ed8fffc02bbc42b0b08bbcffaa9dae10383a8c79bab89d",
-      "size_bytes": 11335,
-      "git_blob": "c4057a53a747e517b5684832b68918f3ace95733",
+      "sha256": "2de82f36dac99c72ebc69dce37a4568fe6973d80a53db469c3822c8c5b548025",
+      "size_bytes": 11346,
+      "git_blob": "164381d0d95885c8cc0214d5f89d51064493dc9c",
       "previous_git_blob": "66f9955057a6cc6f5a795f02c70633386712537c"
     },
     {
@@ -24063,9 +25031,9 @@
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "a1c5d8efb09b0ddecefb36b16839634dc1812b1249bf06ab73d25f841c6328de",
-      "size_bytes": 13290,
-      "git_blob": "bc4cdf2c931868b8810869d53cfb28e9660fd478",
+      "sha256": "9160f608e391b82282afbe556abe099f103017f26bfa19fb8d3b3d0b31b22463",
+      "size_bytes": 13843,
+      "git_blob": "fbeaaa21881b25b446b2821ad02b4826e7cc6ede",
       "previous_git_blob": "14b4eb55e1f5ad5dd06016e157b0216521884144"
     },
     {
@@ -24277,9 +25245,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow/ParcelConflicts.cs",
-      "sha256": "6fb7c3c5143f41927563341dda0f49679cd081d377164554811193b6c6307ed2",
-      "size_bytes": 3043,
-      "git_blob": "9fa78360968470087d20adc94120502d6c600a5a"
+      "sha256": "190c851eaf3b4f5e4c6b4ae235e82cda9de2222e3c9d7d7a50b5b6b076b71a97",
+      "size_bytes": 4255,
+      "git_blob": "a13c9f64a5430b8d16711d5f62772d9f7de056f2"
     },
     {
       "version": "architecture-quality-audit-02-rereview",
@@ -24371,9 +25339,9 @@
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
       "storage_scope": "public_repository",
-      "sha256": "b1cc12a16975d5b555abd0fa8de323e1ea6c5c225aac2e7603a6de73200b446a",
-      "size_bytes": 12411,
-      "git_blob": "ed200ddcb957b4952ef049b2fba5d02012f9c84a"
+      "sha256": "e5b382a7ce94c2dd622dc1247281dde2356fd1afda557c343d061e62475837d7",
+      "size_bytes": 14334,
+      "git_blob": "ad441018339ddc5723589421a7861d7368c8e582"
     },
     {
       "version": "architecture-quality-audit-02-rereview",
@@ -24417,9 +25385,9 @@
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
       "storage_scope": "public_repository",
-      "sha256": "b938abdc730f9c2f63c893fa0406fa859747bef27cd8a452045de3ef1527ebff",
-      "size_bytes": 5918,
-      "git_blob": "b0d1ce6405f1728c2957c291f27777dfffd14fc6"
+      "sha256": "cdcbce2d686203e8c258add9d1f8b90dc3ba8f5eb9d4a5b1234c02b7c03d7cc0",
+      "size_bytes": 7696,
+      "git_blob": "1d1041b6d914bf7f4926581d1040281114553dae"
     },
     {
       "version": "architecture-quality-audit-02-rereview",
@@ -24464,9 +25432,9 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "f31d58dd890476bbb042c87d745a07b19494e5466ce4922f06e6a00d6af9512f",
-      "size_bytes": 23554,
-      "git_blob": "6e7ac76f0493403df4837f8e8825c5e16043ea2f",
+      "sha256": "c88fd2d7a6feac54e679a9fcec87bf540f4509cf4d0b51c414695928b2bbdf12",
+      "size_bytes": 25274,
+      "git_blob": "f3269172e40798c3d4f942cd36f0ad4cf392506e",
       "previous_git_blob": "2477f1e147faa0ececc08ad12146914e3b1a038c"
     },
     {
@@ -24476,9 +25444,9 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "008e9910ec4508eff421f3691caaba55c882e994db5cef42c29953afa8a21ea4",
-      "size_bytes": 24788,
-      "git_blob": "ae81a89b5ab59bb3f9c25f8b8b06080cd82544f0",
+      "sha256": "1fc37065002d88a07bfae9ec97a61925b9ac21e18f609a690f6b36fc5831a06c",
+      "size_bytes": 24996,
+      "git_blob": "32ffc0edab7e7fcc435207a34d7def76bbbb1728",
       "previous_git_blob": "b25bcbfb544447fd06a6d8371a28e5e8819ee857"
     },
     {
@@ -24677,9 +25645,9 @@
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "eb5de0c4523b82a59cb0a78da6e6fa7bb3631f087de787857bc685384e535548",
-      "size_bytes": 13016,
-      "git_blob": "2d5e7541fe45c958e16e4328703ca11263eb518a"
+      "sha256": "79fa2f00577a9cc3c3f065d9d4e5aaab637bf1567c992707bb075fcff08193b9",
+      "size_bytes": 13194,
+      "git_blob": "07d6c16e56e9ace4720e63abc2fd4ee2deb33864"
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
@@ -24699,9 +25667,9 @@
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "187e58fedff9309f37655fc74e06e63c98bc8be8a5786347bfd6ad077b80c9b3",
-      "size_bytes": 6597,
-      "git_blob": "d4851c7336ea63d627f86a67c394e3129316dd62"
+      "sha256": "35869d8454d6ddcd1c1273169479781a49f84a36e70d4ebe949370620f48d039",
+      "size_bytes": 7000,
+      "git_blob": "a1b7c2936cb53f3dd87b566b114450f388a94bb2"
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/Workstation.xaml",
@@ -27512,9 +28480,9 @@
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
       "storage_scope": "public_repository",
-      "sha256": "0503e45648bb353a43a544b87a45c7729a4afcaaa552f1db970f564c32330265",
-      "size_bytes": 3394,
-      "git_blob": "aac2942c2bd68064b48838d4fd7cf0dbfcff15d3"
+      "sha256": "ae9207627bb6a195fba4c62e6fb6742dacbf1372e370a92e8c719d712432184a",
+      "size_bytes": 6281,
+      "git_blob": "6a4911efcaae7ca3129d7e71e60c4600eae4cc2a"
     },
     {
       "version": "architecture-quality-audit-02-rereview",
@@ -27523,9 +28491,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "tests/Ipc.Application.Verification/ArchitectureQuality.Recovery02.cs",
-      "sha256": "45c7beaa3bf86b0147cb7df681520f87d0f6bc0044f09282ebdc79559e4e13b4",
-      "size_bytes": 14558,
-      "git_blob": "2975a5163f3dbc73b6b3937ab9ee6afcdfa5d157",
+      "sha256": "5833b662e32ef9193b31299fe00cfe2c1fec594b228e5d905f8212d1c6a37ce6",
+      "size_bytes": 19323,
+      "git_blob": "7c6d4a1cc0b160bb3bdff9ad5900e64a81d35879",
       "previous_git_blob": "66d52de20574b243502d26a6654e854dea19142c"
     },
     {
@@ -27539,6 +28507,17 @@
       "size_bytes": 15427,
       "git_blob": "881b4893958c314a873d50ad8f6d3e772e93e12b",
       "previous_git_blob": "9e3601c5bd0978264ab8f584c413200be76725f2"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs",
+      "version": "pr26-recovery-closure-20261019",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
+      "source": "User-authorized PR26 P1/P2 closure on baac260",
+      "storage_scope": "public_repository",
+      "sha256": "4020a366c674fa0107d1708675a1d4ae6fb896ffb2eb91db84d5690f723bf8ac",
+      "size_bytes": 13595,
+      "git_blob": "bd299e337fdbf33b3d06c215acad89b15a2e3ee5"
     },
     {
       "version": "audit02-implementation",
@@ -27591,9 +28570,9 @@
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "a4a8964f1e7470c8a7256ae6ca8c8e88d81e2484b773b04b6367accac15e88fe",
-      "size_bytes": 1654,
-      "git_blob": "2576b19f3b3d854ea6fb3a6f46c6ee4c3fd49272",
+      "sha256": "01f2376879009488b1ecf27564eba12f1047408e564da8c8cd8676e214542bf4",
+      "size_bytes": 1792,
+      "git_blob": "11cb0c2c0364d19cdd6f9f608fb798b88145201d",
       "previous_git_blob": "63f0f0969192e8ada3a8436104c7b42d3ea6302d"
     },
     {
@@ -27615,9 +28594,9 @@
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "a31ee73727b56aefa52ca5e1df440650a26df3e762cfcd69f51be94efd724b03",
-      "size_bytes": 15922,
-      "git_blob": "f693b4c4b3cca033db336678b602f6e377a0d5b2",
+      "sha256": "6ca1943ee7407e14198b470bf5eacb7dddff43c5998e5e0dc320212d1d9a97a9",
+      "size_bytes": 16370,
+      "git_blob": "2f6fff8a7d44d95673bbaa8dab9b5cd0cf035839",
       "previous_git_blob": "ec3161f509796fb2deda47f3eb553448d7c74c4f"
     },
     {
@@ -27696,20 +28675,42 @@
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "685667f95789b949c1562095c6d517108665182a52274f4863b944d833560def",
-      "size_bytes": 37585,
-      "git_blob": "f94a634dfb3eb556d5e77d9f6a66ab99514f7506"
+      "sha256": "5cda0c428d183f86cb836831ad62cfb796dd2e04bfa98ecc2d02e2147261bdda",
+      "size_bytes": 40956,
+      "git_blob": "f490c31a7ace8065df973477e470916172e03fc1"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/SportmasterWindowLifetime.cs",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "48d255e3d24ade252f8fba976a1de9005d3fdc7a9a23fb7eff4c706b21a35509",
+      "size_bytes": 5530,
+      "git_blob": "029dc62974e8307a948cbc2ef6bdf105d3d599fe"
     },
     {
       "path": "tests/Ipc.Application.Verification/VisibilityShim.cs",
-      "version": "capability-reliability-20",
-      "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "c3a26a14634dbcd3598241fae24a895dd21b8e2ba7a070ae0fde4a86da9f2ea8",
-      "size_bytes": 192,
-      "git_blob": "3f76fd39ef88fc57754d3f3bcc86dce67327d81a"
+      "sha256": "157e7871591a39d493bcfc25ad4221d533c807e2cfd9bae579518bed3da97ace",
+      "size_bytes": 248,
+      "git_blob": "cee428a3a6d805136de91d1b6b7e6c2307d105a4"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/WindowEventShim.cs",
+      "version": "sportmaster-alternate-ui",
+      "status": "implementation_or_scoped_reference_evidence",
+      "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
+      "source": "User-approved derivative WPF implementation; original HTML withheld",
+      "storage_scope": "public_repository",
+      "sha256": "57d36c4e9d97929e5bebca9fb85f78fe4023f10a3207ccfca80bc05e8cc47cb9",
+      "size_bytes": 3436,
+      "git_blob": "2c57e0367d755935dec0a55757704b85e9258fe9"
     },
     {
       "path": "tests/Ipc.Application.Verification/fixtures/direct-plc-schema2-optional.json",
@@ -27774,9 +28775,9 @@
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "176add21c43c407e98dc27e39fa8d0349c318d8a448f508e26794eb8a3765fc9",
-      "size_bytes": 10661,
-      "git_blob": "60ff94856d7e460086a16339d75eaf827bd1e585"
+      "sha256": "f2fd182da44b29777596a2c87c0912d6e5fc8af19ab071d274d8b5ef1a8023cf",
+      "size_bytes": 11864,
+      "git_blob": "1cbb9b961e5b8227e7cd52fafd5a489cdc8e58a6"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/packages.sportmaster.lock.json",
@@ -29032,11 +30033,36 @@
     "release_assets": 8,
     "pr26_merge": "9a5d87ad41e3e936f56a7e58ec60de8f7aa53458"
   },
+  "updated_date": "2026-10-19",
+  "pr26_recovery_closure": {
+    "baseline": "baac260214f910dca9ae4628ba6449b25188e2ac",
+    "source": "0b6fe6a11fb53640cadddc86009293883bb77d71",
+    "report": "docs/runtime/pr26-recovery-closure-results.md",
+    "evidence": "docs/runtime/evidence/pr26-recovery-closure/README.md",
+    "original_review": "docs/reviews/pr26-independent-78298b5/README.md",
+    "before_manifest": "docs/archive/pre-pr26-recovery-closure/docs__manifest.json.txt",
+    "business_merged_main": false,
+    "windows": "NOT_RUN",
+    "sdk_protocol_field": "BLOCKED",
+    "new_package": "NOT_RUN"
+  },
+  "pr31_independent_review_archive": {
+    "reviewed_head": "f068156ed9d4a0ffe4feee94b5c11e966aaa366b",
+    "baseline_main": "baac260214f910dca9ae4628ba6449b25188e2ac",
+    "archive": "docs/reviews/pr31-independent-rereview-f068156/README.md",
+    "identity": "docs/reviews/pr31-independent-rereview-f068156/archive-identity.json",
+    "user_authorized_merge": true,
+    "archive_turn_tests_build_package": "NOT_RUN_BY_USER_REQUEST",
+    "business_test_config_changed": false,
+    "windows": "NOT_RUN",
+    "real_sdk_protocol_field": "BLOCKED",
+    "historical_failures": "RETAINED"
+  },
   "sportmaster_alternate_ui": {
     "work_package": "WP-IPC-SPORTMASTER-ALTERNATE-UI",
-    "source_commit": "bf16bd1079128b4d235819878af18443a848943a",
+    "source_commit": "ee56123",
     "initial_main": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
-    "integrated_main": "baac260214f910dca9ae4628ba6449b25188e2ac",
+    "integrated_main": "713f23d7c39743762adb884fdffa18745cad08f8",
     "approved_design": "docs/superpowers/specs/2026-10-18-sportmaster-alternate-ui-design.md",
     "runtime": "docs/runtime/sportmaster-alternate-ui.md",
     "results": "docs/runtime/sportmaster-alternate-ui-results.md",

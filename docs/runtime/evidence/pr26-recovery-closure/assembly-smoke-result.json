@@ -1,0 +1,23 @@
+{
+  "source": "0b6fe6a11fb53640cadddc86009293883bb77d71",
+  "exit": 0,
+  "operations": [
+    {
+      "Id": "000359ac57aa40d7becbc7726fc49bbd",
+      "PositionId": "right",
+      "State": "SlotResolved",
+      "Slot": "REFERENCE-07"
+    },
+    {
+      "Id": "3fdb77136e914256b7f2f285f578516f",
+      "PositionId": "left",
+      "State": "SlotResolved",
+      "Slot": "REFERENCE-07"
+    }
+  ],
+  "wcs_attempts": [
+    1,
+    1
+  ],
+  "plc_absent": true
+}

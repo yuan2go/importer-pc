@@ -1,3 +1,5 @@
+> 历史N01–N07及PR26作者结果保留原身份；独立复审另发现P1/P2且architecture-quality有失败，见[本轮整改](../work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)及[原独立报告](../reviews/pr26-independent-78298b5/README.md)。本页历史PASS不代表本轮阻断已闭。
+
 # PR26审查修复与交付
 
 本次修复独立审查的5项P1、2项P2，更新PR26，不合并。业务、当前指南、打包及扩展源码固定 **e914e75a109672cd1d52be91c40459f09231ea57**；证据提交仅保存回执。文档先行提交80b8f6a，随后实现1291ee6，收尾纳入最新main的整合源码e914e75。开工main为b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d，收尾main为4afe2afacde9e2acab7648fff3440fa3cc331b6e；审查基线2126ac2c06a0c352d96afbbf13ec1a719c352738。原main工作树和私有未跟踪资料未改。

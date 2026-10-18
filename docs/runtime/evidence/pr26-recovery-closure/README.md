@@ -1,0 +1,11 @@
+# PR26复审整改证据
+
+业务源码固定 `0b6fe6a11fb53640cadddc86009293883bb77d71`，基线main `baac260214f910dca9ae4628ba6449b25188e2ac`。0b6fe6a各选择器日志/退出码是最终定向证据；inventory在8039121执行，后续仅增加租约测试范围与迁移意图审计，不改变去重/消费者路径。真实Assembly独立构建/左右位运行和旧OutcomeReconciled管理命令也保留。SHA256SUMS逐文件固定所提交原字节。
+
+原独立审查FAIL另见 `docs/reviews/pr26-independent-78298b5/`，本目录保留新增RED的15项失败、初始nullable编译失败、原DB4副本运行租约误计失败和诊断原生库解析环境失败。它们按各自形成时性质解释，未删断言、未覆盖历史输出。95c阶段输出在本地catalog保有，未作为最终冻结产物资格，避免构建/运行先后不清；最终选择器在构建完成后锁定DLL前后hash。
+
+完整SQLite/WAL/raw/图像/配置/进程根在runtime-custody登记的本地artifact保存，不将整个运行根或二进制复制到公开仓库。原PR24 DB4、8981d54旧发布及旧OutcomeReconciled输入原件均保留；测试只改副本。没有重签/打包候选。Windows/SDK/真实合同与现场边界不由参考PASS关闭。
+
+公开JSON的*.public.json为显式路径映射副本，并记录原JSON SHA256；本地原JSON未修改。local-artifact:后接本地artifact目录名及相对路径，local-worktree:为工作树标识，不是公开下载链接。资料检查初次系统Python缺Pillow与新JSON路径标记失败保留在本地，不为这些情况放宽校验器。
+
+archive-comparison.json：同一bundled Python/Pillow下main基线268项、当前267项，新增0，修正manifest校验文件名1项；旧267项资料问题仍FAIL。完整前后校验输出在本地artifact保留。

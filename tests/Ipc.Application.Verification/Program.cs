@@ -15,6 +15,8 @@ Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--sportmaster-window-lifecycle")) { await SportmasterWindowLifetime.Run(); return; }
 if (args.Contains("--sportmaster-ui")) { await SportmasterUi.Run(workspace, root); return; }
+if (args.Contains("--historical-db4-upgrade")) { var i=Array.IndexOf(args,"--historical-db4-upgrade"); await ArchitectureQuality.HistoricalDb4UpgradeChecks(workspace,root,Path.GetFullPath(args[i+1])); return; }
+if (args.Contains("--upgrade-conflict-closure")) { await ArchitectureQuality.UpgradeConflictClosureChecks(workspace,root); return; }
 if (args.Contains("--configuration-confirmation")) { await ArchitectureQuality.ConfigurationConfirmationChecks(workspace, root); return; }
 if (args.Contains("--configuration-confirmation-crash-child")) { var i = Array.IndexOf(args, "--configuration-confirmation-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], "BeforeCreate"); return; }
 if(args.Contains("--prior-custody-migration")){var i=Array.IndexOf(args,"--prior-custody-migration");await ArchitectureQuality.PriorCustodyChecks(workspace,root,Path.GetFullPath(args[i+1]));return;}

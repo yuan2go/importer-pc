@@ -1,0 +1,106 @@
+{
+  "original_sha256": "cd97b907e96e67c07ee931553622bb7968b965d1c7546ceb23d1fb387e4b258c",
+  "publication_transform": "Local paths replaced with artifact identifiers; original bytes preserved in local artifact",
+  "data": [
+    {
+      "log": "upgrade-conflict-closure-8039121.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-335f634963e9424b8be343f55aaddd19",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/upgrade-conflict-closure-8039121"
+    },
+    {
+      "log": "review-closure-95c285b.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-9b1f358068b04df586607c428e4a6fd8",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/review-closure-95c285b"
+    },
+    {
+      "log": "legacy-custody-upgrade-95c285b.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-25bf39f33fc94ce69669795cde449c8c",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/legacy-custody-upgrade-95c285b"
+    },
+    {
+      "log": "receipt-custody-95c285b.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-9e07d4e89b56468895714a4bfae094e7",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/receipt-custody-95c285b"
+    },
+    {
+      "log": "inventory-closure-8039121.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-e620e27386804c02be589e09d0eb7557",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/inventory-closure-8039121"
+    },
+    {
+      "log": "pr26-recovery-closure-red3.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-4d925cca15e84cc2abad9f8cd1b46f84",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/pr26-recovery-closure-red3"
+    },
+    {
+      "log": "review-closure-0b6fe6a.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-0d00b35315a24c2bac7856e70f946513",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/review-closure-0b6fe6a"
+    },
+    {
+      "log": "legacy-custody-upgrade-0b6fe6a.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-c1543596ccdb4c66a6c35519049272de",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/legacy-custody-upgrade-0b6fe6a"
+    },
+    {
+      "log": "historical-db4-upgrade-8039121.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-e5c7c207103a4f20a8547aa27312a392",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/historical-db4-upgrade-8039121"
+    },
+    {
+      "log": "receipt-custody-0b6fe6a.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-22758518a95445dcbe40d8a0849cf3f6",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/receipt-custody-0b6fe6a"
+    },
+    {
+      "log": "configuration-confirmation-0b6fe6a.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-e1408dd846f944b98faee5f79c41201a",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/configuration-confirmation-0b6fe6a"
+    },
+    {
+      "log": "upgrade-conflict-closure-95c285b.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-ca6b525890b347cd865c69473867993e",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/upgrade-conflict-closure-95c285b"
+    },
+    {
+      "log": "prior-custody-migration-95c285b.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-59b7b3b693c74258b200ddf8dd7603ac",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/prior-custody-migration-95c285b"
+    },
+    {
+      "log": "architecture-quality-95c285b.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-2391dcda52954036b59c320653fbad5e",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/architecture-quality-95c285b"
+    },
+    {
+      "log": "historical-db4-upgrade-0b6fe6a.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-6539e4de7d4247579f11d9ecf039742d",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/historical-db4-upgrade-0b6fe6a"
+    },
+    {
+      "log": "configuration-confirmation-95c285b.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-c971c686f14646babea96fa13168e1fb",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/configuration-confirmation-95c285b"
+    },
+    {
+      "log": "pr26-recovery-closure-green1.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-002b5800d11f456e8be9473e15c72d2a",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/pr26-recovery-closure-green1"
+    },
+    {
+      "log": "upgrade-conflict-closure-0b6fe6a.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-e9c7cde1470d4c82868c3e620da05892",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/upgrade-conflict-closure-0b6fe6a"
+    },
+    {
+      "log": "prior-custody-migration-0b6fe6a.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-95e51a299ad04d0c88145eff6dae5081",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/prior-custody-migration-0b6fe6a"
+    },
+    {
+      "log": "architecture-quality-0b6fe6a.log",
+      "original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-3b3c01fd3cea408ea934bd18efe8567b",
+      "preserved_root": "local-artifact:ipc-pr26-recovery-closure-20261019/runtime-evidence/architecture-quality-0b6fe6a"
+    }
+  ]
+}

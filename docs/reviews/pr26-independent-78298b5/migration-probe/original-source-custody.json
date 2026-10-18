@@ -1,0 +1,74 @@
+{
+  "original_artifact_directory": "ipc-pr24-independent-rereview-f862c2a-20261018",
+  "original_relative_root": "runtime-evidence/review/review-maintenance",
+  "original_storage_version": 4,
+  "original_state": "WcsUnknown",
+  "probe_only_modifies_copy": true,
+  "files": [
+    {
+      "file": "business.json",
+      "sha256": "a1c3151b8cd0ea431bf4b65c5a7dc763b761819407291d0a2a574509662f2e66",
+      "bytes": 2216
+    },
+    {
+      "file": "data/Simulation/reference-17/sportmaster/038616CEC9A6D841DF0FC387BA4F65776B425AE12B3ABBA82803CF39AF50692F.lease",
+      "sha256": "e323c59b6a08c64feae2544218a659b305ac4d36700104d133e97602ea14461a",
+      "bytes": 37
+    },
+    {
+      "file": "data/Simulation/reference-17/sportmaster/configuration.json",
+      "sha256": "a14f368c812ac6b6ca717ae7e9095122c8c574b31277f55c2110ca2786f3ded4",
+      "bytes": 2707
+    },
+    {
+      "file": "data/Simulation/reference-17/sportmaster/diagnostics/runtime.jsonl",
+      "sha256": "074eba9712671458e7edc8515a99d8080db812f96d028c33a435d6fa5a9855fd",
+      "bytes": 702
+    },
+    {
+      "file": "data/Simulation/reference-17/sportmaster/sportmaster.db",
+      "sha256": "35d89a5a2bb69c162943c6c27964619bbf5e58ed7f0437275c7851f9c68e78ef",
+      "bytes": 176128
+    },
+    {
+      "file": "data/Simulation/reference-17/sportmaster/sportmaster.db-shm",
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "bytes": 32768
+    },
+    {
+      "file": "data/Simulation/reference-17/sportmaster/sportmaster.db-wal",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "data/Simulation/reference-peers/CD24B4571CC773C008529B835F1883EF5924536D422457D22DE0445BE8DE6DD5/CB2445EC851AB18660396677C66152977658C874BEB43B00F7F68A057F37FF86.lease",
+      "sha256": "bea3f7dc5795f27efab51abe5f89858fc4b755bd5a37260d353b6da5f49de3db",
+      "bytes": 70
+    },
+    {
+      "file": "data/Simulation/reference-peers/CD24B4571CC773C008529B835F1883EF5924536D422457D22DE0445BE8DE6DD5/cd7635c055d14435ac90a79037f31be2.json",
+      "sha256": "befa3495843a313861f0cb7d175863051199b53b2bce6f237364c068a79ec320",
+      "bytes": 2621
+    },
+    {
+      "file": "data/Simulation/resource-leases/0F5D99CB09CC4ABB47684F24C71210EF2676DE4A902CF3EB2A162E4767CEFE04.lease",
+      "sha256": "cd4abd46e26d2abad67ae4f928cfaa8c45c4559b33f04afe5c81e55e756d0b77",
+      "bytes": 50
+    },
+    {
+      "file": "data/Simulation/resource-leases/28A03FC1D84FCD65B824FF7999D46BD791D111B1DA8ED1135BBA1443F312A22D.lease",
+      "sha256": "c134a07e85816e13a5c08a29606532d3de9f70750f28b69cdd269252dcd3045a",
+      "bytes": 51
+    },
+    {
+      "file": "data/Simulation/resource-leases/3437C06361ECD16E21A46AA4154BFB3DB06CB6BBE67C50F601B075D92A368F58.lease",
+      "sha256": "5d336c981a28d6f3cc20c4950b5a02febe440469c369a306bdbe2e477dd67b9c",
+      "bytes": 51
+    },
+    {
+      "file": "data/Simulation/resource-leases/EFA3CE7DEA7C1023FC63E0C3A3C9BB94792C5A8BE295CD81D57F625B2B889E34.lease",
+      "sha256": "d512bf7bc8ad39c25dee707f5a018f387b11095082cccec4f44e1fe108703ab2",
+      "bytes": 50
+    }
+  ]
+}

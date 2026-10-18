@@ -1,0 +1,79 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-e9c7cde1470d4c82868c3e620da05892
+DB4 preflight: {
+  "name": "db4-wcs-unknown",
+  "refusal": "LegacyUnsettled: preserve original schema; reconcile originals with the matching old release and create a consistent backup before upgrade",
+  "Version": 4,
+  "Changed": []
+}
+PASS AQ: db4-wcs-unknown: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: db4-wcs-unknown: refusal preserves original DB/config/raw/image bytes
+PASS AQ: db4-wcs-unknown: matching DB4 reader remains usable
+DB4 preflight: {
+  "name": "db4-plc-accepted",
+  "refusal": "LegacyUnsettled: preserve original schema; reconcile originals with the matching old release and create a consistent backup before upgrade",
+  "Version": 4,
+  "Changed": []
+}
+PASS AQ: db4-plc-accepted: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: db4-plc-accepted: refusal preserves original DB/config/raw/image bytes
+PASS AQ: db4-plc-accepted: matching DB4 reader remains usable
+DB4 preflight: {
+  "name": "db4-plc-unknown",
+  "refusal": "LegacyUnsettled: preserve original schema; reconcile originals with the matching old release and create a consistent backup before upgrade",
+  "Version": 4,
+  "Changed": []
+}
+PASS AQ: db4-plc-unknown: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: db4-plc-unknown: refusal preserves original DB/config/raw/image bytes
+PASS AQ: db4-plc-unknown: matching DB4 reader remains usable
+DB4 preflight: {
+  "name": "db4-attached-unknown",
+  "refusal": "LegacyUnsettled: preserve original schema; reconcile originals with the matching old release and create a consistent backup before upgrade",
+  "Version": 4,
+  "Changed": []
+}
+PASS AQ: db4-attached-unknown: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: db4-attached-unknown: refusal preserves original DB/config/raw/image bytes
+PASS AQ: db4-attached-unknown: matching DB4 reader remains usable
+DB4 preflight: {
+  "name": "db4-old-implementation",
+  "refusal": "LegacyUnsettled: preserve original schema; reconcile originals with the matching old release and create a consistent backup before upgrade",
+  "Version": 4,
+  "Changed": []
+}
+PASS AQ: db4-old-implementation: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: db4-old-implementation: refusal preserves original DB/config/raw/image bytes
+PASS AQ: db4-old-implementation: matching DB4 reader remains usable
+PASS AQ: read-only preflight preserves exact nonempty DB/WAL/config originals
+PASS AQ: fully settled DB4 upgrades without changing original send attempts
+PASS AQ: schema1-legacy-False: actual main remains blocked until explicit conflict acknowledgement
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: schema1-legacy-False: authorized original conflict acknowledgement commits
+PASS AQ: schema1-legacy-False: inspected main can resume
+PASS AQ: schema1-legacy-False: acknowledged identity stays cleared across restart
+PASS AQ: schema1-legacy-True: actual main remains blocked until explicit conflict acknowledgement
+PASS AQ: scope repair preserves original responsibility identity
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: schema1-legacy-True: authorized original conflict acknowledgement commits
+PASS AQ: schema1-legacy-True: inspected main can resume
+PASS AQ: schema1-legacy-True: acknowledged identity stays cleared across restart
+PASS AQ: schema1-legacy-True: exact old incorrect scope body retained in append-only audit
+PASS AQ: schema2-legacy-False: actual main remains blocked until explicit conflict acknowledgement
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: schema2-legacy-False: authorized original conflict acknowledgement commits
+PASS AQ: schema2-legacy-False: inspected main can resume
+PASS AQ: schema2-legacy-False: acknowledged identity stays cleared across restart
+PASS AQ: schema2-legacy-True: actual main remains blocked until explicit conflict acknowledgement
+PASS AQ: scope repair preserves original responsibility identity
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: schema2-legacy-True: authorized original conflict acknowledgement commits
+PASS AQ: schema2-legacy-True: inspected main can resume
+PASS AQ: schema2-legacy-True: acknowledged identity stays cleared across restart
+PASS AQ: schema2-legacy-True: exact old incorrect scope body retained in append-only audit
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: schema2 to schema3 candidate saved before legacy conflict appears
+PASS AQ: unacknowledged legacy conflict blocks Pending topology activation and retains actual main
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: topology transition requires explicit restage after acknowledgement
+PASS AQ: acknowledged conflict permits controlled schema3 activation on later startup
+PASS UPGRADE CONFLICT CLOSURE COMPLETE

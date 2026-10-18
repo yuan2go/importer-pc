@@ -1,0 +1,84 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-4fe31453af354b08962938b0197710d3
+Pause={
+  "Status": "Persisted",
+  "Reason": "Application command committed",
+  "Revision": 12
+}
+Authorize={
+  "Status": "Authorized",
+  "Reason": "SIMULATION maintenance grant; pause alone provides no authorization",
+  "Revision": 13
+}
+DuringHeldHealth={
+  "Snapshot": {
+    "Admit": false,
+    "Resume": true,
+    "Configure": false,
+    "ContinuePrepared": [],
+    "ContinueUpload": [],
+    "AbandonUnsubmitted": []
+  },
+  "ExternalWaits": 1
+}
+HeldHealthReceipt={
+  "Status": "Rejected",
+  "Reason": "Pause, authenticate maintenance, select the original receipt occurrence and provide an inspection reason",
+  "Revision": 13
+}
+HeldHealthQueryCalls=0
+DrainedReceipt={
+  "Status": "Unresolved",
+  "Reason": "Original occurrence retained; inspect ReceiptResponsibilities and ReceiptOutcomeKnown audit. A query never supplies the old raw.",
+  "Revision": 14
+}
+DrainedFacts={
+  "QueryCalls": 1,
+  "ImageReleased": false,
+  "Receipts": [
+    {
+      "Id": "177497d950534bfaac690c7aec4f252a",
+      "Operation": "843389cc2d6845ba904af7767b2b3732",
+      "Stage": "image-upload",
+      "Request": "e8fc5e965a7d4fe588c0cee5b7fcf724",
+      "Source": "Query",
+      "State": "NoReply",
+      "RawHash": null,
+      "QueryOccurrence": null,
+      "Custody": null
+    },
+    {
+      "Id": "6f3558b1d3084805a7699945d1aeb804",
+      "Operation": "843389cc2d6845ba904af7767b2b3732",
+      "Stage": "image-upload",
+      "Request": "e8fc5e965a7d4fe588c0cee5b7fcf724",
+      "Source": "Submit",
+      "State": "Awaiting",
+      "RawHash": null,
+      "QueryOccurrence": null,
+      "Custody": "OriginalRawMissing"
+    },
+    {
+      "Id": "06d3192047ba4aef83a013fb46ddb7f9",
+      "Operation": "843389cc2d6845ba904af7767b2b3732",
+      "Stage": "wcs-slot",
+      "Request": "52b644be54e74d8695db3000557afd7c",
+      "Source": "Submit",
+      "State": "Committed",
+      "RawHash": "2F6050A762E38A4792039EA969478B0B273C103025AAC8840C44D88EA432D262",
+      "QueryOccurrence": null,
+      "Custody": null
+    },
+    {
+      "Id": "a74339d770ea4c5fbb39a0a16abcd62e",
+      "Operation": "843389cc2d6845ba904af7767b2b3732",
+      "Stage": "image-capture",
+      "Request": "77875b6db4ea4a01b899397dd551814a",
+      "Source": "Submit",
+      "State": "Committed",
+      "RawHash": "391F9F4585D235C63B722292E188F82B1B367F3B8628AA907ECC586836B5B624",
+      "QueryOccurrence": null,
+      "Custody": null
+    }
+  ]
+}
+PASS AQ DIAGNOSIS: health in-flight rejects without query; explicit post-drain query is Unresolved with original raw/image retained

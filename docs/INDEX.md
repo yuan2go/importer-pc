@@ -1,12 +1,14 @@
 > Sportmaster第二套UI：[PR27独立审查与P2修复](reviews/pr27-ui-independent-review.md)。实施入口：[已批准设计](superpowers/specs/2026-10-18-sportmaster-alternate-ui-design.md)、[运行/参数](runtime/sportmaster-alternate-ui.md)、[结果](runtime/sportmaster-alternate-ui-results.md)及[工作包与计划](work-packages/WP-IPC-SPORTMASTER-ALTERNATE-UI.md)。仅扩展桌面展示与启动参数，架构22业务规则继续有效；原HTML不上传，Windows/真实接口分项验收。
 
+> [PR31独立复审归档与授权合并](reviews/pr31-independent-rereview-f068156/README.md)：原审head `f068156ed9d4a0ffe4feee94b5c11e966aaa366b`、原基线main `baac260214f910dca9ae4628ba6449b25188e2ac`。本次仅归档/合并，不重跑验证；原结论和所有未验证边界保持。
+
 > [2026-10-19不测试发布与合并回执](runtime/publication-20261019.md)：PR26已合并，8个既有参考产物已上传；Windows/真实集成边界不变。
 
 # 统一资料与实施入口
 
 ## 当前工程入口
 
-[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。本次N01–N07开工main基线b2dc55b，最新同步main为4afe2af；PR24已由独立授权合并，本任务不代合并其他PR。继承PR23/24及后续有效修复的准确提交见本次结果；新结果不冒充main能力或历史PASS。新Application使用schema3/Parcel DB5，DB3/4为历史发布；Supply的Storage5和Product命令单独适用。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。本轮以PR26合并后的main baac260复核；PR24/26的历史源码、候选及PASS保留其原范围。Parcel DB5、旧schema1/2单main和schema3独立位共同支持；DB2/3/4升级前责任判定与资料专用迁移见维护指南。Supply Storage5保持单独契约。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
 [N01–N07交付、PR26复核修复及验证边界](runtime/architecture-quality-audit-02-results.md)。缺raw资料责任、旧发布Query到DB5、旧配置账确认和维护围栏的实际步骤见维护指南；[复核前原字节](archive/pre-pr26-rereview/README.md)保留前次结论，前次PASS不作为全闭环证据。
 

@@ -1,0 +1,197 @@
+{
+  "archived_at_utc": "2026-10-18T17:00:42.619856+00:00",
+  "reviewed_head": "f068156ed9d4a0ffe4feee94b5c11e966aaa366b",
+  "main_before_archive": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "pr": 31,
+  "head_unchanged_before_archive": true,
+  "original_artifact": "ipc-pr31-independent-review-f068156-20261019",
+  "files": [
+    {
+      "original": "REPORT.md",
+      "source_sha256": "911d83e4c4e2ce7cc571f87f3010d4e243b0138ccc5797e583bcb25d2e20da8e",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/REPORT.md",
+      "archived_sha256": "911d83e4c4e2ce7cc571f87f3010d4e243b0138ccc5797e583bcb25d2e20da8e",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "architecture-quality.exit.json",
+      "source_sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/architecture-quality.exit.json",
+      "archived_sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "architecture-quality.log",
+      "source_sha256": "0f0635fb3a379912b2783cf7738f39f6007eef5f98fd9b64bbcb140d9f366d5c",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/architecture-quality.log",
+      "archived_sha256": "0f0635fb3a379912b2783cf7738f39f6007eef5f98fd9b64bbcb140d9f366d5c",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "build.log",
+      "source_sha256": "eed4701b2e7b31d72ad4e4e36cce22902a21321509412911226a2fa2719d2a58",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/build.log",
+      "archived_sha256": "eed4701b2e7b31d72ad4e4e36cce22902a21321509412911226a2fa2719d2a58",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "configuration-confirmation.exit.json",
+      "source_sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/configuration-confirmation.exit.json",
+      "archived_sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "configuration-confirmation.log",
+      "source_sha256": "576f099a4c304c2273c3f76268379c232713a376088213ec02769692c684eb1f",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/configuration-confirmation.log",
+      "archived_sha256": "576f099a4c304c2273c3f76268379c232713a376088213ec02769692c684eb1f",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "historical-db4-upgrade.exit.json",
+      "source_sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/historical-db4-upgrade.exit.json",
+      "archived_sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "historical-db4-upgrade.log",
+      "source_sha256": "bebea2eaf283babc7aebb98bd074f26ca83827d367046ea10ad4d65d303ddc80",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/historical-db4-upgrade.log",
+      "archived_sha256": "bebea2eaf283babc7aebb98bd074f26ca83827d367046ea10ad4d65d303ddc80",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "identity.json",
+      "source_sha256": "10a525cddba0a1fec09b7cb4740ac095b34e44ad053bfcfb2bc422ada5dc1ef2",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/public/identity.public.json",
+      "archived_sha256": "47e9b0a068f911e0f46bd4bd2637fedec48f0d72f38f91d4c2b061b03d9213f1",
+      "mode": "PUBLIC_PATH_MAPPING_ORIGINAL_RETAINED_LOCALLY"
+    },
+    {
+      "original": "legacy-custody-upgrade.exit.json",
+      "source_sha256": "7f2ebb711799c8ce075069cd6b2c7fc84d6d7fb9a9cbb119be2d1c590d96ebee",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/legacy-custody-upgrade.exit.json",
+      "archived_sha256": "7f2ebb711799c8ce075069cd6b2c7fc84d6d7fb9a9cbb119be2d1c590d96ebee",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "legacy-custody-upgrade.log",
+      "source_sha256": "c36375e9aef3f3ed4f63c6db91f943fb5e02b503516c45ecf8dc6e3e6ee868bf",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/legacy-custody-upgrade.log",
+      "archived_sha256": "c36375e9aef3f3ed4f63c6db91f943fb5e02b503516c45ecf8dc6e3e6ee868bf",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "negative-probe/Probe.csproj",
+      "source_sha256": "b07e1ad504e35a28c867372f7e7f895d8b673f6b73101e15823352c1651f69e1",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/negative-probe/Probe.csproj",
+      "archived_sha256": "b07e1ad504e35a28c867372f7e7f895d8b673f6b73101e15823352c1651f69e1",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "negative-probe/Program.cs",
+      "source_sha256": "25ba7e3524e54e95e9340905e1afa46171ccb3acd04d0abf7416d167891d55cf",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/negative-probe/Program.cs",
+      "archived_sha256": "25ba7e3524e54e95e9340905e1afa46171ccb3acd04d0abf7416d167891d55cf",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "negative-probe/build.log",
+      "source_sha256": "b956ac950da9399063c588689f6c216b4e328938b21fbb410a0c74939092d35e",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/negative-probe/build.log",
+      "archived_sha256": "b956ac950da9399063c588689f6c216b4e328938b21fbb410a0c74939092d35e",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "negative-probe/results.json",
+      "source_sha256": "ffa7edc1ead47542ad4632ad3e393c9f38886fc2cea2e4b2b07f6f78c1cabc41",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/negative-probe/results.json",
+      "archived_sha256": "ffa7edc1ead47542ad4632ad3e393c9f38886fc2cea2e4b2b07f6f78c1cabc41",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "prior-custody-migration.exit.json",
+      "source_sha256": "7f2ebb711799c8ce075069cd6b2c7fc84d6d7fb9a9cbb119be2d1c590d96ebee",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/prior-custody-migration.exit.json",
+      "archived_sha256": "7f2ebb711799c8ce075069cd6b2c7fc84d6d7fb9a9cbb119be2d1c590d96ebee",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "prior-custody-migration.log",
+      "source_sha256": "87d88782461003ec08f5653c8d5196feeb8e760aceb2d18f8aaf96190b842f61",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/prior-custody-migration.log",
+      "archived_sha256": "87d88782461003ec08f5653c8d5196feeb8e760aceb2d18f8aaf96190b842f61",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "receipt-custody.exit.json",
+      "source_sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/receipt-custody.exit.json",
+      "archived_sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "receipt-custody.log",
+      "source_sha256": "6741ea4ce86005ab71bbec7b6a3b00882d798b86ca6e8a273902f959a3e77d48",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/receipt-custody.log",
+      "archived_sha256": "6741ea4ce86005ab71bbec7b6a3b00882d798b86ca6e8a273902f959a3e77d48",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "review-result.json",
+      "source_sha256": "50dda23775a18ccd9eb3839e50db0fb2b7ba928073e22caa5fb46b613aaf0159",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/review-result.json",
+      "archived_sha256": "50dda23775a18ccd9eb3839e50db0fb2b7ba928073e22caa5fb46b613aaf0159",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "runtime-custody.json",
+      "source_sha256": "e0c62dbe229030f6da66608c1d8dcf8f694224f5a65e501532cc0a763af638a6",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/public/runtime-custody.public.json",
+      "archived_sha256": "67d6119c989f3b65492b9e6d1db06257a6116ff9b062d03a68f6e28f6e4b2fee",
+      "mode": "PUBLIC_PATH_MAPPING_ORIGINAL_RETAINED_LOCALLY"
+    },
+    {
+      "original": "source-custody.json",
+      "source_sha256": "dd395c44777a75236fc46438da0b4f6d80f2f11013755922f9f78467b1c6d5a5",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/source-custody.json",
+      "archived_sha256": "dd395c44777a75236fc46438da0b4f6d80f2f11013755922f9f78467b1c6d5a5",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "upgrade-conflict-closure.exit.json",
+      "source_sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/upgrade-conflict-closure.exit.json",
+      "archived_sha256": "e9f325a2e0f043b92b926c69aa306b6ed000222b841b2717587d919254d18baa",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "upgrade-conflict-closure.log",
+      "source_sha256": "19d7929c8c0a7c3f0ab1772c5bd2424cba63ecfe24c04e68a871967f5738e1d9",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/upgrade-conflict-closure.log",
+      "archived_sha256": "19d7929c8c0a7c3f0ab1772c5bd2424cba63ecfe24c04e68a871967f5738e1d9",
+      "mode": "BYTE_IDENTICAL"
+    },
+    {
+      "original": "SHA256SUMS",
+      "source_sha256": "2ddc88afe0bc63ea01efcf5dca8bcd914869a3986d6091e844066cc7468e8a44",
+      "archived_path": "docs/reviews/pr31-independent-rereview-f068156/original/SHA256SUMS",
+      "mode": "BYTE_IDENTICAL"
+    }
+  ],
+  "publication_subset": "Reports, logs, exact probe source and checksums; runtime/binary originals remain local with custody index",
+  "current_turn": {
+    "tests": "NOT_RUN_BY_USER_REQUEST",
+    "build": "NOT_RUN_BY_USER_REQUEST",
+    "package": "NOT_RUN_BY_USER_REQUEST",
+    "business_test_config_changes": false
+  },
+  "boundaries": {
+    "windows": "NOT_RUN",
+    "real_sdk_protocol_field": "BLOCKED",
+    "original_pdf01": "BLOCKED_NOT_OBTAINED",
+    "historical_failures": "RETAINED"
+  }
+}

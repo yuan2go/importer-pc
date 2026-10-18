@@ -17,7 +17,26 @@ public sealed partial class ParcelRepository
             var legacyId = Wire.Hash("legacy-identity-conflict:" + row.Seq + ":" + row.At + ":" + row.Detail)[..32].ToLowerInvariant();
             using var exists = db.CreateCommand(); exists.CommandText = "SELECT count(*) FROM parcel_identity_conflicts WHERE id=$id OR id=$legacy";
             exists.Parameters.AddWithValue("$id", recordedId ?? ""); exists.Parameters.AddWithValue("$legacy", legacyId);
-            if ((long)exists.ExecuteScalar()! != 0) continue; // Acknowledged rows still retain their original identity.
+            if ((long)exists.ExecuteScalar()! != 0)
+            {
+                // Earlier readers used declaration roles (left/right) even when the
+                // persisted legacy configuration actually runs main. Preserve the ID
+                // and old body in the same transaction that expands its protection.
+                using var read = db.CreateCommand(); read.CommandText = "SELECT body FROM parcel_identity_conflicts WHERE id=$id AND acknowledged=0";
+                read.Parameters.AddWithValue("$id",legacyId);
+                if (read.ExecuteScalar() is string body)
+                {
+                    var prior = Wire.Decode<IdentityConflict>(body);
+                    var scope = prior.Positions.Concat(positions).Distinct(StringComparer.Ordinal).ToArray();
+                    if (!scope.SequenceEqual(prior.Positions))
+                    {
+                        var expanded = prior with { Positions = scope };
+                        Commit(null,"LegacyIdentityConflictScopeExpanded",Wire.Encode(new { OriginalBody = body, Original = prior, Responsibility = expanded }),
+                            paused:true,identityConflict:expanded,priorConflictBody:body);
+                    }
+                }
+                continue; // Acknowledged rows retain identity and never re-arm.
+            }
             var fact = new IdentityConflict(legacyId, "legacy-audit:" + row.Seq, positions,
                 "Legacy conflict scope/entity was not recorded; inspect all possible positions. Original=" + row.Detail, DateTimeOffset.Parse(row.At, System.Globalization.CultureInfo.InvariantCulture));
             Commit(null, "LegacyIdentityConflictRecovered", Wire.Encode(new { OriginalSequence = row.Seq, row.At, row.Detail, Responsibility = fact }), paused: true, identityConflict: fact);

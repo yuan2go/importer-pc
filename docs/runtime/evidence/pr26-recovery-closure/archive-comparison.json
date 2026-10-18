@@ -1,0 +1,12 @@
+{
+  "baseline_errors": 268,
+  "current_errors": 267,
+  "new_errors": [],
+  "removed_errors": [
+    {
+      "code": "manifest_checksum",
+      "path": "docs/manifest.sha256"
+    }
+  ],
+  "state": "PASS_NO_NEW_ERRORS"
+}

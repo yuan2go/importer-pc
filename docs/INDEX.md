@@ -2,7 +2,7 @@
 
 ## 当前工程入口
 
-最新核验main **12a40b308e13744eb4be959dff4a62dca473b5d9**，PR15已合并，开工查无开放PR。当前任务为[UI-MAINTAINABILITY-16](work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，[有效基线/计划](runtime/ui-maintainability-16-baseline.md)。15源码/证据/候选保持历史身份；本包结果见[16逐项报告](runtime/ui-maintainability-16.md)、[checks](runtime/ui-maintainability-16-checks.json)及[候选](https://github.com/yuan2go/importer-pc/releases/tag/ui16-reference-089fd98)。Windows客户端实际验收仍NOT_RUN，真实能力按D/B项BLOCKED。
+最新核验main **6e9c890a7483c3006b3448c203570ef2ca19ed25**，PR16已合并，开工查无开放PR。当前工作包为[APPLICATION-CONVERGENCE-17](work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)：有效设计、兼容映射和17-01～08验收在此集中定义；16及更早报告保持原形成时结论。[前置原字节及替代关系](archive/pre-application-convergence-17/README.md)。Windows实际客户端NOT_RUN，真实SDK/PLC/WCS合同及现场BLOCKED。
 
 |入口|阅读目的|
 |---|---|
@@ -18,7 +18,7 @@ Windows实际WPF、DPI、HID、声音和部署沿13批准后验，保持NOT_RUN�
 
 ## 代码前必读
 
-1. [AGENTS](../AGENTS.md)、16工作包、15工作包、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
+1. [AGENTS](../AGENTS.md)、17工作包、16工作包、15工作包、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
 2. [框架架构](design/framework.md)、[决策记录](design/framework-decisions.md)、[受控装配与扩展](design/controlled-extensions.md)。职责/事务/身份/生命周期要求继续有效，不能改弱目标消除缺陷。
 3. [14任务](work-packages/WP-IPC-CONFORMANCE-FIX-14.md)、[实施](runtime/conformance-fix-14.md)/证据，以及[13任务](work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)/[复核](runtime/arch-extension-closure-13-recheck.md)、按影响再读[12任务](work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)/[交付](runtime/extension-windows-delivery-12.md)。保留后续批准的后装与Windows后验，勿重复实施已闭子项。
 4. [运行/发布/维护](runtime/operations.md)、[扩展开发安装恢复](extensions/developer-guide.md)，核实际入口、配置、依赖和源码。

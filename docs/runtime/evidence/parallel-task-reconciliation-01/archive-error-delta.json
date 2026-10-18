@@ -1,0 +1,15 @@
+{
+  "StartMain": "713f23d7c39743762adb884fdffa18745cad08f8",
+  "CodeSource": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+  "StartErrorCount": 267,
+  "CurrentErrorCount": 268,
+  "Added": [
+    {
+      "code": "private_metadata_marker",
+      "path": "docs/runtime/evidence/parallel-task-reconciliation-01/qualified-wpf-builds.json"
+    }
+  ],
+  "Removed": [],
+  "ArchiveStatus": "FAIL",
+  "Scope": "public; original assets unchanged"
+}

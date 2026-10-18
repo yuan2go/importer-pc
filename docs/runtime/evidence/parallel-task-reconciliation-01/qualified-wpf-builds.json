@@ -1,0 +1,38 @@
+[
+  {
+    "Application": "direct-plc",
+    "Command": [
+      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "build",
+      "src/Ipc.Desktop/Ipc.Desktop.csproj",
+      "-m:1",
+      "-nr:false",
+      "-p:EnableWindowsTargeting=true",
+      "-p:RestoreLockedMode=true",
+      "-p:Application=DirectPlc",
+      "-p:NuGetLockFilePath=packages.direct-plc.lock.json",
+      "--artifacts-path",
+      "/Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/parallel-reconciliation-01/21e6cae/wpf-direct-plc"
+    ],
+    "ExitCode": 0,
+    "Windows": "NOT_RUN"
+  },
+  {
+    "Application": "wcs-to-plc",
+    "Command": [
+      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "build",
+      "src/Ipc.Desktop/Ipc.Desktop.csproj",
+      "-m:1",
+      "-nr:false",
+      "-p:EnableWindowsTargeting=true",
+      "-p:RestoreLockedMode=true",
+      "-p:Application=WcsToPlc",
+      "-p:NuGetLockFilePath=packages.wcs-to-plc.lock.json",
+      "--artifacts-path",
+      "/Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/parallel-reconciliation-01/21e6cae/wpf-wcs-to-plc"
+    ],
+    "ExitCode": 0,
+    "Windows": "NOT_RUN"
+  }
+]

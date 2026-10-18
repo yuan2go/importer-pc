@@ -16,7 +16,7 @@
 |审查02 N01–N07实施：配置断进程、旧Attached/缺raw、容量、CAS、选装与维护；后续两P2恢复及custody竞态|PR26已合并；新PR32 codex/parcel-recovery-p2，HEAD0aac919，4笔起始main外提交，共同基线baac260。永久ID核验、持久Query依据与确定性夹具|[PR32原审](../reviews/parallel-task-reconciliation-01/pr32-original-review.md)、[结果](parcel-recovery-p2.md)，原FAIL及发布身份保留；参考范围无已确认残余缺陷|与PR31修改相邻恢复文件；合并两者语义，不按ours/theirs整文件覆盖|
 |Sportmaster第二套UI：按提供HTML转换WPF，客户端参数可选；公开衍生代码，原HTML不传；后续6项P2修复|PR27 codex/sportmaster-alternate-ui，初始e86d664，盘点末a4ecfd1；共同基线713f23d，17笔。classic/supply-station、多窗共享实例、读取失效/顺序、小客户区暂停、关闭排空|[原审](https://github.com/yuan2go/importer-pc/blob/a4ecfd1c2a687caca9d52f2cfc08ee4fce9ff91e/docs/reviews/pr27-ui-independent-review.md)、[结果](https://github.com/yuan2go/importer-pc/blob/a4ecfd1c2a687caca9d52f2cfc08ee4fce9ff91e/docs/runtime/sportmaster-alternate-ui-results.md)、固定候选与原失败。Windows原生交互未验|与PR30共享VM、PR29共享打包/指南。保留RCS类型化结果和新版UI，UI不拥有业务流程|
 |业务版本贯通发行物、业务/组件/驱动兼容声明与真实组合证据；后续修复P1/P2并复审|PR29 codex/version-compatibility，HEADe0f5303，共同基线baac260，11笔。业务1.2.1、release schema2、内嵌ProviderSets、快照事件/实际DLL校验、维护共用入口|[最新原审](../reviews/parallel-task-reconciliation-01/pr29-original-review.md)：仍有执行方式/验证资格改标P2；原P1配置和维护P2已修|修复剩余P2；与RCS契约1.7和新组件版本声明联动；不删兼容守卫换通过|
-|按实际给定sorter.task.dest_request及三类响应实现首个Sportmaster RCS组件，明确命名|PR30 codex/sportmaster-rcs-task，HEAD822ce92，共同基线baac260，6笔。纯准备T1、HTTP原件T3、正常/NEED_UNPACK/拒绝、Unknown禁重发、签名扩展、SQL6/Contracts1.7|实际读原提示词和独立协议探针；[设计](https://github.com/yuan2go/importer-pc/blob/822ce92f01e01487fdf037eca9219a601250d458/docs/design/sportmaster-rcs-task.md)、[结果](https://github.com/yuan2go/importer-pc/blob/822ce92f01e01487fdf037eca9219a601250d458/docs/runtime/sportmaster-rcs-task.md)。原审无已确认阻断；真实RCS未联调|与PR31迁移守卫、PR32持久Query依据相交；与PR29内嵌版本声明冲突，需新精确包|
+|按实际给定sorter.task.dest_request及三类响应实现首个Sportmaster RCS组件，明确命名|PR30 codex/sportmaster-rcs-task，HEAD822ce92，共同基线baac260，6笔。纯准备T1、HTTP原件T3、正常/NEED_UNPACK/拒绝、Unknown禁重发、签名扩展、SQL6/Contracts1.7|实际读原提示词和独立协议探针；[设计](https://github.com/yuan2go/importer-pc/blob/822ce92f01e01487fdf037eca9219a601250d458/docs/design/sportmaster-rcs-task.md)、[结果](https://github.com/yuan2go/importer-pc/blob/822ce92f01e01487fdf037eca9219a601250d458/docs/runtime/sportmaster-rcs-task.md)。初期报告无阻断，收尾实际行内P1另见C08；真实RCS未联调|与PR31迁移守卫、PR32持久Query依据相交；与PR29内嵌版本声明冲突，需新精确包|
 |不测试发布任务：提交现有成果、输出数量并合并当时PR|PR28 e43940e已合并，原main baac260；发布8份既有产物及回执|[原回执](publication-20261019.md)保留NOT_RUN；无未提交新增源码|本次显式要求组合必要验证，旧不测试仅属原任务，不扩展为永久限制|
 
 ## 文档权威与裁决
@@ -36,9 +36,9 @@
 
 保留所有4个PR代码、配置、脚本、工作包、设计、验证记录和历史快照；PR29/32此前仅在Git外的独立报告在本次原字节归档。源候选/签名包/数据库保持原位和指纹，当前公开源代码与合成证据不夹带私钥、SDK、客户原稿或机器配置。02 PDF SHA256 dce6b0e235c44e414cc14a976dbd3cea0d24f634aab1276be894b6b69b62283d，另两份已公开PDF及同源UI资产继续原字节。陈旧远端docs/ui-assets和docs/final-ui-assets分支作为历史候选保留：非Open PR，不为祖先关系盲合旧入口。
 
-## 最终验证与交付
+## 验收口径
 
-待组合实现和验证后，在此登记固定源码、要求—位置—来源—结果、每PR实际合并身份及统计截止点。源码核实、自动化、参考进程、Windows实机和真实设备现场分别列明；本次调查不是现场PASS。
+最终固定代码、需求覆盖与完整交付状态见文末。源码核实、自动化、参考进程、Windows实机和真实设备现场分别列明；本次参考验证不授予现场PASS。
 
 ## PR32组合验证
 
@@ -75,3 +75,37 @@ PR30评论来自c168a30，已确认修改base可令base+全局序号重复。采
 CLI夹具原两个失败为合成HTTP对端误读请求字段barcode（实际请求是loadCode），不是组件请求不符；第三次参考包卸载在CanConfigure快照与命令之间被Monitor守卫拒绝，原审计证明前一个包已退休且本次没有进入维护动作。夹具仅对明确的“active calls drain”前置拒绝等待后再试，不重试未知外呼；原FAIL及原库保留。
 
 最终新冻结候选使用业务1.2.4/能力2.1.2/reader1.2.2/RCS1.0.4，不覆盖ed514f6或更早媒介。ed514f6实际ZIP/六组合/维护验证仍保留其适用版本，但最终验收必须重跑新组合。
+
+## 最终候选、需求覆盖与验证
+
+固定运行源码 **21e6cae3c9e20f34fc9429812e48e7f95e455fb9**；业务1.2.4、Contracts1.7.0、Parcel DB6、能力包2.1.2、reader1.2.2、RCS1.0.4。后续整合证据/统计提交不改变SOURCE_PATHS运行与随包指南闭包。所有结果对应该固定候选，当前main须逐文件核对闭包一致，不能把旧候选PASS挪用。
+
+|已确认要求|最终实现位置|来源|最终结果|
+|---|---|---|---|
+|四类职责与独立主流程；同实例多页面；可选能力不复制流程|src/Ipc.Application.{Sportmaster,DirectPlc,WcsToPlc}、ParcelFlow、Assembly/ParcelCapabilityFactory、Desktop|19/20/22、PR27/29/30|源码核对；实际Release DLL的application-architecture/architecture-quality/review-closure PASS|
+|Sportmaster双reader/左右位隔离、只请求格口、不PLC/不展图|SportmasterFlow、ParcelAcquisition/Runtime、SupplyStationViewModel|22/27/30|采集生命周期/UI/RCS回归和解压CLI双位PASS；同码/原报文与各自结果隔离|
+|DirectPlc/WcsToPlc单相机顺序处理、DirectPlc完整UI延期|各Flow、Topology/Assembly；既有维护外壳|22/29|三core实际启动、主链和重启PASS；两个WPF跨构建PASS不等于完整UI验收|
+|纯准备T1、HTTP原件T3、超时/拒绝/未知不重发、拆包零值/未知区分|SportmasterRcsTaskService、ParcelRuntime/Repository、DestinationSummary|PR30/27、C08|RCS及精确签名RCS组PASS；实际selected CLI原请求/原HTTP字节、重启/Query/重连不POST PASS|
+|数字ID不因低基值、归档、恢复而复用|ParcelHistory.InitializeIntegrationRequestHistory/RequireNewIntegrationRequestId、Repository.Commit、Runtime.PrepareWcs|PR30行内P1、本轮C08|原RED复现；当前低区间发送前Block、旧意图不改、归档与备份恢复重建上界PASS；不承诺跨站ID治理|
+|原件/永久ID/持久Query、旧库迁移与配置确认守卫|ParcelLegacyReceiptRecovery、ParcelCustodyMigration、ParcelUpgradeGuard、ConfigurationActivation|PR31/32/30|recovery-p2、upgrade-conflict-closure、receipt-custody、configuration-confirmation PASS；SQL1–5原校验和保持、6只追加|
+|版本贯通、实际业务程序集维护校验、组合资格不能改标|BusinessCompatibility/ReadPublishedRelease、compatibility JSON、application_compatibility.py|PR29、C02/03|三业务actual metadata/维护门禁PASS；5份实际app/desktop工厂IL门禁PASS；schema3六记录重验PASS；旧反例拒绝保持|
+|配置CAS/启动成功确认、扩展安装恢复/租约/退休、选装部署|原ConfigurationStore、ExtensionStore、原发布入口|PR24/26/27/29/30|精确Release quality-extensions/signed-business-compatibility PASS；实际CLI双reader+WCS配置/激活、显式启动失败保旧Effective及安全退休PASS|
+|读取失效/乱序/恢复横幅、小视口暂停、多窗关闭排空|ParcelViewModel、SupplyStationViewModel、SportmasterWindowLifetime|PR27、C05/08|UI/窗口两组PASS；读错横幅原RED、恢复后仅清理自有横幅PASS；Windows原生后验另列|
+|完整媒介与指南、原产物/历史证据保存|package-application.py、release_documents.py、manifest、归档/证据索引|PR27/29/30、本轮C04/06/07|5份ZIP实际逐文件/SHA及精确Binaries PASS；核心不夹带选装包；selected各含3精确包；全部233待保护原文件未改|
+
+[固定证据索引](evidence/parallel-task-reconciliation-01/qualified-evidence-index.json)列明原始日志SHA、精确包来源/宿主指纹和验证DLL；[构建](evidence/parallel-task-reconciliation-01/qualified-build-summary.json)、[全部组合验证](evidence/parallel-task-reconciliation-01/qualified-verification-summary.json)、[六运行记录索引](evidence/parallel-task-reconciliation-01/qualified-journeys-index.json)、[实际CLI摘要](evidence/parallel-task-reconciliation-01/qualified-selected-cli.json)、[媒介核验](evidence/parallel-task-reconciliation-01/qualified-media-verification.json)、[实际版本/维护](evidence/parallel-task-reconciliation-01/qualified-actual-metadata-maintenance.json)均可追溯。12组实际Release DLL回归、3组精确签名扩展、6条core运行路径及独立selected CLI全部exit0；41项脚本与含Pillow环境的10项archive工具自测PASS。未受影响旧Supply沿用ed514f6锁定构建证据，不重复扩大为现场资格。
+
+复现：使用固定SHA的新隔离checkout；以.NET10.0.402运行package-application.py分别生成3个portable core；使用build-extension.py针对实际core的Platform/Contracts和Assembly构建3个新精确包（RSA至少3072、自有获授权publisher/trust）；同一package入口传3个--extension-package生成Sportmaster selected portable/win-x64。执行本目录verify-media.py；selected-release-journey.py <新候选目录> <dotnet> <独立trust> <源码目录>运行合成HTTP对端与实际CLI。smoke-application.py的default、--optional-features、独立--peer-fixture及--attached-upload后用application_compatibility.py --record/--package重验。定向C#旗标与准确日志见summary，测试签名私钥及本机trust不发布。
+
+## 失败、保留物与验收上限
+
+- d4d448a候选媒介Binaries含不存在路径：**FAIL，已修复**；ed514f6媒介完整性及当时组合PASS，但后来补查的数字ID P1尚缺，因此其资格仍仅限原执行范围。两轮候选/包/原数据库不覆盖，当前21e6cae重新构建验证。
+- C08两项回归在旧组合真实RED，当前PASS；SQL6原旧测试越过PR31守卫及DB4夹具残留SQL6的FAIL、PR29旧改标反例原PASS保留。没有删责任断言或吞异常换PASS。
+- selected CLI前两次合成对端误取barcode字段、第三次前置active-call守卫拒绝，均保留原日志/库。夹具纠正字段与明确前置拒绝等待；未知动作不自动重试。最终真实CLI PASS。旧Windows IL探针误选窗口程序集Ipc.Desktop.dll的FAIL保留，正确工厂在Ipc.Assembly.dll，5份实际工厂均PASS。
+- 系统Python缺Pillow曾使工具测试1项FAIL及archive图像诊断不同；换到具Pillow的现有运行环境10项PASS。全量public archive仍有起始main同样的**267项历史资产问题（265 PPTX media类型不匹配、2旧私密元数据标记）**，不改历史资产/不加例外。必须核对最后差集为零；这不是全仓archive PASS。
+- Windows实际客户端、Dispatcher/HWND、DPI/触控、UAC/ACL、维护安装恢复、原生关闭竞争：**NOT_RUN**；macOS arm64跨构建/事件替身不代替这些验收。真实SDK、客户RCS/WCS/PLC、设备/实体、权限及现场：**BLOCKED**。按既有Windows后验清单，在Windows x64对同一ZIP/精确包运行并保存截图/回执，随后按客户合同治理编码/单位/认证/握手与跨站ID区间，联调超时/重复响应/实体处置；Production缺能力继续拒绝。
+- 原审查01 PDF缺失，不能取得的外部会话/已删产物不能宣称取回；02原PDF及另两份公开PDF、原UI HTML/CSS/JS/PPTX/34PNG保持原字节和形成时边界。原始客户HTML/PRD、受限基线、两份旧delivery12本地副本、私钥/本机配置、缓存与测试库不上传；已授权通用实现、原公开报告和本轮合成证据有清晰索引。
+
+源码、配置、脚本和原报告均进入同一Git历史，不创建第二套框架/配置/扩展平台。原D/RV编号与批准状态不倒写。发布参考媒介不是Production交付批准。
+
+最终public archive差集：起始267、当前267、新增0/删除0；[差集回执](evidence/parallel-task-reconciliation-01/archive-error-delta.json)。历史FAIL保持，新增入口与清单没有新增错误。

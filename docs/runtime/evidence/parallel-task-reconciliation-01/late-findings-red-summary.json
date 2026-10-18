@@ -1,0 +1,22 @@
+[
+  {
+    "Command": [
+      "dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--sportmaster-ui"
+    ],
+    "ExitCode": -6,
+    "Log": "late-findings-red--sportmaster-ui.log"
+  },
+  {
+    "Command": [
+      "dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--sportmaster-rcs"
+    ],
+    "ExitCode": -6,
+    "Log": "late-findings-red--sportmaster-rcs.log"
+  }
+]

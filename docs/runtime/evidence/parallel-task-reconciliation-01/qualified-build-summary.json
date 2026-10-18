@@ -1,0 +1,42 @@
+[
+  {
+    "Step": "sportmaster-core",
+    "ExitCode": 0,
+    "Log": "qualified-sportmaster-core.log"
+  },
+  {
+    "Step": "direct-plc-core",
+    "ExitCode": 0,
+    "Log": "qualified-direct-plc-core.log"
+  },
+  {
+    "Step": "wcs-to-plc-core",
+    "ExitCode": 0,
+    "Log": "qualified-wcs-to-plc-core.log"
+  },
+  {
+    "Step": "extension-capabilities",
+    "ExitCode": 0,
+    "Log": "qualified-extension-capabilities.log"
+  },
+  {
+    "Step": "extension-barcode",
+    "ExitCode": 0,
+    "Log": "qualified-extension-barcode.log"
+  },
+  {
+    "Step": "extension-rcs",
+    "ExitCode": 0,
+    "Log": "qualified-extension-rcs.log"
+  },
+  {
+    "Step": "selected-portable",
+    "ExitCode": 0,
+    "Log": "qualified-selected-portable.log"
+  },
+  {
+    "Step": "selected-win-x64",
+    "ExitCode": 0,
+    "Log": "qualified-selected-win-x64.log"
+  }
+]

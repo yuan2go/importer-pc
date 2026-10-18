@@ -1,0 +1,157 @@
+[
+  {
+    "Step": "selected-cli",
+    "ExitCode": 0,
+    "Log": "qualified-selected-cli.log"
+  },
+  {
+    "Step": "fixture-build",
+    "ExitCode": 0,
+    "Log": "qualified-fixture-build.log"
+  },
+  {
+    "Step": "smoke-sportmaster-default",
+    "ExitCode": 0,
+    "Log": "qualified-smoke-sportmaster-default.log"
+  },
+  {
+    "Step": "reverify-sportmaster-default",
+    "ExitCode": 0,
+    "Log": "qualified-reverify-sportmaster-default.log"
+  },
+  {
+    "Step": "smoke-direct-plc-default",
+    "ExitCode": 0,
+    "Log": "qualified-smoke-direct-plc-default.log"
+  },
+  {
+    "Step": "reverify-direct-plc-default",
+    "ExitCode": 0,
+    "Log": "qualified-reverify-direct-plc-default.log"
+  },
+  {
+    "Step": "smoke-wcs-default",
+    "ExitCode": 0,
+    "Log": "qualified-smoke-wcs-default.log"
+  },
+  {
+    "Step": "reverify-wcs-default",
+    "ExitCode": 0,
+    "Log": "qualified-reverify-wcs-default.log"
+  },
+  {
+    "Step": "smoke-wcs-before-local",
+    "ExitCode": 0,
+    "Log": "qualified-smoke-wcs-before-local.log"
+  },
+  {
+    "Step": "reverify-wcs-before-local",
+    "ExitCode": 0,
+    "Log": "qualified-reverify-wcs-before-local.log"
+  },
+  {
+    "Step": "smoke-wcs-before-external",
+    "ExitCode": 0,
+    "Log": "qualified-smoke-wcs-before-external.log"
+  },
+  {
+    "Step": "reverify-wcs-before-external",
+    "ExitCode": 0,
+    "Log": "qualified-reverify-wcs-before-external.log"
+  },
+  {
+    "Step": "smoke-wcs-attached",
+    "ExitCode": 0,
+    "Log": "qualified-smoke-wcs-attached.log"
+  },
+  {
+    "Step": "reverify-wcs-attached",
+    "ExitCode": 0,
+    "Log": "qualified-reverify-wcs-attached.log"
+  },
+  {
+    "Step": "exact--quality-extensions",
+    "ExitCode": 0,
+    "Log": "qualified-exact--quality-extensions.log"
+  },
+  {
+    "Step": "exact--signed-business-compatibility",
+    "ExitCode": 0,
+    "Log": "qualified-exact--signed-business-compatibility.log"
+  },
+  {
+    "Step": "exact--sportmaster-rcs-signed",
+    "ExitCode": 0,
+    "Log": "qualified-exact--sportmaster-rcs-signed.log"
+  },
+  {
+    "Step": "frozen--application-architecture",
+    "ExitCode": 0,
+    "Log": "qualified-frozen--application-architecture.log"
+  },
+  {
+    "Step": "frozen--architecture-quality",
+    "ExitCode": 0,
+    "Log": "qualified-frozen--architecture-quality.log"
+  },
+  {
+    "Step": "frozen--review-closure",
+    "ExitCode": 0,
+    "Log": "qualified-frozen--review-closure.log"
+  },
+  {
+    "Step": "frozen--acquisition-lifecycle",
+    "ExitCode": 0,
+    "Log": "qualified-frozen--acquisition-lifecycle.log"
+  },
+  {
+    "Step": "frozen--parcel-recovery-p2",
+    "ExitCode": 0,
+    "Log": "qualified-frozen--parcel-recovery-p2.log"
+  },
+  {
+    "Step": "frozen--upgrade-conflict-closure",
+    "ExitCode": 0,
+    "Log": "qualified-frozen--upgrade-conflict-closure.log"
+  },
+  {
+    "Step": "frozen--receipt-custody",
+    "ExitCode": 0,
+    "Log": "qualified-frozen--receipt-custody.log"
+  },
+  {
+    "Step": "frozen--configuration-confirmation",
+    "ExitCode": 0,
+    "Log": "qualified-frozen--configuration-confirmation.log"
+  },
+  {
+    "Step": "frozen--version-compatibility",
+    "ExitCode": 0,
+    "Log": "qualified-frozen--version-compatibility.log"
+  },
+  {
+    "Step": "frozen--sportmaster-ui",
+    "ExitCode": 0,
+    "Log": "qualified-frozen--sportmaster-ui.log"
+  },
+  {
+    "Step": "frozen--sportmaster-window-lifecycle",
+    "ExitCode": 0,
+    "Log": "qualified-frozen--sportmaster-window-lifecycle.log"
+  },
+  {
+    "Step": "frozen--sportmaster-rcs",
+    "ExitCode": 0,
+    "Log": "qualified-frozen--sportmaster-rcs.log"
+  },
+  {
+    "Step": "maintenance-il-probe-build",
+    "ExitCode": 0,
+    "Log": "qualified-maintenance-il-probe-build.log"
+  },
+  {
+    "Step": "published-maintenance-probe-build",
+    "ExitCode": 0,
+    "Log": "qualified-published-maintenance-probe-build.log"
+  }
+]

@@ -1,0 +1,30 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-165bd66914a9443d92022d18329603f4
+PASS P2: accepted original survives 5000 rejected emissions; rejected records leave no owners
+PASS P2: idempotent ingress release cannot remove the operation owner
+PASS P2: reconnect and reused source event retain exact original epoch while new acquisition is distinct
+PASS P2: foreign device, admission and timestamp cannot substitute original acquisition
+PASS P2: released frame cannot be recaptured; durable original request remains queryable
+PASS P2: more than 4096 accepted in-flight acquisitions retain all owners
+PASS P2: earliest accepted original remains available after accepted flood
+PASS P2: all consumed observations are released without a count or time eviction policy
+PASS P2: callback exception is propagated and provisional owner is removed
+PASS P2: active capture pins original even after its last observation owner releases
+PASS P2: source disposal refuses to erase active original and permits cleanup retry
+PASS P2: failed asynchronous capture propagates error and releases only its completed pin
+PASS P2: slow left original accepted
+PASS P2: bounded left queue holds two original acquisitions while capture is in flight
+PASS P2: left queue overload explicitly rejects input
+PASS P2: concurrent rejected flood retains exactly accepted left acquisitions
+PASS P2: right accepts while left capture and queue are blocked
+PASS P2: right completes and releases independently of overloaded left
+PASS P2: left reconnect waits for in-flight capture while snapshots remain readable
+PASS P2: left reader reconnect completes only after the original capture releases its lifecycle
+PASS P2: left reconnect does not change right epoch
+PASS P2: slow capture resolves exact pre-reconnect acquisition once; blocked queued observations release
+PASS P2: durable main completion precedes release of the final operation acquisition
+PASS P2: lost capture reply preserves unknown acquisition ownership
+PASS P2: original query recovers capture without resend and terminal cleanup releases owner
+PASS P2: paused observation can enter queue for explicit business rejection
+PASS P2: business rejection releases ingress without inventing an operation
+PASS P2: fully drained disposal terminates process-local acquisition resources
+PASS P2: restart queries durable original capture with identical request and acquisition, without recreating frame or resending

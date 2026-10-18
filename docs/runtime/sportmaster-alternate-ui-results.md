@@ -1,3 +1,5 @@
+> 最新整合运行源码：`07e3d8c3a6cbdb2da44cb675ec7767e938393192`，继承main `4afe2afacde9e2acab7648fff3440fa3cc331b6e`；最终结果见下方“整合后验证”。此前记录保持原SHA。
+
 # Sportmaster 第二套 UI · 实施与验证结果
 
 2026-10-19；开工main `b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d`。用户确认本次衍生WPF代码可提交公开仓库，原HTML不上传。[运行指南](sportmaster-alternate-ui.md)与[Windows后验](validation/sportmaster-alternate-ui-windows.md)。
@@ -35,10 +37,30 @@
 
 ## 最新main整合
 
-收尾时发现main已更新到 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`（PR23及PR24）。以上911ed24候选和52/60/27项结果保持形成时身份；下一步将整合最新main并重验受影响契约/UI/实际候选，不把旧PASS套用到新源码。
+收尾时发现main已更新到 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`（PR23及PR24）。以上911ed24候选和52/60/27项结果保持形成时身份。已在开发分支正常整合最新main：保留两边文档入口、manifest历史与全部验证选择器；新UI适配分页历史与详情选择、原件检查说明、已展示CAS、容量/附加责任。相对4afe2af的业务Flow、ParcelRuntime、SQL、驱动/外部协议源码无差异，未以UI任务重写业务。
 
 全库资料校验与开工main b2dc55b对照：267个历史问题完全一致（265个PPTX媒体类型与2个元数据标记），本次新增0。未修改原资产或把全库FAIL记为PASS；详见[对照](evidence/sportmaster-alternate-ui/archive-comparison-b2dc55b.json)。
 
 ## 未执行与受阻
 
 Windows原生窗口/启动/焦点/DPI/触控/截图实际 NOT_RUN；已提供可执行烟测工程，不将交叉编译、BAML或HTML截图当作真机PASS。真实SDK、WCS/PLC、设备/实体及现场验收 BLOCKED。Production继续按原守卫NotReady，不改变D/RV、旧HTML或历史验收结论。PR按用户授权创建main目标，不合并。
+
+## 整合后验证
+
+固定运行源码07e3d8c（最终报告/manifest/PR回执仅文档）：
+
+- 最终UI定向66项PASS，使用 `--no-incremental` 强制编译并直接运行DLL，0警告0错误；新增真实双位重启、软件暂停/恢复、空检查说明拒绝、按本位原作业传递说明、历史选择一致、同件保留/换件清空检查草稿及并发修订返回Conflict。
+- 最新main架构22定向62项PASS；PR24质量复审回归32项PASS。没有拿旧60项结果冒充整合后结果。
+- DirectPlc/WcsToPlc WPF兼容编译各0警告0错误；Windows原生烟测工程跨编译，实际Windows执行仍NOT_RUN。
+- 补充的恢复测试初次因配置库存不完整及忽略重启默认暂停而失败；按当前main的真实配置/恢复流程修正测试夹具，保留[失败日志](evidence/sportmaster-alternate-ui/integrated-test-setup-failure.log)，没有放宽业务守卫。
+
+最终两类候选已按07e3d8c冻结源码重新生成并解包，27项检查全部PASS，实际portable宿主双位WCS链及正常停止通过；Windows实际UI继续NOT_RUN。
+
+|最终目标|本地ZIP|SHA-256|字节|
+|---|---|---|---|
+|portable|`sportmaster-portable.zip`|`40a19959b2428b01291f43f21e79c561b6721d5ef201dfe1dcff5e38188aebec`|18362596|
+|win-x64|`sportmaster-win-x64.zip`|`de4dd2936fc4c865183c7ef381a16ce0e0c248878f12b78ab944551e0a4dad45`|104056578|
+
+本地完整产物位于 `/Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/sportmaster-alternate-ui/07e3d8c/`；不将候选ZIP/二进制、原稿或运行数据库提交Git。活动[候选/解包回执](evidence/sportmaster-alternate-ui/package-verification.json)固定07e3d8c；整合前911ed24回执另存为[历史记录](evidence/sportmaster-alternate-ui/pre-main-integration-911ed24-package-verification.json)。两个阶段不能共用结论或文件身份。
+
+最新main4afe2af全库资料校验与当前比较：[267项历史错误完全一致，无新增](evidence/sportmaster-alternate-ui/integrated-archive-comparison.json)。manifest逐文件hash/大小/范围校验与本次文档链接一致；保留全库FAIL，不倒写PPTX/原设计资产。

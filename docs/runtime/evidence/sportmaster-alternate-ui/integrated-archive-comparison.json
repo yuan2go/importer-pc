@@ -1,0 +1,14 @@
+{
+  "BaselineMain": "4afe2afacde9e2acab7648fff3440fa3cc331b6e",
+  "BaselineStatus": "FAIL",
+  "CurrentStatus": "FAIL",
+  "BaselineErrorCount": 267,
+  "CurrentErrorCount": 267,
+  "NewErrors": [],
+  "ResolvedErrors": [],
+  "ErrorKinds": {
+    "pptx_media_type_mismatch": 265,
+    "private_metadata_marker": 2
+  },
+  "Meaning": "Inherited asset failures retained; scoped comparison is not whole-archive PASS"
+}

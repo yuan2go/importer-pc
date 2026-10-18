@@ -1,5 +1,5 @@
 {
-  "SourceCommit": "911ed2433fc403a43189c00218e095dddbaff7a8",
+  "SourceCommit": "07e3d8c3a6cbdb2da44cb675ec7767e938393192",
   "Checks": [
     "portable archive paths safe",
     "portable all shipped SHA256SUMS verified after extraction",
@@ -32,15 +32,15 @@
   "Packages": [
     {
       "Target": "portable",
-      "Zip": "ipc-sportmaster-ui-911ed24-portable.zip",
-      "Sha256": "afe723bb841c62c0005ab20186e0e3ec77e88054f32e06be33dd21b43ff545ec",
-      "Size": 18216418
+      "Zip": "sportmaster-portable.zip",
+      "Sha256": "40a19959b2428b01291f43f21e79c561b6721d5ef201dfe1dcff5e38188aebec",
+      "Size": 18362596
     },
     {
       "Target": "win-x64",
-      "Zip": "ipc-sportmaster-ui-911ed24-win-x64.zip",
-      "Sha256": "744eabbfbe39a02063b60c51d72b3cefaabbd3504516d0a5201b354735f69038",
-      "Size": 103761346
+      "Zip": "sportmaster-win-x64.zip",
+      "Sha256": "de4dd2936fc4c865183c7ef381a16ce0e0c248878f12b78ab944551e0a4dad45",
+      "Size": 104056578
     }
   ],
   "WindowsUi": "NOT_RUN",

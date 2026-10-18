@@ -2,7 +2,7 @@
 
 **已完成本轮通用实现、参考可靠性验证和候选检查，未声明整体生产就绪。** Windows实际执行NOT_RUN；真实SDK、认证、采集关联、秤校准、WCS/PLC/上传协议及现场权限/SOP按提供者分别BLOCKED。D/RV不变。
 
-执行基线main **08286542bbd007433d85be2cb8d129b366b007e0**（PR19已合并）。文档前置d2f5f23；核心实现43bbdab；最终运行、签名包及四候选源码 **a147eac7e4bafb70e16b2c677c2a2933909234d3**。97d9efc候选属于升级守卫补齐前诊断，已退出现行身份，原字节/hash保留。本包开发分支codex/capability-reliability-closure-20，不自动合并；并行PR20备份/健康恢复未合并进本包。
+执行基线main **08286542bbd007433d85be2cb8d129b366b007e0**（PR19已合并）。文档前置d2f5f23；核心实现43bbdab；最终运行、签名包及四候选源码 **a147eac7e4bafb70e16b2c677c2a2933909234d3**。97d9efc候选属于升级守卫补齐前诊断，已退出现行身份，原字节/hash保留。本包开发分支codex/capability-reliability-closure-20，已推送并创建[PR #21（OPEN、未合并）](https://github.com/yuan2go/importer-pc/pull/21)，创建时HEAD27b3c7f11a638c9a054d7f8939f25aa17f7769aa；后续仅文档回执，不改冻结源码或候选；并行PR20备份/健康恢复未合并进本包。
 
 ## 逐项结果与实际入口
 

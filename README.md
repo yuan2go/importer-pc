@@ -4,6 +4,8 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 
 ## 当前工程状态
 
+本轮交付 [PR #21（OPEN，未合并）](https://github.com/yuan2go/importer-pc/pull/21)；冻结运行源码a147eac，逐项参考验证完成，Windows实际NOT_RUN、真实接入按能力BLOCKED。
+
 PR #19已合并，执行基线main **08286542bbd007433d85be2cb8d129b366b007e0**。本轮实施 [WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20](docs/work-packages/WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20.md)，[现行可靠性设计](docs/design/capability-reliability-20.md)补充19的职责设计；[运行/部署](docs/runtime/capability-reliability-20.md)与[回执](docs/runtime/capability-reliability-20-results.md)记录本轮验证边界。并行开放PR #20处理备份/健康恢复，不作为本包已取得的能力。
 
 [19结果](docs/runtime/application-capability-19-results.md)中的c213aad候选与PASS保持形成时范围，本轮复核已发现组合可靠性、客户端和打包缺口，不能由旧PASS认定已关闭。Windows实际客户端/交互/UAC/ACL NOT_RUN；真实SDK/协议/设备/现场按所选提供者的证据分别准入，现有参考提供者不能满足Production。

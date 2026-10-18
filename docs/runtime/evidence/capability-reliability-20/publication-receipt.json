@@ -1,0 +1,18 @@
+{
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/21",
+  "State": "OPEN_AT_READBACK",
+  "CreatedFromHead": "27b3c7f11a638c9a054d7f8939f25aa17f7769aa",
+  "FrozenRuntimeSource": "a147eac7e4bafb70e16b2c677c2a2933909234d3",
+  "BaseMain": "08286542bbd007433d85be2cb8d129b366b007e0",
+  "BaseMainUnchangedAtReadback": true,
+  "MergeStateAtCreation": "CLEAN",
+  "Merged": false,
+  "AutoMergeRequested": false,
+  "ParallelPullRequest": "https://github.com/yuan2go/importer-pc/pull/20",
+  "RemoteBinariesPublished": false,
+  "OriginalWorkspaceUntrackedFiles": "UNCHANGED",
+  "Windows": "NOT_RUN",
+  "RealProvidersAndField": "BLOCKED_PER_CAPABILITY",
+  "ReadAtUtc": "2026-10-18T08:06:03.076582+00:00",
+  "ReceiptFollowup": "Documentation-only commit; frozen runtime and candidate bytes unchanged"
+}

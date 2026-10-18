@@ -172,15 +172,15 @@
     },
     {
       "path": "README.md",
-      "sha256": "9fbe908337863091d7e0a49bd57816e4e37c9691557ddf6d4af4134fd40485ec",
-      "size_bytes": 4053,
-      "git_blob": "b3b832b24fb49cce2fb3b6a42d4c8ecbbb66a95c",
+      "sha256": "c5f3e63e113ff47a48c46efb2c602747dc9be7748835ea2bbf9ff047cc6ab6ad",
+      "size_bytes": 4258,
+      "git_blob": "0db8deaa8cd77fb0da49b33d45908dc9481f5c80",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "previous_git_blob": "adcc367494a1ce2e2d787add212efd7a1f17efd3",
+      "previous_git_blob": "b3b832b24fb49cce2fb3b6a42d4c8ecbbb66a95c",
       "prior_closure13_git_blob": "a305391de26301ca46bfee2a7060f69fbb751252",
       "pre_conformance_audit_git_blob": "22bbdf4741bf3df550ec41159f57858b6326f4a4"
     },
@@ -327,15 +327,15 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "fd4dd84f8c37ceb84fce1d1f8cb1221840dffeabab9df84a91b9f9a507502e42",
-      "size_bytes": 6652,
-      "git_blob": "c9883745a559c3d542522dba17e094d9bc007c77",
+      "sha256": "e566a2b9bd0ae706973a15c9ffd2bd6f5eae0b16ee19d506b0bd8b7bdfe3a4c6",
+      "size_bytes": 6834,
+      "git_blob": "83c0403924fed4c63f88a1744de11dda4d29d38c",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "previous_git_blob": "014c5706ec2a3aaf30f16d564d48c3aa94935543",
+      "previous_git_blob": "c9883745a559c3d542522dba17e094d9bc007c77",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
       "pre_conformance_audit_git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc"
     },
@@ -2663,10 +2663,10 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "d90ba082c323332b006eecff05f90995f43e0c79ef939776327143747b9202ea",
-      "size_bytes": 7543,
-      "git_blob": "5210d664ab456c6f1cef21ae9c520cd6abefed17",
-      "previous_git_blob": "8601605fd3d233d6bb065f07c362ec1f06a3cba1"
+      "sha256": "e53d2438dc224b84ab334f51cee739854e12e0eb71c2b85ad91b16e9ba6a0e3c",
+      "size_bytes": 7734,
+      "git_blob": "1026eaa70b860700f79cbaa9fe674059cab68f6a",
+      "previous_git_blob": "5210d664ab456c6f1cef21ae9c520cd6abefed17"
     },
     {
       "path": "docs/runtime/capability-reliability-20.md",
@@ -5935,6 +5935,17 @@
       "sha256": "2c8f054385467e784741189f8b2260939e1a60c9537fe2d824e1548f481be9e2",
       "size_bytes": 2387,
       "git_blob": "547e9787c474f171c747c5f340a5f6e3f59dcf9d"
+    },
+    {
+      "path": "docs/runtime/evidence/capability-reliability-20/publication-receipt.json",
+      "version": "capability-reliability-20",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
+      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "storage_scope": "public_repository",
+      "sha256": "faa3453e3b5a6dce3b7a5c40adabcb8cfaa6ee4afb4606588e43c70a87861482",
+      "size_bytes": 802,
+      "git_blob": "35ed1d60045d159d0ba4f0f7b2ea0ddf8aabbd99"
     },
     {
       "path": "docs/runtime/evidence/capability-reliability-20/signed-reference-identity.json",
@@ -13698,10 +13709,10 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "5074341ce76d75fd52cacb7d473356cd9122a151f037f4217657825b54548c6c",
-      "size_bytes": 2610,
-      "git_blob": "7b71250e9d43c94b1afce6d13c134b8085236369",
-      "previous_git_blob": "38bd3525cd227a13b29ee23906e2578e619eb064"
+      "sha256": "d4e4861568c6abf13ba185ab0edbbb0b045ccc77ab7f887b8ef3dc75c7625f41",
+      "size_bytes": 2845,
+      "git_blob": "26cf9c1d776db67f150127bedcc03e0f43e41ed9",
+      "previous_git_blob": "7b71250e9d43c94b1afce6d13c134b8085236369"
     },
     {
       "path": "docs/work-packages/WP-IPC-CONFORMANCE-FIX-14.md",

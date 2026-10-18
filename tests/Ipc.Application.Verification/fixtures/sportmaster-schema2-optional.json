@@ -1,0 +1,91 @@
+{
+  "SchemaVersion": 2,
+  "ApplicationId": "sportmaster",
+  "StationId": "reference-18",
+  "Mode": "Simulation",
+  "Weight": {
+    "Source": "Measured",
+    "Unit": "Kg",
+    "Precision": 3,
+    "ConfiguredValue": null,
+    "MaximumAgeMs": 3000
+  },
+  "Reader": {
+    "Role": "parcel-reader",
+    "Driver": "manual",
+    "DeviceId": "sportmaster.camera",
+    "Revision": "1",
+    "ReplayFile": null
+  },
+  "Scale": {
+    "Kind": "weight",
+    "Implementation": "reference-weight",
+    "Version": "1.0.0",
+    "InstanceId": "sportmaster.weight",
+    "Target": "reference://weight/sportmaster",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {}
+  },
+  "Wcs": {
+    "Kind": "integration",
+    "Implementation": "reference-integration",
+    "Version": "1.0.0",
+    "InstanceId": "sportmaster.integration",
+    "Target": "reference://integration/sportmaster",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {
+      "slot": "REFERENCE-07"
+    },
+    "Package": null,
+    "Module": null
+  },
+  "Plc": null,
+  "Extensions": null,
+  "QueueCapacity": 64,
+  "TimeoutMs": 1500,
+  "MaximumOperations": 10000,
+  "Login": {
+    "Kind": "login",
+    "Implementation": "reference-login",
+    "Version": "1.0.0",
+    "InstanceId": "sportmaster.login",
+    "Target": "reference://login/sportmaster",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {
+      "subjects": "alice,bob"
+    }
+  },
+  "Images": {
+    "Camera": {
+      "Kind": "camera",
+      "Implementation": "reference-camera",
+      "Version": "1.0.0",
+      "InstanceId": "sportmaster.camera",
+      "Target": "reference://camera/sportmaster",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    },
+    "Uploader": {
+      "Kind": "upload",
+      "Implementation": "reference-upload",
+      "Version": "1.0.0",
+      "InstanceId": "sportmaster.upload",
+      "Target": "reference://upload/sportmaster",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    },
+    "MaximumBytes": 4194304
+  },
+  "MaintenanceLogin": {
+    "Kind": "login",
+    "Implementation": "reference-login",
+    "Version": "1.0.0",
+    "InstanceId": "maintenance",
+    "Target": "reference://maintenance",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {
+      "subjects": "maintenance"
+    }
+  },
+  "WeightValidity": "AtAssociation"
+}

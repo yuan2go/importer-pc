@@ -10,7 +10,14 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     readonly Guid runtimeId = Guid.NewGuid();
     readonly CancellationTokenSource stopping = new();
     readonly Dictionary<string, ParcelOperation> operations = [];
-    Channel<object>? ingress;
+    readonly Dictionary<string, Channel<object>> positionQueues = [];
+    readonly Dictionary<string, ObservationSession> readers = [];
+    readonly Dictionary<string, DeliveryPosition> positions = [];
+    readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> scaleEpochs = new();
+    readonly System.Collections.Concurrent.ConcurrentDictionary<string, long> scaleSequences = new();
+    sealed record ParcelMeasurement(string InstanceId, string Epoch, long Sequence, WeightMeasurement Measurement);
+    readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> admissionPositions = new();
+    readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> overloadedPositions = new();
     Task? worker;
     ResourceLease? lease;
     RuntimeJournal? journal;
@@ -18,9 +25,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     ConfigurationRevisions<ParcelConfiguration>? configuration;
     ParcelPorts? ports;
     string? directory, overloadMarker;
-    DeviceState? readerHealth;
-    string registeredEpoch = Wire.Id();
-    long sequence;
     int accepting, overload, pendingObservations;
     sealed record ParcelObservation(Observation Observation, OperatorIdentity? Operator);
     bool started, stopped, disposed;
@@ -55,14 +59,24 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         var errors = definition.Validate(seed); if (errors.Length > 0) throw new InvalidDataException(string.Join("; ", errors));
         seed = factory.Normalize(seed);
         directory = Path.Combine(launch.DataRoot, seed.Mode.ToString(), seed.StationId, Id);
-        lease = new(directory, ["application-owner", "reader:" + seed.Reader.DeviceId]);
+        lease = new(directory, ["application-owner"]);
         overloadMarker = Path.Combine(directory, "overload.json"); overload = File.Exists(overloadMarker) ? 1 : 0;
+        if (overload != 0)
+        {
+            using var marker = System.Text.Json.JsonDocument.Parse(File.ReadAllText(overloadMarker));
+            if (marker.RootElement.TryGetProperty("Positions", out var priorPositions))
+                foreach (var position in priorPositions.EnumerateArray()) overloadedPositions.TryAdd(position.GetString()!, 0);
+        }
         if (File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json"))) throw new InvalidDataException("Interrupted restore remains isolated; preserve original recovery set");
         configuration = new(Path.Combine(directory, "configuration.json"), seed, definition.Validate);
-        repository = new(directory, Id) { Boundary = point => Boundary?.Invoke(point) };
+        repository = new(directory, Id, 3) { Boundary = point => Boundary?.Invoke(point) };
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
         if (File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json"))) repository!.Commit(null, "RestoredIsolated", "Original recovery set loaded; operator must reconcile external effects", paused: true);
-        foreach (var op in repository.Load()) operations.Add(op.Id, op);
+        foreach (var op in repository.Load())
+        {
+            operations.Add(op.Id, op);
+            if (op.PositionId is not null) admissionPositions.TryAdd(op.AdmissionId, op.PositionId);
+        }
         repository.ValidateRawInventory();
         foreach (var op in operations.Values.Where(x => x.Image is not null && !x.ImageReleased)) _ = ReadImage(op, op.Image!);
         RecoverLocalFacts();
@@ -80,19 +94,20 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         {
             factory.Validate(Effective);
             ports = factory.Create(Effective); // Factory owns partial construction if any step fails.
-            ingress = Channel.CreateBounded<object>(new BoundedChannelOptions(Effective.QueueCapacity)
-                { SingleReader = true, FullMode = BoundedChannelFullMode.Wait, AllowSynchronousContinuations = false });
-            worker = Task.Run(ProcessIngressAsync, CancellationToken.None);
-            foreach (var port in CapabilityPorts()) await port.StartAsync(token).ConfigureAwait(false);
-            if (ports.Weight is not null) await ports.Weight.StartMeasurementsAsync(Enqueue, token).ConfigureAwait(false);
-            await ports.Reader.StartControlledAsync(registeredEpoch, Enqueue, h =>
+            foreach (var binding in ParcelBindings.Positions(Effective))
             {
-                if (h.DeviceId == Effective.Reader.DeviceId && h.Epoch == registeredEpoch)
-                    Volatile.Write(ref readerHealth, new(h.DeviceId, h.Epoch, 0, h.Health, h.ConfirmedAt, h.ConfirmedAt, h.ValidUntil, h.Source));
-            }, token).ConfigureAwait(false);
+                positions.Add(binding.Id, binding);
+                positionQueues.Add(binding.Id, Channel.CreateBounded<object>(new BoundedChannelOptions(Effective.QueueCapacity)
+                    { SingleReader = true, FullMode = BoundedChannelFullMode.Wait, AllowSynchronousContinuations = false }));
+            }
+            foreach (var reader in ReaderPorts()) readers.Add(reader.DeviceId, new(reader));
+            worker = Task.WhenAll(positions.Keys.Select(position => Task.Run(() => ProcessIngressAsync(position), CancellationToken.None)));
+            foreach (var port in CapabilityPorts()) await port.StartAsync(token).ConfigureAwait(false);
+            foreach (var scale in CapabilityPorts().OfType<IWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
+            foreach (var reader in readers.Values) await reader.StartAsync(Enqueue, token).ConfigureAwait(false);
             foreach (var port in CapabilityPorts()) capabilityHealth[port.InstanceId] = await ProbeHealthAsync(port, token).ConfigureAwait(false);
             Volatile.Write(ref accepting, 1);
-            maintenanceWorker = Task.Run(MaintainAsync, CancellationToken.None);
+            maintenanceWorker = Task.WhenAll(CapabilityPorts().Select(p => Task.Run(() => MonitorAsync(p), CancellationToken.None)).Append(Task.Run(MaintainAsync, CancellationToken.None)));
         }
         catch (Exception ex)
         {
@@ -100,36 +115,56 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             throw; // Caller must fully stop/dispose the failed candidate before a new owner starts.
         }
     }
-    IEnumerable<ICapabilityPort> CapabilityPorts() => new ICapabilityPort?[] { ports?.Weight, ports?.Wcs, ports?.Plc, ports?.Login, ports?.Camera, ports?.Uploader, ports?.Maintenance }.OfType<ICapabilityPort>();
+    IEnumerable<IControlledObservationSource> ReaderPorts() => ports?.Readers?.Values ?? (ports is null ? [] : [ports.Reader]);
+    IEnumerable<ICapabilityPort> CapabilityPorts() => new ICapabilityPort?[] { ports?.Weight, ports?.Wcs, ports?.Plc, ports?.Login, ports?.Camera, ports?.Uploader, ports?.Maintenance }
+        .OfType<ICapabilityPort>().Concat(ports?.Devices?.Values ?? []).DistinctBy(p => p.InstanceId);
+    ICapabilityPort Capability(string instance) => CapabilityPorts().Single(p => p.InstanceId == instance);
+    async Task RegisterScaleAsync(IWeightSource scale, CancellationToken token)
+    {
+        var registration = Wire.Id(); scaleEpochs[scale.InstanceId] = registration; scaleSequences[scale.InstanceId] = 0;
+        if (scale is IControlledWeightSource controlled)
+            await controlled.StartControlledMeasurementsAsync(registration, o => o.Epoch == registration && scaleEpochs.GetValueOrDefault(scale.InstanceId) == registration &&
+                Enqueue(new ParcelMeasurement(scale.InstanceId, o.Epoch, o.Sequence, o.Measurement)), token).ConfigureAwait(false);
+        else
+        {
+            if (Effective.SchemaVersion >= 3) throw new InvalidDataException("Schema3 scale requires controlled epoch/sequence measurement capability");
+            long sequence = 0;
+            await scale.StartMeasurementsAsync(m => scaleEpochs.GetValueOrDefault(scale.InstanceId) == registration && Enqueue(new ParcelMeasurement(scale.InstanceId, registration, Interlocked.Increment(ref sequence), m)), token).ConfigureAwait(false);
+        }
+    }
     bool Enqueue(object item)
     {
-        if (Volatile.Read(ref accepting) == 0 || Volatile.Read(ref overload) != 0) return false;
+        if (Volatile.Read(ref accepting) == 0) return false;
         var observation = item as Observation;
+        var positionId = observation is not null ? positions.Values.SingleOrDefault(p => p.ReaderDeviceId == observation.DeviceId)?.Id :
+            item is ParcelMeasurement m ? admissionPositions.GetValueOrDefault(m.Measurement.AdmissionId) ?? positions.Values.FirstOrDefault(p => ParcelBindings.Scale(Effective, p.Id)?.InstanceId == m.InstanceId)?.Id : null;
+        if (positionId is null) return false;
+        if (overloadedPositions.ContainsKey(positionId)) return false;
         if (observation is not null)
         {
             var identity = currentOperator;
             if (!SessionValid) return false;
             item = new ParcelObservation(observation, identity); Interlocked.Increment(ref pendingObservations);
         }
-        if (ingress!.Writer.TryWrite(item)) return true;
+        if (positionQueues[positionId].Writer.TryWrite(item)) return true;
         if (observation is not null) Interlocked.Decrement(ref pendingObservations);
-        Interlocked.Exchange(ref overload, 1);
+        overloadedPositions.TryAdd(positionId, 0); Interlocked.Exchange(ref overload, 1);
         // Small durable independent marker: a full queue must not hide callback loss.
-        try { ExtensionStore.AtomicWrite(overloadMarker!, new { At = DateTimeOffset.UtcNow, Reason = "Callback queue full; inspect the same physical parcel before resuming" }); }
+        try { ExtensionStore.AtomicWrite(overloadMarker!, new { At = DateTimeOffset.UtcNow, Positions = overloadedPositions.Keys.ToArray(), Device = observation?.DeviceId, Reason = "Callback queue full; inspect the same physical parcel before resuming" }); }
         catch (Exception ex) { Volatile.Write(ref failure, "Overload marker persistence failed: " + ex.GetType().Name); }
         return false;
     }
-    async Task ProcessIngressAsync()
+    async Task ProcessIngressAsync(string position)
     {
         try
         {
-            await foreach (var item in ingress!.Reader.ReadAllAsync().ConfigureAwait(false))
+            await foreach (var item in positionQueues[position].Reader.ReadAllAsync().ConfigureAwait(false))
             {
                 await gate.WaitAsync().ConfigureAwait(false);
                 try
                 {
-                    if (item is ParcelObservation o) await ObserveAsync(o.Observation, o.Operator).ConfigureAwait(false);
-                    else if (item is WeightMeasurement m) await MeasureAsync(m).ConfigureAwait(false);
+                    if (item is ParcelObservation o) await ObserveAsync(position, o.Observation, o.Operator).ConfigureAwait(false);
+                    else if (item is ParcelMeasurement m) await MeasureAsync(m).ConfigureAwait(false);
                 }
                 finally { if (item is ParcelObservation) Interlocked.Decrement(ref pendingObservations); gate.Release(); }
             }
@@ -137,34 +172,35 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         catch (Exception ex)
         { failure = "Application worker failed: " + ex.GetType().Name + ": " + ex.Message; Interlocked.Exchange(ref accepting, 0); throw; }
     }
-    async Task ObserveAsync(Observation o, OperatorIdentity? admittedOperator)
+    async Task ObserveAsync(string position, Observation o, OperatorIdentity? admittedOperator)
     {
-        if (!CanAdmit() || Effective.Login is not null && admittedOperator is null)
-        { repository!.Commit(null, "ObservationBlocked", "Paused/faulted/unresolved responsibility; source event=" + o.SourceEventId); return; }
-        if (o.DeviceId != Effective.Reader.DeviceId || o.Epoch != registeredEpoch || o.Sequence <= sequence ||
-            o.Kind != "Read" || o.Codes.Length != 1 || o.Codes[0] is not { Length: > 0 and <= 256 } || o.Codes[0].Any(char.IsControl) ||
+        if (!CanAdmit(position) || Effective.Login is not null && admittedOperator is null)
+        { repository!.Commit(null, "ObservationBlocked", "Position=" + position + "; paused/faulted/unresolved responsibility; source event=" + o.SourceEventId); return; }
+        if (!readers.TryGetValue(o.DeviceId, out var reader) || !reader.AcceptSequence(o) ||
+            o.Kind != "Read" || o.Codes is not { Length: 1 } || string.IsNullOrWhiteSpace(o.SourceEventId) || o.SourceEventId.Length > 256 || o.SourceEventId.Any(char.IsControl) || o.Codes[0] is not { Length: > 0 and <= 256 } || o.Codes[0].Any(char.IsControl) ||
             !ExtensionSchema.IsId(o.AdmissionId) || o.ObservedAt > DateTimeOffset.UtcNow || DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) ||
-            readerHealth?.IsValid(DateTimeOffset.UtcNow) != true)
+            reader?.Health?.IsValid(DateTimeOffset.UtcNow) != true)
         { repository!.Commit(null, "ObservationRejected", "Invalid identity/epoch/sequence/code/admission/freshness/reader confirmation"); return; }
-        sequence = o.Sequence;
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
         var prior = operations.Values.FirstOrDefault(x => x.AdmissionId == o.AdmissionId || x.ObservationId == observationId);
         if (prior is not null)
         {
-            if (prior.AdmissionId != o.AdmissionId || prior.ParcelCode != o.Codes[0])
-            { repository!.Commit(null, "IdentityConflict", "Observation/admission identity reused with changed content", paused: true); }
+            if (prior.AdmissionId != o.AdmissionId || prior.ParcelCode != o.Codes[0] || (prior.PositionId ?? "main") != position)
+            { repository!.Commit(null, "IdentityConflict", "Observation/admission identity reused with changed content or position; original retained"); }
             return;
         }
         if (operations.Count >= Effective.MaximumOperations)
         { repository!.Commit(null, "RetentionBudget", "Explicit archive/retention is required", paused: true); return; }
-        if (!AdmissionCapabilitiesReady() || !ImageCapacityAvailable())
+        if (!AdmissionCapabilitiesReady(position) || !ImageCapacityAvailable())
         { repository!.Commit(null, "AdmissionCapabilityBlocked", "Required capability unhealthy or temporary image quota exhausted"); return; }
         var weight = WeightRules.Configured(Effective.Weight);
         var op = new ParcelOperation(Wire.Id(), o.AdmissionId, o.Codes[0], observationId, o.ObservedAt,
             Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes),
             Effective.Weight, weight, Effective.Weight.Source == WeightSource.Measured ? ParcelState.WaitingWeight : ParcelState.Prepared,
             null, null, null, Effective.Weight.Source == WeightSource.Measured ? "Waiting for a valid measurement of this same parcel" : null,
-            Operator: admittedOperator, Acquisition: new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt));
+            Operator: admittedOperator, Acquisition: new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt),
+            PositionId: Effective.SchemaVersion >= 3 ? position : null, ReaderBinding: Effective.SchemaVersion >= 3 ? ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId) : null);
+        admissionPositions.TryAdd(op.AdmissionId, position);
         Save(op, "ParcelObserved", "One admitted parcel; code is not entity identity");
         if (op.FrozenConfiguration.Images is not null)
         {
@@ -173,13 +209,17 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         }
         if (op.WeightPolicy.Source != WeightSource.Measured) await AdvanceAsync(op).ConfigureAwait(false);
     }
-    async Task MeasureAsync(WeightMeasurement m)
+    async Task MeasureAsync(ParcelMeasurement observation)
     {
+        var m = observation.Measurement;
+        if (scaleEpochs.GetValueOrDefault(observation.InstanceId) != observation.Epoch || observation.Sequence <= scaleSequences.GetValueOrDefault(observation.InstanceId))
+        { repository!.Commit(null, "MeasurementRejected", "Old scale registration or sequence"); return; }
+        scaleSequences[observation.InstanceId] = observation.Sequence;
         var op = operations.Values.SingleOrDefault(x => x.AdmissionId == m.AdmissionId);
-        if (op is null) { repository!.Commit(null, "MeasurementRejected", "No matching admitted parcel"); return; }
-        if (!capabilityHealth.TryGetValue(op.FrozenConfiguration.Scale?.InstanceId ?? "", out var scaleHealth) || !scaleHealth.Ready || scaleHealth.ValidUntil <= DateTimeOffset.UtcNow)
+        if (op is null || ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.InstanceId != observation.InstanceId) { repository!.Commit(null, "MeasurementRejected", "No matching admitted parcel"); return; }
+        if (!capabilityHealth.TryGetValue(ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.InstanceId ?? "", out var scaleHealth) || !scaleHealth.Ready || scaleHealth.ValidUntil <= DateTimeOffset.UtcNow)
         { repository!.Commit(null, "MeasurementRejected", "Bound scale health is not confirmed"); return; }
-        var reason = WeightRules.Invalid(m, op, op.FrozenConfiguration.Scale?.Target ?? "", DateTimeOffset.UtcNow);
+        var reason = WeightRules.Invalid(m, op, ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.Target ?? "", DateTimeOffset.UtcNow);
         if (reason is not null) { repository!.Commit(null, "MeasurementRejected", reason); return; }
         if (repository!.HasMeasurement(m) || !WeightPending(op) || op.State == ParcelState.WeightTimedOut ||
             DateTimeOffset.UtcNow > op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs)) return;
@@ -201,7 +241,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         (op.FrozenConfiguration.Images is null || op.ImageReleased);
     FrozenRequest Prepare(ParcelOperation op, string stage, CapabilityBinding binding, string? slot, string? wcsRequest)
     {
-        var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest, op.Operator, op.Image, op.Acquisition));
+        var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest, op.Operator, op.Image, op.Acquisition, op.PositionId, op.ReaderBinding));
         return new(Wire.Id(), Id, op.Id, op.AdmissionId, stage, binding, op.ImplementationHashes[binding.InstanceId],
             op.ConfigurationHash, payload, Wire.Hash(payload), DateTimeOffset.UtcNow);
     }
@@ -212,7 +252,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (op.FrozenConfiguration.Images is not null)
         {
             op = await AdvanceImagesAsync(op).ConfigureAwait(false);
-            if (op.Capture?.State != StageState.Accepted || op.FrozenConfiguration.Images!.Strategy == UploadStrategy.BeforeMain && op.Upload?.State != StageState.Accepted) return;
+            if (op.Capture?.State != StageState.Accepted || op.FrozenConfiguration.Images!.Uploader is not null && op.FrozenConfiguration.Images!.Strategy == UploadStrategy.BeforeMain && op.Upload?.State != StageState.Accepted) return;
         }
         if (CanDispatch(operations[op.Id]) && WeightReady(operations[op.Id])) await definition.AdvanceAsync(this, operations[op.Id]).ConfigureAwait(false);
     }
@@ -227,9 +267,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         Plc = new(Prepare(op, "plc-submit", op.FrozenConfiguration.Plc!, op.Slot, op.Wcs?.Request.Id), StageState.Prepared, 0, []),
         State = ParcelState.SubmittingPlc, Reason = null
     };
-    public bool EmitReference(string admissionId, string code, string sourceEventId) => Effective.Mode == RunMode.Simulation &&
-        Volatile.Read(ref accepting) == 1 && ports!.Reader is ISyntheticObservationInput input && input.Emit("Read", admissionId, [code], null, sourceEventId);
+    public bool EmitReference(string admissionId, string code, string sourceEventId) => EmitReferenceAt(ParcelBindings.Positions(Effective)[0].Id, admissionId, code, sourceEventId);
+    public bool EmitReferenceAt(string positionId, string admissionId, string code, string sourceEventId) => Effective.Mode == RunMode.Simulation &&
+        Volatile.Read(ref accepting) == 1 && positions.TryGetValue(positionId, out var position) && readers[position.ReaderDeviceId].Source is ISyntheticObservationInput input && input.Emit("Read", admissionId, [code], null, sourceEventId);
     public bool EmitReferenceWeight(WeightMeasurement measurement) => Effective.Mode == RunMode.Simulation &&
-        Volatile.Read(ref accepting) == 1 && ports!.Weight is ISyntheticWeightInput input && input.Emit(measurement);
-
+        Volatile.Read(ref accepting) == 1 && CapabilityPorts().OfType<ISyntheticWeightInput>().Any(input => input.Emit(measurement));
 }

@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 2,
+  "SchemaVersion": 3,
   "ApplicationId": "direct-plc",
   "StationId": "reference-17",
   "Mode": "Simulation",
@@ -49,5 +49,22 @@
       "subjects": "maintenance"
     }
   },
-  "WeightValidity": "UntilDispatch"
+  "WeightValidity": "UntilDispatch",
+  "Topology": {
+    "Readers": [
+      {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "direct-plc.camera",
+        "Revision": "1",
+        "ReplayFile": null
+      }
+    ],
+    "Positions": [
+      {
+        "Id": "main",
+        "ReaderDeviceId": "direct-plc.camera"
+      }
+    ]
+  }
 }

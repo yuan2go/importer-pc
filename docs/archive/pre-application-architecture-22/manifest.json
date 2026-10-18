@@ -32,6 +32,10 @@
     {
       "path": "docs/extensions/developer-guide.md",
       "sha256": "3a4fb68820a41854820b51826fae39d40b79e7bc5dabdaceb092d40ef80c8deb"
+    },
+    {
+      "path": "README.md",
+      "sha256": "522f1d40c9ecaabfdff68fcda14adcc7ad79af7d3e7c8eedd26740e0688f4f0b"
     }
   ]
 }

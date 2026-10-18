@@ -1,7 +1,7 @@
 {
   "SchemaVersion": 1,
   "Id": "reference.integration",
-  "Version": "1.0.5",
+  "Version": "1.0.9",
   "Runtime": "net10.0",
   "Rid": "any",
   "ContractMajor": 1,

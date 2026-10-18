@@ -85,7 +85,7 @@ public sealed class ReferencePeer(CapabilityBinding binding, string root, string
                 var bytes = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGP4DwABAQEAsTj2FAAAAABJRU5ErkJggg==");
                 WriteImage(request.Id, bytes);
                 image = new(request.Id, request.AdmissionId, "images/" + Wire.Hash(binding.Target) + "/" + request.Id + ".png", "image/png", bytes.Length,
-                    Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)));
+                    Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)), Acquisition: payload.Acquisition);
             }
             if (stage == "image-upload" && accepted)
             {

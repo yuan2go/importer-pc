@@ -1,5 +1,5 @@
 {
-  "SchemaVersion": 2,
+  "SchemaVersion": 3,
   "ApplicationId": "sportmaster",
   "StationId": "reference-17",
   "Mode": "Simulation",
@@ -13,7 +13,7 @@
   "Reader": {
     "Role": "parcel-reader",
     "Driver": "manual",
-    "DeviceId": "sportmaster.camera",
+    "DeviceId": "sportmaster.camera.left",
     "Revision": "1",
     "ReplayFile": null
   },
@@ -49,5 +49,33 @@
       "subjects": "maintenance"
     }
   },
-  "WeightValidity": "UntilDispatch"
+  "WeightValidity": "UntilDispatch",
+  "Topology": {
+    "Readers": [
+      {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "sportmaster.camera.left",
+        "Revision": "1",
+        "ReplayFile": null
+      },
+      {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "sportmaster.camera.right",
+        "Revision": "1",
+        "ReplayFile": null
+      }
+    ],
+    "Positions": [
+      {
+        "Id": "left",
+        "ReaderDeviceId": "sportmaster.camera.left"
+      },
+      {
+        "Id": "right",
+        "ReaderDeviceId": "sportmaster.camera.right"
+      }
+    ]
+  }
 }

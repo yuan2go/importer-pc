@@ -63,12 +63,20 @@ static class ParcelCli
         else throw new ArgumentException("Unsupported parcel extension action");
         return true;
     }
+    static BusinessReceipt EmitAt(IParcelApplication app, BusinessCommand command)
+    {
+        var input = Wire.Decode<ReferencePositionInput>(command.Value!);
+        return new(app.EmitReferenceAt(input.PositionId, command.Owner!, input.Code, command.Id) ? "Enqueued" : "Rejected", "Explicit position-scoped simulation observation", command.ExpectedRevision);
+    }
+    sealed record ReferencePositionInput(string PositionId, string Code);
     public static async Task<string> Command(IParcelApplication app, string line)
     {
         if (line == "snapshot") return Wire.Encode(await app.SnapshotAsync().ConfigureAwait(false));
         var c = Wire.Decode<BusinessCommand>(line);
         var result = c.Kind switch
         {
+            "EmitReferenceAt" => EmitAt(app, c),
+            "ReconnectDevice" => await app.ReconnectDeviceAsync(c.Owner!).ConfigureAwait(false),
             "EmitReference" => new BusinessReceipt(app.EmitReference(c.Owner!, c.Value!, c.Id) ? "Enqueued" : "Rejected", "Explicit simulation camera observation", c.ExpectedRevision),
             "EmitWeight" => new BusinessReceipt(app.EmitReferenceWeight(Wire.Decode<WeightMeasurement>(c.Value!)) ? "Enqueued" : "Rejected", "Explicit simulation scale observation", c.ExpectedRevision),
             "Login" => await app.LoginAsync(c.Owner!, c.Value!).ConfigureAwait(false),

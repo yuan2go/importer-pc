@@ -1,0 +1,103 @@
+{
+  "SchemaVersion": 2,
+  "ApplicationId": "wcs-to-plc",
+  "StationId": "reference-18",
+  "Mode": "Simulation",
+  "Weight": {
+    "Source": "Measured",
+    "Unit": "Kg",
+    "Precision": 3,
+    "ConfiguredValue": null,
+    "MaximumAgeMs": 3000
+  },
+  "Reader": {
+    "Role": "parcel-reader",
+    "Driver": "manual",
+    "DeviceId": "wcs-to-plc.camera",
+    "Revision": "1",
+    "ReplayFile": null
+  },
+  "Scale": {
+    "Kind": "weight",
+    "Implementation": "reference-weight",
+    "Version": "1.0.0",
+    "InstanceId": "wcs-to-plc.weight",
+    "Target": "reference://weight/wcs-to-plc",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {}
+  },
+  "Wcs": {
+    "Kind": "integration",
+    "Implementation": "reference-integration",
+    "Version": "1.0.0",
+    "InstanceId": "wcs-to-plc.integration",
+    "Target": "reference://integration/wcs-to-plc",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {
+      "slot": "REFERENCE-07"
+    },
+    "Package": null,
+    "Module": null
+  },
+  "Plc": {
+    "Kind": "plc",
+    "Implementation": "reference-plc",
+    "Version": "1.0.0",
+    "InstanceId": "wcs-to-plc.plc",
+    "Target": "reference://plc/wcs-to-plc",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {
+      "complete-on-query": "true"
+    },
+    "Package": null,
+    "Module": null
+  },
+  "Extensions": null,
+  "QueueCapacity": 64,
+  "TimeoutMs": 1500,
+  "MaximumOperations": 10000,
+  "Login": {
+    "Kind": "login",
+    "Implementation": "reference-login",
+    "Version": "1.0.0",
+    "InstanceId": "wcs-to-plc.login",
+    "Target": "reference://login/wcs-to-plc",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {
+      "subjects": "alice,bob"
+    }
+  },
+  "Images": {
+    "Camera": {
+      "Kind": "camera",
+      "Implementation": "reference-camera",
+      "Version": "1.0.0",
+      "InstanceId": "wcs-to-plc.camera",
+      "Target": "reference://camera/wcs-to-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    },
+    "Uploader": {
+      "Kind": "upload",
+      "Implementation": "reference-upload",
+      "Version": "1.0.0",
+      "InstanceId": "wcs-to-plc.upload",
+      "Target": "reference://upload/wcs-to-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    },
+    "MaximumBytes": 4194304
+  },
+  "MaintenanceLogin": {
+    "Kind": "login",
+    "Implementation": "reference-login",
+    "Version": "1.0.0",
+    "InstanceId": "maintenance",
+    "Target": "reference://maintenance",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {
+      "subjects": "maintenance"
+    }
+  },
+  "WeightValidity": "AtAssociation"
+}

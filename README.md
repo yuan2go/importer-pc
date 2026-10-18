@@ -4,6 +4,10 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 
 ## 当前工程状态
 
+当前实施为[Application架构22](docs/runtime/application-architecture-22.md)：一个主流程一个构建选装Application，Sportmaster两相机/两独立投递位，DirectPlc及WcsToPlc各一个顺序投递位；完整schema3配置、每设备注册及每位有界执行、仅取图/上传分离、数据库3升级前未结屏障。既有UI仅保护配置契约，不新增页面/预览。验证与交付记录在本包报告；Windows实际NOT_RUN，真实SDK/协议/现场BLOCKED。
+
+## 继承的PR20/21整合基线
+
 当前工程入口：[PR20/21协调整合](docs/runtime/pr20-21-integration.md)。最终运行/打包源码 **d5c8b7981ba8e4c8b9daf22df1cb686243815f3b**；三个评审问题及Create二次证据比较已修复，交叉恢复/资源/迁移、签名资格与5条解包进程旅程完成定向参考验证。Windows实际NOT_RUN，真实SDK/设备/WCS/PLC/现场BLOCKED。
 
 [PR20](https://github.com/yuan2go/importer-pc/pull/20)已正常合并为`fa1d25211be454cd3cf49da40eb7d8d92e323652`；[PR21](https://github.com/yuan2go/importer-pc/pull/21)已纳入该main并保持经验证运行树，最终合并状态及提交读取GitHub和整合回执。能力可靠性与备份/健康设计共同生效：[20增量设计](docs/design/capability-reliability-20.md)、[备份恢复工作包](docs/work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md)，补充19职责。[既有运行/部署](docs/runtime/capability-reliability-20.md)继续适用；旧报告及a147eac候选保持形成时身份。[整合前入口原字节](docs/archive/pre-pr20-21-integration/README.md)。

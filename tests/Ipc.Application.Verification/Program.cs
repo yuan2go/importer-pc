@@ -13,6 +13,7 @@ var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--application-architecture")) { await ApplicationArchitecture.Run(workspace, root); return; }
 if (args.Contains("--qualified-capabilities")) { var i = Array.IndexOf(args, "--qualified-capabilities"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2]), true); return; }
 if (args.Contains("--signed-capabilities")) { var i = Array.IndexOf(args, "--signed-capabilities"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
 if (args.Contains("--review-regressions")) { ReviewRegressions.Run(root); return; }
@@ -21,7 +22,7 @@ if (args.Contains("--backup-health-recovery")) { await BackupHealthRecovery.Run(
 if (args.Contains("--capability-closure")) { await CapabilityClosure.Run(workspace, root); return; }
 if (args.Contains("--site-capabilities")) { await OptionalCapabilities.Run(workspace, root); return; }
 void Pass(bool condition, string message) { if (!condition) throw new Exception("FAIL AC17: " + message); Console.WriteLine("PASS AC17: " + message); }
-ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
+ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json"))) with { SchemaVersion = 2, Topology = null };
 FlowDefinition Flow(string id) => id switch { "sportmaster" => new SportmasterFlow(), "direct-plc" => new DirectPlcFlow(), _ => new WcsToPlcFlow() };
 async Task<ParcelRuntime> Open(ParcelConfiguration config, string run)
 {

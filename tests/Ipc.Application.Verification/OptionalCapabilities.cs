@@ -13,7 +13,7 @@ static class OptionalCapabilities
     {
         List<object> matrix = [];
         void Pass(bool condition, string message) { if (!condition) throw new Exception("FAIL AC18: " + message); Console.WriteLine("PASS AC18: " + message); }
-        ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json")));
+        ParcelConfiguration Config(string id) => Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", id, "business.json"))) with { SchemaVersion = 2, Topology = null };
         CapabilityBinding Binding(string kind) => new(kind, "reference-" + kind, "1.0.0", kind + ".one", "reference://" + kind + "/one", "PARCEL-REFERENCE-v1", kind == "login" ? new() { ["subjects"] = "alice,bob" } : []);
         ParcelConfiguration Options(string id, bool login, bool weight, bool images) => Config(id) with
         {
@@ -104,7 +104,7 @@ static class OptionalCapabilities
         foreach (var lostKind in new[] { "capture", "upload", "plc" })
         {
             var run = "lost-" + lostKind; var c = Options("wcs-to-plc", true, false, true);
-            var lost = (lostKind == "capture" ? c.Images!.Camera : lostKind == "upload" ? c.Images!.Uploader : c.Plc!) with { Parameters = new() { ["reply-mode"] = "lose-after-commit", ["complete-on-query"] = "true" } };
+            var lost = (lostKind == "capture" ? c.Images!.Camera : lostKind == "upload" ? c.Images!.Uploader! : c.Plc!) with { Parameters = new() { ["reply-mode"] = "lose-after-commit", ["complete-on-query"] = "true" } };
             if (lostKind != "plc") lost = lost with { Parameters = new() { ["reply-mode"] = "lose-after-commit" } };
             c = lostKind == "capture" ? c with { Images = c.Images! with { Camera = lost } } : lostKind == "upload" ? c with { Images = c.Images! with { Uploader = lost } } : c with { Plc = lost };
             ParcelOperation original;
@@ -142,7 +142,7 @@ static class OptionalCapabilities
         foreach (var fault in new[] { "upload", "wcs" })
         {
             var c = Options("wcs-to-plc", false, false, true);
-            c = fault == "upload" ? c with { Images = c.Images! with { Uploader = c.Images.Uploader with { Parameters = new() { ["decision"] = "reject" } } } } : c with { Wcs = c.Wcs! with { Parameters = new() { ["decision"] = "reject" } } };
+            c = fault == "upload" ? c with { Images = c.Images! with { Uploader = c.Images.Uploader! with { Parameters = new() { ["decision"] = "reject" } } } } : c with { Wcs = c.Wcs! with { Parameters = new() { ["decision"] = "reject" } } };
             await using var app = await Open(c, "reject-" + fault); app.EmitReference("rejected-parcel", "009", Wire.Id());
             var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == (fault == "upload" ? ParcelState.ImageRejected : ParcelState.WcsRejected));
             Pass(s.Operations.Single().Plc is null, fault + " explicit rejection never creates PLC intent");

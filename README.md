@@ -1,3 +1,5 @@
+> 本次PR26独立复审P1/P2整改以main `baac260214f910dca9ae4628ba6449b25188e2ac`为基线；[整改计划](docs/work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)为本轮入口。[原独立报告与失败](docs/reviews/pr26-independent-78298b5/README.md)保持原身份。下文阶段版本/候选不是本轮验收。
+
 # importer-pc
 
 C#/.NET 10工位运行基座及独立Application/供包参考产品：WPF、多视图共享业务、真实SQLite事务/Outbox/原请求恢复、合成观察和受控扩展。旧现场迁移、真实SDK/WCS和现场资格分别验证。

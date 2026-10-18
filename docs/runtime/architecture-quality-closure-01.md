@@ -1,5 +1,7 @@
 # Application运行、维护与兼容
 
+本轮P1/P2整改及验证见[工作包](../work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)，旧未结DB4普通启动必须在SQL5及配置确认写入前拒绝；该守卫在基线baac260存在缺口，未取得本轮证据前不得按历史PASS放行。
+
 本页统一审查02 N01–N07后的实际操作。源码和包身份读取同包ASSEMBLY.json及SHA256SUMS；当前仓库交付见[统一入口](../INDEX.md)。[01工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)、[设计及本次差额](../design/architecture-quality-closure-01.md)与[01历史结果](architecture-quality-closure-01-results.md)保留形成时身份。22的三条独立主流程、19/20原请求规则和旧Supply/Inspection继续适用。Windows实机NOT_RUN，真实SDK/协议/现场BLOCKED。软件暂停不是安全急停。
 
 PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。[独立复审与原证据](../reviews/pr24-independent-rereview-f862c2a/README.md)及[R03结果](architecture-quality-closure-01-r03-results.md)为继承来源；本页DB5、旧账确认与独立资料规则为当前操作，不以历史DB4候选或PASS替代。
@@ -24,7 +26,7 @@ Attached上传失败/Unknown/无结果/原能力缺失只进入Upload.State/Fail
 
 旧版Attached曾把已接受主链写成Blocked/ImageUnknown：启动依据已Committed且hash匹配的主链raw恢复其派生主状态，恢复前完整旧JSON写审计，不改变WCS/PLC原请求/回复。旧DB2/3普通启动仍拒绝未明责任；repair-main-projection仅在原库租约及完整备份下修可证明主投影，保持旧schema，不构成完整升级步骤。缺raw的Attached场景改用下述recover-legacy-receipt：通过逐文件校验的匹配原发布、冻结配置/请求往返及原实现指纹，只启动原上传端口并Health/Query，不启动reader、不Submit。持久化独立Query原件和已证明主状态后，仅在所有外部业务已终结、每个缺raw均有权威依据时显式升级DB5；原发生仍Awaiting、原图/包和资料屏障保留。无结果、冲突、原发布/原图/合同缺失保持隔离，不先写未来迁移标记。
 
-历史仅审计而无作用域的IdentityConflict会恢复成显式待检查责任；原审计没有设备/实体范围时保护所有可能位，明确显示资料不足。维护暂停/认证/说明后沿原AcknowledgeIdentityConflict解除；解除记录保留，重启不重复制造阻断。已有明确范围的冲突仍只影响相关位。
+历史仅审计而无作用域的IdentityConflict须按持久Effective实际位恢复为待检查责任，schema1/2必须保护main，不能套用schema3的left/right。未确认冲突阻止Pending拓扑激活；已经错误持久化的legacy范围须保留旧body并追加修复审计，已确认项不重新武装。原审计没有设备/实体范围时保护所有可能位，明确显示资料不足。维护暂停/认证/说明后沿原AcknowledgeIdentityConflict解除；解除记录保留，重启不重复制造阻断。已有明确范围的冲突仍只影响相关位。
 
 原StageFact仅保有至多64条必要事实/最近回复，完整原响应及reply-ID/hash永久持久；StoreRaw与RecoverRaw共享接收发生及不可替换回复身份事务，Request命名空间取原发生。旧DB4及现行DB5启动按原发生顺序验证持久raw/归档BLOB并补齐缺索引，失败完整回滚；已经矛盾的原件与假完成不能改写为成功，以OriginalReplyIdentityConflict拒绝启动，先保全DB/WAL、配置、原raw/归档及精确发布，沿原合同调查处置，不强制清空或重发。超过64次查询仍不能遗忘原身份，也不会单因回复数量锁死权威完成查询。
 

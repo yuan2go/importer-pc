@@ -1,0 +1,19 @@
+{
+  "BeforeVersion": 4,
+  "AfterVersion": 5,
+  "StartFailure": "InvalidDataException: OriginalCapabilityUnavailable: settle unresolved originals using the matching release before changing host/implementation; no source started: 6e20de44418e4374a77d724aec6b9b26",
+  "DatabaseChanged": true,
+  "ConfigurationChanged": true
+}
+[
+  {
+    "Id": "6e20de44418e4374a77d724aec6b9b26",
+    "State": "WcsUnknown",
+    "RecoveryRequired": true,
+    "WcsState": "Unknown",
+    "ImplementationHashes": {
+      "sportmaster.integration": "EEC8327EBE5242B89AC23C7606D61DE85BD0336E4A420231A70A803838DBD929",
+      "maintenance": "485763032DB0EF83B41BCCD91FBCA56C00A5FBE830A7B0B441909E996CDB0BE2"
+    }
+  }
+]

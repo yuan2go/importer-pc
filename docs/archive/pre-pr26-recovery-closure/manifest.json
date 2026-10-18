@@ -1,0 +1,30 @@
+{
+  "source_commit": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "files": [
+    {
+      "source": "README.md",
+      "archive": "README.md.txt",
+      "sha256": "ae3414932c0d02210c0da17f0d5ccade8d0b06a320e9bf2b0c4d649dbbb437f3"
+    },
+    {
+      "source": "docs/INDEX.md",
+      "archive": "docs__INDEX.md.txt",
+      "sha256": "80d6e5c175b94c9dcfe45eee3acf3aae30ecbc6a8adc82ee7cb1d6ed55cf5224"
+    },
+    {
+      "source": "docs/design/architecture-quality-closure-01.md",
+      "archive": "docs__design__architecture-quality-closure-01.md.txt",
+      "sha256": "b6bb4cc3cc62bdc3dd0b764a18b031f9475199ebb34e5a1e58bdfed94290b550"
+    },
+    {
+      "source": "docs/runtime/architecture-quality-closure-01.md",
+      "archive": "docs__runtime__architecture-quality-closure-01.md.txt",
+      "sha256": "218889c45199a6aa928ff07d34585e363e75a5ce48038f2eec087515e1fdfe19"
+    },
+    {
+      "source": "docs/runtime/architecture-quality-audit-02-results.md",
+      "archive": "docs__runtime__architecture-quality-audit-02-results.md.txt",
+      "sha256": "3a66b8659d9c185eacd7e0a57f05ab079ca72a63600d67dff8f4f5f328f882fe"
+    }
+  ]
+}

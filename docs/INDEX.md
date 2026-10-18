@@ -1,3 +1,5 @@
+> [PR26独立复审P1/P2整改](work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)：main基线 `baac260214f910dca9ae4628ba6449b25188e2ac`。[原报告与失败](reviews/pr26-independent-78298b5/README.md)保持原身份。DB4升级前责任守卫和schema1/2 main冲突尚待本轮实现/验证；历史N01–N07 PASS不能覆盖本次阻断。
+
 > [2026-10-19不测试发布与合并回执](runtime/publication-20261019.md)：PR26已合并，8个既有参考产物已上传；Windows/真实集成边界不变。
 
 # 统一资料与实施入口

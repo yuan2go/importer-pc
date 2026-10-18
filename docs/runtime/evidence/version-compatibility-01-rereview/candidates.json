@@ -1,0 +1,43 @@
+{
+  "Candidates": [
+    {
+      "Name": "wcs-to-plc-portable.zip",
+      "Sha256": "8fbfb208a81d32d8ba547df569f57737ef247035aab38eef819e0c4dca6be412",
+      "SourceCommit": "5e3282b02616d905a628a6cbeeb9a7fbe4228a79",
+      "BusinessVersion": "1.2.1",
+      "FileInventorySha256": "e582ae6a79cf16527134e98b160be5f78ad7acfe438cd926cd3be040a4157644",
+      "Execution": "PASS_REFERENCE_JOURNEYS"
+    },
+    {
+      "Name": "sportmaster-win-x64.zip",
+      "Sha256": "d322f98ce6585cc7297015b475a370aced662d1a7248cd871cc40f851c43a1b2",
+      "SourceCommit": "5e3282b02616d905a628a6cbeeb9a7fbe4228a79",
+      "BusinessVersion": "1.2.1",
+      "FileInventorySha256": "4dcc72ef5afad843ba5fe666555391f4e77e560d660767f33f2326d450da59c8",
+      "Execution": "CROSS_PUBLISHED_WINDOWS_NOT_RUN"
+    }
+  ],
+  "ActualBusinessMetadata": [
+    {
+      "Path": "wcs-to-plc-unpacked/app/Ipc.Application.WcsToPlc.dll",
+      "AssemblyVersion": "1.2.1.0",
+      "InformationalVersion": "1.2.1+5e3282b02616d905a628a6cbeeb9a7fbe4228a79",
+      "CompatibilitySha256": "CBBCEDEFBB77D4E59D7FF9CA3179AE4BC0072A619D11B39F34E292D8CDFE4542",
+      "FileSha256": "09B8D2F91956FB527EDDAE7F0699CAB4E65EF3BD7251681A4D2D7A57B515C5BF"
+    },
+    {
+      "Path": "sportmaster-win-x64-unpacked/app/Ipc.Application.Sportmaster.dll",
+      "AssemblyVersion": "1.2.1.0",
+      "InformationalVersion": "1.2.1+5e3282b02616d905a628a6cbeeb9a7fbe4228a79",
+      "CompatibilitySha256": "C32D87E3E5E2885805419DED39CDCFDC80DD2E4713B012702DD0A5F8254335F6",
+      "FileSha256": "1A90FE078C9C0ED1F8CF255B57CD5EA46EA86F99FCCC892B897CAD5FC2CD7364"
+    },
+    {
+      "Path": "sportmaster-win-x64-unpacked/desktop/Ipc.Application.Sportmaster.dll",
+      "AssemblyVersion": "1.2.1.0",
+      "InformationalVersion": "1.2.1+5e3282b02616d905a628a6cbeeb9a7fbe4228a79",
+      "CompatibilitySha256": "C32D87E3E5E2885805419DED39CDCFDC80DD2E4713B012702DD0A5F8254335F6",
+      "FileSha256": "1A90FE078C9C0ED1F8CF255B57CD5EA46EA86F99FCCC892B897CAD5FC2CD7364"
+    }
+  ]
+}

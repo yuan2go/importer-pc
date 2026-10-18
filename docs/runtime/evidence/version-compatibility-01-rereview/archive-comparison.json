@@ -1,0 +1,20 @@
+{
+  "Status": "PASS_NO_NEW_ERRORS",
+  "BaselineErrors": 267,
+  "CurrentErrors": 267,
+  "NewErrors": [],
+  "OverallArchiveStatus": "FAIL",
+  "HistoricalErrorsUnchanged": true,
+  "InitialScan": {
+    "Errors": 268,
+    "AdditionalErrors": [
+      {
+        "code": "content_identity",
+        "path": "docs/runtime/evidence/version-compatibility-01-rereview/wcs-to-plc-wpf-locked-build.log"
+      }
+    ],
+    "Reason": "Scan raced with final WPF log write; regenerated manifest after completed build",
+    "OriginalArtifact": "archive-before-freeze.json",
+    "OriginalSha256": "5e5f05f9038635f673552492ab01ace00a591596ab95465f4b62024a4fc95b9f"
+  }
+}

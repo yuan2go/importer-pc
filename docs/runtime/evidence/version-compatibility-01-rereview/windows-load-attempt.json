@@ -1,0 +1,9 @@
+{
+  "Status": "BLOCKED_ARCHITECTURE",
+  "Host": "Darwin arm64",
+  "Target": "win-x64",
+  "Exception": "FileLoadException",
+  "Message": "The assembly architecture is not compatible with the current process architecture.",
+  "Scope": "Attempted managed assembly load only; no Windows, UAC or device execution",
+  "OriginalStdoutBytes": 0
+}

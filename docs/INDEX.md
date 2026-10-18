@@ -1,4 +1,4 @@
-> PR29独立审查P1/P2正在整改：旧组合记录重验和Windows恢复/卸载入口结论按[整改设计](design/version-compatibility-01.md)读取；原候选及原审查失败保留。
+> PR29独立审查P1/P2已修复并完成定向参考验证：[整改结果与边界](runtime/version-compatibility-01-rereview-results.md)。原候选及原审查失败保留；Windows实际NOT_RUN，真实集成BLOCKED。
 
 > 版本管理现行增量：[版本与兼容](design/version-compatibility-01.md) · [工作包](work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md) · [运行](runtime/version-compatibility-01.md)。继承已合并PR23/24/26/28；本包运行闭包c4e1319，历史记录保持原身份。
 

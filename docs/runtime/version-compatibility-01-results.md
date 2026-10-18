@@ -1,4 +1,4 @@
-> PR29 P1/P2整改：原head d954ba6的组合记录重验存在配置与原事件未关联缺口，Windows恢复/卸载漏传业务程序集。整改设计与执行计划见[本包](../work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md)；旧候选与结果保持原身份，新验证另记，不以旧PASS替代。
+> 本页为c4e1319原交付历史。d954ba6独立审查发现的组合证据与Windows维护入口问题已由[PR29整改](version-compatibility-01-rereview-results.md)补齐；原报告、候选及证据按其原SHA读取，不将旧PASS扩展为新发行通过。
 
 # 版本管理补齐 · 交付结果
 

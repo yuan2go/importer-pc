@@ -21,5 +21,5 @@
 
 - [x] P1测试先行：scripts/test_application_compatibility.py增加原始snapshot与自洽改标配置、缺/错结果及场景、输入事件降级测试；先运行保留真实失败日志。修改scripts/application_compatibility.py，schema2绑定输入事件并校验实际配置/场景/结果，finish拒绝无事实PASS；既有schema1不倒写。
 - [x] P2测试先行：ParcelCapabilityFactory提取原恢复校验为共享ReadPublishedRelease入口，VersionCompatibility.cs在三个业务上验证正确schema2通过、错版本/schema1/声明字节拒绝；先保留原三参实现FAIL，再补实际businessAssembly并用于安装/恢复/卸载。无真实提权或设备控制。
-- [ ] 运行PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts -p test_application_compatibility.py -v及指南/选装包回归；dotnet build tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj -m:1 -nr:false，执行--version-compatibility。必要三种WPF兼容构建；固定源码后新建WcsToPlc portable和Sportmaster win-x64候选，验证默认/BeforeMain/Attached真实进程与负例。
-- [ ] 将原审查原件hash、red/green日志、新候选/运行身份及未验边界写docs/runtime/evidence/version-compatibility-01-rereview和整改结果；资料校验与267项历史失败分开。复核diff、提交并推送codex/version-compatibility，读取PR29 head并保持OPEN，不合并。
+- [x] 运行PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts -p test_application_compatibility.py -v及指南/选装包回归；dotnet build tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj -m:1 -nr:false，执行--version-compatibility。必要三种WPF兼容构建；固定源码后新建WcsToPlc portable和Sportmaster win-x64候选，验证默认/BeforeMain/Attached真实进程与负例。
+- [x] 原审查原件hash、red/green日志、新候选/运行身份及未验边界已写[整改结果](../runtime/version-compatibility-01-rereview-results.md)和证据；资料校验与267项历史失败分开。修复源码提交5e3282b已固定。提交推送与PR状态以实际远端回执为准，本清单不作为推送回执；保持PR29 OPEN，不合并。

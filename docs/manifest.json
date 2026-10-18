@@ -360,9 +360,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "5ac5614d51be546a8846bcc1c0cb041ddf8af82b213493e438f1c026c9c3dd8e",
-      "size_bytes": 10665,
-      "git_blob": "d5daa6c90a2dc17ccf7e7052fbbd147994776bc4",
+      "sha256": "9c117c953c2cdee5f7f25541a6ab5807f05083588a6d5cffa63217c19d7bfbbb",
+      "size_bytes": 10696,
+      "git_blob": "77b79bc844182dc554d1a90b4e16016b719780b1",
       "version": "version-compatibility-01",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized business version compatibility, release provenance and synthetic combination evidence",
@@ -20757,6 +20757,72 @@
       "git_blob": "79e8d8b0492bcb5adbf9ad659f5b43c46b638014"
     },
     {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/README.md",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "59b21109834c687117bc604ab54d2e475c1859a581895ddae75a3027ddfab5af",
+      "size_bytes": 2441,
+      "git_blob": "507c7b13fed674e704d5950824c8751f2a685118"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/archive-checks.json",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "accb67f7278b8320369f8e43ee15789f5e4b9c0b9ff3be24fe003fba03012f76",
+      "size_bytes": 88486,
+      "git_blob": "21ac797d85f7f1fa6798f6281729828a5a483ec5"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/archive-comparison.json",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "e7ab81b8b9840191413ac1a020e73421d033740024a2bb90f49e95f0a1fff343",
+      "size_bytes": 650,
+      "git_blob": "ced9850bac9714ecfda1b34fae13a841d9e692cb"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/candidates.json",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "6783a85587bdcdc087fde224d0dd5d861e601a53d0b990cab86a39754069f08d",
+      "size_bytes": 2004,
+      "git_blob": "e1cc148dc38cd644c9cd35162c42f1deef3f48a5"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/checks.json",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "a8929a0a9707cae3f663f27c5767748d9e593b0c60aa554a4712c2116b3aa930",
+      "size_bytes": 5842,
+      "git_blob": "bdd05f858ff9e7df5a09f0b60e4408043ee6d89f"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/combination-index.json",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "09f7a8cfbfa1f8c6793c0f90059bb05eae990e1b160ed22c18606ccc771c4908",
+      "size_bytes": 1922,
+      "git_blob": "5fd0638b2a42fbaa1a6eff24959b04c3b9bcb121"
+    },
+    {
       "path": "docs/runtime/evidence/version-compatibility-01-rereview/csharp-green-build.log",
       "version": "version-compatibility-01-rereview",
       "status": "current_implementation_or_boundary_record",
@@ -20834,6 +20900,50 @@
       "git_blob": "2abd05cf6ca09063502859dbb6163e20f9bea16b"
     },
     {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/maintenance-il-build.log",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "5937c6ce9abd3f81b211e6a771f501bd6ab29bd81a4a0d0a048a000de8a848eb",
+      "size_bytes": 336,
+      "git_blob": "072853512c735f28d90e6c37d4e2e1bb04f0febf"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/maintenance-il-probe.cs.txt",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "00de2850092d9f9561e071db95c009875e7a02c3ecca6e9878a5d8631e616974",
+      "size_bytes": 3404,
+      "git_blob": "0a8bc030b61e11172e93c55e043b24a6ad56f867"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/maintenance-il-probe.csproj.txt",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "38e201f047792df530db8c7d157c2b6b19d1ed2e4134dba5da5c59e97d3b0da2",
+      "size_bytes": 211,
+      "git_blob": "d858e4e244db21f506bf17826abd182335fc3999"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/maintenance-il.json",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "22bd61f4ab44c70393b8c4f73814dd2e67d29ac2a02877e07473cb4fb41def7f",
+      "size_bytes": 32647,
+      "git_blob": "69ae4723916501cf47f06ad6c0e3cd48e24bc3fa"
+    },
+    {
       "path": "docs/runtime/evidence/version-compatibility-01-rereview/original-review-custody.json",
       "version": "version-compatibility-01-rereview",
       "status": "current_implementation_or_boundary_record",
@@ -20843,6 +20953,39 @@
       "sha256": "d275bed37c26732af1405c7fdb5c2f5d03c70c26f54728e426b543947a173741",
       "size_bytes": 1245,
       "git_blob": "09e03eea8fbc869f737f9410f8f2ace0b1a95734"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/p1-original-probe-rejected.log",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "dc46507b4b138a1fa8f489d619c283a8f5494370b1fb28643075741db12fcfd5",
+      "size_bytes": 919,
+      "git_blob": "a21b94ab55dc7fa97fb3e23db624bc8b5a600eb4"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/published-maintenance-portable-build.log",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "57fff2b44e2520cc03ed9afbe61816afcf9f48b03c419407091e0ebba45d173e",
+      "size_bytes": 276,
+      "git_blob": "5ae6d72e03fa6e4fcea8c7c8cabdaf99309459cd"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/published-maintenance-portable.json",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "b83fb81a8ba35a144091969b3c2f4678f16854f4111b1bd2b84e2209328b765d",
+      "size_bytes": 386,
+      "git_blob": "2c5f02e43f5404cd64c6d475fe6aea84f1757766"
     },
     {
       "path": "docs/runtime/evidence/version-compatibility-01-rereview/python-all-final.log",
@@ -20889,6 +21032,17 @@
       "git_blob": "ca02adbacd0fad31aa74dd231e913b882f08b957"
     },
     {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/sportmaster-win-x64-package.log",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "5a14dc8e3c9d520e414de139a2454c9d9c91a4050566ac372db9027b25130a7a",
+      "size_bytes": 8261,
+      "git_blob": "3b3fdc307dd8049b00322d7e0c5b088cb8052729"
+    },
+    {
       "path": "docs/runtime/evidence/version-compatibility-01-rereview/sportmaster-wpf-build.log",
       "version": "version-compatibility-01-rereview",
       "status": "current_implementation_or_boundary_record",
@@ -20911,6 +21065,116 @@
       "git_blob": "65759d01f428dea0dff5196f1349d14c14fde152"
     },
     {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/wcs-attached.json",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "513936adb3627c91d55a5c782272c85c0772e6098869b187c7245d62d8a77cb5",
+      "size_bytes": 11795,
+      "git_blob": "c693c1dae5f53ced3ff0627741969f67452f89d2"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/wcs-attached.json.events.jsonl",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "cb3aad66af2d9f12311250f983274449db20f39255f6bb1f0f38a759138b0ab6",
+      "size_bytes": 155176,
+      "git_blob": "709561cece3fca7fb8430c991f093c7c3db443fb"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/wcs-attached.log",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "92612730811ad8d67cf761052553a198874b965de1c4705e50c0cbc3f3ca2097",
+      "size_bytes": 810,
+      "git_blob": "b7b0649b4ae26ec593f6a69ba520caf0a8a264c4"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/wcs-before-main.json",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "7783999972910ff5c94fbfedb15486fcdfd03e9e963b54b950f710533429c60f",
+      "size_bytes": 11751,
+      "git_blob": "73f0646863a371e0ad15abe01f1ba545402b7ddb"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/wcs-before-main.json.events.jsonl",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "f5fdeddd2288b2724615b6f1f4165b203c6329ee33866f0b2602619cba7701bf",
+      "size_bytes": 213466,
+      "git_blob": "25addc27c82cf95e01e13b620130cf009f121076"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/wcs-before-main.log",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "877877ad9d8a94392ed6acd0fdab4af45f0aafae88acea3b80d8043fa1799dda",
+      "size_bytes": 781,
+      "git_blob": "28248dc74a4636c1fa33cd50e6ef3db0182aa184"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/wcs-default.json",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "70ef4026829c9ea1e377b67ec2fad5483a1161a8102cefec67e05107f9da1e66",
+      "size_bytes": 7651,
+      "git_blob": "f866737faeb48b7dd8b4cda511d596c2d1de3b13"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/wcs-default.json.events.jsonl",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "bce68c741e5652831570270ac11b71a23edc191f13d2bd1bea6ee2ddfb33ff85",
+      "size_bytes": 40456,
+      "git_blob": "1014c7b03840a1f82db9111292ea734253f83616"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/wcs-default.log",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "5e4133b490901ef608b3dcacab639f6a023b9b00621d9716803e2630e7c0af24",
+      "size_bytes": 545,
+      "git_blob": "cb69bed6689a62ed55b3fd675eecfcaecd182eef"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/wcs-to-plc-package.log",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "dfd7f42d94980d2b5214dcdcf2746ba1a78a3d688af50c3e2e3fd57a2e836ede",
+      "size_bytes": 4765,
+      "git_blob": "aba753105a09365ebfe388d33dbb41c2e3aa5bf8"
+    },
+    {
       "path": "docs/runtime/evidence/version-compatibility-01-rereview/wcs-to-plc-wpf-locked-build.log",
       "version": "version-compatibility-01-rereview",
       "status": "current_implementation_or_boundary_record",
@@ -20931,6 +21195,28 @@
       "sha256": "df97b9b21ce36e6df421e0dd3728dcd3524aa0d49ab1beed6701640667615921",
       "size_bytes": 3167,
       "git_blob": "1fdda5ddc2d9ae1a4b968be30bb14e11ccf8ed86"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/windows-load-attempt.json",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "6cbcd9faa64eae23ef01e60f23918b0db71bb44aa0f30d584a2e87e9f3cff835",
+      "size_bytes": 339,
+      "git_blob": "a51575d27cfef19ba4694a0f7f01314bc8cdf444"
+    },
+    {
+      "path": "docs/runtime/evidence/version-compatibility-01-rereview/windows-load-confirmation.log",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "aebe831d8c70d7faf7762bd71e695a391bf0d713953d7da72b15eb931b3a8a9d",
+      "size_bytes": 652,
+      "git_blob": "5995bfdf5f1563c0f9856bc94609aa5404e4658e"
     },
     {
       "path": "docs/runtime/evidence/version-compatibility-01/README.md",
@@ -21968,10 +22254,21 @@
       "git_blob": "6c8110ef373c8fa9f9c5cee05832f6633afffd08"
     },
     {
+      "path": "docs/runtime/version-compatibility-01-rereview-results.md",
+      "version": "version-compatibility-01-rereview",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized PR29 P1/P2 fix, synthetic regression or original-byte custody",
+      "source": "User authorized PR29 P1/P2 remediation; no customer material",
+      "storage_scope": "public_repository",
+      "sha256": "9ef722b11985b185999ec3b4e6ba61df68bcc48c85e6e2abe19fa7b58238f05d",
+      "size_bytes": 4240,
+      "git_blob": "77cc723ec9139b37790061cd4c5f7acda96eae63"
+    },
+    {
       "path": "docs/runtime/version-compatibility-01-results.md",
-      "sha256": "0e8e08456a557e9bc8169db7b6c8fa91137e5032a8c38e198b776ffa2f302193",
-      "size_bytes": 5711,
-      "git_blob": "fdd335e82bfcd8d41c6008803064881ae707eb93",
+      "sha256": "c4cf2930a0dbcd005d9999b6ff054437439dafae0a1e6a06f236f64847a15cda",
+      "size_bytes": 5663,
+      "git_blob": "b3f405a25f0be3cbddb3f93ba4d9729a739909c2",
       "version": "version-compatibility-01",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized version compatibility and publication receipt",
@@ -23261,9 +23558,9 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md",
-      "sha256": "9957e6ccbc24009750b4c18b6ac7177cf7ac35b01f4ac2d364789d912c38e401",
-      "size_bytes": 3854,
-      "git_blob": "dc5c04125ce6eb76c1e82b0544e33922618eb270",
+      "sha256": "0d5a92e61aeee715d1fe175e7b80efafcda1ebc2488ecf29e9da6a87d6aaa1b6",
+      "size_bytes": 3916,
+      "git_blob": "151667496be6520ea04976ad459b2373ff2ae206",
       "version": "version-compatibility-01",
       "status": "current_reference_implementation_or_evidence",
       "purpose": "Authorized version compatibility and publication receipt",

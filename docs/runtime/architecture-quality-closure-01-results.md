@@ -63,4 +63,4 @@ Application.Contracts/能力示例1.6.0继承PR23原采集Retain/Release；观�
 - **BLOCKED：** 厂商SDK、真实身份/WCS/PLC合同/地址/握手、实体采集/测量关联、离场/复位/安全联锁及现场资格。Production仍拒绝缺必需能力/独立资格，不静默模拟。
 - **后续：** 按[Windows与现场清单](validation/architecture-quality-closure-01-windows.md)收集逐项原证据；取得PDF后单独完成原件归档；有混合旧消费者时安排统一维护读者；按现场预算执行历史外迁和长期性能工作包。D/RV和历史批准不改，不填写假批准人。
 
-本包通过开发分支创建main PR供审查，未合并业务。PR及最终交付HEAD由后续回执登记。
+已创建并读回[PR #24](https://github.com/yuan2go/importer-pc/pull/24)，OPEN，创建时HEAD90123e2，未合并main。回执见[publication-receipt](evidence/architecture-quality-closure-01/publication-receipt.json)。随后仅补本回执/清单，业务及候选仍固定上述身份。

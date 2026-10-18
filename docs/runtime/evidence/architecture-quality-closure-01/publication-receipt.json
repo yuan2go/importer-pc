@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-18T13:59:00.292315+00:00",
+  "pull_request": {
+    "baseRefName": "main",
+    "headRefOid": "90123e2737a9e1dd618372884cb92e74e70edbbe",
+    "mergeStateStatus": "CLEAN",
+    "number": 24,
+    "state": "OPEN",
+    "url": "https://github.com/yuan2go/importer-pc/pull/24"
+  },
+  "base_main": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
+  "runtime_code_commit": "cad129f4fac2c1969c2bd80985caa2c6a0b785f0",
+  "candidate_source_commit": "e1fcff0fdd3434d4bc7d4a50323dd233d822bb15",
+  "business_merged_main": false,
+  "pdf_archived_main": false,
+  "pdf_status": "BLOCKED_NOT_OBTAINED",
+  "pr23_merged_by_this_task": false,
+  "following_commit_scope": "Documentation, manifest and publication receipt only; runtime and candidate bytes unchanged"
+}

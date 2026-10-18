@@ -2,9 +2,9 @@
   "status": "FAIL",
   "scope": "public",
   "counts": {
-    "files": 1914,
-    "references": 1064,
-    "json": 613,
+    "files": 1915,
+    "references": 1066,
+    "json": 614,
     "boards": 18,
     "slides": 18,
     "pptx": 1,
@@ -1603,6 +1603,10 @@
       "target_sha256": "c9a7c03661acf31ff4db5053d5cbeeaed0bb3fda9c3f451ddc874c3c20f9b6c1"
     },
     {
+      "source": "docs/runtime/architecture-quality-closure-01-results.md",
+      "target_sha256": "89fcb0db90a7d3e04b45fb862422aad056e6a5d80ea2709e6dcafed87dbfd1ba"
+    },
+    {
       "source": "docs/runtime/backup-health-recovery.md",
       "target_sha256": "5ea2120df617e64d2985d20f42e8bc71bb8584a618b7f7b5f4abb4022c623449"
     },
@@ -1757,6 +1761,10 @@
     {
       "source": "docs/work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md",
       "target_sha256": "cf391b02971fc189ce69929e5044e41c95eb6ccd1d20fa7be25a4c2a7e19de4c"
+    },
+    {
+      "source": "docs/work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md",
+      "target_sha256": "89fcb0db90a7d3e04b45fb862422aad056e6a5d80ea2709e6dcafed87dbfd1ba"
     },
     {
       "source": "docs/work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md",

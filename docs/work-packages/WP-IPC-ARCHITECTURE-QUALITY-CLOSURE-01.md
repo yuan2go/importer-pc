@@ -13,7 +13,7 @@
 - [x] 配置/扩展：新增配置审计及Parcel消费者读者；Assembly Factory/CLI/PlatformStore复用安装恢复/卸载；真实签名包和离线备份引用检查。
 - [x] UI：先读v1.1原HTML/CSS/JS和完整交接；Parcel ViewModel/History/Maintenance及Sportmaster左右投影，命令Owner一致、完整候选编辑；DirectPlc不扩范围。
 - [x] 参考HTTP有界正文/取消；必要构建、定向验证、一个必要候选独立解包实际进程旅程。
-- [ ] 同步运行/迁移/扩展/Windows与现场后验、问题源码证据及未完成范围；提交推送main PR，不合并业务。
+- [x] 同步运行/迁移/扩展/Windows与现场后验、问题源码证据及未完成范围；提交推送main PR，不合并业务。
 
 每项先建立能复现旧缺陷的定向断言，再实现责任闭环并运行相应选择器；失败保留。测试使用真实Application/ParcelCapabilityFactory、SQLite和参考协议，外部门面仅故障注入，不代替主链。不得删关键断言或把受阻写PASS。
 
@@ -30,3 +30,5 @@
 |用户三至五增量|逐文件复核，不以审查6项缩减范围|阶段/设备/UI/配置/HTTP/扩展各项定向结果|
 
 本包实际实现、固定源码及参考PASS见[交付结果](../runtime/architecture-quality-closure-01-results.md)。原PDF仍未取得，归档项BLOCKED；Windows NOT_RUN、真实SDK/协议/现场BLOCKED，D/RV不改。
+
+已推送并创建[PR #24](https://github.com/yuan2go/importer-pc/pull/24)，未合并main。PDF归档项保持BLOCKED，不以参考整改通过关闭该缺失原件。

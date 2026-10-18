@@ -6,6 +6,10 @@
 
 [22工作包](work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md) · [22设计](design/application-architecture-22.md) · [22运行/配置/升级](runtime/application-architecture-22.md)。最新main基线ea881293，开发分支codex/application-architecture-22；本包完成情况以22结果及实际源码/候选身份读取。Sportmaster两个独立投递位由用户确认；不把旧Supply共享箱/数量/AGV规则套入新Application。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
+## 最新独立审查与下一阶段交接
+
+[架构质量审查02：原PDF、最新复核及精简Codex提示词](reviews/architecture-quality-audit-02/README.md)。固定审查main为`2126ac2c06a0c352d96afbbf13ec1a719c352738`；报告保持形成时身份，下一阶段N01–N07按执行时main与并行PR复核后实施。本次仅获授权发布报告与交接，未实施修复；不覆盖现行设计或历史验收。
+
 ## 继承的整合与历史证据
 
 当前工程入口：[PR20/21整合记录](runtime/pr20-21-integration.md)。开工main `08286542`（PR19已合并）；最终运行源码`d5c8b79`，三项评审修复、交叉恢复整合及定向参考验证完成。PR状态和main合并身份读取GitHub及整合回执；旧报告的OPEN与候选身份按形成时读取。

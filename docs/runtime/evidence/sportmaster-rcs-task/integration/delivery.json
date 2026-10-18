@@ -1,0 +1,30 @@
+{
+  "runtime_source_commit": "9050bdd53e7f60882a9418c1c04e04307a1b8f1d",
+  "integration_main": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "component_version": "1.0.1",
+  "parcel_database": 6,
+  "public_contract": "1.7.0",
+  "artifact_hashes": {
+    "sportmaster-portable.zip": "e796cac5752b99df89e99f19eaf59816fa908790386aeafc98743fd2113c445d",
+    "sportmaster-win-x64.zip": "80b05808479cf3bbb73b81c6fa8a47b0a9d7811b59d26cd058e3963e5e2d3226",
+    "sportmaster-rcs-task-1.0.1.ipcx": "5f72f5b017ee55a2a5c1df5617b7b0930a2becde574a40f09e351ce9bbfb1d5d"
+  },
+  "sql1_5_original_bodies_unchanged": true,
+  "sql1_5_source_hashes": {
+    "1": "1559bee20c41361c095d90468713d929da7edb4c09f6a2a643ebfee01bfe0eae",
+    "2": "ff1531ce414cbb2eafd80a79fb16b80cf5973f9090b344f8794b4e118532a800",
+    "3": "b5c3c2b147373daad5f4fa2195e92e54d17d5dba110bda7ee79163c3e1852a04",
+    "4": "f54bdeba07c877438171128a490f50a9dc9116624b8e0529de67af5ac0a17755",
+    "5": "42e4f24fd0ea9846cd488e8b22ff0be2a4e3732e8bc26985b495806c2f597bf9"
+  },
+  "signed_exact_candidate_application": "PASS",
+  "portable_actual_extracted_smoke": "PASS",
+  "cli_install_candidate_preflight_no_overwrite": "PASS",
+  "win_x64_archive_and_contract_parity": "PASS",
+  "windows_actual": "NOT_RUN",
+  "real_rcs_sdk_device_field": "BLOCKED",
+  "artifacts_local_directory": ".artifacts/rcs-final",
+  "initial_candidate_source": "4c9d51c2c017b7be74cc45156c9df9cd97a5fae9",
+  "initial_component_version": "1.0.0",
+  "original_initial_artifacts": "Unchanged; historical candidate only"
+}

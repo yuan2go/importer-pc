@@ -1,0 +1,60 @@
+{
+  "Head": "f068156ed9d4a0ffe4feee94b5c11e966aaa366b",
+  "SourceFixtureUnchanged": true,
+  "results": [
+    {
+      "variant": "missing-query-raw",
+      "passed": true,
+      "version": 4,
+      "externalQueryCalls": 0,
+      "failure": "Prior outcome custody proof incomplete; original reader marker retained",
+      "original": {
+        "Id": "f8d9565207444e7584ebae5beb9d69d3",
+        "Operation": "020fe20036f749f7af55b19deff160eb",
+        "Stage": "image-upload",
+        "Request": "66dbbf7a89774ec9af44ab27f88bfd4a",
+        "Source": "Submit",
+        "State": "OutcomeReconciled",
+        "RawHash": null,
+        "QueryOccurrence": "e866dd9fe2784378a2fcaaa66bb2dba6",
+        "Custody": null
+      }
+    },
+    {
+      "variant": "changed-query-hash",
+      "passed": true,
+      "version": 4,
+      "externalQueryCalls": 0,
+      "failure": "Outcome Query original bytes changed",
+      "original": {
+        "Id": "f8d9565207444e7584ebae5beb9d69d3",
+        "Operation": "020fe20036f749f7af55b19deff160eb",
+        "Stage": "image-upload",
+        "Request": "66dbbf7a89774ec9af44ab27f88bfd4a",
+        "Source": "Submit",
+        "State": "OutcomeReconciled",
+        "RawHash": null,
+        "QueryOccurrence": "e866dd9fe2784378a2fcaaa66bb2dba6",
+        "Custody": null
+      }
+    },
+    {
+      "variant": "orphan-receipt-owner",
+      "passed": true,
+      "version": 4,
+      "externalQueryCalls": 0,
+      "failure": "Legacy external/custody proof incomplete; original reader marker retained",
+      "original": {
+        "Id": "f8d9565207444e7584ebae5beb9d69d3",
+        "Operation": "020fe20036f749f7af55b19deff160eb",
+        "Stage": "image-upload",
+        "Request": "66dbbf7a89774ec9af44ab27f88bfd4a",
+        "Source": "Submit",
+        "State": "OutcomeReconciled",
+        "RawHash": null,
+        "QueryOccurrence": "e866dd9fe2784378a2fcaaa66bb2dba6",
+        "Custody": null
+      }
+    }
+  ]
+}

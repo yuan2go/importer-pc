@@ -1,0 +1,14 @@
+{
+  "source": "IPC-SYNTHETIC",
+  "locale": "zh_CN",
+  "zone-id": "1",
+  "project-id": "1",
+  "quantity": "1",
+  "specified-chute": "false",
+  "request-id-base": "1000000000000",
+  "request-id-count": "1000000",
+  "left-station-code": "SYNTHETIC-L",
+  "left-bcr-code": "SYNTHETIC-L-READER",
+  "right-station-code": "SYNTHETIC-R",
+  "right-bcr-code": "SYNTHETIC-R-READER"
+}

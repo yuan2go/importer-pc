@@ -1,0 +1,154 @@
+{
+  "BaselineMain": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "RuntimeSource": "fe4a4a2198874a8a5250ce67d50c849ba833c7c0",
+  "Media": [
+    {
+      "File": "core.zip",
+      "Sha256": "92ac82e52374070c8b83e9380fd9422bfcb3bfa9ec40e8a80d201825ca2845f7",
+      "Bytes": 18368454,
+      "SourceCommit": "fe4a4a2198874a8a5250ce67d50c849ba833c7c0",
+      "Target": "portable",
+      "VerifiedFiles": 94,
+      "Packages": [],
+      "WindowsActual": "NOT_RUN",
+      "SdkProtocolSite": "BLOCKED"
+    },
+    {
+      "File": "selected.zip",
+      "Sha256": "65fca269a3f06360b0f9174f60f144f3232ac813fe282c056371bb46d7b1ccf7",
+      "Bytes": 18398318,
+      "SourceCommit": "fe4a4a2198874a8a5250ce67d50c849ba833c7c0",
+      "Target": "portable",
+      "VerifiedFiles": 97,
+      "Packages": [
+        {
+          "Id": "reference.barcode",
+          "Version": "1.1.2",
+          "ManifestSha256": "224A6D0DF798C5D589DD7CC8885E78C3D35B88CFB73BAB33C3E0EED2F4107603",
+          "PackageSha256": "C5198014CF8E46A5A7AF6234D8D59821FD550D635EAC26A1AD0A73E48F301E8F",
+          "File": "offline-extensions/reference.barcode-1.1.2.ipcx",
+          "Mode": "Simulation",
+          "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
+          "Installed": false,
+          "Activated": false,
+          "PublicContracts": {}
+        },
+        {
+          "Id": "reference.parcel-capabilities",
+          "Version": "1.8.2",
+          "ManifestSha256": "DC640C308B2F7125F20788C65727556FD0E29F150E67EDEF4400AFF02045657F",
+          "PackageSha256": "EDE516106FCBE125287421479ED6372B97F46E0B8203B4518C321AD195EADC95",
+          "File": "offline-extensions/reference.parcel-capabilities-1.8.2.ipcx",
+          "Mode": "Simulation",
+          "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
+          "Installed": false,
+          "Activated": false,
+          "PublicContracts": {
+            "Ipc.Application.Contracts": "110AA38D5F25822EC2B6F62E37A262F3FE33E208AD83A2F9FCC7615824B2C487"
+          }
+        }
+      ],
+      "WindowsActual": "NOT_RUN",
+      "SdkProtocolSite": "BLOCKED"
+    },
+    {
+      "File": "windows-selected.zip",
+      "Sha256": "b21bd763078b331cd2493e8686f107decde4abc5dd928f22f1e89cee85d7b3a6",
+      "Bytes": 104108105,
+      "SourceCommit": "fe4a4a2198874a8a5250ce67d50c849ba833c7c0",
+      "Target": "win-x64",
+      "VerifiedFiles": 730,
+      "Packages": [
+        {
+          "Id": "reference.barcode",
+          "Version": "1.1.2",
+          "ManifestSha256": "224A6D0DF798C5D589DD7CC8885E78C3D35B88CFB73BAB33C3E0EED2F4107603",
+          "PackageSha256": "C5198014CF8E46A5A7AF6234D8D59821FD550D635EAC26A1AD0A73E48F301E8F",
+          "File": "offline-extensions/reference.barcode-1.1.2.ipcx",
+          "Mode": "Simulation",
+          "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
+          "Installed": false,
+          "Activated": false,
+          "PublicContracts": {}
+        },
+        {
+          "Id": "reference.parcel-capabilities",
+          "Version": "1.8.2",
+          "ManifestSha256": "DC640C308B2F7125F20788C65727556FD0E29F150E67EDEF4400AFF02045657F",
+          "PackageSha256": "EDE516106FCBE125287421479ED6372B97F46E0B8203B4518C321AD195EADC95",
+          "File": "offline-extensions/reference.parcel-capabilities-1.8.2.ipcx",
+          "Mode": "Simulation",
+          "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
+          "Installed": false,
+          "Activated": false,
+          "PublicContracts": {
+            "Ipc.Application.Contracts": "110AA38D5F25822EC2B6F62E37A262F3FE33E208AD83A2F9FCC7615824B2C487"
+          }
+        }
+      ],
+      "WindowsActual": "NOT_RUN",
+      "SdkProtocolSite": "BLOCKED"
+    }
+  ],
+  "PublicContracts": {
+    "Ipc.Platform.dll": "b94a89c7bbcf03e87fe474335c9d15bd25e5a4cb21d0aea86baf3f121a8aa02a",
+    "Ipc.Application.Contracts.dll": "110aa38d5f25822ec2b6f62e37a262f3fe33e208ad83a2f9fcc7615824b2c487"
+  },
+  "PublicContractsByteIdenticalAcrossMediaAndVerification": true,
+  "ExtensionIdentities": [
+    {
+      "Package": "parcel-1.8.2.ipcx",
+      "PackageSha256": "ede516106fcbe125287421479ed6372b97f46e0b8203b4518c321ad195eadc95",
+      "PluginSourceCommit": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+      "PluginSourceSha256": "759bddb4f1ebf8384c5b37bba5f62559de4d2abda0d9e73652d67b43c1645626",
+      "DefinitionSha256": "423531ba15536fb965eb960b28885b82d6c80f8ae263583365927877b89f73f8",
+      "HostContractSha256": "b94a89c7bbcf03e87fe474335c9d15bd25e5a4cb21d0aea86baf3f121a8aa02a",
+      "FrozenHostUnchanged": true,
+      "FrozenCheckerUnchanged": true,
+      "CheckerContractsSha256": {
+        "Ipc.Platform": "b94a89c7bbcf03e87fe474335c9d15bd25e5a4cb21d0aea86baf3f121a8aa02a",
+        "Ipc.Application.Contracts": "110aa38d5f25822ec2b6f62e37a262f3fe33e208ad83a2f9fcc7615824b2c487"
+      },
+      "Publisher": "audit02-reference",
+      "Version": "1.8.2",
+      "ExtensionContract": 1,
+      "Signature": "RSA-PSS/SHA256",
+      "Mode": "Simulation",
+      "ManifestSha256": "dc640c308b2f7125f20788c65727556fd0e29f150e67edef4400aff02045657f",
+      "TrustSha256": "a7ba985341dbd2b21fbb579a5ed776f3fd3cda8be42074a3654aa292efef37c2",
+      "PayloadSha256": {
+        "Ipc.Reference.ParcelCapabilitiesExtension.dll": "41ab9a75714399fbb83a03b0c47db325a99403133e9cbdc2f66ee14bdc34bb53"
+      },
+      "DependencyPackages": [],
+      "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+    },
+    {
+      "Package": "barcode-1.1.2.ipcx",
+      "PackageSha256": "c5198014cf8e46a5a7af6234d8d59821fd550d635eac26a1ad0a73e48f301e8f",
+      "PluginSourceCommit": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+      "PluginSourceSha256": "9dd0901d9f4bee8b540db0a72f3a768dc40d9da615a517a41aa6c82a972ed45d",
+      "DefinitionSha256": "1bcfe58954716d7b1b6714e58209c667147fe11cd4927a05bcf4fd6c7410f9ad",
+      "HostContractSha256": "b94a89c7bbcf03e87fe474335c9d15bd25e5a4cb21d0aea86baf3f121a8aa02a",
+      "FrozenHostUnchanged": true,
+      "FrozenCheckerUnchanged": true,
+      "CheckerContractsSha256": {
+        "Ipc.Platform": "b94a89c7bbcf03e87fe474335c9d15bd25e5a4cb21d0aea86baf3f121a8aa02a"
+      },
+      "Publisher": "audit02-reference",
+      "Version": "1.1.2",
+      "ExtensionContract": 1,
+      "Signature": "RSA-PSS/SHA256",
+      "Mode": "Simulation",
+      "ManifestSha256": "224a6d0df798c5d589dd7cc8885e78c3d35b88cfb73bab33c3e0eed2f4107603",
+      "TrustSha256": "a7ba985341dbd2b21fbb579a5ed776f3fd3cda8be42074a3654aa292efef37c2",
+      "PayloadSha256": {
+        "Ipc.Reference.BarcodeExtension.dll": "87fa2eb3565609f29a27f6f4e81e598201cabf496ab7fc16898a7d9d8ecd7558"
+      },
+      "DependencyPackages": [],
+      "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+    }
+  ],
+  "RepositoryAndSql1To5Unchanged": true,
+  "RepositoryFileSha256": "f31d58dd890476bbb042c87d745a07b19494e5466ce4922f06e6a00d6af9512f",
+  "PriorImmutablePackagesOverwritten": false
+}

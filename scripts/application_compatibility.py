@@ -7,6 +7,7 @@ import re
 import threading
 import uuid
 import xml.etree.ElementTree as ET
+from urllib.parse import urlsplit
 
 APPLICATIONS = {'sportmaster': 'Sportmaster', 'direct-plc': 'DirectPlc', 'wcs-to-plc': 'WcsToPlc'}
 
@@ -70,9 +71,58 @@ def utc():
 
 
 def run_input(record):
+    keys = ['Command', 'WorkingDirectory', 'OptionalFeatures', 'AttachedUpload', 'ExternalPeerProcess', 'Windows', 'RealEquipment', 'Assurance', 'Checks', 'OptionalChecks'] if record['SchemaVersion'] >= 3 else []
     return {key: record[key] for key in ['RunId', 'Application', 'BusinessVersion', 'SourceCommit', 'Target',
         'CandidateFilesSha256', 'ReleaseSha256', 'AssemblyManifestSha256', 'CompatibilitySha256',
-        'InputConfiguration', 'InputConfigurationSha256']}
+        'InputConfiguration', 'InputConfigurationSha256'] + keys}
+
+
+
+def journey_checks(application, optional, attached):
+    checks = ['candidate file hashes', 'actual selected assembly startup', 'camera-to-final-reference-chain',
+              'persistent original phases on restart', 'orderly stop',
+              'both packaged physical readers' if application == 'sportmaster' and not optional else 'selected topology']
+    extra = ['authenticated admission', 'same-entity measured weight', 'actual PNG upload bytes',
+             'attached upload independent from main' if attached else 'lost pre-main upload blocks PLC',
+             'process restart original query',
+             'independent upload reconciliation keeps original operator' if attached else 'explicit continuation original operator',
+             'one execution per independent receiver'] if optional else []
+    return checks, extra
+
+
+def verify_execution(record, events, config):
+    if (record.get('Target'), record.get('Windows'), record.get('RealEquipment'), record.get('Assurance')) != (
+            'portable', 'NOT_RUN', 'BLOCKED', 'SIMULATION_REFERENCE_ONLY') or config.get('Mode') != 'Simulation':
+        raise ValueError('Portable reference qualification cannot claim Windows or real equipment acceptance')
+    command = record.get('Command')
+    if not isinstance(command, list) or not command or any(not isinstance(v, str) for v in command):
+        raise ValueError('Actual command must be a nonempty argument list')
+    for key, flag in [('OptionalFeatures', '--optional-features'), ('AttachedUpload', '--attached-upload'), ('ExternalPeerProcess', '--peer-fixture')]:
+        if type(record.get(key)) is not bool or record[key] != (flag in command) or command.count(flag) > 1:
+            raise ValueError('Command execution mode differs from recorded scenario')
+    if record['AttachedUpload'] and not record['OptionalFeatures'] or record['ExternalPeerProcess'] and not record['OptionalFeatures']:
+        raise ValueError('Execution mode requires optional journey')
+    checks, extra = journey_checks(record['Application'], record['OptionalFeatures'], record['AttachedUpload'])
+    if record.get('Checks') != checks or record.get('OptionalChecks') != extra:
+        raise ValueError('Claimed checks differ from the selected reference journey')
+    bindings = [config.get('Wcs'), config.get('Plc'), (config.get('Images') or {}).get('Uploader')]
+    endpoints = [(b.get('Parameters') or {}).get('endpoint') for b in bindings if b]
+    peers = [e for e in events if e.get('Status') == 'ReferencePeerStarted']
+    if not record['ExternalPeerProcess']:
+        if any(endpoints) or peers:
+            raise ValueError('Local reference execution cannot claim an external peer endpoint/process')
+    else:
+        if not endpoints or any(not ep or urlsplit(ep).scheme != 'http' or urlsplit(ep).hostname != '127.0.0.1' for ep in endpoints) or len(set(endpoints)) != 1:
+            raise ValueError('External peer process must match every actual reference endpoint')
+        if record['SchemaVersion'] >= 3:
+            if len(peers) != 1:
+                raise ValueError('Actual external peer process start evidence required')
+            peer = peers[0]
+            if type(peer.get('ProcessId')) is not int or peer['ProcessId'] <= 0 or peer.get('Endpoint') != endpoints[0] or peer.get('Health') != 'PARCEL-REFERENCE-v1' or not re.fullmatch('[0-9A-F]{64}', peer.get('FixtureSha256', '')):
+                raise ValueError('External peer process identity/health differs from actual configuration')
+            i = command.index('--peer-fixture')
+            if i + 1 >= len(command) or peer.get('Fixture') != str((Path(record['WorkingDirectory']) / command[i+1]).resolve()) or events.index(peer) >= next(i for i,e in enumerate(events) if e.get('Status') == 'Started'):
+                raise ValueError('External peer command identity/start order differs')
 
 
 def verify_run_events(record, events_path):
@@ -83,7 +133,7 @@ def verify_run_events(record, events_path):
     """
     events = [json.loads(line)['Value'] for line in events_path.read_text().splitlines()]
     inputs = [event for event in events if event.get('Status') == 'CombinationInput']
-    if record['SchemaVersion'] == 2:
+    if record['SchemaVersion'] in (2, 3):
         if not events or len(inputs) != 1 or events[0] != dict(Status='CombinationInput', Binding=run_input(record)):
             raise ValueError('Recorded input/candidate identity differs from original run input event')
     elif inputs:
@@ -98,6 +148,7 @@ def verify_run_events(record, events_path):
     if len(starts) < 2 or any(event.get('Business') != record['Application'] for event in starts) or len({s.get('RuntimeId') for s in snapshots} - {None}) < 2:
         raise ValueError('Original run snapshots do not prove selected application restart')
     config = snapshots[0]['Configuration']['Effective']
+    verify_execution(record, events, config)
     images = config.get('Images')
     optional = bool(config.get('Login') or config.get('Scale') or images)
     attached = bool(images and images.get('Strategy', 'BeforeMain') == 'Attached')
@@ -114,11 +165,11 @@ def verify_run_events(record, events_path):
 
 
 class CombinationRun:
-    def __init__(self, output, command):
+    def __init__(self, output, command, *, optional_features=False, attached_upload=False, external_peer_process=False):
         self.output = Path(output).resolve()
         self.events_path = self.output.with_suffix(self.output.suffix + '.events.jsonl')
         if self.events_path.exists(): raise FileExistsError('Evidence events already exist')
-        self.record = dict(SchemaVersion=2, RunId=uuid.uuid4().hex, Status='RUNNING', StartedAt=utc(), Command=command,
+        self.record = dict(SchemaVersion=3, OptionalFeatures=optional_features, AttachedUpload=attached_upload, ExternalPeerProcess=external_peer_process, RunId=uuid.uuid4().hex, Status='RUNNING', StartedAt=utc(), Command=command, WorkingDirectory=str(Path.cwd()),
                            Windows='NOT_RUN', RealEquipment='BLOCKED', Assurance='SIMULATION_REFERENCE_ONLY')
         with self.output.open('x') as f: json.dump(self.record, f, indent=2)
         self.events = self.events_path.open('x')
@@ -141,6 +192,8 @@ class CombinationRun:
             Target=identity['Target'], CandidateFilesSha256=sha(root / 'SHA256SUMS'), ReleaseSha256=sha(root / 'app/application-release.json'),
             AssemblyManifestSha256=sha(root / 'ASSEMBLY.json'), CompatibilitySha256=release['CompatibilitySha256'],
             InputConfiguration=initial_config, InputConfigurationSha256=object_sha(initial_config))
+        checks, extra = journey_checks(release['ApplicationId'], self.record['OptionalFeatures'], self.record['AttachedUpload'])
+        self.record.update(Checks=checks, OptionalChecks=extra)
         self.event(dict(Status='CombinationInput', Binding=run_input(self.record)))
         self.save()
 
@@ -169,10 +222,12 @@ class CombinationRun:
         self.save()
 
 
-def verify_record(record_path, root, effective_configuration=None):
+def verify_record(record_path, root, effective_configuration=None, trusted_record_sha256=None):
     record_path, root = Path(record_path), Path(root)
     r = json.loads(record_path.read_bytes())
-    if r.get('SchemaVersion') not in (1, 2) or r.get('Status') != 'PASS': raise ValueError('Combination was not verified PASS')
+    if r.get('SchemaVersion') not in (1, 2, 3) or r.get('Status') != 'PASS': raise ValueError('Combination was not verified PASS')
+    if r['SchemaVersion'] < 3 and (not trusted_record_sha256 or sha(record_path) != trusted_record_sha256.upper()):
+        raise ValueError('Legacy schema command/qualification was not input-bound; independently trusted original record SHA256 required')
     for key, path in [('CandidateFilesSha256', root/'SHA256SUMS'), ('ReleaseSha256', root/'app/application-release.json'),
                       ('AssemblyManifestSha256', root/'ASSEMBLY.json'), ('CompatibilitySha256', root/'app/application-compatibility.json')]:
         if r[key] != sha(path): raise ValueError('Record belongs to another/changed candidate: ' + key)
@@ -189,6 +244,9 @@ def verify_record(record_path, root, effective_configuration=None):
     release = json.loads((root/'app/application-release.json').read_bytes())
     if (r['Application'], r['BusinessVersion'], r['SourceCommit']) != (release['ApplicationId'], release['BusinessVersion'], release['SourceCommit']):
         raise ValueError('Record business release identity differs')
+    identity = json.loads((root/'ASSEMBLY.json').read_bytes())
+    if identity.get('Target') != r['Target'] or identity.get('SourceCommit') != r['SourceCommit'] or identity.get('BusinessVersion') != r['BusinessVersion']:
+        raise ValueError('Record execution target/business differs from actual candidate identity')
     providers = selected_providers(config)
     declaration = json.loads((root/'app/application-compatibility.json').read_bytes())
     if providers != r['Providers'] or require_combination(declaration, providers) != r['CompatibilitySet']: raise ValueError('Recorded provider combination differs')
@@ -201,6 +259,7 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--record', type=Path, required=True); p.add_argument('--package', type=Path, required=True)
     p.add_argument('--configuration', type=Path)
+    p.add_argument('--record-sha256', help='Original legacy record SHA256 from an independently trusted publication/index')
     a = p.parse_args()
-    verified = verify_record(a.record, a.package, json.loads(a.configuration.read_bytes()) if a.configuration else None)
+    verified = verify_record(a.record, a.package, json.loads(a.configuration.read_bytes()) if a.configuration else None, a.record_sha256)
     print(json.dumps(dict(Status='PASS', RunId=verified['RunId'], Application=verified['Application'], BusinessVersion=verified['BusinessVersion'])))

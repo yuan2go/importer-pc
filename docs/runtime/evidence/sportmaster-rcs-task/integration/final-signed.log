@@ -1,0 +1,115 @@
+FrozenHostCustodyPublicProjection={
+  "source_commit": "9050bdd53e7f60882a9418c1c04e04307a1b8f1d",
+  "projection": "Explicit repository-relative path projection of local frozen host custody; original absolute paths retained outside Git",
+  "raw_original_sha256": "29b137d81a4c3d2cd76f6cca4ec6e44ed9b070a118d143562d5b7fcfe8a97989",
+  "assemblies": [
+    {
+      "name": "Ipc.Application.Contracts.dll",
+      "source": ".artifacts/rcs-final/sportmaster-portable/app/Ipc.Application.Contracts.dll",
+      "source_sha256": "43283e9240c5b4d4ad9cfe29aa0c660d36f77a4bcbe367a5d9aa807e72e133ec",
+      "destination": ".artifacts/rcs-final-signed-test-host/Ipc.Application.Contracts.dll",
+      "destination_sha256": "43283e9240c5b4d4ad9cfe29aa0c660d36f77a4bcbe367a5d9aa807e72e133ec",
+      "prior_testhost_sha256": "aa5afdaccfad403093182fed8439bcdc7292655b2c5b7490ad1c9c80b644750e"
+    },
+    {
+      "name": "Ipc.Application.ParcelFlow.dll",
+      "source": ".artifacts/rcs-final/sportmaster-portable/app/Ipc.Application.ParcelFlow.dll",
+      "source_sha256": "9b892f7421e99c8a01b675888f0d85de1b074d6a43a7bc02af1b5b29f00d6dca",
+      "destination": ".artifacts/rcs-final-signed-test-host/Ipc.Application.ParcelFlow.dll",
+      "destination_sha256": "9b892f7421e99c8a01b675888f0d85de1b074d6a43a7bc02af1b5b29f00d6dca",
+      "prior_testhost_sha256": "ba3d5c5f21ec31a821eebd43965ddf1ba7f7e5f05e8a3913efc8c4d52b150e64"
+    },
+    {
+      "name": "Ipc.Application.Sportmaster.dll",
+      "source": ".artifacts/rcs-final/sportmaster-portable/app/Ipc.Application.Sportmaster.dll",
+      "source_sha256": "473e45710c1ab1b648e96bae7faebd352c33192bbc182ea553a0dfd1f41fb849",
+      "destination": ".artifacts/rcs-final-signed-test-host/Ipc.Application.Sportmaster.dll",
+      "destination_sha256": "473e45710c1ab1b648e96bae7faebd352c33192bbc182ea553a0dfd1f41fb849",
+      "prior_testhost_sha256": "f93e80397f903d645c159a13da22c65d08fa7a43f59a4806e17f27ec647bfc99"
+    },
+    {
+      "name": "Ipc.Assembly.dll",
+      "source": ".artifacts/rcs-final/sportmaster-portable/app/Ipc.Assembly.dll",
+      "source_sha256": "d97a9580629d1176679ced8d69f9403dc6cb6f02e10853af2e455b184ec9ef3c",
+      "destination": ".artifacts/rcs-final-signed-test-host/Ipc.Assembly.dll",
+      "destination_sha256": "d97a9580629d1176679ced8d69f9403dc6cb6f02e10853af2e455b184ec9ef3c",
+      "prior_testhost_sha256": null
+    },
+    {
+      "name": "Ipc.Components.dll",
+      "source": ".artifacts/rcs-final/sportmaster-portable/app/Ipc.Components.dll",
+      "source_sha256": "915c8998b2d642440a2648106a46fe96294ffe9545f70a64db2b308a8c31b4a3",
+      "destination": ".artifacts/rcs-final-signed-test-host/Ipc.Components.dll",
+      "destination_sha256": "915c8998b2d642440a2648106a46fe96294ffe9545f70a64db2b308a8c31b4a3",
+      "prior_testhost_sha256": "322238d5ceeded74f1de2673499facf7cc076e952846e333bbd7b196715eb995"
+    },
+    {
+      "name": "Ipc.Drivers.dll",
+      "source": ".artifacts/rcs-final/sportmaster-portable/app/Ipc.Drivers.dll",
+      "source_sha256": "d46bd5aa28afcdbf48ba9bfa5f50a27e4fc04d0173eeda53fca75b266e63d750",
+      "destination": ".artifacts/rcs-final-signed-test-host/Ipc.Drivers.dll",
+      "destination_sha256": "d46bd5aa28afcdbf48ba9bfa5f50a27e4fc04d0173eeda53fca75b266e63d750",
+      "prior_testhost_sha256": "2892cb75055b30d0a0d79d9252f37b431b2dada67625e672089d0e55ccfe5d7c"
+    },
+    {
+      "name": "Ipc.Integrations.dll",
+      "source": ".artifacts/rcs-final/sportmaster-portable/app/Ipc.Integrations.dll",
+      "source_sha256": "3ba3b7ecd73adab1ea4312bde6dd7c88c82973410690fc3ebe7823ae269655df",
+      "destination": ".artifacts/rcs-final-signed-test-host/Ipc.Integrations.dll",
+      "destination_sha256": "3ba3b7ecd73adab1ea4312bde6dd7c88c82973410690fc3ebe7823ae269655df",
+      "prior_testhost_sha256": "ccb8e4d9ed24eaa0a9c0e94d58ce1c8e4b5824985995138a1dddadc7be149e34"
+    },
+    {
+      "name": "Ipc.Platform.Storage.dll",
+      "source": ".artifacts/rcs-final/sportmaster-portable/app/Ipc.Platform.Storage.dll",
+      "source_sha256": "42d4da538e2359b34dbb686a880aac50cc0759838d4c55bdaad131f843c87da9",
+      "destination": ".artifacts/rcs-final-signed-test-host/Ipc.Platform.Storage.dll",
+      "destination_sha256": "42d4da538e2359b34dbb686a880aac50cc0759838d4c55bdaad131f843c87da9",
+      "prior_testhost_sha256": "3a7f201c404aed2a4a2a610e30e5f180f66eec631b8b68c7cb4172d10dd6bbad"
+    },
+    {
+      "name": "Ipc.Platform.dll",
+      "source": ".artifacts/rcs-final/sportmaster-portable/app/Ipc.Platform.dll",
+      "source_sha256": "cb542b283abf847461eb182594dcf17dda6ae6b3492b0e30018df22d2ade5b83",
+      "destination": ".artifacts/rcs-final-signed-test-host/Ipc.Platform.dll",
+      "destination_sha256": "cb542b283abf847461eb182594dcf17dda6ae6b3492b0e30018df22d2ade5b83",
+      "prior_testhost_sha256": "eebd1c1fe6c538981e5314b584868d89921742badde28e94c49bdbf163a2b36a"
+    },
+    {
+      "name": "Ipc.Reference.Protocol.dll",
+      "source": ".artifacts/rcs-final/sportmaster-portable/app/Ipc.Reference.Protocol.dll",
+      "source_sha256": "5464aff30c7a9bb561a415c573b754d8c30b279abe3fa206c7cefaaf4ee0bec6",
+      "destination": ".artifacts/rcs-final-signed-test-host/Ipc.Reference.Protocol.dll",
+      "destination_sha256": "5464aff30c7a9bb561a415c573b754d8c30b279abe3fa206c7cefaaf4ee0bec6",
+      "prior_testhost_sha256": "35a24b746d8b7b2af8b4092af6994aa1aa6eab07591f591001531622b9b55526"
+    },
+    {
+      "name": "Ipc.Supply.Contracts.dll",
+      "source": ".artifacts/rcs-final/sportmaster-portable/app/Ipc.Supply.Contracts.dll",
+      "source_sha256": "de4df8ac24259c5976c9b584cba304b461827bb22e50badfb3d5f14886ed6e15",
+      "destination": ".artifacts/rcs-final-signed-test-host/Ipc.Supply.Contracts.dll",
+      "destination_sha256": "de4df8ac24259c5976c9b584cba304b461827bb22e50badfb3d5f14886ed6e15",
+      "prior_testhost_sha256": "16afabacc14f31f05f6fdbf728bb4f81bf2e59edd3cbb12192fc209a9575925e"
+    },
+    {
+      "name": "Ipc.Supply.dll",
+      "source": ".artifacts/rcs-final/sportmaster-portable/app/Ipc.Supply.dll",
+      "source_sha256": "9f444a5f0ffddba00e0ac355c77947913efa3b10f692ad49b5bbe45ccdc41545",
+      "destination": ".artifacts/rcs-final-signed-test-host/Ipc.Supply.dll",
+      "destination_sha256": "9f444a5f0ffddba00e0ac355c77947913efa3b10f692ad49b5bbe45ccdc41545",
+      "prior_testhost_sha256": "a892a98e42b14e1fe16fe7454c1349e7c19900e38498b4d7018cbb9f8e708263"
+    }
+  ]
+}
+
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-147deb68038f4f7f8d3567d70ad87d7c
+PASS RCS20: signed package verifies exact integration contract and explicitly declares no original-query capability
+PASS RCS20: installed exact signed module is discoverable with Query=false
+PASS RCS20: plain SportmasterApplication and ParcelCapabilityFactory load signed provider and execute both HTTP positions with durable original wire/response custody
+PASS RCS20: signed runtime exposes assigned task/SKU and original unpack details separately
+PASS RCS20: installed exact signed module is discoverable with Query=false
+PASS RCS20: actual signed extension path preserves ordinary RCS rejection
+PASS RCS20: installed exact signed module is discoverable with Query=false
+PASS RCS20: installed exact signed module is discoverable with Query=false
+PASS RCS20: signed provider restart, reconcile and reconnect retain exact original HTTP intention without a repeated POST
+PASS RCS20 SIGNED COMPLETE: verified installed extension, plain factory application, dual positions, unpack/rejection and restart no resend; Simulation fixture only

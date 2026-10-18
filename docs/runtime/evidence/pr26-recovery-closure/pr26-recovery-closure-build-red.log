@@ -1,0 +1,41 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 490 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 490 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 490 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 490 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 490 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 490 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj (用时 490 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 62 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 490 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 65 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 65 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Components/Ipc.Components.csproj (用时 8 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 76 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 78 毫秒)。
+  Ipc.Platform -> /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.Contracts/bin/Debug/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Platform.Storage/bin/Debug/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.ParcelFlow/bin/Debug/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.Sportmaster/bin/Debug/net10.0/Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.DirectPlc/bin/Debug/net10.0/Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.WcsToPlc/bin/Debug/net10.0/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Reference.Protocol/bin/Debug/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Components/bin/Debug/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Drivers/bin/Debug/net10.0/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Integrations/bin/Debug/net10.0/Ipc.Integrations.dll
+  Ipc.Application.Supply -> /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/src/Ipc.Application.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+/Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs(37,55): error CS8602: 解引用可能出现空引用。 [/Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj]
+/Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs(67,87): error CS8604: “PositionSnapshot Enumerable.Single<PositionSnapshot>(IEnumerable<PositionSnapshot> source)”中的形参“source”可能传入 null 引用实参。 [/Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj]
+/Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs(90,217): error CS8604: “PositionSnapshot Enumerable.Single<PositionSnapshot>(IEnumerable<PositionSnapshot> source)”中的形参“source”可能传入 null 引用实参。 [/Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj]
+
+生成失败。
+
+/Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs(37,55): error CS8602: 解引用可能出现空引用。 [/Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj]
+/Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs(67,87): error CS8604: “PositionSnapshot Enumerable.Single<PositionSnapshot>(IEnumerable<PositionSnapshot> source)”中的形参“source”可能传入 null 引用实参。 [/Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj]
+/Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs(90,217): error CS8604: “PositionSnapshot Enumerable.Single<PositionSnapshot>(IEnumerable<PositionSnapshot> source)”中的形参“source”可能传入 null 引用实参。 [/Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj]
+    0 个警告
+    3 个错误
+
+已用时间 00:00:11.28

@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj" />
     <Project Path="src/Ipc.Components/Ipc.Components.csproj" />
     <Project Path="src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj" />
     <Project Path="src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj" />

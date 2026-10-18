@@ -10,11 +10,12 @@ from composition import resolve
 
 class CompatibilityTests(unittest.TestCase):
     def completed_run(self, output, root, config, identity):
-        run = CombinationRun(output, ['actual-smoke'])
-        run.bind(root, identity, config)
-        run.effective(config)
         optional=bool(config.get('Images'))
         attached=bool(optional and config['Images'].get('Strategy','BeforeMain')=='Attached')
+        command=['actual-smoke']+(['--optional-features'] if optional else [])+(['--attached-upload'] if attached else [])
+        run = CombinationRun(output, command, optional_features=optional, attached_upload=attached)
+        run.bind(root, identity, config)
+        run.effective(config)
         operation={'Id':'operation-one','State':'PlcAccepted'}
         if optional: operation.update(Capture={'State':'Accepted'},Upload={'State':'Accepted'})
         for runtime in ['before-restart', 'after-restart']:
@@ -22,7 +23,7 @@ class CompatibilityTests(unittest.TestCase):
             run.event({'ApplicationId': config['ApplicationId'], 'RuntimeId': runtime,
                        'Configuration': {'Effective': config},
                        'Operations': [operation]})
-        run.finish({'Checks': ['actual journey'], 'OptionalFeatures': optional, 'AttachedUpload': attached,
+        run.finish({'OptionalFeatures': optional, 'AttachedUpload': attached,
                     'OperationId': 'operation-one', 'State': 'PlcAccepted'})
         return run
 
@@ -31,7 +32,7 @@ class CompatibilityTests(unittest.TestCase):
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             selected = resolve(root/'config/compositions.json', application+'-reference')
             version, policy = read_business(root, application, selected)
-            self.assertEqual(version['BusinessVersion'], '1.2.1')
+            self.assertEqual(version['BusinessVersion'], '1.2.2')
             self.assertEqual(version['CompatibilitySha256'], sha(policy))
             selected['components'][-2]['version'] = '9.0.0'
             # Change the actual business declaration regardless of topological order.
@@ -44,7 +45,7 @@ class CompatibilityTests(unittest.TestCase):
         app = root/'app'; app.mkdir()
         (app/'application-compatibility.json').write_text(json.dumps(policy))
         (app/'business.dll').write_text('fixed binary')
-        release = dict(SchemaVersion=2, ApplicationId='direct-plc', BusinessVersion='1.2.1', BusinessAssembly='business.dll', SourceCommit='a'*40, CompatibilitySha256=sha(app/'application-compatibility.json'))
+        release = dict(SchemaVersion=2, ApplicationId='direct-plc', BusinessVersion='1.2.2', BusinessAssembly='business.dll', SourceCommit='a'*40, CompatibilitySha256=sha(app/'application-compatibility.json'))
         (app/'application-release.json').write_text(json.dumps(release))
         identity = dict(release, Target='portable')
         (root/'ASSEMBLY.json').write_text(json.dumps(identity))
@@ -119,7 +120,7 @@ class CompatibilityTests(unittest.TestCase):
                 altered=copy.deepcopy(original); altered[key]=value
                 output.write_text(json.dumps(altered))
                 with self.subTest(field=key):
-                    with self.assertRaisesRegex(ValueError,'scenario|result'): verify_record(output,root)
+                    with self.assertRaisesRegex(ValueError,'input|scenario|result'): verify_record(output,root)
 
     def test_original_snapshot_is_required_even_with_rehashed_events(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -147,7 +148,7 @@ class CompatibilityTests(unittest.TestCase):
             base=Path(temporary); root=base/'package'; root.mkdir()
             config, _, identity=self.fixture(root)
             output=base/'run.json'; self.completed_run(output,root,config,identity)
-            r=json.loads(output.read_bytes()); self.assertEqual(r['SchemaVersion'],2)
+            r=json.loads(output.read_bytes()); self.assertEqual(r['SchemaVersion'],3)
             r['SchemaVersion']=1; output.write_text(json.dumps(r))
             with self.assertRaisesRegex(ValueError,'schema'): verify_record(output,root)
 
@@ -160,11 +161,13 @@ class CompatibilityTests(unittest.TestCase):
             rows=[json.loads(line) for line in events.read_text().splitlines()]
             events.write_text('\n'.join(json.dumps(row) for row in rows if row['Value'].get('Status')!='CombinationInput')+'\n')
             r['SchemaVersion']=1; r['EventsSha256']=sha(events); output.write_text(json.dumps(r))
-            original=output.read_bytes(); verify_record(output,root); self.assertEqual(output.read_bytes(),original)
+            original=output.read_bytes()
+            with self.assertRaisesRegex(ValueError,'trusted'): verify_record(output,root)
+            verify_record(output,root,trusted_record_sha256=sha(output)); self.assertEqual(output.read_bytes(),original)
             r['EffectiveConfiguration']['Plc']['Target']='reference://another'
             r['EffectiveConfigurationSha256']=object_sha(r['EffectiveConfiguration']); r['Providers']=selected_providers(r['EffectiveConfiguration'])
             output.write_text(json.dumps(r))
-            with self.assertRaisesRegex(ValueError,'snapshot'): verify_record(output,root)
+            with self.assertRaisesRegex(ValueError,'snapshot'): verify_record(output,root,trusted_record_sha256=sha(output))
 
     def test_schema2_preserves_valid_before_main_and_attached_journeys(self):
         config=json.loads((Path(__file__).resolve().parent.parent/'config/optional/direct-plc/business.json').read_bytes())
@@ -187,6 +190,55 @@ class CompatibilityTests(unittest.TestCase):
             for r in [altered,dict(original,RunId='another-run')]:
                 output.write_text(json.dumps(r))
                 with self.assertRaisesRegex(ValueError,'input'): verify_record(output,root)
+
+    def test_execution_command_qualification_and_checks_are_input_bound(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base=Path(temporary); root=base/'package'; root.mkdir()
+            config, _, identity=self.fixture(root)
+            output=base/'run.json'; self.completed_run(output,root,config,identity)
+            original=json.loads(output.read_bytes()); events=(base/original['EventsFile']).read_bytes()
+            attacks=[dict(original,ExternalPeerProcess=True,Command=original['Command']+['--peer-fixture','not-executed.dll']),
+                     dict(original,Command=['another-command']),dict(original,Windows='PASS'),
+                     dict(original,RealEquipment='PASS'),dict(original,Assurance='PRODUCTION_ACCEPTANCE'),
+                     dict(original,Checks=original['Checks']+['unexecuted check']),
+                     dict(original,OptionalChecks=['unexecuted optional check'])]
+            for changed in attacks:
+                output.write_text(json.dumps(changed))
+                with self.assertRaisesRegex(ValueError,'input'): verify_record(output,root)
+                self.assertEqual((base/original['EventsFile']).read_bytes(),events)
+
+    def test_peer_and_qualification_cannot_be_forged_even_with_rebound_input(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base=Path(temporary); root=base/'package'; root.mkdir()
+            config, _, identity=self.fixture(root)
+            output=base/'run.json'; self.completed_run(output,root,config,identity)
+            original=json.loads(output.read_bytes()); events=base/original['EventsFile']
+            original_events=events.read_text()
+            for changed in [dict(original,ExternalPeerProcess=True,Command=original['Command']+['--peer-fixture','not-executed.dll']),
+                            dict(original,Windows='PASS'),dict(original,Assurance='PRODUCTION_ACCEPTANCE')]:
+                # An adversary rehashes the metadata event, while actual snapshots remain unchanged.
+                rows=[json.loads(line) for line in original_events.splitlines()]
+                rows[0]['Value']['Binding']=__import__('application_compatibility').run_input(changed)
+                events.write_text(''.join(json.dumps(row)+'\n' for row in rows));changed['EventsSha256']=sha(events)
+                output.write_text(json.dumps(changed))
+                with self.assertRaisesRegex(ValueError,'qualification|Command|endpoint|mode'): verify_record(output,root)
+
+    def test_schema2_requires_trusted_original_record_hash(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base=Path(temporary); root=base/'package'; root.mkdir()
+            config, _, identity=self.fixture(root)
+            output=base/'run.json'; self.completed_run(output,root,config,identity)
+            record=json.loads(output.read_bytes());record['SchemaVersion']=2
+            rows=[json.loads(line) for line in (base/record['EventsFile']).read_text().splitlines()]
+            rows[0]['Value']['Binding']=__import__('application_compatibility').run_input(record)
+            (base/record['EventsFile']).write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            record['EventsSha256']=sha(base/record['EventsFile']);output.write_text(json.dumps(record))
+            anchor=sha(output);original=output.read_bytes()
+            with self.assertRaisesRegex(ValueError,'trusted'):verify_record(output,root)
+            verify_record(output,root,trusted_record_sha256=anchor)
+            record['Command']=['not-executed'];output.write_text(json.dumps(record))
+            with self.assertRaisesRegex(ValueError,'trusted'):verify_record(output,root,trusted_record_sha256=anchor)
+            self.assertNotEqual(output.read_bytes(),original)
 
 
 if __name__ == '__main__': unittest.main()

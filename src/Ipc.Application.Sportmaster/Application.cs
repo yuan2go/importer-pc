@@ -16,7 +16,8 @@ public sealed class SportmasterFlow : FlowDefinition
     {
         if (op.Wcs is not { State: StageState.Accepted or StageState.Rejected } wcs) return op;
         var reply = wcs.Replies.Last(x => x.BusinessAccepted is not null);
-        return op with { State = wcs.State == StageState.Accepted ? ParcelState.SlotResolved : ParcelState.WcsRejected,
+        return op with { State = wcs.State == StageState.Accepted ? ParcelState.SlotResolved :
+                reply.Destination?.Outcome == WcsDestinationOutcome.UnpackRequired ? ParcelState.UnpackRequired : ParcelState.WcsRejected,
             Slot = wcs.State == StageState.Accepted ? reply.Slot : op.Slot, Reason = wcs.State == StageState.Accepted ? null : reply.Evidence };
     }
     public override async Task AdvanceAsync(IParcelExecution e, ParcelOperation op)
@@ -30,7 +31,8 @@ public sealed class SportmasterFlow : FlowDefinition
         if (stage == ParcelStage.Wcs)
         {
             op = op with { Slot = reply.BusinessAccepted == true ? reply.Slot : op.Slot,
-                State = reply.BusinessAccepted == true ? ParcelState.SlotResolved : ParcelState.WcsRejected };
+                State = reply.BusinessAccepted == true ? ParcelState.SlotResolved :
+                    reply.Destination?.Outcome == WcsDestinationOutcome.UnpackRequired ? ParcelState.UnpackRequired : ParcelState.WcsRejected };
             return op;
         }
         throw new InvalidDataException("Stage does not belong to this Application");

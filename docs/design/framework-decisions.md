@@ -1,3 +1,5 @@
+> RCS增量01：[Sportmaster RCS分拣任务服务](../runtime/sportmaster-rcs-task.md)。首项真实HTTP协议组件与参考夹具验证分别记录；公共契约1.7.0、Parcel数据库6，继承main PR26的旧原件核对/责任保留与版本屏障。旧1.6.0/SQL4与无真实协议的说明按形成时读取，原字节见[归档](../archive/pre-sportmaster-rcs-task/README.md)。Windows实际NOT_RUN，真实RCS/设备/现场BLOCKED。
+
 > 业务版本及兼容管理按[版本管理增量](version-compatibility-01.md)；已合并质量闭环和原D/RV保持。
 
 > 本包整改权威：[质量闭环设计](architecture-quality-closure-01.md)。22拓扑、19/20可靠性、框架F决策共同继承；本文中的历史实施和版本记录保持形成时范围。

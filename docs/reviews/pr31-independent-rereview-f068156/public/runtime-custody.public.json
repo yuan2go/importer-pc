@@ -1,0 +1,42 @@
+{
+  "source_file": "runtime-custody.json",
+  "original_sha256": "e0c62dbe229030f6da66608c1d8dcf8f694224f5a65e501532cc0a763af638a6",
+  "publication_transform": "Explicit local artifact path mapping; original unchanged and locally retained",
+  "data": [
+    {
+      "selector": "upgrade-conflict-closure",
+      "source": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-fb5cf66d2afe4ca7b4111e45de1bdc4b",
+      "preserved": "local-artifact:ipc-pr31-independent-review-f068156-20261019/runtime-evidence/upgrade-conflict-closure"
+    },
+    {
+      "selector": "historical-db4-upgrade",
+      "source": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-fa58236aea734a2aafe9549422d52d8c",
+      "preserved": "local-artifact:ipc-pr31-independent-review-f068156-20261019/runtime-evidence/historical-db4-upgrade"
+    },
+    {
+      "selector": "architecture-quality",
+      "source": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-9009323216ef427fb9bc103f128cb3c4",
+      "preserved": "local-artifact:ipc-pr31-independent-review-f068156-20261019/runtime-evidence/architecture-quality"
+    },
+    {
+      "selector": "configuration-confirmation",
+      "source": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-81ce995b8f7843839a380928ac1be171",
+      "preserved": "local-artifact:ipc-pr31-independent-review-f068156-20261019/runtime-evidence/configuration-confirmation"
+    },
+    {
+      "selector": "receipt-custody",
+      "source": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-3d9052cbb2f845ffb8622ec5ef2c4486",
+      "preserved": "local-artifact:ipc-pr31-independent-review-f068156-20261019/runtime-evidence/receipt-custody"
+    },
+    {
+      "selector": "prior-custody-migration",
+      "source": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-35bc5bc81c8d4743916bad2b59ebb14d",
+      "preserved": "local-artifact:ipc-pr31-independent-review-f068156-20261019/runtime-evidence/prior-custody-migration"
+    },
+    {
+      "selector": "legacy-custody-upgrade",
+      "source": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-77bc0bc4d7694ec19f6c643e744c5cf9",
+      "preserved": "local-artifact:ipc-pr31-independent-review-f068156-20261019/runtime-evidence/legacy-custody-upgrade"
+    }
+  ]
+}

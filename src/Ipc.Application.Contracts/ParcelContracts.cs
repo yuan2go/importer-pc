@@ -4,7 +4,8 @@ namespace Ipc.Application.Contracts;
 
 public sealed record ParcelWeight(decimal Value, WeightUnit Unit, int Precision, WeightSource Source, string? MeasurementId, string Evidence, DateTimeOffset? MeasuredAt = null);
 public sealed record FrozenRequest(string Id, string ApplicationId, string OperationId, string AdmissionId, string Stage,
-    CapabilityBinding Binding, string ImplementationHash, string ConfigurationHash, string Payload, string PayloadHash, DateTimeOffset PreparedAt);
+    CapabilityBinding Binding, string ImplementationHash, string ConfigurationHash, string Payload, string PayloadHash, DateTimeOffset PreparedAt,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PreparedIntegrationRequest? IntegrationRequest = null);
 public sealed record ParcelPayload(string ParcelCode, string AdmissionId, ParcelWeight? Weight, string? Slot, string? WcsRequestId,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] OperatorIdentity? Operator = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelImage? Image = null,
@@ -15,7 +16,9 @@ public sealed record ParcelPayload(string ParcelCode, string AdmissionId, Parcel
 // != physical completion. Null is unknown, never a successful fallback.
 public sealed record StageReply(string Id, string RequestId, string PayloadHash, bool TransportSucceeded,
     bool? ProtocolAcknowledged, bool? BusinessAccepted, bool? PhysicalCompleted, string? Slot, string Evidence, DateTimeOffset At,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelImage? Image = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelImage? Image = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] WcsDestinationResult? Destination = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] IntegrationHttpResponse? HttpResponse = null);
 public interface IPlcPort : ICapabilityPort
 {
     Task<StageReply> SubmitAsync(FrozenRequest command, CancellationToken token);
@@ -42,7 +45,7 @@ public sealed record ParcelConfiguration(int SchemaVersion, string ApplicationId
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] WeightValidity? WeightValidity = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelTopology? Topology = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelRetentionPolicy? Retention = null);
-public enum ParcelState { WaitingWeight, Prepared, ResolvingWcs, WcsUnknown, WcsRejected, SlotResolved, SubmittingPlc, PlcUnknown, PlcRejected, PlcAccepted, PhysicalCompleted, Blocked, CapturingImage, UploadingImage, ImageUnknown, ImageRejected, WeightTimedOut, Abandoned }
+public enum ParcelState { WaitingWeight, Prepared, ResolvingWcs, WcsUnknown, WcsRejected, SlotResolved, SubmittingPlc, PlcUnknown, PlcRejected, PlcAccepted, PhysicalCompleted, Blocked, CapturingImage, UploadingImage, ImageUnknown, ImageRejected, WeightTimedOut, Abandoned, UnpackRequired }
 public enum StageState { Prepared, Dispatching, Unknown, Rejected, Accepted, Conflict, Cancelled }
 public sealed record StageFact(FrozenRequest Request, StageState State, int Attempts, StageReply[] Replies, string? Failure = null);
 public sealed record ParcelOperation(string Id, string AdmissionId, string ParcelCode, string ObservationId,

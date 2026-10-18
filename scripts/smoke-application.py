@@ -35,6 +35,7 @@ def run(evidence):
     data = Path(tempfile.mkdtemp(prefix='ipc17-unpacked-'))
     peer_root = None
     peer_url = None
+    peer_evidence = None
     if a.peer_fixture:
         if not a.optional_features: raise ValueError('--peer-fixture requires --optional-features')
         listener = socket.socket(); listener.bind(('127.0.0.1', 0)); port = listener.getsockname()[1]; listener.close()
@@ -57,6 +58,7 @@ def run(evidence):
             if peer_process.poll() is not None: raise ValueError('Independent reference service failed; see '+str(data/'external-peer.log'))
             time.sleep(.05)
         else: raise TimeoutError('Independent reference service did not start')
+        peer_evidence = dict(Status='ReferencePeerStarted', ProcessId=peer_process.pid, Fixture=str(a.peer_fixture.resolve()), FixtureSha256=hashlib.sha256(a.peer_fixture.read_bytes()).hexdigest().upper(), Endpoint=peer_url+'parcel-reference/', Health='PARCEL-REFERENCE-v1')
     config = root / 'app/config'
     if a.optional_features:
         config = data / 'config'; config.mkdir()
@@ -90,7 +92,7 @@ def run(evidence):
                 try:
                     value, length = decoder.raw_decode(buffer.lstrip())
                 except json.JSONDecodeError: continue
-                messages.put(value); outputs.append(value); evidence.event(value); buffer = buffer.lstrip()[length:].lstrip()
+                evidence.event(value); messages.put(value); outputs.append(value); buffer = buffer.lstrip()[length:].lstrip()
         threading.Thread(target=read, daemon=True).start()
         try:
             value = messages.get(timeout=20)
@@ -111,6 +113,7 @@ def run(evidence):
         if process.returncode: raise ValueError('Stop failed: ' + process.stderr.read())
 
     evidence.bind(root, identity, json.loads((config / 'business.json').read_bytes()))
+    if peer_evidence: evidence.event(peer_evidence)
     process, messages = start()
     try:
         initial_snapshot = send(process, messages, 'snapshot')
@@ -192,7 +195,7 @@ def run(evidence):
     evidence.finish(result)
     print(json.dumps(result))
 
-evidence = CombinationRun(a.output, sys.argv)
+evidence = CombinationRun(a.output, sys.argv, optional_features=a.optional_features, attached_upload=a.attached_upload, external_peer_process=bool(a.peer_fixture))
 try:
     run(evidence)
 except BaseException as failure:

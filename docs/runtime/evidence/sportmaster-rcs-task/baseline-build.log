@@ -1,0 +1,23 @@
+  正在确定要还原的项目…
+  已还原 /private/tmp/ipc-rcs-baseline-4afe/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj (用时 390 毫秒)。
+  13 个项目(共 14 个)是最新的，无法还原。
+  Ipc.Platform -> /private/tmp/ipc-rcs-baseline-4afe/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /private/tmp/ipc-rcs-baseline-4afe/src/Ipc.Application.Contracts/bin/Debug/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /private/tmp/ipc-rcs-baseline-4afe/src/Ipc.Platform.Storage/bin/Debug/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /private/tmp/ipc-rcs-baseline-4afe/src/Ipc.Application.ParcelFlow/bin/Debug/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /private/tmp/ipc-rcs-baseline-4afe/src/Ipc.Application.Sportmaster/bin/Debug/net10.0/Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> /private/tmp/ipc-rcs-baseline-4afe/src/Ipc.Application.DirectPlc/bin/Debug/net10.0/Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> /private/tmp/ipc-rcs-baseline-4afe/src/Ipc.Application.WcsToPlc/bin/Debug/net10.0/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> /private/tmp/ipc-rcs-baseline-4afe/src/Ipc.Reference.Protocol/bin/Debug/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /private/tmp/ipc-rcs-baseline-4afe/src/Ipc.Components/bin/Debug/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> /private/tmp/ipc-rcs-baseline-4afe/src/Ipc.Drivers/bin/Debug/net10.0/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /private/tmp/ipc-rcs-baseline-4afe/src/Ipc.Application.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /private/tmp/ipc-rcs-baseline-4afe/src/Ipc.Integrations/bin/Debug/net10.0/Ipc.Integrations.dll
+  Ipc.Application.Supply -> /private/tmp/ipc-rcs-baseline-4afe/src/Ipc.Application.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Application.Verification -> /private/tmp/ipc-rcs-baseline-4afe/tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:06.08

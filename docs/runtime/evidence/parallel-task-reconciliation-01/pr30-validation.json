@@ -1,0 +1,75 @@
+{
+  "CodeCommit": "fe74a3672e9eb20129a650b305d2c96d23b23797",
+  "FinalBuild": "0 warnings, 0 errors",
+  "FinalGroups": [
+    "sportmaster-rcs",
+    "parcel-recovery-p2",
+    "upgrade-conflict-closure"
+  ],
+  "AllFinalExitCodes": 0,
+  "EarlierCombinedCustodyAndConfiguration": 0,
+  "RetainedFailures": [
+    "pr30-upgrade-pre-adaptation.log",
+    "pr30-combined--sportmaster-rcs.log"
+  ],
+  "Files": [
+    {
+      "File": "pr30-combined--configuration-confirmation.log",
+      "Sha256": "bebcbbb5b52d85daa3de6b2d4cd35940daae884a8c59a0ad9a334f05f36cb2c8"
+    },
+    {
+      "File": "pr30-combined--parcel-recovery-p2.log",
+      "Sha256": "3634a0c2a6055fa8a9595ede8e7dfdfb4c153a02b5edcd2b9b2e0338174b074b"
+    },
+    {
+      "File": "pr30-combined--receipt-custody.log",
+      "Sha256": "25c9c2b68975135fd9befd4553310e488c227b1f12c66afaf76889cda5c97a0a"
+    },
+    {
+      "File": "pr30-combined--sportmaster-rcs.log",
+      "Sha256": "02940f4dce10fdaaf9351b1ca49b95481d682c5bcc3419ec53ae3ca501ee235c"
+    },
+    {
+      "File": "pr30-combined--upgrade-conflict-closure.log",
+      "Sha256": "0d9bf68dd4bd97f6359516bef63a6264b3cacb5ae65f38c48b32ddb50112eb12"
+    },
+    {
+      "File": "pr30-combined-build.log",
+      "Sha256": "04ac2b5cf0a6eebe93b721c3167491d6631e81adb91406645e1e84a1ee276fcc"
+    },
+    {
+      "File": "pr30-combined-summary.json",
+      "Sha256": "3a8f4c5678b3c5e473b9bc4902cc83c0cae9ba2e51b1db31196dadea2943c73f"
+    },
+    {
+      "File": "pr30-final--parcel-recovery-p2.log",
+      "Sha256": "e65e3b248bc3f19e278c63c37b1e9a17142d693c9d943b794006f21cba91723f"
+    },
+    {
+      "File": "pr30-final--sportmaster-rcs.log",
+      "Sha256": "5637cf19302e7576c3702dc66472088b3419b7c4ec5ef40995c3e5f298dacd22"
+    },
+    {
+      "File": "pr30-final--upgrade-conflict-closure.log",
+      "Sha256": "78ebebf6a9dc8589d6eb29615de5f4726d2d0919c3cad6ce1091f7c19bdfa49a"
+    },
+    {
+      "File": "pr30-final-build.log",
+      "Sha256": "0b37520f56e51d81243f27db1cadc7c4a1d87dad23910c8f142087bda272344c"
+    },
+    {
+      "File": "pr30-final-summary.json",
+      "Sha256": "92d525a0775207dfe84896f1097751818ce7a624e5848c1581f3be0160c1d20d"
+    },
+    {
+      "File": "pr30-merge-build.log",
+      "Sha256": "be125b935af5a5a98982b8b25f9da9f50a84fa69a0f04d6d48536aeec7f1fdbe"
+    },
+    {
+      "File": "pr30-upgrade-pre-adaptation.log",
+      "Sha256": "51c652ea0ef666630ea0064d2ea2903ffd1dd4f52aed7e6ad10cd8e460ba4d41"
+    }
+  ],
+  "Windows": "NOT_RUN",
+  "RealRCS": "BLOCKED"
+}

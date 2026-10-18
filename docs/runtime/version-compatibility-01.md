@@ -23,14 +23,18 @@ python3 scripts/application_compatibility.py --record /evidence/new-run.json --p
 python3 scripts/application_compatibility.py --record /evidence/new-run.json --package /unpacked --configuration /evidence/effective.json
 ```
 
-business-identity只读编译版本和内嵌声明；deployment-check同时执行版本兼容、原精确包和语义校验，不连接设备/外呼。ProviderSets每个集合列出可共同使用的成员，选中集合内可省略业务未启用的可选能力；禁止跨集合拼接成员。新业务支持的精确参考能力包为2.0.1，示例reader为2.0.1，必须针对本次宿主公共DLL重新构建；旧1.4.0/1.0.9及PR23/24/26各自候选继续按原身份读取。
+business-identity只读编译版本和内嵌声明；deployment-check同时执行版本兼容、原精确包和语义校验，不连接设备/外呼。ProviderSets每个集合列出可共同使用的成员，选中集合内可省略业务未启用的可选能力；禁止跨集合拼接成员。当前业务1.2.2支持的精确参考能力包为2.1.0，示例reader为1.2.0，Sportmaster RCS为1.0.2，必须针对本次宿主公共DLL重新构建；旧1.4.0/1.0.9及PR23/24/26各自候选继续按原身份读取。
 
 声明兼容、静态校验、运行PASS、Production资格和现场验收是不同事实。组合记录及其哈希用于身份和完整性核对，不自行证明发布者信任或现场批准；现有独立信任/资格机制继续生效。记录中未执行的组合没有PASS，不根据同版本号或同一集合推断其他组合已验证。业务版本以项目声明识别，具体交付仍用SourceCommit和文件SHA区分；不允许用手改版本号替代新发布和验证。
 
-整合基线更新：2026-10-19 PR23/24合并至main 4afe2afacde9e2acab7648fff3440fa3cc331b6e；保留其去重前库存校验、两阶段配置激活、采集保有、恢复、容量与消费者卸载。新业务1.2.1/参考扩展2.0.1独立于前轮本地1.1.0/1.4.1和并行PR26的1.6.x，原包/记录不覆盖。
+## 当前记录与历史兼容
 
-发行构建使用git archive导出的固定提交快照，编译、种子、内嵌声明及随包指南均从该快照读取；SourceRevisionId显式绑定导出提交。运行中的主工作树变化不会混入候选。先前8bdfaa9 Windows候选在构建期间发生本任务整合main，来源稳定性未获证明，保持原字节但不作为合格候选；最终候选按新快照重新生成。
+新记录schema3在首条CombinationInput冻结实际命令、工作目录、候选/配置、场景、计划检查和资格边界；独立peer还必须有实际启动PID、夹具SHA、健康成功及与所有实际端点一致的事件。命令、外部进程、检查项或Windows/真实资格改标均拒绝；参考进程永远不能授予Production。
 
-最终继承main9a5d87a（PR26已合并）：复用--composition、--extension-package/--extension-trust和实际composition.lock.json，不重建选装器；保留显式--version、安装Repair回执/依赖custody及原请求只读核对。业务1.2.1与扩展2.0.1独立于前轮本地1.2.0/2.0.0。第一次快照发布因SDK排除ArtifactsPath中的源码而真实FAIL，已把source-snapshot移到独立兄弟目录，不削弱编译或契约校验。
+旧schema1/2保留原字节和形成时结论，其命令没有被冻结。当前重验另需 `--record-sha256 ORIGINAL_RECORD_SHA256`，该SHA必须来自独立可信发布或固定Git索引，不能从待审文件本身重新计算作为信任依据。然后仍核原snapshot、配置、结果、执行方式与参考资格；缺旧证据则保持未证明。新schema3的自带事件/hash只证明一致性，整个证据集替换仍需受信发布渠道/独立索引判断。
 
-PR29整改新记录为schema2，首条CombinationInput是运行器记录的输入/候选身份，其余事件保留实际进程输出。重验同时对应原始Effective配置、场景、作业结果和重启代次；旧schema1保留并按其已有输出重验，缺独立输入事件的历史边界不得抹去。Windows安装/恢复/卸载共用含业务程序集的发行校验，实际UAC/ACL/维护交互仍NOT_RUN。
+```sh
+python3 scripts/application_compatibility.py --record /evidence/legacy-run.json --package /original-unpacked --record-sha256 ORIGINAL_TRUSTED_RECORD_SHA256
+```
+
+当前发行使用同一package-application.py的固定git archive快照；源码、内嵌声明、配置、随包指南及SourceRevisionId同源。业务1.2.2、Contracts1.7/DB6与新精确扩展分别识别，不覆盖旧1.2.1/2.0.1/1.0.1候选。PR29原历史基线和失败说明保存在[原字节](../archive/pre-parallel-task-reconciliation-01/README.md)及原结果/证据，旧PASS不表示当前组合已验。安装、恢复、卸载共用含实际业务程序集的发行校验；Windows UAC/ACL/真实维护交互NOT_RUN，真实设备/协议/现场BLOCKED。

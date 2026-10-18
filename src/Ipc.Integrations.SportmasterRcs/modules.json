@@ -1,0 +1,19 @@
+[
+  {
+    "Id": "sportmaster-rcs-task",
+    "Assembly": "Ipc.Integrations.SportmasterRcs.dll",
+    "EntryType": "Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskExtension",
+    "Kind": "integration",
+    "MaximumInstances": 1,
+    "ContractIdentity": "SPORTMASTER-RCS-SORTER-v1",
+    "Requirements": {
+      "Query": false,
+      "PhysicalConfirmation": false
+    },
+    "Assurance": {
+      "SchemaVersion": 1,
+      "Simulation": true,
+      "ProtocolEvidence": "Destination request v1 implementation; synthetic HTTP verification only; production qualification unavailable"
+    }
+  }
+]

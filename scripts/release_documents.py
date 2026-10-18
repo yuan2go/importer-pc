@@ -18,7 +18,8 @@ GUIDES = {
     'docs/extensions/supply-guide.md': 'EXTENSIONS.md',
     'docs/runtime/validation/ui-maintainability-16-windows.md': 'WINDOWS-VALIDATION.md',
 }
-ALL_GUIDES = {**GUIDES, **PARCEL_GUIDES}
+SPORTMASTER_GUIDES = {**PARCEL_GUIDES, 'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md'}
+ALL_GUIDES = {**GUIDES, **SPORTMASTER_GUIDES}
 
 ROOT_INPUTS = ['global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx']
 SOURCE_DIRECTORIES = ['src', 'config', 'scripts', 'examples']
@@ -57,6 +58,6 @@ def render(root, source, commit, guides=None):
 
 
 def publish(root, output, commit, product='supply'):
-    guides = PARCEL_GUIDES if product in ('sportmaster', 'direct-plc', 'wcs-to-plc') else GUIDES
+    guides = SPORTMASTER_GUIDES if product == 'sportmaster' else PARCEL_GUIDES if product in ('direct-plc', 'wcs-to-plc') else GUIDES
     for source, name in guides.items():
         (output / name).write_text(render(root, source, commit, guides), encoding='utf-8')

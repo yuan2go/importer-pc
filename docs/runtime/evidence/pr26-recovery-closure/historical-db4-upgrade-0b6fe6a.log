@@ -1,0 +1,13 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-6539e4de7d4247579f11d9ecf039742d
+PASS AQ: historical input retains actual PR24 DB4 migration identity
+DB4 preflight: {
+  "name": "historical-pr24-db4",
+  "refusal": "LegacyUnsettled: preserve original schema; reconcile originals with the matching old release and create a consistent backup before upgrade",
+  "Version": 4,
+  "Changed": []
+}
+PASS AQ: historical-pr24-db4: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: historical-pr24-db4: refusal preserves original DB/config/raw/image bytes
+PASS AQ: historical-pr24-db4: matching DB4 reader remains usable
+PASS AQ: historical source directory remains byte-identical; probe changed only an independent copy
+PASS HISTORICAL DB4 UPGRADE COMPLETE

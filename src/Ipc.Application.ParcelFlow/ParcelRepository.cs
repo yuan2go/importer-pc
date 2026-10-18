@@ -45,14 +45,31 @@ public sealed partial class ParcelRepository : IDisposable
             strftime('%Y-%m-%dT%H:%M:%fZ','now'),'Prior outcome resolution does not restore the missing original raw'
             FROM parcel_receipts r WHERE r.state='OutcomeReconciled' OR EXISTS(SELECT 1 FROM parcel_audit a WHERE a.event='ReceiptOutcomeKnown' AND json_valid(a.detail) AND json_extract(a.detail,'$.OriginalOccurrence')=r.id);
         UPDATE parcel_receipts SET state='Awaiting' WHERE state='OutcomeReconciled';
+        """), new(6, """
+        CREATE TABLE parcel_integration_semantics(version INTEGER PRIMARY KEY CHECK(version=6),description TEXT NOT NULL);
+        INSERT INTO parcel_integration_semantics VALUES(6,'Frozen external wire intents and original HTTP receipts; UnpackRequired holds the original position');
         """)];
     public long Revision { get; private set; }
     public bool Paused { get; private set; }
-    public ParcelRepository(string directory, string application, int storageVersion = 5, bool allowCustodyUpgrade = false)
+    public ParcelRepository(string directory, string application, int storageVersion = 6, bool allowCustodyUpgrade = false)
     {
-        if (storageVersion is not (2 or 3 or 4 or 5)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
+        if (storageVersion is not (2 or 3 or 4 or 5 or 6)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
         Directory.CreateDirectory(directory); rawRoot = Path.Combine(directory, "receipts"); Directory.CreateDirectory(rawRoot);
-        db = Database.Open(Path.Combine(directory, application + ".db"));
+        var database = Path.Combine(directory, application + ".db");
+        if (File.Exists(database) && new FileInfo(database).Length != 0)
+        {
+            // A refused upgrade must not checkpoint a live historical WAL, change
+            // journal settings, or strand configuration behind a new reader marker.
+            db = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString());
+            try
+            {
+                db.Open();
+                StorageVersion = ReadStorageVersion(database, application);
+                RequireLegacySettlement(application, storageVersion, allowCustodyUpgrade);
+            }
+            finally { db.Dispose(); }
+        }
+        db = Database.Open(database);
         try
         {
             using (var version = db.CreateCommand())
@@ -76,16 +93,30 @@ public sealed partial class ParcelRepository : IDisposable
         exists.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='platform_migrations'";
         if ((long)exists.ExecuteScalar()! == 0) return;
         using var version = db.CreateCommand(); version.CommandText = "SELECT max(version) FROM platform_migrations WHERE application=$app"; version.Parameters.AddWithValue("$app", application);
-        if (version.ExecuteScalar() is not long legacy || legacy >= storageVersion || legacy >= 4) return;
+        if (version.ExecuteScalar() is not long legacy || legacy >= storageVersion) return;
         if (allowCustodyUpgrade && LegacyCustodyUpgradeEligible(application)) return;
         // Do not strand old unresolved originals behind a future-reader marker. They need
         // their matching old host/implementation; refuse BEFORE adding any future-reader migration.
-        using var pending = db.CreateCommand(); pending.CommandText = "SELECT count(*) FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable')";
-        var unsettled = (long)pending.ExecuteScalar()! > 0 || Load().Any(op =>
-            !(op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted ||
-              application == "sportmaster" && op.State == ParcelState.SlotResolved) ||
+        using var pending = db.CreateCommand();
+        pending.CommandText = "SELECT count(*) FROM parcel_receipts WHERE state NOT IN ('Committed','NoReply')";
+        var unsettled = (long)pending.ExecuteScalar()! > 0 || UpgradeOperations().Any(op =>
+            !ExternalWorkComplete(op, application) ||
             op.FrozenConfiguration.Images is not null && !op.ImageReleased && !(op.Image is null && op.Capture?.State is StageState.Rejected or StageState.Cancelled && op.Upload is null));
         if (unsettled) throw new InvalidDataException("LegacyUnsettled: preserve original schema; reconcile originals with the matching old release and create a consistent backup before upgrade");
+    }
+    // Upgrade reads history as well as the resident working set. Stream the originals:
+    // an archived owner or an old falsely-cleared receipt cannot hide responsibility.
+    IEnumerable<ParcelOperation> UpgradeOperations()
+    {
+        using var cmd = db.CreateCommand();
+        cmd.CommandText = StorageVersion >= 4 ? "SELECT body,NULL FROM parcel_operations UNION ALL SELECT body,body_hash FROM parcel_archives" : "SELECT body,NULL FROM parcel_operations";
+        using var r = cmd.ExecuteReader();
+        while (r.Read())
+        {
+            var body = r.GetString(0);
+            if (!r.IsDBNull(1) && Wire.Hash(body) != r.GetString(1)) throw new InvalidDataException("Archived original checksum differs");
+            yield return Wire.Decode<ParcelOperation>(body);
+        }
     }
     public ParcelOperation[] Load()
     {
@@ -99,7 +130,7 @@ public sealed partial class ParcelRepository : IDisposable
         }
         return result.ToArray();
     }
-    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null)
+    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null)
     {
         using var tx = db.BeginTransaction();
         if (measurement is not null)
@@ -118,8 +149,11 @@ public sealed partial class ParcelRepository : IDisposable
         }
         if (identityConflict is not null)
         {
-            using var conflict = db.CreateCommand(); conflict.Transaction = tx; conflict.CommandText = "INSERT INTO parcel_identity_conflicts(id,body) VALUES($id,$body)";
-            conflict.Parameters.AddWithValue("$id", identityConflict.Id); conflict.Parameters.AddWithValue("$body", Wire.Encode(identityConflict)); conflict.ExecuteNonQuery();
+            using var conflict = db.CreateCommand(); conflict.Transaction = tx; conflict.CommandText = priorConflictBody is null ? "INSERT INTO parcel_identity_conflicts(id,body) VALUES($id,$body)" :
+                "UPDATE parcel_identity_conflicts SET body=$body WHERE id=$id AND body=$prior AND acknowledged=0";
+            if (priorConflictBody is not null) conflict.Parameters.AddWithValue("$prior", priorConflictBody);
+            conflict.Parameters.AddWithValue("$id", identityConflict.Id); conflict.Parameters.AddWithValue("$body", Wire.Encode(identityConflict));
+            if (conflict.ExecuteNonQuery() != 1) throw new InvalidDataException("Conflict scope changed during recovery");
         }
         if (clearConflict is not null)
         {

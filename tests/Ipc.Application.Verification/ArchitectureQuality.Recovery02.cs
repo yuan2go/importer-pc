@@ -49,6 +49,54 @@ static partial class ArchitectureQuality
         public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
+    // Keep the real capability factory, receiver and runtime. Only the health
+    // completion and the empty authoritative Query are controlled by this fixture.
+    sealed class RecoveryQueryFactory(IParcelCapabilityFactory inner) : IParcelCapabilityFactory
+    {
+        int holdHealth, queryCalls;
+        public int QueryCalls => Volatile.Read(ref queryCalls);
+        public TaskCompletionSource HealthEntered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        readonly TaskCompletionSource healthRelease = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public void HoldNextHealth() => Interlocked.Exchange(ref holdHealth,1);
+        public void ReleaseHealth() { Interlocked.Exchange(ref holdHealth,0); healthRelease.TrySetResult(); }
+        public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
+        public void Validate(ParcelConfiguration c) => inner.Validate(c);
+        public CapabilityRequirements Requirements(CapabilityBinding b) => inner.Requirements(b);
+        public ParcelPorts Create(ParcelConfiguration c)
+        {
+            var p=inner.Create(c);
+            return p with { Wcs=new Health(p.Wcs!,this), Uploader=new UploadQuery(p.Uploader!,this) };
+        }
+        public ValueTask DisposeAsync() { ReleaseHealth(); return inner.DisposeAsync(); }
+        sealed class Health(IWcsPort inner,RecoveryQueryFactory owner) : IWcsPort
+        {
+            public string InstanceId => inner.InstanceId;
+            public Task StartAsync(CancellationToken t) => inner.StartAsync(t);
+            public async Task<CapabilityHealth> HealthAsync(CancellationToken t)
+            {
+                if(Volatile.Read(ref owner.holdHealth)!=0)
+                { owner.HealthEntered.TrySetResult(); await owner.healthRelease.Task.WaitAsync(t); }
+                return await inner.HealthAsync(t);
+            }
+            public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
+            public Task<StageReply> ResolveSlotAsync(FrozenRequest r,CancellationToken t) => inner.ResolveSlotAsync(r,t);
+            public Task<StageReply?> QueryAsync(FrozenRequest r,CancellationToken t) => inner.QueryAsync(r,t);
+            public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
+            public ValueTask DisposeAsync() => inner.DisposeAsync();
+        }
+        sealed class UploadQuery(IImageUploader inner,RecoveryQueryFactory owner) : IImageUploader
+        {
+            public string InstanceId => inner.InstanceId;
+            public Task StartAsync(CancellationToken t) => inner.StartAsync(t);
+            public Task<CapabilityHealth> HealthAsync(CancellationToken t) => inner.HealthAsync(t);
+            public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
+            public Task<StageReply> UploadAsync(FrozenRequest r,ReadOnlyMemory<byte> bytes,CancellationToken t) => inner.UploadAsync(r,bytes,t);
+            public Task<StageReply?> QueryAsync(FrozenRequest r,CancellationToken t)
+            { Interlocked.Increment(ref owner.queryCalls); return inner.QueryAsync(r,t); }
+            public Task StopAsync(CancellationToken t) => inner.StopAsync(t);
+            public ValueTask DisposeAsync() => inner.DisposeAsync();
+        }
+    }
     static async Task Recovery02Checks()
     {
         var name="real-upload-crash"; var path=Path.Combine(root,name); var c=InterruptedConfig();
@@ -58,21 +106,36 @@ static partial class ArchitectureQuality
         { var output=child.StandardOutput.ReadToEndAsync(); var error=child.StandardError.ReadToEndAsync(); await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15)); Console.Write(await output); Console.Write(await error); Check(child.ExitCode==74,"real process stops inside upload after independent receiver commit and before response custody"); }
         var before=Wire.Decode<ParcelSnapshot>(File.ReadAllText(Path.Combine(path,"before.json"))).Operations.Single();
         string occurrence;
-        await using(var app=await Open(c,name,f=>new FaultFactory(f){EmptyUploadQuery=true}))
+        RecoveryQueryFactory? recoveryFactory = null;
+        await using(var app=await Open(c,name,f=>recoveryFactory=new RecoveryQueryFactory(new FaultFactory(f){EmptyUploadQuery=true})))
         {
             var s=await app.SnapshotAsync(); var op=s.Operations.Single();
             Check(op.State==ParcelState.SlotResolved && op.Reason==before.Reason && op.Wcs!.Attempts==1 && op.Upload!.State==StageState.Unknown && !op.ImageReleased,
                 "Dispatching interruption preserves accepted main state/reason and the original upload/image responsibility");
+            recoveryFactory!.HoldNextHealth();
+            await recoveryFactory.HealthEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             await Maintenance(app);
             var inventory=await Command(app,"ReceiptResponsibilities",op.Id);
             var rows=Wire.Decode<ParcelReceiptResponsibility[]>(inventory.Reason); occurrence=rows.Single(r=>r.State=="Awaiting").Id;
+            var fenced=await Command(app,"ReconcileReceipt",occurrence,"Capability health is still in flight; retain original responsibility");
+            var fencedSnapshot=await app.SnapshotAsync();
+            var fencedInventory=await Command(app,"ReceiptResponsibilities",op.Id);
+            Check(fenced.Status=="Rejected" && fencedSnapshot.Availability?.Configure==false && recoveryFactory.QueryCalls==0 &&
+                Wire.Encode(fencedSnapshot.Operations.Single().Upload)==Wire.Encode(op.Upload) && !fencedSnapshot.Operations.Single().ImageReleased &&
+                fencedInventory.Reason==inventory.Reason,
+                "in-flight health fences original recovery before Query without changing receipt custody, upload facts or image ownership");
+            recoveryFactory.ReleaseHealth();
+            await Wait(app,s=>s.Availability?.Configure==true);
             var inconclusive=await Command(app,"ReconcileReceipt",occurrence,"Synthetic authority returned no result; retain original");
+            Console.WriteLine("AQ original receipt recovery after health drain: "+Wire.Encode(inconclusive));
+            Check(recoveryFactory.QueryCalls==1,"drained explicit recovery executes exactly one original upload Query");
             Check(inconclusive.Status=="Unresolved" && !(await app.SnapshotAsync()).Operations.Single().ImageReleased,"inconclusive original Query never dispositions missing raw or releases its image");
             await Command(app,"Resume");
             app.EmitReferenceAt("right","unrelated-right","00018","unrelated-right-source");
             await Wait(app,s=>s.Operations.Any(o=>o.AdmissionId=="unrelated-right" && o.State==ParcelState.SlotResolved));
             Check((await app.OperationAsync(op.Id))!.Wcs!.Attempts==1,"unrelated position continues while old attachment retains one original WCS attempt");
-            await Maintenance(app); await app.BackupAsync(Path.Combine(root,"legacy-before.backup.db"));
+            await Maintenance(app); await Wait(app,s=>s.Availability?.Configure==true);
+            await app.BackupAsync(Path.Combine(root,"legacy-before.backup.db"));
         }
         // An actual old stored projection: retain stage/raw originals, alter only the old
         // overall State/Reason exactly as the pre-fix recovery used to do.
@@ -85,7 +148,8 @@ static partial class ArchitectureQuality
             Check(restored!.State==ParcelState.SlotResolved && restored.Reason is null && Wire.Encode(restored.Wcs)==Wire.Encode(before.Wcs) && Wire.Encode(restored.Upload!.Request)==Wire.Encode(before.Upload!.Request),
                 "old polluted Blocked projection is recovered from original committed main raw without rewriting requests");
             var denied=await Command(app,"ReconcileReceipt",occurrence,"Must authenticate first"); Check(denied.Status=="Rejected","missing receipt recovery requires paused authenticated maintenance");
-            await Maintenance(app); var result=await Command(app,"ReconcileReceipt",occurrence,"Original receiver queried; authoritative upload result and image verified");
+            await Maintenance(app); await Wait(app,s=>s.Availability?.Configure==true);
+            var result=await Command(app,"ReconcileReceipt",occurrence,"Original receiver queried; authoritative upload result and image verified");
             Check(result.Status=="OutcomeKnownRawMissing","explicit recovery links business outcome to its own Query/T3 while original raw responsibility remains");
             Check(!(await app.OperationAsync(before.Id))!.ImageReleased,"known business outcome does not release missing original raw/image custody");
             var rows=Wire.Decode<ParcelReceiptResponsibility[]>((await Command(app,"ReceiptResponsibilities",before.Id)).Reason);
@@ -98,9 +162,40 @@ static partial class ArchitectureQuality
             Check((await app.OperationAsync(before.Id))!.Wcs!.Request.Id==before.Wcs!.Request.Id,"archive keeps frozen original request after outcome recovery");
         }
         await using(var app=await Open(c,name)) Check(!(await app.OperationAsync(before.Id))!.ImageReleased,"independent missing raw/image custody survives restart after outcome query");
+        await CurrentCustody06Checks(c);
         await LegacyProjection02Checks(c,before.Id);
         await Relocation02Checks(c);
         await LegacyConflict02Checks();
+    }
+    static async Task CurrentCustody06Checks(ParcelConfiguration c)
+    {
+        var directory = DirectoryFor("current-db6-offline-custody", c);
+        ParcelRecovery.Restore(Path.Combine(root, "legacy-before.backup.db"), directory);
+        await using (var app = await Open(c, "current-db6-offline-custody", factory => new FaultFactory(factory) { EmptyUploadQuery = true }))
+            await Wait(app, snapshot => snapshot.Operations.Single(x => x.AdmissionId == "unrelated-right").ImageReleased);
+        var database = Path.Combine(directory, "sportmaster.db"); string occurrence; ParcelOperation original;
+        using (var repository = new ParcelRepository(directory, "sportmaster", 6))
+        {
+            original = repository.Load().Single(x => x.AdmissionId == "interrupted-attached");
+            occurrence = repository.PendingReceipts().Single(x => x.Operation == original.Id && x.Stage == "image-upload" && x.Reply is null).Id;
+        }
+        var calls = 0;
+        async Task<StageReply?> Query(string json, string _, string __, CancellationToken token)
+        {
+            calls++; var operation = Wire.Decode<ParcelOperation>(json); var request = operation.Upload!.Request;
+            await using var uploader = new Ipc.Components.ReferenceImageUploader(request.Binding, request.Binding.Parameters["peer-root"]);
+            await uploader.StartAsync(token); return await uploader.QueryAsync(request, token);
+        }
+        var release = Path.GetDirectoryName(typeof(ArchitectureQuality).Assembly.Location)!;
+        var first = await ParcelLegacyReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current6-first.backup.db"), occurrence, release,
+            "Synthetic current-schema offline query; retain original missing raw", new SportmasterFlow(), Query, expectedWalHash: WalHash(database));
+        Check(calls == 1 && ParcelRepository.ReadStorageVersion(database, "sportmaster") == 6 && Wire.Encode(first).Contains("\"DatabaseVersion\": 6", StringComparison.Ordinal),
+            "current SQL6 offline receipt recovery performs one original Query and returns SQL6 without a post-query downgrade failure");
+        await ParcelLegacyReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current6-second.backup.db"), occurrence, release,
+            "Synthetic repeat must reuse its committed original Query basis", new SportmasterFlow(), Query, expectedWalHash: WalHash(database));
+        using var readback = new ParcelRepository(directory, "sportmaster", 6); var current = readback.Load().Single(x => x.Id == original.Id);
+        Check(calls == 1 && current.Wcs!.Attempts == 1 && current.Upload!.Attempts == 1 && !current.ImageReleased && readback.ReceiptById(occurrence) is { State: "Awaiting", RawHash: null, QueryOccurrence: not null },
+            "repeated SQL6 offline recovery reuses original Query, preserves missing raw/image custody and never resubmits WCS or upload");
     }
     static async Task LegacyProjection02Checks(ParcelConfiguration c,string id)
     {
@@ -109,7 +204,7 @@ static partial class ArchitectureQuality
         using(var db=new SqliteConnection("Data Source="+database))
         {
             db.Open(); using var q=db.CreateCommand(); q.CommandText="UPDATE parcel_operations SET body=json_set(body,'$.State','Blocked','$.Reason','RawUnavailable:old-version') WHERE id=$id"; q.Parameters.AddWithValue("$id",id); q.ExecuteNonQuery();
-            q.CommandText="DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version=5; DROP TABLE parcel_history_index; DROP TABLE parcel_archives; DROP TABLE parcel_reply_identities; DROP TABLE parcel_archived_receipts; DROP TABLE parcel_overload_ack; DROP TABLE parcel_identity_conflicts; DROP TABLE parcel_configuration_audit; DELETE FROM platform_migrations WHERE version=4"; q.ExecuteNonQuery();
+            q.CommandText="DROP TABLE parcel_integration_semantics; DELETE FROM platform_migrations WHERE version=6; DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version=5; DROP TABLE parcel_history_index; DROP TABLE parcel_archives; DROP TABLE parcel_reply_identities; DROP TABLE parcel_archived_receipts; DROP TABLE parcel_overload_ack; DROP TABLE parcel_identity_conflicts; DROP TABLE parcel_configuration_audit; DELETE FROM platform_migrations WHERE version=4"; q.ExecuteNonQuery();
         }
         var hash=Wire.FileHash(database); var backup=Path.Combine(root,"legacy-repair-preserved.db");
         Check(ParcelRepository.RepairLegacyMain(database,hash,backup,new SportmasterFlow(),"Offline original receipt custody checked")==1 && File.Exists(backup+".recovery/COMPLETED.json"),"offline old-schema repair creates a full original recovery set before changing derived main projection");

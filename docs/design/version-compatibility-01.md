@@ -39,3 +39,9 @@ Assembly把设备和服务绑定转换为通用提供者身份，校验所有启
 P1：新增组合记录schema2，运行前固定输入配置和候选身份为CombinationInput事件；重验必须逐字段对应此事件、实际进程snapshot的Effective配置、ApplicationId、重启代次、OperationId/最终State和默认/BeforeMain/Attached场景。schema1历史记录保留原字节，只在已有snapshot/场景/结果一致时通过重验，其输入无独立事件绑定。schema2含输入事件时拒绝降级为schema1。原始事件和记录同时重写不由自带SHA证明可信，发布渠道/外部索引信任边界保持。
 
 P2：安装/恢复/卸载共用一个发行读取与验证方法，均传实际编译业务程序集；schema2正确组合可继续，错误业务版本/声明/文件仍拒绝。跨平台定向测试覆盖同一共享方法，不伪称Windows提权/ACL/交互已验。业务逻辑、业务版本1.2.1、内嵌兼容声明、公共契约及旧请求不改。
+
+## 并发整合资格与版本裁决（业务代码前）
+
+最新独立复审发现执行方式/验收资格可改标，本包修复既有记录器：新记录schema3在原输入事件绑定实际命令、三项场景布尔值及Windows/真实设备/Assurance；输入在启动前冻结。独立对端必须由实际Popen/健康成功事件、PID、夹具SHA与配置endpoint共同证明，不由结果字段自行声称。参考portable记录只能NOT_RUN/BLOCKED/SIMULATION_REFERENCE_ONLY。原schema1/2因没有命令冻结，保留原字节和历史结论；当前重验必须额外提供来自独立可信索引的原记录SHA，不能把自带hash冒充发布者信任。原事件配置/结果关联仍要验证，不补造旧事件。
+
+最终业务版本1.2.2，Application.Contracts1.7.0/DB6。更新原ProviderSets为新宿主的reference.parcel-capabilities2.1.0和barcode1.2.0，并增Sportmaster RCS1.0.2允许组合，保留其他同组可选能力。旧1.2.1/2.0.1/RCS1.0.1候选及PASS不改，不重签覆盖。业务发布、内嵌声明、composition、维护和同一打包入口同步。

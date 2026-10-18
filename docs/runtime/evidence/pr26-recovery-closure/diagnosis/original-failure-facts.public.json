@@ -1,0 +1,33 @@
+{
+  "original_sha256": "8b6dc9043e3e432edc9ba9a5b8e6968ac634b4310648fc57243b68df106bf569",
+  "publication_transform": "Local paths replaced with artifact identifiers; original bytes preserved in local artifact",
+  "data": {
+    "reviewedHead": "78298b5dc7ccdcb7bb08e857d2d94f3681182fde",
+    "latestMainAtDiagnosis": "baac260214f910dca9ae4628ba6449b25188e2ac",
+    "originalFailureLog": "local-artifact:ipc-pr26-independent-review-78298b5-20261019/e914-evidence/architecture-quality.log",
+    "originalFailureLogSha256": "74a4e7aef8c6428691c78455521c2b1b3b21adb784bdd380bb1f7d98381fdbde",
+    "retainedDatabase": "local-artifact:ipc-pr26-independent-review-78298b5-20261019/e914-runtime-evidence/architecture-quality/real-upload-crash/data/Simulation/reference-17/sportmaster/sportmaster.db",
+    "retainedDatabaseSha256": "dd83b63f5131e5786f8efe5a05bbb213da4cb6a0fc3a09846fa1eaa161540ab0",
+    "queryInconclusiveAuditCount": 0,
+    "imageUploadReceipts": [
+      [
+        "e4b331615052437d914826d719bdaf4c",
+        "Submit",
+        "Awaiting",
+        null
+      ],
+      [
+        "addfaf6000324381ae5dace9c031493b",
+        "Submit",
+        "Committed",
+        "AE36AD4AF5686450B047D3E14F116CCF99CF26F03D4EAC2902AB1ECCC58BCE76"
+      ],
+      [
+        "ded8cb2d72c545369dfa86d6414f4703",
+        "Query",
+        "Committed",
+        "0C307222A97624FA7EA52E1C37442FF5B42D0A56C0004EBC46B311C06409932F"
+      ]
+    ]
+  }
+}

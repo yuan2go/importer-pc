@@ -1,0 +1,20 @@
+{
+  "Status": "UpgradedCustodyRetained",
+  "DatabaseVersion": 5,
+  "OriginalOccurrence": "f8d9565207444e7584ebae5beb9d69d3",
+  "Raw": {
+    "Id": "f8d9565207444e7584ebae5beb9d69d3",
+    "Operation": "020fe20036f749f7af55b19deff160eb",
+    "Stage": "image-upload",
+    "Request": "66dbbf7a89774ec9af44ab27f88bfd4a",
+    "Source": "Submit",
+    "State": "Awaiting",
+    "RawHash": null,
+    "QueryOccurrence": "e866dd9fe2784378a2fcaaa66bb2dba6",
+    "Custody": "OriginalRawMissing"
+  },
+  "Pending": 1,
+  "Backup": "/Users/yuan/.codex/artifacts/ipc-pr26-recovery-closure-20261019/assembly-prior-full.backup.db",
+  "OriginalQueryOnly": true,
+  "OriginalSubmitAttemptsUnchanged": true
+}

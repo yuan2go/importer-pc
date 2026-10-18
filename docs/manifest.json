@@ -16266,6 +16266,17 @@
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
       "previous_git_blob": "5fd7c8a345b61de980764da8e0f9d250fc48ab63"
+    },
+    {
+      "path": "docs/runtime/evidence/site-capabilities-18/publication-receipt.json",
+      "version": "SITE-CAPABILITIES-18-publication",
+      "status": "publication_receipt_not_acceptance",
+      "purpose": "User-authorized upload of existing synthetic reference packages; publication checks and Windows execution NOT_RUN",
+      "source": "2026-10-18 explicit no-test publication request",
+      "storage_scope": "public_repository",
+      "sha256": "2f14aa008883815350536ea29b96feece51f17beab8329be6b29a38ca589e8ca",
+      "size_bytes": 2237,
+      "git_blob": "59f051870bfb3efaf864a084ec4ec93bbf01add3"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -16886,5 +16897,17 @@
       "extension_build_definition_schema": 1
     },
     "current_implementation_work_package": "WP-IPC-UI-MAINTAINABILITY-16"
+  },
+  "site_capabilities_18_publication": {
+    "receipt": "docs/runtime/evidence/site-capabilities-18/publication-receipt.json",
+    "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/site18-reference-08595e9",
+    "source_commit": "08595e9243ccd9981fc419b8074f67c836644248",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/18",
+    "remote_assets": 5,
+    "tests_build_validators": "NOT_RUN_BY_USER_REQUEST",
+    "windows": "NOT_RUN",
+    "field": "BLOCKED",
+    "binary_storage": "github_prerelease_assets_not_git",
+    "repackaged": false
   }
 }

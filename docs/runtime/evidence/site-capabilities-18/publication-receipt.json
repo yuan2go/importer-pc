@@ -1,0 +1,52 @@
+{
+  "PublicationDate": "2026-10-18",
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/18",
+  "PrepublicationHead": "cc1a8fc6df6a2debcac35019516c49952b2bd3d9",
+  "RuntimeSourceCommit": "08595e9243ccd9981fc419b8074f67c836644248",
+  "Release": "https://github.com/yuan2go/importer-pc/releases/tag/site18-reference-08595e9",
+  "ReleaseId": 416233764,
+  "Prerelease": true,
+  "Draft": false,
+  "TestsBuildValidators": "NOT_RUN_BY_USER_REQUEST",
+  "Repackaged": false,
+  "Windows": "NOT_RUN",
+  "RealCapabilitiesAndField": "BLOCKED",
+  "ReadbackScope": "GitHub release metadata, uploaded size and server SHA256; no download or executable validation in this publication task",
+  "Assets": [
+    {
+      "Name": "candidate-inventory.json",
+      "Bytes": 2186,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:13f8eaf9b8a4887445bb600121a2fe756a2e1c99cc4c474563f2af1eff4959ea",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/site18-reference-08595e9/candidate-inventory.json"
+    },
+    {
+      "Name": "direct-plc.zip",
+      "Bytes": 18045183,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:969d315efd2cf58ffe9d075921d84e7f996d92466464737754a100e923cdbac2",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/site18-reference-08595e9/direct-plc.zip"
+    },
+    {
+      "Name": "SHA256SUMS",
+      "Bytes": 335,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:a5fb5ea56ee1b7b5bca361a5835cce6efc3f601d16e35cc7977f5e5833fd3908",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/site18-reference-08595e9/SHA256SUMS"
+    },
+    {
+      "Name": "sportmaster.zip",
+      "Bytes": 18127884,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:8b49b71f9642e98496a9451580bc178407c84ac0682cb3ade4db2252a01a492c",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/site18-reference-08595e9/sportmaster.zip"
+    },
+    {
+      "Name": "wcs-to-plc.zip",
+      "Bytes": 18127938,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:5b50f9b7dcfc9bed98eb0dc4e076abe9cc317f2ead3b337b3020064cecc4620d",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/site18-reference-08595e9/wcs-to-plc.zip"
+    }
+  ]
+}

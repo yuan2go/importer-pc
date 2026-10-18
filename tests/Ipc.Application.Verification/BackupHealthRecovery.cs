@@ -75,6 +75,32 @@ static class BackupHealthRecovery
             else Console.WriteLine("BHR Windows Junction destination: NOT_RUN");
         });
 
+        await Case("restored-mode-qualification", async () =>
+        {
+            // Synthetic offline Production custody tests the conflicting restore rules,
+            // not a production adapter, approved deployment, or device operation.
+            var c = Config(); var (app, launch) = Create(c, "restore-mode"); await using var owned = app;
+            await app.StartAsync(CancellationToken.None); await Command(app, "Pause");
+            await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
+            var backup = Path.Combine(root, "mode.db"); await app.BackupAsync(backup);
+            var recovery = backup + ".recovery"; var configFile = Path.Combine(recovery, "configuration.json");
+            var original = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(configFile));
+            var production = original with { Effective = original.Effective with { Mode = RunMode.Production } };
+            ExtensionStore.AtomicWrite(configFile, production);
+            var manifestFile = Path.Combine(recovery, "COMPLETED.json"); var manifest = Wire.Decode<ParcelRecoveryManifest>(File.ReadAllText(manifestFile));
+            ExtensionStore.AtomicWrite(manifestFile, manifest with { Files = new(manifest.Files) { ["configuration.json"] = Wire.FileHash(configFile) } });
+            var target = Path.Combine(root, "production-restored", "Production", c.StationId, c.ApplicationId);
+            ParcelRecovery.Restore(backup, target);
+            Check(Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(Path.Combine(target, "configuration.json"))).Effective.Mode == RunMode.Production,
+                "isolated recovery preserves Production mode and verified complete custody instead of relabeling Simulation");
+            var config = Path.Combine(root, "production-config"); Directory.CreateDirectory(config);
+            ExtensionStore.AtomicWrite(Path.Combine(config, "business.json"), production.Effective);
+            var restoredLaunch = launch with { ConfigurationDirectory = config, DataRoot = Path.Combine(root, "production-restored") };
+            await using var restored = SportmasterApplication.Create(restoredLaunch, new ParcelCapabilityFactory(restoredLaunch));
+            try { await restored.StartAsync(CancellationToken.None); throw new Exception("Unqualified restored Production started"); }
+            catch (InvalidDataException e) { Check(e.Message.Contains("Production NotReady", StringComparison.Ordinal), "restored Production still refuses missing real reader/qualification; no simulation fallback"); }
+        });
+
         await Case("custody", async () =>
         {
             var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/optional/sportmaster/business.json")));

@@ -109,6 +109,8 @@ def validate_module(module):
                                   not isinstance(assurance['ProtocolEvidence'], str) or not 1 <= len(assurance['ProtocolEvidence']) <= 256 or
                                   any(ord(c) < 32 for c in assurance['ProtocolEvidence'])):
         raise ValueError('Invalid versioned provider assurance')
+    if assurance is not None and not assurance['Simulation'] and not re.fullmatch(r'[0-9A-Fa-f]{64}', assurance['ProtocolEvidence']):
+        raise ValueError('Real provider ProtocolEvidence must be a 64-character hexadecimal SHA-256')
     if requirements.get('CompletesOnSubmit') and not requirements.get('PhysicalConfirmation'):
         raise ValueError('Completion on submit requires declared physical confirmation')
     contract = module.get('ContractIdentity')

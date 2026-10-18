@@ -49,7 +49,7 @@ public static class DeploymentQualifications
     {
         if (!ExtensionSchema.IsHash(file.Sha256)) throw new InvalidDataException("Invalid qualification evidence hash");
         RequireFile(file.Path);
-        if (FileHash(file.Path) != file.Sha256) throw new InvalidDataException("Qualification evidence changed: " + System.IO.Path.GetFileName(file.Path));
+        if (!string.Equals(FileHash(file.Path), file.Sha256, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Qualification evidence changed: " + System.IO.Path.GetFileName(file.Path));
     }
     static void RequireFile(string path)
     {

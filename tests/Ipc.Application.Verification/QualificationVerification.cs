@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
+using Ipc.Assembly;
 
 static class QualificationVerification
 {
@@ -21,6 +22,20 @@ static class QualificationVerification
         { var document = Wire.Encode(value); ExtensionStore.AtomicWrite(path, new SignedDeploymentQualification("qualification-test", document, Convert.ToBase64String(rsa.SignData(Encoding.UTF8.GetBytes(document), HashAlgorithmName.SHA256, RSASignaturePadding.Pss)))); }
         DeploymentQualification Read() => DeploymentQualifications.Read(path, trust, RunMode.Production, q.ConfigurationHash, q.ApplicationContractSha256);
         Write(q); Check(Read().ConfigurationHash == q.ConfigurationHash, "independently signed exact evidence accepted by verifier (synthetic test only)");
+        var lowercase = file with { Sha256 = file.Sha256.ToLowerInvariant() };
+        var mixed = file with { Sha256 = file.Sha256[..32].ToLowerInvariant() + file.Sha256[32..] };
+        foreach (var hash in new[] { lowercase, mixed })
+        {
+            Write(q with { ApprovalEvidence = [hash], Prerequisites = [new(package, prerequisite, [hash])] });
+            Check(Read().ApprovalEvidence.Single().Sha256 == hash.Sha256, "lower/mixed-case approval and prerequisite hashes verify without rewriting signed bytes");
+            File.AppendAllText(evidence, "changed"); Reject(() => Read(), "changed bytes rejected with lower/mixed-case signed hashes");
+            File.WriteAllText(evidence, "SYNTHETIC qualification verifier test; no actual production approval");
+        }
+        var real = new ExtensionModule("provider", "Provider.dll", "Provider.Entry", "observation", 1, [], new(), "SYNTHETIC-v1", new(1, false, file.Sha256));
+        ParcelCapabilityFactory.RequireReal(real, q with { ApprovalEvidence = [lowercase] });
+        Check(true, "real provider evidence matches lowercase approved hash without changing package or signed decision");
+        Reject(() => ParcelCapabilityFactory.RequireReal(real with { Assurance = new(1, false, new('0', 64)) }, q), "unapproved protocol hash still rejected by Production guard");
+        Write(q);
         Reject(() => DeploymentQualifications.Read(path, trust with { Publishers = [trust.Publishers[0] with { TestOnly = true }] }, RunMode.Production, q.ConfigurationHash, q.ApplicationContractSha256), "test signer cannot qualify Production");
         Write(q with { ConfigurationHash = new('C', 64) }); Reject(() => Read(), "changed configuration cannot reuse qualification");
         Write(q with { ExpiresAt = DateTimeOffset.UtcNow.AddSeconds(-1) }); Reject(() => Read(), "expired qualification rejected");

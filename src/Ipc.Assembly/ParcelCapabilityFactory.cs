@@ -170,9 +170,9 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         }
         return candidateQualification;
     }
-    static void RequireReal(ExtensionModule module, DeploymentQualification? qualification)
+    internal static void RequireReal(ExtensionModule module, DeploymentQualification? qualification)
     {
-        if (module.Assurance is not { SchemaVersion: 1, Simulation: false } || module.Requirements is null || string.IsNullOrWhiteSpace(module.ContractIdentity) || !ExtensionSchema.IsHash(module.Assurance.ProtocolEvidence) || qualification?.ApprovalEvidence.Any(x => x.Sha256 == module.Assurance.ProtocolEvidence) != true)
+        if (module.Assurance is not { SchemaVersion: 1, Simulation: false } || module.Requirements is null || string.IsNullOrWhiteSpace(module.ContractIdentity) || !ExtensionSchema.IsHash(module.Assurance.ProtocolEvidence) || qualification?.ApprovalEvidence.Any(x => string.Equals(x.Sha256, module.Assurance.ProtocolEvidence, StringComparison.OrdinalIgnoreCase)) != true)
             throw new InvalidDataException("Production NotReady: provider must explicitly declare real identity, contract, capability semantics and protocol evidence: " + module.Id);
     }
     internal static void ValidateRequirements(ParcelConfiguration c, CapabilityRequirements requirements, string kind)

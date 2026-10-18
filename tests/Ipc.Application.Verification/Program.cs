@@ -11,6 +11,7 @@ var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
 var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id()); Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--signed-capabilities")) { var i = Array.IndexOf(args, "--signed-capabilities"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
+if (args.Contains("--review-regressions")) { ReviewRegressions.Run(root); return; }
 if (args.Contains("--reliability-closure")) { await ReliabilityClosure.Run(workspace, root); return; }
 if (args.Contains("--backup-health-recovery")) { await BackupHealthRecovery.Run(workspace, root); return; }
 if (args.Contains("--capability-closure")) { await CapabilityClosure.Run(workspace, root); return; }

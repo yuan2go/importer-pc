@@ -21141,6 +21141,17 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/runtime/evidence/version-compatibility-01/publication-receipt.json",
+      "sha256": "0226f08c7b8820bdc1d80f236a7f90e2b009031cfa23a5801bb943725646ac6a",
+      "size_bytes": 465,
+      "git_blob": "ddb3bc25890648ee3a6f2999f6b6a41a45dde6f8",
+      "version": "version-compatibility-01",
+      "status": "current_reference_implementation_or_evidence",
+      "purpose": "Authorized version compatibility and publication receipt",
+      "source": "WP-IPC-VERSION-COMPATIBILITY-01 explicit user authorization",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/runtime/evidence/version-compatibility-01/reference.parcel-capabilities-2.0.1.identity.json",
       "sha256": "78656c8bf190e81899f30ef12f32e14aae930a8fc5fbe306a634edcf6f56e9e8",
       "size_bytes": 1323,
@@ -21693,13 +21704,13 @@
     },
     {
       "path": "docs/runtime/version-compatibility-01-results.md",
-      "sha256": "007db1a80039c1227ba8bdb477c6771ac1a33f11944a9634ec0b42d115faca11",
-      "size_bytes": 5197,
-      "git_blob": "fb8e0cd25d39cbfcaffa7d9be06b9a6fc69f7930",
+      "sha256": "62e3bea494caa261a1f027c1aa3632a15ead3338aa94574a6227ce4b717252e5",
+      "size_bytes": 5396,
+      "git_blob": "a9f5294175390ae68636bcf4edec53f4cafc75f6",
       "version": "version-compatibility-01",
       "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized business version compatibility and synthetic evidence",
-      "source": "WP-IPC-VERSION-COMPATIBILITY-01 explicit user implementation and PR authorization",
+      "purpose": "Authorized version compatibility and publication receipt",
+      "source": "WP-IPC-VERSION-COMPATIBILITY-01 explicit user authorization",
       "storage_scope": "public_repository"
     },
     {
@@ -22983,13 +22994,13 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md",
-      "sha256": "a97aa468875cadbde4b0715f426af628063fc99da32e1d3d1c291f83bbf9ed3f",
-      "size_bytes": 1884,
-      "git_blob": "2999087c57836de202a30e1de343e054846a9eef",
+      "sha256": "cd5b77bc1ccdf8148acc5dc4e0df123317508152c56bb0541a403b98a8cd4d5b",
+      "size_bytes": 2099,
+      "git_blob": "b271114e47e6bc5189242c5354c976a8484a09a3",
       "version": "version-compatibility-01",
       "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized business version compatibility, release provenance and synthetic combination evidence",
-      "source": "WP-IPC-VERSION-COMPATIBILITY-01 explicit user implementation and PR authorization",
+      "purpose": "Authorized version compatibility and publication receipt",
+      "source": "WP-IPC-VERSION-COMPATIBILITY-01 explicit user authorization",
       "storage_scope": "public_repository"
     },
     {

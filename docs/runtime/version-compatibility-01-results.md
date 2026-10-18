@@ -37,3 +37,5 @@ python3 scripts/application_compatibility.py --record /new/evidence/run.json --p
 公开范围仅获授权通用实现和合成证据；不上传ZIP/ipcx、私钥、SDK、字体、生产数据或客户材料。资料检查与业务检查分开，原265项PPTX媒体类型和2项UI元数据失败保持，新增交付错误须为0。
 
 公开组合JSON仅对Command本机路径作显式PublicProjection，原件SHA和公开副本SHA分别记录，原始字节本地保有；实际配置、原事件和身份hash不变。资料首次新增本机路径标记和checksum文件名错误已修正，不修改历史2项UI元数据或265项PPTX失败。
+
+交付[PR #29](https://github.com/yuan2go/importer-pc/pull/29)已创建并读回OPEN/MERGEABLE，创建时head1570b32；目标main，未合并。本回执不改变运行闭包c4e1319和原候选。

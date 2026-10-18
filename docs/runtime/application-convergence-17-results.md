@@ -39,3 +39,5 @@ SDK10.0.402/runtime10.0.13，macOS26.5 arm64；locked restore、完整solution�
 首轮编译/工具/冻结宿主失败见[原始失败公开副本](evidence/application-convergence-17/log-custody.json)；未删除断言或把停止超时变成成功。原目录路径是唯一公开替换项，原hash可对账。全仓资产校验仍可能报告历史源图/字体/外链问题，本包新文件/链接/清单错误另行修复，不伪称已修复原设计资产。
 
 全仓资料校验实际结果为 **FAIL（既有源资产）**：265个原PPTX媒体类型不符、2个原UI元数据标记保持原件；本包新增清单/内容身份/链接错误 **0**。迁移引起的历史源码链接已验证原Git blob并固定59个链接到各报告原分析SHA，原报告修改前字节归档，结论/行号/当时验收状态未改。未通过放宽资料校验消除历史失败。远端预发布9个附件已核对大小及GitHub提供的SHA256，见[远端回读](evidence/application-convergence-17/remote-release.json)。
+
+交付PR：[main PR #17](https://github.com/yuan2go/importer-pc/pull/17)，分支`codex/application-convergence-17`；未合并main。冻结运行源与9个远端附件保持f184a6b，后续提交仅文档/证据/清单与实际PR回执。原主工作区受限未跟踪资料继续保留。

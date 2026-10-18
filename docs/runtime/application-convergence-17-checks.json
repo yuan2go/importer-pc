@@ -7,7 +7,7 @@
   "Branch": "codex/application-convergence-17",
   "Phase": "ENGINEERING_REFERENCE_PASS_WINDOWS_NOT_RUN_REAL_CAPABILITIES_BLOCKED",
   "Release": "https://github.com/yuan2go/importer-pc/releases/tag/application17-reference-f184a6b",
-  "PullRequest": null,
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/17",
   "SDK": "10.0.402",
   "Runtime": "10.0.13",
   "Host": "macOS 26.5 arm64",

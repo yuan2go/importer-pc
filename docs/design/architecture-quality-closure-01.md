@@ -51,3 +51,9 @@ Parcel拥有自己的只读消费者检查：Effective/Pending、未结作业原
 每项记固定源码、命令、退出码和原失败证据。Windows实机/交互/UAC/ACL NOT_RUN；真实SDK/WCS/PLC合同/实体/复位/联锁/现场BLOCKED，提供后验步骤。业务和文档在开发分支提交main PR供审查，不合并main；只有取得的原始PDF按用户单独授权归档main。保留REQ/BR/CAPI/D/RV和原历史验收。
 
 补充所有权决策：Application入队时脱离驱动扫码缓冲区；每次外部提交/查询传递独立请求副本，原请求和冻结配置不授予适配器修改权。完整和兼容配置表单的CAS绑定草稿读取时修订及运行实例，不随投影刷新推进。
+
+## AQD-06 激活确认与断进程
+
+收尾只读发现并行审查02 PR25指出同一配置可靠性范围的资源成功前生效窗口。复核当前实现后纳入本包修复，不合并该文档PR，也不把其PDF当成审查01。配置账保留最后确认Effective及完整Pending；新增激活尝试身份/时间，先持久ActivationInProgress再构造/启动资源，全部启动成功后原子确认Effective。进程中断后保留旧Effective、Pending及失败，禁止自动重试候选，须维护者重新校验/保存。运行启动期间候选只供当前构造使用，不发布为已确认配置。资源失败继续完整Stop/Dispose后才允许新Owner；配置恢复不代表资源已释放。
+
+旧无尝试字段配置可读；新字段可缺省。保留原Activate供Supply兼容，Parcel采用两阶段入口；旧Activate只识别PendingRestart，因此不会重试ActivationInProgress。不得用旧程序原地回退活动尝试，仍走完整备份/原发布恢复。最终候选须在本修复后新建精确包，先前产物身份保留。

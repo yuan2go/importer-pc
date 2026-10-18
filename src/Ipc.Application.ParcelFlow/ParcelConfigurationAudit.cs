@@ -36,7 +36,7 @@ public sealed partial class ParcelRuntime
             var current = configuration!.Current;
             var effective = Wire.Hash(Wire.Encode(current.Effective)); var pending = current.Pending is null ? null : Wire.Hash(Wire.Encode(current.Pending));
             var status = effective == item.CandidateHash ? outcome : pending == item.CandidateHash ? current.Status : "InterruptedNotApplied";
-            var next = item with { Status = status, AfterRevision = current.Revision, Result = current.Failure ?? "Core identity and activation barriers retained; durable envelope inspected" };
+            var next = item with { Status = status, AfterRevision = current.Revision, Result = Wire.Encode(new { Detail = current.Failure ?? "Core identity and resource startup confirmed; durable envelope inspected", current.Activation }) };
             repository.Commit(null, "ConfigurationAuditRecovered", Wire.Encode(next), configurationAudit: next);
         }
     }

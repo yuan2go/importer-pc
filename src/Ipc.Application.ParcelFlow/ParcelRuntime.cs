@@ -50,7 +50,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     public bool HasActiveWork => worker is { IsCompleted: false };
     public bool HasUnreleasedResources => !disposed;
     public string[] OwnershipDiagnostics => disposed ? [] : [Id + ": owns reader/ports/worker/database/leases until Stop and Dispose complete"];
-    ParcelConfiguration Effective => configuration!.Current.Effective;
+    ParcelConfiguration? startupConfiguration;
+    ParcelConfiguration Effective => startupConfiguration ?? configuration!.Current.Effective;
     public async Task StartAsync(CancellationToken token)
     {
         if (started || disposed) throw new InvalidOperationException("Application startup is single-use");
@@ -70,6 +71,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json"))) throw new InvalidDataException("Interrupted restore remains isolated; preserve original recovery set");
         configuration = new(Path.Combine(directory, "configuration.json"), seed, definition.Validate);
         ValidateDeploymentIdentity(seed);
+        configuration.RecoverInterruptedActivation();
         repository = new(directory, Id, 4) { Boundary = point => Boundary?.Invoke(point) };
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
         foreach (var conflict in repository.LoadConflicts()) identityConflicts.Add(conflict.Id, conflict);
@@ -90,7 +92,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         try
         {
             // Pending is activated only at a controlled startup, after recovery barriers.
-            configuration.Activate(candidate => { RequireSameIdentity(seed, candidate); return operations.Values.All(IsSettled) && repository.PendingReceipts().Length == 0; }, factory.Validate);
+            startupConfiguration = configuration.BeginActivation(candidate => { RequireSameIdentity(seed, candidate); return operations.Values.All(IsSettled) && repository.PendingReceipts().Length == 0; }, factory.Validate);
         }
         catch (Exception ex) when (ex is InvalidDataException or InvalidOperationException)
         { _ = ex; /* Failure remains in the authoritative envelope; previous Effective is usable. */ }
@@ -114,13 +116,19 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             foreach (var scale in CapabilityPorts().OfType<IWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
             foreach (var reader in readers.Values) await reader.StartAsync(Enqueue, token).ConfigureAwait(false);
             foreach (var port in CapabilityPorts()) capabilityHealth[port.InstanceId] = await ProbeHealthAsync(port, token).ConfigureAwait(false);
+            if (startupConfiguration is not null)
+            {
+                configuration.ConfirmActivation(configuration.Current.Activation!.Id);
+                startupConfiguration = null;
+            }
             CompleteConfigurationAudit("Activated");
             Volatile.Write(ref accepting, 1);
             maintenanceWorker = Task.WhenAll(CapabilityPorts().Select(p => Task.Run(() => MonitorAsync(p), CancellationToken.None)).Append(Task.Run(MaintainAsync, CancellationToken.None)));
         }
         catch (Exception ex)
         {
-            if (Wire.Encode(Effective) != Wire.Encode(priorEffective)) configuration.FailActivation(priorEffective, Effective, ex);
+            if (startupConfiguration is { } failedCandidate) configuration.FailActivation(priorEffective, failedCandidate, ex);
+            startupConfiguration = null;
             CompleteConfigurationAudit("ActivationFailed");
             throw; // Caller must fully stop/dispose the failed candidate before a new owner starts.
         }

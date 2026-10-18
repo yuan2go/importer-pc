@@ -50,7 +50,7 @@ dotnet app/Ipc.Assembly.dll --action extension-uninstall --package '{"Id":"appro
 
 Parcel数据库4，SQL1～3/checksum逐字节保留，新增历史/原响应保有/身份冲突/过载确认/配置审计设施。DB3→4的迁移SQL不重写旧业务JSON；正常重启恢复追加恢复标记，原冻结请求及hash不变；DB1/2/3均在迁移标记升级前拒绝未结，先以匹配旧发布清偿并备份，不能以追加表结构冒充精确实现兼容。旧程序拒读DB4。升级前通过匹配发布做完整备份并保存原二进制、配置、信任与包；回退只能使用匹配原发布/升级前备份，并先核对期间外部动作，不能倒退业务账或盲重发。
 
-Application.Contracts仍为ABI1.6.0，能力示例新不可变1.6.4；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包采用新1.0.10。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
+Application.Contracts仍为ABI1.6.0，能力示例新不可变1.6.6；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包采用新1.0.10。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
 
 必要构建与定向选择器：
 
@@ -58,9 +58,11 @@ Application.Contracts仍为ABI1.6.0，能力示例新不可变1.6.4；继承PR23
 dotnet build tests/Ipc.Application.Verification -p:RestoreLockedMode=true -m:1 -nr:false
 dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --architecture-quality
 # signed package按本宿主精确合同独立构建后：
-dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --quality-extensions /new/1.6.4.ipcx /independent/trust.json
+dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --quality-extensions /new/1.6.6.ipcx /independent/trust.json
 ```
 
 只根据变更执行AA22/AC19/AC20/BHR/AC17资源组和必要WPF构建/参考包进程，不循环全部历史候选。真实SDK、WCS/PLC字段/地址/握手、身份/原件关联、复位/联锁及现场BLOCKED；[Windows及现场后验](validation/architecture-quality-closure-01-windows.md)不能由合成验证关闭。
 
 驱动入队时复制扫码数组；提交及查询适配器取得原请求的独立副本。外部可变参数不能修改已持久化意图、冻结配置或后续查询依据。配置编辑草稿绑定读取时的运行实例与配置修订，自动刷新不推进草稿CAS；双窗口冲突须重新读取后人工合并。
+
+配置账新增可缺省Activation尝试身份/源时间/结果，旧Effective在资源构造和Start全部成功前不变，Pending保持完整候选。突然退出后标记ActivationFailed，保留旧确认版、原候选和原尝试；不自动重试，维护者核对后使用当前CAS重新保存。失败资源仍必须Stop/Dispose释放，配置回退不等于资源释放。Supply旧Activate路径保持；旧版本不支持原地恢复活动尝试，应使用匹配完整备份和发布。

@@ -65,6 +65,7 @@ static partial class ArchitectureQuality
             app.EmitReferenceAt("right", "capacity-two", "002", "capacity-2"); await Task.Delay(200);
             var s = await app.SnapshotAsync(); Check(!s.Paused && s.Operations.Any(o => o.AdmissionId == "capacity-two"), "AQ04 capacity archive permits next real main chain without deleting history");
         }
+        await ActivationCrashChecks();
         await ResponsibilityChecks();
         await IsolationChecks();
         if (failures != 0) throw new Exception("Architecture quality failures: " + failures);

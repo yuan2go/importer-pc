@@ -11,6 +11,7 @@ var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
 var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id()); Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--signed-capabilities")) { var i = Array.IndexOf(args, "--signed-capabilities"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
+if (args.Contains("--backup-health-recovery")) { await BackupHealthRecovery.Run(workspace, root); return; }
 if (args.Contains("--capability-closure")) { await CapabilityClosure.Run(workspace, root); return; }
 if (args.Contains("--site-capabilities")) { await OptionalCapabilities.Run(workspace, root); return; }
 void Pass(bool condition, string message) { if (!condition) throw new Exception("FAIL AC17: " + message); Console.WriteLine("PASS AC17: " + message); }
@@ -43,13 +44,15 @@ foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
     Pass(app.EmitReference("parcel-one", "000000123", "reader-event-one"), "repeat observation callback explicitly queued");
     await Task.Delay(100); Pass((await app.SnapshotAsync()).Operations.Length == 1, id + " duplicate callback/admission does not create another command");
     Pass(app.EmitReference("parcel-two", "000000123", "reader-event-two"), id + " same code different admitted entity queued");
-    await Wait(app, x => x.Operations.Length == 2);
+    await Wait(app, x => x.Operations.Length == 2 && x.Operations.All(o => o.State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PlcAccepted)));
     if (id != "sportmaster")
     {
         await app.ReconcileAsync(op.Id); var completed = (await app.SnapshotAsync()).Operations.Single(x => x.Id == op.Id);
         Pass(completed.State == ParcelState.PhysicalCompleted && completed.Plc!.Attempts == 1, id + " physical completion comes only from explicit original peer query");
     }
-    await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); var prior = (await app.SnapshotAsync()).Configuration;
+    Pass((await Command(app, "Pause")).Status == "Persisted", id + " pause committed after both stage calls drain");
+    Pass((await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY")).Status == "Authorized", id + " maintenance authentication explicitly confirmed");
+    var prior = (await app.SnapshotAsync()).Configuration;
     var invalid = prior.Effective with { Weight = prior.Effective.Weight with { Precision = 99 } };
     Pass((await app.StageConfigurationAsync(prior.Revision, invalid)).Status == "Rejected" && Wire.Encode((await app.SnapshotAsync()).Configuration) == Wire.Encode(prior), id + " invalid configuration leaves old authority byte-equivalent");
     var backup = Path.Combine(root, id + ".backup.db"); Pass((await app.BackupAsync(backup)).Status == "BackupCreated" && File.Exists(backup), id + " online backup actually created");

@@ -1,0 +1,33 @@
+  正在确定要还原的项目…
+  已还原 BASELINE_WORKTREE/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 277 毫秒)。
+  已还原 BASELINE_WORKTREE/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 277 毫秒)。
+  已还原 BASELINE_WORKTREE/src/Ipc.Components/Ipc.Components.csproj (用时 277 毫秒)。
+  已还原 BASELINE_WORKTREE/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 277 毫秒)。
+  已还原 BASELINE_WORKTREE/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 277 毫秒)。
+  已还原 BASELINE_WORKTREE/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 274 毫秒)。
+  已还原 BASELINE_WORKTREE/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 276 毫秒)。
+  已还原 BASELINE_WORKTREE/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj (用时 276 毫秒)。
+  已还原 BASELINE_WORKTREE/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 4 毫秒)。
+  已还原 BASELINE_WORKTREE/src/Ipc.Platform/Ipc.Platform.csproj (用时 3 毫秒)。
+  已还原 BASELINE_WORKTREE/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 3 毫秒)。
+  已还原 BASELINE_WORKTREE/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 3 毫秒)。
+  已还原 BASELINE_WORKTREE/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 6 毫秒)。
+  Ipc.Platform -> BASELINE_WORKTREE/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> BASELINE_WORKTREE/src/Ipc.Application.Contracts/bin/Debug/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> BASELINE_WORKTREE/src/Ipc.Platform.Storage/bin/Debug/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> BASELINE_WORKTREE/src/Ipc.Application.ParcelFlow/bin/Debug/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> BASELINE_WORKTREE/src/Ipc.Application.Sportmaster/bin/Debug/net10.0/Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> BASELINE_WORKTREE/src/Ipc.Application.DirectPlc/bin/Debug/net10.0/Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> BASELINE_WORKTREE/src/Ipc.Application.WcsToPlc/bin/Debug/net10.0/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> BASELINE_WORKTREE/src/Ipc.Reference.Protocol/bin/Debug/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> BASELINE_WORKTREE/src/Ipc.Components/bin/Debug/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> BASELINE_WORKTREE/src/Ipc.Drivers/bin/Debug/net10.0/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> BASELINE_WORKTREE/src/Ipc.Application.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> BASELINE_WORKTREE/src/Ipc.Integrations/bin/Debug/net10.0/Ipc.Integrations.dll
+  Ipc.Application.Verification -> BASELINE_WORKTREE/tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:06.09

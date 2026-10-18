@@ -29,9 +29,30 @@ public sealed class ReferencePeer(CapabilityBinding binding, string root, string
         var ready = running;
         if (ready && remote is not null)
         {
-            try { using var response = await remote.GetAsync("health", token).ConfigureAwait(false); ready = response.IsSuccessStatusCode && await response.Content.ReadAsStringAsync(token).ConfigureAwait(false) == "PARCEL-REFERENCE-v1"; }
+            try
+            {
+                // Header and body share the caller's budget; never buffer an unbounded
+                // response. Cancellation belongs to the caller that owns that budget.
+                using var response = await remote.GetAsync("health", HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+                ready = false;
+                var marker = "PARCEL-REFERENCE-v1"u8.ToArray();
+                if (response.IsSuccessStatusCode && (response.Content.Headers.ContentLength is null || response.Content.Headers.ContentLength <= marker.Length))
+                {
+                    await using var stream = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
+                    var bytes = new byte[marker.Length + 1]; var length = 0;
+                    while (length < bytes.Length)
+                    {
+                        var read = await stream.ReadAsync(bytes.AsMemory(length), token).ConfigureAwait(false);
+                        if (read == 0) break;
+                        length += read;
+                    }
+                    ready = bytes.AsSpan(0, length).SequenceEqual(marker);
+                }
+            }
             catch (HttpRequestException) { ready = false; }
+            catch (IOException) { ready = false; }
         }
+        token.ThrowIfCancellationRequested(); now = DateTimeOffset.UtcNow;
         return new CapabilityHealth(binding.InstanceId, ready, now, now.AddSeconds(3), ready ? "SIMULATION: durable reference peer" : "Stopped/unavailable");
     }
     public async Task<StageReply> SubmitAsync(FrozenRequest request, CancellationToken token, ReadOnlyMemory<byte> content = default)

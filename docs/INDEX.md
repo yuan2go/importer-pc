@@ -2,7 +2,9 @@
 
 ## 当前工程入口
 
-交付[PR #19](https://github.com/yuan2go/importer-pc/pull/19)为OPEN，未合并main。当前工作包：[APPLICATION-CAPABILITY-CLOSURE-19](work-packages/WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19.md)。main **08b8067aa6cba6a148252296c7a5b18a27b3be65**，PR #18 已合并，开工无开放PR。唯一现行职责/策略设计：[19设计](design/application-capability-19.md)。[19实施结果/能力矩阵](runtime/application-capability-19-results.md)、[配置与客户端运行](runtime/application-capability-19.md)、[证据](runtime/evidence/application-capability-19/README.md)；运行源码c213aad，三portable与三Windows候选已构建/解压，Windows实际执行NOT_RUN。[被替代入口原字节](archive/pre-application-capability-19/README.md)。
+2026-10-18执行时远端main为`08286542bbd007433d85be2cb8d129b366b007e0`（PR19已合并）。PR20与PR21正在修复及协调，现行增量与顺序验证见[整合记录](runtime/pr20-21-integration.md)。下方19形成时的OPEN与旧main身份为历史快照，不能作为当前状态；其原字节保留于Git `08286542:docs/INDEX.md`。原D/RV、公开边界及历史失败不改。
+
+PR #19已合并，当前修复基线main `0828654`，开工无开放PR。当前增量：[备份路径与健康预算修复](work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md)、[修复与验证报告](runtime/backup-health-recovery.md)。[本轮前入口原字节](archive/pre-backup-health-recovery/README.md)。继承工作包：[APPLICATION-CAPABILITY-CLOSURE-19](work-packages/WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19.md)。19开工基线main **08b8067aa6cba6a148252296c7a5b18a27b3be65**（历史）。唯一现行职责/策略设计：[19设计](design/application-capability-19.md)。[19实施结果/能力矩阵](runtime/application-capability-19-results.md)、[配置与客户端运行](runtime/application-capability-19.md)、[证据](runtime/evidence/application-capability-19/README.md)；运行源码c213aad，三portable与三Windows候选已构建/解压，Windows实际执行NOT_RUN。[被替代入口原字节](archive/pre-application-capability-19/README.md)。
 
 [17实施](runtime/application-convergence-17.md)、[17结果](runtime/application-convergence-17-results.md)、[18实施](runtime/site-capabilities-18.md)、[18结果](runtime/site-capabilities-18-results.md)按其原SHA和形成时范围读取，不作为本轮完成证据。Supply/Inspection兼容机制、D/RV和公开范围继续有效。Windows实际运行NOT_RUN；真实SDK/协议/现场BLOCKED。
 

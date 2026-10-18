@@ -1,0 +1,52 @@
+EvidenceRoot=SYNTHETIC_TEMP_ROOT
+PASS BHR: original image observation admitted
+PASS BHR: actual BackupAsync includes unreleased nested image and receipt custody
+PASS BHR: manifest keys are slash paths and live leases are excluded
+PASS BHR: restore preserves original image bytes
+PASS BHR: isolated restore retains original unknown upload identity/attempt, no login or automatic resend, source unchanged
+PASS BHR: restored query resolves independent upload ledger with exactly one external execution
+PASS BHR: path-1BA7343C rejected before target creation; original custody preserved
+PASS BHR: path-B21164E2 rejected before target creation; original custody preserved
+PASS BHR: path-C646F356 rejected before target creation; original custody preserved
+PASS BHR: path-6941CC19 rejected before target creation; original custody preserved
+PASS BHR: path-E88D5E48 rejected before target creation; original custody preserved
+PASS BHR: path-644B962F rejected before target creation; original custody preserved
+PASS BHR: path-076E3742 rejected before target creation; original custody preserved
+PASS BHR: path-7E5299DB rejected before target creation; original custody preserved
+PASS BHR: path-37903E07 rejected before target creation; original custody preserved
+PASS BHR: path-330944A7 rejected before target creation; original custody preserved
+PASS BHR: path-EEAD1762 rejected before target creation; original custody preserved
+PASS BHR: path-7324598C rejected before target creation; original custody preserved
+PASS BHR: path-B4FDD8B2 rejected before target creation; original custody preserved
+PASS BHR: case-alias rejected before target creation; original custody preserved
+PASS BHR: bad-hash rejected before target creation; original custody preserved
+PASS BHR: missing-file rejected before target creation; original custody preserved
+PASS BHR: unlisted-file rejected before target creation; original custody preserved
+PASS BHR: linked-file rejected before target creation; original custody preserved
+PASS BHR: raw duplicate JSON keys rejected before deserialization can collapse them
+PASS BHR: changed-image rejected before target creation; original custody preserved
+PASS BHR: linked-directory rejected before target creation; original custody preserved
+PASS BHR: windows-reserved-name rejected before target creation; original custody preserved
+BHR Windows actual BackupAsync separator reproduction: NOT_RUN (host is not Windows)
+PASS BHR: startup StallHeaders exhausts health budget as unavailable, no terminal worker failure
+PASS BHR: startup health can recover on later real confirmation StallHeaders
+PASS BHR: startup StallBody exhausts health budget as unavailable, no terminal worker failure
+PASS BHR: startup health can recover on later real confirmation StallBody
+PASS BHR: real startup cancellation propagates
+PASS BHR: ReferencePeer preserves caller cancellation because a single token does not identify its source
+PASS BHR: stage health observation queued
+PASS BHR: pre-send timeout retains Prepared identity and zero attempts without killing ingress
+PASS BHR: explicit continuation can reach healthy provider without replacing original intent
+PASS BHR: shutdown test observation queued
+PASS BHR: shutdown during first pre-send health drains ownership without inventing device failure or delivery
+PASS BHR: shutdown after external commit retains Unknown and original single attempt
+PASS BHR: restart after delivery cancellation preserves frozen request, no resend
+PASS BHR: original query resolves cancelled delivery with exactly one independent execution
+PASS BHR: bounded health rejects OversizedDeclared without buffering or waiting for a huge body
+PASS BHR: bounded health rejects OversizedChunked without buffering or waiting for a huge body
+PASS BHR: bounded health rejects InvalidMarker without buffering or waiting for a huge body
+PASS BHR: bounded health rejects Unavailable without buffering or waiting for a huge body
+PASS BHR: legacy loopback own HTTP timeout is unavailable
+PASS BHR: legacy loopback preserves real caller cancellation
+PASS BHR: query cancellation cannot erase existing PLC acceptance or original reply; physical completion remains unconfirmed
+PASS BHR COMPLETE: custody, portable manifest rejection, bounded health, cancellation and original recovery semantics

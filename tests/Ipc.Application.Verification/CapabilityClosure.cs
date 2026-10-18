@@ -64,6 +64,17 @@ static class CapabilityClosure
             await Wait(app, x => x.Operations.Single().ImageReleased);
             Pass(!File.Exists(Path.Combine(root, "entry-" + id, "data", "Simulation", c.StationId, id, op.Image!.RelativeFile)), id + " terminal upload releases bounded temporary bytes with durable release marker");
         }
+        var weightedUpload = Config("wcs-to-plc") with { Weight = new(WeightSource.Measured, WeightUnit.Kg, 3), Scale = B("weight"), Images = new(B("camera"), B("upload"), Strategy: UploadStrategy.Attached) };
+        await using (var app = await Open(weightedUpload, "upload-required-weight", inner => new BlockingFactory(inner, "requires-weight")))
+        {
+            app.EmitReference("weight-upload", "00002", "original-weighted-upload");
+            var s = await Wait(app, x => x.Operations.FirstOrDefault()?.Capture?.State == StageState.Accepted);
+            Pass(s.Operations.Single().Upload is null && s.Operations.Single().Weight is null, "uploader declaring measured input captures first but cannot prematurely freeze or send weightless upload");
+            var m = new WeightMeasurement(Wire.Id(), "weight-upload", weightedUpload.Scale!.Target, 1.234m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow);
+            app.EmitReferenceWeight(m);
+            s = await Wait(app, x => x.Operations.Single().State == ParcelState.PlcAccepted && x.Operations.Single().Upload?.State == StageState.Accepted);
+            Pass(Wire.Decode<ParcelPayload>(s.Operations.Single().Upload!.Request.Payload).Weight?.MeasurementId == m.Id, "required measured upload input is frozen only when same-parcel measurement is ready");
+        }
         // Attached upload intentionally commits and loses its reply. The main chain still
         // proceeds, and restart cannot convert the upload's uncertainty into a resend.
         var attached = Config("wcs-to-plc") with { Weight = new(WeightSource.Disabled, WeightUnit.Kg, 3), Images = new(B("camera"), B("upload") with { Parameters = new() { ["reply-mode"] = "lose-after-commit" } }, Strategy: UploadStrategy.Attached) };
@@ -174,7 +185,9 @@ static class CapabilityClosure
         public TaskCompletionSource Release { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void Validate(ParcelConfiguration c) => inner.Validate(c);
-        public ParcelPorts Create(ParcelConfiguration c) { var p = inner.Create(c); return slow == "wcs" ? p with { Wcs = new BlockingWcs(p.Wcs!, Entered, Release) } : p with { Uploader = new BlockingUpload(p.Uploader!, Entered, Release) }; }
+        public CapabilityRequirements Requirements(CapabilityBinding binding)
+        { var requirements = inner.Requirements(binding); return slow == "requires-weight" && binding.Kind == "upload" ? requirements with { MeasuredWeight = true } : requirements; }
+        public ParcelPorts Create(ParcelConfiguration c) { var p = inner.Create(c); return slow == "wcs" ? p with { Wcs = new BlockingWcs(p.Wcs!, Entered, Release) } : slow == "upload" ? p with { Uploader = new BlockingUpload(p.Uploader!, Entered, Release) } : p; }
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
     sealed class BlockingWcs(IWcsPort inner, TaskCompletionSource entered, TaskCompletionSource release) : IWcsPort

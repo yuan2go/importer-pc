@@ -10,7 +10,8 @@ public sealed partial class ParcelRuntime
     bool CanContinue(ParcelOperation op) => CanDispatch(op) && WeightReady(op) &&
         (op.State == ParcelState.Prepared && op.Wcs is null && op.Plc is null || Enum.GetValues<ParcelStage>().Any(kind => GetStage(op, kind) is { State: StageState.Prepared, Attempts: 0 }));
     bool CanContinueUpload(ParcelOperation op) => op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached &&
-        !repository!.Paused && SessionValid && op.Upload is { State: StageState.Prepared, Attempts: 0 };
+        !repository!.Paused && SessionValid && op.Upload is { State: StageState.Prepared, Attempts: 0 } &&
+        (!factory.Requirements(op.FrozenConfiguration.Images.Uploader).MeasuredWeight || WeightReady(op));
     bool CanAbandon(ParcelOperation op) => repository!.Paused && SessionValid && op.Wcs is null && op.Plc is null &&
         !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) && !repository.PendingReceipts().Any(x => x.Operation == op.Id) && op.Capture?.State is not (StageState.Unknown or StageState.Conflict);
     bool CanConfigure => repository?.Paused == true && MaintenanceAuthorized && externalWaits == 0;

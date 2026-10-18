@@ -1,3 +1,5 @@
+> PR29 P1/P2整改：原head d954ba6的组合记录重验存在配置与原事件未关联缺口，Windows恢复/卸载漏传业务程序集。整改设计与执行计划见[本包](../work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md)；旧候选与结果保持原身份，新验证另记，不以旧PASS替代。
+
 # 版本管理补齐 · 交付结果
 
 用户2026-10-19授权，WP-IPC-VERSION-COMPATIBILITY-01。开工main b2dc55b；执行中依次继承PR23/24的main4afe2af、PR26的main9a5d87a，最终继承仅文档PR28的main baac260214f910dca9ae4628ba6449b25188e2ac。并行PR27属于UI，未纳入本包。不改原工作区未跟踪资料或其他工作树。

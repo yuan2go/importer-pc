@@ -1,0 +1,17 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-b708c66107f1436eac1fbb20d0b0b387
+PASS VC01: sportmaster compiled business version and embedded declaration
+PASS VC01: sportmaster default and all optional provider versions declared
+PASS VC01: unknown provider version rejected before constructing any resource
+PASS VC01: wrong provider protocol rejected
+PASS VC01: unapproved implementation rejected
+PASS VC01: rejection did not open readers or create external ports
+PASS VC01: mixing members from distinct compatibility sets rejected
+PASS VC01: whole selected set matches a single declaration
+PASS VC01: schema2 binds actual compiled version, binary and declaration bytes
+Unhandled exception. System.IO.InvalidDataException: Installed Application registration does not match this host/presentation
+   at Ipc.Platform.ApplicationReleaseValidation.ValidateIfPublished(String directory, String application, BusinessPresentation presentation, Assembly businessAssembly) in /Users/yuan/.codex/worktrees/version-compatibility/importer-pc/src/Ipc.Platform/ApplicationRelease.cs:line 18
+   at Ipc.Assembly.ParcelCapabilityFactory.ReadPublishedRelease(String appRoot) in /Users/yuan/.codex/worktrees/version-compatibility/importer-pc/src/Ipc.Assembly/ParcelCapabilityFactory.cs:line 240
+   at VersionCompatibility.Run(String workspace, String root) in /Users/yuan/.codex/worktrees/version-compatibility/importer-pc/tests/Ipc.Application.Verification/VersionCompatibility.cs:line 57
+   at VersionCompatibility.Run(String workspace, String root) in /Users/yuan/.codex/worktrees/version-compatibility/importer-pc/tests/Ipc.Application.Verification/VersionCompatibility.cs:line 78
+   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/version-compatibility/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 16
+   at Program.<Main>(String[] args)

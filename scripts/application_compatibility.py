@@ -69,12 +69,56 @@ def utc():
     return datetime.datetime.now(datetime.timezone.utc).isoformat()
 
 
+def run_input(record):
+    return {key: record[key] for key in ['RunId', 'Application', 'BusinessVersion', 'SourceCommit', 'Target',
+        'CandidateFilesSha256', 'ReleaseSha256', 'AssemblyManifestSha256', 'CompatibilitySha256',
+        'InputConfiguration', 'InputConfigurationSha256']}
+
+
+def verify_run_events(record, events_path):
+    """Cross-check claims against the preserved input and actual process snapshots.
+
+    This establishes consistency, not publisher trust: an independently trusted
+    record/index is still needed to detect replacement of the entire evidence.
+    """
+    events = [json.loads(line)['Value'] for line in events_path.read_text().splitlines()]
+    inputs = [event for event in events if event.get('Status') == 'CombinationInput']
+    if record['SchemaVersion'] == 2:
+        if not events or len(inputs) != 1 or events[0] != dict(Status='CombinationInput', Binding=run_input(record)):
+            raise ValueError('Recorded input/candidate identity differs from original run input event')
+    elif inputs:
+        raise ValueError('Run input event cannot be bypassed by record schema downgrade')
+    snapshots = [event for event in events if isinstance(event.get('Configuration'), dict) and 'Effective' in event['Configuration']]
+    if not snapshots:
+        raise ValueError('No actual configuration snapshot in original run events')
+    for snapshot in snapshots:
+        if snapshot.get('ApplicationId') != record['Application'] or object_sha(snapshot['Configuration']['Effective']) != record['EffectiveConfigurationSha256']:
+            raise ValueError('Recorded effective configuration differs from original run snapshot')
+    starts = [event for event in events if event.get('Status') == 'Started']
+    if len(starts) < 2 or any(event.get('Business') != record['Application'] for event in starts) or len({s.get('RuntimeId') for s in snapshots} - {None}) < 2:
+        raise ValueError('Original run snapshots do not prove selected application restart')
+    config = snapshots[0]['Configuration']['Effective']
+    images = config.get('Images')
+    optional = bool(config.get('Login') or config.get('Scale') or images)
+    attached = bool(images and images.get('Strategy', 'BeforeMain') == 'Attached')
+    if type(record.get('OptionalFeatures')) is not bool or type(record.get('AttachedUpload')) is not bool or record['OptionalFeatures'] != optional or record['AttachedUpload'] != attached:
+        raise ValueError('Recorded scenario differs from original run snapshot')
+    if optional and (not config.get('Login') or not config.get('Scale') or not images or config['Weight']['Source'] != 'Measured'):
+        raise ValueError('Original run snapshot does not match optional journey scenario')
+    operation = next((op for op in snapshots[-1].get('Operations', []) if op['Id'] == record.get('OperationId')), None)
+    expected = 'SlotResolved' if record['Application'] == 'sportmaster' else 'PlcAccepted'
+    if operation is None or operation.get('State') != record.get('State') or operation['State'] not in (expected, 'PhysicalCompleted'):
+        raise ValueError('Recorded result differs from original final operation snapshot')
+    if optional and ((operation.get('Capture') or {}).get('State') != 'Accepted' or (operation.get('Upload') or {}).get('State') != 'Accepted'):
+        raise ValueError('Original result does not prove completed optional image journey')
+
+
 class CombinationRun:
     def __init__(self, output, command):
         self.output = Path(output).resolve()
         self.events_path = self.output.with_suffix(self.output.suffix + '.events.jsonl')
         if self.events_path.exists(): raise FileExistsError('Evidence events already exist')
-        self.record = dict(SchemaVersion=1, RunId=uuid.uuid4().hex, Status='RUNNING', StartedAt=utc(), Command=command,
+        self.record = dict(SchemaVersion=2, RunId=uuid.uuid4().hex, Status='RUNNING', StartedAt=utc(), Command=command,
                            Windows='NOT_RUN', RealEquipment='BLOCKED', Assurance='SIMULATION_REFERENCE_ONLY')
         with self.output.open('x') as f: json.dump(self.record, f, indent=2)
         self.events = self.events_path.open('x')
@@ -97,6 +141,7 @@ class CombinationRun:
             Target=identity['Target'], CandidateFilesSha256=sha(root / 'SHA256SUMS'), ReleaseSha256=sha(root / 'app/application-release.json'),
             AssemblyManifestSha256=sha(root / 'ASSEMBLY.json'), CompatibilitySha256=release['CompatibilitySha256'],
             InputConfiguration=initial_config, InputConfigurationSha256=object_sha(initial_config))
+        self.event(dict(Status='CombinationInput', Binding=run_input(self.record)))
         self.save()
 
     def effective(self, config):
@@ -117,6 +162,8 @@ class CombinationRun:
         if result:
             if 'EffectiveConfigurationSha256' not in self.record: raise ValueError('No actual effective configuration was observed')
             self.record.update(result)
+        if error is None:
+            verify_run_events(self.record, self.events_path)
         self.record.update(Status='FAIL' if error else 'PASS', FinishedAt=utc(), EventsSha256=sha(self.events_path), EventsFile=self.events_path.name)
         if error: self.record['Failure'] = dict(Type=type(error).__name__, Message=str(error))
         self.save()
@@ -125,7 +172,7 @@ class CombinationRun:
 def verify_record(record_path, root, effective_configuration=None):
     record_path, root = Path(record_path), Path(root)
     r = json.loads(record_path.read_bytes())
-    if r.get('SchemaVersion') != 1 or r.get('Status') != 'PASS': raise ValueError('Combination was not verified PASS')
+    if r.get('SchemaVersion') not in (1, 2) or r.get('Status') != 'PASS': raise ValueError('Combination was not verified PASS')
     for key, path in [('CandidateFilesSha256', root/'SHA256SUMS'), ('ReleaseSha256', root/'app/application-release.json'),
                       ('AssemblyManifestSha256', root/'ASSEMBLY.json'), ('CompatibilitySha256', root/'app/application-compatibility.json')]:
         if r[key] != sha(path): raise ValueError('Record belongs to another/changed candidate: ' + key)
@@ -145,6 +192,7 @@ def verify_record(record_path, root, effective_configuration=None):
     providers = selected_providers(config)
     declaration = json.loads((root/'app/application-compatibility.json').read_bytes())
     if providers != r['Providers'] or require_combination(declaration, providers) != r['CompatibilitySet']: raise ValueError('Recorded provider combination differs')
+    verify_run_events(r, record_path.parent/r['EventsFile'])
     return r
 
 

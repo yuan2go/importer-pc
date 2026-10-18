@@ -1,3 +1,5 @@
+> PR29 P1/P2整改：原head d954ba6的组合记录重验存在配置与原事件未关联缺口，Windows恢复/卸载漏传业务程序集。整改设计与执行计划见[本包](../work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md)；旧候选与结果保持原身份，新验证另记，不以旧PASS替代。
+
 # 版本及兼容管理运行指南
 
 [设计及边界](../design/version-compatibility-01.md) · [工作包](../work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md)。本次运行证据另行记录，本文不把目标写成已通过。
@@ -6,7 +8,7 @@
 
 使用原package-application.py选择业务与目标。新application-release.json为schema2，带BusinessVersion、BusinessAssembly、CompatibilitySha256；ASSEMBLY.json同时带业务版本与声明hash。每个app/desktop目录的application-compatibility.json必须与程序集内嵌内容一致。原公共契约精确SHA、签名依赖及Production资格继续校验。旧候选保持原schema1和原字节，只由匹配旧程序处理。
 
-复用smoke-application.py --package <已解压portable> --output <新证据.json>；默认、--optional-features、--optional-features --attached-upload为不同场景，需分别执行。输出记录绑定实际候选及运行配置，并在相邻*.events.jsonl保留原始进程输出。开始先写RUNNING，失败记录FAIL并保留原异常；成功才PASS，证据文件存在拒绝覆盖。Windows候选不能以portable记录替代实机运行。证据读取工具校验候选/配置/事件hash，过期或篡改不能作为同组合PASS。
+复用smoke-application.py --package <已解压portable> --output <新证据.json>；默认、--optional-features、--optional-features --attached-upload为不同场景，需分别执行。输出记录绑定实际候选及运行配置，并在相邻*.events.jsonl保留原始进程输出。开始先写RUNNING，失败记录FAIL并保留原异常；成功才PASS，证据文件存在拒绝覆盖。Windows候选不能以portable记录替代实机运行。证据读取工具除校验候选/配置/事件hash，还必须核对原始snapshot配置及场景/结果；d954ba6旧实现缺少此关联，不能仅因旧工具返回PASS认定重验完整。
 
 启用新提供者前：发布新业务声明（若原声明未覆盖）、按目标宿主重建新不可变扩展版本、静态校验/安装、提交完整配置草稿、原件清偿与受控重启、对实际组合执行验证并保存记录。历史Unknown只核对原请求，不因版本升级重发。
 
@@ -30,3 +32,5 @@ business-identity只读编译版本和内嵌声明；deployment-check同时执�
 发行构建使用git archive导出的固定提交快照，编译、种子、内嵌声明及随包指南均从该快照读取；SourceRevisionId显式绑定导出提交。运行中的主工作树变化不会混入候选。先前8bdfaa9 Windows候选在构建期间发生本任务整合main，来源稳定性未获证明，保持原字节但不作为合格候选；最终候选按新快照重新生成。
 
 最终继承main9a5d87a（PR26已合并）：复用--composition、--extension-package/--extension-trust和实际composition.lock.json，不重建选装器；保留显式--version、安装Repair回执/依赖custody及原请求只读核对。业务1.2.1与扩展2.0.1独立于前轮本地1.2.0/2.0.0。第一次快照发布因SDK排除ArtifactsPath中的源码而真实FAIL，已把source-snapshot移到独立兄弟目录，不削弱编译或契约校验。
+
+PR29整改新记录为schema2，首条CombinationInput是运行器记录的输入/候选身份，其余事件保留实际进程输出。重验同时对应原始Effective配置、场景、作业结果和重启代次；旧schema1保留并按其已有输出重验，缺独立输入事件的历史边界不得抹去。Windows安装/恢复/卸载共用含业务程序集的发行校验，实际UAC/ACL/维护交互仍NOT_RUN。

@@ -9,6 +9,23 @@ from composition import resolve
 
 
 class CompatibilityTests(unittest.TestCase):
+    def completed_run(self, output, root, config, identity):
+        run = CombinationRun(output, ['actual-smoke'])
+        run.bind(root, identity, config)
+        run.effective(config)
+        optional=bool(config.get('Images'))
+        attached=bool(optional and config['Images'].get('Strategy','BeforeMain')=='Attached')
+        operation={'Id':'operation-one','State':'PlcAccepted'}
+        if optional: operation.update(Capture={'State':'Accepted'},Upload={'State':'Accepted'})
+        for runtime in ['before-restart', 'after-restart']:
+            run.event({'Status': 'Started', 'Business': config['ApplicationId']})
+            run.event({'ApplicationId': config['ApplicationId'], 'RuntimeId': runtime,
+                       'Configuration': {'Effective': config},
+                       'Operations': [operation]})
+        run.finish({'Checks': ['actual journey'], 'OptionalFeatures': optional, 'AttachedUpload': attached,
+                    'OperationId': 'operation-one', 'State': 'PlcAccepted'})
+        return run
+
     def test_business_version_matches_every_declared_composition(self):
         root = Path(__file__).resolve().parent.parent
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
@@ -21,8 +38,8 @@ class CompatibilityTests(unittest.TestCase):
             next(c for c in selected['components'] if c['id'] == 'application.'+application)['version'] = '9.0.0'
             with self.assertRaisesRegex(ValueError, 'version'): read_business(root, application, selected)
 
-    def fixture(self, root):
-        config = json.loads((Path(__file__).resolve().parent.parent/'config/direct-plc/business.json').read_bytes())
+    def fixture(self, root, config=None):
+        if config is None: config = json.loads((Path(__file__).resolve().parent.parent/'config/direct-plc/business.json').read_bytes())
         policy = json.loads((Path(__file__).resolve().parent.parent/'config/compatibility/direct-plc.json').read_bytes())
         app = root/'app'; app.mkdir()
         (app/'application-compatibility.json').write_text(json.dumps(policy))
@@ -39,8 +56,7 @@ class CompatibilityTests(unittest.TestCase):
             base = Path(temporary); root=base/'package'; root.mkdir()
             config, policy, identity = self.fixture(root)
             output=base/'run.json'
-            run=CombinationRun(output, ['actual-smoke'])
-            run.bind(root, identity, config); run.effective(config); run.event({'Status':'Started'}); run.finish({'Checks':['actual journey']})
+            run=self.completed_run(output, root, config, identity)
             r=verify_record(output, root, config)
             self.assertEqual(r['Status'],'PASS')
             changed=copy.deepcopy(config); changed['Plc']['Version']='2.0.1'
@@ -68,8 +84,7 @@ class CompatibilityTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             base=Path(temporary); root=base/'package'; root.mkdir()
             config, policy, identity=self.fixture(root)
-            output=base/'run.json'; run=CombinationRun(output,['smoke'])
-            run.bind(root,identity,config); run.effective(config); run.event({'Status':'Started'}); run.finish({'Checks':['journey']})
+            output=base/'run.json'; self.completed_run(output, root, config, identity)
             original=json.loads(output.read_bytes())
             for key,value in [('BusinessVersion','2.0.1'),('Providers',[]),('CompatibilitySet','other')]:
                 altered=dict(original); altered[key]=value; output.write_text(json.dumps(altered))
@@ -77,6 +92,101 @@ class CompatibilityTests(unittest.TestCase):
             altered=copy.deepcopy(original); altered['EffectiveConfiguration']['Plc']['Target']='reference://other'
             output.write_text(json.dumps(altered))
             with self.assertRaises(ValueError): verify_record(output,root)
+
+    def test_self_consistent_configuration_relabelling_cannot_reuse_events(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base=Path(temporary); root=base/'package'; root.mkdir()
+            config, policy, identity=self.fixture(root)
+            output=base/'run.json'; self.completed_run(output, root, config, identity)
+            r=json.loads(output.read_bytes())
+            original_events=(base/r['EventsFile']).read_bytes()
+            for key in ['InputConfiguration', 'EffectiveConfiguration']:
+                r[key]['Plc']['Target']='reference://not-executed'
+                r[key+'Sha256']=object_sha(r[key])
+            r['Providers']=selected_providers(r['EffectiveConfiguration'])
+            r['CompatibilitySet']=require_combination(policy,r['Providers'])
+            output.write_text(json.dumps(r))
+            self.assertEqual((base/r['EventsFile']).read_bytes(),original_events)
+            with self.assertRaisesRegex(ValueError,'input|snapshot'): verify_record(output,root,r['EffectiveConfiguration'])
+
+    def test_scenario_and_result_must_be_observed(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base=Path(temporary); root=base/'package'; root.mkdir()
+            config, _, identity=self.fixture(root)
+            output=base/'run.json'; self.completed_run(output, root, config, identity)
+            original=json.loads(output.read_bytes())
+            for key,value in [('OptionalFeatures',True),('AttachedUpload',True),('OperationId','not-executed'),('State','PhysicalCompleted')]:
+                altered=copy.deepcopy(original); altered[key]=value
+                output.write_text(json.dumps(altered))
+                with self.subTest(field=key):
+                    with self.assertRaisesRegex(ValueError,'scenario|result'): verify_record(output,root)
+
+    def test_original_snapshot_is_required_even_with_rehashed_events(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base=Path(temporary); root=base/'package'; root.mkdir()
+            config, _, identity=self.fixture(root)
+            output=base/'run.json'; self.completed_run(output, root, config, identity)
+            r=json.loads(output.read_bytes()); events=base/r['EventsFile']
+            rows=[json.loads(line) for line in events.read_text().splitlines()]
+            events.write_text('\n'.join(json.dumps(row) for row in rows if 'Configuration' not in row['Value'])+'\n')
+            r['EventsSha256']=sha(events); output.write_text(json.dumps(r))
+            with self.assertRaisesRegex(ValueError,'snapshot'): verify_record(output,root)
+
+    def test_finish_does_not_issue_pass_without_snapshot(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base=Path(temporary); root=base/'package'; root.mkdir()
+            config, _, identity=self.fixture(root)
+            output=base/'run.json'; run=CombinationRun(output,['smoke'])
+            run.bind(root,identity,config); run.effective(config); run.event({'Status':'Started'})
+            with self.assertRaisesRegex(ValueError,'snapshot'):
+                run.finish({'OptionalFeatures':False,'AttachedUpload':False,'OperationId':'not-observed','State':'PlcAccepted'})
+            self.assertNotEqual(json.loads(output.read_bytes())['Status'],'PASS')
+
+    def test_input_event_cannot_be_dropped_by_record_schema_downgrade(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base=Path(temporary); root=base/'package'; root.mkdir()
+            config, _, identity=self.fixture(root)
+            output=base/'run.json'; self.completed_run(output,root,config,identity)
+            r=json.loads(output.read_bytes()); self.assertEqual(r['SchemaVersion'],2)
+            r['SchemaVersion']=1; output.write_text(json.dumps(r))
+            with self.assertRaisesRegex(ValueError,'schema'): verify_record(output,root)
+
+    def test_legacy_record_keeps_original_bytes_and_requires_matching_snapshot(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base=Path(temporary); root=base/'package'; root.mkdir()
+            config, _, identity=self.fixture(root)
+            output=base/'run.json'; self.completed_run(output,root,config,identity)
+            r=json.loads(output.read_bytes()); events=base/r['EventsFile']
+            rows=[json.loads(line) for line in events.read_text().splitlines()]
+            events.write_text('\n'.join(json.dumps(row) for row in rows if row['Value'].get('Status')!='CombinationInput')+'\n')
+            r['SchemaVersion']=1; r['EventsSha256']=sha(events); output.write_text(json.dumps(r))
+            original=output.read_bytes(); verify_record(output,root); self.assertEqual(output.read_bytes(),original)
+            r['EffectiveConfiguration']['Plc']['Target']='reference://another'
+            r['EffectiveConfigurationSha256']=object_sha(r['EffectiveConfiguration']); r['Providers']=selected_providers(r['EffectiveConfiguration'])
+            output.write_text(json.dumps(r))
+            with self.assertRaisesRegex(ValueError,'snapshot'): verify_record(output,root)
+
+    def test_schema2_preserves_valid_before_main_and_attached_journeys(self):
+        config=json.loads((Path(__file__).resolve().parent.parent/'config/optional/direct-plc/business.json').read_bytes())
+        for strategy in ['BeforeMain','Attached']:
+            with self.subTest(strategy=strategy), tempfile.TemporaryDirectory() as temporary:
+                base=Path(temporary); root=base/'package'; root.mkdir()
+                selected=copy.deepcopy(config); selected['Images']['Strategy']=strategy
+                selected, _, identity=self.fixture(root,selected)
+                output=base/'run.json'; self.completed_run(output,root,selected,identity)
+                self.assertEqual(verify_record(output,root,selected)['AttachedUpload'],strategy=='Attached')
+
+    def test_input_and_run_identity_cannot_be_relabelled_independently(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base=Path(temporary); root=base/'package'; root.mkdir()
+            config, _, identity=self.fixture(root)
+            output=base/'run.json'; self.completed_run(output,root,config,identity)
+            original=json.loads(output.read_bytes())
+            altered=copy.deepcopy(original); altered['InputConfiguration']['StationId']='another-input'
+            altered['InputConfigurationSha256']=object_sha(altered['InputConfiguration'])
+            for r in [altered,dict(original,RunId='another-run')]:
+                output.write_text(json.dumps(r))
+                with self.assertRaisesRegex(ValueError,'input'): verify_record(output,root)
 
 
 if __name__ == '__main__': unittest.main()

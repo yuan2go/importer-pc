@@ -1,3 +1,5 @@
+> PR29 P1/P2整改：原head d954ba6的组合记录重验存在配置与原事件未关联缺口，Windows恢复/卸载漏传业务程序集。整改设计与执行计划见[本包](../work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md)；旧候选与结果保持原身份，新验证另记，不以旧PASS替代。
+
 # 业务版本、兼容声明与组合证据
 
 WP-IPC-VERSION-COMPATIBILITY-01；用户2026-10-19授权。基线main b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d，PR23/24/26开放。PR26已有选装包交付实现，本包不复制其安装、恢复或选装器；只在现有发布、装配和冒烟入口补版本链。
@@ -31,3 +33,9 @@ Assembly把设备和服务绑定转换为通用提供者身份，校验所有启
 最终继承main9a5d87a（PR26已合并）：复用--composition、--extension-package/--extension-trust和实际composition.lock.json，不重建选装器；保留显式--version、安装Repair回执/依赖custody及原请求只读核对。业务1.2.1与扩展2.0.1独立于前轮本地1.2.0/2.0.0。第一次快照发布因SDK排除ArtifactsPath中的源码而真实FAIL，已把source-snapshot移到独立兄弟目录，不削弱编译或契约校验。
 
 最终签名组合验证使用实际已解压Release宿主的精确公共DLL构建扩展；独立验证进程加载该Release业务/平台/驱动/组件字节，验证器自身与运行闭包分别记hash。Debug包/旧记录不能充当新Release通过证据。
+
+## PR29独立审查整改
+
+P1：新增组合记录schema2，运行前固定输入配置和候选身份为CombinationInput事件；重验必须逐字段对应此事件、实际进程snapshot的Effective配置、ApplicationId、重启代次、OperationId/最终State和默认/BeforeMain/Attached场景。schema1历史记录保留原字节，只在已有snapshot/场景/结果一致时通过重验，其输入无独立事件绑定。schema2含输入事件时拒绝降级为schema1。原始事件和记录同时重写不由自带SHA证明可信，发布渠道/外部索引信任边界保持。
+
+P2：安装/恢复/卸载共用一个发行读取与验证方法，均传实际编译业务程序集；schema2正确组合可继续，错误业务版本/声明/文件仍拒绝。跨平台定向测试覆盖同一共享方法，不伪称Windows提权/ACL/交互已验。业务逻辑、业务版本1.2.1、内嵌兼容声明、公共契约及旧请求不改。

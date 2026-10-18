@@ -234,13 +234,18 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             new CapabilityDescriptor(m.Kind, "extension:" + x.Package.Id + "/" + m.Id, x.Package.Version, m.ContractIdentity ?? "PARCEL-REFERENCE-v1", m.Parameters, m.Requirements ?? new(), x.Package, m.Id)));
         return new(ReferenceCapabilityCatalog.Providers.Append(new("observation", "manual", "1.0.0", "CONTROLLED-OBSERVATION-v1", [], new())).Concat(descriptors).ToArray(), installed.Select(x => x.Package.Id + "@" + x.Package.Version).ToArray());
     }
+    internal ApplicationRelease ReadPublishedRelease(string appRoot)
+    {
+        var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(appRoot, "application-release.json")));
+        ApplicationReleaseValidation.ValidateIfPublished(appRoot, release.ApplicationId, new(release.Views, release.Layouts), businessAssembly);
+        return release;
+    }
     public async Task<BusinessReceipt> InstallAsync(string file, string sha256)
     {
         if (OperatingSystem.IsWindows())
         {
             var appRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "app"));
-            var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(appRoot, "application-release.json")));
-            ApplicationReleaseValidation.ValidateIfPublished(appRoot, release.ApplicationId, new(release.Views, release.Layouts), businessAssembly);
+            var release = ReadPublishedRelease(appRoot);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(appRoot, release.Files.Keys.Append("application-release.json").ToArray());
             var start = new System.Diagnostics.ProcessStartInfo(Path.Combine(appRoot, "Ipc.Assembly.exe")) { UseShellExecute = true, Verb = "runas", WorkingDirectory = appRoot };
             foreach (var value in new[] { "--action", "extension-install", "--mode", mode.ToString(), "--file", Path.GetFullPath(file), "--sha256", sha256 }) start.ArgumentList.Add(value);
@@ -269,8 +274,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         if (OperatingSystem.IsWindows())
         {
             var appRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "app"));
-            var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(appRoot, "application-release.json")));
-            ApplicationReleaseValidation.ValidateIfPublished(appRoot, release.ApplicationId, new(release.Views, release.Layouts));
+            var release = ReadPublishedRelease(appRoot);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(appRoot, release.Files.Keys.Append("application-release.json").ToArray());
             var start = new System.Diagnostics.ProcessStartInfo(Path.Combine(appRoot, "Ipc.Assembly.exe")) { UseShellExecute = true, Verb = "runas", WorkingDirectory = appRoot };
             foreach (var arg in new[] { "--action", action, "--mode", mode.ToString(), action == "extension-recover" ? "--operation" : "--package", identity }) start.ArgumentList.Add(arg);

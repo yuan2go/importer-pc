@@ -1,0 +1,41 @@
+{
+  "source": "a2e987a8d15eb397ad1a40cf1a303bdad4ec397b",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "5cf56cf26fc33be7f3363fdf8654b4f10ed969bb40a9fff36b7494eafd41f8f8"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "sha256": "cd3794bb5661de579a8c12fb1e7200a0ed88af9b0491753328d758a9dd8a46ab"
+    },
+    {
+      "path": "docs/runtime/getting-started.md",
+      "sha256": "4db9bd92e7b5385d8fbb9ab469deb108377997d8670fb58f8dca74af0eb6886b"
+    },
+    {
+      "path": "docs/runtime/operations.md",
+      "sha256": "e8939c49ad2b8bedc8d2f4cf3d53b2f0cde9445bedb46c61d804df624e947781"
+    },
+    {
+      "path": "docs/runtime/application-architecture-22.md",
+      "sha256": "b1341c5827bad9953c9fe8b7b23926e893e128ad67d35104d317b18dbc7fac5a"
+    },
+    {
+      "path": "docs/runtime/architecture-quality-closure-01.md",
+      "sha256": "bdc2485cd65555c72d3bfe38d3e3ee163c26e118f091d2471fc531417de9b3ca"
+    },
+    {
+      "path": "docs/extensions/developer-guide.md",
+      "sha256": "26419ce6cfa4cf77fb922d8997f0756ed1ac3fdde3c8811cc2b84ed892a4bcd7"
+    },
+    {
+      "path": "docs/ui/STATUS.md",
+      "sha256": "058ae7771162ef479603cfbf882fd30175142036e17fa9425607ed9f5337a78f"
+    },
+    {
+      "path": "docs/design/architecture-quality-closure-01.md",
+      "sha256": "4fd12ef87e728362c2dd884519d1ed5727127eb1cb81169377c97a3200ddfb9b"
+    }
+  ]
+}

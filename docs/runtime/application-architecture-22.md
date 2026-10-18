@@ -14,7 +14,7 @@ python3 scripts/package-application.py --application sportmaster --target portab
 dotnet /new/unpacked/app/Ipc.Assembly.dll --config /new/unpacked/app/config --data-root /new/isolated/runtime
 ```
 
-DirectPlc、WcsToPlc使用相同脚本分别--application direct-plc/wcs-to-plc。Windows候选--target win-x64包含原有WPF页面和受保护安装/部署脚本；交叉构建不等于Windows运行。本包不新增DirectPlc UI、页面、图片区域或预览能力。portable包只含所选业务控制台闭包；DirectPlc不带Ipc.Integrations。
+DirectPlc、WcsToPlc使用相同脚本分别--application direct-plc/wcs-to-plc。Windows候选--target win-x64包含原有WPF页面和受保护安装/部署脚本；交叉构建不等于Windows运行。DirectPlc完整UI按批准延期；Sportmaster已有双位结果及共享历史/维护页，不新增图片区域。portable包只含所选业务控制台闭包；DirectPlc不带Ipc.Integrations。
 
 默认schema3配置为config/{application}/business.json。Sportmaster显式左右两个reader和投递位，两个独立主链；DirectPlc/WcsToPlc一个main顺序位。config/optional/{application}/business.json为完整认证/实测/采图/上传可选配置：Sportmaster左右分别绑定独立秤和复用各自reader的采集，服务组件可共享。启用秤、上传或认证但缺失/失效必须拒绝；不回退关闭或模拟成功。启用Production须独立真实资格及真实提供者，模拟配置不能直接改Mode成为生产。
 
@@ -42,15 +42,14 @@ Platform.ObservationSession为每个reader固定epoch、来源sequence和健康�
 
 IParcelApplication.EmitReferenceAt(positionId, admissionId, code, sourceEventId)和ReconnectDeviceAsync(deviceId)为实际契约，CLI对应EmitReferenceAt/ReconnectDevice。单侧重连要求软件暂停和维护认证，只替换该reader注册，不改另一位epoch或重发原请求。认证与维护仍走已选组件；有未结责任时保护原操作员，不在切页/换班时篡改原件。其他Pause/Resume/Reconcile/ContinuePrepared/ContinueUpload/AbandonUnsubmitted/Backup保持原守卫。
 
-StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保存PendingRestart；原Effective不变。在途未清偿、上传未结/未知或原回执责任未完时激活拒绝。二进制/设备/拓扑/参数一次修订受控重启生效，不给扩展另建配置权威。既有WPF单Reader表单遇schema3明确只读，并在保存方法再次拒绝，禁止降为schema2/丢失右侧或改绑；通过上述完整接口维护。
+StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保存PendingRestart；原Effective不变。在途未清偿、上传未结/未知或原回执责任未完时激活拒绝。二进制/设备/拓扑/参数一次修订受控重启生效，不给扩展另建配置权威。WPF维护页提供完整schema3 JSON编辑/校验/保存及加载时修订CAS；旧单Reader参数表仍拒绝schema3保存，禁止降版/丢失右位。
 
 ## 版本升级与原件
 
-P2增量的公共Application.Contracts版本1.5.0；新参考能力包manifest版本1.5.0（22原候选1.4.0保留），仍必须使用目标宿主的精确Platform/Application契约SHA重新构建及独立签名。保留旧1.3.1/更早包与全部ID/version登记，不能覆盖原版本。ContractMajor相同不代表精确契约兼容。包构建/签名/安装/资格沿[扩展指南](../extensions/developer-guide.md)，不允许任意DLL扫描或热换Application。
-
+当前Application.Contracts ABI1.6.0，继承PR23 1.5.0的Retain/Release；包版本与ABI分别读取。PR24最终Debug1.6.6/Release1.6.7仅匹配其精确公共DLL。本次如公共字节改变必须新不可变包；不覆盖旧ID/version。按[扩展指南](../extensions/developer-guide.md)使用目标Release宿主和独立信任构建、预检、安装、绑定与激活。
 配置schema1/2保持显式单Reader历史兼容模式，不猜成左右位；默认种子和当前目标使用schema3。已有schema2站必须通过完整拓扑候选/CAS显式迁移。测试中的schema2兼容夹具只保护原机制，不证明新双位。
 
-本宿主数据库版本3，原迁移1/2的SQL/checksum逐字节保留，追加parcel_topology_semantics。不因旧配置仍为schema2就隐瞒新宿主的存储版本。数据库1/2在新增版本前检查所有未结主链、原图/上传、Awaiting/RawDurable回执；任何未结抛LegacyUnsettled且原迁移历史/业务JSON不变。先用匹配旧发布/包/配置清偿，再做完整备份，最后升级。已结原件不回填Position/Reader，也不改原payload/hash/目标/实现身份。
+Parcel当前数据库4，SQL1～3/checksum保留，追加归档、永久去重、冲突和配置审计设施。不因旧配置仍为schema2就隐瞒新宿主的存储版本。数据库1/2/3在新增版本前检查所有未结主链、原图/上传、Awaiting/RawDurable回执；任何未结抛LegacyUnsettled且原迁移历史/业务JSON不变。先用匹配旧发布/包/配置清偿，再做完整备份，最后升级。已结原件不回填Position/Reader，也不改原payload/hash/目标/实现身份。
 
 不得用改库、删除原件或强改迁移表作为部署升级步骤。新备份通过应用BackupAsync，包含完整配置、SQLite一致快照、原回执与尚存原图及完成清单；恢复到全新隔离目录，首次启动暂停。原请求、原WCS格口及PLC意图继续同T3事务，Unknown只查询原目标/实现，不盲重发。
 

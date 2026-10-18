@@ -1,8 +1,10 @@
-> Application17新增Sportmaster/DirectPlc/WcsToPlc所属实际WPF页面、VM、共享历史/维护/窗口及选择闭包，见[完成矩阵](../runtime/application-convergence-17-results.md)。三种WPF交叉构建PASS；实际Windows图0、客户端交互NOT_RUN。下文Supply及原型记录保留原形成时范围。
+# UI实现与实物状态
 
-> 当前工程实现见[16 UI映射](ui-maintainability-16-mapping.md)、[逐项报告](../runtime/ui-maintainability-16.md)与[同版Windows后验](../runtime/validation/ui-maintainability-16-windows.md)。v1.1实物保持原字节；WPF实际截图0、行为/DPI/HID/声音/触控仍NOT_RUN，局部核心与交叉构建不关闭原RV。[更新前原字节](../archive/pre-ui-maintainability-16/README.md)。
+Sportmaster当前WPF按left/right显示各自reader、作业、条码、格口及主链/后台责任，当前位命令与历史Owner分别选择；共享Application及连接。维护页已有完整schema3 JSON读取、校验、保存及加载时Revision CAS，旧单Reader表单仍只读保护拓扑。草稿、Pending、最后确认Effective、ActivationFailed分别显示。DirectPlc完整UI按已批准延期；不新增Sportmaster展图或长期图库。
 
-# UI资料当前状态
+来源为[v1.1实物与完整交接](ss-ui-vis-001-v1.1/README.md)，原HTML/CSS/JS及34张同源PNG保持原身份。新WPF是Application业务实现，不能据此声称旧HTML/RV已修复。实际Windows截图0；双窗、DPI/HID、声音/触控及安装交互NOT_RUN。跨平台真实VM/CAS检查与WPF交叉构建分别报告。[N01前原字节](../archive/pre-architecture-quality-02/README.md)。
+
+## 原始资料与历史验收
 
 2026-10-16：依据用户明确要求，新增 [最终完整交付v1.1实物](ss-ui-vis-001-v1.1/README.md)。原HTML、分离源码、18页PPTX/JSON、tokens和完整UI交接已保存；34张PNG由同源重新导出，不是历史PNG或WPF截图。
 

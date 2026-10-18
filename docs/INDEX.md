@@ -1,22 +1,17 @@
-> 当前整改：[质量闭环01](work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)及[运行/迁移/扩展指南](runtime/architecture-quality-closure-01.md)。[整改前入口原字节](archive/pre-architecture-quality-closure-01/README.md)。不以22旧PASS关闭新审查问题。
-
-> 采集身份P2修复当前入口：[工作包与设计](work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)。[修复结果与证据](runtime/acquisition-lifecycle-p2.md)。PR #22已合并main `2126ac2`；下述22开发基线、分支和候选均按形成时读取。
-
-> 22现行拓扑、状态作用域、版本与交付：[Application架构22](design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
-
 # 统一资料与实施入口
 
 ## 当前工程入口
 
-[22工作包](work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md) · [22设计](design/application-architecture-22.md) · [22运行/配置/升级](runtime/application-architecture-22.md)。22形成时基线ea881293及分支按原报告读取；本轮执行main为2126ac2，整改状态和候选身份见质量闭环01结果。Sportmaster两个独立投递位由用户确认；不把旧Supply共享箱/数量/AGV规则套入新Application。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。本次N01–N07执行main b2dc55b，继承未合并PR24 a2e987a（包含PR23 966ec6a），新结果不冒充main能力或历史PASS。新Application使用schema3/Parcel DB4，Supply的Storage5和Product命令单独适用。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
+[N01前操作指引原字节](archive/pre-architecture-quality-02/README.md)。19职责、20可靠性、22拓扑及[质量闭环设计](design/architecture-quality-closure-01.md)按适用范围共同生效；阶段工作包和原候选作为历史来源保留。
 ## 最新独立审查与下一阶段交接
 
 [架构质量审查02：原PDF、最新复核及精简Codex提示词](reviews/architecture-quality-audit-02/README.md)。固定审查main为`2126ac2c06a0c352d96afbbf13ec1a719c352738`；报告保持形成时身份，下一阶段N01–N07按执行时main与并行PR复核后实施。该报告发布任务未实施修复；质量闭环01的实际增量按本包结果和固定源码读取，不据此改写原审查结论或历史验收。
 
 ## 继承的整合与历史证据
 
-当前工程入口：[PR20/21整合记录](runtime/pr20-21-integration.md)。开工main `08286542`（PR19已合并）；最终运行源码`d5c8b79`，三项评审修复、交叉恢复整合及定向参考验证完成。PR状态和main合并身份读取GitHub及整合回执；旧报告的OPEN与候选身份按形成时读取。
+历史整合入口：[PR20/21整合记录](runtime/pr20-21-integration.md)。开工main `08286542`（PR19已合并）；最终运行源码`d5c8b79`，三项评审修复、交叉恢复整合及定向参考验证完成。PR状态和main合并身份读取GitHub及整合回执；旧报告的OPEN与候选身份按形成时读取。
 
 现行增量共同生效：[能力可靠性20设计](design/capability-reliability-20.md)、[20工作包](work-packages/WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20.md)/[运行](runtime/capability-reliability-20.md)/[历史结果](runtime/capability-reliability-20-results.md)，以及[备份健康工作包](work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md)/[运行及历史结果](runtime/backup-health-recovery.md)。它们补充[19职责设计](design/application-capability-19.md)，不能互相替代。[19运行](runtime/application-capability-19.md)和旧候选保留原身份。原字节分别见[20前归档](archive/pre-capability-reliability-20/README.md)、[备份修复前归档](archive/pre-backup-health-recovery/README.md)及Git基线。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
@@ -56,4 +51,4 @@
 
 [资料校验工具](../tools/README.md)只证明它覆盖的资料/链接/身份，不代表业务或现场通过。已知源资产问题与本次新增材料校验分开，保持原件和失败记录。
 
-本包实际交付：[22结果与候选身份](runtime/application-architecture-22-results.md)。
+22历史交付：[22结果与候选身份](runtime/application-architecture-22-results.md)。

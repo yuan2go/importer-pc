@@ -59,3 +59,17 @@ Parcel拥有自己的只读消费者检查：Effective/Pending、未结作业原
 旧无尝试字段配置可读；新字段可缺省。保留原Activate供Supply兼容，Parcel采用两阶段入口；旧Activate只识别PendingRestart，因此不会重试ActivationInProgress。不得用旧程序原地回退活动尝试，仍走完整备份/原发布恢复。最终候选须在本修复后新建精确包，先前产物身份保留。
 
 AQD-05补差：实际签名包复现仅Pending含包、重启激活被旧件屏障拒绝时，未初始化Store的Effective不能作为备份登记依据。备份复制前分别登记Effective和Pending，备份读者继续核对原COMPLETED及配置hash；清偿live后该离线Pending仍必须阻卸载。
+
+## 审查02 N01–N07差额设计（本次实施范围）
+
+审查02固定2126ac2，执行main b2dc55b，继承PR24 a2e987a（含PR23 966ec6a），两PR开工均OPEN。审查01 AQ与其缺PDF记录保留原身份；审查02原PDF已在main，hash dce6b0e235c44e414cc14a976dbd3cea0d24f634aab1276be894b6b69b62283d。本节是具体差额设计，不替换原始审查或D/RV。
+
+- N01/A09：整合README/INDEX、现有22运行、扩展和UI STATUS；Supply操作单独标识，随包按产品选择。替代操作原字节见pre-architecture-quality-02，设计22/19/20仍有效内容不归档删除。
+- N02/A01：复用已有Begin/Confirm、Interrupted尝试和原三断进程测试；不增加配置账。核部分资源失败排空及显式restage。旧无尝试配置只作为历史输入，成功Start才有当前运行确认，不能声称已找回旧程序遗失值。
+- N03/A02/A04：修Attached重启主Reason；依据持久且验hash的主链原回复恢复旧Blocked投影，恢复前完整JSON写原审计。原请求/原回复不改。维护暂停及认证后，允许对缺raw的原Awaiting执行原Query；查询产生自己的原件和T3，只有有效权威终态才可用显式命令关联旧发生为OutcomeReconciled。原发生ID/Source/空raw_hash保留，审计保存新查询发生及检查说明，绝不制造旧raw或清RawDurable丢件。Query无结果/冲突/无原能力保持隔离。旧DB升级屏障和匹配旧发布清偿继续执行，离线局部投影修复不授权控制动作。
+- N04/A03：复用DB4工作集/事务归档/永久去重/分页/raw和备份。补完整恢复集搬迁至新卷的容量预检和实际恢复入口，按实际字节加配置磁盘保留计算，保留原集、不自动删历史；不设客户保留期。新卷恢复仍隔离，旧根停止后才能启用。
+- N05/A05/A06：继承双位目标与完整编辑器。使用两个实际ParcelViewModel同时加载/编辑/自动刷新/保存验证CAS和另一位/实例不丢；Windows双窗交互单独NOT_RUN。
+- N06/A07/A08：继承Store恢复/卸载与Pending备份测试；包选装采用compositions闭包加重复--extension-package输入，校验完整依赖/目标精确公共DLL，实际只复制所选.ipcx及身份锁，不夹带私钥/信任策略。随包提供安装指引，安装/绑定/激活沿原入口；Release签名旅程核验宿主匹配。
+- N07：沿打包工作复用产品映射/指南集合，沿恢复工作将主结果解释留给各Flow；不全量改名、不新建恢复/插件框架。未改变公共契约就保留ABI，公共字节变化则新不可变包。
+
+采用现有设施定向修补。仅加阻断不能解决恢复，另建通用框架会扩大责任；本方案补既有对象的完成路径。验证以已有architecture-quality、AA22、资源/扩展组和必要打包启动为主，原失败输出保留，Windows/SDK/协议/现场分层。

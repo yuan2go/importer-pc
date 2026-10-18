@@ -1,13 +1,12 @@
-> 当前整改：[WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01](docs/work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)。实际路径见[质量闭环运行指南](docs/runtime/architecture-quality-closure-01.md)，22及旧报告PASS仅覆盖原身份；本包验证与剩余边界按同包结果读取。
-
 # importer-pc
 
-C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、多视图共享业务、真实SQLite事务/Outbox/原请求恢复、合成观察和受控扩展。旧现场迁移、真实SDK/WCS和现场资格分别验证。
+C#/.NET 10工位运行基座及独立Application/供包参考产品：WPF、多视图共享业务、真实SQLite事务/Outbox/原请求恢复、合成观察和受控扩展。旧现场迁移、真实SDK/WCS和现场资格分别验证。
 
 ## 当前工程状态
 
-当前实施为[Application架构22](docs/runtime/application-architecture-22.md)：一个主流程一个构建选装Application，Sportmaster两相机/两独立投递位，DirectPlc及WcsToPlc各一个顺序投递位；完整schema3配置、每设备注册及每位有界执行、仅取图/上传分离、数据库3升级前未结屏障。既有UI仅保护配置契约，不新增页面/预览。验证与交付记录在本包报告；Windows实际NOT_RUN，真实SDK/协议/现场BLOCKED。
+三个独立Application按[架构22](docs/design/application-architecture-22.md)选装，Parcel当前数据库4、配置schema3，Application.Contracts ABI1.6.0，保留PR23采集所有权和PR24归档、双位、完整配置与两阶段激活。执行main为b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d；PR23/24仍开放，本分支继承PR24固定a2e987a，不代为合并。N01–N07针对[独立审查02](docs/reviews/architecture-quality-audit-02/README.md)，与审查01 AQ编号和缺PDF记录分开。
 
+先按[首次运行](docs/runtime/getting-started.md)选产品。新Application使用Assembly/ParcelConfiguration；[维护指南](docs/runtime/architecture-quality-closure-01.md)统一配置确认、恢复、容量及扩展路线；Supply的Product/StationConfig、箱/数量规则仅在[Supply指南](docs/runtime/operations.md)适用。Windows实际NOT_RUN，真实SDK/协议/现场BLOCKED。
 ## 继承的PR20/21整合基线
 
 当前工程入口：[PR20/21协调整合](docs/runtime/pr20-21-integration.md)。最终运行/打包源码 **d5c8b7981ba8e4c8b9daf22df1cb686243815f3b**；三个评审问题及Create二次证据比较已修复，交叉恢复/资源/迁移、签名资格与5条解包进程旅程完成定向参考验证。Windows实际NOT_RUN，真实SDK/设备/WCS/PLC/现场BLOCKED。
@@ -44,4 +43,4 @@ Supply兼容Storage/MinimumReader为5/5；17冻结参考读码1.0.5与场地能�
 
 仓库public；[公开范围](docs/baseline/PUBLICATION.md)持续有效，完整客户归档仍PUBLIC_SUBSET_ONLY。D批准与RV状态不因参考实现或文档发布关闭。只提交获授权审查、通用实现及合成证据，不附客户原稿、私密链接、凭据、生产数据、SDK或字体文件。历史源资产校验问题保留，不放松校验器换通过。
 
-本包实际交付：[22结果与候选身份](docs/runtime/application-architecture-22-results.md)。
+历史22交付：[22结果与候选身份](docs/runtime/application-architecture-22-results.md)；本次继承[PR24结果](docs/runtime/architecture-quality-closure-01-results.md)，新验证按本分支结果读取。

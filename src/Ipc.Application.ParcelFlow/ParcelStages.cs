@@ -20,12 +20,14 @@ public sealed partial class ParcelRuntime
         if (query && !factory.Requirements(stage.Request.Binding).Query)
         { op = StageFailure(op, kind, stage, "Provider declares no authoritative query capability; preserve unknown and original responsibility"); Save(op, "QueryUnsupported", GetStage(op, kind)!.Failure!); return op; }
         var port = PortFor(op, kind);
+        if (!PortMaintenanceClear(port)) return op;
         CapabilityHealth health;
-        try { health = await ExternalAsync(() => ProbeHealthAsync(port, stopping.Token)).ConfigureAwait(false); }
+        try { health = await ExternalPortAsync(port, () => ProbeHealthAsync(port, stopping.Token)).ConfigureAwait(false); }
         catch (OperationCanceledException) when (stopping.IsCancellationRequested)
         { return operations[op.Id]; } // No delivery occurred, no failed health fact is invented on shutdown.
         capabilityHealth[port.InstanceId] = health;
         op = operations[op.Id];
+        if (!PortMaintenanceClear(port)) return op;
         if (!health.Ready || health.ValidUntil <= DateTimeOffset.UtcNow || health.ConfirmedAt > DateTimeOffset.UtcNow)
         { op = StageFailure(op, kind, stage, "Original capability is not healthy; reconnect and reconcile"); Save(op, "CapabilityNotReady", "Original capability is not healthy"); return op; }
         if (!query && ((!attached && !CanDispatch(op) || attached && !CanSendUpload(op)) ||
@@ -45,7 +47,7 @@ public sealed partial class ParcelRuntime
         StageReply? reply;
         try
         {
-            reply = await ExternalAsync(() => PortCallAsync(port, async () => kind switch
+            reply = await ExternalPortAsync(port, () => PortCallAsync(port, async () => kind switch
             {
                 ParcelStage.Wcs => query ? await ports.Wcs!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Wcs!.ResolveSlotAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
                 ParcelStage.Plc => query ? await ports.Plc!.QueryAsync(deliveryRequest, budget.Token).ConfigureAwait(false) : await ports.Plc!.SubmitAsync(deliveryRequest, budget.Token).ConfigureAwait(false),
@@ -139,7 +141,7 @@ public sealed partial class ParcelRuntime
                 }
                 if (stage?.State is StageState.Prepared or StageState.Dispatching)
                     op = SetStage(op, kind, stage with { State = StageState.Unknown, Failure = "Interrupted startup: reconcile the original identity" }) with
-                        { State = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached ? op.State : UnknownState(kind), Reason = "Restart does not authorize automatic dispatch or replay" };
+                        { State = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached ? op.State : UnknownState(kind), Reason = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached ? op.Reason : "Restart does not authorize automatic dispatch or replay" };
             }
             if (op != op0) Save(op, "RestartRecovery", "Prepared/Dispatching conservatively retained as unknown");
         }
@@ -181,12 +183,15 @@ public sealed partial class ParcelRuntime
             // Main dependencies first. An independent upload's missing raw never blocks a PLC/WCS query.
             var stages = new[] { ParcelStage.Capture }.Where(k => op.Capture?.State == StageState.Unknown)
                 .Concat(definition.ReconciliationStages(op)).Concat(op.Upload?.State == StageState.Unknown ? new[] { ParcelStage.Upload } : []).Distinct().ToArray();
+            var maintenanceBlocked = false;
             foreach (var kind in stages.Where(k => requested is null || requested == k))
             {
                 var original = GetStage(op, kind)!;
+                if (!PortMaintenanceClear(PortFor(op, kind))) { maintenanceBlocked = true; continue; }
                 if (repository!.PendingReceipts().Any(x => x.Operation == operationId && x.Stage == original.Request.Stage)) continue;
                 op = await ExecuteStageAsync(op, kind, true).ConfigureAwait(false);
             }
+            if (maintenanceBlocked) return new("MaintenanceInProgress", "Original stage retained; selected capability is under maintenance", repository!.Revision);
             return new(op.State.ToString(), requested is { } selected ? GetStage(op, selected)?.Failure ?? "Original stage inspected" : op.Reason ?? "Original main facts retained; attached responsibility is independent", repository!.Revision);
         }
         finally { gate.Release(); }

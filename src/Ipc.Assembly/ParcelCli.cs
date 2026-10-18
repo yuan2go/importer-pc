@@ -59,11 +59,11 @@ static class ParcelCli
             : MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(paths.Root, "reference-leases"));
         var store = new ExtensionStore(paths.Root, Wire.Decode<ExtensionTrust>(File.ReadAllText(paths.TrustFile)), mode, leases);
         if (map["--action"] == "extension-install") Console.WriteLine(Wire.Encode(store.Install(map["--file"], map["--sha256"])));
-        else if (map["--action"] == "extension-recover") Console.WriteLine(Wire.Encode(store.Recover(map["--operation"], refreshReferences: () => store.InspectConsumers(ParcelRepository.InspectRequiredPackages))));
+        else if (map["--action"] == "extension-recover") Console.WriteLine(Wire.Encode(store.Recover(map["--operation"], refreshReferences: () => store.InspectConsumers(Ipc.Assembly.ExtensionConsumerReaders.Inspect))));
         else if (map["--action"] == "extension-uninstall")
         {
             var package = Wire.Decode<PackageReference>(map["--package"]);
-            store.Uninstall(package, () => store.InspectConsumers(ParcelRepository.InspectRequiredPackages));
+            store.Uninstall(package, () => store.InspectConsumers(Ipc.Assembly.ExtensionConsumerReaders.Inspect));
             Console.WriteLine(Wire.Encode(store.Inventory().Single(x => x.Package == package)));
         }
         else if (map["--action"] == "extension-operations") Console.WriteLine(Wire.Encode(store.Operations()));

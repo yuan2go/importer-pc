@@ -38,19 +38,69 @@ public sealed partial class ParcelRepository
         }
         RecoveryFiles.RequireOrdinaryAncestors(configPath);
         var config = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(configPath));
-        if (config.Effective.ApplicationId != application || config.Effective.SchemaVersion is < 1 or > 3 || config.Pending is { } pending && pending.ApplicationId != application)
-            throw new InvalidDataException("Consumer configuration identity/schema unavailable");
+        ValidateConsumerConfiguration(config.Effective, application, null);
+        if (config.Pending is { } candidate) ValidateConsumerConfiguration(candidate, application, config.Effective);
         HashSet<PackageReference> required = [.. config.Effective.Extensions?.Packages ?? [], .. config.Pending?.Extensions?.Packages ?? []];
+        c.CommandText = "SELECT count(*) FROM parcel_receipts WHERE state NOT IN ('Awaiting','RawDurable','Committed','NoReply')";
+        if (Convert.ToInt64(c.ExecuteScalar()) != 0) throw new InvalidDataException("Unknown consumer receipt responsibility; use matching release");
         c.CommandText = "SELECT operation FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable')";
         HashSet<string> pendingReceipts = []; using (var r = c.ExecuteReader()) while (r.Read()) pendingReceipts.Add(r.GetString(0));
         c.CommandText = "SELECT body FROM parcel_operations";
         using (var r = c.ExecuteReader()) while (r.Read())
         {
             var op = Wire.Decode<ParcelOperation>(r.GetString(0));
+            ValidateConsumerConfiguration(op.FrozenConfiguration, application, config.Effective);
+            if (!Enum.IsDefined(op.State) || op.ConfigurationHash != Wire.Hash(Wire.Encode(op.FrozenConfiguration)))
+                throw new InvalidDataException("Unknown/changed frozen operation format; retain packages");
+            foreach (var stage in new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>())
+                if (!Enum.IsDefined(stage.State) || stage.Request is null || stage.Replies is null || stage.Attempts is < 0 or > 1 ||
+                    stage.Request.ApplicationId != application || stage.Request.OperationId != op.Id || stage.Request.ConfigurationHash != op.ConfigurationHash ||
+                    !ParcelBindings.All(op.FrozenConfiguration).Any(b => Wire.Encode(b) == Wire.Encode(stage.Request.Binding)))
+                    throw new InvalidDataException("Unknown/changed frozen stage identity; retain packages");
             var terminal = op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted || application == "sportmaster" && op.State == ParcelState.SlotResolved;
-            if (!terminal || op.FrozenConfiguration.Images is not null && !op.ImageReleased || pendingReceipts.Contains(op.Id))
+            var pendingReceipt = pendingReceipts.Remove(op.Id);
+            var unsettledStage = new[] { op.Wcs, op.Plc, op.Capture, op.Upload }.OfType<StageFact>().Any(s => s.State is StageState.Prepared or StageState.Dispatching or StageState.Unknown or StageState.Conflict);
+            if (!terminal || op.RecoveryRequired || unsettledStage || op.FrozenConfiguration.Images is not null && !op.ImageReleased || pendingReceipt)
                 foreach (var package in op.FrozenConfiguration.Extensions?.Packages ?? []) required.Add(package);
         }
+        if (pendingReceipts.Count != 0) throw new InvalidDataException("Original receipt occurrence lacks its owning operation; retain packages");
         return required.ToArray();
     }
+    static void ValidateConsumerConfiguration(ParcelConfiguration configuration, string application, ParcelConfiguration? owner)
+    {
+        if (configuration is null || owner is not null && (configuration.StationId != owner.StationId || configuration.Mode != owner.Mode))
+            throw new InvalidDataException("Consumer configuration owner differs; retain packages");
+        var errors = ParcelConfigurationRules.Validate(configuration, application, application == "sportmaster" ? ["left", "right"] : ["main"]);
+        if (errors.Length != 0) throw new InvalidDataException("Unknown/invalid consumer configuration: " + string.Join("; ", errors));
+        if (application == "sportmaster" ? configuration.Wcs is null || configuration.Plc is not null :
+            configuration.Plc is null || application == "direct-plc" && configuration.Wcs is not null || application == "wcs-to-plc" && configuration.Wcs is null)
+            throw new InvalidDataException("Consumer main capability ownership differs from declared Application");
+        if (configuration.CapabilityInstances is { } inventory && (inventory.Length > 64 || ParcelBindings.Bound(configuration).Any(b => !inventory.Any(i => Wire.Encode(i) == Wire.Encode(b)))))
+            throw new InvalidDataException("Incomplete authoritative consumer capability inventory");
+        var deployment = configuration.Extensions;
+        var bindings = ParcelBindings.All(configuration);
+        var readers = ParcelBindings.Readers(configuration);
+        if (deployment is not null && (deployment.Packages is null || deployment.Instances is null || deployment.Packages.Length > 64 || deployment.Instances.Length > 64 ||
+            deployment.Packages.Any(p => p is null || !ExtensionSchema.IsId(p.Id) || !ExtensionSchema.IsVersion(p.Version) || !ExtensionSchema.IsHash(p.ManifestSha256)) ||
+            deployment.Packages.Select(p => p.Id).Distinct().Count() != deployment.Packages.Length ||
+            deployment.Instances.Any(i => i is null || !ExtensionSchema.IsId(i.Id) || !ExtensionSchema.IsId(i.ModuleId) || i.Parameters is null) ||
+            deployment.Instances.Select(i => i.Id).Distinct().Count() != deployment.Instances.Length ||
+            deployment.Services is { Length: > 0 } || deployment.Ports is { Length: > 0 }))
+            throw new InvalidDataException("Unknown/invalid consumer extension closure; retain packages");
+        foreach (var binding in bindings)
+            if (binding.Package is { } package
+                ? deployment?.Packages.Contains(package) != true || binding.Version != package.Version || !ExtensionSchema.IsId(binding.Module) || binding.Implementation != "extension:" + package.Id + "/" + binding.Module
+                : binding.Module is not null || binding.Implementation.StartsWith("extension:", StringComparison.Ordinal))
+                throw new InvalidDataException("Dangling/contradictory exact capability package reference; retain packages");
+        foreach (var reader in readers)
+        {
+            if (reader.Driver == "manual") continue;
+            var instance = deployment?.Instances.SingleOrDefault(i => "extension:" + i.Id == reader.Driver);
+            if (instance is null || !instance.Enabled || instance.DeviceId != reader.DeviceId || deployment!.Packages.Count(p => p.Id == instance.PackageId) != 1)
+                throw new InvalidDataException("Dangling/unknown reader extension reference; retain packages");
+        }
+        if (deployment?.Instances.Any(i => !readers.Any(r => r.Driver == "extension:" + i.Id)) == true)
+            throw new InvalidDataException("Unbound observation extension instance; retain packages");
+    }
+
 }

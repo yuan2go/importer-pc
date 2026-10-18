@@ -164,8 +164,7 @@ public sealed partial class ParcelRepository : IDisposable
         using var cmd = db.CreateCommand(); cmd.Transaction = tx; cmd.CommandText = "UPDATE parcel_receipts SET state='RawDurable',raw_hash=$hash WHERE id=$id AND state='Awaiting'";
         cmd.Parameters.AddWithValue("$id", occurrence); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply)));
         if (cmd.ExecuteNonQuery() != 1) throw new InvalidDataException("Receipt occurrence cannot be reused");
-        using var identity = db.CreateCommand(); identity.Transaction = tx; identity.CommandText = "INSERT INTO parcel_reply_identities VALUES($request,$id,$hash) ON CONFLICT(request,id) DO NOTHING";
-        identity.Parameters.AddWithValue("$request", reply.RequestId); identity.Parameters.AddWithValue("$id", reply.Id); identity.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply))); identity.ExecuteNonQuery();
+        RegisterReplyIdentity(OccurrenceRequest(occurrence, tx), reply, tx);
         tx.Commit();
     }
     public void NoReply(string occurrence)
@@ -191,6 +190,7 @@ public sealed partial class ParcelRepository : IDisposable
             var id = reader.GetString(0); if (File.Exists(Path.Combine(rawRoot, id + ".json"))) continue;
             if (!HasArchivedRaw(id, reader.GetString(1))) throw new InvalidDataException("Durable original raw receipt is missing");
         }
+        ValidateDurableReplyIdentities();
         CleanupArchivedRawFiles();
     }
     public (string Id, string Operation, string Stage, string Request, StageReply? Reply)[] PendingReceipts()
@@ -211,8 +211,11 @@ public sealed partial class ParcelRepository : IDisposable
     }
     public void RecoverRaw(string id, StageReply reply)
     {
-        using var cmd = db.CreateCommand(); cmd.CommandText = "UPDATE parcel_receipts SET state='RawDurable',raw_hash=$hash WHERE id=$id AND state IN ('Awaiting','RawDurable')";
-        cmd.Parameters.AddWithValue("$id", id); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply))); cmd.ExecuteNonQuery();
+        using var tx = db.BeginTransaction();
+        using var cmd = db.CreateCommand(); cmd.Transaction = tx; cmd.CommandText = "UPDATE parcel_receipts SET state='RawDurable',raw_hash=$hash WHERE id=$id AND state IN ('Awaiting','RawDurable')";
+        cmd.Parameters.AddWithValue("$id", id); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply)));
+        if (cmd.ExecuteNonQuery() != 1) throw new InvalidDataException("Original recovery occurrence changed");
+        RegisterReplyIdentity(OccurrenceRequest(id, tx), reply, tx); Boundary?.Invoke("BeforeRecoveredReplyIdentityCommit"); tx.Commit();
     }
     public bool HasMeasurement(WeightMeasurement m)
     {

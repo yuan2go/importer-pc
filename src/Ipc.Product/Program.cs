@@ -50,7 +50,7 @@ if (action.StartsWith("extension-", StringComparison.Ordinal))
             {
                 var station = Wire.Decode<StationConfig>(File.ReadAllText(Path.Combine(root, "station.json")));
                 if (station.Mode != mode) throw new InvalidDataException("Station/extension mode mismatch");
-                references = () => extensions.InspectConsumers(SupplyStore.InspectRequiredExtensionPackages).Concat(SupplyStore.InspectRequiredExtensionPackages(Path.Combine(data, mode.ToString(), station.StationId, "station.db"))).Distinct().ToArray();
+                references = () => extensions.InspectConsumers(Ipc.Assembly.ExtensionConsumerReaders.Inspect).Concat(SupplyStore.InspectRequiredExtensionPackages(Path.Combine(data, mode.ToString(), station.StationId, "station.db"))).Distinct().ToArray();
             }
             Console.WriteLine(Wire.Encode(extensions.Recover(originalId, refreshReferences: references)));
         }
@@ -60,7 +60,7 @@ if (action.StartsWith("extension-", StringComparison.Ordinal))
             if (station.Mode != mode) throw new InvalidDataException("Station/extension mode mismatch");
             var db = Path.Combine(data, mode.ToString(), station.StationId, "station.db");
             var package = extensions.Inventory().Single(x => x.Package.ManifestSha256 == Get("--manifest-hash", "") && x.Status == "Installed").Package;
-            extensions.Uninstall(package, () => extensions.InspectConsumers(SupplyStore.InspectRequiredExtensionPackages).Concat(SupplyStore.InspectRequiredExtensionPackages(db)).Distinct().ToArray());
+            extensions.Uninstall(package, () => extensions.InspectConsumers(Ipc.Assembly.ExtensionConsumerReaders.Inspect).Concat(SupplyStore.InspectRequiredExtensionPackages(db)).Distinct().ToArray());
             Console.WriteLine(Wire.Encode(new { Status = "Uninstalled", Package = package }));
         }
         else throw new ArgumentException("Unknown extension action");

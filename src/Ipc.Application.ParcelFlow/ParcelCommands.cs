@@ -18,6 +18,7 @@ public sealed partial class ParcelRuntime
             if (overload != 0) reasons.Add("Overload: rejected callback; inspect parcel and acknowledge while paused");
             if (!SessionValid) reasons.Add("Operator authentication required for new admission");
             if (repository.Paused) reasons.Add("Software admission paused; this is not an emergency stop");
+            reasons.AddRange(maintainedResources.Keys.Order().Select(resource => "MaintenanceInProgress:" + resource));
             if (readers.Values.Any(r => r.Health?.IsValid(DateTimeOffset.UtcNow) != true)) reasons.Add("Reader confirmation missing/expired");
             if (!ImageCapacityAvailable()) reasons.Add("Temporary image capacity/backlog exhausted; existing originals retained");
             if (operations.Values.Any(NeedsReconciliation)) reasons.Add("Original stage outcome or receipt responsibility is unresolved");

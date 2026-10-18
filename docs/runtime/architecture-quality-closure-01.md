@@ -1,4 +1,4 @@
-> PR24独立复审整改进行中：R01～R05以[现行设计/执行计划](../design/architecture-quality-closure-01.md#aqd-07-pr24独立复审整改)为目标，以下前轮能力须结合本轮验证读取。旧源码/候选身份和失败记录保留。
+> PR24本轮复审整改：回执原件身份恢复、Attached原因隔离、完整离线消费者检查、混合Supply/Parcel读者及资源维护发送围栏已实现。必要定向验证与固定候选见本轮结果；历史候选/失败仍保留原身份，Windows/真实现场边界不变。
 
 # 质量闭环01 · 运行、维护与兼容
 
@@ -20,13 +20,13 @@ Capacity统一投影未结/工作集/归档量、磁盘可用及保留阈值。�
 
 即使数据库格式未变，端口构造后、所有来源Start前仍核对全部未结原件的精确实现指纹；缺原实现即拒绝启动业务，要求匹配原发布清偿，不能先在另一位制造混合版本责任。任一重启未结责任使软件暂停；主链未结还带RecoveryRequired。重量可按原Admission关联，不能自动首次发送。先显式Resume，再对原Owner以ContinuePrepared提交检查说明；若期限/健康/原件屏障未满足仍拒绝。说明表示操作者检查记录，不假造物理传感器许可。所有原ID/payload/hash/配置/实现/接受事实保留。已经返回且持久的raw仅本地T3恢复。
 
-Attached上传失败/Unknown/无结果/原能力缺失只进入Upload.State/Failure和AuxiliaryReasons。主链Reason、WCS格口、PLC接受/物理完成不被上传覆盖。ReconcileAsync(operationId,stage?)可选择原stage字符串（wcs-slot、plc-submit、image-capture、image-upload）；默认先主链后独立上传。仅同阶段未清原接收阻挡该阶段，另一查询不能代偿缺失原件。原StageFact仅保有至多64条必要事实/最近回复，完整原响应及reply-ID/hash永久持久；达到历史回复数不会永久锁死后续权威完成查询。
+Attached上传失败/Unknown/无结果/原能力缺失只进入Upload.State/Failure和AuxiliaryReasons。主链Reason、WCS格口、PLC接受/物理完成不被上传覆盖。ReconcileAsync(operationId,stage?)可选择原stage字符串（wcs-slot、plc-submit、image-capture、image-upload）；默认先主链后独立上传。仅同阶段未清原接收阻挡该阶段，另一查询不能代偿缺失原件。原StageFact仅保有至多64条必要事实/最近回复，完整原响应及reply-ID/hash永久持久；StoreRaw与RecoverRaw均以同一事务提交接收发生和不可替换身份。旧DB4启动按原发生顺序验证raw及归档BLOB并补齐缺索引，事务失败回滚而不改变原件。既有已提交状态与矛盾原件不一致时以OriginalReplyIdentityConflict阻断启动；须先保存完整DB/WAL、配置、原raw/归档及精确发布，沿原协议调查并批准处置，不强制清空、不重发或把旧假完成当真。达到历史回复数不会永久锁死后续权威完成查询。
 
 过载确认先将原marker哈希、命令ID/回执和审计同事务提交，再删除marker/解除内存。SQL失败不清责；提交后中断按原哈希收敛。新marker不能被旧确认清掉。跨位身份冲突包含稳定ID、受影响位和原件；重启保留，暂停/维护认证/说明后以AcknowledgeIdentityConflict明确处置，原冲突和作业不删除。
 
 ## 设备与UI
 
-物理reader及其采图门面共享设备串行门；采集/查询/重连/Stop不并发替换会话。独立设备不共用该门，WCS等可并发服务调用保持双位独立。维护外呼释放应用聚合锁，快照/软件暂停可用；全局服务重连需要现有服务调用排空。维护预算取消但提供者未返回时仍持有原任务/资源，不能当成已经停止。旧epoch回调与旧维护代次健康不可污染新注册；健康返回InstanceId、确认时间和TTL均校验，投影不续期。
+物理reader及其采图门面共享设备串行门；采集/查询/重连/Stop不并发替换会话。独立设备不共用该门，WCS等可并发服务调用保持双位独立。维护外呼释放应用聚合锁，快照/软件暂停可用；选定服务重连只要求该服务的现有业务、查询、认证及健康外呼排空。维护登记先于释放聚合锁，并以物理设备键/服务实例键覆盖准入、继续、Submit/Query及认证；共享WCS维护阻断所有依赖位，独立设备只阻其所属位。服务在途外呼先拒绝维护，设备在途采集按预算等待串行门。维护预算取消但提供者未返回时仍持有原任务/资源，不能当成已经停止；迟到完成按MaintenanceIncomplete保留失败审计，不宣布成功。软件Pause/Snapshot/Stop的取消边界保持可用，重连回执报告实际暂停状态。旧epoch回调与旧维护代次健康不可污染新注册；健康返回InstanceId、确认时间和TTL均校验，投影不续期。
 
 工作台及公共底栏显示当前投递位、条码和完整命令Owner；历史详情单独显示所选Owner及可用命令。历史选择不改变当前位，刷新和双窗保持本窗目标；发送使用显示时的修订，冲突要求刷新。Sportmaster同时显示left/right的reader、入场、作业和WCS格口，模拟输入显式选择位。原UI v1.1 HTML/CSS/JS与交接为信息层级依据，没有复制其旧共享箱/数量/AGV规则。没有新增图片区域或DirectPlc完整UI。Windows交互另验。
 
@@ -68,3 +68,10 @@ dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Veri
 驱动入队时复制扫码数组；提交及查询适配器取得原请求的独立副本。外部可变参数不能修改已持久化意图、冻结配置或后续查询依据。配置编辑草稿绑定读取时的运行实例与配置修订，自动刷新不推进草稿CAS；双窗口冲突须重新读取后人工合并。
 
 配置账新增可缺省Activation尝试身份/源时间/结果，旧Effective在资源构造和Start全部成功前不变，Pending保持完整候选。突然退出后标记ActivationFailed，保留旧确认版、原候选和原尝试；不自动重试，维护者核对后使用当前CAS重新保存。失败资源仍必须Stop/Dispose释放，配置回退不等于资源释放。Supply旧Activate路径保持；旧版本不支持原地恢复活动尝试，应使用匹配完整备份和发布。
+
+
+### PR24本轮离线维护读者依赖
+
+装配的ExtensionConsumerReaders只探测只读格式标记，将Supply schema_history根交给SupplyStore既有读者，将Parcel platform_migrations根交给ParcelRepository；两者同时出现、未知、缺失或未来版本均拒绝卸载，保留消费者登记和包身份。Parcel读者共同校验Effective、Pending及冻结配置shape/schema/站点/模式、实例库存和精确包/模块/reader引用，未知阶段或悬挂原回执不能当零引用。检查不加载扩展、不实例化其他主流程、不要求离线包仍可激活。
+
+为支持同机同模式混合消费者，Parcel装配显式携带Ipc.Supply与Ipc.Supply.Contracts只读维护依赖；旧Product携带ParcelFlow及Application.Contracts公共读者。其余两个未选择的Parcel主流程和WCS实现不得泄漏到DirectPlc。保留Supply DB5与Parcel DB4原迁移SQL，未增加/重写公共契约、数据库或协议版本；Application.Contracts仍1.6.0。精确新宿主构建签名样例使用新不可变版本1.6.8/1.6.9，旧1.6.0～1.6.7原件不覆盖。

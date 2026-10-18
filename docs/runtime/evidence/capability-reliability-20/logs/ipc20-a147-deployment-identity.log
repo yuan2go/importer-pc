@@ -1,0 +1,80 @@
+{
+  "Status": "IdentityOnly",
+  "ConfigurationHash": "27433479F015E1BD45DAA2A93694BA85350728D61F20D359FE8C51A3BE101437",
+  "HostContractSha256": "F983FD611EC32D0E37622DA488CB0A8AB16DE45304EF4BA3A489FB89E9C339C7",
+  "ApplicationContractSha256": "422CAFF501D01DEE83A88C255D69024612E4B9623EE6E12751F4B0230B79C6A0",
+  "NormalizedConfiguration": {
+    "SchemaVersion": 2,
+    "ApplicationId": "wcs-to-plc",
+    "StationId": "reference-17",
+    "Mode": "Simulation",
+    "Weight": {
+      "Source": "Configured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": 1.25,
+      "MaximumAgeMs": 3000,
+      "WaitTimeoutMs": 15000
+    },
+    "Reader": {
+      "Role": "parcel-reader",
+      "Driver": "manual",
+      "DeviceId": "wcs-to-plc.camera",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    "Scale": null,
+    "Wcs": {
+      "Kind": "integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "InstanceId": "wcs-to-plc.integration",
+      "Target": "reference://integration/wcs-to-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "slot": "REFERENCE-07",
+        "peer-root": "/tmp/ipc20-a147-preflight-only/Simulation/reference-peers"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Plc": {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "InstanceId": "wcs-to-plc.plc",
+      "Target": "reference://plc/wcs-to-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "complete-on-query": "true",
+        "peer-root": "/tmp/ipc20-a147-preflight-only/Simulation/reference-peers"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Extensions": null,
+    "QueueCapacity": 64,
+    "TimeoutMs": 1500,
+    "MaximumOperations": 10000,
+    "SessionLifetimeMs": 28800000,
+    "MaintenanceLogin": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "WeightValidity": "UntilDispatch"
+  },
+  "ExternalCalls": 0,
+  "PhysicalReadiness": "NOT_VERIFIED"
+}

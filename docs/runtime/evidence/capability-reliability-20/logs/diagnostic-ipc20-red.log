@@ -1,0 +1,651 @@
+EvidenceRoot=/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-2798e626d61445909e186647adf4db13
+FAIL AC20 sportmaster capture unknown deadline: sportmaster capture unknown cannot hide waiting weight or admit next parcel
+PASS AC20: sportmaster rejected capture remains terminal for both disabled and measured weight
+FAIL AC20 sportmaster rejected capture Measured: sportmaster rejected capture remains terminal for both disabled and measured weight
+FAIL AC20 direct-plc capture unknown deadline: direct-plc capture unknown cannot hide waiting weight or admit next parcel
+PASS AC20: direct-plc rejected capture remains terminal for both disabled and measured weight
+FAIL AC20 direct-plc rejected capture Measured: direct-plc rejected capture remains terminal for both disabled and measured weight
+FAIL AC20 wcs-to-plc capture unknown deadline: wcs-to-plc capture unknown cannot hide waiting weight or admit next parcel
+PASS AC20: wcs-to-plc rejected capture remains terminal for both disabled and measured weight
+FAIL AC20 wcs-to-plc rejected capture Measured: wcs-to-plc rejected capture remains terminal for both disabled and measured weight
+FAIL AC20 cancel no image and restart: Timeout: {
+  "RuntimeId": "142fe996-7fff-48da-93e6-a86cc2f244d5",
+  "ApplicationId": "sportmaster",
+  "Revision": 4,
+  "State": "Blocked",
+  "Paused": true,
+  "BlockingReasons": [
+    "Software admission paused; this is not an emergency stop",
+    "Temporary image capacity/backlog exhausted; existing originals retained"
+  ],
+  "Operations": [
+    {
+      "Id": "d11b80c229fc46a18888b7a81480db55",
+      "AdmissionId": "cancelled",
+      "ParcelCode": "003",
+      "ObservationId": "8CFAA72200026637A3C7D37B52DA8D0D6200D0FF081F046641796665FC6221A6",
+      "ObservedAt": "2026-10-18T07:45:06.409949+00:00",
+      "ConfigurationHash": "26E03712C1241488BC2634050CB262E89255D13B3EAC1BA1489F24E1A217A55C",
+      "FrozenConfiguration": {
+        "SchemaVersion": 1,
+        "ApplicationId": "sportmaster",
+        "StationId": "reference-17",
+        "Mode": "Simulation",
+        "Weight": {
+          "Source": "Disabled",
+          "Unit": "Kg",
+          "Precision": 3,
+          "ConfiguredValue": null,
+          "MaximumAgeMs": 3000,
+          "WaitTimeoutMs": 15000
+        },
+        "Reader": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "Scale": null,
+        "Wcs": {
+          "Kind": "integration",
+          "Implementation": "reference-integration",
+          "Version": "1.0.0",
+          "InstanceId": "sportmaster.integration",
+          "Target": "reference://integration/sportmaster",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "slot": "REFERENCE-07",
+            "peer-root": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-2798e626d61445909e186647adf4db13/cancel-empty/data/Simulation/reference-peers"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "Plc": null,
+        "Extensions": null,
+        "QueueCapacity": 64,
+        "TimeoutMs": 1500,
+        "MaximumOperations": 10000,
+        "Images": {
+          "Camera": {
+            "Kind": "camera",
+            "Implementation": "reference-camera",
+            "Version": "1.0.0",
+            "InstanceId": "camera.one",
+            "Target": "reference://camera/reliability20",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "decision": "accept",
+              "reply-mode": "normal"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "Uploader": {
+            "Kind": "upload",
+            "Implementation": "reference-upload",
+            "Version": "1.0.0",
+            "InstanceId": "upload.one",
+            "Target": "reference://upload/reliability20",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "decision": "accept",
+              "reply-mode": "normal",
+              "peer-root": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-2798e626d61445909e186647adf4db13/cancel-empty/data/Simulation/reference-peers"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "MaximumBytes": 4194304,
+          "Strategy": "BeforeMain",
+          "TotalBytes": 33554432,
+          "MaximumPending": 1
+        },
+        "SessionLifetimeMs": 28800000,
+        "MaintenanceLogin": {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "InstanceId": "maintenance",
+          "Target": "reference://maintenance",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "subjects": "maintenance"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        }
+      },
+      "ImplementationHashes": {
+        "sportmaster.integration": "5E3399AA7E8CB3B4726DEF59378FA571DC5FF1D4640A5E3484F51B934AC3FCDE",
+        "camera.one": "787BCF570E3F24282D9589F9E40D57497FDA92F6FCD7AAA0C3F6ED4C7DD87585",
+        "upload.one": "E6E840B319A47108EA38EE5EC3ABE76F9FAAE44F0856B33D65645FD44011A22A",
+        "maintenance": "E6E840B319A47108EA38EE5EC3ABE76F9FAAE44F0856B33D65645FD44011A22A"
+      },
+      "WeightPolicy": {
+        "Source": "Disabled",
+        "Unit": "Kg",
+        "Precision": 3,
+        "ConfiguredValue": null,
+        "MaximumAgeMs": 3000,
+        "WaitTimeoutMs": 15000
+      },
+      "Weight": null,
+      "State": "Abandoned",
+      "Slot": null,
+      "Wcs": null,
+      "Plc": null,
+      "Reason": "Unsubmitted parcel inspected and removed: SIMULATION inspected and removed",
+      "Capture": {
+        "Request": {
+          "Id": "dfe3a5d5f1764e68a67d1ada64720280",
+          "ApplicationId": "sportmaster",
+          "OperationId": "d11b80c229fc46a18888b7a81480db55",
+          "AdmissionId": "cancelled",
+          "Stage": "image-capture",
+          "Binding": {
+            "Kind": "camera",
+            "Implementation": "reference-camera",
+            "Version": "1.0.0",
+            "InstanceId": "camera.one",
+            "Target": "reference://camera/reliability20",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "decision": "accept",
+              "reply-mode": "normal"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "ImplementationHash": "787BCF570E3F24282D9589F9E40D57497FDA92F6FCD7AAA0C3F6ED4C7DD87585",
+          "ConfigurationHash": "26E03712C1241488BC2634050CB262E89255D13B3EAC1BA1489F24E1A217A55C",
+          "Payload": "{\n  \u0022ParcelCode\u0022: \u0022003\u0022,\n  \u0022AdmissionId\u0022: \u0022cancelled\u0022,\n  \u0022Weight\u0022: null,\n  \u0022Slot\u0022: null,\n  \u0022WcsRequestId\u0022: null,\n  \u0022Acquisition\u0022: {\n    \u0022DeviceId\u0022: \u0022sportmaster.camera\u0022,\n    \u0022Epoch\u0022: \u00224d99f905adbb48c4a65e807efaab2dff\u0022,\n    \u0022SourceEventId\u0022: \u00222aa72ae7521c40d59bab51d0f0b83919\u0022,\n    \u0022AdmissionId\u0022: \u0022cancelled\u0022,\n    \u0022ObservedAt\u0022: \u00222026-10-18T07:45:06.409949\u002B00:00\u0022\n  }\n}",
+          "PayloadHash": "3EBFCBA15CAB7903EC0FB9C5FBBCCCF059F646AAD4195682054DCBCA7AA6CFC6",
+          "PreparedAt": "2026-10-18T07:45:06.410616+00:00"
+        },
+        "State": "Cancelled",
+        "Attempts": 0,
+        "Replies": [],
+        "Failure": "Local cancellation before acquisition"
+      },
+      "Acquisition": {
+        "DeviceId": "sportmaster.camera",
+        "Epoch": "4d99f905adbb48c4a65e807efaab2dff",
+        "SourceEventId": "2aa72ae7521c40d59bab51d0f0b83919",
+        "AdmissionId": "cancelled",
+        "ObservedAt": "2026-10-18T07:45:06.409949+00:00"
+      }
+    }
+  ],
+  "Health": [
+    {
+      "InstanceId": "sportmaster.integration",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T07:45:10.644817+00:00",
+      "ValidUntil": "2026-10-18T07:45:13.644817+00:00",
+      "Detail": "SIMULATION: durable reference peer"
+    },
+    {
+      "InstanceId": "camera.one",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T07:45:10.644827+00:00",
+      "ValidUntil": "2026-10-18T07:45:13.644827+00:00",
+      "Detail": "SIMULATION: durable reference peer"
+    },
+    {
+      "InstanceId": "upload.one",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T07:45:10.644829+00:00",
+      "ValidUntil": "2026-10-18T07:45:13.644829+00:00",
+      "Detail": "SIMULATION: durable reference peer"
+    },
+    {
+      "InstanceId": "sportmaster.camera",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T07:45:10.410278+00:00",
+      "ValidUntil": "2026-10-18T07:45:15.410278+00:00",
+      "Detail": "SIMULATION:manual"
+    }
+  ],
+  "Configuration": {
+    "Revision": 0,
+    "Effective": {
+      "SchemaVersion": 1,
+      "ApplicationId": "sportmaster",
+      "StationId": "reference-17",
+      "Mode": "Simulation",
+      "Weight": {
+        "Source": "Disabled",
+        "Unit": "Kg",
+        "Precision": 3,
+        "ConfiguredValue": null,
+        "MaximumAgeMs": 3000,
+        "WaitTimeoutMs": 15000
+      },
+      "Reader": {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "sportmaster.camera",
+        "Revision": "1",
+        "ReplayFile": null
+      },
+      "Scale": null,
+      "Wcs": {
+        "Kind": "integration",
+        "Implementation": "reference-integration",
+        "Version": "1.0.0",
+        "InstanceId": "sportmaster.integration",
+        "Target": "reference://integration/sportmaster",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "slot": "REFERENCE-07",
+          "peer-root": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-2798e626d61445909e186647adf4db13/cancel-empty/data/Simulation/reference-peers"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "Plc": null,
+      "Extensions": null,
+      "QueueCapacity": 64,
+      "TimeoutMs": 1500,
+      "MaximumOperations": 10000,
+      "Images": {
+        "Camera": {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "InstanceId": "camera.one",
+          "Target": "reference://camera/reliability20",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "decision": "accept",
+            "reply-mode": "normal"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "Uploader": {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "InstanceId": "upload.one",
+          "Target": "reference://upload/reliability20",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "decision": "accept",
+            "reply-mode": "normal",
+            "peer-root": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-2798e626d61445909e186647adf4db13/cancel-empty/data/Simulation/reference-peers"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "MaximumBytes": 4194304,
+        "Strategy": "BeforeMain",
+        "TotalBytes": 33554432,
+        "MaximumPending": 1
+      },
+      "SessionLifetimeMs": 28800000,
+      "MaintenanceLogin": {
+        "Kind": "login",
+        "Implementation": "reference-login",
+        "Version": "1.0.0",
+        "InstanceId": "maintenance",
+        "Target": "reference://maintenance",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "subjects": "maintenance"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      }
+    },
+    "Pending": null,
+    "Status": "Effective",
+    "Failure": null
+  },
+  "CurrentOperator": null,
+  "Availability": {
+    "Admit": false,
+    "Resume": false,
+    "Configure": false,
+    "ContinuePrepared": [],
+    "ContinueUpload": [],
+    "AbandonUnsubmitted": [
+      "d11b80c229fc46a18888b7a81480db55"
+    ]
+  }
+}
+Unhandled exception. System.Exception: AC20 failures: sportmaster capture unknown deadline: sportmaster capture unknown cannot hide waiting weight or admit next parcel
+sportmaster rejected capture Measured: sportmaster rejected capture remains terminal for both disabled and measured weight
+direct-plc capture unknown deadline: direct-plc capture unknown cannot hide waiting weight or admit next parcel
+direct-plc rejected capture Measured: direct-plc rejected capture remains terminal for both disabled and measured weight
+wcs-to-plc capture unknown deadline: wcs-to-plc capture unknown cannot hide waiting weight or admit next parcel
+wcs-to-plc rejected capture Measured: wcs-to-plc rejected capture remains terminal for both disabled and measured weight
+cancel no image and restart: Timeout: {
+  "RuntimeId": "142fe996-7fff-48da-93e6-a86cc2f244d5",
+  "ApplicationId": "sportmaster",
+  "Revision": 4,
+  "State": "Blocked",
+  "Paused": true,
+  "BlockingReasons": [
+    "Software admission paused; this is not an emergency stop",
+    "Temporary image capacity/backlog exhausted; existing originals retained"
+  ],
+  "Operations": [
+    {
+      "Id": "d11b80c229fc46a18888b7a81480db55",
+      "AdmissionId": "cancelled",
+      "ParcelCode": "003",
+      "ObservationId": "8CFAA72200026637A3C7D37B52DA8D0D6200D0FF081F046641796665FC6221A6",
+      "ObservedAt": "2026-10-18T07:45:06.409949+00:00",
+      "ConfigurationHash": "26E03712C1241488BC2634050CB262E89255D13B3EAC1BA1489F24E1A217A55C",
+      "FrozenConfiguration": {
+        "SchemaVersion": 1,
+        "ApplicationId": "sportmaster",
+        "StationId": "reference-17",
+        "Mode": "Simulation",
+        "Weight": {
+          "Source": "Disabled",
+          "Unit": "Kg",
+          "Precision": 3,
+          "ConfiguredValue": null,
+          "MaximumAgeMs": 3000,
+          "WaitTimeoutMs": 15000
+        },
+        "Reader": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "Scale": null,
+        "Wcs": {
+          "Kind": "integration",
+          "Implementation": "reference-integration",
+          "Version": "1.0.0",
+          "InstanceId": "sportmaster.integration",
+          "Target": "reference://integration/sportmaster",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "slot": "REFERENCE-07",
+            "peer-root": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-2798e626d61445909e186647adf4db13/cancel-empty/data/Simulation/reference-peers"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "Plc": null,
+        "Extensions": null,
+        "QueueCapacity": 64,
+        "TimeoutMs": 1500,
+        "MaximumOperations": 10000,
+        "Images": {
+          "Camera": {
+            "Kind": "camera",
+            "Implementation": "reference-camera",
+            "Version": "1.0.0",
+            "InstanceId": "camera.one",
+            "Target": "reference://camera/reliability20",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "decision": "accept",
+              "reply-mode": "normal"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "Uploader": {
+            "Kind": "upload",
+            "Implementation": "reference-upload",
+            "Version": "1.0.0",
+            "InstanceId": "upload.one",
+            "Target": "reference://upload/reliability20",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "decision": "accept",
+              "reply-mode": "normal",
+              "peer-root": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-2798e626d61445909e186647adf4db13/cancel-empty/data/Simulation/reference-peers"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "MaximumBytes": 4194304,
+          "Strategy": "BeforeMain",
+          "TotalBytes": 33554432,
+          "MaximumPending": 1
+        },
+        "SessionLifetimeMs": 28800000,
+        "MaintenanceLogin": {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "InstanceId": "maintenance",
+          "Target": "reference://maintenance",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "subjects": "maintenance"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        }
+      },
+      "ImplementationHashes": {
+        "sportmaster.integration": "5E3399AA7E8CB3B4726DEF59378FA571DC5FF1D4640A5E3484F51B934AC3FCDE",
+        "camera.one": "787BCF570E3F24282D9589F9E40D57497FDA92F6FCD7AAA0C3F6ED4C7DD87585",
+        "upload.one": "E6E840B319A47108EA38EE5EC3ABE76F9FAAE44F0856B33D65645FD44011A22A",
+        "maintenance": "E6E840B319A47108EA38EE5EC3ABE76F9FAAE44F0856B33D65645FD44011A22A"
+      },
+      "WeightPolicy": {
+        "Source": "Disabled",
+        "Unit": "Kg",
+        "Precision": 3,
+        "ConfiguredValue": null,
+        "MaximumAgeMs": 3000,
+        "WaitTimeoutMs": 15000
+      },
+      "Weight": null,
+      "State": "Abandoned",
+      "Slot": null,
+      "Wcs": null,
+      "Plc": null,
+      "Reason": "Unsubmitted parcel inspected and removed: SIMULATION inspected and removed",
+      "Capture": {
+        "Request": {
+          "Id": "dfe3a5d5f1764e68a67d1ada64720280",
+          "ApplicationId": "sportmaster",
+          "OperationId": "d11b80c229fc46a18888b7a81480db55",
+          "AdmissionId": "cancelled",
+          "Stage": "image-capture",
+          "Binding": {
+            "Kind": "camera",
+            "Implementation": "reference-camera",
+            "Version": "1.0.0",
+            "InstanceId": "camera.one",
+            "Target": "reference://camera/reliability20",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {
+              "decision": "accept",
+              "reply-mode": "normal"
+            },
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "ImplementationHash": "787BCF570E3F24282D9589F9E40D57497FDA92F6FCD7AAA0C3F6ED4C7DD87585",
+          "ConfigurationHash": "26E03712C1241488BC2634050CB262E89255D13B3EAC1BA1489F24E1A217A55C",
+          "Payload": "{\n  \u0022ParcelCode\u0022: \u0022003\u0022,\n  \u0022AdmissionId\u0022: \u0022cancelled\u0022,\n  \u0022Weight\u0022: null,\n  \u0022Slot\u0022: null,\n  \u0022WcsRequestId\u0022: null,\n  \u0022Acquisition\u0022: {\n    \u0022DeviceId\u0022: \u0022sportmaster.camera\u0022,\n    \u0022Epoch\u0022: \u00224d99f905adbb48c4a65e807efaab2dff\u0022,\n    \u0022SourceEventId\u0022: \u00222aa72ae7521c40d59bab51d0f0b83919\u0022,\n    \u0022AdmissionId\u0022: \u0022cancelled\u0022,\n    \u0022ObservedAt\u0022: \u00222026-10-18T07:45:06.409949\u002B00:00\u0022\n  }\n}",
+          "PayloadHash": "3EBFCBA15CAB7903EC0FB9C5FBBCCCF059F646AAD4195682054DCBCA7AA6CFC6",
+          "PreparedAt": "2026-10-18T07:45:06.410616+00:00"
+        },
+        "State": "Cancelled",
+        "Attempts": 0,
+        "Replies": [],
+        "Failure": "Local cancellation before acquisition"
+      },
+      "Acquisition": {
+        "DeviceId": "sportmaster.camera",
+        "Epoch": "4d99f905adbb48c4a65e807efaab2dff",
+        "SourceEventId": "2aa72ae7521c40d59bab51d0f0b83919",
+        "AdmissionId": "cancelled",
+        "ObservedAt": "2026-10-18T07:45:06.409949+00:00"
+      }
+    }
+  ],
+  "Health": [
+    {
+      "InstanceId": "sportmaster.integration",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T07:45:10.644817+00:00",
+      "ValidUntil": "2026-10-18T07:45:13.644817+00:00",
+      "Detail": "SIMULATION: durable reference peer"
+    },
+    {
+      "InstanceId": "camera.one",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T07:45:10.644827+00:00",
+      "ValidUntil": "2026-10-18T07:45:13.644827+00:00",
+      "Detail": "SIMULATION: durable reference peer"
+    },
+    {
+      "InstanceId": "upload.one",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T07:45:10.644829+00:00",
+      "ValidUntil": "2026-10-18T07:45:13.644829+00:00",
+      "Detail": "SIMULATION: durable reference peer"
+    },
+    {
+      "InstanceId": "sportmaster.camera",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T07:45:10.410278+00:00",
+      "ValidUntil": "2026-10-18T07:45:15.410278+00:00",
+      "Detail": "SIMULATION:manual"
+    }
+  ],
+  "Configuration": {
+    "Revision": 0,
+    "Effective": {
+      "SchemaVersion": 1,
+      "ApplicationId": "sportmaster",
+      "StationId": "reference-17",
+      "Mode": "Simulation",
+      "Weight": {
+        "Source": "Disabled",
+        "Unit": "Kg",
+        "Precision": 3,
+        "ConfiguredValue": null,
+        "MaximumAgeMs": 3000,
+        "WaitTimeoutMs": 15000
+      },
+      "Reader": {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "sportmaster.camera",
+        "Revision": "1",
+        "ReplayFile": null
+      },
+      "Scale": null,
+      "Wcs": {
+        "Kind": "integration",
+        "Implementation": "reference-integration",
+        "Version": "1.0.0",
+        "InstanceId": "sportmaster.integration",
+        "Target": "reference://integration/sportmaster",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "slot": "REFERENCE-07",
+          "peer-root": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-2798e626d61445909e186647adf4db13/cancel-empty/data/Simulation/reference-peers"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "Plc": null,
+      "Extensions": null,
+      "QueueCapacity": 64,
+      "TimeoutMs": 1500,
+      "MaximumOperations": 10000,
+      "Images": {
+        "Camera": {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "InstanceId": "camera.one",
+          "Target": "reference://camera/reliability20",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "decision": "accept",
+            "reply-mode": "normal"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "Uploader": {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "InstanceId": "upload.one",
+          "Target": "reference://upload/reliability20",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "decision": "accept",
+            "reply-mode": "normal",
+            "peer-root": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-2798e626d61445909e186647adf4db13/cancel-empty/data/Simulation/reference-peers"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "MaximumBytes": 4194304,
+        "Strategy": "BeforeMain",
+        "TotalBytes": 33554432,
+        "MaximumPending": 1
+      },
+      "SessionLifetimeMs": 28800000,
+      "MaintenanceLogin": {
+        "Kind": "login",
+        "Implementation": "reference-login",
+        "Version": "1.0.0",
+        "InstanceId": "maintenance",
+        "Target": "reference://maintenance",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "subjects": "maintenance"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      }
+    },
+    "Pending": null,
+    "Status": "Effective",
+    "Failure": null
+  },
+  "CurrentOperator": null,
+  "Availability": {
+    "Admit": false,
+    "Resume": false,
+    "Configure": false,
+    "ContinuePrepared": [],
+    "ContinueUpload": [],
+    "AbandonUnsubmitted": [
+      "d11b80c229fc46a18888b7a81480db55"
+    ]
+  }
+}
+   at ReliabilityClosure.Run(String workspace, String root) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/tests/Ipc.Application.Verification/ReliabilityClosure.cs:line 74
+   at Program.<Main>$(String[] args) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/tests/Ipc.Application.Verification/Program.cs:line 14
+   at Program.<Main>(String[] args)

@@ -1,0 +1,45 @@
+  正在确定要还原的项目…
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Platform/Ipc.Platform.csproj (用时 550 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 550 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 550 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 550 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 550 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Components/Ipc.Components.csproj (用时 550 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 550 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 550 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 15 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 15 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 18 毫秒)。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Assembly/release_win-x64/Ipc.Assembly.dll
+  Ipc.Assembly -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/app/
+  正在确定要还原的项目…
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.WcsToPlc.Desktop/Ipc.Application.WcsToPlc.Desktop.csproj (用时 432 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 432 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 406 毫秒)。
+  11 个项目(共 14 个)是最新的，无法还原。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Assembly/release_win-x64/Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Application.ParcelFlow.Desktop/release/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.WcsToPlc.Desktop -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Application.WcsToPlc.Desktop/release/Ipc.Application.WcsToPlc.Desktop.dll
+  Ipc.Desktop -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/build-intermediates/bin/Ipc.Desktop/release_win-x64/Ipc.Desktop.dll
+  Ipc.Desktop -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64/desktop/
+{"Package": "/Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/.artifacts/reliability20-a147eac/wcs-to-plc-win-x64.zip", "Sha256": "7d1f06af3b266f904a1f72ba01aa1cfe994d006c4cdbec87552f8f443bd5fc19", "SourceCommit": "a147eac7e4bafb70e16b2c677c2a2933909234d3", "Application": "wcs-to-plc", "Target": "win-x64"}

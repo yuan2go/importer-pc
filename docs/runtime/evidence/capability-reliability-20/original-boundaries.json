@@ -1,0 +1,34 @@
+{
+  "Baseline": "08286542bbd007433d85be2cb8d129b366b007e0",
+  "SourceCommit": "a147eac7e4bafb70e16b2c677c2a2933909234d3",
+  "Checks": [
+    {
+      "Path": "docs/reviews/issues.json",
+      "Sha256": "a16947ee9ee1a60a16afd35ab2b0e04897d88d24a44c97a1c2249ddeeb9d2ed9",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/reviews/STATUS.md",
+      "Sha256": "e86ab9c05db0ca8222c19e24366127237fa6678b2131f5327e7be6ad0a3a0a40",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/readiness/decision-pack.md",
+      "Sha256": "a767a1cce43c74cec5dc97b3b0ee98e33ad1250804e11d0c7f3f952c58bb294f",
+      "Unchanged": true
+    },
+    {
+      "Path": "docs/readiness/technical-baseline.json",
+      "Sha256": "6193225e4940240ea68d4510f1bb69c8a4a682b68b54abc7b09a7bdccf5e0312",
+      "Unchanged": true
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
+      "Scope": "original migration1 raw SQL literal",
+      "Sha256": "1559bee20c41361c095d90468713d929da7edb4c09f6a2a643ebfee01bfe0eae",
+      "Unchanged": true
+    }
+  ],
+  "SupplySourceAndSql": "UNCHANGED",
+  "PrivateKeysIncluded": false
+}

@@ -5,6 +5,7 @@
 最新核验main **6e9c890a7483c3006b3448c203570ef2ca19ed25**，PR16已合并，开工查无开放PR。当前工作包为[APPLICATION-CONVERGENCE-17](work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)：有效设计、兼容映射和17-01～08验收在此集中定义；16及更早报告保持原形成时结论。[前置原字节及替代关系](archive/pre-application-convergence-17/README.md)。Windows实际客户端NOT_RUN，真实SDK/PLC/WCS合同及现场BLOCKED。
 
 |入口|阅读目的|
+|[17实际职责/运行/接入/恢复](runtime/application-convergence-17.md)、[Windows后验](runtime/validation/application-convergence-17-windows.md)|三个Application和实际WPF选择、重量/原阶段恢复；Supply/Inspection兼容边界。|
 |---|---|
 |[16逐项实现/验收](runtime/ui-maintainability-16.md)、[首次参考作业](runtime/getting-started.md)|本包操作、维护性、工具和写放大证据；当前运行入口。|
 |[PR14后历史复核](reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)、[形成时问题](reviews/audit-reconciliation-01/current-findings.json)|按原来源版本理解；15/16分项结果见各自报告，不倒写历史。|

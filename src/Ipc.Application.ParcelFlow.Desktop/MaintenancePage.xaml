@@ -1,0 +1,7 @@
+<UserControl x:Class="Ipc.Application.ParcelFlow.Desktop.MaintenancePage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <StackPanel><TextBlock Text="配置与设备维护 · 显式参考权限" FontSize="21" FontWeight="Bold"/><TextBlock Text="先暂停新入场。保存后等待重启；有未决阶段时不激活。失败保留旧有效配置。重连不会重发。"/><StackPanel Orientation="Horizontal"><Button Content="读取有效/待生效配置" Click="Load_Click"/><Button Content="校验并保存草稿" Click="Save_Click"/><Button Content="受控重连" Click="Reconnect_Click"/><Button Content="确认已检查过载现场" Click="Overload_Click"/></StackPanel></StackPanel>
+  <TextBox Grid.Row="1" Text="{Binding ConfigurationDraft, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FontFamily="Consolas"/>
+  <DockPanel Grid.Row="2"><Button DockPanel.Dock="Right" Content="创建一致备份" Click="Backup_Click"/><TextBox Text="{Binding BackupPath, UpdateSourceTrigger=PropertyChanged}" ToolTip="新的本地备份完整路径；已有文件拒绝覆盖"/></DockPanel>
+ </Grid>
+</UserControl>

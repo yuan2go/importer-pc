@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Ipc.Desktop;
-public partial class App : Application
+public partial class App : global::System.Windows.Application
 {
     IHost? host;
     protected override async void OnStartup(StartupEventArgs e)

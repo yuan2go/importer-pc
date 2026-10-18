@@ -1,5 +1,6 @@
 <Project>
   <PropertyGroup>
+    <BusinessModule Condition="'$(BusinessModule)' == '' And '$(Application)' != ''">$(Application)</BusinessModule>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

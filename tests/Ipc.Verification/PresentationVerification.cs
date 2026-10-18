@@ -11,7 +11,7 @@ static class PresentationVerification
         Assert(!same.Differs && same.Item == "0001", "Identical wave identity preserves leading zeroes without a warning");
         Assert(different.Differs && different.Difference.Contains("入场箱 0001") && different.Difference.Contains("Item 001"), "Difference includes both original identities, never a copied current-box value");
         Assert(!WaveComparison.Compare(null, "0001").Differs && WaveComparison.Compare("0001", null).Item == "未取得", "Missing current input stays unknown, not a historical mismatch");
-        var lane = XDocument.Load(Path.Combine(workspace, "src/Ipc.Desktop/LaneControl.xaml"));
+        var lane = XDocument.Load(Path.Combine(workspace, "src/Ipc.Application.Supply.Desktop/LaneControl.xaml"));
         var wave = lane.Descendants().Single(x => (string?)x.Attribute("Text") == "{Binding ItemWave}");
         var difference = lane.Descendants().Single(x => (string?)x.Attribute("Text") == "{Binding WaveDifference}");
         Assert(!wave.Ancestors().Any(x => x.Name.LocalName == "Expander"), "Current Item wave is outside collapsed auxiliary content");

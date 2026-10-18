@@ -47,7 +47,7 @@ class ArchiveTests(unittest.TestCase):
         self.assertEqual(before, {p: (p.read_bytes(), p.stat().st_mtime_ns) for p in before})
 
     def test_runtime_outputs_do_not_hide_documentation_or_source(self):
-        for project in ('Ipc.Supply', 'Ipc.Supply.Contracts', 'Ipc.Assembly', 'Ipc.Inspection'):
+        for project in ('Ipc.Application.Supply', 'Ipc.Application.Supply.Contracts', 'Ipc.Assembly', 'Ipc.Application.Inspection', 'Ipc.Application.WcsToPlc', 'Ipc.Drivers', 'Ipc.Integrations'):
             generated = self.root / ('src/' + project + '/bin/Debug/runtime.dll')
             generated.parent.mkdir(parents=True); generated.write_bytes(b'generated')
         release = self.root / '.artifacts/release/runtime.exe'

@@ -1,0 +1,32 @@
+{
+  "SchemaVersion": 1,
+  "Project": "examples/ParcelCapabilitiesExtension/ParcelCapabilitiesExtension.csproj",
+  "SourceRoots": [
+    "examples/ParcelCapabilitiesExtension",
+    "src/Ipc.Reference.Protocol",
+    "src/Ipc.Drivers",
+    "src/Ipc.Integrations"
+  ],
+  "BuildInputs": [
+    "Directory.Build.props",
+    "global.json",
+    "NuGet.Config"
+  ],
+  "Manifest": "examples/ParcelCapabilitiesExtension/manifest.template.json",
+  "Modules": "examples/ParcelCapabilitiesExtension/modules.json",
+  "ParameterSchemas": {
+    "parcel-weight": "examples/ParcelCapabilitiesExtension/weight.parameters.json",
+    "parcel-plc": "examples/ParcelCapabilitiesExtension/plc.parameters.json",
+    "parcel-integration": "examples/ParcelCapabilitiesExtension/integration.parameters.json"
+  },
+  "Content": [
+    {
+      "Root": "build",
+      "Source": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+      "Path": "Ipc.Reference.ParcelCapabilitiesExtension.dll"
+    }
+  ],
+  "PublicContracts": [
+    "Ipc.Application.Contracts"
+  ]
+}

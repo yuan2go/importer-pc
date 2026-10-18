@@ -334,6 +334,26 @@
       "ipc.adapters": {
         "type": "Project",
         "dependencies": {
+          "Ipc.Drivers": "[1.0.0, )",
+          "Ipc.Integrations": "[1.0.0, )"
+        }
+      },
+      "ipc.application.contracts": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Platform": "[1.0.0, )"
+        }
+      },
+      "ipc.drivers": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Reference.Protocol": "[1.0.0, )"
+        }
+      },
+      "ipc.integrations": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Reference.Protocol": "[1.0.0, )",
           "Ipc.Supply.Contracts": "[1.0.0, )"
         }
       },
@@ -343,15 +363,28 @@
           "Microsoft.Extensions.Hosting": "[10.0.13, )"
         }
       },
-      "ipc.supply": {
+      "ipc.platform.storage": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Supply.Contracts": "[1.0.0, )",
+          "Ipc.Platform": "[1.0.0, )",
           "Microsoft.Data.Sqlite": "[10.0.13, )",
           "SQLitePCLRaw.bundle_e_sqlite3": "[2.1.14, )"
         }
       },
-      "ipc.supply.contracts": {
+      "ipc.reference.protocol": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.0.0, )"
+        }
+      },
+      "Ipc.Supply": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Platform.Storage": "[1.0.0, )",
+          "Ipc.Supply.Contracts": "[1.0.0, )"
+        }
+      },
+      "Ipc.Supply.Contracts": {
         "type": "Project",
         "dependencies": {
           "Ipc.Platform": "[1.0.0, )"

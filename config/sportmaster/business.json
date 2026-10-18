@@ -1,0 +1,39 @@
+{
+  "SchemaVersion": 1,
+  "ApplicationId": "sportmaster",
+  "StationId": "reference-17",
+  "Mode": "Simulation",
+  "Weight": {
+    "Source": "Disabled",
+    "Unit": "Kg",
+    "Precision": 3,
+    "ConfiguredValue": null,
+    "MaximumAgeMs": 3000
+  },
+  "Reader": {
+    "Role": "parcel-reader",
+    "Driver": "manual",
+    "DeviceId": "sportmaster.camera",
+    "Revision": "1",
+    "ReplayFile": null
+  },
+  "Scale": null,
+  "Wcs": {
+    "Kind": "integration",
+    "Implementation": "reference-integration",
+    "Version": "1.0.0",
+    "InstanceId": "sportmaster.integration",
+    "Target": "reference://integration/sportmaster",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {
+      "slot": "REFERENCE-07"
+    },
+    "Package": null,
+    "Module": null
+  },
+  "Plc": null,
+  "Extensions": null,
+  "QueueCapacity": 64,
+  "TimeoutMs": 1500,
+  "MaximumOperations": 10000
+}

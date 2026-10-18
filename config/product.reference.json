@@ -27,21 +27,74 @@
     },
     {
       "Id": "supply",
-      "Kind": "supply",
+      "Kind": "application",
       "Version": "1.0.0",
       "ContractMajor": 1,
       "Dependencies": [
-        "supply-contracts"
+        "supply-contracts",
+        "platform-storage"
       ],
       "File": "Ipc.Supply.dll"
     },
     {
-      "Id": "adapters",
-      "Kind": "adapters",
+      "Id": "platform-storage",
+      "Kind": "platform",
       "Version": "1.0.0",
       "ContractMajor": 1,
       "Dependencies": [
+        "platform"
+      ],
+      "File": "Ipc.Platform.Storage.dll"
+    },
+    {
+      "Id": "application-contracts",
+      "Kind": "contracts",
+      "Version": "1.0.0",
+      "ContractMajor": 1,
+      "Dependencies": [
+        "platform"
+      ],
+      "File": "Ipc.Application.Contracts.dll"
+    },
+    {
+      "Id": "reference-protocol",
+      "Kind": "fixture",
+      "Version": "1.0.0",
+      "ContractMajor": 1,
+      "Dependencies": [
+        "application-contracts"
+      ],
+      "File": "Ipc.Reference.Protocol.dll"
+    },
+    {
+      "Id": "drivers",
+      "Kind": "drivers",
+      "Version": "1.0.0",
+      "ContractMajor": 1,
+      "Dependencies": [
+        "reference-protocol"
+      ],
+      "File": "Ipc.Drivers.dll"
+    },
+    {
+      "Id": "integrations",
+      "Kind": "integrations",
+      "Version": "1.0.0",
+      "ContractMajor": 1,
+      "Dependencies": [
+        "reference-protocol",
         "supply-contracts"
+      ],
+      "File": "Ipc.Integrations.dll"
+    },
+    {
+      "Id": "adapters",
+      "Kind": "compatibility",
+      "Version": "1.0.0",
+      "ContractMajor": 1,
+      "Dependencies": [
+        "drivers",
+        "integrations"
       ],
       "File": "Ipc.Adapters.dll"
     },

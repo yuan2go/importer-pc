@@ -15,7 +15,7 @@ class CompositionTests(unittest.TestCase):
     def test_distinct_selected_closures(self):
         core = composition.resolve(ROOT / 'config/compositions.json', 'core-reference')
         extended = composition.resolve(ROOT / 'config/compositions.json', 'barcode-reference')
-        self.assertEqual({x['id'] for x in core['components']}, {'platform', 'supply-contracts', 'supply', 'adapters', 'product'})
+        self.assertEqual({x['id'] for x in core['components']}, {'platform', 'platform-storage', 'application-contracts', 'reference-protocol', 'drivers', 'integrations', 'supply-contracts', 'supply', 'adapters', 'product'})
         self.assertEqual({x['id'] for x in extended['components']} - {x['id'] for x in core['components']}, {'reference.barcode'})
 
     def test_non_supply_is_a_real_selected_closure(self):

@@ -286,13 +286,38 @@
         "resolved": "10.0.13",
         "contentHash": "DkNjtQyPR5Ud/zHnWHdsOuKbFRL9nIC92Q76z0NmHVDoQm40toLtsGFTIWq7toBoVa6fo/DInL3PLxY3Asixyw=="
       },
+      "ipc.application.contracts": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Platform": "[1.0.0, )"
+        }
+      },
+      "ipc.drivers": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Reference.Protocol": "[1.0.0, )"
+        }
+      },
+      "ipc.integrations": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Reference.Protocol": "[1.0.0, )",
+          "Ipc.Supply.Contracts": "[1.0.0, )"
+        }
+      },
       "ipc.platform": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Hosting": "[10.0.13, )"
         }
       },
-      "ipc.supply.contracts": {
+      "ipc.reference.protocol": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.0.0, )"
+        }
+      },
+      "Ipc.Supply.Contracts": {
         "type": "Project",
         "dependencies": {
           "Ipc.Platform": "[1.0.0, )"

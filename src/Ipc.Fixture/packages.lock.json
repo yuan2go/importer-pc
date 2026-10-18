@@ -52,13 +52,39 @@
       "ipc.adapters": {
         "type": "Project",
         "dependencies": {
+          "Ipc.Drivers": "[1.0.0, )",
+          "Ipc.Integrations": "[1.0.0, )"
+        }
+      },
+      "ipc.application.contracts": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Platform": "[1.0.0, )"
+        }
+      },
+      "ipc.drivers": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Reference.Protocol": "[1.0.0, )"
+        }
+      },
+      "ipc.integrations": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Reference.Protocol": "[1.0.0, )",
           "Ipc.Supply.Contracts": "[1.0.0, )"
         }
       },
       "ipc.platform": {
         "type": "Project"
       },
-      "ipc.supply.contracts": {
+      "ipc.reference.protocol": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.0.0, )"
+        }
+      },
+      "Ipc.Supply.Contracts": {
         "type": "Project",
         "dependencies": {
           "Ipc.Platform": "[1.0.0, )"

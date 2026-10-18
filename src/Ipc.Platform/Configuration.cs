@@ -26,6 +26,7 @@ public sealed record ProductManifest(int SchemaVersion, string ProductId, RunMod
     string BusinessModule, string[] Views, ModuleSpec[] Modules);
 public sealed record DeviceBinding(string Role, string Driver, string DeviceId, string Revision, string? ReplayFile = null);
 public sealed record IntegrationBinding(string Id, string Revision, string Contract, string Endpoint);
+// Published Supply schema1 ABI. New Applications use ConfigurationRevisions<T> with their own fields.
 public sealed record StationConfig(int SchemaVersion, string StationId, string Version, RunMode Mode, DeviceBinding[] Devices,
     IntegrationBinding Integration, int EventCapacity = 64, int CommandCapacity = 32, int OutboxCapacity = 64,
     int TimeoutMs = 1500, int MinimumFreeMb = 128, string Policy = "SYNTHETIC-KEEP-v1", int FixtureDemand = 120,

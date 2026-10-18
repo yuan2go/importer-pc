@@ -1,1 +1,1 @@
-<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="../Ipc.Supply.Contracts/Ipc.Supply.Contracts.csproj"/></ItemGroup></Project>
+<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="../Ipc.Drivers/Ipc.Drivers.csproj"/><ProjectReference Include="../Ipc.Integrations/Ipc.Integrations.csproj"/></ItemGroup></Project>

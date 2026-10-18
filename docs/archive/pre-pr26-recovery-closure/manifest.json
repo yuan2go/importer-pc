@@ -25,6 +25,16 @@
       "source": "docs/runtime/architecture-quality-audit-02-results.md",
       "archive": "docs__runtime__architecture-quality-audit-02-results.md.txt",
       "sha256": "3a66b8659d9c185eacd7e0a57f05ab079ca72a63600d67dff8f4f5f328f882fe"
+    },
+    {
+      "source": "docs/manifest.json",
+      "archive": "docs__manifest.json.txt",
+      "sha256": "22f39dfe068edaabae8a4a95fd1decc38e865a80eab1d1ea2c60ceccb462ccd7"
+    },
+    {
+      "source": "docs/manifest.sha256",
+      "archive": "docs__manifest.sha256.txt",
+      "sha256": "fc27c48ed027df1d47f370c02d6dce9d0be27600049124455d2a62e3c0c6f1e2"
     }
   ]
 }

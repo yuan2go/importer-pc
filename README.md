@@ -1,4 +1,4 @@
-> 本次PR26独立复审P1/P2整改以main `baac260214f910dca9ae4628ba6449b25188e2ac`为基线；[整改计划](docs/work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)为本轮入口。[原独立报告与失败](docs/reviews/pr26-independent-78298b5/README.md)保持原身份。下文阶段版本/候选不是本轮验收。
+> PR26独立复审P1/P2整改基线main `baac260214f910dca9ae4628ba6449b25188e2ac`；[本轮结果与未验边界](docs/runtime/pr26-recovery-closure-results.md)。独立分支供复审，不合并main。
 
 # importer-pc
 
@@ -6,7 +6,7 @@ C#/.NET 10工位运行基座及独立Application/供包参考产品：WPF、多�
 
 ## 当前工程状态
 
-三个独立Application按[架构22](docs/design/application-architecture-22.md)选装，Parcel当前数据库5、配置schema3，Application.Contracts ABI1.6.0；DB3/4属于历史发布。保留PR23采集所有权和PR24归档、双位、完整配置与两阶段激活；PR26复核修复继承PR24后续原回复身份、消费者、维护围栏及R03去重前原库存校验；PR24由独立授权合并，本任务只同步最新main，不代合并其他PR。开工main基线为b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d，同步main为4afe2afacde9e2acab7648fff3440fa3cc331b6e；当前交付的继承提交、源码、包和验证身份统一读取[本次结果](docs/runtime/architecture-quality-audit-02-results.md)。N01–N07针对[独立审查02](docs/reviews/architecture-quality-audit-02/README.md)，与审查01 AQ编号和缺PDF记录分开。
+三个独立Application按[架构22](docs/design/application-architecture-22.md)选装，Parcel DB5、配置schema1/2/3、Application.Contracts ABI1.6.0。PR23采集、PR24质量闭环及PR26有效整改已由main继承。本轮修复DB4升级前责任判定、schema1/2实际main位冲突恢复与Pending激活屏障；原SQL/请求/回执和历史失败保留，未结责任不通过升级或换配置清除。旧N01–N07候选身份及结果见[历史交付](docs/runtime/architecture-quality-audit-02-results.md)，不代替本轮验证。
 
 先按[首次运行](docs/runtime/getting-started.md)选产品。新Application使用Assembly/ParcelConfiguration；[维护指南](docs/runtime/architecture-quality-closure-01.md)统一配置确认、恢复、容量及扩展路线；Supply的Product/StationConfig、箱/数量规则仅在[Supply指南](docs/runtime/operations.md)适用。Windows实际NOT_RUN，真实SDK/协议/现场BLOCKED。
 PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。限定参考范围独立复审与原证据见[归档](docs/reviews/pr24-independent-rereview-f862c2a/README.md)、[R01～R05结果](docs/runtime/architecture-quality-closure-01-rereview-results.md)及[R03结果](docs/runtime/architecture-quality-closure-01-r03-results.md)。这些历史PASS及原包身份不替代PR26新验证，也不关闭Windows/真实现场门禁。

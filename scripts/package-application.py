@@ -32,7 +32,8 @@ properties = ['-p:Application=' + module, '-p:NuGetLockFilePath=' + lock]
 artifacts = output / 'build-intermediates'
 for project, destination in [('Ipc.Assembly', 'app'), *([('Ipc.Desktop', 'desktop')] if a.target == 'win-x64' else [])]:
     command = [a.dotnet, 'publish', f'src/{project}/{project}.csproj', '-c', 'Release', '-m:1', '-nr:false',
-               '-p:EnableWindowsTargeting=true', '-p:RestoreLockedMode=true', *properties,
+               '-p:EnableWindowsTargeting=true', '-p:RestoreLockedMode=true',
+               '-p:PathMap=' + str(root) + '=/_/src%2C' + str(artifacts) + '=/_/build', *properties,
                '--artifacts-path', str(artifacts), '--self-contained', 'true' if a.target == 'win-x64' else 'false', '-o', str(output / destination)]
     if a.target == 'win-x64': command += ['-r', 'win-x64']
     subprocess.run(command, cwd=root, check=True)

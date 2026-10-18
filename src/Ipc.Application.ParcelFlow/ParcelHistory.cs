@@ -12,7 +12,7 @@ public sealed partial class ParcelRepository
         return c.ExecuteScalar() is long sequence ? sequence : throw new InvalidDataException("Persist admission before preparing an external request");
     }
     public string? OriginalReplyHash(string request, string reply)
-    { using var c = db.CreateCommand(); c.CommandText = "SELECT hash FROM parcel_reply_identities WHERE request=$request AND id=$id"; c.Parameters.AddWithValue("$request", request); c.Parameters.AddWithValue("$id", reply); return c.ExecuteScalar() as string; }
+    { if(StorageVersion<4) return null; using var c = db.CreateCommand(); c.CommandText = "SELECT hash FROM parcel_reply_identities WHERE request=$request AND id=$id"; c.Parameters.AddWithValue("$request", request); c.Parameters.AddWithValue("$id", reply); return c.ExecuteScalar() as string; }
     public long ArchivedCount
     { get { using var c = db.CreateCommand(); c.CommandText = "SELECT count(*) FROM parcel_archives"; return (long)c.ExecuteScalar()!; } }
     public bool HasOverloadAcknowledgement(string identity)
@@ -78,6 +78,9 @@ public sealed partial class ParcelRepository
         }
         foreach (var item in raw)
         {
+            // Reactivated custody owners can already have immutable raw in the archive.
+            // Verify and reuse it; cleanup may legitimately have removed its spool file.
+            if (HasArchivedRaw(item.Id, item.Hash)) continue;
             var path = Path.Combine(rawRoot, item.Id + ".json"); var bytes = File.ReadAllBytes(path);
             if (Convert.ToHexString(SHA256.HashData(bytes)) != item.Hash) throw new InvalidDataException("Original raw changed before archive");
             using var c = db.CreateCommand(); c.Transaction = tx; c.CommandText = "INSERT INTO parcel_archived_receipts VALUES($id,$body,$hash)";
@@ -86,6 +89,7 @@ public sealed partial class ParcelRepository
     }
     bool HasArchivedRaw(string id, string hash)
     {
+        if (StorageVersion < 4) return false;
         using var c = db.CreateCommand(); c.CommandText = "SELECT body,raw_hash FROM parcel_archived_receipts WHERE id=$id"; c.Parameters.AddWithValue("$id", id);
         using var r = c.ExecuteReader(); return r.Read() && r.GetString(1) == hash && Convert.ToHexString(SHA256.HashData((byte[])r.GetValue(0))) == hash;
     }

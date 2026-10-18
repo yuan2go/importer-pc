@@ -1,0 +1,24 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "2ad633578141db4ef34e255217bc8815634ffd0a",
+  "Plan": {
+    "CopyBytes": 247694,
+    "MinimumFreeBytes": 67108864,
+    "AvailableBytes": 18818334720,
+    "RemainingGrowthBytes": 18750978162,
+    "Fits": true
+  },
+  "Restore": {
+    "Status": "RestoredIsolated",
+    "Admission": "Reconcile original external stages before resume"
+  },
+  "Repair": {
+    "Status": "MainProjectionRepair",
+    "Repaired": 1,
+    "ExternalCalls": 0
+  },
+  "OriginalCopiedDatabaseHash": "B07402B7F6C42F2B6CD5A47D6F89764C81C3AE60CE347904572175357BDC20D9",
+  "SchemaAfter": 3,
+  "MissingReceiptBarrierRetained": true,
+  "OriginalRequestReplayed": false
+}

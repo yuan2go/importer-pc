@@ -1,0 +1,102 @@
+{
+  "OriginalSource": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+  "ChildExit": 74,
+  "Migrations": [
+    [
+      "sportmaster",
+      1,
+      "4829ACE166B3C1C1EF42B30E6EC9A1A76327D7A0886CD1E26C9856D11F3D7438"
+    ],
+    [
+      "sportmaster",
+      2,
+      "73DC166BAB495E3AC78515F5AE09994188FC9CCB242ED815DE1C583300088507"
+    ],
+    [
+      "sportmaster",
+      3,
+      "880B984094625D55B7DE90C6A52A9858DFE7F6B4D77F6FAE4A7EB7D3BD484C5A"
+    ]
+  ],
+  "Receipts": [
+    [
+      "38df4251e9344164b360807ce2860caf",
+      "71fa0532b0204d87bb6919a734d036a8",
+      "image-capture",
+      "a23ed3f2ce1144d4a76864e411870980",
+      "Submit",
+      "Committed",
+      "E40802E56A76F2FDD4F86838A80B185D6A7B57CAEF9C92D645B7CFA5BFA018EA"
+    ],
+    [
+      "e556546e697542b0af43b6822f0d813a",
+      "71fa0532b0204d87bb6919a734d036a8",
+      "wcs-slot",
+      "8a71c9f5b3d143df8f86c3722f3ee4c7",
+      "Submit",
+      "Committed",
+      "BA67A219C817888ABF5A0B21CB79AD00D69FDBDCFF9A0CA1CE6421DA7FBA086F"
+    ],
+    [
+      "1e637e066a674876966810edabec17b6",
+      "71fa0532b0204d87bb6919a734d036a8",
+      "image-upload",
+      "992d86b4dec541a0aebac75784d00f41",
+      "Submit",
+      "Awaiting",
+      null
+    ]
+  ],
+  "RestartState": "Blocked",
+  "RestartUpload": "Unknown",
+  "QueryReply": {
+    "Id": "690decbd337e4aa7ac28f72b9e15c644",
+    "RequestId": "992d86b4dec541a0aebac75784d00f41",
+    "PayloadHash": "8DBF1A4533FA2B3877105A39D6BE0BE8DADB94A7C0B732D7CBBF0FD0B08336DB",
+    "TransportSucceeded": true,
+    "ProtocolAcknowledged": true,
+    "BusinessAccepted": true,
+    "PhysicalCompleted": null,
+    "Slot": null,
+    "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+    "At": "2026-10-18T15:48:31.543647+00:00",
+    "Image": {
+      "CaptureRequestId": "a23ed3f2ce1144d4a76864e411870980",
+      "AdmissionId": "genuine-crash-admission",
+      "RelativeFile": "images/9419EC7CF2BAEF44F197FB9E47163C52F78F17891196582FF7B3B5B7D38C3414/a23ed3f2ce1144d4a76864e411870980.png",
+      "MediaType": "image/png",
+      "Length": 67,
+      "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+      "UploadedUri": "reference://images/992d86b4dec541a0aebac75784d00f41",
+      "Acquisition": {
+        "DeviceId": "sportmaster.camera.left",
+        "Epoch": "f79e7631a50142c6a027039506b26156",
+        "SourceEventId": "genuine-crash-observation",
+        "AdmissionId": "genuine-crash-admission",
+        "ObservedAt": "2026-10-18T15:48:31.486074+00:00"
+      }
+    }
+  },
+  "PeerEntries": [
+    {
+      "File": "${LOCAL_ARTIFACTS}/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers/CD24B4571CC773C008529B835F1883EF5924536D422457D22DE0445BE8DE6DD5/8a71c9f5b3d143df8f86c3722f3ee4c7.json",
+      "RequestId": "8a71c9f5b3d143df8f86c3722f3ee4c7",
+      "Counters": {
+        "Executions": 1
+      }
+    },
+    {
+      "File": "${LOCAL_ARTIFACTS}/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers/C8DE02D1C3CD55FEA147027A1E1CAB65ADC59001F4B513201B65B02BF72AC54D/992d86b4dec541a0aebac75784d00f41.json",
+      "RequestId": "992d86b4dec541a0aebac75784d00f41",
+      "Counters": {
+        "Executions": 1
+      }
+    }
+  ],
+  "SourceDbSha256": "7c289131477705bc2f6d92fc3e144fac47e8a7ed7a511f968ab15aa26b2c1136",
+  "PublicProjection": {
+    "OriginalSha256": "60de90ef4e30dcd8cfe976a7d95bd2fd8055e2c2f43420f135ce37bdd699b84d",
+    "OnlyLocalPathsReplaced": true,
+    "NotFrozenRequestOrReplayInput": true
+  }
+}

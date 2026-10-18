@@ -10,14 +10,14 @@
 
 ## Global Constraints
 
-Keep SQL1-4, original request/reply bytes, D/RV and parallel PR26. No retry, redirects, invented query/physical completion or production fallback. Only synthetic fixture data is published. Windows actual NOT_RUN; real RCS/device/field BLOCKED.
+Keep SQL1-5 from integrated main baac260 (PR26/28), original request/reply bytes and D/RV. No retry, redirects, invented query/physical completion or production fallback. Only synthetic fixture data is published. Windows actual NOT_RUN; real RCS/device/field BLOCKED.
 
 ### Task 1: Durable preparation and result contracts
 
 Files: src/Ipc.Application.Contracts/ParcelContracts.cs, WcsDestination.cs; src/Ipc.Application.ParcelFlow/ParcelRuntime.cs, ParcelHistory.cs, ParcelRepository.cs; src/Ipc.Application.Sportmaster/Application.cs.
 
 - [x] Add optional PreparedIntegrationRequest and typed destination/HTTP receipt fields, IWcsRequestPreparer, appended UnpackRequired state, contract version increment.
-- [x] Pure preparer receives detached FrozenRequest and persistent operation sequence; T1 commits returned body/hash before any call. SQL5 adds future-reader semantic guard; retain upgrade settlement check.
+- [x] Pure preparer receives detached FrozenRequest and persistent operation sequence; T1 commits returned body/hash before any call. SQL6 adds the future-reader semantic guard; retain main SQL5 custody/authorized legacy recovery.
 - [x] Sportmaster maps NEED_UNPACK to UnpackRequired and holds this position until inspected local disposition; generic rejection remains distinct.
 
 ### Task 2: Protocol component and executable configuration

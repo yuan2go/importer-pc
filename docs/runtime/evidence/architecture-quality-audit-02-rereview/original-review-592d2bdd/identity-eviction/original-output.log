@@ -1,0 +1,11 @@
+RecoveredIdentity=NULL
+OriginalEvicted=True
+{
+  "Probe": "ChangedRecoveredReplyAfterEviction",
+  "Before": "PlcAccepted",
+  "After": "PhysicalCompleted",
+  "Stage": "Accepted",
+  "Attempts": 1,
+  "ReturnedSameIdWithChangedContent": true,
+  "DefectReproduced": true
+}

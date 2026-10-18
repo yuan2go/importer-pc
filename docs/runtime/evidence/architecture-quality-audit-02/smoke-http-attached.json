@@ -1,0 +1,30 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "2ad633578141db4ef34e255217bc8815634ffd0a",
+  "Application": "sportmaster",
+  "Target": "portable",
+  "Checks": [
+    "candidate file hashes",
+    "actual selected assembly startup",
+    "camera-to-final-reference-chain",
+    "persistent original phases on restart",
+    "orderly stop",
+    "selected topology"
+  ],
+  "AttachedUpload": true,
+  "ExternalPeerProcess": true,
+  "OptionalFeatures": true,
+  "OptionalChecks": [
+    "authenticated admission",
+    "same-entity measured weight",
+    "actual PNG upload bytes",
+    "attached upload independent from main",
+    "process restart original query",
+    "independent upload reconciliation keeps original operator",
+    "one execution per independent receiver"
+  ],
+  "State": "SlotResolved",
+  "OperationId": "31dbeac21bf242bf94e256b47f69d8e3",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED"
+}

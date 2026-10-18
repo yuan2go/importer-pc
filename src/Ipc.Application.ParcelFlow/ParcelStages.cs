@@ -4,7 +4,7 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
-    async Task<ParcelOperation> ExecuteStageAsync(ParcelOperation op, ParcelStage kind, bool query)
+    async Task<ParcelOperation> ExecuteStageAsync(ParcelOperation op, ParcelStage kind, bool query, string? missingOccurrence = null, string? resolutionReason = null, BusinessCommand? resolutionCommand = null)
     {
         var key = op.Id + ":" + kind;
         if (!activeStages.Add(key)) return operations[op.Id];
@@ -81,7 +81,16 @@ public sealed partial class ParcelRuntime
         // Do not reclassify a returned-but-unrecorded reply as an ordinary transport failure.
         repository.StoreRaw(occurrence, reply);
         Boundary?.Invoke("AfterRawDurable");
-        op = ApplyReply(op, kind, reply); Save(op, "ReceiptApplied", "T3: original raw reply, stage and downstream intent committed together", occurrence);
+        op = ApplyReply(op, kind, reply);
+        if (missingOccurrence is not null && repository.Paused && MaintenanceAuthorized &&
+            GetStage(op, kind) is { State: StageState.Accepted or StageState.Rejected, Failure: null } resolved &&
+            resolved.Replies.Any(r => r.Id == reply.Id && r.BusinessAccepted is not null) && repository.MissingAwaitingRaw(missingOccurrence))
+        {
+            repository.Commit(op, "ReceiptOutcomeKnown", Wire.Encode(new { OriginalOccurrence = missingOccurrence, QueryOccurrence = occurrence, Detail = resolutionReason }),
+                occurrence: occurrence, command: resolutionCommand, reconciledOccurrence: missingOccurrence);
+            operations[op.Id] = op;
+        }
+        else Save(op, "ReceiptApplied", "T3: original raw reply, stage and downstream intent committed together", occurrence);
         return op;
         }
         finally { activeStages.Remove(key); }
@@ -127,6 +136,7 @@ public sealed partial class ParcelRuntime
     }
     void RecoverLocalFacts()
     {
+        RestoreMainProjections();
         foreach (var op0 in operations.Values.ToArray())
         {
             var op = op0;
@@ -151,9 +161,14 @@ public sealed partial class ParcelRuntime
         }
         foreach (var item in repository!.PendingReceipts())
         {
-            if (!operations.TryGetValue(item.Operation, out var op)) throw new InvalidDataException("Receipt occurrence has no original operation");
+            if (!operations.TryGetValue(item.Operation, out var op))
+            {
+                op = repository.ReadOperation(item.Operation) ?? throw new InvalidDataException("Receipt occurrence has no original operation");
+                operations.Add(op.Id, op);
+            }
             if (item.Reply is null)
             {
+                if (repository.HasReceiptOutcomeBasis(item.Id)) continue; // Outcome known; missing original remains an independent pending custody occurrence.
                 var missingKind = ParseStage(item.Stage);
                 op = StageFailure(op, missingKind, GetStage(op, missingKind)!, "RawUnavailable:" + item.Id);
                 if (!(missingKind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached)) op = op with { State = ParcelState.Blocked };

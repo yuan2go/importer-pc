@@ -1,0 +1,56 @@
+[
+  {
+    "Name": "sport-core",
+    "ZipSha256": "2b5a52b898d0f956941168535fb976de658f05dfccaa82746f3c3d275811f0ba",
+    "SourceCommit": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+    "Target": "portable",
+    "OfflineBundles": [],
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "Name": "sport-selected",
+    "ZipSha256": "b1cf0aa941961c4112942f67e86f244d1263f361916e707f3a4b628d2a72fd22",
+    "SourceCommit": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+    "Target": "portable",
+    "OfflineBundles": [
+      {
+        "Id": "reference.barcode",
+        "Version": "1.1.0",
+        "ManifestSha256": "806E87C2C261CD1D815F1F427A7D90D1B69D3E1272C157D48EFA6824FDAE988A",
+        "PackageSha256": "C084AF18DD8D8019A8C5EB07D14097C20FBB5419840D7A122E198DC93985BD44",
+        "File": "offline-extensions/reference.barcode-1.1.0.ipcx",
+        "Mode": "Simulation",
+        "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
+        "Installed": false,
+        "Activated": false,
+        "PublicContracts": {}
+      },
+      {
+        "Id": "reference.parcel-capabilities",
+        "Version": "1.8.0",
+        "ManifestSha256": "AC569B99A5D6A82A4AE735C28D7D2F6EEF57BDFAEDF1A8B705E34E73D1AAC300",
+        "PackageSha256": "3D126E80705F79AC4C00809BF5E384A78E3C966971BABA558BF3B1B1906D5F92",
+        "File": "offline-extensions/reference.parcel-capabilities-1.8.0.ipcx",
+        "Mode": "Simulation",
+        "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
+        "Installed": false,
+        "Activated": false,
+        "PublicContracts": {
+          "Ipc.Application.Contracts": "3FA9F3C1F01981C5B750E9F4DE83BCC425175C5D5036FFDBA5DFB57927C6FF1B"
+        }
+      }
+    ],
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "Name": "sport-win",
+    "ZipSha256": "a9ab5b3984168fd8ddbf0e3277bc549d558ee49c3484f3c3fbaa8cb38c174b45",
+    "SourceCommit": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+    "Target": "win-x64",
+    "OfflineBundles": [],
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  }
+]

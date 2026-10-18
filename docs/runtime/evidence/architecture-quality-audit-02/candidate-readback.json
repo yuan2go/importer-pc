@@ -1,0 +1,53 @@
+[
+  {
+    "Name": "sport-core",
+    "SourceCommit": "2ad633578141db4ef34e255217bc8815634ffd0a",
+    "ZipSha256": "3738b23a7b2e8fe84d19b1979d453310924625ecc5c8c31ad607480f23bd42d3",
+    "FilesVerified": 92,
+    "OfflinePackages": [],
+    "WindowsRuntime": "NOT_RUN"
+  },
+  {
+    "Name": "sport-selected",
+    "SourceCommit": "2ad633578141db4ef34e255217bc8815634ffd0a",
+    "ZipSha256": "e70d8197844f959717e4e88dab33d8238cb8e3ece4b9173561023c30ebdebbbc",
+    "FilesVerified": 95,
+    "OfflinePackages": [
+      {
+        "Id": "reference.parcel-capabilities",
+        "Version": "1.7.2",
+        "ManifestSha256": "666CC5714E94C6D98C49C4C9DD1D1C1EC0732100C66526A19755E31C6FD95361",
+        "PackageSha256": "7D3DCEE34249CB441522E028B2CC87E4BF257D956B848817A6B90006CCA90F62",
+        "File": "offline-extensions/reference.parcel-capabilities-1.7.2.ipcx",
+        "Mode": "Simulation",
+        "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
+        "Installed": false,
+        "Activated": false,
+        "PublicContracts": {
+          "Ipc.Application.Contracts": "50C693C0D07E2BD314816310EE8510DEDC78A90AAB9AC0F293E97DA492DF1EFA"
+        }
+      },
+      {
+        "Id": "reference.barcode",
+        "Version": "1.0.12",
+        "ManifestSha256": "6DE713A58DDD7B50FE638FBFFA16D31B91FB25DF63247CB460EC129353A38DAE",
+        "PackageSha256": "7F9ACEC09CB4DA5AEF296F2CBC336FA7030065BB2BE0BBBDA4B8D7A786DC5BF3",
+        "File": "offline-extensions/reference.barcode-1.0.12.ipcx",
+        "Mode": "Simulation",
+        "TrustSha256": "A7BA985341DBD2B21FBB579A5ED776F3FD3CDA8BE42074A3654AA292EFEF37C2",
+        "Installed": false,
+        "Activated": false,
+        "PublicContracts": {}
+      }
+    ],
+    "WindowsRuntime": "NOT_RUN"
+  },
+  {
+    "Name": "sport-win",
+    "SourceCommit": "2ad633578141db4ef34e255217bc8815634ffd0a",
+    "ZipSha256": "ce7580cfaaefca0f324f445133d944af51702adce5336a275735e5f9fb7adb3e",
+    "FilesVerified": 723,
+    "OfflinePackages": [],
+    "WindowsRuntime": "NOT_RUN"
+  }
+]

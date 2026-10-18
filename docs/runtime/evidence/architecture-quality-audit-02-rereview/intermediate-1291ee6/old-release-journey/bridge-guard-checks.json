@@ -1,0 +1,32 @@
+[
+  {
+    "Case": "repeat",
+    "Exit": 0,
+    "Expected": "ok",
+    "Pass": true
+  },
+  {
+    "Case": "wrong-release",
+    "Exit": -6,
+    "Expected": "Implementation",
+    "Pass": true
+  },
+  {
+    "Case": "extra-dll",
+    "Exit": -6,
+    "Expected": "Unregistered DLL",
+    "Pass": true
+  },
+  {
+    "Case": "changed-dll",
+    "Exit": -6,
+    "Expected": "hash mismatch",
+    "Pass": true
+  },
+  {
+    "Case": "linked-release",
+    "Exit": -6,
+    "Expected": "Linked",
+    "Pass": true
+  }
+]

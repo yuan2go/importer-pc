@@ -2,6 +2,7 @@
  <ProjectReference Include="../../src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj"/><ProjectReference Include="../../src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj"/><ProjectReference Include="../../src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj"/><ProjectReference Include="../../src/Ipc.Components/Ipc.Components.csproj"/><ProjectReference Include="../../src/Ipc.Drivers/Ipc.Drivers.csproj"/><ProjectReference Include="../../src/Ipc.Integrations/Ipc.Integrations.csproj"/>
  <ProjectReference Include="../../src/Ipc.Application.Supply/Ipc.Application.Supply.csproj"/>
  <ProjectReference Include="../../src/Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj"/>
+ <Compile Include="../../src/Ipc.Assembly/OriginalParcelQuery.cs" Link="OriginalParcelQuery.cs"/>
  <Compile Include="../../src/Ipc.Assembly/ExtensionConsumerReaders.cs" Link="ExtensionConsumerReaders.cs"/>
  <Compile Include="../../src/Ipc.Assembly/ParcelCapabilityFactory.cs" Link="ParcelCapabilityFactory.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs" Link="Client/ParcelTargets.cs"/>

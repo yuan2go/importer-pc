@@ -228,7 +228,7 @@ static class ApplicationArchitecture
         using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db")))
         {
             db.Open(); using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)cmd.ExecuteScalar()! == 5, "settled database2 upgrades with unchanged SQL1-4 and appended integration semantic SQL5");
+            Check((long)cmd.ExecuteScalar()! == 6, "settled database2 upgrades with unchanged SQL1-5, independent custody SQL5 and appended integration semantic SQL6");
         }
         await Task.CompletedTask;
     }

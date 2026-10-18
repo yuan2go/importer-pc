@@ -1,5 +1,7 @@
 # Sportmaster RCS 分拣任务服务
 
+已整合main `baac260214f910dca9ae4628ba6449b25188e2ac`（PR26/28）。组件最终版本1.0.1；此前1.0.0及4c9d51c候选保持历史身份。
+
 WP-IPC-SPORTMASTER-RCS-TASK-01，名称 `SportmasterRcsTaskService`，模块 `sportmaster-rcs-task`，包 `sportmaster.rcs-task`。范围与兼容见[设计](../design/sportmaster-rcs-task.md)、[工作包](../work-packages/WP-IPC-SPORTMASTER-RCS-TASK-01.md)。此组件实现实际HTTP客户端，不提供RCS服务端。唯一命令为 `sorter.task.dest_request`，POST路径 `/rcs/sorter/api`。
 
 ## 实现和职责
@@ -50,7 +52,7 @@ python3 scripts/configure-sportmaster-rcs.py \
 
 ## 兼容与验证边界
 
-公共契约1.7.0：新增字段为可省略，原参考请求/回包的null新增字段不改变序列化字节；扩展指纹已改变，旧包不可重签覆盖。Parcel数据库5追加SQL5，SQL1-4/hash原样；实际runtime和消费者检查同一版本，旧reader拒读5。任何旧未结主链/原图/接收责任在升级前拒绝，必须先由匹配旧发布清偿并完成一致备份；新UnpackRequired和Unknown不可靠降级清除。
+公共契约1.7.0：新增字段为可省略，原参考请求/回包的null新增字段不改变序列化字节；扩展指纹已改变，旧包不可重签覆盖。Parcel数据库6追加SQL6，SQL1-5/hash原样继承新main的接收责任与原请求核对修复；实际runtime和消费者检查同一版本，旧reader拒读6。DB4/5原件经main既有raw核验可保留责任升级，DB2/3旧未结门禁不改；显式custody-only迁移仍使用5。新UnpackRequired和Unknown不能靠降级清除。
 
 运行定向验证：
 

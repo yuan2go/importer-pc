@@ -1,0 +1,10 @@
+ExpectedStartupFailure=Synthetic legacy candidate cannot initialize
+{
+  "Probe": "LegacyUnconfirmedEffectiveAfterStartupFailure",
+  "Status": "Effective",
+  "Failure": null,
+  "Activation": null,
+  "Effective": 1700,
+  "Pending": null,
+  "DefectReproduced": true
+}

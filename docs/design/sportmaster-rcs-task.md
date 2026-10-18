@@ -1,6 +1,6 @@
 # Sportmaster RCS 分拣任务服务 · 01
 
-2026-10-19用户已确认实现、必要验证、提交推送及main PR。执行基线main `4afe2afacde9e2acab7648fff3440fa3cc331b6e`；PR26并行不合并、不覆盖。命名 `SportmasterRcsTaskService` / `sportmaster-rcs-task`。本增量继承22与质量闭环01，原D/RV、Supply CAPI含义及历史报告不改。
+2026-10-19用户已确认实现、必要验证、提交推送及main PR。开工基线main `4afe2afacde9e2acab7648fff3440fa3cc331b6e`；当时PR26并行，执行中其已由独立授权合入main，本分支整合经过见末段。命名 `SportmasterRcsTaskService` / `sportmaster-rcs-task`。本增量继承22与质量闭环01，原D/RV、Supply CAPI含义及历史报告不改。
 
 ## 组件与事务
 
@@ -14,10 +14,12 @@
 
 保留HTTP状态、响应原始字节base64/hash及类型化结果。匹配requestId、唯一index=1、command和success；缺失/歧义/非法结构不推断成功。success=true必须有有效格口；保留taskId、skuId与可空尺寸重量。NEED_UNPACK保留barcode、skuId、scanQty、所有chutes（含remaining=0及未知phase原值），进入独立UnpackRequired状态，本位等待现有受守卫的检查移除动作，不自动下一件、不代发拆包命令。其它success=false保留code/message/args为业务拒绝。HTTP错误/超时/断连/非法JSON/关联错误保持Unknown，不重试/重定向/用POST假查询。
 
-共享StageReply增加可省略的目的地结果及HTTP原件，旧参考回执序列化字节不变。新数据库语义5追加迁移，SQL1-4不改；旧未结原件仍在迁移前拒绝，旧宿主拒读新库。公共契约精确指纹改变，旧包不重签覆盖。
+共享StageReply增加可省略的目的地结果及HTTP原件，旧参考回执序列化字节不变。整合main PR26/28后新数据库语义6追加迁移，SQL1-5原样继承；DB4/5仍按main已获授权的raw核验/原请求核对链保留恢复能力，DB2/3原未结门禁不改；旧宿主拒读6。公共契约精确指纹改变，旧包不重签覆盖。
 
 ## 验证与公开边界
 
 必要基线/定向HTTP夹具覆盖三种结果、空字段、关联/结构/HTTP失败、超时、双位并行、原请求持久化、重启Unknown无重发、拆包本位阻断及历史/迁移；实际签名包装配和选装portable发布启动。Windows仅交叉构建，实际Windows/真实RCS/设备/现场分别NOT_RUN/BLOCKED。测试只用合成标识，不复制用户接口全文或示例业务标识，不上传客户原稿/凭据/真实地址。
 
 编号范围按不可变历史序号判定；旧历史和既有索引更新可能留有序号空洞，因此request-id-count不是可处理件数承诺。范围耗尽或准备校验失败只持久阻断原实体，Wcs意图/attempt仍未创建；可暂停检查并本地处置后再受控修改配置，不使输入worker崩溃。
+
+2026-10-19执行中main推进至baac260，PR26/28已合并；继承其SQL5接收责任、原件查询/缺件保管及发布链。RCS追加SQL6，恢复主投影保持UnpackRequired，不因旧业务拒绝投影释放本位。初轮4c9d51c/组件1.0.0为历史候选；整合组件采用新不可变1.0.1，未改写旧包。

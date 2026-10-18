@@ -1,10 +1,6 @@
-> 22现行拓扑、状态作用域、版本与交付：[Application架构22](../design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
+# Supply兼容：运行、维护、发布与恢复
 
-> 现行三Application职责、公共能力与可选策略：[19唯一设计](../design/application-capability-19.md)。本页保留仍有效的基础机制及Supply兼容说明；17/18阶段限制已由19替代。原字节见[归档](../archive/pre-application-capability-19/README.md)。
-
-# 运行、维护、发布与恢复
-
-Supply兼容运行指南（16形成时工作包为 **UI-MAINTAINABILITY-16**）。Storage/MinimumReader **5/5**、SIMULATION-v1、ExtensionContract **1**；参考扩展新增不可变版本 **1.0.4**。当前结果/源SHA/候选身份见[16报告](ui-maintainability-16.md)及包内release.json。运行方式以本文和[首次参考作业](getting-started.md)为入口；历次操作原文见[本次前置归档](../archive/pre-ui-maintainability-16/README.md)。目标设计、原SQL/checksum、旧候选、D/RV和原失败均保留。
+Supply兼容运行指南（16形成时工作包为 **UI-MAINTAINABILITY-16**）。Storage/MinimumReader **5/5**、SIMULATION-v1、ExtensionContract **1**；参考扩展新增不可变版本 **1.0.4**。当前结果/源SHA/候选身份见[16报告](ui-maintainability-16.md)及包内release.json。运行方式以本文和[首次参考作业](supply-getting-started.md)为入口；历次操作原文见[本次前置归档](../archive/pre-ui-maintainability-16/README.md)。目标设计、原SQL/checksum、旧候选、D/RV和原失败均保留。
 
 Windows实际客户端/输入/DPI/声音/触控/PowerShell/UAC/ACL仍NOT_RUN，[同版后验](validation/ui-maintainability-16-windows.md)逐项记录。真实SDK/WCS、身份、实体/数量及逐SKU少货权威未取得，Production缺必需能力继续NotReady。软件暂停不是安全急停。
 
@@ -27,7 +23,7 @@ dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --maintai
 
 ## 首次运行与操作
 
-[首次运行/首条合成参考作业](getting-started.md)提供完整可执行步骤。源码启动在build后seal实际app/config；发布包已经seal，不手改product.json哈希。
+[首次运行/首条合成参考作业](supply-getting-started.md)提供完整可执行步骤。源码启动在build后seal实际app/config；发布包已经seal，不手改product.json哈希。
 
 ```sh
 # 终端A：只绑定字面127.0.0.1；独立接收账，保持进程

@@ -17,7 +17,7 @@ static class SportmasterRcs
 {
     static void Check(bool value, string message)
     { if (!value) throw new Exception("FAIL RCS20: " + message); Console.WriteLine("PASS RCS20: " + message); }
-    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.0.0", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
+    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.0.1", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
     {
         ["source"] = "TEST_READER", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83", ["quantity"] = "1",
         ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "100000",
@@ -94,8 +94,8 @@ static class SportmasterRcs
             var before = peer.Requests.Count; Check(await service.QueryAsync(right, CancellationToken.None) is null && peer.Requests.Count == before, "unsupported original query sends no request and never resubmits");
         }
         await RuntimeChecks(workspace, root, peer);
-        MigrationChecks(root);
-        Console.WriteLine("PASS RCS20 COMPLETE: synthetic HTTP protocol, exact custody, independent positions, unpack guards, restart unknown and SQL5 barriers");
+        MigrationChecks(workspace, root);
+        Console.WriteLine("PASS RCS20 COMPLETE: synthetic HTTP protocol, exact custody, independent positions, unpack guards, restart unknown and SQL6 custody transitions");
     }
     static async Task PreparationGuards(SportmasterRcsTaskService service, CapabilityBinding binding, Peer peer)
     {
@@ -236,6 +236,32 @@ static class SportmasterRcs
             var reply = (await app.SnapshotAsync()).Operations.Single().Wcs!.Replies.Single();
             Check(Encoding.UTF8.GetString(Convert.FromBase64String(reply.HttpResponse!.BodyBase64)) == "{not-json", "raw malformed reply bytes survive application restart without reparsing into success");
         }
+        var plain = config;
+        CapabilityBinding Camera(string position) => new("camera", "reference-camera", "1.0.0", "rcs.camera." + position, config.Topology!.Readers.Single(x => x.DeviceId.EndsWith("." + position, StringComparison.Ordinal)).DeviceId, "PARCEL-REFERENCE-v1", []);
+        var leftCamera = Camera("left"); var rightCamera = Camera("right");
+        var uploader = new CapabilityBinding("upload", "reference-upload", "1.0.0", "rcs.upload", "reference://upload/rcs-attached", "PARCEL-REFERENCE-v1", []);
+        config = config with { Images = new(leftCamera, uploader, Strategy: UploadStrategy.Attached),
+            CapabilityInstances = [config.Wcs!, config.MaintenanceLogin!, leftCamera, rightCamera, uploader], Topology = config.Topology! with { Positions = [config.Topology.Positions[0], config.Topology.Positions[1] with { CameraInstanceId = rightCamera.InstanceId }] } };
+        peer.Mode = "unpack"; ParcelOperation unpackOriginal;
+        await using (var app = await Open("rcs-unpack-projection-recovery"))
+        {
+            app.EmitReferenceAt("left", "synthetic-unpack-attached", "SYNTH-0001", Wire.Id());
+            unpackOriginal = (await Wait(app, x => x.Operations.SingleOrDefault() is { State: ParcelState.UnpackRequired, Upload.State: StageState.Accepted })).Operations.Single();
+        }
+        var projectionDirectory = Path.Combine(root, "rcs-unpack-projection-recovery", "data", "Simulation", config.StationId, "sportmaster");
+        using (var db = new SqliteConnection("Data Source=" + Path.Combine(projectionDirectory, "sportmaster.db")))
+        {
+            db.Open(); using var command = db.CreateCommand(); command.CommandText = "UPDATE parcel_operations SET body=json_set(body,'$.State','Blocked','$.Reason','Synthetic prior attached receipt projection') WHERE id=$id"; command.Parameters.AddWithValue("$id", unpackOriginal.Id); Check(command.ExecuteNonQuery() == 1, "synthetic prior attached projection changes only the persisted overall state/reason");
+        }
+        var postsBeforeRecovery = peer.Requests.Count;
+        await using (var app = await Open("rcs-unpack-projection-recovery"))
+        {
+            var recovered = (await app.SnapshotAsync()).Operations.Single();
+            Check(recovered.State == ParcelState.UnpackRequired && Wire.Encode(recovered.Wcs) == Wire.Encode(unpackOriginal.Wcs) && peer.Requests.Count == postsBeforeRecovery &&
+                (await app.SnapshotAsync()).Positions!.Single(x => x.Id == "left").Admit == false,
+                "main receipt projection recovery restores NEED_UNPACK as a held position with exact original WCS request/raw instead of flattening it to generic rejection");
+        }
+        config = plain;
         peer.Mode = "assigned"; config = config with { Wcs = config.Wcs! with { Parameters = new(config.Wcs.Parameters) { ["request-id-count"] = "1" } } };
         await using (var app = await Open("rcs-range-exhausted"))
         {
@@ -259,29 +285,59 @@ static class SportmasterRcs
         using (var db = new SqliteConnection("Data Source=" + file))
         {
             db.Open(); using var command = db.CreateCommand(); command.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)command.ExecuteScalar()! == 5, "actual ParcelRuntime startup records semantic SQL5");
+            Check((long)command.ExecuteScalar()! == 6, "actual ParcelRuntime startup records integration semantic SQL6");
         }
-        try { using var oldReader = new ParcelRepository(directory, "sportmaster", 4); throw new Exception("Old reader accepted actual SQL5 runtime database"); }
-        catch (InvalidDataException) { Check(true, "old SQL4 reader rejects actual application SQL5 database"); }
+        try { using var oldReader = new ParcelRepository(directory, "sportmaster", 5); throw new Exception("Old reader accepted actual SQL6 runtime database"); }
+        catch (InvalidDataException) { Check(true, "old SQL5 reader rejects actual application SQL6 database"); }
     }
-    static void MigrationChecks(string root)
+    static void MigrationChecks(string workspace, string root)
     {
-        var directory = Path.Combine(root, "rcs-sql4"); using (var repo = new ParcelRepository(directory, "sportmaster", 4)) { }
-        var file = Path.Combine(directory, "sportmaster.db");
-        void Sql(string sql) { using var db = new SqliteConnection("Data Source=" + file); db.Open(); using var c = db.CreateCommand(); c.CommandText = sql; c.ExecuteNonQuery(); }
-        long Version() { using var db = new SqliteConnection("Data Source=" + file); db.Open(); using var c = db.CreateCommand(); c.CommandText = "SELECT max(version) FROM platform_migrations"; return (long)c.ExecuteScalar()!; }
-        Sql("INSERT INTO parcel_receipts VALUES('synthetic-pending','synthetic-operation','wcs-slot','original','Submit','Awaiting',NULL)");
-        try { using var rejected = new ParcelRepository(directory, "sportmaster"); throw new Exception("SQL4 unsettled upgrade accepted"); }
-        catch (InvalidDataException e) { Check(e.Message.Contains("LegacyUnsettled", StringComparison.Ordinal) && Version() == 4, "SQL4 unresolved receipt blocks SQL5 before original migration history changes"); }
-        Sql("UPDATE parcel_receipts SET state='NoReply'"); using (var upgraded = new ParcelRepository(directory, "sportmaster")) { }
-        Check(Version() == 5, "settled SQL4 appends semantic SQL5");
-        try { using var rejected = new ParcelRepository(directory, "sportmaster", 4); throw new Exception("Old reader accepted SQL5"); }
-        catch (InvalidDataException) { Check(Version() == 5, "old SQL4 reader rejects future SQL5 without modifying the original database"); }
+        var directory = Path.Combine(root, "rcs-sql5-custody");
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
+        var request = Request(config.Wcs!); var reply = new StageReply(Wire.Id(), request.Id, request.PayloadHash, true, null, null, null, null, "Synthetic pre-RCS original unknown", DateTimeOffset.UtcNow);
+        var stage = new StageFact(request, StageState.Unknown, 1, [reply], "Synthetic outcome unknown");
+        var operation = new ParcelOperation(request.OperationId, request.AdmissionId, "SYNTH-0001", Wire.Id(), request.PreparedAt, request.ConfigurationHash, config, new() { [config.Wcs!.InstanceId] = request.ImplementationHash }, config.Weight, null,
+            ParcelState.WcsUnknown, null, stage, null, "Synthetic original awaiting reconciliation", PositionId: "left");
+        string durable, awaiting; string frozen;
+        Dictionary<long, string> SqlHistory()
+        {
+            using var db = new SqliteConnection("Data Source=" + Path.Combine(directory, "sportmaster.db")); db.Open(); using var c = db.CreateCommand(); c.CommandText = "SELECT version,sha FROM platform_migrations ORDER BY version";
+            using var r = c.ExecuteReader(); Dictionary<long, string> history = []; while (r.Read()) history.Add(r.GetInt64(0), r.GetString(1)); return history;
+        }
+        using (var original = new ParcelRepository(directory, "sportmaster", 5))
+        {
+            original.Commit(operation, "SyntheticLegacyUnknown", "Synthetic valid SQL5 reference original before RCS optional fields");
+            durable = original.BeginReceipt(operation, stage, "Submit"); original.StoreRaw(durable, reply);
+            awaiting = original.BeginReceipt(operation, stage, "Query"); frozen = Wire.Encode(original.Load().Single());
+        }
+        var priorHistory = SqlHistory(); var raw = Path.Combine(directory, "receipts", durable + ".json"); var originalBytes = File.ReadAllBytes(raw);
+        using (var upgraded = new ParcelRepository(directory, "sportmaster"))
+        {
+            Check(upgraded.StorageVersion == 6 && Wire.Encode(upgraded.Load().Single()) == frozen && upgraded.Load().Single().Wcs!.Request.IntegrationRequest is null,
+                "valid SQL5 unknown original upgrades to SQL6 without rewriting request, stage, nullable integration fields or business responsibility");
+            Check(upgraded.PendingReceipts().Length == 2 && upgraded.ReceiptById(durable) is { State: "RawDurable" } && upgraded.ReceiptById(awaiting) is { State: "Awaiting", RawHash: null } &&
+                File.ReadAllBytes(raw).SequenceEqual(originalBytes), "SQL5-to6 transition preserves exact durable reply bytes/hash and each independent pending custody occurrence");
+        }
+        Check(priorHistory.All(x => SqlHistory().GetValueOrDefault(x.Key) == x.Value) && SqlHistory().Keys.Max() == 6, "SQL6 append preserves every genuine main SQL1-5 checksum");
+        try { using var rejected = new ParcelRepository(directory, "sportmaster", 5); throw new Exception("Old reader accepted SQL6"); }
+        catch (InvalidDataException) { Check(SqlHistory().Keys.Max() == 6, "old SQL5 reader rejects future SQL6 without modifying the original database"); }
+        var malformed = Path.Combine(root, "rcs-sql5-malformed"); using (var original = new ParcelRepository(malformed, "sportmaster", 5)) { }
+        var stray = Path.Combine(malformed, "receipts", Wire.Id() + ".json"); File.WriteAllText(stray, Wire.Encode(reply));
+        try { using var rejected = new ParcelRepository(malformed, "sportmaster"); throw new Exception("Malformed SQL5 raw inventory accepted"); }
+        catch (InvalidDataException)
+        {
+            using var db = new SqliteConnection("Data Source=" + Path.Combine(malformed, "sportmaster.db")); db.Open(); using var c = db.CreateCommand(); c.CommandText = "SELECT max(version) FROM platform_migrations";
+            Check((long)c.ExecuteScalar()! == 5 && File.Exists(stray), "malformed original receipt inventory blocks before SQL6 marker and preserves the original file for investigation");
+        }
     }
     sealed class Factory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory
     {
-        static ParcelConfiguration Reference(ParcelConfiguration c) => c with { Wcs = c.Wcs! with { Implementation = "reference-integration", Target = "reference://integration/synthetic-rcs-verification", Contract = "PARCEL-REFERENCE-v1", Parameters = new() } };
-        public ParcelConfiguration Normalize(ParcelConfiguration c) => c;
+        static ParcelConfiguration Reference(ParcelConfiguration c)
+        {
+            var reference = c.Wcs! with { Implementation = "reference-integration", Version = "1.0.0", Target = "reference://integration/synthetic-rcs-verification", Contract = "PARCEL-REFERENCE-v1", Parameters = new() };
+            return c with { Wcs = reference, CapabilityInstances = c.CapabilityInstances?.Select(x => x.InstanceId == c.Wcs.InstanceId ? reference : x).ToArray() };
+        }
+        public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void Validate(ParcelConfiguration c) { inner.Validate(inner.Normalize(Reference(c))); using var _ = new DisposableBindingCheck(c.Wcs!); }
         public CapabilityRequirements Requirements(CapabilityBinding b) => new(BusinessAcceptance: true, Query: false);
         public ParcelPorts Create(ParcelConfiguration c)

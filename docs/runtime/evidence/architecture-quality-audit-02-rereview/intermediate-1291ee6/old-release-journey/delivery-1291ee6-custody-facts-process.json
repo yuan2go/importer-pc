@@ -1,0 +1,16 @@
+{
+  "Command": [
+    "python3",
+    "${LOCAL_ARTIFACTS}/ipc-pr26-original-query-bridge-20261018/delivery-tools/genuine-delivery-journey.py",
+    "--new-release",
+    "${LOCAL_ARTIFACTS}/ipc-pr26-original-query-bridge-20261018/delivery-1291ee6-unpacked/app",
+    "--root",
+    "${LOCAL_ARTIFACTS}/ipc-pr26-original-query-bridge-20261018/genuine-recovery-delivery-1291ee6-custody-facts"
+  ],
+  "Exit": 0,
+  "PublicProjection": {
+    "OriginalSha256": "c0d682ba8a1c039a5c6344494f2bb3415bfaa31c79377ba17ea0fe448e0b5ff9",
+    "OnlyLocalPathsReplaced": true,
+    "NotFrozenRequestOrReplayInput": true
+  }
+}

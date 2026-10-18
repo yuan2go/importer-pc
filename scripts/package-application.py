@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import zipfile
 from composition import resolve
+from application_bundles import read_packages, publish_packages
 from release_documents import SOURCE_PATHS, publish as publish_guides
 
 APPLICATIONS = {'sportmaster': 'Sportmaster', 'direct-plc': 'DirectPlc', 'wcs-to-plc': 'WcsToPlc'}
@@ -16,6 +17,10 @@ p.add_argument('--application', choices=APPLICATIONS, required=True)
 p.add_argument('--target', choices=['portable', 'win-x64'], required=True)
 p.add_argument('--output', type=Path, required=True)
 p.add_argument('--dotnet', default='dotnet')
+p.add_argument('--composition', help='Existing composition matching the selected Application; defaults to its reference core')
+p.add_argument('--extension-package', type=Path, action='append', default=[], help='Exact signed offline Driver/Component package; repeat for its complete dependency closure')
+p.add_argument('--extension-trust', type=Path, help='Independent trust used only for static acceptance; never copied into the candidate')
+p.add_argument('--extension-check-host', type=Path, help='Runnable Assembly with byte-identical public DLLs for a Windows target')
 a = p.parse_args()
 root = Path(__file__).resolve().parent.parent
 output = a.output.resolve()
@@ -25,6 +30,12 @@ if output.exists() or archive.exists():
 if subprocess.check_output(['git', 'status', '--porcelain', '--', *SOURCE_PATHS], cwd=root, text=True).strip():
     raise ValueError('Commit exact runtime, configuration, packaging and shipped guides before publication')
 source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
+selection = resolve(root / 'config/compositions.json', a.composition or a.application + '-reference')
+if selection['product']['business'] != a.application:
+    raise ValueError('Composition must select the requested Application')
+bundles = read_packages(a.extension_package, selection)
+if bundles and a.extension_trust is None:
+    raise ValueError('Selected offline packages require independent trust for target-host acceptance')
 module = APPLICATIONS[a.application]
 lock = 'packages.' + a.application + ('.win-x64' if a.target == 'win-x64' else '') + '.lock.json'
 properties = ['-p:Application=' + module, '-p:NuGetLockFilePath=' + lock]
@@ -51,7 +62,7 @@ for base in [output / 'app', output / 'desktop']:
         raise ValueError('DirectPlc must not depend on a WCS implementation')
 if a.target == 'win-x64' and not (output / 'desktop' / f'Ipc.Application.{module}.Desktop.dll').is_file():
     raise ValueError('Selected WPF presentation was not delivered')
-selection = resolve(root / 'config/compositions.json', a.application + '-reference')
+publish_packages(bundles, selection, output, a.dotnet, a.extension_trust, a.extension_check_host)
 for directory in [output / 'app', output / 'desktop']:
     if not directory.exists(): continue
     files = {f.relative_to(directory).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest().upper()
@@ -63,8 +74,9 @@ selection.update(SourceCommit=source, Target=a.target, EntryPoint='app/Ipc.Assem
                  DesktopEntryPoint='desktop/Ipc.Desktop.exe' if a.target == 'win-x64' else None,
                  Windows='NOT_RUN', PhysicalIntegration='BLOCKED',
                  Binaries={str(f.relative_to(output)): hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(output.rglob('Ipc.*.dll'))})
+(output / 'composition.lock.json').write_text(json.dumps(selection, indent=2) + '\n')
 (output / 'ASSEMBLY.json').write_text(json.dumps(selection, indent=2) + '\n')
-publish_guides(root, output, source)
+publish_guides(root, output, source, a.application)
 if a.target == 'win-x64':
     for script in ['protect-release.ps1', 'provision-runtime.ps1', 'provision-extensions.ps1']:
         shutil.copyfile(root / 'scripts' / script, output / script)

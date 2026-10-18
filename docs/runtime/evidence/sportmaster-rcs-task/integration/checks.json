@@ -1,0 +1,42 @@
+{
+  "integration_main": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "component_version": "1.0.1",
+  "parcel_database": 6,
+  "public_contract": "1.7.0",
+  "sql1_5_unchanged": true,
+  "tests": {
+    "RCS": {
+      "status": "PASS",
+      "pass_lines": 108
+    },
+    "AA22": {
+      "status": "PASS",
+      "pass_lines": 63
+    },
+    "ArchitectureQuality": {
+      "status": "PASS",
+      "pass_lines": 104
+    },
+    "ReviewClosure": {
+      "status": "PASS",
+      "pass_lines": 33
+    },
+    "ReceiptCustody": {
+      "status": "PASS",
+      "pass_lines": 10
+    },
+    "ConfigurationConfirmation": {
+      "status": "PASS",
+      "pass_lines": 33
+    }
+  },
+  "script_tests": 26,
+  "tool_tests": 10,
+  "windows_actual": "NOT_RUN",
+  "real_rcs_sdk_device_field": "BLOCKED",
+  "diagnostics": [
+    "Reference-only test factory retains fixed1.0.0 while real component is1.0.1",
+    "Attached image test supplies full authoritative capability inventory",
+    "Offline custody test waits for genuine unrelated image cleanup; original missing left bytes/custody retained; no assertions removed"
+  ]
+}

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/tmp/ipc-pr26-genuine-post-upgrade.py", line 37, in <module>
+    raw=db.execute('select state,raw_hash from parcel_receipts where id=?',('1e637e066a674876966810edabec17b6',)).fetchone();assert raw==('Awaiting',None)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: unable to open database file

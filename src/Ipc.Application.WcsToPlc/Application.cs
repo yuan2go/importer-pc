@@ -12,6 +12,14 @@ public sealed class WcsToPlcFlow : FlowDefinition
         (op.Wcs?.State == StageState.Unknown ? new[] { ParcelStage.Wcs } : []).Concat(
             op.Plc?.State == StageState.Unknown || op.Plc?.State == StageState.Accepted && !op.Plc.Replies.Any(x => x.PhysicalCompleted == true) ? [ParcelStage.Plc] : []).ToArray();
     public override bool MainSettled(ParcelOperation op) => op.State is ParcelState.PhysicalCompleted or ParcelState.PlcRejected or ParcelState.WcsRejected;
+    public override ParcelOperation RestoreMainProjection(ParcelOperation op)
+    {
+        if (op.Plc is { State: StageState.Accepted or StageState.Rejected } plc)
+            return op with { State = FlowResults.PlcState(plc), Reason = plc.State == StageState.Accepted ? null : plc.Replies.Last(x => x.BusinessAccepted is not null).Evidence };
+        if (op.Wcs is { State: StageState.Rejected } wcs)
+            return op with { State = ParcelState.WcsRejected, Reason = wcs.Replies.Last(x => x.BusinessAccepted is not null).Evidence };
+        return op;
+    }
     public override async Task AdvanceAsync(IParcelExecution e, ParcelOperation op)
     {
         op = e.Current(op.Id);

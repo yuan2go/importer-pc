@@ -1,3 +1,5 @@
+> 当前整合结果见[integration](integration/README.md)。以下4c9d51c/组件1.0.0记录为整合前历史候选，保持原SHA与原字节；不充当新main候选证据。
+
 # RCS组件01证据
 
 本目录只使用合成数据。执行基线main `4afe2afacde9e2acab7648fff3440fa3cc331b6e`；PR26独立保留。当前已执行结果见[checks](checks.json)和同目录原日志。

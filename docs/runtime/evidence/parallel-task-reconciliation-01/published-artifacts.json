@@ -1,0 +1,100 @@
+{
+  "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+  "Url": "https://github.com/yuan2go/importer-pc/releases/tag/reference-reconciliation-20261019-21e6cae",
+  "Prerelease": true,
+  "Assets": [
+    {
+      "File": "ARTIFACTS.json",
+      "Bytes": 2066,
+      "Sha256": "f813d2f85c5d047811885d11c29274024008e893e3153229eb925112495f3a5a",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/reference-reconciliation-20261019-21e6cae/ARTIFACTS.json",
+      "GitHubDigestVerified": true
+    },
+    {
+      "File": "barcode.ipcx",
+      "Bytes": 7594,
+      "Sha256": "9a6573816d66e36225cc379b7ebe3c84671f5b46d6d6c6595beaddbf80f1d14e",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/reference-reconciliation-20261019-21e6cae/barcode.ipcx",
+      "GitHubDigestVerified": true
+    },
+    {
+      "File": "barcode.ipcx.identity.json",
+      "Bytes": 1199,
+      "Sha256": "2030b41b6a86193e26977a1121ee8c36a0855e542095a0f6eb958f9a9244f604",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/reference-reconciliation-20261019-21e6cae/barcode.ipcx.identity.json",
+      "GitHubDigestVerified": true
+    },
+    {
+      "File": "capabilities.ipcx",
+      "Bytes": 20609,
+      "Sha256": "ae975413b30ab35c7a448381e48f5022038fc82e76ebb0422df0016cb36ed96f",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/reference-reconciliation-20261019-21e6cae/capabilities.ipcx",
+      "GitHubDigestVerified": true
+    },
+    {
+      "File": "capabilities.ipcx.identity.json",
+      "Bytes": 1316,
+      "Sha256": "1b443ae2441176c707aac8ecfe3b64502cd6e3949d4212aeac8c333186f7f749",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/reference-reconciliation-20261019-21e6cae/capabilities.ipcx.identity.json",
+      "GitHubDigestVerified": true
+    },
+    {
+      "File": "direct-plc-core.zip",
+      "Bytes": 18361549,
+      "Sha256": "94b295ad49974e0aba0afd4c73e2de3f012dd4b991c5821308d5cfd0cf2dacfd",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/reference-reconciliation-20261019-21e6cae/direct-plc-core.zip",
+      "GitHubDigestVerified": true
+    },
+    {
+      "File": "rcs.ipcx",
+      "Bytes": 17664,
+      "Sha256": "14f791c836d4aeeb7227a6d6f726f54b7a826188e2d443e44fb2a220f33da496",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/reference-reconciliation-20261019-21e6cae/rcs.ipcx",
+      "GitHubDigestVerified": true
+    },
+    {
+      "File": "rcs.ipcx.identity.json",
+      "Bytes": 1297,
+      "Sha256": "14c8f87049752aa134cd3081953160c4397d63328f9a99b0342884d2f863c5ae",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/reference-reconciliation-20261019-21e6cae/rcs.ipcx.identity.json",
+      "GitHubDigestVerified": true
+    },
+    {
+      "File": "SHA256SUMS",
+      "Bytes": 1057,
+      "Sha256": "8bc73e180a49585fcb6630ff92c2d29e1684f04b00ff4665c387c40ec74b8a2e",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/reference-reconciliation-20261019-21e6cae/SHA256SUMS",
+      "GitHubDigestVerified": true
+    },
+    {
+      "File": "sportmaster-core.zip",
+      "Bytes": 18393632,
+      "Sha256": "387d1669fe89dfe6ca8485301e7f6a7b5aa8e90d78a7109819dd31eb11206641",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/reference-reconciliation-20261019-21e6cae/sportmaster-core.zip",
+      "GitHubDigestVerified": true
+    },
+    {
+      "File": "sportmaster-selected-portable.zip",
+      "Bytes": 18441584,
+      "Sha256": "fb57a6ecb8d92d4789dc5c96778e6e2435afeaad24096ee2c68bbfaf361c7f2c",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/reference-reconciliation-20261019-21e6cae/sportmaster-selected-portable.zip",
+      "GitHubDigestVerified": true
+    },
+    {
+      "File": "sportmaster-selected-win-x64.zip",
+      "Bytes": 104170521,
+      "Sha256": "54ce02ece4e88dd352687f446d72448f4fda2cabc16cf9e11e47a616e01c97a1",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/reference-reconciliation-20261019-21e6cae/sportmaster-selected-win-x64.zip",
+      "GitHubDigestVerified": true
+    },
+    {
+      "File": "wcs-to-plc-core.zip",
+      "Bytes": 18383028,
+      "Sha256": "7c4350430af3092155a73dd1a444640549b7ba8c1de80d2bf4fbc343bbd2bc93",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/reference-reconciliation-20261019-21e6cae/wcs-to-plc-core.zip",
+      "GitHubDigestVerified": true
+    }
+  ],
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED"
+}

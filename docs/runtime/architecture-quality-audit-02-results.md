@@ -1,3 +1,5 @@
+> 历史N01–N07及PR26作者结果保留原身份；独立复审另发现P1/P2且architecture-quality有失败，见[本轮整改](../work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)及[原独立报告](../reviews/pr26-independent-78298b5/README.md)。本页历史PASS不代表本轮阻断已闭。
+
 > PR26形成时结果与原证据。独立复审的永久回复身份、持久Query依据及custody竞态由[恢复P2补丁](parcel-recovery-p2.md)补齐；本文原字节见归档，不将原PASS扩展为后续异常路径已验。
 
 # PR26审查修复与交付

@@ -1,0 +1,131 @@
+{
+  "head": "78298b5dc7ccdcb7bb08e857d2d94f3681182fde",
+  "requested_baseline": "4afe2afacde9e2acab7648fff3440fa3cc331b6e",
+  "head_timeline": [
+    "592d2bdd1b4d4525926684968a48ab4f375bf503",
+    "e914e75a109672cd1d52be91c40459f09231ea57",
+    "78298b5dc7ccdcb7bb08e857d2d94f3681182fde"
+  ],
+  "externally_merged_commit": "9a5d87ad41e3e936f56a7e58ec60de8f7aa53458",
+  "latest_main_observed": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "decision": "CHANGES_REQUIRED",
+  "standards": [
+    {
+      "id": "S01",
+      "priority": "P2",
+      "source": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:78",
+      "evidence": "standards-probe/legacy-conflict-proof.json"
+    }
+  ],
+  "spec": [
+    {
+      "id": "F01",
+      "priority": "P1",
+      "source": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs:79",
+      "evidence": "migration-probe/results.log"
+    }
+  ],
+  "source_integrity": {
+    "checked_git_blobs": 2418,
+    "drift": []
+  },
+  "final_head_runs": [
+    {
+      "name": "locked verification build",
+      "exit_code": 0
+    },
+    {
+      "name": "--receipt-custody",
+      "exit_code": 0
+    },
+    {
+      "name": "migration-probe",
+      "exit_code": 0,
+      "outcome": "REPRODUCED_P1"
+    },
+    {
+      "name": "standards schema1/schema2 runtime probe",
+      "exit_code": 0,
+      "outcome": "REPRODUCED_P2"
+    }
+  ],
+  "intermediate_source": "e914e75a109672cd1d52be91c40459f09231ea57",
+  "intermediate_pass_selectors": [
+    "--inventory-closure",
+    "--review-closure",
+    "--configuration-confirmation",
+    "--receipt-custody",
+    "--legacy-custody-upgrade",
+    "--prior-custody-migration"
+  ],
+  "intermediate_architecture_quality": {
+    "exit_code": 134,
+    "failing_assertions": 1,
+    "status": "FAIL_PRESERVED_NOT_COUNTED_AS_PASS"
+  },
+  "logs": [
+    {
+      "file": "build.log",
+      "sha256": "a0a762cf89b7f2ec8d4544a2253eb96503c1e2fb34365506eea236255c8e3e38"
+    },
+    {
+      "file": "custody.log",
+      "sha256": "1cd3a4bd22d978936bfe13a15a8bf042481b25ee41bd4438415486563f896e84"
+    },
+    {
+      "file": "migration-probe/results.log",
+      "sha256": "3d7b0fe39e0d466079d19ae3b4f0d58d0f370e9fc4b2223b6a2079aca4258c78"
+    },
+    {
+      "file": "migration-probe/prior-reader-refusal.log",
+      "sha256": "535cc0ee811f646f18d211afa5c356ac80ee74fe85ff2e7f3877b4145740850e"
+    },
+    {
+      "file": "standards-probe/run1.json",
+      "sha256": "0399ecce719942ffa9081765ebf16bd7ba8f54a6429f08c079771c3e949e608d"
+    },
+    {
+      "file": "standards-probe/run2.json",
+      "sha256": "8aab7f4bb48cc870282ce20e109786c1a75af2a5b9ca9566b4485e5815c43ea0"
+    },
+    {
+      "file": "e914-evidence/inventory.log",
+      "sha256": "5dd217b0d594ce421ab1a25acd40cd4d2037674b0bf8497798fab3919eb4bcb6"
+    },
+    {
+      "file": "e914-evidence/review.log",
+      "sha256": "e6102f562a9745b4e89c8fa56a99de6b001c7298c76214f1bb27be51d436a789"
+    },
+    {
+      "file": "e914-evidence/confirmation.log",
+      "sha256": "068445e25e0b585384d5a730b56ac6d9d2147f0b3933af2e19f9658b3868dceb"
+    },
+    {
+      "file": "e914-evidence/custody.log",
+      "sha256": "9cca57b938e81996326350c33b9dc6fe12574dd71a0c797ae7c078c7de91f81d"
+    },
+    {
+      "file": "e914-evidence/legacy-custody.log",
+      "sha256": "26543caaadeaa808b0aec6efb0b0a916e4c18855e39bf9f402f264472255bdfb"
+    },
+    {
+      "file": "e914-evidence/prior-custody.log",
+      "sha256": "0512bcf7482306bd8fbae8445287bb03a3828fbba2f009ccc50511fac60eaf46"
+    },
+    {
+      "file": "e914-evidence/architecture-quality.log",
+      "sha256": "74a4e7aef8c6428691c78455521c2b1b3b21adb784bdd380bb1f7d98381fdbde"
+    }
+  ],
+  "report_sha256": "a3f58d8b8805c944e94b8d059b56e809f59acf55d6c03423626a4d39bef77b3d",
+  "read_only_no_repository_pr_modification_or_merge": true,
+  "review_completed_at_utc": "2026-10-18T16:24:15.253146+00:00",
+  "unverified": [
+    "Windows actual behavior",
+    "Real SDK/protocol/device/site",
+    "Full product packaging and selected extension lifecycle not rerun",
+    "Real power loss and production endurance",
+    "Subsequent main changes after PR26 merge"
+  ],
+  "historical_review_592_artifact": "ipc-pr26-independent-review-592d2bd-20261019"
+}

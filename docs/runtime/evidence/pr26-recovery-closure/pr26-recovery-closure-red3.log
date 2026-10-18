@@ -1,0 +1,72 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-4d925cca15e84cc2abad9f8cd1b46f84
+DB4 preflight: {
+  "name": "db4-wcs-unknown",
+  "refusal": null,
+  "Version": 5,
+  "Changed": []
+}
+FAIL AQ: db4-wcs-unknown: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: db4-wcs-unknown: refusal preserves original DB/config/raw/image bytes
+FAIL AQ: db4-wcs-unknown: old reader stranded: Foreign/future/changed application migration; preserve the original database
+DB4 preflight: {
+  "name": "db4-plc-accepted",
+  "refusal": null,
+  "Version": 5,
+  "Changed": []
+}
+FAIL AQ: db4-plc-accepted: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: db4-plc-accepted: refusal preserves original DB/config/raw/image bytes
+FAIL AQ: db4-plc-accepted: old reader stranded: Foreign/future/changed application migration; preserve the original database
+DB4 preflight: {
+  "name": "db4-plc-unknown",
+  "refusal": null,
+  "Version": 5,
+  "Changed": []
+}
+FAIL AQ: db4-plc-unknown: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: db4-plc-unknown: refusal preserves original DB/config/raw/image bytes
+FAIL AQ: db4-plc-unknown: old reader stranded: Foreign/future/changed application migration; preserve the original database
+DB4 preflight: {
+  "name": "db4-attached-unknown",
+  "refusal": null,
+  "Version": 5,
+  "Changed": []
+}
+FAIL AQ: db4-attached-unknown: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: db4-attached-unknown: refusal preserves original DB/config/raw/image bytes
+FAIL AQ: db4-attached-unknown: old reader stranded: Foreign/future/changed application migration; preserve the original database
+PASS AQ: fully settled DB4 upgrades without changing original send attempts
+FAIL AQ: schema1-legacy-False: actual main remains blocked until explicit conflict acknowledgement
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: schema1-legacy-False: authorized original conflict acknowledgement commits
+PASS AQ: schema1-legacy-False: inspected main can resume
+PASS AQ: schema1-legacy-False: acknowledged identity stays cleared across restart
+FAIL AQ: schema1-legacy-True: actual main remains blocked until explicit conflict acknowledgement
+PASS AQ: scope repair preserves original responsibility identity
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: schema1-legacy-True: authorized original conflict acknowledgement commits
+PASS AQ: schema1-legacy-True: inspected main can resume
+PASS AQ: schema1-legacy-True: acknowledged identity stays cleared across restart
+FAIL AQ: schema1-legacy-True: old incorrect scope retained in append-only audit
+FAIL AQ: schema2-legacy-False: actual main remains blocked until explicit conflict acknowledgement
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: schema2-legacy-False: authorized original conflict acknowledgement commits
+PASS AQ: schema2-legacy-False: inspected main can resume
+PASS AQ: schema2-legacy-False: acknowledged identity stays cleared across restart
+FAIL AQ: schema2-legacy-True: actual main remains blocked until explicit conflict acknowledgement
+PASS AQ: scope repair preserves original responsibility identity
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: schema2-legacy-True: authorized original conflict acknowledgement commits
+PASS AQ: schema2-legacy-True: inspected main can resume
+PASS AQ: schema2-legacy-True: acknowledged identity stays cleared across restart
+FAIL AQ: schema2-legacy-True: old incorrect scope retained in append-only audit
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: schema2 to schema3 candidate saved before legacy conflict appears
+FAIL AQ: unacknowledged legacy conflict blocks Pending topology activation and retains actual main
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: topology transition requires explicit restage after acknowledgement
+PASS AQ: acknowledged conflict permits controlled schema3 activation on later startup
+Unhandled exception. System.Exception: Upgrade/conflict closure failures: 15
+   at ArchitectureQuality.UpgradeConflictClosureChecks(String source, String evidence) in /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs:line 102
+   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/pr26-recovery-closure/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 16
+   at Program.<Main>(String[] args)

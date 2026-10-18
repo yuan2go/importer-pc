@@ -1,0 +1,132 @@
+{
+  "1": {
+    "snapshot": {
+      "Paused": true,
+      "Conflicts": [
+        {
+          "Id": "890deae40aa6b766941ce5b691a98b81",
+          "OriginalOperation": "legacy-audit:1",
+          "Positions": [
+            "left",
+            "right"
+          ],
+          "Detail": "Legacy conflict scope/entity was not recorded; inspect all possible positions. Original=Legacy observation/admission reused with changed content; scope absent",
+          "At": "2026-10-18T16:22:20.134339+00:00",
+          "Acknowledged": false
+        }
+      ],
+      "BeforePositions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "sportmaster.camera.left",
+          "Admit": false,
+          "CurrentOperation": null,
+          "BlockingReasons": [
+            "Global software pause"
+          ],
+          "MainResultComplete": true,
+          "BackgroundComplete": true
+        }
+      ],
+      "Resume": {
+        "Status": "Persisted",
+        "Reason": "Application command committed",
+        "Revision": 3
+      },
+      "AfterPaused": false,
+      "AfterPositions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "sportmaster.camera.left",
+          "Admit": true,
+          "CurrentOperation": null,
+          "BlockingReasons": [],
+          "MainResultComplete": true,
+          "BackgroundComplete": true
+        }
+      ]
+    },
+    "unacknowledged_rows": [
+      [
+        "890deae40aa6b766941ce5b691a98b81",
+        0
+      ]
+    ],
+    "audit_events": [
+      [
+        "IdentityConflict"
+      ],
+      [
+        "LegacyIdentityConflictRecovered"
+      ],
+      [
+        "AdmissionResumed"
+      ]
+    ]
+  },
+  "2": {
+    "snapshot": {
+      "Paused": true,
+      "Conflicts": [
+        {
+          "Id": "83b082a9f1d96f77e203778a7fe4a623",
+          "OriginalOperation": "legacy-audit:1",
+          "Positions": [
+            "left",
+            "right"
+          ],
+          "Detail": "Legacy conflict scope/entity was not recorded; inspect all possible positions. Original=Legacy observation/admission reused with changed content; scope absent",
+          "At": "2026-10-18T16:22:20.102438+00:00",
+          "Acknowledged": false
+        }
+      ],
+      "BeforePositions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "sportmaster.camera.left",
+          "Admit": false,
+          "CurrentOperation": null,
+          "BlockingReasons": [
+            "Global software pause"
+          ],
+          "MainResultComplete": true,
+          "BackgroundComplete": true
+        }
+      ],
+      "Resume": {
+        "Status": "Persisted",
+        "Reason": "Application command committed",
+        "Revision": 3
+      },
+      "AfterPaused": false,
+      "AfterPositions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "sportmaster.camera.left",
+          "Admit": true,
+          "CurrentOperation": null,
+          "BlockingReasons": [],
+          "MainResultComplete": true,
+          "BackgroundComplete": true
+        }
+      ]
+    },
+    "unacknowledged_rows": [
+      [
+        "83b082a9f1d96f77e203778a7fe4a623",
+        0
+      ]
+    ],
+    "audit_events": [
+      [
+        "IdentityConflict"
+      ],
+      [
+        "LegacyIdentityConflictRecovered"
+      ],
+      [
+        "AdmissionResumed"
+      ]
+    ]
+  }
+}

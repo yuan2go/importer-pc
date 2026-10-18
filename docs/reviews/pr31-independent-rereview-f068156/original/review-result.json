@@ -1,0 +1,70 @@
+{
+  "head": "f068156ed9d4a0ffe4feee94b5c11e966aaa366b",
+  "main": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "outcome": "NO_REMAINING_P1_P2_IN_REVIEWED_SCOPE",
+  "scope": [
+    "DB4 pre-migration compatibility",
+    "schema1/2 actual main legacy conflict",
+    "Pending activation barrier",
+    "original architecture-quality failure closure"
+  ],
+  "standards_findings": [],
+  "spec_findings": [],
+  "build": "PASS",
+  "independent_tests": [
+    {
+      "selector": "upgrade-conflict-closure",
+      "exit": 0
+    },
+    {
+      "selector": "historical-db4-upgrade",
+      "exit": 0
+    },
+    {
+      "selector": "architecture-quality",
+      "exit": 0
+    },
+    {
+      "selector": "configuration-confirmation",
+      "exit": 0
+    },
+    {
+      "selector": "receipt-custody",
+      "exit": 0
+    },
+    {
+      "selector": "prior-custody-migration",
+      "exit": 0
+    },
+    {
+      "selector": "legacy-custody-upgrade",
+      "exit": 0
+    }
+  ],
+  "negative_prior_outcome_cases": [
+    {
+      "case": "missing-query-raw",
+      "pass": true,
+      "db_version": 4,
+      "external_query_calls": 0
+    },
+    {
+      "case": "changed-query-hash",
+      "pass": true,
+      "db_version": 4,
+      "external_query_calls": 0
+    },
+    {
+      "case": "orphan-receipt-owner",
+      "pass": true,
+      "db_version": 4,
+      "external_query_calls": 0
+    }
+  ],
+  "windows": "NOT_RUN",
+  "real_sdk_protocol_field": "BLOCKED",
+  "original_aq_failure_preserved": true,
+  "repository_changes": false,
+  "pr_changes": false,
+  "merge": false
+}

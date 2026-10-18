@@ -43,7 +43,7 @@ static partial class ArchitectureQuality
             }
             await using (var app = Create())
             {
-                await app.StartAsync(default); app.EmitReference("signed-original", "00017", "signed-source");
+                await app.StartAsync(default); Check((await Command(app, "Resume")).Status == "Persisted", "controlled activation retains pause until explicit Resume"); app.EmitReference("signed-original", "00017", "signed-source");
                 var s = await Wait(app, s => s.Operations.FirstOrDefault()?.State == ParcelState.PlcAccepted); var op = s.Operations.Single();
                 Check(op.Plc!.Request.Binding.Package == package && op.Plc.Attempts == 1, "actual signed Application port executes and freezes package identity");
                 await app.ReconcileAsync(op.Id); await Maintenance(app);

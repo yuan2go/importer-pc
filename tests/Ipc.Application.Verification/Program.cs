@@ -13,6 +13,7 @@ var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--historical-db4-upgrade")) { var i=Array.IndexOf(args,"--historical-db4-upgrade"); await ArchitectureQuality.HistoricalDb4UpgradeChecks(workspace,root,Path.GetFullPath(args[i+1])); return; }
 if (args.Contains("--upgrade-conflict-closure")) { await ArchitectureQuality.UpgradeConflictClosureChecks(workspace,root); return; }
 if (args.Contains("--configuration-confirmation")) { await ArchitectureQuality.ConfigurationConfirmationChecks(workspace, root); return; }
 if (args.Contains("--configuration-confirmation-crash-child")) { var i = Array.IndexOf(args, "--configuration-confirmation-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], "BeforeCreate"); return; }

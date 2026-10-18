@@ -14,9 +14,9 @@ static partial class ArchitectureQuality
     static Dictionary<string,string> CustodyFiles(string name,ParcelConfiguration c) => Directory.EnumerateFiles(DirectoryFor(name,c),"*",SearchOption.AllDirectories)
         .Where(p=>!p.EndsWith("-wal")&&!p.EndsWith("-shm")&&!p.Contains("diagnostics")&&!p.EndsWith(".lock"))
         .ToDictionary(p=>p,Wire.FileHash);
-    static async Task RefuseDb4(string name,ParcelConfiguration c)
+    static async Task RefuseDb4(string name,ParcelConfiguration c,bool historical=false)
     {
-        var file=UpgradeDatabase(name,c); SyntheticDb4(file); var files=CustodyFiles(name,c);
+        var file=UpgradeDatabase(name,c); if(!historical)SyntheticDb4(file); var files=CustodyFiles(name,c);
         string? refusal=null;
         try { await using var unexpected=await Open(c,name); }
         catch(InvalidDataException ex) { refusal=ex.Message; }
@@ -42,6 +42,26 @@ static partial class ArchitectureQuality
                 await Wait(app,s=>s.Operations.FirstOrDefault() is {} op && (kind switch{"wcs-unknown"=>op.State==ParcelState.WcsUnknown,"plc-unknown"=>op.State==ParcelState.PlcUnknown,"plc-accepted"=>op.State==ParcelState.PlcAccepted,_=>op.Upload?.State==StageState.Unknown}));
             }
             await RefuseDb4(name,c);
+        }
+        // A different frozen implementation is rejected at the same pre-migration
+        // boundary. This fixture retains the real original requests and replies.
+        var changed=Config("sportmaster") with { Wcs=Config("sportmaster").Wcs! with { Parameters=new(Config("sportmaster").Wcs!.Parameters){["reply-mode"]="lose-after-commit"} } };
+        var changedName="db4-old-implementation";
+        await using(var app=await Open(changed,changedName)){app.EmitReference("old-implementation","00083","old-implementation-source");await Wait(app,s=>s.Operations.FirstOrDefault()?.State==ParcelState.WcsUnknown);}
+        using(var repo=new ParcelRepository(DirectoryFor(changedName,changed),changed.ApplicationId))
+        {var op=repo.Load().Single();repo.Commit(op with { ImplementationHashes=op.ImplementationHashes.ToDictionary(x=>x.Key,_=>new string('A',64)) },"SyntheticPriorImplementation","Only frozen implementation hash differs in this synthetic fixture");}
+        await RefuseDb4(changedName,changed);
+        // Hold a nonempty WAL without a live Application. Refusal must not checkpoint
+        // or alter the source DB/WAL, even when the unresolved source is only in WAL.
+        var walName="db4-nonempty-wal";
+        await using(var app=await Open(changed,walName)){app.EmitReference("wal-original","00084","wal-source");await Wait(app,s=>s.Operations.FirstOrDefault()?.State==ParcelState.WcsUnknown);}
+        var walDb=UpgradeDatabase(walName,changed);SyntheticDb4(walDb);
+        using(var writer=new SqliteConnection(new SqliteConnectionStringBuilder{DataSource=walDb,Pooling=false}.ToString()))
+        {
+            writer.Open();using var q=writer.CreateCommand();q.CommandText="PRAGMA journal_mode=WAL; PRAGMA wal_autocheckpoint=0; UPDATE parcel_meta SET revision=revision+1";q.ExecuteNonQuery();
+            var dbHash=Wire.FileHash(walDb);var walHash=Wire.FileHash(walDb+"-wal");var configHash=Wire.FileHash(Path.Combine(DirectoryFor(walName,changed),"configuration.json"));
+            try {await using var unexpected=await Open(changed,walName);Check(false,"nonempty WAL unresolved upgrade must refuse");}
+            catch(InvalidDataException ex){Check(ex.Message.Contains("LegacyUnsettled")&&Wire.FileHash(walDb)==dbHash&&Wire.FileHash(walDb+"-wal")==walHash&&Wire.FileHash(Path.Combine(DirectoryFor(walName,changed),"configuration.json"))==configHash,"read-only preflight preserves exact nonempty DB/WAL/config originals");}
         }
         var settled=Config("sportmaster");var terminal="db4-terminal";
         await using(var app=await Open(settled,terminal)) {app.EmitReference("settled-upgrade","00082","settled-upgrade-source");await Wait(app,s=>s.Operations.FirstOrDefault()?.State==ParcelState.SlotResolved);}
@@ -94,6 +114,17 @@ static partial class ArchitectureQuality
             s=await app.SnapshotAsync();Check((await app.StageConfigurationAsync(s.Configuration.Revision,candidate,"Restage only after original conflict acknowledgement")).Status=="PendingRestart","topology transition requires explicit restage after acknowledgement");
         }
         await using(var app=await Open(c,name)){var s=await app.SnapshotAsync();Check(s.Configuration.Effective.SchemaVersion==3&&s.Positions!.Select(p=>p.Id).Order().SequenceEqual(new[]{"left","right"}),"acknowledged conflict permits controlled schema3 activation on later startup");}
+    }
+    public static async Task HistoricalDb4UpgradeChecks(string source,string evidence,string fixture)
+    {
+        workspace=source;root=evidence;failures=0;var name="historical-pr24-db4";var target=Path.Combine(root,name);Directory.CreateDirectory(target);
+        var originals=Directory.EnumerateFiles(fixture,"*",SearchOption.AllDirectories).ToDictionary(p=>p,Wire.FileHash);
+        foreach(var file in originals.Keys){var to=Path.Combine(target,Path.GetRelativePath(fixture,file));Directory.CreateDirectory(Path.GetDirectoryName(to)!);File.Copy(file,to);}
+        var c=Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(target,"business.json")));
+        Check(ParcelRepository.ReadStorageVersion(UpgradeDatabase(name,c),c.ApplicationId)==4,"historical input retains actual PR24 DB4 migration identity");
+        await RefuseDb4(name,c,historical:true);
+        Check(originals.All(p=>File.Exists(p.Key)&&Wire.FileHash(p.Key)==p.Value),"historical source directory remains byte-identical; probe changed only an independent copy");
+        if(failures!=0)throw new Exception("Historical DB4 upgrade failures: "+failures);Console.WriteLine("PASS HISTORICAL DB4 UPGRADE COMPLETE");
     }
     public static async Task UpgradeConflictClosureChecks(string source,string evidence)
     {

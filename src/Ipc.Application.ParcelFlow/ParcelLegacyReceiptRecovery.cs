@@ -49,53 +49,53 @@ public static class ParcelLegacyReceiptRecovery
             }
             else
             {
-            var pending=repository.PendingReceipts().SingleOrDefault(x=>x.Id==occurrence);
-            var op=repository.Load().SingleOrDefault(x=>x.Id==pending.Operation)??throw new InvalidDataException("Original receipt owner unavailable");
-            if(pending.Stage!="image-upload"||!repository.MissingAwaitingRaw(occurrence)||op.FrozenConfiguration.Images?.Strategy!=UploadStrategy.Attached||op.Upload?.Request.Id!=pending.Request||op.Upload.State==StageState.Conflict||!repository.HasMainReceiptCustody(op))
-                throw new InvalidDataException("Only an original missing Awaiting Attached upload with committed main raw is supported");
-            var restored=definition.RestoreMainProjection(op) with {RecoveryRequired=false};
-            if(!definition.MainSettled(restored))throw new InvalidDataException("Original main result is not proven complete");
-            repository.ValidateRawInventory(); // Before any external query or future-reader migration.
-            await BackupAsync(repository,directory,backup,envelope,registerBackup).ConfigureAwait(false);
-            string? basis=repository.ReceiptById(occurrence)!.QueryOccurrence;
-            // A previous maintenance process may have flushed Query raw and died before
-            // T3. Finish that exact occurrence locally; do not strand it behind a new Query.
-            foreach(var local in repository.PendingReceipts().Where(x=>x.Operation==op.Id&&x.Stage=="image-upload"&&x.Reply is not null).ToArray())
-            {
-                var raw=local.Reply!;
-                if(!ValidTerminalReply(restored,raw,directory))
+                var pending=repository.PendingReceipts().SingleOrDefault(x=>x.Id==occurrence);
+                var op=repository.Load().SingleOrDefault(x=>x.Id==pending.Operation)??throw new InvalidDataException("Original receipt owner unavailable");
+                if(pending.Stage!="image-upload"||!repository.MissingAwaitingRaw(occurrence)||op.FrozenConfiguration.Images?.Strategy!=UploadStrategy.Attached||op.Upload?.Request.Id!=pending.Request||op.Upload.State==StageState.Conflict||!repository.HasMainReceiptCustody(op))
+                    throw new InvalidDataException("Only an original missing Awaiting Attached upload with committed main raw is supported");
+                var restored=definition.RestoreMainProjection(op) with {RecoveryRequired=false};
+                if(!definition.MainSettled(restored))throw new InvalidDataException("Original main result is not proven complete");
+                repository.ValidateRawInventory(); // Before any external query or future-reader migration.
+                await BackupAsync(repository,directory,backup,envelope,registerBackup).ConfigureAwait(false);
+                string? basis=repository.ReceiptById(occurrence)!.QueryOccurrence;
+                // A previous maintenance process may have flushed Query raw and died before
+                // T3. Finish that exact occurrence locally; do not strand it behind a new Query.
+                foreach(var local in repository.PendingReceipts().Where(x=>x.Operation==op.Id&&x.Stage=="image-upload"&&x.Reply is not null).ToArray())
                 {
-                    repository.RecoverRaw(local.Id,raw);
-                    repository.Commit(Conflicted(restored,raw),"LegacyQueryConflict","Original persisted Query is contradictory; no upgrade",paused:true,occurrence:local.Id);
-                    return new{Status="Conflict",DatabaseVersion=version,OriginalOccurrence=occurrence};
+                    var raw=local.Reply!;
+                    if(!ValidTerminalReply(restored,raw,directory))
+                    {
+                        repository.RecoverRaw(local.Id,raw);
+                        repository.Commit(Conflicted(restored,raw),"LegacyQueryConflict","Original persisted Query is contradictory; no upgrade",paused:true,occurrence:local.Id);
+                        return new{Status="Conflict",DatabaseVersion=version,OriginalOccurrence=occurrence};
+                    }
+                    repository.RecoverRaw(local.Id,raw);restored=ApplyTerminalReply(restored,raw);
+                    repository.Commit(restored,"ReceiptOutcomeKnown",OutcomeDetail(occurrence,local.Id,op,reason,backup,originalRelease),paused:true,occurrence:local.Id,reconciledOccurrence:occurrence);
+                    basis=local.Id;
                 }
-                repository.RecoverRaw(local.Id,raw);restored=ApplyTerminalReply(restored,raw);
-                repository.Commit(restored,"ReceiptOutcomeKnown",OutcomeDetail(occurrence,local.Id,op,reason,backup,originalRelease),paused:true,occurrence:local.Id,reconciledOccurrence:occurrence);
-                basis=local.Id;
-            }
-            if(!repository.HasReceiptOutcomeBasis(occurrence))
-            {
-                var query=repository.BeginReceipt(op,op.Upload,"Query"); StageReply? reply;
-                try { reply=await originalQuery(Wire.Encode(op),directory,dataRoot,token).ConfigureAwait(false); }
-                catch(Exception ex) when(ex is IOException or TimeoutException or OperationCanceledException)
-                { repository.NoReply(query);repository.Commit(null,"LegacyQueryUnavailable",ex.GetType().Name+": "+ex.Message,paused:true);throw; }
-                if(reply is null)
-                { repository.NoReply(query);repository.Commit(null,"LegacyQueryInconclusive","Original Query has no authoritative result; custody unchanged",paused:true);return new{Status="Unresolved",DatabaseVersion=version,OriginalOccurrence=occurrence}; }
-                repository.StoreRaw(query,reply);Boundary?.Invoke("AfterLegacyRawDurable");
-                if(!ValidTerminalReply(restored,reply,directory))
+                if(!repository.HasReceiptOutcomeBasis(occurrence))
                 {
-                    repository.Commit(Conflicted(restored,reply),"LegacyQueryConflict","Original response retained; no upgrade or raw disposition",paused:true,occurrence:query);
-                    return new{Status="Conflict",DatabaseVersion=version,OriginalOccurrence=occurrence};
+                    var query=repository.BeginReceipt(op,op.Upload,"Query"); StageReply? reply;
+                    try { reply=await originalQuery(Wire.Encode(op),directory,dataRoot,token).ConfigureAwait(false); }
+                    catch(Exception ex) when(ex is IOException or TimeoutException or OperationCanceledException)
+                    { repository.NoReply(query);repository.Commit(null,"LegacyQueryUnavailable",ex.GetType().Name+": "+ex.Message,paused:true);throw; }
+                    if(reply is null)
+                    { repository.NoReply(query);repository.Commit(null,"LegacyQueryInconclusive","Original Query has no authoritative result; custody unchanged",paused:true);return new{Status="Unresolved",DatabaseVersion=version,OriginalOccurrence=occurrence}; }
+                    repository.StoreRaw(query,reply);Boundary?.Invoke("AfterLegacyRawDurable");
+                    if(!ValidTerminalReply(restored,reply,directory))
+                    {
+                        repository.Commit(Conflicted(restored,reply),"LegacyQueryConflict","Original response retained; no upgrade or raw disposition",paused:true,occurrence:query);
+                        return new{Status="Conflict",DatabaseVersion=version,OriginalOccurrence=occurrence};
+                    }
+                    restored=ApplyTerminalReply(restored,reply);
+                    repository.Commit(restored,"ReceiptOutcomeKnown",OutcomeDetail(occurrence,query,op,reason,backup,originalRelease),paused:true,occurrence:query,reconciledOccurrence:occurrence);
+                    basis=query;Boundary?.Invoke("AfterLegacyOutcomeCommit");
                 }
-                restored=ApplyTerminalReply(restored,reply);
-                repository.Commit(restored,"ReceiptOutcomeKnown",OutcomeDetail(occurrence,query,op,reason,backup,originalRelease),paused:true,occurrence:query,reconciledOccurrence:occurrence);
-                basis=query;Boundary?.Invoke("AfterLegacyOutcomeCommit");
-            }
-            // An earlier process can also die before receiving a Query reply. The known
-            // outcome may be linked to each such occurrence, but NONE loses raw custody.
-            foreach(var missing in repository.PendingReceipts().Where(x=>x.Operation==op.Id&&x.Stage=="image-upload"&&x.Reply is null&&!repository.HasReceiptOutcomeBasis(x.Id)).ToArray())
-                repository.Commit(null,"ReceiptOutcomeKnown",OutcomeDetail(missing.Id,basis!,op,reason,backup,originalRelease),paused:true,reconciledOccurrence:missing.Id,outcomeQuery:basis);
-            repository.ValidateRawInventory();
+                // An earlier process can also die before receiving a Query reply. The known
+                // outcome may be linked to each such occurrence, but NONE loses raw custody.
+                foreach(var missing in repository.PendingReceipts().Where(x=>x.Operation==op.Id&&x.Stage=="image-upload"&&x.Reply is null&&!repository.HasReceiptOutcomeBasis(x.Id)).ToArray())
+                    repository.Commit(null,"ReceiptOutcomeKnown",OutcomeDetail(missing.Id,basis!,op,reason,backup,originalRelease),paused:true,reconciledOccurrence:missing.Id,outcomeQuery:basis);
+                repository.ValidateRawInventory();
             }
             Boundary?.Invoke("BeforeLegacyUpgrade");
         }

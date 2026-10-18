@@ -52,24 +52,32 @@ public sealed partial class ParcelRepository
         using var states = db.CreateCommand();
         states.CommandText = "SELECT count(*) FROM parcel_receipts WHERE state NOT IN ('Awaiting','RawDurable','OutcomeReconciled','Committed','NoReply')";
         if ((long)states.ExecuteScalar()! != 0) return false;
-        // Include DB4's historical false disposition before SQL5 restores Awaiting.
-        using var c = db.CreateCommand();
-        c.CommandText = "SELECT id,operation FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable','OutcomeReconciled')";
-        List<(string Id,string Owner)> pending = [];
-        using (var r = c.ExecuteReader()) while (r.Read()) pending.Add((r.GetString(0),r.GetString(1)));
+        // Stream history and each owner's outstanding occurrences: total historical
+        // queries do not become an unbounded in-memory upgrade inventory.
         foreach (var op in UpgradeOperations())
         {
             if (!ExternalWorkComplete(op,application)) return false;
-            var own = pending.Where(x => x.Owner == op.Id).ToArray();
-            if (own.Length == 0)
+            var hasCustody = false;
+            foreach (var id in UpgradeReceiptIds(op.Id))
             {
-                if (op.FrozenConfiguration.Images is not null && !op.ImageReleased) return false;
+                if (!hasCustody && (op.FrozenConfiguration.Images?.Strategy != UploadStrategy.Attached || !HasMainReceiptCustody(op))) return false;
+                hasCustody = true;
+                if (ReceiptById(id) is not { Stage: "image-upload", RawHash: null } ||
+                    File.Exists(Path.Combine(rawRoot,id+".json")) || !HasReceiptOutcomeBasis(id)) return false;
             }
-            else if (op.FrozenConfiguration.Images?.Strategy != UploadStrategy.Attached || !HasMainReceiptCustody(op) ||
-                own.Any(x => ReceiptById(x.Id) is not { Stage: "image-upload", RawHash: null } ||
-                    File.Exists(Path.Combine(rawRoot,x.Id+".json")) || !HasReceiptOutcomeBasis(x.Id))) return false;
+            if (!hasCustody && op.FrozenConfiguration.Images is not null && !op.ImageReleased) return false;
         }
-        return pending.All(x => StorageVersion >= 4 ? ReadOperation(x.Owner) is not null : Load().Any(op => op.Id == x.Owner));
+        using var orphan = db.CreateCommand();
+        orphan.CommandText = "SELECT count(*) FROM parcel_receipts r WHERE state IN ('Awaiting','RawDurable','OutcomeReconciled') AND NOT EXISTS(SELECT 1 FROM parcel_operations o WHERE o.id=r.operation)" +
+            (StorageVersion >= 4 ? " AND NOT EXISTS(SELECT 1 FROM parcel_archives a WHERE a.id=r.operation)" : "");
+        return (long)orphan.ExecuteScalar()! == 0;
+    }
+    IEnumerable<string> UpgradeReceiptIds(string operation)
+    {
+        using var c = db.CreateCommand();
+        c.CommandText = "SELECT id FROM parcel_receipts WHERE operation=$op AND state IN ('Awaiting','RawDurable','OutcomeReconciled')";
+        c.Parameters.AddWithValue("$op",operation);
+        using var r = c.ExecuteReader(); while (r.Read()) yield return r.GetString(0);
     }
     public static void UpgradeCustodyOnly(string directory,string application)
     {

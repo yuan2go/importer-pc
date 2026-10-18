@@ -1,0 +1,31 @@
+  正在确定要还原的项目…
+  已还原 <REPO>/src/Ipc.Components/Ipc.Components.csproj (用时 893 毫秒)。
+  已还原 <REPO>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 893 毫秒)。
+  已还原 <REPO>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 893 毫秒)。
+  已还原 <REPO>/src/Ipc.Application.DirectPlc.Desktop/Ipc.Application.DirectPlc.Desktop.csproj (用时 893 毫秒)。
+  已还原 <REPO>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 893 毫秒)。
+  已还原 <REPO>/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 893 毫秒)。
+  已还原 <REPO>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 892 毫秒)。
+  已还原 <REPO>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 893 毫秒)。
+  已还原 <REPO>/src/Ipc.Platform/Ipc.Platform.csproj (用时 5 毫秒)。
+  已还原 <REPO>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 5 毫秒)。
+  已还原 <REPO>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 13 毫秒)。
+  已还原 <REPO>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 16 毫秒)。
+  Ipc.Platform -> <BUILD_OUTPUT>
+  Ipc.Application.Contracts -> <BUILD_OUTPUT>
+  Ipc.Platform.Storage -> <BUILD_OUTPUT>
+  Ipc.Application.ParcelFlow -> <BUILD_OUTPUT>
+  Ipc.Application.DirectPlc -> <BUILD_OUTPUT>
+  Ipc.Reference.Protocol -> <BUILD_OUTPUT>
+  Ipc.Components -> <BUILD_OUTPUT>
+  Ipc.Drivers -> <BUILD_OUTPUT>
+  Ipc.Assembly -> <BUILD_OUTPUT>
+  Ipc.Application.ParcelFlow.Desktop -> <BUILD_OUTPUT>
+  Ipc.Application.DirectPlc.Desktop -> <BUILD_OUTPUT>
+  Ipc.Desktop -> <BUILD_OUTPUT>
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:11.56

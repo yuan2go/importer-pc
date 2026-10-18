@@ -4,6 +4,8 @@ import re
 from urllib.parse import quote, unquote, urlsplit
 
 GUIDES = {
+    'docs/runtime/sportmaster-alternate-ui.md': 'SPORTMASTER-UI.md',
+    'docs/runtime/validation/sportmaster-alternate-ui-windows.md': 'SPORTMASTER-UI-WINDOWS.md',
     'docs/runtime/application-architecture-22.md': 'APPLICATIONS.md',
     'docs/design/application-architecture-22.md': 'ARCHITECTURE-22.md',
     'docs/runtime/capability-reliability-20.md': 'APPLICATIONS-20.md',

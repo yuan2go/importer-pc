@@ -71,6 +71,7 @@ if a.target == 'win-x64':
 (output / 'APPLICATION-START.txt').write_text(
     'SIMULATION REFERENCE ONLY\nConsole: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'
     + ('Windows: desktop/Ipc.Desktop.exe --config desktop/config --data-root <new-isolated-root>\n' if a.target == 'win-x64' else '')
+    + ('Sportmaster alternate native UI: desktop/Ipc.Desktop.exe --ui supply-station --config desktop/config --data-root <new-isolated-root>\nClassic default: omit --ui, or use --ui classic. Use SPORTMASTER-UI.md and SPORTMASTER-UI-WINDOWS.md.\n' if a.target == 'win-x64' and a.application == 'sportmaster' else '')
     + 'Use APPLICATIONS.md for reference camera/weight input, original-stage reconciliation and recovery.\n')
 entries = sorted(f for f in output.rglob('*') if f.is_file())
 (output / 'SHA256SUMS').write_text(''.join(hashlib.sha256(f.read_bytes()).hexdigest() + '  ' + f.relative_to(output).as_posix() + '\n' for f in entries))

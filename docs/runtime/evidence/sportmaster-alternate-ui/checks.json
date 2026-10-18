@@ -1,0 +1,18 @@
+{
+  "Status": "REFERENCE_PASS_WINDOWS_NOT_RUN",
+  "BaselineMain": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "Date": "2026-10-19",
+  "SportmasterUiAssertions": 52,
+  "Architecture22Assertions": 60,
+  "Builds": {
+    "SportmasterWpf": "PASS",
+    "DirectPlcWpfCompatibility": "PASS",
+    "WcsToPlcWpfCompatibility": "PASS",
+    "WindowsWpfSmokeHarnessCrossBuild": "PASS"
+  },
+  "ProductionDependenciesAdded": 0,
+  "BusinessLogicChanged": false,
+  "WindowsUi": "NOT_RUN",
+  "RealSdkWcsField": "BLOCKED",
+  "OriginalHtmlUploaded": false
+}

@@ -1,3 +1,5 @@
+> Sportmaster桌面新增第二套原生UI及 `--ui` 参数，见[运行指南](sportmaster-alternate-ui.md)。本页“本包不新增UI”仅描述架构22形成时范围；本次增量不改变其业务/拓扑/恢复规则。
+
 # Application架构22 · 运行和兼容指南
 
 [现行设计](../design/application-architecture-22.md) · [工作包](../work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md)。开工main ea881293c888a824f26c9f9fa07352a22786206b，继承PR20/21，不自动合并本PR。参考装配为独立F-02工程，不是旧现场迁移。Windows实际NOT_RUN；真实SDK/认证/WCS/PLC/采集关联/离场复位及现场BLOCKED。软件暂停不等于安全急停。

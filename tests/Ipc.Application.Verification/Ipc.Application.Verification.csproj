@@ -3,4 +3,6 @@
  <Compile Include="../../src/Ipc.Assembly/ParcelCapabilityFactory.cs" Link="ParcelCapabilityFactory.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs" Link="Client/ParcelViewModel.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs" Link="Client/CapabilityEditing.cs"/>
+ <Compile Include="../../src/Ipc.Desktop/DesktopLaunchOptions.cs" Link="Client/DesktopLaunchOptions.cs"/>
+ <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs" Link="Client/SupplyStationViewModel.cs"/>
 </ItemGroup></Project>

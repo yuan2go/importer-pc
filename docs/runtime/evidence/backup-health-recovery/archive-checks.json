@@ -2,9 +2,9 @@
   "Status": "FAIL_INHERITED_ASSET_ISSUES",
   "Scope": "public",
   "Counts": {
-    "files": 1587,
-    "references": 885,
-    "json": 541,
+    "files": 1588,
+    "references": 887,
+    "json": 542,
     "boards": 18,
     "slides": 18,
     "pptx": 1,
@@ -21,6 +21,6 @@
   ],
   "NewFileHashLinkErrors": 0,
   "ValidatorUnchanged": true,
-  "Source": "tools/verify_archive.py with bundled Python/Pillow; raw local report /tmp/bhr-archive.json",
+  "Source": "tools/verify_archive.py with bundled Python/Pillow; final raw local report /tmp/bhr-archive-final.json",
   "BusinessAcceptance": "NOT_ESTABLISHED_BY_ARCHIVE_CHECK"
 }

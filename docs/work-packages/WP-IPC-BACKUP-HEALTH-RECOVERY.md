@@ -20,4 +20,4 @@
 
 Windows实机NOT_RUN；真实SDK/设备/协议/现场BLOCKED，Production仍拒绝。原评审线程的GitHub状态不由局部PASS自动关闭；历史失败和D/RV不倒写。
 
-交付：[PR #20](https://github.com/yuan2go/importer-pc/pull/20)，运行源码c78746a；[实际结果](../runtime/backup-health-recovery.md)。只提交main PR，不合并。
+交付：[PR #20](https://github.com/yuan2go/importer-pc/pull/20)，运行源码2efb7b6；[实际结果](../runtime/backup-health-recovery.md)。只提交main PR，不合并。

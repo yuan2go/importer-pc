@@ -1,6 +1,6 @@
 {
   "Status": "PASS",
-  "SourceCommit": "c78746a8f4417136f8244b514326a83bba58345d",
+  "SourceCommit": "2efb7b6dfde3a999d5f5775d21b6c58dff961fae",
   "Application": "direct-plc",
   "Target": "portable",
   "Checks": [
@@ -15,7 +15,7 @@
   "OptionalFeatures": false,
   "OptionalChecks": [],
   "State": "PlcAccepted",
-  "OperationId": "3d74532840f54abcacf2bd9f7f2ea2c5",
+  "OperationId": "e41db7bf80a840c982539b70948724aa",
   "Windows": "NOT_RUN",
   "RealEquipment": "BLOCKED"
 }

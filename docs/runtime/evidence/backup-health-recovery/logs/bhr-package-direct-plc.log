@@ -1,21 +1,21 @@
   正在确定要还原的项目…
-  已还原 WORKTREE/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 730 毫秒)。
-  已还原 WORKTREE/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 731 毫秒)。
-  已还原 WORKTREE/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 730 毫秒)。
-  已还原 WORKTREE/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 731 毫秒)。
-  已还原 WORKTREE/src/Ipc.Platform/Ipc.Platform.csproj (用时 730 毫秒)。
-  已还原 WORKTREE/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 731 毫秒)。
-  已还原 WORKTREE/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 729 毫秒)。
-  已还原 WORKTREE/src/Ipc.Components/Ipc.Components.csproj (用时 730 毫秒)。
-  已还原 WORKTREE/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 6 毫秒)。
-  Ipc.Platform -> WORKTREE/.artifacts/bhr-c78746a/direct-plc/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
-  Ipc.Application.Contracts -> WORKTREE/.artifacts/bhr-c78746a/direct-plc/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
-  Ipc.Platform.Storage -> WORKTREE/.artifacts/bhr-c78746a/direct-plc/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
-  Ipc.Application.ParcelFlow -> WORKTREE/.artifacts/bhr-c78746a/direct-plc/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
-  Ipc.Application.DirectPlc -> WORKTREE/.artifacts/bhr-c78746a/direct-plc/build-intermediates/bin/Ipc.Application.DirectPlc/release/Ipc.Application.DirectPlc.dll
-  Ipc.Reference.Protocol -> WORKTREE/.artifacts/bhr-c78746a/direct-plc/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
-  Ipc.Components -> WORKTREE/.artifacts/bhr-c78746a/direct-plc/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
-  Ipc.Drivers -> WORKTREE/.artifacts/bhr-c78746a/direct-plc/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
-  Ipc.Assembly -> WORKTREE/.artifacts/bhr-c78746a/direct-plc/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
-  Ipc.Assembly -> WORKTREE/.artifacts/bhr-c78746a/direct-plc/app/
-{"Package": "WORKTREE/.artifacts/bhr-c78746a/direct-plc.zip", "Sha256": "f538ff6515a5f8b925ce3e16d9ba25923a6329836aff609f0f83d73de5563649", "SourceCommit": "c78746a8f4417136f8244b514326a83bba58345d", "Application": "direct-plc", "Target": "portable"}
+  已还原 WORKTREE/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 680 毫秒)。
+  已还原 WORKTREE/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 680 毫秒)。
+  已还原 WORKTREE/src/Ipc.Platform/Ipc.Platform.csproj (用时 680 毫秒)。
+  已还原 WORKTREE/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 680 毫秒)。
+  已还原 WORKTREE/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 680 毫秒)。
+  已还原 WORKTREE/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 680 毫秒)。
+  已还原 WORKTREE/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 680 毫秒)。
+  已还原 WORKTREE/src/Ipc.Components/Ipc.Components.csproj (用时 680 毫秒)。
+  已还原 WORKTREE/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 5 毫秒)。
+  Ipc.Platform -> WORKTREE/.artifacts/bhr-2efb7b6/direct-plc/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> WORKTREE/.artifacts/bhr-2efb7b6/direct-plc/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> WORKTREE/.artifacts/bhr-2efb7b6/direct-plc/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> WORKTREE/.artifacts/bhr-2efb7b6/direct-plc/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> WORKTREE/.artifacts/bhr-2efb7b6/direct-plc/build-intermediates/bin/Ipc.Application.DirectPlc/release/Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> WORKTREE/.artifacts/bhr-2efb7b6/direct-plc/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> WORKTREE/.artifacts/bhr-2efb7b6/direct-plc/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> WORKTREE/.artifacts/bhr-2efb7b6/direct-plc/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Assembly -> WORKTREE/.artifacts/bhr-2efb7b6/direct-plc/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> WORKTREE/.artifacts/bhr-2efb7b6/direct-plc/app/
+{"Package": "WORKTREE/.artifacts/bhr-2efb7b6/direct-plc.zip", "Sha256": "916a512e73a6470fe17505b9eee7889106d855d7d9628e6139bdeb849111b72d", "SourceCommit": "2efb7b6dfde3a999d5f5775d21b6c58dff961fae", "Application": "direct-plc", "Target": "portable"}

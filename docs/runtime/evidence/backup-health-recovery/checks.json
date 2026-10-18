@@ -1,16 +1,16 @@
 {
   "BaseMain": "08286542bbd007433d85be2cb8d129b366b007e0",
-  "RuntimeSource": "c78746a8f4417136f8244b514326a83bba58345d",
+  "RuntimeSource": "2efb7b6dfde3a999d5f5775d21b6c58dff961fae",
   "Host": "macOS arm64",
   "SDK": "10.0.402",
   "SourceFiles": {
-    "src/Ipc.Application.ParcelFlow/ParcelCommands.cs": "1474bae215f7aea8620e6a70b02a03f7ebada5f62ed484297753191e8ea193ac",
+    "src/Ipc.Application.ParcelFlow/ParcelCommands.cs": "f64efc77a2c32474f0b93865c9e1c0db818f83a39d6042a78465906c825f07a1",
     "src/Ipc.Application.ParcelFlow/ParcelGuards.cs": "e342d38e5b673973de1aaec1e9d0ce736872f1c26f06c70f57e6d3f1e7af59de",
     "src/Ipc.Application.ParcelFlow/ParcelHealth.cs": "5c7339af99c160a05071bc6f7e33180bd8555ae681f1134d10fbe93abb68cde7",
-    "src/Ipc.Application.ParcelFlow/ParcelRecovery.cs": "047981cdf4629b8c81085f4d0b9261368cc7e1fc000f660ba1f5738c9015fbc6",
+    "src/Ipc.Application.ParcelFlow/ParcelRecovery.cs": "227af2df4b60914f5e7f99995bdce2639291ecbdf26d92762aba5bf96c1aa068",
     "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs": "c20fd2b5425b5de0c71185ca4938c93553a8d20052e8756222d4357e218bab50",
     "src/Ipc.Application.ParcelFlow/ParcelStages.cs": "9c1f474288dc1857e1d63ce85ad7f25c897c3916e9748feacb2aef50e5109b4c",
-    "src/Ipc.Application.ParcelFlow/RecoveryFiles.cs": "06555ce72bf55330674136d9cdeda74e174b2ddf2a9e8b6cd1b790a173a2ae90",
+    "src/Ipc.Application.ParcelFlow/RecoveryFiles.cs": "243166e86d20f1df28ec38467ec2be67fb38944a90befe1f09543dfb9334e59a",
     "src/Ipc.Integrations/LoopbackIntegration.cs": "37571d1661f2556e5576bd103dceed167b0c37464fecb8e18ded9f979575cdd0",
     "src/Ipc.Reference.Protocol/ReferencePeer.cs": "dda1b962ed380b5591dd458d5e626fb2bcd427770fbc0b8e38695940b31faf80",
     "tests/Ipc.Application.Verification/BackupHealthRecovery.cs": "874e5fc15bb9ddee92be995088089394b755c346a8b52710b99bc1b214bf633f",
@@ -36,8 +36,8 @@
   },
   "Sanitization": "Only local workspace, SDK and synthetic temp roots replaced; verdicts and stack line numbers retained. No production databases, credentials, real images or SDK files.",
   "Logs": {
-    "bhr-fixture-build.log": "caf6cbc027e65c3c035b73570ea1fce6dbad5854ab5b265eb1c294557ca6568d",
-    "bhr-frozen-build.log": "1c225468e2c0fe3475530477b28a31d7c8f70dd7dc26f2e5302e6350dc5d1253",
+    "bhr-fixture-build.log": "d6f79746b392622ef4a7178df6dc0043e205321040384a48d597d8a8fc3a6068",
+    "bhr-frozen-build.log": "bf460f83c5ab548e42dfd705cfaa33a3c46a623b9dcecdcb234d7b950b37a285",
     "bhr-frozen-core17.log": "50341ec3b1b318ffa7530c684d9fd28f50c760d5f29a7cf7e5f2023ed9c0ddaf",
     "bhr-frozen-core18.log": "e60f4b109325745531e38ddfb4f618641eeb5c766b94cf8faa7b672295838ddf",
     "bhr-frozen-core19.log": "03ef6d5e3e10edd71598d8205275602b32a9607f2f93bea8229e67a3a172e55a",
@@ -45,15 +45,22 @@
     "bhr-main-baseline-build.log": "06d008d1e157e0e9a812802e58fa268d31580d9f8fb2658e553e539734022aea",
     "bhr-main-baseline.log": "6c1c9299f3c18f1c1573d65933437331cd257b7e9c76600c7ad7cd8979946b00",
     "bhr-main-core17-baseline.log": "7c942b302ae9d6bbb5eaa08c2a9f5510df0878d23777179a370d8af9de0b1464",
-    "bhr-package-direct-plc.log": "5ba9a6708d54e21f924a9516fb7e60dc678cbf663223fdf4c289e94bfd11b1b7",
-    "bhr-package-sportmaster.log": "b43c58950d9db4b29b58e31c3efdfad78cb4dcbc152975d2ed711027de093ef9",
-    "bhr-package-wcs-to-plc.log": "f8bdb530a978c428769a63d71d3fb2998f3e8b1b08c562d122537dc2747089d0",
+    "bhr-package-direct-plc.log": "ae3108b6434d655093ae38aa7f431d5fe1b64c7d0c49065317e601026f7a5130",
+    "bhr-package-sportmaster.log": "ed3b5d176a78788621a2ef8a6156b919b114e7c6ff5b9b6d1dda78732f43b4fa",
+    "bhr-package-wcs-to-plc.log": "b4de281fceee15e63de1397859141129427666b3b0727b93fed4fb0dd0f31e29",
     "bhr-related-red2.log": "f8359689e7c903d16b9561550600ef2fde8b0d28ad5c9602268fc67bce3fdee6",
-    "bhr-smoke-attached.log": "7e8f17cc87ba5164398fffaf29dbca096d9a30577ecd8e3d1ea15dde6ba357a5",
-    "bhr-smoke-before-main.log": "d526cb8f2ad8a2262b744256693e763391b8dc360a55f2e7d692e27848bc912b",
-    "bhr-smoke-direct-plc.log": "f8fefb288580103677efc1eb03c336800ad1081d68477e778021a3e71be488b5",
-    "bhr-smoke-sportmaster.log": "f315cf6484932697bb7db3732c45cf1f75b737f097a6b9526568e15ba7523277",
-    "bhr-smoke-wcs-to-plc.log": "2c1f817209b8f982e89f6227917f38b4a2a1739c31568bb0e20be2b7b206a1a2"
+    "bhr-smoke-attached.log": "6e35392cfd4e6db4f8cc5e51e21e5f435bcb73fa0379c5dfb5033b9180bedb68",
+    "bhr-smoke-before-main.log": "795a7e06ec49d2360bb2d016838afd0d090e2ed29cfcd9e1d9c5af4ae78da4cc",
+    "bhr-smoke-direct-plc.log": "b89c270de47124449750b50c83eb8d478f1dbff003a3bd1e4b397ea8c41f3a8c",
+    "bhr-smoke-sportmaster.log": "da6faeddf6c16c894f7c1defbfffd2d260a60311fce5a93eecc0a336922efe30",
+    "bhr-smoke-wcs-to-plc.log": "186b5428adec9b6c855ace0d772106c7c58b27dc2121847ad021a91e5f4ce731"
   },
-  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/20"
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/20",
+  "BaselineHarnessSha256": {
+    "Program.cs": "af9535d08c2b2ece6eb4be7e6dc88e78d4c48b200eebef7b27d1a3a1c4ce4b11",
+    "BackupHealthRecovery.cs": "e5dacbee362f8360cb709e82f450854f88332169f8fb7e42a8c5a6f45e24202d"
+  },
+  "BaselineHarnessMeaning": "Then-current risk selector appended to untouched main business source; later related cancellation regressions have separate red evidence.",
+  "PreviousImplementationSource": "c78746a8f4417136f8244b514326a83bba58345d",
+  "FinalIncrement": "Producer enforces the same 32 MiB manifest quota as restore before publishing COMPLETED; final builds, 4 scopes and 5 process journeys rerun."
 }

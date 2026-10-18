@@ -14449,9 +14449,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "1474bae215f7aea8620e6a70b02a03f7ebada5f62ed484297753191e8ea193ac",
-      "size_bytes": 15052,
-      "git_blob": "67ed1012c2a3af3518fb80095a65eeddba1f5064",
+      "sha256": "f64efc77a2c32474f0b93865c9e1c0db818f83a39d6042a78465906c825f07a1",
+      "size_bytes": 15289,
+      "git_blob": "c950edee00f4ca6858539ea0865af77fcd2446d5",
       "previous_git_blob": "5dc1911a43d3f25e663174c5c08145105df5d40e"
     },
     {
@@ -14496,9 +14496,9 @@
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "047981cdf4629b8c81085f4d0b9261368cc7e1fc000f660ba1f5738c9015fbc6",
-      "size_bytes": 4180,
-      "git_blob": "7ae25bfb2ff1cb204de417764021dcb0f2a670b4"
+      "sha256": "227af2df4b60914f5e7f99995bdce2639291ecbdf26d92762aba5bf96c1aa068",
+      "size_bytes": 4198,
+      "git_blob": "21b1949622c2b99a2574cc6d72fbfc65e9a6ee0c"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
@@ -17642,9 +17642,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "84b3f044e213b46c1111688cebda5112461c561ffb56133ba7038084ea50c9e7",
-      "size_bytes": 5840,
-      "git_blob": "89ef69719191d93221741abcd67ea361ae6a4a2a"
+      "sha256": "7f5a04a45e81de546d71f5b99b501024af86f979d81fb35ff424253b6e7e531e",
+      "size_bytes": 5945,
+      "git_blob": "99fec105b2128694fd655ef8c8abd395ecd67c43"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/README.md",
@@ -17653,9 +17653,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "4409fb0b341b22e9411c62a46c31d570ba27cd76fe2722ea830703bc6eaf8b15",
-      "size_bytes": 1626,
-      "git_blob": "d868b2f95c700439099e416464b6732974a85847"
+      "sha256": "93a9a319c799a08b975c37add7b3ccd46cc2b3ebc964ff1e072b3c9e5a03c4a4",
+      "size_bytes": 1719,
+      "git_blob": "ae94f80d189829900222afd661a66b28abb94499"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/candidates.json",
@@ -17664,9 +17664,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "62ec02bbb6fe5e61d7636fdfb3150bf015c75ca7d8cee36edf5b32a0b9db5621",
+      "sha256": "eb6b2af039fdd822a93acc256d9a1f3cbcf2fd97ad003101cac84dbad2eae2a6",
       "size_bytes": 4488,
-      "git_blob": "d52064493aab52fa075a822efc8311096e855199"
+      "git_blob": "b1bfc02c3ba885ff4cd76ccc2beef86a095847e6"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/checks.json",
@@ -17675,9 +17675,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "c4cb59ce74a886e9bfcefe7f2069b2e16b342bc78f2d904db2611cc2a5c711ce",
-      "size_bytes": 4188,
-      "git_blob": "8323fba778eb3b615a900c1af02dbe69bf76771f"
+      "sha256": "06bd49eaaffc1b161dc25688c1943ca4aac3b116a6f9809deaa9e73f4e27b3cc",
+      "size_bytes": 4818,
+      "git_blob": "5faa36629f07ae03cabe6e865c88be6aa31b023e"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-fixture-build.log",
@@ -17686,9 +17686,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "caf6cbc027e65c3c035b73570ea1fce6dbad5854ab5b265eb1c294557ca6568d",
-      "size_bytes": 1084,
-      "git_blob": "a892168d9f45d650546334616a25ee4120e97dba"
+      "sha256": "d6f79746b392622ef4a7178df6dc0043e205321040384a48d597d8a8fc3a6068",
+      "size_bytes": 917,
+      "git_blob": "c885c6938161a5d4be72a95916b86986c5a2fec8"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-frozen-build.log",
@@ -17697,9 +17697,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "1c225468e2c0fe3475530477b28a31d7c8f70dd7dc26f2e5302e6350dc5d1253",
+      "sha256": "bf460f83c5ab548e42dfd705cfaa33a3c46a623b9dcecdcb234d7b950b37a285",
       "size_bytes": 1557,
-      "git_blob": "c201c3474a505ef2b043c9c41fab83d58dcb2838"
+      "git_blob": "d93185978a0e5e3008bf6928562082efccbfa4a3"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-frozen-core17.log",
@@ -17785,9 +17785,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "5ba9a6708d54e21f924a9516fb7e60dc678cbf663223fdf4c289e94bfd11b1b7",
+      "sha256": "ae3108b6434d655093ae38aa7f431d5fe1b64c7d0c49065317e601026f7a5130",
       "size_bytes": 2482,
-      "git_blob": "4965651aca2e60a6aa3b4ffd3e03b4c07a4f994b"
+      "git_blob": "e5672bc3459e63de073944cd99a67b3303b4cf5b"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-package-sportmaster.log",
@@ -17796,9 +17796,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "b43c58950d9db4b29b58e31c3efdfad78cb4dcbc152975d2ed711027de093ef9",
+      "sha256": "ed3b5d176a78788621a2ef8a6156b919b114e7c6ff5b9b6d1dda78732f43b4fa",
       "size_bytes": 3018,
-      "git_blob": "16e20af8a938335d3dd97249685f2d99ebf3ff9e"
+      "git_blob": "3f4a236a8298dcff1f7ead83d02906fbdd695286"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-package-wcs-to-plc.log",
@@ -17807,9 +17807,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "f8bdb530a978c428769a63d71d3fb2998f3e8b1b08c562d122537dc2747089d0",
+      "sha256": "b4de281fceee15e63de1397859141129427666b3b0727b93fed4fb0dd0f31e29",
       "size_bytes": 2989,
-      "git_blob": "53f6186393494b18ae7d48b67262e8064df51864"
+      "git_blob": "ddf90fe02f0395a70994a2ada575a0d6538476f7"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-related-red2.log",
@@ -17829,9 +17829,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "7e8f17cc87ba5164398fffaf29dbca096d9a30577ecd8e3d1ea15dde6ba357a5",
+      "sha256": "6e35392cfd4e6db4f8cc5e51e21e5f435bcb73fa0379c5dfb5033b9180bedb68",
       "size_bytes": 788,
-      "git_blob": "20ea02832d90da851fa466c1ca0fddb3418e695d"
+      "git_blob": "974a0d9aa68aa6915614c63e3c5befb930b9efbd"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-smoke-before-main.log",
@@ -17840,9 +17840,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "d526cb8f2ad8a2262b744256693e763391b8dc360a55f2e7d692e27848bc912b",
+      "sha256": "795a7e06ec49d2360bb2d016838afd0d090e2ed29cfcd9e1d9c5af4ae78da4cc",
       "size_bytes": 759,
-      "git_blob": "ad051e282b8c41a4d50d30334856284038b97fcc"
+      "git_blob": "ab97ff333a10e4adcfb2196a0769adbeb1e8bc9c"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-smoke-direct-plc.log",
@@ -17851,9 +17851,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "f8fefb288580103677efc1eb03c336800ad1081d68477e778021a3e71be488b5",
+      "sha256": "b89c270de47124449750b50c83eb8d478f1dbff003a3bd1e4b397ea8c41f3a8c",
       "size_bytes": 524,
-      "git_blob": "9e2313c047b8c8f88efec5104fb573645016c920"
+      "git_blob": "96ce45a50a1acc72128b1fddf3d4c9a12fbdca97"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-smoke-sportmaster.log",
@@ -17862,9 +17862,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "f315cf6484932697bb7db3732c45cf1f75b737f097a6b9526568e15ba7523277",
+      "sha256": "da6faeddf6c16c894f7c1defbfffd2d260a60311fce5a93eecc0a336922efe30",
       "size_bytes": 526,
-      "git_blob": "fa478f83301754bbbb896911cd9717ea0890ba7f"
+      "git_blob": "ad954996467dffd93d67488f4ad934c470e2a0c8"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/logs/bhr-smoke-wcs-to-plc.log",
@@ -17873,9 +17873,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "2c1f817209b8f982e89f6227917f38b4a2a1739c31568bb0e20be2b7b206a1a2",
+      "sha256": "186b5428adec9b6c855ace0d772106c7c58b27dc2121847ad021a91e5f4ce731",
       "size_bytes": 524,
-      "git_blob": "5ede90a449a7fbdeb0d0958657443d2ac60c5f6d"
+      "git_blob": "d644bb0d647a042d0b899a51b0beda75e182b56b"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/smoke-attached.json",
@@ -17884,9 +17884,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "7b862efefb88ca2d67bc516d79b77af0da3eff68cd93c8aeb570057637bc6e20",
+      "sha256": "4a596fa3efc53bba23a0f6694b5e3cedf07e095883030c3b30c5c30e11df1778",
       "size_bytes": 872,
-      "git_blob": "f132bfc877f33c18afd55efa5402239c073ff0dd"
+      "git_blob": "e87138cb8cc56dfc3c18809119f698d843c59be6"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/smoke-before-main.json",
@@ -17895,9 +17895,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "390686e4a39d3026727a6bf0cba1e39489c91507112eeeac9c8716ec53367894",
+      "sha256": "8b25bd32fe169142a68b52ecd7e3b754dac3048a85c6ca6b563c59ffa1562264",
       "size_bytes": 843,
-      "git_blob": "a9b3f714301259417ecc05e2399c628c5c913699"
+      "git_blob": "85c8071056f81268142388611c53442d45d10acd"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/smoke-direct-plc.json",
@@ -17906,9 +17906,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "df693f126944043ca1d146be0be621911b6bbbee81f74d208485cc8a1c584f8c",
+      "sha256": "e0ffe689979d9c64561afbb7355e1fa07a8d5e9f7fb3a187a9eb53ae026ca363",
       "size_bytes": 576,
-      "git_blob": "244958522ad40e14e5b279dddd60e62226008eae"
+      "git_blob": "326329f899e92a2ab1f669d427718816d7401cc7"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/smoke-sportmaster.json",
@@ -17917,9 +17917,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "783a07a4fe641de9a9b8b555ed34fb7ca19ad080af5849448d7e7f190ce3fbac",
+      "sha256": "47c731046ca88346ea061cd3650eba46c92f3b8ee0ce940df1e1199902877e2a",
       "size_bytes": 578,
-      "git_blob": "5912a87f6dfea28f36eb6e3b662e7d36a0e483e8"
+      "git_blob": "c4bf36d7325413590db81f86c10b8c8d8d66400d"
     },
     {
       "path": "docs/runtime/evidence/backup-health-recovery/smoke-wcs-to-plc.json",
@@ -17928,9 +17928,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "137b16ea138f7ae6f10969d97d97c603f29f90f8fe0d52315ea0048403365060",
+      "sha256": "cb7219dee1a8bfbf2ff241667ff63845a1571d6749d42818163b2a4a4f7ab534",
       "size_bytes": 576,
-      "git_blob": "2ebb39de4a8a6aa30c6eb2bc9a4960508488d12b"
+      "git_blob": "85fee22f5f1c90d8875e0fb60ba663f321e3f185"
     },
     {
       "path": "docs/work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md",
@@ -17939,9 +17939,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "0d85502f284e099babe59662c7c1711f7d79c0814357610963341dd96a7c3ecd",
+      "sha256": "e4c464ce1dc1ee3fabe50787b8f1b2e9c1839bd733938a3bb4713a2566f6935b",
       "size_bytes": 3235,
-      "git_blob": "a9377de918886a0f7b47160cdbecd4f7d1188d66"
+      "git_blob": "df5f4b945d2310e5cd8970854df47193ddb340c6"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelHealth.cs",
@@ -17961,9 +17961,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "06555ce72bf55330674136d9cdeda74e174b2ddf2a9e8b6cd1b790a173a2ae90",
-      "size_bytes": 5099,
-      "git_blob": "a1c094303e8979c81e579d6cb982857d008ac0c7"
+      "sha256": "243166e86d20f1df28ec38467ec2be67fb38944a90befe1f09543dfb9334e59a",
+      "size_bytes": 5161,
+      "git_blob": "82d7f09319be89683493c160afb04d9eff25f7a5"
     },
     {
       "path": "tests/Ipc.Application.Verification/BackupHealthRecovery.cs",
@@ -17983,9 +17983,9 @@
       "purpose": "Targeted repair and synthetic verification or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "e50b6eb0b36a26ad45a58b60114a5dcebc11f9099d78fa18f4fa409b9fa617b5",
-      "size_bytes": 786,
-      "git_blob": "46d6e190ab7d9cabce7befb4db6c218cdb53003d"
+      "sha256": "0d1246e5dcfe42c2804db1d0c0a30a46d9c05ec0ee4803847d5ec464e10971e6",
+      "size_bytes": 798,
+      "git_blob": "cf20f5b1a6daf49e1e6bc68a546b73b08598eb77"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -18672,7 +18672,7 @@
   },
   "backup_health_recovery": {
     "base_main": "08286542bbd007433d85be2cb8d129b366b007e0",
-    "runtime_source_commit": "c78746a8f4417136f8244b514326a83bba58345d",
+    "runtime_source_commit": "2efb7b6dfde3a999d5f5775d21b6c58dff961fae",
     "report": "docs/runtime/backup-health-recovery.md",
     "checks": "docs/runtime/evidence/backup-health-recovery/checks.json",
     "core": "PASS_TARGETED_AND_AFFECTED_AC17_AC18_AC19",

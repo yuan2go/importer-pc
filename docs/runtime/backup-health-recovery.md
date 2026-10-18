@@ -1,6 +1,6 @@
 # 备份路径与健康取消 · 独立复核及修复
 
-修复基于main **08286542bbd007433d85be2cb8d129b366b007e0**，PR19已经合并，开工与发布前无其他开放PR。运行源码 **c78746a8f4417136f8244b514326a83bba58345d**；后续仅报告/manifest/证据。交付[PR #20](https://github.com/yuan2go/importer-pc/pull/20)，保持OPEN、不合并。独立工作树保护原目录未跟踪资料。原REQ/BR/CAPI/D/RV、SQL与历史证据不改。
+修复基于main **08286542bbd007433d85be2cb8d129b366b007e0**，PR19已经合并，开工与发布前无其他开放PR。运行源码 **2efb7b6dfde3a999d5f5775d21b6c58dff961fae**；该提交为最终运行源码；其后仅报告/manifest/证据。交付[PR #20](https://github.com/yuan2go/importer-pc/pull/20)，保持OPEN、不合并。独立工作树保护原目录未跟踪资料。原REQ/BR/CAPI/D/RV、SQL与历史证据不改。
 
 ## 复核结果和实现
 
@@ -8,7 +8,7 @@
 |---|---|
 |PR18 P1 / 4305731150|仍存在：BackupAsync及恢复实际清单直接使用本机GetRelativePath。新增内部RecoveryFiles，只有本机枚举结果转换为`/`；备份、恢复输入和实际集合共用严格规范，保留全局ProductValidation反斜杠/越界/链接拒绝。Windows原始故障本机未执行，不以Mac通过替代。|
 |PR18 P2 / 4305731157|ReferencePeer仍传播OCE，但PR19已经在阶段和巡检处捕获；原“超时必然终止阶段worker”不再是最新main完整事实。新发现启动没有预算，原捕获把停机视为失败。统一启动/阶段/巡检ProbeHealthAsync，仅自身TimeoutMs预算耗尽转不可用，生命周期取消传播；ReferencePeer有限读取健康标记，保留调用取消。|
-|关联数据保护|恢复创建目标之前验证SHA256、完整文件集合、重复原始JSON键、Windows保留名/尾点尾空格、大小写和文件目录别名、越界及逐层链接；禁止递归跟随链接。新文件独占创建、Flush及复制后验hash，失败保留无完成标记的残件。备份前重验未释放图像与原作业metadata，目标不得位于运行目录；不删除或覆盖原业务数据。|
+|关联数据保护|恢复创建目标之前验证SHA256、完整文件集合、重复原始JSON键、Windows保留名/尾点尾空格、大小写和文件目录别名、越界及逐层链接；禁止递归跟随链接。备份/恢复共用32MiB清单上限，写完成标记前再验容量；新文件独占创建、Flush及复制后验hash，失败保留无完成标记的残件。备份前重验未释放图像与原作业metadata，目标不得位于运行目录；不删除或覆盖原业务数据。|
 |关联取消语义|旧Supply LoopbackIntegration自身HTTP超时仍false，真正调用取消传播。PLC确认查询失败保留先前接受/拒绝及原回执；发送后取消仍Unknown/单次原尝试，重启只能原查询，不自动重发。两处均先新增FAIL回归后修复。|
 
 方案/边界及运行操作见[工作包](../work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md)、[随包运行指南](application-capability-19.md#备份路径与健康预算修复)。不新增框架、配置字段、公共协议、迁移或依赖。旧非规范反斜杠清单继续明确拒绝并保留原件，不静默篡改原身份或重签同版本旧包。恢复仍只进全新同Application隔离根、暂停且无登录，不回滚独立接收账。

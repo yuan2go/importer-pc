@@ -37,6 +37,11 @@ public sealed partial class ParcelRuntime
             Save(op, "CapturePrepared", "T1: capture bound to original observation/admission before any weight wait");
         }
         if (op.Capture is { State: StageState.Prepared, Attempts: 0 }) op = await ExecuteStageAsync(op, ParcelStage.Capture, false).ConfigureAwait(false);
+        if (op.Capture?.State == StageState.Accepted && op.Upload is null)
+        {
+            var prepared = PrepareUploadIfReady(op);
+            if (prepared != op) { op = prepared; Save(op, "UploadPrepared", "Required upload inputs are ready; freeze original upload intent"); }
+        }
         if (op.FrozenConfiguration.Images!.Strategy == UploadStrategy.Attached && op.Capture?.State == StageState.Accepted) ScheduleAttached(op);
         return operations[op.Id];
     }
@@ -89,9 +94,14 @@ public sealed partial class ParcelRuntime
         op = op with { Image = reply.Image };
         if (op.State is ParcelState.ImageUnknown or ParcelState.CapturingImage or ParcelState.UploadingImage)
             op = op with { State = op.WeightPolicy.Source == WeightSource.Measured && op.Weight is null ? ParcelState.WaitingWeight : ParcelState.Prepared, Reason = null };
-        if (kind == ParcelStage.Capture && op.Upload is null)
-            op = op with { Upload = new(Prepare(op, "image-upload", op.FrozenConfiguration.Images!.Uploader, null, null), StageState.Prepared, 0, []) };
+        if (kind == ParcelStage.Capture && op.Upload is null) op = PrepareUploadIfReady(op);
         return op;
+    }
+    ParcelOperation PrepareUploadIfReady(ParcelOperation op)
+    {
+        var binding = op.FrozenConfiguration.Images!.Uploader;
+        if (factory.Requirements(binding).MeasuredWeight && !WeightReady(op)) return op;
+        return op with { Upload = new(Prepare(op, "image-upload", binding, null, null), StageState.Prepared, 0, []) };
     }
     static bool ValidMediaType(string type) => type.Length is > 0 and <= 128 && type.Contains('/') && type.All(x => char.IsAsciiLetterOrDigit(x) || x is '/' or '-' or '+' or '.');
     bool ImageCapacityAvailable()

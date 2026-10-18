@@ -37,7 +37,7 @@ public sealed partial class ParcelRuntime
         if (!health.Ready || health.ValidUntil <= DateTimeOffset.UtcNow || health.ConfirmedAt > DateTimeOffset.UtcNow)
         { op = SetStage(op, kind, stage with { Failure = "Original capability is not healthy" }) with { State = attached ? op.State : ParcelState.Blocked, Reason = attached ? op.Reason : "Original capability is not healthy; reconnect and reconcile" }; Save(op, "CapabilityNotReady", "Original capability is not healthy"); return op; }
         if (!query && ((!attached && !CanDispatch(op) || attached && (stopping.IsCancellationRequested || repository!.Paused || failure is not null)) ||
-            !PredecessorsAccepted(op, kind) || kind is ParcelStage.Wcs or ParcelStage.Plc && !WeightReady(op))) return op;
+            !PredecessorsAccepted(op, kind) || (kind is ParcelStage.Wcs or ParcelStage.Plc || kind == ParcelStage.Upload && factory.Requirements(stage.Request.Binding).MeasuredWeight) && !WeightReady(op))) return op;
         if (!query)
         {
             if (stage.State != StageState.Prepared || stage.Attempts != 0) throw new InvalidOperationException("Only a never-attempted prepared intent can be dispatched");

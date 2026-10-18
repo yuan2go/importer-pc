@@ -110,7 +110,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
                 var module = manifest.Modules.SingleOrDefault(x => x.Id == b.Module && x.Kind == b.Kind) ?? throw new InvalidDataException("Typed capability/module missing");
                 var errors = ExtensionSchema.Validate(module.Parameters, b.Parameters);
                 if (module.ContractIdentity is not null && module.ContractIdentity != b.Contract) throw new InvalidDataException("Selected binding contract differs from signed provider contract");
-                if (bound.Any(x => x.InstanceId == b.InstanceId)) ValidateRequirements(c, module.Requirements ?? new());
+                if (bound.Any(x => x.InstanceId == b.InstanceId)) ValidateRequirements(c, module.Requirements ?? new(), b.Kind);
                 if (errors.Length != 0 || manifest.Prerequisites.Length != 0) throw new InvalidDataException("Capability schema/native SDK prerequisite evidence is unavailable: " + string.Join("; ", errors));
                 if (bindings.Count(x => x.Package == b.Package && x.Module == b.Module) > module.MaximumInstances) throw new InvalidDataException("Capability instance quota exceeded");
             }
@@ -130,12 +130,14 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
                 var descriptor = ReferenceCapabilityCatalog.Providers.Single(x => x.Kind == b.Kind);
                 var errors = ExtensionSchema.Validate(descriptor.Parameters, b.Parameters);
                 if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
-                if (bound.Any(x => x.InstanceId == b.InstanceId)) ValidateRequirements(c, descriptor.Requirements);
+                if (bound.Any(x => x.InstanceId == b.InstanceId)) ValidateRequirements(c, descriptor.Requirements, b.Kind);
             }
         }
     }
-    static void ValidateRequirements(ParcelConfiguration c, CapabilityRequirements requirements)
+    static void ValidateRequirements(ParcelConfiguration c, CapabilityRequirements requirements, string kind)
     {
+        if (kind is "login" or "weight" or "camera" && (requirements.MeasuredWeight || requirements.ImageAddress) || kind == "upload" && requirements.ImageAddress)
+            throw new InvalidDataException("Declared inputs create an impossible pre-capture/authentication or self-upload dependency");
         if (requirements.MeasuredWeight && c.Weight.Source != WeightSource.Measured)
             throw new InvalidDataException("Selected protocol requires an actual same-parcel measurement");
         if (requirements.ImageAddress && (c.Images is null || c.Images.Strategy != UploadStrategy.BeforeMain))

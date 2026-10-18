@@ -6,33 +6,35 @@ public sealed partial class ParcelRuntime
 {
     bool SharedReady() => factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
         !stopping.IsCancellationRequested && (overload == 0 || Effective.SchemaVersion >= 3);
-    bool CanResume() => SharedReady() && (Effective.SchemaVersion >= 3 ? positions.Keys.Any(PositionReady) : positions.Keys.All(PositionReady));
-    bool PositionReady(string position) => SharedReady() && !overloadedPositions.ContainsKey(position) &&
+    bool CanResume() => CapacityAvailable && SharedReady() && (Effective.SchemaVersion >= 3 ? positions.Keys.Any(PositionReady) : positions.Keys.All(PositionReady));
+    bool PositionReady(string position) => SharedReady() && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !overloadedPositions.ContainsKey(position) &&
         !(overload != 0 && overloadedPositions.IsEmpty) &&
         readers[positions[position].ReaderDeviceId].Health?.IsValid(DateTimeOffset.UtcNow) == true && AdmissionCapabilitiesReady(position) &&
         !operations.Values.Where(x => (x.PositionId ?? "main") == position).Any(x => NeedsReconciliation(x) || WeightExpired(x) || x.State == ParcelState.WeightTimedOut || !MainTerminated(x) && x.Weight is not null && !WeightReady(x));
-    bool CanContinue(ParcelOperation op) => CanDispatch(op) && !MainTerminated(op) && (WeightReady(op) || op.Capture is { State: StageState.Prepared, Attempts: 0 }) &&
-        (op.State == ParcelState.Prepared && op.Wcs is null && op.Plc is null || Enum.GetValues<ParcelStage>().Any(kind => GetStage(op, kind) is { State: StageState.Prepared, Attempts: 0 }));
+    bool CanContinue(ParcelOperation op) => CanDispatch(op with { RecoveryRequired = false }) && !MainTerminated(op) && (op.RecoveryRequired && WeightPending(op) || WeightReady(op) || op.Capture is { State: StageState.Prepared, Attempts: 0 }) &&
+        (op.RecoveryRequired || op.State == ParcelState.Prepared && op.Wcs is null && op.Plc is null || Enum.GetValues<ParcelStage>().Any(kind => GetStage(op, kind) is { State: StageState.Prepared, Attempts: 0 }));
     bool CanContinueUpload(ParcelOperation op) => op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached &&
         CanSendUpload(op) && op.Upload is { State: StageState.Prepared, Attempts: 0 } &&
         (!factory.Requirements(op.FrozenConfiguration.Images.Uploader!).MeasuredWeight || WeightReady(op));
-    bool CanSendUpload(ParcelOperation op) => factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested &&
+    bool CanSendUpload(ParcelOperation op) => op.Upload is { } upload && PortMaintenanceClear(Capability(upload.Request.Binding.InstanceId)) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested &&
         !repository!.Paused && failure is null && SessionValid && (Effective.Login is null || currentOperator is not null && currentOperator.Subject == op.Operator?.Subject);
     bool CanAbandon(ParcelOperation op) => repository!.Paused && SessionValid && !MainTerminated(op) &&
         (op.Wcs is null || op.Wcs is { State: StageState.Prepared, Attempts: 0 } || op.Wcs.State is StageState.Accepted or StageState.Rejected) &&
         (op.Plc is null || op.Plc is { State: StageState.Prepared, Attempts: 0 }) &&
         !activeStages.Any(x => x.StartsWith(op.Id + ":", StringComparison.Ordinal)) && !repository.PendingReceipts().Any(x => x.Operation == op.Id) && op.Capture?.State is not (StageState.Unknown or StageState.Conflict);
     bool CanConfigure => repository?.Paused == true && MaintenanceAuthorized && externalWaits == 0;
-    bool CanAdmit(string position) => !repository!.Paused && PositionReady(position) && ImageCapacityAvailable() &&
+    bool CanAdmit(string position) => CapacityAvailable && !repository!.Paused && PositionReady(position) && ImageCapacityAvailable() &&
         !operations.Values.Any(x => (x.PositionId ?? "main") == position && (Effective.SchemaVersion >= 3 ? !MainTerminated(x) :
             WeightPending(x) || !MainTerminated(x) && x.FrozenConfiguration.Images is not null && x.Capture?.State != StageState.Accepted));
     bool CanAdmit() => positions.Keys.Any(CanAdmit);
     PositionSnapshot[] PositionSnapshots() => positions.Values.Select(p =>
     {
-        var current = operations.Values.LastOrDefault(x => (x.PositionId ?? "main") == p.Id);
+        var current = repository!.Latest(p.Id);
         var reasons = new List<string>();
         if (!PositionReady(p.Id)) reasons.Add("Position dependency/health or original responsibility blocked");
+        if (!PositionMaintenanceClear(p.Id)) reasons.Add("Position resource maintenance in progress; original intent retained");
         if (current is not null && !MainTerminated(current)) reasons.Add("Current entity main result is incomplete");
+        if (!CapacityAvailable) reasons.Add("Unresolved capacity exhausted");
         if (repository!.Paused) reasons.Add("Global software pause");
         return new PositionSnapshot(p.Id, p.ReaderDeviceId, CanAdmit(p.Id), current?.Id, reasons.ToArray(), current is null || MainTerminated(current),
             operations.Values.Where(x => (x.PositionId ?? "main") == p.Id).All(IsSettled));
@@ -73,7 +75,7 @@ public sealed partial class ParcelRuntime
             {
                 await Task.Delay(100, stopping.Token).ConfigureAwait(false);
                 await gate.WaitAsync(stopping.Token).ConfigureAwait(false);
-                try { ExpireWeights(); ReleaseCompletedImages(); auxiliary.RemoveAll(x => x.IsCompleted); }
+                try { ExpireWeights(); ReleaseCompletedImages(); RefreshStorageCapacity(); ArchiveSettled(); RecoverOverloadAcknowledgement(); auxiliary.RemoveAll(x => x.IsCompleted); }
                 finally { gate.Release(); }
             }
         }

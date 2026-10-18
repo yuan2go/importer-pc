@@ -1,4 +1,12 @@
-> 版本管理现行增量：[版本与兼容](design/version-compatibility-01.md) · [工作包](work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md) · [运行](runtime/version-compatibility-01.md)。22拓扑与19/20机制继续有效。
+> 版本管理现行增量：[版本与兼容](design/version-compatibility-01.md) · [工作包](work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md) · [运行](runtime/version-compatibility-01.md)。继承已合并PR23/24，原历史结果保持。
+
+> PR24独立复审已归档：[固定head原报告、证据和未验证边界](reviews/pr24-independent-rereview-f862c2a/README.md)。f862c2a限定参考范围无剩余代码阻断；2026-10-19用户授权归档后精确head合并，本轮不重复测试或打包，合并身份读取PR。
+
+> 前轮历史结果：[五项整改证据](runtime/architecture-quality-closure-01-rereview-results.md)及[R03修复记录](runtime/architecture-quality-closure-01-r03-results.md)。原报告、候选与历史失败保持形成时身份，Windows/真实SDK/协议/现场门禁不因合并关闭。
+
+> 当前整改：[质量闭环01](work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)及[运行/迁移/扩展指南](runtime/architecture-quality-closure-01.md)。[整改前入口原字节](archive/pre-architecture-quality-closure-01/README.md)。不以22旧PASS关闭新审查问题。
+
+> 采集身份P2修复当前入口：[工作包与设计](work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)。[修复结果与证据](runtime/acquisition-lifecycle-p2.md)。PR #22已合并main `2126ac2`；下述22开发基线、分支和候选均按形成时读取。
 
 > 22现行拓扑、状态作用域、版本与交付：[Application架构22](design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
 
@@ -6,11 +14,11 @@
 
 ## 当前工程入口
 
-[22工作包](work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md) · [22设计](design/application-architecture-22.md) · [22运行/配置/升级](runtime/application-architecture-22.md)。22历史开工基线ea881293；该包已合并，历史候选以22结果原身份读取。Sportmaster两个独立投递位由用户确认；不把旧Supply共享箱/数量/AGV规则套入新Application。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+[22工作包](work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md) · [22设计](design/application-architecture-22.md) · [22运行/配置/升级](runtime/application-architecture-22.md)。22形成时基线ea881293及分支按原报告读取；本轮执行main为2126ac2，整改状态和候选身份见质量闭环01结果。Sportmaster两个独立投递位由用户确认；不把旧Supply共享箱/数量/AGV规则套入新Application。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
 ## 最新独立审查与下一阶段交接
 
-[架构质量审查02：原PDF、最新复核及精简Codex提示词](reviews/architecture-quality-audit-02/README.md)。固定审查main为`2126ac2c06a0c352d96afbbf13ec1a719c352738`；报告保持形成时身份，下一阶段N01–N07按执行时main与并行PR复核后实施。本次仅获授权发布报告与交接，未实施修复；不覆盖现行设计或历史验收。
+[架构质量审查02：原PDF、最新复核及精简Codex提示词](reviews/architecture-quality-audit-02/README.md)。固定审查main为`2126ac2c06a0c352d96afbbf13ec1a719c352738`；报告保持形成时身份，下一阶段N01–N07按执行时main与并行PR复核后实施。该报告发布任务未实施修复；质量闭环01的实际增量按本包结果和固定源码读取，不据此改写原审查结论或历史验收。
 
 ## 继承的整合与历史证据
 
@@ -22,7 +30,7 @@
 
 ## 代码前必读
 
-1. [AGENTS](../AGENTS.md)、20工作包及设计、19工作包及设计、17/18实施证据、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
+1. [AGENTS](../AGENTS.md)、[本包](work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)及[整改设计](design/architecture-quality-closure-01.md)、22拓扑及19/20可靠性、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
 2. [框架架构](design/framework.md)、[决策记录](design/framework-decisions.md)、[受控装配与扩展](design/controlled-extensions.md)。职责/事务/身份/生命周期要求继续有效，不能改弱目标消除缺陷。
 3. [14任务](work-packages/WP-IPC-CONFORMANCE-FIX-14.md)、[实施](runtime/conformance-fix-14.md)/证据，以及[13任务](work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)/[复核](runtime/arch-extension-closure-13-recheck.md)、按影响再读[12任务](work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)/[交付](runtime/extension-windows-delivery-12.md)。保留后续批准的后装与Windows后验，勿重复实施已闭子项。
 4. [运行/发布/维护](runtime/operations.md)、[扩展开发安装恢复](extensions/developer-guide.md)，核实际入口、配置、依赖和源码。
@@ -46,7 +54,7 @@
 |旧独立复核|[02](reviews/main-static-review-02.md)、[03](reviews/main-static-review-03.md)、[03 checks](reviews/main-static-review-03-checks.json)|
 |资料与准备阶段|[BASELINE-01](work-packages/WP-IPC-DESIGN-BASELINE-01.md)、[READINESS计划](superpowers/plans/2026-10-16-ipc-readiness.md)、[修订与验证建议](readiness/revision-and-verification.md)|
 
-历史PR状态以其记录时间理解，实时状态读取GitHub；不把历史OPEN_AT_CREATION当作仍未合并。历史“不测试”仅限原任务，当前必要验证按16变更风险执行；旧候选/旧PASS不代替新SHA证据。完整客户归档继续PUBLIC_SUBSET_ONLY。
+历史PR状态以其记录时间理解，实时状态读取GitHub；不把历史OPEN_AT_CREATION当作仍未合并。历史“不测试”仅限原任务，当前必要验证按本次质量闭环变更风险执行；旧候选/旧PASS不代替新SHA证据。完整客户归档继续PUBLIC_SUBSET_ONLY。
 
 ## 原字节归档与资料检查
 
@@ -54,4 +62,4 @@
 
 [资料校验工具](../tools/README.md)只证明它覆盖的资料/链接/身份，不代表业务或现场通过。已知源资产问题与本次新增材料校验分开，保持原件和失败记录。
 
-本包实际交付：[22结果与候选身份](runtime/application-architecture-22-results.md)。
+本包交付：[质量闭环01结果](runtime/architecture-quality-closure-01-results.md)。本轮独立复审五项按[设计与计划](design/architecture-quality-closure-01.md#aqd-07-pr24独立复审整改)补差；旧22/前轮参考PASS保留形成时范围。

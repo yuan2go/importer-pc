@@ -1,0 +1,22 @@
+EvidenceRoot=<TEMP>/ipc17-verification-d792a4bdd82543d6afd8d615cd67a2d5
+PASS AQ: R01 failed recovery commit retains Awaiting occurrence/raw bytes and rolls back reply identity
+PASS AQ: R01 startup restores permanent original reply identity from Awaiting raw bytes
+PASS AQ: R01 raw identity test actually passes bounded reply eviction
+PASS AQ: R01 changed old reply ID becomes Conflict after 65 queries without resending Submit
+PASS AQ: R01 existing DB4 committed raw backfills earliest reply identity while preserving recorded Conflict
+PASS AQ: R02 interrupted Attached upload preserves completed main result and null main Reason
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: R05 shared service maintenance closes Resume and every dependent position
+PASS AQ: R05 explicit Resume cannot bypass maintained shared WCS
+PASS AQ: R05 no main request enters a WCS with reconnect in flight
+PASS AQ: R05 successful maintenance retains actual software pause
+PASS AQ: R03 unknown Pending schema conservatively blocks retirement; read-only bytes retained
+PASS AQ: R03 binding package without deployment cannot become empty references; read-only bytes retained
+PASS AQ: R03 dangling observation extension blocks retirement; read-only bytes retained
+PASS AQ: R03 Pending cannot change consumer station ownership; read-only bytes retained
+PASS AQ: R03 valid exact offline Pending package is retained without loading modules
+PASS AQ: R04 actual Supply format5 and Parcel DB4 dispatch to owning readers without mutation
+PASS AQ: R04 mixed-reader dispatch preserves legacy Supply Pending package responsibility
+PASS AQ: R04 ambiguous consumer remains blocked without mutation
+PASS AQ: R03 future frozen configuration blocks retirement without rewriting originals
+PASS PR24 REVIEW CLOSURE COMPLETE

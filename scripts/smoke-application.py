@@ -170,7 +170,8 @@ def run(evidence):
                 snap = send(process, messages, 'snapshot')
                 if snap['Operations'][0]['Plc'] is not None or snap['Operations'][0]['Wcs'] is not None: raise ValueError('Query dispatched downstream')
                 if command('Login', 'alice', 'SIMULATION_ONLY')['Status'] != 'Authenticated': raise ValueError('Original subject could not reauthenticate')
-                if command('ContinuePrepared', operation['Id'])['Status'] != 'Persisted': raise ValueError('Original continuation rejected')
+                if command('Resume')['Status'] != 'Persisted': raise ValueError('Explicit restart admission resume rejected')
+                if command('ContinuePrepared', operation['Id'], 'Synthetic original parcel inspected after restart')['Status'] != 'Persisted': raise ValueError('Original continuation rejected')
                 final = send(process, messages, 'snapshot')['Operations'][0]
                 if final['State'] != expected: raise ValueError('Continuation did not finish main chain')
             if final['Operator'] != operation['Operator'] or final['Upload']['Attempts'] != 1 or final['Capture']['Attempts'] != 1: raise ValueError('Recovery changed identity or repeated image stage')

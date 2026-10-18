@@ -1,0 +1,13 @@
+{
+  "observed_at": "2026-10-18T14:31:28.946150+00:00",
+  "pr": 25,
+  "url": "https://github.com/yuan2go/importer-pc/pull/25",
+  "read_head": "5cfb838a2a0348dd5141d63512c615773139bd3f",
+  "audit_identity": "AUDIT-02 is not proven to be AUDIT-01; missing original PDF gate retained",
+  "read_only": true,
+  "adopted_current_defects": [
+    "config confirmation before resource startup",
+    "Pending-only backup registration"
+  ],
+  "other_worktree_modified": false
+}

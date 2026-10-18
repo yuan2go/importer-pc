@@ -50,7 +50,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     public bool HasActiveWork => worker is { IsCompleted: false };
     public bool HasUnreleasedResources => !disposed;
     public string[] OwnershipDiagnostics => disposed ? [] : [Id + ": owns reader/ports/worker/database/leases until Stop and Dispose complete"];
-    ParcelConfiguration Effective => configuration!.Current.Effective;
+    ParcelConfiguration? startupConfiguration;
+    ParcelConfiguration Effective => startupConfiguration ?? configuration!.Current.Effective;
     public async Task StartAsync(CancellationToken token)
     {
         if (started || disposed) throw new InvalidOperationException("Application startup is single-use");
@@ -69,8 +70,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         }
         if (File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json"))) throw new InvalidDataException("Interrupted restore remains isolated; preserve original recovery set");
         configuration = new(Path.Combine(directory, "configuration.json"), seed, definition.Validate);
-        repository = new(directory, Id, 3) { Boundary = point => Boundary?.Invoke(point) };
+        ValidateDeploymentIdentity(seed);
+        configuration.RecoverInterruptedActivation();
+        repository = new(directory, Id, 4) { Boundary = point => Boundary?.Invoke(point) };
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
+        foreach (var conflict in repository.LoadConflicts()) identityConflicts.Add(conflict.Id, conflict);
+        RefreshStorageCapacity();
+        RecoverOverloadAcknowledgement();
         if (File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json"))) repository!.Commit(null, "RestoredIsolated", "Original recovery set loaded; operator must reconcile external effects", paused: true);
         foreach (var op in repository.Load())
         {
@@ -86,14 +92,18 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         try
         {
             // Pending is activated only at a controlled startup, after recovery barriers.
-            configuration.Activate(_ => operations.Values.All(IsSettled) && repository.PendingReceipts().Length == 0, factory.Validate);
+            startupConfiguration = configuration.BeginActivation(candidate => { RequireSameIdentity(seed, candidate); return operations.Values.All(IsSettled) && repository.PendingReceipts().Length == 0; }, factory.Validate);
         }
         catch (Exception ex) when (ex is InvalidDataException or InvalidOperationException)
         { _ = ex; /* Failure remains in the authoritative envelope; previous Effective is usable. */ }
         try
         {
             factory.Validate(Effective);
-            ports = factory.Create(Effective); // Factory owns partial construction if any step fails.
+            ports = factory.Create(Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective))); // Factory owns partial construction if any step fails.
+            var incompatibleOriginals = operations.Values.Where(op => !IsSettled(op) && op.ImplementationHashes.Any(original =>
+                ports.ImplementationHashes.GetValueOrDefault(original.Key) != original.Value)).Select(op => op.Id).ToArray();
+            if (incompatibleOriginals.Length != 0)
+                throw new InvalidDataException("OriginalCapabilityUnavailable: settle unresolved originals using the matching release before changing host/implementation; no source started: " + string.Join(",", incompatibleOriginals));
             foreach (var binding in ParcelBindings.Positions(Effective))
             {
                 positions.Add(binding.Id, binding);
@@ -106,12 +116,20 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             foreach (var scale in CapabilityPorts().OfType<IWeightSource>()) await RegisterScaleAsync(scale, token).ConfigureAwait(false);
             foreach (var reader in readers.Values) await reader.StartAsync(Enqueue, token).ConfigureAwait(false);
             foreach (var port in CapabilityPorts()) capabilityHealth[port.InstanceId] = await ProbeHealthAsync(port, token).ConfigureAwait(false);
+            if (startupConfiguration is not null)
+            {
+                configuration.ConfirmActivation(configuration.Current.Activation!.Id);
+                startupConfiguration = null;
+            }
+            CompleteConfigurationAudit("Activated");
             Volatile.Write(ref accepting, 1);
             maintenanceWorker = Task.WhenAll(CapabilityPorts().Select(p => Task.Run(() => MonitorAsync(p), CancellationToken.None)).Append(Task.Run(MaintainAsync, CancellationToken.None)));
         }
         catch (Exception ex)
         {
-            if (Wire.Encode(Effective) != Wire.Encode(priorEffective)) configuration.FailActivation(priorEffective, Effective, ex);
+            if (startupConfiguration is { } failedCandidate) configuration.FailActivation(priorEffective, failedCandidate, ex);
+            startupConfiguration = null;
+            CompleteConfigurationAudit("ActivationFailed");
             throw; // Caller must fully stop/dispose the failed candidate before a new owner starts.
         }
     }
@@ -132,7 +150,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             await scale.StartMeasurementsAsync(m => scaleEpochs.GetValueOrDefault(scale.InstanceId) == registration && Enqueue(new ParcelMeasurement(scale.InstanceId, registration, Interlocked.Increment(ref sequence), m)), token).ConfigureAwait(false);
         }
     }
-    bool Enqueue(object item)
+    bool Enqueue(object item) { lock (overloadSync) return EnqueueCore(item); }
+    bool EnqueueCore(object item)
     {
         if (Volatile.Read(ref accepting) == 0) return false;
         var observation = item as Observation;
@@ -144,6 +163,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         {
             var identity = currentOperator;
             if (!SessionValid) return false;
+            // Driver buffers remain driver-owned after callback return.
+            observation = observation with { Codes = observation.Codes?.ToArray() ?? [] };
             item = new ParcelObservation(observation, identity); Interlocked.Increment(ref pendingObservations);
         }
         if (positionQueues[positionId].Writer.TryWrite(item)) return true;
@@ -166,7 +187,18 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     if (item is ParcelObservation o) await ObserveAsync(position, o.Observation, o.Operator).ConfigureAwait(false);
                     else if (item is ParcelMeasurement m) await MeasureAsync(m).ConfigureAwait(false);
                 }
-                finally { if (item is ParcelObservation) Interlocked.Decrement(ref pendingObservations); gate.Release(); }
+                finally
+                {
+                    try
+                    {
+                        if (item is ParcelObservation o)
+                        {
+                            try { ReleaseIngressAcquisition(o.Observation); }
+                            finally { Interlocked.Decrement(ref pendingObservations); }
+                        }
+                    }
+                    finally { gate.Release(); }
+                }
             }
         }
         catch (Exception ex)
@@ -182,14 +214,15 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             reader?.Health?.IsValid(DateTimeOffset.UtcNow) != true)
         { repository!.Commit(null, "ObservationRejected", "Invalid identity/epoch/sequence/code/admission/freshness/reader confirmation"); return; }
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
-        var prior = operations.Values.FirstOrDefault(x => x.AdmissionId == o.AdmissionId || x.ObservationId == observationId);
-        if (prior is not null)
+        var priors = repository!.FindIdentities(o.AdmissionId, observationId);
+        if (priors.Length > 0)
         {
-            if (prior.AdmissionId != o.AdmissionId || prior.ParcelCode != o.Codes[0] || (prior.PositionId ?? "main") != position)
-            { repository!.Commit(null, "IdentityConflict", "Observation/admission identity reused with changed content or position; original retained"); }
+            foreach (var prior in priors.Where(p => p.AdmissionId != o.AdmissionId || p.ParcelCode != o.Codes[0] || (p.PositionId ?? "main") != position))
+            { RecordIdentityConflict(prior, position, "Observation/admission identity reused with changed content/position; source=" + o.SourceEventId + "; code=" + o.Codes[0]); }
             return;
         }
-        if (operations.Count >= Effective.MaximumOperations)
+        ArchiveSettled();
+        if (!CapacityAvailable)
         { repository!.Commit(null, "RetentionBudget", "Explicit archive/retention is required", paused: true); return; }
         if (!AdmissionCapabilitiesReady(position) || !ImageCapacityAvailable())
         { repository!.Commit(null, "AdmissionCapabilityBlocked", "Required capability unhealthy or temporary image quota exhausted"); return; }
@@ -201,6 +234,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             Operator: admittedOperator, Acquisition: new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt),
             PositionId: Effective.SchemaVersion >= 3 ? position : null, ReaderBinding: Effective.SchemaVersion >= 3 ? ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId) : null);
         admissionPositions.TryAdd(op.AdmissionId, position);
+        if (op.FrozenConfiguration.Images is not null && ParcelBindings.Camera(op.FrozenConfiguration, op.PositionId)?.Target == o.DeviceId)
+            ((IReaderImageCapture)reader.Source).RetainAcquisition(op.Acquisition!, "operation:" + op.Id);
         Save(op, "ParcelObserved", "One admitted parcel; code is not entity identity");
         if (op.FrozenConfiguration.Images is not null)
         {

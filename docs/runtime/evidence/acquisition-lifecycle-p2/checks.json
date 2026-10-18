@@ -1,0 +1,170 @@
+{
+  "baseline": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
+  "runtime_source": "ca35b16a0ef883126b39640c19ea6f840e5a9716",
+  "sdk": "10.0.402",
+  "checks": [
+    {
+      "log": "logs/baseline-build.log",
+      "status": "PASS",
+      "pass_lines": 0,
+      "sha256": "641e6e716a90865606a9c66ad5f411ce9879bac5b80b886457a28f502b7ed084"
+    },
+    {
+      "log": "logs/red-before-fix.log",
+      "status": "EXPECTED_FAIL_REPRODUCED",
+      "pass_lines": 0,
+      "sha256": "ced582822ab5b9910c9891f867db43f9a2006fe9b181ad0e0a66b72fd370835e"
+    },
+    {
+      "log": "logs/initial-test-build-failure.log",
+      "status": "FAIL_CORRECTED_ENVIRONMENT_OR_TEST_FIXTURE",
+      "pass_lines": 0,
+      "sha256": "47d10b556af6105feda9326c8711ab0f8084763008ccde301dcaf957a41096ac"
+    },
+    {
+      "log": "logs/initial-legacy-missing-fixture.log",
+      "status": "FAIL_CORRECTED_ENVIRONMENT_OR_TEST_FIXTURE",
+      "pass_lines": 0,
+      "sha256": "c16080b4ebee20f0190100d679f939c4d3e4659e7454a41c06d974fc7b56888d"
+    },
+    {
+      "log": "logs/initial-signed-contract-mismatch.log",
+      "status": "FAIL_CORRECTED_ENVIRONMENT_OR_TEST_FIXTURE",
+      "pass_lines": 0,
+      "sha256": "ccd4e130e2d61c173e371243611679eeb6ddfe7d38b1b539e7ec307dffa463a4"
+    },
+    {
+      "log": "logs/core-build.log",
+      "status": "PASS",
+      "pass_lines": 0,
+      "sha256": "4606b4145eb585550a8b1cda47f24d2954703b0627ae5316039ca21c1bf63c53"
+    },
+    {
+      "log": "logs/targeted.log",
+      "status": "PASS",
+      "pass_lines": 28,
+      "sha256": "2c98f3eb341a3b3daaebe845225e952b40ce2c49f2fba65cb4149558c1589a0b"
+    },
+    {
+      "log": "logs/aa22.log",
+      "status": "PASS",
+      "pass_lines": 61,
+      "sha256": "bb340d95ae9e92a6768874773ede0f8fce84efcb8314cf99876c2bb22c47ffec"
+    },
+    {
+      "log": "logs/reliability.log",
+      "status": "PASS",
+      "pass_lines": 50,
+      "sha256": "836f55d4f811cef7b9d1dcd9c4a0c4aad1997d3c5cf88207d68e65d7222202a7"
+    },
+    {
+      "log": "logs/capability.log",
+      "status": "PASS",
+      "pass_lines": 49,
+      "sha256": "0aff86d1794f9c688b42fd075848d42c7926d3c8331852f0202346f17f4c2f10"
+    },
+    {
+      "log": "logs/ac17.log",
+      "status": "PASS",
+      "pass_lines": 72,
+      "sha256": "5693ca9341353147662996dbcd7a5049947851ac0b5d8bb7eaf7a72f10462c0a"
+    },
+    {
+      "log": "logs/legacy-build.log",
+      "status": "PASS",
+      "pass_lines": 0,
+      "sha256": "3c8531f656b7b2b154305361391ea5bac68674c38df7dd3287bbc97aff7fd884"
+    },
+    {
+      "log": "logs/fixture-build.log",
+      "status": "PASS",
+      "pass_lines": 0,
+      "sha256": "f88cf64390b3c89a3c61cb21521b3069bb8acc13c9b4358a79f0d207a975cfa7"
+    },
+    {
+      "log": "logs/legacy-closure.log",
+      "status": "PASS",
+      "pass_lines": 7,
+      "sha256": "734bbaf671e51810e62aef0f306cc3295317d7e3a66876a3d91ea514adda4aa8"
+    },
+    {
+      "log": "logs/signed-build.log",
+      "status": "PASS",
+      "pass_lines": 0,
+      "sha256": "47bd2ea5fc8a3fc4e995f254d9f153f431ec7018423eb6ec6311b2d251aea446"
+    },
+    {
+      "log": "logs/signed-activation.log",
+      "status": "PASS",
+      "pass_lines": 11,
+      "sha256": "56e8276d56eb4181ac9bd6e7b140b636e15dfcfa000810ac88070d7898bd5b58"
+    },
+    {
+      "log": "logs/package-sportmaster.log",
+      "status": "PASS",
+      "pass_lines": 0,
+      "sha256": "de09f546c7b36797e0d4daa956a9670f514103e2d0dd3830004626e8f98ec191"
+    },
+    {
+      "log": "logs/package-direct.log",
+      "status": "PASS",
+      "pass_lines": 0,
+      "sha256": "02416e64108d671839dde79826918ee8b539d67f1d69736e08a87bd31c69293f"
+    },
+    {
+      "log": "logs/package-wcs.log",
+      "status": "PASS",
+      "pass_lines": 0,
+      "sha256": "c1bd07e6c700979971a1386e0de829ecf625a7929e3af88fbdcdb5c6aec7f59a"
+    },
+    {
+      "log": "logs/package-win.log",
+      "status": "PASS",
+      "pass_lines": 0,
+      "sha256": "fed2b03643ad146a0acf9f64ca3a217cc35202c62d4c51cdfb46d4fd8aa276b3"
+    },
+    {
+      "log": "logs/smoke-sportmaster.log",
+      "status": "PASS",
+      "pass_lines": 0,
+      "sha256": "5c37424746c1834ea537136cf6f3c524fe0c403f48d1168a690e65e847ee53f9"
+    },
+    {
+      "log": "logs/smoke-direct.log",
+      "status": "PASS",
+      "pass_lines": 0,
+      "sha256": "cd8ceece79e95b2957422fb2286205438de218a36709c4f95636c6e4b873ea2e"
+    },
+    {
+      "log": "logs/smoke-wcs.log",
+      "status": "PASS",
+      "pass_lines": 0,
+      "sha256": "88cdda11ffa191166eb9ce75dfa1107a0f49a2e99a32680e8cba91c12ddd8719"
+    },
+    {
+      "log": "logs/smoke-optional.log",
+      "status": "PASS",
+      "pass_lines": 0,
+      "sha256": "7f087da1d202f1bd132577935f0d47118691db59cb86fa791872e7977ab0551b"
+    }
+  ],
+  "source_files": {
+    "src/Ipc.Drivers/ObservationSources.cs": "85bb96f193985073f0f040bf0f910760e3e3617a8024f37aa1da78053915ef99",
+    "src/Ipc.Application.Contracts/ParcelTopology.cs": "35b02b7c8d9d0da83fda27777f3132ab2001463a1dc6a4e3b3b7e2600c57b086",
+    "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs": "a4ba279771572d5f2b3dd896b260218cd4c8b5a5b37991aded7ccad97c5f41e9",
+    "src/Ipc.Application.ParcelFlow/ParcelAcquisitions.cs": "6716bd4e1514f2a082f98fde8a9b62e83baaef99acca6caf1f421057f356770e",
+    "src/Ipc.Application.ParcelFlow/ParcelImages.cs": "ff8420feefa84f7045677bd4b9f4521a12d3ea2aea3599c4b7526cdadf449a37",
+    "tests/Ipc.Application.Verification/AcquisitionLifecycle.cs": "aec42c58d8f5eb603700d0e233b6fd68b5a18f8430b46dbe7066429007140d34"
+  },
+  "pre_freeze_logs": [
+    "baseline-build.log",
+    "red-before-fix.log",
+    "initial-test-build-failure.log",
+    "initial-legacy-missing-fixture.log",
+    "legacy-build.log",
+    "fixture-build.log",
+    "legacy-closure.log"
+  ],
+  "Windows": "NOT_RUN",
+  "RealSDK_WCS_PLC_Field": "BLOCKED"
+}

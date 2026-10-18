@@ -352,14 +352,14 @@
       "ipc.application.parcelflow": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.2.0, )",
+          "Ipc.Application.Contracts": "[1.6.0, )",
           "Ipc.Platform.Storage": "[1.0.0, )"
         }
       },
       "ipc.application.parcelflow.desktop": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.2.0, )"
+          "Ipc.Application.Contracts": "[1.6.0, )"
         }
       },
       "ipc.assembly": {
@@ -368,7 +368,8 @@
           "Ipc.Application.DirectPlc": "[1.0.0, )",
           "Ipc.Components": "[1.0.0, )",
           "Ipc.Drivers": "[1.0.0, )",
-          "Ipc.Platform": "[1.0.0, )"
+          "Ipc.Platform": "[1.0.0, )",
+          "Ipc.Supply": "[1.0.0, )"
         }
       },
       "ipc.components": {
@@ -400,7 +401,20 @@
       "ipc.reference.protocol": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.2.0, )"
+          "Ipc.Application.Contracts": "[1.6.0, )"
+        }
+      },
+      "Ipc.Supply": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Platform.Storage": "[1.0.0, )",
+          "Ipc.Supply.Contracts": "[1.0.0, )"
+        }
+      },
+      "Ipc.Supply.Contracts": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Platform": "[1.0.0, )"
         }
       }
     },

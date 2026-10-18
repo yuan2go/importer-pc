@@ -1,0 +1,16 @@
+{
+  "status": "PUSH_AND_SAME_PR_UPDATE_CONFIRMED",
+  "verified_at_utc": "2026-10-18T15:52:25.146048+00:00",
+  "pull_request": "https://github.com/yuan2go/importer-pc/pull/24",
+  "source_commit": "445e1f62bf01fe21e5f13576d2f483292571b709",
+  "evidence_commit": "ae138dc5bf5a95c6a47dc6e5d648d31b325f9f7d",
+  "remote_head_observed": "ae138dc5bf5a95c6a47dc6e5d648d31b325f9f7d",
+  "pr_state": "OPEN",
+  "body_sha256": "20a47e4b534caf967c51a05d0e3e3491783986fbc28e03764b554907732e8207",
+  "review_input_head": "3f6f762d31655ef0fe8d6562ed413beed682e2f9",
+  "main_before_and_after": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "merged_main": false,
+  "following_commit_scope": "This receipt and manifest hashes only; no runtime source changes",
+  "original_worktree_tracked_files_unchanged": true,
+  "parallel_pr23_26_untouched": true
+}

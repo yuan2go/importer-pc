@@ -12,11 +12,12 @@ public sealed partial class ParcelRuntime
         try
         {
             if (stopped || stopping.IsCancellationRequested || ports?.Login is null || repository is null) return new("Rejected", "Login is disabled or application stopped", repository?.Revision ?? 0);
+            if (!PortMaintenanceClear(ports.Login)) return new("Rejected", "Authentication resource is under maintenance", repository.Revision);
             if (authenticating || session.Valid(DateTimeOffset.UtcNow, Effective.SessionLifetimeMs) || operations.Values.Any(x => !IsSettled(x) && x.Operator?.Subject != subject) || Volatile.Read(ref pendingObservations) != 0) return new("Rejected", "Protect original unfinished operations before changing operator", repository.Revision);
             if (!ExtensionSchema.IsId(subject) || proof is null || proof.Length is < 1 or > 256) return new("Rejected", "Invalid identity input", repository.Revision);
             authenticating = true; ownsAuthentication = true;
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token); budget.CancelAfter(Effective.TimeoutMs);
-            var identity = await ExternalAsync(() => ports.Login.AuthenticateAsync(subject, proof, budget.Token)).ConfigureAwait(false);
+            var identity = await ExternalPortAsync(ports.Login, () => ports.Login.AuthenticateAsync(subject, proof, budget.Token)).ConfigureAwait(false);
             if (identity is null) return new("Rejected", "Authentication rejected; no operator changed", repository.Revision);
             if (identity.Subject != subject || string.IsNullOrWhiteSpace(identity.DisplayName) || identity.DisplayName.Length > 128 ||
                 identity.DisplayName.Any(char.IsControl) || identity.Authority != Effective.Login!.Target || identity.Simulation != factory.SimulationIdentity(Effective.Login!) || identity.ExpiresAt <= DateTimeOffset.UtcNow ||
@@ -51,12 +52,13 @@ public sealed partial class ParcelRuntime
         try
         {
             if (stopped || stopping.IsCancellationRequested || ports?.Maintenance is null || repository?.Paused != true) return new("Rejected", "Pause before maintenance authentication", repository?.Revision ?? 0);
+            if (!PortMaintenanceClear(ports.Maintenance)) return new("Rejected", "Maintenance authenticator is under maintenance", repository.Revision);
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token); budget.CancelAfter(Effective.TimeoutMs);
-            var identity = await ExternalAsync(() => ports.Maintenance.AuthenticateAsync(subject, proof, budget.Token)).ConfigureAwait(false);
+            var identity = await ExternalPortAsync(ports.Maintenance, () => ports.Maintenance.AuthenticateAsync(subject, proof, budget.Token)).ConfigureAwait(false);
             if (identity is null || identity.Subject != subject || identity.Authority != (Effective.MaintenanceLogin?.Target ?? "reference://maintenance") ||
                 !Guid.TryParseExact(identity.SessionId, "N", out _) || identity.AuthenticatedAt > DateTimeOffset.UtcNow || identity.ExpiresAt is null || identity.Simulation != (Effective.MaintenanceLogin is null || factory.SimulationIdentity(Effective.MaintenanceLogin)) || identity.Grants?.Contains("maintenance") != true || identity.ExpiresAt <= DateTimeOffset.UtcNow)
                 return new("Rejected", "Maintenance authentication rejected", repository.Revision);
-            maintenanceSession.Set(identity); repository.Commit(null, "MaintenanceAuthenticated", Wire.Encode(identity));
+            maintenanceSession.Set(Wire.Decode<OperatorIdentity>(Wire.Encode(identity))); repository.Commit(null, "MaintenanceAuthenticated", Wire.Encode(identity));
             return new("Authorized", identity.Simulation ? "SIMULATION maintenance grant; pause alone provides no authorization" : "Authenticated maintenance grant; pause alone provides no authorization", repository.Revision);
         }
         finally { gate.Release(); }
@@ -66,15 +68,35 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync().ConfigureAwait(false);
         try { return factory.Catalog(); } finally { gate.Release(); }
     }
+    public async Task<BusinessReceipt> ManageCapabilityAsync(string action, string identity)
+    {
+        await gate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            if (stopped || !CanConfigure) return new("Rejected", "Pause and authenticate maintenance after active calls drain", repository?.Revision ?? 0);
+            var actor = maintenanceSession.Identity!;
+            repository!.Commit(null, "ExtensionMaintenanceStarted", Wire.Encode(new { Action = action, Identity = identity, Actor = actor }));
+            var result = await ExternalAsync(() => factory.ManageAsync(action, identity)).ConfigureAwait(false);
+            repository.Commit(null, "ExtensionMaintenanceResult", Wire.Encode(new { Action = action, Identity = identity, Actor = actor, Result = result }));
+            return result with { Revision = repository.Revision };
+        }
+        catch (Exception ex) when (ex is InvalidDataException or IOException or UnauthorizedAccessException or InvalidOperationException or Microsoft.Data.Sqlite.SqliteException)
+        { repository!.Commit(null, "ExtensionMaintenanceFailed", ex.GetType().Name + ": " + ex.Message); return new("Rejected", ex.Message, repository.Revision); }
+        finally { gate.Release(); }
+    }
     public async Task<BusinessReceipt> InstallCapabilityAsync(string file, string sha256)
     {
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
             if (stopped || repository?.Paused != true || !MaintenanceAuthorized || externalWaits != 0) return new("Rejected", "Pause and authenticate maintenance before installation", repository?.Revision ?? 0);
-            return await ExternalAsync(() => factory.InstallAsync(file, sha256)).ConfigureAwait(false);
+            var actor = maintenanceSession.Identity;
+            repository.Commit(null, "ExtensionInstallStarted", Wire.Encode(new { Actor = actor, Sha256 = sha256 }));
+            var result = await ExternalAsync(() => factory.InstallAsync(file, sha256)).ConfigureAwait(false);
+            repository.Commit(null, "ExtensionInstallResult", Wire.Encode(new { Actor = actor, Sha256 = sha256, Result = result }));
+            return result with { Revision = repository.Revision };
         }
-        catch (Exception ex) when (ex is InvalidDataException or IOException or UnauthorizedAccessException) { return new("Rejected", ex.Message, repository?.Revision ?? 0); }
+        catch (Exception ex) when (ex is InvalidDataException or IOException or UnauthorizedAccessException) { repository!.Commit(null, "ExtensionInstallFailed", ex.GetType().Name + ": " + ex.Message); return new("Rejected", ex.Message, repository.Revision); }
         finally { gate.Release(); }
     }
 }

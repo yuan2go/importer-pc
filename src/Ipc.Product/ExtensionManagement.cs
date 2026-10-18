@@ -70,7 +70,7 @@ public sealed partial class ProductRuntime
         var operation = store.Operations().Single(x => x.Id == originalOperationId);
         if (operation.Kind == "Uninstall") _ = await (application ?? throw new GuardException("Uninstall recovery needs station inspection")).RequiredExtensionPackagesAsync().ConfigureAwait(false);
         return await Task.Run(() => store.Recover(originalOperationId, refreshReferences: operation.Kind == "Uninstall"
-            ? () => store.InspectConsumers(SupplyStore.InspectRequiredExtensionPackages).Concat(application!.RequiredExtensionPackagesAsync().GetAwaiter().GetResult()).Distinct().ToArray() : null)).ConfigureAwait(false);
+            ? () => store.InspectConsumers(Ipc.Assembly.ExtensionConsumerReaders.Inspect).Concat(application!.RequiredExtensionPackagesAsync().GetAwaiter().GetResult()).Distinct().ToArray() : null)).ConfigureAwait(false);
     }
     public async Task UninstallExtensionAsync(PackageReference package)
     {
@@ -78,6 +78,6 @@ public sealed partial class ProductRuntime
         _ = await application.RequiredExtensionPackagesAsync().ConfigureAwait(false);
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         await Task.Run(() => (extensionStore ?? throw new InvalidOperationException("Extension store unavailable")).Uninstall(package,
-            () => extensionStore!.InspectConsumers(SupplyStore.InspectRequiredExtensionPackages).Concat(application.RequiredExtensionPackagesAsync().GetAwaiter().GetResult()).Distinct().ToArray())).ConfigureAwait(false);
+            () => extensionStore!.InspectConsumers(Ipc.Assembly.ExtensionConsumerReaders.Inspect).Concat(application.RequiredExtensionPackagesAsync().GetAwaiter().GetResult()).Distinct().ToArray())).ConfigureAwait(false);
     }
 }

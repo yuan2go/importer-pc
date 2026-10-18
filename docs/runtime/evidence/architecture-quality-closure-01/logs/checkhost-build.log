@@ -1,0 +1,29 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 607 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 607 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 607 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 607 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 607 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Components/Ipc.Components.csproj (用时 607 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 607 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 607 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 7 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 8 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 8 毫秒)。
+  Ipc.Platform -> /tmp/ipc-aq-frozen-check-host/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /tmp/ipc-aq-frozen-check-host/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /tmp/ipc-aq-frozen-check-host/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /tmp/ipc-aq-frozen-check-host/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /tmp/ipc-aq-frozen-check-host/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> /tmp/ipc-aq-frozen-check-host/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /tmp/ipc-aq-frozen-check-host/Ipc.Components.dll
+  Ipc.Drivers -> /tmp/ipc-aq-frozen-check-host/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-aq-frozen-check-host/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /tmp/ipc-aq-frozen-check-host/Ipc.Integrations.dll
+  Ipc.Assembly -> /tmp/ipc-aq-frozen-check-host/Ipc.Assembly.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:03.05

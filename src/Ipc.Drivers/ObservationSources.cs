@@ -11,8 +11,15 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
     CancellationTokenSource? heartbeatStop;
     Task? heartbeat;
     long sequence;
-    readonly Dictionary<string, AcquisitionIdentity> acquisitions = [];
+    sealed class AcquisitionRecord
+    {
+        public readonly HashSet<string> Owners = [];
+        public int Captures;
+    }
+    readonly Dictionary<AcquisitionIdentity, AcquisitionRecord> acquisitions = [];
+    bool captureBound, disposed;
     readonly object callbackGate = new();
+    public int RetainedAcquisitionCount { get { lock (callbackGate) return acquisitions.Count; } }
     public string DeviceId { get; } = deviceId;
     public string Epoch { get; private set; } = Wire.Id();
     public int StartCount { get; private set; }
@@ -26,6 +33,7 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
         if (string.IsNullOrWhiteSpace(registeredEpoch)) throw new ArgumentException("Registered epoch required", nameof(registeredEpoch));
         lock (callbackGate)
         {
+            ObjectDisposedException.ThrowIf(disposed, this);
             if (receive is not null || heartbeatStop is not null) throw new InvalidOperationException("Source already owns a callback/heartbeat");
             receive = receiver; health = onHealth; Epoch = registeredEpoch; sequence = 0; StartCount++;
             heartbeatStop = new(); Confirm(DeviceHealth.Ready);
@@ -56,25 +64,72 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
             var callback = receive ?? throw new InvalidOperationException("Source stopped");
             var observation = new Observation(Wire.Id(), DeviceId, Epoch, sourceId ?? Wire.Id(), Interlocked.Increment(ref sequence), admissionId,
                 kind, codes ?? [], quantity, DateTimeOffset.UtcNow);
-            acquisitions.TryAdd(observation.Epoch + ":" + observation.SourceEventId, new(DeviceId, observation.Epoch, observation.SourceEventId, admissionId, observation.ObservedAt));
-            if (acquisitions.Count > 4096) acquisitions.Remove(acquisitions.Keys.First());
-            return callback(observation);
+            var identity = new AcquisitionIdentity(DeviceId, observation.Epoch, observation.SourceEventId, admissionId, observation.ObservedAt);
+            var owner = "observation:" + observation.Id;
+            if (captureBound)
+            {
+                if (!acquisitions.TryGetValue(identity, out var record)) acquisitions.Add(identity, record = new());
+                record.Owners.Add(owner);
+            }
+            var accepted = false;
+            try { return accepted = callback(observation); }
+            finally { if (!accepted) ReleaseAcquisition(identity, owner); }
         }
     }
-    public IImageCamera BindCapture(CapabilityBinding binding, string temporaryDirectory) => new AcquisitionView(this, new ReferenceImageCamera(binding, temporaryDirectory));
+    public IImageCamera BindCapture(CapabilityBinding binding, string temporaryDirectory)
+    {
+        lock (callbackGate)
+        {
+            ObjectDisposedException.ThrowIf(disposed, this);
+            if (receive is not null || binding.Target != DeviceId) throw new InvalidOperationException("Bind original capture to this reader before startup");
+            captureBound = true;
+            return new AcquisitionView(this, new ReferenceImageCamera(binding, temporaryDirectory));
+        }
+    }
+    public void RetainAcquisition(AcquisitionIdentity identity, string owner)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(owner);
+        lock (callbackGate)
+        {
+            if (!acquisitions.TryGetValue(identity, out var record) || record.Owners.Count == 0)
+                throw new IOException("Original acquisition unavailable; retaining a replacement is forbidden");
+            record.Owners.Add(owner);
+        }
+    }
+    public void ReleaseAcquisition(AcquisitionIdentity identity, string owner)
+    {
+        lock (callbackGate)
+            if (acquisitions.TryGetValue(identity, out var record))
+            {
+                record.Owners.Remove(owner);
+                if (record.Owners.Count == 0 && record.Captures == 0) acquisitions.Remove(identity);
+            }
+    }
     sealed class AcquisitionView(ManualObservationSource owner, IImageCamera port) : IImageCamera
     {
         public string InstanceId => port.InstanceId;
         public Task StartAsync(CancellationToken t) => port.StartAsync(t);
         public Task<CapabilityHealth> HealthAsync(CancellationToken t) => port.HealthAsync(t);
         public Task ReconnectAsync(CancellationToken t) => port.ReconnectAsync(t);
-        public Task<StageReply> CaptureAsync(FrozenRequest request, CancellationToken t)
+        public async Task<StageReply> CaptureAsync(FrozenRequest request, CancellationToken t)
         {
             var acquisition = Wire.Decode<ParcelPayload>(request.Payload).Acquisition;
+            AcquisitionRecord record;
             lock (owner.callbackGate)
-                if (acquisition is null || !owner.acquisitions.TryGetValue(acquisition.Epoch + ":" + acquisition.SourceEventId, out var original) || original != acquisition)
+            {
+                if (acquisition is null || !owner.acquisitions.TryGetValue(acquisition, out record!) || record.Owners.Count == 0)
                     throw new IOException("Original acquisition unavailable; latest frame substitution forbidden");
-            return port.CaptureAsync(request, t);
+                record.Captures++;
+            }
+            try { return await port.CaptureAsync(request, t).ConfigureAwait(false); }
+            finally
+            {
+                lock (owner.callbackGate)
+                {
+                    record.Captures--;
+                    if (record.Owners.Count == 0 && record.Captures == 0) owner.acquisitions.Remove(acquisition);
+                }
+            }
         }
         public Task<StageReply?> QueryAsync(FrozenRequest request, CancellationToken t) => port.QueryAsync(request, t);
         public Task StopAsync(CancellationToken t) => port.StopAsync(t);
@@ -91,7 +146,15 @@ public sealed class ManualObservationSource(string deviceId, string confirmation
             heartbeatStop?.Dispose(); heartbeatStop = null;
         }
     }
-    public async ValueTask DisposeAsync() => await StopAsync(CancellationToken.None).ConfigureAwait(false);
+    public async ValueTask DisposeAsync()
+    {
+        await StopAsync(CancellationToken.None).ConfigureAwait(false);
+        lock (callbackGate)
+        {
+            if (acquisitions.Values.Any(x => x.Captures != 0)) throw new InvalidOperationException("Original captures still active; source ownership retained");
+            disposed = true; acquisitions.Clear();
+        }
+    }
 }
 
 // Replay is explicitly advanced; liveness confirms the synthetic source, not the age or

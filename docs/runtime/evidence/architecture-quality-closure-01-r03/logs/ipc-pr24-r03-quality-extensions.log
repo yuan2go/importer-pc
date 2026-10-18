@@ -1,0 +1,58 @@
+EvidenceRoot=<EVIDENCE_ROOT>
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: actual signed installation interruption retains original operation journal
+PASS AQ: actual Application management recovers original published package without new identity
+PASS AQ: installed signed module binds only through complete CAS/Pending candidate
+PASS AQ: Pending configuration consumer prevents retirement before activation
+PASS AQ: controlled activation retains pause until explicit Resume
+PASS AQ: actual signed Application port executes and freezes package identity
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: safe removal stages complete built-in deployment while retaining original history
+PASS AQ: active resource/package use prevents uninstall before controlled restart
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: R04 actual Parcel management retains mixed offline Supply Pending package
+PASS AQ: cleared live deployment and settled originals permit real safe uninstall through Application entry
+PASS AQ: uninstall decision preserves historical package/request/acceptance facts
+PASS AQ: retirement preserves permanent registration and original uninstall operation
+PASS AQ: unreadable offline consumer explicitly blocks maintenance rather than clearing references
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: Application installs signed capability before binding
+PASS AQ: installed signed module binds only through complete CAS/Pending candidate
+PASS AQ: Pending configuration consumer prevents retirement before activation
+PASS AQ: controlled activation retains pause until explicit Resume
+PASS AQ: actual signed Application port executes and freezes package identity
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: package-bearing backup registers an offline consumer with complete custody
+PASS AQ: safe removal stages complete built-in deployment while retaining original history
+PASS AQ: active resource/package use prevents uninstall before controlled restart
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: offline original backup pins exact package after live binding and resources are removed
+PASS AQ: uninstall decision preserves historical package/request/acceptance facts
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: Pending-only backup probe installs actual signed package
+PASS AQ: candidate-only package retained while original main is unresolved
+PASS AQ: restart keeps package solely in rejected Pending without initializing active extension resources
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: actual backup preserves unactivated Pending package
+PASS AQ: live original and candidate can be cleared independently of immutable backup
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: offline backup with package only in Pending prevents uninstall after all live references clear
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: R03 exact signed package installed for isolated legacy consumer guard
+PASS AQ: R03 schema1/Effective real Application uninstall preserves exact installed package and ambiguous original bytes
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: R03 exact signed package installed for isolated legacy consumer guard
+PASS AQ: R03 schema1/Pending real Application uninstall preserves exact installed package and ambiguous original bytes
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: R03 exact signed package installed for isolated legacy consumer guard
+PASS AQ: R03 schema1/Frozen real Application uninstall preserves exact installed package and ambiguous original bytes
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: R03 exact signed package installed for isolated legacy consumer guard
+PASS AQ: R03 schema2/Effective real Application uninstall preserves exact installed package and ambiguous original bytes
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: R03 exact signed package installed for isolated legacy consumer guard
+PASS AQ: R03 schema2/Pending real Application uninstall preserves exact installed package and ambiguous original bytes
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: R03 exact signed package installed for isolated legacy consumer guard
+PASS AQ: R03 schema2/Frozen real Application uninstall preserves exact installed package and ambiguous original bytes
+PASS AQ EXTENSIONS COMPLETE

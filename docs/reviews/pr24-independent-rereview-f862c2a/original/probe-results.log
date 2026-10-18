@@ -1,0 +1,1405 @@
+{
+  "name": "schema1-Effective-kind",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "5127F0172F7BC385256DBC7E9E089210157B9D34452CA7E6A3BB109D8B9CAD91",
+  "configAfter": "5127F0172F7BC385256DBC7E9E089210157B9D34452CA7E6A3BB109D8B9CAD91",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Effective-implementation",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "1147EE5C0F16E1B8019521864B19C2FF1E461432CC3A882410873BADCA73F52D",
+  "configAfter": "1147EE5C0F16E1B8019521864B19C2FF1E461432CC3A882410873BADCA73F52D",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Effective-version",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "C5EFE7473B54A4FC19EBF3C5178FF25BD29555615C23089F1ED6D3B79FA531AB",
+  "configAfter": "C5EFE7473B54A4FC19EBF3C5178FF25BD29555615C23089F1ED6D3B79FA531AB",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Effective-target",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "C399B46A7C88F2E60385CCC79B8965213C5C75FE08525407E5E0DE9133CE1578",
+  "configAfter": "C399B46A7C88F2E60385CCC79B8965213C5C75FE08525407E5E0DE9133CE1578",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Effective-contract",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "003C60D3A82A1DD8EC9287863EED3D34CD4AF400D81D1F70B7B551D9D0544BA1",
+  "configAfter": "003C60D3A82A1DD8EC9287863EED3D34CD4AF400D81D1F70B7B551D9D0544BA1",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Effective-parameters",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "1D3A500D1D91DE1DA0A6F0C135AD6A41FAC800E123A6E152DD580FAB56DAA013",
+  "configAfter": "1D3A500D1D91DE1DA0A6F0C135AD6A41FAC800E123A6E152DD580FAB56DAA013",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Effective-enabled",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "10328917A3D9329552A954A1B1AB2C869812658914077BBD02D690343C8C47D4",
+  "configAfter": "10328917A3D9329552A954A1B1AB2C869812658914077BBD02D690343C8C47D4",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Effective-package",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "01B8453ABB05D114F9558FDFD08229D056902FA434B16D9BE008199375762510",
+  "configAfter": "01B8453ABB05D114F9558FDFD08229D056902FA434B16D9BE008199375762510",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema1-Effective-module",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "5F52F6683849FBEE65517DC7B0FD863283293FB4B424E699A77C0881F28F81F6",
+  "configAfter": "5F52F6683849FBEE65517DC7B0FD863283293FB4B424E699A77C0881F28F81F6",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema1-Effective-cloned-mirror",
+  "pass": true,
+  "rejected": false,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "9688FD44ADEB73491F769FABF5668F4F576765DF268AAC327BB4C703FB916058",
+  "configAfter": "9688FD44ADEB73491F769FABF5668F4F576765DF268AAC327BB4C703FB916058",
+  "detail": ""
+}
+{
+  "name": "schema1-Effective-duplicate-packages",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "1B3F0A0F5BAB80BBAE436820BF1888369E49DB5D0F383C63F6D3E61E734142A0",
+  "configAfter": "1B3F0A0F5BAB80BBAE436820BF1888369E49DB5D0F383C63F6D3E61E734142A0",
+  "detail": "Unknown/invalid consumer configuration: Invalid exact capability deployment closure"
+}
+{
+  "name": "schema1-Effective-null-item",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "8C8CB868DB63BF1FFE92CAA57A47DD3593782EB174DA4D9585B8771E5B4A9FC1",
+  "configAfter": "8C8CB868DB63BF1FFE92CAA57A47DD3593782EB174DA4D9585B8771E5B4A9FC1",
+  "detail": "Unknown/invalid consumer configuration: Malformed configuration: missing reader/weight/camera or null capability inventory"
+}
+{
+  "name": "schema1-Effective-oversize",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "1CD747D650FA54B2E3BA843DA09D5CD157A25352D8A6040EBD4A47EAE252BE8E",
+  "configAfter": "1CD747D650FA54B2E3BA843DA09D5CD157A25352D8A6040EBD4A47EAE252BE8E",
+  "detail": "Unknown/invalid consumer configuration: Invalid bounded capability instance inventory"
+}
+{
+  "name": "schema1-Pending-kind",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "54C2209046D5479AE59963BA0994416963F07808173374A59330D362FC748707",
+  "configAfter": "54C2209046D5479AE59963BA0994416963F07808173374A59330D362FC748707",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Pending-implementation",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "98B0E8BF70A4C6F50F8DB207C82147B186E2169532FF46C849AB210C7BA0F6C8",
+  "configAfter": "98B0E8BF70A4C6F50F8DB207C82147B186E2169532FF46C849AB210C7BA0F6C8",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Pending-version",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "7751DEF8BF30C9B6168734E828114AD2CF91093A91A7969A68EB3DEAF38138F6",
+  "configAfter": "7751DEF8BF30C9B6168734E828114AD2CF91093A91A7969A68EB3DEAF38138F6",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Pending-target",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "BEA4F31DCD5E6754996A7600B9FBA9B695EAB7F60B523E4770F15F047349A45B",
+  "configAfter": "BEA4F31DCD5E6754996A7600B9FBA9B695EAB7F60B523E4770F15F047349A45B",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Pending-contract",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "9AE06CB79ABA7496C6D05EF999C8F07E5977069175B474AF1339007ED71A26E2",
+  "configAfter": "9AE06CB79ABA7496C6D05EF999C8F07E5977069175B474AF1339007ED71A26E2",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Pending-parameters",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "A063E6ECE5D107168E21CFE93AB35C312D8E67A88E4BF618D0723F6375875B92",
+  "configAfter": "A063E6ECE5D107168E21CFE93AB35C312D8E67A88E4BF618D0723F6375875B92",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Pending-enabled",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "30A395D64BD6E8C80C0B96A92B01CD6CA4D9033B6D8BCC87F3DCD57B830B50BC",
+  "configAfter": "30A395D64BD6E8C80C0B96A92B01CD6CA4D9033B6D8BCC87F3DCD57B830B50BC",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Pending-package",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "B3C647E4893246D7B1E51DE62C2AD77F4AD9715E76CF6B4ACD4A68985173EF1E",
+  "configAfter": "B3C647E4893246D7B1E51DE62C2AD77F4AD9715E76CF6B4ACD4A68985173EF1E",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema1-Pending-module",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "8CF583B1F1C3B121DF3E531F4625E367B3C609E00EE591FCBC6C5B80F169B658",
+  "configAfter": "8CF583B1F1C3B121DF3E531F4625E367B3C609E00EE591FCBC6C5B80F169B658",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema1-Pending-cloned-mirror",
+  "pass": true,
+  "rejected": false,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "099C73F4E6B94583805BDB9B524982C27212518E7D4F7381C1D2187DAEC95174",
+  "configAfter": "099C73F4E6B94583805BDB9B524982C27212518E7D4F7381C1D2187DAEC95174",
+  "detail": ""
+}
+{
+  "name": "schema1-Pending-duplicate-packages",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "4787603EA9DDCB477EE6BE88CB8935540A9BB8593EC3D98801809E593CB2187C",
+  "configAfter": "4787603EA9DDCB477EE6BE88CB8935540A9BB8593EC3D98801809E593CB2187C",
+  "detail": "Unknown/invalid consumer configuration: Invalid exact capability deployment closure"
+}
+{
+  "name": "schema1-Pending-null-item",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "028433B39D3A3086FB15A7EA0E0270F4102D6F99A7D8CE1685826B1949A546C6",
+  "configAfter": "028433B39D3A3086FB15A7EA0E0270F4102D6F99A7D8CE1685826B1949A546C6",
+  "detail": "Unknown/invalid consumer configuration: Malformed configuration: missing reader/weight/camera or null capability inventory"
+}
+{
+  "name": "schema1-Pending-oversize",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "9F72B2C6E3E5ADAAF833F6A0C063BBE42B84D7A256876C5673A0B45279B57348",
+  "configAfter": "9F72B2C6E3E5ADAAF833F6A0C063BBE42B84D7A256876C5673A0B45279B57348",
+  "detail": "Unknown/invalid consumer configuration: Invalid bounded capability instance inventory"
+}
+{
+  "name": "schema1-Frozen-kind",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "34E73B521F0EF61D79146F58925E3959368043D65D1A688E785F38F92114FFA8",
+  "dbAfter": "34E73B521F0EF61D79146F58925E3959368043D65D1A688E785F38F92114FFA8",
+  "configBefore": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "configAfter": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Frozen-implementation",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "D175C10C0163D2D3343D8A479AB05B261BE111B27568DBB85B9FA993A5BB281F",
+  "dbAfter": "D175C10C0163D2D3343D8A479AB05B261BE111B27568DBB85B9FA993A5BB281F",
+  "configBefore": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "configAfter": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Frozen-version",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "AABCC4C6EB22C63174AB3CAFC4667685F259CDCE58239594B9FF27FEFE12DEF8",
+  "dbAfter": "AABCC4C6EB22C63174AB3CAFC4667685F259CDCE58239594B9FF27FEFE12DEF8",
+  "configBefore": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "configAfter": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Frozen-target",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "51A22A222BDB2F2A9055C5491FEDC51FBBDEF18E47EB0E6187D62D2EC71A1776",
+  "dbAfter": "51A22A222BDB2F2A9055C5491FEDC51FBBDEF18E47EB0E6187D62D2EC71A1776",
+  "configBefore": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "configAfter": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Frozen-contract",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "56F46A15A97284AA67ADE54695E432C18D1ADAF8E0D55493EA48D977811ABFB0",
+  "dbAfter": "56F46A15A97284AA67ADE54695E432C18D1ADAF8E0D55493EA48D977811ABFB0",
+  "configBefore": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "configAfter": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Frozen-parameters",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "202C6DA6A54BAA67027D75D942DB47AA488EED6B210DDC68EE7A6E9C9188B082",
+  "dbAfter": "202C6DA6A54BAA67027D75D942DB47AA488EED6B210DDC68EE7A6E9C9188B082",
+  "configBefore": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "configAfter": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Frozen-enabled",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "2419CE2408648D2DD7CE753B09F89E7F8D78BCBA0915AD05C3B43E9BA26BA000",
+  "dbAfter": "2419CE2408648D2DD7CE753B09F89E7F8D78BCBA0915AD05C3B43E9BA26BA000",
+  "configBefore": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "configAfter": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema1-Frozen-package",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "ADF7201D057A6C35DFEDA25C9106251D62A6089CA3DB3D9838B562BD658320E6",
+  "dbAfter": "ADF7201D057A6C35DFEDA25C9106251D62A6089CA3DB3D9838B562BD658320E6",
+  "configBefore": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "configAfter": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema1-Frozen-module",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "C86E81D1F6B62C1546F32FCB3BE47CEB48CBF5C39FC52B3DD0690E63AB801111",
+  "dbAfter": "C86E81D1F6B62C1546F32FCB3BE47CEB48CBF5C39FC52B3DD0690E63AB801111",
+  "configBefore": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "configAfter": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema1-Frozen-cloned-mirror",
+  "pass": true,
+  "rejected": false,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "83FFB740F78C9997883D40D31F36C03C332459D1D6D712032FD67F1017395F81",
+  "dbAfter": "83FFB740F78C9997883D40D31F36C03C332459D1D6D712032FD67F1017395F81",
+  "configBefore": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "configAfter": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "detail": ""
+}
+{
+  "name": "schema1-Frozen-duplicate-packages",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "ACD43348778672A2D210033AE780F10A5FBC23464BBA019F321F3B0D9F3EA590",
+  "dbAfter": "ACD43348778672A2D210033AE780F10A5FBC23464BBA019F321F3B0D9F3EA590",
+  "configBefore": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "configAfter": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "detail": "Unknown/invalid consumer configuration: Invalid exact capability deployment closure"
+}
+{
+  "name": "schema1-Frozen-null-item",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "6591809A4EA325E6948BEC1BC392F489C2B1BF83E39DDA3B93D9F13BCD371583",
+  "dbAfter": "6591809A4EA325E6948BEC1BC392F489C2B1BF83E39DDA3B93D9F13BCD371583",
+  "configBefore": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "configAfter": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "detail": "Unknown/invalid consumer configuration: Malformed configuration: missing reader/weight/camera or null capability inventory"
+}
+{
+  "name": "schema1-Frozen-oversize",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "B57AF96BB5A1C8BA5D7E66C12A91C0077EBCBD676717E824BE3E751776472F72",
+  "dbAfter": "B57AF96BB5A1C8BA5D7E66C12A91C0077EBCBD676717E824BE3E751776472F72",
+  "configBefore": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "configAfter": "E88F5D5A1DBA4E833FD7106CB2146DC85CADA24C4E2634538E4632FD7FB72F77",
+  "detail": "Unknown/invalid consumer configuration: Invalid bounded capability instance inventory"
+}
+{
+  "name": "schema2-Effective-kind",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "6739FCBB7C5D91A8483C1C6472FE9AF89D5EA0C1DAB74D862F73CD2BF598AC53",
+  "configAfter": "6739FCBB7C5D91A8483C1C6472FE9AF89D5EA0C1DAB74D862F73CD2BF598AC53",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Effective-implementation",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "771F05B3A4AA217B46D7B7C2F0C42DBB123721451FD88CC188EAC7D60F555304",
+  "configAfter": "771F05B3A4AA217B46D7B7C2F0C42DBB123721451FD88CC188EAC7D60F555304",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Effective-version",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "47B7A2F7E2DCF53FF5202DFD4AF51D714DE1C19D180F46AA2A8EFF7DC89C6C2B",
+  "configAfter": "47B7A2F7E2DCF53FF5202DFD4AF51D714DE1C19D180F46AA2A8EFF7DC89C6C2B",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Effective-target",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "8C85FB3D115841984DEA1D5635C7238A7391B891D2997A59517B21545F1FAAE2",
+  "configAfter": "8C85FB3D115841984DEA1D5635C7238A7391B891D2997A59517B21545F1FAAE2",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Effective-contract",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "E5DCBEDCE5D34BA6276477A79AD02496297DD06A6CCE995C0947360FF8A37525",
+  "configAfter": "E5DCBEDCE5D34BA6276477A79AD02496297DD06A6CCE995C0947360FF8A37525",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Effective-parameters",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "1D74846DFE970487472141D3AEED868C0A0830066EB85B177FBC0798619E62ED",
+  "configAfter": "1D74846DFE970487472141D3AEED868C0A0830066EB85B177FBC0798619E62ED",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Effective-enabled",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "2FF048C74A855E7F45A1E25DD0EA708C4598C8E9F7C9BFFEC5BBAB380BB74C09",
+  "configAfter": "2FF048C74A855E7F45A1E25DD0EA708C4598C8E9F7C9BFFEC5BBAB380BB74C09",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Effective-package",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "F1B50D78A7137FACD25FB0213279EE11234C07E9C0466A43CC5FAB6EE688439C",
+  "configAfter": "F1B50D78A7137FACD25FB0213279EE11234C07E9C0466A43CC5FAB6EE688439C",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema2-Effective-module",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "78CFB1A680FA3B442692E22C8F303C03A308E8B708F481A56648A6D5F19DD0F9",
+  "configAfter": "78CFB1A680FA3B442692E22C8F303C03A308E8B708F481A56648A6D5F19DD0F9",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema2-Effective-cloned-mirror",
+  "pass": true,
+  "rejected": false,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "78197709A82505F85E5EEF1CEA283047EBE2FE78CE94C438F5EBD4038CECA6AE",
+  "configAfter": "78197709A82505F85E5EEF1CEA283047EBE2FE78CE94C438F5EBD4038CECA6AE",
+  "detail": ""
+}
+{
+  "name": "schema2-Effective-duplicate-packages",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "36B2CF7F687B09E24501AE738F047E82620BA408370E97ED9F6DECC820D466D1",
+  "configAfter": "36B2CF7F687B09E24501AE738F047E82620BA408370E97ED9F6DECC820D466D1",
+  "detail": "Unknown/invalid consumer configuration: Invalid exact capability deployment closure"
+}
+{
+  "name": "schema2-Effective-null-item",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "5C9B735525A673F9AA178C72D86A143B94403EB315BBF7ED8F7C23B201880DAE",
+  "configAfter": "5C9B735525A673F9AA178C72D86A143B94403EB315BBF7ED8F7C23B201880DAE",
+  "detail": "Unknown/invalid consumer configuration: Malformed configuration: missing reader/weight/camera or null capability inventory"
+}
+{
+  "name": "schema2-Effective-oversize",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "7B447AA54FB5BF5D5D05C793154C11B39E2C872AB22B268F2B01B06913D2F173",
+  "configAfter": "7B447AA54FB5BF5D5D05C793154C11B39E2C872AB22B268F2B01B06913D2F173",
+  "detail": "Unknown/invalid consumer configuration: Invalid bounded capability instance inventory"
+}
+{
+  "name": "schema2-Pending-kind",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "9C7D71E6A9A9EB3959C9CE0B479D55A71D502F2F92D4C19407D3449C3660D98F",
+  "configAfter": "9C7D71E6A9A9EB3959C9CE0B479D55A71D502F2F92D4C19407D3449C3660D98F",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Pending-implementation",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "CBCFE573C8170B1F99FC4E6D83F7CC9345331A61E87DD33A70B574E2C7AA502D",
+  "configAfter": "CBCFE573C8170B1F99FC4E6D83F7CC9345331A61E87DD33A70B574E2C7AA502D",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Pending-version",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "C02F33B2A3C16915685325645ED527C9CED19B7AC5232169393DD6EB12802D26",
+  "configAfter": "C02F33B2A3C16915685325645ED527C9CED19B7AC5232169393DD6EB12802D26",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Pending-target",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "0275067F0B493185977F5C70A1B0E2A7A4E21B5C3C6286212959FED930B23414",
+  "configAfter": "0275067F0B493185977F5C70A1B0E2A7A4E21B5C3C6286212959FED930B23414",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Pending-contract",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "16DD7EE46455DE30C0401F76D128ACACC0716CFD35A6ED7783F29F9F2CFE9AAC",
+  "configAfter": "16DD7EE46455DE30C0401F76D128ACACC0716CFD35A6ED7783F29F9F2CFE9AAC",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Pending-parameters",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "F2E2EA9A7F825EB5B3ED3B345962D26DC2DFFBE3C96A561B935B476A4FD992EF",
+  "configAfter": "F2E2EA9A7F825EB5B3ED3B345962D26DC2DFFBE3C96A561B935B476A4FD992EF",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Pending-enabled",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "DBCDC600F466EF81CADAC041BEA238AAFB161A60A476849B4249C4934F6FDB9E",
+  "configAfter": "DBCDC600F466EF81CADAC041BEA238AAFB161A60A476849B4249C4934F6FDB9E",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Pending-package",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "D679443871F07E50F2E4AA5651B6D0179AC7E54323C9E59065A11F4C04E30223",
+  "configAfter": "D679443871F07E50F2E4AA5651B6D0179AC7E54323C9E59065A11F4C04E30223",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema2-Pending-module",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "F90646E05AE1D1D97826C6676B43FC868EE4ABF88EC0E9EE284E613A7EDC18FF",
+  "configAfter": "F90646E05AE1D1D97826C6676B43FC868EE4ABF88EC0E9EE284E613A7EDC18FF",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema2-Pending-cloned-mirror",
+  "pass": true,
+  "rejected": false,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "361B247C723D0E01E2C30D9B69C78BA35D6DBD3E8890F79251726BE401511780",
+  "configAfter": "361B247C723D0E01E2C30D9B69C78BA35D6DBD3E8890F79251726BE401511780",
+  "detail": ""
+}
+{
+  "name": "schema2-Pending-duplicate-packages",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "A3700C4A11517CFE7C0CB47C3136DE8FFD6012D0B27DDE03DA2268541C11F505",
+  "configAfter": "A3700C4A11517CFE7C0CB47C3136DE8FFD6012D0B27DDE03DA2268541C11F505",
+  "detail": "Unknown/invalid consumer configuration: Invalid exact capability deployment closure"
+}
+{
+  "name": "schema2-Pending-null-item",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "D6EF4D3F27C08DD456797A5C997BCC20D91EB7ABC0606698FCD10028BB35F2F4",
+  "configAfter": "D6EF4D3F27C08DD456797A5C997BCC20D91EB7ABC0606698FCD10028BB35F2F4",
+  "detail": "Unknown/invalid consumer configuration: Malformed configuration: missing reader/weight/camera or null capability inventory"
+}
+{
+  "name": "schema2-Pending-oversize",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "251E53E538374A15181E86CE2BDBBCC8822DD1F75AA8879A360DBDA757EE9026",
+  "configAfter": "251E53E538374A15181E86CE2BDBBCC8822DD1F75AA8879A360DBDA757EE9026",
+  "detail": "Unknown/invalid consumer configuration: Invalid bounded capability instance inventory"
+}
+{
+  "name": "schema2-Frozen-kind",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "D673046C1D3432211CA25ABD94F1516AA10ADEF16DA25F1B8009208C1E59841D",
+  "dbAfter": "D673046C1D3432211CA25ABD94F1516AA10ADEF16DA25F1B8009208C1E59841D",
+  "configBefore": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "configAfter": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Frozen-implementation",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "BEFDB2933271B5024B25271CF37F2822AF7493D67ACD408982E2B60AD4EF215D",
+  "dbAfter": "BEFDB2933271B5024B25271CF37F2822AF7493D67ACD408982E2B60AD4EF215D",
+  "configBefore": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "configAfter": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Frozen-version",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "F6617E4495B86D9EBD567E66D840E70B9E2678CC57C553E2CC4026E657A2DDE1",
+  "dbAfter": "F6617E4495B86D9EBD567E66D840E70B9E2678CC57C553E2CC4026E657A2DDE1",
+  "configBefore": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "configAfter": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Frozen-target",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "1B9C461C4CD6A2188DA7673DF95ACD577FA3F52C9B3E16F658E91F743C22468C",
+  "dbAfter": "1B9C461C4CD6A2188DA7673DF95ACD577FA3F52C9B3E16F658E91F743C22468C",
+  "configBefore": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "configAfter": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Frozen-contract",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "36EE881F0C3E135BA2B193B16AC31395FD73B1A86A1A1DB87610A0F5C5054A09",
+  "dbAfter": "36EE881F0C3E135BA2B193B16AC31395FD73B1A86A1A1DB87610A0F5C5054A09",
+  "configBefore": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "configAfter": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Frozen-parameters",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "D37F759DC42890DBE758677A07F513FA46D8014FD13CE3EB23574FBBE853AAB8",
+  "dbAfter": "D37F759DC42890DBE758677A07F513FA46D8014FD13CE3EB23574FBBE853AAB8",
+  "configBefore": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "configAfter": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Frozen-enabled",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "A16E4EFC3E972B830D4F73A4AB67DFB575B7684C5D9D47EB1499E6F7F11E7BA9",
+  "dbAfter": "A16E4EFC3E972B830D4F73A4AB67DFB575B7684C5D9D47EB1499E6F7F11E7BA9",
+  "configBefore": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "configAfter": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema2-Frozen-package",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "368A2DE565F7050981CB658E1D67A20AEEDD13D8E145C57DD1994F1D1D713D79",
+  "dbAfter": "368A2DE565F7050981CB658E1D67A20AEEDD13D8E145C57DD1994F1D1D713D79",
+  "configBefore": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "configAfter": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema2-Frozen-module",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "37061D3A4A4EB012EC51859C00F9206234CE5D6D4A3987EFD68D39550FA1479F",
+  "dbAfter": "37061D3A4A4EB012EC51859C00F9206234CE5D6D4A3987EFD68D39550FA1479F",
+  "configBefore": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "configAfter": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema2-Frozen-cloned-mirror",
+  "pass": true,
+  "rejected": false,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "19A5D47E49FA4BD38FBC4D5BD987EEBB29F56E4EAD7B300985504147B2706E56",
+  "dbAfter": "19A5D47E49FA4BD38FBC4D5BD987EEBB29F56E4EAD7B300985504147B2706E56",
+  "configBefore": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "configAfter": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "detail": ""
+}
+{
+  "name": "schema2-Frozen-duplicate-packages",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "1436EABE72F3D200022005F2A63B6AE6FA616FE8F31BC620225058A66F5E400C",
+  "dbAfter": "1436EABE72F3D200022005F2A63B6AE6FA616FE8F31BC620225058A66F5E400C",
+  "configBefore": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "configAfter": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "detail": "Unknown/invalid consumer configuration: Invalid exact capability deployment closure"
+}
+{
+  "name": "schema2-Frozen-null-item",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "F1C9CFFEA39A8F1B9587F2AF0E1739A82561385BF21CDBB6AE88BA24514883B2",
+  "dbAfter": "F1C9CFFEA39A8F1B9587F2AF0E1739A82561385BF21CDBB6AE88BA24514883B2",
+  "configBefore": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "configAfter": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "detail": "Unknown/invalid consumer configuration: Malformed configuration: missing reader/weight/camera or null capability inventory"
+}
+{
+  "name": "schema2-Frozen-oversize",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "15C478D1B7769777BF4ECA3B10AEF3356533E39781CC3930F3E45230841367F7",
+  "dbAfter": "15C478D1B7769777BF4ECA3B10AEF3356533E39781CC3930F3E45230841367F7",
+  "configBefore": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "configAfter": "935BBFBFC743678BA1D2386E3885AD2E983FA33396BC44CACF608EB03BAA6E6E",
+  "detail": "Unknown/invalid consumer configuration: Invalid bounded capability instance inventory"
+}
+{
+  "name": "schema3-Effective-kind",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "F53C234E17D7E0EE158EE0DCD3B409436A8A2A85EC412EA4CEA9DC97E97909C3",
+  "configAfter": "F53C234E17D7E0EE158EE0DCD3B409436A8A2A85EC412EA4CEA9DC97E97909C3",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Effective-implementation",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "583878BF4BC7B21A9E55BF6FAD344E061879BA5262E560F4D5DE1AB46C6B081F",
+  "configAfter": "583878BF4BC7B21A9E55BF6FAD344E061879BA5262E560F4D5DE1AB46C6B081F",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Effective-version",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "EE95F48CB247BAEB893702B4851C18A2778926BB46D82E82795A118CBC22A7FA",
+  "configAfter": "EE95F48CB247BAEB893702B4851C18A2778926BB46D82E82795A118CBC22A7FA",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Effective-target",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "936682649B559B44F56EBCC213C1F22D253B4755E4E3D90FAD39290A5729ABCA",
+  "configAfter": "936682649B559B44F56EBCC213C1F22D253B4755E4E3D90FAD39290A5729ABCA",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Effective-contract",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "9A7BB1B33CE47DF8D4F4D642AD6FBFF108435A08C87072CB716FD506FCDBB1F0",
+  "configAfter": "9A7BB1B33CE47DF8D4F4D642AD6FBFF108435A08C87072CB716FD506FCDBB1F0",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Effective-parameters",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "487EE710715AEDE3885C0AC7EE9685A4B4452C331C65B9B354F388E34D3875FB",
+  "configAfter": "487EE710715AEDE3885C0AC7EE9685A4B4452C331C65B9B354F388E34D3875FB",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Effective-enabled",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "1D278A5F7ACD53104DBE7624BF07BF25E708EED2856A31D66E699A023D63F288",
+  "configAfter": "1D278A5F7ACD53104DBE7624BF07BF25E708EED2856A31D66E699A023D63F288",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Effective-package",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "4996023F7182BC797339FA117812780F6779E78994413E7C1C85B074BE33C3B0",
+  "configAfter": "4996023F7182BC797339FA117812780F6779E78994413E7C1C85B074BE33C3B0",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema3-Effective-module",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "79A2A0C581CA9B0E4EA39020EB2C6F45352FE88B2C5B42F9A62ACE36DDE69EB7",
+  "configAfter": "79A2A0C581CA9B0E4EA39020EB2C6F45352FE88B2C5B42F9A62ACE36DDE69EB7",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema3-Effective-cloned-mirror",
+  "pass": true,
+  "rejected": false,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "F4CEB065CC6379A0A1A4D24AD6C59367C83FEB6B78C769D5FDC004D1B6ACE332",
+  "configAfter": "F4CEB065CC6379A0A1A4D24AD6C59367C83FEB6B78C769D5FDC004D1B6ACE332",
+  "detail": ""
+}
+{
+  "name": "schema3-Effective-duplicate-packages",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "7A894B91A33352E8FEA6855A60BFE972979753ECFD64C16072A6EBABDCA09915",
+  "configAfter": "7A894B91A33352E8FEA6855A60BFE972979753ECFD64C16072A6EBABDCA09915",
+  "detail": "Unknown/invalid consumer configuration: Invalid exact capability deployment closure"
+}
+{
+  "name": "schema3-Effective-null-item",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "50110C555CDB870EC855F6A29D662C5670363D182F8EE07A3CB24B25992FED2E",
+  "configAfter": "50110C555CDB870EC855F6A29D662C5670363D182F8EE07A3CB24B25992FED2E",
+  "detail": "Unknown/invalid consumer configuration: Malformed configuration: missing reader/weight/camera or null capability inventory"
+}
+{
+  "name": "schema3-Effective-oversize",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "AE1004628C2E08F4F590E06CCD1546BB6E837E1AF8E8421F5CEF9D1BD05636A9",
+  "configAfter": "AE1004628C2E08F4F590E06CCD1546BB6E837E1AF8E8421F5CEF9D1BD05636A9",
+  "detail": "Unknown/invalid consumer configuration: Invalid bounded capability instance inventory"
+}
+{
+  "name": "schema3-Pending-kind",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "DF3D57F647E5BF8903013364A30B4E4F3EAB800982A5D359E4900DBBD00FFF4D",
+  "configAfter": "DF3D57F647E5BF8903013364A30B4E4F3EAB800982A5D359E4900DBBD00FFF4D",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Pending-implementation",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "F81F6D6CD490C557C8DEF54961A2589F00AFA95885182CA395881F3A840F600F",
+  "configAfter": "F81F6D6CD490C557C8DEF54961A2589F00AFA95885182CA395881F3A840F600F",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Pending-version",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "44F67152B4164FF7E3652A43E72C743297060A78B06DE939FE1E353C6BDF2FE0",
+  "configAfter": "44F67152B4164FF7E3652A43E72C743297060A78B06DE939FE1E353C6BDF2FE0",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Pending-target",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "529723811D7703834578C3FA60C41DDC6577996101D4FBE5C38DB5394A1A2AB6",
+  "configAfter": "529723811D7703834578C3FA60C41DDC6577996101D4FBE5C38DB5394A1A2AB6",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Pending-contract",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "E5B44ED70A69769B860700084DCFCB9501CD514BD1D220A80A4F79D73DB059C9",
+  "configAfter": "E5B44ED70A69769B860700084DCFCB9501CD514BD1D220A80A4F79D73DB059C9",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Pending-parameters",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "2E733ECA5CA5499F7AD2CD22438D5C3CD81E0669C396864F550C673124D812EC",
+  "configAfter": "2E733ECA5CA5499F7AD2CD22438D5C3CD81E0669C396864F550C673124D812EC",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Pending-enabled",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "FF4A9A3CA76A7475291534B3CBB9CB82113D079A53CF43D962A1533CDE901C78",
+  "configAfter": "FF4A9A3CA76A7475291534B3CBB9CB82113D079A53CF43D962A1533CDE901C78",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Pending-package",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "1159761A6A00140932C5CE7F59122038140D1B62701E93C224DBF6672BEAED34",
+  "configAfter": "1159761A6A00140932C5CE7F59122038140D1B62701E93C224DBF6672BEAED34",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema3-Pending-module",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "379783539018AB2178BDB0ECE036BE4BB31EAB02062431E536D3EE4C63B85064",
+  "configAfter": "379783539018AB2178BDB0ECE036BE4BB31EAB02062431E536D3EE4C63B85064",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema3-Pending-cloned-mirror",
+  "pass": true,
+  "rejected": false,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "694E7FEAF33AE76A6F13F1753B4901AD27EA502B43D914B9E440F2C4CF495B92",
+  "configAfter": "694E7FEAF33AE76A6F13F1753B4901AD27EA502B43D914B9E440F2C4CF495B92",
+  "detail": ""
+}
+{
+  "name": "schema3-Pending-duplicate-packages",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "5252CCA86014BA4358007BA328E0663A26573627C61E86CFC03F95D7DB06A1E3",
+  "configAfter": "5252CCA86014BA4358007BA328E0663A26573627C61E86CFC03F95D7DB06A1E3",
+  "detail": "Unknown/invalid consumer configuration: Invalid exact capability deployment closure"
+}
+{
+  "name": "schema3-Pending-null-item",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "544E983E712008F5074D4731069B27196FE1B40D04F649906C1DA0A46FE1C08F",
+  "configAfter": "544E983E712008F5074D4731069B27196FE1B40D04F649906C1DA0A46FE1C08F",
+  "detail": "Unknown/invalid consumer configuration: Malformed configuration: missing reader/weight/camera or null capability inventory"
+}
+{
+  "name": "schema3-Pending-oversize",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "dbAfter": "21685A96C07955B69A1884901BA0F2978505C9F9699DDC6EDB6FF7A7CD07DEAB",
+  "configBefore": "AA19FEBABD36544776DBE17E4FAD79F757B35B64D059BDFBE4252B9034922163",
+  "configAfter": "AA19FEBABD36544776DBE17E4FAD79F757B35B64D059BDFBE4252B9034922163",
+  "detail": "Unknown/invalid consumer configuration: Invalid bounded capability instance inventory"
+}
+{
+  "name": "schema3-Frozen-kind",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "F42D27A7D59041063237A9E1B5DC1942C28911EE0F8A09871BF62E603D5DBC20",
+  "dbAfter": "F42D27A7D59041063237A9E1B5DC1942C28911EE0F8A09871BF62E603D5DBC20",
+  "configBefore": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "configAfter": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Frozen-implementation",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "1BCFDB7CC1070D6F904FF202CE92BB933F316DB8987B6E57ABAF9A0C67402455",
+  "dbAfter": "1BCFDB7CC1070D6F904FF202CE92BB933F316DB8987B6E57ABAF9A0C67402455",
+  "configBefore": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "configAfter": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Frozen-version",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "F0A448FDB0D9721C7793FAE0E888ED4A12C73ACC3BA107E24479F6B6ABFAFF07",
+  "dbAfter": "F0A448FDB0D9721C7793FAE0E888ED4A12C73ACC3BA107E24479F6B6ABFAFF07",
+  "configBefore": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "configAfter": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Frozen-target",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "3157DDD2147CE285373B5EE500611F913C18C0A2700C9016DDBB7E09D6091033",
+  "dbAfter": "3157DDD2147CE285373B5EE500611F913C18C0A2700C9016DDBB7E09D6091033",
+  "configBefore": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "configAfter": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Frozen-contract",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "9DFC873163BC7045D365BDAF1ECF27657E2B31304A7F64046BAF48062BE30CD2",
+  "dbAfter": "9DFC873163BC7045D365BDAF1ECF27657E2B31304A7F64046BAF48062BE30CD2",
+  "configBefore": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "configAfter": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Frozen-parameters",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "62B0CF49E06BF6E3C60C0FC78E3074D5C06B8977A1F0B0C8381E06AC83F5E0C1",
+  "dbAfter": "62B0CF49E06BF6E3C60C0FC78E3074D5C06B8977A1F0B0C8381E06AC83F5E0C1",
+  "configBefore": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "configAfter": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Frozen-enabled",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "BF093FD953B0EEDB0B6285098CA58D98670427E49A6E3A38CE27E91FB97A08D6",
+  "dbAfter": "BF093FD953B0EEDB0B6285098CA58D98670427E49A6E3A38CE27E91FB97A08D6",
+  "configBefore": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "configAfter": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content"
+}
+{
+  "name": "schema3-Frozen-package",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "A4115A4849B75A738CA5D70C6BB6EB4A6841D67878CDBDB7ACC1753F1CA5EF8A",
+  "dbAfter": "A4115A4849B75A738CA5D70C6BB6EB4A6841D67878CDBDB7ACC1753F1CA5EF8A",
+  "configBefore": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "configAfter": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema3-Frozen-module",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "549C3B04DD9B99DA421B784CC26D56D1B4D0898CECFFED7E97339B393716C6A9",
+  "dbAfter": "549C3B04DD9B99DA421B784CC26D56D1B4D0898CECFFED7E97339B393716C6A9",
+  "configBefore": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "configAfter": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "detail": "Unknown/invalid consumer configuration: Capability inventory must contain each complete authoritative role binding; Role and inventory identity have contradictory binding content; Dangling or contradictory exact capability package reference"
+}
+{
+  "name": "schema3-Frozen-cloned-mirror",
+  "pass": true,
+  "rejected": false,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "F6AB8E5FC6C8F8071DB95BF27C07A810316265F6C5ECDDAB1C80413D830F3B2B",
+  "dbAfter": "F6AB8E5FC6C8F8071DB95BF27C07A810316265F6C5ECDDAB1C80413D830F3B2B",
+  "configBefore": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "configAfter": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "detail": ""
+}
+{
+  "name": "schema3-Frozen-duplicate-packages",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "FD1967ECCB178224885CBDA1AF91450CA01DC3E5DC9A5AD19B53C64F7FECB212",
+  "dbAfter": "FD1967ECCB178224885CBDA1AF91450CA01DC3E5DC9A5AD19B53C64F7FECB212",
+  "configBefore": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "configAfter": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "detail": "Unknown/invalid consumer configuration: Invalid exact capability deployment closure"
+}
+{
+  "name": "schema3-Frozen-null-item",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "AEBDD82338D81C4B2676081D06EC5137752298AAE288AF68A0F784FDA2BD84C2",
+  "dbAfter": "AEBDD82338D81C4B2676081D06EC5137752298AAE288AF68A0F784FDA2BD84C2",
+  "configBefore": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "configAfter": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "detail": "Unknown/invalid consumer configuration: Malformed configuration: missing reader/weight/camera or null capability inventory"
+}
+{
+  "name": "schema3-Frozen-oversize",
+  "pass": true,
+  "rejected": true,
+  "unchanged": true,
+  "references": 0,
+  "dbBefore": "D56B1466B9283B7C30CA8F77B39CFFDC633A0BE937FBB76B2EE415BAA52892BF",
+  "dbAfter": "D56B1466B9283B7C30CA8F77B39CFFDC633A0BE937FBB76B2EE415BAA52892BF",
+  "configBefore": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "configAfter": "A5B52779E56DEE5790632D692C47FDD5C57F4AB7B695BD44F8C75CB146BC8B0F",
+  "detail": "Unknown/invalid consumer configuration: Invalid bounded capability instance inventory"
+}
+Independent extra raw field matrix failures=0

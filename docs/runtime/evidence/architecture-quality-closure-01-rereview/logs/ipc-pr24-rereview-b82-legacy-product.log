@@ -1,0 +1,31 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 1.96 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 1.96 秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 1.97 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 1.96 秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 1.96 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 1.96 秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 1.96 秒)。
+  已还原 <WORKTREE>/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 1.96 秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 4 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 3 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Product/Ipc.Product.csproj (用时 10 毫秒)。
+  Ipc.Platform -> /tmp/ipc-pr24-rereview-b82-supply/bin/Ipc.Platform/debug/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /tmp/ipc-pr24-rereview-b82-supply/bin/Ipc.Application.Contracts/debug/Ipc.Application.Contracts.dll
+  Ipc.Reference.Protocol -> /tmp/ipc-pr24-rereview-b82-supply/bin/Ipc.Reference.Protocol/debug/Ipc.Reference.Protocol.dll
+  Ipc.Drivers -> /tmp/ipc-pr24-rereview-b82-supply/bin/Ipc.Drivers/debug/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-pr24-rereview-b82-supply/bin/Ipc.Application.Supply.Contracts/debug/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /tmp/ipc-pr24-rereview-b82-supply/bin/Ipc.Integrations/debug/Ipc.Integrations.dll
+  Ipc.Adapters -> /tmp/ipc-pr24-rereview-b82-supply/bin/Ipc.Adapters/debug/Ipc.Adapters.dll
+  Ipc.Platform.Storage -> /tmp/ipc-pr24-rereview-b82-supply/bin/Ipc.Platform.Storage/debug/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> /tmp/ipc-pr24-rereview-b82-supply/bin/Ipc.Application.Supply/debug/Ipc.Supply.dll
+  Ipc.Application.ParcelFlow -> /tmp/ipc-pr24-rereview-b82-supply/bin/Ipc.Application.ParcelFlow/debug/Ipc.Application.ParcelFlow.dll
+<WORKTREE>/src/Ipc.Assembly/ExtensionConsumerReaders.cs(13,48): error CS0122: “RecoveryFiles”不可访问，因为它具有一定的保护级别 [<WORKTREE>/src/Ipc.Product/Ipc.Product.csproj]
+
+生成失败。
+
+<WORKTREE>/src/Ipc.Assembly/ExtensionConsumerReaders.cs(13,48): error CS0122: “RecoveryFiles”不可访问，因为它具有一定的保护级别 [<WORKTREE>/src/Ipc.Product/Ipc.Product.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:07.58

@@ -1,10 +1,14 @@
+> 当前整改：[WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01](docs/work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)。实际路径见[质量闭环运行指南](docs/runtime/architecture-quality-closure-01.md)，22及旧报告PASS仅覆盖原身份；本包验证与剩余边界按同包结果读取。
+
 # importer-pc
 
 C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、多视图共享业务、真实SQLite事务/Outbox/原请求恢复、合成观察和受控扩展。旧现场迁移、真实SDK/WCS和现场资格分别验证。
 
 ## 当前工程状态
 
-当前实施为[Application架构22](docs/runtime/application-architecture-22.md)：一个主流程一个构建选装Application，Sportmaster两相机/两独立投递位，DirectPlc及WcsToPlc各一个顺序投递位；完整schema3配置、每设备注册及每位有界执行、仅取图/上传分离、数据库3升级前未结屏障。既有UI仅保护配置契约，不新增页面/预览。验证与交付记录在本包报告；Windows实际NOT_RUN，真实SDK/协议/现场BLOCKED。
+当前实施为[质量闭环01](docs/runtime/architecture-quality-closure-01.md)，继承Application22三条独立主流程与19/20可靠性约束。Sportmaster为左右两个独立投递位，DirectPlc及WcsToPlc各一个顺序位；Parcel数据库4提供历史归档/分页/永久身份，客户端提供双位结果和完整候选维护。Windows实际NOT_RUN，真实SDK/协议/现场BLOCKED。
+
+PR24固定f862c2ae2ad00ab79ceff5e2013c2a5593d05234独立复审在限定参考范围内未发现剩余代码阻断，R03及R01～R05参考回归通过；[原报告与证据归档](docs/reviews/pr24-independent-rereview-f862c2a/README.md)。2026-10-19用户授权归档后按精确head合并，身份以PR记录为准；本轮不重复测试或打包。原审查失败、旧候选及Windows/真实现场门禁保留。
 
 ## 继承的PR20/21整合基线
 
@@ -42,4 +46,4 @@ Supply兼容Storage/MinimumReader为5/5；17冻结参考读码1.0.5与场地能�
 
 仓库public；[公开范围](docs/baseline/PUBLICATION.md)持续有效，完整客户归档仍PUBLIC_SUBSET_ONLY。D批准与RV状态不因参考实现或文档发布关闭。只提交获授权审查、通用实现及合成证据，不附客户原稿、私密链接、凭据、生产数据、SDK或字体文件。历史源资产校验问题保留，不放松校验器换通过。
 
-本包实际交付：[22结果与候选身份](docs/runtime/application-architecture-22-results.md)。
+本包交付及原候选身份：[质量闭环01结果](docs/runtime/architecture-quality-closure-01-results.md)。22结果保留原阶段范围。

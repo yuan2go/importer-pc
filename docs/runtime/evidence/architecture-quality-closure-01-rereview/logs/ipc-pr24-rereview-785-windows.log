@@ -1,0 +1,37 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 2.63 秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 2.73 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 2.61 秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 2.61 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 2.64 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 2.63 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj (用时 2.61 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 2.61 秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 19 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 10 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 72 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 64 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 132 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 179 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 285 毫秒)。
+  Ipc.Platform -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Platform/debug/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Application.Supply.Contracts/debug/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Platform.Storage/debug/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Application.Supply/debug/Ipc.Supply.dll
+  Ipc.Application.Contracts -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Application.Contracts/debug/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Application.ParcelFlow/debug/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Application.Sportmaster/debug/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Reference.Protocol/debug/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Components/debug/Ipc.Components.dll
+  Ipc.Drivers -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Drivers/debug/Ipc.Drivers.dll
+  Ipc.Integrations -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Integrations/debug/Ipc.Integrations.dll
+  Ipc.Assembly -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Assembly/debug_win-x64/Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Application.ParcelFlow.Desktop/debug/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Application.Sportmaster.Desktop/debug/Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> /tmp/ipc-pr24-rereview-785-windows/bin/Ipc.Desktop/debug_win-x64/Ipc.Desktop.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:18.55

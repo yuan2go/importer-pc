@@ -1,0 +1,221 @@
+{
+  "schema": 1,
+  "pull_request": "https://github.com/yuan2go/importer-pc/pull/24",
+  "head": "a2e987a8d15eb397ad1a40cf1a303bdad4ec397b",
+  "main": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "reviewed_at": "2026-10-18T22:45:55.126568+08:00",
+  "decision": "CHANGES_REQUIRED",
+  "findings": [
+    {
+      "id": "PR24-R01",
+      "axis": "Spec",
+      "priority": "P1",
+      "title": "Recovered raw reply bypasses permanent identity contradiction checks",
+      "evidence": "New raw file + Awaiting occurrence before metadata transaction; actual Application startup recovers without identity hash; 65 genuine original queries evict old reply; changed old reply-ID becomes Accepted/PhysicalCompleted through ReconcileAsync with one submit",
+      "proof": "raw-id-recovery-result.json",
+      "locations": [
+        {
+          "path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
+          "line": 212,
+          "source_url": "https://github.com/yuan2go/importer-pc/blob/a2e987a8d15eb397ad1a40cf1a303bdad4ec397b/src/Ipc.Application.ParcelFlow/ParcelRepository.cs#L212"
+        },
+        {
+          "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
+          "line": 93,
+          "source_url": "https://github.com/yuan2go/importer-pc/blob/a2e987a8d15eb397ad1a40cf1a303bdad4ec397b/src/Ipc.Application.ParcelFlow/ParcelStages.cs#L93"
+        },
+        {
+          "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
+          "line": 162,
+          "source_url": "https://github.com/yuan2go/importer-pc/blob/a2e987a8d15eb397ad1a40cf1a303bdad4ec397b/src/Ipc.Application.ParcelFlow/ParcelStages.cs#L162"
+        }
+      ],
+      "verification": "REAL_APPLICATION_FACTORY_SQLITE_WITH_FAULT_INJECTED_QUERY_REPLIES"
+    },
+    {
+      "id": "PR24-R02",
+      "axis": "Spec",
+      "priority": "P2",
+      "title": "Interrupted Attached upload overwrites main Reason",
+      "evidence": "RecoverLocalFacts preserves main PhysicalCompleted but unconditionally replaces Reason on Dispatching upload recovery",
+      "proof": "SpecComponentProbe.cs",
+      "locations": [
+        {
+          "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
+          "line": 140,
+          "source_url": "https://github.com/yuan2go/importer-pc/blob/a2e987a8d15eb397ad1a40cf1a303bdad4ec397b/src/Ipc.Application.ParcelFlow/ParcelStages.cs#L140"
+        }
+      ],
+      "verification": "STATIC_AND_PRODUCTION_RECOVERY_METHOD_COMPONENT_PROBE"
+    },
+    {
+      "id": "PR24-R03",
+      "axis": "Standards",
+      "priority": "P2",
+      "title": "Offline consumer does not reject future Pending or inconsistent package bindings",
+      "evidence": "Pending.SchemaVersion999 and dangling binding package with Extensions=null both returned references=0; no actual uninstall executed",
+      "proof": "offline-consumers.log",
+      "locations": [
+        {
+          "path": "src/Ipc.Application.ParcelFlow/ParcelConsumers.cs",
+          "line": 41,
+          "source_url": "https://github.com/yuan2go/importer-pc/blob/a2e987a8d15eb397ad1a40cf1a303bdad4ec397b/src/Ipc.Application.ParcelFlow/ParcelConsumers.cs#L41"
+        },
+        {
+          "path": "src/Ipc.Application.ParcelFlow/ParcelConsumers.cs",
+          "line": 43,
+          "source_url": "https://github.com/yuan2go/importer-pc/blob/a2e987a8d15eb397ad1a40cf1a303bdad4ec397b/src/Ipc.Application.ParcelFlow/ParcelConsumers.cs#L43"
+        }
+      ],
+      "verification": "INDEPENDENT_BUILD_REAL_SQLITE_INSPECTOR"
+    },
+    {
+      "id": "PR24-R04",
+      "axis": "Standards",
+      "priority": "P2",
+      "title": "Mixed Supply/Parcel consumer reader dispatch is missing",
+      "evidence": "Shared machine store; every consumer passed to Parcel-only reader; legitimate Supply consumer conservatively blocks unrelated package retirement; previously disclosed scope gap",
+      "locations": [
+        {
+          "path": "src/Ipc.Assembly/ParcelCapabilityFactory.cs",
+          "line": 279,
+          "source_url": "https://github.com/yuan2go/importer-pc/blob/a2e987a8d15eb397ad1a40cf1a303bdad4ec397b/src/Ipc.Assembly/ParcelCapabilityFactory.cs#L279"
+        },
+        {
+          "path": "src/Ipc.Assembly/ParcelCli.cs",
+          "line": 62,
+          "source_url": "https://github.com/yuan2go/importer-pc/blob/a2e987a8d15eb397ad1a40cf1a303bdad4ec397b/src/Ipc.Assembly/ParcelCli.cs#L62"
+        },
+        {
+          "path": "src/Ipc.Platform/MachineRuntimePolicy.cs",
+          "line": 18,
+          "source_url": "https://github.com/yuan2go/importer-pc/blob/a2e987a8d15eb397ad1a40cf1a303bdad4ec397b/src/Ipc.Platform/MachineRuntimePolicy.cs#L18"
+        }
+      ],
+      "verification": "STATIC_NOT_MIXED_STORE_RUNTIME"
+    },
+    {
+      "id": "PR24-R05",
+      "axis": "Standards",
+      "priority": "P1",
+      "title": "Resume reopens dependent business sends during service reconnect",
+      "evidence": "Actual Sportmaster + normal factory, delayed original WCS reconnect: Resume Persisted, shared WCS call executes during reconnect, SlotResolved and Paused=false; maintenance returns admission remains paused",
+      "proof": "maintenance-resume-result.json",
+      "locations": [
+        {
+          "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
+          "line": 7,
+          "source_url": "https://github.com/yuan2go/importer-pc/blob/a2e987a8d15eb397ad1a40cf1a303bdad4ec397b/src/Ipc.Application.ParcelFlow/ParcelGuards.cs#L7"
+        },
+        {
+          "path": "src/Ipc.Application.ParcelFlow/ParcelDeviceLifecycle.cs",
+          "line": 10,
+          "source_url": "https://github.com/yuan2go/importer-pc/blob/a2e987a8d15eb397ad1a40cf1a303bdad4ec397b/src/Ipc.Application.ParcelFlow/ParcelDeviceLifecycle.cs#L10"
+        },
+        {
+          "path": "src/Ipc.Application.ParcelFlow/ParcelDeviceLifecycle.cs",
+          "line": 33,
+          "source_url": "https://github.com/yuan2go/importer-pc/blob/a2e987a8d15eb397ad1a40cf1a303bdad4ec397b/src/Ipc.Application.ParcelFlow/ParcelDeviceLifecycle.cs#L33"
+        }
+      ],
+      "verification": "REAL_APPLICATION_FACTORY_WITH_DELAYED_REFERENCE_SERVICE"
+    }
+  ],
+  "coverage": [
+    {
+      "area": "baseline/governance",
+      "status": "PARTIAL",
+      "detail": "Pinned latest head/main; original AUDIT01 PDF absent. README current-state still 22/database3 despite closure banner; AUDIT02 not substitute"
+    },
+    {
+      "area": "roles and three applications",
+      "status": "STATIC_NO_NEW_CONFIRMED_DEFECT",
+      "detail": "Separate flows and position topology preserved; no new universal process engine"
+    },
+    {
+      "area": "capacity archive",
+      "status": "PASS_DIRECTED_REFERENCE_WITH_R01_CAVEAT",
+      "detail": "AQ real SQLite capacity/archive/dedupe/page/restart/backup tests passed; false terminal from R01 can invalidate archive eligibility"
+    },
+    {
+      "area": "main/Attached recovery",
+      "status": "FAIL_R01_R02",
+      "detail": "No blind resend retained; reply identity and independent Reason recovery gaps remain"
+    },
+    {
+      "area": "device/concurrency",
+      "status": "FAIL_R05",
+      "detail": "Same-device capture/reconnect directed test passed; reconnect maintenance fence can be bypassed for dependent service"
+    },
+    {
+      "area": "configuration activation/crash",
+      "status": "PASS_DIRECTED_REFERENCE",
+      "detail": "BeforeCreate, AfterCreate, AfterPortStart child process exits retain prior Effective/Pending and require explicit restage; no new confirmed defect"
+    },
+    {
+      "area": "UI target/full draft CAS",
+      "status": "PASS_CORE_VIEWMODEL_WINDOWS_NOT_RUN",
+      "detail": "Independent AQ target and refresh-CAS checks passed; no actual WPF interaction"
+    },
+    {
+      "area": "extensions/offline retirement",
+      "status": "PARTIAL_R03_R04",
+      "detail": "Pending-only backup registration code present; signed installation/uninstall suite not independently rerun in this audit"
+    },
+    {
+      "area": "bounded HTTP",
+      "status": "PASS_DIRECTED_REFERENCE",
+      "detail": "Chunked no-content-length quota and caller body cancellation tests passed"
+    },
+    {
+      "area": "compatibility/delivery",
+      "status": "PARTIAL",
+      "detail": "DB1/2/3 unsettled guards verified in AQ. Windows, vendor SDK/contracts and site remain unqualified; no business modifications or merge"
+    }
+  ],
+  "independent_runs": [
+    {
+      "name": "isolated-locked-build",
+      "exit_code": 0
+    },
+    {
+      "name": "architecture-quality",
+      "exit_code": 0
+    },
+    {
+      "name": "added-maintenance/raw-identity probes",
+      "exit_code": 0,
+      "interpretation": "Completed and reproduced defects; not product PASS"
+    },
+    {
+      "name": "offline-consumer probes",
+      "exit_code": 0,
+      "interpretation": "Completed and reproduced fail-closed validation gap"
+    }
+  ],
+  "host_sha256": {
+    "Ipc.Application.Contracts.dll": "dd55791d6bbd806fcabf77da9495d100ae98e37156629f5f26c7d9ff5a4efa37",
+    "Ipc.Application.DirectPlc.dll": "2a1b04f3dea6feae18c6bfe84bfc26bd784f377224330cb753ea2176dad99ddb",
+    "Ipc.Application.ParcelFlow.dll": "380a1a87c4e9e3cf0b8b4d8007b688d222dc6b1c306d2c331c5a5e3268733636",
+    "Ipc.Application.Sportmaster.dll": "47e1365868965d3e5169986052860d7174d2af66cb5dc27fd246a62561438136",
+    "Ipc.Application.Verification.dll": "151369c13b488c081c0f1327f94fd53e1d7ce3fe15452c2d3081f7365a768648",
+    "Ipc.Application.WcsToPlc.dll": "0457f75e86054ead913d4fff6255f5e43dbe724d8fc9a3807461ce15468f19fa",
+    "Ipc.Components.dll": "acc52b70183663813030ca9568732c8553c513aa65a5c2852714e2fc17419f80",
+    "Ipc.Drivers.dll": "3e52fbd80787d3523635bd689cf092317e3dd2352d45f1de61b1628028543a12",
+    "Ipc.Integrations.dll": "cb268cd490f32923d71f8500f2a1ec5f3d73c50ff72c893f874691b2c57d7f57",
+    "Ipc.Platform.Storage.dll": "f402604300fd18c832ea4850293d7befefe4d9bc87b7d19dfeb827181c25435a",
+    "Ipc.Platform.dll": "83f52fc6b734b3557d4ad4b1ccf4fe8d87320f0428e48a399133f592801fdbae",
+    "Ipc.Reference.Protocol.dll": "31db15dbaf4bad4e71a8495e7bd7fb52146018cf91938d1db8dcda9a7f14d80c",
+    "Ipc.Supply.Contracts.dll": "a3b52a153b7712792dc7aad94d87b123b1f3755c7a8e5255e8608ddb181bbe45"
+  },
+  "boundaries": [
+    "Windows actual NOT_RUN",
+    "Vendor SDK/WCS/PLC/site BLOCKED",
+    "No real power outage or production load test",
+    "No current signed-package lifecycle independently rebuilt/rerun",
+    "Health-vs-device-session concurrency remains provider-contract-dependent; not counted as confirmed finding",
+    "Awaiting with no raw same-stage fence treated as documented conservative limitation, not additional confirmed defect"
+  ],
+  "repository_writes": false,
+  "published_to_github": false
+}

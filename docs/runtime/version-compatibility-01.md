@@ -21,6 +21,10 @@ python3 scripts/application_compatibility.py --record /evidence/new-run.json --p
 python3 scripts/application_compatibility.py --record /evidence/new-run.json --package /unpacked --configuration /evidence/effective.json
 ```
 
-business-identity只读编译版本和内嵌声明；deployment-check同时执行版本兼容、原精确包和语义校验，不连接设备/外呼。ProviderSets每个集合列出可共同使用的成员，选中集合内可省略业务未启用的可选能力；禁止跨集合拼接成员。新业务支持的精确参考能力包为1.4.1，示例reader为1.0.10，必须针对本次宿主公共DLL重新构建；旧1.4.0/1.0.9及PR23/24/26各自候选继续按原身份读取。
+business-identity只读编译版本和内嵌声明；deployment-check同时执行版本兼容、原精确包和语义校验，不连接设备/外呼。ProviderSets每个集合列出可共同使用的成员，选中集合内可省略业务未启用的可选能力；禁止跨集合拼接成员。新业务支持的精确参考能力包为2.0.0，示例reader为2.0.0，必须针对本次宿主公共DLL重新构建；旧1.4.0/1.0.9及PR23/24/26各自候选继续按原身份读取。
 
 声明兼容、静态校验、运行PASS、Production资格和现场验收是不同事实。组合记录及其哈希用于身份和完整性核对，不自行证明发布者信任或现场批准；现有独立信任/资格机制继续生效。记录中未执行的组合没有PASS，不根据同版本号或同一集合推断其他组合已验证。业务版本以项目声明识别，具体交付仍用SourceCommit和文件SHA区分；不允许用手改版本号替代新发布和验证。
+
+整合基线更新：2026-10-19 PR23/24合并至main 4afe2afacde9e2acab7648fff3440fa3cc331b6e；保留其去重前库存校验、两阶段配置激活、采集保有、恢复、容量与消费者卸载。新业务1.2.0/参考扩展2.0.0独立于前轮本地1.1.0/1.4.1和并行PR26的1.6.x，原包/记录不覆盖。
+
+发行构建使用git archive导出的固定提交快照，编译、种子、内嵌声明及随包指南均从该快照读取；SourceRevisionId显式绑定导出提交。运行中的主工作树变化不会混入候选。先前8bdfaa9 Windows候选在构建期间发生本任务整合main，来源稳定性未获证明，保持原字节但不作为合格候选；最终候选按新快照重新生成。

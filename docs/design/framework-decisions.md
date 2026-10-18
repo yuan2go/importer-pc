@@ -1,4 +1,6 @@
-> 业务版本及兼容管理按[版本管理增量](version-compatibility-01.md)；原历史结果和D/RV保持。
+> 业务版本及兼容管理按[版本管理增量](version-compatibility-01.md)；已合并质量闭环和原D/RV保持。
+
+> 本包整改权威：[质量闭环设计](architecture-quality-closure-01.md)。22拓扑、19/20可靠性、框架F决策共同继承；本文中的历史实施和版本记录保持形成时范围。
 
 > 22现行拓扑、状态作用域、版本与交付：[Application架构22](../design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
 

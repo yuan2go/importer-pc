@@ -95,7 +95,7 @@ static class ReliabilityClosure
             reader.Target = "changed-device";
             try { await vm.SaveCapabilitiesAsync(); throw new Exception("Reader identity silently accepted"); }
             catch (InvalidOperationException ex) { Check(ex.Message.Contains("DeviceId"), "tampered reader target is explicitly rejected instead of silently discarded: " + ex.Message); }
-            reader.Target = c.Reader.DeviceId; vm.DraftWaitMs += 1; await vm.SaveCapabilitiesAsync(); await vm.RefreshAsync();
+            reader.Target = c.Reader.DeviceId; vm.ConfigurationReason = "Synthetic parameter maintenance after original reconciliation"; vm.DraftWaitMs += 1; await vm.SaveCapabilitiesAsync(); await vm.RefreshAsync();
             Check(vm.Snapshot!.Configuration.Status == "PendingRestart" && vm.Snapshot.Configuration.Effective.Weight.WaitTimeoutMs == c.Weight.WaitTimeoutMs, "actual ViewModel parameter save preserves Effective and creates Pending");
         });
         foreach (var validity in new[] { WeightValidity.UntilDispatch, WeightValidity.AtAssociation })
@@ -132,7 +132,7 @@ static class ReliabilityClosure
             string originalBody, originalChecksum;
             using (var db = new Microsoft.Data.Sqlite.SqliteConnection("Data Source=" + file))
             {
-                db.Open(); using var command = db.CreateCommand(); command.CommandText = "DROP TABLE parcel_topology_semantics; DROP TABLE parcel_semantics; DELETE FROM platform_migrations WHERE version>=2"; command.ExecuteNonQuery();
+                db.Open(); using var command = db.CreateCommand(); command.CommandText = "DROP TABLE parcel_history_index; DROP TABLE parcel_archives; DROP TABLE parcel_reply_identities; DROP TABLE parcel_archived_receipts; DROP TABLE parcel_overload_ack; DROP TABLE parcel_identity_conflicts; DROP TABLE parcel_configuration_audit; DROP INDEX parcel_receipts_pending; DROP INDEX parcel_receipts_operation; DROP TABLE parcel_topology_semantics; DROP TABLE parcel_semantics; DELETE FROM platform_migrations WHERE version>=2"; command.ExecuteNonQuery();
                 command.CommandText = "SELECT body FROM parcel_operations"; originalBody = (string)command.ExecuteScalar()!;
                 command.CommandText = "SELECT sha FROM platform_migrations WHERE version=1"; originalChecksum = (string)command.ExecuteScalar()!;
             }
@@ -147,7 +147,7 @@ static class ReliabilityClosure
                 command.CommandText = "DELETE FROM parcel_operations"; command.ExecuteNonQuery(); // Synthetic fixture only: represent an empty legacy root, never a recovery procedure.
             }
             using var upgraded = new ParcelRepository(Path.GetDirectoryName(file)!, "direct-plc");
-            Check(upgraded.Load().Length == 0, "settled legacy root accepts additive migration2/3 without changing migration1");
+            Check(upgraded.Load().Length == 0, "settled legacy root accepts additive migration2/3/4 without changing migration1");
         });
         await Case("Application delivery capability compatibility", () =>
         {

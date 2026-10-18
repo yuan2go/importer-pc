@@ -1,0 +1,26 @@
+EvidenceRoot=<TEMP>/ipc17-verification-4abad5724f8347ff9acae48d32262e28
+PASS AQ: R01 failed recovery commit retains Awaiting occurrence/raw bytes and rolls back reply identity
+PASS AQ: R01 startup restores permanent original reply identity from Awaiting raw bytes
+PASS AQ: R01 raw identity test actually passes bounded reply eviction
+PASS AQ: R01 changed old reply ID becomes Conflict after 65 queries without resending Submit
+PASS AQ: R01 existing DB4 committed raw backfills earliest reply identity while preserving recorded Conflict
+PASS AQ: R02 interrupted Attached upload preserves completed main result and null main Reason
+PASS AQ: R01 archived original BLOB repairs missing DB4 identity without unarchiving or changing main facts
+PASS AQ: R01 prior false completion refuses startup and rolls back repair without rewriting raw or inventing settlement
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: R05 shared service maintenance closes Resume and every dependent position
+PASS AQ: R05 explicit Resume cannot bypass maintained shared WCS
+PASS AQ: R05 no new Submit or original Query enters a WCS with reconnect in flight
+PASS AQ: R05 maintained original retains its single sending attempt
+PASS AQ: R05 successful maintenance retains actual software pause
+Unhandled exception. System.IO.InvalidDataException: Bound provider differs from the same authoritative instance inventory
+   at Ipc.Assembly.ParcelCapabilityFactory.ValidateDeployment(ParcelConfiguration c) in <WORKTREE>/src/Ipc.Assembly/ParcelCapabilityFactory.cs:line 132
+   at Ipc.Assembly.ParcelCapabilityFactory.Validate(ParcelConfiguration c) in <WORKTREE>/src/Ipc.Assembly/ParcelCapabilityFactory.cs:line 66
+   at ArchitectureQuality.ReviewFactory.Validate(ParcelConfiguration c) in <WORKTREE>/tests/Ipc.Application.Verification/ReviewClosure.cs:line 185
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartAsync(CancellationToken token) in <WORKTREE>/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 101
+   at ArchitectureQuality.Open(ParcelConfiguration c, String name, Func`2 wrap) in <WORKTREE>/tests/Ipc.Application.Verification/ArchitectureQuality.cs:line 21
+   at ArchitectureQuality.Open(ParcelConfiguration c, String name, Func`2 wrap) in <WORKTREE>/tests/Ipc.Application.Verification/ArchitectureQuality.cs:line 21
+   at ArchitectureQuality.ReviewIndependentMaintenance() in <WORKTREE>/tests/Ipc.Application.Verification/ReviewClosure.cs:line 120
+   at ArchitectureQuality.ReviewClosureChecks(String source, String evidence) in <WORKTREE>/tests/Ipc.Application.Verification/ReviewClosure.cs:line 14
+   at Program.<Main>$(String[] args) in <WORKTREE>/tests/Ipc.Application.Verification/Program.cs:line 18
+   at Program.<Main>(String[] args)

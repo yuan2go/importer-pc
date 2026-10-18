@@ -33,7 +33,10 @@ public static class ParcelRecovery
         var actual = RecoveryFiles.Inventory(recovery);
         if (!actual.Keys.Order(StringComparer.Ordinal).SequenceEqual(manifest.Files.Keys.Order(StringComparer.Ordinal))) throw new InvalidDataException("Recovery custody file set changed");
         var config = Wire.Decode<ConfigurationRevision<Ipc.Application.Contracts.ParcelConfiguration>>(File.ReadAllText(RecoveryFiles.Resolve(recovery, "configuration.json")));
-        if (config.Effective.ApplicationId != manifest.Application || Path.GetFileName(target) != manifest.Application || !Enum.IsDefined(config.Effective.Mode))
+        if (config.Effective.ApplicationId != manifest.Application || Path.GetFileName(target) != manifest.Application || !Enum.IsDefined(config.Effective.Mode) ||
+            Directory.GetParent(target)?.Name != config.Effective.StationId ||
+            Directory.GetParent(target)?.Parent?.Name != config.Effective.Mode.ToString() ||
+            config.Pending is { } pending && (pending.ApplicationId != config.Effective.ApplicationId || pending.StationId != config.Effective.StationId || pending.Mode != config.Effective.Mode))
             throw new InvalidDataException("Original application/mode/directory identity must be preserved");
         Directory.CreateDirectory(target);
         ExtensionStore.AtomicWrite(Path.Combine(target, "RESTORE-INCOMPLETE.json"), manifest);

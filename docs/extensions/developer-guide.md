@@ -1,4 +1,10 @@
-> Parcel业务版本与允许提供者声明见[版本管理指南](../runtime/version-compatibility-01.md)。下文Supply参考版本及命令只适用于相应冻结宿主；不得将旧包版本重签给新契约。
+> 当前业务版本/允许提供者见[版本管理指南](../runtime/version-compatibility-01.md)；以下历次包版本只对应其冻结宿主，不能重签覆盖。
+
+> PR24 R03规则已实施：schema1/2/3在任何All/Bound去重之前校验原库存唯一性、镜像内容一致性及精确包闭包；歧义原件明确阻卸载。见[固定源码/验证边界](../runtime/architecture-quality-closure-01-r03-results.md)，旧包/候选身份不变。
+
+> 路径边界：业务SQL及状态语义仍由各业务维护读者拥有。PR24整改由装配ExtensionConsumerReaders分派已知Supply/Parcel消费者；不认识、未来、损坏或身份不一致的根必须阻断。新Application的安装恢复/消费者/备份及安全卸载见[质量闭环01运行指南](../runtime/architecture-quality-closure-01.md)。不得把错误格式当零引用；原包身份不放宽。
+
+> 采集生命周期P2：复用reader采图的提供者须实现`IReaderImageCapture`新增的RetainAcquisition/ReleaseAcquisition所有者协议，且回调前暂存观察所有者、拒收/异常撤销，Stop/重连保有在途，采图实际返回前不得释放底层资源。业务拥有释放时机，不得按缓存条数或时间逐出。Application.Contracts及参考能力包进入新不可变1.5.0，须对新宿主精确契约重新构建/签名；历史1.4.0包与请求不覆盖。详情见[本次工作包](../work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)。
 
 > 22现行拓扑、状态作用域、版本与交付：[Application架构22](../design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
 
@@ -97,3 +103,6 @@ Prepared/FilesVerified/Published/Registered中断沿原操作恢复，损坏原�
 定向验证先执行`dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll --help`。默认`--reconciliation`包含H04/A01/E07/E08/E11/E12/AC14/AC15和原AC/进程基线；`--architecture`专门验证身份/实际AssemblyRef/独立扩展与装配，不在默认范围；`--maintainability`与`--health-profile`为16风险和健康写量测量的显式范围。只按改动运行必要选择器，不循环全量替代实机。构建工具边界测试：`python3 -m unittest discover -s scripts -p 'test_extension_build.py' -v`；其编译/进程失败注入不冒称真实DLL验收。
 
 实际WPF、HID、DPI、双窗、声音/触控、PowerShell、UAC/ACL与恢复旅程继续逐项NOT_RUN，待既有获授权Windows环境；真实SDK/WCS、实体、数量、逐SKU少货及身份批准按能力BLOCKED，Production缺必需能力保持NotReady。
+
+
+PR24混合消费者读者：Parcel Factory/CLI与Supply Product管理入口统一调用装配分派，再由各业务校验其原格式。Parcel完整校验Effective、Pending和冻结原件，不接受未来schema或悬挂包/模块/reader；Supply原读者仍拥有SQL5及原请求清偿语义。已知无引用混合根允许卸载；缺件/未知/歧义根和任一未决责任继续拒绝。Parcel随装配携带Supply只读维护DLL，Supply随Product携带Parcel共用读者；没有启动第二业务实例或扩展SDK。公共契约仍1.6.0；本轮精确宿主签名示例使用新不可变1.6.8/1.6.9版本，不改变原包或旧请求。

@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import tarfile
 import zipfile
 from composition import resolve
 from application_compatibility import read_business
@@ -33,15 +34,21 @@ lock = 'packages.' + a.application + ('.win-x64' if a.target == 'win-x64' else '
 properties = ['-p:Application=' + module, '-p:NuGetLockFilePath=' + lock]
 # Isolated artifacts avoid reusing another selection's intermediate WPF/assembly state.
 artifacts = output / 'build-intermediates'
+build_source = artifacts / 'source'
+build_source.mkdir(parents=True)
+# Compile committed bytes, even if this shared workspace changes during a long publish.
+export = subprocess.Popen(['git', 'archive', '--format=tar', source], cwd=root, stdout=subprocess.PIPE)
+with tarfile.open(fileobj=export.stdout, mode='r|') as snapshot:
+    snapshot.extractall(build_source, filter='data')
+if export.wait(): raise ValueError('Frozen source export failed')
 for project, destination in [('Ipc.Assembly', 'app'), *([('Ipc.Desktop', 'desktop')] if a.target == 'win-x64' else [])]:
     command = [a.dotnet, 'publish', f'src/{project}/{project}.csproj', '-c', 'Release', '-m:1', '-nr:false',
                '-p:EnableWindowsTargeting=true', '-p:RestoreLockedMode=true',
-               '-p:PathMap=' + str(root) + '=/_/src%2C' + str(artifacts) + '=/_/build', *properties,
+               '-p:PathMap=' + str(build_source) + '=/_/src%2C' + str(artifacts) + '=/_/build', '-p:SourceRevisionId=' + source, *properties,
                '--artifacts-path', str(artifacts), '--self-contained', 'true' if a.target == 'win-x64' else 'false', '-o', str(output / destination)]
     if a.target == 'win-x64': command += ['-r', 'win-x64']
-    subprocess.run(command, cwd=root, check=True)
-    shutil.copytree(root / 'config' / a.application, output / destination / 'config')
-shutil.rmtree(artifacts)
+    subprocess.run(command, cwd=build_source, check=True)
+    shutil.copytree(build_source / 'config' / a.application, output / destination / 'config')
 if a.target == 'portable':
     compiled = json.loads(subprocess.check_output([a.dotnet, str(output / 'app/Ipc.Assembly.dll'), '--action', 'business-identity'], text=True))
     if compiled['ApplicationId'] != a.application or any(compiled[key] != value for key, value in business.items()):
@@ -61,7 +68,7 @@ if a.target == 'win-x64' and not (output / 'desktop' / f'Ipc.Application.{module
 selection.update(business)
 for directory in [output / 'app', output / 'desktop']:
     if not directory.exists(): continue
-    shutil.copyfile(compatibility_source, directory / 'application-compatibility.json')
+    shutil.copyfile(build_source / compatibility_source.relative_to(root), directory / 'application-compatibility.json')
     files = {f.relative_to(directory).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest().upper()
              for f in sorted(directory.rglob('*')) if f.is_file()}
     release = dict(SchemaVersion=2, ApplicationId=a.application, SourceCommit=source, **business,
@@ -72,10 +79,11 @@ selection.update(SourceCommit=source, Target=a.target, EntryPoint='app/Ipc.Assem
                  Windows='NOT_RUN', PhysicalIntegration='BLOCKED',
                  Binaries={str(f.relative_to(output)): hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(output.rglob('Ipc.*.dll'))})
 (output / 'ASSEMBLY.json').write_text(json.dumps(selection, indent=2) + '\n')
-publish_guides(root, output, source)
+publish_guides(build_source, output, source)
 if a.target == 'win-x64':
     for script in ['protect-release.ps1', 'provision-runtime.ps1', 'provision-extensions.ps1']:
-        shutil.copyfile(root / 'scripts' / script, output / script)
+        shutil.copyfile(build_source / 'scripts' / script, output / script)
+shutil.rmtree(artifacts)
 (output / 'APPLICATION-START.txt').write_text(
     'SIMULATION REFERENCE ONLY\nConsole: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'
     + ('Windows: desktop/Ipc.Desktop.exe --config desktop/config --data-root <new-isolated-root>\n' if a.target == 'win-x64' else '')

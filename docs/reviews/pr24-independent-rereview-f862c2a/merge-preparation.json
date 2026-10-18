@@ -1,0 +1,38 @@
+{
+  "review_head_confirmed_unchanged": "f862c2ae2ad00ab79ceff5e2013c2a5593d05234",
+  "main_confirmed": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "publication_changes": "README.md and docs only; no business/test/config/build input changes",
+  "merge_mode": "normal merge commit, exact archive head match, no force/admin bypass",
+  "git_identities": [
+    {
+      "path": "src",
+      "reviewed_git_identity": "a6cedbf3448e76af32f128a4ffe40f45b6dfbb76"
+    },
+    {
+      "path": "tests",
+      "reviewed_git_identity": "c6c30bcc3579769889cac12c31e964dfcc0853ef"
+    },
+    {
+      "path": "config",
+      "reviewed_git_identity": "580eee8635dd4188cea0a3195ca608e9803aeafd"
+    },
+    {
+      "path": "scripts",
+      "reviewed_git_identity": "4425a3a44698fc436155eff69f1a2511c542a52d"
+    },
+    {
+      "path": "examples",
+      "reviewed_git_identity": "d0877829973791703da5bd48b80a6fc7f5c99ca1"
+    },
+    {
+      "path": "global.json",
+      "reviewed_git_identity": "98fe74ec314e54eb8678787d3d58fc83abdad96c"
+    },
+    {
+      "path": "Directory.Build.props",
+      "reviewed_git_identity": "79fa9cff54538b44812d898fba7df9ef6b0cb289"
+    }
+  ],
+  "test_build_packaging": "NOT_RUN_BY_USER_REQUEST",
+  "pre_existing_worktree_and_parallel_prs_preserved": true
+}

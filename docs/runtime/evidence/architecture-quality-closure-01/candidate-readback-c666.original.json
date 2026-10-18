@@ -1,0 +1,16 @@
+[
+  {
+    "name": "sportmaster-portable-final",
+    "zip_sha256": "0a89b0519e58d3d7429ff1e1d94b0cb723e8e290da0d19c5f604821ec37a6f62",
+    "files_verified": 97,
+    "source_commit": "c666efd8df50aac0ad579ec600b801f04372dbac",
+    "readback": "PASS"
+  },
+  {
+    "name": "wcs-to-plc-portable-final",
+    "zip_sha256": "6682fb9485f188284a8d88415006f9778334d6299995a6939484a10458838c9a",
+    "files_verified": 97,
+    "source_commit": "c666efd8df50aac0ad579ec600b801f04372dbac",
+    "readback": "PASS"
+  }
+]

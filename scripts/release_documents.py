@@ -5,6 +5,8 @@ from urllib.parse import quote, unquote, urlsplit
 
 GUIDES = {
     'docs/runtime/version-compatibility-01.md': 'VERSIONS.md',
+    'docs/runtime/architecture-quality-closure-01.md': 'QUALITY-CLOSURE-01.md',
+    'docs/runtime/validation/architecture-quality-closure-01-windows.md': 'QUALITY-WINDOWS-ACCEPTANCE.md',
     'docs/runtime/application-architecture-22.md': 'APPLICATIONS.md',
     'docs/design/application-architecture-22.md': 'ARCHITECTURE-22.md',
     'docs/runtime/capability-reliability-20.md': 'APPLICATIONS-20.md',

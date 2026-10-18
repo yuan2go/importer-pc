@@ -1,0 +1,63 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-2c17328c85f24326aa0823e1226059bc
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: right input enters while left WCS is slow
+PASS AA22: real dual consumers interleave; same barcode has two distinct entities and reader bindings
+PASS AA22: T1 freezes original position/device/acquisition in delivered semantics
+PASS AA22: duplicate original does not create another request
+PASS AA22: single-side reconnect while other original remains owned
+PASS AA22: other reader epoch unchanged by single-side reconnect
+PASS AA22: old registration callback is fenced after reconnect
+PASS AA22: resume does not resend original stages
+PASS AA22: reader disconnect blocks only its position
+PASS AA22: shared WCS health failure blocks both positions without rewriting originals
+PASS AA22: application API rejects schema3 flattening, beyond UI protection
+PASS AA22: complete topology staged using original configuration CAS
+PASS AA22: stale configuration CAS rejected
+PASS AA22: Pending/Effective preserve both bindings and separate activation
+PASS AA22: real legacy ViewModel rejects flattening schema3, authority unchanged
+PASS AA22: multi-device original set backed up through actual application
+PASS AA22: restart activates full revision while old parcels retain original configuration
+PASS AA22: restored complete multi-device backup starts isolated with original position/request responsibilities
+PASS AA22: schema2 config is never guessed into two positions; full explicit schema3 candidate staged
+PASS AA22: controlled restart explicitly activates schema2 to complete schema3 topology
+PASS AA22: direct-plc sequential position cannot admit next parcel on PLC acceptance alone
+PASS AA22: direct-plc preserves own main chain/delivery object without WCS leakage or repeats
+PASS AA22: wcs-to-plc sequential position cannot admit next parcel on PLC acceptance alone
+PASS AA22: wcs-to-plc preserves own main chain/delivery object without WCS leakage or repeats
+PASS AA22: configured login refuses unauthenticated admission
+PASS AA22: same physical reader reuses controlled original capture; capture-only waits for this weight without uploader
+PASS AA22: scale re-registers its own measurement epoch without changing parcel acquisition
+PASS AA22: late old-generation scale callback cannot supply current weight
+PASS AA22: inherited session guard protects original unfinished operator
+PASS AA22: enabled scale rejects zero instead of missing-weight fallback
+PASS AA22: account switch cannot change admitted identity or dispatch old parcel
+PASS AA22: capture-only original retained until main completion
+PASS AA22: capture-only terminal release is durable then deletes temporary original
+PASS AA22: BeforeMain unknown retains original and correct main-flow ordering
+PASS AA22: BeforeMain original upload query never blindly resends
+PASS AA22: Attached unknown retains original and correct main-flow ordering
+PASS AA22: Attached original upload query never blindly resends
+PASS AA22: left Unknown original does not block independently reconciled right position
+PASS AA22: position queue bounds and visibly rejects overload
+PASS AA22: left overload does not consume right queue
+PASS AA22: Stop timeout retains database/device/package ownership until both workers drain
+PASS AA22: Stop retry drains all positions before final resource release
+PASS AA22: restart explicitly pauses all new admission while preserving scoped original responsibility
+PASS AA22: explicit resume preserves durable scoped overload and original uncertainty
+PASS AA22: second reader startup failure retains already-started first reader and downstream resources
+PASS AA22: partial startup disposes every returned source before factory/database release
+PASS AA22: failed candidate releases leases only after cleanup; fresh owner can start
+PASS AA22: real factory partial construction retains every acquired device lease
+PASS AA22: actual factory releases partially constructed readers before shared device lease release
+PASS AA22: shipped dual optional config binds each original capture/measurement independently
+PASS AA22: both optional positions complete real capture/scale/upload/WCS paths with original identity
+PASS AA22: capture-only unsubmitted parcel safely cancelled through actual command guard
+PASS AA22: safe cancellation releases capture-only bytes without inventing upload or main execution
+PASS AA22: database2 unresolved originals block before migration3
+PASS AA22: blocked upgrade preserves SQL2 identity and checksum history
+PASS AA22: settled database2 upgrades with unchanged SQL1-3 and appended archive/audit SQL4
+PASS AA22 COMPLETE

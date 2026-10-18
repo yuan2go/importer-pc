@@ -18,7 +18,7 @@ static class VersionCompatibility
         {
             var assembly = flow.GetType().Assembly;
             var policy = BusinessCompatibility.Read(assembly);
-            Pass(policy.ApplicationId == flow.Id && BusinessCompatibility.VersionOf(assembly) == "1.1.0", flow.Id + " compiled business version and embedded declaration");
+            Pass(policy.ApplicationId == flow.Id && BusinessCompatibility.VersionOf(assembly) == "1.2.0", flow.Id + " compiled business version and embedded declaration");
             var configDirectory = Path.Combine(root, flow.Id, "config"); Directory.CreateDirectory(configDirectory);
             var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", flow.Id, "business.json")));
             var launch = new BusinessLaunch(configDirectory, Path.Combine(root, flow.Id, "data"), null, null);
@@ -49,7 +49,7 @@ static class VersionCompatibility
             var presentation = new BusinessPresentation([flow.Id], ["standard"]);
             var release = new ApplicationRelease(2, flow.Id, new string('a', 40), presentation.Views, presentation.Layouts,
                 new() { [binary] = Wire.FileHash(assembly.Location), ["application-compatibility.json"] = BusinessCompatibility.Fingerprint(assembly) },
-                "1.1.0", binary, BusinessCompatibility.Fingerprint(assembly));
+                "1.2.0", binary, BusinessCompatibility.Fingerprint(assembly));
             void Write(ApplicationRelease value) => ExtensionStore.AtomicWrite(Path.Combine(directory, "application-release.json"), value);
             void Check() => ApplicationReleaseValidation.ValidateIfPublished(directory, flow.Id, presentation, assembly);
             Write(release); Check(); Pass(true, "schema2 binds actual compiled version, binary and declaration bytes");
@@ -68,8 +68,8 @@ static class VersionCompatibility
             await runtime.CommandAsync(new(Wire.Id(), before.Revision, "Pause"));
             await runtime.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
             before = await runtime.SnapshotAsync();
-            var rejected = await runtime.StageConfigurationAsync(before.Configuration.Revision, Replace(capability with { Version = "9.0.0" }));
-            Pass(rejected.Status == "Rejected" && Wire.Encode((await runtime.SnapshotAsync()).Configuration) == Wire.Encode(before.Configuration), "actual maintenance rejects incompatible candidate without replacing Effective/Pending");
+            var rejected = await runtime.StageConfigurationAsync(before.Configuration.Revision, Replace(capability with { Version = "9.0.0" }), "Verify incompatible provider version rejection");
+            Pass(rejected.Status == "Rejected" && rejected.Reason.Contains("not declared compatible", StringComparison.Ordinal) && Wire.Encode((await runtime.SnapshotAsync()).Configuration) == Wire.Encode(before.Configuration), "actual maintenance reaches compatibility rejection without replacing Effective/Pending");
         }
         Console.WriteLine("PASS VC01 COMPLETE");
     }

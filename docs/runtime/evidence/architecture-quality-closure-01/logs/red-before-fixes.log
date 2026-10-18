@@ -1,0 +1,12 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-9ae3852393ac4844a8266e7c4dee0a1f
+FAIL AQ: AQ03 recovered WaitingWeight accepts original measurement without automatically sending PLC
+PASS AQ: explicit continuation preserves admission and makes one first attempt
+PASS AQ: explicit maintenance grant obtained
+FAIL AQ: AQ01 rejects cross mode/station restore before creating target
+FAIL AQ: AQ01 rejects cross mode/station restore before creating target
+PASS AQ: AQ04 settled history does not consume unresolved admission capacity
+FAIL AQ: AQ04 capacity archive permits next real main chain without deleting history
+Unhandled exception. System.Exception: Architecture quality failures: 4
+   at ArchitectureQuality.Run(String source, String evidence) in /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.cs:line 65
+   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 16
+   at Program.<Main>(String[] args)

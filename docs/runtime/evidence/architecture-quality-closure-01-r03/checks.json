@@ -1,0 +1,252 @@
+{
+  "review_head": "3f6f762d31655ef0fe8d6562ed413beed682e2f9",
+  "main": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "governance_commit": "4b94c3f7905dd794ce72d82e9f4ce5064865a03f",
+  "runtime_test_source": "445e1f62bf01fe21e5f13576d2f483292571b709",
+  "sdk": "10.0.402",
+  "runs": [
+    {
+      "name": "red-build",
+      "source_commit": "4b94c3f7905dd794ce72d82e9f4ce5064865a03f + new harness",
+      "command": "build tests, original product at 4b94c3f plus new failing harness",
+      "exit_code": 0,
+      "status": "PASS_BUILD_ONLY",
+      "log": "logs/ipc-pr24-r03-red-build.log"
+    },
+    {
+      "name": "red",
+      "source_commit": "4b94c3f7905dd794ce72d82e9f4ce5064865a03f + new harness",
+      "command": "dotnet Verification.dll <WORKTREE> --inventory-closure",
+      "exit_code": 134,
+      "status": "EXPECTED_FAIL_29_ASSERTIONS",
+      "log": "logs/ipc-pr24-r03-red.log"
+    },
+    {
+      "name": "green-build",
+      "source_commit": "uncommitted implementation subsequently frozen at 445e1f62bf01fe21e5f13576d2f483292571b709",
+      "command": "precommit implementation build",
+      "exit_code": 0,
+      "status": "PASS_INTERMEDIATE",
+      "log": "logs/ipc-pr24-r03-green-build.log"
+    },
+    {
+      "name": "inventory-closure",
+      "source_commit": "uncommitted implementation subsequently frozen at 445e1f62bf01fe21e5f13576d2f483292571b709",
+      "command": "precommit --inventory-closure",
+      "exit_code": 0,
+      "status": "PASS_INTERMEDIATE",
+      "log": "logs/ipc-pr24-r03-inventory-closure.log"
+    },
+    {
+      "name": "review-closure",
+      "source_commit": "uncommitted implementation subsequently frozen at 445e1f62bf01fe21e5f13576d2f483292571b709",
+      "command": "precommit --review-closure",
+      "exit_code": 0,
+      "status": "PASS_INTERMEDIATE",
+      "log": "logs/ipc-pr24-r03-review-closure.log"
+    },
+    {
+      "name": "final-tests",
+      "source_commit": "445e1f62bf01fe21e5f13576d2f483292571b709",
+      "command": "dotnet build tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj --artifacts-path /tmp/ipc-pr24-r03-final-tests -p:RestoreLockedMode=true -m:1 -nr:false",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": "logs/ipc-pr24-r03-final-tests.log"
+    },
+    {
+      "name": "final-host",
+      "source_commit": "445e1f62bf01fe21e5f13576d2f483292571b709",
+      "command": "dotnet publish src/Ipc.Assembly/Ipc.Assembly.csproj -c Debug -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.lock.json -p:RestoreLockedMode=true --artifacts-path /tmp/ipc-pr24-r03-final-host-build -o /tmp/ipc-pr24-r03-final-host -m:1 -nr:false",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": "logs/ipc-pr24-r03-final-host.log"
+    },
+    {
+      "name": "final-product",
+      "source_commit": "445e1f62bf01fe21e5f13576d2f483292571b709",
+      "command": "dotnet build src/Ipc.Product/Ipc.Product.csproj -p:RestoreLockedMode=true --artifacts-path /tmp/ipc-pr24-r03-final-product -m:1 -nr:false",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": "logs/ipc-pr24-r03-final-product.log"
+    },
+    {
+      "name": "final-inventory",
+      "source_commit": "445e1f62bf01fe21e5f13576d2f483292571b709",
+      "command": "dotnet /tmp/ipc-pr24-r03-final-tests/bin/Ipc.Application.Verification/debug/Ipc.Application.Verification.dll <WORKTREE> --inventory-closure",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": "logs/ipc-pr24-r03-final-inventory.log"
+    },
+    {
+      "name": "final-review",
+      "source_commit": "445e1f62bf01fe21e5f13576d2f483292571b709",
+      "command": "dotnet /tmp/ipc-pr24-r03-final-tests/bin/Ipc.Application.Verification/debug/Ipc.Application.Verification.dll <WORKTREE> --review-closure",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": "logs/ipc-pr24-r03-final-review.log"
+    },
+    {
+      "name": "signed-build",
+      "source_commit": "445e1f62bf01fe21e5f13576d2f483292571b709",
+      "command": "python3 scripts/build-extension.py --definition examples/ParcelCapabilitiesExtension/extension.build.json --contract /tmp/ipc-pr24-r03-final-host/Ipc.Platform.dll --check-host /tmp/ipc-pr24-r03-final-host/Ipc.Assembly.dll --output <SYNTHETIC_SIGNING_ROOT>/capabilities-1.6.10-r03.ipcx --key <SYNTHETIC_SIGNING_ROOT>/signer.pem --publisher quality-synthetic --trust <SYNTHETIC_SIGNING_ROOT>/trust.json --version 1.6.10 --dotnet <DOTNET_ROOT>/dotnet",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": "logs/ipc-pr24-r03-signed-build.log"
+    },
+    {
+      "name": "quality-extensions",
+      "source_commit": "445e1f62bf01fe21e5f13576d2f483292571b709",
+      "command": "dotnet /tmp/ipc-pr24-r03-signed-tests/Ipc.Application.Verification.dll <WORKTREE> --quality-extensions <SYNTHETIC_SIGNING_ROOT>/capabilities-1.6.10-r03.ipcx <SYNTHETIC_SIGNING_ROOT>/trust.json",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": "logs/ipc-pr24-r03-quality-extensions.log"
+    }
+  ],
+  "matrix": {
+    "schemas": [
+      1,
+      2,
+      3
+    ],
+    "scopes": [
+      "Effective",
+      "Pending",
+      "unresolved FrozenConfiguration"
+    ],
+    "negative_cases_per_scope": 10,
+    "positive_cases_per_scope": 3,
+    "original_db_and_configuration_bytes_unchanged": true,
+    "real_direct_plc_cases": 3,
+    "real_signed_uninstall_negative_cases": 6
+  },
+  "logs": [
+    {
+      "file": "logs/ipc-pr24-r03-final-host.log",
+      "raw_sha256": "a3e176aa0ea65a0500aeb30e6f29a48f2a6634379e8984111f34128fed09263a",
+      "published_sha256": "cdbba9f9e47b88cea2956b0537215b94625216c4447a3f96a8190914eb08c443",
+      "normalization": "workspace/tool/synthetic signing root and generated evidence/compiler roots only; original kept locally",
+      "pass_assertions": 0,
+      "fail_assertions": 0
+    },
+    {
+      "file": "logs/ipc-pr24-r03-final-inventory.log",
+      "raw_sha256": "5b88b9e47fa976794da05ee4443d747f4e881ab72286d3a14e3d446afef2a0ae",
+      "published_sha256": "a6b6ad95d5256ecee7f9e41e5facb88cb6be3ff1212c11426839ae73d9b31af6",
+      "normalization": "workspace/tool/synthetic signing root and generated evidence/compiler roots only; original kept locally",
+      "pass_assertions": 130,
+      "fail_assertions": 0
+    },
+    {
+      "file": "logs/ipc-pr24-r03-final-product.log",
+      "raw_sha256": "9fc31fcebe10a22d2dc06dafec4c8e9815db7f3e7c135ccf2390e5b4fae1c805",
+      "published_sha256": "a0df26c25d9d63c9e54ddcc6298ab577bfc33258963d775e8bbbe9313b1ba7f1",
+      "normalization": "workspace/tool/synthetic signing root and generated evidence/compiler roots only; original kept locally",
+      "pass_assertions": 0,
+      "fail_assertions": 0
+    },
+    {
+      "file": "logs/ipc-pr24-r03-final-review.log",
+      "raw_sha256": "6d7270f98de532909b422499c27d7c5c20e59a49645a349b80b7654cd62ba96b",
+      "published_sha256": "b052bfa3faa22556c22eb85bff297007c39b68aef8a1b23a6c546251891e5b11",
+      "normalization": "workspace/tool/synthetic signing root and generated evidence/compiler roots only; original kept locally",
+      "pass_assertions": 33,
+      "fail_assertions": 0
+    },
+    {
+      "file": "logs/ipc-pr24-r03-final-tests.log",
+      "raw_sha256": "e7a60e563245cf18f7fe5075c8e143460c0e0ec3218610627aa448d64d4ce709",
+      "published_sha256": "2091941394b7c7bd4e6ed74a0b4c9b27888d7444644db10c548e7ccd33d94437",
+      "normalization": "workspace/tool/synthetic signing root and generated evidence/compiler roots only; original kept locally",
+      "pass_assertions": 0,
+      "fail_assertions": 0
+    },
+    {
+      "file": "logs/ipc-pr24-r03-green-build.log",
+      "raw_sha256": "516740ff1804df1924933315795a3ffdc73be3f18c30184ad0babd4eace7a768",
+      "published_sha256": "c4061b294ca75611311ebe838aec2b80cbff29ea507d018d0e95a99260ba9e82",
+      "normalization": "workspace/tool/synthetic signing root and generated evidence/compiler roots only; original kept locally",
+      "pass_assertions": 0,
+      "fail_assertions": 0
+    },
+    {
+      "file": "logs/ipc-pr24-r03-inventory-closure.log",
+      "raw_sha256": "241cea2cebf872d144e3f1341d8ee43f751d6ffb1842d1977c1ff54804b9660c",
+      "published_sha256": "a6b6ad95d5256ecee7f9e41e5facb88cb6be3ff1212c11426839ae73d9b31af6",
+      "normalization": "workspace/tool/synthetic signing root and generated evidence/compiler roots only; original kept locally",
+      "pass_assertions": 130,
+      "fail_assertions": 0
+    },
+    {
+      "file": "logs/ipc-pr24-r03-quality-extensions.log",
+      "raw_sha256": "74cdb6aea623c1f0d85c4d6e777291a1b4748ec289763335bb572af6e7f3850e",
+      "published_sha256": "511058122db4518b7fead9f78f22fac29289f104868532a74c343129d7a9170a",
+      "normalization": "workspace/tool/synthetic signing root and generated evidence/compiler roots only; original kept locally",
+      "pass_assertions": 57,
+      "fail_assertions": 0
+    },
+    {
+      "file": "logs/ipc-pr24-r03-red-build.log",
+      "raw_sha256": "a084d491528b84a400755ae1cae43bd6da7fc61d5369c7a221bcc39ed26d8914",
+      "published_sha256": "04451e9bb3cacb148f94af29421aa1e88bf530184bdf753e5be8b71fc123f36e",
+      "normalization": "workspace/tool/synthetic signing root and generated evidence/compiler roots only; original kept locally",
+      "pass_assertions": 0,
+      "fail_assertions": 0
+    },
+    {
+      "file": "logs/ipc-pr24-r03-red.log",
+      "raw_sha256": "062c8d5a7c96f4b7089afd7ee20ccb6fa5c7a2a5f3106acdec2afa838b68c482",
+      "published_sha256": "a25c1d576753c279112dcdc87f61e40385459b3224db74b05378a30bca97429f",
+      "normalization": "workspace/tool/synthetic signing root and generated evidence/compiler roots only; original kept locally",
+      "pass_assertions": 100,
+      "fail_assertions": 29
+    },
+    {
+      "file": "logs/ipc-pr24-r03-review-closure.log",
+      "raw_sha256": "05360b40674d10b576c65383c5ac7f38dcf06192abc7e588a5243601ac0d7ca8",
+      "published_sha256": "b052bfa3faa22556c22eb85bff297007c39b68aef8a1b23a6c546251891e5b11",
+      "normalization": "workspace/tool/synthetic signing root and generated evidence/compiler roots only; original kept locally",
+      "pass_assertions": 33,
+      "fail_assertions": 0
+    },
+    {
+      "file": "logs/ipc-pr24-r03-signed-build.log",
+      "raw_sha256": "7ffb7d24181a623849325d9a8a5e3ccb8b780a70def4cbf5ef0fa2b286995388",
+      "published_sha256": "9d78e839a9de0019e56e07b8a32d41c7d0093aac30b9da2df00a66504e270102",
+      "normalization": "workspace/tool/synthetic signing root and generated evidence/compiler roots only; original kept locally",
+      "pass_assertions": 0,
+      "fail_assertions": 0
+    }
+  ],
+  "compatibility": [
+    {
+      "scope": "src/Ipc.Application.Contracts",
+      "changed_files": []
+    },
+    {
+      "scope": "src/Ipc.Platform",
+      "changed_files": []
+    },
+    {
+      "scope": "config",
+      "changed_files": []
+    },
+    {
+      "scope": "scripts",
+      "changed_files": []
+    },
+    {
+      "scope": "examples",
+      "changed_files": []
+    },
+    {
+      "scope": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
+      "changed_files": []
+    }
+  ],
+  "new_product_candidate": "NOT_BUILT_THIS_ROUND",
+  "historical_candidate_source": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+  "windows": "NOT_RUN_THIS_ROUND",
+  "real_sdk_protocol_site": "BLOCKED",
+  "original_pdf_01": "BLOCKED_NOT_OBTAINED",
+  "no_merge_main": true
+}

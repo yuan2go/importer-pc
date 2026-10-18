@@ -6,7 +6,7 @@ PASS SMUI: direct-plc accepts explicit classic
 PASS SMUI: wcs-to-plc accepts explicit classic
 PASS SMUI: supply accepts explicit classic
 PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui
-PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui 
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui
 PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui --view
 PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui unknown
 PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui Supply-Station

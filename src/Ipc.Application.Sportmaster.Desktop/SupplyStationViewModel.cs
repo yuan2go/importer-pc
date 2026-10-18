@@ -145,7 +145,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         ParcelState.Blocked => "作业阻断",
         ParcelState.WaitingWeight => "等待本件有效重量",
         ParcelState.WeightTimedOut => "本件称重超时",
-        ParcelState.ImageUnknown => "上传结果待核对 · 禁止重传",
+        ParcelState.ImageUnknown => "图像阶段待核对 · 保留原采集与上传事实",
         ParcelState.ImageRejected => "图像阶段拒绝",
         ParcelState.CapturingImage => "正在采集本件图像",
         ParcelState.UploadingImage => "正在上传原图",

@@ -86,6 +86,6 @@ Ipc.Desktop.exe --ui supply-station --view sportmaster-history --layout compact
 ## 已确认的授权
 
 1. 采用推荐原生 WPF 方案：按原稿视觉结构接现有 Sportmaster 业务，默认 classic，通过 `--ui supply-station` 选择新 UI；原稿未被 Sportmaster 支持的箱/数量/拆包/AGV行为不进入本次业务。
-2. `docs/baseline/PUBLICATION.md` 把原产品HTML及衍生资产列为受限。本次请求已授权本地阅读与实现，但公开发布尚无单独证明；用户明确允许本次由该原稿衍生的WPF UI代码提交当前公开仓库。原HTML仍保持本地不上传。
+2. `docs/baseline/PUBLICATION.md` 把原产品HTML及衍生资产列为受限。本次用户进一步明确允许本次由该原稿衍生的WPF UI代码提交当前公开仓库。原HTML仍保持本地不上传。
 
 本文件为编码前确认的设计；实际完成情况以运行报告、源码提交及PR为准。

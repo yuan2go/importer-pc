@@ -1,0 +1,219 @@
+[
+  {
+    "Name": "release-restore",
+    "OriginalSha256": "42f856d5cbaf388fa2670f6e2f46643dca94a623bddc562a89707701d0f78682",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/release-restore.log",
+    "PublicSha256": "23659f119d1a7653c2b46e9b4f558fd9b034c14b497b8a971481910a5661cd30",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "release-build",
+    "OriginalSha256": "f1046acf5129db82d7ec508821cf36621e894a8ce494022c6e4b26d606a840f8",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/release-build.log",
+    "PublicSha256": "72438c7209dab5e010402254ea89ff476d52150de2d3b358492a9103db87cc83",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "application-risks",
+    "OriginalSha256": "135ecd73215369b7075471b5d91419a82b04d19a3b968c5b4a6cb74a0157f20f",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/application-risks.log",
+    "PublicSha256": "3ef2ac5df348caf0c7e81ff6b1500a06afb3a04bc63dab60bac29fd891d4d04d",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "first-core-build-failure",
+    "OriginalSha256": "2d2eb646f829af47ce5f74f1fb3ce940df2da612e44275b66584040810085aa9",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/first-core-build-failure.log",
+    "PublicSha256": "fc18986314b14331910b910e8ab3b415d45cb372dbc6ad42e73b69fa65627c1c",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "first-wpf-build-failure",
+    "OriginalSha256": "2ab98a8613ab64503948b4151c8640d247569f9e0f8535b4353261b9716984bc",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/first-wpf-build-failure.log",
+    "PublicSha256": "94b3aebe098eb8fe7a298e23720035a70716f39f53d71b0c47b485526432a641",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "supply-namespace-build-failure",
+    "OriginalSha256": "7fd1970e7eccd64508811b2db6c5f6db63c21bfc6a0f960cca5d58f495532a01",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/supply-namespace-build-failure.log",
+    "PublicSha256": "1b69d1f054a67c2903b157750fd8c455c4b71de79dbaf89cdbd0dc11872a200b",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "first-architecture-concurrent-build-failure",
+    "OriginalSha256": "17d314478549fee10fd25f0c94cac7c80b3e143032663356467e117f9fb07005",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/first-architecture-concurrent-build-failure.log",
+    "PublicSha256": "777aff050d3cf1104340fd9101785260ba9cd303cce9231d33e3b9a47db58668",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "first-archive-tools-failure",
+    "OriginalSha256": "80d8c786732345be81147d813d834c50c0a2d131b3ee894a816c4892f004a121",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/first-archive-tools-failure.log",
+    "PublicSha256": "46e63899e3e694bd62ea8fa895523c31e414908ee0050c4a2db8cf8ffd2f7586",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "archive-tools-final",
+    "OriginalSha256": "d5fe22bd6e494fa612ef5410e97d7c644684fd171b74bbc8e375bcf95f81c28e",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/archive-tools-final.log",
+    "PublicSha256": "d5fe22bd6e494fa612ef5410e97d7c644684fd171b74bbc8e375bcf95f81c28e",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "packaging-tools-final",
+    "OriginalSha256": "f772b272bd386952fdd77e8d34ce48e89b019a04f0c0adbc53d084b15b24bb23",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/packaging-tools-final.log",
+    "PublicSha256": "f772b272bd386952fdd77e8d34ce48e89b019a04f0c0adbc53d084b15b24bb23",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "external-first",
+    "OriginalSha256": "03d180acd7181ac6df48fca5dde82bc8d1904413faf5da2f461079f40c8d477c",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/external-first.log",
+    "PublicSha256": "41c6c5eebc884f02ea0757e5d2892274c5235c40627a0906e578516981a760a2",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "external-repeat",
+    "OriginalSha256": "5903eb9da2acc144f4d73da81fb926fbf7b3653301d74b8bc2ffb4fbacb04ff8",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/external-repeat.log",
+    "PublicSha256": "7b1de7e6cbd029951f05bd8aac69e8f560e62b23e695d1ad5d3aa288864c9cff",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "external-reader",
+    "OriginalSha256": "4abba8267f28e6cdf3bced77b0076ccee82e355c355763706a2c4e23832d4078",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/external-reader.log",
+    "PublicSha256": "e42dc34892f7d4e2788287628f1a75b0c5300cf4d5e34217dcd2f0862e9d7e5e",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "extension-journey",
+    "OriginalSha256": "18afdd184a79ea17f9a71e24aab8769a22c37026529c00d0701bfe1d15718517",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/extension-journey.log",
+    "PublicSha256": "18afdd184a79ea17f9a71e24aab8769a22c37026529c00d0701bfe1d15718517",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "pathmap-probe-one",
+    "OriginalSha256": "f3bddbf34b7ec6be0db917ea59e01d2ae4f5713a998f556cd2549e06b81fa6a7",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/pathmap-probe-one.log",
+    "PublicSha256": "63179341e9b25ac08853e24a8ad3633d81769d8ca247fe8d5ca2707a6188f0d4",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "pathmap-probe-two",
+    "OriginalSha256": "45224f39abd856fc4a405e4004ac39dc1414768ee3dbdd21fc586b0e580d4b8e",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/pathmap-probe-two.log",
+    "PublicSha256": "72a3a828b136075794891c2c1adf462ba1bc9fcea69dc6a1ff69acd70421633d",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "baseline",
+    "OriginalSha256": "6c9bb8291b7245655c7248cffa41bd148adb9f4bb352b47611a3ab2f9b7c3137",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/baseline.log",
+    "PublicSha256": "b3c72ff59878976a3af4b2dc615a6c08dd74aace6e123125fde4fd98ef10aefa",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "architecture",
+    "OriginalSha256": "0726416702068fc6f190fbd809ea7bed161b96b5acc8143a7df3a7fa4b511318",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/architecture.log",
+    "PublicSha256": "575a97917639de066a2fcbae2f294c029f68ad92c907f56a2499786deb62c956",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "operation-closure",
+    "OriginalSha256": "50aa07c021cae0984d3bf9f9b115063c10da7c6e366344c9e6edb39773a61ff0",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/operation-closure.log",
+    "PublicSha256": "59de91865097caa949b32ad1a7bbb6bae4b18a7d2e101639558d5c63d875f7fa",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "conformance",
+    "OriginalSha256": "d29101f9d2a59ae42ff0f0a7ad83701b36440b08245afeb0838a0ddc37ef76cc",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/conformance.log",
+    "PublicSha256": "ac87109c0aa116eccdf24c0c02ba330ec3db0d69e0ede0ad1990d6d92381cf10",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "closure",
+    "OriginalSha256": "4965ab1940732b40f62dde7b17843234420a23b4b2b297246b2e00a59dd587fa",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/closure.log",
+    "PublicSha256": "bf1b11974a1f48609ff2b0a3dc067d54394fe4d521df0a943ab4bb23883f8753",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "maintainability",
+    "OriginalSha256": "df12f02617b1a471d03a064b89dc4d5f35f9ced0347b5851f9e97c64e3d8a304",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/maintainability.log",
+    "PublicSha256": "384a6ff985c9e5126f302b28791e8d9b867f3586dd8d7d10a8973657a33510af",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "package-sportmaster-portable",
+    "OriginalSha256": "ed4d926b37cd20e2fc99339a975db8e610d845598d9b28f52477d470dbc0a6ac",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/package-sportmaster-portable.log",
+    "PublicSha256": "e9e92c36b2a92949d6d2874e59f6556be309be1b62fe33d0aa145f2f5cd7daad",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "package-sportmaster-win-x64",
+    "OriginalSha256": "736009fdbba7d7a7febc03713a0a5a165c2261cac1dba94d8ddc2081b81c52e6",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/package-sportmaster-win-x64.log",
+    "PublicSha256": "f0c0ee981e879749f67f036da4209367a387c46b6953df473340247bc9fe84ef",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "unpacked-sportmaster",
+    "OriginalSha256": "ec809de2a531dad5a593bb988c11dbda37d3ec8aeb5473552dfc5dfdc60ede28",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/unpacked-sportmaster.log",
+    "PublicSha256": "ec809de2a531dad5a593bb988c11dbda37d3ec8aeb5473552dfc5dfdc60ede28",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "package-direct-plc-portable",
+    "OriginalSha256": "b96814a703dfc8c36805d385202cff870212d6d6f9f9ce1bf366f171f2b7c572",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/package-direct-plc-portable.log",
+    "PublicSha256": "e832837ad932a70c34b95e3cfe212d4ecf64bfe74d4c5ed7958754b1f80488d7",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "package-direct-plc-win-x64",
+    "OriginalSha256": "a54672f6d5e7c2a0900b6d28538eed636fdb81de8d3cdc036ce8fce3a61e2851",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/package-direct-plc-win-x64.log",
+    "PublicSha256": "2482b6037fed59db811648a844f0d5e2d34c713a2cd68c9a651a727316b46f0b",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "unpacked-direct-plc",
+    "OriginalSha256": "af006de36e54f1fd31e6d8de7e13cf5f6981a50182dd600e2304a579b0f1cca7",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/unpacked-direct-plc.log",
+    "PublicSha256": "af006de36e54f1fd31e6d8de7e13cf5f6981a50182dd600e2304a579b0f1cca7",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "package-wcs-to-plc-portable",
+    "OriginalSha256": "01494a35c2b60525c3d2021e1fbf5549470a7ad76d62cd277c0b3d6299d63993",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/package-wcs-to-plc-portable.log",
+    "PublicSha256": "180d094f57beac37530e12ae0d064e3323251691bb4e33e03a04eaa62dad41c7",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "package-wcs-to-plc-win-x64",
+    "OriginalSha256": "cf45d3b7ad16ae096215247753fe9b23a81bb508c906230a3ab86c699c8a3778",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/package-wcs-to-plc-win-x64.log",
+    "PublicSha256": "35f97dd753fbf9c1ab57ddaff32883ebf016cc1711f6c8c9f44958d2c87da536",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  },
+  {
+    "Name": "unpacked-wcs-to-plc",
+    "OriginalSha256": "866474305cf567f97ce0569834957f2d21c7ce7ee4061d397fcb99f31495cff9",
+    "PublicPath": "docs/runtime/evidence/application-convergence-17/logs/unpacked-wcs-to-plc.log",
+    "PublicSha256": "866474305cf567f97ce0569834957f2d21c7ce7ee4061d397fcb99f31495cff9",
+    "Sanitization": "Local custody paths only; original retained outside Git"
+  }
+]

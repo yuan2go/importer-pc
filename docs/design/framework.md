@@ -331,8 +331,8 @@ Simulation与Production使用不同装配清单、端点允许规则、数据根
 |责任|实现|
 |---|---|
 |显式装配/配置/受控生命周期|`src/Ipc.Platform/Configuration.cs`、`Lifecycle.cs`，`src/Ipc.Product/ProductRuntime.cs`|
-|共享应用契约/作业/命令/许可|`src/Ipc.Supply/Model.cs`、`StationApplication.cs`|
-|实际SQLite事务/Outbox/接受账/备份|`src/Ipc.Supply/Store.cs`|
+|共享应用契约/作业/命令/许可|`src/Ipc.Application.Supply/Model.cs`、`StationApplication.cs`|
+|实际SQLite事务/Outbox/接受账/备份|`src/Ipc.Application.Supply/Store.cs`|
 |人工/文件源、固定绑定HTTP端口|`src/Ipc.Adapters/ObservationSources.cs`、`LoopbackIntegration.cs`|
 |独立持久接收账与原子需求裁决|`src/Ipc.Fixture/Receiver.cs`、`Program.cs`|
 |WPF页面/布局/焦点/草稿|`src/Ipc.Desktop/`|

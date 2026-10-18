@@ -1,0 +1,26 @@
+F...F.....
+======================================================================
+FAIL: test_distinct_selected_closures (test_composition.CompositionTests.test_distinct_selected_closures)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<WORKTREE>/tools/test_composition.py", line 18, in test_distinct_selected_closures
+    self.assertEqual({x['id'] for x in core['components']}, {'platform', 'supply-contracts', 'supply', 'adapters', 'product'})
+AssertionError: Items in the first set but not the second:
+'integrations'
+'drivers'
+'platform-storage'
+'reference-protocol'
+'application-contracts'
+
+======================================================================
+FAIL: test_images_pptx_relations_and_public_secrets_fail (test_verify_archive.ArchiveTests.test_images_pptx_relations_and_public_secrets_fail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<WORKTREE>/tools/test_verify_archive.py", line 120, in test_images_pptx_relations_and_public_secrets_fail
+    self.assertTrue({'UnidentifiedImageError', 'secret_marker', 'pptx_external_relationship', 'embedded_font',
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.057s
+
+FAILED (failures=2)

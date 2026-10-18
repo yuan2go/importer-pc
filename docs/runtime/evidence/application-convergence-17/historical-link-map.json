@@ -1,0 +1,297 @@
+[
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Supply/StationApplication.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/StationApplication.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Desktop/ViewModels.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/ViewModels.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Desktop/MainWindow.xaml",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Desktop/LaneControl.xaml",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/LaneControl.xaml"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Desktop/MainWindow.xaml.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Supply/Model.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/Model.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Supply/StationApplication.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/StationApplication.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Desktop/MainWindow.xaml.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Product/Program.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Product/Program.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Supply/Store.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/Store.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../scripts/station.ps1",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/scripts/station.ps1"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Platform/DeviceCapabilities.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Platform/DeviceCapabilities.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Supply/StationApplication.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/StationApplication.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Desktop/MainWindow.xaml.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Supply/Store.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/Store.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Supply/Model.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/Model.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Desktop/MainWindow.xaml",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Desktop/MainWindow.xaml.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Desktop/ViewModels.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/ViewModels.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Desktop/MainWindow.xaml",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Desktop/MainWindow.xaml.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Desktop/MainWindow.xaml.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Product/ProductRuntime.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Product/ProductRuntime.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Platform/Lifecycle.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Platform/Lifecycle.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Product/ProductRuntime.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Product/ProductRuntime.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Platform/Lifecycle.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Platform/Lifecycle.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-02.md",
+    "OriginalTarget": "../../src/Ipc.Desktop/App.xaml.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/App.xaml.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-03.md",
+    "OriginalTarget": "../../src/Ipc.Product/ProductRuntime.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/2579392ddcc0b4302d4aae865d4b2d8b3c083b59/src/Ipc.Product/ProductRuntime.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-03.md",
+    "OriginalTarget": "../../src/Ipc.Product/ReferenceProduct.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/2579392ddcc0b4302d4aae865d4b2d8b3c083b59/src/Ipc.Product/ReferenceProduct.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-03.md",
+    "OriginalTarget": "../../src/Ipc.Supply/Model.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/2579392ddcc0b4302d4aae865d4b2d8b3c083b59/src/Ipc.Supply/Model.cs"
+  },
+  {
+    "Source": "docs/reviews/main-static-review-03.md",
+    "OriginalTarget": "../../src/Ipc.Supply/StationApplication.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/2579392ddcc0b4302d4aae865d4b2d8b3c083b59/src/Ipc.Supply/StationApplication.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Supply/ResponsePersistence.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Supply/ResponsePersistence.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Supply/Store.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Supply/Store.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Product/HeadlessNotifications.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Product/HeadlessNotifications.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Platform/ExtensionConsumers.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Platform/ExtensionConsumers.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Supply/ExtensionMaintenance.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Supply/ExtensionMaintenance.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Product/IntegrationRuntime.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Product/IntegrationRuntime.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Product/SenderModule.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Product/SenderModule.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Supply/IntegrationHealth.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Supply/IntegrationHealth.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Desktop/ConfigurationDraft.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Desktop/ConfigurationDraft.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Desktop/ExtensionsView.xaml.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Desktop/ExtensionsView.xaml.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Supply.Contracts/ConfigurationActivation.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Supply.Contracts/ConfigurationActivation.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Desktop/MainWindow.Extensions.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Desktop/MainWindow.Extensions.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Desktop/LaneControl.xaml.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Desktop/LaneControl.xaml.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Desktop/ScanInputDraft.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Desktop/ScanInputDraft.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Desktop/MainWindow.xaml",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Desktop/MainWindow.xaml"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Desktop/LaneControl.xaml",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Desktop/LaneControl.xaml"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Desktop/HistoryPresentation.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Desktop/HistoryPresentation.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Desktop/MainWindow.Closure.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Desktop/MainWindow.Closure.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Desktop/MainWindow.Presentation.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Desktop/MainWindow.Presentation.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Desktop/ViewModels.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Desktop/ViewModels.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Desktop/Themes/Workstation.xaml",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Desktop/Themes/Workstation.xaml"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Supply.Contracts/Model.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Supply.Contracts/Model.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Platform/ExtensionPackages.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Platform/ExtensionPackages.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Platform/ExtensionContractCompatibility.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Platform/ExtensionContractCompatibility.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Product/ProductRuntime.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Product/ProductRuntime.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Supply/Maintenance.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Supply/Maintenance.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Supply/StationApplication.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Supply/StationApplication.cs"
+  },
+  {
+    "Source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",
+    "OriginalTarget": "../../../src/Ipc.Desktop/MainWindow.xaml.cs",
+    "PinnedTarget": "https://github.com/yuan2go/importer-pc/blob/0096f3435cc5066a1b50836ef534ec24221a7e6f/src/Ipc.Desktop/MainWindow.xaml.cs"
+  }
+]

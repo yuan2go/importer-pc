@@ -16,7 +16,7 @@ python3 tools/verify_archive.py --root "$ARCHIVE_ROOT" --scope local --registry 
 python3 tools/verify_archive.py --zip "$INPUT_ZIP" --sha256 8685ba48f19aa087541598b0efc4e56a04f017e56251197bd53b9318d2c3302a
 ```
 
-路径参数由使用者设置。校验模式不能生成 manifest 或自动修复。manifest 中仅排除自身及其校验文件，校验文件记录 manifest 的 SHA-256；远端复核另外逐文件比较这两个文件。所有其余交付文件必须列入清单，禁止任意扩张排除范围。RUNTIME-03仅新增精确的生成物规则：十个已登记C#项目（含13新增Contracts/Assembly/Inspection）自身的bin/obj，以及根目录.artifacts，不属于归档输入；docs下同名目录、其他工程目录和所有源码仍逐文件检查。规则由对应失败用例保护。`.git` 和 Python 字节码缓存属于运行环境，不是交付资料。
+路径参数由使用者设置。校验模式不能生成 manifest 或自动修复。manifest 中仅排除自身及其校验文件，校验文件记录 manifest 的 SHA-256；远端复核另外逐文件比较这两个文件。所有其余交付文件必须列入清单，禁止任意扩张排除范围。RUNTIME-03仅新增精确的生成物规则：`verify_archive.py`中RUNTIME_PROJECTS精确登记的当前C#工程自身bin/obj（含17的Application/Drivers/Integrations与独立参考扩展），以及根目录.artifacts，不属于归档输入；docs下同名目录、其他工程目录和所有源码仍逐文件检查。规则由对应失败用例保护。`.git` 和 Python 字节码缓存属于运行环境，不是交付资料。
 
 检查包括逐文件大小/哈希、JSON、Markdown 相对链接与标题锚点、HTML 属性与 CSS 资源、图片完整解码、PPTX CRC/XML/内部关系/外部关系/嵌入字体、画板尺寸及 SVG/资产引用、敏感标记。外链只记录指纹，不自动访问。行内代码路径、历史 JSON/脚本中的运行环境路径须由证据定位表另行登记，不把文本中的每个文件名自动当成当前链接。
 

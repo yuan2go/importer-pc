@@ -1,0 +1,11 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "d7a53b39a1b996d25b98cde09949e77e179f6403",
+  "HostSourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+  "PayloadAndManifest": {
+    "Ipc.Reference.ParcelCapabilitiesExtension.dll": "e61a2daf1cd62ee16cea29dbd139098147134695535d307097948cc56bd81359",
+    "manifest.json": "e8ac24d0142073e3ec254c36a17a1220f65f00b2bd52d382f64ac61c13e2be76"
+  },
+  "NativeSdk": "BLOCKED",
+  "Windows": "NOT_RUN"
+}

@@ -1,0 +1,17 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+  "Application": "sportmaster",
+  "Target": "portable",
+  "Checks": [
+    "candidate file hashes",
+    "actual selected assembly startup",
+    "camera-to-final-reference-chain",
+    "persistent original phases on restart",
+    "orderly stop"
+  ],
+  "State": "SlotResolved",
+  "OperationId": "d385b6c6794c4342a9128f4b39b13e9d",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED"
+}

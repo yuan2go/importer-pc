@@ -1,0 +1,23 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 731 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 731 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 731 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 731 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 731 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 731 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 731 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 731 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 4 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 9 毫秒)。
+  Ipc.Platform -> <ARTIFACTS>/wcs-to-plc-portable/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <ARTIFACTS>/wcs-to-plc-portable/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <ARTIFACTS>/wcs-to-plc-portable/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <ARTIFACTS>/wcs-to-plc-portable/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> <ARTIFACTS>/wcs-to-plc-portable/build-intermediates/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> <ARTIFACTS>/wcs-to-plc-portable/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Drivers -> <ARTIFACTS>/wcs-to-plc-portable/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <ARTIFACTS>/wcs-to-plc-portable/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <ARTIFACTS>/wcs-to-plc-portable/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> <ARTIFACTS>/wcs-to-plc-portable/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> <ARTIFACTS>/wcs-to-plc-portable/app/
+{"Package": "<ARTIFACTS>/wcs-to-plc-portable.zip", "Sha256": "d2c12c5361b2a568273f92db59fa8ec0829cd8dc4a6d7647ac10ffcd7f6ab9ce", "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4", "Application": "wcs-to-plc", "Target": "portable"}

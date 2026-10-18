@@ -1,0 +1,262 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+  "Packages": {
+    "reference.parcel-capabilities": {
+      "Id": "reference.parcel-capabilities",
+      "Version": "1.0.0",
+      "ManifestSha256": "E8AC24D0142073E3EC254C36A17A1220F65F00B2BD52D382F64AC61C13E2BE76"
+    },
+    "reference.barcode": {
+      "Id": "reference.barcode",
+      "Version": "1.0.5",
+      "ManifestSha256": "EF743D974AD54D13E561E58B9D5C7900264ABA21B25499EC0C5DEB93867F4573"
+    }
+  },
+  "Checks": [
+    "signed permanent install",
+    "single CAS configuration authority",
+    "pending not effective",
+    "controlled startup activation",
+    "external reader",
+    "external correlated scale",
+    "external WCS result",
+    "external PLC lost reply",
+    "restart original request query",
+    "one attempt per stage",
+    "complete stop"
+  ],
+  "Operation": {
+    "Id": "59f21f6f96324972a0490a514c22c6f9",
+    "AdmissionId": "extension-parcel",
+    "ParcelCode": "000917",
+    "ObservationId": "C68195B1C7EAD13230129F6F7F34077C0E5F7B1B30983E4DA6AA9AFFBD515FA4",
+    "ObservedAt": "2026-10-18T03:26:35.710762+00:00",
+    "ConfigurationHash": "D9C78782878DEC5664477AB0CAF3CEB1A8C06ED101FFFB2C9C1F02431B7344EA",
+    "FrozenConfiguration": {
+      "SchemaVersion": 1,
+      "ApplicationId": "wcs-to-plc",
+      "StationId": "reference-17",
+      "Mode": "Simulation",
+      "Weight": {
+        "Source": "Measured",
+        "Unit": "Kg",
+        "Precision": 3,
+        "ConfiguredValue": null,
+        "MaximumAgeMs": 60000
+      },
+      "Reader": {
+        "Role": "parcel-reader",
+        "Driver": "extension:reader.one",
+        "DeviceId": "wcs-to-plc.camera",
+        "Revision": "1",
+        "ReplayFile": null
+      },
+      "Scale": {
+        "Kind": "weight",
+        "Implementation": "extension:reference.parcel-capabilities/parcel-weight",
+        "Version": "1.0.0",
+        "InstanceId": "external.weight",
+        "Target": "reference://weight/extension17",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {},
+        "Package": {
+          "Id": "reference.parcel-capabilities",
+          "Version": "1.0.0",
+          "ManifestSha256": "E8AC24D0142073E3EC254C36A17A1220F65F00B2BD52D382F64AC61C13E2BE76"
+        },
+        "Module": "parcel-weight"
+      },
+      "Wcs": {
+        "Kind": "integration",
+        "Implementation": "extension:reference.parcel-capabilities/parcel-integration",
+        "Version": "1.0.0",
+        "InstanceId": "external.integration",
+        "Target": "reference://integration/extension17",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "peer-root": "<ARTIFACTS>/extension-journey/independent-peers",
+          "slot": "EXTENSION-17"
+        },
+        "Package": {
+          "Id": "reference.parcel-capabilities",
+          "Version": "1.0.0",
+          "ManifestSha256": "E8AC24D0142073E3EC254C36A17A1220F65F00B2BD52D382F64AC61C13E2BE76"
+        },
+        "Module": "parcel-integration"
+      },
+      "Plc": {
+        "Kind": "plc",
+        "Implementation": "extension:reference.parcel-capabilities/parcel-plc",
+        "Version": "1.0.0",
+        "InstanceId": "external.plc",
+        "Target": "reference://plc/extension17",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "peer-root": "<ARTIFACTS>/extension-journey/independent-peers",
+          "reply-mode": "lose-after-commit",
+          "complete-on-query": "true"
+        },
+        "Package": {
+          "Id": "reference.parcel-capabilities",
+          "Version": "1.0.0",
+          "ManifestSha256": "E8AC24D0142073E3EC254C36A17A1220F65F00B2BD52D382F64AC61C13E2BE76"
+        },
+        "Module": "parcel-plc"
+      },
+      "Extensions": {
+        "Packages": [
+          {
+            "Id": "reference.parcel-capabilities",
+            "Version": "1.0.0",
+            "ManifestSha256": "E8AC24D0142073E3EC254C36A17A1220F65F00B2BD52D382F64AC61C13E2BE76"
+          },
+          {
+            "Id": "reference.barcode",
+            "Version": "1.0.5",
+            "ManifestSha256": "EF743D974AD54D13E561E58B9D5C7900264ABA21B25499EC0C5DEB93867F4573"
+          }
+        ],
+        "Instances": [
+          {
+            "Id": "reader.one",
+            "PackageId": "reference.barcode",
+            "ModuleId": "barcode-source",
+            "DeviceId": "wcs-to-plc.camera",
+            "Enabled": true,
+            "Parameters": {
+              "health.interval-ms": "1000"
+            }
+          }
+        ]
+      },
+      "QueueCapacity": 64,
+      "TimeoutMs": 1500,
+      "MaximumOperations": 10000
+    },
+    "ImplementationHashes": {
+      "external.weight": "E61A2DAF1CD62EE16CEA29DBD139098147134695535D307097948CC56BD81359",
+      "external.integration": "E61A2DAF1CD62EE16CEA29DBD139098147134695535D307097948CC56BD81359",
+      "external.plc": "E61A2DAF1CD62EE16CEA29DBD139098147134695535D307097948CC56BD81359"
+    },
+    "WeightPolicy": {
+      "Source": "Measured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": null,
+      "MaximumAgeMs": 60000
+    },
+    "Weight": {
+      "Value": 3.125,
+      "Unit": "Kg",
+      "Precision": 3,
+      "Source": "Measured",
+      "MeasurementId": "240aef3d793944ff8f3a6451e1f6be50",
+      "Evidence": "reference://weight/extension17:Valid"
+    },
+    "State": "PhysicalCompleted",
+    "Slot": "EXTENSION-17",
+    "Wcs": {
+      "Request": {
+        "Id": "72090a131f574e1e971b33fbb29c5f1d",
+        "ApplicationId": "wcs-to-plc",
+        "OperationId": "59f21f6f96324972a0490a514c22c6f9",
+        "AdmissionId": "extension-parcel",
+        "Stage": "wcs-slot",
+        "Binding": {
+          "Kind": "integration",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-integration",
+          "Version": "1.0.0",
+          "InstanceId": "external.integration",
+          "Target": "reference://integration/extension17",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "peer-root": "<ARTIFACTS>/extension-journey/independent-peers",
+            "slot": "EXTENSION-17"
+          },
+          "Package": {
+            "Id": "reference.parcel-capabilities",
+            "Version": "1.0.0",
+            "ManifestSha256": "E8AC24D0142073E3EC254C36A17A1220F65F00B2BD52D382F64AC61C13E2BE76"
+          },
+          "Module": "parcel-integration"
+        },
+        "ImplementationHash": "E61A2DAF1CD62EE16CEA29DBD139098147134695535D307097948CC56BD81359",
+        "ConfigurationHash": "D9C78782878DEC5664477AB0CAF3CEB1A8C06ED101FFFB2C9C1F02431B7344EA",
+        "Payload": "{\n  \"ParcelCode\": \"000917\",\n  \"AdmissionId\": \"extension-parcel\",\n  \"Weight\": {\n    \"Value\": 3.125,\n    \"Unit\": \"Kg\",\n    \"Precision\": 3,\n    \"Source\": \"Measured\",\n    \"MeasurementId\": \"240aef3d793944ff8f3a6451e1f6be50\",\n    \"Evidence\": \"reference://weight/extension17:Valid\"\n  },\n  \"Slot\": null,\n  \"WcsRequestId\": null\n}",
+        "PayloadHash": "A18B8825CD6FA5B02CC7F6511F9043FB2D834CC304FE3FE1B39692A6E8A12D6B",
+        "PreparedAt": "2026-10-18T03:26:35.749618+00:00"
+      },
+      "State": "Accepted",
+      "Attempts": 1,
+      "Replies": [
+        {
+          "Id": "95f48f00c2e54891b7fe3025f1f42bb1",
+          "RequestId": "72090a131f574e1e971b33fbb29c5f1d",
+          "PayloadHash": "A18B8825CD6FA5B02CC7F6511F9043FB2D834CC304FE3FE1B39692A6E8A12D6B",
+          "TransportSucceeded": true,
+          "ProtocolAcknowledged": true,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": null,
+          "Slot": "EXTENSION-17",
+          "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+          "At": "2026-10-18T03:26:35.758598+00:00"
+        }
+      ],
+      "Failure": null
+    },
+    "Plc": {
+      "Request": {
+        "Id": "1f048e284abd467ca3522e8e2a5d026f",
+        "ApplicationId": "wcs-to-plc",
+        "OperationId": "59f21f6f96324972a0490a514c22c6f9",
+        "AdmissionId": "extension-parcel",
+        "Stage": "plc-submit",
+        "Binding": {
+          "Kind": "plc",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-plc",
+          "Version": "1.0.0",
+          "InstanceId": "external.plc",
+          "Target": "reference://plc/extension17",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "peer-root": "<ARTIFACTS>/extension-journey/independent-peers",
+            "reply-mode": "lose-after-commit",
+            "complete-on-query": "true"
+          },
+          "Package": {
+            "Id": "reference.parcel-capabilities",
+            "Version": "1.0.0",
+            "ManifestSha256": "E8AC24D0142073E3EC254C36A17A1220F65F00B2BD52D382F64AC61C13E2BE76"
+          },
+          "Module": "parcel-plc"
+        },
+        "ImplementationHash": "E61A2DAF1CD62EE16CEA29DBD139098147134695535D307097948CC56BD81359",
+        "ConfigurationHash": "D9C78782878DEC5664477AB0CAF3CEB1A8C06ED101FFFB2C9C1F02431B7344EA",
+        "Payload": "{\n  \"ParcelCode\": \"000917\",\n  \"AdmissionId\": \"extension-parcel\",\n  \"Weight\": {\n    \"Value\": 3.125,\n    \"Unit\": \"Kg\",\n    \"Precision\": 3,\n    \"Source\": \"Measured\",\n    \"MeasurementId\": \"240aef3d793944ff8f3a6451e1f6be50\",\n    \"Evidence\": \"reference://weight/extension17:Valid\"\n  },\n  \"Slot\": \"EXTENSION-17\",\n  \"WcsRequestId\": \"72090a131f574e1e971b33fbb29c5f1d\"\n}",
+        "PayloadHash": "1231C39D0F948C68CA2C359A3EF7CC9648C4B7AB5BC7A2B1EA8556A89FF60984",
+        "PreparedAt": "2026-10-18T03:26:35.774477+00:00"
+      },
+      "State": "Accepted",
+      "Attempts": 1,
+      "Replies": [
+        {
+          "Id": "552d0f8e77ed49dcbe892b506488636d",
+          "RequestId": "1f048e284abd467ca3522e8e2a5d026f",
+          "PayloadHash": "1231C39D0F948C68CA2C359A3EF7CC9648C4B7AB5BC7A2B1EA8556A89FF60984",
+          "TransportSucceeded": true,
+          "ProtocolAcknowledged": true,
+          "BusinessAccepted": true,
+          "PhysicalCompleted": true,
+          "Slot": "EXTENSION-17",
+          "Evidence": "SIMULATION: reference peer reports explicit physical completion; no real equipment operated",
+          "At": "2026-10-18T03:26:36.155768+00:00"
+        }
+      ],
+      "Failure": null
+    },
+    "Reason": null
+  },
+  "Windows": "NOT_RUN",
+  "RealSdk": "BLOCKED"
+}

@@ -1,0 +1,72 @@
+{
+  "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+  "Candidates": [
+    {
+      "Name": "sportmaster-portable.zip",
+      "Sha256": "f3735a0a7bbf01b54839f95c694262d8df3b231e18c433b3cc09fc071c195be5",
+      "Bytes": 18088740,
+      "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+      "Application": "sportmaster",
+      "Target": "portable",
+      "ZipIntegrity": "PASS",
+      "Runtime": "PASS_ACTUAL_UNPACKED"
+    },
+    {
+      "Name": "sportmaster-win-x64.zip",
+      "Sha256": "b2e698573130585bc420e20505227764bd18fabb70a51d3da890606f78666d81",
+      "Bytes": 103484650,
+      "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+      "Application": "sportmaster",
+      "Target": "win-x64",
+      "ZipIntegrity": "PASS",
+      "Runtime": "NOT_RUN_WINDOWS"
+    },
+    {
+      "Name": "direct-plc-portable.zip",
+      "Sha256": "386dfa7a334e22693aaef8d1fcfbc435389e7c9acf90d4a8e58ae415d759fea0",
+      "Bytes": 18005951,
+      "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+      "Application": "direct-plc",
+      "Target": "portable",
+      "ZipIntegrity": "PASS",
+      "Runtime": "PASS_ACTUAL_UNPACKED"
+    },
+    {
+      "Name": "direct-plc-win-x64.zip",
+      "Sha256": "ef788ea13798ddf65d4eb4aa82ff100ba8e869bdf33f6b953580646b706427cd",
+      "Bytes": 103319240,
+      "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+      "Application": "direct-plc",
+      "Target": "win-x64",
+      "ZipIntegrity": "PASS",
+      "Runtime": "NOT_RUN_WINDOWS"
+    },
+    {
+      "Name": "wcs-to-plc-portable.zip",
+      "Sha256": "d2c12c5361b2a568273f92db59fa8ec0829cd8dc4a6d7647ac10ffcd7f6ab9ce",
+      "Bytes": 18088646,
+      "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+      "Application": "wcs-to-plc",
+      "Target": "portable",
+      "ZipIntegrity": "PASS",
+      "Runtime": "PASS_ACTUAL_UNPACKED"
+    },
+    {
+      "Name": "wcs-to-plc-win-x64.zip",
+      "Sha256": "ec272cf5064a4113f5864ef6520d75863da632bb42e08a531dcd7318d8ba35c8",
+      "Bytes": 103484705,
+      "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+      "Application": "wcs-to-plc",
+      "Target": "win-x64",
+      "ZipIntegrity": "PASS",
+      "Runtime": "NOT_RUN_WINDOWS"
+    }
+  ],
+  "SharedPublicContracts": {
+    "Ipc.Platform.dll": "32cf43e525e154107c0b3a19279c66f944cba9be15c4dbeba226d4d4fe3deae1",
+    "Ipc.Application.Contracts.dll": "569243a4356011c1591296ef4ed2beb088b2e51dece223751e09f663229bd0bf"
+  },
+  "SharedPublicByteIdentity": "PASS_ACROSS_ALL_SIX",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED"
+}

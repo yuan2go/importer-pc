@@ -1,0 +1,35 @@
+using Ipc.Application.Contracts;
+using Ipc.Platform;
+namespace Ipc.Assembly;
+
+public static class ParcelAssembly
+{
+    public static IBusinessRuntime Create(BusinessLaunch launch)
+    {
+        ParcelCapabilityFactory.RegisterContracts();
+        var factory = new ParcelCapabilityFactory(launch);
+#if SPORTMASTER
+        var runtime = Ipc.Application.Sportmaster.SportmasterApplication.Create(launch, factory);
+#elif DIRECTPLC
+        var runtime = Ipc.Application.DirectPlc.DirectPlcApplication.Create(launch, factory);
+#elif WCSTOPLC
+        var runtime = Ipc.Application.WcsToPlc.WcsToPlcApplication.Create(launch, factory);
+#else
+#error A registered Application must be selected at build time.
+#endif
+        ApplicationReleaseValidation.ValidateIfPublished(AppContext.BaseDirectory, runtime.Id, runtime.Presentation);
+        return runtime;
+    }
+}
+static class InstalledBusiness
+{
+    public static BusinessAssembly Create() => new(
+#if SPORTMASTER
+        "sportmaster",
+#elif DIRECTPLC
+        "direct-plc",
+#else
+        "wcs-to-plc",
+#endif
+        ParcelAssembly.Create);
+}

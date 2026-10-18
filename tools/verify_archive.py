@@ -136,9 +136,33 @@ def markdown(text):
 # Runtime build outputs are not archival inputs. These exact project output roots and the
 # repository's dedicated publication directory are generated; docs/assets remain exhaustive.
 RUNTIME_PROJECTS = {
-    'src/Ipc.Platform', 'src/Ipc.Supply', 'src/Ipc.Adapters', 'src/Ipc.Product',
-    'src/Ipc.Fixture', 'src/Ipc.Desktop', 'tests/Ipc.Verification',
-    'src/Ipc.Supply.Contracts', 'src/Ipc.Assembly', 'src/Ipc.Inspection',
+    'src/Ipc.Adapters',
+    'src/Ipc.Application.Contracts',
+    'src/Ipc.Application.DirectPlc',
+    'src/Ipc.Application.DirectPlc.Desktop',
+    'src/Ipc.Application.Inspection',
+    'src/Ipc.Application.ParcelFlow',
+    'src/Ipc.Application.ParcelFlow.Desktop',
+    'src/Ipc.Application.Sportmaster',
+    'src/Ipc.Application.Sportmaster.Desktop',
+    'src/Ipc.Application.Supply',
+    'src/Ipc.Application.Supply.Contracts',
+    'src/Ipc.Application.WcsToPlc',
+    'src/Ipc.Application.WcsToPlc.Desktop',
+    'src/Ipc.Assembly',
+    'src/Ipc.Desktop',
+    'src/Ipc.Drivers',
+    'src/Ipc.Fixture',
+    'src/Ipc.Integrations',
+    'src/Ipc.Platform',
+    'src/Ipc.Platform.Storage',
+    'src/Ipc.Product',
+    'src/Ipc.Reference.Protocol',
+    'tests/Ipc.Verification',
+    'tests/Ipc.Application.Verification',
+    'examples/BarcodeExtension',
+    'examples/IntegrationExtension',
+    'examples/ParcelCapabilitiesExtension',
 }
 
 

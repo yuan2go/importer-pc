@@ -1,3 +1,5 @@
+> 17源码迁移后的历史定位维护：源码/脚本链接固定到本报告原分析基准 `cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa`；结论、行号及当时NOT_RUN状态未改。修改前字节保留于17前置归档。
+
 # 最新 main 架构与供包 UI 独立静态复核
 
 复核日期：2026-10-16（Asia/Shanghai）。工作包：WP-IPC-MAIN-REVIEW-02。
@@ -33,7 +35,7 @@
 
 ### E-01 / P1：重扫修订没有完整撤销旧任务与数量的当前有效性
 
-证据：[StationApplication.cs](../../src/Ipc.Supply/StationApplication.cs) 311～323、518～524行；[ViewModels.cs](../../src/Ipc.Desktop/ViewModels.cs) 90～96行。依据：framework §6.3/8/10，RV-02/03/04，REQ-035/036。
+证据：[StationApplication.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/StationApplication.cs) 311～323、518～524行；[ViewModels.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/ViewModels.cs) 90～96行。依据：framework §6.3/8/10，RV-02/03/04，REQ-035/036。
 
 同实体已有合法校验结果、之后业务拒绝再重扫时，无码/多码/非法输入分支只更新Status/Reason，旧Barcode、Task、Package、Remaining、Supply继续作为当前字段。合法纠正分支只清Task、不清Remaining/Supply；新校验未回执时，UI仍直接显示旧数量。旧事实可以保留在历史，但不应继续显示成新观察/新修订的有效任务。守卫阻止此时提交，不等于显示语义已正确。
 
@@ -41,7 +43,7 @@
 
 ### E-02 / P1：固定动作带未绑定持续可见的任务核对信息
 
-证据：[MainWindow.xaml](../../src/Ipc.Desktop/MainWindow.xaml) 7～13行，[LaneControl.xaml](../../src/Ipc.Desktop/LaneControl.xaml) 3～14行，[MainWindow.xaml.cs](../../src/Ipc.Desktop/MainWindow.xaml.cs) 226～244行。依据：framework §10，RV-13/14，REQ-017～022/035/036。
+证据：[MainWindow.xaml](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml) 7～13行，[LaneControl.xaml](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/LaneControl.xaml) 3～14行，[MainWindow.xaml.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml.cs) 226～244行。依据：framework §10，RV-13/14，REQ-017～022/035/036。
 
 整个箱区、左右任务和拆包计数都在同一个WorkScroll内；窄/矮有效区把右通道排到下一行，但左右供包按钮仍固定且按业务守卫启用。源码没有保证点击某通道供包时，其条码/SKU、供给/保留/移除量和计数仍可同时核对。800×420的几何门槛只检查总客户区，未证明内部当前任务可用；本轮没有测量任何实际控件遮挡或DPI结果。
 
@@ -49,7 +51,7 @@
 
 ### E-03 / P1：观察核对解除入口不能约束到已检查的来源证据
 
-证据：[Model.cs](../../src/Ipc.Supply/Model.cs) 的 `ReviewObservationsAsync(string evidence)`；[StationApplication.cs](../../src/Ipc.Supply/StationApplication.cs) 695～704行；[MainWindow.xaml.cs](../../src/Ipc.Desktop/MainWindow.xaml.cs) 424行。依据：framework §6.2/6.4/9，F-10，RV-01/02。
+证据：[Model.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/Model.cs) 的 `ReviewObservationsAsync(string evidence)`；[StationApplication.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/StationApplication.cs) 695～704行；[MainWindow.xaml.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml.cs) 424行。依据：framework §6.2/6.4/9，F-10，RV-01/02。
 
 该入口只有自由文本；后台执行时按Code删除全部ObservationReview，不带commandId、expectedRevision、scope/source/epoch/evidenceVersion。在维护员看过旧投影、随后产生新来源拒收的时序中，旧说明可以清掉未检查的新阻断或另一来源阻断。SetBlock（725～727行）在同Code/Scope/Source已有项时也不更新证据版本，不能只给UI补一个旧版本字段。它不清除Unknown或Overload，但仍缺“恢复只解除对应证据”的约束。
 
@@ -57,7 +59,7 @@
 
 ### E-04 / P1：预检查和备份可在备份前迁移旧库；升级指针未接入启动
 
-证据：[Program.cs](../../src/Ipc.Product/Program.cs) 11～35行，[Store.cs](../../src/Ipc.Supply/Store.cs) 41～73行，[station.ps1](../../scripts/station.ps1) 28～33、45～61行。依据：framework §11，F-09/12。
+证据：[Program.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Product/Program.cs) 11～35行，[Store.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/Store.cs) 41～73行，[station.ps1](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/scripts/station.ps1) 28～33、45～61行。依据：framework §11，F-09/12。
 
 当前程序的preflight/backup均先 `new SupplyStore(dbPath)`；该构造器以ReadWriteCreate打开并将schema1前向迁移到format2，然后才检查未决或创建备份。因而“拿新程序检查/备份旧库”会先修改源库，甚至检查随后拒绝也已迁移；这不能生成旧EXE需要的升级前schema1备份。用旧发布脚本操作旧库的正确路径应保留，不能把风险扩大为所有既有升级都必然失败。
 
@@ -67,7 +69,7 @@
 
 ### E-05 / P1：投影新鲜不代表设备健康有效，新连接代次缺少可达接纳路径
 
-证据：[DeviceCapabilities.cs](../../src/Ipc.Platform/DeviceCapabilities.cs) 5～14行，[StationApplication.cs](../../src/Ipc.Supply/StationApplication.cs) 354～366、526～570行，[MainWindow.xaml.cs](../../src/Ipc.Desktop/MainWindow.xaml.cs) 140行。依据：framework §4.1/5.2/6.2/9，RV-01/03/09。
+证据：[DeviceCapabilities.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Platform/DeviceCapabilities.cs) 5～14行，[StationApplication.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/StationApplication.cs) 354～366、526～570行，[MainWindow.xaml.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml.cs) 140行。依据：framework §4.1/5.2/6.2/9，RV-01/03/09。
 
 设备守卫只看Health==Ready，未按健康源时间/有效期撤销；相同epoch和health的重复健康通知在更新时间前即返回。Snapshot每次读取重新生成GeneratedAt，因此UI的3秒限制不能证明底层设备状态仍新鲜。另在非not-connected之后，SetDeviceCore无条件拒绝不同epoch的健康，只有进程启动重置；现有端口没有显式注册合法重连新代次的步骤。不能用接纳任意新epoch修复，否则迟到旧回调也可覆盖。
 
@@ -75,7 +77,7 @@
 
 ### E-06 / P2：历史关闭会话不可发现，查询仍缺明确条件和状态
 
-证据：[Store.cs](../../src/Ipc.Supply/Store.cs) 100～108行，[Model.cs](../../src/Ipc.Supply/Model.cs) IStationApplication，[MainWindow.xaml](../../src/Ipc.Desktop/MainWindow.xaml) 15行，[MainWindow.xaml.cs](../../src/Ipc.Desktop/MainWindow.xaml.cs) 256～304、350行；[ViewModels.cs](../../src/Ipc.Desktop/ViewModels.cs) 130～142行。依据：framework §6.4/7/8/10，RV-06/16，REQ-037/040/046。
+证据：[Store.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/Store.cs) 100～108行，[Model.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Supply/Model.cs) IStationApplication，[MainWindow.xaml](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml) 15行，[MainWindow.xaml.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml.cs) 256～304、350行；[ViewModels.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/ViewModels.cs) 130～142行。依据：framework §6.4/7/8/10，RV-06/16，REQ-037/040/046。
 
 Store虽有Sessions，但应用契约/页面没有历史会话查询；History只列operations，Details(operationId)只读同owner请求，关闭owner为sessionId。“当前关闭详情”只取当前Session。换新箱后，旧箱关闭检查/关闭请求缺少可发现入口，不能要求操作者从外部知道ID。普通查询是对整段JSON的instr文本匹配，缺日期/结果/通道的明确条件；时间缺年份/时区。刷新替换整个结果源，未保留选中ID，也没有独立的加载/空/失败状态，失败时旧结果可能继续留屏。
 
@@ -83,7 +85,7 @@ Store虽有Sessions，但应用契约/页面没有历史会话查询；History�
 
 ### E-07 / P2：常驻操作信息不完整，低频技术信息占据主层
 
-证据：[MainWindow.xaml](../../src/Ipc.Desktop/MainWindow.xaml) 4～13、41～44行；[MainWindow.xaml.cs](../../src/Ipc.Desktop/MainWindow.xaml.cs) 82～95行。依据：framework §9/10，RV-04/05/14/15，REQ-006/026。
+证据：[MainWindow.xaml](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml) 4～13、41～44行；[MainWindow.xaml.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml.cs) 82～95行。依据：framework §9/10，RV-04/05/14/15，REQ-006/026。
 
 顶栏没有物理工位ID、独立WCS连接/来源时间、常驻活动报警入口/计数；正常就绪时也无法直接辨认WCS状态，AlarmSummary只在恢复页，设备主要在通道/诊断页。全局阻断带跨页存在，这部分已改善；但投影修订/来源长证据默认占主层，主屏还始终显示非拆包计数输入、不可用清空按钮。
 
@@ -91,7 +93,7 @@ Store虽有Sessions，但应用契约/页面没有历史会话查询；History�
 
 ### E-08 / P2：提示声按快照轮询且全局节流会丢应提示的状态变化
 
-证据：[MainWindow.xaml.cs](../../src/Ipc.Desktop/MainWindow.xaml.cs) 21、70～81行。依据：framework §10、供包UI三类提示声要求（REQ-025）。
+证据：[MainWindow.xaml.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/MainWindow.xaml.cs) 21、70～81行。依据：framework §10、供包UI三类提示声要求（REQ-025）。
 
 同次刷新两个通道进入需提示状态时，首个播放后更新lastSound，另一个被800ms门槛压掉却仍更新audible状态，之后不会补播；轮询间发生并结束的状态也没有独立事件消费。事件是否实际发生过、是否需要声音、是否成功播放没有分开。Windows听审决定音色/音量，但上述丢失来自代码仲裁。
 
@@ -99,7 +101,7 @@ Store虽有Sessions，但应用契约/页面没有历史会话查询；History�
 
 ### E-09 / P2：资源停止/释放遇到单项异常时可能跳过后续清理
 
-证据：[ProductRuntime.cs](../../src/Ipc.Product/ProductRuntime.cs) 203～208、274～285行，[Lifecycle.cs](../../src/Ipc.Platform/Lifecycle.cs) 46～50行。依据：framework §4.1/5.1，RV-09/10。
+证据：[ProductRuntime.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Product/ProductRuntime.cs) 203～208、274～285行，[Lifecycle.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Platform/Lifecycle.cs) 46～50行。依据：framework §4.1/5.1，RV-09/10。
 
 ObservationModule.StopAsync在逆序source.StopAsync处没有逐项捕获，某个源抛错则后续来源、队列完成和worker等待被跳过。ModuleCatalog的外层Stop会继续其它模块，已有保护应保留；但Dispose仍顺序await，ProductRuntime.Dispose遇到catalog异常会跳过application/store/journal/租约释放。上一包已覆盖“停止屏障写库失败仍停模块”，不能把该用例当成“任意适配器释放失败”已覆盖。
 
@@ -107,7 +109,7 @@ ObservationModule.StopAsync在逆序source.StopAsync处没有逐项捕获，某�
 
 ### E-10 / P2（跨账户部署条件）：工位/设备租约默认路径是用户级
 
-证据：[ProductRuntime.cs](../../src/Ipc.Product/ProductRuntime.cs) 50～64行，[Lifecycle.cs](../../src/Ipc.Platform/Lifecycle.cs) 55～73行；[App.xaml.cs](../../src/Ipc.Desktop/App.xaml.cs) BootOptions。依据：framework §11，RV-09/10。
+证据：[ProductRuntime.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Product/ProductRuntime.cs) 50～64行，[Lifecycle.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Platform/Lifecycle.cs) 55～73行；[App.xaml.cs](https://github.com/yuan2go/importer-pc/blob/cc3675fc9aa78a5b27d6c12c15e13c6d0a2856aa/src/Ipc.Desktop/App.xaml.cs) BootOptions。依据：framework §11，RV-09/10。
 
 文件锁能保护相同路径下的实例，但默认设备/工位lease放LocalApplicationData，桌面入口不提供机级LeaseRoot选择；不同Windows账户的默认路径不同。若部署允许跨账户/登录会话运行，同工位/设备键不会在同一目录争用，现有同账户第二进程记录不能证明这一边界。当前参考工程未连接真实设备，没有“已经发生设备争抢”的证据。
 

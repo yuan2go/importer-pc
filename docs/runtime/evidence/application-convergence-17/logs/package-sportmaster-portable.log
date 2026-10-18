@@ -1,0 +1,23 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 797 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 797 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 797 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 797 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 797 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 796 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 797 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 797 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 5 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 6 毫秒)。
+  Ipc.Platform -> <ARTIFACTS>/sportmaster-portable/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <ARTIFACTS>/sportmaster-portable/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <ARTIFACTS>/sportmaster-portable/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <ARTIFACTS>/sportmaster-portable/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> <ARTIFACTS>/sportmaster-portable/build-intermediates/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> <ARTIFACTS>/sportmaster-portable/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Drivers -> <ARTIFACTS>/sportmaster-portable/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <ARTIFACTS>/sportmaster-portable/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <ARTIFACTS>/sportmaster-portable/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> <ARTIFACTS>/sportmaster-portable/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> <ARTIFACTS>/sportmaster-portable/app/
+{"Package": "<ARTIFACTS>/sportmaster-portable.zip", "Sha256": "f3735a0a7bbf01b54839f95c694262d8df3b231e18c433b3cc09fc071c195be5", "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4", "Application": "sportmaster", "Target": "portable"}

@@ -1,0 +1,81 @@
+{
+  "Url": "https://github.com/yuan2go/importer-pc/releases/tag/application17-reference-f184a6b",
+  "Tag": "application17-reference-f184a6b",
+  "TargetCommitish": "f184a6bb9aeea36f236313457a7c58936c1768c4",
+  "IsDraft": false,
+  "Prerelease": true,
+  "Assets": [
+    {
+      "Name": "candidate-inventory.json",
+      "Sha256": "7597f79574b35fd20ec76ea5928c0c2c0f44a5063c989f0b649e2e29babb6f30",
+      "Bytes": 2582,
+      "RemoteDigest": "sha256:7597f79574b35fd20ec76ea5928c0c2c0f44a5063c989f0b649e2e29babb6f30",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/application17-reference-f184a6b/candidate-inventory.json",
+      "State": "uploaded"
+    },
+    {
+      "Name": "direct-plc-portable.zip",
+      "Sha256": "386dfa7a334e22693aaef8d1fcfbc435389e7c9acf90d4a8e58ae415d759fea0",
+      "Bytes": 18005951,
+      "RemoteDigest": "sha256:386dfa7a334e22693aaef8d1fcfbc435389e7c9acf90d4a8e58ae415d759fea0",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/application17-reference-f184a6b/direct-plc-portable.zip",
+      "State": "uploaded"
+    },
+    {
+      "Name": "direct-plc-win-x64.zip",
+      "Sha256": "ef788ea13798ddf65d4eb4aa82ff100ba8e869bdf33f6b953580646b706427cd",
+      "Bytes": 103319240,
+      "RemoteDigest": "sha256:ef788ea13798ddf65d4eb4aa82ff100ba8e869bdf33f6b953580646b706427cd",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/application17-reference-f184a6b/direct-plc-win-x64.zip",
+      "State": "uploaded"
+    },
+    {
+      "Name": "parcel-capabilities-independent-source.zip",
+      "Sha256": "9a17368f127c8f8e270cc5189761e7d4250964bc8b4aa63897d88e34b3d116ef",
+      "Bytes": 87816,
+      "RemoteDigest": "sha256:9a17368f127c8f8e270cc5189761e7d4250964bc8b4aa63897d88e34b3d116ef",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/application17-reference-f184a6b/parcel-capabilities-independent-source.zip",
+      "State": "uploaded"
+    },
+    {
+      "Name": "reference17-offline-extensions.zip",
+      "Sha256": "f8940fb88f1a2672e24edd1ee51e997602c8c6996a631ead6a9a73b3363275d5",
+      "Bytes": 22570,
+      "RemoteDigest": "sha256:f8940fb88f1a2672e24edd1ee51e997602c8c6996a631ead6a9a73b3363275d5",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/application17-reference-f184a6b/reference17-offline-extensions.zip",
+      "State": "uploaded"
+    },
+    {
+      "Name": "sportmaster-portable.zip",
+      "Sha256": "f3735a0a7bbf01b54839f95c694262d8df3b231e18c433b3cc09fc071c195be5",
+      "Bytes": 18088740,
+      "RemoteDigest": "sha256:f3735a0a7bbf01b54839f95c694262d8df3b231e18c433b3cc09fc071c195be5",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/application17-reference-f184a6b/sportmaster-portable.zip",
+      "State": "uploaded"
+    },
+    {
+      "Name": "sportmaster-win-x64.zip",
+      "Sha256": "b2e698573130585bc420e20505227764bd18fabb70a51d3da890606f78666d81",
+      "Bytes": 103484650,
+      "RemoteDigest": "sha256:b2e698573130585bc420e20505227764bd18fabb70a51d3da890606f78666d81",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/application17-reference-f184a6b/sportmaster-win-x64.zip",
+      "State": "uploaded"
+    },
+    {
+      "Name": "wcs-to-plc-portable.zip",
+      "Sha256": "d2c12c5361b2a568273f92db59fa8ec0829cd8dc4a6d7647ac10ffcd7f6ab9ce",
+      "Bytes": 18088646,
+      "RemoteDigest": "sha256:d2c12c5361b2a568273f92db59fa8ec0829cd8dc4a6d7647ac10ffcd7f6ab9ce",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/application17-reference-f184a6b/wcs-to-plc-portable.zip",
+      "State": "uploaded"
+    },
+    {
+      "Name": "wcs-to-plc-win-x64.zip",
+      "Sha256": "ec272cf5064a4113f5864ef6520d75863da632bb42e08a531dcd7318d8ba35c8",
+      "Bytes": 103484705,
+      "RemoteDigest": "sha256:ec272cf5064a4113f5864ef6520d75863da632bb42e08a531dcd7318d8ba35c8",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/application17-reference-f184a6b/wcs-to-plc-win-x64.zip",
+      "State": "uploaded"
+    }
+  ]
+}

@@ -101,8 +101,8 @@ def build(args):
     if contract.name != 'Ipc.Platform.dll':
         raise ValueError('--contract must name the frozen Ipc.Platform.dll')
     host = (args.check_host or contract.parent / 'Ipc.Product.dll').resolve(strict=True)
-    if host.name != 'Ipc.Product.dll':
-        raise ValueError('The frozen static checker must be Ipc.Product.dll')
+    if host.name not in {'Ipc.Product.dll', 'Ipc.Assembly.dll'}:
+        raise ValueError('The frozen static checker must be Ipc.Product.dll or the selected Ipc.Assembly.dll')
     destination = args.output.resolve()
     identity_destination = Path(str(destination) + '.identity.json')
     if destination.exists() or identity_destination.exists():

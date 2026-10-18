@@ -1,0 +1,6 @@
+<UserControl x:Class="Ipc.Application.ParcelFlow.Desktop.HistoryPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="3*"/><ColumnDefinition Width="2*"/></Grid.ColumnDefinitions>
+  <DataGrid ItemsSource="{Binding Operations}" SelectedItem="{Binding Selected}" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" EnableRowVirtualization="True" RowHeight="44"><DataGrid.Columns><DataGridTextColumn Header="包裹号" Binding="{Binding ParcelCode}" Width="*"/><DataGridTextColumn Header="状态" Binding="{Binding State}" Width="*"/><DataGridTextColumn Header="格口" Binding="{Binding Slot}" Width="100"/><DataGridTextColumn Header="实体身份" Binding="{Binding AdmissionId}" Width="*"/></DataGrid.Columns></DataGrid>
+  <DockPanel Grid.Column="1" Margin="12,0,0,0"><StackPanel DockPanel.Dock="Top" Orientation="Horizontal"><Button Content="核对原请求" Click="Query_Click"/><Button Content="继续未尝试的PLC意图" Click="Continue_Click"/></StackPanel><TextBox Text="{Binding Details}" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontFamily="Consolas"/></DockPanel>
+ </Grid>
+</UserControl>

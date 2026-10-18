@@ -1,3 +1,5 @@
+> Application17新增Sportmaster/DirectPlc/WcsToPlc所属实际WPF页面、VM、共享历史/维护/窗口及选择闭包，见[完成矩阵](../runtime/application-convergence-17-results.md)。三种WPF交叉构建PASS；实际Windows图0、客户端交互NOT_RUN。下文Supply及原型记录保留原形成时范围。
+
 > 当前工程实现见[16 UI映射](ui-maintainability-16-mapping.md)、[逐项报告](../runtime/ui-maintainability-16.md)与[同版Windows后验](../runtime/validation/ui-maintainability-16-windows.md)。v1.1实物保持原字节；WPF实际截图0、行为/DPI/HID/声音/触控仍NOT_RUN，局部核心与交叉构建不关闭原RV。[更新前原字节](../archive/pre-ui-maintainability-16/README.md)。
 
 # UI资料当前状态

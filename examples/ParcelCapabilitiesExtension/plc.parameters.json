@@ -1,0 +1,39 @@
+[
+  {
+    "Key": "peer-root",
+    "Group": "参考端 / 持久化",
+    "Label": "独立合成接收账绝对目录",
+    "Type": "string",
+    "Required": true,
+    "MaximumLength": 1024
+  },
+  {
+    "Key": "decision",
+    "Group": "参考端 / 结果",
+    "Label": "模拟业务结果",
+    "Type": "choice",
+    "Default": "accept",
+    "Choices": [
+      "accept",
+      "reject"
+    ]
+  },
+  {
+    "Key": "reply-mode",
+    "Group": "参考端 / 故障",
+    "Label": "回执模式",
+    "Type": "choice",
+    "Default": "normal",
+    "Choices": [
+      "normal",
+      "lose-after-commit"
+    ]
+  },
+  {
+    "Key": "complete-on-query",
+    "Group": "参考端 / 物理阶段",
+    "Label": "原查询时模拟物理完成",
+    "Type": "boolean",
+    "Default": "false"
+  }
+]

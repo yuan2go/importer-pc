@@ -2,7 +2,7 @@ param(
     [ValidateSet('Simulation','Production')][string]$Mode='Simulation',
     [string]$Output='.artifacts/win-x64',
     [string]$ProductDefinition='config/product.reference.json',
-    [ValidateSet('core-reference','barcode-reference','integration-reference')][string]$Composition='core-reference',
+    [ValidateSet('core-reference','barcode-reference','integration-reference','sportmaster-reference','direct-plc-reference','wcs-to-plc-reference')][string]$Composition='core-reference',
     [string]$ExtensionKey,
     [string]$ExtensionTrust,
     [string]$ExtensionCheckHost,
@@ -11,6 +11,12 @@ param(
 $ErrorActionPreference='Stop'
 Set-Location (Join-Path $PSScriptRoot '..')
 # One packaging authority for dependency closure, exact inventory and provenance.
+if ($Composition -in @('sportmaster-reference','direct-plc-reference','wcs-to-plc-reference')) {
+    if ($Mode -ne 'Simulation') { throw 'Production Application capabilities are not approved' }
+    & python3 scripts/package-application.py --application ($Composition -replace '-reference$','') --target win-x64 --output $Output
+    if ($LASTEXITCODE -ne 0) { throw "Application publication failed ($LASTEXITCODE)" }
+    exit 0
+}
 $arguments=@('scripts/package-reference.py','--target','win-x64','--mode',$Mode,'--output',$Output,'--composition',$Composition,'--product-definition',$ProductDefinition)
 if ($ExtensionKey) {$arguments+=@('--extension-key',$ExtensionKey)}
 if ($ExtensionTrust) {$arguments+=@('--extension-trust',$ExtensionTrust)}

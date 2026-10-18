@@ -1,0 +1,23 @@
+[
+  {
+    "Id": "parcel-weight",
+    "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+    "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.WeightFactory",
+    "Kind": "weight",
+    "MaximumInstances": 4
+  },
+  {
+    "Id": "parcel-plc",
+    "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+    "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.PlcFactory",
+    "Kind": "plc",
+    "MaximumInstances": 4
+  },
+  {
+    "Id": "parcel-integration",
+    "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+    "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.WcsFactory",
+    "Kind": "integration",
+    "MaximumInstances": 4
+  }
+]

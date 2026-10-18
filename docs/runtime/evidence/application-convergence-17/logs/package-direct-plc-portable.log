@@ -1,0 +1,19 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 566 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 566 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 566 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 566 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 566 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 566 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 566 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 566 毫秒)。
+  Ipc.Platform -> <ARTIFACTS>/direct-plc-portable/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <ARTIFACTS>/direct-plc-portable/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <ARTIFACTS>/direct-plc-portable/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <ARTIFACTS>/direct-plc-portable/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> <ARTIFACTS>/direct-plc-portable/build-intermediates/bin/Ipc.Application.DirectPlc/release/Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> <ARTIFACTS>/direct-plc-portable/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Drivers -> <ARTIFACTS>/direct-plc-portable/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Assembly -> <ARTIFACTS>/direct-plc-portable/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> <ARTIFACTS>/direct-plc-portable/app/
+{"Package": "<ARTIFACTS>/direct-plc-portable.zip", "Sha256": "386dfa7a334e22693aaef8d1fcfbc435389e7c9acf90d4a8e58ae415d759fea0", "SourceCommit": "f184a6bb9aeea36f236313457a7c58936c1768c4", "Application": "direct-plc", "Target": "portable"}

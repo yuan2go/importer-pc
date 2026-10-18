@@ -47,7 +47,9 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
         RejectLinks(leases); RequireProtectedAcl(new DirectoryInfo(leases), policy.RuntimeAccountSid);
         return leases;
     }
-    public static void RequireProtectedInstaller(string installRoot)
+    public static void RequireProtectedInstaller(string installRoot) => RequireProtectedApplicationInstaller(installRoot,
+        ["Ipc.Product.exe", "Ipc.Product.dll", "Ipc.Platform.dll", "Ipc.Supply.Contracts.dll", "Ipc.Supply.dll", "Ipc.Adapters.dll"]);
+    public static void RequireProtectedApplicationInstaller(string installRoot, IReadOnlyList<string> requiredFiles)
     {
         if (!OperatingSystem.IsWindows()) return;
         var root = Path.GetFullPath(installRoot).TrimEnd(Path.DirectorySeparatorChar);
@@ -57,9 +59,10 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
             throw new UnauthorizedAccessException("Elevated extension helper must come from a maintenance-protected Program Files/ImporterPc release");
         for (var current = new DirectoryInfo(root); current is not null && !string.Equals(current.FullName, programFiles, StringComparison.OrdinalIgnoreCase); current = current.Parent)
         { RejectLinks(current.FullName); RequireProtectedAcl(current, null); }
-        foreach (var name in new[] { "Ipc.Product.exe", "Ipc.Product.dll", "Ipc.Platform.dll", "Ipc.Supply.Contracts.dll", "Ipc.Supply.dll", "Ipc.Adapters.dll" })
+        foreach (var name in requiredFiles)
         {
-            var path = Path.Combine(root, name); RejectLinks(path); RequireProtectedAcl(new FileInfo(path), null);
+            if (!ProductValidation.IsSafeRelativeFile(root, name, out var path)) throw new InvalidDataException("Unsafe protected installer dependency");
+            RejectLinks(path); RequireProtectedAcl(new FileInfo(path), null);
         }
     }
     public static string ResolveLeaseRoot(string? requestedRoot)

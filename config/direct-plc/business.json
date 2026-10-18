@@ -1,0 +1,39 @@
+{
+  "SchemaVersion": 1,
+  "ApplicationId": "direct-plc",
+  "StationId": "reference-17",
+  "Mode": "Simulation",
+  "Weight": {
+    "Source": "Configured",
+    "Unit": "Kg",
+    "Precision": 3,
+    "ConfiguredValue": 1.25,
+    "MaximumAgeMs": 3000
+  },
+  "Reader": {
+    "Role": "parcel-reader",
+    "Driver": "manual",
+    "DeviceId": "direct-plc.camera",
+    "Revision": "1",
+    "ReplayFile": null
+  },
+  "Scale": null,
+  "Wcs": null,
+  "Plc": {
+    "Kind": "plc",
+    "Implementation": "reference-plc",
+    "Version": "1.0.0",
+    "InstanceId": "direct-plc.plc",
+    "Target": "reference://plc/direct-plc",
+    "Contract": "PARCEL-REFERENCE-v1",
+    "Parameters": {
+      "complete-on-query": "true"
+    },
+    "Package": null,
+    "Module": null
+  },
+  "Extensions": null,
+  "QueueCapacity": 64,
+  "TimeoutMs": 1500,
+  "MaximumOperations": 10000
+}

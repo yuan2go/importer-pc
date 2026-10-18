@@ -1,0 +1,67 @@
+EvidenceRoot=<TEMPORARY_CUSTODY_PATH>
+PASS AC17: sportmaster camera callback accepted into bounded queue
+PASS AC17: sportmaster views share one stable application owner
+PASS AC17: sportmaster owns exactly its actual required phases
+PASS AC17: sportmaster code/weight origin preserved
+PASS AC17: repeat observation callback explicitly queued
+PASS AC17: sportmaster duplicate callback/admission does not create another command
+PASS AC17: sportmaster same code different admitted entity queued
+PASS AC17: sportmaster invalid configuration leaves old authority byte-equivalent
+PASS AC17: sportmaster online backup actually created
+PASS AC17: sportmaster full recovery set verified and copied into a new isolated application directory
+PASS AC17: sportmaster restored application starts paused with original stage/configuration facts
+PASS AC17: direct-plc camera callback accepted into bounded queue
+PASS AC17: direct-plc views share one stable application owner
+PASS AC17: direct-plc owns exactly its actual required phases
+PASS AC17: direct-plc code/weight origin preserved
+PASS AC17: repeat observation callback explicitly queued
+PASS AC17: direct-plc duplicate callback/admission does not create another command
+PASS AC17: direct-plc same code different admitted entity queued
+PASS AC17: direct-plc physical completion comes only from explicit original peer query
+PASS AC17: direct-plc invalid configuration leaves old authority byte-equivalent
+PASS AC17: direct-plc online backup actually created
+PASS AC17: direct-plc full recovery set verified and copied into a new isolated application directory
+PASS AC17: direct-plc restored application starts paused with original stage/configuration facts
+PASS AC17: direct-plc isolated restore queries the original independent peer location instead of a new empty receiver
+PASS AC17: wcs-to-plc camera callback accepted into bounded queue
+PASS AC17: wcs-to-plc views share one stable application owner
+PASS AC17: wcs-to-plc owns exactly its actual required phases
+PASS AC17: wcs-to-plc code/weight origin preserved
+PASS AC17: repeat observation callback explicitly queued
+PASS AC17: wcs-to-plc duplicate callback/admission does not create another command
+PASS AC17: wcs-to-plc same code different admitted entity queued
+PASS AC17: wcs-to-plc physical completion comes only from explicit original peer query
+PASS AC17: wcs-to-plc invalid configuration leaves old authority byte-equivalent
+PASS AC17: wcs-to-plc online backup actually created
+PASS AC17: wcs-to-plc full recovery set verified and copied into a new isolated application directory
+PASS AC17: wcs-to-plc restored application starts paused with original stage/configuration facts
+PASS AC17: wcs-to-plc isolated restore queries the original independent peer location instead of a new empty receiver
+PASS AC17: wrong entity measurement queued for application validation
+PASS AC17: unstable measurement queued for validation
+PASS AC17: zero measurement queued as invalid, not unknown fallback
+PASS AC17: wrong/unstable/zero weight cannot prepare a PLC command
+PASS AC17: valid stable same-parcel measurement frozen into actual PLC payload
+PASS AC17: WCS acceptance and original PLC intention survive lost PLC reply
+PASS AC17: changed target saved only as pending
+PASS AC17: unresolved responsibility blocks changed configuration activation and retains old effective
+PASS AC17: restart freezes both original stage identities/payloads/config/implementations
+PASS AC17: original PLC query resolves committed action without repeating either phase
+PASS AC17: duplicate/late original query does not resubmit or count another action
+PASS AC17: independent durable PLC peer ledger contains one execution
+PASS AC17: foreign application database identity is rejected instead of being reinterpreted
+PASS AC17: changed application migration checksum is rejected without overwriting history
+PASS AC17: Production rejects missing real SDK/protocol authority without fallback
+PASS AC17 resource: first observation enters the asynchronous worker
+PASS AC17 resource: bounded ingress rejects overflow without blocking callback on WCS
+PASS AC17 resource: stop timeout retains downstream database/port/lease ownership
+PASS AC17 resource: second runtime cannot acquire retained application/device leases
+PASS AC17 resource: released only after callback, worker and port termination
+PASS AC17 resource: restart preserves overload marker and original cancelled-stage uncertainty
+PASS AC17 resource: valid candidate is saved separately before construction
+PASS AC17 resource: candidate construction failure remains explicit
+PASS AC17 resource: next controlled startup uses original Effective and retains failed candidate without automatic reactivation
+PASS AC17 resource: injected T3 failure terminates worker visibly
+PASS AC17 resource: terminal failure remains reported after safe release
+PASS AC17 resource: original durable WCS raw replay atomically restores accepted slot and never-attempted PLC intent without external replay
+PASS AC17 resource: mutable UI projection cannot mutate authoritative configuration or frozen requests
+PASS AC17 COMPLETE: full reference chains, identity, weight correlation, restart/unknown, old configuration and no repeated external action

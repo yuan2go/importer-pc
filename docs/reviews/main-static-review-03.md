@@ -1,3 +1,5 @@
+> 17源码迁移后的历史定位维护：源码/脚本链接固定到本报告原分析基准 `2579392ddcc0b4302d4aae865d4b2d8b3c083b59`；结论、行号及当时NOT_RUN状态未改。修改前字节保留于17前置归档。
+
 # 合并07后的架构与供包UI独立静态复核
 
 日期：2026-10-16（Asia/Shanghai）；工作包：WP-IPC-MAIN-REVIEW-03。
@@ -37,7 +39,7 @@
 
 **1项明确发现；本轴最高优先级为P2：E-10最终生效配置与租约集合不一致。**
 
-证据：[ProductRuntime.cs](../../src/Ipc.Product/ProductRuntime.cs) 66–72、79、89–99行；[ReferenceProduct.cs](../../src/Ipc.Product/ReferenceProduct.cs) 24–29行只校验配置结构/产品组合，没有校验所持资源键。依据：framework §11“为设备绑定建立本机独占控制”，07切片2的机级所有权约束。
+证据：[ProductRuntime.cs](https://github.com/yuan2go/importer-pc/blob/2579392ddcc0b4302d4aae865d4b2d8b3c083b59/src/Ipc.Product/ProductRuntime.cs) 66–72、79、89–99行；[ReferenceProduct.cs](https://github.com/yuan2go/importer-pc/blob/2579392ddcc0b4302d4aae865d4b2d8b3c083b59/src/Ipc.Product/ReferenceProduct.cs) 24–29行只校验配置结构/产品组合，没有校验所持资源键。依据：framework §11“为设备绑定建立本机独占控制”，07切片2的机级所有权约束。
 
 触发条件：同一工位已有数据库Effective配置，设备集合含A；重新部署的合法seed配置改为B。启动先用seed取得工位/设备B租约，随后选数据库Effective并启动设备A；79行只检查PendingActivation，不检查已有Effective。另一工位、另一数据根可以持有A的租约，两个运行实例因而可同时启动同一配置设备。当前只注册模拟源，没有已发生物理设备争抢的证据。
 
@@ -47,7 +49,7 @@
 
 **2项明确发现；本轴两项均为P2：E-06历史读取权限旁路、UI-01实物UI落实差异。**
 
-证据：[Model.cs](../../src/Ipc.Supply/Model.cs) 115–119行保留全部公开入口；[StationApplication.cs](../../src/Ipc.Supply/StationApplication.cs) 634–642行中，HistoryCore/AlarmHistoryCore直接读取Store，没有RequireIdentity；新QueryHistoryAsync/SessionDetailsAsync及DetailsAsync有身份检查。依据：07切片5“查询无副作用且无权时返回明确失败”，framework §6.4 QueryHistory/GetRequestDetail的“权限检查”。
+证据：[Model.cs](https://github.com/yuan2go/importer-pc/blob/2579392ddcc0b4302d4aae865d4b2d8b3c083b59/src/Ipc.Supply/Model.cs) 115–119行保留全部公开入口；[StationApplication.cs](https://github.com/yuan2go/importer-pc/blob/2579392ddcc0b4302d4aae865d4b2d8b3c083b59/src/Ipc.Supply/StationApplication.cs) 634–642行中，HistoryCore/AlarmHistoryCore直接读取Store，没有RequireIdentity；新QueryHistoryAsync/SessionDetailsAsync及DetailsAsync有身份检查。依据：07切片5“查询无副作用且无权时返回明确失败”，framework §6.4 QueryHistory/GetRequestDetail的“权限检查”。
 
 退出登录或身份过期后，调用旧HistoryAsync仍可分页读取作业历史。AlarmHistoryAsync还有当前可操作UI路径：`MainWindow.xaml.cs:333–336`，`MainWindow.xaml:44` 的刷新/翻页按钮没有身份Tag守卫，应用入口也不拒绝。不能仅靠新类型化API有校验宣称所有历史读取已受控。
 

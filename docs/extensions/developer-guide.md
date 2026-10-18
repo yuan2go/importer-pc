@@ -1,6 +1,10 @@
+> 新场地业务运行与接入见[Application17指南](../runtime/application-convergence-17.md)。下文为Supply兼容路径，旧候选版本只按其形成时记录理解。
+
+> 当前任务：[APPLICATION-CONVERGENCE-17](../work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)，基线main `6e9c890`。17替代16当前任务指引；Supply专属箱/双通道/数量不推广到其他Application。历史正文保留形成时语境，原字节见[归档](../archive/pre-application-convergence-17/README.md)。
+
 # 受控扩展开发、构建与安装
 
-当前指南对应[UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)。[原15及13指南原字节](../archive/pre-ui-maintainability-16/docs/extensions/developer-guide.md.txt)保留历史命令与版本，当前操作以本页和[运行指南](../runtime/operations.md)为准。Storage/MinimumReader=5/5、ExtensionContract=1；本包参考扩展使用新不可变版本1.0.4。原1.0.0～1.0.3包、身份登记、历史宿主和请求保持，不重签覆盖。
+Supply兼容扩展指南对应[UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)。[原15及13指南原字节](../archive/pre-ui-maintainability-16/docs/extensions/developer-guide.md.txt)保留历史命令与版本，当前操作以本页和[运行指南](../runtime/operations.md)为准。Storage/MinimumReader=5/5、ExtensionContract=1；本包参考扩展使用新不可变版本1.0.4。原1.0.0～1.0.3包、身份登记、历史宿主和请求保持，不重签覆盖。
 
 设备扩展实现`Ipc.Platform.IObservationExtension`，只构造来源；受控Start后开始观察/可靠健康确认，Stop/Dispose必须涵盖回调和在途任务。服务扩展实现`Ipc.Supply.IIntegrationExtension`，返回`IControlledIntegration`，拥有编码、原目标执行/查询、权威验回、健康、取消、超时和完整停止。设备有DeviceId及业务Role；服务有独立实例/端口/目标，不造设备ID。两者都不拥有SQLite、业务状态、页面、根容器或第二接受账。契约和精确AssemblyRef/依赖闭包由冻结宿主预检；ALC不是代码沙箱。
 

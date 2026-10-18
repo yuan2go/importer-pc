@@ -4,11 +4,11 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 
 ## 当前工程状态
 
-最新核验main **12a40b3**（PR15已合并）。本轮实施 **UI-MAINTAINABILITY-16**：报警/历史/维护操作闭环、窗口职责、适配器公共边界和动作/责任/视图规则、声明式独立扩展工具、统一发布入口及健康续期写放大优化。
+执行基线main **6e9c890**（PR16已合并）。当前交付 **Application架构收敛与场地业务贯通17**：Platform/Application/Drivers/Integrations职责收敛，三个独立Application与实际WPF装配，重量/原阶段恢复，受控扩展和可运行参考候选。
 
-当前入口：[16逐项实现与边界](docs/runtime/ui-maintainability-16.md) · [checks/实际证据](docs/runtime/ui-maintainability-16-checks.json) · [首次运行与首条参考作业](docs/runtime/getting-started.md)。版本Storage/MinimumReader=5/5、SIMULATION-v1/扩展契约1；参考包新增不可变1.0.4，原1.0.0～1.0.3/宿主/请求身份保持。旧15结果保留[原报告](docs/runtime/operation-closure-15.md)及[同版候选](https://github.com/yuan2go/importer-pc/releases/tag/operation15-reference-013862f)。
+[17实际完成矩阵](docs/runtime/application-convergence-17-results.md) · [运行/配置/扩展/恢复](docs/runtime/application-convergence-17.md) · [checks与证据](docs/runtime/application-convergence-17-checks.json) · [六个候选与独立扩展源](https://github.com/yuan2go/importer-pc/releases/tag/application17-reference-f184a6b)。Supply/Inspection原行为与旧公共身份保留，旧Supply 5/5 SQL及历史请求不改写。
 
-实际WPF截图0；Windows客户端/HID/DPI/双窗/声音/触控/PowerShell/UAC/ACL全部NOT_RUN，[同版后验](docs/runtime/validation/ui-maintainability-16-windows.md)逐项保留。真实SDK/WCS、身份/实体/数量/逐SKU少货与现场按能力BLOCKED，Production缺必需能力NotReady。核心/交叉构建/候选不代替这些验收。
+三条完整参考链、必要核心/恢复/资源/配置验证、独立签名扩展安装旅程、WPF交叉构建及portable候选解压启动/重启/停止PASS。**Windows实际客户端截图0，交互/ACL/UAC NOT_RUN；真实SDK/读码/秤/PLC/WCS与现场BLOCKED；Production NotReady**，见[17后验清单](docs/runtime/validation/application-convergence-17-windows.md)。原D/RV和资料公开边界不变。16与更早报告保留形成时身份。
 
 ## 开发与运行入口
 
@@ -21,7 +21,7 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 dotnet src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll --url http://127.0.0.1:18743/ --data /tmp/ipc-simulation-receiver
 ```
 
-现实现Storage/MinimumReader为5/5，参考扩展1.0.4。保留SQL1～5及checksum；旧精确1.0.1/1.0.2不重签或伪兼容。旧Effective经清偿、合法过渡、备份显式升级和新部署生效，合成旅程见15报告；真实旧根/备份盘点仍为独立门禁，不能换seed跳过。部署遵循指定账户、机级资源和包所有权；软件暂停不是安全急停。
+Supply兼容Storage/MinimumReader为5/5；本轮参考读码1.0.5与场地能力包1.0.0均使用新不可变身份。保留SQL1～5及checksum；旧精确1.0.1/1.0.2不重签或伪兼容。旧Effective经清偿、合法过渡、备份显式升级和新部署生效，合成旅程见15报告；真实旧根/备份盘点仍为独立门禁，不能换seed跳过。部署遵循指定账户、机级资源和包所有权；软件暂停不是安全急停。
 
 ## UI与历史交付
 

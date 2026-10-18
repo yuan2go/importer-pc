@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="../Ipc.Application.Contracts/Ipc.Application.Contracts.csproj"/></ItemGroup></Project>

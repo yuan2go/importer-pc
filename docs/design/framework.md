@@ -1,4 +1,6 @@
-> 当前工程任务为 [UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，基线 main `12a40b3`（PR15已合并）。15的实现及历史证据继续有效；本包只收敛指定UI、维护职责、独立扩展工具和健康续期写放大。有效F/D/RV要求不降低。修改前原字节见 [归档](../archive/pre-ui-maintainability-16/README.md)。
+> 当前任务：[APPLICATION-CONVERGENCE-17](../work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)，基线main `6e9c890`。17替代16当前任务指引；Supply专属箱/双通道/数量不推广到其他Application。历史正文保留形成时语境，原字节见[归档](../archive/pre-application-convergence-17/README.md)。
+
+> 16形成时任务为 [UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，基线 main `12a40b3`（PR15已合并）。15的实现及历史证据继续有效；本包只收敛指定UI、维护职责、独立扩展工具和健康续期写放大。有效F/D/RV要求不降低。修改前原字节见 [归档](../archive/pre-ui-maintainability-16/README.md)。
 
 > FIX-14工程增量：冲突与原终态正交、持续核对贯穿读者/守卫/保留；逐实例健康按业务实际依赖裁决；每窗统一草稿、显式激活选择；无桌面交付确认及离线根围栏。目标与F-01～12不降低，实际机制见 [14操作](../runtime/operations.md)。
 
@@ -329,8 +331,8 @@ Simulation与Production使用不同装配清单、端点允许规则、数据根
 |责任|实现|
 |---|---|
 |显式装配/配置/受控生命周期|`src/Ipc.Platform/Configuration.cs`、`Lifecycle.cs`，`src/Ipc.Product/ProductRuntime.cs`|
-|共享应用契约/作业/命令/许可|`src/Ipc.Supply/Model.cs`、`StationApplication.cs`|
-|实际SQLite事务/Outbox/接受账/备份|`src/Ipc.Supply/Store.cs`|
+|共享应用契约/作业/命令/许可|`src/Ipc.Application.Supply/Model.cs`、`StationApplication.cs`|
+|实际SQLite事务/Outbox/接受账/备份|`src/Ipc.Application.Supply/Store.cs`|
 |人工/文件源、固定绑定HTTP端口|`src/Ipc.Adapters/ObservationSources.cs`、`LoopbackIntegration.cs`|
 |独立持久接收账与原子需求裁决|`src/Ipc.Fixture/Receiver.cs`、`Program.cs`|
 |WPF页面/布局/焦点/草稿|`src/Ipc.Desktop/`|

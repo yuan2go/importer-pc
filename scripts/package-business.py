@@ -11,11 +11,17 @@ from composition import resolve
 from release_documents import SOURCE_PATHS, publish as publish_guides
 
 p = argparse.ArgumentParser()
-p.add_argument('--composition', choices=['inspection-reference', 'supply-assembly'], required=True)
+p.add_argument('--composition', choices=['inspection-reference', 'supply-assembly', 'sportmaster-reference', 'direct-plc-reference', 'wcs-to-plc-reference'], required=True)
+p.add_argument('--target', choices=['portable', 'win-x64'], default='portable')
 p.add_argument('--output', type=Path, required=True)
 p.add_argument('--dotnet', default='dotnet')
 a = p.parse_args()
 root = Path(__file__).resolve().parent.parent
+if a.composition not in ['inspection-reference', 'supply-assembly']:
+    subprocess.run(['python3', str(root / 'scripts/package-application.py'), '--application', a.composition.removesuffix('-reference'), '--target', a.target, '--output', str(a.output), '--dotnet', a.dotnet], cwd=root, check=True)
+    raise SystemExit(0)
+if a.target != 'portable':
+    raise ValueError('Use package-reference.py for the legacy Supply Windows candidate; Inspection retains its portable assembly')
 selected = resolve(root / 'config/compositions.json', a.composition)
 output = a.output.resolve()
 archive = Path(str(output) + '.zip')

@@ -11,7 +11,8 @@
       "version": "1.0.0",
       "contract": 1,
       "dependencies": [
-        "supply-contracts"
+        "supply-contracts",
+        "platform-storage"
       ],
       "delivery": "core"
     },
@@ -19,7 +20,8 @@
       "version": "1.0.0",
       "contract": 1,
       "dependencies": [
-        "supply-contracts"
+        "drivers",
+        "integrations"
       ],
       "delivery": "core"
     },
@@ -33,7 +35,7 @@
       "delivery": "core"
     },
     "reference.barcode": {
-      "version": "1.0.4",
+      "version": "1.0.5",
       "contract": 1,
       "dependencies": [
         "platform"
@@ -49,7 +51,7 @@
       "delivery": "core"
     },
     "reference.integration": {
-      "version": "1.0.4",
+      "version": "1.0.5",
       "contract": 1,
       "dependencies": [
         "supply-contracts"
@@ -79,6 +81,103 @@
         "product"
       ],
       "delivery": "core"
+    },
+    "application.sportmaster": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform-storage",
+        "application-contracts"
+      ],
+      "delivery": "core"
+    },
+    "assembly.sportmaster": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "application.sportmaster",
+        "drivers",
+        "integrations"
+      ],
+      "delivery": "core"
+    },
+    "application.direct-plc": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform-storage",
+        "application-contracts"
+      ],
+      "delivery": "core"
+    },
+    "assembly.direct-plc": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "application.direct-plc",
+        "drivers"
+      ],
+      "delivery": "core"
+    },
+    "application.wcs-to-plc": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform-storage",
+        "application-contracts"
+      ],
+      "delivery": "core"
+    },
+    "assembly.wcs-to-plc": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "application.wcs-to-plc",
+        "drivers",
+        "integrations"
+      ],
+      "delivery": "core"
+    },
+    "platform-storage": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform"
+      ],
+      "delivery": "core"
+    },
+    "application-contracts": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform"
+      ],
+      "delivery": "core"
+    },
+    "reference-protocol": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "application-contracts"
+      ],
+      "delivery": "core"
+    },
+    "drivers": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "reference-protocol"
+      ],
+      "delivery": "core"
+    },
+    "integrations": {
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "reference-protocol",
+        "supply-contracts"
+      ],
+      "delivery": "core"
     }
   },
   "compositions": {
@@ -99,6 +198,15 @@
     ],
     "supply-assembly": [
       "assembly.supply"
+    ],
+    "sportmaster-reference": [
+      "assembly.sportmaster"
+    ],
+    "direct-plc-reference": [
+      "assembly.direct-plc"
+    ],
+    "wcs-to-plc-reference": [
+      "assembly.wcs-to-plc"
     ]
   },
   "required": {
@@ -134,6 +242,21 @@
       "supply",
       "adapters",
       "product"
+    ],
+    "sportmaster-reference": [
+      "platform",
+      "application.sportmaster",
+      "assembly.sportmaster"
+    ],
+    "direct-plc-reference": [
+      "platform",
+      "application.direct-plc",
+      "assembly.direct-plc"
+    ],
+    "wcs-to-plc-reference": [
+      "platform",
+      "application.wcs-to-plc",
+      "assembly.wcs-to-plc"
     ]
   },
   "products": {
@@ -206,6 +329,42 @@
         "maintenance",
         "engineering",
         "extensions"
+      ],
+      "layouts": [
+        "standard",
+        "compact"
+      ]
+    },
+    "sportmaster-reference": {
+      "business": "sportmaster",
+      "views": [
+        "sportmaster",
+        "sportmaster-history",
+        "sportmaster-maintenance"
+      ],
+      "layouts": [
+        "standard",
+        "compact"
+      ]
+    },
+    "direct-plc-reference": {
+      "business": "direct-plc",
+      "views": [
+        "direct-plc",
+        "direct-plc-history",
+        "direct-plc-maintenance"
+      ],
+      "layouts": [
+        "standard",
+        "compact"
+      ]
+    },
+    "wcs-to-plc-reference": {
+      "business": "wcs-to-plc",
+      "views": [
+        "wcs-to-plc",
+        "wcs-to-plc-history",
+        "wcs-to-plc-maintenance"
       ],
       "layouts": [
         "standard",

@@ -202,7 +202,7 @@ static class OperationClosureVerification
         foreach (var time in new[] { "25:00", "12", "bogus" })
             try { HistoryTimeRange.Parse(DateTime.Today, time, zone); throw new Exception("invalid time accepted"); } catch (ArgumentException) { Assert(true, "invalid local time feedback: " + time); }
         try { HistoryTimeRange.Validate(until, from); throw new Exception("reversed range accepted"); } catch (ArgumentException) { Assert(true, "reversed range rejected before query"); }
-        var wiring = File.ReadAllText(Path.Combine(workspace, "src/Ipc.Desktop/ExtensionsView.xaml.cs"));
+        var wiring = File.ReadAllText(Path.Combine(workspace, "src/Ipc.Application.Supply.Desktop/ExtensionsView.xaml.cs"));
         Assert(wiring.Contains("await selection.Run") && !wiring.Contains("Draft.Build()") && wiring.Contains("selection.Invalidate()"), "actual WPF package/instance/default/import handlers use verified coordinator and partial target source; Windows event execution NOT_RUN");
     }
     static async Task IndependentReceipts(string root, string url, bool flushedFirst)

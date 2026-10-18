@@ -62,7 +62,13 @@
   },
   "Publication": {
     "Branch": "codex/application-capability-closure-19",
-    "State": "PENDING_PR",
+    "State": "OPEN",
+    "PullRequest": "https://github.com/yuan2go/importer-pc/pull/19",
+    "CreationHeadCommit": "3a1af5a4161e7407638549691d5a254f97bab7dc",
+    "Base": "main",
+    "MainAtCreation": "08b8067aa6cba6a148252296c7a5b18a27b3be65",
+    "Merged": false,
     "AutoMerge": false
-  }
+  },
+  "SourceWhitespaceCheck": "PASS excluding preserved original stdout logs; two original trailing spaces retained with log custody hashes"
 }

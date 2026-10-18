@@ -11,10 +11,12 @@
 - [x] AC19-D/F：扫码关联采图、两类上传独立状态、有限缓存/释放重启；外呼释放锁并跟踪在途，Pause/快照不会等待网络。复验ContinuePrepared和Unknown不重发。
 - [x] AC19-E：现有签名包种类/精确加载/资源租约新增认证相机上传；现有配置权威支持实例启用/绑定；客户端结构化能力/schema编辑、安装、会话与独立状态/处置，不交JSON调试替代品。
 - [x] AC19-V：tests/Ipc.Application.Verification新增19风险选择器，17/18受影响回归、协议样例与签名包、Supply/Inspection受影响回归；三WPF构建、三portable ZIP解压与独立HTTP进程冒烟。实际失败保留。
-- [ ] AC19-DELIVERY：现行指南/manifest/能力矩阵/运行与剩余接入清单、源SHA及日志hash；提交开发分支并创建main PR，不合并。
+- [x] AC19-DELIVERY：现行指南/manifest/能力矩阵/运行与剩余接入清单、源SHA及日志hash；提交开发分支并创建main PR，不合并。
 
 验证命令：固定dotnet10.0.402构建tests/Ipc.Application.Verification，运行新增--capability-closure及原默认/--site-capabilities；scripts/package-application.py与smoke-application.py沿原入口。Windows实际运行NOT_RUN，真实SDK/设备/现场BLOCKED。
 
 ## 执行回执
 
 实现与参考资格验证已完成，最终运行源码c213aad54f5d48687efc0b56428991b6bf4f3537；逐项结果、完整SHA、复现和剩余接入见[19结果](../runtime/application-capability-19-results.md)。勾选表示本包授权实施/参考验证范围，不表示Windows实机、真实协议或现场通过。D/RV与原SQL不改。交付开发分支PR，不合并main。
+
+已推送并创建[PR #19](https://github.com/yuan2go/importer-pc/pull/19)，OPEN、未合并main。实际运行源码及本地候选仍固定c213aad，后续仅文档/证据。

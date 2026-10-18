@@ -2,7 +2,7 @@
 
 本包完成独立Application编排、公共能力、两类上传、适配边界及客户端代码贯通，并完成参考资格验证。**Windows实机NOT_RUN，真实SDK/协议/现场BLOCKED，Production继续NotReady；D/RV未关闭。**
 
-开工main：`08b8067aa6cba6a148252296c7a5b18a27b3be65`（PR18已合并，开工与交付前均无其他开放PR）。文档前置提交：`4644a4c`。最终运行/六候选源码：**`c213aad54f5d48687efc0b56428991b6bf4f3537`**。开发分支`codex/application-capability-closure-19`；后续仅报告、清单及证据提交，不改变冻结源码或候选字节。
+开工main：`08b8067aa6cba6a148252296c7a5b18a27b3be65`（PR18已合并，开工与交付前均无其他开放PR）。文档前置提交：`4644a4c`。最终运行/六候选源码：**`c213aad54f5d48687efc0b56428991b6bf4f3537`**。交付[PR #19](https://github.com/yuan2go/importer-pc/pull/19)，OPEN、未合并main。开发分支`codex/application-capability-closure-19`；后续仅报告、清单及证据提交，不改变冻结源码或候选字节。
 
 ## 实际完成与验证
 

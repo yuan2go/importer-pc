@@ -2,7 +2,7 @@
 
 ## 当前工程入口
 
-当前工作包：[APPLICATION-CAPABILITY-CLOSURE-19](work-packages/WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19.md)。main **08b8067aa6cba6a148252296c7a5b18a27b3be65**，PR #18 已合并，开工无开放PR。唯一现行职责/策略设计：[19设计](design/application-capability-19.md)。[19实施结果/能力矩阵](runtime/application-capability-19-results.md)、[配置与客户端运行](runtime/application-capability-19.md)、[证据](runtime/evidence/application-capability-19/README.md)；运行源码c213aad，三portable与三Windows候选已构建/解压，Windows实际执行NOT_RUN。[被替代入口原字节](archive/pre-application-capability-19/README.md)。
+交付[PR #19](https://github.com/yuan2go/importer-pc/pull/19)为OPEN，未合并main。当前工作包：[APPLICATION-CAPABILITY-CLOSURE-19](work-packages/WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19.md)。main **08b8067aa6cba6a148252296c7a5b18a27b3be65**，PR #18 已合并，开工无开放PR。唯一现行职责/策略设计：[19设计](design/application-capability-19.md)。[19实施结果/能力矩阵](runtime/application-capability-19-results.md)、[配置与客户端运行](runtime/application-capability-19.md)、[证据](runtime/evidence/application-capability-19/README.md)；运行源码c213aad，三portable与三Windows候选已构建/解压，Windows实际执行NOT_RUN。[被替代入口原字节](archive/pre-application-capability-19/README.md)。
 
 [17实施](runtime/application-convergence-17.md)、[17结果](runtime/application-convergence-17-results.md)、[18实施](runtime/site-capabilities-18.md)、[18结果](runtime/site-capabilities-18-results.md)按其原SHA和形成时范围读取，不作为本轮完成证据。Supply/Inspection兼容机制、D/RV和公开范围继续有效。Windows实际运行NOT_RUN；真实SDK/协议/现场BLOCKED。
 

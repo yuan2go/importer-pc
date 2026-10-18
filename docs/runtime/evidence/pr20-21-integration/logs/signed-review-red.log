@@ -1,0 +1,11 @@
+EvidenceRoot=/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-65d462e0b56546d08ae125032d0c19a0
+PASS AC20 qualification: independently signed exact evidence accepted by verifier (synthetic test only)
+FAIL review: signed qualification evidence casing: Qualification evidence changed: synthetic-approval-evidence.txt
+PASS review package: Production real evidence length=64 valid=True
+PASS review package: Production real evidence length=64 valid=True
+PASS review package: Production real evidence length=64 valid=True
+FAIL review: signed package protocol evidence: Non-hash real ProtocolEvidence accepted by signed package verifier
+Unhandled exception. System.Exception: signed qualification evidence casing: Qualification evidence changed: synthetic-approval-evidence.txt; signed package protocol evidence: Non-hash real ProtocolEvidence accepted by signed package verifier
+   at ReviewRegressions.Run(String root) in /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/tests/Ipc.Application.Verification/ReviewRegressions.cs:line 17
+   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 14
+   at Program.<Main>(String[] args)

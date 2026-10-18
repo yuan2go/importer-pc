@@ -2,7 +2,7 @@
 
 ## 当前工程入口
 
-当前协调工作：[PR20/21整合记录](runtime/pr20-21-integration.md)。开工main `08286542`（PR19已合并），PR20与PR21修复/合并验证进行中；旧报告的OPEN及源码身份按形成时读取。
+当前工程入口：[PR20/21整合记录](runtime/pr20-21-integration.md)。开工main `08286542`（PR19已合并）；最终运行源码`d5c8b79`，三项评审修复、交叉恢复整合及定向参考验证完成。PR状态和main合并身份读取GitHub及整合回执；旧报告的OPEN与候选身份按形成时读取。
 
 现行增量共同生效：[能力可靠性20设计](design/capability-reliability-20.md)、[20工作包](work-packages/WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20.md)/[运行](runtime/capability-reliability-20.md)/[历史结果](runtime/capability-reliability-20-results.md)，以及[备份健康工作包](work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md)/[运行及历史结果](runtime/backup-health-recovery.md)。它们补充[19职责设计](design/application-capability-19.md)，不能互相替代。[19运行](runtime/application-capability-19.md)和旧候选保留原身份。原字节分别见[20前归档](archive/pre-capability-reliability-20/README.md)、[备份修复前归档](archive/pre-backup-health-recovery/README.md)及Git基线。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 

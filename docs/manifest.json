@@ -3,7 +3,7 @@
   "work_package": "PR20-21-INTEGRATION-20261018",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/pr20-21-integration",
+  "branch": "codex/capability-reliability-closure-20",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
@@ -327,9 +327,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "7239c4480a92a267216288a0bfd2593cc99c1e2a17ed886581ef808f17d0cb69",
-      "size_bytes": 6900,
-      "git_blob": "731739a6c18260f666624f1ebb2c2691a9bf5e97",
+      "sha256": "0090c03b1893aab03c14127e3d7e1fe4831d3806a3665cd690e48c9497b2535b",
+      "size_bytes": 7014,
+      "git_blob": "961e4c67aebbdc6d7d8aa6b980c5d52fda53557b",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
@@ -2186,9 +2186,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "acecb48577e6de8cc35b7b9846a750a8618a4cf0e67f3ddc19dbfcf8a7d3c778",
-      "size_bytes": 3125,
-      "git_blob": "6163dbc6856840548e7f37afc036ee50b110e297"
+      "sha256": "b7f71f035832c25e54320b2dd060b9635b2b90334ee1d489ae7cd7d8c7afc5d8",
+      "size_bytes": 3946,
+      "git_blob": "0ebfb0f325231f7088ea6102a815ee2590b5ec77"
     },
     {
       "path": "docs/design/controlled-extensions.md",
@@ -9905,9 +9905,350 @@
       "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
       "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
       "storage_scope": "public_repository",
-      "sha256": "5642c7cb706b927ec36930448825bee15f3e537bb5448cec90e2cb8333b5ad3d",
-      "size_bytes": 829,
-      "git_blob": "3f7ed26213d3bfa4c47afcae3bc78d3865470d85"
+      "sha256": "9ccd6e7ba6ce937619f0cc197c2f866713f3cebd3de82aea5f094bba85aa6b67",
+      "size_bytes": 3055,
+      "git_blob": "74e4bc55029290304ca23834042645872124b7c3"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/archive-checks.json",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "ade4e2570ef1db7a27f9d11ca85fed6f74450eed8ee1b8b2dbe3ce7bfda655fe",
+      "size_bytes": 75119,
+      "git_blob": "4323479597f0ad27af526697050b474da60732e1"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/checks.json",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "058c80ff40ca44ceb35efe5e0a971b881801f283bedbfbb82f72d40c15d14e13",
+      "size_bytes": 2601,
+      "git_blob": "c08539c82ecea3338f76c7365b7b08fcd5b0b7d1"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/final-candidates.json",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "56085396da728def5a35c919d1a365dfd4f10ac9e91e6c729bb9b7cf8d74a0cd",
+      "size_bytes": 634,
+      "git_blob": "0812eefa61efdd221f3fe2f473933c54c59ec5bb"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/final-signed-reference-1.2.2.ipcx.identity.json",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "026380b115ba933c51c846e8f0903c62a845923b6530d73fc7bafa03f2570ee5",
+      "size_bytes": 1310,
+      "git_blob": "4edbfdf0b695d3b78d5bc0410743064350d4ca8b"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/final-signed-reference-identity.json",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "026380b115ba933c51c846e8f0903c62a845923b6530d73fc7bafa03f2570ee5",
+      "size_bytes": 1310,
+      "git_blob": "4edbfdf0b695d3b78d5bc0410743064350d4ca8b"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/final-smoke-attached.json",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "3117fe051de27704f5dc39eb3cc53068936a7cd8a49a5c470bcb67317a39d533",
+      "size_bytes": 872,
+      "git_blob": "4c2d7eccc95a2cc940c5b5c7d1ce91ef171db568"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/final-smoke-before-main.json",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "840ea88ca4ae54f680ec9c76fe83f455d53292db3510cf9d47b719034fbfd05c",
+      "size_bytes": 843,
+      "git_blob": "598d02bf562d60229eadf29b029d9968fe184f44"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/final-smoke-direct-plc.json",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "081457c54e76c1c4b8e9349a627e18ebd67c31ddbf2077c40aa6490ce6552b1f",
+      "size_bytes": 576,
+      "git_blob": "7466e030905c6a2e3871f6d830f1cfec0d079f0b"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/final-smoke-sportmaster.json",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "4e1bff0e0f5e9a5904a1d8e9b8690a4f27cba0766f87c47773976242e3dddc21",
+      "size_bytes": 578,
+      "git_blob": "548fc0dc2e6cd9c9706ff2a5c816ec276e34b578"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/final-smoke-wcs-to-plc.json",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "7a42bed3be6945e4faf2fa4a6923a75c7c6467ed854aa07bc785b43247819aa9",
+      "size_bytes": 576,
+      "git_blob": "8b9443fd88bb91be81e9eed3afd40c1a6824c73a"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/frozen-source.json",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "64d4f62b52b3a73ad7f5f684fa2df2fa8822753da3e491aac2d236f2fc6bff0b",
+      "size_bytes": 60598,
+      "git_blob": "05a8a820ef603bcca8c5c338af51eec345d5244d"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/acquisition-green-before-freeze.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "6285c9c5d3b5463051f2418800c32dbb66715e6d6388e9bdac6a10b0b95fb0df",
+      "size_bytes": 1337,
+      "git_blob": "d0773b66b45cb58df88b4c4bda0585b327dda521"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/acquisition-red.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "9267f49181c6b12db16abd07e5177b99fb1d585f6c6f8be2a993c2e46dfd9351",
+      "size_bytes": 1889,
+      "git_blob": "2e3e6ee5df3fbcc536cd09b6d0d4039e9e94280c"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-build.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "830487dee7fae79c98419648755ff87a127adc26b879e300a16b01d8a54e02d6",
+      "size_bytes": 2233,
+      "git_blob": "926fa29c4f188907836dcac5fb9c9eed4291095c"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-capability-closure.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "df9496518cde87927cef2c20739f6a8e3821ba48268c4f1319d10d37c74ebd12",
+      "size_bytes": 4334,
+      "git_blob": "aa9c5c2e330be1c72ed623df18c596f90946a8e0"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-package-direct-plc.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "cdb6b5af0fb0fd9883ab20427cb7e36a44e58f103d5b8b2db4b5222432c53463",
+      "size_bytes": 3665,
+      "git_blob": "3bdd9ca57bcf864d2e840c653eeaf3781ebd1ec7"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-package-sportmaster.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "7a7ef58c57354501a8a456c90ebbd160df14efcc61687f56e2e405b4bcde970a",
+      "size_bytes": 4436,
+      "git_blob": "81ecc508f077ebfc5392f526601d51850fcc3c67"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-package-wcs-to-plc.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "6a4ae74646d53e8a8c95272d1d3ed8b0477813ae5cbfb5edd0754dadefb9344e",
+      "size_bytes": 4406,
+      "git_blob": "23552f8beb06276bb25f2398c09b56d4c7790964"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-qualified-activation.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "29cf3b9d84708537623519d8c1129ec451adb1ac783f97114a1a1766034e32bf",
+      "size_bytes": 1337,
+      "git_blob": "d875b35c396ec6ac84ed9380e4dc3ecde107750f"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-review-regressions.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "678c9d5677146f099a97218d010e0f357dc83beee4cd9cb2f630dd5e925178e6",
+      "size_bytes": 2313,
+      "git_blob": "c9c9591dd667621100a69fd29b5d1ffcfce8d8a1"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-signed-build.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "53ee146c12d56e0a77741b57c6a27e2ea36e10e985eede3b5c33293c01892bff",
+      "size_bytes": 21894,
+      "git_blob": "d650874343db969cf4b9c64443c2bb0ca7729b74"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-signed-host-build.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "09e783fa243edb728ecdc0898ded38a806ff2717a9906e3e46684caad2aeb73e",
+      "size_bytes": 3335,
+      "git_blob": "a8f6865e7f9e08be89ac3ea4eaac29740a750b08"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-smoke-attached.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "642f6af3ff43aab8f75c168d6f05266d17f09ccaf969363cba9eb1c9d012316a",
+      "size_bytes": 788,
+      "git_blob": "38da4002c87991ce9be954fe7d470faeb8287d8d"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-smoke-before-main.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "36cc52b1a196f5891d6ba4d60424ae38ca5a60f0ce133dae75e3a8849f0f4e11",
+      "size_bytes": 759,
+      "git_blob": "efda464d77135a9b9d8846f836f690503bd65e8c"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-smoke-direct-plc.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "552430caedbe05e77e9b8d5acf706ce563bddfa319a2071554081979a40f9277",
+      "size_bytes": 524,
+      "git_blob": "5ffd98f29797396e1b3210180609d74a3fdecf3e"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-smoke-sportmaster.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "34dc8087383dc7d85bf7c4cf3bf2514727295421358d9677254eebb3203be84a",
+      "size_bytes": 526,
+      "git_blob": "7fb8f35267d905d34d4a32333b350046361417fb"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/final-smoke-wcs-to-plc.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "d47d17c308555e993ec028d1df26cae2baf3bddfb29926123bf75d818201af0f",
+      "size_bytes": 524,
+      "git_blob": "967cd37923afedc3d62333bf4bd8d19c051d7bef"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/integration-bhr.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "931e4b255e20972f58c53427a80bb6d439fb47ad2aca4040e224f4e596784f78",
+      "size_bytes": 5065,
+      "git_blob": "cf0b647c67861762606d1de38bfdc895c5c8862e"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/integration-reliability.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "6b3d329cd4726dd7b5a064f46a8a028e08658a325c8fc8ca2f8b3aa7877c0352",
+      "size_bytes": 4413,
+      "git_blob": "85d40b5fe5145e36e929da02944ee28f7ca216a5"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/integration-resources.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "909e95e0095f9139d46f728264da3fd5e44cee72153a63b99e6ac557d8cd1b6e",
+      "size_bytes": 5745,
+      "git_blob": "adb4e2fbc84f3692afeb0e615f14516aea601e65"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/mac-temp-alias-failure.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "8ae377c17d5f818b90fc7690bd38eb4fe65ff78b13de6d9d03aee654358bee53",
+      "size_bytes": 1637,
+      "git_blob": "de2e3a48032e53d04f52c94d15a1e68bdec4c73d"
     },
     {
       "path": "docs/runtime/evidence/pr20-21-integration/logs/pr20-build.log",
@@ -9952,6 +10293,61 @@
       "sha256": "501d0222ccb5bbde70cc6b27044a360e95d0d41fa0e73c7d114c1e224c4d76ca",
       "size_bytes": 4943,
       "git_blob": "6def5fba9de7bf00ef635d1fddd2aff18ee69d7b"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/protocol-builder-green.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "8841ae1fcca709275429e6f231305ed5bc1114d7a10a0ffd22bc8a1a60b81f4e",
+      "size_bytes": 113,
+      "git_blob": "6897bf06b4d1bdf47993227c061abd115317afd9"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/protocol-builder-red.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "19ce756c9c3867a21ce86ba18827b82d98848ca8af9e121796bfac9c60613e06",
+      "size_bytes": 3642,
+      "git_blob": "b93bb524c1e10ed16e125388f29856d9dde0e989"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/review-fixture-contract-failure.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "9beb935c972156825b0825d97bd5a75ea121f8ea10602408205364582d9f948f",
+      "size_bytes": 1236,
+      "git_blob": "2369351470d483a9c04a5151e4f76e97deb267cf"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/logs/signed-review-red.log",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "63f998ffdb7f55816afd72b37665f81b2d390520b3974a857bf6cb7e65b4a460",
+      "size_bytes": 1251,
+      "git_blob": "63e15520d8040e8fc093d8dbe14b422f3ea16b3a"
+    },
+    {
+      "path": "docs/runtime/evidence/pr20-21-integration/superseded-5af8d2c-candidates.json",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "aab30671b19d7c3edc08a4f0c109c07586bf04096a406c696ca5d4ac470a81a5",
+      "size_bytes": 634,
+      "git_blob": "a564be6f19ef19bb70a10564205942fc237a4b1c"
     },
     {
       "path": "docs/runtime/evidence/project-conformance-audit-01/README.md",
@@ -12874,9 +13270,9 @@
       "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
       "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
       "storage_scope": "public_repository",
-      "sha256": "87e780669710692954f23ef8a88b59e0b5756585e615528f13b1230f800c43b6",
-      "size_bytes": 2826,
-      "git_blob": "f4c8f166a3a9df348a120c88ae82789d3160e64c"
+      "sha256": "6c478189db8ccde47421ae9818244c7a02aafa7e56649950f44dc5f5da20ba41",
+      "size_bytes": 9674,
+      "git_blob": "ad3d207d2b68d3bf6411f88a49bc88d11858866c"
     },
     {
       "path": "docs/runtime/publication.md",
@@ -14692,9 +15088,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "cf3d831dcb05c0680f7abf8ac284a1ec2db6d3a526f18932ce7c3ef9062ab401",
-      "size_bytes": 19086,
-      "git_blob": "ad9ab37bbf5684fed1747be0f3c60d0e530d38e9",
+      "sha256": "6d48123626f0e11c9a7e9b84590f6cb7e28106c79e4075992c5c4201280f6b33",
+      "size_bytes": 19322,
+      "git_blob": "5767dbf8e08cd175e7411e02e90caa378322b551",
       "previous_git_blob": "cc56658fffa8ef23ba544513b1738b90b588a734"
     },
     {
@@ -14879,9 +15275,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "71916a513d1b439496a369e77329c860525f20f6fc76b46a3cdb947b3c676ec3",
-      "size_bytes": 11130,
-      "git_blob": "2c3680f8566946e6d97c3e570f6c108ef9c923a2",
+      "sha256": "05c171e335afdda7f65cfcbb9b2bd4a388dc59f94ec179467f08914445a8f5ac",
+      "size_bytes": 12960,
+      "git_blob": "ae937eaa8583f74bd0ab405e51a492386bf88384",
       "previous_git_blob": "8a656a641f502d907841820b9fee7a8154371ccf"
     },
     {
@@ -16716,9 +17112,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "f0d5edc9792f745dc8ca65bc3fe235be4587675a1f80945d4bc95b23e652234d",
-      "size_bytes": 26956,
-      "git_blob": "50eb04a04c98e06714a274617be67f9b51a0db8c",
+      "sha256": "6a339cd990b7e4b3962d8d0e62f06ceb92d523ba0f1d2d2af52a17875c3ef1e5",
+      "size_bytes": 27064,
+      "git_blob": "77340a4e22cbbd572e60c40ff4523d0347427fd0",
       "previous_git_blob": "be626120f23830bb97c144699e76f4ca5d4e380b"
     },
     {
@@ -17720,9 +18116,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "ccaaf377163a34901fec85aa4a5ad8c9faef1f057afb40a404766d14d4d759c3",
-      "size_bytes": 4866,
-      "git_blob": "494dd1a005c21f8b35be7987902b8804f189ef86"
+      "sha256": "e64c01c7ac548c118aeeb7b2bdf493ff43bb5320573f817de65e1ec64217231a",
+      "size_bytes": 4916,
+      "git_blob": "6f7897525a4f92f4731147811848ae4a6761fb74"
     },
     {
       "path": "src/Ipc.Platform/DeviceCapabilities.cs",
@@ -17789,9 +18185,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "7de3b7c908b980a2627619e5725e4268ad9e08f048c6a289d922fd934a3f851b",
-      "size_bytes": 18631,
-      "git_blob": "031701c06cece53785c82ee1600c8a09b207fa48",
+      "sha256": "72163b92f4fa43c201fcf223bbe4307da01b564ba9d40b2f13d6cf4b88dae48d",
+      "size_bytes": 18695,
+      "git_blob": "20091049fbed5a77637d750ac5f07a65b4e4ca2d",
       "previous_git_blob": "2a45e5dfa5a79edf76f45e3816394e870f39a4da"
     },
     {
@@ -18318,9 +18714,9 @@
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
-      "sha256": "fe357ed6dd2bce012f2b212de0feacb29653a63dd24d66f2b2415bea71cfcdda",
-      "size_bytes": 30398,
-      "git_blob": "2cf955dfb77bb93a7808293e1ef89a90950603cf"
+      "sha256": "508e1833a9fc4538167dbb87e885356b97f932fffae3635870f5a0d0df86cffb",
+      "size_bytes": 33022,
+      "git_blob": "49b0589b5c137ad2c79a07b87baa814b0517e66f"
     },
     {
       "path": "tests/Ipc.Application.Verification/CapabilityClosure.cs",
@@ -18364,9 +18760,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "469b80e6889f0e3f09d053c47ab498da7aaef40c755ba20eaa93d97d028409e1",
-      "size_bytes": 12787,
-      "git_blob": "6d81d14e2dc10ca8f5e2f4ee48cad76b10722ad2",
+      "sha256": "b7e9a77a7349b1c42529a5f601a6ec55ae5efea8c88b763b0f16291dba9eddc9",
+      "size_bytes": 13291,
+      "git_blob": "88757f1fe6c84e01c61ab7c904e05c46852aebce",
       "previous_git_blob": "e479415f5dc73b9f48b8ae4f402faa8f4ae18604"
     },
     {
@@ -18376,9 +18772,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "796425ec07c71fe0002232f03dfa40a4880c90ede0981f4b0b7b2a72c194a33b",
-      "size_bytes": 3661,
-      "git_blob": "8f4d8c8dcf51ee50efca83fc3c4126996e069392"
+      "sha256": "cf14a768864243b957718d438244ffb48f27fd67061d03df993a6c68a2805b13",
+      "size_bytes": 5039,
+      "git_blob": "6089e180a61f7c7389a401cac14f63a745210e56"
     },
     {
       "path": "tests/Ipc.Application.Verification/ReliabilityClosure.cs",
@@ -18405,15 +18801,26 @@
       "previous_git_blob": "171b7b2aeb2aca2926348dd50a50533d005b5acd"
     },
     {
+      "path": "tests/Ipc.Application.Verification/ReviewRegressions.cs",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "8ffa50481fabd5ca3e11e191429e5deef724a40f03dd742ad9d0d03886daec13",
+      "size_bytes": 3245,
+      "git_blob": "e3a0e19b0734c60a24af2908e1e049611efa7f89"
+    },
+    {
       "path": "tests/Ipc.Application.Verification/SignedCapabilities.cs",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "3e09c755a59648c8ff2a605760d7880b8aa3e98fd77a8c0e8d38d00f235521b5",
-      "size_bytes": 6132,
-      "git_blob": "2b4d16406a6c737c7d6371dfae8485f9d45c11a8",
+      "sha256": "8a0b9e21643afc0fcc06e2b714d24bfefee8afb59bccfa690e268bbf02ead175",
+      "size_bytes": 9353,
+      "git_blob": "796f531842e9eb5a72e80cd1d2a2296e0601d56e",
       "previous_git_blob": "fb2506761dbb00c69bdf13f597b2d1f4125fd0f8"
     },
     {
@@ -19456,5 +19863,6 @@
     "checks": "docs/runtime/evidence/capability-reliability-20/checks.json",
     "candidates": "docs/runtime/evidence/capability-reliability-20/candidate-inventory.json",
     "reference_verification": "PASS"
-  }
+  },
+  "runtime_source_commit": "d5c8b7981ba8e4c8b9daf22df1cb686243815f3b"
 }

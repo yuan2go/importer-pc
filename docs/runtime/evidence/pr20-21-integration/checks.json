@@ -1,0 +1,79 @@
+{
+  "FinalSourceCommit": "d5c8b7981ba8e4c8b9daf22df1cb686243815f3b",
+  "RiskSuiteSourceCommit": "5af8d2ccfd6e2433657690ea89f034696c922ce9",
+  "FinalDelta": "Only qualified Create evidence hash comparison changed; actual full qualified acquisition, review regressions, selected package closures and process journeys rerun on final source. Frozen source file hashes bind final source.",
+  "Checks": [
+    {
+      "Log": "logs/integration-bhr.log",
+      "Status": "PASS",
+      "PassLines": 57,
+      "Sha256": "931e4b255e20972f58c53427a80bb6d439fb47ad2aca4040e224f4e596784f78"
+    },
+    {
+      "Log": "logs/integration-reliability.log",
+      "Status": "PASS",
+      "PassLines": 50,
+      "Sha256": "6b3d329cd4726dd7b5a064f46a8a028e08658a325c8fc8ca2f8b3aa7877c0352"
+    },
+    {
+      "Log": "logs/integration-resources.log",
+      "Status": "PASS",
+      "PassLines": 72,
+      "Sha256": "909e95e0095f9139d46f728264da3fd5e44cee72153a63b99e6ac557d8cd1b6e"
+    },
+    {
+      "Log": "logs/protocol-builder-green.log",
+      "Status": "PASS",
+      "PassLines": 0,
+      "Sha256": "8841ae1fcca709275429e6f231305ed5bc1114d7a10a0ffd22bc8a1a60b81f4e"
+    },
+    {
+      "Log": "logs/final-review-regressions.log",
+      "Status": "PASS",
+      "PassLines": 29,
+      "Sha256": "678c9d5677146f099a97218d010e0f357dc83beee4cd9cb2f630dd5e925178e6"
+    },
+    {
+      "Log": "logs/final-qualified-activation.log",
+      "Status": "PASS",
+      "PassLines": 12,
+      "Sha256": "29cf3b9d84708537623519d8c1129ec451adb1ac783f97114a1a1766034e32bf"
+    },
+    {
+      "Log": "logs/final-capability-closure.log",
+      "Status": "PASS",
+      "PassLines": 49,
+      "Sha256": "df9496518cde87927cef2c20739f6a8e3821ba48268c4f1319d10d37c74ebd12"
+    }
+  ],
+  "Windows": "NOT_RUN",
+  "WindowsCrossBuild": "NOT_REPEATED",
+  "RealSDKWcsPlcField": "BLOCKED",
+  "ProcessJourneys": [
+    {
+      "File": "final-smoke-attached.json",
+      "Status": "PASS",
+      "SourceCommit": "d5c8b7981ba8e4c8b9daf22df1cb686243815f3b"
+    },
+    {
+      "File": "final-smoke-before-main.json",
+      "Status": "PASS",
+      "SourceCommit": "d5c8b7981ba8e4c8b9daf22df1cb686243815f3b"
+    },
+    {
+      "File": "final-smoke-direct-plc.json",
+      "Status": "PASS",
+      "SourceCommit": "d5c8b7981ba8e4c8b9daf22df1cb686243815f3b"
+    },
+    {
+      "File": "final-smoke-sportmaster.json",
+      "Status": "PASS",
+      "SourceCommit": "d5c8b7981ba8e4c8b9daf22df1cb686243815f3b"
+    },
+    {
+      "File": "final-smoke-wcs-to-plc.json",
+      "Status": "PASS",
+      "SourceCommit": "d5c8b7981ba8e4c8b9daf22df1cb686243815f3b"
+    }
+  ]
+}

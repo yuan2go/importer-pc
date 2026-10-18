@@ -1,0 +1,14 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-e0ea6871305f4215bf68eaad783f9f41
+PASS AC19 signed: signature and exact contract policy admits all six registered provider kinds
+PASS AC19 signed: signed component owns its target identity (no external call)
+PASS AC19 signed: signed protocol measured-weight/image-address requirements reject incompatible configuration
+PASS AC19 signed: signed protocol measured-weight/image-address requirements reject incompatible configuration
+PASS AC19 signed: provider-owned parameter schema rejects unknown protocol fields
+PASS AC19 signed: installed providers discoverable before any enable or binding
+Unhandled exception. System.IO.InvalidDataException: Qualified installed prerequisite changed during acquisition
+   at Ipc.Assembly.ParcelCapabilityFactory.Create(ParcelConfiguration c) in /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/src/Ipc.Assembly/ParcelCapabilityFactory.cs:line 232
+   at Ipc.Application.ParcelFlow.ParcelRuntime.StartAsync(CancellationToken token) in /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/src/Ipc.Application.ParcelFlow/ParcelRuntime.cs:line 82
+   at SignedCapabilities.Run(String workspace, String root, String packageFile, String trustFile, Boolean qualifyPrerequisite) in /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/tests/Ipc.Application.Verification/SignedCapabilities.cs:line 84
+   at SignedCapabilities.Run(String workspace, String root, String packageFile, String trustFile, Boolean qualifyPrerequisite) in /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/tests/Ipc.Application.Verification/SignedCapabilities.cs:line 96
+   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 16
+   at Program.<Main>(String[] args)

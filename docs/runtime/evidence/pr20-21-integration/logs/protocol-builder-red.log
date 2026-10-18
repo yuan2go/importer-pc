@@ -1,0 +1,45 @@
+.......FFFFF.....
+======================================================================
+FAIL: test_real_protocol_evidence_is_sha256_at_build_time (test_extension_build.ExtensionBuildTests.test_real_protocol_evidence_is_sha256_at_build_time) (evidence='not-a-hash')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/scripts/test_extension_build.py", line 28, in test_real_protocol_evidence_is_sha256_at_build_time
+    with self.subTest(evidence=evidence), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_real_protocol_evidence_is_sha256_at_build_time (test_extension_build.ExtensionBuildTests.test_real_protocol_evidence_is_sha256_at_build_time) (evidence='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/scripts/test_extension_build.py", line 28, in test_real_protocol_evidence_is_sha256_at_build_time
+    with self.subTest(evidence=evidence), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_real_protocol_evidence_is_sha256_at_build_time (test_extension_build.ExtensionBuildTests.test_real_protocol_evidence_is_sha256_at_build_time) (evidence='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/scripts/test_extension_build.py", line 28, in test_real_protocol_evidence_is_sha256_at_build_time
+    with self.subTest(evidence=evidence), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_real_protocol_evidence_is_sha256_at_build_time (test_extension_build.ExtensionBuildTests.test_real_protocol_evidence_is_sha256_at_build_time) (evidence='gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/scripts/test_extension_build.py", line 28, in test_real_protocol_evidence_is_sha256_at_build_time
+    with self.subTest(evidence=evidence), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_real_protocol_evidence_is_sha256_at_build_time (test_extension_build.ExtensionBuildTests.test_real_protocol_evidence_is_sha256_at_build_time) (evidence='ＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡＡ')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/scripts/test_extension_build.py", line 28, in test_real_protocol_evidence_is_sha256_at_build_time
+    with self.subTest(evidence=evidence), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 13 tests in 1.850s
+
+FAILED (failures=5)

@@ -327,9 +327,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "ad60714ea115e2906c2317d5a9b0503bdf1ca00fdc46569f72e26e1575c93c5e",
-      "size_bytes": 10452,
-      "git_blob": "f40228afab2e4c9be9c83131dfe1539445ef8f36",
+      "sha256": "11e9dfd8efd717d3dca2a8bc1c1f0dfbb9cf0cc649a727fae80b9f0a175f56ba",
+      "size_bytes": 10619,
+      "git_blob": "7e782fa6be70f6ceca91ef5e8b592090ed6a1ae9",
       "version": "sportmaster-alternate-ui",
       "status": "implementation_or_scoped_reference_evidence",
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
@@ -19475,9 +19475,9 @@
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "ddb685d96ae7b6f7678e5792e8469e9c7535207ad3c58d60d2b8fe215ce608ea",
-      "size_bytes": 388,
-      "git_blob": "25e4c7039f66f6e185f66c5fb89a20db978e832c"
+      "sha256": "f7b4b204e0a8f2db286a8dc6ddaeeee442c2823209a403f385b007058d77a6f5",
+      "size_bytes": 687,
+      "git_blob": "77ba382a0d6c1ea705a3ea56846e5fbfe06fe69f"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-alternate-ui/final-build.log",
@@ -21115,6 +21115,28 @@
       "git_blob": "35baba6fe745f640d680c18ead8b870daf3a9924"
     },
     {
+      "path": "docs/runtime/publication-20261019.json",
+      "sha256": "8be986f6c5f7382a5d27b1810f54281103c3292f4d8b895993d86749d404e1ec",
+      "size_bytes": 5049,
+      "git_blob": "d95c91a1c4b3648f0f739e608b2fb57b8c180e4d",
+      "version": "publication-2026-10-19",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "User-authorized no-test publication receipt and navigation",
+      "source": "2026-10-19 explicit user publication and merge request",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/publication-20261019.md",
+      "sha256": "0b24789af1ed5df4daf2f8f0625c1ed1c79525dacbc8ef1eb5bbee0db10d5189",
+      "size_bytes": 2594,
+      "git_blob": "08cb15dc37dd50222c94ab4498d800c4459c9804",
+      "version": "publication-2026-10-19",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "User-authorized no-test publication receipt and navigation",
+      "source": "2026-10-19 explicit user publication and merge request",
+      "storage_scope": "public_repository"
+    },
+    {
       "path": "docs/runtime/publication.md",
       "version": "runtime-publication-1.0",
       "status": "current_navigation_or_verification",
@@ -21212,9 +21234,9 @@
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "c4afc948a6b891b9bf12ea5712c3c1e4a743ebb4fc3026b2af9bd858d241d840",
-      "size_bytes": 8927,
-      "git_blob": "35a051b8aa96445ef2069a571bae9f836051e9e1"
+      "sha256": "1fc9778911cdc8d1d12463739df122dd1059390532a576517f3cf8cb5e6ecdc5",
+      "size_bytes": 9617,
+      "git_blob": "6b9c07e57c33200c2fe861c777a0dbf4c4f25d98"
     },
     {
       "path": "docs/runtime/sportmaster-alternate-ui.md",
@@ -22658,9 +22680,9 @@
       "purpose": "Selectable native Sportmaster UI and documented verification boundaries",
       "source": "User-approved derivative WPF implementation; original HTML withheld",
       "storage_scope": "public_repository",
-      "sha256": "45a931e1251122ca35f37ec237844ff773c0edbd51a3aeb24ae3880637a305f6",
-      "size_bytes": 2710,
-      "git_blob": "d1e2b8918f982b7e35e0b5938c5befc2e5299938"
+      "sha256": "66c936d1ec747b92293ea32500a386e95b126d13ca8c9be8f91ee6572e3c0b08",
+      "size_bytes": 2813,
+      "git_blob": "f5755fc8efd22912c70d35cc1884d3fd2f279f2b"
     },
     {
       "path": "docs/work-packages/WP-IPC-UI-BASELINE-ALIGNMENT-10.md",
@@ -28781,6 +28803,14 @@
     "release_observation_package": "1.0.12",
     "private_keys_included": false,
     "business_code_commit": "bab9c3012652c3b8aae1d90627953734a1de29b8"
+  },
+  "publication_20261019": {
+    "receipt": "docs/runtime/publication-20261019.json",
+    "report": "docs/runtime/publication-20261019.md",
+    "tests": "NOT_RUN_BY_USER_REQUEST",
+    "release": "https://github.com/yuan2go/importer-pc/releases/tag/audit02-rereview-reference-e914e75",
+    "release_assets": 8,
+    "pr26_merge": "9a5d87ad41e3e936f56a7e58ec60de8f7aa53458"
   },
   "sportmaster_alternate_ui": {
     "work_package": "WP-IPC-SPORTMASTER-ALTERNATE-UI",

@@ -81,3 +81,7 @@ PR创建后main合入PR26到9a5d87a；本分支再次正常整合，保留其资
 产物目录 `Workspace/artifacts/importer-pc/sportmaster-alternate-ui/7ed7862/`。27项[解包/资源/启动检查](evidence/sportmaster-alternate-ui/package-verification.json)PASS，包括真实portable宿主双位WCS链、一次原请求、正常停止；不把该启动当作Windows桌面启动。
 
 已创建并附加[main PR #27](https://github.com/yuan2go/importer-pc/pull/27)，不合并。源码7ed7862后的报告/manifest提交仅交付回执，不改变冻结运行源码。
+
+收尾再次继承main `baac260214f910dca9ae4628ba6449b25188e2ac`（PR28，仅文档发布回执）；相对9a5d87a无src/scripts/config变化。正常合并保留双方入口和manifest，无需重建已冻结7ed7862运行候选；上述最终验证仍绑定7ed7862。全库资料校验对照见[最终记录](evidence/sportmaster-alternate-ui/final-archive-comparison.json)，历史FAIL与本次新增分开。PR27保持OPEN，不合并。
+
+最新main baac260的完整扫描为268项（267项历史设计资产问题加1项manifest校验和）；合并后重新生成manifest校验和，当前267项历史问题保持，新增0、移除1项校验和错误。完整资料状态仍FAIL。

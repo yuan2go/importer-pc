@@ -25,8 +25,8 @@
     },
     {
       "Id": "AC18-05",
-      "Status": "PENDING_PR",
-      "Evidence": "source/docs/manifest/evidence; PR receipt pending"
+      "Status": "PASS",
+      "Evidence": "Pushed development branch and created main PR #18; not merged"
     }
   ],
   "CoreMatrix": 24,
@@ -45,5 +45,11 @@
     "ExistingMetadataMarkers": 2,
     "NewContentOrReferenceErrors": 0
   },
-  "ArchiveToolTests": 10
+  "ArchiveToolTests": 10,
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/18",
+  "EvidenceCommit": "22e413521e0ff2f861b4de86afde60d2e646c6c7",
+  "GitDiffCheck": {
+    "Source": "PASS",
+    "EvidenceLogs": "ONE_ORIGINAL_TRAILING_SPACE_RETAINED"
+  }
 }

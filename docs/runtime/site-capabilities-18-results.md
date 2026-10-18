@@ -10,7 +10,7 @@
 |AC18-02|PASS：三场景×登录开关×称重开关×传图开关共24组合；关闭功能不构造对应端口；未登录观察拒绝进入队列；实测等待/错误重量不触发后续|[24组合](evidence/site-capabilities-18/optional-matrix.json)、[实际执行](evidence/site-capabilities-18/logs/image-recovery-final.log)|
 |AC18-03|PASS：原操作员/会话快照进入原payload；WCS原格口和请求进入PLC；采图/上传/PLC落账丢回执后重启原查询；图像原回执T3失败本地重放；每阶段一次尝试；图像备份恢复不复活登录或重传|同上及[原Application恢复/资源回归](evidence/site-capabilities-18/logs/application-serial.log)|
 |AC18-04|PASS：三个WPF选择交叉构建0警告/错误，Windows依赖锁更新；三个ZIP实际解压后默认链与全部可选功能HTTP链各一轮；独立服务持久账/PNG字节；错Application配置在建库前拒绝；旧baseline/architecture与15个发布工具测试|[候选](evidence/site-capabilities-18/candidate-inventory.json)、[独立服务接收事实](evidence/site-capabilities-18/independent-http-receivers.json)、[错误组合](evidence/site-capabilities-18/wrong-composition-rejection.json)、[全部日志](evidence/site-capabilities-18/README.md)|
-|AC18-05|源码、配置、指南、清单和公开合成证据已形成；PR回执在创建后登记|[checks](site-capabilities-18-checks.json)|
+|AC18-05|PASS：源码、配置、指南、清单、公开合成证据已推送并创建main PR #18，未合并|[checks](site-capabilities-18-checks.json)|
 
 三个portable候选均来自08595e9，ZIP CRC、全文件SHA、选中Application闭包与实际启动/退出已核验。三个候选的Platform、Application.Contracts与Components字节分别完全相同；DirectPlc不含Integrations DLL。候选保留在工作树 `.artifacts/site18-08595e9/`，没有将二进制或客户资料混入Git提交。
 
@@ -27,3 +27,5 @@
 **Windows实际客户端/交互/截图/DPI/HID/ACL/UAC：NOT_RUN。真实身份、相机/秤SDK、上传合同、WCS、PLC控制授权/安全联锁与现场：BLOCKED。Production仍NotReady，D/RV不变。** 新登录、采图、上传抽象和内建参考适配器不能作为“真实协议已接通”或“任意插件已可安装”的证据；新可选能力的真实签名适配仍需合同和受控加载政策。旧原包/原发布恢复边界不降低。
 
 资料校验使用有Pillow的既有工作区Python后，当前结果为 **FAIL（原资产）**：265个原PPTX媒体类型问题、2个原UI元数据标记。新增内容身份、清单、链接错误 **0**；未改原件或放宽检查。完整结果见证据内archive-final.json；清单新增证据后另作最后内容/引用核对。
+
+交付PR：[main PR #18](https://github.com/yuan2go/importer-pc/pull/18)，分支`codex/site-capabilities-18`；运行源08595e9、验证/证据提交22e4135。已推送，main仍d3a757d，未擅自合并。原工作区未跟踪资料未改动。源码空白检查通过；公开原日志保留一处原始行尾空格，git diff --check全范围会报告该证据行，不改原件换通过。

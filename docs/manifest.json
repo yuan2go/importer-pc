@@ -324,15 +324,15 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "e5ac70852888424def642e46305287b645dcde0ff11efe97a91af1b59203dcbb",
-      "size_bytes": 8871,
-      "git_blob": "3c7740425d9985f449f9dd1de43e09d57f170dc0",
+      "sha256": "8d479d412117d2173000a368fa3410f8fe07df462a671e735cf89aa35844329e",
+      "size_bytes": 8948,
+      "git_blob": "36d37b1cbe48ff8ca327bb680bc7c6a31d1f24e9",
       "version": "site-capabilities-18",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "previous_git_blob": "ac694778d92f5ca90067bd16a4faefd0ba4cfddb",
+      "previous_git_blob": "3c7740425d9985f449f9dd1de43e09d57f170dc0",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
       "pre_conformance_audit_git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc"
     },
@@ -10750,10 +10750,10 @@
       "purpose": "Authorized general site capability implementation, public baseline custody or synthetic verification",
       "source": "WP-IPC-SITE-CAPABILITIES-18 explicit user scope; no customer source, SDK or production data",
       "storage_scope": "public_repository",
-      "sha256": "8bf7fdda789050dac5c057ae22fba7253031e977f132574913e462328d10657e",
-      "size_bytes": 1585,
-      "git_blob": "86c9e9ce81b314a7e7849cf3c5e5a625bf226a7c",
-      "previous_git_blob": "7267315ecb5633d98e048f4f71dcd18c0c4b27c6"
+      "sha256": "5981320fed41002ddd1cf92363649dbd2a48c1630fbdc40fc35e46f25c83fdeb",
+      "size_bytes": 1828,
+      "git_blob": "57a57de75cf1ada1689467f520e4de9c4a8d0ad1",
+      "previous_git_blob": "86c9e9ce81b314a7e7849cf3c5e5a625bf226a7c"
     },
     {
       "path": "docs/runtime/site-capabilities-18-results.md",
@@ -10762,10 +10762,10 @@
       "purpose": "Authorized general site capability implementation, public baseline custody or synthetic verification",
       "source": "WP-IPC-SITE-CAPABILITIES-18 explicit user scope; no customer source, SDK or production data",
       "storage_scope": "public_repository",
-      "sha256": "8029883875f085cc36d6c554bc4989b894d874d4cdf9a3bd71c7c8498d19edde",
-      "size_bytes": 4727,
-      "git_blob": "f37f8849212e37401479ae57c7777affb0fce80d",
-      "previous_git_blob": "3b747368916ecf1299e8a3c29d9303a8ea924b36"
+      "sha256": "e0a8282a7f0085ec5c18472dd98ecc62b7e2fc19b9d996b3a88337f1982b4c12",
+      "size_bytes": 5133,
+      "git_blob": "7520de684bf66bbc7a255c8cd6ffcbc70562dfb4",
+      "previous_git_blob": "f37f8849212e37401479ae57c7777affb0fce80d"
     },
     {
       "path": "docs/runtime/site-capabilities-18.md",

@@ -156,6 +156,7 @@ public sealed partial class ParcelRuntime
             RecoveryFiles.RequireOrdinaryAncestors(recovery);
             RecoveryFiles.RequireOrdinaryAncestors(destination);
             factory.RegisterBackup(destination, Effective);
+            if (configuration!.Current.Pending is { } pending) factory.RegisterBackup(destination, pending);
             repository.Backup(destination);
             foreach (var name in names)
             {

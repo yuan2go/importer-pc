@@ -44,7 +44,7 @@ dotnet app/Ipc.Assembly.dll --action extension-uninstall --package '{"Id":"appro
 
 运行维护经IParcelApplication.ManageCapabilityAsync（桌面安装管理/CLI ManageExtension），需暂停/维护认证/外呼排空；Windows调用受保护runas帮助程序再读回原操作/登记。Windows实际UAC/ACL仍NOT_RUN。安装中断按原操作恢复；永久ID/version不覆盖。
 
-消费者读者由Parcel拥有，检查精确迁移checksum、当前Effective/Pending、所有未结业务/图像/回执及已注册离线根；包租约和反向依赖沿ExtensionStore。Backup在开始复制前即登记离线消费者，不完整或缺失备份保持阻断，COMPLETED后按原hash检查。已有备份中的Effective仍引用原包，因此仅移除当前绑定不足以卸载。未知/Supply/未来/损坏消费者均保守拒绝，不能返回空引用；Supply兼容主程序仍使用自己的读者。混合旧根的统一管理读者尚未交付，必须保留原包并使用匹配维护发布盘点，不能声称支持跨业务任意卸载。
+消费者读者由Parcel拥有，检查精确迁移checksum、当前Effective/Pending、所有未结业务/图像/回执及已注册离线根；包租约和反向依赖沿ExtensionStore。Backup在开始复制前分别检查Effective和Pending并登记离线消费者（包括只存在于被拒激活Pending的包），不完整或缺失备份保持阻断，COMPLETED后按原hash检查。已有备份中的Effective仍引用原包，因此仅移除当前绑定不足以卸载。未知/Supply/未来/损坏消费者均保守拒绝，不能返回空引用；Supply兼容主程序仍使用自己的读者。混合旧根的统一管理读者尚未交付，必须保留原包并使用匹配维护发布盘点，不能声称支持跨业务任意卸载。
 
 ## 升级、回退与验证
 

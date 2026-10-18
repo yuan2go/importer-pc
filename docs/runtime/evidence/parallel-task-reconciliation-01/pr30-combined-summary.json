@@ -1,0 +1,52 @@
+[
+  {
+    "Command": [
+      "dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--sportmaster-rcs"
+    ],
+    "ExitCode": -6,
+    "Log": "pr30-combined--sportmaster-rcs.log"
+  },
+  {
+    "Command": [
+      "dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--parcel-recovery-p2"
+    ],
+    "ExitCode": 0,
+    "Log": "pr30-combined--parcel-recovery-p2.log"
+  },
+  {
+    "Command": [
+      "dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--upgrade-conflict-closure"
+    ],
+    "ExitCode": 0,
+    "Log": "pr30-combined--upgrade-conflict-closure.log"
+  },
+  {
+    "Command": [
+      "dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--receipt-custody"
+    ],
+    "ExitCode": 0,
+    "Log": "pr30-combined--receipt-custody.log"
+  },
+  {
+    "Command": [
+      "dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--configuration-confirmation"
+    ],
+    "ExitCode": 0,
+    "Log": "pr30-combined--configuration-confirmation.log"
+  }
+]

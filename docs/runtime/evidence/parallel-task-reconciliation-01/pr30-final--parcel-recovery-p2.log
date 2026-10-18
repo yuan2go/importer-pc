@@ -1,0 +1,103 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-59d7371322df41d890be1fb8384e74ea
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-c0c306f2f66948ef9433c6393aa4c70a
+PASS AQ: P2 input: real child terminated after original upload file flush, before T3
+PASS AQ: P2 DB3 original ID evicted from 64-reply projection
+PASS AQ: P2 DB3 local=False rejects changed permanent identity before acceptance/upgrade
+PASS AQ: P2 identity conflict retains original missing raw, image and full backup without another local Query
+PASS AQ: P2 conflict retains contradictory raw and frozen submit identity/counts
+PASS AQ: P2 DB3 original ID evicted from 64-reply projection
+PASS AQ: P2 DB3 local=True rejects changed permanent identity before acceptance/upgrade
+PASS AQ: P2 identity conflict retains original missing raw, image and full backup without another local Query
+PASS AQ: P2 conflict retains contradictory raw and frozen submit identity/counts
+PASS AQ: P2 DB4 original ID evicted from 64-reply projection
+PASS AQ: P2 DB4 local=False rejects changed permanent identity before acceptance/upgrade
+PASS AQ: P2 identity conflict retains original missing raw, image and full backup without another local Query
+PASS AQ: P2 conflict retains contradictory raw and frozen submit identity/counts
+PASS AQ: P2 DB4 original ID evicted from 64-reply projection
+PASS AQ: P2 DB4 local=True rejects changed permanent identity before acceptance/upgrade
+PASS AQ: P2 identity conflict retains original missing raw, image and full backup without another local Query
+PASS AQ: P2 conflict retains contradictory raw and frozen submit identity/counts
+PASS AQ: P2 DB4 original ID evicted from 64-reply projection
+PASS AQ: P2 same-ID/same-bytes local=False remains idempotent and upgrades with original missing raw retained
+PASS AQ: P2 DB4 original ID evicted from 64-reply projection
+PASS AQ: P2 same-ID/same-bytes local=True remains idempotent and upgrades with original missing raw retained
+PASS AQ: P2 DB5 original ID evicted from 64-reply projection
+PASS AQ: P2 same-ID/same-bytes local=False remains idempotent and upgrades with original missing raw retained
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 all 67 durable Query bases remain valid beyond bounded reply projection
+PASS AQ: P2 evicted intermediate terminal Query remains authoritative
+PASS AQ: P2 unchanged permanent identity remains idempotent
+PASS AQ: P2 candidate may stage after proven external completion
+PASS AQ: P2 opposite terminal state rejects durable Query basis
+PASS AQ: P2 changed frozen configuration cannot authorize custody basis
+PASS AQ: P2 altered linked Query raw refuses custody proof
+PASS AQ: P2 actual restart activates candidate using persistent Query evidence beyond projection
+PASS AQ: P2 activation preserves all missing raw/image responsibility and never resubmits original work
+PASS RECOVERY P2 COMPLETE

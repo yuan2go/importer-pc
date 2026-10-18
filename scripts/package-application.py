@@ -88,7 +88,9 @@ for directory in [output / 'app', output / 'desktop']:
 selection.update(SourceCommit=source, Target=a.target, EntryPoint='app/Ipc.Assembly.dll',
                  DesktopEntryPoint='desktop/Ipc.Desktop.exe' if a.target == 'win-x64' else None,
                  Windows='NOT_RUN', PhysicalIntegration='BLOCKED',
-                 Binaries={str(f.relative_to(output)): hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(output.rglob('Ipc.*.dll'))})
+                 Binaries={str(f.relative_to(output)): hashlib.sha256(f.read_bytes()).hexdigest()
+                           for directory in [output / 'app', output / 'desktop'] if directory.exists()
+                           for f in sorted(directory.rglob('Ipc.*.dll'))})
 (output / 'composition.lock.json').write_text(json.dumps(selection, indent=2) + '\n')
 (output / 'ASSEMBLY.json').write_text(json.dumps(selection, indent=2) + '\n')
 publish_guides(build_source, output, source, a.application)

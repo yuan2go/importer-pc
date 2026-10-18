@@ -59,3 +59,9 @@
 ## C05 UI与RCS组合差额（修改页面前）
 
 已按入口检查v1.1 README/GALLERY、原单文件HTML和分离HTML/CSS/JS、完整UI交接；另核用户明确给定HTML及PR27已批准的WPF衍生设计和原始审查，不上传客户HTML。保留蓝/紫双位、固定主动作和局部滚动诊断。PR27的Status没有UnpackRequired分支，RCS三类详情只在ParcelViewModel；组合后复用同一个只读DestinationSummary，既有诊断区显示任务/SKU/所有拆包格口及零/未知差别，并补中文阻断状态。业务状态/命令守卫、原请求/HTTP、窗口和读序代码保持所有权；不引入拆包提交、PLC、图片展示或长期图存储。随包UI指南只属于Sportmaster；其他产品共享版本/维护指南。
+
+## C07 实际发行二进制清单缺陷
+
+在d4d448a五份实际媒介核对时发现原package-application.py从整个output递归收集Ipc DLL，ASSEMBLY/composition.lock的Binaries包括随后删除的build-intermediates。Sportmaster core清单96项中84项不在ZIP，Windows selected142项中115项不在ZIP。原候选、签名包及原12组参考PASS保留其身份，媒介整体未获合格；不把测试PASS扩张为发行完整。
+
+修复同一发布入口，只从最终app/desktop收集实际DLL，仍保留完整Files/SHA256SUMS及原包静态验收。实际ZIP核对器verify-media.py固定检查无缺失/无未列二进制及逐文件SHA，原d4反例FAIL保留。新源码需重建精确指纹，业务1.2.3/能力包2.1.1/reader1.2.1/RCS1.0.3使用全新目录与身份，不覆盖d4的1.2.2/2.1.0/1.2.0/1.0.2。原14/19/29等更早候选保持形成时范围。

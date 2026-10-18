@@ -4,21 +4,34 @@
     "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
     "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.WeightFactory",
     "Kind": "weight",
-    "MaximumInstances": 4
+    "MaximumInstances": 4,
+    "ContractIdentity": "PARCEL-REFERENCE-v1",
+    "Requirements": {
+      "Query": false
+    }
   },
   {
     "Id": "parcel-plc",
     "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
     "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.PlcFactory",
     "Kind": "plc",
-    "MaximumInstances": 4
+    "MaximumInstances": 4,
+    "ContractIdentity": "PARCEL-REFERENCE-v1",
+    "Requirements": {
+      "Query": true,
+      "PhysicalConfirmation": true
+    }
   },
   {
     "Id": "parcel-integration",
     "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
     "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.WcsFactory",
     "Kind": "integration",
-    "MaximumInstances": 4
+    "MaximumInstances": 4,
+    "ContractIdentity": "PARCEL-REFERENCE-v1",
+    "Requirements": {
+      "Query": true
+    }
   },
   {
     "Id": "parcel-login",

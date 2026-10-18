@@ -156,7 +156,7 @@ except BaseException:
     raise
 result = dict(Status='PASS', SourceCommit=identity['SourceCommit'], Application=identity['product']['business'], Target='portable',
               Checks=['candidate file hashes', 'actual selected assembly startup', 'camera-to-final-reference-chain', 'persistent original phases on restart', 'orderly stop'],
-              AttachedUpload=a.attached_upload, ExternalPeerProcess=bool(a.peer_fixture), OptionalFeatures=a.optional_features, OptionalChecks=['authenticated admission', 'same-entity measured weight', 'actual PNG upload bytes', 'attached upload independent from main' if a.attached_upload else 'lost pre-main upload blocks PLC', 'process restart original query', 'explicit continuation original operator', 'one execution per independent receiver'] if a.optional_features else [],
+              AttachedUpload=a.attached_upload, ExternalPeerProcess=bool(a.peer_fixture), OptionalFeatures=a.optional_features, OptionalChecks=['authenticated admission', 'same-entity measured weight', 'actual PNG upload bytes', 'attached upload independent from main' if a.attached_upload else 'lost pre-main upload blocks PLC', 'process restart original query', 'independent upload reconciliation keeps original operator' if a.attached_upload else 'explicit continuation original operator', 'one execution per independent receiver'] if a.optional_features else [],
               State=operation['State'], OperationId=operation['Id'], Windows='NOT_RUN', RealEquipment='BLOCKED')
 a.output.write_text(json.dumps(result, indent=2) + '\n')
 print(json.dumps(result))

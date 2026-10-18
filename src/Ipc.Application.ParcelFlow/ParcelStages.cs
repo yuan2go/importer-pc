@@ -93,7 +93,7 @@ public sealed partial class ParcelRuntime
         var inconsistent = reply.RequestId != stage.Request.Id || reply.PayloadHash != stage.Request.PayloadHash ||
             !Guid.TryParseExact(reply.Id, "N", out _) || string.IsNullOrWhiteSpace(reply.Evidence) || reply.At < stage.Request.PreparedAt || reply.At > DateTimeOffset.UtcNow.AddSeconds(1) ||
             reply.BusinessAccepted is not null && (!reply.TransportSucceeded || reply.ProtocolAcknowledged != true) ||
-            reply.PhysicalCompleted == true && reply.BusinessAccepted != true ||
+            reply.PhysicalCompleted == true && (reply.BusinessAccepted != true || !factory.Requirements(stage.Request.Binding).PhysicalConfirmation) ||
             wcs && reply.BusinessAccepted == true && (string.IsNullOrWhiteSpace(reply.Slot) || reply.Slot.Length > 64 || reply.Slot.Any(char.IsControl)) ||
             prior is not null && Wire.Encode(prior) != Wire.Encode(reply) ||
             kind is ParcelStage.Capture or ParcelStage.Upload && reply.BusinessAccepted == true && !ValidImageReply(op, kind, reply.Image);

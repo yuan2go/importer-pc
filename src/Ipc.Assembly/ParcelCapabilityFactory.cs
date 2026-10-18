@@ -141,9 +141,12 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         if (requirements.ImageAddress && (c.Images is null || c.Images.Strategy != UploadStrategy.BeforeMain))
             throw new InvalidDataException("Selected protocol requires a confirmed image address before main flow");
     }
-    public CapabilityRequirements Requirements(CapabilityBinding binding) => binding.Package is null
-        ? ReferenceCapabilityCatalog.Providers.Single(x => x.Kind == binding.Kind).Requirements
-        : Store().VerifyInstalled(binding.Package).Manifest.Modules.Single(x => x.Id == binding.Module).Requirements ?? new(Query: true);
+    public CapabilityRequirements Requirements(CapabilityBinding binding)
+    {
+        RegisterContracts();
+        return binding.Package is null ? ReferenceCapabilityCatalog.Providers.Single(x => x.Kind == binding.Kind).Requirements
+            : Store().VerifyInstalled(binding.Package).Manifest.Modules.Single(x => x.Id == binding.Module).Requirements ?? new(Query: true);
+    }
     public CapabilityCatalog Catalog()
     {
         RegisterContracts();

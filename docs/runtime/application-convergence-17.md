@@ -62,7 +62,7 @@ python3 scripts/build-extension.py --definition examples/ParcelCapabilitiesExten
 dotnet <冻结portable/app/Ipc.Assembly.dll> --action extension-install --mode Simulation --file <parcel.ipcx> --sha256 <原包大写SHA256> --extension-root <隔离库> --extension-trust <独立信任.json>
 ```
 
-安装不激活。config目录的extension-store.json明确独立Root/TrustFile绝对路径（参考环境）；同一业务修订的Extensions.Packages列精确包，Reader使用原观察实例，Scale/Wcs/Plc分别使用Package/Module/InstanceId和严格参数，不假造设备观察。Scale的Kind=weight/Module=parcel-weight，PLC为plc/parcel-plc，WCS为integration/parcel-integration；扩展绑定Implementation为`extension:<PackageId>/<ModuleId>`、Version必须等于原Package.Version；各参数见各schema，`peer-root`为独立合成接收账绝对目录。WCS/PLC的身份、合同、目标和全部参数随阶段冻结。安装静态/运行校验与原政策一致；包使用和离线consumer登记保护旧责任。旧Supply工具遇到不识别的新业务消费者拒绝卸载，不能删登记绕过。
+安装不激活。portable参考环境的config目录extension-store.json明确独立Root/TrustFile绝对路径；Windows拒绝该覆盖文件和CLI自选路径，复用ProgramData独立信任、指定运行账户与机级租约，安装要求提升且来自受保护Program Files发布目录。包内provision-runtime.ps1/provision-extensions.ps1供既定Windows后验配置，实际ACL/UAC未验；同一业务修订的Extensions.Packages列精确包，Reader使用原观察实例，Scale/Wcs/Plc分别使用Package/Module/InstanceId和严格参数，不假造设备观察。Scale的Kind=weight/Module=parcel-weight，PLC为plc/parcel-plc，WCS为integration/parcel-integration；扩展绑定Implementation为`extension:<PackageId>/<ModuleId>`、Version必须等于原Package.Version；各参数见各schema，`peer-root`为独立合成接收账绝对目录。WCS/PLC的身份、合同、目标和全部参数随阶段冻结。安装静态/运行校验与原政策一致；包使用和离线consumer登记保护旧责任。旧Supply工具遇到不识别的新业务消费者拒绝卸载，不能删登记绕过。
 
 当前真实SDK、型号/固件/位数、PLC地址/字节序/命令握手/回执查询和安全控制权、WCS版本合同与认证/格口/幂等范围、秤关联/校准/质量/时间源均未取得。所有Production启动明确NotReady，原生SDK/系统驱动prerequisite仍拒绝，未虚构任何厂商方法或地址。显式参考端使用独立持久接收账，校验原请求、重复身份/报文、业务接受与查询，注入lose-after-commit在落账后丢回执；不是返回成功的占位接口，也不证明现场能力。
 

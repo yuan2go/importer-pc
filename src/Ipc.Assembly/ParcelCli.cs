@@ -24,8 +24,22 @@ static class ParcelCli
             var dependencies = map.TryGetValue("--dependency-files", out var file) ? Wire.Decode<string[]>(File.ReadAllText(file)) : [];
             Console.WriteLine(Wire.Encode(ExtensionBuildCheck.Inspect(map["--file"], map["--extension-trust"], mode, dependencies))); return true;
         }
-        var root = map["--extension-root"];
-        var store = new ExtensionStore(root, Wire.Decode<ExtensionTrust>(File.ReadAllText(map["--extension-trust"])), mode, Path.Combine(root, "reference-leases"));
+        var paths = MachineRuntimePolicy.ExtensionPaths(mode, map.GetValueOrDefault("--extension-root"), map.GetValueOrDefault("--extension-trust"));
+        if (map["--action"] == "extension-install")
+        {
+            MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+            if (OperatingSystem.IsWindows())
+            {
+                var releaseFile = Path.Combine(AppContext.BaseDirectory, "application-release.json");
+                if (!File.Exists(releaseFile)) throw new UnauthorizedAccessException("Elevated Application helper requires a frozen protected release");
+                var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(releaseFile));
+                ApplicationReleaseValidation.ValidateIfPublished(AppContext.BaseDirectory, release.ApplicationId, new(release.Views, release.Layouts));
+                MachineRuntimePolicy.RequireProtectedApplicationInstaller(AppContext.BaseDirectory, release.Files.Keys.Append("application-release.json").ToArray());
+            }
+        }
+        var leases = map["--action"] == "extension-install" ? MachineRuntimePolicy.InstallerLeaseRoot(Path.Combine(paths.Root, "reference-leases"))
+            : MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(paths.Root, "reference-leases"));
+        var store = new ExtensionStore(paths.Root, Wire.Decode<ExtensionTrust>(File.ReadAllText(paths.TrustFile)), mode, leases);
         if (map["--action"] == "extension-install") Console.WriteLine(Wire.Encode(store.Install(map["--file"], map["--sha256"])));
         else if (map["--action"] == "extension-inspect") Console.WriteLine(Wire.Encode(ExtensionPackages.Inspect(map["--file"], store.Trust, mode)));
         else throw new ArgumentException("Unsupported parcel extension action");

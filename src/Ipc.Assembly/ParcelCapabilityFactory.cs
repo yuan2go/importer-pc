@@ -21,10 +21,23 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
     ExtensionStore Store()
     {
         if (store is not null) return store;
-        var settings = Wire.Decode<ParcelExtensionStoreConfiguration>(File.ReadAllText(Path.Combine(launch.ConfigurationDirectory, "extension-store.json")));
-        if (!Path.IsPathFullyQualified(settings.Root) || !Path.IsPathFullyQualified(settings.TrustFile)) throw new InvalidDataException("Explicit independent reference store/trust absolute paths are required");
-        var trust = Wire.Decode<ExtensionTrust>(File.ReadAllText(settings.TrustFile));
-        return store = new(settings.Root, trust, RunMode.Simulation, Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
+        var settingsFile = Path.Combine(launch.ConfigurationDirectory, "extension-store.json");
+        (string Root, string TrustFile) paths;
+        if (OperatingSystem.IsWindows())
+        {
+            if (File.Exists(settingsFile)) throw new InvalidDataException("Windows reference extension store/trust overrides are forbidden; use provisioned machine policy");
+            paths = MachineRuntimePolicy.ExtensionPaths(RunMode.Simulation);
+        }
+        else
+        {
+            var settings = Wire.Decode<ParcelExtensionStoreConfiguration>(File.ReadAllText(settingsFile));
+            if (!Path.IsPathFullyQualified(settings.Root) || !Path.IsPathFullyQualified(settings.TrustFile)) throw new InvalidDataException("Explicit independent reference store/trust absolute paths are required");
+            paths = MachineRuntimePolicy.ExtensionPaths(RunMode.Simulation, settings.Root, settings.TrustFile);
+        }
+        if (new FileInfo(paths.TrustFile).Length > ExtensionPackages.MaximumManifestBytes) throw new InvalidDataException("Trust policy quota exceeded");
+        var trust = Wire.Decode<ExtensionTrust>(File.ReadAllText(paths.TrustFile));
+        var leases = MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
+        return store = new(paths.Root, trust, RunMode.Simulation, leases);
     }
     public ParcelConfiguration Normalize(ParcelConfiguration configuration)
     {
@@ -92,7 +105,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
     public ParcelPorts Create(ParcelConfiguration c)
     {
         Validate(c);
-        var resourceRoot = Path.Combine(launch.DataRoot, "Simulation", "resource-leases");
+        var resourceRoot = MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
         devices = new(resourceRoot, new[] { "reader:" + c.Reader.DeviceId }.Concat(new[] { c.Scale, c.Plc }.OfType<CapabilityBinding>().Select(x => x.Kind + ":" + x.Target)));
         if (c.Extensions is { Packages.Length: > 0 } deployment)
         {

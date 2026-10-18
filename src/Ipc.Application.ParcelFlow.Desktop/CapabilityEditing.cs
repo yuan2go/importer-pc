@@ -103,7 +103,7 @@ public partial class ParcelViewModel
     public async Task SaveCapabilitiesAsync()
     {
         if (Snapshot is null) return;
-        var instances = CapabilityDrafts.Where(x => x.Kind != "observation" && (x.Enabled || x.Bound)).Select(x => x.Build()).ToArray();
+        var instances = CapabilityDrafts.Where(x => x.Kind != "observation").Select(x => x.Build()).ToArray();
         CapabilityBinding? Selected(string kind) => CapabilityDrafts.Where(x => x.Role == kind && x.Bound).Select(x => x.Build()).SingleOrDefault();
         var reader = Selected("observation") ?? throw new InvalidOperationException("读码来源必须绑定");
         if (!reader.Enabled) throw new InvalidOperationException("读码来源必须启用");

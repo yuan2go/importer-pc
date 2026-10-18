@@ -150,7 +150,7 @@
       "delivery": "core"
     },
     "application-contracts": {
-      "version": "1.4.0",
+      "version": "1.5.0",
       "contract": 1,
       "dependencies": [
         "platform"

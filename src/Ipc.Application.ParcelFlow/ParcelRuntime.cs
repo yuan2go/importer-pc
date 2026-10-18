@@ -166,7 +166,18 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                     if (item is ParcelObservation o) await ObserveAsync(position, o.Observation, o.Operator).ConfigureAwait(false);
                     else if (item is ParcelMeasurement m) await MeasureAsync(m).ConfigureAwait(false);
                 }
-                finally { if (item is ParcelObservation) Interlocked.Decrement(ref pendingObservations); gate.Release(); }
+                finally
+                {
+                    try
+                    {
+                        if (item is ParcelObservation o)
+                        {
+                            try { ReleaseIngressAcquisition(o.Observation); }
+                            finally { Interlocked.Decrement(ref pendingObservations); }
+                        }
+                    }
+                    finally { gate.Release(); }
+                }
             }
         }
         catch (Exception ex)
@@ -201,6 +212,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             Operator: admittedOperator, Acquisition: new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt),
             PositionId: Effective.SchemaVersion >= 3 ? position : null, ReaderBinding: Effective.SchemaVersion >= 3 ? ParcelBindings.Readers(Effective).Single(r => r.DeviceId == o.DeviceId) : null);
         admissionPositions.TryAdd(op.AdmissionId, position);
+        if (op.FrozenConfiguration.Images is not null && ParcelBindings.Camera(op.FrozenConfiguration, op.PositionId)?.Target == o.DeviceId)
+            ((IReaderImageCapture)reader.Source).RetainAcquisition(op.Acquisition!, "operation:" + op.Id);
         Save(op, "ParcelObserved", "One admitted parcel; code is not entity identity");
         if (op.FrozenConfiguration.Images is not null)
         {

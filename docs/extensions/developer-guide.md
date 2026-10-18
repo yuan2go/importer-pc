@@ -1,3 +1,5 @@
+> 采集生命周期P2：复用reader采图的提供者须实现`IReaderImageCapture`新增的RetainAcquisition/ReleaseAcquisition所有者协议，且回调前暂存观察所有者、拒收/异常撤销，Stop/重连保有在途，采图实际返回前不得释放底层资源。业务拥有释放时机，不得按缓存条数或时间逐出。Application.Contracts及参考能力包进入新不可变1.5.0，须对新宿主精确契约重新构建/签名；历史1.4.0包与请求不覆盖。详情见[本次工作包](../work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)。
+
 > 22现行拓扑、状态作用域、版本与交付：[Application架构22](../design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
 
 > 现行三Application职责、公共能力与可选策略：[19职责设计](../design/application-capability-19.md)及[20可靠性增量](../design/capability-reliability-20.md)。本页保留仍有效的基础机制及Supply兼容说明；17/18阶段限制已由19替代。原字节见[归档](../archive/pre-application-capability-19/README.md)。

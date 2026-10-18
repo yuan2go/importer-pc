@@ -1,18 +1,18 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-APPLICATION-ARCHITECTURE-22",
+  "work_package": "WP-IPC-ACQUISITION-LIFECYCLE-P2",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/application-architecture-22",
+  "branch": "codex/acquisition-lifecycle-p2",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
-  "framework_design_state": "APPLICATION_ARCHITECTURE_REFERENCE_VERIFIED_WINDOWS_NOT_RUN_REAL_BLOCKED",
+  "framework_design_state": "ACQUISITION_LIFECYCLE_REFERENCE_VERIFIED_WINDOWS_NOT_RUN_REAL_BLOCKED",
   "previous_manifest": {
-    "commit": "ea881293c888a824f26c9f9fa07352a22786206b",
-    "snapshot": "docs/archive/pre-application-architecture-22/docs/manifest.json.txt",
-    "sha256": "7a8ea1b140e0207aa6594ef5c1c2bcb251c7a9cddf026ef7a39c2a6d132ee7fb",
-    "meaning": "Original pre22 manifest, source/report/package custody unchanged"
+    "commit": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
+    "snapshot": "docs/archive/pre-acquisition-lifecycle-p2/docs/manifest.json.txt",
+    "sha256": "9852b2b3f9a460572a4585e46e5820dcc81182d451cab09b5c2cdcdbf4616adf",
+    "meaning": "Original merged PR22 manifest and publication custody unchanged"
   },
   "self_verification": {
     "sha256_file": "manifest.sha256",
@@ -186,14 +186,14 @@
     },
     {
       "path": "config/compositions.json",
-      "version": "capability-reliability-20",
+      "version": "acquisition-lifecycle-p2",
       "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "a7beedb86522c49905f04c10f0750dce1c08954f22c79106e7471668fcb21516",
+      "sha256": "b8973e83fa34a4e38a6c9e46945efc3fb56083e2316302148a9edca56fcaba29",
       "size_bytes": 7744,
-      "git_blob": "ea9956fb8421191f0b6396a764ef3baf607a35af",
+      "git_blob": "7adfbf57a33557ed1ddefad774df37638ed8ffd1",
       "previous_git_blob": "4cd784e0404ca5afd64566dfe56625fe843c6313",
       "prior_closure13_git_blob": "1896d9c2f91ac6d1c8d840733492c11a0499555e"
     },
@@ -327,17 +327,83 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "4b3d2b58e65178792d6849891d8f363b5c95ac319cfc50170ed74bf1afc26e2c",
-      "size_bytes": 7860,
-      "git_blob": "0daf3a56543290ea16f608416dac43e90e40ccbf",
-      "version": "capability-reliability-20",
+      "sha256": "d347d11ce83e00299f5013379cb1b7ec8840f5557dd82206b5e1eff0a0a279d6",
+      "size_bytes": 8066,
+      "git_blob": "2f933e5694f953cb7119e3b7229afebc51c1adfd",
+      "version": "acquisition-lifecycle-p2",
       "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
       "storage_scope": "public_repository",
       "previous_git_blob": "c9883745a559c3d542522dba17e094d9bc007c77",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
       "pre_conformance_audit_git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc"
+    },
+    {
+      "path": "docs/archive/pre-acquisition-lifecycle-p2/README.md",
+      "storage_scope": "public_repository",
+      "version": "acquisition-lifecycle-p2",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
+      "sha256": "e517e7f67512e5db4d423692780c25635596acb3a255e56ed635714d4af3df68",
+      "size_bytes": 247,
+      "git_blob": "d7cbb0ad44fd8d04265d57e9d56a6eaeb2307a85"
+    },
+    {
+      "path": "docs/archive/pre-acquisition-lifecycle-p2/docs/INDEX.md.txt",
+      "storage_scope": "public_repository",
+      "version": "acquisition-lifecycle-p2",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
+      "sha256": "4b3d2b58e65178792d6849891d8f363b5c95ac319cfc50170ed74bf1afc26e2c",
+      "size_bytes": 7860,
+      "git_blob": "0daf3a56543290ea16f608416dac43e90e40ccbf"
+    },
+    {
+      "path": "docs/archive/pre-acquisition-lifecycle-p2/docs/extensions/developer-guide.md.txt",
+      "storage_scope": "public_repository",
+      "version": "acquisition-lifecycle-p2",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
+      "sha256": "74e4d1e4f16b01b0273cbb0dae28e1bb4905f32ebb3df95b1706f50cea01b6b2",
+      "size_bytes": 11712,
+      "git_blob": "97de4fe44e344579520696baa1d2d07b9d7bd0ab"
+    },
+    {
+      "path": "docs/archive/pre-acquisition-lifecycle-p2/docs/manifest.json.txt",
+      "storage_scope": "public_repository",
+      "version": "acquisition-lifecycle-p2",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
+      "sha256": "9852b2b3f9a460572a4585e46e5820dcc81182d451cab09b5c2cdcdbf4616adf",
+      "size_bytes": 1207184,
+      "git_blob": "509cd01f0f66899c4bde25d1f983adf410fedc9a"
+    },
+    {
+      "path": "docs/archive/pre-acquisition-lifecycle-p2/docs/manifest.sha256.txt",
+      "storage_scope": "public_repository",
+      "version": "acquisition-lifecycle-p2",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
+      "sha256": "2f4e780c22d5f035efddbf13b6bae36f3d2797e709c76f682875aa159f33030a",
+      "size_bytes": 80,
+      "git_blob": "4e8810e6b63693d1883e6b53edb11bb92735acff"
+    },
+    {
+      "path": "docs/archive/pre-acquisition-lifecycle-p2/docs/runtime/application-architecture-22.md.txt",
+      "storage_scope": "public_repository",
+      "version": "acquisition-lifecycle-p2",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
+      "sha256": "f1b252ec4dd2e3b7ec89c164e918e7a5243aa65baee790e27ac205c7f786e5b5",
+      "size_bytes": 8513,
+      "git_blob": "2d3b33c212f86b0b78c96054f2133613033436c0"
     },
     {
       "path": "docs/archive/pre-application-architecture-22/README.md",
@@ -2415,14 +2481,14 @@
     },
     {
       "path": "docs/extensions/developer-guide.md",
-      "version": "capability-reliability-20",
+      "version": "acquisition-lifecycle-p2",
       "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "74e4d1e4f16b01b0273cbb0dae28e1bb4905f32ebb3df95b1706f50cea01b6b2",
-      "size_bytes": 11712,
-      "git_blob": "97de4fe44e344579520696baa1d2d07b9d7bd0ab",
+      "sha256": "bc0f598abead7b69c2cc40a928e2c0e10dcf94d479f872a1ecc16b993f97f9c3",
+      "size_bytes": 12291,
+      "git_blob": "f77579dffc8ed2ba338996980f48b50fa43c255f",
       "previous_git_blob": "9ceb8f1d4b3d1f5ba2754715802428c25e048f84",
       "prior_closure13_git_blob": "920e1ac245b3de720f3607001f510dae0c0a9980"
     },
@@ -2772,14 +2838,14 @@
     },
     {
       "path": "docs/runtime/application-architecture-22.md",
-      "version": "application-architecture-22",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
-      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "version": "acquisition-lifecycle-p2",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "f1b252ec4dd2e3b7ec89c164e918e7a5243aa65baee790e27ac205c7f786e5b5",
-      "size_bytes": 8513,
-      "git_blob": "2d3b33c212f86b0b78c96054f2133613033436c0"
+      "sha256": "b1341c5827bad9953c9fe8b7b23926e893e128ad67d35104d317b18dbc7fac5a",
+      "size_bytes": 8672,
+      "git_blob": "eabe7064b97782534dcc87c41faa78c4875339a7"
     },
     {
       "path": "docs/runtime/application-capability-19-checks.json",
@@ -3518,6 +3584,17 @@
       "sha256": "f9878cd8a76a2df538f0377cdaad8ad321d3052ebc0c66ce01129e1ba49178b4",
       "size_bytes": 493,
       "git_blob": "399628b6f950d67d9c61ce1c0bab4a306a4e0d13"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
+      "version": "APPLICATION-ARCHITECTURE-22-publication",
+      "status": "publication_receipt_not_acceptance",
+      "purpose": "User-authorized upload of existing synthetic reference packages; publication tests, builds and validators NOT_RUN",
+      "source": "2026-10-18 explicit no-test publication request",
+      "storage_scope": "public_repository",
+      "sha256": "44b9be428ef905f16c3df4263f75560419a034e9d8bfb01dba625d319ac5ac57",
+      "size_bytes": 3920,
+      "git_blob": "4a2e327af5a6e4919c56ebc4891cf944f88e2ef1"
     },
     {
       "path": "docs/runtime/evidence/application-architecture-22/smoke-direct-plc.json",
@@ -15132,6 +15209,17 @@
       "git_blob": "b18904ae31ddfcec6f7885e2e7b811ed099a0072"
     },
     {
+      "path": "docs/work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md",
+      "storage_scope": "public_repository",
+      "version": "acquisition-lifecycle-p2",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
+      "sha256": "2cc35236c3085a0e2143c5ef191c9ce2e5b45297c0ebd382866afdc13ff50525",
+      "size_bytes": 2936,
+      "git_blob": "4ea6bafa499b8c898ada87c3a5e3702017b8b2db"
+    },
+    {
       "path": "docs/work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md",
       "version": "application-architecture-22",
       "status": "current_reference_implementation_or_evidence",
@@ -15639,14 +15727,14 @@
     },
     {
       "path": "examples/ParcelCapabilitiesExtension/manifest.template.json",
-      "version": "capability-reliability-20",
+      "version": "acquisition-lifecycle-p2",
       "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "508bbe294e3a73533d34836e99b19138a8b1dedae9b15c7e71b47c157357bba3",
+      "sha256": "b98b51f1c6e8a8b3fa383d722de506bc15986c459d77c43a4bfe7454c8bbe38b",
       "size_bytes": 219,
-      "git_blob": "fd5e5c0190738498a9404123bf03dbe57f59ae76",
+      "git_blob": "0122626fc8d1f771108c02012c5e7d9c70e0f73f",
       "previous_git_blob": "506f835f3946d73c56c9f1a486b64f34837f5119"
     },
     {
@@ -16076,14 +16164,14 @@
     },
     {
       "path": "src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj",
-      "version": "capability-reliability-20",
+      "version": "acquisition-lifecycle-p2",
       "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "8a27b832bd8f222d5e39e4bbcb43de44d54aff9e2e310b63a1b8cd951dc6e153",
+      "sha256": "2d4e79275bf9fd2d3a8e8f8f8e5012317f358d29b6b05032bcc114e6208638b6",
       "size_bytes": 187,
-      "git_blob": "3fdbcc64740f26f9c694d2c22c8cc8c844c83bf7",
+      "git_blob": "410a6bed42976ce8715063d4152eb226495868ba",
       "previous_git_blob": "f25ab42340afcea98589f6c3b1a14cada8ef706c"
     },
     {
@@ -16112,14 +16200,14 @@
     },
     {
       "path": "src/Ipc.Application.Contracts/ParcelTopology.cs",
-      "version": "application-architecture-22",
-      "status": "current_reference_implementation_or_evidence",
-      "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
-      "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
+      "version": "acquisition-lifecycle-p2",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "27cf493a8b5539fe6246a06f06a9111365eff970ba7bd33b30f75cef50124f03",
-      "size_bytes": 2199,
-      "git_blob": "46b8bb7dae899f9528b5b989953d187b014242e6"
+      "sha256": "35b02b7c8d9d0da83fda27777f3132ab2001463a1dc6a4e3b3b7e2600c57b086",
+      "size_bytes": 2596,
+      "git_blob": "9ec1f408548865516b8bb3a4397a02f2b2b03c72"
     },
     {
       "path": "src/Ipc.Application.Contracts/packages.direct-plc.lock.json",
@@ -16631,6 +16719,17 @@
       "git_blob": "a1c292a4cf07f8aa035b44be729909fa35fdab24"
     },
     {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelAcquisitions.cs",
+      "storage_scope": "public_repository",
+      "version": "acquisition-lifecycle-p2",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
+      "sha256": "6716bd4e1514f2a082f98fde8a9b62e83baaef99acca6caf1f421057f356770e",
+      "size_bytes": 693,
+      "git_blob": "e28e869220b6c06d8c3504483a75c62d13dc3ac5"
+    },
+    {
       "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
@@ -16667,14 +16766,14 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelImages.cs",
-      "version": "capability-reliability-20",
+      "version": "acquisition-lifecycle-p2",
       "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "4be34919bf283318f97dd1c004f1e32757e95954fad1f9d3eb1463e77d8371f1",
-      "size_bytes": 10790,
-      "git_blob": "94f8a94cef636d71e4f90fe8326452b680fb7fdb",
+      "sha256": "ff8420feefa84f7045677bd4b9f4521a12d3ea2aea3599c4b7526cdadf449a37",
+      "size_bytes": 10847,
+      "git_blob": "d4d751d4bac511ca67e4645df49d43df3fd67905",
       "previous_git_blob": "75d397632f4dd9966eedae2fbb40bfbdf0bed02b"
     },
     {
@@ -16715,14 +16814,14 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
-      "version": "capability-reliability-20",
+      "version": "acquisition-lifecycle-p2",
       "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "2afae5bf8e70628ad79ae34fa72b3fda77b6f64969e7fd61fcc83b5559ca4e21",
-      "size_bytes": 21864,
-      "git_blob": "b97d27c0448e51678eb0fbce4eba33f32c4bf86a",
+      "sha256": "a4ba279771572d5f2b3dd896b260218cd4c8b5a5b37991aded7ccad97c5f41e9",
+      "size_bytes": 22440,
+      "git_blob": "fed2ab19792861eca3e354a064ac2702bb53b195",
       "previous_git_blob": "eb07c177c7f05e363ff0c7321bf0d27901577573"
     },
     {
@@ -18267,14 +18366,14 @@
     },
     {
       "path": "src/Ipc.Drivers/ObservationSources.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "version": "acquisition-lifecycle-p2",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "0bc20e9f8b7dd4f8ac9d6669f84c7565fb148eca635a4b5dbbabcfecf31dd520",
-      "size_bytes": 7512,
-      "git_blob": "185566c2a0bc048e704a1c0d7b2c6f6ba7eb854a"
+      "sha256": "85bb96f193985073f0f040bf0f910760e3e3617a8024f37aa1da78053915ef99",
+      "size_bytes": 9907,
+      "git_blob": "d98f66cc4bc8cc85bc7de1d9ff21feb7bf07ec52"
     },
     {
       "path": "src/Ipc.Drivers/ParcelDevices.cs",
@@ -19412,6 +19511,17 @@
       "git_blob": "fc5df22665b11329e079729645b95b84e0c71285"
     },
     {
+      "path": "tests/Ipc.Application.Verification/AcquisitionLifecycle.cs",
+      "storage_scope": "public_repository",
+      "version": "acquisition-lifecycle-p2",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
+      "sha256": "aec42c58d8f5eb603700d0e233b6fd68b5a18f8430b46dbe7066429007140d34",
+      "size_bytes": 17449,
+      "git_blob": "ee3cc93fc6aab254535f2585b8e8665dd9f632dd"
+    },
+    {
       "path": "tests/Ipc.Application.Verification/ApplicationArchitecture.cs",
       "version": "application-architecture-22",
       "status": "current_reference_implementation_or_evidence",
@@ -19470,14 +19580,14 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Program.cs",
-      "version": "capability-reliability-20",
+      "version": "acquisition-lifecycle-p2",
       "status": "implementation_evidence_or_historical_custody",
-      "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
-      "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "3a945e02fc480ef71721b2d4c9c353d56aa84ae38351541aec9a0ca0dc2c6e08",
-      "size_bytes": 13448,
-      "git_blob": "eddcee09bcdf62c31d6f08199c53ca455ecfeece",
+      "sha256": "ff535edb7d7e6cf128e5231e2873257542bfe58b406722a4ac9a58008f6196b1",
+      "size_bytes": 13555,
+      "git_blob": "c16697a7ac2680101e527ae67c8aba0376f4c78c",
       "previous_git_blob": "e479415f5dc73b9f48b8ae4f402faa8f4ae18604"
     },
     {
@@ -19916,17 +20026,6 @@
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
       "previous_git_blob": "5fd7c8a345b61de980764da8e0f9d250fc48ab63"
-    },
-    {
-      "path": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
-      "version": "APPLICATION-ARCHITECTURE-22-publication",
-      "status": "publication_receipt_not_acceptance",
-      "purpose": "User-authorized upload of existing synthetic reference packages; publication tests, builds and validators NOT_RUN",
-      "source": "2026-10-18 explicit no-test publication request",
-      "storage_scope": "public_repository",
-      "sha256": "44b9be428ef905f16c3df4263f75560419a034e9d8bfb01dba625d319ac5ac57",
-      "size_bytes": 3920,
-      "git_blob": "4a2e327af5a6e4919c56ebc4891cf944f88e2ef1"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

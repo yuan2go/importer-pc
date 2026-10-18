@@ -1,6 +1,6 @@
 # WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 · 交付结果
 
-执行main **2126ac2c06a0c352d96afbbf13ec1a719c352738**；收尾重新fetch及核对，main未移动。开发分支codex/architecture-quality-closure-01。主工作区未跟踪资料及其他工作树未修改。文档治理先提交 **e6582a2**；继承PR #23 head **966ec6aa17dfe29b96fc9b9113f3037ba586f6a0**的采集所有者协议，分支合并 **9226eb9**。没有替该PR合并main。主要整改提交cad129f；升级屏障77e9478/84d6c42、草稿CAS 8ae136f、外部可变数据所有权ee59989。补充资源成功后配置确认54111de、仅Pending含包的备份消费者3d69607。最终业务/UI/随包指南与候选源码固定为 **3d6960756bfd843a1cb78c6648687b45f2da9f1c**；后续提交仅证据和交付文档。e1fcff0、c666efd、ee59989及54111de候选保留形成时身份，当前资格按最终readback读取。
+执行main **2126ac2c06a0c352d96afbbf13ec1a719c352738**；收尾main新增审查02文档合并 **b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d**，已同步到本分支；其6个变更均为文档/PDF，不改已验证业务源码及候选。开发分支codex/architecture-quality-closure-01。主工作区未跟踪资料及其他工作树未修改。文档治理先提交 **e6582a2**；继承PR #23 head **966ec6aa17dfe29b96fc9b9113f3037ba586f6a0**的采集所有者协议，分支合并 **9226eb9**。没有替该PR合并main。主要整改提交cad129f；升级屏障77e9478/84d6c42、草稿CAS 8ae136f、外部可变数据所有权ee59989。补充资源成功后配置确认54111de、仅Pending含包的备份消费者3d69607。最终业务/UI/随包指南与候选源码固定为 **3d6960756bfd843a1cb78c6648687b45f2da9f1c**；后续提交仅证据和交付文档。e1fcff0、c666efd、ee59989及54111de候选保留形成时身份，当前资格按最终readback读取。
 
 **参考工程整改及定向验证PASS；原始PDF归档BLOCKED；Windows实际NOT_RUN；真实SDK/协议/现场BLOCKED。** 不是旧现场迁移、客户批准或工业现场放行。独立审查原REPORT.md/FINDINGS.json身份见[输入登记](../reviews/architecture-quality-audit-01/input-identity.json)；未取得PDF，未转换Markdown冒充原件，也未直接将业务变更写入main。
 
@@ -66,4 +66,4 @@ Application.Contracts ABI1.6.0、能力示例新不可变1.6.6继承PR23原采�
 - **BLOCKED：** 厂商SDK、真实身份/WCS/PLC合同/地址/握手、实体采集/测量关联、离场/复位/安全联锁及现场资格。Production仍拒绝缺必需能力/独立资格，不静默模拟。
 - **后续：** 按[Windows与现场清单](validation/architecture-quality-closure-01-windows.md)收集逐项原证据；取得PDF后单独完成原件归档；有混合旧消费者时安排统一维护读者；按现场预算执行历史外迁和长期性能工作包。D/RV和历史批准不改，不填写假批准人。
 
-已创建并读回[PR #24](https://github.com/yuan2go/importer-pc/pull/24)，OPEN，创建时HEAD90123e2，未合并main。回执见[publication-receipt](evidence/architecture-quality-closure-01/publication-receipt.json)。随后收尾补齐升级屏障、草稿CAS、可变边界、配置激活及Pending备份；另只读核对并行[PR25](https://github.com/yuan2go/importer-pc/pull/25)，未改其工作树/分支，审查02 PDF不冒充审查01。仍更新同一PR且不合并main；最终源码、候选和读回身份在本报告及readback登记。
+已创建并读回[PR #24](https://github.com/yuan2go/importer-pc/pull/24)，OPEN，创建时HEAD90123e2，未合并main。回执见[publication-receipt](evidence/architecture-quality-closure-01/publication-receipt.json)。随后收尾补齐升级屏障、草稿CAS、可变边界、配置激活及Pending备份；另只读核对并行[PR25](https://github.com/yuan2go/importer-pc/pull/25)，未改其工作树/分支；随后其文档合并main，本分支继承原审查02 PDF及发布元数据，PDF hash与main逐字节相同，仍不冒充审查01。仍更新同一PR且不合并main；最终源码、候选和读回身份在本报告及readback登记。

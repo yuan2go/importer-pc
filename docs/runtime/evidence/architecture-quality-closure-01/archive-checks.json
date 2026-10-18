@@ -2,9 +2,9 @@
   "status": "FAIL",
   "scope": "public",
   "counts": {
-    "files": 1994,
-    "references": 1071,
-    "json": 645,
+    "files": 1998,
+    "references": 1076,
+    "json": 646,
     "boards": 18,
     "slides": 18,
     "pptx": 1,
@@ -1121,6 +1121,94 @@
     {
       "source": "docs/design/framework-decisions.md",
       "target_sha256": "42754b59f3106abf2a27777d269f0d24ba4ecda79f5affa7c4217f624a7349c2"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "177fd644aabc6aeac2f0324d6fd48c5ae0c574d9884dcd2b041c22681e858911"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "187fc2c82096c4c3b3768e9c8aa06ea6db946bece769cd5f76392ffde6b675b8"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "89fcb0db90a7d3e04b45fb862422aad056e6a5d80ea2709e6dcafed87dbfd1ba"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "cc56a9c6298d8801e0a0ddda074949db6d3bec3417c5419bff6247e6f6a9e51e"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "46486f0c3408f4ef0bed10539d5d3232678ece5418c9f7340025773a95f67d14"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "e9a85a47d88f3d1c05161d6913230f89edcd9c3a7652e97e475a5e6b730ce643"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "6d33561fae18eddcd07b19288378c13a2659714971ae2a0192e9622fe45edbb2"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "19a71e7b31ca3e4537b7dcb038c97f7529fbfdbdc5e2855bdaf0c0f67f9ad162"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "7d85de1cafd0914062a0ecd8285854207bbfa7e60e58d5ccf9b22555019ce6ca"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "61ba997b2edeb13819d3d490f580395ec25b012ebe62b1ad0acaeeae9bd2bd18"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "be01796858a3e43dd81e5ccf2aa7454e123b47ee47fc27ebad3b796957920252"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "334418141f17d397b4b64613be301bf4de56ebc45da360ea19819bab21691992"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "b772cddf0c96523a4d29b01d57af6b1636267082a548ea81611cdf9110365168"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "5a865f84b63f10c9ca39b484797659e24b281f3afc00743ab881218fdbbe9481"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "7c928cf911ed927e020069bb02ded47f114219e523555d7c570fee1517d1e2ac"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "6235724d27b3f7d7d0034cfccafe269720c65fec2911c2bba095bf592edf43c8"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "a2fac277c5273305ee136f65bf70b29c4dbc65cb03a6bb4bf5a95a590cfb88ca"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "cdfdb96bde68468b6a8054d0ff459472fca344a04ea59e4474a9c844843e2681"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "1ef65d0db15ac3b7b44dd1e9394d4edfb6eca105dacd489924712bbf024623dc"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "962e19cc4330148741fe85c4394fbd8a6efca8914db7d46f08f4cd9daed20a1a"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "773e9ab8a274e0c3de17b58114c971185c641268f26a2135e71d002408c68b0a"
+    },
+    {
+      "source": "docs/reviews/architecture-quality-audit-02/README.md",
+      "target_sha256": "e30f44858d4e4e80e4fb96c47c4f80fd617784a276770c3429de39db6dc4b149"
     },
     {
       "source": "docs/reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md",

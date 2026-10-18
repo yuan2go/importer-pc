@@ -8,7 +8,10 @@ using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
 var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
-var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id()); Directory.CreateDirectory(root);
+var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
+// Backup custody rejects link ancestors; macOS temp is exposed through /var.
+if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
+Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--signed-capabilities")) { var i = Array.IndexOf(args, "--signed-capabilities"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
 if (args.Contains("--review-regressions")) { ReviewRegressions.Run(root); return; }

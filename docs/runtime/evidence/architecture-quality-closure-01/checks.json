@@ -1,0 +1,206 @@
+{
+  "baseline": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
+  "runtime_code_commit": "cad129f4fac2c1969c2bd80985caa2c6a0b785f0",
+  "candidate_source_commit": "e1fcff0fdd3434d4bc7d4a50323dd233d822bb15",
+  "runs": [
+    {
+      "name": "dependency-build",
+      "command": "dotnet build tests/Ipc.Application.Verification -p:RestoreLockedMode=true -m:1 -nr:false",
+      "exit_code": 0,
+      "status": "PASS_REFERENCE",
+      "log": "logs/dependency-build.log",
+      "log_sha256": "ff59d755b12e45e4885aee09b8f9a04964fb38f51e9dfbf35e84947d7d64d98b"
+    },
+    {
+      "name": "pr23-acquisition",
+      "command": "dotnet Ipc.Application.Verification.dll . --acquisition-lifecycle",
+      "exit_code": 0,
+      "status": "PASS_REFERENCE",
+      "log": "logs/dependency-acquisition.log",
+      "log_sha256": "a847181a8099e468365adb1acf9b3dca30e379263ccf620da11d2b89004de3bb"
+    },
+    {
+      "name": "red-core",
+      "command": "dotnet Ipc.Application.Verification.dll . --architecture-quality",
+      "exit_code": 134,
+      "status": "EXPECTED_DEFECTS_REPRODUCED",
+      "log": "logs/red-before-fixes.log",
+      "log_sha256": "2310ad76fc53f7e950e804579b26c219a26deb3424ed2e3bae084fd9fd47ab6d"
+    },
+    {
+      "name": "frozen-quality",
+      "command": "exact command/time/host hashes in frozen-quality-run.json",
+      "exit_code": 0,
+      "status": "PASS_REFERENCE",
+      "log": "logs/frozen-quality.log",
+      "log_sha256": "33f754f0d87ad70e72aeefca27c4c9bf3ce441ac910ab6306669d76b81520467"
+    },
+    {
+      "name": "aa22",
+      "command": "dotnet Ipc.Application.Verification.dll . --application-architecture",
+      "exit_code": 0,
+      "status": "PASS_REFERENCE",
+      "log": "logs/frozen-aa22.log",
+      "log_sha256": "dbe9ebf802c08fdb27b089a08b08e5b19a127a5f0f1f6c14f9b225d632792d6c"
+    },
+    {
+      "name": "ac19",
+      "command": "dotnet Ipc.Application.Verification.dll . --capability-closure",
+      "exit_code": 0,
+      "status": "PASS_REFERENCE",
+      "log": "logs/ac19.log",
+      "log_sha256": "6af8a4ab24e3854f0dbf1ffba44699b9f36e4f9197e1ea4c9cac25a0ffab6aee"
+    },
+    {
+      "name": "ac20-initial",
+      "command": "dotnet Ipc.Application.Verification.dll . --reliability-closure",
+      "exit_code": 134,
+      "status": "FAIL_PRESERVED_OLD_FIXTURES",
+      "log": "logs/ac20.log",
+      "log_sha256": "5582af7b9a8f957e2ce5949f892373247812c3356feeeee1f0c0dbea825b8879"
+    },
+    {
+      "name": "ac20-fixed",
+      "command": "dotnet Ipc.Application.Verification.dll . --reliability-closure",
+      "exit_code": 0,
+      "status": "PASS_REFERENCE",
+      "log": "logs/ac20-fixed.log",
+      "log_sha256": "9f53a3d0783665c8f4d8cb9202149caa79f7be44851938665cc52f8930c52717"
+    },
+    {
+      "name": "backup-health-initial",
+      "command": "dotnet Ipc.Application.Verification.dll . --backup-health-recovery",
+      "exit_code": 134,
+      "status": "FAIL_PRESERVED_STAGE_HEALTH_STATE",
+      "log": "logs/bhr.log",
+      "log_sha256": "1314d2a83c931da6b1a2a5086022af3af369fb97e8c4f0d3a63c34de10d7ef57"
+    },
+    {
+      "name": "backup-health-fixed",
+      "command": "dotnet Ipc.Application.Verification.dll . --backup-health-recovery",
+      "exit_code": 0,
+      "status": "PASS_REFERENCE",
+      "log": "logs/bhr-fixed.log",
+      "log_sha256": "d82b139201ad857c2496563201548011b5d6df3eb485e536f18b674ea8f0f12e"
+    },
+    {
+      "name": "resources",
+      "command": "dotnet Ipc.Application.Verification.dll .",
+      "exit_code": 0,
+      "status": "PASS_REFERENCE",
+      "log": "logs/resources.log",
+      "log_sha256": "17939598c9014af8ced9c5af04fa452660f6601e9f142779840e046ef90e50d0"
+    },
+    {
+      "name": "frozen-debug",
+      "command": "dotnet build tests/Ipc.Application.Verification -p:RestoreLockedMode=true -m:1 -nr:false",
+      "exit_code": 0,
+      "status": "BUILD_PASS",
+      "log": "logs/frozen-debug-build.log",
+      "log_sha256": "357df3c0898f5d353556ac95e1240f7a2501d6a4fbdcc41a9f0fd0180dc0a80c"
+    },
+    {
+      "name": "extensions-initial",
+      "command": "dotnet Ipc.Application.Verification.dll . --quality-extensions PACKAGE TRUST",
+      "exit_code": 134,
+      "status": "FAIL_PRESERVED_MISSING_EXPLICIT_RESUME_IN_JOURNEY",
+      "log": "logs/extensions.log",
+      "log_sha256": "9256dc2431f19468553407369e0954b09487ab507951a8dcd831cbdfb900939c"
+    },
+    {
+      "name": "extensions-fixed",
+      "command": "dotnet Ipc.Application.Verification.dll . --quality-extensions PACKAGE TRUST",
+      "exit_code": 0,
+      "status": "PASS_REAL_SIGNED_APPLICATION",
+      "log": "logs/extensions-fixed.log",
+      "log_sha256": "4f5d18720a0180ac47da16422f78e6c0929786ea8f8a3f6a4be863660e4c7b3b"
+    },
+    {
+      "name": "signed-debug-build",
+      "command": "build-extension.py --definition examples/ParcelCapabilitiesExtension/extension.build.json --version 1.6.0 against frozen Debug checker",
+      "exit_code": 0,
+      "status": "PASS_FROZEN_STATIC_CHECK",
+      "log": "logs/signed-build.log",
+      "log_sha256": "8b039f3a81e05e37d4eb6c13ca9c634f21bcbd80dd726a6f631ba664ac8687c4"
+    },
+    {
+      "name": "signed-release-build",
+      "command": "build-extension.py --definition examples/ParcelCapabilitiesExtension/extension.build.json --version 1.6.1 against frozen unpacked Release checker",
+      "exit_code": 0,
+      "status": "PASS_FROZEN_STATIC_CHECK",
+      "log": "logs/release-signed-build.log",
+      "log_sha256": "f8988f9af1e7f9dc2d0b5da9fe1d9b18c22a4d73ed096b62a0b557a5deb6afd9"
+    },
+    {
+      "name": "wpf",
+      "command": "dotnet build src/Ipc.Desktop/Ipc.Desktop.csproj -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.win-x64.lock.json -p:EnableWindowsTargeting=true -p:RestoreLockedMode=true -r win-x64 --artifacts-path ISOLATED -m:1 -nr:false",
+      "exit_code": 0,
+      "status": "CROSS_BUILD_PASS_WINDOWS_NOT_RUN",
+      "log": "logs/final-wpf.log",
+      "log_sha256": "0f8400b162780b85134ce323d15e8dce4818093e113fe294737afb045f19386c"
+    },
+    {
+      "name": "guides",
+      "command": "python3 -m unittest discover -s scripts -p test_release_documents.py -v",
+      "exit_code": 0,
+      "status": "PASS",
+      "log": "logs/guides.log",
+      "log_sha256": "bfdb78c32b8c6a4ad94f651eff184f1597b3860ecd390d5983be7056527cbddd"
+    },
+    {
+      "name": "sport-package",
+      "command": "package-application.py --application sportmaster --target portable",
+      "exit_code": 0,
+      "status": "PASS_IMMUTABLE_CANDIDATE",
+      "log": "logs/package-sport.log",
+      "log_sha256": "b74cb95bc17af589963c024cff7fd5a61b065b6e36f866530cc7abd4e1e62e59"
+    },
+    {
+      "name": "wcs-package",
+      "command": "package-application.py --application wcs-to-plc --target portable",
+      "exit_code": 0,
+      "status": "PASS_IMMUTABLE_CANDIDATE",
+      "log": "logs/package-wcs.log",
+      "log_sha256": "68bc178b25e279a7a804ac4eb5f369d02ba4088b89721eb3c38db96b3a7cd0d8"
+    },
+    {
+      "name": "sport-smoke",
+      "command": "smoke-application.py --package independent-readback --output smoke-sport.json",
+      "exit_code": 0,
+      "status": "PASS_ACTUAL_PROCESS",
+      "log": "logs/smoke-sport.log",
+      "log_sha256": "503a68dde6f26b22e197cb9825fc25540a9d7dae9da6530028120f22584be1f5"
+    },
+    {
+      "name": "wcs-attached-smoke",
+      "command": "smoke-application.py --package independent-readback --peer-fixture independently-built-Ipc.Fixture.dll --optional-features --attached-upload",
+      "exit_code": 0,
+      "status": "PASS_INDEPENDENT_HTTP_PROCESS",
+      "log": "logs/smoke-wcs-attached.log",
+      "log_sha256": "7f4b3f9ca40101da69e0b65c8a12546e8ad27a575a84cfbd3748ad74282d2dff"
+    },
+    {
+      "name": "wcs-before-smoke",
+      "command": "smoke-application.py --package independent-readback --peer-fixture independently-built-Ipc.Fixture.dll --optional-features",
+      "exit_code": 0,
+      "status": "PASS_INDEPENDENT_HTTP_PROCESS",
+      "log": "logs/smoke-wcs-before.log",
+      "log_sha256": "c09849f7514d4511fe58bceb72f201b94668fa9103ce3cf51cafbcd21761d05a"
+    }
+  ],
+  "release_cli_management": "release-cli-management.json",
+  "boundaries": {
+    "original_audit_pdf": "BLOCKED_NOT_OBTAINED",
+    "windows_actual": "NOT_RUN",
+    "real_sdk_protocol_site": "BLOCKED",
+    "legacy_full_suite": "NOT_RUN_NOT_REPLACED_BY_REFERENCE_RESULTS"
+  },
+  "documentation": {
+    "tool_exit_code": 1,
+    "tool_status": "FAIL_HISTORICAL_ASSETS",
+    "historical_error_count": 267,
+    "new_errors": 0,
+    "comparison": "archive-error-comparison.json",
+    "private_metadata_fixed_without_rule_changes": true
+  }
+}

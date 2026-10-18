@@ -1,0 +1,9 @@
+{
+  "status": "PASS_UNCHANGED_HISTORICAL_ERRORS",
+  "baseline": "docs/runtime/evidence/acquisition-lifecycle-p2/archive-checks.json",
+  "historical_error_count": 267,
+  "new_errors": 0,
+  "resolved_historical_errors": 0,
+  "error_sets_identical": true,
+  "validator_rules_changed": false
+}

@@ -8,7 +8,7 @@
 
 ## 当前工程入口
 
-[22工作包](work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md) · [22设计](design/application-architecture-22.md) · [22运行/配置/升级](runtime/application-architecture-22.md)。最新main基线ea881293，开发分支codex/application-architecture-22；本包完成情况以22结果及实际源码/候选身份读取。Sportmaster两个独立投递位由用户确认；不把旧Supply共享箱/数量/AGV规则套入新Application。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+[22工作包](work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md) · [22设计](design/application-architecture-22.md) · [22运行/配置/升级](runtime/application-architecture-22.md)。22形成时基线ea881293及分支按原报告读取；本轮执行main为2126ac2，整改状态和候选身份见质量闭环01结果。Sportmaster两个独立投递位由用户确认；不把旧Supply共享箱/数量/AGV规则套入新Application。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
 ## 继承的整合与历史证据
 

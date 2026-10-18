@@ -1,0 +1,20 @@
+{
+  "command": [
+    "dotnet",
+    "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+    ".",
+    "--architecture-quality"
+  ],
+  "started_at": "2026-10-18T13:53:24.006494+00:00",
+  "finished_at": "2026-10-18T13:53:32.253359+00:00",
+  "exit_code": 0,
+  "business_source_commit": "cad129f4fac2c1969c2bd80985caa2c6a0b785f0",
+  "host_sha256": {
+    "Ipc.Platform.dll": "1fbc5388661b41a1fd3456326d458bff9a424c5c5c5ebc0f98c79a3a3581de9a",
+    "Ipc.Application.Contracts.dll": "dcb8818fbe290af9376dd8efb36124c293ebbdb0aec98f55238c479dba0c8541",
+    "Ipc.Application.ParcelFlow.dll": "8880914f385f833582cb5c4b713c57159a009c40357a45fc9a1a3ecfd9bff1b0"
+  },
+  "executable_sha256": "11b517e7b00d0efa20e9b3ab6fe433f135d828a4c95c9c6ca7a9cf1328b6ada4",
+  "original_command_record_sha256": "4187b26ee9858fcc62290f55b5ce091a6fd33684a096870d26096c482d7e3ccc",
+  "public_command_normalization": "Only the local executable path is replaced with dotnet; original exact command record retained outside public repository; times, return code and host hashes unchanged."
+}

@@ -1,0 +1,18 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 390 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Fixture/Ipc.Fixture.csproj (用时 390 毫秒)。
+  6 个项目(共 8 个)是最新的，无法还原。
+  Ipc.Platform -> /tmp/ipc-aq-fixture-e1/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /tmp/ipc-aq-fixture-e1/Ipc.Application.Contracts.dll
+  Ipc.Reference.Protocol -> /tmp/ipc-aq-fixture-e1/Ipc.Reference.Protocol.dll
+  Ipc.Drivers -> /tmp/ipc-aq-fixture-e1/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-aq-fixture-e1/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /tmp/ipc-aq-fixture-e1/Ipc.Integrations.dll
+  Ipc.Adapters -> /tmp/ipc-aq-fixture-e1/Ipc.Adapters.dll
+  Ipc.Fixture -> /tmp/ipc-aq-fixture-e1/Ipc.Fixture.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:03.13

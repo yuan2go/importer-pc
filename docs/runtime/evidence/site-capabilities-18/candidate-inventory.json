@@ -1,0 +1,54 @@
+{
+  "SourceCommit": "08595e9243ccd9981fc419b8074f67c836644248",
+  "Packages": [
+    {
+      "Application": "sportmaster",
+      "Target": "portable",
+      "File": "sportmaster.zip",
+      "Size": 18127884,
+      "Sha256": "8b49b71f9642e98496a9451580bc178407c84ac0682cb3ade4db2252a01a492c",
+      "SourceCommit": "08595e9243ccd9981fc419b8074f67c836644248",
+      "Default": "PASS",
+      "OptionsIndependentHttp": "PASS"
+    },
+    {
+      "Application": "direct-plc",
+      "Target": "portable",
+      "File": "direct-plc.zip",
+      "Size": 18045183,
+      "Sha256": "969d315efd2cf58ffe9d075921d84e7f996d92466464737754a100e923cdbac2",
+      "SourceCommit": "08595e9243ccd9981fc419b8074f67c836644248",
+      "Default": "PASS",
+      "OptionsIndependentHttp": "PASS"
+    },
+    {
+      "Application": "wcs-to-plc",
+      "Target": "portable",
+      "File": "wcs-to-plc.zip",
+      "Size": 18127938,
+      "Sha256": "5b50f9b7dcfc9bed98eb0dc4e076abe9cc317f2ead3b337b3020064cecc4620d",
+      "SourceCommit": "08595e9243ccd9981fc419b8074f67c836644248",
+      "Default": "PASS",
+      "OptionsIndependentHttp": "PASS"
+    }
+  ],
+  "CommonContractBytes": {
+    "sportmaster": {
+      "Ipc.Platform.dll": "90fa1a367ce9baa69b4d4b2c572c9a2c59d984ae626db26474d58f630212c175",
+      "Ipc.Application.Contracts.dll": "2d479fb8f47e320423bf4d60984f3ff121c0eeb4d31ddbde3463d629026889dd",
+      "Ipc.Components.dll": "92d8adc9bb9cd172deb85ae4c1e14ecff1bb65f4a820294f155434a4a596ad0e"
+    },
+    "direct-plc": {
+      "Ipc.Platform.dll": "90fa1a367ce9baa69b4d4b2c572c9a2c59d984ae626db26474d58f630212c175",
+      "Ipc.Application.Contracts.dll": "2d479fb8f47e320423bf4d60984f3ff121c0eeb4d31ddbde3463d629026889dd",
+      "Ipc.Components.dll": "92d8adc9bb9cd172deb85ae4c1e14ecff1bb65f4a820294f155434a4a596ad0e"
+    },
+    "wcs-to-plc": {
+      "Ipc.Platform.dll": "90fa1a367ce9baa69b4d4b2c572c9a2c59d984ae626db26474d58f630212c175",
+      "Ipc.Application.Contracts.dll": "2d479fb8f47e320423bf4d60984f3ff121c0eeb4d31ddbde3463d629026889dd",
+      "Ipc.Components.dll": "92d8adc9bb9cd172deb85ae4c1e14ecff1bb65f4a820294f155434a4a596ad0e"
+    }
+  },
+  "WindowsClient": "NOT_RUN",
+  "RealProtocols": "BLOCKED"
+}

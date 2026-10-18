@@ -1,0 +1,49 @@
+{
+  "WorkPackage": "WP-IPC-SITE-CAPABILITIES-18",
+  "BaselineMain": "d3a757d6314a2d690bcfc4e7763cfd4849b97319",
+  "RuntimeSourceCommit": "08595e9243ccd9981fc419b8074f67c836644248",
+  "Acceptance": [
+    {
+      "Id": "AC18-01",
+      "Status": "PASS",
+      "Evidence": "site-capabilities-18.md: source capability matrix and baseline reconciliation"
+    },
+    {
+      "Id": "AC18-02",
+      "Status": "PASS",
+      "Evidence": "optional-matrix.json: 24 combinations; three optional HTTP process journeys"
+    },
+    {
+      "Id": "AC18-03",
+      "Status": "PASS",
+      "Evidence": "image-recovery-final.log: original identity, image raw T3 recovery, no repeat capture/upload/PLC, isolated image backup; wrong-composition-rejection.json"
+    },
+    {
+      "Id": "AC18-04",
+      "Status": "PASS",
+      "Evidence": "three WPF cross builds; three ZIP default and independent HTTP smoke journeys; affected old scopes and packaging tests"
+    },
+    {
+      "Id": "AC18-05",
+      "Status": "PENDING_PR",
+      "Evidence": "source/docs/manifest/evidence; PR receipt pending"
+    }
+  ],
+  "CoreMatrix": 24,
+  "IndependentHttpJourneys": 3,
+  "UnpackedDefaultJourneys": 3,
+  "WpfSelectionsBuilt": 3,
+  "PackagingUnitTests": 15,
+  "WindowsActualClient": "NOT_RUN",
+  "RealIdentityCameraScaleImageWcsPlc": "BLOCKED",
+  "FieldAcceptance": "BLOCKED",
+  "Production": "NotReady",
+  "DRvChanged": false,
+  "Archive": {
+    "Status": "FAIL_EXISTING_ASSETS",
+    "PptxMediaTypeMismatch": 265,
+    "ExistingMetadataMarkers": 2,
+    "NewContentOrReferenceErrors": 0
+  },
+  "ArchiveToolTests": 10
+}

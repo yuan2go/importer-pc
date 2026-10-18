@@ -165,6 +165,24 @@ static class OptionalCapabilities
             s = await restored.SnapshotAsync();
             Pass(s.Paused && s.CurrentOperator is null && s.Operations.Single().Image == original.Image && s.Operations.Single().Operator == original.Operator && ReadPeer(original.Upload!).Executions == 1, "restore stays paused without reviving login or repeating remote upload");
         }
+        // New image reply application also depends on durable local pixels. Verify both
+        // crash windows through the shared original-raw recovery mechanism.
+        foreach (var receiptNumber in new[] { 1, 2 })
+        {
+            var c = Options("wcs-to-plc", false, false, true); var run = "raw-image-" + receiptNumber;
+            var app = await Open(c, run); var count = 0;
+            app.Boundary = point => { if (point == "AfterRawDurable" && ++count == receiptNumber) throw new IOException("AC18 original image raw durable, T3 interrupted"); };
+            app.EmitReference("raw-image-parcel", "001", Wire.Id());
+            await Wait(app, x => x.BlockingReasons.Any(r => r.Contains("worker failed")));
+            try { await app.DisposeAsync(); throw new Exception("Expected image T3 worker failure"); }
+            catch (InvalidOperationException) { Pass(true, "image raw T3 failure remains visible " + receiptNumber); }
+            await using var restored = await Open(c, run); var snapshot = await restored.SnapshotAsync(); var op = snapshot.Operations.Single();
+            Pass(op.Wcs is null && op.Plc is null && op.Capture?.State == StageState.Accepted &&
+                (receiptNumber == 1 ? op.Upload?.State == StageState.Prepared : op.Upload?.State == StageState.Accepted), "startup replays original durable image raw locally without dispatch " + receiptNumber);
+            Pass((await Command(restored, "ContinuePrepared", op.Id)).Status == "Persisted", "explicit image recovery continuation accepted " + receiptNumber);
+            op = (await restored.SnapshotAsync()).Operations.Single();
+            Pass(op.State == ParcelState.PlcAccepted && op.Capture!.Attempts == 1 && op.Upload!.Attempts == 1 && ReadPeer(op.Upload).Executions == 1, "image raw recovery never recaptures or retransmits " + receiptNumber);
+        }
         var validation = Options("sportmaster", false, false, true); var flow = Flow("sportmaster");
         Pass(flow.Validate(validation with { Images = validation.Images! with { Uploader = null! } }).Length > 0, "incomplete optional image dependency is rejected before construction");
         Pass(flow.Validate(validation with { Images = validation.Images! with { MaximumBytes = int.MaxValue } }).Length > 0, "unbounded image allocation is rejected before construction");

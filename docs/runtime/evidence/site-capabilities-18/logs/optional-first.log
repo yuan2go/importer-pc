@@ -1,0 +1,4 @@
+/isolated-source/tests/Ipc.Application.Verification/OptionalCapabilities.cs(40,60): error CS0246: 未能找到类型或命名空间名“PeerEntry”(是否缺少 using 指令或程序集引用?) [/isolated-source/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj]
+/isolated-source/tests/Ipc.Application.Verification/OptionalCapabilities.cs(40,9): error CS0246: 未能找到类型或命名空间名“PeerEntry”(是否缺少 using 指令或程序集引用?) [/isolated-source/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj]
+
+生成失败。请修复生成错误并重新运行。

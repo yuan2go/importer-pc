@@ -1,0 +1,29 @@
+{
+  "SourceCommit": "08595e9243ccd9981fc419b8074f67c836644248",
+  "Cases": [
+    {
+      "Application": "sportmaster",
+      "WrongConfiguration": "direct-plc",
+      "Status": "PASS",
+      "ExitCode": -6,
+      "DatabaseCreated": false,
+      "Reason": "Application identity rejected before resource/database/port creation"
+    },
+    {
+      "Application": "direct-plc",
+      "WrongConfiguration": "wcs-to-plc",
+      "Status": "PASS",
+      "ExitCode": -6,
+      "DatabaseCreated": false,
+      "Reason": "Application identity rejected before resource/database/port creation"
+    },
+    {
+      "Application": "wcs-to-plc",
+      "WrongConfiguration": "sportmaster",
+      "Status": "PASS",
+      "ExitCode": -6,
+      "DatabaseCreated": false,
+      "Reason": "Application identity rejected before resource/database/port creation"
+    }
+  ]
+}

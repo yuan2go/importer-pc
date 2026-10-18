@@ -1,0 +1,31 @@
+  正在确定要还原的项目…
+  已还原 /isolated-source/src/Ipc.Application.DirectPlc.Desktop/Ipc.Application.DirectPlc.Desktop.csproj (用时 463 毫秒)。
+  已还原 /isolated-source/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 463 毫秒)。
+  已还原 /isolated-source/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 463 毫秒)。
+  已还原 /isolated-source/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 463 毫秒)。
+  已还原 /isolated-source/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 463 毫秒)。
+  已还原 /isolated-source/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 463 毫秒)。
+  已还原 /isolated-source/src/Ipc.Components/Ipc.Components.csproj (用时 463 毫秒)。
+  已还原 /isolated-source/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 463 毫秒)。
+  已还原 /isolated-source/src/Ipc.Platform/Ipc.Platform.csproj (用时 4 毫秒)。
+  已还原 /isolated-source/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 6 毫秒)。
+  已还原 /isolated-source/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 9 毫秒)。
+  已还原 /isolated-source/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 21 毫秒)。
+  Ipc.Platform -> /tmp/ipc18-final-wpf/direct-plc/bin/Ipc.Platform/debug/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /tmp/ipc18-final-wpf/direct-plc/bin/Ipc.Application.Contracts/debug/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /tmp/ipc18-final-wpf/direct-plc/bin/Ipc.Platform.Storage/debug/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /tmp/ipc18-final-wpf/direct-plc/bin/Ipc.Application.ParcelFlow/debug/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> /tmp/ipc18-final-wpf/direct-plc/bin/Ipc.Application.DirectPlc/debug/Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> /tmp/ipc18-final-wpf/direct-plc/bin/Ipc.Reference.Protocol/debug/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /tmp/ipc18-final-wpf/direct-plc/bin/Ipc.Components/debug/Ipc.Components.dll
+  Ipc.Drivers -> /tmp/ipc18-final-wpf/direct-plc/bin/Ipc.Drivers/debug/Ipc.Drivers.dll
+  Ipc.Assembly -> /tmp/ipc18-final-wpf/direct-plc/bin/Ipc.Assembly/debug/Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> /tmp/ipc18-final-wpf/direct-plc/bin/Ipc.Application.ParcelFlow.Desktop/debug/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.DirectPlc.Desktop -> /tmp/ipc18-final-wpf/direct-plc/bin/Ipc.Application.DirectPlc.Desktop/debug/Ipc.Application.DirectPlc.Desktop.dll
+  Ipc.Desktop -> /tmp/ipc18-final-wpf/direct-plc/bin/Ipc.Desktop/debug/Ipc.Desktop.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:03.34

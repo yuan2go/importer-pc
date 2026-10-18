@@ -1,0 +1,33 @@
+{
+  "Command": [
+    "${LOCAL_HOME}/.local/share/ipc-dotnet/dotnet",
+    "run",
+    "--no-build",
+    "--project",
+    "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-pr26-standards-vn_sfb73/Probe.csproj",
+    "--",
+    "${LOCAL_ARTIFACTS}/ipc-architecture-quality-02-20261018/final/sport-core/app/config/business.json"
+  ],
+  "ExitCode": 0,
+  "Scope": "external synthetic DB4 only; repository and original artifacts unchanged",
+  "ReferencedDlls": {
+    "Ipc.Application.Contracts.dll": "50c693c0d07e2bd314816310ee8510dedc78a90aab9ac0f293e97da492df1efa",
+    "Ipc.Application.ParcelFlow.dll": "525dc49454a0b1e369b9b09e2458371c94209d38369bd86b1891cde87f1381e7",
+    "Ipc.Application.Sportmaster.dll": "fb0fdc3cfa2e8cb9a1951d77c02b450ee862008c47605426530b93f49b597b60",
+    "Ipc.Assembly.dll": "ca389975742cebd1b58d46151b1c828f24be04bc17c9013170905e38168ebaaa",
+    "Ipc.Components.dll": "facf271971b01c23b2df1395df7a158d2a6ab2969e8adf45d6ae344ac21fbbaf",
+    "Ipc.Drivers.dll": "96361e04e92e5f98d8813c6049775097537573d44471b25a984e3f658daecc82",
+    "Ipc.Integrations.dll": "962f2cfd18a73155729010a2116c730386c46cf8059a140452cec28217f12785",
+    "Ipc.Platform.Storage.dll": "b46c9d4ad3768135daf6884ec34bb55c7576ea736c968d640e3d17d55532a782",
+    "Ipc.Platform.dll": "1b4560d495cdf646bb54a05d9cd138235b29aead7d9f71f8435ad3b0d6b1570c",
+    "Ipc.Reference.Protocol.dll": "0125675089afe47aa3092fa741160098b36de4c3be76019ad62afbae87686d18",
+    "Ipc.Supply.Contracts.dll": "7158083ebd19b77a654d438caed2191270a0f41db4a237f41fb64f42d4f61288"
+  },
+  "SourceSha": "2ad633578141db4ef34e255217bc8815634ffd0a",
+  "PrHead": "592d2bdd1b4d4525926684968a48ab4f375bf503",
+  "PublicProjection": {
+    "OriginalSha256": "63217020194061cfdfe7ad80f17bff306ccdff450963c044e1cfe4a2eaa7fe92",
+    "OnlyLocalPathsReplaced": true,
+    "NotFrozenRequestOrReplayInput": true
+  }
+}

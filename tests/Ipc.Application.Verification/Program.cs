@@ -15,6 +15,14 @@ Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--version-compatibility")) { await VersionCompatibility.Run(workspace, root); return; }
 if (args.Contains("--signed-business-compatibility")) { var i = Array.IndexOf(args, "--signed-business-compatibility"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2]), declaredCompatibility: true); return; }
+if (args.Contains("--configuration-confirmation")) { await ArchitectureQuality.ConfigurationConfirmationChecks(workspace, root); return; }
+if (args.Contains("--configuration-confirmation-crash-child")) { var i = Array.IndexOf(args, "--configuration-confirmation-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], "BeforeCreate"); return; }
+if(args.Contains("--prior-custody-migration")){var i=Array.IndexOf(args,"--prior-custody-migration");await ArchitectureQuality.PriorCustodyChecks(workspace,root,Path.GetFullPath(args[i+1]));return;}
+if(args.Contains("--legacy-cut-child")){var i=Array.IndexOf(args,"--legacy-cut-child");await ArchitectureQuality.LegacyCutChild(args[i+1],args[i+2],args[i+3]);return;}
+if(args.Contains("--legacy-custody-upgrade")){var i=Array.IndexOf(args,"--legacy-custody-upgrade");await ArchitectureQuality.LegacyCustodyChecks(workspace,root,Path.GetFullPath(args[i+1]),Path.GetFullPath(args[i+2]));return;}
+if (args.Contains("--raw-custody-child")) { var i=Array.IndexOf(args,"--raw-custody-child"); await ArchitectureQuality.RawCustodyChild(workspace,args[i+1]); return; }
+if (args.Contains("--receipt-custody")) { await ArchitectureQuality.CustodyChecks(workspace,root); return; }
+if (args.Contains("--upload-crash-child")) { var i = Array.IndexOf(args, "--upload-crash-child"); await ArchitectureQuality.UploadCrashChild(workspace, args[i + 1]); return; }
 if (args.Contains("--configuration-crash-child")) { var i = Array.IndexOf(args, "--configuration-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], args[i + 2]); return; }
 if (args.Contains("--quality-extensions")) { var i = Array.IndexOf(args, "--quality-extensions"); await ArchitectureQuality.ExtensionChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
 if (args.Contains("--inventory-closure")) { await ArchitectureQuality.InventoryClosureChecks(workspace, root); return; }

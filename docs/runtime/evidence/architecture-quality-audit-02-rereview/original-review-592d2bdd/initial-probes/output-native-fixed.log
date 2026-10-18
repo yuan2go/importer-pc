@@ -1,0 +1,25 @@
+{
+  "Probe": "LegacyEffectiveNoConfirmation",
+  "Status": "Effective",
+  "TimeoutMs": 1700,
+  "Activation": null,
+  "Failure": null,
+  "Admit": true,
+  "DefectReproduced": true
+}
+{
+  "Probe": "RecoveredRawPermanentReplyIdentity",
+  "Occurrence": {
+    "Id": "a1ca704e4d754b69a0f86bc76b4b6177",
+    "Operation": "d82ed842a20f4826b24ee6ff07e79608",
+    "Stage": "wcs-slot",
+    "Request": "86675412b8054bef9dce211169c8f179",
+    "Source": "Query",
+    "State": "Committed",
+    "RawHash": "146ED9CF78D443DEF02A0070A3671EC37D3D726F2EE5094E66E3B15C12649B9A"
+  },
+  "Expected": "146ED9CF78D443DEF02A0070A3671EC37D3D726F2EE5094E66E3B15C12649B9A",
+  "Actual": null,
+  "DefectReproduced": true
+}
+REVIEW_ROOT=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc-pr26-independent-review-qpp627_z/bin/Debug/net10.0/synthetic

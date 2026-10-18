@@ -14,7 +14,7 @@ class CompatibilityTests(unittest.TestCase):
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             selected = resolve(root/'config/compositions.json', application+'-reference')
             version, policy = read_business(root, application, selected)
-            self.assertEqual(version['BusinessVersion'], '1.2.0')
+            self.assertEqual(version['BusinessVersion'], '1.2.1')
             self.assertEqual(version['CompatibilitySha256'], sha(policy))
             selected['components'][-2]['version'] = '9.0.0'
             # Change the actual business declaration regardless of topological order.
@@ -27,7 +27,7 @@ class CompatibilityTests(unittest.TestCase):
         app = root/'app'; app.mkdir()
         (app/'application-compatibility.json').write_text(json.dumps(policy))
         (app/'business.dll').write_text('fixed binary')
-        release = dict(SchemaVersion=2, ApplicationId='direct-plc', BusinessVersion='1.2.0', BusinessAssembly='business.dll', SourceCommit='a'*40, CompatibilitySha256=sha(app/'application-compatibility.json'))
+        release = dict(SchemaVersion=2, ApplicationId='direct-plc', BusinessVersion='1.2.1', BusinessAssembly='business.dll', SourceCommit='a'*40, CompatibilitySha256=sha(app/'application-compatibility.json'))
         (app/'application-release.json').write_text(json.dumps(release))
         identity = dict(release, Target='portable')
         (root/'ASSEMBLY.json').write_text(json.dumps(identity))
@@ -43,7 +43,7 @@ class CompatibilityTests(unittest.TestCase):
             run.bind(root, identity, config); run.effective(config); run.event({'Status':'Started'}); run.finish({'Checks':['actual journey']})
             r=verify_record(output, root, config)
             self.assertEqual(r['Status'],'PASS')
-            changed=copy.deepcopy(config); changed['Plc']['Version']='2.0.0'
+            changed=copy.deepcopy(config); changed['Plc']['Version']='2.0.1'
             with self.assertRaises(ValueError): verify_record(output, root, changed)
             with self.assertRaises(ValueError): require_combination(policy, selected_providers(changed))
             with self.assertRaises(FileExistsError): CombinationRun(output,['another-run'])
@@ -71,7 +71,7 @@ class CompatibilityTests(unittest.TestCase):
             output=base/'run.json'; run=CombinationRun(output,['smoke'])
             run.bind(root,identity,config); run.effective(config); run.event({'Status':'Started'}); run.finish({'Checks':['journey']})
             original=json.loads(output.read_bytes())
-            for key,value in [('BusinessVersion','2.0.0'),('Providers',[]),('CompatibilitySet','other')]:
+            for key,value in [('BusinessVersion','2.0.1'),('Providers',[]),('CompatibilitySet','other')]:
                 altered=dict(original); altered[key]=value; output.write_text(json.dumps(altered))
                 with self.assertRaises(ValueError): verify_record(output,root)
             altered=copy.deepcopy(original); altered['EffectiveConfiguration']['Plc']['Target']='reference://other'

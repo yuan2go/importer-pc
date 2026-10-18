@@ -11,6 +11,7 @@ public abstract class FlowDefinition
     public abstract bool PredecessorsAccepted(ParcelOperation operation, ParcelStage stage);
     public abstract ParcelStage[] ReconciliationStages(ParcelOperation operation);
     public abstract bool MainSettled(ParcelOperation operation);
+    public virtual ParcelOperation RestoreMainProjection(ParcelOperation operation) => operation;
     public abstract string[] ValidateBusiness(ParcelConfiguration config);
     public string[] Validate(ParcelConfiguration c) => [.. ParcelConfigurationRules.Validate(c, Id, PositionRoles), .. ValidateBusiness(c)];
 

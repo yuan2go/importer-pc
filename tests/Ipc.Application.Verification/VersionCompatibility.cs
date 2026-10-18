@@ -18,7 +18,7 @@ static class VersionCompatibility
         {
             var assembly = flow.GetType().Assembly;
             var policy = BusinessCompatibility.Read(assembly);
-            Pass(policy.ApplicationId == flow.Id && BusinessCompatibility.VersionOf(assembly) == "1.2.0", flow.Id + " compiled business version and embedded declaration");
+            Pass(policy.ApplicationId == flow.Id && BusinessCompatibility.VersionOf(assembly) == "1.2.1", flow.Id + " compiled business version and embedded declaration");
             var configDirectory = Path.Combine(root, flow.Id, "config"); Directory.CreateDirectory(configDirectory);
             var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", flow.Id, "business.json")));
             var launch = new BusinessLaunch(configDirectory, Path.Combine(root, flow.Id, "data"), null, null);
@@ -37,8 +37,8 @@ static class VersionCompatibility
             await factory.DisposeAsync();
             var a = new ProviderVersion("login", "a", "1.0.0", "C1");
             var b = new ProviderVersion("plc", "b", "1.0.0", "C1");
-            var c = b with { Version = "2.0.0" };
-            var d = a with { Version = "2.0.0" };
+            var c = b with { Version = "2.0.1" };
+            var d = a with { Version = "2.0.1" };
             var pairs = policy with { ProviderSets = [new("old", [a, b]), new("new", [d, c])] };
             Reject(() => pairs.Require([a, c]), "mixing members from distinct compatibility sets rejected");
             Pass(pairs.Require([d, c]) == "new", "whole selected set matches a single declaration");
@@ -49,7 +49,7 @@ static class VersionCompatibility
             var presentation = new BusinessPresentation([flow.Id], ["standard"]);
             var release = new ApplicationRelease(2, flow.Id, new string('a', 40), presentation.Views, presentation.Layouts,
                 new() { [binary] = Wire.FileHash(assembly.Location), ["application-compatibility.json"] = BusinessCompatibility.Fingerprint(assembly) },
-                "1.2.0", binary, BusinessCompatibility.Fingerprint(assembly));
+                "1.2.1", binary, BusinessCompatibility.Fingerprint(assembly));
             void Write(ApplicationRelease value) => ExtensionStore.AtomicWrite(Path.Combine(directory, "application-release.json"), value);
             void Check() => ApplicationReleaseValidation.ValidateIfPublished(directory, flow.Id, presentation, assembly);
             Write(release); Check(); Pass(true, "schema2 binds actual compiled version, binary and declaration bytes");

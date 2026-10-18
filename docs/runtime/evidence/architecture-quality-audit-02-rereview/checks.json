@@ -1,0 +1,101 @@
+{
+  "SourceCommit": "e914e75a109672cd1d52be91c40459f09231ea57",
+  "Checks": [
+    {
+      "Name": "inventory",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-inventory.log"
+    },
+    {
+      "Name": "quality",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-quality.log"
+    },
+    {
+      "Name": "aa22",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-aa22.log"
+    },
+    {
+      "Name": "confirmation",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-confirmation.log"
+    },
+    {
+      "Name": "legacy",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-legacy.log"
+    },
+    {
+      "Name": "prior",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-prior.log"
+    },
+    {
+      "Name": "quality-extensions",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-quality-extensions.log"
+    },
+    {
+      "Name": "signed-capabilities",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-signed-capabilities.log"
+    },
+    {
+      "Name": "review",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-review.log"
+    },
+    {
+      "Name": "resource",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-resource.log"
+    },
+    {
+      "Name": "custody-concurrent",
+      "ExitCode": 134,
+      "Status": "FAIL",
+      "Log": "logs/ipc-pr26-e914e75-custody.log",
+      "Detail": "Two custody assertions failed during concurrent group. No raw Query was committed; exact rejected command reason was not recorded. This run is not green."
+    },
+    {
+      "Name": "custody-isolated-same-binary",
+      "ExitCode": 0,
+      "Status": "PASS",
+      "Log": "logs/ipc-pr26-e914e75-custody-isolated.log",
+      "Detail": "Same binary and unchanged assertions in isolated run; original concurrent failure retained."
+    },
+    {
+      "Name": "custody-maintenance-availability-fixture",
+      "ExitCode": 0,
+      "Status": "PASS",
+      "Log": "logs/ipc-pr26-custody-drain-final.log",
+      "Host": "custody-fixture-host.json",
+      "Patch": "custody-fixture-only.patch"
+    }
+  ],
+  "Builds": [
+    {
+      "Name": "test",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-build-test.log"
+    },
+    {
+      "Name": "core",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-build-core.log"
+    },
+    {
+      "Name": "win",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-build-win.log"
+    },
+    {
+      "Name": "selected",
+      "ExitCode": 0,
+      "Log": "logs/ipc-pr26-e914e75-build-selected.log"
+    }
+  ],
+  "Windows": "NOT_RUN",
+  "SDKProtocolSite": "BLOCKED"
+}

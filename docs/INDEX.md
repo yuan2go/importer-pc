@@ -1,20 +1,15 @@
-> 版本管理现行增量：[版本与兼容](design/version-compatibility-01.md) · [工作包](work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md) · [运行](runtime/version-compatibility-01.md)。继承已合并PR23/24，原历史结果保持。
-
-> PR24独立复审已归档：[固定head原报告、证据和未验证边界](reviews/pr24-independent-rereview-f862c2a/README.md)。f862c2a限定参考范围无剩余代码阻断；2026-10-19用户授权归档后精确head合并，本轮不重复测试或打包，合并身份读取PR。
-
-> 前轮历史结果：[五项整改证据](runtime/architecture-quality-closure-01-rereview-results.md)及[R03修复记录](runtime/architecture-quality-closure-01-r03-results.md)。原报告、候选与历史失败保持形成时身份，Windows/真实SDK/协议/现场门禁不因合并关闭。
-
-> 当前整改：[质量闭环01](work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)及[运行/迁移/扩展指南](runtime/architecture-quality-closure-01.md)。[整改前入口原字节](archive/pre-architecture-quality-closure-01/README.md)。不以22旧PASS关闭新审查问题。
-
-> 采集身份P2修复当前入口：[工作包与设计](work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)。[修复结果与证据](runtime/acquisition-lifecycle-p2.md)。PR #22已合并main `2126ac2`；下述22开发基线、分支和候选均按形成时读取。
-
-> 22现行拓扑、状态作用域、版本与交付：[Application架构22](design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
+> 版本管理现行增量：[版本与兼容](design/version-compatibility-01.md) · [工作包](work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md) · [运行](runtime/version-compatibility-01.md)。继承已合并PR23/24/26，历史记录保持原身份。
 
 # 统一资料与实施入口
 
 ## 当前工程入口
 
-[22工作包](work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md) · [22设计](design/application-architecture-22.md) · [22运行/配置/升级](runtime/application-architecture-22.md)。22形成时基线ea881293及分支按原报告读取；本轮执行main为2126ac2，整改状态和候选身份见质量闭环01结果。Sportmaster两个独立投递位由用户确认；不把旧Supply共享箱/数量/AGV规则套入新Application。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。本次N01–N07开工main基线b2dc55b，最新同步main为4afe2af；PR24已由独立授权合并，本任务不代合并其他PR。继承PR23/24及后续有效修复的准确提交见本次结果；新结果不冒充main能力或历史PASS。新Application使用schema3/Parcel DB5，DB3/4为历史发布；Supply的Storage5和Product命令单独适用。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+
+[N01–N07交付、PR26复核修复及验证边界](runtime/architecture-quality-audit-02-results.md)。缺raw资料责任、旧发布Query到DB5、旧配置账确认和维护围栏的实际步骤见维护指南；[复核前原字节](archive/pre-pr26-rereview/README.md)保留前次结论，前次PASS不作为全闭环证据。
+
+[N01前操作指引原字节](archive/pre-architecture-quality-02/README.md)。19职责、20可靠性、22拓扑及[质量闭环设计](design/architecture-quality-closure-01.md)按适用范围共同生效；阶段工作包和原候选作为历史来源保留。
+PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。[PR24独立原报告与证据](reviews/pr24-independent-rereview-f862c2a/README.md)、[五项整改](runtime/architecture-quality-closure-01-rereview-results.md)及[R03去重前校验](runtime/architecture-quality-closure-01-r03-results.md)保留各自固定源码与未验边界；[R03前入口原字节](archive/pre-pr24-r03-20261018/README.md)与[复审前入口原字节](archive/pre-pr24-rereview-20261018/README.md)保持原身份。采集P2见[工作包](work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)及[结果](runtime/acquisition-lifecycle-p2.md)，其成果随PR24祖先关系继承；旧OPEN与不合并说明按形成时范围理解。
 
 ## 最新独立审查与下一阶段交接
 
@@ -22,7 +17,7 @@
 
 ## 继承的整合与历史证据
 
-当前工程入口：[PR20/21整合记录](runtime/pr20-21-integration.md)。开工main `08286542`（PR19已合并）；最终运行源码`d5c8b79`，三项评审修复、交叉恢复整合及定向参考验证完成。PR状态和main合并身份读取GitHub及整合回执；旧报告的OPEN与候选身份按形成时读取。
+历史整合入口：[PR20/21整合记录](runtime/pr20-21-integration.md)。开工main `08286542`（PR19已合并）；最终运行源码`d5c8b79`，三项评审修复、交叉恢复整合及定向参考验证完成。PR状态和main合并身份读取GitHub及整合回执；旧报告的OPEN与候选身份按形成时读取。
 
 现行增量共同生效：[能力可靠性20设计](design/capability-reliability-20.md)、[20工作包](work-packages/WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20.md)/[运行](runtime/capability-reliability-20.md)/[历史结果](runtime/capability-reliability-20-results.md)，以及[备份健康工作包](work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md)/[运行及历史结果](runtime/backup-health-recovery.md)。它们补充[19职责设计](design/application-capability-19.md)，不能互相替代。[19运行](runtime/application-capability-19.md)和旧候选保留原身份。原字节分别见[20前归档](archive/pre-capability-reliability-20/README.md)、[备份修复前归档](archive/pre-backup-health-recovery/README.md)及Git基线。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
@@ -33,7 +28,7 @@
 1. [AGENTS](../AGENTS.md)、[本包](work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)及[整改设计](design/architecture-quality-closure-01.md)、22拓扑及19/20可靠性、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
 2. [框架架构](design/framework.md)、[决策记录](design/framework-decisions.md)、[受控装配与扩展](design/controlled-extensions.md)。职责/事务/身份/生命周期要求继续有效，不能改弱目标消除缺陷。
 3. [14任务](work-packages/WP-IPC-CONFORMANCE-FIX-14.md)、[实施](runtime/conformance-fix-14.md)/证据，以及[13任务](work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)/[复核](runtime/arch-extension-closure-13-recheck.md)、按影响再读[12任务](work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)/[交付](runtime/extension-windows-delivery-12.md)。保留后续批准的后装与Windows后验，勿重复实施已闭子项。
-4. [运行/发布/维护](runtime/operations.md)、[扩展开发安装恢复](extensions/developer-guide.md)，核实际入口、配置、依赖和源码。
+4. [Application运行/发布/维护](runtime/architecture-quality-closure-01.md)、[Supply运行维护](runtime/operations.md)、[扩展开发安装恢复](extensions/developer-guide.md)，核实际入口、配置、依赖和源码。
 5. [D决策](readiness/decision-pack.md)、[技术基线](readiness/technical-baseline.json)、[RV状态](reviews/STATUS.md)/[原问题](reviews/issues.json)。采用不等于客户批准，局部新PASS不关闭全部旧RV。
 6. [公开范围](baseline/PUBLICATION.md)、[资料缺失](baseline/MISSING.md)、[冲突](baseline/CONFLICTS.md)和[manifest](manifest.json)。先保留需改文件原字节，再清理相关过期入口；已正确内容不重复写，未经实现的目标不写成能力。
 
@@ -62,4 +57,4 @@
 
 [资料校验工具](../tools/README.md)只证明它覆盖的资料/链接/身份，不代表业务或现场通过。已知源资产问题与本次新增材料校验分开，保持原件和失败记录。
 
-本包交付：[质量闭环01结果](runtime/architecture-quality-closure-01-results.md)。本轮独立复审五项按[设计与计划](design/architecture-quality-closure-01.md#aqd-07-pr24独立复审整改)补差；旧22/前轮参考PASS保留形成时范围。
+22历史交付：[22结果与候选身份](runtime/application-architecture-22-results.md)。

@@ -17,7 +17,7 @@ def main():
     parser.add_argument('--key', type=Path, required=True)
     parser.add_argument('--publisher', required=True)
     parser.add_argument('--trust', type=Path, required=True)
-    parser.add_argument('--version', help='New immutable version; defaults to declaration manifest')
+    parser.add_argument('--version', help='New immutable three-part version; required by checked-in examples (independent declarations may retain an explicit Version)')
     parser.add_argument('--dependency-package', type=Path, action='append', default=[], help='Exact signed dependency archive; repeat for complete closure')
     parser.add_argument('--dotnet', default='dotnet')
     args = parser.parse_args()

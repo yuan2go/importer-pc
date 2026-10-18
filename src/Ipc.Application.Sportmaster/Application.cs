@@ -12,6 +12,13 @@ public sealed class SportmasterFlow : FlowDefinition
     public override ParcelStage[] ReconciliationStages(ParcelOperation op) =>
         op.Wcs?.State == StageState.Unknown ? [ParcelStage.Wcs] : [];
     public override bool MainSettled(ParcelOperation op) => op.State is ParcelState.SlotResolved or ParcelState.WcsRejected;
+    public override ParcelOperation RestoreMainProjection(ParcelOperation op)
+    {
+        if (op.Wcs is not { State: StageState.Accepted or StageState.Rejected } wcs) return op;
+        var reply = wcs.Replies.Last(x => x.BusinessAccepted is not null);
+        return op with { State = wcs.State == StageState.Accepted ? ParcelState.SlotResolved : ParcelState.WcsRejected,
+            Slot = wcs.State == StageState.Accepted ? reply.Slot : op.Slot, Reason = wcs.State == StageState.Accepted ? null : reply.Evidence };
+    }
     public override async Task AdvanceAsync(IParcelExecution e, ParcelOperation op)
     {
         op = e.Current(op.Id);

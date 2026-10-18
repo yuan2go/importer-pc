@@ -1,0 +1,103 @@
+{
+  "source_commit": "bab9c3012652c3b8aae1d90627953734a1de29b8",
+  "results": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "quality",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "core_package",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "checker_build",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "parcel_signed_build",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "barcode_signed_build",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "extensions",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "selected_package",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "selected_journey",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "windows_package",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "fixture_build",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "core_smoke",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "http_smoke",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "aa22_release",
+        "exit_code": 0
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "resources_release",
+        "exit_code": 0
+      }
+    }
+  ]
+}

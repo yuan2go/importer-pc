@@ -1,0 +1,10 @@
+{
+  "Status": "FAIL_HISTORICAL_UNCHANGED",
+  "BaselineErrors": 267,
+  "CurrentErrors": 267,
+  "Added": [],
+  "Removed": [],
+  "BeforeProjectionErrors": 276,
+  "BeforeProjectionAdded": 9,
+  "Meaning": "Path-only public projections preserve original bytes locally and SHA lineage; validator unchanged, historical assets not modified."
+}

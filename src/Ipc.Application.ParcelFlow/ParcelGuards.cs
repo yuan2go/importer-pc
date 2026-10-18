@@ -4,7 +4,7 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
-    bool SharedReady() => factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
+    bool SharedReady() => configuration?.Current.Confirmation?.Required != true && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
         !stopping.IsCancellationRequested && (overload == 0 || Effective.SchemaVersion >= 3);
     bool CanResume() => CapacityAvailable && SharedReady() && (Effective.SchemaVersion >= 3 ? positions.Keys.Any(PositionReady) : positions.Keys.All(PositionReady));
     bool PositionReady(string position) => SharedReady() && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !overloadedPositions.ContainsKey(position) &&

@@ -1,0 +1,83 @@
+{
+  "Status": "PASS",
+  "OldSource": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+  "OldDatabase": 3,
+  "NewDatabase": 5,
+  "OldMain": "SlotResolved",
+  "OldUpload": "Accepted",
+  "OriginalOccurrence": "1e637e066a674876966810edabec17b6",
+  "OriginalRaw": [
+    "Submit",
+    "Awaiting",
+    null
+  ],
+  "QueryOccurrence": "afe7960571ca44c699d7c28d8d82b000",
+  "QueryRaw": [
+    "Query",
+    "Committed",
+    "B49609DDC0367FB85EB7572A96448C62903D02FF7882CB64B6E998F4C26D511F"
+  ],
+  "OriginalImageHeld": true,
+  "OriginalArchived": false,
+  "OriginalAuthoritativeSourceUnchanged": true,
+  "OriginalRuntimeLeaseChanges": [
+    {
+      "File": "data/Simulation/reference-peers/C8DE02D1C3CD55FEA147027A1E1CAB65ADC59001F4B513201B65B02BF72AC54D/E816B5540D4AA6567C004DE20615432C99325072F8D72D0CB17FB4EEAC697C7D.lease",
+      "Before": "0557952a638129187923c9fe337688ab187f724d78dfc795b6f832db886c606e",
+      "After": "ce51c5865caf84c1f936faf0c9c839e9784c6dc2994f9fa40d44515e8a72fbd9"
+    },
+    {
+      "File": "data/Simulation/reference-peers/CD24B4571CC773C008529B835F1883EF5924536D422457D22DE0445BE8DE6DD5/CB2445EC851AB18660396677C66152977658C874BEB43B00F7F68A057F37FF86.lease",
+      "Before": "46c1e62ebc2b690d2bbb3a469ca836f93857146c74885f573f25d121536a7f6f",
+      "After": "2ac9253c6dffd43a52cc3563334d45ee89d33c1b109f24c1422c71eff1ae4f35"
+    }
+  ],
+  "MaintenanceConfirmation": true,
+  "CurrentConfigurationTransition": true,
+  "IndependentRightMain": "SlotResolved",
+  "Counters": [
+    {
+      "Stage": "Wcs",
+      "Request": "8a71c9f5b3d143df8f86c3722f3ee4c7",
+      "Executions": 1,
+      "File": "${LOCAL_ARTIFACTS}/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers/CD24B4571CC773C008529B835F1883EF5924536D422457D22DE0445BE8DE6DD5/8a71c9f5b3d143df8f86c3722f3ee4c7.json"
+    },
+    {
+      "Stage": "Upload",
+      "Request": "992d86b4dec541a0aebac75784d00f41",
+      "Executions": 1,
+      "File": "${LOCAL_ARTIFACTS}/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers/C8DE02D1C3CD55FEA147027A1E1CAB65ADC59001F4B513201B65B02BF72AC54D/992d86b4dec541a0aebac75784d00f41.json"
+    }
+  ],
+  "ActualFrozenPackages": [],
+  "PackagePin": "NOT_APPLICABLE: this actual old fixture has built-in reference providers; separate signed-package consumer evidence required",
+  "Offline": {
+    "Status": "UpgradedCustodyRetained",
+    "DatabaseVersion": 5,
+    "OriginalOccurrence": "1e637e066a674876966810edabec17b6",
+    "Raw": {
+      "Id": "1e637e066a674876966810edabec17b6",
+      "Operation": "71fa0532b0204d87bb6919a734d036a8",
+      "Stage": "image-upload",
+      "Request": "992d86b4dec541a0aebac75784d00f41",
+      "Source": "Submit",
+      "State": "Awaiting",
+      "RawHash": null,
+      "QueryOccurrence": "afe7960571ca44c699d7c28d8d82b000",
+      "Custody": "OriginalRawMissing"
+    },
+    "Pending": 1,
+    "Backup": "${LOCAL_ARTIFACTS}/ipc-pr26-original-query-bridge-20261018/genuine-recovery-delivery-1291ee6-custody-facts/before-offline-recovery.db",
+    "OriginalQueryOnly": true,
+    "OriginalSubmitAttemptsUnchanged": true
+  },
+  "Windows": "NOT_RUN",
+  "SdkProtocolField": "BLOCKED",
+  "Candidate": "${LOCAL_ARTIFACTS}/ipc-pr26-original-query-bridge-20261018/delivery-1291ee6-unpacked/app/Ipc.Assembly.dll",
+  "CandidateAssemblySha256": "1e861ab409da57553347b5937fb7937650fa1639407547a28f5246ee469198f3",
+  "PublicProjection": {
+    "OriginalSha256": "078cc5b46dd0cfbd7222bccdd18677ae6e5403998f58048325958b09bcda7add",
+    "OnlyLocalPathsReplaced": true,
+    "NotFrozenRequestOrReplayInput": true
+  }
+}

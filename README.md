@@ -4,9 +4,9 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 
 ## 当前工程状态
 
-本轮交付 [PR #21（OPEN，未合并）](https://github.com/yuan2go/importer-pc/pull/21)；冻结运行源码a147eac，逐项参考验证完成，Windows实际NOT_RUN、真实接入按能力BLOCKED。
+当前工程入口：[PR20/21协调整合](docs/runtime/pr20-21-integration.md)。最终运行/打包源码 **d5c8b7981ba8e4c8b9daf22df1cb686243815f3b**；三个评审问题及Create二次证据比较已修复，交叉恢复/资源/迁移、签名资格与5条解包进程旅程完成定向参考验证。Windows实际NOT_RUN，真实SDK/设备/WCS/PLC/现场BLOCKED。
 
-PR #19已合并，执行基线main **08286542bbd007433d85be2cb8d129b366b007e0**。本轮实施 [WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20](docs/work-packages/WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20.md)，[现行可靠性设计](docs/design/capability-reliability-20.md)补充19的职责设计；[运行/部署](docs/runtime/capability-reliability-20.md)与[回执](docs/runtime/capability-reliability-20-results.md)记录本轮验证边界。并行开放PR #20处理备份/健康恢复，不作为本包已取得的能力。
+[PR20](https://github.com/yuan2go/importer-pc/pull/20)已正常合并为`fa1d25211be454cd3cf49da40eb7d8d92e323652`；[PR21](https://github.com/yuan2go/importer-pc/pull/21)已纳入该main并保持经验证运行树，最终合并状态及提交读取GitHub和整合回执。能力可靠性与备份/健康设计共同生效：[20增量设计](docs/design/capability-reliability-20.md)、[备份恢复工作包](docs/work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md)，补充19职责。[既有运行/部署](docs/runtime/capability-reliability-20.md)继续适用；旧报告及a147eac候选保持形成时身份。[整合前入口原字节](docs/archive/pre-pr20-21-integration/README.md)。
 
 [19结果](docs/runtime/application-capability-19-results.md)中的c213aad候选与PASS保持形成时范围，本轮复核已发现组合可靠性、客户端和打包缺口，不能由旧PASS认定已关闭。Windows实际客户端/交互/UAC/ACL NOT_RUN；真实SDK/协议/设备/现场按所选提供者的证据分别准入，现有参考提供者不能满足Production。
 

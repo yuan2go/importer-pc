@@ -70,3 +70,9 @@ python3 -m unittest discover -s scripts -p test_extension_build.py
 本轮资料校验仍为FAIL：265项原PPTX媒体类型问题、2项原UI元数据标记，错误集合与PR21原archive-checks完全相同，新增文件/hash/链接错误0。未删原断言/资产或修改历史FAIL来换PASS。[实际输出](evidence/pr20-21-integration/archive-checks.json)。只提交获授权通用源码、合成数据和本轮证据，未上传客户原稿、SDK、生产数据、签名私钥或候选二进制；原主目录未跟踪资料保留。
 
 合并次序和保护规则按实时GitHub复核；本报告不把“候选已验证”等同“已合并main”，最终回执由GitHub PR mergeCommit及main提交共同确认。
+
+## 合并过程回执
+
+PR20已按普通merge-commit流程合并，GitHub记录2026-10-18T08:46:20Z，mergeCommit **fa1d25211be454cd3cf49da40eb7d8d92e323652**，受核对HEAD d3a3ad293a9c77f4991b2fff29da0dfed6c218e6。随后将该main合入PR21，整合提交 **2d27ae82ae4e8b3b9a264a94e519ec96d9c15de3**；与已验证/记录的fd6e659完整树比较无变化，因此不重复业务测试。此后仅补文档/manifest；最终PR21 mergeCommit与main由GitHub记录确认，不把此形成时回执伪称已完成最后一步。
+
+分支保护查询为未保护，仓库rulesets为空，两PR非draft、MERGEABLE/CLEAN、无CI检查或必需review；使用--match-head-commit普通手动merge，不用--admin、强推或自动合并。三个指定评审线程在修复及相关验证后处理，其状态与D/RV/Windows/现场验收分别管理。

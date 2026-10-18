@@ -172,9 +172,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "c5f3e63e113ff47a48c46efb2c602747dc9be7748835ea2bbf9ff047cc6ab6ad",
-      "size_bytes": 4258,
-      "git_blob": "0db8deaa8cd77fb0da49b33d45908dc9481f5c80",
+      "sha256": "522f1d40c9ecaabfdff68fcda14adcc7ad79af7d3e7c8eedd26740e0688f4f0b",
+      "size_bytes": 4588,
+      "git_blob": "c1df09a289cbcc668d71fb822dea98131be3259a",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
@@ -1526,6 +1526,28 @@
       "sha256": "a77702b72aaed101634f34ee8751d4345e26e66a3d1cd37b5ded2aacb09e7847",
       "size_bytes": 1436,
       "git_blob": "5ec630748ce690497da5ab4d4d971bc163b80956"
+    },
+    {
+      "path": "docs/archive/pre-pr20-21-integration/README.md",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "61e8ecb16209e6e6f9e74bc58e196ce2c4fcf4046346d5b0e6f3dd99a6ba6e3a",
+      "size_bytes": 347,
+      "git_blob": "ec2b185c1892a1fc578d404aaf709a0792b12ef6"
+    },
+    {
+      "path": "docs/archive/pre-pr20-21-integration/README.md.txt",
+      "version": "pr20-21-integration-20261018",
+      "status": "authorized_generic_integration",
+      "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
+      "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
+      "storage_scope": "public_repository",
+      "sha256": "c5f3e63e113ff47a48c46efb2c602747dc9be7748835ea2bbf9ff047cc6ab6ad",
+      "size_bytes": 4258,
+      "git_blob": "0db8deaa8cd77fb0da49b33d45908dc9481f5c80"
     },
     {
       "path": "docs/archive/pre-reconciliation-01/AGENTS.md.txt",
@@ -13270,9 +13292,9 @@
       "purpose": "PR20/21 review repair, synthetic regression or custody evidence",
       "source": "2026-10-18 user authorization; original public generic source and synthetic inputs only",
       "storage_scope": "public_repository",
-      "sha256": "6c478189db8ccde47421ae9818244c7a02aafa7e56649950f44dc5f5da20ba41",
-      "size_bytes": 9674,
-      "git_blob": "ad3d207d2b68d3bf6411f88a49bc88d11858866c"
+      "sha256": "037b81911a5f0801cf145d338146f3b641b7021c01792266b8212bce6a859077",
+      "size_bytes": 10523,
+      "git_blob": "35baba6fe745f640d680c18ead8b870daf3a9924"
     },
     {
       "path": "docs/runtime/publication.md",

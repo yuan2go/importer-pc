@@ -60,7 +60,7 @@ public sealed partial class ParcelRepository : IDisposable
         exists.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='platform_migrations'";
         if ((long)exists.ExecuteScalar()! == 0) return;
         using var version = db.CreateCommand(); version.CommandText = "SELECT max(version) FROM platform_migrations WHERE application=$app"; version.Parameters.AddWithValue("$app", application);
-        if (version.ExecuteScalar() is not long legacy || legacy >= storageVersion || legacy >= 3) return;
+        if (version.ExecuteScalar() is not long legacy || legacy >= storageVersion) return;
         // Do not strand old unresolved originals behind a future-reader marker. They need
         // their matching old host/implementation; refuse BEFORE adding any future-reader migration.
         using var pending = db.CreateCommand(); pending.CommandText = "SELECT count(*) FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable')";

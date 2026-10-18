@@ -55,6 +55,30 @@ static partial class ArchitectureQuality
         }
         await OverloadChecks();
         await ConfigurationChecks();
+        Migration3Checks();
+    }
+    static void Migration3Checks()
+    {
+        var c = Config("direct-plc") with { SchemaVersion = 2, Topology = null, Retention = null, Weight = new(WeightSource.Measured, WeightUnit.Kg, 3), Scale = B("weight") };
+        var path = Path.Combine(root, "exact-legacy3"); Directory.CreateDirectory(path);
+        var original = new ParcelOperation(Wire.Id(), "legacy3-original", "00091", Wire.Hash("legacy3-observation"), DateTimeOffset.UtcNow,
+            Wire.Hash(Wire.Encode(c)), c, new() { [c.Scale!.InstanceId] = new string('A', 64) }, c.Weight, null, ParcelState.WaitingWeight,
+            null, null, null, "Original pre-upgrade same-parcel weight wait");
+        using (var old = new ParcelRepository(path, "direct-plc", 3)) old.Commit(original, "LegacySyntheticObserved", "Explicit original DB3 fixture");
+        string body;
+        using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "direct-plc.db")))
+        { db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT body FROM parcel_operations"; body = (string)q.ExecuteScalar()!; }
+        try { using var upgraded = new ParcelRepository(path, "direct-plc"); Check(false, "DB3 unresolved originals must reject migration before changing reader marker"); }
+        catch (InvalidDataException ex) { Check(ex.Message.Contains("LegacyUnsettled"), "DB3 unresolved originals retain matching old-release settlement path before DB4 migration"); }
+        using (var old = new ParcelRepository(path, "direct-plc", 3)) Check(Wire.Encode(old.Load().Single()) == body, "rejected DB3 upgrade leaves original JSON readable by unchanged DB3 reader");
+        using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "direct-plc.db")))
+        {
+            db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT max(version) FROM platform_migrations";
+            Check((long)q.ExecuteScalar()! == 3, "DB3 rejection preserves original migration identity instead of stranding unknown responsibility");
+            q.CommandText = "UPDATE parcel_operations SET body=$body";
+            q.Parameters.AddWithValue("$body", Wire.Encode(original with { State = ParcelState.Abandoned, Reason = "Synthetic old-release inspected local cancellation; no request attempted" })); q.ExecuteNonQuery();
+        }
+        using (var upgraded = new ParcelRepository(path, "direct-plc")) Check(upgraded.Load().Single().Id == original.Id, "settled DB3 upgrade retains original history under additive DB4 facilities");
     }
     static async Task OverloadChecks()
     {

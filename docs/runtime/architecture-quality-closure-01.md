@@ -48,9 +48,9 @@ dotnet app/Ipc.Assembly.dll --action extension-uninstall --package '{"Id":"appro
 
 ## 升级、回退与验证
 
-Parcel数据库4，SQL1～3/checksum逐字节保留，新增历史/原响应保有/身份冲突/过载确认/配置审计设施。DB3→4的迁移SQL不重写旧业务JSON；正常重启恢复追加恢复标记，原冻结请求及hash不变；DB1/2仍按22迁移前清偿屏障拒绝未结。旧程序拒读DB4。升级前通过匹配发布做完整备份并保存原二进制、配置、信任与包；回退只能使用匹配原发布/升级前备份，并先核对期间外部动作，不能倒退业务账或盲重发。
+Parcel数据库4，SQL1～3/checksum逐字节保留，新增历史/原响应保有/身份冲突/过载确认/配置审计设施。DB3→4的迁移SQL不重写旧业务JSON；正常重启恢复追加恢复标记，原冻结请求及hash不变；DB1/2/3均在迁移标记升级前拒绝未结，先以匹配旧发布清偿并备份，不能以追加表结构冒充精确实现兼容。旧程序拒读DB4。升级前通过匹配发布做完整备份并保存原二进制、配置、信任与包；回退只能使用匹配原发布/升级前备份，并先核对期间外部动作，不能倒退业务账或盲重发。
 
-Application.Contracts及能力示例1.6.0；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包采用新1.0.10。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
+Application.Contracts仍为ABI1.6.0，能力示例新不可变1.6.2；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包采用新1.0.10。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
 
 必要构建与定向选择器：
 
@@ -58,7 +58,7 @@ Application.Contracts及能力示例1.6.0；继承PR23的1.5.0原采集所有者
 dotnet build tests/Ipc.Application.Verification -p:RestoreLockedMode=true -m:1 -nr:false
 dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --architecture-quality
 # signed package按本宿主精确合同独立构建后：
-dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --quality-extensions /new/1.6.0.ipcx /independent/trust.json
+dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --quality-extensions /new/1.6.2.ipcx /independent/trust.json
 ```
 
 只根据变更执行AA22/AC19/AC20/BHR/AC17资源组和必要WPF构建/参考包进程，不循环全部历史候选。真实SDK、WCS/PLC字段/地址/握手、身份/原件关联、复位/联锁及现场BLOCKED；[Windows及现场后验](validation/architecture-quality-closure-01-windows.md)不能由合成验证关闭。

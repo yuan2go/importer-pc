@@ -5,6 +5,38 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRepository
 {
+    long lastIntegrationRequestId;
+    // Rebuild a scalar from canonical resident/archived T1 facts. It is not a
+    // second allocation journal and does not grow memory with historical volume.
+    void InitializeIntegrationRequestHistory()
+    {
+        var history="SELECT id,json_extract(body,'$.Wcs.Request.IntegrationRequest.RequestId') AS wire FROM parcel_operations" +
+            (StorageVersion>=4?" UNION ALL SELECT id,json_extract(body,'$.Wcs.Request.IntegrationRequest.RequestId') AS wire FROM parcel_archives":"");
+        using var invalid=db.CreateCommand();
+        invalid.CommandText="SELECT wire FROM ("+history+") WHERE wire IS NOT NULL GROUP BY wire HAVING typeof(wire)!='integer' OR wire<=0 OR count(DISTINCT id)>1 LIMIT 1";
+        if(invalid.ExecuteScalar() is not null)throw new InvalidDataException("Ambiguous original numeric request ID; preserve original owners and investigate before admission");
+        using var maximum=db.CreateCommand();maximum.CommandText="SELECT coalesce(max(wire),0) FROM ("+history+")";
+        lastIntegrationRequestId=Convert.ToInt64(maximum.ExecuteScalar());
+    }
+    internal void RequireNewIntegrationRequestId(long id)
+    {
+        if(id<=lastIntegrationRequestId)throw new InvalidDataException($"External numeric request ID {id} must exceed durable original allocation {lastIntegrationRequestId}");
+    }
+    void ValidateIntegrationIntentCommit(ParcelOperation operation,Microsoft.Data.Sqlite.SqliteTransaction transaction)
+    {
+        if(operation.Wcs?.Request.IntegrationRequest is not {} wire)return;
+        using var prior=db.CreateCommand();prior.Transaction=transaction;
+        prior.CommandText="SELECT json_extract(body,'$.Wcs.Request') FROM parcel_operations WHERE id=$id"+
+            (StorageVersion>=4?" UNION ALL SELECT json_extract(body,'$.Wcs.Request') FROM parcel_archives WHERE id=$id":"");
+        prior.Parameters.AddWithValue("$id",operation.Id);
+        var original=prior.ExecuteScalar();
+        if(original is string json)
+        {
+            if(Wire.Encode(Wire.Decode<FrozenRequest>(json))!=Wire.Encode(operation.Wcs.Request))
+                throw new InvalidDataException("Original external intent cannot be replaced by a new allocation");
+        }
+        else RequireNewIntegrationRequestId(wire.RequestId);
+    }
     public long OperationSequence(string id)
     {
         using var c = db.CreateCommand(); c.CommandText = "SELECT seq FROM parcel_history_index WHERE id=$id";

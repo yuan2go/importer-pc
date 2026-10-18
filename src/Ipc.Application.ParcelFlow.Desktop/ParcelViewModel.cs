@@ -114,6 +114,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     protected virtual void SnapshotReadSucceeded(long id) { }
     protected virtual void SnapshotReadFailed(long id, Exception error) { }
     protected virtual bool CanApplySnapshot(long id) => true;
+    protected virtual void ReportCommandFailure(Exception error,string prefix) => Message=prefix+error.Message;
     async Task<(long Id, ParcelSnapshot Snapshot)> ReadSnapshotWithIdAsync()
     {
         var id = Interlocked.Increment(ref snapshotReadId);
@@ -154,7 +155,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         if (Busy) { Message = "已有操作进行中，请等待。"; return; }
         Busy = true; Changed(nameof(Busy));
         try { await action(); await RefreshAsync(); }
-        catch (Exception ex) { Message = ex.GetType().Name + ": " + ex.Message; }
+        catch (Exception ex) { ReportCommandFailure(ex,ex.GetType().Name+": "); }
         finally { Busy = false; Changed(nameof(Busy)); }
     }
     public async Task PauseAsync()
@@ -171,7 +172,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
             }
             Message = "暂停遇到连续修订冲突，请重试；状态仍由应用服务确认。";
         }
-        catch (Exception ex) { Message = "暂停失败：" + ex.Message; }
+        catch (Exception ex) { ReportCommandFailure(ex,"暂停失败："); }
     }
     public async Task CommandAsync(string kind, string? owner = null)
     {

@@ -10,7 +10,8 @@ namespace Ipc.Application.Sportmaster.Desktop;
 public sealed class SupplyStationViewModel : ParcelViewModel
 {
     DateTimeOffset? lastRead;
-    string? readFailure;
+    string? readFailure, readFailureMessage;
+    Exception? lastReadError;
     bool fresh;
     bool viewportFits = true, viewportRecoveryRequired;
     long successfulReadId, failedReadId;
@@ -43,7 +44,9 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     void SnapshotChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName != nameof(Snapshot)) return;
-        lastRead = DateTimeOffset.UtcNow; readFailure = null; RefreshFreshness();
+        lastRead = DateTimeOffset.UtcNow; readFailure = null; lastReadError=null;
+        if(Message==readFailureMessage)Message="";
+        readFailureMessage=null; RefreshFreshness();
     }
     public void RefreshFreshness(DateTimeOffset? at = null)
     {
@@ -75,13 +78,16 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     }
     public void MarkReadFailure(string reason)
     {
-        readFailure = reason; Message = "状态读取失败，旧快照仅供参考：" + reason; RefreshFreshness();
+        readFailure = reason; readFailureMessage="状态读取失败，旧快照仅供参考："+reason; Message=readFailureMessage; RefreshFreshness();
     }
     public Task RefreshDisplayAsync() => RefreshAsync();
     protected override void SnapshotReadSucceeded(long id) => AdvanceReadId(ref successfulReadId, id);
     protected override bool CanApplySnapshot(long id) => id > Volatile.Read(ref failedReadId);
+    protected override void ReportCommandFailure(Exception error,string prefix)
+    { if(!ReferenceEquals(error,lastReadError))base.ReportCommandFailure(error,prefix); }
     protected override void SnapshotReadFailed(long id, Exception error)
     {
+        lastReadError=error;
         // Only a success from a later request supersedes this failure. An older
         // request completing while this read was pending cannot certify freshness.
         if (id > Volatile.Read(ref successfulReadId) && AdvanceReadId(ref failedReadId, id)) MarkReadFailure(error.Message);

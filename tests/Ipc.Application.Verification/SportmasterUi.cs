@@ -249,6 +249,13 @@ static class SportmasterUi
         try { await ui.RefreshDisplayAsync(); throw new Exception("Expected snapshot failure"); }
         catch (IOException) { Check(!ui.Fresh && ui.ReadStatus.Contains("synthetic failed snapshot"), "thrown application snapshot failure visibly invalidates last display"); }
         probe.Read = null; await ui.RefreshDisplayAsync();
+        probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("current command read banner"));
+        await ui.RunAsync(() => Task.CompletedTask);
+        Check(!ui.Fresh && ui.Message.Contains("current command read banner"),"command read failure owns its diagnostic while projection is stale");
+        probe.Read = null; await ui.RefreshDisplayAsync();
+        Check(ui.Fresh && !ui.Message.Contains("current command read banner") && !ui.Message.Contains("旧快照仅供参考"),"successful recovery removes only the read failure banner");
+        ui.MarkReadFailure("scoped read diagnostic");ui.Message="Independent business result must remain";await ui.RefreshDisplayAsync();
+        Check(ui.Message=="Independent business result must remain","snapshot recovery preserves a later unrelated business message");
         var beforeFailure = await app.SnapshotAsync();
         var delayedFailure = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
         probe.Read = () => delayedFailure.Task; var failedOlderRead = ui.RefreshDisplayAsync();

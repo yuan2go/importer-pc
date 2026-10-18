@@ -17,7 +17,7 @@ static class SportmasterRcs
 {
     static void Check(bool value, string message)
     { if (!value) throw new Exception("FAIL RCS20: " + message); Console.WriteLine("PASS RCS20: " + message); }
-    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.0.3", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
+    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.0.4", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
     {
         ["source"] = "TEST_READER", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83", ["quantity"] = "1",
         ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "100000",
@@ -95,7 +95,54 @@ static class SportmasterRcs
         }
         await RuntimeChecks(workspace, root, peer);
         MigrationChecks(workspace, root);
+        await NumericIdentityHistoryChecks(workspace,root,peer);
         Console.WriteLine("PASS RCS20 COMPLETE: synthetic HTTP protocol, exact custody, independent positions, unpack guards, restart unknown and SQL6 custody transitions");
+    }
+    static async Task NumericIdentityHistoryChecks(string workspace,string root,Peer peer)
+    {
+        var a=Binding(peer.Endpoint);a=a with{Parameters=new(a.Parameters){["request-id-base"]="100"}};
+        var b=a with{Parameters=new(a.Parameters){["request-id-base"]="99"}};
+        await using(var first=new SportmasterRcsTaskService(a))await using(var second=new SportmasterRcsTaskService(b))
+            Check(first.PrepareRequest(Request(a),1).RequestId==second.PrepareRequest(Request(b),2).RequestId,"rebase arithmetic reproduces the original numeric-ID collision; application must guard durable allocations");
+        var name="rcs-numeric-history";var configPath=Path.Combine(root,name,"config");Directory.CreateDirectory(configPath);
+        var c=Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace,"config/sportmaster/business.json"))) with{Wcs=Binding(peer.Endpoint),TimeoutMs=1500};
+        ExtensionStore.AtomicWrite(Path.Combine(configPath,"business.json"),c);
+        var data=Path.Combine(root,name,"data");var directory=Path.Combine(data,"Simulation",c.StationId,c.ApplicationId);
+        async Task<ParcelRuntime> Open(string dataRoot)
+        {
+            var launch=new BusinessLaunch(configPath,dataRoot,null,null);var app=new ParcelRuntime(launch,new SportmasterFlow(),new Factory(new ParcelCapabilityFactory(launch)));
+            try{await app.StartAsync(default);return app;}catch{await app.DisposeAsync();throw;}
+        }
+        async Task<BusinessReceipt> Command(ParcelRuntime app,string kind,string? owner=null,string? value=null)
+        {var s=await app.SnapshotAsync();return await app.CommandAsync(new(Wire.Id(),s.Revision,kind,owner,value));}
+        async Task Maintenance(ParcelRuntime app)
+        {await Command(app,"Pause");Check((await app.AuthorizeMaintenanceAsync("maintenance","SIMULATION_ONLY")).Status=="Authorized","numeric-ID fixture explicitly authenticates maintenance");await Wait(app,s=>s.Availability!.Configure);}
+        peer.Mode="assigned";string original;long allocated;var backup=Path.Combine(root,"rcs-numeric-history.backup.db");
+        await using(var app=await Open(data))
+        {
+            app.EmitReferenceAt("right","numeric-original","SYNTH-0001",Wire.Id());var s=await Wait(app,x=>x.Operations.SingleOrDefault()?.State==ParcelState.SlotResolved);
+            original=s.Operations.Single().Id;allocated=s.Operations.Single().Wcs!.Request.IntegrationRequest!.RequestId;
+            await Maintenance(app);s=await app.SnapshotAsync();var low=s.Configuration.Effective with{Wcs=s.Configuration.Effective.Wcs! with{Parameters=new(s.Configuration.Effective.Wcs!.Parameters){["request-id-base"]="1"}}};
+            Check((await app.StageConfigurationAsync(s.Configuration.Revision,low,"Synthetic obsolete numeric range, no remote action allowed")).Status=="PendingRestart","numeric range candidate remains one controlled configuration revision");
+        }
+        var posts=peer.Requests.Count;
+        await using(var app=await Open(data))
+        {
+            await Command(app,"Resume");app.EmitReferenceAt("right","numeric-blocked","SYNTH-0001",Wire.Id());
+            var s=await Wait(app,x=>x.Operations.Any(o=>o.AdmissionId=="numeric-blocked"&&o.State is ParcelState.Blocked or ParcelState.SlotResolved));var op=s.Operations.Single(o=>o.AdmissionId=="numeric-blocked");
+            Check(op.State==ParcelState.Blocked&&op.Wcs is null&&peer.Requests.Count==posts&&op.Reason!.Contains("numeric request ID"),"obsolete range is durably blocked before T1/attempt/POST without crashing the worker");
+            await Command(app,"Pause");await app.AuthorizeMaintenanceAsync("maintenance","SIMULATION_ONLY");
+            Check((await Command(app,"AbandonUnsubmitted",op.Id,"Synthetic entity inspected after ID allocation refusal")).Status=="Persisted","blocked unsent entity supports existing inspected disposition");
+            await Wait(app,x=>x.Availability!.Configure);await Command(app,"ArchiveHistory",value:"Synthetic numeric history must retain allocation identity");
+            using(var repo=new ParcelRepository(directory,c.ApplicationId))Check(repo.History(long.MaxValue,20).Items.Any(i=>i.Operation.Id==original&&i.Archived),"numeric allocation authority survives real transaction history archival");
+            Check((await app.BackupAsync(backup)).Status=="BackupCreated","numeric history uses the actual complete backup path");
+        }
+        var restored=Path.Combine(root,"rcs-numeric-restored");ParcelRecovery.Restore(backup,Path.Combine(restored,"Simulation",c.StationId,c.ApplicationId));
+        await using(var app=await Open(restored))
+        {
+            await Command(app,"Resume");app.EmitReferenceAt("right","numeric-restored-blocked","SYNTH-0001",Wire.Id());var s=await Wait(app,x=>x.Operations.Any(o=>o.AdmissionId=="numeric-restored-blocked"&&o.State is ParcelState.Blocked or ParcelState.SlotResolved));
+            Check(s.Operations.Single(o=>o.AdmissionId=="numeric-restored-blocked").Wcs is null&&peer.Requests.Count==posts&&s.Operations.Single(o=>o.AdmissionId=="numeric-restored-blocked").Reason!.Contains(allocated.ToString()),"fresh restored process rebuilds the durable ID floor from archived original intents and refuses reuse");
+        }
     }
     static async Task PreparationGuards(SportmasterRcsTaskService service, CapabilityBinding binding, Peer peer)
     {

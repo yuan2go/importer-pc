@@ -1,6 +1,6 @@
 # Sportmaster RCS 分拣任务服务
 
-已整合main `baac260214f910dca9ae4628ba6449b25188e2ac`（PR26/28）。当前组件版本1.0.3，业务1.2.3/公共契约1.7.0；原1.0.1、1.0.0及各候选保持历史身份，不能重签覆盖。
+已整合main `baac260214f910dca9ae4628ba6449b25188e2ac`（PR26/28）。当前组件版本1.0.4，业务1.2.4/公共契约1.7.0；原1.0.1、1.0.0及各候选保持历史身份，不能重签覆盖。
 
 WP-IPC-SPORTMASTER-RCS-TASK-01，名称 `SportmasterRcsTaskService`，模块 `sportmaster-rcs-task`，包 `sportmaster.rcs-task`。范围与兼容见[设计](../design/sportmaster-rcs-task.md)、[工作包](../work-packages/WP-IPC-SPORTMASTER-RCS-TASK-01.md)。此组件实现实际HTTP客户端，不提供RCS服务端。唯一命令为 `sorter.task.dest_request`，POST路径 `/rcs/sorter/api`。
 
@@ -66,3 +66,5 @@ python3 scripts/configure-sportmaster-rcs.py \
 编号范围按不可变历史序号判定；旧历史和既有索引更新可能留有序号空洞，因此request-id-count不是可处理件数承诺。范围耗尽或准备校验失败只持久阻断原实体，Wcs意图/attempt仍未创建；可暂停检查并本地处置后再受控修改配置，不使输入worker崩溃。
 
 并发整合兼容说明：当前CLI recover-legacy-receipt显式迁移至Parcel DB6；内部API默认DB5调用保持兼容。两者均保留永久回复身份、持久Query原件依据和完整备份，未清原raw/图像/包责任；普通启动在任何未来reader标记前拒绝DB2–5未结责任。原SQL1–5和历史发布指令按其固定版本保留。
+
+并发整合补充：请求数字ID在准备时必须高于本Application库原始T1（含归档）的已分配上界。重配低基值会在发送前阻断本件，WCS尝试为零；暂停、维护认证并检查实体后按原弃置/配置CAS流程处理。重启和备份恢复从原件重建上界，原Prepared/Unknown固定原ID/报文，不因基值变更重配。此约束不是跨站全局分配；现场仍须治理各站互不重叠的区间及服务端幂等合同。

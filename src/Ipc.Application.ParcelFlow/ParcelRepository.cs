@@ -82,8 +82,9 @@ public sealed partial class ParcelRepository : IDisposable
             Database.Migrate(db, application, migrations.Take(storageVersion).ToArray());
             StorageVersion=storageVersion;
             using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT revision,paused FROM parcel_meta WHERE id=1";
-            using var r = cmd.ExecuteReader(); if (!r.Read()) throw new InvalidDataException("Missing parcel metadata");
-            Revision = r.GetInt64(0); Paused = r.GetBoolean(1);
+            using (var r = cmd.ExecuteReader())
+            { if (!r.Read()) throw new InvalidDataException("Missing parcel metadata"); Revision = r.GetInt64(0); Paused = r.GetBoolean(1); }
+            InitializeIntegrationRequestHistory();
         }
         catch { db.Dispose(); throw; }
     }
@@ -168,6 +169,7 @@ public sealed partial class ParcelRepository : IDisposable
         }
         if (operation is not null)
         {
+            ValidateIntegrationIntentCommit(operation,tx);
             if (StorageVersion >= 5)
             {
                 using var prior = db.CreateCommand(); prior.Transaction = tx;
@@ -228,7 +230,9 @@ public sealed partial class ParcelRepository : IDisposable
             commandReceipt.Parameters.AddWithValue("$id", command.Id); commandReceipt.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(command)));
             commandReceipt.Parameters.AddWithValue("$receipt", Wire.Encode(new BusinessReceipt("Persisted", "Application command committed", Revision + 1))); commandReceipt.ExecuteNonQuery();
         }
-        tx.Commit(); Revision++; if (paused is not null) Paused = paused.Value;
+        tx.Commit();
+        if(operation?.Wcs?.Request.IntegrationRequest is {} allocated)lastIntegrationRequestId=Math.Max(lastIntegrationRequestId,allocated.RequestId);
+        Revision++; if (paused is not null) Paused = paused.Value;
     }
     public string BeginReceipt(ParcelOperation op, StageFact stage, string source)
     {

@@ -64,3 +64,5 @@ python3 scripts/package-application.py --application sportmaster --target win-x6
 实际验证结果及源码/候选身份见[结果报告](sportmaster-alternate-ui-results.md)。本机为macOS，只能执行跨平台应用/投影测试和WPF交叉构建、发布/解包/资源检查。Windows窗口、DPI、焦点、触控和截图实际 NOT_RUN；真实SDK、WCS、实体/现场验收 BLOCKED。可执行的Windows原生烟测与后验步骤见[Windows清单](validation/sportmaster-alternate-ui-windows.md)。原型截图和BAML资源都不能当作Windows运行证明，D/RV历史不倒写。
 
 组合增量：与RCS组件共用只读DestinationSummary，在既有每位诊断区显示任务/SKU/拆包格口及原始零值/未知字段，UnpackRequired明确显示本位等待检查。没有新增业务动作、图像展示或物理完成声明。版本/候选身份和当前组合验证见[整合报告](parallel-task-reconciliation-01.md)。
+
+读取恢复时，仅清除本次状态读取错误拥有的横幅，其他业务消息继续保留；命令后读取与周期读取共用读序及失效判断。整合回归覆盖失败→恢复、乱序、窗口排空及RCS拆包投影。

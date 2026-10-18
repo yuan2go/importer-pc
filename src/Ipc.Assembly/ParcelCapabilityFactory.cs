@@ -276,11 +276,11 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
             var manager = Store();
             if (action == "extension-recover")
             {
-                var result = manager.Recover(identity, refreshReferences: () => manager.InspectConsumers(ParcelRepository.InspectRequiredPackages));
+                var result = manager.Recover(identity, refreshReferences: () => manager.InspectConsumers(Ipc.Assembly.ExtensionConsumerReaders.Inspect));
                 return new BusinessReceipt(result.Status, result.Reason, 0);
             }
             var package = Wire.Decode<PackageReference>(identity);
-            manager.Uninstall(package, () => manager.InspectConsumers(ParcelRepository.InspectRequiredPackages));
+            manager.Uninstall(package, () => manager.InspectConsumers(Ipc.Assembly.ExtensionConsumerReaders.Inspect));
             return new BusinessReceipt("Uninstalled", "Exact package retired; immutable identity retained", 0);
         }).ConfigureAwait(false);
     }

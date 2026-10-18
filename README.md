@@ -4,7 +4,7 @@ C#/.NET 10工位运行基座及独立Application/供包参考产品：WPF、多�
 
 ## 当前工程状态
 
-三个独立Application按[架构22](docs/design/application-architecture-22.md)选装，Parcel当前数据库4、配置schema3，Application.Contracts ABI1.6.0，保留PR23采集所有权和PR24归档、双位、完整配置与两阶段激活。执行main为b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d；PR23/24仍开放，本分支继承PR24固定a2e987a，不代为合并。N01–N07针对[独立审查02](docs/reviews/architecture-quality-audit-02/README.md)，与审查01 AQ编号和缺PDF记录分开。
+三个独立Application按[架构22](docs/design/application-architecture-22.md)选装，Parcel当前数据库5、配置schema3，Application.Contracts ABI1.6.0；DB3/4属于历史发布。保留PR23采集所有权和PR24归档、双位、完整配置与两阶段激活；PR26复核修复选择继承PR24后续原回复身份、消费者及维护围栏成果，不代合并其PR。执行main基线为b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d；当前交付的继承提交、源码、包和验证身份统一读取[本次结果](docs/runtime/architecture-quality-audit-02-results.md)。N01–N07针对[独立审查02](docs/reviews/architecture-quality-audit-02/README.md)，与审查01 AQ编号和缺PDF记录分开。
 
 先按[首次运行](docs/runtime/getting-started.md)选产品。新Application使用Assembly/ParcelConfiguration；[维护指南](docs/runtime/architecture-quality-closure-01.md)统一配置确认、恢复、容量及扩展路线；Supply的Product/StationConfig、箱/数量规则仅在[Supply指南](docs/runtime/operations.md)适用。Windows实际NOT_RUN，真实SDK/协议/现场BLOCKED。
 ## 继承的PR20/21整合基线
@@ -17,7 +17,7 @@ C#/.NET 10工位运行基座及独立Application/供包参考产品：WPF、多�
 
 ## 开发与运行入口
 
-[统一资料入口](docs/INDEX.md) · [工作约束](AGENTS.md) · [框架设计](docs/design/framework.md) · [决策与批准边界](docs/design/framework-decisions.md) · [受控装配/扩展](docs/design/controlled-extensions.md) · [扩展开发](docs/extensions/developer-guide.md) · [运行、发布与恢复](docs/runtime/operations.md)
+[统一资料入口](docs/INDEX.md) · [工作约束](AGENTS.md) · [框架设计](docs/design/framework.md) · [决策与批准边界](docs/design/framework-decisions.md) · [受控装配/扩展](docs/design/controlled-extensions.md) · [扩展开发](docs/extensions/developer-guide.md) · [Application运行、发布与恢复](docs/runtime/architecture-quality-closure-01.md) · [Supply运行维护](docs/runtime/operations.md)
 
 ```sh
 # 使用global.json固定的.NET SDK10.0.402与Python3；按本包影响选择验证

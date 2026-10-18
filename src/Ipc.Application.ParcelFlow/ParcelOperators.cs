@@ -12,11 +12,12 @@ public sealed partial class ParcelRuntime
         try
         {
             if (stopped || stopping.IsCancellationRequested || ports?.Login is null || repository is null) return new("Rejected", "Login is disabled or application stopped", repository?.Revision ?? 0);
+            if (!PortMaintenanceClear(ports.Login)) return new("Rejected", "Authentication resource is under maintenance", repository.Revision);
             if (authenticating || session.Valid(DateTimeOffset.UtcNow, Effective.SessionLifetimeMs) || operations.Values.Any(x => !IsSettled(x) && x.Operator?.Subject != subject) || Volatile.Read(ref pendingObservations) != 0) return new("Rejected", "Protect original unfinished operations before changing operator", repository.Revision);
             if (!ExtensionSchema.IsId(subject) || proof is null || proof.Length is < 1 or > 256) return new("Rejected", "Invalid identity input", repository.Revision);
             authenticating = true; ownsAuthentication = true;
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token); budget.CancelAfter(Effective.TimeoutMs);
-            var identity = await ExternalAsync(() => ports.Login.AuthenticateAsync(subject, proof, budget.Token)).ConfigureAwait(false);
+            var identity = await ExternalPortAsync(ports.Login, () => ports.Login.AuthenticateAsync(subject, proof, budget.Token)).ConfigureAwait(false);
             if (identity is null) return new("Rejected", "Authentication rejected; no operator changed", repository.Revision);
             if (identity.Subject != subject || string.IsNullOrWhiteSpace(identity.DisplayName) || identity.DisplayName.Length > 128 ||
                 identity.DisplayName.Any(char.IsControl) || identity.Authority != Effective.Login!.Target || identity.Simulation != factory.SimulationIdentity(Effective.Login!) || identity.ExpiresAt <= DateTimeOffset.UtcNow ||
@@ -51,8 +52,9 @@ public sealed partial class ParcelRuntime
         try
         {
             if (stopped || stopping.IsCancellationRequested || ports?.Maintenance is null || repository?.Paused != true) return new("Rejected", "Pause before maintenance authentication", repository?.Revision ?? 0);
+            if (!PortMaintenanceClear(ports.Maintenance)) return new("Rejected", "Maintenance authenticator is under maintenance", repository.Revision);
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token); budget.CancelAfter(Effective.TimeoutMs);
-            var identity = await ExternalAsync(() => ports.Maintenance.AuthenticateAsync(subject, proof, budget.Token)).ConfigureAwait(false);
+            var identity = await ExternalPortAsync(ports.Maintenance, () => ports.Maintenance.AuthenticateAsync(subject, proof, budget.Token)).ConfigureAwait(false);
             if (identity is null || identity.Subject != subject || identity.Authority != (Effective.MaintenanceLogin?.Target ?? "reference://maintenance") ||
                 !Guid.TryParseExact(identity.SessionId, "N", out _) || identity.AuthenticatedAt > DateTimeOffset.UtcNow || identity.ExpiresAt is null || identity.Simulation != (Effective.MaintenanceLogin is null || factory.SimulationIdentity(Effective.MaintenanceLogin)) || identity.Grants?.Contains("maintenance") != true || identity.ExpiresAt <= DateTimeOffset.UtcNow)
                 return new("Rejected", "Maintenance authentication rejected", repository.Revision);

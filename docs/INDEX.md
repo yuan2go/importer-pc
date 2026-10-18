@@ -2,9 +2,9 @@
 
 ## 当前工程入口
 
-[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。本次N01–N07执行main b2dc55b，继承未合并PR24 a2e987a（包含PR23 966ec6a），新结果不冒充main能力或历史PASS。新Application使用schema3/Parcel DB4，Supply的Storage5和Product命令单独适用。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。本次N01–N07执行main基线b2dc55b，继承PR23/24及后续有效修复的准确提交见本次结果；未代合并其他PR，新结果不冒充main能力或历史PASS。新Application使用schema3/Parcel DB5，DB3/4为历史发布；Supply的Storage5和Product命令单独适用。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
-[前次N01–N07交付及复核边界](runtime/architecture-quality-audit-02-results.md)。PR26独立复核5项P1/2项P2正在修复，当前恢复目标见整改设计；前次PASS不作为全闭环结论。
+[N01–N07交付、PR26复核修复及验证边界](runtime/architecture-quality-audit-02-results.md)。缺raw资料责任、旧发布Query到DB5、旧配置账确认和维护围栏的实际步骤见维护指南；[复核前原字节](archive/pre-pr26-rereview/README.md)保留前次结论，前次PASS不作为全闭环证据。
 
 [N01前操作指引原字节](archive/pre-architecture-quality-02/README.md)。19职责、20可靠性、22拓扑及[质量闭环设计](design/architecture-quality-closure-01.md)按适用范围共同生效；阶段工作包和原候选作为历史来源保留。
 ## 最新独立审查与下一阶段交接
@@ -24,7 +24,7 @@
 1. [AGENTS](../AGENTS.md)、[本包](work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)及[整改设计](design/architecture-quality-closure-01.md)、22拓扑及19/20可靠性、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
 2. [框架架构](design/framework.md)、[决策记录](design/framework-decisions.md)、[受控装配与扩展](design/controlled-extensions.md)。职责/事务/身份/生命周期要求继续有效，不能改弱目标消除缺陷。
 3. [14任务](work-packages/WP-IPC-CONFORMANCE-FIX-14.md)、[实施](runtime/conformance-fix-14.md)/证据，以及[13任务](work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)/[复核](runtime/arch-extension-closure-13-recheck.md)、按影响再读[12任务](work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)/[交付](runtime/extension-windows-delivery-12.md)。保留后续批准的后装与Windows后验，勿重复实施已闭子项。
-4. [运行/发布/维护](runtime/operations.md)、[扩展开发安装恢复](extensions/developer-guide.md)，核实际入口、配置、依赖和源码。
+4. [Application运行/发布/维护](runtime/architecture-quality-closure-01.md)、[Supply运行维护](runtime/operations.md)、[扩展开发安装恢复](extensions/developer-guide.md)，核实际入口、配置、依赖和源码。
 5. [D决策](readiness/decision-pack.md)、[技术基线](readiness/technical-baseline.json)、[RV状态](reviews/STATUS.md)/[原问题](reviews/issues.json)。采用不等于客户批准，局部新PASS不关闭全部旧RV。
 6. [公开范围](baseline/PUBLICATION.md)、[资料缺失](baseline/MISSING.md)、[冲突](baseline/CONFLICTS.md)和[manifest](manifest.json)。先保留需改文件原字节，再清理相关过期入口；已正确内容不重复写，未经实现的目标不写成能力。
 

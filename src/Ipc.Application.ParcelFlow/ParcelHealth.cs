@@ -10,10 +10,15 @@ public sealed partial class ParcelRuntime
             while (!stopping.IsCancellationRequested)
             {
                 await Task.Delay(100, stopping.Token).ConfigureAwait(false);
-                var epoch = portEpochs.GetValueOrDefault(port.InstanceId);
-                var health = await ProbeHealthAsync(port, stopping.Token).ConfigureAwait(false);
                 await gate.WaitAsync(stopping.Token).ConfigureAwait(false);
-                try { if (epoch == portEpochs.GetValueOrDefault(port.InstanceId)) capabilityHealth[port.InstanceId] = health; } finally { gate.Release(); }
+                try
+                {
+                    if (!PortMaintenanceClear(port)) continue;
+                    var epoch = portEpochs.GetValueOrDefault(port.InstanceId);
+                    var health = await ExternalPortAsync(port, () => ProbeHealthAsync(port, stopping.Token)).ConfigureAwait(false);
+                    if (epoch == portEpochs.GetValueOrDefault(port.InstanceId)) capabilityHealth[port.InstanceId] = health;
+                }
+                finally { gate.Release(); }
             }
         }
         catch (OperationCanceledException) when (stopping.IsCancellationRequested) { }
@@ -28,7 +33,7 @@ public sealed partial class ParcelRuntime
         budget.CancelAfter(Effective.TimeoutMs);
         try
         {
-            var result = await port.HealthAsync(budget.Token).ConfigureAwait(false);
+            var result = await PortCallAsync(port, () => port.HealthAsync(budget.Token), budget.Token).ConfigureAwait(false);
             caller.ThrowIfCancellationRequested(); stopping.Token.ThrowIfCancellationRequested();
             // A provider can return a cached success after its request budget elapsed.
             if (epoch != portEpochs.GetValueOrDefault(port.InstanceId)) return Unavailable("Old maintenance epoch health discarded");

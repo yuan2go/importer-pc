@@ -6,6 +6,23 @@ public sealed partial class ParcelRuntime
 {
     readonly System.Collections.Concurrent.ConcurrentDictionary<string, SemaphoreSlim> deviceOperations = new();
     readonly HashSet<string> maintenanceOperations = [];
+    readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> maintainedResources = new();
+    readonly Dictionary<string, int> resourceCalls = [];
+    bool PortMaintenanceClear(ICapabilityPort port) => !maintainedResources.ContainsKey(DeviceKey(port));
+    bool PositionMaintenanceClear(string position) => !maintainedResources.ContainsKey(positions[position].ReaderDeviceId) &&
+        new[] { Effective.Wcs, Effective.Plc, Effective.Login, ParcelBindings.Scale(Effective, position), ParcelBindings.Camera(Effective, position),
+            Effective.Images?.Strategy == UploadStrategy.Attached ? null : Effective.Images?.Uploader }
+        .OfType<CapabilityBinding>().All(b => !maintainedResources.ContainsKey(DeviceKey(Capability(b.InstanceId))));
+    async Task<T> ExternalPortAsync<T>(ICapabilityPort port, Func<Task<T>> action)
+    {
+        // Reserve under the aggregate gate before releasing it. Service maintenance
+        // cannot pass a drain check between this reservation and the external call.
+        var resource = DeviceKey(port);
+        if (!PortMaintenanceClear(port)) throw new InvalidOperationException("Selected capability is under maintenance");
+        resourceCalls[resource] = resourceCalls.GetValueOrDefault(resource) + 1;
+        try { return await ExternalAsync(action).ConfigureAwait(false); }
+        finally { if (--resourceCalls[resource] == 0) resourceCalls.Remove(resource); }
+    }
     readonly System.Collections.Concurrent.ConcurrentDictionary<string, long> portEpochs = new();
     Task<T> PortCallAsync<T>(ICapabilityPort port, Func<Task<T>> action, CancellationToken token) => DeviceKey(port).StartsWith("service:", StringComparison.Ordinal) ? action() : DeviceCallAsync(DeviceKey(port), action, token);
     string DeviceKey(ICapabilityPort port) => ParcelBindings.Bound(Effective).FirstOrDefault(b => b.InstanceId == port.InstanceId && b.Kind is "camera" or "weight" or "plc")?.Target ?? "service:" + port.InstanceId;
@@ -22,6 +39,7 @@ public sealed partial class ParcelRuntime
         var key = deviceId ?? "*";
         await gate.WaitAsync().ConfigureAwait(false);
         var owns = false;
+        string[] resources = [];
         try
         {
             if (stopped || stopping.IsCancellationRequested || ports is null || repository?.Paused != true || !MaintenanceAuthorized ||
@@ -30,10 +48,15 @@ public sealed partial class ParcelRuntime
             var selectedReaders = readers.Values.Where(r => deviceId is null || r.Source.DeviceId == deviceId).ToArray();
             var selectedPorts = CapabilityPorts().Where(p => deviceId is null || p.InstanceId == deviceId || DeviceKey(p) == deviceId).ToArray();
             if (selectedReaders.Length == 0 && selectedPorts.Length == 0) return new("Rejected", "Unknown device/capability identity", repository.Revision);
-            if (externalWaits != 0 && selectedPorts.Any(p => DeviceKey(p).StartsWith("service:", StringComparison.Ordinal)))
-                return new("Rejected", "Service maintenance requires all current service calls to drain", repository.Revision);
+            resources = selectedReaders.Select(r => r.Source.DeviceId).Concat(selectedPorts.Select(DeviceKey)).Distinct().ToArray();
+            if (resources.Any(maintainedResources.ContainsKey)) return new("Rejected", "Selected physical device/service is already under maintenance", repository.Revision);
+            if (selectedPorts.Any(p => DeviceKey(p).StartsWith("service:", StringComparison.Ordinal) && resourceCalls.GetValueOrDefault(DeviceKey(p)) != 0))
+                return new("Rejected", "Selected service calls must drain before maintenance", repository.Revision);
             foreach (var port in selectedPorts) portEpochs.AddOrUpdate(port.InstanceId, 1, (_, value) => value + 1);
             maintenanceOperations.Add(key); owns = true;
+            foreach (var resource in resources) maintainedResources.TryAdd(resource, 0);
+            foreach (var port in selectedPorts)
+                if (capabilityHealth.TryGetValue(port.InstanceId, out var original)) capabilityHealth[port.InstanceId] = original with { Ready = false, Detail = "Maintenance in progress; original confirmation retained" };
             repository.Commit(null, "MaintenanceStarted", Wire.Encode(new { Device = key, Actor = maintenanceSession.Identity, TimeoutMs = Effective.TimeoutMs }));
             using var budget = CancellationTokenSource.CreateLinkedTokenSource(stopping.Token); budget.CancelAfter(Effective.TimeoutMs);
             try
@@ -60,7 +83,7 @@ public sealed partial class ParcelRuntime
                     return true;
                 }).ConfigureAwait(false);
                 repository.Commit(null, "DeviceReconnected", "Actor=" + maintenanceSession.Identity!.Subject + "; device=" + key + "; no original request resent");
-                return new("Reconnected", "Selected lifecycle completed; admission remains paused", repository.Revision);
+                return new("Reconnected", "Selected lifecycle completed; software paused=" + repository.Paused + "; current health is required before dependent work", repository.Revision);
             }
             catch (Exception ex) when (ex is IOException or TimeoutException or OperationCanceledException)
             {
@@ -69,6 +92,10 @@ public sealed partial class ParcelRuntime
                 return new("MaintenanceIncomplete", "Original resources retained; inspect and explicitly retry maintenance", repository.Revision);
             }
         }
-        finally { if (owns) maintenanceOperations.Remove(key); gate.Release(); }
+        finally
+        {
+            if (owns) { foreach (var resource in resources) maintainedResources.TryRemove(resource, out _); maintenanceOperations.Remove(key); }
+            gate.Release();
+        }
     }
 }

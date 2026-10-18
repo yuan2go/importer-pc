@@ -2,7 +2,7 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
-public sealed record ParcelReceiptResponsibility(string Id, string Operation, string Stage, string Request, string Source, string State, string? RawHash);
+public sealed record ParcelReceiptResponsibility(string Id, string Operation, string Stage, string Request, string Source, string State, string? RawHash, string? QueryOccurrence = null, string? Custody = null);
 public sealed partial class ParcelRepository
 {
     public ParcelReceiptResponsibility[] ReceiptResponsibilities(string operation)
@@ -11,13 +11,14 @@ public sealed partial class ParcelRepository
         c.CommandText = "SELECT id,operation,stage,request,source,state,raw_hash FROM parcel_receipts WHERE operation=$op AND (state IN ('Awaiting','RawDurable') OR rowid IN (SELECT rowid FROM parcel_receipts WHERE operation=$op ORDER BY rowid DESC LIMIT 200)) ORDER BY rowid DESC";
         c.Parameters.AddWithValue("$op", operation); using var r = c.ExecuteReader(); List<ParcelReceiptResponsibility> rows = [];
         while (r.Read()) rows.Add(new(r.GetString(0),r.GetString(1),r.GetString(2),r.GetString(3),r.GetString(4),r.GetString(5),r.IsDBNull(6) ? null : r.GetString(6)));
-        return rows.ToArray();
+        return rows.Select(x => x with { QueryOccurrence = CustodyQuery(x.Id), Custody = x.State == "Awaiting" && x.RawHash is null ? "OriginalRawMissing" : null }).ToArray();
     }
     public ParcelReceiptResponsibility? ReceiptById(string id)
     {
         using var c = db.CreateCommand(); c.CommandText = "SELECT id,operation,stage,request,source,state,raw_hash FROM parcel_receipts WHERE id=$id";
         c.Parameters.AddWithValue("$id",id); using var r = c.ExecuteReader();
-        return !r.Read() ? null : new(r.GetString(0),r.GetString(1),r.GetString(2),r.GetString(3),r.GetString(4),r.GetString(5),r.IsDBNull(6) ? null : r.GetString(6));
+        ParcelReceiptResponsibility? row = !r.Read() ? null : new(r.GetString(0),r.GetString(1),r.GetString(2),r.GetString(3),r.GetString(4),r.GetString(5),r.IsDBNull(6) ? null : r.GetString(6));
+        r.Close(); return row is null ? null : row with { QueryOccurrence = CustodyQuery(row.Id), Custody = row.State == "Awaiting" && row.RawHash is null ? "OriginalRawMissing" : null };
     }
     public bool MissingAwaitingRaw(string id) => !File.Exists(Path.Combine(rawRoot, id + ".json")) &&
         PendingReceipts().Any(x => x.Id == id && x.Reply is null) && MissingAwaitingRow(id);
@@ -73,6 +74,7 @@ public sealed partial class ParcelRuntime
         var pending = repository!.PendingReceipts().SingleOrDefault(x => x.Id == command.Owner);
         if (pending.Id is null || !repository.MissingAwaitingRaw(pending.Id) || !operations.TryGetValue(pending.Operation, out var op))
             return new("Rejected", "Only original Awaiting with no recorded raw can be queried; durable/missing/changed originals retain custody isolation", repository.Revision);
+        if (repository.HasReceiptOutcomeBasis(pending.Id)) return new("OutcomeKnownRawMissing", "Business outcome is known; original raw custody, image and package responsibility remain", repository.Revision);
         var kind = ParseStage(pending.Stage); var stage = GetStage(op, kind);
         if (stage is null || stage.Request.Id != pending.Request || stage.State == StageState.Conflict || activeStages.Contains(op.Id + ":" + kind))
             return new("Rejected", "Original stage unavailable, conflicting or in use", repository.Revision);
@@ -80,7 +82,7 @@ public sealed partial class ParcelRuntime
             Actor = maintenanceSession.Identity, Reason = command.Value, MissingRaw = true, Policy = "Authoritative original-query outcome only; absent old raw remains absent and original occurrence retained" });
         await ExecuteStageAsync(op, kind, true, pending.Id, auditReason, command).ConfigureAwait(false);
         ReleaseCompletedImages();
-        return new(repository.ReceiptById(pending.Id)!.State == "OutcomeReconciled" ? "OutcomeReconciled" : "Unresolved",
-            "Original occurrence retained; inspect ReceiptResponsibilities and ReceiptOutcomeReconciled audit. A query never supplies the old raw.", repository.Revision);
+        return new(repository.HasReceiptOutcomeBasis(pending.Id) ? "OutcomeKnownRawMissing" : "Unresolved",
+            "Original occurrence retained; inspect ReceiptResponsibilities and ReceiptOutcomeKnown audit. A query never supplies the old raw.", repository.Revision);
     }
 }

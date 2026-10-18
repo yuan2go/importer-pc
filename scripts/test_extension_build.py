@@ -1,10 +1,15 @@
 """Focused tests for declaration custody and fail-closed publication (no runtime simulation evidence)."""
 import argparse
+from contextlib import redirect_stdout
+import io
 import json
 from pathlib import Path
 import subprocess
+import runpy
+import sys
 import tempfile
 import unittest
+import zipfile
 from unittest.mock import patch
 import extension_build as builder
 
@@ -109,6 +114,61 @@ class ExtensionBuildTests(unittest.TestCase):
         self.assertNotIn(self.key.name, result['PayloadSha256'])
         with patch.object(builder, 'run', side_effect=self.fake_run), self.assertRaises(FileExistsError):
             builder.build(self.args)
+
+    def test_unversioned_template_requires_explicit_version_before_compilation(self):
+        path = self.repo / 'manifest.json'
+        manifest = json.loads(path.read_text()); del manifest['Version']
+        path.write_text(json.dumps(manifest)); self.commit()
+        with patch.object(builder, 'run') as run, self.assertRaisesRegex(ValueError, 'supply --version'):
+            builder.build(self.args)
+        run.assert_not_called()
+        self.assertFalse(self.args.output.exists())
+        self.assertFalse(Path(str(self.args.output) + '.identity.json').exists())
+        self.args.version = '2.0.1'
+        with patch.object(builder, 'run', side_effect=self.fake_run):
+            identity = builder.build(self.args)
+        with zipfile.ZipFile(self.args.output) as archive:
+            self.assertEqual(json.loads(archive.read('manifest.json'))['Version'], '2.0.1')
+        self.assertEqual(identity['Version'], '2.0.1')
+
+    def test_explicit_version_overrides_independent_declared_version(self):
+        self.args.version = '2.0.2'
+        with patch.object(builder, 'run', side_effect=self.fake_run):
+            identity = builder.build(self.args)
+        with zipfile.ZipFile(self.args.output) as archive:
+            self.assertEqual(json.loads(archive.read('manifest.json'))['Version'], '2.0.2')
+        self.assertEqual(identity['Version'], '2.0.2')
+
+    def test_version_rejects_ranges_empty_values_and_non_three_part_numbers(self):
+        for version in ['', '1.2', '1.2.3.4', '01.2.3', '1.02.3', '1.2.03', '1.2.*', '1.2.3-preview', '１.2.3', '1.2.3\n', 123, True]:
+            self.args.version = version
+            with self.subTest(version=version), patch.object(builder, 'run') as run, self.assertRaisesRegex(ValueError, 'three-part'):
+                builder.build(self.args)
+            run.assert_not_called()
+            self.assertFalse(self.args.output.exists())
+
+    def test_checked_in_examples_have_no_reusable_version_default(self):
+        examples = Path(__file__).resolve().parent.parent / 'examples'
+        templates = list(examples.glob('*/manifest.template.json'))
+        self.assertEqual({p.parent.name for p in templates}, {'BarcodeExtension', 'IntegrationExtension', 'ParcelCapabilitiesExtension'})
+        for path in templates:
+            with self.subTest(example=path.parent.name):
+                self.assertNotIn('Version', json.loads(path.read_text()))
+
+    def test_cli_shortcuts_and_independent_definition_keep_explicit_version(self):
+        script = Path(__file__).resolve().parent / 'build-extension.py'
+        for extra, expected in [([], 'BarcodeExtension'), (['--kind', 'observation'], 'BarcodeExtension'),
+                                (['--kind', 'integration'], 'IntegrationExtension'),
+                                (['--definition', str(self.args.definition)], None)]:
+            command = [str(script), '--contract', str(self.args.contract), '--output', str(self.args.output),
+                       '--key', str(self.key), '--publisher', 'test-only', '--trust', str(self.trust),
+                       '--version', '2.0.3', '--dotnet', 'unit-test-dotnet', *extra]
+            with self.subTest(arguments=extra), patch.object(sys, 'argv', command), patch.object(builder, 'build', return_value={}) as build, patch('signal.signal'), redirect_stdout(io.StringIO()):
+                runpy.run_path(str(script), run_name='__main__')
+            args = build.call_args.args[0]
+            self.assertEqual(args.version, '2.0.3')
+            self.assertEqual(args.dotnet, 'unit-test-dotnet')
+            self.assertEqual(args.definition, self.args.definition if expected is None else script.parent.parent / 'examples' / expected / 'extension.build.json')
 
     def test_production_testonly_rejected_before_compilation(self):
         path = self.repo / 'manifest.json'; manifest=json.loads(path.read_text()); manifest['Mode']='Production'; path.write_text(json.dumps(manifest)); self.commit()

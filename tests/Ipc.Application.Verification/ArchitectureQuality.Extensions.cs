@@ -52,9 +52,23 @@ static partial class ArchitectureQuality
                 Check((await app.StageConfigurationAsync(s.Configuration.Revision, seed, "Synthetic settled signed module removal")).Status == "PendingRestart", "safe removal stages complete built-in deployment while retaining original history");
                 Check((await app.ManageCapabilityAsync("extension-uninstall", Wire.Encode(package))).Status == "Rejected", "active resource/package use prevents uninstall before controlled restart");
             }
+            // Same machine/mode registry contains a real stopped legacy Supply root.
+            var supplyDb = Path.Combine(path, "offline-supply", "station.db");
+            var supplyConfig = Wire.Decode<StationConfig>(File.ReadAllText(Path.Combine(workspace, "config/station.simulation.json")));
+            using (var legacy = new Ipc.Supply.SupplyStore(supplyDb))
+                legacy.Commit(legacy.Load(), "SyntheticOfflineSupply", "deployment", "synthetic", config: new(Wire.Id(), "seed", supplyConfig, "synthetic", "Effective", "", DateTimeOffset.UtcNow));
+            store.RegisterConsumer(supplyDb);
             await using (var app = Create())
             {
                 await app.StartAsync(default); await Maintenance(app);
+                if (!keepBackup)
+                {
+                    using (var legacy = new Ipc.Supply.SupplyStore(supplyDb))
+                        legacy.Commit(legacy.Load(), "SyntheticPendingSupply", "legacy-pending", "synthetic", config: new("legacy-pending", "seed", supplyConfig with {Extensions=new([package],[])}, "synthetic", "PendingActivation", "", DateTimeOffset.UtcNow));
+                    Check((await app.ManageCapabilityAsync("extension-uninstall", Wire.Encode(package))).Status == "Rejected", "R04 actual Parcel management retains mixed offline Supply Pending package");
+                    using (var legacy = new Ipc.Supply.SupplyStore(supplyDb))
+                        legacy.Commit(legacy.Load(), "SyntheticRejectedSupply", "legacy-pending", "synthetic", config: new("legacy-pending", "seed", supplyConfig with {Extensions=new([package],[])}, "synthetic", "Rejected", "", DateTimeOffset.UtcNow));
+                }
                 var result = await app.ManageCapabilityAsync("extension-uninstall", Wire.Encode(package));
                 Check(result.Status == (keepBackup ? "Rejected" : "Uninstalled"), keepBackup ? "offline original backup pins exact package after live binding and resources are removed" : "cleared live deployment and settled originals permit real safe uninstall through Application entry");
                 var history = await app.HistoryAsync(); Check(history.Items.Single().Operation.Plc!.Request.Binding.Package == package && history.Items.Single().Operation.Plc!.Attempts == 1, "uninstall decision preserves historical package/request/acceptance facts");
@@ -63,7 +77,7 @@ static partial class ArchitectureQuality
             {
                 Check(store.Inventory().Single().Status == "Uninstalled" && store.Operations().Any(x => x.State == "Uninstalled"), "retirement preserves permanent registration and original uninstall operation");
                 File.WriteAllText(Path.Combine(path, "unavailable-consumer.db"), "Synthetic unreadable offline consumer"); store.RegisterConsumer(Path.Combine(path, "unavailable-consumer.db"));
-                try { store.InspectConsumers(ParcelRepository.InspectRequiredPackages); Check(false, "unreadable offline consumer must not become empty references"); }
+                try { store.InspectConsumers(ExtensionConsumerReaders.Inspect); Check(false, "unreadable offline consumer must not become empty references"); }
                 catch (Exception ex) when (ex is Microsoft.Data.Sqlite.SqliteException or InvalidDataException) { Check(true, "unreadable offline consumer explicitly blocks maintenance rather than clearing references"); }
             }
         }

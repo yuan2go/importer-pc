@@ -131,10 +131,14 @@ static class AcquisitionLifecycle
             Check(right.RetainedAcquisitionCount == 0 && left.RetainedAcquisitionCount == 3, "right completes and releases independently of overloaded left");
             await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
             var before = await app.SnapshotAsync();
-            Check((await app.ReconnectDeviceAsync(left.DeviceId)).Status == "Reconnected", "left reader can reconnect without erasing pending originals");
+            var reconnect = app.ReconnectDeviceAsync(left.DeviceId);
+            await Task.Delay(100);
+            var during = await app.SnapshotAsync().WaitAsync(TimeSpan.FromSeconds(2));
+            Check(!reconnect.IsCompleted && left.Epoch == before.Devices!.Single(x => x.DeviceId == left.DeviceId).Epoch, "left reconnect waits for in-flight capture while snapshots remain readable");
+            factory.Release.TrySetResult();
+            Check((await reconnect).Status == "Reconnected", "left reader reconnect completes only after the original capture releases its lifecycle");
             var after = await app.SnapshotAsync();
             Check(after.Devices!.Single(x => x.DeviceId == right.DeviceId).Epoch == before.Devices!.Single(x => x.DeviceId == right.DeviceId).Epoch, "left reconnect does not change right epoch");
-            factory.Release.TrySetResult();
             var s = await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "slow" && o.Capture?.State == StageState.Accepted) && left.RetainedAcquisitionCount == 1);
             var op = s.Operations.Single(o => o.AdmissionId == "slow");
             Check(op.Image?.Acquisition == op.Acquisition && op.Acquisition!.Epoch != left.Epoch && op.Capture?.Attempts == 1, "slow capture resolves exact pre-reconnect acquisition once; blocked queued observations release");
@@ -146,6 +150,7 @@ static class AcquisitionLifecycle
             Check(durableBeforeRelease && left.RetainedAcquisitionCount == 0, "durable main completion precedes release of the final operation acquisition");
             app.Boundary = null;
 
+            await Wait(app, x => x.Positions!.Single(p => p.Id == "left").Admit);
             factory.LoseNextReply = true;
             app.EmitReferenceAt("left", "unknown", "0001", "unknown-source");
             s = await Wait(app, x => x.Operations.Any(o => o.AdmissionId == "unknown" && o.Capture?.State == StageState.Unknown));

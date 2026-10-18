@@ -10,6 +10,7 @@ public sealed partial class ParcelRepository : IDisposable
     internal Action<string>? Boundary { get; set; }
     readonly SqliteConnection db;
     readonly string rawRoot;
+    public int StorageVersion { get; private set; }
     static readonly DatabaseMigration[] migrations = [new(1, """
         CREATE TABLE parcel_meta(id INTEGER PRIMARY KEY CHECK(id=1),revision INTEGER NOT NULL,paused INTEGER NOT NULL);
         INSERT INTO parcel_meta VALUES(1,0,0);
@@ -36,31 +37,47 @@ public sealed partial class ParcelRepository : IDisposable
         CREATE TABLE parcel_identity_conflicts(id TEXT PRIMARY KEY,body TEXT NOT NULL,acknowledged INTEGER NOT NULL DEFAULT 0);
         CREATE TABLE parcel_configuration_audit(id TEXT PRIMARY KEY,body TEXT NOT NULL);
         CREATE INDEX parcel_receipts_pending ON parcel_receipts(state,operation,stage);
+        """), new(5, """
+        CREATE TABLE parcel_receipt_custody(occurrence TEXT PRIMARY KEY,query_occurrence TEXT,observed_at TEXT NOT NULL,evidence TEXT NOT NULL);
+        CREATE TABLE parcel_archive_versions(operation TEXT NOT NULL,body_hash TEXT NOT NULL,body TEXT NOT NULL,recorded_at TEXT NOT NULL,PRIMARY KEY(operation,body_hash));
+        INSERT INTO parcel_receipt_custody SELECT r.id,
+            (SELECT json_extract(a.detail,'$.QueryOccurrence') FROM parcel_audit a WHERE a.event IN ('ReceiptOutcomeReconciled','ReceiptOutcomeKnown') AND json_valid(a.detail) AND json_extract(a.detail,'$.OriginalOccurrence')=r.id ORDER BY a.seq DESC LIMIT 1),
+            strftime('%Y-%m-%dT%H:%M:%fZ','now'),'Prior outcome resolution does not restore the missing original raw'
+            FROM parcel_receipts r WHERE r.state='OutcomeReconciled' OR EXISTS(SELECT 1 FROM parcel_audit a WHERE a.event='ReceiptOutcomeKnown' AND json_valid(a.detail) AND json_extract(a.detail,'$.OriginalOccurrence')=r.id);
+        UPDATE parcel_receipts SET state='Awaiting' WHERE state='OutcomeReconciled';
         """)];
     public long Revision { get; private set; }
     public bool Paused { get; private set; }
-    public ParcelRepository(string directory, string application, int storageVersion = 4)
+    public ParcelRepository(string directory, string application, int storageVersion = 5, bool allowCustodyUpgrade = false)
     {
-        if (storageVersion is not (2 or 3 or 4)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
+        if (storageVersion is not (2 or 3 or 4 or 5)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
         Directory.CreateDirectory(directory); rawRoot = Path.Combine(directory, "receipts"); Directory.CreateDirectory(rawRoot);
         db = Database.Open(Path.Combine(directory, application + ".db"));
         try
         {
-            RequireLegacySettlement(application, storageVersion);
+            using (var version = db.CreateCommand())
+            {
+                version.CommandText="SELECT count(*) FROM sqlite_master WHERE name='platform_migrations'";
+                if ((long)version.ExecuteScalar()! != 0) { version.CommandText="SELECT coalesce(max(version),0) FROM platform_migrations"; StorageVersion=Convert.ToInt32(version.ExecuteScalar()); }
+            }
+            RequireLegacySettlement(application, storageVersion, allowCustodyUpgrade);
+            if (StorageVersion >= 4 && StorageVersion < storageVersion) ValidateRawInventory();
             Database.Migrate(db, application, migrations.Take(storageVersion).ToArray());
+            StorageVersion=storageVersion;
             using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT revision,paused FROM parcel_meta WHERE id=1";
             using var r = cmd.ExecuteReader(); if (!r.Read()) throw new InvalidDataException("Missing parcel metadata");
             Revision = r.GetInt64(0); Paused = r.GetBoolean(1);
         }
         catch { db.Dispose(); throw; }
     }
-    void RequireLegacySettlement(string application, int storageVersion)
+    void RequireLegacySettlement(string application, int storageVersion, bool allowCustodyUpgrade)
     {
         using var exists = db.CreateCommand();
         exists.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='platform_migrations'";
         if ((long)exists.ExecuteScalar()! == 0) return;
         using var version = db.CreateCommand(); version.CommandText = "SELECT max(version) FROM platform_migrations WHERE application=$app"; version.Parameters.AddWithValue("$app", application);
-        if (version.ExecuteScalar() is not long legacy || legacy >= storageVersion) return;
+        if (version.ExecuteScalar() is not long legacy || legacy >= storageVersion || legacy >= 4) return;
+        if (allowCustodyUpgrade && LegacyCustodyUpgradeEligible(application)) return;
         // Do not strand old unresolved originals behind a future-reader marker. They need
         // their matching old host/implementation; refuse BEFORE adding any future-reader migration.
         using var pending = db.CreateCommand(); pending.CommandText = "SELECT count(*) FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable')";
@@ -72,11 +89,17 @@ public sealed partial class ParcelRepository : IDisposable
     }
     public ParcelOperation[] Load()
     {
-        using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT body FROM parcel_operations ORDER BY rowid";
+        using var cmd = db.CreateCommand();
+        cmd.CommandText = StorageVersion >= 5 ? "SELECT body,NULL FROM parcel_operations UNION ALL SELECT body,body_hash FROM parcel_archives a WHERE EXISTS(SELECT 1 FROM parcel_receipts r WHERE r.operation=a.id AND r.state IN ('Awaiting','RawDurable'))" : "SELECT body,NULL FROM parcel_operations ORDER BY rowid";
         using var r = cmd.ExecuteReader(); List<ParcelOperation> result = [];
-        while (r.Read()) result.Add(Wire.Decode<ParcelOperation>(r.GetString(0))); return result.ToArray();
+        while (r.Read())
+        {
+            var body=r.GetString(0); if(!r.IsDBNull(1) && Wire.Hash(body)!=r.GetString(1)) throw new InvalidDataException("Archived original checksum differs");
+            result.Add(Wire.Decode<ParcelOperation>(body));
+        }
+        return result.ToArray();
     }
-    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null)
+    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null)
     {
         using var tx = db.BeginTransaction();
         if (measurement is not null)
@@ -111,6 +134,12 @@ public sealed partial class ParcelRepository : IDisposable
         }
         if (operation is not null)
         {
+            if (StorageVersion >= 5)
+            {
+                using var prior = db.CreateCommand(); prior.Transaction = tx;
+                prior.CommandText = "INSERT OR IGNORE INTO parcel_archive_versions SELECT id,body_hash,body,archived_at FROM parcel_archives WHERE id=$id; DELETE FROM parcel_archives WHERE id=$id";
+                prior.Parameters.AddWithValue("$id",operation.Id); prior.ExecuteNonQuery();
+            }
             using var save = db.CreateCommand(); save.Transaction = tx;
             using var indexed = db.CreateCommand(); indexed.Transaction = tx;
             indexed.CommandText = "INSERT INTO parcel_history_index(id,admission,observation,position) VALUES($id,$admission,$observation,$position) ON CONFLICT(id) DO NOTHING";
@@ -143,19 +172,20 @@ public sealed partial class ParcelRepository : IDisposable
         }
         if (reconciledOccurrence is not null)
         {
-            // Outcome resolution is linked to a distinct durable authoritative Query.
-            // The original occurrence remains present with NULL raw_hash: no old raw is fabricated.
+            // A different Query proves only the business outcome. The old occurrence
+            // remains Awaiting and all custody/image/package/archive guards keep it.
             using var resolve = db.CreateCommand(); resolve.Transaction = tx;
-            resolve.CommandText = """
-                UPDATE parcel_receipts SET state='OutcomeReconciled'
-                WHERE id=$old AND state='Awaiting' AND raw_hash IS NULL
-                AND EXISTS(SELECT 1 FROM parcel_receipts q WHERE q.id=$query AND q.state='Committed'
-                    AND q.source='Query' AND q.operation=parcel_receipts.operation
-                    AND q.request=parcel_receipts.request AND q.stage=parcel_receipts.stage)
-                """;
+            resolve.CommandText = "SELECT count(*) FROM parcel_receipts r JOIN parcel_receipts q ON q.id=$query WHERE r.id=$old AND r.state='Awaiting' AND r.raw_hash IS NULL AND q.state='Committed' AND q.source='Query' AND q.operation=r.operation AND q.request=r.request AND q.stage=r.stage";
             resolve.Parameters.AddWithValue("$old", reconciledOccurrence);
-            resolve.Parameters.AddWithValue("$query", occurrence ?? throw new InvalidOperationException("Resolution requires its own committed Query"));
-            if (resolve.ExecuteNonQuery() != 1) throw new InvalidDataException("Original missing-raw occurrence or authoritative Query changed");
+            resolve.Parameters.AddWithValue("$query", occurrence ?? outcomeQuery ?? throw new InvalidOperationException("Resolution requires its own committed Query"));
+            if ((long)resolve.ExecuteScalar()! != 1) throw new InvalidDataException("Original missing-raw occurrence or authoritative Query changed");
+            if (StorageVersion >= 5)
+            {
+                using var basis = db.CreateCommand(); basis.Transaction = tx;
+                basis.CommandText = "INSERT INTO parcel_receipt_custody VALUES($old,$query,$at,$evidence) ON CONFLICT(occurrence) DO UPDATE SET query_occurrence=excluded.query_occurrence,observed_at=excluded.observed_at,evidence=excluded.evidence";
+                basis.Parameters.AddWithValue("$old", reconciledOccurrence); basis.Parameters.AddWithValue("$query", occurrence ?? outcomeQuery!);
+                basis.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); basis.Parameters.AddWithValue("$evidence", detail); basis.ExecuteNonQuery();
+            }
         }
         if (command is not null)
         {
@@ -176,12 +206,16 @@ public sealed partial class ParcelRepository : IDisposable
     public void StoreRaw(string occurrence, StageReply reply)
     {
         ExtensionStore.AtomicWrite(Path.Combine(rawRoot, occurrence + ".json"), reply);
+        if (Boundary is not null)
+        {
+            using var hook=db.CreateCommand(); hook.CommandText="SELECT stage FROM parcel_receipts WHERE id=$id";hook.Parameters.AddWithValue("$id",occurrence);
+            Boundary("AfterRawFileDurable:"+(string)hook.ExecuteScalar()!);
+        }
         using var tx = db.BeginTransaction();
         using var cmd = db.CreateCommand(); cmd.Transaction = tx; cmd.CommandText = "UPDATE parcel_receipts SET state='RawDurable',raw_hash=$hash WHERE id=$id AND state='Awaiting'";
         cmd.Parameters.AddWithValue("$id", occurrence); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply)));
         if (cmd.ExecuteNonQuery() != 1) throw new InvalidDataException("Receipt occurrence cannot be reused");
-        using var identity = db.CreateCommand(); identity.Transaction = tx; identity.CommandText = "INSERT INTO parcel_reply_identities VALUES($request,$id,$hash) ON CONFLICT(request,id) DO NOTHING";
-        identity.Parameters.AddWithValue("$request", reply.RequestId); identity.Parameters.AddWithValue("$id", reply.Id); identity.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply))); identity.ExecuteNonQuery();
+        RegisterReplyIdentity(OccurrenceRequest(occurrence, tx), reply, tx);
         tx.Commit();
     }
     public void NoReply(string occurrence)
@@ -207,6 +241,7 @@ public sealed partial class ParcelRepository : IDisposable
             var id = reader.GetString(0); if (File.Exists(Path.Combine(rawRoot, id + ".json"))) continue;
             if (!HasArchivedRaw(id, reader.GetString(1))) throw new InvalidDataException("Durable original raw receipt is missing");
         }
+        ValidateDurableReplyIdentities();
         CleanupArchivedRawFiles();
     }
     public (string Id, string Operation, string Stage, string Request, StageReply? Reply)[] PendingReceipts()
@@ -227,8 +262,11 @@ public sealed partial class ParcelRepository : IDisposable
     }
     public void RecoverRaw(string id, StageReply reply)
     {
-        using var cmd = db.CreateCommand(); cmd.CommandText = "UPDATE parcel_receipts SET state='RawDurable',raw_hash=$hash WHERE id=$id AND state IN ('Awaiting','RawDurable')";
-        cmd.Parameters.AddWithValue("$id", id); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply))); cmd.ExecuteNonQuery();
+        using var tx = db.BeginTransaction();
+        using var cmd = db.CreateCommand(); cmd.Transaction = tx; cmd.CommandText = "UPDATE parcel_receipts SET state='RawDurable',raw_hash=$hash WHERE id=$id AND state IN ('Awaiting','RawDurable')";
+        cmd.Parameters.AddWithValue("$id", id); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply)));
+        if (cmd.ExecuteNonQuery() != 1) throw new InvalidDataException("Original recovery occurrence changed");
+        RegisterReplyIdentity(OccurrenceRequest(id, tx), reply, tx); Boundary?.Invoke("BeforeRecoveredReplyIdentityCommit"); tx.Commit();
     }
     public bool HasMeasurement(WeightMeasurement m)
     {

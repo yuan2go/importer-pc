@@ -86,18 +86,18 @@ static partial class ArchitectureQuality
                 "old polluted Blocked projection is recovered from original committed main raw without rewriting requests");
             var denied=await Command(app,"ReconcileReceipt",occurrence,"Must authenticate first"); Check(denied.Status=="Rejected","missing receipt recovery requires paused authenticated maintenance");
             await Maintenance(app); var result=await Command(app,"ReconcileReceipt",occurrence,"Original receiver queried; authoritative upload result and image verified");
-            Check(result.Status=="OutcomeReconciled","explicit recovery links original missing occurrence to its own authoritative Query/T3");
-            await Wait(app,s=>s.Operations.Single(o=>o.Id==before.Id).ImageReleased);
+            Check(result.Status=="OutcomeKnownRawMissing","explicit recovery links business outcome to its own Query/T3 while original raw responsibility remains");
+            Check(!(await app.OperationAsync(before.Id))!.ImageReleased,"known business outcome does not release missing original raw/image custody");
             var rows=Wire.Decode<ParcelReceiptResponsibility[]>((await Command(app,"ReceiptResponsibilities",before.Id)).Reason);
             var original=rows.Single(r=>r.Id==occurrence);
-            Check(original.State=="OutcomeReconciled" && original.Source=="Submit" && original.RawHash is null && rows.Any(r=>r.Source=="Query" && r.State=="Committed" && r.RawHash is not null),
-                "original absent raw remains absent, original occurrence retained, distinct query has durable raw");
-            Check(!File.Exists(Path.Combine(DirectoryFor(name,c),before.Image!.RelativeFile)) && (await app.OperationAsync(before.Id))!.Upload!.Attempts==1,
-                "only after authoritative disposition does the original policy release bytes; upload is never resubmitted");
+            Check(original.State=="Awaiting" && original.Source=="Submit" && original.RawHash is null && rows.Any(r=>r.Source=="Query" && r.State=="Committed" && r.RawHash is not null),
+                "original Awaiting remains pending with absent raw; distinct query has its own durable raw");
+            Check(File.Exists(Path.Combine(DirectoryFor(name,c),before.Image!.RelativeFile)) && (await app.OperationAsync(before.Id))!.Upload!.Attempts==1,
+                "original missing raw keeps image bytes and upload is never resubmitted");
             await Command(app,"ArchiveHistory",value:"Synthetic settled archive after explicit receipt resolution");
             Check((await app.OperationAsync(before.Id))!.Wcs!.Request.Id==before.Wcs!.Request.Id,"archive keeps frozen original request after outcome recovery");
         }
-        await using(var app=await Open(c,name)) Check((await app.OperationAsync(before.Id))!.ImageReleased,"receipt outcome disposition and image release survive restart");
+        await using(var app=await Open(c,name)) Check(!(await app.OperationAsync(before.Id))!.ImageReleased,"independent missing raw/image custody survives restart after outcome query");
         await LegacyProjection02Checks(c,before.Id);
         await Relocation02Checks(c);
         await LegacyConflict02Checks();
@@ -109,7 +109,7 @@ static partial class ArchitectureQuality
         using(var db=new SqliteConnection("Data Source="+database))
         {
             db.Open(); using var q=db.CreateCommand(); q.CommandText="UPDATE parcel_operations SET body=json_set(body,'$.State','Blocked','$.Reason','RawUnavailable:old-version') WHERE id=$id"; q.Parameters.AddWithValue("$id",id); q.ExecuteNonQuery();
-            q.CommandText="DROP TABLE parcel_history_index; DROP TABLE parcel_archives; DROP TABLE parcel_reply_identities; DROP TABLE parcel_archived_receipts; DROP TABLE parcel_overload_ack; DROP TABLE parcel_identity_conflicts; DROP TABLE parcel_configuration_audit; DELETE FROM platform_migrations WHERE version=4"; q.ExecuteNonQuery();
+            q.CommandText="DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version=5; DROP TABLE parcel_history_index; DROP TABLE parcel_archives; DROP TABLE parcel_reply_identities; DROP TABLE parcel_archived_receipts; DROP TABLE parcel_overload_ack; DROP TABLE parcel_identity_conflicts; DROP TABLE parcel_configuration_audit; DELETE FROM platform_migrations WHERE version=4"; q.ExecuteNonQuery();
         }
         var hash=Wire.FileHash(database); var backup=Path.Combine(root,"legacy-repair-preserved.db");
         Check(ParcelRepository.RepairLegacyMain(database,hash,backup,new SportmasterFlow(),"Offline original receipt custody checked")==1 && File.Exists(backup+".recovery/COMPLETED.json"),"offline old-schema repair creates a full original recovery set before changing derived main projection");

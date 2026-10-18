@@ -116,7 +116,8 @@ static class ApplicationArchitecture
             await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
             Check((await app.ReconnectDeviceAsync(captureOnly.Scale!.InstanceId)).Status == "Reconnected", "scale re-registers its own measurement epoch without changing parcel acquisition");
             Check(!scales!.Probe!.EmitOld(new(Wire.Id(), op.AdmissionId, captureOnly.Scale.Target, 2.345m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow)), "late old-generation scale callback cannot supply current weight");
-            await Command(app, "Resume");
+            await Wait(app, x => x.Availability!.Resume);
+            Check((await Command(app, "Resume")).Status == "Persisted", "scale maintenance requires fresh capability health before explicit Resume");
             Check((await app.LogoutAsync()).Status == "Rejected" && (await app.LoginAsync("bob", "SIMULATION_ONLY")).Status == "Rejected", "inherited session guard protects original unfinished operator");
             app.EmitReferenceWeight(new(Wire.Id(), op.AdmissionId, captureOnly.Scale!.Target, 0, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow)); await Task.Delay(50);
             Check((await app.SnapshotAsync()).Operations.Single().Weight is null, "enabled scale rejects zero instead of missing-weight fallback");
@@ -227,7 +228,7 @@ static class ApplicationArchitecture
         using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db")))
         {
             db.Open(); using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)cmd.ExecuteScalar()! == 4, "settled database2 upgrades with unchanged SQL1-3 and appended archive/audit SQL4");
+            Check((long)cmd.ExecuteScalar()! == 5, "settled database2 upgrades with unchanged SQL1-4 and appended independent custody SQL5");
         }
         await Task.CompletedTask;
     }

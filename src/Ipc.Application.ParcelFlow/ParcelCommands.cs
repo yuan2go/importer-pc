@@ -13,11 +13,13 @@ public sealed partial class ParcelRuntime
             List<string> reasons = []; List<string> auxiliaryReasons = []; var now = DateTimeOffset.UtcNow;
             if (factory.AdmissionFailure(Effective) is { } qualificationFailure) reasons.Add(qualificationFailure);
             if (failure is not null) reasons.Add(failure);
+            if (configuration.Current.Confirmation?.Required == true) reasons.Add("ConfigurationConfirmationRequired: inspect the preserved legacy envelope; successful resource startup and authenticated current-revision confirmation are required");
             if (!CapacityAvailable) reasons.Add(storageCapacityFailure ?? "Unresolved operation capacity exhausted; original responsibilities cannot be archived");
             foreach (var conflict in identityConflicts.Values) reasons.Add("IdentityConflict:" + conflict.Id + "; positions=" + string.Join(",", conflict.Positions));
             if (overload != 0) reasons.Add("Overload: rejected callback; inspect parcel and acknowledge while paused");
             if (!SessionValid) reasons.Add("Operator authentication required for new admission");
             if (repository.Paused) reasons.Add("Software admission paused; this is not an emergency stop");
+            reasons.AddRange(maintainedResources.Keys.Order().Select(resource => "MaintenanceInProgress:" + resource));
             if (readers.Values.Any(r => r.Health?.IsValid(DateTimeOffset.UtcNow) != true)) reasons.Add("Reader confirmation missing/expired");
             if (!ImageCapacityAvailable()) reasons.Add("Temporary image capacity/backlog exhausted; existing originals retained");
             if (operations.Values.Any(NeedsReconciliation)) reasons.Add("Original stage outcome or receipt responsibility is unresolved");
@@ -28,6 +30,7 @@ public sealed partial class ParcelRuntime
             foreach (var reader in readers.Values.Select(r => r.Health).OfType<DeviceState>()) health.Add(new(reader.DeviceId, reader.IsValid(DateTimeOffset.UtcNow), reader.ConfirmedAt ?? reader.UpdatedAt, reader.ValidUntil ?? reader.UpdatedAt, reader.ValidityReason(DateTimeOffset.UtcNow) ?? reader.Source));
             foreach (var h in health.Where(x => !x.Ready))
                 (Effective.Images?.Strategy == UploadStrategy.Attached && h.InstanceId == Effective.Images.Uploader?.InstanceId ? auxiliaryReasons : reasons).Add("Capability unavailable: " + h.InstanceId);
+            auxiliaryReasons.AddRange(repository.PendingReceipts().Select(x=>x.Operation+": original receipt custody "+x.Id+"; stage="+x.Stage+"; raw="+(x.Reply is null?"missing":"durable pending T3")+"; outcome="+(repository.HasReceiptOutcomeBasis(x.Id)?"known by separate Query":"unresolved")));
             if (repository.ArchiveCleanupFailure is { } cleanup) auxiliaryReasons.Add(cleanup);
             auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : Effective.SchemaVersion >= 3 && CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
@@ -56,6 +59,21 @@ public sealed partial class ParcelRuntime
                 case "ReceiptResponsibilities" when command.Owner is not null:
                     return new("ReceiptResponsibilities", Wire.Encode(repository.ReceiptResponsibilities(command.Owner)), repository.Revision);
                 case "ReconcileReceipt": return await ReconcileReceiptAsync(command).ConfigureAwait(false);
+                case "ConfirmConfiguration" when CanConfigure && command.Owner is not null && !string.IsNullOrWhiteSpace(command.Value):
+                    if (!AdmissionCapabilitiesReady() || readers.Values.Any(r => r.Health?.IsValid(DateTimeOffset.UtcNow) != true))
+                        return new("Rejected", "Current resource health must be confirmed before Effective maintenance confirmation", repository.Revision);
+                    // The inspected runtime, configuration CAS and content identity are independent
+                    // of the latest application projection used to submit this command.
+                    var owner = command.Owner.Split(':', 3);
+                    if (owner.Length != 3 || !Guid.TryParseExact(owner[0], "N", out var inspectedRuntime) || !long.TryParse(owner[1], out var configurationRevision))
+                        return new("Rejected", "Owner must be runtimeIdN:configurationRevision:effectiveSha256", repository.Revision);
+                    if (inspectedRuntime != runtimeId) return new("Conflict", "Runtime identity changed; inspect this instance before confirming Effective", repository.Revision);
+                    try { configuration!.ConfirmEffective(configurationRevision, owner[2], maintenanceSession.Identity!.Subject, command.Value); }
+                    catch (InvalidOperationException ex) { return new("Conflict", ex.Message, repository.Revision); }
+                    catch (InvalidDataException ex) { return new("Rejected", ex.Message, repository.Revision); }
+                    repository.Commit(null, "ConfigurationEffectiveConfirmed", Wire.Encode(new { ConfigurationRevision = configuration!.Current.Revision,
+                        RuntimeId = runtimeId, EffectiveHash = owner[2], Maintenance = maintenanceSession.Identity!.Subject, Reason = command.Value }), command: command);
+                    break;
                 case "Pause": repository.Commit(null, "AdmissionPaused", "Software pause only", paused: true, command: command); break;
                 case "Resume" when CanResume():
                     repository.Commit(null, "AdmissionResumed", "Other stage guards remain independent", paused: false, command: command); break;

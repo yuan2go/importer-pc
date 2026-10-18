@@ -135,9 +135,11 @@ static partial class ArchitectureQuality
     static async Task ConfigurationChecks()
     {
         var c = Config("sportmaster");
+        long beforeConfigurationRevision = -1;
         await using (var app = await Open(c, "config-audit"))
         {
             await Maintenance(app); var s = await app.SnapshotAsync();
+            beforeConfigurationRevision=s.Configuration.Revision;
             var candidate = s.Configuration.Effective with { TimeoutMs = 1800 };
             Check((await app.ValidateConfigurationAsync(candidate)).Status == "Validated" && (await app.SnapshotAsync()).Configuration.Pending is null, "full topology candidate can be validated without saving or activating");
             app.Boundary = p => { if (p == "AfterConfigurationStaged") throw new IOException("Synthetic envelope/audit interruption"); };
@@ -149,7 +151,7 @@ static partial class ArchitectureQuality
             var s = await app.SnapshotAsync(); Check(s.Configuration.Effective.TimeoutMs == 1800, "controlled restart activates complete original candidate");
             using var db = new SqliteConnection("Data Source=" + Path.Combine(DirectoryFor("config-audit", c), "sportmaster.db")); db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT body FROM parcel_configuration_audit";
             var audit = Wire.Decode<ConfigurationChangeAudit>((string)q.ExecuteScalar()!);
-            Check(audit.Actor?.Subject == "maintenance" && audit.Status == "Activated" && audit.BeforeRevision == 0 && audit.AfterRevision == 3 && s.Configuration.Revision == 3 && s.Configuration.Activation?.Outcome == "Activated" && audit.BeforeHash != audit.CandidateHash && audit.Reason.Contains("timeout"), "restart closes configuration audit with original maintenance actor/reason, before/after revisions and exact hashes");
+            Check(audit.Actor?.Subject == "maintenance" && audit.Status == "Activated" && audit.BeforeRevision == beforeConfigurationRevision && audit.AfterRevision == beforeConfigurationRevision+3 && s.Configuration.Revision == beforeConfigurationRevision+3 && s.Configuration.Activation?.Outcome == "Activated" && audit.BeforeHash != audit.CandidateHash && audit.Reason.Contains("timeout"), "restart closes configuration audit with original maintenance actor/reason, before/after revisions and exact hashes");
             await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY");
             Check((await app.StageConfigurationAsync(0, s.Configuration.Effective, "Stale synthetic editor")).Status == "Rejected", "configuration CAS still rejects a stale full editor after activation");
         }

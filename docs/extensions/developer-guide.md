@@ -27,7 +27,7 @@
 
 声明自身必须处于SourceRoots或BuildInputs中。`SourceRoots:["."]`可选整个独立仓库；不要把输出/密钥置入已声明源码范围。源范围的未提交改动或未跟踪输入、浅历史、链接/越界路径拒绝。只复制声明范围的Git已跟踪普通文件到临时隔离根，再locked restore/build；未声明的外部构建文件不会继承。构建代码是开发者获授权的可信代码，构建器不是恶意MSBuild的沙箱。
 
-`Manifest`必须明确包含SchemaVersion=1、Id、三段Version、Runtime=net10.0、Rid、ContractMajor=1、Mode、Dependencies和Prerequisites；不填写生成的SourceCommit、Publisher、Files、模块、哈希。`Dependencies`为完整精确`Id/Version/ManifestSha256`直接依赖，不能填版本范围。`Modules`是`Id/Assembly/EntryType/Kind/MaximumInstances`数组；每个模块映射独立schema文件，纯依赖类库可用空数组和空映射。`Content`逐项声明编译产物或提交的源文件及包内路径；私有DLL不能漏包，宿主公共DLL不能打进插件。跨包依赖使用签名的精确包，不复制另一包的实现冒充自己的内容。
+`Manifest`必须明确包含SchemaVersion=1、Id、Runtime=net10.0、Rid、ContractMajor=1、Mode、Dependencies和Prerequisites；仓库示例模板不填写Version，构建时必须用`--version`提供新的三段不可变版本。独立工程已有显式Version的声明继续兼容，`--version`可显式覆盖；最终签名manifest的Version必为严格三段数字。不填写生成的SourceCommit、Publisher、Files、模块、哈希。`Dependencies`为完整精确`Id/Version/ManifestSha256`直接依赖，不能填版本范围。`Modules`是`Id/Assembly/EntryType/Kind/MaximumInstances`数组；每个模块映射独立schema文件，纯依赖类库可用空数组和空映射。`Content`逐项声明编译产物或提交的源文件及包内路径；私有DLL不能漏包，宿主公共DLL不能打进插件。跨包依赖使用签名的精确包，不复制另一包的实现冒充自己的内容。
 
 参数沿现有有限schema：string/integer/boolean/choice/string-list/secret-reference，分组、标签、单位、范围/长度/集合上限、默认、条件必填、只读、说明；EditRole=Maintenance，ApplyLevel=Restart。敏感参数仅存`credential:名称`引用，不能在参数或包中写密码。宿主直接从schema生成表单，不执行包内XAML/脚本。完整可复制声明见[观察示例](../../examples/BarcodeExtension/extension.build.json)、[Parcel能力示例](../../examples/ParcelCapabilitiesExtension/extension.build.json)，项目只引用冻结公共契约；不加入宿主ProjectReference。
 
@@ -68,6 +68,6 @@ dotnet /frozen/app/Ipc.Assembly.dll --action extension-inspect --mode Simulation
 dotnet /frozen/app/Ipc.Assembly.dll --action extension-install --mode Simulation --file /media/selected.ipcx --sha256 ORIGINAL_UPPERCASE_SHA256 --extension-root /reference/store --extension-trust /independent/trust.json
 ```
 
-安装成功后，在完整schema3候选中加入精确Extensions.Packages、Instances；reader.Driver=`extension:实例ID`。类型化能力Implementation=`extension:包ID/模块ID`、Package/Module与库存保持同一修订；每个位置绑定自己的稳定设备。校验后用加载时配置Revision CAS保存PendingRestart，清偿旧责任后受控退出/重启，资源成功才确认Effective。安装、绑定、激活、健康、可接纳是独立状态。完整命令/恢复/安全卸载及离线备份消费者见[维护指南](../runtime/architecture-quality-closure-01.md)。
+安装成功后，在完整schema3候选中加入精确Extensions.Packages、Instances；reader.Driver=`extension:实例ID`。类型化能力Implementation=`extension:包ID/模块ID`、Package/Module与库存保持同一修订；每个位置绑定自己的稳定设备。校验后用加载时配置Revision CAS保存PendingRestart，外部业务责任满足应用屏障后受控退出/重启，资源成功才确认Effective；若仅剩已由原Query证实结果的缺raw资料，允许配置过渡但原图、归档和包引用继续保有。旧账没有资源成功证据时，还需按维护指南读取原envelope/hash并显式确认，不能把旧Effective直接当成已激活成功。安装、绑定、激活、健康、可接纳是独立状态。完整命令/恢复/安全卸载及离线备份消费者见[维护指南](../runtime/architecture-quality-closure-01.md)。
 
 新Application修改清单：所属Flow与Desktop、Assembly/Desktop的条件ProjectReference和注册根、compositions产品闭包/视图、package-application及对应锁文件；超出Parcel语义可独立IBusinessRuntime，不修改Platform为万能业务引擎。现有公共ID、配置键、原JSON和包身份保持兼容。Windows安装/UAC/ACL、实际SDK资源寿命及现场逐项NOT_RUN/BLOCKED。

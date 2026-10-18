@@ -11,7 +11,7 @@ static class ParcelCli
         if (!args.Contains("--action")) return false;
         ParcelCapabilityFactory.RegisterContracts();
         var map = args.Chunk(2).ToDictionary(x => x[0], x => x.Length == 2 ? x[1] : throw new ArgumentException("Missing value"));
-        if (map.Keys.Any(x => x is not ("--action" or "--mode" or "--file" or "--extension-trust" or "--dependency-files" or "--extension-root" or "--sha256" or "--destination" or "--data-root" or "--package" or "--operation" or "--reason"))) throw new ArgumentException("Unknown extension option");
+        if (map.Keys.Any(x => x is not ("--action" or "--mode" or "--file" or "--extension-trust" or "--dependency-files" or "--extension-root" or "--sha256" or "--destination" or "--data-root" or "--package" or "--operation" or "--reason" or "--original-release" or "--occurrence" or "--wal-sha256"))) throw new ArgumentException("Unknown extension option");
         var mode = Enum.Parse<RunMode>(map.GetValueOrDefault("--mode", "Simulation"));
         if (!Enum.IsDefined(mode)) throw new InvalidDataException("Unknown extension management mode");
         if (map["--action"] is "deployment-identity" or "deployment-check")
@@ -31,6 +31,20 @@ static class ParcelCli
                 return true;
             }
             finally { factory.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+        }
+        if (map["--action"] == "recover-legacy-receipt")
+        {
+            var directory=Path.GetDirectoryName(Path.GetFullPath(map["--file"]))!;
+            var dataRoot=Directory.GetParent(directory)!.Parent!.Parent!.FullName;
+            using var cancellation=new CancellationTokenSource();
+            var factory=new ParcelCapabilityFactory(new(directory,dataRoot,null,null));
+            try
+            {
+                Console.WriteLine(Wire.Encode(ParcelLegacyReceiptRecovery.RecoverAsync(map["--file"],map["--sha256"],map["--destination"],map["--occurrence"],map["--original-release"],map["--reason"],ParcelAssembly.Definition(),
+                    (json,config,data,t)=>OriginalParcelQuery.QueryAsync(map["--original-release"],json,"image-upload",config,data,t),
+                    (backup,c)=>{factory.Normalize(c);factory.RegisterBackup(backup,c);},cancellation.Token,map.GetValueOrDefault("--wal-sha256")).GetAwaiter().GetResult())); return true;
+            }
+            finally {factory.DisposeAsync().AsTask().GetAwaiter().GetResult();}
         }
         if (map["--action"] == "repair-main-projection")
         {
@@ -71,11 +85,11 @@ static class ParcelCli
             : MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(paths.Root, "reference-leases"));
         var store = new ExtensionStore(paths.Root, Wire.Decode<ExtensionTrust>(File.ReadAllText(paths.TrustFile)), mode, leases);
         if (map["--action"] == "extension-install") Console.WriteLine(Wire.Encode(store.Install(map["--file"], map["--sha256"])));
-        else if (map["--action"] == "extension-recover") Console.WriteLine(Wire.Encode(store.Recover(map["--operation"], refreshReferences: () => store.InspectConsumers(ParcelRepository.InspectRequiredPackages))));
+        else if (map["--action"] == "extension-recover") Console.WriteLine(Wire.Encode(store.Recover(map["--operation"], refreshReferences: () => store.InspectConsumers(Ipc.Assembly.ExtensionConsumerReaders.Inspect))));
         else if (map["--action"] == "extension-uninstall")
         {
             var package = Wire.Decode<PackageReference>(map["--package"]);
-            store.Uninstall(package, () => store.InspectConsumers(ParcelRepository.InspectRequiredPackages));
+            store.Uninstall(package, () => store.InspectConsumers(Ipc.Assembly.ExtensionConsumerReaders.Inspect));
             Console.WriteLine(Wire.Encode(store.Inventory().Single(x => x.Package == package)));
         }
         else if (map["--action"] == "extension-operations") Console.WriteLine(Wire.Encode(store.Operations()));

@@ -1,6 +1,6 @@
 # UI实现与实物状态
 
-Sportmaster当前WPF按left/right显示各自reader、作业、条码、格口及主链/后台责任，当前位命令与历史Owner分别选择；共享Application及连接。维护页已有完整schema3 JSON读取、校验、保存及加载时Revision CAS，旧单Reader表单仍只读保护拓扑。草稿、Pending、最后确认Effective、ActivationFailed分别显示。DirectPlc完整UI按已批准延期；不新增Sportmaster展图或长期图库。
+Sportmaster当前WPF按left/right显示各自reader、作业、条码、格口及主链/后台责任，当前位命令与历史Owner分别选择；共享Application及连接。维护页已有完整schema3 JSON读取、校验、保存及加载时Revision CAS，旧单Reader表单仍只读保护拓扑。草稿、Pending、已确认Effective、尚待确认的当前运行输入和ActivationFailed分别显示。维护页“运行输入确认”读取原配置账、原字节SHA256、读取时运行实例/配置修订及当前输入；确认绑定读取时三段Owner，自动刷新不推进该确认身份，也不覆盖未保存配置草稿。旧账资源启动成功仍须暂停/维护认证及检查说明，确认后仍保留软件暂停。异常恢复页列原接收发生及OriginalRawMissing/关联Query；Query只证明结果，原Awaiting及原图、归档、包资料责任保留。DirectPlc完整UI按已批准延期；不新增Sportmaster展图或长期图库。
 
 来源为[v1.1实物与完整交接](ss-ui-vis-001-v1.1/README.md)，原HTML/CSS/JS及34张同源PNG保持原身份。新WPF是Application业务实现，不能据此声称旧HTML/RV已修复。实际Windows截图0；双窗、DPI/HID、声音/触控及安装交互NOT_RUN。跨平台真实VM/CAS检查与WPF交叉构建分别报告。[N01前原字节](../archive/pre-architecture-quality-02/README.md)。
 

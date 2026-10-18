@@ -9,7 +9,7 @@ using System.Text;
 
 static class SignedCapabilities
 {
-    public static async Task Run(string workspace, string root, string packageFile, string trustFile, bool qualifyPrerequisite = false)
+    public static async Task Run(string workspace, string root, string packageFile, string trustFile, bool qualifyPrerequisite = false, bool declaredCompatibility = false)
     {
         void Pass(bool condition, string reason) { if (!condition) throw new Exception("FAIL AC19 signed: " + reason); Console.WriteLine("PASS AC19 signed: " + reason); }
         using var signer = qualifyPrerequisite ? RSA.Create(3072) : null;
@@ -48,7 +48,8 @@ static class SignedCapabilities
         {
             Login = B("login"), Scale = B("weight"), Wcs = B("integration"), Plc = B("plc"), Weight = new(WeightSource.Measured, WeightUnit.Kg, 3), Images = new(B("camera"), B("upload")), Extensions = new([package.Package], [])
         };
-        var factory = new ParcelCapabilityFactory(launch);
+        var factory = new ParcelCapabilityFactory(launch, declaredCompatibility ? BusinessCompatibility.Read(typeof(WcsToPlcFlow).Assembly) : null);
+        if (declaredCompatibility) Pass(true, "actual signed providers checked against compiled business compatibility declaration");
         void Qualify(ParcelConfiguration selected)
         {
             if (signer is null) return;

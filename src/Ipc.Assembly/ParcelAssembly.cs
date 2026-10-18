@@ -15,7 +15,9 @@ public static class ParcelAssembly
     public static IBusinessRuntime Create(BusinessLaunch launch)
     {
         ParcelCapabilityFactory.RegisterContracts();
-        var factory = new ParcelCapabilityFactory(launch);
+        var businessAssembly = Definition().GetType().Assembly;
+        var compatibility = BusinessCompatibility.Read(businessAssembly);
+        var factory = new ParcelCapabilityFactory(launch, compatibility, businessAssembly);
 #if SPORTMASTER
         var runtime = Ipc.Application.Sportmaster.SportmasterApplication.Create(launch, factory);
 #elif DIRECTPLC
@@ -25,7 +27,7 @@ public static class ParcelAssembly
 #else
 #error A registered Application must be selected at build time.
 #endif
-        ApplicationReleaseValidation.ValidateIfPublished(AppContext.BaseDirectory, runtime.Id, runtime.Presentation);
+        ApplicationReleaseValidation.ValidateIfPublished(AppContext.BaseDirectory, runtime.Id, runtime.Presentation, businessAssembly);
         return runtime;
     }
 }

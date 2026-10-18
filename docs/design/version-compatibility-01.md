@@ -6,7 +6,7 @@ WP-IPC-VERSION-COMPATIBILITY-01；用户2026-10-19授权。基线main b2dc55b60f
 
 采用精确声明与实际证据，继承现有精确包依赖、契约指纹、能力要求、单一配置修订和原请求冻结。不增加版本范围解析器或第二资格系统；自动推断兼容无法代替验证。仅给组合表写人工PASS无法绑定运行字节，故不采用。
 
-三个Parcel业务的项目Version为版本来源，组合声明中的版本必须一致。业务内嵌自己的兼容声明（config/compatibility/*.json），列出允许的提供者kind、implementation、version、contract；无通配符。声明随业务版本交付，不能由运行配置扩大。构建同一个业务的多个UI仍共享原实例；不修改页面或业务状态机。Supply/Inspection保持原产品版本与路径，不冒充本包改造成独立扩展。
+三个Parcel业务的项目Version为版本来源，组合声明中的版本必须一致。业务内嵌自己的兼容声明（config/compatibility/*.json），按ProviderSets列出允许共同出现的提供者kind、implementation、version、contract；所选全部成员必须落入同一个集合，无通配符。声明随业务版本交付，不能由运行配置扩大。构建同一个业务的多个UI仍共享原实例；不修改页面或业务状态机。Supply/Inspection保持原产品版本与路径，不冒充本包改造成独立扩展。
 
 Application发行清单schema2含BusinessVersion、BusinessAssembly、CompatibilitySha256，继续保有SourceCommit、视图/布局、文件SHA。装配前验证实际业务程序集版本和内嵌声明；外部声明文件必须与内嵌字节一致。新业务拒绝schema1降级，历史schema1交给其匹配旧发布使用；无发行清单的源码构建仍明确属于开发路径。Platform契约字节变化要求扩展新版本重建，不能重签覆盖旧版本。
 

@@ -13,6 +13,8 @@ var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--version-compatibility")) { await VersionCompatibility.Run(workspace, root); return; }
+if (args.Contains("--signed-business-compatibility")) { var i = Array.IndexOf(args, "--signed-business-compatibility"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2]), declaredCompatibility: true); return; }
 if (args.Contains("--application-architecture")) { await ApplicationArchitecture.Run(workspace, root); return; }
 if (args.Contains("--qualified-capabilities")) { var i = Array.IndexOf(args, "--qualified-capabilities"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2]), true); return; }
 if (args.Contains("--signed-capabilities")) { var i = Array.IndexOf(args, "--signed-capabilities"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }

@@ -14,11 +14,20 @@ static class ParcelCli
         if (map.Keys.Any(x => x is not ("--action" or "--mode" or "--file" or "--extension-trust" or "--dependency-files" or "--extension-root" or "--sha256" or "--destination" or "--data-root"))) throw new ArgumentException("Unknown extension option");
         var mode = Enum.Parse<RunMode>(map.GetValueOrDefault("--mode", "Simulation"));
         if (!Enum.IsDefined(mode)) throw new InvalidDataException("Unknown extension management mode");
+        if (map["--action"] == "business-identity")
+        {
+            var assembly = ParcelAssembly.Definition().GetType().Assembly;
+            Console.WriteLine(Wire.Encode(new { ApplicationId = ParcelAssembly.Definition().Id,
+                BusinessVersion = BusinessCompatibility.VersionOf(assembly), BusinessAssembly = Path.GetFileName(assembly.Location),
+                CompatibilitySha256 = BusinessCompatibility.Fingerprint(assembly), Declaration = BusinessCompatibility.Read(assembly) }));
+            return true;
+        }
         if (map["--action"] is "deployment-identity" or "deployment-check")
         {
             var file = Path.GetFullPath(map["--file"]);
             var launch = new BusinessLaunch(Path.GetDirectoryName(file)!, map.GetValueOrDefault("--data-root", Path.Combine(Path.GetDirectoryName(file)!, "data")), null, null);
-            var factory = new ParcelCapabilityFactory(launch);
+            var businessAssembly = ParcelAssembly.Definition().GetType().Assembly;
+            var factory = new ParcelCapabilityFactory(launch, BusinessCompatibility.Read(businessAssembly), businessAssembly);
             try
             {
                 var c = factory.Normalize(Wire.Decode<ParcelConfiguration>(File.ReadAllText(file)));
@@ -51,7 +60,7 @@ static class ParcelCli
                 var releaseFile = Path.Combine(AppContext.BaseDirectory, "application-release.json");
                 if (!File.Exists(releaseFile)) throw new UnauthorizedAccessException("Elevated Application helper requires a frozen protected release");
                 var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(releaseFile));
-                ApplicationReleaseValidation.ValidateIfPublished(AppContext.BaseDirectory, release.ApplicationId, new(release.Views, release.Layouts));
+                ApplicationReleaseValidation.ValidateIfPublished(AppContext.BaseDirectory, release.ApplicationId, new(release.Views, release.Layouts), ParcelAssembly.Definition().GetType().Assembly);
                 MachineRuntimePolicy.RequireProtectedApplicationInstaller(AppContext.BaseDirectory, release.Files.Keys.Append("application-release.json").ToArray());
             }
         }

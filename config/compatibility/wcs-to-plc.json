@@ -1,0 +1,148 @@
+{
+  "SchemaVersion": 1,
+  "ApplicationId": "wcs-to-plc",
+  "ProviderSets": [
+    {
+      "Id": "builtin-reference",
+      "Providers": [
+        {
+          "Kind": "observation",
+          "Implementation": "manual",
+          "Version": "1.0.0",
+          "Contract": "CONTROLLED-OBSERVATION-v1"
+        },
+        {
+          "Kind": "weight",
+          "Implementation": "reference-weight",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "reference-integration",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "plc",
+          "Implementation": "reference-plc",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        }
+      ]
+    },
+    {
+      "Id": "signed-reference",
+      "Providers": [
+        {
+          "Kind": "observation",
+          "Implementation": "manual",
+          "Version": "1.0.0",
+          "Contract": "CONTROLLED-OBSERVATION-v1"
+        },
+        {
+          "Kind": "weight",
+          "Implementation": "reference-weight",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "reference-integration",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "plc",
+          "Implementation": "reference-plc",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "weight",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-weight",
+          "Version": "1.4.1",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "login",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-login",
+          "Version": "1.4.1",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-camera",
+          "Version": "1.4.1",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-upload",
+          "Version": "1.4.1",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-integration",
+          "Version": "1.4.1",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "plc",
+          "Implementation": "extension:reference.parcel-capabilities/parcel-plc",
+          "Version": "1.4.1",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "extension:reference.parcel-capabilities/strict-wcs",
+          "Version": "1.4.1",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "observation",
+          "Implementation": "extension:reference.barcode/barcode-source",
+          "Version": "1.0.10",
+          "Contract": "CONTROLLED-OBSERVATION-v1"
+        }
+      ]
+    }
+  ]
+}

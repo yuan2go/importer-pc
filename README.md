@@ -4,11 +4,9 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 
 ## 当前工程状态
 
-已完成 **WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19** 的实施与参考资格验证。开工main **08b8067aa6cba6a148252296c7a5b18a27b3be65**（PR18已合并）；最终运行/六候选源码 **c213aad54f5d48687efc0b56428991b6bf4f3537**。
+PR #19已合并，执行基线main **08286542bbd007433d85be2cb8d129b366b007e0**。本轮正在实施 [WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20](docs/work-packages/WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20.md)，[现行可靠性设计](docs/design/capability-reliability-20.md)补充19的职责设计。并行开放PR #20处理备份/健康恢复，不作为本包已取得的能力。
 
-[PR #19（OPEN，未合并）](https://github.com/yuan2go/importer-pc/pull/19) · [19结果及能力矩阵](docs/runtime/application-capability-19-results.md) · [现行职责设计](docs/design/application-capability-19.md) · [配置/客户端/部署/恢复](docs/runtime/application-capability-19.md) · [证据及完整身份](docs/runtime/evidence/application-capability-19/README.md)。三Application独立编排、公共会话/能力、称重守卫、两类上传与有界原图、签名提供者及结构化客户端已实施；三个portable解压9条进程旅程、精确Release签包激活、三个Windows候选交叉构建/解压通过。
-
-**Windows实际客户端/交互/截图/ACL/UAC NOT_RUN；真实SDK/协议/设备/现场BLOCKED，Production继续NotReady。** Supply/Inspection行为与原SQL、D/RV和公开边界保持。17/18结果按其原SHA与形成时范围保留。
+[19结果](docs/runtime/application-capability-19-results.md)中的c213aad候选与PASS保持形成时范围，本轮复核已发现组合可靠性、客户端和打包缺口，不能由旧PASS认定已关闭。Windows实际客户端/交互/UAC/ACL NOT_RUN；真实SDK/协议/设备/现场按所选提供者的证据分别准入，现有参考提供者不能满足Production。
 
 ## 开发与运行入口
 

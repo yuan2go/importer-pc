@@ -2,13 +2,13 @@
 
 ## 当前工程入口
 
-交付[PR #19](https://github.com/yuan2go/importer-pc/pull/19)为OPEN，未合并main。当前工作包：[APPLICATION-CAPABILITY-CLOSURE-19](work-packages/WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19.md)。main **08b8067aa6cba6a148252296c7a5b18a27b3be65**，PR #18 已合并，开工无开放PR。唯一现行职责/策略设计：[19设计](design/application-capability-19.md)。[19实施结果/能力矩阵](runtime/application-capability-19-results.md)、[配置与客户端运行](runtime/application-capability-19.md)、[证据](runtime/evidence/application-capability-19/README.md)；运行源码c213aad，三portable与三Windows候选已构建/解压，Windows实际执行NOT_RUN。[被替代入口原字节](archive/pre-application-capability-19/README.md)。
+PR #19已合并至执行基线main **08286542bbd007433d85be2cb8d129b366b007e0**。当前工作包：[CAPABILITY-RELIABILITY-CLOSURE-20](work-packages/WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20.md)；[20设计](design/capability-reliability-20.md)补充[19职责设计](design/application-capability-19.md)。开放PR #20为独立备份/健康恢复工作，重叠文件合并时需复核，不覆盖其修改。[19运行](runtime/application-capability-19.md)、[19历史结果](runtime/application-capability-19-results.md)和c213aad六候选保留原身份；Windows实际NOT_RUN。[本轮前原字节](archive/pre-capability-reliability-20/README.md)。
 
 [17实施](runtime/application-convergence-17.md)、[17结果](runtime/application-convergence-17-results.md)、[18实施](runtime/site-capabilities-18.md)、[18结果](runtime/site-capabilities-18-results.md)按其原SHA和形成时范围读取，不作为本轮完成证据。Supply/Inspection兼容机制、D/RV和公开范围继续有效。Windows实际运行NOT_RUN；真实SDK/协议/现场BLOCKED。
 
 ## 代码前必读
 
-1. [AGENTS](../AGENTS.md)、19工作包及设计、17/18实施证据、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
+1. [AGENTS](../AGENTS.md)、20工作包及设计、19工作包及设计、17/18实施证据、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
 2. [框架架构](design/framework.md)、[决策记录](design/framework-decisions.md)、[受控装配与扩展](design/controlled-extensions.md)。职责/事务/身份/生命周期要求继续有效，不能改弱目标消除缺陷。
 3. [14任务](work-packages/WP-IPC-CONFORMANCE-FIX-14.md)、[实施](runtime/conformance-fix-14.md)/证据，以及[13任务](work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)/[复核](runtime/arch-extension-closure-13-recheck.md)、按影响再读[12任务](work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)/[交付](runtime/extension-windows-delivery-12.md)。保留后续批准的后装与Windows后验，勿重复实施已闭子项。
 4. [运行/发布/维护](runtime/operations.md)、[扩展开发安装恢复](extensions/developer-guide.md)，核实际入口、配置、依赖和源码。

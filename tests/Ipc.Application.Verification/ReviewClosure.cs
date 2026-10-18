@@ -173,6 +173,11 @@ static partial class ArchitectureQuality
         using(var supply=new Ipc.Supply.SupplyStore(supplyDb))
             supply.Commit(supply.Load(),"SyntheticPendingConsumer","deployment","synthetic",config:new(Wire.Id(),"seed",supplyConfig with {Extensions=new([package],[])},"synthetic","PendingActivation","",DateTimeOffset.UtcNow));
         Check(ExtensionConsumerReaders.Inspect(supplyDb).Contains(package),"R04 mixed-reader dispatch preserves legacy Supply Pending package responsibility");
+        if (!OperatingSystem.IsWindows())
+        {
+            var link=Path.Combine(root,"review-linked-consumer");Directory.CreateSymbolicLink(link,Path.GetDirectoryName(database)!);
+            try{ExtensionConsumerReaders.Inspect(Path.Combine(link,Path.GetFileName(database)));Check(false,"R04 linked consumer ancestor must block");}catch(InvalidDataException){Check(Wire.FileHash(database)==parcelHash,"R04 linked consumer ancestor is rejected before opening database");}
+        }
         var ambiguous=Path.Combine(root,"review-ambiguous.db");File.Copy(database,ambiguous);
         using(var db=new SqliteConnection("Data Source="+ambiguous)){db.Open();using var q=db.CreateCommand();q.CommandText="CREATE TABLE schema_history(id INTEGER PRIMARY KEY,checksum TEXT,applied TEXT)";q.ExecuteNonQuery();}
         var before=Wire.FileHash(ambiguous);

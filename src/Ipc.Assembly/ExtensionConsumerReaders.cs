@@ -10,8 +10,11 @@ public static class ExtensionConsumerReaders
 {
     public static PackageReference[] Inspect(string database)
     {
-        database = Path.GetFullPath(database); RecoveryFiles.RequireOrdinaryAncestors(database);
+        database = Path.GetFullPath(database);
         if (!File.Exists(database)) throw new InvalidDataException("Registered consumer unavailable; retain packages");
+        for (FileSystemInfo? part = new FileInfo(database); part is not null; part = part is FileInfo file ? file.Directory : ((DirectoryInfo)part).Parent)
+            if ((part.Attributes & FileAttributes.ReparsePoint) != 0)
+                throw new InvalidDataException("Linked registered consumer or ancestor; retain packages");
         bool parcel, supply;
         using (var connection = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
         {

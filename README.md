@@ -43,4 +43,4 @@ Supply兼容Storage/MinimumReader为5/5；17冻结参考读码1.0.5与场地能�
 
 仓库public；[公开范围](docs/baseline/PUBLICATION.md)持续有效，完整客户归档仍PUBLIC_SUBSET_ONLY。D批准与RV状态不因参考实现或文档发布关闭。只提交获授权审查、通用实现及合成证据，不附客户原稿、私密链接、凭据、生产数据、SDK或字体文件。历史源资产校验问题保留，不放松校验器换通过。
 
-历史22交付：[22结果与候选身份](docs/runtime/application-architecture-22-results.md)；本次继承[PR24结果](docs/runtime/architecture-quality-closure-01-results.md)，新验证按本分支结果读取。
+历史22交付：[22结果与候选身份](docs/runtime/application-architecture-22-results.md)；本次继承[PR24结果](docs/runtime/architecture-quality-closure-01-results.md)，新验证见[本次N01–N07交付](docs/runtime/architecture-quality-audit-02-results.md)。

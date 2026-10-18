@@ -1,6 +1,6 @@
-# 质量闭环01 · 运行、维护与兼容
+# Application运行、维护与兼容
 
-[工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md) · [编码前设计](../design/architecture-quality-closure-01.md)。本页描述本分支实际路径；最终源码/验证/PR身份见[结果](architecture-quality-closure-01-results.md)。22的三条独立主流程、19/20原请求规则和旧Supply/Inspection继续适用。Windows实机NOT_RUN，真实SDK/协议/现场BLOCKED。软件暂停不是安全急停。
+本页统一审查02 N01–N07后的实际操作。源码和包身份读取同包ASSEMBLY.json及SHA256SUMS；当前仓库交付见[统一入口](../INDEX.md)。[01工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)、[设计及本次差额](../design/architecture-quality-closure-01.md)与[01历史结果](architecture-quality-closure-01-results.md)保留形成时身份。22的三条独立主流程、19/20原请求规则和旧Supply/Inspection继续适用。Windows实机NOT_RUN，真实SDK/协议/现场BLOCKED。软件暂停不是安全急停。
 
 ## 容量及原件
 

@@ -29,11 +29,11 @@
 
 `Manifest`必须明确包含SchemaVersion=1、Id、三段Version、Runtime=net10.0、Rid、ContractMajor=1、Mode、Dependencies和Prerequisites；不填写生成的SourceCommit、Publisher、Files、模块、哈希。`Dependencies`为完整精确`Id/Version/ManifestSha256`直接依赖，不能填版本范围。`Modules`是`Id/Assembly/EntryType/Kind/MaximumInstances`数组；每个模块映射独立schema文件，纯依赖类库可用空数组和空映射。`Content`逐项声明编译产物或提交的源文件及包内路径；私有DLL不能漏包，宿主公共DLL不能打进插件。跨包依赖使用签名的精确包，不复制另一包的实现冒充自己的内容。
 
-参数沿现有有限schema：string/integer/boolean/choice/string-list/secret-reference，分组、标签、单位、范围/长度/集合上限、默认、条件必填、只读、说明；EditRole=Maintenance，ApplyLevel=Restart。敏感参数仅存`credential:名称`引用，不能在参数或包中写密码。宿主直接从schema生成表单，不执行包内XAML/脚本。完整可复制声明见[观察示例](../../examples/BarcodeExtension/extension.build.json)、[服务示例](../../examples/IntegrationExtension/extension.build.json)，项目只引用冻结公共契约；不加入宿主ProjectReference。
+参数沿现有有限schema：string/integer/boolean/choice/string-list/secret-reference，分组、标签、单位、范围/长度/集合上限、默认、条件必填、只读、说明；EditRole=Maintenance，ApplyLevel=Restart。敏感参数仅存`credential:名称`引用，不能在参数或包中写密码。宿主直接从schema生成表单，不执行包内XAML/脚本。完整可复制声明见[观察示例](../../examples/BarcodeExtension/extension.build.json)、[Parcel能力示例](../../examples/ParcelCapabilitiesExtension/extension.build.json)，项目只引用冻结公共契约；不加入宿主ProjectReference。
 
 ## 构建、静态检查与签名
 
-先取得本次冻结宿主（Parcel使用`Ipc.Assembly.dll`，Supply使用`Ipc.Product.dll`静态入口），使用目标宿主相邻的`Ipc.Platform.dll`；集成还需相邻`Ipc.Supply.Contracts.dll`，在PublicContracts声明其程序集名。独立私钥放构建者私有目录，信任政策从独立渠道取得，SchemaVersion=1，Publishers为Id/PublicKeyPem/TestOnly；包内公钥不会自动入信。Simulation接受明确TestOnly信任，Production拒绝测试根；通过静态检查不授予生产能力。
+先取得本次冻结宿主（Parcel使用`Ipc.Assembly.dll`，Supply使用`Ipc.Product.dll`静态入口），使用目标宿主相邻的`Ipc.Platform.dll`；Parcel类型化能力还需相邻`Ipc.Application.Contracts.dll`，在PublicContracts声明；Supply兼容集成才使用Ipc.Supply.Contracts。独立私钥放构建者私有目录，信任政策从独立渠道取得，SchemaVersion=1，Publishers为Id/PublicKeyPem/TestOnly；包内公钥不会自动入信。Simulation接受明确TestOnly信任，Production拒绝测试根；通过静态检查不授予生产能力。
 
 ```sh
 python3 scripts/build-extension.py \
@@ -45,7 +45,7 @@ python3 scripts/build-extension.py \
   --dotnet /pinned/dotnet
 ```
 
-有包依赖时，为完整闭包重复指定`--dependency-package /original/dependency.ipcx`，顺序不限。`--kind observation|integration`保留兼容快捷入口，只选择对应示例的声明，不再内嵌两套模块/schema/打包规则；不传kind和definition时选观察示例。参考发布组合从`config/compositions.json`传入1.0.4。
+有包依赖时，为完整闭包重复指定`--dependency-package /original/dependency.ipcx`，顺序不限。`--kind observation|integration`保留兼容快捷入口，只选择对应示例的声明，不再内嵌两套模块/schema/打包规则；不传kind和definition时选观察示例。Parcel能力使用上方模板版本或显式新--version；所选媒介的实际版本和精确身份读取composition.lock.json及identity，旧Supply快捷示例不能替代Parcel类型化能力。
 
 构建器记录声明/源码字节hash与最后实际输入提交；从隔离源码确定性编译，绑定精确公共DLL指纹，签名后调用同冻结宿主`extension-check`。该入口复用`ExtensionPackages.Inspect/ExtractVerified`验证签名、配额、实际托管元数据/入口、依赖闭包和schema，仅在临时目录校验依赖，不注册/安装包、不修改信任、不启动业务或加载插件。多余、缺少、冲突、循环、变更的依赖拒绝。宿主全文件前后hash与插件输入再次核验后，才独占发布完整`.ipcx`及`.identity.json`。失败/取消不产生成功包；原输出存在就拒绝覆盖。RSA-PSS签名随机；可复现性比较原始manifest和payload，不要求ZIP签名字节一致。
 
@@ -57,7 +57,7 @@ dotnet /frozen/app/Ipc.Assembly.dll --action extension-check --mode Simulation \
   --dependency-files /independent/dependencies.json
 ```
 
-此检查不替代安装时永久ID/version登记、机器策略、ACL或实例启动。macOS交叉打包win-x64自包含候选时，不能执行Windows自包含宿主。为构建器提供`--check-host /frozen-portable/app/Ipc.Product.dll`，或为package-reference.py提供`--extension-check-host`（PowerShell为`-ExtensionCheckHost`）。检查器必须来自冻结可运行宿主，Ipc.Platform与全部声明公共契约逐字节匹配目标，且两份宿主前后不变；任何差异拒绝，不放宽目标合同指纹。旧冻结宿主没有新静态入口时用其原版构建器/原包，不混用不同公共DLL冒称兼容。公共DLL指纹变化即便契约主版本不变也要新不可变包版本；T1原请求固定原实现、合同及目标，缺原能力精确阻塞，不能通过换包/换ID重发解除。
+此检查不替代安装时永久ID/version登记、机器策略、ACL或实例启动。macOS交叉打包win-x64自包含候选时，不能执行Windows自包含宿主。为构建器提供`--check-host /frozen-portable/app/Ipc.Assembly.dll`，或为package-application.py提供`--extension-check-host`；旧Supply另按自己的发布入口。检查器必须来自冻结可运行宿主，Ipc.Platform与全部声明公共契约逐字节匹配目标，且两份宿主前后不变；任何差异拒绝，不放宽目标合同指纹。旧冻结宿主没有新静态入口时用其原版构建器/原包，不混用不同公共DLL冒称兼容。公共DLL指纹变化即便契约主版本不变也要新不可变包版本；T1原请求固定原实现、合同及目标，缺原能力精确阻塞，不能通过换包/换ID重发解除。
 
 ## Parcel安装、绑定与维护
 

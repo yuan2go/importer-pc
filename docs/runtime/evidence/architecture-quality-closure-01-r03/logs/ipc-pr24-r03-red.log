@@ -1,0 +1,134 @@
+EvidenceRoot=<EVIDENCE_ROOT>
+FAIL AQ: R03 schema1/Effective/duplicate-identical rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema1/Effective/duplicate-hidden-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Effective/role-mirror-conflict rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema1/Effective/unbound-duplicate rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Effective/dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Effective/disabled-dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Effective/module-without-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Effective/package-version-mismatch rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Effective/invalid-package-identity rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema1/Effective/unknown-kind rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Effective/valid-no-inventory retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Effective/valid-role-mirrors retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Effective/valid-exact-package retains exact known references with original DB/config bytes unchanged
+FAIL AQ: R03 schema1/Pending/duplicate-identical rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema1/Pending/duplicate-hidden-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Pending/role-mirror-conflict rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema1/Pending/unbound-duplicate rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Pending/dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Pending/disabled-dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Pending/module-without-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Pending/package-version-mismatch rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Pending/invalid-package-identity rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema1/Pending/unknown-kind rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Pending/valid-no-inventory retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Pending/valid-role-mirrors retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Pending/valid-exact-package retains exact known references with original DB/config bytes unchanged
+FAIL AQ: R03 schema1/Frozen/duplicate-identical rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema1/Frozen/duplicate-hidden-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Frozen/role-mirror-conflict rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema1/Frozen/unbound-duplicate rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Frozen/dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Frozen/disabled-dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Frozen/module-without-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Frozen/package-version-mismatch rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Frozen/invalid-package-identity rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema1/Frozen/unknown-kind rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Frozen/valid-no-inventory retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Frozen/valid-role-mirrors retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema1/Frozen/valid-exact-package retains exact known references with original DB/config bytes unchanged
+PASS AQ: explicit maintenance grant obtained
+FAIL AQ: R03 schema1 Application format rejects raw inventory before deduplication
+PASS AQ: R03 schema1 real validation/CAS rejection leaves original configuration unchanged
+PASS AQ: R03 schema1 legal complete mirrored inventory still runs actual DirectPlc once
+FAIL AQ: R03 schema2/Effective/duplicate-identical rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema2/Effective/duplicate-hidden-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Effective/role-mirror-conflict rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema2/Effective/unbound-duplicate rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Effective/dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Effective/disabled-dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Effective/module-without-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Effective/package-version-mismatch rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Effective/invalid-package-identity rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema2/Effective/unknown-kind rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Effective/valid-no-inventory retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Effective/valid-role-mirrors retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Effective/valid-exact-package retains exact known references with original DB/config bytes unchanged
+FAIL AQ: R03 schema2/Pending/duplicate-identical rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema2/Pending/duplicate-hidden-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Pending/role-mirror-conflict rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema2/Pending/unbound-duplicate rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Pending/dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Pending/disabled-dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Pending/module-without-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Pending/package-version-mismatch rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Pending/invalid-package-identity rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema2/Pending/unknown-kind rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Pending/valid-no-inventory retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Pending/valid-role-mirrors retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Pending/valid-exact-package retains exact known references with original DB/config bytes unchanged
+FAIL AQ: R03 schema2/Frozen/duplicate-identical rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema2/Frozen/duplicate-hidden-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Frozen/role-mirror-conflict rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema2/Frozen/unbound-duplicate rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Frozen/dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Frozen/disabled-dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Frozen/module-without-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Frozen/package-version-mismatch rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Frozen/invalid-package-identity rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema2/Frozen/unknown-kind rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Frozen/valid-no-inventory retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Frozen/valid-role-mirrors retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema2/Frozen/valid-exact-package retains exact known references with original DB/config bytes unchanged
+PASS AQ: explicit maintenance grant obtained
+FAIL AQ: R03 schema2 Application format rejects raw inventory before deduplication
+PASS AQ: R03 schema2 real validation/CAS rejection leaves original configuration unchanged
+PASS AQ: R03 schema2 legal complete mirrored inventory still runs actual DirectPlc once
+PASS AQ: R03 schema3/Effective/duplicate-identical rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Effective/duplicate-hidden-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Effective/role-mirror-conflict rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Effective/unbound-duplicate rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Effective/dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Effective/disabled-dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Effective/module-without-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Effective/package-version-mismatch rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Effective/invalid-package-identity rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema3/Effective/unknown-kind rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Effective/valid-no-inventory retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Effective/valid-role-mirrors retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Effective/valid-exact-package retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Pending/duplicate-identical rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Pending/duplicate-hidden-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Pending/role-mirror-conflict rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Pending/unbound-duplicate rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Pending/dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Pending/disabled-dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Pending/module-without-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Pending/package-version-mismatch rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Pending/invalid-package-identity rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema3/Pending/unknown-kind rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Pending/valid-no-inventory retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Pending/valid-role-mirrors retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Pending/valid-exact-package retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Frozen/duplicate-identical rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Frozen/duplicate-hidden-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Frozen/role-mirror-conflict rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Frozen/unbound-duplicate rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Frozen/dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Frozen/disabled-dangling-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Frozen/module-without-package rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Frozen/package-version-mismatch rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Frozen/invalid-package-identity rejects ambiguity with original DB/config bytes unchanged
+FAIL AQ: R03 schema3/Frozen/unknown-kind rejects ambiguity with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Frozen/valid-no-inventory retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Frozen/valid-role-mirrors retains exact known references with original DB/config bytes unchanged
+PASS AQ: R03 schema3/Frozen/valid-exact-package retains exact known references with original DB/config bytes unchanged
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: R03 schema3 Application format rejects raw inventory before deduplication
+PASS AQ: R03 schema3 real validation/CAS rejection leaves original configuration unchanged
+PASS AQ: R03 schema3 legal complete mirrored inventory still runs actual DirectPlc once
+Unhandled exception. System.Exception: R03 inventory closure failures: 29
+   at ArchitectureQuality.InventoryClosureChecks(String source, String evidence) in <WORKTREE>/tests/Ipc.Application.Verification/InventoryClosure.cs:line 55
+   at Program.<Main>$(String[] args) in <WORKTREE>/tests/Ipc.Application.Verification/Program.cs:line 18
+   at Program.<Main>(String[] args)

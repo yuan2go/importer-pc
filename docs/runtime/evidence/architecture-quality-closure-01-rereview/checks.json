@@ -1,0 +1,208 @@
+{
+  "review_head": "a2e987a8d15eb397ad1a40cf1a303bdad4ec397b",
+  "review_main": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "runtime_code_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+  "candidate_source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+  "plugin_source_commit": "b82b8d07a39fe8d2a875a05aec0cebfa4aeb94ab",
+  "plugin_source_meaning": "Last relevant change to declared extension inputs; host source is the later frozen composition fix",
+  "runs": [
+    {
+      "name": "review-closure",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "dotnet Ipc.Application.Verification.dll <WORKTREE> --review-closure",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-785-review-closure.log",
+      "published_log_sha256": "cc2dbf07d115b5b610c02bc5101f277c246978bcb23c8216d287b79666293355"
+    },
+    {
+      "name": "architecture-quality",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "dotnet Ipc.Application.Verification.dll <WORKTREE> --architecture-quality",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-785-architecture-quality.log",
+      "published_log_sha256": "7bde37cd403cc476d68d6ee71d309faa8e42a686be8533e3e898e706ead80c80"
+    },
+    {
+      "name": "acquisition-lifecycle",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "dotnet Ipc.Application.Verification.dll <WORKTREE> --acquisition-lifecycle",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-785-acquisition-lifecycle.log",
+      "published_log_sha256": "7890cba01725b5ac40a6f97d071ae0806aaee1d5d2926f12c9fbb79350a52b76"
+    },
+    {
+      "name": "application-architecture",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "dotnet Ipc.Application.Verification.dll <WORKTREE> --application-architecture",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-785-application-architecture.log",
+      "published_log_sha256": "0396c2b5ca745f490b72a87a3d74dd0d3ea9c685d1c86ec07e192c6cdacf4666"
+    },
+    {
+      "name": "backup-health-recovery",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "dotnet Ipc.Application.Verification.dll <WORKTREE> --backup-health-recovery",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-785-backup-health-recovery.log",
+      "published_log_sha256": "552c59bccf8a409cf0786aa82a4f32413b07ce51e8f488f208e3b2588a242a69"
+    },
+    {
+      "name": "quality-extensions",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "dotnet Ipc.Application.Verification.dll <WORKTREE> --quality-extensions capabilities-1.6.8-rereview.ipcx <TestOnly trust>",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-785-quality-extensions.log",
+      "published_log_sha256": "29efb8cf681bc795f49d71f9d045b9d212f06da1f72e0a55f64d74f525c48241"
+    },
+    {
+      "name": "tests",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "dotnet build tests/Ipc.Application.Verification --artifacts-path <isolated> -p:RestoreLockedMode=true -m:1 -nr:false",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-785-tests.log",
+      "published_log_sha256": "5d4223b0e6760a2714ffc451acae14a0e2073be6efb990292051add4da2c475e"
+    },
+    {
+      "name": "debug-host",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "dotnet publish src/Ipc.Assembly -c Debug -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.lock.json -p:RestoreLockedMode=true --artifacts-path <isolated> -o <frozen-checker> -m:1 -nr:false",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-785-debug-host.log",
+      "published_log_sha256": "ff249cad755407ea9c0370a83230919de8230745ace93c98db8ef0ac4d86a5fd"
+    },
+    {
+      "name": "legacy-product",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "dotnet build src/Ipc.Product -p:RestoreLockedMode=true --artifacts-path <isolated> -m:1 -nr:false",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-785-legacy-product.log",
+      "published_log_sha256": "2930843bdc7b0706383c83567f957a98337c507a63d602e73078ae4ed0e870ce"
+    },
+    {
+      "name": "windows",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "dotnet build src/Ipc.Desktop -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.win-x64.lock.json -p:RestoreLockedMode=true -p:EnableWindowsTargeting=true -r win-x64 --artifacts-path <isolated> -m:1 -nr:false",
+      "status": "PASS_CROSS_BUILD_ONLY",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-785-windows.log",
+      "published_log_sha256": "d811d798367bb639ef95def5db51aafb618ac0c92ddb9ddb33b2df04da23d78a"
+    },
+    {
+      "name": "direct-closure",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "dotnet publish src/Ipc.Assembly -p:Application=DirectPlc -p:NuGetLockFilePath=packages.direct-plc.lock.json -p:RestoreLockedMode=true --artifacts-path <isolated> -o <isolated> -m:1 -nr:false",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-785-direct-closure.log",
+      "published_log_sha256": "4cbd3194e1a85971a39177c8c1f19f0fe3318d67bfc504740ddbcd0f6fe3abf0"
+    },
+    {
+      "name": "package-sportmaster",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "python3 scripts/package-application.py --application sportmaster --target portable --output <new-immutable-candidate> --dotnet dotnet",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-fixed-package-sportmaster.log",
+      "published_log_sha256": "6094bf775055b0e90ae786e5b05439e0d099a7a5e6fd3282c6db525abc4e83ec"
+    },
+    {
+      "name": "package-wcs-to-plc",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "python3 scripts/package-application.py --application wcs-to-plc --target portable --output <new-immutable-candidate> --dotnet dotnet",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-fixed-package-wcs-to-plc.log",
+      "published_log_sha256": "76d8cd547165b7b192fea1320ca492a3175546558f98b8621c8ed599f8ae90f8"
+    },
+    {
+      "name": "signed-debug",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "python3 scripts/build-extension.py --definition examples/ParcelCapabilitiesExtension/extension.build.json --contract <exact-host>/Ipc.Platform.dll --check-host <exact-host>/Ipc.Assembly.dll --version 1.6.8 --output <new-package> --key <ephemeral-key> --publisher quality-synthetic --trust <TestOnly trust> --dotnet dotnet",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-785-signed-debug.log",
+      "published_log_sha256": "e1d4e07e394c1a01139a99a132c724e986ebffb412cddcacc6433d24a9763fdf"
+    },
+    {
+      "name": "signed-release",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "python3 scripts/build-extension.py --definition examples/ParcelCapabilitiesExtension/extension.build.json --contract <exact-host>/Ipc.Platform.dll --check-host <exact-host>/Ipc.Assembly.dll --version 1.6.9 --output <new-package> --key <ephemeral-key> --publisher quality-synthetic --trust <TestOnly trust> --dotnet dotnet",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-785-signed-release.log",
+      "published_log_sha256": "7fd8857c1d5f205571ec91f0f0d0bb4ad5ffbfd610e1e5e6dc96a2d7150f1a8c"
+    },
+    {
+      "name": "smoke-sport",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "python3 scripts/smoke-application.py --package <independent-extracted-candidate> --output <result> --dotnet dotnet",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-smoke-sport.log",
+      "published_log_sha256": "ffdfabad1802f7d577b971a5be766b8b08d59b3d7d82bb369829076219f866d7"
+    },
+    {
+      "name": "smoke-wcs-before",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "python3 scripts/smoke-application.py --package <independent-extracted-candidate> --output <result> --dotnet dotnet --optional-features --peer-fixture <frozen-Ipc.Fixture.dll>",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-smoke-wcs-before.log",
+      "published_log_sha256": "834827f1379799cc8be82cb1fd93d8c045786ecf137aee6f9ab2be009dc272f3"
+    },
+    {
+      "name": "smoke-wcs-attached",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "python3 scripts/smoke-application.py --package <independent-extracted-candidate> --output <result> --dotnet dotnet --optional-features --peer-fixture <frozen-Ipc.Fixture.dll> --attached-upload",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-smoke-wcs-attached.log",
+      "published_log_sha256": "f8a44da85130dcf99f83410803298a463486dd16e56d01514cfad3bdbed2b88f"
+    },
+    {
+      "name": "release-cli",
+      "source_commit": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+      "command": "Actual frozen Release Ipc.Assembly extension-install/recover/uninstall/operations; new isolated Simulation store",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": "logs/ipc-pr24-rereview-cli.log",
+      "published_log_sha256": "e01f699e09929feb22c9c8ea003ef2fecd051ea4ac3bf0d94ccc5fa5f06231cf"
+    }
+  ],
+  "original_failure_notes": [
+    "red.log: expected 8 review probe failures before fixes (exit134); source reviewed head plus new harness",
+    "green/green2/fences build logs: compiler errors preserved; following runs that used previous binaries are not qualification for the failed build",
+    "fences2/archive: invalid synthetic inventory rejected; harness corrected to complete inventory, production guard not weakened",
+    "acquisition: old test expected reconnect while capture active; changed to assert waiting plus exact retained frame/epoch",
+    "acquisition2/aa22: immediate post-maintenance input/Resume rejected before fresh health; tests now wait for valid projected availability",
+    "b82 real Assembly/Product/WPF and first package attempts: inaccessible internal RecoveryFiles; fixed within composition, failed artifacts retained, later785 builds and new directories passed"
+  ],
+  "boundaries": {
+    "windows_actual": "NOT_RUN",
+    "real_sdk_wcs_plc_site": "BLOCKED",
+    "real_power_loss_and_production_load": "NOT_RUN",
+    "legacy_supply_runtime_and_inspection_rerun": "NOT_RUN_THIS_ROUND; affected Product compiled, actual Supply DB5 read-only maintenance exercised",
+    "original_audit_01_pdf": "BLOCKED_NOT_OBTAINED",
+    "main_merge": "NOT_PERFORMED"
+  },
+  "fixture": {
+    "source_commit": "e1fcff0fdd3434d4bc7d4a50323dd233d822bb15",
+    "dll_sha256": "fe5f537084475d98efcfdf7d177296f4c63fa590ee2f9cdee4f2ff64c8038beb",
+    "qualification": "Synthetic loopback reference only; wire source unchanged"
+  },
+  "delivery": "CODE_REMEDIATED_REFERENCE_VERIFIED_PENDING_INDEPENDENT_REVIEW",
+  "archive": {
+    "status": "FAIL_PRESERVED_HISTORICAL_267",
+    "new_error_identities": 0,
+    "comparison": "archive-error-comparison.json"
+  }
+}

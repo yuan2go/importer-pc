@@ -1,0 +1,18 @@
+{
+  "host_source": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+  "unchanged_original_test_output": true,
+  "copied_exact_checker_binaries": {
+    "Ipc.Components.dll": "3a740de685f38e7691f76a315459258a7085161dbaec67cbc50759101be2e1c7",
+    "Ipc.Application.ParcelFlow.dll": "b933453533d0391fbe7c936d162b1586e3af6097c41294b70669b5dc35344216",
+    "Ipc.Supply.Contracts.dll": "e3d7ca1ab3b62896ae6976434eea4a06c4cf5b2e68d936cd7a7abd066ee2c294",
+    "Ipc.Platform.dll": "a0334060fb3e1cb951fdb1c9ee7739022580c49f33c2f8ac45a62c1106aeda63",
+    "Ipc.Reference.Protocol.dll": "6b1aff0e4cebb00137dbdd2ab969e2615abfc1cef4d4673a3c329292069bdd4c",
+    "Ipc.Drivers.dll": "733f9d5d8ee676f902b097faf7a9c243b6486088a848c8209064af021c17eb30",
+    "Ipc.Integrations.dll": "5a0da46c18030980f637ce190fe7d1027f6bbb983e47c56e63f2e9276e31ccfd",
+    "Ipc.Supply.dll": "b86a3b0ffbea4a717dc12ad2b8a303f128b4cf1b50ae87cb5239750d435d4df0",
+    "Ipc.Platform.Storage.dll": "d616a1fc099351069039afe7acc90c46bc257229245915cd217fbcfd6a421752",
+    "Ipc.Application.Contracts.dll": "554c73b050cd0f2ea3fcf9852504c9b731ce6603751f5e265340ef20790a1f37",
+    "Ipc.Application.Sportmaster.dll": "d3ca8973a3a7fc6ac274d51f7974210ae284b930fb2351e3aaae68ee8648b700"
+  },
+  "verification_test_binary_sha256": "659d202c2a78d25bf2de2b9ed1ff5bb829275e85491cfcdd3439f2b428c10d4e"
+}

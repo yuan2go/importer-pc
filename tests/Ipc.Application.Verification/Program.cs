@@ -23,6 +23,7 @@ if (args.Contains("--receipt-custody")) { await ArchitectureQuality.CustodyCheck
 if (args.Contains("--upload-crash-child")) { var i = Array.IndexOf(args, "--upload-crash-child"); await ArchitectureQuality.UploadCrashChild(workspace, args[i + 1]); return; }
 if (args.Contains("--configuration-crash-child")) { var i = Array.IndexOf(args, "--configuration-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], args[i + 2]); return; }
 if (args.Contains("--quality-extensions")) { var i = Array.IndexOf(args, "--quality-extensions"); await ArchitectureQuality.ExtensionChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
+if (args.Contains("--inventory-closure")) { await ArchitectureQuality.InventoryClosureChecks(workspace, root); return; }
 if (args.Contains("--review-closure")) { await ArchitectureQuality.ReviewClosureChecks(workspace, root); return; }
 if (args.Contains("--architecture-quality")) { await ArchitectureQuality.Run(workspace, root); return; }
 if (args.Contains("--acquisition-lifecycle")) { await AcquisitionLifecycle.Run(workspace, root); return; }

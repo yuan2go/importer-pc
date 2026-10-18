@@ -59,6 +59,12 @@ dotnet /frozen/app/Ipc.Assembly.dll --action extension-check --mode Simulation \
 
 此检查不替代安装时永久ID/version登记、机器策略、ACL或实例启动。macOS交叉打包win-x64自包含候选时，不能执行Windows自包含宿主。为构建器提供`--check-host /frozen-portable/app/Ipc.Assembly.dll`，或为package-application.py提供`--extension-check-host`；旧Supply另按自己的发布入口。检查器必须来自冻结可运行宿主，Ipc.Platform与全部声明公共契约逐字节匹配目标，且两份宿主前后不变；任何差异拒绝，不放宽目标合同指纹。旧冻结宿主没有新静态入口时用其原版构建器/原包，不混用不同公共DLL冒称兼容。公共DLL指纹变化即便契约主版本不变也要新不可变包版本；T1原请求固定原实现、合同及目标，缺原能力精确阻塞，不能通过换包/换ID重发解除。
 
+## 原库存校验与离线消费者
+
+schema1/2/3必须先校验未经All/Bound去重的角色和完整CapabilityInstances，再解析业务/拓扑。库存至多64项、无null、InstanceId唯一（同内容重复也拒绝）；不同角色不得共占身份，角色与库存的一次合法镜像须全部字段一致。逐项校验已知kind、Enabled及精确包Id/Version/ManifestSha256、Module/Implementation闭包，disabled项也不能隐藏引用；无Package不得携带扩展Module/Implementation。Effective、Pending、未结FrozenConfiguration与Factory独立校验入口共用该规则；不加载扩展、不要求历史包仍能启动，不修改原JSON/hash或原包。
+
+已知Supply/Parcel由装配ExtensionConsumerReaders分派至各业务原格式读者，未知/歧义/未来/缺失根拒绝卸载。装配显式携带对方只读维护依赖，不启动第二业务实例或SDK。R03固定源码及原失败见[PR24结果](../runtime/architecture-quality-closure-01-r03-results.md)；PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。[独立复审原件](../reviews/pr24-independent-rereview-f862c2a/README.md)与旧签名1.6.8/1.6.9/1.6.11只保留形成时身份，当前新包仍必须显式指定新版本并匹配精确Release。
+
 ## Parcel安装、绑定与维护
 
 目标包使用实际Release宿主的Platform和Application.Contracts；参考声明见[Parcel能力示例](../../examples/ParcelCapabilitiesExtension/extension.build.json)。使用`--definition`；声明的PublicContracts从目标Platform旁读取Application.Contracts，`--check-host`须逐字节匹配目标公共DLL。私钥外置，TestOnly只用于Simulation；真实SDK/协议/资格仍BLOCKED。

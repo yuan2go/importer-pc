@@ -2,6 +2,8 @@
 
 本页统一审查02 N01–N07后的实际操作。源码和包身份读取同包ASSEMBLY.json及SHA256SUMS；当前仓库交付见[统一入口](../INDEX.md)。[01工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)、[设计及本次差额](../design/architecture-quality-closure-01.md)与[01历史结果](architecture-quality-closure-01-results.md)保留形成时身份。22的三条独立主流程、19/20原请求规则和旧Supply/Inspection继续适用。Windows实机NOT_RUN，真实SDK/协议/现场BLOCKED。软件暂停不是安全急停。
 
+PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。[独立复审与原证据](../reviews/pr24-independent-rereview-f862c2a/README.md)及[R03结果](architecture-quality-closure-01-r03-results.md)为继承来源；本页DB5、旧账确认与独立资料规则为当前操作，不以历史DB4候选或PASS替代。
+
 ## 容量及原件
 
 schema3增加可缺省Retention：ResidentHistory=200（1～10000）、MinimumFreeBytes=67108864（技术默认64MiB，允许1MiB～1TiB）。旧配置缺省时按同一显式软件策略读取，不改原FrozenConfiguration。MaximumOperations现在约束不能归档的责任数量；工作集高水位为min(ResidentHistory,MaximumOperations)。默认及optional种子已登记策略，不通过提高上限延迟故障。
@@ -24,13 +26,13 @@ Attached上传失败/Unknown/无结果/原能力缺失只进入Upload.State/Fail
 
 历史仅审计而无作用域的IdentityConflict会恢复成显式待检查责任；原审计没有设备/实体范围时保护所有可能位，明确显示资料不足。维护暂停/认证/说明后沿原AcknowledgeIdentityConflict解除；解除记录保留，重启不重复制造阻断。已有明确范围的冲突仍只影响相关位。
 
-原StageFact仅保有至多64条必要事实/最近回复，完整原响应及reply-ID/hash永久持久；达到历史回复数不会永久锁死后续权威完成查询。
+原StageFact仅保有至多64条必要事实/最近回复，完整原响应及reply-ID/hash永久持久；StoreRaw与RecoverRaw共享接收发生及不可替换回复身份事务，Request命名空间取原发生。旧DB4及现行DB5启动按原发生顺序验证持久raw/归档BLOB并补齐缺索引，失败完整回滚；已经矛盾的原件与假完成不能改写为成功，以OriginalReplyIdentityConflict拒绝启动，先保全DB/WAL、配置、原raw/归档及精确发布，沿原合同调查处置，不强制清空或重发。超过64次查询仍不能遗忘原身份，也不会单因回复数量锁死权威完成查询。
 
 过载确认先将原marker哈希、命令ID/回执和审计同事务提交，再删除marker/解除内存。SQL失败不清责；提交后中断按原哈希收敛。新marker不能被旧确认清掉。跨位身份冲突包含稳定ID、受影响位和原件；重启保留，暂停/维护认证/说明后以AcknowledgeIdentityConflict明确处置，原冲突和作业不删除。
 
 ## 设备与UI
 
-物理reader及其采图门面共享设备串行门；采集/查询/重连/Stop不并发替换会话。独立设备不共用该门，WCS等可并发服务调用保持双位独立。维护外呼释放应用聚合锁，快照/软件暂停可用；共享服务重连需要该服务既有调用先排空；维护取得所选资源围栏后，Submit/Query/健康/认证不能进入同一资源，相关Resume/准入关闭。独立设备维护仍允许其他无依赖位受原守卫恢复运行。维护预算取消但提供者未返回时仍持有原任务/资源，不能当成已经停止。旧epoch回调与旧维护代次健康不可污染新注册；健康返回InstanceId、确认时间和TTL均校验，投影不续期。
+物理reader及其采图门面共享设备串行门；采集/查询/重连/Stop不并发替换会话。独立设备不共用该门，WCS等可并发服务调用保持双位独立。维护外呼释放应用聚合锁，快照/软件暂停可用；共享服务重连需要该服务既有调用先排空；维护取得所选资源围栏后，Submit/Query/健康/认证不能进入同一资源，相关Resume/准入关闭。独立设备维护仍允许其他无依赖位受原守卫恢复运行。设备在途采集按预算等待同一串行门；维护预算取消但提供者未返回时仍持有围栏、原任务/资源及租约，不能当成已经停止；迟到返回按MaintenanceIncomplete保留失败审计，回执使用实际软件暂停状态。旧epoch回调与旧维护代次健康不可污染新注册；健康返回InstanceId、确认时间和TTL均校验，投影不续期。
 
 工作台及公共底栏显示当前投递位、条码和完整命令Owner；历史详情单独显示所选Owner及可用命令。历史选择不改变当前位，刷新和双窗保持本窗目标；发送使用显示时的修订，冲突要求刷新。Sportmaster同时显示left/right的reader、入场、作业和WCS格口，模拟输入显式选择位。原UI v1.1 HTML/CSS/JS与交接为信息层级依据，没有复制其旧共享箱/数量/AGV规则。没有新增图片区域或DirectPlc完整UI。Windows交互另验。
 
@@ -50,7 +52,7 @@ dotnet app/Ipc.Assembly.dll --action extension-uninstall --package '{"Id":"appro
 
 运行维护经IParcelApplication.ManageCapabilityAsync（桌面安装管理/CLI ManageExtension），需暂停/维护认证/外呼排空；Windows调用受保护runas帮助程序再读回原操作/登记。Windows实际UAC/ACL仍NOT_RUN。安装中断按原操作恢复；永久ID/version不覆盖。
 
-消费者读者由Parcel拥有，检查精确迁移checksum、当前Effective/Pending、所有未结业务/图像/回执及已注册离线根；包租约和反向依赖沿ExtensionStore。Backup在开始复制前分别检查Effective和Pending并登记离线消费者（包括只存在于被拒激活Pending的包），不完整或缺失备份保持阻断，COMPLETED后按原hash检查。已有备份中的Effective仍引用原包，因此仅移除当前绑定不足以卸载。装配按数据库标记选择Parcel或Supply各自拥有的只读读者；未知、混合歧义、未来、损坏或无法验证完整配置/冻结绑定的消费者均保守拒绝，不能返回空引用。已知Supply沿自身存储契约读取，不将其业务SQL放入Platform；旧根/备份仍须完整注册并核对原件，不支持跳过未知消费者的任意卸载。
+消费者读者由Parcel拥有。schema1/2/3必须先校验未经All/Bound去重的角色和完整CapabilityInstances，再解析业务/拓扑。库存至多64项、无null、InstanceId唯一（同内容重复也拒绝）；不同角色不得共占身份，角色与库存的一次合法镜像须全部字段一致。逐项校验已知kind、Enabled及精确包Id/Version/ManifestSha256、Module/Implementation闭包，disabled项也不能隐藏引用；无Package不得携带扩展Module/Implementation。Effective、Pending、未结FrozenConfiguration与Factory独立校验入口共用该规则；不加载扩展、不要求历史包仍能启动，不修改原JSON/hash或原包。检查精确迁移checksum、当前Effective/Pending、所有未结业务/图像/回执及已注册离线根；包租约和反向依赖沿ExtensionStore。Backup在开始复制前分别检查Effective和Pending并登记离线消费者（包括只存在于被拒激活Pending的包），不完整或缺失备份保持阻断，COMPLETED后按原hash检查。已有备份中的Effective仍引用原包，因此仅移除当前绑定不足以卸载。装配按数据库标记选择Parcel或Supply各自拥有的只读读者；未知、混合歧义、未来、损坏或无法验证完整配置/冻结绑定的消费者均保守拒绝，不能返回空引用。已知Supply沿自身存储契约读取，不将其业务SQL放入Platform；旧根/备份仍须完整注册并核对原件，不支持跳过未知消费者的任意卸载。
 
 ## 升级、回退与验证
 

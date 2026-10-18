@@ -1,0 +1,31 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 200 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 200 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 200 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 200 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 200 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 200 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 200 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 200 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 3 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 4 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 4 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 5 毫秒)。
+  已还原 <WORKTREE>/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj (用时 9 毫秒)。
+  Ipc.Platform -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Platform/debug/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Application.Contracts/debug/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Platform.Storage/debug/Ipc.Platform.Storage.dll
+<WORKTREE>/src/Ipc.Application.ParcelFlow/ParcelDeviceLifecycle.cs(59,153): error CS0117: “CapabilityHealth”未包含“Reason”的定义 [<WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj]
+  Ipc.Reference.Protocol -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Reference.Protocol/debug/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Components/debug/Ipc.Components.dll
+  Ipc.Drivers -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Drivers/debug/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Application.Supply.Contracts/debug/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Integrations/debug/Ipc.Integrations.dll
+
+生成失败。
+
+<WORKTREE>/src/Ipc.Application.ParcelFlow/ParcelDeviceLifecycle.cs(59,153): error CS0117: “CapabilityHealth”未包含“Reason”的定义 [<WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:02.87

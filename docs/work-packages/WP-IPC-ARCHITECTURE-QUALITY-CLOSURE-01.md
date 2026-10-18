@@ -33,4 +33,14 @@
 
 已推送并创建[PR #24](https://github.com/yuan2go/importer-pc/pull/24)，未合并main。PDF归档项保持BLOCKED，不以参考整改通过关闭该缺失原件。
 
-最终源码/候选3d6960756bfd843a1cb78c6648687b45f2da9f1c；增补DB3/同格式精确实现升级屏障、双窗口草稿CAS、驱动/适配器可变数据所有权、资源成功后配置确认及仅Pending含包的备份消费者。原PDF归档仍未完成，整包不标记全部验收完成。
+前轮最终源码/候选3d6960756bfd843a1cb78c6648687b45f2da9f1c；增补DB3/同格式精确实现升级屏障、双窗口草稿CAS、驱动/适配器可变数据所有权、资源成功后配置确认及仅Pending含包的备份消费者。原PDF归档仍未完成，整包不标记全部验收完成。
+
+
+PR24独立审查输入a2e987a的R01～R05于本轮完成整改，文档治理b59318a先于代码，真实装配与候选源码固定7850fcc02b04d1b572fcb89215945ee0f60be28c。见[本轮结果、固定证据及后验边界](../runtime/architecture-quality-closure-01-rereview-results.md)。更新同一PR供复审，不合并main；原PDF01、Windows/真实现场门禁仍保留。
+
+
+3f6f762独立复审剩余R03已由用户授权继续整改，见AQD-08方案/计划：所有支持schema在去重前校验原库存，覆盖Effective/Pending/未结Frozen；前轮结果、原件及失败不改写，不合并main。
+
+本次剩余R03闭环：先治理4b94c3f7905dd794ce72d82e9f4ce5064865a03f，业务/测试固定445e1f62bf01fe21e5f13576d2f483292571b709；所有支持schema统一去重前库存校验，schema1/2三类消费者及真实签名卸载验证通过。见[本轮证据/边界](../runtime/architecture-quality-closure-01-r03-results.md)。保持原件、29项修复前失败及旧候选身份，更新同PR24待复审，不合并main。
+
+2026-10-19用户授权归档本次独立复审并合并PR24；先确认远端仍为f862c2ae2ad00ab79ceff5e2013c2a5593d05234，新增提交仅文档/证据，再按归档head执行正常合并。见[原报告/证据及边界](../reviews/pr24-independent-rereview-f862c2a/README.md)。本次不重复测试、构建或打包，历史失败及未验证门禁不变。

@@ -1,0 +1,60 @@
+{
+  "source": "f862c2ae2ad00ab79ceff5e2013c2a5593d05234",
+  "copied_exact_checker_dlls": [
+    {
+      "file": "Ipc.Components.dll",
+      "before": "3aeafff247d30fff836908abe22060de03e1173ee223d33fce97bc94a91faec8",
+      "after": "e1e9ebe9b4c5cdd2cde50684f712d9d4fb358c7d2029454f07037d31537a6a58"
+    },
+    {
+      "file": "Ipc.Application.ParcelFlow.dll",
+      "before": "557c74353c0d87469b2a03edf3caea7fee09d811c693be4cf47811e425246a73",
+      "after": "3130358c4b95a29185e37c0e454d8e05eaf47cb9c3fda9d689e552f5d62d899d"
+    },
+    {
+      "file": "Ipc.Supply.Contracts.dll",
+      "before": "e9a4522cb3b268537521944a90b1b46736d96a431c2ed8e498512f1cd3451c45",
+      "after": "69b66679287908efb22dbd35df8aad2815195eb48d8a94ad5d4e657b5a2ff94d"
+    },
+    {
+      "file": "Ipc.Platform.dll",
+      "before": "5c8388d2c29c036219b29d8613f13193607909b58918a26fcaad69347310b074",
+      "after": "87c81d26d499bcf82adffb29e228df577e22b3f411b639ad23f6a59d50cba2d7"
+    },
+    {
+      "file": "Ipc.Reference.Protocol.dll",
+      "before": "9fa0a2ebf640fd0ed4940fdca210fff432dcbf28ac80245f13d88151a4850e41",
+      "after": "f5306a5cedb917bf9941e1a69ec80a0b4ef2f797afeea95cba721798460bd921"
+    },
+    {
+      "file": "Ipc.Drivers.dll",
+      "before": "7d966d59b238d05a4b8b869fe36b78d2099a410e1f1d36aba0c7d94b73d02367",
+      "after": "16c8d0b08e5dace597a6d42420a4213f442c88b28a1532f60895c7664a0b57e2"
+    },
+    {
+      "file": "Ipc.Integrations.dll",
+      "before": "b123998bf68a6c6c891f3154742b0dc3edd249adcbbd2fbb919cf7ce55ff7759",
+      "after": "9b97f5c466c033cba899dd191adf0a75da68d8846952f12ca98c20111a448bc8"
+    },
+    {
+      "file": "Ipc.Supply.dll",
+      "before": "2f0383e4e044cdb6d9448a9dbb88bb20cfe33e2e20faf9fdd30ed5f7d2478799",
+      "after": "ec155f28f0205c9ac33c7c1489a1158f64fa943e4f029627932a1bb1d46ec61a"
+    },
+    {
+      "file": "Ipc.Platform.Storage.dll",
+      "before": "456babd2f8df2e827c6d0494682cde230817b7126f6176ddded03c3d20d38315",
+      "after": "bdd83a9c2f7f5182c6a65bd940038a3cb37b90fb8e1b0afa903a56c003f92328"
+    },
+    {
+      "file": "Ipc.Application.Contracts.dll",
+      "before": "ad16788b5c7d1623adf296dd4a3dc05ca666950d2e10774c90a908cdfce9d485",
+      "after": "c827d22fbfa6662fc377a36d70ac5f541e950096b317ea64a3521c06d744f2d7"
+    },
+    {
+      "file": "Ipc.Application.Sportmaster.dll",
+      "before": "029cbd6da8582fb65b2fc15cd41fafbfe1976c4e90eccf261383363585420206",
+      "after": "f9074ec86dd81dc070ce185116ba6f1bfbcd334c947385131643ff11372bf745"
+    }
+  ]
+}

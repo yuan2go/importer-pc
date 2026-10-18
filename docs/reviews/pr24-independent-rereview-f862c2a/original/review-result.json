@@ -1,0 +1,126 @@
+{
+  "reviewed_at_utc": "2026-10-18T15:59:38.296959+00:00",
+  "head": "f862c2ae2ad00ab79ceff5e2013c2a5593d05234",
+  "main": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "delta_base": "3f6f762d31655ef0fe8d6562ed413beed682e2f9",
+  "decision": "NO_REMAINING_CONFIRMED_CODE_BLOCKER_IN_REVIEWED_REFERENCE_SCOPE",
+  "standards_findings": [],
+  "spec_findings": [],
+  "source_blob_integrity": {
+    "checked_files": 2133,
+    "drift": []
+  },
+  "runs": [
+    {
+      "name": "inventory",
+      "exit_code": 0,
+      "log": "inventory.log",
+      "sha256": "43144c03fe9fa81e3e629103755182e9f7d1b5ce945b1808cddd5f9364330502",
+      "pass_assertions": 130,
+      "fixture_original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-c97dbef3b315428d870dd91c1c9df711",
+      "preserved_fixture_root": "runtime-evidence/inventory"
+    },
+    {
+      "name": "review",
+      "exit_code": 0,
+      "log": "review.log",
+      "sha256": "744281b1031c69af5d84bfc262566f0a18dfa48fb914135611f29e35302df79f",
+      "pass_assertions": 33,
+      "fixture_original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-cca184dd83e645ab8118eef2ab930f02",
+      "preserved_fixture_root": "runtime-evidence/review"
+    },
+    {
+      "name": "extensions",
+      "exit_code": 0,
+      "log": "extensions.log",
+      "sha256": "a1c3dbb5036d861992fd3d0e97bc3c6cf1b8a0120b57258dcfe770f05768624c",
+      "pass_assertions": 57,
+      "fixture_original_root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-096324e2602244abaebbfe68c9e45bb1",
+      "preserved_fixture_root": "runtime-evidence/extensions"
+    },
+    {
+      "name": "independent-field-probe",
+      "exit_code": 0,
+      "log": "probe-results.log",
+      "sha256": "07130b688b3b7549efc4bec393914db2144f6e2d6250dc9d80f3cc746cd234f5",
+      "cases": 117,
+      "description": "9 individual full-binding field contradictions plus clone, package uniqueness, null and bound64 limit controls across schemas1/2/3 and three scopes; exact original DB/config hashes"
+    }
+  ],
+  "builds": [
+    {
+      "log": "build.log",
+      "exit_code": 0,
+      "sha256": "93a275ccf7d2d5b095bfd6577af232af9d22d6e1f6776fd17710d046c2a7d0c8"
+    },
+    {
+      "log": "host-build.log",
+      "exit_code": 0,
+      "sha256": "430324fa29c0a3421e8d40540ee03ac21bcec70448684f30a6f7079b3e4505fe"
+    },
+    {
+      "log": "signed-build.log",
+      "exit_code": 0,
+      "sha256": "2feb87566177ce87c9e84c4e8a301f7238c5bb4e1427b8f5dc2b303c53e0c24c"
+    },
+    {
+      "log": "probe-build.log",
+      "exit_code": 0,
+      "sha256": "daa1ea2eb84846777ae53673687f0ea4f645c8945efb7d609a83c0c5a3a26b23"
+    }
+  ],
+  "independent_sample": {
+    "Package": "capabilities-1.6.11-independent.ipcx",
+    "PackageSha256": "628da64283ae5d56eaa92cd65fd79830a58dd39daf8ab9e4fc9adee79b8c0602",
+    "PluginSourceCommit": "b82b8d07a39fe8d2a875a05aec0cebfa4aeb94ab",
+    "PluginSourceSha256": "d097bdc09565b5326baf0c08c8d8b075f84b3a7e1df5cbf3851fe9fbecaf18c7",
+    "DefinitionSha256": "423531ba15536fb965eb960b28885b82d6c80f8ae263583365927877b89f73f8",
+    "HostContractSha256": "87c81d26d499bcf82adffb29e228df577e22b3f411b639ad23f6a59d50cba2d7",
+    "FrozenHostUnchanged": true,
+    "FrozenCheckerUnchanged": true,
+    "CheckerContractsSha256": {
+      "Ipc.Platform": "87c81d26d499bcf82adffb29e228df577e22b3f411b639ad23f6a59d50cba2d7",
+      "Ipc.Application.Contracts": "c827d22fbfa6662fc377a36d70ac5f541e950096b317ea64a3521c06d744f2d7"
+    },
+    "Publisher": "quality-synthetic",
+    "Version": "1.6.11",
+    "ExtensionContract": 1,
+    "Signature": "RSA-PSS/SHA256",
+    "Mode": "Simulation",
+    "ManifestSha256": "95bb90d262266f1585d090b738b8844254c37bbf98fd5098f1a451a6ff3cb5b8",
+    "TrustSha256": "dbda299cc35dd82733ee7efe6d8ddd8d456a667445003eaf715db94f72613fe1",
+    "PayloadSha256": {
+      "Ipc.Reference.ParcelCapabilitiesExtension.dll": "516e66e25822c1e0d1b3f670a0a3aef0ee516a77c4255f6511f688a5536b7651"
+    },
+    "DependencyPackages": [],
+    "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+  },
+  "no_repository_source_document_configuration_changes": true,
+  "no_pr_mutation_other_than_local_attachment": true,
+  "no_merge": true,
+  "unverified": [
+    "Windows actual installation/runtime/UI/multiwindow/UAC/ACL",
+    "Real SDK/device/WCS/PLC contracts and site interlocks",
+    "Physical power loss and production endurance",
+    "Full product packaging or legacy Supply/Inspection complete acceptance not repeated",
+    "Original AUDIT01 PDF unavailable",
+    "Prior historical 267 archive errors not rerun or closed by this audit"
+  ],
+  "limitations": [
+    "Reference signed sample1.6.11 is newly built only for independent verification; old packages and product candidates retain their identities",
+    "No statistical production lifetime claim from bounded fault injection",
+    "Frozen fixture is a never-sent hash-correct Prepared unresolved operation; other real uncertain/request/image/receipt duties covered by existing review/extension regression, not every schema Cartesian product"
+  ],
+  "report": "REPORT.md",
+  "report_sha256": "6274263d0eab8d512d9cd82b3814c26d3b5a286c92e8a2a8d2de170038851577",
+  "source_commands": {
+    "build": "dotnet build tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj --artifacts-path <ARTIFACT>/build -p:RestoreLockedMode=true -m:1 -nr:false",
+    "runtime": [
+      "--inventory-closure",
+      "--review-closure",
+      "--quality-extensions <new1.6.11> <TestOnly trust>"
+    ],
+    "host": "dotnet publish src/Ipc.Assembly/Ipc.Assembly.csproj -c Debug -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.lock.json -p:RestoreLockedMode=true --artifacts-path <ARTIFACT>/host-build -o <ARTIFACT>/host -m:1 -nr:false",
+    "probe": "dotnet exec --runtimeconfig <BUILD>/Ipc.Application.Verification.runtimeconfig.json --depsfile <BUILD>/Ipc.Application.Verification.deps.json probe-build/Probe.dll <SOURCE>/config/direct-plc/business.json probe-cases"
+  }
+}

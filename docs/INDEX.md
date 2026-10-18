@@ -2,11 +2,13 @@
 
 ## 当前工程入口
 
-[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。本次N01–N07执行main基线b2dc55b，继承PR23/24及后续有效修复的准确提交见本次结果；未代合并其他PR，新结果不冒充main能力或历史PASS。新Application使用schema3/Parcel DB5，DB3/4为历史发布；Supply的Storage5和Product命令单独适用。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+[首次运行及产品选择](runtime/getting-started.md) · [Application设计](design/application-architecture-22.md) · [Application运行/配置](runtime/application-architecture-22.md) · [恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md) · [扩展开发](extensions/developer-guide.md)。本次N01–N07开工main基线b2dc55b，最新同步main为4afe2af；PR24已由独立授权合并，本任务不代合并其他PR。继承PR23/24及后续有效修复的准确提交见本次结果；新结果不冒充main能力或历史PASS。新Application使用schema3/Parcel DB5，DB3/4为历史发布；Supply的Storage5和Product命令单独适用。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
 [N01–N07交付、PR26复核修复及验证边界](runtime/architecture-quality-audit-02-results.md)。缺raw资料责任、旧发布Query到DB5、旧配置账确认和维护围栏的实际步骤见维护指南；[复核前原字节](archive/pre-pr26-rereview/README.md)保留前次结论，前次PASS不作为全闭环证据。
 
 [N01前操作指引原字节](archive/pre-architecture-quality-02/README.md)。19职责、20可靠性、22拓扑及[质量闭环设计](design/architecture-quality-closure-01.md)按适用范围共同生效；阶段工作包和原候选作为历史来源保留。
+PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c2a5593d05234`，归档后最终head `f531d3a6882891cfc7870f5dcccfe985009d6be4`，main合并提交 `4afe2afacde9e2acab7648fff3440fa3cc331b6e`。[PR24独立原报告与证据](reviews/pr24-independent-rereview-f862c2a/README.md)、[五项整改](runtime/architecture-quality-closure-01-rereview-results.md)及[R03去重前校验](runtime/architecture-quality-closure-01-r03-results.md)保留各自固定源码与未验边界；[R03前入口原字节](archive/pre-pr24-r03-20261018/README.md)与[复审前入口原字节](archive/pre-pr24-rereview-20261018/README.md)保持原身份。采集P2见[工作包](work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)及[结果](runtime/acquisition-lifecycle-p2.md)，其成果随PR24祖先关系继承；旧OPEN与不合并说明按形成时范围理解。
+
 ## 最新独立审查与下一阶段交接
 
 [架构质量审查02：原PDF、最新复核及精简Codex提示词](reviews/architecture-quality-audit-02/README.md)。固定审查main为`2126ac2c06a0c352d96afbbf13ec1a719c352738`；报告保持形成时身份，下一阶段N01–N07按执行时main与并行PR复核后实施。该报告发布任务未实施修复；质量闭环01的实际增量按本包结果和固定源码读取，不据此改写原审查结论或历史验收。

@@ -1,3 +1,5 @@
+> RCS增量01：[Sportmaster RCS分拣任务服务](runtime/sportmaster-rcs-task.md)。首项真实HTTP协议组件与参考夹具验证分别记录；公共契约1.7.0、Parcel数据库5，旧未结升级屏障继续有效。旧1.6.0/SQL4与无真实协议的说明按形成时读取，原字节见[归档](archive/pre-sportmaster-rcs-task/README.md)。Windows实际NOT_RUN，真实RCS/设备/现场BLOCKED。
+
 > PR24独立复审已归档：[固定head原报告、证据和未验证边界](reviews/pr24-independent-rereview-f862c2a/README.md)。f862c2a限定参考范围无剩余代码阻断；2026-10-19用户授权归档后精确head合并，本轮不重复测试或打包，合并身份读取PR。
 
 > 前轮历史结果：[五项整改证据](runtime/architecture-quality-closure-01-rereview-results.md)及[R03修复记录](runtime/architecture-quality-closure-01-r03-results.md)。原报告、候选与历史失败保持形成时身份，Windows/真实SDK/协议/现场门禁不因合并关闭。

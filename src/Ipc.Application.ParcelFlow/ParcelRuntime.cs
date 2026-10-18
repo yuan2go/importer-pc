@@ -72,7 +72,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         configuration = new(Path.Combine(directory, "configuration.json"), seed, definition.Validate);
         ValidateDeploymentIdentity(seed);
         configuration.RecoverInterruptedActivation();
-        repository = new(directory, Id, 4) { Boundary = point => Boundary?.Invoke(point) };
+        repository = new(directory, Id, 5) { Boundary = point => Boundary?.Invoke(point) };
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
         foreach (var conflict in repository.LoadConflicts()) identityConflicts.Add(conflict.Id, conflict);
         RefreshStorageCapacity();
@@ -292,10 +292,29 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (CanDispatch(operations[op.Id]) && WeightReady(operations[op.Id])) await definition.AdvanceAsync(this, operations[op.Id]).ConfigureAwait(false);
     }
     ParcelOperation IParcelExecution.Current(string id) => operations[id];
-    ParcelOperation IParcelExecution.PrepareWcs(ParcelOperation op) => op with
-    { Wcs = new(Prepare(op, "wcs-slot", op.FrozenConfiguration.Wcs!, null, null), StageState.Prepared, 0, []), State = ParcelState.ResolvingWcs };
+    ParcelOperation IParcelExecution.PrepareWcs(ParcelOperation op)
+    {
+        var request = Prepare(op, "wcs-slot", op.FrozenConfiguration.Wcs!, null, null);
+        if (ports!.Wcs is IWcsRequestPreparer preparer)
+        {
+            try
+            {
+                var prepared = preparer.PrepareRequest(Wire.Decode<FrozenRequest>(Wire.Encode(request)), repository!.OperationSequence(op.Id));
+                if (prepared.RequestId <= 0 || prepared.ContentType != "application/json" || string.IsNullOrWhiteSpace(prepared.Body) ||
+                    System.Text.Encoding.UTF8.GetByteCount(prepared.Body) > 65536 || Wire.Hash(prepared.Body) != prepared.BodyHash)
+                    throw new InvalidDataException("Invalid external request preparation; no delivery permitted");
+                request = request with { IntegrationRequest = prepared };
+            }
+            catch (Exception e) when (e is InvalidDataException or ArgumentException or OverflowException)
+            {
+                return op with { State = ParcelState.Blocked, Reason = "IntegrationPreparationBlocked: " + e.Message + "; no external intent or delivery was created; inspect and dispose this original entity before reconfiguration" };
+            }
+        }
+        return op with { Wcs = new(request, StageState.Prepared, 0, []), State = ParcelState.ResolvingWcs };
+    }
     ParcelOperation IParcelExecution.PreparePlc(ParcelOperation op) => PreparePlc(op);
-    void IParcelExecution.Persist(ParcelOperation op, string reason) => Save(op, "IntentPrepared", reason);
+    void IParcelExecution.Persist(ParcelOperation op, string reason) => Save(op,
+        op.State == ParcelState.Blocked && op.Wcs is null ? "PreparationBlocked" : "IntentPrepared", op.Reason ?? reason);
     Task<ParcelOperation> IParcelExecution.ExecuteAsync(ParcelOperation op, ParcelStage stage) => ExecuteStageAsync(op, stage, false);
     ParcelOperation PreparePlc(ParcelOperation op) => op with
     {

@@ -1,0 +1,27 @@
+{
+  "SchemaVersion": 1,
+  "Project": "src/Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj",
+  "SourceRoots": [
+    "src/Ipc.Integrations.SportmasterRcs"
+  ],
+  "BuildInputs": [
+    "Directory.Build.props",
+    "global.json",
+    "NuGet.Config"
+  ],
+  "Manifest": "src/Ipc.Integrations.SportmasterRcs/manifest.template.json",
+  "Modules": "src/Ipc.Integrations.SportmasterRcs/modules.json",
+  "ParameterSchemas": {
+    "sportmaster-rcs-task": "src/Ipc.Integrations.SportmasterRcs/parameters.json"
+  },
+  "Content": [
+    {
+      "Root": "build",
+      "Source": "Ipc.Integrations.SportmasterRcs.dll",
+      "Path": "Ipc.Integrations.SportmasterRcs.dll"
+    }
+  ],
+  "PublicContracts": [
+    "Ipc.Application.Contracts"
+  ]
+}

@@ -1,0 +1,120 @@
+[
+  {
+    "Key": "source",
+    "Group": "RCS 分拣任务",
+    "Label": "协议来源",
+    "Type": "string",
+    "Required": true,
+    "MaximumLength": 64
+  },
+  {
+    "Key": "locale",
+    "Group": "RCS 分拣任务",
+    "Label": "协议语言",
+    "Type": "string",
+    "Required": true,
+    "MaximumLength": 64
+  },
+  {
+    "Key": "zone-id",
+    "Group": "RCS 分拣任务",
+    "Label": "区域数字标识",
+    "Type": "integer",
+    "Required": true,
+    "MaximumLength": 32,
+    "Minimum": 1,
+    "Maximum": 9223372036854775807
+  },
+  {
+    "Key": "project-id",
+    "Group": "RCS 分拣任务",
+    "Label": "项目数字标识",
+    "Type": "integer",
+    "Required": true,
+    "MaximumLength": 32,
+    "Minimum": 1,
+    "Maximum": 9223372036854775807
+  },
+  {
+    "Key": "quantity",
+    "Group": "RCS 分拣任务",
+    "Label": "每次实体准入的明确数量",
+    "Type": "integer",
+    "Required": true,
+    "MaximumLength": 10,
+    "Minimum": 1,
+    "Maximum": 2147483647
+  },
+  {
+    "Key": "request-id-base",
+    "Group": "RCS 分拣任务",
+    "Label": "独占请求编号区间起点（不含）",
+    "Type": "integer",
+    "Required": true,
+    "MaximumLength": 32,
+    "Minimum": 0,
+    "Maximum": 9223372036854775806
+  },
+  {
+    "Key": "request-id-count",
+    "Group": "RCS 分拣任务",
+    "Label": "独占请求编号区间容量",
+    "Type": "integer",
+    "Required": true,
+    "MaximumLength": 32,
+    "Minimum": 1,
+    "Maximum": 9223372036854775807
+  },
+  {
+    "Key": "left-station-code",
+    "Group": "RCS 分拣任务",
+    "Label": "左位工位编号",
+    "Type": "string",
+    "Required": true,
+    "MaximumLength": 256
+  },
+  {
+    "Key": "left-bcr-code",
+    "Group": "RCS 分拣任务",
+    "Label": "左位读码器编号",
+    "Type": "string",
+    "Required": true,
+    "MaximumLength": 256
+  },
+  {
+    "Key": "right-station-code",
+    "Group": "RCS 分拣任务",
+    "Label": "右位工位编号",
+    "Type": "string",
+    "Required": true,
+    "MaximumLength": 256
+  },
+  {
+    "Key": "right-bcr-code",
+    "Group": "RCS 分拣任务",
+    "Label": "右位读码器编号",
+    "Type": "string",
+    "Required": true,
+    "MaximumLength": 256
+  },
+  {
+    "Key": "specified-chute",
+    "Group": "RCS 分拣任务",
+    "Label": "是否指定格口",
+    "Type": "choice",
+    "Required": true,
+    "Choices": [
+      "false",
+      "true"
+    ]
+  },
+  {
+    "Key": "chute-code",
+    "Group": "RCS 分拣任务",
+    "Label": "指定格口（仅指定时填写）",
+    "Type": "string",
+    "MaximumLength": 64,
+    "RequiredWhenKey": "specified-chute",
+    "RequiredWhenEquals": "true"
+  }
+]

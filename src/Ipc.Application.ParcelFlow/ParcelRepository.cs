@@ -36,12 +36,15 @@ public sealed partial class ParcelRepository : IDisposable
         CREATE TABLE parcel_identity_conflicts(id TEXT PRIMARY KEY,body TEXT NOT NULL,acknowledged INTEGER NOT NULL DEFAULT 0);
         CREATE TABLE parcel_configuration_audit(id TEXT PRIMARY KEY,body TEXT NOT NULL);
         CREATE INDEX parcel_receipts_pending ON parcel_receipts(state,operation,stage);
+        """), new(5, """
+        CREATE TABLE parcel_integration_semantics(version INTEGER PRIMARY KEY CHECK(version=5),description TEXT NOT NULL);
+        INSERT INTO parcel_integration_semantics VALUES(5,'Frozen external wire intents and original HTTP receipts; UnpackRequired holds the original position');
         """)];
     public long Revision { get; private set; }
     public bool Paused { get; private set; }
-    public ParcelRepository(string directory, string application, int storageVersion = 4)
+    public ParcelRepository(string directory, string application, int storageVersion = 5)
     {
-        if (storageVersion is not (2 or 3 or 4)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
+        if (storageVersion is not (2 or 3 or 4 or 5)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
         Directory.CreateDirectory(directory); rawRoot = Path.Combine(directory, "receipts"); Directory.CreateDirectory(rawRoot);
         db = Database.Open(Path.Combine(directory, application + ".db"));
         try

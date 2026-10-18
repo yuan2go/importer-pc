@@ -1,0 +1,34 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-9c06d1186a3d4a928a177a4abf5af5f3
+PASS AQ: R01 failed recovery commit retains Awaiting occurrence/raw bytes and rolls back reply identity
+PASS AQ: R01 startup restores permanent original reply identity from Awaiting raw bytes
+PASS AQ: R01 raw identity test actually passes bounded reply eviction
+PASS AQ: R01 changed old reply ID becomes Conflict after 65 queries without resending Submit
+PASS AQ: R01 existing DB4 committed raw backfills earliest reply identity while preserving recorded Conflict
+PASS AQ: R01 malformed returned RequestId cannot poison another original request identity namespace
+PASS AQ: R02 interrupted Attached upload preserves completed main result and null main Reason
+PASS AQ: R01 archived original BLOB repairs missing DB4 identity without unarchiving or changing main facts
+PASS AQ: R01 prior false completion refuses startup and rolls back repair without rewriting raw or inventing settlement
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: R05 shared service maintenance closes Resume and every dependent position
+PASS AQ: R05 explicit Resume cannot bypass maintained shared WCS
+PASS AQ: R05 no new Submit or original Query enters a WCS with reconnect in flight
+PASS AQ: R05 maintained original retains its single sending attempt
+PASS AQ: R05 successful maintenance retains actual software pause
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: R05 selected service rejects maintenance until its original active call drains
+PASS AQ: R05 unrelated active WCS does not prevent left-camera maintenance or independent Resume
+PASS AQ: R05 independent right position resumes while left resource remains fenced
+PASS AQ: R05 expired maintenance budget retains noncooperative resource fence and keeps right position available
+PASS AQ: R05 right progresses while maintained left cannot admit or call its camera
+PASS AQ: R05 late provider return reports timeout and actual unpaused state without inventing maintenance success
+PASS AQ: R03 unknown Pending schema conservatively blocks retirement; read-only bytes retained
+PASS AQ: R03 binding package without deployment cannot become empty references; read-only bytes retained
+PASS AQ: R03 dangling observation extension blocks retirement; read-only bytes retained
+PASS AQ: R03 Pending cannot change consumer station ownership; read-only bytes retained
+PASS AQ: R03 valid exact offline Pending package is retained without loading modules
+PASS AQ: R04 actual Supply format5 and Parcel DB4 dispatch to owning readers without mutation
+PASS AQ: R04 mixed-reader dispatch preserves legacy Supply Pending package responsibility
+PASS AQ: R04 linked consumer ancestor is rejected before opening database
+PASS AQ: R04 ambiguous consumer remains blocked without mutation
+PASS AQ: R03 future frozen configuration blocks retirement without rewriting originals
+PASS PR24 REVIEW CLOSURE COMPLETE

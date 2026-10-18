@@ -1,0 +1,21 @@
+{
+  "baseline_main": "4afe2afacde9e2acab7648fff3440fa3cc331b6e",
+  "focused": "PASS",
+  "focused_pass_lines": 104,
+  "regressions": {
+    "application-architecture": "PASS",
+    "architecture-quality": "PASS",
+    "review-closure": "PASS"
+  },
+  "wpf_cross_build": "PASS",
+  "windows_actual": "NOT_RUN",
+  "real_rcs": "BLOCKED_NOT_CONNECTED",
+  "device_field": "BLOCKED",
+  "guide_tests": "PASS_2",
+  "archive_tool_tests": "PASS_10_WITH_BUNDLED_PILLOW",
+  "diagnostics": {
+    "focused-01": "Fixture timeout200ms could reject cold-JIT observations; use existing1500ms budget and intentional peer2500ms timeout",
+    "focused-02": "Invalid dotnet run argument ordering treated -m:1 as workspace; changed to explicit serial build then DLL execution",
+    "system-python-tools": "Pillow unavailable; original failure preserved and rerun passed with bundled Python. No assertions removed."
+  }
+}

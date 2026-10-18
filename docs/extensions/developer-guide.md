@@ -1,3 +1,5 @@
+> RCS增量01：[Sportmaster RCS分拣任务服务](../runtime/sportmaster-rcs-task.md)。首项真实HTTP协议组件与参考夹具验证分别记录；公共契约1.7.0、Parcel数据库5，旧未结升级屏障继续有效。旧1.6.0/SQL4与无真实协议的说明按形成时读取，原字节见[归档](../archive/pre-sportmaster-rcs-task/README.md)。Windows实际NOT_RUN，真实RCS/设备/现场BLOCKED。
+
 > PR24 R03规则已实施：schema1/2/3在任何All/Bound去重之前校验原库存唯一性、镜像内容一致性及精确包闭包；歧义原件明确阻卸载。见[固定源码/验证边界](../runtime/architecture-quality-closure-01-r03-results.md)，旧包/候选身份不变。
 
 > 路径边界：业务SQL及状态语义仍由各业务维护读者拥有。PR24整改由装配ExtensionConsumerReaders分派已知Supply/Parcel消费者；不认识、未来、损坏或身份不一致的根必须阻断。新Application的安装恢复/消费者/备份及安全卸载见[质量闭环01运行指南](../runtime/architecture-quality-closure-01.md)。不得把错误格式当零引用；原包身份不放宽。

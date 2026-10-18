@@ -23,7 +23,8 @@ public sealed class SportmasterFlow : FlowDefinition
         if (stage == ParcelStage.Wcs)
         {
             op = op with { Slot = reply.BusinessAccepted == true ? reply.Slot : op.Slot,
-                State = reply.BusinessAccepted == true ? ParcelState.SlotResolved : ParcelState.WcsRejected };
+                State = reply.BusinessAccepted == true ? ParcelState.SlotResolved :
+                    reply.Destination?.Outcome == WcsDestinationOutcome.UnpackRequired ? ParcelState.UnpackRequired : ParcelState.WcsRejected };
             return op;
         }
         throw new InvalidDataException("Stage does not belong to this Application");

@@ -1,0 +1,21 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Platform/debug/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Application.Contracts/debug/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Platform.Storage/debug/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Application.ParcelFlow/debug/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Application.Sportmaster/debug/Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Application.DirectPlc/debug/Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Application.WcsToPlc/debug/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Reference.Protocol/debug/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Components/debug/Ipc.Components.dll
+  Ipc.Drivers -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Drivers/debug/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Application.Supply.Contracts/debug/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Integrations/debug/Ipc.Integrations.dll
+  Ipc.Application.Verification -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Application.Verification/debug/Ipc.Application.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:02.64

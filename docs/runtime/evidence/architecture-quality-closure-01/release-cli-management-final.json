@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "source_commit": "c666efd8df50aac0ad579ec600b801f04372dbac",
+  "installed": {
+    "Package": {
+      "Id": "reference.parcel-capabilities",
+      "Version": "1.6.3",
+      "ManifestSha256": "28887E558F8D9F4BE802A9728537C52A6D57A1994FAE6CBBE2AE3B7D36F92244"
+    },
+    "PackageSha256": "BD875D0F106ADE8880ABE5FE62F5808D889D5499824DEB0E9C353890AD95CD81",
+    "TrustSha256": "9919B6B5B66175D11217ABCC9CFEEF98B1AE5470925462DDA0A1324561097FEB",
+    "OperationId": "f5ab95c8d3964213b43041d2f421592c",
+    "At": "2026-10-18T14:09:27.802328+00:00",
+    "Status": "Installed",
+    "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
+  },
+  "recovered": {
+    "Package": {
+      "Id": "reference.parcel-capabilities",
+      "Version": "1.6.3",
+      "ManifestSha256": "28887E558F8D9F4BE802A9728537C52A6D57A1994FAE6CBBE2AE3B7D36F92244"
+    },
+    "PackageSha256": "BD875D0F106ADE8880ABE5FE62F5808D889D5499824DEB0E9C353890AD95CD81",
+    "TrustSha256": "9919B6B5B66175D11217ABCC9CFEEF98B1AE5470925462DDA0A1324561097FEB",
+    "OperationId": "f5ab95c8d3964213b43041d2f421592c",
+    "At": "2026-10-18T14:09:28.180764+00:00",
+    "Status": "Installed",
+    "Reason": "Installed only; not activated. Offline signature/trust checked; no online revocation claim."
+  },
+  "uninstalled": {
+    "Package": {
+      "Id": "reference.parcel-capabilities",
+      "Version": "1.6.3",
+      "ManifestSha256": "28887E558F8D9F4BE802A9728537C52A6D57A1994FAE6CBBE2AE3B7D36F92244"
+    },
+    "PackageSha256": "BD875D0F106ADE8880ABE5FE62F5808D889D5499824DEB0E9C353890AD95CD81",
+    "TrustSha256": "9919B6B5B66175D11217ABCC9CFEEF98B1AE5470925462DDA0A1324561097FEB",
+    "OperationId": "f5ab95c8d3964213b43041d2f421592c",
+    "At": "2026-10-18T14:09:28.32186+00:00",
+    "Status": "Uninstalled",
+    "Reason": "Disabled/unbound; files retired for recovery, audit retained"
+  },
+  "operations": [
+    {
+      "Id": "5ce2fcb48cae475c9419d6b8de699b22",
+      "PackageSha256": "BD875D0F106ADE8880ABE5FE62F5808D889D5499824DEB0E9C353890AD95CD81",
+      "Package": {
+        "Id": "reference.parcel-capabilities",
+        "Version": "1.6.3",
+        "ManifestSha256": "28887E558F8D9F4BE802A9728537C52A6D57A1994FAE6CBBE2AE3B7D36F92244"
+      },
+      "State": "Uninstalled",
+      "At": "2026-10-18T14:09:28.307752+00:00",
+      "Error": null,
+      "Kind": "Uninstall"
+    },
+    {
+      "Id": "f5ab95c8d3964213b43041d2f421592c",
+      "PackageSha256": "BD875D0F106ADE8880ABE5FE62F5808D889D5499824DEB0E9C353890AD95CD81",
+      "Package": {
+        "Id": "reference.parcel-capabilities",
+        "Version": "1.6.3",
+        "ManifestSha256": "28887E558F8D9F4BE802A9728537C52A6D57A1994FAE6CBBE2AE3B7D36F92244"
+      },
+      "State": "Registered",
+      "At": "2026-10-18T14:09:27.761467+00:00",
+      "Error": null,
+      "Kind": "Install"
+    }
+  ],
+  "boundary": "New isolated store; TestOnly Simulation; no real devices"
+}

@@ -1,0 +1,23 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 1.84 秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 1.84 秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 1.84 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 1.84 秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 1.84 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 1.84 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 1.84 秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 1.84 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 32 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 49 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 49 毫秒)。
+  Ipc.Platform -> /tmp/ipc-pr24-rereview-b82-direct-build/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-pr24-rereview-b82-direct-build/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> /tmp/ipc-pr24-rereview-b82-direct-build/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> /tmp/ipc-pr24-rereview-b82-direct-build/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> /tmp/ipc-pr24-rereview-b82-direct-build/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> /tmp/ipc-pr24-rereview-b82-direct-build/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> /tmp/ipc-pr24-rereview-b82-direct-build/bin/Ipc.Application.DirectPlc/release/Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> /tmp/ipc-pr24-rereview-b82-direct-build/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /tmp/ipc-pr24-rereview-b82-direct-build/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /tmp/ipc-pr24-rereview-b82-direct-build/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+<WORKTREE>/src/Ipc.Assembly/ExtensionConsumerReaders.cs(13,48): error CS0122: “RecoveryFiles”不可访问，因为它具有一定的保护级别 [<WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj]

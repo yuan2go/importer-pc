@@ -1,0 +1,13 @@
+EvidenceRoot=<TEMP>/ipc17-verification-3038c288854b49c5a0de03b4259ef97a
+PASS AQ: R01 failed recovery commit retains Awaiting occurrence/raw bytes and rolls back reply identity
+PASS AQ: R01 startup restores permanent original reply identity from Awaiting raw bytes
+PASS AQ: R01 raw identity test actually passes bounded reply eviction
+PASS AQ: R01 changed old reply ID becomes Conflict after 65 queries without resending Submit
+PASS AQ: R01 existing DB4 committed raw backfills earliest reply identity while preserving recorded Conflict
+PASS AQ: R02 interrupted Attached upload preserves completed main result and null main Reason
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: R05 shared service maintenance closes Resume and every dependent position
+PASS AQ: R05 explicit Resume cannot bypass maintained shared WCS
+PASS AQ: R05 no main request enters a WCS with reconnect in flight
+PASS AQ: R05 successful maintenance retains actual software pause
+PASS PR24 REVIEW CLOSURE COMPLETE

@@ -1,0 +1,41 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-c6889c74503e46158577af23f69488bd
+PASS AQ: AQ03 recovered WaitingWeight accepts original measurement without automatically sending PLC
+PASS AQ: explicit continuation preserves admission and makes one first attempt
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: AQ01 rejects cross mode/station restore before creating target
+PASS AQ: AQ01 rejects cross mode/station restore before creating target
+PASS AQ: AQ04 settled history does not consume unresolved admission capacity
+PASS AQ: AQ04 capacity archive permits next real main chain without deleting history
+PASS AQ: bounded keyset pages include every original archived/resident operation exactly once
+PASS AQ: repeated real main chains keep resident work bounded while archived history grows
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: restart deduplicates permanent archived admission and retains original JSON/request bytes
+PASS AQ: actual backup/isolated restore retains full paged history and identity index
+PASS AQ: cross-position identity conflict durably blocks both affected positions and preserves original entity
+PASS AQ: identity conflict remains a stable responsibility after restart
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: authorized identity disposition recovers affected positions without resending original WCS
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: AQ02 real SQLITE_BUSY preserves original marker byte-for-byte before acknowledgement commit
+PASS AQ: failed acknowledgement cannot clear in-memory overload responsibility
+PASS AQ: post-commit interruption retains marker for deterministic restart cleanup
+PASS AQ: restart cleans only durably acknowledged marker and retains original command receipt
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: full topology candidate can be validated without saving or activating
+PASS AQ: interrupted save retains authoritative Pending and durable audit intention
+PASS AQ: controlled restart activates complete original candidate
+PASS AQ: restart closes configuration audit with original maintenance actor/reason, before/after revisions and exact hashes
+PASS AQ: configuration CAS still rejects a stale full editor after activation
+PASS AQ: AQ06 wrong health instance cannot assert readiness for configured WCS
+PASS AQ: AQ06 expired source confirmation keeps timestamps but projects unavailable in actual ViewModel
+PASS AQ: actual ViewModel separates displayed position/current command owner from selected history detail
+PASS AQ: refresh preserves independent window targets and projects both Sportmaster results
+PASS AQ: attached transport loss owns upload Failure without contaminating accepted main reason or PLC fact
+PASS AQ: independent main query reaches authoritative physical completion while attached query remains unknown and retains image
+PASS AQ: restart assigns missing raw upload occurrence to attached responsibility, preserving completed main facts
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: same-device reconnect waits for in-flight capture while snapshot and software pause remain responsive
+PASS AQ: capture returns original acquisition before underlying reader session is replaced with new epoch
+PASS AQ: HTTP submit enforces streamed response quota without Content-Length
+PASS AQ: HTTP header/body reads share caller cancellation without successful fallback
+PASS AQ COMPLETE

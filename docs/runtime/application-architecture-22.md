@@ -26,7 +26,7 @@ ParcelConfiguration.SchemaVersion=3，Topology.Readers是DeviceBinding数组（�
 
 Images.Camera启用采图；Images.Uploader=null为仅取图。有Uploader时Strategy=BeforeMain/Attached分别要求前置地址或独立后台责任；若协议要求图片地址，禁止仅取图或Attached。仅取图原件保留到主链终态/安全取消；未知采集/上传保留原件及独立接收责任。MaximumBytes、TotalBytes、MaximumPending控制临时原件容量，无长期图库或预览服务。
 
-Camera.Target等于本位Reader.DeviceId表示复用同物理相机；reader须实现IReaderImageCapture并返回受控原采集门面，拒绝另开连接。签名相机模块须与reader属于同一精确包；不允许借另一位设备。独立相机Target为独立设备身份。schema3每张返回图必须带与原AcquisitionIdentity完全相同的证据，不能取“最近图”。参考manual源有有限原采集登记，只有合成图；真实SDK关联仍待验收。
+Camera.Target等于本位Reader.DeviceId表示复用同物理相机；reader须实现IReaderImageCapture并返回受控原采集门面，拒绝另开连接。签名相机模块须与reader属于同一精确包；不允许借另一位设备。独立相机Target为独立设备身份。schema3每张返回图必须带与原AcquisitionIdentity完全相同的证据，不能取“最近图”。参考manual源的原采集登记按[采集生命周期P2](../work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)管理，不按固定条数逐出在途记录，仍只有合成图；真实SDK关联仍待验收。
 
 Platform.ObservationSession为每个reader固定epoch、来源sequence和健康，旧注册回调被围栏拒绝；每个秤使用IControlledWeightSource的注册epoch/sequence。重量还需原AdmissionId、绑定实例/设备、稳定性、质量、单位/精度和期限。无重量不是0。PLC语义和握手归驱动，WCS字段、单位、缺省操作人/认证和响应转换归组件，Platform不规定现场报文。
 
@@ -48,7 +48,7 @@ StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保
 
 ## 版本升级与原件
 
-公共Application.Contracts版本1.4.0；新参考能力包manifest版本1.4.0，仍必须使用目标宿主的精确Platform/Application契约SHA重新构建及独立签名。保留旧1.3.1/更早包与全部ID/version登记，不能覆盖原版本。ContractMajor相同不代表精确契约兼容。包构建/签名/安装/资格沿[扩展指南](../extensions/developer-guide.md)，不允许任意DLL扫描或热换Application。
+P2增量的公共Application.Contracts版本1.5.0；新参考能力包manifest版本1.5.0（22原候选1.4.0保留），仍必须使用目标宿主的精确Platform/Application契约SHA重新构建及独立签名。保留旧1.3.1/更早包与全部ID/version登记，不能覆盖原版本。ContractMajor相同不代表精确契约兼容。包构建/签名/安装/资格沿[扩展指南](../extensions/developer-guide.md)，不允许任意DLL扫描或热换Application。
 
 配置schema1/2保持显式单Reader历史兼容模式，不猜成左右位；默认种子和当前目标使用schema3。已有schema2站必须通过完整拓扑候选/CAS显式迁移。测试中的schema2兼容夹具只保护原机制，不证明新双位。
 

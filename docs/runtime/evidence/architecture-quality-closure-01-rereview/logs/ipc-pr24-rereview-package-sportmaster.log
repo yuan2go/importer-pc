@@ -1,0 +1,31 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 854 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 854 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 854 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 854 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 854 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 854 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 854 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 854 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 19 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 19 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 18 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 21 毫秒)。
+  Ipc.Platform -> <CANDIDATES>/sportmaster-portable-rereview/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> <CANDIDATES>/sportmaster-portable-rereview/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> <CANDIDATES>/sportmaster-portable-rereview/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> <CANDIDATES>/sportmaster-portable-rereview/build-intermediates/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> <CANDIDATES>/sportmaster-portable-rereview/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> <CANDIDATES>/sportmaster-portable-rereview/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> <CANDIDATES>/sportmaster-portable-rereview/build-intermediates/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> <CANDIDATES>/sportmaster-portable-rereview/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <CANDIDATES>/sportmaster-portable-rereview/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> <CANDIDATES>/sportmaster-portable-rereview/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Integrations -> <CANDIDATES>/sportmaster-portable-rereview/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+<WORKTREE>/src/Ipc.Assembly/ExtensionConsumerReaders.cs(13,48): error CS0122: “RecoveryFiles”不可访问，因为它具有一定的保护级别 [<WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj]
+Traceback (most recent call last):
+  File "<WORKTREE>/scripts/package-application.py", line 39, in <module>
+    subprocess.run(command, cwd=root, check=True)
+  File "/opt/homebrew/Cellar/python@3.12/3.12.2_1/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['dotnet', 'publish', 'src/Ipc.Assembly/Ipc.Assembly.csproj', '-c', 'Release', '-m:1', '-nr:false', '-p:EnableWindowsTargeting=true', '-p:RestoreLockedMode=true', '-p:PathMap=<WORKTREE>=/_/src%2C<CANDIDATES>/sportmaster-portable-rereview/build-intermediates=/_/build', '-p:Application=Sportmaster', '-p:NuGetLockFilePath=packages.sportmaster.lock.json', '--artifacts-path', '<CANDIDATES>/sportmaster-portable-rereview/build-intermediates', '--self-contained', 'false', '-o', '<CANDIDATES>/sportmaster-portable-rereview/app']' returned non-zero exit status 1.

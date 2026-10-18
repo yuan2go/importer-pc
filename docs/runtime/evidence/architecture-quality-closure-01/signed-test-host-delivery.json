@@ -1,0 +1,8 @@
+{
+  "source_commit": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+  "public_contracts": {
+    "Ipc.Platform.dll": "adccd99b8779c135a3cff1f20eabb3731c347fe015cac8ca4f64aaf55d17411f",
+    "Ipc.Application.Contracts.dll": "1e783289ffa1e67789371afa9a66d6d89b93a97f5760638c42c5325e98c286b6"
+  },
+  "method": "Separate compiled test host, copied matching core DLLs from frozen checker; original test output preserved"
+}

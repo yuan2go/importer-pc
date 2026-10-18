@@ -44,6 +44,7 @@ public partial class SupplyStationWindow : Window
             if (closing) return;
             timer.Start();
             if (initialPage == "maintenance") await ViewModel.RunAsync(ViewModel.LoadCapabilitiesAsync);
+            if (initialPage == "history") await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync());
         };
         Closing += ClosingWindow;
         Closed += (_, _) => { timer.Stop(); windows.Remove(this); };
@@ -59,7 +60,7 @@ public partial class SupplyStationWindow : Window
         PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, _ => work };
     }
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
-    void History_Click(object sender, RoutedEventArgs e) => SetPage("history");
+    async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync()); }
     async void Maintenance_Click(object sender, RoutedEventArgs e) { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.LoadCapabilitiesAsync); }
     void Window_Click(object sender, RoutedEventArgs e)
     {
@@ -67,7 +68,7 @@ public partial class SupplyStationWindow : Window
     }
     void Layout_Click(object sender, RoutedEventArgs e) { compact = !compact; ApplyLayout(); }
     void ApplyLayout() { FontSize = compact ? 14 : 16; work.Margin = compact ? new Thickness(0) : new Thickness(4); }
-    public void ShowDetails(ParcelOperation operation) { ViewModel.Selected = operation; SetPage("history"); }
+    public async Task ShowDetailsAsync(ParcelOperation operation) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operation.Id)); }
     async void Pause_Click(object sender, RoutedEventArgs e) => await ViewModel.PauseAsync();
     async void Resume_Click(object sender, RoutedEventArgs e)
     {

@@ -1,0 +1,45 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 759 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 759 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 760 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 759 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Components/Ipc.Components.csproj (用时 760 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 759 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 759 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 760 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 32 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 27 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 43 毫秒)。
+  Ipc.Platform -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Assembly/release_win-x64/Ipc.Assembly.dll
+  Ipc.Assembly -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/app/
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 500 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj (用时 466 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 466 毫秒)。
+  11 个项目(共 14 个)是最新的，无法还原。
+  Ipc.Platform -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Assembly/release_win-x64/Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Application.ParcelFlow.Desktop/release/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Application.Sportmaster.Desktop/release/Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/build-intermediates/bin/Ipc.Desktop/release_win-x64/Ipc.Desktop.dll
+  Ipc.Desktop -> /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64/desktop/
+{"Package": "/Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/.artifacts/p2/sportmaster-win-x64.zip", "Sha256": "844541e8f2519ad4d5a8ededd1dd838d2273f12234fc7986403d9eea1d5d2ff9", "SourceCommit": "ca35b16a0ef883126b39640c19ea6f840e5a9716", "Application": "sportmaster", "Target": "win-x64"}

@@ -1,0 +1,538 @@
+EvidenceRoot=<TEMP>/ipc17-verification-deef0aeb908d42f2a20f5ddc9be2bfe1
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: right input enters while left WCS is slow
+PASS AA22: real dual consumers interleave; same barcode has two distinct entities and reader bindings
+PASS AA22: T1 freezes original position/device/acquisition in delivered semantics
+PASS AA22: duplicate original does not create another request
+PASS AA22: single-side reconnect while other original remains owned
+PASS AA22: other reader epoch unchanged by single-side reconnect
+PASS AA22: old registration callback is fenced after reconnect
+PASS AA22: resume does not resend original stages
+PASS AA22: reader disconnect blocks only its position
+PASS AA22: shared WCS health failure blocks both positions without rewriting originals
+PASS AA22: application API rejects schema3 flattening, beyond UI protection
+PASS AA22: complete topology staged using original configuration CAS
+PASS AA22: stale configuration CAS rejected
+PASS AA22: Pending/Effective preserve both bindings and separate activation
+PASS AA22: real legacy ViewModel rejects flattening schema3, authority unchanged
+PASS AA22: multi-device original set backed up through actual application
+PASS AA22: restart activates full revision while old parcels retain original configuration
+PASS AA22: restored complete multi-device backup starts isolated with original position/request responsibilities
+PASS AA22: schema2 config is never guessed into two positions; full explicit schema3 candidate staged
+PASS AA22: controlled restart explicitly activates schema2 to complete schema3 topology
+PASS AA22: direct-plc sequential position cannot admit next parcel on PLC acceptance alone
+PASS AA22: direct-plc preserves own main chain/delivery object without WCS leakage or repeats
+PASS AA22: wcs-to-plc sequential position cannot admit next parcel on PLC acceptance alone
+PASS AA22: wcs-to-plc preserves own main chain/delivery object without WCS leakage or repeats
+PASS AA22: configured login refuses unauthenticated admission
+PASS AA22: same physical reader reuses controlled original capture; capture-only waits for this weight without uploader
+PASS AA22: scale re-registers its own measurement epoch without changing parcel acquisition
+PASS AA22: late old-generation scale callback cannot supply current weight
+PASS AA22: inherited session guard protects original unfinished operator
+PASS AA22: enabled scale rejects zero instead of missing-weight fallback
+Unhandled exception. System.Exception: AA22 timeout: {
+  "RuntimeId": "018a4bd5-672e-46c0-a3cb-aa8fc9915b96",
+  "ApplicationId": "direct-plc",
+  "Revision": 12,
+  "State": "Blocked",
+  "Paused": true,
+  "BlockingReasons": [
+    "Software admission paused; this is not an emergency stop",
+    "Original stage outcome or receipt responsibility is unresolved",
+    "Measurement missing/expired for admission image-only"
+  ],
+  "Operations": [
+    {
+      "Id": "076e3f458bdd4ffd82eb9b6fdef9acd9",
+      "AdmissionId": "image-only",
+      "ParcelCode": "001",
+      "ObservationId": "5AB5A140EB3D2A40AE2A6664FD8F5A7BD1A43040D5B02F258A0408B556EC2204",
+      "ObservedAt": "2026-10-18T14:59:09.811868+00:00",
+      "ConfigurationHash": "788FF31A720A2779BBE5B9616B8A883AB3AF989F9D4CD75C23D8D8DFE089C2DF",
+      "FrozenConfiguration": {
+        "SchemaVersion": 3,
+        "ApplicationId": "direct-plc",
+        "StationId": "reference-17",
+        "Mode": "Simulation",
+        "Weight": {
+          "Source": "Measured",
+          "Unit": "Kg",
+          "Precision": 3,
+          "ConfiguredValue": null,
+          "MaximumAgeMs": 3000,
+          "WaitTimeoutMs": 2000
+        },
+        "Reader": {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "direct-plc.camera",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        "Scale": {
+          "Kind": "weight",
+          "Implementation": "reference-weight",
+          "Version": "1.0.0",
+          "InstanceId": "weight.22",
+          "Target": "reference://weight/22",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {},
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "Wcs": null,
+        "Plc": {
+          "Kind": "plc",
+          "Implementation": "reference-plc",
+          "Version": "1.0.0",
+          "InstanceId": "direct-plc.plc",
+          "Target": "reference://plc/direct-plc",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "complete-on-query": "true",
+            "peer-root": "<TEMP>/ipc17-verification-deef0aeb908d42f2a20f5ddc9be2bfe1/capture-only/data/Simulation/reference-peers"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "Extensions": null,
+        "QueueCapacity": 64,
+        "TimeoutMs": 1500,
+        "MaximumOperations": 10000,
+        "Login": {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "InstanceId": "login.22",
+          "Target": "reference://login/22",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "subjects": "alice,bob"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "Images": {
+          "Camera": {
+            "Kind": "camera",
+            "Implementation": "reference-camera",
+            "Version": "1.0.0",
+            "InstanceId": "camera.22",
+            "Target": "direct-plc.camera",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {},
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "Uploader": null,
+          "MaximumBytes": 4194304,
+          "Strategy": "BeforeMain",
+          "TotalBytes": 33554432,
+          "MaximumPending": 32
+        },
+        "SessionLifetimeMs": 28800000,
+        "MaintenanceLogin": {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "InstanceId": "maintenance",
+          "Target": "reference://maintenance",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {
+            "subjects": "maintenance"
+          },
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "WeightValidity": "UntilDispatch",
+        "Topology": {
+          "Readers": [
+            {
+              "Role": "parcel-reader",
+              "Driver": "manual",
+              "DeviceId": "direct-plc.camera",
+              "Revision": "1",
+              "ReplayFile": null
+            }
+          ],
+          "Positions": [
+            {
+              "Id": "main",
+              "ReaderDeviceId": "direct-plc.camera",
+              "CameraInstanceId": null,
+              "ScaleInstanceId": null
+            }
+          ]
+        },
+        "Retention": {
+          "ResidentHistory": 200,
+          "MinimumFreeBytes": 67108864
+        }
+      },
+      "ImplementationHashes": {
+        "weight.22": "0FA096CBA76538E5F7C7D3403980C81B19EB7F40973AEC5740BAAA5D7CBEC059",
+        "direct-plc.plc": "0FA096CBA76538E5F7C7D3403980C81B19EB7F40973AEC5740BAAA5D7CBEC059",
+        "login.22": "5A25D78E0F314127439A36863A540D88190B6CB588BA69F503BD84123FEAD925",
+        "camera.22": "0FA096CBA76538E5F7C7D3403980C81B19EB7F40973AEC5740BAAA5D7CBEC059",
+        "maintenance": "5A25D78E0F314127439A36863A540D88190B6CB588BA69F503BD84123FEAD925"
+      },
+      "WeightPolicy": {
+        "Source": "Measured",
+        "Unit": "Kg",
+        "Precision": 3,
+        "ConfiguredValue": null,
+        "MaximumAgeMs": 3000,
+        "WaitTimeoutMs": 2000
+      },
+      "Weight": null,
+      "State": "WeightTimedOut",
+      "Slot": null,
+      "Wcs": null,
+      "Plc": null,
+      "Reason": "Same-parcel measurement deadline expired; inspect and explicitly abandon before next parcel",
+      "Operator": {
+        "Subject": "alice",
+        "DisplayName": "alice",
+        "Authority": "reference://login/22",
+        "SessionId": "0755fa84d6d2450097592a52f1fa97bc",
+        "AuthenticatedAt": "2026-10-18T14:59:09.811505+00:00",
+        "Simulation": true,
+        "ExpiresAt": "2026-10-18T22:59:09.811505+00:00",
+        "Grants": []
+      },
+      "Image": {
+        "CaptureRequestId": "d6035b4ff42c44d5a72694a46f308f1e",
+        "AdmissionId": "image-only",
+        "RelativeFile": "images/CF0185CACAADD54F1E1B10E7D207F465A771E482FC29B3AD7558C457303A0769/d6035b4ff42c44d5a72694a46f308f1e.png",
+        "MediaType": "image/png",
+        "Length": 67,
+        "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+        "UploadedUri": null,
+        "Acquisition": {
+          "DeviceId": "direct-plc.camera",
+          "Epoch": "e93c639c10da403a828ff7497a100d44",
+          "SourceEventId": "acquisition-only",
+          "AdmissionId": "image-only",
+          "ObservedAt": "2026-10-18T14:59:09.811868+00:00"
+        }
+      },
+      "Capture": {
+        "Request": {
+          "Id": "d6035b4ff42c44d5a72694a46f308f1e",
+          "ApplicationId": "direct-plc",
+          "OperationId": "076e3f458bdd4ffd82eb9b6fdef9acd9",
+          "AdmissionId": "image-only",
+          "Stage": "image-capture",
+          "Binding": {
+            "Kind": "camera",
+            "Implementation": "reference-camera",
+            "Version": "1.0.0",
+            "InstanceId": "camera.22",
+            "Target": "direct-plc.camera",
+            "Contract": "PARCEL-REFERENCE-v1",
+            "Parameters": {},
+            "Package": null,
+            "Module": null,
+            "Enabled": true
+          },
+          "ImplementationHash": "0FA096CBA76538E5F7C7D3403980C81B19EB7F40973AEC5740BAAA5D7CBEC059",
+          "ConfigurationHash": "788FF31A720A2779BBE5B9616B8A883AB3AF989F9D4CD75C23D8D8DFE089C2DF",
+          "Payload": "{\n  \u0022ParcelCode\u0022: \u0022001\u0022,\n  \u0022AdmissionId\u0022: \u0022image-only\u0022,\n  \u0022Weight\u0022: null,\n  \u0022Slot\u0022: null,\n  \u0022WcsRequestId\u0022: null,\n  \u0022Operator\u0022: {\n    \u0022Subject\u0022: \u0022alice\u0022,\n    \u0022DisplayName\u0022: \u0022alice\u0022,\n    \u0022Authority\u0022: \u0022reference://login/22\u0022,\n    \u0022SessionId\u0022: \u00220755fa84d6d2450097592a52f1fa97bc\u0022,\n    \u0022AuthenticatedAt\u0022: \u00222026-10-18T14:59:09.811505\u002B00:00\u0022,\n    \u0022Simulation\u0022: true,\n    \u0022ExpiresAt\u0022: \u00222026-10-18T22:59:09.811505\u002B00:00\u0022,\n    \u0022Grants\u0022: []\n  },\n  \u0022Acquisition\u0022: {\n    \u0022DeviceId\u0022: \u0022direct-plc.camera\u0022,\n    \u0022Epoch\u0022: \u0022e93c639c10da403a828ff7497a100d44\u0022,\n    \u0022SourceEventId\u0022: \u0022acquisition-only\u0022,\n    \u0022AdmissionId\u0022: \u0022image-only\u0022,\n    \u0022ObservedAt\u0022: \u00222026-10-18T14:59:09.811868\u002B00:00\u0022\n  },\n  \u0022PositionId\u0022: \u0022main\u0022,\n  \u0022ReaderBinding\u0022: {\n    \u0022Role\u0022: \u0022parcel-reader\u0022,\n    \u0022Driver\u0022: \u0022manual\u0022,\n    \u0022DeviceId\u0022: \u0022direct-plc.camera\u0022,\n    \u0022Revision\u0022: \u00221\u0022,\n    \u0022ReplayFile\u0022: null\n  }\n}",
+          "PayloadHash": "5AAF380A63F6F5560CA4FFD79F0E5647E47DB9EB961EE9F30AE9F345635EA312",
+          "PreparedAt": "2026-10-18T14:59:09.814267+00:00"
+        },
+        "State": "Accepted",
+        "Attempts": 1,
+        "Replies": [
+          {
+            "Id": "efaa46c809c74eb2a80312e9dca04213",
+            "RequestId": "d6035b4ff42c44d5a72694a46f308f1e",
+            "PayloadHash": "5AAF380A63F6F5560CA4FFD79F0E5647E47DB9EB961EE9F30AE9F345635EA312",
+            "TransportSucceeded": true,
+            "ProtocolAcknowledged": true,
+            "BusinessAccepted": true,
+            "PhysicalCompleted": null,
+            "Slot": null,
+            "Evidence": "SIMULATION reference peer: durable acceptance; physical completion is independent",
+            "At": "2026-10-18T14:59:09.821029+00:00",
+            "Image": {
+              "CaptureRequestId": "d6035b4ff42c44d5a72694a46f308f1e",
+              "AdmissionId": "image-only",
+              "RelativeFile": "images/CF0185CACAADD54F1E1B10E7D207F465A771E482FC29B3AD7558C457303A0769/d6035b4ff42c44d5a72694a46f308f1e.png",
+              "MediaType": "image/png",
+              "Length": 67,
+              "Sha256": "D44C0303173ECDB8BA72A7AB688F020583B31865537E2F9AB57E56AEEC687807",
+              "UploadedUri": null,
+              "Acquisition": {
+                "DeviceId": "direct-plc.camera",
+                "Epoch": "e93c639c10da403a828ff7497a100d44",
+                "SourceEventId": "acquisition-only",
+                "AdmissionId": "image-only",
+                "ObservedAt": "2026-10-18T14:59:09.811868+00:00"
+              }
+            }
+          }
+        ],
+        "Failure": null
+      },
+      "Acquisition": {
+        "DeviceId": "direct-plc.camera",
+        "Epoch": "e93c639c10da403a828ff7497a100d44",
+        "SourceEventId": "acquisition-only",
+        "AdmissionId": "image-only",
+        "ObservedAt": "2026-10-18T14:59:09.811868+00:00"
+      },
+      "PositionId": "main",
+      "ReaderBinding": {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "direct-plc.camera",
+        "Revision": "1",
+        "ReplayFile": null
+      }
+    }
+  ],
+  "Health": [
+    {
+      "InstanceId": "weight.22",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T14:59:15.25583+00:00",
+      "ValidUntil": "2026-10-18T14:59:18.25583+00:00",
+      "Detail": "SIMULATION: correlated scale input, no real measurement"
+    },
+    {
+      "InstanceId": "direct-plc.plc",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T14:59:15.25581+00:00",
+      "ValidUntil": "2026-10-18T14:59:18.25581+00:00",
+      "Detail": "SIMULATION: durable reference peer"
+    },
+    {
+      "InstanceId": "login.22",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T14:59:15.255824+00:00",
+      "ValidUntil": "2026-10-18T14:59:18.255824+00:00",
+      "Detail": "SIMULATION identity provider"
+    },
+    {
+      "InstanceId": "camera.22",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T14:59:15.255821+00:00",
+      "ValidUntil": "2026-10-18T14:59:18.255821+00:00",
+      "Detail": "SIMULATION: durable reference peer"
+    },
+    {
+      "InstanceId": "direct-plc.camera",
+      "Ready": true,
+      "ConfirmedAt": "2026-10-18T14:59:14.80976+00:00",
+      "ValidUntil": "2026-10-18T14:59:19.80976+00:00",
+      "Detail": "SIMULATION:manual"
+    }
+  ],
+  "Configuration": {
+    "Revision": 0,
+    "Effective": {
+      "SchemaVersion": 3,
+      "ApplicationId": "direct-plc",
+      "StationId": "reference-17",
+      "Mode": "Simulation",
+      "Weight": {
+        "Source": "Measured",
+        "Unit": "Kg",
+        "Precision": 3,
+        "ConfiguredValue": null,
+        "MaximumAgeMs": 3000,
+        "WaitTimeoutMs": 2000
+      },
+      "Reader": {
+        "Role": "parcel-reader",
+        "Driver": "manual",
+        "DeviceId": "direct-plc.camera",
+        "Revision": "1",
+        "ReplayFile": null
+      },
+      "Scale": {
+        "Kind": "weight",
+        "Implementation": "reference-weight",
+        "Version": "1.0.0",
+        "InstanceId": "weight.22",
+        "Target": "reference://weight/22",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {},
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "Wcs": null,
+      "Plc": {
+        "Kind": "plc",
+        "Implementation": "reference-plc",
+        "Version": "1.0.0",
+        "InstanceId": "direct-plc.plc",
+        "Target": "reference://plc/direct-plc",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "complete-on-query": "true",
+          "peer-root": "<TEMP>/ipc17-verification-deef0aeb908d42f2a20f5ddc9be2bfe1/capture-only/data/Simulation/reference-peers"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "Extensions": null,
+      "QueueCapacity": 64,
+      "TimeoutMs": 1500,
+      "MaximumOperations": 10000,
+      "Login": {
+        "Kind": "login",
+        "Implementation": "reference-login",
+        "Version": "1.0.0",
+        "InstanceId": "login.22",
+        "Target": "reference://login/22",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "subjects": "alice,bob"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "Images": {
+        "Camera": {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "InstanceId": "camera.22",
+          "Target": "direct-plc.camera",
+          "Contract": "PARCEL-REFERENCE-v1",
+          "Parameters": {},
+          "Package": null,
+          "Module": null,
+          "Enabled": true
+        },
+        "Uploader": null,
+        "MaximumBytes": 4194304,
+        "Strategy": "BeforeMain",
+        "TotalBytes": 33554432,
+        "MaximumPending": 32
+      },
+      "SessionLifetimeMs": 28800000,
+      "MaintenanceLogin": {
+        "Kind": "login",
+        "Implementation": "reference-login",
+        "Version": "1.0.0",
+        "InstanceId": "maintenance",
+        "Target": "reference://maintenance",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "subjects": "maintenance"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "WeightValidity": "UntilDispatch",
+      "Topology": {
+        "Readers": [
+          {
+            "Role": "parcel-reader",
+            "Driver": "manual",
+            "DeviceId": "direct-plc.camera",
+            "Revision": "1",
+            "ReplayFile": null
+          }
+        ],
+        "Positions": [
+          {
+            "Id": "main",
+            "ReaderDeviceId": "direct-plc.camera",
+            "CameraInstanceId": null,
+            "ScaleInstanceId": null
+          }
+        ]
+      },
+      "Retention": {
+        "ResidentHistory": 200,
+        "MinimumFreeBytes": 67108864
+      }
+    },
+    "Pending": null,
+    "Status": "Effective",
+    "Failure": null,
+    "Activation": null
+  },
+  "CurrentOperator": {
+    "Subject": "alice",
+    "DisplayName": "alice",
+    "Authority": "reference://login/22",
+    "SessionId": "0755fa84d6d2450097592a52f1fa97bc",
+    "AuthenticatedAt": "2026-10-18T14:59:09.811505+00:00",
+    "Simulation": true,
+    "ExpiresAt": "2026-10-18T22:59:09.811505+00:00",
+    "Grants": []
+  },
+  "Availability": {
+    "Admit": false,
+    "Resume": false,
+    "Configure": true,
+    "ContinuePrepared": [],
+    "ContinueUpload": [],
+    "AbandonUnsubmitted": [
+      "076e3f458bdd4ffd82eb9b6fdef9acd9"
+    ]
+  },
+  "Positions": [
+    {
+      "Id": "main",
+      "ReaderDeviceId": "direct-plc.camera",
+      "Admit": false,
+      "CurrentOperation": "076e3f458bdd4ffd82eb9b6fdef9acd9",
+      "BlockingReasons": [
+        "Position dependency/health or original responsibility blocked",
+        "Current entity main result is incomplete",
+        "Global software pause"
+      ],
+      "MainResultComplete": false,
+      "BackgroundComplete": false
+    }
+  ],
+  "Devices": [
+    {
+      "DeviceId": "direct-plc.camera",
+      "Epoch": "e93c639c10da403a828ff7497a100d44",
+      "Sequence": 2,
+      "Health": "Ready",
+      "UpdatedAt": "2026-10-18T14:59:14.80976+00:00",
+      "ConfirmedAt": "2026-10-18T14:59:14.80976+00:00",
+      "ValidUntil": "2026-10-18T14:59:19.80976+00:00",
+      "Source": "SIMULATION:manual",
+      "Invalidity": null
+    }
+  ],
+  "Capacity": {
+    "Unresolved": 1,
+    "Resident": 1,
+    "Archived": 0,
+    "MaximumUnresolved": 10000,
+    "Available": true,
+    "Policy": "Terminal originals transactionally archived; all historical identities/receipts/audit retained; no automatic disk deletion",
+    "FreeStorageBytes": 20288806912,
+    "MinimumFreeBytes": 67108864
+  },
+  "IdentityConflicts": [],
+  "AuxiliaryReasons": []
+}
+   at ApplicationArchitecture.Wait(ParcelRuntime app, Func`2 predicate) in <WORKTREE>/tests/Ipc.Application.Verification/ApplicationArchitecture.cs:line 17
+   at ApplicationArchitecture.Run(String workspace, String root) in <WORKTREE>/tests/Ipc.Application.Verification/ApplicationArchitecture.cs:line 124
+   at ApplicationArchitecture.Run(String workspace, String root) in <WORKTREE>/tests/Ipc.Application.Verification/ApplicationArchitecture.cs:line 131
+   at Program.<Main>$(String[] args) in <WORKTREE>/tests/Ipc.Application.Verification/Program.cs:line 21
+   at Program.<Main>(String[] args)

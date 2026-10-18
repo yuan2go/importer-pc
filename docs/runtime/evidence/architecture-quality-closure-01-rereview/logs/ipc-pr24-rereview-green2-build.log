@@ -1,0 +1,19 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Platform/debug/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Application.Contracts/debug/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Platform.Storage/debug/Ipc.Platform.Storage.dll
+<WORKTREE>/src/Ipc.Application.ParcelFlow/ParcelDeviceLifecycle.cs(59,153): error CS0117: “CapabilityHealth”未包含“Evidence”的定义 [<WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj]
+  Ipc.Reference.Protocol -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Reference.Protocol/debug/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Components/debug/Ipc.Components.dll
+  Ipc.Drivers -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Drivers/debug/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Application.Supply.Contracts/debug/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /tmp/ipc-pr24-rereview-green-build/bin/Ipc.Integrations/debug/Ipc.Integrations.dll
+
+生成失败。
+
+<WORKTREE>/src/Ipc.Application.ParcelFlow/ParcelDeviceLifecycle.cs(59,153): error CS0117: “CapabilityHealth”未包含“Evidence”的定义 [<WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj]
+    0 个警告
+    1 个错误
+
+已用时间 00:00:02.08

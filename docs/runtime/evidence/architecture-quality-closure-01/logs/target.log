@@ -1,0 +1,9 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-d5022fd5c0f04b238871bfb406171469
+PASS AQ: AQ03 recovered WaitingWeight accepts original measurement without automatically sending PLC
+PASS AQ: explicit continuation preserves admission and makes one first attempt
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: AQ01 rejects cross mode/station restore before creating target
+PASS AQ: AQ01 rejects cross mode/station restore before creating target
+PASS AQ: AQ04 settled history does not consume unresolved admission capacity
+PASS AQ: AQ04 capacity archive permits next real main chain without deleting history
+PASS AQ COMPLETE

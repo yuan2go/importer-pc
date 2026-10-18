@@ -1,0 +1,7 @@
+{
+  "artifact_directory_name": "ipc-pr24-r03-445e1f6-20261018T155500Z",
+  "custody_sha256": "5cddf127792f8592d7ad0cfdd17f4bf82460e9b298b1017889820a04f51e7df2",
+  "file_count": 2308,
+  "original_logs_and_synthetic_databases_retained": true,
+  "private_signer_and_runtime_trust_not_published": true
+}

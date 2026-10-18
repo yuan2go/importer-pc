@@ -1,3 +1,5 @@
+> 19的版本例子保持历史身份；当前拓扑/包版本见[22指南](application-architecture-22.md)，本轮整改及实际结果见[质量闭环工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)。重启未结责任须显式恢复，不以旧测试的自动重量续跑降低目标。
+
 > 20可靠性/部署增量已生效：[现行指南](../runtime/capability-reliability-20.md)及[设计](../design/capability-reliability-20.md)。下文19阶段策略/版本/保守恢复说明按形成时范围保留；冲突处以20为准，原字节已归档。
 
 # 三Application交付与能力运行 · 19

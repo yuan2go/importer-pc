@@ -78,5 +78,9 @@
         "ReaderDeviceId": "wcs-to-plc.camera"
       }
     ]
+  },
+  "Retention": {
+    "ResidentHistory": 200,
+    "MinimumFreeBytes": 67108864
   }
 }

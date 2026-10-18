@@ -1,0 +1,22 @@
+{
+  "source_commit": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+  "observed_at": "2026-10-18T14:31:28.902655+00:00",
+  "sdk": "10.0.402",
+  "executable_sha256": "11b517e7b00d0efa20e9b3ab6fe433f135d828a4c95c9c6ca7a9cf1328b6ada4",
+  "host_sha256": {
+    "Ipc.Application.Contracts.dll": "5d50da5a20f1b23726d4748db15789a45597f671fe84ec91dd9b83154ada60bc",
+    "Ipc.Application.DirectPlc.dll": "c66fb51d12f3bbeb1ab361b6d841f3dcc2dd70f16ece7da563e1e84ac0a0e252",
+    "Ipc.Application.ParcelFlow.dll": "cc836f962f405bc00911768a1bcd273727a4ddbe301e2d05dbd76a0396c07560",
+    "Ipc.Application.Sportmaster.dll": "cb83b8dd6013c1840961597528baa01ccfde5eb759457db7248364b7e304250d",
+    "Ipc.Application.Verification.dll": "6df8955cba501a061730f2b0cf349e2d724273b45c047cd23f24f2519d76847f",
+    "Ipc.Application.WcsToPlc.dll": "0cb0f008b2b4cf5ad3e6f8ecde302fa4382e7ea740621cd71839be65dd25016c",
+    "Ipc.Components.dll": "ff291600a6872b194c5f6b1f8ee1ce7b74b88853115a32cca8c14efc9fe06152",
+    "Ipc.Drivers.dll": "36cebab274f63beb02ec312d0e5818fb85bc38316bd9054ac63b948302dc7f66",
+    "Ipc.Integrations.dll": "7e4ee736b5a5dd1194fb2dc86270f37cac45902166454edb9d7712bf46a394db",
+    "Ipc.Platform.Storage.dll": "ca2a0a281c5823949d066fbf17259dec0a177754aae539aad87fd63203b65220",
+    "Ipc.Platform.dll": "6b418202e8bb6f6c5da769923681e1f1ab7dac5d1710a38d3ee26984d65ad8f8",
+    "Ipc.Reference.Protocol.dll": "861301684f15d829b1c3b8241738d6a844c45f916d4ec52e752bab45f3087b57",
+    "Ipc.Supply.Contracts.dll": "f076e74e4b237b3acbce6894d72c27ccb87afd6486385d698ef146ce3ad1876b"
+  },
+  "scope": "AQ/AA22/BHR/AC17 resources using original compiled host; separate signed host has matching checker core; no inferred timestamps"
+}

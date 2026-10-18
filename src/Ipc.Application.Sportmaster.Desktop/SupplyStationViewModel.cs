@@ -70,7 +70,23 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     {
         var op = position.Operation;
         if (!Fresh || op is null || !position.CanContinue) { Message = "当前原阶段不可继续"; return; }
-        await RunAsync(() => CommandAsync("ContinuePrepared", op.Id));
+        await RunAsync(async () =>
+        {
+            var snapshot = await Application.SnapshotAsync();
+            var result = await Application.CommandAsync(new(Wire.Id(), snapshot.Revision, "ContinuePrepared", op.Id, position.InspectionReason));
+            Message = result.Status + " · " + result.Reason;
+        });
+    }
+    public async Task OpenHistoryAsync(string? operationId = null)
+    {
+        await LoadHistoryAsync();
+        if (operationId is null) return;
+        SelectedHistory = HistoryItems.FirstOrDefault(x => x.Operation.Id == operationId);
+        if (SelectedHistory is null)
+        {
+            Selected = await Application.OperationAsync(operationId);
+            if (Selected is null) Message = "原作业详情未取得：" + operationId;
+        }
     }
     public async Task EmitPositionAsync(SupplyStationPositionViewModel position)
     {
@@ -109,6 +125,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public bool CanReconcile { get; private set; }
     public bool CanContinue { get; private set; }
     public ParcelOperation[] Recent { get; private set; } = [];
+    public string InspectionReason { get; set; } = "";
     public string ParcelCode { get; set; } = "000123456789";
     public string AdmissionId { get; private set; } = "parcel-" + Wire.Id();
     public SupplyStationPositionViewModel(SupplyStationViewModel owner, string position)

@@ -16,7 +16,7 @@ public sealed partial class ParcelRuntime
     { ParcelStage.Wcs => ParcelState.WcsUnknown, ParcelStage.Plc => ParcelState.PlcUnknown, _ => ParcelState.ImageUnknown };
     static ParcelStage ParseStage(string stage) => stage switch
     { "image-capture" => ParcelStage.Capture, "image-upload" => ParcelStage.Upload, "wcs-slot" => ParcelStage.Wcs, "plc-submit" => ParcelStage.Plc, _ => throw new InvalidDataException("Unknown original stage") };
-    bool CanDispatch(ParcelOperation op) => !WeightExpired(op) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested && failure is null && (overload == 0 || Effective.SchemaVersion >= 3 && !overloadedPositions.ContainsKey(op.PositionId ?? "main")) && !repository!.Paused &&
+    bool CanDispatch(ParcelOperation op) => PositionMaintenanceClear(op.PositionId ?? "main") && !op.RecoveryRequired && !HasIdentityConflict(op.PositionId ?? "main") && !WeightExpired(op) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested && failure is null && (overload == 0 || Effective.SchemaVersion >= 3 && !overloadedPositions.ContainsKey(op.PositionId ?? "main")) && !repository!.Paused &&
         SessionValid && (Effective.Login is null || currentOperator?.Subject == op.Operator?.Subject && currentOperator is not null) &&
         !repository.PendingReceipts().Any(x => x.Operation == op.Id && !(op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Stage == "image-upload")) &&
         Enum.GetValues<ParcelStage>().Where(kind => !(kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached))
@@ -124,7 +124,9 @@ public sealed partial class ParcelRuntime
             if (original.Capture?.State is StageState.Unknown or StageState.Conflict or StageState.Dispatching ||
                 original.Upload?.State is StageState.Unknown or StageState.Conflict or StageState.Dispatching ||
                 activeStages.Any(x => x.StartsWith(original.Id + ":", StringComparison.Ordinal)) || repository!.PendingReceipts().Any(x => x.Operation == original.Id)) continue;
-            var op = original with { ImageReleased = true }; Save(op, "ImageReleased", "No remaining image responsibility; durable release precedes temporary byte deletion"); Boundary?.Invoke("AfterImageReleaseDurable"); if (op.Image is not null) DeleteImage(op);
+            var op = original with { ImageReleased = true }; Save(op, "ImageReleased", "No remaining image responsibility; durable release precedes temporary byte deletion"); Boundary?.Invoke("AfterImageReleaseDurable");
+            ReleaseOperationAcquisition(op);
+            if (op.Image is not null) DeleteImage(op);
         }
     }
     void DeleteImage(ParcelOperation op)

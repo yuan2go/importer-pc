@@ -1,3 +1,5 @@
+> PR24本轮交付：[五项整改、固定源码与复审证据](runtime/architecture-quality-closure-01-rereview-results.md)，供复审、不合并main。原候选与历史失败保持身份。
+
 > 当前整改：[质量闭环01](work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)及[运行/迁移/扩展指南](runtime/architecture-quality-closure-01.md)。[整改前入口原字节](archive/pre-architecture-quality-closure-01/README.md)。不以22旧PASS关闭新审查问题。
 
 > 采集身份P2修复当前入口：[工作包与设计](work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md)。[修复结果与证据](runtime/acquisition-lifecycle-p2.md)。PR #22已合并main `2126ac2`；下述22开发基线、分支和候选均按形成时读取。

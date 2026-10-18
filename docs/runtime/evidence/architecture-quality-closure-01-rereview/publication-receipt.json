@@ -1,0 +1,7 @@
+{
+  "pull_request": "https://github.com/yuan2go/importer-pc/pull/24",
+  "runtime_source": "7850fcc02b04d1b572fcb89215945ee0f60be28c",
+  "publication": "PENDING_PUSH",
+  "main_merge": false,
+  "source_guards": "Only documentation/evidence may change after runtime freeze"
+}

@@ -1,0 +1,305 @@
+dotnet restore src/Ipc.Assembly/Ipc.Assembly.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-0 -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.lock.json
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 332 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 333 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 322 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 338 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 338 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 331 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 329 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 322 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 9 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 11 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 9 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 12 毫秒)。
+dotnet restore src/Ipc.Assembly/Ipc.Assembly.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-1 -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.win-x64.lock.json -r win-x64
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 448 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 445 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 446 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 478 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 444 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 480 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 527 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 446 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 38 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 119 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 125 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 216 毫秒)。
+dotnet restore src/Ipc.Assembly/Ipc.Assembly.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-2 -p:Application=DirectPlc -p:NuGetLockFilePath=packages.direct-plc.lock.json
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 235 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 241 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 234 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 234 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 234 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 241 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 234 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 234 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 4 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 5 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 4 毫秒)。
+dotnet restore src/Ipc.Assembly/Ipc.Assembly.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-3 -p:Application=DirectPlc -p:NuGetLockFilePath=packages.direct-plc.win-x64.lock.json -r win-x64
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 250 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 249 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 249 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 249 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 251 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 250 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 249 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 250 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 27 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 28 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 31 毫秒)。
+dotnet restore src/Ipc.Assembly/Ipc.Assembly.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-4 -p:Application=WcsToPlc -p:NuGetLockFilePath=packages.wcs-to-plc.lock.json
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 288 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 278 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 288 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 278 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 288 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 288 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 288 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 288 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 4 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 4 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 16 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 5 毫秒)。
+dotnet restore src/Ipc.Assembly/Ipc.Assembly.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-5 -p:Application=WcsToPlc -p:NuGetLockFilePath=packages.wcs-to-plc.win-x64.lock.json -r win-x64
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 276 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 272 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 272 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 276 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 282 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 272 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 272 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 275 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 17 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 22 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 26 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 32 毫秒)。
+dotnet restore src/Ipc.Assembly/Ipc.Assembly.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-6 -p:Application=Supply -p:NuGetLockFilePath=packages.supply.lock.json
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 189 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 188 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 189 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 189 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 190 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Product/Ipc.Product.csproj (用时 189 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 189 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 189 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 2 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 2 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 4 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 3 毫秒)。
+dotnet restore src/Ipc.Desktop/Ipc.Desktop.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-7 -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.lock.json
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 294 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 300 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 276 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 300 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 294 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 303 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj (用时 294 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 314 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 8 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 8 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 5 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 11 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 8 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 23 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 19 毫秒)。
+dotnet restore src/Ipc.Desktop/Ipc.Desktop.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-8 -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.win-x64.lock.json -r win-x64
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 240 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 240 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 240 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 233 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 240 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 240 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 240 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 238 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 10 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 27 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 31 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 42 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 40 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj (用时 47 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 46 毫秒)。
+dotnet restore src/Ipc.Desktop/Ipc.Desktop.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-9 -p:Application=DirectPlc -p:NuGetLockFilePath=packages.direct-plc.lock.json
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 223 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.DirectPlc.Desktop/Ipc.Application.DirectPlc.Desktop.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 214 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 4 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 9 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 10 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 6 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 11 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 21 毫秒)。
+dotnet restore src/Ipc.Desktop/Ipc.Desktop.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-10 -p:Application=DirectPlc -p:NuGetLockFilePath=packages.direct-plc.win-x64.lock.json -r win-x64
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 321 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 326 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 326 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 320 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 320 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.DirectPlc.Desktop/Ipc.Application.DirectPlc.Desktop.csproj (用时 323 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 323 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 322 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 30 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 34 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 44 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 61 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 67 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 77 毫秒)。
+dotnet restore src/Ipc.Desktop/Ipc.Desktop.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-11 -p:Application=WcsToPlc -p:NuGetLockFilePath=packages.wcs-to-plc.lock.json
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 335 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 335 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 334 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 334 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 335 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 335 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 336 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 342 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 4 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 3 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 10 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 19 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 8 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.WcsToPlc.Desktop/Ipc.Application.WcsToPlc.Desktop.csproj (用时 4 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 10 毫秒)。
+dotnet restore src/Ipc.Desktop/Ipc.Desktop.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-12 -p:Application=WcsToPlc -p:NuGetLockFilePath=packages.wcs-to-plc.win-x64.lock.json -r win-x64
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 1.08 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 978 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 979 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 1.05 秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 979 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 977 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 1.01 秒)。
+  已还原 <WORKTREE>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 977 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.WcsToPlc.Desktop/Ipc.Application.WcsToPlc.Desktop.csproj (用时 30 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 25 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 27 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 34 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 27 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 42 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 40 毫秒)。
+dotnet restore src/Ipc.Desktop/Ipc.Desktop.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-13 -p:Application=Supply -p:NuGetLockFilePath=packages.supply.lock.json
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 171 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 171 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 171 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 171 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 171 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 171 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 171 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 171 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 3 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 3 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Product/Ipc.Product.csproj (用时 7 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 27 毫秒)。
+dotnet restore src/Ipc.Product/Ipc.Product.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-14 -p:Application=Supply -p:NuGetLockFilePath=packages.lock.json
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 206 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 206 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 206 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 206 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 206 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 206 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 206 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Product/Ipc.Product.csproj (用时 206 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 2 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 7 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 7 毫秒)。
+dotnet restore src/Ipc.Product/Ipc.Product.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-15 -p:Application=Supply -p:NuGetLockFilePath=packages.win-x64.lock.json -r win-x64
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 217 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 217 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 217 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 217 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 217 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Product/Ipc.Product.csproj (用时 217 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 217 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 217 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 8 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 13 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 13 毫秒)。
+dotnet restore src/Ipc.Assembly/Ipc.Assembly.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-16 -p:Application=Supply -p:NuGetLockFilePath=packages.lock.json
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 174 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 170 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 177 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 168 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 168 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 177 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 170 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Product/Ipc.Product.csproj (用时 168 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 2 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 2 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 4 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 6 毫秒)。
+dotnet restore src/Ipc.Desktop/Ipc.Desktop.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-17 -p:Application=Supply -p:NuGetLockFilePath=packages.lock.json
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 186 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 186 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 186 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 186 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 186 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 186 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 186 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Product/Ipc.Product.csproj (用时 186 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 3 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 3 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 3 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 4 毫秒)。
+dotnet restore src/Ipc.Desktop/Ipc.Desktop.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-18 -p:Application=Supply -p:NuGetLockFilePath=packages.win-x64.lock.json -r win-x64
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 224 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 14 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 15 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 16 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Product/Ipc.Product.csproj (用时 20 毫秒)。
+dotnet restore src/Ipc.Product/Ipc.Product.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-19 -p:Application=Supply -p:NuGetLockFilePath=packages.supply.lock.json
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 213 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 215 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 215 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 214 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 214 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 214 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 215 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 213 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 3 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 3 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Product/Ipc.Product.csproj (用时 9 毫秒)。
+dotnet restore tests/Ipc.Verification/Ipc.Verification.csproj -p:RestoreLockedMode=false -p:RestoreForceEvaluate=true -p:EnableWindowsTargeting=true --artifacts-path /tmp/ipc-pr24-rereview-profile-20
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 183 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 183 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 183 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 183 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 183 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 183 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Product/Ipc.Product.csproj (用时 183 毫秒)。
+  已还原 <WORKTREE>/tests/Ipc.Verification/Ipc.Verification.csproj (用时 183 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 2 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 3 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 3 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 4 毫秒)。

@@ -1,4 +1,4 @@
-> 前轮结果：以下固定3d69607及其候选/测试身份保持原记录。后续a2e987a独立复审确认五项问题，本轮整改与新验证另行登记，不把此处PASS当作复审关闭。
+> 前轮结果：以下固定3d69607及其候选/测试身份保持原记录。后续a2e987a独立复审确认五项问题，本轮整改与新验证见[PR24复审结果](architecture-quality-closure-01-rereview-results.md)，不把此处PASS当作复审关闭。
 
 # WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 · 交付结果
 

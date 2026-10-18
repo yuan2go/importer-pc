@@ -79,7 +79,10 @@ AQD-05补差：实际签名包复现仅Pending含包、重启激活被旧件屏�
 - [x] 回执/Attached：修改ParcelRepository.StoreRaw/RecoverRaw/ValidateRawInventory及ParcelStages恢复原因；新增ReviewClosure回执落盘中断、65次后续回复/同ID篡改Conflict、旧DB4索引补齐/矛盾原件、Attached已完成主链重启断言。发生和身份均在事务内提交，Request命名空间由原接收发生而非外部返回字段确定，永不重发Submit。
 - [x] 维护围栏：ParcelDeviceLifecycle新增资源占用查询，ParcelGuards、ParcelStages及健康投影使用同一围栏；以延迟WCS重连和左右独立设备维护验证Resume/已准备意图/新件/原Query被正确隔离、无关位继续、停止和超时保有资源。
 - [x] 离线维护：ParcelConsumers验证完整配置及冻结责任；Ipc.Assembly/ExtensionConsumerReaders显式分派并接到Factory/CLI/Product入口；测试未来Pending、悬挂绑定/冻结包、未知根、真实混合Supply/Parcel数据库以及仅Pending离线备份。所有异常保留包和消费者登记。
-- [ ] 交付：锁文件按实际新增维护依赖更新，不升级NuGet；新精确宿主单独构建不可变签名样例，真实安装/恢复/卸载旅程；必要核心/WPF及旧产品编译、选装依赖和参考进程冒烟。新候选不覆盖原产物；Windows/SDK/现场及原审查01 PDF缺件继续保留。
-- [ ] 按固定源码登记必要命令、宿主/包/候选hash及原失败；资料工具与既有267项错误集核差，提交推送同PR24供复审，不合并main。
+- [x] 交付：锁文件按实际新增维护依赖更新，不升级NuGet；新精确宿主单独构建不可变签名样例，真实安装/恢复/卸载旅程；必要核心/WPF及旧产品编译、选装依赖和参考进程冒烟。新候选不覆盖原产物；Windows/SDK/现场及原审查01 PDF缺件继续保留。
+- [x] 按固定源码登记必要命令、宿主/包/候选hash及原失败；资料工具与既有267项错误集核差，提交推送同PR24供复审，不合并main。
 
 关键命令：`dotnet build tests/Ipc.Application.Verification -p:RestoreLockedMode=true -m:1 -nr:false`；`dotnet Ipc.Application.Verification.dll . --review-closure`（本轮定向入口）；受影响`--architecture-quality`、`--application-architecture`及签名`--quality-extensions`，以实际风险决定。每步先保留复现失败，再记录修复后结果；不运行无差别全量测试。
+
+
+本轮固定实现与候选7850fcc02b04d1b572fcb89215945ee0f60be28c，实际定向结果及失败保留见[复审结果](../runtime/architecture-quality-closure-01-rereview-results.md)。本轮结论为参考验证通过、待独立复审；不变更D/RV或Windows/现场状态。

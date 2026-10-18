@@ -33,4 +33,7 @@
 
 已推送并创建[PR #24](https://github.com/yuan2go/importer-pc/pull/24)，未合并main。PDF归档项保持BLOCKED，不以参考整改通过关闭该缺失原件。
 
-最终源码/候选3d6960756bfd843a1cb78c6648687b45f2da9f1c；增补DB3/同格式精确实现升级屏障、双窗口草稿CAS、驱动/适配器可变数据所有权、资源成功后配置确认及仅Pending含包的备份消费者。原PDF归档仍未完成，整包不标记全部验收完成。
+前轮最终源码/候选3d6960756bfd843a1cb78c6648687b45f2da9f1c；增补DB3/同格式精确实现升级屏障、双窗口草稿CAS、驱动/适配器可变数据所有权、资源成功后配置确认及仅Pending含包的备份消费者。原PDF归档仍未完成，整包不标记全部验收完成。
+
+
+PR24独立审查输入a2e987a的R01～R05于本轮完成整改，文档治理b59318a先于代码，真实装配与候选源码固定7850fcc02b04d1b572fcb89215945ee0f60be28c。见[本轮结果、固定证据及后验边界](../runtime/architecture-quality-closure-01-rereview-results.md)。更新同一PR供复审，不合并main；原PDF01、Windows/真实现场门禁仍保留。

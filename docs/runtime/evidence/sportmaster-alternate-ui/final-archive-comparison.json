@@ -1,0 +1,11 @@
+{
+  "BaselineMain": "9a5d87ad41e3e936f56a7e58ec60de8f7aa53458",
+  "BaselineStatus": "FAIL",
+  "CurrentInheritedErrorCount": 267,
+  "ErrorKinds": {
+    "pptx_media_type_mismatch": 265,
+    "private_metadata_marker": 2
+  },
+  "NewArtifactPathMarker": "removed_from_public_result",
+  "WholeArchive": "Retains historical design-asset failures; final comparison rerun after path correction"
+}

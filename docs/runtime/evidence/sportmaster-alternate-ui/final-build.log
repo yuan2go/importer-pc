@@ -1,0 +1,30 @@
+  正在确定要还原的项目…
+  已还原 <REPO>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 3.57 秒)。
+  已还原 <REPO>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 3.23 秒)。
+  已还原 <REPO>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 3.57 秒)。
+  已还原 <REPO>/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 3.46 秒)。
+  已还原 <REPO>/src/Ipc.Components/Ipc.Components.csproj (用时 3.59 秒)。
+  已还原 <REPO>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 3.57 秒)。
+  已还原 <REPO>/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 3.58 秒)。
+  已还原 <REPO>/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj (用时 3.61 秒)。
+  6 个项目(共 14 个)是最新的，无法还原。
+  Ipc.Platform -> <REPO>/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <REPO>/src/Ipc.Application.Contracts/bin/Debug/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <REPO>/src/Ipc.Platform.Storage/bin/Debug/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <REPO>/src/Ipc.Application.ParcelFlow/bin/Debug/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> <REPO>/src/Ipc.Application.Sportmaster/bin/Debug/net10.0/Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> <REPO>/src/Ipc.Application.DirectPlc/bin/Debug/net10.0/Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> <REPO>/src/Ipc.Application.WcsToPlc/bin/Debug/net10.0/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> <REPO>/src/Ipc.Reference.Protocol/bin/Debug/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <REPO>/src/Ipc.Components/bin/Debug/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> <REPO>/src/Ipc.Drivers/bin/Debug/net10.0/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <REPO>/src/Ipc.Application.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <REPO>/src/Ipc.Integrations/bin/Debug/net10.0/Ipc.Integrations.dll
+  Ipc.Application.Supply -> <REPO>/src/Ipc.Application.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Application.Verification -> <REPO>/tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:24.16

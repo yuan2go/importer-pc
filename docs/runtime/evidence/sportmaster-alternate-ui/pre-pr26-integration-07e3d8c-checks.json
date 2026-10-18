@@ -1,0 +1,39 @@
+{
+  "Status": "REFERENCE_PASS_WINDOWS_NOT_RUN",
+  "BaselineMain": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "Date": "2026-10-19",
+  "SportmasterUiAssertions": 66,
+  "Architecture22Assertions": 62,
+  "Builds": {
+    "SportmasterWpf": "PASS",
+    "DirectPlcWpfCompatibility": "PASS",
+    "WcsToPlcWpfCompatibility": "PASS",
+    "WindowsWpfSmokeHarnessCrossBuild": "PASS"
+  },
+  "ProductionDependenciesAdded": 0,
+  "BusinessLogicChanged": false,
+  "WindowsUi": "NOT_RUN",
+  "RealSdkWcsField": "BLOCKED",
+  "OriginalHtmlUploaded": false,
+  "SourceCommit": "07e3d8c3a6cbdb2da44cb675ec7767e938393192",
+  "FinalUiAssertions": 66,
+  "PackageChecks": 27,
+  "Packages": [
+    {
+      "Target": "portable",
+      "Zip": "sportmaster-portable.zip",
+      "Sha256": "40a19959b2428b01291f43f21e79c561b6721d5ef201dfe1dcff5e38188aebec",
+      "Size": 18362596
+    },
+    {
+      "Target": "win-x64",
+      "Zip": "sportmaster-win-x64.zip",
+      "Sha256": "de4dd2936fc4c865183c7ef381a16ce0e0c248878f12b78ab944551e0a4dad45",
+      "Size": 104056578
+    }
+  ],
+  "IntegratedMain": "4afe2afacde9e2acab7648fff3440fa3cc331b6e",
+  "QualityReviewClosureAssertions": 32,
+  "WholeArchiveStatus": "FAIL_INHERITED_267_UNCHANGED",
+  "NewArchiveErrors": 0
+}

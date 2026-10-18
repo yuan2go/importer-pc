@@ -1,0 +1,35 @@
+  正在确定要还原的项目…
+  已还原 <REPO>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 4.03 秒)。
+  已还原 <REPO>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 4.03 秒)。
+  已还原 <REPO>/src/Ipc.Platform/Ipc.Platform.csproj (用时 4.04 秒)。
+  已还原 <REPO>/tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj (用时 4.05 秒)。
+  已还原 <REPO>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 4.05 秒)。
+  已还原 <REPO>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 4.04 秒)。
+  已还原 <REPO>/src/Ipc.Components/Ipc.Components.csproj (用时 4.03 秒)。
+  已还原 <REPO>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 5 毫秒)。
+  已还原 <REPO>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 7 毫秒)。
+  已还原 <REPO>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 10 毫秒)。
+  已还原 <REPO>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 3 毫秒)。
+  已还原 <REPO>/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj (用时 18 毫秒)。
+  已还原 <REPO>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 4.02 秒)。
+  已还原 <REPO>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 109 毫秒)。
+  Ipc.Platform -> <BUILD_OUTPUT>
+  Ipc.Application.Supply.Contracts -> <BUILD_OUTPUT>
+  Ipc.Platform.Storage -> <BUILD_OUTPUT>
+  Ipc.Application.Supply -> <BUILD_OUTPUT>
+  Ipc.Application.Contracts -> <BUILD_OUTPUT>
+  Ipc.Application.ParcelFlow -> <BUILD_OUTPUT>
+  Ipc.Application.Sportmaster -> <BUILD_OUTPUT>
+  Ipc.Reference.Protocol -> <BUILD_OUTPUT>
+  Ipc.Components -> <BUILD_OUTPUT>
+  Ipc.Drivers -> <BUILD_OUTPUT>
+  Ipc.Integrations -> <BUILD_OUTPUT>
+  Ipc.Application.ParcelFlow.Desktop -> <BUILD_OUTPUT>
+  Ipc.Application.Sportmaster.Desktop -> <BUILD_OUTPUT>
+  Ipc.Desktop.UiVerification -> <BUILD_OUTPUT>
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:25.08

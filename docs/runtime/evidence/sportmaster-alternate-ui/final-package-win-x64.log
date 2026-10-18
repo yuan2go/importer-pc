@@ -1,0 +1,48 @@
+  正在确定要还原的项目…
+  已还原 <REPO>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 3.72 秒)。
+  已还原 <REPO>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 3.74 秒)。
+  已还原 <REPO>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 3.73 秒)。
+  已还原 <REPO>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 3.76 秒)。
+  已还原 <REPO>/src/Ipc.Platform/Ipc.Platform.csproj (用时 3.73 秒)。
+  已还原 <REPO>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 3.72 秒)。
+  已还原 <REPO>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 3.75 秒)。
+  已还原 <REPO>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 3.9 秒)。
+  已还原 <REPO>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 20 毫秒)。
+  已还原 <REPO>/src/Ipc.Components/Ipc.Components.csproj (用时 54 毫秒)。
+  已还原 <REPO>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 97 毫秒)。
+  已还原 <REPO>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 78 毫秒)。
+  Ipc.Platform -> <CANDIDATE_OUTPUT>
+  Ipc.Application.Supply.Contracts -> <CANDIDATE_OUTPUT>
+  Ipc.Platform.Storage -> <CANDIDATE_OUTPUT>
+  Ipc.Application.Supply -> <CANDIDATE_OUTPUT>
+  Ipc.Application.Contracts -> <CANDIDATE_OUTPUT>
+  Ipc.Application.ParcelFlow -> <CANDIDATE_OUTPUT>
+  Ipc.Application.Sportmaster -> <CANDIDATE_OUTPUT>
+  Ipc.Reference.Protocol -> <CANDIDATE_OUTPUT>
+  Ipc.Components -> <CANDIDATE_OUTPUT>
+  Ipc.Drivers -> <CANDIDATE_OUTPUT>
+  Ipc.Integrations -> <CANDIDATE_OUTPUT>
+  Ipc.Assembly -> <CANDIDATE_OUTPUT>
+  Ipc.Assembly -> <CANDIDATE_OUTPUT>
+  正在确定要还原的项目…
+  已还原 <REPO>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 795 毫秒)。
+  已还原 <REPO>/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj (用时 794 毫秒)。
+  已还原 <REPO>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 739 毫秒)。
+  12 个项目(共 15 个)是最新的，无法还原。
+  Ipc.Platform -> <CANDIDATE_OUTPUT>
+  Ipc.Application.Supply.Contracts -> <CANDIDATE_OUTPUT>
+  Ipc.Platform.Storage -> <CANDIDATE_OUTPUT>
+  Ipc.Application.Supply -> <CANDIDATE_OUTPUT>
+  Ipc.Application.Contracts -> <CANDIDATE_OUTPUT>
+  Ipc.Application.ParcelFlow -> <CANDIDATE_OUTPUT>
+  Ipc.Application.Sportmaster -> <CANDIDATE_OUTPUT>
+  Ipc.Reference.Protocol -> <CANDIDATE_OUTPUT>
+  Ipc.Components -> <CANDIDATE_OUTPUT>
+  Ipc.Drivers -> <CANDIDATE_OUTPUT>
+  Ipc.Integrations -> <CANDIDATE_OUTPUT>
+  Ipc.Assembly -> <CANDIDATE_OUTPUT>
+  Ipc.Application.ParcelFlow.Desktop -> <CANDIDATE_OUTPUT>
+  Ipc.Application.Sportmaster.Desktop -> <CANDIDATE_OUTPUT>
+  Ipc.Desktop -> <CANDIDATE_OUTPUT>
+  Ipc.Desktop -> <CANDIDATE_OUTPUT>
+{"Package": "<CANDIDATE_OUTPUT> "Sha256": "564ac7bab158b3ee7f24d65c9136292fb0eda25350f8ca75081ff26886fb87a9", "SourceCommit": "7ed7862d4ab3a3f5bdcb88cd19633d4d75ce6806", "Application": "sportmaster", "Target": "win-x64"}

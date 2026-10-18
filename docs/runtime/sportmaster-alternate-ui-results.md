@@ -1,4 +1,4 @@
-> 最新整合运行源码：`07e3d8c3a6cbdb2da44cb675ec7767e938393192`，继承main `4afe2afacde9e2acab7648fff3440fa3cc331b6e`；最终结果见下方“整合后验证”。此前记录保持原SHA。
+> 最终运行源码：`7ed7862d4ab3a3f5bdcb88cd19633d4d75ce6806`，继承main `9a5d87ad41e3e936f56a7e58ec60de8f7aa53458`；最终结果见末节。此前候选与PASS保持原SHA。
 
 # Sportmaster 第二套 UI · 实施与验证结果
 
@@ -61,6 +61,23 @@ Windows原生窗口/启动/焦点/DPI/触控/截图实际 NOT_RUN；已提供可
 |portable|`sportmaster-portable.zip`|`40a19959b2428b01291f43f21e79c561b6721d5ef201dfe1dcff5e38188aebec`|18362596|
 |win-x64|`sportmaster-win-x64.zip`|`de4dd2936fc4c865183c7ef381a16ce0e0c248878f12b78ab944551e0a4dad45`|104056578|
 
-本地完整产物位于 `/Volumes/DevSSD/Development/Workspace/artifacts/importer-pc/sportmaster-alternate-ui/07e3d8c/`；不将候选ZIP/二进制、原稿或运行数据库提交Git。活动[候选/解包回执](evidence/sportmaster-alternate-ui/package-verification.json)固定07e3d8c；整合前911ed24回执另存为[历史记录](evidence/sportmaster-alternate-ui/pre-main-integration-911ed24-package-verification.json)。两个阶段不能共用结论或文件身份。
+本地完整产物位于 `Workspace/artifacts/importer-pc/sportmaster-alternate-ui/07e3d8c/`；不将候选ZIP/二进制、原稿或运行数据库提交Git。活动[候选/解包回执](evidence/sportmaster-alternate-ui/package-verification.json)固定07e3d8c；整合前911ed24回执另存为[历史记录](evidence/sportmaster-alternate-ui/pre-main-integration-911ed24-package-verification.json)。两个阶段不能共用结论或文件身份。
 
 最新main4afe2af全库资料校验与当前比较：[267项历史错误完全一致，无新增](evidence/sportmaster-alternate-ui/integrated-archive-comparison.json)。manifest逐文件hash/大小/范围校验与本次文档链接一致；保留全库FAIL，不倒写PPTX/原设计资产。
+
+## PR26合入main后的最终交付
+
+PR创建后main合入PR26到9a5d87a；本分支再次正常整合，保留其资料入口、SQL5原件保有、旧配置确认与选装包发布机制，未修改其业务实现。最终源码固定7ed7862；本次UI/API形状不另改，精确公共DLL字节指纹仍以各候选release为准，后装包不能跨候选盲复用。此前07e3d8c候选及验证回执另存于[整合前记录](evidence/sportmaster-alternate-ui/pre-pr26-integration-07e3d8c-package-verification.json)，不覆盖历史身份。
+
+最终复验：UI66、架构22回归62、质量复审32、配置确认32条断言均PASS；Sportmaster发布编译、DirectPlc/WcsToPlc兼容编译、Windows原生烟测工程跨编译均0警告0错误；随包指南2项及选装包辅助测试3项通过。最新共享维护页的旧配置确认/原接收责任入口随本UI继承。Windows实际UI依然NOT_RUN，真实SDK/WCS/现场依然BLOCKED。
+
+实际最终媒介：
+
+|目标|ZIP|SHA-256|字节|
+|---|---|---|---|
+|portable|`sportmaster-portable.zip`|`08dbe011e71dcee97785d29129c84d54b3fe595801dd94089a15db215788882e`|18373128|
+|win-x64|`sportmaster-win-x64.zip`|`564ac7bab158b3ee7f24d65c9136292fb0eda25350f8ca75081ff26886fb87a9`|104110127|
+
+产物目录 `Workspace/artifacts/importer-pc/sportmaster-alternate-ui/7ed7862/`。27项[解包/资源/启动检查](evidence/sportmaster-alternate-ui/package-verification.json)PASS，包括真实portable宿主双位WCS链、一次原请求、正常停止；不把该启动当作Windows桌面启动。
+
+已创建并附加[main PR #27](https://github.com/yuan2go/importer-pc/pull/27)，不合并。源码7ed7862后的报告/manifest提交仅交付回执，不改变冻结运行源码。

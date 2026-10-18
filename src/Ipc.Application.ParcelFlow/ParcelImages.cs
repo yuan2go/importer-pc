@@ -2,7 +2,7 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
-enum ParcelStage { Capture, Upload, Wcs, Plc }
+public enum ParcelStage { Capture, Upload, Wcs, Plc }
 public sealed partial class ParcelRuntime
 {
     static StageFact? GetStage(ParcelOperation op, ParcelStage kind) => kind switch
@@ -18,33 +18,55 @@ public sealed partial class ParcelRuntime
     static ParcelStage ParseStage(string stage) => stage switch
     { "image-capture" => ParcelStage.Capture, "image-upload" => ParcelStage.Upload, "wcs-slot" => ParcelStage.Wcs, "plc-submit" => ParcelStage.Plc, _ => throw new InvalidDataException("Unknown original stage") };
     bool CanDispatch(ParcelOperation op) => !stopping.IsCancellationRequested && failure is null && overload == 0 && !repository!.Paused &&
-        (Effective.Login is null || currentOperator?.Subject == op.Operator?.Subject && currentOperator is not null) &&
-        (op.WeightPolicy.Source == WeightSource.Disabled || op.Weight is not null) &&
-        !repository.PendingReceipts().Any(x => x.Operation == op.Id) &&
-        Enum.GetValues<ParcelStage>().All(kind => GetStage(op, kind)?.State is not (StageState.Unknown or StageState.Conflict or StageState.Dispatching));
+        SessionValid && (Effective.Login is null || currentOperator?.Subject == op.Operator?.Subject && currentOperator is not null) &&
+        !repository.PendingReceipts().Any(x => x.Operation == op.Id && !(op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Stage == "image-upload")) &&
+        Enum.GetValues<ParcelStage>().Where(kind => !(kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached))
+            .All(kind => GetStage(op, kind)?.State is not (StageState.Unknown or StageState.Conflict or StageState.Dispatching)) &&
+        op.State is not (ParcelState.WeightTimedOut or ParcelState.Abandoned);
     bool PredecessorsAccepted(ParcelOperation op, ParcelStage kind) => kind switch
     {
         ParcelStage.Capture => true,
         ParcelStage.Upload => op.Capture?.State == StageState.Accepted,
-        ParcelStage.Wcs => op.FrozenConfiguration.Images is null || op.Upload?.State == StageState.Accepted,
-        _ => (op.FrozenConfiguration.Images is null || op.Upload?.State == StageState.Accepted) && (!definition.RequiresWcs || op.Wcs?.State == StageState.Accepted)
+        _ => (op.FrozenConfiguration.Images is null || op.FrozenConfiguration.Images.Strategy == UploadStrategy.Attached || op.Upload?.State == StageState.Accepted) && definition.PredecessorsAccepted(op, kind)
     };
-    async Task<ParcelOperation> AdvanceImagesAsync(ParcelOperation op)
+    async Task<ParcelOperation> CaptureOriginalAsync(ParcelOperation op)
     {
         if (op.Capture is null)
         {
-            op = op with { Capture = new(Prepare(op, "image-capture", op.FrozenConfiguration.Images!.Camera, null, null), StageState.Prepared, 0, []), State = ParcelState.CapturingImage };
-            Save(op, "CapturePrepared", "T1: image capture belongs to this admitted parcel");
+            op = op with { Capture = new(Prepare(op, "image-capture", op.FrozenConfiguration.Images!.Camera, null, null), StageState.Prepared, 0, []) };
+            Save(op, "CapturePrepared", "T1: capture bound to original observation/admission before any weight wait");
         }
         if (op.Capture is { State: StageState.Prepared, Attempts: 0 }) op = await ExecuteStageAsync(op, ParcelStage.Capture, false).ConfigureAwait(false);
+        if (op.FrozenConfiguration.Images!.Strategy == UploadStrategy.Attached && op.Capture?.State == StageState.Accepted) ScheduleAttached(op);
+        return operations[op.Id];
+    }
+    async Task<ParcelOperation> AdvanceImagesAsync(ParcelOperation op)
+    {
+        op = await CaptureOriginalAsync(op).ConfigureAwait(false);
         if (op.Capture?.State != StageState.Accepted) return op;
-        if (op.Upload is { State: StageState.Prepared, Attempts: 0 } && !stopping.IsCancellationRequested && !repository!.Paused && overload == 0)
+        if (op.FrozenConfiguration.Images!.Strategy == UploadStrategy.BeforeMain && op.Upload is { State: StageState.Prepared, Attempts: 0 } && CanDispatch(op))
             op = await ExecuteStageAsync(op, ParcelStage.Upload, false).ConfigureAwait(false);
-        return op;
+        return operations[op.Id];
+    }
+    void ScheduleAttached(ParcelOperation op)
+    {
+        if (op.Upload is not { State: StageState.Prepared, Attempts: 0 } || !attachedRunning.Add(op.Id)) return;
+        auxiliary.Add(Task.Run(async () =>
+        {
+            await gate.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                var latest = operations[op.Id];
+                if (!stopping.IsCancellationRequested && !repository!.Paused && latest.Upload is { State: StageState.Prepared, Attempts: 0 })
+                    await ExecuteStageAsync(latest, ParcelStage.Upload, false).ConfigureAwait(false);
+            }
+            catch (Exception ex) { failure = "Attached upload persistence failure: " + ex.Message; Interlocked.Exchange(ref accepting, 0); }
+            finally { attachedRunning.Remove(op.Id); gate.Release(); }
+        }));
     }
     byte[] ReadImage(ParcelOperation op, ParcelImage image)
     {
-        if (image.AdmissionId != op.AdmissionId || image.CaptureRequestId != op.Capture?.Request.Id || image.MediaType != "image/png" || Path.GetFileName(image.RelativeFile) != image.CaptureRequestId + ".png" ||
+        if (image.AdmissionId != op.AdmissionId || image.CaptureRequestId != op.Capture?.Request.Id || !ValidMediaType(image.MediaType) || !ExtensionSchema.IsHash(image.Sha256) ||
             image.Length is < 1 || image.Length > op.FrozenConfiguration.Images!.MaximumBytes ||
             !image.RelativeFile.StartsWith("images/", StringComparison.Ordinal) || !ProductValidation.IsSafeRelativeFile(directory!, image.RelativeFile, out var path) ||
             new FileInfo(path).Length != image.Length) throw new InvalidDataException("Image identity, path or quota differs from the original capture");
@@ -59,14 +81,40 @@ public sealed partial class ParcelRuntime
         catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException) { return false; }
         return kind == ParcelStage.Capture ? image.UploadedUri is null : op.Image is { } captured &&
             image with { UploadedUri = null } == captured with { UploadedUri = null } &&
-            Uri.TryCreate(image.UploadedUri, UriKind.Absolute, out var uri) && uri.Scheme == "reference";
+            Uri.TryCreate(image.UploadedUri, UriKind.Absolute, out var uri) && uri.Scheme is "reference" or "https" or "http" && string.IsNullOrEmpty(uri.UserInfo);
     }
     ParcelOperation ApplyImageReply(ParcelOperation op, ParcelStage kind, StageReply reply)
     {
-        if (reply.BusinessAccepted != true) return op with { State = ParcelState.ImageRejected, Reason = reply.Evidence };
-        op = op with { Image = reply.Image, State = ParcelState.Prepared, Reason = null };
+        if (reply.BusinessAccepted != true) return op.FrozenConfiguration.Images!.Strategy == UploadStrategy.Attached && kind == ParcelStage.Upload ? op : op with { State = ParcelState.ImageRejected, Reason = reply.Evidence };
+        op = op with { Image = reply.Image };
+        if (op.State is ParcelState.ImageUnknown or ParcelState.CapturingImage or ParcelState.UploadingImage)
+            op = op with { State = op.WeightPolicy.Source == WeightSource.Measured && op.Weight is null ? ParcelState.WaitingWeight : ParcelState.Prepared, Reason = null };
         if (kind == ParcelStage.Capture && op.Upload is null)
-            op = op with { Upload = new(Prepare(op, "image-upload", op.FrozenConfiguration.Images!.Uploader, null, null), StageState.Prepared, 0, []), State = ParcelState.UploadingImage };
+            op = op with { Upload = new(Prepare(op, "image-upload", op.FrozenConfiguration.Images!.Uploader, null, null), StageState.Prepared, 0, []) };
         return op;
+    }
+    static bool ValidMediaType(string type) => type.Length is > 0 and <= 128 && type.Contains('/') && type.All(x => char.IsAsciiLetterOrDigit(x) || x is '/' or '-' or '+' or '.');
+    bool ImageCapacityAvailable()
+    {
+        if (Effective.Images is not { } policy) return true;
+        var pending = operations.Values.Where(x => x.FrozenConfiguration.Images is not null && !x.ImageReleased && x.Capture?.State != StageState.Rejected).ToArray();
+        return pending.Length < policy.MaximumPending && pending.Sum(x => (long)(x.Image?.Length ?? x.FrozenConfiguration.Images!.MaximumBytes)) + policy.MaximumBytes <= policy.TotalBytes;
+    }
+    void RecoverImageCleanup()
+    {
+        foreach (var op in operations.Values.Where(x => x.ImageReleased && x.Image is not null)) DeleteImage(op);
+    }
+    void ReleaseCompletedImages()
+    {
+        foreach (var original in operations.Values.Where(x => x.Image is not null && !x.ImageReleased && x.Upload?.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled).ToArray())
+        {
+            if (activeStages.Any(x => x.StartsWith(original.Id + ":", StringComparison.Ordinal)) || repository!.PendingReceipts().Any(x => x.Operation == original.Id)) continue;
+            var op = original with { ImageReleased = true }; Save(op, "ImageReleased", "Upload terminal; durable release precedes temporary byte deletion"); Boundary?.Invoke("AfterImageReleaseDurable"); DeleteImage(op);
+        }
+    }
+    void DeleteImage(ParcelOperation op)
+    {
+        if (!ProductValidation.IsSafeRelativeFile(directory!, op.Image!.RelativeFile, out var path) || !op.Image.RelativeFile.StartsWith("images/", StringComparison.Ordinal)) throw new InvalidDataException("Unsafe released image path");
+        if (File.Exists(path)) File.Delete(path);
     }
 }

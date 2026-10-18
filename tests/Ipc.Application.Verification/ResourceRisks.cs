@@ -38,7 +38,7 @@ static class ResourceRisks
         await using (var first = new ParcelRuntime(activationLaunch, new WcsToPlcFlow(), new ParcelCapabilityFactory(activationLaunch)))
         {
             await first.StartAsync(CancellationToken.None); var initial = await first.SnapshotAsync();
-            await first.CommandAsync(new(Wire.Id(), initial.Revision, "Pause")); initial = await first.SnapshotAsync();
+            await first.CommandAsync(new(Wire.Id(), initial.Revision, "Pause")); await first.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); initial = await first.SnapshotAsync();
             var candidate = initial.Configuration.Effective with { Wcs = initial.Configuration.Effective.Wcs! with { Parameters = new(initial.Configuration.Effective.Wcs.Parameters) { ["decision"] = "reject" } } };
             Pass((await first.StageConfigurationAsync(initial.Configuration.Revision, candidate)).Status == "PendingRestart", "valid candidate is saved separately before construction");
         }

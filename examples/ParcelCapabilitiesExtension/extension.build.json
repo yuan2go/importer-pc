@@ -5,7 +5,8 @@
     "examples/ParcelCapabilitiesExtension",
     "src/Ipc.Reference.Protocol",
     "src/Ipc.Drivers",
-    "src/Ipc.Integrations"
+    "src/Ipc.Integrations",
+    "src/Ipc.Components"
   ],
   "BuildInputs": [
     "Directory.Build.props",
@@ -17,7 +18,11 @@
   "ParameterSchemas": {
     "parcel-weight": "examples/ParcelCapabilitiesExtension/weight.parameters.json",
     "parcel-plc": "examples/ParcelCapabilitiesExtension/plc.parameters.json",
-    "parcel-integration": "examples/ParcelCapabilitiesExtension/integration.parameters.json"
+    "parcel-integration": "examples/ParcelCapabilitiesExtension/integration.parameters.json",
+    "parcel-login": "examples/ParcelCapabilitiesExtension/login.parameters.json",
+    "parcel-camera": "examples/ParcelCapabilitiesExtension/camera.parameters.json",
+    "parcel-upload": "examples/ParcelCapabilitiesExtension/upload.parameters.json",
+    "strict-wcs": "examples/ParcelCapabilitiesExtension/integration.parameters.json"
   },
   "Content": [
     {

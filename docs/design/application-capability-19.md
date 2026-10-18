@@ -4,7 +4,7 @@
 
 ## 所有权
 
-Platform拥有模块生命周期、会话/认证、重量、读码、关联取图/上传通用协议、签名/schema/安装/精确加载、资源租约、配置修订机制。公共协议不包含ParcelOperation、格口业务、WCS/PLC状态。Application.Contracts拥有业务意图和外部可证明事实。三个Application各自给出下一步骤、前置、结果解释、终态及恢复规则；ParcelFlow只执行共用持久机制及能力策略。不引入流程引擎或消息总线。
+Platform拥有模块生命周期、会话/认证、重量、读码、关联取图/上传通用协议、签名/schema/安装/精确加载、资源租约、配置修订机制。原公共类型的完整命名保留，以Application.Contracts类型转发到Platform，避免仅换程序集却破坏发布类型名。Platform没有Application程序集依赖。公共协议不包含ParcelOperation、格口业务、WCS/PLC状态。Application.Contracts拥有业务意图和外部可证明事实。三个Application各自给出下一步骤、前置、结果解释、终态及恢复规则；ParcelFlow只执行共用持久机制及能力策略。不引入流程引擎或消息总线。
 
 Sportmaster只请求WCS并展示有效格口；DirectPlc验证重量后准备PLC；WcsToPlc验证重量、WCS格口后在同一T3提交原格口与原PLC意图。三个构建产物只选择一个主流程，多页面共享实例。现场字段/认证/编码/单位/PLC握手由适配器管理；声明输入要求、查询及物理确认能力，配置校验器拒绝实测/图片依赖冲突。
 

@@ -1,0 +1,24 @@
+[
+  {
+    "Key": "decision",
+    "Group": "reference",
+    "Label": "Reference decision",
+    "Type": "choice",
+    "Default": "accept",
+    "Choices": [
+      "accept",
+      "reject"
+    ]
+  },
+  {
+    "Key": "reply-mode",
+    "Group": "reference",
+    "Label": "Reference reply",
+    "Type": "choice",
+    "Default": "normal",
+    "Choices": [
+      "normal",
+      "lose-after-commit"
+    ]
+  }
+]

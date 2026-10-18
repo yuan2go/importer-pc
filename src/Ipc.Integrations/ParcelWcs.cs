@@ -1,3 +1,4 @@
+using Ipc.Platform;
 using Ipc.Application.Contracts;
 using Ipc.Reference.Protocol;
 namespace Ipc.Integrations;

@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><AssemblyName>Ipc.Reference.ParcelCapabilitiesExtension</AssemblyName></PropertyGroup><ItemGroup>
 <Reference Include="Ipc.Platform"><HintPath>$(IpcContractDirectory)/Ipc.Platform.dll</HintPath><Private>false</Private></Reference><Reference Include="Ipc.Application.Contracts"><HintPath>$(IpcContractDirectory)/Ipc.Application.Contracts.dll</HintPath><Private>false</Private></Reference>
 <Compile Include="../../src/Ipc.Reference.Protocol/ReferencePeer.cs" Link="ReferencePeer.cs"/><Compile Include="../../src/Ipc.Drivers/ParcelDevices.cs" Link="ParcelDevices.cs"/><Compile Include="../../src/Ipc.Integrations/ParcelWcs.cs" Link="ParcelWcs.cs"/>
+<Compile Include="../../src/Ipc.Drivers/ReferenceImageCamera.cs" Link="ReferenceImageCamera.cs"/><Compile Include="../../src/Ipc.Components/ReferenceOptionalServices.cs" Link="ReferenceOptionalServices.cs"/>
 </ItemGroup><Target Name="RequireFrozenContract" BeforeTargets="ResolveAssemblyReferences" Condition="!Exists('$(IpcContractDirectory)/Ipc.Application.Contracts.dll')"><Error Text="Use frozen public Application contracts"/></Target></Project>

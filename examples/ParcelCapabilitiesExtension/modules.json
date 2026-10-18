@@ -19,5 +19,51 @@
     "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.WcsFactory",
     "Kind": "integration",
     "MaximumInstances": 4
+  },
+  {
+    "Id": "parcel-login",
+    "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+    "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.LoginFactory",
+    "Kind": "login",
+    "MaximumInstances": 4,
+    "ContractIdentity": "PARCEL-REFERENCE-v1",
+    "Requirements": {
+      "Query": false
+    }
+  },
+  {
+    "Id": "parcel-camera",
+    "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+    "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.CameraFactory",
+    "Kind": "camera",
+    "MaximumInstances": 4,
+    "ContractIdentity": "PARCEL-REFERENCE-v1",
+    "Requirements": {
+      "Query": true
+    }
+  },
+  {
+    "Id": "parcel-upload",
+    "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+    "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.UploadFactory",
+    "Kind": "upload",
+    "MaximumInstances": 4,
+    "ContractIdentity": "PARCEL-REFERENCE-v1",
+    "Requirements": {
+      "Query": true
+    }
+  },
+  {
+    "Id": "strict-wcs",
+    "Assembly": "Ipc.Reference.ParcelCapabilitiesExtension.dll",
+    "EntryType": "Ipc.Reference.ParcelCapabilitiesExtension.WcsFactory",
+    "Kind": "integration",
+    "MaximumInstances": 4,
+    "ContractIdentity": "PARCEL-REFERENCE-v1",
+    "Requirements": {
+      "Query": true,
+      "ImageAddress": true,
+      "MeasuredWeight": true
+    }
   }
 ]

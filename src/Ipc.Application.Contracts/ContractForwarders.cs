@@ -1,0 +1,12 @@
+using System.Runtime.CompilerServices;
+[assembly: TypeForwardedTo(typeof(Ipc.Application.Contracts.WeightSource))]
+[assembly: TypeForwardedTo(typeof(Ipc.Application.Contracts.WeightUnit))]
+[assembly: TypeForwardedTo(typeof(Ipc.Application.Contracts.MeasurementQuality))]
+[assembly: TypeForwardedTo(typeof(Ipc.Application.Contracts.WeightPolicy))]
+[assembly: TypeForwardedTo(typeof(Ipc.Application.Contracts.WeightMeasurement))]
+[assembly: TypeForwardedTo(typeof(Ipc.Application.Contracts.CapabilityBinding))]
+[assembly: TypeForwardedTo(typeof(Ipc.Application.Contracts.CapabilityHealth))]
+[assembly: TypeForwardedTo(typeof(Ipc.Application.Contracts.ICapabilityPort))]
+[assembly: TypeForwardedTo(typeof(Ipc.Application.Contracts.IWeightSource))]
+[assembly: TypeForwardedTo(typeof(Ipc.Application.Contracts.OperatorIdentity))]
+[assembly: TypeForwardedTo(typeof(Ipc.Application.Contracts.IOperatorAuthenticator))]

@@ -4,7 +4,7 @@ using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition definition, IParcelCapabilityFactory factory)
-    : IBusinessRuntime, IParcelApplication, IRuntimeOwnership
+    : IBusinessRuntime, IParcelApplication, IRuntimeOwnership, IParcelExecution
 {
     readonly SemaphoreSlim gate = new(1, 1);
     readonly Guid runtimeId = Guid.NewGuid();
@@ -25,7 +25,18 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     sealed record ParcelObservation(Observation Observation, OperatorIdentity? Operator);
     bool started, stopped, disposed;
     string? failure;
-    OperatorIdentity? currentOperator;
+    readonly OperatorSession session = new();
+    readonly OperatorSession maintenanceSession = new();
+    OperatorIdentity? currentOperator => session.Identity;
+    bool SessionValid => Effective.Login is null || session.Valid(DateTimeOffset.UtcNow, Effective.SessionLifetimeMs);
+    bool MaintenanceAuthorized => maintenanceSession.Valid(DateTimeOffset.UtcNow, 900000) && maintenanceSession.Identity?.Grants?.Contains("maintenance") == true;
+    readonly Dictionary<string, CapabilityHealth> capabilityHealth = [];
+    readonly HashSet<string> activeStages = [];
+    readonly HashSet<string> attachedRunning = [];
+    readonly List<Task> auxiliary = [];
+    Task? maintenanceWorker;
+    int externalWaits;
+    TaskCompletionSource? externalDrained;
     internal Action<string>? Boundary { get; set; }
     Exception? terminalWorkerFailure;
     public string Id => definition.Id;
@@ -48,13 +59,15 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         overloadMarker = Path.Combine(directory, "overload.json"); overload = File.Exists(overloadMarker) ? 1 : 0;
         if (File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json"))) throw new InvalidDataException("Interrupted restore remains isolated; preserve original recovery set");
         configuration = new(Path.Combine(directory, "configuration.json"), seed, definition.Validate);
-        repository = new(directory, Id);
+        repository = new(directory, Id) { Boundary = point => Boundary?.Invoke(point) };
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
-        if (File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json"))) repository.Commit(null, "RestoredIsolated", "Original recovery set loaded; operator must reconcile external effects", paused: true);
+        if (File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json"))) repository!.Commit(null, "RestoredIsolated", "Original recovery set loaded; operator must reconcile external effects", paused: true);
         foreach (var op in repository.Load()) operations.Add(op.Id, op);
         repository.ValidateRawInventory();
-        foreach (var op in operations.Values.Where(x => x.Image is not null)) _ = ReadImage(op, op.Image!);
+        foreach (var op in operations.Values.Where(x => x.Image is not null && !x.ImageReleased)) _ = ReadImage(op, op.Image!);
         RecoverLocalFacts();
+        RecoverImageCleanup();
+        ExpireWeights();
         var priorEffective = configuration.Current.Effective;
         try
         {
@@ -78,7 +91,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 if (h.DeviceId == Effective.Reader.DeviceId && h.Epoch == registeredEpoch)
                     Volatile.Write(ref readerHealth, new(h.DeviceId, h.Epoch, 0, h.Health, h.ConfirmedAt, h.ConfirmedAt, h.ValidUntil, h.Source));
             }, token).ConfigureAwait(false);
+            foreach (var port in CapabilityPorts()) capabilityHealth[port.InstanceId] = await port.HealthAsync(token).ConfigureAwait(false);
             Volatile.Write(ref accepting, 1);
+            maintenanceWorker = Task.Run(MaintainAsync, CancellationToken.None);
         }
         catch (Exception ex)
         {
@@ -86,15 +101,15 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             throw; // Caller must fully stop/dispose the failed candidate before a new owner starts.
         }
     }
-    IEnumerable<ICapabilityPort> CapabilityPorts() => new ICapabilityPort?[] { ports?.Weight, ports?.Wcs, ports?.Plc, ports?.Login, ports?.Camera, ports?.Uploader }.OfType<ICapabilityPort>();
+    IEnumerable<ICapabilityPort> CapabilityPorts() => new ICapabilityPort?[] { ports?.Weight, ports?.Wcs, ports?.Plc, ports?.Login, ports?.Camera, ports?.Uploader, ports?.Maintenance }.OfType<ICapabilityPort>();
     bool Enqueue(object item)
     {
         if (Volatile.Read(ref accepting) == 0 || Volatile.Read(ref overload) != 0) return false;
         var observation = item as Observation;
         if (observation is not null)
         {
-            var identity = Volatile.Read(ref currentOperator);
-            if (Effective.Login is not null && identity is null) return false;
+            var identity = currentOperator;
+            if (!SessionValid) return false;
             item = new ParcelObservation(observation, identity); Interlocked.Increment(ref pendingObservations);
         }
         if (ingress!.Writer.TryWrite(item)) return true;
@@ -125,75 +140,85 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     }
     async Task ObserveAsync(Observation o, OperatorIdentity? admittedOperator)
     {
-        if (repository!.Paused || failure is not null || operations.Values.Any(NeedsReconciliation) || Effective.Login is not null && admittedOperator is null)
-        { repository.Commit(null, "ObservationBlocked", "Paused/faulted/unresolved responsibility; source event=" + o.SourceEventId); return; }
+        if (!CanAdmit() || Effective.Login is not null && admittedOperator is null)
+        { repository!.Commit(null, "ObservationBlocked", "Paused/faulted/unresolved responsibility; source event=" + o.SourceEventId); return; }
         if (o.DeviceId != Effective.Reader.DeviceId || o.Epoch != registeredEpoch || o.Sequence <= sequence ||
             o.Kind != "Read" || o.Codes.Length != 1 || o.Codes[0] is not { Length: > 0 and <= 256 } || o.Codes[0].Any(char.IsControl) ||
             !ExtensionSchema.IsId(o.AdmissionId) || o.ObservedAt > DateTimeOffset.UtcNow || DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) ||
             readerHealth?.IsValid(DateTimeOffset.UtcNow) != true)
-        { repository.Commit(null, "ObservationRejected", "Invalid identity/epoch/sequence/code/admission/freshness/reader confirmation"); return; }
+        { repository!.Commit(null, "ObservationRejected", "Invalid identity/epoch/sequence/code/admission/freshness/reader confirmation"); return; }
         sequence = o.Sequence;
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
         var prior = operations.Values.FirstOrDefault(x => x.AdmissionId == o.AdmissionId || x.ObservationId == observationId);
         if (prior is not null)
         {
             if (prior.AdmissionId != o.AdmissionId || prior.ParcelCode != o.Codes[0])
-            { repository.Commit(null, "IdentityConflict", "Observation/admission identity reused with changed content", paused: true); }
+            { repository!.Commit(null, "IdentityConflict", "Observation/admission identity reused with changed content", paused: true); }
             return;
         }
         if (operations.Count >= Effective.MaximumOperations)
-        { repository.Commit(null, "RetentionBudget", "Explicit archive/retention is required", paused: true); return; }
+        { repository!.Commit(null, "RetentionBudget", "Explicit archive/retention is required", paused: true); return; }
+        if (!AdmissionCapabilitiesReady() || !ImageCapacityAvailable())
+        { repository!.Commit(null, "AdmissionCapabilityBlocked", "Required capability unhealthy or temporary image quota exhausted"); return; }
         var weight = WeightRules.Configured(Effective.Weight);
         var op = new ParcelOperation(Wire.Id(), o.AdmissionId, o.Codes[0], observationId, o.ObservedAt,
             Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes),
             Effective.Weight, weight, Effective.Weight.Source == WeightSource.Measured ? ParcelState.WaitingWeight : ParcelState.Prepared,
             null, null, null, Effective.Weight.Source == WeightSource.Measured ? "Waiting for a valid measurement of this same parcel" : null,
-            Operator: admittedOperator);
+            Operator: admittedOperator, Acquisition: new(o.DeviceId, o.Epoch, o.SourceEventId, o.AdmissionId, o.ObservedAt));
         Save(op, "ParcelObserved", "One admitted parcel; code is not entity identity");
-        if (op.State != ParcelState.WaitingWeight) await AdvanceAsync(op).ConfigureAwait(false);
+        if (op.FrozenConfiguration.Images is not null)
+        {
+            op = await CaptureOriginalAsync(op).ConfigureAwait(false);
+            if (op.Capture?.State != StageState.Accepted) return;
+        }
+        if (op.WeightPolicy.Source != WeightSource.Measured) await AdvanceAsync(op).ConfigureAwait(false);
     }
     async Task MeasureAsync(WeightMeasurement m)
     {
         var op = operations.Values.SingleOrDefault(x => x.AdmissionId == m.AdmissionId);
         if (op is null) { repository!.Commit(null, "MeasurementRejected", "No matching admitted parcel"); return; }
+        if (!capabilityHealth.TryGetValue(op.FrozenConfiguration.Scale?.InstanceId ?? "", out var scaleHealth) || !scaleHealth.Ready || scaleHealth.ValidUntil <= DateTimeOffset.UtcNow)
+        { repository!.Commit(null, "MeasurementRejected", "Bound scale health is not confirmed"); return; }
         var reason = WeightRules.Invalid(m, op, op.FrozenConfiguration.Scale?.Target ?? "", DateTimeOffset.UtcNow);
         if (reason is not null) { repository!.Commit(null, "MeasurementRejected", reason); return; }
-        if (!repository!.RecordMeasurement(m) || op.State != ParcelState.WaitingWeight) return;
-        op = op with { Weight = new(m.Value, m.Unit, m.Precision, WeightSource.Measured, m.Id, m.DeviceId + ":" + m.Quality), State = ParcelState.Prepared, Reason = null };
-        Save(op, "WeightAssociated", "Valid stable measurement correlated by admission identity");
+        if (repository!.HasMeasurement(m) || op.Weight is not null || op.State is ParcelState.WeightTimedOut or ParcelState.Abandoned ||
+            DateTimeOffset.UtcNow > op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs)) return;
+        op = op with { Weight = new(m.Value, m.Unit, m.Precision, WeightSource.Measured, m.Id, m.DeviceId + ":" + m.Quality, m.MeasuredAt), State = ParcelState.Prepared, Reason = null };
+        Boundary?.Invoke("BeforeWeightAssociation");
+        repository!.Commit(op, "WeightAssociated", "Measurement deduplication and parcel association committed in one transaction", measurement: m);
+        operations[op.Id] = op;
         await AdvanceAsync(op).ConfigureAwait(false);
     }
     void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null)
     { repository!.Commit(op, eventName, detail, occurrence: occurrence); operations[op.Id] = op; journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision }); }
-    static bool NeedsReconciliation(ParcelOperation op) => op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.ImageUnknown or ParcelState.Blocked;
-    static bool IsSettled(ParcelOperation op) => op.State is ParcelState.SlotResolved or ParcelState.PhysicalCompleted or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.ImageRejected;
+    static bool NeedsReconciliation(ParcelOperation op) => op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.Blocked or ParcelState.WeightTimedOut ||
+        op.FrozenConfiguration.Images?.Strategy != UploadStrategy.Attached && op.State == ParcelState.ImageUnknown;
+    bool IsSettled(ParcelOperation op) => (definition.MainSettled(op) || op.State is ParcelState.ImageRejected or ParcelState.Abandoned) &&
+        (op.FrozenConfiguration.Images is null || op.ImageReleased || op.Upload?.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled || op.Capture?.State is StageState.Rejected or StageState.Cancelled);
     FrozenRequest Prepare(ParcelOperation op, string stage, CapabilityBinding binding, string? slot, string? wcsRequest)
     {
-        var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest, op.Operator, op.Image));
+        var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest, op.Operator, op.Image, op.Acquisition));
         return new(Wire.Id(), Id, op.Id, op.AdmissionId, stage, binding, op.ImplementationHashes[binding.InstanceId],
             op.ConfigurationHash, payload, Wire.Hash(payload), DateTimeOffset.UtcNow);
     }
     async Task AdvanceAsync(ParcelOperation op)
     {
-        if (!CanDispatch(op)) return;
+        op = operations[op.Id];
+        if (!CanDispatch(op) || !WeightReady(op)) return;
         if (op.FrozenConfiguration.Images is not null)
         {
             op = await AdvanceImagesAsync(op).ConfigureAwait(false);
-            if (op.Upload?.State != StageState.Accepted) return;
+            if (op.FrozenConfiguration.Images!.Strategy == UploadStrategy.BeforeMain && op.Upload?.State != StageState.Accepted) return;
         }
-        if (definition.RequiresWcs && op.Wcs is null)
-        {
-            var request = Prepare(op, "wcs-slot", op.FrozenConfiguration.Wcs!, null, null);
-            op = op with { Wcs = new(request, StageState.Prepared, 0, []), State = ParcelState.ResolvingWcs };
-            Save(op, "WcsPrepared", "T1: frozen original WCS intent");
-        }
-        if (op.Wcs is { State: StageState.Prepared, Attempts: 0 })
-            op = await ExecuteStageAsync(op, ParcelStage.Wcs, false).ConfigureAwait(false);
-        if (definition.RequiresPlc && (op.Wcs is null || op.Wcs.State == StageState.Accepted) && op.Plc is null)
-        { op = PreparePlc(op); Save(op, "PlcPrepared", "T1: original PLC command linked to accepted WCS result"); }
-        if (op.Plc?.State == StageState.Prepared && !stopping.IsCancellationRequested)
-            await ExecuteStageAsync(op, ParcelStage.Plc, false).ConfigureAwait(false);
+        await definition.AdvanceAsync(this, operations[op.Id]).ConfigureAwait(false);
     }
+    ParcelOperation IParcelExecution.Current(string id) => operations[id];
+    ParcelOperation IParcelExecution.PrepareWcs(ParcelOperation op) => op with
+    { Wcs = new(Prepare(op, "wcs-slot", op.FrozenConfiguration.Wcs!, null, null), StageState.Prepared, 0, []), State = ParcelState.ResolvingWcs };
+    ParcelOperation IParcelExecution.PreparePlc(ParcelOperation op) => PreparePlc(op);
+    void IParcelExecution.Persist(ParcelOperation op, string reason) => Save(op, "IntentPrepared", reason);
+    Task<ParcelOperation> IParcelExecution.ExecuteAsync(ParcelOperation op, ParcelStage stage) => ExecuteStageAsync(op, stage, false);
     ParcelOperation PreparePlc(ParcelOperation op) => op with
     {
         Plc = new(Prepare(op, "plc-submit", op.FrozenConfiguration.Plc!, op.Slot, op.Wcs?.Request.Id), StageState.Prepared, 0, []),

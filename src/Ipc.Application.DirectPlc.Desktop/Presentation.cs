@@ -1,3 +1,4 @@
+using Ipc.Platform;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 namespace Ipc.Application.DirectPlc.Desktop;

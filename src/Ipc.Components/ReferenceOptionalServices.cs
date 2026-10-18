@@ -28,7 +28,7 @@ public sealed class ReferenceOperatorAuthenticator(CapabilityBinding binding) : 
         token.ThrowIfCancellationRequested(); if (!running) throw new IOException("Reference authenticator is stopped");
         if (binding.Parameters.GetValueOrDefault("reply-mode") == "unavailable") throw new IOException("SIMULATION authentication unavailable");
         return Task.FromResult<OperatorIdentity?>(proof == "SIMULATION_ONLY" && binding.Parameters["subjects"].Split(',').Contains(subject)
-            ? new(subject, subject, binding.Target, Wire.Id(), DateTimeOffset.UtcNow, true) : null);
+            ? new(subject, subject, binding.Target, Wire.Id(), DateTimeOffset.UtcNow, true, DateTimeOffset.UtcNow.AddHours(8), subject == "maintenance" ? ["maintenance"] : []) : null);
     }
     public Task ReconnectAsync(CancellationToken token) => StartAsync(token);
     public Task StopAsync(CancellationToken token) { token.ThrowIfCancellationRequested(); running = false; return Task.CompletedTask; }

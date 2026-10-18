@@ -346,7 +346,7 @@
       "ipc.application.parcelflow": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.1.0, )",
+          "Ipc.Application.Contracts": "[1.2.0, )",
           "Ipc.Platform.Storage": "[1.0.0, )"
         }
       },
@@ -379,7 +379,7 @@
       "ipc.reference.protocol": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.1.0, )"
+          "Ipc.Application.Contracts": "[1.2.0, )"
         }
       }
     },

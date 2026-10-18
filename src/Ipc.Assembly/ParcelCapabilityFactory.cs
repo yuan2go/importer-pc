@@ -49,13 +49,14 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
             parameters.TryAdd("peer-root", Path.GetFullPath(Path.Combine(launch.DataRoot, "Simulation", "reference-peers")));
             return b with { Parameters = parameters };
         }
-        return configuration with { Wcs = Resolve(configuration.Wcs), Plc = Resolve(configuration.Plc), Images = configuration.Images is { } i ? i with { Uploader = Resolve(i.Uploader)! } : null };
+        return configuration with { CapabilityInstances = configuration.CapabilityInstances?.Select(x => Resolve(x)!).ToArray(), Wcs = Resolve(configuration.Wcs), Plc = Resolve(configuration.Plc), Images = configuration.Images is { } i ? i with { Uploader = Resolve(i.Uploader)! } : null };
     }
     public void Validate(ParcelConfiguration c)
     {
         RegisterContracts();
         if (c.Mode != RunMode.Simulation) throw new InvalidDataException("Production capabilities require approved SDK/protocol/native prerequisite evidence; reference ports cannot satisfy Production");
-        var bindings = new[] { c.Scale, c.Wcs, c.Plc, c.Login, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
+        var bound = new[] { c.Scale, c.Wcs, c.Plc, c.Login, c.MaintenanceLogin, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
+        var bindings = bound.Concat(c.CapabilityInstances ?? []).DistinctBy(x => x.InstanceId).ToArray();
         if (c.Reader.Driver != "manual" && !c.Reader.Driver.StartsWith("extension:", StringComparison.Ordinal)) throw new InvalidDataException("No approved reader implementation: " + c.Reader.Driver);
         if (c.Extensions is not null)
         {
@@ -77,15 +78,21 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
                     throw new InvalidDataException("Unbound package in application deployment");
         }
         else if (c.Reader.Driver != "manual" || bindings.Any(x => x.Package is not null)) throw new InvalidDataException("Extension binding requires an exact deployment");
-        foreach (var b in bindings)
+        if (bound.Any(x => !x.Enabled)) throw new InvalidDataException("A bound provider must be enabled");
+        if (c.CapabilityInstances is { } instances)
         {
-            if (!Uri.TryCreate(b.Target, UriKind.Absolute, out var target) || target.Scheme != "reference") throw new InvalidDataException("Reference capability target must use explicit reference:// identity");
+            if (instances.Length > 64 || instances.Select(x => x.InstanceId).Distinct().Count() != instances.Length) throw new InvalidDataException("Invalid bounded capability instance inventory");
+            if (bound.Any(b => !instances.Any(i => Wire.Encode(i) == Wire.Encode(b)))) throw new InvalidDataException("Bound provider differs from the same authoritative instance inventory");
+        }
+        foreach (var b in bindings.Concat(c.CapabilityInstances ?? []).DistinctBy(x => x.InstanceId))
+        {
+            if (b.Package is null && (!Uri.TryCreate(b.Target, UriKind.Absolute, out var target) || target.Scheme != "reference")) throw new InvalidDataException("Reference capability target must use explicit reference:// identity");
             if (b.Parameters.TryGetValue("endpoint", out var endpoint) &&
                 (b.Kind is not ("integration" or "plc" or "upload") || !Uri.TryCreate(endpoint, UriKind.Absolute, out var peerUri) || peerUri.Scheme != "http" || peerUri.Host != "127.0.0.1" || peerUri.AbsolutePath != "/parcel-reference/" || peerUri.UserInfo.Length != 0 || peerUri.Query.Length != 0 || peerUri.Fragment.Length != 0))
                 throw new InvalidDataException("Controlled reference HTTP peer must be literal loopback with an exact path");
-            if (b.Kind is "login" or "camera" or "upload")
+            if (b.Package is null && b.Kind is ("login" or "camera" or "upload"))
             {
-                if (b.Package is not null || b.Implementation != "reference-" + b.Kind || b.Version != "1.0.0" || b.Contract != "PARCEL-REFERENCE-v1")
+                if (b.Implementation != "reference-" + b.Kind || b.Version != "1.0.0" || b.Contract != "PARCEL-REFERENCE-v1")
                     throw new InvalidDataException("Optional capability only has an explicit reference implementation; signed real provider binding requires approved policy/contract");
                 var optionalAllowed = b.Kind == "login" ? new[] { "subjects", "reply-mode" } : b.Kind == "camera" ? new[] { "decision", "reply-mode" } : new[] { "decision", "reply-mode", "peer-root", "endpoint" };
                 if (b.Parameters.Keys.Any(x => !optionalAllowed.Contains(x)) ||
@@ -102,6 +109,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
                 var manifest = Store().VerifyInstalled(b.Package).Manifest;
                 var module = manifest.Modules.SingleOrDefault(x => x.Id == b.Module && x.Kind == b.Kind) ?? throw new InvalidDataException("Typed capability/module missing");
                 var errors = ExtensionSchema.Validate(module.Parameters, b.Parameters);
+                if (module.ContractIdentity is not null && module.ContractIdentity != b.Contract) throw new InvalidDataException("Selected binding contract differs from signed provider contract");
+                if (bound.Any(x => x.InstanceId == b.InstanceId)) ValidateRequirements(c, module.Requirements ?? new());
                 if (errors.Length != 0 || manifest.Prerequisites.Length != 0) throw new InvalidDataException("Capability schema/native SDK prerequisite evidence is unavailable: " + string.Join("; ", errors));
                 if (bindings.Count(x => x.Package == b.Package && x.Module == b.Module) > module.MaximumInstances) throw new InvalidDataException("Capability instance quota exceeded");
             }
@@ -116,7 +125,52 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
                     b.Parameters.TryGetValue("slot", out var slot) && (string.IsNullOrWhiteSpace(slot) || slot.Length > 64 || slot.Any(char.IsControl)))
                     throw new InvalidDataException("Invalid reference protocol parameters");
             }
+            if (b.Package is null)
+            {
+                var descriptor = ReferenceCapabilityCatalog.Providers.Single(x => x.Kind == b.Kind);
+                var errors = ExtensionSchema.Validate(descriptor.Parameters, b.Parameters);
+                if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
+                if (bound.Any(x => x.InstanceId == b.InstanceId)) ValidateRequirements(c, descriptor.Requirements);
+            }
         }
+    }
+    static void ValidateRequirements(ParcelConfiguration c, CapabilityRequirements requirements)
+    {
+        if (requirements.MeasuredWeight && c.Weight.Source != WeightSource.Measured)
+            throw new InvalidDataException("Selected protocol requires an actual same-parcel measurement");
+        if (requirements.ImageAddress && (c.Images is null || c.Images.Strategy != UploadStrategy.BeforeMain))
+            throw new InvalidDataException("Selected protocol requires a confirmed image address before main flow");
+    }
+    public CapabilityRequirements Requirements(CapabilityBinding binding) => binding.Package is null
+        ? ReferenceCapabilityCatalog.Providers.Single(x => x.Kind == binding.Kind).Requirements
+        : Store().VerifyInstalled(binding.Package).Manifest.Modules.Single(x => x.Id == binding.Module).Requirements ?? new(Query: true);
+    public CapabilityCatalog Catalog()
+    {
+        RegisterContracts();
+        var settingsFile = Path.Combine(launch.ConfigurationDirectory, "extension-store.json");
+        var installed = store is not null || OperatingSystem.IsWindows() || File.Exists(settingsFile) ? Store().Inventory().Where(x => x.Status == "Installed").ToArray() : [];
+        var descriptors = installed.SelectMany(x => Store().VerifyInstalled(x.Package).Manifest.Modules.Select(m =>
+            new CapabilityDescriptor(m.Kind, "extension:" + x.Package.Id + "/" + m.Id, x.Package.Version, m.ContractIdentity ?? "PARCEL-REFERENCE-v1", m.Parameters, m.Requirements ?? new(), x.Package, m.Id)));
+        return new(ReferenceCapabilityCatalog.Providers.Append(new("observation", "manual", "1.0.0", "CONTROLLED-OBSERVATION-v1", [], new())).Concat(descriptors).ToArray(), installed.Select(x => x.Package.Id + "@" + x.Package.Version).ToArray());
+    }
+    public async Task<BusinessReceipt> InstallAsync(string file, string sha256)
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            var appRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "app"));
+            var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(appRoot, "application-release.json")));
+            ApplicationReleaseValidation.ValidateIfPublished(appRoot, release.ApplicationId, new(release.Views, release.Layouts));
+            MachineRuntimePolicy.RequireProtectedApplicationInstaller(appRoot, release.Files.Keys.Append("application-release.json").ToArray());
+            var start = new System.Diagnostics.ProcessStartInfo(Path.Combine(appRoot, "Ipc.Assembly.exe")) { UseShellExecute = true, Verb = "runas", WorkingDirectory = appRoot };
+            foreach (var value in new[] { "--action", "extension-install", "--mode", "Simulation", "--file", Path.GetFullPath(file), "--sha256", sha256 }) start.ArgumentList.Add(value);
+            using var process = System.Diagnostics.Process.Start(start) ?? throw new IOException("Protected installation helper did not start");
+            await process.WaitForExitAsync().ConfigureAwait(false);
+            if (process.ExitCode != 0) throw new IOException("Installation helper failed; preserve original installation journal");
+            var entry = Store().Inventory().SingleOrDefault(x => x.PackageSha256 == sha256 && x.Status == "Installed") ?? throw new IOException("Installation was not confirmed by the original store registration");
+            return new(entry.Status, entry.Reason, 0);
+        }
+        RegisterContracts(); var installed = Store().Install(file, sha256);
+        return new(installed.Status, installed.Reason, 0);
     }
     public ParcelPorts Create(ParcelConfiguration c)
     {
@@ -142,12 +196,12 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         T Own<T>(CapabilityBinding b, Func<T> builtIn, Func<ExtensionLoading, ExtensionModule, T> external) where T : class, ICapabilityPort
         {
             T value;
-            if (b.Package is null) { value = builtIn(); hashes.Add(b.InstanceId, Wire.FileHash(value.GetType().Assembly.Location)); }
+            if (b.Package is null) { value = builtIn(); hashes.Add(b.InstanceId, BuiltInFingerprint(value.GetType())); }
             else
             {
                 var module = Store().VerifyInstalled(b.Package).Manifest.Modules.Single(x => x.Id == b.Module);
                 value = external(loading!, module);
-                hashes.Add(b.InstanceId, Wire.FileHash(Path.Combine(Store().PackageDirectory(b.Package), module.Assembly)));
+                hashes.Add(b.InstanceId, Wire.Hash(b.Package.ManifestSha256 + ":" + Wire.FileHash(typeof(IParcelApplication).Assembly.Location) + ":" + Wire.FileHash(typeof(ExtensionStore).Assembly.Location)));
             }
             constructed.Add(value); if (value.InstanceId != b.InstanceId) throw new InvalidDataException("Capability returned a mismatched identity"); return value;
         }
@@ -158,10 +212,29 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         var wcs = c.Wcs is { } w ? Own<IWcsPort>(w, () => new ReferenceWcs(w, w.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IWcsExtension>(w.Package!, m, "integration").Create(w)) : null;
         #endif
         var plc = c.Plc is { } p ? Own<IPlcPort>(p, () => new ReferencePlc(p, p.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IPlcExtension>(p.Package!, m, "plc").Create(p)) : null;
-        var login = c.Login is { } a ? Own<IOperatorAuthenticator>(a, () => new ReferenceOperatorAuthenticator(a), (_, _) => throw new InvalidDataException("Reference-only optional capability")) : null;
-        var camera = c.Images is { } i ? Own<IImageCamera>(i.Camera, () => new ReferenceImageCamera(i.Camera, Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId)), (_, _) => throw new InvalidDataException("Reference-only optional capability")) : null;
-        var uploader = c.Images is { } j ? Own<IImageUploader>(j.Uploader, () => new ReferenceImageUploader(j.Uploader, j.Uploader.Parameters.GetValueOrDefault("peer-root", "")), (_, _) => throw new InvalidDataException("Reference-only optional capability")) : null;
-        transferred = true; return new(reader, weight, wcs, plc, hashes, login, camera, uploader);
+        var login = c.Login is { } a ? Own<IOperatorAuthenticator>(a, () => new ReferenceOperatorAuthenticator(a), (l, m) => l.CreateFactory<ILoginExtension>(a.Package!, m, "login").Create(a)) : null;
+        var camera = c.Images is { } i ? Own<IImageCamera>(i.Camera, () => new ReferenceImageCamera(i.Camera, Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId)), (l, m) => l.CreateFactory<ICameraExtension>(i.Camera.Package!, m, "camera").Create(i.Camera, Path.Combine(launch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId))) : null;
+        var uploader = c.Images is { } j ? Own<IImageUploader>(j.Uploader, () => new ReferenceImageUploader(j.Uploader, j.Uploader.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IUploadExtension>(j.Uploader.Package!, m, "upload").Create(j.Uploader)) : null;
+        // Legacy simulation configurations retain their explicit reference maintenance
+        // boundary. New deployments select this authenticator in the same revision.
+        var maintenanceBinding = c.MaintenanceLogin ?? new("login", "reference-login", "1.0.0", "maintenance", "reference://maintenance", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "maintenance" });
+        var maintenance = Own<IOperatorAuthenticator>(maintenanceBinding, () => new ReferenceOperatorAuthenticator(maintenanceBinding),
+            (l, m) => l.CreateFactory<ILoginExtension>(maintenanceBinding.Package!, m, "login").Create(maintenanceBinding));
+        transferred = true; return new(reader, weight, wcs, plc, hashes, login, camera, uploader, maintenance);
+    }
+    static string BuiltInFingerprint(Type implementation)
+    {
+        Dictionary<string, string> closure = [];
+        void Visit(System.Reflection.Assembly assembly)
+        {
+            var name = assembly.GetName().Name!;
+            if (closure.ContainsKey(name)) return;
+            closure.Add(name, Wire.FileHash(assembly.Location));
+            foreach (var dependency in assembly.GetReferencedAssemblies().Where(x => x.Name!.StartsWith("Ipc.", StringComparison.Ordinal)))
+                Visit(System.Reflection.Assembly.Load(dependency));
+        }
+        Visit(implementation.Assembly);
+        return Wire.Hash(string.Join("\n", closure.OrderBy(x => x.Key, StringComparer.Ordinal).Select(x => x.Key + ":" + x.Value)));
     }
     public async ValueTask DisposeAsync()
     {

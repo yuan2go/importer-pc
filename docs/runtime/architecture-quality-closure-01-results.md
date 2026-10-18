@@ -1,6 +1,6 @@
 # WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 · 交付结果
 
-执行main **2126ac2c06a0c352d96afbbf13ec1a719c352738**；收尾重新fetch及核对，main未移动。开发分支codex/architecture-quality-closure-01。主工作区未跟踪资料及其他工作树未修改。文档治理先提交 **e6582a2**；继承PR #23 head **966ec6aa17dfe29b96fc9b9113f3037ba586f6a0**的采集所有者协议，分支合并 **9226eb9**。没有替该PR合并main。业务源码提交 **cad129f4fac2c1969c2bd80985caa2c6a0b785f0**；候选固定 **e1fcff0fdd3434d4bc7d4a50323dd233d822bb15**，该增量仅修正签名旅程显式Resume并澄清迁移说明。后续交付提交仅文档、证据、清单及PR回执。
+执行main **2126ac2c06a0c352d96afbbf13ec1a719c352738**；收尾重新fetch及核对，main未移动。开发分支codex/architecture-quality-closure-01。主工作区未跟踪资料及其他工作树未修改。文档治理先提交 **e6582a2**；继承PR #23 head **966ec6aa17dfe29b96fc9b9113f3037ba586f6a0**的采集所有者协议，分支合并 **9226eb9**。没有替该PR合并main。主要整改提交cad129f；收尾精确实现升级屏障补充于77e9478及**84d6c427681e0bb918817d5623b17d6d1944616b**。先前e1fcff0候选保留形成时身份，不作为最终升级资格；修复后的最终候选由后续candidate-readback记录固定。
 
 **参考工程整改及定向验证PASS；原始PDF归档BLOCKED；Windows实际NOT_RUN；真实SDK/协议/现场BLOCKED。** 不是旧现场迁移、客户批准或工业现场放行。独立审查原REPORT.md/FINDINGS.json身份见[输入登记](../reviews/architecture-quality-audit-01/input-identity.json)；未取得PDF，未转换Markdown冒充原件，也未直接将业务变更写入main。
 
@@ -27,11 +27,11 @@
 
 ## 数据、配置与扩展兼容
 
-Parcel数据库4追加设施；[SQL1～3原字节/checksum核对](evidence/architecture-quality-closure-01/migration-custody.json)全部相同。DB1/2未结迁移前拒绝沿用22；DB3的迁移SQL不改业务JSON，正常重启恢复会追加恢复标记但原请求/目标/合同/payload/hash不变。新备份含同一库的归档JSON、原raw BLOB及永久去重，活跃原图/回执继续完整保有。旧程序拒读新库，升级前完整备份和匹配旧发布必须保留；回退前核对外部副作用，不回滚业务事实。Supply存储5/旧SQL与Inspection业务未重写。
+Parcel数据库4追加设施；[SQL1～3原字节/checksum核对](evidence/architecture-quality-closure-01/migration-custody.json)全部相同。DB1/2/3均在迁移标记升级前拒绝未结。DB3→4会同时改变精确实现资格，必须先由匹配旧发布清偿再备份升级；不能只因SQL追加就放行。即使格式相同，所有来源Start前仍验证未结原件精确实现，缺原实现拒绝新宿主启动，避免跨位混合版本责任。迁移SQL不改已结业务JSON，原请求/目标/合同/payload/hash保持。新备份含同一库的归档JSON、原raw BLOB及永久去重，活跃原图/回执继续完整保有。旧程序拒读新库，升级前完整备份和匹配旧发布必须保留；回退前核对外部副作用，不回滚业务事实。Supply存储5/旧SQL与Inspection业务未重写。
 
 schema3增加可缺省Retention，默认200条工作集高水位/64MiB技术保留，MaximumOperations约束不可归档责任；不指定客户保留天数。长期磁盘历史外迁/删除仍需实际预算和批准，软件不删除Unknown或备份消费者来续跑。
 
-Application.Contracts/能力示例1.6.0继承PR23原采集Retain/Release；观察及兼容集成模板1.0.10。精确合同变化须新包，不覆盖1.4/1.5/1.0.9原包。冻结Debug签名包1.6.0专供实际六类能力/维护旅程；Release的公开DLL不同，另建不可变1.6.1供解包CLI静态/安装/恢复/卸载验证，两者不混用，均TestOnly Simulation。
+Application.Contracts ABI1.6.0、能力示例新不可变1.6.2继承PR23原采集Retain/Release；观察及兼容集成模板1.0.10。精确合同变化须新包，不覆盖1.4/1.5/1.0.9原包。早期冻结Debug1.6.0及Release1.6.1签名证据保持原身份；升级屏障后为最终Debug宿主另建1.6.2、最终Release宿主另建1.6.3，不复用旧精确包。全部是TestOnly Simulation。
 
 包、模块、能力、服务/设备实例及投递位分别读取；安装不等于绑定/激活/健康/业务可用。未知、未来、损坏及本宿主无适用读者的Supply消费者均明确阻卸载。没有伪称跨业务混合旧根的统一消费者读者已交付；混合旧根需匹配维护发布盘点和后续适配。
 
@@ -45,12 +45,12 @@ Application.Contracts/能力示例1.6.0继承PR23原采集Retain/Release；观�
 - 两个portable包各独立解压，逐项核对97条SHA256SUMS。Sportmaster真实进程运行左右位；WcsToPlc两条独立HTTP接收进程旅程分别验证Attached与BeforeMain、登录/同件重量、真实PNG字节、回复丢失、进程重启原查询、显式检查/继续、接收端每请求一次。Attached旅程到参考PhysicalCompleted；BeforeMain旅程到PlcAccepted，未将它当物理完成。
 - 随包指南2项测试PASS。资料校验保留原资产错误集合，不靠豁免降低标准；与继承基线完全相同的267项历史资产错误，新增0；差集见[记录](evidence/architecture-quality-closure-01/archive-error-comparison.json)，校验规则未放宽。
 
-|本地候选，SourceCommit e1fcff0|ZIP SHA-256|
+|早期候选（e1fcff0，已由最终升级屏障候选取代）|ZIP SHA-256|
 |---|---|
 |sportmaster-portable|756473fa8872f14ee74c5a79889717c97719e2dcb45cf392d46d2c70ff3b7e9d|
 |wcs-to-plc-portable|fed9b913da888463145632bd231e44ca12349115dd3e745469a37684ed2508fb|
 
-候选在本机Codex artifacts的ipc-architecture-quality-closure-01目录，未发布为验收Release、未提交二进制或私钥。默认运行`dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>`，完整输入、维护与升级见同包QUALITY-CLOSURE-01.md。DirectPlc真实Application及签名端口已定向验证，本轮没有重复打其portable包或开发延期完整UI。
+候选在本机Codex artifacts的ipc-architecture-quality-closure-01目录，未发布为验收Release、未提交二进制或私钥。默认运行`dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>`，完整输入、维护与升级见同包QUALITY-CLOSURE-01.md。最终候选身份以更新后的readback为准。DirectPlc真实Application及签名端口已定向验证，本轮没有重复打其portable包或开发延期完整UI。
 
 ## 历史和未验证边界
 
@@ -63,4 +63,4 @@ Application.Contracts/能力示例1.6.0继承PR23原采集Retain/Release；观�
 - **BLOCKED：** 厂商SDK、真实身份/WCS/PLC合同/地址/握手、实体采集/测量关联、离场/复位/安全联锁及现场资格。Production仍拒绝缺必需能力/独立资格，不静默模拟。
 - **后续：** 按[Windows与现场清单](validation/architecture-quality-closure-01-windows.md)收集逐项原证据；取得PDF后单独完成原件归档；有混合旧消费者时安排统一维护读者；按现场预算执行历史外迁和长期性能工作包。D/RV和历史批准不改，不填写假批准人。
 
-已创建并读回[PR #24](https://github.com/yuan2go/importer-pc/pull/24)，OPEN，创建时HEAD90123e2，未合并main。回执见[publication-receipt](evidence/architecture-quality-closure-01/publication-receipt.json)。随后仅补本回执/清单，业务及候选仍固定上述身份。
+已创建并读回[PR #24](https://github.com/yuan2go/importer-pc/pull/24)，OPEN，创建时HEAD90123e2，未合并main。回执见[publication-receipt](evidence/architecture-quality-closure-01/publication-receipt.json)。随后收尾复核补齐升级屏障，仍更新同一PR且不合并main；最终源码、候选和读回身份在本报告及readback登记。

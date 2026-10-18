@@ -14,8 +14,20 @@ class ExtensionBuildTests(unittest.TestCase):
         module = dict(Id='camera', Assembly='Provider.dll', EntryType='Provider.Camera', Kind='camera', MaximumInstances=1,
                       ContractIdentity='CAPTURE-v1', Requirements={'Query': True, 'ImageAddress': False})
         builder.validate_module(module)
+        builder.validate_module(dict(module, Assurance=dict(SchemaVersion=1, Simulation=False, ProtocolEvidence='A' * 64), Requirements=dict(PhysicalConfirmation=True, CompletesOnSubmit=True, BusinessAcceptance=True)))
+        with self.assertRaises(ValueError): builder.validate_module(dict(module, Assurance=dict(SchemaVersion=2, Simulation=False, ProtocolEvidence='test')))
+        with self.assertRaises(ValueError): builder.validate_module(dict(module, Requirements=dict(CompletesOnSubmit=True)))
         for patch_value in [{'Requirements': {'Query': 'true'}}, {'Requirements': {'AnyCommand': True}}, {'ContractIdentity': 'x' * 129}, {'Parameters': []}]:
             with self.assertRaises(ValueError): builder.validate_module(dict(module, **patch_value))
+
+    def test_real_protocol_evidence_is_sha256_at_build_time(self):
+        module = dict(Id='source', Assembly='Provider.dll', EntryType='Provider.Source', Kind='observation', MaximumInstances=1)
+        for evidence in ['A' * 64, 'a' * 64, 'aB' * 32]:
+            builder.validate_module(dict(module, Assurance=dict(SchemaVersion=1, Simulation=False, ProtocolEvidence=evidence)))
+        for evidence in ['not-a-hash', 'A' * 63, 'A' * 65, 'g' * 64, 'Ａ' * 64, 'A' * 63 + '\n']:
+            with self.subTest(evidence=evidence), self.assertRaises(ValueError):
+                builder.validate_module(dict(module, Assurance=dict(SchemaVersion=1, Simulation=False, ProtocolEvidence=evidence)))
+        builder.validate_module(dict(module, Assurance=dict(SchemaVersion=1, Simulation=True, ProtocolEvidence='SIMULATION:synthetic protocol')))
 
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix='ipc-build-tool-test-')
@@ -104,6 +116,16 @@ class ExtensionBuildTests(unittest.TestCase):
             builder.build(self.args)
         run.assert_not_called()
         self.assertFalse(self.args.output.exists())
+
+    def test_invalid_production_protocol_never_signs_or_publishes(self):
+        path = self.repo / 'manifest.json'; manifest = json.loads(path.read_text()); manifest['Mode'] = 'Production'; path.write_text(json.dumps(manifest))
+        path = self.repo / 'modules.json'; modules = json.loads(path.read_text()); modules[0]['Assurance'] = dict(SchemaVersion=1, Simulation=False, ProtocolEvidence='not-a-hash'); path.write_text(json.dumps(modules)); self.commit()
+        trust = json.loads(self.trust.read_text()); trust['Publishers'][0]['TestOnly'] = False; self.trust.write_text(json.dumps(trust))
+        with patch.object(builder, 'run', side_effect=self.fake_run) as run, self.assertRaisesRegex(ValueError, 'ProtocolEvidence'):
+            builder.build(self.args)
+        self.assertFalse(any('-sign' in call.args[0] for call in run.call_args_list))
+        self.assertFalse(self.args.output.exists())
+        self.assertFalse(Path(str(self.args.output) + '.identity.json').exists())
 
     def test_build_failure_and_cancellation_leave_no_success_artifact(self):
         for exception in [subprocess.CalledProcessError(1, 'compiler'), KeyboardInterrupt()]:

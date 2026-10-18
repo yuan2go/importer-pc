@@ -11,7 +11,7 @@
      <DataGridCheckBoxColumn Header="绑定业务" Binding="{Binding Bound,UpdateSourceTrigger=PropertyChanged}"/>
      <DataGridTemplateColumn Header="已安装提供者" Width="*"><DataGridTemplateColumn.CellTemplate><DataTemplate><ComboBox ItemsSource="{Binding Providers}" SelectedItem="{Binding Provider,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Implementation"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
      <DataGridTextColumn Header="实例身份" Binding="{Binding InstanceId,UpdateSourceTrigger=PropertyChanged}" Width="150"/>
-     <DataGridTextColumn Header="协议目标" Binding="{Binding Target,UpdateSourceTrigger=PropertyChanged}" Width="220"/>
+     <DataGridTemplateColumn Header="协议目标 / 读码身份" Width="220"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBox Text="{Binding Target,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding IsTargetReadOnly}" ToolTip="{Binding TargetBoundary}"/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
      <DataGridTextColumn Header="合同版本" Binding="{Binding Contract,UpdateSourceTrigger=PropertyChanged}" Width="180"/>
     </DataGrid.Columns></DataGrid>
     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"><StackPanel x:Name="ParameterForm" Margin="8"/></ScrollViewer>
@@ -19,11 +19,12 @@
    <TabItem Header="称重与图像策略"><ScrollViewer><StackPanel Margin="16">
     <TextBlock Text="称重来源 · 配置补全与实测不同；协议强制实测时配置补全拒绝"/><WrapPanel><ComboBox ItemsSource="{Binding WeightSources}" SelectedItem="{Binding DraftWeightSource}" Width="170"/><ComboBox ItemsSource="{Binding WeightUnits}" SelectedItem="{Binding DraftUnit}" Width="90"/><TextBlock Text="精度"/><TextBox Text="{Binding DraftPrecision}" Width="80"/><TextBlock Text="配置值"/><TextBox Text="{Binding DraftConfiguredWeight}" Width="100"/></WrapPanel>
     <WrapPanel><TextBlock Text="本件等待期限(ms)"/><TextBox Text="{Binding DraftWaitMs}" Width="120"/><TextBlock Text="测量新鲜度(ms)"/><TextBox Text="{Binding DraftFreshMs}" Width="120"/></WrapPanel>
+    <TextBlock Text="重量有效期：UntilDispatch持续到提交，AtAssociation仅关联时新鲜；真实现场须有资格证据" TextWrapping="Wrap"/><ComboBox ItemsSource="{Binding WeightValidities}" SelectedItem="{Binding DraftWeightValidity}" Width="240" HorizontalAlignment="Left"/>
     <TextBlock Text="图片上传 · BeforeMain前置成功后进入主链 / Attached独立恢复" Margin="0,16,0,8"/><ComboBox ItemsSource="{Binding UploadStrategies}" SelectedItem="{Binding DraftUploadStrategy}" Width="240" HorizontalAlignment="Left"/>
     <WrapPanel><TextBlock Text="单件最大字节"/><TextBox Text="{Binding DraftImageBytes}" Width="120"/><TextBlock Text="缓存总字节"/><TextBox Text="{Binding DraftTotalBytes}" Width="120"/><TextBlock Text="待处理件数"/><TextBox Text="{Binding DraftPending}" Width="100"/></WrapPanel>
    </StackPanel></ScrollViewer></TabItem>
    <TabItem Header="安装管理"><StackPanel Margin="16"><TextBlock Text="{Binding InstalledPackages}" TextWrapping="Wrap"/><TextBlock Text="离线签名包路径（Windows由受保护提权帮助程序安装后刷新）"/><TextBox Text="{Binding PackagePath,UpdateSourceTrigger=PropertyChanged}"/><TextBlock Text="原包 SHA256"/><TextBox Text="{Binding PackageSha256,UpdateSourceTrigger=PropertyChanged}" FontFamily="Consolas"/><Button Content="验证签名并安装" Click="Install_Click" HorizontalAlignment="Left"/></StackPanel></TabItem>
-   <TabItem Header="异常与恢复"><StackPanel Margin="16"><TextBlock Text="先在记录中选择原作业；未知只查询，不重发。放弃仅限未形成WCS/PLC意图的作业。" TextWrapping="Wrap"/><TextBox Text="{Binding InspectionReason,UpdateSourceTrigger=PropertyChanged}" ToolTip="已检查并移除实体的处置说明"/><WrapPanel><Button Content="继续未尝试附加上传" Click="Upload_Click" IsEnabled="{Binding CanContinueUpload}"/><Button Content="检查后放弃未提交作业" Click="Abandon_Click" IsEnabled="{Binding CanAbandon}"/><Button Content="确认已检查过载现场" Click="Overload_Click"/></WrapPanel></StackPanel></TabItem>
+   <TabItem Header="异常与恢复"><StackPanel Margin="16"><TextBlock Text="先在记录中选择原作业；未知只查询，不重发。处置仅限无未知外部责任且PLC尚未尝试；原WCS接受及原意图保留。" TextWrapping="Wrap"/><TextBox Text="{Binding InspectionReason,UpdateSourceTrigger=PropertyChanged}" ToolTip="已检查并移除实体的处置说明"/><WrapPanel><Button Content="继续未尝试附加上传" Click="Upload_Click" IsEnabled="{Binding CanContinueUpload}"/><Button Content="检查后取消未发送意图" Click="Abandon_Click" IsEnabled="{Binding CanAbandon}"/><Button Content="确认已检查过载现场" Click="Overload_Click"/></WrapPanel></StackPanel></TabItem>
   </TabControl>
   <DockPanel Grid.Row="2"><Button DockPanel.Dock="Right" Content="创建一致备份" Click="Backup_Click"/><TextBox Text="{Binding BackupPath,UpdateSourceTrigger=PropertyChanged}" ToolTip="新备份完整路径；已有文件拒绝覆盖"/></DockPanel>
  </Grid>

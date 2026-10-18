@@ -1,0 +1,14 @@
+EvidenceRoot=/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-996a205bace246beb168e93ec4316eb8
+PASS AC17: sportmaster camera callback accepted into bounded queue
+PASS AC17: sportmaster views share one stable application owner
+PASS AC17: sportmaster owns exactly its actual required phases
+PASS AC17: sportmaster code/weight origin preserved
+PASS AC17: repeat observation callback explicitly queued
+PASS AC17: sportmaster duplicate callback/admission does not create another command
+PASS AC17: sportmaster same code different admitted entity queued
+PASS AC17: sportmaster invalid configuration leaves old authority byte-equivalent
+Unhandled exception. System.Exception: FAIL AC17: sportmaster online backup actually created
+   at Program.<<Main>$>g__Pass|0_0(Boolean condition, String message) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/tests/Ipc.Application.Verification/Program.cs:line 17
+   at Program.<Main>$(String[] args) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/tests/Ipc.Application.Verification/Program.cs:line 56
+   at Program.<Main>$(String[] args) in /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/tests/Ipc.Application.Verification/Program.cs:line 70
+   at Program.<Main>(String[] args)

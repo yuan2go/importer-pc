@@ -8,9 +8,15 @@ using Ipc.Platform;
 using Microsoft.Data.Sqlite;
 
 var workspace = Path.GetFullPath(args.FirstOrDefault() ?? ".");
-var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id()); Directory.CreateDirectory(root);
+var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
+// Backup custody rejects link ancestors; macOS temp is exposed through /var.
+if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
+Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--qualified-capabilities")) { var i = Array.IndexOf(args, "--qualified-capabilities"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2]), true); return; }
 if (args.Contains("--signed-capabilities")) { var i = Array.IndexOf(args, "--signed-capabilities"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
+if (args.Contains("--review-regressions")) { ReviewRegressions.Run(root); return; }
+if (args.Contains("--reliability-closure")) { await ReliabilityClosure.Run(workspace, root); return; }
 if (args.Contains("--backup-health-recovery")) { await BackupHealthRecovery.Run(workspace, root); return; }
 if (args.Contains("--capability-closure")) { await CapabilityClosure.Run(workspace, root); return; }
 if (args.Contains("--site-capabilities")) { await OptionalCapabilities.Run(workspace, root); return; }
@@ -44,6 +50,7 @@ foreach (var id in new[] { "sportmaster", "direct-plc", "wcs-to-plc" })
     Pass(app.EmitReference("parcel-one", "000000123", "reader-event-one"), "repeat observation callback explicitly queued");
     await Task.Delay(100); Pass((await app.SnapshotAsync()).Operations.Length == 1, id + " duplicate callback/admission does not create another command");
     Pass(app.EmitReference("parcel-two", "000000123", "reader-event-two"), id + " same code different admitted entity queued");
+    await Wait(app, x => x.Operations.Length == 2 && x.Operations.First().State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PlcAccepted));
     await Wait(app, x => x.Operations.Length == 2 && x.Operations.All(o => o.State == (id == "sportmaster" ? ParcelState.SlotResolved : ParcelState.PlcAccepted)));
     if (id != "sportmaster")
     {

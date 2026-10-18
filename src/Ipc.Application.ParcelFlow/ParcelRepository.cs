@@ -18,6 +18,9 @@ public sealed class ParcelRepository : IDisposable
         CREATE TABLE parcel_commands(id TEXT PRIMARY KEY,hash TEXT NOT NULL,receipt TEXT NOT NULL);
         CREATE TABLE parcel_receipts(id TEXT PRIMARY KEY,operation TEXT NOT NULL,stage TEXT NOT NULL,request TEXT NOT NULL,source TEXT NOT NULL,state TEXT NOT NULL,raw_hash TEXT);
         CREATE TABLE parcel_measurements(id TEXT PRIMARY KEY,admission TEXT NOT NULL,body TEXT NOT NULL);
+        """), new(2, """
+        CREATE TABLE parcel_semantics(version INTEGER PRIMARY KEY CHECK(version=2),description TEXT NOT NULL);
+        INSERT INTO parcel_semantics VALUES(2,'Independent weight/capture/upload guards; schema2 weight validity; local unsent disposition');
         """)];
     public long Revision { get; private set; }
     public bool Paused { get; private set; }
@@ -27,12 +30,29 @@ public sealed class ParcelRepository : IDisposable
         db = Database.Open(Path.Combine(directory, application + ".db"));
         try
         {
+            RequireLegacySettlement(application);
             Database.Migrate(db, application, migrations);
             using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT revision,paused FROM parcel_meta WHERE id=1";
             using var r = cmd.ExecuteReader(); if (!r.Read()) throw new InvalidDataException("Missing parcel metadata");
             Revision = r.GetInt64(0); Paused = r.GetBoolean(1);
         }
         catch { db.Dispose(); throw; }
+    }
+    void RequireLegacySettlement(string application)
+    {
+        using var exists = db.CreateCommand();
+        exists.CommandText = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='platform_migrations'";
+        if ((long)exists.ExecuteScalar()! == 0) return;
+        using var version = db.CreateCommand(); version.CommandText = "SELECT max(version) FROM platform_migrations WHERE application=$app"; version.Parameters.AddWithValue("$app", application);
+        if (version.ExecuteScalar() is not long legacy || legacy != 1) return;
+        // Do not strand old unresolved originals behind a future-reader marker. They need
+        // their matching old host/implementation; refuse BEFORE adding migration 2.
+        using var pending = db.CreateCommand(); pending.CommandText = "SELECT count(*) FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable')";
+        var unsettled = (long)pending.ExecuteScalar()! > 0 || Load().Any(op =>
+            !(op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted ||
+              application == "sportmaster" && op.State == ParcelState.SlotResolved) ||
+            op.FrozenConfiguration.Images is not null && !op.ImageReleased && !(op.Image is null && op.Capture?.State is StageState.Rejected or StageState.Cancelled && op.Upload is null));
+        if (unsettled) throw new InvalidDataException("LegacyUnsettled: preserve schema1; reconcile originals with the matching old release and create a consistent backup before upgrade");
     }
     public ParcelOperation[] Load()
     {

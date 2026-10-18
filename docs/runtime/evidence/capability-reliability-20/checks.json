@@ -1,0 +1,86 @@
+{
+  "SourceCommit": "a147eac7e4bafb70e16b2c677c2a2933909234d3",
+  "ReferenceOnly": true,
+  "Checks": [
+    {
+      "Name": "build",
+      "Command": "dotnet build tests/Ipc.Application.Verification -m:1 -nr:false",
+      "Result": "PASS",
+      "Log": "logs/ipc20-a147-build.log",
+      "Sha256": "c907094b7a38f4b19b1daa9f7c5d6237e7c3cc7d4a5ece09ce8b8d74b70b2de5"
+    },
+    {
+      "Name": "AC20",
+      "Command": "dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --reliability-closure",
+      "Result": "PASS",
+      "Log": "logs/ipc20-a147-target.log",
+      "Sha256": "d1c9b22dfb0953f62e4d37ce5b85ac701ca2790c49e9b523d7cc0d018f59f5af"
+    },
+    {
+      "Name": "AC19",
+      "Command": "dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --capability-closure",
+      "Result": "PASS",
+      "Log": "logs/ipc20-a147-core19.log",
+      "Sha256": "d3641b6dacd8f74189d97f7eff0d29bd0c4824141e5c4025c78142ca337889fe"
+    },
+    {
+      "Name": "AC17",
+      "Command": "dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll .",
+      "Result": "PASS",
+      "Log": "logs/ipc20-a147-core17.log",
+      "Sha256": "0ac1d846726891d7aeb7d8562963d71545deb4fcadc39e94d9ea07d26d66277c"
+    },
+    {
+      "Name": "baseline",
+      "Command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll . --baseline",
+      "Result": "PASS",
+      "Log": "logs/ipc20-a147-baseline.log",
+      "Sha256": "cb8c34333f38cccc3006fe2d7031b1560013d1430e26c6e2397eb1fe4f596f68"
+    },
+    {
+      "Name": "signed-reference",
+      "Command": "dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --signed-capabilities <new1.3.1.ipcx> <test-trust>",
+      "Result": "PASS",
+      "Log": "logs/ipc20-a147-signed-test.log",
+      "Sha256": "cfdf1be16aaa716d7a8c7ea8328c8948118b264ec7e59545473c5907bffd0920"
+    },
+    {
+      "Name": "signed-schema",
+      "Command": "dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --signed-capabilities <synthetic-schema-probe.ipcx> <test-trust>",
+      "Result": "PASS",
+      "Log": "logs/ipc20-a147-schema-test.log",
+      "Sha256": "d0c42d6e764f605001430a04df53916d00d1e8ae8e4e5b74f617f1385e7bef61"
+    },
+    {
+      "Name": "tools",
+      "Command": "python3 -m unittest discover -s scripts -p test_extension_build.py -v",
+      "Result": "PASS",
+      "Log": "logs/ipc20-a147-extension-tools.log",
+      "Sha256": "e6415d63ef4e237c1943bd40ae28c64c1ced2d134bce19f1816ea82a73fe3337"
+    },
+    {
+      "Name": "guides",
+      "Command": "python3 -m unittest discover -s scripts -p test_release_documents.py -v",
+      "Result": "PASS",
+      "Log": "logs/ipc20-a147-guide-tools.log",
+      "Sha256": "bfdb78c32b8c6a4ad94f651eff184f1597b3860ecd390d5983be7056527cbddd"
+    },
+    {
+      "Name": "wpf-sportmaster",
+      "Command": "dotnet build src/Ipc.Desktop/Ipc.Desktop.csproj -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.lock.json -p:EnableWindowsTargeting=true -m:1 -nr:false",
+      "Result": "PASS_CROSS_BUILD_ONLY",
+      "Log": "logs/ipc20-a147-wpf-sportmaster.log",
+      "Sha256": "c2d669d10d4b9d47ee4cfd2945744ae77e35ed04b5597df3e955935db3250dc2"
+    },
+    {
+      "Name": "wpf-direct-plc",
+      "Command": "dotnet build src/Ipc.Desktop/Ipc.Desktop.csproj -p:Application=DirectPlc -p:NuGetLockFilePath=packages.direct-plc.lock.json -p:EnableWindowsTargeting=true -m:1 -nr:false",
+      "Result": "PASS_CROSS_BUILD_ONLY",
+      "Log": "logs/ipc20-a147-wpf-direct-plc.log",
+      "Sha256": "0f58e5d24a385fdeaf7117e4400eae19da6eccd8e06c6e067a745288a2177251"
+    }
+  ],
+  "Windows": "NOT_RUN",
+  "RealAuthenticationSdkWcsPlcCameraAndField": "BLOCKED",
+  "ProductionReadiness": "NOT_CLAIMED"
+}

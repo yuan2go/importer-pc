@@ -1,0 +1,42 @@
+[
+  {
+    "File": "direct-plc-portable.zip",
+    "Sha256": "87642e119b9163f14e8de5b3cecba03682c6790da8cabb899c35d5f84e1bfcaf",
+    "Bytes": 18090130,
+    "SourceCommit": "a147eac7e4bafb70e16b2c677c2a2933909234d3",
+    "Target": "portable",
+    "Files": 89,
+    "Readback": "PASS",
+    "WindowsExecution": "NOT_RUN"
+  },
+  {
+    "File": "sportmaster-portable.zip",
+    "Sha256": "6c8b23c5aeebfca5f45ed6b3fedbd2649e8841ac61eb49d771c79419f37e5dc2",
+    "Bytes": 18172555,
+    "SourceCommit": "a147eac7e4bafb70e16b2c677c2a2933909234d3",
+    "Target": "portable",
+    "Files": 93,
+    "Readback": "PASS",
+    "WindowsExecution": "NOT_RUN"
+  },
+  {
+    "File": "wcs-to-plc-portable.zip",
+    "Sha256": "de50a29747f6761cd1276a144d7a96947d38b6c0cd1135a3a58d1833b06d63a5",
+    "Bytes": 18175002,
+    "SourceCommit": "a147eac7e4bafb70e16b2c677c2a2933909234d3",
+    "Target": "portable",
+    "Files": 93,
+    "Readback": "PASS",
+    "WindowsExecution": "NOT_RUN"
+  },
+  {
+    "File": "wcs-to-plc-win-x64.zip",
+    "Sha256": "7d1f06af3b266f904a1f72ba01aa1cfe994d006c4cdbec87552f8f443bd5fc19",
+    "Bytes": 103668429,
+    "SourceCommit": "a147eac7e4bafb70e16b2c677c2a2933909234d3",
+    "Target": "win-x64",
+    "Files": 724,
+    "Readback": "PASS",
+    "WindowsExecution": "NOT_RUN"
+  }
+]

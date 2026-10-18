@@ -1,0 +1,31 @@
+  正在确定要还原的项目…
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 472 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 472 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 472 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Platform/Ipc.Platform.csproj (用时 472 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 472 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 472 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.DirectPlc.Desktop/Ipc.Application.DirectPlc.Desktop.csproj (用时 472 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 472 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 9 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 9 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Components/Ipc.Components.csproj (用时 10 毫秒)。
+  已还原 /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 11 毫秒)。
+  Ipc.Platform -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.Contracts/bin/Debug/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Platform.Storage/bin/Debug/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.ParcelFlow/bin/Debug/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.DirectPlc/bin/Debug/net10.0/Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Reference.Protocol/bin/Debug/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Components/bin/Debug/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Drivers/bin/Debug/net10.0/Ipc.Drivers.dll
+  Ipc.Assembly -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Assembly/bin/Debug/net10.0/Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.ParcelFlow.Desktop/bin/Debug/net10.0-windows/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.DirectPlc.Desktop -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Application.DirectPlc.Desktop/bin/Debug/net10.0-windows/Ipc.Application.DirectPlc.Desktop.dll
+  Ipc.Desktop -> /Volumes/DevSSD/Development/Workspace/worktrees/importer-pc-capability-20/src/Ipc.Desktop/bin/Debug/net10.0-windows/Ipc.Desktop.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:02.75

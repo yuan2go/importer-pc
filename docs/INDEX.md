@@ -2,15 +2,15 @@
 
 ## 当前工程入口
 
-2026-10-18执行时远端main为`08286542bbd007433d85be2cb8d129b366b007e0`（PR19已合并）。PR20与PR21正在修复及协调，现行增量与顺序验证见[整合记录](runtime/pr20-21-integration.md)。下方19形成时的OPEN与旧main身份为历史快照，不能作为当前状态；其原字节保留于Git `08286542:docs/INDEX.md`。原D/RV、公开边界及历史失败不改。
+当前工程入口：[PR20/21整合记录](runtime/pr20-21-integration.md)。开工main `08286542`（PR19已合并）；最终运行源码`d5c8b79`，三项评审修复、交叉恢复整合及定向参考验证完成。PR状态和main合并身份读取GitHub及整合回执；旧报告的OPEN与候选身份按形成时读取。
 
-PR #19已合并，当前修复基线main `0828654`，开工无开放PR。当前增量：[备份路径与健康预算修复](work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md)、[修复与验证报告](runtime/backup-health-recovery.md)。[本轮前入口原字节](archive/pre-backup-health-recovery/README.md)。继承工作包：[APPLICATION-CAPABILITY-CLOSURE-19](work-packages/WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19.md)。19开工基线main **08b8067aa6cba6a148252296c7a5b18a27b3be65**（历史）。唯一现行职责/策略设计：[19设计](design/application-capability-19.md)。[19实施结果/能力矩阵](runtime/application-capability-19-results.md)、[配置与客户端运行](runtime/application-capability-19.md)、[证据](runtime/evidence/application-capability-19/README.md)；运行源码c213aad，三portable与三Windows候选已构建/解压，Windows实际执行NOT_RUN。[被替代入口原字节](archive/pre-application-capability-19/README.md)。
+现行增量共同生效：[能力可靠性20设计](design/capability-reliability-20.md)、[20工作包](work-packages/WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20.md)/[运行](runtime/capability-reliability-20.md)/[历史结果](runtime/capability-reliability-20-results.md)，以及[备份健康工作包](work-packages/WP-IPC-BACKUP-HEALTH-RECOVERY.md)/[运行及历史结果](runtime/backup-health-recovery.md)。它们补充[19职责设计](design/application-capability-19.md)，不能互相替代。[19运行](runtime/application-capability-19.md)和旧候选保留原身份。原字节分别见[20前归档](archive/pre-capability-reliability-20/README.md)、[备份修复前归档](archive/pre-backup-health-recovery/README.md)及Git基线。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
 [17实施](runtime/application-convergence-17.md)、[17结果](runtime/application-convergence-17-results.md)、[18实施](runtime/site-capabilities-18.md)、[18结果](runtime/site-capabilities-18-results.md)按其原SHA和形成时范围读取，不作为本轮完成证据。Supply/Inspection兼容机制、D/RV和公开范围继续有效。Windows实际运行NOT_RUN；真实SDK/协议/现场BLOCKED。
 
 ## 代码前必读
 
-1. [AGENTS](../AGENTS.md)、19工作包及设计、17/18实施证据、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
+1. [AGENTS](../AGENTS.md)、20工作包及设计、19工作包及设计、17/18实施证据、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
 2. [框架架构](design/framework.md)、[决策记录](design/framework-decisions.md)、[受控装配与扩展](design/controlled-extensions.md)。职责/事务/身份/生命周期要求继续有效，不能改弱目标消除缺陷。
 3. [14任务](work-packages/WP-IPC-CONFORMANCE-FIX-14.md)、[实施](runtime/conformance-fix-14.md)/证据，以及[13任务](work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)/[复核](runtime/arch-extension-closure-13-recheck.md)、按影响再读[12任务](work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)/[交付](runtime/extension-windows-delivery-12.md)。保留后续批准的后装与Windows后验，勿重复实施已闭子项。
 4. [运行/发布/维护](runtime/operations.md)、[扩展开发安装恢复](extensions/developer-guide.md)，核实际入口、配置、依赖和源码。

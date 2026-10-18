@@ -17,7 +17,15 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
     PackageUseLease? use;
     ResourceLease? devices;
     readonly List<IAsyncDisposable> constructed = [];
+    readonly List<FileStream> prerequisiteHolds = [];
     bool transferred;
+    RunMode mode = RunMode.Simulation;
+    ExtensionTrust? trustPolicy;
+    string? trustFile;
+    DeploymentQualification? qualification;
+    public string? AdmissionFailure(ParcelConfiguration c) => c.Mode == RunMode.Production && (qualification is null || qualification.ExpiresAt <= DateTimeOffset.UtcNow)
+        ? "Production NotReady: exact deployment qualification missing/expired" : null;
+    public bool SimulationIdentity(CapabilityBinding b) => b.Package is null || Store().VerifyInstalled(b.Package).Manifest.Modules.Single(x => x.Id == b.Module).Assurance?.Simulation != false;
     public static void RegisterContracts() => ExtensionPublicContracts.Register(typeof(IPlcExtension).Assembly);
     ExtensionStore Store()
     {
@@ -27,34 +35,50 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         if (OperatingSystem.IsWindows())
         {
             if (File.Exists(settingsFile)) throw new InvalidDataException("Windows reference extension store/trust overrides are forbidden; use provisioned machine policy");
-            paths = MachineRuntimePolicy.ExtensionPaths(RunMode.Simulation);
+            paths = MachineRuntimePolicy.ExtensionPaths(mode);
         }
         else
         {
             var settings = Wire.Decode<ParcelExtensionStoreConfiguration>(File.ReadAllText(settingsFile));
             if (!Path.IsPathFullyQualified(settings.Root) || !Path.IsPathFullyQualified(settings.TrustFile)) throw new InvalidDataException("Explicit independent reference store/trust absolute paths are required");
-            paths = MachineRuntimePolicy.ExtensionPaths(RunMode.Simulation, settings.Root, settings.TrustFile);
+            paths = MachineRuntimePolicy.ExtensionPaths(mode, settings.Root, settings.TrustFile);
         }
         if (new FileInfo(paths.TrustFile).Length > ExtensionPackages.MaximumManifestBytes) throw new InvalidDataException("Trust policy quota exceeded");
         var trust = Wire.Decode<ExtensionTrust>(File.ReadAllText(paths.TrustFile));
         var leases = MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
-        return store = new(paths.Root, trust, RunMode.Simulation, leases);
+        trustPolicy = trust; trustFile = paths.TrustFile;
+        return store = new(paths.Root, trust, mode, leases);
     }
     public ParcelConfiguration Normalize(ParcelConfiguration configuration)
     {
+        if (store is not null && mode != configuration.Mode) throw new InvalidDataException("Store mode belongs to the original runtime");
+        mode = configuration.Mode;
         CapabilityBinding? Resolve(CapabilityBinding? b)
         {
-            if (b is null || b.Kind is "weight" or "login" or "camera" || b.Package is not null || b.Parameters.ContainsKey("endpoint")) return b;
+            if (b is null || b.Implementation != "reference-" + b.Kind || b.Kind is "weight" or "login" or "camera" || b.Package is not null || b.Parameters.ContainsKey("endpoint")) return b;
             var parameters = new Dictionary<string, string>(b.Parameters);
             parameters.TryAdd("peer-root", Path.GetFullPath(Path.Combine(launch.DataRoot, "Simulation", "reference-peers")));
             return b with { Parameters = parameters };
         }
         return configuration with { CapabilityInstances = configuration.CapabilityInstances?.Select(x => Resolve(x)!).ToArray(), Wcs = Resolve(configuration.Wcs), Plc = Resolve(configuration.Plc), Images = configuration.Images is { } i ? i with { Uploader = Resolve(i.Uploader)! } : null };
     }
-    public void Validate(ParcelConfiguration c)
+    public void Validate(ParcelConfiguration c) => _ = ValidateDeployment(c);
+    DeploymentQualification? ValidateDeployment(ParcelConfiguration c)
     {
         RegisterContracts();
-        if (c.Mode != RunMode.Simulation) throw new InvalidDataException("Production capabilities require approved SDK/protocol/native prerequisite evidence; reference ports cannot satisfy Production");
+        if (store is not null && mode != c.Mode) throw new InvalidDataException("Cannot change the extension store mode within a running owner");
+        mode = c.Mode;
+        if (c.Mode == RunMode.Production && (c.Reader.Driver == "manual" || c.MaintenanceLogin is null || c.SchemaVersion != 2))
+            throw new InvalidDataException("Production NotReady: real reader, maintenance authenticator and explicit schema2 policy are required");
+        if (c.Extensions is { } malformed && (malformed.Packages is null || malformed.Instances is null || malformed.Packages.Any(x => x is null) || malformed.Instances.Any(x => x is null)))
+            throw new InvalidDataException("Malformed application extension deployment");
+        DeploymentQualification? candidateQualification = null;
+        if (c.Mode == RunMode.Production || c.Extensions?.Packages.Any(p => Store().VerifyInstalled(p).Manifest.Prerequisites.Length > 0) == true)
+        {
+            _ = Store();
+            var hash = Wire.Hash(Wire.Encode(c));
+            candidateQualification = DeploymentQualifications.Read(Path.Combine(Path.GetDirectoryName(trustFile!)!, "deployment-qualification." + hash + ".json"), trustPolicy!, mode, hash, Wire.FileHash(typeof(IParcelApplication).Assembly.Location));
+        }
         var bound = new[] { c.Scale, c.Wcs, c.Plc, c.Login, c.MaintenanceLogin, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
         var bindings = bound.Concat(c.CapabilityInstances ?? []).DistinctBy(x => x.InstanceId).ToArray();
         if (c.Reader.Driver != "manual" && !c.Reader.Driver.StartsWith("extension:", StringComparison.Ordinal)) throw new InvalidDataException("No approved reader implementation: " + c.Reader.Driver);
@@ -69,9 +93,17 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
             // their own typed bindings below, never counterfeit observation DeviceIds.
             var observationInstances = c.Extensions.Instances.Where(x => c.Reader.Driver == "extension:" + x.Id).ToArray();
             var observationDeployment = c.Extensions with { Instances = observationInstances };
-            var errors = ExtensionDeployment.Validate(observationDeployment, readerBindings, Store());
+            var errors = ExtensionDeployment.Validate(observationDeployment, readerBindings, Store(), p => DeploymentQualifications.RequirePrerequisites(candidateQualification, p));
             if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
             if (c.Extensions.Instances.Length != observationInstances.Length) throw new InvalidDataException("Unbound observation extension instance");
+            foreach (var package in c.Extensions.Packages)
+            {
+                var verified = Store().VerifyInstalled(package);
+                DeploymentQualifications.RequirePrerequisites(candidateQualification, verified);
+                if (c.Mode == RunMode.Production)
+                    foreach (var instance in observationInstances.Where(x => x.PackageId == package.Id))
+                        RequireReal(verified.Manifest.Modules.Single(x => x.Id == instance.ModuleId), candidateQualification);
+            }
             foreach (var package in c.Extensions.Packages)
                 if (!bindings.Any(x => x.Package == package) && !observationInstances.Any(x => x.PackageId == package.Id) &&
                     !c.Extensions.Packages.Any(x => Store().VerifyInstalled(x).Manifest.Dependencies.Contains(package)))
@@ -86,8 +118,9 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         }
         foreach (var b in bindings.Concat(c.CapabilityInstances ?? []).DistinctBy(x => x.InstanceId))
         {
+            if (c.Mode == RunMode.Production && b.Enabled && b.Package is null) throw new InvalidDataException("Production NotReady: reference capability " + b.InstanceId);
             if (b.Package is null && (!Uri.TryCreate(b.Target, UriKind.Absolute, out var target) || target.Scheme != "reference")) throw new InvalidDataException("Reference capability target must use explicit reference:// identity");
-            if (b.Parameters.TryGetValue("endpoint", out var endpoint) &&
+            if (b.Package is null && b.Parameters.TryGetValue("endpoint", out var endpoint) &&
                 (b.Kind is not ("integration" or "plc" or "upload") || !Uri.TryCreate(endpoint, UriKind.Absolute, out var peerUri) || peerUri.Scheme != "http" || peerUri.Host != "127.0.0.1" || peerUri.AbsolutePath != "/parcel-reference/" || peerUri.UserInfo.Length != 0 || peerUri.Query.Length != 0 || peerUri.Fragment.Length != 0))
                 throw new InvalidDataException("Controlled reference HTTP peer must be literal loopback with an exact path");
             if (b.Package is null && b.Kind is ("login" or "camera" or "upload"))
@@ -109,9 +142,11 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
                 var manifest = Store().VerifyInstalled(b.Package).Manifest;
                 var module = manifest.Modules.SingleOrDefault(x => x.Id == b.Module && x.Kind == b.Kind) ?? throw new InvalidDataException("Typed capability/module missing");
                 var errors = ExtensionSchema.Validate(module.Parameters, b.Parameters);
+                if (c.Mode == RunMode.Production && b.Enabled) RequireReal(module, candidateQualification);
+                DeploymentQualifications.RequirePrerequisites(candidateQualification, Store().VerifyInstalled(b.Package));
                 if (module.ContractIdentity is not null && module.ContractIdentity != b.Contract) throw new InvalidDataException("Selected binding contract differs from signed provider contract");
                 if (bound.Any(x => x.InstanceId == b.InstanceId)) ValidateRequirements(c, module.Requirements ?? new(), b.Kind);
-                if (errors.Length != 0 || manifest.Prerequisites.Length != 0) throw new InvalidDataException("Capability schema/native SDK prerequisite evidence is unavailable: " + string.Join("; ", errors));
+                if (errors.Length != 0) throw new InvalidDataException("Capability schema/native SDK prerequisite evidence is unavailable: " + string.Join("; ", errors));
                 if (bindings.Count(x => x.Package == b.Package && x.Module == b.Module) > module.MaximumInstances) throw new InvalidDataException("Capability instance quota exceeded");
             }
             else
@@ -133,9 +168,19 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
                 if (bound.Any(x => x.InstanceId == b.InstanceId)) ValidateRequirements(c, descriptor.Requirements, b.Kind);
             }
         }
+        return candidateQualification;
     }
-    static void ValidateRequirements(ParcelConfiguration c, CapabilityRequirements requirements, string kind)
+    internal static void RequireReal(ExtensionModule module, DeploymentQualification? qualification)
     {
+        if (module.Assurance is not { SchemaVersion: 1, Simulation: false } || module.Requirements is null || string.IsNullOrWhiteSpace(module.ContractIdentity) || !ExtensionSchema.IsHash(module.Assurance.ProtocolEvidence) || qualification?.ApprovalEvidence.Any(x => string.Equals(x.Sha256, module.Assurance.ProtocolEvidence, StringComparison.OrdinalIgnoreCase)) != true)
+            throw new InvalidDataException("Production NotReady: provider must explicitly declare real identity, contract, capability semantics and protocol evidence: " + module.Id);
+    }
+    internal static void ValidateRequirements(ParcelConfiguration c, CapabilityRequirements requirements, string kind)
+    {
+        if (kind is "integration" or "plc" or "camera" or "upload" && !requirements.BusinessAcceptance)
+            throw new InvalidDataException("Application delivery requires authoritative business acceptance for " + kind);
+        if (kind == "plc" && (!requirements.PhysicalConfirmation || !requirements.Query && !requirements.CompletesOnSubmit))
+            throw new InvalidDataException("Application delivery requires physical completion on submit or authoritative original query");
         if (kind is "login" or "weight" or "camera" && (requirements.MeasuredWeight || requirements.ImageAddress) || kind == "upload" && requirements.ImageAddress)
             throw new InvalidDataException("Declared inputs create an impossible pre-capture/authentication or self-upload dependency");
         if (requirements.MeasuredWeight && c.Weight.Source != WeightSource.Measured)
@@ -167,7 +212,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
             ApplicationReleaseValidation.ValidateIfPublished(appRoot, release.ApplicationId, new(release.Views, release.Layouts));
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(appRoot, release.Files.Keys.Append("application-release.json").ToArray());
             var start = new System.Diagnostics.ProcessStartInfo(Path.Combine(appRoot, "Ipc.Assembly.exe")) { UseShellExecute = true, Verb = "runas", WorkingDirectory = appRoot };
-            foreach (var value in new[] { "--action", "extension-install", "--mode", "Simulation", "--file", Path.GetFullPath(file), "--sha256", sha256 }) start.ArgumentList.Add(value);
+            foreach (var value in new[] { "--action", "extension-install", "--mode", mode.ToString(), "--file", Path.GetFullPath(file), "--sha256", sha256 }) start.ArgumentList.Add(value);
             using var process = System.Diagnostics.Process.Start(start) ?? throw new IOException("Protected installation helper did not start");
             await process.WaitForExitAsync().ConfigureAwait(false);
             if (process.ExitCode != 0) throw new IOException("Installation helper failed; preserve original installation journal");
@@ -179,7 +224,13 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
     }
     public ParcelPorts Create(ParcelConfiguration c)
     {
-        Validate(c);
+        qualification = ValidateDeployment(c);
+        if (qualification is { } decision)
+            foreach (var evidence in decision.ApprovalEvidence.Concat(decision.Prerequisites.SelectMany(x => x.Files)).DistinctBy(x => x.Path))
+            {
+                prerequisiteHolds.Add(new FileStream(evidence.Path, FileMode.Open, FileAccess.Read, FileShare.Read));
+                if (!string.Equals(DeploymentQualifications.FileHash(evidence.Path), evidence.Sha256, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Qualified installed prerequisite changed during acquisition");
+            }
         var resourceRoot = MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
         devices = new(resourceRoot, new[] { "reader:" + c.Reader.DeviceId }.Concat(new[] { c.Scale, c.Plc, c.Images?.Camera }.OfType<CapabilityBinding>().Select(x => x.Kind + ":" + x.Target)));
         if (c.Extensions is { Packages.Length: > 0 } deployment)
@@ -222,6 +273,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         var uploader = c.Images is { } j ? Own<IImageUploader>(j.Uploader, () => new ReferenceImageUploader(j.Uploader, j.Uploader.Parameters.GetValueOrDefault("peer-root", "")), (l, m) => l.CreateFactory<IUploadExtension>(j.Uploader.Package!, m, "upload").Create(j.Uploader)) : null;
         // Legacy simulation configurations retain their explicit reference maintenance
         // boundary. New deployments select this authenticator in the same revision.
+        if (c.Mode == RunMode.Production && c.MaintenanceLogin is null) throw new InvalidDataException("Production maintenance authenticator missing");
         var maintenanceBinding = c.MaintenanceLogin ?? new("login", "reference-login", "1.0.0", "maintenance", "reference://maintenance", "PARCEL-REFERENCE-v1", new() { ["subjects"] = "maintenance" });
         var maintenance = Own<IOperatorAuthenticator>(maintenanceBinding, () => new ReferenceOperatorAuthenticator(maintenanceBinding),
             (l, m) => l.CreateFactory<ILoginExtension>(maintenanceBinding.Package!, m, "login").Create(maintenanceBinding));
@@ -246,5 +298,6 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         if (!transferred)
             foreach (var resource in constructed.AsEnumerable().Reverse()) await resource.DisposeAsync().ConfigureAwait(false);
         loading?.Dispose(); use?.Dispose(); devices?.Dispose();
+        foreach (var hold in prerequisiteHolds) hold.Dispose(); prerequisiteHolds.Clear();
     }
 }

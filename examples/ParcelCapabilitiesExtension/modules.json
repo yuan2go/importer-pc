@@ -8,6 +8,11 @@
     "ContractIdentity": "PARCEL-REFERENCE-v1",
     "Requirements": {
       "Query": false
+    },
+    "Assurance": {
+      "SchemaVersion": 1,
+      "Simulation": true,
+      "ProtocolEvidence": "PARCEL-REFERENCE-v1"
     }
   },
   {
@@ -20,6 +25,11 @@
     "Requirements": {
       "Query": true,
       "PhysicalConfirmation": true
+    },
+    "Assurance": {
+      "SchemaVersion": 1,
+      "Simulation": true,
+      "ProtocolEvidence": "PARCEL-REFERENCE-v1"
     }
   },
   {
@@ -31,6 +41,11 @@
     "ContractIdentity": "PARCEL-REFERENCE-v1",
     "Requirements": {
       "Query": true
+    },
+    "Assurance": {
+      "SchemaVersion": 1,
+      "Simulation": true,
+      "ProtocolEvidence": "PARCEL-REFERENCE-v1"
     }
   },
   {
@@ -42,6 +57,11 @@
     "ContractIdentity": "PARCEL-REFERENCE-v1",
     "Requirements": {
       "Query": false
+    },
+    "Assurance": {
+      "SchemaVersion": 1,
+      "Simulation": true,
+      "ProtocolEvidence": "PARCEL-REFERENCE-v1"
     }
   },
   {
@@ -53,6 +73,11 @@
     "ContractIdentity": "PARCEL-REFERENCE-v1",
     "Requirements": {
       "Query": true
+    },
+    "Assurance": {
+      "SchemaVersion": 1,
+      "Simulation": true,
+      "ProtocolEvidence": "PARCEL-REFERENCE-v1"
     }
   },
   {
@@ -64,6 +89,11 @@
     "ContractIdentity": "PARCEL-REFERENCE-v1",
     "Requirements": {
       "Query": true
+    },
+    "Assurance": {
+      "SchemaVersion": 1,
+      "Simulation": true,
+      "ProtocolEvidence": "PARCEL-REFERENCE-v1"
     }
   },
   {
@@ -77,6 +107,11 @@
       "Query": true,
       "ImageAddress": true,
       "MeasuredWeight": true
+    },
+    "Assurance": {
+      "SchemaVersion": 1,
+      "Simulation": true,
+      "ProtocolEvidence": "PARCEL-REFERENCE-v1"
     }
   }
 ]

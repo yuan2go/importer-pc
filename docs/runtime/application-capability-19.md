@@ -1,3 +1,5 @@
+> 20可靠性/部署增量已生效：[现行指南](../runtime/capability-reliability-20.md)及[设计](../design/capability-reliability-20.md)。下文19阶段策略/版本/保守恢复说明按形成时范围保留；冲突处以20为准，原字节已归档。
+
 # 三Application交付与能力运行 · 19
 
 当前实施基线main `08b8067aa6cba6a148252296c7a5b18a27b3be65`，PR18已合并。[现行设计](../design/application-capability-19.md)及[工作包](../work-packages/WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19.md)为职责/策略唯一入口。17/18报告保持原SHA和历史结果。候选SourceCommit和全文件身份以随包application-release.json、ASSEMBLY.json、SHA256SUMS为准；验收及剩余现场接入仍按分层证据登记。

@@ -76,7 +76,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         }
         catch (Exception ex) when (ex is InvalidDataException or InvalidOperationException)
         { _ = ex; /* Failure remains in the authoritative envelope; previous Effective is usable. */ }
-        if (Effective.Mode == RunMode.Production) throw new InvalidDataException("Production NotReady: approved reader/scale/PLC/WCS contracts, native SDK evidence and control authority are absent");
         try
         {
             factory.Validate(Effective);
@@ -182,9 +181,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         { repository!.Commit(null, "MeasurementRejected", "Bound scale health is not confirmed"); return; }
         var reason = WeightRules.Invalid(m, op, op.FrozenConfiguration.Scale?.Target ?? "", DateTimeOffset.UtcNow);
         if (reason is not null) { repository!.Commit(null, "MeasurementRejected", reason); return; }
-        if (repository!.HasMeasurement(m) || op.Weight is not null || op.State is ParcelState.WeightTimedOut or ParcelState.Abandoned ||
+        if (repository!.HasMeasurement(m) || !WeightPending(op) || op.State == ParcelState.WeightTimedOut ||
             DateTimeOffset.UtcNow > op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs)) return;
-        op = op with { Weight = new(m.Value, m.Unit, m.Precision, WeightSource.Measured, m.Id, m.DeviceId + ":" + m.Quality, m.MeasuredAt), State = ParcelState.Prepared, Reason = null };
+        op = op with { Weight = new(m.Value, m.Unit, m.Precision, WeightSource.Measured, m.Id, m.DeviceId + ":" + m.Quality, m.MeasuredAt), State = op.Capture is { State: StageState.Unknown or StageState.Conflict } ? op.State : ParcelState.Prepared, Reason = op.Capture is { State: StageState.Unknown or StageState.Conflict } ? op.Reason : null };
         Boundary?.Invoke("BeforeWeightAssociation");
         repository!.Commit(op, "WeightAssociated", "Measurement deduplication and parcel association committed in one transaction", measurement: m);
         operations[op.Id] = op;
@@ -193,9 +192,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null)
     { repository!.Commit(op, eventName, detail, occurrence: occurrence); operations[op.Id] = op; journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision }); }
     static bool NeedsReconciliation(ParcelOperation op) => op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.Blocked or ParcelState.WeightTimedOut ||
-        op.FrozenConfiguration.Images?.Strategy != UploadStrategy.Attached && op.State == ParcelState.ImageUnknown;
-    bool IsSettled(ParcelOperation op) => (definition.MainSettled(op) || op.State is ParcelState.ImageRejected or ParcelState.Abandoned) &&
-        (op.FrozenConfiguration.Images is null || op.ImageReleased || op.Upload?.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled || op.Capture?.State is StageState.Rejected or StageState.Cancelled);
+        op.Capture?.State is StageState.Unknown or StageState.Conflict ||
+        op.FrozenConfiguration.Images?.Strategy != UploadStrategy.Attached && op.Upload?.State is StageState.Unknown or StageState.Conflict;
+    bool MainTerminated(ParcelOperation op) => definition.MainSettled(op) || op.State is ParcelState.ImageRejected or ParcelState.Abandoned;
+    bool WeightPending(ParcelOperation op) => op.WeightPolicy.Source == WeightSource.Measured && op.Weight is null && !MainTerminated(op);
+    bool WeightExpired(ParcelOperation op) => WeightPending(op) && DateTimeOffset.UtcNow > op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs);
+    bool IsSettled(ParcelOperation op) => MainTerminated(op) &&
+        (op.FrozenConfiguration.Images is null || op.ImageReleased);
     FrozenRequest Prepare(ParcelOperation op, string stage, CapabilityBinding binding, string? slot, string? wcsRequest)
     {
         var payload = Wire.Encode(new ParcelPayload(op.ParcelCode, op.AdmissionId, op.Weight, slot, wcsRequest, op.Operator, op.Image, op.Acquisition));
@@ -205,13 +208,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     async Task AdvanceAsync(ParcelOperation op)
     {
         op = operations[op.Id];
-        if (!CanDispatch(op) || !WeightReady(op)) return;
+        if (!CanDispatch(op) || MainTerminated(op)) return;
         if (op.FrozenConfiguration.Images is not null)
         {
             op = await AdvanceImagesAsync(op).ConfigureAwait(false);
-            if (op.FrozenConfiguration.Images!.Strategy == UploadStrategy.BeforeMain && op.Upload?.State != StageState.Accepted) return;
+            if (op.Capture?.State != StageState.Accepted || op.FrozenConfiguration.Images!.Strategy == UploadStrategy.BeforeMain && op.Upload?.State != StageState.Accepted) return;
         }
-        await definition.AdvanceAsync(this, operations[op.Id]).ConfigureAwait(false);
+        if (CanDispatch(operations[op.Id]) && WeightReady(operations[op.Id])) await definition.AdvanceAsync(this, operations[op.Id]).ConfigureAwait(false);
     }
     ParcelOperation IParcelExecution.Current(string id) => operations[id];
     ParcelOperation IParcelExecution.PrepareWcs(ParcelOperation op) => op with

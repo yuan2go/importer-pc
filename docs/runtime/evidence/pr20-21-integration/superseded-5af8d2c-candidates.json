@@ -1,0 +1,20 @@
+[
+  {
+    "Application": "sportmaster",
+    "Sha256": "5b0ed91b2f48d336b62653bed8cb0b314be0c170d205da1f133453001ea886a2",
+    "SourceCommit": "5af8d2ccfd6e2433657690ea89f034696c922ce9",
+    "Bytes": 18178998
+  },
+  {
+    "Application": "direct-plc",
+    "Sha256": "af211d5ff51ef63fc169f633d8fd5a946cd7810aafb5cf69f442b925267b7d63",
+    "SourceCommit": "5af8d2ccfd6e2433657690ea89f034696c922ce9",
+    "Bytes": 18096547
+  },
+  {
+    "Application": "wcs-to-plc",
+    "Sha256": "ee02be6915d97b22c198538e9b9f8ff81e9c108664b71c654ca315cb5733f6e5",
+    "SourceCommit": "5af8d2ccfd6e2433657690ea89f034696c922ce9",
+    "Bytes": 18181430
+  }
+]

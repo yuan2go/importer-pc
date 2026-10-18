@@ -60,6 +60,8 @@ public static class ExtensionPackages
             m.Dependencies.Select(x => x.Id).Distinct().Count() != m.Dependencies.Length ||
             m.Modules.Any(x => x is null || !ExtensionSchema.IsId(x.Id) || x.Kind is not ("observation" or "integration" or "weight" or "plc" or "login" or "camera" or "upload") ||
                 x.ContractIdentity is not null && (string.IsNullOrWhiteSpace(x.ContractIdentity) || x.ContractIdentity.Length > 128 || x.ContractIdentity.Any(char.IsControl)) ||
+                x.Assurance is { } a && (a.SchemaVersion != 1 || string.IsNullOrWhiteSpace(a.ProtocolEvidence) || a.ProtocolEvidence.Length > 256 || a.ProtocolEvidence.Any(char.IsControl) || !a.Simulation && !ExtensionSchema.IsHash(a.ProtocolEvidence)) ||
+                x.Requirements is { CompletesOnSubmit: true, PhysicalConfirmation: false } ||
                 x.MaximumInstances is < 1 or > 32 || string.IsNullOrWhiteSpace(x.EntryType) || x.EntryType.Length > 256 ||
                 !m.Files.Any(f => f.Path == x.Assembly && f.Path.EndsWith(".dll", StringComparison.Ordinal)) || ExtensionSchema.ValidateDefinition(x.Parameters).Length != 0) ||
             m.Modules.Select(x => x.Id).Distinct().Count() != m.Modules.Length)

@@ -89,6 +89,16 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
         RejectLinks(fixedRoot); RequireProtectedAcl(new DirectoryInfo(fixedRoot), policy.RuntimeAccountSid);
         return fixedRoot;
     }
+    public static void RequireProtectedEvidence(string path)
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        RejectLinks(path); RequireProtectedAcl(new FileInfo(path), null);
+        var roots = new[] { Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) };
+        var boundary = roots.FirstOrDefault(root => Path.GetFullPath(path).StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+            ?? throw new UnauthorizedAccessException("Qualification evidence requires a maintenance protected Program Files or ProgramData location");
+        for (var current = new FileInfo(path).Directory; current is not null && !string.Equals(current.FullName, boundary, StringComparison.OrdinalIgnoreCase); current = current.Parent)
+        { RejectLinks(current.FullName); RequireProtectedAcl(current, null); }
+    }
     static void RejectLinks(string path)
     {
         if ((File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0)

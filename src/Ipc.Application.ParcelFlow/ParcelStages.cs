@@ -29,7 +29,7 @@ public sealed partial class ParcelRuntime
         op = operations[op.Id];
         if (!health.Ready || health.ValidUntil <= DateTimeOffset.UtcNow || health.ConfirmedAt > DateTimeOffset.UtcNow)
         { op = SetStage(op, kind, stage with { Failure = "Original capability is not healthy" }) with { State = attached ? op.State : ParcelState.Blocked, Reason = attached ? op.Reason : "Original capability is not healthy; reconnect and reconcile" }; Save(op, "CapabilityNotReady", "Original capability is not healthy"); return op; }
-        if (!query && ((!attached && !CanDispatch(op) || attached && (stopping.IsCancellationRequested || repository!.Paused || failure is not null)) ||
+        if (!query && ((!attached && !CanDispatch(op) || attached && !CanSendUpload(op)) ||
             !PredecessorsAccepted(op, kind) || (kind is ParcelStage.Wcs or ParcelStage.Plc || kind == ParcelStage.Upload && factory.Requirements(stage.Request.Binding).MeasuredWeight) && !WeightReady(op))) return op;
         if (stopping.IsCancellationRequested) return op;
         if (!query)
@@ -93,6 +93,7 @@ public sealed partial class ParcelRuntime
         var inconsistent = reply.RequestId != stage.Request.Id || reply.PayloadHash != stage.Request.PayloadHash ||
             !Guid.TryParseExact(reply.Id, "N", out _) || string.IsNullOrWhiteSpace(reply.Evidence) || reply.At < stage.Request.PreparedAt || reply.At > DateTimeOffset.UtcNow.AddSeconds(1) ||
             reply.BusinessAccepted is not null && (!reply.TransportSucceeded || reply.ProtocolAcknowledged != true) ||
+            kind == ParcelStage.Plc && factory.Requirements(stage.Request.Binding) is { Query: false, CompletesOnSubmit: true } && reply.BusinessAccepted == true && reply.PhysicalCompleted != true ||
             reply.PhysicalCompleted == true && (reply.BusinessAccepted != true || !factory.Requirements(stage.Request.Binding).PhysicalConfirmation) ||
             wcs && reply.BusinessAccepted == true && (string.IsNullOrWhiteSpace(reply.Slot) || reply.Slot.Length > 64 || reply.Slot.Any(char.IsControl)) ||
             prior is not null && Wire.Encode(prior) != Wire.Encode(reply) ||
@@ -126,6 +127,11 @@ public sealed partial class ParcelRuntime
             foreach (var kind in Enum.GetValues<ParcelStage>())
             {
                 var stage = GetStage(op, kind);
+                if (stage is { State: StageState.Prepared, Attempts: 0 })
+                {
+                    repository!.Commit(null, "RestartPrepared", "Never attempted original intention retained for explicit continuation or local disposition", paused: true);
+                    continue;
+                }
                 if (stage?.State is StageState.Prepared or StageState.Dispatching)
                     op = SetStage(op, kind, stage with { State = StageState.Unknown, Failure = "Interrupted startup: reconcile the original identity" }) with
                         { State = kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached ? op.State : UnknownState(kind), Reason = "Restart does not authorize automatic dispatch or replay" };

@@ -83,7 +83,7 @@ public sealed class ExtensionLoading(ExtensionStore store) : IDisposable
 
 public static class ExtensionDeployment
 {
-    public static string[] Validate(DeploymentExtensions? deployment, DeviceBinding[] bindings, ExtensionStore? store)
+    public static string[] Validate(DeploymentExtensions? deployment, DeviceBinding[] bindings, ExtensionStore? store, Action<VerifiedExtension>? validatePrerequisites = null)
     {
         List<string> errors = [];
         var used = bindings.Where(x => x.Driver.StartsWith("extension:", StringComparison.Ordinal)).ToArray();
@@ -111,7 +111,11 @@ public static class ExtensionDeployment
         foreach (var p in packages.Values)
         {
             if (!Visit(p.Manifest.Id)) errors.Add("Missing/conflicting/cyclic dependency: " + p.Manifest.Id);
-            if (p.Manifest.Prerequisites.Length > 0) errors.Add("SDK/system-driver prerequisite requires approved evidence resolver: " + p.Manifest.Id);
+            if (p.Manifest.Prerequisites.Length > 0)
+            {
+                if (validatePrerequisites is null) errors.Add("SDK/system-driver prerequisite requires approved evidence resolver: " + p.Manifest.Id);
+                else try { validatePrerequisites(p); } catch (InvalidDataException ex) { errors.Add(ex.Message); }
+            }
         }
         foreach (var i in deployment.Instances)
         {

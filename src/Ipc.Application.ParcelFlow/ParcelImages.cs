@@ -17,17 +17,17 @@ public sealed partial class ParcelRuntime
     { ParcelStage.Wcs => ParcelState.WcsUnknown, ParcelStage.Plc => ParcelState.PlcUnknown, _ => ParcelState.ImageUnknown };
     static ParcelStage ParseStage(string stage) => stage switch
     { "image-capture" => ParcelStage.Capture, "image-upload" => ParcelStage.Upload, "wcs-slot" => ParcelStage.Wcs, "plc-submit" => ParcelStage.Plc, _ => throw new InvalidDataException("Unknown original stage") };
-    bool CanDispatch(ParcelOperation op) => !stopping.IsCancellationRequested && failure is null && overload == 0 && !repository!.Paused &&
+    bool CanDispatch(ParcelOperation op) => !WeightExpired(op) && factory.AdmissionFailure(Effective) is null && !stopping.IsCancellationRequested && failure is null && overload == 0 && !repository!.Paused &&
         SessionValid && (Effective.Login is null || currentOperator?.Subject == op.Operator?.Subject && currentOperator is not null) &&
         !repository.PendingReceipts().Any(x => x.Operation == op.Id && !(op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Stage == "image-upload")) &&
         Enum.GetValues<ParcelStage>().Where(kind => !(kind == ParcelStage.Upload && op.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached))
             .All(kind => GetStage(op, kind)?.State is not (StageState.Unknown or StageState.Conflict or StageState.Dispatching)) &&
-        op.State is not (ParcelState.WeightTimedOut or ParcelState.Abandoned);
+        op.State is not (ParcelState.WeightTimedOut or ParcelState.Abandoned or ParcelState.ImageRejected);
     bool PredecessorsAccepted(ParcelOperation op, ParcelStage kind) => kind switch
     {
         ParcelStage.Capture => true,
         ParcelStage.Upload => op.Capture?.State == StageState.Accepted,
-        _ => (op.FrozenConfiguration.Images is null || op.FrozenConfiguration.Images.Strategy == UploadStrategy.Attached || op.Upload?.State == StageState.Accepted) && definition.PredecessorsAccepted(op, kind)
+        _ => (op.FrozenConfiguration.Images is null || op.Capture?.State == StageState.Accepted && (op.FrozenConfiguration.Images.Strategy == UploadStrategy.Attached || op.Upload?.State == StageState.Accepted)) && definition.PredecessorsAccepted(op, kind)
     };
     async Task<ParcelOperation> CaptureOriginalAsync(ParcelOperation op)
     {
@@ -49,7 +49,7 @@ public sealed partial class ParcelRuntime
     {
         op = await CaptureOriginalAsync(op).ConfigureAwait(false);
         if (op.Capture?.State != StageState.Accepted) return op;
-        if (op.FrozenConfiguration.Images!.Strategy == UploadStrategy.BeforeMain && op.Upload is { State: StageState.Prepared, Attempts: 0 } && CanDispatch(op))
+        if (WeightReady(op) && op.FrozenConfiguration.Images!.Strategy == UploadStrategy.BeforeMain && op.Upload is { State: StageState.Prepared, Attempts: 0 } && CanDispatch(op))
             op = await ExecuteStageAsync(op, ParcelStage.Upload, false).ConfigureAwait(false);
         return operations[op.Id];
     }
@@ -107,19 +107,24 @@ public sealed partial class ParcelRuntime
     bool ImageCapacityAvailable()
     {
         if (Effective.Images is not { } policy) return true;
-        var pending = operations.Values.Where(x => x.FrozenConfiguration.Images is not null && !x.ImageReleased && x.Capture?.State != StageState.Rejected).ToArray();
+        var pending = operations.Values.Where(x => x.FrozenConfiguration.Images is not null && !x.ImageReleased).ToArray();
         return pending.Length < policy.MaximumPending && pending.Sum(x => (long)(x.Image?.Length ?? x.FrozenConfiguration.Images!.MaximumBytes)) + policy.MaximumBytes <= policy.TotalBytes;
     }
     void RecoverImageCleanup()
     {
+        ReleaseCompletedImages();
         foreach (var op in operations.Values.Where(x => x.ImageReleased && x.Image is not null)) DeleteImage(op);
     }
     void ReleaseCompletedImages()
     {
-        foreach (var original in operations.Values.Where(x => x.Image is not null && !x.ImageReleased && x.Upload?.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled).ToArray())
+        foreach (var original in operations.Values.Where(x => x.FrozenConfiguration.Images is not null && !x.ImageReleased &&
+            (x.Upload?.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled ||
+             x.Image is null && (x.Capture?.State is StageState.Rejected or StageState.Cancelled || x.Capture is null && x.State == ParcelState.Abandoned))).ToArray())
         {
-            if (activeStages.Any(x => x.StartsWith(original.Id + ":", StringComparison.Ordinal)) || repository!.PendingReceipts().Any(x => x.Operation == original.Id)) continue;
-            var op = original with { ImageReleased = true }; Save(op, "ImageReleased", "Upload terminal; durable release precedes temporary byte deletion"); Boundary?.Invoke("AfterImageReleaseDurable"); DeleteImage(op);
+            if (original.Capture?.State is StageState.Unknown or StageState.Conflict or StageState.Dispatching ||
+                original.Upload?.State is StageState.Unknown or StageState.Conflict or StageState.Dispatching ||
+                activeStages.Any(x => x.StartsWith(original.Id + ":", StringComparison.Ordinal)) || repository!.PendingReceipts().Any(x => x.Operation == original.Id)) continue;
+            var op = original with { ImageReleased = true }; Save(op, "ImageReleased", "No remaining image responsibility; durable release precedes temporary byte deletion"); Boundary?.Invoke("AfterImageReleaseDurable"); if (op.Image is not null) DeleteImage(op);
         }
     }
     void DeleteImage(ParcelOperation op)

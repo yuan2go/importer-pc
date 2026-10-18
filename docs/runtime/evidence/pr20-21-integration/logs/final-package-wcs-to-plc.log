@@ -1,0 +1,25 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 589 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/src/Ipc.Components/Ipc.Components.csproj (用时 589 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 589 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 589 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 589 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 589 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 589 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 589 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 4 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 5 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 6 毫秒)。
+  Ipc.Platform -> /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/.artifacts/pr20-21/final/candidates/wcs-to-plc/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/.artifacts/pr20-21/final/candidates/wcs-to-plc/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/.artifacts/pr20-21/final/candidates/wcs-to-plc/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/.artifacts/pr20-21/final/candidates/wcs-to-plc/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/.artifacts/pr20-21/final/candidates/wcs-to-plc/build-intermediates/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/.artifacts/pr20-21/final/candidates/wcs-to-plc/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/.artifacts/pr20-21/final/candidates/wcs-to-plc/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/.artifacts/pr20-21/final/candidates/wcs-to-plc/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/.artifacts/pr20-21/final/candidates/wcs-to-plc/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/.artifacts/pr20-21/final/candidates/wcs-to-plc/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/.artifacts/pr20-21/final/candidates/wcs-to-plc/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> /Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/.artifacts/pr20-21/final/candidates/wcs-to-plc/app/
+{"Package": "/Users/yuan/.codex/worktrees/pr20-21-integration/importer-pc/.artifacts/pr20-21/final/candidates/wcs-to-plc.zip", "Sha256": "85b3b4947c42b92d3c07e0e7871ff265a469c46e69567f92488cec259affc992", "SourceCommit": "d5c8b7981ba8e4c8b9daf22df1cb686243815f3b", "Application": "wcs-to-plc", "Target": "portable"}

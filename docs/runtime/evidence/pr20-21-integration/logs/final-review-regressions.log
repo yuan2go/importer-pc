@@ -1,0 +1,30 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-e1499c8233564807949312fd492b2e4f
+PASS AC20 qualification: independently signed exact evidence accepted by verifier (synthetic test only)
+PASS AC20 qualification: lower/mixed-case approval and prerequisite hashes verify without rewriting signed bytes
+PASS AC20 qualification: changed bytes rejected with lower/mixed-case signed hashes
+PASS AC20 qualification: lower/mixed-case approval and prerequisite hashes verify without rewriting signed bytes
+PASS AC20 qualification: changed bytes rejected with lower/mixed-case signed hashes
+PASS AC20 qualification: real provider evidence matches lowercase approved hash without changing package or signed decision
+PASS AC20 qualification: unapproved protocol hash still rejected by Production guard
+PASS AC20 qualification: test signer cannot qualify Production
+PASS AC20 qualification: changed configuration cannot reuse qualification
+PASS AC20 qualification: expired qualification rejected
+PASS AC20 qualification: changed prerequisite/evidence bytes rejected
+PASS AC20 qualification: installed prerequisite proof binds exact package and declaration
+PASS AC20 qualification: missing SDK proof rejected without permanent blanket SDK denial
+PASS review: signed qualification evidence casing
+PASS review package: Production real evidence length=64 valid=True
+PASS review package: Production real evidence length=64 valid=True
+PASS review package: Production real evidence length=64 valid=True
+PASS review package: Production real evidence length=10 valid=False
+PASS review package: Production real evidence length=63 valid=False
+PASS review package: Production real evidence length=65 valid=False
+PASS review package: Production real evidence length=64 valid=False
+PASS review package: Simulation real evidence length=64 valid=True
+PASS review package: Simulation real evidence length=64 valid=True
+PASS review package: Simulation real evidence length=64 valid=True
+PASS review package: Simulation real evidence length=10 valid=False
+PASS review package: Simulation real evidence length=63 valid=False
+PASS review package: Simulation real evidence length=65 valid=False
+PASS review package: Simulation real evidence length=64 valid=False
+PASS review: signed package protocol evidence

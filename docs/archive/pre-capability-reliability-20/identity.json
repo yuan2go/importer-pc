@@ -1,0 +1,41 @@
+{
+  "SourceCommit": "08286542bbd007433d85be2cb8d129b366b007e0",
+  "Files": [
+    {
+      "path": "README.md",
+      "sha256": "afdc9863855b04d787af70bbdfd8500505c10f6fbd502aa55a154e3cbfef63ab"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "sha256": "913409ed32274f5df492eb802f2a6e9de7caa796e62d8679c6a73f4ded49c1fe"
+    },
+    {
+      "path": "docs/design/framework.md",
+      "sha256": "dd16d86401d17118fb82661c046b5e147e745e3dc9b3da9c9b9f94caa3e535b9"
+    },
+    {
+      "path": "docs/design/framework-decisions.md",
+      "sha256": "1f5ab2c7add85e27661cfb5a091377dc51a210b527aeeabb3298f9ef5a7bcd6c"
+    },
+    {
+      "path": "docs/design/controlled-extensions.md",
+      "sha256": "b1bde55940d966c1ffb11094978b9975807e6b26ec2f3099fa345a31801e53a8"
+    },
+    {
+      "path": "docs/design/application-capability-19.md",
+      "sha256": "e2d078aee04fedad0789d7bbf01712d8858297126ebead42ed0885973318045f"
+    },
+    {
+      "path": "docs/runtime/application-capability-19.md",
+      "sha256": "725471af69558714d749623cf260788d5570d6887a4a56a607befbd6c72a5dc1"
+    },
+    {
+      "path": "docs/extensions/developer-guide.md",
+      "sha256": "d36eb2210368b59114ef05a544915dff757b92af6543e99617c2bc8326037dec"
+    },
+    {
+      "path": "docs/manifest.json",
+      "sha256": "af12af26d7c459af6c94d3430b74ea0b0d3bf1fd397ebe6ddf3be9f597111c08"
+    }
+  ]
+}

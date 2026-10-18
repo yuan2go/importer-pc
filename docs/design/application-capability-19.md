@@ -1,3 +1,5 @@
+> 20可靠性/部署增量已生效：[现行指南](../runtime/capability-reliability-20.md)及[设计](../design/capability-reliability-20.md)。下文19阶段策略/版本/保守恢复说明按形成时范围保留；冲突处以20为准，原字节已归档。
+
 # Application及公共能力现行设计 · 19
 
 基线08b8067aa6cba6a148252296c7a5b18a27b3be65；用户19授权为本轮目标。本文取代17/18的当前任务指导、共同布尔分派及“仅前置上传”阶段限制。原报告和已发布字节不修改；[原入口](../archive/pre-application-capability-19/README.md)。

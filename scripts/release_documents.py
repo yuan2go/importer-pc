@@ -4,7 +4,9 @@ import re
 from urllib.parse import quote, unquote, urlsplit
 
 GUIDES = {
-    'docs/runtime/application-capability-19.md': 'APPLICATIONS.md',
+    'docs/runtime/capability-reliability-20.md': 'APPLICATIONS.md',
+    'docs/design/capability-reliability-20.md': 'RELIABILITY.md',
+    'docs/runtime/application-capability-19.md': 'APPLICATIONS-19.md',
     'docs/design/application-capability-19.md': 'OPTIONAL-CAPABILITIES.md',
     'docs/runtime/operations.md': 'OPERATIONS.md',
     'docs/extensions/developer-guide.md': 'EXTENSIONS.md',

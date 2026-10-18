@@ -66,7 +66,7 @@ selection.update(SourceCommit=source, Target=a.target, EntryPoint='app/Ipc.Assem
 (output / 'ASSEMBLY.json').write_text(json.dumps(selection, indent=2) + '\n')
 publish_guides(root, output, source)
 if a.target == 'win-x64':
-    for script in ['provision-runtime.ps1', 'provision-extensions.ps1']:
+    for script in ['protect-release.ps1', 'provision-runtime.ps1', 'provision-extensions.ps1']:
         shutil.copyfile(root / 'scripts' / script, output / script)
 (output / 'APPLICATION-START.txt').write_text(
     'SIMULATION REFERENCE ONLY\nConsole: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'

@@ -30,6 +30,25 @@ public static class ParcelLegacyReceiptRecovery
         if(registerBackup is null && (c.Extensions?.Packages.Length>0||envelope.Pending?.Extensions?.Packages.Length>0)) throw new InvalidDataException("Extension backup consumer registration required");
         using(var repository=new ParcelRepository(directory,definition.Id,version))
         {
+            var original = repository.ReceiptById(occurrence) ?? throw new InvalidDataException("Original receipt occurrence unavailable");
+            if (version == 4 && original.State == "OutcomeReconciled")
+            {
+                // An old release falsely cleared raw custody, sometimes archiving its
+                // owner. Verify its existing Query BEFORE SQL5; never ask a new Query
+                // to stand in for the old raw or manufacture an already-released image.
+                var prior = repository.ReadOperation(original.Operation) ?? throw new InvalidDataException("Original archived owner unavailable");
+                if (original.Stage != "image-upload" || original.RawHash is not null ||
+                    File.Exists(Path.Combine(directory,"receipts",occurrence+".json")) ||
+                    prior.FrozenConfiguration.Images?.Strategy != UploadStrategy.Attached ||
+                    !repository.HasMainReceiptCustody(prior) || !repository.HasReceiptOutcomeBasis(occurrence))
+                    throw new InvalidDataException("Prior outcome custody proof incomplete; original reader marker retained");
+                repository.ValidateRawInventory();
+                await BackupAsync(repository,directory,backup,envelope,registerBackup).ConfigureAwait(false);
+                // Full-set eligibility, including other owners, is checked below while
+                // the old marker remains intact. This path makes no external call.
+            }
+            else
+            {
             var pending=repository.PendingReceipts().SingleOrDefault(x=>x.Id==occurrence);
             var op=repository.Load().SingleOrDefault(x=>x.Id==pending.Operation)??throw new InvalidDataException("Original receipt owner unavailable");
             if(pending.Stage!="image-upload"||!repository.MissingAwaitingRaw(occurrence)||op.FrozenConfiguration.Images?.Strategy!=UploadStrategy.Attached||op.Upload?.Request.Id!=pending.Request||op.Upload.State==StageState.Conflict||!repository.HasMainReceiptCustody(op))
@@ -77,6 +96,7 @@ public static class ParcelLegacyReceiptRecovery
             foreach(var missing in repository.PendingReceipts().Where(x=>x.Operation==op.Id&&x.Stage=="image-upload"&&x.Reply is null&&!repository.HasReceiptOutcomeBasis(x.Id)).ToArray())
                 repository.Commit(null,"ReceiptOutcomeKnown",OutcomeDetail(missing.Id,basis!,op,reason,backup,originalRelease),paused:true,reconciledOccurrence:missing.Id,outcomeQuery:basis);
             repository.ValidateRawInventory();
+            }
             Boundary?.Invoke("BeforeLegacyUpgrade");
         }
         ParcelRepository.UpgradeCustodyOnly(directory,definition.Id);

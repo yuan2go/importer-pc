@@ -71,11 +71,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json"))) throw new InvalidDataException("Interrupted restore remains isolated; preserve original recovery set");
         configuration = new(Path.Combine(directory, "configuration.json"), seed, definition.Validate);
         ValidateDeploymentIdentity(seed);
+        // Refuse old unresolved responsibilities before either future-reader markers
+        // or confirmation/recovery writes can make the original release unusable.
+        repository = new(directory, Id, 5) { Boundary = point => Boundary?.Invoke(point) };
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
-        repository = new(directory, Id, 5) { Boundary = point => Boundary?.Invoke(point) };
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
-        repository.RecoverLegacyConflicts(definition.PositionRoles);
+        repository.RecoverLegacyConflicts(ParcelBindings.Positions(Effective).Select(p => p.Id).ToArray());
         foreach (var conflict in repository.LoadConflicts()) identityConflicts.Add(conflict.Id, conflict);
         RefreshStorageCapacity();
         RecoverOverloadAcknowledgement();

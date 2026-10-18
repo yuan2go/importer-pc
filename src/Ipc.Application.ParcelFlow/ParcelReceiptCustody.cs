@@ -10,7 +10,7 @@ public sealed partial class ParcelRepository
     {
         using var c = db.CreateCommand();
         c.CommandText = StorageVersion >= 5 ? "SELECT query_occurrence FROM parcel_receipt_custody WHERE occurrence=$id" :
-            "SELECT json_extract(detail,'$.QueryOccurrence') FROM parcel_audit WHERE event='ReceiptOutcomeKnown' AND json_valid(detail) AND json_extract(detail,'$.OriginalOccurrence')=$id ORDER BY seq DESC LIMIT 1";
+            "SELECT json_extract(detail,'$.QueryOccurrence') FROM parcel_audit WHERE event IN ('ReceiptOutcomeKnown','ReceiptOutcomeReconciled') AND json_valid(detail) AND json_extract(detail,'$.OriginalOccurrence')=$id ORDER BY seq DESC LIMIT 1";
         c.Parameters.AddWithValue("$id",occurrence); return c.ExecuteScalar() as string;
     }
     public bool HasReceiptOutcomeBasis(string occurrence)
@@ -47,9 +47,30 @@ public sealed partial class ParcelRepository
     static bool ExternalWorkComplete(ParcelOperation op,string application) => !op.RecoveryRequired &&
         (op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted || application=="sportmaster" && op.State==ParcelState.SlotResolved) &&
         new[]{op.Wcs,op.Plc,op.Capture,op.Upload}.OfType<StageFact>().All(s=>s.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled);
-    bool LegacyCustodyUpgradeEligible(string application) => Load().All(op=>
-        ExternalWorkComplete(op,application) && ((op.FrozenConfiguration.Images is null || op.ImageReleased) && !PendingReceipts().Any(x=>x.Operation==op.Id) || CustodyOnly(op,application))) &&
-        PendingReceipts().All(x=>Load().Any(op=>op.Id==x.Operation));
+    bool LegacyCustodyUpgradeEligible(string application)
+    {
+        using var states = db.CreateCommand();
+        states.CommandText = "SELECT count(*) FROM parcel_receipts WHERE state NOT IN ('Awaiting','RawDurable','OutcomeReconciled','Committed','NoReply')";
+        if ((long)states.ExecuteScalar()! != 0) return false;
+        // Include DB4's historical false disposition before SQL5 restores Awaiting.
+        using var c = db.CreateCommand();
+        c.CommandText = "SELECT id,operation FROM parcel_receipts WHERE state IN ('Awaiting','RawDurable','OutcomeReconciled')";
+        List<(string Id,string Owner)> pending = [];
+        using (var r = c.ExecuteReader()) while (r.Read()) pending.Add((r.GetString(0),r.GetString(1)));
+        foreach (var op in UpgradeOperations())
+        {
+            if (!ExternalWorkComplete(op,application)) return false;
+            var own = pending.Where(x => x.Owner == op.Id).ToArray();
+            if (own.Length == 0)
+            {
+                if (op.FrozenConfiguration.Images is not null && !op.ImageReleased) return false;
+            }
+            else if (op.FrozenConfiguration.Images?.Strategy != UploadStrategy.Attached || !HasMainReceiptCustody(op) ||
+                own.Any(x => ReceiptById(x.Id) is not { Stage: "image-upload", RawHash: null } ||
+                    File.Exists(Path.Combine(rawRoot,x.Id+".json")) || !HasReceiptOutcomeBasis(x.Id))) return false;
+        }
+        return pending.All(x => StorageVersion >= 4 ? ReadOperation(x.Owner) is not null : Load().Any(op => op.Id == x.Owner));
+    }
     public static void UpgradeCustodyOnly(string directory,string application)
     {
         // Caller holds the application owner and has created a full backup. No sources
@@ -69,7 +90,7 @@ public sealed partial class ParcelRepository
 }
 public sealed partial class ParcelRuntime
 {
-    bool ConfigurationResponsibilitiesClear() => operations.Values.All(op=>IsSettled(op)||repository!.CustodyOnly(op,Id)) &&
+    bool ConfigurationResponsibilitiesClear() => identityConflicts.Count == 0 && operations.Values.All(op=>IsSettled(op)||repository!.CustodyOnly(op,Id)) &&
         repository!.PendingReceipts().All(x=>repository.HasReceiptOutcomeBasis(x.Id));
     bool RequiresOriginalExecution(ParcelOperation op) => !IsSettled(op) && !repository!.CustodyOnly(op,Id);
 }

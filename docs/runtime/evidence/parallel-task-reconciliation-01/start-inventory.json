@@ -1,0 +1,683 @@
+{
+  "StartedAt": "2026-10-19T01:08:15+08:00",
+  "StartMain": "713f23d7c39743762adb884fdffa18745cad08f8",
+  "Environment": "Darwin arm64 25.5.0; .NET SDK 10.0.402; Python3",
+  "OpenPullRequests": [
+    {
+      "baseRefName": "main",
+      "baseRefOid": "baac260214f910dca9ae4628ba6449b25188e2ac",
+      "headRefName": "codex/parcel-recovery-p2",
+      "headRefOid": "0aac91922dfd04539f6015f7bc8dbf820a23d782",
+      "isDraft": false,
+      "mergeStateStatus": "DIRTY",
+      "number": 32,
+      "reviewDecision": "",
+      "statusCheckRollup": [],
+      "title": "fix: preserve permanent recovery identity and durable Query custody evidence",
+      "url": "https://github.com/yuan2go/importer-pc/pull/32"
+    },
+    {
+      "baseRefName": "main",
+      "baseRefOid": "baac260214f910dca9ae4628ba6449b25188e2ac",
+      "headRefName": "codex/sportmaster-rcs-task",
+      "headRefOid": "822ce92f01e01487fdf037eca9219a601250d458",
+      "isDraft": false,
+      "mergeStateStatus": "DIRTY",
+      "number": 30,
+      "reviewDecision": "",
+      "statusCheckRollup": [],
+      "title": "feat: add Sportmaster RCS destination task component",
+      "url": "https://github.com/yuan2go/importer-pc/pull/30"
+    },
+    {
+      "baseRefName": "main",
+      "baseRefOid": "baac260214f910dca9ae4628ba6449b25188e2ac",
+      "headRefName": "codex/version-compatibility",
+      "headRefOid": "e0f5303ff80c48f1a7ecf6964916cb21c13a7327",
+      "isDraft": false,
+      "mergeStateStatus": "DIRTY",
+      "number": 29,
+      "reviewDecision": "",
+      "statusCheckRollup": [],
+      "title": "feat: complete business release versions and compatibility evidence",
+      "url": "https://github.com/yuan2go/importer-pc/pull/29"
+    },
+    {
+      "baseRefName": "main",
+      "baseRefOid": "713f23d7c39743762adb884fdffa18745cad08f8",
+      "headRefName": "codex/sportmaster-alternate-ui",
+      "headRefOid": "e86d664c78418d82bdd49b1abaacc148f38c2d35",
+      "isDraft": false,
+      "mergeStateStatus": "CLEAN",
+      "number": 27,
+      "reviewDecision": "",
+      "statusCheckRollup": [],
+      "title": "feat: add selectable Sportmaster supply station WPF UI",
+      "url": "https://github.com/yuan2go/importer-pc/pull/27"
+    }
+  ],
+  "Worktrees": [
+    {
+      "Name": "primary",
+      "Head": "713f23d7c39743762adb884fdffa18745cad08f8",
+      "Accessible": true,
+      "UncommittedFileCount": 198,
+      "IgnoredNoncacheFileCount": 3
+    },
+    {
+      "Name": "acquisition-lifecycle-p2",
+      "Head": "966ec6aa17dfe29b96fc9b9113f3037ba586f6a0",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 2121
+    },
+    {
+      "Name": "application-architecture-22",
+      "Head": "199be19db2cb4c1b0bfe3a69f47e8b6a92dce70e",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 6
+    },
+    {
+      "Name": "application-capability-19",
+      "Head": "c377f2b78d8f7222cf3998c5c47e19259345d441",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 15120
+    },
+    {
+      "Name": "application-convergence-17",
+      "Head": "9d28cba6fa13b575d1b35eeb9f70b3af724f7fe3",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 12
+    },
+    {
+      "Name": "architecture-quality-02",
+      "Head": "78298b5dc7ccdcb7bb08e857d2d94f3681182fde",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 10
+    },
+    {
+      "Name": "architecture-quality-audit-02",
+      "Head": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 2
+    },
+    {
+      "Name": "architecture-quality-closure-01",
+      "Head": "f531d3a6882891cfc7870f5dcccfe985009d6be4",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 6
+    },
+    {
+      "Name": "backup-health-recovery",
+      "Head": "ecdbddc6640249347c7821cf3b1e58ccd7c22f83",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 1106
+    },
+    {
+      "Name": "ipc-arch-ui-alignment-01",
+      "Head": "c77f7eabb3ee0e98ff340c9cc0c2dcd1f734cfaf",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 888
+    },
+    {
+      "Name": "ipc-audit-reconciliation-01",
+      "Head": "0961b3e6f78f1c6c6ae77a44750922312e40973d",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 4091
+    },
+    {
+      "Name": "ipc-baseline-continuation",
+      "Head": "8090914e752d724b3e67b09227609830030d9510",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 0
+    },
+    {
+      "Name": "ipc-conformance-fix-14",
+      "Head": "149b050c36b87ac57575bfa149ddd1da0bd46972",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 3092
+    },
+    {
+      "Name": "ipc-operation-closure-15",
+      "Head": "cf875d5a5206fa0b54941216e0aa265b9cdf63b2",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 0
+    },
+    {
+      "Name": "main-static-review",
+      "Head": "340109cb6119f5b5323300eafde95900e40b2a71",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 0
+    },
+    {
+      "Name": "parcel-recovery-p2",
+      "Head": "0aac91922dfd04539f6015f7bc8dbf820a23d782",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 5
+    },
+    {
+      "Name": "pr20-21-integration",
+      "Head": "36408c843cff92aa2732180366e8346161ac3d83",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 1203
+    },
+    {
+      "Name": "pr26-recovery-closure",
+      "Head": "da9233d78cd47a4addaf5bc78268494f81725368",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 0
+    },
+    {
+      "Name": "site-capabilities-18",
+      "Head": "aa97a531040501edac075c0b1648d890ff9b0f2b",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 559
+    },
+    {
+      "Name": "sportmaster-alternate-ui",
+      "Head": "e86d664c78418d82bdd49b1abaacc148f38c2d35",
+      "Accessible": true,
+      "UncommittedFileCount": 35,
+      "IgnoredNoncacheFileCount": 8
+    },
+    {
+      "Name": "sportmaster-rcs-task",
+      "Head": "822ce92f01e01487fdf037eca9219a601250d458",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 6080
+    },
+    {
+      "Name": "ui-maintainability-16",
+      "Head": "d323287e9454e50d9e040d55bdd289857a8dfd2c",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 13
+    },
+    {
+      "Name": "version-compatibility",
+      "Head": "e0f5303ff80c48f1a7ecf6964916cb21c13a7327",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 6733
+    },
+    {
+      "Name": "worktrees",
+      "Head": "e49249c2a5148544cdc5b7d8bf0a74a69c015026",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 4045
+    },
+    {
+      "Name": "worktrees",
+      "Head": "451f7f5b3a9e7aace77c6617d05eb15ed69888b1",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 3553
+    },
+    {
+      "Name": "worktrees",
+      "Head": "0364b07cd56f8eb61775cac13b5f1620d620bec8",
+      "Accessible": true,
+      "UncommittedFileCount": 0,
+      "IgnoredNoncacheFileCount": 2300
+    }
+  ],
+  "Refs": [
+    {
+      "ref": "refs/heads/codex/acquisition-lifecycle-p2",
+      "sha": "966ec6aa17dfe29b96fc9b9113f3037ba586f6a0",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/application-architecture-22",
+      "sha": "199be19db2cb4c1b0bfe3a69f47e8b6a92dce70e",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/application-capability-closure-19",
+      "sha": "c377f2b78d8f7222cf3998c5c47e19259345d441",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/application-convergence-17",
+      "sha": "9d28cba6fa13b575d1b35eeb9f70b3af724f7fe3",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/arch-extension-closure-13",
+      "sha": "451f7f5b3a9e7aace77c6617d05eb15ed69888b1",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/architecture-quality-02",
+      "sha": "78298b5dc7ccdcb7bb08e857d2d94f3681182fde",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/architecture-quality-closure-01",
+      "sha": "f531d3a6882891cfc7870f5dcccfe985009d6be4",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/backup-health-recovery",
+      "sha": "ecdbddc6640249347c7821cf3b1e58ccd7c22f83",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/capability-reliability-closure-20",
+      "sha": "e49249c2a5148544cdc5b7d8bf0a74a69c015026",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/closure13-verification-20261017",
+      "sha": "0364b07cd56f8eb61775cac13b5f1620d620bec8",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/conformance-fix-14",
+      "sha": "149b050c36b87ac57575bfa149ddd1da0bd46972",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/ipc-readiness-02",
+      "sha": "bab1a88f5262fc7a89ee832b9b6068215b37e6a2",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/operation-closure-15",
+      "sha": "cf875d5a5206fa0b54941216e0aa265b9cdf63b2",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/parallel-task-reconciliation-01",
+      "sha": "713f23d7c39743762adb884fdffa18745cad08f8",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/parcel-recovery-p2",
+      "sha": "0aac91922dfd04539f6015f7bc8dbf820a23d782",
+      "ancestor_of_start_main": false,
+      "commits_outside_start": 4
+    },
+    {
+      "ref": "refs/heads/codex/pr20-21-integration",
+      "sha": "d3a3ad293a9c77f4991b2fff29da0dfed6c218e6",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/pr20-reviewed",
+      "sha": "d3a3ad293a9c77f4991b2fff29da0dfed6c218e6",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/pr21-integrated",
+      "sha": "36408c843cff92aa2732180366e8346161ac3d83",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/pr26-recovery-closure",
+      "sha": "da9233d78cd47a4addaf5bc78268494f81725368",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/publication-20261019",
+      "sha": "e43940e298605bb4250c68105e9f633bbfc9fcb6",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/site-capabilities-18",
+      "sha": "aa97a531040501edac075c0b1648d890ff9b0f2b",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/sportmaster-alternate-ui",
+      "sha": "a4ecfd1c2a687caca9d52f2cfc08ee4fce9ff91e",
+      "ancestor_of_start_main": false,
+      "commits_outside_start": 17
+    },
+    {
+      "ref": "refs/heads/codex/sportmaster-rcs-task",
+      "sha": "822ce92f01e01487fdf037eca9219a601250d458",
+      "ancestor_of_start_main": false,
+      "commits_outside_start": 6
+    },
+    {
+      "ref": "refs/heads/codex/ui-maintainability-16",
+      "sha": "d323287e9454e50d9e040d55bdd289857a8dfd2c",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/version-compatibility",
+      "sha": "e0f5303ff80c48f1a7ecf6964916cb21c13a7327",
+      "ancestor_of_start_main": false,
+      "commits_outside_start": 11
+    },
+    {
+      "ref": "refs/heads/codex/wp-ipc-arch-ui-alignment-01",
+      "sha": "c77f7eabb3ee0e98ff340c9cc0c2dcd1f734cfaf",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/wp-ipc-audit-reconciliation-01",
+      "sha": "02b255e1cddcfb53307ebc769f345c0fe38aa8d8",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/wp-ipc-engineering-closure-07",
+      "sha": "ca4f0bfe64dfb738153da4d0a78ea277a969189d",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/wp-ipc-extension-windows-delivery-12",
+      "sha": "2116c3b90b6fe7c729d0888452b6a1ca4d3bd7f5",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/wp-ipc-main-review-02",
+      "sha": "76dff7a7fb49fbe3f4c451fd59030ebeed6df9ab",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/wp-ipc-main-review-03",
+      "sha": "340109cb6119f5b5323300eafde95900e40b2a71",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/wp-ipc-review-followup-11",
+      "sha": "0961b3e6f78f1c6c6ae77a44750922312e40973d",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/wp-ipc-runtime-03",
+      "sha": "a7a3d874dd3223135ebe7077965a6fa6bb1b7bfc",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/codex/wp-ipc-runtime-hardening-04",
+      "sha": "26af6e544189e288c00c4596d8b861dcc0cb91f6",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/docs/wp-ipc-baseline-01-continuation",
+      "sha": "8090914e752d724b3e67b09227609830030d9510",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/heads/main",
+      "sha": "713f23d7c39743762adb884fdffa18745cad08f8",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/HEAD",
+      "sha": "713f23d7c39743762adb884fdffa18745cad08f8",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/acquisition-lifecycle-p2",
+      "sha": "966ec6aa17dfe29b96fc9b9113f3037ba586f6a0",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/application-architecture-22",
+      "sha": "199be19db2cb4c1b0bfe3a69f47e8b6a92dce70e",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/application-capability-closure-19",
+      "sha": "c377f2b78d8f7222cf3998c5c47e19259345d441",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/application-convergence-17",
+      "sha": "9d28cba6fa13b575d1b35eeb9f70b3af724f7fe3",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/arch-extension-closure-13",
+      "sha": "0364b07cd56f8eb61775cac13b5f1620d620bec8",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/architecture-quality-02",
+      "sha": "78298b5dc7ccdcb7bb08e857d2d94f3681182fde",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/architecture-quality-closure-01",
+      "sha": "f531d3a6882891cfc7870f5dcccfe985009d6be4",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/backup-health-recovery",
+      "sha": "d3a3ad293a9c77f4991b2fff29da0dfed6c218e6",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/capability-reliability-closure-20",
+      "sha": "36408c843cff92aa2732180366e8346161ac3d83",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/conformance-fix-14",
+      "sha": "149b050c36b87ac57575bfa149ddd1da0bd46972",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/ipc-readiness-02",
+      "sha": "bab1a88f5262fc7a89ee832b9b6068215b37e6a2",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/operation-closure-15",
+      "sha": "cf875d5a5206fa0b54941216e0aa265b9cdf63b2",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/parcel-recovery-p2",
+      "sha": "0aac91922dfd04539f6015f7bc8dbf820a23d782",
+      "ancestor_of_start_main": false,
+      "commits_outside_start": 4
+    },
+    {
+      "ref": "refs/remotes/origin/codex/pr26-recovery-closure",
+      "sha": "da9233d78cd47a4addaf5bc78268494f81725368",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/publication-20261019",
+      "sha": "e43940e298605bb4250c68105e9f633bbfc9fcb6",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/review14-receipt-recovery",
+      "sha": "5548b3f962c409079618635d3128830ea7887069",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/site-capabilities-18",
+      "sha": "aa97a531040501edac075c0b1648d890ff9b0f2b",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/sportmaster-alternate-ui",
+      "sha": "a4ecfd1c2a687caca9d52f2cfc08ee4fce9ff91e",
+      "ancestor_of_start_main": false,
+      "commits_outside_start": 17
+    },
+    {
+      "ref": "refs/remotes/origin/codex/sportmaster-rcs-task",
+      "sha": "822ce92f01e01487fdf037eca9219a601250d458",
+      "ancestor_of_start_main": false,
+      "commits_outside_start": 6
+    },
+    {
+      "ref": "refs/remotes/origin/codex/ui-maintainability-16",
+      "sha": "d323287e9454e50d9e040d55bdd289857a8dfd2c",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/version-compatibility",
+      "sha": "e0f5303ff80c48f1a7ecf6964916cb21c13a7327",
+      "ancestor_of_start_main": false,
+      "commits_outside_start": 11
+    },
+    {
+      "ref": "refs/remotes/origin/codex/wp-ipc-arch-ui-alignment-01",
+      "sha": "c77f7eabb3ee0e98ff340c9cc0c2dcd1f734cfaf",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/wp-ipc-audit-reconciliation-01",
+      "sha": "02b255e1cddcfb53307ebc769f345c0fe38aa8d8",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/wp-ipc-engineering-closure-07",
+      "sha": "ca4f0bfe64dfb738153da4d0a78ea277a969189d",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/wp-ipc-extension-windows-delivery-12",
+      "sha": "2116c3b90b6fe7c729d0888452b6a1ca4d3bd7f5",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/wp-ipc-main-review-02",
+      "sha": "76dff7a7fb49fbe3f4c451fd59030ebeed6df9ab",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/wp-ipc-main-review-03",
+      "sha": "340109cb6119f5b5323300eafde95900e40b2a71",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/wp-ipc-review-followup-11",
+      "sha": "0961b3e6f78f1c6c6ae77a44750922312e40973d",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/wp-ipc-runtime-03",
+      "sha": "a7a3d874dd3223135ebe7077965a6fa6bb1b7bfc",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/codex/wp-ipc-runtime-hardening-04",
+      "sha": "26af6e544189e288c00c4596d8b861dcc0cb91f6",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/docs/architecture-quality-audit-02",
+      "sha": "39827186933b8b0f1ffec14babb16b05e81ac315",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/docs/final-ui-assets-20261016",
+      "sha": "35ee540b7b1b69f795881c14b75631c5af254071",
+      "ancestor_of_start_main": false,
+      "commits_outside_start": 8
+    },
+    {
+      "ref": "refs/remotes/origin/docs/ui-assets-20261016",
+      "sha": "3edb3747d7183d38adf1118989e7d36b2390ffba",
+      "ancestor_of_start_main": false,
+      "commits_outside_start": 1
+    },
+    {
+      "ref": "refs/remotes/origin/docs/wp-ipc-project-conformance-audit-01-20261017",
+      "sha": "6406b4fd6304c2825121aedfac9a1c37be69b37b",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    },
+    {
+      "ref": "refs/remotes/origin/main",
+      "sha": "713f23d7c39743762adb884fdffa18745cad08f8",
+      "ancestor_of_start_main": true,
+      "commits_outside_start": 0
+    }
+  ],
+  "Snapshot": "External recoverable binary patches, staged patches, copied files with SHA256, ignored text evidence and all-refs Git bundle; originals retained.",
+  "EvidenceGaps": [
+    "Only accessible local Codex sessions, registered worktrees and supplied artifacts were inspected; deleted or inaccessible remote sessions cannot be recovered.",
+    "Architecture audit 01 original PDF remains unavailable; audit02 original PDF is retained unchanged."
+  ],
+  "Publication": "Restricted primary HTML/PRD, private keys, raw local test stores, compiled binaries and SDK/fonts are retained locally and excluded."
+}

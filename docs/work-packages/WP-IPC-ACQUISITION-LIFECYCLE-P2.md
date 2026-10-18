@@ -16,10 +16,12 @@
 - [x] 在既有Application.Verification增加`--acquisition-lifecycle`，修复前运行一条接受+5000拒收后原图采集，确认IOException。
 - [x] 修改Application.Contracts的reader采图生命周期、Drivers的所有者/在途登记及ParcelFlow的观察到作业交接/持久释放；保留Unknown守卫。
 - [x] 复用现有AA22/能力/可靠性验证，补必要的慢采图双位过载、重复/拒绝、重连、异常/恢复/终态回收用例；记录红绿输出。
-- [ ] 核验真实/扩展驱动接入，必要构建/发布启动冒烟；更新运行/扩展兼容说明、manifest与结果；提交推送main PR，不合并。
+- [x] 核验真实/扩展驱动接入，必要构建/发布启动冒烟；更新运行/扩展兼容说明、manifest与结果；提交推送main PR，不合并。
 
 ## 验收边界
 
 参考合成设备与macOS验证不等于Windows实际、真实相机SDK/WCS/PLC或现场验收。Production缺真实能力仍拒绝。只交授权通用实现和合成证据，不带客户原稿、SDK、字体、生产数据或凭据。
 
 实现及验证已完成，见[结果报告](../runtime/acquisition-lifecycle-p2.md)。源码固定`ca35b16a0ef883126b39640c19ea6f840e5a9716`；最后远端PR交付另记，未授权合并main。
+
+已创建并读回[PR #23](https://github.com/yuan2go/importer-pc/pull/23)，base=main，OPEN；源码提交`ca35b16`，结果/证据提交`8415e9c`。未合并。最后交付记录只补远端回执及清单，不改变运行源码或候选。

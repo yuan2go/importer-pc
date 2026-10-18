@@ -2799,9 +2799,9 @@
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
       "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
-      "sha256": "e655c633534aaba09e6c29e92798f6bba2de7c4a84ac498cc072ff624b74b1b0",
-      "size_bytes": 8589,
-      "git_blob": "b81473349e10472a328981700ba7d80ec98decb1"
+      "sha256": "4d3e4006ff9a9b761b9b6a8008b46768b0847790cad3089f05067b7953a6df5b",
+      "size_bytes": 8688,
+      "git_blob": "1f2f8855907c70c96e19d40cd17849947295f7f6"
     },
     {
       "path": "docs/runtime/alignment-01-checks.json",
@@ -3441,6 +3441,17 @@
       "sha256": "2c98f3eb341a3b3daaebe845225e952b40ce2c49f2fba65cb4149558c1589a0b",
       "size_bytes": 2360,
       "git_blob": "d340f41a5ec8a9340a690d8e303a86ea55b98823"
+    },
+    {
+      "path": "docs/runtime/evidence/acquisition-lifecycle-p2/publication-receipt.json",
+      "storage_scope": "public_repository",
+      "version": "acquisition-lifecycle-p2",
+      "status": "implementation_evidence_or_historical_custody",
+      "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
+      "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
+      "sha256": "95607abbe6b34b50f99fab9abe73671cb139155dc21bc972bc2f7da51e505dab",
+      "size_bytes": 763,
+      "git_blob": "f1fb675ba04f28bea26b21b04c14a1e0104aea25"
     },
     {
       "path": "docs/runtime/evidence/acquisition-lifecycle-p2/smoke-direct.json",
@@ -15611,9 +15622,9 @@
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic acquisition lifecycle repair, synthetic verification or original-byte custody",
       "source": "WP-IPC-ACQUISITION-LIFECYCLE-P2 user implementation authorization",
-      "sha256": "717c2ede0f2d8e66ed64ae8f5575f9d4cfeee672533873ddc52dba59b9ae3928",
-      "size_bytes": 3133,
-      "git_blob": "e17817dd9779847fde4a6528d4ce2f23ba2df775"
+      "sha256": "995fc0fe68089050d052ab9faf9d9e4a49ff94de5e2708be3befd2f41380c032",
+      "size_bytes": 3379,
+      "git_blob": "e7a5bbb44e6bb694155984b7666d723c3fa425f2"
     },
     {
       "path": "docs/work-packages/WP-IPC-APPLICATION-ARCHITECTURE-22.md",

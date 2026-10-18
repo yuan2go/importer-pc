@@ -1,6 +1,6 @@
 # 原采集身份生命周期P2 · 修复与验证
 
-2026-10-18。基线main `2126ac2c06a0c352d96afbbf13ec1a719c352738`，已合并[PR #22](https://github.com/yuan2go/importer-pc/pull/22)；独立核验了[原P2评审](https://github.com/yuan2go/importer-pc/pull/22#discussion_r4306589275)。运行源码固定`ca35b16a0ef883126b39640c19ea6f840e5a9716`。独立开发分支`codex/acquisition-lifecycle-p2`，主工作区受限未跟踪资料及其他工作树未改。
+2026-10-18。基线main `2126ac2c06a0c352d96afbbf13ec1a719c352738`，已合并[PR #22](https://github.com/yuan2go/importer-pc/pull/22)；独立核验了[原P2评审](https://github.com/yuan2go/importer-pc/pull/22#discussion_r4306589275)。运行源码固定`ca35b16a0ef883126b39640c19ea6f840e5a9716`。已创建[PR #23](https://github.com/yuan2go/importer-pc/pull/23)，base=main，OPEN，未合并；独立开发分支`codex/acquisition-lifecycle-p2`，主工作区受限未跟踪资料及其他工作树未改。
 
 [工作包/设计](../work-packages/WP-IPC-ACQUISITION-LIFECYCLE-P2.md) · [检查与源码hash](evidence/acquisition-lifecycle-p2/checks.json) · [原字节](../archive/pre-acquisition-lifecycle-p2/README.md)。本包是参考实现修复，不是旧现场迁移或真实设备验收。REQ/BR/CAPI/D/RV、原SQL/checksum及22既有候选/发布身份不改。
 

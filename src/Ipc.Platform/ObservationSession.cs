@@ -12,8 +12,8 @@ public sealed class ObservationSession(IControlledObservationSource source)
     public DeviceState? Health => Volatile.Read(ref health);
     public bool AcceptSequence(Observation observation)
     {
-        if (observation.DeviceId != source.DeviceId || observation.Epoch != Epoch || observation.Sequence <= sequence) return false;
-        sequence = observation.Sequence;
+        if (observation.DeviceId != source.DeviceId || observation.Epoch != Epoch || observation.Sequence <= Interlocked.Read(ref sequence)) return false;
+        Interlocked.Exchange(ref sequence, observation.Sequence);
         if (Health is { } confirmed) Volatile.Write(ref health, confirmed with { Sequence = sequence });
         return true;
     }
@@ -23,13 +23,13 @@ public sealed class ObservationSession(IControlledObservationSource source)
         return source.StartControlledAsync(registration, o => o.DeviceId == source.DeviceId && o.Epoch == registration && registration == Epoch && receive(o), h =>
         {
             if (h.DeviceId == source.DeviceId && h.Epoch == registration && registration == Epoch)
-                Volatile.Write(ref health, new(h.DeviceId, h.Epoch, sequence, h.Health, h.ConfirmedAt, h.ConfirmedAt, h.ValidUntil, h.Source));
+                Volatile.Write(ref health, new(h.DeviceId, h.Epoch, Interlocked.Read(ref sequence), h.Health, h.ConfirmedAt, h.ConfirmedAt, h.ValidUntil, h.Source));
         }, token);
     }
     public async Task ReconnectAsync(Func<Observation, bool> receive, CancellationToken token)
     {
+        Volatile.Write(ref epoch, Wire.Id()); Interlocked.Exchange(ref sequence, 0); Volatile.Write(ref health, null);
         await source.StopAsync(token).ConfigureAwait(false);
-        Volatile.Write(ref epoch, Wire.Id()); sequence = 0; Volatile.Write(ref health, null);
         await StartAsync(receive, token).ConfigureAwait(false);
     }
 }

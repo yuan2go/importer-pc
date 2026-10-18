@@ -1,0 +1,47 @@
+{
+  "source_commit": "3f6f762d31655ef0fe8d6562ed413beed682e2f9",
+  "files": [
+    {
+      "path": "README.md",
+      "archived": "docs/archive/pre-pr24-r03-20261018/README.md.txt",
+      "sha256": "4d01499e0430a8f5ee269ff4027b47a6f0ed1524433ffa194e13c714f2ed31a8",
+      "source_commit": "3f6f762d31655ef0fe8d6562ed413beed682e2f9"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "archived": "docs/archive/pre-pr24-r03-20261018/docs/INDEX.md.txt",
+      "sha256": "f81b90b0db3cb84c7541cc83d5e57c11a9c32ea18defef24b2ac6a538aa2f1df",
+      "source_commit": "3f6f762d31655ef0fe8d6562ed413beed682e2f9"
+    },
+    {
+      "path": "docs/design/architecture-quality-closure-01.md",
+      "archived": "docs/archive/pre-pr24-r03-20261018/docs/design/architecture-quality-closure-01.md.txt",
+      "sha256": "a92f7c6e7be85eace5fbd799932baa69024e051b76e1e9c8668d61b258db224e",
+      "source_commit": "3f6f762d31655ef0fe8d6562ed413beed682e2f9"
+    },
+    {
+      "path": "docs/runtime/architecture-quality-closure-01.md",
+      "archived": "docs/archive/pre-pr24-r03-20261018/docs/runtime/architecture-quality-closure-01.md.txt",
+      "sha256": "0ada47fd4e49253a212f86854867ae09b628af98cfb68577826817a5dedf2889",
+      "source_commit": "3f6f762d31655ef0fe8d6562ed413beed682e2f9"
+    },
+    {
+      "path": "docs/extensions/developer-guide.md",
+      "archived": "docs/archive/pre-pr24-r03-20261018/docs/extensions/developer-guide.md.txt",
+      "sha256": "eab47007695b9357238246a9a118e1fa244a9e27ac0ff430d89fb454a9997380",
+      "source_commit": "3f6f762d31655ef0fe8d6562ed413beed682e2f9"
+    },
+    {
+      "path": "docs/runtime/architecture-quality-closure-01-rereview-results.md",
+      "archived": "docs/archive/pre-pr24-r03-20261018/docs/runtime/architecture-quality-closure-01-rereview-results.md.txt",
+      "sha256": "c3fdfa8d8bb55148d4a35ec182d097774f7203f58a1b5941e5c5b48f992433f5",
+      "source_commit": "3f6f762d31655ef0fe8d6562ed413beed682e2f9"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md",
+      "archived": "docs/archive/pre-pr24-r03-20261018/docs/work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md.txt",
+      "sha256": "2834365a3811d7eafc270071374a0db30369e532a0c43dc64246fbfb1bf635af",
+      "source_commit": "3f6f762d31655ef0fe8d6562ed413beed682e2f9"
+    }
+  ]
+}

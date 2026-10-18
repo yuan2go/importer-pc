@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "pull_request": "https://github.com/yuan2go/importer-pc/pull/24",
+  "head": "3f6f762d31655ef0fe8d6562ed413beed682e2f9",
+  "main": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "reviewed_at_utc": "2026-10-18T15:23:56.568670+00:00",
+  "decision": "CHANGES_REQUIRED",
+  "axes": {
+    "Standards": {
+      "confirmed_remaining_blockers": 1,
+      "highest_priority": "P2"
+    },
+    "Spec": {
+      "confirmed_remaining_blockers": 0
+    }
+  },
+  "findings": [
+    {
+      "id": "PR24-R03-REOPENED",
+      "axis": "Standards",
+      "priority": "P2",
+      "title": "Schema1/2 duplicate capability inventory hides contradictory package references before offline inspection",
+      "trigger": "CapabilityInstances includes the existing PLC and maintenance bindings plus a second PLC with same InstanceId and dangling Package while Extensions=null; schema1/2 accepted",
+      "observed": "Effective, Pending and unresolved FrozenConfiguration with valid ConfigurationHash return zero references; DB/config SHA256 unchanged. Equivalent schema3 configuration rejected.",
+      "impact": "Malformed offline responsibility is treated as a complete zero-reference proof, defeating the required conservative uninstall precondition. Actual uninstall was not executed.",
+      "requirement": "AQD-07.3: unknown schema/enums/dangling references or contradictory instances must conservatively refuse; no uncertain state as empty references",
+      "locations": [
+        {
+          "path": "src/Ipc.Application.ParcelFlow/ParcelConsumers.cs",
+          "line": 78
+        },
+        {
+          "path": "src/Ipc.Application.ParcelFlow/ParcelConfigurationRules.cs",
+          "line": 42
+        },
+        {
+          "path": "src/Ipc.Application.ParcelFlow/ParcelConfigurationRules.cs",
+          "line": 72
+        },
+        {
+          "path": "src/Ipc.Application.Contracts/ParcelTopology.cs",
+          "line": 26
+        }
+      ],
+      "proof": "standards-probe/results.log"
+    }
+  ],
+  "item_results": [
+    {
+      "id": "R01",
+      "status": "NO_CONFIRMED_REMAINING_BLOCKER",
+      "evidence": "fresh review-closure and independent repository/SQLite raw/index rollback/missing/archive/70-query component probes"
+    },
+    {
+      "id": "R02",
+      "status": "NO_CONFIRMED_REMAINING_BLOCKER",
+      "evidence": "fresh actual DirectPlc Attached recovery and static main/aux reason paths"
+    },
+    {
+      "id": "R03",
+      "status": "NOT_CLOSED",
+      "evidence": "standards-probe results; legitimate future schema/direct dangling references rejected, duplicate legacy inventory not rejected"
+    },
+    {
+      "id": "R04",
+      "status": "NO_CONFIRMED_REMAINING_DISPATCH_BLOCKER",
+      "evidence": "real Supply DB5/Parcel DB4 readonly paths, all four management roots wired; actual complete signed uninstall not independently executed"
+    },
+    {
+      "id": "R05",
+      "status": "NO_CONFIRMED_REMAINING_BLOCKER_IN_REFERENCE_SCOPE",
+      "evidence": "fresh real-Application slow WCS Resume/admission/query fence, budget expiry, Stop cancellation with lease held, auth reservation and fence; existing dual-position directed run rerun"
+    }
+  ],
+  "runs": [
+    {
+      "name": "locked independent verification build",
+      "exit_code": 0
+    },
+    {
+      "name": "review-closure",
+      "exit_code": 0
+    },
+    {
+      "name": "architecture-quality including configuration process termination probes",
+      "exit_code": 0
+    },
+    {
+      "name": "independent raw/index component probe",
+      "exit_code": 0
+    },
+    {
+      "name": "independent maintenance real-Application probe",
+      "exit_code": 0
+    },
+    {
+      "name": "offline-consumer independent counterexample",
+      "exit_code": 0,
+      "interpretation": "Reproduced R03 defect, not product PASS"
+    },
+    {
+      "name": "real Sportmaster Assembly build",
+      "exit_code": 0
+    },
+    {
+      "name": "real legacy Product build",
+      "exit_code": 0
+    }
+  ],
+  "host_sha256": {
+    "Ipc.Application.Contracts.dll": "30404f58a5e5334d153d316c5eec552cae298b95d360093e199970404e6d6112",
+    "Ipc.Application.DirectPlc.dll": "b67bddac8822149e7fdf61fe04bfd451cb9ede8d069dfd4dee2a5e29b58f3950",
+    "Ipc.Application.ParcelFlow.dll": "2ad809be367e550c7801da043457d13016ffb0e88c605348614c594048c05a5d",
+    "Ipc.Application.Sportmaster.dll": "d755c5e75706e70f212c68b830d9028a98b712e307cc6f5a3718caba4e30a071",
+    "Ipc.Application.Verification.dll": "3a3266bc019095c8085c9ec01d76ab09f71508dcecab3c31219f6ea856e0d910",
+    "Ipc.Application.WcsToPlc.dll": "9908688ac3769f03265577f48d55cf7f430492575a0898256b27a9cd091802d6",
+    "Ipc.Components.dll": "0fde087e34a594e2ff7b98055726ac52b93ea94c664a420c5211e331d19a1af4",
+    "Ipc.Drivers.dll": "073ec3286fe4d3cde607a358bf177cdac07b0cb1b216430943e979ee52ef961c",
+    "Ipc.Integrations.dll": "4c1f1d42a65f8f42c2ef24b58ee1d336332d8c14ae04b8b75ebbe8ad635280e9",
+    "Ipc.Platform.Storage.dll": "11639750826e1857178e1a5b42b9edabb3e3fb327e98104c36e6521c435d1de0",
+    "Ipc.Platform.dll": "db94a9c0dd03bb362e5bb89f4ad59adda03504020da96cf9a685e9721722437c",
+    "Ipc.Reference.Protocol.dll": "8775db66a2365d02be9a4d49b3b323aa09f1a645ccda58e2481be76a4b1352c6",
+    "Ipc.Supply.Contracts.dll": "574d4a5191bc0b8dff2a70555783c88fb047fab1e302405a926edda098f25a67",
+    "Ipc.Supply.dll": "c29fa6a8fdb22eeae107790758b8487a5a07a865a98b0f7a6fecbc65c261a9a1"
+  },
+  "boundaries": [
+    "Windows actual NOT_RUN; no new Windows packaging or WPF runtime acceptance",
+    "Real SDK/device/WCS/PLC/site BLOCKED; synthetic delayed wrappers only",
+    "Real power failure and production-load longevity NOT_RUN; controlled process termination tested",
+    "Fresh signed package rebuild/full install/recovery/uninstall lifecycle NOT_RUN independently in this review",
+    "Unknown physical provider cancellation/session guarantees remain external qualification",
+    "Old-epoch unavailable health projection interleaving not demonstrated as a blocking defect; not listed as confirmed finding"
+  ],
+  "repository_source_document_changes": false,
+  "pull_request_writes": false,
+  "merge_performed": false,
+  "remote_readback": {
+    "baseRefOid": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+    "headRefOid": "3f6f762d31655ef0fe8d6562ed413beed682e2f9",
+    "mergeable": "MERGEABLE",
+    "state": "OPEN"
+  },
+  "workspace_end": "workspace-end.json"
+}

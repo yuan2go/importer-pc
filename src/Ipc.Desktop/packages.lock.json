@@ -344,6 +344,13 @@
           "Ipc.Platform": "[1.0.0, )"
         }
       },
+      "ipc.application.parcelflow": {
+        "type": "Project",
+        "dependencies": {
+          "Ipc.Application.Contracts": "[1.6.0, )",
+          "Ipc.Platform.Storage": "[1.0.0, )"
+        }
+      },
       "ipc.drivers": {
         "type": "Project",
         "dependencies": {
@@ -375,13 +382,14 @@
         "type": "Project",
         "dependencies": {
           "Ipc.Adapters": "[1.0.0, )",
+          "Ipc.Application.ParcelFlow": "[1.0.0, )",
           "Ipc.Supply": "[1.0.0, )"
         }
       },
       "ipc.reference.protocol": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.0.0, )"
+          "Ipc.Application.Contracts": "[1.6.0, )"
         }
       },
       "Ipc.Supply": {

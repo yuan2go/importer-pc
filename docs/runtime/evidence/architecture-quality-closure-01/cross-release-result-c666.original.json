@@ -1,0 +1,18 @@
+{
+  "Status": "PASS",
+  "OldSourceCommit": "e1fcff0fdd3434d4bc7d4a50323dd233d822bb15",
+  "NewSourceCommit": "c666efd8df50aac0ad579ec600b801f04372dbac",
+  "StorageVersion": 4,
+  "NewUnsettledHostExitCode": -6,
+  "Rejection": "OriginalCapabilityUnavailable before sources Start",
+  "RejectionLogSha256": "139c2f9443a8c16b665cdc64389d7fa54ef3b8b1a940ce171e4a6b3a329dfdbf",
+  "OriginalRequestId": "4671a4f8f6a8473683138f19c8cfb41d",
+  "OriginalPayloadHash": "30BE2E47E9CB6ABC795FFA73DBF405E10DEC686BEA6A2F93F10835C99B01E8EE",
+  "OriginalOperator": null,
+  "OldMatchingReleaseCleared": "PhysicalCompleted",
+  "NewHostAfterSettlement": "StartedPaused",
+  "ReceiverExecutions": 1,
+  "FrozenRequestUnchanged": true,
+  "RealEquipment": "BLOCKED",
+  "Windows": "NOT_RUN"
+}

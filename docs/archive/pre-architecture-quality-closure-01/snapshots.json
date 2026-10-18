@@ -1,0 +1,33 @@
+{
+  "baseline": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "770aa4c2cd27e8797b2c91ec17627e2ec505fcaca98e56c27bece44471e75159"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "sha256": "4b3d2b58e65178792d6849891d8f363b5c95ac319cfc50170ed74bf1afc26e2c"
+    },
+    {
+      "path": "docs/design/framework.md",
+      "sha256": "732d9bb79367d35356cc4b31df529cfc0d7cc7eced00e72d92f7557d0c317f63"
+    },
+    {
+      "path": "docs/design/framework-decisions.md",
+      "sha256": "57996d706044c547447e333c6147f5b14664dcf6688ac36e51bc675d1b88e767"
+    },
+    {
+      "path": "docs/design/controlled-extensions.md",
+      "sha256": "f6120184a0d9efb0a1204f2c43981269044e8ff539d744a9b376c6957d9846ab"
+    },
+    {
+      "path": "docs/extensions/developer-guide.md",
+      "sha256": "74e4d1e4f16b01b0273cbb0dae28e1bb4905f32ebb3df95b1706f50cea01b6b2"
+    },
+    {
+      "path": "docs/runtime/application-capability-19.md",
+      "sha256": "bdb490d363337fc658a46522b049a84b5bf04669d915d95d9d4662614742dddb"
+    }
+  ]
+}

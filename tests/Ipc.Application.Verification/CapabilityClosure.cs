@@ -162,7 +162,12 @@ static class CapabilityClosure
         { db.Open(); using var count = db.CreateCommand(); count.CommandText = "SELECT COUNT(*) FROM parcel_measurements"; Pass((long)count.ExecuteScalar()! == 0, "interrupted association cannot leave an orphaned measurement dedup row"); }
         await using (var app = await Open(crash, "weight-crash"))
         {
-            app.EmitReferenceWeight(sample); var s = await Wait(app, x => x.Operations.Single().State == ParcelState.PlcAccepted);
+            app.EmitReferenceWeight(sample); var s = await Wait(app, x => x.Operations.Single().Weight is not null);
+            Pass(s.Paused && s.Operations.Single().Plc is null, "recovered original measurement cannot automatically authorize first PLC dispatch");
+            await Command(app, "Resume");
+            var recovered = s.Operations.Single(); var revision = (await app.SnapshotAsync()).Revision;
+            await app.CommandAsync(new(Wire.Id(), revision, "ContinuePrepared", recovered.Id, "Synthetic original parcel inspected after interrupted association"));
+            s = await Wait(app, x => x.Operations.Single().State == ParcelState.PlcAccepted);
             app.EmitReferenceWeight(sample); await Task.Delay(50);
             Pass((await app.SnapshotAsync()).Operations.Single().Plc!.Attempts == 1 && s.Operations.Single().Weight!.MeasurementId == sample.Id, "original sample survives restart and duplicate sample cannot cause another PLC attempt");
         }
@@ -172,9 +177,9 @@ static class CapabilityClosure
             await app.LoginAsync("alice", "SIMULATION_ONLY"); app.EmitReference("session", "007", Wire.Id()); var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved); var op = s.Operations.Single();
             await Task.Delay(240); Pass(!app.EmitReference("expired-session", "008", Wire.Id()), "expired session refuses admission without inventing an authenticated default");
             await Command(app, "Pause"); var before = (await app.SnapshotAsync()).Configuration;
-            Pass((await app.StageConfigurationAsync(before.Revision, before.Effective)).Status == "Rejected", "software pause alone grants no maintenance authority");
+            Pass((await app.StageConfigurationAsync(before.Revision, before.Effective, "Synthetic directed configuration verification")).Status == "Rejected", "software pause alone grants no maintenance authority");
             Pass((await app.AuthorizeMaintenanceAsync("maintenance", "wrong")).Status == "Rejected" && (await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY")).Status == "Authorized", "separate reference maintenance provider authenticates explicit maintenance grant");
-            Pass((await app.StageConfigurationAsync(before.Revision, before.Effective with { TimeoutMs = 1800 })).Status == "PendingRestart", "authenticated configuration forms pending revision and leaves original effective and parcel frozen");
+            Pass((await app.StageConfigurationAsync(before.Revision, before.Effective with { TimeoutMs = 1800 }, "Synthetic directed configuration verification")).Status == "PendingRestart", "authenticated configuration forms pending revision and leaves original effective and parcel frozen");
             Pass((await app.LoginAsync("bob", "SIMULATION_ONLY")).Status == "Authenticated" && (await app.SnapshotAsync()).Operations.Single().Operator!.SessionId == op.Operator!.SessionId, "expired session replacement preserves admitted operator snapshot");
         }
         Console.WriteLine("PASS AC19 COMPLETE: independent entrances, weight/session guards, original images, two upload strategies, cleanup and nonblocking recovery");

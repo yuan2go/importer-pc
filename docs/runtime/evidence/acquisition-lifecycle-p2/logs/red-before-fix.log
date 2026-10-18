@@ -1,0 +1,8 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-9cee2c0c98754e61ac9fcea0609e88e6
+Unhandled exception. System.IO.IOException: Original acquisition unavailable; latest frame substitution forbidden
+   at Ipc.Adapters.ManualObservationSource.AcquisitionView.CaptureAsync(FrozenRequest request, CancellationToken t) in /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/src/Ipc.Drivers/ObservationSources.cs:line 76
+   at AcquisitionLifecycle.Run(String root) in /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/tests/Ipc.Application.Verification/AcquisitionLifecycle.cs:line 21
+   at AcquisitionLifecycle.Run(String root) in /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/tests/Ipc.Application.Verification/AcquisitionLifecycle.cs:line 23
+   at AcquisitionLifecycle.Run(String root) in /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/tests/Ipc.Application.Verification/AcquisitionLifecycle.cs:line 23
+   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/acquisition-lifecycle-p2/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 16
+   at Program.<Main>(String[] args)

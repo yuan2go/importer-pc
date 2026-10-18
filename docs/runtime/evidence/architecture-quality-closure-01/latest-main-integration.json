@@ -1,0 +1,27 @@
+{
+  "observed_at": "2026-10-18T14:33:50.966345+00:00",
+  "execution_baseline": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
+  "latest_main": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "prior_branch": "db4a163ace441b2516ebb06487da59431c62cb67",
+  "incoming_scope": "6 documentation/PDF paths; no runtime/config/packaging changes",
+  "runtime_candidate_source": "3d6960756bfd843a1cb78c6648687b45f2da9f1c",
+  "audit02_originals": [
+    {
+      "path": "docs/reviews/architecture-quality-audit-02/Codex-next-phase.md",
+      "sha256": "70c96957740b3595b55e2043c0979ce92cf4deb971f0a4cba30477f3d082a80e",
+      "same_as_main": true
+    },
+    {
+      "path": "docs/reviews/architecture-quality-audit-02/README.md",
+      "sha256": "e5d2e40e7ca49e1640070290dae756c44ead414092f02a10057f9c60e4beebb1",
+      "same_as_main": true
+    },
+    {
+      "path": "docs/reviews/architecture-quality-audit-02/WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02.pdf",
+      "sha256": "dce6b0e235c44e414cc14a976dbd3cea0d24f634aab1276be894b6b69b62283d",
+      "same_as_main": true
+    }
+  ],
+  "pdf01_still": "BLOCKED_NOT_OBTAINED",
+  "business_merged_main": false
+}

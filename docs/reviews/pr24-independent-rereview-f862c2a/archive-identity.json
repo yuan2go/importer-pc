@@ -1,0 +1,128 @@
+{
+  "archived_at_utc": "2026-10-18T16:05:30.357430+00:00",
+  "review_head": "f862c2ae2ad00ab79ceff5e2013c2a5593d05234",
+  "review_main": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "original_result": "NO_REMAINING_CONFIRMED_CODE_BLOCKER_IN_REVIEWED_REFERENCE_SCOPE",
+  "original_report_sha256": "6274263d0eab8d512d9cd82b3814c26d3b5a286c92e8a2a8d2de170038851577",
+  "files": [
+    {
+      "original_path": "REPORT.md",
+      "archived_path": "original/REPORT.md",
+      "sha256": "6274263d0eab8d512d9cd82b3814c26d3b5a286c92e8a2a8d2de170038851577",
+      "bytes": 8478,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "SHA256SUMS",
+      "archived_path": "original/SHA256SUMS",
+      "sha256": "a14b5143432876e14765b1d95c779b2d31cf67be47aa654a47277b3c1a096b40",
+      "bytes": 1285,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "build.log",
+      "archived_path": "original/build.log",
+      "sha256": "93a275ccf7d2d5b095bfd6577af232af9d22d6e1f6776fd17710d046c2a7d0c8",
+      "bytes": 4881,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "capabilities-1.6.11-independent.ipcx.identity.json",
+      "archived_path": "original/capabilities-1.6.11-independent.ipcx.identity.json",
+      "sha256": "3913984ba51a4ebd254cbf0d22cc2997f2d240f6fe6cf069b010e041e454db45",
+      "bytes": 1320,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "extensions.log",
+      "archived_path": "original/extensions.log",
+      "sha256": "a1c3dbb5036d861992fd3d0e97bc3c6cf1b8a0120b57258dcfe770f05768624c",
+      "bytes": 4435,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "host-build.log",
+      "archived_path": "original/host-build.log",
+      "sha256": "430324fa29c0a3421e8d40540ee03ac21bcec70448684f30a6f7079b3e4505fe",
+      "bytes": 4183,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "inventory.log",
+      "archived_path": "original/inventory.log",
+      "sha256": "43144c03fe9fa81e3e629103755182e9f7d1b5ce945b1808cddd5f9364330502",
+      "bytes": 14087,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "probe/Probe.csproj",
+      "archived_path": "original/probe/Probe.csproj",
+      "sha256": "fa067a38a481a8e3acc20d0a993146699575d74fd1c526aa264d68d3ff71fc4e",
+      "bytes": 311,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "probe/Program.cs",
+      "archived_path": "original/probe/Program.cs",
+      "sha256": "460d4feb800846d9f2ffbd072f316f3335475c1d07c2668887f7ff90d6e7d3f8",
+      "bytes": 3420,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "probe-build.log",
+      "archived_path": "original/probe-build.log",
+      "sha256": "daa1ea2eb84846777ae53673687f0ea4f645c8945efb7d609a83c0c5a3a26b23",
+      "bytes": 352,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "probe-results.log",
+      "archived_path": "original/probe-results.log",
+      "sha256": "07130b688b3b7549efc4bec393914db2144f6e2d6250dc9d80f3cc746cd234f5",
+      "bytes": 72994,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "review-result.json",
+      "archived_path": "original/review-result.json",
+      "sha256": "13299aaf02e5b621705bc012b5e083b499af0fa3d4e1be35ce09a9152aa2e5e9",
+      "bytes": 6047,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "review.log",
+      "archived_path": "original/review.log",
+      "sha256": "744281b1031c69af5d84bfc262566f0a18dfa48fb914135611f29e35302df79f",
+      "bytes": 2947,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "signed-build.log",
+      "archived_path": "original/signed-build.log",
+      "sha256": "2feb87566177ce87c9e84c4e8a301f7238c5bb4e1427b8f5dc2b303c53e0c24c",
+      "bytes": 21906,
+      "bytes_unchanged": true
+    },
+    {
+      "original_path": "signed-tests-overlay.json",
+      "archived_path": "original/signed-tests-overlay.json",
+      "sha256": "1542e14a5037c260f71f0b7831c9b1911527071cdfd582757f473cdb17082c92",
+      "bytes": 2510,
+      "bytes_unchanged": true
+    }
+  ],
+  "original_checksum_file_verified": true,
+  "excluded_from_publication": [
+    {
+      "path": "capabilities-1.6.11-independent.ipcx",
+      "sha256": "628da64283ae5d56eaa92cd65fd79830a58dd39daf8ab9e4fc9adee79b8c0602",
+      "reason": "Retained local verification binary; exact identity archived"
+    }
+  ],
+  "private_keys_trust_sdk_production_data_included": false,
+  "this_archival_turn_tests": "NOT_RUN_BY_USER_REQUEST",
+  "this_archival_turn_build_package": "NOT_RUN_BY_USER_REQUEST",
+  "historical_failures_modified": false,
+  "merge_user_authorized": true,
+  "merge_not_production_qualification": true
+}

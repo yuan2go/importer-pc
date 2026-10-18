@@ -31,7 +31,7 @@ public partial class ShellWindow : Window
         finally { refreshing = false; }
     }
     void Workstation_Click(object s, RoutedEventArgs e) => PageHost.Content = work;
-    void History_Click(object s, RoutedEventArgs e) => PageHost.Content = history;
+    async void History_Click(object s, RoutedEventArgs e) { PageHost.Content = history; await vm.RunAsync(() => vm.LoadHistoryAsync()); }
     async void Maintenance_Click(object s, RoutedEventArgs e) { PageHost.Content = maintenance; await vm.RunAsync(vm.LoadCapabilitiesAsync); }
     void Window_Click(object s, RoutedEventArgs e) => new ShellWindow(newViewModel(), newViewModel, workstation, layout: compact ? "compact" : "standard") { Owner = this }.Show();
     void Layout_Click(object s, RoutedEventArgs e) { compact = !compact; ApplyLayout(); }

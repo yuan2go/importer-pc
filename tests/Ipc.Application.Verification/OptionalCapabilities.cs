@@ -115,7 +115,7 @@ static class OptionalCapabilities
                 Pass(lostKind == "plc" || original.Wcs is null && original.Plc is null, run + " uncertain image stage blocks all downstream effects");
                 Pass((await app.LogoutAsync()).Status == "Rejected", run + " uncertainty cannot be cleared by logout");
                 await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); s = await app.SnapshotAsync();
-                Pass((await app.StageConfigurationAsync(s.Configuration.Revision, s.Configuration.Effective with { Login = null })).Status == "PendingRestart", run + " feature change is pending only");
+                Pass((await app.StageConfigurationAsync(s.Configuration.Revision, s.Configuration.Effective with { Login = null }, "Synthetic directed configuration verification")).Status == "PendingRestart", run + " feature change is pending only");
             }
             await using (var app = await Open(c, run))
             {

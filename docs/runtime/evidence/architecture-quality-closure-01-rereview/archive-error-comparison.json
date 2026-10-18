@@ -1,0 +1,11 @@
+{
+  "status": "PASS_NO_NEW_OR_REMOVED_HISTORICAL_ERROR_IDENTITIES",
+  "archive_verifier_status": "FAIL_PRESERVED_HISTORICAL_267",
+  "baseline": "docs/runtime/evidence/acquisition-lifecycle-p2/archive-checks.json",
+  "baseline_errors": 267,
+  "current_errors": 267,
+  "added": [],
+  "removed": [],
+  "identity": "exact (code,path) set equality; duplicate errors counted separately in source outputs",
+  "tool_unchanged": true
+}

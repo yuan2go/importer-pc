@@ -81,13 +81,16 @@ public partial class ParcelViewModel
     public async Task LoadCapabilitiesAsync()
     {
         if (Snapshot is null) await RefreshAsync();
-        var c = Snapshot!.Configuration.Pending ?? Snapshot.Configuration.Effective;
+        var loaded = Snapshot!;
+        var c = loaded.Configuration.Pending ?? loaded.Configuration.Effective;
         var catalog = await application.CapabilitiesAsync();
-        InstalledPackages = "已安装签名包：" + string.Join(" · ", catalog.InstalledPackages); Changed(nameof(InstalledPackages));
+        SetConfigurationDraft(c, loaded.Configuration.Revision, loaded.RuntimeId);
+        InstalledProviderParameters = Wire.Encode(catalog); Changed(nameof(InstalledProviderParameters));
+        InstalledPackages = "已安装签名包（安装不代表绑定、激活或健康）：" + string.Join(" · ", catalog.InstalledPackages); Changed(nameof(InstalledPackages));
         CapabilityDrafts.Clear();
         if (c.SchemaVersion >= 3 || c.Topology is not null)
         {
-            Message = "schema3设备拓扑为只读；请通过版本化完整配置及应用CAS接口维护，旧单Reader表单禁止保存";
+            Message = "schema3旧表单只读；请在“完整候选配置”编辑全部拓扑、校验并以CAS保存；受控重启生效";
             return;
         }
         var bound = new[] { c.Login, c.MaintenanceLogin, c.Scale, c.Wcs, c.Plc, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
@@ -136,15 +139,17 @@ public partial class ParcelViewModel
             Extensions = instances.Append(reader).Any(x => x.Package is not null) ? new(instances.Append(reader).Where(x => x.Package is not null).Select(x => x.Package!).Distinct().ToArray(),
                 reader.Package is null ? [] : [new(reader.InstanceId, reader.Package.Id, reader.Module!, Snapshot.Configuration.Effective.Reader.DeviceId, true, reader.Parameters)]) : null
         };
-        var receipt = await application.StageConfigurationAsync(Snapshot.Configuration.Revision, c);
+        var expected = RequireDraftRevision();
+        var receipt = await application.StageConfigurationAsync(expected, c, ConfigurationReason);
+        AdvanceOwnDraftRevision(expected, receipt);
         Message = receipt.Status + " · " + receipt.Reason;
     }
     public async Task AuthorizeMaintenanceAsync(string proof) { var r = await application.AuthorizeMaintenanceAsync(MaintenanceSubject, proof); Message = r.Status + " · " + r.Reason; }
     public async Task InstallAsync() { var r = await application.InstallCapabilityAsync(PackagePath, PackageSha256); Message = r.Status + " · " + r.Reason; await LoadCapabilitiesAsync(); }
-    public async Task ContinueUploadAsync() { var op = Selected ?? Current ?? throw new InvalidOperationException("选择原作业"); await CommandAsync("ContinueUpload", op.Id); }
+    public async Task ContinueUploadAsync() { var op = Selected ?? throw new InvalidOperationException("选择原作业"); await CommandAsync("ContinueUpload", op.Id); }
     public async Task AbandonAsync()
     {
-        var op = Selected ?? Current ?? throw new InvalidOperationException("选择原作业"); var s = await application.SnapshotAsync();
+        var op = Selected ?? throw new InvalidOperationException("选择原作业"); var s = Snapshot ?? throw new InvalidOperationException("刷新后选择原作业");
         var r = await application.CommandAsync(new(Wire.Id(), s.Revision, "AbandonUnsubmitted", op.Id, InspectionReason)); Message = r.Status + " · " + r.Reason;
     }
 }

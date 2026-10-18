@@ -1,0 +1,26 @@
+{
+  "Package": "capabilities-1.6.1-release.ipcx",
+  "PackageSha256": "a8de7f96c678c6d6ac3df21c01471173106800619decfca97904f3d7f0483e3a",
+  "PluginSourceCommit": "cad129f4fac2c1969c2bd80985caa2c6a0b785f0",
+  "PluginSourceSha256": "af973c8abcaec9e911e2c2ed78fb602adc6a288f29aa8adb95e4aa7a869c69bd",
+  "DefinitionSha256": "423531ba15536fb965eb960b28885b82d6c80f8ae263583365927877b89f73f8",
+  "HostContractSha256": "5002b52f8ddbbb2e717bde17943da2560c8fb3aebd0d48117deff44ef526eb9a",
+  "FrozenHostUnchanged": true,
+  "FrozenCheckerUnchanged": true,
+  "CheckerContractsSha256": {
+    "Ipc.Platform": "5002b52f8ddbbb2e717bde17943da2560c8fb3aebd0d48117deff44ef526eb9a",
+    "Ipc.Application.Contracts": "0a2887a2da9af935f4ea2b8e9d1ea2c8bf9758c9784483603b2920dea560682b"
+  },
+  "Publisher": "quality-synthetic",
+  "Version": "1.6.1",
+  "ExtensionContract": 1,
+  "Signature": "RSA-PSS/SHA256",
+  "Mode": "Simulation",
+  "ManifestSha256": "222ebb9e98ebfe35f95357a7b4f2042012fa4d0fa35a17847070889d2476ee4c",
+  "TrustSha256": "dbda299cc35dd82733ee7efe6d8ddd8d456a667445003eaf715db94f72613fe1",
+  "PayloadSha256": {
+    "Ipc.Reference.ParcelCapabilitiesExtension.dll": "d098b113403ba4290059cb5176b3eaf5b00e9861af9799ece23cdadb8ad9af51"
+  },
+  "DependencyPackages": [],
+  "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+}

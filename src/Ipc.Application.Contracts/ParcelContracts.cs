@@ -40,7 +40,8 @@ public sealed record ParcelConfiguration(int SchemaVersion, string ApplicationId
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] CapabilityBinding[]? CapabilityInstances = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] CapabilityBinding? MaintenanceLogin = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] WeightValidity? WeightValidity = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelTopology? Topology = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelTopology? Topology = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ParcelRetentionPolicy? Retention = null);
 public enum ParcelState { WaitingWeight, Prepared, ResolvingWcs, WcsUnknown, WcsRejected, SlotResolved, SubmittingPlc, PlcUnknown, PlcRejected, PlcAccepted, PhysicalCompleted, Blocked, CapturingImage, UploadingImage, ImageUnknown, ImageRejected, WeightTimedOut, Abandoned }
 public enum StageState { Prepared, Dispatching, Unknown, Rejected, Accepted, Conflict, Cancelled }
 public sealed record StageFact(FrozenRequest Request, StageState State, int Attempts, StageReply[] Replies, string? Failure = null);
@@ -54,21 +55,26 @@ public sealed record ParcelOperation(string Id, string AdmissionId, string Parce
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] bool ImageReleased = false,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] AcquisitionIdentity? Acquisition = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? PositionId = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DeviceBinding? ReaderBinding = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DeviceBinding? ReaderBinding = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] bool RecoveryRequired = false);
 public sealed record ParcelSnapshot(Guid RuntimeId, string ApplicationId, long Revision, string State, bool Paused,
     string[] BlockingReasons, ParcelOperation[] Operations, CapabilityHealth[] Health,
-    ConfigurationRevision<ParcelConfiguration> Configuration, OperatorIdentity? CurrentOperator = null, ParcelAvailability? Availability = null, PositionSnapshot[]? Positions = null, DeviceState[]? Devices = null);
+    ConfigurationRevision<ParcelConfiguration> Configuration, OperatorIdentity? CurrentOperator = null, ParcelAvailability? Availability = null, PositionSnapshot[]? Positions = null, DeviceState[]? Devices = null, ParcelCapacity? Capacity = null, IdentityConflict[]? IdentityConflicts = null, string[]? AuxiliaryReasons = null);
 public sealed record ParcelAvailability(bool Admit, bool Resume, bool Configure, string[] ContinuePrepared, string[] ContinueUpload, string[] AbandonUnsubmitted);
 public interface IParcelApplication : IBusinessApplication
 {
     Task<ParcelSnapshot> SnapshotAsync();
+    Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50);
+    Task<ParcelOperation?> OperationAsync(string id);
     Task<BusinessReceipt> LoginAsync(string subject, string proof);
     Task<BusinessReceipt> LogoutAsync();
     Task<BusinessReceipt> AuthorizeMaintenanceAsync(string subject, string proof);
     Task<CapabilityCatalog> CapabilitiesAsync();
+    Task<BusinessReceipt> ManageCapabilityAsync(string action, string identity);
     Task<BusinessReceipt> InstallCapabilityAsync(string file, string sha256);
-    Task<BusinessReceipt> StageConfigurationAsync(long expectedRevision, ParcelConfiguration candidate);
-    Task<BusinessReceipt> ReconcileAsync(string operationId);
+    Task<BusinessReceipt> ValidateConfigurationAsync(ParcelConfiguration candidate);
+    Task<BusinessReceipt> StageConfigurationAsync(long expectedRevision, ParcelConfiguration candidate, string? reason = null);
+    Task<BusinessReceipt> ReconcileAsync(string operationId, string? stage = null);
     Task<BusinessReceipt> ReconnectAsync();
     Task<BusinessReceipt> BackupAsync(string destination);
     bool EmitReference(string admissionId, string code, string sourceEventId);

@@ -1,0 +1,27 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 922 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 922 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 922 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 922 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 923 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 922 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 922 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 922 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 6 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/architecture-quality-closure-01/importer-pc/src/Ipc.Product/Ipc.Product.csproj (用时 9 毫秒)。
+  Ipc.Platform -> /tmp/ipc-aq-delivery-supply-compat/bin/Ipc.Platform/debug/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /tmp/ipc-aq-delivery-supply-compat/bin/Ipc.Application.Contracts/debug/Ipc.Application.Contracts.dll
+  Ipc.Reference.Protocol -> /tmp/ipc-aq-delivery-supply-compat/bin/Ipc.Reference.Protocol/debug/Ipc.Reference.Protocol.dll
+  Ipc.Drivers -> /tmp/ipc-aq-delivery-supply-compat/bin/Ipc.Drivers/debug/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-aq-delivery-supply-compat/bin/Ipc.Application.Supply.Contracts/debug/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /tmp/ipc-aq-delivery-supply-compat/bin/Ipc.Integrations/debug/Ipc.Integrations.dll
+  Ipc.Adapters -> /tmp/ipc-aq-delivery-supply-compat/bin/Ipc.Adapters/debug/Ipc.Adapters.dll
+  Ipc.Platform.Storage -> /tmp/ipc-aq-delivery-supply-compat/bin/Ipc.Platform.Storage/debug/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> /tmp/ipc-aq-delivery-supply-compat/bin/Ipc.Application.Supply/debug/Ipc.Supply.dll
+  Ipc.Product -> /tmp/ipc-aq-delivery-supply-compat/bin/Ipc.Product/debug/Ipc.Product.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:04.35

@@ -9,6 +9,11 @@ public sealed record PositionSnapshot(string Id, string ReaderDeviceId, bool Adm
 public interface IReaderImageCapture
 {
     IImageCamera BindCapture(CapabilityBinding binding, string temporaryDirectory);
+    // The callback provisionally owns "observation:" + Observation.Id before delivery.
+    // A consumer must retain its own owner BEFORE releasing the ingress owner.
+    // Release is idempotent; it cannot release another owner or an active capture.
+    void RetainAcquisition(AcquisitionIdentity identity, string owner);
+    void ReleaseAcquisition(AcquisitionIdentity identity, string owner);
 }
 public static class ParcelBindings
 {

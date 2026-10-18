@@ -1,5 +1,5 @@
 {
-  "SourceCommit": "bf16bd1079128b4d235819878af18443a848943a",
+  "SourceCommit": "e86d664c78418d82bdd49b1abaacc148f38c2d35",
   "Checks": [
     "portable archive paths safe",
     "portable all shipped SHA256SUMS verified after extraction",
@@ -33,14 +33,14 @@
     {
       "Target": "portable",
       "Zip": "sportmaster-portable.zip",
-      "Sha256": "3db6057bb6fd49423b265e90d054c2a1687f048de58b0f4b0a85467894d240c1",
-      "Size": 18373853
+      "Sha256": "054c8acb9165f3608347fd3d20dcaf56613e0efe7c2e64750a5bf092c7e90110",
+      "Size": 18377583
     },
     {
       "Target": "win-x64",
       "Zip": "sportmaster-win-x64.zip",
-      "Sha256": "85a9c73720672bbbbb0b2c5dea05f71d2c3ee3cfdaf46ae15c844a87918e5f86",
-      "Size": 104114359
+      "Sha256": "e64cdee3ffcc5797cc40641917ba7c6bd000d8947aeebe6fc78a87c589dd1b6c",
+      "Size": 104121535
     }
   ],
   "WindowsUi": "NOT_RUN",

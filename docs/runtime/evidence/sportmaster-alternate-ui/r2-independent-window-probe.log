@@ -1,0 +1,7 @@
+<WORKTREE>/src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs(28,35): warning CS8622: “void SupplyStationWindow.ViewportChanged(object sender, SizeChangedEventArgs e)”的参数“sender”类型中引用类型的为 Null 性与目标委托“EventHandler<SizeChangedEventArgs>”不匹配(可能是由于为 Null 性特性)。 [<PROBE>]
+<PROBE>): warning CS0067: 从不使用事件“DispatcherTimer.Tick” [<PROBE>]
+<PROBE>): warning CS0067: 从不使用事件“Window.Loaded” [<PROBE>]
+<PROBE>): warning CS0067: 从不使用事件“Grid.SizeChanged” [<PROBE>]
+Root.IsVisible=True; Child.IsVisible=False; Child.TimerRunning=False
+Root.Message=停止未完成，仍持有资源：synthetic owner-stop failure
+AfterRetry.Root.IsVisible=False; Child.TimerRunning=False; StopCalls=2

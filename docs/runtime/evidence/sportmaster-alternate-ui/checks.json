@@ -2,7 +2,7 @@
   "Status": "REFERENCE_PASS_WINDOWS_NOT_RUN",
   "BaselineMain": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
   "Date": "2026-10-19",
-  "SportmasterUiAssertions": 86,
+  "SportmasterUiAssertions": 96,
   "Architecture22Assertions": 62,
   "Builds": {
     "SportmasterWpf": "PASS",
@@ -15,31 +15,31 @@
   "WindowsUi": "NOT_RUN",
   "RealSdkWcsField": "BLOCKED",
   "OriginalHtmlUploaded": false,
-  "SourceCommit": "bf16bd1079128b4d235819878af18443a848943a",
-  "FinalUiAssertions": 86,
+  "SourceCommit": "e86d664c78418d82bdd49b1abaacc148f38c2d35",
+  "FinalUiAssertions": 96,
   "PackageChecks": 27,
   "Packages": [
     {
       "Target": "portable",
       "Zip": "sportmaster-portable.zip",
-      "Sha256": "3db6057bb6fd49423b265e90d054c2a1687f048de58b0f4b0a85467894d240c1",
-      "Size": 18373853
+      "Sha256": "054c8acb9165f3608347fd3d20dcaf56613e0efe7c2e64750a5bf092c7e90110",
+      "Size": 18377583
     },
     {
       "Target": "win-x64",
       "Zip": "sportmaster-win-x64.zip",
-      "Sha256": "85a9c73720672bbbbb0b2c5dea05f71d2c3ee3cfdaf46ae15c844a87918e5f86",
-      "Size": 104114359
+      "Sha256": "e64cdee3ffcc5797cc40641917ba7c6bd000d8947aeebe6fc78a87c589dd1b6c",
+      "Size": 104121535
     }
   ],
-  "IntegratedMain": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "IntegratedMain": "713f23d7c39743762adb884fdffa18745cad08f8",
   "QualityReviewClosureAssertions": 32,
   "WholeArchiveStatus": "FAIL_INHERITED_267_UNCHANGED",
   "NewArchiveErrors": 0,
   "ConfigurationConfirmationAssertions": 32,
   "PullRequest": "https://github.com/yuan2go/importer-pc/pull/27",
   "Merged": false,
-  "ReviewedHead": "7d47a19e057586a8c704700ac9cfb7adf349c703",
+  "ReviewedHead": "226ac9bfdde08a99f5ce93e55c4eb0a0d277b7fa",
   "P2Fixes": {
     "P2-01": "SOURCE_FIXED_REFERENCE_VERIFIED",
     "P2-02": "SOURCE_FIXED_WPF_CROSSBUILD_WINDOWS_NOT_RUN",
@@ -51,6 +51,51 @@
   "PackageHelperTests": 3,
   "NativeLayoutGeometryAssertions": "WINDOWS_NOT_RUN",
   "ArchiveValidationScope": "Git tracked files plus pending non-ignored additions; public source snapshot",
-  "WorktreeGeneratedOutputErrors": 164,
-  "NewPublicSourceErrors": 0
+  "NewPublicSourceErrors": 0,
+  "WindowControlFlowAssertions": 16,
+  "UpgradeConflictClosureAssertions": 47,
+  "IndependentWindowProbe": "PASS_EVENT_TIMER_SUBSTITUTES_NOT_NATIVE_WPF",
+  "RereviewP2Fixes": {
+    "R2-P2-01": "READ_ID_ORDERING_REFERENCE_VERIFIED",
+    "R2-P2-02": "EXACT_WINDOW_CONTROL_FLOW_VERIFIED_NATIVE_WINDOWS_NOT_RUN"
+  },
+  "HistoricalWorktreeBuildOutputScan": "p2-worktree-build-output-scan.json (prior round only)",
+  "Verification": [
+    {
+      "Selector": "--sportmaster-ui",
+      "Assertions": 96,
+      "ExitCode": 0,
+      "Log": "r2-sportmaster-ui.log"
+    },
+    {
+      "Selector": "--sportmaster-window-lifecycle",
+      "Assertions": 16,
+      "ExitCode": 0,
+      "Log": "r2-sportmaster-window-lifecycle.log"
+    },
+    {
+      "Selector": "--application-architecture",
+      "Assertions": 62,
+      "ExitCode": 0,
+      "Log": "r2-application-architecture.log"
+    },
+    {
+      "Selector": "--configuration-confirmation",
+      "Assertions": 32,
+      "ExitCode": 0,
+      "Log": "r2-configuration-confirmation.log"
+    },
+    {
+      "Selector": "--review-closure",
+      "Assertions": 32,
+      "ExitCode": 0,
+      "Log": "r2-review-closure.log"
+    },
+    {
+      "Selector": "--upgrade-conflict-closure",
+      "Assertions": 47,
+      "ExitCode": 0,
+      "Log": "r2-upgrade-conflict-closure.log"
+    }
+  ]
 }

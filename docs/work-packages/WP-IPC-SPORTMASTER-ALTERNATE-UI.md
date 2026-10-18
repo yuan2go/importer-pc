@@ -28,3 +28,5 @@
 用户2026-10-19授权修复4项并更新同PR，不合并。[原审查及修复复核](../reviews/pr27-ui-independent-review.md)、[整改计划](../superpowers/plans/2026-10-19-sportmaster-ui-p2.md)。修复统一所有桌面读取失败、诊断局部滚动、小客户区暂停/人工恢复保护和失效时间常驻；共享桌面默认行为不变，业务核心不改。历史7ed7862候选保持原身份，新候选见运行结果后续记录。
 
 P2修复源码bf16bd1已推送PR27；UI86/架构62/配置确认32/质量复审32及候选27项参考验证通过。Windows布局与交互仍NOT_RUN，原D/RV不变，不合并PR。
+
+第二轮读取/关闭竞态整改按[新计划](../superpowers/plans/2026-10-19-sportmaster-ui-rereview-p2.md)完成；源码e86d664正常继承main713f23d，业务核心相对此main不变。UI96、窗口控制流16及相关173项回归、新候选27项检查PASS。原复审与旧候选保留，Windows原生仍NOT_RUN，PR27不合并。

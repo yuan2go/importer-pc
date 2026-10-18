@@ -1,0 +1,2 @@
+Fresh=False; Left.CanAdmit=False; ReadStatus=快照已失效 · NEWER PAUSE READ FAILED · 最后成功读取：2026-10-19 01:06:28 +08:00; Message=暂停失败：NEWER PAUSE READ FAILED
+EmitCallsAfterFailure=0

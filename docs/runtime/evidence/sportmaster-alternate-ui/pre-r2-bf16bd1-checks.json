@@ -1,0 +1,56 @@
+{
+  "Status": "REFERENCE_PASS_WINDOWS_NOT_RUN",
+  "BaselineMain": "b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d",
+  "Date": "2026-10-19",
+  "SportmasterUiAssertions": 86,
+  "Architecture22Assertions": 62,
+  "Builds": {
+    "SportmasterWpf": "PASS",
+    "DirectPlcWpfCompatibility": "PASS",
+    "WcsToPlcWpfCompatibility": "PASS",
+    "WindowsWpfSmokeHarnessCrossBuild": "PASS"
+  },
+  "ProductionDependenciesAdded": 0,
+  "BusinessLogicChanged": false,
+  "WindowsUi": "NOT_RUN",
+  "RealSdkWcsField": "BLOCKED",
+  "OriginalHtmlUploaded": false,
+  "SourceCommit": "bf16bd1079128b4d235819878af18443a848943a",
+  "FinalUiAssertions": 86,
+  "PackageChecks": 27,
+  "Packages": [
+    {
+      "Target": "portable",
+      "Zip": "sportmaster-portable.zip",
+      "Sha256": "3db6057bb6fd49423b265e90d054c2a1687f048de58b0f4b0a85467894d240c1",
+      "Size": 18373853
+    },
+    {
+      "Target": "win-x64",
+      "Zip": "sportmaster-win-x64.zip",
+      "Sha256": "85a9c73720672bbbbb0b2c5dea05f71d2c3ee3cfdaf46ae15c844a87918e5f86",
+      "Size": 104114359
+    }
+  ],
+  "IntegratedMain": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "QualityReviewClosureAssertions": 32,
+  "WholeArchiveStatus": "FAIL_INHERITED_267_UNCHANGED",
+  "NewArchiveErrors": 0,
+  "ConfigurationConfirmationAssertions": 32,
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/27",
+  "Merged": false,
+  "ReviewedHead": "7d47a19e057586a8c704700ac9cfb7adf349c703",
+  "P2Fixes": {
+    "P2-01": "SOURCE_FIXED_REFERENCE_VERIFIED",
+    "P2-02": "SOURCE_FIXED_WPF_CROSSBUILD_WINDOWS_NOT_RUN",
+    "P2-03": "SOURCE_FIXED_REFERENCE_VERIFIED_WINDOWS_NOT_RUN",
+    "P2-04": "SOURCE_FIXED_REFERENCE_VERIFIED_WINDOWS_NOT_RUN"
+  },
+  "IndependentOrderingProbe": "PASS",
+  "ShippedGuideTests": 2,
+  "PackageHelperTests": 3,
+  "NativeLayoutGeometryAssertions": "WINDOWS_NOT_RUN",
+  "ArchiveValidationScope": "Git tracked files plus pending non-ignored additions; public source snapshot",
+  "WorktreeGeneratedOutputErrors": 164,
+  "NewPublicSourceErrors": 0
+}

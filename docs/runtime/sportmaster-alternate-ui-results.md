@@ -104,3 +104,24 @@ PR创建后main合入PR26到9a5d87a；本分支再次正常整合，保留其资
 [同一main PR27](https://github.com/yuan2go/importer-pc/pull/27)继续用于本次修复审查，不合并。原HTML没有进入提交或候选。全库资料保持历史设计资产FAIL，最终对照见[资料回执](evidence/sportmaster-alternate-ui/final-archive-comparison.json)；当前逐文件身份与新日志随manifest更新。
 
 本次工作目录资料扫描因新烟测工程的ignored bin/obj生成物额外报告164项（109未登记、51二进制、4生成路径标记），见[工作区扫描记录](evidence/sportmaster-alternate-ui/p2-worktree-build-output-scan.json)。这些文件不进入Git/候选公开清单。公开资料对照另在Git文件加待提交非忽略新增文件的精确源码快照执行，校验器与例外政策未改，不用工作区生成物结果冒充公开源码校验。
+
+## 226ac9b复审后的读取/窗口竞态整改（2026-10-19）
+
+[第二轮原复审和整改复核](../reviews/pr27-ui-independent-review.md)保留两项原P2：旧成功先完成后，新暂停读取失败仍被忽略；主窗停止失败重启已关闭子窗计时器。两项新增回归先在原源码失败，见[r2读取RED](evidence/sportmaster-alternate-ui/r2-pre-fix-read-failure.log)和[r2窗口RED](evidence/sportmaster-alternate-ui/r2-pre-fix-window-failure.log)，没有删断言或跳过失败。
+
+修复按每次读取的单调请求ID判断：只有ID更大的成功能覆盖较旧失败，禁止发布早于相关失败的结果，但新于失败的在途读取成功可直接恢复。共享桌面的默认钩子不改变classic行为。窗口Closed是终态；停止失败只恢复仍登记/未关闭窗口；子窗失败不提前解除主窗正在进行的排空。原实体、请求、CAS和业务守卫不改。
+
+先在ee56123402cba4d284186a06aa61c7a478193560验证96/16/62/32/32，整合前日志以r2-pre-main-ee56123前缀保留。随后正常继承main `713f23d7c39743762adb884fdffa18745cad08f8`（PR31恢复整改），保留两边入口、manifest与全部验证选择器。整合后重新验证同组用例并补47项升级冲突回归。最终冻结运行源码 `e86d664c78418d82bdd49b1abaacc148f38c2d35`，后续交付回执仅文档。相对该main，业务Flow/Runtime/应用契约/SQL/配置/驱动/协议无差异；PR31恢复改动来自main，非UI重新实施。
+
+整合后验证：UI96、实际窗口代码控制流16、架构62、配置确认32、质量复审32、升级冲突47项PASS；三类客户端和原生WPF烟测工程锁定构建均0警告0错误；指南2/发布辅助3项PASS。窗口控制流使用实际code-behind及最小事件/计时器替身，覆盖主子重叠关闭、刷新/保护Pause挂起、失败重试、子窗失败与5秒超时；不能替代HWND/原生Dispatcher。独立保留的[读取原探针](evidence/sportmaster-alternate-ui/r2-independent-ordering-probe.log)复跑Fresh/CanAdmit为false且入场调用0，[关闭原探针](evidence/sportmaster-alternate-ui/r2-independent-window-probe.log)复跑子窗计时器始终停止。旧临时事件替身编译警告原样保留；正式验证工程和WPF项目构建0警告。两轴源码复核未发现剩余确定阻断项。
+
+|目标|新ZIP|SHA256|字节|
+|---|---|---|---|
+|portable|`sportmaster-portable.zip`|`054c8acb9165f3608347fd3d20dcaf56613e0efe7c2e64750a5bf092c7e90110`|18377583|
+|win-x64|`sportmaster-win-x64.zip`|`e64cdee3ffcc5797cc40641917ba7c6bd000d8947aeebe6fc78a87c589dd1b6c`|104121535|
+
+目录 `Workspace/artifacts/importer-pc/sportmaster-alternate-ui/pr27-r2-e86d664/`。[新候选实际解包/启动](evidence/sportmaster-alternate-ui/package-verification.json)27项PASS，实际portable双位原WCS链、一次请求和正常停止通过。bf16bd1的[检查](evidence/sportmaster-alternate-ui/pre-r2-bf16bd1-checks.json)和[候选](evidence/sportmaster-alternate-ui/pre-r2-bf16bd1-package-verification.json)另存历史，未覆盖旧ZIP或赋予旧候选新结论。
+
+原生烟测已增加主子重叠关闭、停止失败与重试，但实际Windows窗口/Dispatcher/DPI/触控/截图仍NOT_RUN；真实SDK/WCS/设备/现场BLOCKED，D/RV不变。main原始失败日志有一处尾空白，保留原字节；本PR相对main的diff空白检查PASS。公开源码快照资料对照见[最终记录](evidence/sportmaster-alternate-ui/final-archive-comparison.json)，不扫描忽略的本地编译生成物充作公开内容。
+
+同一[PR27](https://github.com/yuan2go/importer-pc/pull/27)更新审查与验证记录，不合并。原HTML仍未上传。

@@ -1,0 +1,61 @@
+EvidenceRoot=<TEMP>
+PASS SMUI: omitted --ui preserves classic default
+PASS SMUI: UI selection preserves configuration, data, page and layout arguments
+PASS SMUI: sportmaster accepts explicit classic
+PASS SMUI: direct-plc accepts explicit classic
+PASS SMUI: wcs-to-plc accepts explicit classic
+PASS SMUI: supply accepts explicit classic
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui --view
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui unknown
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui Supply-Station
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui classic --ui supply-station
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --unknown value
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --layout
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --data-root one --data-root two
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: orphan
+PASS SMUI: direct-plc rejects invalid arguments before runtime construction: --ui supply-station
+PASS SMUI: wcs-to-plc rejects invalid arguments before runtime construction: --ui supply-station
+PASS SMUI: supply rejects invalid arguments before runtime construction: --ui supply-station
+PASS SMUI: classic, alternate and auxiliary models share the actual application and runtime identity
+PASS SMUI: schema3 projects two independently admissible real positions
+PASS SMUI: same barcode has independently retained entity drafts
+PASS SMUI: actual double-position input retains leading zeros, distinct admissions and correctly bound operations
+PASS SMUI: position histories and configured reader identities remain isolated
+PASS SMUI: second UI creates no runtime, device epoch, PLC phase or duplicate WCS execution
+PASS SMUI: right actual receiver keeps original business payload and reader binding
+PASS SMUI: left actual receiver keeps original business payload and reader binding
+PASS SMUI: alternate history loads actual paginated records and selects the originating left operation
+PASS SMUI: opening right history replaces left detail and highlighted selection together
+PASS SMUI: opening general history clears previous operation highlight and detail
+PASS SMUI: repeated reference clicks retain admission identity and cannot repeat original requests
+PASS SMUI: refresh/navigation preserve stable position objects and each window's explicit drafts
+PASS SMUI: auxiliary window owns drafts while sharing business facts
+PASS SMUI: read failure retains original facts/time as stale and disables position actions
+PASS SMUI: stale action methods issue no application command, query or admission
+PASS SMUI: new successful read recovers freshness without resetting business
+PASS SMUI: snapshot deadline expires even without a thrown read error
+PASS SMUI: expired snapshot cannot dispatch position actions
+PASS SMUI: thrown application snapshot failure visibly invalidates last display
+PASS SMUI: late obsolete failure cannot invalidate newer successful snapshot
+PASS SMUI: successful real command refresh updates snapshot through inherited RunAsync
+PASS SMUI: old poll failure cannot invalidate newer successful inherited command refresh
+PASS SMUI: right device fault projection cannot overwrite left identity, device readiness or application guard
+PASS SMUI: real pause advances revision for refresh ordering test
+PASS SMUI: late older refresh cannot overwrite newer actual application revision or guards
+PASS SMUI: lower revision is rejected even when returned by a later refresh
+PASS SMUI: unmatched current operation never falls back to another historical entity or position
+PASS SMUI: inherited command refresh failure immediately invalidates the display and retains successful read time
+PASS SMUI: no position action reaches application after failed inherited command refresh
+PASS SMUI: Pause initial snapshot shares the alternate UI failure policy
+PASS SMUI: configuration confirmation snapshot shares the alternate UI failure policy
+PASS SMUI: older poll success cannot undo newer failed Pause read
+PASS SMUI: older poll success cannot undo newer failed ConfirmConfiguration read
+Unhandled exception. System.Exception: FAIL SMUI: older poll success before newer Pause failure cannot keep display fresh
+   at SportmasterUi.Check(Boolean condition, String reason) in <WORKTREE>/tests/Ipc.Application.Verification/SportmasterUi.cs:line 15
+   at SportmasterUi.VerifyReadFailurePaths(ParcelRuntime app) in <WORKTREE>/tests/Ipc.Application.Verification/SportmasterUi.cs:line 348
+   at SportmasterUi.Run(String workspace, String root) in <WORKTREE>/tests/Ipc.Application.Verification/SportmasterUi.cs:line 118
+   at SportmasterUi.Run(String workspace, String root) in <WORKTREE>/tests/Ipc.Application.Verification/SportmasterUi.cs:line 120
+   at Program.<Main>$(String[] args) in <WORKTREE>/tests/Ipc.Application.Verification/Program.cs:line 16
+   at Program.<Main>(String[] args)

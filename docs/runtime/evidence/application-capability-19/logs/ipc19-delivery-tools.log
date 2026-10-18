@@ -1,0 +1,21 @@
+test_cancellation_stops_real_descendants (test_build_process.BuildProcessTests.test_cancellation_stops_real_descendants) ... ok
+test_failure_stops_real_descendants (test_build_process.BuildProcessTests.test_failure_stops_real_descendants) ... ok
+test_atomic_publication_failure_rolls_back_created_identity (test_extension_build.ExtensionBuildTests.test_atomic_publication_failure_rolls_back_created_identity) ... ok
+test_build_failure_and_cancellation_leave_no_success_artifact (test_extension_build.ExtensionBuildTests.test_build_failure_and_cancellation_leave_no_success_artifact) ... ok
+test_checker_failure_and_frozen_host_drift_never_publish (test_extension_build.ExtensionBuildTests.test_checker_failure_and_frozen_host_drift_never_publish) ... ok
+test_cross_target_checker_requires_byte_identical_public_contracts (test_extension_build.ExtensionBuildTests.test_cross_target_checker_requires_byte_identical_public_contracts) ... ok
+test_dirty_and_untracked_inputs_rejected (test_extension_build.ExtensionBuildTests.test_dirty_and_untracked_inputs_rejected) ... ok
+test_external_git_snapshot_and_identity_stable (test_extension_build.ExtensionBuildTests.test_external_git_snapshot_and_identity_stable) ... ok
+test_production_testonly_rejected_before_compilation (test_extension_build.ExtensionBuildTests.test_production_testonly_rejected_before_compilation) ... ok
+test_source_and_payload_escape_links_rejected (test_extension_build.ExtensionBuildTests.test_source_and_payload_escape_links_rejected) ... ok
+test_testonly_simulation_can_publish_with_process_boundaries_mocked (test_extension_build.ExtensionBuildTests.test_testonly_simulation_can_publish_with_process_boundaries_mocked) ... ok
+test_typed_provider_requirements_are_bounded_and_not_arbitrary_metadata (test_extension_build.ExtensionBuildTests.test_typed_provider_requirements_are_bounded_and_not_arbitrary_metadata) ... ok
+test_undeclared_private_dependency_and_duplicate_payload_rejected (test_extension_build.ExtensionBuildTests.test_undeclared_private_dependency_and_duplicate_payload_rejected) ... ok
+test_unknown_declaration_and_uncommitted_metadata_rejected (test_extension_build.ExtensionBuildTests.test_unknown_declaration_and_uncommitted_metadata_rejected) ... ok
+test_current_links_standalone_and_evidence_links_immutable (test_release_documents.ReleaseDocumentTests.test_current_links_standalone_and_evidence_links_immutable) ... ok
+test_missing_and_escaping_links_stop_publication (test_release_documents.ReleaseDocumentTests.test_missing_and_escaping_links_stop_publication) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 2.994s
+
+OK

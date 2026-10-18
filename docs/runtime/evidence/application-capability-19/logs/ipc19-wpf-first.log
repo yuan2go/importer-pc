@@ -1,0 +1,36 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 540 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.WcsToPlc.Desktop/Ipc.Application.WcsToPlc.Desktop.csproj (用时 511 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 540 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 511 毫秒)。
+  10 个项目(共 14 个)是最新的，无法还原。
+  Ipc.Platform -> <WORKTREE>/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <WORKTREE>/src/Ipc.Application.Contracts/bin/Debug/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <WORKTREE>/src/Ipc.Platform.Storage/bin/Debug/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <WORKTREE>/src/Ipc.Application.ParcelFlow/bin/Debug/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> <WORKTREE>/src/Ipc.Application.WcsToPlc/bin/Debug/net10.0/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> <WORKTREE>/src/Ipc.Reference.Protocol/bin/Debug/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <WORKTREE>/src/Ipc.Components/bin/Debug/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> <WORKTREE>/src/Ipc.Drivers/bin/Debug/net10.0/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <WORKTREE>/src/Ipc.Application.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <WORKTREE>/src/Ipc.Integrations/bin/Debug/net10.0/Ipc.Integrations.dll
+  Ipc.Assembly -> <WORKTREE>/src/Ipc.Assembly/bin/Debug/net10.0/Ipc.Assembly.dll
+<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs(27,9): error CS9266: 属性 'CapabilityDraft.Provider' 的 'get' 访问器应使用“field”，因为其他访问器正在使用它。 [<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj]
+<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs(32,36): error CS9273: 在语言版本 14.0 中，“field”是属性访问器中的关键字。重命名变量或改用标识符“@field”。 [<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj]
+<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs(32,95): error CS9258: 在语言版本 14.0 中，‘field’ 关键字绑定到属性的合成后备字段。要避免生成合成后备字段并引用现有成员，请改用 ‘this.field’ 或 ‘@field’。 [<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj]
+<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs(32,102): error CS9258: 在语言版本 14.0 中，‘field’ 关键字绑定到属性的合成后备字段。要避免生成合成后备字段并引用现有成员，请改用 ‘this.field’ 或 ‘@field’。 [<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj]
+<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs(32,108): error CS1061: “CapabilityDescriptor”未包含“Default”的定义，并且找不到可接受第一个“CapabilityDescriptor”类型参数的可访问扩展方法“Default”(是否缺少 using 指令或程序集引用?) [<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj]
+<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs(32,95): error CS1503: 参数 1: 无法从“Ipc.Platform.CapabilityDescriptor”转换为“Ipc.Platform.ParameterField” [<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj]
+
+生成失败。
+
+<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs(27,9): error CS9266: 属性 'CapabilityDraft.Provider' 的 'get' 访问器应使用“field”，因为其他访问器正在使用它。 [<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj]
+<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs(32,36): error CS9273: 在语言版本 14.0 中，“field”是属性访问器中的关键字。重命名变量或改用标识符“@field”。 [<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj]
+<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs(32,95): error CS9258: 在语言版本 14.0 中，‘field’ 关键字绑定到属性的合成后备字段。要避免生成合成后备字段并引用现有成员，请改用 ‘this.field’ 或 ‘@field’。 [<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj]
+<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs(32,102): error CS9258: 在语言版本 14.0 中，‘field’ 关键字绑定到属性的合成后备字段。要避免生成合成后备字段并引用现有成员，请改用 ‘this.field’ 或 ‘@field’。 [<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj]
+<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs(32,108): error CS1061: “CapabilityDescriptor”未包含“Default”的定义，并且找不到可接受第一个“CapabilityDescriptor”类型参数的可访问扩展方法“Default”(是否缺少 using 指令或程序集引用?) [<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj]
+<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs(32,95): error CS1503: 参数 1: 无法从“Ipc.Platform.CapabilityDescriptor”转换为“Ipc.Platform.ParameterField” [<WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj]
+    0 个警告
+    6 个错误
+
+已用时间 00:00:03.68

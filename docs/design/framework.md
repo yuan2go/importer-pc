@@ -1,14 +1,6 @@
-> 当前任务：[SITE-CAPABILITIES-18](../work-packages/WP-IPC-SITE-CAPABILITIES-18.md)，基线 main `d3a757d`（PR17已合并）。独立复核并增量补齐三场景可选登录、称重、采图上传；17原实现/证据按形成时解释。原字节见[归档](../archive/pre-site-capabilities-18/README.md)。真实协议/现场及Windows边界不变。
+> 现行三Application职责、公共能力与可选策略：[19唯一设计](../design/application-capability-19.md)。本页保留仍有效的基础机制及Supply兼容说明；17/18阶段限制已由19替代。原字节见[归档](../archive/pre-application-capability-19/README.md)。
 
-> 当前任务：[APPLICATION-CONVERGENCE-17](../work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)，基线main `6e9c890`。17替代16当前任务指引；Supply专属箱/双通道/数量不推广到其他Application。历史正文保留形成时语境，原字节见[归档](../archive/pre-application-convergence-17/README.md)。
-
-> 16形成时任务为 [UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，基线 main `12a40b3`（PR15已合并）。15的实现及历史证据继续有效；本包只收敛指定UI、维护职责、独立扩展工具和健康续期写放大。有效F/D/RV要求不降低。修改前原字节见 [归档](../archive/pre-ui-maintainability-16/README.md)。
-
-> FIX-14工程增量：冲突与原终态正交、持续核对贯穿读者/守卫/保留；逐实例健康按业务实际依赖裁决；每窗统一草稿、显式激活选择；无桌面交付确认及离线根围栏。目标与F-01～12不降低，实际机制见 [14操作](../runtime/operations.md)。
-
-
-
-## 从CLOSURE-13继承的职责与决定
+# 从CLOSURE-13继承的职责与决定
 
 职责映射见[受控装配与扩展](controlled-extensions.md)，实现/验证入口为[13报告](../runtime/arch-extension-closure-13.md)。基座负责机制，业务及其公共契约拥有状态/规则/数据/页面，设备拥有采集，集成拥有外部协议，Product和构建选装根可引用具体实现。Ipc.Assembly通用路径不解释Supply/left-right/loopback；编译注册选择一个业务及所属views/layouts，UI复用业务应用契约。
 

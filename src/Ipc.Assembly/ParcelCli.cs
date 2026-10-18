@@ -54,6 +54,7 @@ static class ParcelCli
             "EmitReference" => new BusinessReceipt(app.EmitReference(c.Owner!, c.Value!, c.Id) ? "Enqueued" : "Rejected", "Explicit simulation camera observation", c.ExpectedRevision),
             "EmitWeight" => new BusinessReceipt(app.EmitReferenceWeight(Wire.Decode<WeightMeasurement>(c.Value!)) ? "Enqueued" : "Rejected", "Explicit simulation scale observation", c.ExpectedRevision),
             "Login" => await app.LoginAsync(c.Owner!, c.Value!).ConfigureAwait(false),
+            "AuthorizeMaintenance" => await app.AuthorizeMaintenanceAsync(c.Owner!, c.Value!).ConfigureAwait(false),
             "Logout" => await app.LogoutAsync().ConfigureAwait(false),
             "Reconcile" => await app.ReconcileAsync(c.Owner!).ConfigureAwait(false),
             "Reconnect" => await app.ReconnectAsync().ConfigureAwait(false),

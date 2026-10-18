@@ -1,21 +1,13 @@
+using Ipc.Platform;
 namespace Ipc.Application.Contracts;
 
-public sealed record OperatorIdentity(string Subject, string DisplayName, string Authority, string SessionId,
-    DateTimeOffset AuthenticatedAt, bool Simulation);
-public sealed record ImagePolicy(CapabilityBinding Camera, CapabilityBinding Uploader, int MaximumBytes = 4194304);
+public enum UploadStrategy { BeforeMain, Attached }
+public sealed record ImagePolicy(CapabilityBinding Camera, CapabilityBinding Uploader, int MaximumBytes = 4194304,
+    UploadStrategy Strategy = UploadStrategy.BeforeMain, long TotalBytes = 33554432, int MaximumPending = 32);
 public sealed record ParcelImage(string CaptureRequestId, string AdmissionId, string RelativeFile, string MediaType,
     int Length, string Sha256, string? UploadedUri = null);
-public interface IOperatorAuthenticator : ICapabilityPort
-{
-    Task<OperatorIdentity?> AuthenticateAsync(string subject, string proof, CancellationToken token);
-}
-public interface IImageCamera : ICapabilityPort
-{
-    Task<StageReply> CaptureAsync(FrozenRequest request, CancellationToken token);
-    Task<StageReply?> QueryAsync(FrozenRequest original, CancellationToken token);
-}
-public interface IImageUploader : ICapabilityPort
-{
-    Task<StageReply> UploadAsync(FrozenRequest request, ReadOnlyMemory<byte> content, CancellationToken token);
-    Task<StageReply?> QueryAsync(FrozenRequest original, CancellationToken token);
-}
+public interface IImageCamera : Ipc.Platform.IImageCamera<FrozenRequest, StageReply> { }
+public interface IImageUploader : Ipc.Platform.IImageUploader<FrozenRequest, StageReply> { }
+public interface ILoginExtension { IOperatorAuthenticator Create(CapabilityBinding binding); }
+public interface ICameraExtension { IImageCamera Create(CapabilityBinding binding, string temporaryDirectory); }
+public interface IUploadExtension { IImageUploader Create(CapabilityBinding binding); }

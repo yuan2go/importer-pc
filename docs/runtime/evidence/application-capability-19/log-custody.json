@@ -1,0 +1,459 @@
+{
+  "Logs": [
+    {
+      "File": "logs/ipc19-architecture.log",
+      "OriginalSha256": "dd6669c54372022b5861641fa13f44f38b5b44a7382ef2747855ad5ec79087c8",
+      "PublicSha256": "d5d426eadfbb136f4650eccdc3fe4282a39c725b49869290d750d3b1e9b2697b",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-build2.log",
+      "OriginalSha256": "af79debcc91f84f75e74a534b82b33644e1884038826af10f1ff5418e54499a8",
+      "PublicSha256": "07ce459cf433195a5447bcf74514a4fdfe1372e24ea41c33fe366157c91a7fa5",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-c213-architecture.log",
+      "OriginalSha256": "ace638aa58262d96a6b50ab7a076ecda21e0fd46daa6e88a2def8ed3ec52a641",
+      "PublicSha256": "60d75cd8428795248983aa355e90398b8bf132d44a7f8901be9f31d1fbf40a31",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-baseline.log",
+      "OriginalSha256": "74c38750dfabb180221d6ff8f023331fb8bd428bc5714a895c9a3b0177410a77",
+      "PublicSha256": "ae2b85187880313fcacef9c6434f150ea2e17b206639b779da29c5b68c7adfb6",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-build.log",
+      "OriginalSha256": "e741fce8d279b18a8d79f76186a8f48a0ebeedf0c1ce289df9eeaad0fa22e2b9",
+      "PublicSha256": "7622f80b11163e5d27c9608a53a2e94fca2440f60972aa09d6e9557b124aed65",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-core17.log",
+      "OriginalSha256": "09282d7d001eabddb77970ab88c979f408d2d8ba47ac4dc2fea7207df78cc075",
+      "PublicSha256": "edcbbeee62871009006e2bc541d67acac7f79f46dba86aec4e4e4ca92acb6837",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-core18.log",
+      "OriginalSha256": "f3d7cb0a1b9664f88007055091b5585a38475aef0dd2ad24c220adb949fb9095",
+      "PublicSha256": "1113594bcbc5de5354b2193086e30d78196fc3468610099b78145ff4c7882606",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-core19.log",
+      "OriginalSha256": "4bb9ba01c18e2f7940b4f747055147368b10c44db0bc890b25baac89c610ec55",
+      "PublicSha256": "9438f1fcadffba28914e0bde0aa49d0d5b120a27414e5115ed567680e215077a",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-host.log",
+      "OriginalSha256": "e4000cd6ab03db61cd0f643a4fc93e1379d391b9e01b9ebe5b39f8a2c998939f",
+      "PublicSha256": "bef9c6b35a76fd0f2d83b81b9b0dc639e6b92b2d0a002b3b8c55779421e95d6c",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-legacy-build.log",
+      "OriginalSha256": "e47a6511ad4cb21ca5095d766a88a68de9fd821d537ee34ba2f3ce99784c6185",
+      "PublicSha256": "512d28b0032bdc8885d608a767882ca49f91cfaf7c4fcc3c2e40151ccd9acffb",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-package-direct-plc-windows.log",
+      "OriginalSha256": "4392b83182372e2b0b51c57fb22e75176f81afbbb8d4eab6457c51a0fa4df9ef",
+      "PublicSha256": "b1006cb8a3679b5548bc02fb5b45665765a609c3b6c7b1fe620216f94b356e1b",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-package-direct-plc.log",
+      "OriginalSha256": "81231b5939182773f17dc23e9d5b333ba50c1d80dccc06f5d6f1b66d1fe3cae0",
+      "PublicSha256": "097de14ecf15a821f514a12ea92d56f4bd35339f69cb3085c0b7dd80bd26e875",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-package-sportmaster-windows.log",
+      "OriginalSha256": "f9ca59e00b54d7bf3369cd2460d11ababd9a60adc35d370704155bb99ccd1b9d",
+      "PublicSha256": "bc3a8d63b6345e5b63b294dadd27bccc81ad09e786f703fa01745f408aa75cd9",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-package-sportmaster.log",
+      "OriginalSha256": "409845c34a1af9fb5bd7cd458c3bb10e9673ec1db36f26ae438899f9bec4cf5d",
+      "PublicSha256": "1062909fbf36477bc352b2755ddcacfec9c6a8245af112cfb4b55e19194223f8",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-package-wcs-to-plc-windows.log",
+      "OriginalSha256": "0847bc53f00d87dddeb72fb872d7c3beebb9062fb7694932c3ad66416d8801c3",
+      "PublicSha256": "05d0a3d369e31dd2952a72bce292d568b9c8863ffca2879ad50781d4cff26fac",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-package-wcs-to-plc.log",
+      "OriginalSha256": "a2088469e5e2c91ced63cbcdd4ce870424bb76a9f131ae1485ffb9e6232302c6",
+      "PublicSha256": "a154682ac81a311fe1c7d1655aa51a6fc4382e6cb8bae33110d5f7e11c6b462d",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-sign-debug.log",
+      "OriginalSha256": "15425c7c3f652f854d5eaf11ee164b885f2fd1c3240699c931ff953d37b25fe5",
+      "PublicSha256": "84e8d4641347930668264609d24392c6b811973b72902f084cc7576a3a97f92c",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-sign-release.log",
+      "OriginalSha256": "fc93de1405a0b674f48b0127c91722a344997d327fbf9213c1c71954e53b19cf",
+      "PublicSha256": "b5cce07fca0e83a56528622827be9d874bc9006d56f82b03ce58cd648888ee2b",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-signed-debug.log",
+      "OriginalSha256": "ecf3c40d2be5f0b4d3c0f7f1c506a984f92e14ea8b921cd17e337bf6a356ed4a",
+      "PublicSha256": "c6e6b40fc702213bf51d85c535fa522b4645152d7972e2d144fd2805ad174ebc",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-signed-release-journey.log",
+      "OriginalSha256": "466cfd02437bc2b30e376cee4044d597ad1b8d04397edb941799a4123b1d9658",
+      "PublicSha256": "466cfd02437bc2b30e376cee4044d597ad1b8d04397edb941799a4123b1d9658",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-smoke-direct-plc-attached.log",
+      "OriginalSha256": "0f94a5328b718a3222ae19c7f1f181d6dbb65324feeb93df6c6c4503d36ecc9b",
+      "PublicSha256": "0f94a5328b718a3222ae19c7f1f181d6dbb65324feeb93df6c6c4503d36ecc9b",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-smoke-direct-plc-before-main.log",
+      "OriginalSha256": "06a4cad9f30f2546ae3ddbad3251f3a05e3542a0d33f66cabca25193e7d94f1d",
+      "PublicSha256": "06a4cad9f30f2546ae3ddbad3251f3a05e3542a0d33f66cabca25193e7d94f1d",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-smoke-direct-plc-default.log",
+      "OriginalSha256": "a2699f4361f38891385ac5471996a57bc331903dddf56b6565acbc910e11db94",
+      "PublicSha256": "a2699f4361f38891385ac5471996a57bc331903dddf56b6565acbc910e11db94",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-smoke-sportmaster-attached.log",
+      "OriginalSha256": "bc8cca16df3ff8abb1c33c39092c2884e349c8a3c658faee4fe3c2a37dd9a465",
+      "PublicSha256": "bc8cca16df3ff8abb1c33c39092c2884e349c8a3c658faee4fe3c2a37dd9a465",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-smoke-sportmaster-before-main.log",
+      "OriginalSha256": "927fb38cc311e823d3c7b77440fe496e7e9f18a51945f6ce6e4341752c6adacc",
+      "PublicSha256": "927fb38cc311e823d3c7b77440fe496e7e9f18a51945f6ce6e4341752c6adacc",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-smoke-sportmaster-default.log",
+      "OriginalSha256": "d17f1eab5280fb29f520e5c7681ca3647d32a2d90fcfd9b97c7433202a54fcc2",
+      "PublicSha256": "d17f1eab5280fb29f520e5c7681ca3647d32a2d90fcfd9b97c7433202a54fcc2",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-smoke-wcs-to-plc-attached.log",
+      "OriginalSha256": "54d15a3541c732553e086b47d26e145d7f3a9be5ff86bc6d8823524b252ca597",
+      "PublicSha256": "54d15a3541c732553e086b47d26e145d7f3a9be5ff86bc6d8823524b252ca597",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-smoke-wcs-to-plc-before-main.log",
+      "OriginalSha256": "8d3e1911470cc3006a517dcf982bf24a1e656b8cb5310e1022a4317c627b8589",
+      "PublicSha256": "8d3e1911470cc3006a517dcf982bf24a1e656b8cb5310e1022a4317c627b8589",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-c213-smoke-wcs-to-plc-default.log",
+      "OriginalSha256": "27b029853a1eafc66bfaa435f1a27a1357de9346d786fa005e1cfc4dd53c1be4",
+      "PublicSha256": "27b029853a1eafc66bfaa435f1a27a1357de9346d786fa005e1cfc4dd53c1be4",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Final c213 scope"
+    },
+    {
+      "File": "logs/ipc19-delivery-architecture.log",
+      "OriginalSha256": "4859a954f7d0061310bb948ff792e8aa7b72dd070c32b7af5b5cbfa8ed2142cc",
+      "PublicSha256": "5bc60c62b3506b3b2b7307ca40e6863ac9beafbe6d42b80e1cbac43a060ae130",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-baseline.log",
+      "OriginalSha256": "34e56916b71112015544fbb94391c67e7bb8b688250489cea44daf19573da850",
+      "PublicSha256": "6f805cd1e41e675a9f1f9dcbaf212f3a75bd1e401e9aaca0871139074cb174fd",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-build.log",
+      "OriginalSha256": "f20ffa3fc34e3016bcb4298046050dd95b00ca46e9b2fd99afb2f8c967c3cffc",
+      "PublicSha256": "d1b9199b75b67e0b02f2a4eb83874c74761e28b6cf3b9d992aa9e5d76bc89aac",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-core17.log",
+      "OriginalSha256": "8b388234ba88c8afa1170e83be1405493880447c6b11351b4d70c32185effe3f",
+      "PublicSha256": "dd0fb98965549f58ad0f50cf56a49cfafcecd5e7208f5fab48c8e5aab500bfe0",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-core18.log",
+      "OriginalSha256": "2f29721bd293f07a76a203e5835054341eb3f8a8796b7db9fb3aa0110f5bd798",
+      "PublicSha256": "b14e807ca3b6119327a3610327b88784c89c279591c2a5fb17b4005bb2542b2b",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-core19.log",
+      "OriginalSha256": "b2d9f88b2eb0cc4096e3ca7981046f8d1a9c83d5083dde4c27658467f16fc278",
+      "PublicSha256": "5a5b664daba7aa5cee85fc006552ac78807f33322f9311c6d5cb66ff4cb07150",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-host-build.log",
+      "OriginalSha256": "b8f937ca940d8ee7eeb107cae31d9412f1a2c88d4b9d1d480aeef3453553d050",
+      "PublicSha256": "cd45771c14d7758a1dab790216c18dc5c72b21ac179ad07bd82054bd322c0486",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-legacy-build.log",
+      "OriginalSha256": "2058ce7716225399452ee9057ea355c7360b02b5875e9ae25e748263f3359147",
+      "PublicSha256": "5e6f5b6b4b823d401fa0ba7c1ba205e54f6f79326add43df1385740d1744c0ca",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-package-direct-plc-windows.log",
+      "OriginalSha256": "fff590042fd4a1b5bc7d6a83599d21825f35e1a590bbf804da3f88732ccbc80a",
+      "PublicSha256": "365c90c8d668cd77e16f16bde89ee73dd0f27f6761a4219b014c4b76b09137c4",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-package-direct-plc.log",
+      "OriginalSha256": "f741bf60ad077364aa791ce23179d39cd518451fdc0973d6dc5f4e5292b38c4f",
+      "PublicSha256": "4117b8c298ffc4340af44a106209f675b2266852031916a15937f864b2b21ec8",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-package-sportmaster-windows.log",
+      "OriginalSha256": "d315d00af9ec6d66f3fbd63b0dc71765f8a53452f26aac176ee147ca4506a63d",
+      "PublicSha256": "85964a4a89ad9a4ca54cf29fe7e9fbc04e9c250c34fe222a50687bae2e119788",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-package-sportmaster.log",
+      "OriginalSha256": "55e521944a4003d9fd8def0d7ca4c77dbe64749f002619d6a8f1b6f524cf7438",
+      "PublicSha256": "ffab2a33f7cfb68f3c6a67699038c37678e95bf85a0ce703a5c477854decc3ab",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-package-wcs-to-plc-windows.log",
+      "OriginalSha256": "f767066b4907ad5780740c3584abf044850a726c785555c8ca7d47f532f72752",
+      "PublicSha256": "63b990763e6cf6ecd39646eec441a106719b027943872b3e3d248fea18f2f05d",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-package-wcs-to-plc.log",
+      "OriginalSha256": "c56707b9651916a8d7bf1d5d2acf338c0c24ef9fb1423f1c76777165ff2592e6",
+      "PublicSha256": "740dfe9de27d057b4d77a2c6c25bc8d044aa1c9753948891c461a91918988486",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-release-signed-build.log",
+      "OriginalSha256": "57204dec5a52c49ae7affaad1a2b32fa73ad9d421e7e0780c7b20aa45aa4bdfa",
+      "PublicSha256": "131d72ec9ea22e67427d49441d26858e82f57f6414febe94809939dd56111d2d",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-sdk.log",
+      "OriginalSha256": "e8d734aa49fd4d274ae4018f81310b17d61c9461670d2ca914ca9c5bba5a74f0",
+      "PublicSha256": "3b8b46b63982c621b00191a7c3747c5886e5e2bf662582ba47fcec0545ca501e",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-signed-build.log",
+      "OriginalSha256": "ca5d996f345d8c343b8d76313e2fa895042c0c48532c017e31c3b90485da0b16",
+      "PublicSha256": "ae1fe296e10c9f51227936826f2ca1d32ac761ceb0f57c59d3b35ffb5afd0062",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-signed-v2.log",
+      "OriginalSha256": "203cea4fee4badab6c8e554786994da9396d0485de1520e7fd20de3aa15a5c64",
+      "PublicSha256": "a58f90c420610cacc186b5c1807fafab46e17f2a3d66a555ae68b24a735acfdd",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-signed.log",
+      "OriginalSha256": "8ed7b106bd7dc353d695d0fff60b121f17b28b310870cb1a68241ede8b3ae9f3",
+      "PublicSha256": "26c8b87792960b2672b7053e1b9ddee1145ed1423a7c5be8f739fd820d9640a1",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-smoke-direct-plc-attached.log",
+      "OriginalSha256": "2311a8902fa0d459ff53871db7147bbb89059c73b850aa1f81b2edb6b05b4238",
+      "PublicSha256": "2311a8902fa0d459ff53871db7147bbb89059c73b850aa1f81b2edb6b05b4238",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-smoke-direct-plc-before-main.log",
+      "OriginalSha256": "3ada36d7c68dbf379b25b0f22ced73274449d085fa88e2fc7449a6b5402fa6c7",
+      "PublicSha256": "3ada36d7c68dbf379b25b0f22ced73274449d085fa88e2fc7449a6b5402fa6c7",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-smoke-direct-plc-default.log",
+      "OriginalSha256": "c9bd739bd8254ba421cb4bcaa38ccfa7ea754bf563f59a638b2b81fd464a1920",
+      "PublicSha256": "c9bd739bd8254ba421cb4bcaa38ccfa7ea754bf563f59a638b2b81fd464a1920",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-smoke-sportmaster-attached.log",
+      "OriginalSha256": "395521d2c6ac3a77149e9eb6abf4851fc2ae0eab6591810e94c2740c1b59fc16",
+      "PublicSha256": "395521d2c6ac3a77149e9eb6abf4851fc2ae0eab6591810e94c2740c1b59fc16",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-smoke-sportmaster-before-main.log",
+      "OriginalSha256": "f40e7f609fe4348a20f55739b52843dbef756113183dca6bdfd475525fca25bf",
+      "PublicSha256": "f40e7f609fe4348a20f55739b52843dbef756113183dca6bdfd475525fca25bf",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-smoke-sportmaster-default.log",
+      "OriginalSha256": "8a8b194b338bda5eb4cf6665175cfc3d5cf7db81b9dc427893c0d2f7bfe8fb82",
+      "PublicSha256": "8a8b194b338bda5eb4cf6665175cfc3d5cf7db81b9dc427893c0d2f7bfe8fb82",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-smoke-wcs-to-plc-attached.log",
+      "OriginalSha256": "704ef572bce4833b3864f05661e2b1ace5db22f01c1996f46221fcc6b2d23a96",
+      "PublicSha256": "704ef572bce4833b3864f05661e2b1ace5db22f01c1996f46221fcc6b2d23a96",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-smoke-wcs-to-plc-before-main.log",
+      "OriginalSha256": "a9e2043fa132ef3c0f787d625373fb0e7fe13a1cf36443d38216caa3a6b4796e",
+      "PublicSha256": "a9e2043fa132ef3c0f787d625373fb0e7fe13a1cf36443d38216caa3a6b4796e",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-smoke-wcs-to-plc-default.log",
+      "OriginalSha256": "02ae0ec4d2e1716e9ff35781ebcdda01cc00bdd1eac928b5f981d0d1c2ccbfd7",
+      "PublicSha256": "02ae0ec4d2e1716e9ff35781ebcdda01cc00bdd1eac928b5f981d0d1c2ccbfd7",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-delivery-tools.log",
+      "OriginalSha256": "3b07abad550d633e7515a930256bb952dc00596ca107069b86c0f3a3b4e50aa2",
+      "PublicSha256": "3b07abad550d633e7515a930256bb952dc00596ca107069b86c0f3a3b4e50aa2",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-first-build.log",
+      "OriginalSha256": "c06f034718556634acf63f4edd33d6d70aceb160c24620cbee4b8664bbbee7ca",
+      "PublicSha256": "67da2485aa46b4eb7658f7f0f822df336601d625c0cc836523c521c3fc2ebae4",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-regression18.log",
+      "OriginalSha256": "b735aee17366a7d6ea04b90fcdd71a643fc512088b456e49fd3435c8e7ca6638",
+      "PublicSha256": "2d13e18c9e481dd7e1f26f7823aedcb23b4094ca828c1e9ce03790a977123b22",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-signed-build-v2.log",
+      "OriginalSha256": "2b892816f4268b0ee4378a16cd68f993bbc3c08a8aeff4a31a38292f1a20a353",
+      "PublicSha256": "fbe23bc08a56511491310a2a600c40d52ed690bb9328f668cd41ec76b2b5cd94",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-signed-build.log",
+      "OriginalSha256": "4b833a3408e31b91496bf3303ae35b9e1a5478deed581aebc9d827107945116f",
+      "PublicSha256": "080ed6bb91ea2d707e94d274b37d9aab01917538a9bd3feeb9b21f1e739da3dc",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-smoke-direct-plc-before-main.log",
+      "OriginalSha256": "23cb6b4e33f83f4d71464cab7072a2de4e4e474b0c1d37c04a6c76889349783e",
+      "PublicSha256": "b915eca64a7ed8e25bfbb7c0b9a3177477a7a93e389034c4928672db5fb7d794",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-tools-final.log",
+      "OriginalSha256": "e0c1255899dc9cdeb9090dc870e0c189ea3d19a5eb904b2fabf1fa54460c6680",
+      "PublicSha256": "e0c1255899dc9cdeb9090dc870e0c189ea3d19a5eb904b2fabf1fa54460c6680",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    },
+    {
+      "File": "logs/ipc19-wpf-first.log",
+      "OriginalSha256": "4c9cf44772049573ad36e5057bffaa39494def660898a5c66db6e60652770631",
+      "PublicSha256": "e94d9f11f8790e47b9192286b67e94a694437e6937f806a27da9755f294551ab",
+      "Transformation": "Only local path roots replaced; no errors or assertions removed",
+      "Authority": "Earlier run or failure evidence"
+    }
+  ]
+}

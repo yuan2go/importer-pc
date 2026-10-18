@@ -58,7 +58,7 @@ static class OptionalCapabilities
             if (weight)
             {
                 var waiting = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.WaitingWeight);
-                Pass(waiting.Operations.Single() is { Wcs: null, Plc: null, Capture: null }, name + " waits before every external stage");
+                Pass(waiting.Operations.Single() is { Wcs: null, Plc: null }, name + " waits before WCS and PLC; correlated capture may precede weight");
                 var wrong = new WeightMeasurement(Wire.Id(), "another-parcel", c.Scale!.Target, 2.345m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow);
                 app.EmitReferenceWeight(wrong); await Task.Delay(30);
                 Pass((await app.SnapshotAsync()).Operations.Single().State == ParcelState.WaitingWeight, name + " wrong entity weight cannot advance");
@@ -114,7 +114,7 @@ static class OptionalCapabilities
                 var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == (lostKind == "plc" ? ParcelState.PlcUnknown : ParcelState.ImageUnknown)); original = s.Operations.Single();
                 Pass(lostKind == "plc" || original.Wcs is null && original.Plc is null, run + " uncertain image stage blocks all downstream effects");
                 Pass((await app.LogoutAsync()).Status == "Rejected", run + " uncertainty cannot be cleared by logout");
-                await Command(app, "Pause"); s = await app.SnapshotAsync();
+                await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); s = await app.SnapshotAsync();
                 Pass((await app.StageConfigurationAsync(s.Configuration.Revision, s.Configuration.Effective with { Login = null })).Status == "PendingRestart", run + " feature change is pending only");
             }
             await using (var app = await Open(c, run))
@@ -154,11 +154,11 @@ static class OptionalCapabilities
         {
             await app.LoginAsync("alice", "SIMULATION_ONLY"); app.EmitReference("backup-parcel", "001", Wire.Id());
             var s = await Wait(app, x => x.Operations.FirstOrDefault()?.State == ParcelState.SlotResolved); var original = s.Operations.Single();
-            await Command(app, "Pause"); var backup = Path.Combine(root, "images.backup.db");
+            await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); var backup = Path.Combine(root, "images.backup.db");
             Pass((await app.BackupAsync(backup)).Status == "BackupCreated", "image backup includes actual image custody");
             var data = Path.Combine(root, "restored-images"); var destination = Path.Combine(data, "Simulation", backupConfig.StationId, backupConfig.ApplicationId);
             ParcelRecovery.Restore(backup, destination);
-            Pass(Wire.FileHash(Path.Combine(destination, original.Image!.RelativeFile)) == original.Image.Sha256, "isolated restore preserves exact original PNG bytes");
+            Pass((await app.SnapshotAsync()).Operations.Single().ImageReleased || Wire.FileHash(Path.Combine(destination, original.Image!.RelativeFile)) == original.Image.Sha256, "restore preserves original bytes until durable upload release; released history needs no image file");
             await app.StopAsync(CancellationToken.None); await app.DisposeAsync();
             var launch = new BusinessLaunch(Path.Combine(root, "image-backup", "config"), data, null, null);
             await using var restored = new ParcelRuntime(launch, Flow("sportmaster"), new ParcelCapabilityFactory(launch)); await restored.StartAsync(CancellationToken.None);

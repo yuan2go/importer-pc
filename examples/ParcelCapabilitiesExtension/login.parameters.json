@@ -1,0 +1,21 @@
+[
+  {
+    "Key": "subjects",
+    "Group": "reference",
+    "Label": "Synthetic subjects",
+    "Type": "string",
+    "Required": true,
+    "MaximumLength": 1024
+  },
+  {
+    "Key": "reply-mode",
+    "Group": "reference",
+    "Label": "Reference reply",
+    "Type": "choice",
+    "Default": "normal",
+    "Choices": [
+      "normal",
+      "unavailable"
+    ]
+  }
+]

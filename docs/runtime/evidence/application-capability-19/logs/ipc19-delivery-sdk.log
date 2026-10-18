@@ -1,0 +1,44 @@
+.NET SDK:
+ Version:           10.0.402
+ Commit:            a8dd0577c5
+ Workload version:  10.0.400-manifests.da132f47
+ MSBuild version:   18.9.15+a8dd0577c
+
+运行时环境:
+ OS Name:     Mac OS X
+ OS Version:  26.5
+ OS Platform: Darwin
+ RID:         osx-arm64
+ Base Path:   <SDK>/sdk/10.0.402/
+
+已安装 .NET 工作负载:
+没有要显示的已安装工作负载。
+已配置为在安装新清单时使用 workload sets。
+未安装任何 workload sets。运行 “dotnet workload restore” 以安装工作负载集。
+
+Host:
+  Version:      10.0.13
+  Architecture: arm64
+  Commit:       4099f83977
+
+.NET SDKs installed:
+  10.0.402 [<SDK>/sdk]
+
+.NET runtimes installed:
+  Microsoft.AspNetCore.App 10.0.13 [<SDK>/shared/Microsoft.AspNetCore.App]
+  Microsoft.NETCore.App 10.0.13 [<SDK>/shared/Microsoft.NETCore.App]
+
+Other architectures found:
+  None
+
+Environment variables:
+  Not set
+
+global.json file:
+  <WORKTREE>/global.json
+
+Learn more:
+  https://aka.ms/dotnet/info
+
+Download .NET:
+  https://aka.ms/dotnet/download

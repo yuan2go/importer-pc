@@ -295,7 +295,7 @@
       "ipc.application.parcelflow.desktop": {
         "type": "Project",
         "dependencies": {
-          "Ipc.Application.Contracts": "[1.1.0, )"
+          "Ipc.Application.Contracts": "[1.2.0, )"
         }
       },
       "ipc.platform": {

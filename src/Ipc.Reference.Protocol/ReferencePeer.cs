@@ -58,6 +58,8 @@ public sealed class ReferencePeer(CapabilityBinding binding, string root, string
             ParcelImage? image = null;
             if (stage == "image-capture" && accepted)
             {
+                if (payload.Acquisition is not { } acquisition || acquisition.AdmissionId != request.AdmissionId || acquisition.ObservedAt > request.PreparedAt || string.IsNullOrWhiteSpace(acquisition.SourceEventId))
+                    throw new InvalidDataException("Capture requires original source acquisition identity; current/latest frame is forbidden");
                 // A valid one-pixel PNG from an explicit synthetic camera, never a site image.
                 var bytes = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGP4DwABAQEAsTj2FAAAAABJRU5ErkJggg==");
                 WriteImage(request.Id, bytes);

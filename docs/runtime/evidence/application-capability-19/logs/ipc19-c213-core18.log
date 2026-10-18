@@ -1,0 +1,276 @@
+EvidenceRoot=<TEMP>/ipc17-verification-439f01050fd448a6968a29cac5826d5b
+PASS AC18: sportmaster-False-False-False creates only selected runtime dependencies
+PASS AC18: sportmaster-False-False-False freezes selected identity, actual weight and uploaded image
+PASS AC18: sportmaster-False-False-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: sportmaster-False-False-False repeated admission shares owner and does not repeat stages
+PASS AC18: sportmaster-False-False-True creates only selected runtime dependencies
+PASS AC18: sportmaster-False-False-True freezes selected identity, actual weight and uploaded image
+PASS AC18: sportmaster-False-False-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: sportmaster-False-False-True uploader actually transfers captured PNG bytes to independent receiver
+PASS AC18: sportmaster-False-False-True repeated admission shares owner and does not repeat stages
+PASS AC18: sportmaster-False-True-False creates only selected runtime dependencies
+PASS AC18: sportmaster-False-True-False waits before WCS and PLC; correlated capture may precede weight
+PASS AC18: sportmaster-False-True-False wrong entity weight cannot advance
+PASS AC18: sportmaster-False-True-False stale/unit/quality failures cannot send PLC
+PASS AC18: sportmaster-False-True-False freezes selected identity, actual weight and uploaded image
+PASS AC18: sportmaster-False-True-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: sportmaster-False-True-False repeated admission shares owner and does not repeat stages
+PASS AC18: sportmaster-False-True-True creates only selected runtime dependencies
+PASS AC18: sportmaster-False-True-True waits before WCS and PLC; correlated capture may precede weight
+PASS AC18: sportmaster-False-True-True wrong entity weight cannot advance
+PASS AC18: sportmaster-False-True-True stale/unit/quality failures cannot send PLC
+PASS AC18: sportmaster-False-True-True freezes selected identity, actual weight and uploaded image
+PASS AC18: sportmaster-False-True-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: sportmaster-False-True-True uploader actually transfers captured PNG bytes to independent receiver
+PASS AC18: sportmaster-False-True-True repeated admission shares owner and does not repeat stages
+PASS AC18: sportmaster-True-False-False creates only selected runtime dependencies
+PASS AC18: sportmaster-True-False-False unauthenticated observation cannot enter the queue or create an operation
+PASS AC18: sportmaster-True-False-False rejected login preserves no session
+PASS AC18: sportmaster-True-False-False authenticates through selected component
+PASS AC18: sportmaster-True-False-False freezes selected identity, actual weight and uploaded image
+PASS AC18: sportmaster-True-False-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: sportmaster-True-False-False repeated admission shares owner and does not repeat stages
+PASS AC18: sportmaster-True-False-False changes operator only after original operation settles
+PASS AC18: sportmaster-True-False-False operator change preserves old immutable snapshot
+PASS AC18: sportmaster-True-False-True creates only selected runtime dependencies
+PASS AC18: sportmaster-True-False-True unauthenticated observation cannot enter the queue or create an operation
+PASS AC18: sportmaster-True-False-True rejected login preserves no session
+PASS AC18: sportmaster-True-False-True authenticates through selected component
+PASS AC18: sportmaster-True-False-True freezes selected identity, actual weight and uploaded image
+PASS AC18: sportmaster-True-False-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: sportmaster-True-False-True uploader actually transfers captured PNG bytes to independent receiver
+PASS AC18: sportmaster-True-False-True repeated admission shares owner and does not repeat stages
+PASS AC18: sportmaster-True-False-True changes operator only after original operation settles
+PASS AC18: sportmaster-True-False-True operator change preserves old immutable snapshot
+PASS AC18: sportmaster-True-True-False creates only selected runtime dependencies
+PASS AC18: sportmaster-True-True-False unauthenticated observation cannot enter the queue or create an operation
+PASS AC18: sportmaster-True-True-False rejected login preserves no session
+PASS AC18: sportmaster-True-True-False authenticates through selected component
+PASS AC18: sportmaster-True-True-False waits before WCS and PLC; correlated capture may precede weight
+PASS AC18: sportmaster-True-True-False wrong entity weight cannot advance
+PASS AC18: sportmaster-True-True-False stale/unit/quality failures cannot send PLC
+PASS AC18: sportmaster-True-True-False freezes selected identity, actual weight and uploaded image
+PASS AC18: sportmaster-True-True-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: sportmaster-True-True-False repeated admission shares owner and does not repeat stages
+PASS AC18: sportmaster-True-True-False changes operator only after original operation settles
+PASS AC18: sportmaster-True-True-False operator change preserves old immutable snapshot
+PASS AC18: sportmaster-True-True-True creates only selected runtime dependencies
+PASS AC18: sportmaster-True-True-True unauthenticated observation cannot enter the queue or create an operation
+PASS AC18: sportmaster-True-True-True rejected login preserves no session
+PASS AC18: sportmaster-True-True-True authenticates through selected component
+PASS AC18: sportmaster-True-True-True waits before WCS and PLC; correlated capture may precede weight
+PASS AC18: sportmaster-True-True-True wrong entity weight cannot advance
+PASS AC18: sportmaster-True-True-True stale/unit/quality failures cannot send PLC
+PASS AC18: sportmaster-True-True-True freezes selected identity, actual weight and uploaded image
+PASS AC18: sportmaster-True-True-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: sportmaster-True-True-True uploader actually transfers captured PNG bytes to independent receiver
+PASS AC18: sportmaster-True-True-True repeated admission shares owner and does not repeat stages
+PASS AC18: sportmaster-True-True-True changes operator only after original operation settles
+PASS AC18: sportmaster-True-True-True operator change preserves old immutable snapshot
+PASS AC18: direct-plc-False-False-False creates only selected runtime dependencies
+PASS AC18: direct-plc-False-False-False freezes selected identity, actual weight and uploaded image
+PASS AC18: direct-plc-False-False-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: direct-plc-False-False-False repeated admission shares owner and does not repeat stages
+PASS AC18: direct-plc-False-False-True creates only selected runtime dependencies
+PASS AC18: direct-plc-False-False-True freezes selected identity, actual weight and uploaded image
+PASS AC18: direct-plc-False-False-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: direct-plc-False-False-True uploader actually transfers captured PNG bytes to independent receiver
+PASS AC18: direct-plc-False-False-True repeated admission shares owner and does not repeat stages
+PASS AC18: direct-plc-False-True-False creates only selected runtime dependencies
+PASS AC18: direct-plc-False-True-False waits before WCS and PLC; correlated capture may precede weight
+PASS AC18: direct-plc-False-True-False wrong entity weight cannot advance
+PASS AC18: direct-plc-False-True-False stale/unit/quality failures cannot send PLC
+PASS AC18: direct-plc-False-True-False freezes selected identity, actual weight and uploaded image
+PASS AC18: direct-plc-False-True-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: direct-plc-False-True-False repeated admission shares owner and does not repeat stages
+PASS AC18: direct-plc-False-True-True creates only selected runtime dependencies
+PASS AC18: direct-plc-False-True-True waits before WCS and PLC; correlated capture may precede weight
+PASS AC18: direct-plc-False-True-True wrong entity weight cannot advance
+PASS AC18: direct-plc-False-True-True stale/unit/quality failures cannot send PLC
+PASS AC18: direct-plc-False-True-True freezes selected identity, actual weight and uploaded image
+PASS AC18: direct-plc-False-True-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: direct-plc-False-True-True uploader actually transfers captured PNG bytes to independent receiver
+PASS AC18: direct-plc-False-True-True repeated admission shares owner and does not repeat stages
+PASS AC18: direct-plc-True-False-False creates only selected runtime dependencies
+PASS AC18: direct-plc-True-False-False unauthenticated observation cannot enter the queue or create an operation
+PASS AC18: direct-plc-True-False-False rejected login preserves no session
+PASS AC18: direct-plc-True-False-False authenticates through selected component
+PASS AC18: direct-plc-True-False-False freezes selected identity, actual weight and uploaded image
+PASS AC18: direct-plc-True-False-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: direct-plc-True-False-False repeated admission shares owner and does not repeat stages
+PASS AC18: direct-plc-True-False-False accepted PLC with unknown physical completion protects operator
+PASS AC18: direct-plc-True-False-False changes operator only after original operation settles
+PASS AC18: direct-plc-True-False-False operator change preserves old immutable snapshot
+PASS AC18: direct-plc-True-False-True creates only selected runtime dependencies
+PASS AC18: direct-plc-True-False-True unauthenticated observation cannot enter the queue or create an operation
+PASS AC18: direct-plc-True-False-True rejected login preserves no session
+PASS AC18: direct-plc-True-False-True authenticates through selected component
+PASS AC18: direct-plc-True-False-True freezes selected identity, actual weight and uploaded image
+PASS AC18: direct-plc-True-False-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: direct-plc-True-False-True uploader actually transfers captured PNG bytes to independent receiver
+PASS AC18: direct-plc-True-False-True repeated admission shares owner and does not repeat stages
+PASS AC18: direct-plc-True-False-True accepted PLC with unknown physical completion protects operator
+PASS AC18: direct-plc-True-False-True changes operator only after original operation settles
+PASS AC18: direct-plc-True-False-True operator change preserves old immutable snapshot
+PASS AC18: direct-plc-True-True-False creates only selected runtime dependencies
+PASS AC18: direct-plc-True-True-False unauthenticated observation cannot enter the queue or create an operation
+PASS AC18: direct-plc-True-True-False rejected login preserves no session
+PASS AC18: direct-plc-True-True-False authenticates through selected component
+PASS AC18: direct-plc-True-True-False waits before WCS and PLC; correlated capture may precede weight
+PASS AC18: direct-plc-True-True-False wrong entity weight cannot advance
+PASS AC18: direct-plc-True-True-False stale/unit/quality failures cannot send PLC
+PASS AC18: direct-plc-True-True-False freezes selected identity, actual weight and uploaded image
+PASS AC18: direct-plc-True-True-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: direct-plc-True-True-False repeated admission shares owner and does not repeat stages
+PASS AC18: direct-plc-True-True-False accepted PLC with unknown physical completion protects operator
+PASS AC18: direct-plc-True-True-False changes operator only after original operation settles
+PASS AC18: direct-plc-True-True-False operator change preserves old immutable snapshot
+PASS AC18: direct-plc-True-True-True creates only selected runtime dependencies
+PASS AC18: direct-plc-True-True-True unauthenticated observation cannot enter the queue or create an operation
+PASS AC18: direct-plc-True-True-True rejected login preserves no session
+PASS AC18: direct-plc-True-True-True authenticates through selected component
+PASS AC18: direct-plc-True-True-True waits before WCS and PLC; correlated capture may precede weight
+PASS AC18: direct-plc-True-True-True wrong entity weight cannot advance
+PASS AC18: direct-plc-True-True-True stale/unit/quality failures cannot send PLC
+PASS AC18: direct-plc-True-True-True freezes selected identity, actual weight and uploaded image
+PASS AC18: direct-plc-True-True-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: direct-plc-True-True-True uploader actually transfers captured PNG bytes to independent receiver
+PASS AC18: direct-plc-True-True-True repeated admission shares owner and does not repeat stages
+PASS AC18: direct-plc-True-True-True accepted PLC with unknown physical completion protects operator
+PASS AC18: direct-plc-True-True-True changes operator only after original operation settles
+PASS AC18: direct-plc-True-True-True operator change preserves old immutable snapshot
+PASS AC18: wcs-to-plc-False-False-False creates only selected runtime dependencies
+PASS AC18: wcs-to-plc-False-False-False freezes selected identity, actual weight and uploaded image
+PASS AC18: wcs-to-plc-False-False-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-False-False-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-False-False-False PLC receives exact original WCS slot and request
+PASS AC18: wcs-to-plc-False-False-False repeated admission shares owner and does not repeat stages
+PASS AC18: wcs-to-plc-False-False-True creates only selected runtime dependencies
+PASS AC18: wcs-to-plc-False-False-True freezes selected identity, actual weight and uploaded image
+PASS AC18: wcs-to-plc-False-False-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-False-False-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-False-False-True PLC receives exact original WCS slot and request
+PASS AC18: wcs-to-plc-False-False-True uploader actually transfers captured PNG bytes to independent receiver
+PASS AC18: wcs-to-plc-False-False-True repeated admission shares owner and does not repeat stages
+PASS AC18: wcs-to-plc-False-True-False creates only selected runtime dependencies
+PASS AC18: wcs-to-plc-False-True-False waits before WCS and PLC; correlated capture may precede weight
+PASS AC18: wcs-to-plc-False-True-False wrong entity weight cannot advance
+PASS AC18: wcs-to-plc-False-True-False stale/unit/quality failures cannot send PLC
+PASS AC18: wcs-to-plc-False-True-False freezes selected identity, actual weight and uploaded image
+PASS AC18: wcs-to-plc-False-True-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-False-True-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-False-True-False PLC receives exact original WCS slot and request
+PASS AC18: wcs-to-plc-False-True-False repeated admission shares owner and does not repeat stages
+PASS AC18: wcs-to-plc-False-True-True creates only selected runtime dependencies
+PASS AC18: wcs-to-plc-False-True-True waits before WCS and PLC; correlated capture may precede weight
+PASS AC18: wcs-to-plc-False-True-True wrong entity weight cannot advance
+PASS AC18: wcs-to-plc-False-True-True stale/unit/quality failures cannot send PLC
+PASS AC18: wcs-to-plc-False-True-True freezes selected identity, actual weight and uploaded image
+PASS AC18: wcs-to-plc-False-True-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-False-True-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-False-True-True PLC receives exact original WCS slot and request
+PASS AC18: wcs-to-plc-False-True-True uploader actually transfers captured PNG bytes to independent receiver
+PASS AC18: wcs-to-plc-False-True-True repeated admission shares owner and does not repeat stages
+PASS AC18: wcs-to-plc-True-False-False creates only selected runtime dependencies
+PASS AC18: wcs-to-plc-True-False-False unauthenticated observation cannot enter the queue or create an operation
+PASS AC18: wcs-to-plc-True-False-False rejected login preserves no session
+PASS AC18: wcs-to-plc-True-False-False authenticates through selected component
+PASS AC18: wcs-to-plc-True-False-False freezes selected identity, actual weight and uploaded image
+PASS AC18: wcs-to-plc-True-False-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-True-False-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-True-False-False PLC receives exact original WCS slot and request
+PASS AC18: wcs-to-plc-True-False-False repeated admission shares owner and does not repeat stages
+PASS AC18: wcs-to-plc-True-False-False accepted PLC with unknown physical completion protects operator
+PASS AC18: wcs-to-plc-True-False-False changes operator only after original operation settles
+PASS AC18: wcs-to-plc-True-False-False operator change preserves old immutable snapshot
+PASS AC18: wcs-to-plc-True-False-True creates only selected runtime dependencies
+PASS AC18: wcs-to-plc-True-False-True unauthenticated observation cannot enter the queue or create an operation
+PASS AC18: wcs-to-plc-True-False-True rejected login preserves no session
+PASS AC18: wcs-to-plc-True-False-True authenticates through selected component
+PASS AC18: wcs-to-plc-True-False-True freezes selected identity, actual weight and uploaded image
+PASS AC18: wcs-to-plc-True-False-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-True-False-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-True-False-True PLC receives exact original WCS slot and request
+PASS AC18: wcs-to-plc-True-False-True uploader actually transfers captured PNG bytes to independent receiver
+PASS AC18: wcs-to-plc-True-False-True repeated admission shares owner and does not repeat stages
+PASS AC18: wcs-to-plc-True-False-True accepted PLC with unknown physical completion protects operator
+PASS AC18: wcs-to-plc-True-False-True changes operator only after original operation settles
+PASS AC18: wcs-to-plc-True-False-True operator change preserves old immutable snapshot
+PASS AC18: wcs-to-plc-True-True-False creates only selected runtime dependencies
+PASS AC18: wcs-to-plc-True-True-False unauthenticated observation cannot enter the queue or create an operation
+PASS AC18: wcs-to-plc-True-True-False rejected login preserves no session
+PASS AC18: wcs-to-plc-True-True-False authenticates through selected component
+PASS AC18: wcs-to-plc-True-True-False waits before WCS and PLC; correlated capture may precede weight
+PASS AC18: wcs-to-plc-True-True-False wrong entity weight cannot advance
+PASS AC18: wcs-to-plc-True-True-False stale/unit/quality failures cannot send PLC
+PASS AC18: wcs-to-plc-True-True-False freezes selected identity, actual weight and uploaded image
+PASS AC18: wcs-to-plc-True-True-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-True-True-False independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-True-True-False PLC receives exact original WCS slot and request
+PASS AC18: wcs-to-plc-True-True-False repeated admission shares owner and does not repeat stages
+PASS AC18: wcs-to-plc-True-True-False accepted PLC with unknown physical completion protects operator
+PASS AC18: wcs-to-plc-True-True-False changes operator only after original operation settles
+PASS AC18: wcs-to-plc-True-True-False operator change preserves old immutable snapshot
+PASS AC18: wcs-to-plc-True-True-True creates only selected runtime dependencies
+PASS AC18: wcs-to-plc-True-True-True unauthenticated observation cannot enter the queue or create an operation
+PASS AC18: wcs-to-plc-True-True-True rejected login preserves no session
+PASS AC18: wcs-to-plc-True-True-True authenticates through selected component
+PASS AC18: wcs-to-plc-True-True-True waits before WCS and PLC; correlated capture may precede weight
+PASS AC18: wcs-to-plc-True-True-True wrong entity weight cannot advance
+PASS AC18: wcs-to-plc-True-True-True stale/unit/quality failures cannot send PLC
+PASS AC18: wcs-to-plc-True-True-True freezes selected identity, actual weight and uploaded image
+PASS AC18: wcs-to-plc-True-True-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-True-True-True independent receiver contains original operator/weight/image exactly once
+PASS AC18: wcs-to-plc-True-True-True PLC receives exact original WCS slot and request
+PASS AC18: wcs-to-plc-True-True-True uploader actually transfers captured PNG bytes to independent receiver
+PASS AC18: wcs-to-plc-True-True-True repeated admission shares owner and does not repeat stages
+PASS AC18: wcs-to-plc-True-True-True accepted PLC with unknown physical completion protects operator
+PASS AC18: wcs-to-plc-True-True-True changes operator only after original operation settles
+PASS AC18: wcs-to-plc-True-True-True operator change preserves old immutable snapshot
+PASS AC18: lost-capture uncertain image stage blocks all downstream effects
+PASS AC18: lost-capture uncertainty cannot be cleared by logout
+PASS AC18: lost-capture feature change is pending only
+PASS AC18: lost-capture restart keeps original responsibility and requires new session only for new admission
+PASS AC18: lost-capture exact original frozen request survives restart
+PASS AC18: lost-capture original query does not dispatch downstream PLC
+PASS AC18: lost-capture pause still guards never-attempted downstream continuation
+PASS AC18: lost-capture only the original subject can recover a lost session with unfinished work
+PASS AC18: lost-capture software pause can be released after reconciliation
+PASS AC18: lost-capture explicit continuation dispatches only never-attempted downstream intents
+PASS AC18: lost-capture continuation preserves original operator and executes every phase once
+PASS AC18: lost-capture query resolves original fact without resend
+PASS AC18: lost-upload uncertain image stage blocks all downstream effects
+PASS AC18: lost-upload uncertainty cannot be cleared by logout
+PASS AC18: lost-upload feature change is pending only
+PASS AC18: lost-upload restart keeps original responsibility and requires new session only for new admission
+PASS AC18: lost-upload exact original frozen request survives restart
+PASS AC18: lost-upload original query does not dispatch downstream PLC
+PASS AC18: lost-upload pause still guards never-attempted downstream continuation
+PASS AC18: lost-upload only the original subject can recover a lost session with unfinished work
+PASS AC18: lost-upload software pause can be released after reconciliation
+PASS AC18: lost-upload explicit continuation dispatches only never-attempted downstream intents
+PASS AC18: lost-upload continuation preserves original operator and executes every phase once
+PASS AC18: lost-upload query resolves original fact without resend
+PASS AC18: lost-plc uncertain image stage blocks all downstream effects
+PASS AC18: lost-plc uncertainty cannot be cleared by logout
+PASS AC18: lost-plc feature change is pending only
+PASS AC18: lost-plc restart keeps original responsibility and requires new session only for new admission
+PASS AC18: lost-plc exact original frozen request survives restart
+PASS AC18: lost-plc query resolves original fact without resend
+PASS AC18: upload explicit rejection never creates PLC intent
+PASS AC18: wcs explicit rejection never creates PLC intent
+PASS AC18: image backup includes actual image custody
+PASS AC18: restore preserves original bytes until durable upload release; released history needs no image file
+PASS AC18: restore stays paused without reviving login or repeating remote upload
+PASS AC18: image raw T3 failure remains visible 1
+PASS AC18: startup replays original durable image raw locally without dispatch 1
+PASS AC18: explicit image recovery continuation accepted 1
+PASS AC18: image raw recovery never recaptures or retransmits 1
+PASS AC18: image raw T3 failure remains visible 2
+PASS AC18: startup replays original durable image raw locally without dispatch 2
+PASS AC18: explicit image recovery continuation accepted 2
+PASS AC18: image raw recovery never recaptures or retransmits 2
+PASS AC18: incomplete optional image dependency is rejected before construction
+PASS AC18: unbounded image allocation is rejected before construction
+PASS AC18: authentication network failure differs from credential rejection
+PASS AC18 COMPLETE: 24 optional-feature combinations and original identity/image/PLC failure recovery

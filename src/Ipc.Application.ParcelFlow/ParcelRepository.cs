@@ -7,6 +7,7 @@ namespace Ipc.Application.ParcelFlow;
 // Application owns SQL, aggregate semantics and the T1/T2/T3 transaction boundaries.
 public sealed class ParcelRepository : IDisposable
 {
+    internal Action<string>? Boundary { get; set; }
     readonly SqliteConnection db;
     readonly string rawRoot;
     static readonly DatabaseMigration[] migrations = [new(1, """
@@ -39,9 +40,17 @@ public sealed class ParcelRepository : IDisposable
         using var r = cmd.ExecuteReader(); List<ParcelOperation> result = [];
         while (r.Read()) result.Add(Wire.Decode<ParcelOperation>(r.GetString(0))); return result.ToArray();
     }
-    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null)
+    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null)
     {
         using var tx = db.BeginTransaction();
+        if (measurement is not null)
+        {
+            using var sample = db.CreateCommand(); sample.Transaction = tx;
+            sample.CommandText = "INSERT INTO parcel_measurements VALUES($id,$admission,$body)";
+            sample.Parameters.AddWithValue("$id", measurement.Id); sample.Parameters.AddWithValue("$admission", measurement.AdmissionId);
+            sample.Parameters.AddWithValue("$body", Wire.Encode(measurement)); sample.ExecuteNonQuery();
+            Boundary?.Invoke("AfterMeasurementInsert");
+        }
         if (operation is not null)
         {
             using var save = db.CreateCommand(); save.Transaction = tx;
@@ -129,13 +138,12 @@ public sealed class ParcelRepository : IDisposable
         using var cmd = db.CreateCommand(); cmd.CommandText = "UPDATE parcel_receipts SET state='RawDurable',raw_hash=$hash WHERE id=$id AND state IN ('Awaiting','RawDurable')";
         cmd.Parameters.AddWithValue("$id", id); cmd.Parameters.AddWithValue("$hash", Wire.Hash(Wire.Encode(reply))); cmd.ExecuteNonQuery();
     }
-    public bool RecordMeasurement(WeightMeasurement m)
+    public bool HasMeasurement(WeightMeasurement m)
     {
         using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT body FROM parcel_measurements WHERE id=$id"; cmd.Parameters.AddWithValue("$id", m.Id);
-        if (cmd.ExecuteScalar() is string prior)
-        { if (prior != Wire.Encode(m)) throw new InvalidDataException("Measurement identity reused with different content"); return false; }
-        cmd.CommandText = "INSERT INTO parcel_measurements VALUES($id,$admission,$body)";
-        cmd.Parameters.AddWithValue("$admission", m.AdmissionId); cmd.Parameters.AddWithValue("$body", Wire.Encode(m)); cmd.ExecuteNonQuery(); return true;
+        if (cmd.ExecuteScalar() is not string prior) return false;
+        if (prior != Wire.Encode(m)) throw new InvalidDataException("Measurement identity reused with different content");
+        return true;
     }
     public BusinessReceipt? PriorCommand(BusinessCommand c)
     {

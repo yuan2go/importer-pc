@@ -13,7 +13,9 @@ public sealed record ParameterField(string Key, string Group, string Label, stri
     bool ReadOnly = false, string ApplyLevel = "Restart", string EditRole = "Maintenance",
     string? RequiredWhenKey = null, string? RequiredWhenEquals = null, int MaximumItems = 32);
 public sealed record ExtensionModule(string Id, string Assembly, string EntryType, string Kind,
-    int MaximumInstances, ParameterField[] Parameters);
+    int MaximumInstances, ParameterField[] Parameters,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] CapabilityRequirements? Requirements = null,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? ContractIdentity = null);
 [method: System.Text.Json.Serialization.JsonConstructor]
 public sealed record ExtensionManifest(int SchemaVersion, string Id, string Version, string Publisher,
     string Runtime, string Rid, int ContractMajor, RunMode Mode, string SourceCommit,

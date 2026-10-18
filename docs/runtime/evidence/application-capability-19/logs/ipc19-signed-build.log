@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "<WORKTREE>/scripts/build-extension.py", line 35, in <module>
+    main()
+  File "<WORKTREE>/scripts/build-extension.py", line 31, in main
+    print(json.dumps(build(args)))
+                     ^^^^^^^^^^^
+  File "<WORKTREE>/scripts/extension_build.py", line 103, in build
+    host = (args.check_host or contract.parent / 'Ipc.Product.dll').resolve(strict=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.12/3.12.2_1/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pathlib.py", line 1240, in resolve
+    s = self._flavour.realpath(self, strict=strict)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen posixpath>", line 435, in realpath
+  File "<frozen posixpath>", line 470, in _joinrealpath
+FileNotFoundError: [Errno 2] No such file or directory: '<WORKTREE>/src/Ipc.Assembly/bin/Debug/net10.0/Ipc.Product.dll'

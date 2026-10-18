@@ -58,13 +58,14 @@ public static class ExtensionPackages
             m.Files.Sum(x => x.Length) > MaximumExpandedBytes || m.Files.Select(x => x.Path).Distinct(StringComparer.OrdinalIgnoreCase).Count() != m.Files.Length ||
             m.Dependencies.Any(x => x is null || !ExtensionSchema.IsId(x.Id) || !ExtensionSchema.IsVersion(x.Version) || !ExtensionSchema.IsHash(x.ManifestSha256) || x.Id == m.Id) ||
             m.Dependencies.Select(x => x.Id).Distinct().Count() != m.Dependencies.Length ||
-            m.Modules.Any(x => x is null || !ExtensionSchema.IsId(x.Id) || x.Kind is not ("observation" or "integration" or "weight" or "plc") ||
+            m.Modules.Any(x => x is null || !ExtensionSchema.IsId(x.Id) || x.Kind is not ("observation" or "integration" or "weight" or "plc" or "login" or "camera" or "upload") ||
+                x.ContractIdentity is not null && (string.IsNullOrWhiteSpace(x.ContractIdentity) || x.ContractIdentity.Length > 128 || x.ContractIdentity.Any(char.IsControl)) ||
                 x.MaximumInstances is < 1 or > 32 || string.IsNullOrWhiteSpace(x.EntryType) || x.EntryType.Length > 256 ||
                 !m.Files.Any(f => f.Path == x.Assembly && f.Path.EndsWith(".dll", StringComparison.Ordinal)) || ExtensionSchema.ValidateDefinition(x.Parameters).Length != 0) ||
             m.Modules.Select(x => x.Id).Distinct().Count() != m.Modules.Length)
             throw new InvalidDataException("Invalid extension inventory/module/schema/dependency/quota");
         var publicContracts = ExtensionPublicContracts.Snapshot();
-        if (m.Modules.Any(x => x.Kind is "integration" or "weight" or "plc") && m.PublicContracts is not { Count: > 0 })
+        if (m.Modules.Any(x => x.Kind is "integration" or "weight" or "plc" or "login" or "camera" or "upload") && m.PublicContracts is not { Count: > 0 })
             throw new InvalidDataException("Integration requires pinned public business contracts");
         if (m.PublicContracts is not null)
             foreach (var contract in m.PublicContracts)

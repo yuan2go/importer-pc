@@ -96,6 +96,18 @@ def host_inventory(directory):
     return {f.relative_to(directory).as_posix(): digest(f) for f in sorted(directory.rglob('*')) if f.is_file()}
 
 
+def validate_module(module):
+    required = {'Id', 'Assembly', 'EntryType', 'Kind', 'MaximumInstances'}
+    if not isinstance(module, dict) or not required <= set(module) or set(module) - required - {'Requirements', 'ContractIdentity'}:
+        raise ValueError('Module declaration fields are invalid; schema is supplied separately')
+    requirements = module.get('Requirements', {})
+    if not isinstance(requirements, dict) or set(requirements) - {'MeasuredWeight', 'ImageAddress', 'Query', 'PhysicalConfirmation'} or any(type(value) is not bool for value in requirements.values()):
+        raise ValueError('Invalid typed capability requirements')
+    contract = module.get('ContractIdentity')
+    if contract is not None and (not isinstance(contract, str) or not 1 <= len(contract) <= 128 or not contract.strip() or any(ord(c) < 32 for c in contract)):
+        raise ValueError('Invalid bounded provider contract identity')
+
+
 def build(args):
     contract = args.contract.resolve(strict=True)
     if contract.name != 'Ipc.Platform.dll':
@@ -201,8 +213,7 @@ def build(args):
         if set(declaration['ParameterSchemas']) != {m['Id'] for m in modules}:
             raise ValueError('Every module must have exactly one parameter schema mapping')
         for module in modules:
-            if set(module) != {'Id', 'Assembly', 'EntryType', 'Kind', 'MaximumInstances'}:
-                raise ValueError('Module declaration fields are invalid; schema is supplied separately')
+            validate_module(module)
             module['Parameters'] = decode_json(sources[declaration['ParameterSchemas'][module['Id']]])
             if module['Assembly'] not in payload:
                 raise ValueError('Module assembly absent from exact payload')

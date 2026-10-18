@@ -32,7 +32,7 @@ public partial class ShellWindow : Window
     }
     void Workstation_Click(object s, RoutedEventArgs e) => PageHost.Content = work;
     void History_Click(object s, RoutedEventArgs e) => PageHost.Content = history;
-    void Maintenance_Click(object s, RoutedEventArgs e) { vm.LoadConfigurationDraft(); PageHost.Content = maintenance; }
+    async void Maintenance_Click(object s, RoutedEventArgs e) { PageHost.Content = maintenance; await vm.RunAsync(vm.LoadCapabilitiesAsync); }
     void Window_Click(object s, RoutedEventArgs e) => new ShellWindow(newViewModel(), newViewModel, workstation, layout: compact ? "compact" : "standard") { Owner = this }.Show();
     void Layout_Click(object s, RoutedEventArgs e) { compact = !compact; ApplyLayout(); }
     void ApplyLayout() { FontSize = compact ? 14 : 16; PageHost.Margin = new Thickness(0, compact ? 8 : 12, 0, compact ? 8 : 12); }

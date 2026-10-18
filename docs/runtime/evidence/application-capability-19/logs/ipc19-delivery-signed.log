@@ -1,0 +1,9 @@
+EvidenceRoot=<TEMP>/ipc17-verification-ebd42606a7df40e096b8505f40fcc3ad
+Unhandled exception. System.IO.InvalidDataException: Unsupported extension identity/runtime/contract/RID/mode/source
+   at Ipc.Platform.ExtensionPackages.VerifyMetadata(Byte[] manifestBytes, Byte[] signature, ExtensionTrust trust, RunMode mode, String packageHash) in <WORKTREE>/src/Ipc.Platform/ExtensionPackages.cs:line 54
+   at Ipc.Platform.ExtensionPackages.Inspect(String archive, ExtensionTrust trust, RunMode mode, Func`2 resolve) in <WORKTREE>/src/Ipc.Platform/ExtensionPackages.cs:line 111
+   at Ipc.Platform.ExtensionStore.Plan(String file) in <WORKTREE>/src/Ipc.Platform/ExtensionStore.cs:line 81
+   at Ipc.Platform.ExtensionStore.Install(String archive, String expectedPackageSha256) in <WORKTREE>/src/Ipc.Platform/ExtensionStore.cs:line 126
+   at SignedCapabilities.Run(String workspace, String root, String packageFile, String trustFile) in <WORKTREE>/tests/Ipc.Application.Verification/SignedCapabilities.cs:line 14
+   at Program.<Main>$(String[] args) in <WORKTREE>/tests/Ipc.Application.Verification/Program.cs:line 13
+   at Program.<Main>(String[] args)

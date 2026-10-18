@@ -2,29 +2,13 @@
 
 ## 当前工程入口
 
-本轮基线 **d3a757d6314a2d690bcfc4e7763cfd4849b97319**，PR17已合并，开工无开放PR；当前交付[PR #18](https://github.com/yuan2go/importer-pc/pull/18)待审，任务[场地能力18](work-packages/WP-IPC-SITE-CAPABILITIES-18.md)。[18能力矩阵与运行指南](runtime/site-capabilities-18.md)；下方17入口及6e9c890指17开工时基线，不能当作当前远端状态。
+交付[PR #19](https://github.com/yuan2go/importer-pc/pull/19)为OPEN，未合并main。当前工作包：[APPLICATION-CAPABILITY-CLOSURE-19](work-packages/WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19.md)。main **08b8067aa6cba6a148252296c7a5b18a27b3be65**，PR #18 已合并，开工无开放PR。唯一现行职责/策略设计：[19设计](design/application-capability-19.md)。[19实施结果/能力矩阵](runtime/application-capability-19-results.md)、[配置与客户端运行](runtime/application-capability-19.md)、[证据](runtime/evidence/application-capability-19/README.md)；运行源码c213aad，三portable与三Windows候选已构建/解压，Windows实际执行NOT_RUN。[被替代入口原字节](archive/pre-application-capability-19/README.md)。
 
-17开工时main **6e9c890a7483c3006b3448c203570ef2ca19ed25**，PR16当时已合并；17原工作包为[APPLICATION-CONVERGENCE-17](work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)：有效设计、兼容映射和17-01～08验收在此集中定义；16及更早报告保持原形成时结论。[前置原字节及替代关系](archive/pre-application-convergence-17/README.md)。Windows实际客户端NOT_RUN，真实SDK/PLC/WCS合同及现场BLOCKED。
-
-|入口|阅读目的|
-|---|---|
-|[18结果](runtime/site-capabilities-18-results.md)、[能力/配置](runtime/site-capabilities-18.md)、[证据](runtime/evidence/site-capabilities-18/README.md)|24组合及三独立HTTP链，原身份/图像恢复，Windows NOT_RUN、真实能力BLOCKED。|
-|[17完成矩阵](runtime/application-convergence-17-results.md)、[checks](runtime/application-convergence-17-checks.json)及[候选](https://github.com/yuan2go/importer-pc/releases/tag/application17-reference-f184a6b)|最终源码/三链/扩展/包验证；Windows NOT_RUN、真实能力BLOCKED。|
-|[17实际职责/运行/接入/恢复](runtime/application-convergence-17.md)、[Windows后验](runtime/validation/application-convergence-17-windows.md)|三个Application和实际WPF选择、重量/原阶段恢复；Supply/Inspection兼容边界。|
-|---|---|
-|[16逐项实现/验收](runtime/ui-maintainability-16.md)、[首次参考作业](runtime/getting-started.md)|本包操作、维护性、工具和写放大证据；当前运行入口。|
-|[PR14后历史复核](reviews/audit-reconciliation-01/POST-PR14-ANALYSIS.zh-CN.md)、[形成时问题](reviews/audit-reconciliation-01/current-findings.json)|按原来源版本理解；15/16分项结果见各自报告，不倒写历史。|
-|[原PDF与归并报告](reviews/audit-reconciliation-01/README.md)|8cab固定审查原字节；不直接沿用旧“14待实施”提示词。|
-|[15完整工作包](work-packages/WP-IPC-OPERATION-CLOSURE-15.md)、[精简Codex提示词](work-packages/Codex-WP-IPC-OPERATION-CLOSURE-15.md)|原任务要求、范围、依赖和验收；形成时PLANNED不是当前实施结论。|
-|[FIX14实施](runtime/conformance-fix-14.md)、[checks](runtime/conformance-fix-14-checks.json)、[证据](runtime/evidence/conformance-fix-14/README.md)|冻结源68cdc36的真实核心验证、原FAIL与复验、候选/兼容及Windows边界。|
-|[14原任务](work-packages/WP-IPC-CONFORMANCE-FIX-14.md)、[原项目审查](reviews/project-conformance-audit-01/README.md)|原AC14-01～07与形成时8cab证据，作为历史及受影响回归依据。|
-|[本轮核验](runtime/evidence/audit-reconciliation-publication-01/README.md)、[前置归档](archive/pre-audit-reconciliation-publication-01/README.md)|输入身份、原PDF、日志SHA、文档校验、原字节/替代关系。|
-
-Windows实际WPF、DPI、HID、声音和部署沿13批准后验，保持NOT_RUN；真实SDK/WCS/实体/数量/身份及现场按独立门禁。Linux/Mac运行、交叉构建、Windows实际验收分开。15已实现与验证范围见报告；实际客户端/现场能力不得由参考实现推定。
+[17实施](runtime/application-convergence-17.md)、[17结果](runtime/application-convergence-17-results.md)、[18实施](runtime/site-capabilities-18.md)、[18结果](runtime/site-capabilities-18-results.md)按其原SHA和形成时范围读取，不作为本轮完成证据。Supply/Inspection兼容机制、D/RV和公开范围继续有效。Windows实际运行NOT_RUN；真实SDK/协议/现场BLOCKED。
 
 ## 代码前必读
 
-1. [AGENTS](../AGENTS.md)、17工作包、16工作包、15工作包、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
+1. [AGENTS](../AGENTS.md)、19工作包及设计、17/18实施证据、最新复核/问题及相关原始证据；从执行时最新main核差异/工作区/并行PR。
 2. [框架架构](design/framework.md)、[决策记录](design/framework-decisions.md)、[受控装配与扩展](design/controlled-extensions.md)。职责/事务/身份/生命周期要求继续有效，不能改弱目标消除缺陷。
 3. [14任务](work-packages/WP-IPC-CONFORMANCE-FIX-14.md)、[实施](runtime/conformance-fix-14.md)/证据，以及[13任务](work-packages/WP-IPC-ARCH-EXTENSION-CLOSURE-13.md)/[复核](runtime/arch-extension-closure-13-recheck.md)、按影响再读[12任务](work-packages/WP-IPC-EXTENSION-WINDOWS-DELIVERY-12.md)/[交付](runtime/extension-windows-delivery-12.md)。保留后续批准的后装与Windows后验，勿重复实施已闭子项。
 4. [运行/发布/维护](runtime/operations.md)、[扩展开发安装恢复](extensions/developer-guide.md)，核实际入口、配置、依赖和源码。

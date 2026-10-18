@@ -8,7 +8,7 @@ using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
 // Window owns selection/draft only; every command and fact belongs to the shared application.
-public class ParcelViewModel(IParcelApplication application, string title, string flow) : INotifyPropertyChanged
+public partial class ParcelViewModel(IParcelApplication application, string title, string flow) : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
     public IParcelApplication Application => application;
@@ -17,7 +17,7 @@ public class ParcelViewModel(IParcelApplication application, string title, strin
     ParcelSnapshot? snapshot;
     ParcelOperation? selected;
     string message = "等待相机读码；模拟工程不操作真实设备。";
-    public ParcelSnapshot? Snapshot { get => snapshot; private set { snapshot = value; Changed(); Changed(nameof(Operations)); Changed(nameof(Current)); Changed(nameof(BlockingReasons)); Changed(nameof(Status)); Changed(nameof(CurrentWeight)); Changed(nameof(CurrentStage)); Changed(nameof(CurrentSlot)); Changed(nameof(Health)); Changed(nameof(ConfigurationState)); Changed(nameof(LoginVisibility)); Changed(nameof(Session)); Changed(nameof(OperationOperator)); Changed(nameof(CurrentImage)); } }
+    public ParcelSnapshot? Snapshot { get => snapshot; private set { snapshot = value; Changed(); Changed(nameof(Operations)); Changed(nameof(Current)); Changed(nameof(BlockingReasons)); Changed(nameof(Status)); Changed(nameof(CurrentWeight)); Changed(nameof(CurrentStage)); Changed(nameof(CurrentSlot)); Changed(nameof(Health)); Changed(nameof(ConfigurationState)); Changed(nameof(LoginVisibility)); Changed(nameof(Session)); Changed(nameof(OperationOperator)); Changed(nameof(CurrentImage)); Changed(nameof(UploadState)); Changed(nameof(CanAdmit)); Changed(nameof(CanResume)); Changed(nameof(CanContinue)); Changed(nameof(CanContinueUpload)); Changed(nameof(CanAbandon)); Changed(nameof(CanConfigure)); } }
     public ParcelOperation[] Operations => Snapshot?.Operations ?? [];
     public ParcelOperation? Current => Snapshot?.Operations.FirstOrDefault();
     public string BlockingReasons => string.Join("\n", Snapshot?.BlockingReasons ?? []);
@@ -27,7 +27,14 @@ public class ParcelViewModel(IParcelApplication application, string title, strin
     public string OperatorSubject { get; set; } = "alice";
     public string Session => Snapshot?.Configuration.Effective.Login is null ? "登录未启用" : Snapshot.CurrentOperator is { } user ? "当前操作员：" + user.DisplayName + " · 模拟身份" : "等待操作员认证";
     public string OperationOperator => Current?.Operator is { } user ? "原作业操作员：" + user.DisplayName + " · " + user.SessionId : "原作业没有登录身份";
-    public string CurrentImage => Current?.Image is { } image ? (image.UploadedUri is null ? "图像已采集，上传未确认" : "图像已上传 · " + image.UploadedUri) : Snapshot?.Configuration.Effective.Images is null ? "传图未启用" : "图像尚未取得";
+    public bool CanAdmit => Snapshot?.Availability?.Admit == true;
+    public bool CanResume => Snapshot?.Availability?.Resume == true;
+    public bool CanConfigure => Snapshot?.Availability?.Configure == true;
+    public bool CanContinue => Snapshot?.Availability?.ContinuePrepared.Contains((Selected ?? Current)?.Id ?? "") == true;
+    public bool CanContinueUpload => Snapshot?.Availability?.ContinueUpload.Contains((Selected ?? Current)?.Id ?? "") == true;
+    public bool CanAbandon => Snapshot?.Availability?.AbandonUnsubmitted.Contains((Selected ?? Current)?.Id ?? "") == true;
+    public string UploadState => Current?.Upload is { } upload ? "附加/前置上传：" + upload.State + " · 尝试 " + upload.Attempts + " · " + upload.Failure : "上传未准备";
+    public string CurrentImage => Current?.Image is { } image ? (image.UploadedUri is null ? "图像已采集，上传未确认" : "图像已上传 · " + image.UploadedUri + (Current.ImageReleased ? " · 临时原件已释放" : "")) : Snapshot?.Configuration.Effective.Images is null ? "传图未启用" : "图像尚未取得";
     public async Task LoginAsync(string proof) { var r = await application.LoginAsync(OperatorSubject, proof); Message = r.Status + " · " + r.Reason; }
     public async Task LogoutAsync() { var r = await application.LogoutAsync(); Message = r.Status + " · " + r.Reason; }
     public string CurrentSlot => Current?.Slot ?? "未取得";
@@ -38,6 +45,8 @@ public class ParcelViewModel(IParcelApplication application, string title, strin
         ParcelState.ImageRejected => "图像阶段拒绝 · 后续业务未发送",
         ParcelState.CapturingImage => "正在采集当前包裹图像",
         ParcelState.UploadingImage => "正在上传原图像",
+        ParcelState.WeightTimedOut => "本件称重超时 · 暂停并检查实体后处置",
+        ParcelState.Abandoned => "未提交作业已处置 · 原上传责任单独保留",
         ParcelState.WaitingWeight => "等待同一包裹的有效重量",
         ParcelState.SlotResolved => "WCS 格口已取得",
         ParcelState.PlcAccepted => "PLC 业务已接受 · 物理完成待核对",
@@ -47,7 +56,7 @@ public class ParcelViewModel(IParcelApplication application, string title, strin
         ParcelState.Blocked => "作业阻断 · 保留现场包裹",
         _ => "正在处理 · " + Current.State
     };
-    public ParcelOperation? Selected { get => selected; set { selected = value; Changed(); Changed(nameof(Details)); } }
+    public ParcelOperation? Selected { get => selected; set { selected = value; Changed(); Changed(nameof(Details)); Changed(nameof(CanContinue)); Changed(nameof(CanContinueUpload)); Changed(nameof(CanAbandon)); } }
     public string Details => Selected is null ? "选择一条作业查看原阶段、目标、报文和回执。" : Wire.Encode(Selected);
     public string Message { get => message; set { message = value; Changed(); } }
     public string ConfigurationState => Snapshot is null ? "未加载" : Snapshot.Configuration.Status + " · 修订 " + Snapshot.Configuration.Revision + (Snapshot.Configuration.Failure is { } f ? "\n" + f : "");

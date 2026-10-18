@@ -4,13 +4,11 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 
 ## 当前工程状态
 
-执行基线main **d3a757d**（PR17已合并）。当前交付 **三场地能力18**：继承17的Sportmaster/DirectPlc/WcsToPlc，补齐每场景可选登录/身份快照、Sportmaster重量参与、相机采图/组件上传与原阶段恢复。运行源 **08595e9**。
+已完成 **WP-IPC-APPLICATION-CAPABILITY-CLOSURE-19** 的实施与参考资格验证。开工main **08b8067aa6cba6a148252296c7a5b18a27b3be65**（PR18已合并）；最终运行/六候选源码 **c213aad54f5d48687efc0b56428991b6bf4f3537**。
 
-[18实际能力矩阵与运行方法](docs/runtime/site-capabilities-18.md) · [完成结果](docs/runtime/site-capabilities-18-results.md) · [checks](docs/runtime/site-capabilities-18-checks.json) · [合成执行证据](docs/runtime/evidence/site-capabilities-18/README.md)。24种组合、三ZIP默认链及三独立HTTP进程链、图像原回执/未知恢复与备份、必要旧范围回归和三个WPF交叉构建通过。
+[PR #19（OPEN，未合并）](https://github.com/yuan2go/importer-pc/pull/19) · [19结果及能力矩阵](docs/runtime/application-capability-19-results.md) · [现行职责设计](docs/design/application-capability-19.md) · [配置/客户端/部署/恢复](docs/runtime/application-capability-19.md) · [证据及完整身份](docs/runtime/evidence/application-capability-19/README.md)。三Application独立编排、公共会话/能力、称重守卫、两类上传与有界原图、签名提供者及结构化客户端已实施；三个portable解压9条进程旅程、精确Release签包激活、三个Windows候选交叉构建/解压通过。
 
-**Windows实际客户端/截图/交互/ACL/UAC NOT_RUN；真实身份/读码/相机/秤/传图/PLC/WCS及现场BLOCKED；Production NotReady。** 新可选功能仅有显式参考适配器，接口不代表真实协议资格。Supply/Inspection原行为、旧公共身份与Supply 5/5 SQL保留，D/RV不改。
-
-17的[历史完成矩阵](docs/runtime/application-convergence-17-results.md)、[六候选与独立扩展源](https://github.com/yuan2go/importer-pc/releases/tag/application17-reference-f184a6b)继续固定f184a6b；其形成时main6e9c890与版本说明不作为18当前身份。
+**Windows实际客户端/交互/截图/ACL/UAC NOT_RUN；真实SDK/协议/设备/现场BLOCKED，Production继续NotReady。** Supply/Inspection行为与原SQL、D/RV和公开边界保持。17/18结果按其原SHA与形成时范围保留。
 
 ## 开发与运行入口
 
@@ -23,7 +21,7 @@ C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、�
 dotnet src/Ipc.Fixture/bin/Debug/net10.0/Ipc.Fixture.dll --url http://127.0.0.1:18743/ --data /tmp/ipc-simulation-receiver
 ```
 
-Supply兼容Storage/MinimumReader为5/5；17冻结参考读码1.0.5与场地能力包1.0.0属于其原发布；18新增Application.Contracts及场地能力示例1.1.0使用新精确指纹，旧签名包不覆盖。保留SQL1～5及checksum；旧精确1.0.1/1.0.2不重签或伪兼容。旧Effective经清偿、合法过渡、备份显式升级和新部署生效，合成旅程见15报告；真实旧根/备份盘点仍为独立门禁，不能换seed跳过。部署遵循指定账户、机级资源和包所有权；软件暂停不是安全急停。
+Supply兼容Storage/MinimumReader为5/5；17冻结参考读码1.0.5与场地能力包1.0.0属于其原发布；19使用Application.Contracts及场地能力示例1.2.0、新观察/集成参考包1.0.6精确身份，旧签名包不覆盖。保留SQL1～5及checksum；旧精确1.0.1/1.0.2不重签或伪兼容。旧Effective经清偿、合法过渡、备份显式升级和新部署生效，合成旅程见15报告；真实旧根/备份盘点仍为独立门禁，不能换seed跳过。部署遵循指定账户、机级资源和包所有权；软件暂停不是安全急停。
 
 ## UI与历史交付
 

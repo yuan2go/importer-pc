@@ -13,22 +13,18 @@ public sealed partial class ParcelRuntime
             List<string> reasons = [];
             if (failure is not null) reasons.Add(failure);
             if (overload != 0) reasons.Add("Overload: rejected callback; inspect parcel and acknowledge while paused");
-            if (Effective.Login is not null && currentOperator is null) reasons.Add("Operator authentication required for new admission");
+            if (!SessionValid) reasons.Add("Operator authentication required for new admission");
             if (repository.Paused) reasons.Add("Software admission paused; this is not an emergency stop");
             if (readerHealth?.IsValid(DateTimeOffset.UtcNow) != true) reasons.Add("Reader confirmation missing/expired");
+            if (!ImageCapacityAvailable()) reasons.Add("Temporary image capacity/backlog exhausted; existing originals retained");
             if (operations.Values.Any(NeedsReconciliation)) reasons.Add("Original stage outcome or receipt responsibility is unresolved");
-            foreach (var op in operations.Values.Where(x => x.State == ParcelState.WaitingWeight && DateTimeOffset.UtcNow - x.ObservedAt > TimeSpan.FromMilliseconds(x.WeightPolicy.MaximumAgeMs)))
+            foreach (var op in operations.Values.Where(x => x.State == ParcelState.WeightTimedOut || x.Weight is not null && !WeightReady(x) && !definition.MainSettled(x)))
                 reasons.Add("Measurement missing/expired for admission " + op.AdmissionId);
-            List<CapabilityHealth> health = [];
+            List<CapabilityHealth> health = [.. capabilityHealth.Values.Where(x => x.InstanceId != ports?.Maintenance?.InstanceId)];
             if (readerHealth is { } reader) health.Add(new(reader.DeviceId, reader.IsValid(DateTimeOffset.UtcNow), reader.ConfirmedAt ?? reader.UpdatedAt, reader.ValidUntil ?? reader.UpdatedAt, reader.ValidityReason(DateTimeOffset.UtcNow) ?? reader.Source));
-            using var budget = new CancellationTokenSource(TimeSpan.FromMilliseconds(Effective.TimeoutMs));
-            foreach (var p in CapabilityPorts())
-            {
-                var h = await p.HealthAsync(budget.Token).ConfigureAwait(false); health.Add(h);
-                if (!h.Ready || h.ValidUntil <= DateTimeOffset.UtcNow) reasons.Add("Capability unavailable: " + h.InstanceId);
-            }
+            foreach (var h in health.Where(x => !x.Ready || x.ValidUntil <= DateTimeOffset.UtcNow)) reasons.Add("Capability unavailable: " + h.InstanceId);
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : "Blocked", repository.Paused,
-                reasons.ToArray(), operations.Values.Reverse().ToArray(), health.ToArray(), configuration.Current, currentOperator);
+                reasons.ToArray(), operations.Values.Reverse().ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability());
             return Wire.Decode<ParcelSnapshot>(Wire.Encode(projection));
         }
         finally { gate.Release(); }
@@ -51,15 +47,22 @@ public sealed partial class ParcelRuntime
             switch (command.Kind)
             {
                 case "Pause": repository.Commit(null, "AdmissionPaused", "Software pause only", paused: true, command: command); break;
-                case "Resume" when (Effective.Login is null || currentOperator is not null) && failure is null && overload == 0 && !operations.Values.Any(NeedsReconciliation) && readerHealth?.IsValid(DateTimeOffset.UtcNow) == true:
+                case "Resume" when CanResume():
                     repository.Commit(null, "AdmissionResumed", "Other stage guards remain independent", paused: false, command: command); break;
                 case "AcknowledgeOverload" when repository.Paused && overload != 0 && ingress?.Reader.Count == 0:
                     if (File.Exists(overloadMarker)) File.Delete(overloadMarker);
                     Interlocked.Exchange(ref overload, 0); repository.Commit(null, "OverloadAcknowledged", "Paused operator inspection acknowledged", command: command); break;
                 case "ContinuePrepared" when command.Owner is not null && operations.TryGetValue(command.Owner, out var op) &&
-                    CanDispatch(op) && (op.State == ParcelState.Prepared && op.Wcs is null && op.Plc is null ||
-                    Enum.GetValues<ParcelStage>().Any(kind => GetStage(op, kind) is { State: StageState.Prepared, Attempts: 0 })):
+                    CanContinue(op):
                     await AdvanceAsync(op).ConfigureAwait(false); break;
+                case "ContinueUpload" when command.Owner is not null && operations.TryGetValue(command.Owner, out var imageOp) && CanContinueUpload(imageOp):
+                    ScheduleAttached(imageOp); break;
+                case "AbandonUnsubmitted" when command.Owner is not null && operations.TryGetValue(command.Owner, out var abandoned) && CanAbandon(abandoned) &&
+                    !string.IsNullOrWhiteSpace(command.Value):
+                    Save(abandoned with { State = ParcelState.Abandoned,
+                        Upload = abandoned.Upload is { State: StageState.Prepared, Attempts: 0 } u ? u with { State = StageState.Cancelled, Failure = "Local cancellation before any external upload attempt" } : abandoned.Upload,
+                        Capture = abandoned.Capture is { State: StageState.Prepared, Attempts: 0 } c ? c with { State = StageState.Cancelled, Failure = "Local cancellation before acquisition" } : abandoned.Capture,
+                        Reason = "Unsubmitted parcel inspected and removed: " + command.Value }, "Abandoned", "No WCS or PLC intent existed; original image/upload responsibility retained"); break;
                 default: return new("Rejected", "Unsupported command or an application guard is closed", repository.Revision);
             }
             var receipt = new BusinessReceipt("Persisted", "Application command committed", repository.Revision);
@@ -73,7 +76,7 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
-            if (stopped || configuration is null || repository?.Paused != true) return new("Rejected", "Pause admission for reference maintenance", repository?.Revision ?? 0);
+            if (stopped || configuration is null || (repository?.Paused != true || !MaintenanceAuthorized || externalWaits != 0)) return new("Rejected", "Pause and authenticate maintenance before configuration", repository?.Revision ?? 0);
             candidate = Wire.Decode<ParcelConfiguration>(Wire.Encode(candidate));
             var errors = definition.Validate(candidate);
             if (errors.Length != 0) return new("Rejected", string.Join("; ", errors), repository.Revision);
@@ -92,7 +95,7 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
-            if (stopped || ports is null || repository?.Paused != true) return new("Rejected", "Pause admission before reconnect", repository?.Revision ?? 0);
+            if (stopped || ports is null || (repository?.Paused != true || !MaintenanceAuthorized || externalWaits != 0)) return new("Rejected", "Pause and authenticate maintenance before reconnect", repository?.Revision ?? 0);
             foreach (var port in CapabilityPorts())
             { using var budget = new CancellationTokenSource(Effective.TimeoutMs); await port.ReconnectAsync(budget.Token).ConfigureAwait(false); }
             // A new registered epoch only after the previous source has actually stopped.
@@ -113,7 +116,7 @@ public sealed partial class ParcelRuntime
         await gate.WaitAsync().ConfigureAwait(false);
         try
         {
-            if (repository is null || !repository.Paused) return new("Rejected", "Pause before reference maintenance backup", repository?.Revision ?? 0);
+            if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0) return new("Rejected", "Pause before reference maintenance backup", repository?.Revision ?? 0);
             var recovery = destination + ".recovery";
             if (Directory.Exists(recovery) || File.Exists(destination)) throw new IOException("Backup destination must be new");
             Directory.CreateDirectory(recovery);
@@ -153,6 +156,12 @@ public sealed partial class ParcelRuntime
             try { await worker.WaitAsync(token).ConfigureAwait(false); }
             catch (Exception ex) when (worker.IsCompleted) { terminalWorkerFailure = ex; }
         }
+        if (maintenanceWorker is not null) await maintenanceWorker.WaitAsync(token).ConfigureAwait(false);
+        await Task.WhenAll(auxiliary.ToArray()).WaitAsync(token).ConfigureAwait(false);
+        Task drain;
+        await gate.WaitAsync(token).ConfigureAwait(false);
+        try { drain = externalDrained?.Task ?? Task.CompletedTask; } finally { gate.Release(); }
+        await drain.WaitAsync(token).ConfigureAwait(false);
         await gate.WaitAsync(token).ConfigureAwait(false);
         try
         {

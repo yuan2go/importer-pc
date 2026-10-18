@@ -1,0 +1,29 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "c213aad54f5d48687efc0b56428991b6bf4f3537",
+  "Application": "wcs-to-plc",
+  "Target": "portable",
+  "Checks": [
+    "candidate file hashes",
+    "actual selected assembly startup",
+    "camera-to-final-reference-chain",
+    "persistent original phases on restart",
+    "orderly stop"
+  ],
+  "AttachedUpload": true,
+  "ExternalPeerProcess": true,
+  "OptionalFeatures": true,
+  "OptionalChecks": [
+    "authenticated admission",
+    "same-entity measured weight",
+    "actual PNG upload bytes",
+    "attached upload independent from main",
+    "process restart original query",
+    "independent upload reconciliation keeps original operator",
+    "one execution per independent receiver"
+  ],
+  "State": "PhysicalCompleted",
+  "OperationId": "a1904ee442f14a588c6c1a91bb74dbb6",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED"
+}

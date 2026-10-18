@@ -1,0 +1,25 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 776 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 776 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 776 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 776 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 776 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 776 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 776 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 776 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 8 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 11 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 7 毫秒)。
+  Ipc.Platform -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster/build-intermediates/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> <WORKTREE>/.artifacts/capability19-delivery/sportmaster/app/
+{"Package": "<WORKTREE>/.artifacts/capability19-delivery/sportmaster.zip", "Sha256": "4e5ea1498d1f2c582321f5bf71cd43e238e0089d4fb59a743257b0603553f068", "SourceCommit": "4806790f19bdd3cc19f4edcf50b94255fe50aa6c", "Application": "sportmaster", "Target": "portable"}

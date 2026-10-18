@@ -1,9 +1,4 @@
-> 当前任务：[APPLICATION-CONVERGENCE-17](../work-packages/WP-IPC-APPLICATION-CONVERGENCE-17.md)，基线main `6e9c890`。17替代16当前任务指引；Supply专属箱/双通道/数量不推广到其他Application。历史正文保留形成时语境，原字节见[归档](../archive/pre-application-convergence-17/README.md)。
-
-> 16形成时任务为 [UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，基线 main `12a40b3`（PR15已合并）。15的实现及历史证据继续有效；本包只收敛指定UI、维护职责、独立扩展工具和健康续期写放大。有效F/D/RV要求不降低。修改前原字节见 [归档](../archive/pre-ui-maintainability-16/README.md)。
-
-> FIX-14当前机制：服务健康以实例/目标/部署/epoch/sequence与时效记录；Supply按requests实际依赖守卫，辅助和历史查询错误不归主WCS。唯一部署草稿贯通维护/组件页，激活带本次修订；共享库卸载扫描持久登记的离线/恢复根及冲突责任，旧库覆盖不明拒绝。旧13完成性表述仅为历史，实际结果见 [14报告](../runtime/conformance-fix-14.md)。
-
+> 现行三Application职责、公共能力与可选策略：[19唯一设计](../design/application-capability-19.md)。本页保留仍有效的基础机制及Supply兼容说明；17/18阶段限制已由19替代。原字节见[归档](../archive/pre-application-capability-19/README.md)。
 
 # CLOSURE-13 受控装配与扩展
 

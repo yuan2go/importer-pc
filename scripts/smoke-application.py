@@ -20,7 +20,9 @@ p.add_argument('--dotnet', default='dotnet')
 p.add_argument('--peer-fixture', type=Path, help='Run independent loopback WCS/PLC/upload receiver process; requires --optional-features')
 p.add_argument('--output', type=Path, required=True)
 p.add_argument('--optional-features', action='store_true', help='Authenticate, wait for correlated weight, capture/upload, restart after lost upload reply, then explicitly continue')
+p.add_argument('--attached-upload', action='store_true', help='Validate independent attached upload uncertainty while the main chain completes')
 a = p.parse_args()
+if a.attached_upload and not a.optional_features: raise ValueError('--attached-upload requires --optional-features')
 root = a.package.resolve()
 identity = json.loads((root / 'ASSEMBLY.json').read_text())
 if identity['Target'] != 'portable': raise ValueError('This smoke requires the portable candidate, not an unexecuted Windows target')
@@ -61,7 +63,7 @@ if a.optional_features:
     c['Login'] = binding('login'); c['Login']['Parameters'] = {'subjects':'alice,bob'}
     c['Weight'] = dict(Source='Measured', Unit='Kg', Precision=3, ConfiguredValue=None, MaximumAgeMs=3000)
     c['Scale'] = binding('weight')
-    c['Images'] = dict(Camera=binding('camera'), Uploader=binding('upload'), MaximumBytes=4194304)
+    c['Images'] = dict(Camera=binding('camera'), Uploader=binding('upload'), MaximumBytes=4194304, Strategy='Attached' if a.attached_upload else 'BeforeMain')
     c['Images']['Uploader']['Parameters'] = {'reply-mode':'lose-after-commit'}
     if peer_url:
         for bound in [c['Wcs'], c['Plc'], c['Images']['Uploader']]:
@@ -102,7 +104,7 @@ try:
     if result['Status'] != 'Enqueued': raise ValueError('Reference camera was not admitted')
     for _ in range(60):
         snapshot = send(process, messages, 'snapshot')
-        if snapshot['Operations']: break
+        if snapshot['Operations'] and ((snapshot['Operations'][0].get('Capture') or {}).get('State') == 'Accepted' if a.optional_features else snapshot['Operations'][0]['State'] == ('SlotResolved' if identity['product']['business'] == 'sportmaster' else 'PlcAccepted')): break
         time.sleep(.05)
     operation = snapshot['Operations'][0]
     if a.optional_features:
@@ -111,9 +113,10 @@ try:
         send(process, messages, dict(Id=uuid.uuid4().hex, ExpectedRevision=snapshot['Revision'], Kind='EmitWeight', Value=json.dumps(measurement)))
         for _ in range(60):
             snapshot = send(process, messages, 'snapshot'); operation = snapshot['Operations'][0]
-            if operation['State'] == 'ImageUnknown': break
+            if (operation['Upload']['State'] == 'Unknown' and operation['State'] in ('SlotResolved', 'PlcAccepted')) if a.attached_upload else operation['State'] == 'ImageUnknown': break
             time.sleep(.05)
-        if operation['State'] != 'ImageUnknown' or operation['Wcs'] is not None or operation['Plc'] is not None: raise ValueError('Lost upload must block downstream effects')
+        if not a.attached_upload and (operation['State'] != 'ImageUnknown' or operation['Wcs'] is not None or operation['Plc'] is not None): raise ValueError('Lost pre-main upload must block downstream effects')
+        if a.attached_upload and (operation['Upload']['State'] != 'Unknown' or operation['State'] not in ('SlotResolved','PlcAccepted')): raise ValueError('Attached uncertainty must not block main chain')
     expected = 'SlotResolved' if identity['product']['business'] == 'sportmaster' else 'PlcAccepted'
     if not a.optional_features and operation['State'] != expected: raise ValueError('Incomplete actual reference chain: ' + operation['State'])
     if operation['ParcelCode'] != '000000917': raise ValueError('Original code changed')
@@ -125,15 +128,26 @@ try:
     if a.optional_features:
         if recovered['Upload']['Request'] != operation['Upload']['Request'] or restarted['CurrentOperator'] is not None: raise ValueError('Restart changed upload or revived a session')
         def command(kind, owner=None, value=None):
+            command_id = uuid.uuid4().hex
+            for attempt in range(3):
+                snap = send(process, messages, 'snapshot')
+                result = send(process, messages, dict(Id=command_id, ExpectedRevision=snap['Revision'], Kind=kind, Owner=owner, Value=value))
+                if result['Status'] != 'Conflict': return result
+            return result  # Only explicit local CAS rejection permits refresh; never retry an uncertain send.
+        reconciled = command('Reconcile', operation['Id'])
+        if a.attached_upload:
+            if reconciled['Status'] not in ('SlotResolved','PlcAccepted','PhysicalCompleted'): raise ValueError('Attached original reconciliation failed')
+            final = send(process, messages, 'snapshot')['Operations'][0]
+            if final['Upload']['State'] != 'Accepted' or final['Wcs'] != operation['Wcs']: raise ValueError('Attached reconciliation changed original main WCS fact')
+        else:
+            if reconciled['Status'] != 'Prepared': raise ValueError('Original upload query did not recover')
             snap = send(process, messages, 'snapshot')
-            return send(process, messages, dict(Id=uuid.uuid4().hex, ExpectedRevision=snap['Revision'], Kind=kind, Owner=owner, Value=value))
-        if command('Reconcile', operation['Id'])['Status'] != 'Prepared': raise ValueError('Original upload query did not recover')
-        snap = send(process, messages, 'snapshot')
-        if snap['Operations'][0]['Plc'] is not None or snap['Operations'][0]['Wcs'] is not None: raise ValueError('Query dispatched downstream')
-        if command('Login', 'alice', 'SIMULATION_ONLY')['Status'] != 'Authenticated': raise ValueError('Original subject could not reauthenticate')
-        if command('ContinuePrepared', operation['Id'])['Status'] != 'Persisted': raise ValueError('Original continuation rejected')
-        final = send(process, messages, 'snapshot')['Operations'][0]
-        if final['State'] != expected or final['Operator'] != operation['Operator'] or final['Upload']['Attempts'] != 1 or final['Capture']['Attempts'] != 1: raise ValueError('Continuation changed identity or repeated image stage')
+            if snap['Operations'][0]['Plc'] is not None or snap['Operations'][0]['Wcs'] is not None: raise ValueError('Query dispatched downstream')
+            if command('Login', 'alice', 'SIMULATION_ONLY')['Status'] != 'Authenticated': raise ValueError('Original subject could not reauthenticate')
+            if command('ContinuePrepared', operation['Id'])['Status'] != 'Persisted': raise ValueError('Original continuation rejected')
+            final = send(process, messages, 'snapshot')['Operations'][0]
+            if final['State'] != expected: raise ValueError('Continuation did not finish main chain')
+        if final['Operator'] != operation['Operator'] or final['Upload']['Attempts'] != 1 or final['Capture']['Attempts'] != 1: raise ValueError('Recovery changed identity or repeated image stage')
         for stage in [final['Upload'], *([final['Wcs']] if final['Wcs'] else []), *([final['Plc']] if final['Plc'] else [])]:
             request = stage['Request']; peer = (peer_root/'parcel-peers' if peer_root else Path(request['Binding']['Parameters']['peer-root'])) / hashlib.sha256(request['Binding']['Target'].encode()).hexdigest().upper()
             ledger = json.loads((peer / (request['Id']+'.json')).read_text())
@@ -146,7 +160,7 @@ except BaseException:
     raise
 result = dict(Status='PASS', SourceCommit=identity['SourceCommit'], Application=identity['product']['business'], Target='portable',
               Checks=['candidate file hashes', 'actual selected assembly startup', 'camera-to-final-reference-chain', 'persistent original phases on restart', 'orderly stop'],
-              ExternalPeerProcess=bool(a.peer_fixture), OptionalFeatures=a.optional_features, OptionalChecks=['authenticated admission', 'same-entity measured weight', 'actual PNG upload bytes', 'lost upload blocks PLC', 'process restart original query', 'explicit continuation original operator', 'one execution per independent receiver'] if a.optional_features else [],
+              AttachedUpload=a.attached_upload, ExternalPeerProcess=bool(a.peer_fixture), OptionalFeatures=a.optional_features, OptionalChecks=['authenticated admission', 'same-entity measured weight', 'actual PNG upload bytes', 'attached upload independent from main' if a.attached_upload else 'lost pre-main upload blocks PLC', 'process restart original query', 'independent upload reconciliation keeps original operator' if a.attached_upload else 'explicit continuation original operator', 'one execution per independent receiver'] if a.optional_features else [],
               State=operation['State'], OperationId=operation['Id'], Windows='NOT_RUN', RealEquipment='BLOCKED')
 a.output.write_text(json.dumps(result, indent=2) + '\n')
 print(json.dumps(result))

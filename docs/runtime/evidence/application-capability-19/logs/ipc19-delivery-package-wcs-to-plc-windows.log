@@ -1,0 +1,45 @@
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Platform/Ipc.Platform.csproj (用时 946 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 945 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 945 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 945 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 946 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 945 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 945 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 946 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 16 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 18 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Components/Ipc.Components.csproj (用时 16 毫秒)。
+  Ipc.Platform -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Assembly/release_win-x64/Ipc.Assembly.dll
+  Ipc.Assembly -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/app/
+  正在确定要还原的项目…
+  已还原 <WORKTREE>/src/Ipc.Application.WcsToPlc.Desktop/Ipc.Application.WcsToPlc.Desktop.csproj (用时 646 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 604 毫秒)。
+  已还原 <WORKTREE>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 604 毫秒)。
+  11 个项目(共 14 个)是最新的，无法还原。
+  Ipc.Platform -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Assembly/release_win-x64/Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Application.ParcelFlow.Desktop/release/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.WcsToPlc.Desktop -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Application.WcsToPlc.Desktop/release/Ipc.Application.WcsToPlc.Desktop.dll
+  Ipc.Desktop -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/build-intermediates/bin/Ipc.Desktop/release_win-x64/Ipc.Desktop.dll
+  Ipc.Desktop -> <WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows/desktop/
+{"Package": "<WORKTREE>/.artifacts/capability19-delivery/wcs-to-plc-windows.zip", "Sha256": "64aed55dd82a889acd5d9cc822f290bd04a553b1bc23ed0383f0ce819c5ab55a", "SourceCommit": "4806790f19bdd3cc19f4edcf50b94255fe50aa6c", "Application": "wcs-to-plc", "Target": "win-x64"}

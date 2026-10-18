@@ -37,3 +37,6 @@
 
 
 PR24独立审查输入a2e987a的R01～R05于本轮完成整改，文档治理b59318a先于代码，真实装配与候选源码固定7850fcc02b04d1b572fcb89215945ee0f60be28c。见[本轮结果、固定证据及后验边界](../runtime/architecture-quality-closure-01-rereview-results.md)。更新同一PR供复审，不合并main；原PDF01、Windows/真实现场门禁仍保留。
+
+
+3f6f762独立复审剩余R03已由用户授权继续整改，见AQD-08方案/计划：所有支持schema在去重前校验原库存，覆盖Effective/Pending/未结Frozen；前轮结果、原件及失败不改写，不合并main。

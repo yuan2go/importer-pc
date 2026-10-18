@@ -86,3 +86,24 @@ AQD-05补差：实际签名包复现仅Pending含包、重启激活被旧件屏�
 
 
 本轮固定实现与候选7850fcc02b04d1b572fcb89215945ee0f60be28c，实际定向结果及失败保留见[复审结果](../runtime/architecture-quality-closure-01-rereview-results.md)。本轮结论为参考验证通过、待独立复审；不变更D/RV或Windows/现场状态。
+
+
+## AQD-08 R03兼容库存校验闭环
+
+2026-10-18用户明确授权修复独立复审剩余R03，不合并main。基线PR24 head **3f6f762d31655ef0fe8d6562ed413beed682e2f9**、main **b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d**，开放PR23/26保持独立。schema1/2的Effective/Pending/未结FrozenConfiguration可携带同InstanceId不同包的矛盾库存，All去重后返回零引用，不能以schema3测试关闭此问题。原独立审查、原件与入口保持身份，见pre-pr24-r03归档。
+
+已获本轮用户确认的方案：在Parcel共用配置规则中先校验未去重的角色与完整CapabilityInstances，再进入拓扑/业务解析。仅在离线读者加特例会留下其他入口不一致；修改All或自动取首项会放宽歧义/改变公共契约，因此不采用。三个Application及schema1/2/3统一规则；Factory的独立校验入口也在Bound/DistinctBy前调用同一校验。
+
+规则：库存至多64项、非null且InstanceId唯一（相同内容的重复库存也拒绝）；不同角色不能占同一身份。角色与库存中的一次合法镜像必须保持全部绑定内容一致，包含kind/实现/version/目标/合同/参数/Enabled/包/模块。原始每项都检查已知能力kind、精确绑定身份及包引用；包ID/version/manifest hash合法、声明集合唯一、Package/Module/Implementation/Version相符；无Package不能携带扩展Module/Implementation，disabled项同样不能隐藏引用。先验证这些事实再做All/Bound去重，不加载扩展/SDK，也不以包当前可启动作为历史读者前提。
+
+没有新的数据库/配置/公共契约/扩展协议版本；不修改FrozenConfiguration或其hash、原SQL、原包或旧请求。非法原件保留并明确阻卸载，合法旧schema与合法角色/库存镜像继续读取。现有旧候选与1.6.8/1.6.9精确包维持原源码/二进制身份，不能标成本轮候选；本轮不重复打包整个产品。
+
+### 执行计划（writing-plans）
+
+目标：闭合剩余R03，并保持合法兼容配置的完整引用与只读证据。技术栈.NET10.0.402/SQLite，分支codex/architecture-quality-closure-01；沿现有计划逐项执行，无需新业务实例或通用框架。
+
+- [ ] 先保存独立复审原报告/合成探针和旧入口字节；修正README/INDEX/指南的当前状态，提交文档治理。
+- [ ] 新增定向--inventory-closure：schema1/2（及schema3控制组）分别覆盖Effective/Pending/未结Frozen；同ID相同/不同内容、角色镜像矛盾、悬挂包/模块/版本/未知kind必须拒绝且DB/config原bytes不改。合法旧schema/完整镜像/精确包引用须仍可读并保有未结包。先记录修复前失败。
+- [ ] 在ParcelConfigurationRules新增统一原库存校验，先于All/ValidateTopology；删除schema3专属重复实现与离线重复绑定校验，Factory入口复用；保持reader专属校验与真实安装资格机制。
+- [ ] 只做受影响定向验证：--inventory-closure、--review-closure，必要真实Assembly/Product构建；按风险核配置验证和卸载原入口，不无差别全量测试/重打旧候选。
+- [ ] 固定源码、命令/返回码、原失败与只读hash证据；更新同一PR供复审，核main未变，Windows/SDK/现场及原PDF缺件继续NOT_RUN/BLOCKED。

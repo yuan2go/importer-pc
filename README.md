@@ -1,3 +1,5 @@
+> 当前整改：[WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01](docs/work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)。状态为实施中，22及旧报告PASS仅覆盖原身份；本包未验证的能力不作已完成声明。
+
 # importer-pc
 
 C#/.NET 10工位运行基座与供包独立参考产品：Generic Host、WPF、多视图共享业务、真实SQLite事务/Outbox/原请求恢复、合成观察和受控扩展。旧现场迁移、真实SDK/WCS和现场资格分别验证。

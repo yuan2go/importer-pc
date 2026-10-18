@@ -1,3 +1,5 @@
+> 路径边界：下文Supply/Product命令和消费者SQL属于旧Supply兼容链；不得用于证明Parcel卸载安全。新Application沿[质量闭环01设计](../design/architecture-quality-closure-01.md)补齐自己的安装恢复/消费者/备份检查；未交付前卸载仍BLOCKED。精确契约及原包身份不放宽。
+
 > 22现行拓扑、状态作用域、版本与交付：[Application架构22](../design/application-architecture-22.md)。19/20及PR20/21已闭修复继续有效；冲突处按22增量，原字节见归档。
 
 > 现行三Application职责、公共能力与可选策略：[19职责设计](../design/application-capability-19.md)及[20可靠性增量](../design/capability-reliability-20.md)。本页保留仍有效的基础机制及Supply兼容说明；17/18阶段限制已由19替代。原字节见[归档](../archive/pre-application-capability-19/README.md)。

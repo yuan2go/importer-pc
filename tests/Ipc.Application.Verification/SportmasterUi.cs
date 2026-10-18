@@ -115,6 +115,8 @@ static class SportmasterUi
             Check(auxiliary.Left.AdmissionId != ui.Left.AdmissionId && auxiliary.Right.AdmissionId != ui.Right.AdmissionId,
                 "auxiliary window owns drafts while sharing business facts");
             await VerifySnapshotSafety(app, ui, snapshot);
+            await VerifyReadFailurePaths(app);
+            await VerifyViewportProtection(app);
         }
         await using (var app = await Open(configuration, "ui-unknown", loseSecondLeft: true))
         {
@@ -233,7 +235,7 @@ static class SportmasterUi
         var operation = ui.Left.Operation!.Id; var updated = ui.UpdatedAt;
         ui.MarkReadFailure("synthetic connection loss");
         Check(!ui.Fresh && !ui.Left.CanAdmit && !ui.Right.CanAdmit && !ui.Left.CanReconcile && !ui.Left.CanContinue &&
-            ui.Left.Operation!.Id == operation && ui.UpdatedAt == updated && ui.ReadStatus.Contains("synthetic connection loss"),
+            ui.Left.Operation!.Id == operation && ui.UpdatedAt == updated && ui.ReadStatus.Contains(updated) && ui.ReadStatus.Contains("synthetic connection loss"),
             "read failure retains original facts/time as stale and disables position actions");
         await ui.EmitPositionAsync(ui.Left); await ui.ReconcilePositionAsync(ui.Left); await ui.ContinuePositionAsync(ui.Left);
         Check(probe.Writes == 0, "stale action methods issue no application command, query or admission");
@@ -299,6 +301,80 @@ static class SportmasterUi
             "unmatched current operation never falls back to another historical entity or position");
         probe.Read = null;
         var paused = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), paused.Revision, "Resume")); await original.RefreshDisplayAsync();
+    }
+
+    static async Task VerifyReadFailurePaths(ParcelRuntime app)
+    {
+        var probe = new SnapshotProbe(app); var ui = new SupplyStationViewModel(probe);
+        await ui.RefreshDisplayAsync(); var updated = ui.UpdatedAt;
+        probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("failed post-command snapshot"));
+        await ui.RunAsync(() => ui.CommandAsync("Resume"));
+        Check(!ui.Fresh && !ui.Left.CanAdmit && ui.ReadStatus.Contains(updated) && ui.ReadStatus.Contains("failed post-command snapshot"),
+            "inherited command refresh failure immediately invalidates the display and retains successful read time");
+        var writes = probe.Writes;
+        await ui.EmitPositionAsync(ui.Left); await ui.ReconcilePositionAsync(ui.Left); await ui.ContinuePositionAsync(ui.Left);
+        Check(probe.Writes == writes, "no position action reaches application after failed inherited command refresh");
+        probe.Read = null; await ui.RefreshDisplayAsync();
+        probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("failed pause initial read"));
+        await ui.PauseAsync();
+        Check(!ui.Fresh && ui.ReadStatus.Contains("failed pause initial read"), "Pause initial snapshot shares the alternate UI failure policy");
+        probe.Read = null; await ui.LoadConfigurationConfirmationAsync();
+        probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("failed confirmation read"));
+        await ui.RunAsync(ui.ConfirmConfigurationAsync);
+        Check(!ui.Fresh && ui.ReadStatus.Contains("failed confirmation read"), "configuration confirmation snapshot shares the alternate UI failure policy");
+        probe.Read = null; await ui.RefreshDisplayAsync();
+        foreach (var failurePath in new[] { "Pause", "ConfirmConfiguration" })
+        {
+            var oldSnapshot = ui.Snapshot!;
+            var oldRead = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
+            probe.Read = () => oldRead.Task; var poll = ui.RefreshDisplayAsync();
+            probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("newer " + failurePath + " read failed"));
+            if (failurePath == "Pause") await ui.PauseAsync(); else await ui.RunAsync(ui.ConfirmConfigurationAsync);
+            oldRead.SetResult(oldSnapshot); await poll;
+            Check(!ui.Fresh && !ui.Left.CanAdmit && ui.ReadStatus.Contains("newer " + failurePath),
+                "older poll success cannot undo newer failed " + failurePath + " read");
+            probe.Read = null; await ui.RefreshDisplayAsync();
+        }
+        var late = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
+        probe.Read = () => late.Task; var command = ui.RunAsync(() => ui.CommandAsync("Resume"));
+        probe.Read = null; await ui.RefreshDisplayAsync(); var current = ui.Snapshot;
+        late.SetException(new IOException("obsolete command refresh failure")); await command;
+        Check(ui.Fresh && ReferenceEquals(ui.Snapshot, current) && !ui.ReadStatus.Contains("obsolete command"),
+            "late command refresh failure cannot invalidate a newer successful poll");
+        updated = ui.UpdatedAt; ui.RefreshFreshness(DateTimeOffset.UtcNow.AddSeconds(4));
+        Check(!ui.Fresh && ui.ReadStatus.Contains(updated), "deadline expiry visibly retains last successful read time");
+        await ui.RefreshDisplayAsync();
+    }
+
+    static async Task VerifyViewportProtection(ParcelRuntime app)
+    {
+        var probe = new SnapshotProbe(app); var ui = new SupplyStationViewModel(probe); await ui.RefreshDisplayAsync();
+        var before = await app.SnapshotAsync(); var writes = probe.Writes;
+        Check(!ui.SetViewport(1280, 680) && ui.ViewportReady, "minimum effective client area remains usable at the exact boundary");
+        Check(ui.SetViewport(1093, 614) && !ui.ViewportReady && !ui.CanUseWorkspace && !ui.Left.CanAdmit && !ui.CanResumeInViewport,
+            "1366 at 125 percent equivalent client area protects all new position actions");
+        await ui.EmitPositionAsync(ui.Left); await ui.ContinuePositionAsync(ui.Left); await ui.ReconcilePositionAsync(ui.Left);
+        Check(probe.Writes == writes, "small client area dispatches no position action");
+        Check(!ui.SetViewport(911, 512) && !ui.ViewportFits && !ui.CanAcknowledgeViewport,
+            "1366 at 150 percent remains protected without repeated size-entry notifications");
+        ui.SetViewport(1440, 900); ui.AcknowledgeViewport();
+        Check(!ui.ViewportReady && !ui.CanUseWorkspace, "restored area cannot acknowledge before a confirmed paused snapshot");
+        await ui.PauseAsync(); var paused = await app.SnapshotAsync();
+        Check(ui.CanAcknowledgeViewport && paused.Paused && paused.RuntimeId == before.RuntimeId && paused.Operations.Length == before.Operations.Length,
+            "existing software Pause preserves application and original operations for viewport protection");
+        ui.AcknowledgeViewport();
+        Check(ui.ViewportReady && ui.CanUseWorkspace && ui.Snapshot!.Paused && !ui.Left.CanAdmit && ui.CanResumeInViewport,
+            "manual viewport acknowledgement keeps business paused until explicit Resume");
+        Check(ui.SetViewport(1279, 680), "one DIP below minimum width re-enters protection");
+        ui.SetViewport(1280, 679); Check(!ui.ViewportFits, "one DIP below minimum height remains protected");
+        ui.SetViewport(double.NaN, 900); Check(!ui.ViewportFits, "invalid client geometry cannot authorize a view");
+        ui.SetViewport(1440, 900); ui.MarkReadFailure("viewport stale read"); ui.AcknowledgeViewport();
+        Check(!ui.ViewportReady, "restored geometry and stale pause facts cannot clear viewport protection");
+        await ui.RefreshDisplayAsync(); ui.AcknowledgeViewport(); await ui.RunAsync(() => ui.CommandAsync("Resume"));
+        var after = await app.SnapshotAsync();
+        Check(!after.Paused && after.RuntimeId == before.RuntimeId &&
+            after.Operations.All(op => before.Operations.Any(old => old.Id == op.Id && Wire.Encode(old.Wcs?.Request) == Wire.Encode(op.Wcs?.Request))),
+            "explicit post-confirmation Resume preserves original requests and creates no business instance");
     }
 
     sealed class LostReplyFactory(ParcelCapabilityFactory inner) : IParcelCapabilityFactory

@@ -17,6 +17,7 @@ public partial class SupplyStationWindow : Window
     readonly SupplyStationWindow root;
     readonly HashSet<SupplyStationWindow> windows;
     Task pendingRefresh = Task.CompletedTask;
+    Task pendingViewportPause = Task.CompletedTask;
     bool compact, closing, closeReady;
     public SupplyStationViewModel ViewModel { get; }
 
@@ -24,6 +25,7 @@ public partial class SupplyStationWindow : Window
     {
         InitializeComponent();
         ViewModel = new(application); DataContext = ViewModel; this.stopOwner = stopOwner;
+        ClientArea.SizeChanged += ViewportChanged;
         root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
         if (owner is not null) Owner = owner;
         work.ColumnDefinitions.Add(new()); work.ColumnDefinitions.Add(new());
@@ -40,8 +42,10 @@ public partial class SupplyStationWindow : Window
         };
         Loaded += async (_, _) =>
         {
+            if (ActualWidth > SystemParameters.WorkArea.Width || ActualHeight > SystemParameters.WorkArea.Height) WindowState = WindowState.Maximized;
             pendingRefresh = RefreshAsync(); await pendingRefresh;
             if (closing) return;
+            UpdateViewport();
             timer.Start();
             if (initialPage == "maintenance") await ViewModel.RunAsync(ViewModel.LoadCapabilitiesAsync);
             if (initialPage == "history") await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync());
@@ -68,11 +72,24 @@ public partial class SupplyStationWindow : Window
     }
     void Layout_Click(object sender, RoutedEventArgs e) { compact = !compact; ApplyLayout(); }
     void ApplyLayout() { FontSize = compact ? 14 : 16; work.Margin = compact ? new Thickness(0) : new Thickness(4); }
+    void ViewportChanged(object sender, SizeChangedEventArgs e) => UpdateViewport();
+    void UpdateViewport()
+    {
+        if (closing || ClientArea.ActualWidth <= 0 || ClientArea.ActualHeight <= 0) return;
+        if (ViewModel.SetViewport(ClientArea.ActualWidth, ClientArea.ActualHeight)) QueueViewportPause();
+    }
+    void QueueViewportPause()
+    {
+        if (!closing && pendingViewportPause.IsCompleted) pendingViewportPause = ViewModel.PauseAsync();
+    }
+    void Maximize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Maximized;
+    void ViewportPause_Click(object sender, RoutedEventArgs e) => QueueViewportPause();
+    void ViewportAcknowledge_Click(object sender, RoutedEventArgs e) => ViewModel.AcknowledgeViewport();
     public async Task ShowDetailsAsync(ParcelOperation operation) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operation.Id)); }
     async void Pause_Click(object sender, RoutedEventArgs e) => await ViewModel.PauseAsync();
     async void Resume_Click(object sender, RoutedEventArgs e)
     {
-        if (ViewModel.Fresh) await ViewModel.RunAsync(() => ViewModel.CommandAsync("Resume"));
+        if (ViewModel.CanResumeInViewport) await ViewModel.RunAsync(() => ViewModel.CommandAsync("Resume"));
     }
     async void Login_Click(object sender, RoutedEventArgs e)
     {
@@ -93,7 +110,7 @@ public partial class SupplyStationWindow : Window
         foreach (var window in affected) { window.closing = true; window.timer.Stop(); window.IsEnabled = false; }
         try
         {
-            await Task.WhenAll(affected.Select(x => x.pendingRefresh)).WaitAsync(TimeSpan.FromSeconds(5));
+            await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.pendingViewportPause })).WaitAsync(TimeSpan.FromSeconds(5));
             if (stopOwner is not null) await stopOwner();
             closeReady = true;
             foreach (var child in affected.Where(x => x != this)) { child.closeReady = true; child.Close(); }

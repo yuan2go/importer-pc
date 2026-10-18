@@ -12,3 +12,18 @@
 原审查独立复跑UI66断言PASS、WPF烟测工程交叉编译0警告0错误；未据此关闭上述P2。业务Flow/Runtime/SQL/驱动/协议无改动，参数拒绝与共享实例接线正确，生命周期未发现额外确定缺陷；Windows原生运行NOT_RUN、真实接口/现场BLOCKED。原结论保持形成时身份。
 
 用户已授权修复四项并推送原PR，不合并；[修复计划](../superpowers/plans/2026-10-19-sportmaster-ui-p2.md)。本表的修复验证将另追加，不倒写原审查状态。
+
+## 修复复核（2026-10-19）
+
+原OPEN结论保留。用户授权后实施四项，源码复核结果：
+
+|编号|修复|已执行证据|未执行边界|
+|---|---|---|---|
+|P2-01|共享桌面读取钩子覆盖所有快照路径；相关失败退休旧轮询|真实Application的命令/暂停/确认读取失败及两种旧成功竞态，另有独立临时探针复跑|Windows事件调度实测NOT_RUN|
+|P2-02|顶部132 DIP、状态96 DIP局部滚动；时间独立常驻，原原因不裁剪|XAML静态复核、WPF编译；原生烟测增加50条合成责任及固定动作几何断言|实际Windows布局/截图NOT_RUN|
+|P2-03|640×420最小窗口，按1280×680有效客户区保护；已有Pause、人工确认与显式Resume分开|跨平台真实Application边界/锁存/暂停/原请求回归；原生烟测增加尺寸保护|实际Windows DPI/多屏/触控NOT_RUN|
+|P2-04|失败ReadStatus保留时间，滚动区外LastReadTime常驻|失败/到期回归及XAML绑定检查|Windows可见性实测NOT_RUN|
+
+修复中独立复核额外发现“旧轮询成功覆盖较新Pause读取失败”；已用InvalidatePendingRefresh修复，并加入Pause/ConfirmConfiguration两条回归，独立原探针复跑不再开启Fresh/CanAdmit。两轴复核未发现剩余确定阻断项，但不宣称Windows或现场验收通过。
+
+最终源码/候选及日志身份由[运行结果](../runtime/sportmaster-alternate-ui-results.md)追加记录。业务核心/应用契约/SQL/驱动/协议/配置相对main无差异；共享桌面只新增默认行为不变的读取扩展点。PR27不合并，原D/RV不变。

@@ -70,11 +70,14 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public string BackupPath { get; set; } = "";
     public bool Busy { get; private set; }
     long refreshGeneration;
+    // A presentation may observe read failures; the default preserves the classic path.
+    protected virtual Task<ParcelSnapshot> ReadSnapshotAsync() => application.SnapshotAsync();
+    protected void InvalidatePendingRefresh() => Interlocked.Increment(ref refreshGeneration);
     public async Task RefreshAsync()
     {
         var currentId = Selected?.Id;
         var generation = Interlocked.Increment(ref refreshGeneration);
-        var next = await application.SnapshotAsync();
+        var next = await ReadSnapshotAsync();
         if (generation != Volatile.Read(ref refreshGeneration) || Snapshot is { } previous && next.RuntimeId == previous.RuntimeId && next.Revision < previous.Revision) return;
         Snapshot = next;
         if (!PositionIds.Contains(SelectedPositionId)) SelectedPositionId = PositionIds.FirstOrDefault() ?? "main";
@@ -110,7 +113,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         {
             for (var retry = 0; retry < 3; retry++)
             {
-                var s = await application.SnapshotAsync();
+                var s = await ReadSnapshotAsync();
                 var r = await application.CommandAsync(new(Wire.Id(), s.Revision, "Pause"));
                 if (r.Status == "Conflict") continue;
                 Message = r.Status + " · " + r.Reason; await RefreshAsync(); return;

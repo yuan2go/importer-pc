@@ -1,4 +1,5 @@
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -38,7 +39,8 @@ static class Program
         await using (runtime)
         {
             await runtime.StartAsync(CancellationToken.None);
-            var application = (IParcelApplication)runtime.Application;
+            var application = DispatchProxy.Create<IParcelApplication, ProjectionProbe>();
+            var probe = (ProjectionProbe)(object)application; probe.Inner = (IParcelApplication)runtime.Application;
             var stops = 0;
             var classic = Presentation.Create(application, null, null);
             var alternate = (SupplyStationWindow)Presentation.Create(application, null, "standard", "supply-station", async () => { await runtime.StopAsync(CancellationToken.None); stops++; });
@@ -68,7 +70,43 @@ static class Program
             Check(ReferenceEquals(child.ViewModel.Application, application) && !ReferenceEquals(child.ViewModel, alternate.ViewModel), "auxiliary window inherits UI and shares Application with independent model");
             child.Close(); await Task.Delay(100);
             Check(stops == 0 && !child.IsVisible, "closing auxiliary window keeps business owner alive");
-            foreach (var size in new[] { (1440, 980), (1100, 760) })
+            probe.Project = snapshot => snapshot with
+            {
+                AuxiliaryReasons = Enumerable.Range(0, 50).Select(i => $"SYNTHETIC retained receipt {i}: original custody and upload failure detail").ToArray(),
+                BlockingReasons = Enumerable.Range(0, 50).Select(i => $"SYNTHETIC long blocking reason {i}").ToArray()
+            };
+            alternate.ViewModel.Message = string.Join("\n", Enumerable.Repeat("SYNTHETIC long diagnostic", 50));
+            await alternate.ViewModel.RefreshDisplayAsync(); alternate.UpdateLayout();
+            var header = (ScrollViewer)alternate.FindName("HeaderDiagnostics");
+            var diagnostics = (ScrollViewer)alternate.FindName("StatusDiagnostics");
+            var page = (ContentControl)alternate.FindName("PageHost");
+            Check(header.ActualHeight <= 132 && diagnostics.ActualHeight <= 96 && page.ActualHeight > 240,
+                "50 receipt reasons and long messages scroll locally without consuming work area");
+            Check(alternate.ViewModel.AuxiliaryState.Contains("receipt 49"), "bounded diagnostic display retains all original entries");
+            var client = (Grid)alternate.FindName("ClientArea");
+            foreach (var position in Descendants(alternate).OfType<SupplyStationPosition>())
+            {
+                var actions = (Border)position.FindName("FixedActions");
+                var bounds = actions.TransformToAncestor(client).TransformBounds(new Rect(actions.RenderSize));
+                Check(actions.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= client.ActualHeight,
+                    "position recovery actions stay within the effective client area under diagnostic backlog");
+            }
+            probe.Project = null; await alternate.ViewModel.RefreshDisplayAsync();
+            alternate.WindowState = WindowState.Normal;
+            foreach (var size in new[] { (1100, 650), (911, 512) })
+            {
+                alternate.Width = size.Item1; alternate.Height = size.Item2; await Task.Delay(200);
+                for (var i = 0; i < 30 && alternate.ViewModel.Snapshot?.Paused != true; i++) await Task.Delay(50);
+                Check(!alternate.ViewModel.ViewportFits && !alternate.ViewModel.CanUseWorkspace && alternate.ViewModel.Snapshot!.Paused,
+                    $"small {size.Item1}x{size.Item2} client protects view and invokes existing software Pause");
+            }
+            alternate.Width = 1440; alternate.Height = 980; await Task.Delay(200);
+            Check(alternate.ViewModel.ViewportFits && !alternate.ViewModel.ViewportReady && alternate.ViewModel.Snapshot!.Paused,
+                "restored geometry remains protected and never automatically resumes business");
+            Click(alternate, "确认视图，保持暂停");
+            Check(alternate.ViewModel.ViewportReady && alternate.ViewModel.Snapshot!.Paused,
+                "manual view confirmation clears only presentation protection");
+            foreach (var size in new[] { (1440, 980), (1366, 768) })
             {
                 alternate.Width = size.Item1; alternate.Height = size.Item2; alternate.UpdateLayout();
                 var bitmap = new RenderTargetBitmap((int)alternate.ActualWidth, (int)alternate.ActualHeight, 96, 96, PixelFormats.Pbgra32);
@@ -89,5 +127,21 @@ static class Program
     {
         for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
         { var child = VisualTreeHelper.GetChild(root, i); yield return child; foreach (var nested in Descendants(child)) yield return nested; }
+    }
+}
+
+// Synthetic layout projection only; every command still reaches the same real Application.
+public class ProjectionProbe : DispatchProxy
+{
+    public IParcelApplication Inner = null!;
+    public Func<ParcelSnapshot, ParcelSnapshot>? Project;
+    protected override object? Invoke(MethodInfo? method, object?[]? arguments)
+    {
+        if (method!.Name == nameof(IParcelApplication.SnapshotAsync)) return Snapshot();
+        return method.Invoke(Inner, arguments);
+    }
+    async Task<ParcelSnapshot> Snapshot()
+    {
+        var snapshot = await Inner.SnapshotAsync(); return Project?.Invoke(snapshot) ?? snapshot;
     }
 }

@@ -46,7 +46,7 @@
     </Expander>
    </StackPanel>
   </ScrollViewer>
-  <Border Grid.Row="3" Background="White" BorderBrush="{StaticResource StationLine}" BorderThickness="0,1,0,0" Padding="0,10,0,0">
+  <Border x:Name="FixedActions" Grid.Row="3" Background="White" BorderBrush="{StaticResource StationLine}" BorderThickness="0,1,0,0" Padding="0,10,0,0">
    <StackPanel><TextBox Text="{Binding InspectionReason,UpdateSourceTrigger=PropertyChanged}" ToolTip="重启后检查原实体的说明，用于继续本位原阶段" AutomationProperties.Name="本位原实体检查说明" MinHeight="36"/>
    <WrapPanel><Button Content="查看详情" Click="Details_Click" IsEnabled="{Binding CanReconcile}" Style="{StaticResource StationButton}"/><Button Content="核对原请求" Click="Reconcile_Click" IsEnabled="{Binding CanReconcile}" Style="{StaticResource StationButton}"/><Button Content="继续未尝试原阶段" Click="Continue_Click" IsEnabled="{Binding CanContinue}" Style="{StaticResource StationButton}"/></WrapPanel></StackPanel>
   </Border>

@@ -1,4 +1,4 @@
-> Sportmaster第二套UI实施入口：[已批准设计](superpowers/specs/2026-10-18-sportmaster-alternate-ui-design.md)、[运行/参数](runtime/sportmaster-alternate-ui.md)、[结果](runtime/sportmaster-alternate-ui-results.md)及[工作包与计划](work-packages/WP-IPC-SPORTMASTER-ALTERNATE-UI.md)。仅扩展桌面展示与启动参数，架构22业务规则继续有效；原HTML不上传，Windows/真实接口分项验收。
+> Sportmaster第二套UI：[PR27独立审查与P2修复](reviews/pr27-ui-independent-review.md)。实施入口：[已批准设计](superpowers/specs/2026-10-18-sportmaster-alternate-ui-design.md)、[运行/参数](runtime/sportmaster-alternate-ui.md)、[结果](runtime/sportmaster-alternate-ui-results.md)及[工作包与计划](work-packages/WP-IPC-SPORTMASTER-ALTERNATE-UI.md)。仅扩展桌面展示与启动参数，架构22业务规则继续有效；原HTML不上传，Windows/真实接口分项验收。
 
 > [2026-10-19不测试发布与合并回执](runtime/publication-20261019.md)：PR26已合并，8个既有参考产物已上传；Windows/真实集成边界不变。
 

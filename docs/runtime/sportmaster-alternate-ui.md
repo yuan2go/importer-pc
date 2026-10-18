@@ -31,14 +31,20 @@
 
 登录启用时使用已有认证接口；未启用时显示未启用。Simulation提供按位显式参考输入，需显式创建新实体身份；重复点击不自动发明新身份。Production隐藏该区域，缺真实能力仍NotReady。
 
+## 小客户区与诊断积压
+
+诊断原文不裁剪：顶部设备/附加责任最多132 DIP，全局状态/原因/错误最多96 DIP，均可局部滚动；最后成功读取时间独立常驻。字段继续局部滚动，双位恢复动作保持固定。
+
+根Grid有效客户区小于1280×680 DIP时进入本窗保护，禁止新入场、继续原阶段和恢复；窗口最小640×420，提供可滚动保护说明、最大化和重试软件暂停。进入保护只调用已有Pause，不取消在途请求。窗口初次超出工作区时最大化。恢复空间不会自动Resume：须取得有效暂停快照、点击“确认视图，保持暂停”，再核对现场并显式恢复新入场。保护Pause在主窗关闭时与刷新一起有界等待。Windows DPI、多屏及真实布局验收仍待执行。
+
 ## 实现、依赖与构建
 
 - `src/Ipc.Desktop/DesktopLaunchOptions.cs`：严格解析桌面参数。
 - `src/Ipc.Desktop/ParcelApp.xaml.cs`：预校验后创建一个runtime并选择UI。
 - `src/Ipc.Application.Sportmaster.Desktop/Presentation.cs`：显式UI工厂。
-- `SupplyStationWindow`：窗口、页面、500ms轮询和有界关闭。
+- `SupplyStationWindow`：窗口、页面、500ms轮询、有界关闭及客户区保护。
 - `SupplyStationPosition` / `SupplyStationTheme`：本位控件与资源；控件自己声明主题资源，创建时不依赖父树已经挂接。
-- `SupplyStationViewModel`：可跨平台验证的真实UI投影与命令转发；位置对象和草稿保持稳定。读取失败或超过3秒失效，原事实标旧并禁用新操作；成功读取恢复。旧轮询成功或失败都不能覆盖较新的成功命令刷新。
+- `SupplyStationViewModel`：可跨平台验证的真实UI投影与命令转发；位置对象和草稿保持稳定。轮询、命令刷新、暂停及配置确认均经同一快照读取扩展点。读取失败或超过3秒失效，原事实标旧并禁用新操作，最后成功读取时间常驻；成功读取恢复。旧轮询/命令成功或失败都不能覆盖较新的成功读取。
 
 沿用 .NET SDK10.0.402、WPF及已有锁定包，无新增生产NuGet依赖、原HTML、WebView、字体或SDK。
 

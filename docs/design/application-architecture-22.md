@@ -1,3 +1,5 @@
+> 业务版本及兼容管理按[版本管理增量](version-compatibility-01.md)；原历史结果和D/RV保持。
+
 # Application架构22 · 现行增量
 
 WP-IPC-APPLICATION-ARCHITECTURE-22，开工main ea881293c888a824f26c9f9fa07352a22786206b，无开放PR。此设计在业务代码前形成。19/20及PR20/21的原请求、资格、原图、备份与健康修复继承；历史原字节见[归档](../archive/pre-application-architecture-22/README.md)。本包替代本轮TOPOLOGY/PREVIEW/UI补充任务，不新增页面/图片展示/DirectPlc UI。

@@ -1,0 +1,56 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-2d58ea6e1bb147bdaefdd3528c17615d
+PASS RCS20: lifecycle readiness sends no fabricated remote health request
+PASS RCS20: assigned sends exact pre-frozen JSON bytes once
+PASS RCS20: assigned preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: assigned preserves original HTTP status and exact response bytes/hash
+PASS RCS20: assigned retains original local correlation without physical completion
+PASS RCS20: assigned reply preserves task/SKU and nullable measurements
+PASS RCS20: unpack sends exact pre-frozen JSON bytes once
+PASS RCS20: unpack preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: unpack preserves original HTTP status and exact response bytes/hash
+PASS RCS20: unpack retains original local correlation without physical completion
+PASS RCS20: NEED_UNPACK preserves all typed split-package details
+PASS RCS20: reject sends exact pre-frozen JSON bytes once
+PASS RCS20: reject preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: reject preserves original HTTP status and exact response bytes/hash
+PASS RCS20: reject retains original local correlation without physical completion
+PASS RCS20: other explicit errors remain business rejections with original codes/messages
+PASS RCS20: malformed sends exact pre-frozen JSON bytes once
+PASS RCS20: malformed preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: malformed preserves original HTTP status and exact response bytes/hash
+PASS RCS20: malformed retains original local correlation without physical completion
+PASS RCS20: malformed remains unknown and cannot manufacture acceptance
+PASS RCS20: wrong-id sends exact pre-frozen JSON bytes once
+PASS RCS20: wrong-id preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: wrong-id preserves original HTTP status and exact response bytes/hash
+PASS RCS20: wrong-id retains original local correlation without physical completion
+PASS RCS20: wrong-id remains unknown and cannot manufacture acceptance
+PASS RCS20: wrong-index sends exact pre-frozen JSON bytes once
+PASS RCS20: wrong-index preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: wrong-index preserves original HTTP status and exact response bytes/hash
+PASS RCS20: wrong-index retains original local correlation without physical completion
+PASS RCS20: wrong-index remains unknown and cannot manufacture acceptance
+PASS RCS20: wrong-command sends exact pre-frozen JSON bytes once
+PASS RCS20: wrong-command preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: wrong-command preserves original HTTP status and exact response bytes/hash
+PASS RCS20: wrong-command retains original local correlation without physical completion
+PASS RCS20: wrong-command remains unknown and cannot manufacture acceptance
+PASS RCS20: http-error sends exact pre-frozen JSON bytes once
+PASS RCS20: http-error preserves documented field casing, numbers, booleans, null and configured mapping
+PASS RCS20: http-error preserves original HTTP status and exact response bytes/hash
+PASS RCS20: http-error retains original local correlation without physical completion
+PASS RCS20: http-error remains unknown and cannot manufacture acceptance
+PASS RCS20: durable entity sequence allocates distinct numeric request IDs and right mapping
+PASS RCS20: unsupported original query sends no request and never resubmits
+Unhandled exception. System.IO.DirectoryNotFoundException: Could not find a part of the path '/Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/-m:1/config/sportmaster/business.json'.
+   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Int32 bufferSize)
+   at System.IO.File.ReadAllText(String path, Encoding encoding)
+   at SportmasterRcs.RuntimeChecks(String workspace, String root, Peer peer) in /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/tests/Ipc.Application.Verification/SportmasterRcs.cs:line 87
+   at SportmasterRcs.Run(String workspace, String root) in /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/tests/Ipc.Application.Verification/SportmasterRcs.cs:line 81
+   at SportmasterRcs.Run(String workspace, String root) in /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/tests/Ipc.Application.Verification/SportmasterRcs.cs:line 83
+   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 16
+   at Program.<Main>(String[] args)

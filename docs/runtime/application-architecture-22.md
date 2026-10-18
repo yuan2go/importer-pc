@@ -1,3 +1,5 @@
+> 当前版本声明和新发行清单见[版本管理指南](version-compatibility-01.md)；以下22/P2版本均按历史候选身份读取，现行公共契约继承质量闭环01。
+
 > Sportmaster桌面新增第二套原生UI及 `--ui` 参数，见[运行指南](sportmaster-alternate-ui.md)。本页“本包不新增UI”仅描述架构22形成时范围；本次增量不改变其业务/拓扑/恢复规则。
 
 # Application架构22 · 运行和兼容指南
@@ -48,10 +50,10 @@ StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保
 
 ## 版本升级与原件
 
-当前Application.Contracts ABI1.6.0，继承PR23 1.5.0的Retain/Release；包版本与ABI分别读取。PR24最终Debug1.6.6/Release1.6.7仅匹配其精确公共DLL。本次如公共字节改变必须新不可变包；不覆盖旧ID/version。按[扩展指南](../extensions/developer-guide.md)使用目标Release宿主和独立信任构建、预检、安装、绑定与激活。
+当前Application.Contracts ABI1.7.0，继承PR23 1.5.0的Retain/Release；包版本与ABI分别读取。PR24最终Debug1.6.6/Release1.6.7仅匹配其精确公共DLL。本次如公共字节改变必须新不可变包；不覆盖旧ID/version。按[扩展指南](../extensions/developer-guide.md)使用目标Release宿主和独立信任构建、预检、安装、绑定与激活。
 配置schema1/2保持显式单Reader历史兼容模式，不猜成左右位；默认种子和当前目标使用schema3。已有schema2站必须通过完整拓扑候选/CAS显式迁移。测试中的schema2兼容夹具只保护原机制，不证明新双位。
 
-Parcel当前数据库5，SQL1～4及checksum保留；DB3为22历史拓扑版本，DB4为前次归档/永久去重/冲突/配置审计版本。SQL5追加缺raw资料与Query关联索引及旧归档版本保有，并将历史OutcomeReconciled恢复为Awaiting资料责任。不因旧配置仍为schema2就隐瞒当前存储版本。旧库普通启动仍先检查未结，不能自动把未知外部动作迁到新实现。旧DB2/3 Attached主状态已污染且上传缺raw时，按[维护指南](architecture-quality-closure-01.md)的recover-legacy-receipt离线使用完整匹配旧发布，仅Query原请求；确认外部业务已终结后显式升级DB5，原Awaiting、原图和原包责任持续保留。其他旧未结仍需匹配发布清偿、完整备份后升级。原payload/hash/目标/实现及SQL1～4原字节不改；旧代码已释放的历史图像不能由迁移伪造恢复。
+Parcel当前数据库6，SQL1～5及checksum保留；DB3为22历史拓扑版本，DB4为前次归档/永久去重/冲突/配置审计版本。继承的SQL5保存缺raw资料与Query关联索引及旧归档版本，SQL6追加RCS原报文/拆包语义屏障，并将历史OutcomeReconciled恢复为Awaiting资料责任。不因旧配置仍为schema2就隐瞒当前存储版本。旧库普通启动仍先检查未结，不能自动把未知外部动作迁到新实现。旧DB2/3 Attached主状态已污染且上传缺raw时，按[维护指南](architecture-quality-closure-01.md)的recover-legacy-receipt离线使用完整匹配旧发布，仅Query原请求；确认外部业务已终结后显式升级当前DB6，原Awaiting、原图和原包责任持续保留。其他旧未结仍需匹配发布清偿、完整备份后升级。原payload/hash/目标/实现及SQL1～4原字节不改；旧代码已释放的历史图像不能由迁移伪造恢复。
 
 不得用改库、删除原件或强改迁移表作为部署升级步骤。新备份通过应用BackupAsync，包含完整配置、SQLite一致快照、原回执与尚存原图及完成清单；恢复到全新隔离目录，首次启动暂停。原请求、原WCS格口及PLC意图继续同T3事务，Unknown只查询原目标/实现，不盲重发。
 
@@ -62,3 +64,5 @@ Parcel当前数据库5，SQL1～4及checksum保留；DB3为22历史拓扑版本�
 部分构造失败由工厂接管已构造资源，部分启动失败由runtime接管返回端口。Stop停止所有源、排空每位/附加/外呼，再释放共享资源；超时/清理异常保有租约及数据库，允许重复清理。不得把Stop超时或普通软件暂停当作设备已停。
 
 真实离场/复位、共享联锁、SDK关联、WCS/PLC批准合同及Windows实际UI/PowerShell/UAC/ACL仍分别BLOCKED/NOT_RUN。本轮参考逻辑证据不关闭历史D/RV，不声称旧HTML已修复或现场可上线。实际源码、产物与日志身份在本包结果记录。
+
+[RCS分拣任务组件](sportmaster-rcs-task.md)为Sportmaster显式可选适配器；默认参考组件保持可用。SQL5原件按main已授权核验与责任保留流程可升级6，不补造Query或改写原binding；当前CLI专用custody迁移2–5显式选择6，内部API原调用默认5保持兼容，已有6不降级。

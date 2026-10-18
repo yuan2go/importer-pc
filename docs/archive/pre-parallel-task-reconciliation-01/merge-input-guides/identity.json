@@ -1,0 +1,22 @@
+[
+  {
+    "Path": "docs/runtime/application-architecture-22.md",
+    "SourceCommit": "2a5376b12a149f85388f28b95d37ebb382923e98",
+    "Sha256": "d7dfaf8ce5f837405da72a51d5c7f18a5bfc0c1bb65f56bd648c0cd21c593097"
+  },
+  {
+    "Path": "docs/runtime/architecture-quality-closure-01.md",
+    "SourceCommit": "2a5376b12a149f85388f28b95d37ebb382923e98",
+    "Sha256": "9e072fef5655f9bf656242c6ac9ade1a83ebcc7e0f46506ac1729d71d38bba4e"
+  },
+  {
+    "Path": "docs/runtime/sportmaster-rcs-task.md",
+    "SourceCommit": "2a5376b12a149f85388f28b95d37ebb382923e98",
+    "Sha256": "6b86b3351a990bfab6c80f5381b6c7e6641f2da3006a25e5e08fa670b958b2fa"
+  },
+  {
+    "Path": "docs/design/version-compatibility-01.md",
+    "SourceCommit": "2a5376b12a149f85388f28b95d37ebb382923e98",
+    "Sha256": "0b872f90fdb907c20773bd576e375cb13d835782f1075b386f1d500ff25ce513"
+  }
+]

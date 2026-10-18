@@ -1,0 +1,82 @@
+{
+  "Projection": "Path-only public projection; NOT frozen request or replay input",
+  "OriginalFileSha256": "e0af787e3bdeeebdc615db5f6017e3521f352cb49d88ba1faf209436997a5b6d",
+  "Result": {
+    "Status": "PASS",
+    "OldSource": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+    "OldDatabase": 3,
+    "NewDatabase": 5,
+    "OldMain": "SlotResolved",
+    "OldUpload": "Accepted",
+    "OriginalOccurrence": "1e637e066a674876966810edabec17b6",
+    "OriginalRaw": [
+      "Submit",
+      "Awaiting",
+      null
+    ],
+    "QueryOccurrence": "a84e14c5a2d7473face1f793e893031f",
+    "QueryRaw": [
+      "Query",
+      "Committed",
+      "B49609DDC0367FB85EB7572A96448C62903D02FF7882CB64B6E998F4C26D511F"
+    ],
+    "OriginalImageHeld": true,
+    "OriginalArchived": false,
+    "OriginalAuthoritativeSourceUnchanged": true,
+    "OriginalRuntimeLeaseChanges": [
+      {
+        "File": "data/Simulation/reference-peers/C8DE02D1C3CD55FEA147027A1E1CAB65ADC59001F4B513201B65B02BF72AC54D/E816B5540D4AA6567C004DE20615432C99325072F8D72D0CB17FB4EEAC697C7D.lease",
+        "Before": "8bcc8bdb64e3114fca4987c6536e897ccc80b3f646ebf200a3a17b941de7c9f5",
+        "After": "781d07eae2b01e61a73e03442cc4ebd5cb943378a94b95e4bafb565c6d97e021"
+      },
+      {
+        "File": "data/Simulation/reference-peers/CD24B4571CC773C008529B835F1883EF5924536D422457D22DE0445BE8DE6DD5/CB2445EC851AB18660396677C66152977658C874BEB43B00F7F68A057F37FF86.lease",
+        "Before": "962d5ad108c234846e02b9dd91ff8385e6b18774018661586989a48d83b1ee86",
+        "After": "9cdea7a7c797bbf0e3a0eb8ec7f762c83fbaf46614a8c27e5a2d6f7c77b81397"
+      }
+    ],
+    "MaintenanceConfirmation": true,
+    "CurrentConfigurationTransition": true,
+    "IndependentRightMain": "SlotResolved",
+    "Counters": [
+      {
+        "Stage": "Wcs",
+        "Request": "8a71c9f5b3d143df8f86c3722f3ee4c7",
+        "Executions": 1,
+        "File": "LOCAL_PATH_SHA256:cdf40c9b2a1b4d8c5c858d64f926aa73c75a41ce111aa53cad8566b7eb42cadb"
+      },
+      {
+        "Stage": "Upload",
+        "Request": "992d86b4dec541a0aebac75784d00f41",
+        "Executions": 1,
+        "File": "LOCAL_PATH_SHA256:8d5108e176342a3398d7c3a6be5855bee61a3da0dc4ee916e5b890dc1c7b9852"
+      }
+    ],
+    "ActualFrozenPackages": [],
+    "PackagePin": "NOT_APPLICABLE: this actual old fixture has built-in reference providers; separate signed-package consumer evidence required",
+    "Offline": {
+      "Status": "UpgradedCustodyRetained",
+      "DatabaseVersion": 5,
+      "OriginalOccurrence": "1e637e066a674876966810edabec17b6",
+      "Raw": {
+        "Id": "1e637e066a674876966810edabec17b6",
+        "Operation": "71fa0532b0204d87bb6919a734d036a8",
+        "Stage": "image-upload",
+        "Request": "992d86b4dec541a0aebac75784d00f41",
+        "Source": "Submit",
+        "State": "Awaiting",
+        "RawHash": null,
+        "QueryOccurrence": "a84e14c5a2d7473face1f793e893031f",
+        "Custody": "OriginalRawMissing"
+      },
+      "Pending": 1,
+      "Backup": "LOCAL_PATH_SHA256:bc386f8abc20398df3f4d0f18cb803f644c79c047eb922b1841fe956add352b0",
+      "OriginalQueryOnly": true,
+      "OriginalSubmitAttemptsUnchanged": true
+    },
+    "Windows": "NOT_RUN",
+    "SdkProtocolField": "BLOCKED",
+    "Candidate": "LOCAL_PATH_SHA256:5fb12764e87410b2f02b410751d5f4fe986a9265d99b9bb17f90553a2d802515",
+    "CandidateAssemblySha256": "5bbc4969bcc302f484b647b984f95046f966b0ce13e2c12cb57a205f9b624f3e"
+  }
+}

@@ -10,7 +10,8 @@ using Ipc.Platform;
 namespace Ipc.Assembly;
 
 public sealed record ParcelExtensionStoreConfiguration(string Root, string TrustFile);
-public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapabilityFactory
+public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompatibility? compatibility = null,
+    System.Reflection.Assembly? businessAssembly = null) : IParcelCapabilityFactory
 {
     ExtensionStore? store;
     ExtensionLoading? loading;
@@ -84,6 +85,11 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         }
         var bound = ParcelBindings.Bound(c);
         var bindings = bound.Concat(c.CapabilityInstances ?? []).DistinctBy(x => x.InstanceId).ToArray();
+        if (compatibility is not null)
+        {
+            if (compatibility.ApplicationId != c.ApplicationId) throw new InvalidDataException("Business compatibility belongs to another Application");
+            _ = compatibility.Require(SelectedProviders(c));
+        }
         foreach (var r in ParcelBindings.Readers(c))
             if (r.Driver != "manual" && !r.Driver.StartsWith("extension:", StringComparison.Ordinal)) throw new InvalidDataException("No approved reader implementation: " + r.Driver);
         if (c.Extensions is not null)
@@ -182,6 +188,19 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         }
         return candidateQualification;
     }
+    public ProviderVersion[] SelectedProviders(ParcelConfiguration c)
+    {
+        var selected = ParcelBindings.All(c).Where(b => b.Enabled).Select(b => new ProviderVersion(b.Kind, b.Implementation, b.Version, b.Contract)).ToList();
+        foreach (var reader in ParcelBindings.Readers(c))
+        {
+            if (reader.Driver == "manual") { selected.Add(new("observation", "manual", "1.0.0", "CONTROLLED-OBSERVATION-v1")); continue; }
+            var instance = c.Extensions?.Instances.SingleOrDefault(x => reader.Driver == "extension:" + x.Id) ?? throw new InvalidDataException("Missing selected reader instance");
+            var package = c.Extensions!.Packages.Single(x => x.Id == instance.PackageId);
+            var module = Store().VerifyInstalled(package).Manifest.Modules.Single(x => x.Id == instance.ModuleId);
+            selected.Add(new("observation", "extension:" + package.Id + "/" + module.Id, package.Version, module.ContractIdentity ?? "CONTROLLED-OBSERVATION-v1"));
+        }
+        return selected.Distinct().ToArray();
+    }
     internal static void RequireReal(ExtensionModule module, DeploymentQualification? qualification)
     {
         if (module.Assurance is not { SchemaVersion: 1, Simulation: false } || module.Requirements is null || string.IsNullOrWhiteSpace(module.ContractIdentity) || !ExtensionSchema.IsHash(module.Assurance.ProtocolEvidence) || qualification?.ApprovalEvidence.Any(x => string.Equals(x.Sha256, module.Assurance.ProtocolEvidence, StringComparison.OrdinalIgnoreCase)) != true)
@@ -215,13 +234,18 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
             new CapabilityDescriptor(m.Kind, "extension:" + x.Package.Id + "/" + m.Id, x.Package.Version, m.ContractIdentity ?? "PARCEL-REFERENCE-v1", m.Parameters, m.Requirements ?? new(), x.Package, m.Id)));
         return new(ReferenceCapabilityCatalog.Providers.Append(new("observation", "manual", "1.0.0", "CONTROLLED-OBSERVATION-v1", [], new())).Concat(descriptors).ToArray(), installed.Select(x => x.Package.Id + "@" + x.Package.Version).ToArray());
     }
+    internal ApplicationRelease ReadPublishedRelease(string appRoot)
+    {
+        var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(appRoot, "application-release.json")));
+        ApplicationReleaseValidation.ValidateIfPublished(appRoot, release.ApplicationId, new(release.Views, release.Layouts), businessAssembly);
+        return release;
+    }
     public async Task<BusinessReceipt> InstallAsync(string file, string sha256)
     {
         if (OperatingSystem.IsWindows())
         {
             var appRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "app"));
-            var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(appRoot, "application-release.json")));
-            ApplicationReleaseValidation.ValidateIfPublished(appRoot, release.ApplicationId, new(release.Views, release.Layouts));
+            var release = ReadPublishedRelease(appRoot);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(appRoot, release.Files.Keys.Append("application-release.json").ToArray());
             var start = new System.Diagnostics.ProcessStartInfo(Path.Combine(appRoot, "Ipc.Assembly.exe")) { UseShellExecute = true, Verb = "runas", WorkingDirectory = appRoot };
             foreach (var value in new[] { "--action", "extension-install", "--mode", mode.ToString(), "--file", Path.GetFullPath(file), "--sha256", sha256 }) start.ArgumentList.Add(value);
@@ -250,8 +274,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch) : IParcelCapa
         if (OperatingSystem.IsWindows())
         {
             var appRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "app"));
-            var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(appRoot, "application-release.json")));
-            ApplicationReleaseValidation.ValidateIfPublished(appRoot, release.ApplicationId, new(release.Views, release.Layouts));
+            var release = ReadPublishedRelease(appRoot);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(appRoot, release.Files.Keys.Append("application-release.json").ToArray());
             var start = new System.Diagnostics.ProcessStartInfo(Path.Combine(appRoot, "Ipc.Assembly.exe")) { UseShellExecute = true, Verb = "runas", WorkingDirectory = appRoot };
             foreach (var arg in new[] { "--action", action, "--mode", mode.ToString(), action == "extension-recover" ? "--operation" : "--package", identity }) start.ArgumentList.Add(arg);

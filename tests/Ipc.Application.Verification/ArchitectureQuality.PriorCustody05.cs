@@ -21,7 +21,7 @@ static partial class ArchitectureQuality
         target=maintenanceDirectory;var originalDb=Path.Combine(target,"sportmaster.db");var queryCalls=0;
         var transition=await ParcelLegacyReceiptRecovery.RecoverAsync(originalDb,Wire.FileHash(originalDb),Path.Combine(root,"prior-custody.backup.db"),occurrence,root,
             "Verify historical Query and preserve prior false raw disposition",new Ipc.Application.Sportmaster.SportmasterFlow(),
-            (_,_,_,_)=>{queryCalls++;throw new Exception("Prior proved outcome must not call another Query");},expectedWalHash:WalHash(originalDb));
+            (_,_,_,_)=>{queryCalls++;throw new Exception("Prior proved outcome must not call another Query");},expectedWalHash:WalHash(originalDb),targetStorageVersion:6);
         Check(queryCalls==0&&File.Exists(Path.Combine(root,"prior-custody.backup.db.recovery/COMPLETED.json")),"prior OutcomeReconciled uses complete backup and existing original Query without any external call");
         using(var auditDb=new Microsoft.Data.Sqlite.SqliteConnection("Data Source="+originalDb))
         {

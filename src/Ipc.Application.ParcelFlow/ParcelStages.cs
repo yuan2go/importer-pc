@@ -109,9 +109,13 @@ public sealed partial class ParcelRuntime
             wcs && reply.BusinessAccepted == true && (string.IsNullOrWhiteSpace(reply.Slot) || reply.Slot.Length > 64 || reply.Slot.Any(char.IsControl)) ||
             prior is not null && Wire.Encode(prior) != Wire.Encode(reply) ||
             kind is ParcelStage.Capture or ParcelStage.Upload && reply.BusinessAccepted == true && !ValidImageReply(op, kind, reply.Image);
+        inconsistent |= reply.Destination is { } destination && (!wcs || !Enum.IsDefined(destination.Outcome) ||
+            (destination.Outcome == WcsDestinationOutcome.Assigned) != (reply.BusinessAccepted == true) ||
+            destination.Outcome == WcsDestinationOutcome.UnpackRequired && (reply.BusinessAccepted != false || destination.Unpack is null));
         var terminal = stage.Replies.LastOrDefault(x => x.BusinessAccepted is not null);
         inconsistent |= terminal is not null && reply.BusinessAccepted is not null &&
-            (terminal.BusinessAccepted != reply.BusinessAccepted || terminal.Slot != reply.Slot || Wire.Encode(terminal.Image) != Wire.Encode(reply.Image) || stage.Replies.Any(x => x.PhysicalCompleted == true) && reply.PhysicalCompleted == false);
+            (terminal.BusinessAccepted != reply.BusinessAccepted || terminal.Slot != reply.Slot || Wire.Encode(terminal.Image) != Wire.Encode(reply.Image) ||
+             Wire.Encode(terminal.Destination) != Wire.Encode(reply.Destination) || stage.Replies.Any(x => x.PhysicalCompleted == true) && reply.PhysicalCompleted == false);
         if (inconsistent)
         {
             stage = stage with { State = StageState.Conflict, Replies = RetainReplyFacts(stage.Replies.Append(reply).ToArray()), Failure = "Contradictory or invalid original-stage receipt" };

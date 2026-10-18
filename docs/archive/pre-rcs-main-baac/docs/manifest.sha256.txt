@@ -1,0 +1,1 @@
+22f39dfe068edaabae8a4a95fd1decc38e865a80eab1d1ea2c60ceccb462ccd7  docs/manifest.json

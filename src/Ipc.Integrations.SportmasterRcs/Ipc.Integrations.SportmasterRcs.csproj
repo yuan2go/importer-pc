@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><Version>1.0.2</Version><NuGetLockFilePath Condition="'$(IpcContractDirectory)' != ''">packages.extension.lock.json</NuGetLockFilePath></PropertyGroup>
+  <ItemGroup Condition="'$(IpcContractDirectory)' == ''">
+    <ProjectReference Include="../Ipc.Application.Contracts/Ipc.Application.Contracts.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(IpcContractDirectory)' != ''">
+    <Reference Include="Ipc.Platform"><HintPath>$(IpcContractDirectory)/Ipc.Platform.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Ipc.Application.Contracts"><HintPath>$(IpcContractDirectory)/Ipc.Application.Contracts.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

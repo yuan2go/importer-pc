@@ -1,0 +1,234 @@
+{
+  "SchemaVersion": 1,
+  "RunId": "3316af1fa36849afac4ba5b05674f5be",
+  "Status": "PASS",
+  "StartedAt": "2026-10-18T16:24:52.934754+00:00",
+  "Command": [
+    "scripts/smoke-application.py",
+    "--package",
+    "$LOCAL_PATH/direct-plc-unpacked",
+    "--dotnet",
+    "$LOCAL_PATH/dotnet",
+    "--output",
+    "$LOCAL_PATH/direct-plc-default.json"
+  ],
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED",
+  "Assurance": "SIMULATION_REFERENCE_ONLY",
+  "Application": "direct-plc",
+  "BusinessVersion": "1.2.1",
+  "SourceCommit": "c4e131968964458467c3a03eddf90832ef85b309",
+  "Target": "portable",
+  "CandidateFilesSha256": "0E4EBC146AE112151FF61F2B542C383A68BEC8153D08B2881CE5741F77EE9A28",
+  "ReleaseSha256": "59FB4ADBD1396DB14869C378A323825B7399FC7FD758F297129B12B571E282D7",
+  "AssemblyManifestSha256": "C55819BE97AD851CFE880278377106D1781FD7DDF6A5F5EEF207ECCB94DDCD70",
+  "CompatibilitySha256": "B41B01A040E2C99E0AC5C11BA16B850F05B81A52A5467BA71F4EBA51755E849C",
+  "InputConfiguration": {
+    "SchemaVersion": 3,
+    "ApplicationId": "direct-plc",
+    "StationId": "reference-17",
+    "Mode": "Simulation",
+    "Weight": {
+      "Source": "Configured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": 1.25,
+      "MaximumAgeMs": 3000
+    },
+    "Reader": {
+      "Role": "parcel-reader",
+      "Driver": "manual",
+      "DeviceId": "direct-plc.camera",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    "Scale": null,
+    "Wcs": null,
+    "Plc": {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "InstanceId": "direct-plc.plc",
+      "Target": "reference://plc/direct-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "complete-on-query": "true"
+      },
+      "Package": null,
+      "Module": null
+    },
+    "Extensions": null,
+    "QueueCapacity": 64,
+    "TimeoutMs": 1500,
+    "MaximumOperations": 10000,
+    "Login": null,
+    "Images": null,
+    "MaintenanceLogin": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      }
+    },
+    "WeightValidity": "UntilDispatch",
+    "Topology": {
+      "Readers": [
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "direct-plc.camera",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Positions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "direct-plc.camera"
+        }
+      ]
+    },
+    "Retention": {
+      "ResidentHistory": 200,
+      "MinimumFreeBytes": 67108864
+    }
+  },
+  "InputConfigurationSha256": "705473B3D1E614092CD5834491CF4B48C1C7B2BA7BDAF5AFF6C879ACC7F5F7FA",
+  "EffectiveConfiguration": {
+    "SchemaVersion": 3,
+    "ApplicationId": "direct-plc",
+    "StationId": "reference-17",
+    "Mode": "Simulation",
+    "Weight": {
+      "Source": "Configured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": 1.25,
+      "MaximumAgeMs": 3000,
+      "WaitTimeoutMs": 15000
+    },
+    "Reader": {
+      "Role": "parcel-reader",
+      "Driver": "manual",
+      "DeviceId": "direct-plc.camera",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    "Scale": null,
+    "Wcs": null,
+    "Plc": {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "InstanceId": "direct-plc.plc",
+      "Target": "reference://plc/direct-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "complete-on-query": "true",
+        "peer-root": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-unpacked-j8x45j3i/Simulation/reference-peers"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Extensions": null,
+    "QueueCapacity": 64,
+    "TimeoutMs": 1500,
+    "MaximumOperations": 10000,
+    "SessionLifetimeMs": 28800000,
+    "MaintenanceLogin": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "WeightValidity": "UntilDispatch",
+    "Topology": {
+      "Readers": [
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "direct-plc.camera",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Positions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "direct-plc.camera",
+          "CameraInstanceId": null,
+          "ScaleInstanceId": null
+        }
+      ]
+    },
+    "Retention": {
+      "ResidentHistory": 200,
+      "MinimumFreeBytes": 67108864
+    }
+  },
+  "EffectiveConfigurationSha256": "283EB4EB7A39ACDD0E7F04389D0CE95090EFF86A7DA8C880343331F37F8A4D02",
+  "Providers": [
+    {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "direct-plc.plc",
+      "Target": "reference://plc/direct-plc"
+    },
+    {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance"
+    },
+    {
+      "Kind": "observation",
+      "Implementation": "manual",
+      "Version": "1.0.0",
+      "Contract": "CONTROLLED-OBSERVATION-v1",
+      "DeviceId": "direct-plc.camera",
+      "Revision": "1"
+    }
+  ],
+  "CompatibilitySet": "builtin-reference",
+  "Checks": [
+    "candidate file hashes",
+    "actual selected assembly startup",
+    "camera-to-final-reference-chain",
+    "persistent original phases on restart",
+    "orderly stop",
+    "selected topology"
+  ],
+  "AttachedUpload": false,
+  "ExternalPeerProcess": false,
+  "OptionalFeatures": false,
+  "OptionalChecks": [],
+  "State": "PlcAccepted",
+  "OperationId": "e2ae297d0f774833bdd3241aa01ea10a",
+  "FinishedAt": "2026-10-18T16:24:59.862132+00:00",
+  "EventsSha256": "41EE4601E981E0730FDF661B44DABC4BA37BE7943A153D0372FA2156C2277536",
+  "EventsFile": "direct-plc-default.json.events.jsonl",
+  "PublicProjection": {
+    "OriginalRecordSha256": "2a55497e57eccda2af81843952545c310a08fa8c2d155e4ec4b319b22d91bec3",
+    "ChangedFields": [
+      "Command local path arguments only"
+    ],
+    "Reason": "Replace local user paths with role aliases; original local bytes retained; configuration and event digests unchanged"
+  }
+}

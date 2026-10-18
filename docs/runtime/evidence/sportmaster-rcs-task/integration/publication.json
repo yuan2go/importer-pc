@@ -1,0 +1,18 @@
+{
+  "pull_request": "https://github.com/yuan2go/importer-pc/pull/30",
+  "base": "main",
+  "head_branch": "codex/sportmaster-rcs-task",
+  "head_at_creation": "c168a30833784df06709ad9b29c91d6bb2fb4fea",
+  "runtime_source_commit": "9050bdd53e7f60882a9418c1c04e04307a1b8f1d",
+  "integration_main": "baac260214f910dca9ae4628ba6449b25188e2ac",
+  "state_at_readback": "OPEN",
+  "merge_state_at_readback": "CLEAN",
+  "mergeable_at_readback": "MERGEABLE",
+  "merged": false,
+  "publication_scope": "New implementation, synthetic fixtures and evidence only; original supplied interface examples/customer material/private signing keys excluded",
+  "component_version": "1.0.1",
+  "public_contract": "1.7.0",
+  "parcel_database": 6,
+  "windows_actual": "NOT_RUN",
+  "real_rcs_sdk_device_field": "BLOCKED"
+}

@@ -52,6 +52,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         ParcelState.Abandoned => "未发送意图已处置 · 原接受与上传事实保留",
         ParcelState.WaitingWeight => "等待同一包裹的有效重量",
         ParcelState.SlotResolved => "WCS 格口已取得",
+        ParcelState.UnpackRequired => "需拆包 · 本位等待检查处置",
         ParcelState.PlcAccepted => "PLC 业务已接受 · 物理完成待核对",
         ParcelState.PhysicalCompleted => "组件报告物理完成 · 见原回执",
         ParcelState.PlcUnknown or ParcelState.WcsUnknown => "结果待核对 · 请勿重复放货",
@@ -60,7 +61,44 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         _ => "正在处理 · " + Current.State
     };
     public ParcelOperation? Selected { get => selected; set { selected = value; Changed(); NotifyTargets(); } }
-    public string Details => Selected is null ? "选择一条作业查看原阶段、目标、报文和回执。" : Wire.Encode(Selected);
+    public string Details
+    {
+        get
+        {
+            if (Selected is null) return "选择一条作业查看原阶段、目标、报文和回执。";
+            var summary = DestinationSummary(Selected);
+            return (summary.Length == 0 ? "" : summary + "\n\n原作业、请求与回执完整快照：\n") + Wire.Encode(Selected);
+        }
+    }
+    public static string DestinationSummary(ParcelOperation operation)
+    {
+        var reply = operation.Wcs?.Replies.LastOrDefault(r => r.Destination is not null);
+        if (reply?.Destination is not { } result) return "";
+        string Known(string? text) => text ?? "未取得";
+        string Measure(decimal? value) => value?.ToString(CultureInfo.InvariantCulture) ?? "未取得";
+        var outcome = result.Outcome switch
+        {
+            WcsDestinationOutcome.Assigned => "目标格口已取得；物理完成未确认",
+            WcsDestinationOutcome.UnpackRequired => "需拆包；本位等待检查处置",
+            _ => "业务拒绝"
+        };
+        var lines = new List<string>
+        {
+            "原 RCS 回执 · " + outcome + "（作业状态以原快照为准）",
+            "任务 " + Known(result.TaskId) + " · SKU " + Known(result.SkuId) + " · 格口 " + Known(reply.Slot),
+            "长度 " + Measure(result.Length) + " · 宽度 " + Measure(result.Width) + " · 高度 " + Measure(result.Height) + " · 重量 " + Measure(result.Weight) + "（接口未提供单位）"
+        };
+        if (result.Code is not null || result.Message is not null) lines.Add("业务码 " + Known(result.Code) + " · 原因 " + Known(result.Message));
+        if (result.Unpack is { } unpack)
+        {
+            lines.Add("拆包条码 " + unpack.Barcode + " · SKU " + unpack.SkuId + " · 扫描数量 " + unpack.ScanQty.ToString(CultureInfo.InvariantCulture));
+            if (unpack.Chutes.Length == 0) lines.Add("上游未返回拆包格口明细");
+            foreach (var chute in unpack.Chutes)
+                lines.Add("格口 " + chute.ChuteNo + " · 订单 " + chute.OrderNo + " · 剩余 " + chute.Remaining.ToString(CultureInfo.InvariantCulture) + " · 阶段 " + chute.Phase);
+            lines.Add("本接口未提供拆包提交；暂停并检查移除原实体后，使用已有受守卫的本地处置。");
+        }
+        return string.Join("\n", lines);
+    }
     public string Message { get => message; set { message = value; Changed(); } }
     public string ConfigurationState => Snapshot is null ? "未加载" : Snapshot.Configuration.Status + " · 修订 " + Snapshot.Configuration.Revision + (Snapshot.Configuration.Failure is { } f ? "\n" + f : "");
     public string ConfigurationDraft { get; set; } = "";

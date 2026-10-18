@@ -17,12 +17,19 @@ if (args.Contains("--sportmaster-window-lifecycle")) { await SportmasterWindowLi
 if (args.Contains("--sportmaster-ui")) { await SportmasterUi.Run(workspace, root); return; }
 if (args.Contains("--historical-db4-upgrade")) { var i=Array.IndexOf(args,"--historical-db4-upgrade"); await ArchitectureQuality.HistoricalDb4UpgradeChecks(workspace,root,Path.GetFullPath(args[i+1])); return; }
 if (args.Contains("--upgrade-conflict-closure")) { await ArchitectureQuality.UpgradeConflictClosureChecks(workspace,root); return; }
+
+if (args.Contains("--sportmaster-rcs-signed")) { var i = Array.IndexOf(args, "--sportmaster-rcs-signed"); await SportmasterRcs.SignedChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
+if (args.Contains("--sportmaster-rcs")) { await SportmasterRcs.Run(workspace, root); return; }
+
+if (args.Contains("--version-compatibility")) { await VersionCompatibility.Run(workspace, root); return; }
+if (args.Contains("--signed-business-compatibility")) { var i = Array.IndexOf(args, "--signed-business-compatibility"); await SignedCapabilities.Run(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2]), declaredCompatibility: true); return; }
 if (args.Contains("--configuration-confirmation")) { await ArchitectureQuality.ConfigurationConfirmationChecks(workspace, root); return; }
 if (args.Contains("--configuration-confirmation-crash-child")) { var i = Array.IndexOf(args, "--configuration-confirmation-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], "BeforeCreate"); return; }
 if(args.Contains("--prior-custody-migration")){var i=Array.IndexOf(args,"--prior-custody-migration");await ArchitectureQuality.PriorCustodyChecks(workspace,root,Path.GetFullPath(args[i+1]));return;}
 if(args.Contains("--legacy-cut-child")){var i=Array.IndexOf(args,"--legacy-cut-child");await ArchitectureQuality.LegacyCutChild(args[i+1],args[i+2],args[i+3]);return;}
 if(args.Contains("--legacy-custody-upgrade")){var i=Array.IndexOf(args,"--legacy-custody-upgrade");await ArchitectureQuality.LegacyCustodyChecks(workspace,root,Path.GetFullPath(args[i+1]),Path.GetFullPath(args[i+2]));return;}
 if (args.Contains("--raw-custody-child")) { var i=Array.IndexOf(args,"--raw-custody-child"); await ArchitectureQuality.RawCustodyChild(workspace,args[i+1]); return; }
+if (args.Contains("--parcel-recovery-p2")) { await ArchitectureQuality.RecoveryP2Checks(workspace,root); return; }
 if (args.Contains("--receipt-custody")) { await ArchitectureQuality.CustodyChecks(workspace,root); return; }
 if (args.Contains("--upload-crash-child")) { var i = Array.IndexOf(args, "--upload-crash-child"); await ArchitectureQuality.UploadCrashChild(workspace, args[i + 1]); return; }
 if (args.Contains("--configuration-crash-child")) { var i = Array.IndexOf(args, "--configuration-crash-child"); await ArchitectureQuality.ActivationCrashChild(args[i + 1], args[i + 2]); return; }

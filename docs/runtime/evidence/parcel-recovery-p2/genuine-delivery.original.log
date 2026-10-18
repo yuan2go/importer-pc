@@ -1,0 +1,78 @@
+{
+  "Status": "PASS",
+  "OldSource": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+  "OldDatabase": 3,
+  "NewDatabase": 5,
+  "OldMain": "SlotResolved",
+  "OldUpload": "Accepted",
+  "OriginalOccurrence": "1e637e066a674876966810edabec17b6",
+  "OriginalRaw": [
+    "Submit",
+    "Awaiting",
+    null
+  ],
+  "QueryOccurrence": "a84e14c5a2d7473face1f793e893031f",
+  "QueryRaw": [
+    "Query",
+    "Committed",
+    "B49609DDC0367FB85EB7572A96448C62903D02FF7882CB64B6E998F4C26D511F"
+  ],
+  "OriginalImageHeld": true,
+  "OriginalArchived": false,
+  "OriginalAuthoritativeSourceUnchanged": true,
+  "OriginalRuntimeLeaseChanges": [
+    {
+      "File": "data/Simulation/reference-peers/C8DE02D1C3CD55FEA147027A1E1CAB65ADC59001F4B513201B65B02BF72AC54D/E816B5540D4AA6567C004DE20615432C99325072F8D72D0CB17FB4EEAC697C7D.lease",
+      "Before": "8bcc8bdb64e3114fca4987c6536e897ccc80b3f646ebf200a3a17b941de7c9f5",
+      "After": "781d07eae2b01e61a73e03442cc4ebd5cb943378a94b95e4bafb565c6d97e021"
+    },
+    {
+      "File": "data/Simulation/reference-peers/CD24B4571CC773C008529B835F1883EF5924536D422457D22DE0445BE8DE6DD5/CB2445EC851AB18660396677C66152977658C874BEB43B00F7F68A057F37FF86.lease",
+      "Before": "962d5ad108c234846e02b9dd91ff8385e6b18774018661586989a48d83b1ee86",
+      "After": "9cdea7a7c797bbf0e3a0eb8ec7f762c83fbaf46614a8c27e5a2d6f7c77b81397"
+    }
+  ],
+  "MaintenanceConfirmation": true,
+  "CurrentConfigurationTransition": true,
+  "IndependentRightMain": "SlotResolved",
+  "Counters": [
+    {
+      "Stage": "Wcs",
+      "Request": "8a71c9f5b3d143df8f86c3722f3ee4c7",
+      "Executions": 1,
+      "File": "/Users/yuan/.codex/artifacts/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers/CD24B4571CC773C008529B835F1883EF5924536D422457D22DE0445BE8DE6DD5/8a71c9f5b3d143df8f86c3722f3ee4c7.json"
+    },
+    {
+      "Stage": "Upload",
+      "Request": "992d86b4dec541a0aebac75784d00f41",
+      "Executions": 1,
+      "File": "/Users/yuan/.codex/artifacts/ipc-pr26-original-query-bridge-20261018/genuine-crash/data/Simulation/reference-peers/C8DE02D1C3CD55FEA147027A1E1CAB65ADC59001F4B513201B65B02BF72AC54D/992d86b4dec541a0aebac75784d00f41.json"
+    }
+  ],
+  "ActualFrozenPackages": [],
+  "PackagePin": "NOT_APPLICABLE: this actual old fixture has built-in reference providers; separate signed-package consumer evidence required",
+  "Offline": {
+    "Status": "UpgradedCustodyRetained",
+    "DatabaseVersion": 5,
+    "OriginalOccurrence": "1e637e066a674876966810edabec17b6",
+    "Raw": {
+      "Id": "1e637e066a674876966810edabec17b6",
+      "Operation": "71fa0532b0204d87bb6919a734d036a8",
+      "Stage": "image-upload",
+      "Request": "992d86b4dec541a0aebac75784d00f41",
+      "Source": "Submit",
+      "State": "Awaiting",
+      "RawHash": null,
+      "QueryOccurrence": "a84e14c5a2d7473face1f793e893031f",
+      "Custody": "OriginalRawMissing"
+    },
+    "Pending": 1,
+    "Backup": "/Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/genuine-delivery/before-offline-recovery.db",
+    "OriginalQueryOnly": true,
+    "OriginalSubmitAttemptsUnchanged": true
+  },
+  "Windows": "NOT_RUN",
+  "SdkProtocolField": "BLOCKED",
+  "Candidate": "/Users/yuan/.codex/artifacts/ipc-parcel-recovery-p2-20261019/selected-journey/sport-core-unpacked/app/Ipc.Assembly.dll",
+  "CandidateAssemblySha256": "5bbc4969bcc302f484b647b984f95046f966b0ce13e2c12cb57a205f9b624f3e"
+}

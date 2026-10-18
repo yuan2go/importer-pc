@@ -4,8 +4,7 @@ import re
 from urllib.parse import quote, unquote, urlsplit
 
 PARCEL_GUIDES = {
-    'docs/runtime/sportmaster-alternate-ui.md': 'SPORTMASTER-UI.md',
-    'docs/runtime/validation/sportmaster-alternate-ui-windows.md': 'SPORTMASTER-UI-WINDOWS.md',
+    'docs/runtime/version-compatibility-01.md': 'VERSIONS.md',
     'docs/runtime/getting-started.md': 'GETTING-STARTED.md',
     'docs/runtime/architecture-quality-closure-01.md': 'QUALITY-CLOSURE-01.md',
     'docs/runtime/validation/architecture-quality-closure-01-windows.md': 'QUALITY-WINDOWS-ACCEPTANCE.md',
@@ -19,7 +18,10 @@ GUIDES = {
     'docs/extensions/supply-guide.md': 'EXTENSIONS.md',
     'docs/runtime/validation/ui-maintainability-16-windows.md': 'WINDOWS-VALIDATION.md',
 }
-ALL_GUIDES = {**GUIDES, **PARCEL_GUIDES}
+SPORTMASTER_GUIDES = {**PARCEL_GUIDES, 'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',
+    'docs/runtime/sportmaster-alternate-ui.md': 'SPORTMASTER-UI.md',
+    'docs/runtime/validation/sportmaster-alternate-ui-windows.md': 'SPORTMASTER-UI-WINDOWS.md'}
+ALL_GUIDES = {**GUIDES, **SPORTMASTER_GUIDES}
 
 ROOT_INPUTS = ['global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx']
 SOURCE_DIRECTORIES = ['src', 'config', 'scripts', 'examples']
@@ -58,6 +60,6 @@ def render(root, source, commit, guides=None):
 
 
 def publish(root, output, commit, product='supply'):
-    guides = PARCEL_GUIDES if product in ('sportmaster', 'direct-plc', 'wcs-to-plc') else GUIDES
+    guides = SPORTMASTER_GUIDES if product == 'sportmaster' else PARCEL_GUIDES if product in ('direct-plc', 'wcs-to-plc') else GUIDES
     for source, name in guides.items():
         (output / name).write_text(render(root, source, commit, guides), encoding='utf-8')

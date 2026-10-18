@@ -45,12 +45,15 @@ public sealed partial class ParcelRepository : IDisposable
             strftime('%Y-%m-%dT%H:%M:%fZ','now'),'Prior outcome resolution does not restore the missing original raw'
             FROM parcel_receipts r WHERE r.state='OutcomeReconciled' OR EXISTS(SELECT 1 FROM parcel_audit a WHERE a.event='ReceiptOutcomeKnown' AND json_valid(a.detail) AND json_extract(a.detail,'$.OriginalOccurrence')=r.id);
         UPDATE parcel_receipts SET state='Awaiting' WHERE state='OutcomeReconciled';
+        """), new(6, """
+        CREATE TABLE parcel_integration_semantics(version INTEGER PRIMARY KEY CHECK(version=6),description TEXT NOT NULL);
+        INSERT INTO parcel_integration_semantics VALUES(6,'Frozen external wire intents and original HTTP receipts; UnpackRequired holds the original position');
         """)];
     public long Revision { get; private set; }
     public bool Paused { get; private set; }
-    public ParcelRepository(string directory, string application, int storageVersion = 5, bool allowCustodyUpgrade = false)
+    public ParcelRepository(string directory, string application, int storageVersion = 6, bool allowCustodyUpgrade = false)
     {
-        if (storageVersion is not (2 or 3 or 4 or 5)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
+        if (storageVersion is not (2 or 3 or 4 or 5 or 6)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
         Directory.CreateDirectory(directory); rawRoot = Path.Combine(directory, "receipts"); Directory.CreateDirectory(rawRoot);
         var database = Path.Combine(directory, application + ".db");
         if (File.Exists(database) && new FileInfo(database).Length != 0)

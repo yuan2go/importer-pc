@@ -1,3 +1,7 @@
+> RCS增量01：[Sportmaster RCS分拣任务服务](../runtime/sportmaster-rcs-task.md)。已继承main PR26/28；公共契约1.7.0、Parcel数据库6（SQL1–5原样继承），旧请求/接收责任仍按获授权核对恢复链保留。初轮4c9d51c候选与最终整合候选分别记录；Windows实际NOT_RUN，真实RCS/设备/现场BLOCKED。
+
+> 当前业务版本/允许提供者见[版本管理指南](../runtime/version-compatibility-01.md)；扩展版本仍由显式--version指定，不覆盖旧包。
+
 # 受控扩展：三Application与共享包工具
 
 新Application使用Ipc.Assembly、ParcelConfiguration和StageConfiguration；Supply的StationConfig/SaveConfig/ActivateConfig操作在[Supply扩展指南](supply-guide.md)。包格式、签名、精确公共DLL、不可变ID/version与Store机制共用。Driver拥有读码/称重/采图/PLC端口，Component拥有认证/WCS/上传端口；Application决定主流程，UI只调用契约。

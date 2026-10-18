@@ -1,0 +1,32 @@
+[
+  {
+    "Command": [
+      "dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--version-compatibility"
+    ],
+    "ExitCode": 0,
+    "Log": "pr29-combined--version-compatibility.log"
+  },
+  {
+    "Command": [
+      "dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--sportmaster-rcs"
+    ],
+    "ExitCode": 0,
+    "Log": "pr29-combined--sportmaster-rcs.log"
+  },
+  {
+    "Command": [
+      "dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--configuration-confirmation"
+    ],
+    "ExitCode": 0,
+    "Log": "pr29-combined--configuration-confirmation.log"
+  }
+]

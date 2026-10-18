@@ -18,7 +18,7 @@ dotnet /new/unpacked/app/Ipc.Assembly.dll --config /new/unpacked/app/config --da
 
 等待本位SlotResolved；Sportmaster不发PLC。PLC业务必须分别查看PlcAccepted和权威PhysicalCompleted。右位用right及新身份；其他业务用main。结束输入`quit`，等待完整Stop/Dispose。登录/重量/图片可选旅程、完整配置与设备接入见[Application指南](application-architecture-22.md)，故障恢复、容量、维护及扩展操作见[维护指南](architecture-quality-closure-01.md)和[扩展开发](../extensions/developer-guide.md)。
 
-Parcel使用数据库5；DB3/4历史根升级和资料责任按维护指南执行，不使用新seed覆盖旧账。旧配置文件未记录资源成功时，启动保留原JSON/hash并标记ConfirmationRequired；资源实际成功后仍暂停，先在维护页读取待确认原账、核对证据并确认，再显式Resume。CLI的ConfirmConfiguration使用读取时的`RuntimeId`、`Configuration.Revision`、`Confirmation.EffectiveHash`组成Owner=`runtimeIdN:configurationRevision:effectiveSha256`（runtimeIdN为无连字符32位GUID），Value为维护检查说明，ExpectedRevision为提交时应用Revision；任一身份/修订变化须重新检查，不自动改用最新内容确认。
+Parcel使用数据库6，SQL1–5原样继承，新增RCS原报文/拆包语义屏障；DB3/4/5历史根升级和资料责任按维护指南执行，不使用新seed覆盖旧账。旧配置文件未记录资源成功时，启动保留原JSON/hash并标记ConfirmationRequired；资源实际成功后仍暂停，先在维护页读取待确认原账、核对证据并确认，再显式Resume。CLI的ConfirmConfiguration使用读取时的`RuntimeId`、`Configuration.Revision`、`Confirmation.EffectiveHash`组成Owner=`runtimeIdN:configurationRevision:effectiveSha256`（runtimeIdN为无连字符32位GUID），Value为维护检查说明，ExpectedRevision为提交时应用Revision；任一身份/修订变化须重新检查，不自动改用最新内容确认。
 
 配置维护先Pause，再AuthorizeMaintenance（Owner=maintenance、Value=SIMULATION_ONLY仅限参考认证）。完整编辑器加载时固定配置Revision，自动刷新不能推进草稿修订。ValidateConfiguration只校验；StageConfiguration用加载时配置Revision、Owner为维护原因、Value为完整JSON，保存Pending。原件清偿后受控退出/重启，全部资源成功才确认Effective；中断保留旧Effective和候选，ActivationFailed须比较原尝试后显式重新保存。冲突保留草稿，重新加载比较，不自动覆盖。
 

@@ -74,7 +74,22 @@ static class ApplicationArchitecture
             var vm = new ParcelViewModel(app, "22", "22"); await vm.RefreshAsync(); var before = Wire.Encode((await app.SnapshotAsync()).Configuration);
             await vm.LoadCapabilitiesAsync(); await vm.SaveCapabilitiesAsync();
             Check(vm.Message.Contains("拒绝保存") && Wire.Encode((await app.SnapshotAsync()).Configuration) == before, "real legacy ViewModel rejects flattening schema3, authority unchanged");
-            var backup = Path.Combine(root, "dual.backup.db"); Check((await app.BackupAsync(backup)).Status == "BackupCreated", "multi-device original set backed up through actual application");
+            var backup = Path.Combine(root, "dual.backup.db"); BusinessReceipt? backupReceipt = null;
+            var backupDeadline = DateTimeOffset.UtcNow.AddSeconds(5);
+            while (DateTimeOffset.UtcNow < backupDeadline)
+            {
+                // Background health probes share the maintenance drain guard. A snapshot
+                // can race the next probe; only the explicit pre-I/O rejection is retryable.
+                if ((await app.SnapshotAsync()).Availability?.Configure == true)
+                {
+                    backupReceipt = await app.BackupAsync(backup);
+                    if (backupReceipt.Status == "BackupCreated") break;
+                    if (backupReceipt.Status != "Rejected" || backupReceipt.Reason != "Pause before reference maintenance backup")
+                        throw new Exception("Unexpected backup result: " + Wire.Encode(backupReceipt));
+                }
+                await Task.Delay(20);
+            }
+            Check(backupReceipt?.Status == "BackupCreated", "multi-device original set backed up through actual application: " + Wire.Encode(backupReceipt));
             ParcelRecovery.Restore(backup, Path.Combine(root, "dual-restored/data/Simulation", sport.StationId, sport.ApplicationId));
         }
         await using (var app = await Open(sport, "dual"))
@@ -228,7 +243,7 @@ static class ApplicationArchitecture
         using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db")))
         {
             db.Open(); using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)cmd.ExecuteScalar()! == 5, "settled database2 upgrades with unchanged SQL1-4 and appended independent custody SQL5");
+            Check((long)cmd.ExecuteScalar()! == 6, "settled database2 upgrades with unchanged SQL1-5, independent custody SQL5 and appended integration semantic SQL6");
         }
         await Task.CompletedTask;
     }

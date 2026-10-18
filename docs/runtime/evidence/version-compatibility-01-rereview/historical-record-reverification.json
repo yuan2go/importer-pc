@@ -1,0 +1,32 @@
+[
+  {
+    "Case": "sportmaster-default",
+    "Outcome": "PASS_EXISTING_SCHEMA1_SNAPSHOT_SCENARIO_RESULT",
+    "RecordSha256": "f016bc348984faa89d49e2fb251928b8b8302364e0910eba90b4ed73721efbb0"
+  },
+  {
+    "Case": "direct-plc-default",
+    "Outcome": "PASS_EXISTING_SCHEMA1_SNAPSHOT_SCENARIO_RESULT",
+    "RecordSha256": "0c6a7f2242fa8dd980d1e5903b659aef37552468c597201ce0d18c22acd163b9"
+  },
+  {
+    "Case": "wcs-to-plc-default",
+    "Outcome": "PASS_EXISTING_SCHEMA1_SNAPSHOT_SCENARIO_RESULT",
+    "RecordSha256": "88ee846614e03ed65777d4e6daad83c6b4d21138338755e2ca7807cffad4d288"
+  },
+  {
+    "Case": "wcs-to-plc-optional",
+    "Outcome": "PASS_EXISTING_SCHEMA1_SNAPSHOT_SCENARIO_RESULT",
+    "RecordSha256": "7b7cd454d13c5ae6e9f12ed0ce7651ddd27ca99734c62fb10558003bff909365"
+  },
+  {
+    "Case": "wcs-to-plc-attached",
+    "Outcome": "PASS_EXISTING_SCHEMA1_SNAPSHOT_SCENARIO_RESULT",
+    "RecordSha256": "1f590a195b59461abf9b52cb87794ce60d9f2d7294b92df5cf1deadac156954f"
+  },
+  {
+    "Case": "original-independent-review-relabelled-record",
+    "Outcome": "REJECTED",
+    "Reason": "Recorded effective configuration differs from original run snapshot"
+  }
+]

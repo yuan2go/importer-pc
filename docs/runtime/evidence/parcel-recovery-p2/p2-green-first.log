@@ -1,0 +1,89 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-b4d3b26a0feb4ac1b68e9c861b499e36
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-9ad1d8f819bf424e8961c64a30f87b15
+PASS AQ: P2 input: real child terminated after original upload file flush, before T3
+PASS AQ: P2 DB3 original ID evicted from 64-reply projection
+FAIL AQ: P2 DB3 local=False: InvalidDataException: OriginalReplyIdentityConflict: committed facts lack the original contradiction responsibility; preserve all raw bytes and use controlled investigation: 54765b22e973447cac890d2b6ee702bc
+PASS AQ: P2 DB3 original ID evicted from 64-reply projection
+FAIL AQ: P2 DB3 local=True: InvalidDataException: OriginalReplyIdentityConflict: committed facts lack the original contradiction responsibility; preserve all raw bytes and use controlled investigation: 5cf63e37ef6e4aec884829f786326ac8
+PASS AQ: P2 DB4 original ID evicted from 64-reply projection
+FAIL AQ: P2 DB4 local=False: InvalidDataException: OriginalReplyIdentityConflict: committed facts lack the original contradiction responsibility; preserve all raw bytes and use controlled investigation: 6e87756b8a8a4188adc3594a8a4a0d98
+PASS AQ: P2 DB4 original ID evicted from 64-reply projection
+FAIL AQ: P2 DB4 local=True: InvalidDataException: OriginalReplyIdentityConflict: committed facts lack the original contradiction responsibility; preserve all raw bytes and use controlled investigation: ad244ff9eea84d12ac2ac5e2fc6300e7
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+PASS AQ: P2 distinct missing occurrence obtains its own committed Query basis
+FAIL AQ: P2 all 67 durable Query bases remain valid beyond bounded reply projection
+PASS AQ: P2 unchanged permanent identity remains idempotent
+PASS AQ: P2 opposite terminal state rejects durable Query basis
+PASS AQ: P2 candidate may stage after proven external completion
+FAIL AQ: P2 actual restart activates candidate using persistent Query evidence beyond projection
+PASS AQ: P2 activation preserves all missing raw/image responsibility and never resubmits original work
+Unhandled exception. System.Exception: Recovery P2 failures: 6
+   at ArchitectureQuality.RecoveryP2Checks(String source, String evidence) in /Users/yuan/.codex/worktrees/parcel-recovery-p2/importer-pc/tests/Ipc.Application.Verification/ArchitectureQuality.RecoveryP2.cs:line 34
+   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/parcel-recovery-p2/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 22
+   at Program.<Main>(String[] args)

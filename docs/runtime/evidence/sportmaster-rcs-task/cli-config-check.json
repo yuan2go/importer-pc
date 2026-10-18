@@ -1,0 +1,12 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "4c9d51c2c017b7be74cc45156c9df9cd97a5fae9",
+  "CLIInstallation": "Installed",
+  "CandidateGenerator": "CandidateOnly",
+  "DeploymentCheck": "PreflightPassed",
+  "NoOverwrite": true,
+  "ExternalCalls": 0,
+  "ExpectedPackageHashFormat": "Existing uppercase SHA256 convention",
+  "Windows": "NOT_RUN",
+  "RealRcs": "BLOCKED"
+}

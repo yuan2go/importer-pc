@@ -1,0 +1,60 @@
+{
+  "SchemaVersion": 1,
+  "ArtifactRoot": "$CODEX_HOME/artifacts/ipc-version-compatibility-c4e1319",
+  "Candidates": [
+    {
+      "Name": "sportmaster-portable",
+      "ZipSha256": "1a1baae6e993fa972c4203e12385d33b0f24349eadd4a7044f6f97ba4cd8fd68",
+      "SourceCommit": "c4e131968964458467c3a03eddf90832ef85b309",
+      "BusinessVersion": "1.2.1",
+      "ReleaseSha256": "43d421aa097595b756d3283ed9f7030f0799f25e3dc636d0ce6161cf9e5e3cb3",
+      "FilesSha256": "62602502ba3a8bff04faa9f6013eec841fd150ff12b2cc7bbe5ca3bcacdf528c",
+      "Windows": "NOT_APPLICABLE",
+      "Execution": "PASS_UNPACKED_REFERENCE_JOURNEY"
+    },
+    {
+      "Name": "direct-plc-portable",
+      "ZipSha256": "c0acfc7ae900cc527ca9dcbfdc39a6d81953b1063f353cdc880c4142f5905754",
+      "SourceCommit": "c4e131968964458467c3a03eddf90832ef85b309",
+      "BusinessVersion": "1.2.1",
+      "ReleaseSha256": "59fb4adbd1396db14869c378a323825b7399fc7fd758f297129b12b571e282d7",
+      "FilesSha256": "0e4ebc146ae112151ff61f2b542c383a68bec8153d08b2881ce5741f77ee9a28",
+      "Windows": "NOT_APPLICABLE",
+      "Execution": "PASS_UNPACKED_REFERENCE_JOURNEY"
+    },
+    {
+      "Name": "wcs-to-plc-portable",
+      "ZipSha256": "490f2dc65534688ebef780ff3b608519050acadd06f6a314a90830cf7233ad7b",
+      "SourceCommit": "c4e131968964458467c3a03eddf90832ef85b309",
+      "BusinessVersion": "1.2.1",
+      "ReleaseSha256": "15e988c56050cf83c642b2944fd5c64683d1a69b0a94a180b3f83a9f6b6764ff",
+      "FilesSha256": "615758a530bd25f766a883691388fd8a021a458f28fce8654f4fa3c46126fab8",
+      "Windows": "NOT_APPLICABLE",
+      "Execution": "PASS_UNPACKED_REFERENCE_JOURNEY"
+    },
+    {
+      "Name": "sportmaster-win-x64",
+      "ZipSha256": "bcbef8ade3b59386f9bf2772769b6636e851cc0c466af96ca9ac5b41397fe662",
+      "SourceCommit": "c4e131968964458467c3a03eddf90832ef85b309",
+      "BusinessVersion": "1.2.1",
+      "ReleaseSha256": "2a81c0419eeada47ea1166061a350c0fc89967fa2168f1ca47caf74d93976c2c",
+      "FilesSha256": "6f9e6c098138663f85cf483dbd665ae118df61a816e09dff297e8f2d5c71b907",
+      "Windows": "NOT_RUN",
+      "Execution": "CROSS_PUBLISHED_ONLY"
+    }
+  ],
+  "PriorArtifacts": [
+    {
+      "SourceCommit": "8bdfaa9b9b6bedfdb0faab590416124765d5f7a9",
+      "BusinessVersion": "1.1.0",
+      "Portable": "historical PASS only for original source",
+      "Windows": "UNQUALIFIED_SOURCE_CHANGED_DURING_BUILD; original bytes retained"
+    },
+    {
+      "SourceCommit": "deacd170d569162c9a3c8a9311c73540d71ff919",
+      "BusinessVersion": "1.2.0",
+      "Portable": "FAIL_SDK_ARTIFACT_GLOB_EXCLUDED_SOURCE",
+      "SignedDebug": "historical PASS for its exact Debug host only"
+    }
+  ]
+}

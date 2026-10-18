@@ -1,0 +1,37 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 1.46 秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 1.46 秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 1.46 秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 1.46 秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 1.45 秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 1.46 秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 1.46 秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 1.46 秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 31 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 22 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Application.Sportmaster.Desktop/Ipc.Application.Sportmaster.Desktop.csproj (用时 33 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 40 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 34 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Components/Ipc.Components.csproj (用时 41 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 48 毫秒)。
+  Ipc.Platform -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Integrations -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Assembly/release_win-x64/Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Application.ParcelFlow.Desktop/release/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Application.Sportmaster.Desktop/release/Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> /Users/yuan/.codex/worktrees/sportmaster-rcs-task/importer-pc/.artifacts/rcs-wpf-build/bin/Ipc.Desktop/release_win-x64/Ipc.Desktop.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:11.84

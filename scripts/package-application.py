@@ -6,8 +6,10 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import tarfile
 import zipfile
 from composition import resolve
+from application_compatibility import read_business
 from application_bundles import read_packages, publish_packages
 from release_documents import SOURCE_PATHS, publish as publish_guides
 
@@ -30,26 +32,37 @@ if output.exists() or archive.exists():
 if subprocess.check_output(['git', 'status', '--porcelain', '--', *SOURCE_PATHS], cwd=root, text=True).strip():
     raise ValueError('Commit exact runtime, configuration, packaging and shipped guides before publication')
 source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-selection = resolve(root / 'config/compositions.json', a.composition or a.application + '-reference')
-if selection['product']['business'] != a.application:
-    raise ValueError('Composition must select the requested Application')
-bundles = read_packages(a.extension_package, selection)
-if bundles and a.extension_trust is None:
-    raise ValueError('Selected offline packages require independent trust for target-host acceptance')
 module = APPLICATIONS[a.application]
 lock = 'packages.' + a.application + ('.win-x64' if a.target == 'win-x64' else '') + '.lock.json'
 properties = ['-p:Application=' + module, '-p:NuGetLockFilePath=' + lock]
 # Isolated artifacts avoid reusing another selection's intermediate WPF/assembly state.
 artifacts = output / 'build-intermediates'
+# The SDK excludes its entire artifacts tree from default source globs.
+build_source = output / 'source-snapshot'
+build_source.mkdir(parents=True)
+export = subprocess.Popen(['git', 'archive', '--format=tar', source], cwd=root, stdout=subprocess.PIPE)
+with tarfile.open(fileobj=export.stdout, mode='r|') as snapshot:
+    snapshot.extractall(build_source, filter='data')
+if export.wait(): raise ValueError('Frozen source export failed')
+selection = resolve(build_source / 'config/compositions.json', a.composition or a.application + '-reference')
+if selection['product']['business'] != a.application:
+    raise ValueError('Composition must select the requested Application')
+bundles = read_packages(a.extension_package, selection)
+if bundles and a.extension_trust is None:
+    raise ValueError('Selected offline packages require independent trust for target-host acceptance')
+business, compatibility_source = read_business(build_source, a.application, selection)
 for project, destination in [('Ipc.Assembly', 'app'), *([('Ipc.Desktop', 'desktop')] if a.target == 'win-x64' else [])]:
     command = [a.dotnet, 'publish', f'src/{project}/{project}.csproj', '-c', 'Release', '-m:1', '-nr:false',
                '-p:EnableWindowsTargeting=true', '-p:RestoreLockedMode=true',
-               '-p:PathMap=' + str(root) + '=/_/src%2C' + str(artifacts) + '=/_/build', *properties,
+               '-p:PathMap=' + str(build_source) + '=/_/src%2C' + str(artifacts) + '=/_/build', '-p:SourceRevisionId=' + source, *properties,
                '--artifacts-path', str(artifacts), '--self-contained', 'true' if a.target == 'win-x64' else 'false', '-o', str(output / destination)]
     if a.target == 'win-x64': command += ['-r', 'win-x64']
-    subprocess.run(command, cwd=root, check=True)
-    shutil.copytree(root / 'config' / a.application, output / destination / 'config')
-shutil.rmtree(artifacts)
+    subprocess.run(command, cwd=build_source, check=True)
+    shutil.copytree(build_source / 'config' / a.application, output / destination / 'config')
+if a.target == 'portable':
+    compiled = json.loads(subprocess.check_output([a.dotnet, str(output / 'app/Ipc.Assembly.dll'), '--action', 'business-identity'], text=True))
+    if compiled['ApplicationId'] != a.application or any(compiled[key] != value for key, value in business.items()):
+        raise ValueError('Compiled business version/declaration differs from publication inputs')
 # Portable intentionally has no Windows binaries. The Windows candidate always contains
 # the actual selected Application-owned WPF page and shared window/navigation/maintenance.
 for base in [output / 'app', output / 'desktop']:
@@ -63,11 +76,13 @@ for base in [output / 'app', output / 'desktop']:
 if a.target == 'win-x64' and not (output / 'desktop' / f'Ipc.Application.{module}.Desktop.dll').is_file():
     raise ValueError('Selected WPF presentation was not delivered')
 publish_packages(bundles, selection, output, a.dotnet, a.extension_trust, a.extension_check_host)
+selection.update(business)
 for directory in [output / 'app', output / 'desktop']:
     if not directory.exists(): continue
+    shutil.copyfile(compatibility_source, directory / 'application-compatibility.json')
     files = {f.relative_to(directory).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest().upper()
              for f in sorted(directory.rglob('*')) if f.is_file()}
-    release = dict(SchemaVersion=1, ApplicationId=a.application, SourceCommit=source,
+    release = dict(SchemaVersion=2, ApplicationId=a.application, SourceCommit=source, **business,
                    Views=selection['product']['views'], Layouts=selection['product']['layouts'], Files=files)
     (directory / 'application-release.json').write_text(json.dumps(release, indent=2) + '\n')
 selection.update(SourceCommit=source, Target=a.target, EntryPoint='app/Ipc.Assembly.dll',
@@ -76,10 +91,12 @@ selection.update(SourceCommit=source, Target=a.target, EntryPoint='app/Ipc.Assem
                  Binaries={str(f.relative_to(output)): hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(output.rglob('Ipc.*.dll'))})
 (output / 'composition.lock.json').write_text(json.dumps(selection, indent=2) + '\n')
 (output / 'ASSEMBLY.json').write_text(json.dumps(selection, indent=2) + '\n')
-publish_guides(root, output, source, a.application)
+publish_guides(build_source, output, source, a.application)
 if a.target == 'win-x64':
     for script in ['protect-release.ps1', 'provision-runtime.ps1', 'provision-extensions.ps1']:
-        shutil.copyfile(root / 'scripts' / script, output / script)
+        shutil.copyfile(build_source / 'scripts' / script, output / script)
+shutil.rmtree(artifacts)
+shutil.rmtree(build_source)
 (output / 'APPLICATION-START.txt').write_text(
     'SIMULATION REFERENCE ONLY\nConsole: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'
     + ('Windows: desktop/Ipc.Desktop.exe --config desktop/config --data-root <new-isolated-root>\n' if a.target == 'win-x64' else '')
@@ -89,4 +106,4 @@ entries = sorted(f for f in output.rglob('*') if f.is_file())
 (output / 'SHA256SUMS').write_text(''.join(hashlib.sha256(f.read_bytes()).hexdigest() + '  ' + f.relative_to(output).as_posix() + '\n' for f in entries))
 with zipfile.ZipFile(archive, 'x', zipfile.ZIP_DEFLATED) as z:
     for file in sorted(f for f in output.rglob('*') if f.is_file()): z.write(file, file.relative_to(output).as_posix())
-print(json.dumps(dict(Package=str(archive), Sha256=hashlib.sha256(archive.read_bytes()).hexdigest(), SourceCommit=source, Application=a.application, Target=a.target)))
+print(json.dumps(dict(Package=str(archive), Sha256=hashlib.sha256(archive.read_bytes()).hexdigest(), SourceCommit=source, Application=a.application, Target=a.target, **business)))

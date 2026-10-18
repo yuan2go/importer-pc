@@ -155,6 +155,7 @@ RUNTIME_PROJECTS = {
     'src/Ipc.Drivers',
     'src/Ipc.Fixture',
     'src/Ipc.Integrations',
+    'src/Ipc.Integrations.SportmasterRcs',
     'src/Ipc.Platform',
     'src/Ipc.Platform.Storage',
     'src/Ipc.Product',

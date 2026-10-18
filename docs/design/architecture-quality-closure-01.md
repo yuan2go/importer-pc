@@ -153,3 +153,12 @@ PR24已由独立授权合并：归档前复审head `f862c2ae2ad00ab79ceff5e2013c
 architecture-quality先打印真实回执并用受控健康外呼证明围栏语义，再修复测试同步：等待公开Configure后发起维护动作仍需CAS/守卫；在途拒绝另行验证，不删除无结果保原图/原发生断言，不弱化生产围栏。新PASS与历史FAIL分别记录。
 
 Windows/真实SDK/协议/现场仍NOT_RUN/BLOCKED，不改D/RV或未取得的PDF01；不重打无关候选，不合并main。
+
+
+## 恢复P2：永久身份与持久Query依据（2026-10-19）
+
+继承main baac2602的独立原件责任、配置确认、DB5及维护围栏，修复独立复审的两个P2，不重做DB4迁移或其他业务分支。离线recover-legacy-receipt的外部Query和已刷盘本地重放，在提交业务结果前，均比较同请求永久回复ID的首次原hash；不同字节进入现有LegacyQueryConflict，保有原Awaiting、图像、备份、数据库版本和矛盾raw。展示列表的64条裁剪不能移除这一判断；无DB4索引的旧格式沿原occurrence原件读取身份，不创建第二账。
+
+HasReceiptOutcomeBasis以原责任到独立Committed Query的持久关联、原件SHA、请求/冻结payload、永久回复身份及当前终结结果一致性为依据。最近回复列表只作投影，不能作为持久依据的存在条件；损坏、错请求、冲突或相反终结值不能通过。Query仍不能变成原Submit的raw，不释放原图/原包或归档资格。SQL1～5、公共契约和旧包身份不改变。
+
+测试使用可控Health闸门：读到可维护后令实际Monitor进入外呼，验证命令被拒且无Query/修订变化；释放同一外呼后再执行成功路径。成功窗口通过测试专用调度建立，不放宽生产CanConfigure，也不将未知外呼失败盲重试。原并发FAIL和独立PASS分别保存；新结果只解释并验证这一次竞态。

@@ -1,0 +1,26 @@
+{
+  "Package": "sportmaster-rcs-task.ipcx",
+  "PackageSha256": "54513836e111154594b0feed44d18d678beca1e851f86d1e48daf44ddeb5ee03",
+  "PluginSourceCommit": "4c9d51c2c017b7be74cc45156c9df9cd97a5fae9",
+  "PluginSourceSha256": "04313fb48f5210bc9e06316ff7d1b14ea11767dc0cd8aede0f7440650c31ca3d",
+  "DefinitionSha256": "4be6d5f4b46b72225b10af722fb9e6f1066536be285db802a68e380ceb62dc60",
+  "HostContractSha256": "ad862d8d5d0bc3fe5ab1e8a5a000421acb28f5bf34467f320ebe22fe6fc75178",
+  "FrozenHostUnchanged": true,
+  "FrozenCheckerUnchanged": true,
+  "CheckerContractsSha256": {
+    "Ipc.Platform": "ad862d8d5d0bc3fe5ab1e8a5a000421acb28f5bf34467f320ebe22fe6fc75178",
+    "Ipc.Application.Contracts": "f7a2e2dae013feabbfe1cffb3a8d48702d1fd658fef7c92264cfea017ed6c042"
+  },
+  "Publisher": "rcs-fixture-20261019",
+  "Version": "1.0.0",
+  "ExtensionContract": 1,
+  "Signature": "RSA-PSS/SHA256",
+  "Mode": "Simulation",
+  "ManifestSha256": "5f38fb97dafdfb46acd06197dcdaa65185b1c9e007512e9d0d55441384aa247b",
+  "TrustSha256": "35d96bb5aa2da236157f0ea796a11c49a3c33877a8da226b26e1fb6625b9cb9a",
+  "PayloadSha256": {
+    "Ipc.Integrations.SportmasterRcs.dll": "8df7b5fcea0a1a618e79c2e8041bb7952e50a45a8006dab8e6c4b239184e6a81"
+  },
+  "DependencyPackages": [],
+  "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+}

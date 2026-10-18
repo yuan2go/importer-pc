@@ -1,0 +1,46 @@
+{
+  "SourceCommit": "5e3282b02616d905a628a6cbeeb9a7fbe4228a79",
+  "Cases": [
+    {
+      "Case": "wcs-default",
+      "Status": "PASS",
+      "SchemaVersion": 2,
+      "RunId": "3cb5f1c7d28441938a24729571d29cee",
+      "SourceCommit": "5e3282b02616d905a628a6cbeeb9a7fbe4228a79",
+      "Record": "wcs-default.json",
+      "RecordSha256": "70ef4026829c9ea1e377b67ec2fad5483a1161a8102cefec67e05107f9da1e66",
+      "OriginalRecordSha256": "d320fe8b6e67302419cde9a7de2f7b3502e20c5ec0e6e10c5568d53f8a52a0e8",
+      "EventsSha256": "BCE68C741E5652831570270AC11B71A23EDC191F13D2BD1BEA6EE2DDFB33FF85"
+    },
+    {
+      "Case": "wcs-before-main",
+      "Status": "PASS",
+      "SchemaVersion": 2,
+      "RunId": "34100735142041b2a28bd5c0078a5cdf",
+      "SourceCommit": "5e3282b02616d905a628a6cbeeb9a7fbe4228a79",
+      "Record": "wcs-before-main.json",
+      "RecordSha256": "7783999972910ff5c94fbfedb15486fcdfd03e9e963b54b950f710533429c60f",
+      "OriginalRecordSha256": "fffbbb75b2bfb442c203e93e23a8ea8281cb550a603c00606029ba76c723cf6b",
+      "EventsSha256": "F5FDEDDD2288B2724615B6F1F4165B203C6329EE33866F0B2602619CBA7701BF"
+    },
+    {
+      "Case": "wcs-attached",
+      "Status": "PASS",
+      "SchemaVersion": 2,
+      "RunId": "6ab2528e58b24222a9792d27775a1fcc",
+      "SourceCommit": "5e3282b02616d905a628a6cbeeb9a7fbe4228a79",
+      "Record": "wcs-attached.json",
+      "RecordSha256": "513936adb3627c91d55a5c782272c85c0772e6098869b187c7245d62d8a77cb5",
+      "OriginalRecordSha256": "1d66f820fd1d8d63bc1d370139ddd1320a9acd235a2445b98ba977ccbeab5c36",
+      "EventsSha256": "CB3AAD66AF2D9F12311250F983274449DB20F39255F6BB1F0F38A759138B0AB6"
+    }
+  ],
+  "Negative": {
+    "Case": "schema2-self-consistent-relabel",
+    "Status": "REJECTED",
+    "Expected": "REJECTED",
+    "Reason": "Recorded input/candidate identity differs from original run input event"
+  },
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED"
+}

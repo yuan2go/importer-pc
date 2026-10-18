@@ -1,0 +1,36 @@
+{
+  "ReviewHead": "d954ba6bac2610592512405eee9a96bfc5b9bcb3",
+  "LocalArtifact": "ipc-pr29-independent-review-d954ba6-20261019",
+  "Files": [
+    {
+      "Path": "REVIEW.md",
+      "Sha256": "7e6f34fe17e03a4a61651ec7b7ed77b18f7f750484dcbe1cf1c412cee6c2a4ea"
+    },
+    {
+      "Path": "record-probe/probe-record.py",
+      "Sha256": "243cbb4c4060fdbadb38953c9c1fa7b91e2b2e21bc166c1417ecd173c796d77d"
+    },
+    {
+      "Path": "record-probe/result.json",
+      "Sha256": "26ade4c4d174dfd862da5464ea7b5b81b525a15781cdcc983637fb182bf3a58f"
+    },
+    {
+      "Path": "record-probe/default-relabelled-as-optional.json",
+      "Sha256": "7bfd69e5fb39fca95ba508ed7a9ba36ac7e81a8c4d4df254b4bdb6c5785afab3"
+    },
+    {
+      "Path": "record-probe/wcs-to-plc-default.json.events.jsonl",
+      "Sha256": "a1ffd31fd278510101d3f621f3010b1de7b5d261a2935dcfdc7331a8e2773db4"
+    },
+    {
+      "Path": "maintenance-probe/Program.cs",
+      "Sha256": "fb95e156b8da8e70af9d5202a362da05a00e71acbb1d0719cd5227039bbc6efa"
+    },
+    {
+      "Path": "maintenance-probe/result.log",
+      "Sha256": "7ac678eedd260e4ec9f68e3b7b4232722d7108bdce4b21859cb5bfb79db9e01e"
+    }
+  ],
+  "OriginalBytes": "RETAINED_UNCHANGED_LOCALLY",
+  "PublicCopy": "HASH_RECEIPT_ONLY"
+}

@@ -8,8 +8,9 @@ namespace Ipc.Application.ParcelFlow;
 public static class ParcelLegacyReceiptRecovery
 {
     internal static Action<string>? Boundary;
-    public static async Task<object> RecoverAsync(string database,string expectedHash,string backup,string occurrence,string originalRelease,string reason,FlowDefinition definition,Func<string,string,string,CancellationToken,Task<StageReply?>> originalQuery,Action<string,ParcelConfiguration>? registerBackup=null,CancellationToken token=default,string? expectedWalHash=null)
+    public static async Task<object> RecoverAsync(string database,string expectedHash,string backup,string occurrence,string originalRelease,string reason,FlowDefinition definition,Func<string,string,string,CancellationToken,Task<StageReply?>> originalQuery,Action<string,ParcelConfiguration>? registerBackup=null,CancellationToken token=default,string? expectedWalHash=null,int targetStorageVersion=5)
     {
+        if (targetStorageVersion is not (5 or 6)) throw new ArgumentOutOfRangeException(nameof(targetStorageVersion));
         database=Path.GetFullPath(database);backup=Path.GetFullPath(backup);
         RecoveryFiles.RequireOrdinaryAncestors(database);RecoveryFiles.RequireOrdinaryAncestors(backup);
         var directory=Path.GetDirectoryName(database)!;
@@ -65,7 +66,7 @@ public static class ParcelLegacyReceiptRecovery
                 foreach(var local in repository.PendingReceipts().Where(x=>x.Operation==op.Id&&x.Stage=="image-upload"&&x.Reply is not null).ToArray())
                 {
                     var raw=local.Reply!;
-                    if(!ValidTerminalReply(restored,raw,directory))
+                    if(!ValidTerminalReply(repository,restored,raw,directory))
                     {
                         repository.RecoverRaw(local.Id,raw);
                         repository.Commit(Conflicted(restored,raw),"LegacyQueryConflict","Original persisted Query is contradictory; no upgrade",paused:true,occurrence:local.Id);
@@ -84,7 +85,7 @@ public static class ParcelLegacyReceiptRecovery
                     if(reply is null)
                     { repository.NoReply(query);repository.Commit(null,"LegacyQueryInconclusive","Original Query has no authoritative result; custody unchanged",paused:true);return new{Status="Unresolved",DatabaseVersion=version,OriginalOccurrence=occurrence}; }
                     repository.StoreRaw(query,reply);Boundary?.Invoke("AfterLegacyRawDurable");
-                    if(!ValidTerminalReply(restored,reply,directory))
+                    if(!ValidTerminalReply(repository,restored,reply,directory))
                     {
                         repository.Commit(Conflicted(restored,reply),"LegacyQueryConflict","Original response retained; no upgrade or raw disposition",paused:true,occurrence:query);
                         return new{Status="Conflict",DatabaseVersion=version,OriginalOccurrence=occurrence};
@@ -101,9 +102,9 @@ public static class ParcelLegacyReceiptRecovery
             }
             Boundary?.Invoke("BeforeLegacyUpgrade");
         }
-        ParcelRepository.UpgradeCustodyOnly(directory,definition.Id);
-        using var readback=new ParcelRepository(directory,definition.Id);
-        return new{Status="UpgradedCustodyRetained",DatabaseVersion=5,OriginalOccurrence=occurrence,Raw=readback.ReceiptById(occurrence),Pending=readback.PendingReceipts().Length,Backup=backup,OriginalQueryOnly=true,OriginalSubmitAttemptsUnchanged=true};
+        ParcelRepository.UpgradeCustodyOnly(directory,definition.Id,targetStorageVersion);
+        using var readback=new ParcelRepository(directory,definition.Id,Math.Max(version,targetStorageVersion));
+        return new{Status="UpgradedCustodyRetained",DatabaseVersion=readback.StorageVersion,OriginalOccurrence=occurrence,Raw=readback.ReceiptById(occurrence),Pending=readback.PendingReceipts().Length,Backup=backup,OriginalQueryOnly=true,OriginalSubmitAttemptsUnchanged=true};
     }
     static string OutcomeDetail(string original,string query,ParcelOperation before,string reason,string backup,string release) =>
         Wire.Encode(new{OriginalOccurrence=original,QueryOccurrence=query,Original=before,Actor=Environment.UserName,Reason=reason,Backup=backup,OriginalRelease=Path.GetFullPath(release)});
@@ -111,10 +112,11 @@ public static class ParcelLegacyReceiptRecovery
     {Upload=op.Upload! with{State=reply.BusinessAccepted==true?StageState.Accepted:StageState.Rejected,Replies=op.Upload.Replies.Append(reply).Distinct().ToArray(),Failure=null},Image=reply.BusinessAccepted==true?reply.Image:op.Image};
     static ParcelOperation Conflicted(ParcelOperation op,StageReply reply)=>op with
     {Upload=op.Upload! with{State=StageState.Conflict,Replies=op.Upload.Replies.Append(reply).ToArray(),Failure="Invalid/contradictory original Query; original custody retained"}};
-    static bool ValidTerminalReply(ParcelOperation op,StageReply reply,string directory)
+    static bool ValidTerminalReply(ParcelRepository repository,ParcelOperation op,StageReply reply,string directory)
     {
         var stage=op.Upload!;var original=op.Image;var terminal=stage.Replies.LastOrDefault(r=>r.BusinessAccepted is not null);
-        if(stage.State==StageState.Conflict||reply.RequestId!=stage.Request.Id||reply.PayloadHash!=stage.Request.PayloadHash||
+        if(repository.OriginalReplyHash(stage.Request.Id,reply.Id) is {} originalHash && originalHash!=Wire.Hash(Wire.Encode(reply))||
+            stage.State==StageState.Conflict||reply.RequestId!=stage.Request.Id||reply.PayloadHash!=stage.Request.PayloadHash||
             !Guid.TryParseExact(reply.Id,"N",out _)||!reply.TransportSucceeded||reply.ProtocolAcknowledged!=true||reply.BusinessAccepted is null||
             reply.PhysicalCompleted==true||string.IsNullOrWhiteSpace(reply.Evidence)||reply.At<stage.Request.PreparedAt||reply.At>DateTimeOffset.UtcNow.AddSeconds(1)||
             stage.Replies.Any(r=>r.Id==reply.Id&&Wire.Encode(r)!=Wire.Encode(reply))||

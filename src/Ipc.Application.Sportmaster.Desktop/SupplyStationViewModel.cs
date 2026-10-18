@@ -156,7 +156,8 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string OperationId => Operation?.Id ?? "未取得";
     public string Admission => Operation?.AdmissionId ?? "未取得";
     public string RequestId => Operation?.Wcs?.Request.Id ?? "未创建";
-    public string ResultReason => Operation?.Wcs?.Failure ?? Operation?.Reason ?? "";
+    public string ResultReason => Operation is { } op
+        ? string.Join("\n", new[] { op.Wcs?.Failure ?? op.Reason, ParcelViewModel.DestinationSummary(op) }.Where(s => !string.IsNullOrEmpty(s))) : "";
     public string ObservedAt => Operation?.ObservedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "尚无观察";
     public string ImageStatus => Operation?.Capture is { } c ? "采集 " + c.State + (Operation.Upload is { } u ? " · 上传 " + u.State : "") : "未参与采集";
     public bool CanAdmit { get; private set; }
@@ -197,6 +198,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         ParcelState.SlotResolved => "WCS 格口已取得",
         ParcelState.WcsUnknown => "WCS 结果待核对 · 请勿重复放货",
         ParcelState.WcsRejected => "WCS 明确拒绝",
+        ParcelState.UnpackRequired => "需拆包 · 本位等待检查处置",
         ParcelState.ResolvingWcs => "WCS 格口处理中",
         ParcelState.Prepared => "原阶段待执行",
         ParcelState.Blocked => "作业阻断",

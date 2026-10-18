@@ -1,0 +1,27 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/source-snapshot/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 1.12 秒)。
+  已还原 /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/source-snapshot/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 1.12 秒)。
+  已还原 /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/source-snapshot/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 1.12 秒)。
+  已还原 /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/source-snapshot/src/Ipc.Components/Ipc.Components.csproj (用时 1.12 秒)。
+  已还原 /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/source-snapshot/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 1.11 秒)。
+  已还原 /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/source-snapshot/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 1.12 秒)。
+  已还原 /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/source-snapshot/src/Ipc.Platform/Ipc.Platform.csproj (用时 1.11 秒)。
+  已还原 /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/source-snapshot/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 1.12 秒)。
+  已还原 /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/source-snapshot/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 6 毫秒)。
+  已还原 /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/source-snapshot/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 4 毫秒)。
+  已还原 /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/source-snapshot/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 6 毫秒)。
+  已还原 /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/source-snapshot/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 10 毫秒)。
+  Ipc.Platform -> /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/build-intermediates/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/build-intermediates/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Integrations -> /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> /Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable/app/
+{"Package": "/Users/yuan/.codex/artifacts/ipc-pr29-fixes-20261019/wcs-to-plc-portable.zip", "Sha256": "8fbfb208a81d32d8ba547df569f57737ef247035aab38eef819e0c4dca6be412", "SourceCommit": "5e3282b02616d905a628a6cbeeb9a7fbe4228a79", "Application": "wcs-to-plc", "Target": "portable", "BusinessVersion": "1.2.1", "BusinessAssembly": "Ipc.Application.WcsToPlc.dll", "CompatibilitySha256": "CBBCEDEFBB77D4E59D7FF9CA3179AE4BC0072A619D11B39F34E292D8CDFE4542"}

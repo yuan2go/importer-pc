@@ -1,0 +1,20 @@
+{
+  "Status": "PASS_ARCHIVE_HASHES_AND_CONTRACTS_ONLY",
+  "SourceCommit": "4c9d51c2c017b7be74cc45156c9df9cd97a5fae9",
+  "FilesChecked": 735,
+  "WinZipSha256": "4d9d5c74543d4ad727fd134aff72ce8480186cdfd5d4a748b25aff19479c6d8c",
+  "ContractsMatchPortableSignedTarget": {
+    "Ipc.Platform.dll": {
+      "sportmaster-portable/app": "ad862d8d5d0bc3fe5ab1e8a5a000421acb28f5bf34467f320ebe22fe6fc75178",
+      "sportmaster-win-x64/app": "ad862d8d5d0bc3fe5ab1e8a5a000421acb28f5bf34467f320ebe22fe6fc75178",
+      "sportmaster-win-x64/desktop": "ad862d8d5d0bc3fe5ab1e8a5a000421acb28f5bf34467f320ebe22fe6fc75178"
+    },
+    "Ipc.Application.Contracts.dll": {
+      "sportmaster-portable/app": "f7a2e2dae013feabbfe1cffb3a8d48702d1fd658fef7c92264cfea017ed6c042",
+      "sportmaster-win-x64/app": "f7a2e2dae013feabbfe1cffb3a8d48702d1fd658fef7c92264cfea017ed6c042",
+      "sportmaster-win-x64/desktop": "f7a2e2dae013feabbfe1cffb3a8d48702d1fd658fef7c92264cfea017ed6c042"
+    }
+  },
+  "WindowsActual": "NOT_RUN",
+  "RealEquipment": "BLOCKED"
+}

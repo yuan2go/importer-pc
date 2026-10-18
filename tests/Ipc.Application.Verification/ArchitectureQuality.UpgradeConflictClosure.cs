@@ -10,24 +10,25 @@ static partial class ArchitectureQuality
     { using var db=new SqliteConnection("Data Source="+file); db.Open(); using var q=db.CreateCommand(); q.CommandText=sql; q.ExecuteNonQuery(); }
     // Explicit synthetic format fixture. Source facts are produced by the real current
     // Application; historical-release fixtures are verified separately, never relabelled.
-    static void SyntheticDb4(string file) => Sql(file,"DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version=5");
+    static void SyntheticDb4(string file) => Sql(file,"DROP TABLE IF EXISTS parcel_integration_semantics; DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version>=5");
+    static void SyntheticDb5(string file) => Sql(file,"DROP TABLE IF EXISTS parcel_integration_semantics; DELETE FROM platform_migrations WHERE version=6");
     static Dictionary<string,string> CustodyFiles(string name,ParcelConfiguration c) => Directory.EnumerateFiles(DirectoryFor(name,c),"*",SearchOption.AllDirectories)
         .Where(p=>!p.EndsWith("-wal")&&!p.EndsWith("-shm")&&!p.Contains("diagnostics")&&!p.EndsWith(".lock") &&
             // ResourceLease rewrites only this root control file with the current PID;
             // it is not original business custody. Nested image/raw files remain checked.
             !(Path.GetDirectoryName(p)==DirectoryFor(name,c)&&p.EndsWith(".lease",StringComparison.Ordinal)))
         .ToDictionary(p=>p,Wire.FileHash);
-    static async Task RefuseDb4(string name,ParcelConfiguration c,bool historical=false)
+    static async Task RefuseDb4(string name,ParcelConfiguration c,bool historical=false,int storageVersion=4)
     {
-        var file=UpgradeDatabase(name,c); if(!historical)SyntheticDb4(file); var files=CustodyFiles(name,c);
+        var file=UpgradeDatabase(name,c); if(!historical) { if(storageVersion==4)SyntheticDb4(file); else SyntheticDb5(file); } var files=CustodyFiles(name,c);
         string? refusal=null;
         try { await using var unexpected=await Open(c,name); }
         catch(InvalidDataException ex) { refusal=ex.Message; }
-        Console.WriteLine("DB4 preflight: "+Wire.Encode(new {name,refusal,Version=ParcelRepository.ReadStorageVersion(file,c.ApplicationId),Changed=files.Where(p=>!File.Exists(p.Key)||Wire.FileHash(p.Key)!=p.Value).Select(p=>Path.GetRelativePath(DirectoryFor(name,c),p.Key)).ToArray()}));
-        Check(refusal?.Contains("LegacyUnsettled")==true && ParcelRepository.ReadStorageVersion(file,c.ApplicationId)==4,
-            name+": unresolved DB4 refuses BEFORE future reader marker, not after provider construction");
+        Console.WriteLine($"DB{storageVersion} preflight: "+Wire.Encode(new {name,refusal,Version=ParcelRepository.ReadStorageVersion(file,c.ApplicationId),Changed=files.Where(p=>!File.Exists(p.Key)||Wire.FileHash(p.Key)!=p.Value).Select(p=>Path.GetRelativePath(DirectoryFor(name,c),p.Key)).ToArray()}));
+        Check(refusal?.Contains("LegacyUnsettled")==true && ParcelRepository.ReadStorageVersion(file,c.ApplicationId)==storageVersion,
+            $"{name}: unresolved DB{storageVersion} refuses BEFORE future reader marker, not after provider construction");
         Check(files.All(p=>File.Exists(p.Key)&&Wire.FileHash(p.Key)==p.Value),name+": refusal preserves original DB/config/raw/image bytes");
-        try { using var old=new ParcelRepository(DirectoryFor(name,c),c.ApplicationId,4); Check(old.StorageVersion==4,name+": matching DB4 reader remains usable"); }
+        try { using var old=new ParcelRepository(DirectoryFor(name,c),c.ApplicationId,storageVersion); Check(old.StorageVersion==storageVersion,name+": matching DB4 reader remains usable"); }
         catch(InvalidDataException ex) { Check(false,name+": old reader stranded: "+ex.Message); }
     }
     static async Task UpgradePreflightChecks()
@@ -46,6 +47,11 @@ static partial class ArchitectureQuality
             }
             await RefuseDb4(name,c);
         }
+        var db5 = Config("sportmaster");
+        db5 = db5 with { Wcs = db5.Wcs! with { Parameters = new(db5.Wcs.Parameters) { ["reply-mode"] = "lose-after-commit" } } };
+        await using (var app = await Open(db5,"db5-unknown"))
+        { app.EmitReference("db5-original","00085","db5-source"); await Wait(app,s=>s.Operations.FirstOrDefault()?.State==ParcelState.WcsUnknown); }
+        await RefuseDb4("db5-unknown",db5,storageVersion:5);
         // A different frozen implementation is rejected at the same pre-migration
         // boundary. This fixture retains the real original requests and replies.
         var changed=Config("sportmaster") with { Wcs=Config("sportmaster").Wcs! with { Parameters=new(Config("sportmaster").Wcs!.Parameters){["reply-mode"]="lose-after-commit"} } };
@@ -70,7 +76,7 @@ static partial class ArchitectureQuality
         await using(var app=await Open(settled,terminal)) {app.EmitReference("settled-upgrade","00082","settled-upgrade-source");await Wait(app,s=>s.Operations.FirstOrDefault()?.State==ParcelState.SlotResolved);}
         var database=UpgradeDatabase(terminal,settled);SyntheticDb4(database);
         using(var repo=new ParcelRepository(DirectoryFor(terminal,settled),settled.ApplicationId))
-            Check(repo.StorageVersion==5&&repo.Load().Single().Wcs!.Attempts==1,"fully settled DB4 upgrades without changing original send attempts");
+            Check(repo.StorageVersion==6&&repo.Load().Single().Wcs!.Attempts==1,"fully settled DB4 upgrades without changing original send attempts");
     }
     static async Task LegacyActualPositionChecks(int schema,bool previouslyRecovered)
     {

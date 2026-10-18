@@ -19916,6 +19916,17 @@
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
       "previous_git_blob": "5fd7c8a345b61de980764da8e0f9d250fc48ab63"
+    },
+    {
+      "path": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
+      "version": "APPLICATION-ARCHITECTURE-22-publication",
+      "status": "publication_receipt_not_acceptance",
+      "purpose": "User-authorized upload of existing synthetic reference packages; publication tests, builds and validators NOT_RUN",
+      "source": "2026-10-18 explicit no-test publication request",
+      "storage_scope": "public_repository",
+      "sha256": "44b9be428ef905f16c3df4263f75560419a034e9d8bfb01dba625d319ac5ac57",
+      "size_bytes": 3920,
+      "git_blob": "4a2e327af5a6e4919c56ebc4891cf944f88e2ef1"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -20612,5 +20623,18 @@
     "candidates": "docs/runtime/evidence/capability-reliability-20/candidate-inventory.json",
     "reference_verification": "PASS"
   },
-  "runtime_source_commit": "d5c8b7981ba8e4c8b9daf22df1cb686243815f3b"
+  "runtime_source_commit": "d5c8b7981ba8e4c8b9daf22df1cb686243815f3b",
+  "application_architecture_22_publication": {
+    "receipt": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
+    "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/architecture22-reference-8981d54",
+    "source_commit": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/22",
+    "remote_assets": 9,
+    "tests_build_validators": "NOT_RUN_BY_USER_REQUEST",
+    "windows": "NOT_RUN",
+    "field": "BLOCKED",
+    "binary_storage": "github_prerelease_assets_not_git",
+    "repackaged": false,
+    "private_key_included": false
+  }
 }

@@ -1,0 +1,82 @@
+{
+  "PublicationDate": "2026-10-18",
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/22",
+  "PrepublicationHead": "d0736b558cf3dba57f268ef867a8e8e4b38c5fa6",
+  "RuntimeSourceCommit": "8981d54a3dcb45aa08ea8953f1dd9d4cd2f079f7",
+  "Release": "https://github.com/yuan2go/importer-pc/releases/tag/architecture22-reference-8981d54",
+  "ReleaseId": 416367814,
+  "Prerelease": true,
+  "Draft": false,
+  "TestsBuildValidators": "NOT_RUN_BY_USER_REQUEST",
+  "Repackaged": false,
+  "Windows": "NOT_RUN",
+  "RealCapabilitiesAndField": "BLOCKED",
+  "ReadbackScope": "GitHub release upload state, size and server SHA256 metadata; no download or executable validation in this publication task",
+  "SignedPackageBoundary": "Original Debug exact-checker package; not claimed compatible with Release candidate ZIPs; preserve original identity and contract hashes",
+  "PrivateKeyIncluded": false,
+  "Assets": [
+    {
+      "Name": "candidates.json",
+      "Bytes": 1004,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:c2cab48aa8e0788cc431b8a9bd7d79a89828ea482e5c5897ff6853466a5c1b3e",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/architecture22-reference-8981d54/candidates.json"
+    },
+    {
+      "Name": "direct-plc-portable.zip",
+      "Bytes": 18128176,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:4ad8dc55e04cfe58b67d5a73588b8c8cd67175f684b75963c7d97a4987432556",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/architecture22-reference-8981d54/direct-plc-portable.zip"
+    },
+    {
+      "Name": "reference.parcel-capabilities-1.4.0.ipcx",
+      "Bytes": 20433,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:7bdd16f0795f5b9453615be6758bb420446a97cb1fdd6a922f6cb15a67981041",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/architecture22-reference-8981d54/reference.parcel-capabilities-1.4.0.ipcx"
+    },
+    {
+      "Name": "reference.parcel-capabilities-1.4.0.ipcx.identity.json",
+      "Bytes": 1331,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:7f126c42c43be851b6baf22d5ce26d2bd5f818bbdd82d8d00f55da6b1ba2465b",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/architecture22-reference-8981d54/reference.parcel-capabilities-1.4.0.ipcx.identity.json"
+    },
+    {
+      "Name": "SHA256SUMS",
+      "Bytes": 753,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:c7a588a940d8c76109835e3536a7467c4d6610879b35d530150a2b5516f3b7b9",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/architecture22-reference-8981d54/SHA256SUMS"
+    },
+    {
+      "Name": "sportmaster-portable.zip",
+      "Bytes": 18210729,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:504609fae1daa723db05f5fd1fdd5fb9a52b45bdbae98a9eff6d42637842ad40",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/architecture22-reference-8981d54/sportmaster-portable.zip"
+    },
+    {
+      "Name": "sportmaster-win-x64.zip",
+      "Bytes": 103729800,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:998a837a41d6df26ed140179caf17c8a57df5a5433dceffdb90e54bfb99d0b00",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/architecture22-reference-8981d54/sportmaster-win-x64.zip"
+    },
+    {
+      "Name": "test-trust.json",
+      "Bytes": 786,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:a54b875dc8033e90f91d144d4a0353391f1c41dbeba7c255cc5e2d827269639a",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/architecture22-reference-8981d54/test-trust.json"
+    },
+    {
+      "Name": "wcs-to-plc-portable.zip",
+      "Bytes": 18213043,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:4d537bdf4a386781d754259dd48b827a011f9b3a9c5895ef233546d974f8275a",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/architecture22-reference-8981d54/wcs-to-plc-portable.zip"
+    }
+  ]
+}

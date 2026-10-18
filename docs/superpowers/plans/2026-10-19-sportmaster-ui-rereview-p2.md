@@ -6,9 +6,9 @@
 
 **Constraints:** .NET10.0.402/WPF；原HTML不上传；不改业务Flow、Runtime、契约、SQL、配置、驱动或协议。Windows原生运行NOT_RUN，真实SDK/设备/现场BLOCKED。保留226ac9b原复审和bf16bd1候选身份。
 
-- [ ] 1. 先补`SportmasterUi.cs`的旧成功先完成、新读取后失败回归（Pause、ConfirmConfiguration、命令后读取）以及新读取仍挂起/新成功恢复/旧失败不得覆盖新成功。先证明旧源码失败。
-- [ ] 2. `ParcelViewModel.cs`私有读取包装返回`(Id, Snapshot)`并通知成功/失败钩子，三个读取路径共用；默认钩子不改变classic行为。`SupplyStationViewModel`按最大成功ID/失败ID判断失效和发布资格，替换无身份的成功次数比较。
-- [ ] 3. 链接实际`SupplyStationWindow.xaml.cs`到跨平台验证，用仅提供事件、计时器和控件边界的替身执行主子重叠关闭、停止失败/重试、挂起快照与保护Pause、子窗失败和超时；明确不是Windows交互验收。保留Closed终态，恢复时过滤存活集合，关闭期间拒绝新刷新。
+- [x] 1. 先补`SportmasterUi.cs`的旧成功先完成、新读取后失败回归（Pause、ConfirmConfiguration、命令后读取）以及新读取仍挂起/新成功恢复/旧失败不得覆盖新成功。先证明旧源码失败。
+- [x] 2. `ParcelViewModel.cs`私有读取包装返回`(Id, Snapshot)`并通知成功/失败钩子，三个读取路径共用；默认钩子不改变classic行为。`SupplyStationViewModel`按最大成功ID/失败ID判断失效和发布资格，替换无身份的成功次数比较。
+- [x] 3. 链接实际`SupplyStationWindow.xaml.cs`到跨平台验证，用仅提供事件、计时器和控件边界的替身执行主子重叠关闭、停止失败/重试、挂起快照与保护Pause、子窗失败和超时；明确不是Windows交互验收。保留Closed终态，恢复时过滤存活集合，关闭期间拒绝新刷新。
 - [ ] 4. 原生WPF烟测增加同一关闭竞态和失败重试断言；执行UI、生命周期、架构/配置/质量回归及三类客户端/原生烟测构建。修复原探针复跑；独立复核代码。
 - [ ] 5. 冻结源码与随包指南，重建新候选并解包/启动核验，保留先前回执；追加审查/验证记录、更新manifest及源码快照资料校验，提交推送同PR27，不合并。
 

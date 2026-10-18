@@ -70,15 +70,28 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public string BackupPath { get; set; } = "";
     public bool Busy { get; private set; }
     long refreshGeneration;
+    long snapshotReadId;
     // A presentation may observe read failures; the default preserves the classic path.
     protected virtual Task<ParcelSnapshot> ReadSnapshotAsync() => application.SnapshotAsync();
-    protected void InvalidatePendingRefresh() => Interlocked.Increment(ref refreshGeneration);
+    protected virtual void SnapshotReadSucceeded(long id) { }
+    protected virtual void SnapshotReadFailed(long id, Exception error) { }
+    protected virtual bool CanApplySnapshot(long id) => true;
+    async Task<(long Id, ParcelSnapshot Snapshot)> ReadSnapshotWithIdAsync()
+    {
+        var id = Interlocked.Increment(ref snapshotReadId);
+        try
+        {
+            var result = await ReadSnapshotAsync();
+            SnapshotReadSucceeded(id); return (id, result);
+        }
+        catch (Exception error) { SnapshotReadFailed(id, error); throw; }
+    }
     public async Task RefreshAsync()
     {
         var currentId = Selected?.Id;
         var generation = Interlocked.Increment(ref refreshGeneration);
-        var next = await ReadSnapshotAsync();
-        if (generation != Volatile.Read(ref refreshGeneration) || Snapshot is { } previous && next.RuntimeId == previous.RuntimeId && next.Revision < previous.Revision) return;
+        var (readId, next) = await ReadSnapshotWithIdAsync();
+        if (generation != Volatile.Read(ref refreshGeneration) || !CanApplySnapshot(readId) || Snapshot is { } previous && next.RuntimeId == previous.RuntimeId && next.Revision < previous.Revision) return;
         Snapshot = next;
         if (!PositionIds.Contains(SelectedPositionId)) SelectedPositionId = PositionIds.FirstOrDefault() ?? "main";
         NotifyTargets();
@@ -113,7 +126,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         {
             for (var retry = 0; retry < 3; retry++)
             {
-                var s = await ReadSnapshotAsync();
+                var (_, s) = await ReadSnapshotWithIdAsync();
                 var r = await application.CommandAsync(new(Wire.Id(), s.Revision, "Pause"));
                 if (r.Status == "Conflict") continue;
                 Message = r.Status + " · " + r.Reason; await RefreshAsync(); return;

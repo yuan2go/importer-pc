@@ -335,12 +335,48 @@ static class SportmasterUi
                 "older poll success cannot undo newer failed " + failurePath + " read");
             probe.Read = null; await ui.RefreshDisplayAsync();
         }
+        foreach (var path in new[] { "Pause", "ConfirmConfiguration", "CommandRefresh" })
+        {
+            var oldSnapshot = ui.Snapshot!;
+            var oldRead = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var newRead = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
+            probe.Read = () => oldRead.Task; var poll = ui.RefreshDisplayAsync();
+            probe.Read = () => newRead.Task;
+            var action = path == "Pause" ? ui.PauseAsync() : path == "ConfirmConfiguration" ? ui.RunAsync(ui.ConfirmConfigurationAsync) : ui.RunAsync(() => ui.CommandAsync("Resume"));
+            oldRead.SetResult(oldSnapshot); await poll;
+            newRead.SetException(new IOException("newer " + path + " failed after older success")); await action;
+            Check(!ui.Fresh && !ui.Left.CanAdmit && ui.ReadStatus.Contains("failed after older success"),
+                "older poll success before newer " + path + " failure cannot keep display fresh");
+            var beforeWrites = probe.Writes; await ui.EmitPositionAsync(ui.Left);
+            Check(probe.Writes == beforeWrites, "failed " + path + " after older success prevents application admission");
+            probe.Read = null; await ui.RefreshDisplayAsync();
+        }
         var late = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
         probe.Read = () => late.Task; var command = ui.RunAsync(() => ui.CommandAsync("Resume"));
         probe.Read = null; await ui.RefreshDisplayAsync(); var current = ui.Snapshot;
         late.SetException(new IOException("obsolete command refresh failure")); await command;
         Check(ui.Fresh && ReferenceEquals(ui.Snapshot, current) && !ui.ReadStatus.Contains("obsolete command"),
             "late command refresh failure cannot invalidate a newer successful poll");
+        var failingPoll = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var pendingNewer = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
+        probe.Read = () => failingPoll.Task; var oldPoll = ui.RefreshDisplayAsync();
+        probe.Read = () => pendingNewer.Task; var pendingPause = ui.PauseAsync();
+        failingPoll.SetException(new IOException("older failure while newer read is still pending"));
+        try { await oldPoll; throw new Exception("Expected old poll failure"); } catch (IOException) { }
+        Check(!ui.Fresh && !ui.Left.CanAdmit, "a newer pending read is not proof of success and cannot hide an observed failure");
+        probe.Read = null; pendingNewer.SetResult(await app.SnapshotAsync()); await pendingPause;
+        Check(ui.Fresh && ui.Snapshot!.Paused, "newer successful Pause and display read recover the failed projection");
+        await ui.RunAsync(() => ui.CommandAsync("Resume"));
+        var failureBeforeSuccess = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var laterSuccess = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
+        probe.Read = () => failureBeforeSuccess.Task; var earlier = ui.RefreshDisplayAsync();
+        probe.Read = () => laterSuccess.Task; var later = ui.RefreshDisplayAsync();
+        failureBeforeSuccess.SetException(new IOException("failure before newer poll succeeds"));
+        try { await earlier; throw new Exception("Expected earlier poll failure"); } catch (IOException) { }
+        Check(!ui.Fresh, "failed earlier read marks stale while later display read is pending");
+        var latest = await app.SnapshotAsync(); laterSuccess.SetResult(latest); await later;
+        Check(ui.Fresh && ReferenceEquals(ui.Snapshot, latest), "already pending newer poll can recover without an extra refresh after failure");
+        probe.Read = null;
         updated = ui.UpdatedAt; ui.RefreshFreshness(DateTimeOffset.UtcNow.AddSeconds(4));
         Check(!ui.Fresh && ui.ReadStatus.Contains(updated), "deadline expiry visibly retains last successful read time");
         await ui.RefreshDisplayAsync();

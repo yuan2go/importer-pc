@@ -1,5 +1,6 @@
 using System.IO;
 using System.Reflection;
+using System.Windows.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -41,9 +42,9 @@ static class Program
             await runtime.StartAsync(CancellationToken.None);
             var application = DispatchProxy.Create<IParcelApplication, ProjectionProbe>();
             var probe = (ProjectionProbe)(object)application; probe.Inner = (IParcelApplication)runtime.Application;
-            var stops = 0;
+            var stops = 0; var stopCalls = 0; var failNextStop = false;
             var classic = Presentation.Create(application, null, null);
-            var alternate = (SupplyStationWindow)Presentation.Create(application, null, "standard", "supply-station", async () => { await runtime.StopAsync(CancellationToken.None); stops++; });
+            var alternate = (SupplyStationWindow)Presentation.Create(application, null, "standard", "supply-station", async () => { stopCalls++; if (failNextStop) { failNextStop = false; throw new IOException("SYNTHETIC owner stop failed"); } await runtime.StopAsync(CancellationToken.None); stops++; });
             classic.Show(); alternate.Show(); await Task.Delay(1200);
             Check(classic is ShellWindow && alternate.ViewModel.Fresh, "classic and alternate native windows load actual resources and snapshots");
             Check(ReferenceEquals(((ParcelViewModel)classic.DataContext).Application, alternate.ViewModel.Application), "two UI choices share the same actual Application");
@@ -115,9 +116,20 @@ static class Program
             }
             Click(alternate, "辅助窗口"); await Task.Delay(200);
             var remaining = alternate.OwnedWindows.OfType<SupplyStationWindow>().Single();
+            var fields = BindingFlags.Instance | BindingFlags.NonPublic;
+            var pendingChildRead = new TaskCompletionSource();
+            typeof(SupplyStationWindow).GetField("pendingRefresh", fields)!.SetValue(remaining, pendingChildRead.Task);
+            var childTimer = (DispatcherTimer)typeof(SupplyStationWindow).GetField("timer", fields)!.GetValue(remaining)!;
+            failNextStop = true; remaining.Close(); alternate.Close();
+            Check(stopCalls == 0, "overlapping child and owner close drain the original pending read first");
+            pendingChildRead.SetResult();
+            for (var i = 0; i < 100 && (!alternate.IsEnabled || remaining.IsVisible); i++) await Task.Delay(20);
+            Check(alternate.IsVisible && alternate.IsEnabled && !remaining.IsVisible && !childTimer.IsEnabled && stops == 0,
+                "owner stop failure retains owner without restarting a closed child's native DispatcherTimer");
             alternate.Close();
             for (var i = 0; i < 100 && alternate.IsVisible; i++) await Task.Delay(50);
-            Check(stops == 1 && !alternate.IsVisible && !remaining.IsVisible, "main close drains views, stops business once and closes owned windows");
+            Check(stops == 1 && stopCalls == 2 && !alternate.IsVisible && !remaining.IsVisible && !childTimer.IsEnabled,
+                "owner retry stops business once and leaves closed auxiliary timer stopped");
             classic.Close();
         }
         lines.Add("PASS WINDOWS WPF SMOKE; real SDK/WCS/device/field acceptance remains BLOCKED");

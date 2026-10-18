@@ -13,7 +13,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     string? readFailure;
     bool fresh;
     bool viewportFits = true, viewportRecoveryRequired;
-    long displayReadGeneration, successfulReadVersion;
+    long successfulReadId, failedReadId;
     string selectedPage = "workstation";
     public SupplyStationPositionViewModel Left { get; }
     public SupplyStationPositionViewModel Right { get; }
@@ -43,7 +43,6 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     void SnapshotChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName != nameof(Snapshot)) return;
-        Interlocked.Increment(ref successfulReadVersion);
         lastRead = DateTimeOffset.UtcNow; readFailure = null; RefreshFreshness();
     }
     public void RefreshFreshness(DateTimeOffset? at = null)
@@ -79,20 +78,24 @@ public sealed class SupplyStationViewModel : ParcelViewModel
         readFailure = reason; Message = "状态读取失败，旧快照仅供参考：" + reason; RefreshFreshness();
     }
     public Task RefreshDisplayAsync() => RefreshAsync();
-    protected override async Task<ParcelSnapshot> ReadSnapshotAsync()
+    protected override void SnapshotReadSucceeded(long id) => AdvanceReadId(ref successfulReadId, id);
+    protected override bool CanApplySnapshot(long id) => id > Volatile.Read(ref failedReadId);
+    protected override void SnapshotReadFailed(long id, Exception error)
     {
-        var generation = Interlocked.Increment(ref displayReadGeneration);
-        var successfulBefore = Volatile.Read(ref successfulReadVersion);
-        try { return await base.ReadSnapshotAsync(); }
-        catch (Exception ex)
+        // Only a success from a later request supersedes this failure. An older
+        // request completing while this read was pending cannot certify freshness.
+        if (id > Volatile.Read(ref successfulReadId) && AdvanceReadId(ref failedReadId, id)) MarkReadFailure(error.Message);
+    }
+    static bool AdvanceReadId(ref long current, long next)
+    {
+        var previous = Volatile.Read(ref current);
+        while (next > previous)
         {
-            if (generation == Volatile.Read(ref displayReadGeneration) && successfulBefore == Volatile.Read(ref successfulReadVersion))
-            {
-                // A failed non-display read (Pause/confirmation) also retires older polls.
-                InvalidatePendingRefresh(); MarkReadFailure(ex.Message);
-            }
-            throw;
+            var actual = Interlocked.CompareExchange(ref current, next, previous);
+            if (actual == previous) return true;
+            previous = actual;
         }
+        return false;
     }
     public async Task ReconcilePositionAsync(SupplyStationPositionViewModel position)
     {

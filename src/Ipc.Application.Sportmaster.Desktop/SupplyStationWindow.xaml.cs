@@ -18,7 +18,7 @@ public partial class SupplyStationWindow : Window
     readonly HashSet<SupplyStationWindow> windows;
     Task pendingRefresh = Task.CompletedTask;
     Task pendingViewportPause = Task.CompletedTask;
-    bool compact, closing, closeReady;
+    bool compact, closing, closeReady, closed;
     public SupplyStationViewModel ViewModel { get; }
 
     public SupplyStationWindow(IParcelApplication application, string? view, string? layout, Func<Task>? stopOwner = null, SupplyStationWindow? owner = null)
@@ -38,20 +38,20 @@ public partial class SupplyStationWindow : Window
         timer.Tick += (_, _) =>
         {
             ViewModel.RefreshFreshness();
-            if (pendingRefresh.IsCompleted && !closing) pendingRefresh = RefreshAsync();
+            if (pendingRefresh.IsCompleted && !closing && !closed) pendingRefresh = RefreshAsync();
         };
         Loaded += async (_, _) =>
         {
             if (ActualWidth > SystemParameters.WorkArea.Width || ActualHeight > SystemParameters.WorkArea.Height) WindowState = WindowState.Maximized;
             pendingRefresh = RefreshAsync(); await pendingRefresh;
-            if (closing) return;
+            if (closing || closed) return;
             UpdateViewport();
             timer.Start();
             if (initialPage == "maintenance") await ViewModel.RunAsync(ViewModel.LoadCapabilitiesAsync);
             if (initialPage == "history") await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync());
         };
         Closing += ClosingWindow;
-        Closed += (_, _) => { timer.Stop(); windows.Remove(this); };
+        Closed += (_, _) => { closed = true; timer.Stop(); windows.Remove(this); };
     }
     async Task RefreshAsync()
     {
@@ -75,12 +75,12 @@ public partial class SupplyStationWindow : Window
     void ViewportChanged(object sender, SizeChangedEventArgs e) => UpdateViewport();
     void UpdateViewport()
     {
-        if (closing || ClientArea.ActualWidth <= 0 || ClientArea.ActualHeight <= 0) return;
+        if (closing || closed || ClientArea.ActualWidth <= 0 || ClientArea.ActualHeight <= 0) return;
         if (ViewModel.SetViewport(ClientArea.ActualWidth, ClientArea.ActualHeight)) QueueViewportPause();
     }
     void QueueViewportPause()
     {
-        if (!closing && pendingViewportPause.IsCompleted) pendingViewportPause = ViewModel.PauseAsync();
+        if (!closing && !closed && pendingViewportPause.IsCompleted) pendingViewportPause = ViewModel.PauseAsync();
     }
     void Maximize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Maximized;
     void ViewportPause_Click(object sender, RoutedEventArgs e) => QueueViewportPause();
@@ -102,7 +102,7 @@ public partial class SupplyStationWindow : Window
     }
     async void ClosingWindow(object? sender, CancelEventArgs e)
     {
-        if (closeReady) return;
+        if (closeReady || closed) return;
         e.Cancel = true;
         if (closing) return;
         closing = true;
@@ -113,13 +113,18 @@ public partial class SupplyStationWindow : Window
             await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.pendingViewportPause })).WaitAsync(TimeSpan.FromSeconds(5));
             if (stopOwner is not null) await stopOwner();
             closeReady = true;
-            foreach (var child in affected.Where(x => x != this)) { child.closeReady = true; child.Close(); }
+            foreach (var child in affected.Where(x => x != this && !x.closed && windows.Contains(x))) { child.closeReady = true; child.Close(); }
             Close();
         }
         catch (Exception ex)
         {
-            ViewModel.Message = "停止未完成，仍持有资源：" + ex.Message; closing = false;
-            foreach (var window in affected) { window.closing = false; window.IsEnabled = true; window.timer.Start(); }
+            ViewModel.Message = "停止未完成，仍持有资源：" + ex.Message;
+            // The root owns recovery while it is draining the same child. A child
+            // failure must not restart polling underneath an in-progress owner stop.
+            if (this != root && root.closing) return;
+            closing = false;
+            foreach (var window in affected.Where(x => !x.closed && windows.Contains(x)))
+            { window.closing = false; window.IsEnabled = true; window.timer.Start(); }
         }
     }
 }

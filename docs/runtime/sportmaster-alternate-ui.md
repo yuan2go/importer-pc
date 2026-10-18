@@ -17,7 +17,7 @@
 
 省略 `--ui` 等价于 classic；合法参数值区分大小写。未知值、缺值、重复参数及其他业务使用 supply-station 会在创建业务/设备前拒绝。`--ui` 仅为桌面参数，控制台 `Ipc.Assembly` 不接受它。既有 `--view sportmaster` / `sportmaster-history` / `sportmaster-maintenance` 和 `--layout standard|compact` 保持有效。
 
-点击“工作台 / 作业记录 / 设备与维护”只导航页面。“辅助窗口”继承所选UI和布局，具有自己的草稿与选择，继续共享同一个 Application；关闭辅助窗口不停止业务。主窗口关闭先停止各窗刷新、最多5秒等待在途快照，再调用宿主的停止预算。任一失败保留窗口、资源责任和诊断，可在故障消除后重试。
+点击“工作台 / 作业记录 / 设备与维护”只导航页面。“辅助窗口”继承所选UI和布局，具有自己的草稿与选择，继续共享同一个 Application；关闭辅助窗口不停止业务。主窗口关闭先停止各窗刷新、最多5秒等待在途快照和保护Pause，再调用宿主的停止预算。任一失败保留仍存活的窗口、资源责任和诊断，可在故障消除后重试。已关闭子窗是终态，不重新启动计时器；主窗仍在关闭时，子窗失败不能提前恢复轮询。
 
 ## 实际页面与原型差异
 
@@ -44,7 +44,7 @@
 - `src/Ipc.Application.Sportmaster.Desktop/Presentation.cs`：显式UI工厂。
 - `SupplyStationWindow`：窗口、页面、500ms轮询、有界关闭及客户区保护。
 - `SupplyStationPosition` / `SupplyStationTheme`：本位控件与资源；控件自己声明主题资源，创建时不依赖父树已经挂接。
-- `SupplyStationViewModel`：可跨平台验证的真实UI投影与命令转发；位置对象和草稿保持稳定。轮询、命令刷新、暂停及配置确认均经同一快照读取扩展点。读取失败或超过3秒失效，原事实标旧并禁用新操作，最后成功读取时间常驻；成功读取恢复。旧轮询/命令成功或失败都不能覆盖较新的成功读取。
+- `SupplyStationViewModel`：可跨平台验证的真实UI投影与命令转发；位置对象和草稿保持稳定。轮询、命令刷新、暂停及配置确认均经同一快照读取扩展点。读取失败或超过3秒失效，原事实标旧并禁用新操作，最后成功读取时间常驻；成功读取恢复。每次快照读取分配单调请求ID，失败只被ID更大的成功读取覆盖；较旧读取即使先完成，也不能掩盖较新读取随后失败。失败之前的结果禁止重新发布，失败之后已挂起的新读取成功可以恢复，无需额外轮询。
 
 沿用 .NET SDK10.0.402、WPF及已有锁定包，无新增生产NuGet依赖、原HTML、WebView、字体或SDK。
 
@@ -58,5 +58,7 @@ python3 scripts/package-application.py --application sportmaster --target win-x6
 发布脚本在原选装闭包内包含两套WPF资源；ApplicationId、Views/Layouts、公共应用契约和业务部署配置格式均不变。release文件包含真实文件hash；随包 `SPORTMASTER-UI.md`、`SPORTMASTER-UI-WINDOWS.md` 和 `APPLICATION-START.txt` 说明启动和验收。
 
 ## 验证边界
+
+跨平台 `--sportmaster-window-lifecycle` 使用实际窗口代码及事件/计时器替身验证关闭控制流，覆盖主子重叠关闭、停止失败重试、挂起刷新/保护Pause、子窗失败及5秒超时；它不执行WPF布局、原生Dispatcher或HWND操作。
 
 实际验证结果及源码/候选身份见[结果报告](sportmaster-alternate-ui-results.md)。本机为macOS，只能执行跨平台应用/投影测试和WPF交叉构建、发布/解包/资源检查。Windows窗口、DPI、焦点、触控和截图实际 NOT_RUN；真实SDK、WCS、实体/现场验收 BLOCKED。可执行的Windows原生烟测与后验步骤见[Windows清单](validation/sportmaster-alternate-ui-windows.md)。原型截图和BAML资源都不能当作Windows运行证明，D/RV历史不倒写。

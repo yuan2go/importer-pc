@@ -10,7 +10,7 @@
 - [ ] 合并逐文件核对Commands/Guards/Runtime/Stages/Recovery，保留20的健康预算/取消、恢复清单和21的独立重量/图像守卫、Production资格与迁移；必要交叉用例及解包进程旅程验证。
 - [ ] 定向构建/测试与证据通过后，先正常合并PR20，再将main合入PR21，比较测试树与最终树；正常合并PR21，核对远端main和PR状态。禁止强推、绕过保护、自动合并。
 
-已复现：新增BackupAsync实际入口回归在PR20原源码接受指向运行根的外部目录链接，返回BackupCreated（FAIL）。修复后需先验证所有链接负例再完成整合。Windows Junction测试分支已加入，当前主机为macOS，实际Windows仍NOT_RUN。
+已复现：新增BackupAsync实际入口回归在PR20原源码接受指向运行根的外部目录链接，返回BackupCreated（FAIL）。修复源码`1b6962e1909e1a33967fce8902eb001bec341d6c`定向构建0警告/0错误；同一--backup-health-recovery全组PASS，包含直接/嵌套/悬空链接拒绝、普通外部目录成功、原Unknown上传备份恢复、健康超时和取消、PLC接受事实保留。中间一次失败是悬空链接测试清理误用Directory.Delete，改为File.Delete，保留原失败日志。证据见[evidence](evidence/pr20-21-integration/README.md)。Windows Junction测试分支已加入，当前主机为macOS，实际Windows仍NOT_RUN。
 
 ## 验证边界
 

@@ -1,0 +1,96 @@
+{
+  "PublicationDate": "2026-10-18",
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/19",
+  "PrepublicationHead": "225058f65457a3aaeb9c516714d3fee01928bfa5",
+  "RuntimeSourceCommit": "c213aad54f5d48687efc0b56428991b6bf4f3537",
+  "Release": "https://github.com/yuan2go/importer-pc/releases/tag/capability19-reference-c213aad",
+  "ReleaseId": 416288086,
+  "Prerelease": true,
+  "Draft": false,
+  "TestsBuildValidators": "NOT_RUN_BY_USER_REQUEST",
+  "Repackaged": false,
+  "Windows": "NOT_RUN",
+  "RealCapabilitiesAndField": "BLOCKED",
+  "ReadbackScope": "GitHub release metadata, upload state, size and server SHA256 only; no download or executable validation in this publication task",
+  "SignedPackage": "Exact previously exercised Release-host package; renamed from release.ipcx without changing bytes",
+  "PrivateKeyIncluded": false,
+  "Assets": [
+    {
+      "Name": "candidate-inventory.json",
+      "Bytes": 9371,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:8e2c6ffe00e063dc2f3152820316b458b780e2fc6ee4888272baed5ee82a3941",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/capability19-reference-c213aad/candidate-inventory.json"
+    },
+    {
+      "Name": "direct-plc-windows.zip",
+      "Bytes": 103462682,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:be86ac0402cc9fca47f2f134b3ca51c5559c0a76f7288c59c8cad17f6d5719f2",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/capability19-reference-c213aad/direct-plc-windows.zip"
+    },
+    {
+      "Name": "direct-plc.zip",
+      "Bytes": 18069525,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:16223afdb344b36461e9d2ba6260d93fcbec64874d8ee37cb1c83812a2d04765",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/capability19-reference-c213aad/direct-plc.zip"
+    },
+    {
+      "Name": "reference.parcel-capabilities-1.2.0.ipcx",
+      "Bytes": 19476,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:f18f05717cc82f29eccc51bd46b6d08c0b16cdb33ec8a4f6162fbea3632c3609",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/capability19-reference-c213aad/reference.parcel-capabilities-1.2.0.ipcx"
+    },
+    {
+      "Name": "release.ipcx.identity.json",
+      "Bytes": 1294,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:0bb2cd6e5bfcbbc675b1440c38070ea716111bac6261ff8d97ffd864a373184f",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/capability19-reference-c213aad/release.ipcx.identity.json"
+    },
+    {
+      "Name": "SHA256SUMS",
+      "Bytes": 903,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:dc79baeaedf8133caabb49c3115185308277dd2c3e9b1e387b871e705abab6df",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/capability19-reference-c213aad/SHA256SUMS"
+    },
+    {
+      "Name": "sportmaster-windows.zip",
+      "Bytes": 103627478,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:7f3d151b25402c2d5ebdb182482ae6b2f666021dd73c1093f1ef511525bd0030",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/capability19-reference-c213aad/sportmaster-windows.zip"
+    },
+    {
+      "Name": "sportmaster.zip",
+      "Bytes": 18151919,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:fd592e53d21a6944329df7341d8dd41fc491c57e4a62b4694138db8eb8d91f04",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/capability19-reference-c213aad/sportmaster.zip"
+    },
+    {
+      "Name": "trust.Simulation.reference19.json",
+      "Bytes": 777,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:9e79be1a5537274f8313ed8b8b354463c50db2eb17e311cc4ab036609d2c885e",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/capability19-reference-c213aad/trust.Simulation.reference19.json"
+    },
+    {
+      "Name": "wcs-to-plc-windows.zip",
+      "Bytes": 103632437,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:5a614ee7dea8f4dcf1e9e1c9bb296962f507f0d92d6a6aa76becfd1f728d5635",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/capability19-reference-c213aad/wcs-to-plc-windows.zip"
+    },
+    {
+      "Name": "wcs-to-plc.zip",
+      "Bytes": 18154367,
+      "State": "uploaded",
+      "GitHubDigest": "sha256:c8f0ca4e69782835a7411f7940ea95dbe4f3b68c89570a1d80227bcb2059255d",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/capability19-reference-c213aad/wcs-to-plc.zip"
+    }
+  ]
+}

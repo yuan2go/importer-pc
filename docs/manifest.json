@@ -17579,6 +17579,17 @@
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
       "previous_git_blob": "5fd7c8a345b61de980764da8e0f9d250fc48ab63"
+    },
+    {
+      "path": "docs/runtime/evidence/application-capability-19/publication-receipt.json",
+      "version": "APPLICATION-CAPABILITY-19-publication",
+      "status": "publication_receipt_not_acceptance",
+      "purpose": "User-authorized upload of existing synthetic reference packages; publication tests, builds and validators NOT_RUN",
+      "source": "2026-10-18 explicit no-test publication request",
+      "storage_scope": "public_repository",
+      "sha256": "f2da87801c89e49db9a8d92c5bf6e30e969e4641f04292ddd2b16e8229b8235d",
+      "size_bytes": 4461,
+      "git_blob": "3606575118209674da6600a626586b4769cb1691"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -18244,5 +18255,18 @@
     "pull_request": "https://github.com/yuan2go/importer-pc/pull/17",
     "binary_storage": "github_prerelease_assets_not_git",
     "private_keys_included": false
+  },
+  "application_capability_19_publication": {
+    "receipt": "docs/runtime/evidence/application-capability-19/publication-receipt.json",
+    "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/capability19-reference-c213aad",
+    "source_commit": "c213aad54f5d48687efc0b56428991b6bf4f3537",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/19",
+    "remote_assets": 11,
+    "tests_build_validators": "NOT_RUN_BY_USER_REQUEST",
+    "windows": "NOT_RUN",
+    "field": "BLOCKED",
+    "binary_storage": "github_prerelease_assets_not_git",
+    "repackaged": false,
+    "private_key_included": false
   }
 }

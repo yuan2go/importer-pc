@@ -1,0 +1,108 @@
+{
+  "SchemaVersion": 1,
+  "State": "BUILD_SUCCEEDED_NOT_TESTED",
+  "SourceCommit": "939462bee40c9eebe8eb2aa60860217afd95fcdd",
+  "SourceTree": "e155ceed992982a74ff14ebf00d3f2ea3bab892a",
+  "BaseRequestedByUser": "aaa30b57cf8f810637b6502748783cdab66bbf36",
+  "ObservedMainAtStart": "fe9e5bb15cd0e380c3dbd2c0a5369afaee9325c4",
+  "Sdk": "10.0.402",
+  "Target": "win-x64",
+  "SelfContained": true,
+  "Tests": "NOT_RUN_BY_USER_REQUEST",
+  "RuntimeAndInstallation": "NOT_RUN_BY_USER_REQUEST",
+  "RealSdkAndField": "BLOCKED",
+  "Authenticode": "NOT_SIGNED_NO_CERTIFICATE_PROVIDED",
+  "StartedUtc": "2026-10-19T18:02:39.231001+00:00",
+  "Commands": [
+    {
+      "Application": "sportmaster",
+      "Command": [
+        "C:\\Scoop\\apps\\python\\current\\python.exe",
+        "scripts/package-application.py",
+        "--application",
+        "sportmaster",
+        "--target",
+        "win-x64",
+        "--output",
+        "D:\\r\\windows-not-tested-939462bee40c-991c36\\sportmaster-win-x64-939462bee40c",
+        "--dotnet",
+        "D:/tools/dotnet/dotnet.exe"
+      ],
+      "Log": "sportmaster-win-x64-939462bee40c.log",
+      "ExitCode": 0
+    },
+    {
+      "Application": "direct-plc",
+      "Command": [
+        "C:\\Scoop\\apps\\python\\current\\python.exe",
+        "scripts/package-application.py",
+        "--application",
+        "direct-plc",
+        "--target",
+        "win-x64",
+        "--output",
+        "D:\\r\\windows-not-tested-939462bee40c-991c36\\direct-plc-win-x64-939462bee40c",
+        "--dotnet",
+        "D:/tools/dotnet/dotnet.exe"
+      ],
+      "Log": "direct-plc-win-x64-939462bee40c.log",
+      "ExitCode": 0
+    },
+    {
+      "Application": "wcs-to-plc",
+      "Command": [
+        "C:\\Scoop\\apps\\python\\current\\python.exe",
+        "scripts/package-application.py",
+        "--application",
+        "wcs-to-plc",
+        "--target",
+        "win-x64",
+        "--output",
+        "D:\\r\\windows-not-tested-939462bee40c-991c36\\wcs-to-plc-win-x64-939462bee40c",
+        "--dotnet",
+        "D:/tools/dotnet/dotnet.exe"
+      ],
+      "Log": "wcs-to-plc-win-x64-939462bee40c.log",
+      "ExitCode": 0
+    }
+  ],
+  "Packages": [
+    {
+      "Application": "sportmaster",
+      "Target": "win-x64",
+      "SourceCommit": "939462bee40c9eebe8eb2aa60860217afd95fcdd",
+      "BusinessVersion": "1.4.0",
+      "ApplicationContractVersion": "1.10.0",
+      "File": "sportmaster-win-x64-939462bee40c.zip",
+      "Bytes": 104281746,
+      "Sha256": "8bcd0c69729f43e170d3aef5c3b8f3d868bb0a88db332e9a528541bfa2364470",
+      "EntryPoint": "Setup.cmd",
+      "OfflineBundles": []
+    },
+    {
+      "Application": "direct-plc",
+      "Target": "win-x64",
+      "SourceCommit": "939462bee40c9eebe8eb2aa60860217afd95fcdd",
+      "BusinessVersion": "1.4.0",
+      "ApplicationContractVersion": "1.10.0",
+      "File": "direct-plc-win-x64-939462bee40c.zip",
+      "Bytes": 104197153,
+      "Sha256": "11a1459c98591aea433d2948b075f7cb348e26838e7e358f6c27eba435d33dd5",
+      "EntryPoint": "Setup.cmd",
+      "OfflineBundles": []
+    },
+    {
+      "Application": "wcs-to-plc",
+      "Target": "win-x64",
+      "SourceCommit": "939462bee40c9eebe8eb2aa60860217afd95fcdd",
+      "BusinessVersion": "1.4.0",
+      "ApplicationContractVersion": "1.10.0",
+      "File": "wcs-to-plc-win-x64-939462bee40c.zip",
+      "Bytes": 104240537,
+      "Sha256": "8c7f1eff4e4b39763efe184adcef63e0a00155f7a1036ae8724e4c87e71d3571",
+      "EntryPoint": "Setup.cmd",
+      "OfflineBundles": []
+    }
+  ],
+  "CompletedUtc": "2026-10-19T18:06:36.849627+00:00"
+}

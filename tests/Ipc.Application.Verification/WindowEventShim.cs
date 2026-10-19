@@ -64,6 +64,11 @@ namespace System.Windows.Threading
 }
 namespace Ipc.Application.ParcelFlow.Desktop
 {
+    public static class ConfigurationCloseGuard
+    {
+        public static bool HasUnsaved(ParcelViewModel vm, MaintenancePage page) => vm.HasUnsavedConfiguration;
+        public static bool ConfirmDiscard(System.Windows.Window window, int count) => false;
+    }
     public class HistoryPage;
     public class MaintenancePage;
 }

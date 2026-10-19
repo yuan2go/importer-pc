@@ -17,6 +17,7 @@ public partial class ShellWindow : Window
     readonly HashSet<ShellWindow> windows;
     Task pendingRefresh = Task.CompletedTask, pendingViewportPause = Task.CompletedTask;
     bool compact, closing, closeReady, closed;
+    long closeGeneration;
     public Func<Task>? StopOwnerAsync { get; set; }
     public ShellWindow(ParcelViewModel vm, Func<ParcelViewModel> newViewModel, Func<UserControl> workstation, string? view = null, string? layout = null, ShellWindow? owner = null)
     {
@@ -62,15 +63,25 @@ public partial class ShellWindow : Window
     async void Login_Click(object s, RoutedEventArgs e) { var proof = LoginProof.Password; LoginProof.Clear(); await vm.RunAsync(() => vm.LoginAsync(proof), "验证身份"); }
     async void Logout_Click(object s, RoutedEventArgs e) => await vm.RunAsync(vm.LogoutAsync, "登出");
     async void Continue_Click(object s, RoutedEventArgs e) { if (vm.CanUseWorkspace) await vm.RunAsync(vm.ContinueAsync, "继续未尝试原阶段"); }
+    public Func<int, bool>? ConfirmDiscardDrafts { get; set; }
     async void ClosingOwner(object? sender, CancelEventArgs e)
     {
         if (closeReady || closed) return;
         e.Cancel = true; if (closing) return; closing = true;
+        var generation = ++closeGeneration;
         var affected = StopOwnerAsync is null ? new[] { this } : windows.ToArray();
-        foreach (var window in affected) { window.closing = true; window.timer.Stop(); window.IsEnabled = false; }
+        foreach (var window in affected) { if (window != this) window.closeGeneration++; window.closing = true; window.timer.Stop(); window.IsEnabled = false; }
         try
         {
             await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.pendingViewportPause, x.vm.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
+            // A root close owns the entire group, including an auxiliary close already draining.
+            if (generation != closeGeneration || this != root && root.closing) return;
+            var dirty = affected.Count(x => !x.closed && windows.Contains(x) && ConfigurationCloseGuard.HasUnsaved(x.vm, x.maintenance));
+            if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? ConfigurationCloseGuard.ConfirmDiscard(this, dirty)))
+            {
+                vm.Message = "已取消关闭；未保存草稿、选择与配置修订已保留。";
+                RestoreAfterClose(); return;
+            }
             if (StopOwnerAsync is not null) await StopOwnerAsync();
             closeReady = true;
             foreach (var child in affected.Where(x => x != this && !x.closed && windows.Contains(x))) { child.closeReady = true; child.Close(); }
@@ -79,9 +90,14 @@ public partial class ShellWindow : Window
         catch (Exception error)
         {
             vm.Message = "停止未完成，仍持有资源：" + error.Message;
-            if (this != root && root.closing) return;
+            if (generation != closeGeneration || this != root && root.closing) return;
+            RestoreAfterClose();
+        }
+        void RestoreAfterClose()
+        {
             closing = false;
-            foreach (var window in affected.Where(x => !x.closed && windows.Contains(x))) { window.closing = false; window.IsEnabled = true; window.timer.Start(); }
+            foreach (var window in affected.Where(x => !x.closed && windows.Contains(x)))
+            { window.closing = false; window.IsEnabled = true; window.timer.Start(); }
         }
     }
 }

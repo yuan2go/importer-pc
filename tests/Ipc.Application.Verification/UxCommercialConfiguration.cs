@@ -16,12 +16,14 @@ static partial class ArchitectureQuality
             var before = await app.SnapshotAsync(); var effective = before.Configuration.Effective;
             Check(first.ReaderDrafts.Count == 2 && first.PositionDrafts.Count == 2 && first.CapabilityDrafts.Count == effective.CapabilityInstances!.Length,
                 "UXC03 actual VM loads every schema3 reader, position and optional capability without clearing the form");
+            Check(!first.HasUnsavedConfiguration && !second.HasUnsavedConfiguration, "P2 initial full form is clean without normalizing its source");
             var diagnostics = Path.Combine(root, "uxc03-diagnostics"); Directory.CreateDirectory(diagnostics);
             File.WriteAllText(Path.Combine(diagnostics, "effective-before.json"), Wire.Encode(effective));
             File.WriteAllText(Path.Combine(diagnostics, "form-no-edit.json"), Wire.Encode(first.BuildStructuredConfiguration()));
             Check(Wire.Encode(first.BuildStructuredConfiguration()) == Wire.Encode(effective), "UXC03 no-edit form round trip retains exact topology, role anchors, optional policies, retention and omitted parameter defaults");
             var right = first.CapabilityDrafts.Single(x => x.InstanceId == c.Topology!.Positions.Single(x => x.Id == "right").ScaleInstanceId);
             right.Target += "/edited";
+            Check(first.HasUnsavedConfiguration, "P2 raw structured parameter edits are protected before validation");
             first.ConfigurationReason = "Synthetic exact right-position scale target maintenance";
             await first.ValidateStructuredConfigurationAsync();
             Check(first.Message.Contains("Validated") && (await app.SnapshotAsync()).Configuration.Pending is null,
@@ -30,6 +32,7 @@ static partial class ArchitectureQuality
             var saved = (await app.SnapshotAsync()).Configuration;
             Check(saved.Pending is not null && first.Message.StartsWith("PendingRestart") && Wire.Encode(saved.Effective) == Wire.Encode(effective),
                 "UXC03 same Application CAS saves Pending and preserves Effective until controlled restart");
+            Check(!first.HasUnsavedConfiguration, "P2 only a successful Pending receipt accepts the submitted form baseline");
             var pending = saved.Pending!;
             File.WriteAllText(Path.Combine(diagnostics, "pending-one-position.json"), Wire.Encode(pending));
             Check(Wire.Encode(pending.Topology) == Wire.Encode(effective.Topology) && pending.Weight == effective.Weight && pending.Retention == effective.Retention &&
@@ -52,7 +55,9 @@ static partial class ArchitectureQuality
             File.WriteAllText(Path.Combine(diagnostics, "stale-window-result.txt"), second.Message);
             Check(second.Message.StartsWith("Rejected") && second.Message.Contains("Configuration revision conflict", StringComparison.Ordinal) && Wire.Encode((await app.SnapshotAsync()).Configuration.Pending) == Wire.Encode(pending),
                 "UXC03 automatic refresh cannot replace a second window's loaded configuration CAS");
+            Check(second.HasUnsavedConfiguration, "P2 stale CAS rejection retains the unsaved second-window draft");
             first.StructuredPolicy!.Precision = "bad";
+            Check(first.HasUnsavedConfiguration, "P2 invalid numeric text remains a protected draft without requiring a build");
             var invalidBlocked = false;
             try { await first.SaveStructuredConfigurationAsync(); } catch (InvalidOperationException) { invalidBlocked = true; }
             Check(invalidBlocked && Wire.Encode((await app.SnapshotAsync()).Configuration.Pending) == Wire.Encode(pending),
@@ -60,6 +65,8 @@ static partial class ArchitectureQuality
             first.StructuredPolicy.Precision = effective.Weight.Precision.ToString(System.Globalization.CultureInfo.InvariantCulture);
             await first.SwitchToAdvancedConfigurationAsync();
             var advanced = Wire.Decode<ParcelConfiguration>(first.ConfigurationDraft) with { TimeoutMs = 1703 };
+            first.ConfigurationDraft = "SYNTHETIC malformed JSON";
+            Check(first.HasUnsavedConfiguration, "P2 malformed advanced JSON is protected without decoding");
             first.ConfigurationDraft = Wire.Encode(advanced);
             await first.RefreshAsync();
             Check(first.ConfigurationDraft == Wire.Encode(advanced) && !first.AdvancedConfigurationReadOnly && !first.CanEditFormConfiguration,
@@ -70,6 +77,7 @@ static partial class ArchitectureQuality
             await first.LoadStructuredFromJsonAsync();
             Check(first.AdvancedConfigurationReadOnly && first.BuildStructuredConfiguration().TimeoutMs == 1703,
                 "UXC03 explicit JSON-to-form transfer retains unrelated JSON fields and the original draft CAS");
+            Check(first.HasUnsavedConfiguration, "P2 explicit JSON-to-form transfer stays unsaved until CAS staging");
             first.NewCapabilityKind = "weight"; await first.AddCapabilityInstanceAsync();
             var added = first.CapabilityDrafts.Single(x => x.InstanceId == "weight.1");
             var position = first.PositionDrafts.Single(x => x.Id == "right");
@@ -96,10 +104,44 @@ static partial class ArchitectureQuality
         {
             var legacy = Config("sportmaster") with { SchemaVersion = schema, Topology = null, WeightValidity = schema == 1 ? null : WeightValidity.UntilDispatch };
             await using var app = await Open(legacy, "uxc03-legacy-" + schema); await Maintenance(app);
-            var vm = new ParcelViewModel(app, "旧版本", "合成回归"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
-            vm.ConfigurationReason = "Synthetic legacy schema compatibility"; vm.DraftWaitMs += 1; await vm.SaveCapabilitiesAsync();
+            var heldLegacy = new HeldConfigurationApplication(app);
+            var vm = new ParcelViewModel(heldLegacy, "旧版本", "合成回归"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
+            Check(!vm.HasUnsavedConfiguration, "P2 legacy schema" + schema + " initial form is clean");
+            vm.DraftPrecision += 1; Check(vm.HasUnsavedConfiguration, "P2 legacy numeric edits are protected"); vm.DraftPrecision -= 1;
+            Check(!vm.HasUnsavedConfiguration, "P2 reverting legacy edits restores the original baseline");
+            vm.ConfigurationReason = "Synthetic legacy schema compatibility"; vm.DraftWaitMs += 1;
+            var submittedWait = vm.DraftWaitMs; heldLegacy.HoldNextStage = true; var legacySave = vm.SaveCapabilitiesAsync();
+            await heldLegacy.StageEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            vm.DraftWaitMs += 1; heldLegacy.StageRelease.TrySetResult(); await legacySave;
+            Check(vm.HasUnsavedConfiguration && (await app.SnapshotAsync()).Configuration.Pending!.Weight.WaitTimeoutMs == submittedWait,
+                "P2 legacy save freezes submitted fields while newer edits stay protected");
+            vm.DraftWaitMs = submittedWait;
+            Check(!vm.HasUnsavedConfiguration, "P2 legacy successful save accepts only its submitted baseline");
             Check(vm.CapabilityDrafts.Count > 0 && vm.Message.StartsWith("PendingRestart"), "UXC03 existing schema" + schema + " structured maintenance path remains usable");
         }
+        await using (var app = await Open(c, "p2-structured-save-edit"))
+        {
+            await Maintenance(app); var held = new HeldConfigurationApplication(app);
+            var vm = new ParcelViewModel(held, "并发草稿", "合成回归"); await vm.RefreshAsync(); await vm.LoadCapabilitiesAsync();
+            vm.StructuredPolicy!.WaitTimeoutMs = "16011"; vm.ConfigurationReason = "Synthetic structured save while editing";
+            held.HoldNextStage = true; var save = vm.SaveStructuredConfigurationAsync();
+            await held.StageEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            vm.StructuredPolicy.WaitTimeoutMs = "16012"; held.StageRelease.TrySetResult(); await save;
+            Check(vm.HasUnsavedConfiguration && vm.StructuredPolicy.WaitTimeoutMs == "16012" &&
+                (await app.SnapshotAsync()).Configuration.Pending!.Weight.WaitTimeoutMs == 16011,
+                "P2 structured save accepts only the captured draft and preserves newer unsaved edits");
+            vm.StructuredPolicy.WaitTimeoutMs = "16011";
+            Check(!vm.HasUnsavedConfiguration, "P2 reverting to the successfully submitted structured draft restores its clean baseline");
+        }
+        var field = new ParameterField("input.labels", "输入", "来源标签（每行一项）", "string-list", Default: "[]", MaximumLength: 256, MaximumItems: 16);
+        var list = new CapabilityParameter(field, "[]");
+        var legal = Wire.Encode(new[] { new string('a', 256), new string('b', 150), "", "quote\"slash\\" });
+        list.Value = legal;
+        Check(list.IsList && list.EditorMaximumLength >= legal.Length && legal.Length > field.MaximumLength && list.Value == legal && ExtensionSchema.Validate([field], new Dictionary<string, string>() { [field.Key] = list.Value }).Length == 0,
+            "P2 legal list longer than one item fits the editor and retains JSON escapes and empty items exactly");
+        Check(list.EditorLabel.Contains("JSON") && list.EditorHelp.Contains("16") && list.EditorHelp.Contains("256"), "P2 list syntax and per-item/count limits are explicit");
+        foreach (var value in new[] { "not json", Wire.Encode(Enumerable.Repeat("a", 17).ToArray()), Wire.Encode(new[] { new string('a', 257) }) })
+            Check(ExtensionSchema.Validate([field], new Dictionary<string, string>() { [field.Key] = value }).Length != 0, "P2 existing schema still rejects invalid list: " + value[..Math.Min(30, value.Length)]);
         var provider = new CapabilityDescriptor("weight", "extension:synthetic.weight/provider", "1.0.0", "synthetic-v1", [], new(), new("synthetic.weight", "1.0.0", new string('A', 64)), "provider");
         var binding = new CapabilityBinding("weight", provider.Implementation, provider.Version, "synthetic.scale", "synthetic://scale", provider.Contract, [], provider.Package! with { ManifestSha256 = new string('B', 64) }, provider.Module);
         var unknown = new CapabilityDraft("weight", [provider], binding, false);
@@ -151,7 +193,7 @@ static partial class ArchitectureQuality
         Check(held.CatalogReads == 1 && vm.ConfigurationDraft == jsonB && !vm.AdvancedConfigurationReadOnly,
             "UXC03 repeated maintenance navigation preserves newer unsaved JSON, its authority and original CAS");
         held.StageRelease.TrySetResult(); await save; await vm.RefreshAsync();
-        Check((await app.SnapshotAsync()).Configuration.Pending!.TimeoutMs == 1801 && vm.ConfigurationDraft == jsonB && vm.ConfigurationEditorState.Contains("已修改未保存"),
+        Check((await app.SnapshotAsync()).Configuration.Pending!.TimeoutMs == 1801 && vm.ConfigurationDraft == jsonB && vm.HasUnsavedConfiguration && vm.ConfigurationEditorState.Contains("已修改未保存"),
             "UXC03 a held actual Application save stages A while later edited B remains untouched and explicitly unsaved");
         var draftRevision = vm.DraftRevisionState;
         var readerIds = vm.ReaderDrafts.Select(x => x.Original.DeviceId).ToArray();

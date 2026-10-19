@@ -19,6 +19,7 @@ public partial class SupplyStationWindow : Window
     Task pendingRefresh = Task.CompletedTask;
     Task pendingViewportPause = Task.CompletedTask;
     bool compact, closing, closeReady, closed;
+    long closeGeneration;
     public SupplyStationViewModel ViewModel { get; }
 
     public SupplyStationWindow(IParcelApplication application, string? view, string? layout, Func<Task>? stopOwner = null, SupplyStationWindow? owner = null)
@@ -105,17 +106,27 @@ public partial class SupplyStationWindow : Window
     {
         if (ViewModel.Fresh) await ViewModel.RunAsync(ViewModel.LogoutAsync, "登出");
     }
+    public Func<int, bool>? ConfirmDiscardDrafts { get; set; }
     async void ClosingWindow(object? sender, CancelEventArgs e)
     {
         if (closeReady || closed) return;
         e.Cancel = true;
         if (closing) return;
         closing = true;
+        var generation = ++closeGeneration;
         var affected = stopOwner is null ? new[] { this } : windows.ToArray();
-        foreach (var window in affected) { window.closing = true; window.timer.Stop(); window.IsEnabled = false; }
+        foreach (var window in affected) { if (window != this) window.closeGeneration++; window.closing = true; window.timer.Stop(); window.IsEnabled = false; }
         try
         {
             await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.pendingViewportPause, x.ViewModel.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
+            // A root close owns the entire group, including an auxiliary close already draining.
+            if (generation != closeGeneration || this != root && root.closing) return;
+            var dirty = affected.Count(x => !x.closed && windows.Contains(x) && ConfigurationCloseGuard.HasUnsaved(x.ViewModel, x.maintenance));
+            if (dirty != 0 && !(ConfirmDiscardDrafts?.Invoke(dirty) ?? ConfigurationCloseGuard.ConfirmDiscard(this, dirty)))
+            {
+                ViewModel.Message = "已取消关闭；未保存草稿、选择与配置修订已保留。";
+                RestoreAfterClose(); return;
+            }
             if (stopOwner is not null) await stopOwner();
             closeReady = true;
             foreach (var child in affected.Where(x => x != this && !x.closed && windows.Contains(x))) { child.closeReady = true; child.Close(); }
@@ -126,7 +137,11 @@ public partial class SupplyStationWindow : Window
             ViewModel.Message = "停止未完成，仍持有资源：" + ex.Message;
             // The root owns recovery while it is draining the same child. A child
             // failure must not restart polling underneath an in-progress owner stop.
-            if (this != root && root.closing) return;
+            if (generation != closeGeneration || this != root && root.closing) return;
+            RestoreAfterClose();
+        }
+        void RestoreAfterClose()
+        {
             closing = false;
             foreach (var window in affected.Where(x => !x.closed && windows.Contains(x)))
             { window.closing = false; window.IsEnabled = true; window.timer.Start(); }

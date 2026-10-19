@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Ipc.Application.Contracts;
+using Ipc.Platform;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster.Desktop;
 
@@ -40,6 +41,7 @@ static partial class Program
         var readers = (DataGrid)page.FindName("ReaderInstances");
         check(!readers.IsReadOnly && readers.Columns[0].IsReadOnly && readers.Columns[1].IsReadOnly,
             window.GetType().Name + " native reader grid allows ordinary edits and protects stable device/role identity");
+        await VerifyParameterForms(page, vm, check);
         var item = vm.ReaderDrafts[0]; var original = item.Capability.InstanceId;
         var column = readers.Columns.Single(x => Equals(x.Header, "实例身份"));
         readers.SelectedItem = item; readers.CurrentCell = new(item, column); readers.ScrollIntoView(item, column); readers.UpdateLayout();
@@ -63,10 +65,74 @@ static partial class Program
         box.IsChecked = !enabled; box.GetBindingExpression(CheckBox.IsCheckedProperty)!.UpdateSource();
         check(instances.CommitEdit(DataGridEditingUnit.Row, true) && capability.Enabled != enabled, "native checkbox commits enabled flag to original draft");
         capability.Enabled = enabled;
+        var policy = vm.StructuredPolicy!; var precision = policy.Precision; var draftRevision = vm.DraftRevisionState;
+        var selected = readers.SelectedItem; var decisions = 0;
+        void CancelClose(Window target)
+        {
+            if (target is ShellWindow shell) shell.ConfirmDiscardDrafts = count => { decisions += count; return false; };
+            else ((SupplyStationWindow)target).ConfirmDiscardDrafts = count => { decisions += count; return false; };
+        }
+        CancelClose(window);
+        try
+        {
+            policy.Precision = "SYNTHETIC invalid number";
+            window.Close();
+            for (var i = 0; i < 100 && !window.IsEnabled; i++) await Task.Delay(20);
+            check(decisions == 1 && window.IsVisible && window.IsEnabled && policy.Precision == "SYNTHETIC invalid number" &&
+                vm.DraftRevisionState == draftRevision && ReferenceEquals(selected, readers.SelectedItem),
+                "native close cancellation preserves invalid raw draft, original CAS, selection and live window");
+        }
+        finally
+        {
+            policy.Precision = precision;
+            if (window is ShellWindow shell) shell.ConfirmDiscardDrafts = null;
+            else ((SupplyStationWindow)window).ConfirmDiscardDrafts = null;
+        }
         var draft = vm.ConfigurationDraft; Click(window, "工作台"); Click(window, "设备与维护");
         for (var i = 0; i < 100 && vm.Busy; i++) await Task.Delay(20);
         check(vm.ConfigurationDraft == draft && item.Capability.InstanceId == original, "native navigation preserves draft and selection source");
         Click(window, "工作台");
+    }
+
+    static async Task VerifyParameterForms(MaintenancePage page, ParcelViewModel vm, Action<bool, string> check)
+    {
+        var readers = (DataGrid)page.FindName("ReaderInstances");
+        var instances = (DataGrid)page.FindName("Instances");
+        var reader = vm.ReaderDrafts[0].Capability; var inventory = vm.CapabilityDrafts.First();
+        var readerProvider = reader.Provider!; var inventoryProvider = inventory.Provider!;
+        var topologyTab = Descendants(page).OfType<TabItem>().Single(x => Equals(x.Header, "结构化拓扑与策略"));
+        var inventoryTab = Descendants(page).OfType<TabItem>().Single(x => Equals(x.Header, "能力库存与参数"));
+        var readerForm = (StackPanel)page.FindName("ReaderParameterForm");
+        var inventoryForm = (StackPanel)page.FindName("ParameterForm");
+        var field = new ParameterField("input.labels", "输入", "来源标签（每行一项）", "string-list", Default: "[]", MaximumLength: 256, MaximumItems: 16);
+        try
+        {
+            topologyTab.IsSelected = true; readers.SelectedItem = vm.ReaderDrafts[0];
+            // Synthetic descriptor exercises the real schema-driven native editor; no package is installed or activated.
+            reader.Provider = readerProvider with { Parameters = [field] }; page.UpdateLayout(); await Dispatcher.Yield();
+            var editor = Descendants(readerForm).OfType<TextBox>().Single();
+            var json = Wire.Encode(new[] { new string('a', 256), new string('b', 150), "", "quote\"slash\\" });
+            editor.Text = json; editor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
+            check(editor.AcceptsReturn && editor.MaxLength >= json.Length && reader.Parameters.Single().Value == json,
+                "native list editor accepts a legal multi-item JSON value longer than the per-item bound without truncation");
+            inventoryTab.IsSelected = true; instances.SelectedItem = inventory; page.UpdateLayout(); await Dispatcher.Yield();
+            check(inventoryForm.Children.Count > 0 && readerForm.Children.Count > 0, "reader and inventory selections retain independent parameter forms");
+            inventory.Provider = inventoryProvider with { Parameters = [field with { Key = "synthetic.inventory", Label = "库存参数" }] };
+            page.UpdateLayout(); await Dispatcher.Yield(); topologyTab.IsSelected = true; page.UpdateLayout(); await Dispatcher.Yield();
+            check(ReferenceEquals(readers.SelectedItem, vm.ReaderDrafts[0]) && Descendants(readerForm).OfType<TextBox>().Single().Text == json &&
+                inventory.Parameters.Single().Field.Key == "synthetic.inventory", "native tab return and provider change preserve the selected reader's original parameter editor and value");
+            reader.Provider = readerProvider with { Parameters = [field with { ReadOnly = true }] }; page.UpdateLayout(); await Dispatcher.Yield();
+            var readOnly = Descendants(readerForm).OfType<TextBox>().Single();
+            check(readOnly.IsReadOnly && !readOnly.IsEnabled && readOnly.Text == "[]", "native list defaults and schema read-only protection survive provider rerender");
+        }
+        finally
+        {
+            reader.Provider = readerProvider; inventory.Provider = inventoryProvider;
+            // Restore original configuration bytes after the UI-only synthetic schema fixture.
+            await vm.LoadCapabilitiesAsync();
+            topologyTab.IsSelected = true; readers.SelectedItem = vm.ReaderDrafts[0]; instances.SelectedItem = vm.CapabilityDrafts.First();
+            page.UpdateLayout(); await Dispatcher.Yield();
+        }
     }
 
     static bool Inside(FrameworkElement element, Grid client)

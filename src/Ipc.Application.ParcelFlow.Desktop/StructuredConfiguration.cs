@@ -98,14 +98,14 @@ public partial class ParcelViewModel
         get
         {
             var state = "未加载";
-            if (configurationAuthority == "高级JSON") state = ConfigurationDraft == savedCandidate ? "已加载/已保存" : "已修改未保存";
+            if (configurationAuthority is "高级JSON" or "旧版表单") state = !HasUnsavedConfiguration ? "已加载/已保存" : "已修改未保存";
             else if (configurationAuthority == "结构化表单")
                 try { state = Wire.Encode(BuildStructuredConfiguration()) == savedCandidate ? "已加载/已保存" : "已修改未保存"; }
                 catch (InvalidOperationException) { state = "已修改，局部字段未通过"; }
             return "编辑来源：" + configurationAuthority + " · " + state + " · " + validationState + "\n" + DraftRevisionState + "\n当前应用：" + (Snapshot?.Configuration.Status ?? "未读取") + " · Effective修订与Pending内容见运行输入页；保存不代表生效。";
         }
     }
-    void EditorChanged() { validationState = "修改后需重新校验"; Changed(nameof(ConfigurationEditorState)); }
+    void EditorChanged() { validationState = "修改后需重新校验"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(HasUnsavedConfiguration)); }
     void ApplyInstalledCatalog(CapabilityCatalog catalog)
     {
         installedCatalog = catalog;
@@ -122,7 +122,7 @@ public partial class ParcelViewModel
         NotifyConfigurationEditorState();
     }
     public void NotifyConfigurationEditorState()
-    { Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditLegacyConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ConfigurationEditorState)); }
+    { Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditLegacyConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ConfigurationEditorState)); }
     void LoadStructuredConfiguration(ParcelConfiguration c, CapabilityCatalog catalog)
     {
         // Construct every reference and selection before changing the current editing
@@ -158,7 +158,7 @@ public partial class ParcelViewModel
         StructuredPolicy = policy; StructuredPolicy.PropertyChanged += (_, _) => EditorChanged();
         try { savedCandidate = Wire.Encode(BuildStructuredConfiguration()); }
         catch (InvalidOperationException) { savedCandidate = Wire.Encode(c); }
-        NotifyConfigurationEditorState();
+        AcceptEditorBaseline(); NotifyConfigurationEditorState();
     }
     CapabilityChoice[] Choices(string kind, string empty = "不绑定") => [new(empty, null), .. CapabilityDrafts.Where(x => x.Kind == kind).Select(x => new CapabilityChoice(x.InstanceId, x))];
     void AddRole(string role, string kind, CapabilityBinding? binding)
@@ -264,13 +264,13 @@ public partial class ParcelViewModel
     }
     public async Task SaveStructuredConfigurationAsync()
     {
-        RequireFreshSnapshot(); var expected = RequireDraftRevision(); var candidate = BuildStructuredConfiguration();
+        RequireFreshSnapshot(); var expected = RequireDraftRevision(); var candidate = BuildStructuredConfiguration(); var submittedSignature = ConfigurationEditSignature();
         var validation = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
         if (validation.Status != "Validated") { validationState = validation.Status + " · " + validation.Reason; Changed(nameof(ConfigurationEditorState)); Message = validationState; return; }
         var reason = ConfigurationReason;
         var receipt = await ServiceAsync(() => application.StageConfigurationAsync(expected, candidate, reason));
         AdvanceOwnDraftRevision(expected, receipt);
-        if (receipt.Status == "PendingRestart") { savedCandidate = Wire.Encode(candidate); ConfigurationDraft = savedCandidate; Changed(nameof(ConfigurationDraft)); }
+        if (receipt.Status == "PendingRestart") { savedEditorSignature = submittedSignature; savedCandidate = Wire.Encode(candidate); ConfigurationDraft = savedCandidate; Changed(nameof(ConfigurationDraft)); }
         validationState = receipt.Status + " · " + receipt.Reason; Changed(nameof(ConfigurationEditorState)); Message = validationState;
     }
     public async Task LoadStructuredFromJsonAsync()
@@ -285,11 +285,12 @@ public partial class ParcelViewModel
         // document inspected by this action; leave a newer JSON draft untouched.
         if (ConfigurationDraft != sourceJson) { Message = "JSON在校验期间已修改；保留当前编辑，请重新加载表单。"; return; }
         LoadStructuredConfiguration(c, catalog);
-        savedCandidate = ""; EditorChanged(); Message = "已显式采用高级JSON作为表单草稿；未保存，原CAS保持。";
+        savedEditorSignature = ""; savedCandidate = ""; EditorChanged(); Message = "已显式采用高级JSON作为表单草稿；未保存，原CAS保持。";
     }
     public Task SwitchToAdvancedConfigurationAsync()
     {
         if (configurationAuthority == "结构化表单") ConfigurationDraft = Wire.Encode(BuildStructuredConfiguration());
+        else if (configurationAuthority == "旧版表单") ConfigurationDraft = Wire.Encode(BuildLegacyConfiguration());
         else if (configurationAuthority == "未加载") throw new InvalidOperationException("先读取当前配置，再切换编辑来源");
         configurationAuthority = "高级JSON"; Changed(nameof(ConfigurationDraft)); NotifyConfigurationEditorState(); Message = "高级JSON为当前编辑来源；表单保存已停用。返回表单须显式加载此JSON。"; return Task.CompletedTask;
     }

@@ -1,11 +1,30 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Threading;
 namespace Ipc.Application.ParcelFlow.Desktop;
 public partial class MaintenancePage : UserControl
 {
-    CapabilityDraft? selected;
-    public MaintenancePage() => InitializeComponent();
+    CapabilityDraft? selectedReader, selectedInstance;
+    public MaintenancePage()
+    {
+        InitializeComponent();
+        DataContextChanged += (_, _) =>
+        {
+            SelectReader(null); SelectInstance(null);
+            Dispatcher.BeginInvoke(new Action(SyncSelections), DispatcherPriority.DataBind);
+        };
+        Loaded += (_, _) => SyncSelections();
+        Unloaded += (_, _) => { SelectReader(null); SelectInstance(null); };
+    }
+    void SyncSelections()
+    {
+        if (!IsLoaded || DataContext is not ParcelViewModel vm) return;
+        var reader = ReaderInstances.SelectedItem as ReaderConfigurationDraft;
+        var instance = Instances.SelectedItem as CapabilityDraft;
+        SelectReader(reader is not null && vm.ReaderDrafts.Contains(reader) ? reader.Capability : null);
+        SelectInstance(instance is not null && vm.CapabilityDrafts.Contains(instance) ? instance : null);
+    }
     async void Load_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.LoadCapabilitiesAsync, "重新读取并替换本窗草稿"); }
     async void ConfirmationLoad_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.LoadConfigurationConfirmationAsync, "读取待确认原账"); }
     async void ConfirmationSave_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ConfirmConfigurationAsync, "确认已核对当前运行输入"); }
@@ -31,26 +50,31 @@ public partial class MaintenancePage : UserControl
     async void Install_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.InstallAsync, "验证签名并安装"); }
     async void Upload_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ContinueUploadAsync, "继续未尝试附加上传"); }
     async void Abandon_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.AbandonAsync, "检查后取消未发送意图"); }
-    void Reader_Changed(object sender, SelectionChangedEventArgs e) => SelectDraft((ReaderInstances.SelectedItem as ReaderConfigurationDraft)?.Capability);
-    void Instance_Changed(object sender, SelectionChangedEventArgs e) => SelectDraft(Instances.SelectedItem as CapabilityDraft);
-    void SelectDraft(CapabilityDraft? draft)
+    void Reader_Changed(object sender, SelectionChangedEventArgs e) => SelectReader((ReaderInstances.SelectedItem as ReaderConfigurationDraft)?.Capability);
+    void Instance_Changed(object sender, SelectionChangedEventArgs e) => SelectInstance(Instances.SelectedItem as CapabilityDraft);
+    void SelectReader(CapabilityDraft? draft) => SelectDraft(ref selectedReader, draft, ReaderParameterForm);
+    void SelectInstance(CapabilityDraft? draft) => SelectDraft(ref selectedInstance, draft, ParameterForm);
+    void SelectDraft(ref CapabilityDraft? selected, CapabilityDraft? draft, StackPanel form)
     {
         if (selected is not null) selected.PropertyChanged -= ProviderChanged;
         selected = draft;
         if (selected is not null) selected.PropertyChanged += ProviderChanged;
-        RenderParameters();
+        RenderParameters(selected, form);
     }
-    void ProviderChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) { if (e.PropertyName == nameof(CapabilityDraft.Provider)) RenderParameters(); }
-    void RenderParameters()
+    void ProviderChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        if (e.PropertyName != nameof(CapabilityDraft.Provider)) return;
+        if (ReferenceEquals(sender, selectedReader)) RenderParameters(selectedReader, ReaderParameterForm);
+        if (ReferenceEquals(sender, selectedInstance)) RenderParameters(selectedInstance, ParameterForm);
+    }
+    static void RenderParameters(CapabilityDraft? selected, StackPanel? form)
     {
-        if (ParameterForm is null || ReaderParameterForm is null) return;
-        ParameterForm.Children.Clear(); ReaderParameterForm.Children.Clear();
-        var form = selected?.Kind == "observation" ? ReaderParameterForm : ParameterForm;
+        if (form is null) return;
+        form.Children.Clear();
         if (selected is not null) form.Children.Add(new TextBlock { Text = selected.ProviderIdentity, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 4, 0, 8) });
         foreach (var p in selected?.Parameters ?? [])
         {
             var row = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 4, 0, 4) };
-            row.Children.Add(new TextBlock { Text = p.Field.Label + (p.Field.Required ? " *" : "") + " " + p.Field.Unit, Width = 270, VerticalAlignment = VerticalAlignment.Center });
+            row.Children.Add(new TextBlock { Text = p.EditorLabel + (p.Field.Required ? " *" : "") + " " + p.Field.Unit, Width = 270, VerticalAlignment = VerticalAlignment.Center });
             Control input;
             if (p.Field.Type is "choice" or "boolean")
             {
@@ -59,10 +83,13 @@ public partial class MaintenancePage : UserControl
             }
             else
             {
-                var text = new TextBox { Width = 310, MaxLength = p.Field.MaximumLength, IsReadOnly = p.Field.ReadOnly };
+                var text = new TextBox { Width = 310, MaxLength = p.EditorMaximumLength, IsReadOnly = p.Field.ReadOnly,
+                    AcceptsReturn = p.IsList, TextWrapping = p.IsList ? TextWrapping.Wrap : TextWrapping.NoWrap,
+                    MinHeight = p.IsList ? 90 : 44, MaxHeight = p.IsList ? 180 : double.PositiveInfinity,
+                    VerticalScrollBarVisibility = p.IsList ? ScrollBarVisibility.Auto : ScrollBarVisibility.Hidden };
                 text.SetBinding(TextBox.TextProperty, new Binding(nameof(p.Value)) { Source = p, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }); input = text;
             }
-            input.ToolTip = p.Field.Description ?? p.Field.Type; input.IsEnabled = !p.Field.ReadOnly;
+            input.ToolTip = p.EditorHelp; input.IsEnabled = !p.Field.ReadOnly;
             row.Children.Add(input); form.Children.Add(row);
         }
     }

@@ -35756,9 +35756,9 @@
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
       "path": "docs/runtime/evidence/ux-commercial-fix-01/README.md",
-      "sha256": "9b5e8faa24a14fea6097edd997fcfeeab81912e6bd344a26672e2a55d593cdf1",
-      "size_bytes": 2138,
-      "git_blob": "36bb7095bf4dd52e6b60618f2597c780c28ebbc7"
+      "sha256": "98b634a0bf23623702f144c5d898b8d1b4c1b564c64f91915a30565074a0a510",
+      "size_bytes": 2175,
+      "git_blob": "9d7ae039843e99d64dae5a74a0070db7da3b0b8f"
     },
     {
       "version": "ux-commercial-fix-01",
@@ -35778,9 +35778,9 @@
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
       "path": "docs/runtime/evidence/ux-commercial-fix-01/checks.json",
-      "sha256": "c3dc6fd32b64cd456ceb61d62584379b22b0d815349505c44c9bca3219856674",
-      "size_bytes": 9786,
-      "git_blob": "508386ea8b14e8fcf6f687873af9613963102b05"
+      "sha256": "9e29199b4349687c2d90b06a1ae45f979df089e4e4f93b74a35b39c412ed5bed",
+      "size_bytes": 9847,
+      "git_blob": "3dfe1d737295cdc97ba9871b224ccc73eda54060"
     },
     {
       "version": "ux-commercial-fix-01",
@@ -35965,9 +35965,9 @@
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
       "path": "docs/runtime/evidence/ux-commercial-fix-01/logs/sportmaster-ui.log",
-      "sha256": "e610fab8b6e994f299203f9c581f34d04b8738bb61b581cb7b258a1ed374b0cf",
-      "size_bytes": 8699,
-      "git_blob": "8e71b1653776384b205954430d12755012e9dc9b"
+      "sha256": "d66fbb75053e7e15c82379f6d2fb93289587aab02687a7ea5cc41affac0b6627",
+      "size_bytes": 8715,
+      "git_blob": "f1e17368cb6346fb8fe63ee75189568b3047edaf"
     },
     {
       "version": "ux-commercial-fix-01",
@@ -36108,9 +36108,9 @@
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
       "path": "docs/runtime/ux-commercial-fix-01-results.md",
-      "sha256": "3d846a18f78bd1aa82ecc56da0137b5fc2ebdd837f7f6051d8c4baa1e093f435",
-      "size_bytes": 9444,
-      "git_blob": "9f241fbdfec3146080c5d8afcfd536dea62c013c"
+      "sha256": "73abd8115a14ab79d3340ecb77a8201a2e2ad54b003a2b43e4a8bd1de06cec09",
+      "size_bytes": 9526,
+      "git_blob": "102066bb140a65c7c9a91c0b447353579de0c3d9"
     },
     {
       "version": "ux-commercial-fix-01",
@@ -36119,9 +36119,9 @@
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
       "path": "docs/superpowers/plans/2026-10-19-ux-commercial-fix-01.md",
-      "sha256": "db7cf83c773953941545a01e9110827eaf8986b60e3478180405e4f4cfdd46a9",
-      "size_bytes": 5334,
-      "git_blob": "64f73fd17b957ba5e3e93a83ec6b6bc1fed7e964"
+      "sha256": "957a604f44cd269d84dfd7b0bd537b648e984bc58ee45b4328a399a81de3e86c",
+      "size_bytes": 5525,
+      "git_blob": "68490e9af2307fe3261b4c0737eb406af55e8532"
     },
     {
       "version": "ux-commercial-fix-01",
@@ -36130,9 +36130,9 @@
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
       "path": "docs/work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md",
-      "sha256": "bdd1d0e86d7fa8850096b97b57ebb5ee7c866b463f33536a01c28d23e868a71a",
-      "size_bytes": 5564,
-      "git_blob": "504fabe2690dc1bf9a2bda824e7fbedb3c6ab8c9"
+      "sha256": "9b0408b4f0832e78f3032ec5142daf8e184ba6d7e10bbdc5dd76af8d9b712b17",
+      "size_bytes": 5636,
+      "git_blob": "420ff259bcb050ef294b0e579d60ba7167937c6a"
     },
     {
       "version": "ux-commercial-fix-01",
@@ -36302,7 +36302,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY",
+  "current_implementation_work_package": "WP-IPC-UX-COMMERCIAL-FIX-01",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -36363,7 +36363,7 @@
     "application_code_changed": false,
     "remote_verification": "read exact main commit and file identities after merge"
   },
-  "next_implementation_work_package": "A03-03 Windows native evidence; A03-04 real combination/SDK/Unknown contract; A03-05/06 Windows and confirmed load/offline acceptance",
+  "next_implementation_work_package": "Deferred Windows native and target hardware acceptance; confirmed capability-specific SDK/protocol/Unknown integration",
   "main_static_review_03": {
     "entry": "docs/reviews/main-static-review-03.md",
     "checks": "docs/reviews/main-static-review-03-checks.json",
@@ -36926,7 +36926,7 @@
     "candidates": "docs/runtime/evidence/capability-reliability-20/candidate-inventory.json",
     "reference_verification": "PASS"
   },
-  "runtime_source_commit": "565abcc63b885dc60873aa21e25f2d4612963c0d",
+  "runtime_source_commit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
   "application_architecture_22_publication": {
     "receipt": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/architecture22-reference-8981d54",
@@ -37313,6 +37313,14 @@
     "final_receipt": "docs/runtime/evidence/publication-audit03-20261019/final-publication-receipt.json"
   },
   "ux_commercial_fix_01": {
+    "product_source_commit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+    "fixture_source_commit": "b38a2d323ff21b7b5a7da798b8d3008fc75730d4",
+    "results": "docs/runtime/ux-commercial-fix-01-results.md",
+    "checks": "docs/runtime/evidence/ux-commercial-fix-01/checks.json",
+    "artifacts": "docs/runtime/evidence/ux-commercial-fix-01/ARTIFACTS.json",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/37",
+    "publication": "LOCAL_IMMUTABLE_REFERENCE_CANDIDATES_NO_REMOTE_RELEASE",
+    "recorded_at_utc": "2026-10-19T05:04:56Z",
     "baseline": "8f886f44bec01779318ec078a569500ab1beab56",
     "work_package": "docs/work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md",
     "business_version": "1.3.0",
@@ -37323,5 +37331,10 @@
     "production": "NOT_READY",
     "private_keys_included": false,
     "historical_runtime_publication": "runtime_publication retains its original release identity"
+  },
+  "prior_implementation_before_ux_commercial_fix_01": {
+    "current_implementation_work_package": "WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY",
+    "next_implementation_work_package": "A03-03 Windows native evidence; A03-04 real combination/SDK/Unknown contract; A03-05/06 Windows and confirmed load/offline acceptance",
+    "runtime_source_commit": "565abcc63b885dc60873aa21e25f2d4612963c0d"
   }
 }

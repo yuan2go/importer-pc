@@ -1,5 +1,7 @@
 # UX商业质量修复 Implementation Plan
 
+> 开工计划及原核对项保留；已执行结果与剩余验收见[修复结果](../../runtime/ux-commercial-fix-01-results.md)，不将下文计划清单当作当前未实现功能。
+
 > For agentic workers: execute the approved WP-IPC-UX-COMMERCIAL-FIX-01 task by task. Use separate file ownership for UI and maintenance work; root owns application facts, integration, verification and publication.
 
 **Goal:** 修复UXC-01～07的可实现部分，交付同一Application的真实页面和可运行媒介，Windows/现场验收后置。

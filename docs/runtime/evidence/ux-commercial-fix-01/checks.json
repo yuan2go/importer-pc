@@ -46,7 +46,7 @@
       "ElapsedSeconds": 1.161,
       "Log": "logs/sportmaster-ui.log",
       "RawSha256": "84f96ad94e62931221aa281b99a3ea24b8d8d0079de4c4c59fa1a4056a7cfdd9",
-      "PublishedLogSha256": "e610fab8b6e994f299203f9c581f34d04b8738bb61b581cb7b258a1ed374b0cf"
+      "PublishedLogSha256": "d66fbb75053e7e15c82379f6d2fb93289587aab02687a7ea5cc41affac0b6627"
     },
     {
       "Name": "sportmaster-window-lifecycle",
@@ -237,5 +237,5 @@
       "PublishedLogSha256": "dbc5d3f0f916703ea5ba3855828e8d3fc50f1b594886e2a3cb5af80ef1b58f3c"
     }
   ],
-  "LogPublication": "Only local path labels replaced. Raw SHA256 binds original local logs; published SHA256 binds reviewable derivatives. No customer or production material."
+  "LogPublication": "Only local path labels replaced; trailing whitespace explicitly rendered as [trailing-space]. Raw SHA256 binds original local logs; published SHA256 binds reviewable derivatives. No customer or production material."
 }

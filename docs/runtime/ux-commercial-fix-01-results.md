@@ -2,7 +2,7 @@
 
 按用户“先修复问题，后面再验收”实施。已修复UXC-01～07中可由现有代码、合同和设计完成的部分，并交付可运行的独立Application、桌面接线与新参考媒介。**没有完成Windows原生或现场商用验收**；真实SDK/设备/权威Unknown处置合同不足的G-02仍按能力阻断，Production仍NotReady。
 
-[工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md) · [实施计划](../superpowers/plans/2026-10-19-ux-commercial-fix-01.md) · [证据入口](evidence/ux-commercial-fix-01/README.md) · [不可变产物](evidence/ux-commercial-fix-01/ARTIFACTS.json)。
+[PR #37](https://github.com/yuan2go/importer-pc/pull/37)（OPEN，未合并） · [工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md) · [实施计划](../superpowers/plans/2026-10-19-ux-commercial-fix-01.md) · [证据入口](evidence/ux-commercial-fix-01/README.md) · [不可变产物](evidence/ux-commercial-fix-01/ARTIFACTS.json)。
 
 ## 固定身份和范围
 

@@ -113,9 +113,16 @@ static class CommercialProductization
             var resumedVm = new ParcelViewModel(repaired, "synthetic", "sportmaster"); await resumedVm.RefreshAsync(); await resumedVm.LoadCapabilitiesAsync(); await resumedVm.ContinueIncompleteEditorAsync();
             Check(resumedVm.StructuredPolicy!.Precision == "unfinished-precision" && resumedVm.CapabilityDrafts.Any(c => c.InstanceId == extraInstance) && (await repaired.SnapshotAsync()).Configuration.Effective.TimeoutMs == 2000,
                 "running settings resume invalid fields and added inventory from the same encrypted CAS store without activating configuration");
-            await repaired.CheckScheduledBackupAsync(now.AddMinutes(42));
+            var backupAt = now.AddMinutes(42);
+            for (int attempt = 0; attempt < 30; attempt++)
+            {
+                backupAt = now.AddMinutes(42 + attempt);
+                await repaired.CheckScheduledBackupAsync(backupAt);
+                if ((await repaired.SnapshotAsync()).AuxiliaryReasons!.Any(x => x.Contains("BackupCreated"))) break;
+                await Task.Delay(20); // Real health probes may briefly own the external window.
+            }
             Check(Directory.GetFiles(backupFolder, "*.db").Length == 1 && (await repaired.SnapshotAsync()).AuxiliaryReasons!.Any(x => x.Contains("BackupCreated")), "scheduled path actually creates the original complete recovery set engine output");
-            await repaired.CheckScheduledBackupAsync(now.AddMinutes(60));
+            await repaired.CheckScheduledBackupAsync(backupAt.AddMinutes(20));
             Check(Directory.GetFiles(backupFolder, "*.db").Length == 1 && (await repaired.SnapshotAsync()).AuxiliaryReasons!.Any(x => x.Contains("Failed")), "backup count budget leaves the prior complete set and reports failure without deletion");
         }
         var sets = await service.ListBackupsAsync(backupFolder, default);

@@ -126,7 +126,7 @@ static partial class SportmasterRcs
             using (var copy = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(target, "sportmaster.db"), Pooling = false }.ToString()))
             {
                 original.Open(); copy.Open(); original.BackupDatabase(copy);
-                using var q = copy.CreateCommand(); q.CommandText = "DROP TABLE parcel_integration_id_owners; DROP TABLE parcel_integration_id_ranges; DROP TABLE parcel_integration_id_restores; DELETE FROM platform_migrations WHERE version=7"; q.ExecuteNonQuery();
+                using var q = copy.CreateCommand(); q.CommandText = "DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE parcel_integration_id_owners; DROP TABLE parcel_integration_id_ranges; DROP TABLE parcel_integration_id_restores; DELETE FROM platform_migrations WHERE version>=7"; q.ExecuteNonQuery();
                 if (conflict)
                 {
                     q.CommandText = "UPDATE parcel_operations SET body=json_set(body,'$.Wcs.Request.IntegrationRequest.RequestId',(SELECT json_extract(body,'$.Wcs.Request.IntegrationRequest.RequestId') FROM parcel_archives LIMIT 1))"; q.ExecuteNonQuery();
@@ -139,7 +139,7 @@ static partial class SportmasterRcs
         string[] before;
         using (var old = new ParcelRepository(valid, "sportmaster", 6)) before = old.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().ToArray();
         using (var current = new ParcelRepository(valid, "sportmaster"))
-            Check(current.StorageVersion == 7 && current.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().SequenceEqual(before),
+            Check(current.StorageVersion == 8 && current.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().SequenceEqual(before),
                 "A03 explicit synthetic SQL6 resident/archive numeric migration preserves every original ID and exact frozen request");
         using (var db = new SqliteConnection("Data Source=" + Path.Combine(valid, "sportmaster.db")))
         { db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT count(*) FROM parcel_integration_id_owners"; Check((long)q.ExecuteScalar()! == 3, "A03 SQL7 backfills all immutable numeric owners from SQL6 resident and archived originals"); }

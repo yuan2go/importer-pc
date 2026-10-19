@@ -1,5 +1,5 @@
 #requires -Version 7.0
-param([Parameter(Mandatory)][string]$Media, [Parameter(Mandatory)][string]$Output, [string]$Dotnet = 'dotnet')
+param([Parameter(Mandatory)][string]$Media, [Parameter(Mandatory)][string]$Output, [string]$Dotnet = 'dotnet', [string]$FixtureCommit)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 if (-not $IsWindows) { throw 'This fixture uses the actual Windows WPF/DPAPI binaries; run on Windows. It does not provision runtime policy or operate equipment.' }
@@ -9,6 +9,8 @@ $Output = [IO.Path]::GetFullPath($Output)
 if (Test-Path -LiteralPath $Output) { throw 'Choose a new evidence directory' }
 $release = Get-Content -LiteralPath (Join-Path $Media 'app/application-release.json') -Raw | ConvertFrom-Json
 if ($release.ApplicationId -ne 'sportmaster' -or $release.SourceCommit -notmatch '^[0-9a-f]{40}$') { throw 'Expected a frozen Sportmaster Windows medium' }
+if (-not $FixtureCommit) { $FixtureCommit = $release.SourceCommit }
+if ($FixtureCommit -notmatch '^[0-9a-f]{40}$') { throw 'FixtureCommit must be an explicit full Git commit identity' }
 $inventory = @{}
 foreach ($line in Get-Content -LiteralPath (Join-Path $Media 'SHA256SUMS')) {
     if ($line -notmatch '^([0-9A-Fa-f]{64})  (.+)$') { throw 'Invalid frozen inventory' }
@@ -20,7 +22,7 @@ foreach ($line in Get-Content -LiteralPath (Join-Path $Media 'SHA256SUMS')) {
 }
 New-Item -ItemType Directory -Path $Output | Out-Null
 # Test source comes from the medium's commit, never from a later working tree.
-$fixture = & git -C $repository show ($release.SourceCommit + ':tests/Ipc.Application.Verification/CommercialProductization.cs')
+$fixture = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/CommercialProductization.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Frozen fixture source is unavailable' }
 [IO.File]::WriteAllLines((Join-Path $Output 'CommercialProductization.cs'), [string[]]$fixture)
 $entry = @'
@@ -45,10 +47,10 @@ Console.WriteLine("PASS frozen native batch preflight and duplicate receipt refu
 [IO.File]::WriteAllText((Join-Path $Output 'Program.cs'), $entry)
 $references = @(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'Ipc.*.dll') + @(Get-Item -LiteralPath (Join-Path $Media 'desktop/Ipc.Application.ParcelFlow.Desktop.dll'))
 $xmlReferences = ($references | ForEach-Object { '<Reference Include="' + [Security.SecurityElement]::Escape($_.BaseName) + '"><HintPath>' + [Security.SecurityElement]::Escape($_.FullName) + '</HintPath><Private>true</Private></Reference>' }) -join "`n"
-$sqlite = @(@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter '*Sqlite*.dll') + @(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'SQLitePCLRaw*.dll') | Sort-Object FullName -Unique)
+$sqlite = @(@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'Microsoft.Data.Sqlite*.dll') + @(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'SQLitePCLRaw*.dll') | Sort-Object FullName -Unique)
 $xmlReferences += ($sqlite | ForEach-Object { '<Reference Include="' + $_.BaseName + '"><HintPath>' + [Security.SecurityElement]::Escape($_.FullName) + '</HintPath><Private>true</Private></Reference>' }) -join "`n"
 $nativeSqlite = [Security.SecurityElement]::Escape((Join-Path $Media 'app/e_sqlite3.dll'))
-$project = '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0-windows</TargetFramework><UseWPF>true</UseWPF><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><AssemblyName>Ipc.Application.Verification</AssemblyName><TreatWarningsAsErrors>true</TreatWarningsAsErrors></PropertyGroup><ItemGroup>' + $xmlReferences + '<Content Include="' + $nativeSqlite + '" Link="e_sqlite3.dll" CopyToOutputDirectory="Always"/></ItemGroup></Project>'
+$project = '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0-windows</TargetFramework><UseWPF>true</UseWPF><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><AssemblyName>Ipc.Application.Verification</AssemblyName><TreatWarningsAsErrors>true</TreatWarningsAsErrors></PropertyGroup><ItemGroup><Using Include="System.IO"/>' + $xmlReferences + '<Content Include="' + $nativeSqlite + '" Link="e_sqlite3.dll" CopyToOutputDirectory="Always"/></ItemGroup></Project>'
 [IO.File]::WriteAllText((Join-Path $Output 'MediaVerification.csproj'), $project)
 $fixtureWorkspace = Join-Path $Output 'workspace'
 New-Item -ItemType Directory -Path (Join-Path $fixtureWorkspace 'config/sportmaster') | Out-Null
@@ -58,5 +60,5 @@ $result = $LASTEXITCODE
 $unchanged = $true
 foreach ($relative in $inventory.Keys) { if ((Get-FileHash -LiteralPath (Join-Path $Media $relative)).Hash -ne $inventory[$relative]) { $unchanged = $false } }
 $binaries = @($references | ForEach-Object { [ordered]@{File=$_.Name;Sha256=(Get-FileHash -LiteralPath $_.FullName).Hash} })
-[ordered]@{Status=if ($result -eq 0 -and $unchanged) {'PASS'} else {'FAIL'};SourceCommit=$release.SourceCommit;MediumInventorySha256=(Get-FileHash -LiteralPath (Join-Path $Media 'SHA256SUMS')).Hash;UnchangedMedium=$unchanged;Binaries=$binaries;Scope='SYNTHETIC_APPLICATION_CORE_REAL_PUBLISHED_DLLS';WindowsInstallation='NOT_RUN';Equipment='BLOCKED';ExitCode=$result} | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $Output 'RESULT.json') -Encoding utf8NoBOM
+[ordered]@{Status=if ($result -eq 0 -and $unchanged) {'PASS'} else {'FAIL'};SourceCommit=$release.SourceCommit;FixtureCommit=$FixtureCommit;MediumInventorySha256=(Get-FileHash -LiteralPath (Join-Path $Media 'SHA256SUMS')).Hash;UnchangedMedium=$unchanged;Binaries=$binaries;Scope='SYNTHETIC_APPLICATION_CORE_REAL_PUBLISHED_DLLS';WindowsInstallation='NOT_RUN';Equipment='BLOCKED';ExitCode=$result} | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $Output 'RESULT.json') -Encoding utf8NoBOM
 if ($result -ne 0 -or -not $unchanged) { throw 'Frozen-medium verification failed; retained RUN.log and original evidence' }

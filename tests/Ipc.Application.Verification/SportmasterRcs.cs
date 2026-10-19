@@ -386,13 +386,13 @@ static partial class SportmasterRcs
             terminalRaw=original.BeginReceipt(terminal,terminal.Wcs!,"Submit"); original.StoreRaw(terminalRaw,terminalReply);original.Commit(terminal,"SyntheticTerminalCustody","Committed original raw",occurrence:terminalRaw);
         }
         using(var upgraded=new ParcelRepository(settledDirectory,"sportmaster"))
-            Check(upgraded.StorageVersion==7&&Wire.Encode(upgraded.Load().Single())==Wire.Encode(terminal)&&Wire.Decode<StageReply>(File.ReadAllText(Path.Combine(settledDirectory,"receipts",terminalRaw+".json")))==terminalReply,
-                "settled SQL5 original upgrades to SQL7 preserving exact request/result/committed raw");
+            Check(upgraded.StorageVersion==8&&Wire.Encode(upgraded.Load().Single())==Wire.Encode(terminal)&&Wire.Decode<StageReply>(File.ReadAllText(Path.Combine(settledDirectory,"receipts",terminalRaw+".json")))==terminalReply,
+                "settled SQL5 original upgrades to SQL8 preserving exact request/result/committed raw");
         using(var db=new SqliteConnection("Data Source="+Path.Combine(settledDirectory,"sportmaster.db")))
         {
             db.Open();using var q=db.CreateCommand();q.CommandText="SELECT version,sha FROM platform_migrations ORDER BY version";
             using var r=q.ExecuteReader();Dictionary<long,string> history=[];while(r.Read())history.Add(r.GetInt64(0),r.GetString(1));
-            Check(priorHistory.All(x=>history.GetValueOrDefault(x.Key)==x.Value)&&history.Keys.Max()==7,"SQL6/7 append preserves every original SQL1-5 checksum");
+            Check(priorHistory.All(x=>history.GetValueOrDefault(x.Key)==x.Value)&&history.Keys.Max()==8,"SQL6/7/8 append preserves every original SQL1-5 checksum");
         }
         try { using var rejected=new ParcelRepository(settledDirectory,"sportmaster",5);throw new Exception("Old reader accepted SQL6"); }
         catch(InvalidDataException){Check(true,"old SQL5 reader rejects settled future SQL6 without downgrade");}

@@ -1,0 +1,160 @@
+{
+  "date": "2026-10-19",
+  "timezone": "Asia/Shanghai",
+  "baseline_remote_main": "524916b2088f267175bec46daf01e6df020932b7",
+  "main_after_pr44_45": "dbf53853eadd65c284fcd648d36096e4c0a69b38",
+  "merged_prs": [
+    {
+      "number": 44,
+      "head": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "merge": "fea535c94c12a50c9559928a2de0bf680e09dba7"
+    },
+    {
+      "number": 45,
+      "original_head": "506bf7a09a2a1ff028728346b7b23d05925bacb5",
+      "head": "878d3f37c23bcd22af8e889f8640995446b91d12",
+      "merge": "dbf53853eadd65c284fcd648d36096e4c0a69b38"
+    }
+  ],
+  "current_counts": {
+    "unique_commits": 14,
+    "ordinary_commits": 11,
+    "merge_commits": 3,
+    "open_prs": 0
+  },
+  "receipt_pr_additional_commits": {
+    "ordinary": 1,
+    "github_merge": 1
+  },
+  "expected_final_after_receipt_pr_merge": {
+    "unique_commits": 16,
+    "ordinary_commits": 12,
+    "merge_commits": 4,
+    "preexisting_task_commits": 11,
+    "created_in_this_publication": 5,
+    "new_breakdown": {
+      "receipt_content": 1,
+      "branch_integration": 1,
+      "github_merges": 3
+    }
+  },
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "builds": "NOT_RUN_BY_USER_REQUEST",
+  "repackaging": "NOT_RUN_BY_USER_REQUEST",
+  "runtime": "NOT_RUN_BY_USER_REQUEST",
+  "hooks": "DISABLED_FOR_PUBLICATION",
+  "uploaded_assets": 10,
+  "archives": 6,
+  "identity_manifests": 2,
+  "sha256sum_files": 2,
+  "releases": [
+    {
+      "url": "https://github.com/yuan2go/importer-pc/releases/tag/startup-deployment-reference-e79a8bf",
+      "source": "e79a8bfdc65328619c77013fb314eaaef4a35a2f",
+      "asset_count": 6
+    },
+    {
+      "url": "https://github.com/yuan2go/importer-pc/releases/tag/runtime-all-entrypoints-reference-16ecb57",
+      "source": "16ecb571cba32188f62a6e6e677030cd589dbf48",
+      "asset_count": 4
+    }
+  ],
+  "assets": [
+    {
+      "release": "startup-deployment-reference-e79a8bf",
+      "name": "ARTIFACTS.json",
+      "size_bytes": 1594,
+      "sha256": "ed5e3041dd198d7898bcbf82be298a0a4f1e6bdd6239f1210506eeda72e2ee73",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/startup-deployment-reference-e79a8bf/ARTIFACTS.json",
+      "matches_local_original_bytes": true
+    },
+    {
+      "release": "startup-deployment-reference-e79a8bf",
+      "name": "SHA256SUMS",
+      "size_bytes": 548,
+      "sha256": "128c9b808b86bbfa5f1210a5d0f5832ae3e8efcb47ab744ac195998a5b8b0c89",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/startup-deployment-reference-e79a8bf/SHA256SUMS",
+      "matches_local_original_bytes": true
+    },
+    {
+      "release": "startup-deployment-reference-e79a8bf",
+      "name": "startup-deployment-direct-plc-win-x64-e79a8bf.zip",
+      "size_bytes": 104820006,
+      "sha256": "1af49e1fd5b69d25a6afce04721ac3f833a840fb65420c8f0751cf911295409c",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/startup-deployment-reference-e79a8bf/startup-deployment-direct-plc-win-x64-e79a8bf.zip",
+      "matches_local_original_bytes": true
+    },
+    {
+      "release": "startup-deployment-reference-e79a8bf",
+      "name": "startup-deployment-sportmaster-portable-e79a8bf.zip",
+      "size_bytes": 18726821,
+      "sha256": "d7f4fe5e0917fb4393ba61cc32d66889629ad97b46a9d54b3ea5aa8cc8aec3b2",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/startup-deployment-reference-e79a8bf/startup-deployment-sportmaster-portable-e79a8bf.zip",
+      "matches_local_original_bytes": true
+    },
+    {
+      "release": "startup-deployment-reference-e79a8bf",
+      "name": "startup-deployment-sportmaster-win-x64-e79a8bf.zip",
+      "size_bytes": 104926639,
+      "sha256": "e9aebafd80a1938e78c983adb247d0ef3cce5b04744d452fece72dbaa972bb62",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/startup-deployment-reference-e79a8bf/startup-deployment-sportmaster-win-x64-e79a8bf.zip",
+      "matches_local_original_bytes": true
+    },
+    {
+      "release": "startup-deployment-reference-e79a8bf",
+      "name": "startup-deployment-wcs-to-plc-win-x64-e79a8bf.zip",
+      "size_bytes": 104871067,
+      "sha256": "8243a259fca37e5bbfaccf2865524db0a8e1bc8255a2899f53214f40df25ce26",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/startup-deployment-reference-e79a8bf/startup-deployment-wcs-to-plc-win-x64-e79a8bf.zip",
+      "matches_local_original_bytes": true
+    },
+    {
+      "release": "runtime-all-entrypoints-reference-16ecb57",
+      "name": "ARTIFACTS.json",
+      "size_bytes": 1057,
+      "sha256": "4ac899fffe788b12d23cd5767a1b326be69961301863ecfdf3404bdc59a85134",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/runtime-all-entrypoints-reference-16ecb57/ARTIFACTS.json",
+      "matches_local_original_bytes": true
+    },
+    {
+      "release": "runtime-all-entrypoints-reference-16ecb57",
+      "name": "identity02-inspection-reference.zip",
+      "size_bytes": 917407,
+      "sha256": "cd08bac45bbf8bea53ce92c20549a63f702440d363f9b0dff6ebbacddc40e1e6",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/runtime-all-entrypoints-reference-16ecb57/identity02-inspection-reference.zip",
+      "matches_local_original_bytes": true
+    },
+    {
+      "release": "runtime-all-entrypoints-reference-16ecb57",
+      "name": "identity02-supply-assembly.zip",
+      "size_bytes": 18457624,
+      "sha256": "1f23d40270c6cd7b7853e34adf38d670bcdfe879caebc81b793e7f0db78ab518",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/runtime-all-entrypoints-reference-16ecb57/identity02-supply-assembly.zip",
+      "matches_local_original_bytes": true
+    },
+    {
+      "release": "runtime-all-entrypoints-reference-16ecb57",
+      "name": "SHA256SUMS",
+      "size_bytes": 280,
+      "sha256": "432f2a61199913790d421d574812dc058e05577da367afc2416a2b17504f3f3d",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/runtime-all-entrypoints-reference-16ecb57/SHA256SUMS",
+      "matches_local_original_bytes": true
+    }
+  ],
+  "policy": "All runtime entrypoints call final shared PR44 MachineRuntimePolicy. Designated unelevated deny-only membership allowed; enabled administrators, services, and wrong SID rejected. Windows actual not verified.",
+  "combined_media": "NOT_BUILT_BY_USER_REQUEST; both source-specific archives retain their original policy, code, package and qualification scope",
+  "windows_native": "NOT_RUN",
+  "real_sdk_protocol_devices_site": "BLOCKED",
+  "production": "NotReady",
+  "receipt_identity": "Final receipt commit, PR, actual merge and final main are read from Git/GitHub; no self-reference embedded."
+}

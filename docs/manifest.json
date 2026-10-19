@@ -371,9 +371,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "c9f8f746364f54e4f51908c4600c60a61db06ad6808534f2da5900b19407c2e8",
-      "size_bytes": 11506,
-      "git_blob": "f1a0c2e19b6dce0a824ed1929b0bb9bb721f9147",
+      "sha256": "994a14874ef743b215ad452f4f5af963081e4d9039e3814106695493f9ae3545",
+      "size_bytes": 11524,
+      "git_blob": "a6b807db04e55e76002ad89ed009b7c546af19df",
       "version": "ux-maintenance-p2-04",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
@@ -39980,9 +39980,20 @@
       "purpose": "Authorized source integration, original evidence or publication custody",
       "source": "PR44/45 and user no-test all-open-PR publication request 2026-10-19",
       "storage_scope": "public_repository",
-      "sha256": "9f900a978dff00812970b17daab4dfe19843c27f87600df509a60d0e8ef2e10e",
-      "size_bytes": 3660,
-      "git_blob": "4e56d18e6b3e5b34ff63b5fd22d41d11e5cd5939"
+      "sha256": "11b55edfb7108c5d220db23c96c2c95aeba8c1fbc05b54ff8b97bf3632510f71",
+      "size_bytes": 4680,
+      "git_blob": "8ed9e37f0012b50431d39863b31a85599f78095f"
+    },
+    {
+      "path": "docs/runtime/evidence/deployment-publication-20261019/final-publication-receipt.json",
+      "version": "deployment-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Actual merge, unique commit count and independent immutable artifact custody",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "073fce732427dfc72ee685368f69f51439d24f7536f21657fb5489a36305cf67",
+      "size_bytes": 6929,
+      "git_blob": "cd1704802460e82e16064a8fd4a571bd283f759a"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -41216,6 +41227,7 @@
     "report": "docs/runtime/publication-deployment-20261019.md",
     "resolution": "docs/runtime/evidence/deployment-publication-20261019/merge-resolution.json",
     "tests": "NOT_RUN_BY_USER_REQUEST",
-    "combined_media": "NOT_BUILT_BY_USER_REQUEST"
+    "combined_media": "NOT_BUILT_BY_USER_REQUEST",
+    "final_receipt": "docs/runtime/evidence/deployment-publication-20261019/final-publication-receipt.json"
   }
 }

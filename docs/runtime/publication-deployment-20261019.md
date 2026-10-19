@@ -18,3 +18,11 @@
 6个ZIP均从原任务工作树上传，不重建、重签或覆盖。原报告“仅本地”保留形成时间，新公开上传由本次用户明确授权；原形成时检查、日志和媒体SHA保持。两组共10项附件。**当前main是两项源码的组合，本轮没有生成包含二者的新可信媒介。** 不混用旧宿主/精确扩展或对旧ZIP改标；下一次发行须从新固定组合源码构建并验证精确合同/包/指南。
 
 [PR44固定交付报告](startup-deployment-02-results.md)、[PR45原报告](runtime-identity-preflight-02.md)、旧首次运行01候选、原失败/PASS、267项历史资产问题、REQ/BR/CAPI/D/RV均保留形成时身份。Windows原生SID/UAC/ACL、不同账户授权、安装/修复/中断/快捷方式及窗口交互未验 **NOT_RUN**；真实SDK/协议/设备/现场 **BLOCKED**，Production **NotReady**。不宣称MSI事务、工业标准认证或商业验收。
+
+## 实际合并、资产回读与计数截止
+
+PR45后继整合head `878d3f37c23bcd22af8e889f8640995446b91d12`实际merge为`dbf53853eadd65c284fcd648d36096e4c0a69b38`；PR44/45均MERGED，截止该main时Open PR为0。相对开工远端main，唯一提交14笔＝11普通＋3合并，采用Git集合计数，不相加各分支ahead。
+
+最终回执另通过独立PR增加1笔普通提交及1笔GitHub merge，合并后总计16＝12普通＋4合并。其中既有任务11笔，本发布流程新建5笔（回执内容1、分支整合1、GitHub PR merge3）；最后实际main、回执PR身份及计数由Git/GitHub读取，避免自引用。
+
+[最终机器回执](evidence/deployment-publication-20261019/final-publication-receipt.json)保存原/后继head、实际merge及10项资产。GitHub的state、长度和SHA256均与本地原件相同；6个ZIP不重建、不重签，ARTIFACTS/SHA256SUMS明确各自固定来源。此为上传身份回读，不是候选/组合运行验证；原Windows与商用门禁保持。

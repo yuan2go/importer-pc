@@ -1,0 +1,129 @@
+{
+  "RecordedAt": "2026-10-19T04:14:27.129438+00:00",
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/35",
+  "PullRequestMerged": false,
+  "Main": "7cf84f371dc0076231bde7a25e5d4f22404db93b",
+  "RuntimeSource": "1401b7d3663bd7ca40aaa87773b023162178611c",
+  "ReferenceRelease": "https://github.com/yuan2go/importer-pc/releases/tag/audit03-reference-1401b7d",
+  "ReleaseStatus": "PUBLISHED_REFERENCE_PRERELEASE_WITHDRAWN_FROM_FINAL_DELIVERY",
+  "Windows": "NOT_RUN",
+  "ProductionAdmission": "NOT_PASSED",
+  "OtherPullRequestsMerged": [],
+  "RemoteAssetsVerified": 16,
+  "AssetChecks": [
+    {
+      "Name": "ARTIFACTS.json",
+      "Size": 2443,
+      "Sha256": "6c3f306b723b9c4a7d17b9e325ea04656652646ca7ca1427b13f20359e5f553f",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/ARTIFACTS.json"
+    },
+    {
+      "Name": "barcode.ipcx",
+      "Size": 7586,
+      "Sha256": "529530b391040ee5be54e9b973aaaf8333b80c2058fecde2087dea8f559e5e5e",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/barcode.ipcx"
+    },
+    {
+      "Name": "barcode.ipcx.identity.json",
+      "Size": 1183,
+      "Sha256": "b7a0a31b2d66827b206e98dd29b96fc94b26b517673a1968b7e442b275103acf",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/barcode.ipcx.identity.json"
+    },
+    {
+      "Name": "capabilities.ipcx",
+      "Size": 20602,
+      "Sha256": "b49f4e3f5c95f674ea2cadf820bb8d6a732699ce1877ed6fee3d0587cdd64cb4",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/capabilities.ipcx"
+    },
+    {
+      "Name": "capabilities.ipcx.identity.json",
+      "Size": 1300,
+      "Sha256": "702545297deb1baae9a96cc2756336d5164a9a107f2f6b4af85136c7695ca7d6",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/capabilities.ipcx.identity.json"
+    },
+    {
+      "Name": "direct-plc-core.zip",
+      "Size": 18611034,
+      "Sha256": "ed1c279b60cfe75be10b2dfbcb255ddf107df02ed4bb4fe681688bb771b28cb8",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/direct-plc-core.zip"
+    },
+    {
+      "Name": "direct-plc-win-x64.zip",
+      "Size": 104570436,
+      "Sha256": "268285bd2bfb645f9e201138c0f24078e50a46d870ad7a092bc72fc3be05b087",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/direct-plc-win-x64.zip"
+    },
+    {
+      "Name": "rcs.ipcx",
+      "Size": 17731,
+      "Sha256": "c005d6e633786c92ecc450bf6996456d631a8cd157b649f967c32f6d3aec2680",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/rcs.ipcx"
+    },
+    {
+      "Name": "rcs.ipcx.identity.json",
+      "Size": 1281,
+      "Sha256": "82cea2a2a7f46f72a726054a974e8fc554a0e1b77f586605c083d565f8951dea",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/rcs.ipcx.identity.json"
+    },
+    {
+      "Name": "reference-trust.json",
+      "Size": 739,
+      "Sha256": "26989c5030f9a805dc46dbac5f603402db1e38ff8eb57635ca3dc2afd4de9306",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/reference-trust.json"
+    },
+    {
+      "Name": "SHA256SUMS",
+      "Size": 1322,
+      "Sha256": "7552778cb7a01bc3f90acebedd4640ae904da3feeb6336e1d344b8e8bf6d6771",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/SHA256SUMS"
+    },
+    {
+      "Name": "sportmaster-core.zip",
+      "Size": 18647374,
+      "Sha256": "d2b3f683d61804e1b7baa2b6443a0bb9857b751187783b8bf0d05c497bf75838",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/sportmaster-core.zip"
+    },
+    {
+      "Name": "sportmaster-selected-portable.zip",
+      "Size": 18695371,
+      "Sha256": "8e0fe3062bd1cc2a84f86828d1efd34894192ba22c305e6fd4e393982f257577",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/sportmaster-selected-portable.zip"
+    },
+    {
+      "Name": "sportmaster-selected-win-x64.zip",
+      "Size": 104715318,
+      "Sha256": "d97cec0f887ad3fa6308b050aaf21fb5bbb8be840fd7987919d60b1732c0c23b",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/sportmaster-selected-win-x64.zip"
+    },
+    {
+      "Name": "wcs-to-plc-core.zip",
+      "Size": 18636527,
+      "Sha256": "c39357db4a45e5fa9513b0511a8a302c400d847935604e6de9521e8b9ac822ff",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/wcs-to-plc-core.zip"
+    },
+    {
+      "Name": "wcs-to-plc-win-x64.zip",
+      "Size": 104621483,
+      "Sha256": "6a123683313b0f328e5c26a0824122b0d5af2e0b3a32c19c40c6571034f83c7b",
+      "State": "uploaded",
+      "Download": "https://github.com/yuan2go/importer-pc/releases/download/audit03-reference-1401b7d/wcs-to-plc-win-x64.zip"
+    }
+  ],
+  "Scope": "Reference/Simulation; no Windows or real equipment qualification",
+  "WithdrawalReason": "Composition declares application-contracts 1.7.0 while actual ABI is 1.8.0. Existing bytes retained; successor will have a new source/output/package identity."
+}

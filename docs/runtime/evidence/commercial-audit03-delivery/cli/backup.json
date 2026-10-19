@@ -1,0 +1,53 @@
+{
+  "Application": "direct-plc",
+  "Station": "reference-17",
+  "Mode": "Simulation",
+  "DatabaseVersion": 7,
+  "Revision": 1,
+  "Paused": false,
+  "Resident": 1,
+  "Archived": 0,
+  "Unsettled": 1,
+  "PendingReceipts": 0,
+  "IdentityConflicts": 0,
+  "DatabaseBytes": 217088,
+  "CustodyBytes": 3219,
+  "DatabaseSha256": "E0852A5A6B8038BB2FF133E3906858761D8CFE2A7C2486A4CE822FFCEC79F940",
+  "WalSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "ConfigurationSha256": "E171126690A0B28132337F7F619B60809A9191D5BEEBE2B32F90681F5E0A0B9B",
+  "OrdinaryUpgradeAllowed": false,
+  "Reasons": [
+    "Original business/image/recovery responsibilities require matching-release settlement"
+  ],
+  "At": "2026-10-19T04:04:05.273567+00:00",
+  "BusinessVersion": "1.2.7",
+  "SourceIdentity": "1.2.7\u002B1401b7d3663bd7ca40aaa87773b023162178611c",
+  "ApplicationContractSha256": "77964EB99805DCF258922CEBD900F2DDAAEC98B77E39C7FEDCA521A06916253D",
+  "ConfigurationSchema": 3,
+  "Providers": [
+    {
+      "InstanceId": "direct-plc.plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "TargetSha256": "9A29ACF09E469F3AA7C799E6552C7A442235A95D4C542A84219FE26EF8813333",
+      "PackageSha256": null
+    },
+    {
+      "InstanceId": "maintenance",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "TargetSha256": "28C52C39DB1B968ED558A80E582B2CFD1017064E2B6AFE08B53B29FA7D5B77B6",
+      "PackageSha256": null
+    },
+    {
+      "InstanceId": "maintenance.scale",
+      "Implementation": "reference-weight",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "TargetSha256": "D14B005FF2DEA87769FBB7E7BCAF1FC0687B7CEA970AD61E58B25CE584E1E0E8",
+      "PackageSha256": null
+    }
+  ]
+}

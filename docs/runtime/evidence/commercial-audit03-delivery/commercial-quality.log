@@ -1,0 +1,49 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-7dc1ac247e274c4dbb570bbdd9691d06
+PASS CQ03: first observation admitted
+PASS CQ03: second observation admitted
+PASS CQ03: real runtime counterexample retains historical timestamp order
+PASS CQ03: classic current identity and empty slot match authoritative position despite reversed timestamps
+PASS CQ03: auxiliary and alternate agree on current identity
+PASS CQ03: current query targets original current request despite selected historical row
+PASS CQ03: current continuation cannot target selected historical parcel
+PASS CQ03: equal timestamp / missing ID / wrong owner / empty current never falls back to history
+PASS CQ03: equal timestamp / missing ID / wrong owner / empty current never falls back to history
+PASS CQ03: equal timestamp / missing ID / wrong owner / empty current never falls back to history
+PASS CQ03: equal timestamp / missing ID / wrong owner / empty current never falls back to history
+PASS CQ03: real initial snapshot ready
+PASS CQ03: classic failed read invalidates Ready, health and new actions
+PASS CQ03: stale actions fail at VM boundary before any application write
+PASS CQ03: independent pause still reads current revision and reaches application
+PASS CQ03: pending read does not renew last success deadline
+PASS CQ03: new successful snapshot restores permitted actions
+PASS CQ03: older read failure cannot invalidate newer applied success
+PASS CQ03: older success cannot revive snapshot after newer failure
+PASS CQ03: fresh poll recovers after ordered failure
+PASS CQ03: restart waiting weight requires inspection
+PASS CQ03: safe abandonment converges recovery flag without external send
+PASS CQ03: DB5 resident/archive terminal recovery flag repairs without reactivating history
+PASS CQ03: DB5 resident/archive terminal recovery flag repairs without reactivating history
+PASS CQ03: Sportmaster unknown remains blocked after restart
+PASS CQ03: Sportmaster original WCS query clears entity check only after authoritative slot, without PLC or resend
+PASS CQ03: direct-plc acceptance remains unresolved across restart
+PASS CQ03: proven original terminal receipt clears only stale flag in DB5 resident/archive
+PASS CQ03: terminal repair retains exact original JSON and SHA in transactional audit
+PASS CQ03: proven original terminal receipt clears only stale flag in DB5 resident/archive
+PASS CQ03: terminal repair retains exact original JSON and SHA in transactional audit
+PASS CQ03: accepted retains original DB5 bytes and refuses future marker
+PASS CQ03: unknown retains original DB5 bytes and refuses future marker
+PASS CQ03: missing-raw retains original DB5 bytes and refuses future marker
+PASS CQ03: conflict retains original DB5 bytes and refuses future marker
+PASS CQ03: unproved-abandon retains original DB5 bytes and refuses future marker
+PASS CQ03: direct-plc original authoritative query terminates recovery without resending or changing payload
+PASS CQ03: wcs-to-plc acceptance remains unresolved across restart
+PASS CQ03: proven original terminal receipt clears only stale flag in DB5 resident/archive
+PASS CQ03: terminal repair retains exact original JSON and SHA in transactional audit
+PASS CQ03: proven original terminal receipt clears only stale flag in DB5 resident/archive
+PASS CQ03: terminal repair retains exact original JSON and SHA in transactional audit
+PASS CQ03: accepted retains original DB5 bytes and refuses future marker
+PASS CQ03: unknown retains original DB5 bytes and refuses future marker
+PASS CQ03: missing-raw retains original DB5 bytes and refuses future marker
+PASS CQ03: conflict retains original DB5 bytes and refuses future marker
+PASS CQ03: unproved-abandon retains original DB5 bytes and refuses future marker
+PASS CQ03: wcs-to-plc original authoritative query terminates recovery without resending or changing payload

@@ -12,6 +12,8 @@ Sportmaster支持 `--ui classic`（默认）和 `--ui supply-station`，导航�
 
 ## 开发、发布与维护
 
+[审查03交付结果、媒介与逐组合准入](docs/runtime/commercial-audit03-delivery-results.md) · [PR #35](https://github.com/yuan2go/importer-pc/pull/35)。已完成可执行工程与参考候选，真实组合/Windows验收及商用未完成。
+
 本轮工程入口为[审查03交付工作包](docs/work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)，普通升级/窄恢复以现行维护正文为准。
 
 先读[统一入口](docs/INDEX.md)、[工作约束](AGENTS.md)、[首次运行](docs/runtime/getting-started.md)、[配置/恢复/扩展维护](docs/runtime/architecture-quality-closure-01.md)、[版本与组合证据](docs/runtime/version-compatibility-01.md)及[扩展开发](docs/extensions/developer-guide.md)。

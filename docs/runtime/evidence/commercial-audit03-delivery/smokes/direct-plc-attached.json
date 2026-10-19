@@ -1,0 +1,373 @@
+{
+  "SchemaVersion": 3,
+  "OptionalFeatures": true,
+  "AttachedUpload": true,
+  "ExternalPeerProcess": true,
+  "RunId": "23944e5d785246bf9c64e01ba3dbaf31",
+  "Status": "PASS",
+  "StartedAt": "2026-10-19T04:04:46.901665+00:00",
+  "Command": [
+    "${WORKTREE}/scripts/smoke-application.py",
+    "--package",
+    "${WORKTREE}/.artifacts/audit03-1401b7d/unpacked/direct-plc-core",
+    "--dotnet",
+    "${DOTNET}",
+    "--output",
+    "${WORKTREE}/.artifacts/audit03-1401b7d/smokes/direct-plc-attached.json",
+    "--optional-features",
+    "--peer-fixture",
+    "${WORKTREE}/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll",
+    "--attached-upload"
+  ],
+  "WorkingDirectory": "/private/tmp",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED",
+  "Assurance": "SIMULATION_REFERENCE_ONLY",
+  "Application": "direct-plc",
+  "BusinessVersion": "1.2.7",
+  "SourceCommit": "1401b7d3663bd7ca40aaa87773b023162178611c",
+  "Target": "portable",
+  "CandidateFilesSha256": "5B935FA1ADA41677FF91CA218920905B8297E9616C165AF45021FBB485BD4ECE",
+  "ReleaseSha256": "D75C9265A34DED00D12E2AD9C841B1796E630EC88BE28F07A8FAAECBD8F305B2",
+  "AssemblyManifestSha256": "E5F612A4E0E02755780581DCD2B03B4A5230BFA448EA74C3729B667ED8ED068F",
+  "CompatibilitySha256": "D5B68239C5E885D9BEB0BD69A9EECE5BAF47514D002478B7C559A90DB9BDC7BF",
+  "InputConfiguration": {
+    "SchemaVersion": 3,
+    "ApplicationId": "direct-plc",
+    "StationId": "reference-17",
+    "Mode": "Simulation",
+    "Weight": {
+      "Source": "Measured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": null,
+      "MaximumAgeMs": 3000
+    },
+    "Reader": {
+      "Role": "parcel-reader",
+      "Driver": "manual",
+      "DeviceId": "direct-plc.camera",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    "Scale": {
+      "Kind": "weight",
+      "Implementation": "reference-weight",
+      "Version": "1.0.0",
+      "InstanceId": "weight.smoke",
+      "Target": "reference://weight/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    },
+    "Wcs": null,
+    "Plc": {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "InstanceId": "direct-plc.plc",
+      "Target": "reference://plc/direct-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "complete-on-query": "true",
+        "endpoint": "http://127.0.0.1:52291/parcel-reference/"
+      },
+      "Package": null,
+      "Module": null
+    },
+    "Extensions": null,
+    "QueueCapacity": 64,
+    "TimeoutMs": 1500,
+    "MaximumOperations": 10000,
+    "Login": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "login.smoke",
+      "Target": "reference://login/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "alice,bob"
+      }
+    },
+    "Images": {
+      "Camera": {
+        "Kind": "camera",
+        "Implementation": "reference-camera",
+        "Version": "1.0.0",
+        "InstanceId": "camera.smoke",
+        "Target": "reference://camera/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {}
+      },
+      "Uploader": {
+        "Kind": "upload",
+        "Implementation": "reference-upload",
+        "Version": "1.0.0",
+        "InstanceId": "upload.smoke",
+        "Target": "reference://upload/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "reply-mode": "lose-after-commit",
+          "endpoint": "http://127.0.0.1:52291/parcel-reference/"
+        }
+      },
+      "MaximumBytes": 4194304,
+      "Strategy": "Attached"
+    },
+    "MaintenanceLogin": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      }
+    },
+    "WeightValidity": "UntilDispatch",
+    "Topology": {
+      "Readers": [
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "direct-plc.camera",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Positions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "direct-plc.camera"
+        }
+      ]
+    },
+    "Retention": {
+      "ResidentHistory": 200,
+      "MinimumFreeBytes": 67108864
+    }
+  },
+  "InputConfigurationSha256": "CD745EFC6CC61B4621919DCBBEE066AE47208E83B32CDBEEDB1E4165824187DA",
+  "Checks": [
+    "candidate file hashes",
+    "actual selected assembly startup",
+    "camera-to-final-reference-chain",
+    "persistent original phases on restart",
+    "orderly stop",
+    "selected topology"
+  ],
+  "OptionalChecks": [
+    "authenticated admission",
+    "same-entity measured weight",
+    "actual PNG upload bytes",
+    "attached upload independent from main",
+    "process restart original query",
+    "independent upload reconciliation keeps original operator",
+    "one execution per independent receiver"
+  ],
+  "EffectiveConfiguration": {
+    "SchemaVersion": 3,
+    "ApplicationId": "direct-plc",
+    "StationId": "reference-17",
+    "Mode": "Simulation",
+    "Weight": {
+      "Source": "Measured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": null,
+      "MaximumAgeMs": 3000,
+      "WaitTimeoutMs": 15000
+    },
+    "Reader": {
+      "Role": "parcel-reader",
+      "Driver": "manual",
+      "DeviceId": "direct-plc.camera",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    "Scale": {
+      "Kind": "weight",
+      "Implementation": "reference-weight",
+      "Version": "1.0.0",
+      "InstanceId": "weight.smoke",
+      "Target": "reference://weight/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {},
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Wcs": null,
+    "Plc": {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "InstanceId": "direct-plc.plc",
+      "Target": "reference://plc/direct-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "complete-on-query": "true",
+        "endpoint": "http://127.0.0.1:52291/parcel-reference/"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Extensions": null,
+    "QueueCapacity": 64,
+    "TimeoutMs": 1500,
+    "MaximumOperations": 10000,
+    "Login": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "login.smoke",
+      "Target": "reference://login/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "alice,bob"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Images": {
+      "Camera": {
+        "Kind": "camera",
+        "Implementation": "reference-camera",
+        "Version": "1.0.0",
+        "InstanceId": "camera.smoke",
+        "Target": "reference://camera/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {},
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "Uploader": {
+        "Kind": "upload",
+        "Implementation": "reference-upload",
+        "Version": "1.0.0",
+        "InstanceId": "upload.smoke",
+        "Target": "reference://upload/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "reply-mode": "lose-after-commit",
+          "endpoint": "http://127.0.0.1:52291/parcel-reference/"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "MaximumBytes": 4194304,
+      "Strategy": "Attached",
+      "TotalBytes": 33554432,
+      "MaximumPending": 32
+    },
+    "SessionLifetimeMs": 28800000,
+    "MaintenanceLogin": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "WeightValidity": "UntilDispatch",
+    "Topology": {
+      "Readers": [
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "direct-plc.camera",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Positions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "direct-plc.camera",
+          "CameraInstanceId": null,
+          "ScaleInstanceId": null
+        }
+      ]
+    },
+    "Retention": {
+      "ResidentHistory": 200,
+      "MinimumFreeBytes": 67108864
+    }
+  },
+  "EffectiveConfigurationSha256": "5BD532A355B332A5F5B51B93A583E8BE5DD0814E7E0D4B498D9CB582AF8585A4",
+  "Providers": [
+    {
+      "Kind": "weight",
+      "Implementation": "reference-weight",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "weight.smoke",
+      "Target": "reference://weight/smoke"
+    },
+    {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "direct-plc.plc",
+      "Target": "reference://plc/direct-plc"
+    },
+    {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "login.smoke",
+      "Target": "reference://login/smoke"
+    },
+    {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance"
+    },
+    {
+      "Kind": "camera",
+      "Implementation": "reference-camera",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "camera.smoke",
+      "Target": "reference://camera/smoke"
+    },
+    {
+      "Kind": "upload",
+      "Implementation": "reference-upload",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "upload.smoke",
+      "Target": "reference://upload/smoke"
+    },
+    {
+      "Kind": "observation",
+      "Implementation": "manual",
+      "Version": "1.0.0",
+      "Contract": "CONTROLLED-OBSERVATION-v1",
+      "DeviceId": "direct-plc.camera",
+      "Revision": "1"
+    }
+  ],
+  "CompatibilitySet": "builtin-reference",
+  "State": "PhysicalCompleted",
+  "OperationId": "88c4783dff854966b2f5a1ad8646779b",
+  "FinishedAt": "2026-10-19T04:04:48.454318+00:00",
+  "EventsSha256": "95BB61571922A55DD1AEEA159922D570BF8B1BB7339D6243F4CB7CC252EBEC23",
+  "EventsFile": "direct-plc-attached.json.events.jsonl"
+}

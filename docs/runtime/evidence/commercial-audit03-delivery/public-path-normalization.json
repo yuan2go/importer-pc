@@ -1,0 +1,210 @@
+{
+  "Rule": "Machine-local worktree root becomes ${WORKTREE}; pinned dotnet path becomes ${DOTNET}. Only new delivery evidence copies are normalized; source audit PDF/ZIP are unchanged. Raw bytes are retained locally outside Git.",
+  "HashSemantics": "Existing configuration/release/event hash fields refer to the original raw run inputs; normalization may alter displayed configuration paths and is not claimed to regenerate those original hash values. Runtime/payload/package bytes and release artifact digests are unchanged.",
+  "Files": [
+    {
+      "Path": "aa22-old-callback-assertion.log",
+      "RawSha256": "a5d5f7ca5c426bf79f2f2d9ce3f436fdc8bd003ed1cfa1e8b7bf8b8fc76d059b",
+      "PublicSha256": "92c7658ccf2d3b23e8df5e950e7551134eecdf3d4f26beba03478547f141f774",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/aa22-old-callback-assertion.log"
+    },
+    {
+      "Path": "bhr-original-confirmation-fixture.log",
+      "RawSha256": "4a39d12f0c6fc4431feedb32c2b89697e184328aa1bca7a1fe8c20fafb2f57c8",
+      "PublicSha256": "3e457390af65c6e6cde7af4a0e47b173e592ff5eecc81baec9f7b28053f19e81",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/bhr-original-confirmation-fixture.log"
+    },
+    {
+      "Path": "cli/commands.json",
+      "RawSha256": "74ab92638ebc652ba5de5151b4ea403115850749153a2fe663f7f464bb55e158",
+      "PublicSha256": "e4ad7a19b127f7f1a8feaf733224d5f1b7bda47c834f1c34e4df4403f546116c",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/cli/commands.json"
+    },
+    {
+      "Path": "input-red.log",
+      "RawSha256": "f6710b32cddf5175ee304f138e2e30f01f71f356d5832fd331a501ce5f18617e",
+      "PublicSha256": "623cb7f57fe890bc9457021914767692f97de38020a3b246a557948b13d61b7d",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/input-red.log"
+    },
+    {
+      "Path": "input-setup-invalid-guid.log",
+      "RawSha256": "830c1fc2d0a3494755a88738d3f5136493c9214a97efd71d7d4ca99bc96d683f",
+      "PublicSha256": "3ecdb7999bc2856992435a4d097a338077ac949de9a67126efe98d5e4c90fd66",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/input-setup-invalid-guid.log"
+    },
+    {
+      "Path": "numeric-migration-verifier-build.log",
+      "RawSha256": "b830cfdd56d3ca307001da47bf86e76e44b1753330a0933d793420136295c1f5",
+      "PublicSha256": "59ee7e63bedd113b25b4df168372e28b80ded312f74b2cd8bd127ce787ece885",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/numeric-migration-verifier-build.log"
+    },
+    {
+      "Path": "pipeline-commands.json",
+      "RawSha256": "81a5313283d15d509d8395b9ab42e41ffb0b9de194bc45c69b0cffcf2a751515",
+      "PublicSha256": "e4a0d62d926549d02f1956e8053cfc8b8dcaa54ad650337f3e313a13ee7d2a8f",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/pipeline-commands.json"
+    },
+    {
+      "Path": "powershell-host-rejection.log",
+      "RawSha256": "75a5d0d32dc52ef7862ee36c114c6c1aff9406aa13239e845e57dbdc2a87495f",
+      "PublicSha256": "33a5c766b9de1e1afb9153de3662fd6915171521b7cffb1773a46c5efb7a3494",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/powershell-host-rejection.log"
+    },
+    {
+      "Path": "quality-original-db6-reader.log",
+      "RawSha256": "40a4f4c9073c4eaa45ba5877ccd4c78a1db1c9fc17a585fa58423fa2b1556a7b",
+      "PublicSha256": "7c6a27e27e492753d022379113342b496878b9faeb62924b1c867c9714747490",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/quality-original-db6-reader.log"
+    },
+    {
+      "Path": "rcs-old-db6-assertion.log",
+      "RawSha256": "e3d60914ea887a0f63e942e451858b82ede5c18fa507fa5872b5cf787da5138f",
+      "PublicSha256": "8258763fc28b362bd907b25f812686cbfa3f3f6352270ac6bf6e33166aa7d957",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/rcs-old-db6-assertion.log"
+    },
+    {
+      "Path": "selected-journey.json",
+      "RawSha256": "39d9e212bcb2623760722c6ebdf308a72c950e58bcb4147f00cff29299e23407",
+      "PublicSha256": "c3068e981b3dbe60e9921eaa26e8ad384e8410ab4dacef0b363563c98ddd3a83",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/selected-journey.json"
+    },
+    {
+      "Path": "selected-journey.log",
+      "RawSha256": "4e7c58a466b097fda87f7547cde0f07cdcf41deb246251e2fc889bdb03729c0b",
+      "PublicSha256": "2b5f8fa0b23e43077b159054adc587d290048e8428a5422ff4169be3402689c6",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/selected-journey.log"
+    },
+    {
+      "Path": "signed-t1-migration-original-unreleased-image-fixture.log",
+      "RawSha256": "c594c1aa621302d9ea3b438c3a6e9b311e66b24fe06a24f0f8781fad6b345502",
+      "PublicSha256": "3917123ca969e3b545e39a05ee6fe2fc9e6fdc81bf5dc4d8a29e8f7f22f265be",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/signed-t1-migration-original-unreleased-image-fixture.log"
+    },
+    {
+      "Path": "smokes/commands.json",
+      "RawSha256": "a8e1970a45e5322d82af9adc1df046a65abbf23bd973c83ab53029108c57d450",
+      "PublicSha256": "a27ea1ffb9d3c5fc5135402adccf7e172616a5bde033f0b3cc2e8eb214eecc5d",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/commands.json"
+    },
+    {
+      "Path": "smokes/direct-plc-attached.json",
+      "RawSha256": "e3d28e335f022b1f9d1435b314615adc098ff433df4902adaf1fde223f0d0a67",
+      "PublicSha256": "0cf351c1e3343442749c4eadd637ddbbce733f17a9aed4ccc0be57ce3120b8e2",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/direct-plc-attached.json"
+    },
+    {
+      "Path": "smokes/direct-plc-attached.json.events.jsonl",
+      "RawSha256": "95bb61571922a55dd1aeea159922d570bf8b1bb7339d6243f4cb7cc252ebec23",
+      "PublicSha256": "a9c9cafe0342fb3407881af73ee02a8781295e6d718759eef9f7e821db7d8a0c",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/direct-plc-attached.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/direct-plc-before-main.json",
+      "RawSha256": "6632e998ebb5b3dc422d4b77b9b539f5cc5d6f0f5ccc4babe9d98ba77647850b",
+      "PublicSha256": "4f5d81781c9c96743e6659726e2a343cbe6a48d4ca7d3da186da2615be38352a",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/direct-plc-before-main.json"
+    },
+    {
+      "Path": "smokes/direct-plc-before-main.json.events.jsonl",
+      "RawSha256": "043c228ee81e235dcd97b3b2fc0ce814c91e3a32aeb6ce4e025f5f877468385f",
+      "PublicSha256": "01575fd013e0a579ebb5fd7430ac59e3b40bbb2a90759d53776b0e6023364377",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/direct-plc-before-main.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/direct-plc-default.json",
+      "RawSha256": "5ae5f52b9a0129b16c0719af6adcf4fed177d982dca69ac58412fbdf3c92a2ec",
+      "PublicSha256": "1ac27819d0feecc147b226974069617e213ace0eae44a7dcf017b10281f62ef1",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/direct-plc-default.json"
+    },
+    {
+      "Path": "smokes/direct-plc-default.json.events.jsonl",
+      "RawSha256": "23087076dc14610ca5d640f3b80b295b607c5498a1590d3fc00b25cde24c5de7",
+      "PublicSha256": "2c28d61902848c0cb2aca1c072a10489ce16eab767bac54374ea7fe160516cb0",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/direct-plc-default.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/sportmaster-attached.json",
+      "RawSha256": "3c7e2b1a9f175b411045aea0d97ad54ef952bc0f1d46f3b0f26861ebf739b977",
+      "PublicSha256": "d89466f7858e42d1f4f74325ce46f674f38f0f18b447147b6d2a43da490ec8f3",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/sportmaster-attached.json"
+    },
+    {
+      "Path": "smokes/sportmaster-attached.json.events.jsonl",
+      "RawSha256": "3ba7193b644bf4c84df5379bb6b42f7f7a2e1f2699448f3950eb7a73e737f229",
+      "PublicSha256": "224c6acc3b2b7310c60e39ef3e2d3adff682beb29d0b5e5f11b12dccc47d0a7c",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/sportmaster-attached.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/sportmaster-before-main.json",
+      "RawSha256": "8adcffc95c50821ecf28710b762a218bc20fe8c4cf172e1cafea40cf80b0ced8",
+      "PublicSha256": "bfcea19d97ef8caac6aa7af8ae415708e3e5c8669d09e0c5d02a184f6e2ef31e",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/sportmaster-before-main.json"
+    },
+    {
+      "Path": "smokes/sportmaster-before-main.json.events.jsonl",
+      "RawSha256": "b733db210822c3238129b44e685939ce61011a6271e7955f64759cda661d6591",
+      "PublicSha256": "c6786938f245d9e000eeeccf567d32cdcb7355ac9c4f6f453f9e968e867f58f1",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/sportmaster-before-main.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/sportmaster-default.json",
+      "RawSha256": "7fe1d7864029874e2a127e7f6cb476537eb3bf2965ccfa53298f98e72029a629",
+      "PublicSha256": "d22671194bf7b949f07b75aa749327ba6c472757aa757dbfa8141079ab273000",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/sportmaster-default.json"
+    },
+    {
+      "Path": "smokes/sportmaster-default.json.events.jsonl",
+      "RawSha256": "38d791145679e8f76758a9fec63f1495832d81096521c1384019da6d13cd1aff",
+      "PublicSha256": "1c7c34f65a905cf7e6e075cdae9cfd5f6c0fe5e986d3ad89e97db6be160c1124",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/sportmaster-default.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/wcs-to-plc-attached.json",
+      "RawSha256": "0f87c95367701a4274097730b2e8d0c0db8a78b8aa45c44ee41423b732d32e63",
+      "PublicSha256": "b21daeb2d2cd00f69f8cced3c22a6e6d180cdcdf0fe2b870e80668eb65d8b6c1",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/wcs-to-plc-attached.json"
+    },
+    {
+      "Path": "smokes/wcs-to-plc-attached.json.events.jsonl",
+      "RawSha256": "9df6499676f90947af62ec2415221d353a734ede8fff6d747291b0dec34c4516",
+      "PublicSha256": "1758c3fa915a8e7a17fe5aad5c6de680f72f664fd3c3901ffdb0a9f458e4ced0",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/wcs-to-plc-attached.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/wcs-to-plc-before-main.json",
+      "RawSha256": "721f087cd5159d718007b0fe25bdf95acb7e71dd99145098258bab6f33a103fa",
+      "PublicSha256": "a798f3dda9ed94dd62d3206b7b36cd497b8ce1abc62523bfe9fd2252c53edecd",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/wcs-to-plc-before-main.json"
+    },
+    {
+      "Path": "smokes/wcs-to-plc-before-main.json.events.jsonl",
+      "RawSha256": "0be2c9e7992c9fdae466f36ee76a70cca89270648e926178773600c56a16c9ed",
+      "PublicSha256": "f78330cd95c19734a3723b660312904d2c7c8c4f36e963cae630e5b4348d7d03",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/wcs-to-plc-before-main.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/wcs-to-plc-default.json",
+      "RawSha256": "bbed853af9c940b1b645da14ec1cc4e9676a015e4d4db9b6dd7784a83abe8547",
+      "PublicSha256": "c50a0fc404828a9de04fb6fe5dbf75d9d02b05cde62005eba588a430cda589a5",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/wcs-to-plc-default.json"
+    },
+    {
+      "Path": "smokes/wcs-to-plc-default.json.events.jsonl",
+      "RawSha256": "658e3d690ae39ba0753b144ce1e9a8394d691f79b6f5f9d6f14038404bf83e51",
+      "PublicSha256": "261685e32631443902b3c152fa913564edc9ff2f26550f4f2ca1e3521e0a5c1e",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/wcs-to-plc-default.json.events.jsonl"
+    },
+    {
+      "Path": "upgrade-original-db5-fixture.log",
+      "RawSha256": "8951357b9f2b6841e3d77ddbc697038cd4ed2077affeddbb67c7723b1b7415c9",
+      "PublicSha256": "239a7de4d882a3c337fe2e062eafb718a35c6e0cdada1eb7bc26f1b4c9b51abb",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/upgrade-original-db5-fixture.log"
+    },
+    {
+      "Path": "verifier-build.log",
+      "RawSha256": "74274fab500f20cd7a49ccebffdc703b5aa1a8c8acdb4dd897d46310a57a41fd",
+      "PublicSha256": "a71c04d991af0ee0418dc2f5b540d61d0b993dc63bd4e06ad48246d631aef80d",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/verifier-build.log"
+    }
+  ]
+}

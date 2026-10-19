@@ -1,0 +1,44 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-713c56d8bcdf491da1b689212a4a2990
+DB4 preflight: {
+  "name": "db4-wcs-unknown",
+  "refusal": "LegacyUnsettled: preserve original schema; reconcile originals with the matching old release and create a consistent backup before upgrade",
+  "Version": 4,
+  "Changed": []
+}
+PASS AQ: db4-wcs-unknown: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: db4-wcs-unknown: refusal preserves original DB/config/raw/image bytes
+PASS AQ: db4-wcs-unknown: matching DB4 reader remains usable
+DB4 preflight: {
+  "name": "db4-plc-accepted",
+  "refusal": "LegacyUnsettled: preserve original schema; reconcile originals with the matching old release and create a consistent backup before upgrade",
+  "Version": 4,
+  "Changed": []
+}
+PASS AQ: db4-plc-accepted: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: db4-plc-accepted: refusal preserves original DB/config/raw/image bytes
+PASS AQ: db4-plc-accepted: matching DB4 reader remains usable
+DB4 preflight: {
+  "name": "db4-plc-unknown",
+  "refusal": "LegacyUnsettled: preserve original schema; reconcile originals with the matching old release and create a consistent backup before upgrade",
+  "Version": 4,
+  "Changed": []
+}
+PASS AQ: db4-plc-unknown: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: db4-plc-unknown: refusal preserves original DB/config/raw/image bytes
+PASS AQ: db4-plc-unknown: matching DB4 reader remains usable
+DB4 preflight: {
+  "name": "db4-attached-unknown",
+  "refusal": "LegacyUnsettled: preserve original schema; reconcile originals with the matching old release and create a consistent backup before upgrade",
+  "Version": 4,
+  "Changed": []
+}
+PASS AQ: db4-attached-unknown: unresolved DB4 refuses BEFORE future reader marker, not after provider construction
+PASS AQ: db4-attached-unknown: refusal preserves original DB/config/raw/image bytes
+PASS AQ: db4-attached-unknown: matching DB4 reader remains usable
+Unhandled exception. System.IO.InvalidDataException: Unknown/changed original database; matching maintenance reader required
+   at Ipc.Application.ParcelFlow.ParcelRepository.ReadStorageVersion(String database, String application) in ${WORKTREE}/src/Ipc.Application.ParcelFlow/ParcelLegacyRecovery.cs:line 17
+   at ArchitectureQuality.RefuseDb4(String name, ParcelConfiguration c, Boolean historical, Int32 storageVersion) in ${WORKTREE}/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs:line 27
+   at ArchitectureQuality.UpgradePreflightChecks() in ${WORKTREE}/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs:line 54
+   at ArchitectureQuality.UpgradeConflictClosureChecks(String source, String evidence) in ${WORKTREE}/tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs:line 141
+   at Program.<Main>$(String[] args) in ${WORKTREE}/tests/Ipc.Application.Verification/Program.cs:line 24
+   at Program.<Main>(String[] args)

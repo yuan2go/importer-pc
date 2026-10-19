@@ -1,0 +1,40 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-b0e6183ec08f41e0b07b988970b33114
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: missing/duplicate/shared/misbound topology rejected before resources
+PASS AA22: right input enters while left WCS is slow
+PASS AA22: real dual consumers interleave; same barcode has two distinct entities and reader bindings
+PASS AA22: T1 freezes original position/device/acquisition in delivered semantics
+PASS AA22: duplicate original does not create another request
+PASS AA22: single-side reconnect while other original remains owned
+PASS AA22: other reader epoch unchanged by single-side reconnect
+PASS AA22: old registration callback is fenced after reconnect
+PASS AA22: resume does not resend original stages
+PASS AA22: reader disconnect blocks only its position
+PASS AA22: shared WCS health failure blocks both positions without rewriting originals
+PASS AA22: application API rejects schema3 flattening, beyond UI protection
+PASS AA22: complete topology staged using original configuration CAS
+PASS AA22: stale configuration CAS rejected
+PASS AA22: Pending/Effective preserve both bindings and separate activation
+PASS AA22: real legacy ViewModel rejects flattening schema3, authority unchanged
+PASS AA22: multi-device original set backed up through actual application: {
+  "Status": "BackupCreated",
+  "Reason": "Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set",
+  "Revision": 26
+}
+PASS AA22: restart activates full revision while old parcels retain original configuration
+PASS AA22: restored complete multi-device backup starts isolated with original position/request responsibilities
+PASS AA22: schema2 config is never guessed into two positions; full explicit schema3 candidate staged
+PASS AA22: controlled restart explicitly activates schema2 to complete schema3 topology
+PASS AA22: direct-plc sequential position cannot admit next parcel on PLC acceptance alone
+PASS AA22: direct-plc preserves own main chain/delivery object without WCS leakage or repeats
+PASS AA22: wcs-to-plc sequential position cannot admit next parcel on PLC acceptance alone
+PASS AA22: wcs-to-plc preserves own main chain/delivery object without WCS leakage or repeats
+Unhandled exception. System.Exception: FAIL AA22: configured login refuses unauthenticated admission
+   at ApplicationArchitecture.Check(Boolean pass, String reason) in ${WORKTREE}/tests/Ipc.Application.Verification/ApplicationArchitecture.cs:line 13
+   at ApplicationArchitecture.Run(String workspace, String root) in ${WORKTREE}/tests/Ipc.Application.Verification/ApplicationArchitecture.cs:line 127
+   at ApplicationArchitecture.Run(String workspace, String root) in ${WORKTREE}/tests/Ipc.Application.Verification/ApplicationArchitecture.cs:line 147
+   at Program.<Main>$(String[] args) in ${WORKTREE}/tests/Ipc.Application.Verification/Program.cs:line 42
+   at Program.<Main>(String[] args)

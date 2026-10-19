@@ -65,6 +65,7 @@ static partial class SportmasterRcs
                     firstRequest = Wire.Encode(ordered[0].Wcs!.Request); secondRequest = Wire.Encode(ordered[1].Wcs!.Request); lastId = ordered[1].Wcs!.Request.IntegrationRequest!.RequestId;
                     ExtensionStore.AtomicWrite(Path.Combine(root, "rcs-t1-" + delayedPosition + ".json"), result);
                     await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); await Wait(app, s => s.Availability!.Configure);
+                    await Wait(app, x => x.Operations.All(o => o.ImageReleased));
                     await Command(app, "ArchiveHistory", value: "Synthetic T1 owner archival");
                     Check((await app.BackupAsync(backup)).Status == "BackupCreated", "A03 actual backup retains owner ledger, ranges and archived originals");
                 }
@@ -74,9 +75,9 @@ static partial class SportmasterRcs
             await using (var app = await Open(data))
             {
                 var history = await app.HistoryAsync(long.MaxValue, 20);
-                Check(history.Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().SequenceEqual(new[] { firstRequest, secondRequest }.Order()) && peer.Requests.Count == posts, "A03 restart/archive preserve both original wire IDs and exact bodies without POST");
+                Check(history.Items.Count(x => x.Archived) == 2 && history.Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().SequenceEqual(new[] { firstRequest, secondRequest }.Order()) && peer.Requests.Count == posts, "A03 restart/archive preserve both original wire IDs and exact bodies without POST");
                 await Command(app, "Resume"); app.EmitReferenceAt("left", "after-backup", "SYNTH-0001", "after-backup-event");
-                var after = await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "after-backup" && o.State == ParcelState.SlotResolved));
+                var after = await Wait(app, s => s.Operations.Any(o => o.AdmissionId == "after-backup" && o.State == ParcelState.SlotResolved && o.ImageReleased));
                 Check(after.Operations.Single(o => o.AdmissionId == "after-backup").Wcs!.Request.IntegrationRequest!.RequestId > lastId, "A03 source consumes a new persistent ID after the backup cut");
             }
             posts = peer.Requests.Count;
@@ -104,8 +105,40 @@ static partial class SportmasterRcs
             using var db = new SqliteConnection("Data Source=" + Path.Combine(directory, "sportmaster.db")); db.Open(); using var q = db.CreateCommand();
             q.CommandText = "SELECT count(*) FROM parcel_integration_id_owners";
             Check((long)q.ExecuteScalar()! == 3, "A03 persistent SQL unique owners include archived and post-restore T1 allocations");
+            NumericMigrationChecks(Path.Combine(data, "Simulation", c.StationId, c.ApplicationId), Path.Combine(root, "migration-" + delayedPosition));
         }
         Console.WriteLine(signed is null ? "PASS A03 RCS COMPLETE" : "PASS A03 SIGNED RCS COMPLETE");
+    }
+    static void NumericMigrationChecks(string source, string root)
+    {
+        void CloneSix(string target, bool conflict)
+        {
+            Directory.CreateDirectory(target);
+            using (var original = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(source, "sportmaster.db"), Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()))
+            using (var copy = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(target, "sportmaster.db"), Pooling = false }.ToString()))
+            {
+                original.Open(); copy.Open(); original.BackupDatabase(copy);
+                using var q = copy.CreateCommand(); q.CommandText = "DROP TABLE parcel_integration_id_owners; DROP TABLE parcel_integration_id_ranges; DROP TABLE parcel_integration_id_restores; DELETE FROM platform_migrations WHERE version=7"; q.ExecuteNonQuery();
+                if (conflict)
+                {
+                    q.CommandText = "UPDATE parcel_operations SET body=json_set(body,'$.Wcs.Request.IntegrationRequest.RequestId',(SELECT json_extract(body,'$.Wcs.Request.IntegrationRequest.RequestId') FROM parcel_archives LIMIT 1))"; q.ExecuteNonQuery();
+                }
+            }
+            var receipts = Path.Combine(source, "receipts"); Directory.CreateDirectory(Path.Combine(target, "receipts"));
+            foreach (var file in Directory.EnumerateFiles(receipts)) File.Copy(file, Path.Combine(target, "receipts", Path.GetFileName(file)));
+        }
+        var valid = Path.Combine(root, "valid"); CloneSix(valid, false);
+        string[] before;
+        using (var old = new ParcelRepository(valid, "sportmaster", 6)) before = old.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().ToArray();
+        using (var current = new ParcelRepository(valid, "sportmaster"))
+            Check(current.StorageVersion == 7 && current.History(long.MaxValue, 20).Items.Select(x => Wire.Encode(x.Operation.Wcs!.Request)).Order().SequenceEqual(before),
+                "A03 explicit synthetic SQL6 resident/archive numeric migration preserves every original ID and exact frozen request");
+        using (var db = new SqliteConnection("Data Source=" + Path.Combine(valid, "sportmaster.db")))
+        { db.Open(); using var q = db.CreateCommand(); q.CommandText = "SELECT count(*) FROM parcel_integration_id_owners"; Check((long)q.ExecuteScalar()! == 3, "A03 SQL7 backfills all immutable numeric owners from SQL6 resident and archived originals"); }
+        var ambiguous = Path.Combine(root, "ambiguous"); CloneSix(ambiguous, true); var database = Path.Combine(ambiguous, "sportmaster.db"); var hash = Wire.FileHash(database);
+        try { using var refused = new ParcelRepository(ambiguous, "sportmaster"); throw new Exception("Ambiguous SQL6 request IDs migrated"); }
+        catch (InvalidDataException e) { Check(e.Message.Contains("Ambiguous") && Wire.FileHash(database) == hash && ParcelRepository.ReadStorageVersion(database, "sportmaster") == 6,
+            "A03 ambiguous old numeric owners refuse in read-only preflight before SQL7 or database byte changes"); }
     }
     sealed class HoldFactory(string position) : IParcelCapabilityFactory
     {

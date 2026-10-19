@@ -1,0 +1,155 @@
+[
+  {
+    "File": "direct-plc-core.zip",
+    "Bytes": 18611034,
+    "Sha256": "ed1c279b60cfe75be10b2dfbcb255ddf107df02ed4bb4fe681688bb771b28cb8",
+    "SourceCommit": "1401b7d3663bd7ca40aaa87773b023162178611c",
+    "Application": "direct-plc",
+    "Target": "portable",
+    "BusinessVersion": "1.2.7",
+    "FilesVerified": 98,
+    "GuideSourcesVerified": 8,
+    "OfflinePackages": [],
+    "PeAppHosts": {},
+    "Dependencies": 34,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "File": "direct-plc-win-x64.zip",
+    "Bytes": 104570436,
+    "Sha256": "268285bd2bfb645f9e201138c0f24078e50a46d870ad7a092bc72fc3be05b087",
+    "SourceCommit": "1401b7d3663bd7ca40aaa87773b023162178611c",
+    "Application": "direct-plc",
+    "Target": "win-x64",
+    "BusinessVersion": "1.2.7",
+    "FilesVerified": 732,
+    "GuideSourcesVerified": 8,
+    "OfflinePackages": [],
+    "PeAppHosts": {
+      "app/Ipc.Assembly.exe": "0x8664",
+      "desktop/Ipc.Desktop.exe": "0x8664"
+    },
+    "Dependencies": 34,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "File": "sportmaster-core.zip",
+    "Bytes": 18647374,
+    "Sha256": "d2b3f683d61804e1b7baa2b6443a0bb9857b751187783b8bf0d05c497bf75838",
+    "SourceCommit": "1401b7d3663bd7ca40aaa87773b023162178611c",
+    "Application": "sportmaster",
+    "Target": "portable",
+    "BusinessVersion": "1.2.7",
+    "FilesVerified": 104,
+    "GuideSourcesVerified": 11,
+    "OfflinePackages": [],
+    "PeAppHosts": {},
+    "Dependencies": 34,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "File": "sportmaster-selected-portable.zip",
+    "Bytes": 18695371,
+    "Sha256": "8e0fe3062bd1cc2a84f86828d1efd34894192ba22c305e6fd4e393982f257577",
+    "SourceCommit": "1401b7d3663bd7ca40aaa87773b023162178611c",
+    "Application": "sportmaster",
+    "Target": "portable",
+    "BusinessVersion": "1.2.7",
+    "FilesVerified": 108,
+    "GuideSourcesVerified": 11,
+    "OfflinePackages": [
+      {
+        "Id": "sportmaster.rcs-task",
+        "Version": "1.0.7",
+        "Mode": "Simulation"
+      },
+      {
+        "Id": "reference.barcode",
+        "Version": "1.2.5",
+        "Mode": "Simulation"
+      },
+      {
+        "Id": "reference.parcel-capabilities",
+        "Version": "2.1.5",
+        "Mode": "Simulation"
+      }
+    ],
+    "PeAppHosts": {},
+    "Dependencies": 34,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "File": "sportmaster-selected-win-x64.zip",
+    "Bytes": 104715318,
+    "Sha256": "d97cec0f887ad3fa6308b050aaf21fb5bbb8be840fd7987919d60b1732c0c23b",
+    "SourceCommit": "1401b7d3663bd7ca40aaa87773b023162178611c",
+    "Application": "sportmaster",
+    "Target": "win-x64",
+    "BusinessVersion": "1.2.7",
+    "FilesVerified": 745,
+    "GuideSourcesVerified": 11,
+    "OfflinePackages": [
+      {
+        "Id": "sportmaster.rcs-task",
+        "Version": "1.0.7",
+        "Mode": "Simulation"
+      },
+      {
+        "Id": "reference.barcode",
+        "Version": "1.2.5",
+        "Mode": "Simulation"
+      },
+      {
+        "Id": "reference.parcel-capabilities",
+        "Version": "2.1.5",
+        "Mode": "Simulation"
+      }
+    ],
+    "PeAppHosts": {
+      "app/Ipc.Assembly.exe": "0x8664",
+      "desktop/Ipc.Desktop.exe": "0x8664"
+    },
+    "Dependencies": 34,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "File": "wcs-to-plc-core.zip",
+    "Bytes": 18636527,
+    "Sha256": "c39357db4a45e5fa9513b0511a8a302c400d847935604e6de9521e8b9ac822ff",
+    "SourceCommit": "1401b7d3663bd7ca40aaa87773b023162178611c",
+    "Application": "wcs-to-plc",
+    "Target": "portable",
+    "BusinessVersion": "1.2.7",
+    "FilesVerified": 100,
+    "GuideSourcesVerified": 8,
+    "OfflinePackages": [],
+    "PeAppHosts": {},
+    "Dependencies": 34,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "File": "wcs-to-plc-win-x64.zip",
+    "Bytes": 104621483,
+    "Sha256": "6a123683313b0f328e5c26a0824122b0d5af2e0b3a32c19c40c6571034f83c7b",
+    "SourceCommit": "1401b7d3663bd7ca40aaa87773b023162178611c",
+    "Application": "wcs-to-plc",
+    "Target": "win-x64",
+    "BusinessVersion": "1.2.7",
+    "FilesVerified": 736,
+    "GuideSourcesVerified": 8,
+    "OfflinePackages": [],
+    "PeAppHosts": {
+      "app/Ipc.Assembly.exe": "0x8664",
+      "desktop/Ipc.Desktop.exe": "0x8664"
+    },
+    "Dependencies": 34,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  }
+]

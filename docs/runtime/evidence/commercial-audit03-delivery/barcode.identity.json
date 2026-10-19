@@ -1,0 +1,25 @@
+{
+  "Package": "barcode.ipcx",
+  "PackageSha256": "529530b391040ee5be54e9b973aaaf8333b80c2058fecde2087dea8f559e5e5e",
+  "PluginSourceCommit": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+  "PluginSourceSha256": "9dd0901d9f4bee8b540db0a72f3a768dc40d9da615a517a41aa6c82a972ed45d",
+  "DefinitionSha256": "1bcfe58954716d7b1b6714e58209c667147fe11cd4927a05bcf4fd6c7410f9ad",
+  "HostContractSha256": "60f7f61970f762b988d0ead09e52687170a511f848d944726f8dda13ff522903",
+  "FrozenHostUnchanged": true,
+  "FrozenCheckerUnchanged": true,
+  "CheckerContractsSha256": {
+    "Ipc.Platform": "60f7f61970f762b988d0ead09e52687170a511f848d944726f8dda13ff522903"
+  },
+  "Publisher": "audit03-reference",
+  "Version": "1.2.5",
+  "ExtensionContract": 1,
+  "Signature": "RSA-PSS/SHA256",
+  "Mode": "Simulation",
+  "ManifestSha256": "7e69d376b3f71004e0c11cd1429696aa05449f14b4f0f355b8d37a5f6e4cd75f",
+  "TrustSha256": "26989c5030f9a805dc46dbac5f603402db1e38ff8eb57635ca3dc2afd4de9306",
+  "PayloadSha256": {
+    "Ipc.Reference.BarcodeExtension.dll": "6b3db300949bbc4e2f82d8cc69a52ba00e18954abd31467c7579d0640b97a046"
+  },
+  "DependencyPackages": [],
+  "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+}

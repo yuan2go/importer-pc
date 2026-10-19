@@ -1,0 +1,20 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-a384d4cdbef44d36bff54189971b194b
+PASS RCS20: A03 independent position reaches actual HTTP T1 while other capture is held
+PASS RCS20: A03 left capture delay gives both positions one actual T1 and POST without global serialization
+PASS RCS20: A03 numeric order follows durable T1 preparation, not earlier admission order
+PASS RCS20: A03 actual backup retains owner ledger, ranges and archived originals
+PASS RCS20: A03 restart/archive preserve both original wire IDs and exact bodies without POST
+PASS RCS20: A03 source consumes a new persistent ID after the backup cut
+PASS RCS20: A03 restored backup retires entire source range including IDs used after backup
+PASS RCS20: A03 exhausted unsent entity can be inspected and disposed
+PASS RCS20: A03 new disjoint range uses original configuration CAS and controlled restart
+PASS RCS20: A03 restored root runs with new range; old retirement never retires newly staged range on restart
+PASS RCS20: A03 persistent SQL unique owners include archived and post-restore T1 allocations
+Unhandled exception. System.IO.InvalidDataException: LegacyUnsettled: preserve original schema; reconcile originals with the matching old release and create a consistent backup before upgrade
+   at Ipc.Application.ParcelFlow.ParcelRepository.RequireLegacySettlement(String application, Int32 storageVersion, Boolean allowCustodyUpgrade)
+   at Ipc.Application.ParcelFlow.ParcelRepository..ctor(String directory, String application, Int32 storageVersion, Boolean allowCustodyUpgrade)
+   at SportmasterRcs.NumericMigrationChecks(String source, String root) in ${WORKTREE}/tests/Ipc.Application.Verification/Audit03.Rcs.cs:line 132
+   at SportmasterRcs.Audit03Checks(String workspace, String root, String packageFile, String trustFile) in ${WORKTREE}/tests/Ipc.Application.Verification/Audit03.Rcs.cs:line 107
+   at SportmasterRcs.Audit03Checks(String workspace, String root, String packageFile, String trustFile) in ${WORKTREE}/tests/Ipc.Application.Verification/Audit03.Rcs.cs:line 109
+   at Program.<Main>$(String[] args) in ${WORKTREE}/tests/Ipc.Application.Verification/Program.cs:line 20
+   at Program.<Main>(String[] args)

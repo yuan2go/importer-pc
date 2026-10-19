@@ -1,0 +1,618 @@
+{
+  "SchemaVersion": 3,
+  "OptionalFeatures": true,
+  "AttachedUpload": false,
+  "ExternalPeerProcess": true,
+  "RunId": "fa8bb6d902a84f02880c0b6506fbe64a",
+  "Status": "PASS",
+  "StartedAt": "2026-10-19T04:04:43.980354+00:00",
+  "Command": [
+    "${WORKTREE}/scripts/smoke-application.py",
+    "--package",
+    "${WORKTREE}/.artifacts/audit03-1401b7d/unpacked/sportmaster-core",
+    "--dotnet",
+    "${DOTNET}",
+    "--output",
+    "${WORKTREE}/.artifacts/audit03-1401b7d/smokes/sportmaster-before-main.json",
+    "--optional-features",
+    "--peer-fixture",
+    "${WORKTREE}/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll"
+  ],
+  "WorkingDirectory": "/private/tmp",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED",
+  "Assurance": "SIMULATION_REFERENCE_ONLY",
+  "Application": "sportmaster",
+  "BusinessVersion": "1.2.7",
+  "SourceCommit": "1401b7d3663bd7ca40aaa87773b023162178611c",
+  "Target": "portable",
+  "CandidateFilesSha256": "87CC07F3805AD79FE9F34499908F58B8F17302DC32894E80FCB9D874D89DF44A",
+  "ReleaseSha256": "DCED520A1968F1F683374BA4D953B28160DCF5A6C8658FC6000A9D001290B513",
+  "AssemblyManifestSha256": "DA0C3DF4F93A08E4C2205CC311CD13F382D42DE9411A9263D5A6E241748D01A8",
+  "CompatibilitySha256": "898DD8A1BDB4F7F965F27ABB750CC954ADAD65C1FDA6CD538287E897F4A0D606",
+  "InputConfiguration": {
+    "SchemaVersion": 3,
+    "ApplicationId": "sportmaster",
+    "StationId": "reference-17",
+    "Mode": "Simulation",
+    "Weight": {
+      "Source": "Measured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": null,
+      "MaximumAgeMs": 3000
+    },
+    "Reader": {
+      "Role": "parcel-reader",
+      "Driver": "manual",
+      "DeviceId": "sportmaster.camera.left",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    "Scale": {
+      "Kind": "weight",
+      "Implementation": "reference-weight",
+      "Version": "1.0.0",
+      "InstanceId": "weight.smoke",
+      "Target": "reference://weight/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {}
+    },
+    "Wcs": {
+      "Kind": "integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "InstanceId": "sportmaster.integration",
+      "Target": "reference://integration/sportmaster",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "slot": "REFERENCE-07",
+        "endpoint": "http://127.0.0.1:52235/parcel-reference/"
+      },
+      "Package": null,
+      "Module": null
+    },
+    "Plc": null,
+    "Extensions": null,
+    "QueueCapacity": 64,
+    "TimeoutMs": 1500,
+    "MaximumOperations": 10000,
+    "Login": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "login.smoke",
+      "Target": "reference://login/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "alice,bob"
+      }
+    },
+    "Images": {
+      "Camera": {
+        "Kind": "camera",
+        "Implementation": "reference-camera",
+        "Version": "1.0.0",
+        "InstanceId": "camera.smoke",
+        "Target": "reference://camera/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {}
+      },
+      "Uploader": {
+        "Kind": "upload",
+        "Implementation": "reference-upload",
+        "Version": "1.0.0",
+        "InstanceId": "upload.smoke",
+        "Target": "reference://upload/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "reply-mode": "lose-after-commit",
+          "endpoint": "http://127.0.0.1:52235/parcel-reference/"
+        }
+      },
+      "MaximumBytes": 4194304,
+      "Strategy": "BeforeMain"
+    },
+    "MaintenanceLogin": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      }
+    },
+    "WeightValidity": "UntilDispatch",
+    "Topology": {
+      "Readers": [
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.right",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Positions": [
+        {
+          "Id": "left",
+          "ReaderDeviceId": "sportmaster.camera.left",
+          "CameraInstanceId": "camera.smoke",
+          "ScaleInstanceId": "weight.smoke"
+        },
+        {
+          "Id": "right",
+          "ReaderDeviceId": "sportmaster.camera.right",
+          "CameraInstanceId": "camera.smoke.right",
+          "ScaleInstanceId": "weight.smoke.right"
+        }
+      ]
+    },
+    "Retention": {
+      "ResidentHistory": 200,
+      "MinimumFreeBytes": 67108864
+    },
+    "CapabilityInstances": [
+      {
+        "Kind": "weight",
+        "Implementation": "reference-weight",
+        "Version": "1.0.0",
+        "InstanceId": "weight.smoke",
+        "Target": "reference://weight/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {}
+      },
+      {
+        "Kind": "weight",
+        "Implementation": "reference-weight",
+        "Version": "1.0.0",
+        "InstanceId": "weight.smoke.right",
+        "Target": "reference://weight/smoke/right",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {}
+      },
+      {
+        "Kind": "integration",
+        "Implementation": "reference-integration",
+        "Version": "1.0.0",
+        "InstanceId": "sportmaster.integration",
+        "Target": "reference://integration/sportmaster",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "slot": "REFERENCE-07",
+          "endpoint": "http://127.0.0.1:52235/parcel-reference/"
+        },
+        "Package": null,
+        "Module": null
+      },
+      {
+        "Kind": "login",
+        "Implementation": "reference-login",
+        "Version": "1.0.0",
+        "InstanceId": "login.smoke",
+        "Target": "reference://login/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "subjects": "alice,bob"
+        }
+      },
+      {
+        "Kind": "login",
+        "Implementation": "reference-login",
+        "Version": "1.0.0",
+        "InstanceId": "maintenance",
+        "Target": "reference://maintenance",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "subjects": "maintenance"
+        }
+      },
+      {
+        "Kind": "camera",
+        "Implementation": "reference-camera",
+        "Version": "1.0.0",
+        "InstanceId": "camera.smoke",
+        "Target": "reference://camera/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {}
+      },
+      {
+        "Kind": "camera",
+        "Implementation": "reference-camera",
+        "Version": "1.0.0",
+        "InstanceId": "camera.smoke.right",
+        "Target": "reference://camera/smoke/right",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {}
+      },
+      {
+        "Kind": "upload",
+        "Implementation": "reference-upload",
+        "Version": "1.0.0",
+        "InstanceId": "upload.smoke",
+        "Target": "reference://upload/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "reply-mode": "lose-after-commit",
+          "endpoint": "http://127.0.0.1:52235/parcel-reference/"
+        }
+      }
+    ]
+  },
+  "InputConfigurationSha256": "993D7246B0BCB5A10E5853BA2D16244F27575F01155DF219D59D97964BD7C343",
+  "Checks": [
+    "candidate file hashes",
+    "actual selected assembly startup",
+    "camera-to-final-reference-chain",
+    "persistent original phases on restart",
+    "orderly stop",
+    "selected topology"
+  ],
+  "OptionalChecks": [
+    "authenticated admission",
+    "same-entity measured weight",
+    "actual PNG upload bytes",
+    "lost pre-main upload blocks PLC",
+    "process restart original query",
+    "explicit continuation original operator",
+    "one execution per independent receiver"
+  ],
+  "EffectiveConfiguration": {
+    "SchemaVersion": 3,
+    "ApplicationId": "sportmaster",
+    "StationId": "reference-17",
+    "Mode": "Simulation",
+    "Weight": {
+      "Source": "Measured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": null,
+      "MaximumAgeMs": 3000,
+      "WaitTimeoutMs": 15000
+    },
+    "Reader": {
+      "Role": "parcel-reader",
+      "Driver": "manual",
+      "DeviceId": "sportmaster.camera.left",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    "Scale": {
+      "Kind": "weight",
+      "Implementation": "reference-weight",
+      "Version": "1.0.0",
+      "InstanceId": "weight.smoke",
+      "Target": "reference://weight/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {},
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Wcs": {
+      "Kind": "integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "InstanceId": "sportmaster.integration",
+      "Target": "reference://integration/sportmaster",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "slot": "REFERENCE-07",
+        "endpoint": "http://127.0.0.1:52235/parcel-reference/"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Plc": null,
+    "Extensions": null,
+    "QueueCapacity": 64,
+    "TimeoutMs": 1500,
+    "MaximumOperations": 10000,
+    "Login": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "login.smoke",
+      "Target": "reference://login/smoke",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "alice,bob"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Images": {
+      "Camera": {
+        "Kind": "camera",
+        "Implementation": "reference-camera",
+        "Version": "1.0.0",
+        "InstanceId": "camera.smoke",
+        "Target": "reference://camera/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {},
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "Uploader": {
+        "Kind": "upload",
+        "Implementation": "reference-upload",
+        "Version": "1.0.0",
+        "InstanceId": "upload.smoke",
+        "Target": "reference://upload/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "reply-mode": "lose-after-commit",
+          "endpoint": "http://127.0.0.1:52235/parcel-reference/"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      "MaximumBytes": 4194304,
+      "Strategy": "BeforeMain",
+      "TotalBytes": 33554432,
+      "MaximumPending": 32
+    },
+    "SessionLifetimeMs": 28800000,
+    "CapabilityInstances": [
+      {
+        "Kind": "weight",
+        "Implementation": "reference-weight",
+        "Version": "1.0.0",
+        "InstanceId": "weight.smoke",
+        "Target": "reference://weight/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {},
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      {
+        "Kind": "weight",
+        "Implementation": "reference-weight",
+        "Version": "1.0.0",
+        "InstanceId": "weight.smoke.right",
+        "Target": "reference://weight/smoke/right",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {},
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      {
+        "Kind": "integration",
+        "Implementation": "reference-integration",
+        "Version": "1.0.0",
+        "InstanceId": "sportmaster.integration",
+        "Target": "reference://integration/sportmaster",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "slot": "REFERENCE-07",
+          "endpoint": "http://127.0.0.1:52235/parcel-reference/"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      {
+        "Kind": "login",
+        "Implementation": "reference-login",
+        "Version": "1.0.0",
+        "InstanceId": "login.smoke",
+        "Target": "reference://login/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "subjects": "alice,bob"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      {
+        "Kind": "login",
+        "Implementation": "reference-login",
+        "Version": "1.0.0",
+        "InstanceId": "maintenance",
+        "Target": "reference://maintenance",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "subjects": "maintenance"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      {
+        "Kind": "camera",
+        "Implementation": "reference-camera",
+        "Version": "1.0.0",
+        "InstanceId": "camera.smoke",
+        "Target": "reference://camera/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {},
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      {
+        "Kind": "camera",
+        "Implementation": "reference-camera",
+        "Version": "1.0.0",
+        "InstanceId": "camera.smoke.right",
+        "Target": "reference://camera/smoke/right",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {},
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      },
+      {
+        "Kind": "upload",
+        "Implementation": "reference-upload",
+        "Version": "1.0.0",
+        "InstanceId": "upload.smoke",
+        "Target": "reference://upload/smoke",
+        "Contract": "PARCEL-REFERENCE-v1",
+        "Parameters": {
+          "reply-mode": "lose-after-commit",
+          "endpoint": "http://127.0.0.1:52235/parcel-reference/"
+        },
+        "Package": null,
+        "Module": null,
+        "Enabled": true
+      }
+    ],
+    "MaintenanceLogin": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "WeightValidity": "UntilDispatch",
+    "Topology": {
+      "Readers": [
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.left",
+          "Revision": "1",
+          "ReplayFile": null
+        },
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "sportmaster.camera.right",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Positions": [
+        {
+          "Id": "left",
+          "ReaderDeviceId": "sportmaster.camera.left",
+          "CameraInstanceId": "camera.smoke",
+          "ScaleInstanceId": "weight.smoke"
+        },
+        {
+          "Id": "right",
+          "ReaderDeviceId": "sportmaster.camera.right",
+          "CameraInstanceId": "camera.smoke.right",
+          "ScaleInstanceId": "weight.smoke.right"
+        }
+      ]
+    },
+    "Retention": {
+      "ResidentHistory": 200,
+      "MinimumFreeBytes": 67108864
+    }
+  },
+  "EffectiveConfigurationSha256": "444BFB62BE0BE2825D293780D43C719C6E1D3C71850B5032F8F2A50224DEF543",
+  "Providers": [
+    {
+      "Kind": "weight",
+      "Implementation": "reference-weight",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "weight.smoke",
+      "Target": "reference://weight/smoke"
+    },
+    {
+      "Kind": "integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "sportmaster.integration",
+      "Target": "reference://integration/sportmaster"
+    },
+    {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "login.smoke",
+      "Target": "reference://login/smoke"
+    },
+    {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance"
+    },
+    {
+      "Kind": "camera",
+      "Implementation": "reference-camera",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "camera.smoke",
+      "Target": "reference://camera/smoke"
+    },
+    {
+      "Kind": "upload",
+      "Implementation": "reference-upload",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "upload.smoke",
+      "Target": "reference://upload/smoke"
+    },
+    {
+      "Kind": "weight",
+      "Implementation": "reference-weight",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "weight.smoke.right",
+      "Target": "reference://weight/smoke/right"
+    },
+    {
+      "Kind": "camera",
+      "Implementation": "reference-camera",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "camera.smoke.right",
+      "Target": "reference://camera/smoke/right"
+    },
+    {
+      "Kind": "observation",
+      "Implementation": "manual",
+      "Version": "1.0.0",
+      "Contract": "CONTROLLED-OBSERVATION-v1",
+      "DeviceId": "sportmaster.camera.left",
+      "Revision": "1"
+    },
+    {
+      "Kind": "observation",
+      "Implementation": "manual",
+      "Version": "1.0.0",
+      "Contract": "CONTROLLED-OBSERVATION-v1",
+      "DeviceId": "sportmaster.camera.right",
+      "Revision": "1"
+    }
+  ],
+  "CompatibilitySet": "builtin-reference",
+  "State": "SlotResolved",
+  "OperationId": "061c99e0dede45e59d791dc8fe57bac5",
+  "FinishedAt": "2026-10-19T04:04:46.850620+00:00",
+  "EventsSha256": "B733DB210822C3238129B44E685939CE61011A6271E7955F64759CDA661D6591",
+  "EventsFile": "sportmaster-before-main.json.events.jsonl"
+}

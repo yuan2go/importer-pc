@@ -2,6 +2,8 @@
 
 ## 最新独立审查与实施交接
 
+[审查03工程交付结果](runtime/commercial-audit03-delivery-results.md) · [PR #35](https://github.com/yuan2go/importer-pc/pull/35) · [最终产物hash与证据](runtime/evidence/commercial-audit03-delivery/ARTIFACTS.json)。00/01/02及03源码、05媒介/维护和06参考故障路径已落实；真实组合、Windows原生与目标负载/现场门禁按逐包剩余读取。
+
 [商业质量审查03原报告与证据](reviews/commercial-quality-audit-03/README.md) · [下一阶段Codex提示词](reviews/commercial-quality-audit-03/Codex-next-phase.md)。固定审查main为ec698bd；开放PR34的覆盖与剩余按发布交接分别读取。现行实施入口为[审查03交付工作包](work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)，其中列明00～06的执行依赖、支持组合及待确认输入。原审查与报告发布按形成时身份保留。
 
 ## 当前有效阅读顺序

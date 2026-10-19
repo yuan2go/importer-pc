@@ -1,0 +1,35 @@
+  正在确定要还原的项目…
+  已还原 ${WORKTREE}/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 519 毫秒)。
+  已还原 ${WORKTREE}/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 519 毫秒)。
+  已还原 ${WORKTREE}/src/Ipc.Platform/Ipc.Platform.csproj (用时 519 毫秒)。
+  已还原 ${WORKTREE}/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 519 毫秒)。
+  已还原 ${WORKTREE}/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 519 毫秒)。
+  已还原 ${WORKTREE}/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 519 毫秒)。
+  已还原 ${WORKTREE}/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 519 毫秒)。
+  已还原 ${WORKTREE}/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 519 毫秒)。
+  已还原 ${WORKTREE}/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 11 毫秒)。
+  已还原 ${WORKTREE}/src/Ipc.Components/Ipc.Components.csproj (用时 14 毫秒)。
+  已还原 ${WORKTREE}/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 19 毫秒)。
+  已还原 ${WORKTREE}/src/Ipc.Application.DirectPlc.Desktop/Ipc.Application.DirectPlc.Desktop.csproj (用时 19 毫秒)。
+  已还原 ${WORKTREE}/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 20 毫秒)。
+  已还原 ${WORKTREE}/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 28 毫秒)。
+  Ipc.Platform -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Platform/debug/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Application.Supply.Contracts/debug/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Platform.Storage/debug/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Application.Supply/debug/Ipc.Supply.dll
+  Ipc.Application.Contracts -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Application.Contracts/debug/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Application.ParcelFlow/debug/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Application.DirectPlc/debug/Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Reference.Protocol/debug/Ipc.Reference.Protocol.dll
+  Ipc.Components -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Components/debug/Ipc.Components.dll
+  Ipc.Drivers -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Drivers/debug/Ipc.Drivers.dll
+  Ipc.Assembly -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Assembly/debug/Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Application.ParcelFlow.Desktop/debug/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.DirectPlc.Desktop -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Application.DirectPlc.Desktop/debug/Ipc.Application.DirectPlc.Desktop.dll
+  Ipc.Desktop -> ${WORKTREE}/.artifacts/deployment02-checks/build-DirectPlc/bin/Ipc.Desktop/debug/Ipc.Desktop.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:04.13

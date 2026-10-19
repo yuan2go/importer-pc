@@ -1,0 +1,18 @@
+{
+  "BaselineCommit": "524916b2088f267175bec46daf01e6df020932b7",
+  "Interpreter": "Bundled Python with Pillow; same verifier/baseline as first-run-01",
+  "BaselineErrorCount": 268,
+  "CurrentErrorCount": 267,
+  "CurrentCodes": {
+    "private_metadata_marker": 2,
+    "pptx_media_type_mismatch": 265
+  },
+  "NewErrors": [],
+  "Resolved": [
+    {
+      "code": "manifest_checksum",
+      "path": "docs/manifest.sha256"
+    }
+  ],
+  "Overall": "FAIL_HISTORICAL_ASSET_ERRORS_RETAINED"
+}

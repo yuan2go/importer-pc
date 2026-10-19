@@ -1,0 +1,174 @@
+{
+  "SourceCommit": "e79a8bfdc65328619c77013fb314eaaef4a35a2f",
+  "Meaning": "Tests/builds ran on the exact code files frozen in this commit; original local logs retained; Windows native execution not performed",
+  "Logs": [
+    {
+      "Log": "core-build.log",
+      "OriginalSha256": "f1dd49dd2ae9819d7db04a64bbab650cb428f5e59a4fa352a6d11b2f4486ab0f",
+      "PublishedSha256": "a5542546a41bdf2eab4e85d58f1f558c8bd8c6f7e6f8a5ee62cd4935606006e1",
+      "Redactions": [
+        "worktree absolute path",
+        "synthetic temporary root"
+      ]
+    },
+    {
+      "Log": "startup-deployment.log",
+      "OriginalSha256": "63d3944bb83942a2fcbea16e970687b86bac8e99723a757c7748b6d3805fc8ca",
+      "PublishedSha256": "7ca2d07834013c85197f4571efe524c2313801d3695bb6b4da7dcb4f17237822",
+      "Redactions": [
+        "worktree absolute path",
+        "synthetic temporary root"
+      ]
+    },
+    {
+      "Log": "application-regression.log",
+      "OriginalSha256": "a6457f3d5015fbe78b2f39cecdd77ef1704d36425040ee415288171012fff5e5",
+      "PublishedSha256": "f819ee6616ca5216b511e63fd9d9c4cacf05597270e3fb53aa4a50d6d2a93af1",
+      "Redactions": [
+        "worktree absolute path",
+        "synthetic temporary root"
+      ]
+    },
+    {
+      "Log": "runtime-identity.log",
+      "OriginalSha256": "a058466b6b10a7dc2cd33e837977ea3328ac15bcce78772d5a50ccc6d678cac0",
+      "PublishedSha256": "a058466b6b10a7dc2cd33e837977ea3328ac15bcce78772d5a50ccc6d678cac0",
+      "Redactions": [
+        "worktree absolute path",
+        "synthetic temporary root"
+      ]
+    },
+    {
+      "Log": "platform-build.log",
+      "OriginalSha256": "d4611f056f3af1bf97db6b9431b272868e5b43a0a9d0c25fb4766900701050d4",
+      "PublishedSha256": "8da88119e326dff2da63be11f78d1048453a6d3188c0be1293f66b32cea88865",
+      "Redactions": [
+        "worktree absolute path",
+        "synthetic temporary root"
+      ]
+    },
+    {
+      "Log": "wpf-Sportmaster.log",
+      "OriginalSha256": "24b29d0d84a72b8e8cab1121b8fb548e6dca10283ec93a04e14dd53113298d93",
+      "PublishedSha256": "4dd951263369113a8f62b7806c3e54d45ca1af06840738cdbd12263246f619ff",
+      "Redactions": [
+        "worktree absolute path",
+        "synthetic temporary root"
+      ]
+    },
+    {
+      "Log": "wpf-DirectPlc.log",
+      "OriginalSha256": "3bb8dd9baa5429b8971a745196fc0e1e089be5b97d9b78fbd80ebaa0f3857ade",
+      "PublishedSha256": "32e42526a7591274c86ed4461f214a96e7754e4ec3049f03f41400338246af1f",
+      "Redactions": [
+        "worktree absolute path",
+        "synthetic temporary root"
+      ]
+    },
+    {
+      "Log": "wpf-WcsToPlc.log",
+      "OriginalSha256": "e9156a06a000a4335af2801cf00abf363211fbad37bb61cd63bbfac69b709772",
+      "PublishedSha256": "138f758317f9c2b90c6387cdb50d607aac142476e7566d5e12b7497d028140c0",
+      "Redactions": [
+        "worktree absolute path",
+        "synthetic temporary root"
+      ]
+    },
+    {
+      "Log": "archive-unit.log",
+      "OriginalSha256": "ec24b13bc10a698a73fc5f0ae8e12b62bdd114dfaecc13656c4c008652c2c919",
+      "PublishedSha256": "3bd4873c0cb2576779ede2177d0e8e03aaee24b97a1e333cfa41c2f3ff1fa549",
+      "Redactions": [
+        "absolute local worktree/checker paths"
+      ]
+    },
+    {
+      "Log": "archive-unit-bundled.log",
+      "OriginalSha256": "e8298476886e8478a30981faab2112977f2aa3ee1c522ad82aac3ebd1e621705",
+      "PublishedSha256": "e8298476886e8478a30981faab2112977f2aa3ee1c522ad82aac3ebd1e621705",
+      "Redactions": [
+        "absolute local worktree/checker paths"
+      ]
+    },
+    {
+      "Log": "archive-environment.log",
+      "OriginalSha256": "c3dc2d1add533ff194e2dba965d1c222a6477fe36945377bd08b069743f148b0",
+      "PublishedSha256": "c3dc2d1add533ff194e2dba965d1c222a6477fe36945377bd08b069743f148b0",
+      "Redactions": [
+        "absolute local worktree/checker paths"
+      ]
+    },
+    {
+      "Log": "powershell-syntax.log",
+      "OriginalSha256": "26442a489f870d842d1a719352c1236632776e7efd4ad05a115af8eaf5caae17",
+      "PublishedSha256": "26442a489f870d842d1a719352c1236632776e7efd4ad05a115af8eaf5caae17",
+      "Redactions": [
+        "absolute local worktree/checker paths"
+      ]
+    },
+    {
+      "Log": "published-media-inspector.log",
+      "OriginalSha256": "7ed639da1c013e21a3389838655cb1bb50ee7ac064187ac8a43fe64113aefefe",
+      "PublishedSha256": "7ed639da1c013e21a3389838655cb1bb50ee7ac064187ac8a43fe64113aefefe",
+      "Redactions": [
+        "absolute local worktree/checker paths"
+      ]
+    },
+    {
+      "Log": "published-owner-refusal.log",
+      "OriginalSha256": "f13fcb69c7cf500fb43900b3f8c513cd3418c5b517a5f865f5c4506374e77bee",
+      "PublishedSha256": "df9be133a4a156659e653677adb84ee542ac5837720b5615294f6282ec991003",
+      "Redactions": [
+        "absolute local worktree/checker paths"
+      ]
+    },
+    {
+      "Log": "published-portable-smoke.log",
+      "OriginalSha256": "6190d69f18aaf5fa1cc8b7b1aebb464df44fcfd4a3e881e769004f28ddb54b10",
+      "PublishedSha256": "977ce10f582d2aab84295310f0dabf989e0182bd4cd4ace1bf350ed314820593",
+      "Redactions": [
+        "absolute local worktree/checker paths"
+      ]
+    },
+    {
+      "Log": "candidate-verification.log",
+      "OriginalSha256": "8ccd9affcaea40791ea477878fc3c39a0a422c5fdf15b78c17fac6167e6b173b",
+      "PublishedSha256": "8ccd9affcaea40791ea477878fc3c39a0a422c5fdf15b78c17fac6167e6b173b",
+      "Redactions": [
+        "absolute local worktree/checker paths"
+      ]
+    },
+    {
+      "Log": "package-sportmaster-portable.log",
+      "OriginalSha256": "886fa2f7d5fc8aa72a97c0893510dd6187dae32f7a88ca0111fdd233f9210c22",
+      "PublishedSha256": "74efe1f963f15218e330ecfcf749bd8cb49ecd8c4528d2c2e9d5cf58abd32d2a",
+      "Redactions": [
+        "absolute local worktree/checker paths"
+      ]
+    },
+    {
+      "Log": "package-sportmaster-win-x64.log",
+      "OriginalSha256": "f1248a9429b64150b8a052fcf6b3fcf5cb2e8f8994ce53386d1847ab3c70ad10",
+      "PublishedSha256": "5731ba750590403d46e2454b3f39cc8d70a51a58e19636ec794ba0de0a0a9b2d",
+      "Redactions": [
+        "absolute local worktree/checker paths"
+      ]
+    },
+    {
+      "Log": "package-direct-plc-win-x64.log",
+      "OriginalSha256": "7ffff0c30a69d740f6b9b703f753d3d3f0060d0c020063ebba8996b778c91909",
+      "PublishedSha256": "b89f070d6b62ef71cdc4116eddf62c63b45670a5105249183cc8c08f9af08d5c",
+      "Redactions": [
+        "absolute local worktree/checker paths"
+      ]
+    },
+    {
+      "Log": "package-wcs-to-plc-win-x64.log",
+      "OriginalSha256": "caa72ee99ccfcb1750055b5bb048ec632c13d87a98b99601c5991c9755b659f8",
+      "PublishedSha256": "5297e378488e5124f906df9aff42a9ef14d579f3513f11475cff02328badb4c2",
+      "Redactions": [
+        "absolute local worktree/checker paths"
+      ]
+    }
+  ]
+}

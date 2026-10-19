@@ -1,0 +1,64 @@
+PASS published DeploymentMedia inspector sportmaster 745
+PASS published DeploymentMedia inspector direct-plc 736
+PASS published DeploymentMedia inspector wcs-to-plc 740
+PASS published portable startup/snapshot/ownership/stop/SQLite integrity
+[
+  {
+    "ApplicationId": "sportmaster",
+    "Target": "portable",
+    "SourceCommit": "e79a8bfdc65328619c77013fb314eaaef4a35a2f",
+    "Archive": "startup-deployment-sportmaster-portable-e79a8bf.zip",
+    "ZipSha256": "d7f4fe5e0917fb4393ba61cc32d66889629ad97b46a9d54b3ea5aa8cc8aec3b2",
+    "SHA256SUMSSha256": "cb81c386bcd5f97fbbf100d9c91b6d759f15cb87a34b40dca3cca96ab6d7ea06",
+    "VerifiedFileCount": 105,
+    "WindowsRuntime": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED",
+    "SmokeExitCode": 0,
+    "RunDirectory": "/tmp",
+    "NewDataDirectoryCreated": true,
+    "SnapshotOperationCount": 0,
+    "SQLiteIntegrity": "ok",
+    "SecondOwnerRejected": true,
+    "OriginalOwnerStoppedNormally": true,
+    "PhysicalCalls": "NONE_REFERENCE_ONLY"
+  },
+  {
+    "ApplicationId": "sportmaster",
+    "Target": "win-x64",
+    "SourceCommit": "e79a8bfdc65328619c77013fb314eaaef4a35a2f",
+    "Archive": "startup-deployment-sportmaster-win-x64-e79a8bf.zip",
+    "ZipSha256": "e9aebafd80a1938e78c983adb247d0ef3cce5b04744d452fece72dbaa972bb62",
+    "SHA256SUMSSha256": "559983b40e5548c1df82a4cb32d2145754958c1206d6d82572b6417c608ec6e9",
+    "VerifiedFileCount": 744,
+    "WindowsRuntime": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED",
+    "NativeWizardAndRepairEntries": true,
+    "DesktopConsoleHelperBytesMatch": true
+  },
+  {
+    "ApplicationId": "direct-plc",
+    "Target": "win-x64",
+    "SourceCommit": "e79a8bfdc65328619c77013fb314eaaef4a35a2f",
+    "Archive": "startup-deployment-direct-plc-win-x64-e79a8bf.zip",
+    "ZipSha256": "1af49e1fd5b69d25a6afce04721ac3f833a840fb65420c8f0751cf911295409c",
+    "SHA256SUMSSha256": "26c53d5f286d7f6b686fb77dc43b0153850eb3119b22327c8b7fbb87b95d4762",
+    "VerifiedFileCount": 735,
+    "WindowsRuntime": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED",
+    "NativeWizardAndRepairEntries": true,
+    "DesktopConsoleHelperBytesMatch": true
+  },
+  {
+    "ApplicationId": "wcs-to-plc",
+    "Target": "win-x64",
+    "SourceCommit": "e79a8bfdc65328619c77013fb314eaaef4a35a2f",
+    "Archive": "startup-deployment-wcs-to-plc-win-x64-e79a8bf.zip",
+    "ZipSha256": "8243a259fca37e5bbfaccf2865524db0a8e1bc8255a2899f53214f40df25ce26",
+    "SHA256SUMSSha256": "151cde387d182d6b608dd53eb5adc134fa07b285b2d2faa30a65ca2ff560f8f9",
+    "VerifiedFileCount": 739,
+    "WindowsRuntime": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED",
+    "NativeWizardAndRepairEntries": true,
+    "DesktopConsoleHelperBytesMatch": true
+  }
+]

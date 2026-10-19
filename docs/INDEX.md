@@ -1,5 +1,9 @@
 # 统一资料与实施入口
 
+## 最新独立审查与实施交接
+
+[商业质量审查03原报告与证据](reviews/commercial-quality-audit-03/README.md) · [下一阶段Codex提示词](reviews/commercial-quality-audit-03/Codex-next-phase.md)。固定审查main为ec698bd；开放PR34的覆盖与剩余按发布交接分别读取。WP-A03-00～06待实施，先整理相关现行文档，再修改代码；本次报告发布不改变当前运行版本或商用准入。
+
 ## 当前有效阅读顺序
 
 1. [AGENTS](../AGENTS.md)、[本次整合工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-01.md)与[任务/冲突/验证/交付报告](runtime/parallel-task-reconciliation-01.md)。开工main713f23d，源PR27/29/30/32及执行期产物统一调查；原任务“不合并”仅由本次用户明确授权更新。
@@ -18,6 +22,7 @@
 
 |来源|保留入口及适用范围|
 |---|---|
+|审查03 / WP-A03-00～06|[31页原PDF、67文件证据包及发布时复核](reviews/commercial-quality-audit-03/README.md)，固定ec698bd；与PR34的CQ03编号逐项映射，原审查只读结论不倒写。|
 |本轮全部任务|[起始清单](runtime/evidence/parallel-task-reconciliation-01/start-inventory.json)、[整合报告](runtime/parallel-task-reconciliation-01.md)、[PR29原复审](reviews/parallel-task-reconciliation-01/pr29-original-review.md)、[PR32原审](reviews/parallel-task-reconciliation-01/pr32-original-review.md)、[PR27原审](reviews/pr27-ui-independent-review.md)|
 |PR29版本|[设计](design/version-compatibility-01.md)、[原结果](runtime/version-compatibility-01-results.md)、[原P1/P2修复](runtime/version-compatibility-01-rereview-results.md)，候选/原件按原SHA|
 |PR30 RCS|[工作包](work-packages/WP-IPC-SPORTMASTER-RCS-TASK-01.md)、[原证据](runtime/evidence/sportmaster-rcs-task/README.md)|

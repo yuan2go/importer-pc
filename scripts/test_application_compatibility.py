@@ -32,12 +32,19 @@ class CompatibilityTests(unittest.TestCase):
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             selected = resolve(root/'config/compositions.json', application+'-reference')
             version, policy = read_business(root, application, selected)
-            self.assertEqual(version['BusinessVersion'], '1.2.7')
+            self.assertEqual(version['BusinessVersion'], '1.2.8')
             self.assertEqual(version['CompatibilitySha256'], sha(policy))
             selected['components'][-2]['version'] = '9.0.0'
             # Change the actual business declaration regardless of topological order.
             next(c for c in selected['components'] if c['id'] == 'application.'+application)['version'] = '9.0.0'
             with self.assertRaisesRegex(ValueError, 'version'): read_business(root, application, selected)
+
+    def test_contract_declaration_must_match_actual_project(self):
+        root = Path(__file__).resolve().parent.parent
+        selected = resolve(root/'config/compositions.json', 'sportmaster-reference')
+        next(c for c in selected['components'] if c['id'] == 'application-contracts')['version'] = '1.7.0'
+        with self.assertRaisesRegex(ValueError, 'contract project version'):
+            read_business(root, 'sportmaster', selected)
 
     def fixture(self, root, config=None):
         if config is None: config = json.loads((Path(__file__).resolve().parent.parent/'config/direct-plc/business.json').read_bytes())
@@ -45,7 +52,7 @@ class CompatibilityTests(unittest.TestCase):
         app = root/'app'; app.mkdir()
         (app/'application-compatibility.json').write_text(json.dumps(policy))
         (app/'business.dll').write_text('fixed binary')
-        release = dict(SchemaVersion=2, ApplicationId='direct-plc', BusinessVersion='1.2.7', BusinessAssembly='business.dll', SourceCommit='a'*40, CompatibilitySha256=sha(app/'application-compatibility.json'))
+        release = dict(SchemaVersion=2, ApplicationId='direct-plc', BusinessVersion='1.2.8', BusinessAssembly='business.dll', SourceCommit='a'*40, CompatibilitySha256=sha(app/'application-compatibility.json'))
         (app/'application-release.json').write_text(json.dumps(release))
         identity = dict(release, Target='portable')
         (root/'ASSEMBLY.json').write_text(json.dumps(identity))

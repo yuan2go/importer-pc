@@ -59,6 +59,10 @@ for project, destination in [('Ipc.Assembly', 'app'), *([('Ipc.Desktop', 'deskto
                '--artifacts-path', str(artifacts), '--self-contained', 'true' if a.target == 'win-x64' else 'false', '-o', str(output / destination)]
     if a.target == 'win-x64': command += ['-r', 'win-x64']
     subprocess.run(command, cwd=build_source, check=True)
+    published = json.loads((output / destination / (project + '.deps.json')).read_bytes())
+    contract_version = next(c['version'] for c in selection['components'] if c['id'] == 'application-contracts')
+    if 'Ipc.Application.Contracts/' + contract_version not in published['libraries']:
+        raise ValueError('Published Application contract differs from composition version')
     shutil.copytree(build_source / 'config' / a.application, output / destination / 'config')
 if a.target == 'portable':
     compiled = json.loads(subprocess.check_output([a.dotnet, str(output / 'app/Ipc.Assembly.dll'), '--action', 'business-identity'], text=True))

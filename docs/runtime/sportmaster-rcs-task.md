@@ -1,6 +1,6 @@
 # Sportmaster RCS 分拣任务服务
 
-已整合main `baac260214f910dca9ae4628ba6449b25188e2ac`（PR26/28）。当前组件版本1.0.7，业务1.2.7/公共契约1.8.0；原1.0.1、1.0.0及各候选保持历史身份，不能重签覆盖。
+已整合main `baac260214f910dca9ae4628ba6449b25188e2ac`（PR26/28）。当前组件版本1.0.8，业务1.2.8/公共契约1.8.0；原1.0.1、1.0.0及各候选保持历史身份，不能重签覆盖。
 
 WP-IPC-SPORTMASTER-RCS-TASK-01，名称 `SportmasterRcsTaskService`，模块 `sportmaster-rcs-task`，包 `sportmaster.rcs-task`。范围与兼容见[设计](../design/sportmaster-rcs-task.md)、[工作包](../work-packages/WP-IPC-SPORTMASTER-RCS-TASK-01.md)。此组件实现实际HTTP客户端，不提供RCS服务端。唯一命令为 `sorter.task.dest_request`，POST路径 `/rcs/sorter/api`。
 

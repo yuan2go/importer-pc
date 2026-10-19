@@ -49,3 +49,5 @@
 发布前交付链复核：离线Backup注册Effective/Pending消费者前必须Normalize原Mode，不能误用Simulation包库。d374a11本地候选及其原日志保留，最终业务1.2.7、参考能力2.1.5、reader1.2.5、RCS1.0.7另用新不可变目录构建；ABI1.8.0/DB7及SQL1～6不变。原1.2.6/2.1.4/1.2.4/1.0.6不能重签覆盖。
 
 当前执行结果：[逐工作包/产物/准入](../runtime/commercial-audit03-delivery-results.md)。03代码与参考验证完成但Windows未验；04缺真实组合仍受阻；05已交媒介/运行维护路径但Windows实际验收未做；06参考故障/诊断/SOP完成，目标负载/离线与现场未确认。未勾选项不以本轮部分PASS关闭。
+
+交付组合最后复核发现1401b7d仍由composition声明Contracts1.7.0、实际DLL1.8.0；该候选公开保留但退出最终交付。新增打包前项目/组合与打包后deps核对；后继业务1.2.8、能力2.1.6、reader1.2.6、RCS1.0.8使用新目录/身份，功能与DB7迁移不变。

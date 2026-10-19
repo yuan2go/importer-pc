@@ -15,3 +15,11 @@
 [PR35最终参考预发布](https://github.com/yuan2go/importer-pc/releases/tag/audit03-reference-565abcc)已包含16项附件：7个ZIP、3个ipcx、3份身份文件、仅含公钥的参考信任文件、ARTIFACTS与SHA256SUMS。固定构建源码 `565abcc63b885dc60873aa21e25f2d4612963c0d`；本轮不重建、不重签或覆盖原资产。1401b7d及PR34旧候选保留形成时身份，不能据合并升级资格。
 
 历史验证见[PR35逐包报告](commercial-audit03-delivery-results.md)及[PR34原整改结果](commercial-quality-fix-03-results.md)。原PASS/FAIL、267项历史资产错误、原PDF/ZIP、D/RV和未完成项保持形成时边界。Windows实际仍 **NOT_RUN**；真实SDK/协议/设备/现场 **BLOCKED**，指定商用组合不通过。此次仅检查Git内容/身份与远端发布状态，不授予新的运行或现场PASS。
+
+## 实际合并与最终计数
+
+PR35实际merge为`97a01fb02e7fef6b9c3a769092d57728b992489f`；PR34后继整合head为`a71c6d7dea166b33c94be863ebd1b08c2be1f565`，实际merge为`a0bec28bcb6fef817004661b7dd2782a86676370`。两PR均MERGED，截止该main时Open PR为0。相对开工远端main，唯一提交数为16（13个普通提交、3个合并提交）；没有按各分支ahead重复相加。
+
+本最终回执另经独立PR增加1个普通提交及1个GitHub合并提交，合并后总数为18＝14普通＋4合并；其中既有任务13笔，本发布流程新建5笔（1笔回执内容、1笔分支整合及3笔GitHub PR合并）。最终实际SHA及总数以该回执PR合并后的Git/GitHub为准。
+
+[最终机器回执](evidence/publication-audit03-20261019/final-publication-receipt.json)保留两PR头/merge、计数基线和16项远端资产。重新读取GitHub资产状态、长度和摘要，与PR35已有冻结回执全部一致；未重复执行原运行旅程、打包或签名。

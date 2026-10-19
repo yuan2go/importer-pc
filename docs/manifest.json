@@ -35690,9 +35690,9 @@
       "purpose": "Authorized merge custody and retained historical task outputs",
       "source": "User no-test publication and all-open-PR merge request 2026-10-19",
       "storage_scope": "public_repository",
-      "sha256": "c6d653cdb07876e02b38897b47c3d8b282b049225d6554ea717a1441a9fc0326",
-      "size_bytes": 2813,
-      "git_blob": "5096dc684e5aa8335e63d26bc715fbc7f5cca0d6"
+      "sha256": "5edac18d0ce9027fc4a4e850a53d39c9666b3458294d7d8dfbaaeb57f3001147",
+      "size_bytes": 3815,
+      "git_blob": "da6f05a7d9e1e8eccb97063710d966883c8c8a3c"
     },
     {
       "path": "docs/work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md",
@@ -35715,6 +35715,17 @@
       "sha256": "720299f8d85d9131d3c0e08f2c957907f660fe0a1be50a6ae48517614da149e1",
       "size_bytes": 1858,
       "git_blob": "8c538b2f579e842747ea11e94eef233cbd458948"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-audit03-20261019/final-publication-receipt.json",
+      "version": "audit03-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Actual merge and immutable artifact publication receipt",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "1e815c1b5d83713c6b9016e7db5b7270327010a4b9ec20f99e28f1bf30c40602",
+      "size_bytes": 7627,
+      "git_blob": "62eee7820e60eea1515d93b6b6b80949abeb4248"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -36803,6 +36814,7 @@
     "tests": "NOT_RUN_BY_USER_REQUEST",
     "runtime_source": "565abcc63b885dc60873aa21e25f2d4612963c0d",
     "pr34_original": "c07304418aa68428331ba141418edfb3519a6939",
-    "pr35_original": "ec5b3d675e17a59b3d1f198d4aae24b306d1a89b"
+    "pr35_original": "ec5b3d675e17a59b3d1f198d4aae24b306d1a89b",
+    "final_receipt": "docs/runtime/evidence/publication-audit03-20261019/final-publication-receipt.json"
   }
 }

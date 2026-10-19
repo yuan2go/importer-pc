@@ -33,3 +33,5 @@ Parcel使用数据库7，SQL1–6原样继承，SQL7追加数字请求唯一归�
 ## Supply兼容产品
 
 仅Supply使用共享箱、Quantity、OpenContext/Submit及旧供包接收端。按[Supply首次作业](supply-getting-started.md)和[Supply运行维护](operations.md)执行。Inspection为独立参考装配，不套用新Parcel或Supply命令。历史源码/候选/PASS按原版本读取。
+
+当前源码中Supply与Inspection直接运行入口同样在配置读取和持久资源创建前校验Windows机器策略与指定未提权账户（允许UAC deny-only组身份）；Inspection的Simulation限制仍保留。旧候选不自动更新，后验及维护权限边界见[全部入口门禁补齐](runtime-identity-preflight-02.md)。

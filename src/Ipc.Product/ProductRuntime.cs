@@ -67,6 +67,7 @@ public sealed partial class ProductRuntime : IHostedService, IAsyncDisposable, I
     {
         try
         {
+            MachineRuntimePolicy.RequireRuntimeIdentity();
             manifest = Wire.Decode<ProductManifest>(File.ReadAllText(options.Manifest)); allowedViews = manifest.Views.Append("extensions").Distinct().ToArray();
             var seed = Wire.Decode<StationConfig>(File.ReadAllText(options.Station)); Mode = seed.Mode;
             Presentation = Wire.Decode<PresentationSettings>(File.ReadAllText(options.Presentation));

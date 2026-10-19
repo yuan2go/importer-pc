@@ -1,0 +1,15 @@
+{
+  "baseline": "524916b2088f267175bec46daf01e6df020932b7",
+  "baseline_status": "FAIL",
+  "baseline_errors": 268,
+  "current_status": "FAIL",
+  "current_errors": 267,
+  "introduced": [],
+  "removed": [
+    {
+      "code": "manifest_checksum",
+      "path": "docs/manifest.sha256"
+    }
+  ],
+  "scope": "Same bundled Python/Pillow; static archive comparison only, inherited asset errors retained"
+}

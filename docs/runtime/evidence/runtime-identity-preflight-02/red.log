@@ -1,0 +1,29 @@
+test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) ... ok
+test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) ... ok
+test_direct_runtime_guard_precedes_configuration_and_storage (test_runtime_identity.RuntimeIdentityTests.test_direct_runtime_guard_precedes_configuration_and_storage) ... ok
+test_inspection_runtime_guard_precedes_configuration_and_ledger (test_runtime_identity.RuntimeIdentityTests.test_inspection_runtime_guard_precedes_configuration_and_ledger) ... ERROR
+test_maintenance_dispatch_does_not_require_runtime_identity (test_runtime_identity.RuntimeIdentityTests.test_maintenance_dispatch_does_not_require_runtime_identity) ... ok
+test_supply_runtime_guard_precedes_configuration_extensions_and_storage (test_runtime_identity.RuntimeIdentityTests.test_supply_runtime_guard_precedes_configuration_extensions_and_storage) ... ERROR
+
+======================================================================
+ERROR: test_inspection_runtime_guard_precedes_configuration_and_ledger (test_runtime_identity.RuntimeIdentityTests.test_inspection_runtime_guard_precedes_configuration_and_ledger)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 127, in test_inspection_runtime_guard_precedes_configuration_and_ledger
+    guard = source.index('MachineRuntimePolicy.RequireRuntimeIdentity();', start)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: substring not found
+
+======================================================================
+ERROR: test_supply_runtime_guard_precedes_configuration_extensions_and_storage (test_runtime_identity.RuntimeIdentityTests.test_supply_runtime_guard_precedes_configuration_extensions_and_storage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 110, in test_supply_runtime_guard_precedes_configuration_extensions_and_storage
+    guard = source.index('MachineRuntimePolicy.RequireRuntimeIdentity();', start)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: substring not found
+
+----------------------------------------------------------------------
+Ran 6 tests in 21.479s
+
+FAILED (errors=2)

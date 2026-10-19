@@ -1,0 +1,13 @@
+  正在确定要还原的项目…
+  已还原 <workspace>/src/Ipc.Platform/Ipc.Platform.csproj (用时 418 毫秒)。
+  已还原 <workspace>/src/Ipc.Application.Inspection/Ipc.Application.Inspection.csproj (用时 418 毫秒)。
+  已还原 <workspace>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 418 毫秒)。
+  Ipc.Platform -> <workspace>/.artifacts/build-inspection/bin/Ipc.Platform/debug/Ipc.Platform.dll
+  Ipc.Application.Inspection -> <workspace>/.artifacts/build-inspection/bin/Ipc.Application.Inspection/debug/Ipc.Inspection.dll
+  Ipc.Assembly -> <workspace>/.artifacts/build-inspection/bin/Ipc.Assembly/debug/Ipc.Assembly.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:02.02

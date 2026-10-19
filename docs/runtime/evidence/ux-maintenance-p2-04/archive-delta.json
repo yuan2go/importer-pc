@@ -1,0 +1,17 @@
+{
+  "BaselineMain": "be7956447054054dfdcfce725e8fbbbdfc87407a",
+  "CheckedDeliveryTree": "7b172f45f7bfd561e8664c5f10ecd41be76e7e83",
+  "Scope": "clean git archive of staged delivery tree; generated bin/obj excluded by Git, no validator exception added",
+  "Python": "bundled Python / Pillow12.3.0",
+  "BaselineErrors": 268,
+  "DeliveryErrors": 267,
+  "NewErrors": [],
+  "ResolvedBaselineErrors": [
+    {
+      "code": "manifest_checksum",
+      "path": "docs/manifest.sha256"
+    }
+  ],
+  "Status": "FAIL_INHERITED_ERRORS",
+  "ExceptionsExpanded": false
+}

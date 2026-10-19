@@ -1,0 +1,130 @@
+{
+  "Host": "Darwin arm64",
+  "DotnetSdk": "10.0.402",
+  "SourceCommit": "ab8f4d40d10d13b545456e4b7b99b6291b9303ec",
+  "Checks": [
+    {
+      "name": "configuration",
+      "command": [
+        "<pinned-dotnet-10.0.402>",
+        "run",
+        "--project",
+        "tests/Ipc.Application.Verification",
+        "--no-build",
+        "--",
+        ".",
+        "--ux-commercial-configuration"
+      ],
+      "exit_code": 0,
+      "pass_lines": 63
+    },
+    {
+      "name": "presentation",
+      "command": [
+        "<pinned-dotnet-10.0.402>",
+        "run",
+        "--project",
+        "tests/Ipc.Application.Verification",
+        "--no-build",
+        "--",
+        ".",
+        "--ux-commercial-presentation"
+      ],
+      "exit_code": 0,
+      "pass_lines": 49
+    },
+    {
+      "name": "sportmaster-ui",
+      "command": [
+        "<pinned-dotnet-10.0.402>",
+        "run",
+        "--project",
+        "tests/Ipc.Application.Verification",
+        "--no-build",
+        "--",
+        ".",
+        "--sportmaster-ui"
+      ],
+      "exit_code": 0,
+      "pass_lines": 103
+    },
+    {
+      "name": "wpf-sportmaster",
+      "command": [
+        "<pinned-dotnet-10.0.402>",
+        "build",
+        "src/Ipc.Desktop/Ipc.Desktop.csproj",
+        "-p:Application=Sportmaster",
+        "-p:NuGetLockFilePath=packages.sportmaster.lock.json",
+        "-m:1",
+        "-nr:false"
+      ],
+      "exit_code": 0,
+      "execution": "CROSS_BUILD_ONLY"
+    },
+    {
+      "name": "wpf-direct-plc",
+      "command": [
+        "<pinned-dotnet-10.0.402>",
+        "build",
+        "src/Ipc.Desktop/Ipc.Desktop.csproj",
+        "-p:Application=DirectPlc",
+        "-p:NuGetLockFilePath=packages.direct-plc.lock.json",
+        "-m:1",
+        "-nr:false"
+      ],
+      "exit_code": 0,
+      "execution": "CROSS_BUILD_ONLY"
+    },
+    {
+      "name": "wpf-wcs-to-plc",
+      "command": [
+        "<pinned-dotnet-10.0.402>",
+        "build",
+        "src/Ipc.Desktop/Ipc.Desktop.csproj",
+        "-p:Application=WcsToPlc",
+        "-p:NuGetLockFilePath=packages.wcs-to-plc.lock.json",
+        "-m:1",
+        "-nr:false"
+      ],
+      "exit_code": 0,
+      "execution": "CROSS_BUILD_ONLY"
+    },
+    {
+      "name": "sportmaster-window-lifecycle",
+      "command": [
+        "<pinned-dotnet-10.0.402>",
+        "run",
+        "--project",
+        "tests/Ipc.Application.Verification",
+        "--",
+        ".",
+        "--sportmaster-window-lifecycle"
+      ],
+      "exit_code": 0,
+      "pass_lines": 38
+    },
+    {
+      "name": "native-verifier",
+      "command": [
+        "<pinned-dotnet-10.0.402>",
+        "build",
+        "tests/Ipc.Desktop.UiVerification",
+        "-m:1",
+        "-nr:false"
+      ],
+      "exit_code": 0,
+      "execution": "CROSS_BUILD_ONLY"
+    }
+  ],
+  "WindowsNative": "NOT_RUN",
+  "WindowsScreenshots": 0,
+  "NewRelease": "NOT_CREATED_SOURCE_PR_ONLY",
+  "SdkProtocolField": "BLOCKED_PER_CAPABILITY",
+  "Production": "NOT_READY",
+  "NegativeEvidence": {
+    "close-red.log": "Original silent auxiliary draft loss, baseline business source be79564 plus new focused test",
+    "close-generation-first-failure.log": "Local intermediate attempt suppressed a child diagnostic; original lifecycle regression failed, diagnostic ownership corrected without deleting assertion",
+    "close-reentrancy-red.log": "Window event substitute models actual WPF reentrant Close refusal; production close at19c2fda; corrected with Dispatcher.Yield inab8f4d4"
+  }
+}

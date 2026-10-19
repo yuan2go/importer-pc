@@ -4,13 +4,15 @@ C#/.NET 10工位运行基座及独立Application参考工程。Platform负责机
 
 当前main继承PR37的有效实现和PR39续修。[不可变参考候选1.3.2](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-6ce1d6d)冻结源码为6ce1d6d0b109bd6a3d9490fac176122b4670b90b；原f1a655c候选、PR37本地1.3.0与原验证保持形成时身份。Windows/真实组合未放行。
 
+本分支另修复[关窗草稿与参数表单三项P2](docs/runtime/ux-maintenance-p2-04-results.md)。本轮准备1.3.3不可变参考候选，冻结源及实际远端状态见结果；原1.3.2不含该增量，Windows原生后验仍NOT_RUN。
+
 ## 当前运行与组合
 
-当前业务版本1.3.2、Application.Contracts1.9.0、Parcel DB7（SQL1–6原样保留；SQL7为数字请求持久归属与范围退役）、配置schema1/2/3；Supply另用Storage5和原操作契约。三个主流程保持独立：Sportmaster左右两个独立reader/投递位，扫码取得WCS格口，不下PLC；DirectPlc与WcsToPlc各单reader/顺序位，分别PLC与WCS→PLC。登录/称重/采图/上传按已确认策略选装，DirectPlc完整UI继续延期。
+本分支业务版本1.3.3、Application.Contracts1.9.0、Parcel DB7（SQL1–6原样保留；SQL7为数字请求持久归属与范围退役）、配置schema1/2/3；Supply另用Storage5和原操作契约。三个主流程保持独立：Sportmaster左右两个独立reader/投递位，扫码取得WCS格口，不下PLC；DirectPlc与WcsToPlc各单reader/顺序位，分别PLC与WCS→PLC。登录/称重/采图/上传按已确认策略选装，DirectPlc完整UI继续延期。
 
-Sportmaster支持 `--ui classic`（默认）和 `--ui supply-station`，导航与辅助窗共享Application、连接和原作业。RCS组件 `sportmaster.rcs-task` 1.1.4只实现 `sorter.task.dest_request`；正常、NEED_UNPACK、拒绝和Unknown分别处理，不自动重发、不提供未确认的拆包提交。图片展示与长期图库不在范围。
+Sportmaster支持 `--ui classic`（默认）和 `--ui supply-station`，导航与辅助窗共享Application、连接和原作业。RCS组件 `sportmaster.rcs-task` 1.1.5只实现 `sorter.task.dest_request`；正常、NEED_UNPACK、拒绝和Unknown分别处理，不自动重发、不提供未确认的拆包提交。图片展示与长期图库不在范围。
 
-[并发整合报告](docs/runtime/parallel-task-reconciliation-01.md)统一PR27/29/30/32、PR31恢复基线、冲突裁决及最终组合验证；历史候选、原失败与形成时结论保持原身份。当前精确参考扩展为能力包2.2.4与reader1.3.4，按实际目标公共DLL构建，版本号本身不构成加载/Production资格。
+[并发整合报告](docs/runtime/parallel-task-reconciliation-01.md)统一PR27/29/30/32、PR31恢复基线、冲突裁决及最终组合验证；历史候选、原失败与形成时结论保持原身份。本分支精确参考扩展为能力包2.2.5与reader1.3.5，按实际目标公共DLL构建，版本号本身不构成加载/Production资格。
 
 ## 开发、发布与维护
 

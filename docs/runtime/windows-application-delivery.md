@@ -1,10 +1,10 @@
-> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.2/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
+> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 
 > 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
 
 # 三个Application的Windows候选与维护路径
 
-本页与实际媒介同一固定源码生成；SourceCommit、ApplicationId、业务1.3.2、ABI1.9.0、DB7、配置schema1/2/3分别读取ASSEMBLY.json、app/application-release.json和DEPENDENCIES.json。Supply仍用自己的station.ps1/Storage5，不能套用这里命令。候选工程基线沿现有Windows11 build26100+ x64/PowerShell7；客户SKU/build、设备/SDK及合同未确认，实际Windows全部NOT_RUN，真实组合和商用BLOCKED。不得把本页步骤写成已经执行的Windows验收。
+本页与实际媒介同一固定源码生成；SourceCommit、ApplicationId、业务1.3.3、ABI1.9.0、DB7、配置schema1/2/3分别读取ASSEMBLY.json、app/application-release.json和DEPENDENCIES.json。Supply仍用自己的station.ps1/Storage5，不能套用这里命令。候选工程基线沿现有Windows11 build26100+ x64/PowerShell7；客户SKU/build、设备/SDK及合同未确认，实际Windows全部NOT_RUN，真实组合和商用BLOCKED。不得把本页步骤写成已经执行的Windows验收。
 
 ## 媒介与依赖诊断
 

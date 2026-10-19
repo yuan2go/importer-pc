@@ -1,4 +1,4 @@
-> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.2/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
+> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 
 > 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
 
@@ -27,7 +27,7 @@ python3 scripts/application_compatibility.py --record /evidence/new-run.json --p
 python3 scripts/application_compatibility.py --record /evidence/new-run.json --package /unpacked --configuration /evidence/effective.json
 ```
 
-business-identity只读编译版本和内嵌声明；deployment-check同时执行版本兼容、原精确包和语义校验，不连接设备/外呼。ProviderSets每个集合列出可共同使用的成员，选中集合内可省略业务未启用的可选能力；禁止跨集合拼接成员。本分支业务1.3.2声明的新精确参考能力包为2.2.4，示例reader为1.3.4，Sportmaster RCS为1.1.4，必须针对本次宿主公共DLL重新构建并分别记录实际签名/manifest/包hash；此声明不表示媒介已生成或运行已通过。旧1.4.0/1.0.9及PR23/24/26各自候选继续按原身份读取。
+business-identity只读编译版本和内嵌声明；deployment-check同时执行版本兼容、原精确包和语义校验，不连接设备/外呼。ProviderSets每个集合列出可共同使用的成员，选中集合内可省略业务未启用的可选能力；禁止跨集合拼接成员。本分支业务1.3.3声明的新精确参考能力包为2.2.5，示例reader为1.3.5，Sportmaster RCS为1.1.5，必须针对本次宿主公共DLL重新构建并分别记录实际签名/manifest/包hash；此声明不表示媒介已生成或运行已通过。旧1.4.0/1.0.9及PR23/24/26各自候选继续按原身份读取。
 
 声明兼容、静态校验、运行PASS、Production资格和现场验收是不同事实。组合记录及其哈希用于身份和完整性核对，不自行证明发布者信任或现场批准；现有独立信任/资格机制继续生效。记录中未执行的组合没有PASS，不根据同版本号或同一集合推断其他组合已验证。业务版本以项目声明识别，具体交付仍用SourceCommit和文件SHA区分；不允许用手改版本号替代新发布和验证。
 
@@ -41,4 +41,4 @@ business-identity只读编译版本和内嵌声明；deployment-check同时执�
 python3 scripts/application_compatibility.py --record /evidence/legacy-run.json --package /original-unpacked --record-sha256 ORIGINAL_TRUSTED_RECORD_SHA256
 ```
 
-本分支交付继续使用同一package-application.py的固定git archive快照；源码、内嵌声明、配置、随包指南及SourceRevisionId同源。业务1.3.2、Contracts1.9.0/DB7与新精确扩展分别识别，不覆盖旧1.2.1/2.0.1/1.0.1候选。PR29原历史基线和失败说明保存在[原字节](../archive/pre-parallel-task-reconciliation-01/README.md)及原结果/证据，旧PASS不表示当前组合已验。安装、恢复、卸载共用含实际业务程序集的发行校验；Windows UAC/ACL/真实维护交互NOT_RUN，真实设备/协议/现场BLOCKED。
+本分支交付继续使用同一package-application.py的固定git archive快照；源码、内嵌声明、配置、随包指南及SourceRevisionId同源。业务1.3.3、Contracts1.9.0/DB7与新精确扩展分别识别，不覆盖旧1.2.1/2.0.1/1.0.1候选。PR29原历史基线和失败说明保存在[原字节](../archive/pre-parallel-task-reconciliation-01/README.md)及原结果/证据，旧PASS不表示当前组合已验。安装、恢复、卸载共用含实际业务程序集的发行校验；Windows UAC/ACL/真实维护交互NOT_RUN，真实设备/协议/现场BLOCKED。

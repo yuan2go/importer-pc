@@ -1,0 +1,79 @@
+[
+  {
+    "Path": "close-red.log",
+    "RawSha256": "1fa0709a2098b3e3be8be1998d9e08931e0f09996dfdccf5c0a2ea33ec518b2a",
+    "PublishedSha256": "8a6acc04e622ce7119a20b8d4fcff2dc5c53ee6f9e3d2f3c79263c3fccce01b9",
+    "RawLocation": "local .artifacts/ux-maintenance-p2-04/close-red.log",
+    "PublishedMeaning": "Explicit worktree-path-normalized derivative; raw remains local, no claim that published bytes are raw"
+  },
+  {
+    "Path": "close-generation-first-failure.log",
+    "RawSha256": "5ad88b0e935a1189537e7d95b4d9f9ceaa4efa4ea8594a33b47c7baff9467340",
+    "PublishedSha256": "b626f630bd5be6946545d6a8a5312612698f8bb89d560940e24121ef39e091c4",
+    "RawLocation": "local .artifacts/ux-maintenance-p2-04/close-generation-first-failure.log",
+    "PublishedMeaning": "Explicit worktree-path-normalized derivative; raw remains local, no claim that published bytes are raw"
+  },
+  {
+    "Path": "close-reentrancy-red.log",
+    "RawSha256": "8b239e7f00a465940aab46ace881f4ee4a52585fd185337b9424efd44a01bbc4",
+    "PublishedSha256": "4769d3bf79a4bbbfd4ccb876998aef585ce2ee8757905ff459ee0b81f0571c38",
+    "RawLocation": "local .artifacts/ux-maintenance-p2-04/close-reentrancy-red.log",
+    "PublishedMeaning": "Explicit worktree-path-normalized derivative; raw remains local, no claim that published bytes are raw"
+  },
+  {
+    "Path": "close-green.log",
+    "RawSha256": "1cbff51301163cd8f5ff93a2e3e90d8edfe483d6c3e0bc14eb68f14086c5eb8c",
+    "PublishedSha256": "1cbff51301163cd8f5ff93a2e3e90d8edfe483d6c3e0bc14eb68f14086c5eb8c",
+    "RawLocation": "local .artifacts/ux-maintenance-p2-04/close-green.log",
+    "PublishedMeaning": "Explicit worktree-path-normalized derivative; raw remains local, no claim that published bytes are raw"
+  },
+  {
+    "Path": "configuration.log",
+    "RawSha256": "73623e0ab32cff18583942e187e10aea48f764e28f101c03ff8dbe5aa8f97e97",
+    "PublishedSha256": "73623e0ab32cff18583942e187e10aea48f764e28f101c03ff8dbe5aa8f97e97",
+    "RawLocation": "local .artifacts/ux-maintenance-p2-04/configuration.log",
+    "PublishedMeaning": "Explicit worktree-path-normalized derivative; raw remains local, no claim that published bytes are raw"
+  },
+  {
+    "Path": "presentation.log",
+    "RawSha256": "25888d5a866ca255c883eda7c78478e4432fcd5c896d0045af75d9b0f27d710d",
+    "PublishedSha256": "25888d5a866ca255c883eda7c78478e4432fcd5c896d0045af75d9b0f27d710d",
+    "RawLocation": "local .artifacts/ux-maintenance-p2-04/presentation.log",
+    "PublishedMeaning": "Explicit worktree-path-normalized derivative; raw remains local, no claim that published bytes are raw"
+  },
+  {
+    "Path": "sportmaster-ui.log",
+    "RawSha256": "90ba13cddbec1661a89acce98586c6726083339ab0797802f9c60ee7970c4b9d",
+    "PublishedSha256": "90ba13cddbec1661a89acce98586c6726083339ab0797802f9c60ee7970c4b9d",
+    "RawLocation": "local .artifacts/ux-maintenance-p2-04/sportmaster-ui.log",
+    "PublishedMeaning": "Explicit worktree-path-normalized derivative; raw remains local, no claim that published bytes are raw"
+  },
+  {
+    "Path": "wpf-sportmaster.log",
+    "RawSha256": "e23089a4f4fd3df73898e570039c80d6911a3accbb7fbaa16e38e82b21a95654",
+    "PublishedSha256": "55f9ae9aeaecc4cb681aa76745edc6901e08db186dd413c5cd77b6b2a07089c1",
+    "RawLocation": "local .artifacts/ux-maintenance-p2-04/wpf-sportmaster.log",
+    "PublishedMeaning": "Explicit worktree-path-normalized derivative; raw remains local, no claim that published bytes are raw"
+  },
+  {
+    "Path": "wpf-direct-plc.log",
+    "RawSha256": "ff229341c20fab4ca14e8a2082a177dc92d99aba53e6e5f6988abae020a020d3",
+    "PublishedSha256": "0e6a7bb4e4d069569568389b955a2e983538abf34a64e76968b56113b06aaebd",
+    "RawLocation": "local .artifacts/ux-maintenance-p2-04/wpf-direct-plc.log",
+    "PublishedMeaning": "Explicit worktree-path-normalized derivative; raw remains local, no claim that published bytes are raw"
+  },
+  {
+    "Path": "wpf-wcs-to-plc.log",
+    "RawSha256": "bc794cdf58c48d4a8849af4c89f0ab28e02fa8be176d6f590ad640c7fa2e8cec",
+    "PublishedSha256": "dd08d66bc19992aed79467b71b6e42e6ea04dca87964094e8ab5cf0290540e03",
+    "RawLocation": "local .artifacts/ux-maintenance-p2-04/wpf-wcs-to-plc.log",
+    "PublishedMeaning": "Explicit worktree-path-normalized derivative; raw remains local, no claim that published bytes are raw"
+  },
+  {
+    "Path": "native-build.log",
+    "RawSha256": "8cf6cbddf234bfce80fb89093abd64b50c153d14839beb3e415893cb51ec45fc",
+    "PublishedSha256": "344d223af3d0903e9cd42d4b4cbec48ffd6e62db8faeb53e3498a1ce4977f1ef",
+    "RawLocation": "local .artifacts/ux-maintenance-p2-04/native-build.log",
+    "PublishedMeaning": "Explicit worktree-path-normalized derivative; raw remains local, no claim that published bytes are raw"
+  }
+]

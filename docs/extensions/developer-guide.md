@@ -1,6 +1,6 @@
-> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.2/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
+> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 
-> 本分支UX修复改变公共契约字节，参考能力2.2.4、reader1.3.4、RCS1.1.4须用冻结宿主重新构建/签名；实际身份与运行资格另记。修改前说明固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)，旧包和原请求不重签或覆盖。
+> 本分支UX修复改变公共契约字节，参考能力2.2.5、reader1.3.5、RCS1.1.5须用冻结宿主重新构建/签名；实际身份与运行资格另记。修改前说明固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)，旧包和原请求不重签或覆盖。
 
 > RCS增量01：[Sportmaster RCS分拣任务服务](../runtime/sportmaster-rcs-task.md)。已继承main PR26/28；本分支公共契约1.9.0、Parcel数据库7（SQL1–6原样继承），旧请求/接收责任仍按获授权核对恢复链保留。初轮4c9d51c候选与最终整合候选分别记录；Windows实际NOT_RUN，真实RCS/设备/现场BLOCKED。
 

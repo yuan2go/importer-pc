@@ -3,6 +3,7 @@
  <ProjectReference Include="../../src/Ipc.Application.Supply/Ipc.Application.Supply.csproj"/>
  <ProjectReference Include="../../src/Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj"/>
  <Compile Include="../../src/Ipc.Assembly/OriginalParcelQuery.cs" Link="OriginalParcelQuery.cs"/>
+ <Compile Include="../../src/Ipc.Assembly/DeploymentComponentReview.cs" Link="DeploymentComponentReview.cs"/>
  <Compile Include="../../src/Ipc.Assembly/ExtensionConsumerReaders.cs" Link="ExtensionConsumerReaders.cs"/>
  <Compile Include="../../src/Ipc.Assembly/ParcelCapabilityFactory.cs" Link="ParcelCapabilityFactory.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs" Link="Client/ParcelSnapshotValidity.cs"/>

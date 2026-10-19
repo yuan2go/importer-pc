@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "D:\projects\importer-pc\docs\runtime\evidence\commercial-productization-01\verify-inventories.py", line 12, in <module>
+    lock=json.loads((medium/'ASSEMBLY.json').read_bytes())
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Scoop\apps\python\current\Lib\pathlib\__init__.py", line 777, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\pathlib\__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\projects\\importer-pc\\.artifacts\\comm-review-47\\releases\\direct-plc-022c898-win-x64\\ASSEMBLY.json'

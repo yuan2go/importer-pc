@@ -90,6 +90,35 @@ class ReleaseTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.verify()
 
+    def test_reuse_requires_original_source_hash_and_exact_expanded_inventory(self):
+        archive = self.seal()
+        row = dict(Application='inspection', Target='portable', SourceCommit=self.source,
+                   Zip=archive.name, ZipSha256=release.sha(archive))
+        manifest = self.output.parent / 'reuse.json'
+        release.write(manifest, [row])
+        self.assertEqual(release.reuse_candidates(self.output.parent, manifest, self.source),
+                         {('inspection', 'portable'): self.output})
+        release.write(manifest, [dict(row, SourceCommit='b' * 40)])
+        with self.assertRaises(ValueError):
+            release.reuse_candidates(self.output.parent, manifest, self.source)
+        release.write(manifest, [dict(row, ZipSha256='A' * 64)])
+        with self.assertRaises(ValueError):
+            release.reuse_candidates(self.output.parent, manifest, self.source)
+        release.write(manifest, [row])
+        (self.output / 'injection.dll').write_bytes(b'extra')
+        with self.assertRaises(ValueError):
+            release.reuse_candidates(self.output.parent, manifest, self.source)
+
+    def test_reuse_refuses_duplicate_or_escaping_original_names(self):
+        archive = self.seal()
+        row = dict(Application='inspection', Target='portable', SourceCommit=self.source,
+                   Zip=archive.name, ZipSha256=release.sha(archive))
+        manifest = self.output.parent / 'reuse.json'
+        for records in ([row, row], [dict(row, Zip='../candidate.zip')]):
+            release.write(manifest, records)
+            with self.assertRaises(ValueError):
+                release.reuse_candidates(self.output.parent, manifest, self.source)
+
 
 class Pr48ReleaseTests(unittest.TestCase):
     def make(self, root):

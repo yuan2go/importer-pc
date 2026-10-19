@@ -1,0 +1,7 @@
+PASS canonical manifest hashes, sizes and Git blobs for every changed/new authorized file
+PASS untouched file records and all historical publication objects preserved; self hash valid
+PASS seven original Git-byte snapshots; D/RV/technical baseline and original UI assets unchanged
+PASS added current-document local links and anchors; historical custody is checked separately
+PASS public delta excludes private key/token material, local artifacts and unrelated user workbook
+PASS core/WPF/component receipts agree on one frozen source and medium inventory
+PASS all latest-main publication metadata plus original PR47 review object preserved; final55025ce media/receipts agree

@@ -1,0 +1,319 @@
+{
+  "schema_version": 1,
+  "work_package": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+  "date": "2026-10-20",
+  "baseline_main": "c445b0ec32a3db44f00a1968f3c501aa36eb786f",
+  "branch": "codex/commercial-productization-01",
+  "sdk": "10.0.402",
+  "business_version": "1.4.0",
+  "application_contracts": "1.10.0",
+  "parcel_storage": 8,
+  "engineering_status": "REVIEW_REPAIRED_EXECUTABLE_CORE_COMPLETE_EXTERNAL_ACCEPTANCE_OUTSTANDING",
+  "production_status": "NOT_READY",
+  "historical_d_rv": "UNCHANGED",
+  "public_scope": "AUTHORIZED_GENERIC_CODE_AND_SYNTHETIC_BOUNDED_NATIVE_EVIDENCE_ONLY",
+  "not_run": [
+    {
+      "id": "N01",
+      "status": "NOT_RUN",
+      "scope": "Privileged default/custom program-root install, UAC accept/cancel, pre/post-registration interruption, same-source program repair and authority readback",
+      "reason": "Current authorized execution environment is non-elevated; no provisioned Windows installation sandbox or interactive privileged journey performed"
+    },
+    {
+      "id": "N02",
+      "status": "NOT_RUN",
+      "scope": "Two actual Windows accounts and installed data/program ACL negatives, filtered runtime plus truly elevated/service launch",
+      "reason": "No second designated real account/provisioned policy session; pure shared decision and current nonadmin denial are separately PASS"
+    },
+    {
+      "id": "N03",
+      "status": "NOT_RUN",
+      "scope": "ARP actual modify/uninstall, actual MoveFileEx restart queue, post-reboot cleanup and repeated actual batch installation; real file-sharing failure/internal inventory reentry is separately PASS",
+      "reason": "Requires a provisioned privileged Windows installation/reboot sandbox"
+    },
+    {
+      "id": "N04",
+      "status": "NOT_RUN",
+      "scope": "Actual cross-user/machine DPAPI continuation, privileged first-run/repair full journey",
+      "reason": "Current-host DPAPI and actual crypt32 refusal of synthetic invalid ciphertext verified; no second machine/account or privileged full journey"
+    },
+    {
+      "id": "N05",
+      "status": "NOT_RUN",
+      "scope": "Original full1440x900 client/high-DPI/touch/screen-reader/hardware-input matrix",
+      "reason": "Current work area1536x816 DIP cannot fit original assertion; no target touch/reader hardware. Original assertion retained, bounded1100x600 native checks separately PASS"
+    },
+    {
+      "id": "N06",
+      "status": "NOT_RUN",
+      "scope": "Real prolonged throughput, actual faulty disk/full volume and production storage/export capacity commitments",
+      "reason": "No field workload or dedicated fault-volume environment; bounded/cancel/quota/concurrency invariants exercised synthetically"
+    },
+    {
+      "id": "N07",
+      "status": "NOT_RUN",
+      "scope": "Protected original-machine registration pointer switch and authenticated restored-root handoff confirmation",
+      "reason": "No actual protected deployment; database identity/source fence/isolation/old-backup and DB7 rejection executed in core"
+    },
+    {
+      "id": "N08",
+      "status": "NOT_RUN_ENVIRONMENT",
+      "scope": "Developer source/payload symlink rejection fixture",
+      "reason": "WinError1314 creating the test link before product assertion; no skip or weakened assertion"
+    }
+  ],
+  "blocked": [
+    {
+      "id": "B01",
+      "status": "BLOCKED",
+      "scope": "Vendor driver installers, actual SDK/protocol endpoints, redistribution/trust inputs, stable physical identities and connected devices",
+      "reason": "No authorized real inputs; no SDK/protocol invented, no equipment controlled"
+    },
+    {
+      "id": "B02",
+      "status": "BLOCKED",
+      "scope": "Per-composition Production qualification, real accounts/secrets/device/contract/exact package compatibility and external allocation ranges",
+      "reason": "Simulation/TestOnly signatures and reference ports do not confer Production qualification"
+    },
+    {
+      "id": "B03",
+      "status": "BLOCKED",
+      "scope": "Cross-machine source retirement, secret scope conversion and physical/external range handoff",
+      "reason": "Missing independently verifiable original-machine/device/secret/range evidence; isolated restore remains guarded"
+    },
+    {
+      "id": "B04",
+      "status": "BLOCKED",
+      "scope": "Commercial code signing, production support data authorization and field go-live acceptance",
+      "reason": "No signing identity/field authorization or approval evidence; not fabricated"
+    },
+    {
+      "id": "B05",
+      "status": "BLOCKED",
+      "scope": "Automatic same-machine adoption for legacy DB/ledger without original DPAPI machine custody",
+      "reason": "Never mint replacement origin evidence for existing ledgers; complete backup and isolated restore remain usable"
+    }
+  ],
+  "not_triggered": [
+    "License charging/activation service",
+    "Central or remote monitoring/control",
+    "OEM/multilingual platform",
+    "DirectPlc complete UI (explicitly deferred)"
+  ],
+  "review_start_head": "c74c01ef87e2a7f6ecfa29856699e74999b167a7",
+  "review_document_first_commit": "ee769f0",
+  "runtime_source_commit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+  "fixture_commit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+  "media_file": "media-identities.json",
+  "historical_evidence": "../commercial-productization-01/checks.json",
+  "units": [
+    {
+      "id": "COMM-00",
+      "implementation": "CORE_IMPLEMENTED_AND_REVIEWED",
+      "checks": "DOC/MANIFEST",
+      "coverage": "Pre-code review ee769f0; old originals/D/RV/objects preserved",
+      "acceptance": "BOUNDED_PASS_WITH_DECLARED_NOT_RUN_BLOCKED"
+    },
+    {
+      "id": "COMM-01",
+      "implementation": "CORE_IMPLEMENTED_AND_REVIEWED",
+      "checks": "COMPONENT/PERMISSION/INVENTORY",
+      "coverage": "Protected paths/helper/registration inherited; static acceptance and nonadmin refusal",
+      "acceptance": "BOUNDED_PASS_WITH_DECLARED_NOT_RUN_BLOCKED"
+    },
+    {
+      "id": "COMM-02",
+      "implementation": "CORE_IMPLEMENTED_AND_REVIEWED",
+      "checks": "CORE/WPF/READINESS",
+      "coverage": "First configuration before runtime; explicit repair; missing-ledger/database refusal",
+      "acceptance": "BOUNDED_PASS_WITH_DECLARED_NOT_RUN_BLOCKED"
+    },
+    {
+      "id": "COMM-03",
+      "implementation": "CORE_IMPLEMENTED_AND_REVIEWED",
+      "checks": "CORE/WPF",
+      "coverage": "Replacement draft restores atomically; unreadable DPAPI draft preserves ciphertext and editor",
+      "acceptance": "BOUNDED_PASS_WITH_DECLARED_NOT_RUN_BLOCKED"
+    },
+    {
+      "id": "COMM-04",
+      "implementation": "CORE_IMPLEMENTED_AND_REVIEWED",
+      "checks": "WPF",
+      "coverage": "Two native layouts/pages share the original runtime and keyboard/long-code state",
+      "acceptance": "BOUNDED_PASS_WITH_DECLARED_NOT_RUN_BLOCKED"
+    },
+    {
+      "id": "COMM-05",
+      "implementation": "CORE_IMPLEMENTED_AND_REVIEWED",
+      "checks": "CORE/WPF",
+      "coverage": "Original Unknown request remains fixed and never resends; original health/epoch guards retained",
+      "acceptance": "BOUNDED_PASS_WITH_DECLARED_NOT_RUN_BLOCKED"
+    },
+    {
+      "id": "COMM-06",
+      "implementation": "CORE_IMPLEMENTED_AND_REVIEWED",
+      "checks": "CORE/WPF",
+      "coverage": "Fixed history bounds/filter, independent read/export, exact long text/formula safety, cancellation",
+      "acceptance": "BOUNDED_PASS_WITH_DECLARED_NOT_RUN_BLOCKED"
+    },
+    {
+      "id": "COMM-07",
+      "implementation": "CORE_IMPLEMENTED_AND_REVIEWED",
+      "checks": "CORE/REMOVAL/PERMISSION/OLD_READER",
+      "coverage": "Same-source Repair; bounded whitelist cleanup and completed-root reentry; no downgrade",
+      "acceptance": "BOUNDED_PASS_WITH_DECLARED_NOT_RUN_BLOCKED"
+    },
+    {
+      "id": "COMM-08",
+      "implementation": "CORE_IMPLEMENTED_AND_REVIEWED",
+      "checks": "CORE",
+      "coverage": "Complete/scheduled backup and isolated restore; DPAPI origin and bounded fenced lineage; legacy origin absent refuses adoption",
+      "acceptance": "BOUNDED_PASS_WITH_DECLARED_NOT_RUN_BLOCKED"
+    },
+    {
+      "id": "COMM-09",
+      "implementation": "CORE_IMPLEMENTED_AND_REVIEWED",
+      "checks": "CORE/WPF",
+      "coverage": "Exact support preview bytes, secret exclusions and actual offline support window",
+      "acceptance": "BOUNDED_PASS_WITH_DECLARED_NOT_RUN_BLOCKED"
+    },
+    {
+      "id": "COMM-10",
+      "implementation": "CORE_IMPLEMENTED_AND_REVIEWED",
+      "checks": "INVENTORY/CORE/WPF/COMPONENT/REMOVAL",
+      "coverage": "Three Applications x two targets from exact source; same frozen Windows medium critical journeys",
+      "acceptance": "BOUNDED_PASS_WITH_DECLARED_NOT_RUN_BLOCKED"
+    }
+  ],
+  "actual_checks": [
+    {
+      "id": "CORE",
+      "status": "PASS",
+      "receipt": "core-result.json"
+    },
+    {
+      "id": "WPF",
+      "status": "PASS",
+      "receipt": "wpf-result.json"
+    },
+    {
+      "id": "COMPONENT",
+      "status": "PASS",
+      "receipt": "component-result.json"
+    },
+    {
+      "id": "REMOVAL",
+      "status": "PASS",
+      "receipt": "removal-result.json"
+    },
+    {
+      "id": "INVENTORY",
+      "status": "PASS",
+      "log": "inventory.log"
+    },
+    {
+      "id": "INHERITED_PUBLICATION_GATES",
+      "status": "PASS_9_TESTS",
+      "log": "unified-integration-tests.log"
+    }
+  ],
+  "review_findings": [
+    {
+      "id": "first-configuration-route",
+      "status": "FIXED_BOUNDED_VERIFIED",
+      "evidence": "core.log;wpf.log;native-readiness.log"
+    },
+    {
+      "id": "missing-original-ledger-or-database",
+      "status": "FIXED_BOUNDED_VERIFIED",
+      "evidence": "core.log"
+    },
+    {
+      "id": "partial-draft-restore",
+      "status": "FIXED_BOUNDED_VERIFIED",
+      "evidence": "core.log"
+    },
+    {
+      "id": "uninstall-completed-root-reentry",
+      "status": "FIXED_BOUNDED_VERIFIED",
+      "evidence": "removal.log"
+    },
+    {
+      "id": "copied-policy-is-not-machine-proof",
+      "status": "FIXED_BOUNDED_VERIFIED",
+      "evidence": "core.log"
+    },
+    {
+      "id": "unreadable-recovered-DPAPI-draft",
+      "status": "FIXED_BOUNDED_VERIFIED",
+      "evidence": "wpf.log;native-readiness.log"
+    },
+    {
+      "id": "missing-previously-started-database-without-raw-files",
+      "status": "FIXED_BOUNDED_VERIFIED",
+      "evidence": "core.log",
+      "source_fix": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa"
+    }
+  ],
+  "incoming_review_thread": {
+    "id": "PRRT_kwDOVLQU8s6uBL7f",
+    "status": "RESOLVED_AFTER_ACTUAL_FROZEN_WPF_PASS",
+    "runtime_fix": "a14281737095108686e9f1bb6ead69ede02f9305"
+  },
+  "preserved_failures": [
+    {
+      "scope": "initial development core build",
+      "status": "FAILED_THEN_FIXED",
+      "evidence": "build-core-missing-reference.log",
+      "reason": "Missing existing DeploymentComponentReview source link; same source linked then final build passes"
+    },
+    {
+      "scope": "aggregate inventory input readiness",
+      "status": "NOT_READY_THEN_RETRIED_WITH_COMPLETE_MEDIA",
+      "evidence": "inventory-input-not-ready.log",
+      "reason": "Started before DirectPlc Windows output completed; original error retained; all-six check runs in a fresh output directory"
+    },
+    {
+      "scope": "bb90598/a142817 intermediate candidate builds",
+      "status": "SUPERSEDED_INTERRUPTED_NOT_RELEASED",
+      "reason": "Incoming review and pre-execution fixture correction; original logs/interruption receipts retained locally"
+    },
+    {
+      "scope": "Parallel old-head main merge",
+      "status": "RECONCILED_WITH_NORMAL_MERGE_AND_FRESH_MEDIA",
+      "reason": "PR47 merged c74c01e while review ongoing; PR53 carries final differences; no older package relabeled"
+    }
+  ],
+  "repository_gate": {
+    "main_protected": false,
+    "rulesets": [],
+    "protection_detail": "403 Resource not accessible by integration; no administration permission",
+    "ci": "No configured check/status returned at review; final head rechecked before server merge",
+    "merge": "PR53 expected-final-head server merge; no protection changes, force or bypass; PR47 original external merge remains76fefc8"
+  },
+  "integration_base_main": "aaa30b57cf8f810637b6502748783cdab66bbf36",
+  "reviewed_pr": 47,
+  "delivery_pr": 53,
+  "historical_review_evidence": "../pr47-commercial-productization-review/checks.json",
+  "integration_reason": "External PR47 old-head merge plus PR48–51 publication/custody integration and final original-startup-facts/missing-database guard",
+  "inherited_bounded_checks": [
+    {
+      "id": "READINESS",
+      "source_commit": "022c898f138a1326eec9134f8f18724a07fea5c4",
+      "status": "INHERITED_PASS_UNCHANGED_AFFECTED_IMPLEMENTATION",
+      "evidence": "../pr47-commercial-productization-review/native-readiness.log"
+    },
+    {
+      "id": "PERMISSION",
+      "source_commit": "022c898f138a1326eec9134f8f18724a07fea5c4",
+      "status": "INHERITED_PASS_UNCHANGED_AFFECTED_IMPLEMENTATION",
+      "evidence": "../pr47-commercial-productization-review/permission.log"
+    },
+    {
+      "id": "OLD_READER",
+      "source_commit": "022c898f138a1326eec9134f8f18724a07fea5c4",
+      "status": "INHERITED_PASS_UNCHANGED_AFFECTED_IMPLEMENTATION",
+      "evidence": "../pr47-commercial-productization-review/old-reader.log"
+    }
+  ]
+}

@@ -21,6 +21,24 @@ static partial class Program
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
         File.WriteAllText(Path.Combine(configRoot, "business.json"), Wire.Encode(config));
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
+        if (Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)
+        {
+            var draftFile = Path.Combine(launch.DataRoot, config.Mode.ToString(), config.StationId, config.ApplicationId, "startup-maintenance/editor-draft.bin");
+            Directory.CreateDirectory(Path.GetDirectoryName(draftFile)!); File.WriteAllBytes(draftFile, [1, 2, 3, 4]); var draftHash = Wire.FileHash(draftFile);
+            var desktop = System.Reflection.Assembly.LoadFrom(desktopPath);
+            var type = desktop.GetType("Ipc.Desktop.StartupRepairWindow", throwOnError: true)!;
+            var first = (Window)Activator.CreateInstance(type, [launch, null, true])!;
+            first.Show();
+            for (var i = 0; i < 100 && !Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("草稿不可用")); i++) await Task.Delay(20);
+            first.UpdateLayout();
+            Check(first.Title.Contains("首次工位配置") && Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "保存首配待生效…")) &&
+                Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "按当前首配启动")), "actual published desktop first-configuration window exposes explicit save/start through the existing editor");
+            Check(!Directory.GetFiles(launch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && !Directory.GetFiles(launch.DataRoot, "configuration.json", SearchOption.AllDirectories).Any(),
+                "first-configuration native read creates neither database nor authoritative configuration");
+            Check(Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("草稿不可用")) && Descendants(first).OfType<TextBox>().Any(t => t.Text == config.TimeoutMs.ToString()) && Wire.FileHash(draftFile) == draftHash,
+                "actual Windows DPAPI refusal leaves the original ciphertext unchanged while the published offline editor loads configuration fields and an explicit unavailable-draft diagnosis");
+            Screenshot(first, Path.Combine(evidence, "commercial-first-configuration.png")); first.Close();
+        }
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); var identity = (await runtime.SnapshotAsync()).RuntimeId;
         var classic = (ShellWindow)Presentation.Create(runtime, null, "standard"); var alternate = (SupplyStationWindow)Presentation.Create(runtime, null, "standard", "supply-station");

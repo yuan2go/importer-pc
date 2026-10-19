@@ -21,6 +21,11 @@ if (args.FirstOrDefault() == "--windows-runtime-setup")
     return;
 }
 
+if (args.FirstOrDefault() == "--commercial-removal")
+{
+    CommercialRemovalVerification.Run(Path.Combine(Path.GetTempPath(), "ipc-removal-" + Wire.Id()));
+    return;
+}
 SupplyContractRegistration.Register();
 
 if (args.FirstOrDefault() == "--extension-interrupt")

@@ -1,0 +1,101 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-0fa9681bb7604bc49a8ac1c1d392d49d
+PASS SMUI: omitted --ui preserves classic default
+PASS SMUI: UI selection preserves configuration, data, page and layout arguments
+PASS SMUI: sportmaster accepts explicit classic
+PASS SMUI: direct-plc accepts explicit classic
+PASS SMUI: wcs-to-plc accepts explicit classic
+PASS SMUI: supply accepts explicit classic
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui --view
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui unknown
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui Supply-Station
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --ui classic --ui supply-station
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --unknown value
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --layout
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: --data-root one --data-root two
+PASS SMUI: sportmaster rejects invalid arguments before runtime construction: orphan
+PASS SMUI: direct-plc rejects invalid arguments before runtime construction: --ui supply-station
+PASS SMUI: wcs-to-plc rejects invalid arguments before runtime construction: --ui supply-station
+PASS SMUI: supply rejects invalid arguments before runtime construction: --ui supply-station
+PASS SMUI: classic, alternate and auxiliary models share the actual application and runtime identity
+PASS SMUI: schema3 projects two independently admissible real positions
+PASS SMUI: same barcode has independently retained entity drafts
+PASS SMUI: actual double-position input retains leading zeros, distinct admissions and correctly bound operations
+PASS SMUI: position histories and configured reader identities remain isolated
+PASS SMUI: second UI creates no runtime, device epoch, PLC phase or duplicate WCS execution
+PASS SMUI: right actual receiver keeps original business payload and reader binding
+PASS SMUI: left actual receiver keeps original business payload and reader binding
+PASS SMUI: alternate history loads actual paginated records and selects the originating left operation
+PASS SMUI: opening right history replaces left detail and highlighted selection together
+PASS SMUI: opening general history clears previous operation highlight and detail
+PASS SMUI: repeated reference clicks retain admission identity and cannot repeat original requests
+PASS SMUI: refresh/navigation preserve stable position objects and each window's explicit drafts
+PASS SMUI: auxiliary window owns drafts while sharing business facts
+PASS SMUI: read failure retains original facts/time as stale and disables position actions
+PASS SMUI: stale action methods issue no application command, query or admission
+PASS SMUI: new successful read recovers freshness without resetting business
+PASS SMUI: snapshot deadline expires even without a thrown read error
+PASS SMUI: expired snapshot cannot dispatch position actions
+PASS SMUI: thrown application snapshot failure visibly invalidates last display
+PASS SMUI: command read failure owns its diagnostic while projection is stale
+PASS SMUI: successful recovery removes only the read failure banner
+PASS SMUI: snapshot recovery preserves a later unrelated business message
+PASS SMUI: late obsolete failure cannot invalidate newer successful snapshot
+PASS SMUI: successful real command refresh updates snapshot through inherited RunAsync
+PASS SMUI: old poll failure cannot invalidate newer successful inherited command refresh
+PASS SMUI: right device fault projection cannot overwrite left identity, device readiness or application guard
+PASS SMUI: real pause advances revision for refresh ordering test
+PASS SMUI: late older refresh cannot overwrite newer actual application revision or guards
+PASS SMUI: lower revision is rejected even when returned by a later refresh
+PASS SMUI: unmatched current operation never falls back to another historical entity or position
+PASS SMUI: inherited command refresh failure immediately invalidates the display and retains successful read time
+PASS SMUI: no position action reaches application after failed inherited command refresh
+PASS SMUI: Pause initial snapshot shares the alternate UI failure policy
+PASS SMUI: configuration confirmation snapshot shares the alternate UI failure policy
+PASS SMUI: older poll success cannot undo newer failed Pause read
+PASS SMUI: older poll success cannot undo newer failed ConfirmConfiguration read
+PASS SMUI: older poll success before newer Pause failure cannot keep display fresh
+PASS SMUI: failed Pause after older success prevents application admission
+PASS SMUI: older poll success before newer ConfirmConfiguration failure cannot keep display fresh
+PASS SMUI: failed ConfirmConfiguration after older success prevents application admission
+PASS SMUI: older poll success before newer CommandRefresh failure cannot keep display fresh
+PASS SMUI: failed CommandRefresh after older success prevents application admission
+PASS SMUI: late command refresh failure cannot invalidate a newer successful poll
+PASS SMUI: a newer pending read is not proof of success and cannot hide an observed failure
+PASS SMUI: newer successful Pause and display read recover the failed projection
+PASS SMUI: failed earlier read marks stale while later display read is pending
+PASS SMUI: already pending newer poll can recover without an extra refresh after failure
+PASS SMUI: deadline expiry visibly retains last successful read time
+PASS SMUI: minimum effective client area remains usable at the exact boundary
+PASS SMUI: 1366 at 125 percent equivalent client area protects all new position actions
+PASS SMUI: small client area dispatches no position action
+PASS SMUI: 1366 at 150 percent remains protected without repeated size-entry notifications
+PASS SMUI: restored area cannot acknowledge before a confirmed paused snapshot
+PASS SMUI: existing software Pause preserves application and original operations for viewport protection
+PASS SMUI: manual viewport acknowledgement keeps business paused until explicit Resume
+PASS SMUI: one DIP below minimum width re-enters protection
+PASS SMUI: one DIP below minimum height remains protected
+PASS SMUI: invalid client geometry cannot authorize a view
+PASS SMUI: restored geometry and stale pause facts cannot clear viewport protection
+PASS SMUI: explicit post-confirmation Resume preserves original requests and creates no business instance
+PASS SMUI: accepted prior left slot is shown before next entity
+PASS SMUI: same-operation refresh retains each position's own inspection draft
+PASS SMUI: latest left Unknown clears displayed old slot, retains historical acceptance and leaves right position independent
+PASS SMUI: new left operation clears previous entity inspection without clearing unchanged right draft
+PASS SMUI: lost reply follows a real independent receiver commit
+PASS SMUI: UI reconciliation queries exact original request without another admission or send
+PASS SMUI: uncertainty keeps the same owner and runtime
+PASS SMUI: real WCS rejection remains distinct from Unknown or slot acceptance
+PASS SMUI: schema2 explicitly maps single main to left and disables unsupported right
+PASS SMUI: legacy UI never mirrors one operation into a second physical position or admits right
+PASS SMUI: real dual weight recovery setup admits both original entities
+PASS SMUI: restart projects each real recovery responsibility and software pause closes continue guards
+PASS SMUI: explicit software resume opens continuation without confirming either original entity
+PASS SMUI: blank inspection cannot clear original recovery responsibility or send WCS
+PASS SMUI: concurrent revision change rejects displayed CAS instead of silently authorizing stale inspection
+PASS SMUI: left continuation forwards displayed revision, original target and inspection reason despite right history selection
+PASS SMUI: confirmed left recovery neither confirms right nor invents weight or a WCS send
+PASS SMUI: actual left measurement enters original recovery chain
+PASS SMUI: continued original left completes WCS once while unconfirmed right remains untouched
+PASS SMUI COMPLETE: actual application integration and alternate UI projection; Windows UI NOT_RUN

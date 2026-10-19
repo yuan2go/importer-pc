@@ -27,6 +27,10 @@ def read_business(root, application, selection):
     declared = next(c['version'] for c in selection['components'] if c['id'] == 'application.' + application)
     if not re.fullmatch(r'(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)', version or '') or declared != version:
         raise ValueError('Business project version and composition differ')
+    contract = ET.parse(root / 'src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj').findtext('./PropertyGroup/Version')
+    declared_contract = next(c['version'] for c in selection['components'] if c['id'] == 'application-contracts')
+    if declared_contract != contract:
+        raise ValueError('Application contract project version and composition differ')
     policy = root / 'config/compatibility' / (application + '.json')
     declaration = json.loads(policy.read_bytes())
     if declaration['SchemaVersion'] != 1 or declaration['ApplicationId'] != application:

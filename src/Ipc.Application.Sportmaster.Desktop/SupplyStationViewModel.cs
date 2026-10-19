@@ -104,6 +104,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
 public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
 {
     readonly string requestedPosition;
+    readonly SupplyStationViewModel owner;
     public event PropertyChangedEventHandler? PropertyChanged;
     public string PositionId { get; private set; }
     public string Heading => PositionId == "main" ? "MAIN · 单读码兼容位" : requestedPosition == "left" ? "LEFT · 左投递位" : "RIGHT · 右投递位";
@@ -111,7 +112,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string ReaderId { get; private set; } = "未配置";
     public ParcelOperation? Operation { get; private set; }
     public string Barcode => Operation?.ParcelCode ?? "等待包裹";
-    public string Slot => Operation?.Wcs?.State == StageState.Accepted ? Operation.Slot ?? "未取得" : "未取得";
+    public string Slot => !owner.Fresh ? "旧格口已失效" : Operation?.Wcs?.State == StageState.Accepted ? Operation.Slot ?? "未取得" : "未取得";
     public string Status { get; private set; } = "正在初始化";
     public string DeviceStatus { get; private set; } = "设备状态未取得";
     public string BlockingReasons { get; private set; } = "等待有效快照";
@@ -130,7 +131,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string ParcelCode { get; set; } = "000123456789";
     public string AdmissionId { get; private set; } = "parcel-" + Wire.Id();
     public SupplyStationPositionViewModel(SupplyStationViewModel owner, string position)
-    { requestedPosition = PositionId = position; }
+    { this.owner = owner; requestedPosition = PositionId = position; }
     public void NewParcel() { AdmissionId = "parcel-" + Wire.Id(); PropertyChanged?.Invoke(this, new(nameof(AdmissionId))); }
     internal void Update(ParcelSnapshot? snapshot, DateTimeOffset now, bool fresh, bool viewportReady)
     {
@@ -152,7 +153,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         CanContinue = fresh && viewportReady && Operation is { } op && snapshot?.Availability?.ContinuePrepared.Contains(op.Id) == true;
         BlockingReasons = !fresh ? "快照失效；等待状态读取恢复" : !viewportReady ? "视图空间保护；恢复客户区并人工确认" : binding is null ? "当前配置未启用该投递位" :
             position is null ? "尚未取得投递位状态" : string.Join("\n", position.BlockingReasons);
-        Status = binding is null ? "未启用" : position?.CurrentOperation is not null && Operation is null ? "当前作业身份未匹配 · 等待新快照" : Operation is null ? "等待包裹入场" : StageText(Operation.State);
+        Status = !fresh ? "旧作业状态已失效 · 等待新快照" : binding is null ? "未启用" : position?.CurrentOperation is not null && Operation is null ? "当前作业身份未匹配 · 等待新快照" : Operation is null ? "等待包裹入场" : StageText(Operation.State);
         PropertyChanged?.Invoke(this, new(""));
     }
     public static string StageText(ParcelState state) => state switch

@@ -1,0 +1,19 @@
+test_business_version_matches_every_declared_composition (test_application_compatibility.CompatibilityTests.test_business_version_matches_every_declared_composition) ... FAIL
+
+======================================================================
+FAIL: test_business_version_matches_every_declared_composition (test_application_compatibility.CompatibilityTests.test_business_version_matches_every_declared_composition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/56081ee5bcf2/audit03-work/pr34-architecture/compatibility-1gvjbgb2/scripts/test_application_compatibility.py", line 35, in test_business_version_matches_every_declared_composition
+    self.assertEqual(version['BusinessVersion'], '1.2.4')
+AssertionError: '1.2.5' != '1.2.4'
+- 1.2.5
+?     ^
++ 1.2.4
+?     ^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.004s
+
+FAILED (failures=1)

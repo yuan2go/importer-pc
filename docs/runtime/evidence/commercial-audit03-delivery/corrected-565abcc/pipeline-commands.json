@@ -1,0 +1,202 @@
+[
+  {
+    "Name": "sportmaster-core",
+    "Command": [
+      "python3",
+      "scripts/package-application.py",
+      "--application",
+      "sportmaster",
+      "--target",
+      "portable",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/sportmaster-core",
+      "--dotnet",
+      "${DOTNET}"
+    ]
+  },
+  {
+    "Name": "direct-plc-core",
+    "Command": [
+      "python3",
+      "scripts/package-application.py",
+      "--application",
+      "direct-plc",
+      "--target",
+      "portable",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/direct-plc-core",
+      "--dotnet",
+      "${DOTNET}"
+    ]
+  },
+  {
+    "Name": "wcs-to-plc-core",
+    "Command": [
+      "python3",
+      "scripts/package-application.py",
+      "--application",
+      "wcs-to-plc",
+      "--target",
+      "portable",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/wcs-to-plc-core",
+      "--dotnet",
+      "${DOTNET}"
+    ]
+  },
+  {
+    "Name": "direct-plc-win-x64",
+    "Command": [
+      "python3",
+      "scripts/package-application.py",
+      "--application",
+      "direct-plc",
+      "--target",
+      "win-x64",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/direct-plc-win-x64",
+      "--dotnet",
+      "${DOTNET}"
+    ]
+  },
+  {
+    "Name": "wcs-to-plc-win-x64",
+    "Command": [
+      "python3",
+      "scripts/package-application.py",
+      "--application",
+      "wcs-to-plc",
+      "--target",
+      "win-x64",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/wcs-to-plc-win-x64",
+      "--dotnet",
+      "${DOTNET}"
+    ]
+  },
+  {
+    "Name": "barcode",
+    "Command": [
+      "python3",
+      "scripts/build-extension.py",
+      "--definition",
+      "examples/BarcodeExtension/extension.build.json",
+      "--contract",
+      "${WORKTREE}/.artifacts/audit03-565abcc/sportmaster-core/app/Ipc.Platform.dll",
+      "--check-host",
+      "${WORKTREE}/.artifacts/audit03-565abcc/sportmaster-core/app/Ipc.Assembly.dll",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/barcode.ipcx",
+      "--version",
+      "1.2.6",
+      "--publisher",
+      "audit03-reference",
+      "--key",
+      "/tmp/ipc-a03-signing-d374a11/publisher.pem",
+      "--trust",
+      "/tmp/ipc-a03-signing-d374a11/trust.json",
+      "--dotnet",
+      "${DOTNET}"
+    ]
+  },
+  {
+    "Name": "capabilities",
+    "Command": [
+      "python3",
+      "scripts/build-extension.py",
+      "--definition",
+      "examples/ParcelCapabilitiesExtension/extension.build.json",
+      "--contract",
+      "${WORKTREE}/.artifacts/audit03-565abcc/sportmaster-core/app/Ipc.Platform.dll",
+      "--check-host",
+      "${WORKTREE}/.artifacts/audit03-565abcc/sportmaster-core/app/Ipc.Assembly.dll",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/capabilities.ipcx",
+      "--version",
+      "2.1.6",
+      "--publisher",
+      "audit03-reference",
+      "--key",
+      "/tmp/ipc-a03-signing-d374a11/publisher.pem",
+      "--trust",
+      "/tmp/ipc-a03-signing-d374a11/trust.json",
+      "--dotnet",
+      "${DOTNET}"
+    ]
+  },
+  {
+    "Name": "rcs",
+    "Command": [
+      "python3",
+      "scripts/build-extension.py",
+      "--definition",
+      "src/Ipc.Integrations.SportmasterRcs/extension.build.json",
+      "--contract",
+      "${WORKTREE}/.artifacts/audit03-565abcc/sportmaster-core/app/Ipc.Platform.dll",
+      "--check-host",
+      "${WORKTREE}/.artifacts/audit03-565abcc/sportmaster-core/app/Ipc.Assembly.dll",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/rcs.ipcx",
+      "--version",
+      "1.0.8",
+      "--publisher",
+      "audit03-reference",
+      "--key",
+      "/tmp/ipc-a03-signing-d374a11/publisher.pem",
+      "--trust",
+      "/tmp/ipc-a03-signing-d374a11/trust.json",
+      "--dotnet",
+      "${DOTNET}"
+    ]
+  },
+  {
+    "Name": "sportmaster-selected-portable",
+    "Command": [
+      "python3",
+      "scripts/package-application.py",
+      "--application",
+      "sportmaster",
+      "--target",
+      "portable",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/sportmaster-selected-portable",
+      "--dotnet",
+      "${DOTNET}",
+      "--extension-trust",
+      "/tmp/ipc-a03-signing-d374a11/trust.json",
+      "--extension-check-host",
+      "${WORKTREE}/.artifacts/audit03-565abcc/sportmaster-core/app/Ipc.Assembly.dll",
+      "--extension-package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/barcode.ipcx",
+      "--extension-package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/capabilities.ipcx",
+      "--extension-package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/rcs.ipcx"
+    ]
+  },
+  {
+    "Name": "sportmaster-selected-win-x64",
+    "Command": [
+      "python3",
+      "scripts/package-application.py",
+      "--application",
+      "sportmaster",
+      "--target",
+      "win-x64",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/sportmaster-selected-win-x64",
+      "--dotnet",
+      "${DOTNET}",
+      "--extension-trust",
+      "/tmp/ipc-a03-signing-d374a11/trust.json",
+      "--extension-check-host",
+      "${WORKTREE}/.artifacts/audit03-565abcc/sportmaster-core/app/Ipc.Assembly.dll",
+      "--extension-package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/barcode.ipcx",
+      "--extension-package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/capabilities.ipcx",
+      "--extension-package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/rcs.ipcx"
+    ]
+  }
+]

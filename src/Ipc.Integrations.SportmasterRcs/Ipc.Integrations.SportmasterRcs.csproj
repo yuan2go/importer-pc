@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><Version>1.0.5</Version><NuGetLockFilePath Condition="'$(IpcContractDirectory)' != ''">packages.extension.lock.json</NuGetLockFilePath></PropertyGroup>
+  <PropertyGroup><Version>1.0.8</Version><NuGetLockFilePath Condition="'$(IpcContractDirectory)' != ''">packages.extension.lock.json</NuGetLockFilePath></PropertyGroup>
   <ItemGroup Condition="'$(IpcContractDirectory)' == ''">
     <ProjectReference Include="../Ipc.Application.Contracts/Ipc.Application.Contracts.csproj" />
   </ItemGroup>

@@ -1,0 +1,12 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-44fcd4c79e154818a5fe4817914d9eae
+Unhandled exception. System.IO.DirectoryNotFoundException: Could not find a part of the path '${WORKTREE}/--audit03-input/config/direct-plc/business.json'.
+   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64& fileLength, UnixFileMode& filePermissions, Boolean failForSymlink, Boolean& wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.StreamReader.ValidateArgsAndOpenPath(String path, Int32 bufferSize)
+   at System.IO.File.ReadAllText(String path, Encoding encoding)
+   at Audit03.Config(String id) in ${WORKTREE}/tests/Ipc.Application.Verification/Audit03.Inputs.cs:line 15
+   at Audit03.Inputs(String source, String evidence) in ${WORKTREE}/tests/Ipc.Application.Verification/Audit03.Inputs.cs:line 43
+   at Program.<Main>$(String[] args) in ${WORKTREE}/tests/Ipc.Application.Verification/Program.cs:line 22
+   at Program.<Main>(String[] args)

@@ -8,7 +8,10 @@ public partial class ParcelViewModel
     Exception? lastReadError;
     bool fresh;
     long appliedReadId, failedReadId;
-    public bool Fresh => fresh && lastRead is { } at && DateTimeOffset.UtcNow >= at && DateTimeOffset.UtcNow-at < TimeSpan.FromSeconds(3);
+    long lastReadTick;
+    readonly HashSet<Guid> retiredRuntimeIds = [];
+    bool MonotonicFresh => lastReadTick != 0 && System.Diagnostics.Stopwatch.GetElapsedTime(lastReadTick) < TimeSpan.FromSeconds(3);
+    public bool Fresh => fresh && MonotonicFresh && lastRead is { } at && DateTimeOffset.UtcNow >= at && DateTimeOffset.UtcNow-at < TimeSpan.FromSeconds(3);
     public string UpdatedAt => lastRead is { } at ? at.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") : "尚未取得快照";
     public string ReadStatus => !Fresh ? "快照已失效 · " + (readFailure ?? "正在读取或读取超时") + " · 最后成功读取：" + UpdatedAt : "状态更新时间 · " + UpdatedAt;
     public bool CanQueryCurrent => Fresh && Current is not null;
@@ -20,7 +23,7 @@ public partial class ParcelViewModel
     }
     void SnapshotReadApplied(long id)
     {
-        AdvanceReadId(ref appliedReadId,id); lastRead=DateTimeOffset.UtcNow; readFailure=null; lastReadError=null;
+        AdvanceReadId(ref appliedReadId,id); lastRead=DateTimeOffset.UtcNow; lastReadTick=System.Diagnostics.Stopwatch.GetTimestamp(); readFailure=null; lastReadError=null;
         if(Message==readFailureMessage)Message="";
         readFailureMessage=null; RefreshFreshness();
     }
@@ -44,7 +47,7 @@ public partial class ParcelViewModel
     public void RefreshFreshness(DateTimeOffset? at=null)
     {
         var now=at??DateTimeOffset.UtcNow;
-        fresh=lastRead is { } read && now>=read && now-read<TimeSpan.FromSeconds(3) && readFailure is null;
+        fresh=MonotonicFresh && lastRead is { } read && now>=read && now-read<TimeSpan.FromSeconds(3) && readFailure is null;
         foreach(var name in new[]{nameof(Fresh),nameof(UpdatedAt),nameof(ReadStatus),nameof(Status),nameof(Health),nameof(BlockingReasons),nameof(CanAdmit),nameof(CanResume),nameof(CanConfigure),nameof(CanContinue),nameof(CanContinueUpload),nameof(CanAbandon)})Changed(name);
         NotifyTargets(); SnapshotValidityChanged(now);
     }

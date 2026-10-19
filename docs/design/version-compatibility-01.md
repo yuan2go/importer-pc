@@ -1,3 +1,5 @@
+> 当前版本与实际支持组合以[运行指南](../runtime/version-compatibility-01.md)及内嵌声明为准：业务1.2.7、ABI1.8.0、DB7，新不可变参考包2.1.5/reader1.2.5/RCS1.0.7。下文PR29原阶段的1.2.1等按其原SHA和形成时含义保留。
+
 > PR29 P1/P2整改：原head d954ba6的组合记录重验存在配置与原事件未关联缺口，Windows恢复/卸载漏传业务程序集。整改设计与执行计划见[本包](../work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md)；旧候选与结果保持原身份，新验证另记，不以旧PASS替代。
 
 # 业务版本、兼容声明与组合证据
@@ -44,7 +46,4 @@ P2：安装/恢复/卸载共用一个发行读取与验证方法，均传实际�
 
 最新独立复审发现执行方式/验收资格可改标，本包修复既有记录器：新记录schema3在原输入事件绑定实际命令、三项场景布尔值及Windows/真实设备/Assurance；输入在启动前冻结。独立对端必须由实际Popen/健康成功事件、PID、夹具SHA与配置endpoint共同证明，不由结果字段自行声称。参考portable记录只能NOT_RUN/BLOCKED/SIMULATION_REFERENCE_ONLY。原schema1/2因没有命令冻结，保留原字节和历史结论；当前重验必须额外提供来自独立可信索引的原记录SHA，不能把自带hash冒充发布者信任。原事件配置/结果关联仍要验证，不补造旧事件。
 
-上述整合候选形成时的业务版本为1.2.3，Application.Contracts1.7.0/DB6。更新原ProviderSets为新宿主的reference.parcel-capabilities2.1.1和barcode1.2.1，并增Sportmaster RCS1.0.3允许组合，保留其他同组可选能力。旧1.2.1/2.0.1/RCS1.0.1候选及PASS不改，不重签覆盖。业务发布、内嵌声明、composition、维护和同一打包入口同步。
-
-整合main的业务1.2.4、参考能力2.1.2、reader1.2.2及RCS1.0.4见[并发整合报告](../runtime/parallel-task-reconciliation-01.md)；上述1.2.3/2.1.1/1.2.1/1.0.3为历史候选，不能作为当前安装默认值。
-本次[CQ03整改](../work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md)候选业务为1.2.5；公共契约API及SQL1–6不改；ProviderSets同步新不可变能力包2.1.3、reader1.2.3和RCS1.0.5。精确扩展是否可沿用仍按目标公共DLL校验，版本号不授予加载或现场资格。
+最终业务版本1.2.3，Application.Contracts1.7.0/DB6。更新原ProviderSets为新宿主的reference.parcel-capabilities2.1.1和barcode1.2.1，并增Sportmaster RCS1.0.3允许组合，保留其他同组可选能力。旧1.2.1/2.0.1/RCS1.0.1候选及PASS不改，不重签覆盖。业务发布、内嵌声明、composition、维护和同一打包入口同步。

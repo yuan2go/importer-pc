@@ -1,0 +1,73 @@
+{
+  "review_revision": "c07304418aa68428331ba141418edfb3519a6939",
+  "started_utc": "2026-10-19T02:44:43.681619+00:00",
+  "finished_utc": "2026-10-19T02:44:43.831719+00:00",
+  "scope": "Exactly one existing unittest method; git-show exported inputs; no source edits; no full suite",
+  "fixture_root": "/workspace/scratch/56081ee5bcf2/audit03-work/pr34-architecture/compatibility-1gvjbgb2",
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "test_application_compatibility.CompatibilityTests.test_business_version_matches_every_declared_composition",
+    "-v"
+  ],
+  "working_directory": "/workspace/scratch/56081ee5bcf2/audit03-work/pr34-architecture/compatibility-1gvjbgb2/scripts",
+  "exit_code": 1,
+  "python_version": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "inputs": [
+    {
+      "path": "scripts/test_application_compatibility.py",
+      "sha256": "c07ae388d5f82c5e173d1e2f45a76295eeaf790b4e506ae85714b7256f9984ca",
+      "bytes": 17045
+    },
+    {
+      "path": "scripts/application_compatibility.py",
+      "sha256": "582c11052493f3bd253aec331260083d351f5ccc01adaab3c820a412780d83d7",
+      "bytes": 18665
+    },
+    {
+      "path": "scripts/composition.py",
+      "sha256": "a2a6d797686e82ef8690df0dddae6bd1967213acfb1240cb9cdf62106a37864c",
+      "bytes": 1604
+    },
+    {
+      "path": "config/compositions.json",
+      "sha256": "6986abd6d360157ed35fbb0a8ffe07758cb53e191a1f2b83a428a9f1ee3df1f3",
+      "bytes": 7744
+    },
+    {
+      "path": "config/compatibility/sportmaster.json",
+      "sha256": "cd4fc256b447cac2fd5d6c60ad3628cb6ccb80ea52f59efc667335883fcfa5e4",
+      "bytes": 7125
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
+      "sha256": "1e162b72d852d46d9a6c59da4b729afc039641c7dfb11798de1b4c86ec071905",
+      "bytes": 340
+    },
+    {
+      "path": "config/compatibility/direct-plc.json",
+      "sha256": "e27c7eedde7d3f87c271ae8ffdf1e0ca314d995ad4fbea3650d40eba39019299",
+      "bytes": 3507
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
+      "sha256": "5192b7838f82e40cb61561e06950be8f49771bb3b3cbe45e7b30d2ed06f1b997",
+      "bytes": 339
+    },
+    {
+      "path": "config/compatibility/wcs-to-plc.json",
+      "sha256": "0f0eee1cf596308a4367c2d1fae808e712cf0be8d4f4e6ef305431aabb01bcad",
+      "bytes": 4297
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
+      "sha256": "f8578ab6cf5c234e8c53982b4136134d106bc91f1a95cc9e5e913bd4a20db00b",
+      "bytes": 339
+    }
+  ],
+  "log_path": "/workspace/scratch/56081ee5bcf2/audit03-work/pr34-architecture/single-compatibility-test.log",
+  "log_sha256": "7bb299cd48418800a3406c75ef06614ca4658f18359aea9458abb84661e79d53",
+  "repository_status_porcelain_after": ""
+}

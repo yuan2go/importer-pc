@@ -1,0 +1,50 @@
+> PR29 P1/P2整改：原head d954ba6的组合记录重验存在配置与原事件未关联缺口，Windows恢复/卸载漏传业务程序集。整改设计与执行计划见[本包](../work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md)；旧候选与结果保持原身份，新验证另记，不以旧PASS替代。
+
+# 业务版本、兼容声明与组合证据
+
+WP-IPC-VERSION-COMPATIBILITY-01；用户2026-10-19授权。基线main b2dc55b60fa6a3da88964d7b75413f1b7cda9c4d，PR23/24/26开放。PR26已有选装包交付实现，本包不复制其安装、恢复或选装器；只在现有发布、装配和冒烟入口补版本链。
+
+## 方案及所有权
+
+采用精确声明与实际证据，继承现有精确包依赖、契约指纹、能力要求、单一配置修订和原请求冻结。不增加版本范围解析器或第二资格系统；自动推断兼容无法代替验证。仅给组合表写人工PASS无法绑定运行字节，故不采用。
+
+三个Parcel业务的项目Version为版本来源，组合声明中的版本必须一致。业务内嵌自己的兼容声明（config/compatibility/*.json），按ProviderSets列出允许共同出现的提供者kind、implementation、version、contract；所选全部成员必须落入同一个集合，无通配符。声明随业务版本交付，不能由运行配置扩大。构建同一个业务的多个UI仍共享原实例；不修改页面或业务状态机。Supply/Inspection保持原产品版本与路径，不冒充本包改造成独立扩展。
+
+Application发行清单schema2含BusinessVersion、BusinessAssembly、CompatibilitySha256，继续保有SourceCommit、视图/布局、文件SHA。装配前验证实际业务程序集版本和内嵌声明；外部声明文件必须与内嵌字节一致。新业务拒绝schema1降级，历史schema1交给其匹配旧发布使用；无发行清单的源码构建仍明确属于开发路径。Platform契约字节变化要求扩展新版本重建，不能重签覆盖旧版本。
+
+Assembly把设备和服务绑定转换为通用提供者身份，校验所有启用/绑定实例及新配置候选。业务声明允许只是第一道条件；原包签名、公共契约SHA、AssemblyRef、依赖、前置能力、运行模式与真实资格校验继续独立生效。未知版本、错合同、未声明实现均在构造设备和外呼前拒绝。声明不重写历史请求；未结升级/恢复仍遵守原件屏障。
+
+## 组合记录
+
+扩展既有smoke-application.py，运行前写RUNNING，完成写PASS，异常写FAIL，进程被中断保留RUNNING。记录唯一RunId、UTC起止、实际候选文件清单/发行清单/业务声明/有效初始配置SHA、业务版本、各提供者版本及精确包身份、实际命令、场景、检查项和原始运行输出。多次运行用新文件，拒绝覆盖。记录与发行物分离，避免候选SHA自引用；无记录为NOT_RUN，不把声明或安装成功当组合PASS。记录重验使用同一候选和配置，修改参数、包或业务后原PASS不适用。
+
+复用真实进程默认及可选能力/恢复冒烟，覆盖三个流程，前置/Attached上传，必要拒绝用例和签名提供者。证据记录Simulation/Windows NOT_RUN/真实设备BLOCKED，不授予Production资格。PR26后续合并时继承其选装包入口，版本检查和记录消费相同发行清单及绑定，不另建打包系统。
+
+## 兼容与交付
+
+本包不改变SQL、Parcel配置schema、原payload、历史包/候选/报告。新业务版本整合后为1.2.1，前轮本地候选1.1.0保持原身份，公共业务契约继承main的1.6.0（无业务接口更改）；Platform新增声明API会改变精确公共DLL指纹，新的参考扩展以新不可变版本构建。
+
+版本号用于发布识别，不保证加载或现场兼容；业务版本、契约版本、配置修订、数据库版本、提供者包版本分开。真实协议/实体/批准不足仍BLOCKED，Windows实际NOT_RUN，D/RV不改。
+
+整合基线更新：2026-10-19 PR23/24合并至main 4afe2afacde9e2acab7648fff3440fa3cc331b6e；保留其去重前库存校验、两阶段配置激活、采集保有、恢复、容量与消费者卸载。新业务1.2.1/参考扩展2.0.1独立于前轮本地1.1.0/1.4.1和并行PR26的1.6.x，原包/记录不覆盖。
+
+发行构建使用git archive导出的固定提交快照，编译、种子、内嵌声明及随包指南均从该快照读取；SourceRevisionId显式绑定导出提交。运行中的主工作树变化不会混入候选。先前8bdfaa9 Windows候选在构建期间发生本任务整合main，来源稳定性未获证明，保持原字节但不作为合格候选；最终候选按新快照重新生成。
+
+最终继承main9a5d87a（PR26已合并）：复用--composition、--extension-package/--extension-trust和实际composition.lock.json，不重建选装器；保留显式--version、安装Repair回执/依赖custody及原请求只读核对。业务1.2.1与扩展2.0.1独立于前轮本地1.2.0/2.0.0。第一次快照发布因SDK排除ArtifactsPath中的源码而真实FAIL，已把source-snapshot移到独立兄弟目录，不削弱编译或契约校验。
+
+最终签名组合验证使用实际已解压Release宿主的精确公共DLL构建扩展；独立验证进程加载该Release业务/平台/驱动/组件字节，验证器自身与运行闭包分别记hash。Debug包/旧记录不能充当新Release通过证据。
+
+## PR29独立审查整改
+
+P1：新增组合记录schema2，运行前固定输入配置和候选身份为CombinationInput事件；重验必须逐字段对应此事件、实际进程snapshot的Effective配置、ApplicationId、重启代次、OperationId/最终State和默认/BeforeMain/Attached场景。schema1历史记录保留原字节，只在已有snapshot/场景/结果一致时通过重验，其输入无独立事件绑定。schema2含输入事件时拒绝降级为schema1。原始事件和记录同时重写不由自带SHA证明可信，发布渠道/外部索引信任边界保持。
+
+P2：安装/恢复/卸载共用一个发行读取与验证方法，均传实际编译业务程序集；schema2正确组合可继续，错误业务版本/声明/文件仍拒绝。跨平台定向测试覆盖同一共享方法，不伪称Windows提权/ACL/交互已验。业务逻辑、业务版本1.2.1、内嵌兼容声明、公共契约及旧请求不改。
+
+## 并发整合资格与版本裁决（业务代码前）
+
+最新独立复审发现执行方式/验收资格可改标，本包修复既有记录器：新记录schema3在原输入事件绑定实际命令、三项场景布尔值及Windows/真实设备/Assurance；输入在启动前冻结。独立对端必须由实际Popen/健康成功事件、PID、夹具SHA与配置endpoint共同证明，不由结果字段自行声称。参考portable记录只能NOT_RUN/BLOCKED/SIMULATION_REFERENCE_ONLY。原schema1/2因没有命令冻结，保留原字节和历史结论；当前重验必须额外提供来自独立可信索引的原记录SHA，不能把自带hash冒充发布者信任。原事件配置/结果关联仍要验证，不补造旧事件。
+
+上述整合候选形成时的业务版本为1.2.3，Application.Contracts1.7.0/DB6。更新原ProviderSets为新宿主的reference.parcel-capabilities2.1.1和barcode1.2.1，并增Sportmaster RCS1.0.3允许组合，保留其他同组可选能力。旧1.2.1/2.0.1/RCS1.0.1候选及PASS不改，不重签覆盖。业务发布、内嵌声明、composition、维护和同一打包入口同步。
+
+整合main的业务1.2.4、参考能力2.1.2、reader1.2.2及RCS1.0.4见[并发整合报告](../runtime/parallel-task-reconciliation-01.md)；上述1.2.3/2.1.1/1.2.1/1.0.3为历史候选，不能作为当前安装默认值。
+本次[CQ03整改](../work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md)候选业务为1.2.5；公共契约API及SQL1–6不改；ProviderSets同步新不可变能力包2.1.3、reader1.2.3和RCS1.0.5。精确扩展是否可沿用仍按目标公共DLL校验，版本号不授予加载或现场资格。

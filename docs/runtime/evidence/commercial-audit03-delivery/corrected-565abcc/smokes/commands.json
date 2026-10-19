@@ -1,0 +1,158 @@
+[
+  {
+    "Name": "sportmaster-default",
+    "Command": [
+      "python3",
+      "${WORKTREE}/scripts/smoke-application.py",
+      "--package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/unpacked/sportmaster-core",
+      "--dotnet",
+      "${DOTNET}",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/smokes/sportmaster-default.json"
+    ],
+    "Cwd": "/tmp",
+    "ExitCode": 0
+  },
+  {
+    "Name": "sportmaster-before-main",
+    "Command": [
+      "python3",
+      "${WORKTREE}/scripts/smoke-application.py",
+      "--package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/unpacked/sportmaster-core",
+      "--dotnet",
+      "${DOTNET}",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/smokes/sportmaster-before-main.json",
+      "--optional-features",
+      "--peer-fixture",
+      "${WORKTREE}/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll"
+    ],
+    "Cwd": "/tmp",
+    "ExitCode": 0
+  },
+  {
+    "Name": "sportmaster-attached",
+    "Command": [
+      "python3",
+      "${WORKTREE}/scripts/smoke-application.py",
+      "--package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/unpacked/sportmaster-core",
+      "--dotnet",
+      "${DOTNET}",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/smokes/sportmaster-attached.json",
+      "--optional-features",
+      "--peer-fixture",
+      "${WORKTREE}/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll",
+      "--attached-upload"
+    ],
+    "Cwd": "/tmp",
+    "ExitCode": 0
+  },
+  {
+    "Name": "direct-plc-default",
+    "Command": [
+      "python3",
+      "${WORKTREE}/scripts/smoke-application.py",
+      "--package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/unpacked/direct-plc-core",
+      "--dotnet",
+      "${DOTNET}",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/smokes/direct-plc-default.json"
+    ],
+    "Cwd": "/tmp",
+    "ExitCode": 0
+  },
+  {
+    "Name": "direct-plc-before-main",
+    "Command": [
+      "python3",
+      "${WORKTREE}/scripts/smoke-application.py",
+      "--package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/unpacked/direct-plc-core",
+      "--dotnet",
+      "${DOTNET}",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/smokes/direct-plc-before-main.json",
+      "--optional-features",
+      "--peer-fixture",
+      "${WORKTREE}/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll"
+    ],
+    "Cwd": "/tmp",
+    "ExitCode": 0
+  },
+  {
+    "Name": "direct-plc-attached",
+    "Command": [
+      "python3",
+      "${WORKTREE}/scripts/smoke-application.py",
+      "--package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/unpacked/direct-plc-core",
+      "--dotnet",
+      "${DOTNET}",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/smokes/direct-plc-attached.json",
+      "--optional-features",
+      "--peer-fixture",
+      "${WORKTREE}/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll",
+      "--attached-upload"
+    ],
+    "Cwd": "/tmp",
+    "ExitCode": 0
+  },
+  {
+    "Name": "wcs-to-plc-default",
+    "Command": [
+      "python3",
+      "${WORKTREE}/scripts/smoke-application.py",
+      "--package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/unpacked/wcs-to-plc-core",
+      "--dotnet",
+      "${DOTNET}",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/smokes/wcs-to-plc-default.json"
+    ],
+    "Cwd": "/tmp",
+    "ExitCode": 0
+  },
+  {
+    "Name": "wcs-to-plc-before-main",
+    "Command": [
+      "python3",
+      "${WORKTREE}/scripts/smoke-application.py",
+      "--package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/unpacked/wcs-to-plc-core",
+      "--dotnet",
+      "${DOTNET}",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/smokes/wcs-to-plc-before-main.json",
+      "--optional-features",
+      "--peer-fixture",
+      "${WORKTREE}/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll"
+    ],
+    "Cwd": "/tmp",
+    "ExitCode": 0
+  },
+  {
+    "Name": "wcs-to-plc-attached",
+    "Command": [
+      "python3",
+      "${WORKTREE}/scripts/smoke-application.py",
+      "--package",
+      "${WORKTREE}/.artifacts/audit03-565abcc/unpacked/wcs-to-plc-core",
+      "--dotnet",
+      "${DOTNET}",
+      "--output",
+      "${WORKTREE}/.artifacts/audit03-565abcc/smokes/wcs-to-plc-attached.json",
+      "--optional-features",
+      "--peer-fixture",
+      "${WORKTREE}/src/Ipc.Fixture/bin/Release/net10.0/Ipc.Fixture.dll",
+      "--attached-upload"
+    ],
+    "Cwd": "/tmp",
+    "ExitCode": 0
+  }
+]

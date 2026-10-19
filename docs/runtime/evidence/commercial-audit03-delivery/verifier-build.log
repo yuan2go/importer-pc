@@ -1,0 +1,21 @@
+  Ipc.Platform -> ${WORKTREE}/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> ${WORKTREE}/src/Ipc.Application.Contracts/bin/Release/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> ${WORKTREE}/src/Ipc.Platform.Storage/bin/Release/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> ${WORKTREE}/src/Ipc.Application.ParcelFlow/bin/Release/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> ${WORKTREE}/src/Ipc.Application.Sportmaster/bin/Release/net10.0/Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> ${WORKTREE}/src/Ipc.Application.DirectPlc/bin/Release/net10.0/Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> ${WORKTREE}/src/Ipc.Application.WcsToPlc/bin/Release/net10.0/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> ${WORKTREE}/src/Ipc.Reference.Protocol/bin/Release/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> ${WORKTREE}/src/Ipc.Components/bin/Release/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> ${WORKTREE}/src/Ipc.Drivers/bin/Release/net10.0/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> ${WORKTREE}/src/Ipc.Application.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> ${WORKTREE}/src/Ipc.Integrations/bin/Release/net10.0/Ipc.Integrations.dll
+  Ipc.Application.Supply -> ${WORKTREE}/src/Ipc.Application.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Integrations.SportmasterRcs -> ${WORKTREE}/src/Ipc.Integrations.SportmasterRcs/bin/Release/net10.0/Ipc.Integrations.SportmasterRcs.dll
+  Ipc.Application.Verification -> ${WORKTREE}/tests/Ipc.Application.Verification/bin/Release/net10.0/Ipc.Application.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:04.47

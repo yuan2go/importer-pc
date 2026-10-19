@@ -1,0 +1,17 @@
+{
+  "BaselineMain": "7cf84f371dc0076231bde7a25e5d4f22404db93b",
+  "BaselineStatus": "FAIL",
+  "CurrentStatus": "FAIL",
+  "BaselineErrors": 267,
+  "CurrentErrors": 267,
+  "NewErrors": [],
+  "RemovedErrors": [],
+  "ByCode": {
+    "private_metadata_marker": 2,
+    "pptx_media_type_mismatch": 265
+  },
+  "CanonicalErrorsSha256": "6bda010ec500b71a559a71cccb850a4e2aee23d7405ea8e051634e9474b27a5a",
+  "Verifier": "tools/verify_archive.py --root . --scope public",
+  "Environment": "Bundled primary-runtime Python with Pillow/pypdf; same baseline/current environment",
+  "Meaning": "No new archive errors; overall FAIL retains original PPTX media and historical private-metadata failures. No verifier/exception relaxation."
+}

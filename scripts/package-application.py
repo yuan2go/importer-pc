@@ -12,6 +12,7 @@ from composition import resolve
 from application_compatibility import read_business
 from application_bundles import read_packages, publish_packages
 from release_documents import SOURCE_PATHS, publish as publish_guides
+from release_dependencies import publish as publish_dependencies
 
 APPLICATIONS = {'sportmaster': 'Sportmaster', 'direct-plc': 'DirectPlc', 'wcs-to-plc': 'WcsToPlc'}
 p = argparse.ArgumentParser()
@@ -58,6 +59,10 @@ for project, destination in [('Ipc.Assembly', 'app'), *([('Ipc.Desktop', 'deskto
                '--artifacts-path', str(artifacts), '--self-contained', 'true' if a.target == 'win-x64' else 'false', '-o', str(output / destination)]
     if a.target == 'win-x64': command += ['-r', 'win-x64']
     subprocess.run(command, cwd=build_source, check=True)
+    published = json.loads((output / destination / (project + '.deps.json')).read_bytes())
+    contract_version = next(c['version'] for c in selection['components'] if c['id'] == 'application-contracts')
+    if 'Ipc.Application.Contracts/' + contract_version not in published['libraries']:
+        raise ValueError('Published Application contract differs from composition version')
     shutil.copytree(build_source / 'config' / a.application, output / destination / 'config')
 if a.target == 'portable':
     compiled = json.loads(subprocess.check_output([a.dotnet, str(output / 'app/Ipc.Assembly.dll'), '--action', 'business-identity'], text=True))
@@ -85,7 +90,7 @@ for directory in [output / 'app', output / 'desktop']:
     release = dict(SchemaVersion=2, ApplicationId=a.application, SourceCommit=source, **business,
                    Views=selection['product']['views'], Layouts=selection['product']['layouts'], Files=files)
     (directory / 'application-release.json').write_text(json.dumps(release, indent=2) + '\n')
-selection.update(SourceCommit=source, Target=a.target, EntryPoint='app/Ipc.Assembly.dll',
+selection.update(ApplicationId=a.application, SourceCommit=source, Target=a.target, EntryPoint='app/Ipc.Assembly.dll',
                  DesktopEntryPoint='desktop/Ipc.Desktop.exe' if a.target == 'win-x64' else None,
                  Windows='NOT_RUN', PhysicalIntegration='BLOCKED',
                  Binaries={str(f.relative_to(output)): hashlib.sha256(f.read_bytes()).hexdigest()
@@ -94,14 +99,15 @@ selection.update(SourceCommit=source, Target=a.target, EntryPoint='app/Ipc.Assem
 (output / 'composition.lock.json').write_text(json.dumps(selection, indent=2) + '\n')
 (output / 'ASSEMBLY.json').write_text(json.dumps(selection, indent=2) + '\n')
 publish_guides(build_source, output, source, a.application)
+publish_dependencies(build_source, output, source)
 if a.target == 'win-x64':
-    for script in ['protect-release.ps1', 'provision-runtime.ps1', 'provision-extensions.ps1']:
+    for script in ['protect-release.ps1', 'provision-runtime.ps1', 'provision-extensions.ps1', 'application.ps1', 'application.cmd']:
         shutil.copyfile(build_source / 'scripts' / script, output / script)
 shutil.rmtree(artifacts)
 shutil.rmtree(build_source)
 (output / 'APPLICATION-START.txt').write_text(
     'SIMULATION REFERENCE ONLY\nConsole: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'
-    + ('Windows: desktop/Ipc.Desktop.exe --config desktop/config --data-root <new-isolated-root>\n' if a.target == 'win-x64' else '')
+    + ('Windows: pwsh -NoProfile -File <absolute-release>/application.ps1 -Action Diagnose -DataRoot <absolute-data-root>\nRun: pwsh -NoProfile -File <absolute-release>/application.ps1 -Action Run -DataRoot <absolute-data-root>\n' if a.target == 'win-x64' else '')
     + ('Sportmaster alternate native UI: desktop/Ipc.Desktop.exe --ui supply-station --config desktop/config --data-root <new-isolated-root>\nClassic default: omit --ui, or use --ui classic. Use SPORTMASTER-UI.md and SPORTMASTER-UI-WINDOWS.md.\n' if a.target == 'win-x64' and a.application == 'sportmaster' else '')
     + 'Use APPLICATIONS.md for reference camera/weight input, original-stage reconciliation and recovery.\n')
 entries = sorted(f for f in output.rglob('*') if f.is_file())

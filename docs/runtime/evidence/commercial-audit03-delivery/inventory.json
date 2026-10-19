@@ -1,0 +1,31 @@
+{
+  "RecordedAt": "2026-10-19T04:07:02.157682+00:00",
+  "ExecutionMain": "7cf84f371dc0076231bde7a25e5d4f22404db93b",
+  "OriginalReviewMain": "ec698bd4e11d06c13c097c77f90cc5ce145ab3ea",
+  "RuntimeSourceCommit": "1401b7d3663bd7ca40aaa87773b023162178611c",
+  "PrimaryWorktree": {
+    "Head": "ec698bd4e11d06c13c097c77f90cc5ce145ab3ea",
+    "TrackedChanges": 0,
+    "UntrackedEntriesRetained": 6,
+    "StatusFingerprint": "baf4d8a73367a38dd31be7693ce32969f33fa0932d22d340c1be8f8b7f333d97"
+  },
+  "Pr34": {
+    "State": "OPEN",
+    "Head": "c07304418aa68428331ba141418edfb3519a6939",
+    "MergedByThisTask": false
+  },
+  "PriorRelease": {
+    "Tag": "reference-reconciliation-20261019-21e6cae",
+    "SourceCommit": "21e6cae3c9e20f34fc9429812e48e7f95e455fb9",
+    "WindowsZipSha256": "54ce02ece4e88dd352687f446d72448f4fda2cabc16cf9e11e47a616e01c97a1"
+  },
+  "Environment": "Darwin arm64",
+  "Windows": "NOT_RUN",
+  "RealSdkDeviceProtocolAndField": "BLOCKED",
+  "OriginalDAndRvChanged": false,
+  "WithdrawnLocalCandidate": {
+    "SourceCommit": "d374a1119b7c998dae273e5ff4c7958d187904bb",
+    "BusinessVersion": "1.2.6",
+    "Reason": "Offline backup consumer registration needed original Mode normalization; retained without replacing its immutable packages"
+  }
+}

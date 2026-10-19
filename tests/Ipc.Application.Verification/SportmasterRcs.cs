@@ -13,11 +13,11 @@ using Microsoft.Data.Sqlite;
 
 // All identifiers and replies below are synthetic protocol fixtures. The listener
 // is a local peer, independent of the application database and its receipt journal.
-static class SportmasterRcs
+static partial class SportmasterRcs
 {
     static void Check(bool value, string message)
     { if (!value) throw new Exception("FAIL RCS20: " + message); Console.WriteLine("PASS RCS20: " + message); }
-    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.0.5", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
+    static CapabilityBinding Binding(string endpoint) => new("integration", "sportmaster-rcs-task", "1.0.8", "sportmaster.integration", endpoint, "SPORTMASTER-RCS-SORTER-v1", new()
     {
         ["source"] = "TEST_READER", ["locale"] = "zh_CN", ["zone-id"] = "71", ["project-id"] = "83", ["quantity"] = "1",
         ["specified-chute"] = "false", ["request-id-base"] = "810000000", ["request-id-count"] = "100000",
@@ -141,11 +141,13 @@ static class SportmasterRcs
         await using(var app=await Open(restored))
         {
             await Command(app,"Resume");app.EmitReferenceAt("right","numeric-restored-blocked","SYNTH-0001",Wire.Id());var s=await Wait(app,x=>x.Operations.Any(o=>o.AdmissionId=="numeric-restored-blocked"&&o.State is ParcelState.Blocked or ParcelState.SlotResolved));
-            Check(s.Operations.Single(o=>o.AdmissionId=="numeric-restored-blocked").Wcs is null&&peer.Requests.Count==posts&&s.Operations.Single(o=>o.AdmissionId=="numeric-restored-blocked").Reason!.Contains(allocated.ToString()),"fresh restored process rebuilds the durable ID floor from archived original intents and refuses reuse");
+            Check(s.Operations.Single(o=>o.AdmissionId=="numeric-restored-blocked").Wcs is null&&peer.Requests.Count==posts&&s.Operations.Single(o=>o.AdmissionId=="numeric-restored-blocked").Reason!.Contains("exhausted/retired"),"fresh restored process rebuilds the durable ID floor from archived original intents and refuses reuse");
         }
     }
     static async Task PreparationGuards(SportmasterRcsTaskService service, CapabilityBinding binding, Peer peer)
     {
+        var signedStyle = binding with { Implementation = "extension:sportmaster.rcs-task/sportmaster-rcs-task" };
+        Check(service.GetRequestIdRange(signedStyle) == new IntegrationRequestIdRange(810000001, 810100000), "numeric range uses the actual signed binding contract, not a built-in implementation alias");
         var count = peer.Requests.Count; var original = Request(binding); var frozen = original with { IntegrationRequest = service.PrepareRequest(original, 11) };
         var alteredBody = frozen.IntegrationRequest!.Body + " ";
         try { await service.RequestDestinationAsync(frozen with { IntegrationRequest = frozen.IntegrationRequest with { Body = alteredBody, BodyHash = Wire.Hash(alteredBody) } }, CancellationToken.None); throw new Exception("Changed wire body accepted"); }
@@ -332,7 +334,7 @@ static class SportmasterRcs
         using (var db = new SqliteConnection("Data Source=" + file))
         {
             db.Open(); using var command = db.CreateCommand(); command.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)command.ExecuteScalar()! == 6, "actual ParcelRuntime startup records integration semantic SQL6");
+            Check((long)command.ExecuteScalar()! == 7, "actual ParcelRuntime startup records numeric ownership semantics SQL7");
         }
         try { using var oldReader = new ParcelRepository(directory, "sportmaster", 5); throw new Exception("Old reader accepted actual SQL6 runtime database"); }
         catch (InvalidDataException) { Check(true, "old SQL5 reader rejects actual application SQL6 database"); }
@@ -384,13 +386,13 @@ static class SportmasterRcs
             terminalRaw=original.BeginReceipt(terminal,terminal.Wcs!,"Submit"); original.StoreRaw(terminalRaw,terminalReply);original.Commit(terminal,"SyntheticTerminalCustody","Committed original raw",occurrence:terminalRaw);
         }
         using(var upgraded=new ParcelRepository(settledDirectory,"sportmaster"))
-            Check(upgraded.StorageVersion==6&&Wire.Encode(upgraded.Load().Single())==Wire.Encode(terminal)&&Wire.Decode<StageReply>(File.ReadAllText(Path.Combine(settledDirectory,"receipts",terminalRaw+".json")))==terminalReply,
-                "settled SQL5 original upgrades to SQL6 preserving exact request/result/committed raw");
+            Check(upgraded.StorageVersion==7&&Wire.Encode(upgraded.Load().Single())==Wire.Encode(terminal)&&Wire.Decode<StageReply>(File.ReadAllText(Path.Combine(settledDirectory,"receipts",terminalRaw+".json")))==terminalReply,
+                "settled SQL5 original upgrades to SQL7 preserving exact request/result/committed raw");
         using(var db=new SqliteConnection("Data Source="+Path.Combine(settledDirectory,"sportmaster.db")))
         {
             db.Open();using var q=db.CreateCommand();q.CommandText="SELECT version,sha FROM platform_migrations ORDER BY version";
             using var r=q.ExecuteReader();Dictionary<long,string> history=[];while(r.Read())history.Add(r.GetInt64(0),r.GetString(1));
-            Check(priorHistory.All(x=>history.GetValueOrDefault(x.Key)==x.Value)&&history.Keys.Max()==6,"SQL6 append preserves every original SQL1-5 checksum");
+            Check(priorHistory.All(x=>history.GetValueOrDefault(x.Key)==x.Value)&&history.Keys.Max()==7,"SQL6/7 append preserves every original SQL1-5 checksum");
         }
         try { using var rejected=new ParcelRepository(settledDirectory,"sportmaster",5);throw new Exception("Old reader accepted SQL6"); }
         catch(InvalidDataException){Check(true,"old SQL5 reader rejects settled future SQL6 without downgrade");}

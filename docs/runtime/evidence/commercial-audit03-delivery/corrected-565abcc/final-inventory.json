@@ -1,0 +1,18 @@
+{
+  "Main": "7cf84f371dc0076231bde7a25e5d4f22404db93b",
+  "PrimaryHead": "ec698bd4e11d06c13c097c77f90cc5ce145ab3ea",
+  "PrimaryTrackedChanges": 0,
+  "PrimaryUntrackedEntriesRetained": 6,
+  "PrimaryStatusSha256": "934eae04874d02f8f8af40d2f61c2ddec0a3a65c1f65900ec92ad0a09e280b12",
+  "Pr34": {
+    "headRefOid": "c07304418aa68428331ba141418edfb3519a6939",
+    "state": "OPEN"
+  },
+  "Pr35": {
+    "baseRefName": "main",
+    "headRefOid": "565abcc63b885dc60873aa21e25f2d4612963c0d",
+    "state": "OPEN"
+  },
+  "RecordedAt": "2026-10-19T04:21:07.266174+00:00",
+  "Pr35HeadScope": "Before final evidence-only commit"
+}

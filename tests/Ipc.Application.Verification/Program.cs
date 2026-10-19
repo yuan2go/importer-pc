@@ -13,7 +13,13 @@ var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
-if (args.Any(x => x.StartsWith("--commercial-quality", StringComparison.Ordinal))) { await CommercialQuality.Run(workspace, root, args); return; }
+if (args.Contains("--resource-risks")) { await ResourceRisks.Run(workspace, root); return; }
+if (args.Contains("--audit03-maintenance")) { await Audit03.Maintenance(workspace, root); return; }
+if (args.Contains("--audit03-snapshots")) { await Audit03.Snapshots(workspace, root); return; }
+if (args.Contains("--commercial-quality")) { await CommercialQuality.Run(workspace, root, args); return; }
+if (args.Contains("--audit03-rcs-signed")) { var i=Array.IndexOf(args,"--audit03-rcs-signed"); await SportmasterRcs.Audit03Checks(workspace, root, Path.GetFullPath(args[i+1]), Path.GetFullPath(args[i+2])); return; }
+if (args.Contains("--audit03-rcs")) { await SportmasterRcs.Audit03Checks(workspace, root); return; }
+if (args.Contains("--audit03-input")) { await Audit03.Inputs(workspace, root); return; }
 if (args.Contains("--sportmaster-window-lifecycle")) { await SportmasterWindowLifetime.Run(); return; }
 if (args.Contains("--sportmaster-ui")) { await SportmasterUi.Run(workspace, root); return; }
 if (args.Contains("--historical-db4-upgrade")) { var i=Array.IndexOf(args,"--historical-db4-upgrade"); await ArchitectureQuality.HistoricalDb4UpgradeChecks(workspace,root,Path.GetFullPath(args[i+1])); return; }

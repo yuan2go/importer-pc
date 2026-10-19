@@ -11,7 +11,7 @@ public partial class ParcelViewModel
     public PositionPresentation[] PositionRows => Snapshot?.Positions?.Select(p =>
     {
         var op = CurrentAt(p.Id);
-        return new PositionPresentation(p.Id, p.ReaderDeviceId, !Fresh ? "快照失效" : p.Admit ? "允许新入场" : string.Join(" · ", p.BlockingReasons), op?.ParcelCode ?? "—", op?.AdmissionId ?? "—", op?.State.ToString() ?? (p.CurrentOperation is not null ? "当前作业身份未匹配" : "等待本位观察"), op?.Slot ?? "未取得", op?.Reason ?? "", p.MainResultComplete ? "主结果已确认" : "主结果未完成", p.BackgroundComplete ? "后台责任已清偿" : "后台责任待清偿 · " + op?.Upload?.State + " · " + op?.Upload?.Failure);
+        return new PositionPresentation(p.Id, p.ReaderDeviceId, !Fresh ? "快照失效" : p.Admit ? "允许新入场" : string.Join(" · ", p.BlockingReasons), op?.ParcelCode ?? "—", op?.AdmissionId ?? "—", op?.State.ToString() ?? (p.CurrentOperation is not null ? "当前作业身份未匹配" : "等待本位观察"), !Fresh ? "旧格口已失效 · " + (op?.Slot ?? "未取得") : op?.Slot ?? "未取得", op?.Reason ?? "", p.MainResultComplete ? "主结果已确认" : "主结果未完成", p.BackgroundComplete ? "后台责任已清偿" : "后台责任待清偿 · " + op?.Upload?.State + " · " + op?.Upload?.Failure);
     }).ToArray() ?? [];
     public string CurrentCommandTarget => "当前位命令目标：" + SelectedPositionId + " · " + (Current?.ParcelCode ?? "无作业") + " · " + (Current?.Id ?? "—");
     public string HistoryCommandTarget => "记录命令目标：" + (Selected?.PositionId ?? "—") + " · " + (Selected?.ParcelCode ?? "未选择") + " · " + (Selected?.Id ?? "—");

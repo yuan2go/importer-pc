@@ -1,0 +1,262 @@
+{
+  "SchemaVersion": 3,
+  "OptionalFeatures": false,
+  "AttachedUpload": false,
+  "ExternalPeerProcess": false,
+  "RunId": "a1ead3013bc04cf39df031bfbba20c56",
+  "Status": "PASS",
+  "StartedAt": "2026-10-19T04:04:46.946206+00:00",
+  "Command": [
+    "${WORKTREE}/scripts/smoke-application.py",
+    "--package",
+    "${WORKTREE}/.artifacts/audit03-1401b7d/unpacked/wcs-to-plc-core",
+    "--dotnet",
+    "${DOTNET}",
+    "--output",
+    "${WORKTREE}/.artifacts/audit03-1401b7d/smokes/wcs-to-plc-default.json"
+  ],
+  "WorkingDirectory": "/private/tmp",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED",
+  "Assurance": "SIMULATION_REFERENCE_ONLY",
+  "Application": "wcs-to-plc",
+  "BusinessVersion": "1.2.7",
+  "SourceCommit": "1401b7d3663bd7ca40aaa87773b023162178611c",
+  "Target": "portable",
+  "CandidateFilesSha256": "7CE021CF0BCBE9DFD67A028344B2F1C5BEEC0DA912F36464245E0EFF4157E8E4",
+  "ReleaseSha256": "AB9A74527B9EE83E06C49AF3003047EE9D954905D3DFA114E1791FD62BD0810D",
+  "AssemblyManifestSha256": "EB71719A1770DDA47AB3E73748ADF56C05AA6F2702485AFFDAA3A0104A5DE755",
+  "CompatibilitySha256": "41BD759A9CDBEDA7D7AD795678091CF54ECF6C251CAAD79197C43EB620EEC15B",
+  "InputConfiguration": {
+    "SchemaVersion": 3,
+    "ApplicationId": "wcs-to-plc",
+    "StationId": "reference-17",
+    "Mode": "Simulation",
+    "Weight": {
+      "Source": "Configured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": 1.25,
+      "MaximumAgeMs": 3000
+    },
+    "Reader": {
+      "Role": "parcel-reader",
+      "Driver": "manual",
+      "DeviceId": "wcs-to-plc.camera",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    "Scale": null,
+    "Wcs": {
+      "Kind": "integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "InstanceId": "wcs-to-plc.integration",
+      "Target": "reference://integration/wcs-to-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "slot": "REFERENCE-07"
+      },
+      "Package": null,
+      "Module": null
+    },
+    "Plc": {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "InstanceId": "wcs-to-plc.plc",
+      "Target": "reference://plc/wcs-to-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "complete-on-query": "true"
+      },
+      "Package": null,
+      "Module": null
+    },
+    "Extensions": null,
+    "QueueCapacity": 64,
+    "TimeoutMs": 1500,
+    "MaximumOperations": 10000,
+    "Login": null,
+    "Images": null,
+    "MaintenanceLogin": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      }
+    },
+    "WeightValidity": "UntilDispatch",
+    "Topology": {
+      "Readers": [
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "wcs-to-plc.camera",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Positions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "wcs-to-plc.camera"
+        }
+      ]
+    },
+    "Retention": {
+      "ResidentHistory": 200,
+      "MinimumFreeBytes": 67108864
+    }
+  },
+  "InputConfigurationSha256": "E0D81FA66A021C837B99167EE76C3367E67C43F43631B85896006FF6BC32F7AF",
+  "Checks": [
+    "candidate file hashes",
+    "actual selected assembly startup",
+    "camera-to-final-reference-chain",
+    "persistent original phases on restart",
+    "orderly stop",
+    "selected topology"
+  ],
+  "OptionalChecks": [],
+  "EffectiveConfiguration": {
+    "SchemaVersion": 3,
+    "ApplicationId": "wcs-to-plc",
+    "StationId": "reference-17",
+    "Mode": "Simulation",
+    "Weight": {
+      "Source": "Configured",
+      "Unit": "Kg",
+      "Precision": 3,
+      "ConfiguredValue": 1.25,
+      "MaximumAgeMs": 3000,
+      "WaitTimeoutMs": 15000
+    },
+    "Reader": {
+      "Role": "parcel-reader",
+      "Driver": "manual",
+      "DeviceId": "wcs-to-plc.camera",
+      "Revision": "1",
+      "ReplayFile": null
+    },
+    "Scale": null,
+    "Wcs": {
+      "Kind": "integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "InstanceId": "wcs-to-plc.integration",
+      "Target": "reference://integration/wcs-to-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "slot": "REFERENCE-07",
+        "peer-root": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-unpacked-kxl607w_/Simulation/reference-peers"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Plc": {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "InstanceId": "wcs-to-plc.plc",
+      "Target": "reference://plc/wcs-to-plc",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "complete-on-query": "true",
+        "peer-root": "/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-unpacked-kxl607w_/Simulation/reference-peers"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "Extensions": null,
+    "QueueCapacity": 64,
+    "TimeoutMs": 1500,
+    "MaximumOperations": 10000,
+    "SessionLifetimeMs": 28800000,
+    "MaintenanceLogin": {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "Parameters": {
+        "subjects": "maintenance"
+      },
+      "Package": null,
+      "Module": null,
+      "Enabled": true
+    },
+    "WeightValidity": "UntilDispatch",
+    "Topology": {
+      "Readers": [
+        {
+          "Role": "parcel-reader",
+          "Driver": "manual",
+          "DeviceId": "wcs-to-plc.camera",
+          "Revision": "1",
+          "ReplayFile": null
+        }
+      ],
+      "Positions": [
+        {
+          "Id": "main",
+          "ReaderDeviceId": "wcs-to-plc.camera",
+          "CameraInstanceId": null,
+          "ScaleInstanceId": null
+        }
+      ]
+    },
+    "Retention": {
+      "ResidentHistory": 200,
+      "MinimumFreeBytes": 67108864
+    }
+  },
+  "EffectiveConfigurationSha256": "57991CF9DEC76DDA956EA61B238C3125349F83AB96B00480DD40A87C8E6676F6",
+  "Providers": [
+    {
+      "Kind": "integration",
+      "Implementation": "reference-integration",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "wcs-to-plc.integration",
+      "Target": "reference://integration/wcs-to-plc"
+    },
+    {
+      "Kind": "plc",
+      "Implementation": "reference-plc",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "wcs-to-plc.plc",
+      "Target": "reference://plc/wcs-to-plc"
+    },
+    {
+      "Kind": "login",
+      "Implementation": "reference-login",
+      "Version": "1.0.0",
+      "Contract": "PARCEL-REFERENCE-v1",
+      "InstanceId": "maintenance",
+      "Target": "reference://maintenance"
+    },
+    {
+      "Kind": "observation",
+      "Implementation": "manual",
+      "Version": "1.0.0",
+      "Contract": "CONTROLLED-OBSERVATION-v1",
+      "DeviceId": "wcs-to-plc.camera",
+      "Revision": "1"
+    }
+  ],
+  "CompatibilitySet": "builtin-reference",
+  "State": "PlcAccepted",
+  "OperationId": "5374045ca28d49efa5765938837d1faa",
+  "FinishedAt": "2026-10-19T04:04:48.132182+00:00",
+  "EventsSha256": "658E3D690AE39BA0753B144CE1E9A8394D691F79B6F5F9D6F14038404BF83E51",
+  "EventsFile": "wcs-to-plc-default.json.events.jsonl"
+}

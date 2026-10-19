@@ -1,12 +1,18 @@
 # 统一资料与实施入口
 
-本次整改：[CQ03四项修复工作包](work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md)及[整改结果](runtime/commercial-quality-fix-03-results.md)（文档先行，历史审查不改）。
+## 最新独立审查与实施交接
+
+[审查03不测试发布与合并记录](runtime/publication-audit03-20261019.md) · [PR34原整改报告](runtime/commercial-quality-fix-03-results.md)。当前实现继承PR35的1.2.8/ABI1.8/DB7，原报告中的OPEN及旧候选按形成时身份解释。
+
+[审查03工程交付结果](runtime/commercial-audit03-delivery-results.md) · [PR #35](https://github.com/yuan2go/importer-pc/pull/35) · [最终产物hash与证据](runtime/evidence/commercial-audit03-delivery/corrected-565abcc/ARTIFACTS.json)。00/01/02及03源码、05媒介/维护和06参考故障路径已落实；真实组合、Windows原生与目标负载/现场门禁按逐包剩余读取。
+
+[商业质量审查03原报告与证据](reviews/commercial-quality-audit-03/README.md) · [下一阶段Codex提示词](reviews/commercial-quality-audit-03/Codex-next-phase.md)。固定审查main为ec698bd；PR34的形成时覆盖与剩余按原发布交接读取；本轮合并不倒写原审查结论。现行实施入口为[审查03交付工作包](work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)，其中列明00～06的执行依赖、支持组合及待确认输入。原审查与报告发布按形成时身份保留。
 
 ## 当前有效阅读顺序
 
-1. [AGENTS](../AGENTS.md)、[本次整合工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-01.md)与[任务/冲突/验证/交付报告](runtime/parallel-task-reconciliation-01.md)。开工main713f23d，源PR27/29/30/32及执行期产物统一调查；原任务“不合并”仅由本次用户明确授权更新。
+1. [AGENTS](../AGENTS.md)、[审查03交付工作包](work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)；既有组合、来源PR及历史验证见[整合报告](runtime/parallel-task-reconciliation-01.md)。旧任务的合并授权只适用于其原PR和固定head。
 2. [框架](design/framework.md)、[F决策](design/framework-decisions.md)、[受控装配/扩展](design/controlled-extensions.md)、[19职责](design/application-capability-19.md)、[20可靠性](design/capability-reliability-20.md)、[22拓扑](design/application-architecture-22.md)和[质量/恢复设计](design/architecture-quality-closure-01.md)。仍是三个独立Application，无通用主流程、第二配置账或第二扩展设施。
-3. [首次运行](runtime/getting-started.md)、[Application配置](runtime/application-architecture-22.md)、[恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md)、[版本与组合证据](runtime/version-compatibility-01.md)、[扩展开发安装恢复](extensions/developer-guide.md)。当前业务1.2.5、Contracts1.7.0、Parcel DB6；schema1/2保留main兼容位，schema3显式双位。Supply Storage5仅按[Supply运行维护](runtime/operations.md)操作。
+3. [首次运行](runtime/getting-started.md)、[Windows交付与故障SOP](runtime/windows-application-delivery.md)、[Application配置](runtime/application-architecture-22.md)、[恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md)、[版本与组合证据](runtime/version-compatibility-01.md)、[扩展开发安装恢复](extensions/developer-guide.md)。当前业务1.2.8、Contracts1.8.0、Parcel DB7；schema1/2保留main兼容位，schema3显式双位。Supply Storage5仅按[Supply运行维护](runtime/operations.md)操作。
 4. [RCS设计](design/sportmaster-rcs-task.md)/[运行](runtime/sportmaster-rcs-task.md)、[Sportmaster可选UI](runtime/sportmaster-alternate-ui.md)、[永久恢复P2及原失败](runtime/parcel-recovery-p2.md)。原请求/版本/目标/合同/raw不因新部署改变，Unknown不自动重发。
 5. [D决策](readiness/decision-pack.md)、[技术基线](readiness/technical-baseline.json)、[RV状态](reviews/STATUS.md)/[原问题](reviews/issues.json)、[公开范围](baseline/PUBLICATION.md)、[缺失](baseline/MISSING.md)/[冲突](baseline/CONFLICTS.md)和[manifest](manifest.json)。客户全量资料仍PUBLIC_SUBSET_ONLY，原审查01 PDF未取得。
 
@@ -20,6 +26,7 @@
 
 |来源|保留入口及适用范围|
 |---|---|
+|审查03 / WP-A03-00～06|[31页原PDF、67文件证据包及发布时复核](reviews/commercial-quality-audit-03/README.md)，固定ec698bd；与PR34的CQ03编号逐项映射，原审查只读结论不倒写。|
 |本轮全部任务|[起始清单](runtime/evidence/parallel-task-reconciliation-01/start-inventory.json)、[整合报告](runtime/parallel-task-reconciliation-01.md)、[PR29原复审](reviews/parallel-task-reconciliation-01/pr29-original-review.md)、[PR32原审](reviews/parallel-task-reconciliation-01/pr32-original-review.md)、[PR27原审](reviews/pr27-ui-independent-review.md)|
 |PR29版本|[设计](design/version-compatibility-01.md)、[原结果](runtime/version-compatibility-01-results.md)、[原P1/P2修复](runtime/version-compatibility-01-rereview-results.md)，候选/原件按原SHA|
 |PR30 RCS|[工作包](work-packages/WP-IPC-SPORTMASTER-RCS-TASK-01.md)、[原证据](runtime/evidence/sportmaster-rcs-task/README.md)|

@@ -10,8 +10,8 @@ static partial class ArchitectureQuality
     { using var db=new SqliteConnection("Data Source="+file); db.Open(); using var q=db.CreateCommand(); q.CommandText=sql; q.ExecuteNonQuery(); }
     // Explicit synthetic format fixture. Source facts are produced by the real current
     // Application; historical-release fixtures are verified separately, never relabelled.
-    static void SyntheticDb4(string file) => Sql(file,"DROP TABLE IF EXISTS parcel_integration_semantics; DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version>=5");
-    static void SyntheticDb5(string file) => Sql(file,"DROP TABLE IF EXISTS parcel_integration_semantics; DELETE FROM platform_migrations WHERE version=6");
+    static void SyntheticDb4(string file) => Sql(file,"DROP TABLE IF EXISTS parcel_integration_id_owners; DROP TABLE IF EXISTS parcel_integration_id_ranges; DROP TABLE IF EXISTS parcel_integration_id_restores; DROP TABLE IF EXISTS parcel_integration_semantics; DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version>=5");
+    static void SyntheticDb5(string file) => Sql(file,"DROP TABLE IF EXISTS parcel_integration_id_owners; DROP TABLE IF EXISTS parcel_integration_id_ranges; DROP TABLE IF EXISTS parcel_integration_id_restores; DROP TABLE IF EXISTS parcel_integration_semantics; DELETE FROM platform_migrations WHERE version>=6");
     static Dictionary<string,string> CustodyFiles(string name,ParcelConfiguration c) => Directory.EnumerateFiles(DirectoryFor(name,c),"*",SearchOption.AllDirectories)
         .Where(p=>!p.EndsWith("-wal")&&!p.EndsWith("-shm")&&!p.Contains("diagnostics")&&!p.EndsWith(".lock") &&
             // ResourceLease rewrites only this root control file with the current PID;
@@ -76,7 +76,7 @@ static partial class ArchitectureQuality
         await using(var app=await Open(settled,terminal)) {app.EmitReference("settled-upgrade","00082","settled-upgrade-source");await Wait(app,s=>s.Operations.FirstOrDefault()?.State==ParcelState.SlotResolved);}
         var database=UpgradeDatabase(terminal,settled);SyntheticDb4(database);
         using(var repo=new ParcelRepository(DirectoryFor(terminal,settled),settled.ApplicationId))
-            Check(repo.StorageVersion==6&&repo.Load().Single().Wcs!.Attempts==1,"fully settled DB4 upgrades without changing original send attempts");
+            Check(repo.StorageVersion==7&&repo.Load().Single().Wcs!.Attempts==1,"fully settled DB4 upgrades without changing original send attempts");
     }
     static async Task LegacyActualPositionChecks(int schema,bool previouslyRecovered)
     {

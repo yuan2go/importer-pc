@@ -1,0 +1,176 @@
+{
+  "date": "2026-10-19",
+  "baseline_main": "7cf84f371dc0076231bde7a25e5d4f22404db93b",
+  "pr34_head": "c07304418aa68428331ba141418edfb3519a6939",
+  "pr35_head": "ec5b3d675e17a59b3d1f198d4aae24b306d1a89b",
+  "pr35_merge": "97a01fb02e7fef6b9c3a769092d57728b992489f",
+  "runtime_and_package_input_source": "565abcc63b885dc60873aa21e25f2d4612963c0d",
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "builds": "NOT_RUN_BY_USER_REQUEST",
+  "repackaging": "NOT_RUN_BY_USER_REQUEST",
+  "hooks": "DISABLED_FOR_PUBLICATION",
+  "conflicts": [
+    {
+      "path": "README.md",
+      "pr34_blob": "1c8ead541e39222e7d8ef6cf4867dfcf0865f6b1",
+      "pr35_blob": "7c517da6964f47d55f7e99cdc98473f270ba1eef",
+      "resolution": "retain_PR35_current_guidance_and_archive_PR34_history"
+    },
+    {
+      "path": "config/compatibility/direct-plc.json",
+      "pr34_blob": "fc3086cc28a04fcfcc1001e3fb8499b1275f1c27",
+      "pr35_blob": "5d85baa0d6a2d3a538da553366517711f042db32",
+      "resolution": "retain_1.2.8_ABI1.8_DB7_exact_versions"
+    },
+    {
+      "path": "config/compatibility/sportmaster.json",
+      "pr34_blob": "6712bb32a1075fa47bd05e6ec44af04325024dca",
+      "pr35_blob": "1e186d7c98d90061b1f629c5252ad74e559fa8e5",
+      "resolution": "retain_1.2.8_ABI1.8_DB7_exact_versions"
+    },
+    {
+      "path": "config/compatibility/wcs-to-plc.json",
+      "pr34_blob": "6549ea9702caa59e87a2d9eec116816594c1fc80",
+      "pr35_blob": "29d529663939d31455f0591aa3c03b1891806afb",
+      "resolution": "retain_1.2.8_ABI1.8_DB7_exact_versions"
+    },
+    {
+      "path": "config/compositions.json",
+      "pr34_blob": "3c4827a282260551f6f1f55a96a064e2a747acd1",
+      "pr35_blob": "cce8aee4f9cc78dceae5036529e6d13ca97ec7e0",
+      "resolution": "retain_1.2.8_ABI1.8_DB7_exact_versions"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "pr34_blob": "79fcddafbfbfe79bd01650010bc419b1ac0a0fa8",
+      "pr35_blob": "ef3db106db892d1fba2d23fa99d5a595db313e6c",
+      "resolution": "retain_PR35_current_guidance_and_archive_PR34_history"
+    },
+    {
+      "path": "docs/design/framework-decisions.md",
+      "pr34_blob": "1aabb76a16b07e300d59a5ad18e3b324629e1139",
+      "pr35_blob": "4ddd3fe0b00e603c5fdff05cd21b740a86b489c5",
+      "resolution": "retain_PR35_current_guidance_and_archive_PR34_history"
+    },
+    {
+      "path": "docs/design/framework.md",
+      "pr34_blob": "f5c95fbbbe3ce6d1fff334667ccae7f65f74d6a5",
+      "pr35_blob": "06cf0044d9766d30cda7f376db7620aeb8c2c8cb",
+      "resolution": "retain_PR35_current_guidance_and_archive_PR34_history"
+    },
+    {
+      "path": "docs/manifest.json",
+      "pr34_blob": "a7c09e81d9645eee5280b57b0bf7868934408a92",
+      "pr35_blob": "568b470cd339527a6c5913d15642bfd86173c617",
+      "resolution": "manifest_rebuilt_from_selected_inventory"
+    },
+    {
+      "path": "docs/manifest.sha256",
+      "pr34_blob": "6c97678f91aed7bda9bc0fd3ceac180e640e5aa8",
+      "pr35_blob": "3ffc6da9569755d9acb4961ce628ede8626baa11",
+      "resolution": "manifest_rebuilt_from_selected_inventory"
+    },
+    {
+      "path": "docs/runtime/application-architecture-22.md",
+      "pr34_blob": "77da077164b52aeb66c7356ba0a21b7c98c38e05",
+      "pr35_blob": "4a04d6bbde4b51c24af5d3e494be256eb8f211d5",
+      "resolution": "retain_PR35_current_guidance_and_archive_PR34_history"
+    },
+    {
+      "path": "docs/runtime/architecture-quality-closure-01.md",
+      "pr34_blob": "2efbf1a4b41529d43295386fe16b07ae86c70ed4",
+      "pr35_blob": "e470634fa09d7231b5272fb1807aedba44b46f09",
+      "resolution": "retain_PR35_current_guidance_and_archive_PR34_history"
+    },
+    {
+      "path": "docs/runtime/sportmaster-rcs-task.md",
+      "pr34_blob": "928e9a1a9bf93c81f092094bc529ddc258cf75cd",
+      "pr35_blob": "d2f4a7f9843093d235b32eda252f41ec2ff43361",
+      "resolution": "retain_PR35_current_guidance_and_archive_PR34_history"
+    },
+    {
+      "path": "docs/runtime/version-compatibility-01.md",
+      "pr34_blob": "59dd4d041bda72924a365ca5b764327af137f695",
+      "pr35_blob": "2abdcddd1621de35159bbf35a3c8c66a2e546989",
+      "resolution": "retain_PR35_current_guidance_and_archive_PR34_history"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
+      "pr34_blob": "c7e7011c82b6f2adec584a13570a06cb792212f5",
+      "pr35_blob": "e067ef612da4cfbea660cea21f8548ac33be80d4",
+      "resolution": "retain_1.2.8_ABI1.8_DB7_exact_versions"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs",
+      "pr34_blob": "b4dffe9f8fb8c58f06e40b20adb67b172a494bec",
+      "pr35_blob": "0064293b0e654098c5cd50784f618d3f9e6c4049",
+      "resolution": "retain_reviewed_PR35_superset_and_original_PR34_tests"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs",
+      "pr34_blob": "a7551797e6e92c4d7297c30c3cae23da3b5b34fb",
+      "pr35_blob": "d4e980b6fbd5b27c6c72e5e1266af875ee8096ba",
+      "resolution": "retain_reviewed_PR35_superset_and_original_PR34_tests"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs",
+      "pr34_blob": "8157eada3ba895891839b4393105e718d60a34f6",
+      "pr35_blob": "73bbce14c3855280da6c8aa0c1afb3b097775c53",
+      "resolution": "retain_reviewed_PR35_superset_and_original_PR34_tests"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
+      "pr34_blob": "577087b1564e9ff7d16e29281a3490651ea890c1",
+      "pr35_blob": "2f1777e6d27b555fdd394bba19019adc90013f2d",
+      "resolution": "retain_1.2.8_ABI1.8_DB7_exact_versions"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
+      "pr34_blob": "02bdcbfaeaa09c97d9fa52fed2278654713a0e44",
+      "pr35_blob": "64732b781e7fd4f32fe0562cc89e47cf56e8644d",
+      "resolution": "retain_1.2.8_ABI1.8_DB7_exact_versions"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj",
+      "pr34_blob": "bb1b3cdbfa8c0ce0188833d91dfe75004ba45368",
+      "pr35_blob": "25d3c2d81ba4584b776bd3f0b83ae5331a78dfd9",
+      "resolution": "retain_1.2.8_ABI1.8_DB7_exact_versions"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/manifest.template.json",
+      "pr34_blob": "0d9a6b8c7b3d917bc45a57bba31e4a70348689e3",
+      "pr35_blob": "dfd07f39b49ef75941df9b7ef6f3aeb0892d4728",
+      "resolution": "retain_1.2.8_ABI1.8_DB7_exact_versions"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/Program.cs",
+      "pr34_blob": "cc2441273d9b25f3d12ffa6cabf0653d9d9d53c0",
+      "pr35_blob": "1db2f4c5f64830524fb51ee0c0b783db13135e76",
+      "resolution": "retain_reviewed_PR35_superset_and_original_PR34_tests"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/SportmasterRcs.cs",
+      "pr34_blob": "6a88c7630078cf3a1ca49cd941361ff628d4399c",
+      "pr35_blob": "978c3378537eba2edf42427ff337eb76ad303ea2",
+      "resolution": "retain_reviewed_PR35_superset_and_original_PR34_tests"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/VersionCompatibility.cs",
+      "pr34_blob": "378a12dd1dbed8ab41cb75f9174523e1bb1f1bb5",
+      "pr35_blob": "ddfe4bedd10d962b8637d3f5e1199f87c52cf148",
+      "resolution": "retain_reviewed_PR35_superset_and_original_PR34_tests"
+    }
+  ],
+  "retained_identical_pr34_implementations": [
+    "src/Ipc.Application.ParcelFlow/ParcelTerminalRecovery.cs",
+    "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
+    "tests/Ipc.Application.Verification/CommercialQuality.cs",
+    "tests/Ipc.Application.Verification/SportmasterUi.cs"
+  ],
+  "scope": "Retain PR35 code and immutable release identity; PR34 ancestry, reports, original failure and historical evidence remain; no new runtime behavior introduced.",
+  "static_git_content_comparison": {
+    "relative_to_pr35": "src/tests/config/scripts/examples, root build inputs, licenses and all shipped guides have no Git content delta",
+    "runtime_result": "NOT_RUN_BY_USER_REQUEST",
+    "pr34_prior_description": "docs/runtime/evidence/publication-audit03-20261019/pr34-before.json"
+  }
+}

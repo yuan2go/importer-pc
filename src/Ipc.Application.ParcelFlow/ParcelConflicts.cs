@@ -55,8 +55,10 @@ public sealed partial class ParcelRuntime
     IdentityConflict[] IdentityConflicts() => identityConflicts.Values.ToArray();
     bool HasIdentityConflict(string position) => identityConflicts.Values.Any(c => c.Positions.Contains(position));
     void RecordIdentityConflict(ParcelOperation original, string position, string detail)
+        => RecordIdentityConflict(original, new[] { original.PositionId ?? "main", position }.Distinct().ToArray(), detail);
+    void RecordIdentityConflict(ParcelOperation original, string[] affectedPositions, string detail)
     {
-        var fact = new IdentityConflict(Wire.Id(), original.Id, new[] { original.PositionId ?? "main", position }.Distinct().ToArray(), detail, DateTimeOffset.UtcNow);
+        var fact = new IdentityConflict(Wire.Id(), original.Id, affectedPositions, detail, DateTimeOffset.UtcNow);
         repository!.Commit(null, "IdentityConflict", Wire.Encode(fact), identityConflict: fact);
         identityConflicts.Add(fact.Id, fact);
     }

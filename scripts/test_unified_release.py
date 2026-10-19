@@ -139,6 +139,19 @@ class ReleaseTests(unittest.TestCase):
         with patch.object(release, 'git', return_value='src/Ipc.Platform/Runtime.cs'):
             with self.assertRaises(ValueError): release.source_input_compatibility('old', 'new')
 
+    def test_generated_checkout_cleanup_handles_windows_readonly_git_objects(self):
+        import stat
+        workspace = Path(tempfile.mkdtemp(prefix='ipc-unified-frozen-'))
+        pack = workspace / 'source/.git/objects/pack/frozen.idx'
+        pack.parent.mkdir(parents=True)
+        pack.write_bytes(b'git-like immutable object')
+        pack.chmod(stat.S_IREAD)
+        release.cleanup_frozen_workspace(workspace)
+        self.assertFalse(workspace.exists())
+        with self.assertRaises(ValueError):
+            release.cleanup_frozen_workspace(self.output)
+        self.assertTrue(self.output.exists())
+
 
 class Pr48ReleaseTests(unittest.TestCase):
     def make(self, root):

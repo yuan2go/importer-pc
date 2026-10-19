@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import shutil
+import stat
 import tempfile
 from pathlib import Path, PurePosixPath
 import platform
@@ -67,6 +68,19 @@ def reuse_candidates(directory, manifest, source):
             raise ValueError('Original reuse identity differs')
         result[key] = medium
     return result
+
+
+def cleanup_frozen_workspace(workspace):
+    workspace = Path(workspace).resolve()
+    if workspace.parent != Path(tempfile.gettempdir()).resolve() or not workspace.name.startswith('ipc-unified-frozen-'):
+        raise ValueError('Refuse cleanup outside generated frozen workspace')
+    def retry_readonly(function, path, error):
+        candidate = Path(path)
+        if os.name != 'nt' or not isinstance(error, PermissionError) or not candidate.resolve().is_relative_to(workspace) or not candidate.is_file() or candidate.stat().st_mode & stat.S_IWRITE:
+            raise error
+        candidate.chmod(candidate.stat().st_mode | stat.S_IWRITE)
+        function(path)
+    shutil.rmtree(workspace, onexc=retry_readonly)
 
 
 def source_input_compatibility(source, main_baseline):
@@ -237,7 +251,7 @@ def main():
     build_root = ROOT
     try:
         reused = reuse_candidates(a.reuse_directory.resolve(), a.reuse_manifest.resolve(), source) if a.reuse_directory else {}
-        if source != controller:
+        if source != controller and set(reused) != set(MATRIX):
             workspace = Path(tempfile.mkdtemp(prefix='ipc-unified-frozen-')).resolve()
             build_root = workspace / 'source'
             build_root.mkdir()
@@ -275,7 +289,7 @@ def main():
         if workspace is not None:
             if workspace.parent != Path(tempfile.gettempdir()).resolve() or not workspace.name.startswith('ipc-unified-frozen-') or build_root.parent != workspace:
                 raise ValueError('Refuse cleanup outside generated frozen workspace')
-            shutil.rmtree(workspace)
+            cleanup_frozen_workspace(workspace)
             record['FrozenWorkspaceCleanup'] = 'REMOVED_GENERATED_CHECKOUT_ONLY'
         record.update(State='PASS', FinishedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat())
         write(output / 'build-record.json', record)

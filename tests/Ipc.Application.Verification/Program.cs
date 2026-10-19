@@ -13,6 +13,7 @@ var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--audit03-rcs")) { await SportmasterRcs.Audit03Checks(workspace, root); return; }
 if (args.Contains("--audit03-input")) { await Audit03.Inputs(workspace, root); return; }
 if (args.Contains("--sportmaster-window-lifecycle")) { await SportmasterWindowLifetime.Run(); return; }
 if (args.Contains("--sportmaster-ui")) { await SportmasterUi.Run(workspace, root); return; }

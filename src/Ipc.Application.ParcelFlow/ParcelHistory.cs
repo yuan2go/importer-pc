@@ -10,6 +10,11 @@ public sealed partial class ParcelRepository
     // second allocation journal and does not grow memory with historical volume.
     void InitializeIntegrationRequestHistory()
     {
+        ValidateIntegrationRequestHistory();
+        BackfillIntegrationRequestOwners();
+    }
+    void ValidateIntegrationRequestHistory()
+    {
         var history="SELECT id,json_extract(body,'$.Wcs.Request.IntegrationRequest.RequestId') AS wire FROM parcel_operations" +
             (StorageVersion>=4?" UNION ALL SELECT id,json_extract(body,'$.Wcs.Request.IntegrationRequest.RequestId') AS wire FROM parcel_archives":"");
         using var invalid=db.CreateCommand();
@@ -17,10 +22,15 @@ public sealed partial class ParcelRepository
         if(invalid.ExecuteScalar() is not null)throw new InvalidDataException("Ambiguous original numeric request ID; preserve original owners and investigate before admission");
         using var maximum=db.CreateCommand();maximum.CommandText="SELECT coalesce(max(wire),0) FROM ("+history+")";
         lastIntegrationRequestId=Convert.ToInt64(maximum.ExecuteScalar());
+        using var requests = db.CreateCommand();
+        requests.CommandText = "SELECT request FROM (SELECT id,json_extract(body,'$.Wcs.Request.Id') request FROM parcel_operations WHERE json_extract(body,'$.Wcs.Request.IntegrationRequest') IS NOT NULL" +
+            (StorageVersion >= 4 ? " UNION ALL SELECT id,json_extract(body,'$.Wcs.Request.Id') request FROM parcel_archives WHERE json_extract(body,'$.Wcs.Request.IntegrationRequest') IS NOT NULL" : "") + ") GROUP BY request HAVING request IS NULL OR count(DISTINCT id)>1 LIMIT 1";
+        if (requests.ExecuteScalar() is not null) throw new InvalidDataException("Ambiguous original request owner; preserve original database before numeric ownership migration");
     }
     internal void RequireNewIntegrationRequestId(long id)
     {
-        if(id<=lastIntegrationRequestId)throw new InvalidDataException($"External numeric request ID {id} must exceed durable original allocation {lastIntegrationRequestId}");
+        var floor = IntegrationRequestIdFloor();
+        if(id<=floor)throw new InvalidDataException($"External numeric request ID {id} must exceed durable original allocation/retired range {floor}");
     }
     void ValidateIntegrationIntentCommit(ParcelOperation operation,Microsoft.Data.Sqlite.SqliteTransaction transaction)
     {
@@ -36,6 +46,7 @@ public sealed partial class ParcelRepository
                 throw new InvalidDataException("Original external intent cannot be replaced by a new allocation");
         }
         else RequireNewIntegrationRequestId(wire.RequestId);
+        RegisterIntegrationRequestOwner(operation, transaction);
     }
     public long OperationSequence(string id)
     {

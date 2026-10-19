@@ -6,7 +6,7 @@
 
 当前规范：framework/F-01～12的职责与原请求原则、19/20能力/可靠性、22拓扑、质量维护指南的当前操作正文、RCS和版本指南的具体合同。旧候选/阶段范围由固定SHA及原结果解释；旧工作包“不测试/不合并”仅对其当次授权有效。D-01～16审批、RV-01～17和Supply CAPI保持原责任，不以参考实现改成已批准。
 
-业务修改前独立提交本包00文档。普通Parcel DB2–5升级6必须先只读证明所有业务及原件责任清偿；raw可读不等于业务可升级。repair-main-projection只修有原件依据的投影，保留旧库。recover-legacy-receipt CLI显式选择DB6，旧API默认DB5，仅在完整备份、DB/WAL指纹、匹配原发布及逐发生权威Query依据下迁移已终结Attached的剩余资料责任。原Awaiting、原图和包引用保持。Supply仍Storage5，Inspection沿自身规则。
+业务修改前独立提交本包00文档。00提交时普通Parcel DB2–5升级6必须先只读证明所有业务及原件责任清偿；raw可读不等于业务可升级。repair-main-projection只修有原件依据的投影，保留旧库。recover-legacy-receipt CLI显式选择DB6，旧API默认DB5，仅在完整备份、DB/WAL指纹、匹配原发布及逐发生权威Query依据下迁移已终结Attached的剩余资料责任。原Awaiting、原图和包引用保持。Supply仍Storage5，Inspection沿自身规则。
 
 ## 首个交付组合与未确认输入
 
@@ -43,3 +43,5 @@
 4. 继承/完善03共享表示机制，复用ViewModel测试及WPF跨构建；实际Windows另记。终态标记修复不能清偿身份冲突或独立原件责任。
 5. 必要兼容/资源回归、三选装核心及WPF构建；以已提交源码构建实际解压发布冒烟，核指南/组合/文件hash。Windows、SDK、真实服务/现场分别NOT_RUN/BLOCKED。
 6. 最终交付记录每包完成/剩余、代码/能力/环境/需求分类，绑定源码SHA、产物hash、配置/数据库/协议身份；逐Application及组合评定开发、实验室、现场和商用。关键错控/丢件/重复副作用/无法恢复风险未关闭不作“有条件通过”。推送开发分支并建main PR，不自行合并。
+
+02实施设计落点：公共契约1.8.0、业务1.2.6、RCS1.0.6；参考包声明2.1.4/reader1.2.4，避开PR34身份。追加SQL7三张业务表永久保存数字ID→原Operation/Request/hash、配置范围和恢复退役边界；原SQL1～6不改。普通DB2～6未结仍只读拒绝升级，窄custody CLI显式7、旧API默认5。00提交在业务修改前的DB6事实不倒写；当前操作正文同步为7。

@@ -10,7 +10,7 @@ public static class ParcelLegacyReceiptRecovery
     internal static Action<string>? Boundary;
     public static async Task<object> RecoverAsync(string database,string expectedHash,string backup,string occurrence,string originalRelease,string reason,FlowDefinition definition,Func<string,string,string,CancellationToken,Task<StageReply?>> originalQuery,Action<string,ParcelConfiguration>? registerBackup=null,CancellationToken token=default,string? expectedWalHash=null,int targetStorageVersion=5)
     {
-        if (targetStorageVersion is not (5 or 6)) throw new ArgumentOutOfRangeException(nameof(targetStorageVersion));
+        if (targetStorageVersion is not (5 or 6 or 7)) throw new ArgumentOutOfRangeException(nameof(targetStorageVersion));
         database=Path.GetFullPath(database);backup=Path.GetFullPath(backup);
         RecoveryFiles.RequireOrdinaryAncestors(database);RecoveryFiles.RequireOrdinaryAncestors(backup);
         var directory=Path.GetDirectoryName(database)!;

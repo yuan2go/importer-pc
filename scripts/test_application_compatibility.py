@@ -32,7 +32,7 @@ class CompatibilityTests(unittest.TestCase):
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             selected = resolve(root/'config/compositions.json', application+'-reference')
             version, policy = read_business(root, application, selected)
-            self.assertEqual(version['BusinessVersion'], '1.2.4')
+            self.assertEqual(version['BusinessVersion'], '1.2.6')
             self.assertEqual(version['CompatibilitySha256'], sha(policy))
             selected['components'][-2]['version'] = '9.0.0'
             # Change the actual business declaration regardless of topological order.
@@ -45,7 +45,7 @@ class CompatibilityTests(unittest.TestCase):
         app = root/'app'; app.mkdir()
         (app/'application-compatibility.json').write_text(json.dumps(policy))
         (app/'business.dll').write_text('fixed binary')
-        release = dict(SchemaVersion=2, ApplicationId='direct-plc', BusinessVersion='1.2.4', BusinessAssembly='business.dll', SourceCommit='a'*40, CompatibilitySha256=sha(app/'application-compatibility.json'))
+        release = dict(SchemaVersion=2, ApplicationId='direct-plc', BusinessVersion='1.2.6', BusinessAssembly='business.dll', SourceCommit='a'*40, CompatibilitySha256=sha(app/'application-compatibility.json'))
         (app/'application-release.json').write_text(json.dumps(release))
         identity = dict(release, Target='portable')
         (root/'ASSEMBLY.json').write_text(json.dumps(identity))

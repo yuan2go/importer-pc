@@ -74,7 +74,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         ValidateDeploymentIdentity(seed);
         // Refuse old unresolved responsibilities before either future-reader markers
         // or confirmation/recovery writes can make the original release unusable.
-        repository = new(directory, Id, 6) { Boundary = point => Boundary?.Invoke(point) };
+        repository = new(directory, Id, 7) { Boundary = point => Boundary?.Invoke(point) };
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
@@ -111,6 +111,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 ports.ImplementationHashes.GetValueOrDefault(original.Key) != original.Value)).Select(op => op.Id).ToArray();
             if (incompatibleOriginals.Length != 0)
                 throw new InvalidDataException("OriginalCapabilityUnavailable: settle unresolved originals using the matching release before changing host/implementation; no source started: " + string.Join(",", incompatibleOriginals));
+            if (ports.Wcs is IWcsRequestPreparer numericPreparer)
+                repository.RegisterIntegrationRequestRanges(numericPreparer, new[] { priorEffective, Effective, configuration.Current.Pending }.OfType<ParcelConfiguration>(),
+                    File.Exists(Path.Combine(directory!, "RESTORED-ISOLATED.json")) ? Wire.FileHash(Path.Combine(directory!, "RESTORED-ISOLATED.json")) : null);
             foreach (var binding in ParcelBindings.Positions(Effective))
             {
                 positions.Add(binding.Id, binding);
@@ -329,7 +332,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         {
             try
             {
-                var prepared = preparer.PrepareRequest(Wire.Decode<FrozenRequest>(Wire.Encode(request)), repository!.OperationSequence(op.Id));
+                var range = preparer.GetRequestIdRange(request.Binding);
+                var sequence = range is null ? repository!.OperationSequence(op.Id) : repository!.NextIntegrationPreparationSequence(range);
+                var prepared = preparer.PrepareRequest(Wire.Decode<FrozenRequest>(Wire.Encode(request)), sequence);
+                if (range is not null && prepared.RequestId != checked(range.First + sequence - 1))
+                    throw new InvalidDataException("Numeric request ID differs from the allocated T1 range position");
                 if (prepared.RequestId <= 0 || prepared.ContentType != "application/json" || string.IsNullOrWhiteSpace(prepared.Body) ||
                     System.Text.Encoding.UTF8.GetByteCount(prepared.Body) > 65536 || Wire.Hash(prepared.Body) != prepared.BodyHash)
                     throw new InvalidDataException("Invalid external request preparation; no delivery permitted");

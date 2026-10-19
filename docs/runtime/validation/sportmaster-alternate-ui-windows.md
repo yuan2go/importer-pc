@@ -36,3 +36,8 @@ UiVerification已按实际ClientArea尺寸检查classic与supply-station的1440�
 原生维护补验需在实际全局主题下对reader实例文本列BeginEdit/CommitEdit及能力Enabled复选框提交，稳定DeviceId、角色与位置只读；模板内精确提供者/本位秤相机和参数还须交互点验。两布局普通慢操作开始后OperationFeedback先显示实际操作名，冲突操作禁用而Pause保持独立；任务仍由原窗口排空。历史表可在慢读取期间选择B，完成后行/详情/Owner仍为B。
 
 当前环境macOS arm64，无Windows原生会话；上述源码与交叉构建不构成执行证据。键盘Tab/扫码焦点/触摸、普通账户安装/UAC/ACL/更新中断恢复及目标负载/班次仍NOT_RUN。完整显示矩阵未缩减。
+
+
+### 1a34a1e复审后的续修要求（原生仍NOT_RUN）
+
+原脚本Busy断言误查父UserControl而非实际禁用Grid，会中断后续验收；交叉编译不能关闭该缺陷。续修须检查实际维护Grid/表格/保存控件及独立Pause，以finally释放挂起任务。完成后检查真正绑定的OperationFeedback，无消息成功不能重现旧失败。classic在每个支持客户区验证诊断Expander可见、展开可滚动且操作员登录/登出在启用组合可达、密码可聚焦；关闭诊断后继续完整工作台几何断言。源代码补齐和Windows实际执行分别记录。

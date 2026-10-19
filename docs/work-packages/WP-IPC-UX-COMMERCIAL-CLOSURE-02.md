@@ -36,4 +36,25 @@ main在开工时仍为业务1.2.8/Contracts1.8.0/DB7；PR37产品冻结c384c3bc4
 
 ## 实际交付与本包边界
 
-[最终逐包结果](../runtime/ux-commercial-closure-02-results.md)、[固定参考预发布](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-f1a655c)及[商业输入账](../runtime/ux-commercial-combination-02.json)为实际交付。WP-02/03/05代码及参考验证已完成，WP-06参考媒介与远端回读完成；WP-01商业输入待确认、WP-04真实SDK/权威合同受阻、WP-05/06 Windows及目标机验收NOT_RUN；WP-07新增可选建议未自动采纳。当前资料检查267项继承错误、新增0项，整体仍FAIL。原失败、原PDF/HTML/图册、D/RV及PR37原证据不倒写。
+[最终逐包结果](../runtime/ux-commercial-closure-02-results.md)、[固定参考预发布](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-f1a655c)及[商业输入账](../runtime/ux-commercial-combination-02.json)为实际交付。WP-02选择归属参考证据有效；WP-03/05在1a34a1e复审发现下述工程差额，不能记全部完成。WP-06的f1a655c参考媒介与远端回读保持原身份；WP-01商业输入待确认、WP-04真实SDK/权威合同受阻、WP-05/06 Windows及目标机验收NOT_RUN；WP-07新增可选建议未自动采纳。当前资料检查267项继承错误、新增0项，整体仍FAIL。原失败、原PDF/HTML/图册、D/RV及PR37原证据不倒写。
+
+## 2026-10-19 复审差额及续修设计
+
+用户在独立复审后授权“继续修复可以修复的功能”。复审点为PR39 `1a34a1e655a479c9692b85fc8a568aca6a813c17`；main仍`eeeed0e`，PR37仍固定依赖，不合并。
+
+|差额 / 原映射|复审事实|续修方式与验收|
+|---|---|---|
+|紧凑入口 / WP-03/05、UX-04/07、UXC-04|classic将包含唯一操作员登录/登出及会话/设备来源的Expander设为Collapsed；宽<1280或高<680强制compact，维护认证不能替代操作员登录。|保留同一可展开诊断入口，compact默认折叠而不隐藏。沿用原登录应用契约、独立维护认证和固定Pause；在原生客户区矩阵展开后验证入口、密码焦点、滚动和固定操作，收起后验证工作台内容。|
+|完成反馈 / WP-03、UX-04/05|Feedback在Busy结束切回旧Message；成功只读操作未写Message时会重现旧失败，现有测试只看OperationStatus。|沿用Message/OperationStatus，无新任务框架。用本窗消息修订识别动作期间是否有新回执；无新消息且最终读取成功时发布带操作名的完成消息，不能覆盖独立Pause/新读取失败或同文新回执。冲突调用不执行、不污染完成消息。测试真正绑定的Feedback，保留失败、Pause、Drain、读取恢复反例。|
+|原生验证器 / WP-03/05|检查了父UserControl.IsEnabled，但绑定仅禁内部Grid，首个断言必失败；无finally释放挂起任务。|命名实际维护作用域并检查该Grid及具体表格/保存控件禁用，Pause独立；try/finally始终释放并await原任务。补完成后的实际TextBlock绑定断言。保留编辑/几何/生命周期断言，不将交叉构建记原生PASS。|
+
+选择方案：恢复现有可展开入口，比新增登录页或诊断窗口少一个生命周期且保留既有键盘路径；消息修订比比较字符串能分清相同内容的新回执；原生测试断言实际控件而不改变业务禁用范围。框架/F决策、22、原请求/Unknown/双位隔离保持。Windows/SDK/合同门禁仍按输入账。
+
+### 执行计划（沿既有隔离worktree顺序）
+
+- [ ] 文档先行：更正当前“全部交付”和“诊断移至维护”说明，保留旧Git/Release/原证据，独立提交。
+- [ ] 定向RED：在`UxCommercialPresentation.VerifyBusy`覆盖无消息成功后Feedback、重复入口、同文新回执、独立Pause及后读失败恢复；先跑`--ux-commercial-presentation`保存原失败。
+- [ ] 修改`ShellWindow.xaml`诊断折叠及标识、`ParcelViewModel.RunCoreAsync`消息归属；`MaintenancePage.xaml`命名作用域。原生`UxCommercialClosure.cs`检查实际作用域/子控件、finally排空、完成绑定及compact入口可达；不降800×420目标。
+- [ ] 执行presentation、snapshots、UI、窗口生命周期等受影响回归及三业务WPF/原生验证器交叉构建；不重跑未受影响全量。原生Windows实际NOT_RUN。
+- [ ] 声明业务1.3.2/Contracts1.9.0/DB7，新冻结源码候选、精确依赖、同版解包启动；复用固定公共DLL的原签名包仅在SHA确实相同且兼容声明覆盖时，否则新不可变版本。不覆盖f1a655c资产。
+- [ ] 新证据、manifest和PR39同步真实状态，正常提交推送；只关闭本次有证据的工程项，不宣布商业/Windows/现场闭环。

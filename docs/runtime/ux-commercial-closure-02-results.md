@@ -1,6 +1,6 @@
 # UX审查01 · WP-01～07工程交付
 
-可完成的通用工程及参考发行已交付；**未完成商用放行**。本分支显式依赖PR37固定head，未合并PR37或PR38到main。缺商业组合、Windows环境、真实SDK/正式权威Unknown合同的工作仍明确受阻/待验；可选建议不算既定缺陷。
+**复审更正：工程尚有可修复差额，未完成商用放行。** 固定f1a655c参考发行已交付；PR39在1a34a1e复审发现紧凑登录/诊断不可达、完成反馈恢复旧消息及原生验证器错误对象断言，续修见[工作包](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md#2026-10-19-复审差额及续修设计)。下表已有证据按原源码读取，不能据其宣称WP-03/05全部闭合。本分支显式依赖PR37固定head，未合并PR37或PR38到main。缺商业组合、Windows环境、真实SDK/正式权威Unknown合同的工作仍明确受阻/待验；可选建议不算既定缺陷。
 
 [工作包及UX/UXC映射](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md) · [固定证据](evidence/ux-commercial-closure-02/README.md) · [参考预发布](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-f1a655c) · [产物hash](evidence/ux-commercial-closure-02/ARTIFACTS.json) · [商业输入账](ux-commercial-combination-02.json)。
 
@@ -24,7 +24,7 @@
 |WP-02|继承UXC-01的每位最新观察/持久审计和双位原件守卫；新增慢快照、慢历史A→B、原件显式打开A→B、列表换源空选择保护。行/详情/核对及继续Owner一致；迟到原A查询结果显式标原A，不切回A；清选择清命令目标。|两布局原生回放待Windows；无码/多码/重复/旧序列/重启等参考回归PASS不等于现场。|
 |WP-03|维护三个DataGrid显式可编辑，稳定设备/角色/位置仍只读；schema3完整表单、精确提供者/依赖、原配置账/CAS继承。普通操作开始前显示实际操作名、Busy/原因，冲突维护/命令禁用；Pause独立。失败保留说明，后台任务和整个动作仍归关闭排空；导航/安装刷新保草稿。|真实WPF文本/复选框BeginEdit/CommitEdit及Busy/Pause脚本已补且可编译，原生执行NOT_RUN；双窗CAS、非法数值、草稿切换、Pending/Effective及失败恢复参考已核。|
 |WP-04|原端口、来源/epoch、资源、Production拒绝缺能力、原Unknown守卫继续继承；RCS明确本地lifecycle证据|真实厂商SDK/型号/固件/触发关联、正式协议/权威Query或处置依据未收到，BLOCKED_PER_CAPABILITY。QueryAsync仍返回无依据结果，不造查询、不POST假探活、不自动清Unknown。|
-|WP-05|继承六态、健康范围、真实启动阶段及两布局关闭排空。普通反馈移出20DIP多项诊断滚动区；长原件摘要先显示待核对状态，原码/ID仍在详情。经典紧凑诊断收至维护入口。原生验证器以真实ClientArea测试两布局支持区内容、长码完整选择、旧Unknown+新拒收、固定动作和低于最低区Pause/恢复不Resume。|800×420是沿既有框架重排目标；原生DPI/键盘/HID/焦点/触摸、真实像素可读性NOT_RUN。UX-08启动为继承改进；UX-09仅针对已明确同步服务调用路径，不宣称目标机时延/班次达标。|
+|WP-05|继承六态、健康范围、真实启动阶段及两布局关闭排空。普通反馈移出20DIP多项诊断滚动区；长原件摘要先显示待核对状态，原码/ID仍在详情。经典紧凑诊断被隐藏的实现已确认为复审缺陷；须恢复同一可展开入口。原生验证器以真实ClientArea测试两布局支持区内容、长码完整选择、旧Unknown+新拒收、固定动作和低于最低区Pause/恢复不Resume。|800×420是沿既有框架重排目标；原生DPI/键盘/HID/焦点/触摸、真实像素可读性NOT_RUN。UX-08启动为继承改进；UX-09仅针对已明确同步服务调用路径，不宣称目标机时延/班次达标。|
 |WP-06|固定Git源码实际发布/ZIP完整性/精确依赖/同版解包运行；3核心主链、原件重启、安装/配置/激活/启动失败保旧/安全退休及签名RCS原始字节/回执/重启不重发参考PASS。运行/故障/备份恢复/安装更新SOP沿现有设施。|Windows普通账户/UAC/ACL、安装/更新中断恢复/卸载保数据、目标负载与代表班次NOT_RUN；真实组合及商用BLOCKED。参考媒介不是已在目标机安装。|
 |WP-07|继承分页/结构详情/完整原JSON、精确包选择/原操作ID恢复；新增查询完成时间及查询时列表/可更新详情/页外目标说明。|新筛选/导出/安装日志枚举未采纳，保持可选，不自动升级缺陷。|
 

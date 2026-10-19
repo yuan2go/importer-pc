@@ -1,0 +1,261 @@
+{
+  "repository": "https://github.com/pbakaus/impeccable",
+  "commit": "46b822f7dda9f7dba799a9c7776fdc19b3a93559",
+  "skill_version": "4.7.0",
+  "engine_version": "0.1.16",
+  "license": "Apache-2.0",
+  "upstream_files": [
+    {
+      "path": "SKILL.md",
+      "sha256": "a5d5c15a1d9e16ca502443726fcf29d51cdbc41212c4b65e0271aad423dd7908"
+    },
+    {
+      "path": "agents/impeccable_asset_producer.toml",
+      "sha256": "af4b1724f58c853a0f5fdf3916a0501c07899eba45c6ee3fedfddda81ebd7291"
+    },
+    {
+      "path": "agents/impeccable_documenter.toml",
+      "sha256": "dda3050e01b58d1ed3f64ab760069b716e796c6b194d030ed3d66db8ef593493"
+    },
+    {
+      "path": "agents/impeccable_finish_reviewer.toml",
+      "sha256": "b4e690d0056e26777697bb1d8f7a4779d857f155fed99f43165c5f20aac83804"
+    },
+    {
+      "path": "agents/impeccable_manual_edit_applier.toml",
+      "sha256": "517031fa28b8c10fd4344818bacf4f52a798568d3e851d66c6ef41b7326244f6"
+    },
+    {
+      "path": "agents/openai.yaml",
+      "sha256": "92a7f329c767dd067a21b6e7bc1ccf07319a2b4e6f84687b3318a595af2e15d9"
+    },
+    {
+      "path": "reference/adapt.md",
+      "sha256": "7fa395172f7ee6dce4ee88f9b7dadc07362542ca682acd7404ec341fa1e56432"
+    },
+    {
+      "path": "reference/adapt.native.md",
+      "sha256": "07f759e869ab46308ab8e4776cbc9587f3b44f43dcad48c953d68861bc280de0"
+    },
+    {
+      "path": "reference/android.md",
+      "sha256": "a3757686a0c2778ccbc0ea321f4460368f26bc0229d2b24c3c694a42ce40b1a0"
+    },
+    {
+      "path": "reference/animate.md",
+      "sha256": "9d6d186e5da3d4ebffb333f9b58209d847705d11d9b4e761bfb2529bf47b0d3a"
+    },
+    {
+      "path": "reference/audit.md",
+      "sha256": "2e8eb96adbc2536af58f5593fcfd5f750a6f588d599c7a25c8337fb39a7f2927"
+    },
+    {
+      "path": "reference/audit.native.md",
+      "sha256": "b203cd0b268ca3e69937462967b3c88095166ea9f8b5d9c8907bad4c5468794f"
+    },
+    {
+      "path": "reference/bolder.md",
+      "sha256": "b0f36c1f1bd01eca327d755e935bae11f5c02fb8006635bb613d6c0f82388ec4"
+    },
+    {
+      "path": "reference/clarify.md",
+      "sha256": "cbbf5647e0e14f6b10c7fd43392ecc1d6924acfbf43994d1d147047d73497f42"
+    },
+    {
+      "path": "reference/colorize.md",
+      "sha256": "a3cd4b18154e8c06edfbf7e7316077e8dd500d9777ea723c09fc02fe32b3fba2"
+    },
+    {
+      "path": "reference/component-review.md",
+      "sha256": "479855a5e4e9e706470eb2950a72c4bd451e1f303d3a5765618d569f42ab5b08"
+    },
+    {
+      "path": "reference/craft-floor.md",
+      "sha256": "c51f0d79d3e4b403f6b709c1e32a528af608e3cf178799accb2b452d4f99c144"
+    },
+    {
+      "path": "reference/craft.md",
+      "sha256": "39b5fefbf524ad156a4cab2fbc5b65f2358c213a30d59a4c7510704e8d9dd56b"
+    },
+    {
+      "path": "reference/critique.md",
+      "sha256": "b1b1ad178ebc135d922cae4d55e27460140dd340f763bef9af05541643e0fb98"
+    },
+    {
+      "path": "reference/delight.md",
+      "sha256": "14a5700220c44c9addf2bca02036969b4cede7ea51fd98fe290892942bb89d2c"
+    },
+    {
+      "path": "reference/distill.md",
+      "sha256": "ecd046fed780af3c054ae33d9989c1861f0968ca99bdc26d8a1c405a675d26be"
+    },
+    {
+      "path": "reference/doctor.md",
+      "sha256": "d32ef85f7f067b2c52231a0c96b3da4e1ca4c2da0655ca3138a4dfc72faaf3b5"
+    },
+    {
+      "path": "reference/document.md",
+      "sha256": "8ed88ce75b25a0114e7db709d5ad928ed1c2cd07f44519782c0d6f0c2dca385e"
+    },
+    {
+      "path": "reference/extract.md",
+      "sha256": "9f62e80b14a210b1c5dd036865c9d3a83614451e060cbd4b2220d1b597b2c973"
+    },
+    {
+      "path": "reference/generate.md",
+      "sha256": "4cfb126cab29ca02b667fa37a7f1ab670c74ad65d01e40eecd1e4e2c28496469"
+    },
+    {
+      "path": "reference/harden.md",
+      "sha256": "6e49ba8dec911bfe49e4169f3a2382a2d209dfec2a426bd7cd0a87bec2e02989"
+    },
+    {
+      "path": "reference/hooks.md",
+      "sha256": "c17c7f1b884b8a0d818e5f37b46ffe8ae588baf7db565625fca7889ae847b010"
+    },
+    {
+      "path": "reference/init.md",
+      "sha256": "2e612d1131a6e1b576222f4356bdf2a2be939c4f5e4d3dd68e2a47ab0a5a7487"
+    },
+    {
+      "path": "reference/ios.md",
+      "sha256": "60ada207bfb419ad0a570b8319c29403713ca2ad3fb9a2f5bdffa62ab25611bb"
+    },
+    {
+      "path": "reference/layout.md",
+      "sha256": "875ceae18559e953dc9949e50374c2daadaebdb58520406b909f552a06c3e081"
+    },
+    {
+      "path": "reference/live-setup.md",
+      "sha256": "d297e5a3e3695e94bccc732d4cb38187602349893e7f215a8d400a95b8af55d7"
+    },
+    {
+      "path": "reference/live.md",
+      "sha256": "d03712f9b4d8232e43157da1f849d036ace2c39e8287e5f55ea54b9c9037e0e0"
+    },
+    {
+      "path": "reference/mode-operate.md",
+      "sha256": "7cc131b41dae694a4b554c940445117318f0c6fb19f905cf1f8cbafc08a3f430"
+    },
+    {
+      "path": "reference/mode-persuade.md",
+      "sha256": "81cf3d22f747b9768abe48bd6cb881b8807809b8995f20096cfb442dadf550bc"
+    },
+    {
+      "path": "reference/mode-read.md",
+      "sha256": "20da46dd620da4433736173b130de306ceeb124dac83fccf664a12e236ee0b8d"
+    },
+    {
+      "path": "reference/new-work.md",
+      "sha256": "386c12c61773cc154449336ec8a852d12eddfd3206e6cf1af97eba752959b65a"
+    },
+    {
+      "path": "reference/onboard.md",
+      "sha256": "3dbda622366c2161e8a7ab585298895a0a9332ee65724a5009b378b0f4b1ab60"
+    },
+    {
+      "path": "reference/operate.md",
+      "sha256": "c4b169ab7932329c833750971c53bc129d0385e16d0219b31f002792fce939e8"
+    },
+    {
+      "path": "reference/optimize.md",
+      "sha256": "bf39d3e644880f99310578558634377efe3af9872c166a94423b687205e48f38"
+    },
+    {
+      "path": "reference/overdrive.md",
+      "sha256": "0386e434919124508d57358ad78eea905ef3d4de464e64f8d1ffd4097dc404ba"
+    },
+    {
+      "path": "reference/polish.md",
+      "sha256": "e0f8997a76ff955449cc65bf2d9fcc542d893700a30b56fb2c5e5d8a438410f7"
+    },
+    {
+      "path": "reference/quieter.md",
+      "sha256": "f348d23d8a60bb1e3956489512129edd2993343eead114d06ff398e2a2caab8a"
+    },
+    {
+      "path": "reference/region-map.md",
+      "sha256": "af58ff0b02c6507be860624f122f6d2f4f36bddf18f143b2d5036962bea932c6"
+    },
+    {
+      "path": "reference/routing.md",
+      "sha256": "3347cc1bf41d7b34e32617a468a7064fc1740eb7c1abe4ff479be07cfebec5b5"
+    },
+    {
+      "path": "reference/shape.md",
+      "sha256": "51960b514f8437baf12484dd5be824e0c2d0ee8802e29e7f511e431493a6c417"
+    },
+    {
+      "path": "reference/typeset.md",
+      "sha256": "1189468e9b74842534f7932e9db90012307d374d67c7d54e48eb15dd407b05d2"
+    },
+    {
+      "path": "reference/visualize.md",
+      "sha256": "f3fa0f21096d7db32cd494dd0b5d206c19fedb65d159874778ef6d5a23000338"
+    },
+    {
+      "path": "scripts/command-metadata.json",
+      "sha256": "96a05614e8c3d0ed091415d496758d878fd86ac7b129a616e00493951c186f01"
+    },
+    {
+      "path": "scripts/impeccable",
+      "sha256": "47c96e1b46562973a834db37691333c08033a764b6c65fc18c4909a4a1f44e90"
+    },
+    {
+      "path": "scripts/impeccable.cmd",
+      "sha256": "e6c5f6a1b4cfb5c2d3548ad7581f4bcfa71f44aa04c5a02d40c9e48102980925"
+    },
+    {
+      "path": "scripts/live-browser-dom.js",
+      "sha256": "0e8e243d4242d1af8a710a548a85fe421a4fcf7787c6dbc11376ebe4c0f8f118"
+    },
+    {
+      "path": "scripts/live-browser-ignores.js",
+      "sha256": "cab20ca388425390b961d698b37445ba9416b4614852feace997c2375bcf4519"
+    },
+    {
+      "path": "scripts/live-browser-session.js",
+      "sha256": "b94fb3852486579e6796211e2176b6105ceb38c98f34ede2f935b0c72a2371c3"
+    },
+    {
+      "path": "scripts/live-browser.js",
+      "sha256": "6ef208ec112eb7db4f21aa3d9f365d975bda1ecbf1f317d2f60cb63c3ee03e43"
+    },
+    {
+      "path": "scripts/modern-screenshot.umd.js",
+      "sha256": "9b0dc34415466edac6e6802574006608b5e5c0da9fdcb7b2651dbd1ea06713a6"
+    },
+    {
+      "path": "scripts/VERSION",
+      "sha256": "a5689fdfe12484161ae85462360e3382a0eaa1bd1fb55a30fc244d9653d76ea6"
+    },
+    {
+      "path": "scripts/data/font-index-failures.json",
+      "sha256": "7461de9923357d70b1365647b0a85d181eac1702f622cbf24465767f4ba99d06"
+    },
+    {
+      "path": "scripts/data/font-index.json",
+      "sha256": "47edbdfaf27073c47033d1ac7dfee881be49e2dcbda7671d1157300481dde6da"
+    },
+    {
+      "path": "reference/degraded/asset-producer.md",
+      "sha256": "09456545fe32b648e2bd5bb6a1e807e4fb40b440c3abe6730cd179a3db808d9e"
+    },
+    {
+      "path": "reference/degraded/documenter.md",
+      "sha256": "4609eff24dc4e74450a80b696092085255bb3fd068e8046163934e44bda49503"
+    },
+    {
+      "path": "reference/degraded/finish-reviewer.md",
+      "sha256": "ffceed2530950ec2e6e82a4e07dca5854330ad9aa94bb4007d7cce5079845cd7"
+    },
+    {
+      "path": "reference/degraded/manual-edit-applier.md",
+      "sha256": "1b3672f3f3ae0065fbaac8a9025b759da40caeaa75cb716b629e4544c03ad8fb"
+    }
+  ],
+  "local_adaptations": [
+    "SKILL.md WPF scope",
+    "WPF.md native workflow"
+  ]
+}

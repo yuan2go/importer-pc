@@ -18,3 +18,5 @@
 ## 项目级 UI/UX skill
 
 UI/UX设计、实现与审查可使用 [ui-ux-pro-max](.agents/skills/ui-ux-pro-max/SKILL.md)，安装来源、版本与命令见 [skill说明](.agents/skills/README.md)。当前桌面实现查询使用 `--stack wpf`；通用建议须服从上述实物基线、业务边界和公开范围，不能替代Windows/真实接口/现场验收。
+
+本轮视觉优化同时使用项目级 [Impeccable](.agents/skills/impeccable/SKILL.md) 的 Operate 模式，先读 [WPF适配](.agents/skills/impeccable/WPF.md)；来源/固定提交见 skill说明。网页检测/CDP不用于原生WPF验收，独立 `--stack wpf` 查询不与 `--design-system`混同。

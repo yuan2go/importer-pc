@@ -17,7 +17,7 @@
 ```bash
 python3 .agents/skills/ui-ux-pro-max/scripts/search.py "binding command validation" --stack wpf
 python3 .agents/skills/ui-ux-pro-max/scripts/search.py "keyboard focus modal" --domain ux
-python3 .agents/skills/ui-ux-pro-max/scripts/search.py "industrial operations dashboard" --design-system -p "Importer-PC"
+
 ```
 
 这些命令只输出建议。仅在任务确需保存设计建议时使用 `--persist`，并显式指定 `--output-dir <项目根目录>`；先读取已有文件，未经明确授权不使用 `--force`。
@@ -37,3 +37,11 @@ python3 .agents/skills/ui-ux-pro-max/scripts/tests/test_native_desktop_stack_fre
 2026-10-19安装核验：macOS/Python 3.12.13；12个领域数据文件、22个技术栈文件及推理表校验通过；核心39项和原生/桌面指南9项测试通过。WPF、UX和设计系统三种JSON输出冒烟通过，绝对脚本路径在项目目录外可用，未持久化生成设计文件。74份上游文件中73份保持原字节，仅 `SKILL.md` 作上述适配。业务构建及Windows/SDK/现场验证本次未运行。
 
 完整 `git diff --cached --check` 报告上游 `scripts/design_system.py` 原有的46处行尾空格；该文件已按上游Git blob核对原字节，未为格式检查改写。仅本地新增说明和适配文件的格式检查通过。
+
+## Impeccable（本项目）
+
+[impeccable](impeccable/SKILL.md) 从官方 [pbakaus/impeccable](https://github.com/pbakaus/impeccable/tree/46b822f7dda9f7dba799a9c7776fdc19b3a93559) 的 `.agents/skills/impeccable` 完整安装，固定提交46b822f7dda9f7dba799a9c7776fdc19b3a93559，skill4.7.0 / engine0.1.16。Apache-2.0 LICENSE及第三方NOTICE完整保留，全部原文件hash见UPSTREAM.json；原ui-ux-pro-max保留。
+
+本地只适配SKILL.md入口并新增[WPF约束](impeccable/WPF.md)。下一轮Codex可识别 `$impeccable`，本轮已读取并实际应用其Operate、critique/layout/clarify/polish。原生WPF按native评审扩展，不用网页检测/CDP/营销动效验收。Windows context启动器会按固定版本缓存校验过的engine；不入库或进入客户端依赖。本轮context实际执行，报告XAML未识别为视觉实现，故以项目实物和真实WPF为权威。
+
+`--design-system`模式忽略`--stack`；WPF查询必须独立执行，不把通用设计系统输出称为WPF定稿。示例：`python .agents/skills/ui-ux-pro-max/scripts/search.py "binding update focus selection" --stack wpf`；针对性UX查询见本轮证据。技能安装/搜索可用不代表客户端验收。

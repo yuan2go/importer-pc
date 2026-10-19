@@ -1,0 +1,93 @@
+{
+  "SchemaVersion": 1,
+  "WorkPackage": "UNIFIED-RELEASE-01",
+  "BaseMain": "c445b0ec32a3db44f00a1968f3c501aa36eb786f",
+  "FrozenSource": "07e0f7ab1e884d355c79ce87d6848ed507a1bf27",
+  "Status": "INTERRUPTED_BY_USER_REQUEST",
+  "StoppedUtc": "2026-10-19T17:08:40.493440+00:00",
+  "Authority": "Human user explicitly authorized notification to this task: stop tests/builds/repackaging, preserve existing outputs and finalize commits/PR. The relayed instruction was confirmed against the source human messages.",
+  "ReleaseReceiptProduced": false,
+  "WindowsMediaProduced": false,
+  "RealIntegration": "BLOCKED",
+  "WindowsAcceptance": "NOT_RUN",
+  "Artifacts": [
+    {
+      "File": "baseline-guides.log",
+      "Bytes": 427,
+      "Sha256": "5B5C1090A48F0BFB8F4BC9372177520652363D61DADE5420B6FBC7933C7034B1",
+      "State": "EXISTING_EVIDENCE"
+    },
+    {
+      "File": "baseline-build.log",
+      "Bytes": 3553,
+      "Sha256": "8FAB3BC7D8C775D2C8B2CEEBEA9EF211F399ABB72A4321E28EF68C21378222E5",
+      "State": "EXISTING_EVIDENCE"
+    },
+    {
+      "File": "baseline-startup-partial.log",
+      "Bytes": 2452,
+      "Sha256": "A6B9421D6EA24D1965226459A5EFA299734A112C0AAF220B5EA0C44DA9341818",
+      "State": "EXISTING_EVIDENCE"
+    },
+    {
+      "File": "release-gates-unit.log",
+      "Bytes": 779,
+      "Sha256": "F105D618602FDC1E9A501D95C64582B50CF03BDBB8855954A3929DF42E73EB35",
+      "State": "EXISTING_EVIDENCE"
+    },
+    {
+      "File": "runtime-identity.log",
+      "Bytes": 1440,
+      "Sha256": "C50C0E8A6C98412E517477F891C5F57594BE14268DF893E5CE5203C89AAC73D1",
+      "State": "EXISTING_EVIDENCE"
+    },
+    {
+      "File": "extension-tools-interrupted.log",
+      "Bytes": 1055,
+      "Sha256": "6E1BE571DB3149A2B82C33C26235F1BF8CB8C7CD4753BA39DDF9A7E0A300F1D7",
+      "State": "EXISTING_EVIDENCE"
+    },
+    {
+      "File": "unified-build-interrupted.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "State": "EXISTING_EVIDENCE"
+    },
+    {
+      "File": "build-record.interrupted-original.json",
+      "Bytes": 19296,
+      "Sha256": "FE83250D202D7AF1C5294D4D87ADB3E0AA5A7586C54BD23EE64A0AFA786F2DBB",
+      "State": "EXISTING_EVIDENCE"
+    },
+    {
+      "File": "sportmaster-portable-build.log",
+      "Bytes": 4407,
+      "Sha256": "07C164B2EBAC9CACC336DE67B2D0A093B18AFB70CFD716501C04BD0DFC3808E2",
+      "State": "EXISTING_EVIDENCE"
+    },
+    {
+      "File": "sportmaster-portable-07e0f7ab1e88.zip.partial",
+      "Bytes": 4716149,
+      "Sha256": "E36245A874BD93E0EEC7755A23CDC63B7A8E468BFB40920040A965A57C3F9E08",
+      "State": "INTERRUPTED_NOT_INSTALL_MEDIA"
+    },
+    {
+      "File": "candidate-ASSEMBLY.json",
+      "Bytes": 4096,
+      "Sha256": "B47AE50CB3408CDA29553D3BB9566BB2F56555308FE5B2DC84B7A688653123E2",
+      "State": "UNVERIFIED_CANDIDATE_METADATA"
+    },
+    {
+      "File": "candidate-SHA256SUMS",
+      "Bytes": 10859,
+      "Sha256": "EDB257758665FAA96A71A4133A62F6CB4C61018EA3E78B5684187ABFEE51364A",
+      "State": "UNVERIFIED_CANDIDATE_METADATA"
+    },
+    {
+      "File": "candidate-DEPENDENCIES.json",
+      "Bytes": 17894,
+      "Sha256": "C97962ACFA77ACFCAFE0857FC92BF3FB31AF29F669A12DA75841CE1E62BAA1F7",
+      "State": "UNVERIFIED_CANDIDATE_METADATA"
+    }
+  ]
+}

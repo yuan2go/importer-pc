@@ -13,7 +13,7 @@ public sealed class ProductSupportWindow : Window
         ProductBrand.Apply(this);
         Title = "Importer PC · 帮助与支持"; Width = 880; Height = 720; MinWidth = 580; MinHeight = 420; WindowStartupLocation = WindowStartupLocation.CenterOwner;
         var tabs = new TabControl();
-        tabs.Items.Add(new TabItem { Header = "离线帮助", Content = new TextBox { Text = ProductHelp.QuickStart, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, FontSize = 16, Margin = new(16), VerticalScrollBarVisibility = ScrollBarVisibility.Auto } });
+        tabs.Items.Add(new TabItem { Header = "离线帮助", Content = ProductHelp.CreateView() });
         var body = new StackPanel { Margin = new(16) }; var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         tabs.Items.Add(new TabItem { Header = "支持预览与关于", Content = scroll });
         body.Children.Add(new TextBlock { Text = "支持摘要仅写本地。预览固定5分钟，不收集任意磁盘日志或生产附件。", TextWrapping = TextWrapping.Wrap });

@@ -2,6 +2,33 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 
 public static class ProductHelp
 {
+    public static System.Windows.FrameworkElement CreateView()
+    {
+        var panel = new System.Windows.Controls.Grid { Margin = new(16) };
+        panel.RowDefinitions.Add(new() { Height = System.Windows.GridLength.Auto });
+        panel.RowDefinitions.Add(new() { Height = System.Windows.GridLength.Auto });
+        panel.RowDefinitions.Add(new() { Height = new(1, System.Windows.GridUnitType.Star) });
+        var search = new System.Windows.Controls.TextBox { MinHeight = 44, ToolTip = "搜索任务或故障，例如首配、Unknown、备份、卸载" };
+        System.Windows.Automation.AutomationProperties.SetName(search, "搜索离线帮助");
+        panel.Children.Add(search);
+        var topics = QuickStart.Replace("\r", "").Split("\n\n", StringSplitOptions.RemoveEmptyEntries).Skip(1).ToArray();
+        var list = new System.Windows.Controls.ListBox { MinHeight = 88, MaxHeight = 170, Margin = new(0, 8, 0, 12) };
+        System.Windows.Automation.AutomationProperties.SetName(list, "帮助任务");
+        System.Windows.Controls.Grid.SetRow(list, 1); panel.Children.Add(list);
+        var text = new System.Windows.Controls.TextBox { IsReadOnly = true, TextWrapping = System.Windows.TextWrapping.Wrap, FontSize = 16, VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Auto };
+        System.Windows.Automation.AutomationProperties.SetName(text, "帮助正文");
+        System.Windows.Controls.Grid.SetRow(text, 2); panel.Children.Add(text);
+        void Filter()
+        {
+            var found = topics.Where(t => t.Contains(search.Text.Trim(), StringComparison.OrdinalIgnoreCase)).ToArray();
+            list.Items.Clear();
+            foreach (var topic in found) list.Items.Add(new System.Windows.Controls.ListBoxItem { Content = topic.Split('\n')[0], Tag = topic, MinHeight = 44 });
+            if (list.Items.Count > 0) list.SelectedIndex = 0;
+            else text.Text = "没有匹配的帮助。请尝试‘首配’、‘备份’或‘Unknown’；业务状态未改变。";
+        }
+        list.SelectionChanged += (_, _) => { if (list.SelectedItem is System.Windows.Controls.ListBoxItem item) text.Text = (string)item.Tag; };
+        search.TextChanged += (_, _) => Filter(); Filter(); return panel;
+    }
     public const string QuickStart = """
 Importer PC · 离线快速开始
 

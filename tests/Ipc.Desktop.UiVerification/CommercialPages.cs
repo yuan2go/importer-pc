@@ -31,12 +31,31 @@ static partial class Program
             first.Show();
             for (var i = 0; i < 100 && !Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("草稿不可用")); i++) await Task.Delay(20);
             first.UpdateLayout();
+            var taskTabs = Descendants(first).OfType<TabControl>().Single(t => t.Name == "StartupTasks");
+            Check(taskTabs.Items.Count == 5 && taskTabs.SelectedIndex == 0, "first configuration starts with directories and separates devices, policy, review and recovery tasks");
+            Check(!Descendants(first).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "创建完整备份…")), "low-frequency recovery actions do not crowd the initial directory task");
+            taskTabs.SelectedIndex = 3; first.UpdateLayout();
             Check(first.Title.Contains("首次工位配置") && Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "保存首配待生效…")) &&
                 Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "按当前首配启动")), "actual published desktop first-configuration window exposes explicit save/start through the existing editor");
             Check(!Directory.GetFiles(launch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && !Directory.GetFiles(launch.DataRoot, "configuration.json", SearchOption.AllDirectories).Any(),
                 "first-configuration native read creates neither database nor authoritative configuration");
+            taskTabs.SelectedIndex = 2; first.UpdateLayout();
             Check(Descendants(first).OfType<TextBlock>().Any(t => t.Text.Contains("草稿不可用")) && Descendants(first).OfType<TextBox>().Any(t => t.Text == config.TimeoutMs.ToString()) && Wire.FileHash(draftFile) == draftHash,
                 "actual Windows DPAPI refusal leaves the original ciphertext unchanged while the published offline editor loads configuration fields and an explicit unavailable-draft diagnosis");
+            taskTabs.SelectedIndex = 2; first.UpdateLayout();
+            var timeout = Descendants(first).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "调用超时（ms）");
+            var originalTimeout = timeout.Text; timeout.Text = "4321";
+            taskTabs.SelectedIndex = 1; first.UpdateLayout(); taskTabs.SelectedIndex = 2; first.UpdateLayout();
+            Check(timeout.Text == "4321" && timeout.IsVisible, "task navigation preserves the same incomplete editor input without reconstructing it");
+            timeout.Text = originalTimeout;
+            taskTabs.SelectedIndex = 3; first.UpdateLayout(); Click(first, "分层检查与变更预览");
+            var checkedField = type.GetField("checkedInput", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
+            for (var i = 0; i < 100 && checkedField.GetValue(first) is null; i++) await Task.Delay(20);
+            Check(checkedField.GetValue(first) is string, "actual candidate check records the exact current editor input");
+            taskTabs.SelectedIndex = 2; timeout.Text = "4322";
+            Check(checkedField.GetValue(first) is null, "editing policy invalidates a completed candidate check");
+            timeout.Text = originalTimeout; taskTabs.SelectedIndex = 1; first.UpdateLayout();
+            await first.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             Screenshot(first, Path.Combine(evidence, "commercial-first-configuration.png")); first.Close();
         }
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
@@ -60,6 +79,12 @@ static partial class Program
         Check(Descendants(page).OfType<Button>().Any(b => Equals(b.Content, "加密保存未完成设置")) && Descendants(page).OfType<Button>().Any(b => Equals(b.Content, "继续未完成设置")), "native settings exposes persistent draft actions without replacing configuration authority");
         var support = new ProductSupportWindow(runtime, null) { Owner = classic }; support.Show(); await Task.Delay(200); support.UpdateLayout();
         Check(support.Icon is not null && support.Content is TabControl tabs && tabs.Items.Count == 2, "offline help and preview/about load as native owned tabs");
+        var helpSearch = Descendants(support).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "搜索离线帮助");
+        helpSearch.Text = "Unknown";
+        Check(Descendants(support).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "帮助正文").Text.Contains("不要重发"), "task help search exposes the preserved Unknown no-resend procedure");
+        helpSearch.Text = "no-matching-topic-123";
+        Check(Descendants(support).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "帮助正文").Text.Contains("没有匹配"), "help search presents an explicit empty result without changing business state");
+        helpSearch.Text = "";
         Screenshot(support, Path.Combine(evidence, "commercial-support.png")); support.Close();
         Check((await runtime.SnapshotAsync()).RuntimeId == identity, "history/settings/help window actions never reconstruct the business runtime");
         lines.Add("NOT_RUN target client 1440x900 and target touch/DPI/reader hardware: current host work area " + SystemParameters.WorkArea + "; original full matrix assertion remains unchanged.");

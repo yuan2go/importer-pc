@@ -1,0 +1,47 @@
+name: Sportmaster commercial engineering
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: sportmaster-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  frozen-sportmaster:
+    runs-on: windows-2025
+    timeout-minutes: 45
+    steps:
+      - run: git config --global core.longpaths true
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Policy rejection tests
+        run: python -m unittest discover -s scripts -p test_commercial_delivery.py -v
+      - name: Freeze only the first commercial composition
+        shell: pwsh
+        run: |
+          python scripts/release-windows.py --profile sportmaster --source '${{ github.sha }}' --output C:/scd-release
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Native frozen journeys and separate production rejection
+        shell: pwsh
+        run: ./scripts/verify-sportmaster-delivery.ps1 -Release C:/scd-release -Output C:/scd-evidence
+      - name: Keep actual receipts including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sportmaster-evidence-${{ github.sha }}
+          path: |
+            C:/scd-evidence
+            C:/scd-release/*.json
+            C:/scd-release/*.log
+            C:/scd-release/SHA256SUMS
+          retention-days: 30
+          if-no-files-found: warn

@@ -28,3 +28,11 @@ dotnet run --project tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification
 8. 子窗带着挂起刷新或保护Pause先开始关闭，再关闭主窗，先释放子窗挂起任务再注入主窗停止失败：子窗关闭后计时器保持停止，主窗保留并可重试。子窗失败而主窗仍在排空时，不得提前恢复子窗轮询。关闭主窗口：所有刷新停下、已开始请求由runtime排空；停止失败显示“仍持有资源”并可重试，不声称停止完成。日志、退出码和未决原件分别保留。
 
 逐项记录候选SHA、Windows版本/账户、实际有效客户区与缩放、截图、运行日志、PASS/FAIL/BLOCKED。不得把单个启动烟测扩大为整体验收。
+
+## 本轮WP-02/03/05原生补验
+
+UiVerification已按实际ClientArea尺寸检查classic与supply-station的1440×900、1100×600、911×512、800×420 DIP重排，低于800×420仍须保护并请求Pause，恢复后不得自动Resume。检查长码完整选择、原Unknown叠加新拒收、两个原件摘要及固定动作；实际DPI/OS/账户/客户区与PNG仅在Windows执行时生成。旧“1100×650/911×512窗口一律保护”断言被真实客户区内容/超界/恢复检查替代，未删除保护验收。
+
+原生维护补验需在实际全局主题下对reader实例文本列BeginEdit/CommitEdit及能力Enabled复选框提交，稳定DeviceId、角色与位置只读；模板内精确提供者/本位秤相机和参数还须交互点验。两布局普通慢操作开始后OperationFeedback先显示实际操作名，冲突操作禁用而Pause保持独立；任务仍由原窗口排空。历史表可在慢读取期间选择B，完成后行/详情/Owner仍为B。
+
+当前环境macOS arm64，无Windows原生会话；上述源码与交叉构建不构成执行证据。键盘Tab/扫码焦点/触摸、普通账户安装/UAC/ACL/更新中断恢复及目标负载/班次仍NOT_RUN。完整显示矩阵未缩减。

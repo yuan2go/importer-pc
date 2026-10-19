@@ -1,0 +1,119 @@
+[
+  {
+    "Command": [
+      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--ux-commercial-presentation"
+    ],
+    "StartedAt": "2026-10-19T06:19:36.141542+00:00",
+    "Seconds": 0.626281667035073,
+    "ExitCode": 0,
+    "Log": "ux-commercial-presentation.log",
+    "Sha256": "62ddbbc33e8b380569cfa74eefa7e150258fad608816adda9e25d3af8c402dbb"
+  },
+  {
+    "Command": [
+      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--ux-commercial-inputs"
+    ],
+    "StartedAt": "2026-10-19T06:19:36.768434+00:00",
+    "Seconds": 1.06616424996173,
+    "ExitCode": 0,
+    "Log": "ux-commercial-inputs.log",
+    "Sha256": "55d8a71a8dd884abaf5c8592bf0b0b4094b41f1cd43fdc0f64ced90c698c3895"
+  },
+  {
+    "Command": [
+      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--ux-commercial-configuration"
+    ],
+    "StartedAt": "2026-10-19T06:19:37.835005+00:00",
+    "Seconds": 0.6636669170111418,
+    "ExitCode": -6,
+    "Log": "ux-commercial-configuration.log",
+    "Sha256": "8161646ed4abf34095315203eb2a886bb1f83be73d5aa074d6ccbc1f29a60d60"
+  },
+  {
+    "Command": [
+      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--audit03-snapshots"
+    ],
+    "StartedAt": "2026-10-19T06:19:38.499096+00:00",
+    "Seconds": 0.5308420829824172,
+    "ExitCode": 0,
+    "Log": "audit03-snapshots.log",
+    "Sha256": "8eef27c7652d636f4e0024c10653821e53c735ab7b817bcaabb6a94c9fd5e6fd"
+  },
+  {
+    "Command": [
+      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--sportmaster-ui"
+    ],
+    "StartedAt": "2026-10-19T06:19:39.030363+00:00",
+    "Seconds": 1.1175470420275815,
+    "ExitCode": 0,
+    "Log": "sportmaster-ui.log",
+    "Sha256": "6f133748e080777f675f538a3bc1921dd0d9258e332e0448e3e3325c8659d259"
+  },
+  {
+    "Command": [
+      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--sportmaster-window-lifecycle"
+    ],
+    "StartedAt": "2026-10-19T06:19:40.148353+00:00",
+    "Seconds": 5.068050000001676,
+    "ExitCode": 0,
+    "Log": "sportmaster-window-lifecycle.log",
+    "Sha256": "f8baacaeb3752adcb1aacaf144936879a799a0e069a0b7f35e1b0978e0223887"
+  },
+  {
+    "Command": [
+      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--version-compatibility"
+    ],
+    "StartedAt": "2026-10-19T06:19:45.216845+00:00",
+    "Seconds": 0.4407448749989271,
+    "ExitCode": 0,
+    "Log": "version-compatibility.log",
+    "Sha256": "1ec05bcfa6fb20ce075f2525dcbbe708bcf0794acd7bb23f69ab5eea007eb364"
+  },
+  {
+    "Command": [
+      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--resource-risks"
+    ],
+    "StartedAt": "2026-10-19T06:19:45.658079+00:00",
+    "Seconds": 0.5561100839986466,
+    "ExitCode": 0,
+    "Log": "resource-risks.log",
+    "Sha256": "27f6826bee3ea74ee2dca0dd5805d04f647cb918c95f781a97a00dac22b55a61"
+  },
+  {
+    "Command": [
+      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
+      ".",
+      "--parcel-recovery-p2"
+    ],
+    "StartedAt": "2026-10-19T06:19:46.214618+00:00",
+    "Seconds": 7.093131459027063,
+    "ExitCode": 0,
+    "Log": "parcel-recovery-p2.log",
+    "Sha256": "da06169d97d901db9fdafa88567ba151575a6770b6f75a49009131e0782b8d5d"
+  }
+]

@@ -57,10 +57,51 @@ static class UxCommercialPresentation
         var colors = new[] { ParcelPresentation.Neutral(""), ParcelPresentation.Pending(""), ParcelPresentation.Accepted(""), ParcelPresentation.Rejected(""), ParcelPresentation.Unknown(""), ParcelPresentation.Stale() };
         Check(colors.Select(x => x.Background).Distinct().Count() == 6 && colors.All(x => x.Icon.Length > 0), "normal, pending, accepted, rejected, unknown and stale have separate semantic backgrounds and text icons");
         Check(ParcelPresentation.Health(new("rcs", true, DateTimeOffset.UtcNow.AddMilliseconds(-20), DateTimeOffset.UtcNow.AddSeconds(2), "RCS client local lifecycle/configuration readiness only; upstream health endpoint is not supplied"), DateTimeOffset.UtcNow).Contains("客户端已启动，上游未确认"), "RCS lifecycle evidence never claims upstream readiness");
+        await VerifySelectionInterleaving(probe, baseline, a, b);
         await VerifyHistory(probe, baseline, a, b);
+        await VerifyOpenDetails(probe, baseline, a, b);
+        await VerifyBusy(probe, baseline);
         await VerifyServiceContext(probe, baseline);
         await app.StopAsync(CancellationToken.None);
         Console.WriteLine("PASS UX-PRESENTATION COMPLETE; reference projection/service ownership only; Windows native NOT_RUN");
+    }
+    static async Task VerifySelectionInterleaving(UxPresentationProbe probe, ParcelSnapshot baseline, ParcelOperation a, ParcelOperation b)
+    {
+        foreach (var vm in new ParcelViewModel[] { new((IParcelApplication)(object)probe, "classic", "test"), new SupplyStationViewModel((IParcelApplication)(object)probe) })
+        {
+            probe.Read = () => Task.FromResult(baseline);
+            probe.History = _ => Task.FromResult(new ParcelHistoryPage([new(2, false, b), new(1, false, a)], null));
+            await vm.RefreshAsync(); await vm.LoadHistoryAsync();
+            vm.SelectedHistory = vm.HistoryItems.Single(x => x.Operation.Id == a.Id);
+            var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var pending = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
+            probe.Read = () => { entered.SetResult(); return pending.Task; };
+            var refresh = vm.RefreshAsync(); await entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+            vm.SelectedHistory = vm.HistoryItems.Single(x => x.Operation.Id == b.Id);
+            pending.SetResult(baseline); await refresh;
+            Check(vm.Selected?.Id == b.Id && vm.SelectedHistory?.Operation.Id == b.Id && vm.StructuredDetails.Contains(b.Id), "A to B during slow snapshot retains B row, details and command owner in " + vm.Title);
+            string? queried = null;
+            probe.Read = () => Task.FromResult(baseline);
+            probe.Reconcile = id => { queried = id; return Task.FromResult(new BusinessReceipt("Unknown", "Synthetic original query", baseline.Revision)); };
+            await vm.QuerySelectedAsync();
+            Check(queried == b.Id && vm.Selected?.Id == b.Id, "query after interleaved snapshot uses exactly selected B in " + vm.Title);
+            vm.SelectedHistory = vm.HistoryItems.Single(x => x.Operation.Id == a.Id);
+            var historyEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var historyPending = new TaskCompletionSource<ParcelHistoryPage>(TaskCreationOptions.RunContinuationsAsynchronously);
+            probe.History = _ => { historyEntered.SetResult(); return historyPending.Task; };
+            var load = vm.LoadHistoryAsync(); await historyEntered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+            vm.SelectedHistory = vm.HistoryItems.Single(x => x.Operation.Id == b.Id);
+            // Simulate WPF SelectedItem=null while ItemsSource is being replaced.
+            vm.PropertyChanged += (_, e) => { if (e.PropertyName == nameof(vm.HistoryItems)) vm.SelectedHistory = null; };
+            historyPending.SetResult(new([new(2, false, b), new(1, false, a)], null)); await load;
+            Check(vm.Selected?.Id == b.Id && vm.SelectedHistory?.Operation.Id == b.Id && ReferenceEquals(vm.SelectedHistory, vm.HistoryItems[0]), "A to B during slow history rebinds current B to the replacement page in " + vm.Title);
+            BusinessCommand? continued = null;
+            probe.Command = command => { continued = command; return Task.FromResult(new BusinessReceipt("Guarded", "Synthetic guard; no external effect", baseline.Revision)); };
+            await vm.ContinueSelectedAsync();
+            Check(continued?.Owner == b.Id && continued.Kind == "ContinuePrepared", "continue after interleaved history freezes B owner in " + vm.Title);
+            vm.SelectedHistory = null;
+            Check(vm.Selected is null && !vm.CanHistoryQuery && !vm.CanHistoryContinue, "explicit deselection clears command target in " + vm.Title);
+        }
     }
     static async Task VerifyHistory(UxPresentationProbe probe, ParcelSnapshot baseline, ParcelOperation a, ParcelOperation b)
     {
@@ -88,7 +129,39 @@ static class UxCommercialPresentation
         probe.Reconcile = _ => { commandEntered.SetResult(); return reconciliation.Task; };
         var selectedRead = vm.QuerySelectedAsync(); await commandEntered.Task; vm.Selected = b;
         reconciliation.SetResult(new("Unknown", "Synthetic query", 1)); await selectedRead;
-        Check(vm.Selected?.Id == b.Id, "late original-operation query cannot replace a newer selected operation");
+        Check(vm.Selected?.Id == b.Id && vm.Message.Contains(a.Id), "late original-operation query names its original A result and cannot replace selected B");
+    }
+    static async Task VerifyOpenDetails(UxPresentationProbe probe, ParcelSnapshot baseline, ParcelOperation a, ParcelOperation b)
+    {
+        probe.Read = () => Task.FromResult(baseline);
+        probe.History = _ => Task.FromResult(new ParcelHistoryPage([new(2, false, b), new(1, false, a)], null));
+        var vm = new SupplyStationViewModel((IParcelApplication)(object)probe); await vm.RefreshAsync(); await vm.LoadHistoryAsync();
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var pending = new TaskCompletionSource<ParcelHistoryPage>(TaskCreationOptions.RunContinuationsAsynchronously);
+        probe.History = _ => { entered.SetResult(); return pending.Task; };
+        var open = vm.OpenHistoryAsync(a.Id); await entered.Task.WaitAsync(TimeSpan.FromSeconds(2));
+        vm.SelectedHistory = vm.HistoryItems.Single(x => x.Operation.Id == b.Id);
+        pending.SetResult(new([new(2, false, b), new(1, false, a)], null)); await open;
+        Check(vm.Selected?.Id == b.Id && vm.SelectedHistory?.Operation.Id == b.Id, "slow explicit open A cannot override later selection B");
+    }
+    static async Task VerifyBusy(UxPresentationProbe probe, ParcelSnapshot baseline)
+    {
+        probe.Read = () => Task.FromResult(baseline);
+        var vm = new ParcelViewModel((IParcelApplication)(object)probe, "test", "test"); await vm.RefreshAsync();
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously); var calls = 0;
+        var run = vm.RunAsync(async () => { calls++; await release.Task; vm.Message = "PendingRestart · Synthetic saved"; }, "保存表单");
+        Check(vm.Busy && !vm.CanStartOperation && !vm.CanConfigure && vm.OperationStatus.Contains("正在保存表单"), "ordinary operation publishes its name and disable reason before service completes");
+        await vm.RunAsync(() => { calls++; return Task.CompletedTask; }, "重复保存");
+        Check(calls == 1 && vm.Busy, "busy duplicate operation never enters another service call");
+        BusinessCommand? paused = null;
+        probe.Command = command => { paused = command; return Task.FromResult(new BusinessReceipt("Persisted", "Synthetic pause", baseline.Revision)); };
+        await vm.PauseAsync();
+        Check(paused?.Kind == "Pause" && vm.Busy, "software Pause has an independent path while ordinary action remains busy");
+        var drain = vm.DrainAsync(); Check(!drain.IsCompleted, "closing still owns busy workflow and original service");
+        release.SetResult(); await run; await drain;
+        Check(!vm.Busy && vm.CanStartOperation && vm.OperationStatus.Contains("PendingRestart"), "completed action retains exact save result and releases only its busy lane");
+        await vm.RunAsync(() => Task.FromException(new IOException("SYNTHETIC operation failed")), "备份");
+        Check(!vm.Busy && vm.OperationStatus.Contains("备份未完成") && vm.OperationStatus.Contains("SYNTHETIC operation failed"), "ordinary failure stays visible and allows explicit retry");
     }
     static Task VerifyServiceContext(UxPresentationProbe probe, ParcelSnapshot snapshot) => Task.Run(() =>
     {
@@ -127,6 +200,7 @@ public class UxPresentationProbe : DispatchProxy
 {
     public Func<Task<ParcelSnapshot>> Read = null!;
     public Func<long, Task<ParcelHistoryPage>> History = _ => Task.FromResult(new ParcelHistoryPage([], null));
+    public Func<BusinessCommand, Task<BusinessReceipt>> Command = _ => throw new InvalidOperationException("Unexpected command");
     public Func<string, Task<BusinessReceipt>> Reconcile = _ => throw new InvalidOperationException("Unexpected reconcile");
     protected override object? Invoke(MethodInfo? method, object?[]? args) => method!.Name switch
     {
@@ -134,6 +208,7 @@ public class UxPresentationProbe : DispatchProxy
         "HistoryAsync" => History((long)args![0]!),
         "OperationAsync" => ReadOperation((string)args![0]!),
         "ReconcileAsync" => Reconcile((string)args![0]!),
+        "CommandAsync" => Command((BusinessCommand)args![0]!),
         _ => throw new InvalidOperationException("Unexpected presentation service " + method.Name)
     };
     async Task<ParcelOperation?> ReadOperation(string id) => (await Read()).Operations.SingleOrDefault(x => x.Id == id);

@@ -34,8 +34,8 @@ public partial class ShellWindow : Window
             pendingRefresh = RefreshAsync(); await pendingRefresh;
             if (closing || closed) return;
             UpdateViewport(); timer.Start();
-            if (initialPage == "history") await vm.RunAsync(() => vm.LoadHistoryAsync());
-            if (initialPage == "maintenance") await vm.RunAsync(vm.EnsureMaintenanceLoadedAsync);
+            if (initialPage == "history") await vm.RunAsync(() => vm.LoadHistoryAsync(), "读取作业记录");
+            if (initialPage == "maintenance") await vm.RunAsync(vm.EnsureMaintenanceLoadedAsync, "读取维护配置");
         };
         Closed += (_, _) => { closed = true; timer.Stop(); windows.Remove(this); }; Closing += ClosingOwner;
     }
@@ -51,17 +51,17 @@ public partial class ShellWindow : Window
     void ViewportPause_Click(object s, RoutedEventArgs e) => QueueViewportPause();
     void ViewportAcknowledge_Click(object s, RoutedEventArgs e) => vm.AcknowledgeViewport();
     void Workstation_Click(object s, RoutedEventArgs e) => PageHost.Content = work;
-    async void History_Click(object s, RoutedEventArgs e) { PageHost.Content = history; await vm.RunAsync(() => vm.LoadHistoryAsync()); }
-    async void Maintenance_Click(object s, RoutedEventArgs e) { PageHost.Content = maintenance; await vm.RunAsync(vm.EnsureMaintenanceLoadedAsync); }
+    async void History_Click(object s, RoutedEventArgs e) { PageHost.Content = history; await vm.RunAsync(() => vm.LoadHistoryAsync(), "作业记录"); }
+    async void Maintenance_Click(object s, RoutedEventArgs e) { PageHost.Content = maintenance; await vm.RunAsync(vm.EnsureMaintenanceLoadedAsync, "设备与维护"); }
     void Window_Click(object s, RoutedEventArgs e) { if (!root.closing) new ShellWindow(newViewModel(), newViewModel, workstation, layout: compact ? "compact" : "standard", owner: root).Show(); }
     void Layout_Click(object s, RoutedEventArgs e) { compact = !compact; ApplyLayout(); }
     void ApplyLayout() { vm.IsCompact = compact || ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680; FontSize = vm.IsCompact ? 14 : 16; }
     async void Pause_Click(object s, RoutedEventArgs e) => await vm.PauseAsync();
-    async void Resume_Click(object s, RoutedEventArgs e) { if (vm.CanResumeInViewport) await vm.RunAsync(() => vm.CommandAsync("Resume")); }
-    async void Reconcile_Click(object s, RoutedEventArgs e) { if (vm.CanUseWorkspace) await vm.RunAsync(vm.ReconcileAsync); }
-    async void Login_Click(object s, RoutedEventArgs e) { var proof = LoginProof.Password; LoginProof.Clear(); await vm.RunAsync(() => vm.LoginAsync(proof)); }
-    async void Logout_Click(object s, RoutedEventArgs e) => await vm.RunAsync(vm.LogoutAsync);
-    async void Continue_Click(object s, RoutedEventArgs e) { if (vm.CanUseWorkspace) await vm.RunAsync(vm.ContinueAsync); }
+    async void Resume_Click(object s, RoutedEventArgs e) { if (vm.CanResumeInViewport) await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复新入场"); }
+    async void Reconcile_Click(object s, RoutedEventArgs e) { if (vm.CanUseWorkspace) await vm.RunAsync(vm.ReconcileAsync, "核对原请求"); }
+    async void Login_Click(object s, RoutedEventArgs e) { var proof = LoginProof.Password; LoginProof.Clear(); await vm.RunAsync(() => vm.LoginAsync(proof), "验证身份"); }
+    async void Logout_Click(object s, RoutedEventArgs e) => await vm.RunAsync(vm.LogoutAsync, "登出");
+    async void Continue_Click(object s, RoutedEventArgs e) { if (vm.CanUseWorkspace) await vm.RunAsync(vm.ContinueAsync, "继续未尝试原阶段"); }
     async void ClosingOwner(object? sender, CancelEventArgs e)
     {
         if (closeReady || closed) return;

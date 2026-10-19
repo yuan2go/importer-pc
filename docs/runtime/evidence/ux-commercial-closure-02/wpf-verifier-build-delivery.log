@@ -1,0 +1,33 @@
+  正在确定要还原的项目…
+  已还原 /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 157 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Platform/Ipc.Platform.csproj (用时 157 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 157 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 139 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 157 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Components/Ipc.Components.csproj (用时 157 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 139 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 139 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 11 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 12 毫秒)。
+  已还原 /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 12 毫秒)。
+  3 个项目(共 14 个)是最新的，无法还原。
+  Ipc.Platform -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Application.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Platform.Storage/bin/Debug/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Application.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Application.Contracts -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Application.Contracts/bin/Debug/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Application.ParcelFlow/bin/Debug/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Application.Sportmaster/bin/Debug/net10.0/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Reference.Protocol/bin/Debug/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Components/bin/Debug/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Drivers/bin/Debug/net10.0/Ipc.Drivers.dll
+  Ipc.Integrations -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Integrations/bin/Debug/net10.0/Ipc.Integrations.dll
+  Ipc.Application.ParcelFlow.Desktop -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Application.ParcelFlow.Desktop/bin/Debug/net10.0-windows/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/src/Ipc.Application.Sportmaster.Desktop/bin/Debug/net10.0-windows/Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop.UiVerification -> /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Desktop.UiVerification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:03.36

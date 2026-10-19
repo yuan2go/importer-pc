@@ -31,12 +31,12 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public string OperatorSubject { get; set; } = "alice";
     public string Session => Snapshot?.Configuration.Effective.Login is null ? "登录未启用" : Snapshot.CurrentOperator is { } user ? "当前操作员：" + user.DisplayName + (user.Simulation ? " · 模拟身份" : " · " + user.Authority) : "等待操作员认证";
     public string OperationOperator => Current?.Operator is { } user ? "原作业操作员：" + user.DisplayName + " · " + user.SessionId : "原作业没有登录身份";
-    public bool CanAdmit => Fresh && Snapshot?.Availability?.Admit == true;
-    public bool CanResume => Fresh && Snapshot?.Availability?.Resume == true;
-    public bool CanConfigure => Fresh && Snapshot?.Availability?.Configure == true;
-    public bool CanContinue => Fresh && Snapshot?.Availability?.ContinuePrepared.Contains(Current?.Id ?? "") == true;
-    public bool CanContinueUpload => Fresh && Snapshot?.Availability?.ContinueUpload.Contains(Selected?.Id ?? "") == true;
-    public bool CanAbandon => Fresh && Snapshot?.Availability?.AbandonUnsubmitted.Contains(Selected?.Id ?? "") == true;
+    public bool CanAdmit => !Busy && Fresh && Snapshot?.Availability?.Admit == true;
+    public bool CanResume => !Busy && Fresh && Snapshot?.Availability?.Resume == true;
+    public bool CanConfigure => !Busy && Fresh && Snapshot?.Availability?.Configure == true;
+    public bool CanContinue => !Busy && Fresh && Snapshot?.Availability?.ContinuePrepared.Contains(Current?.Id ?? "") == true;
+    public bool CanContinueUpload => !Busy && Fresh && Snapshot?.Availability?.ContinueUpload.Contains(Selected?.Id ?? "") == true;
+    public bool CanAbandon => !Busy && Fresh && Snapshot?.Availability?.AbandonUnsubmitted.Contains(Selected?.Id ?? "") == true;
     public string CaptureState => "采集：" + (Current?.Capture?.State.ToString() ?? "未准备") + " · " + Current?.Capture?.Failure;
     public string UploadState => Current?.Upload is { } upload ? "附加/前置上传：" + upload.State + " · 尝试 " + upload.Attempts + " · " + upload.Failure : "上传未准备";
     public string CurrentImage => Current?.Image is { } image ? (image.UploadedUri is null ? "图像已采集，上传未确认" : "图像已上传 · " + image.UploadedUri + (Current.ImageReleased ? " · 临时原件已释放" : "")) : Snapshot?.Configuration.Effective.Images is null ? "传图未启用" : "图像尚未取得";
@@ -46,7 +46,15 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public string CurrentWeight => Current?.Weight is { } w ? w.Value.ToString("F" + w.Precision, CultureInfo.InvariantCulture) + " " + w.Unit + " · " + (w.Source == WeightSource.Measured ? "实测" : "配置补全") : "未参与或未取得；见当前重量策略";
     public string CurrentStage => CurrentPresentation.Text;
     long selectionGeneration;
-    public ParcelOperation? Selected { get => selected; set { selected = value; Interlocked.Increment(ref selectionGeneration); Changed(); NotifyTargets(); } }
+    protected long SelectionGeneration => selectionGeneration;
+    public ParcelOperation? Selected { get => selected; set => SetSelection(value, true); }
+    void SetSelection(ParcelOperation? value, bool userIntent)
+    {
+        selected = value;
+        if (userIntent) Interlocked.Increment(ref selectionGeneration);
+        selectedHistory = value is null ? null : HistoryItems.FirstOrDefault(x => x.Operation.Id == value.Id);
+        Changed(nameof(Selected)); Changed(nameof(SelectedHistory)); NotifyTargets();
+    }
     public string Details
     {
         get
@@ -85,7 +93,8 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         }
         return string.Join("\n", lines);
     }
-    public string Message { get => message; set { message = value; Changed(); } }
+    public string Message { get => message; set { message = value; Changed(); Changed(nameof(Feedback)); } }
+    public string Feedback => Busy ? OperationStatus : Message;
     public string ConfigurationState => Snapshot is null ? "未加载" : Snapshot.Configuration.Status + " · 修订 " + Snapshot.Configuration.Revision + (Snapshot.Configuration.Failure is { } f ? "\n" + f : "");
     string configurationDraft = "";
     public string ConfigurationDraft { get => configurationDraft; set { configurationDraft = value; Changed(); NotifyConfigurationEditorState(); } }
@@ -111,7 +120,6 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     }
     public async Task RefreshAsync()
     {
-        var currentId = Selected?.Id;
         var generation = Interlocked.Increment(ref refreshGeneration);
         var (readId, next) = await ReadSnapshotWithIdAsync();
         if (generation != Volatile.Read(ref refreshGeneration) || !CanApplySnapshot(readId)) return;
@@ -122,13 +130,14 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
             retiredRuntimeIds.Add(original.RuntimeId);
             ResetHistoryForRuntime();
             Selected = null;
-            currentId = null;
         }
         Snapshot = next;
         SnapshotReadApplied(readId);
         if (!PositionIds.Contains(SelectedPositionId)) SelectedPositionId = PositionIds.FirstOrDefault() ?? "main";
         NotifyTargets();
-        if (currentId is not null) Selected = Operations.FirstOrDefault(x => x.Id == currentId) ?? Selected;
+        // Resolve the selection after the await. A slow read must never restore an
+        // earlier user intent; refreshing facts for the same owner is not a new intent.
+        if (Selected is { } current) SetSelection(Operations.FirstOrDefault(x => x.Id == current.Id) ?? current, false);
     }
     long? draftConfigurationRevision;
     Guid? draftRuntimeId;
@@ -144,14 +153,35 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     }
     void AdvanceOwnDraftRevision(long expected, BusinessReceipt receipt)
     { if (receipt.Status == "PendingRestart") { draftConfigurationRevision = expected + 1; Changed(nameof(DraftRevisionState)); } }
-    public Task RunAsync(Func<Task> action) => Own(RunCoreAsync(action));
-    async Task RunCoreAsync(Func<Task> action)
+    public bool CanStartOperation => !Busy;
+    public bool CanStartFreshOperation => !Busy && Fresh;
+    public string OperationStatus { get; private set; } = "";
+    void SetBusy(bool value)
     {
-        if (Busy) { Message = "已有操作进行中，请等待。"; return; }
-        Busy = true; Changed(nameof(Busy));
-        try { await action(); await RefreshAsync(); }
-        catch (Exception ex) { ReportCommandFailure(ex,ex.GetType().Name+": "); }
-        finally { Busy = false; Changed(nameof(Busy)); }
+        Busy = value;
+        foreach (var name in new[] { nameof(Busy), nameof(CanStartOperation), nameof(CanStartFreshOperation), nameof(OperationStatus), nameof(Feedback) }) Changed(name);
+        RefreshFreshness();
+    }
+    public Task RunAsync(Func<Task> action, string operation = "操作") => Own(RunCoreAsync(action, operation));
+    async Task RunCoreAsync(Func<Task> action, string operation)
+    {
+        if (Busy) { Message = OperationStatus + "；冲突操作暂不可用，软件暂停仍可独立执行。"; return; }
+        OperationStatus = "正在" + operation + "… 冲突操作暂不可用，软件暂停仍可独立执行。";
+        SetBusy(true);
+        var priorMessage = Message;
+        try
+        {
+            await action();
+            OperationStatus = operation + "已返回 · " + (Message == priorMessage ? "操作完成，正在读取最新状态" : Message);
+            Changed(nameof(OperationStatus)); Changed(nameof(Feedback));
+            await RefreshAsync();
+        }
+        catch (Exception ex)
+        {
+            ReportCommandFailure(ex, ex.GetType().Name + ": ");
+            OperationStatus = operation + "未完成 · " + ex.Message + "；保留原对象与草稿，核对原因后重试。";
+        }
+        finally { SetBusy(false); }
     }
     public Task PauseAsync() => Own(PauseCoreAsync());
     async Task PauseCoreAsync()

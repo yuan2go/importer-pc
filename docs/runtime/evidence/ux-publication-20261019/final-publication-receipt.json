@@ -1,0 +1,183 @@
+{
+  "date": "2026-10-19",
+  "timezone": "Asia/Shanghai",
+  "baseline_remote_main": "eeeed0e0700cd07a76587b2bb701e91d422b2c35",
+  "main_after_pr37_38_39": "f1549822683b64d858349af0867e62ba92432d75",
+  "merged_prs": [
+    {
+      "number": 38,
+      "head": "d9333543b29cb35bae5b80d4db92e1d65cf366da",
+      "merge": "53bcb798853c0c6a0e3b6c5a0c2a85a3001a7103"
+    },
+    {
+      "number": 37,
+      "original_head": "2d60fdc83a267c1ed4ad7a9f7ce200bd11255a94",
+      "head": "1d486b34d3e3bcce2c6f0040a347bd1a5264024c",
+      "merge": "07095fdf4e04519934076ede24bfa8607207f9bc"
+    },
+    {
+      "number": 39,
+      "original_head": "24d2650a61caf0f5f147daf6ed67789e33b65c4d",
+      "head": "5866fae21ace88743aa6e7e8aa0e43bb499236d7",
+      "merge": "f1549822683b64d858349af0867e62ba92432d75"
+    }
+  ],
+  "counts_at_current_main": {
+    "unique_commits": 22,
+    "ordinary_commits": 16,
+    "merge_commits": 6,
+    "open_prs": 0
+  },
+  "receipt_pr_additional_commits": {
+    "ordinary": 1,
+    "github_merge": 1
+  },
+  "expected_final_counts_after_receipt_pr_merge": {
+    "unique_commits": 24,
+    "ordinary_commits": 17,
+    "merge_commits": 7,
+    "preexisting_unique_commits": 17,
+    "created_in_this_publication": 7,
+    "created_in_this_publication_breakdown": {
+      "receipt_content": 1,
+      "branch_integrations": 2,
+      "github_pr_merges": 4
+    }
+  },
+  "counting_rule": "git rev-list --count baseline_remote_main..final_main; shared PR37 commits included only once, not sum of per-branch ahead counts",
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "builds": "NOT_RUN_BY_USER_REQUEST",
+  "repackaging": "NOT_RUN_BY_USER_REQUEST",
+  "runtime": "NOT_RUN_BY_USER_REQUEST",
+  "hooks": "DISABLED_FOR_PUBLICATION",
+  "release_source": "6ce1d6d0b109bd6a3d9490fac176122b4670b90b",
+  "release": "https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-6ce1d6d",
+  "asset_count": 15,
+  "assets": [
+    {
+      "name": "ARTIFACTS.json",
+      "size_bytes": 2696,
+      "sha256": "0a7e9d0ac9ef007172fc4531059b57db1e98d466e8d0c52d16797a3ed0b58ef9",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/ARTIFACTS.json",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "barcode.ipcx",
+      "size_bytes": 7595,
+      "sha256": "3fa672ff3431882a3c7ab8c721e5e2264fb7bd4a34a8a4f424e32fffd4af8d28",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/barcode.ipcx",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "barcode.ipcx.identity.json",
+      "size_bytes": 1191,
+      "sha256": "34ee5c8c6486939eef0fc966663561e477257ae46d032b671cce335824a40a32",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/barcode.ipcx.identity.json",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "capabilities.ipcx",
+      "size_bytes": 20601,
+      "sha256": "0efb4f442d35ae631ca12d754a22d7d96f8d1e04d3bf2aeaefb8b9f314f541e1",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/capabilities.ipcx",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "capabilities.ipcx.identity.json",
+      "size_bytes": 1308,
+      "sha256": "0523792311de4775c345e554244cb6624ca9b77418a67bd844550e73cee69c53",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/capabilities.ipcx.identity.json",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "direct-plc-core.zip",
+      "size_bytes": 18620047,
+      "sha256": "1ac24fe561f4b672a49fe3c14931949e947588f06f9432e21be63692512d554a",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/direct-plc-core.zip",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "raw-verification-evidence.zip",
+      "size_bytes": 231098,
+      "sha256": "7108d0fe230b9babbd810c29bc9d2289176e09eb9374aa34b10e6ea1c5a7f0c3",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/raw-verification-evidence.zip",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "rcs.ipcx",
+      "size_bytes": 17738,
+      "sha256": "10d145903c79574d05c517ef335456fc39fb81f59e44b9c1da4955a5b1ae9574",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/rcs.ipcx",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "rcs.ipcx.identity.json",
+      "size_bytes": 1289,
+      "sha256": "1c6cf4e1efae0c0bd221364fd74614d0c46a95def4a37fe4e0710d3aefb0e6dc",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/rcs.ipcx.identity.json",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "reference-trust.json",
+      "size_bytes": 786,
+      "sha256": "646b510c511190a9ce64ccabf669a9d72c7de9ae1dbe4e5092f9631c42e10fcf",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/reference-trust.json",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "SHA256SUMS",
+      "size_bytes": 1240,
+      "sha256": "004426497050b721c2cb8a13c441bad01e8246f92a218851953d3ca8064baaee",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/SHA256SUMS",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "sportmaster-core.zip",
+      "size_bytes": 18659525,
+      "sha256": "2e324494eeca9dbcfb352da19cd12131ed465903b30e0b3157d0a1789c8e99d3",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/sportmaster-core.zip",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "sportmaster-selected-portable.zip",
+      "size_bytes": 18707548,
+      "sha256": "217b4a0396a393f2597a9b55194a7cd8e03ca77f87dbad7f6b2afdbdd0f11d98",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/sportmaster-selected-portable.zip",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "sportmaster-selected-win-x64.zip",
+      "size_bytes": 104801961,
+      "sha256": "8f9944d72ea129e6f8280e1105a4d2a5987623f56947f663096d2975dc569138",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/sportmaster-selected-win-x64.zip",
+      "matches_frozen_receipt": true
+    },
+    {
+      "name": "wcs-to-plc-core.zip",
+      "size_bytes": 18645599,
+      "sha256": "999ffc85d7eb0207d702cc0dee063023031c91d0e570fdecac66b28ad86a6ce9",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-6ce1d6d/wcs-to-plc-core.zip",
+      "matches_frozen_receipt": true
+    }
+  ],
+  "custody_scope": "GitHub state/size/digest compared with existing frozen receipt; no runtime or new release qualification",
+  "windows_actual": "NOT_RUN",
+  "real_sdk_authoritative_protocol_site": "BLOCKED",
+  "commercial_admission": "NOT_APPROVED",
+  "final_receipt_identity": "This receipt is committed in a separate main PR; its exact commit, actual merge and final main are read from Git/GitHub to avoid self-reference."
+}

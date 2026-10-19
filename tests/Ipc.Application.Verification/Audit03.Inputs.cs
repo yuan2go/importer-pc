@@ -80,6 +80,7 @@ static partial class Audit03
             }
         }
         await Measurements();
+        await SharedStorageFailure();
         if (failures != 0) throw new Exception("Audit03 input failures: " + failures);
         Console.WriteLine("PASS A03 INPUT COMPLETE");
     }
@@ -117,4 +118,22 @@ static partial class Audit03
         Check(recovered.IdentityConflicts!.Length == 1 && recovered.IdentityConflicts.Single().Detail.Contains("3.456") && recovered.Operations.Single(o => o.PositionId == "left").Weight?.Value == 2.345m,
             "measurement contradiction evidence and original survive restart");
     }
+    static async Task SharedStorageFailure()
+    {
+        var c = Config("direct-plc") with { Scale = Scale("store-fault.scale"), Weight = new(WeightSource.Measured, WeightUnit.Kg, 3, MaximumAgeMs: 60000, WaitTimeoutMs: 300000) };
+        var app = await Open(c, "store-fault");
+        app.EmitReference("store-original", "ORIGINAL", "store-event"); await Wait(app, s => s.Operations.FirstOrDefault()?.State == ParcelState.WaitingWeight);
+        app.Boundary = point => { if (point == "AfterMeasurementInsert") throw new IOException("Synthetic shared database commit failure"); };
+        var measurement = new WeightMeasurement(Wire.Id(), "store-original", c.Scale!.Target, 1.234m, WeightUnit.Kg, 3, MeasurementQuality.Valid, true, DateTimeOffset.UtcNow);
+        app.EmitReferenceWeight(measurement);
+        var failed = await Wait(app, s => s.BlockingReasons.Any(r => r.Contains("worker failed")));
+        Check(!app.EmitReferenceWeight(measurement with { Id = Wire.Id() }) && !failed.Availability!.Admit && failed.Operations.Single().Weight is null && failed.Operations.Single().Plc is null,
+            "shared storage failure still stops receipt and rolls back measurement/intent before any PLC send");
+        try { await app.DisposeAsync(); Check(false, "terminal worker failure must remain visible to its owner"); }
+        catch (InvalidOperationException e) { Check(e.Message.Contains("resources released after terminal worker failure") && !app.HasUnreleasedResources, "shared failure cleanup reports original fault while releasing resources"); }
+        using var repository = new ParcelRepository(Path.Combine(root, "store-fault", "data", "Simulation", c.StationId, c.ApplicationId), c.ApplicationId);
+        Check(repository.ReadMeasurement(measurement.Id) is null, "failed database transaction leaves no partial measurement identity");
+        Evidence("shared-storage-failure", failed);
+    }
+
 }

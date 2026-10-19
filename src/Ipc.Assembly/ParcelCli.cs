@@ -51,7 +51,7 @@ static class ParcelCli
                 MachineRuntimePolicy.RequireExtensionInstallerAuthority();
                 var dataRoot = Directory.GetParent(directory)!.Parent!.Parent!.FullName;
                 var factory = new ParcelCapabilityFactory(new(directory, dataRoot, null, null));
-                try { Console.WriteLine(Wire.Encode(ParcelRepository.BackupOffline(database, map["--destination"], definition, factory.RegisterBackup))); }
+                try { Console.WriteLine(Wire.Encode(ParcelRepository.BackupOffline(database, map["--destination"], definition, (backup, c) => { factory.Normalize(c); factory.RegisterBackup(backup, c); }))); }
                 finally { factory.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
             }
             else Console.WriteLine(Wire.Encode(map["--action"] == "diagnostic-export"

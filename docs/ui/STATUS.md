@@ -1,4 +1,4 @@
-> 当前组合：业务1.2.6；classic/supply-station共用快照时效、当前位身份及维护保护。继承PR34 c073044的已复核实现，并补退役运行实例拒绝、修订倒退失效、旧格口标旧及轮询失败时独立软件暂停。原实物、原SHA/PASS/FAIL与实际Windows NOT_RUN保持，执行来源见[审查03工作包](../work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)。
+> 当前组合：业务1.2.7；classic/supply-station共用快照时效、当前位身份及维护保护。继承PR34 c073044的已复核实现，并补退役运行实例拒绝、修订倒退失效、旧格口标旧及轮询失败时独立软件暂停。原实物、原SHA/PASS/FAIL与实际Windows NOT_RUN保持，执行来源见[审查03工作包](../work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)。
 
 # UI实现与实物状态
 

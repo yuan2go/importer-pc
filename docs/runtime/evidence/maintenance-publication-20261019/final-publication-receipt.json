@@ -1,0 +1,231 @@
+{
+  "date": "2026-10-19",
+  "timezone": "Asia/Shanghai",
+  "baseline_remote_main": "be7956447054054dfdcfce725e8fbbbdfc87407a",
+  "main_after_pr41_42": "d68e11fa5ddd13d7e3de96bf3ca6911256fdf427",
+  "merged_prs": [
+    {
+      "number": 41,
+      "head": "e274b5f9ca3ad645c4071eef480a3fe00c4b4bcb",
+      "merge": "9f4b32f319d3a66d993cfbafcdda90656e7fd687"
+    },
+    {
+      "number": 42,
+      "original_head": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "head": "428ac6a7b29394717243a5b226b3bdc48d907134",
+      "merge": "d68e11fa5ddd13d7e3de96bf3ca6911256fdf427"
+    }
+  ],
+  "counts_at_current_main": {
+    "unique_commits": 13,
+    "ordinary_commits": 10,
+    "merge_commits": 3,
+    "open_prs": 0
+  },
+  "receipt_pr_additional_commits": {
+    "ordinary": 1,
+    "github_merge": 1
+  },
+  "expected_final_after_receipt_pr_merge": {
+    "unique_commits": 15,
+    "ordinary_commits": 11,
+    "merge_commits": 4,
+    "preexisting_task_commits": 10,
+    "created_in_this_publication": 5,
+    "new_breakdown": {
+      "receipt_content": 1,
+      "branch_integration": 1,
+      "github_merges": 3
+    }
+  },
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "builds": "NOT_RUN_BY_USER_REQUEST",
+  "repackaging": "NOT_RUN_BY_USER_REQUEST",
+  "runtime": "NOT_RUN_BY_USER_REQUEST",
+  "hooks": "DISABLED_FOR_PUBLICATION",
+  "assets_total": 18,
+  "existing_maintenance_assets": 15,
+  "new_sid_reference_assets": 3,
+  "releases": [
+    {
+      "url": "https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-ff31b0e",
+      "source": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+      "scope": "Maintenance P2 only; no SID preflight patch"
+    },
+    {
+      "url": "https://github.com/yuan2go/importer-pc/releases/tag/runtime-sid-reference-f354d3f",
+      "source": "f354d3ff8d8a46d3eaca02db61877be1fd506785",
+      "scope": "Portable SID development reference only; no maintenance P2"
+    }
+  ],
+  "assets": [
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "ARTIFACTS.json",
+      "size_bytes": 2487,
+      "sha256": "fd06f0b7b71c0ab893db95c99ba53d32cc651b870ffc07b4836566d54fbef600",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/ARTIFACTS.json",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "barcode.ipcx",
+      "size_bytes": 7594,
+      "sha256": "9d7ee21c8409406d950c5ca0b03d9d8e43fa7864e719689d913af3912ccd5059",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/barcode.ipcx",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "barcode.ipcx.identity.json",
+      "size_bytes": 1191,
+      "sha256": "ee9441ded23a31f78148d12afeb836d883b431a9834405fb94ce570b700cb2a3",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/barcode.ipcx.identity.json",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "capabilities.ipcx",
+      "size_bytes": 20602,
+      "sha256": "99cff37bfedfde2c6a2f4b850344284fde840b6cc7c17dab4a19975933fbab88",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/capabilities.ipcx",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "capabilities.ipcx.identity.json",
+      "size_bytes": 1308,
+      "sha256": "aa73dbe303c9272193c3be5ab9512f257351495315488ebf47ae79f9cf473aec",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/capabilities.ipcx.identity.json",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "direct-plc-core.zip",
+      "size_bytes": 18620015,
+      "sha256": "5c370314754b785e138b304024bdc8e6aaa7377e69c52ee3e5fa91c0c9e345b0",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/direct-plc-core.zip",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "raw-verification-evidence.zip",
+      "size_bytes": 265516,
+      "sha256": "3a5dc70846ab5bc62b0c073483b4575bd3a4d9019a1ebc28abcb7a2e0af07b26",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/raw-verification-evidence.zip",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "rcs.ipcx",
+      "size_bytes": 17734,
+      "sha256": "b73b9bfb2bce37b40050468f41aba6fa3c27b566f8fab13214dc4c3c6f576803",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/rcs.ipcx",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "rcs.ipcx.identity.json",
+      "size_bytes": 1289,
+      "sha256": "06bc9dc232321301e2f4adb3bd65896ac9893f42d105abc50c211635da6a7fa5",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/rcs.ipcx.identity.json",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "reference-trust.json",
+      "size_bytes": 786,
+      "sha256": "646b510c511190a9ce64ccabf669a9d72c7de9ae1dbe4e5092f9631c42e10fcf",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/reference-trust.json",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "SHA256SUMS",
+      "size_bytes": 1240,
+      "sha256": "d2f5d6adf2456c6c8c881bcd7c200d131619a994a6e40f576e8048ee853a87b3",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/SHA256SUMS",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "sportmaster-core.zip",
+      "size_bytes": 18660769,
+      "sha256": "2b4163ed7fe6f759b3f1033c21e9c3a42ac1782c1937bf4444d02aa0e91a52f8",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/sportmaster-core.zip",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "sportmaster-selected-portable.zip",
+      "size_bytes": 18708795,
+      "sha256": "80055560f33fd66a244eed496ba89f3d2e125e8a2fdf9fc2b22e083ebe691c50",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/sportmaster-selected-portable.zip",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "sportmaster-selected-win-x64.zip",
+      "size_bytes": 104816123,
+      "sha256": "8a26a33f3b7574053a9624bf156974fe20945fcc511fd0dd47eb9dca25b941ca",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/sportmaster-selected-win-x64.zip",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "ux-reference-ff31b0e",
+      "name": "wcs-to-plc-core.zip",
+      "size_bytes": 18645538,
+      "sha256": "fdd88e17a573ccbb4750f72f760accee10ba5f910f38a1aa248620002c0c554d",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/ux-reference-ff31b0e/wcs-to-plc-core.zip",
+      "custody": "Matches existing PR42 frozen receipt"
+    },
+    {
+      "release": "runtime-sid-reference-f354d3f",
+      "name": "SHA256SUMS",
+      "size_bytes": 167,
+      "sha256": "9357f937e3dd17aa3e08c1e35540f175a9c589db165c65feebe511951680e572",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/runtime-sid-reference-f354d3f/SHA256SUMS",
+      "custody": "GitHub upload digest equals original local bytes"
+    },
+    {
+      "release": "runtime-sid-reference-f354d3f",
+      "name": "SID-ARTIFACT.json",
+      "size_bytes": 750,
+      "sha256": "4f0b132ebb88549383083b1e960cb4aac15033772e5d4e50c72fd11ea7a73a33",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/runtime-sid-reference-f354d3f/SID-ARTIFACT.json",
+      "custody": "GitHub upload digest equals original local bytes"
+    },
+    {
+      "release": "runtime-sid-reference-f354d3f",
+      "name": "sid-portable.zip",
+      "size_bytes": 18661554,
+      "sha256": "39c4373a4bdf655b982283342e4a961bddf440b7dbdb9f7def0c2a38d9fe3048",
+      "state": "uploaded",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/runtime-sid-reference-f354d3f/sid-portable.zip",
+      "custody": "GitHub upload digest equals original local bytes"
+    }
+  ],
+  "combined_media": "NOT_BUILT_BY_USER_REQUEST; neither old ZIP is relabelled as combined main",
+  "combined_runtime": "NOT_RUN_BY_USER_REQUEST",
+  "windows_native": "NOT_RUN",
+  "real_sdk_protocol_devices_site": "BLOCKED",
+  "production": "NOT_READY",
+  "receipt_identity": "Read final receipt commit/PR/merge and actual final main from Git/GitHub; no self-referential hash embedded."
+}

@@ -13,3 +13,11 @@ PR48 实际合并 4f21b2d9cf6742a6775e47766c9f8d96f2804bca。PR49 继承其 main
 两个负向夹具的所有场景保留于同一测试文件；PR48 三项夹具只按统一 API/所需依赖库存和错误文案迁移，断言仍验证篡改、额外文件、ZIP 成员及来源身份，未运行、未跳过或吞异常。PR47 关闭扩展临时文件句柄的修正保持；依赖材料同时覆盖 desktop/app。两种证据目录各自 -text 规则保留。INDEX 同时保留商业当前入口与发行形成时记录，manifest 逐路径合并并保留历史对象，不用旧设计状态覆盖商业实现。
 
 统一核验器同时保留 PR48 对宿主 BusinessVersion/BusinessAssembly/CompatibilitySha256、原生脚本实际派发参数和非空扩展身份的门禁。夹具错误文案按统一核验器精确迁移；仍未运行测试。
+
+## 上传快照 PR51 与统计截止
+
+PR49 实际合并 cfe6c0e0d0570986ea8c63f619e328d3891b82ef。PR51 将原上传快照 cfeb784 的两个独有提交及上传说明纳入同一 main 祖先；INDEX、manifest 和发行报告重叠时保留最新已整合版本，恢复阶段说明不被旧快照删除。原上传字节与中断证据保留在提交祖先和证据目录中。
+
+最后本地整合前，去重输入为 35 个提交；加入本地双父整合后为 36，再以 GitHub merge 方法合并 PR51 后应为 37。计数基线为开工 main c445b0ec，使用 Git 图集合而非各分支 ahead 相加。PR51 的实际 merged 状态、最终 merge SHA 和最终 main 计数在 API 完成后回读；本文件不伪造自身后继合并 SHA。前四个已确认 merge 及统计方法见[机器回执](evidence/publication-merge-20261020/receipt-before-final-merge.json)。
+
+本轮全部代码/冲突整合未运行测试、构建、重新出包或启动。运行方式继续使用产品操作指南；新发行工具统一为 `python scripts/release-windows.py --output <全新目录> --dotnet <固定SDK>`，可选完整 `--source` 须等于干净检出的 HEAD。本轮未执行该命令。六个已上传 ZIP 仍属于 bd86fbb，统一发行的 .zip.partial 仍为不可安装中断产物，均不代表最终 main 组合验收。报价表未上传，D/RV 和真实 SDK/现场边界不改写。

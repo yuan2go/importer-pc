@@ -41603,9 +41603,10 @@
       "status": "uploaded_source_or_preserved_evidence_unverified",
       "purpose": "Authorized source/evidence integration; no tests or build in this task",
       "source": "User-authorized merge of uploaded snapshots and all open PRs",
-      "sha256": "88290910e618fc82856d373cc9d08935cd6a0644f85773625f653a86395d969f",
-      "size_bytes": 2298,
-      "git_blob": "adc4e431862cde631d0bac5f13c75c40e02209a1"
+      "sha256": "b604617e79a746376642198f012ccea16c32fcb57c769b531a8b88687a5eb34b",
+      "size_bytes": 3706,
+      "git_blob": "26f5be5405d9a48850fd60488307e2623213562b",
+      "pre_publication_merge_git_blob": "adc4e431862cde631d0bac5f13c75c40e02209a1"
     },
     {
       "path": "docs/runtime/publication-snapshot-20261020-commercial.md",
@@ -41650,6 +41651,26 @@
       "sha256": "8996ca9ebd3e6c79e1cba26ff4e488cfa784200d9f1eb32f60d225a44800efe5",
       "size_bytes": 4147,
       "git_blob": "5a4a615e97e500630b6de114fe6637f60b36fdec"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-merge-20261020/receipt-before-final-merge.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-MERGE-20261020",
+      "status": "source_upload_or_merge_custody_without_runtime_verification",
+      "source": "Explicit user authorization to submit uploaded snapshots and merge all open PRs",
+      "sha256": "8ad9220c938fe85c9cfe81023e3783bb73abfccefc73b2ec09741b134604d25a",
+      "size_bytes": 1345,
+      "git_blob": "45b452167507cf1078d2cf41c007d29cd51b20ac"
+    },
+    {
+      "path": "docs/runtime/publication-snapshot-20261020-unified-release.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-MERGE-20261020",
+      "status": "source_upload_or_merge_custody_without_runtime_verification",
+      "source": "Explicit user authorization to submit uploaded snapshots and merge all open PRs",
+      "sha256": "e8683a9373e942845ac2621d0c6d304ef9ef48e7118dabfcb963030c9b5810be",
+      "size_bytes": 1821,
+      "git_blob": "98acd88ed14280fe1fab36b2326b2425dfb583bf"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -43084,6 +43105,8 @@
     "receipt": "docs/runtime/publication-merge-20261020.md",
     "historical_media_source": "bd86fbb01b249f07e25fb12e003fed2a130a9c1c",
     "windows": "NOT_RUN",
-    "real_integration": "BLOCKED"
+    "real_integration": "BLOCKED",
+    "final_snapshot_pr": 51,
+    "actual_predecessor_main": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef"
   }
 }

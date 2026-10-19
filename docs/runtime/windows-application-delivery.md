@@ -4,6 +4,8 @@
 
 # 三个Application的Windows候选与维护路径
 
+当前合并源码同时包含PR44部署/修复向导及PR45全部运行入口门禁，共用最终MachineRuntimePolicy：指定未提权账户允许deny-only管理员组身份，已启用管理员权限/服务账户/非指定SID继续拒绝。此次发布的e79a8bf与16ecb57候选分别保留原范围，尚无包含两项增量的新组合媒介；详细身份与下载见[本次不测试发布记录](publication-deployment-20261019.md)。
+
 本文描述当前合并源码的操作；旧媒介必须按其固定SourceCommit及随包指南读取。ff31b0e的1.3.3媒介不包含SID前置修复，f354d3f的portable参考不含维护P2，本轮未生成二者组合的新媒介。SourceCommit、ApplicationId、业务1.3.3、ABI1.9.0、DB7、配置schema1/2/3分别读取ASSEMBLY.json、app/application-release.json和DEPENDENCIES.json。Supply仍用自己的station.ps1/Storage5，不能套用这里命令。候选工程基线沿现有Windows11 build26100+ x64/PowerShell7；客户SKU/build、设备/SDK及合同未确认，实际Windows全部NOT_RUN，真实组合和商用BLOCKED。不得把本页步骤写成已经执行的Windows验收。
 
 ## 媒介与依赖诊断

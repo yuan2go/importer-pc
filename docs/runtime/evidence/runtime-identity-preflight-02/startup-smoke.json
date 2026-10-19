@@ -1,0 +1,50 @@
+[
+  {
+    "composition": "supply-assembly",
+    "source_commit": "16ecb571cba32188f62a6e6e677030cd589dbf48",
+    "zip_sha256": "1f23d40270c6cd7b7853e34adf38d670bcdfe879caebc81b793e7f0db78ab518",
+    "sha256sums_sha256": "5cdc1fde30740d68c5c97a2ab84df6522a178bab923cdc18721438823447621a",
+    "verified_files": 98,
+    "startup_exit_code": 0,
+    "commands": [
+      "snapshot",
+      "quit"
+    ],
+    "persistent_check": "ok",
+    "host": "Darwin arm64",
+    "windows_identity_acl": "NOT_RUN",
+    "scope": "Unpacked frozen portable package, new Simulation data root, no commands creating work or samples",
+    "command": [
+      "<dotnet>",
+      "<workspace>/.artifacts/identity02-verified-supply-assembly/app/Ipc.Assembly.dll",
+      "--config",
+      "<workspace>/.artifacts/identity02-verified-supply-assembly/app/config",
+      "--data-root",
+      "<workspace>/.artifacts/identity02-smoke-data-supply-assembly"
+    ]
+  },
+  {
+    "composition": "inspection-reference",
+    "source_commit": "16ecb571cba32188f62a6e6e677030cd589dbf48",
+    "zip_sha256": "cd08bac45bbf8bea53ce92c20549a63f702440d363f9b0dff6ebbacddc40e1e6",
+    "sha256sums_sha256": "e0c90d8f7c3863d9c6fb2949851752ee4c7948b610f1814daa66e15403daa958",
+    "verified_files": 46,
+    "startup_exit_code": 0,
+    "commands": [
+      "snapshot",
+      "quit"
+    ],
+    "persistent_check": "JSON ledger empty; revision 0",
+    "host": "Darwin arm64",
+    "windows_identity_acl": "NOT_RUN",
+    "scope": "Unpacked frozen portable package, new Simulation data root, no commands creating work or samples",
+    "command": [
+      "<dotnet>",
+      "<workspace>/.artifacts/identity02-verified-inspection-reference/app/Ipc.Assembly.dll",
+      "--config",
+      "<workspace>/.artifacts/identity02-verified-inspection-reference/app/config",
+      "--data-root",
+      "<workspace>/.artifacts/identity02-smoke-data-inspection-reference"
+    ]
+  }
+]

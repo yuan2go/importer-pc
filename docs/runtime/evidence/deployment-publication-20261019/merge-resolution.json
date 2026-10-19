@@ -1,0 +1,195 @@
+{
+  "date": "2026-10-19",
+  "baseline_main": "524916b2088f267175bec46daf01e6df020932b7",
+  "pr44_head": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+  "pr44_merge": "fea535c94c12a50c9559928a2de0bf680e09dba7",
+  "pr45_original_head": "506bf7a09a2a1ff028728346b7b23d05925bacb5",
+  "conflicts": [
+    "docs/manifest.json",
+    "docs/manifest.sha256",
+    "scripts/test_runtime_identity.py"
+  ],
+  "fixture_resolution": "Preserve PR44 conditional default DataRoot argument construction, runtime-prepare and first-run assertions; add PR45 File/Destination operands and retain its five maintenance dispatch and Supply/Inspection ordering assertions. No assertions removed or executed.",
+  "policy_resolution": "Use user-authorized PR44 final shared MachineRuntimePolicy. Retain PR45 ProductRuntime/InspectionRuntime RequireRuntimeIdentity before persistent initialization. Designated UAC-filtered deny-only administrator membership allowed; enabled elevation, services and mismatched SID rejected. PR45 does not define a second policy.",
+  "source_blobs": [
+    {
+      "path": "scripts/Maintenance.cmd",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "7127964e966a9422b18e0aa0d42ddb4899314b6b"
+    },
+    {
+      "path": "scripts/Setup.cmd",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "f423f05d7a9b15af3c64decc3d5c6c29b5b4c8c0"
+    },
+    {
+      "path": "scripts/application.cmd",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "1ba13b803a5f55093276770c14a58d6ae54963d3"
+    },
+    {
+      "path": "scripts/application.ps1",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "773f6dfe03db9719540192ef7e80e0c7d6078b34"
+    },
+    {
+      "path": "scripts/package-application.py",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "f4803c85ce23160680bdab813bc83ba3b3c88d81"
+    },
+    {
+      "path": "scripts/release_documents.py",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "ffbf82378e1aa3b8a16274e8804eaaf35c135901"
+    },
+    {
+      "path": "src/Ipc.Application.Contracts/StartupMaintenance.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "8a3d5b1e5d4c33fbc4e5c1c6774ddb8240d4a93a"
+    },
+    {
+      "path": "src/Ipc.Application.Inspection/InspectionRuntime.cs",
+      "source": "506bf7a09a2a1ff028728346b7b23d05925bacb5",
+      "git_blob": "dcfba8167208862b84d1e572466704697b4aea0b"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupConfigurationDraft.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "7154ef80b87189dbb186e73a037691e4a0185c3e"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "7f83ebaf841538bc52aa436cabf336a02b978695"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelStartupMaintenance.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "08f837a4ccffdd32b185e5b295079376d7a2ed20"
+    },
+    {
+      "path": "src/Ipc.Assembly/Ipc.Assembly.csproj",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "5ff23942170dd502020267a4f18d26fdce1e6fe0"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelAssembly.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "ac12f81cc7f29b29b2623cd85909ca7b17f819df"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelCapabilityFactory.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "f751bab25535977dd64ffd563c0fcb6a4a8ba629"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelCli.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "423c82458d6b793e8d26515709cd84be1eda095f"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelRuntimeSetup.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "221646bbf1d99a0da87b5e47c75076dfe18be413"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelStartupServices.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "78bb92b4654726a7bc811eba824dbdc2de10f471"
+    },
+    {
+      "path": "src/Ipc.Assembly/Program.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "78991f46d26928860d022a76e2b957719c7b5939"
+    },
+    {
+      "path": "src/Ipc.Desktop/DesktopLaunchOptions.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "46e2f5c219b5f00dd9681b406101b13a06f5266c"
+    },
+    {
+      "path": "src/Ipc.Desktop/Ipc.Desktop.csproj",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "bef4626a979cda21bc5f91398c4d38cf6298f494"
+    },
+    {
+      "path": "src/Ipc.Desktop/ParcelApp.xaml.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "9af6d5fca5831890ed448cf79c50c1c73c78f7a4"
+    },
+    {
+      "path": "src/Ipc.Desktop/StartupWorkflows.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "399796fbb620ca864289d09f427122f3ecebe11e"
+    },
+    {
+      "path": "src/Ipc.Platform/CommonCapabilities.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "3df64ecc687505a69896412a49db82e19d281ece"
+    },
+    {
+      "path": "src/Ipc.Platform/DeploymentMedia.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "6f7b616ee667565fe97ba2bb2845f5aa4cbe1a0b"
+    },
+    {
+      "path": "src/Ipc.Platform/DeploymentPaths.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "f22718565145d038ea3af0a213e28c5f2815f9a4"
+    },
+    {
+      "path": "src/Ipc.Platform/MachineRuntimePolicy.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "4eced0d672d172451680624c5dccb85cf3fa4efc"
+    },
+    {
+      "path": "src/Ipc.Platform/MachineRuntimeSetup.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "7dd974beb118ba92e4f8047a7806ea6365d99864"
+    },
+    {
+      "path": "src/Ipc.Platform/WindowsDeploymentSetup.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "39fb4591731b6602aa8b6f006c66a99108504374"
+    },
+    {
+      "path": "src/Ipc.Product/ProductRuntime.cs",
+      "source": "506bf7a09a2a1ff028728346b7b23d05925bacb5",
+      "git_blob": "4fb806128fcafc3d8f6e489abbd0d6cf978244a8"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "a449888ba67c0d93ec9f6483c523126386eba038"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/Program.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "77609e76ba5ead326e7347757e464bc134527f2c"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/StartupDeployment.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "c6985a9409af07a0170cdc03aba7c15badc4ec56"
+    },
+    {
+      "path": "tests/Ipc.Verification/Program.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "be83e42fb2f702a1975105f2f610f3dcd2e2ae80"
+    },
+    {
+      "path": "tests/Ipc.Verification/RuntimeIdentityVerification.cs",
+      "source": "310b9ea5501ca1f2a6f897924e3734113ecfbac5",
+      "git_blob": "47e6a56147e30f7f49b9a2ab5b130496055e5317"
+    }
+  ],
+  "functional_overlap": [
+    "scripts/test_runtime_identity.py"
+  ],
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "builds": "NOT_RUN_BY_USER_REQUEST",
+  "repackaging": "NOT_RUN_BY_USER_REQUEST",
+  "runtime": "NOT_RUN_BY_USER_REQUEST",
+  "hooks": "DISABLED_FOR_PUBLICATION",
+  "media_boundary": "e79a8bf PR44 four ZIPs and 16ecb57 PR45 two portable ZIPs remain independent fixed sources; no combined media produced."
+}

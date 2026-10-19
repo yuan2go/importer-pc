@@ -281,15 +281,19 @@ def build(args):
             # Hard-link a fully written sibling into place: exclusive and atomic.
             # The signed archive is the final commit marker after its identity.
             for target, data in [(identity_destination, (json.dumps(identity, indent=2) + '\n').encode()), (destination, staged.read_bytes())]:
-                with tempfile.NamedTemporaryFile(dir=destination.parent, prefix='.ipc-publish-', delete=False) as file:
-                    pending = Path(file.name)
-                    try:
+                pending = None
+                try:
+                    with tempfile.NamedTemporaryFile(dir=destination.parent, prefix='.ipc-publish-', delete=False) as file:
+                        pending = Path(file.name)
                         file.write(data)
                         file.flush()
                         os.fsync(file.fileno())
-                        os.link(pending, target)
-                        created.append(target)
-                    finally:
+                    # Windows does not allow unlinking an open NamedTemporaryFile.
+                    # Close before publishing/removing the fully flushed sibling.
+                    os.link(pending, target)
+                    created.append(target)
+                finally:
+                    if pending is not None:
                         pending.unlink(missing_ok=True)
         except BaseException:
             for path in reversed(created):

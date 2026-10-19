@@ -21,7 +21,7 @@ foreach ($line in Get-Content -LiteralPath (Join-Path $Media 'SHA256SUMS')) {
     $inventory[$relative] = $hash
 }
 New-Item -ItemType Directory -Path $Output | Out-Null
-# Test source comes from the medium's commit, never from a later working tree.
+# Test source comes from an explicit fixed commit (medium by default); never from working files.
 $fixture = & git -C $repository show ($FixtureCommit + ':tests/Ipc.Application.Verification/CommercialProductization.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Frozen fixture source is unavailable' }
 [IO.File]::WriteAllLines((Join-Path $Output 'CommercialProductization.cs'), [string[]]$fixture)

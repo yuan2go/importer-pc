@@ -3,10 +3,12 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
 import tarfile
+import tempfile
 import zipfile
 from composition import resolve
 from application_compatibility import read_business
@@ -37,13 +39,31 @@ module = APPLICATIONS[a.application]
 lock = 'packages.' + a.application + ('.win-x64' if a.target == 'win-x64' else '') + '.lock.json'
 properties = ['-p:Application=' + module, '-p:NuGetLockFilePath=' + lock]
 # Isolated artifacts avoid reusing another selection's intermediate WPF/assembly state.
-artifacts = output / 'build-intermediates'
+workspace = Path(tempfile.mkdtemp(prefix='ipc-publication-'))
+print('Retained build workspace on failure: ' + str(workspace), flush=True)
+artifacts = workspace / 'build-intermediates'
 # The SDK excludes its entire artifacts tree from default source globs.
-build_source = output / 'source-snapshot'
+build_source = workspace / 'source-snapshot'
 build_source.mkdir(parents=True)
 export = subprocess.Popen(['git', 'archive', '--format=tar', source], cwd=root, stdout=subprocess.PIPE)
 with tarfile.open(fileobj=export.stdout, mode='r|') as snapshot:
-    snapshot.extractall(build_source, filter='data')
+    # Historical evidence contains deep paths. Use the Windows extended path
+    # syntax for archive I/O only; do not change machine LongPaths/UAC policies.
+    extraction_root = ('\\\\?\\' + str(build_source)) if os.name == 'nt' else str(build_source)
+    def publication_member(member, destination):
+        # Extended Win32 paths do not normalize '/' (including tarfile's final
+        # directory-attribute pass). Normalize archive names before the same
+        # safe-data filter, retaining its escape/link checks.
+        if os.name == 'nt':
+            member = member.replace(name=member.name.replace('/', os.sep))
+        return tarfile.data_filter(member, destination)
+    snapshot.extractall(extraction_root, filter=publication_member)
+# A streaming tar reader may stop at its EOF marker while git still writes
+# padding. Drain it before wait(): the smaller Windows pipe can otherwise
+# deadlock after an apparently complete extraction.
+while export.stdout.read(65536):
+    pass
+export.stdout.close()
 if export.wait(): raise ValueError('Frozen source export failed')
 selection = resolve(build_source / 'config/compositions.json', a.composition or a.application + '-reference')
 if selection['product']['business'] != a.application:
@@ -52,10 +72,18 @@ bundles = read_packages(a.extension_package, selection)
 if bundles and a.extension_trust is None:
     raise ValueError('Selected offline packages require independent trust for target-host acceptance')
 business, compatibility_source = read_business(build_source, a.application, selection)
+# A Git-exported snapshot is nested beneath the working repository. SDK SCM
+# discovery would otherwise read that repository's live HEAD into SourceLink,
+# even when SourceRevisionId is fixed, changing contract bytes between publishes.
+artifacts.mkdir(parents=True, exist_ok=True)
+source_link = artifacts / 'frozen-source-link.json'
+source_link.write_text(json.dumps({'documents': {'/_/src/*':
+    'https://raw.githubusercontent.com/yuan2go/importer-pc/' + source + '/*'}}), encoding='utf-8')
 for project, destination in [('Ipc.Assembly', 'app'), *([('Ipc.Desktop', 'desktop')] if a.target == 'win-x64' else [])]:
     command = [a.dotnet, 'publish', f'src/{project}/{project}.csproj', '-c', 'Release', '-m:1', '-nr:false',
                '-p:EnableWindowsTargeting=true', '-p:RestoreLockedMode=true',
                '-p:PathMap=' + str(build_source) + '=/_/src%2C' + str(artifacts) + '=/_/build', '-p:SourceRevisionId=' + source, *properties,
+               '-p:EnableSourceControlManagerQueries=false', '-p:EnableSourceLink=false', '-p:SourceLink=' + str(source_link),
                '--artifacts-path', str(artifacts), '--self-contained', 'true' if a.target == 'win-x64' else 'false', '-o', str(output / destination)]
     if a.target == 'win-x64': command += ['-r', 'win-x64']
     subprocess.run(command, cwd=build_source, check=True)
@@ -80,6 +108,11 @@ for base in [output / 'app', output / 'desktop']:
         raise ValueError('DirectPlc must not depend on a WCS implementation')
 if a.target == 'win-x64' and not (output / 'desktop' / f'Ipc.Application.{module}.Desktop.dll').is_file():
     raise ValueError('Selected WPF presentation was not delivered')
+if a.target == 'win-x64':
+    for binary in (output / 'app').glob('Ipc.*.dll'):
+        peer = output / 'desktop' / binary.name
+        if peer.exists() and hashlib.sha256(binary.read_bytes()).digest() != hashlib.sha256(peer.read_bytes()).digest():
+            raise ValueError('Console/helper and desktop contract bytes differ: ' + binary.name)
 publish_packages(bundles, selection, output, a.dotnet, a.extension_trust, a.extension_check_host)
 selection.update(business)
 for directory in [output / 'app', output / 'desktop']:
@@ -104,7 +137,7 @@ if a.target == 'win-x64':
     for script in ['protect-release.ps1', 'provision-runtime.ps1', 'provision-extensions.ps1', 'application.ps1', 'application.cmd', 'Setup.cmd', 'Maintenance.cmd']:
         shutil.copyfile(build_source / 'scripts' / script, output / script)
 shutil.rmtree(artifacts)
-shutil.rmtree(build_source)
+shutil.rmtree(extraction_root)
 (output / 'APPLICATION-START.txt').write_text(
     'SIMULATION REFERENCE ONLY\nConsole: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'
     + ('Windows: double-click Setup.cmd; first launch from an unpacked package also opens the native installation wizard (no PowerShell required).\nChoose runtime account, original data root, configuration source and optional independent trust/offline packages; review then approve Windows UAC. Program files are installed side by side and data is retained.\nStart from the installed Start Menu shortcut. Offline startup repair: Maintenance.cmd or the installed startup-repair shortcut; business/devices do not need to start.\nDefault data: %LOCALAPPDATA%\\ImporterPc\\data; installer selections are retained for both desktop and console. See STARTUP-DEPLOYMENT.md.\n' if a.target == 'win-x64' else '')

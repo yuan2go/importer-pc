@@ -1,0 +1,17 @@
+{
+  "requested_main": "aaa30b57cf8f810637b6502748783cdab66bbf36",
+  "observed_main_at_turn_start": "fe9e5bb15cd0e380c3dbd2c0a5369afaee9325c4",
+  "frozen_build_source": "939462bee40c9eebe8eb2aa60860217afd95fcdd",
+  "merged_existing_prs": [
+    {
+      "pr": 52,
+      "merge_sha": "d3870322127ab6118d47e50c0996123813a14279"
+    },
+    {
+      "pr": 54,
+      "merge_sha": "939462bee40c9eebe8eb2aa60860217afd95fcdd"
+    }
+  ],
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "old_releases_overwritten": false
+}

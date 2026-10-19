@@ -4,6 +4,10 @@
 
 用户要求先修复、后验收。本次[UX修复工作包](work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)继承下列main1.2.8/ABI1.8/DB7，先修UXC-01～07的源码/页面/维护闭环，正式Windows/现场验收后置；实际完成与候选身份见[修复结果](runtime/ux-commercial-fix-01-results.md)和[证据](runtime/evidence/ux-commercial-fix-01/README.md)，不用计划版本替换既有发行事实。
 
+## 本轮有效入口
+
+[UX审查WP-01～07工程闭环](work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为当前执行入口。开发分支显式依赖PR37固定2d60fdc，远端PR37未合并；main 1.2.8、PR37本地1.3.0和本轮候选分别记录。原审查及下列审查03记录按形成时身份保留。
+
 ## 最新独立审查与实施交接
 
 [UX商用质量审查01原PDF与发布时复核](reviews/ux-commercial-quality-audit-01/README.md) · [下一阶段Codex提示词](reviews/ux-commercial-quality-audit-01/Codex-next-phase.md)。原报告固定main为`8f886f44bec01779318ec078a569500ab1beab56`；发布时开放PR37已有UX整改，按实际行为继承并补差额，不能将其本地1.3.0候选当作main已交付。此次仅报告与交接发布，原结论不倒写。

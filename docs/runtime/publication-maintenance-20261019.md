@@ -18,3 +18,11 @@
 **当前main包含两组源码，但本轮未产生同时包含二者的新媒介。** 不能把上述任一旧包、Windows ZIP或扩展标为已包含全部合并修复；下一次发行须固定新的组合源码、生成全新可信媒介并核对精确扩展依赖及指南。当前合并后的运行/打包/组合状态 **NOT_RUN**。
 
 Windows令牌/SID/ACL/UAC及WPF原生交互、普通账户安装更新、目标负载仍 **NOT_RUN**；真实SDK/正式协议/权威Unknown/设备/现场 **BLOCKED**，Production **NOT_READY**。非WindowsPortableDevelopmentOnly/WindowsPolicyChecked=false不表示Windows已验；参考发布和Git合并不授予商用或现场资格。
+
+## 实际合并、发布摘要与唯一提交数
+
+PR42后继整合head `428ac6a7b29394717243a5b226b3bdc48d907134`实际merge为`d68e11fa5ddd13d7e3de96bf3ca6911256fdf427`；PR41/42均MERGED，截止该main时Open PR为0。相对开工远端main，唯一提交13笔＝10普通＋3合并，按Git集合计数，不相加分支ahead。
+
+最终回执经独立PR再增加1笔普通提交和1笔GitHub merge，合并后总计15＝11普通＋4合并。其中既有任务10笔，本发布流程新建5笔（1笔回执内容、1笔分支整合、3笔GitHub PR merge）；最终实际main与回执PR身份从Git/GitHub读取，避免自引用。
+
+[最终机器回执](evidence/maintenance-publication-20261019/final-publication-receipt.json)保存全部原/后继head、merge和18项资产摘要：维护发布既有15项的GitHub state/size/SHA与原冻结回执一致；SID新上传3项的GitHub摘要与本地原字节一致。仅作发布身份回读，没有下载重跑或新运行资格。合并后的组合新媒介仍未生成，旧两个来源不互相覆盖。

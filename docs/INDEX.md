@@ -6,7 +6,7 @@
 
 ## 本轮有效入口
 
-[本次维护P2与SID不测试发布记录](runtime/publication-maintenance-20261019.md)：当前源码同时包含两项修复，既有两个候选分别保留原固定源码；本轮未生成组合媒介。
+[本次维护P2与SID不测试发布记录](runtime/publication-maintenance-20261019.md)：PR41/42已实际合并，当前源码同时包含两项修复；既有两个候选分别保留原固定源码，本轮未生成组合媒介。
 
 [运行账户SID前置修复](runtime/runtime-identity-preflight-01.md) · [定向工作包](work-packages/WP-IPC-RUNTIME-IDENTITY-PREFLIGHT-01.md)：继承已合并PR37/39的UI与配置成果，修复PR35 P1的启动校验顺序。Windows实机仍NOT_RUN，旧发布媒介不因源码修改自动更新。
 

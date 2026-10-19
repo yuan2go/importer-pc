@@ -50,6 +50,7 @@ public static class DeploymentComponentReviewing
                 if (expanded > 2L * 1024 * 1024 * 1024 || new DriveInfo(Path.GetPathRoot(scratch)!).AvailableFreeSpace < package.Manifest.Files.Sum(f => f.Length) + 67108864)
                     throw new IOException("组件展开超过2GiB总预算或临时卷空间不足；未执行组件");
                 var target = Path.Combine(scratch, package.ManifestSha256);
+                Directory.CreateDirectory(target);
                 ExtensionPackages.ExtractVerified(archive, target, trust, request.Mode, package.PackageSha256, Resolve);
                 return verified[reference] = (package, target);
             }

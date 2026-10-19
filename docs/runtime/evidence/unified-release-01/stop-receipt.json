@@ -5,7 +5,7 @@
   "FrozenSource": "07e0f7ab1e884d355c79ce87d6848ed507a1bf27",
   "Status": "INTERRUPTED_BY_USER_REQUEST",
   "StoppedUtc": "2026-10-19T17:08:40.493440+00:00",
-  "Authority": "Human user explicitly authorized this task to stop testing/building and finalize in chat 01a1551e-8b85-7c11-9081-0753bda97fd5; relayed stop instruction confirmed by read_thread.",
+  "Authority": "Human user explicitly authorized notification to this task: stop tests/builds/repackaging, preserve existing outputs and finalize commits/PR. The relayed instruction was confirmed against the source human messages.",
   "ReleaseReceiptProduced": false,
   "WindowsMediaProduced": false,
   "RealIntegration": "BLOCKED",

@@ -2,7 +2,7 @@
 
 C#/.NET 10工位运行基座及独立Application参考工程。Platform负责机制，Application拥有状态和守卫，Driver适配设备，Component适配外部服务。一个Application运行实例可服务多个页面和布局。
 
-当前main继承PR37的有效实现和PR39续修。[不可变参考候选1.3.2](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-6ce1d6d)冻结源码为6ce1d6d0b109bd6a3d9490fac176122b4670b90b；原f1a655c候选、PR37本地1.3.0与原验证保持形成时身份。Windows/真实组合未放行。
+main be79564继承PR37的有效实现和PR39续修。原[不可变参考候选1.3.2](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-6ce1d6d)冻结源码为6ce1d6d0b109bd6a3d9490fac176122b4670b90b；原f1a655c候选、PR37本地1.3.0与原验证保持形成时身份。Windows/真实组合未放行。
 
 本分支另修复[关窗草稿与参数表单三项P2](docs/runtime/ux-maintenance-p2-04-results.md)。[新不可变参考候选1.3.3](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-ff31b0e)冻结ff31b0e，含本次三项修复；原1.3.2不含该增量。main与本分支/产品冻结分开，Windows原生后验仍NOT_RUN。
 

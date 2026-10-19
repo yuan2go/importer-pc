@@ -20,7 +20,7 @@
 
 产品冻结后的交付说明、证据和manifest有后续提交；[source-parity](evidence/ux-maintenance-p2-04/source-parity.json)核生产/配置/脚本/示例/随包指南与产品冻结逐字节相同。原始CombinationRun/事件及旅程在Release raw ZIP；公开替换路径副本另列Raw/Published hash。资料检查268→267项：修复本次manifest校验文件名格式，267项设计原件继承错误仍FAIL，新增0项，不扩大例外。
 
-开工main仍be79564。并行PR41的Windows账户预检不属于本包，候选不含该PR；业务源码无重叠，共用INDEX/manifest/Windows指南若后续整合须显式保留双方来源。本次正常推送并创建main PR，不自动合并。
+开工main仍be79564。并行PR41的Windows账户预检不属于本包，候选不含该PR；业务源码无重叠，共用INDEX/manifest/Windows指南若后续整合须显式保留双方来源。本次正常推送并创建[main PR #42](https://github.com/yuan2go/importer-pc/pull/42)，保持OPEN，不自动合并；[回执](evidence/ux-maintenance-p2-04/delivery-receipt.json)分别登记PR head、main、产品冻结和实际Release。
 
 ## 复验与剩余
 

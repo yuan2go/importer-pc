@@ -11,7 +11,7 @@ public sealed class ProductSupportWindow : Window
     public ProductSupportWindow(IParcelApplication application, string? operationId)
     {
         ProductBrand.Apply(this);
-        Title = "Importer PC · 帮助与支持"; Width = 880; Height = 720; MinWidth = 580; MinHeight = 420; WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        Title = "Importer PC · 帮助与支持"; FontSize = 16; Width = 880; Height = 720; MinWidth = 580; MinHeight = 420; WindowStartupLocation = WindowStartupLocation.CenterOwner;
         var tabs = new TabControl();
         tabs.Items.Add(new TabItem { Header = "离线帮助", Content = ProductHelp.CreateView() });
         var body = new StackPanel { Margin = new(16) }; var scroll = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
@@ -24,7 +24,7 @@ public sealed class ProductSupportWindow : Window
         var export = new Button { Content = "保存预览的支持摘要…", MinHeight = 44, Margin = new(12, 0, 0, 0), IsEnabled = false };
         actions.Children.Add(previewButton); actions.Children.Add(export); body.Children.Add(actions);
         var status = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new(0, 12, 0, 12) }; body.Children.Add(status);
-        var content = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, FontFamily = new("Consolas"), MinHeight = 200 }; body.Children.Add(content);
+        var content = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalContentAlignment = VerticalAlignment.Top, FontFamily = new("Consolas"), MinHeight = 200 }; body.Children.Add(content);
         ProductSupportPreview? selected = null;
         previewButton.Click += async (_, _) =>
         {

@@ -3,6 +3,9 @@ import hashlib
 import json
 from pathlib import Path, PurePosixPath
 import re
+import os
+import shutil
+import subprocess
 
 CASES = {
     'core': ('engineering', '冻结实际DLL的COMM夹具；CAS/首配修复/Unknown/备份/支持摘要'),
@@ -83,3 +86,20 @@ def plan(source, inventory):
     return dict(SchemaVersion=1, SourceCommit=source, MediumInventorySha256=inventory,
                 Cases=[dict(Id=key, Status='BLOCKED' if key in ('field', 'signoff') else 'NOT_RUN',
                             Reason=text, Evidence=[]) for key, (_, text) in CASES.items()])
+
+
+def distribution_signature(medium, approved_signer):
+    # A release manifest string or a manually supplied PASS is never signature evidence.
+    if not approved_signer:
+        return dict(Status='BLOCKED', Reason='No externally approved public signer certificate supplied; no distribution signature qualification')
+    shell = shutil.which('pwsh')
+    if os.name != 'nt' or not shell:
+        return dict(Status='BLOCKED', Reason='Actual Windows Authenticode verification requires Windows PowerShell 7')
+    result = subprocess.run([shell, '-NoProfile', '-File', str(Path(__file__).with_name('verify-distribution-signature.ps1')),
+                             '-Media', str(medium), '-ApprovedSigner', str(approved_signer)], capture_output=True, text=True, encoding='utf-8')
+    if result.returncode != 0:
+        return dict(Status='BLOCKED', Reason='Windows rejected distribution signatures or approved certificate', Detail=result.stdout.strip())
+    receipt = json.loads(result.stdout)
+    if receipt.get('Status') != 'PASS' or not receipt.get('Files'):
+        raise ValueError('Signature verifier returned incomplete evidence')
+    return receipt

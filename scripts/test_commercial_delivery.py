@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from commercial_delivery import digest, evaluate, plan, CASES
+from commercial_delivery import digest, evaluate, plan, CASES, distribution_signature
 
 
 class DeliveryGate(unittest.TestCase):
@@ -50,6 +50,11 @@ class DeliveryGate(unittest.TestCase):
         with self.assertRaises(ValueError): self.check()
         self.report['Cases'][0]['Evidence'][0]['Sha256'] = digest(file)
         with self.assertRaises(ValueError): self.check()
+
+    def test_unsigned_manifest_or_manual_pass_cannot_substitute_signer(self):
+        # No certificate was provided. Even manually completed cases cannot grant
+        # Authenticode status or fabricate an approved publisher.
+        self.assertEqual('BLOCKED', distribution_signature(self.root, None)['Status'])
 
 
 if __name__ == '__main__': unittest.main()

@@ -100,6 +100,8 @@ static partial class Program
         helpSearch.Text = "no-matching-topic-123";
         Check(Descendants(support).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "帮助正文").Text.Contains("没有匹配"), "help search presents an explicit empty result without changing business state");
         helpSearch.Text = "";
+        support.UpdateLayout(); await support.Dispatcher.InvokeAsync(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+        Check(Descendants(support).OfType<ListBoxItem>().Any(t => t.IsVisible && t.ActualHeight >= 44 && Equals(t.Content, "安装与首配")), "help task names render with usable touch targets after search resets");
         Screenshot(support, Path.Combine(evidence, "commercial-support.png")); support.Close();
         Check((await runtime.SnapshotAsync()).RuntimeId == identity, "history/settings/help window actions never reconstruct the business runtime");
         lines.Add("NOT_RUN target client 1440x900 and target touch/DPI/reader hardware: current host work area " + SystemParameters.WorkArea + "; original full matrix assertion remains unchanged.");

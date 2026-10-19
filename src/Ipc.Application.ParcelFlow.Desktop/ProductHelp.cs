@@ -8,14 +8,16 @@ public static class ProductHelp
         panel.RowDefinitions.Add(new() { Height = System.Windows.GridLength.Auto });
         panel.RowDefinitions.Add(new() { Height = System.Windows.GridLength.Auto });
         panel.RowDefinitions.Add(new() { Height = new(1, System.Windows.GridUnitType.Star) });
-        var search = new System.Windows.Controls.TextBox { MinHeight = 44, ToolTip = "搜索任务或故障，例如首配、Unknown、备份、卸载" };
+        var search = new System.Windows.Controls.TextBox { MinHeight = 44, FontSize = 16, ToolTip = "搜索任务或故障，例如首配、Unknown、备份、卸载" };
         System.Windows.Automation.AutomationProperties.SetName(search, "搜索离线帮助");
-        panel.Children.Add(search);
+        var searchArea = new System.Windows.Controls.StackPanel();
+        searchArea.Children.Add(new System.Windows.Controls.TextBlock { Text = "搜索任务或故障 · 首配 / Unknown / 备份 / 卸载", FontSize = 16, Margin = new(4, 0, 4, 8) });
+        searchArea.Children.Add(search); panel.Children.Add(searchArea);
         var topics = QuickStart.Replace("\r", "").Split("\n\n", StringSplitOptions.RemoveEmptyEntries).Skip(1).ToArray();
-        var list = new System.Windows.Controls.ListBox { MinHeight = 88, MaxHeight = 170, Margin = new(0, 8, 0, 12) };
+        var list = new System.Windows.Controls.ListBox { MinHeight = 88, MaxHeight = 170, FontSize = 16, Margin = new(0, 8, 0, 12) };
         System.Windows.Automation.AutomationProperties.SetName(list, "帮助任务");
         System.Windows.Controls.Grid.SetRow(list, 1); panel.Children.Add(list);
-        var text = new System.Windows.Controls.TextBox { IsReadOnly = true, TextWrapping = System.Windows.TextWrapping.Wrap, FontSize = 16, VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Auto };
+        var text = new System.Windows.Controls.TextBox { IsReadOnly = true, TextWrapping = System.Windows.TextWrapping.Wrap, FontSize = 16, VerticalContentAlignment = System.Windows.VerticalAlignment.Top, VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Auto };
         System.Windows.Automation.AutomationProperties.SetName(text, "帮助正文");
         System.Windows.Controls.Grid.SetRow(text, 2); panel.Children.Add(text);
         void Filter()

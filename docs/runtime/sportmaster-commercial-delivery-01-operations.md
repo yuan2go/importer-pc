@@ -57,7 +57,7 @@ python scripts/release-windows.py --profile sportmaster --source <完整冻结SH
 |field|获授权真实 SDK/合同/设备、实体与编号/角色批准、目标显示/触控|连续操作、断网/断电/重启/恢复、真实接受语义与实体安全逐项验收；未提供 BLOCKED|
 |signoff|可信分发证书、精确包资格及授权负责方|真实签名/介质/源码一致，现场逐项放行；未提供 BLOCKED|
 
-`check-commercial-delivery.py --release <发行目录> --evidence <acceptance.json> --level engineering|production` 复核介质并拒绝必需项缺失/错源/被改/非 PASS。工具不能签发生产批准。当前未签名候选保留工程范围，实际发布前必须另有可信签名流水线与授权放行。
+`check-commercial-delivery.py --release <发行目录> --evidence <acceptance.json> --level engineering|production` 复核介质并拒绝必需项缺失/错源/被改/非 PASS。production 还须传 `--approved-signer <获真实批准的公开.cer>`，实际核验全部产品 PE 的 Windows Authenticode 状态与精确签名者；JSON 中手填签名状态无效，不传私钥。工具不能签发生产批准。当前未签名候选保留工程范围，实际发布前必须另有可信签名流水线与授权放行，签名后须重新生成并验证完整发行库存。
 
 ## 交付签收清单
 

@@ -446,11 +446,12 @@ static class SportmasterUi
         public Task StopAsync(CancellationToken token) => inner.StopAsync(token);
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
-    sealed class SnapshotProbe(IParcelApplication inner) : IParcelApplication
+    internal sealed class SnapshotProbe(IParcelApplication inner) : IParcelApplication
     {
         public Func<Task<ParcelSnapshot>>? Read;
         public int Writes;
         public List<BusinessCommand> Commands { get; } = [];
+        public List<string> Queries { get; } = [];
         public Task<ParcelSnapshot> SnapshotAsync() => Read?.Invoke() ?? inner.SnapshotAsync();
         public Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50) => inner.HistoryAsync(beforeSequence, limit);
         public Task<ParcelOperation?> OperationAsync(string id) => inner.OperationAsync(id);
@@ -464,7 +465,7 @@ static class SportmasterUi
         public Task<BusinessReceipt> ValidateConfigurationAsync(ParcelConfiguration candidate) => inner.ValidateConfigurationAsync(candidate);
         public Task<BusinessReceipt> InstallCapabilityAsync(string file, string sha256) { Writes++; return inner.InstallCapabilityAsync(file, sha256); }
         public Task<BusinessReceipt> StageConfigurationAsync(long revision, ParcelConfiguration candidate, string? reason = null) { Writes++; return inner.StageConfigurationAsync(revision, candidate, reason); }
-        public Task<BusinessReceipt> ReconcileAsync(string operationId, string? stage = null) { Writes++; return inner.ReconcileAsync(operationId, stage); }
+        public Task<BusinessReceipt> ReconcileAsync(string operationId, string? stage = null) { Writes++; Queries.Add(operationId); return inner.ReconcileAsync(operationId, stage); }
         public Task<BusinessReceipt> ReconnectAsync() { Writes++; return inner.ReconnectAsync(); }
         public Task<BusinessReceipt> BackupAsync(string destination) { Writes++; return inner.BackupAsync(destination); }
         public bool EmitReference(string admission, string code, string source) { Writes++; return inner.EmitReference(admission, code, source); }

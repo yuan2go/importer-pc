@@ -1,0 +1,11 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-eeb20aa833af4e1fbd47e63c48f47e6e
+PASS RCS20: signed package verifies exact integration contract and explicitly declares no original-query capability
+PASS RCS20: installed exact signed module is discoverable with Query=false
+PASS RCS20: plain SportmasterApplication and ParcelCapabilityFactory load signed provider and execute both HTTP positions with durable original wire/response custody
+PASS RCS20: signed runtime exposes assigned task/SKU and original unpack details separately
+PASS RCS20: installed exact signed module is discoverable with Query=false
+PASS RCS20: actual signed extension path preserves ordinary RCS rejection
+PASS RCS20: installed exact signed module is discoverable with Query=false
+PASS RCS20: installed exact signed module is discoverable with Query=false
+PASS RCS20: signed provider restart, reconcile and reconnect retain exact original HTTP intention without a repeated POST
+PASS RCS20 SIGNED COMPLETE: verified installed extension, plain factory application, dual positions, unpack/rejection and restart no resend; Simulation fixture only

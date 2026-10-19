@@ -74,7 +74,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         ValidateDeploymentIdentity(seed);
         // Refuse old unresolved responsibilities before either future-reader markers
         // or confirmation/recovery writes can make the original release unusable.
-        repository = new(directory, Id, 6) { Boundary = point => Boundary?.Invoke(point) };
+        repository = new(directory, Id, 7) { Boundary = point => Boundary?.Invoke(point) };
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
@@ -111,6 +111,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 ports.ImplementationHashes.GetValueOrDefault(original.Key) != original.Value)).Select(op => op.Id).ToArray();
             if (incompatibleOriginals.Length != 0)
                 throw new InvalidDataException("OriginalCapabilityUnavailable: settle unresolved originals using the matching release before changing host/implementation; no source started: " + string.Join(",", incompatibleOriginals));
+            if (ports.Wcs is IWcsRequestPreparer numericPreparer)
+                repository.RegisterIntegrationRequestRanges(numericPreparer, new[] { priorEffective, Effective, configuration.Current.Pending }.OfType<ParcelConfiguration>(),
+                    File.Exists(Path.Combine(directory!, "RESTORED-ISOLATED.json")) ? Wire.FileHash(Path.Combine(directory!, "RESTORED-ISOLATED.json")) : null);
             foreach (var binding in ParcelBindings.Positions(Effective))
             {
                 positions.Add(binding.Id, binding);
@@ -172,8 +175,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (overloadedPositions.ContainsKey(positionId)) return false;
         if (observation is not null)
         {
-            var identity = currentOperator;
-            if (!SessionValid) return false;
+            var identity = SessionValid ? currentOperator : null;
             // Driver buffers remain driver-owned after callback return.
             observation = observation with { Codes = observation.Codes?.ToArray() ?? [] };
             item = new ParcelObservation(observation, identity); Interlocked.Increment(ref pendingObservations);
@@ -217,8 +219,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     }
     async Task ObserveAsync(string position, Observation o, OperatorIdentity? admittedOperator)
     {
-        if (!CanAdmit(position) || Effective.Login is not null && admittedOperator is null)
-        { repository!.Commit(null, "ObservationBlocked", "Position=" + position + "; paused/faulted/unresolved responsibility; source event=" + o.SourceEventId); return; }
         if (!readers.TryGetValue(o.DeviceId, out var reader) || !reader.AcceptSequence(o) ||
             o.Kind != "Read" || o.Codes is not { Length: 1 } || string.IsNullOrWhiteSpace(o.SourceEventId) || o.SourceEventId.Length > 256 || o.SourceEventId.Any(char.IsControl) || o.Codes[0] is not { Length: > 0 and <= 256 } || o.Codes[0].Any(char.IsControl) ||
             !ExtensionSchema.IsId(o.AdmissionId) || o.ObservedAt > DateTimeOffset.UtcNow || DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) ||
@@ -232,6 +232,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             { RecordIdentityConflict(prior, position, "Observation/admission identity reused with changed content/position; source=" + o.SourceEventId + "; code=" + o.Codes[0]); }
             return;
         }
+        // Current-source evidence about an existing entity is processed even while
+        // admission is closed. Only genuinely new entities pass the admission gate.
+        if (!CanAdmit(position) || Effective.Login is not null && admittedOperator is null)
+        { repository.Commit(null, "ObservationBlocked", "Position=" + position + "; paused/faulted/unresolved responsibility; source event=" + o.SourceEventId); return; }
         ArchiveSettled();
         if (!CapacityAvailable)
         { repository!.Commit(null, "RetentionBudget", "Explicit archive/retention is required", paused: true); return; }
@@ -261,13 +265,31 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (scaleEpochs.GetValueOrDefault(observation.InstanceId) != observation.Epoch || observation.Sequence <= scaleSequences.GetValueOrDefault(observation.InstanceId))
         { repository!.Commit(null, "MeasurementRejected", "Old scale registration or sequence"); return; }
         scaleSequences[observation.InstanceId] = observation.Sequence;
+        var sourcePositions = positions.Values.Where(p => ParcelBindings.Scale(Effective, p.Id)?.InstanceId == observation.InstanceId).Select(p => p.Id).ToArray();
+        var sourceBinding = sourcePositions.Select(p => ParcelBindings.Scale(Effective, p)).OfType<CapabilityBinding>().FirstOrDefault();
+        if (sourceBinding is null || m.DeviceId != sourceBinding.Target || !Guid.TryParseExact(m.Id, "N", out _) ||
+            !capabilityHealth.TryGetValue(observation.InstanceId, out var sourceHealth) || !sourceHealth.Ready || sourceHealth.ValidUntil <= DateTimeOffset.UtcNow)
+        { repository!.Commit(null, "MeasurementRejected", "Unconfirmed scale source/device/measurement identity"); return; }
+        // Compare the durable identity before phase/admission/freshness guards can
+        // hide a contradiction. The original sample remains immutable.
+        var prior = repository!.ReadMeasurement(m.Id);
+        if (prior is not null)
+        {
+            if (Wire.Encode(prior) != Wire.Encode(m))
+            {
+                var original = repository.FindMeasurementOwner(prior.AdmissionId);
+                var affected = sourcePositions.Concat(new[] { original.PositionId ?? "main" }).Distinct(StringComparer.Ordinal).ToArray();
+                RecordIdentityConflict(original, affected, Wire.Encode(new { Kind = "MeasurementIdentityConflict", Original = prior, Incoming = observation }));
+            }
+            return;
+        }
         var op = operations.Values.SingleOrDefault(x => x.AdmissionId == m.AdmissionId);
         if (op is null || ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.InstanceId != observation.InstanceId) { repository!.Commit(null, "MeasurementRejected", "No matching admitted parcel"); return; }
         if (!capabilityHealth.TryGetValue(ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.InstanceId ?? "", out var scaleHealth) || !scaleHealth.Ready || scaleHealth.ValidUntil <= DateTimeOffset.UtcNow)
         { repository!.Commit(null, "MeasurementRejected", "Bound scale health is not confirmed"); return; }
         var reason = WeightRules.Invalid(m, op, ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.Target ?? "", DateTimeOffset.UtcNow);
         if (reason is not null) { repository!.Commit(null, "MeasurementRejected", reason); return; }
-        if (repository!.HasMeasurement(m) || !WeightPending(op) || op.State == ParcelState.WeightTimedOut ||
+        if (!WeightPending(op) || op.State == ParcelState.WeightTimedOut ||
             DateTimeOffset.UtcNow > op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs)) return;
         op = op with { Weight = new(m.Value, m.Unit, m.Precision, WeightSource.Measured, m.Id, m.DeviceId + ":" + m.Quality, m.MeasuredAt), State = op.Capture is { State: StageState.Unknown or StageState.Conflict } ? op.State : ParcelState.Prepared, Reason = op.Capture is { State: StageState.Unknown or StageState.Conflict } ? op.Reason : null };
         Boundary?.Invoke("BeforeWeightAssociation");
@@ -310,7 +332,11 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         {
             try
             {
-                var prepared = preparer.PrepareRequest(Wire.Decode<FrozenRequest>(Wire.Encode(request)), repository!.OperationSequence(op.Id));
+                var range = preparer.GetRequestIdRange(request.Binding);
+                var sequence = range is null ? repository!.OperationSequence(op.Id) : repository!.NextIntegrationPreparationSequence(range);
+                var prepared = preparer.PrepareRequest(Wire.Decode<FrozenRequest>(Wire.Encode(request)), sequence);
+                if (range is not null && prepared.RequestId != checked(range.First + sequence - 1))
+                    throw new InvalidDataException("Numeric request ID differs from the allocated T1 range position");
                 if (prepared.RequestId <= 0 || prepared.ContentType != "application/json" || string.IsNullOrWhiteSpace(prepared.Body) ||
                     System.Text.Encoding.UTF8.GetByteCount(prepared.Body) > 65536 || Wire.Hash(prepared.Body) != prepared.BodyHash)
                     throw new InvalidDataException("Invalid external request preparation; no delivery permitted");

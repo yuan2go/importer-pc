@@ -9,16 +9,10 @@ namespace Ipc.Application.Sportmaster.Desktop;
 // Presentation only. Every fact/permission comes from the existing application contract.
 public sealed class SupplyStationViewModel : ParcelViewModel
 {
-    DateTimeOffset? lastRead;
-    string? readFailure, readFailureMessage;
-    Exception? lastReadError;
-    bool fresh;
     bool viewportFits = true, viewportRecoveryRequired;
-    long successfulReadId, failedReadId;
     string selectedPage = "workstation";
     public SupplyStationPositionViewModel Left { get; }
     public SupplyStationPositionViewModel Right { get; }
-    public bool Fresh => fresh;
     public bool ViewportFits => viewportFits;
     public bool ViewportReady => viewportFits && !viewportRecoveryRequired;
     public bool CanUseWorkspace => Fresh && ViewportReady;
@@ -28,8 +22,6 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     public string ViewportStatus => !viewportFits ? "窗口空间不足 · 请最大化或调整显示设置" : "空间已恢复 · 请核对状态并确认视图";
     public bool Legacy => Snapshot?.Configuration.Effective.Topology is null;
     public string Station => Snapshot?.Configuration.Effective.StationId ?? "等待站位配置";
-    public string UpdatedAt => lastRead is { } at ? at.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") : "尚未取得快照";
-    public string ReadStatus => !Fresh ? "快照已失效 · " + (readFailure ?? "正在读取或读取超时") + " · 最后成功读取：" + UpdatedAt : "状态更新时间 · " + UpdatedAt;
     public string TopologyStatus => Legacy ? "单读码兼容配置 · 仅 main 位，未启用双位" : "left / right 独立投递位 · 扫码 → WCS 格口";
     public string SelectedPage
     {
@@ -39,21 +31,11 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     public SupplyStationViewModel(IParcelApplication application) : base(application, "Sportmaster 供包工作台", "扫码 → WCS 格口")
     {
         Left = new(this, "left"); Right = new(this, "right");
-        PropertyChanged += SnapshotChanged;
     }
-    void SnapshotChanged(object? sender, PropertyChangedEventArgs e)
+    protected override void SnapshotValidityChanged(DateTimeOffset now)
     {
-        if (e.PropertyName != nameof(Snapshot)) return;
-        lastRead = DateTimeOffset.UtcNow; readFailure = null; lastReadError=null;
-        if(Message==readFailureMessage)Message="";
-        readFailureMessage=null; RefreshFreshness();
-    }
-    public void RefreshFreshness(DateTimeOffset? at = null)
-    {
-        var now = at ?? DateTimeOffset.UtcNow;
-        fresh = lastRead is { } read && now >= read && now - read < TimeSpan.FromSeconds(3) && readFailure is null;
-        Left.Update(Snapshot, now, fresh, ViewportReady); Right.Update(Snapshot, now, fresh, ViewportReady);
-        foreach (var property in new[] { nameof(Fresh), nameof(Legacy), nameof(Station), nameof(UpdatedAt), nameof(ReadStatus), nameof(TopologyStatus) }) Changed(property);
+        Left.Update(Snapshot, now, Fresh, ViewportReady); Right.Update(Snapshot, now, Fresh, ViewportReady);
+        foreach(var name in new[]{nameof(Legacy),nameof(Station),nameof(TopologyStatus)})Changed(name);
         NotifyViewport();
     }
     // Geometry is window-owned. Restoring pixels never resumes the shared business.
@@ -76,33 +58,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     {
         foreach (var name in new[] { nameof(ViewportFits), nameof(ViewportReady), nameof(CanUseWorkspace), nameof(CanResumeInViewport), nameof(CanAcknowledgeViewport), nameof(ViewportWarningVisibility), nameof(ViewportStatus) }) Changed(name);
     }
-    public void MarkReadFailure(string reason)
-    {
-        readFailure = reason; readFailureMessage="状态读取失败，旧快照仅供参考："+reason; Message=readFailureMessage; RefreshFreshness();
-    }
     public Task RefreshDisplayAsync() => RefreshAsync();
-    protected override void SnapshotReadSucceeded(long id) => AdvanceReadId(ref successfulReadId, id);
-    protected override bool CanApplySnapshot(long id) => id > Volatile.Read(ref failedReadId);
-    protected override void ReportCommandFailure(Exception error,string prefix)
-    { if(!ReferenceEquals(error,lastReadError))base.ReportCommandFailure(error,prefix); }
-    protected override void SnapshotReadFailed(long id, Exception error)
-    {
-        lastReadError=error;
-        // Only a success from a later request supersedes this failure. An older
-        // request completing while this read was pending cannot certify freshness.
-        if (id > Volatile.Read(ref successfulReadId) && AdvanceReadId(ref failedReadId, id)) MarkReadFailure(error.Message);
-    }
-    static bool AdvanceReadId(ref long current, long next)
-    {
-        var previous = Volatile.Read(ref current);
-        while (next > previous)
-        {
-            var actual = Interlocked.CompareExchange(ref current, next, previous);
-            if (actual == previous) return true;
-            previous = actual;
-        }
-        return false;
-    }
     public async Task ReconcilePositionAsync(SupplyStationPositionViewModel position)
     {
         var op = position.Operation;
@@ -148,6 +104,7 @@ public sealed class SupplyStationViewModel : ParcelViewModel
 public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
 {
     readonly string requestedPosition;
+    readonly SupplyStationViewModel owner;
     public event PropertyChangedEventHandler? PropertyChanged;
     public string PositionId { get; private set; }
     public string Heading => PositionId == "main" ? "MAIN · 单读码兼容位" : requestedPosition == "left" ? "LEFT · 左投递位" : "RIGHT · 右投递位";
@@ -155,7 +112,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string ReaderId { get; private set; } = "未配置";
     public ParcelOperation? Operation { get; private set; }
     public string Barcode => Operation?.ParcelCode ?? "等待包裹";
-    public string Slot => Operation?.Wcs?.State == StageState.Accepted ? Operation.Slot ?? "未取得" : "未取得";
+    public string Slot => !owner.Fresh ? "旧格口已失效" : Operation?.Wcs?.State == StageState.Accepted ? Operation.Slot ?? "未取得" : "未取得";
     public string Status { get; private set; } = "正在初始化";
     public string DeviceStatus { get; private set; } = "设备状态未取得";
     public string BlockingReasons { get; private set; } = "等待有效快照";
@@ -174,7 +131,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public string ParcelCode { get; set; } = "000123456789";
     public string AdmissionId { get; private set; } = "parcel-" + Wire.Id();
     public SupplyStationPositionViewModel(SupplyStationViewModel owner, string position)
-    { requestedPosition = PositionId = position; }
+    { this.owner = owner; requestedPosition = PositionId = position; }
     public void NewParcel() { AdmissionId = "parcel-" + Wire.Id(); PropertyChanged?.Invoke(this, new(nameof(AdmissionId))); }
     internal void Update(ParcelSnapshot? snapshot, DateTimeOffset now, bool fresh, bool viewportReady)
     {
@@ -187,7 +144,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
             .OrderByDescending(x => x.ObservedAt).ThenByDescending(x => x.Id, StringComparer.Ordinal).ToArray() ?? [];
         var previousOperation = Operation?.Id;
         // A named current operation must match both identities. Never fall back to another parcel.
-        Operation = position?.CurrentOperation is { } id ? Recent.FirstOrDefault(x => x.Id == id) : Recent.FirstOrDefault();
+        Operation = position?.CurrentOperation is { } id ? Recent.FirstOrDefault(x => x.Id == id) : null;
         if (Operation?.Id != previousOperation) InspectionReason = "";
         var device = snapshot?.Devices?.SingleOrDefault(x => x.DeviceId == ReaderId);
         DeviceStatus = !fresh ? "设备旧状态已失效" : device is null ? "设备状态未取得" : device.IsValid(now) ? "读码就绪 · " + device.ConfirmedAt?.ToLocalTime().ToString("HH:mm:ss") : "未就绪 · " + device.ValidityReason(now);
@@ -196,7 +153,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         CanContinue = fresh && viewportReady && Operation is { } op && snapshot?.Availability?.ContinuePrepared.Contains(op.Id) == true;
         BlockingReasons = !fresh ? "快照失效；等待状态读取恢复" : !viewportReady ? "视图空间保护；恢复客户区并人工确认" : binding is null ? "当前配置未启用该投递位" :
             position is null ? "尚未取得投递位状态" : string.Join("\n", position.BlockingReasons);
-        Status = binding is null ? "未启用" : position?.CurrentOperation is not null && Operation is null ? "当前作业身份未匹配 · 等待新快照" : Operation is null ? "等待包裹入场" : StageText(Operation.State);
+        Status = !fresh ? "旧作业状态已失效 · 等待新快照" : binding is null ? "未启用" : position?.CurrentOperation is not null && Operation is null ? "当前作业身份未匹配 · 等待新快照" : Operation is null ? "等待包裹入场" : StageText(Operation.State);
         PropertyChanged?.Invoke(this, new(""));
     }
     public static string StageText(ParcelState state) => state switch

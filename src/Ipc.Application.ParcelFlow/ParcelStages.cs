@@ -131,8 +131,8 @@ public sealed partial class ParcelRuntime
         }
         stage = stage with { State = reply.BusinessAccepted == true ? StageState.Accepted : StageState.Rejected, Failure = null };
         op = SetStage(op, kind, stage) with { Reason = independentUpload ? op.Reason : reply.BusinessAccepted == true ? null : reply.Evidence };
-        if (kind is ParcelStage.Capture or ParcelStage.Upload) return ApplyImageReply(op, kind, reply);
-        return definition.ApplyBusinessReply(this, op, kind, reply);
+        op = kind is ParcelStage.Capture or ParcelStage.Upload ? ApplyImageReply(op, kind, reply) : definition.ApplyBusinessReply(this, op, kind, reply);
+        return MainTerminated(op) ? op with { RecoveryRequired = false } : op;
     }
     void RecoverLocalFacts()
     {

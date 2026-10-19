@@ -1,0 +1,23 @@
+{
+  "Scope": "Reference fault/ownership suite; no confirmed production load/offline target",
+  "Root": "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-fe8c85018598445b86a862b5a3eaf714",
+  "PeakMemoryFootprintRaw": [
+    "            63357744  peak memory footprint"
+  ],
+  "DatabaseFilesAfter": [
+    {
+      "Path": "raw-data/Simulation/reference-17/wcs-to-plc/wcs-to-plc.db",
+      "Bytes": 229376
+    },
+    {
+      "Path": "activation-data/Simulation/reference-17/wcs-to-plc/wcs-to-plc.db",
+      "Bytes": 253952
+    },
+    {
+      "Path": "resource-data/Simulation/reference-17/wcs-to-plc/wcs-to-plc.db",
+      "Bytes": 225280
+    }
+  ],
+  "FilesBytesAfter": 730392,
+  "TargetPerformanceAdmission": "INSUFFICIENT_EVIDENCE: target rate/offline duration/RPO/RTO not confirmed"
+}

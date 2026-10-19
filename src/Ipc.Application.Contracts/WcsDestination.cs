@@ -4,8 +4,12 @@ namespace Ipc.Application.Contracts;
 // A sequence is assigned by the original database, never by a transport attempt.
 public interface IWcsRequestPreparer
 {
-    PreparedIntegrationRequest PrepareRequest(FrozenRequest request, long operationSequence);
+    PreparedIntegrationRequest PrepareRequest(FrozenRequest request, long preparationSequence);
+    // Numeric components describe their configured range without I/O. The application
+    // chooses a sequence at T1 using its durable allocations, never admission order.
+    IntegrationRequestIdRange? GetRequestIdRange(CapabilityBinding binding) => null;
 }
+public sealed record IntegrationRequestIdRange(long First, long Last);
 public sealed record PreparedIntegrationRequest(long RequestId, string ContentType, string Body, string BodyHash);
 public sealed record IntegrationHttpResponse(int StatusCode, string BodyBase64, string BodyHash, bool Complete = true);
 public enum WcsDestinationOutcome { Assigned, UnpackRequired, Rejected }

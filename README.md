@@ -4,24 +4,28 @@ C#/.NET 10工位运行基座及独立Application参考工程。Platform负责机
 
 ## 当前运行与组合
 
-业务版本1.2.4、Application.Contracts1.7.0、Parcel DB6（SQL1–5原样保留）、配置schema1/2/3；Supply另用Storage5和原操作契约。三个主流程保持独立：Sportmaster左右两个独立reader/投递位，扫码取得WCS格口，不下PLC；DirectPlc与WcsToPlc各单reader/顺序位，分别PLC与WCS→PLC。登录/称重/采图/上传按已确认策略选装，DirectPlc完整UI继续延期。
+业务版本1.2.8、Application.Contracts1.8.0、Parcel DB7（SQL1–6原样保留；SQL7为数字请求持久归属与范围退役）、配置schema1/2/3；Supply另用Storage5和原操作契约。三个主流程保持独立：Sportmaster左右两个独立reader/投递位，扫码取得WCS格口，不下PLC；DirectPlc与WcsToPlc各单reader/顺序位，分别PLC与WCS→PLC。登录/称重/采图/上传按已确认策略选装，DirectPlc完整UI继续延期。
 
-Sportmaster支持 `--ui classic`（默认）和 `--ui supply-station`，导航与辅助窗共享Application、连接和原作业。RCS组件 `sportmaster.rcs-task` 1.0.4只实现 `sorter.task.dest_request`；正常、NEED_UNPACK、拒绝和Unknown分别处理，不自动重发、不提供未确认的拆包提交。图片展示与长期图库不在范围。
+Sportmaster支持 `--ui classic`（默认）和 `--ui supply-station`，导航与辅助窗共享Application、连接和原作业。RCS组件 `sportmaster.rcs-task` 1.0.8只实现 `sorter.task.dest_request`；正常、NEED_UNPACK、拒绝和Unknown分别处理，不自动重发、不提供未确认的拆包提交。图片展示与长期图库不在范围。
 
-[并发整合报告](docs/runtime/parallel-task-reconciliation-01.md)统一PR27/29/30/32、PR31恢复基线、冲突裁决及最终组合验证；历史候选、原失败与形成时结论保持原身份。新精确参考扩展为能力包2.1.2与reader1.2.2，按实际目标公共DLL构建，版本号本身不构成加载/Production资格。
+[并发整合报告](docs/runtime/parallel-task-reconciliation-01.md)统一PR27/29/30/32、PR31恢复基线、冲突裁决及最终组合验证；历史候选、原失败与形成时结论保持原身份。新精确参考扩展为能力包2.1.6与reader1.2.6，按实际目标公共DLL构建，版本号本身不构成加载/Production资格。
 
 ## 开发、发布与维护
+
+[审查03交付结果、媒介与逐组合准入](docs/runtime/commercial-audit03-delivery-results.md) · [PR #35](https://github.com/yuan2go/importer-pc/pull/35)。已完成可执行工程与参考候选，真实组合/Windows验收及商用未完成。
+
+本轮工程入口为[审查03交付工作包](docs/work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)，普通升级/窄恢复以现行维护正文为准。
 
 先读[统一入口](docs/INDEX.md)、[工作约束](AGENTS.md)、[首次运行](docs/runtime/getting-started.md)、[配置/恢复/扩展维护](docs/runtime/architecture-quality-closure-01.md)、[版本与组合证据](docs/runtime/version-compatibility-01.md)及[扩展开发](docs/extensions/developer-guide.md)。
 
 ```sh
 # global.json固定SDK 10.0.402，需Python3；按受影响范围验证
 ./scripts/build.sh
-# 最终媒介/精确源码及运行回执见整合报告
+# 最终媒介/精确源码及运行回执见审查03交付结果
 python3 scripts/package-application.py --application sportmaster --target portable --output /new/immutable/output
 ```
 
-旧DB2–5普通升级先只读核未结责任，不能通过升级消除Unknown或原件责任。窄维护CLI `recover-legacy-receipt` 要求原DB/WAL SHA、全备份、原目标Query和永久身份/原件依据，显式选择当前DB6；内部API旧调用默认DB5兼容。配置沿同一CAS/Pending/Effective账，资源成功后确认；停止失败保持资源与包租约。软件暂停不是安全急停。
+旧DB2–6普通升级先只读核未结责任，不能通过升级消除Unknown或原件责任。窄维护CLI `recover-legacy-receipt` 要求原DB/WAL SHA、全备份、原目标Query和永久身份/原件依据，显式选择当前DB7；内部API旧调用默认DB5兼容。配置沿同一CAS/Pending/Effective账，资源成功后确认；停止失败保持资源与包租约。软件暂停不是安全急停。
 
 ## 证据与边界
 

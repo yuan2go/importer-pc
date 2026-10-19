@@ -115,6 +115,7 @@ public partial class ParcelViewModel
     }
     public async Task SaveCapabilitiesAsync()
     {
+        RequireFreshSnapshot();
         if (Snapshot is null) return;
         if (Snapshot.Configuration.Effective.SchemaVersion >= 3 || Snapshot.Configuration.Pending?.SchemaVersion >= 3 || Snapshot.Configuration.Effective.Topology is not null)
         {
@@ -144,11 +145,11 @@ public partial class ParcelViewModel
         AdvanceOwnDraftRevision(expected, receipt);
         Message = receipt.Status + " · " + receipt.Reason;
     }
-    public async Task AuthorizeMaintenanceAsync(string proof) { var r = await application.AuthorizeMaintenanceAsync(MaintenanceSubject, proof); Message = r.Status + " · " + r.Reason; }
-    public async Task InstallAsync() { var r = await application.InstallCapabilityAsync(PackagePath, PackageSha256); Message = r.Status + " · " + r.Reason; await LoadCapabilitiesAsync(); }
+    public async Task AuthorizeMaintenanceAsync(string proof) { RequireFreshSnapshot(); var r = await application.AuthorizeMaintenanceAsync(MaintenanceSubject, proof); Message = r.Status + " · " + r.Reason; }
+    public async Task InstallAsync() { RequireFreshSnapshot(); var r = await application.InstallCapabilityAsync(PackagePath, PackageSha256); Message = r.Status + " · " + r.Reason; await LoadCapabilitiesAsync(); }
     public async Task ContinueUploadAsync() { var op = Selected ?? throw new InvalidOperationException("选择原作业"); await CommandAsync("ContinueUpload", op.Id); }
     public async Task AbandonAsync()
-    {
+    { RequireFreshSnapshot();
         var op = Selected ?? throw new InvalidOperationException("选择原作业"); var s = Snapshot ?? throw new InvalidOperationException("刷新后选择原作业");
         var r = await application.CommandAsync(new(Wire.Id(), s.Revision, "AbandonUnsubmitted", op.Id, InspectionReason)); Message = r.Status + " · " + r.Reason;
     }

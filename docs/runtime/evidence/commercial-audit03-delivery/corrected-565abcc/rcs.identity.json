@@ -1,0 +1,26 @@
+{
+  "Package": "rcs.ipcx",
+  "PackageSha256": "c02d4b86fe8ac3f3e5e701350b6e40646fecfb255ff1c89598262b736b7b10d0",
+  "PluginSourceCommit": "9e1b481e38e6c14489dc947ebac932d901dcab32",
+  "PluginSourceSha256": "c32c1bfb87348d903bd6f49ae5ea9381b0b55bcd6fe246d4ae391b1c09725fe7",
+  "DefinitionSha256": "4be6d5f4b46b72225b10af722fb9e6f1066536be285db802a68e380ceb62dc60",
+  "HostContractSha256": "c0d9e17c96941447cb19db9c1b78df67727e3dd7d8a03215d137aa3d67ec6c74",
+  "FrozenHostUnchanged": true,
+  "FrozenCheckerUnchanged": true,
+  "CheckerContractsSha256": {
+    "Ipc.Platform": "c0d9e17c96941447cb19db9c1b78df67727e3dd7d8a03215d137aa3d67ec6c74",
+    "Ipc.Application.Contracts": "de0cad7eca6268c04f39b664b365307b2850f2e2e637cc251d25c53203f27716"
+  },
+  "Publisher": "audit03-reference",
+  "Version": "1.0.8",
+  "ExtensionContract": 1,
+  "Signature": "RSA-PSS/SHA256",
+  "Mode": "Simulation",
+  "ManifestSha256": "99ce8c69144642d2552c268609f7fc5fa60540fff99a9f317a96c21a650a42fe",
+  "TrustSha256": "26989c5030f9a805dc46dbac5f603402db1e38ff8eb57635ca3dc2afd4de9306",
+  "PayloadSha256": {
+    "Ipc.Integrations.SportmasterRcs.dll": "01b38f6b1df3d09fe2e96c78f6fa6f037fd49e30a2e8aedf8c01b34dc26ce5c0"
+  },
+  "DependencyPackages": [],
+  "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+}

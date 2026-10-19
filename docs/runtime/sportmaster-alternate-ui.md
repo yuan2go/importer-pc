@@ -66,3 +66,5 @@ python3 scripts/package-application.py --application sportmaster --target win-x6
 组合增量：与RCS组件共用只读DestinationSummary，在既有每位诊断区显示任务/SKU/拆包格口及原始零值/未知字段，UnpackRequired明确显示本位等待检查。没有新增业务动作、图像展示或物理完成声明。版本/候选身份和当前组合验证见[整合报告](parallel-task-reconciliation-01.md)。
 
 读取恢复时，仅清除本次状态读取错误拥有的横幅，其他业务消息继续保留；命令后读取与周期读取共用读序及失效判断。整合回归覆盖失败→恢复、乱序、窗口排空及RCS拆包投影。
+
+审查03：两布局的快照读取失败/超过3秒未成功时，共用失效显示和维护动作保护；时效同时使用单调时钟与显示时间。运行实例切换清本窗旧选择，退役实例不能回写；同实例修订倒退明确失效。当前件严格按Position.CurrentOperation定位，旧格口明确标旧，不从历史/时间排序猜目标。轮询失败时软件暂停仍以已显示修订到Application做CAS，成功回执与快照是否恢复分别显示；刷新成功不自动Resume/重发。Windows原生交互、DPI及截图另行验收。

@@ -4,7 +4,7 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed record ParcelRecoveryManifest(string Application, string Database, string DatabaseHash,
     Dictionary<string, string> Files, DateTimeOffset At, string Recovery);
-public static class ParcelRecovery
+public static partial class ParcelRecovery
 {
     // Offline, new isolated application directory only. A backup never rolls back a peer's
     // action. On first startup all interrupted intents retain their original identities.

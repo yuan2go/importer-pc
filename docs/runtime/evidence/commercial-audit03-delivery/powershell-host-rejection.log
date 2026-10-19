@@ -1,0 +1,6 @@
+Exception: ${WORKTREE}/scripts/application.ps1:16
+Line |
+  16 |      throw 'Candidate baseline is Windows build 26100+ x64 / PowerShel …
+     |      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Candidate baseline is Windows build 26100+ x64 / PowerShell 7. Actual
+     | Windows qualification is NOT_RUN.

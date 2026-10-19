@@ -50,6 +50,12 @@ public sealed class SportmasterRcsTaskService : IWcsPort, IWcsRequestPreparer
     }
     public async Task ReconnectAsync(CancellationToken token)
     { await StopAsync(token).ConfigureAwait(false); await StartAsync(token).ConfigureAwait(false); }
+    public IntegrationRequestIdRange? GetRequestIdRange(CapabilityBinding binding)
+    {
+        if (binding.Contract != Contract) return null;
+        var range = new RcsTaskOptions(binding);
+        return new(checked(range.RequestIdBase + 1), checked(range.RequestIdBase + range.RequestIdCount));
+    }
     public PreparedIntegrationRequest PrepareRequest(FrozenRequest request, long operationSequence) => RcsDestinationProtocol.Prepare(options, request, operationSequence);
     public Task<StageReply> ResolveSlotAsync(FrozenRequest request, CancellationToken token) => RequestDestinationAsync(request, token);
     public Task<StageReply?> QueryAsync(FrozenRequest original, CancellationToken token)

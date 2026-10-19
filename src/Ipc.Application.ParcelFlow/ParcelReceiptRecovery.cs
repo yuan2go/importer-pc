@@ -39,16 +39,7 @@ public sealed partial class ParcelRepository
                 if (reply.RequestId != stage.Request.Id || reply.PayloadHash != stage.Request.PayloadHash ||
                     !reply.TransportSucceeded || reply.ProtocolAcknowledged != true || (reply.BusinessAccepted == true) != (stage.State == StageState.Accepted) ||
                     stage.Request.Stage == "wcs-slot" && reply.BusinessAccepted == true && string.IsNullOrWhiteSpace(reply.Slot)) return false;
-                using var c = db.CreateCommand(); c.CommandText = "SELECT id,raw_hash FROM parcel_receipts WHERE operation=$op AND request=$request AND stage=$stage AND state='Committed'";
-                c.Parameters.AddWithValue("$op", op.Id); c.Parameters.AddWithValue("$request", stage.Request.Id); c.Parameters.AddWithValue("$stage", stage.Request.Stage);
-                using var r = c.ExecuteReader(); var found = false; var hash = Wire.Hash(Wire.Encode(reply));
-                while (r.Read())
-                {
-                    if (r.IsDBNull(1) || r.GetString(1) != hash) continue;
-                    var file = Path.Combine(rawRoot, r.GetString(0) + ".json");
-                    if (File.Exists(file) ? Wire.FileHash(file) == hash : HasArchivedRaw(r.GetString(0), hash)) { found = true; break; }
-                }
-                if (!found) return false;
+                if (!HasCommittedReplyBytes(op, stage, reply)) return false;
             }
         }
         return op.Wcs is not null || op.Plc is not null;

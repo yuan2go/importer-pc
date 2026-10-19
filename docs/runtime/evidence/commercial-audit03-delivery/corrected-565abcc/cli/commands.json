@@ -1,0 +1,60 @@
+[
+  {
+    "Name": "inspect",
+    "Command": [
+      "${DOTNET}",
+      "${WORKTREE}/.artifacts/audit03-565abcc/unpacked/direct-plc-core/app/Ipc.Assembly.dll",
+      "--action",
+      "maintenance-inspect",
+      "--file",
+      "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-92db7fed4df44a07a57db1d9947fa237/maintenance/data/Simulation/reference-17/direct-plc/direct-plc.db"
+    ],
+    "Cwd": "/tmp",
+    "ExitCode": 0
+  },
+  {
+    "Name": "diagnostics",
+    "Command": [
+      "${DOTNET}",
+      "${WORKTREE}/.artifacts/audit03-565abcc/unpacked/direct-plc-core/app/Ipc.Assembly.dll",
+      "--action",
+      "diagnostic-export",
+      "--file",
+      "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-92db7fed4df44a07a57db1d9947fa237/maintenance/data/Simulation/reference-17/direct-plc/direct-plc.db",
+      "--destination",
+      "${WORKTREE}/.artifacts/audit03-565abcc/cli-evidence/diagnostic.zip"
+    ],
+    "Cwd": "/tmp",
+    "ExitCode": 0
+  },
+  {
+    "Name": "backup",
+    "Command": [
+      "${DOTNET}",
+      "${WORKTREE}/.artifacts/audit03-565abcc/unpacked/direct-plc-core/app/Ipc.Assembly.dll",
+      "--action",
+      "backup-offline",
+      "--file",
+      "/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-92db7fed4df44a07a57db1d9947fa237/maintenance/data/Simulation/reference-17/direct-plc/direct-plc.db",
+      "--destination",
+      "${WORKTREE}/.artifacts/audit03-565abcc/cli-evidence/original.backup.db"
+    ],
+    "Cwd": "/tmp",
+    "ExitCode": 0
+  },
+  {
+    "Name": "plan",
+    "Command": [
+      "${DOTNET}",
+      "${WORKTREE}/.artifacts/audit03-565abcc/unpacked/direct-plc-core/app/Ipc.Assembly.dll",
+      "--action",
+      "recovery-plan",
+      "--file",
+      "${WORKTREE}/.artifacts/audit03-565abcc/cli-evidence/original.backup.db",
+      "--destination",
+      "${WORKTREE}/.artifacts/audit03-565abcc/cli-evidence/new/Simulation/reference-17/direct-plc"
+    ],
+    "Cwd": "/tmp",
+    "ExitCode": 0
+  }
+]

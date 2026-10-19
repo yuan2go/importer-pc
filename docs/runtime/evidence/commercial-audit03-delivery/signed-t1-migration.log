@@ -1,0 +1,30 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-6e5a37ca267a42d89d75f5278460c9de
+PASS RCS20: A03 independent position reaches actual HTTP T1 while other capture is held
+PASS RCS20: A03 left capture delay gives both positions one actual T1 and POST without global serialization
+PASS RCS20: A03 numeric order follows durable T1 preparation, not earlier admission order
+PASS RCS20: A03 actual backup retains owner ledger, ranges and archived originals
+PASS RCS20: A03 restart/archive preserve both original wire IDs and exact bodies without POST
+PASS RCS20: A03 source consumes a new persistent ID after the backup cut
+PASS RCS20: A03 restored backup retires entire source range including IDs used after backup
+PASS RCS20: A03 exhausted unsent entity can be inspected and disposed
+PASS RCS20: A03 new disjoint range uses original configuration CAS and controlled restart
+PASS RCS20: A03 restored root runs with new range; old retirement never retires newly staged range on restart
+PASS RCS20: A03 persistent SQL unique owners include archived and post-restore T1 allocations
+PASS RCS20: A03 explicit synthetic SQL6 resident/archive numeric migration preserves every original ID and exact frozen request
+PASS RCS20: A03 SQL7 backfills all immutable numeric owners from SQL6 resident and archived originals
+PASS RCS20: A03 ambiguous old numeric owners refuse in read-only preflight before SQL7 or database byte changes
+PASS RCS20: A03 independent position reaches actual HTTP T1 while other capture is held
+PASS RCS20: A03 right capture delay gives both positions one actual T1 and POST without global serialization
+PASS RCS20: A03 numeric order follows durable T1 preparation, not earlier admission order
+PASS RCS20: A03 actual backup retains owner ledger, ranges and archived originals
+PASS RCS20: A03 restart/archive preserve both original wire IDs and exact bodies without POST
+PASS RCS20: A03 source consumes a new persistent ID after the backup cut
+PASS RCS20: A03 restored backup retires entire source range including IDs used after backup
+PASS RCS20: A03 exhausted unsent entity can be inspected and disposed
+PASS RCS20: A03 new disjoint range uses original configuration CAS and controlled restart
+PASS RCS20: A03 restored root runs with new range; old retirement never retires newly staged range on restart
+PASS RCS20: A03 persistent SQL unique owners include archived and post-restore T1 allocations
+PASS RCS20: A03 explicit synthetic SQL6 resident/archive numeric migration preserves every original ID and exact frozen request
+PASS RCS20: A03 SQL7 backfills all immutable numeric owners from SQL6 resident and archived originals
+PASS RCS20: A03 ambiguous old numeric owners refuse in read-only preflight before SQL7 or database byte changes
+PASS A03 SIGNED RCS COMPLETE

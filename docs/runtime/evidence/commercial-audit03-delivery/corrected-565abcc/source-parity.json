@@ -1,0 +1,8 @@
+{
+  "RuntimeMediaSource": "565abcc63b885dc60873aa21e25f2d4612963c0d",
+  "FrozenInputFiles": 450,
+  "SourceCodeSha256": "8a56e63949620a2af34d8ee48dda604c8514c829fce1c3eff0e769107acc8336",
+  "ChangedPublicationInputsAfterFreeze": [],
+  "PostFreezeScope": "Delivery results, evidence, entry navigation and manifest only; no runtime/configuration/packaging/shipped-guide changes",
+  "Comparison": "Every current publication input equals its frozen Git blob byte-for-byte"
+}

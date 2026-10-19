@@ -124,7 +124,10 @@ static class ApplicationArchitecture
         ScaleFactory? scales = null;
         await using (var app = await Open(captureOnly, "capture-only", f => scales = new(f)))
         {
-            Check(!app.EmitReference("unauthenticated", "001", "none"), "configured login refuses unauthenticated admission");
+            var unauthenticated = await app.SnapshotAsync();
+            Check(app.EmitReference("unauthenticated", "001", "none"), "current-source evidence is queued even when new admission is unauthorized");
+            var deniedAdmission = await Wait(app, x => x.Revision > unauthenticated.Revision);
+            Check(deniedAdmission.Operations.Length == 0 && !deniedAdmission.Availability!.Admit, "configured login refuses unauthenticated entity admission without hiding source evidence");
             await app.LoginAsync("alice", "SIMULATION_ONLY"); app.EmitReference("image-only", "001", "acquisition-only");
             var s = await Wait(app, x => x.Operations.FirstOrDefault()?.Capture?.State == StageState.Accepted); var op = s.Operations.Single();
             Check(op.Upload is null && !op.ImageReleased && op.Image!.Acquisition == op.Acquisition && op.Plc is null, "same physical reader reuses controlled original capture; capture-only waits for this weight without uploader");
@@ -243,7 +246,7 @@ static class ApplicationArchitecture
         using (var db = new SqliteConnection("Data Source=" + Path.Combine(path, "sportmaster.db")))
         {
             db.Open(); using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT max(version) FROM platform_migrations";
-            Check((long)cmd.ExecuteScalar()! == 6, "settled database2 upgrades with unchanged SQL1-5, independent custody SQL5 and appended integration semantic SQL6");
+            Check((long)cmd.ExecuteScalar()! == 7, "settled database2 upgrades with unchanged SQL1-5, independent custody SQL5 and appended integration semantics SQL6/7");
         }
         await Task.CompletedTask;
     }

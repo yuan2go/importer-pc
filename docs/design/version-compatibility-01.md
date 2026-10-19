@@ -1,3 +1,5 @@
+> 当前版本与实际支持组合以[运行指南](../runtime/version-compatibility-01.md)及内嵌声明为准：业务1.2.7、ABI1.8.0、DB7，新不可变参考包2.1.5/reader1.2.5/RCS1.0.7。下文PR29原阶段的1.2.1等按其原SHA和形成时含义保留。
+
 > PR29 P1/P2整改：原head d954ba6的组合记录重验存在配置与原事件未关联缺口，Windows恢复/卸载漏传业务程序集。整改设计与执行计划见[本包](../work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md)；旧候选与结果保持原身份，新验证另记，不以旧PASS替代。
 
 # 业务版本、兼容声明与组合证据

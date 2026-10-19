@@ -41,6 +41,23 @@ static class ParcelCli
             }
             finally { factory.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
         }
+        if (map["--action"] is "maintenance-inspect" or "diagnostic-export" or "backup-offline")
+        {
+            var database = Path.GetFullPath(map["--file"]);
+            var directory = Path.GetDirectoryName(database)!;
+            var definition = ParcelAssembly.Definition();
+            if (map["--action"] == "backup-offline")
+            {
+                MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+                var dataRoot = Directory.GetParent(directory)!.Parent!.Parent!.FullName;
+                var factory = new ParcelCapabilityFactory(new(directory, dataRoot, null, null));
+                try { Console.WriteLine(Wire.Encode(ParcelRepository.BackupOffline(database, map["--destination"], definition, (backup, c) => { factory.Normalize(c); factory.RegisterBackup(backup, c); }))); }
+                finally { factory.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
+            }
+            else Console.WriteLine(Wire.Encode(map["--action"] == "diagnostic-export"
+                ? ParcelRepository.ExportDiagnostics(database, map["--destination"], definition) : ParcelRepository.InspectMaintenance(database, definition)));
+            return true;
+        }
         if (map["--action"] == "recover-legacy-receipt")
         {
             var directory=Path.GetDirectoryName(Path.GetFullPath(map["--file"]))!;
@@ -51,7 +68,7 @@ static class ParcelCli
             {
                 Console.WriteLine(Wire.Encode(ParcelLegacyReceiptRecovery.RecoverAsync(map["--file"],map["--sha256"],map["--destination"],map["--occurrence"],map["--original-release"],map["--reason"],ParcelAssembly.Definition(),
                     (json,config,data,t)=>OriginalParcelQuery.QueryAsync(map["--original-release"],json,"image-upload",config,data,t),
-                    (backup,c)=>{factory.Normalize(c);factory.RegisterBackup(backup,c);},cancellation.Token,map.GetValueOrDefault("--wal-sha256"),targetStorageVersion:6).GetAwaiter().GetResult())); return true;
+                    (backup,c)=>{factory.Normalize(c);factory.RegisterBackup(backup,c);},cancellation.Token,map.GetValueOrDefault("--wal-sha256"),targetStorageVersion:7).GetAwaiter().GetResult())); return true;
             }
             finally {factory.DisposeAsync().AsTask().GetAwaiter().GetResult();}
         }

@@ -1,0 +1,16 @@
+...E...............
+======================================================================
+ERROR: test_business_version_matches_every_declared_composition (test_application_compatibility.CompatibilityTests.test_business_version_matches_every_declared_composition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "${WORKTREE}/scripts/test_application_compatibility.py", line 34, in test_business_version_matches_every_declared_composition
+    version, policy = read_business(root, application, selected)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${WORKTREE}/scripts/application_compatibility.py", line 33, in read_business
+    raise ValueError('Application contract project version and composition differ')
+ValueError: Application contract project version and composition differ
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.138s
+
+FAILED (errors=1)

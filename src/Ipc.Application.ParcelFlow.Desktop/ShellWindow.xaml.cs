@@ -25,9 +25,10 @@ public partial class ShellWindow : Window
     }
     async void Refresh(object? sender, EventArgs e)
     {
+        vm.RefreshFreshness();
         if (refreshing) return;
         refreshing = true;
-        try { await vm.RefreshAsync(); } catch (Exception ex) { vm.Message = "状态读取失败：" + ex.Message; }
+        try { await vm.RefreshAsync(); } catch (Exception ex) { vm.Message = vm.ReadStatus + " · " + ex.Message; }
         finally { refreshing = false; }
     }
     void Workstation_Click(object s, RoutedEventArgs e) => PageHost.Content = work;

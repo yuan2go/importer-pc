@@ -1,4 +1,4 @@
-> 当前组合：业务1.2.4，classic/supply-station共享同一Sportmaster实例，RCS结果及零值/未知字段、读序/失效恢复横幅已组合验证。Windows交互仍NOT_RUN，完整来源与证据见[整合报告](../runtime/parallel-task-reconciliation-01.md)。以下形成时结论保留其原SHA。
+> 当前组合：业务1.2.7；classic/supply-station共用快照时效、当前位身份及维护保护。继承PR34 c073044的已复核实现，并补退役运行实例拒绝、修订倒退失效、旧格口标旧及轮询失败时独立软件暂停。原实物、原SHA/PASS/FAIL与实际Windows NOT_RUN保持，执行来源见[审查03工作包](../work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)。
 
 # UI实现与实物状态
 

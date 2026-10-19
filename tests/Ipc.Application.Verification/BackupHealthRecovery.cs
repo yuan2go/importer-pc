@@ -86,6 +86,10 @@ static class BackupHealthRecovery
             var recovery = backup + ".recovery"; var configFile = Path.Combine(recovery, "configuration.json");
             var original = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(configFile));
             var production = original with { Effective = original.Effective with { Mode = RunMode.Production } };
+            // Deliberately synthetic Production input: changing Mode also changes the
+            // envelope hash. Preserve the original custody, but require confirmation.
+            if (production.Confirmation is { } confirmation)
+                production = production with { Confirmation = confirmation with { EffectiveHash = Wire.Hash(Wire.Encode(production.Effective)), Required = true, State = "Required", ConfirmedBy = null, ConfirmedAt = null } };
             ExtensionStore.AtomicWrite(configFile, production);
             var manifestFile = Path.Combine(recovery, "COMPLETED.json"); var manifest = Wire.Decode<ParcelRecoveryManifest>(File.ReadAllText(manifestFile));
             ExtensionStore.AtomicWrite(manifestFile, manifest with { Files = new(manifest.Files) { ["configuration.json"] = Wire.FileHash(configFile) } });

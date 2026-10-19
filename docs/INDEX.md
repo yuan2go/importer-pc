@@ -1,5 +1,7 @@
 # 统一资料与实施入口
 
+> 本轮三项P2修复入口：[维护草稿与参数工作包](work-packages/WP-IPC-UX-MAINTENANCE-P2-04.md)。开发中；1.3.2参考发布仍含这三项差额，不能以旧候选宣告已修。
+
 > PR39在1a34a1e复审的三项源码差额已续修，见[续修结果](runtime/ux-commercial-rereview-03-results.md)。原生Windows待验；固定参考发布不代表工程全部闭合或商用放行。
 
 ## 本轮有效入口
@@ -22,7 +24,7 @@
 
 1. [AGENTS](../AGENTS.md)、[本轮UX闭环工作包](work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)，继承PR37的[原工作包](work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)/[原实施计划](superpowers/plans/2026-10-19-ux-commercial-fix-01.md)及[审查03交付工作包](work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)；既有组合、来源PR及历史验证见[整合报告](runtime/parallel-task-reconciliation-01.md)。旧任务的合并授权只适用于其原PR和固定head。
 2. [框架](design/framework.md)、[F决策](design/framework-decisions.md)、[受控装配/扩展](design/controlled-extensions.md)、[19职责](design/application-capability-19.md)、[20可靠性](design/capability-reliability-20.md)、[22拓扑](design/application-architecture-22.md)和[质量/恢复设计](design/architecture-quality-closure-01.md)。仍是三个独立Application，无通用主流程、第二配置账或第二扩展设施。
-3. [首次运行](runtime/getting-started.md)、[Windows交付与故障SOP](runtime/windows-application-delivery.md)、[Application配置](runtime/application-architecture-22.md)、[恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md)、[版本与组合证据](runtime/version-compatibility-01.md)、[扩展开发安装恢复](extensions/developer-guide.md)。本分支业务1.3.1、Contracts1.9.0、Parcel DB7；schema1/2保留main兼容位，schema3显式双位。Supply Storage5仅按[Supply运行维护](runtime/operations.md)操作。
+3. [首次运行](runtime/getting-started.md)、[Windows交付与故障SOP](runtime/windows-application-delivery.md)、[Application配置](runtime/application-architecture-22.md)、[恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md)、[版本与组合证据](runtime/version-compatibility-01.md)、[扩展开发安装恢复](extensions/developer-guide.md)。当前已发布参考业务1.3.2、Contracts1.9.0、Parcel DB7；schema1/2保留main兼容位，schema3显式双位。Supply Storage5仅按[Supply运行维护](runtime/operations.md)操作。
 4. [RCS设计](design/sportmaster-rcs-task.md)/[运行](runtime/sportmaster-rcs-task.md)、[Sportmaster可选UI](runtime/sportmaster-alternate-ui.md)、[永久恢复P2及原失败](runtime/parcel-recovery-p2.md)。原请求/版本/目标/合同/raw不因新部署改变，Unknown不自动重发。
 5. [D决策](readiness/decision-pack.md)、[技术基线](readiness/technical-baseline.json)、[RV状态](reviews/STATUS.md)/[原问题](reviews/issues.json)、[公开范围](baseline/PUBLICATION.md)、[缺失](baseline/MISSING.md)/[冲突](baseline/CONFLICTS.md)和[manifest](manifest.json)。客户全量资料仍PUBLIC_SUBSET_ONLY，原审查01 PDF未取得。
 

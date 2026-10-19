@@ -56,6 +56,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     public async Task StartAsync(CancellationToken token)
     {
         if (started || disposed) throw new InvalidOperationException("Application startup is single-use");
+        MachineRuntimePolicy.RequireRuntimeIdentity();
         started = true;
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(launch.ConfigurationDirectory, "business.json")));
         var errors = definition.Validate(seed); if (errors.Length > 0) throw new InvalidDataException(string.Join("; ", errors));

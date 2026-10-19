@@ -1,0 +1,22 @@
+{
+  "baseline_main": "be7956447054054dfdcfce725e8fbbbdfc87407a",
+  "baseline_status": "FAIL",
+  "after_status": "FAIL",
+  "baseline_errors": {
+    "manifest_checksum": 1,
+    "private_metadata_marker": 2,
+    "pptx_media_type_mismatch": 265
+  },
+  "after_errors": {
+    "private_metadata_marker": 2,
+    "pptx_media_type_mismatch": 265
+  },
+  "introduced": [],
+  "removed": [
+    {
+      "code": "manifest_checksum",
+      "path": "docs/manifest.sha256"
+    }
+  ],
+  "meaning": "Historical UI asset and metadata failures retained; required current manifest checksum refreshed; not a global archive PASS."
+}

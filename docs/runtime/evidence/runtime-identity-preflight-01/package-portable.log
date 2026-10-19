@@ -1,0 +1,27 @@
+  正在确定要还原的项目…
+  已还原 <workspace>/.artifacts/sid-portable/source-snapshot/src/Ipc.Platform/Ipc.Platform.csproj (用时 503 毫秒)。
+  已还原 <workspace>/.artifacts/sid-portable/source-snapshot/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 503 毫秒)。
+  已还原 <workspace>/.artifacts/sid-portable/source-snapshot/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 503 毫秒)。
+  已还原 <workspace>/.artifacts/sid-portable/source-snapshot/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 503 毫秒)。
+  已还原 <workspace>/.artifacts/sid-portable/source-snapshot/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 503 毫秒)。
+  已还原 <workspace>/.artifacts/sid-portable/source-snapshot/src/Ipc.Components/Ipc.Components.csproj (用时 503 毫秒)。
+  已还原 <workspace>/.artifacts/sid-portable/source-snapshot/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 503 毫秒)。
+  已还原 <workspace>/.artifacts/sid-portable/source-snapshot/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 503 毫秒)。
+  已还原 <workspace>/.artifacts/sid-portable/source-snapshot/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 7 毫秒)。
+  已还原 <workspace>/.artifacts/sid-portable/source-snapshot/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 7 毫秒)。
+  已还原 <workspace>/.artifacts/sid-portable/source-snapshot/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 7 毫秒)。
+  已还原 <workspace>/.artifacts/sid-portable/source-snapshot/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 9 毫秒)。
+  Ipc.Platform -> <workspace>/.artifacts/sid-portable/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> <workspace>/.artifacts/sid-portable/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> <workspace>/.artifacts/sid-portable/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> <workspace>/.artifacts/sid-portable/build-intermediates/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> <workspace>/.artifacts/sid-portable/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> <workspace>/.artifacts/sid-portable/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> <workspace>/.artifacts/sid-portable/build-intermediates/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> <workspace>/.artifacts/sid-portable/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <workspace>/.artifacts/sid-portable/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> <workspace>/.artifacts/sid-portable/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Integrations -> <workspace>/.artifacts/sid-portable/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> <workspace>/.artifacts/sid-portable/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> <workspace>/.artifacts/sid-portable/app/
+{"Package": "<workspace>/.artifacts/sid-portable.zip", "Sha256": "39c4373a4bdf655b982283342e4a961bddf440b7dbdb9f7def0c2a38d9fe3048", "SourceCommit": "f354d3ff8d8a46d3eaca02db61877be1fd506785", "Application": "sportmaster", "Target": "portable", "BusinessVersion": "1.3.2", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "93ECF0EC08B8816D5904C4542FD12CF6A61F903C9FE2226D4CC97943876A7C02"}

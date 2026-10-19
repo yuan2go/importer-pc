@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-19",
+  "baseline_main": "be7956447054054dfdcfce725e8fbbbdfc87407a",
+  "script_baseline_git_blob": "b8c33d111713f124a2eefb6882ae33857022dd43",
+  "host": "Darwin arm64",
+  "powershell": "7.5.4 osx-arm64; official release checksum verified",
+  "dotnet_sdk": "10.0.402",
+  "before": "RED: Run/Console ignored synthetic denial; Diagnose dispatched children before policy failure",
+  "after": "PASS: 4 portable regression methods including 3-entry denial/allow subcases",
+  "identity_decisions": "PASS: designated SID, SID mismatch/null, enabled/deny-only administrator claims, service identities, legacy maintenance semantics",
+  "assembly_builds": {
+    "sportmaster": "PASS",
+    "direct-plc": "PASS",
+    "wcs-to-plc": "PASS"
+  },
+  "sportmaster_wpf_cross_build": "PASS; Windows native NOT_RUN",
+  "bundle_guide_tests": "PASS (3)",
+  "windows": "NOT_RUN",
+  "real_sdk_devices_site": "BLOCKED",
+  "production": "NOT_READY",
+  "evidence_scope": "Portable executable dispatch uses synthetic children and removes only OS/build gate from temporary script; C# account decisions are real shared logic with synthetic claims; storage ordering assertions are static.",
+  "build_commands": [
+    "dotnet build src/Ipc.Assembly/Ipc.Assembly.csproj -p:Application=Sportmaster -p:NuGetLockFilePath=packages.sportmaster.lock.json -p:RestoreLockedMode=true --artifacts-path .artifacts/build-sportmaster -m:1 -nr:false",
+    "dotnet build src/Ipc.Assembly/Ipc.Assembly.csproj -p:Application=DirectPlc -p:NuGetLockFilePath=packages.direct-plc.lock.json -p:RestoreLockedMode=true --artifacts-path .artifacts/build-direct-plc -m:1 -nr:false",
+    "dotnet build src/Ipc.Assembly/Ipc.Assembly.csproj -p:Application=WcsToPlc -p:NuGetLockFilePath=packages.wcs-to-plc.lock.json -p:RestoreLockedMode=true --artifacts-path .artifacts/build-wcs-to-plc -m:1 -nr:false",
+    "dotnet build src/Ipc.Desktop/Ipc.Desktop.csproj -p:Application=Sportmaster -p:RestoreLockedMode=true -p:EnableWindowsTargeting=true --artifacts-path .artifacts/build-desktop -m:1 -nr:false"
+  ],
+  "published_log_normalization": "Workspace path replaced with <workspace>; trailing whitespace removed. Original local logs retained under .artifacts.",
+  "original_log_sha256": {
+    "sid-before.log": "c5ed10e839fd16eaa0377cf1ad437a9bbd05c06fadfb8b3263705c3b91aa247c",
+    "sid-before-corrected-harness.log": "a8735f5e9ac70cf46f7f2410dfbcbff5b75b93dae8c8e73a0ad48be51f58560d",
+    "sid-after.log": "5148e4ed48c5a7689edb184fcce3da43deaf2a809e3a540c183f9559168585b8",
+    "sid-policy.log": "de6ce0249691b70667577b134ba0eae327f19ea2d4cc5e3aca12d25cadf8972c"
+  },
+  "source_commit": "f354d3ff8d8a46d3eaca02db61877be1fd506785",
+  "portable_startup": "PASS: unpacked frozen Sportmaster package; no operations submitted; runtime-check explicitly PortableDevelopmentOnly; console Started/snapshot/quit; read-only post-exit integrity check",
+  "archive": "FAIL (267 inherited asset/metadata findings), introduced 0, current manifest checksum corrected",
+  "package_command": "python3 scripts/package-application.py --application sportmaster --target portable --output .artifacts/sid-portable --dotnet <dotnet-10.0.402>"
+}

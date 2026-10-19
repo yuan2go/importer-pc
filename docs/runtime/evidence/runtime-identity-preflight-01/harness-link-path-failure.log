@@ -1,0 +1,136 @@
+test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) ...
+  test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Run') ... FAIL
+  test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Console') ... FAIL
+  test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Diagnose') ... FAIL
+test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) ...
+  test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Run') ... FAIL
+  test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Console') ... FAIL
+  test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Diagnose') ... FAIL
+test_direct_runtime_guard_precedes_configuration_and_storage (test_runtime_identity.RuntimeIdentityTests.test_direct_runtime_guard_precedes_configuration_and_storage) ... ERROR
+test_maintenance_dispatch_does_not_require_runtime_identity (test_runtime_identity.RuntimeIdentityTests.test_maintenance_dispatch_does_not_require_runtime_identity) ... FAIL
+
+======================================================================
+ERROR: test_direct_runtime_guard_precedes_configuration_and_storage (test_runtime_identity.RuntimeIdentityTests.test_direct_runtime_guard_precedes_configuration_and_storage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 104, in test_direct_runtime_guard_precedes_configuration_and_storage
+    guard = source.index('MachineRuntimePolicy.RequireRuntimeIdentity();', start)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: substring not found
+
+======================================================================
+FAIL: test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Run')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 82, in test_allowed_dispatch_preserves_existing_launch_arguments
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : Exception: /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmpq449i7sl/release/application.ps1:19
+Line |
+  19 |  … ReparsePoint)) { throw "Linked path refused: $($pathInfo.FullName)" }
+     |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Linked path refused: /var
+
+
+======================================================================
+FAIL: test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Console')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 82, in test_allowed_dispatch_preserves_existing_launch_arguments
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : Exception: /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmp2xafvrut/release/application.ps1:19
+Line |
+  19 |  … ReparsePoint)) { throw "Linked path refused: $($pathInfo.FullName)" }
+     |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Linked path refused: /var
+
+
+======================================================================
+FAIL: test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Diagnose')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 82, in test_allowed_dispatch_preserves_existing_launch_arguments
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : Exception: /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmpz06bevn3/release/application.ps1:19
+Line |
+  19 |  … ReparsePoint)) { throw "Linked path refused: $($pathInfo.FullName)" }
+     |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Linked path refused: /var
+
+
+======================================================================
+FAIL: test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Run')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 76, in test_denial_stops_every_runtime_entry_before_other_children
+    self.assertEqual(calls, [['Ipc.Assembly.exe', '--action', 'runtime-check']], result.stderr)
+AssertionError: Lists differ: [] != [['Ipc.Assembly.exe', '--action', 'runtime-check']]
+
+Second list contains 1 additional elements.
+First extra element 0:
+['Ipc.Assembly.exe', '--action', 'runtime-check']
+
+- []
++ [['Ipc.Assembly.exe', '--action', 'runtime-check']] : Exception: /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmp0gku7esq/release/application.ps1:19
+Line |
+  19 |  … ReparsePoint)) { throw "Linked path refused: $($pathInfo.FullName)" }
+     |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Linked path refused: /var
+
+
+======================================================================
+FAIL: test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Console')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 76, in test_denial_stops_every_runtime_entry_before_other_children
+    self.assertEqual(calls, [['Ipc.Assembly.exe', '--action', 'runtime-check']], result.stderr)
+AssertionError: Lists differ: [] != [['Ipc.Assembly.exe', '--action', 'runtime-check']]
+
+Second list contains 1 additional elements.
+First extra element 0:
+['Ipc.Assembly.exe', '--action', 'runtime-check']
+
+- []
++ [['Ipc.Assembly.exe', '--action', 'runtime-check']] : Exception: /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmpc6lm1rh8/release/application.ps1:19
+Line |
+  19 |  … ReparsePoint)) { throw "Linked path refused: $($pathInfo.FullName)" }
+     |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Linked path refused: /var
+
+
+======================================================================
+FAIL: test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Diagnose')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 76, in test_denial_stops_every_runtime_entry_before_other_children
+    self.assertEqual(calls, [['Ipc.Assembly.exe', '--action', 'runtime-check']], result.stderr)
+AssertionError: Lists differ: [] != [['Ipc.Assembly.exe', '--action', 'runtime-check']]
+
+Second list contains 1 additional elements.
+First extra element 0:
+['Ipc.Assembly.exe', '--action', 'runtime-check']
+
+- []
++ [['Ipc.Assembly.exe', '--action', 'runtime-check']] : Exception: /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmpl8gcvreu/release/application.ps1:19
+Line |
+  19 |  … ReparsePoint)) { throw "Linked path refused: $($pathInfo.FullName)" }
+     |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Linked path refused: /var
+
+
+======================================================================
+FAIL: test_maintenance_dispatch_does_not_require_runtime_identity (test_runtime_identity.RuntimeIdentityTests.test_maintenance_dispatch_does_not_require_runtime_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 97, in test_maintenance_dispatch_does_not_require_runtime_identity
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : Exception: /var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmpy6z04dd7/release/application.ps1:19
+Line |
+  19 |  … ReparsePoint)) { throw "Linked path refused: $($pathInfo.FullName)" }
+     |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Linked path refused: /var
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 6.434s
+
+FAILED (failures=7, errors=1)

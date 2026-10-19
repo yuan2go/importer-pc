@@ -1,0 +1,37 @@
+  正在确定要还原的项目…
+  已还原 D:\w\ipc-release\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 1.81 秒)。
+  已还原 D:\w\ipc-release\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 1.81 秒)。
+  已还原 D:\w\ipc-release\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 1.81 秒)。
+  已还原 D:\w\ipc-release\src\Ipc.Application.DirectPlc\Ipc.Application.DirectPlc.csproj (用时 1.81 秒)。
+  已还原 D:\w\ipc-release\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 1.81 秒)。
+  已还原 D:\w\ipc-release\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 1.81 秒)。
+  已还原 D:\w\ipc-release\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 1.81 秒)。
+  已还原 D:\w\ipc-release\src\Ipc.Components\Ipc.Components.csproj (用时 1.81 秒)。
+  已还原 D:\w\ipc-release\src\Ipc.Integrations.SportmasterRcs\Ipc.Integrations.SportmasterRcs.csproj (用时 21 毫秒)。
+  已还原 D:\w\ipc-release\src\Ipc.Platform\Ipc.Platform.csproj (用时 40 毫秒)。
+  已还原 D:\w\ipc-release\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 43 毫秒)。
+  已还原 D:\w\ipc-release\tests\Ipc.Application.Verification\Ipc.Application.Verification.csproj (用时 81 毫秒)。
+  已还原 D:\w\ipc-release\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 67 毫秒)。
+  已还原 D:\w\ipc-release\src\Ipc.Application.WcsToPlc\Ipc.Application.WcsToPlc.csproj (用时 71 毫秒)。
+  已还原 D:\w\ipc-release\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 24 毫秒)。
+  Ipc.Platform -> D:\w\ipc-release\src\Ipc.Platform\bin\Release\net10.0\Ipc.Platform.dll
+  Ipc.Application.Contracts -> D:\w\ipc-release\src\Ipc.Application.Contracts\bin\Release\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> D:\w\ipc-release\src\Ipc.Platform.Storage\bin\Release\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> D:\w\ipc-release\src\Ipc.Application.ParcelFlow\bin\Release\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\w\ipc-release\src\Ipc.Application.Sportmaster\bin\Release\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> D:\w\ipc-release\src\Ipc.Application.DirectPlc\bin\Release\net10.0\Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> D:\w\ipc-release\src\Ipc.Application.WcsToPlc\bin\Release\net10.0\Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> D:\w\ipc-release\src\Ipc.Reference.Protocol\bin\Release\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\w\ipc-release\src\Ipc.Components\bin\Release\net10.0\Ipc.Components.dll
+  Ipc.Drivers -> D:\w\ipc-release\src\Ipc.Drivers\bin\Release\net10.0\Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> D:\w\ipc-release\src\Ipc.Application.Supply.Contracts\bin\Release\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> D:\w\ipc-release\src\Ipc.Integrations\bin\Release\net10.0\Ipc.Integrations.dll
+  Ipc.Application.Supply -> D:\w\ipc-release\src\Ipc.Application.Supply\bin\Release\net10.0\Ipc.Supply.dll
+  Ipc.Integrations.SportmasterRcs -> D:\w\ipc-release\src\Ipc.Integrations.SportmasterRcs\bin\Release\net10.0\Ipc.Integrations.SportmasterRcs.dll
+  Ipc.Application.Verification -> D:\w\ipc-release\tests\Ipc.Application.Verification\bin\Release\net10.0\Ipc.Application.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:44.67

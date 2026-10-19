@@ -41,7 +41,7 @@ static partial class Program
         }
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); var identity = (await runtime.SnapshotAsync()).RuntimeId;
-        var classic = (ShellWindow)Presentation.Create(runtime, null, "standard"); var alternate = (SupplyStationWindow)Presentation.Create(runtime, null, "standard", "supply-station");
+        var classic = (ShellWindow)Presentation.Create(runtime, null, "standard", "classic"); var alternate = (SupplyStationWindow)Presentation.Create(runtime, null, "standard", "supply-station");
         classic.Show(); alternate.Show(); await Task.Delay(400);
         Check(classic.Icon is not null && alternate.Icon is not null, "both native layouts load the repository-owned shared product icon");
         Check(ReferenceEquals(((ParcelViewModel)classic.DataContext).Application, alternate.ViewModel.Application), "native shared pages keep one Application instance");

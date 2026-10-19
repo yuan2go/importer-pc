@@ -15,7 +15,7 @@ public partial class MaintenancePage : UserControl
             Dispatcher.BeginInvoke(new Action(SyncSelections), DispatcherPriority.DataBind);
         };
         Loaded += (_, _) => SyncSelections();
-        Unloaded += (_, _) => { SelectReader(null); SelectInstance(null); };
+
     }
     void SyncSelections()
     {
@@ -60,6 +60,7 @@ public partial class MaintenancePage : UserControl
     void SelectInstance(CapabilityDraft? draft) => SelectDraft(ref selectedInstance, draft, ParameterForm);
     void SelectDraft(ref CapabilityDraft? selected, CapabilityDraft? draft, StackPanel form)
     {
+        if (ReferenceEquals(selected, draft)) return;
         if (selected is not null) selected.PropertyChanged -= ProviderChanged;
         selected = draft;
         if (selected is not null) selected.PropertyChanged += ProviderChanged;

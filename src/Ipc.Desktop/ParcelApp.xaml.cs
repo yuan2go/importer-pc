@@ -78,7 +78,7 @@ public partial class App : System.Windows.Application
     }
     async Task Failed(Exception error)
     {
-        selected ??= new(new(Path.Combine(AppContext.BaseDirectory, "config"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data"), null, null), "classic");
+        selected ??= new(new(Path.Combine(AppContext.BaseDirectory, "config"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data"), null, null), DesktopLaunchOptions.DefaultUi(ApplicationId));
         Exception failure = error;
         try { await StopAsync(); } catch (Exception cleanup) { failure = new AggregateException("启动与清理失败，保留诊断", error, cleanup); }
         startup.Fail(failure.ToString(), async () => { await StopAsync(); startup.AllowClose = true; Shutdown(2); },

@@ -1,0 +1,14 @@
+SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.
+SIZE window=1366.4x768 client=1352x730.4 DPI=1.25
+PASS left and right resolve independent operations on the shared live Application
+SIZE window=1100x650.4 client=1085.6x612.8 DPI=1.25
+PASS repeated native snapshots retain focus, barcode selection, disclosure and unsaved inspection
+PASS native history row and command owner survive live snapshot refresh
+PASS page navigation preserves existing controls and independent drafts
+FAIL System.InvalidOperationException: Sequence contains no matching element
+   at System.Linq.ThrowHelper.ThrowNoMatchException()
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source, Func`2 predicate)
+   at Program.Click(DependencyObject root, String name) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 147
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\VisualProductization.cs:line 63
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\VisualProductization.cs:line 92
+   at Program.<>c__DisplayClass1_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc\tests\Ipc.Desktop.UiVerification\Program.cs:line 31

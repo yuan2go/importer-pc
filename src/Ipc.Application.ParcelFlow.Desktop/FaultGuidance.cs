@@ -17,7 +17,7 @@ public partial class ParcelViewModel
             if (s.Capacity is { Available: false }) return "CP-STORAGE · 存储或未结容量不足。暂停受影响入场，保留原库/原件；检查完整备份和目标卷，不删除未决记录。";
             if (s.Health.Any(h => !h.Ready)) return "CP-HEALTH · 所需设备或服务未就绪/健康过期。检查具体来源与时间，授权受控重连后重新检查；连通不等于业务允许。";
             if (s.Paused) return "软件暂停新入场 · 核对现场及当前业务守卫后再显式恢复；此操作不是安全急停。";
-            return s.Availability?.Admit == true ? "按当前投递位提示连续作业。取得格口/请求接受与实体完成分别保留；设备读码与页面焦点无关。" : "当前业务守卫仍有阻断，查看对应位/原请求及详细原因；页面切换不会重启连接或清除责任。";
+            return s.Availability?.Admit == true ? "按对应投递位的本件结果作业；相机读码持续运行。" : "当前入场受阻，请查看对应投递位及原请求责任。";
         }
     }
 }

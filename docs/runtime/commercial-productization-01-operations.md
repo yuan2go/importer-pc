@@ -1,3 +1,5 @@
+> Sportmaster本轮缺省界面为supply-station，保留显式 `--ui classic`；展示设置提供布局/辅助窗/来源诊断，其他Application缺省不变。当前运行与本轮Windows合成验证见[视觉产品化](sportmaster-visual-productization-01.md)，原发行证据保持其SourceCommit。
+
 # Importer PC 商业交付操作指南
 
 适用：COMM-00～10 实施源码；Sportmaster / DirectPlc / WcsToPlc 业务 1.4.0、Application.Contracts 1.10.0、DB8。具体源码、介质与已执行结果见[实施结果](commercial-productization-01-results.md)。旧 ZIP 仍按各自 SourceCommit 和随包说明使用。通用工程能力不代表真实设备、客户协议、Windows 现场或投产资格通过。

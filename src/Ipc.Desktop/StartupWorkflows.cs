@@ -14,16 +14,22 @@ abstract class StartupWorkflowWindow : Window
 {
     protected readonly StackPanel Body = new();
     protected readonly WrapPanel Actions = new();
+    protected StackPanel Form;
     protected readonly TextBlock Status = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 12) };
     protected bool Busy;
     protected StartupWorkflowWindow(string title)
     {
+        Form = Body;
         ProductBrand.Apply(this);
         Title = title; Width = 960; Height = 760; MinWidth = 680; MinHeight = 500; WindowStartupLocation = WindowStartupLocation.CenterScreen;
         Background = new SolidColorBrush(Color.FromRgb(241, 244, 247)); Foreground = new SolidColorBrush(Color.FromRgb(25, 39, 54));
         var grid = new Grid { Margin = new(24) };
         grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-        var heading = new StackPanel(); heading.Children.Add(new TextBlock { Text = title, FontSize = 24, FontWeight = FontWeights.Bold }); heading.Children.Add(Status);
+        var heading = new StackPanel(); heading.Children.Add(new TextBlock { Text = title, FontSize = 24, FontWeight = FontWeights.Bold }); var statusView = new ScrollViewer { Content = Status, MaxHeight = 116, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        heading.Children.Add(statusView);
+        var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 200, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        diagnostic.SetBinding(TextBox.TextProperty, new System.Windows.Data.Binding(nameof(TextBlock.Text)) { Source = Status });
+        heading.Children.Add(new Expander { Header = "完整诊断（可选择复制）", Content = diagnostic });
         var scroll = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; Grid.SetRow(scroll, 1); Grid.SetRow(Actions, 2);
         grid.Children.Add(heading); grid.Children.Add(scroll); grid.Children.Add(Actions); Content = grid;
         Closing += (_, e) => { if (Busy) e.Cancel = true; };
@@ -41,24 +47,24 @@ abstract class StartupWorkflowWindow : Window
         finally { Busy = false; Actions.IsEnabled = true; Body.IsEnabled = true; }
     }
     protected void Message(string text) { Status.Text = text; Status.Foreground = Foreground; }
-    protected void Note(string text) => Body.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 8) });
+    protected void Note(string text) => Form.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 8) });
     protected TextBox Field(string label, string value, Action<string> changed, bool readOnly = false)
     {
         Note(label); var box = new TextBox { Text = value, MinHeight = 44, IsReadOnly = readOnly, MaxLength = 65536, Margin = new(0, 0, 0, 4) };
         System.Windows.Automation.AutomationProperties.SetName(box, label);
-        box.TextChanged += (_, _) => changed(box.Text); Body.Children.Add(box); return box;
+        box.TextChanged += (_, _) => changed(box.Text); Form.Children.Add(box); return box;
     }
     protected TextBox Folder(string label, string value)
     {
         var box = Field(label, value, _ => { });
         var browse = new Button { Content = "选择文件夹…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         browse.Click += (_, _) => { var picker = new OpenFolderDialog { Title = label }; if (picker.ShowDialog(this) == true) box.Text = picker.FolderName; };
-        Body.Children.Add(browse); return box;
+        Form.Children.Add(browse); return box;
     }
     protected void Choice<T>(string label, T selected, Action<T> changed) where T : struct, Enum
     {
         Note(label); var box = new ComboBox { ItemsSource = Enum.GetValues<T>(), SelectedItem = selected, MinHeight = 36 };
-        box.SelectionChanged += (_, _) => { if (box.SelectedItem is T value) changed(value); }; Body.Children.Add(box);
+        box.SelectionChanged += (_, _) => { if (box.SelectedItem is T value) changed(value); }; Form.Children.Add(box);
     }
     protected static string? FilePick(Window owner, string title, string filter = "所有文件|*.*")
     { var picker = new OpenFileDialog { Title = title, Filter = filter }; return picker.ShowDialog(owner) == true ? picker.FileName : null; }
@@ -67,6 +73,7 @@ abstract class StartupWorkflowWindow : Window
 
 sealed class StartupRepairWindow : StartupWorkflowWindow
 {
+    readonly TabControl steps = new();
     IStartupMaintenance maintenance = null!;
     StartupMaintenanceDocument? document;
     StartupConfigurationDraft? draft;
@@ -86,6 +93,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         Message("无需业务启动成功。检查和编辑不连接设备；保存为 Pending，正常启动仍检查原恢复责任。" + (failure is null ? "" : "\n启动诊断：" + failure));
         config = Folder("原配置目录（包含 business.json）", launch.ConfigurationDirectory);
         data = Folder("原数据根（保留 Simulation/Production、站和 Application 层级）", launch.DataRoot);
+        var sourceFields = new StackPanel();
+        var sources = Body.Children.Cast<UIElement>().ToArray(); Body.Children.Clear();
+        foreach (var item in sources) sourceFields.Children.Add(item);
+        Body.Children.Add(new Expander { Header = "配置来源与数据目录", Content = sourceFields, IsExpanded = !initialConfiguration });
+        Body.Children.Add(steps);
         Action("读取所选配置", Read);
         Action("分层检查与变更预览", async () => { var candidate = RequireDraft(); var report = await Task.Run(() => maintenance.CheckAsync(candidate)); Message("候选 " + report.CandidateHash + "\n" + string.Join("\n", report.Checks.Select(c => c.Layer + " · " + c.Status + " · " + c.Reason)) + "\n生效影响：设备、目标或策略变更须受控重启；原请求保持原配置。保存草稿不激活。"); });
         Action("保存未完成草稿", async () =>
@@ -158,6 +170,11 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (setup.Installed is { } installed) { config.Text = installed.ConfigurationDirectory; data.Text = installed.DataRoot; await Read(); }
         });
         Action(initialConfiguration ? "按当前首配启动" : "重试正常启动", () => { SelectedLaunch = SelectedLaunch with { ConfigurationDirectory = config.Text, DataRoot = data.Text }; RetryRequested = true; CompleteDialog(); return Task.CompletedTask; });
+        var primaryLabels = new[] { "读取所选配置", "分层检查与变更预览", initialConfiguration ? "保存首配待生效…" : "保存待生效修订…", initialConfiguration ? "按当前首配启动" : "重试正常启动" };
+        var secondary = new WrapPanel();
+        foreach (var button in Actions.Children.OfType<Button>().Where(b => !primaryLabels.Contains(b.Content as string)).ToArray())
+        { Actions.Children.Remove(button); secondary.Children.Add(button); }
+        Actions.Children.Add(new Expander { Header = "草稿、模板、备份与支持", Content = secondary, Margin = new(0, 8, 0, 0), MaxWidth = 880 });
         Loaded += async (_, _) => await Run(Read);
     }
     ParcelConfiguration RequireDraft()
@@ -185,19 +202,62 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     }
     void Render(bool replaceDraft = true)
     {
-        while (Body.Children.Count > 6) Body.Children.RemoveAt(6); // Preserve path selectors and their browse controls.
+        var selectedStep = (steps.SelectedItem as TabItem)?.Header;
+        steps.Items.Clear();
+        void Step(string title)
+        {
+            Form = new StackPanel { Margin = new(16) };
+            steps.Items.Add(new TabItem { Header = title, Content = Form });
+        }
+        Step("1 · 设备与角色");
         if (replaceDraft) draft = document?.Candidate is { } candidate ? new(candidate, document.Catalog) : null;
         if (draft is not null)
         {
             var c = document!.Candidate!;
-            Note($"{c.ApplicationId} · {c.StationId} · {c.Mode} · 修订 {document.Revision} · {document.ConfigurationStatus}\n原账散列：{document.ConfigurationHash}\n工位身份只读。设备与服务沿已交付精确目录选择；未枚举/未连接不等于已验证。\n设备尚未启动。可保存未完成草稿；审阅后显式启动仍受完整资格/原责任检查。");
+            Note($"{c.StationId} · {c.Mode} · 配置{document.ConfigurationStatus}。本步骤填写读码来源和服务；设备尚未启动。");
+            Form.Children.Add(new Expander { Header = "配置版本与来源（只读）", Content = new TextBox { Text = $"{c.ApplicationId} · 修订 {document.Revision}\n原账SHA256：{document.ConfigurationHash}\n工位身份只读。未枚举或未连接的能力仍待核验，启动受原责任和资格检查。", IsReadOnly = true, TextWrapping = TextWrapping.Wrap } });
+            foreach (var capability in draft.Readers.Concat(draft.Capabilities))
+            {
+                var stepForm = Form; Form = new StackPanel { Margin = new(12) };
+                var role = capability.Role switch { "operator-login" => "操作员登录（可选）", "maintenance-auth" => "维护认证", "default-scale" => "默认实测秤（可选）", _ => capability.Kind == "observation" ? "读码来源 · " + capability.Target : capability.InstanceId == c.Wcs?.InstanceId ? "WCS 格口服务" : capability.Role };
+                stepForm.Children.Add(new GroupBox { Header = role, Content = Form, Margin = new(0, 12, 0, 4) });
+                Form.Children.Add(new Expander { Header = "精确组件来源", Content = new TextBox { Text = capability.InstanceId + "\n" + capability.ProviderIdentity, IsReadOnly = true, TextWrapping = TextWrapping.Wrap } });
+                if (capability.Role is "operator-login" or "default-scale")
+                {
+                    var optional = new CheckBox { Content = capability.Role == "operator-login" ? "启用本组合的操作员登录（维护认证另有守卫）" : "绑定默认实测秤（仅选实测重量时生效）", IsChecked = capability.Bound, MinHeight = 44 };
+                    optional.Checked += (_, _) => capability.Bound = true; optional.Unchecked += (_, _) => capability.Bound = false; Form.Children.Add(optional);
+                }
+                var providers = new ComboBox { ItemsSource = capability.Providers, SelectedItem = capability.Provider, MinHeight = 44, DisplayMemberPath = "Implementation" };
+                System.Windows.Automation.AutomationProperties.SetName(providers, capability.Role + "精确提供者");
+                providers.SelectionChanged += (_, _) => { if (providers.SelectedItem is CapabilityDescriptor selected && selected != capability.Provider) { capability.Provider = selected; Render(false); } }; Form.Children.Add(providers);
+                Field(capability.Kind == "observation" ? "稳定设备身份（离线录入，待真实SDK核验；按上方业务位绑定）" : "目标（地址/实例由所选组件合同决定）", capability.Target, v => capability.Target = v, capability.Provider is null);
+                foreach (var parameter in capability.Parameters)
+                {
+                    Note(parameter.Field.Label + " · " + parameter.EditorHelp);
+                    if (parameter.Field.Sensitive)
+                    {
+                        var password = new PasswordBox { Password = parameter.Value, MinHeight = 36, IsEnabled = !parameter.Field.ReadOnly };
+                        password.PasswordChanged += (_, _) => parameter.Value = password.Password; Form.Children.Add(password);
+                    }
+                    else if (parameter.Field.Choices is { Length: > 0 } choices)
+                    {
+                        var selected = new ComboBox { ItemsSource = choices, SelectedItem = parameter.Value, MinHeight = 36, IsEnabled = !parameter.Field.ReadOnly };
+                        selected.SelectionChanged += (_, _) => parameter.Value = selected.SelectedItem as string ?? ""; Form.Children.Add(selected);
+                    }
+                    else Field(parameter.Field.Key, parameter.Value, v => parameter.Value = v, parameter.Field.ReadOnly);
+                }
+                Form = stepForm;
+            }
+            var toPolicy = new Button { Content = "下一步：运行策略", HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 16, 0, 0) };
+            toPolicy.Click += (_, _) => steps.SelectedIndex = 1; Form.Children.Add(toPolicy);
+            Step("2 · 运行策略");
             Field("输入队列容量", draft.QueueCapacity, v => draft.QueueCapacity = v);
             Field("调用超时（ms）", draft.TimeoutMs, v => draft.TimeoutMs = v);
             Field("作业容量", draft.MaximumOperations, v => draft.MaximumOperations = v);
             Field("常驻历史条数（同库归档不释放磁盘）", draft.ResidentHistory, v => draft.ResidentHistory = v);
             Field("关键写入保留空间（MiB）", draft.MinimumFreeMiB, v => draft.MinimumFreeMiB = v);
             var scheduledBackup = new CheckBox { Content = "启用受控计划备份（仅在已暂停、维护授权有效且无在途外呼时触发；不会自动暂停业务）", IsChecked = draft.Policy.BackupEnabled, MinHeight = 44 };
-            scheduledBackup.Checked += (_, _) => draft.Policy.BackupEnabled = true; scheduledBackup.Unchecked += (_, _) => draft.Policy.BackupEnabled = false; Body.Children.Add(scheduledBackup);
+            scheduledBackup.Checked += (_, _) => draft.Policy.BackupEnabled = true; scheduledBackup.Unchecked += (_, _) => draft.Policy.BackupEnabled = false; Form.Children.Add(scheduledBackup);
             var scheduleDirectory = Folder("计划备份目录（原业务目录以外；须有容量）", draft.Policy.BackupDirectory); scheduleDirectory.TextChanged += (_, _) => draft.Policy.BackupDirectory = scheduleDirectory.Text;
             Field("计划备份周期（分钟，15～10080；未启用可留空）", draft.Policy.BackupIntervalMinutes, v => draft.Policy.BackupIntervalMinutes = v);
             Field("备份容量份数上限（1～1000；到限保留所有旧备份并报错，不自动删除）", draft.Policy.BackupMaximumSets, v => draft.Policy.BackupMaximumSets = v);
@@ -208,36 +268,13 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Field("测量最大年龄（ms）", draft.Policy.MaximumAgeMs, v => draft.Policy.MaximumAgeMs = v);
             Field("等待重量期限（ms）", draft.Policy.WaitTimeoutMs, v => draft.Policy.WaitTimeoutMs = v);
             Choice("重量有效期", draft.Policy.Validity, v => draft.Policy.Validity = v);
-            foreach (var capability in draft.Readers.Concat(draft.Capabilities))
-            {
-                Note(capability.Role + " · " + capability.InstanceId + "\n" + capability.ProviderIdentity);
-                if (capability.Role is "operator-login" or "default-scale")
-                {
-                    var optional = new CheckBox { Content = capability.Role == "operator-login" ? "启用本组合的操作员登录（维护认证另有守卫）" : "绑定默认实测秤（仅选实测重量时生效）", IsChecked = capability.Bound, MinHeight = 44 };
-                    optional.Checked += (_, _) => capability.Bound = true; optional.Unchecked += (_, _) => capability.Bound = false; Body.Children.Add(optional);
-                }
-                var providers = new ComboBox { ItemsSource = capability.Providers, SelectedItem = capability.Provider, MinHeight = 44, DisplayMemberPath = "Implementation" };
-                System.Windows.Automation.AutomationProperties.SetName(providers, capability.Role + "精确提供者");
-                providers.SelectionChanged += (_, _) => { if (providers.SelectedItem is CapabilityDescriptor selected && selected != capability.Provider) { capability.Provider = selected; Render(false); } }; Body.Children.Add(providers);
-                Field(capability.Kind == "observation" ? "稳定设备身份（离线录入，待真实SDK核验；按上方业务位绑定）" : "目标（地址/实例由所选组件合同决定）", capability.Target, v => capability.Target = v, capability.Provider is null);
-                foreach (var parameter in capability.Parameters)
-                {
-                    Note(parameter.Field.Label + " · " + parameter.EditorHelp);
-                    if (parameter.Field.Sensitive)
-                    {
-                        var password = new PasswordBox { Password = parameter.Value, MinHeight = 36, IsEnabled = !parameter.Field.ReadOnly };
-                        password.PasswordChanged += (_, _) => parameter.Value = password.Password; Body.Children.Add(password);
-                    }
-                    else if (parameter.Field.Choices is { Length: > 0 } choices)
-                    {
-                        var selected = new ComboBox { ItemsSource = choices, SelectedItem = parameter.Value, MinHeight = 36, IsEnabled = !parameter.Field.ReadOnly };
-                        selected.SelectionChanged += (_, _) => parameter.Value = selected.SelectedItem as string ?? ""; Body.Children.Add(selected);
-                    }
-                    else Field(parameter.Field.Key, parameter.Value, v => parameter.Value = v, parameter.Field.ReadOnly);
-                }
-            }
+            var toReview = new Button { Content = "下一步：检查与保存", HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 16, 0, 0) };
+            toReview.Click += (_, _) => steps.SelectedIndex = 2; Form.Children.Add(toReview);
+            Step("3 · 检查与保存");
+            Note("先填写维护原因，再使用下方“分层检查与变更预览”。核对结果后保存待生效配置，最后显式启动。启动仍检查原责任和实际能力。");
             Field("维护原因（必填；保留审计与原配置字节）", reason, v => reason = v);
         }
+        Step("备份与恢复（维护）");
         Note("完整备份恢复：验证原库和 .recovery 同伴目录，复制到新的隔离目录。恢复标记继续阻止自动业务恢复。");
         var backupFolder = Folder("浏览完整备份目录（最多256份；校验整个恢复集，保留无效项）", backupCatalogRoot);
         backupFolder.TextChanged += (_, _) => backupCatalogRoot = backupFolder.Text;
@@ -245,17 +282,17 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         foreach (var column in new[] { ("时间", "At"), ("完整性", "Status"), ("字节", "Bytes"), ("备份", "Path") }) backupRows.Columns.Add(new DataGridTextColumn { Header = column.Item1, Binding = new System.Windows.Data.Binding(column.Item2), Width = column.Item2 == "Path" ? new DataGridLength(1, DataGridLengthUnitType.Star) : DataGridLength.Auto });
         var listBackups = new Button { Content = "读取并校验备份列表", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         listBackups.Click += async (_, _) => await Run(async () => { var selected = backupCatalogRoot; backupRows.ItemsSource = await Task.Run(() => maintenance.ListBackupsAsync(selected, CancellationToken.None)); Message("备份列表已读回；Verified表示完整字节集可预检恢复，不代表外部业务已经核对。"); });
-        Body.Children.Add(listBackups); Body.Children.Add(backupRows);
+        Form.Children.Add(listBackups); Form.Children.Add(backupRows);
         var backupBox = Field("完整备份数据库", backup, v => { backup = v; recovery = null; });
         backupRows.SelectionChanged += (_, _) => { if (backupRows.SelectedItem is StartupBackupItem item) { backupBox.Text = item.Path; Message(item.Status + " · " + item.Summary); } };
         var choose = new Button { Content = "选择完整备份…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-        choose.Click += (_, _) => { var selected = FilePick(this, "选择完整备份数据库", "SQLite 备份|*.db;*.sqlite;*.backup|所有文件|*.*"); if (selected is not null) backupBox.Text = selected; }; Body.Children.Add(choose);
+        choose.Click += (_, _) => { var selected = FilePick(this, "选择完整备份数据库", "SQLite 备份|*.db;*.sqlite;*.backup|所有文件|*.*"); if (selected is not null) backupBox.Text = selected; }; Form.Children.Add(choose);
         var destination = Folder("新的隔离数据根（不覆盖原目录）", restoreRoot);
         destination.TextChanged += (_, _) => { restoreRoot = destination.Text; recovery = null; };
         var plan = new Button { Content = "检查恢复计划", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         var preview = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 80 };
         plan.Click += async (_, _) => await Run(async () => { recovery = await Task.Run(() => maintenance.PlanRestoreAsync(backup, restoreRoot)); preview.Text = recovery.Summary + "\n目标：" + recovery.Destination; Message("完整备份已校验；尚未恢复。检查目标后执行下方恢复。"); });
-        Body.Children.Add(plan); Body.Children.Add(preview);
+        Form.Children.Add(plan); Form.Children.Add(preview);
         var restore = new Button { Content = "按计划恢复到新目录…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         restore.Click += async (_, _) => await Run(async () =>
         {
@@ -264,7 +301,9 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             restoredPreview = selected; restoredBackup = backup;
             data.Text = selected.DataRoot; await Read();
             Message("完整备份已恢复并重新读取新目录。原目录保留；重试启动时隔离恢复责任仍由业务守卫处理。"); recovery = null;
-        }); Body.Children.Add(restore);
+        }); Form.Children.Add(restore);
+        steps.SelectedItem = steps.Items.OfType<TabItem>().FirstOrDefault(t => Equals(t.Header, selectedStep)) ?? steps.Items[0];
+        Form = Body;
     }
 }
 

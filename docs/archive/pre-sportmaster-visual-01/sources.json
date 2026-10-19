@@ -16,6 +16,11 @@
     {
       "path": ".agents/skills/README.md",
       "sha256": "ae7050982a294106c8898d0314af4b21da93cfd238cf2ea5f66abfe6f3d7b4e2"
+    },
+    {
+      "path": "docs/runtime/validation/sportmaster-alternate-ui-windows.md",
+      "sha256": "4a487960c2e2bb293ee291b39ba641d6ec7463b2e8d67ccad7a67d770aa29f69",
+      "note": "Additional stale current acceptance instructions discovered during implementation review; original bytes retained before replacing that checklist"
     }
   ]
 }

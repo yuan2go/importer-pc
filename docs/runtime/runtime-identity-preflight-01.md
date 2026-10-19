@@ -25,6 +25,19 @@ PowerShell用例在macOS/Linux使用合成可执行文件，仅从临时脚本�
 
 已通过：4个PowerShell回归方法（含三入口允许/拒绝子例）、共享身份判定定向执行、三个Application装配构建、Sportmaster WPF交叉构建（全部0警告/0错误）及3个随包指南回归。原日志与[检查记录](evidence/runtime-identity-preflight-01/checks.json)保留本轮真实边界。未运行全量业务/恢复/负载测试。
 
+源码提交`f354d3ff8d8a46d3eaca02db61877be1fd506785`的Sportmaster portable候选已生成、重新解包并逐文件核SHA256SUMS；控制台Started→snapshot→quit退出0、作业数0，进程退出后只读SQLite integrity_check为ok。[冒烟身份记录](evidence/runtime-identity-preflight-01/startup-smoke.json)中ZIP SHA256为`39c4373a4bdf655b982283342e4a961bddf440b7dbdb9f7def0c2a38d9fe3048`，SHA256SUMS文件hash为`e05356df09f808fa3bf79342f07b058bf6c8ec2eeb02b0b356695b6ebf3e4da3`。该ZIP仅保留于本地`.artifacts/sid-portable.zip`，不作为Windows发行或覆盖已有Release。`runtime-check`在portable明确返回PortableDevelopmentOnly/WindowsPolicyChecked=false，不返回Windows已验。
+
+最小启动复跑（使用全新绝对Simulation数据根；不提交任何实体/作业）：
+
+```sh
+python3 scripts/package-application.py --application sportmaster --target portable --output .artifacts/new-sid-portable --dotnet /absolute/path/to/dotnet
+# 解压ZIP并核SHA256SUMS后：
+dotnet /absolute/unpacked/app/Ipc.Assembly.dll --action runtime-check
+printf 'snapshot\nquit\n' | dotnet /absolute/unpacked/app/Ipc.Assembly.dll --config /absolute/unpacked/app/config --data-root /absolute/new-simulation-root
+```
+
+源码后的证据提交只更新本报告、manifest和验证记录，不改变固定媒介中的源码/配置/随包指南；新Windows媒介及原生验收尚未生成/执行。
+
 归档核对采用同一带Pillow的Python对固定main快照和本分支比较：[差额](evidence/runtime-identity-preflight-01/archive-delta.json)为未新增失败，刷新当前manifest后移除1项原校验和错误；265项历史PPTX媒介类型与2项历史metadata错误保持，归档整体仍FAIL。不修改历史资产或添加豁免换取PASS。
 
 ## Windows后验与交付边界

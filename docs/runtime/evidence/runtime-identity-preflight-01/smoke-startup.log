@@ -1,0 +1,19 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "f354d3ff8d8a46d3eaca02db61877be1fd506785",
+  "Application": "sportmaster",
+  "Target": "portable",
+  "ZipSha256": "39c4373a4bdf655b982283342e4a961bddf440b7dbdb9f7def0c2a38d9fe3048",
+  "SHA256SUMS": "e05356df09f808fa3bf79342f07b058bf6c8ec2eeb02b0b356695b6ebf3e4da3",
+  "RuntimeCheck": {
+    "Status": "PortableDevelopmentOnly",
+    "WindowsPolicyChecked": false,
+    "PersistentWrites": 0
+  },
+  "Console": "Started -> snapshot -> quit; exit 0",
+  "OperationCount": 0,
+  "DatabaseIntegrity": "ok (read-only after process exit)",
+  "Windows": "NOT_RUN",
+  "RealSdkDevicesSite": "BLOCKED",
+  "Production": "NOT_READY"
+}

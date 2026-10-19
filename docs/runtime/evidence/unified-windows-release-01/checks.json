@@ -1,0 +1,32 @@
+{
+  "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042",
+  "Status": "PASS_CROSS_PLATFORM_ONLY",
+  "UnitChecks": [
+    {
+      "Command": "python3 -m unittest discover -s scripts -p test_application_bundles.py",
+      "Count": 3,
+      "Status": "PASS"
+    },
+    {
+      "Command": "python3 -m unittest discover -s scripts -p test_application_compatibility.py",
+      "Count": 17,
+      "Status": "PASS"
+    },
+    {
+      "Command": "python3 -m unittest discover -s scripts -p test_unified_release.py",
+      "Count": 3,
+      "Status": "PASS"
+    }
+  ],
+  "MediaCount": 8,
+  "SmokeApplications": [
+    "sportmaster",
+    "direct-plc",
+    "wcs-to-plc",
+    "supply",
+    "inspection"
+  ],
+  "Windows": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "Commercial": "NOT_APPROVED"
+}

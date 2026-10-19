@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build and verify one immutable, same-source Windows reference release set."""
 import argparse
+import ast
 import datetime
 import hashlib
 import json
@@ -66,6 +67,19 @@ def reuse_candidates(directory, manifest, source):
             raise ValueError('Original reuse identity differs')
         result[key] = medium
     return result
+
+
+def source_input_compatibility(source, main_baseline):
+    """Runtime/configuration/guides must match; record non-runtime test/controller changes."""
+    differences = []
+    for path in git('diff', '--name-only', source, main_baseline, '--', *SOURCE_PATHS).splitlines():
+        if path == 'scripts/release-windows.py' or path.startswith('scripts/test_') and path.endswith('.py'):
+            differences.append(dict(Path=path, Kind='NON_RUNTIME_TEST_OR_CONTROLLER'))
+        elif path.startswith('scripts/') and path.endswith('.py') and ast.dump(ast.parse(git('show', source + ':' + path)), include_attributes=False) == ast.dump(ast.parse(git('show', main_baseline + ':' + path)), include_attributes=False):
+            differences.append(dict(Path=path, Kind='SCRIPT_TEXT_ONLY_IDENTICAL_AST'))
+        else:
+            raise ValueError('Frozen source runtime/package input differs from main: ' + path)
+    return differences
 
 
 def verify_package(directory, application, target, source):
@@ -165,9 +179,8 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--dotnet', default='dotnet')
-    p.add_argument('--source', help='Optional full frozen SHA; must equal this clean checkout HEAD')
+    p.add_argument('--source', help='Full main-ancestor SHA; runtime/configuration/guides must match current main')
     p.add_argument('--verify-only', action='store_true')
-    p.add_argument('--source', help='Exact main-ancestor commit with package inputs identical to current main')
     p.add_argument('--reuse-directory', type=Path, help='Existing same-source media; originals retain filenames and bytes')
     p.add_argument('--reuse-manifest', type=Path, help='Independent original ZIP identity inventory for reuse')
     a = p.parse_args()
@@ -191,14 +204,14 @@ def main():
     controller = git('rev-parse', 'HEAD')
     source = git('rev-parse', a.source or 'HEAD')
     main_baseline = git('rev-parse', 'origin/main')
+    input_differences = []
     if a.source:
         subprocess.run(['git', 'merge-base', '--is-ancestor', source, main_baseline], cwd=ROOT, check=True)
-        if git('diff', '--name-only', source, main_baseline, '--', *SOURCE_PATHS):
-            raise ValueError('Frozen source package inputs differ from current main')
+        input_differences = source_input_compatibility(source, main_baseline)
     if bool(a.reuse_directory) != bool(a.reuse_manifest):
         raise ValueError('Reuse requires both original directory and identity inventory')
     if a.source is not None and a.source != source:
-        raise ValueError('Use a clean checkout of the full frozen --source commit')
+        raise ValueError('Frozen --source must be a full commit SHA')
     for commit in MERGES.values():
         subprocess.run(['git', 'merge-base', '--is-ancestor', commit, source], cwd=ROOT, check=True)
     expected = read(ROOT / 'global.json')['sdk']['version']
@@ -214,6 +227,7 @@ def main():
                   Inputs={str(f.relative_to(ROOT)).replace('\\', '/'): sha(f) for f in sorted(ROOT.glob('src/*/packages*.lock.json'))}, Commands=[], Packages=[])
     record['Toolchain'] = subprocess.check_output([a.dotnet, '--info'], cwd=ROOT, text=True, encoding='utf-8')
     record.update(BuildControllerCommit=controller, MainBaseline=main_baseline, ReusedArtifacts=[])
+    record['NonRuntimeMainInputDifferences'] = input_differences
     record['ControllerArguments'] = sys.argv[1:]
     if a.reuse_manifest:
         record['OriginalReuseInventory'] = dict(File=str(a.reuse_manifest.resolve()), Sha256=sha(a.reuse_manifest))

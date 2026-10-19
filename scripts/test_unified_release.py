@@ -5,6 +5,9 @@ from pathlib import Path
 import tempfile
 import unittest
 import zipfile
+import subprocess
+import sys
+from unittest.mock import patch
 from release_build import archive_package, frozen_export
 
 spec = importlib.util.spec_from_file_location('unified_release', Path(__file__).with_name('release-windows.py'))
@@ -118,6 +121,23 @@ class ReleaseTests(unittest.TestCase):
             release.write(manifest, records)
             with self.assertRaises(ValueError):
                 release.reuse_candidates(self.output.parent, manifest, self.source)
+
+    def test_cli_reuse_options_parse_without_duplicate_source_flag(self):
+        result = subprocess.run([sys.executable, str(Path(__file__).with_name('release-windows.py')), '--help'], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('--reuse-directory', result.stdout)
+
+    def test_source_pin_refuses_runtime_and_functional_packager_differences(self):
+        path = 'scripts/package-application.py'
+        def query(*args):
+            if args[0] == 'diff': return path
+            return 'x = 1' if args[1].startswith('old:') else '# comment only\nx = 1'
+        with patch.object(release, 'git', side_effect=query):
+            self.assertEqual(release.source_input_compatibility('old', 'new')[0]['Kind'], 'SCRIPT_TEXT_ONLY_IDENTICAL_AST')
+        with patch.object(release, 'git', side_effect=lambda *a: path if a[0] == 'diff' else ('x=1' if a[1].startswith('old:') else 'x=2')):
+            with self.assertRaises(ValueError): release.source_input_compatibility('old', 'new')
+        with patch.object(release, 'git', return_value='src/Ipc.Platform/Runtime.cs'):
+            with self.assertRaises(ValueError): release.source_input_compatibility('old', 'new')
 
 
 class Pr48ReleaseTests(unittest.TestCase):

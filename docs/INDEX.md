@@ -1,7 +1,9 @@
 
 # 统一资料与实施入口
 
-[统一发行执行与版本边界](runtime/unified-release-main-20261020.md)保留 cfe6c0e 的实际发行；继承 PR53 后的最终组合将按新冻结身份另行交付。
+[统一发行执行与版本边界](runtime/unified-release-main-20261020.md)保留 cfe6c0e 原始身份；[最新完整八包组合](runtime/unified-release-latest-55025ce.md)按 55025ce 冻结来源核验、复用与补构建。
+
+> 另一轮 Windows 不测试发布的范围与记录见[独立记录](runtime/windows-no-test-release-20261020.md)，其结果不替代本次定向验证。
 
 > PR47复审修正及最新main集成的当前源码/介质/逐项结果见[最终集成证据](runtime/evidence/pr47-main-integration/README.md)和[审查裁决](reviews/pr47-commercial-productization-review.md)。旧发行与上传记录按原源码身份保留，不能替代当前DB8交付。
 > COMM-00～10 当前操作见[产品操作指南](runtime/commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](runtime/commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。
@@ -84,3 +86,7 @@ Sportmaster 左右独立读码及取格口，无 PLC、图片展示或长期图�
 > 发行入口增量（PR48）：[原形成时范围](runtime/unified-windows-release-01.md)。本次整合不执行测试/构建，旧冻结结果不授予最终组合资格。
 
 > 统一发行当前工具及中断交付见[结果](runtime/unified-release-01.md)；全部合并裁决见[不测试合并记录](runtime/publication-merge-20261020.md)。最终 main 组合没有重新测试或出包，旧介质/原 PASS 保持原身份。
+
+## 已完成的历史冻结发行回执
+
+[本轮7acbb2c发行结果](runtime/unified-windows-release-01-results.md)含8套实际媒介和完整原始校验；它覆盖开工PR44/45/46，早于运行中另合并的PR47/DB8，不可冒充最新main或用于DB8。并发整合保留后合入的统一发行实现、旧原件及所有现行产品指引；本轮实际续建编排源码仅按hash归档于证据目录，当前操作仍按[现行统一发行](runtime/unified-release-01.md)。Windows实机NOT_RUN、真实能力BLOCKED、商用NOT_APPROVED。

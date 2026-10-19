@@ -1,0 +1,25 @@
+{
+  "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042",
+  "Checks": [
+    {
+      "Name": "tampered-payload",
+      "ExitCode": -6,
+      "Diagnostic": "Unhandled exception. System.IO.InvalidDataException: Extension size quota exceeded\n   at Ipc.Platform.ExtensionPackages.ReadBounded(Stream stream, Int64 maximum) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 31\n   at Ipc.Platform.ExtensionPackages.<Inspect>g__ReadEntry|9_0(String name, Int64 limit, <>c__DisplayClass9_0&) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 111\n   at Ipc.Platform.ExtensionPackages.Inspect(String archive, ExtensionTrust trust, RunMode mode, Func`2 resolve) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 120\n   at Ipc.Product.ExtensionBuildCheck.Inspect(String archive, String trustFile, RunMode mode, String[] dependencyArchives) in /_/src/src/Ipc.Product/ExtensionBuildCheck.cs:line 38\n   at Ipc.Assembly.ParcelCli.Management(String[] args) in /_/src/src/Ipc.Assembly/ParcelCli.cs:line 108\n   at Program.<Main>$(String[] args) in /_/src/src/Ipc.Assembly/Program.cs:line 7\n   at Program.<Main>(String[] args)\n",
+      "Status": "EXPECTED_REJECTION"
+    },
+    {
+      "Name": "test-trust-in-production",
+      "ExitCode": -6,
+      "Diagnostic": "Unhandled exception. System.IO.InvalidDataException: Test publisher is forbidden in Production\n   at Ipc.Platform.ExtensionPackages.VerifyMetadata(Byte[] manifestBytes, Byte[] signature, ExtensionTrust trust, RunMode mode, String packageHash) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 45\n   at Ipc.Platform.ExtensionPackages.Inspect(String archive, ExtensionTrust trust, RunMode mode, Func`2 resolve) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 113\n   at Ipc.Product.ExtensionBuildCheck.Inspect(String archive, String trustFile, RunMode mode, String[] dependencyArchives) in /_/src/src/Ipc.Product/ExtensionBuildCheck.cs:line 38\n   at Ipc.Assembly.ParcelCli.Management(String[] args) in /_/src/src/Ipc.Assembly/ParcelCli.cs:line 108\n   at Program.<Main>$(String[] args) in /_/src/src/Ipc.Assembly/Program.cs:line 7\n   at Program.<Main>(String[] args)\n",
+      "Status": "EXPECTED_REJECTION"
+    },
+    {
+      "Name": "portable-checker-matches-Windows-contract",
+      "Status": "PASS",
+      "Portable": "83a81326eca30165801043c2a46ca5da4b9dfd0e4ae485e38370a116c9b76337",
+      "Windows": "83a81326eca30165801043c2a46ca5da4b9dfd0e4ae485e38370a116c9b76337"
+    }
+  ],
+  "NativeExecution": "NOT_RUN",
+  "PluginExecution": "NOT_RUN"
+}

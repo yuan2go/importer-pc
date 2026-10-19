@@ -1,0 +1,81 @@
+{
+  "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042",
+  "StartedUtc": "2026-10-19T17:05:56.123076+00:00",
+  "Platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "Python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "Status": "BUILDING",
+  "Packages": [
+    {
+      "Application": "sportmaster",
+      "Target": "portable",
+      "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042",
+      "BusinessVersion": "1.3.3",
+      "ContractVersion": "1.9.0",
+      "OfflineBundles": [],
+      "Sha256": "fbe41d30cf005b4585333ed744305e735714abdadbec88946abd5fe610e2f2c5",
+      "Bytes": 18484817,
+      "File": "sportmaster-portable.zip"
+    },
+    {
+      "Application": "sportmaster",
+      "Target": "win-x64",
+      "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042",
+      "BusinessVersion": "1.3.3",
+      "ContractVersion": "1.9.0",
+      "OfflineBundles": [],
+      "Sha256": "2dc02b2cadbdd3ff29d23f99a87a87b4d525f4a48bc30806f74eafb579a56a70",
+      "Bytes": 104352419,
+      "File": "sportmaster-win-x64.zip"
+    },
+    {
+      "Application": "direct-plc",
+      "Target": "portable",
+      "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042",
+      "BusinessVersion": "1.3.3",
+      "ContractVersion": "1.9.0",
+      "OfflineBundles": [],
+      "Sha256": "40a10615d0e44c0bb7518ba7c167e3980650f329f7935a98550c20537e36aab7",
+      "Bytes": 18447751,
+      "File": "direct-plc-portable.zip"
+    },
+    {
+      "Application": "direct-plc",
+      "Target": "win-x64",
+      "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042",
+      "BusinessVersion": "1.3.3",
+      "ContractVersion": "1.9.0",
+      "OfflineBundles": [],
+      "Sha256": "1cddf459c900aac4bea488bcc8ac1304059196cffbd8bf799cc507b994320d67",
+      "Bytes": 104269265,
+      "File": "direct-plc-win-x64.zip"
+    },
+    {
+      "Application": "wcs-to-plc",
+      "Target": "portable",
+      "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042",
+      "BusinessVersion": "1.3.3",
+      "ContractVersion": "1.9.0",
+      "OfflineBundles": [],
+      "Sha256": "6d3ed1c4394b3a6c3a0fcdb9ed0017d981f133411da0945eb4e77efd784ae0da",
+      "Bytes": 18469387,
+      "File": "wcs-to-plc-portable.zip"
+    }
+  ],
+  "WindowsAcceptance": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "CommercialAcceptance": "NOT_APPROVED",
+  "Sdk": "10.0.402",
+  "SdkInfo": ".NET SDK:\n Version:           10.0.402\n Commit:            a8dd0577c5\n Workload version:  10.0.400-manifests.da132f47\n MSBuild version:   18.9.15+a8dd0577c\n\nRuntime Environment:\n OS Name:     ubuntu\n OS Version:  24.04\n OS Platform: Linux\n RID:         linux-x64\n Base Path:   /workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/sdk/10.0.402/\n\n.NET workloads installed:\nThere are no installed workloads to display.\nConfigured to use workload sets when installing new manifests.\nNo workload sets are installed. Run \"dotnet workload restore\" to install a workload set.\n\nHost:\n  Version:      10.0.13\n  Architecture: x64\n  Commit:       4099f83977\n\n.NET SDKs installed:\n  10.0.402 [/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/sdk]\n\n.NET runtimes installed:\n  Microsoft.AspNetCore.App 10.0.13 [/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/shared/Microsoft.AspNetCore.App]\n  Microsoft.NETCore.App 10.0.13 [/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/shared/Microsoft.NETCore.App]\n\nOther architectures found:\n  None\n\nEnvironment variables:\n  DOTNET_CLI_HOME                          [/workspace/scratch/7529011c39ef/dotnet-home]\n  DOTNET_ROOT                              [/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet]\n\nglobal.json file:\n  /workspace/scratch/7529011c39ef/release-7acbb2c/source/global.json\n\nLearn more:\n  https://aka.ms/dotnet/info\n\nDownload .NET:\n  https://aka.ms/dotnet/download\n",
+  "CurrentCommand": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "scripts/package-application.py",
+    "--application",
+    "wcs-to-plc",
+    "--target",
+    "win-x64",
+    "--output",
+    "/workspace/scratch/7529011c39ef/release-7acbb2c/wcs-to-plc-win-x64",
+    "--dotnet",
+    "/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/dotnet"
+  ]
+}

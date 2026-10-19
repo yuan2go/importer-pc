@@ -4,9 +4,9 @@
 
 # 三个Application的Windows候选与维护路径
 
-当前合并源码同时包含PR44部署/修复向导及PR45全部运行入口门禁，共用最终MachineRuntimePolicy：指定未提权账户允许deny-only管理员组身份，已启用管理员权限/服务账户/非指定SID继续拒绝。此次发布的e79a8bf与16ecb57候选分别保留原范围，尚无包含两项增量的新组合媒介；详细身份与下载见[本次不测试发布记录](publication-deployment-20261019.md)。
+历史合并记录（2026-10-19）：当时源码同时包含PR44部署/修复向导及PR45全部运行入口门禁，共用最终MachineRuntimePolicy：指定未提权账户允许deny-only管理员组身份，已启用管理员权限/服务账户/非指定SID继续拒绝。此次发布的e79a8bf与16ecb57候选分别保留原范围，尚无包含两项增量的新组合媒介；详细身份与下载见[本次不测试发布记录](publication-deployment-20261019.md)。
 
-本文描述当前合并源码的操作；旧媒介按固定 SourceCommit 和随包指南读取，不能把旧 ZIP 改标为本包已完成版本。SourceCommit、ApplicationId、业务/ABI/DB/config 版本分别读取 ASSEMBLY.json、app/application-release.json 和 DEPENDENCIES.json；Supply 仍使用自己的 Storage/操作契约。候选工程的 Windows 参考范围和客户实际 OS/SDK/设备资格分别核对；正常原生流程不依赖 PowerShell，显式高级脚本依赖在对应章节列出。Windows 实际验收及真实组合未完成，不得把操作步骤写成已执行结果。
+当前COMM增量、完整冻结介质和实际验证见顶部实施结果；下文继承基础操作与历史交付语境。旧媒介按固定 SourceCommit 和随包指南读取，不能把旧 ZIP 改标为本包已完成版本。SourceCommit、ApplicationId、业务/ABI/DB/config 版本分别读取 ASSEMBLY.json、app/application-release.json 和 DEPENDENCIES.json；Supply 仍使用自己的 Storage/操作契约。候选工程的 Windows 参考范围和客户实际 OS/SDK/设备资格分别核对；正常原生流程不依赖 PowerShell，显式高级脚本依赖在对应章节列出。Windows 实际验收及真实组合未完成，不得把操作步骤写成已执行结果。
 
 ## 媒介与依赖诊断
 

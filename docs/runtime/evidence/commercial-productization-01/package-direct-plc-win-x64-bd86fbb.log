@@ -1,0 +1,45 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 2.98 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 2.98 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 2.98 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 2.99 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Application.DirectPlc\Ipc.Application.DirectPlc.csproj (用时 2.98 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 3 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (用时 2.98 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 31 毫秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 102 毫秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 74 毫秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 2.96 秒)。
+  Ipc.Platform -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Application.DirectPlc\release\Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Assembly -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\app\
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop.csproj (用时 1.87 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Application.DirectPlc.Desktop\Ipc.Application.DirectPlc.Desktop.csproj (用时 2.15 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\source-snapshot\src\Ipc.Desktop\Ipc.Desktop.csproj (用时 1.87 秒)。
+  11 个项目(共 14 个)是最新的，无法还原。
+  Ipc.Platform -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Application.DirectPlc\release\Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Assembly -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Application.ParcelFlow.Desktop\release\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.DirectPlc.Desktop -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Application.DirectPlc.Desktop\release\Ipc.Application.DirectPlc.Desktop.dll
+  Ipc.Desktop -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\build-intermediates\bin\Ipc.Desktop\release_win-x64\Ipc.Desktop.dll
+  Ipc.Desktop -> D:\projects\importer-pc\.artifacts\comm\releases\direct-plc-bd86fbb-win-x64\desktop\
+{"Package": "D:\\projects\\importer-pc\\.artifacts\\comm\\releases\\direct-plc-bd86fbb-win-x64.zip", "Sha256": "0b9205dc4ac5a99d56324278ae47c04e4305a3fd2f55b9fc84a33a9586b2c44e", "SourceCommit": "bd86fbb01b249f07e25fb12e003fed2a130a9c1c", "Application": "direct-plc", "Target": "win-x64", "BusinessVersion": "1.4.0", "BusinessAssembly": "Ipc.Application.DirectPlc.dll", "CompatibilitySha256": "84F560DE9829EC5CD01C9B6461C91B0E08791F745981E6C81B176586D7169064"}

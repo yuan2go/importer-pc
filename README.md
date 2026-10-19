@@ -7,7 +7,7 @@ C#/.NET 10 Windows 工位运行基座与独立 Application 参考工程。Platfo
 
 **当前实施：[商业化产品交付完整工作包](docs/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)**。操作以[产品操作指南](docs/runtime/commercial-productization-01-operations.md)为准；COMM-00～10 实现映射、精确冻结身份、必要验证和逐项环境缺口见[实施结果](docs/runtime/commercial-productization-01-results.md)。工程交付与现场投产资格分别判定。
 
-本次静态核对基线为 main [b8f449ec](https://github.com/yuan2go/importer-pc/commit/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5)（2026-10-19）。PR #44 已加入原生 WPF 安装向导、独立离线基本配置、启动修复和完整备份恢复入口；PR #45 补齐 Supply/Inspection 的运行身份前置门禁。指定 Windows 账户以非提权进程运行，允许 UAC 过滤后的管理员用户；正常安装、启动和维护不要求 PowerShell。详细已有能力及差额见[基线核对](docs/reviews/commercial-productization-01-baseline.md)。
+工作包文档阶段的静态核对基线为 main [b8f449ec](https://github.com/yuan2go/importer-pc/commit/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5)（2026-10-19）。PR #44 已加入原生 WPF 安装向导、独立离线基本配置、启动修复和完整备份恢复入口；PR #45 补齐 Supply/Inspection 的运行身份前置门禁。指定 Windows 账户以非提权进程运行，允许 UAC 过滤后的管理员用户；正常安装、启动和维护不要求 PowerShell。详细已有能力及差额见[基线核对](docs/reviews/commercial-productization-01-baseline.md)。
 
 开始工作先读[统一索引](docs/INDEX.md)、[AGENTS](AGENTS.md)、本包及关联设计/实施/验收。修改代码前先清理相关过期当前指引，保留历史证据；继承最新 main，避免重做已完成能力。
 

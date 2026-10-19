@@ -1,5 +1,5 @@
 
-> **当前商业化增量入口：**[完整工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)、[产品设计](commercial-productization-01.md)与[实现逻辑](../implementation/commercial-productization-01.md)。2026-10-19 核对源码 main b8f449ec；本增量为待实施设计，不表示已完成产品功能。
+> **当前商业化增量入口：**[完整工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)、[产品设计](commercial-productization-01.md)与[实现逻辑](../implementation/commercial-productization-01.md)。原设计于2026-10-19静态核对 main b8f449ec；本包当前实现、冻结介质与逐项验证以上述实施结果为准，原设计状态按形成时语境保留。
 > COMM-00～10 当前操作见[产品操作指南](../runtime/commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](../runtime/commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。
 >
 > 现行基础依次读取本框架/F 决策、[19 职责](application-capability-19.md)、[20 可靠性](capability-reliability-20.md)、[22 独立 Application](application-architecture-22.md)、[质量/恢复](architecture-quality-closure-01.md)、[RCS](sportmaster-rcs-task.md)及[版本兼容](version-compatibility-01.md)。四层职责、一个 Application 多页共享实例、唯一配置账和原请求责任持续有效。

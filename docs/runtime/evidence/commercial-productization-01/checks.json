@@ -1,0 +1,468 @@
+{
+  "schema_version": 1,
+  "work_package": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+  "date": "2026-10-20",
+  "baseline_main": "c445b0ec32a3db44f00a1968f3c501aa36eb786f",
+  "branch": "codex/commercial-productization-01",
+  "document_first_commit": "662ef51",
+  "runtime_source_commit": "bd86fbb01b249f07e25fb12e003fed2a130a9c1c",
+  "core_wpf_component_fixture_commit": "bd86fbb01b249f07e25fb12e003fed2a130a9c1c",
+  "sdk": "10.0.402",
+  "business_version": "1.4.0",
+  "application_contracts": "1.10.0",
+  "parcel_storage": 8,
+  "engineering_status": "EXECUTABLE_CORE_COMPLETE_EXTERNAL_ACCEPTANCE_OUTSTANDING",
+  "production_status": "NOT_READY",
+  "historical_d_rv": "UNCHANGED",
+  "public_scope": "AUTHORIZED_GENERIC_CODE_AND_SYNTHETIC_BOUNDED_NATIVE_EVIDENCE_ONLY",
+  "units": [
+    {
+      "id": "COMM-00",
+      "scope": "baseline and document decisions",
+      "implementation": "CORE_IMPLEMENTED",
+      "acceptance": "SEE_CPV_EVIDENCE_AND_EXTERNAL_REMAINDERS"
+    },
+    {
+      "id": "COMM-01",
+      "scope": "protected installation and component review",
+      "implementation": "CORE_IMPLEMENTED",
+      "acceptance": "SEE_CPV_EVIDENCE_AND_EXTERNAL_REMAINDERS"
+    },
+    {
+      "id": "COMM-02",
+      "scope": "first configuration and explicit initial repair",
+      "implementation": "CORE_IMPLEMENTED",
+      "acceptance": "SEE_CPV_EVIDENCE_AND_EXTERNAL_REMAINDERS"
+    },
+    {
+      "id": "COMM-03",
+      "scope": "single-authority settings and resumable drafts",
+      "implementation": "CORE_IMPLEMENTED",
+      "acceptance": "SEE_CPV_EVIDENCE_AND_EXTERNAL_REMAINDERS"
+    },
+    {
+      "id": "COMM-04",
+      "scope": "shared-instance daily operations",
+      "implementation": "CORE_IMPLEMENTED",
+      "acceptance": "SEE_CPV_EVIDENCE_AND_EXTERNAL_REMAINDERS"
+    },
+    {
+      "id": "COMM-05",
+      "scope": "fault impact and guarded recovery",
+      "implementation": "CORE_IMPLEMENTED",
+      "acceptance": "SEE_CPV_EVIDENCE_AND_EXTERNAL_REMAINDERS"
+    },
+    {
+      "id": "COMM-06",
+      "scope": "stable history, CSV and factual metrics",
+      "implementation": "CORE_IMPLEMENTED",
+      "acceptance": "SEE_CPV_EVIDENCE_AND_EXTERNAL_REMAINDERS"
+    },
+    {
+      "id": "COMM-07",
+      "scope": "upgrade, same-source repair and retaining uninstall",
+      "implementation": "CORE_IMPLEMENTED",
+      "acceptance": "SEE_CPV_EVIDENCE_AND_EXTERNAL_REMAINDERS"
+    },
+    {
+      "id": "COMM-08",
+      "scope": "complete backup, isolated restore, handoff and capacity",
+      "implementation": "CORE_IMPLEMENTED",
+      "acceptance": "SEE_CPV_EVIDENCE_AND_EXTERNAL_REMAINDERS"
+    },
+    {
+      "id": "COMM-09",
+      "scope": "bounded support preview and offline help",
+      "implementation": "CORE_IMPLEMENTED",
+      "acceptance": "SEE_CPV_EVIDENCE_AND_EXTERNAL_REMAINDERS"
+    },
+    {
+      "id": "COMM-10",
+      "scope": "product identity, batch plans and complete frozen delivery",
+      "implementation": "CORE_IMPLEMENTED",
+      "acceptance": "SEE_CPV_EVIDENCE_AND_EXTERNAL_REMAINDERS"
+    }
+  ],
+  "actual_checks": [
+    {
+      "id": "DOC",
+      "status": "PASS_CHANGED_SCOPE",
+      "evidence": [
+        "original-archive-02.log"
+      ],
+      "scope": "Document-first diff, canonical original-byte custody and incremental manifest; no historical full-archive closure"
+    },
+    {
+      "id": "CORE",
+      "status": "PASS",
+      "evidence": [
+        "core-result.json",
+        "core.log"
+      ],
+      "scope": "Frozen published DLLs and same-source existing fixture; synthetic identity/ports, actual DPAPI/SQLite/config/recovery files",
+      "pass_lines": 51
+    },
+    {
+      "id": "WPF",
+      "status": "PASS_BOUNDED_NATIVE",
+      "evidence": [
+        "wpf-result.json",
+        "wpf.log",
+        "commercial-history-1100x600.png",
+        "commercial-support.png"
+      ],
+      "scope": "Native 1100x600 shared pages, focus/automation labels/long text/filter collapse/export/drafts/offline help; full target matrix NOT_RUN"
+    },
+    {
+      "id": "COMPONENT",
+      "status": "PASS_STATIC_ONLY",
+      "evidence": [
+        "component-result.json",
+        "component.log",
+        "synthetic-package-identity.json"
+      ],
+      "scope": "Independent reference.barcode1.4.2 signed for this ABI; static valid/tampered/missing-dependency/conflict/TestOnly-Production checks; no provider load, installation or activation"
+    },
+    {
+      "id": "PERMISSION",
+      "status": "PASS_NATIVE_READONLY",
+      "evidence": [
+        "native-permission.log",
+        "native-permission.fixture.cs.txt",
+        "native-permission.fixture.csproj.txt"
+      ],
+      "scope": "Current non-elevated Windows token; protected custom parent reviewed without creation, writable parent refused, batch execution exit5/no mutation/no hidden elevation"
+    },
+    {
+      "id": "OLD_READER",
+      "status": "PASS_ACTUAL_PRIOR_BINARY",
+      "evidence": [
+        "old-reader.log",
+        "old-reader.fixture.cs.txt",
+        "old-reader.fixture.csproj.txt",
+        "sql-floor-identity.log"
+      ],
+      "scope": "Actual frozen70ccedc DB7 reader rejects finalDB8 without changed database SHA; SQL1-7 raw strings unchanged"
+    },
+    {
+      "id": "MEDIA",
+      "status": "PASS",
+      "evidence": [
+        "media-identities.json",
+        "media-smoke.log",
+        "source-link-isolation.log"
+      ],
+      "scope": "All six same-source candidates: complete inventory, ZIP entries/CRC/content bytes, business identity; all shared Ipc helper/desktop bytes identical"
+    },
+    {
+      "id": "IDENTITY",
+      "status": "PASS_SHARED_DECISION",
+      "evidence": [
+        "runtime-identity-02.log"
+      ],
+      "scope": "Ordinary/designated/deny-only allowed; elevated/enabled-admin/system/service/wrong SID denied; first-run callback failures stop without fallback; no actual cross-account claim"
+    },
+    {
+      "id": "DEVELOPER_TOOLS",
+      "status": "18_PASS_1_NOT_RUN_ENVIRONMENT",
+      "evidence": [
+        "extension-build-tests.log",
+        "dependency-utf8.log",
+        "windows-frozen-archive.log",
+        "release-documents-frozen.log"
+      ],
+      "scope": "One symlink fixture cannot create link: WinError1314, original assertion unchanged; actual new extension build and six complete publications pass"
+    },
+    {
+      "id": "OTHER_APPLICATIONS",
+      "status": "PASS_BUILD_ONLY_EARLIER_SHARED_INPUTS",
+      "evidence": [
+        "build-supply-frozen.log",
+        "build-inspection-frozen.log"
+      ],
+      "scope": "Earlier necessary shared-layer compile0warnings0errors; later runtime changes Parcel-only; no final-media Supply/Inspection journey claim"
+    }
+  ],
+  "cpv": [
+    {
+      "id": "CPV-01",
+      "status": "PASS_CHANGED_SCOPE",
+      "checks": [
+        "DOC"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "CPV-02",
+      "status": "PARTIAL",
+      "checks": [
+        "PERMISSION",
+        "CORE"
+      ],
+      "remaining": [
+        "N01",
+        "N02",
+        "N03"
+      ]
+    },
+    {
+      "id": "CPV-03",
+      "status": "PARTIAL",
+      "checks": [
+        "IDENTITY",
+        "PERMISSION"
+      ],
+      "remaining": [
+        "N02",
+        "N04"
+      ]
+    },
+    {
+      "id": "CPV-04",
+      "status": "PARTIAL_STATIC_PASS_REAL_BLOCKED",
+      "checks": [
+        "COMPONENT"
+      ],
+      "remaining": [
+        "B01",
+        "B02"
+      ]
+    },
+    {
+      "id": "CPV-05",
+      "status": "PASS_SOFTWARE_BOUNDARY",
+      "checks": [
+        "CORE"
+      ],
+      "remaining": [
+        "N04",
+        "B01",
+        "B02"
+      ]
+    },
+    {
+      "id": "CPV-06",
+      "status": "PASS_SOFTWARE_BOUNDARY",
+      "checks": [
+        "CORE",
+        "WPF"
+      ],
+      "remaining": [
+        "N04"
+      ]
+    },
+    {
+      "id": "CPV-07",
+      "status": "PARTIAL",
+      "checks": [
+        "CORE",
+        "WPF"
+      ],
+      "remaining": [
+        "N05",
+        "N06"
+      ]
+    },
+    {
+      "id": "CPV-08",
+      "status": "PARTIAL",
+      "checks": [
+        "CORE",
+        "WPF"
+      ],
+      "remaining": [
+        "N05",
+        "B01",
+        "B02"
+      ]
+    },
+    {
+      "id": "CPV-09",
+      "status": "PASS_SOFTWARE_BOUNDARY",
+      "checks": [
+        "CORE"
+      ],
+      "remaining": [
+        "B01",
+        "B02"
+      ]
+    },
+    {
+      "id": "CPV-10",
+      "status": "PASS_SOFTWARE_BOUNDARY",
+      "checks": [
+        "CORE",
+        "WPF"
+      ],
+      "remaining": [
+        "N06"
+      ]
+    },
+    {
+      "id": "CPV-11",
+      "status": "PARTIAL",
+      "checks": [
+        "CORE",
+        "OLD_READER",
+        "MEDIA"
+      ],
+      "remaining": [
+        "N01",
+        "N03"
+      ]
+    },
+    {
+      "id": "CPV-12",
+      "status": "PARTIAL",
+      "checks": [
+        "CORE"
+      ],
+      "remaining": [
+        "N03"
+      ]
+    },
+    {
+      "id": "CPV-13",
+      "status": "PASS_CORE_RESTORE_HANDOFF_FENCE",
+      "checks": [
+        "CORE",
+        "OLD_READER"
+      ],
+      "remaining": [
+        "N07",
+        "B03"
+      ]
+    },
+    {
+      "id": "CPV-14",
+      "status": "PASS_BOUNDED_SYNTHETIC",
+      "checks": [
+        "CORE",
+        "WPF"
+      ],
+      "remaining": [
+        "N06",
+        "B04"
+      ]
+    },
+    {
+      "id": "CPV-15",
+      "status": "PARTIAL_NATIVE",
+      "checks": [
+        "WPF"
+      ],
+      "remaining": [
+        "N05"
+      ]
+    },
+    {
+      "id": "CPV-16",
+      "status": "PARTIAL",
+      "checks": [
+        "MEDIA",
+        "PERMISSION",
+        "CORE"
+      ],
+      "remaining": [
+        "N01",
+        "N02",
+        "N03",
+        "B01",
+        "B02",
+        "B04"
+      ]
+    }
+  ],
+  "not_run": [
+    {
+      "id": "N01",
+      "status": "NOT_RUN",
+      "scope": "Privileged default/custom program-root install, UAC accept/cancel, pre/post-registration interruption, same-source program repair and authority readback",
+      "reason": "Current authorized execution environment is non-elevated; no provisioned Windows installation sandbox or interactive privileged journey performed"
+    },
+    {
+      "id": "N02",
+      "status": "NOT_RUN",
+      "scope": "Two actual Windows accounts and installed data/program ACL negatives, filtered runtime plus truly elevated/service launch",
+      "reason": "No second designated real account/provisioned policy session; pure shared decision and current nonadmin denial are separately PASS"
+    },
+    {
+      "id": "N03",
+      "status": "NOT_RUN",
+      "scope": "ARP actual modify/uninstall, locked program files, reboot deletion, post-reboot interrupted cleanup/reentry, repeated actual batch installation",
+      "reason": "Requires a provisioned privileged Windows installation/reboot sandbox"
+    },
+    {
+      "id": "N04",
+      "status": "NOT_RUN",
+      "scope": "Actual cross-user/machine DPAPI continuation, privileged first-run/repair full journey",
+      "reason": "Only current Windows DPAPI and synthetic injected designated identity executed"
+    },
+    {
+      "id": "N05",
+      "status": "NOT_RUN",
+      "scope": "Original full1440x900 client/high-DPI/touch/screen-reader/hardware-input matrix",
+      "reason": "Current work area1536x816 DIP cannot fit original assertion; no target touch/reader hardware. Original assertion retained, bounded1100x600 native checks separately PASS"
+    },
+    {
+      "id": "N06",
+      "status": "NOT_RUN",
+      "scope": "Real prolonged throughput, actual faulty disk/full volume and production storage/export capacity commitments",
+      "reason": "No field workload or dedicated fault-volume environment; bounded/cancel/quota/concurrency invariants exercised synthetically"
+    },
+    {
+      "id": "N07",
+      "status": "NOT_RUN",
+      "scope": "Protected original-machine registration pointer switch and authenticated restored-root handoff confirmation",
+      "reason": "No actual protected deployment; database identity/source fence/isolation/old-backup and DB7 rejection executed in core"
+    },
+    {
+      "id": "N08",
+      "status": "NOT_RUN_ENVIRONMENT",
+      "scope": "Developer source/payload symlink rejection fixture",
+      "reason": "WinError1314 creating the test link before product assertion; no skip or weakened assertion"
+    }
+  ],
+  "blocked": [
+    {
+      "id": "B01",
+      "status": "BLOCKED",
+      "scope": "Vendor driver installers, actual SDK/protocol endpoints, redistribution/trust inputs, stable physical identities and connected devices",
+      "reason": "No authorized real inputs; no SDK/protocol invented, no equipment controlled"
+    },
+    {
+      "id": "B02",
+      "status": "BLOCKED",
+      "scope": "Per-composition Production qualification, real accounts/secrets/device/contract/exact package compatibility and external allocation ranges",
+      "reason": "Simulation/TestOnly signatures and reference ports do not confer Production qualification"
+    },
+    {
+      "id": "B03",
+      "status": "BLOCKED",
+      "scope": "Cross-machine source retirement, secret scope conversion and physical/external range handoff",
+      "reason": "Missing independently verifiable original-machine/device/secret/range evidence; isolated restore remains guarded"
+    },
+    {
+      "id": "B04",
+      "status": "BLOCKED",
+      "scope": "Commercial code signing, production support data authorization and field go-live acceptance",
+      "reason": "No signing identity/field authorization or approval evidence; not fabricated"
+    }
+  ],
+  "not_triggered": [
+    "License charging/activation service",
+    "Central or remote monitoring/control",
+    "OEM/multilingual platform",
+    "DirectPlc complete UI (explicitly deferred)"
+  ],
+  "preserved_failures": [
+    "component-review.log",
+    "prior-969-media-smoke.log",
+    "source-link-isolation.log",
+    "synthetic-package-build.log",
+    "extension-build-tests.log",
+    "original-archive.log"
+  ],
+  "media_file": "media-identities.json",
+  "reproduction": "README.md"
+}

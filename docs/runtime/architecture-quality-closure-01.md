@@ -20,7 +20,7 @@ Capacity统一投影未结/工作集/归档量、磁盘可用及保留阈值。�
 
 恢复目标严格使用`<new-data-root>/<原Mode>/<原StationId>/<原ApplicationId>`，新目录且完整COMPLETED清单；错身份在创建目标前拒绝。启动比较seed、Effective/Pending和数据身份，构造任何能力前失败，不改原模式、不换空库。
 
-即使数据库格式未变，端口构造后、所有来源Start前仍核对需要继续执行的未结原件精确实现指纹；缺原实现即拒绝启动业务，要求匹配原发布核对，不能先在另一位制造混合版本责任。仅剩资料责任且各缺raw均有独立Committed Query依据的已终结Attached作业不再调用旧端口，但继续保有原图、包及归档屏障。任一重启未结责任使软件暂停；主链未结还带RecoveryRequired。重量可按原Admission关联，不能自动首次发送。先显式Resume，再对原Owner以ContinuePrepared提交检查说明；若期限/健康/原件屏障未满足仍拒绝。说明表示操作者检查记录，不假造物理传感器许可。所有原ID/payload/hash/配置/实现/接受事实保留。已经返回且持久的raw仅本地T3恢复。
+即使数据库格式未变，端口构造后、所有来源Start前仍核对需要继续执行的未结原件精确实现指纹；缺原实现即拒绝启动业务，要求匹配原发布核对，不能先在另一位制造混合版本责任。仅剩资料责任且各缺raw均有独立Committed Query依据的已终结Attached作业不再调用旧端口，但继续保有原图、包及归档屏障。任一重启未结责任使软件暂停；主链未结还带RecoveryRequired（原实体检查要求）。权威主链终结或受守卫的未发送处置应清除此标记，独立原件/上传/包责任继续按各自事实保留。旧终结记录残留标记只能依据原终结证据和未发送取消事实修复，保留修复前JSON与审计；未明/矛盾回执不能据终态文字清责。CQ03整改及兼容验证见本次工作包。重量可按原Admission关联，不能自动首次发送。先显式Resume，再对原Owner以ContinuePrepared提交检查说明；若期限/健康/原件屏障未满足仍拒绝。说明表示操作者检查记录，不假造物理传感器许可。所有原ID/payload/hash/配置/实现/接受事实保留。已经返回且持久的raw仅本地T3恢复。
 
 Attached上传失败/Unknown/无结果/原能力缺失只进入Upload.State/Failure和AuxiliaryReasons。主链Reason、WCS格口、PLC接受/物理完成不被上传覆盖。ReconcileAsync(operationId,stage?)可选择原stage字符串（wcs-slot、plc-submit、image-capture、image-upload）；默认先主链后独立上传。仅同阶段未清原接收阻挡该阶段，另一查询不能代偿缺失原件。维护页“异常与恢复”或CLI的ReceiptResponsibilities（Owner=原OperationId）列出原发生ID/阶段/请求/来源/资料状态；ReconcileReceipt（Owner=原发生ID、Value=检查说明、ExpectedRevision=当前应用Revision）要求暂停和维护认证，仅适用于Awaiting且raw_hash为空、无原文件。只调用冻结原实现/原目标的Query，不Submit。原查询无结果、错误、不支持或冲突仍保留原发生、原图和包责任；有效权威终态只确认上传结果并关联新的Committed Query发生；旧发生保留缺raw资料责任，仍阻原图释放、归档及原包退休。SQL5把已有OutcomeReconciled旧行恢复为Awaiting并建立资料索引；已归档作业因原资料责任重新进入工作集，原归档JSON/hash在后续更新前另存版本。旧代码已释放或删除的图像只能如实保留缺口，不能由新Query、种子或迁移制造原字节。真正原文件仅从完整恢复集按原发生/清单hash恢复后本地T3清偿；缺原字节和合同处置依据时责任持续可见，不提供强制清除。Production须实际提供者支持权威原Query，缺合同仍BLOCKED。
 
@@ -36,7 +36,9 @@ Attached上传失败/Unknown/无结果/原能力缺失只进入Upload.State/Fail
 
 物理reader及其采图门面共享设备串行门；采集/查询/重连/Stop不并发替换会话。独立设备不共用该门，WCS等可并发服务调用保持双位独立。维护外呼释放应用聚合锁，快照/软件暂停可用；共享服务重连需要该服务既有调用先排空；维护取得所选资源围栏后，Submit/Query/健康/认证不能进入同一资源，相关Resume/准入关闭。独立设备维护仍允许其他无依赖位受原守卫恢复运行。设备在途采集按预算等待同一串行门；维护预算取消但提供者未返回时仍持有围栏、原任务/资源及租约，不能当成已经停止；迟到返回按MaintenanceIncomplete保留失败审计，回执使用实际软件暂停状态。旧epoch回调与旧维护代次健康不可污染新注册；健康返回InstanceId、确认时间和TTL均校验，投影不续期。
 
-工作台及公共底栏显示当前投递位、条码和完整命令Owner；历史详情单独显示所选Owner及可用命令。历史选择不改变当前位，刷新和双窗保持本窗目标；发送使用显示时的修订，冲突要求刷新。Sportmaster同时显示left/right的reader、入场、作业和WCS格口，模拟输入显式选择位。原UI v1.1 HTML/CSS/JS与交接为信息层级依据，没有复制其旧共享箱/数量/AGV规则。没有新增图片区域或DirectPlc完整UI。Windows交互另验。
+工作台及公共底栏的当前件以所选Positions.CurrentOperation及相同投递位的Operation.Id定位；观察时间仅用于历史排序，不能选择当前件。当前ID缺失或归属不符时显示未取得，不回退到历史件。显示当前投递位、条码和完整命令Owner；历史详情单独显示所选Owner及可用命令。历史选择不改变当前位，刷新和双窗保持本窗目标；发送使用显示时的修订，冲突要求刷新。Sportmaster同时显示left/right的reader、入场、作业和WCS格口，模拟输入显式选择位。原UI v1.1 HTML/CSS/JS与交接为信息层级依据，没有复制其旧共享箱/数量/AGV规则。没有新增图片区域或DirectPlc完整UI。Windows交互另验。
+
+快照读取失败或最后成功读取超过3秒后，classic、supply-station和辅助窗口均将旧状态标为失效，显示最后成功时间，关闭依赖当前投影的新入场、恢复、继续、核对及维护写入；独立软件暂停入口保留并重新读取应用修订。新成功读取才恢复可用性，旧请求的迟到成功或失败不能覆盖更新读取结果。此为CQ03整改目标，执行证据见[整改工作包](../work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md)，未验证前不视为已经通过。
 
 ## 配置、安装与安全卸载
 
@@ -58,9 +60,9 @@ dotnet app/Ipc.Assembly.dll --action extension-uninstall --package '{"Id":"appro
 
 ## 升级、回退与验证
 
-Parcel现行数据库6；SQL1～5/checksum逐字节继承main：SQL5的独立资料索引和原归档版本继续生效，SQL6仅追加RCS原报文/拆包语义屏障。DB4/5经既有raw库存核验后可保留原责任升级6；DB2/3未明主链/上传/原件仍按旧屏障拒绝，需匹配发布清偿或专用原Query证明后才升级。旧专用custody迁移2–5仍落5，已是6则保持6，不在外查后尝试降级。升级不重写原冻结请求、发送次数、目标、hash或合同，不把追加表结构当作精确实现兼容；旧5程序拒读6。升级前通过匹配发布做完整备份并保存原二进制、配置、信任与包；回退只能使用匹配原发布/升级前备份，并先核对期间外部动作，不能倒退业务账或盲重发。
+Parcel现行数据库6；SQL1～5/checksum逐字节继承main：SQL5的独立资料索引和原归档版本继续生效，SQL6仅追加RCS原报文/拆包语义屏障。DB4/5经既有raw库存核验后可保留原责任升级6；DB2/3未明主链/上传/原件仍按旧屏障拒绝，需匹配发布清偿或专用原Query证明后才升级。recover-legacy-receipt当前CLI显式把DB2–5迁移至DB6；内部API未指定目标的历史调用默认DB5，已有DB6保持6，不能降级。升级不重写原冻结请求、发送次数、目标、hash或合同，不把追加表结构当作精确实现兼容；旧5程序拒读6。升级前通过匹配发布做完整备份并保存原二进制、配置、信任与包；回退只能使用匹配原发布/升级前备份，并先核对期间外部动作，不能倒退业务账或盲重发。
 
-Application.Contracts仍为ABI1.6.0；PR24能力包1.6.6/1.6.7保留原身份，本次能力、观察及兼容集成示例模板均不提供Version，每次构建显式指定`--version`的新不可变版本；准确发行物版本及manifest/包哈希读取媒介`composition.lock.json`与`.identity.json`，不得把模板或历史示例版本视为当前默认；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包同样使用显式新版本。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
+当前Application.Contracts为ABI1.7.0；PR24能力包1.6.6/1.6.7保留原身份，本次能力、观察及兼容集成示例模板均不提供Version，每次构建显式指定`--version`的新不可变版本；准确发行物版本及manifest/包哈希读取媒介`composition.lock.json`与`.identity.json`，不得把模板或历史示例版本视为当前默认；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包同样使用显式新版本。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
 
 必要构建与定向选择器：
 

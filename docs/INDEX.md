@@ -1,5 +1,7 @@
 # 统一资料与实施入口
 
+本次整改：[CQ03四项修复工作包](work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md)（文档先行；执行结果以同包记录为准）。
+
 ## 当前有效阅读顺序
 
 1. [AGENTS](../AGENTS.md)、[本次整合工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-01.md)与[任务/冲突/验证/交付报告](runtime/parallel-task-reconciliation-01.md)。开工main713f23d，源PR27/29/30/32及执行期产物统一调查；原任务“不合并”仅由本次用户明确授权更新。

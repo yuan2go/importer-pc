@@ -1,8 +1,8 @@
-> 当前同版候选为OPERATION-CLOSURE-15源013862f，见[15报告](operation-closure-15.md)及[实际客户端后验清单](validation/operation-closure-15-windows.md)。实际截图0，W01～06均NOT_RUN；下方09候选和形成时时态是历史，支持/保护矩阵继续有效。不新建VM/runner或扩OAuth。
+> 当前候选身份、SourceCommit及ZIP SHA从[并发整合报告](parallel-task-reconciliation-01.md)读取；后续修复候选以各自交付回执为准。OPERATION-CLOSURE-15源013862f及下方09均为历史候选，原证据保持原身份。[实际客户端后验清单](validation/operation-closure-15-windows.md)与本表支持/保护矩阵继续适用；实际截图0，W01～06均NOT_RUN。不新建VM/runner或扩OAuth。
 
 # WINDOWS-VALIDATION-06 同版待验记录
 
-2026-10-16；授权已具备，**实际Windows环境缺失：BLOCKED**。当前执行宿主为macOS ARM64；没有可用Windows客户端、工控机、显示/DPI设备、扫码器、触控或扬声器听审环境。包身份及SHA引用[09同版检查](reference-validation-09-checks.json)。不拿HTML导出、旧包或跨平台核心结果代替WPF操作。
+2026-10-16；授权已具备，**实际Windows环境缺失：BLOCKED**。该次执行宿主为macOS ARM64；没有可用Windows客户端、工控机、显示/DPI设备、扫码器、触控或扬声器听审环境。包身份及SHA引用[09同版检查](reference-validation-09-checks.json)。不拿HTML导出、旧包或跨平台核心结果代替WPF操作。
 
 |项|实际结果|未执行内容/解阻条件|
 |---|---|---|

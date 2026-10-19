@@ -1,0 +1,59 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+  "CorePackages": 0,
+  "SelectedPackages": [
+    {
+      "Id": "reference.barcode",
+      "Version": "1.3.0",
+      "ManifestSha256": "C4E1B798D00373244513AE2F3DABE64E3FF95F526DA80078C0BB63BAD29557A0",
+      "PackageSha256": "0F07A02CEB87A6CD471B5BFA0CBBAB5C02652B2647CA6DBBC7070B683286A4AA",
+      "File": "offline-extensions/reference.barcode-1.3.0.ipcx",
+      "Mode": "Simulation",
+      "TrustSha256": "1C285CFC8AE0AF33F32F0BC99A88C1711A10108CC66295B996B06BCC75E0F62D",
+      "Installed": false,
+      "Activated": false,
+      "PublicContracts": {}
+    },
+    {
+      "Id": "reference.parcel-capabilities",
+      "Version": "2.2.0",
+      "ManifestSha256": "8CA9533DC9DBD3457889159CECB1F968B2EEA0D5CCF7BB5C9AFB1BD15EB5BEDF",
+      "PackageSha256": "B24825CC81F10E8C0EF3096D18154845E64F9CD0B033A98D8878EF85859E1380",
+      "File": "offline-extensions/reference.parcel-capabilities-2.2.0.ipcx",
+      "Mode": "Simulation",
+      "TrustSha256": "1C285CFC8AE0AF33F32F0BC99A88C1711A10108CC66295B996B06BCC75E0F62D",
+      "Installed": false,
+      "Activated": false,
+      "PublicContracts": {
+        "Ipc.Application.Contracts": "8DCAB3214A41FFC5F2855519BB24B245DE9650FAD7B3AF32EB49AAE06B2FD9C9"
+      }
+    },
+    {
+      "Id": "sportmaster.rcs-task",
+      "Version": "1.1.0",
+      "ManifestSha256": "6AD12085FB8949A12AC30FB21EEBFD10BA489CE49234B729B45D42E5FB2BDCF0",
+      "PackageSha256": "795F2A8CE9AFE89A9D8ED9876FB7F477732DC75B36A70025396339313476E356",
+      "File": "offline-extensions/sportmaster.rcs-task-1.1.0.ipcx",
+      "Mode": "Simulation",
+      "TrustSha256": "1C285CFC8AE0AF33F32F0BC99A88C1711A10108CC66295B996B06BCC75E0F62D",
+      "Installed": false,
+      "Activated": false,
+      "PublicContracts": {
+        "Ipc.Application.Contracts": "8DCAB3214A41FFC5F2855519BB24B245DE9650FAD7B3AF32EB49AAE06B2FD9C9"
+      }
+    }
+  ],
+  "InstalledActivatedRetired": true,
+  "Positions": [
+    "left",
+    "right"
+  ],
+  "FailedStartupRetainedPriorEffective": true,
+  "OriginalWcsAttempts": [
+    1,
+    1
+  ],
+  "Windows": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED"
+}

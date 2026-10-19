@@ -5,10 +5,12 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-public sealed class CapabilityParameter(ParameterField field, string value)
+public sealed class CapabilityParameter(ParameterField field, string value) : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
+    string current = value;
     public ParameterField Field { get; } = field;
-    public string Value { get; set; } = value;
+    public string Value { get => current; set { current = value; PropertyChanged?.Invoke(this, new(nameof(Value))); } }
 }
 public sealed class CapabilityDraft : INotifyPropertyChanged
 {
@@ -17,13 +19,21 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     public CapabilityDescriptor[] Providers { get; }
     public string Kind { get; }
     public string Role { get; }
-    public bool Enabled { get; set; }
-    public bool Bound { get; set; }
-    public string InstanceId { get; set; }
+    bool enabled, bound;
+    string instanceId = "", target = "", contract = "";
+    public bool Enabled { get => enabled; set { enabled = value; Notify(); } }
+    public bool Bound { get => bound; set { bound = value; Notify(); } }
+    public string InstanceId { get => instanceId; set { instanceId = value; Notify(); } }
     public bool IsTargetReadOnly => Kind == "observation";
+    public bool LegacyBindingEditable { get; set; } = true;
     public string TargetBoundary => IsTargetReadOnly ? "稳定读码DeviceId只读；更换须清偿原件并受控迁移部署" : "组件拥有的协议目标；保存后待受控重启";
-    public string Target { get; set; }
-    public string Contract { get; set; }
+    public string Target { get => target; set { target = value; Notify(); } }
+    public string Contract { get => contract; set { contract = value; Notify(); } }
+    public string ProviderIdentity => Provider is { } p ? p.Implementation + " @ " + p.Version + " · " + (p.Package?.ManifestSha256 ?? "内置参考") + " · " + p.Module : "原提供者未安装或精确身份不匹配；保存被阻断：" + OriginalProviderIdentity;
+    readonly Dictionary<string, string> originalParameters = [];
+    bool preserveOmittedDefaults;
+    public string OriginalProviderIdentity { get; private set; } = "新增实例";
+    void Notify([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new(name));
     public ObservableCollection<CapabilityParameter> Parameters { get; } = [];
     public CapabilityDescriptor? Provider
     {
@@ -31,24 +41,32 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         set
         {
             if (ReferenceEquals(provider, value)) return;
-            provider = value; Parameters.Clear();
-            if (value is not null) foreach (var parameter in value.Parameters) Parameters.Add(new(parameter, parameter.Default ?? ""));
+            provider = value; Parameters.Clear(); originalParameters.Clear(); preserveOmittedDefaults = false;
+            if (value is not null) foreach (var parameter in value.Parameters) { var item = new CapabilityParameter(parameter, parameter.Default ?? ""); item.PropertyChanged += (_, _) => Notify(nameof(Parameters)); Parameters.Add(item); }
             Contract = value?.Contract ?? "";
-            PropertyChanged?.Invoke(this, new(nameof(Provider))); PropertyChanged?.Invoke(this, new(nameof(Contract)));
+            Notify(nameof(Provider)); Notify(nameof(Contract)); Notify(nameof(ProviderIdentity));
         }
     }
     public CapabilityDraft(string kind, CapabilityDescriptor[] providers, CapabilityBinding? binding, bool bound, string? role = null)
     {
         Kind = kind; Role = role ?? kind; Providers = providers.Where(x => x.Kind == kind).ToArray();
         InstanceId = binding?.InstanceId ?? kind + ".one"; Target = binding?.Target ?? "reference://" + kind + "/one"; Contract = binding?.Contract ?? "";
-        Provider = Providers.FirstOrDefault(x => x.Implementation == binding?.Implementation && x.Version == binding.Version) ?? Providers.FirstOrDefault();
+        Provider = binding is null ? Providers.FirstOrDefault() : Providers.SingleOrDefault(x => x.Implementation == binding.Implementation && x.Version == binding.Version && x.Package == binding.Package && x.Module == binding.Module);
         if (binding is not null) foreach (var p in Parameters) p.Value = binding.Parameters.GetValueOrDefault(p.Field.Key) ?? p.Field.Default ?? "";
+        if (binding is not null) { preserveOmittedDefaults = true; OriginalProviderIdentity = binding.Implementation + " @ " + binding.Version + " · " + (binding.Package?.ManifestSha256 ?? "内置参考") + " · " + binding.Module; Contract = binding.Contract; foreach (var pair in binding.Parameters) originalParameters[pair.Key] = pair.Value; }
         Enabled = binding?.Enabled ?? false; Bound = bound;
     }
     public CapabilityBinding Build()
     {
         var p = Provider ?? throw new InvalidOperationException("选择已安装的能力提供者：" + Kind);
-        var parameters = Parameters.Where(x => x.Value.Length > 0).ToDictionary(x => x.Field.Key, x => x.Value);
+        // Keep original insertion order and explicitly omitted defaults. Reordering
+        // unrelated parameter bytes would change the frozen configuration hash.
+        var parameters = new Dictionary<string, string>(originalParameters);
+        foreach (var item in Parameters)
+        {
+            if (item.Value.Length == 0 && originalParameters.GetValueOrDefault(item.Field.Key) != "") { parameters.Remove(item.Field.Key); continue; }
+            if (!preserveOmittedDefaults || originalParameters.ContainsKey(item.Field.Key) || item.Value != item.Field.Default) parameters[item.Field.Key] = item.Value;
+        }
         var errors = ExtensionSchema.Validate(p.Parameters, parameters);
         if (errors.Length != 0) throw new InvalidOperationException(string.Join("; ", errors));
         return new(Kind, p.Implementation, p.Version, InstanceId, Target, Contract, parameters, p.Package, p.Module, Enabled);
@@ -83,16 +101,17 @@ public partial class ParcelViewModel
         if (Snapshot is null) await RefreshAsync();
         var loaded = Snapshot!;
         var c = loaded.Configuration.Pending ?? loaded.Configuration.Effective;
-        var catalog = await application.CapabilitiesAsync();
+        var catalog = await ServiceAsync(() => application.CapabilitiesAsync());
         SetConfigurationDraft(c, loaded.Configuration.Revision, loaded.RuntimeId);
-        InstalledProviderParameters = Wire.Encode(catalog); Changed(nameof(InstalledProviderParameters));
-        InstalledPackages = "已安装签名包（安装不代表绑定、激活或健康）：" + string.Join(" · ", catalog.InstalledPackages); Changed(nameof(InstalledPackages));
+        ApplyInstalledCatalog(catalog);
         CapabilityDrafts.Clear();
         if (c.SchemaVersion >= 3 || c.Topology is not null)
         {
-            Message = "schema3旧表单只读；请在“完整候选配置”编辑全部拓扑、校验并以CAS保存；受控重启生效";
+            LoadStructuredConfiguration(c, catalog);
+            Message = "已读取完整拓扑与能力库存；表单为当前编辑来源。保存为Pending，受控重启生效。";
             return;
         }
+        StartLegacyConfiguration(c);
         var bound = new[] { c.Login, c.MaintenanceLogin, c.Scale, c.Wcs, c.Plc, c.Images?.Camera, c.Images?.Uploader }.OfType<CapabilityBinding>().ToArray();
         var instances = c.CapabilityInstances ?? bound;
         CapabilityBinding readerBinding;
@@ -116,10 +135,11 @@ public partial class ParcelViewModel
     public async Task SaveCapabilitiesAsync()
     {
         RequireFreshSnapshot();
+        RequireFormConfigurationAuthority();
         if (Snapshot is null) return;
         if (Snapshot.Configuration.Effective.SchemaVersion >= 3 || Snapshot.Configuration.Pending?.SchemaVersion >= 3 || Snapshot.Configuration.Effective.Topology is not null)
         {
-            Message = "拒绝保存：此表单不能编辑完整schema3拓扑，原配置及设备绑定保持不变";
+            await SaveStructuredConfigurationAsync();
             return;
         }
         var instances = CapabilityDrafts.Where(x => x.Kind != "observation").Select(x => x.Build()).ToArray();
@@ -141,16 +161,27 @@ public partial class ParcelViewModel
                 reader.Package is null ? [] : [new(reader.InstanceId, reader.Package.Id, reader.Module!, Snapshot.Configuration.Effective.Reader.DeviceId, true, reader.Parameters)]) : null
         };
         var expected = RequireDraftRevision();
-        var receipt = await application.StageConfigurationAsync(expected, c, ConfigurationReason);
+        var reason = ConfigurationReason;
+        var receipt = await ServiceAsync(() => application.StageConfigurationAsync(expected, c, reason));
         AdvanceOwnDraftRevision(expected, receipt);
         Message = receipt.Status + " · " + receipt.Reason;
     }
-    public async Task AuthorizeMaintenanceAsync(string proof) { RequireFreshSnapshot(); var r = await application.AuthorizeMaintenanceAsync(MaintenanceSubject, proof); Message = r.Status + " · " + r.Reason; }
-    public async Task InstallAsync() { RequireFreshSnapshot(); var r = await application.InstallCapabilityAsync(PackagePath, PackageSha256); Message = r.Status + " · " + r.Reason; await LoadCapabilitiesAsync(); }
+    public async Task AuthorizeMaintenanceAsync(string proof) { RequireFreshSnapshot(); var subject = MaintenanceSubject; var r = await ServiceAsync(() => application.AuthorizeMaintenanceAsync(subject, proof)); Message = r.Status + " · " + r.Reason; }
+    public async Task InstallAsync()
+    {
+        RequireFreshSnapshot();
+        if (string.IsNullOrWhiteSpace(PackagePath) || !System.IO.Path.IsPathFullyQualified(PackagePath)) throw new InvalidOperationException("填写离线签名包的完整路径");
+        if (!ExtensionSchema.IsHash(PackageSha256)) throw new InvalidOperationException("原包 SHA256 必须为64位十六进制；安装前核对原包");
+        var path = PackagePath; var sha = PackageSha256;
+        var r = await ServiceAsync(() => application.InstallCapabilityAsync(path, sha));
+        ApplyInstalledCatalog(await ServiceAsync(() => application.CapabilitiesAsync()));
+        Message = r.Status + " · " + r.Reason + "；安装清单已刷新，当前草稿保留。需要新提供者时显式重新读取配置。";
+    }
     public async Task ContinueUploadAsync() { var op = Selected ?? throw new InvalidOperationException("选择原作业"); await CommandAsync("ContinueUpload", op.Id); }
     public async Task AbandonAsync()
     { RequireFreshSnapshot();
         var op = Selected ?? throw new InvalidOperationException("选择原作业"); var s = Snapshot ?? throw new InvalidOperationException("刷新后选择原作业");
-        var r = await application.CommandAsync(new(Wire.Id(), s.Revision, "AbandonUnsubmitted", op.Id, InspectionReason)); Message = r.Status + " · " + r.Reason;
+        var command = new BusinessCommand(Wire.Id(), s.Revision, "AbandonUnsubmitted", op.Id, InspectionReason);
+        var r = await ServiceAsync(() => application.CommandAsync(command)); Message = r.Status + " · " + r.Reason;
     }
 }

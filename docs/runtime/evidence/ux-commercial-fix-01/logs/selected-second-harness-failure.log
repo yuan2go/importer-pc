@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "<artifacts>/selected-release-journey.py", line 102, in <module>
+    history=cmd('History'); assert len(history['Items'])==2 and all(x['Operation']['Wcs']['Attempts']==1 for x in history['Items'])
+            ^^^^^^^^^^^^^^
+  File "<artifacts>/selected-release-journey.py", line 51, in cmd
+    if out['Status']=='Rejected' and ((kind=='ManageExtension' and out['Reason']=='Pause and authenticate maintenance after active calls drain') or (kind=='StageConfiguration' and out['Reason']=='Pause and authenticate maintenance before configuration')):
+       ~~~^^^^^^^^^^
+KeyError: 'Status'

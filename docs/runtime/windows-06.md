@@ -1,3 +1,5 @@
+> UX修复分支的Sportmaster supply-station新增800×420 DIP紧凑重排及最低区以下保护，见[当前后验清单](validation/sportmaster-alternate-ui-windows.md)。下文1280×680及09/15等版本是原候选事实，既有1920×1080/1366×768各100/125/150%及混合DPI矩阵不缩减；新布局须用本次SHA/媒介补验，不据源码或交叉构建记PASS。修改前本页固定原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。
+
 > 当前候选身份、SourceCommit及ZIP SHA从[并发整合报告](parallel-task-reconciliation-01.md)读取；后续修复候选以各自交付回执为准。OPERATION-CLOSURE-15源013862f及下方09均为历史候选，原证据保持原身份。[实际客户端后验清单](validation/operation-closure-15-windows.md)与本表支持/保护矩阵继续适用；实际截图0，W01～06均NOT_RUN。不新建VM/runner或扩OAuth。
 
 # WINDOWS-VALIDATION-06 同版待验记录

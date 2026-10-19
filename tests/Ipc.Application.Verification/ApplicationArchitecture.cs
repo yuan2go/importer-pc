@@ -73,7 +73,7 @@ static class ApplicationArchitecture
             s = await app.SnapshotAsync(); Check(s.Configuration.Pending!.Topology!.Readers.Length == 2 && s.Configuration.Effective.TimeoutMs != 1700, "Pending/Effective preserve both bindings and separate activation");
             var vm = new ParcelViewModel(app, "22", "22"); await vm.RefreshAsync(); var before = Wire.Encode((await app.SnapshotAsync()).Configuration);
             await vm.LoadCapabilitiesAsync(); await vm.SaveCapabilitiesAsync();
-            Check(vm.Message.Contains("拒绝保存") && Wire.Encode((await app.SnapshotAsync()).Configuration) == before, "real legacy ViewModel rejects flattening schema3, authority unchanged");
+            Check(vm.ReaderDrafts.Count == 2 && vm.PositionDrafts.Count == 2 && Wire.Encode(vm.BuildStructuredConfiguration().Topology) == Wire.Encode(s.Configuration.Pending!.Topology) && Wire.Encode((await app.SnapshotAsync()).Configuration) == before, "schema3 complete ViewModel preserves topology and empty-reason save leaves authority unchanged");
             var backup = Path.Combine(root, "dual.backup.db"); BusinessReceipt? backupReceipt = null;
             var backupDeadline = DateTimeOffset.UtcNow.AddSeconds(5);
             while (DateTimeOffset.UtcNow < backupDeadline)
@@ -252,6 +252,7 @@ static class ApplicationArchitecture
     }
     sealed class BlockingFactory(ParcelCapabilityFactory inner, bool failSecondStart = false) : IParcelCapabilityFactory
     {
+        public CapabilityCatalog Catalog() => inner.Catalog();
         public TaskCompletionSource Entered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public TaskCompletionSource Release { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public bool Unavailable;

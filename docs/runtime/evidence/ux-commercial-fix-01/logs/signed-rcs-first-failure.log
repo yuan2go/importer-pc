@@ -1,0 +1,12 @@
+EvidenceRoot=<synthetic-evidence-root>
+PASS RCS20: A03 independent position reaches actual HTTP T1 while other capture is held
+PASS RCS20: A03 left capture delay gives both positions one actual T1 and POST without global serialization
+PASS RCS20: A03 numeric order follows durable T1 preparation, not earlier admission order
+PASS RCS20: A03 actual backup retains owner ledger, ranges and archived originals
+Unhandled exception. System.Exception: FAIL RCS20: A03 restart/archive preserve both original wire IDs and exact bodies without POST
+   at SportmasterRcs.Check(Boolean value, String message) in /_/src/tests/Ipc.Application.Verification/SportmasterRcs.cs:line 19
+   at SportmasterRcs.Audit03Checks(String workspace, String root, String packageFile, String trustFile) in /_/src/tests/Ipc.Application.Verification/Audit03.Rcs.cs:line 78
+   at SportmasterRcs.Audit03Checks(String workspace, String root, String packageFile, String trustFile) in /_/src/tests/Ipc.Application.Verification/Audit03.Rcs.cs:line 81
+   at SportmasterRcs.Audit03Checks(String workspace, String root, String packageFile, String trustFile) in /_/src/tests/Ipc.Application.Verification/Audit03.Rcs.cs:line 110
+   at Program.<Main>$(String[] args) in /_/src/tests/Ipc.Application.Verification/Program.cs:line 23
+   at Program.<Main>(String[] args)

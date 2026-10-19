@@ -1,0 +1,10 @@
+{
+  "SchemaVersion": 1,
+  "Publishers": [
+    {
+      "Id": "ux-commercial-reference-only",
+      "PublicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAuteamyFp4Piea5kG61fC\nUH97XxATfUYCYdswuTLFoIAfOk2wYUy+gZH32G4siLve67KuNszUFA4yST5+OzuC\njXPNq/gEIU2AdqBpxXjyD0OWPIsVnqnGtCcAuAWiG93rNzRFdfI1qk4D8L28d22t\nW5v9eQhVg5LBBMOoqaC1GSVF35H/xv30vaCvIrDgTVJY3wqVfTvuzHEzS5mQvUKK\n7eOX0zMqs0hJv0O4RhgzXIkHBmsUACCQ/rLpijjyYj1+lHkiJmvkOJUyOYCarLSm\n0eS9kRX7Iu3tSrLf67oJVmJC7KrnwVSytWubyk/GMixoQY0e307x8WkQcg+DRPrM\nVoRCIG072IpNe0NmZqBVCT6kVEV5XhfIrWqO1cKXH4wOapjNmNrFgMfjPNT7qoQl\nvCjYRzSfFdkz8HJeZsIh3qJ2XNOUVIAD8TcQmFmDoZcuFBMI8QN3gHzJr3Lj8C2U\nce0jbJbWynkK3Our2YHmqangkkFZk8/xEs8vUqfB5wLHAgMBAAE=\n-----END PUBLIC KEY-----\n",
+      "TestOnly": true
+    }
+  ]
+}

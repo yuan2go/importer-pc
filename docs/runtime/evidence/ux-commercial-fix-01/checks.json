@@ -1,0 +1,241 @@
+{
+  "ProductSourceCommit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+  "Environment": {
+    "OperatingSystem": "macOS 26.5.2 / Darwin 25.5 arm64",
+    "Sdk": "10.0.402",
+    "Runtime": "10.0.13",
+    "WindowsNative": "NOT_RUN",
+    "PhysicalDevices": "NOT_CONNECTED"
+  },
+  "FrozenSourceChecks": [
+    {
+      "Name": "build",
+      "ExitCode": 0,
+      "ElapsedSeconds": 5.827,
+      "Log": "logs/build.log",
+      "RawSha256": "f3617cf777783a408cdee316c59776781bbebb392448f23b5bb8ed59205d05a5",
+      "PublishedLogSha256": "ae2f4c5de05c43a12a3086d7d64650ee079c47134d06de0902cd35785d4309f0"
+    },
+    {
+      "Name": "ux-commercial-inputs",
+      "ExitCode": 0,
+      "ElapsedSeconds": 1.873,
+      "Log": "logs/ux-commercial-inputs.log",
+      "RawSha256": "22c093bc699f49960a3af4e26703231da4318057a090751decb8c32434d58067",
+      "PublishedLogSha256": "77ce6f77f5cfb67abfe9a86ffbaa8313fd982681e943cb4a38fc8246202d0468"
+    },
+    {
+      "Name": "ux-commercial-presentation",
+      "ExitCode": 0,
+      "ElapsedSeconds": 0.635,
+      "Log": "logs/ux-commercial-presentation.log",
+      "RawSha256": "fe0e8a2f04670c779a74cded68936b4e83ba52d893595482b054c7e983f47eb1",
+      "PublishedLogSha256": "1c61658124c49917f2adf750cb44c554ed3500211adb3b912015d3841c57d35b"
+    },
+    {
+      "Name": "ux-commercial-configuration",
+      "ExitCode": 0,
+      "ElapsedSeconds": 0.603,
+      "Log": "logs/ux-commercial-configuration.log",
+      "RawSha256": "ef0c45cd8185d2b9e6e017347444bbe3432589c093c52e766570955d34a07be5",
+      "PublishedLogSha256": "ceee5fc36c00157ed0a2a1e1a3f1a5d5f3dda99bd6a6039c293424a8833de599"
+    },
+    {
+      "Name": "sportmaster-ui",
+      "ExitCode": 0,
+      "ElapsedSeconds": 1.161,
+      "Log": "logs/sportmaster-ui.log",
+      "RawSha256": "84f96ad94e62931221aa281b99a3ea24b8d8d0079de4c4c59fa1a4056a7cfdd9",
+      "PublishedLogSha256": "d66fbb75053e7e15c82379f6d2fb93289587aab02687a7ea5cc41affac0b6627"
+    },
+    {
+      "Name": "sportmaster-window-lifecycle",
+      "ExitCode": 0,
+      "ElapsedSeconds": 5.08,
+      "Log": "logs/sportmaster-window-lifecycle.log",
+      "RawSha256": "76394c0598de934d215b8aaf88e5a776517ceef7c7b4e7c64a3df464c1c17306",
+      "PublishedLogSha256": "8df461b2f6b2dc8d4656d6bd17c9785262c3bdaf0346a1f041ff1802fdc77131"
+    },
+    {
+      "Name": "commercial-quality",
+      "ExitCode": 0,
+      "ElapsedSeconds": 4.503,
+      "Log": "logs/commercial-quality.log",
+      "RawSha256": "dcca02b117c1c9e0c6fb1aa4c4c381cf09e10525a95e4fa2e9ceb86980af43f2",
+      "PublishedLogSha256": "d37dc1b522348be7159790e066fd32cd30bcad849ae69dded973a0ba09af81e0"
+    },
+    {
+      "Name": "audit03-input",
+      "ExitCode": 0,
+      "ElapsedSeconds": 0.893,
+      "Log": "logs/audit03-input.log",
+      "RawSha256": "49360072751ad2546b7cbda751b22b4abcd02dfcc5488ad3401f1211b8b7629d",
+      "PublishedLogSha256": "4036909815bf9898e375c98eaac72a06022ee7565aacf09179aee3b85c05b331"
+    },
+    {
+      "Name": "audit03-snapshots",
+      "ExitCode": 0,
+      "ElapsedSeconds": 0.615,
+      "Log": "logs/audit03-snapshots.log",
+      "RawSha256": "eedb14197dd17e9cc8eb397dc446cac6805549a77d269c2ab2cba98ad5b1a5b6",
+      "PublishedLogSha256": "82964190047d71e33d2c900fcaa3e3722041ef1cc9e4b9539e68e31b6cd3d0c1"
+    },
+    {
+      "Name": "audit03-maintenance",
+      "ExitCode": 0,
+      "ElapsedSeconds": 0.677,
+      "Log": "logs/audit03-maintenance.log",
+      "RawSha256": "75ab3c22a690b7f0f6bb9e11b943bdf46c50fad7261b4a4e451f89a80de458f9",
+      "PublishedLogSha256": "66d712ee1788d8aec24600676d9d85931315e28fe33b238c7994c24a236ff064"
+    },
+    {
+      "Name": "application-architecture",
+      "ExitCode": 0,
+      "ElapsedSeconds": 2.653,
+      "Log": "logs/application-architecture.log",
+      "RawSha256": "9516c9539d44b2b17ecee35b8d39f21bf540a8aa023ebaacda6b919ae956f5ee",
+      "PublishedLogSha256": "d7d1c4a960590d32fa6a661e658a32d022b490c324ea6436e48d990983ab28d7"
+    },
+    {
+      "Name": "configuration-confirmation",
+      "ExitCode": 0,
+      "ElapsedSeconds": 1.449,
+      "Log": "logs/configuration-confirmation.log",
+      "RawSha256": "e4febf0d7c364fd4ddcd528277671ce5609ce3f80f489e5734edcde4f9c6ce83",
+      "PublishedLogSha256": "128c947e265fa0d8f6bb5ec765f1327d7898f70af8671c2fbc2167ee0caabf50"
+    },
+    {
+      "Name": "version-compatibility",
+      "ExitCode": 0,
+      "ElapsedSeconds": 0.702,
+      "Log": "logs/version-compatibility.log",
+      "RawSha256": "71b9d2ee5b26b3dcdfcd34508e08a8e7528168795791acf0f10d6d47db60fd6d",
+      "PublishedLogSha256": "14f44c9ee547e6986ec803089594d089d7e420da283ffaf8291a9a7d85d5c3c5"
+    },
+    {
+      "Name": "sportmaster-rcs",
+      "ExitCode": 0,
+      "ElapsedSeconds": 3.3,
+      "Log": "logs/sportmaster-rcs.log",
+      "RawSha256": "990c76b823624d071c5ba2e4e26f8c917d1b2e393cf61b9cbc9f8f542f50e712",
+      "PublishedLogSha256": "60f09c5ae2408add3da83b49cebfca959c611e9d8fabcac34b4f74e954b18982"
+    },
+    {
+      "Name": "parcel-recovery-p2",
+      "ExitCode": 0,
+      "ElapsedSeconds": 8.231,
+      "Log": "logs/parcel-recovery-p2.log",
+      "RawSha256": "f58c841c0f5a7126b509136a2d710d292454db0aa3fe2bfffbe3747dcc867e21",
+      "PublishedLogSha256": "814162fdb711c0530c9c59b941e81a6e3a0002500e79b61a66b0497d05485101"
+    }
+  ],
+  "SupplementalSignedRcs": {
+    "ProductSourceCommit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+    "VerifierSourceCommit": "b38a2d323ff21b7b5a7da798b8d3008fc75730d4",
+    "VerifierSha256": "9c4d3a6952401301572cefe3be6021c20b217f0c368502f7add7595f222a5dfe",
+    "FrozenDependencies": [
+      {
+        "File": "Ipc.Components.dll",
+        "Sha256": "3530af29868b8222cd641b9c5a848f323b6c3960ea73dcac7e7dba37c1efa84d"
+      },
+      {
+        "File": "Ipc.Application.ParcelFlow.dll",
+        "Sha256": "872d5a1655d12a72f80c2f7fb4917effd00d2928e97486425051add82998fb47"
+      },
+      {
+        "File": "Ipc.Application.DirectPlc.dll",
+        "Sha256": "ed3c21087ec448e36c043386c2ffe3e926e0df891f974adb9ba9fc4c0e5c64ae"
+      },
+      {
+        "File": "Ipc.Supply.Contracts.dll",
+        "Sha256": "438cffbc02aeaaf9b5ee6a7a062e1ce852eab6bb6c45ac79d14483a77334d34f"
+      },
+      {
+        "File": "Ipc.Platform.dll",
+        "Sha256": "c947c1590f7d2fa4e73f6da3e14966d154f8178d3a48d8c5fa2ddbe8c19d690b"
+      },
+      {
+        "File": "Ipc.Reference.Protocol.dll",
+        "Sha256": "4c70b2bba496339b401cc55734d00aa8c1a2b49ea38ace29b67ef7a56ee66541"
+      },
+      {
+        "File": "Ipc.Drivers.dll",
+        "Sha256": "28c856088ddb6581bf87a4c21f9852942ad8a7d28adf4e8f6332539383351c7f"
+      },
+      {
+        "File": "Ipc.Integrations.dll",
+        "Sha256": "53d832608a8bf5c6669177d6318e07254b02488e361e711a7fe5151e800cbf4c"
+      },
+      {
+        "File": "Ipc.Supply.dll",
+        "Sha256": "952af6e8a93dd34715130903d8b0bfa086e46c3cea313c1849472b2be43c3b56"
+      },
+      {
+        "File": "Ipc.Integrations.SportmasterRcs.dll",
+        "Sha256": "574937281940fe65473201c909b18b740cb17524cedcb25ab937f0c529ed3e83"
+      },
+      {
+        "File": "Ipc.Application.WcsToPlc.dll",
+        "Sha256": "3677509504affb31d75c41a5478fb1731abae33c245029eb55a8ce032b2f6f30"
+      },
+      {
+        "File": "Ipc.Platform.Storage.dll",
+        "Sha256": "6bbc7aff9b5967a5b7e67b74d5ed1663578115b699bbcc43463540e986fd3784"
+      },
+      {
+        "File": "Ipc.Application.Contracts.dll",
+        "Sha256": "8dcab3214a41ffc5f2855519bb24b245de9650fad7b3af32eb49aae06b2fd9c9"
+      },
+      {
+        "File": "Ipc.Application.Sportmaster.dll",
+        "Sha256": "27614dc1ff45932d9824dc64ce9d2f83a1553f172815e1fac4622f1ecfcf3a63"
+      }
+    ],
+    "ExitCode": 0
+  },
+  "OtherLogs": [
+    {
+      "Name": "signed-capabilities",
+      "Log": "logs/signed-capabilities.log",
+      "RawSha256": "074ee2c991c8a71d76d4640b3577704d0e6b24dc104a724d124e6707826a380a",
+      "PublishedLogSha256": "9cb7bd60bdbec42ccce70eb44bb2d1ef2b656649511d1c547c5629116a97c2d3"
+    },
+    {
+      "Name": "signed-rcs-fixture-corrected",
+      "Log": "logs/signed-rcs-fixture-corrected.log",
+      "RawSha256": "e29734adadb6854a4b73241d80a6c28f3498c724640577ec6eb9a11c4e1d629f",
+      "PublishedLogSha256": "94d1e44df0d576272b0a1083ac197fefbcd88f97117cf2b5473664c38ccd64d3"
+    },
+    {
+      "Name": "baseline-red",
+      "Log": "logs/baseline-red.log",
+      "RawSha256": "d2437e5e1d10d1a055e0933ad864bfc28b41d1f8e1547640b5aaeb2b9cff8e0f",
+      "PublishedLogSha256": "bb0c365b17f43e6d3e715a28abcc8e6b1fc5c72058630616de747719f4e7f37b"
+    },
+    {
+      "Name": "signed-rcs-first-failure",
+      "Log": "logs/signed-rcs-first-failure.log",
+      "RawSha256": "b2d1c97c37d05db3977a6fed20f6e47d6a7740b7b5548981f07efbfc53509c60",
+      "PublishedLogSha256": "51007acc736e6c042ac47f792b3a792f752d5d118edd3ac01a421202c86add7b"
+    },
+    {
+      "Name": "selected-first-failure",
+      "Log": "logs/selected-first-failure.log",
+      "RawSha256": "1afe208abf84dc6d2180edd1c1b88eb5ae30d9c7c419caaeb372d0bd0d58dc81",
+      "PublishedLogSha256": "c81a927735e79da5e1a5cff5e22775b1f99e10000a4520135f41113d7c5cea6b"
+    },
+    {
+      "Name": "selected-second-harness-failure",
+      "Log": "logs/selected-second-harness-failure.log",
+      "RawSha256": "3a3a815a1d8c0ea5256002fc2c172a21684673422c37210a1304b187e9a20f02",
+      "PublishedLogSha256": "592fac0a73917ed33cc3116e061fbd425a2741b976b0b460dc5538e535259b7e"
+    },
+    {
+      "Name": "selected-final",
+      "Log": "logs/selected-final.log",
+      "RawSha256": "4c504177625c29dd1db9fc829bd88ad21b9cc8675cfea0bcf11f321760e8ae82",
+      "PublishedLogSha256": "dbc5d3f0f916703ea5ba3855828e8d3fc50f1b594886e2a3cb5af80ef1b58f3c"
+    }
+  ],
+  "LogPublication": "Only local path labels replaced; trailing whitespace explicitly rendered as [trailing-space]. Raw SHA256 binds original local logs; published SHA256 binds reviewable derivatives. No customer or production material."
+}

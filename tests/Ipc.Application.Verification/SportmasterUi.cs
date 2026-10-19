@@ -102,8 +102,10 @@ static class SportmasterUi
             Check(ui.SelectedHistory?.Operation.Id == right.Id && ui.Selected?.Id == right.Id,
                 "opening right history replaces left detail and highlighted selection together");
             await ui.OpenHistoryAsync();
-            Check(ui.SelectedHistory is null && ui.Selected is null && ui.HistoryItems.Length == 2,
-                "opening general history clears previous operation highlight and detail");
+            Check(ui.SelectedHistory?.Operation.Id == right.Id && ui.Selected?.Id == right.Id && ui.HistoryItems.Length == 2,
+                "opening general history preserves the explicit right operation selection");
+            ui.SelectedHistory = ui.HistoryItems.Single(x => x.Operation.Id == left.Id);
+            Check(ui.Selected?.Id == left.Id, "explicit history selection replaces the previous command target");
             await ui.EmitPositionAsync(ui.Left); await ui.EmitPositionAsync(ui.Right); await Task.Delay(80);
             Check((await app.SnapshotAsync()).Operations.Length == 2 && (await app.SnapshotAsync()).Operations.All(o => Peer(o.Wcs!).Executions == 1),
                 "repeated reference clicks retain admission identity and cannot repeat original requests");
@@ -258,13 +260,13 @@ static class SportmasterUi
         Check(ui.Message=="Independent business result must remain","snapshot recovery preserves a later unrelated business message");
         var beforeFailure = await app.SnapshotAsync();
         var delayedFailure = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
-        probe.Read = () => delayedFailure.Task; var failedOlderRead = ui.RefreshDisplayAsync();
+        probe.Read = () => delayedFailure.Task; var failedOlderRead = ui.RefreshDisplayAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
         probe.Read = () => Task.FromResult(beforeFailure); await ui.RefreshDisplayAsync();
         delayedFailure.SetException(new IOException("late obsolete read failure"));
         try { await failedOlderRead; throw new Exception("Expected obsolete read exception"); }
         catch (IOException) { Check(ui.Fresh && !ui.ReadStatus.Contains("late obsolete"), "late obsolete failure cannot invalidate newer successful snapshot"); }
         var delayedCommandFailure = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
-        probe.Read = () => delayedCommandFailure.Task; var readBeforeCommand = ui.RefreshDisplayAsync();
+        probe.Read = () => delayedCommandFailure.Task; var readBeforeCommand = ui.RefreshDisplayAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
         probe.Read = null;
         await ui.RunAsync(() => ui.CommandAsync("Pause"));
         var commandSnapshot = ui.Snapshot!;
@@ -292,7 +294,7 @@ static class SportmasterUi
             "right device fault projection cannot overwrite left identity, device readiness or application guard");
         probe.Read = null; await ui.RefreshDisplayAsync();
         var older = await app.SnapshotAsync(); var delayed = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
-        probe.Read = () => delayed.Task; var first = ui.RefreshDisplayAsync();
+        probe.Read = () => delayed.Task; var first = ui.RefreshDisplayAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
         var receipt = await app.CommandAsync(new(Wire.Id(), older.Revision, "Pause"));
         Check(receipt.Status == "Persisted", "real pause advances revision for refresh ordering test");
         var newer = await app.SnapshotAsync(); probe.Read = () => Task.FromResult(newer); await ui.RefreshDisplayAsync();
@@ -304,8 +306,11 @@ static class SportmasterUi
         Check(ReferenceEquals(ui.Snapshot, baselineRead), "lower revision is rejected even when returned by a later refresh");
         var positions = newer.Positions!.Select(p => p.Id == "left" ? p with { CurrentOperation = "missing-original" } : p).ToArray();
         probe.Read = () => Task.FromResult(newer with { Positions = positions }); await ui.RefreshDisplayAsync();
-        Check(ui.Left.Operation is null && ui.Left.Slot == "未取得" && ui.Left.Status.Contains("身份未匹配") && ui.Right.Operation is not null,
-            "unmatched current operation never falls back to another historical entity or position");
+        var latestLeftInput = newer.Inputs!.Single(x => x.PositionId == "left");
+        Check(ui.Left.Operation is null && ui.Left.Slot == "未取得" && !ui.Left.CanReconcile && !ui.Left.CanContinue && !ui.Left.CanAdmit &&
+            ui.Left.BlockingReasons.Contains("missing-original") && ui.Left.Input?.Observation.Id == latestLeftInput.Observation.Id &&
+            (ui.Left.InputUnadmitted ? ui.Left.Barcode == ParcelPresentation.InputCode(latestLeftInput) && ui.Left.Status.Contains("重复") : ui.Left.Status.Contains("身份未匹配")) && ui.Right.Operation is not null,
+            "unmatched current identity blocks commands and never borrows historical slot; independent duplicate observation remains explicit");
         probe.Read = null;
         var paused = await app.SnapshotAsync(); await app.CommandAsync(new(Wire.Id(), paused.Revision, "Resume")); await original.RefreshDisplayAsync();
     }
@@ -334,7 +339,7 @@ static class SportmasterUi
         {
             var oldSnapshot = ui.Snapshot!;
             var oldRead = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
-            probe.Read = () => oldRead.Task; var poll = ui.RefreshDisplayAsync();
+            probe.Read = () => oldRead.Task; var poll = ui.RefreshDisplayAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
             probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("newer " + failurePath + " read failed"));
             if (failurePath == "Pause") await ui.PauseAsync(); else await ui.RunAsync(ui.ConfirmConfigurationAsync);
             oldRead.SetResult(oldSnapshot); await poll;
@@ -347,7 +352,7 @@ static class SportmasterUi
             var oldSnapshot = ui.Snapshot!;
             var oldRead = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
             var newRead = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
-            probe.Read = () => oldRead.Task; var poll = ui.RefreshDisplayAsync();
+            probe.Read = () => oldRead.Task; var poll = ui.RefreshDisplayAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
             probe.Read = () => newRead.Task;
             var action = path == "Pause" ? ui.PauseAsync() : path == "ConfirmConfiguration" ? ui.RunAsync(ui.ConfirmConfigurationAsync) : ui.RunAsync(() => ui.CommandAsync("Resume"));
             oldRead.SetResult(oldSnapshot); await poll;
@@ -359,15 +364,15 @@ static class SportmasterUi
             probe.Read = null; await ui.RefreshDisplayAsync();
         }
         var late = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
-        probe.Read = () => late.Task; var command = ui.RunAsync(() => ui.CommandAsync("Resume"));
+        probe.Read = () => late.Task; var command = ui.RunAsync(() => ui.CommandAsync("Resume")); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
         probe.Read = null; await ui.RefreshDisplayAsync(); var current = ui.Snapshot;
         late.SetException(new IOException("obsolete command refresh failure")); await command;
         Check(ui.Fresh && ReferenceEquals(ui.Snapshot, current) && !ui.ReadStatus.Contains("obsolete command"),
             "late command refresh failure cannot invalidate a newer successful poll");
         var failingPoll = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
         var pendingNewer = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
-        probe.Read = () => failingPoll.Task; var oldPoll = ui.RefreshDisplayAsync();
-        probe.Read = () => pendingNewer.Task; var pendingPause = ui.PauseAsync();
+        probe.Read = () => failingPoll.Task; var oldPoll = ui.RefreshDisplayAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
+        probe.Read = () => pendingNewer.Task; var pendingPause = ui.PauseAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
         failingPoll.SetException(new IOException("older failure while newer read is still pending"));
         try { await oldPoll; throw new Exception("Expected old poll failure"); } catch (IOException) { }
         Check(!ui.Fresh && !ui.Left.CanAdmit, "a newer pending read is not proof of success and cannot hide an observed failure");
@@ -376,8 +381,8 @@ static class SportmasterUi
         await ui.RunAsync(() => ui.CommandAsync("Resume"));
         var failureBeforeSuccess = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
         var laterSuccess = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
-        probe.Read = () => failureBeforeSuccess.Task; var earlier = ui.RefreshDisplayAsync();
-        probe.Read = () => laterSuccess.Task; var later = ui.RefreshDisplayAsync();
+        probe.Read = () => failureBeforeSuccess.Task; var earlier = ui.RefreshDisplayAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
+        probe.Read = () => laterSuccess.Task; var later = ui.RefreshDisplayAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
         failureBeforeSuccess.SetException(new IOException("failure before newer poll succeeds"));
         try { await earlier; throw new Exception("Expected earlier poll failure"); } catch (IOException) { }
         Check(!ui.Fresh, "failed earlier read marks stale while later display read is pending");
@@ -393,13 +398,16 @@ static class SportmasterUi
     {
         var probe = new SnapshotProbe(app); var ui = new SupplyStationViewModel(probe); await ui.RefreshDisplayAsync();
         var before = await app.SnapshotAsync(); var writes = probe.Writes;
-        Check(!ui.SetViewport(1280, 680) && ui.ViewportReady, "minimum effective client area remains usable at the exact boundary");
-        Check(ui.SetViewport(1093, 614) && !ui.ViewportReady && !ui.CanUseWorkspace && !ui.Left.CanAdmit && !ui.CanResumeInViewport,
-            "1366 at 125 percent equivalent client area protects all new position actions");
+        Check(!ui.SetViewport(800, 420) && ui.ViewportReady, "minimum effective client area remains usable at the exact boundary");
+        Check(!ui.SetViewport(1093, 614) && ui.ViewportReady && ui.CanUseWorkspace,
+            "1366 at 125 percent equivalent client area uses compact layout");
+        Check(!ui.SetViewport(911, 512) && ui.ViewportReady, "1366 at 150 percent equivalent client area uses compact layout");
+        Check(ui.SetViewport(799, 420) && !ui.ViewportReady && !ui.CanUseWorkspace && !ui.Left.CanAdmit && !ui.CanResumeInViewport,
+            "below 800 DIP width protects all new position actions");
         await ui.EmitPositionAsync(ui.Left); await ui.ContinuePositionAsync(ui.Left); await ui.ReconcilePositionAsync(ui.Left);
         Check(probe.Writes == writes, "small client area dispatches no position action");
-        Check(!ui.SetViewport(911, 512) && !ui.ViewportFits && !ui.CanAcknowledgeViewport,
-            "1366 at 150 percent remains protected without repeated size-entry notifications");
+        Check(!ui.SetViewport(800, 419) && !ui.ViewportFits && !ui.CanAcknowledgeViewport,
+            "below 420 DIP height remains protected without repeated size-entry notifications");
         ui.SetViewport(1440, 900); ui.AcknowledgeViewport();
         Check(!ui.ViewportReady && !ui.CanUseWorkspace, "restored area cannot acknowledge before a confirmed paused snapshot");
         await ui.PauseAsync(); var paused = await app.SnapshotAsync();
@@ -408,8 +416,8 @@ static class SportmasterUi
         ui.AcknowledgeViewport();
         Check(ui.ViewportReady && ui.CanUseWorkspace && ui.Snapshot!.Paused && !ui.Left.CanAdmit && ui.CanResumeInViewport,
             "manual viewport acknowledgement keeps business paused until explicit Resume");
-        Check(ui.SetViewport(1279, 680), "one DIP below minimum width re-enters protection");
-        ui.SetViewport(1280, 679); Check(!ui.ViewportFits, "one DIP below minimum height remains protected");
+        Check(ui.SetViewport(799, 420), "one DIP below minimum width re-enters protection");
+        ui.SetViewport(800, 419); Check(!ui.ViewportFits, "one DIP below minimum height remains protected");
         ui.SetViewport(double.NaN, 900); Check(!ui.ViewportFits, "invalid client geometry cannot authorize a view");
         ui.SetViewport(1440, 900); ui.MarkReadFailure("viewport stale read"); ui.AcknowledgeViewport();
         Check(!ui.ViewportReady, "restored geometry and stale pause facts cannot clear viewport protection");
@@ -448,11 +456,15 @@ static class SportmasterUi
     }
     internal sealed class SnapshotProbe(IParcelApplication inner) : IParcelApplication
     {
-        public Func<Task<ParcelSnapshot>>? Read;
+        Func<Task<ParcelSnapshot>>? read;
+        TaskCompletionSource readEntered = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public Func<Task<ParcelSnapshot>>? Read { get => read; set { read = value; readEntered = new(TaskCreationOptions.RunContinuationsAsynchronously); } }
+        public Task ReadEntered => readEntered.Task;
         public int Writes;
         public List<BusinessCommand> Commands { get; } = [];
         public List<string> Queries { get; } = [];
-        public Task<ParcelSnapshot> SnapshotAsync() => Read?.Invoke() ?? inner.SnapshotAsync();
+        public Task<ParcelSnapshot> SnapshotAsync()
+        { var invocation = read; readEntered.TrySetResult(); return invocation?.Invoke() ?? inner.SnapshotAsync(); }
         public Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50) => inner.HistoryAsync(beforeSequence, limit);
         public Task<ParcelOperation?> OperationAsync(string id) => inner.OperationAsync(id);
         public Task<BusinessReceipt> CommandAsync(BusinessCommand command) { Writes++; Commands.Add(command); return inner.CommandAsync(command); }

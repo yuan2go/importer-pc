@@ -17,7 +17,9 @@ public sealed record CapabilityRequirements(bool MeasuredWeight = false, bool Im
     bool Query = false, bool PhysicalConfirmation = false, bool BusinessAcceptance = true, bool CompletesOnSubmit = false);
 public sealed record CapabilityDescriptor(string Kind, string Implementation, string Version, string Contract,
     ParameterField[] Parameters, CapabilityRequirements Requirements, PackageReference? Package = null, string? Module = null);
-public sealed record CapabilityCatalog(CapabilityDescriptor[] Providers, string[] InstalledPackages);
+public sealed record CapabilityPackage(PackageReference Package, PackageReference[] Dependencies);
+public sealed record CapabilityCatalog(CapabilityDescriptor[] Providers, string[] InstalledPackages,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] CapabilityPackage[]? Packages = null);
 public sealed class OperatorSession
 {
     OperatorIdentity? identity;

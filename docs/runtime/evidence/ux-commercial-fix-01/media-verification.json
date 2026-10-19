@@ -1,0 +1,118 @@
+[
+  {
+    "File": "direct-plc-core.zip",
+    "Bytes": 18619170,
+    "Sha256": "936317867349cae2267a49410a3d47130ff41e7b8c6b5f68d571abfb3bb9fbe5",
+    "SourceCommit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+    "Application": "direct-plc",
+    "Target": "portable",
+    "FilesVerified": 98,
+    "GuideSourcesVerified": 8,
+    "OfflinePackages": [],
+    "PeAppHosts": {},
+    "PrivateKeyIncluded": false,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "File": "sportmaster-core.zip",
+    "Bytes": 18656982,
+    "Sha256": "05cedc6c65c682e460110af9d487770d7baa7fd30ece572889e145fe14f88204",
+    "SourceCommit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+    "Application": "sportmaster",
+    "Target": "portable",
+    "FilesVerified": 104,
+    "GuideSourcesVerified": 11,
+    "OfflinePackages": [],
+    "PeAppHosts": {},
+    "PrivateKeyIncluded": false,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "File": "sportmaster-selected-portable.zip",
+    "Bytes": 18704988,
+    "Sha256": "28f12e9cb60c732831f5484818646acb96ee01bd51626a0efce41d26ba0cd058",
+    "SourceCommit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+    "Application": "sportmaster",
+    "Target": "portable",
+    "FilesVerified": 108,
+    "GuideSourcesVerified": 11,
+    "OfflinePackages": [
+      {
+        "Id": "reference.barcode",
+        "Version": "1.3.0",
+        "ManifestSha256": "c4e1b798d00373244513ae2f3dabe64e3ff95f526da80078c0bb63bad29557a0",
+        "PackageSha256": "0f07a02ceb87a6cd471b5bfa0cbbab5c02652b2647ca6dbbc7070b683286a4aa"
+      },
+      {
+        "Id": "reference.parcel-capabilities",
+        "Version": "2.2.0",
+        "ManifestSha256": "8ca9533dc9dbd3457889159cecb1f968b2eea0d5ccf7bb5c9afb1bd15eb5bedf",
+        "PackageSha256": "b24825cc81f10e8c0ef3096d18154845e64f9cd0b033a98d8878ef85859e1380"
+      },
+      {
+        "Id": "sportmaster.rcs-task",
+        "Version": "1.1.0",
+        "ManifestSha256": "6ad12085fb8949a12ac30fb21eebfd10ba489ce49234b729b45d42e5fb2bdcf0",
+        "PackageSha256": "795f2a8ce9afe89a9d8ed9876fb7f477732dc75b36a70025396339313476e356"
+      }
+    ],
+    "PeAppHosts": {},
+    "PrivateKeyIncluded": false,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "File": "sportmaster-selected-win-x64.zip",
+    "Bytes": 104792931,
+    "Sha256": "26d5f430bd10ae89f4c2c68559b69095a234a4e9e40ea7c8591a28161a4ed1d3",
+    "SourceCommit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+    "Application": "sportmaster",
+    "Target": "win-x64",
+    "FilesVerified": 745,
+    "GuideSourcesVerified": 11,
+    "OfflinePackages": [
+      {
+        "Id": "reference.barcode",
+        "Version": "1.3.0",
+        "ManifestSha256": "c4e1b798d00373244513ae2f3dabe64e3ff95f526da80078c0bb63bad29557a0",
+        "PackageSha256": "0f07a02ceb87a6cd471b5bfa0cbbab5c02652b2647ca6dbbc7070b683286a4aa"
+      },
+      {
+        "Id": "reference.parcel-capabilities",
+        "Version": "2.2.0",
+        "ManifestSha256": "8ca9533dc9dbd3457889159cecb1f968b2eea0d5ccf7bb5c9afb1bd15eb5bedf",
+        "PackageSha256": "b24825cc81f10e8c0ef3096d18154845e64f9cd0b033a98d8878ef85859e1380"
+      },
+      {
+        "Id": "sportmaster.rcs-task",
+        "Version": "1.1.0",
+        "ManifestSha256": "6ad12085fb8949a12ac30fb21eebfd10ba489ce49234b729b45d42e5fb2bdcf0",
+        "PackageSha256": "795f2a8ce9afe89a9d8ed9876fb7f477732dc75b36a70025396339313476e356"
+      }
+    ],
+    "PeAppHosts": {
+      "app/Ipc.Assembly.exe": "0x8664",
+      "desktop/Ipc.Desktop.exe": "0x8664"
+    },
+    "PrivateKeyIncluded": false,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  },
+  {
+    "File": "wcs-to-plc-core.zip",
+    "Bytes": 18644686,
+    "Sha256": "64937e19a9289556b53f80b2fcfafb3552ac0c60f0153bdecf80668c3662c858",
+    "SourceCommit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+    "Application": "wcs-to-plc",
+    "Target": "portable",
+    "FilesVerified": 100,
+    "GuideSourcesVerified": 8,
+    "OfflinePackages": [],
+    "PeAppHosts": {},
+    "PrivateKeyIncluded": false,
+    "Windows": "NOT_RUN",
+    "PhysicalIntegration": "BLOCKED"
+  }
+]

@@ -34838,14 +34838,14 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Audit03.Rcs.cs",
-      "version": "audit03-delivery-1.2.8",
+      "version": "ux-commercial-fix-01",
       "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic implementation or synthetic delivery evidence",
-      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
+      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
-      "sha256": "76fbe4acb536ce21d7a37f2cd00b7f9b4251bb2b806bdc96794d5f4576ab153a",
-      "size_bytes": 15802,
-      "git_blob": "4c6518afa7dc8146ede13556e6a7e4d86d632639"
+      "sha256": "d86c1d7f984d801f0c6971124b6c8a436b1309f1ec333387ef3502ecc6301bf3",
+      "size_bytes": 16404,
+      "git_blob": "3edd74374c520defe2d6abec0ef51d7bd006bfe4"
     },
     {
       "path": "tests/Ipc.Application.Verification/Audit03.Snapshots.cs",

@@ -2,6 +2,8 @@
 
 **当前工作：[Sportmaster 首个商业交付组合](work-packages/WP-IPC-SPORTMASTER-COMMERCIAL-DELIVERY-01.md)。** 起点 main `939462bee40c9eebe8eb2aa60860217afd95fcdd`，先提交设计，再实施。
 
+> 已发布的历史 Windows 介质：[三业务下载与精确来源](runtime/windows-no-test-release-20261020.md)，运行源码 `939462bee40c9eebe8eb2aa60860217afd95fcdd`，原任务未运行测试/安装。既有[统一发行 cfe6c0e](runtime/unified-release-main-20261020.md)保持旧来源；两者不覆盖本次 Sportmaster 增量。
+
 ## 1. 当前阅读顺序
 
 1. [AGENTS](../AGENTS.md)、[本包基线与清理](reviews/sportmaster-commercial-delivery-01-baseline.md)、[产品设计](design/sportmaster-commercial-delivery-01.md)、[必要验收](runtime/validation/sportmaster-commercial-delivery-01.md)。

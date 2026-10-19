@@ -1,0 +1,49 @@
+Retained build workspace on failure: C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h
+  正在确定要还原的项目…
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 1.23 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 33 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 34 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 34 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 34 毫秒)。
+  Ipc.Platform -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\r\windows-not-tested-939462bee40c-991c36\sportmaster-win-x64-939462bee40c\app\
+  正在确定要还原的项目…
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Application.Sportmaster.Desktop\Ipc.Application.Sportmaster.Desktop.csproj (用时 1.05 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop.csproj (用时 926 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\source-snapshot\src\Ipc.Desktop\Ipc.Desktop.csproj (用时 918 毫秒)。
+  12 个项目(共 15 个)是最新的，无法还原。
+  Ipc.Platform -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Application.ParcelFlow.Desktop\release\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Application.Sportmaster.Desktop\release\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-x6i6iq4h\build-intermediates\bin\Ipc.Desktop\release_win-x64\Ipc.Desktop.dll
+  Ipc.Desktop -> D:\r\windows-not-tested-939462bee40c-991c36\sportmaster-win-x64-939462bee40c\desktop\
+{"Package": "D:\\r\\windows-not-tested-939462bee40c-991c36\\sportmaster-win-x64-939462bee40c.zip", "Sha256": "8bcd0c69729f43e170d3aef5c3b8f3d868bb0a88db332e9a528541bfa2364470", "SourceCommit": "939462bee40c9eebe8eb2aa60860217afd95fcdd", "Application": "sportmaster", "Target": "win-x64", "BusinessVersion": "1.4.0", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "D80BA0B0C40F34E2E9C080C9D898C77214461BCEA394F43290CD9DDC9F473975"}

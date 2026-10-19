@@ -47,7 +47,14 @@ with tarfile.open(fileobj=export.stdout, mode='r|') as snapshot:
     # Historical evidence contains deep paths. Use the Windows extended path
     # syntax for archive I/O only; do not change machine LongPaths/UAC policies.
     extraction_root = ('\\\\?\\' + str(build_source)) if os.name == 'nt' else str(build_source)
-    snapshot.extractall(extraction_root, filter='data')
+    def publication_member(member, destination):
+        # Extended Win32 paths do not normalize '/' (including tarfile's final
+        # directory-attribute pass). Normalize archive names before the same
+        # safe-data filter, retaining its escape/link checks.
+        if os.name == 'nt':
+            member = member.replace(name=member.name.replace('/', os.sep))
+        return tarfile.data_filter(member, destination)
+    snapshot.extractall(extraction_root, filter=publication_member)
 if export.wait(): raise ValueError('Frozen source export failed')
 selection = resolve(build_source / 'config/compositions.json', a.composition or a.application + '-reference')
 if selection['product']['business'] != a.application:

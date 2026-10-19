@@ -69,10 +69,18 @@ bundles = read_packages(a.extension_package, selection)
 if bundles and a.extension_trust is None:
     raise ValueError('Selected offline packages require independent trust for target-host acceptance')
 business, compatibility_source = read_business(build_source, a.application, selection)
+# A Git-exported snapshot is nested beneath the working repository. SDK SCM
+# discovery would otherwise read that repository's live HEAD into SourceLink,
+# even when SourceRevisionId is fixed, changing contract bytes between publishes.
+artifacts.mkdir(parents=True, exist_ok=True)
+source_link = artifacts / 'frozen-source-link.json'
+source_link.write_text(json.dumps({'documents': {'/_/src/*':
+    'https://raw.githubusercontent.com/yuan2go/importer-pc/' + source + '/*'}}), encoding='utf-8')
 for project, destination in [('Ipc.Assembly', 'app'), *([('Ipc.Desktop', 'desktop')] if a.target == 'win-x64' else [])]:
     command = [a.dotnet, 'publish', f'src/{project}/{project}.csproj', '-c', 'Release', '-m:1', '-nr:false',
                '-p:EnableWindowsTargeting=true', '-p:RestoreLockedMode=true',
                '-p:PathMap=' + str(build_source) + '=/_/src%2C' + str(artifacts) + '=/_/build', '-p:SourceRevisionId=' + source, *properties,
+               '-p:EnableSourceControlManagerQueries=false', '-p:EnableSourceLink=false', '-p:SourceLink=' + str(source_link),
                '--artifacts-path', str(artifacts), '--self-contained', 'true' if a.target == 'win-x64' else 'false', '-o', str(output / destination)]
     if a.target == 'win-x64': command += ['-r', 'win-x64']
     subprocess.run(command, cwd=build_source, check=True)
@@ -97,6 +105,11 @@ for base in [output / 'app', output / 'desktop']:
         raise ValueError('DirectPlc must not depend on a WCS implementation')
 if a.target == 'win-x64' and not (output / 'desktop' / f'Ipc.Application.{module}.Desktop.dll').is_file():
     raise ValueError('Selected WPF presentation was not delivered')
+if a.target == 'win-x64':
+    for binary in (output / 'app').glob('Ipc.*.dll'):
+        peer = output / 'desktop' / binary.name
+        if peer.exists() and hashlib.sha256(binary.read_bytes()).digest() != hashlib.sha256(peer.read_bytes()).digest():
+            raise ValueError('Console/helper and desktop contract bytes differ: ' + binary.name)
 publish_packages(bundles, selection, output, a.dotnet, a.extension_trust, a.extension_check_host)
 selection.update(business)
 for directory in [output / 'app', output / 'desktop']:

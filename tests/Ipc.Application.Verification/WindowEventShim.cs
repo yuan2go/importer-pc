@@ -21,13 +21,20 @@ namespace System.Windows
         public event EventHandler? Loaded;
         public event System.ComponentModel.CancelEventHandler? Closing;
         public event EventHandler? Closed;
-        bool disposed;
+        bool disposed, insideClosing;
+        [ThreadStatic] static TaskCompletionSource? closingEvent;
+        internal static Task YieldClosingEvent() => closingEvent?.Task ?? Task.CompletedTask;
         public void Show() => IsVisible = true;
         public void RaiseLoaded() => Loaded?.Invoke(this, EventArgs.Empty);
         public void Close()
         {
+            if (insideClosing) throw new InvalidOperationException("WPF does not allow Close during Closing");
             if (disposed) return;
-            var args = new System.ComponentModel.CancelEventArgs(); Closing?.Invoke(this, args);
+            var args = new System.ComponentModel.CancelEventArgs();
+            var prior = closingEvent; var completed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            closingEvent = completed; insideClosing = true;
+            try { Closing?.Invoke(this, args); }
+            finally { insideClosing = false; closingEvent = prior; completed.TrySetResult(); }
             if (args.Cancel) return;
             disposed = true; IsVisible = false; Closed?.Invoke(this, EventArgs.Empty);
         }
@@ -52,6 +59,7 @@ namespace System.Windows.Controls
 }
 namespace System.Windows.Threading
 {
+    public static class Dispatcher { public static Task Yield() => System.Windows.Window.YieldClosingEvent(); }
     public class DispatcherTimer
     {
         public TimeSpan Interval { get; set; }

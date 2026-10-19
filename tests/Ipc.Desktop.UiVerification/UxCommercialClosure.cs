@@ -7,6 +7,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Platform;
+using Ipc.Assembly;
+using Ipc.Application.Sportmaster;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster.Desktop;
 
@@ -132,6 +134,63 @@ static partial class Program
             await vm.LoadCapabilitiesAsync();
             topologyTab.IsSelected = true; readers.SelectedItem = vm.ReaderDrafts[0]; instances.SelectedItem = vm.CapabilityDrafts.First();
             page.UpdateLayout(); await Dispatcher.Yield();
+        }
+    }
+
+    static async Task VerifyLegacyDraftClose(string evidence, ParcelConfiguration config, Action<bool, string> check)
+    {
+        foreach (var ui in new[] { "classic", "supply-station" })
+        {
+            var configRoot = Path.Combine(evidence, "legacy-" + ui, "config"); Directory.CreateDirectory(configRoot);
+            var legacy = config with { SchemaVersion = 2, Topology = null, StationId = "native-legacy-" + ui };
+            ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), legacy);
+            var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "legacy-" + ui, "data"), null, null);
+            await using var runtime = SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
+            await runtime.StartAsync(CancellationToken.None);
+            var stops = 0; var decisions = 0;
+            var window = Presentation.Create((IParcelApplication)runtime.Application, "sportmaster-maintenance", null, ui,
+                async () => { await runtime.StopAsync(CancellationToken.None); stops++; });
+            void Decision(bool discard)
+            {
+                if (window is ShellWindow shell) shell.ConfirmDiscardDrafts = _ => { decisions++; return discard; };
+                else ((SupplyStationWindow)window).ConfirmDiscardDrafts = _ => { decisions++; return discard; };
+            }
+            window.Show();
+            try
+            {
+                var vm = (ParcelViewModel)window.DataContext;
+                for (var i = 0; i < 100 && (!vm.HasLoadedConfiguration || vm.Busy); i++) await Task.Delay(20);
+                var page = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
+                var tab = Descendants(page).OfType<TabItem>().Single(x => Equals(x.Header, "旧schema1/2策略"));
+                tab.IsSelected = true; window.UpdateLayout(); await Dispatcher.Yield();
+                var editor = Descendants(page).OfType<TextBox>().Single(x => x.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path.Path == nameof(vm.DraftPrecision));
+                var before = vm.DraftPrecision; var revision = vm.DraftRevisionState;
+                editor.Focus(); editor.Text = "SYNTHETIC invalid integer"; editor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
+                check(Validation.GetHasError(editor) && vm.DraftPrecision == before && !vm.HasUnsavedConfiguration,
+                    ui + " native legacy conversion failure leaves the model unchanged but retains invalid editor text");
+                Decision(false); window.Close();
+                for (var i = 0; i < 100 && !window.IsEnabled; i++) await Task.Delay(20);
+                check(decisions == 1 && stops == 0 && window.IsVisible && window.IsEnabled && Validation.GetHasError(editor) &&
+                    editor.Text == "SYNTHETIC invalid integer" && vm.DraftRevisionState == revision,
+                    ui + " native close detects conversion errors independently of model dirty state and cancellation preserves raw input and CAS");
+                editor.Text = (before + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                // This legacy binding normally updates on LostFocus. Close must flush it before testing the draft.
+                window.Close();
+                for (var i = 0; i < 100 && !window.IsEnabled; i++) await Task.Delay(20);
+                check(decisions == 2 && stops == 0 && window.IsVisible && vm.DraftPrecision == before + 1 && vm.HasUnsavedConfiguration,
+                    ui + " native close commits pending text before deciding whether to discard and still defaults to preserving it");
+                Decision(true); window.Close();
+                for (var i = 0; i < 100 && window.IsVisible; i++) await Task.Delay(20);
+                check(!window.IsVisible && stops == 1, ui + " explicit discard exits native Closing before closing and stops the actual Application once");
+            }
+            finally
+            {
+                if (window.IsVisible)
+                {
+                    Decision(true); window.Close();
+                    for (var i = 0; i < 100 && window.IsVisible; i++) await Task.Delay(20);
+                }
+            }
         }
     }
 

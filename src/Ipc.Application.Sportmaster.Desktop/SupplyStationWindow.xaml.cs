@@ -118,6 +118,8 @@ public partial class SupplyStationWindow : Window
         foreach (var window in affected) { if (window != this) window.closeGeneration++; window.closing = true; window.timer.Stop(); window.IsEnabled = false; }
         try
         {
+            // Close cannot re-enter a native WPF Closing event even when every drain task is already complete.
+            await System.Windows.Threading.Dispatcher.Yield();
             await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.pendingViewportPause, x.ViewModel.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
             // A root close owns the entire group, including an auxiliary close already draining.
             if (generation != closeGeneration || this != root && root.closing) return;

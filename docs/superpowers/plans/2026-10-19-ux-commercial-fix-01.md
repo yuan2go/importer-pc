@@ -20,7 +20,7 @@
 Files: src/Ipc.Application.Contracts/ParcelInputs.cs、ParcelContracts.cs；src/Ipc.Application.ParcelFlow/ParcelInputs.cs、ParcelRuntime.cs、ParcelGuards.cs、ParcelCommands.cs；tests/Ipc.Application.Verification/UxCommercialInputs.cs。
 
 Consumes: 原Observation、ParcelSnapshot.Positions/Operations、repository.Commit及原输入队列。
-Produces: `ParcelInputSnapshot(string PositionId, Observation Observation, ParcelInputOutcome Outcome, string Reason, string? OperationId, DateTimeOffset RecordedAt)`；快照末尾可选`ParcelInputSnapshot[]? Inputs=null`。
+Produces: `ParcelInputSnapshot(string PositionId, Observation Observation, ParcelInputOutcome Outcome, string Reason, string? OperationId, DateTimeOffset RecordedAt, DeviceBinding? ReaderBinding=null)`；快照末尾可选`ParcelInputSnapshot[]? Inputs=null`。
 
 - [ ] 在真实runtime输入成功→NoRead后断言`Inputs.Single(x=>x.PositionId=="left").Outcome==Rejected`、CurrentOperation不再指上件成功；原Request/hash/attempt不变、右位不变。
 - [ ] 运行`dotnet <verification.dll> . --ux-commercial-inputs`并保留RED。
@@ -63,6 +63,6 @@ Files: 桌面服务调用帮助类及相关VM/关闭流程；不得改变业务�
 Files: 项目/兼容声明、运行/UI指南、manifest、原package-application入口及本包结果。
 
 - [ ] 同步业务/ABI/新精确包身份，测试旧版本事实与当前声明分开。
-- [ ] 使用`/Users/yuan/.local/share/ipc-dotnet/dotnet`，串行`-m:1 -nr:false`执行必要模块/恢复/配置/资源测试和三套WPF交叉构建。
+- [ ] 使用固定SDK 10.0.402的`dotnet`，串行`-m:1 -nr:false`执行必要模块/恢复/配置/资源测试和三套WPF交叉构建。
 - [ ] 提交冻结源码后生成实际portable和Windows候选；选装签名/依赖/Files/hash及解包参考启动；无私钥/SDK/字体/客户原稿。
 - [ ] 记录源码SHA、命令/返回码、候选hash、原失败和未验边界；文档/manifest校验后推送当前开发分支并创建main PR，不合并。

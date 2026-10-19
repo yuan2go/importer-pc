@@ -6,7 +6,7 @@
 
 比较仅清UI旧值、另建输入/配置状态机、补齐既有Application投影三条路径：采用第三条。仅清UI无法解释重启与双窗，第二套状态机会分裂原件与配置责任。基座、三个独立Application、驱动/组件、原请求、Unknown、SQL1～7和单一配置账继续继承。
 
-1. UXC-01：Application拥有独立最新观察事实，不因非法观察创建新Operation。新增可选ParcelSnapshot.Inputs（ParcelInputSnapshot数组），记录PositionId、原Observation、Outcome（Admitted/Rejected/Blocked/Duplicate）、Reason、OperationId及RecordedAt。事实进入既有parcel_audit的专用InputObserved事件，启动按持久seq重建每位最多一个投影；不新增表/第二账、不修改SQL和DB7。可信当前reader/epoch/sequence与来源时效先验证；旧注册/旧序列只审计，不覆盖当前投影。无码、多码、非法码的原来源和分类可追溯。最新观察未准入且旧主链已终结时，CurrentOperation为空，原作业仍在历史；原未决责任继续显示及受守卫，不被观察失败清除。两布局按同一投影展示，不用上件格口解释本次观察。
+1. UXC-01：Application拥有独立最新观察事实，不因非法观察创建新Operation。新增可选ParcelSnapshot.Inputs（ParcelInputSnapshot数组），记录PositionId、原Observation、Outcome（Admitted/Rejected/Blocked/Duplicate）、Reason、OperationId、RecordedAt及原ReaderBinding。事实进入既有parcel_audit的专用InputObserved事件，启动按持久seq重建每位最多一个投影；不新增表/第二账、不修改SQL和DB7。可信当前reader/epoch/sequence与来源时效先验证；旧注册/旧序列不能覆盖当前投影；来源事件/新鲜度/健康验证通过后才推进序列。设备完整绑定变化后旧终结结果留历史，不冒新来源。无码、多码、非法码的原来源和分类可追溯。最新观察未准入且旧主链已终结时，CurrentOperation为空，原作业仍在历史；原未决责任继续显示及受守卫，不被观察失败清除。两布局按同一投影展示，不用上件格口解释本次观察。
 2. UXC-02/06：保留已批准的浅灰/白卡、蓝紫位标识和大条码/格口。正常、等待、处理中、拒绝、Unknown、失效使用文字+语义图标/颜色，普通RCS摘要不着错误色。健康展示保留证据范围，RCS仅本地lifecycle时明确“客户端已启动，上游未确认”，不造health请求或把POST当查询。
 3. UXC-03：沿原schema、库存和CAS补schema3结构化编辑。所有reader/投递位/实例及本位秤/相机绑定保持完整，已安装提供者按精确身份选择；局部字段校验、完整候选校验、保存Pending、受控重启Effective分开。只读高级JSON仍可用，表单与高级JSON一次只以明确加载的草稿为准，冲突不覆盖。旧schema1/2兼容路径保留。安装/原操作恢复/卸载继续调用原Store，不引入第二安装设施。
 4. UXC-04：在既有framework的800×420DIP重排目标内补真正紧凑布局；至少保留两位来源/当前状态/原码/格口和固定操作，详细标识和诊断可折叠/局部滚动。低于最低有效客户区仍暂停保护，恢复空间后人工确认且不Resume。既有1280×680是旧候选阈值，不作为缩减既有06矩阵的依据；本包扩展布局，不整屏缩字、不放松业务守卫。实际DPI/触控可用性后验。
@@ -23,10 +23,10 @@ G-01真实Windows验收按用户要求后置；G-02缺真实SDK/协议/权威Unk
 
 ## 执行清单
 
-- [ ] 文档设计/计划与本包原审查映射先提交。
-- [ ] UXC-01真实运行时和两布局反例先RED，再持久观察投影及重启/防重闭环。
-- [ ] UXC-02/04/05/06两布局状态、布局和页面状态接线。
-- [ ] UXC-03 schema3编辑、校验、CAS/激活与原Store管理路径。
-- [ ] UXC-07异步服务调用及关闭/暂停/草稿回归。
+- [x] 文档设计/计划与本包原审查映射先提交（943727e）。
+- [x] UXC-01真实运行时和两布局反例先RED，再持久观察投影及重启/防重闭环。
+- [x] UXC-02/04/05/06两布局状态、布局和页面状态接线。
+- [x] UXC-03 schema3编辑、校验、CAS/激活与原Store管理路径。
+- [x] UXC-07异步服务调用及关闭/暂停/草稿回归。
 - [ ] 版本、配置/依赖、随包指南、manifest、实际构建/参考媒介及证据。
 - [ ] 提交推送并创建main PR，报告已修/待验/受阻，后续验收不在本包宣告通过。

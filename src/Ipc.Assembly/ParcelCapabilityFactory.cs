@@ -230,9 +230,12 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         RegisterContracts();
         var settingsFile = Path.Combine(launch.ConfigurationDirectory, "extension-store.json");
         var installed = store is not null || OperatingSystem.IsWindows() || File.Exists(settingsFile) ? Store().Inventory().Where(x => x.Status == "Installed").ToArray() : [];
-        var descriptors = installed.SelectMany(x => Store().VerifyInstalled(x.Package).Manifest.Modules.Select(m =>
+        // Verify signed declarative manifests only. Catalog reads never load provider code.
+        var manifests = installed.Select(x => (x.Package, Manifest: Store().VerifyInstalled(x.Package).Manifest)).ToArray();
+        var descriptors = manifests.SelectMany(x => x.Manifest.Modules.Select(m =>
             new CapabilityDescriptor(m.Kind, "extension:" + x.Package.Id + "/" + m.Id, x.Package.Version, m.ContractIdentity ?? "PARCEL-REFERENCE-v1", m.Parameters, m.Requirements ?? new(), x.Package, m.Id)));
-        return new(ReferenceCapabilityCatalog.Providers.Append(new("observation", "manual", "1.0.0", "CONTROLLED-OBSERVATION-v1", [], new())).Concat(descriptors).ToArray(), installed.Select(x => x.Package.Id + "@" + x.Package.Version).ToArray());
+        return new(ReferenceCapabilityCatalog.Providers.Append(new("observation", "manual", "1.0.0", "CONTROLLED-OBSERVATION-v1", [], new())).Concat(descriptors).ToArray(), installed.Select(x => x.Package.Id + "@" + x.Package.Version).ToArray(),
+            manifests.Select(x => new CapabilityPackage(x.Package, x.Manifest.Dependencies)).ToArray());
     }
     internal ApplicationRelease ReadPublishedRelease(string appRoot)
     {

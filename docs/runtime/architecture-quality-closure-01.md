@@ -1,3 +1,5 @@
+> 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
+
 # Application运行、维护与兼容
 
 当前审查03实施范围见[工作包](../work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)。历史P1/P2整改见[结果与固定证据](pr26-recovery-closure-results.md)及[工作包](../work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)。普通DB4未结启动先用只读连接检查，拒绝时不打开写库、不checkpoint非空WAL，不写配置确认。原匹配DB4读者仍可清偿；即使实现Hash看似一致，也不自动放行跨DB升级。
@@ -12,7 +14,7 @@ schema3增加可缺省Retention：ResidentHistory=200（1～10000）、MinimumFr
 
 满足本业务主链终态、图像已释放、无附加Prepared/Unknown/Conflict、无活动阶段和未清接收发生，才能归档。一次至多256件，事务保存完整原JSON/hash、永久Admission/Observation索引及原响应字节/hash后移出工作表。所有测量、请求、发送次数、回执和审计仍保留；原raw从文件转为同数据库BLOB的持久原字节后才清理冗余spool。删除失败显示待清理并重启续清，不能丢失已提交归档。没有按年龄删除、历史覆盖或长期图片库。
 
-快照只投影当前有界工作集及各位最新结果，完整历史走HistoryAsync(beforeSequence,limit)，limit=1～200，默认50，稳定递减游标。OperationAsync(id)读取原件。CLI命令History（Owner为可选游标、Value为可选页长）、Operation（Owner=原ID）；桌面记录页读取50条/下一页/按需详情。归档旧观察仍去重，跨位身份复用写持续冲突责任。磁盘增长保留全部历史，不推断客户保留天数。维护实际路径是将完整恢复集迁至容量足够的新卷：暂停并认证维护，Backup取得COMPLETED集，停止旧根；以新卷的原Mode/Station/Application目录执行recovery-plan，读取CopyBytes、MinimumFreeBytes、AvailableBytes及RemainingGrowthBytes，再restore。预检不足不建目标；副本hash不符拒绝。按包内原发布、配置、信任和包启动新根，恢复隔离后核对外部事实并显式Resume；旧根仍保留，禁止两个根同时操作设备。重复运行期间记录已归档件数与卷剩余增长字节，按实际增长安排下次扩容；不存在自动删除历史或“永久无限磁盘”承诺。
+快照只投影当前有界工作集及各位最新结果，完整历史走HistoryAsync(beforeSequence,limit)，limit=1～200，默认50，稳定递减游标。OperationAsync(id)读取原件。CLI命令History（Owner为可选游标、Value为可选页长）、Operation（Owner=原ID）；桌面记录页读取50条/下一页/按需详情，分别显示加载、空记录和读取失败；保留原选择与完整JSON复制，查询结果不得由迟到旧请求覆盖。归档旧观察仍去重，跨位身份复用写持续冲突责任。磁盘增长保留全部历史，不推断客户保留天数。维护实际路径是将完整恢复集迁至容量足够的新卷：暂停并认证维护，Backup取得COMPLETED集，停止旧根；以新卷的原Mode/Station/Application目录执行recovery-plan，读取CopyBytes、MinimumFreeBytes、AvailableBytes及RemainingGrowthBytes，再restore。预检不足不建目标；副本hash不符拒绝。按包内原发布、配置、信任和包启动新根，恢复隔离后核对外部事实并显式Resume；旧根仍保留，禁止两个根同时操作设备。重复运行期间记录已归档件数与卷剩余增长字节，按实际增长安排下次扩容；不存在自动删除历史或“永久无限磁盘”承诺。
 
 Capacity统一投影未结/工作集/归档量、磁盘可用及保留阈值。低于磁盘保留或未结数耗尽，准入/Resume/UI同源阻断；维护轮询重新读取容量后可恢复。未结、Unknown、原图/上传及原接收责任不得被归档解锁。暂停、维护认证及检查原因齐备时可显式ArchiveHistory；例行策略本身不授权删除磁盘历史。
 
@@ -40,7 +42,7 @@ Attached上传失败/Unknown/无结果/原能力缺失只进入Upload.State/Fail
 
 ## 配置、安装与安全卸载
 
-维护页“完整候选配置”读取全部schema3 JSON，可校验而不保存，也可填维护原因后CAS保存Pending；Effective待清偿屏障及受控重启。旧单Reader表单继续拒绝schema3保存。安装模块/schema、完整候选参数、绑定/激活修订、健康和业务可用分别读取。
+维护页结构化草稿读取全部schema3拓扑及能力绑定，按已安装精确提供者编辑；字段校验与完整候选校验均不保存，填维护原因后才沿原CAS保存Pending，Effective待清偿屏障及受控重启。高级JSON与表单须显式加载为同一草稿，冲突保留原草稿供比较；schema1/2继续走兼容编辑，不将双位降成单Reader。安装模块/schema、完整候选参数、绑定/激活修订、健康和业务可用分别读取。安装后刷新目录不自动重载配置草稿；卸载从实际Catalog返回的PackageReference选择“安全卸载所选精确包”，仍由原Store检查全部消费者和责任。“高级：按原安装操作ID恢复”要求从原安装日志复制原ID；当前应用接口不枚举该日志，页面不猜身份、不新建替代操作。
 
 StageConfigurationAsync(expectedConfigurationRevision,candidate,reason)要求维护身份与1～1024字原因。配置前写持久审计意图，记录主体/前后修订/原与候选hash；保存、校验拒绝、激活及失败有独立结果。文件已保存但结果审计中断时，启动根据原哈希及权威envelope收敛；不把文件/数据库双写当作单事务。候选包在保存期间受原包使用租约保护，消费者先登记，卸载不能在保存窗口漏读引用。
 
@@ -60,7 +62,7 @@ dotnet app/Ipc.Assembly.dll --action extension-uninstall --package '{"Id":"appro
 
 Parcel现行数据库7；SQL1～6/checksum逐字节继承。SQL5独立资料责任、SQL6原报文/拆包语义继续生效，SQL7追加数字请求唯一归属、已配置范围及恢复退役边界。普通DB2–6升级至7必须先只读证明主链、附加上传、图像和每次接收资料责任均已清偿；仅raw库存hash正确不足以授权升级。存在未结责任时拒绝写库及未来reader标记，使用匹配原发布清偿。repair-main-projection只修已由原件证明的主投影，保留旧schema；recover-legacy-receipt是有完整备份、原DB/WAL指纹和原目标权威Query依据的专用窄路径，CLI显式选择DB7，内部旧API默认DB5。窄路径可迁移已证明业务终结但仍缺原raw的Attached资料责任，原发生、图像和原包引用继续保留；无原依据不得升级。已为7的库不降级。升级不重写原冻结请求、发送次数、目标、hash或合同，不把追加表结构当作精确实现兼容；旧5程序拒读6。升级前通过匹配发布做完整备份并保存原二进制、配置、信任与包；回退只能使用匹配原发布/升级前备份，并先核对期间外部动作，不能倒退业务账或盲重发。
 
-Application.Contracts当前为ABI1.8.0；PR24能力包1.6.6/1.6.7保留原身份，本次能力、观察及兼容集成示例模板均不提供Version，每次构建显式指定`--version`的新不可变版本；准确发行物版本及manifest/包哈希读取媒介`composition.lock.json`与`.identity.json`，不得把模板或历史示例版本视为当前默认；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包同样使用显式新版本。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
+Application.Contracts当前为ABI1.9.0；PR24能力包1.6.6/1.6.7保留原身份，本次能力、观察及兼容集成示例模板均不提供Version，每次构建显式指定`--version`的新不可变版本；准确发行物版本及manifest/包哈希读取媒介`composition.lock.json`与`.identity.json`，不得把模板或历史示例版本视为当前默认；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包同样使用显式新版本。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
 
 必要构建与定向选择器：
 

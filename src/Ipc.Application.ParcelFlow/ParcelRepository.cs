@@ -137,7 +137,7 @@ public sealed partial class ParcelRepository : IDisposable
         }
         return result.ToArray();
     }
-    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null)
+    public void Commit(ParcelOperation? operation, string eventName, string detail, bool? paused = null, string? occurrence = null, BusinessCommand? command = null, WeightMeasurement? measurement = null, string? acknowledgedOverload = null, IdentityConflict? identityConflict = null, string? clearConflict = null, ConfigurationChangeAudit? configurationAudit = null, string? reconciledOccurrence = null, string? outcomeQuery = null, string? priorConflictBody = null, ParcelInputSnapshot? input = null)
     {
         using var tx = db.BeginTransaction();
         if (measurement is not null)
@@ -206,6 +206,15 @@ public sealed partial class ParcelRepository : IDisposable
             audit.Transaction = tx; audit.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) VALUES($at,$event,$owner,$detail)";
             audit.Parameters.AddWithValue("$at", DateTimeOffset.UtcNow.ToString("O")); audit.Parameters.AddWithValue("$event", eventName);
             audit.Parameters.AddWithValue("$owner", operation?.Id ?? "runtime"); audit.Parameters.AddWithValue("$detail", detail); audit.ExecuteNonQuery();
+        }
+        if (input is not null)
+        {
+            using var audit = db.CreateCommand(); audit.Transaction = tx;
+            audit.CommandText = "INSERT INTO parcel_audit(at,event,owner,detail) VALUES($at,'InputObserved',$owner,$detail)";
+            audit.Parameters.AddWithValue("$at", input.RecordedAt.ToString("O"));
+            audit.Parameters.AddWithValue("$owner", input.OperationId ?? input.PositionId);
+            audit.Parameters.AddWithValue("$detail", Wire.Encode(input)); audit.ExecuteNonQuery();
+            Boundary?.Invoke("AfterInputObservedInsert");
         }
         if (occurrence is not null)
         {

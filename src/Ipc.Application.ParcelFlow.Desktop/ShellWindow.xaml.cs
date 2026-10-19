@@ -13,41 +13,75 @@ public partial class ShellWindow : Window
     readonly UserControl work;
     readonly HistoryPage history = new();
     readonly MaintenancePage maintenance = new();
-    bool refreshing, compact, closeReady;
+    readonly ShellWindow root;
+    readonly HashSet<ShellWindow> windows;
+    Task pendingRefresh = Task.CompletedTask, pendingViewportPause = Task.CompletedTask;
+    bool compact, closing, closeReady, closed;
     public Func<Task>? StopOwnerAsync { get; set; }
-    public ShellWindow(ParcelViewModel vm, Func<ParcelViewModel> newViewModel, Func<UserControl> workstation, string? view = null, string? layout = null)
+    public ShellWindow(ParcelViewModel vm, Func<ParcelViewModel> newViewModel, Func<UserControl> workstation, string? view = null, string? layout = null, ShellWindow? owner = null)
     {
         InitializeComponent(); this.vm = vm; this.newViewModel = newViewModel; this.workstation = workstation; DataContext = vm; work = workstation();
-        PageHost.Content = view?.EndsWith("-history", StringComparison.Ordinal) == true ? history : view?.EndsWith("-maintenance", StringComparison.Ordinal) == true ? maintenance : work;
+        root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
+        if (owner is not null) Owner = owner;
+        var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : view?.EndsWith("-maintenance", StringComparison.Ordinal) == true ? "maintenance" : "work";
+        PageHost.Content = initialPage == "history" ? history : initialPage == "maintenance" ? maintenance : work;
         compact = layout == "compact"; ApplyLayout();
-        timer.Tick += Refresh; Loaded += async (_, _) => { await vm.RunAsync(vm.RefreshAsync); timer.Start(); };
-        Closed += (_, _) => timer.Stop(); Closing += ClosingOwner;
+        ClientArea.SizeChanged += (_, _) => UpdateViewport();
+        timer.Tick += (_, _) => { vm.RefreshFreshness(); if (!closing && !closed && pendingRefresh.IsCompleted) pendingRefresh = RefreshAsync(); };
+        Loaded += async (_, _) =>
+        {
+            if (ActualWidth > SystemParameters.WorkArea.Width || ActualHeight > SystemParameters.WorkArea.Height) WindowState = WindowState.Maximized;
+            pendingRefresh = RefreshAsync(); await pendingRefresh;
+            if (closing || closed) return;
+            UpdateViewport(); timer.Start();
+            if (initialPage == "history") await vm.RunAsync(() => vm.LoadHistoryAsync());
+            if (initialPage == "maintenance") await vm.RunAsync(vm.EnsureMaintenanceLoadedAsync);
+        };
+        Closed += (_, _) => { closed = true; timer.Stop(); windows.Remove(this); }; Closing += ClosingOwner;
     }
-    async void Refresh(object? sender, EventArgs e)
+    async Task RefreshAsync()
+    { try { await vm.RefreshAsync(); } catch (Exception) { /* Snapshot reader retains and marks its original failure. */ } }
+    void UpdateViewport()
     {
-        vm.RefreshFreshness();
-        if (refreshing) return;
-        refreshing = true;
-        try { await vm.RefreshAsync(); } catch (Exception ex) { vm.Message = vm.ReadStatus + " · " + ex.Message; }
-        finally { refreshing = false; }
+        if (closing || closed || ClientArea.ActualWidth <= 0 || ClientArea.ActualHeight <= 0) return;
+        ApplyLayout(); if (vm.SetViewport(ClientArea.ActualWidth, ClientArea.ActualHeight)) QueueViewportPause();
     }
+    void QueueViewportPause() { if (!closing && !closed && pendingViewportPause.IsCompleted) pendingViewportPause = vm.PauseAsync(); }
+    void Maximize_Click(object s, RoutedEventArgs e) => WindowState = WindowState.Maximized;
+    void ViewportPause_Click(object s, RoutedEventArgs e) => QueueViewportPause();
+    void ViewportAcknowledge_Click(object s, RoutedEventArgs e) => vm.AcknowledgeViewport();
     void Workstation_Click(object s, RoutedEventArgs e) => PageHost.Content = work;
     async void History_Click(object s, RoutedEventArgs e) { PageHost.Content = history; await vm.RunAsync(() => vm.LoadHistoryAsync()); }
-    async void Maintenance_Click(object s, RoutedEventArgs e) { PageHost.Content = maintenance; await vm.RunAsync(vm.LoadCapabilitiesAsync); }
-    void Window_Click(object s, RoutedEventArgs e) => new ShellWindow(newViewModel(), newViewModel, workstation, layout: compact ? "compact" : "standard") { Owner = this }.Show();
+    async void Maintenance_Click(object s, RoutedEventArgs e) { PageHost.Content = maintenance; await vm.RunAsync(vm.EnsureMaintenanceLoadedAsync); }
+    void Window_Click(object s, RoutedEventArgs e) { if (!root.closing) new ShellWindow(newViewModel(), newViewModel, workstation, layout: compact ? "compact" : "standard", owner: root).Show(); }
     void Layout_Click(object s, RoutedEventArgs e) { compact = !compact; ApplyLayout(); }
-    void ApplyLayout() { FontSize = compact ? 14 : 16; PageHost.Margin = new Thickness(0, compact ? 8 : 12, 0, compact ? 8 : 12); }
+    void ApplyLayout() { vm.IsCompact = compact || ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680; FontSize = vm.IsCompact ? 14 : 16; }
     async void Pause_Click(object s, RoutedEventArgs e) => await vm.PauseAsync();
-    async void Resume_Click(object s, RoutedEventArgs e) => await vm.RunAsync(() => vm.CommandAsync("Resume"));
-    async void Reconcile_Click(object s, RoutedEventArgs e) => await vm.RunAsync(vm.ReconcileAsync);
+    async void Resume_Click(object s, RoutedEventArgs e) { if (vm.CanResumeInViewport) await vm.RunAsync(() => vm.CommandAsync("Resume")); }
+    async void Reconcile_Click(object s, RoutedEventArgs e) { if (vm.CanUseWorkspace) await vm.RunAsync(vm.ReconcileAsync); }
     async void Login_Click(object s, RoutedEventArgs e) { var proof = LoginProof.Password; LoginProof.Clear(); await vm.RunAsync(() => vm.LoginAsync(proof)); }
     async void Logout_Click(object s, RoutedEventArgs e) => await vm.RunAsync(vm.LogoutAsync);
-    async void Continue_Click(object s, RoutedEventArgs e) => await vm.RunAsync(vm.ContinueAsync);
+    async void Continue_Click(object s, RoutedEventArgs e) { if (vm.CanUseWorkspace) await vm.RunAsync(vm.ContinueAsync); }
     async void ClosingOwner(object? sender, CancelEventArgs e)
     {
-        if (closeReady || StopOwnerAsync is null) return;
-        e.Cancel = true; timer.Stop(); IsEnabled = false;
-        try { await StopOwnerAsync(); closeReady = true; Close(); }
-        catch (Exception ex) { vm.Message = "停止未完成，仍持有资源：" + ex.Message; IsEnabled = true; timer.Start(); }
+        if (closeReady || closed) return;
+        e.Cancel = true; if (closing) return; closing = true;
+        var affected = StopOwnerAsync is null ? new[] { this } : windows.ToArray();
+        foreach (var window in affected) { window.closing = true; window.timer.Stop(); window.IsEnabled = false; }
+        try
+        {
+            await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.pendingViewportPause, x.vm.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
+            if (StopOwnerAsync is not null) await StopOwnerAsync();
+            closeReady = true;
+            foreach (var child in affected.Where(x => x != this && !x.closed && windows.Contains(x))) { child.closeReady = true; child.Close(); }
+            Close();
+        }
+        catch (Exception error)
+        {
+            vm.Message = "停止未完成，仍持有资源：" + error.Message;
+            if (this != root && root.closing) return;
+            closing = false;
+            foreach (var window in affected.Where(x => !x.closed && windows.Contains(x))) { window.closing = false; window.IsEnabled = true; window.timer.Start(); }
+        }
     }
 }

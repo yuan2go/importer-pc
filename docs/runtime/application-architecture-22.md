@@ -1,3 +1,5 @@
+> 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
+
 > 当前版本声明和新发行清单见[版本管理指南](version-compatibility-01.md)；以下22/P2版本均按历史候选身份读取，现行公共契约继承质量闭环01。
 
 > Sportmaster桌面新增第二套原生UI及 `--ui` 参数，见[运行指南](sportmaster-alternate-ui.md)。本页“本包不新增UI”仅描述架构22形成时范围；本次增量不改变其业务/拓扑/恢复规则。
@@ -34,7 +36,7 @@ Platform.ObservationSession为每个reader固定epoch、来源sequence和健康�
 
 ## 实际应用接口及控制台
 
-每行snapshot读取不可变ParcelSnapshot（RuntimeId、配置修订、Positions、Devices、Operations、独立主链/采集/上传事实）。Positions.Admit只表示软件准入守卫，不能当离场传感器/物理许可。主业务结果、可否下一件、后台是否清偿分别投影。PLC接受但未获权威PhysicalCompleted时，顺序位拒绝下一件；Sportmaster终点是有效格口结果，不发送PLC。
+每行snapshot读取不可变ParcelSnapshot（RuntimeId、配置修订、Positions、Devices、Operations、独立主链/采集/上传事实及可省略Inputs）。Inputs每位最多一项，包含PositionId、原Observation、Outcome（Admitted/Rejected/Blocked/Duplicate）、Reason、OperationId和RecordedAt；原事实使用既有parcel_audit的InputObserved事件持久化，按持久seq恢复，不新增SQL或第二账。来源注册/epoch/sequence及时效先验证，陈旧输入只审计不覆盖当前观察。观察失败不制造Operation；旧主链已终结时不再把旧成功当本次结果，未决责任继续受守卫。Positions.Admit只表示软件准入守卫，不能当离场传感器/物理许可。主业务结果、可否下一件、后台是否清偿分别投影。PLC接受但未获权威PhysicalCompleted时，顺序位拒绝下一件；Sportmaster终点是有效格口结果，不发送PLC。
 
 每条JSON使用唯一Id；应用命令ExpectedRevision取提交时应用Revision，配置草稿与旧账确认必须保留加载时配置Revision及运行实例，不能由自动刷新改写其检查身份。合成左侧输入示例：
 
@@ -46,11 +48,11 @@ Platform.ObservationSession为每个reader固定epoch、来源sequence和健康�
 
 IParcelApplication.EmitReferenceAt(positionId, admissionId, code, sourceEventId)和ReconnectDeviceAsync(deviceId)为实际契约，CLI对应EmitReferenceAt/ReconnectDevice。单侧重连要求软件暂停和维护认证，只替换该reader注册，不改另一位epoch或重发原请求。认证与维护仍走已选组件；有未结责任时保护原操作员，不在切页/换班时篡改原件。其他Pause/Resume/Reconcile/ContinuePrepared/ContinueUpload/AbandonUnsubmitted/Backup保持原守卫。
 
-StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保存PendingRestart；原Effective不变。主链或外部动作未结/未知时激活拒绝；仅当本件外部业务已终结、每个缺raw发生均有已Committed的原Query权威依据时，可在保留独立资料责任的条件下过渡配置。该例外不释放原图、不归档作业、不退休原包；无依据的缺raw仍阻激活。二进制/设备/拓扑/参数一次修订受控重启生效，不给扩展另建配置权威。WPF维护页提供完整schema3 JSON编辑/校验/保存及加载时修订CAS；旧单Reader参数表仍拒绝schema3保存，禁止降版/丢失右位。
+StageConfiguration使用Configuration.Revision及完整ParcelConfiguration，保存PendingRestart；原Effective不变。主链或外部动作未结/未知时激活拒绝；仅当本件外部业务已终结、每个缺raw发生均有已Committed的原Query权威依据时，可在保留独立资料责任的条件下过渡配置。该例外不释放原图、不归档作业、不退休原包；无依据的缺raw仍阻激活。二进制/设备/拓扑/参数一次修订受控重启生效，不给扩展另建配置权威。WPF维护页提供schema3结构化草稿，完整保留reader、投递位、每位秤/相机及共享能力库存、Extensions和Retention；已安装提供者按精确身份选择，局部校验与完整候选校验分开。高级JSON与表单须显式加载草稿，不被轮询或另一入口隐式覆盖；保存仍提交完整候选及加载时修订CAS，禁止降版/丢失右位。schema1/2兼容编辑路径继续保留。维护的“结构化拓扑与策略”展示reader/位/角色绑定及全局策略，“能力库存与参数”编辑提供者及参数；“完整候选配置（高级）”默认只读，需显式从表单生成并切换，或把当前高级JSON加载回表单，沿用原草稿CAS。重新读取须显式替换本窗草稿。
 
 ## 版本升级与原件
 
-当前Application.Contracts ABI1.8.0，继承PR23 1.5.0的Retain/Release；包版本与ABI分别读取。PR24最终Debug1.6.6/Release1.6.7仅匹配其精确公共DLL。本次如公共字节改变必须新不可变包；不覆盖旧ID/version。按[扩展指南](../extensions/developer-guide.md)使用目标Release宿主和独立信任构建、预检、安装、绑定与激活。
+当前Application.Contracts ABI1.9.0，继承PR23 1.5.0的Retain/Release；包版本与ABI分别读取。PR24最终Debug1.6.6/Release1.6.7仅匹配其精确公共DLL。本次如公共字节改变必须新不可变包；不覆盖旧ID/version。按[扩展指南](../extensions/developer-guide.md)使用目标Release宿主和独立信任构建、预检、安装、绑定与激活。
 配置schema1/2保持显式单Reader历史兼容模式，不猜成左右位；默认种子和当前目标使用schema3。已有schema2站必须通过完整拓扑候选/CAS显式迁移。测试中的schema2兼容夹具只保护原机制，不证明新双位。
 
 Parcel当前数据库7，SQL1～6及checksum保留；DB3为22历史拓扑版本，DB4为前次归档/永久去重/冲突/配置审计版本。继承的SQL5保存缺raw资料与Query关联索引及旧归档版本，SQL6追加RCS原报文/拆包语义屏障；SQL5将历史OutcomeReconciled恢复为Awaiting资料责任，SQL7保存数字请求永久唯一Owner、配置范围及恢复退役边界。不因旧配置仍为schema2就隐瞒当前存储版本。旧库普通启动仍先检查未结，不能自动把未知外部动作迁到新实现。旧DB2/3 Attached主状态已污染且上传缺raw时，按[维护指南](architecture-quality-closure-01.md)的recover-legacy-receipt离线使用完整匹配旧发布，仅Query原请求；确认外部业务已终结后显式升级当前DB7，原Awaiting、原图和原包责任持续保留。其他旧未结仍需匹配发布清偿、完整备份后升级。原payload/hash/目标/实现及SQL1～4原字节不改；旧代码已释放的历史图像不能由迁移伪造恢复。

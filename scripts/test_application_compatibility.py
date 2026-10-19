@@ -32,12 +32,31 @@ class CompatibilityTests(unittest.TestCase):
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             selected = resolve(root/'config/compositions.json', application+'-reference')
             version, policy = read_business(root, application, selected)
-            self.assertEqual(version['BusinessVersion'], '1.2.8')
+            self.assertEqual(version['BusinessVersion'], '1.3.0')
             self.assertEqual(version['CompatibilitySha256'], sha(policy))
             selected['components'][-2]['version'] = '9.0.0'
             # Change the actual business declaration regardless of topological order.
             next(c for c in selected['components'] if c['id'] == 'application.'+application)['version'] = '9.0.0'
             with self.assertRaisesRegex(ValueError, 'version'): read_business(root, application, selected)
+
+    def test_current_signed_provider_versions_do_not_relabel_old_packages(self):
+        root = Path(__file__).resolve().parent.parent
+        versions = {'reference.parcel-capabilities': ('2.2.0', '2.1.6'),
+                    'reference.barcode': ('1.3.0', '1.2.6'),
+                    'sportmaster.rcs-task': ('1.1.0', '1.0.8')}
+        for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
+            policy = json.loads((root/'config/compatibility'/f'{application}.json').read_bytes())
+            for group in policy['ProviderSets']:
+                for provider in group['Providers']:
+                    if not provider['Implementation'].startswith('extension:'): continue
+                    package = provider['Implementation'].split(':', 1)[1].split('/', 1)[0]
+                    current, old = versions[package]
+                    self.assertEqual(provider['Version'], current)
+                    require_combination(policy, [provider])
+                    with self.assertRaisesRegex(ValueError, 'not declared compatible'):
+                        require_combination(policy, [dict(provider, Version=old)])
+        manifest = json.loads((root/'src/Ipc.Integrations.SportmasterRcs/manifest.template.json').read_bytes())
+        self.assertEqual(manifest['Version'], versions['sportmaster.rcs-task'][0])
 
     def test_contract_declaration_must_match_actual_project(self):
         root = Path(__file__).resolve().parent.parent
@@ -52,7 +71,7 @@ class CompatibilityTests(unittest.TestCase):
         app = root/'app'; app.mkdir()
         (app/'application-compatibility.json').write_text(json.dumps(policy))
         (app/'business.dll').write_text('fixed binary')
-        release = dict(SchemaVersion=2, ApplicationId='direct-plc', BusinessVersion='1.2.8', BusinessAssembly='business.dll', SourceCommit='a'*40, CompatibilitySha256=sha(app/'application-compatibility.json'))
+        release = dict(SchemaVersion=2, ApplicationId='direct-plc', BusinessVersion='1.3.0', BusinessAssembly='business.dll', SourceCommit='a'*40, CompatibilitySha256=sha(app/'application-compatibility.json'))
         (app/'application-release.json').write_text(json.dumps(release))
         identity = dict(release, Target='portable')
         (root/'ASSEMBLY.json').write_text(json.dumps(identity))

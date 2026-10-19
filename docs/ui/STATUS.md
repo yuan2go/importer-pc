@@ -1,10 +1,16 @@
-> 当前组合：业务1.2.7；classic/supply-station共用快照时效、当前位身份及维护保护。继承PR34 c073044的已复核实现，并补退役运行实例拒绝、修订倒退失效、旧格口标旧及轮询失败时独立软件暂停。原实物、原SHA/PASS/FAIL与实际Windows NOT_RUN保持，执行来源见[审查03工作包](../work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)。
+> 当前分支：业务1.3.0、Application.Contracts1.9.0、Parcel DB7。按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)实施，正式Windows/现场验收后置；原SHA/PASS/FAIL及原实物保持历史身份。修改前状态固定原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。
 
 # UI实现与实物状态
 
-Sportmaster当前WPF按left/right显示各自reader、作业、条码、格口及主链/后台责任，当前位命令与历史Owner分别选择；共享Application及连接。维护页已有完整schema3 JSON读取、校验、保存及加载时Revision CAS，旧单Reader表单仍只读保护拓扑。草稿、Pending、已确认Effective、尚待确认的当前运行输入和ActivationFailed分别显示。维护页“运行输入确认”读取原配置账、原字节SHA256、读取时运行实例/配置修订及当前输入；确认绑定读取时三段Owner，自动刷新不推进该确认身份，也不覆盖未保存配置草稿。旧账资源启动成功仍须暂停/维护认证及检查说明，确认后仍保留软件暂停。异常恢复页列原接收发生及OriginalRawMissing/关联Query；Query只证明结果，原Awaiting及原图、归档、包资料责任保留。DirectPlc完整UI按已批准延期；不新增Sportmaster展图或长期图库。
+Sportmaster两布局继续共享同一Application及reader/发送器。每位最新观察分类独立于Operation：无码、多码、非法码不制造作业，不再由上一件终结成功/格口解释本次观察；旧未决请求和责任仍受原守卫。最新输入在既有审计持久化并恢复，SQL1～7不变。正常、等待、处理中、拒绝、Unknown和失效采用文字及语义样式；普通RCS摘要明确本地客户端与上游确认的证据范围。
 
-来源为[v1.1实物与完整交接](ss-ui-vis-001-v1.1/README.md)，原HTML/CSS/JS及34张同源PNG保持原身份。新WPF是Application业务实现，不能据此声称旧HTML/RV已修复。实际Windows截图0；双窗、DPI/HID、声音/触控及安装交互NOT_RUN。跨平台真实VM/CAS检查与WPF交叉构建分别报告。[N01前原字节](../archive/pre-architecture-quality-02/README.md)。
+Supply-station提供standard/compact真实重排，目标最低有效客户区800×420 DIP，保留双位来源、状态、原码、格口和固定操作；详细字段及诊断局部滚动/折叠。最低区以下继续请求软件Pause，空间恢复后人工确认视图且不自动Resume。原1280×680为旧候选阈值；既有Windows06分辨率/缩放/混合DPI矩阵不缩减，实际可读性、触控与焦点待后验。
+
+维护页schema3结构化草稿保全部位/reader及秤/相机/共享能力绑定，以已安装精确提供者编辑；字段校验、完整候选校验、CAS保存Pending和受控重启Effective分开。高级JSON默认只读，须显式生成/切换或加载回表单，自动刷新不覆盖草稿或推进其CAS；精确包卸载从实际目录选择，原操作恢复仍须从原日志复制操作ID。运行输入确认仍核读取时实例、配置修订和原字节SHA256；确认后保持暂停。异常恢复页保留原接收、Query及资料责任。DirectPlc完整UI按已批准延期；不新增Sportmaster展图或图库。
+
+启动展示真实阶段/失败诊断；历史明确加载/空/失败/更多页和原Operation→Request→Attempt/Reply层次。服务IO与UI投影保持所有权，关闭排空、独立Pause及原命令守卫继续有效。开发验证与实际构建/媒介身份以本分支交付记录为准，不以旧UI验证结果宣告本轮通过。
+
+来源为[v1.1实物与完整交接](ss-ui-vis-001-v1.1/README.md)，原HTML/CSS/JS及34张同源PNG保持原身份。WPF业务实现不证明旧HTML/RV修复。实际Windows截图仍无本轮证据；双窗、DPI/HID、声音/触控及安装交互NOT_RUN，真实SDK/合同/现场BLOCKED。
 
 ## 原始资料与历史验收
 

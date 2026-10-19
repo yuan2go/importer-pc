@@ -1,4 +1,4 @@
-> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.1/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
+> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.2/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 
 > 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
 
@@ -75,4 +75,4 @@ python3 scripts/package-application.py --application sportmaster --target win-x6
 
 审查03：两布局的快照读取失败/超过3秒未成功时，共用失效显示和维护动作保护；时效同时使用单调时钟与显示时间。运行实例切换清本窗旧选择，退役实例不能回写；同实例修订倒退明确失效。当前件严格按Position.CurrentOperation定位，旧格口明确标旧，不从历史/时间排序猜目标。轮询失败时软件暂停仍以已显示修订到Application做CAS，成功回执与快照是否恢复分别显示；刷新成功不自动Resume/重发。Windows原生交互、DPI及截图另行验收。
 
-本轮闭环：历史列表显示查询完成时间，列表为查询时事实；详情可按同一Owner更新，页外原件明确标识。慢快照、历史换页和原件读取不能恢复等待前选择。普通慢动作显示操作名与阻断原因/回执；Pause独立。classic紧凑时应保留可展开的站位/会话诊断及操作员登录入口，默认折叠，维护认证仍独立；1a34a1e将其整体隐藏是已确认复审缺陷，按当前工作包修复。保留本位来源/业务状态/原件责任；长码可局部滚动并完整选择，未决摘要先显示待核对状态再进入详情查原码/ID，不让长码挤走Unknown。
+本轮闭环：历史列表显示查询完成时间，列表为查询时事实；详情可按同一Owner更新，页外原件明确标识。慢快照、历史换页和原件读取不能恢复等待前选择。普通慢动作显示操作名与阻断原因/回执；Pause独立。classic紧凑时应保留可展开的站位/会话诊断及操作员登录入口，默认折叠，维护认证仍独立；1a34a1e将其整体隐藏的复审缺陷已在续修中恢复；实际控件/客户区仍须Windows后验。保留本位来源/业务状态/原件责任；长码可局部滚动并完整选择，未决摘要先显示待核对状态再进入详情查原码/ID，不让长码挤走Unknown。

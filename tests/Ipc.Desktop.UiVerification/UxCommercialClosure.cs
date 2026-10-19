@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Ipc.Application.Contracts;
 using Ipc.Application.ParcelFlow.Desktop;
 using Ipc.Application.Sportmaster.Desktop;
@@ -17,14 +18,25 @@ static partial class Program
         var page = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
         var pending = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var busy = vm.RunAsync(() => pending.Task, "原生慢维护读取");
+        try
+        {
+            await System.Windows.Threading.Dispatcher.Yield();
+            var scope = (Grid)page.FindName("MaintenanceScope");
+            var save = Descendants(page).OfType<Button>().Single(x => Equals(x.Content, "保存表单待重启修订"));
+            check(((TextBlock)window.FindName("OperationFeedback")).Text.Contains("正在原生慢维护读取") &&
+                !scope.IsEnabled && !((DataGrid)page.FindName("ReaderInstances")).IsEnabled && !save.IsEnabled,
+                "native feedback is immediate and actual maintenance scope, reader grid and save control are disabled");
+            check(Descendants(window).OfType<Button>().Single(x => Equals(x.Content, "暂停新入场")).IsEnabled,
+                "native Pause remains enabled outside the busy maintenance scope");
+            await vm.PauseAsync();
+            check(vm.Busy && vm.Snapshot!.Paused, "real Application Pause completes independently while native maintenance is held");
+        }
+        finally { pending.TrySetResult(); await busy; }
+        vm.Message = "SYNTHETIC prior failure";
+        await vm.RunAsync(() => Task.CompletedTask, "原生维护读取");
         await System.Windows.Threading.Dispatcher.Yield();
-        check(((TextBlock)window.FindName("OperationFeedback")).Text.Contains("正在原生慢维护读取") && !page.IsEnabled,
-            "native feedback is visible immediately and conflicting maintenance controls are disabled");
-        check(Descendants(window).OfType<Button>().Single(x => Equals(x.Content, "暂停新入场")).IsEnabled,
-            "native Pause remains enabled outside the busy maintenance scope");
-        await vm.PauseAsync();
-        check(vm.Busy && vm.Snapshot!.Paused, "real Application Pause completes independently while native maintenance is held");
-        pending.SetResult(); await busy;
+        check(((TextBlock)window.FindName("OperationFeedback")).Text.Contains("原生维护读取已完成"),
+            "native bound feedback retains read completion after Busy instead of a prior failure");
         var readers = (DataGrid)page.FindName("ReaderInstances");
         check(!readers.IsReadOnly && readers.Columns[0].IsReadOnly && readers.Columns[1].IsReadOnly,
             window.GetType().Name + " native reader grid allows ordinary edits and protects stable device/role identity");
@@ -57,6 +69,41 @@ static partial class Program
         Click(window, "工作台");
     }
 
+    static bool Inside(FrameworkElement element, Grid client)
+    {
+        var bounds = element.TransformToAncestor(client).TransformBounds(new Rect(element.RenderSize));
+        return element.ActualWidth > 0 && element.ActualHeight > 0 && bounds.Top >= 0 && bounds.Left >= 0 &&
+            bounds.Bottom <= client.ActualHeight && bounds.Right <= client.ActualWidth;
+    }
+    static async Task VerifyClassicDiagnostics(Window window, ParcelViewModel vm, Grid client, Action<bool, string> check)
+    {
+        var diagnostics = (Expander)window.FindName("StationDiagnostics");
+        check(diagnostics.IsVisible && Inside(diagnostics, client), "classic diagnostics header remains reachable in every supported client size");
+        try
+        {
+            diagnostics.IsExpanded = true; window.UpdateLayout();
+            var scroll = (ScrollViewer)window.FindName("StationDiagnosticsScroll");
+            check(scroll.IsVisible && scroll.ActualHeight <= 128 && scroll.ScrollableHeight > 0,
+                "expanded classic diagnostics retain complete contents in a bounded local scroll");
+            var proof = (PasswordBox)window.FindName("LoginProof");
+            proof.BringIntoView(); await Dispatcher.Yield(); window.Activate(); proof.Focus();
+            check(vm.LoginVisibility == Visibility.Visible && proof.IsVisible && proof.IsKeyboardFocusWithin && Inside(proof, client),
+                "configured operator password stays visible and focusable in classic compact diagnostics");
+            var logout = Descendants(window).OfType<Button>().Single(x => Equals(x.Content, "登出"));
+            check(logout.IsVisible && logout.IsEnabled && Inside(logout, client), "operator logout remains reachable beside its login controls");
+            Click(window, "登出");
+            for (var i = 0; i < 100 && vm.Busy; i++) await Task.Delay(20);
+            check(vm.Snapshot!.CurrentOperator is null, "native classic logout reaches the real Application");
+            proof.Password = "SIMULATION_ONLY"; Click(window, "验证身份");
+            for (var i = 0; i < 100 && vm.Busy; i++) await Task.Delay(20);
+            check(vm.Snapshot!.CurrentOperator?.Subject == "alice" && proof.Password.Length == 0,
+                "native classic login reaches the real Application and clears the entered proof");
+            var pause = Descendants(window).OfType<Button>().Single(x => Equals(x.Content, "暂停新入场"));
+            check(pause.IsEnabled && Inside(pause, client), "expanding classic diagnostics retains independent fixed Pause");
+        }
+        finally { diagnostics.ClearValue(Expander.IsExpandedProperty); window.UpdateLayout(); }
+    }
+
     static async Task SetClient(Window window, double width, double height)
     {
         window.WindowState = WindowState.Normal;
@@ -81,10 +128,13 @@ static partial class Program
         foreach (var target in new[] { (1440, 900), (1100, 600), (911, 512), (800, 420) })
         {
             await SetClient(window, target.Item1, target.Item2);
-            check(client.ActualWidth >= 799.5 && client.ActualHeight >= 419.5 && vm.ViewportFits,
+            check(Math.Abs(client.ActualWidth - target.Item1) < 1 && Math.Abs(client.ActualHeight - target.Item2) < 1 && vm.ViewportFits,
                 $"{ui} actual client {client.ActualWidth:F1}x{client.ActualHeight:F1} supports reflow target {target}");
+            if (window is ShellWindow) await VerifyClassicDiagnostics(window, vm, client, check);
             var host = (ContentControl)window.FindName("PageHost");
-            foreach (var text in Descendants(host).OfType<TextBox>().Where(x => x.Name is "CurrentBarcode" or "CurrentSlot" || x.Tag as string is "CurrentBarcode" or "CurrentSlot"))
+            var fields = Descendants(host).OfType<TextBox>().Where(x => x.Name is "CurrentBarcode" or "CurrentSlot" || x.Tag as string is "CurrentBarcode" or "CurrentSlot").ToArray();
+            check(fields.Length == 4, "both positions expose actual barcode and result controls");
+            foreach (var text in fields)
             {
                 var bounds = text.TransformToAncestor(client).TransformBounds(new Rect(text.RenderSize));
                 check(text.ActualHeight > 0 && bounds.Top >= 0 && bounds.Bottom <= client.ActualHeight && bounds.Left >= 0 && bounds.Right <= client.ActualWidth,
@@ -93,7 +143,7 @@ static partial class Program
                 { text.SelectAll(); check(text.SelectedText == longCode, "long leading-zero barcode remains fully selectable for copy"); }
             }
             var summaries = Descendants(host).OfType<TextBlock>().Where(x => x.Name == "RetainedResponsibility" || Equals(x.Tag, "RetainedResponsibility")).ToArray();
-            check(summaries.Length == 2 && summaries.All(x => x.IsVisible && x.ActualHeight > 0 && x.Text.Contains("待核对")), "both retained Unknown responsibilities remain visible alongside the new input rejection");
+            check(summaries.Length == 2 && summaries.All(x => x.IsVisible && Inside(x, client) && x.Text.Contains("待核对")), "both retained Unknown responsibilities remain visible alongside the new input rejection");
             foreach (var button in Descendants(host).OfType<Button>().Where(x => Equals(x.Content, "核对原请求") || Equals(x.Content, "选择此位为命令目标")))
             {
                 var bounds = button.TransformToAncestor(client).TransformBounds(new Rect(button.RenderSize));

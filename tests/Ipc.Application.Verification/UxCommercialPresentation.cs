@@ -61,6 +61,7 @@ static class UxCommercialPresentation
         await VerifyHistory(probe, baseline, a, b);
         await VerifyOpenDetails(probe, baseline, a, b);
         await VerifyBusy(probe, baseline);
+        await VerifyFeedback(probe, baseline);
         await VerifyServiceContext(probe, baseline);
         await app.StopAsync(CancellationToken.None);
         Console.WriteLine("PASS UX-PRESENTATION COMPLETE; reference projection/service ownership only; Windows native NOT_RUN");
@@ -162,6 +163,38 @@ static class UxCommercialPresentation
         Check(!vm.Busy && vm.CanStartOperation && vm.OperationStatus.Contains("PendingRestart"), "completed action retains exact save result and releases only its busy lane");
         await vm.RunAsync(() => Task.FromException(new IOException("SYNTHETIC operation failed")), "备份");
         Check(!vm.Busy && vm.OperationStatus.Contains("备份未完成") && vm.OperationStatus.Contains("SYNTHETIC operation failed"), "ordinary failure stays visible and allows explicit retry");
+    }
+    static async Task VerifyFeedback(UxPresentationProbe probe, ParcelSnapshot baseline)
+    {
+        probe.Read = () => Task.FromResult(baseline);
+        probe.History = _ => Task.FromResult(new ParcelHistoryPage([], null));
+        var vm = new ParcelViewModel((IParcelApplication)(object)probe, "feedback", "test"); await vm.RefreshAsync();
+        vm.Message = "SYNTHETIC prior backup failure";
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var run = vm.RunAsync(async () => { await release.Task; await vm.LoadHistoryAsync(); }, "读取作业记录");
+        Check(vm.Feedback.Contains("正在读取作业记录"), "bound feedback immediately identifies a slow read");
+        var duplicateCalls = 0;
+        await vm.RunAsync(() => { duplicateCalls++; return Task.CompletedTask; }, "重复读取");
+        release.SetResult(); await run;
+        Check(duplicateCalls == 0 && !vm.Busy && vm.Feedback.Contains("读取作业记录已完成") && !vm.Feedback.Contains("prior backup failure") && !vm.Feedback.Contains("冲突操作"),
+            "bound feedback retains successful no-message read completion after Busy and duplicate rejection");
+        vm.Message = "PendingRestart · SYNTHETIC identical receipt";
+        await vm.RunAsync(() => { vm.Message = "PendingRestart · SYNTHETIC identical receipt"; return Task.CompletedTask; }, "保存表单");
+        Check(vm.Feedback == "PendingRestart · SYNTHETIC identical receipt", "same-text new receipt remains the exact command result instead of generic completion");
+        release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        run = vm.RunAsync(() => release.Task, "慢历史读取");
+        probe.Command = _ => Task.FromResult(new BusinessReceipt("Rejected", "SYNTHETIC independent pause refusal", baseline.Revision));
+        await vm.PauseAsync(); release.SetResult(); await run;
+        Check(vm.Feedback.Contains("Rejected") && vm.Feedback.Contains("independent pause refusal"), "successful read cannot overwrite independent Pause result");
+        await vm.RunAsync(() => Task.FromException(new IOException("SYNTHETIC action failure")), "创建备份");
+        Check(!vm.Busy && vm.Feedback.Contains("SYNTHETIC action failure"), "bound feedback retains the actual failed action after Busy ends");
+        probe.Read = () => Task.FromException<ParcelSnapshot>(new IOException("SYNTHETIC post-action snapshot failure"));
+        await vm.RunAsync(() => Task.CompletedTask, "读取作业记录");
+        Check(!vm.Busy && !vm.Fresh && vm.Feedback.Contains("post-action snapshot failure"), "completion cannot mask failed follow-up snapshot");
+        probe.Read = () => Task.FromResult(baseline);
+        await vm.RunAsync(() => Task.CompletedTask, "恢复读取");
+        Check(vm.Fresh && vm.Feedback.Contains("恢复读取已完成") && !vm.Feedback.Contains("post-action snapshot failure"),
+            "successful retry clears its own snapshot failure and retains the new completion");
     }
     static Task VerifyServiceContext(UxPresentationProbe probe, ParcelSnapshot snapshot) => Task.Run(() =>
     {

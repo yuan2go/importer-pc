@@ -35,7 +35,12 @@ static partial class Program
     static async Task Verify(string root, string evidence, List<string> lines)
     {
         void Check(bool yes, string reason) { if (!yes) throw new InvalidOperationException(reason); lines.Add("PASS " + reason); }
-        var launch = new BusinessLaunch(Path.Combine(root, "config/sportmaster"), Path.Combine(evidence, "data"), null, null);
+        var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        config = config with { Login = config.MaintenanceLogin! with
+        { InstanceId = "native.operator", Target = "reference://native-operator", Parameters = new() { ["subjects"] = "alice" } } };
+        ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
+        var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         var runtime = SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
         await using (runtime)
         {
@@ -49,6 +54,9 @@ static partial class Program
             Check(classic is ShellWindow && alternate.ViewModel.Fresh, "classic and alternate native windows load actual resources and snapshots");
             Check(ReferenceEquals(((ParcelViewModel)classic.DataContext).Application, alternate.ViewModel.Application), "two UI choices share the same actual Application");
             Check(Descendants(alternate).OfType<SupplyStationPosition>().Count() == 2, "both native position controls load their own theme dictionaries");
+            await ((ParcelViewModel)classic.DataContext).RunAsync(() => ((ParcelViewModel)classic.DataContext).LoginAsync("SIMULATION_ONLY"), "原生参考登录");
+            Check(((ParcelViewModel)classic.DataContext).Snapshot!.CurrentOperator?.Subject == "alice", "native fixture enables actual optional operator authentication");
+            await alternate.ViewModel.RefreshAsync();
             await alternate.ViewModel.EmitPositionAsync(alternate.ViewModel.Left);
             await alternate.ViewModel.EmitPositionAsync(alternate.ViewModel.Right);
             for (var i = 0; i < 100; i++)

@@ -93,7 +93,8 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         }
         return string.Join("\n", lines);
     }
-    public string Message { get => message; set { message = value; Changed(); Changed(nameof(Feedback)); } }
+    long messageRevision;
+    public string Message { get => message; set { message = value; messageRevision++; Changed(); Changed(nameof(Feedback)); } }
     public string Feedback => Busy ? OperationStatus : Message;
     public string ConfigurationState => Snapshot is null ? "未加载" : Snapshot.Configuration.Status + " · 修订 " + Snapshot.Configuration.Revision + (Snapshot.Configuration.Failure is { } f ? "\n" + f : "");
     string configurationDraft = "";
@@ -165,16 +166,26 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public Task RunAsync(Func<Task> action, string operation = "操作") => Own(RunCoreAsync(action, operation));
     async Task RunCoreAsync(Func<Task> action, string operation)
     {
-        if (Busy) { Message = OperationStatus + "；冲突操作暂不可用，软件暂停仍可独立执行。"; return; }
+        if (Busy) return; // The active feedback already explains this lane; do not replace its result.
         OperationStatus = "正在" + operation + "… 冲突操作暂不可用，软件暂停仍可独立执行。";
         SetBusy(true);
-        var priorMessage = Message;
+        var priorMessageRevision = messageRevision;
         try
         {
             await action();
-            OperationStatus = operation + "已返回 · " + (Message == priorMessage ? "操作完成，正在读取最新状态" : Message);
+            OperationStatus = operation + "已返回 · " + (messageRevision == priorMessageRevision ? "操作已返回，正在读取最新状态" : Message);
             Changed(nameof(OperationStatus)); Changed(nameof(Feedback));
+            var ownsReadFailure = readFailureMessage is not null && Message == readFailureMessage;
             await RefreshAsync();
+            // A read-only action may have no receipt. Publish its completion only if
+            // neither it nor independent Pause wrote a message; a recovered read failure
+            // may also release its own empty banner. Current read failures retain priority.
+            // A new receipt with identical text still owns its message revision.
+            if (messageRevision == priorMessageRevision || ownsReadFailure && Fresh && Message.Length == 0)
+            {
+                Message = operation + "已完成；已读取最新状态。";
+                OperationStatus = Message;
+            }
         }
         catch (Exception ex)
         {

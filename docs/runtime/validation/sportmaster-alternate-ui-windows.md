@@ -1,4 +1,4 @@
-> 当前增量以[UX审查WP-01～07闭环](../../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮计划1.3.1/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
+> 当前增量以[UX审查WP-01～07闭环](../../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮计划1.3.2/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 
 > 本分支口径见[UX修复工作包](../../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)，原清单固定字节见[索引](../../archive/pre-ux-commercial-fix-01/README.md)。既有Windows06显示/DPI矩阵全部保留，本清单只增加修复复验，不宣布验收通过。
 

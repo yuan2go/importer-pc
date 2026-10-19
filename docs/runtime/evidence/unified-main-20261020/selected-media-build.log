@@ -1,0 +1,386 @@
+Retained build workspace on failure: C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q
+  正在确定要还原的项目…
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (用时 1.53 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 1.53 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 1.53 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 1.53 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 1.53 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 1.53 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 1.53 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 1.53 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 78 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 88 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 75 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 90 毫秒)。
+  Ipc.Platform -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\r\main-selected\app\
+  正在确定要还原的项目…
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Desktop\Ipc.Desktop.csproj (用时 1.44 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Application.Sportmaster.Desktop\Ipc.Application.Sportmaster.Desktop.csproj (用时 1.3 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\source-snapshot\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop.csproj (用时 1.41 秒)。
+  12 个项目(共 15 个)是最新的，无法还原。
+  Ipc.Platform -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Assembly\release_win-x64\Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Application.ParcelFlow.Desktop\release\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Application.Sportmaster.Desktop\release\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-ikg9ff_q\build-intermediates\bin\Ipc.Desktop\release_win-x64\Ipc.Desktop.dll
+  Ipc.Desktop -> D:\r\main-selected\desktop\
+{
+  "Manifest": {
+    "SchemaVersion": 1,
+    "Id": "sportmaster.rcs-task",
+    "Version": "1.4.100",
+    "Publisher": "unified-reference-test",
+    "Runtime": "net10.0",
+    "Rid": "any",
+    "ContractMajor": 1,
+    "Mode": "Simulation",
+    "SourceCommit": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+    "Dependencies": [],
+    "Files": [
+      {
+        "Path": "Ipc.Integrations.SportmasterRcs.dll",
+        "Length": 34816,
+        "Sha256": "84C9F40A800F7E4597CDE4C79B5A12EA6923FDA48533E9A9B21C070572AFFFDC"
+      }
+    ],
+    "Modules": [
+      {
+        "Id": "sportmaster-rcs-task",
+        "Assembly": "Ipc.Integrations.SportmasterRcs.dll",
+        "EntryType": "Ipc.Integrations.SportmasterRcs.SportmasterRcsTaskExtension",
+        "Kind": "integration",
+        "MaximumInstances": 1,
+        "Parameters": [
+          {
+            "Key": "source",
+            "Group": "RCS \u5206\u62E3\u4EFB\u52A1",
+            "Label": "\u534F\u8BAE\u6765\u6E90",
+            "Type": "string",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 64,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "locale",
+            "Group": "RCS \u5206\u62E3\u4EFB\u52A1",
+            "Label": "\u534F\u8BAE\u8BED\u8A00",
+            "Type": "string",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 64,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "zone-id",
+            "Group": "RCS \u5206\u62E3\u4EFB\u52A1",
+            "Label": "\u533A\u57DF\u6570\u5B57\u6807\u8BC6",
+            "Type": "integer",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 32,
+            "Minimum": 1,
+            "Maximum": 9223372036854775807,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "project-id",
+            "Group": "RCS \u5206\u62E3\u4EFB\u52A1",
+            "Label": "\u9879\u76EE\u6570\u5B57\u6807\u8BC6",
+            "Type": "integer",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 32,
+            "Minimum": 1,
+            "Maximum": 9223372036854775807,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "quantity",
+            "Group": "RCS \u5206\u62E3\u4EFB\u52A1",
+            "Label": "\u6BCF\u6B21\u5B9E\u4F53\u51C6\u5165\u7684\u660E\u786E\u6570\u91CF",
+            "Type": "integer",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 10,
+            "Minimum": 1,
+            "Maximum": 2147483647,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "request-id-base",
+            "Group": "RCS \u5206\u62E3\u4EFB\u52A1",
+            "Label": "\u72EC\u5360\u8BF7\u6C42\u7F16\u53F7\u533A\u95F4\u8D77\u70B9\uFF08\u4E0D\u542B\uFF09",
+            "Type": "integer",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 32,
+            "Minimum": 0,
+            "Maximum": 9223372036854775806,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "request-id-count",
+            "Group": "RCS \u5206\u62E3\u4EFB\u52A1",
+            "Label": "\u72EC\u5360\u8BF7\u6C42\u7F16\u53F7\u533A\u95F4\u5BB9\u91CF",
+            "Type": "integer",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 32,
+            "Minimum": 1,
+            "Maximum": 9223372036854775807,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "left-station-code",
+            "Group": "RCS \u5206\u62E3\u4EFB\u52A1",
+            "Label": "\u5DE6\u4F4D\u5DE5\u4F4D\u7F16\u53F7",
+            "Type": "string",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "left-bcr-code",
+            "Group": "RCS \u5206\u62E3\u4EFB\u52A1",
+            "Label": "\u5DE6\u4F4D\u8BFB\u7801\u5668\u7F16\u53F7",
+            "Type": "string",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "right-station-code",
+            "Group": "RCS \u5206\u62E3\u4EFB\u52A1",
+            "Label": "\u53F3\u4F4D\u5DE5\u4F4D\u7F16\u53F7",
+            "Type": "string",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "right-bcr-code",
+            "Group": "RCS \u5206\u62E3\u4EFB\u52A1",
+            "Label": "\u53F3\u4F4D\u8BFB\u7801\u5668\u7F16\u53F7",
+            "Type": "string",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "specified-chute",
+            "Group": "RCS \u5206\u62E3\u4EFB\u52A1",
+            "Label": "\u662F\u5426\u6307\u5B9A\u683C\u53E3",
+            "Type": "choice",
+            "Required": true,
+            "Default": null,
+            "MaximumLength": 256,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": [
+              "false",
+              "true"
+            ],
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": null,
+            "RequiredWhenEquals": null,
+            "MaximumItems": 32
+          },
+          {
+            "Key": "chute-code",
+            "Group": "RCS \u5206\u62E3\u4EFB\u52A1",
+            "Label": "\u6307\u5B9A\u683C\u53E3\uFF08\u4EC5\u6307\u5B9A\u65F6\u586B\u5199\uFF09",
+            "Type": "string",
+            "Required": false,
+            "Default": null,
+            "MaximumLength": 64,
+            "Minimum": null,
+            "Maximum": null,
+            "Choices": null,
+            "Sensitive": false,
+            "Description": null,
+            "Unit": null,
+            "ReadOnly": false,
+            "ApplyLevel": "Restart",
+            "EditRole": "Maintenance",
+            "RequiredWhenKey": "specified-chute",
+            "RequiredWhenEquals": "true",
+            "MaximumItems": 32
+          }
+        ],
+        "Requirements": {
+          "MeasuredWeight": false,
+          "ImageAddress": false,
+          "Query": false,
+          "PhysicalConfirmation": false,
+          "BusinessAcceptance": true,
+          "CompletesOnSubmit": false
+        },
+        "ContractIdentity": "SPORTMASTER-RCS-SORTER-v1",
+        "Assurance": {
+          "SchemaVersion": 1,
+          "Simulation": true,
+          "ProtocolEvidence": "Destination request v1 implementation; synthetic HTTP verification only; production qualification unavailable"
+        }
+      }
+    ],
+    "Prerequisites": [],
+    "HostContractSha256": "47DC82FEF412354141B2780887140D647385F6E02697F2FFC550771093FB9AD3",
+    "PublicContracts": {
+      "Ipc.Application.Contracts": "B1536C2E21CB718DC6B353A30359A96E24A6219EEE01AD3BB8ED496AFA11D9AC"
+    }
+  },
+  "ManifestSha256": "354CD1AD176AFBD9E7EFF682D566E94693866981F5C6C06CFA7F363C588548D9",
+  "PackageSha256": "D5231BD08F7571905C01E5310C43BA0AFDD63875E5CB5D5C30FFDC2208AB3522",
+  "TrustSha256": "F519D70DF826DBEF4F17004F99FFEBA74B64D8770BCB0DA38FBC257CAB91E150",
+  "VerifiedAt": "2026-10-19T17:31:00.4604823+00:00",
+  "TestOnly": true,
+  "Reference": {
+    "Id": "sportmaster.rcs-task",
+    "Version": "1.4.100",
+    "ManifestSha256": "354CD1AD176AFBD9E7EFF682D566E94693866981F5C6C06CFA7F363C588548D9"
+  }
+}
+{"Package": "D:\\r\\main-selected.zip", "Sha256": "689445552e78b5f6859bd0cf8bd7ca3b0724adae35f4a2590f4ad91cd04b6c25", "SourceCommit": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef", "Application": "sportmaster", "Target": "win-x64", "BusinessVersion": "1.4.0", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "D80BA0B0C40F34E2E9C080C9D898C77214461BCEA394F43290CD9DDC9F473975"}

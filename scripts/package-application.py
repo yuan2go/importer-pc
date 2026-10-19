@@ -69,7 +69,8 @@ if a.target == 'portable':
     compiled = json.loads(subprocess.check_output([a.dotnet, str(output / 'app/Ipc.Assembly.dll'), '--action', 'business-identity'], text=True))
     if compiled['ApplicationId'] != a.application or any(compiled[key] != value for key, value in business.items()):
         raise ValueError('Compiled business version/declaration differs from publication inputs')
-# Portable intentionally has no Windows binaries. The Windows candidate always contains
+# Portable uses the framework-dependent DLL entry; a Windows build may also emit an apphost.
+# The self-contained Windows candidate always contains
 # the actual selected Application-owned WPF page and shared window/navigation/maintenance.
 for base in [output / 'app', output / 'desktop']:
     if not base.exists(): continue

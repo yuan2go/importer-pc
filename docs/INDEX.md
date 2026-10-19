@@ -1,5 +1,7 @@
 
 # 统一资料与实施入口
+
+**当前统一发行：**[main cfe6c0e 的实际媒体与核验](runtime/unified-release-main-20261020.md)、[下载发行](https://github.com/yuan2go/importer-pc/releases/tag/unified-main-reference-cfe6c0e)。8 个核心 ZIP＋1 个 Simulation 扩展组合，来源/合同/文件校验已完成；Windows 原生安装与现场资格仍按报告未验/受阻边界执行。旧发布及停止回执保留形成时语境。
 > COMM-00～10 当前操作见[产品操作指南](runtime/commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](runtime/commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。
 
 **当前工作：[WP-IPC-COMMERCIAL-PRODUCTIZATION-01](work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md) 的 COMM-00～10 实施。** 开工 main 为 c445b0e；[编码前裁决](implementation/commercial-productization-01-execution.md)已独立提交，实际软件路径、冻结身份和逐项结果见上方实施结果。文档任务 b8f449e 静态基线及原 NOT_RUN 按形成时语境保留。

@@ -1,0 +1,17 @@
+test_supply_runtime_guard_precedes_configuration_extensions_and_storage (scripts.test_runtime_identity.RuntimeIdentityTests.test_supply_runtime_guard_precedes_configuration_extensions_and_storage) ... ok
+test_inspection_runtime_guard_precedes_configuration_and_ledger (scripts.test_runtime_identity.RuntimeIdentityTests.test_inspection_runtime_guard_precedes_configuration_and_ledger) ... ok
+test_direct_runtime_guard_precedes_configuration_and_storage (scripts.test_runtime_identity.RuntimeIdentityTests.test_direct_runtime_guard_precedes_configuration_and_storage) ... ERROR
+test_double_click_cmd_has_no_powershell_dependency (scripts.test_runtime_identity.RuntimeIdentityTests.test_double_click_cmd_has_no_powershell_dependency) ... ok
+
+======================================================================
+ERROR: test_direct_runtime_guard_precedes_configuration_and_storage (scripts.test_runtime_identity.RuntimeIdentityTests.test_direct_runtime_guard_precedes_configuration_and_storage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\w\ipc-release\scripts\test_runtime_identity.py", line 160, in test_direct_runtime_guard_precedes_configuration_and_storage
+    guard = source.index('MachineRuntimePolicy.RequireRuntimeIdentity();', start)
+ValueError: substring not found
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.010s
+
+FAILED (errors=1)

@@ -1,0 +1,8 @@
+test_atomic_publication_failure_rolls_back_created_identity (test_extension_build.ExtensionBuildTests.test_atomic_publication_failure_rolls_back_created_identity) ... ok
+test_cross_target_checker_requires_byte_identical_public_contracts (test_extension_build.ExtensionBuildTests.test_cross_target_checker_requires_byte_identical_public_contracts) ... ok
+test_production_testonly_rejected_before_compilation (test_extension_build.ExtensionBuildTests.test_production_testonly_rejected_before_compilation) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 7.186s
+
+OK

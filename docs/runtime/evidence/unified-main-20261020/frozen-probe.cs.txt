@@ -1,0 +1,75 @@
+
+using Ipc.Platform;
+using Ipc.Application.Contracts;
+using Ipc.Application.ParcelFlow;
+using Ipc.Application.Sportmaster;
+using Ipc.Assembly;
+using System.Security.Cryptography;
+
+var config = Path.GetFullPath(args[0]);
+var run = Path.GetFullPath(args[1]);
+Directory.CreateDirectory(run);
+var launch = new BusinessLaunch(config, Path.Combine(run,"data"), null,null);
+var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(config,"business.json")));
+var before=Directory.GetFiles(config).ToDictionary(p=>Path.GetFileName(p)!,Wire.FileHash);
+int constructed=0;
+IParcelCapabilityFactory Factory()=>new GuardedFactory(launch,()=>constructed++);
+var service=new ParcelStartupMaintenance(launch,new SportmasterFlow(),Factory,()=>{});
+var read=await service.ReadAsync();
+Check(read.Candidate is not null&&!Directory.Exists(launch.DataRoot),"frozen offline read creates no runtime/data");
+Check(read.Catalog.Providers.Length>0,"built-in provider catalog available without extension provisioning");
+var updated=read.Candidate! with{TimeoutMs=2100};
+Check((await service.ValidateAsync(updated)).Status=="Validated","frozen offline configuration validation");
+var denied=new ParcelStartupMaintenance(launch,new SportmasterFlow(),Factory,()=>throw new UnauthorizedAccessException("synthetic authority denial"));
+await Reject<UnauthorizedAccessException>(()=>denied.StageAsync(read.ConfigurationHash,updated,"denied"));
+Check(!Directory.Exists(launch.DataRoot),"maintenance authority denied before data creation (injected synthetic seam)");
+var staged=await service.StageAsync(read.ConfigurationHash,updated,"synthetic offline repair");
+var directory=Path.Combine(launch.DataRoot,seed.Mode.ToString(),seed.StationId,seed.ApplicationId);
+var file=Path.Combine(directory,"configuration.json");var hash=Wire.FileHash(file);
+var envelope=Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(file));
+Check(envelope.Pending?.TimeoutMs==2100&&Wire.Encode(envelope.Effective)==Wire.Encode(seed),"save stages Pending and preserves Effective");
+Check(!Directory.GetFiles(directory,"*.db").Any(),"no business DB created by offline stage");
+await Reject<InvalidOperationException>(()=>service.StageAsync(read.ConfigurationHash,updated,"stale"));
+Check(Wire.FileHash(file)==hash,"CAS conflict preserves original configuration");
+using(var owner=new ResourceLease(directory,["application-owner"]))await Reject<IOException>(()=>service.StageAsync(staged.ConfigurationHash,updated,"busy"));
+await Reject<InvalidDataException>(()=>service.ValidateAsync(updated with {Mode=RunMode.Production}));
+Check(constructed==0,"offline paths never construct SDK/reader/external ports");
+Check(before.All(x=>Wire.FileHash(Path.Combine(config,x.Key!))==x.Value),"frozen seed bytes unchanged");
+bool copied=false;
+foreach(var media in args.Skip(2).Where(x=>!x.StartsWith("junction:"))){
+ var app=Wire.Decode<ApplicationRelease>(File.ReadAllText(Path.Combine(media,"app/application-release.json"))).ApplicationId;
+ var result=DeploymentMedia.Inspect(media,app);
+ Check(result.SourceCommit=="cfe6c0e0d0570986ea8c63f619e328d3891b82ef","actual Windows DeploymentMedia accepts frozen "+app);
+ if(!copied){copied=true;var copy=Path.Combine(run,"copied-media");result.CopyTo(copy);Check(DeploymentMedia.Inspect(copy,app).Files.Count==result.Files.Count,"copy is fully reverified before registration");
+ var injection=Path.Combine(copy,"desktop","extra.dll");File.WriteAllText(injection,"synthetic injected bytes");
+ try{DeploymentMedia.Inspect(copy,app);throw new Exception("extra DLL accepted");}catch(InvalidDataException){Check(true,"actual copied media refuses extra DLL");}File.Delete(injection);
+ File.AppendAllText(Path.Combine(copy,"app","Ipc.Assembly.dll"),"changed");
+ try{DeploymentMedia.Inspect(copy,app);throw new Exception("changed DLL accepted");}catch(InvalidDataException){Check(true,"actual copied media refuses changed binary");}
+ }
+
+}
+foreach(var junction in args.Skip(2).Where(x=>x.StartsWith("junction:"))){
+ try{DeploymentMedia.Inspect(junction[9..],"sportmaster");throw new Exception("reparse media accepted");}catch(IOException){Check(true,"Windows junction ancestor is rejected before traversal");}
+}
+foreach(var pair in new[]{("sportmaster","Sportmaster"),("direct-plc","DirectPlc"),("wcs-to-plc","WcsToPlc")}){
+ var apiLaunch=new BusinessLaunch(Path.Combine(run,"missing-"+pair.Item1),Path.Combine(run,"api-"+pair.Item1),null,null);
+ var assembly=System.Reflection.Assembly.LoadFrom("D:/r/main-cfe6/"+pair.Item1+"-portable-cfe6c0e0d057/app/Ipc.Application."+pair.Item2+".dll");
+ var method=assembly.GetType("Ipc.Application."+pair.Item2+"."+pair.Item2+"Application")!.GetMethod("Create")!;
+ await using var apiFactory=new GuardedFactory(apiLaunch,()=>throw new Exception("identity gate constructed ports"));
+ await using var runtime=(IBusinessRuntime)method.Invoke(null,new object[]{apiLaunch,apiFactory})!;
+ try{await runtime.StartAsync(CancellationToken.None);throw new Exception("missing policy accepted");}
+ catch(InvalidDataException ex)when(ex.Message.Contains("maintainer-installed machine runtime policy")){Check(!Directory.Exists(apiLaunch.DataRoot),"real frozen "+pair.Item1+" Runtime API rejects before missing config/data");}
+}
+Console.WriteLine("PASS frozen static/isolated offline scope; Windows UAC/ACL/full installation NOT_RUN; existing-DB write requires elevated protected workspace; no equipment");
+static void Check(bool b,string text){if(!b)throw new Exception(text);Console.WriteLine("PASS "+text);}
+static async Task Reject<T>(Func<Task> f)where T:Exception{try{await f();}catch(T){Console.WriteLine("PASS rejected "+typeof(T).Name);return;}throw new Exception("expected "+typeof(T).Name);}
+
+sealed class GuardedFactory(BusinessLaunch launch, Action constructed):IParcelCapabilityFactory {
+ readonly ParcelCapabilityFactory inner=new(launch);
+ public CapabilityCatalog Catalog()=>inner.Catalog();
+ public ParcelConfiguration Normalize(ParcelConfiguration c)=>inner.Normalize(c);
+ public void Validate(ParcelConfiguration c)=>inner.Validate(c);
+ public IDisposable? ProtectConfiguration(ParcelConfiguration c)=>inner.ProtectConfiguration(c);
+ public ParcelPorts Create(ParcelConfiguration c){constructed();throw new Exception("offline invoked runtime ports");}
+ public ValueTask DisposeAsync()=>inner.DisposeAsync();
+}

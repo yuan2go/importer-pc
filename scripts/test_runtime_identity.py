@@ -157,7 +157,10 @@ if sys.argv[1:] in (['--action', 'runtime-check'], ['--action', 'runtime-prepare
     def test_direct_runtime_guard_precedes_configuration_and_storage(self):
         source = (ROOT/'src/Ipc.Application.ParcelFlow/ParcelRuntime.cs').read_text()
         start = source.index('public async Task StartAsync(')
-        guard = source.index('MachineRuntimePolicy.RequireRuntimeIdentity();', start)
+        # COMM introduced an internal test seam; the production default must
+        # remain the same machine policy and execute before every I/O boundary.
+        self.assertIn('internal Action RuntimeIdentityPreflight { get; set; } = MachineRuntimePolicy.RequireRuntimeIdentity;', source)
+        guard = source.index('RuntimeIdentityPreflight();', start)
         self.assertLess(guard, source.index('started = true;', start))
         self.assertLess(guard, source.index('File.ReadAllText(', start))
         self.assertLess(guard, source.index('lease = new(', start))

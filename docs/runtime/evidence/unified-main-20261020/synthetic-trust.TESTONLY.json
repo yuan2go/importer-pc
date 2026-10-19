@@ -1,0 +1,10 @@
+{
+  "SchemaVersion": 1,
+  "Publishers": [
+    {
+      "Id": "unified-reference-test",
+      "PublicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAsfOoz4qNb+n9/QCeypUd\neTLIw9KoODa7OIEhHk3E4iN6g6YcDJITJtyJ231NQ19DpEr+eh56jVIz9PP5kFu5\nd54uxwwo6aC4LKv9kmnwcEFRexLIL+ksw1VcFS27Q11KKfuTHRGRON0RvFcKi2Ad\nRqyZ76A3KKewKOt+QAtAJgp1ZJpJ2P5dl3/PPkkaWVGA45MTjZd59xUWo07L+BKy\noZdbbN0KDCfZJbCKfy6i8VKpYZ4rgBSxn6QQetlixHNn2b1bIDacV5NJEHDzpoCg\nWBKYfH8loQLtjdTq64ToqMnX3gORTFKhQ6dvN14TiZBM7uaH6Zn3Q/lMbylk8yTA\n4lv2Z9hIqhnhc9dVrYocqTbfKvJsXAG60jUNNskqz768ELUQQUMaa/hEGVadDMXo\nlK9vnAwYNiMGadk104tNPOViAnpiEvp1BkohBOXeTfsd8fJKjI6QSLqPLWO0FdaC\n9hMcVzZ+b4IGEZl/4/77/mwwrFehg2CuSkyVE1L3w4YLAgMBAAE=\n-----END PUBLIC KEY-----\n",
+      "TestOnly": true
+    }
+  ]
+}

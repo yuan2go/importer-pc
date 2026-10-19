@@ -1,0 +1,113 @@
+{
+  "ReleaseUrl": "https://github.com/yuan2go/importer-pc/releases/tag/unified-main-reference-cfe6c0e",
+  "SourceCommit": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef",
+  "RemoteTag": "unified-main-reference-cfe6c0e",
+  "Assets": [
+    {
+      "File": "sportmaster-portable-cfe6c0e0d057.zip",
+      "LocalSha256": "d3d2912ffb80f7c9b82f1a02c66164d52ebd1e1ba1376f9416afa5c2e28436d6",
+      "RemoteDigest": "sha256:d3d2912ffb80f7c9b82f1a02c66164d52ebd1e1ba1376f9416afa5c2e28436d6",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/sportmaster-portable-cfe6c0e0d057.zip",
+      "Bytes": 18500338
+    },
+    {
+      "File": "sportmaster-win-x64-cfe6c0e0d057.zip",
+      "LocalSha256": "eb883cf959391277c0b90fe96f88a5c1a3e926a1ad3153030fc923e024bd3043",
+      "RemoteDigest": "sha256:eb883cf959391277c0b90fe96f88a5c1a3e926a1ad3153030fc923e024bd3043",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/sportmaster-win-x64-cfe6c0e0d057.zip",
+      "Bytes": 104280601
+    },
+    {
+      "File": "direct-plc-portable-cfe6c0e0d057.zip",
+      "LocalSha256": "829bbf260c4cb28375c21d4782bcaa76ae56bfbf0f009e9b8c672764c634e0d6",
+      "RemoteDigest": "sha256:829bbf260c4cb28375c21d4782bcaa76ae56bfbf0f009e9b8c672764c634e0d6",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/direct-plc-portable-cfe6c0e0d057.zip",
+      "Bytes": 18463169
+    },
+    {
+      "File": "direct-plc-win-x64-cfe6c0e0d057.zip",
+      "LocalSha256": "ce6c59617a6b0d4c54dbcde5f85bec79a7aac9acd172902476ad898c55dfce11",
+      "RemoteDigest": "sha256:ce6c59617a6b0d4c54dbcde5f85bec79a7aac9acd172902476ad898c55dfce11",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/direct-plc-win-x64-cfe6c0e0d057.zip",
+      "Bytes": 104195969
+    },
+    {
+      "File": "wcs-to-plc-portable-cfe6c0e0d057.zip",
+      "LocalSha256": "b2ba753b67938c532c09ee7dc8030d4cfe01935b3c09b41a7fee78fb93b49ca5",
+      "RemoteDigest": "sha256:b2ba753b67938c532c09ee7dc8030d4cfe01935b3c09b41a7fee78fb93b49ca5",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/wcs-to-plc-portable-cfe6c0e0d057.zip",
+      "Bytes": 18484924
+    },
+    {
+      "File": "wcs-to-plc-win-x64-cfe6c0e0d057.zip",
+      "LocalSha256": "d9d7536196b213488a6d3233ea6c2526650a950f8234186d3ca81ed298ed8560",
+      "RemoteDigest": "sha256:d9d7536196b213488a6d3233ea6c2526650a950f8234186d3ca81ed298ed8560",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/wcs-to-plc-win-x64-cfe6c0e0d057.zip",
+      "Bytes": 104239411
+    },
+    {
+      "File": "supply-portable-cfe6c0e0d057.zip",
+      "LocalSha256": "6da39da25ac5ab8cf97a91a8fe9b787901ed3a5a81a81f8a16604986977a424e",
+      "RemoteDigest": "sha256:6da39da25ac5ab8cf97a91a8fe9b787901ed3a5a81a81f8a16604986977a424e",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/supply-portable-cfe6c0e0d057.zip",
+      "Bytes": 18513293
+    },
+    {
+      "File": "inspection-portable-cfe6c0e0d057.zip",
+      "LocalSha256": "b38187b415e2f0a264f644df629169d57dc4e16a9a17fd6d95746bdcfc6ab064",
+      "RemoteDigest": "sha256:b38187b415e2f0a264f644df629169d57dc4e16a9a17fd6d95746bdcfc6ab064",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/inspection-portable-cfe6c0e0d057.zip",
+      "Bytes": 991069
+    },
+    {
+      "File": "RELEASE.json",
+      "LocalSha256": "8660a784aaedeedd3bcdc7620b04dfcbe89de0ba039b9f47e2b5e76396e58151",
+      "RemoteDigest": "sha256:8660a784aaedeedd3bcdc7620b04dfcbe89de0ba039b9f47e2b5e76396e58151",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/RELEASE.json",
+      "Bytes": 28542
+    },
+    {
+      "File": "SHA256SUMS",
+      "LocalSha256": "aa0096ae785a75e0e4a52cc28f1a48bf7c4ab72bd5bb38672c3dbecdf5feabaf",
+      "RemoteDigest": "sha256:aa0096ae785a75e0e4a52cc28f1a48bf7c4ab72bd5bb38672c3dbecdf5feabaf",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/SHA256SUMS",
+      "Bytes": 1801
+    },
+    {
+      "File": "build-record.json",
+      "LocalSha256": "8660a784aaedeedd3bcdc7620b04dfcbe89de0ba039b9f47e2b5e76396e58151",
+      "RemoteDigest": "sha256:8660a784aaedeedd3bcdc7620b04dfcbe89de0ba039b9f47e2b5e76396e58151",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/build-record.json",
+      "Bytes": 28542
+    },
+    {
+      "File": "main-selected.zip",
+      "LocalSha256": "689445552e78b5f6859bd0cf8bd7ca3b0724adae35f4a2590f4ad91cd04b6c25",
+      "RemoteDigest": "sha256:689445552e78b5f6859bd0cf8bd7ca3b0724adae35f4a2590f4ad91cd04b6c25",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/main-selected.zip",
+      "Bytes": 104300177
+    },
+    {
+      "File": "selected-media-and-repeat.json",
+      "LocalSha256": "887c5bef0210ccf4da8cd995c82d271be249a0bf5c45052862249f7c417e7bb3",
+      "RemoteDigest": "sha256:887c5bef0210ccf4da8cd995c82d271be249a0bf5c45052862249f7c417e7bb3",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/selected-media-and-repeat.json",
+      "Bytes": 2091
+    },
+    {
+      "File": "sportmaster-rcs-test-1.4.100.ipcx",
+      "LocalSha256": "d5231bd08f7571905c01e5310c43ba0afdd63875e5cb5d5c30ffdc2208ab3522",
+      "RemoteDigest": "sha256:d5231bd08f7571905c01e5310c43ba0afdd63875e5cb5d5c30ffdc2208ab3522",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-cfe6c0e/sportmaster-rcs-test-1.4.100.ipcx",
+      "Bytes": 18179
+    }
+  ],
+  "PublicApiReadback": {
+    "Assets": 14,
+    "AllUploadedAssetsFound": true,
+    "AllRemoteSha256AndSizesMatch": true,
+    "Prerelease": true,
+    "Draft": false,
+    "TargetCommitish": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef"
+  }
+}

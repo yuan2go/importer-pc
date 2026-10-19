@@ -1,0 +1,44 @@
+test_extension_build (unittest.loader._FailedTest.test_extension_build) ... ERROR
+test_extension_build (unittest.loader._FailedTest.test_extension_build) ... ERROR
+test_extension_build (unittest.loader._FailedTest.test_extension_build) ... ERROR
+
+======================================================================
+ERROR: test_extension_build (unittest.loader._FailedTest.test_extension_build)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_extension_build
+Traceback (most recent call last):
+  File "C:\Scoop\apps\python\current\Lib\unittest\loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+  File "D:\w\ipc-release\scripts\test_extension_build.py", line 14, in <module>
+    import extension_build as builder
+ModuleNotFoundError: No module named 'extension_build'
+
+
+======================================================================
+ERROR: test_extension_build (unittest.loader._FailedTest.test_extension_build)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_extension_build
+Traceback (most recent call last):
+  File "C:\Scoop\apps\python\current\Lib\unittest\loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+  File "D:\w\ipc-release\scripts\test_extension_build.py", line 14, in <module>
+    import extension_build as builder
+ModuleNotFoundError: No module named 'extension_build'
+
+
+======================================================================
+ERROR: test_extension_build (unittest.loader._FailedTest.test_extension_build)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_extension_build
+Traceback (most recent call last):
+  File "C:\Scoop\apps\python\current\Lib\unittest\loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+  File "D:\w\ipc-release\scripts\test_extension_build.py", line 14, in <module>
+    import extension_build as builder
+ModuleNotFoundError: No module named 'extension_build'
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+FAILED (errors=3)

@@ -1,0 +1,25 @@
+PASS frozen offline read creates no runtime/data
+PASS built-in provider catalog available without extension provisioning
+PASS frozen offline configuration validation
+PASS rejected UnauthorizedAccessException
+PASS maintenance authority denied before data creation (injected synthetic seam)
+PASS save stages Pending and preserves Effective
+PASS no business DB created by offline stage
+PASS rejected InvalidOperationException
+PASS CAS conflict preserves original configuration
+PASS rejected IOException
+PASS rejected InvalidDataException
+PASS offline paths never construct SDK/reader/external ports
+PASS frozen seed bytes unchanged
+PASS actual Windows DeploymentMedia accepts frozen sportmaster
+PASS copy is fully reverified before registration
+PASS actual copied media refuses extra DLL
+PASS actual copied media refuses changed binary
+PASS actual Windows DeploymentMedia accepts frozen direct-plc
+PASS actual Windows DeploymentMedia accepts frozen wcs-to-plc
+PASS actual Windows DeploymentMedia accepts frozen sportmaster
+PASS Windows junction ancestor is rejected before traversal
+PASS real frozen sportmaster Runtime API rejects before missing config/data
+PASS real frozen direct-plc Runtime API rejects before missing config/data
+PASS real frozen wcs-to-plc Runtime API rejects before missing config/data
+PASS frozen static/isolated offline scope; Windows UAC/ACL/full installation NOT_RUN; existing-DB write requires elevated protected workspace; no equipment

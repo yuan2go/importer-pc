@@ -1,0 +1,47 @@
+{
+  "Checks": [
+    {
+      "Scenario": "valid-simulation",
+      "ExpectedAccepted": true,
+      "ExitCode": 0,
+      "Passed": true,
+      "SourceCommit": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef",
+      "HostSha256": "6b314374338bb6519ed6bc80d07082fe8317a875047f2782145f016aa455924b",
+      "PackageSha256": "d5231bd08f7571905c01e5310c43ba0afdd63875e5cb5d5c30ffdc2208ab3522",
+      "Diagnostic": " \"RCS \\u5206\\u62E3\\u4EFB\\u52A1\",\n            \"Label\": \"\\u6307\\u5B9A\\u683C\\u53E3\\uFF08\\u4EC5\\u6307\\u5B9A\\u65F6\\u586B\\u5199\\uFF09\",\n            \"Type\": \"string\",\n            \"Required\": false,\n            \"Default\": null,\n            \"MaximumLength\": 64,\n            \"Minimum\": null,\n            \"Maximum\": null,\n            \"Choices\": null,\n            \"Sensitive\": false,\n            \"Description\": null,\n            \"Unit\": null,\n            \"ReadOnly\": false,\n            \"ApplyLevel\": \"Restart\",\n            \"EditRole\": \"Maintenance\",\n            \"RequiredWhenKey\": \"specified-chute\",\n            \"RequiredWhenEquals\": \"true\",\n            \"MaximumItems\": 32\n          }\n        ],\n        \"Requirements\": {\n          \"MeasuredWeight\": false,\n          \"ImageAddress\": false,\n          \"Query\": false,\n          \"PhysicalConfirmation\": false,\n          \"BusinessAcceptance\": true,\n          \"CompletesOnSubmit\": false\n        },\n        \"ContractIdentity\": \"SPORTMASTER-RCS-SORTER-v1\",\n        \"Assurance\": {\n          \"SchemaVersion\": 1,\n          \"Simulation\": true,\n          \"ProtocolEvidence\": \"Destination request v1 implementation; synthetic HTTP verification only; production qualification unavailable\"\n        }\n      }\n    ],\n    \"Prerequisites\": [],\n    \"HostContractSha256\": \"47DC82FEF412354141B2780887140D647385F6E02697F2FFC550771093FB9AD3\",\n    \"PublicContracts\": {\n      \"Ipc.Application.Contracts\": \"B1536C2E21CB718DC6B353A30359A96E24A6219EEE01AD3BB8ED496AFA11D9AC\"\n    }\n  },\n  \"ManifestSha256\": \"354CD1AD176AFBD9E7EFF682D566E94693866981F5C6C06CFA7F363C588548D9\",\n  \"PackageSha256\": \"D5231BD08F7571905C01E5310C43BA0AFDD63875E5CB5D5C30FFDC2208AB3522\",\n  \"TrustSha256\": \"F519D70DF826DBEF4F17004F99FFEBA74B64D8770BCB0DA38FBC257CAB91E150\",\n  \"VerifiedAt\": \"2026-10-19T17:29:57.8750129+00:00\",\n  \"TestOnly\": true,\n  \"Reference\": {\n    \"Id\": \"sportmaster.rcs-task\",\n    \"Version\": \"1.4.100\",\n    \"ManifestSha256\": \"354CD1AD176AFBD9E7EFF682D566E94693866981F5C6C06CFA7F363C588548D9\"\n  }\n}\n"
+    },
+    {
+      "Scenario": "tampered-payload",
+      "ExpectedAccepted": false,
+      "ExitCode": 3762504530,
+      "Passed": true,
+      "SourceCommit": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef",
+      "HostSha256": "6b314374338bb6519ed6bc80d07082fe8317a875047f2782145f016aa455924b",
+      "PackageSha256": "c54395c042d55e607fb2c6fc4c9fc99a54dba2c5b44328cd5ceeda63ff6c6a7a",
+      "Diagnostic": "Unhandled exception. System.IO.InvalidDataException: Extension size quota exceeded\n   at Ipc.Platform.ExtensionPackages.ReadBounded(Stream stream, Int64 maximum) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 31\n   at Ipc.Platform.ExtensionPackages.<Inspect>g__ReadEntry|9_0(String name, Int64 limit, <>c__DisplayClass9_0&) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 111\n   at Ipc.Platform.ExtensionPackages.Inspect(String archive, ExtensionTrust trust, RunMode mode, Func`2 resolve) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 120\n   at Ipc.Product.ExtensionBuildCheck.Inspect(String archive, String trustFile, RunMode mode, String[] dependencyArchives) in /_/src/src/Ipc.Product/ExtensionBuildCheck.cs:line 38\n   at Ipc.Assembly.ParcelCli.Management(String[] args) in /_/src/src/Ipc.Assembly/ParcelCli.cs:line 108\n   at Program.<Main>$(String[] args) in /_/src/src/Ipc.Assembly/Program.cs:line 8\n   at Program.<Main>(String[] args)\n"
+    },
+    {
+      "Scenario": "testonly-production",
+      "ExpectedAccepted": false,
+      "ExitCode": 3762504530,
+      "Passed": true,
+      "SourceCommit": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef",
+      "HostSha256": "6b314374338bb6519ed6bc80d07082fe8317a875047f2782145f016aa455924b",
+      "PackageSha256": "d5231bd08f7571905c01e5310c43ba0afdd63875e5cb5d5c30ffdc2208ab3522",
+      "Diagnostic": "Unhandled exception. System.IO.InvalidDataException: Test publisher is forbidden in Production\n   at Ipc.Platform.ExtensionPackages.VerifyMetadata(Byte[] manifestBytes, Byte[] signature, ExtensionTrust trust, RunMode mode, String packageHash) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 45\n   at Ipc.Platform.ExtensionPackages.Inspect(String archive, ExtensionTrust trust, RunMode mode, Func`2 resolve) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 113\n   at Ipc.Product.ExtensionBuildCheck.Inspect(String archive, String trustFile, RunMode mode, String[] dependencyArchives) in /_/src/src/Ipc.Product/ExtensionBuildCheck.cs:line 38\n   at Ipc.Assembly.ParcelCli.Management(String[] args) in /_/src/src/Ipc.Assembly/ParcelCli.cs:line 108\n   at Program.<Main>$(String[] args) in /_/src/src/Ipc.Assembly/Program.cs:line 8\n   at Program.<Main>(String[] args)\n"
+    },
+    {
+      "Scenario": "old-host-package",
+      "ExpectedAccepted": false,
+      "ExitCode": 3762504530,
+      "Passed": true,
+      "SourceCommit": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef",
+      "HostSha256": "6b314374338bb6519ed6bc80d07082fe8317a875047f2782145f016aa455924b",
+      "PackageSha256": "5b21f9cb9e8b720760ee83385db4f889785f60b1f17b75bfc6c67a393cd520f6",
+      "Diagnostic": "Unhandled exception. System.IO.InvalidDataException: Unsupported extension identity/runtime/contract/RID/mode/source\n   at Ipc.Platform.ExtensionPackages.VerifyMetadata(Byte[] manifestBytes, Byte[] signature, ExtensionTrust trust, RunMode mode, String packageHash) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 54\n   at Ipc.Platform.ExtensionPackages.Inspect(String archive, ExtensionTrust trust, RunMode mode, Func`2 resolve) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 113\n   at Ipc.Product.ExtensionBuildCheck.Inspect(String archive, String trustFile, RunMode mode, String[] dependencyArchives) in /_/src/src/Ipc.Product/ExtensionBuildCheck.cs:line 38\n   at Ipc.Assembly.ParcelCli.Management(String[] args) in /_/src/src/Ipc.Assembly/ParcelCli.cs:line 108\n   at Program.<Main>$(String[] args) in /_/src/src/Ipc.Assembly/Program.cs:line 8\n   at Program.<Main>(String[] args)\n"
+    }
+  ],
+  "Installed": false,
+  "Activated": false,
+  "PhysicalIntegration": "BLOCKED"
+}

@@ -32,14 +32,37 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Native frozen journeys and separate production rejection
         shell: pwsh
-        run: ./scripts/verify-sportmaster-delivery.ps1 -Release C:/scd-release -Output C:/scd-evidence
+        run: |
+          $ErrorActionPreference = 'Stop'
+          try {
+            ./scripts/verify-sportmaster-delivery.ps1 -Release C:/scd-release -Output C:/scd-evidence
+            if (-not $?) { throw 'Frozen verification did not return successfully' }
+            # The helper validates the actual production FAIL JSON and throws on
+            # any engineering failure. Its last native exit=1 is that expected
+            # policy refusal, rather than this step's outcome.
+            exit 0
+          } catch {
+            [Console]::Error.WriteLine($_)
+            exit 1
+          }
       - name: Keep actual receipts including failures
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: sportmaster-evidence-${{ github.sha }}
           path: |
-            C:/scd-evidence
+            C:/scd-evidence/acceptance.json
+            C:/scd-evidence/environment.json
+            C:/scd-evidence/media.json
+            C:/scd-evidence/*-gate.json
+            C:/scd-evidence/core/RESULT.json
+            C:/scd-evidence/core/RUN.log
+            C:/scd-evidence/wpf/RESULT.json
+            C:/scd-evidence/wpf/RUN.log
+            C:/scd-evidence/wpf/WINDOWS-WPF.log
+            C:/scd-evidence/wpf/*.png
+            C:/scd-evidence/removal/RESULT.json
+            C:/scd-evidence/removal/RUN.log
             C:/scd-release/*.json
             C:/scd-release/*.log
             C:/scd-release/SHA256SUMS

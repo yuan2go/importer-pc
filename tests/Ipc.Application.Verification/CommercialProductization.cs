@@ -139,6 +139,17 @@ static class CommercialProductization
         var currentDatabase = Path.Combine(directory, seed.ApplicationId + ".db"); var beforeOldReader = Wire.FileHash(currentDatabase);
         await Reject<InvalidDataException>(() => { using var oldReader = new ParcelRepository(directory, seed.ApplicationId, 7); return Task.CompletedTask; }, "DB7 reader refuses the new DB8 semantic floor before writable open");
         Check(Wire.FileHash(currentDatabase) == beforeOldReader, "refused prior reader preserves original database bytes");
+        var legacyLaunch = launch with { DataRoot = Path.Combine(root, "legacy-handoff-data") };
+        var legacyDirectory = Path.Combine(legacyLaunch.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
+        using (var legacy = new ParcelRepository(legacyDirectory, seed.ApplicationId, 7)) { }
+        File.WriteAllText(Path.Combine(legacyDirectory, "configuration.json"), Wire.Encode(new ConfigurationRevision<ParcelConfiguration>(0, seed, null, "Effective", null)));
+        var legacyService = new ParcelStartupMaintenance(legacyLaunch, new SportmasterFlow(), () => new SyntheticFactory(legacyLaunch), () => { })
+        { MaintenanceWorkspace = () => Directory.CreateDirectory(Path.Combine(root, "legacy-handoff-scratch-" + Wire.Id())).FullName, HandoffMachineIdentity = () => "SYNTHETIC-HANDOFF-MACHINE" };
+        var legacyBackup = Path.Combine(root, "legacy-handoff.db"); await legacyService.BackupAsync(legacyBackup);
+        var legacyTarget = Path.Combine(root, "legacy-handoff-restore"); var legacyRestore = await legacyService.PlanRestoreAsync(legacyBackup, legacyTarget); await legacyService.RestoreAsync(legacyBackup, legacyRestore.Destination, legacyRestore.BackupSha256);
+        await Reject<InvalidDataException>(() => legacyService.AdoptRestoreOwnedAsync(legacyBackup, legacyTarget, legacyRestore.BackupSha256, _ => Task.CompletedTask), "DB7 restore source cannot retire before old readers are fenced by DB8");
+        Check(!File.Exists(Path.Combine(legacyDirectory, "MIGRATION-SOURCE-FENCED.json")) && ParcelRepository.ReadStorageVersion(Path.Combine(legacyDirectory, seed.ApplicationId + ".db"), seed.ApplicationId) == 7,
+            "refused legacy handoff keeps the original reader and does not commit a false source fence");
         // Handoff uses an explicitly synthetic machine proof here. Protected
         // deployment registration/Windows account readback remain native NOT_RUN.
         service.HandoffMachineIdentity = () => "SYNTHETIC-HANDOFF-MACHINE";

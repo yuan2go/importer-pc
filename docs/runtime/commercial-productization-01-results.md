@@ -16,7 +16,7 @@
 |COMM-05|`FaultGuidance`与原健康/守卫；CP类影响/下一动作、明确过期；受控重连仍走Application|无新设备控制协议；Unknown原事实/停止保所有权不放宽|
 |COMM-06|`ParcelHistoryQuery`、`HistoryEditing`、HistoryPage；统一筛选、稳定序号上界、只读连接、流式CSV/取消/回执及事实指标|前导零/长码/公式、同码不同实体、固定边界、取消与不覆盖已验证|
 |COMM-07|`ParcelProductMaintenance`私有DB/WAL/原件快照、完整备份、原责任计划；`WindowsDeploymentMaintenance`系统修复/库存卸载/重入；不回滚业务账|实际卸载/文件占用/重启与系统项后验；Unknown拒绝、原DB/WAL不改字节已验证|
-|COMM-08|备份列表完整性、唯一配置账中计划策略、原完整恢复集、隔离恢复、`ParcelRestoreHandoff`及受保护登记切换；旧根围栏先于提交|完整集实际恢复；旧备份不得退役新事实；同机核心防双活已验证；受保护原机接管确认/换机资格后验|
+|COMM-08|备份列表完整性、唯一配置账中计划策略、原完整恢复集、隔离恢复、`ParcelRestoreHandoff`及受保护登记切换；旧根围栏先于提交|完整集实际恢复；旧备份不得退役新事实、DB7接管拒绝与DB8旧读取者门槛；同机核心防双活已验证；受保护原机接管确认/换机资格后验|
 |COMM-09|`ProductSupportWindow`、`ParcelProductSupport`、独立维护摘要与内置离线帮助；预览固定字节/容量/期限，排除秘密/完整payload/DB/原件|合成秘密标记不泄漏；原生支持页可达；未自动上传|
 |COMM-10|统一产品标题、可重建自有图标、任务/焦点/自动化名；安全站点模板、`DeploymentBatch`固定逐站计划/返回码、统一冻结打包及随包指南|与人工安装同源，非隐式提权；没有克隆生产身份/请求；介质身份单独记录|
 

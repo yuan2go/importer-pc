@@ -1,7 +1,9 @@
 
 # 统一资料与实施入口
 
-**当前统一发行：**[main cfe6c0e 的实际媒体与核验](runtime/unified-release-main-20261020.md)、[下载发行](https://github.com/yuan2go/importer-pc/releases/tag/unified-main-reference-cfe6c0e)。8 个核心 ZIP＋1 个 Simulation 扩展组合，来源/合同/文件校验已完成；Windows 原生安装与现场资格仍按报告未验/受阻边界执行。旧发布及停止回执保留形成时语境。
+> 2026-10-20 新版 Windows 不测试发布正在按[本轮记录](runtime/windows-no-test-release-20261020.md)从全部合并后的 main 构建。既有[统一发行 cfe6c0e](runtime/unified-release-main-20261020.md)保持旧源码身份，不代表 PR53 后继代码。
+
+> PR47复审修正及最新main集成的当前源码/介质/逐项结果见[最终集成证据](runtime/evidence/pr47-main-integration/README.md)和[审查裁决](reviews/pr47-commercial-productization-review.md)。旧发行与上传记录按原源码身份保留，不能替代当前DB8交付。
 > COMM-00～10 当前操作见[产品操作指南](runtime/commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](runtime/commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。
 
 **当前工作：[WP-IPC-COMMERCIAL-PRODUCTIZATION-01](work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md) 的 COMM-00～10 实施。** 开工 main 为 c445b0e；[编码前裁决](implementation/commercial-productization-01-execution.md)已独立提交，实际软件路径、冻结身份和逐项结果见上方实施结果。文档任务 b8f449e 静态基线及原 NOT_RUN 按形成时语境保留。
@@ -82,3 +84,7 @@ Sportmaster 左右独立读码及取格口，无 PLC、图片展示或长期图�
 > 发行入口增量（PR48）：[原形成时范围](runtime/unified-windows-release-01.md)。本次整合不执行测试/构建，旧冻结结果不授予最终组合资格。
 
 > 统一发行当前工具及中断交付见[结果](runtime/unified-release-01.md)；全部合并裁决见[不测试合并记录](runtime/publication-merge-20261020.md)。最终 main 组合没有重新测试或出包，旧介质/原 PASS 保持原身份。
+
+## 已完成的历史冻结发行回执
+
+[本轮7acbb2c发行结果](runtime/unified-windows-release-01-results.md)含8套实际媒介和完整原始校验；它覆盖开工PR44/45/46，早于运行中另合并的PR47/DB8，不可冒充最新main或用于DB8。并发整合保留后合入的统一发行实现、旧原件及所有现行产品指引；本轮实际续建编排源码仅按hash归档于证据目录，当前操作仍按[现行统一发行](runtime/unified-release-01.md)。Windows实机NOT_RUN、真实能力BLOCKED、商用NOT_APPROVED。

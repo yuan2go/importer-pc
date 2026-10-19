@@ -1,0 +1,14 @@
+SYNTHETIC runtime identity/ports; native WPF page, resource, keyboard and window checks only. UAC/installation/real equipment NOT_RUN.
+PASS actual published desktop first-configuration window exposes explicit save/start through the existing editor
+PASS first-configuration native read creates neither database nor authoritative configuration
+PASS actual Windows DPAPI refusal leaves the original ciphertext unchanged while the published offline editor loads configuration fields and an explicit unavailable-draft diagnosis
+PASS both native layouts load the repository-owned shared product icon
+PASS native shared pages keep one Application instance
+PASS native history exact-barcode filter takes keyboard focus and has an automation name
+PASS native history input preserves long leading-zero text in the view model
+PASS compact history collapses filters while keeping the fixed-query/export actions and detail area available
+PASS native history exposes bounded CSV export with cancel entry
+PASS native settings exposes persistent draft actions without replacing configuration authority
+PASS offline help and preview/about load as native owned tabs
+PASS history/settings/help window actions never reconstruct the business runtime
+NOT_RUN target client 1440x900 and target touch/DPI/reader hardware: current host work area 0,0,1536,816; original full matrix assertion remains unchanged.

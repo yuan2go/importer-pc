@@ -1,0 +1,28 @@
+  Determining projects to restore...
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Integrations/Ipc.Integrations.csproj (in 612 ms).
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Adapters/Ipc.Adapters.csproj (in 613 ms).
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (in 613 ms).
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (in 613 ms).
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (in 613 ms).
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (in 613 ms).
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Drivers/Ipc.Drivers.csproj (in 613 ms).
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Platform/Ipc.Platform.csproj (in 13 ms).
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (in 15 ms).
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Product/Ipc.Product.csproj (in 613 ms).
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (in 14 ms).
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Assembly/Ipc.Assembly.csproj (in 18 ms).
+  Ipc.Platform -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Application.Contracts/bin/Release/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Reference.Protocol -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Reference.Protocol/bin/Release/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Drivers -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Drivers/bin/Release/net10.0/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Application.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Integrations/bin/Release/net10.0/Ipc.Integrations.dll
+  Ipc.Adapters -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Platform.Storage -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Platform.Storage/bin/Release/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Application.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Application.ParcelFlow -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Application.ParcelFlow/bin/Release/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Product -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Product/bin/Release/net10.0/Ipc.Product.dll
+  Ipc.Assembly -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.dll
+  Ipc.Assembly -> /workspace/scratch/7529011c39ef/release-7acbb2c/supply-portable/app/
+Sealed Simulation configuration: /workspace/scratch/7529011c39ef/release-7acbb2c/supply-portable/app/config
+{"Package": "/workspace/scratch/7529011c39ef/release-7acbb2c/supply-portable.zip", "Sha256": "702266414cea4205bcc775f9c4bbd6361d8b25d5f937d843321827d0d96a144f", "SchemaVersion": 1, "Business": "supply", "Views": ["workstation", "history", "alarms", "diagnostics", "maintenance", "engineering", "extensions"], "Layouts": ["standard", "compact"], "EntryPoint": "app/Ipc.Assembly.dll", "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042", "Windows": "WINDOWS_NOT_RUN", "Field": "BLOCKED", "Binaries": {"Ipc.Adapters.dll": "a29799bebcc2aa29505776061dadaa5bf54c8455d22759e1a89aa9e7dee3728e", "Ipc.Application.Contracts.dll": "3f4f7148f5ef570ddab96f151ed7622e6c15ff3046f05213a5b1ca02ab7bbb91", "Ipc.Application.ParcelFlow.dll": "8ab04517fa358041a63c79b7a7afede28a943c9adcaec478102f7aa518f9f4b1", "Ipc.Assembly.dll": "b822b10d732e184ff0afba0219550fdcfa4cf7cf6d520e0e4fb54769173e3a82", "Ipc.Drivers.dll": "09f1ebcad34a0520e3942b9070a66c3a25b1b91f4cdae91595c664b03b6c4243", "Ipc.Integrations.dll": "0c50d5d68aea2e2b0cbcd8801f17e65f43ecc4ad1503a40087fa252fe326bfd5", "Ipc.Platform.Storage.dll": "f4ccc6578b1d89f7d932f7bc3f782b8946471058f38485b146c33629331ef172", "Ipc.Platform.dll": "20ecd3d3900b9ce549529e477edbf8b4528426d614fa592d8d533bc00ace4531", "Ipc.Product.dll": "794aead95ed027d21019061e39b429fdfe2544aa2bec62f47009b0419ddae086", "Ipc.Reference.Protocol.dll": "fac8dc3e8bd46a8ddea22de422aa3db25fe8498d6e43866c0fca2b90d9e22222", "Ipc.Supply.Contracts.dll": "459e23bd2878e1ad9ce3079edbe80f438182100e6a893fbd89d17121e52020f9", "Ipc.Supply.dll": "329d98d3bbe9e7cb5847b50516ba6466ee3ec8b7690fdba32cc0b366d4bf1a78"}}

@@ -1,0 +1,44 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042",
+  "Command": [
+    "/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/dotnet",
+    "/workspace/scratch/7529011c39ef/release-7acbb2c/inspection-portable/app/Ipc.Assembly.dll",
+    "--config",
+    "/workspace/scratch/7529011c39ef/release-7acbb2c/inspection-portable/app/config",
+    "--data-root",
+    "/tmp/ipc-release-inspection-67chrux7"
+  ],
+  "ExitCode": 0,
+  "Output": [
+    {
+      "Business": "inspection",
+      "Presentation": {
+        "Views": [
+          "inspection",
+          "inspection-history"
+        ],
+        "Layouts": [
+          "standard",
+          "compact"
+        ]
+      },
+      "Status": "Started"
+    },
+    {
+      "RuntimeId": "1da895cf-a377-49ed-bb59-f17333263041",
+      "Revision": 0,
+      "State": "Ready",
+      "Facts": {
+        "Business": "inspection",
+        "Batches": "0",
+        "Samples": "0",
+        "CurrentBatch": "",
+        "CurrentState": "Empty"
+      }
+    }
+  ],
+  "Stderr": "",
+  "Windows": "NOT_RUN",
+  "Scope": "Actual packaged compatibility entry start/query/stop with synthetic data"
+}

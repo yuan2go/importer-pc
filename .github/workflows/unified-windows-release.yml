@@ -1,0 +1,49 @@
+name: Unified Windows reference release
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-2025
+    timeout-minutes: 90
+    steps:
+      - name: Allow repository evidence paths
+        run: git config --global core.longpaths true
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Build and verify the complete frozen set
+        shell: pwsh
+        run: |
+          python scripts/release-windows.py --source '${{ github.sha }}' --output 'C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Retain build logs including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-evidence-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/*.json
+            C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/*.log
+            C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/SHA256SUMS
+          retention-days: 30
+          if-no-files-found: error
+      - name: Retain verified media only after the complete build succeeds
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-reference-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/*.zip
+            C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/RELEASE.json
+            C:/ipc-release-${{ github.run_id }}-${{ github.run_attempt }}/SHA256SUMS
+          compression-level: 0
+          retention-days: 30
+          if-no-files-found: error

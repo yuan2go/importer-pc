@@ -1,0 +1,32 @@
+[
+  {
+    "Application": "supply",
+    "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042",
+    "ProjectVersions": [
+      "Ipc.Assembly/1.0.0",
+      "Ipc.Adapters/1.0.0",
+      "Ipc.Application.Contracts/1.9.0",
+      "Ipc.Application.ParcelFlow/1.0.0",
+      "Ipc.Drivers/1.0.0",
+      "Ipc.Integrations/1.0.0",
+      "Ipc.Platform/1.0.0",
+      "Ipc.Platform.Storage/1.0.0",
+      "Ipc.Product/1.0.0",
+      "Ipc.Reference.Protocol/1.0.0",
+      "Ipc.Supply/1.0.0",
+      "Ipc.Supply.Contracts/1.0.0",
+      "Ipc.Supply.Contracts.Reference/1.0.0.0",
+      "Ipc.Supply.Reference/1.0.0.0"
+    ]
+  },
+  {
+    "Application": "inspection",
+    "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042",
+    "ProjectVersions": [
+      "Ipc.Assembly/1.0.0",
+      "Ipc.Inspection/1.0.0",
+      "Ipc.Platform/1.0.0",
+      "Ipc.Inspection.Reference/1.0.0.0"
+    ]
+  }
+]

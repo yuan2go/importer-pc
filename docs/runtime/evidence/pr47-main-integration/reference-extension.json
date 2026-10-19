@@ -1,0 +1,25 @@
+{
+  "Package": "reference.barcode-1.4.4.zip",
+  "PackageSha256": "cbeae4cc29c9605a9788720206619601b0317fb5d2913f86771c5453783c016a",
+  "PluginSourceCommit": "1291ee6f02d63a33f45e0ce73adad5c76c6ca389",
+  "PluginSourceSha256": "0fb306849bee38dab02c14b0fbd728c15a995e5328160505b6baf3e852d66bc4",
+  "DefinitionSha256": "7b247be9d150c81ac21172f497b6883e3271676accc69c19711d0f5de3bc17be",
+  "HostContractSha256": "f397a8be28085aa973248df2135865c157b08c60773b9758450c809cf77aec50",
+  "FrozenHostUnchanged": true,
+  "FrozenCheckerUnchanged": true,
+  "CheckerContractsSha256": {
+    "Ipc.Platform": "f397a8be28085aa973248df2135865c157b08c60773b9758450c809cf77aec50"
+  },
+  "Publisher": "comm.synthetic",
+  "Version": "1.4.4",
+  "ExtensionContract": 1,
+  "Signature": "RSA-PSS/SHA256",
+  "Mode": "Simulation",
+  "ManifestSha256": "22f76c7d785c22ea8c7a493df5e2c728d5f4e9da2329a566aca93baf321e6d2d",
+  "TrustSha256": "f137f9fb583b01fbcdd9e0aad423cf929dea8d86f5ec8f397215b3cf7da4ccb4",
+  "PayloadSha256": {
+    "Ipc.Reference.BarcodeExtension.dll": "21a019a06e5430a84a39620528598fa12c850a2823c5530b5692437fdd580fa3"
+  },
+  "DependencyPackages": [],
+  "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+}

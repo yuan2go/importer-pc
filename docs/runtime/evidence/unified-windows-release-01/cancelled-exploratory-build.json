@@ -1,0 +1,70 @@
+{
+  "SourceCommit": "3d95dc0311e43e9baab4af71b9e1338420a827f8",
+  "StartedUtc": "2026-10-19T17:05:05.444332+00:00",
+  "Platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "Python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "Status": "BUILDING",
+  "Packages": [
+    {
+      "Application": "sportmaster",
+      "Target": "portable",
+      "SourceCommit": "3d95dc0311e43e9baab4af71b9e1338420a827f8",
+      "BusinessVersion": "1.3.3",
+      "ContractVersion": "1.9.0",
+      "OfflineBundles": [],
+      "Sha256": "d27f1472ac964011e0f0672caa85dd8197bd2086eeea69d0f042be41c8874e73",
+      "Bytes": 18484864,
+      "File": "sportmaster-portable.zip"
+    },
+    {
+      "Application": "sportmaster",
+      "Target": "win-x64",
+      "SourceCommit": "3d95dc0311e43e9baab4af71b9e1338420a827f8",
+      "BusinessVersion": "1.3.3",
+      "ContractVersion": "1.9.0",
+      "OfflineBundles": [],
+      "Sha256": "d625f1453a5cbbce644d86c584524a16e49557b01d4cb481414e8c0f0e6ddaa8",
+      "Bytes": 104352507,
+      "File": "sportmaster-win-x64.zip"
+    },
+    {
+      "Application": "direct-plc",
+      "Target": "portable",
+      "SourceCommit": "3d95dc0311e43e9baab4af71b9e1338420a827f8",
+      "BusinessVersion": "1.3.3",
+      "ContractVersion": "1.9.0",
+      "OfflineBundles": [],
+      "Sha256": "42c8102554fe82d1f722ac61a8891b97905a84de7b959267ef2974c6d19d3709",
+      "Bytes": 18447795,
+      "File": "direct-plc-portable.zip"
+    },
+    {
+      "Application": "direct-plc",
+      "Target": "win-x64",
+      "SourceCommit": "3d95dc0311e43e9baab4af71b9e1338420a827f8",
+      "BusinessVersion": "1.3.3",
+      "ContractVersion": "1.9.0",
+      "OfflineBundles": [],
+      "Sha256": "ae0b9be6e42e8600878dc96e843633d08dcf0ce99a87780420e7318eac06f05e",
+      "Bytes": 104269368,
+      "File": "direct-plc-win-x64.zip"
+    }
+  ],
+  "WindowsAcceptance": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "CommercialAcceptance": "NOT_APPROVED",
+  "Sdk": "10.0.402",
+  "SdkInfo": ".NET SDK:\n Version:           10.0.402\n Commit:            a8dd0577c5\n Workload version:  10.0.400-manifests.da132f47\n MSBuild version:   18.9.15+a8dd0577c\n\nRuntime Environment:\n OS Name:     ubuntu\n OS Version:  24.04\n OS Platform: Linux\n RID:         linux-x64\n Base Path:   /workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/sdk/10.0.402/\n\n.NET workloads installed:\nThere are no installed workloads to display.\nConfigured to use workload sets when installing new manifests.\nNo workload sets are installed. Run \"dotnet workload restore\" to install a workload set.\n\nHost:\n  Version:      10.0.13\n  Architecture: x64\n  Commit:       4099f83977\n\n.NET SDKs installed:\n  10.0.402 [/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/sdk]\n\n.NET runtimes installed:\n  Microsoft.AspNetCore.App 10.0.13 [/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/shared/Microsoft.AspNetCore.App]\n  Microsoft.NETCore.App 10.0.13 [/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/shared/Microsoft.NETCore.App]\n\nOther architectures found:\n  None\n\nEnvironment variables:\n  DOTNET_CLI_HOME                          [/workspace/scratch/7529011c39ef/dotnet-home]\n  DOTNET_ROOT                              [/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet]\n\nglobal.json file:\n  /workspace/scratch/7529011c39ef/release-unified-02/source/global.json\n\nLearn more:\n  https://aka.ms/dotnet/info\n\nDownload .NET:\n  https://aka.ms/dotnet/download\n",
+  "CurrentCommand": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "scripts/package-application.py",
+    "--application",
+    "wcs-to-plc",
+    "--target",
+    "portable",
+    "--output",
+    "/workspace/scratch/7529011c39ef/release-unified-02/wcs-to-plc-portable",
+    "--dotnet",
+    "/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/dotnet"
+  ]
+}

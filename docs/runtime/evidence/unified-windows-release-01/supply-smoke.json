@@ -1,0 +1,49 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042",
+  "Command": [
+    "/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/dotnet",
+    "/workspace/scratch/7529011c39ef/release-7acbb2c/supply-portable/app/Ipc.Assembly.dll",
+    "--config",
+    "/workspace/scratch/7529011c39ef/release-7acbb2c/supply-portable/app/config",
+    "--data-root",
+    "/tmp/ipc-release-supply-g94p03nm"
+  ],
+  "ExitCode": 0,
+  "Output": [
+    {
+      "Business": "supply",
+      "Presentation": {
+        "Views": [
+          "workstation",
+          "history",
+          "alarms",
+          "diagnostics",
+          "maintenance",
+          "engineering",
+          "extensions"
+        ],
+        "Layouts": [
+          "standard",
+          "compact"
+        ]
+      },
+      "Status": "Started"
+    },
+    {
+      "RuntimeId": "e34ef691-09b6-4c1e-bde2-05bb2510d9c9",
+      "Revision": 7,
+      "State": "Running",
+      "Facts": {
+        "Business": "supply",
+        "AcceptedQuantity": "0",
+        "Session": "",
+        "Admission": "False",
+        "Blocks": "IdentityUnavailable; WcsUnavailable:station; WcsHealth:Health:Disconnected; NoActiveBoxOrCloseBarrier"
+      }
+    }
+  ],
+  "Stderr": "",
+  "Windows": "NOT_RUN",
+  "Scope": "Actual packaged compatibility entry start/query/stop with synthetic data; not Windows identity or installation"
+}

@@ -1,5 +1,7 @@
 # COMMERCIAL-PRODUCTIZATION-01 实施与交付结果
 
+> 历史冻结交付：本页及其证据保留 `bd86fbb` 的原结果。PR #47 后续全面复审、修正差额、新冻结身份及当前边界见[复审交付](../reviews/pr47-commercial-productization-review.md)，不能用本页旧介质替代修正后的版本。
+
 本次实施从 main `c445b0ec32a3db44f00a1968f3c501aa36eb786f` 开始，分支 `codex/commercial-productization-01`。开工工作树干净；开工及交付前开放 PR 核对无并行开放项。编码前提交 `662ef51`，保留七份原字节并裁决当前入口；[实施裁决](../implementation/commercial-productization-01-execution.md)记录 ADR COMM-A～G及收尾裁决。D/RV、客户原稿公开范围、旧失败及旧介质身份未改写。
 
 本页记录实际软件路径与验证边界。冻结媒体的 SourceCommit 从其 `ASSEMBLY.json` / `application-release.json` 读取，ZIP SHA256 从独立交付回执读取；回执在构建/验证后形成，不把本页所在文档提交号冒作已运行介质身份。最终回执见[证据入口](evidence/commercial-productization-01/README.md)、[逐项结果](evidence/commercial-productization-01/checks.json)与[六介质身份](evidence/commercial-productization-01/media-identities.json)。本次已执行部分Windows原生只读/页面验证，未执行提权安装或真实现场验收。

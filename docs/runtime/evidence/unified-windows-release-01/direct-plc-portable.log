@@ -1,0 +1,26 @@
+Retained build workspace on failure: /tmp/ipc-publication-gm3bez82
+  Determining projects to restore...
+  Restored /tmp/ipc-publication-gm3bez82/source-snapshot/src/Ipc.Components/Ipc.Components.csproj (in 635 ms).
+  Restored /tmp/ipc-publication-gm3bez82/source-snapshot/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (in 634 ms).
+  Restored /tmp/ipc-publication-gm3bez82/source-snapshot/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (in 633 ms).
+  Restored /tmp/ipc-publication-gm3bez82/source-snapshot/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (in 633 ms).
+  Restored /tmp/ipc-publication-gm3bez82/source-snapshot/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (in 635 ms).
+  Restored /tmp/ipc-publication-gm3bez82/source-snapshot/src/Ipc.Drivers/Ipc.Drivers.csproj (in 634 ms).
+  Restored /tmp/ipc-publication-gm3bez82/source-snapshot/src/Ipc.Platform/Ipc.Platform.csproj (in 634 ms).
+  Restored /tmp/ipc-publication-gm3bez82/source-snapshot/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (in 633 ms).
+  Restored /tmp/ipc-publication-gm3bez82/source-snapshot/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (in 10 ms).
+  Restored /tmp/ipc-publication-gm3bez82/source-snapshot/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (in 12 ms).
+  Restored /tmp/ipc-publication-gm3bez82/source-snapshot/src/Ipc.Assembly/Ipc.Assembly.csproj (in 13 ms).
+  Ipc.Platform -> /tmp/ipc-publication-gm3bez82/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-publication-gm3bez82/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> /tmp/ipc-publication-gm3bez82/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> /tmp/ipc-publication-gm3bez82/build-intermediates/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> /tmp/ipc-publication-gm3bez82/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> /tmp/ipc-publication-gm3bez82/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> /tmp/ipc-publication-gm3bez82/build-intermediates/bin/Ipc.Application.DirectPlc/release/Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> /tmp/ipc-publication-gm3bez82/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /tmp/ipc-publication-gm3bez82/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /tmp/ipc-publication-gm3bez82/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Assembly -> /tmp/ipc-publication-gm3bez82/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> /workspace/scratch/7529011c39ef/release-7acbb2c/direct-plc-portable/app/
+{"Package": "/workspace/scratch/7529011c39ef/release-7acbb2c/direct-plc-portable.zip", "Sha256": "40a10615d0e44c0bb7518ba7c167e3980650f329f7935a98550c20537e36aab7", "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042", "Application": "direct-plc", "Target": "portable", "BusinessVersion": "1.3.3", "BusinessAssembly": "Ipc.Application.DirectPlc.dll", "CompatibilitySha256": "C62C37AD617CAFB394C1512174C96B15EF61BC014553430DA18B2755A6BADCB9"}

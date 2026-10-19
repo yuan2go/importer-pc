@@ -33,6 +33,13 @@ static partial class Program
             Ipc.Desktop.DesktopLaunchOptions.Parse([], "direct-plc").Ui == "classic" && Ipc.Desktop.DesktopLaunchOptions.Parse([], "wcs-to-plc").Ui == "classic", "actual desktop parser and presentation default use product-specific routing with explicit classic compatibility");
         window.Show(); await Task.Delay(650); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel;
+        if (!baseline)
+        {
+            await vm.PauseAsync();
+            Check(vm.OperatorFeedback.Contains("操作已提交") && vm.Message.StartsWith("Persisted · ") && vm.Snapshot!.Paused,
+                "operator feedback is Chinese while original command receipt and authoritative pause fact remain available");
+            await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复新入场");
+        }
         if (!baseline && Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)
         {
             var desktopAssembly = System.Reflection.Assembly.LoadFrom(desktopPath);

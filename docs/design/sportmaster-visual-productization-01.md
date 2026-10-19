@@ -8,7 +8,7 @@
 
 标准布局在每位内纵向组织条码与大格口；紧凑布局真实改为横向字段和短动作区。保留800×420 DIP客户区保护，不将自动刷新、窗口切换、布局切换作为重置焦点、选择、展开、滚动或草稿的理由。只在显示值变化时通知，当前观察与原作业命令目标继续分别投影。
 
-首次配置按来源→设备与角色→策略→检查→保存与启动组织；模板/备份恢复/支持为低频入口。复用原独立维护、唯一配置账、CAS、未完成草稿与严格准入，Production缺必需能力继续拒绝。安装、快捷方式和启动器沿原发布机制；Sportmaster缺省为supply-station，显式 `--ui classic` 保留；其他Application缺省和显式选择保持合法。
+首次配置按目录与工位→设备与服务→运行策略→检查与启动组织；模板/备份恢复/支持为低频入口。复用原独立维护、唯一配置账、CAS、未完成草稿与严格准入，Production缺必需能力继续拒绝。安装、快捷方式和启动器沿原发布机制；Sportmaster缺省为supply-station，显式 `--ui classic` 保留；其他Application缺省和显式选择保持合法。
 
 技能采用 Impeccable 4.7.0（上游提交 `46b822f7dda9f7dba799a9c7776fdc19b3a93559`）Operate 的 critique/layout/clarify/polish；按项目WPF适配使用原生检查，不运行网页检测/CDP。ui-ux-pro-max单独 `--stack wpf` 和定向UX查询辅助；`--design-system`忽略stack，不作为WPF定稿。技能只用于开发。
 

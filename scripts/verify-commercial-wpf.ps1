@@ -41,8 +41,9 @@ $previousDesktop=$env:IPC_FROZEN_DESKTOP
 try {
  $env:IPC_FROZEN_DESKTOP=Join-Path $Media 'desktop/Ipc.Desktop.dll'
  $mode=if($VisualProductization){'--visual-productization'}else{'--comm-native-pages'}
- $extra=if($Interactive){@('--interactive')}else{@()}
- & $Dotnet run --project (Join-Path $Output 'NativeMedia.csproj') -- $workspace $mode @extra *> (Join-Path $Output 'RUN.log')
+ $nativeArguments=@('run','--project',(Join-Path $Output 'NativeMedia.csproj'),'--',$workspace,$mode)
+ if($Interactive){$nativeArguments += '--interactive'}
+ & $Dotnet @nativeArguments *> (Join-Path $Output 'RUN.log')
 } finally { $env:IPC_FROZEN_DESKTOP=$previousDesktop }
 $result=$LASTEXITCODE
 foreach($relative in $inventory.Keys){if((Get-FileHash -LiteralPath (Join-Path $Media $relative)).Hash -ne $inventory[$relative]){throw "Verification changed medium: $relative"}}

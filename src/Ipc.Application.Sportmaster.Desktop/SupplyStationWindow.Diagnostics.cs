@@ -18,13 +18,13 @@ public partial class SupplyStationWindow
         logout.Click += async (_, _) => await ViewModel.RunAsync(ViewModel.LogoutAsync, "登出");
         actions.Children.Add(login); actions.Children.Add(logout); body.Children.Add(actions);
         var status = new TextBlock(); status.SetBinding(TextBlock.TextProperty, new Binding(nameof(ViewModel.Session))); body.Children.Add(status);
-        var feedback = new TextBlock(); feedback.SetBinding(TextBlock.TextProperty, new Binding(nameof(ViewModel.Feedback))); body.Children.Add(feedback);
+        var feedback = new TextBlock(); feedback.SetBinding(TextBlock.TextProperty, new Binding(nameof(ViewModel.OperatorFeedback))); body.Children.Add(feedback);
         new Window { Owner = this, DataContext = ViewModel, Title = "操作员身份", Width = 520, Height = 400, WindowStartupLocation = WindowStartupLocation.CenterOwner, Content = body }.Show();
     }
     void Diagnostics_Click(object sender, RoutedEventArgs e)
     {
         var body = new StackPanel { Margin = new(20) };
-        foreach (var property in new[] { nameof(ViewModel.Station), nameof(ViewModel.TopologyStatus), nameof(ViewModel.Session), nameof(ViewModel.ConfigurationState), nameof(ViewModel.Health), nameof(ViewModel.BlockingReasons), nameof(ViewModel.AuxiliaryState), nameof(ViewModel.ReadStatus) })
+        foreach (var property in new[] { nameof(ViewModel.Station), nameof(ViewModel.TopologyStatus), nameof(ViewModel.Session), nameof(ViewModel.ConfigurationState), nameof(ViewModel.Health), nameof(ViewModel.BlockingReasons), nameof(ViewModel.AuxiliaryState), nameof(ViewModel.ReadStatus), nameof(ViewModel.Message) })
         {
             var text = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, Margin = new(0, 0, 0, 12) };
             text.SetBinding(TextBox.TextProperty, new Binding(property)); body.Children.Add(text);

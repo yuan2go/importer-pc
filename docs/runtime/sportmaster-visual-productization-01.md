@@ -4,7 +4,7 @@
 
 ## 实际使用
 
-沿原安装机制，完整win-x64介质解压后运行 `Setup.cmd`，安装后指定Windows账户非提权从开始菜单或 `desktop/Ipc.Desktop.exe` 启动。首次工位配置按设备与角色、运行策略、检查与保存三个步骤；可保存未完成草稿。保存Pending和显式启动仍受原身份、原责任、精确能力与Production资格守卫，安装和配置检查不启动设备。
+沿原安装机制，完整win-x64介质解压后运行 `Setup.cmd`，安装后指定Windows账户非提权从开始菜单或 `desktop/Ipc.Desktop.exe` 启动。首次工位配置按目录与工位、设备与服务、运行策略、检查与启动四个步骤，另有恢复维护页；可保存未完成草稿。保存Pending和显式启动仍受原身份、原责任、精确能力与Production资格守卫，安装和配置检查不启动设备。
 
 Sportmaster省略UI参数进入新版supply-station；`--ui classic`显式兼容。页面参数 `--view sportmaster-history|sportmaster-maintenance`、布局 `--layout standard|compact`继续可用；显式 `--ui supply-station`继续有效。高级 `application.ps1`按介质Application选择缺省，显式-Ui继续保留；无参application.cmd、安装和快捷方式沿desktop缺省，无第三套界面。其他Application缺省不变，仍拒绝Sportmaster专属UI。
 

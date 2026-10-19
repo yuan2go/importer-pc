@@ -39,18 +39,21 @@ static partial class Program
             var type = desktopAssembly.GetType("Ipc.Desktop.StartupRepairWindow", true)!;
             var offline = launch with { DataRoot = Path.Combine(evidence, "offline-data") };
             var first = (Window)Activator.CreateInstance(type, [offline, null, true])!; first.Show();
-            for (var i = 0; i < 100 && Descendants(first).OfType<TabItem>().Count() < 4; i++) await Task.Delay(30);
+            for (var i = 0; i < 100 && Descendants(first).OfType<TabItem>().Count() < 5; i++) await Task.Delay(30);
             for (var i = 0; i < 100 && !Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "读取所选配置") && b.IsEnabled); i++) await Task.Delay(30);
             first.UpdateLayout();
-            Check(Descendants(first).OfType<TabItem>().Count() == 4 && Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "保存首配待生效…")), "frozen desktop first configuration exposes task steps and existing guarded save");
+            Check(Descendants(first).OfType<TabItem>().Count() == 5 && Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "保存首配待生效…")), "frozen desktop first configuration exposes task steps and existing guarded save");
             Check(!Directory.Exists(offline.DataRoot) || !Directory.GetFiles(offline.DataRoot, "*.db", SearchOption.AllDirectories).Any(), "offline first configuration never starts the Application or creates a business database");
             Capture("first-configuration", first);
-            var policy = Descendants(first).OfType<TabItem>().Single(t => Equals(t.Header, "2 · 运行策略")); policy.IsSelected = true; first.UpdateLayout();
+            var policy = Descendants(first).OfType<TabItem>().Single(t => Equals(t.Header, "3 运行策略")); policy.IsSelected = true; first.UpdateLayout();
             var timeout = Descendants(first).OfType<TextBox>().Single(b => AutomationProperties.GetName(b).StartsWith("调用超时")); timeout.Text = "1601";
             Check(timeout.IsEnabled && timeout.Focus(), "first-configuration native form becomes enabled and accepts keyboard focus after the read completes");
-            var review = Descendants(first).OfType<TabItem>().Single(t => Equals(t.Header, "3 · 检查与保存")); review.IsSelected = true; first.UpdateLayout(); policy.IsSelected = true; first.UpdateLayout();
+            var review = Descendants(first).OfType<TabItem>().Single(t => Equals(t.Header, "4 检查与启动")); review.IsSelected = true; first.UpdateLayout(); policy.IsSelected = true; first.UpdateLayout();
             Check(timeout.Text == "1601" && Descendants(first).OfType<TextBox>().Contains(timeout), "first-configuration step navigation retains the same native unsaved form controls");
-            Capture("first-configuration-policy", first); first.Close();
+            Capture("first-configuration-policy", first);
+            type.GetProperty("ConfirmDiscardInputs", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(first, new Func<bool>(() => false)); first.Close();
+            Check(first.IsVisible && timeout.Text == "1601", "integrated first-configuration guard refuses to discard an unsaved native draft");
+            timeout.Text = config.TimeoutMs.ToString(); first.Close();
         }
         // Same live WPF fixture captures the before/after state; no images are generated.
         await Fit(1366, 768); Capture("waiting-1366");
@@ -187,4 +190,3 @@ static partial class Program
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
 }
-

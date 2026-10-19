@@ -1,0 +1,50 @@
+{
+  "Status": "FAIL",
+  "Level": "production",
+  "SourceCommit": "1f6e5b853ad67bc3bd604564af238af615e933f7",
+  "MediumInventorySha256": "AEB5AE433EAEBA1D064F68BBC949003059C4202315A1AB62CB68D819CC993253",
+  "Outstanding": [
+    {
+      "Id": "windows-install",
+      "Status": "NOT_RUN",
+      "Reason": "����Windows��ָ��SID����Ĭ��Ŀ¼��helper ACL���Ǽ�/��ݷ�ʽ������Ȩ�����������˻��ܾ�"
+    },
+    {
+      "Id": "windows-repair",
+      "Status": "NOT_RUN",
+      "Reason": "ͬһ���ʣ�δȷ����������ʧ���޸���ϵͳ�Ǽ��޸��������������жϼ�����������ʾܾ�"
+    },
+    {
+      "Id": "windows-uninstall",
+      "Status": "NOT_RUN",
+      "Reason": "ϵͳ��ڱ�������ж�ء���ʵռ���������жϻָ���������������ݱ���"
+    },
+    {
+      "Id": "windows-migration",
+      "Status": "NOT_RUN",
+      "Reason": "�����ָ������¸����롢�ɸ����ۡ�˫�˻�/����DPAPI�ܾ���ԭ�����ط�"
+    },
+    {
+      "Id": "field",
+      "Status": "BLOCKED",
+      "Reason": "��ʵSDK/��ͬ/�豸/ʵ�����ɡ������������쳣�ָ���Ŀ�괥��/DPI�������ʸ�"
+    },
+    {
+      "Id": "signoff",
+      "Status": "BLOCKED",
+      "Reason": "���ŷַ�ǩ���������ʸ�ͻ���Ȩ���𷽷��У�����������PASS����֤��/��׼"
+    },
+    {
+      "Id": "distribution-signature",
+      "Status": "BLOCKED",
+      "Reason": "No externally approved public signer certificate supplied; no distribution signature qualification"
+    }
+  ],
+  "ProductionApproval": "NOT_GRANTED_BY_THIS_TOOL",
+  "TrustBoundary": "Hashes prove custody, not truth of test/qualification/approval attestations. Authorized release review remains mandatory.",
+  "Authenticode": "NOT_SIGNED_NO_CERTIFICATE_PROVIDED",
+  "DistributionSignature": {
+    "Status": "BLOCKED",
+    "Reason": "No externally approved public signer certificate supplied; no distribution signature qualification"
+  }
+}

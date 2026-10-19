@@ -46,14 +46,14 @@ try {
 } finally { $env:IPC_FROZEN_DESKTOP=$previousDesktop }
 $result=$LASTEXITCODE
 foreach($relative in $inventory.Keys){if((Get-FileHash -LiteralPath (Join-Path $Media $relative)).Hash -ne $inventory[$relative]){throw "Verification changed medium: $relative"}}
-if($result -eq 0){
+if(Test-Path -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE.txt')){
  $evidence=Get-Content -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE.txt')
  Copy-Item -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log') -Destination $Output
  if($VisualProductization){Get-ChildItem -LiteralPath $evidence -Filter 'after-*.png' | Copy-Item -Destination $Output}
- else {
-  Copy-Item -LiteralPath (Join-Path $evidence 'commercial-history-1100x600.png') -Destination $Output
-  Copy-Item -LiteralPath (Join-Path $evidence 'commercial-support.png') -Destination $Output
-  Copy-Item -LiteralPath (Join-Path $evidence 'commercial-first-configuration.png') -Destination $Output
+ else { foreach($screen in @('commercial-history-1100x600.png','commercial-support.png','commercial-first-configuration.png')){
+  if(Test-Path -LiteralPath (Join-Path $evidence $screen)){Copy-Item -LiteralPath (Join-Path $evidence $screen) -Destination $Output}
+ }
+
  }
 }
 [ordered]@{Status=if($result -eq 0){'PASS'}else{'FAIL'};SourceCommit=$release.SourceCommit;MediumInventorySha256=(Get-FileHash -LiteralPath (Join-Path $Media 'SHA256SUMS')).Hash;Scope='Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning';ExitCode=$result;Binaries=@($refs|ForEach-Object{[ordered]@{File=$_.Name;Sha256=(Get-FileHash -LiteralPath $_.FullName).Hash}})}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $Output 'RESULT.json') -Encoding utf8NoBOM

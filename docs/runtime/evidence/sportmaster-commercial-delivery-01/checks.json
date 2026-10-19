@@ -1,0 +1,122 @@
+{
+  "SourceCommit": "e45e9871b2ad3b85796ae74b4ac3e716996d4554",
+  "DocumentFirstCommit": "7b631b0",
+  "StartMain": "939462bee40c9eebe8eb2aa60860217afd95fcdd",
+  "IntegratedMain": "f3059d499cd4dbc60b443f0a54cac939b2e5db2f",
+  "Engineering": "PASS_BOUNDED_EXECUTABLE_SCOPE",
+  "Production": "NOT_APPROVED",
+  "Cases": [
+    {
+      "Id": "core",
+      "Status": "PASS",
+      "Reason": "SYNTHETIC_APPLICATION_CORE_REAL_PUBLISHED_DLLS",
+      "Evidence": [
+        {
+          "Path": "core/RESULT.json",
+          "Sha256": "835846429228E16F682579D5185EA14BE334F592B958FA6B201997DBF8AAF69B"
+        },
+        {
+          "Path": "core/RUN.log",
+          "Sha256": "E6FD8B3D63B6976ABE80CB66116E0BB8DB5F6873792B860FFFAEA302C98DD605"
+        }
+      ]
+    },
+    {
+      "Id": "wpf",
+      "Status": "PASS",
+      "Reason": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning",
+      "Evidence": [
+        {
+          "Path": "wpf/RESULT.json",
+          "Sha256": "B49E97BD175B4BF03EAF38F83C350BBAA31B7596B7DA8F1C13FC086D6BCE04C0"
+        },
+        {
+          "Path": "wpf/commercial-first-configuration.png",
+          "Sha256": "F9B2FDFA33D9EC630455DBE01B8D21CB4DF80AE6D835C8AC93D744EDD9BA5FE5"
+        },
+        {
+          "Path": "wpf/commercial-history-1100x600.png",
+          "Sha256": "B52B5004D5240E5CB23305E6C5480DD6AF517A5632D61678385384E1C68BF7DD"
+        },
+        {
+          "Path": "wpf/commercial-support.png",
+          "Sha256": "8B0EBF4F4B094E052FA8839EE388EF954A110D1C2964DCB39BBEFE227BFC67A4"
+        },
+        {
+          "Path": "wpf/RUN.log",
+          "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "Path": "wpf/WINDOWS-WPF.log",
+          "Sha256": "2D361CFEEDAF5240B4F41FC01C3E5AB8C72935E3EC3646AEC29DED99364F05AA"
+        }
+      ]
+    },
+    {
+      "Id": "media",
+      "Status": "PASS",
+      "Reason": "统一发行器双目标库存/ZIP/源码身份全部校验",
+      "Evidence": [
+        {
+          "Path": "media.json",
+          "Sha256": "D60AD013EE0AF3BADB186B9A04CAD28E460B5772BEFA4CD91896816E50AFCC8C"
+        }
+      ]
+    },
+    {
+      "Id": "removal",
+      "Status": "PASS",
+      "Reason": "Internal inventory kernel only; real Windows sharing violation with synthetic restart queue",
+      "Evidence": [
+        {
+          "Path": "removal/RESULT.json",
+          "Sha256": "AAAEC6B38C4D898CDEA45D5D6B52539EF49779CB80E221E875680A4E88A014EB"
+        },
+        {
+          "Path": "removal/RUN.log",
+          "Sha256": "2F630195C5D6C5DBBECF27427911C72B50EE1AD5401959F05D4981DCA7ACC58E"
+        }
+      ]
+    },
+    {
+      "Id": "windows-install",
+      "Status": "NOT_RUN",
+      "Reason": "隔离Windows：指定SID、非默认目录、helper ACL、登记/快捷方式、非提权启动、错误账户拒绝",
+      "Evidence": []
+    },
+    {
+      "Id": "windows-repair",
+      "Status": "NOT_RUN",
+      "Reason": "同一介质：未确认配置启动失败修复、系统登记修复、并排升级及中断继续、错误介质拒绝",
+      "Evidence": []
+    },
+    {
+      "Id": "windows-uninstall",
+      "Status": "NOT_RUN",
+      "Reason": "系统入口保留数据卸载、真实占用重启、中断恢复、共享组件及数据保留",
+      "Evidence": []
+    },
+    {
+      "Id": "windows-migration",
+      "Status": "NOT_RUN",
+      "Reason": "完整恢复集、新根隔离、旧根退役、双账户/换机DPAPI拒绝、原请求不重发",
+      "Evidence": []
+    },
+    {
+      "Id": "field",
+      "Status": "BLOCKED",
+      "Reason": "真实SDK/合同/设备/实体许可、连续运行与异常恢复、目标触控/DPI、部署资格",
+      "Evidence": []
+    },
+    {
+      "Id": "signoff",
+      "Status": "BLOCKED",
+      "Reason": "可信分发签名、逐项资格和获授权负责方放行；不能用手填PASS代替证书/批准",
+      "Evidence": []
+    }
+  ],
+  "HistoricalDRv": "UNCHANGED",
+  "RepositoryProtection": "main unprotected and rulesets empty at last read; workflow is real but required-check settings were not configured by this task",
+  "PR": "https://github.com/yuan2go/importer-pc/pull/56",
+  "HostedFinalCheck": "Must be verified on final expected head before server merge; see PR checks, no bypass"
+}

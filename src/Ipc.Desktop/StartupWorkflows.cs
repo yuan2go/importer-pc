@@ -21,12 +21,12 @@ abstract class StartupWorkflowWindow : Window
     {
         Form = Body;
         ProductBrand.Apply(this);
-        Title = title; Width = 960; Height = 760; MinWidth = 680; MinHeight = 500; WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        Title = title; FontSize = 16; Width = 960; Height = 760; MinWidth = 680; MinHeight = 500; WindowStartupLocation = WindowStartupLocation.CenterScreen;
         Background = new SolidColorBrush(Color.FromRgb(241, 244, 247)); Foreground = new SolidColorBrush(Color.FromRgb(25, 39, 54));
         var grid = new Grid { Margin = new(24) };
         grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-        var heading = new StackPanel(); heading.Children.Add(new TextBlock { Text = title, FontSize = 24, FontWeight = FontWeights.Bold }); var statusView = new ScrollViewer { Content = Status, MaxHeight = 116, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-        heading.Children.Add(statusView);
+        var heading = new StackPanel(); heading.Children.Add(new TextBlock { Text = title, FontSize = 24, FontWeight = FontWeights.Bold });
+        heading.Children.Add(new ScrollViewer { Content = Status, MaxHeight = 116, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
         var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 200, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
         diagnostic.SetBinding(TextBox.TextProperty, new System.Windows.Data.Binding(nameof(TextBlock.Text)) { Source = Status });
         heading.Children.Add(new Expander { Header = "完整诊断（可选择复制）", Content = diagnostic });
@@ -73,7 +73,12 @@ abstract class StartupWorkflowWindow : Window
 
 sealed class StartupRepairWindow : StartupWorkflowWindow
 {
-    readonly TabControl steps = new();
+    readonly UIElement[] pathFields;
+    TabControl? tasks;
+    bool rendering = true;
+    string? savedInput, checkedInput;
+    int selectedTask;
+    internal Func<bool> ConfirmDiscardInputs { get; set; } = null!;
     IStartupMaintenance maintenance = null!;
     StartupMaintenanceDocument? document;
     StartupConfigurationDraft? draft;
@@ -89,21 +94,20 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次工位配置 · Importer PC" : "启动修复 · 离线维护")
     {
         SelectedLaunch = launch;
+        ConfirmDiscardInputs = () => MessageBox.Show(this, "有尚未保存的输入。返回可保存加密草稿；继续将放弃当前未保存输入，既有配置账和已保存草稿保留。", "保护未完成配置", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK;
         if (initialConfiguration) reason = "首次工位配置";
         Message("无需业务启动成功。检查和编辑不连接设备；保存为 Pending，正常启动仍检查原恢复责任。" + (failure is null ? "" : "\n启动诊断：" + failure));
         config = Folder("原配置目录（包含 business.json）", launch.ConfigurationDirectory);
         data = Folder("原数据根（保留 Simulation/Production、站和 Application 层级）", launch.DataRoot);
-        var sourceFields = new StackPanel();
-        var sources = Body.Children.Cast<UIElement>().ToArray(); Body.Children.Clear();
-        foreach (var item in sources) sourceFields.Children.Add(item);
-        Body.Children.Add(new Expander { Header = "配置来源与数据目录", Content = sourceFields, IsExpanded = !initialConfiguration });
-        Body.Children.Add(steps);
+        pathFields = Body.Children.Cast<UIElement>().ToArray();
         Action("读取所选配置", Read);
-        Action("分层检查与变更预览", async () => { var candidate = RequireDraft(); var report = await Task.Run(() => maintenance.CheckAsync(candidate)); Message("候选 " + report.CandidateHash + "\n" + string.Join("\n", report.Checks.Select(c => c.Layer + " · " + c.Status + " · " + c.Reason)) + "\n生效影响：设备、目标或策略变更须受控重启；原请求保持原配置。保存草稿不激活。"); });
+        Action("分层检查与变更预览", async () => { var candidate = RequireDraft(); var report = await Task.Run(() => maintenance.CheckAsync(candidate)); checkedInput = Input(); Message("检查时间 " + DateTimeOffset.Now.ToString("g") + "\n候选 " + report.CandidateHash + "\n" + string.Join("\n", report.Checks.Select(c => c.Layer + " · " + c.Status + " · " + c.Reason)) + "\n输入改变后检查失效。此检查不连接设备，不授予生产资格；保存和启动仍执行完整守卫。"); });
         Action("保存未完成草稿", async () =>
         {
             if (draft is null || document is null) throw new InvalidOperationException("先读取原配置");
+            RequireDirectories();
             savedDraft = await Task.Run(() => maintenance.SaveDraftAsync(document.ConfigurationHash, savedDraft?.DraftHash, draft.Capture()));
+            savedInput = Input();
             Message("未完成输入已保存；不要求连接/Production资格，不写Pending。Windows草稿使用DPAPI及私有ACL；换机需重新配置秘密。");
         });
         Action("继续已保存草稿", () =>
@@ -130,12 +134,12 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         });
         Action(initialConfiguration ? "保存首配待生效…" : "保存待生效修订…", async () =>
         {
-            var candidate = RequireDraft(); var expected = document!.ConfigurationHash;
+            RequireChecked(); var candidate = RequireDraft(); var expected = document!.ConfigurationHash;
             document = await Task.Run(() => initialConfiguration ? maintenance.RepairInitialAsync(expected, candidate, reason) : maintenance.StageAsync(expected, candidate, reason)); Render(); Message("保存后已读回状态：" + document.ConfigurationStatus + "。保存过程不改 Effective 或原数据库；重试启动时由业务决定能否激活。");
         });
         Action("受控修复未确认配置…", async () =>
         {
-            var candidate = RequireDraft();
+            RequireChecked(); var candidate = RequireDraft();
             if (MessageBox.Show(this, "将保留原配置及确认/失败记录。仅在原实例已释放、原责任已清且候选严格校验通过时，允许下一次启动直接尝试候选。失败不会替换Effective。", "确认初始配置修复", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
             document = await Task.Run(() => maintenance.RepairInitialAsync(document!.ConfigurationHash, candidate, reason)); Render();
             Message("修复意图已保存并读回；重试正常启动会再次检查原责任及资格，资源全部成功后才确认Effective。");
@@ -162,29 +166,65 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             await Task.Run(() => maintenance.AdoptRestoreAsync(restoredBackup, restoredPreview.DataRoot, restoredPreview.BackupSha256, Wire.FileHash(registration)));
             Message("原机目录接管已提交。原根启动围栏保留，新根仍隔离；重试启动后先在维护页读取并核对交接。不能自动Resume或重发旧请求。");
         });
-        Action("离线帮助", () => { new Window { Owner = this, Title = "Importer PC · 离线帮助", Width = 860, Height = 700, Content = new TextBox { Text = ProductHelp.QuickStart, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new(16), FontSize = 16 } }.Show(); return Task.CompletedTask; });
+        Action("离线帮助", () => { new Window { Owner = this, Title = "Importer PC · 离线帮助", Width = 860, Height = 700, Content = ProductHelp.CreateView() }.Show(); return Task.CompletedTask; });
         Action("安装 / 修复程序…", async () =>
         {
+            if (!MayDiscard()) return;
             var setup = new StartupSetupWindow(SelectedLaunch) { Owner = this }; setup.ShowDialog();
             if (setup.Launched) { ReplacementLaunched = true; Busy = false; Close(); return; }
-            if (setup.Installed is { } installed) { config.Text = installed.ConfigurationDirectory; data.Text = installed.DataRoot; await Read(); }
+            if (setup.Installed is { } installed) { config.Text = installed.ConfigurationDirectory; data.Text = installed.DataRoot; await Read(true); }
         });
-        Action(initialConfiguration ? "按当前首配启动" : "重试正常启动", () => { SelectedLaunch = SelectedLaunch with { ConfigurationDirectory = config.Text, DataRoot = data.Text }; RetryRequested = true; CompleteDialog(); return Task.CompletedTask; });
-        var primaryLabels = new[] { "读取所选配置", "分层检查与变更预览", initialConfiguration ? "保存首配待生效…" : "保存待生效修订…", initialConfiguration ? "按当前首配启动" : "重试正常启动" };
-        var secondary = new WrapPanel();
-        foreach (var button in Actions.Children.OfType<Button>().Where(b => !primaryLabels.Contains(b.Content as string)).ToArray())
-        { Actions.Children.Remove(button); secondary.Children.Add(button); }
-        Actions.Children.Add(new Expander { Header = "草稿、模板、备份与支持", Content = secondary, Margin = new(0, 8, 0, 0), MaxWidth = 880 });
-        Loaded += async (_, _) => await Run(Read);
+        Action(initialConfiguration ? "按当前首配启动" : "重试正常启动", () => { RequireChecked(); var candidate = RequireDraft(); if (savedInput != Input() || Wire.Encode(candidate) != Wire.Encode(document!.Candidate)) throw new InvalidOperationException("当前输入尚未提交为待生效配置。请保存待生效修订并重新检查；未完成草稿不能作为启动配置。"); SelectedLaunch = SelectedLaunch with { ConfigurationDirectory = config.Text, DataRoot = data.Text }; RetryRequested = true; CompleteDialog(); return Task.CompletedTask; });
+        Action("上一步", () => { if (tasks is not null) tasks.SelectedIndex = Math.Max(0, tasks.SelectedIndex - 1); return Task.CompletedTask; });
+        var next = Action("下一步", () => { if (tasks is not null) tasks.SelectedIndex = Math.Min(3, tasks.SelectedIndex + 1); return Task.CompletedTask; });
+        next.Background = new SolidColorBrush(Color.FromRgb(32, 95, 206)); next.Foreground = Brushes.White;
+        Body.AddHandler(System.Windows.Controls.Primitives.TextBoxBase.TextChangedEvent, new TextChangedEventHandler((_, e) => { if (e.OriginalSource is TextBox { IsReadOnly: false }) Changed(); }));
+        Body.AddHandler(ComboBox.SelectionChangedEvent, new SelectionChangedEventHandler((_, e) => { if (e.OriginalSource is ComboBox) Changed(); }));
+        Body.AddHandler(CheckBox.CheckedEvent, new RoutedEventHandler((_, _) => Changed()));
+        Body.AddHandler(CheckBox.UncheckedEvent, new RoutedEventHandler((_, _) => Changed()));
+        Body.AddHandler(PasswordBox.PasswordChangedEvent, new RoutedEventHandler((_, _) => Changed()));
+        Closing += (_, e) => { if (!Busy && !RetryRequested && !ReplacementLaunched && !MayDiscard()) e.Cancel = true; };
+        Loaded += async (_, _) => await Run(async () => { try { await Read(); } finally { if (tasks is null) Render(); } });
+    }
+    string Input() => config.Text + "\n" + data.Text + "\n" + reason + "\n" + (draft is null ? "" : Wire.Encode(draft.Capture()));
+    new Button Action(string label, Func<Task> action) => base.Action(label, async () =>
+    {
+        if (label is not ("读取所选配置" or "离线帮助" or "安装 / 修复程序…" or "上一步" or "下一步")) RequireMaintenance();
+        await action();
+    });
+    void RequireMaintenance()
+    {
+        RequireDirectories();
+        if (maintenance is null) throw new InvalidOperationException("先读取所选目录；失败读取不能沿用另一目录的维护实例。");
+    }
+    bool MayDiscard() => savedInput is null || savedInput == Input() || ConfirmDiscardInputs();
+    void Changed()
+    {
+        if (rendering || Busy) return;
+        checkedInput = null;
+        Message("输入已改变：此前检查失效。可继续填写或保存未完成草稿；到‘检查与启动’重新检查，不会自动生效。");
+    }
+    void RequireChecked()
+    {
+        if (checkedInput is null || checkedInput != Input()) throw new InvalidOperationException("请先对当前输入执行‘分层检查与变更预览’。检查不等于生产资格，实际命令仍会重新验证。");
     }
     ParcelConfiguration RequireDraft()
     {
         if (draft is null || document is null) throw new InvalidOperationException("先读取有效配置。损坏原账请使用完整备份恢复或安装修复。");
-        if (config.Text != SelectedLaunch.ConfigurationDirectory || data.Text != SelectedLaunch.DataRoot) throw new InvalidOperationException("路径已更改，先重新读取，不能将旧草稿保存到另一个目录");
+        RequireDirectories();
         return draft.Build();
     }
-    async Task Read()
+    void RequireDirectories()
     {
+        if (config.Text != SelectedLaunch.ConfigurationDirectory || data.Text != SelectedLaunch.DataRoot) throw new InvalidOperationException("路径已更改，先重新读取，不能将旧草稿保存到另一个目录");
+    }
+    Task Read() => Read(false);
+    async Task Read(bool discardAccepted)
+    {
+        if (!discardAccepted && !MayDiscard()) return;
+        document = null; draft = null; savedDraft = null; maintenance = null!; checkedInput = savedInput = null;
+        try
+        {
         SelectedLaunch = SelectedLaunch with { ConfigurationDirectory = Path.GetFullPath(config.Text), DataRoot = Path.GetFullPath(data.Text) };
         config.Text = SelectedLaunch.ConfigurationDirectory; data.Text = SelectedLaunch.DataRoot;
         maintenance = ParcelStartupServices.Maintenance(SelectedLaunch);
@@ -199,28 +239,46 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         }
         Render();
         Message(string.Join("\n", document.Diagnostics) + "\n" + document.Catalog.InventoryDiagnostic + unavailableDraft + (savedDraft is null ? "" : "\n发现未完成草稿：" + savedDraft.At + (savedDraft.BaseChanged ? "，基线已变化，保留但不自动应用" : "，可选择继续")));
+        }
+        catch { Render(); throw; }
     }
     void Render(bool replaceDraft = true)
     {
-        var selectedStep = (steps.SelectedItem as TabItem)?.Header;
-        steps.Items.Clear();
-        void Step(string title)
-        {
-            Form = new StackPanel { Margin = new(16) };
-            steps.Items.Add(new TabItem { Header = title, Content = Form });
-        }
-        Step("1 · 设备与角色");
+        rendering = true; checkedInput = null;
+        // Reparent the same directory controls; navigation never reconstructs a draft or runtime.
+        if (tasks is not null) foreach (TabItem tab in tasks.Items) if (tab.Content is Panel panel) panel.Children.Clear();
+        Body.Children.Clear(); foreach (var field in pathFields) Body.Children.Add(field);
+        var policyStart = Body.Children.Count; var deviceStart = policyStart; var reviewStart = policyStart;
         if (replaceDraft) draft = document?.Candidate is { } candidate ? new(candidate, document.Catalog) : null;
         if (draft is not null)
         {
             var c = document!.Candidate!;
-            Note($"{c.StationId} · {c.Mode} · 配置{document.ConfigurationStatus}。本步骤填写读码来源和服务；设备尚未启动。");
-            Form.Children.Add(new Expander { Header = "配置版本与来源（只读）", Content = new TextBox { Text = $"{c.ApplicationId} · 修订 {document.Revision}\n原账SHA256：{document.ConfigurationHash}\n工位身份只读。未枚举或未连接的能力仍待核验，启动受原责任和资格检查。", IsReadOnly = true, TextWrapping = TextWrapping.Wrap } });
+            Note($"{c.ApplicationId} · {c.StationId} · {c.Mode} · 修订 {document.Revision} · {document.ConfigurationStatus}\n工位身份只读；设备尚未启动。可先保存未完成草稿。");
+            Body.Children.Add(new Expander { Header = "配置身份与检查边界", Content = new TextBox { IsReadOnly = true, Text = $"原账散列：{document.ConfigurationHash}\n设备与服务沿已交付精确目录选择；未枚举/未连接不等于已验证。显式启动仍受完整资格和原责任检查。", TextWrapping = TextWrapping.Wrap }, Margin = new(0, 8, 0, 8) });
+            policyStart = Body.Children.Count;
+            Field("输入队列容量", draft.QueueCapacity, v => draft.QueueCapacity = v);
+            Field("调用超时（ms）", draft.TimeoutMs, v => draft.TimeoutMs = v);
+            Field("作业容量", draft.MaximumOperations, v => draft.MaximumOperations = v);
+            Field("常驻历史条数（同库归档不释放磁盘）", draft.ResidentHistory, v => draft.ResidentHistory = v);
+            Field("关键写入保留空间（MiB）", draft.MinimumFreeMiB, v => draft.MinimumFreeMiB = v);
+            var scheduledBackup = new CheckBox { Content = "启用受控计划备份（仅在已暂停、维护授权有效且无在途外呼时触发；不会自动暂停业务）", IsChecked = draft.Policy.BackupEnabled, MinHeight = 44 };
+            scheduledBackup.Checked += (_, _) => draft.Policy.BackupEnabled = true; scheduledBackup.Unchecked += (_, _) => draft.Policy.BackupEnabled = false; Body.Children.Add(scheduledBackup);
+            var scheduleDirectory = Folder("计划备份目录（原业务目录以外；须有容量）", draft.Policy.BackupDirectory); scheduleDirectory.TextChanged += (_, _) => draft.Policy.BackupDirectory = scheduleDirectory.Text;
+            Field("计划备份周期（分钟，15～10080；未启用可留空）", draft.Policy.BackupIntervalMinutes, v => draft.Policy.BackupIntervalMinutes = v);
+            Field("备份容量份数上限（1～1000；到限保留所有旧备份并报错，不自动删除）", draft.Policy.BackupMaximumSets, v => draft.Policy.BackupMaximumSets = v);
+            Choice("重量来源", draft.Policy.WeightSource, v => draft.Policy.WeightSource = v);
+            Choice("重量单位", draft.Policy.Unit, v => draft.Policy.Unit = v);
+            Field("配置重量（仅 Configured 使用）", draft.Policy.ConfiguredWeight, v => draft.Policy.ConfiguredWeight = v);
+            Field("重量精度", draft.Policy.Precision, v => draft.Policy.Precision = v);
+            Field("测量最大年龄（ms）", draft.Policy.MaximumAgeMs, v => draft.Policy.MaximumAgeMs = v);
+            Field("等待重量期限（ms）", draft.Policy.WaitTimeoutMs, v => draft.Policy.WaitTimeoutMs = v);
+            Choice("重量有效期", draft.Policy.Validity, v => draft.Policy.Validity = v);
+            deviceStart = Body.Children.Count;
             foreach (var capability in draft.Readers.Concat(draft.Capabilities))
             {
-                var stepForm = Form; Form = new StackPanel { Margin = new(12) };
+                var previousForm = Form; Form = new StackPanel { Margin = new(12) };
                 var role = capability.Role switch { "operator-login" => "操作员登录（可选）", "maintenance-auth" => "维护认证", "default-scale" => "默认实测秤（可选）", _ => capability.Kind == "observation" ? "读码来源 · " + capability.Target : capability.InstanceId == c.Wcs?.InstanceId ? "WCS 格口服务" : capability.Role };
-                stepForm.Children.Add(new GroupBox { Header = role, Content = Form, Margin = new(0, 12, 0, 4) });
+                previousForm.Children.Add(new GroupBox { Header = role, Content = Form, Margin = new(0, 12, 0, 4) });
                 Form.Children.Add(new Expander { Header = "精确组件来源", Content = new TextBox { Text = capability.InstanceId + "\n" + capability.ProviderIdentity, IsReadOnly = true, TextWrapping = TextWrapping.Wrap } });
                 if (capability.Role is "operator-login" or "default-scale")
                 {
@@ -246,64 +304,64 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                     }
                     else Field(parameter.Field.Key, parameter.Value, v => parameter.Value = v, parameter.Field.ReadOnly);
                 }
-                Form = stepForm;
+                Form = previousForm;
             }
-            var toPolicy = new Button { Content = "下一步：运行策略", HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 16, 0, 0) };
-            toPolicy.Click += (_, _) => steps.SelectedIndex = 1; Form.Children.Add(toPolicy);
-            Step("2 · 运行策略");
-            Field("输入队列容量", draft.QueueCapacity, v => draft.QueueCapacity = v);
-            Field("调用超时（ms）", draft.TimeoutMs, v => draft.TimeoutMs = v);
-            Field("作业容量", draft.MaximumOperations, v => draft.MaximumOperations = v);
-            Field("常驻历史条数（同库归档不释放磁盘）", draft.ResidentHistory, v => draft.ResidentHistory = v);
-            Field("关键写入保留空间（MiB）", draft.MinimumFreeMiB, v => draft.MinimumFreeMiB = v);
-            var scheduledBackup = new CheckBox { Content = "启用受控计划备份（仅在已暂停、维护授权有效且无在途外呼时触发；不会自动暂停业务）", IsChecked = draft.Policy.BackupEnabled, MinHeight = 44 };
-            scheduledBackup.Checked += (_, _) => draft.Policy.BackupEnabled = true; scheduledBackup.Unchecked += (_, _) => draft.Policy.BackupEnabled = false; Form.Children.Add(scheduledBackup);
-            var scheduleDirectory = Folder("计划备份目录（原业务目录以外；须有容量）", draft.Policy.BackupDirectory); scheduleDirectory.TextChanged += (_, _) => draft.Policy.BackupDirectory = scheduleDirectory.Text;
-            Field("计划备份周期（分钟，15～10080；未启用可留空）", draft.Policy.BackupIntervalMinutes, v => draft.Policy.BackupIntervalMinutes = v);
-            Field("备份容量份数上限（1～1000；到限保留所有旧备份并报错，不自动删除）", draft.Policy.BackupMaximumSets, v => draft.Policy.BackupMaximumSets = v);
-            Choice("重量来源", draft.Policy.WeightSource, v => draft.Policy.WeightSource = v);
-            Choice("重量单位", draft.Policy.Unit, v => draft.Policy.Unit = v);
-            Field("配置重量（仅 Configured 使用）", draft.Policy.ConfiguredWeight, v => draft.Policy.ConfiguredWeight = v);
-            Field("重量精度", draft.Policy.Precision, v => draft.Policy.Precision = v);
-            Field("测量最大年龄（ms）", draft.Policy.MaximumAgeMs, v => draft.Policy.MaximumAgeMs = v);
-            Field("等待重量期限（ms）", draft.Policy.WaitTimeoutMs, v => draft.Policy.WaitTimeoutMs = v);
-            Choice("重量有效期", draft.Policy.Validity, v => draft.Policy.Validity = v);
-            var toReview = new Button { Content = "下一步：检查与保存", HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 16, 0, 0) };
-            toReview.Click += (_, _) => steps.SelectedIndex = 2; Form.Children.Add(toReview);
-            Step("3 · 检查与保存");
-            Note("先填写维护原因，再使用下方“分层检查与变更预览”。核对结果后保存待生效配置，最后显式启动。启动仍检查原责任和实际能力。");
+            reviewStart = Body.Children.Count;
             Field("维护原因（必填；保留审计与原配置字节）", reason, v => reason = v);
         }
-        Step("备份与恢复（维护）");
+        var recoveryStart = Body.Children.Count;
         Note("完整备份恢复：验证原库和 .recovery 同伴目录，复制到新的隔离目录。恢复标记继续阻止自动业务恢复。");
         var backupFolder = Folder("浏览完整备份目录（最多256份；校验整个恢复集，保留无效项）", backupCatalogRoot);
         backupFolder.TextChanged += (_, _) => backupCatalogRoot = backupFolder.Text;
         var backupRows = new DataGrid { AutoGenerateColumns = false, IsReadOnly = true, CanUserAddRows = false, MinHeight = 100, MaxHeight = 260, RowHeight = 44 };
         foreach (var column in new[] { ("时间", "At"), ("完整性", "Status"), ("字节", "Bytes"), ("备份", "Path") }) backupRows.Columns.Add(new DataGridTextColumn { Header = column.Item1, Binding = new System.Windows.Data.Binding(column.Item2), Width = column.Item2 == "Path" ? new DataGridLength(1, DataGridLengthUnitType.Star) : DataGridLength.Auto });
         var listBackups = new Button { Content = "读取并校验备份列表", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-        listBackups.Click += async (_, _) => await Run(async () => { var selected = backupCatalogRoot; backupRows.ItemsSource = await Task.Run(() => maintenance.ListBackupsAsync(selected, CancellationToken.None)); Message("备份列表已读回；Verified表示完整字节集可预检恢复，不代表外部业务已经核对。"); });
-        Form.Children.Add(listBackups); Form.Children.Add(backupRows);
+        listBackups.Click += async (_, _) => await Run(async () => { RequireMaintenance(); var selected = backupCatalogRoot; backupRows.ItemsSource = await Task.Run(() => maintenance.ListBackupsAsync(selected, CancellationToken.None)); Message("备份列表已读回；Verified表示完整字节集可预检恢复，不代表外部业务已经核对。"); });
+        Body.Children.Add(listBackups); Body.Children.Add(backupRows);
         var backupBox = Field("完整备份数据库", backup, v => { backup = v; recovery = null; });
         backupRows.SelectionChanged += (_, _) => { if (backupRows.SelectedItem is StartupBackupItem item) { backupBox.Text = item.Path; Message(item.Status + " · " + item.Summary); } };
         var choose = new Button { Content = "选择完整备份…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
-        choose.Click += (_, _) => { var selected = FilePick(this, "选择完整备份数据库", "SQLite 备份|*.db;*.sqlite;*.backup|所有文件|*.*"); if (selected is not null) backupBox.Text = selected; }; Form.Children.Add(choose);
+        choose.Click += (_, _) => { var selected = FilePick(this, "选择完整备份数据库", "SQLite 备份|*.db;*.sqlite;*.backup|所有文件|*.*"); if (selected is not null) backupBox.Text = selected; }; Body.Children.Add(choose);
         var destination = Folder("新的隔离数据根（不覆盖原目录）", restoreRoot);
         destination.TextChanged += (_, _) => { restoreRoot = destination.Text; recovery = null; };
         var plan = new Button { Content = "检查恢复计划", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         var preview = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MinHeight = 80 };
-        plan.Click += async (_, _) => await Run(async () => { recovery = await Task.Run(() => maintenance.PlanRestoreAsync(backup, restoreRoot)); preview.Text = recovery.Summary + "\n目标：" + recovery.Destination; Message("完整备份已校验；尚未恢复。检查目标后执行下方恢复。"); });
-        Form.Children.Add(plan); Form.Children.Add(preview);
+        plan.Click += async (_, _) => await Run(async () => { RequireMaintenance(); recovery = await Task.Run(() => maintenance.PlanRestoreAsync(backup, restoreRoot)); preview.Text = recovery.Summary + "\n目标：" + recovery.Destination; Message("完整备份已校验；尚未恢复。检查目标后执行下方恢复。"); });
+        Body.Children.Add(plan); Body.Children.Add(preview);
         var restore = new Button { Content = "按计划恢复到新目录…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         restore.Click += async (_, _) => await Run(async () =>
         {
+            RequireMaintenance(); if (!MayDiscard()) return;
             var selected = recovery ?? throw new InvalidOperationException("先检查恢复计划");
             await Task.Run(() => maintenance.RestoreAsync(backup, selected.Destination, selected.BackupSha256));
             restoredPreview = selected; restoredBackup = backup;
-            data.Text = selected.DataRoot; await Read();
+            data.Text = selected.DataRoot; await Read(true);
             Message("完整备份已恢复并重新读取新目录。原目录保留；重试启动时隔离恢复责任仍由业务守卫处理。"); recovery = null;
-        }); Form.Children.Add(restore);
-        steps.SelectedItem = steps.Items.OfType<TabItem>().FirstOrDefault(t => Equals(t.Header, selectedStep)) ?? steps.Items[0];
-        Form = Body;
+        }); Body.Children.Add(restore);
+        var fields = Body.Children.Cast<UIElement>().ToArray(); Body.Children.Clear();
+        tasks = new TabControl { Name = "StartupTasks", Margin = new(0, 8, 0, 8) };
+        void Section(string title, string guidance, IEnumerable<UIElement> items)
+        {
+            var panel = new StackPanel { Margin = new(16) };
+            panel.Children.Add(new TextBlock { Text = guidance, TextWrapping = TextWrapping.Wrap, Margin = new(0, 0, 0, 16), FontSize = 16 });
+            foreach (var item in items) panel.Children.Add(item);
+            tasks.Items.Add(new TabItem { Header = title, Content = panel, MinHeight = 44 });
+        }
+        Section("1 目录与工位", "先核对原目录和工位。改变目录后显式重新读取；目录授权仍由受保护安装机制执行。", fields.Take(policyStart));
+        Section("2 设备与服务", "按业务位绑定精确组件与稳定设备身份；登录按组合可选。离线选择不表示已连接或已获资格。", fields.Skip(deviceStart).Take(reviewStart - deviceStart));
+        Section("3 运行策略", "沿用当前组合策略；不填生产默认。计划备份需要受控维护窗口，份数到限不会删除旧备份。", fields.Skip(policyStart).Take(deviceStart - policyStart));
+        Section("4 检查与启动", "检查当前输入，再保存待生效修订并重试启动。未确认配置失败可在恢复维护中受控修复；原失败与原请求保留。", fields.Skip(reviewStart).Take(recoveryStart - reviewStart));
+        Section("恢复与维护", "完整备份、隔离恢复、原机接管和程序维护是独立任务；不会因切换本页执行。原机迁移仍需原根退役和外部责任核对。", fields.Skip(recoveryStart));
+        tasks.SelectedIndex = selectedTask;
+        tasks.SelectionChanged += (_, e) => { if (e.OriginalSource == tasks) { selectedTask = tasks.SelectedIndex; UpdateActions(); } };
+        Body.Children.Add(tasks); UpdateActions(); rendering = false;
+        if (replaceDraft) savedInput = Input();
+    }
+    void UpdateActions()
+    {
+        var groups = new[] { 0, 3, -1, 0, 4, 1, 3, 4, 4, 4, 4, -1, 4, 3, -1, -2 };
+        for (var i = 0; i < Actions.Children.Count; i++)
+            Actions.Children[i].Visibility = groups[i] == -1 || groups[i] == selectedTask || (groups[i] == -2 && selectedTask < 3) ? Visibility.Visible : Visibility.Collapsed;
     }
 }
 

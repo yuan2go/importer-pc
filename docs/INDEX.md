@@ -5,22 +5,20 @@
 
 # 统一资料与实施入口
 
-> 最新 Windows 不测试发布：[三业务下载与精确来源](runtime/windows-no-test-release-20261020.md)，运行源码 `939462bee40c9eebe8eb2aa60860217afd95fcdd`，已构建并上传，未运行测试/安装。既有[统一发行 cfe6c0e](runtime/unified-release-main-20261020.md)保持旧来源。
+**继承的商业交付：[Sportmaster 首个商业交付组合](work-packages/WP-IPC-SPORTMASTER-COMMERCIAL-DELIVERY-01.md)。** 起点 main `939462bee40c9eebe8eb2aa60860217afd95fcdd`，先提交设计，再实施。
 
-> PR47复审修正及最新main集成的当前源码/介质/逐项结果见[最终集成证据](runtime/evidence/pr47-main-integration/README.md)和[审查裁决](reviews/pr47-commercial-productization-review.md)。旧发行与上传记录按原源码身份保留，不能替代当前DB8交付。
-> COMM-00～10 当前操作见[产品操作指南](runtime/commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](runtime/commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。
+> 已发布的历史 Windows 介质：[三业务下载与精确来源](runtime/windows-no-test-release-20261020.md)，运行源码 `939462bee40c9eebe8eb2aa60860217afd95fcdd`，原任务未运行测试/安装。既有[统一发行 cfe6c0e](runtime/unified-release-main-20261020.md)保持旧来源；两者不覆盖本次 Sportmaster 增量。
 
-**继承的商业化工作：[WP-IPC-COMMERCIAL-PRODUCTIZATION-01](work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md) 的 COMM-00～10 实施。** 开工 main 为 c445b0e；[编码前裁决](implementation/commercial-productization-01-execution.md)已独立提交，实际软件路径、冻结身份和逐项结果见上方实施结果。文档任务 b8f449e 静态基线及原 NOT_RUN 按形成时语境保留。
+当前实施、最终冻结介质和逐项结果见[Sportmaster 交付结果](runtime/sportmaster-commercial-delivery-01-results.md)，操作见[同版交付手册](runtime/sportmaster-commercial-delivery-01-operations.md)。
 
-## 1. 本包有效阅读顺序
+## 1. 当前阅读顺序
 
-1. [AGENTS](../AGENTS.md)、[本工作包](work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)、[源码基线与清理依据](reviews/commercial-productization-01-baseline.md)。
-2. [框架](design/framework.md)、[F 决策](design/framework-decisions.md)、[19 职责](design/application-capability-19.md)、[20 可靠性](design/capability-reliability-20.md)、[22 独立 Application](design/application-architecture-22.md)、[质量恢复设计](design/architecture-quality-closure-01.md)。
-3. [商业化产品设计](design/commercial-productization-01.md)、[实现逻辑](implementation/commercial-productization-01.md)、[必要验收](runtime/validation/commercial-productization-01.md)、[精简 Codex 提示词](work-packages/Codex-WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)。
-4. 下节与本次改动相关的运行指南、实际源码、UI 实物和完整交接；先修正相关过期当前指引，再改代码。
-5. [D 决策](readiness/decision-pack.md)、[技术来源基线](readiness/technical-baseline.json)、[RV 状态](reviews/STATUS.md)/[原问题](reviews/issues.json)、[公开范围](baseline/PUBLICATION.md)、[缺失](baseline/MISSING.md)/[冲突](baseline/CONFLICTS.md)和[manifest](manifest.json)。
+1. [AGENTS](../AGENTS.md)、[本包基线与清理](reviews/sportmaster-commercial-delivery-01-baseline.md)、[产品设计](design/sportmaster-commercial-delivery-01.md)、[必要验收](runtime/validation/sportmaster-commercial-delivery-01.md)。
+2. [框架](design/framework.md)、[F 决策](design/framework-decisions.md)、[19 职责](design/application-capability-19.md)、[20 可靠性](design/capability-reliability-20.md)、[22 独立 Application](design/application-architecture-22.md)。
+3. 继承 [COMM-00～10](work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md) 的设计/实现/验收及 [PR47/53 最终证据](runtime/evidence/pr47-main-integration/README.md)，再读下表相关指南和代码。
+4. [D 决策](readiness/decision-pack.md)、[RV 状态](reviews/STATUS.md)、[公开范围](baseline/PUBLICATION.md)及 [manifest](manifest.json)。原 D/RV 不倒写，UI 修改先读第4节全部实物与完整交接。
 
-历史目标、旧“本轮/当前/下一阶段”及原不测试要求只描述各自任务；不覆盖本工作包和最新可核验实现。原 D/RV、原失败及批准记录保持。四层职责、三个独立主流程、多页面共享实例、唯一配置账、原请求身份和 Unknown 恢复规则持续适用。
+旧“当前实施/正在不测试发布/最终 main 没有出包”按各自时间保留于[清理前归档](archive/pre-sportmaster-commercial-delivery-01/README.md)。历史资产只覆盖其声明源码，不能代替后继候选；当前工作不沿用历史免测要求。
 
 ## 2. 最新已实现源码与现行操作
 
@@ -87,7 +85,7 @@ Sportmaster 左右独立读码及取格口，无 PLC、图片展示或长期图�
 
 > 发行入口增量（PR48）：[原形成时范围](runtime/unified-windows-release-01.md)。本次整合不执行测试/构建，旧冻结结果不授予最终组合资格。
 
-> 统一发行当前工具及中断交付见[结果](runtime/unified-release-01.md)；全部合并裁决见[不测试合并记录](runtime/publication-merge-20261020.md)。最终 main 组合没有重新测试或出包，旧介质/原 PASS 保持原身份。
+> 历史统一发行工具及中断交付见[结果](runtime/unified-release-01.md)；全部合并裁决见[不测试合并记录](runtime/publication-merge-20261020.md)。此句仅记录该次整合时状态，旧介质/原 PASS 保持原身份。
 
 ## 已完成的历史冻结发行回执
 

@@ -18,6 +18,7 @@ MERGES = {'44': 'fea535c94c12a50c9559928a2de0bf680e09dba7',
           '46': 'b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5'}
 PARCEL = ('sportmaster', 'direct-plc', 'wcs-to-plc')
 MATRIX = [(a, t) for a in PARCEL for t in ('portable', 'win-x64')] + [('supply', 'portable'), ('inspection', 'portable')]
+PROFILES = {'complete': MATRIX, 'sportmaster': [('sportmaster', 'portable'), ('sportmaster', 'win-x64')]}
 
 
 def sha(path):
@@ -143,6 +144,7 @@ def main():
     p.add_argument('--dotnet', default='dotnet')
     p.add_argument('--source', help='Optional full frozen SHA; must equal this clean checkout HEAD')
     p.add_argument('--verify-only', action='store_true')
+    p.add_argument('--profile', choices=PROFILES, default='complete')
     a = p.parse_args()
     output = a.output.resolve()
     if a.verify_only:
@@ -152,8 +154,11 @@ def main():
             if sha(output / name) != digest.upper():
                 raise ValueError('Release receipt/log/archive changed: ' + name)
         receipt = read(output / 'RELEASE.json')
+        profile = receipt.get('Profile', 'complete')
+        if profile not in PROFILES or a.profile != profile:
+            raise ValueError('Use the recorded release profile; profiles cannot inherit each other\'s scope')
         actual = [verify_package(output / Path(safe_name(r['File'])).stem, r['Application'], r['Target'], receipt['SourceCommit']) for r in receipt['Packages']]
-        if actual != receipt['Packages'] or {(r['Application'], r['Target']) for r in actual} != set(MATRIX):
+        if actual != receipt['Packages'] or len(actual) != len(PROFILES[profile]) or {(r['Application'], r['Target']) for r in actual} != set(PROFILES[profile]):
             raise ValueError('Release set differs')
         print(json.dumps(dict(Status='PASS', SourceCommit=receipt['SourceCommit'], Packages=len(actual))))
         return
@@ -171,7 +176,7 @@ def main():
     if sdk != expected:
         raise ValueError('Pinned SDK required: ' + expected)
     output.mkdir(parents=True)
-    record = dict(SchemaVersion=1, State='BUILDING', SourceCommit=source, SourceTree=git('rev-parse', 'HEAD^{tree}'),
+    record = dict(SchemaVersion=1, Profile=a.profile, State='BUILDING', SourceCommit=source, SourceTree=git('rev-parse', 'HEAD^{tree}'),
                   IncludedMergeCommits=MERGES, Sdk=sdk, Python=platform.python_version(), OS=platform.platform(),
                   StartedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                   WindowsAcceptance='NOT_RUN', PhysicalIntegration='BLOCKED', Assurance='SIMULATION_REFERENCE_ONLY',
@@ -181,7 +186,7 @@ def main():
     write(output / 'build-record.json', record)
     env = dict(os.environ, PYTHONUTF8='1', DOTNET_CLI_TELEMETRY_OPTOUT='1')
     try:
-        for application, target in MATRIX:
+        for application, target in PROFILES[a.profile]:
             name = application + '-' + target + '-' + source[:12]
             command = [sys.executable, str(ROOT / 'scripts/package-application.py'), '--application', application] if application in PARCEL else [sys.executable, str(ROOT / 'scripts/package-business.py'), '--composition', 'supply-assembly' if application == 'supply' else 'inspection-reference']
             command += ['--target', target, '--output', str(output / name), '--dotnet', a.dotnet]

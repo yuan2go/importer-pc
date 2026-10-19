@@ -1,0 +1,28 @@
+Retained build workspace on failure: C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w
+  正在确定要还原的项目…
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 961 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 961 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 961 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (用时 961 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 961 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 961 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 961 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 961 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 11 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 16 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 10 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 16 毫秒)。
+  Ipc.Platform -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-5y5ase_w\build-intermediates\bin\Ipc.Assembly\release\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\ipc-scd-release-05\sportmaster-portable-e45e9871b2ad\app\
+{"Package": "D:\\ipc-scd-release-05\\sportmaster-portable-e45e9871b2ad.zip", "Sha256": "298333c995042685ab8aa6fa3b283529d3f5a55f46dff0ecc1f05fb8f334075c", "SourceCommit": "e45e9871b2ad3b85796ae74b4ac3e716996d4554", "Application": "sportmaster", "Target": "portable", "BusinessVersion": "1.4.0", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "D80BA0B0C40F34E2E9C080C9D898C77214461BCEA394F43290CD9DDC9F473975"}

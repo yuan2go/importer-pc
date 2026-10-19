@@ -1,0 +1,13 @@
+{
+  "BaselinePrHead": "1a34a1e655a479c9692b85fc8a568aca6a813c17",
+  "ProductSource": "6ce1d6d0b109bd6a3d9490fac176122b4670b90b",
+  "Scope": "clean git archive of CheckedDeliveryCommit",
+  "Python": "bundled runtime / Pillow12.3.0 for both inventories",
+  "BaselineErrors": 267,
+  "DeliveryErrors": 267,
+  "NewErrors": [],
+  "ResolvedBaselineErrors": [],
+  "Status": "FAIL_INHERITED_ERRORS_NO_NEW_ERRORS",
+  "ExceptionsExpanded": false,
+  "CheckedDeliveryCommit": "4ba5dca8d133973a775a28e08d3d9ec696300983"
+}

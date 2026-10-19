@@ -47,8 +47,8 @@ public partial class SupplyStationWindow : Window
             if (closing || closed) return;
             UpdateViewport();
             timer.Start();
-            if (initialPage == "maintenance") await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync);
-            if (initialPage == "history") await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync());
+            if (initialPage == "maintenance") await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "读取维护配置");
+            if (initialPage == "history") await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "读取作业记录");
         };
         Closing += ClosingWindow;
         Closed += (_, _) => { closed = true; timer.Stop(); windows.Remove(this); };
@@ -64,8 +64,8 @@ public partial class SupplyStationWindow : Window
         PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, _ => work };
     }
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
-    async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync()); }
-    async void Maintenance_Click(object sender, RoutedEventArgs e) { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync); }
+    async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
+    async void Maintenance_Click(object sender, RoutedEventArgs e) { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "设备与维护"); }
     void Window_Click(object sender, RoutedEventArgs e)
     {
         if (!root.closing) new SupplyStationWindow(ViewModel.Application, null, compact ? "compact" : "standard", owner: root).Show();
@@ -90,20 +90,20 @@ public partial class SupplyStationWindow : Window
     void Maximize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Maximized;
     void ViewportPause_Click(object sender, RoutedEventArgs e) => QueueViewportPause();
     void ViewportAcknowledge_Click(object sender, RoutedEventArgs e) => ViewModel.AcknowledgeViewport();
-    public async Task ShowDetailsAsync(ParcelOperation operation) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operation.Id)); }
+    public async Task ShowDetailsAsync(ParcelOperation operation) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(operation.Id), "读取原作业详情"); }
     async void Pause_Click(object sender, RoutedEventArgs e) => await ViewModel.PauseAsync();
     async void Resume_Click(object sender, RoutedEventArgs e)
     {
-        if (ViewModel.CanResumeInViewport) await ViewModel.RunAsync(() => ViewModel.CommandAsync("Resume"));
+        if (ViewModel.CanResumeInViewport) await ViewModel.RunAsync(() => ViewModel.CommandAsync("Resume"), "恢复新入场");
     }
     async void Login_Click(object sender, RoutedEventArgs e)
     {
         var proof = LoginProof.Password; LoginProof.Clear();
-        if (ViewModel.Fresh) await ViewModel.RunAsync(() => ViewModel.LoginAsync(proof));
+        if (ViewModel.Fresh) await ViewModel.RunAsync(() => ViewModel.LoginAsync(proof), "认证操作员");
     }
     async void Logout_Click(object sender, RoutedEventArgs e)
     {
-        if (ViewModel.Fresh) await ViewModel.RunAsync(ViewModel.LogoutAsync);
+        if (ViewModel.Fresh) await ViewModel.RunAsync(ViewModel.LogoutAsync, "登出");
     }
     async void ClosingWindow(object? sender, CancelEventArgs e)
     {

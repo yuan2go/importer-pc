@@ -1,0 +1,39 @@
+EvidenceRoot=<reference-temp-root>
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: UXC03 actual VM loads every schema3 reader, position and optional capability without clearing the form
+PASS AQ: UXC03 no-edit form round trip retains exact topology, role anchors, optional policies, retention and omitted parameter defaults
+PASS AQ: UXC03 full candidate validation is real Application validation and does not save or activate
+PASS AQ: UXC03 same Application CAS saves Pending and preserves Effective until controlled restart
+PASS AQ: UXC03 editing one position retains the other position, all unrelated inventory, login, image, weight and retention fields
+PASS AQ: UXC03 automatic refresh cannot replace a second window's loaded configuration CAS
+PASS AQ: UXC03 local numeric validation rejects invalid units/precision without saving
+PASS AQ: UXC03 advanced JSON is the explicit sole editing authority and refresh preserves unsaved bytes
+PASS AQ: UXC03 hidden structured form cannot overwrite the active advanced JSON draft
+PASS AQ: UXC03 explicit JSON-to-form transfer retains unrelated JSON fields and the original draft CAS
+PASS AQ: UXC03 newly selected installed capability can bind to one position without rewriting reader topology
+PASS AQ: UXC03 inventory removal rejects a capability still referenced by a position
+PASS AQ: UXC03 explicit unbound candidate removal does not uninstall original packages
+PASS AQ: UXC03 own successful save advances only this window CAS and permits later explicit candidate staging
+PASS AQ: UXC03 controlled real runtime restart activates the saved complete candidate
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: UXC03 existing schema1 structured maintenance path remains usable
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: UXC03 existing schema2 structured maintenance path remains usable
+PASS AQ: UXC03 same name/version with different installed manifest hash never silently substitutes a provider
+PASS AQ: UXC03 declarative installed catalog resolves exact transitive closure and excludes the replaced unused package
+PASS AQ: UXC03 shared exact dependencies appear once
+PASS AQ: UXC03 exact dependency closure rejects synthetic missing without executing provider code
+PASS AQ: UXC03 exact dependency closure rejects synthetic identity-conflict without executing provider code
+PASS AQ: UXC03 exact dependency closure rejects synthetic cycle without executing provider code
+PASS AQ: UXC03 exact dependency closure rejects synthetic duplicate-exact without executing provider code
+PASS AQ: UXC03 old catalog wire remains readable and built-in-only configurations need no fabricated package metadata
+PASS AQ: explicit maintenance grant obtained
+PASS AQ: UXC03 first maintenance navigation loads one actual configuration/catalog draft
+PASS AQ: UXC03 repeated maintenance navigation preserves newer unsaved JSON, its authority and original CAS
+PASS AQ: UXC03 a held actual Application save stages A while later edited B remains untouched and explicitly unsaved
+PASS AQ: UXC03 dangling JSON-to-form binding cannot replace authority, clear the existing form, alter JSON bytes or advance CAS
+PASS AQ: UXC03 corrected JSON remains recoverable and explicitly transfers to a complete form using the saved original CAS
+PASS AQ: UXC03 correcting a rejected form transfer stages the retained B with the actual configuration CAS
+PASS AQ: UXC03 repeated navigation also preserves an unsaved structured form
+PASS AQ: UXC03 only explicit reload replaces the current draft from saved Pending/Effective
+PASS UXC03 COMMERCIAL CONFIGURATION COMPLETE

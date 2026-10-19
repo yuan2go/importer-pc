@@ -1,0 +1,52 @@
+[
+  {
+    "File": "direct-plc-core.zip",
+    "SourceCommit": "f1a655c7d14e4ee012ea17694533f996a03c9246",
+    "BusinessVersion": "1.3.1",
+    "ZipCrc": "PASS",
+    "FileHashes": 98,
+    "Entries": 99,
+    "DesktopPeMachine": null,
+    "WindowsNative": "NOT_RUN"
+  },
+  {
+    "File": "sportmaster-core.zip",
+    "SourceCommit": "f1a655c7d14e4ee012ea17694533f996a03c9246",
+    "BusinessVersion": "1.3.1",
+    "ZipCrc": "PASS",
+    "FileHashes": 104,
+    "Entries": 105,
+    "DesktopPeMachine": null,
+    "WindowsNative": "NOT_RUN"
+  },
+  {
+    "File": "sportmaster-selected-portable.zip",
+    "SourceCommit": "f1a655c7d14e4ee012ea17694533f996a03c9246",
+    "BusinessVersion": "1.3.1",
+    "ZipCrc": "PASS",
+    "FileHashes": 108,
+    "Entries": 109,
+    "DesktopPeMachine": null,
+    "WindowsNative": "NOT_RUN"
+  },
+  {
+    "File": "sportmaster-selected-win-x64.zip",
+    "SourceCommit": "f1a655c7d14e4ee012ea17694533f996a03c9246",
+    "BusinessVersion": "1.3.1",
+    "ZipCrc": "PASS",
+    "FileHashes": 745,
+    "Entries": 746,
+    "DesktopPeMachine": "0x8664",
+    "WindowsNative": "NOT_RUN"
+  },
+  {
+    "File": "wcs-to-plc-core.zip",
+    "SourceCommit": "f1a655c7d14e4ee012ea17694533f996a03c9246",
+    "BusinessVersion": "1.3.1",
+    "ZipCrc": "PASS",
+    "FileHashes": 100,
+    "Entries": 101,
+    "DesktopPeMachine": null,
+    "WindowsNative": "NOT_RUN"
+  }
+]

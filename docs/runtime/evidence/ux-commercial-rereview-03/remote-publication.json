@@ -1,0 +1,106 @@
+{
+  "SourceCommit": "6ce1d6d0b109bd6a3d9490fac176122b4670b90b",
+  "Release": "https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-6ce1d6d",
+  "ReleaseId": 417002469,
+  "Tag": "ux-reference-6ce1d6d",
+  "TagCommit": "6ce1d6d0b109bd6a3d9490fac176122b4670b90b",
+  "PublishedAt": "2026-10-19T07:12:22Z",
+  "ReadbackAtUtc": "2026-10-19T07:13:10.937672+00:00",
+  "Prerelease": true,
+  "Draft": false,
+  "Files": [
+    {
+      "File": "ARTIFACTS.json",
+      "Bytes": 2696,
+      "Sha256": "0a7e9d0ac9ef007172fc4531059b57db1e98d466e8d0c52d16797a3ed0b58ef9",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "SHA256SUMS",
+      "Bytes": 1240,
+      "Sha256": "004426497050b721c2cb8a13c441bad01e8246f92a218851953d3ca8064baaee",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "barcode.ipcx",
+      "Bytes": 7595,
+      "Sha256": "3fa672ff3431882a3c7ab8c721e5e2264fb7bd4a34a8a4f424e32fffd4af8d28",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "barcode.ipcx.identity.json",
+      "Bytes": 1191,
+      "Sha256": "34ee5c8c6486939eef0fc966663561e477257ae46d032b671cce335824a40a32",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "capabilities.ipcx",
+      "Bytes": 20601,
+      "Sha256": "0efb4f442d35ae631ca12d754a22d7d96f8d1e04d3bf2aeaefb8b9f314f541e1",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "capabilities.ipcx.identity.json",
+      "Bytes": 1308,
+      "Sha256": "0523792311de4775c345e554244cb6624ca9b77418a67bd844550e73cee69c53",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "direct-plc-core.zip",
+      "Bytes": 18620047,
+      "Sha256": "1ac24fe561f4b672a49fe3c14931949e947588f06f9432e21be63692512d554a",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "raw-verification-evidence.zip",
+      "Bytes": 231098,
+      "Sha256": "7108d0fe230b9babbd810c29bc9d2289176e09eb9374aa34b10e6ea1c5a7f0c3",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "rcs.ipcx",
+      "Bytes": 17738,
+      "Sha256": "10d145903c79574d05c517ef335456fc39fb81f59e44b9c1da4955a5b1ae9574",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "rcs.ipcx.identity.json",
+      "Bytes": 1289,
+      "Sha256": "1c6cf4e1efae0c0bd221364fd74614d0c46a95def4a37fe4e0710d3aefb0e6dc",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "reference-trust.json",
+      "Bytes": 786,
+      "Sha256": "646b510c511190a9ce64ccabf669a9d72c7de9ae1dbe4e5092f9631c42e10fcf",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "sportmaster-core.zip",
+      "Bytes": 18659525,
+      "Sha256": "2e324494eeca9dbcfb352da19cd12131ed465903b30e0b3157d0a1789c8e99d3",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "sportmaster-selected-portable.zip",
+      "Bytes": 18707548,
+      "Sha256": "217b4a0396a393f2597a9b55194a7cd8e03ca77f87dbad7f6b2afdbdd0f11d98",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "sportmaster-selected-win-x64.zip",
+      "Bytes": 104801961,
+      "Sha256": "8f9944d72ea129e6f8280e1105a4d2a5987623f56947f663096d2975dc569138",
+      "MatchesPublishedInput": true
+    },
+    {
+      "File": "wcs-to-plc-core.zip",
+      "Bytes": 18645599,
+      "Sha256": "999ffc85d7eb0207d702cc0dee063023031c91d0e570fdecac66b28ad86a6ce9",
+      "MatchesPublishedInput": true
+    }
+  ],
+  "Status": "PASS_ACTUAL_REMOTE_BYTES_MATCH",
+  "WindowsNative": "NOT_RUN",
+  "RealSdkProtocolField": "BLOCKED_PER_CAPABILITY"
+}

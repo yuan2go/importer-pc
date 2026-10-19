@@ -1,9 +1,9 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-UX-COMMERCIAL-FIX-01",
+  "work_package": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/ux-commercial-fixes-01",
+  "branch": "codex/ux-commercial-closure-02",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
@@ -172,9 +172,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "ce60e983c1596c44d6f7767f396283e87c3e08a43965824004474300fbbc0d43",
-      "size_bytes": 4104,
-      "git_blob": "ef51b9e629f04bcf9ce8492b6e1c400005be3336",
+      "sha256": "edde8e1eaa98e29ebbb63c84bcb7db6c8e49fb07df694cc46cb01172d9a1bfee",
+      "size_bytes": 4481,
+      "git_blob": "2955783ef9dee6e1cb0f2d885fdfd0024d22e6e1",
       "version": "ux-commercial-fix-01",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
@@ -186,47 +186,47 @@
     },
     {
       "path": "config/compatibility/direct-plc.json",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "6620d1f9efa5b84c31d68b7ff6b0f8b5cf2aae04228c0492c9eb33b1ae418a39",
+      "sha256": "383492a55c27c3a2ad37bcad8347d385b0a455a06183cb4902c4f7c447defd6f",
       "size_bytes": 3507,
-      "git_blob": "0cdce73d83be313bebf3dcef1a4bc1877c869cd0"
+      "git_blob": "6df1864fc7263e6270bfb0378064368da90116a2"
     },
     {
       "path": "config/compatibility/sportmaster.json",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "193bb351d6cd56d49be85d8988ef27e2623c338e9a5d829ad200d32cc5054e66",
+      "sha256": "93ecf0ec08b8816d5904c4542fd12cf6a61f903c9fe2226d4cc97943876a7c02",
       "size_bytes": 7125,
-      "git_blob": "d8ea4ae61ae0f8e0bf5e5da984e48102cc1d7246"
+      "git_blob": "ac678f3b003816d6121ca2ebfb02b7df8dc4caa8"
     },
     {
       "path": "config/compatibility/wcs-to-plc.json",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "9e56f27215276b660a155494a8c70224f8a7801f6eb55213e222cbc60cd6a01b",
+      "sha256": "6c03c5052705e0a2a843046423a9e465c4ba9b23c28215dcef9f574a91c9e24e",
       "size_bytes": 4297,
-      "git_blob": "6771056f013c9d5495721131b42c5c6ea8f3fb18"
+      "git_blob": "11d8306d2883aca8770323fe889834f49a1f616b"
     },
     {
       "path": "config/compositions.json",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "b84c5a72c1e6a836863623bd2b05e684accb5cfaba3a8141f9f673eeb2a75b1a",
+      "sha256": "624c840617f004c98c636b3da2229ab2000041956253a448a7742760e0fe823b",
       "size_bytes": 7744,
-      "git_blob": "ad3912262849158085192169563ca641b65eb614",
+      "git_blob": "940b1e9ac93b7a8da6c179f0b54cd705c0f29dd4",
       "previous_git_blob": "4cd784e0404ca5afd64566dfe56625fe843c6313",
       "prior_closure13_git_blob": "1896d9c2f91ac6d1c8d840733492c11a0499555e"
     },
@@ -371,13 +371,13 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "ff5aa9cc6637984dae014ff9cf1ebbe9967e2572e713a63760b9c929088cb88b",
-      "size_bytes": 8367,
-      "git_blob": "157c2cf927333ed5fd450a948d5c504d6b7885d9",
-      "version": "ux-commercial-fix-01",
+      "sha256": "702b380dca9a1657f9b71c412ffc4278b5a2fdc167fffb58fce0ca602d3731b5",
+      "size_bytes": 8974,
+      "git_blob": "25493eb886955d37f5576a5ccc9759e7434df8cf",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
       "previous_git_blob": "f13c84ec32982cc0a88103086a7e0f908b7b919e",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
@@ -3834,9 +3834,9 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "0db9c8d4e9e59ebe42c6b100074c6709c941156c90f8c128b6d6723b154698f9",
-      "size_bytes": 20228,
-      "git_blob": "e35937e0855631bf6238baa114d803c14e76f7b2",
+      "sha256": "bd8b631d563e4019b144d4de1093abf999e9c1a40289a3b8aac0f7e5127a6973",
+      "size_bytes": 20582,
+      "git_blob": "3df61599eb11d34beb0e33bac2ce9d7c89bd6adb",
       "version": "ux-commercial-fix-01",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
@@ -3846,9 +3846,9 @@
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "1bbfc849c64b6f8433acc2c02361fd15f808b19c6d2c0a57683e82de31147530",
-      "size_bytes": 37940,
-      "git_blob": "0c955338ab0b3a96755eabd45eb7c958ef5cb2f7",
+      "sha256": "18c3cecd8259a89e795a560f220cefbf5e07d749cae83e4e3bd28a8b90ddfe1f",
+      "size_bytes": 38294,
+      "git_blob": "f05c1c6f1c7a29b33231774921732c23f47fa59c",
       "version": "ux-commercial-fix-01",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
@@ -3880,14 +3880,14 @@
     },
     {
       "path": "docs/extensions/developer-guide.md",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "a2daeb845e8713e5d0707115ab83b93f9538334c23eb045810a51336d38c9080",
-      "size_bytes": 11763,
-      "git_blob": "f4008a28fccfe6e7e37d60cae5b2af0419eac99f",
+      "sha256": "4f5dd315c5a1dda986ca4cc602c74f83d4c787ca1ea01e9832eb21251b23e83d",
+      "size_bytes": 12071,
+      "git_blob": "d8a207e32c0e22ecc9f468521530c42b4354a02c",
       "previous_git_blob": "aab8c404037f93f8aeff309c0ef3fefa8cbdc952",
       "prior_closure13_git_blob": "920e1ac245b3de720f3607001f510dae0c0a9980"
     },
@@ -4975,14 +4975,14 @@
     },
     {
       "path": "docs/runtime/application-architecture-22.md",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "fc723772020f777b3ca804b54735f6b3ab5d6832f5f947f22e767b3e5a83624f",
-      "size_bytes": 11822,
-      "git_blob": "7b4c711e13ce5c405a69538fb9b7a26cfb575ace",
+      "sha256": "dab4f5a5d3382f44dd7860dbc9cc8a21ee871f42a65fb43f9f8a65ad63e5231b",
+      "size_bytes": 12130,
+      "git_blob": "df2d23499679f91f8010e9cadf43a4f8441d4f51",
       "previous_git_blob": "97a01f46e39cecd837254898492d31cd0c5f7474"
     },
     {
@@ -26422,14 +26422,14 @@
     },
     {
       "path": "docs/runtime/getting-started.md",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "3bbcf1d0039553df896e971a0ce44b054118bd90323fbe6423b2e2974d3d2495",
-      "size_bytes": 4462,
-      "git_blob": "54b6872e4708d1c5e63b2c152383cf645ddc034a",
+      "sha256": "f22023bcdf381c52b33c7b10d9c6dc466e28af473931e600242adec86f7183ee",
+      "size_bytes": 4770,
+      "git_blob": "adb0076f9d679534518f17ca754f8378c1f95a45",
       "previous_git_blob": "2e72810ecbe43f36491f6604066cfcea19de943d"
     },
     {
@@ -26707,14 +26707,14 @@
     },
     {
       "path": "docs/runtime/sportmaster-alternate-ui.md",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "c3d3a759e1ed69f4df32e1ad0ec79e5f67e3caf4ecbcd306ccabe9068af74ab0",
-      "size_bytes": 10127,
-      "git_blob": "e8b0422c6736ce34462f84bf978ce431881acb7e"
+      "sha256": "7b9b65fe7ad1b85d8c24020a46a2237570adf37045ba980fdb648ad47a541ca5",
+      "size_bytes": 11125,
+      "git_blob": "b81c60873faa1f5a49edccab88499cbca2ce9782"
     },
     {
       "path": "docs/runtime/sportmaster-rcs-task.md",
@@ -26863,14 +26863,14 @@
     },
     {
       "path": "docs/runtime/validation/sportmaster-alternate-ui-windows.md",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "ca49980f9ae0b30b3fa17fc47b4735e59480c222a41597cd8644f66aed9306c0",
-      "size_bytes": 4844,
-      "git_blob": "b60a9020a337efd5bd54eb2e7e231c6d5ab9ec96"
+      "sha256": "2ece14b87fd5a1d593e4d6930accddaa184e376ac4f703c5e8c3baf9f80008e6",
+      "size_bytes": 7004,
+      "git_blob": "0ca176a663661e23d02fbc6c7a4a6bc3723c8218"
     },
     {
       "path": "docs/runtime/validation/ui-maintainability-16-windows.md",
@@ -26918,14 +26918,14 @@
     },
     {
       "path": "docs/runtime/version-compatibility-01.md",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "fcedea4aee6e4dbe5ad5232aa749f039a73cf70d7644a48dcf6a74a895fc26b3",
-      "size_bytes": 5939,
-      "git_blob": "7642e572f88e37fe30510019d1dfe18549e9cb83"
+      "sha256": "da6d2fc3a5d8d4d17abef474b44ddb17aa0a5ff7cb462b7398e96365e3fa6562",
+      "size_bytes": 6247,
+      "git_blob": "54125011a24fb44a1829e53d5adba2533baa0035"
     },
     {
       "path": "docs/runtime/windows-06.md",
@@ -27076,9 +27076,9 @@
     },
     {
       "path": "docs/ui/STATUS.md",
-      "git_blob": "a3d3eaa34077b9b5bbf07416f612809b3c63d909",
-      "sha256": "c5eafa553e9d3b219f59820db060adc7908bdcda4ecd4d47a40ea5297b2ce8bc",
-      "size_bytes": 5088,
+      "git_blob": "b303f9b74ed1cf9ad26472233c7d57dd16a324d4",
+      "sha256": "95bddb8f59d3346484c6999f225efb06d9836425569a77077008e2f3c940ab67",
+      "size_bytes": 5372,
       "version": "ux-commercial-fix-01",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
@@ -28901,14 +28901,14 @@
     },
     {
       "path": "scripts/test_application_compatibility.py",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "57c8b58ce23e9652fd1e307bc161f5a7d2ac098d1b1b0bf51bb547f91c4bc677",
+      "sha256": "74688b33e17551e4d6bf7243387d396175ca3c50f291cc08b0ee5672d659b80e",
       "size_bytes": 18824,
-      "git_blob": "73ce15b40d7b806d3497b6cc68b8f454339a048d"
+      "git_blob": "937cd97f42f4863d9d7b5fcacf8bd6a477107836"
     },
     {
       "path": "scripts/test_build_process.py",
@@ -29228,14 +29228,14 @@
     },
     {
       "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "6c714bb75cc724f3fafd845fac99bbbafcc4f088010ab6f61fca265a4ecd68ab",
+      "sha256": "c857460bac6134195ae6f6f7c3837fb538ba22bd7f335bf5ce729f1e293d4573",
       "size_bytes": 339,
-      "git_blob": "f51f7cf2198a6a87f3c3176d1c81f1ba7e6a99ab"
+      "git_blob": "ca7cee511ea77bdd54651f4c61c1b7ad943540e5"
     },
     {
       "path": "src/Ipc.Application.DirectPlc/packages.direct-plc.lock.json",
@@ -29303,9 +29303,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "9f8f47005f8d145047263782d56853ea3633ea126694ca81471403ed75836a85",
-      "size_bytes": 2160,
-      "git_blob": "f1f92c3d94b778b0c22823ed22c00143012f3f35",
+      "sha256": "f21cc9fbfd27477b019aae3f8f28f24635fd940417acdb9fc3744f1978982862",
+      "size_bytes": 2200,
+      "git_blob": "0c1342000af4391857a723360efc8e91d7189a5c",
       "previous_git_blob": "345d4973ed80b3b0863daddada12bcb5e2153477"
     },
     {
@@ -29862,9 +29862,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
-      "sha256": "774208651a01d7e601fb106347dd879a5665398b51863fd82a722f458f7ec917",
-      "size_bytes": 3780,
-      "git_blob": "1933cba75f36d61217c06f2755eff2f82cfbb675"
+      "sha256": "66eb3d73566becfbe87bb7abaf2fa5f93336c8fb00b61cfc0b45f7ee0181985c",
+      "size_bytes": 4092,
+      "git_blob": "1fc683bf40df0081aca9b6424fcfd21d8b73544b"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/HistoryPage.xaml.cs",
@@ -29873,9 +29873,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
-      "sha256": "640ea4c055209269e12ad4efaaf024976378fe58689195a523854f07809fa7e8",
-      "size_bytes": 1135,
-      "git_blob": "62e4e47fab3b148bb2d712f723aa3c36b742317e"
+      "sha256": "e9dbdd55b683f589e041ddfdafac1295827cfde2d79f3f738682e4a1fc0b6347",
+      "size_bytes": 1225,
+      "git_blob": "f4114faeccddf4adcf7b17625e6d6bdbd375f584"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj",
@@ -29890,14 +29890,14 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/MaintenancePage.xaml",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "af1ca569802c915817e65a6afbb09509dad724e1f7ac684a3fcdbc9b9aafa9c8",
-      "size_bytes": 18955,
-      "git_blob": "c85c3a08c5bc13b53ec73af62ed263f27085f993",
+      "sha256": "d00b3adeb43d0139e5df2ce13e7e2622ee5085d31a43377e3b4ed9a93fa839bf",
+      "size_bytes": 19151,
+      "git_blob": "3686c14582ed6b53000d17f2a2b98612bcbad2d9",
       "previous_git_blob": "03a855195da7b8c6e67149b26a49cd066a985e87"
     },
     {
@@ -29907,9 +29907,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
-      "sha256": "e198df95fd67dc4e8164b096f00bad0ef8c26fc2cb29a5d5b11e8ff189ae896f",
-      "size_bytes": 6770,
-      "git_blob": "f7a2e6af34ddd0ed585bbd7d8717455c525b443f",
+      "sha256": "c5e0634b302a3b9dacabb569bc12b24fffa0cd0c2bb69a61fc120fb5a462e7ab",
+      "size_bytes": 7489,
+      "git_blob": "6b8458fddf703e6711159e7c66244f61c63e51bc",
       "previous_git_blob": "e6a44349820fc649c5bc39f8d3454ad88f02f0cf"
     },
     {
@@ -29919,33 +29919,33 @@
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs",
-      "sha256": "b46502bd7ea636573f32db8cb49a6045633c13f98995176af86a191e95fca3f4",
-      "size_bytes": 15816,
-      "git_blob": "7434a85616e1f5965dc6cb231fae3c1e8f5d9620",
+      "sha256": "b66d765840d38ac9d46af6d1111843e7b8d66eb119ed1b2e537a05b9bac38d5a",
+      "size_bytes": 16962,
+      "git_blob": "abe7799d4557985e2e012f7869fa1a370de3e0e3",
       "previous_git_blob": "66f9955057a6cc6f5a795f02c70633386712537c"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "f6362d2a3bf1e48f3ce97314b3b3d31054d3f7e1802cbd1544a80348e5c1833f",
-      "size_bytes": 16960,
-      "git_blob": "42012b3e242dc4d1e395f5511617c44c40b7671e",
+      "sha256": "401e6ecfb03ab5718dd28ef3befa4be09dc15f4efa61b82e9ed3e375cb6fa861",
+      "size_bytes": 19408,
+      "git_blob": "240ea0b3c8c17c860c49b3adfb579461375f5c4b",
       "previous_git_blob": "14b4eb55e1f5ad5dd06016e157b0216521884144"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ShellWindow.xaml",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "5b3c33cc22482baeb2dad41e67fe45875680ffd1a9fd4d3ffc63c2fc57620338",
-      "size_bytes": 6380,
-      "git_blob": "072d82a3e353ae076983e48a006467bc861cd08b",
+      "sha256": "ebfe3b9be95fb97f81b09751dd1d14fa00d92a97a45d1674f2a5e31011294e3d",
+      "size_bytes": 7297,
+      "git_blob": "a610f0c381657497a0e43cdac7797c058de6b657",
       "previous_git_blob": "23a7a6b92383af678dc509751b28ff33578b8030"
     },
     {
@@ -29955,9 +29955,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
-      "sha256": "53ffcc81796ad1f510e2c04f302e57d67ef6e6c961153bef32ed9aadb0a87d2f",
-      "size_bytes": 6086,
-      "git_blob": "6225337d31b568a82f25df2339cc73e23372abeb",
+      "sha256": "636718370edfaf01638ca6e13779a1fa22feeac95d81e86ea949f603d4ba7619",
+      "size_bytes": 6257,
+      "git_blob": "49be3fb96a9feaf95f71516de24f166dc56c2103",
       "previous_git_blob": "746fc215c1dccfd00a5f006bbc8eec39ff7a676c"
     },
     {
@@ -30051,14 +30051,14 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "12ee0fd37fcfb32111fc3537f9bb23190f0ba681e9d3a8bcfcb1094e389336cb",
+      "sha256": "1985fe40ca98b7d5be3e2b199090511daa8fc4b75c028aa850f1e972337f2aab",
       "size_bytes": 340,
-      "git_blob": "120f3209a6539eb1a5569deaaf0da5e9c0537d07"
+      "git_blob": "cbd16e705a9f103317528b2700656ef529e3ab8d"
     },
     {
       "path": "src/Ipc.Application.Sportmaster/packages.lock.json",
@@ -30126,9 +30126,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
-      "sha256": "8c9f98e0c4a4607541369de10da49cbb06bdc0c9745b5abe7c26f74195006271",
-      "size_bytes": 8595,
-      "git_blob": "2208dd3480fd60483ff9914cb75bcfbe775b3e28"
+      "sha256": "f19737a6499b427a37b31453ee6fb763ba49dd1271f6cad59e99bf44f429e4c1",
+      "size_bytes": 8885,
+      "git_blob": "698d9e8f700ea8eff88f2fba28eb5300e823056e"
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml.cs",
@@ -30159,9 +30159,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
-      "sha256": "f7039cd80df6232228fa3526c7a248ed03e098795381890bb6924f8acc499031",
-      "size_bytes": 12079,
-      "git_blob": "f376189a2bb0fe36f49f4a6912c4b14c46f04750"
+      "sha256": "d7fbc8f14b8a8998f96e56d60d6b6552bb499afd2d22b6ddc7c62fc2f8f66a5c",
+      "size_bytes": 12686,
+      "git_blob": "2bd4ac5733a3ddf28ad2da8b2cece4de2af4bbb8"
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
@@ -30170,9 +30170,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
-      "sha256": "cc38434451b38cf6510b71b2c3ba5f1949843e7e35be638cb96dd98e4a48f897",
-      "size_bytes": 8989,
-      "git_blob": "5fb03794483ec1231f129a4d1cf91cef5b60004a"
+      "sha256": "c0956bf43fe09c06afd1e2cb070288d8c91fb815720be732950dd73df4365185",
+      "size_bytes": 9479,
+      "git_blob": "6528af261a22c598589cb204a66397154e5a991f"
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs",
@@ -30181,9 +30181,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
-      "sha256": "0fdf498df6d8ed15365f4e74f2df9ab697ba00dab16628d0b1f143ea401f147c",
-      "size_bytes": 7208,
-      "git_blob": "2c5bbfa0b86bfdc0b0c47b8df32017e696c79006"
+      "sha256": "8253775e23d619bb94abfbf5f2988983ba8758ff7682c8faa3fdcb3a03c1d222",
+      "size_bytes": 7360,
+      "git_blob": "ec31f52187e3adfceaa214f0d79189d68a434b15"
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/Workstation.xaml",
@@ -30192,9 +30192,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
-      "sha256": "e28c565cda5e8881e671ea92e518761c42f783a4201ea8850039eee3482a83b0",
-      "size_bytes": 4075,
-      "git_blob": "3892d1ea632a31a09e549252be2fba075e8a0397",
+      "sha256": "a31308e2eb3e2797dfbebd007775310cdbe3a6688d405c95c5e117dc520537cf",
+      "size_bytes": 4327,
+      "git_blob": "05b323c81ac005ec4c422ad52f0ac58bfa114d68",
       "previous_git_blob": "bf9daad598ec4736bb491352357a50db292e8647"
     },
     {
@@ -30204,9 +30204,9 @@
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "12e41e6c7ed3575475da96c997b22bb3df1ef2dcdfcb2ca2d3a9b0c954da610d",
-      "size_bytes": 861,
-      "git_blob": "9f021c800a436125eb486bda6dde8c453d326a53"
+      "sha256": "c4206f7d9342bb827fa509e7a094c7ad74083558c631a54330d96f7e35a8ffa0",
+      "size_bytes": 914,
+      "git_blob": "317f627657a74b5e497d6c0170ebd22870ae740b"
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/packages.lock.json",
@@ -31005,14 +31005,14 @@
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "9abe71b496ccdef2a661c9f7ba5a8c8b97139f20a9c669f1df8fecf1aaedfae1",
+      "sha256": "1885404a21056e2518c2adf444b3df07ac4064dc07a998cb614f03665b152d6d",
       "size_bytes": 339,
-      "git_blob": "aa28b43f730d81a14a250f81759ddcbb7ac6d836"
+      "git_blob": "f2a30edd02d51446653c0dbb87572b5f70538fed"
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/packages.lock.json",
@@ -31080,9 +31080,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "875ab6be3ce0dcd959f5597adcc62e7aa93e4fae1b57421986bbc960c74a9a62",
-      "size_bytes": 2367,
-      "git_blob": "25c08cbbc34ce744665e9423cee0155c2fc75aa2",
+      "sha256": "aa5cff416e172b7722b73ec6b0677d3b027b55ffa9af0b92cb7748df1f761c46",
+      "size_bytes": 2407,
+      "git_blob": "1a9f37167abf514ba57b497dc9f70b99784a4562",
       "previous_git_blob": "a81f45a50682b7da5f377de05894fceb4c6a11fc"
     },
     {
@@ -32026,14 +32026,14 @@
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "9cd4385a5337fa0795e64b1ce1a32e356a609d421f5ae60a41702e8b2013b9be",
+      "sha256": "d00780513641b8e7c66c48e4221ca520d552573d0b9d5c4634251f3bbdc53401",
       "size_bytes": 755,
-      "git_blob": "d8eab5dfdb27e18c6df967d0bb67947d94763dc2"
+      "git_blob": "a845ce67146991fcea86e4cf5bacc01e9c450af9"
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/RcsDestinationProtocol.cs",
@@ -32081,14 +32081,14 @@
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/manifest.template.json",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "a0af4e6010c3351cfc2b00fa7d2b280e93795a447921f8b87c358d398a98883c",
+      "sha256": "7dac234b25b870af6eb425985514057e76ec9734faa62a1651ccf475becec7de",
       "size_bytes": 210,
-      "git_blob": "e02f567eb05af57624f8f85fb563701d528132ae"
+      "git_blob": "53950f7ccb819dd4b922a1cfe9415d8bbf1fb97a"
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/modules.json",
@@ -33262,9 +33262,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
-      "sha256": "c582fca3ea33dad029d6ddba2899374baf4851c4dffca9f5656da5db8a7b2405",
+      "sha256": "c6437dcdd79a7de3bd34d81ee40c9c487a606e6d933f8aca27d7d456c5d4748a",
       "size_bytes": 46899,
-      "git_blob": "c85e6e9cb98f1afa1da984b452bde480715d87d2"
+      "git_blob": "8591062e5ee995041f3d0fff24633d180ae18409"
     },
     {
       "path": "tests/Ipc.Application.Verification/SportmasterRcsPresentation.cs",
@@ -33301,14 +33301,14 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/VersionCompatibility.cs",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "af717cefb70f8fee191057406003a248ac61559683f9f8833b4c4cf2c5d2f89e",
+      "sha256": "497d32184d6e515bd9a733915626a83700f7751387e4b3d5f967a4bb50b8653d",
       "size_bytes": 8042,
-      "git_blob": "01b7ef0e4bded7040b9845093b5c5843c60901c6"
+      "git_blob": "b349ea1f7c23a2267135c3e5d3b5c73926101383"
     },
     {
       "path": "tests/Ipc.Application.Verification/VisibilityShim.cs",
@@ -33390,14 +33390,14 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
-      "version": "parallel-reconciliation-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "f2fd182da44b29777596a2c87c0912d6e5fc8af19ab071d274d8b5ef1a8023cf",
-      "size_bytes": 11864,
-      "git_blob": "1cbb9b961e5b8227e7cd52fafd5a489cdc8e58a6"
+      "sha256": "78e506a39bc7edd07214a959f0769c6df420985b2dd3d8427b4f3563a2abdbf1",
+      "size_bytes": 11405,
+      "git_blob": "70b303257d82111999bbe76756543baca13ff2e4"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/packages.sportmaster.lock.json",
@@ -34728,14 +34728,14 @@
     },
     {
       "path": "docs/runtime/windows-application-delivery.md",
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "47a8c85f2852aafbd657e4bb594c1223dd61f846c0f0702fb79b0e038a70b672",
-      "size_bytes": 12477,
-      "git_blob": "3f75c813aefb2f59d6649578c23be8a2e2cbfba4"
+      "sha256": "7664213215e392f0c2dd1b42c0960e2b95f8ff12a7e9c2e897649134de5149f1",
+      "size_bytes": 12785,
+      "git_blob": "0ea198bc9b812ef83fcfcfad0117429e2cac0384"
     },
     {
       "path": "scripts/application.cmd",
@@ -34777,9 +34777,9 @@
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
       "storage_scope": "public_repository",
-      "sha256": "b2afc1a0d26a4d7691248b534da7476036040d5a87e66259fae9f450749e5512",
-      "size_bytes": 2995,
-      "git_blob": "0064293b0e654098c5cd50784f618d3f9e6c4049"
+      "sha256": "30addccfd0d5231ae4bfbbb265ad160f72c298d39f15219f744eaf37149ef3d7",
+      "size_bytes": 3035,
+      "git_blob": "7e4d6503ca047b2d65c94146a2869815769ca1ae"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelIntegrationIds.cs",
@@ -36196,9 +36196,9 @@
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
       "path": "tests/Ipc.Application.Verification/UxCommercialConfiguration.cs",
-      "sha256": "aaf3f5ed8999a711f1762ff811f16dc463bc85699004d864f3e400bd6273569d",
-      "size_bytes": 19228,
-      "git_blob": "a7c6be80a4c33af030d0a79daa59ae4706ff597e"
+      "sha256": "9f46375db6bbb5ea74182031a846373e7e80ee382b5e46c96871ea2dee4728d1",
+      "size_bytes": 19833,
+      "git_blob": "d2b0d37b33d6cdf8d5cb5a666dbdbf355efcf719"
     },
     {
       "version": "ux-commercial-fix-01",
@@ -36212,15 +36212,15 @@
       "git_blob": "86bee2e03b7cfef408dd9c8d37eb5be9c230da6a"
     },
     {
-      "version": "ux-commercial-fix-01",
+      "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
       "path": "tests/Ipc.Application.Verification/UxCommercialPresentation.cs",
-      "sha256": "39bbc6c89b2073a7d115d50069b0ae2075b1598111c47ff20d42f41f893975e3",
-      "size_bytes": 13853,
-      "git_blob": "bb84ab695f573f79fee56767f71fb9b302e9fc43"
+      "sha256": "a028d2314102227937add3c063af965ac722b1ca3bed03a371f01ed8051dd550",
+      "size_bytes": 24091,
+      "git_blob": "9618ba6d38c4360add95a2d3e5cf70a74dd87854"
     },
     {
       "path": "docs/reviews/ux-commercial-quality-audit-01/README.md",
@@ -36254,6 +36254,1106 @@
       "sha256": "76702aec0ee5b46cf7c03df32ec4e9ed66f950055b4399fe86484dff31a056a9",
       "size_bytes": 276445,
       "git_blob": "e032cc631abb8147687eaf9d8fd40a3d7b43ac8c"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "4eb41e115f3f97c9038951d15d2546b17403b39121a019b85b9bcb8c26fa5c2c",
+      "size_bytes": 10782,
+      "git_blob": "50a2ec740846186116f571b65a06b6f2e3b8c7be"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/audit03-snapshots.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "8eef27c7652d636f4e0024c10653821e53c735ab7b817bcaabb6a94c9fd5e6fd",
+      "size_bytes": 1171,
+      "git_blob": "7995b28c6f6b20872385595e97e57b84460acc7e"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/checks-dev.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "c90aa2b9fc44f508af8e749729dfec29c6d3b03df56dabef34cfcf94e74b083b",
+      "size_bytes": 3726,
+      "git_blob": "4139c51b6eaf4913da562d22db6cccd10578c07e"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/configuration-cas-green.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "da2cdec6ff3f11a028813aaa55ff5baaf1b0ae27cb2a8036e8d983a4bc98e915",
+      "size_bytes": 3677,
+      "git_blob": "6312a9357dc62514da2e0ac66a8b894a55a02cc4"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/configuration-first-failure.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "fc43c8beedf92495975345495d77462f6f0bcb849fe22f737b09dbd68a908380",
+      "size_bytes": 4041,
+      "git_blob": "2c87822332d3cfbe7edecba2b41b34e28404c767"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/core-build-final.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "79d068133d8107d3cfdf1ce16edccb39ba9f64d0ee244e6f53b9dfe3ac16f4b8",
+      "size_bytes": 3226,
+      "git_blob": "a2985422773cb385bc00cb6a6a212de0e72e25a0"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/core-build.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "052d3c5ee1d23452e5e1da943e4ea6264fc9d22cd3640449098999742f547952",
+      "size_bytes": 3411,
+      "git_blob": "4a02f81ba7e4f2c73fc8a1c62992e26f4df65c30"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/parcel-recovery-p2.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "da06169d97d901db9fdafa88567ba151575a6770b6f75a49009131e0782b8d5d",
+      "size_bytes": 8175,
+      "git_blob": "b56f920a027d217800f58593969ae9c9751bf52d"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/presentation-final.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "b01e36b54f3394bec45b008be93ec15847b669839f722165bd7958aa01011061",
+      "size_bytes": 4079,
+      "git_blob": "9cd679ab4e787fd898af78f15ddc71a07ba552b6"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/presentation-green.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "160eb5f536e88662a7451c4ef0ff193c36b4b583b897eb263e53470525e53c44",
+      "size_bytes": 4063,
+      "git_blob": "250f28c7260135ad04d2de4bcb3e5d2964bb5563"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/python-compatibility.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "46819e60de07a2681dfbe840293a5496b09304142bb232d93c01db9089fc70ce",
+      "size_bytes": 3116,
+      "git_blob": "b494d4c47c59280febb55c1977210ac1fd960725"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/resource-risks.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "27f6826bee3ea74ee2dca0dd5805d04f647cb918c95f781a97a00dac22b55a61",
+      "size_bytes": 1272,
+      "git_blob": "bf5c6e0fa633b731140074dd3d27690f3294a490"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/selection-green.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "02fad60b20fa734deeb08b8f7868e56aa839bf01f90cbdbf1e4834491db69067",
+      "size_bytes": 3453,
+      "git_blob": "041de38379b7af683e81271f6d77cd5d4c90c6fd"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/selection-red.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "f835a17a6262330b1602799e8a3138a7d7ed376e5c21b63e89ccf818a1c10618",
+      "size_bytes": 2231,
+      "git_blob": "6d9841214436ad6a8a55e1c8a6e337f55dcf23f9"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/sportmaster-ui.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "0c596b442cb615d6a7b1ca5806857037e85f71ce4374616110c2c99b9f454e94",
+      "size_bytes": 8798,
+      "git_blob": "21c874ebc192b241e2dc73864ac5db9220886a97"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/sportmaster-window-lifecycle.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "f8baacaeb3752adcb1aacaf144936879a799a0e069a0b7f35e1b0978e0223887",
+      "size_bytes": 1428,
+      "git_blob": "b6cf3cb0c4eb2c4c0fd49734befd5cb62508558f"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/ux-commercial-configuration.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "fc43c8beedf92495975345495d77462f6f0bcb849fe22f737b09dbd68a908380",
+      "size_bytes": 4041,
+      "git_blob": "2c87822332d3cfbe7edecba2b41b34e28404c767"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/ux-commercial-inputs.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "55d8a71a8dd884abaf5c8592bf0b0b4094b41f1cd43fdc0f64ced90c698c3895",
+      "size_bytes": 2205,
+      "git_blob": "dbe1a538e926cfec032ca4f94c186c12aa09088f"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/ux-commercial-presentation.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "62ddbbc33e8b380569cfa74eefa7e150258fad608816adda9e25d3af8c402dbb",
+      "size_bytes": 4063,
+      "git_blob": "8046cad36fb28b01733999b59910c65009e67e4e"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/version-compatibility.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "1ec05bcfa6fb20ce075f2525dcbbe708bcf0794acd7bb23f69ab5eea007eb364",
+      "size_bytes": 3954,
+      "git_blob": "38cf885d0e483c5803e22b3d89efe62f57eb3bf0"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/wpf-direct-plc.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "a7ddae9d8178a59c33915c5fe995d257cce78340c1d4a0aaf84baf6c78000541",
+      "size_bytes": 3139,
+      "git_blob": "9bc1f7595d0fd867afee0a678c72e85545d1b379"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/wpf-sportmaster.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "27a1ff896f67d3db5f09cac4734242d008b5d59454a5cb65b6a1bd49963df1f7",
+      "size_bytes": 3352,
+      "git_blob": "e8f04082ac04553cb6f74c3749632560ce220a7b"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/wpf-verifier-build-final.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "0f94f04cce4332d7d33c640aeed15ac16eb16d48802020789dbfc5de0bef78fa",
+      "size_bytes": 3262,
+      "git_blob": "d5e11a458d2a7069e45d58228ad925d66b735c14"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/wpf-verifier-build.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "7f68657b6adcbc415eb2ef9fa3621e7560c0538be3deafb940e1e9c8b52b1400",
+      "size_bytes": 3258,
+      "git_blob": "c6d9f2a91256cc559b5e822d6a2b7071b4a96427"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/wpf-wcs-to-plc.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "c743b24cdbb34f17aa0ba675a0c969ca0978a95071eb01ac2adfe86e0451f61b",
+      "size_bytes": 3322,
+      "git_blob": "292f196fac1d5aeb122a903d90c7e9b34f823545"
+    },
+    {
+      "path": "docs/runtime/ux-commercial-combination-02.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "f02ec9694987ab440bd1efb66ac5462260db4e5de174adf650031066227152bb",
+      "size_bytes": 1240,
+      "git_blob": "20294d25a72a873439742cfb181b41eb3a926f3a"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/UxCommercialClosure.cs",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "55b7c11bdcf24ccd05eecfb223520d06b29fdc5b359cb335d60bd2a80471459f",
+      "size_bytes": 13624,
+      "git_blob": "2714603b5235ebaee88085ca51673e9c552aee48"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/python-guides.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "080180b1faaac399146df1f517ff6f2be44a56e7312972aaab8561af5c6c1199",
+      "size_bytes": 420,
+      "git_blob": "755add9265ee7919844c577d0d5dfc3316534309"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/wpf-verifier-build-delivery.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "e7f3aefd14d2c210779a94ae2bbcca022fd38e334699101996473104affd45f7",
+      "size_bytes": 2943,
+      "git_blob": "1dbe804a3d8f47f583b30e9c79387b14fadef123"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/ARTIFACTS.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "9f32c2c1e8a010ce1cb43fbaa2b7d25db5d76296b2cf883fb212cf4d06533999",
+      "size_bytes": 2850,
+      "git_blob": "4b599da5d39066882aba72cd9ab957cf6f7805fa"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/README.md",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "f22df038b364852c03d2814b395894aa475a72b1fc53994d7b763efdadbea8d2",
+      "size_bytes": 2736,
+      "git_blob": "a89b842cbd1b077897b911eb9521028b1f3742ec"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/VERSIONS-ERRATA.md",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "321703036b85d3a10961e5ac87c24d69ec2543f20754133f3ecee91c6c3012c6",
+      "size_bytes": 831,
+      "git_blob": "2dc149e77c491c6c2cacb150f246333a352c99bb"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/archive-delta.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "e942055e3d54b93c9fe324d7ed5ea8f26eab16c0237a2f57057d0d139c82f4e7",
+      "size_bytes": 952,
+      "git_blob": "71f21ff050ddb2ddc67d012a170fd45de9f1e21b"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/direct-plc-core-smoke.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "9dbd1a905a5d9b6eedf609466fe62fee3689b02c006b3cd777b26568cb0b0ea6",
+      "size_bytes": 6535,
+      "git_blob": "bd0416e86d41df475186b7c5ba4a8a6ef75ec389"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/direct-plc-core-smoke.json.events.jsonl",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "4d72e751d3d5272c0f3e8065c0e786e34010c730e1c35b4c24a5457bb7bc2005",
+      "size_bytes": 34386,
+      "git_blob": "62bef0c4054659776a109f28169096ca60507026"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/log-custody.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "8390fe67e3aad8ff8df5364fcee87d9ae71af1803a6b898eadff239edf295544",
+      "size_bytes": 11918,
+      "git_blob": "3396a7a0d3d5a995c875bb878bd0ab02449b8012"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/media-verification.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "de1c01c7db7cfbd1654b4476cbf4f646b0604ae10fe595ae8427675d6906facc",
+      "size_bytes": 1363,
+      "git_blob": "86f0c60f86d082348ff2ab69af837afdae64b4ab"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/publish-checks.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "7d6e686348e0a33e062a9a7cfdbf22a584475238587968613ca91de5509ae995",
+      "size_bytes": 5648,
+      "git_blob": "8db5515c0678df3468e4f633e9e171e76367a306"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/rcs-journey.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "7a5980a1cd4ae19755dc5c6b48a9b6558da86c339d1b7616c1a0bbba0a124172",
+      "size_bytes": 446,
+      "git_blob": "c883d3b127ffc87d6d300359a66f169372fef8b2"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/reference-trust.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "646b510c511190a9ce64ccabf669a9d72c7de9ae1dbe4e5092f9631c42e10fcf",
+      "size_bytes": 786,
+      "git_blob": "8e5359730f4801d801e1044866044d1ea805e741"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/release-addendum.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "45ed62313b0e1481b241406cf49970fd2a26b0ee76c13e3359562dacdb593607",
+      "size_bytes": 409,
+      "git_blob": "7474b555d78325ea8ab4f8caf102271e4fd0dbb4"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/release-barcode.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "0b095cbaf3e3268cab1ecd931a24cfff36c9da95dc6445ef3fd859f10684a054",
+      "size_bytes": 8538,
+      "git_blob": "39ef98899fd5f7853e369a152545777dc596ab94"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/release-capabilities.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "f6e90aa7b7f0a90eb66480af4cf43180dade09fe70ae7623c0a28bdf3b2dabe1",
+      "size_bytes": 21900,
+      "git_blob": "8bc4cae1bd2deee461f5124f46fdaba355c7c658"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/release-direct-plc-core.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "d29e03ac9a02a811654d66aae5f6b20a23987a066514124f83170021af51f357",
+      "size_bytes": 4670,
+      "git_blob": "910ef627928ac6859df1c67bbac3867a619baa05"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/release-rcs.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "66ec3cf2dcb3b1d549e496c146fa0eb61b5d7966f43194406ed6dc4e326a91aa",
+      "size_bytes": 13080,
+      "git_blob": "d5bec7b50ceec666904ee911469d84505e4b5552"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/release-selected-journey.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "2093c22031ce87063f32c12c19103ba24828f89255d7d3c56ed5c278535422b8",
+      "size_bytes": 579,
+      "git_blob": "1fa69e3d1968d91096b8b43df9da3ccd41a8eaa4"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/release-smoke-direct-plc-core.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "09f4610b02f99ff894a657884b15c1c01cda46f971cc45a7e8e82e6f62a82352",
+      "size_bytes": 545,
+      "git_blob": "c3ec0838d1bb54ce2ade66afff3776ec72bed9dc"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/release-smoke-sportmaster-core.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "176915656762c18e50a1197cbbb5645f9ab43cf552c445662e0536285be008f1",
+      "size_bytes": 560,
+      "git_blob": "c820cf0a842a4b14dd65a3625325baf67e30296b"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/release-smoke-wcs-to-plc-core.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "def0eb4ceb683bb8ebdd3f54bc61ef152be26cc3d2fa8e7ed49127a68b92aa3e",
+      "size_bytes": 545,
+      "git_blob": "db8f78618598d0ac22c9d765d400232b15f16ab3"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/release-sportmaster-core.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "ae59cecedd38dee60fb2009c989615fb3e9e7e2d043676c05766b4a165000c40",
+      "size_bytes": 5059,
+      "git_blob": "ad74a4c9d8abbb13f0ca45cb384c2c5e69f55e0c"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/release-sportmaster-selected-portable.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "63afa35cfe34dc4e00e2caf2f4113db9deb659656a152f6539b62b7c1d421088",
+      "size_bytes": 43868,
+      "git_blob": "5fb694caeffaf85c8dbf84ab2622e99c193de4ad"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/release-sportmaster-selected-win-x64.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "1447c2e3575cca8930eb82eda9ed4388a0138d720633dce8792274d1e5c6df1a",
+      "size_bytes": 47738,
+      "git_blob": "883d7ae2eb4ef838f4872cd11d117b6611b8348f"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/release-wcs-to-plc-core.log",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "e9745e1202c12aab7fa1a6ad09f951d36c45ba77f97b030548d69919aeacfdca",
+      "size_bytes": 5014,
+      "git_blob": "f9233aa0c7b7382b4d8cd7daec093271cf7f0fb4"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/remote-readback.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "ead7ed97cdc4072cf655aacea4b2c80176a69684b50f62b1eca9143f258f275a",
+      "size_bytes": 11911,
+      "git_blob": "361ffcbd83a2e5f6b472c861e2433fe722ebe28a"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/selected-journey.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "f50fe095a62ed583826b169b6f7cef25237fef1a14e74288badf86cbe9bcca79",
+      "size_bytes": 855917,
+      "git_blob": "c4e050bd21f366f5cca2a8b32d3c0c80b3c5be40"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/selected-release-journey.py",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "9027b568ba8bd9168f702e9c8511cd3f218a19a2698d316ee98945ada1d0fecd",
+      "size_bytes": 14040,
+      "git_blob": "77385833db45c56ce605f73ac8cc4984bae2943f"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/source-parity.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "1e972b5a2a079553c1d2808b59e2fe672f7fa7f201062bd6602f575a1a5ef1de",
+      "size_bytes": 131347,
+      "git_blob": "6985c0726b11db769333e11962a2aebf6169b2f0"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/sportmaster-core-smoke.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "4d8eb27167c24d797439286ef2326d397eccdf2b7b7753745c56b98e44599aea",
+      "size_bytes": 7559,
+      "git_blob": "f0dee69b1b72273fe60ef7406003ce4bc9e042a2"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/sportmaster-core-smoke.json.events.jsonl",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "0267513d5b9ed9d4c8005a1dd175c84f4961e294177c11a1780600057cf2ad2d",
+      "size_bytes": 75086,
+      "git_blob": "375d6fed8178785a814bc09dc7b2f60cb5f993c0"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/unpacked-smoke-checks.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "8785faa8e2fb2f90b704a6ccf285b5432d4704ae955f41b2fea58a1aa90be1f8",
+      "size_bytes": 1488,
+      "git_blob": "15d67238a60882c7034fec60a19237249a54e5c1"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/wcs-to-plc-core-smoke.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "ecf35e02d94d8deea4d7f8d1459be8c0a8d661647471b52b9f7d5d7f30424006",
+      "size_bytes": 7647,
+      "git_blob": "d1d3b9e7278728905956bc13f4d9d0cc3011ed41"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/wcs-to-plc-core-smoke.json.events.jsonl",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "ce247053b2b61a422bb167af31a301303985bda030381f4129fc488859fe25bb",
+      "size_bytes": 43101,
+      "git_blob": "479228dfa1670f07891f871412867e623bcc65f4"
+    },
+    {
+      "path": "docs/runtime/ux-commercial-closure-02-results.md",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "397261ce9e76acac1bd12cb94668e00501000f92112d88c42e57622f3ab48a38",
+      "size_bytes": 8754,
+      "git_blob": "527ec695c24bfe06c9ffbca47bf26c007018db01"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/archive-product-delta.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "75d39d9519b5db74f33d04cc499936fd78d17a302be71d62db7b292c6af41a4b",
+      "size_bytes": 306,
+      "git_blob": "2e0ae6db6664da51f4ac0ea97a4c932d11c894c5"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/ARTIFACTS.json",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "0a7e9d0ac9ef007172fc4531059b57db1e98d466e8d0c52d16797a3ed0b58ef9",
+      "size_bytes": 2696,
+      "git_blob": "48464e03aee3a41a45830b70aedb5530f59f0aa4"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/README.md",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "ca9f9f1ace87aca9acc21eab2ae57c13a9e7dfc0308a02ecdffdfa77fa2e0bc6",
+      "size_bytes": 2338,
+      "git_blob": "e2c4361d5dd6ae8755f3b44afb055e471af0799d"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/SHA256SUMS",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "004426497050b721c2cb8a13c441bad01e8246f92a218851953d3ca8064baaee",
+      "size_bytes": 1240,
+      "git_blob": "91433c608bc53f935164a6254bb719c6e53d8211"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/audit03-snapshots.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "3394b6aafdaaf11e01def8179967047bd36cdac2774752d12371eccaa4a691dd",
+      "size_bytes": 1084,
+      "git_blob": "db0cb7658eaeb9ac6b01c60fdaeaae05db2ff59b"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/feedback-red.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "f7ea4cce1754083578b8f29841b1fdd9e2ec7f7f4746934258b935fb31f99604",
+      "size_bytes": 4433,
+      "git_blob": "095af83e06412a47c9ee6eeea03c56744f5d2955"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/final-checks.json",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "8136e1d5c063ddc662d886cad75e1eac41cbec777694902d7380f4dc1f797ba4",
+      "size_bytes": 1140,
+      "git_blob": "5447c84a8c7f444d31eab840b58879f9cb518bc8"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/log-custody.json",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "ff84955a9935d669a94305b6873b38fb0128a7ed30b7d740e717fc6894ad7743",
+      "size_bytes": 11563,
+      "git_blob": "ca82b681cbc4c320384825fc21474fcef349b911"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/media-verification.json",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "1f88ceb086188b93ec73a96f542188393cf2e7144cecb544ebf932d26e842a5a",
+      "size_bytes": 864,
+      "git_blob": "13632682bc44813149a09cc3c1b18bbe5454fd0f"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/native-verifier-build-first-failure.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "c7120722c8271827d44c60740b3948b41df2e700dffcf1b3cf4954b5f91f3a9c",
+      "size_bytes": 2501,
+      "git_blob": "651839d6add52e4778be0a53265a75262cfcd021"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/native-verifier-build.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "3faea8598a647b591df435797bc812b16dd0448f8a9ed8603beb8fd41d51be58",
+      "size_bytes": 2073,
+      "git_blob": "ce1885b13b1c0b44bbdeaf413ae8f354091427e3"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/publish-checks.json",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "3b2abd9e87e5747285ae8f0df5a8629d2f7e6f2592af02e430e7e4d99d1415a8",
+      "size_bytes": 650,
+      "git_blob": "f20f09bd6a7b55b83826c0806f1cc6273851d4f0"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/python-compatibility-first-failure.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "3ef2f1bfc318b3bb860569ade98b490e8dcb5a74bafc358d481d23c2a55dc74f",
+      "size_bytes": 4379,
+      "git_blob": "71091e01600ca248afa15ce61b94031a5fbdc795"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/python-compatibility.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "4e03d23715f00d85535aea565785566b3cdeaf41942c9ddfc616ca4ce0947a90",
+      "size_bytes": 3116,
+      "git_blob": "7a8056b608748d39fd34fcd6a1b480482dad6a4b"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/python-guides.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "bfdb78c32b8c6a4ad94f651eff184f1597b3860ecd390d5983be7056527cbddd",
+      "size_bytes": 420,
+      "git_blob": "de57abf209877900aad9efdb492761dbe74a3b1c"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/rcs-journey.json",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "51be5d8a9c2e33950686151c79967861a88b403a08bea96d54c5d59686ba52be",
+      "size_bytes": 446,
+      "git_blob": "5735a3bf77250dd250c7a89812ada4a06c5b8632"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/selected-journey-summary.json",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "3148928ed75c4d66ca14d4092d294c1f197805511d319b37095831a4981252be",
+      "size_bytes": 2269,
+      "git_blob": "46cae8d35f8f89331f52e3f2ef866c1e8aab99df"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/selected-release-journey.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "535cef2ba828e05a92b9d12f4c7b09e06edb2bd452a1348f127ee65d3f54b9e0",
+      "size_bytes": 581,
+      "git_blob": "dd0fd76daabbb8d8e9b0353f2e22e2e65ee68f9c"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/selected-release-journey.py",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "da9a1048510e4dc9b4bd0473b984ea6e8d9e9505e3bd6031e6d2ef3b7cfd22e0",
+      "size_bytes": 14041,
+      "git_blob": "9e7c17d366bf531d7ebbe4e14962ef814e39a12a"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/smoke-results.json",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "1735893c842a080b708e51130d486dbd5a3f49d15397fe129379c4a1092f23a5",
+      "size_bytes": 624,
+      "git_blob": "6df922e287286d1c55f2b7ac2ffc5c51f153c21b"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/source-parity.json",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "b57dfeccbdd6ef2779841fc930a06bd577145bcb4ce4b4c847109a2d1741d527",
+      "size_bytes": 167,
+      "git_blob": "ce87fd5c1f0b25299dfa8d2d46647b54834e9672"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/sportmaster-ui.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "dbcaf8bc9bd87496a26d454f27e3d732b491124031657f6ad373a1ffb8b210c8",
+      "size_bytes": 8711,
+      "git_blob": "f0ee1bdc8f83518fd42bd460fa12319452039a30"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/sportmaster-window-lifecycle.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "402469d259811e3ec0afcb2839a356939d0ca2e9b31212ec0bfe961b4c94fbfc",
+      "size_bytes": 1341,
+      "git_blob": "1e2ff4d4ad8b3ee8812b298045173abdb3c74857"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/tested-source.json",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "13a054e868afc0710ea7396321286c42d83bb4c0ec6df930ee099212cc3b09b1",
+      "size_bytes": 83894,
+      "git_blob": "6e61c91fb6eb85fa288e4be9d67be84c7e863c5e"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/ux-commercial-configuration.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "2e562bdf9df9d44ae37fb7d079d353d8cf5c64c88b813ddb6ee4e0bf80fc15c7",
+      "size_bytes": 3590,
+      "git_blob": "e6085a551563f3ff46a8ce0726f6f48e892b4acb"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/ux-commercial-presentation.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "7105e4f774a0ce8e8d0d54e8a56c60ebf3f41167949e30e332860454ad5fd756",
+      "size_bytes": 4628,
+      "git_blob": "9c73a57427b1eac0815e8465c327445bda1be0e5"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/verification-build.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "8254528792b925349542671f4c3b6bfcaaaf2fab10b321c6c9efcbc77a907fee",
+      "size_bytes": 3412,
+      "git_blob": "8f28361214d0aad0e58c2ff5724d2243a791ff94"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/version-compatibility-first-failure.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "816d73f9b02681afa38f201abcb5f3bd93ed37413266cd43d4d98c1daf98410a",
+      "size_bytes": 750,
+      "git_blob": "2f247238cbc25f02bef524e3e8cfaac637f105ce"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/version-compatibility.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "2f70a5cf568b04f29b78a015a5ea115c22168abfd42e94a5881635537e64b66c",
+      "size_bytes": 3867,
+      "git_blob": "21d9b697ab9d32f116ee6689121c846a4e81a984"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/wpf-builds.json",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "0aa8cda0e5b3f0299852673f5d80e3199406a7294c7fd10676d7fe65c02dbf75",
+      "size_bytes": 372,
+      "git_blob": "8de89dc17a71e7d5776b784c7ccea1a5bcdf822b"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/wpf-direct-plc.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "787fb39ca28a65ebc7e604b3da966e71f44cc12f6e8bac758d0e09f50385abc3",
+      "size_bytes": 3068,
+      "git_blob": "0ae48358488a1b8fdc728ae799ecb624112ec907"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/wpf-sportmaster.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "2c523ce5c6ff9c94103c9ee2604027bdc0937f30da2a61d8ce6b483b091f2f4e",
+      "size_bytes": 3352,
+      "git_blob": "d61d45b51a77d5b520a12285180d44d5d76090c9"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/wpf-wcs-to-plc.log",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "4ffdbb86c1ee0bef8303f2f461a0c27295e58769a30b943d29a4d4a861d60546",
+      "size_bytes": 3250,
+      "git_blob": "fd7915ef45d0493630782b349f6929678c024050"
+    },
+    {
+      "path": "docs/runtime/ux-commercial-rereview-03-results.md",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "c64df177ba7ad959449f12a1cdb824256e7900478bf6f69d268ec604ceb42f75",
+      "size_bytes": 5846,
+      "git_blob": "4a9c020e8bb06cb782ca2e00eb9b3adbddd74021"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/archive-delta.json",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "a2c1783bf8ae3e3f7b4e6f63c3f39895731186b734d858682b71f83f34657ab8",
+      "size_bytes": 508,
+      "git_blob": "2d3b1f7ecdeb590110deb9f799987fd853dea86b"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/independent-review.md",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "f4685b2e32607642490c29d51acdb55a155dfd55542010f4c983ad0ab7bf5b3c",
+      "size_bytes": 2062,
+      "git_blob": "86a963800a953d5abbb24220c16b6339b3350d40"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-rereview-03/remote-publication.json",
+      "version": "ux-commercial-rereview-03",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "e7bc9d1fe346702e353975103401cfc7faa9d26e6efd7121ba19670d4b8bbd8b",
+      "size_bytes": 3469,
+      "git_blob": "84961dd1ff80cf15261d75dc28ef96bad50d5df7"
     },
     {
       "path": ".agents/skills/README.md",
@@ -37112,6 +38212,39 @@
       "sha256": "1a24450024de80b360ac92ddd1bbf80de972fc40fb164d45a158cd96a5471257",
       "size_bytes": 2068,
       "git_blob": "cf667d30bd4291b2ca2d1473592117aaec427c0b"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-publication-20261019/merge-39.json",
+      "version": "ux-publication-20261019",
+      "status": "publication_inventory_NOT_RUN",
+      "purpose": "User-authorized merge custody, original task artifacts or licensed project skill",
+      "source": "PR37/38/39 and user no-test publication request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "d0b10c70e1df813084551c28f1eafb0cce113cc19936baf257fb2799afb2566b",
+      "size_bytes": 1990,
+      "git_blob": "464ae4ab86a6569992469d887df90be88699f0d3"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-publication-20261019/pr39-before.json",
+      "version": "ux-publication-20261019",
+      "status": "publication_inventory_NOT_RUN",
+      "purpose": "User-authorized merge custody, original task artifacts or licensed project skill",
+      "source": "PR37/38/39 and user no-test publication request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "71db60f40e25fa913b3421723eb02c3ea9e641a84282116678f39b0fc186416f",
+      "size_bytes": 3138,
+      "git_blob": "a0af8f57b32477e9fd53ecd28a169a9694fd2825"
+    },
+    {
+      "path": "docs/runtime/publication-ux-20261019.md",
+      "version": "ux-publication-20261019",
+      "status": "publication_inventory_NOT_RUN",
+      "purpose": "User-authorized merge custody, original task artifacts or licensed project skill",
+      "source": "PR37/38/39 and user no-test publication request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "5228ef4c7ca97da9d2c692096b5746831e787a56c3eb2725be02b08c34b8262b",
+      "size_bytes": 2860,
+      "git_blob": "2ee5a0b9d0189d2a63d9da4cdaae995ed551a4c3"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -37193,7 +38326,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "WP-IPC-UX-COMMERCIAL-FIX-01",
+  "current_implementation_work_package": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -37254,7 +38387,7 @@
     "application_code_changed": false,
     "remote_verification": "read exact main commit and file identities after merge"
   },
-  "next_implementation_work_package": "Deferred Windows native and target hardware acceptance; confirmed capability-specific SDK/protocol/Unknown integration",
+  "next_implementation_work_package": "Windows native control/display/focus and ordinary-account delivery; confirmed commercial SDK/protocol/Unknown/load acceptance",
   "main_static_review_03": {
     "entry": "docs/reviews/main-static-review-03.md",
     "checks": "docs/reviews/main-static-review-03-checks.json",
@@ -37817,7 +38950,7 @@
     "candidates": "docs/runtime/evidence/capability-reliability-20/candidate-inventory.json",
     "reference_verification": "PASS"
   },
-  "runtime_source_commit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+  "runtime_source_commit": "6ce1d6d0b109bd6a3d9490fac176122b4670b90b",
   "application_architecture_22_publication": {
     "receipt": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/architecture22-reference-8981d54",
@@ -38228,9 +39361,60 @@
     "next_implementation_work_package": "A03-03 Windows native evidence; A03-04 real combination/SDK/Unknown contract; A03-05/06 Windows and confirmed load/offline acceptance",
     "runtime_source_commit": "565abcc63b885dc60873aa21e25f2d4612963c0d"
   },
+  "prior_manifest_state_before_ux_rereview_03": {
+    "work_package": "WP-IPC-UX-COMMERCIAL-FIX-01",
+    "branch": "codex/ux-commercial-fixes-01",
+    "current_implementation_work_package": "WP-IPC-UX-COMMERCIAL-FIX-01",
+    "runtime_source_commit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+    "next_implementation_work_package": "Deferred Windows native and target hardware acceptance; confirmed capability-specific SDK/protocol/Unknown integration"
+  },
+  "ux_commercial_rereview_03": {
+    "baseline_pr_head": "1a34a1e655a479c9692b85fc8a568aca6a813c17",
+    "main": "eeeed0e0700cd07a76587b2bb701e91d422b2c35",
+    "pr37_dependency": "2d60fdc83a267c1ed4ad7a9f7ce200bd11255a94",
+    "product_source_commit": "6ce1d6d0b109bd6a3d9490fac176122b4670b90b",
+    "business_version": "1.3.2",
+    "application_contracts": "1.9.0",
+    "parcel_database": 7,
+    "extension_versions": {
+      "reference.parcel-capabilities": "2.2.4",
+      "reference.barcode": "1.3.4",
+      "sportmaster.rcs-task": "1.1.4"
+    },
+    "results": "docs/runtime/ux-commercial-rereview-03-results.md",
+    "evidence": "docs/runtime/evidence/ux-commercial-rereview-03/README.md",
+    "artifacts": "docs/runtime/evidence/ux-commercial-rereview-03/ARTIFACTS.json",
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/39",
+    "release": "https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-6ce1d6d",
+    "source_corrections": "compact operator diagnostics accessibility; actual completion feedback; native verifier scope and held-task cleanup",
+    "windows_native": "NOT_RUN",
+    "real_sdk_protocol_field": "BLOCKED_PER_CAPABILITY",
+    "commercial_inputs": "AWAITING_COMMERCIAL_INPUTS",
+    "production": "NOT_READY",
+    "private_keys_included": false,
+    "superseded_local_attempt": {
+      "source": "203c1a8e3de343a23fdfdfdf9681e452647a20cf",
+      "status": "LOCAL_ONLY_VERSION_ASSERTIONS_AND_RCS_TEMPLATE_CORRECTED_NO_REMOTE_RELEASE"
+    },
+    "prior_reference_release": "https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-f1a655c",
+    "superseded_local_attempts": [
+      {
+        "source": "203c1a8e3de343a23fdfdfdf9681e452647a20cf",
+        "status": "LOCAL_ONLY_VERSION_TEST_FAILURE_NO_REMOTE_RELEASE"
+      },
+      {
+        "source": "703648893b7a44c8e0dcbee57d14db88789743f2",
+        "status": "LOCAL_ONLY_CSHARP_VERSION_TEST_FAILURE_NO_REMOTE_RELEASE"
+      }
+    ],
+    "remote_publication": "docs/runtime/evidence/ux-commercial-rereview-03/remote-publication.json",
+    "independent_review": "docs/runtime/evidence/ux-commercial-rereview-03/independent-review.md"
+  },
   "ux_no_test_publication_20261019": {
     "merge37": "docs/runtime/evidence/ux-publication-20261019/merge-37.json",
     "tests": "NOT_RUN_BY_USER_REQUEST",
-    "builds": "NOT_RUN_BY_USER_REQUEST"
+    "builds": "NOT_RUN_BY_USER_REQUEST",
+    "merge39": "docs/runtime/evidence/ux-publication-20261019/merge-39.json",
+    "report": "docs/runtime/publication-ux-20261019.md"
   }
 }

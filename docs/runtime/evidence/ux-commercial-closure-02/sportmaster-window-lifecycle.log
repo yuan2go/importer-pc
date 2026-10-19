@@ -1,0 +1,18 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-37b494e38a074b0b9bc948ed84ef5d9a
+PASS WINDOW-CONTROL: pendingRefresh drains before owner stop
+PASS WINDOW-CONTROL: pendingRefresh owner failure cannot restart closed child timer
+PASS WINDOW-CONTROL: pendingRefresh closed child cannot poll
+PASS WINDOW-CONTROL: pendingRefresh successful retry leaves no orphan timer
+PASS WINDOW-CONTROL: pendingViewportPause drains before owner stop
+PASS WINDOW-CONTROL: pendingViewportPause owner failure cannot restart closed child timer
+PASS WINDOW-CONTROL: pendingViewportPause closed child cannot poll
+PASS WINDOW-CONTROL: pendingViewportPause successful retry leaves no orphan timer
+PASS WINDOW-CONTROL: auxiliary close does not stop owner
+PASS WINDOW-CONTROL: owner stops exactly once after ordinary auxiliary close
+PASS WINDOW-CONTROL: child failure cannot unfreeze a root close still draining
+PASS WINDOW-CONTROL: failed drain retains both windows and prevents premature owner stop
+PASS WINDOW-CONTROL: retained windows can retry after original failure is resolved
+PASS WINDOW-CONTROL: five-second drain timeout keeps owner window and resources
+PASS WINDOW-CONTROL: timed-out close retries without duplicate owner stop
+PASS WINDOW-CONTROL: window close races issue no business or device command
+PASS WINDOW-CONTROL COMPLETE; exact window source with event/timer substitutes; Windows native NOT_RUN

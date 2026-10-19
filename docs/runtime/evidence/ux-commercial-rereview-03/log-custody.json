@@ -1,0 +1,202 @@
+{
+  "SourceCommit": "6ce1d6d0b109bd6a3d9490fac176122b4670b90b",
+  "RawArchive": "raw-verification-evidence.zip",
+  "Files": [
+    {
+      "PublishedFile": "final-checks.json",
+      "RawZipMember": "final/final-checks.json",
+      "RawSha256": "8136e1d5c063ddc662d886cad75e1eac41cbec777694902d7380f4dc1f797ba4",
+      "PublishedSha256": "8136e1d5c063ddc662d886cad75e1eac41cbec777694902d7380f4dc1f797ba4",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "tested-source.json",
+      "RawZipMember": "final/tested-source.json",
+      "RawSha256": "13a054e868afc0710ea7396321286c42d83bb4c0ec6df930ee099212cc3b09b1",
+      "PublishedSha256": "13a054e868afc0710ea7396321286c42d83bb4c0ec6df930ee099212cc3b09b1",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "wpf-builds.json",
+      "RawZipMember": "final/wpf-builds.json",
+      "RawSha256": "0aa8cda0e5b3f0299852673f5d80e3199406a7294c7fd10676d7fe65c02dbf75",
+      "PublishedSha256": "0aa8cda0e5b3f0299852673f5d80e3199406a7294c7fd10676d7fe65c02dbf75",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "publish-checks.json",
+      "RawZipMember": "final/publish-checks.json",
+      "RawSha256": "3b2abd9e87e5747285ae8f0df5a8629d2f7e6f2592af02e430e7e4d99d1415a8",
+      "PublishedSha256": "3b2abd9e87e5747285ae8f0df5a8629d2f7e6f2592af02e430e7e4d99d1415a8",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "media-verification.json",
+      "RawZipMember": "final/media-verification.json",
+      "RawSha256": "1f88ceb086188b93ec73a96f542188393cf2e7144cecb544ebf932d26e842a5a",
+      "PublishedSha256": "1f88ceb086188b93ec73a96f542188393cf2e7144cecb544ebf932d26e842a5a",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "smoke-results.json",
+      "RawZipMember": "final/smoke-results.json",
+      "RawSha256": "1735893c842a080b708e51130d486dbd5a3f49d15397fe129379c4a1092f23a5",
+      "PublishedSha256": "1735893c842a080b708e51130d486dbd5a3f49d15397fe129379c4a1092f23a5",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "source-parity.json",
+      "RawZipMember": "final/source-parity.json",
+      "RawSha256": "b57dfeccbdd6ef2779841fc930a06bd577145bcb4ce4b4c847109a2d1741d527",
+      "PublishedSha256": "b57dfeccbdd6ef2779841fc930a06bd577145bcb4ce4b4c847109a2d1741d527",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "rcs-journey.json",
+      "RawZipMember": "final/rcs-journey.json",
+      "RawSha256": "51be5d8a9c2e33950686151c79967861a88b403a08bea96d54c5d59686ba52be",
+      "PublishedSha256": "51be5d8a9c2e33950686151c79967861a88b403a08bea96d54c5d59686ba52be",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "python-compatibility.log",
+      "RawZipMember": "final/python-compatibility.log",
+      "RawSha256": "4e03d23715f00d85535aea565785566b3cdeaf41942c9ddfc616ca4ce0947a90",
+      "PublishedSha256": "4e03d23715f00d85535aea565785566b3cdeaf41942c9ddfc616ca4ce0947a90",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "python-guides.log",
+      "RawZipMember": "final/python-guides.log",
+      "RawSha256": "bfdb78c32b8c6a4ad94f651eff184f1597b3860ecd390d5983be7056527cbddd",
+      "PublishedSha256": "bfdb78c32b8c6a4ad94f651eff184f1597b3860ecd390d5983be7056527cbddd",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "verification-build.log",
+      "RawZipMember": "final/verification-build.log",
+      "RawSha256": "160b3026588acfd67d57473235b1d67104249f5d502acf7fc1b63ebcfe0b6a7e",
+      "PublishedSha256": "8254528792b925349542671f4c3b6bfcaaaf2fab10b321c6c9efcbc77a907fee",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "native-verifier-build.log",
+      "RawZipMember": "final/native-verifier-build.log",
+      "RawSha256": "5c6bc8e5980b18d08f04ad7b9deb38489294bec0a3196437f8fb2f81d099f2c7",
+      "PublishedSha256": "3faea8598a647b591df435797bc812b16dd0448f8a9ed8603beb8fd41d51be58",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "ux-commercial-presentation.log",
+      "RawZipMember": "final/ux-commercial-presentation.log",
+      "RawSha256": "7b1a885d9a9c8962f2fecfd8fa6f35a1141c14ad4ec10b4f7bdec95a5eac0175",
+      "PublishedSha256": "7105e4f774a0ce8e8d0d54e8a56c60ebf3f41167949e30e332860454ad5fd756",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "audit03-snapshots.log",
+      "RawZipMember": "final/audit03-snapshots.log",
+      "RawSha256": "56e96bd0d6ce47e28e0d92f0f049bfe00d45ad754e4a8c802409f010917acdcc",
+      "PublishedSha256": "3394b6aafdaaf11e01def8179967047bd36cdac2774752d12371eccaa4a691dd",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "sportmaster-ui.log",
+      "RawZipMember": "final/sportmaster-ui.log",
+      "RawSha256": "50202011a63494f8af98c6334de5e7d5d823feac74911930e14883e3946439f7",
+      "PublishedSha256": "dbcaf8bc9bd87496a26d454f27e3d732b491124031657f6ad373a1ffb8b210c8",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "sportmaster-window-lifecycle.log",
+      "RawZipMember": "final/sportmaster-window-lifecycle.log",
+      "RawSha256": "bb075f02f99e5f8f23e0e3d930b2b0bb09a0061fddf5954b4194fd41d996a9a8",
+      "PublishedSha256": "402469d259811e3ec0afcb2839a356939d0ca2e9b31212ec0bfe961b4c94fbfc",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "version-compatibility.log",
+      "RawZipMember": "final/version-compatibility.log",
+      "RawSha256": "32e7454e32fa8f748994436eed454eef0a4d643f4a533af90f0d27fcedf84646",
+      "PublishedSha256": "2f70a5cf568b04f29b78a015a5ea115c22168abfd42e94a5881635537e64b66c",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "ux-commercial-configuration.log",
+      "RawZipMember": "final/ux-commercial-configuration.log",
+      "RawSha256": "da4f1243092f53decb0c63a9a2e439349ca49fb7ba6a51882b738799bec7f7f5",
+      "PublishedSha256": "2e562bdf9df9d44ae37fb7d079d353d8cf5c64c88b813ddb6ee4e0bf80fc15c7",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "wpf-sportmaster.log",
+      "RawZipMember": "final/wpf-sportmaster.log",
+      "RawSha256": "2abd014ee56c498a7db3b18e8d1662449e7efe7afee29903ca5e2eb238be7872",
+      "PublishedSha256": "2c523ce5c6ff9c94103c9ee2604027bdc0937f30da2a61d8ce6b483b091f2f4e",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "wpf-direct-plc.log",
+      "RawZipMember": "final/wpf-direct-plc.log",
+      "RawSha256": "5438224165a130cb8c9d3af94cd1d48b3339e3038e04bd686516151a3a63d72b",
+      "PublishedSha256": "787fb39ca28a65ebc7e604b3da966e71f44cc12f6e8bac758d0e09f50385abc3",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "wpf-wcs-to-plc.log",
+      "RawZipMember": "final/wpf-wcs-to-plc.log",
+      "RawSha256": "f1e21f100d36aa1ef377fa0a1d16a10ee49332b1e60a5a0cdec7844de02d0d38",
+      "PublishedSha256": "4ffdbb86c1ee0bef8303f2f461a0c27295e58769a30b943d29a4d4a861d60546",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "selected-release-journey.log",
+      "RawZipMember": "final/selected-release-journey.log",
+      "RawSha256": "ae737a8f22f0fd8bd6ba1930ae912b8f36594db904fdae9812a85d4f13ec6496",
+      "PublishedSha256": "535cef2ba828e05a92b9d12f4c7b09e06edb2bd452a1348f127ee65d3f54b9e0",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "selected-release-journey.py",
+      "RawZipMember": "final/selected-release-journey.py",
+      "RawSha256": "da9a1048510e4dc9b4bd0473b984ea6e8d9e9505e3bd6031e6d2ef3b7cfd22e0",
+      "PublishedSha256": "da9a1048510e4dc9b4bd0473b984ea6e8d9e9505e3bd6031e6d2ef3b7cfd22e0",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "feedback-red.log",
+      "RawZipMember": "attempt-203c1a8/feedback-red.log",
+      "RawSha256": "1696eec1f57f4878c99a8809424e979b38a3ecd959990843ccf4e00cb8914229",
+      "PublishedSha256": "f7ea4cce1754083578b8f29841b1fdd9e2ec7f7f4746934258b935fb31f99604",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "python-compatibility-first-failure.log",
+      "RawZipMember": "attempt-203c1a8/python-compatibility.log",
+      "RawSha256": "9c3b6da746375d9c964470783e6b23f02dbdd89fe98b4fe2a70e6981028d8c0b",
+      "PublishedSha256": "3ef2f1bfc318b3bb860569ade98b490e8dcb5a74bafc358d481d23c2a55dc74f",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "native-verifier-build-first-failure.log",
+      "RawZipMember": "attempt-203c1a8/native-verifier-build-first-failure.log",
+      "RawSha256": "2f3f726bcbcae843c2bb8ae06f141c0376c411d9e873ea12c599a5775d4d81ef",
+      "PublishedSha256": "c7120722c8271827d44c60740b3948b41df2e700dffcf1b3cf4954b5f91f3a9c",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "version-compatibility-first-failure.log",
+      "RawZipMember": "attempt-7036488/version-compatibility.log",
+      "RawSha256": "ca94bae76a1d20a0515961569eac53e22e3090f4ac1a7ceaf486925fc9232bf7",
+      "PublishedSha256": "816d73f9b02681afa38f201abcb5f3bd93ed37413266cd43d4d98c1daf98410a",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    },
+    {
+      "PublishedFile": "selected-journey-summary.json",
+      "RawZipMember": "final/selected-journey.json",
+      "RawSha256": "e22f539120c9523b5d5f0b3f8fe7e8d87dc2c0e21ec82398b30c656138f024fc",
+      "PublishedSha256": "3148928ed75c4d66ca14d4092d294c1f197805511d319b37095831a4981252be",
+      "Meaning": "Public derivative with explicit development-path labels; original bytes remain in raw ZIP"
+    }
+  ]
+}

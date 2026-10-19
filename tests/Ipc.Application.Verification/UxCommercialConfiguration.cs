@@ -39,7 +39,16 @@ static partial class ArchitectureQuality
                 "UXC03 editing one position retains the other position, all unrelated inventory, login, image, weight and retention fields");
             await second.RefreshAsync(); second.ConfigurationReason = "Synthetic stale second-window candidate";
             second.StructuredPolicy!.WaitTimeoutMs = "16001";
-            await second.SaveStructuredConfigurationAsync();
+            // The reference health pulse briefly owns an external wait. Reach the
+            // actual stale-CAS check; never retry a staged/unknown write or advance
+            // this window's loaded configuration revision.
+            for (var attempt = 0; ; attempt++)
+            {
+                await second.SaveStructuredConfigurationAsync();
+                if (second.Message != "Rejected · Pause and authenticate maintenance before configuration" || attempt >= 9) break;
+                Console.WriteLine("UXC03 pre-CAS guard receipt: " + second.Message);
+                await Wait(app, state => state.Availability?.Configure == true);
+            }
             File.WriteAllText(Path.Combine(diagnostics, "stale-window-result.txt"), second.Message);
             Check(second.Message.StartsWith("Rejected") && second.Message.Contains("Configuration revision conflict", StringComparison.Ordinal) && Wire.Encode((await app.SnapshotAsync()).Configuration.Pending) == Wire.Encode(pending),
                 "UXC03 automatic refresh cannot replace a second window's loaded configuration CAS");

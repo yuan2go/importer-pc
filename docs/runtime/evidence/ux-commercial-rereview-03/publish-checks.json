@@ -1,0 +1,42 @@
+[
+  {
+    "Name": "sportmaster-core",
+    "ExitCode": 0,
+    "Seconds": 8.361
+  },
+  {
+    "Name": "direct-plc-core",
+    "ExitCode": 0,
+    "Seconds": 7.918
+  },
+  {
+    "Name": "wcs-to-plc-core",
+    "ExitCode": 0,
+    "Seconds": 7.807
+  },
+  {
+    "Name": "barcode",
+    "ExitCode": 0,
+    "Seconds": 2.413
+  },
+  {
+    "Name": "capabilities",
+    "ExitCode": 0,
+    "Seconds": 2.482
+  },
+  {
+    "Name": "rcs",
+    "ExitCode": 0,
+    "Seconds": 2.745
+  },
+  {
+    "Name": "sportmaster-selected-portable",
+    "ExitCode": 0,
+    "Seconds": 10.312
+  },
+  {
+    "Name": "sportmaster-selected-win-x64",
+    "ExitCode": 0,
+    "Seconds": 21.526
+  }
+]

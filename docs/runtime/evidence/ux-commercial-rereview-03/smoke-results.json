@@ -1,0 +1,23 @@
+{
+  "SourceCommit": "6ce1d6d0b109bd6a3d9490fac176122b4670b90b",
+  "Checks": [
+    {
+      "Name": "sportmaster-core",
+      "ExitCode": 0,
+      "Seconds": 2.388,
+      "RecordSha256": "f04fe2593c1899ff8d8d4f747edbedd647584166c5e17a756a0a486c916d1274"
+    },
+    {
+      "Name": "direct-plc-core",
+      "ExitCode": 0,
+      "Seconds": 1.152,
+      "RecordSha256": "97d12253c21c45fccc2a90c34a5a577bfe3e487eb18a75440c590eddddee1b2d"
+    },
+    {
+      "Name": "wcs-to-plc-core",
+      "ExitCode": 0,
+      "Seconds": 1.276,
+      "RecordSha256": "b9f4672eccb4cf145ba837a781758d6acebc678f329b85a3f8462b678c0972fc"
+    }
+  ]
+}

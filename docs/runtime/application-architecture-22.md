@@ -1,3 +1,5 @@
+> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.2/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
+
 > 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
 
 > 当前版本声明和新发行清单见[版本管理指南](version-compatibility-01.md)；以下22/P2版本均按历史候选身份读取，现行公共契约继承质量闭环01。

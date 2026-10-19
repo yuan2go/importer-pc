@@ -18,7 +18,7 @@ static class VersionCompatibility
         {
             var assembly = flow.GetType().Assembly;
             var policy = BusinessCompatibility.Read(assembly);
-            Pass(policy.ApplicationId == flow.Id && BusinessCompatibility.VersionOf(assembly) == "1.3.0", flow.Id + " compiled business version and embedded declaration");
+            Pass(policy.ApplicationId == flow.Id && BusinessCompatibility.VersionOf(assembly) == "1.3.2", flow.Id + " compiled business version and embedded declaration");
             var configDirectory = Path.Combine(root, flow.Id, "config"); Directory.CreateDirectory(configDirectory);
             var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config", flow.Id, "business.json")));
             var launch = new BusinessLaunch(configDirectory, Path.Combine(root, flow.Id, "data"), null, null);
@@ -29,7 +29,7 @@ static class VersionCompatibility
             Pass(policy.Require(factory.SelectedProviders(config)) == "builtin-reference", flow.Id + " default and all optional provider versions declared");
             if (flow.Id == "sportmaster")
             {
-                var rcs = factory.SelectedProviders(config).Select(p => p.Kind == "integration" ? new ProviderVersion("integration","extension:sportmaster.rcs-task/sportmaster-rcs-task","1.1.0","SPORTMASTER-RCS-SORTER-v1") : p).ToArray();
+                var rcs = factory.SelectedProviders(config).Select(p => p.Kind == "integration" ? new ProviderVersion("integration","extension:sportmaster.rcs-task/sportmaster-rcs-task","1.1.4","SPORTMASTER-RCS-SORTER-v1") : p).ToArray();
                 Pass(policy.Require(rcs)=="sportmaster-rcs-builtin-reference","RCS and original optional capabilities match the same business declaration");
                 Reject(()=>policy.Require(rcs.Select(p=>p.Kind=="integration"?p with{Version="1.0.2"}:p).ToArray()),"old immutable RCS version is not silently relabelled for new host");
             }
@@ -55,12 +55,12 @@ static class VersionCompatibility
             var presentation = new BusinessPresentation([flow.Id], ["standard"]);
             var release = new ApplicationRelease(2, flow.Id, new string('a', 40), presentation.Views, presentation.Layouts,
                 new() { [binary] = Wire.FileHash(assembly.Location), ["application-compatibility.json"] = BusinessCompatibility.Fingerprint(assembly) },
-                "1.3.0", binary, BusinessCompatibility.Fingerprint(assembly));
+                "1.3.2", binary, BusinessCompatibility.Fingerprint(assembly));
             void Write(ApplicationRelease value) => ExtensionStore.AtomicWrite(Path.Combine(directory, "application-release.json"), value);
             void Check() => ApplicationReleaseValidation.ValidateIfPublished(directory, flow.Id, presentation, assembly);
             Write(release); Check(); Pass(true, "schema2 binds actual compiled version, binary and declaration bytes");
             await using var maintenanceFactory = new ParcelCapabilityFactory(launch, policy, assembly);
-            Pass(maintenanceFactory.ReadPublishedRelease(directory).BusinessVersion == "1.3.0", "protected maintenance accepts actual schema2 business release");
+            Pass(maintenanceFactory.ReadPublishedRelease(directory).BusinessVersion == "1.3.2", "protected maintenance accepts actual schema2 business release");
             Write(release with { BusinessVersion = "1.0.0" }); Reject(Check, "wrong declared business version rejected");
             Reject(() => maintenanceFactory.ReadPublishedRelease(directory), "protected maintenance rejects wrong business version");
             Write(release with { SchemaVersion = 1 }); Reject(Check, "new compiled business cannot downgrade to release schema1");

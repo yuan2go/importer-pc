@@ -39331,9 +39331,9 @@
       "purpose": "Recoverable startup, optional catalog isolation, guided Windows deployment or verification",
       "source": "User-authorized startup/deployment usability closure 2026-10-19",
       "storage_scope": "public_repository",
-      "sha256": "5037cf27cf501f08f747f0256391cf72d237395cdfbaeed32d1f6b07b54b6d14",
+      "sha256": "6cfa13a1650621886a99ffbcead2e35636b9370f7b1b5595ffd3ec9d8beec3ab",
       "size_bytes": 2641,
-      "git_blob": "cb5bc8f809514aba75f27987202796780214e609"
+      "git_blob": "0697cc1ed62b472052d62d2ac1a615bada641220"
     },
     {
       "path": "docs/work-packages/WP-IPC-STARTUP-DEPLOYMENT-02.md",
@@ -39730,6 +39730,17 @@
       "sha256": "1a8e4b4c1aaff2caf2efc75c1a578527d05ee5b94ac21e0c206dd652c627d3fb",
       "size_bytes": 484,
       "git_blob": "c844f85adc749f8140b3818ddb11843e23b8aec9"
+    },
+    {
+      "path": "docs/runtime/evidence/startup-deployment-02/delivery-receipt.json",
+      "version": "startup-deployment-02",
+      "status": "IMPLEMENTED_REFERENCE_VERIFIED_WINDOWS_NOT_RUN",
+      "purpose": "Recoverable startup, optional catalog isolation, guided Windows deployment or verification",
+      "source": "User-authorized startup/deployment usability closure 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "b522041e1bb73f13deef57cfd74c367e143addd5d714881224ad1a2351efe396",
+      "size_bytes": 1034,
+      "git_blob": "250558ef01201088135e7d56081635d98adeb9a3"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

@@ -41362,9 +41362,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/CommercialPages.cs",
-      "sha256": "1970e5e8ad19e1d193da395ef574b68e6021df1d06022910be602325e2487245",
-      "size_bytes": 12361,
-      "git_blob": "e46a046509cde13f2bb62a80ee33f598c6041208",
+      "sha256": "2b7ce9260371f62844d07b6a5788e3c22998c705627bde112be77bc090630743",
+      "size_bytes": 12560,
+      "git_blob": "11fb42762edc25cad84aa8e54045c88408ae5877",
       "version": "sportmaster-visual-productization-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
@@ -45702,6 +45702,50 @@
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01; attribution and original evidence retain their identities",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/development/9247db6-stale-fixture/RESULT.json",
+      "version": "sportmaster-visual-productization-01",
+      "status": "synthetic_verification",
+      "purpose": "Exact synthetic Windows evidence; intermediate outcomes retained",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "4092ff6a7346bc13949fd8721da3ba0f3ddd01df8fa6b2aac8f881ab619a046b",
+      "size_bytes": 3042,
+      "git_blob": "6396b553d433db76fc920622ac9619eed3f8f3d3"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/development/9247db6-stale-fixture/WINDOWS-WPF.log",
+      "version": "sportmaster-visual-productization-01",
+      "status": "synthetic_verification",
+      "purpose": "Exact synthetic Windows evidence; intermediate outcomes retained",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "c16812160a55c8de2041771b20a1ff8425ca493895200cb1f34d50ffd4b22972",
+      "size_bytes": 2662,
+      "git_blob": "6f3acb22bed0c473c25c851593a9bb3948599ecc"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/development/native-13b49df-result.json",
+      "version": "sportmaster-visual-productization-01",
+      "status": "synthetic_verification",
+      "purpose": "Exact synthetic Windows evidence; intermediate outcomes retained",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "1ea6d2f29555f31d8307608fbfba2eaa954c39580e101f9c64aef9d3bd2d1cab",
+      "size_bytes": 3042,
+      "git_blob": "82bc02ae282e82023ee03891169a538b69fba5d3"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/development/native-13b49df.log",
+      "version": "sportmaster-visual-productization-01",
+      "status": "synthetic_verification",
+      "purpose": "Exact synthetic Windows evidence; intermediate outcomes retained",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01",
+      "storage_scope": "public_repository",
+      "sha256": "14ffb311b392a0c47d4ea0a684aa485827590d31b643be8b09a6e13b2c970e9c",
+      "size_bytes": 2627,
+      "git_blob": "cd8e291c72b56de6ee5f695dda5c44cef19ca7b2"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

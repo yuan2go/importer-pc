@@ -1,0 +1,25 @@
+REUSED_VERIFIED sportmaster-55025ce-portable
+REUSED_VERIFIED sportmaster-55025ce-win-x64
+REUSED_VERIFIED direct-plc-55025ce-portable
+REUSED_VERIFIED direct-plc-55025ce-win-x64
+REUSED_VERIFIED wcs-to-plc-55025ce-portable
+REUSED_VERIFIED wcs-to-plc-55025ce-win-x64
+VERIFIED supply-portable-55025ce9c621
+VERIFIED inspection-portable-55025ce9c621
+Traceback (most recent call last):
+  File "D:\w\ipc-release\scripts\release-windows.py", line 292, in <module>
+    main()
+    ~~~~^^
+  File "D:\w\ipc-release\scripts\release-windows.py", line 278, in main
+    shutil.rmtree(workspace)
+    ~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\shutil.py", line 852, in rmtree
+    _rmtree_impl(path, dir_fd, onexc)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\shutil.py", line 705, in _rmtree_unsafe
+    onexc(os.unlink, fullname, err)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\shutil.py", line 701, in _rmtree_unsafe
+    os.unlink(fullname)
+    ~~~~~~~~~^^^^^^^^^^
+PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\yuan\\AppData\\Local\\Temp\\ipc-unified-frozen-v1s9qlyz\\source\\.git\\objects\\pack\\pack-0268cda5c76bb89df777a445e08b7a9975ff903f.idx'

@@ -373,9 +373,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "924bd044f08ae63bf60ca8bce6c44a58156fcec3a5a55d5d20027a6ec6466391",
-      "size_bytes": 13605,
-      "git_blob": "ea611098ec99fb64b28c7b8545db99719d43fd22",
+      "sha256": "07356a6cea2dfdd10a4d30c04db9e9be1667d4dc8b1266ab21c7bc5575bd8472",
+      "size_bytes": 13705,
+      "git_blob": "09fc515e5bf8d3ee4a898684d5a06dd153888e24",
       "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
       "status": "current_review_implementation_or_boundary_record",
       "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
@@ -39369,9 +39369,9 @@
       "purpose": "Recoverable startup, optional catalog isolation, guided Windows deployment or verification",
       "source": "User-authorized startup/deployment usability closure 2026-10-19",
       "storage_scope": "public_repository",
-      "sha256": "01b1720f6d43e6176b56983c8724422ab98e704310e925644cb032867ecd8c60",
-      "size_bytes": 4928,
-      "git_blob": "0cc0b832163792392984fcccd40ce90dd47816e3"
+      "sha256": "c06eb48334a4c1c5a7d4fd2dbb0bbf83163f73a88c93d5b960429787614dfd14",
+      "size_bytes": 5172,
+      "git_blob": "aee4c9e18f6fbf80627ae9296288623fa22c3b08"
     },
     {
       "path": "docs/superpowers/plans/2026-10-19-startup-deployment-02.md",
@@ -40039,9 +40039,9 @@
       "purpose": "Authorized source integration, original evidence or publication custody",
       "source": "PR44/45 and user no-test all-open-PR publication request 2026-10-19",
       "storage_scope": "public_repository",
-      "sha256": "11b55edfb7108c5d220db23c96c2c95aeba8c1fbc05b54ff8b97bf3632510f71",
-      "size_bytes": 4680,
-      "git_blob": "8ed9e37f0012b50431d39863b31a85599f78095f"
+      "sha256": "ccf2731129a24c318c09076eb27c7a30d6eaba89171d6216d6ce9b18e87ad0f4",
+      "size_bytes": 4926,
+      "git_blob": "fdd8dae4cd4799d5c1ecd275b83d39558d3be637"
     },
     {
       "path": "docs/runtime/evidence/deployment-publication-20261019/final-publication-receipt.json",
@@ -40237,9 +40237,9 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "b67760729381ba69b25c8f9d8bf574091e5c307ea361078f5262ffcfeb73a7f3",
-      "size_bytes": 618,
-      "git_blob": "da654e4c360166df5c8f25edf61e40cb0af3e163",
+      "sha256": "6d3be251e3688ad72e40a273ea11a7dc536aaabea069b3e3c92e6062a7fbdc84",
+      "size_bytes": 758,
+      "git_blob": "5a7ce07415e36e7f17b850679cb6896e0bbc8ea9",
       "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
       "status": "current_review_implementation_or_boundary_record",
       "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
@@ -41553,9 +41553,9 @@
       "purpose": "Authorized unified main release tooling and interrupted execution evidence",
       "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
       "storage_scope": "public_repository",
-      "sha256": "b69af0873dbcb0c040e47c298ba6c5425944db34b45f8a743d54c3ae20adcf65",
-      "size_bytes": 3550,
-      "git_blob": "74d8563f3508cfefff7efe866b5c8d446a95c6db",
+      "sha256": "f57edc82727e4e2a6cbf473fa5fe9103359bb5e2a34ad405a88bb8ce2f55d055",
+      "size_bytes": 3870,
+      "git_blob": "44b0403742337d1fe37d172cc9b7d8d733921bda",
       "pre_publication_merge_git_blob": "02948ebb248fcb1387b94840aff0f159ddb3cde7"
     },
     {
@@ -41565,9 +41565,9 @@
       "purpose": "Authorized unified main release tooling and interrupted execution evidence",
       "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
       "storage_scope": "public_repository",
-      "sha256": "1cfae34bd3b64cb79157d0bc0e77e1dfd16553db05e7644db6ac3e93b72e052f",
-      "size_bytes": 17635,
-      "git_blob": "1d291efeca5d52387bc439259559fa3e203422b0",
+      "sha256": "e63f819dd560e4a4eb37206871125d7d3b1001bbb9543bee74a921b2c45b2dac",
+      "size_bytes": 18616,
+      "git_blob": "1f09a7cec85953d423f5d06bd12d3fa3d8c68382",
       "pre_publication_merge_git_blob": "91bfa81172620c630abda966d1031b1c730c4aaf"
     },
     {
@@ -41588,9 +41588,9 @@
       "purpose": "Authorized unified main release tooling and interrupted execution evidence",
       "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
       "storage_scope": "public_repository",
-      "sha256": "8763ffb8df6493388e654e467e1f58ab051d59d790db908d46d8d25a1efb6ba4",
-      "size_bytes": 9524,
-      "git_blob": "72133c10e79587bf1d0d2280bfd08f5061655d69",
+      "sha256": "a79914cb0cd2cce74f75d74f8674d307a34962bc9336ed8b2d87ed293556d52e",
+      "size_bytes": 10491,
+      "git_blob": "355eb9b24c372b52e7d3c77e3323368ebb20f736",
       "pre_publication_merge_git_blob": "6152b97df7660b9ca82fec69ca5f2407d81a94a1"
     },
     {
@@ -42338,9 +42338,9 @@
       "purpose": "Frozen release records and original synthetic verification evidence",
       "source": "Authorized unified release task; no restricted customer assets",
       "storage_scope": "public_repository",
-      "sha256": "e2bbff14c0a006171ded5a540a846886e62df0cc1d3d3011a828bff4d86bdf8a",
-      "size_bytes": 1951,
-      "git_blob": "3f685dc34346efeb164ee662bf085300925f2af9"
+      "sha256": "4a6f829d2797f917ca7f905a4c135dbed3a4d0ab7821953802035b471da9760e",
+      "size_bytes": 1976,
+      "git_blob": "dcfe1df88b4d20e0d7195696e6052a6ea7dc8e06"
     },
     {
       "path": "docs/runtime/evidence/unified-windows-release-01/BUILD.json",
@@ -42755,9 +42755,9 @@
       "version": "WINDOWS-NO-TEST-RELEASE-20261020",
       "status": "source_or_delivery_custody",
       "source": "User-authorized merge, build and new Release; tests not run",
-      "sha256": "4d218f0154b827446f3da4f9bb76bffddc0b8c03e35961ba1101885d9e3baf64",
-      "size_bytes": 1562,
-      "git_blob": "a5d0944726de08352cc811d5259185a9458f3ceb",
+      "sha256": "2645c75337c77c0389c458b6f37d3124147e98ed57a85eef87cab1fe269dac4a",
+      "size_bytes": 4560,
+      "git_blob": "e5a61b2df83d04c7eb09403de3e78cbc68b49290",
       "pre_windows_no_test_release_git_blob": "49f42e4f277fcc6c8603061faa6f3f21e06667fc"
     },
     {
@@ -43306,9 +43306,9 @@
       "purpose": "Actual same-source media, dependency provenance, targeted validation and publication custody",
       "source": "User authorized unified main release; generic code and synthetic data only",
       "storage_scope": "public_repository",
-      "sha256": "3f6b5984d2ed5c157ae5baced174b6b648fb99fcff370e46cd9cbedc817a4b2b",
-      "size_bytes": 7422,
-      "git_blob": "cd0dc72bf88663a0393f8babb8f78f67a4dc8e6a"
+      "sha256": "bbeac46a95238e161d8c23cb7063be0a84f2b21b990ef1c175a4bc2a2dfbab0e",
+      "size_bytes": 7631,
+      "git_blob": "cdb6f545efcd65ca8cc32dd174479a6be1aa971c"
     },
     {
       "path": "docs/runtime/evidence/unified-main-20261020/document-check.json",
@@ -43322,15 +43322,391 @@
       "storage_scope": "public_repository"
     },
     {
+      "path": "docs/runtime/evidence/windows-no-test-release-20261020/BUILD-RECORD.json",
+      "storage_scope": "public_repository",
+      "version": "WINDOWS-NO-TEST-RELEASE-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized merge, build and new Release; tests not run",
+      "sha256": "15e5e807c103d6d3d504e2566ca800d10d9b8ec9f2586048223bacd3e7e9518c",
+      "size_bytes": 3557,
+      "git_blob": "0ac3d49e02d415358e5441fb89bf93fcb0e3e327"
+    },
+    {
+      "path": "docs/runtime/evidence/windows-no-test-release-20261020/README.md",
+      "storage_scope": "public_repository",
+      "version": "WINDOWS-NO-TEST-RELEASE-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized merge, build and new Release; tests not run",
+      "sha256": "34ec2a9cc1ca311f8b73d3aea60f533bac5829c41391e2175d5dbc2e6915f70c",
+      "size_bytes": 558,
+      "git_blob": "e2747bf1f986461ca3fd6fb8ecc8d53cb889df24"
+    },
+    {
+      "path": "docs/runtime/evidence/windows-no-test-release-20261020/RELEASE.json",
+      "storage_scope": "public_repository",
+      "version": "WINDOWS-NO-TEST-RELEASE-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized merge, build and new Release; tests not run",
+      "sha256": "15e5e807c103d6d3d504e2566ca800d10d9b8ec9f2586048223bacd3e7e9518c",
+      "size_bytes": 3557,
+      "git_blob": "0ac3d49e02d415358e5441fb89bf93fcb0e3e327"
+    },
+    {
+      "path": "docs/runtime/evidence/windows-no-test-release-20261020/REMOTE-UPLOAD.json",
+      "storage_scope": "public_repository",
+      "version": "WINDOWS-NO-TEST-RELEASE-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized merge, build and new Release; tests not run",
+      "sha256": "aebd459df3e7b36e9dbbb7c8fad29f5cb13a5939a721e150c261e870d6a9cf7a",
+      "size_bytes": 3117,
+      "git_blob": "f279a6274ceb6e8f697a3bd57232000f121a1765"
+    },
+    {
+      "path": "docs/runtime/evidence/windows-no-test-release-20261020/SHA256SUMS",
+      "storage_scope": "public_repository",
+      "version": "WINDOWS-NO-TEST-RELEASE-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized merge, build and new Release; tests not run",
+      "sha256": "d3c76be4c597d87515b7e2900290baea6404313cecb838211488981b435108d9",
+      "size_bytes": 777,
+      "git_blob": "ece1dc08183cb3b13e9a191f080a5576c587fb8b"
+    },
+    {
+      "path": "docs/runtime/evidence/windows-no-test-release-20261020/direct-plc-win-x64-939462bee40c.log",
+      "storage_scope": "public_repository",
+      "version": "WINDOWS-NO-TEST-RELEASE-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized merge, build and new Release; tests not run",
+      "sha256": "7e67d404e50c58cc595bd4187e997b46e336e28104296642f16e963e8ced72ed",
+      "size_bytes": 7300,
+      "git_blob": "51347d0de71628d76252cba0a151cd5840dcac77"
+    },
+    {
+      "path": "docs/runtime/evidence/windows-no-test-release-20261020/merged-prs-before-build.json",
+      "storage_scope": "public_repository",
+      "version": "WINDOWS-NO-TEST-RELEASE-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized merge, build and new Release; tests not run",
+      "sha256": "4bcd7ce033ef8a6801e2fd5937b314208ca042d4f8153192dc8157f7886e3164",
+      "size_bytes": 516,
+      "git_blob": "62fd8212b8c282207c9adadf60ca1551d4c8cfb8"
+    },
+    {
+      "path": "docs/runtime/evidence/windows-no-test-release-20261020/sportmaster-win-x64-939462bee40c.log",
+      "storage_scope": "public_repository",
+      "version": "WINDOWS-NO-TEST-RELEASE-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized merge, build and new Release; tests not run",
+      "sha256": "899ae93cca276fb2803cee3a91e4127a40b59e59dac83d476747d0a6f1a5e7a9",
+      "size_bytes": 7788,
+      "git_blob": "c8dd12530e85064fad73ca1ba06e1882258418f9"
+    },
+    {
+      "path": "docs/runtime/evidence/windows-no-test-release-20261020/wcs-to-plc-win-x64-939462bee40c.log",
+      "storage_scope": "public_repository",
+      "version": "WINDOWS-NO-TEST-RELEASE-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized merge, build and new Release; tests not run",
+      "sha256": "80a175edd0af5bdd3a44a0444701546d781e99344c4f95bd16d0197da409e53c",
+      "size_bytes": 7744,
+      "git_blob": "caf1a8b4f45014dc25bd61cfb6e468f07dfcfd44"
+    },
+    {
       "path": "docs/runtime/unified-release-latest-55025ce.md",
       "version": "UNIFIED-LATEST-55025CE",
       "status": "authorized_release_integration",
       "purpose": "Same-source reuse and final main recovery closure",
       "source": "Latest main and explicit unified release authorization",
       "storage_scope": "public_repository",
-      "sha256": "460624e3e456a0fc2e58b4bf62768400d1510c759684fb7887a99cb959750d4e",
-      "size_bytes": 1966,
-      "git_blob": "53e3b98c285c9ea503f8ed3a19b89f10ece9803d"
+      "sha256": "da891a213f2ebbfa4e4f6bb030439a159fc3c7d7c6f4d315685aa92371560670",
+      "size_bytes": 6136,
+      "git_blob": "3dbfa187360d9694500206ac56779f18592fc90d"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/README.md",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "c0141a3fa598262f0dc7f64ced7b54f1c2ae8e6f44f5b07a83b54b7d96f9db88",
+      "size_bytes": 2824,
+      "git_blob": "2aeeb3b9d45764c9c61ef1891081ff5ca0874eda"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/RELEASE.json",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "d7223fce971ce33a011b73f8b859682849beaec369dd2f5c516fae5e93f9ba85",
+      "size_bytes": 29742,
+      "git_blob": "e901212f742bbd5c9e54a9300302dfbdf1e9d5eb"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/SHA256SUMS",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "31f62cfa6fc7ee872c14ce2a5c5824583fa5305df980a85234bb018dabdf9113",
+      "size_bytes": 952,
+      "git_blob": "30740fd9cbe04f88f2e51ef0e4eed5e85428b4f9"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/bind-validation.py",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "a43466efcabede54949d94f9dc9dc57345591bde0bd6d472ef705cd10da26a82",
+      "size_bytes": 3244,
+      "git_blob": "575d8a76b52bc53f762bbb6b403e4252eb4065e6"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/build-record.json",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "d7223fce971ce33a011b73f8b859682849beaec369dd2f5c516fae5e93f9ba85",
+      "size_bytes": 29742,
+      "git_blob": "e901212f742bbd5c9e54a9300302dfbdf1e9d5eb"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/cleanup-fix.json",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "9f0f4e151ec2d10f3c36561bab3917b2679a1b61d188662e29e9296271d1e4dc",
+      "size_bytes": 377,
+      "git_blob": "ce19da50fe2883e4e58dcb1b5fdbfb8f2c22b13f"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/complement-build-failed-cleanup.json",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "2b679a8a3cc0b393441e90d49fcd29724a65b8048e78d7ec00e9209a508533c3",
+      "size_bytes": 30529,
+      "git_blob": "6405fd5f4b506ea3dd8cbe5683f858f650bcb0d1"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/complement-build-failed-cleanup.log",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "ed337c802cfe1b0970e203d2bdb7ebf7bd3617797656422232f66e50cd7d2f34",
+      "size_bytes": 1265,
+      "git_blob": "6ef645e07c2d97b1721298a7116698d30d65e5ea"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/entry-probe.py",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "c014221ef4de52b119c225c71d997acbe3478676a0e9e096f98c6b8ae093739f",
+      "size_bytes": 2050,
+      "git_blob": "9b57c3e4a8722bfc12ce07910c8e7e550877d959"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/entry-results.json",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "fb0a9fd70e92ed7dc75ebd59c78054608d8458af504dd247c1bf2e5d4e036c48",
+      "size_bytes": 2725,
+      "git_blob": "38a7c080a8f9f11e8f4b9ac14fba1ef9682e3dcf"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/entry.log",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "cdf99d2b8061264ace4003f93d425976f36124d77255ada4fa4ec4d90ad3f906",
+      "size_bytes": 779,
+      "git_blob": "a46ed293cf0e2bc1ce8f57743f87b094a31a662f"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/final-composition.log",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "ab12bbe087a7b474022d09d8570ff71caed124c45b0a59264c2f44730a4f591e",
+      "size_bytes": 365,
+      "git_blob": "7d6171622458dd4f3f3a35bffd17e27a527e912b"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/followup-main.json",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "735cf11fd82837b1408d9a22dc189694a6a5622a8761a3e1923429c80bc7961d",
+      "size_bytes": 348,
+      "git_blob": "9010a143a7a01c9eeaa7c9a3f3e229d8dc09f81c"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/initial-cli-failure.log",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "491c2124eb43438f16432787ee8273209fa2cc7c1e340067f2373ae25940c742",
+      "size_bytes": 1464,
+      "git_blob": "5c80ee4e073a77920432cf41889ae97f568ab455"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/initial-evidence-binder-failure.log",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "8fd85644ea23a7c513be9d888f8555dbdf1070d1acb7321f813c364b673fe9cd",
+      "size_bytes": 1029,
+      "git_blob": "b85c6b261a699c457c5fd9967846c3d8052ebf08"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/inspection-publish.log",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "06c1b3aa23e593b3c43aa1012eb651a006f6eb59c3daac6c5aafe41fcab9e1ce",
+      "size_bytes": 1833,
+      "git_blob": "ab09404344dce9e33b256f4b308d49d4cf5b80d2"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/original-eight-inventory.json",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "64e4f627127c6f425eae61176455847c7db9b082870b9321f975e4b99980a35f",
+      "size_bytes": 4533,
+      "git_blob": "da5448c08c58e3dcfc95ba98ee350aac5e015605"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/public-readback.json",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "5476164bd021e5324921ddbf7be1ac56a1f83fe0375c83a1f489a74de29f45bb",
+      "size_bytes": 4177,
+      "git_blob": "b777549c7b5a0bd0327720f8a825244a060b7a17"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/publication.log",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "6842aa2c56c819b060f0850d628a9bb7aaad530abfceb090a03bb8e10625683b",
+      "size_bytes": 497,
+      "git_blob": "def649ae861523bcec2fb9d4653bc9ee2477c6b2"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/release-tests14.log",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "0590eb7612da42e1e56784a7e660b5344865e38a78d02d20649616da3c10da16",
+      "size_bytes": 2144,
+      "git_blob": "098685b775d2339153f2bd49021f5b97c8d9ec36"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/remote-publication.json",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "028bedce770b214c1a7eddf928cfb9da69b5a4053c4fa6afc8c9bb1aa983eaf1",
+      "size_bytes": 4698,
+      "git_blob": "f4a57ac348d698ffa37874bc1ae3d83127af26db"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/source-reuse-tests13.log",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "3d792887829238cb749777b19c8dc13c183afd5cd3159f446e8d825b2ecd0300",
+      "size_bytes": 1962,
+      "git_blob": "920588f5c24d907444377629776288f8a3bec23e"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/supply-publish.log",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "c3e763fd0283f6e198c3f0433062a4b6bf8a5079e1bce9837993722f0becb9c3",
+      "size_bytes": 5687,
+      "git_blob": "062f8c3881d1e09a66c7045bb49ddddcfc2a9863"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/targeted-validation.json",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "48aebe894a223bfd8aa0df0d825cd84fef8a790facf54700d897d13469009a86",
+      "size_bytes": 5564,
+      "git_blob": "90968bd4700a380744977b244ecef525910fbe79"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/targeted-validation.log",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "ba934eeaacab44308db3d0b29e5e193a9797ca37a46b0e63e95e7a28a3ec72df",
+      "size_bytes": 92,
+      "git_blob": "8124bc217d0de675c4e03e5f33b30a28e59fa698"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-latest-55025ce/verify-final.log",
+      "version": "UNIFIED-LATEST-55025CE",
+      "status": "authorized_reference_release_evidence_or_mechanism",
+      "purpose": "Same-source complete media with immutable original identities and explicit acceptance boundaries",
+      "source": "User authorized unified Windows release task; generic code and synthetic validation only",
+      "storage_scope": "public_repository",
+      "sha256": "9808b8ec630443663c7e03955994c67f45bcc09e686c3934d3df7d55afb0d931",
+      "size_bytes": 95,
+      "git_blob": "b49e1f6a6b15d1444701695c2a18b095ddeb2d99"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -45026,6 +45402,25 @@
     "historical_releases_d_rv": "UNCHANGED",
     "runtime_code_changes_this_delivery": false
   },
+  "windows_no_test_release_20261020": {
+    "source_commit": "939462bee40c9eebe8eb2aa60860217afd95fcdd",
+    "sdk": "10.0.402",
+    "target": "win-x64",
+    "businesses": [
+      "sportmaster",
+      "direct-plc",
+      "wcs-to-plc"
+    ],
+    "state": "BUILD_SUCCEEDED_NOT_TESTED",
+    "tests": "NOT_RUN_BY_USER_REQUEST",
+    "installation_and_runtime": "NOT_RUN_BY_USER_REQUEST",
+    "release": "https://github.com/yuan2go/importer-pc/releases/tag/windows-main-not-tested-939462bee40c",
+    "report": "docs/runtime/windows-no-test-release-20261020.md",
+    "evidence": "docs/runtime/evidence/windows-no-test-release-20261020/",
+    "old_assets_overwritten": false,
+    "windows_acceptance": "NOT_RUN",
+    "real_sdk_field": "BLOCKED"
+  },
   "latest_unified_release_preparation": {
     "source": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
     "main": "fe9e5bb15cd0e380c3dbd2c0a5369afaee9325c4",
@@ -45033,5 +45428,32 @@
     "guide": "docs/runtime/unified-release-latest-55025ce.md",
     "full_windows_acceptance": "NOT_RUN",
     "real_integration": "BLOCKED"
+  },
+  "unified_latest_release_55025ce": {
+    "source_commit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+    "source_tree": "789527f8a43d54c9c77b9a3cf5731172f295d36f",
+    "controller_commit": "c32f33bf8d6d8ead3e68d5a1d185e8040f371cc2",
+    "main_baseline": "f3059d499cd4dbc60b443f0a54cac939b2e5db2f",
+    "post_build_document_only_main": "f3059d499cd4dbc60b443f0a54cac939b2e5db2f",
+    "package_count": 8,
+    "original_pr53_archives_identity": "SIX_UNCHANGED",
+    "new_frozen_builds": [
+      "supply/portable",
+      "inspection/portable"
+    ],
+    "release": "https://github.com/yuan2go/importer-pc/releases/tag/unified-main-reference-55025ce",
+    "public_assets": 11,
+    "public_api_digests_and_sizes": "PASS",
+    "directed_release_tests": 14,
+    "windows_actual_negative_entries": 8,
+    "inherited_frozen_media_checks": "BOUND_BY_UNCHANGED_INVENTORY_AND_DLLS_NOT_RERUN",
+    "windows_full_privileged_acceptance": "NOT_RUN",
+    "field": "BLOCKED",
+    "production": "NOT_READY",
+    "commercial_qualification": false,
+    "whole_eight_zip_rebuild_repeatability": "NOT_RUN",
+    "original_failure_evidence": "PRESERVED",
+    "historical_release_identities_and_d_rv": "UNCHANGED",
+    "evidence": "docs/runtime/evidence/unified-latest-55025ce/README.md"
   }
 }

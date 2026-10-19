@@ -1,5 +1,7 @@
 # 2026-10-20 main 统一 Windows 发行
 
+> 后继完整八包已按 [55025ce](unified-release-latest-55025ce.md) 发布，包含 PR53 恢复修复。本文 cfe6c0e 是先前实际发行记录，所有来源、哈希与通过日志保留原身份。
+
 状态：统一参考媒介已构建、核验并实际发布；Windows 商用/现场验收没有通过声明。本任务在用户重新明确授权后继续必要构建与定向验证；此前中断、失败、旧 ZIP 和原发布对象保持形成时身份。
 
 最终运行源码冻结为 main `cfe6c0e0d0570986ea8c63f619e328d3891b82ef`，包含 PR44/45/46/47/48/49/50 的合并成果。构建过程中后续 main aaa30b5 仅合并上传保管资料；核对 src/config/scripts/global.json/Directory.Build.props 与当前产品操作指南没有变化，不重标候选为该文档提交。业务版本 1.4.0、Application.Contracts 1.10.0、DB8；Supply/Inspection 仍是各自 1.0.0 portable 参考装配，没有同等原生安装向导。

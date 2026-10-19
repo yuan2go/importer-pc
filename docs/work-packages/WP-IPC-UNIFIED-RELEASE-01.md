@@ -1,5 +1,7 @@
 # UNIFIED-RELEASE-01：main 统一 Windows 发行
 
+当前最终交付见 [55025ce 完整八包发行](../runtime/unified-release-latest-55025ce.md)：PR53六原包身份不变，补齐同源Supply/Inspection，实际发布11资产；14门禁与八入口定向检查完成，完整Windows/现场边界未关闭。下文各阶段来源及停止记录按形成时保留。
+
 当前交付：已从 main cfe6c0e 构建并实际发布统一参考媒介，核验结果与剩余 Windows/现场边界见[实际交付](../runtime/unified-release-main-20261020.md)。下文早期基线和停止记录按形成时阶段读取，不能取代此最终来源。
 
 当前冻结准备：远端 main 已推进至 4f21b2d，包含 PR47/48/50；本包继承其商业化实现和当前发行指南，整合重叠脚本为单一入口。此前 c445 基线及 0f2cd71 候选保持原身份，不能代替当前业务 1.4.0 / Application.Contracts 1.10.0 / DB8 的验证。此项更新下文形成时“不引入未合并增量”的语境，因为这些增量现已合并。

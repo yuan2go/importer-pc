@@ -1,0 +1,8 @@
+PASS unprovisioned Windows readonly/runtime entry denied before config/data: sportmaster portable
+PASS unprovisioned Windows readonly/runtime entry denied before config/data: sportmaster win-x64
+PASS unprovisioned Windows readonly/runtime entry denied before config/data: direct-plc portable
+PASS unprovisioned Windows readonly/runtime entry denied before config/data: direct-plc win-x64
+PASS unprovisioned Windows readonly/runtime entry denied before config/data: wcs-to-plc portable
+PASS unprovisioned Windows readonly/runtime entry denied before config/data: wcs-to-plc win-x64
+PASS unprovisioned Windows readonly/runtime entry denied before config/data: supply portable
+PASS unprovisioned Windows readonly/runtime entry denied before config/data: inspection portable

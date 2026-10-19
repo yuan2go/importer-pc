@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "D:\w\bind-latest-55025-validation.py", line 15, in <module>
+    for item in result.get('Binaries',[]):assert sha(media/'app'/item['File'])==item['Sha256']
+                                                 ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\w\bind-latest-55025-validation.py", line 4, in <lambda>
+    sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest().upper()
+                                ~~~~~~~~~~~~^^
+  File "C:\Scoop\apps\python\current\Lib\pathlib\__init__.py", line 777, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\pathlib\__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\r\\latest-55025-final\\sportmaster-55025ce-win-x64\\app\\Ipc.Application.ParcelFlow.Desktop.dll'

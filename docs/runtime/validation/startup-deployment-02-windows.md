@@ -1,5 +1,7 @@
 # STARTUP-DEPLOYMENT-02 Windows 后验清单
 
+> 后继完整集合见 [55025ce 发行及定向结果](../unified-release-latest-55025ce.md)。本次 Windows 实际入口门禁、同库存继承证据与跨平台机制分别记录；下表全部完整验收场景仍按原状态 NOT_RUN。
+
 2026-10-20 新候选及定向核验见[main cfe6c0e 交付](../unified-release-main-20261020.md)。Windows 主机编译、媒体/架构、只读门禁和隔离夹具已单列；下表完整原生安装/UAC/ACL/账户/升级与人工桌面场景未验，仍 NOT_RUN。下文 Darwin 是原任务的形成环境，不是新构建主机身份。
 
 状态：NOT_RUN。本机为 Darwin arm64；交叉构建/静态媒介核验不代替下列原生结果。用新冻结候选及独立合成数据留存 OS/SKU/build、账户 SID/令牌、SourceCommit、ZIP SHA、操作回执与截图；不采集凭据/生产数据。真实 SDK/设备/Production 资格另验，不用参考模拟关闭现场 RV。

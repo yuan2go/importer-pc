@@ -1,0 +1,82 @@
+[
+  {
+    "Application": "sportmaster",
+    "Target": "portable",
+    "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+    "Zip": "sportmaster-55025ce-portable.zip",
+    "ZipSha256": "1DFB654161746A7235DD78D134B9F52D8B63414F81F422BE84EEF4C658D322CE",
+    "SourceBuildRecordSha256": "2b679a8a3cc0b393441e90d49fcd29724a65b8048e78d7ec00e9209a508533c3",
+    "SourceBuildState": "FAIL_FINAL_TEMP_GIT_CLEANUP_AFTER_ALL_EIGHT_PACKAGE_VERIFICATIONS",
+    "OriginalSixInventorySha256": "85099B52D7726B0FB0B45783FDAC182E8C55C3AD20DE40CDDC5B323AEBF98D7E"
+  },
+  {
+    "Application": "sportmaster",
+    "Target": "win-x64",
+    "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+    "Zip": "sportmaster-55025ce-win-x64.zip",
+    "ZipSha256": "6B84F8ABDF534FBA418C5D043F2E4A949EE6177C40A4421AFA2A7660AC27D051",
+    "SourceBuildRecordSha256": "2b679a8a3cc0b393441e90d49fcd29724a65b8048e78d7ec00e9209a508533c3",
+    "SourceBuildState": "FAIL_FINAL_TEMP_GIT_CLEANUP_AFTER_ALL_EIGHT_PACKAGE_VERIFICATIONS",
+    "OriginalSixInventorySha256": "85099B52D7726B0FB0B45783FDAC182E8C55C3AD20DE40CDDC5B323AEBF98D7E"
+  },
+  {
+    "Application": "direct-plc",
+    "Target": "portable",
+    "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+    "Zip": "direct-plc-55025ce-portable.zip",
+    "ZipSha256": "9E3F0107D0EF759D57CB0C5BB1FEAA72620F75E94055BDF4545605F4A96A9F84",
+    "SourceBuildRecordSha256": "2b679a8a3cc0b393441e90d49fcd29724a65b8048e78d7ec00e9209a508533c3",
+    "SourceBuildState": "FAIL_FINAL_TEMP_GIT_CLEANUP_AFTER_ALL_EIGHT_PACKAGE_VERIFICATIONS",
+    "OriginalSixInventorySha256": "85099B52D7726B0FB0B45783FDAC182E8C55C3AD20DE40CDDC5B323AEBF98D7E"
+  },
+  {
+    "Application": "direct-plc",
+    "Target": "win-x64",
+    "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+    "Zip": "direct-plc-55025ce-win-x64.zip",
+    "ZipSha256": "93867243C91A7AF6B8F30D66F6111FAAE9FD302C9822BD8BBB3F7005A36DA697",
+    "SourceBuildRecordSha256": "2b679a8a3cc0b393441e90d49fcd29724a65b8048e78d7ec00e9209a508533c3",
+    "SourceBuildState": "FAIL_FINAL_TEMP_GIT_CLEANUP_AFTER_ALL_EIGHT_PACKAGE_VERIFICATIONS",
+    "OriginalSixInventorySha256": "85099B52D7726B0FB0B45783FDAC182E8C55C3AD20DE40CDDC5B323AEBF98D7E"
+  },
+  {
+    "Application": "wcs-to-plc",
+    "Target": "portable",
+    "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+    "Zip": "wcs-to-plc-55025ce-portable.zip",
+    "ZipSha256": "A53F21A9F55D1B19C0FA4B4403A3DA2D3CD03490992E8DA703673B7824075345",
+    "SourceBuildRecordSha256": "2b679a8a3cc0b393441e90d49fcd29724a65b8048e78d7ec00e9209a508533c3",
+    "SourceBuildState": "FAIL_FINAL_TEMP_GIT_CLEANUP_AFTER_ALL_EIGHT_PACKAGE_VERIFICATIONS",
+    "OriginalSixInventorySha256": "85099B52D7726B0FB0B45783FDAC182E8C55C3AD20DE40CDDC5B323AEBF98D7E"
+  },
+  {
+    "Application": "wcs-to-plc",
+    "Target": "win-x64",
+    "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+    "Zip": "wcs-to-plc-55025ce-win-x64.zip",
+    "ZipSha256": "0F3DF4D6697F906A163785061F5C0459BDF67273984EAF31D0AAFF5CF1DF33F5",
+    "SourceBuildRecordSha256": "2b679a8a3cc0b393441e90d49fcd29724a65b8048e78d7ec00e9209a508533c3",
+    "SourceBuildState": "FAIL_FINAL_TEMP_GIT_CLEANUP_AFTER_ALL_EIGHT_PACKAGE_VERIFICATIONS",
+    "OriginalSixInventorySha256": "85099B52D7726B0FB0B45783FDAC182E8C55C3AD20DE40CDDC5B323AEBF98D7E"
+  },
+  {
+    "Application": "supply",
+    "Target": "portable",
+    "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+    "Zip": "supply-portable-55025ce9c621.zip",
+    "ZipSha256": "4575669FA312588179ECD08081883E1CBF81C6D31DD4DB84E8114BA05748FF51",
+    "SourceBuildRecordSha256": "2b679a8a3cc0b393441e90d49fcd29724a65b8048e78d7ec00e9209a508533c3",
+    "SourceBuildState": "FAIL_FINAL_TEMP_GIT_CLEANUP_AFTER_ALL_EIGHT_PACKAGE_VERIFICATIONS",
+    "OriginalSixInventorySha256": "85099B52D7726B0FB0B45783FDAC182E8C55C3AD20DE40CDDC5B323AEBF98D7E"
+  },
+  {
+    "Application": "inspection",
+    "Target": "portable",
+    "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+    "Zip": "inspection-portable-55025ce9c621.zip",
+    "ZipSha256": "C71FA4F2E1501A8DE043E8ECEECD2971B9CF366CEA9EDB603AC5D68F6AE17320",
+    "SourceBuildRecordSha256": "2b679a8a3cc0b393441e90d49fcd29724a65b8048e78d7ec00e9209a508533c3",
+    "SourceBuildState": "FAIL_FINAL_TEMP_GIT_CLEANUP_AFTER_ALL_EIGHT_PACKAGE_VERIFICATIONS",
+    "OriginalSixInventorySha256": "85099B52D7726B0FB0B45783FDAC182E8C55C3AD20DE40CDDC5B323AEBF98D7E"
+  }
+]

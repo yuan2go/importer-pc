@@ -1,9 +1,9 @@
 
 # 统一资料与实施入口
 
-[统一发行执行与版本边界](runtime/unified-release-main-20261020.md)保留 cfe6c0e 原始身份；[最新完整八包组合](runtime/unified-release-latest-55025ce.md)按 55025ce 冻结来源核验、复用与补构建。
+[完整八包发行与校验](runtime/unified-release-latest-55025ce.md)：冻结源码 55025ce，包含 PR44/45/46 与 PR53 恢复修复，保留六个原包身份并补齐同源 Supply/Inspection。
 
-> 另一轮 Windows 不测试发布的范围与记录见[独立记录](runtime/windows-no-test-release-20261020.md)，其结果不替代本次定向验证。
+> 独立的 [939462b 三业务 Windows 不测试发布](runtime/windows-no-test-release-20261020.md)按自身来源与未测试范围读取；[cfe6c0e 统一发行](runtime/unified-release-main-20261020.md)保持旧来源。本页链接不将各批次字节或验证结果互相替代。
 
 > PR47复审修正及最新main集成的当前源码/介质/逐项结果见[最终集成证据](runtime/evidence/pr47-main-integration/README.md)和[审查裁决](reviews/pr47-commercial-productization-review.md)。旧发行与上传记录按原源码身份保留，不能替代当前DB8交付。
 > COMM-00～10 当前操作见[产品操作指南](runtime/commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](runtime/commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。

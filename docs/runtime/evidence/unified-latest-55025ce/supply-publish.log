@@ -1,0 +1,29 @@
+Retained build workspace on failure: C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv
+  正在确定要还原的项目…
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 942 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 942 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 942 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 942 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 942 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\source-snapshot\src\Ipc.Adapters\Ipc.Adapters.csproj (用时 942 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\source-snapshot\src\Ipc.Product\Ipc.Product.csproj (用时 942 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 942 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 11 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 8 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 13 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 14 毫秒)。
+  Ipc.Platform -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Reference.Protocol -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Drivers -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Adapters -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\build-intermediates\bin\Ipc.Adapters\release\Ipc.Adapters.dll
+  Ipc.Platform.Storage -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.ParcelFlow -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Product -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\build-intermediates\bin\Ipc.Product\release\Ipc.Product.dll
+  Ipc.Assembly -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-845ppqvv\build-intermediates\bin\Ipc.Assembly\release\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\r\latest-55025\supply-portable-55025ce9c621\app\
+Sealed Simulation configuration: D:\r\latest-55025\supply-portable-55025ce9c621\app\config
+{"Package": "D:\\r\\latest-55025\\supply-portable-55025ce9c621.zip", "Sha256": "4575669fa312588179ecd08081883e1cbf81c6d31dd4db84e8114ba05748ff51", "SchemaVersion": 1, "Business": "supply", "Views": ["workstation", "history", "alarms", "diagnostics", "maintenance", "engineering", "extensions"], "Layouts": ["standard", "compact"], "EntryPoint": "app/Ipc.Assembly.dll", "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa", "Windows": "WINDOWS_NOT_RUN", "Field": "BLOCKED", "Binaries": {"Ipc.Adapters.dll": "089be696a041e2654538381589949faa429555c97b39be267d79465f80d30fb0", "Ipc.Application.Contracts.dll": "50a0e02ec45d96d0a38a0d9361fe70520a5be239bfaa22db0c9896834bc462e3", "Ipc.Application.ParcelFlow.dll": "6aecd806109fbd7b2f5829f5414c49048be05fc19a6267c492497a6bda2358e7", "Ipc.Assembly.dll": "891e6b10b409a41d0e0e9eea3125d6855586547722fa3e8f4d3e4318739efe69", "Ipc.Drivers.dll": "38349ab064e7b5de38c21e18bf6c28e5cc42fa8a864aa649e946f4a074a3de9e", "Ipc.Integrations.dll": "a13c6aaee3ad7eacdd8445a4de84e0db0b8369f3d3970098f013094c837e8b9c", "Ipc.Platform.dll": "f8ce80634b75a256cdee9a2981a29a4fd1a37831df87480eb6d74325afc186c5", "Ipc.Platform.Storage.dll": "2727c81c9c8c35f49de9a9c97509125b33853b2b850cb37aab10fe0959d566ac", "Ipc.Product.dll": "4c3e81c13e3f4a01d9efe9df442ddae9b47fc73093f02cac369d3ca92bfb1a8f", "Ipc.Reference.Protocol.dll": "927f785f547d3be1176d0556132cab7fab68e180e60a622dcb9226ef2c6e4237", "Ipc.Supply.Contracts.dll": "76cc4fdd1b1e79409812d853730f4ff8d3996ba8e2b04a43beaf1d1400619828", "Ipc.Supply.dll": "17bc51fba1ab3edb2ee6cd2d9c4a5d0846c25b3dae4a4f9afaa04afd9043b1e5"}}

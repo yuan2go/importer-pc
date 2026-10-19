@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-19",
+  "baseline_main": "eeeed0e0700cd07a76587b2bb701e91d422b2c35",
+  "pr37_original": "2d60fdc83a267c1ed4ad7a9f7ce200bd11255a94",
+  "main_with_skill": "53bcb798853c0c6a0e3b6c5a0c2a85a3001a7103",
+  "conflicts": [
+    "docs/manifest.json",
+    "docs/manifest.sha256"
+  ],
+  "resolution": "Union exact tracked public file inventories, preserve UX audit input and PR37 metadata, add licensed project skill inventory; recompute actual file hashes and manifest self hash. No runtime, config, tests or shipped-guide changes from PR37.",
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "builds": "NOT_RUN_BY_USER_REQUEST",
+  "repackaging": "NOT_RUN_BY_USER_REQUEST",
+  "hooks": "DISABLED_FOR_PUBLICATION"
+}

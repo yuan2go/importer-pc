@@ -36,6 +36,7 @@ public sealed partial class ParcelStartupMaintenance
             Wire.FileHash(Path.Combine(source, "configuration.json")) != manifest.Files["configuration.json"] ||
             manifest.Files.Any(f => !File.Exists(RecoveryFiles.Resolve(source, f.Key)) || Wire.FileHash(RecoveryFiles.Resolve(source, f.Key)) != f.Value) ||
             !new[] { "configuration.json", "overload.json" }.Where(n => File.Exists(Path.Combine(source, n))).Concat(RecoveryFiles.Enumerate(source, "receipts")).Concat(RecoveryFiles.Enumerate(source, "images", skipImageLeases: true))
+                .Concat(RecoveryFiles.MaintenanceEvidence(source))
                 .Order(StringComparer.Ordinal).SequenceEqual(manifest.Files.Keys.Order(StringComparer.Ordinal)))
             throw new InvalidDataException("原根在备份后已变化；先保全原责任，停机后创建并恢复新的完整备份。不能用旧备份退役较新的原根");
         var policy = Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json");

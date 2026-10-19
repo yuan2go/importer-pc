@@ -135,8 +135,10 @@ public static partial class ParcelRecovery
         if (!Path.IsPathRooted(relative) && relative != ".." && !relative.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal)) throw new IOException("Backup must be outside the live application directory");
         var recovery = destination + ".recovery";
         if (Directory.Exists(recovery) || File.Exists(recovery) || File.Exists(destination) || Directory.Exists(destination)) throw new IOException("Backup destination must be new");
+        using var editor = new ResourceLease(Path.Combine(directory, "startup-maintenance"), ["configuration-editor"]);
         var names = new List<string> { "configuration.json" };
         names.AddRange(RecoveryFiles.Enumerate(directory, "receipts")); names.AddRange(RecoveryFiles.Enumerate(directory, "images", skipImageLeases: true));
+        names.AddRange(RecoveryFiles.MaintenanceEvidence(directory));
         if (File.Exists(Path.Combine(directory, "overload.json"))) names.Add("overload.json");
         RecoveryFiles.ValidateNames(directory, names);
         var hashes = names.ToDictionary(n => n, n => Wire.FileHash(RecoveryFiles.Resolve(directory, n)), StringComparer.Ordinal);

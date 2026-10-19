@@ -123,6 +123,10 @@ static class CommercialProductization
         var target = Path.Combine(root, "restored-from-schedule"); var restore = await service.PlanRestoreAsync(sets[0].Path, target);
         await service.RestoreAsync(sets[0].Path, restore.Destination, restore.BackupSha256);
         Check(File.Exists(Path.Combine(restore.Destination, "RESTORED-ISOLATED.json")) && File.Exists(Path.Combine(directory, "configuration.json")), "scheduled complete backup actually restores to an isolated new root and retains the original root");
+        var maintenanceOriginal = Directory.EnumerateFiles(Path.Combine(directory, "startup-maintenance"), "original-configuration.json", SearchOption.AllDirectories).First();
+        Check(File.ReadAllBytes(maintenanceOriginal).SequenceEqual(File.ReadAllBytes(Path.Combine(restore.Destination, Path.GetRelativePath(directory, maintenanceOriginal)))) &&
+            File.ReadAllBytes(Path.Combine(directory, "startup-maintenance/editor-draft.bin")).SequenceEqual(File.ReadAllBytes(Path.Combine(restore.Destination, "startup-maintenance/editor-draft.bin"))),
+            "complete restoration preserves independent maintenance original bytes and encrypted unfinished editor input");
         var dbFiles = Directory.GetFiles(directory).Where(p => Path.GetFileName(p).StartsWith("sportmaster.db")).ToDictionary(p => p, Wire.FileHash);
         var plan = await service.PlanChangeAsync("Upgrade", Path.Combine(root, "pre-upgrade.db"));
         Check(plan.Allowed && dbFiles.OrderBy(x => x.Key).SequenceEqual(Directory.GetFiles(directory).Where(p => Path.GetFileName(p).StartsWith("sportmaster.db")).ToDictionary(p => p, Wire.FileHash).OrderBy(x => x.Key)), "upgrade preflight inspects a private complete snapshot and preserves original DB/WAL file set and bytes");
@@ -187,6 +191,12 @@ static class CommercialProductization
         var read = await service.ReadAsync(); var changed = read.Candidate! with { Wcs = read.Candidate!.Wcs! with { Target = "reference://integration/new-target" } };
         await Reject<InvalidOperationException>(() => service.RepairInitialAsync(read.ConfigurationHash, changed, "blocked by original request"), "initial repair refuses existing Unknown responsibility");
         Check(!(await service.PlanChangeAsync("Upgrade", Path.Combine(root, "unknown-upgrade.db"))).Allowed, "upgrade/uninstall preflight cannot bypass original Unknown responsibility");
+        var repairBackup = Path.Combine(root, "unknown-same-source-repair.db");
+        var repairPlan = await service.PlanChangeAsync("Repair", repairBackup);
+        var originalBeforeRepair = File.ReadAllBytes(Path.Combine(read.RuntimeDirectory!, "configuration.json"));
+        await service.ExecuteChangeAsync(repairPlan.Identity, "Repair", repairBackup, () => Task.CompletedTask);
+        Check(repairPlan.Allowed && File.Exists(Path.Combine(repairBackup + ".recovery", "COMPLETED.json")) && File.ReadAllBytes(Path.Combine(read.RuntimeDirectory!, "configuration.json")).SequenceEqual(originalBeforeRepair),
+            "same-source repair can back up Unknown originals without changing the configuration or clearing responsibility");
         read = await service.StageAsync(read.ConfigurationHash, changed, "new target for future intents only");
         // Reuse the actual lost-after-commit original as a DB7 upgrade fixture.
         var oldLaunch = launch with { DataRoot = Path.Combine(root, "db7-original-data") };

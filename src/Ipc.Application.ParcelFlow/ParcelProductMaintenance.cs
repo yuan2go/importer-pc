@@ -1,5 +1,7 @@
 using Ipc.Application.Contracts;
 using Ipc.Platform;
+using Ipc.Platform.Storage;
+using Microsoft.Data.Sqlite;
 
 namespace Ipc.Application.ParcelFlow;
 
@@ -13,8 +15,8 @@ public sealed partial class ParcelStartupMaintenance
         if (!File.Exists(database)) throw new FileNotFoundException("原数据库不存在；不能用空库代替维护检查", database);
         var names = new[] { "configuration.json", definition.Id + ".db", definition.Id + ".db-wal", "overload.json", "RESTORED-ISOLATED.json", "RESTORE-INCOMPLETE.json" }
             .Where(n => File.Exists(Path.Combine(directory, n))).Concat(RecoveryFiles.Enumerate(directory, "receipts"))
-            .Concat(RecoveryFiles.Enumerate(directory, "images", skipImageLeases: true)).Order(StringComparer.Ordinal).ToArray();
-        RecoveryFiles.ValidateNames(directory, names.Where(n => n is "configuration.json" or "overload.json" || n.StartsWith("receipts/") || n.StartsWith("images/")));
+            .Concat(RecoveryFiles.Enumerate(directory, "images", skipImageLeases: true)).Concat(RecoveryFiles.MaintenanceEvidence(directory)).Order(StringComparer.Ordinal).ToArray();
+        RecoveryFiles.ValidateNames(directory, names.Where(n => n is "configuration.json" or "overload.json" || n.StartsWith("receipts/") || n.StartsWith("images/") || n.StartsWith("startup-maintenance/")));
         var hashes = names.ToDictionary(n => n, n => Wire.FileHash(RecoveryFiles.Resolve(directory, n)));
         var scratch = MaintenanceWorkspace();
         try
@@ -33,7 +35,7 @@ public sealed partial class ParcelStartupMaintenance
     }
     StartupChangePreview Preview(string purpose, string? destination, (ParcelConfiguration Seed, ConfigurationRevision<ParcelConfiguration>? Envelope, string Directory, string File, string Hash) state, Snapshot? copy)
     {
-        if (purpose is not ("Upgrade" or "Uninstall" or "Backup")) throw new InvalidDataException("不支持的产品维护目的");
+        if (purpose is not ("Upgrade" or "Repair" or "Uninstall" or "Backup")) throw new InvalidDataException("不支持的产品维护目的");
         if (copy is null)
         {
             if (Directory.Exists(state.Directory) && new[] { "receipts", "images" }.Any(n => Directory.Exists(Path.Combine(state.Directory, n)) && Directory.EnumerateFileSystemEntries(Path.Combine(state.Directory, n)).Any()))
@@ -42,9 +44,9 @@ public sealed partial class ParcelStartupMaintenance
         }
         var inspection = ParcelRepository.InspectMaintenance(copy.Database, definition);
         var markers = new[] { "RESTORE-INCOMPLETE.json", "RESTORED-ISOLATED.json", "overload.json" }.Where(n => File.Exists(Path.Combine(state.Directory, n))).ToArray();
-        var allowed = purpose == "Backup" || inspection.OrdinaryUpgradeAllowed && markers.Length == 0;
+        var allowed = purpose is "Backup" or "Repair" || inspection.OrdinaryUpgradeAllowed && markers.Length == 0;
         return new(Wire.Hash(copy.SourceIdentity + state.Hash + purpose + destination), purpose, allowed,
-            Wire.Encode(inspection) + "\n隔离标记：" + string.Join(",", markers) + "\n程序切换不回滚数据库；未决请求须原发布核对。", state.Hash, destination);
+            Wire.Encode(inspection) + "\n隔离标记：" + string.Join(",", markers) + (purpose == "Repair" ? "\n仅相同冻结发布的程序修复：原责任/标记保留，完整备份后不改账、不激活、不启动；装配层必须核对相同源码。" : "\n程序切换不回滚数据库；未决请求须原发布核对。"), state.Hash, destination);
     }
     public Task<StartupChangePreview> PlanChangeAsync(string purpose, string? backupDestination)
     {
@@ -72,10 +74,12 @@ public sealed partial class ParcelStartupMaintenance
     {
         var envelope = state.Envelope ?? throw new InvalidDataException("数据库存在而原配置账缺失");
         await using var ports = factory();
-        using var repository = new ParcelRepository(copy.Directory, definition.Id, ParcelRepository.ReadStorageVersion(copy.Database, definition.Id));
-        // Snapshot repository is disposable; the live DB/WAL is never opened by SQLite.
-        ParcelRecovery.CreateBackup(directory, destination, envelope.Effective, envelope.Pending, new FileInfo(copy.Database).Length,
-            repository.Backup, ports.RegisterBackup);
+        using var database = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = copy.Database, Mode = SqliteOpenMode.ReadOnly, Pooling = false }.ToString()); database.Open();
+        // Back up the exact private DB/WAL snapshot without repository startup's
+        // derived repairs or migrations; the original DB is never opened by SQLite.
+        var snapshotBytes = checked(new FileInfo(copy.Database).Length + (File.Exists(copy.Database + "-wal") ? new FileInfo(copy.Database + "-wal").Length : 0));
+        ParcelRecovery.CreateBackup(directory, destination, envelope.Effective, envelope.Pending, snapshotBytes,
+            file => Database.Backup(database, file), ports.RegisterBackup);
     }
     public async Task BackupAsync(string destination)
     {

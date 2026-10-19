@@ -50,7 +50,7 @@ public sealed partial class ParcelRepository
         var recovery = backup + ".recovery";
         if (File.Exists(backup) || Directory.Exists(recovery)) throw new IOException("Preserve prior backup; choose a new destination");
         var names = new List<string> { "configuration.json" };
-        names.AddRange(RecoveryFiles.Enumerate(directory, "receipts")); names.AddRange(RecoveryFiles.Enumerate(directory, "images", skipImageLeases: true));
+        names.AddRange(RecoveryFiles.Enumerate(directory, "receipts")); names.AddRange(RecoveryFiles.Enumerate(directory, "images", skipImageLeases: true)); names.AddRange(RecoveryFiles.MaintenanceEvidence(directory));
         if (File.Exists(Path.Combine(directory, "overload.json"))) names.Add("overload.json");
         RecoveryFiles.ValidateNames(directory, names);
         var hashes = names.ToDictionary(n => n, n => Wire.FileHash(RecoveryFiles.Resolve(directory, n)));

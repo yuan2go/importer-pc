@@ -132,7 +132,7 @@ public static class ParcelStartupServices
                 RequireMatchingMedia(reviewedDeployment); _ = DeploymentMedia.Inspect(reviewedDeployment.MediaRoot, ApplicationId); ValidateSeed(reviewedDeployment);
                 var original = WindowsDeploymentSetup.Current(ApplicationId);
                 var reviewLaunch = original is null ? new BusinessLaunch(reviewedDeployment.ConfigurationSource, reviewedDeployment.DataRoot, null, null) : new(original.ConfigurationDirectory, original.DataRoot, null, null);
-                return Wire.Encode(await Core(reviewLaunch, installer: true).PlanChangeAsync("Upgrade", request.Destination));
+                return Wire.Encode(await Core(reviewLaunch, installer: true).PlanChangeAsync(original?.SourceCommit == reviewedDeployment.SourceCommit ? "Repair" : "Upgrade", request.Destination));
             case "Stage": await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).StageAsync(request.ExpectedHash!, request.Candidate!, request.Reason!); break;
             case "RepairInitial": await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).RepairInitialAsync(request.ExpectedHash!, request.Candidate!, request.Reason!); break;
             case "SaveDraft": await Core(request.Launch ?? throw new InvalidDataException("Missing launch"), installer: true).SaveDraftAsync(request.ExpectedHash!, request.DraftHash, request.Editor!); break;
@@ -193,7 +193,7 @@ public static class ParcelStartupServices
                 {
                     if (install.ChangePlanIdentity is null || install.BackupDestination is null) throw new InvalidOperationException("升级/修复须先审阅原责任及完整备份计划");
                     var originalLaunch = previous is null ? new BusinessLaunch(install.ConfigurationSource, install.DataRoot, null, null) : new(previous.ConfigurationDirectory, previous.DataRoot, null, null);
-                    await Core(originalLaunch, installer: true).ExecuteChangeAsync(install.ChangePlanIdentity, "Upgrade", install.BackupDestination,
+                    await Core(originalLaunch, installer: true).ExecuteChangeAsync(install.ChangePlanIdentity, previous?.SourceCommit == install.SourceCommit ? "Repair" : "Upgrade", install.BackupDestination,
                         () => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, CreateShortcuts); return Task.CompletedTask; });
                 }
                 else

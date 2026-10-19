@@ -10,14 +10,18 @@
 
 ## 文件与执行计划
 
-- [ ] 先独立提交本文及当前入口清理，然后改业务代码。
-- [ ] `StructuredConfiguration.cs` / `CapabilityEditing.cs`：当前来源的草稿指纹、加载基线、保存回执基线（冻结提交时指纹，保存中更改仍脏）；schema1/2/3和高级JSON均覆盖。
-- [ ] 两套窗口 `.xaml.cs` 及共享原生关闭确认：提交在编辑单元格/文本绑定、保留验证错误、取消/显式放弃、主辅重叠、失败重试；不改Application/设备命令。
-- [ ] `MaintenancePage.xaml.cs`：双选择/提供者订阅独立；string-list多行JSON与准确容量/说明。
-- [ ] 现有Application.Verification定向补未保存/保存/冲突/无效草稿、合法长列表及原关闭资源反例；现有UiVerification补真实页签/提供者/列表/无效编辑/取消与放弃检查。保留RED及环境失败。
-- [ ] 运行配置CAS、窗口生命周期、必要投影/恢复、三业务WPF及原生验证器交叉构建；不重复无关全量。Windows原生控件/焦点/DPI/真实设备仍NOT_RUN/BLOCKED。
-- [ ] 提交实现、证据、当前运行与验证说明及manifest，推送开发分支创建main PR，不合并、不强推。旧参考发布不覆盖，若本次未新发布则明确仅源码PR交付，不把旧包标为包含修复。
+- [x] 先独立提交本文及当前入口清理，然后改业务代码。
+- [x] `StructuredConfiguration.cs` / `CapabilityEditing.cs`：当前来源的草稿指纹、加载基线、保存回执基线（冻结提交时指纹，保存中更改仍脏）；schema1/2/3和高级JSON均覆盖。
+- [x] 两套窗口 `.xaml.cs` 及共享原生关闭确认：提交在编辑单元格/文本绑定、保留验证错误、取消/显式放弃、主辅重叠、失败重试；不改Application/设备命令。
+- [x] `MaintenancePage.xaml.cs`：双选择/提供者订阅独立；string-list多行JSON与准确容量/说明。
+- [x] 现有Application.Verification定向补未保存/保存/冲突/无效草稿、合法长列表及原关闭资源反例；现有UiVerification补真实页签/提供者/列表/无效编辑/取消与放弃检查。保留RED及环境失败。
+- [x] 运行配置CAS、窗口生命周期、必要投影/恢复、三业务WPF及原生验证器交叉构建；不重复无关全量。Windows原生控件/焦点/DPI/真实设备仍NOT_RUN/BLOCKED。
+- [ ] 提交实现、证据、当前运行与验证说明及manifest，推送开发分支创建main PR，不合并、不强推。旧参考发布不覆盖。依原WP-06继续交付含本次修复的新同源参考候选；不把旧包标为包含修复。
 
 读取基线包括AGENTS、INDEX、原审查PDF/README与WP-01～07，框架/F、22、D/RV、公开范围、运行/扩展/部署/版本和6ce发布证据；页面沿v1.1 README/GALLERY、原HTML/分离CSS/JS/完整交接及已采纳Sportmaster alternate规格，无新视觉方案/外部依赖。使用项目ui-ux-pro-max的WPF绑定/校验建议，服从现有实物基线，不另建MVVM框架。
 
 用户已授权这些确定缺陷的工程修复及合理拆分，直接执行本设计；本工作包不增加商业组合、SDK合同或现场验收授权。新原生验证无法在macOS执行时明确NOT_RUN。
+
+关闭补充：按WPF原生关闭约束，先让当前Closing事件退出，再执行可能同步完成的排空/确认/Close；事件替身增加该约束并记录RED，不用替身原有宽松行为掩盖原生风险。原生校验增补实际schema2 Application下int转换错误（模型未改但控件有错）、LostFocus提交、两布局明确放弃后真实停止。
+
+交付设计补充：原任务要求可取得同源不可变候选，本轮业务升1.3.3、Contracts1.9/DB7保持；冻结Git的SourceRevisionId参与公共DLL身份，采用能力2.2.5、reader1.3.5、RCS1.1.5精确新版本，不覆盖旧包。版本联动在冻结前检查C#/Python及RCS模板。沿既有package/build-extension选装设施生成三个portable core、Sportmaster selected portable/win-x64，并执行解包参考/选装激活/失败恢复/RCS原件旅程；Windows原生仍NOT_RUN。该交付继承原任务授权，不新增商业能力或现场资格。

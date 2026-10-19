@@ -1,4 +1,5 @@
 using System.Security.AccessControl;
+using System.Security.Claims;
 using System.Security.Principal;
 
 namespace Ipc.Platform;
@@ -69,6 +70,28 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     {
         if (!OperatingSystem.IsWindows())
             return requestedRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "leases");
+        return ResolveWindowsLeaseRoot(requestedRoot, requireOrdinaryAccount: false);
+    }
+    // Read-only startup gate: no directory, lock, configuration or database is created.
+    // Installer/maintenance authority remains separate from ordinary runtime startup.
+    public static void RequireRuntimeIdentity()
+    {
+        if (OperatingSystem.IsWindows()) _ = ResolveWindowsLeaseRoot(null, requireOrdinaryAccount: true);
+    }
+    internal static void ValidateRuntimeAccount(string? currentSid, string? designatedSid, bool requireOrdinaryAccount, IEnumerable<Claim> claims)
+    {
+        if (string.IsNullOrWhiteSpace(currentSid) || string.IsNullOrWhiteSpace(designatedSid) || currentSid != designatedSid)
+            throw new UnauthorizedAccessException("This Windows account is not the designated station runtime account");
+        // WindowsIdentity.Groups/IsInRole omit deny-only Administrators membership
+        // under UAC. WindowsIdentity emits that membership as DenyOnlySid claims.
+        var privileged = currentSid is "S-1-5-18" or "S-1-5-19" or "S-1-5-20" || claims.Any(claim =>
+            claim.Value == "S-1-5-32-544" && claim.Type is ClaimTypes.GroupSid or ClaimTypes.DenyOnlySid or ClaimTypes.PrimaryGroupSid or ClaimTypes.DenyOnlyPrimaryGroupSid);
+        if (requireOrdinaryAccount && privileged)
+            throw new UnauthorizedAccessException("Daily runtime requires the designated ordinary Windows account; use a separate elevated session for maintenance");
+    }
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    static string ResolveWindowsLeaseRoot(string? requestedRoot, bool requireOrdinaryAccount)
+    {
         var machine = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "ImporterPc");
         var policyFile = Path.Combine(machine, "runtime-policy.json");
         if (!Directory.Exists(machine) || !File.Exists(policyFile))
@@ -83,8 +106,8 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
             requestedRoot is not null && !string.Equals(Path.GetFullPath(requestedRoot), fixedRoot, StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("Machine ownership policy/lease root invalid; per-user overrides are not permitted on Windows");
         using var identity = WindowsIdentity.GetCurrent();
-        if (identity.User?.Value != policy.RuntimeAccountSid)
-            throw new UnauthorizedAccessException("This Windows account is not the designated station runtime account");
+        ValidateRuntimeAccount(identity.User?.Value, policy.RuntimeAccountSid, requireOrdinaryAccount,
+            requireOrdinaryAccount ? identity.UserClaims : []);
         if (!Directory.Exists(fixedRoot)) throw new InvalidDataException("Machine lease directory must be provisioned by a maintainer");
         RejectLinks(fixedRoot); RequireProtectedAcl(new DirectoryInfo(fixedRoot), policy.RuntimeAccountSid);
         return fixedRoot;

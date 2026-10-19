@@ -54,17 +54,15 @@ if ($DataRoot) {
 }
 if (-not $Configuration) { $Configuration = Join-Path $Release 'desktop/config' }
 $Configuration = (Resolve-Path -LiteralPath $Configuration).Path; Ordinary $Configuration
+# Use the same protected policy/ACL/SID validation as direct executable startup.
+# This read-only helper must succeed before deployment checks or a runtime child.
+if ($Action -in @('Diagnose','Run','Console')) { Invoke-App @('--action','runtime-check') }
 switch ($Action) {
     Diagnose {
         Invoke-App @('--action','business-identity')
         Invoke-App @('--action','deployment-check','--file',(Join-Path $Configuration 'business.json'))
         $policy = Join-Path ([Environment]::GetFolderPath('CommonApplicationData')) 'ImporterPc/runtime-policy.json'
-        if (-not (Test-Path -LiteralPath $policy)) { throw 'Machine runtime policy missing: run provision-runtime.ps1 in elevated maintenance with the designated ordinary account' }
-        $current = [Security.Principal.WindowsIdentity]::GetCurrent()
-        try { $sid = $current.User.Value } finally { $current.Dispose() }
-        $installed = Get-Content -LiteralPath $policy -Raw | ConvertFrom-Json
-        if ($sid -ne $installed.RuntimeAccountSid) { throw 'Current account SID differs from designated runtime account; run daily operations under the designated account' }
-        [ordered]@{Status='DependenciesInspected';RuntimeAccountMatches=($sid -eq $installed.RuntimeAccountSid);MachinePolicy=$policy;DataRoot=$DataRoot;Windows='NOT_RUN';SdkAndPhysicalReadiness='NOT_VERIFIED'} | ConvertTo-Json
+        [ordered]@{Status='DependenciesInspected';RuntimeAccountMatches=$true;MachinePolicy=$policy;DataRoot=$DataRoot;Windows='NOT_RUN';SdkAndPhysicalReadiness='NOT_VERIFIED'} | ConvertTo-Json
     }
     ProvisionData {
         if (-not $DataRoot -or -not $RuntimeAccount) { throw 'DataRoot and RuntimeAccount are required' }

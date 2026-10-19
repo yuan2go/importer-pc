@@ -1,3 +1,4 @@
+using System.IO;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -7,12 +8,13 @@ using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
 public sealed record CapabilityChoice(string Label, CapabilityDraft? Capability);
-public sealed class CapabilityRoleDraft(string role, string kind, CapabilityChoice[] choices, CapabilityChoice selected) : INotifyPropertyChanged
+public sealed class CapabilityRoleDraft(string role, string kind, CapabilityChoice[] choices, CapabilityChoice selected, bool visible = true) : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
     CapabilityChoice selection = selected;
     public string Role { get; } = role;
     public string Kind { get; } = kind;
+    public System.Windows.Visibility Visibility => visible ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
     public CapabilityChoice[] Choices { get; } = choices;
     public CapabilityChoice Selection { get => selection; set { selection = value; PropertyChanged?.Invoke(this, new(nameof(Selection))); } }
 }
@@ -48,16 +50,27 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     public string ImageBytes { get => Get<string>(); set => Set(value); }
     public string TotalBytes { get => Get<string>(); set => Set(value); }
     public string MaximumPending { get => Get<string>(); set => Set(value); }
+    public bool BackupEnabled { get => Get<bool>(); set => Set(value); }
+    public string BackupDirectory { get => Get<string>(); set => Set(value); }
+    public string BackupIntervalMinutes { get => Get<string>(); set => Set(value); }
+    public string BackupMaximumSets { get => Get<string>(); set => Set(value); }
     internal static ConfigurationPolicyDraft From(ParcelConfiguration c) => new()
     {
         WeightSource = c.Weight.Source, Unit = c.Weight.Unit, Validity = c.WeightValidity ?? WeightValidity.UntilDispatch,
         Precision = c.Weight.Precision.ToString(CultureInfo.InvariantCulture), ConfiguredWeight = c.Weight.ConfiguredValue?.ToString(CultureInfo.InvariantCulture) ?? "",
         MaximumAgeMs = c.Weight.MaximumAgeMs.ToString(CultureInfo.InvariantCulture), WaitTimeoutMs = c.Weight.WaitTimeoutMs.ToString(CultureInfo.InvariantCulture),
+        BackupEnabled = c.BackupSchedule is not null, BackupDirectory = c.BackupSchedule?.Directory ?? "", BackupIntervalMinutes = c.BackupSchedule?.IntervalMinutes.ToString(CultureInfo.InvariantCulture) ?? "", BackupMaximumSets = c.BackupSchedule?.MaximumSets.ToString(CultureInfo.InvariantCulture) ?? "",
         UploadStrategy = c.Images?.Strategy ?? UploadStrategy.BeforeMain, ImageBytes = (c.Images?.MaximumBytes ?? 4194304).ToString(CultureInfo.InvariantCulture),
         TotalBytes = (c.Images?.TotalBytes ?? 33554432).ToString(CultureInfo.InvariantCulture), MaximumPending = (c.Images?.MaximumPending ?? 32).ToString(CultureInfo.InvariantCulture)
     };
     internal static int Integer(string text, string label, int minimum, int maximum = int.MaxValue) => int.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out var value) && value >= minimum && value <= maximum
         ? value : throw new InvalidOperationException(label + "须为" + minimum + "～" + maximum + "之间的整数");
+    internal ParcelBackupSchedule? BuildBackup()
+    {
+        if (!BackupEnabled) return null;
+        if (string.IsNullOrWhiteSpace(BackupDirectory) || !Path.IsPathFullyQualified(BackupDirectory)) throw new InvalidOperationException("明确选择计划备份的绝对目录；不使用当前工作目录作为默认");
+        return new(Path.GetFullPath(BackupDirectory), Integer(BackupIntervalMinutes, "备份周期(分钟)", 15, 10080), Integer(BackupMaximumSets, "备份容量上限(份)", 1, 1000));
+    }
     internal WeightPolicy BuildWeight()
     {
         decimal? configured = null;
@@ -91,7 +104,10 @@ public partial class ParcelViewModel
     public PackageReference[] InstalledPackageReferences { get; private set; } = [];
     public PackageReference? SelectedInstalledPackage { get; set; }
     public string OriginalRecoveryOperationId { get; set; } = "";
-    public string[] NewCapabilityKinds => installedCatalog?.Providers.Where(x => x.Kind != "observation").Select(x => x.Kind).Distinct().ToArray() ?? [];
+    bool SupportsNewKind(string kind) => kind != "observation" && ((structuredBase?.ApplicationId ?? Snapshot?.ApplicationId) switch
+    { "sportmaster" => kind is not ("plc" or "camera" or "upload"), "direct-plc" => kind != "integration", _ => true });
+    public System.Windows.Visibility ImageSettingsVisibility => (structuredBase?.ApplicationId ?? Snapshot?.ApplicationId) != "sportmaster" || structuredBase?.Images is not null ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+    public string[] NewCapabilityKinds => installedCatalog?.Providers.Where(x => SupportsNewKind(x.Kind)).Select(x => x.Kind).Distinct().ToArray() ?? [];
     public string NewCapabilityKind { get; set; } = "weight";
     public string ConfigurationEditorState
     {
@@ -122,7 +138,7 @@ public partial class ParcelViewModel
         NotifyConfigurationEditorState();
     }
     public void NotifyConfigurationEditorState()
-    { Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditLegacyConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ConfigurationEditorState)); }
+    { Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditLegacyConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ImageSettingsVisibility)); Changed(nameof(ConfigurationEditorState)); }
     void LoadStructuredConfiguration(ParcelConfiguration c, CapabilityCatalog catalog)
     {
         // Construct every reference and selection before changing the current editing
@@ -133,7 +149,8 @@ public partial class ParcelViewModel
         CapabilityRoleDraft LocalRole(string role, string kind, CapabilityBinding? binding)
         {
             var choices = LocalChoices(kind);
-            return new(role, kind, choices, choices.Single(x => x.Capability?.InstanceId == binding?.InstanceId));
+            var visible = c.ApplicationId != "sportmaster" || kind is not ("plc" or "camera" or "upload") || binding is not null;
+            return new(role, kind, choices, choices.Single(x => x.Capability?.InstanceId == binding?.InstanceId), visible);
         }
         var readers = new List<ReaderConfigurationDraft>(); var readerIndex = 0;
         foreach (var reader in ParcelBindings.Readers(c))
@@ -223,7 +240,7 @@ public partial class ParcelViewModel
         {
             Reader = readers.Single(x => x.DeviceId == c.Reader.DeviceId), Topology = new(readers, PositionDrafts.Select(x => x.Build()).ToArray()),
             CapabilityInstances = inventory.Length == 0 && c.CapabilityInstances is null ? null : inventory, Login = Role("登录"), MaintenanceLogin = Role("维护认证"), Scale = Role("默认秤"), Wcs = Role("上游格口"), Plc = Role("PLC"),
-            Weight = policy.BuildWeight(), WeightValidity = policy.Validity, Images = image, Extensions = extensions
+            Weight = policy.BuildWeight(), WeightValidity = policy.Validity, Images = image, Extensions = extensions, BackupSchedule = policy.BuildBackup()
         };
     }
     public Task AddCapabilityInstanceAsync()

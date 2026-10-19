@@ -91,6 +91,7 @@ public sealed partial class ParcelRepository
             Wire.FileHash(typeof(IParcelApplication).Assembly.Location), config.Effective.SchemaVersion,
             ParcelBindings.Bound(config.Effective).Select(b => new ParcelMaintenanceProvider(b.InstanceId, b.Implementation, b.Version, b.Contract, Wire.Hash(b.Target), b.Package?.ManifestSha256)).ToArray());
         tx.Commit();
+        tx.Dispose(); db.Close(); // Windows WAL handles must close before byte-preservation hashes.
         if (Wire.FileHash(database) != hash || (File.Exists(wal) ? Wire.FileHash(wal) : null) != walHash) throw new IOException("Original database changed during offline inspection");
         return inspection;
     }

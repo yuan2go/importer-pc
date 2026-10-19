@@ -1,6 +1,6 @@
-> COMM-00～10 实施入口：[编码前裁决](../implementation/commercial-productization-01-execution.md)。以下旧版本能力与发布记录保留来源；本次新增行为以实施结果和同版介质为据，D/RV 与现场资格不变。
 
 # 原生安装、启动修复与独立基础配置
+> COMM-00～10 当前操作见[产品操作指南](commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。
 
 本指南属于 STARTUP-DEPLOYMENT-02，适用于本次新发布的 Sportmaster、DirectPlc、WcsToPlc Windows 候选。旧媒介按其 SourceCommit 和随包指南操作。本实现采用 Windows 程序/数据分离、按需提升、并排部署和失败保旧等实践；不宣称 MSI 事务、工业标准认证或现场验收通过。Windows 原生 UAC/ACL/快捷方式及实际窗口交互为 NOT_RUN，真实 SDK/设备/合同为 BLOCKED，Production 仍为 NotReady。
 
@@ -10,7 +10,7 @@
 2. 向导检查 app/desktop 发布登记、同一 Application/SourceCommit、全部登记文件及外层 SHA256SUMS。多余程序文件、链接、变化文件明确失败。散列只证明字节完整性，不能代替分发来源可信。
 3. 选择已有 Windows 运行账户、数据根和包含 business.json 的配置来源。默认使用当前用户和 `%LOCALAPPDATA%\ImporterPc\data`；升级自动带入已登记位置。保留原数据位置，不能通过换空根掩盖未决责任。UAC 过滤后的管理员用户可正常运行；真正提升的日常进程继续被拒绝。已有机器政策绑定其他 SID 时保留原政策，不能在此静默换账户。
 4. 可选选择独立批准的信任文件和原始离线签名扩展包。程序计算 hash，按签名、精确身份、依赖和合同校验；安装期间不执行模块或 SDK。无扩展时全部留空即可。软件不产生测试/Production 信任、不安装厂商 SDK、不把旧宿主资格复用于新宿主。已有信任仅接受相同字节，轮换保持独立审查。
-5. 阅读摘要，点击“授权并安装”，允许固定 helper 的 Windows UAC。程序放入 `%ProgramFiles%\ImporterPc\releases\<application>-<source>-<unique>`，策略/部署登记和受保护种子在 `%ProgramData%\ImporterPc`，数据独立。运行账户获得程序读取/执行和新数据目录修改权限；安装文件及政策由 Administrators/SYSTEM 拥有。
+5. 阅读摘要，点击“授权并安装”，允许固定 helper 的 Windows UAC。程序默认放入 `%ProgramFiles%\ImporterPc\releases\<application>-<source>-<unique>`，自选根按产品指南贯穿完整权限/helper/维护校验，策略/部署登记和受保护种子在 `%ProgramData%\ImporterPc`，数据独立。运行账户获得程序读取/执行和新数据目录修改权限；安装文件及政策由 Administrators/SYSTEM 拥有。
 6. 向导复制、落盘、复核后创建本版本的开始菜单入口：运行、启动修复、安装维护。最后原子提交部署位置登记；此前失败保留旧登记、旧版本、已有配置/数据及诊断。部分新目录/已安装未激活扩展保留，重试使用另一个并排目录。机级策略安装幂等，不删除租约。安装不创建或迁移业务库，也不启动设备。
 7. 使用“正常启动已安装程序”或开始菜单运行入口。桌面、控制台和可选脚本从同一受保护位置登记读取配置/数据默认值，不依赖启动时 cwd。升级保留已有种子；种子损坏时可明确勾选“重新部署所选种子配置到新目录”，原种子保留。持久化 Effective/Pending 仍只来自数据目录内唯一配置账，换种子不覆盖它。
 

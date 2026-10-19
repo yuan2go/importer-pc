@@ -54,11 +54,8 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     {
         if (!OperatingSystem.IsWindows()) return;
         var root = Path.GetFullPath(installRoot).TrimEnd(Path.DirectorySeparatorChar);
-        var programFiles = Path.GetFullPath(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)).TrimEnd(Path.DirectorySeparatorChar);
-        var vendor = Path.Combine(programFiles, "ImporterPc");
-        if (!root.StartsWith(vendor + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
-            throw new UnauthorizedAccessException("Elevated extension helper must come from a maintenance-protected Program Files/ImporterPc release");
-        for (var current = new DirectoryInfo(root); current is not null && !string.Equals(current.FullName, programFiles, StringComparison.OrdinalIgnoreCase); current = current.Parent)
+        var boundary = TrustedProgramRoots.RequireBoundary(root);
+        for (var current = new DirectoryInfo(root); current is not null && !string.Equals(current.FullName, boundary, StringComparison.OrdinalIgnoreCase); current = current.Parent)
         { RejectLinks(current.FullName); RequireProtectedAcl(current, null); }
         foreach (var name in requiredFiles)
         {
@@ -117,8 +114,8 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
         if (!OperatingSystem.IsWindows()) return;
         RejectLinks(path); RequireProtectedAcl(new FileInfo(path), null);
         var roots = new[] { Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) };
-        var boundary = roots.FirstOrDefault(root => Path.GetFullPath(path).StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
-            ?? throw new UnauthorizedAccessException("Qualification evidence requires a maintenance protected Program Files or ProgramData location");
+        var boundary = roots.FirstOrDefault(root => Path.GetFullPath(path).StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase));
+        boundary ??= TrustedProgramRoots.RequireBoundary(new FileInfo(path).DirectoryName!);
         for (var current = new FileInfo(path).Directory; current is not null && !string.Equals(current.FullName, boundary, StringComparison.OrdinalIgnoreCase); current = current.Parent)
         { RejectLinks(current.FullName); RequireProtectedAcl(current, null); }
     }

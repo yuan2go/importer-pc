@@ -1,5 +1,6 @@
 # COMMERCIAL-PRODUCTIZATION-01：源码基线与文档收敛
 
+> 实施接续：本页保留 c445b0e 文档任务/静态基线及原计划状态。当前 COMM-00～10 实现、实际结果与外部门槛见[实施结果](../runtime/commercial-productization-01-results.md)；不能把本页初始 NOT_RUN 或“仅文档”语境当作本次实施禁令。
 核对日期：2026-10-19。源码基线：[`b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5`](https://github.com/yuan2go/importer-pc/commit/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5)。本文服务于[商业化工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)，记录实际起点、需补齐的产品闭环和文档清理依据；本次没有实施业务代码，也没有重新执行历史测试。
 
 阅读顺序：[当前索引](../INDEX.md) → 本文 → [产品设计](../design/commercial-productization-01.md) → [实施逻辑](../implementation/commercial-productization-01.md) → [必要验收](../runtime/validation/commercial-productization-01.md)。下一次编码必须重新读取最新 main 及并行修改，本文的固定 SHA 是可追溯起点，不授权覆盖其后的实现。

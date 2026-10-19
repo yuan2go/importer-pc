@@ -371,15 +371,15 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "e4143883ae89ff4179c4ad3e724d2d351f98a895923c72c116cfc8ec0e4bb903",
-      "size_bytes": 10015,
-      "git_blob": "23bf314da82e7a7d5a9a4a5cbac9189f8f2af89b",
-      "version": "ux-maintenance-p2-04",
+      "sha256": "e40e22bdb07498b3766f1576957cf75348b23087793267e635ae637768d080e3",
+      "size_bytes": 10369,
+      "git_blob": "d73e880cf66ccbd5cbed3921d575c4b1e1893ec8",
+      "version": "runtime-identity-preflight-02",
       "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "f13c84ec32982cc0a88103086a7e0f908b7b919e",
+      "previous_git_blob": "23bf314da82e7a7d5a9a4a5cbac9189f8f2af89b",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
       "pre_conformance_audit_git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc"
     },
@@ -3834,27 +3834,27 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "3ac84f3e9f5374b7cf5cccc8ac160ce05c4216325ae775d4ac9d52125f1d04a5",
-      "size_bytes": 20582,
-      "git_blob": "429d9e9a2c368a9e452de71010da35dda73ea5e7",
-      "version": "ux-commercial-fix-01",
+      "sha256": "80e52f047f4dd8972fd3058e5cfb430e0e8dc943d9048afacdd9814b288adf7f",
+      "size_bytes": 21000,
+      "git_blob": "4aa8496bdb5c5adfb507a8e5adf2b0899e0ed2d7",
+      "version": "runtime-identity-preflight-02",
       "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "7e47e26fcb6461ae1701d0402c6a9f455fdcac35"
+      "previous_git_blob": "429d9e9a2c368a9e452de71010da35dda73ea5e7"
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "b185e461b4c63edc688005bf7b0e6663eacc7f36ef7775e13e5cce6155d28faa",
-      "size_bytes": 38294,
-      "git_blob": "c04433bda13b90a2071b7af6a7e3d691296ac117",
-      "version": "ux-commercial-fix-01",
+      "sha256": "57204ad025b33fec75bc7bb39d3e8270e776cce30cce831ee22604a3da7b7d90",
+      "size_bytes": 38592,
+      "git_blob": "413e6dd4109a016ed20c9db0a96adf0f0b3855f8",
+      "version": "runtime-identity-preflight-02",
       "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "4a45d3fe92abb5622d9849a2047488a1bd106d52"
+      "previous_git_blob": "c04433bda13b90a2071b7af6a7e3d691296ac117"
     },
     {
       "path": "docs/design/sportmaster-rcs-task.md",
@@ -26422,15 +26422,15 @@
     },
     {
       "path": "docs/runtime/getting-started.md",
-      "version": "ux-maintenance-p2-04",
+      "version": "runtime-identity-preflight-02",
       "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only",
       "storage_scope": "public_repository",
-      "sha256": "eb30924b632016f6baf6a5b697e1d173f69eff02c9b8cc01572628eaa8493f22",
-      "size_bytes": 4770,
-      "git_blob": "b46643b9119547ea0a39679abf780ebd255519c6",
-      "previous_git_blob": "2e72810ecbe43f36491f6604066cfcea19de943d"
+      "sha256": "df4da5ee7572a9bdab83d6508fadebd0b3ed61aa850ad1c058f8b570f8acec07",
+      "size_bytes": 5079,
+      "git_blob": "dec2e623da290e02320e9a3b73a99f8bd31f3d71",
+      "previous_git_blob": "b46643b9119547ea0a39679abf780ebd255519c6"
     },
     {
       "path": "docs/runtime/hardening-04-checks.json",
@@ -26526,15 +26526,15 @@
     },
     {
       "path": "docs/runtime/operations.md",
-      "sha256": "274e0c3cb8873d0d3b14ba586af28b5b428fb4ad8fea1b0a8366e40f6f1d6b0b",
-      "size_bytes": 11643,
-      "git_blob": "2931f537e6eef4deb4db48bf3a3d9333f9792d42",
-      "version": "audit02-implementation",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
-      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "sha256": "8654fb55e32b829753d1328becc370b2a103a681ca0c171aa3d012d91db6290c",
+      "size_bytes": 12262,
+      "git_blob": "b25ad64d73ae4c23e33c0aa961bc79dea001e34a",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "0af2dd0c3280de5686be32c71d2ae96bdf8b73d6",
+      "previous_git_blob": "2931f537e6eef4deb4db48bf3a3d9333f9792d42",
       "prior_closure13_git_blob": "3f36a26f2e70cd3c4a91c4efb498c0954919bbd3"
     },
     {
@@ -26728,15 +26728,16 @@
       "git_blob": "e44db8310163d1af638143361dfca63a4c20f432"
     },
     {
-      "version": "audit02-implementation",
-      "status": "current_navigation_or_verification",
-      "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
-      "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only",
       "storage_scope": "public_repository",
       "path": "docs/runtime/supply-getting-started.md",
-      "sha256": "0fb9f13def455a4acb08bcb0cc8471ca18af9ba7fa519ad9c41eebfc0afaa674",
-      "size_bytes": 7684,
-      "git_blob": "cb14bfe9405f9eb03fa2a48d4fff4f804674f939"
+      "sha256": "9b02707ff2ec09b2ccaa91820c2801c9af4c7e4f3faf12ab7e21b5b3592995e7",
+      "size_bytes": 8114,
+      "git_blob": "4ee9d2cc1a71ecdc0b1dcd7c668ca5496fd4f2b6",
+      "previous_git_blob": "cb14bfe9405f9eb03fa2a48d4fff4f804674f939"
     },
     {
       "path": "docs/runtime/ui-baseline-alignment-10.md",
@@ -29356,14 +29357,15 @@
     },
     {
       "path": "src/Ipc.Application.Inspection/InspectionRuntime.cs",
-      "version": "APPLICATION-CONVERGENCE-17",
+      "version": "runtime-identity-preflight-02",
       "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
-      "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only",
       "storage_scope": "public_repository",
-      "sha256": "66fe3c120bb94c63d0c23ebfee7e74f982a17516a587ff3cb27aae0e17afafdc",
-      "size_bytes": 5841,
-      "git_blob": "28cc09caca0e1334103651341c7582559392d03c"
+      "sha256": "40944fb499435ada90a325a35f262e3c80fce3200a7eee15dd68353ef3710ddd",
+      "size_bytes": 5896,
+      "git_blob": "dcfba8167208862b84d1e572466704697b4aea0b",
+      "previous_git_blob": "28cc09caca0e1334103651341c7582559392d03c"
     },
     {
       "path": "src/Ipc.Application.Inspection/Ipc.Application.Inspection.csproj",
@@ -32731,15 +32733,15 @@
     },
     {
       "path": "src/Ipc.Product/ProductRuntime.cs",
-      "sha256": "eb21b1043ee5b37dca6fda815c9b8274cbeb7932273d85b62f8c596e0ff1a264",
-      "size_bytes": 33743,
-      "git_blob": "5b2bc50a7ff75636180144bb77cff6a5bd6adba1",
-      "version": "operation-closure-15",
+      "sha256": "bd1d0572a8482411c27f855d56c83c48f0ab83bdf9a3d00ba474880bb9c6b946",
+      "size_bytes": 33802,
+      "git_blob": "4fb806128fcafc3d8f6e489abbd0d6cf978244a8",
+      "version": "runtime-identity-preflight-02",
       "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized generic architecture closure, synthetic reference implementation or immutable evidence; Windows not accepted",
-      "source": "WP-IPC-ARCH-EXTENSION-CLOSURE-13 explicit user authorization; no restricted customer asset",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only",
       "storage_scope": "public_repository",
-      "previous_git_blob": "cd5bad3875e39cef3fb61771ffb50a3568c7d00d"
+      "previous_git_blob": "5b2bc50a7ff75636180144bb77cff6a5bd6adba1"
     },
     {
       "path": "src/Ipc.Product/Program.cs",
@@ -38974,14 +38976,15 @@
     },
     {
       "path": "scripts/test_runtime_identity.py",
-      "sha256": "c839d401960cf61fdd3b8d40e0e2600a9f460dbce6ab2776ee8bae2a38da85f0",
-      "size_bytes": 6537,
-      "git_blob": "0a59e3918e6873a16cb94006728a6e8cf6391081",
-      "version": "runtime-identity-preflight-01",
+      "sha256": "aadbad408d0faae7508c137d9436d1dc30a267afa6799e535e146c115c5d83d7",
+      "size_bytes": 8730,
+      "git_blob": "6c4442c159888900a49c352fe16d47d54a26da30",
+      "version": "runtime-identity-preflight-02",
       "status": "current_implementation_or_boundary_record",
-      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
-      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
-      "storage_scope": "public_repository"
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "0a59e3918e6873a16cb94006728a6e8cf6391081"
     },
     {
       "path": "tests/Ipc.Verification/RuntimeIdentityVerification.cs",
@@ -39081,6 +39084,161 @@
       "sha256": "7ea5faa8f7978d1bfe6fb1747dd62c87d4d84b8e3457e86a53f3221a94603716",
       "size_bytes": 9605,
       "git_blob": "7dc01f5ba50e4fc6c8dc095e93eef0304eb5533a"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-02/build-directplc.log",
+      "storage_scope": "public_repository",
+      "sha256": "750c8bec3ce53dc4f7bf2cf0ffceef1462f87ebdb7a70e67b001f96310b01682",
+      "size_bytes": 2520,
+      "git_blob": "19dd090b8f03bef48191428f7cb9ca4e37f8de36",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-02/build-inspection.log",
+      "storage_scope": "public_repository",
+      "sha256": "30d702301dfad348b268a1216b727e96ae5b8723582f29fbcb502afb779e5bc7",
+      "size_bytes": 718,
+      "git_blob": "4d9e38bf22351a46c875d722913e0088f30d592d",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-02/build-sportmaster.log",
+      "storage_scope": "public_repository",
+      "sha256": "2b9eeeff9d95f1ecc6dacf6daf3581d62cf33a15261f7c2bc790de396739fbaf",
+      "size_bytes": 2757,
+      "git_blob": "597151b9d8352d7d63d9e690e24fcf66230fc991",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-02/build-supply-desktop.log",
+      "storage_scope": "public_repository",
+      "sha256": "2a394149a28c4fa176b08e61b5c757cf557b6ce59b46eb9f85e3b60494654929",
+      "size_bytes": 2697,
+      "git_blob": "b7716e351b1272fbdbd844f4a013111738b344e0",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-02/build-supply.log",
+      "storage_scope": "public_repository",
+      "sha256": "b287496b2d81492ff7c2fc6c99e34c303576fc060736e0d1384a20162c5e61b6",
+      "size_bytes": 2607,
+      "git_blob": "5a42dda09422c2e59442fa80bc0dfafb4643ddda",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-02/build-wcstoplc.log",
+      "storage_scope": "public_repository",
+      "sha256": "ed92b4f303314d9561bfb22ec92b16dca4386b17f36fca3ca3f229fd12ae0762",
+      "size_bytes": 2706,
+      "git_blob": "f0efc76e733ab7bb8bad485039f67713c6481c95",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-02/checks.json",
+      "storage_scope": "public_repository",
+      "sha256": "de00fb46e459e409cd873d3cd71bdfdec956f6167e83e3e59d889cba55b855e7",
+      "size_bytes": 3250,
+      "git_blob": "3e624097cb72905f1c9c9cb21e065f634e6383d9",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-02/green.log",
+      "storage_scope": "public_repository",
+      "sha256": "83f7ad0dfa6c7429e068feaf11d33548d0aa5a0b29afc1d3e542ec7399448146",
+      "size_bytes": 1161,
+      "git_blob": "f1a38f933bc6e20dd27658cdd86f86e4c053733e",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-02/identity-build.log",
+      "storage_scope": "public_repository",
+      "sha256": "57e048a18f3c9ec5943181f9a94242fdcaf8211e8b2cbaa9089abf87099c49b4",
+      "size_bytes": 2485,
+      "git_blob": "0cca32597e73807a663636c4d78fede6e113cacf",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-02/identity-decisions.log",
+      "storage_scope": "public_repository",
+      "sha256": "de6ce0249691b70667577b134ba0eae327f19ea2d4cc5e3aca12d25cadf8972c",
+      "size_bytes": 1240,
+      "git_blob": "8a0bf37b66bf885838d31ffa4e03fe329368328b",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-02/red.log",
+      "storage_scope": "public_repository",
+      "sha256": "2ddb51343fd2c1c37359e98a5d5db70fa3768a6b7862edadaf19c8502d340493",
+      "size_bytes": 2578,
+      "git_blob": "7bf76014ce37dab82aa837960892df682c2b7f56",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only"
+    },
+    {
+      "path": "docs/runtime/runtime-identity-preflight-02.md",
+      "storage_scope": "public_repository",
+      "sha256": "e64497e8c2fcbd2f60f03b1bee3c72ba900e15b9b97ca4b6e8cdd96cf8a05f99",
+      "size_bytes": 6647,
+      "git_blob": "cc955cfffa217a3a67c31381c558549965bb1049",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only",
+      "previous_git_blob": "369a709b90f2c0e1d396f5236a6d5a92c62106da"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-RUNTIME-IDENTITY-PREFLIGHT-02.md",
+      "storage_scope": "public_repository",
+      "sha256": "ef7a996aee157097b933d33b69883a8c099526fc6a4230c4a1f82ba74c7e42ce",
+      "size_bytes": 3587,
+      "git_blob": "c26c2f8de5e572a060a572b4b2e4957c82c2186c",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-02/archive-delta.json",
+      "storage_scope": "public_repository",
+      "sha256": "56652909ba858b66f06efe1ba4f883fe62a821e385a7e1c7636e99e2d94b9836",
+      "size_bytes": 399,
+      "git_blob": "8524d9a4a4c004217b877c6a26abd19b8fc97506",
+      "version": "runtime-identity-preflight-02",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Complete shared identity gate coverage; targeted synthetic evidence, Windows NOT_RUN",
+      "source": "2026-10-19 user-authorized startup identity repair; generic code and synthetic evidence only"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -40300,5 +40458,13 @@
     "tests": "NOT_RUN_BY_USER_REQUEST",
     "combined_media": "NOT_BUILT_BY_USER_REQUEST",
     "final_receipt": "docs/runtime/evidence/maintenance-publication-20261019/final-publication-receipt.json"
+  },
+  "runtime_identity_preflight_02": {
+    "baseline_main": "524916b2088f267175bec46daf01e6df020932b7",
+    "report": "docs/runtime/runtime-identity-preflight-02.md",
+    "checks": "docs/runtime/evidence/runtime-identity-preflight-02/checks.json",
+    "windows": "NOT_RUN",
+    "production": "NOT_READY",
+    "old_release_assets": "UNCHANGED"
   }
 }

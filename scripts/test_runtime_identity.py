@@ -60,7 +60,9 @@ if sys.argv[1:] == ['--action', 'runtime-check'] and os.environ['IPC_DENY'] == '
             before = {p.relative_to(data).as_posix(): p.read_bytes() for p in data.rglob('*') if p.is_file()}
             result = subprocess.run([PWSH, '-NoProfile', '-File', str(release/'application.ps1'),
                                      '-Action', action, '-DataRoot', str(data),
-                                     '-Database', str(data/'original.db')],
+                                     '-Database', str(data/'original.db'),
+                                     '-File', str(root/'input.json'),
+                                     '-Destination', str(root/'output')],
                                     env=dict(os.environ, IPC_TRACE=str(trace), IPC_DENY='1' if deny else '0'),
                                     capture_output=True, text=True, timeout=30)
             calls = [json.loads(line) for line in trace.read_text().splitlines()] if trace.exists() else []
@@ -93,10 +95,38 @@ if sys.argv[1:] == ['--action', 'runtime-check'] and os.environ['IPC_DENY'] == '
                     self.assertEqual(calls[2][1:3], ['--action', 'deployment-check'])
 
     def test_maintenance_dispatch_does_not_require_runtime_identity(self):
-        result, calls = self.launch('Inspect', deny=True)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(len(calls), 1)
-        self.assertEqual(calls[0][1:3], ['--action', 'maintenance-inspect'])
+        for action, operation in [('Inspect', 'maintenance-inspect'), ('Backup', 'backup-offline'),
+                                  ('PlanRestore', 'recovery-plan'), ('Restore', 'restore'),
+                                  ('Export', 'diagnostic-export')]:
+            with self.subTest(action=action):
+                result, calls = self.launch(action, deny=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(len(calls), 1)
+                self.assertEqual(calls[0][1:3], ['--action', operation])
+
+    def test_supply_runtime_guard_precedes_configuration_extensions_and_storage(self):
+        source = (ROOT/'src/Ipc.Product/ProductRuntime.cs').read_text()
+        start = source.index('async Task StartCore(')
+        guard = source.index('MachineRuntimePolicy.RequireRuntimeIdentity();', start)
+        for boundary in ['File.ReadAllText(', 'InitializeExtensionManagement(',
+                         'dataLease = new(', 'store = new(']:
+            self.assertLess(guard, source.index(boundary, start), boundary)
+        # Offline maintenance branches return before ProductHost/StartAsync and retain
+        # their own authority checks; a daily-runtime gate must not be moved above them.
+        program = (ROOT/'src/Ipc.Product/Program.cs').read_text()
+        maintenance = program.index('if (action is "backup" or "preflight" or "restore" or "upgrade")')
+        host = program.index('var host = ProductHost.Build(')
+        self.assertNotIn('RequireRuntimeIdentity', program[:host])
+        self.assertLess(program.index('MachineRuntimePolicy.ResolveLeaseRoot(null);', maintenance),
+                        program.index('Directory.CreateDirectory(directory)', maintenance))
+        self.assertIn('return;', program[maintenance:host])
+
+    def test_inspection_runtime_guard_precedes_configuration_and_ledger(self):
+        source = (ROOT/'src/Ipc.Application.Inspection/InspectionRuntime.cs').read_text()
+        start = source.index('public Task StartAsync(')
+        guard = source.index('MachineRuntimePolicy.RequireRuntimeIdentity();', start)
+        for boundary in ['File.ReadAllText(', 'lease = new(', 'ExtensionStore.AtomicWrite(']:
+            self.assertLess(guard, source.index(boundary, start), boundary)
 
     def test_direct_runtime_guard_precedes_configuration_and_storage(self):
         source = (ROOT/'src/Ipc.Application.ParcelFlow/ParcelRuntime.cs').read_text()

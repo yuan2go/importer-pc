@@ -12,6 +12,8 @@ F-03/F-04：Supply与功能完整的Inspection参考业务实际装配，旧专�
 
 # 框架决策、讨论来源与适用范围
 
+RUNTIME-IDENTITY-PREFLIGHT-02：继承已合并的Parcel身份门禁，Supply和Inspection运行入口同样在配置读取及持久资源之前复用MachineRuntimePolicy.RequireRuntimeIdentity。独立维护分支不套用日常运行门禁，不更改ResolveLeaseRoot或安装权限；[定向结果](../runtime/runtime-identity-preflight-02.md)与Windows未验边界单独记录，原F/D/RV及历史证据保持。
+
 > 先前纠偏入口（历史）：[AUDIT-RECONCILIATION-01](../work-packages/WP-IPC-AUDIT-RECONCILIATION-01.md)。目标设计和下文历史实施/不测试记录保持形成时含义；当前08/10/09实施及验证以该包的同版报告为准。原字节已归档，D/RV不变。
 
 03形成时独立复核：[MAIN-REVIEW-03](../reviews/main-static-review-03.md)，基准main `2579392`（PR #6/#7已合并）。8项指定整改路径静态补齐，E-06/E-10仍有工程缺口；全部运行NOT_RUN，Windows06/真实集成05分别保持NOT_RUN/BLOCKED。后续见工程增量08、参考验证09；下文07/更早记录保留形成时范围。

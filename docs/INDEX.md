@@ -1,5 +1,7 @@
 # 统一资料与实施入口
 
+> [全部运行入口身份门禁补齐](runtime/runtime-identity-preflight-02.md) · [定向工作包](work-packages/WP-IPC-RUNTIME-IDENTITY-PREFLIGHT-02.md)：基线main 524916b已含PR41的Parcel修复，本次补Supply/Inspection启动前同一门禁。Windows原生身份/ACL/拒绝前后持久数据对照仍NOT_RUN；不改变旧媒介与D/RV。
+
 > 本轮三项P2修复入口：[维护草稿与参数工作包](work-packages/WP-IPC-UX-MAINTENANCE-P2-04.md)。源码修复及定向回归见[04结果](runtime/ux-maintenance-p2-04-results.md)；[1.3.3参考候选](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-ff31b0e)冻结ff31b0e，包含修复；原1.3.2仍含差额。main be79564与本分支产品身份分别读取。
 
 > PR39在1a34a1e复审的三项源码差额已续修，见[续修结果](runtime/ux-commercial-rereview-03-results.md)。原生Windows待验；固定参考发布不代表工程全部闭合或商用放行。

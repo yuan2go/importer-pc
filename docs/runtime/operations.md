@@ -1,5 +1,7 @@
 # Supply兼容：运行、维护、发布与恢复
 
+当前源码增量：[全部入口身份门禁](runtime-identity-preflight-02.md)。Windows的ProductRuntime（专用Product、Supply装配和WPF共用）在读取配置、扩展初始化、数据锁和Storage5打开/升级/恢复之前执行受保护机器策略/ACL/指定普通SID校验。身份拒绝沿既有Diagnostics/非零退出路径处理；不能依靠直接EXE绕过。独立backup/preflight/restore/upgrade及扩展管理仍保留原权限与数据守卫；export/serve/snapshot需要启动运行实例，因此受日常账户门禁约束。旧发布包不随源码变化更新，Windows实机NOT_RUN。
+
 Supply兼容运行指南（16形成时工作包为 **UI-MAINTAINABILITY-16**）。Storage/MinimumReader **5/5**、SIMULATION-v1、ExtensionContract **1**；参考扩展新增不可变版本 **1.0.4**。当前结果/源SHA/候选身份见[16报告](ui-maintainability-16.md)及包内release.json。运行方式以本文和[首次参考作业](supply-getting-started.md)为入口；历次操作原文见[本次前置归档](../archive/pre-ui-maintainability-16/README.md)。目标设计、原SQL/checksum、旧候选、D/RV和原失败均保留。
 
 Windows实际客户端/输入/DPI/声音/触控/PowerShell/UAC/ACL仍NOT_RUN，[同版后验](validation/ui-maintainability-16-windows.md)逐项记录。真实SDK/WCS、身份、实体/数量及逐SKU少货权威未取得，Production缺必需能力继续NotReady。软件暂停不是安全急停。

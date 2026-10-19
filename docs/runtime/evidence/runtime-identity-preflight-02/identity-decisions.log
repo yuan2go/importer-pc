@@ -1,0 +1,17 @@
+PASS identity: designated ordinary SID accepted by shared decision
+PASS identity: rejected other ordinary SID
+PASS identity: rejected designated administrator membership: http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid
+PASS identity: rejected designated administrator membership: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/denyonlysid
+PASS identity: rejected designated administrator membership: http://schemas.microsoft.com/ws/2008/06/identity/claims/primarygroupsid
+PASS identity: rejected designated administrator membership: http://schemas.microsoft.com/ws/2008/06/identity/claims/denyonlyprimarygroupsid
+PASS identity: rejected designated system/service SID
+PASS identity: rejected designated system/service SID
+PASS identity: rejected designated system/service SID
+PASS identity: legacy lease resolution retains separate maintenance semantics
+PASS identity: rejected missing current SID
+PASS identity: rejected missing designated SID
+PASS identity: rejected missing current SID
+PASS identity: rejected missing designated SID
+PASS identity: rejected missing current SID
+PASS identity: rejected missing designated SID
+PASS identity: explicit portable development gate preserved; Windows identity/ACL NOT_RUN

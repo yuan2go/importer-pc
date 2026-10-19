@@ -1,0 +1,113 @@
+{
+  "baseline_main": "524916b2088f267175bec46daf01e6df020932b7",
+  "host": "Darwin arm64",
+  "sdk": "10.0.402",
+  "powershell": "7.5.4",
+  "source_order_red": "2 missing guards; script runtime/maintenance dispatch passes",
+  "green": "6 methods; synthetic children, static source order only",
+  "shared_decisions": "PASS; synthetic claims, Windows token/ACL NOT_RUN",
+  "builds": [
+    {
+      "module": "Supply",
+      "command": [
+        "<dotnet>",
+        "build",
+        "src/Ipc.Assembly/Ipc.Assembly.csproj",
+        "-p:BusinessModule=Supply",
+        "-p:RestoreLockedMode=true",
+        "--artifacts-path",
+        "<workspace>/.artifacts/build-supply",
+        "-m:1",
+        "-nr:false"
+      ],
+      "exit_code": 0
+    },
+    {
+      "module": "Inspection",
+      "command": [
+        "<dotnet>",
+        "build",
+        "src/Ipc.Assembly/Ipc.Assembly.csproj",
+        "-p:BusinessModule=Inspection",
+        "-p:RestoreLockedMode=true",
+        "--artifacts-path",
+        "<workspace>/.artifacts/build-inspection",
+        "-m:1",
+        "-nr:false"
+      ],
+      "exit_code": 0
+    },
+    {
+      "module": "Sportmaster",
+      "command": [
+        "<dotnet>",
+        "build",
+        "src/Ipc.Assembly/Ipc.Assembly.csproj",
+        "-p:BusinessModule=Sportmaster",
+        "-p:RestoreLockedMode=true",
+        "--artifacts-path",
+        "<workspace>/.artifacts/build-sportmaster",
+        "-m:1",
+        "-nr:false"
+      ],
+      "exit_code": 0
+    },
+    {
+      "module": "DirectPlc",
+      "command": [
+        "<dotnet>",
+        "build",
+        "src/Ipc.Assembly/Ipc.Assembly.csproj",
+        "-p:BusinessModule=DirectPlc",
+        "-p:NuGetLockFilePath=packages.direct-plc.lock.json",
+        "-p:RestoreLockedMode=true",
+        "--artifacts-path",
+        "<workspace>/.artifacts/build-directplc",
+        "-m:1",
+        "-nr:false"
+      ],
+      "exit_code": 0
+    },
+    {
+      "module": "WcsToPlc",
+      "command": [
+        "<dotnet>",
+        "build",
+        "src/Ipc.Assembly/Ipc.Assembly.csproj",
+        "-p:BusinessModule=WcsToPlc",
+        "-p:NuGetLockFilePath=packages.wcs-to-plc.lock.json",
+        "-p:RestoreLockedMode=true",
+        "--artifacts-path",
+        "<workspace>/.artifacts/build-wcstoplc",
+        "-m:1",
+        "-nr:false"
+      ],
+      "exit_code": 0
+    },
+    {
+      "module": "Supply desktop cross-build",
+      "command": [
+        "<dotnet>",
+        "build",
+        "src/Ipc.Desktop/Ipc.Desktop.csproj",
+        "-p:BusinessModule=Supply",
+        "-p:RestoreLockedMode=true",
+        "-p:EnableWindowsTargeting=true",
+        "--artifacts-path",
+        "<workspace>/.artifacts/build-supply-desktop",
+        "-m:1",
+        "-nr:false"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "windows": "NOT_RUN",
+  "real_sdk_device_site": "BLOCKED",
+  "production": "NOT_READY",
+  "original_local_log_sha256": {
+    "red.log": "483505ba8ef73dddbbbc615190b76662d2af9a23eb312bc7e04e41edad8561ef",
+    "green.log": "83f7ad0dfa6c7429e068feaf11d33548d0aa5a0b29afc1d3e542ec7399448146",
+    "identity-build.log": "f0a716844f95f1e0f589c7c3ddee04a0fe6c4bbd4fe98fa2bc4d1df626f519a5",
+    "identity-decisions.log": "de6ce0249691b70667577b134ba0eae327f19ea2d4cc5e3aca12d25cadf8972c"
+  }
+}

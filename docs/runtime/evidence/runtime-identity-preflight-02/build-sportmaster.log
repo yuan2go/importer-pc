@@ -1,0 +1,31 @@
+  正在确定要还原的项目…
+  已还原 <workspace>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 550 毫秒)。
+  已还原 <workspace>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 550 毫秒)。
+  已还原 <workspace>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 550 毫秒)。
+  已还原 <workspace>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 550 毫秒)。
+  已还原 <workspace>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 550 毫秒)。
+  已还原 <workspace>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 550 毫秒)。
+  已还原 <workspace>/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 550 毫秒)。
+  已还原 <workspace>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 550 毫秒)。
+  已还原 <workspace>/src/Ipc.Platform/Ipc.Platform.csproj (用时 13 毫秒)。
+  已还原 <workspace>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 15 毫秒)。
+  已还原 <workspace>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 15 毫秒)。
+  已还原 <workspace>/src/Ipc.Components/Ipc.Components.csproj (用时 16 毫秒)。
+  Ipc.Platform -> <workspace>/.artifacts/build-sportmaster/bin/Ipc.Platform/debug/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> <workspace>/.artifacts/build-sportmaster/bin/Ipc.Application.Supply.Contracts/debug/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> <workspace>/.artifacts/build-sportmaster/bin/Ipc.Platform.Storage/debug/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> <workspace>/.artifacts/build-sportmaster/bin/Ipc.Application.Supply/debug/Ipc.Supply.dll
+  Ipc.Application.Contracts -> <workspace>/.artifacts/build-sportmaster/bin/Ipc.Application.Contracts/debug/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> <workspace>/.artifacts/build-sportmaster/bin/Ipc.Application.ParcelFlow/debug/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> <workspace>/.artifacts/build-sportmaster/bin/Ipc.Application.Sportmaster/debug/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> <workspace>/.artifacts/build-sportmaster/bin/Ipc.Reference.Protocol/debug/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <workspace>/.artifacts/build-sportmaster/bin/Ipc.Components/debug/Ipc.Components.dll
+  Ipc.Drivers -> <workspace>/.artifacts/build-sportmaster/bin/Ipc.Drivers/debug/Ipc.Drivers.dll
+  Ipc.Integrations -> <workspace>/.artifacts/build-sportmaster/bin/Ipc.Integrations/debug/Ipc.Integrations.dll
+  Ipc.Assembly -> <workspace>/.artifacts/build-sportmaster/bin/Ipc.Assembly/debug/Ipc.Assembly.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:05.09

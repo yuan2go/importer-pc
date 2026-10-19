@@ -26,6 +26,7 @@ public sealed class InspectionRuntime(BusinessLaunch launch) : IBusinessRuntime,
     {
         token.ThrowIfCancellationRequested();
         if (path is not null) throw new InvalidOperationException("Inspection startup is single-use");
+        MachineRuntimePolicy.RequireRuntimeIdentity();
         configuration = Wire.Decode<InspectionConfiguration>(File.ReadAllText(Path.Combine(launch.ConfigurationDirectory, "business.json")));
         if (configuration.SchemaVersion != 1 || !ExtensionSchema.IsId(configuration.StationId) || configuration.Mode != RunMode.Simulation || configuration.MaximumSamples is < 1 or > 1000)
             throw new InvalidDataException("Inspection reference configuration is invalid; Production has no approved implementation");

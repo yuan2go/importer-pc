@@ -1,5 +1,7 @@
 # Supply兼容产品：首次运行与首条参考作业
 
+Windows先由维护安装既有机器策略，日常使用指定普通账户。当前源码的ProductRuntime在任何配置或持久资源初始化前复用统一身份门禁，直接运行Product/Assembly/WPF也适用；离线维护保留原授权，见[门禁补齐与验证边界](runtime-identity-preflight-02.md)。非Windows命令仅作开发模拟，不能证明Windows身份/ACL通过；旧媒介保持原固定源码。
+
 当前工程入口对应[UI-MAINTAINABILITY-16](../work-packages/WP-IPC-UI-MAINTAINABILITY-16.md)，无需沿历次工作包寻找启动命令。[运行/部署/恢复](operations.md)、[独立扩展开发](../extensions/supply-guide.md)分别提供正式维护路径。这里仅使用获授权合成数据、本机SIMULATION-v1接收端；不控制真实设备，不宣称SDK/WCS或现场通过。
 
 ## 从源码首次启动

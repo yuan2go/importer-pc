@@ -1,3 +1,5 @@
+> COMM-00～10 实施入口：[编码前裁决](../implementation/commercial-productization-01-execution.md)。以下旧版本能力与发布记录保留来源；本次新增行为以实施结果和同版介质为据，D/RV 与现场资格不变。
+
 > 现行商业化补差范围见[完整工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)及[基线核对](../reviews/commercial-productization-01-baseline.md)。本页保留已实现的操作；新设计尚待实施。正常安装/首次启动/独立维护以[原生启动部署指南](startup-deployment-02.md)为准，旧媒介按其固定源码和随包说明使用；源码与介质身份见[发布记录](publication-deployment-20261019.md)。历史任务/测试/候选保持原身份，Windows/真实组合未验部分不变。
 
 # 三个Application的Windows候选与维护路径

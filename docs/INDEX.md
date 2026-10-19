@@ -1,3 +1,5 @@
+> COMM-00～10 实施入口：[编码前裁决](implementation/commercial-productization-01-execution.md)。以下旧版本能力与发布记录保留来源；本次新增行为以实施结果和同版介质为据，D/RV 与现场资格不变。
+
 # 统一资料与实施入口
 
 **当前下一阶段： [WP-IPC-COMMERCIAL-PRODUCTIZATION-01](work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)。** 状态为设计/实施交接已形成，新增产品能力 PLANNED，验收 NOT_RUN。本次分析基线是 main [b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5](https://github.com/yuan2go/importer-pc/commit/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5)，执行时重新核对最新 main 与并行修改。

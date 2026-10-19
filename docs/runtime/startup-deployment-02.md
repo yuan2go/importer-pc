@@ -1,3 +1,5 @@
+> COMM-00～10 实施入口：[编码前裁决](../implementation/commercial-productization-01-execution.md)。以下旧版本能力与发布记录保留来源；本次新增行为以实施结果和同版介质为据，D/RV 与现场资格不变。
+
 # 原生安装、启动修复与独立基础配置
 
 本指南属于 STARTUP-DEPLOYMENT-02，适用于本次新发布的 Sportmaster、DirectPlc、WcsToPlc Windows 候选。旧媒介按其 SourceCommit 和随包指南操作。本实现采用 Windows 程序/数据分离、按需提升、并排部署和失败保旧等实践；不宣称 MSI 事务、工业标准认证或现场验收通过。Windows 原生 UAC/ACL/快捷方式及实际窗口交互为 NOT_RUN，真实 SDK/设备/合同为 BLOCKED，Production 仍为 NotReady。

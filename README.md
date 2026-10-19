@@ -1,3 +1,5 @@
+> COMM-00～10 实施入口：[编码前裁决](docs/implementation/commercial-productization-01-execution.md)。以下旧版本能力与发布记录保留来源；本次新增行为以实施结果和同版介质为据，D/RV 与现场资格不变。
+
 # importer-pc
 
 C#/.NET 10 Windows 工位运行基座与独立 Application 参考工程。Platform 提供机制，Application 拥有业务状态、守卫及 UI 契约，Driver 适配硬件，Component 适配外部服务。一个 Application 运行实例可服务多个页面和布局。

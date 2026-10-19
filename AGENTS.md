@@ -14,3 +14,7 @@
 ## UI实现必须读取的实物基线
 
 修改页面前先读 `docs/ui/ss-ui-vis-001-v1.1/README.md`、`GALLERY.md`、原HTML、分离CSS/JS和完整UI交接，不得仅凭文字或现有调试页面猜设计。保留专业作业信息层级；原HTML是模拟设计，不照抄已知业务缺陷；PNG为同源重新导出，Windows交互和截图须另行验收。原文件和当前业务实现的来源、版本与验证边界分别报告。
+
+## 项目级 UI/UX skill
+
+UI/UX设计、实现与审查可使用 [ui-ux-pro-max](.agents/skills/ui-ux-pro-max/SKILL.md)，安装来源、版本与命令见 [skill说明](.agents/skills/README.md)。当前桌面实现查询使用 `--stack wpf`；通用建议须服从上述实物基线、业务边界和公开范围，不能替代Windows/真实接口/现场验收。

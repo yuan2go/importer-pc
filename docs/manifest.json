@@ -3,7 +3,7 @@
   "work_package": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/commercial-productization-01",
+  "branch": "main",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
@@ -373,18 +373,19 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "a053af46f5e1d37b543c2e6d18ec717155d83adfa3ded62041fe15b27fd2625c",
-      "size_bytes": 11923,
-      "git_blob": "eb68645975d4452cb850896ca3684657c53b3f9b",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
-      "status": "current_review_implementation_or_boundary_record",
-      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
-      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+      "sha256": "4308437eb421493ea4cabfd2ddb8262ef9286046f8c15c0dc2f81006555c79ff",
+      "size_bytes": 12361,
+      "git_blob": "cda8086986e03b8a884653aea5c998e3c7bb2a28",
+      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "previous_git_blob": "da0145028454b93ca30dd01b4ce866fc92ba40b9",
+      "previous_git_blob": "4784941f780af72477dbfd449e84986c532950d3",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
       "pre_conformance_audit_git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc",
-      "pre_commercial_productization_git_blob": "a6b807db04e55e76002ad89ed009b7c546af19df"
+      "pre_commercial_productization_git_blob": "a6b807db04e55e76002ad89ed009b7c546af19df",
+      "pre_publication_merge_git_blob": "da0145028454b93ca30dd01b4ce866fc92ba40b9"
     },
     {
       "path": "docs/archive/pre-acquisition-lifecycle-p2/README.md",
@@ -28739,21 +28740,23 @@
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "7af57bf56df6f0516cb6d605ab18e3a53a4f4461875f55b78308561e8845acbb",
-      "size_bytes": 11807,
-      "git_blob": "fdd2a35cbbcab3633cf87864e3790bda54235e1b",
-      "previous_git_blob": "f4803c85ce23160680bdab813bc83ba3b3c88d81"
+      "sha256": "49b4b8eead5cbc14315bc181ee4d3b3dca6f3b2343a818225c1de8a5a9e648bc",
+      "size_bytes": 9657,
+      "git_blob": "7d28e569b77f73b50b3dd7104afec8ae48935622",
+      "previous_git_blob": "f4803c85ce23160680bdab813bc83ba3b3c88d81",
+      "pre_publication_merge_git_blob": "fdd2a35cbbcab3633cf87864e3790bda54235e1b"
     },
     {
       "path": "scripts/package-business.py",
-      "sha256": "fe6e13e7a10867957d90da6d5d7291861f04c8892148265d94455bf05e66cf78",
-      "size_bytes": 3823,
-      "git_blob": "ea62ff0932c906c3711e62f4cb1897c5d67b2247",
+      "sha256": "5b6001d7d2cce6a54c26cd6ca4e81cdef8d4616bb1b43b9e655e832c613e7928",
+      "size_bytes": 4267,
+      "git_blob": "cf529c076b74cb4e3b05428bf1efdbfeddee474b",
       "version": "APPLICATION-CONVERGENCE-17",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "pre_publication_merge_git_blob": "019e302339d97c5f50398e0549e1de435b7f05f8"
     },
     {
       "path": "scripts/package-reference.py",
@@ -29607,27 +29610,29 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelLegacyReceiptRecovery.cs",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
-      "status": "current_review_implementation_or_boundary_record",
-      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
-      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
       "sha256": "094f6f02014d3132ff31abed8883dff5aa338353addc9d3fa4f86f54bfb58856",
       "size_bytes": 14938,
       "git_blob": "b38dfad79edee6d87074e846579443e73336ca5a",
-      "previous_git_blob": "c01c9403278c7ddbcd9989a022a22e37e441ac0b"
+      "previous_git_blob": "a15719a30d16a7fe28b13c5046b02242b33dc634",
+      "pre_publication_merge_git_blob": "c01c9403278c7ddbcd9989a022a22e37e441ac0b"
     },
     {
-      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
-      "status": "current_review_implementation_or_boundary_record",
-      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
-      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
       "path": "src/Ipc.Application.ParcelFlow/ParcelLegacyRecovery.cs",
       "sha256": "bfe657e684154cc53ba8f11380c5b79204faefae7ca5893e57331c0bea6b5c39",
       "size_bytes": 6488,
       "git_blob": "e4128ccb30a3068e615e3b07dae41aa17d498070",
-      "previous_git_blob": "050e663189156194c15fc2d3969d1724e40baa08"
+      "previous_git_blob": "8160cbc6b82d7098391a224b4c6f410444783b02",
+      "pre_publication_merge_git_blob": "050e663189156194c15fc2d3969d1724e40baa08"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelOperators.cs",
@@ -29714,15 +29719,16 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
-      "status": "current_review_implementation_or_boundary_record",
-      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
-      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
       "sha256": "0111ff119a48e2323af2b3480719fbfcaab354e957f64994162ab47ea3232322",
       "size_bytes": 32170,
       "git_blob": "b8778e6ba71396bc184658696a12b548ce0958aa",
-      "previous_git_blob": "2e98969df94d3451e6f531e26a1200da2da46822"
+      "previous_git_blob": "7979420ed7d0bd9f7e1812b40654a38ec0b879d6",
+      "pre_publication_merge_git_blob": "2e98969df94d3451e6f531e26a1200da2da46822"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
@@ -29749,15 +29755,16 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/RecoveryFiles.cs",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
-      "status": "current_review_implementation_or_boundary_record",
-      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
-      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
       "sha256": "31694242d2f59280a40350b2ee8e1fdc00e78d5442a423e4cb7cf54ba254c638",
       "size_bytes": 7223,
       "git_blob": "2f75786edfbf3da48dee05e4de9b2bf51cdb0f7f",
-      "previous_git_blob": "9fe68aa4b527380209f29f86ec0f1a84b593c81f"
+      "previous_git_blob": "f6d69f6f5703b70622beff721539a31186d350a1",
+      "pre_publication_merge_git_blob": "9fe68aa4b527380209f29f86ec0f1a84b593c81f"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/packages.direct-plc.lock.json",
@@ -31543,15 +31550,16 @@
     },
     {
       "path": "src/Ipc.Desktop/ParcelApp.xaml.cs",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
-      "status": "current_review_implementation_or_boundary_record",
-      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
-      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
       "sha256": "6cdd6064e85e93a4c52ccfd7ae5d3709fe136757af681482ad514854d71f6af6",
       "size_bytes": 10634,
       "git_blob": "d9aff0138b38f0d8b8dc4146dcf06b54560d7d1c",
-      "previous_git_blob": "863bf9812b82e08d8fbf66e70006ab1241da6fef"
+      "previous_git_blob": "9af6d5fca5831890ed448cf79c50c1c73c78f7a4",
+      "pre_publication_merge_git_blob": "863bf9812b82e08d8fbf66e70006ab1241da6fef"
     },
     {
       "path": "src/Ipc.Desktop/Themes/Workstation.xaml",
@@ -34798,10 +34806,11 @@
       "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
       "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "4f4e1ce0db9870e1581c6ab0b85d8cfe922d9fb4fe465e39666cd8ada6aba60b",
-      "size_bytes": 2638,
-      "git_blob": "8b97e4ccb1771b58ab62d6e14ec45ca3a3c19fa6",
-      "previous_git_blob": "b565269c0ec8c6bbcf95ca56c221afa65b282b68"
+      "sha256": "db2aeb1377b3e45bf9eeee617fadb981d7b9f7409e63cc652f005e5feb650cd1",
+      "size_bytes": 2884,
+      "git_blob": "bdff873f6d37a0065189fae9695712ac03d230b1",
+      "previous_git_blob": "b565269c0ec8c6bbcf95ca56c221afa65b282b68",
+      "pre_publication_merge_git_blob": "8b97e4ccb1771b58ab62d6e14ec45ca3a3c19fa6"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs",
@@ -34827,15 +34836,16 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelMaintenance.cs",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
-      "status": "current_review_implementation_or_boundary_record",
-      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
-      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
       "sha256": "b3d2c0f35b1a7848f20235de8ce9bb4f311fe46c598f5772f4eb00d5f46c1ec1",
       "size_bytes": 13911,
       "git_blob": "f061ca41dad34e625b591d6ee14d70648d5ce04c",
-      "previous_git_blob": "0b6040435c17886bf44a872293702982599f343f"
+      "previous_git_blob": "9bb0bb4064f338722cb7e28d025786f06d99b7fc",
+      "pre_publication_merge_git_blob": "0b6040435c17886bf44a872293702982599f343f"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelTerminalRecovery.cs",
@@ -39420,27 +39430,29 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelStartupMaintenance.cs",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
-      "status": "current_review_implementation_or_boundary_record",
-      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
-      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
       "sha256": "a879fe6149d75d7501a8d7c60fa6a22dd07a37a7f3f5339bb7728d9658aa1ffa",
       "size_bytes": 13542,
       "git_blob": "ac647ffcaae26bd289abe21dfef384354b1499ce",
-      "previous_git_blob": "16e295dc3591dc6f6b9b65b943b512e6ee8984ec"
+      "previous_git_blob": "08f837a4ccffdd32b185e5b295079376d7a2ed20",
+      "pre_publication_merge_git_blob": "16e295dc3591dc6f6b9b65b943b512e6ee8984ec"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/StartupConfigurationDraft.cs",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
-      "status": "current_review_implementation_or_boundary_record",
-      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
-      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
       "sha256": "37c79a2b4ba54b942e1d47f2a3e8070c2d7c0b3dc5605e65ecad7cd7024de01f",
       "size_bytes": 10039,
       "git_blob": "ce3ec2b39c5696747e0261219f5745b97de44bd1",
-      "previous_git_blob": "ef9bc6b87866a290082f5fecd42c135526396137"
+      "previous_git_blob": "7154ef80b87189dbb186e73a037691e4a0185c3e",
+      "pre_publication_merge_git_blob": "ef9bc6b87866a290082f5fecd42c135526396137"
     },
     {
       "path": "src/Ipc.Assembly/ParcelStartupServices.cs",
@@ -39464,7 +39476,8 @@
       "sha256": "3c489df376ded08c77ab5a80dcd9b1eb6d0a420104ea82c421a5c24616b1aa99",
       "size_bytes": 38261,
       "git_blob": "a9e4e1381e13729b7dbcd77574d1d9c1b1dee8aa",
-      "previous_git_blob": "fa4161ce530d42a91ad9ecc25ea07d5191d36e01"
+      "previous_git_blob": "b5c6a8300b855df98793a4d13535c58318bb9540",
+      "pre_publication_merge_git_blob": "fa4161ce530d42a91ad9ecc25ea07d5191d36e01"
     },
     {
       "path": "src/Ipc.Platform/DeploymentMedia.cs",
@@ -40223,15 +40236,16 @@
     },
     {
       "path": ".gitattributes",
-      "sha256": "67e429be7e8d48005ab94fa79e465027db4e75476e102be6e614b66651f447f0",
-      "size_bytes": 441,
-      "git_blob": "cab39994d737a4d8759787bfa1b9a794476ef9ea",
+      "sha256": "5ed5152462dca1a7bb2876b9bed2599b909b3ae4e7afb7681a82dd61d790234f",
+      "size_bytes": 491,
+      "git_blob": "dd7885b9aebd2ccbb04cfb206abdae1bc87eecd2",
       "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
       "status": "current_review_implementation_or_boundary_record",
       "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
       "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
       "storage_scope": "public_repository",
-      "previous_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd"
+      "pre_publication_merge_git_blob": "cb3492096eb6ca42e35b671e639e0390974d35fd",
+      "previous_git_blob": "8054d586514dff56a6efc503c0fc4f31cee24516"
     },
     {
       "path": "docs/archive/pre-commercial-productization-01-implementation/README.md",
@@ -41176,12 +41190,12 @@
       "sha256": "fcebb801bac4ab57853c540c6cb5c4ae7dea63bec4c2304e020febbdf0a369aa",
       "size_bytes": 9320,
       "git_blob": "015b2b9af3b804a6ec3c0bfe59b3aa18fa6bca64",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
-      "status": "current_review_implementation_or_boundary_record",
-      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
-      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "previous_git_blob": "5714f17e63343d47000fe09c0c841be6fda0d1ca"
+      "pre_publication_merge_git_blob": "5714f17e63343d47000fe09c0c841be6fda0d1ca"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelProductSupport.cs",
@@ -41199,12 +41213,12 @@
       "sha256": "b3578480531cc6e469c3cd8c48241e2970d14fb4bef45791733b34cf09bd9d92",
       "size_bytes": 13522,
       "git_blob": "c91582661daf2bb7a663e46f17d4a4d42881e988",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
-      "status": "current_review_implementation_or_boundary_record",
-      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
-      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "previous_git_blob": "059f37fb4327a59c7b092288d369b81bb3687fbb"
+      "pre_publication_merge_git_blob": "059f37fb4327a59c7b092288d369b81bb3687fbb"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelScheduledBackup.cs",
@@ -41310,12 +41324,12 @@
       "sha256": "c328fdeeb8853af22e6e382ac26019e1fdbbbfc1259fedcec86eeb8053dbca20",
       "size_bytes": 11240,
       "git_blob": "cb8a39f77774c9c11c924dddb1ea4a09953a0262",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
-      "status": "current_review_implementation_or_boundary_record",
-      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
-      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+      "version": "COMMERCIAL-PRODUCTIZATION-01-IMPLEMENTATION",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation, synthetic/native bounded verification or original-byte custody; production boundaries in the execution results",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "previous_git_blob": "07b063d4fa5aee05295e898ef4fe1767f0f6c524"
+      "pre_publication_merge_git_blob": "07b063d4fa5aee05295e898ef4fe1767f0f6c524"
     },
     {
       "path": "tests/Ipc.Application.Verification/CommercialComponentReview.cs",
@@ -41338,7 +41352,8 @@
       "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
       "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
       "storage_scope": "public_repository",
-      "previous_git_blob": "14e73d353bacdf7490ce82c598a28a16c2851d2d"
+      "pre_publication_merge_git_blob": "14e73d353bacdf7490ce82c598a28a16c2851d2d",
+      "previous_git_blob": "aa73f56b4979cab4ffa95e71f25a0d80bc3dc29a"
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/CommercialPages.cs",
@@ -41353,15 +41368,317 @@
       "previous_git_blob": "5e540410048fd73dbb038c8eda9da968dd639386"
     },
     {
+      "path": "docs/runtime/evidence/unified-release-01/README.md",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "a945f30fcdeeade7768557ff28cfb5989488e8ece147690938596bff19b9eccc",
+      "size_bytes": 1985,
+      "git_blob": "1a97d5759268360fbaf9f628e14b33680d2bfebb"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/baseline-build.log",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "8fab3bc7d8c775d2c8b2ceebea9ef211f399abb72a4321e28ef68c21378222e5",
+      "size_bytes": 3553,
+      "git_blob": "3c6d74833e445c54f8bb81b00e926fa556d395dc"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/baseline-guides.log",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "5b5c1090a48f0bfb8f4bc9372177520652363d61dade5420b6fbc7933c7034b1",
+      "size_bytes": 427,
+      "git_blob": "b32ba7929e4259c7ba3a8bcf12197482685825d0"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/baseline-startup-partial.log",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "a6b9421d6ea24d1965226459a5efa299734a112c0aaf220b5ea0c44da9341818",
+      "size_bytes": 2452,
+      "git_blob": "f87e0300d644d898d0fc3c7b4eda5ee793bce632"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/build-record.interrupted-original.json",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "fe83250d202d7af1c5294d4d87adb3e0aa5a7586c54bd23ee64a0afa786f2dbb",
+      "size_bytes": 19296,
+      "git_blob": "6629f203af828134ac96ae2f3f1334e431448f27"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/candidate-ASSEMBLY.json",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "b47ae50cb3408cda29553d3bb9566bb2f56555308fe5b2dc84b7a688653123e2",
+      "size_bytes": 4096,
+      "git_blob": "6dad819e21f20c97fb18d8745ab8a3ff70a1be0a"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/candidate-DEPENDENCIES.json",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "c97962acfa77acfcafe0857fc92bf3fb31af29f669a12da75841ce1e62baa1f7",
+      "size_bytes": 17894,
+      "git_blob": "75504fcb1cd7116c851994879eca05f72bee84d4"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/candidate-SHA256SUMS",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "edb257758665faa96a71a4133a62f6cb4c61018ea3e78b5684187abfee51364a",
+      "size_bytes": 10859,
+      "git_blob": "0d3cef54ceeab71497937846c9aec0169a4e634b"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/extension-tools-interrupted.log",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "6e1be571db3149a2b82c33c26235f1bf8cb8c7cd4753ba39ddf9a7e0a300f1d7",
+      "size_bytes": 1055,
+      "git_blob": "0c91bc8229f05b6b70edcc992d0b2f2a8e405a19"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/release-gates-unit.log",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "f105d618602fdc1e9a501d95c64582b50cf03bdbb8855954a3929df42e73eb35",
+      "size_bytes": 779,
+      "git_blob": "4b808c8aba2aa3fafbe05c16853b8b8b1aa0fb72"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/runtime-identity.log",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "c50c0e8a6c98412e517477f891c5f57594be14268df893e5ce5203c89aac73d1",
+      "size_bytes": 1440,
+      "git_blob": "25148104ba53772aa4ac96e0802da132b56cc597"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/sportmaster-portable-07e0f7ab1e88.zip.partial",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "e36245a874bd93e0eec7755a23cdc63b7a8e468bfb40920040a965a57c3f9e08",
+      "size_bytes": 4716149,
+      "git_blob": "c5bc693da72d52aa30f0444ccacaa77340542461"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/sportmaster-portable-build.log",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "07c164b2ebac9cacc336de67b2d0a093b18afb70cfd716501c04bd0dfc3808e2",
+      "size_bytes": 4407,
+      "git_blob": "cf7bade03d33741d41ff81b227685ebe7ab8af62"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/stop-receipt.json",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "05f7299b30240f4b53853a424ba59458b61def5635ba31fa2eb4f06055030ba5",
+      "size_bytes": 3382,
+      "git_blob": "fe6d989bb48a81356998e88ca7a03509c1187af2"
+    },
+    {
+      "path": "docs/runtime/evidence/unified-release-01/unified-build-interrupted.log",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/runtime/unified-release-01.md",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "2bb15a31034b6dfa3cf0827ee3bd024abd3887cf842ee49135d76004ba4dbe4e",
+      "size_bytes": 6244,
+      "git_blob": "be7b0b38ef5c0bc3b27ed95da27a3cf018e81e59",
+      "pre_publication_merge_git_blob": "b780251275069d087360ff5fb99b84d8ba7273a1"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-UNIFIED-RELEASE-01.md",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "fb1a47b2370f61ab987dcdcc62e0bbe0a5d3f888cd7b5f2d7de6d769714975a6",
+      "size_bytes": 2870,
+      "git_blob": "9773dcb919d4764197dbd1cb8bf66fcecccdead6",
+      "pre_publication_merge_git_blob": "02948ebb248fcb1387b94840aff0f159ddb3cde7"
+    },
+    {
+      "path": "scripts/release-windows.py",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "62e84463edb61fd462309ee5449d92df390ff07677a7ee87768f1c708eca4421",
+      "size_bytes": 12380,
+      "git_blob": "dde8f3a84935d7bb5af1c5d852329d0bf81761cc",
+      "pre_publication_merge_git_blob": "91bfa81172620c630abda966d1031b1c730c4aaf"
+    },
+    {
+      "path": "scripts/release_build.py",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "8f8711395da30542dba02608107e2fa6d7d0d07c0d85140233e4a47964672608",
+      "size_bytes": 3258,
+      "git_blob": "f288676aee14e623b5756c5a80d6a58bb6e7aa0f"
+    },
+    {
+      "path": "scripts/test_unified_release.py",
+      "version": "UNIFIED-RELEASE-01",
+      "status": "public_generic_source_or_execution_evidence",
+      "purpose": "Authorized unified main release tooling and interrupted execution evidence",
+      "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
+      "storage_scope": "public_repository",
+      "sha256": "0aefc3163b55abf52a1bce7d3c9e8f5b57371605f096ab97d9eefba3dbec9e67",
+      "size_bytes": 6525,
+      "git_blob": "e7cd2b20ddb8bf7e1ac04fc98b292a1096be0bf1",
+      "pre_publication_merge_git_blob": "6152b97df7660b9ca82fec69ca5f2407d81a94a1"
+    },
+    {
       "path": "docs/reviews/pr47-commercial-productization-review.md",
-      "sha256": "165ee4d9848224ee09f2b4ff9f5bb66a6e684a1c878f9816da9740c4067e073c",
-      "size_bytes": 9791,
-      "git_blob": "9ec63a81408388f96eae5a64909cfe4b116511e1",
+      "storage_scope": "public_repository",
       "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
       "status": "current_review_implementation_or_boundary_record",
       "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
       "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
-      "storage_scope": "public_repository"
+      "sha256": "2e15f089cec985a16d10957eac7beec8ee35921e72d206e9e97d74df829f24f8",
+      "size_bytes": 11027,
+      "git_blob": "f7c1d81e705017d8a32140c0c283a42ee492c74b",
+      "previous_git_blob": "6c60c3dd4c724fd7d1e5bb0d07b2232eb864ca16"
+    },
+    {
+      "path": "docs/runtime/publication-merge-20261020.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-MERGE-20261020",
+      "status": "uploaded_source_or_preserved_evidence_unverified",
+      "purpose": "Authorized source/evidence integration; no tests or build in this task",
+      "source": "User-authorized merge of uploaded snapshots and all open PRs",
+      "sha256": "b604617e79a746376642198f012ccea16c32fcb57c769b531a8b88687a5eb34b",
+      "size_bytes": 3706,
+      "git_blob": "26f5be5405d9a48850fd60488307e2623213562b",
+      "pre_publication_merge_git_blob": "adc4e431862cde631d0bac5f13c75c40e02209a1"
+    },
+    {
+      "path": "docs/runtime/publication-snapshot-20261020-commercial.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-MERGE-20261020",
+      "status": "uploaded_source_or_preserved_evidence_unverified",
+      "purpose": "Authorized source/evidence integration; no tests or build in this task",
+      "source": "User-authorized merge of uploaded snapshots and all open PRs",
+      "sha256": "2dab0954a0696997c153bebbe2da8f8a66910389a57bb8163cb7ef8659f2894e",
+      "size_bytes": 1703,
+      "git_blob": "44eb2baa1a2969cd01c44d408b3c52c57293a323"
+    },
+    {
+      "path": "docs/runtime/unified-release-01-resumed.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-MERGE-20261020",
+      "status": "uploaded_source_or_preserved_evidence_unverified",
+      "purpose": "Authorized source/evidence integration; no tests or build in this task",
+      "source": "User-authorized merge of uploaded snapshots and all open PRs",
+      "sha256": "cea448abf52683c1bcc0d9d535845f79e4a13bde4052a47134d04f67efd55aa7",
+      "size_bytes": 1508,
+      "git_blob": "8133d03a1cdee97fec463de6d851e3093ce0b7d3"
+    },
+    {
+      "path": "docs/runtime/unified-windows-release-01.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-MERGE-20261020",
+      "status": "uploaded_source_or_preserved_evidence_unverified",
+      "purpose": "Authorized source/evidence integration; no tests or build in this task",
+      "source": "User-authorized merge of uploaded snapshots and all open PRs",
+      "sha256": "50c7d39c39928855e939db08cc7d14a8db729ed2ed04f8f8ccb04092ff370f3a",
+      "size_bytes": 2173,
+      "git_blob": "900f70f9bd88fbb49d932ef7b0f1287b241261ab"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelMachineOrigin.cs",
+      "storage_scope": "public_repository",
+      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
+      "status": "current_review_implementation_or_boundary_record",
+      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
+      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+      "sha256": "d137c9ead9fb75cd209cf1727a91f9fcc222e653aec839af2df6132a4864f8e2",
+      "size_bytes": 4612,
+      "git_blob": "c51ab06da88f060b2ddd934ebd1b2897788b4373",
+      "previous_git_blob": "5a4a615e97e500630b6de114fe6637f60b36fdec"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-merge-20261020/receipt-before-final-merge.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-MERGE-20261020",
+      "status": "source_upload_or_merge_custody_without_runtime_verification",
+      "source": "Explicit user authorization to submit uploaded snapshots and merge all open PRs",
+      "sha256": "8ad9220c938fe85c9cfe81023e3783bb73abfccefc73b2ec09741b134604d25a",
+      "size_bytes": 1345,
+      "git_blob": "45b452167507cf1078d2cf41c007d29cd51b20ac"
+    },
+    {
+      "path": "docs/runtime/publication-snapshot-20261020-unified-release.md",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-MERGE-20261020",
+      "status": "source_upload_or_merge_custody_without_runtime_verification",
+      "source": "Explicit user authorization to submit uploaded snapshots and merge all open PRs",
+      "sha256": "e8683a9373e942845ac2621d0c6d304ef9ef48e7118dabfcb963030c9b5810be",
+      "size_bytes": 1821,
+      "git_blob": "98acd88ed14280fe1fab36b2326b2425dfb583bf"
     },
     {
       "path": "docs/runtime/evidence/pr47-commercial-productization-review/FirstConfigurationReadiness.cs.txt",
@@ -41720,17 +42037,6 @@
       "sha256": "feba6c31268ccd2c57cea12db096325bfc1179c3c267264c726d084d993038ec",
       "size_bytes": 2975,
       "git_blob": "e7bde3a5d08d72fbe0c1da01fba87465c8c21d8a",
-      "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
-      "status": "current_review_implementation_or_boundary_record",
-      "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
-      "source": "PR47 comprehensive review and merge authorization; WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
-      "storage_scope": "public_repository"
-    },
-    {
-      "path": "src/Ipc.Application.ParcelFlow/ParcelMachineOrigin.cs",
-      "sha256": "d137c9ead9fb75cd209cf1727a91f9fcc222e653aec839af2df6132a4864f8e2",
-      "size_bytes": 4612,
-      "git_blob": "c51ab06da88f060b2ddd934ebd1b2897788b4373",
       "version": "COMMERCIAL-PRODUCTIZATION-01-PR47-REVIEW",
       "status": "current_review_implementation_or_boundary_record",
       "purpose": "Authorized PR47 risk repair, exact frozen-media evidence and preserved qualification boundaries",
@@ -43159,10 +43465,36 @@
     "old_document_task_object": "commercial_productization_01 retained verbatim as historical design handoff",
     "public_customer_archive": "PUBLIC_SUBSET_ONLY"
   },
+  "unified_release_01": {
+    "base_main": "c445b0ec32a3db44f00a1968f3c501aa36eb786f",
+    "frozen_source": "07e0f7ab1e884d355c79ce87d6848ed507a1bf27",
+    "work_package": "docs/work-packages/WP-IPC-UNIFIED-RELEASE-01.md",
+    "results": "docs/runtime/unified-release-01.md",
+    "evidence": "docs/runtime/evidence/unified-release-01/stop-receipt.json",
+    "status": "INTERRUPTED_BY_USER_REQUEST",
+    "complete_windows_media": false,
+    "success_release_receipt": false,
+    "windows_acceptance": "NOT_RUN",
+    "real_integration": "BLOCKED",
+    "historical_d_rv": "UNCHANGED",
+    "historical_releases": "UNCHANGED",
+    "new_checks_after_stop": "NOT_RUN_BY_USER_REQUEST"
+  },
+  "publication_merge_20261020": {
+    "baseline_main": "c445b0ec32a3db44f00a1968f3c501aa36eb786f",
+    "scope": "PR47/48/49 and uploaded snapshot PR50/51",
+    "verification": "NOT_RUN_BY_USER_REQUEST",
+    "receipt": "docs/runtime/publication-merge-20261020.md",
+    "historical_media_source": "bd86fbb01b249f07e25fb12e003fed2a130a9c1c",
+    "windows": "NOT_RUN",
+    "real_integration": "BLOCKED",
+    "final_snapshot_pr": 51,
+    "actual_predecessor_main": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef"
+  },
   "pr47_commercial_productization_review": {
     "reviewed_pr": "https://github.com/yuan2go/importer-pc/pull/47",
     "baseline_main": "c445b0ec32a3db44f00a1968f3c501aa36eb786f",
-    "review_start_head": "c74c01ef87e2a7f6ecfa29856699e74999b167a7",
+    "review_start_head": "aaa30b57cf8f810637b6502748783cdab66bbf36",
     "review_document_first_commit": "ee769f0",
     "runtime_source_commit": "022c898f138a1326eec9134f8f18724a07fea5c4",
     "fixture_commit": "022c898f138a1326eec9134f8f18724a07fea5c4",

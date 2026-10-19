@@ -76,3 +76,7 @@ Sportmaster 左右独立读码及取格口，无 PLC、图片展示或长期图�
 [工具说明](../tools/README.md)规定资料校验范围与原资产问题的记账，不通过新增例外掩盖历史失败。manifest 保存全树原条目与本次真实变更；本包文档检查不冒称全量历史资产 PASS。
 
 本次清理前的 README/INDEX/框架和相关运行指南原字节见[商业化整理前归档](archive/pre-commercial-productization-01/README.md)。更早的完整入口、历史细项仍保留于[并发整合前归档](archive/pre-parallel-task-reconciliation-01/README.md)及各阶段 pre-* 目录。原审查01 PDF 缺失、客户全量资料 PUBLIC_SUBSET_ONLY 和原 D/RV 状态分别保留。
+
+> 发行入口增量（PR48）：[原形成时范围](runtime/unified-windows-release-01.md)。本次整合不执行测试/构建，旧冻结结果不授予最终组合资格。
+
+> 统一发行当前工具及中断交付见[结果](runtime/unified-release-01.md)；全部合并裁决见[不测试合并记录](runtime/publication-merge-20261020.md)。最终 main 组合没有重新测试或出包，旧介质/原 PASS 保持原身份。

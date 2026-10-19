@@ -34,3 +34,7 @@ Windows原生执行、UAC提示/取消、真实账户/ACL/链接路径、并发�
 5. 用新候选指定原停止数据根检查既有恢复/迁移守卫；真设备与Production另按原准入，不因安装成功取得权限。
 
 归档使用同一带Pillow解释器比较固定main与本分支，具体差额见[记录](evidence/windows-first-run-01/archive-delta.json)。历史原资产错误保留，不删断言、不加豁免。
+
+## 提交与PR
+
+设计f6fe0d7、实现61ede7d、安装媒介校验与链接防护1760200、验证归档a6c8282；[PR #44](https://github.com/yuan2go/importer-pc/pull/44)已创建并关联本任务，未合并main。最终回执只更新本报告/计划/manifest，候选仍固定1760200。Windows实际待验边界不变。

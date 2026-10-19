@@ -39254,9 +39254,9 @@
       "purpose": "Automatic first-run setup implementation, instructions or verification evidence",
       "source": "User-authorized Windows startup fix 2026-10-19",
       "storage_scope": "public_repository",
-      "sha256": "9b8fb2b758946bef49ba70bdf70fd637651c96f044d511a8286fbabe816aa72b",
-      "size_bytes": 5753,
-      "git_blob": "5e0d452cc709fc4ffd1d9bf2b21b66f089b5ec0d"
+      "sha256": "f1dcb6db09ae6836b07f72f8bcad960da5c1a54c0036f5b5266b2935ebfb5e80",
+      "size_bytes": 6078,
+      "git_blob": "1d49f1e9e46b1e4811bf53363955e6078131762b"
     },
     {
       "path": "docs/superpowers/plans/2026-10-19-windows-first-run.md",
@@ -39265,9 +39265,9 @@
       "purpose": "Automatic first-run setup implementation, instructions or verification evidence",
       "source": "User-authorized Windows startup fix 2026-10-19",
       "storage_scope": "public_repository",
-      "sha256": "1a30cc760954a14965277bb9418d81274e8f3d77f1718537f7b0dc1d45f0291c",
-      "size_bytes": 3909,
-      "git_blob": "ab94f6ba0f1801d47e4c3f8ee1f83fbd7d025b9e"
+      "sha256": "2b89c463939b9e8ca1eaabfb83a8596a06ef0cebdc0d8893c791dcca6cefacce",
+      "size_bytes": 4061,
+      "git_blob": "0f2ec01b46581a754330fb57f616e1a21d0c0fbe"
     },
     {
       "path": "docs/work-packages/WP-IPC-WINDOWS-FIRST-RUN-01.md",

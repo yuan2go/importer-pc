@@ -39,4 +39,6 @@ Files: `docs/INDEX.md`, `docs/design/framework.md`, `framework-decisions.md`, `d
 - [x] 改当前指引，保留旧证据，说明首次UAC、默认数据根、现有策略错误、取消及重试；不再要求基本参考启动手工provision。
 - [x] 更新随包启动说明，提交源码；从固定SHA构建portable和win-x64，解包核hash，portable新根snapshot/quit并检查SQLite integrity；不使用生产设备。
 - [x] 结果记录实际命令/退出码/固定源码与媒介hash，更新manifest。`git diff --check`、指南测试及同基线归档差额核对。
-- [ ] 开发分支推送、创建main PR并附加当前任务；不合并main，报告Windows实际NOT_RUN及现场BLOCKED。
+- [x] 开发分支推送、创建main PR并附加当前任务；不合并main，报告Windows实际NOT_RUN及现场BLOCKED。
+
+交付PR：https://github.com/yuan2go/importer-pc/pull/44 。固定候选源码1760200，后续证据提交只更新文档/manifest，未合并main。

@@ -118,8 +118,16 @@ def verify_package(directory, application, target, source):
                         raise ValueError('Helper/desktop bytes differ: ' + dll.name)
                     peers.append(dll.name)
             result['IdenticalSharedDlls'] = peers
-    elif target != 'portable':
-        raise ValueError('Legacy assembly does not have this Windows installer')
+    else:
+        if target != 'portable':
+            raise ValueError('Legacy assembly does not have this Windows installer')
+        deps = read(directory / 'app/Ipc.Assembly.deps.json')['libraries']
+        assembly = 'Ipc.Supply' if application == 'supply' else 'Ipc.Inspection'
+        versions = [n.rsplit('/', 1)[1] for n in deps if n.startswith(assembly + '/')]
+        expected = next(c['version'] for c in read(directory / 'composition.lock.json')['components'] if c['id'] == application)
+        if versions != [expected]:
+            raise ValueError('Legacy compiled business and composition version differ')
+        result['BusinessVersion'] = versions[0]
     return result
 
 
@@ -160,6 +168,7 @@ def main():
                   WindowsAcceptance='NOT_RUN', PhysicalIntegration='BLOCKED', Assurance='SIMULATION_REFERENCE_ONLY',
                   Authenticode='NOT_SIGNED_NO_CERTIFICATE_PROVIDED',
                   Inputs={str(f.relative_to(ROOT)).replace('\\', '/'): sha(f) for f in sorted(ROOT.glob('src/*/packages*.lock.json'))}, Commands=[], Packages=[])
+    record['Toolchain'] = subprocess.check_output([a.dotnet, '--info'], cwd=ROOT, text=True, encoding='utf-8')
     write(output / 'build-record.json', record)
     env = dict(os.environ, PYTHONUTF8='1', DOTNET_CLI_TELEMETRY_OPTOUT='1')
     try:
@@ -168,6 +177,7 @@ def main():
             command = [sys.executable, str(ROOT / 'scripts/package-application.py'), '--application', application] if application in PARCEL else [sys.executable, str(ROOT / 'scripts/package-business.py'), '--composition', 'supply-assembly' if application == 'supply' else 'inspection-reference']
             command += ['--target', target, '--output', str(output / name), '--dotnet', a.dotnet]
             record['Commands'].append(command)
+            write(output / 'build-record.json', record)
             with (output / (name + '.log')).open('xb') as log:
                 subprocess.run(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
             record['Packages'].append(verify_package(output / name, application, target, source))

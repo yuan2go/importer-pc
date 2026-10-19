@@ -18,9 +18,12 @@ class ReleaseTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.output = Path(self.temp.name) / 'candidate'
         self.output.mkdir()
+        (self.output / 'app').mkdir()
         self.source = release.git('rev-parse', 'HEAD')
         release.write(self.output / 'ASSEMBLY.json', dict(SourceCommit=self.source, Business='inspection'))
         release.write(self.output / 'DEPENDENCIES.json', dict(SourceCommit=self.source))
+        release.write(self.output / 'app/Ipc.Assembly.deps.json', dict(libraries={'Ipc.Inspection/1.0.0': {}}))
+        release.write(self.output / 'composition.lock.json', dict(components=[dict(id='inspection', version='1.0.0')]))
 
     def seal(self):
         archive = Path(str(self.output) + '.zip')
@@ -80,6 +83,12 @@ class ReleaseTests(unittest.TestCase):
         for name in ('../file', '/file', 'C:/file', 'app\\file', 'app//file', './file'):
             with self.subTest(name=name), self.assertRaises(ValueError):
                 release.safe_name(name)
+
+    def test_resealed_wrong_legacy_version_rejected(self):
+        release.write(self.output / 'app/Ipc.Assembly.deps.json', dict(libraries={'Ipc.Inspection/9.0.0': {}}))
+        self.seal()
+        with self.assertRaises(ValueError):
+            self.verify()
 
 
 if __name__ == '__main__':

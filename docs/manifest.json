@@ -371,9 +371,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "5fc4666c54ccb9bd4389d93e9b9990add6305d287feb0b14dbc88f812e1733d5",
-      "size_bytes": 7340,
-      "git_blob": "52bda0a90bc1b383e4a5877ee263c6b0da35c461",
+      "sha256": "03148ff13e63e79ee39a9b2e6f0d640caebccbbf2ce973489701dd22c4ab93f3",
+      "size_bytes": 7779,
+      "git_blob": "89c644d1b33ff5d9cfa747d13b39d614aab1e6c3",
       "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized original audit publication and current-main/PR handoff; no product changes",
@@ -35726,6 +35726,39 @@
       "sha256": "1e815c1b5d83713c6b9016e7db5b7270327010a4b9ec20f99e28f1bf30c40602",
       "size_bytes": 7627,
       "git_blob": "62eee7820e60eea1515d93b6b6b80949abeb4248"
+    },
+    {
+      "path": "docs/reviews/ux-commercial-quality-audit-01/README.md",
+      "version": "ux-commercial-quality-audit-01-publication",
+      "status": "independent_audit_or_implementation_handoff",
+      "purpose": "User-authorized original UX audit PDF publication and current-main/PR37 implementation handoff; no product changes",
+      "source": "2026-10-19 explicit user request to upload the audit PDF to main and deliver the next Codex prompt",
+      "storage_scope": "public_repository",
+      "sha256": "28899ef4cf86bdbdcf905444caac034b1304544260fe542d9d40fb4bc3f2da8b",
+      "size_bytes": 10772,
+      "git_blob": "960d63640715c21f849cc7548573e1905648ab2e"
+    },
+    {
+      "path": "docs/reviews/ux-commercial-quality-audit-01/Codex-next-phase.md",
+      "version": "ux-commercial-quality-audit-01-publication",
+      "status": "independent_audit_or_implementation_handoff",
+      "purpose": "User-authorized original UX audit PDF publication and current-main/PR37 implementation handoff; no product changes",
+      "source": "2026-10-19 explicit user request to upload the audit PDF to main and deliver the next Codex prompt",
+      "storage_scope": "public_repository",
+      "sha256": "65238f5d8e08018e92c372f53de7852d7f8b8066104ba497ccb4f764c93148d5",
+      "size_bytes": 4634,
+      "git_blob": "4ecb88ab4ee2a136c045ab0db07d5ab62b7d8ab1"
+    },
+    {
+      "path": "docs/reviews/ux-commercial-quality-audit-01/WP-IPC-UX-COMMERCIAL-QUALITY-AUDIT-01.pdf",
+      "version": "ux-commercial-quality-audit-01-publication",
+      "status": "independent_audit_or_implementation_handoff",
+      "purpose": "User-authorized original UX audit PDF publication and current-main/PR37 implementation handoff; no product changes",
+      "source": "2026-10-19 explicit user request to upload the audit PDF to main and deliver the next Codex prompt",
+      "storage_scope": "public_repository",
+      "sha256": "76702aec0ee5b46cf7c03df32ec4e9ed66f950055b4399fe86484dff31a056a9",
+      "size_bytes": 276445,
+      "git_blob": "e032cc631abb8147687eaf9d8fd40a3d7b43ac8c"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

@@ -2,6 +2,8 @@
 
 ## 最新独立审查与实施交接
 
+[UX商用质量审查01原PDF与发布时复核](reviews/ux-commercial-quality-audit-01/README.md) · [下一阶段Codex提示词](reviews/ux-commercial-quality-audit-01/Codex-next-phase.md)。原报告固定main为`8f886f44bec01779318ec078a569500ab1beab56`；发布时开放PR37已有UX整改，按实际行为继承并补差额，不能将其本地1.3.0候选当作main已交付。此次仅报告与交接发布，原结论不倒写。
+
 [审查03不测试发布与合并记录](runtime/publication-audit03-20261019.md) · [PR34原整改报告](runtime/commercial-quality-fix-03-results.md)。当前实现继承PR35的1.2.8/ABI1.8/DB7，原报告中的OPEN及旧候选按形成时身份解释。
 
 [审查03工程交付结果](runtime/commercial-audit03-delivery-results.md) · [PR #35](https://github.com/yuan2go/importer-pc/pull/35) · [最终产物hash与证据](runtime/evidence/commercial-audit03-delivery/corrected-565abcc/ARTIFACTS.json)。00/01/02及03源码、05媒介/维护和06参考故障路径已落实；真实组合、Windows原生与目标负载/现场门禁按逐包剩余读取。

@@ -17,3 +17,11 @@ PR38已按精确head合并为`53bcb798853c0c6a0e3b6c5a0c2a85a3001a7103`。PR37�
 [最终参考预发布1.3.2](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-6ce1d6d)已有15个附件，固定构建源码`6ce1d6d0b109bd6a3d9490fac176122b4670b90b`；包括5ZIP、3IPCX、3身份文件、公钥参考信任、原验证证据ZIP、ARTIFACTS及SHA256SUMS。原字节不重建、不重签、不覆盖，旧f1a655c发布及203c1a8/7036488未发布本地尝试保持原身份。
 
 [原PR37报告](ux-commercial-fix-01-results.md)、[WP-01～07结果](ux-commercial-closure-02-results.md)、[最终续修报告](ux-commercial-rereview-03-results.md)、原PDF/HTML/图册、D/RV及历史267项资产错误均保留。原PASS/FAIL不是本轮新运行结果。Windows原生交互、控件/DPI/HID/安装及目标负载 **NOT_RUN**；真实SDK、权威Unknown合同及商业组合仍受阻，商用与现场未放行。软件暂停不是安全急停。
+
+## 实际合并、远端产物与数量截止点
+
+PR39后继head `5866fae21ace88743aa6e7e8aa0e43bb499236d7`已实际合并为`f1549822683b64d858349af0867e62ba92432d75`。开始时3个开放PR37/38/39全部MERGED，截止该main时Open PR为0。相对开工远端main，唯一提交22笔（16普通、6合并）；PR37与PR39共享的提交只计一次，不相加各分支ahead。
+
+本最终回执另经独立PR增加1个普通提交和1个GitHub merge，合并后总计24＝17普通＋7合并。其中纳入原任务唯一17笔，本发布流程新建7笔＝1笔回执内容＋2笔分支整合＋4笔GitHub PR merge。最后实际main、回执PR及总数由Git/GitHub读取，避免自引用提交SHA。
+
+[最终机器回执](evidence/ux-publication-20261019/final-publication-receipt.json)逐项记录原/最终head、实际merge和15项资产。此次重新读取GitHub state、长度和SHA256，与原PR39冻结回执全部一致；未下载重验、重新打包或新签名。skill的原许可证、UPSTREAM及全部文件入清单；原生/真实合同和商用门禁没有因Git合并或资产回读关闭。

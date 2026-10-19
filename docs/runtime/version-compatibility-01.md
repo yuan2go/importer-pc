@@ -27,7 +27,7 @@ python3 scripts/application_compatibility.py --record /evidence/new-run.json --p
 python3 scripts/application_compatibility.py --record /evidence/new-run.json --package /unpacked --configuration /evidence/effective.json
 ```
 
-business-identity只读编译版本和内嵌声明；deployment-check同时执行版本兼容、原精确包和语义校验，不连接设备/外呼。ProviderSets每个集合列出可共同使用的成员，选中集合内可省略业务未启用的可选能力；禁止跨集合拼接成员。本分支业务1.3.2声明的新精确参考能力包为2.2.2，示例reader为1.3.2，Sportmaster RCS为1.1.2，必须针对本次宿主公共DLL重新构建并分别记录实际签名/manifest/包hash；此声明不表示媒介已生成或运行已通过。旧1.4.0/1.0.9及PR23/24/26各自候选继续按原身份读取。
+business-identity只读编译版本和内嵌声明；deployment-check同时执行版本兼容、原精确包和语义校验，不连接设备/外呼。ProviderSets每个集合列出可共同使用的成员，选中集合内可省略业务未启用的可选能力；禁止跨集合拼接成员。本分支业务1.3.2声明的新精确参考能力包为2.2.3，示例reader为1.3.3，Sportmaster RCS为1.1.3，必须针对本次宿主公共DLL重新构建并分别记录实际签名/manifest/包hash；此声明不表示媒介已生成或运行已通过。旧1.4.0/1.0.9及PR23/24/26各自候选继续按原身份读取。
 
 声明兼容、静态校验、运行PASS、Production资格和现场验收是不同事实。组合记录及其哈希用于身份和完整性核对，不自行证明发布者信任或现场批准；现有独立信任/资格机制继续生效。记录中未执行的组合没有PASS，不根据同版本号或同一集合推断其他组合已验证。业务版本以项目声明识别，具体交付仍用SourceCommit和文件SHA区分；不允许用手改版本号替代新发布和验证。
 

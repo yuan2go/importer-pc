@@ -32,7 +32,7 @@ class CompatibilityTests(unittest.TestCase):
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             selected = resolve(root/'config/compositions.json', application+'-reference')
             version, policy = read_business(root, application, selected)
-            self.assertEqual(version['BusinessVersion'], '1.3.1')
+            self.assertEqual(version['BusinessVersion'], '1.3.2')
             self.assertEqual(version['CompatibilitySha256'], sha(policy))
             selected['components'][-2]['version'] = '9.0.0'
             # Change the actual business declaration regardless of topological order.
@@ -41,9 +41,9 @@ class CompatibilityTests(unittest.TestCase):
 
     def test_current_signed_provider_versions_do_not_relabel_old_packages(self):
         root = Path(__file__).resolve().parent.parent
-        versions = {'reference.parcel-capabilities': ('2.2.1', '2.1.6'),
-                    'reference.barcode': ('1.3.1', '1.2.6'),
-                    'sportmaster.rcs-task': ('1.1.1', '1.0.8')}
+        versions = {'reference.parcel-capabilities': ('2.2.3', '2.2.2'),
+                    'reference.barcode': ('1.3.3', '1.3.2'),
+                    'sportmaster.rcs-task': ('1.1.3', '1.1.2')}
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             policy = json.loads((root/'config/compatibility'/f'{application}.json').read_bytes())
             for group in policy['ProviderSets']:

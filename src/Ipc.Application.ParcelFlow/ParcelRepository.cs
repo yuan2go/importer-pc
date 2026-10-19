@@ -81,6 +81,7 @@ public sealed partial class ParcelRepository : IDisposable
             if (StorageVersion >= 4 && StorageVersion < storageVersion) ValidateRawInventory();
             Database.Migrate(db, application, migrations.Take(storageVersion).ToArray());
             StorageVersion=storageVersion;
+            RepairTerminalRecoveryFlags(application);
             using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT revision,paused FROM parcel_meta WHERE id=1";
             using (var r = cmd.ExecuteReader())
             { if (!r.Read()) throw new InvalidDataException("Missing parcel metadata"); Revision = r.GetInt64(0); Paused = r.GetBoolean(1); }

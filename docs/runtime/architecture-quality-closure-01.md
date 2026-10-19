@@ -38,7 +38,7 @@ Attached上传失败/Unknown/无结果/原能力缺失只进入Upload.State/Fail
 
 工作台及公共底栏的当前件以所选Positions.CurrentOperation及相同投递位的Operation.Id定位；观察时间仅用于历史排序，不能选择当前件。当前ID缺失或归属不符时显示未取得，不回退到历史件。显示当前投递位、条码和完整命令Owner；历史详情单独显示所选Owner及可用命令。历史选择不改变当前位，刷新和双窗保持本窗目标；发送使用显示时的修订，冲突要求刷新。Sportmaster同时显示left/right的reader、入场、作业和WCS格口，模拟输入显式选择位。原UI v1.1 HTML/CSS/JS与交接为信息层级依据，没有复制其旧共享箱/数量/AGV规则。没有新增图片区域或DirectPlc完整UI。Windows交互另验。
 
-快照读取失败或最后成功读取超过3秒后，classic、supply-station和辅助窗口均将旧状态标为失效，显示最后成功时间，关闭依赖当前投影的新入场、恢复、继续、核对及维护写入；独立软件暂停入口保留并重新读取应用修订。新成功读取才恢复可用性，旧请求的迟到成功或失败不能覆盖更新读取结果。此为CQ03整改目标，执行证据见[整改工作包](../work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md)，未验证前不视为已经通过。
+快照读取失败或最后成功读取超过3秒后，classic、supply-station和辅助窗口均将旧状态标为失效，显示最后成功时间，关闭依赖当前投影的新入场、恢复、继续、核对及维护写入；独立软件暂停入口保留并重新读取应用修订。新成功读取才恢复可用性，旧请求的迟到成功或失败不能覆盖更新读取结果。CQ03实现及执行边界见[整改工作包](../work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md)。
 
 ## 配置、安装与安全卸载
 

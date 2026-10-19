@@ -46,4 +46,5 @@ P2：安装/恢复/卸载共用一个发行读取与验证方法，均传实际�
 
 上述整合候选形成时的业务版本为1.2.3，Application.Contracts1.7.0/DB6。更新原ProviderSets为新宿主的reference.parcel-capabilities2.1.1和barcode1.2.1，并增Sportmaster RCS1.0.3允许组合，保留其他同组可选能力。旧1.2.1/2.0.1/RCS1.0.1候选及PASS不改，不重签覆盖。业务发布、内嵌声明、composition、维护和同一打包入口同步。
 
-当前main的业务1.2.4、参考能力2.1.2、reader1.2.2及RCS1.0.4见[并发整合报告](../runtime/parallel-task-reconciliation-01.md)；上述1.2.3/2.1.1/1.2.1/1.0.3为历史候选，不能作为当前安装默认值。
+整合main的业务1.2.4、参考能力2.1.2、reader1.2.2及RCS1.0.4见[并发整合报告](../runtime/parallel-task-reconciliation-01.md)；上述1.2.3/2.1.1/1.2.1/1.0.3为历史候选，不能作为当前安装默认值。
+本次[CQ03整改](../work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md)候选业务为1.2.5；公共契约API及SQL1–6不改；ProviderSets同步新不可变能力包2.1.3、reader1.2.3和RCS1.0.5。精确扩展是否可沿用仍按目标公共DLL校验，版本号不授予加载或现场资格。

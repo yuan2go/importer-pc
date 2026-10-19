@@ -55,6 +55,12 @@ with tarfile.open(fileobj=export.stdout, mode='r|') as snapshot:
             member = member.replace(name=member.name.replace('/', os.sep))
         return tarfile.data_filter(member, destination)
     snapshot.extractall(extraction_root, filter=publication_member)
+# A streaming tar reader may stop at its EOF marker while git still writes
+# padding. Drain it before wait(): the smaller Windows pipe can otherwise
+# deadlock after an apparently complete extraction.
+while export.stdout.read(65536):
+    pass
+export.stdout.close()
 if export.wait(): raise ValueError('Frozen source export failed')
 selection = resolve(build_source / 'config/compositions.json', a.composition or a.application + '-reference')
 if selection['product']['business'] != a.application:

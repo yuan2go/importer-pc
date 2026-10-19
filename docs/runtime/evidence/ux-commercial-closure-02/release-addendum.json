@@ -1,0 +1,8 @@
+{
+  "ProductSourceCommit": "f1a655c7d14e4ee012ea17694533f996a03c9246",
+  "Document": "VERSIONS-ERRATA.md",
+  "DocumentSha256": "321703036b85d3a10961e5ac87c24d69ec2543f20754133f3ecee91c6c3012c6",
+  "RemoteReadback": "MATCH",
+  "OriginalAssetsChanged": false,
+  "Purpose": "Correct one inherited version paragraph; current guide differs after frozen product; no new product build or relabelled old candidate"
+}

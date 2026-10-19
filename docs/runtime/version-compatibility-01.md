@@ -41,4 +41,4 @@ business-identity只读编译版本和内嵌声明；deployment-check同时执�
 python3 scripts/application_compatibility.py --record /evidence/legacy-run.json --package /original-unpacked --record-sha256 ORIGINAL_TRUSTED_RECORD_SHA256
 ```
 
-本分支交付继续使用同一package-application.py的固定git archive快照；源码、内嵌声明、配置、随包指南及SourceRevisionId同源。业务1.3.0、Contracts1.9.0/DB7与新精确扩展分别识别，不覆盖旧1.2.1/2.0.1/1.0.1候选。PR29原历史基线和失败说明保存在[原字节](../archive/pre-parallel-task-reconciliation-01/README.md)及原结果/证据，旧PASS不表示当前组合已验。安装、恢复、卸载共用含实际业务程序集的发行校验；Windows UAC/ACL/真实维护交互NOT_RUN，真实设备/协议/现场BLOCKED。
+本分支交付继续使用同一package-application.py的固定git archive快照；源码、内嵌声明、配置、随包指南及SourceRevisionId同源。业务1.3.1、Contracts1.9.0/DB7与新精确扩展分别识别，不覆盖旧1.2.1/2.0.1/1.0.1候选。PR29原历史基线和失败说明保存在[原字节](../archive/pre-parallel-task-reconciliation-01/README.md)及原结果/证据，旧PASS不表示当前组合已验。安装、恢复、卸载共用含实际业务程序集的发行校验；Windows UAC/ACL/真实维护交互NOT_RUN，真实设备/协议/现场BLOCKED。

@@ -1,0 +1,89 @@
+{
+  "SourceCommit": "f1a655c7d14e4ee012ea17694533f996a03c9246",
+  "BusinessVersion": "1.3.1",
+  "ApplicationContracts": "1.9.0",
+  "ParcelDatabase": 7,
+  "ConfigSchema": [
+    1,
+    2,
+    3
+  ],
+  "ExtensionVersions": {
+    "reference.parcel-capabilities": "2.2.1",
+    "reference.barcode": "1.3.1",
+    "sportmaster.rcs-task": "1.1.1"
+  },
+  "Files": [
+    {
+      "File": "barcode.ipcx",
+      "Bytes": 7589,
+      "Sha256": "5cd78bac40e63c8b8c71d92fa113c0b2885ee54a3206d3501d43186a3fd1fdc0"
+    },
+    {
+      "File": "barcode.ipcx.identity.json",
+      "Bytes": 1191,
+      "Sha256": "7566d2fcad9991cbc9ddbbb0c2561d12efaeaa2956e7fc3694198d3d17b3f377"
+    },
+    {
+      "File": "capabilities.ipcx",
+      "Bytes": 20603,
+      "Sha256": "4ca008738e4e4cf8a9163c7c9e02c7905ac684e9388beb989c4c74b6ea7ee3ac"
+    },
+    {
+      "File": "capabilities.ipcx.identity.json",
+      "Bytes": 1308,
+      "Sha256": "1dd9e4aa1967be8cf35662a87dbf7c594e4462027ee5fd346d3690761d67d34e"
+    },
+    {
+      "File": "direct-plc-core.zip",
+      "Bytes": 18620101,
+      "Sha256": "8357f2fda0f6301bc75101f2f7e9c5420728ea77df5a12e7e5ee74a77b922b13"
+    },
+    {
+      "File": "rcs.ipcx",
+      "Bytes": 17734,
+      "Sha256": "fd3d6a284054f1b793d1a3edf35689835bd037f30cbcf961b9cd8ad8e018301d"
+    },
+    {
+      "File": "rcs.ipcx.identity.json",
+      "Bytes": 1289,
+      "Sha256": "471fde5955a2ce843bd816ec60eeebd9586ccedb659198dda0aac25f41c3b894"
+    },
+    {
+      "File": "reference-trust.json",
+      "Bytes": 786,
+      "Sha256": "646b510c511190a9ce64ccabf669a9d72c7de9ae1dbe4e5092f9631c42e10fcf"
+    },
+    {
+      "File": "sportmaster-core.zip",
+      "Bytes": 18659161,
+      "Sha256": "51b03e8593a1cf948670adc3f1b4b1a5bbed9418f076e430950fdfd1d3ebe534"
+    },
+    {
+      "File": "sportmaster-selected-portable.zip",
+      "Bytes": 18707173,
+      "Sha256": "e7a98863be8d69758377d7191df56cde8d2d49f72ab9798d321509a35367e171"
+    },
+    {
+      "File": "sportmaster-selected-win-x64.zip",
+      "Bytes": 104800930,
+      "Sha256": "88db4b80a5965ad2bb22cb82cd11ed39c00965732b2a225e5c6f7e2ac35ae2bb"
+    },
+    {
+      "File": "wcs-to-plc-core.zip",
+      "Bytes": 18645646,
+      "Sha256": "a5f73aaa87768b137a523f26481824a301c2e33903b3dff74fb5979fec9a4d85"
+    },
+    {
+      "File": "raw-verification-evidence.zip",
+      "Bytes": 120887,
+      "Sha256": "02f218ea8b723ffc1e6bf855814e2c4f615468e40e699cbafcaa58ebecb9b53e"
+    }
+  ],
+  "WindowsNative": "NOT_RUN",
+  "RealSdkProtocolField": "BLOCKED_PER_CAPABILITY",
+  "PrivateKeysIncluded": false,
+  "Publication": "REFERENCE_PRERELEASE",
+  "ReleaseUrl": "https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-f1a655c",
+  "RawEvidence": "raw-verification-evidence.zip retains original log/record/event bytes; public JSON copies use explicit local path labels; hash custody in log-custody.json"
+}

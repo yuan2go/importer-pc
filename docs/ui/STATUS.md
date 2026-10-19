@@ -1,3 +1,5 @@
+> 当前增量与实测边界见[UX闭环结果](../runtime/ux-commercial-closure-02-results.md)。PR37有效实现继承；慢快照/历史选择归属、Busy接线、维护表格编辑和实际客户区验证器已补。Windows原生仍NOT_RUN，原HTML/PNG及RV原结论不改。
+
 > 当前分支：业务1.3.0、Application.Contracts1.9.0、Parcel DB7。按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)实施，正式Windows/现场验收后置；原SHA/PASS/FAIL及原实物保持历史身份。修改前状态固定原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。
 
 # UI实现与实物状态

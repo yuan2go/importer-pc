@@ -1,0 +1,25 @@
+  正在确定要还原的项目…
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/source-snapshot/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 526 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/source-snapshot/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 526 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/source-snapshot/src/Ipc.Components/Ipc.Components.csproj (用时 526 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/source-snapshot/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 526 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/source-snapshot/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 526 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/source-snapshot/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 526 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/source-snapshot/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 526 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/source-snapshot/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 526 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/source-snapshot/src/Ipc.Platform/Ipc.Platform.csproj (用时 4 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/source-snapshot/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 4 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/source-snapshot/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 8 毫秒)。
+  Ipc.Platform -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/build-intermediates/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/build-intermediates/bin/Ipc.Application.DirectPlc/release/Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Assembly -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core/app/
+{"Package": "<source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core.zip", "Sha256": "8357f2fda0f6301bc75101f2f7e9c5420728ea77df5a12e7e5ee74a77b922b13", "SourceCommit": "f1a655c7d14e4ee012ea17694533f996a03c9246", "Application": "direct-plc", "Target": "portable", "BusinessVersion": "1.3.1", "BusinessAssembly": "Ipc.Application.DirectPlc.dll", "CompatibilitySha256": "D9EDC5C757039FE7D85FED790C983AE21D39BD617E123AC00CB983D520377048"}

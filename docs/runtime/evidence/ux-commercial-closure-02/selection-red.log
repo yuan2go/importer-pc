@@ -12,9 +12,9 @@ PASS UX-PRESENTATION: presentation never changes original request bytes or ident
 PASS UX-PRESENTATION: normal, pending, accepted, rejected, unknown and stale have separate semantic backgrounds and text icons
 PASS UX-PRESENTATION: RCS lifecycle evidence never claims upstream readiness
 Unhandled exception. System.Exception: FAIL UX-PRESENTATION: A to B during slow snapshot retains B row, details and command owner in classic
-   at UxCommercialPresentation.Check(Boolean value, String reason) in /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/tests/Ipc.Application.Verification/UxCommercialPresentation.cs:line 14
-   at UxCommercialPresentation.VerifySelectionInterleaving(UxPresentationProbe probe, ParcelSnapshot baseline, ParcelOperation a, ParcelOperation b) in /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/tests/Ipc.Application.Verification/UxCommercialPresentation.cs:line 80
-   at UxCommercialPresentation.Run(String workspace, String root) in /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/tests/Ipc.Application.Verification/UxCommercialPresentation.cs:line 60
-   at UxCommercialPresentation.Run(String workspace, String root) in /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/tests/Ipc.Application.Verification/UxCommercialPresentation.cs:line 64
-   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 16
+   at UxCommercialPresentation.Check(Boolean value, String reason) in <source-root>/tests/Ipc.Application.Verification/UxCommercialPresentation.cs:line 14
+   at UxCommercialPresentation.VerifySelectionInterleaving(UxPresentationProbe probe, ParcelSnapshot baseline, ParcelOperation a, ParcelOperation b) in <source-root>/tests/Ipc.Application.Verification/UxCommercialPresentation.cs:line 80
+   at UxCommercialPresentation.Run(String workspace, String root) in <source-root>/tests/Ipc.Application.Verification/UxCommercialPresentation.cs:line 60
+   at UxCommercialPresentation.Run(String workspace, String root) in <source-root>/tests/Ipc.Application.Verification/UxCommercialPresentation.cs:line 64
+   at Program.<Main>$(String[] args) in <source-root>/tests/Ipc.Application.Verification/Program.cs:line 16
    at Program.<Main>(String[] args)

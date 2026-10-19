@@ -1,26 +1,22 @@
 # 统一资料与实施入口
 
-## 本轮UX修复
-
-用户要求先修复、后验收。本次[UX修复工作包](work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)继承下列main1.2.8/ABI1.8/DB7，先修UXC-01～07的源码/页面/维护闭环，正式Windows/现场验收后置；实际完成与候选身份见[修复结果](runtime/ux-commercial-fix-01-results.md)和[证据](runtime/evidence/ux-commercial-fix-01/README.md)，不用计划版本替换既有发行事实。
-
 ## 本轮有效入口
 
-[UX审查WP-01～07工程闭环](work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为当前执行入口。开发分支显式依赖PR37固定2d60fdc，远端PR37未合并；main 1.2.8、PR37本地1.3.0和本轮候选分别记录。原审查及下列审查03记录按形成时身份保留。
+[UX审查WP-01～07工程闭环](work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为当前执行入口，[结果/身份/剩余](runtime/ux-commercial-closure-02-results.md)、[可取得参考候选](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-f1a655c)。开发分支显式依赖PR37固定2d60fdc，远端PR37未合并；main 1.2.8、PR37本地1.3.0和本轮候选分别记录。原审查及下列审查03记录按形成时身份保留。
 
 ## 最新独立审查与实施交接
 
-[UX商用质量审查01原PDF与发布时复核](reviews/ux-commercial-quality-audit-01/README.md) · [下一阶段Codex提示词](reviews/ux-commercial-quality-audit-01/Codex-next-phase.md)。原报告固定main为`8f886f44bec01779318ec078a569500ab1beab56`；发布时开放PR37已有UX整改，按实际行为继承并补差额，不能将其本地1.3.0候选当作main已交付。此次仅报告与交接发布，原结论不倒写。
+[UX商用质量审查01原PDF与发布时复核](reviews/ux-commercial-quality-audit-01/README.md) · [下一阶段Codex提示词](reviews/ux-commercial-quality-audit-01/Codex-next-phase.md)。原报告固定main为`8f886f44bec01779318ec078a569500ab1beab56`；发布时开放PR37已有UX整改，按实际行为继承并补差额，不能将其本地1.3.0候选当作main已交付。原报告发布仅归档交接；本轮工程结果另记，原结论不倒写。
 
-[审查03不测试发布与合并记录](runtime/publication-audit03-20261019.md) · [PR34原整改报告](runtime/commercial-quality-fix-03-results.md)。当前实现继承PR35的1.2.8/ABI1.8/DB7，原报告中的OPEN及旧候选按形成时身份解释。
+[审查03不测试发布与合并记录](runtime/publication-audit03-20261019.md) · [PR34原整改报告](runtime/commercial-quality-fix-03-results.md)。审查03历史实现为PR35的1.2.8/ABI1.8/DB7，原报告中的OPEN及旧候选按形成时身份解释。
 
 [审查03工程交付结果](runtime/commercial-audit03-delivery-results.md) · [PR #35](https://github.com/yuan2go/importer-pc/pull/35) · [最终产物hash与证据](runtime/evidence/commercial-audit03-delivery/corrected-565abcc/ARTIFACTS.json)。00/01/02及03源码、05媒介/维护和06参考故障路径已落实；真实组合、Windows原生与目标负载/现场门禁按逐包剩余读取。
 
-[商业质量审查03原报告与证据](reviews/commercial-quality-audit-03/README.md) · [下一阶段Codex提示词](reviews/commercial-quality-audit-03/Codex-next-phase.md)。固定审查main为ec698bd；PR34的形成时覆盖与剩余按原发布交接读取；本轮合并不倒写原审查结论。现行实施入口为[审查03交付工作包](work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)，其中列明00～06的执行依赖、支持组合及待确认输入。原审查与报告发布按形成时身份保留。
+[商业质量审查03原报告与证据](reviews/commercial-quality-audit-03/README.md) · [下一阶段Codex提示词](reviews/commercial-quality-audit-03/Codex-next-phase.md)。固定审查main为ec698bd；PR34的形成时覆盖与剩余按原发布交接读取；本轮合并不倒写原审查结论。审查03形成时实施入口为[审查03交付工作包](work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)，其中列明00～06的执行依赖、支持组合及待确认输入。原审查与报告发布按形成时身份保留。
 
 ## 当前有效阅读顺序
 
-1. [AGENTS](../AGENTS.md)、[UX修复工作包](work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)及[实施计划](superpowers/plans/2026-10-19-ux-commercial-fix-01.md)，继承[审查03交付工作包](work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)；既有组合、来源PR及历史验证见[整合报告](runtime/parallel-task-reconciliation-01.md)。旧任务的合并授权只适用于其原PR和固定head。
+1. [AGENTS](../AGENTS.md)、[本轮UX闭环工作包](work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)，继承PR37的[原工作包](work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)/[原实施计划](superpowers/plans/2026-10-19-ux-commercial-fix-01.md)及[审查03交付工作包](work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)；既有组合、来源PR及历史验证见[整合报告](runtime/parallel-task-reconciliation-01.md)。旧任务的合并授权只适用于其原PR和固定head。
 2. [框架](design/framework.md)、[F决策](design/framework-decisions.md)、[受控装配/扩展](design/controlled-extensions.md)、[19职责](design/application-capability-19.md)、[20可靠性](design/capability-reliability-20.md)、[22拓扑](design/application-architecture-22.md)和[质量/恢复设计](design/architecture-quality-closure-01.md)。仍是三个独立Application，无通用主流程、第二配置账或第二扩展设施。
 3. [首次运行](runtime/getting-started.md)、[Windows交付与故障SOP](runtime/windows-application-delivery.md)、[Application配置](runtime/application-architecture-22.md)、[恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md)、[版本与组合证据](runtime/version-compatibility-01.md)、[扩展开发安装恢复](extensions/developer-guide.md)。本分支业务1.3.1、Contracts1.9.0、Parcel DB7；schema1/2保留main兼容位，schema3显式双位。Supply Storage5仅按[Supply运行维护](runtime/operations.md)操作。
 4. [RCS设计](design/sportmaster-rcs-task.md)/[运行](runtime/sportmaster-rcs-task.md)、[Sportmaster可选UI](runtime/sportmaster-alternate-ui.md)、[永久恢复P2及原失败](runtime/parcel-recovery-p2.md)。原请求/版本/目标/合同/raw不因新部署改变，Unknown不自动重发。

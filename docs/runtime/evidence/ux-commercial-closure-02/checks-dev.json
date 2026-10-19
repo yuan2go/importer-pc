@@ -1,7 +1,7 @@
 [
   {
     "Command": [
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "dotnet",
       "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
       ".",
       "--ux-commercial-presentation"
@@ -14,7 +14,7 @@
   },
   {
     "Command": [
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "dotnet",
       "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
       ".",
       "--ux-commercial-inputs"
@@ -27,7 +27,7 @@
   },
   {
     "Command": [
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "dotnet",
       "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
       ".",
       "--ux-commercial-configuration"
@@ -40,7 +40,7 @@
   },
   {
     "Command": [
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "dotnet",
       "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
       ".",
       "--audit03-snapshots"
@@ -53,7 +53,7 @@
   },
   {
     "Command": [
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "dotnet",
       "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
       ".",
       "--sportmaster-ui"
@@ -66,7 +66,7 @@
   },
   {
     "Command": [
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "dotnet",
       "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
       ".",
       "--sportmaster-window-lifecycle"
@@ -79,7 +79,7 @@
   },
   {
     "Command": [
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "dotnet",
       "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
       ".",
       "--version-compatibility"
@@ -92,7 +92,7 @@
   },
   {
     "Command": [
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "dotnet",
       "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
       ".",
       "--resource-risks"
@@ -105,7 +105,7 @@
   },
   {
     "Command": [
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "dotnet",
       "tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll",
       ".",
       "--parcel-recovery-p2"

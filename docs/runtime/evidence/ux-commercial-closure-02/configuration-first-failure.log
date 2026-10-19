@@ -37,6 +37,6 @@ PASS AQ: UXC03 correcting a rejected form transfer stages the retained B with th
 PASS AQ: UXC03 repeated navigation also preserves an unsaved structured form
 PASS AQ: UXC03 only explicit reload replaces the current draft from saved Pending/Effective
 Unhandled exception. System.Exception: UXC03 commercial configuration regressions: 1
-   at ArchitectureQuality.UxCommercialConfigurationChecks(String source, String evidence) in /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/tests/Ipc.Application.Verification/UxCommercialConfiguration.cs:line 125
-   at Program.<Main>$(String[] args) in /Users/yuan/.codex/worktrees/ux-commercial-closure-02/importer-pc/tests/Ipc.Application.Verification/Program.cs:line 17
+   at ArchitectureQuality.UxCommercialConfigurationChecks(String source, String evidence) in <source-root>/tests/Ipc.Application.Verification/UxCommercialConfiguration.cs:line 125
+   at Program.<Main>$(String[] args) in <source-root>/tests/Ipc.Application.Verification/Program.cs:line 17
    at Program.<Main>(String[] args)

@@ -172,10 +172,10 @@
     },
     {
       "path": "README.md",
-      "sha256": "94592f66b0fef8db7828c0f0b3f3ab1f1174b578b248546b3cd4bd2c6bc0eca2",
-      "size_bytes": 4082,
-      "git_blob": "0ad445b69200b353bef4448729b408de7a94b8f0",
-      "version": "architecture-quality-audit-02-rereview",
+      "sha256": "cf83fa77368737635b13c25a8aa3d190887921963693d649ecf655c5c9fd936e",
+      "size_bytes": 4090,
+      "git_blob": "7c517da6964f47d55f7e99cdc98473f270ba1eef",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -186,47 +186,47 @@
     },
     {
       "path": "config/compatibility/direct-plc.json",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "d5b68239c5e885d9beb0bd69a9eece5baf47514d002478b7c559a90db9bdc7bf",
+      "sha256": "59d7b0b97696b6e1ca7a9ed83399c9cfb010e07620db1258ca89d1b85c6e3d66",
       "size_bytes": 3507,
-      "git_blob": "8de16bbfa4c6297386e93427b7236b33d637fcbc"
+      "git_blob": "5d85baa0d6a2d3a538da553366517711f042db32"
     },
     {
       "path": "config/compatibility/sportmaster.json",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "898dd8a1bdb4f7f965f27abb750cc954adad65c1fda6cd538287e897f4a0d606",
+      "sha256": "761157d6e28366d04402dbc9e37c76f0117dd696396b1ca3c6190c8c494892cf",
       "size_bytes": 7125,
-      "git_blob": "733df8df97387f250be1bcbedf5e6d91aaa1d992"
+      "git_blob": "1e186d7c98d90061b1f629c5252ad74e559fa8e5"
     },
     {
       "path": "config/compatibility/wcs-to-plc.json",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "41bd759a9cdbeda7d7ad795678091cf54ecf6c251caad79197c43eb620eec15b",
+      "sha256": "d08bfc3e86971cec9b27869560b419e2df980a5ce54ba2e0c9613672dcf81c97",
       "size_bytes": 4297,
-      "git_blob": "ffc1a320f04682584850f9781ae129596f869c2c"
+      "git_blob": "29d529663939d31455f0591aa3c03b1891806afb"
     },
     {
       "path": "config/compositions.json",
-      "version": "architecture-quality-closure-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "a2ceaae999e5e1d1c39e22468a6500744c59407e029bc8ebc63e9a623a488d00",
+      "sha256": "d7c82f49b8466bb224f74d4c0a1d02baaf8039b09c5bdaaed5b710855fce178c",
       "size_bytes": 7744,
-      "git_blob": "e9de9fa39c7e2b1b2290b6be2260b42db9c743b7",
+      "git_blob": "cce8aee4f9cc78dceae5036529e6d13ca97ec7e0",
       "previous_git_blob": "4cd784e0404ca5afd64566dfe56625fe843c6313",
       "prior_closure13_git_blob": "1896d9c2f91ac6d1c8d840733492c11a0499555e"
     },
@@ -371,11 +371,11 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "688ecf3185d4c0db445ef46d0c8a118b3d04ad50bcc6d68d1fe660f9230f1eb7",
-      "size_bytes": 7024,
-      "git_blob": "74c0fdc962ff6ed9222634e88d91a64e304d8471",
-      "version": "commercial-quality-audit-03-publication",
-      "status": "current_navigation",
+      "sha256": "47d98ebe6fa51cb92b5d34060daa10bb76e87936ef0355cc301907d9e7686b62",
+      "size_bytes": 7042,
+      "git_blob": "ef3db106db892d1fba2d23fa99d5a595db313e6c",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized original audit publication and current-main/PR handoff; no product changes",
       "source": "2026-10-19 explicit user report upload and next-phase Codex prompt request",
       "storage_scope": "public_repository",
@@ -3752,7 +3752,7 @@
     },
     {
       "path": "docs/design/application-architecture-22.md",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
       "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
@@ -3837,8 +3837,8 @@
       "sha256": "b51ba06307efacdddc3ff82a0134940697a0c6fb749421b38bf833adeda3dac4",
       "size_bytes": 20220,
       "git_blob": "4ddd3fe0b00e603c5fdff05cd21b740a86b489c5",
-      "version": "architecture-quality-closure-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -3849,8 +3849,8 @@
       "sha256": "86b5e0016a3f961010f35e001e7c232afc605e47dcd30ddaf5f41cdb940c1b9c",
       "size_bytes": 37932,
       "git_blob": "06cf0044d9766d30cda7f376db7620aeb8c2c8cb",
-      "version": "architecture-quality-closure-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -3858,8 +3858,8 @@
     },
     {
       "path": "docs/design/sportmaster-rcs-task.md",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -3869,8 +3869,8 @@
     },
     {
       "path": "docs/design/version-compatibility-01.md",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -3880,7 +3880,7 @@
     },
     {
       "path": "docs/extensions/developer-guide.md",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -4975,7 +4975,7 @@
     },
     {
       "path": "docs/runtime/application-architecture-22.md",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -5149,7 +5149,7 @@
       "previous_git_blob": "0abf652a38b83b8a1b9369ec7f4381a9dfd0e051"
     },
     {
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -26422,7 +26422,7 @@
     },
     {
       "path": "docs/runtime/getting-started.md",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -26707,8 +26707,8 @@
     },
     {
       "path": "docs/runtime/sportmaster-alternate-ui.md",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -26718,14 +26718,14 @@
     },
     {
       "path": "docs/runtime/sportmaster-rcs-task.md",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "ebeb77c417301078ec3c528ebd8bc4dc2079db4a242e0c0ddd37432e86a4498a",
+      "sha256": "3d15ffb2a813d6b7300d51ba2153bb686469a18a6430e84ee2bfc3e169e3a936",
       "size_bytes": 8523,
-      "git_blob": "c3ba44703908ae851096aeaad25f8f143eab85f7"
+      "git_blob": "d2f4a7f9843093d235b32eda252f41ec2ff43361"
     },
     {
       "version": "audit02-implementation",
@@ -26794,7 +26794,7 @@
       "git_blob": "39ee2f04c57b9451f0a59a64851663008752390c"
     },
     {
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
@@ -26918,14 +26918,14 @@
     },
     {
       "path": "docs/runtime/version-compatibility-01.md",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "b1c60c6bef8341314a948d8b35bdc7a257cf65b7ca695cb5b47fbc671fc4ec6c",
+      "sha256": "996af3a5ce85e7117bcc8ed83d8d251777c6f2b6d21074395ed83481f650944c",
       "size_bytes": 5521,
-      "git_blob": "1fc3df5b5ac459e87be6aa6f1d3a179207a43dd4"
+      "git_blob": "2abdcddd1621de35159bbf35a3c8c66a2e546989"
     },
     {
       "path": "docs/runtime/windows-06.md",
@@ -27079,7 +27079,7 @@
       "git_blob": "6b399d8d4688a9157b830485db5ac7ed56e55719",
       "sha256": "cb508ca06b528aa854766e28e8716e9d0dc06ba557fb58563dfab9a243e90cfe",
       "size_bytes": 4356,
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -28645,14 +28645,14 @@
     },
     {
       "path": "scripts/application_compatibility.py",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "582c11052493f3bd253aec331260083d351f5ccc01adaab3c820a412780d83d7",
-      "size_bytes": 18665,
-      "git_blob": "81bf70613bac9056547ab6f661436a7993a0f88b"
+      "sha256": "cf69fc4af6fa37967632229913d122f134f5678475971039e779ff5917130e98",
+      "size_bytes": 19038,
+      "git_blob": "5b6851fec26c76fde9f7826f91c832750401dfed"
     },
     {
       "path": "scripts/build-extension.py",
@@ -28726,14 +28726,14 @@
     },
     {
       "path": "scripts/package-application.py",
-      "version": "audit02-implementation",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "ca8dcdcd162507a2b2fa442aab25b3b9036851b75445139a63234791cfef7864",
-      "size_bytes": 8810,
-      "git_blob": "fbff1f3455a18930af07b67db7b03c3cbb545704",
+      "sha256": "6ddb7a0ece399469384282f6398acda9b0b98e2a9c77f4947c4a731f76846bde",
+      "size_bytes": 9192,
+      "git_blob": "d42e07c7457fe821cc7535249360f70cfd80a886",
       "previous_git_blob": "b72e519039baa98e7fcc04fa133c5f893a62d28a"
     },
     {
@@ -28807,8 +28807,8 @@
     },
     {
       "path": "scripts/release_documents.py",
-      "version": "audit02-implementation",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
@@ -28901,14 +28901,14 @@
     },
     {
       "path": "scripts/test_application_compatibility.py",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "bc0eec60355c9894ea2b770ae7bc75c20b097000125b03646d479c5af0fde4c9",
-      "size_bytes": 17045,
-      "git_blob": "e416e2124138c246292635bd94cfbb4d6d89b38e"
+      "sha256": "8daaa274e145e665ccd46658005d44e631d80e7081adf55181ec25ebdbb4f137",
+      "size_bytes": 17493,
+      "git_blob": "65c9b7a99f7f7110444a6f199fea3d9ac6a5b2c8"
     },
     {
       "path": "scripts/test_build_process.py",
@@ -29048,8 +29048,8 @@
     },
     {
       "path": "src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj",
-      "version": "architecture-quality-closure-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -29106,8 +29106,8 @@
     },
     {
       "path": "src/Ipc.Application.Contracts/WcsDestination.cs",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -29228,14 +29228,14 @@
     },
     {
       "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
-      "version": "APPLICATION-CONVERGENCE-17",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "f0de50486c9a79e81961c4e485b9eb98418dc4942790a7bc310149c1ceb73867",
+      "sha256": "f7c28d8b581738f1e6910744c76590adbd79b954082b828ab8447efb1f9cbb63",
       "size_bytes": 339,
-      "git_blob": "058fa94e4d45e50e95419013c6664c1ea7c23d09"
+      "git_blob": "e067ef612da4cfbea660cea21f8548ac33be80d4"
     },
     {
       "path": "src/Ipc.Application.DirectPlc/packages.direct-plc.lock.json",
@@ -29467,7 +29467,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelCommands.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -29500,8 +29500,8 @@
       "git_blob": "c2bf208d3ccd486c6066f3c2e25b76a6f5eb7b7a"
     },
     {
-      "version": "audit02-implementation",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
@@ -29536,7 +29536,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelGuards.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
@@ -29559,7 +29559,7 @@
       "previous_git_blob": "9c31268d751713d976343c40adcfef7de00248fe"
     },
     {
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
@@ -29583,7 +29583,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelImages.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
@@ -29595,7 +29595,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelLegacyReceiptRecovery.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
@@ -29605,7 +29605,7 @@
       "git_blob": "a15719a30d16a7fe28b13c5046b02242b33dc634"
     },
     {
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -29641,7 +29641,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelReceiptCustody.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation, synthetic review evidence or original-byte custody",
       "source": "PR26 authorized five P1/two P2 repair; inherits latest main PR24 R03 without merging other PRs",
@@ -29651,7 +29651,7 @@
       "git_blob": "956943e33a0b99cf8fd92e285b58a6b9d82887f9"
     },
     {
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -29664,8 +29664,8 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRecovery.cs",
-      "version": "audit02-implementation",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
@@ -29688,7 +29688,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRepository.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -29700,7 +29700,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -29712,7 +29712,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelStages.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -29845,8 +29845,8 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs",
-      "version": "architecture-quality-closure-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -29890,7 +29890,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/MaintenancePage.xaml",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -29913,7 +29913,7 @@
       "previous_git_blob": "e6a44349820fc649c5bc39f8d3454ad88f02f0cf"
     },
     {
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -29926,8 +29926,8 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs",
-      "version": "architecture-quality-closure-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -29938,8 +29938,8 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ShellWindow.xaml",
-      "version": "architecture-quality-closure-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -29950,8 +29950,8 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ShellWindow.xaml.cs",
-      "version": "architecture-quality-closure-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -30051,14 +30051,14 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
-      "version": "APPLICATION-CONVERGENCE-17",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "b68a63513ab3bd176d4cc3930a915acd4702d5bbe4131670603977b4190e4d05",
+      "sha256": "0313fa3296ec107b3a775c9a990e71e3e81d53b07a539a26a179b51ea51a34c8",
       "size_bytes": 340,
-      "git_blob": "5e73c0fa18bab8a03c11ac4a1a01edf0098dd2e2"
+      "git_blob": "2f1777e6d27b555fdd394bba19019adc90013f2d"
     },
     {
       "path": "src/Ipc.Application.Sportmaster/packages.lock.json",
@@ -30154,8 +30154,8 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -31005,14 +31005,14 @@
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
-      "version": "APPLICATION-CONVERGENCE-17",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic Application implementation, synthetic evidence, active guide or original-byte custody",
       "source": "WP-IPC-APPLICATION-CONVERGENCE-17 user authorization; unchanged historical metadata retained",
       "storage_scope": "public_repository",
-      "sha256": "af7c996c17497dbe5a4b741b613595e2e5acb84c7b4bf40835f7bdc226a181d8",
+      "sha256": "6672affd3e72e303198570946f41a784bee2213540e64e641cf10bf0c5c9a111",
       "size_bytes": 339,
-      "git_blob": "a9abda66ea4efcc13cdc81546bf82eaec32fa4ea"
+      "git_blob": "64732b781e7fd4f32fe0562cc89e47cf56e8644d"
     },
     {
       "path": "src/Ipc.Application.WcsToPlc/packages.lock.json",
@@ -31202,7 +31202,7 @@
     },
     {
       "path": "src/Ipc.Assembly/ParcelCli.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -32026,14 +32026,14 @@
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "b336cbf7eed622afe71230d2d5fd2d6620dc1b9bc3f47781bbc34577e024219e",
+      "sha256": "958d97f76747bde02084d62c9370b1ade96b98d067c2e6775f7fb695d571ed47",
       "size_bytes": 755,
-      "git_blob": "3e2a8187ebfd83ebb358bd864c85bf1fb6f0f83f"
+      "git_blob": "25d3c2d81ba4584b776bd3f0b83ae5331a78dfd9"
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/RcsDestinationProtocol.cs",
@@ -32059,8 +32059,8 @@
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/SportmasterRcsTaskService.cs",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -32081,14 +32081,14 @@
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/manifest.template.json",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "23314dae4d681f2eba96421f70c58445081cd1a26e3557daf07ebe16cd03b437",
+      "sha256": "aba3cfe75768dcca613eb4f9fcbf5ffb71d0a6b6f7ef01237b280af5843ecd62",
       "size_bytes": 210,
-      "git_blob": "448359487c8f8bc0f0f37931ea8eef6a41dfbe34"
+      "git_blob": "dfd07f39b49ef75941df9b7ef6f3aeb0892d4728"
     },
     {
       "path": "src/Ipc.Integrations.SportmasterRcs/modules.json",
@@ -32960,7 +32960,7 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/ApplicationArchitecture.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
@@ -33061,7 +33061,7 @@
       "git_blob": "5c581089e8515332569b16e9d00fe01509a0c597"
     },
     {
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -33097,8 +33097,8 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/ArchitectureQuality.UpgradeConflictClosure.cs",
-      "version": "pr26-recovery-closure-20261019",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic recovery closure and synthetic evidence; historical outcomes retained",
       "source": "User-authorized PR26 P1/P2 closure on baac260",
       "storage_scope": "public_repository",
@@ -33119,8 +33119,8 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/BackupHealthRecovery.cs",
-      "version": "BACKUP-HEALTH-RECOVERY",
-      "status": "reference_implementation_or_evidence_not_site_acceptance",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Targeted backup custody and health cancellation repair, synthetic verification, or preserved public baseline",
       "source": "2026-10-18 user authorized repair from main 0828654",
       "storage_scope": "public_repository",
@@ -33152,7 +33152,7 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
@@ -33176,7 +33176,7 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Program.cs",
-      "version": "architecture-quality-audit-02-rereview",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
@@ -33257,14 +33257,14 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/SportmasterRcs.cs",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "2b4860c7d83393106f2867f79b0f4bcab1575a7e602eb6b4ef202039c4ae00aa",
+      "sha256": "59cc53ff39cf606a158661f051f0c79b39af93bdbcc2ce7884712335a67e1402",
       "size_bytes": 46899,
-      "git_blob": "dd08d2091dd8e35b71e50a4c1f8c5b54516c42c8"
+      "git_blob": "978c3378537eba2edf42427ff337eb76ad303ea2"
     },
     {
       "path": "tests/Ipc.Application.Verification/SportmasterRcsPresentation.cs",
@@ -33279,8 +33279,8 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/SportmasterUi.cs",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
@@ -33301,14 +33301,14 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/VersionCompatibility.cs",
-      "version": "parallel-reconciliation-01",
-      "status": "current_navigation_or_verification",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized reconciliation implementation, source custody, or synthetic verification evidence",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "013ee07e1c372234aec65782bdc3afa3f8d1add03c2d1f8e1742e8c8a7e8bddc",
+      "sha256": "018a770d1143c15314929c45d6e0ecc320043c2f28de6e5b453de80538563289",
       "size_bytes": 8042,
-      "git_blob": "ee5ef6d33ad9143062ef44f92a214393e09b4d49"
+      "git_blob": "ddfe4bedd10d962b8637d3f5e1199f87c52cf148"
     },
     {
       "path": "tests/Ipc.Application.Verification/VisibilityShim.cs",
@@ -33801,11 +33801,11 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md",
-      "sha256": "ce00bd0a16072225efc6a6d53805b54e9d92fbea5338f0c6c97b24d54fbc58d1",
-      "size_bytes": 8437,
-      "git_blob": "12d657a2bc6eb01030448df358b163b2ec895999",
-      "version": "commercial-quality-audit-03-publication",
-      "status": "current_navigation",
+      "sha256": "e6f9cf8664da590f961a09489c46c48423677523856a01a2dc2766dfd9a17f42",
+      "size_bytes": 8739,
+      "git_blob": "f63321504637d9a275dc3f72106fccab741e3222",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized original audit publication and current-main/PR handoff; no product changes",
       "source": "2026-10-19 explicit user report upload and next-phase Codex prompt request",
       "storage_scope": "public_repository",
@@ -33815,7 +33815,7 @@
     },
     {
       "path": "docs/licenses/Apache-2.0.txt",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -33826,7 +33826,7 @@
     },
     {
       "path": "docs/licenses/MIT.txt",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -33837,14 +33837,14 @@
     },
     {
       "path": "docs/runtime/commercial-audit03-delivery-results.md",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
       "storage_scope": "public_repository",
-      "sha256": "831cb6e9d14a33a41398ece796a6005bd512ec7f89418b015e4c573ae5383ab7",
-      "size_bytes": 11153,
-      "git_blob": "a15da37f0801edf9644c255a5188b4df17f62a6c"
+      "sha256": "e4d079af0e3036ac37905477d584e6ad88123d7ad16e881c08fd53a8adb21f1b",
+      "size_bytes": 11377,
+      "git_blob": "e3cadca525dfecc70eaf1e742cfc9e9cae3ea928"
     },
     {
       "path": "docs/runtime/evidence/commercial-audit03-delivery/ARTIFACTS.json",
@@ -33864,9 +33864,9 @@
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
       "storage_scope": "public_repository",
-      "sha256": "acdce948ff693e3e1fd39ab3db39a0e01776c19296acba5458f51bae2b4782c1",
-      "size_bytes": 4275,
-      "git_blob": "47ffd3d46310277dd2c89a0c644aff68de89b852"
+      "sha256": "4a8fb1798abad881b9e8a4fed83c0f40ee453574b67d6c7606bbac938fb01448",
+      "size_bytes": 4612,
+      "git_blob": "cd57efb889831e0301e156c536cb3f8d464c4bb4"
     },
     {
       "path": "docs/runtime/evidence/commercial-audit03-delivery/aa22-old-callback-assertion.log",
@@ -34667,9 +34667,9 @@
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
       "storage_scope": "public_repository",
-      "sha256": "ee97a83bc850ac2bd5b3369363c8fd0f9ff5da1a4f0930c64af235ee81bbb070",
-      "size_bytes": 8536,
-      "git_blob": "ddb088383d8581429c0271353547e827acb05217"
+      "sha256": "ac67332a2cb885c00b1059434e098a144298c5220ea3178c793ffc46b8257542",
+      "size_bytes": 8535,
+      "git_blob": "03db1d0b28a138b95480b522a10d7a2d58df3372"
     },
     {
       "path": "docs/runtime/evidence/commercial-audit03-delivery/upgrade-conflict.log",
@@ -34728,18 +34728,18 @@
     },
     {
       "path": "docs/runtime/windows-application-delivery.md",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
       "storage_scope": "public_repository",
-      "sha256": "2a47323b24d15a23a459258e65f7b0b11402b622679586d0b8af304e333b067a",
+      "sha256": "3412f841e3414412e6df463fe252d518a0bd62648c16a208eca3dd1bf4e78cc4",
       "size_bytes": 11937,
-      "git_blob": "13a09d1cdf55584e34412830195b9be45bc85520"
+      "git_blob": "f180df80c88ac146e715afdf664eac0af673bf7f"
     },
     {
       "path": "scripts/application.cmd",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -34750,7 +34750,7 @@
     },
     {
       "path": "scripts/application.ps1",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -34761,7 +34761,7 @@
     },
     {
       "path": "scripts/release_dependencies.py",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -34772,7 +34772,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -34783,7 +34783,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelIntegrationIds.cs",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -34794,7 +34794,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelMaintenance.cs",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -34805,7 +34805,7 @@
     },
     {
       "path": "src/Ipc.Application.ParcelFlow/ParcelTerminalRecovery.cs",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -34816,7 +34816,7 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Audit03.Inputs.cs",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -34827,7 +34827,7 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Audit03.Maintenance.cs",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -34838,7 +34838,7 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Audit03.Rcs.cs",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -34849,7 +34849,7 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/Audit03.Snapshots.cs",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -34860,7 +34860,7 @@
     },
     {
       "path": "tests/Ipc.Application.Verification/CommercialQuality.cs",
-      "version": "audit03-delivery-1.2.7",
+      "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
@@ -34876,9 +34876,9 @@
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
       "storage_scope": "public_repository",
-      "sha256": "dff7a7e57c43bac42b8ca2aa571b33032845240a9f89a1d212f9af56da111f02",
-      "size_bytes": 12464,
-      "git_blob": "62b75dece352a02b7fa8104c5603b69a88fcc24e"
+      "sha256": "1a637d3f929619fe01eefae4007bf4b24bdfd1cae2fd696d1f8a479bae755cdc",
+      "size_bytes": 13004,
+      "git_blob": "008705139532270662a8ae1d67c86bdce98d5e21"
     },
     {
       "path": "docs/runtime/evidence/commercial-audit03-delivery/archive-error-delta.json",
@@ -34890,6 +34890,699 @@
       "sha256": "45ed705d43b6610a71b17c2bf208fc1868d1359aef5596b8e9b492da6ed24e91",
       "size_bytes": 720,
       "git_blob": "fc4e0276db2128635d9cf60bcb751a6980c1ce97"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/ARTIFACTS.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "11f2400ed0b3753a6d38796774f21dd4e303399d4f1d9b5a34cc414432931076",
+      "size_bytes": 2443,
+      "git_blob": "0134a8236c8bfd55441555dfd677ee0f8fe445d8"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/README.md",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c607cbc3a908e9850168b72af8b79bd931bf47f4cc9c4d8c3fa1018f67677979",
+      "size_bytes": 2395,
+      "git_blob": "74e11c7391001d8d0f7d18ff994fcd2443cef723"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/barcode.identity.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "466b32642b52bbc8f88381212bf5942b84e08cc3c3064443f570a55c4b508179",
+      "size_bytes": 1183,
+      "git_blob": "71a6a1e67f347a3d95d583d5c4b6c5c84b0384d7"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/capabilities.identity.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c865ddaa3b13c75c2627ee4e9fd93053c7131948ba07cf2035fb1c850442381c",
+      "size_bytes": 1300,
+      "git_blob": "403007ae39189b6d3d914e132ed6fb9dc4f97af9"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/cli/backup.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e8d1b8f7790c6c8894774c531a3b99151928169a88b071a2554da92732fd2da4",
+      "size_bytes": 1844,
+      "git_blob": "7bea9e30eb2960786886098e550568b1113f3e2c"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/cli/commands.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "a12575116fd154fb8e943ac6e0a7529b1aa438c49d7d6573befe1d35a1f52e66",
+      "size_bytes": 2019,
+      "git_blob": "079120627a867bb80ea91300aa78286c4e869d60"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/cli/diagnostics.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "82fc493ab2aed5bf959437554a189a53966177334e6dfc4ccf52a191e7899780",
+      "size_bytes": 1844,
+      "git_blob": "8d87fceeac3972ea69e7c7f4feca7162e5246f27"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/cli/inspect.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "5138df48a6489be2a58101f8b8d0748724b059789e02420013fc526a849c481b",
+      "size_bytes": 1844,
+      "git_blob": "f47286dd19e97a05c4ae803b49c678461500e8e6"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/cli/plan.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "86dd4617ef3bcae6bb9cd49a0c546b070461862453b00226c0eb9b9f3d25dc59",
+      "size_bytes": 146,
+      "git_blob": "de98402a13fd1a8924d98975859a285f4a6a54b8"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/compatibility.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "21ece16a57c8a6b7350675ba105023b7c2ec208a19efd2f1f927c927497370e7",
+      "size_bytes": 3954,
+      "git_blob": "65ef53365dce9859b6bb8e34b21b3c269c1f3cd6"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/contract-documents.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "24adda79e21044fef19cdc7f0606a9cd7770fc9a99c705a8622ee923c13bce5d",
+      "size_bytes": 100,
+      "git_blob": "27194194ebfd4716ddbad96f04299e69b02b929e"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/contract-python-fixed.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "137e6113f212b8401b027a0e07cb666d45515a88a85cddccafb9b0f3fe02339b",
+      "size_bytes": 118,
+      "git_blob": "a3506e04bdae47262c01b17e5ef6438ef596a148"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/contract-python.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "893052b765b45e153c161c35e22b3cd02ba4789c7c8ae20ce58d47df3e1fdc2e",
+      "size_bytes": 988,
+      "git_blob": "38aa277045ffee1dfed0cb4b12cc32db80988bf0"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/final-inventory.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ecc47a5cb3214712352826e8c09d2ea0093f8027d28bae39ec67e264c9b9289d",
+      "size_bytes": 614,
+      "git_blob": "1e0e2052bb2bc5295e654b0d7e5a53dbf37412a1"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/input-setup-missing-workspace.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "3cdcd1648cc3a2e095149188d511955732920f99c98acdf45ae2c1f2e726e024",
+      "size_bytes": 1580,
+      "git_blob": "0799911a8132fe8552a437c791c90ef8cbfb2254"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/media-verification.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "3b98fa0657bb55814ab156dd1122d2d47665a0b040f1313982d5a13559d89041",
+      "size_bytes": 4474,
+      "git_blob": "15a968e86ca63a22255253296d77d12da97a6aa2"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/media-verification.py",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "be513e2c4c249a28ff85e355b55fd1bb11aee9c1173aa507c0aeaa4eeb23d677",
+      "size_bytes": 3102,
+      "git_blob": "0204666069d39feb74d301cdca1391cbbdd25af0"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/pipeline-commands.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "3d3db8bfc0bd56247639adea3a042db9bd100f4b8d8cca342d87d9bf86051635",
+      "size_bytes": 5433,
+      "git_blob": "685baebb9ddcd03bedafca0c77e04abd82c4fc95"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/public-path-normalization.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9c950227506a3f7c88de6a261bfd94916c9ea125b44cf21f97ea89ff504b7571",
+      "size_bytes": 9550,
+      "git_blob": "b552d3d5e36f92615d00d090960486a39027afbc"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/rcs-journey.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "0baefac942229623c98ffd395df0325bebaf3670c83b3d148c0f95be471a499c",
+      "size_bytes": 446,
+      "git_blob": "261d76fd579a25e97553a66b95afda739597f1da"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/rcs.identity.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "2d260f7feba7d70775b059288f983151c7f6a752ec8befbefea4ef9201e5ab34",
+      "size_bytes": 1281,
+      "git_blob": "8739edcb9cabbcb8c62202a98d8351e7e8e8d625"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/reference-trust.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "26989c5030f9a805dc46dbac5f603402db1e38ff8eb57635ca3dc2afd4de9306",
+      "size_bytes": 739,
+      "git_blob": "5ef61cde5af3c365a0f0da192e5684ff7499a17a"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/release-input.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6f6a38a2056f63541e88eeec43a247613446f2f67687b36b64553a28c583178c",
+      "size_bytes": 1692,
+      "git_blob": "b069ae440c428035ca98a433847ccf2c71efbc6b"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/release-maintenance.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "14485f56f209c354446a8734b7b2781a090fa3a4800f48aa102e130702543cb7",
+      "size_bytes": 842,
+      "git_blob": "d3697814f3dda314c57d0cd46f42f4962b493f00"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/release-snapshots.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "c1df3607081624ada23ed438e5f1dfe27afefbf1ee77865168462e452bde7dfc",
+      "size_bytes": 1171,
+      "git_blob": "1160c9a8e3507e0b2c37d73bd9ec221c4345c56c"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/selected-journey.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "89b759665c6bff4eaf032f52dd5a8117261d1669279e7a06b25c62ed59347364",
+      "size_bytes": 853209,
+      "git_blob": "ffb2854fd162ab87bbe351231eaf537f63231b13"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/selected-journey.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "3a55abbca48ab758c112231921efcabe2c7553eebc156af6e99daf219c93b7af",
+      "size_bytes": 552,
+      "git_blob": "2c296dbee7bf4d332affcea121ad5ad38582cc54"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/selected-release-journey.py",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9d5ad27bb6ad5f0796f0cba52c4065b45458d9532ab4b0fb4a3fb9aa82f7cdce",
+      "size_bytes": 13850,
+      "git_blob": "2cf0cfe2421134df02743f3f6f93435f4303ba45"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/signed-original-unknown.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "15ad80b7db91cb4553dcd960860aea68fb58070e287439da83902fa1414191c6",
+      "size_bytes": 1157,
+      "git_blob": "9a10ade92beb9fb3c840b53a7ff5d31066b0808f"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/signed-t1-migration.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9cd2c61bf8516c99e17c7023be1bc4a1debcf81356a16096e6052db48634a48c",
+      "size_bytes": 2818,
+      "git_blob": "6fc1a55dd3b5af81f7c44788709082b557a32abe"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/commands.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "5e8b0d4ba4fa8d6eb9ae4c352b514f5384516df4b0ee217f1595449c7e60d720",
+      "size_bytes": 4443,
+      "git_blob": "cfadcee7a13bba0a409bb75921ea884036524b10"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/direct-plc-attached.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "4c414080ffd5c4beb234c05d205371a18c743228d2d3a462ce405cfbfad64680",
+      "size_bytes": 10736,
+      "git_blob": "7c6bda7cda059d88a7b6388fe539d7c049c51f97"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/direct-plc-attached.json.events.jsonl",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "71d8b95789f4fd0684e0dbb2256b87177cc38212e69fc1d93df93488e829eed2",
+      "size_bytes": 129159,
+      "git_blob": "89e56d6564798d1e3ba5febaffe4fdf577a062c9"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/direct-plc-attached.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "eae35db92a966283fdded52aa0de54411dfeb907230acc08b17b35cddb5dbe19",
+      "size_bytes": 809,
+      "git_blob": "3544957bbc0671de8b98153915d43c50716cf701"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/direct-plc-before-main.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ba7be255d652fa7bf822f713aa87c4adb7d0d6082a761354301c5867c8dce010",
+      "size_bytes": 10692,
+      "git_blob": "aaeaa2d72439a37b722446f79ce309a1647825f8"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/direct-plc-before-main.json.events.jsonl",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "b1480982658645d37312ab3a181cccf542a96561317cc00a0bb50a88a45f4fcb",
+      "size_bytes": 189070,
+      "git_blob": "a08da68948c344634cf6f2c034bf79f4bde6003b"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/direct-plc-before-main.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "9fefe8fa7a9370f00415b338811cd5de69ec9a8dc6bbb0820905b55edf4c3107",
+      "size_bytes": 780,
+      "git_blob": "5f0d428ceaa1851f064858c02776ec0d03aa02ff"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/direct-plc-default.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "2d54551f729b7e21ffc4b4ea9cff156a0839efb8f6c705f65b8454b589b7c156",
+      "size_bytes": 6490,
+      "git_blob": "47a288a13aa3c1652c3e8cfa90fcd282181b6533"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/direct-plc-default.json.events.jsonl",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "699b4e2f413533af81cb0a4da44ba54acd4b6bf77eed046cf86b8a2cf46434c5",
+      "size_bytes": 32388,
+      "git_blob": "f31a8be53d0287d5fbf21c9d4c2f6b3d57cc0ea3"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/direct-plc-default.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e2e40ff3e4920eaa79ba3b6fc6874cedb4a1bcc3ed1bafd23ead4835b97f762f",
+      "size_bytes": 545,
+      "git_blob": "053e094ea310f1545038178b5ecbb732ad30f378"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/sportmaster-attached.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "76e949b75a5043e732d53ecc9cd551a75d90416cde35f8a6052532878327e0fe",
+      "size_bytes": 18210,
+      "git_blob": "5017b8952498a259e7c04fe6b1f1815db913b9ce"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/sportmaster-attached.json.events.jsonl",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "1257a6630d90e5e8a70b6e9be70b5f2754446d584c97cdfe249afdd749b42816",
+      "size_bytes": 187483,
+      "git_blob": "81e11cca6a852152ba41569d314c4060fa0d72a2"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/sportmaster-attached.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e8d2ccc708ae72559cf1b67535df1c9609feeb49bfe29731761ecf12b368dafb",
+      "size_bytes": 805,
+      "git_blob": "050923b7102418b4dae97461c47997c188f9ebc8"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/sportmaster-before-main.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "f194f10f10e049a3aaa902cd6c526f2bd5a30a4fa0c0202fe7eb0718033419ee",
+      "size_bytes": 18172,
+      "git_blob": "834d6db8373b48eebf402f9c528878c38ac0817c"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/sportmaster-before-main.json.events.jsonl",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "145e3473e00e89e35eef400fc0b7f39d9e74ddaac44ade560363b9bb3becc8b2",
+      "size_bytes": 260583,
+      "git_blob": "8f9b353efa497a40abf85d57135aba4853bebe91"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/sportmaster-before-main.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "e655d820bc6e93fbf4f1430734e0bb95624a8f9f348c0eec70dc2d7f6f1e85b6",
+      "size_bytes": 782,
+      "git_blob": "2f2e23fcee9cade065b85cfb7d0fa856ad3bfd00"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/sportmaster-default.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7666259f7c34f19732196a1d8f135e529adee1bee757109df9c798fc6abf97c8",
+      "size_bytes": 7514,
+      "git_blob": "22efd11014474a6b2bbe603b66a1d7820889d900"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/sportmaster-default.json.events.jsonl",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "97f1d8962f598d3dfc15fc8adafaf4ddba66284525936ffb8849d52ec02c010b",
+      "size_bytes": 69806,
+      "git_blob": "1b87e4d7877b0f1444a829f2867b63b477ae90a8"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/sportmaster-default.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "ae0cf0c35d195cbbedd07f2170c4c0b269a62fb4aed6b6aa1010720b7f9fc539",
+      "size_bytes": 560,
+      "git_blob": "523887a1474ef40af41125d1d816c8c4a432848d"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/wcs-to-plc-attached.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "a535eebdd5d3365a8a90eb559ba3333163ac02f375cf118b4336aed49590d79f",
+      "size_bytes": 11852,
+      "git_blob": "151a164bef0d3176dbb5285e6be3e54f29f68916"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/wcs-to-plc-attached.json.events.jsonl",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "17c647387180a4b007f5f42f354a5bf2dfd94ea28ceaf59b4a273bc52e91cb9f",
+      "size_bytes": 152989,
+      "git_blob": "87e5beb1e0c4b24074dd6f509a4c051f0264e3c3"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/wcs-to-plc-attached.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "2d491b008f011d7d62e06147afede4665aaadb3879991b8ec0dd1d92f6d2d727",
+      "size_bytes": 809,
+      "git_blob": "e625d8560caae361fb3adbe6343af0fc7fa33fe6"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/wcs-to-plc-before-main.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "1fe02e3edeb3dcf8f74907754aec02bb90c685dffb44e32fd44f4a9786d34592",
+      "size_bytes": 11808,
+      "git_blob": "0f3917b46fea71952e62e73d9884b29f95512292"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/wcs-to-plc-before-main.json.events.jsonl",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "a076ef3a3232d85ca07048c683c6cd112cdfed04326181b4ce66a95f73a7d136",
+      "size_bytes": 209949,
+      "git_blob": "bb6118bd492f8fb82ad8d9d11442eb0475e1b0ef"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/wcs-to-plc-before-main.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "19fb81bf2f71bbe6c9b1ffbcab006c0f8fea731c1d5f8ae01d9ff1c8ef4ed7b1",
+      "size_bytes": 780,
+      "git_blob": "ff2921685d1ea77de87fe8e9cc24cafe4784e34d"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/wcs-to-plc-default.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "503f31516bb71baf6e6f8c927da206f7ced76a68d96f3458a6bcb5f93c48e8eb",
+      "size_bytes": 7602,
+      "git_blob": "7df3c2b9607f36083b6b98b0f2c0e77800358c57"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/wcs-to-plc-default.json.events.jsonl",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "7341b7a95538a72a806090e6c6f186f9e5e15134f7ecc3e9057e66412559d526",
+      "size_bytes": 41086,
+      "git_blob": "2ba84c38371eb8f313e1f6700789c6331a175ed1"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/smokes/wcs-to-plc-default.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d0426ea11b4a73b57fa119f094940a237081d2fdc77ced37c182986db271cbe5",
+      "size_bytes": 545,
+      "git_blob": "c55e8b5f4581a389023774cdea9e66e9e794940d"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/source-parity.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "cde94f64398767c461a4a75cfe7e15c4f7e0be1986672250819578b068dfd55d",
+      "size_bytes": 470,
+      "git_blob": "12a9bd186cc29a4671e2451fa829e35583e4e833"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/verification-runtime-files.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "60d9bb8abc99e9c4328286f8e73cb4b83642acbad21037f4c6e3f97b38c3828c",
+      "size_bytes": 1574,
+      "git_blob": "6462f92f6564d75eba013f0119caaccd9d8277b7"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/verifier-build.log",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "d4d705c7980fbabf9514e8250865e8343baea47b3f04dba08a9384193cbabb9e",
+      "size_bytes": 3381,
+      "git_blob": "0510343fbf7352681b5243da5d8206044b13b4cc"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/publication.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "6f479450732e43ad1090db6277a76c87d71b014ae56ccd44a5547276dc37a0e2",
+      "size_bytes": 5818,
+      "git_blob": "35c936a4e3a2a3441d75bc051ca167c30b4dc4a8"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/archive-error-delta.json",
+      "version": "audit03-delivery-1.2.8",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Authorized generic implementation or synthetic delivery evidence",
+      "source": "WP-A03-00..06 explicit implementation and publication authorization",
+      "storage_scope": "public_repository",
+      "sha256": "3a066ba04470588f30e77b9c930d22c91c6ca5fae438edf21b18bd3ffd20dfda",
+      "size_bytes": 732,
+      "git_blob": "66943edf1fd2e1abac83a02caf92bf1d11f9d06d"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -34898,8 +35591,8 @@
     "entry": "docs/runtime/commercial-audit03-delivery-results.md",
     "operations": "docs/runtime/windows-application-delivery.md",
     "checks": "docs/runtime/evidence/commercial-audit03-delivery/README.md",
-    "source_commit": "1401b7d3663bd7ca40aaa87773b023162178611c",
-    "business_version": "1.2.7",
+    "source_commit": "565abcc63b885dc60873aa21e25f2d4612963c0d",
+    "business_version": "1.2.8",
     "parcel_storage": 7,
     "supply_storage": 5,
     "configuration_schema": [
@@ -34917,10 +35610,12 @@
     "actual_wpf_screenshots": 0,
     "private_keys_included": false,
     "pull_request": "https://github.com/yuan2go/importer-pc/pull/35",
-    "artifacts": "docs/runtime/evidence/commercial-audit03-delivery/ARTIFACTS.json",
+    "artifacts": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/ARTIFACTS.json",
     "real_combination": "UNCONFIRMED_SDK_DRIVER_AND_UNKNOWN_DISPOSITION_BLOCKED",
-    "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/audit03-reference-1401b7d",
-    "publication_receipt": "docs/runtime/evidence/commercial-audit03-delivery/publication.json"
+    "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/audit03-reference-565abcc",
+    "publication_receipt": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/publication.json",
+    "archive": "FAIL_267_INHERITED_NO_NEW_ERRORS",
+    "source_parity": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/source-parity.json"
   },
   "followup_work_packages": [
     "WP-A03-03",
@@ -35593,7 +36288,7 @@
     "candidates": "docs/runtime/evidence/capability-reliability-20/candidate-inventory.json",
     "reference_verification": "PASS"
   },
-  "runtime_source_commit": "1401b7d3663bd7ca40aaa87773b023162178611c",
+  "runtime_source_commit": "565abcc63b885dc60873aa21e25f2d4612963c0d",
   "application_architecture_22_publication": {
     "receipt": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/architecture22-reference-8981d54",
@@ -35940,5 +36635,34 @@
   ],
   "historical_runtime_source_commit_before_audit03": "e914e75a109672cd1d52be91c40459f09231ea57",
   "historical_current_implementation_work_package_before_audit03": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02",
-  "historical_next_implementation_work_package_before_audit03": "Windows reference qualification / capability-specific real integration and site approvals"
+  "historical_next_implementation_work_package_before_audit03": "Windows reference qualification / capability-specific real integration and site approvals",
+  "prior_runtime_publication_1401b7d_withdrawn": {
+    "entry": "docs/runtime/commercial-audit03-delivery-results.md",
+    "operations": "docs/runtime/windows-application-delivery.md",
+    "checks": "docs/runtime/evidence/commercial-audit03-delivery/README.md",
+    "source_commit": "1401b7d3663bd7ca40aaa87773b023162178611c",
+    "business_version": "1.2.7",
+    "parcel_storage": 7,
+    "supply_storage": 5,
+    "configuration_schema": [
+      1,
+      2,
+      3
+    ],
+    "application_contracts": "1.8.0",
+    "extension_contract": 1,
+    "core": "PASS_REFERENCE_TARGETED_AND_UNPACKED_JOURNEYS",
+    "wpf": "PASS_THREE_CROSS_BUILDS",
+    "windows": "NOT_RUN",
+    "field": "BLOCKED_PER_CAPABILITY",
+    "production": "NOT_READY",
+    "actual_wpf_screenshots": 0,
+    "private_keys_included": false,
+    "pull_request": "https://github.com/yuan2go/importer-pc/pull/35",
+    "artifacts": "docs/runtime/evidence/commercial-audit03-delivery/ARTIFACTS.json",
+    "real_combination": "UNCONFIRMED_SDK_DRIVER_AND_UNKNOWN_DISPOSITION_BLOCKED",
+    "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/audit03-reference-1401b7d",
+    "publication_receipt": "docs/runtime/evidence/commercial-audit03-delivery/publication.json",
+    "status": "WITHDRAWN_COMPOSITION_CONTRACT_METADATA"
+  }
 }

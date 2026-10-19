@@ -1,0 +1,81 @@
+{
+  "SourceCommit": "565abcc63b885dc60873aa21e25f2d4612963c0d",
+  "BusinessVersion": "1.2.8",
+  "ApplicationContracts": "1.8.0",
+  "ParcelDatabase": 7,
+  "ConfigurationSchema": [
+    1,
+    2,
+    3
+  ],
+  "Packages": [
+    {
+      "File": "barcode.ipcx",
+      "Bytes": 7587,
+      "Sha256": "e2040ef04742ca85a3e355823ad1296d1860f60289a4648e168c4f4f72777f3e"
+    },
+    {
+      "File": "barcode.ipcx.identity.json",
+      "Bytes": 1183,
+      "Sha256": "466b32642b52bbc8f88381212bf5942b84e08cc3c3064443f570a55c4b508179"
+    },
+    {
+      "File": "capabilities.ipcx",
+      "Bytes": 20600,
+      "Sha256": "afab0ad9ece6bbec4b0e40dc4b7a143e8182994718a57bba8fecac9edb3b81f6"
+    },
+    {
+      "File": "capabilities.ipcx.identity.json",
+      "Bytes": 1300,
+      "Sha256": "c865ddaa3b13c75c2627ee4e9fd93053c7131948ba07cf2035fb1c850442381c"
+    },
+    {
+      "File": "direct-plc-core.zip",
+      "Bytes": 18611083,
+      "Sha256": "765d12a7564522ad2d6ef2407b39393d92ef5e4354de3bbfb3fa13653c108ca5"
+    },
+    {
+      "File": "direct-plc-win-x64.zip",
+      "Bytes": 104570617,
+      "Sha256": "d9d5908fe94a03cfffeb20af01eb6682d4f8bfb6196e0352494c0503f71bb8a9"
+    },
+    {
+      "File": "rcs.ipcx",
+      "Bytes": 17729,
+      "Sha256": "c02d4b86fe8ac3f3e5e701350b6e40646fecfb255ff1c89598262b736b7b10d0"
+    },
+    {
+      "File": "rcs.ipcx.identity.json",
+      "Bytes": 1281,
+      "Sha256": "2d260f7feba7d70775b059288f983151c7f6a752ec8befbefea4ef9201e5ab34"
+    },
+    {
+      "File": "sportmaster-core.zip",
+      "Bytes": 18647426,
+      "Sha256": "996916c6ff285b4c5c2649280d80851f60f9ed5282ed8dd9ee23944f9f928aaf"
+    },
+    {
+      "File": "sportmaster-selected-portable.zip",
+      "Bytes": 18695425,
+      "Sha256": "89f0cdc29f1b80cf1b1620ea69fb36709cd77091001375861f3ab5f9fcf30dba"
+    },
+    {
+      "File": "sportmaster-selected-win-x64.zip",
+      "Bytes": 104715508,
+      "Sha256": "2f3c6d6d3354dfeb96ccaafa28ac9a544d4834a46cf98971abebda64e60a8f07"
+    },
+    {
+      "File": "wcs-to-plc-core.zip",
+      "Bytes": 18636617,
+      "Sha256": "8b4df72eeb85a87a2a1e61be50257febf0ebef2ef7bcc44f0038c3f7df30469f"
+    },
+    {
+      "File": "wcs-to-plc-win-x64.zip",
+      "Bytes": 104621679,
+      "Sha256": "67eedaba78b004ab2996bb5ad442948df062e2b9c135f22344c53cdf067c344d"
+    }
+  ],
+  "TestOnlyTrustSha256": "26989c5030f9a805dc46dbac5f603402db1e38ff8eb57635ca3dc2afd4de9306",
+  "Windows": "NOT_RUN",
+  "RealEquipment": "BLOCKED"
+}

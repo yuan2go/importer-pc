@@ -1,5 +1,5 @@
 {
-  "Rule": "Machine-local worktree root becomes ${WORKTREE}; pinned dotnet path becomes ${DOTNET}. Only new delivery evidence copies are normalized; source audit PDF/ZIP are unchanged. Raw bytes are retained locally outside Git.",
+  "Rule": "Machine-local worktree root becomes ${WORKTREE}; pinned dotnet path becomes ${DOTNET}. Only new delivery evidence copies are normalized; source audit PDF/ZIP are unchanged. Raw bytes are retained locally outside Git. One display-only sportmaster-ui.log copy also removes trailing whitespace; original empty-argument log bytes remain retained and hashed.",
   "HashSemantics": "Existing configuration/release/event hash fields refer to the original raw run inputs; normalization may alter displayed configuration paths and is not claimed to regenerate those original hash values. Runtime/payload/package bytes and release artifact digests are unchanged.",
   "Files": [
     {
@@ -205,6 +205,13 @@
       "RawSha256": "74274fab500f20cd7a49ccebffdc703b5aa1a8c8acdb4dd897d46310a57a41fd",
       "PublicSha256": "a71c04d991af0ee0418dc2f5b540d61d0b993dc63bd4e06ad48246d631aef80d",
       "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/verifier-build.log"
+    },
+    {
+      "Path": "sportmaster-ui.log",
+      "RawSha256": "ee97a83bc850ac2bd5b3369363c8fd0f9ff5da1a4f0930c64af235ee81bbb070",
+      "PublicSha256": "ac67332a2cb885c00b1059434e098a144298c5220ea3178c793ffc46b8257542",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/sportmaster-ui.log",
+      "Rule": "Trim trailing whitespace in public log display only; raw retained"
     }
   ]
 }

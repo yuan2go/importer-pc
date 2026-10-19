@@ -1,0 +1,162 @@
+{
+  "Rule": "New public evidence copies replace machine-local worktree root by ${WORKTREE} and pinned dotnet path by ${DOTNET}. Original bytes retained locally outside Git.",
+  "HashSemantics": "Existing source/configuration/event hash fields identify original raw run inputs before path normalization; public displayed paths may not regenerate those original hashes. Source audit PDF/ZIP and binary packages unchanged.",
+  "Files": [
+    {
+      "Path": "cli/commands.json",
+      "RawSha256": "0d01f3edd380f87d7b281d69d547e968f811c3e1421d4a49129719a59bc824c5",
+      "PublicSha256": "a12575116fd154fb8e943ac6e0a7529b1aa438c49d7d6573befe1d35a1f52e66",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/cli/commands.json"
+    },
+    {
+      "Path": "contract-python.log",
+      "RawSha256": "16462ab2da8c78db80465a454894f206b70fbd456b7337036357cf3a9b3b0873",
+      "PublicSha256": "893052b765b45e153c161c35e22b3cd02ba4789c7c8ae20ce58d47df3e1fdc2e",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/contract-python.log"
+    },
+    {
+      "Path": "input-setup-missing-workspace.log",
+      "RawSha256": "fbb0881fb46fa3159923ffc372a1912c51afc3cf48ae205a58f8cbd792748a98",
+      "PublicSha256": "3cdcd1648cc3a2e095149188d511955732920f99c98acdf45ae2c1f2e726e024",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/input-setup-missing-workspace.log"
+    },
+    {
+      "Path": "pipeline-commands.json",
+      "RawSha256": "b4744b25dec3b4b8704bb8d242f4aecce4df612261af7c30a55f2968d9811617",
+      "PublicSha256": "3d3db8bfc0bd56247639adea3a042db9bd100f4b8d8cca342d87d9bf86051635",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/pipeline-commands.json"
+    },
+    {
+      "Path": "selected-journey.json",
+      "RawSha256": "27980292c017d5f2d801352f72629321bbe6e776784c08e6468f2607311e5c47",
+      "PublicSha256": "89b759665c6bff4eaf032f52dd5a8117261d1669279e7a06b25c62ed59347364",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/selected-journey.json"
+    },
+    {
+      "Path": "selected-journey.log",
+      "RawSha256": "c07432dbc090aaed39a9215e2e1c52552e3daa1b58cdba7e31d9a4a0b2d1943f",
+      "PublicSha256": "3a55abbca48ab758c112231921efcabe2c7553eebc156af6e99daf219c93b7af",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/selected-journey.log"
+    },
+    {
+      "Path": "smokes/commands.json",
+      "RawSha256": "ac2b86e676ebc285104fca5136ffb492095cb4a6d3449f796f1c0302be6f2ac3",
+      "PublicSha256": "5e8b0d4ba4fa8d6eb9ae4c352b514f5384516df4b0ee217f1595449c7e60d720",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/commands.json"
+    },
+    {
+      "Path": "smokes/direct-plc-attached.json",
+      "RawSha256": "47f5f262665812efc5ab2b23f2ada83ea07045cf0b1e68307cc5103410a1f1f3",
+      "PublicSha256": "4c414080ffd5c4beb234c05d205371a18c743228d2d3a462ce405cfbfad64680",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/direct-plc-attached.json"
+    },
+    {
+      "Path": "smokes/direct-plc-attached.json.events.jsonl",
+      "RawSha256": "8dd52018f677ee0c99a7506edbf55e9acc6969525189b9568222a19296d97923",
+      "PublicSha256": "71d8b95789f4fd0684e0dbb2256b87177cc38212e69fc1d93df93488e829eed2",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/direct-plc-attached.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/direct-plc-before-main.json",
+      "RawSha256": "965dc974f39aaae8bf2d3a2ca155b9d9451585439711ab3c0beddf34572164ba",
+      "PublicSha256": "ba7be255d652fa7bf822f713aa87c4adb7d0d6082a761354301c5867c8dce010",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/direct-plc-before-main.json"
+    },
+    {
+      "Path": "smokes/direct-plc-before-main.json.events.jsonl",
+      "RawSha256": "9c7d073228530ff9da2e0c7566b359ac51105b707281b685b5cb9154ced80d9c",
+      "PublicSha256": "b1480982658645d37312ab3a181cccf542a96561317cc00a0bb50a88a45f4fcb",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/direct-plc-before-main.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/direct-plc-default.json",
+      "RawSha256": "7fd459ae31a227a64d9b7ef4fecc74a23efac70b512156544edcbfa3f808d6b5",
+      "PublicSha256": "2d54551f729b7e21ffc4b4ea9cff156a0839efb8f6c705f65b8454b589b7c156",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/direct-plc-default.json"
+    },
+    {
+      "Path": "smokes/direct-plc-default.json.events.jsonl",
+      "RawSha256": "4ffc83280a74e9f695163850f637ace2933014a328b2fc59ea24123ff12dc787",
+      "PublicSha256": "699b4e2f413533af81cb0a4da44ba54acd4b6bf77eed046cf86b8a2cf46434c5",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/direct-plc-default.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/sportmaster-attached.json",
+      "RawSha256": "68087f4f06358913552b4b4b816e92a9ea2e3af92936179c4e0dd0b07da35ea5",
+      "PublicSha256": "76e949b75a5043e732d53ecc9cd551a75d90416cde35f8a6052532878327e0fe",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/sportmaster-attached.json"
+    },
+    {
+      "Path": "smokes/sportmaster-attached.json.events.jsonl",
+      "RawSha256": "c6195c647b295ec21c01bf034b8941568d333653f4bd79cdf6129a8e0cc89923",
+      "PublicSha256": "1257a6630d90e5e8a70b6e9be70b5f2754446d584c97cdfe249afdd749b42816",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/sportmaster-attached.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/sportmaster-before-main.json",
+      "RawSha256": "ee701eacf556098a8c7e04e5c8e2891311b07e5faf7e184603dacd98cb5b1ffc",
+      "PublicSha256": "f194f10f10e049a3aaa902cd6c526f2bd5a30a4fa0c0202fe7eb0718033419ee",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/sportmaster-before-main.json"
+    },
+    {
+      "Path": "smokes/sportmaster-before-main.json.events.jsonl",
+      "RawSha256": "e510dec9a58f233b7c784744f8a06923045c60865b5fdce31973002f7f55dc46",
+      "PublicSha256": "145e3473e00e89e35eef400fc0b7f39d9e74ddaac44ade560363b9bb3becc8b2",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/sportmaster-before-main.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/sportmaster-default.json",
+      "RawSha256": "5e57c91c543031082f0dbd70b87a84fcbb4c2e3c6fad98930f71963853c43a56",
+      "PublicSha256": "7666259f7c34f19732196a1d8f135e529adee1bee757109df9c798fc6abf97c8",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/sportmaster-default.json"
+    },
+    {
+      "Path": "smokes/sportmaster-default.json.events.jsonl",
+      "RawSha256": "7f3f279443e6fbbee439ad084fccba13e9002ea62906b2ddacab1955fa17dbf3",
+      "PublicSha256": "97f1d8962f598d3dfc15fc8adafaf4ddba66284525936ffb8849d52ec02c010b",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/sportmaster-default.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/wcs-to-plc-attached.json",
+      "RawSha256": "36286c115affc2df108f23bfb0a6bd5ba7b54219e23cf56ed542937c855f3334",
+      "PublicSha256": "a535eebdd5d3365a8a90eb559ba3333163ac02f375cf118b4336aed49590d79f",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/wcs-to-plc-attached.json"
+    },
+    {
+      "Path": "smokes/wcs-to-plc-attached.json.events.jsonl",
+      "RawSha256": "71bad9c54c943807904b7c72b67235fff40e4e4de98699f3a384bbd00e2040f0",
+      "PublicSha256": "17c647387180a4b007f5f42f354a5bf2dfd94ea28ceaf59b4a273bc52e91cb9f",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/wcs-to-plc-attached.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/wcs-to-plc-before-main.json",
+      "RawSha256": "c2258c0fed4c601489107764fb3423797c0cb1457d59c2c940c30438a9fd40f4",
+      "PublicSha256": "1fe02e3edeb3dcf8f74907754aec02bb90c685dffb44e32fd44f4a9786d34592",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/wcs-to-plc-before-main.json"
+    },
+    {
+      "Path": "smokes/wcs-to-plc-before-main.json.events.jsonl",
+      "RawSha256": "9af141b74e5d290828efb1cbb2dfa7374ea61083d491e97c89578b5f4a4acf73",
+      "PublicSha256": "a076ef3a3232d85ca07048c683c6cd112cdfed04326181b4ce66a95f73a7d136",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/wcs-to-plc-before-main.json.events.jsonl"
+    },
+    {
+      "Path": "smokes/wcs-to-plc-default.json",
+      "RawSha256": "3bb7bab345f8bf1e172e5748496ac2a1e27055b8740544b74de919fbaa4395be",
+      "PublicSha256": "503f31516bb71baf6e6f8c927da206f7ced76a68d96f3458a6bcb5f93c48e8eb",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/wcs-to-plc-default.json"
+    },
+    {
+      "Path": "smokes/wcs-to-plc-default.json.events.jsonl",
+      "RawSha256": "35c55e526f6ef96ebc8124a229fe15720e087671cca753200808ae61d3b2fe9f",
+      "PublicSha256": "7341b7a95538a72a806090e6c6f186f9e5e15134f7ecc3e9057e66412559d526",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/smokes/wcs-to-plc-default.json.events.jsonl"
+    },
+    {
+      "Path": "verifier-build.log",
+      "RawSha256": "fbfb38618e842707ed40d1b235bee306734e22d422e0c017c243d5cd4bae6bac",
+      "PublicSha256": "d4d705c7980fbabf9514e8250865e8343baea47b3f04dba08a9384193cbabb9e",
+      "RawRetainedRelativeToCandidate": "private-raw-publication-evidence/verifier-build.log"
+    }
+  ]
+}

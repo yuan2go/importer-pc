@@ -87,7 +87,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         var locked = ReadState();
         if (locked.Hash != expectedHash) throw new InvalidOperationException("配置在获取所有权时变化；保留当前草稿并重新读取");
         var database = Path.Combine(state.Directory, definition.Id + ".db");
-        if (File.Exists(database) && ReadVersionFromCopy(database) != 7)
+        if (File.Exists(database) && ReadVersionFromCopy(database) != 8)
             throw new InvalidDataException("原库不是本发布格式；请先使用匹配发布完成原责任，不离线迁移旧库");
         if (initialRepair) RequireInitialRepairClear(state.Directory, database);
         var errors = definition.Validate(candidate);

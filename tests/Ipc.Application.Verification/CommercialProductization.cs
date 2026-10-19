@@ -49,10 +49,14 @@ static class CommercialProductization
         File.WriteAllText(Path.Combine(config, "business.json"), Wire.Encode(seed));
         var launch = new BusinessLaunch(config, Path.Combine(root, "data"), null, null);
         var directory = Path.Combine(launch.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
+        // Empty DB7 is a real prior format; migration precedes the deliberately
+        // broken first resource startup, so independent initial repair remains usable.
+        using (var prior = new ParcelRepository(directory, seed.ApplicationId, 7)) { }
         ParcelRuntime Runtime(bool fail = true) => new(launch, new SportmasterFlow(), new SyntheticFactory(launch, fail)) { RuntimeIdentityPreflight = () => { } };
         Console.WriteLine("Isolated synthetic identity dependency; actual Windows UAC/runtime policy NOT_RUN by this fixture.");
         await using (var broken = Runtime()) await Reject<InvalidOperationException>(() => broken.StartAsync(default), "original unconfirmed configuration fails resource construction");
         var file = Path.Combine(directory, "configuration.json");
+        Check(ParcelRepository.ReadStorageVersion(Path.Combine(directory, seed.ApplicationId + ".db"), seed.ApplicationId) == 8, "settled DB7 migrates to DB8 before failed initial resources and retains the repair route");
         var original = File.ReadAllBytes(file);
         var authority = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(file));
         Check(authority.Confirmation is { Required: true } && authority.Confirmation.Attempts.Last().Outcome == "Failed", "failed startup is durable and does not confirm Effective");
@@ -132,6 +136,9 @@ static class CommercialProductization
         Check(Wire.FileHash(file) == blockedHash, "refused repair preserves original envelope bytes"); File.Delete(Path.Combine(directory, "RESTORED-ISOLATED.json"));
         await History(seed, root);
         await Unknown(seed, root);
+        var currentDatabase = Path.Combine(directory, seed.ApplicationId + ".db"); var beforeOldReader = Wire.FileHash(currentDatabase);
+        await Reject<InvalidDataException>(() => { using var oldReader = new ParcelRepository(directory, seed.ApplicationId, 7); return Task.CompletedTask; }, "DB7 reader refuses the new DB8 semantic floor before writable open");
+        Check(Wire.FileHash(currentDatabase) == beforeOldReader, "refused prior reader preserves original database bytes");
         // Handoff uses an explicitly synthetic machine proof here. Protected
         // deployment registration/Windows account readback remain native NOT_RUN.
         service.HandoffMachineIdentity = () => "SYNTHETIC-HANDOFF-MACHINE";
@@ -170,6 +177,15 @@ static class CommercialProductization
         await Reject<InvalidOperationException>(() => service.RepairInitialAsync(read.ConfigurationHash, changed, "blocked by original request"), "initial repair refuses existing Unknown responsibility");
         Check(!(await service.PlanChangeAsync("Upgrade", Path.Combine(root, "unknown-upgrade.db"))).Allowed, "upgrade/uninstall preflight cannot bypass original Unknown responsibility");
         read = await service.StageAsync(read.ConfigurationHash, changed, "new target for future intents only");
+        // Reuse the actual lost-after-commit original as a DB7 upgrade fixture.
+        var oldLaunch = launch with { DataRoot = Path.Combine(root, "db7-original-data") };
+        var oldDirectory = Path.Combine(oldLaunch.DataRoot, c.Mode.ToString(), c.StationId, c.ApplicationId); Directory.CreateDirectory(oldDirectory);
+        File.WriteAllText(Path.Combine(oldDirectory, "configuration.json"), Wire.Encode(new ConfigurationRevision<ParcelConfiguration>(0, c, null, "Effective", null)));
+        using (var old = new ParcelRepository(oldDirectory, c.ApplicationId, 7)) old.Commit(original, "OriginalUnknown", "original frozen request reused without execution");
+        var oldDatabase = Path.Combine(oldDirectory, c.ApplicationId + ".db"); var oldHash = Wire.FileHash(oldDatabase);
+        await using (var blockedUpgrade = new ParcelRuntime(oldLaunch, new SportmasterFlow(), new SyntheticFactory(oldLaunch)) { RuntimeIdentityPreflight = () => { } })
+            await Reject<InvalidDataException>(() => blockedUpgrade.StartAsync(default), "DB7 Unknown remains on its original reader before the DB8 migration");
+        Check(Wire.FileHash(oldDatabase) == oldHash && ParcelRepository.ReadStorageVersion(oldDatabase, c.ApplicationId) == 7, "refused DB7 upgrade preserves original request database and format");
         var reopenedFactory = new SyntheticFactory(launch);
         await using var reopened = new ParcelRuntime(launch, new SportmasterFlow(), reopenedFactory) { RuntimeIdentityPreflight = () => { } };
         await reopened.StartAsync(default); var recovered = (await reopened.SnapshotAsync()).Operations.Single();

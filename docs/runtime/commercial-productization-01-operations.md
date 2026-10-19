@@ -1,6 +1,6 @@
 # Importer PC 商业交付操作指南
 
-适用：COMM-00～10 实施源码；Sportmaster / DirectPlc / WcsToPlc 业务 1.4.0、Application.Contracts 1.10.0、DB7。具体源码、介质与已执行结果见[实施结果](commercial-productization-01-results.md)。旧 ZIP 仍按各自 SourceCommit 和随包说明使用。通用工程能力不代表真实设备、客户协议、Windows 现场或投产资格通过。
+适用：COMM-00～10 实施源码；Sportmaster / DirectPlc / WcsToPlc 业务 1.4.0、Application.Contracts 1.10.0、DB8。具体源码、介质与已执行结果见[实施结果](commercial-productization-01-results.md)。旧 ZIP 仍按各自 SourceCommit 和随包说明使用。通用工程能力不代表真实设备、客户协议、Windows 现场或投产资格通过。
 
 ## 安装和首次配置
 

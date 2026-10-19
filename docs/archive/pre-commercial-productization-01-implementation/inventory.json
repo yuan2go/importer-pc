@@ -4,37 +4,52 @@
     {
       "path": "README.md",
       "snapshot": "README.md.txt",
-      "sha256": "785e87a23170a42ade5941c6800f044465e4e195179a7aa9ef51105f09d07ed3"
+      "sha256": "101800f72c4ea14560187664d5ba31311434a79c28de2b41ccf202db9ec5f81d",
+      "checkout_capture_sha256": "785e87a23170a42ade5941c6800f044465e4e195179a7aa9ef51105f09d07ed3",
+      "git_blob": "fc5b52e8eb601f470ecf49c6971292efcd39c92b"
     },
     {
       "path": "docs/INDEX.md",
       "snapshot": "docs__INDEX.md.txt",
-      "sha256": "9b0fa242e9b479ff2d549e99c392e84abc652b2e7a9e6d41fb3d0844ed702b64"
+      "sha256": "3301c5c5dfd37a5001c2116889169fb8a3ffbb9e1d06df68e92831491b6fa8fb",
+      "checkout_capture_sha256": "9b0fa242e9b479ff2d549e99c392e84abc652b2e7a9e6d41fb3d0844ed702b64",
+      "git_blob": "4784941f780af72477dbfd449e84986c532950d3"
     },
     {
       "path": "docs/design/framework.md",
       "snapshot": "docs__design__framework.md.txt",
-      "sha256": "704bf761ac6a38f3bb7fdc8a318be90ebd8799e5a678a2806070fd5c3cb2dd79"
+      "sha256": "28b41a96d005a5608c100bc827ed81760db1fcea9425cf8d49d5596477a47f61",
+      "checkout_capture_sha256": "704bf761ac6a38f3bb7fdc8a318be90ebd8799e5a678a2806070fd5c3cb2dd79",
+      "git_blob": "133842f38ab117be36c8d40863152d013f68af7e"
     },
     {
       "path": "docs/design/framework-decisions.md",
       "snapshot": "docs__design__framework-decisions.md.txt",
-      "sha256": "886a1cdbf5514a3bc2789ed700b17cf3e1998bc9aac977c6c2fa3f99e29dc572"
+      "sha256": "116e49bbdfaba06e5f105ae96513be6c4f810d71cb896ce85fe88a7cbdb9fbde",
+      "checkout_capture_sha256": "886a1cdbf5514a3bc2789ed700b17cf3e1998bc9aac977c6c2fa3f99e29dc572",
+      "git_blob": "26d52f0d1f13b7a619cc1cb951ffae35a1435440"
     },
     {
       "path": "docs/runtime/getting-started.md",
       "snapshot": "docs__runtime__getting-started.md.txt",
-      "sha256": "6511b39bc72d50444393dd2d01cec2adcc6d5585acd888d91bca4c6e43e2c8cd"
+      "sha256": "06c8ce5433a11b42672114d859bb64106ab53c6c8f66945c2fa4856203858241",
+      "checkout_capture_sha256": "6511b39bc72d50444393dd2d01cec2adcc6d5585acd888d91bca4c6e43e2c8cd",
+      "git_blob": "d1096da2c54113f39cb72ee53e23f8b3b2a9bf2a"
     },
     {
       "path": "docs/runtime/windows-application-delivery.md",
       "snapshot": "docs__runtime__windows-application-delivery.md.txt",
-      "sha256": "7f554a96530b89eee7b4e8961b97ffcda2abb1fdca3525268fb4eb02270da39b"
+      "sha256": "c0bc1cb1d3a41d18a31979e64394b8f586f93f3bf4eb631d09603b80a2e3cd64",
+      "checkout_capture_sha256": "7f554a96530b89eee7b4e8961b97ffcda2abb1fdca3525268fb4eb02270da39b",
+      "git_blob": "4c069fce01cece5f023a4ffd1dbbba51120d1dd2"
     },
     {
       "path": "docs/runtime/startup-deployment-02.md",
       "snapshot": "docs__runtime__startup-deployment-02.md.txt",
-      "sha256": "0b47a1b0447c69d6dc0f53db14376731d4a5b8f1c702729d2970e0c52ff0713d"
+      "sha256": "5b5ab74ba57295ac06418c78a8783936704dde05b40325a0dfda0bbb9eb1768d",
+      "checkout_capture_sha256": "0b47a1b0447c69d6dc0f53db14376731d4a5b8f1c702729d2970e0c52ff0713d",
+      "git_blob": "571a2451d5d881041fa20e101387fe32ab818389"
     }
-  ]
+  ],
+  "hash_scope": "sha256/git_blob identify canonical source Git bytes; checkout_capture_sha256 retains original Windows CRLF capture identity before Git text normalization"
 }

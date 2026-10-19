@@ -79,7 +79,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         ValidateDeploymentIdentity(seed);
         // Refuse old unresolved responsibilities before either future-reader markers
         // or confirmation/recovery writes can make the original release unusable.
-        repository = new(directory, Id, 7) { Boundary = point => Boundary?.Invoke(point) };
+        repository = new(directory, Id, 8) { Boundary = point => Boundary?.Invoke(point) };
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });

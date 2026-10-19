@@ -72,7 +72,7 @@ public sealed partial class ParcelStartupMaintenance
     {
         var envelope = state.Envelope ?? throw new InvalidDataException("数据库存在而原配置账缺失");
         await using var ports = factory();
-        using var repository = new ParcelRepository(copy.Directory, definition.Id, 7);
+        using var repository = new ParcelRepository(copy.Directory, definition.Id, ParcelRepository.ReadStorageVersion(copy.Database, definition.Id));
         // Snapshot repository is disposable; the live DB/WAL is never opened by SQLite.
         ParcelRecovery.CreateBackup(directory, destination, envelope.Effective, envelope.Pending, new FileInfo(copy.Database).Length,
             repository.Backup, ports.RegisterBackup);

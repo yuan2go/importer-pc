@@ -26,7 +26,7 @@
 
 维护界面无需业务 Start 成功，不构造 reader/SDK/外部端口。它读取原 Effective/Pending 和原修订，展示身份、状态、扩展诊断，提供现有能力参数、调用超时、队列/作业容量和基本重量策略的表单。站、模式、拓扑、提供者版本及设备身份保持原值。修改后先校验，填写维护原因，再保存待生效修订。
 
-Windows 保存使用已安装的受保护匹配 helper 提升；日常业务不提升，业务登录/扩展认证故障不阻止 OS 管理员执行离线修复。helper 收到固定操作与散列固定的请求，取得同一 application-owner 锁后重新核对原账 hash/CAS。精确原配置字节与变更记录落在原目录 `startup-maintenance/<operation>/`；沿唯一 configuration.json 保存 Pending，Effective、DB、原请求和原件不改。DB 格式检查使用临时 DB+WAL 副本，避免 SQLite 只读连接在原目录创建 sidecar；Windows临时副本使用受保护的 `%ProgramData%\ImporterPc\maintenance-workspaces`，所在卷需容纳副本及保留空间；完成后删除本次临时副本。当前离线保存仅接受匹配 DB7，旧库不自动迁移。
+Windows 保存使用已安装的受保护匹配 helper 提升；日常业务不提升，业务登录/扩展认证故障不阻止 OS 管理员执行离线修复。helper 收到固定操作与散列固定的请求，取得同一 application-owner 锁后重新核对原账 hash/CAS。精确原配置字节与变更记录落在原目录 `startup-maintenance/<operation>/`；沿唯一 configuration.json 保存 Pending，Effective、DB、原请求和原件不改。DB 格式检查使用临时 DB+WAL 副本，避免 SQLite 只读连接在原目录创建 sidecar；Windows临时副本使用受保护的 `%ProgramData%\ImporterPc\maintenance-workspaces`，所在卷需容纳副本及保留空间；完成后删除本次临时副本。本包离线保存接受匹配 DB8；7→8只在正常启动完成原责任检查后迁移，离线检查/备份不迁移原库。
 
 保存成功只表示 Pending 已读回。正常启动仍执行原责任、确认、资源启动和 Production 守卫；不会因修复自动 Resume、改写旧请求或重发 Unknown。配置已被其他维护修改时保留草稿并报冲突，须重新读取比较。
 

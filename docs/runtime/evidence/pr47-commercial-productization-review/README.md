@@ -1,5 +1,7 @@
 # PR #47 复审交付证据
 
+> 本目录保留`022c898`复审冻结结果。并行main集成后的当前介质与回执见[最新main集成](../pr47-main-integration/README.md)，本目录不改标为集成源码。
+
 当前冻结运行源码及夹具：`022c898f138a1326eec9134f8f18724a07fea5c4`；业务1.4.0 / Application.Contracts1.10.0 / DB8。复审起点为`c74c01e`；旧`bd86fbb`介质及[原记录](../commercial-productization-01/README.md)完整保留。本轮文档回执提交号及main合并号不作为运行介质源码号。
 
 [审查裁决与COMM映射](../../../reviews/pr47-commercial-productization-review.md)在编码前形成；[逐项结果](checks.json)、[六介质身份](media-identities.json)记录最终结果。所有介质均在本机生成，未自动上传ZIP或任何私有备份/密钥。清单中的相对本地路径在仓库根解析。

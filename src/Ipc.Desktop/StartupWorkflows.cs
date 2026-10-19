@@ -171,8 +171,17 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         SelectedLaunch = SelectedLaunch with { ConfigurationDirectory = Path.GetFullPath(config.Text), DataRoot = Path.GetFullPath(data.Text) };
         config.Text = SelectedLaunch.ConfigurationDirectory; data.Text = SelectedLaunch.DataRoot;
         maintenance = ParcelStartupServices.Maintenance(SelectedLaunch);
-        document = await Task.Run(maintenance.ReadAsync); recovery = null; savedDraft = document.Candidate is null ? null : await Task.Run(maintenance.ReadDraftAsync); Render();
-        Message(string.Join("\n", document.Diagnostics) + "\n" + document.Catalog.InventoryDiagnostic + (savedDraft is null ? "" : "\n发现未完成草稿：" + savedDraft.At + (savedDraft.BaseChanged ? "，基线已变化，保留但不自动应用" : "，可选择继续")));
+        document = await Task.Run(maintenance.ReadAsync); recovery = null; savedDraft = null;
+        string? unavailableDraft = null;
+        try { if (document.Candidate is not null) savedDraft = await Task.Run(maintenance.ReadDraftAsync); }
+        catch (System.ComponentModel.Win32Exception error)
+        {
+            // A recovered machine-DPAPI draft is private, non-authoritative input.
+            // Keep its bytes and CAS protection; it cannot hide the repair editor.
+            unavailableDraft = "\n草稿不可用：本机无法解密原DPAPI草稿（" + error.NativeErrorCode + "）。原密文保留、不覆盖；可从当前配置重新填写秘密并受控提交。换机恢复仍隔离，不能代替来源退役与资格核对。";
+        }
+        Render();
+        Message(string.Join("\n", document.Diagnostics) + "\n" + document.Catalog.InventoryDiagnostic + unavailableDraft + (savedDraft is null ? "" : "\n发现未完成草稿：" + savedDraft.At + (savedDraft.BaseChanged ? "，基线已变化，保留但不自动应用" : "，可选择继续")));
     }
     void Render(bool replaceDraft = true)
     {

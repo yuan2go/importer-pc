@@ -1,5 +1,7 @@
 # UX商用质量审查01 · WP-01～07工程闭环
 
+> 续修现行结果：[独立复审后三项修复](../runtime/ux-commercial-rereview-03-results.md)。最终产品6ce1d6d/业务1.3.2；下文初轮1.3.1及两个未发布本地尝试按形成时身份保留，不能混称实际Release。
+
 本轮依据[原24页PDF及发布交接](../reviews/ux-commercial-quality-audit-01/README.md)。开工main `eeeed0e0700cd07a76587b2bb701e91d422b2c35`，PR37固定 `2d60fdc83a267c1ed4ad7a9f7ce200bd11255a94`，PR38仅skill。隔离分支codex/ux-commercial-closure-02从main创建，显式继承PR37为开发依赖；不合并远端PR37/38，不修改其工作树。原工作区未跟踪客户材料保持。
 
 ## 当前来源与替代关系
@@ -56,8 +58,8 @@ main在开工时仍为业务1.2.8/Contracts1.8.0/DB7；PR37产品冻结c384c3bc4
 - [x] 定向RED：在`UxCommercialPresentation.VerifyBusy`覆盖无消息成功后Feedback、重复入口、同文新回执、独立Pause及后读失败恢复；先跑`--ux-commercial-presentation`保存原失败。
 - [x] 修改`ShellWindow.xaml`诊断折叠及标识、`ParcelViewModel.RunCoreAsync`消息归属；`MaintenancePage.xaml`命名作用域。原生`UxCommercialClosure.cs`检查实际作用域/子控件、finally排空、完成绑定及compact入口可达；不降800×420目标。
 - [x] 执行presentation、snapshots、UI、窗口生命周期等受影响回归及三业务WPF/原生验证器交叉构建；不重跑未受影响全量。原生Windows实际NOT_RUN。
-- [ ] 声明业务1.3.2/Contracts1.9.0/DB7，新冻结源码候选、精确依赖、同版解包启动；复用固定公共DLL的原签名包仅在SHA确实相同且兼容声明覆盖时，否则新不可变版本。不覆盖f1a655c资产。
-- [ ] 新证据、manifest和PR39同步真实状态，正常提交推送；只关闭本次有证据的工程项，不宣布商业/Windows/现场闭环。
+- [x] 声明业务1.3.2/Contracts1.9.0/DB7，新冻结源码候选、精确依赖、同版解包启动；复用固定公共DLL的原签名包仅在SHA确实相同且兼容声明覆盖时，否则新不可变版本。不覆盖f1a655c资产。
+- [x] 新证据、manifest和PR39同步真实状态，正常提交推送；只关闭本次有证据的工程项，不宣布商业/Windows/现场闭环。
 
 续修采用业务1.3.2，精确参考能力2.2.2、reader1.3.2、RCS1.1.2；冻结发布的SourceRevisionId也参与公共DLL身份，实际签名包重新构建，不复用/覆盖f1a655c旧包。
 

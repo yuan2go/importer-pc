@@ -1,0 +1,31 @@
+{
+  "SourceCommit": "6ce1d6d0b109bd6a3d9490fac176122b4670b90b",
+  "Checks": [
+    {
+      "Package": "sportmaster-core.zip",
+      "Status": "PASS_CRC_ALL_FILE_HASHES_FROZEN_SOURCE",
+      "WindowsPE": "NOT_APPLICABLE"
+    },
+    {
+      "Package": "direct-plc-core.zip",
+      "Status": "PASS_CRC_ALL_FILE_HASHES_FROZEN_SOURCE",
+      "WindowsPE": "NOT_APPLICABLE"
+    },
+    {
+      "Package": "wcs-to-plc-core.zip",
+      "Status": "PASS_CRC_ALL_FILE_HASHES_FROZEN_SOURCE",
+      "WindowsPE": "NOT_APPLICABLE"
+    },
+    {
+      "Package": "sportmaster-selected-portable.zip",
+      "Status": "PASS_CRC_ALL_FILE_HASHES_FROZEN_SOURCE",
+      "WindowsPE": "NOT_APPLICABLE"
+    },
+    {
+      "Package": "sportmaster-selected-win-x64.zip",
+      "Status": "PASS_CRC_ALL_FILE_HASHES_FROZEN_SOURCE",
+      "WindowsPE": "PASS"
+    }
+  ],
+  "WindowsExecuted": false
+}

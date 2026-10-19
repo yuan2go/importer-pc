@@ -7,6 +7,8 @@
  <Compile Include="../../src/Ipc.Assembly/ParcelCapabilityFactory.cs" Link="ParcelCapabilityFactory.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs" Link="Client/ParcelSnapshotValidity.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs" Link="Client/ParcelTargets.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/HistoryEditing.cs" Link="Client/HistoryEditing.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/FaultGuidance.cs" Link="Client/FaultGuidance.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs" Link="Client/ParcelViewModel.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelPresentation.cs" Link="Client/ParcelPresentation.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/DesktopServiceCalls.cs" Link="Client/DesktopServiceCalls.cs"/>
@@ -14,6 +16,8 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs" Link="Client/StructuredConfiguration.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs" Link="Client/CapabilityEditing.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/StartupConfigurationDraft.cs" Link="Client/StartupConfigurationDraft.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/StartupSiteTemplates.cs" Link="Client/StartupSiteTemplates.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/PersistentConfigurationDrafts.cs" Link="Client/PersistentConfigurationDrafts.cs"/>
  <Compile Include="../../src/Ipc.Desktop/DesktopLaunchOptions.cs" Link="Client/DesktopLaunchOptions.cs"/>
  <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs" Link="Client/SupplyStationViewModel.cs"/>
  <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs" Link="Client/SupplyStationWindow.xaml.cs"/>

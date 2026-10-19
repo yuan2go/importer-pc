@@ -2,6 +2,7 @@ using Ipc.Platform;
 namespace Ipc.Application.Contracts;
 
 public sealed record ParcelRetentionPolicy(int ResidentHistory = 200, long MinimumFreeBytes = 67108864);
+public sealed record ParcelBackupSchedule(string Directory, int IntervalMinutes, int MaximumSets);
 public sealed record ParcelCapacity(int Unresolved, int Resident, long Archived, int MaximumUnresolved, bool Available, string Policy, long FreeStorageBytes = 0, long MinimumFreeBytes = 0);
 public sealed record ParcelHistoryItem(long Sequence, bool Archived, ParcelOperation Operation);
 public sealed record ParcelHistoryPage(ParcelHistoryItem[] Items, long? NextBeforeSequence);

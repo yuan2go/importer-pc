@@ -1,0 +1,10 @@
+using Ipc.Application.ParcelFlow;
+using Ipc.Platform;
+var directory=Path.GetFullPath(".artifacts/comm/frozen-core-bd86fbb/synthetic-data/data/Simulation/reference-17/sportmaster");
+var database=Path.Combine(directory,"sportmaster.db");var before=Wire.FileHash(database);bool refused=false;
+try{using var old=new ParcelRepository(directory,"sportmaster",7);}
+catch(InvalidDataException){refused=true;}
+if(!refused||Wire.FileHash(database)!=before)throw new Exception("Actual prior frozen DB7 reader accepted/mutated DB8");
+Console.WriteLine("PASS actual frozen 70ccedc DB7 reader rejects final DB8 and preserves database SHA256 "+before);
+
+

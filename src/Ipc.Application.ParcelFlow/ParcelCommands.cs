@@ -19,6 +19,7 @@ public sealed partial class ParcelRuntime
             if (overload != 0) reasons.Add("Overload: rejected callback; inspect parcel and acknowledge while paused");
             if (!SessionValid) reasons.Add("Operator authentication required for new admission");
             if (repository.Paused) reasons.Add("Software admission paused; this is not an emergency stop");
+            if (!RestoreConfirmed) reasons.Add("RestoreHandoffRequired: keep isolated; verify same-machine source retirement and authenticate maintenance; cross-machine evidence still required");
             reasons.AddRange(maintainedResources.Keys.Order().Select(resource => "MaintenanceInProgress:" + resource));
             if (readers.Values.Any(r => r.Health?.IsValid(DateTimeOffset.UtcNow) != true)) reasons.Add("Reader confirmation missing/expired");
             if (!ImageCapacityAvailable()) reasons.Add("Temporary image capacity/backlog exhausted; existing originals retained");
@@ -32,6 +33,8 @@ public sealed partial class ParcelRuntime
                 (Effective.Images?.Strategy == UploadStrategy.Attached && h.InstanceId == Effective.Images.Uploader?.InstanceId ? auxiliaryReasons : reasons).Add("Capability unavailable: " + h.InstanceId);
             auxiliaryReasons.AddRange(repository.PendingReceipts().Select(x=>x.Operation+": original receipt custody "+x.Id+"; stage="+x.Stage+"; raw="+(x.Reply is null?"missing":"durable pending T3")+"; outcome="+(repository.HasReceiptOutcomeBasis(x.Id)?"known by separate Query":"unresolved")));
             if (repository.ArchiveCleanupFailure is { } cleanup) auxiliaryReasons.Add(cleanup);
+            if (Volatile.Read(ref lastExportFailure) is { } exportFailure) auxiliaryReasons.Add("HistoryExport:" + exportFailure);
+            if (backupScheduleState is { } scheduled) auxiliaryReasons.Add("BackupSchedule:" + scheduled.Outcome + "; next=" + scheduled.NextDue.ToString("O") + "; checked=" + scheduled.At.ToString("O"));
             auxiliaryReasons.AddRange(operations.Values.Where(x => x.FrozenConfiguration.Images?.Strategy == UploadStrategy.Attached && x.Upload?.Failure is not null).Select(x => x.Id + ": upload " + x.Upload!.Failure));
             var projection = new ParcelSnapshot(runtimeId, Id, repository.Revision, stopped ? "Stopped" : reasons.Count == 0 ? "Ready" : Effective.SchemaVersion >= 3 && CanAdmit() ? "PartiallyReady" : "Blocked", repository.Paused,
                 reasons.ToArray(), operations.Values.Concat(positions.Keys.Select(p => repository.Latest(p)).OfType<ParcelOperation>()).DistinctBy(x => x.Id).OrderByDescending(x => x.ObservedAt).ToArray(), health.ToArray(), configuration.Current, currentOperator, Availability(), PositionSnapshots(), readers.Values.Select(r => r.Health).OfType<DeviceState>().ToArray(), Capacity(), IdentityConflicts(), auxiliaryReasons.ToArray(), latestInputs.Values.ToArray());
@@ -103,6 +106,8 @@ public sealed partial class ParcelRuntime
                         Upload = abandoned.Upload is { State: StageState.Prepared, Attempts: 0 } u ? u with { State = StageState.Cancelled, Failure = "Local cancellation before any external upload attempt" } : abandoned.Upload,
                         Capture = abandoned.Capture is { State: StageState.Prepared, Attempts: 0 } c ? c with { State = StageState.Cancelled, Failure = "Local cancellation before acquisition" } : abandoned.Capture,
                         Reason = "Unsubmitted parcel inspected and removed: " + command.Value }, "Abandoned", "Unsent intentions cancelled locally; original accepted WCS/slot and all request identities retained; no physical completion asserted"); ReleaseCompletedImages(); break;
+                case "InspectRestore": return new("RestoreHandoff", Wire.Encode(ReadRestoreHandoff()), repository.Revision);
+                case "ConfirmRestore": ConfirmRestore(command.Owner, command.Value); break;
                 default: return new("Rejected", "Unsupported command or an application guard is closed", repository.Revision);
             }
             var receipt = new BusinessReceipt("Persisted", "Application command committed", repository.Revision);

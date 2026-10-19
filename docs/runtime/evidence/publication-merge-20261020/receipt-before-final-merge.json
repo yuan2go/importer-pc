@@ -1,0 +1,35 @@
+{
+  "baseline_main": "c445b0ec32a3db44f00a1968f3c501aa36eb786f",
+  "confirmed_merged_before_final_snapshot": [
+    {
+      "pr": 47,
+      "merge_sha": "76fefc803660c5546c7966fc60c4e4b31b7b01fb"
+    },
+    {
+      "pr": 50,
+      "merge_sha": "30b8124ad178e98ae847fa9d41fe6dcdb724a78b"
+    },
+    {
+      "pr": 48,
+      "merge_sha": "4f21b2d9cf6742a6775e47766c9f8d96f2804bca"
+    },
+    {
+      "pr": 49,
+      "merge_sha": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef"
+    }
+  ],
+  "final_snapshot_pr": 51,
+  "final_snapshot_uploaded_source": "cfeb7840aa9eea637db0a27d76e5f9bfa5d68877",
+  "actual_unique_input_commits_before_final_integration": 35,
+  "count_after_this_local_integration": 36,
+  "expected_count_after_final_github_merge": 37,
+  "count_method": "git rev-list --count <baseline>..<final main>; unique graph commits including merges",
+  "final_merge_sha_source": "Read PR51 merged state and merge_commit_sha after GitHub merge; not self-referenced in this receipt",
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "build_and_repackage": "NOT_RUN_BY_USER_REQUEST",
+  "windows": "NOT_RUN",
+  "real_integration": "BLOCKED",
+  "quote_spreadsheet_uploaded": false,
+  "media_source": "bd86fbb01b249f07e25fb12e003fed2a130a9c1c",
+  "media_release": "https://github.com/yuan2go/importer-pc/releases/tag/commercial-productization-reference-bd86fbb"
+}

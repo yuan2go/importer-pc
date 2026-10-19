@@ -95,6 +95,8 @@ def verify_package(directory, application, target, source):
             release = read(base / 'application-release.json')
             if release['SourceCommit'] != source or release['ApplicationId'] != application:
                 raise ValueError('Wrong executable release identity')
+            if any(release.get(k) != identity.get(k) for k in ('BusinessVersion', 'BusinessAssembly', 'CompatibilitySha256')):
+                raise ValueError('Host identity differs')
             if {p.relative_to(base).as_posix() for p in base.rglob('*') if p.is_file()} != set(release['Files']) | {'application-release.json'}:
                 raise ValueError('Incomplete executable release')
             for n, digest in release['Files'].items():
@@ -110,6 +112,8 @@ def verify_package(directory, application, target, source):
             for name in ('Setup.cmd', 'Maintenance.cmd', 'application.cmd', 'app/Ipc.Assembly.exe', 'desktop/Ipc.Desktop.exe'):
                 if name not in inventory:
                     raise ValueError('Missing native entry: ' + name)
+            if '--setup' not in (directory / 'Setup.cmd').read_text(encoding='utf-8') or '--maintenance' not in (directory / 'Maintenance.cmd').read_text(encoding='utf-8'):
+                raise ValueError('Wrong native entry dispatch')
             peers = []
             for dll in (directory / 'app').glob('Ipc.*.dll'):
                 peer = directory / 'desktop' / dll.name
@@ -118,8 +122,18 @@ def verify_package(directory, application, target, source):
                         raise ValueError('Helper/desktop bytes differ: ' + dll.name)
                     peers.append(dll.name)
             result['IdenticalSharedDlls'] = peers
-    elif target != 'portable':
-        raise ValueError('Legacy assembly does not have this Windows installer')
+    else:
+        if target != 'portable':
+            raise ValueError('Legacy assembly does not have this Windows installer')
+        deps = read(directory / 'app/Ipc.Assembly.deps.json')['libraries']
+        assembly = 'Ipc.Supply' if application == 'supply' else 'Ipc.Inspection'
+        versions = [n.rsplit('/', 1)[1] for n in deps if n.startswith(assembly + '/')]
+        expected = next(c['version'] for c in read(directory / 'composition.lock.json')['components'] if c['id'] == application)
+        if versions != [expected]:
+            raise ValueError('Legacy compiled business and composition version differ')
+        result['BusinessVersion'] = versions[0]
+    if any(not bundle for bundle in identity.get('offline_bundles', [])):
+        raise ValueError('Empty extension identity')
     return result
 
 
@@ -127,6 +141,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--dotnet', default='dotnet')
+    p.add_argument('--source', help='Optional full frozen SHA; must equal this clean checkout HEAD')
     p.add_argument('--verify-only', action='store_true')
     a = p.parse_args()
     output = a.output.resolve()
@@ -147,6 +162,8 @@ def main():
     if git('status', '--porcelain', '--', *SOURCE_PATHS):
         raise ValueError('Commit exact runtime/configuration/packaging/guides before building')
     source = git('rev-parse', 'HEAD')
+    if a.source is not None and a.source != source:
+        raise ValueError('Use a clean checkout of the full frozen --source commit')
     for commit in MERGES.values():
         subprocess.run(['git', 'merge-base', '--is-ancestor', commit, source], cwd=ROOT, check=True)
     expected = read(ROOT / 'global.json')['sdk']['version']
@@ -160,6 +177,7 @@ def main():
                   WindowsAcceptance='NOT_RUN', PhysicalIntegration='BLOCKED', Assurance='SIMULATION_REFERENCE_ONLY',
                   Authenticode='NOT_SIGNED_NO_CERTIFICATE_PROVIDED',
                   Inputs={str(f.relative_to(ROOT)).replace('\\', '/'): sha(f) for f in sorted(ROOT.glob('src/*/packages*.lock.json'))}, Commands=[], Packages=[])
+    record['Toolchain'] = subprocess.check_output([a.dotnet, '--info'], cwd=ROOT, text=True, encoding='utf-8')
     write(output / 'build-record.json', record)
     env = dict(os.environ, PYTHONUTF8='1', DOTNET_CLI_TELEMETRY_OPTOUT='1')
     try:
@@ -168,6 +186,7 @@ def main():
             command = [sys.executable, str(ROOT / 'scripts/package-application.py'), '--application', application] if application in PARCEL else [sys.executable, str(ROOT / 'scripts/package-business.py'), '--composition', 'supply-assembly' if application == 'supply' else 'inspection-reference']
             command += ['--target', target, '--output', str(output / name), '--dotnet', a.dotnet]
             record['Commands'].append(command)
+            write(output / 'build-record.json', record)
             with (output / (name + '.log')).open('xb') as log:
                 subprocess.run(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
             record['Packages'].append(verify_package(output / name, application, target, source))

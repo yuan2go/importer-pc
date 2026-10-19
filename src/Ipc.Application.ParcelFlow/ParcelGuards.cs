@@ -4,7 +4,7 @@ namespace Ipc.Application.ParcelFlow;
 
 public sealed partial class ParcelRuntime
 {
-    bool SharedReady() => configuration?.Current.Confirmation?.Required != true && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
+    bool SharedReady() => configuration?.Current.Confirmation?.Required != true && RestoreConfirmed && factory.AdmissionFailure(Effective) is null && SessionValid && failure is null &&
         !stopping.IsCancellationRequested && (overload == 0 || Effective.SchemaVersion >= 3);
     bool CanResume() => CapacityAvailable && SharedReady() && (Effective.SchemaVersion >= 3 ? positions.Keys.Any(PositionReady) : positions.Keys.All(PositionReady));
     bool PositionReady(string position) => SharedReady() && PositionMaintenanceClear(position) && !HasIdentityConflict(position) && !overloadedPositions.ContainsKey(position) &&
@@ -77,7 +77,7 @@ public sealed partial class ParcelRuntime
             {
                 await Task.Delay(100, stopping.Token).ConfigureAwait(false);
                 await gate.WaitAsync(stopping.Token).ConfigureAwait(false);
-                try { ExpireWeights(); ReleaseCompletedImages(); RefreshStorageCapacity(); ArchiveSettled(); RecoverOverloadAcknowledgement(); auxiliary.RemoveAll(x => x.IsCompleted); }
+                try { ExpireWeights(); ReleaseCompletedImages(); RefreshStorageCapacity(); ArchiveSettled(); RecoverOverloadAcknowledgement(); TryScheduledBackup(DateTimeOffset.UtcNow); auxiliary.RemoveAll(x => x.IsCompleted); }
                 finally { gate.Release(); }
             }
         }

@@ -31,6 +31,7 @@ public interface IParcelCapabilityFactory : IAsyncDisposable
     Task<BusinessReceipt> InstallAsync(string file, string sha256) => throw new InvalidOperationException("Installation unavailable");
     ParcelConfiguration Normalize(ParcelConfiguration configuration);
     void Validate(ParcelConfiguration configuration);
+    void ValidateStructure(ParcelConfiguration configuration) => Validate(configuration);
     ParcelPorts Create(ParcelConfiguration configuration);
 }
 public static class WeightRules

@@ -18,9 +18,12 @@ class ReleaseTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.output = Path(self.temp.name) / 'candidate'
         self.output.mkdir()
+        (self.output / 'app').mkdir()
         self.source = release.git('rev-parse', 'HEAD')
         release.write(self.output / 'ASSEMBLY.json', dict(SourceCommit=self.source, Business='inspection'))
         release.write(self.output / 'DEPENDENCIES.json', dict(SourceCommit=self.source))
+        release.write(self.output / 'app/Ipc.Assembly.deps.json', dict(libraries={'Ipc.Inspection/1.0.0': {}}))
+        release.write(self.output / 'composition.lock.json', dict(components=[dict(id='inspection', version='1.0.0')]))
 
     def seal(self):
         archive = Path(str(self.output) + '.zip')
@@ -80,6 +83,56 @@ class ReleaseTests(unittest.TestCase):
         for name in ('../file', '/file', 'C:/file', 'app\\file', 'app//file', './file'):
             with self.subTest(name=name), self.assertRaises(ValueError):
                 release.safe_name(name)
+
+    def test_resealed_wrong_legacy_version_rejected(self):
+        release.write(self.output / 'app/Ipc.Assembly.deps.json', dict(libraries={'Ipc.Inspection/9.0.0': {}}))
+        self.seal()
+        with self.assertRaises(ValueError):
+            self.verify()
+
+
+class Pr48ReleaseTests(unittest.TestCase):
+    def make(self, root):
+        media = root/'supply-portable'; media.mkdir()
+        (media/'ASSEMBLY.json').write_text(json.dumps(dict(SourceCommit='a'*40, Business='supply')))
+        (media/'original.bin').write_bytes(b'original')
+        (media/'DEPENDENCIES.json').write_text(json.dumps(dict(SourceCommit='a'*40)))
+        (media/'composition.lock.json').write_text(json.dumps(dict(components=[dict(id='supply', version='1.0.0')])))
+        (media/'app').mkdir()
+        (media/'app/Ipc.Assembly.deps.json').write_text(json.dumps(dict(libraries={'Ipc.Supply/1.0.0': {}})))
+        self.seal(media)
+        return media
+
+    def seal(self, media):
+        (media/'SHA256SUMS').write_text(''.join(release.sha(p)+'  '+p.relative_to(media).as_posix()+'\n' for p in sorted(media.rglob('*')) if p.is_file() and p.name != 'SHA256SUMS'))
+        with zipfile.ZipFile(media.with_suffix('.zip'),'w') as z:
+            for p in media.rglob('*'):
+                if p.is_file(): z.write(p,p.relative_to(media).as_posix())
+
+    def check(self, media, source, application, target):
+        return release.verify_package(media, application, target, source)
+
+    def test_hash_and_exact_inventory_and_zip(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            media = self.make(Path(temporary))
+            self.assertEqual(self.check(media,'a'*40,'supply','portable')['Application'],'supply')
+            (media/'original.bin').write_bytes(b'tampered')
+            with self.assertRaisesRegex(ValueError,'File differs'): self.check(media,'a'*40,'supply','portable')
+            self.seal(media)
+            (media/'injection.dll').write_bytes(b'extra')
+            with self.assertRaisesRegex(ValueError,'Incomplete package inventory'): self.check(media,'a'*40,'supply','portable')
+
+    def test_zip_cannot_be_stale_or_duplicated(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            media = self.make(Path(temporary))
+            with zipfile.ZipFile(media.with_suffix('.zip'),'a') as z: z.writestr('extra.dll', b'extra')
+            with self.assertRaisesRegex(ValueError,'ZIP members'): self.check(media,'a'*40,'supply','portable')
+
+    def test_identity_cannot_be_relabelled(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            media = self.make(Path(temporary))
+            for source,app in [('b'*40,'supply'),('a'*40,'inspection')]:
+                with self.assertRaisesRegex(ValueError,'Wrong package source/application'): self.check(media,source,app,'portable')
 
 
 if __name__ == '__main__':

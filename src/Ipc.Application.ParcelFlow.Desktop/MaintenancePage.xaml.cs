@@ -26,7 +26,11 @@ public partial class MaintenancePage : UserControl
         SelectInstance(instance is not null && vm.CapabilityDrafts.Contains(instance) ? instance : null);
     }
     async void Load_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.LoadCapabilitiesAsync, "重新读取并替换本窗草稿"); }
+    async void SaveEditor_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.SaveIncompleteEditorAsync, "加密保存未完成设置"); }
+    async void ContinueEditor_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ContinueIncompleteEditorAsync, "继续未完成设置"); }
     async void ConfirmationLoad_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.LoadConfigurationConfirmationAsync, "读取待确认原账"); }
+    async void InspectRestore_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.InspectRestoreAsync, "读取原机恢复交接"); }
+    async void ConfirmRestore_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ConfirmRestoreAsync, "确认恢复核对，保持暂停"); }
     async void ConfirmationSave_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ConfirmConfigurationAsync, "确认已核对当前运行输入"); }
     async void ValidateFull_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ValidateAdvancedConfigurationAsync, "校验完整候选"); }
     async void SaveFull_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.SaveAdvancedConfigurationAsync, "保存完整待重启修订"); }

@@ -1,0 +1,40 @@
+{
+  "source": "c445b0ec32a3db44f00a1968f3c501aa36eb786f",
+  "files": [
+    {
+      "path": "README.md",
+      "snapshot": "README.md.txt",
+      "sha256": "785e87a23170a42ade5941c6800f044465e4e195179a7aa9ef51105f09d07ed3"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "snapshot": "docs__INDEX.md.txt",
+      "sha256": "9b0fa242e9b479ff2d549e99c392e84abc652b2e7a9e6d41fb3d0844ed702b64"
+    },
+    {
+      "path": "docs/design/framework.md",
+      "snapshot": "docs__design__framework.md.txt",
+      "sha256": "704bf761ac6a38f3bb7fdc8a318be90ebd8799e5a678a2806070fd5c3cb2dd79"
+    },
+    {
+      "path": "docs/design/framework-decisions.md",
+      "snapshot": "docs__design__framework-decisions.md.txt",
+      "sha256": "886a1cdbf5514a3bc2789ed700b17cf3e1998bc9aac977c6c2fa3f99e29dc572"
+    },
+    {
+      "path": "docs/runtime/getting-started.md",
+      "snapshot": "docs__runtime__getting-started.md.txt",
+      "sha256": "6511b39bc72d50444393dd2d01cec2adcc6d5585acd888d91bca4c6e43e2c8cd"
+    },
+    {
+      "path": "docs/runtime/windows-application-delivery.md",
+      "snapshot": "docs__runtime__windows-application-delivery.md.txt",
+      "sha256": "7f554a96530b89eee7b4e8961b97ffcda2abb1fdca3525268fb4eb02270da39b"
+    },
+    {
+      "path": "docs/runtime/startup-deployment-02.md",
+      "snapshot": "docs__runtime__startup-deployment-02.md.txt",
+      "sha256": "0b47a1b0447c69d6dc0f53db14376731d4a5b8f1c702729d2970e0c52ff0713d"
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) ...
+  test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Run') ... FAIL
+  test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Console') ... FAIL
+test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) ...
+  test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Run') ... FAIL
+  test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Console') ... FAIL
+test_direct_runtime_guard_precedes_configuration_and_storage (test_runtime_identity.RuntimeIdentityTests.test_direct_runtime_guard_precedes_configuration_and_storage) ... ok
+test_double_click_cmd_has_no_powershell_dependency (test_runtime_identity.RuntimeIdentityTests.test_double_click_cmd_has_no_powershell_dependency) ... ERROR
+test_maintenance_dispatch_does_not_require_runtime_identity (test_runtime_identity.RuntimeIdentityTests.test_maintenance_dispatch_does_not_require_runtime_identity) ... ok
+test_run_and_console_choose_the_same_default_root_without_manual_creation (test_runtime_identity.RuntimeIdentityTests.test_run_and_console_choose_the_same_default_root_without_manual_creation) ... FAIL
+test_setup_does_not_start_a_business_child (test_runtime_identity.RuntimeIdentityTests.test_setup_does_not_start_a_business_child) ... FAIL
+
+======================================================================
+ERROR: test_double_click_cmd_has_no_powershell_dependency (test_runtime_identity.RuntimeIdentityTests.test_double_click_cmd_has_no_powershell_dependency)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/scripts/test_runtime_identity.py", line 118, in test_double_click_cmd_has_no_powershell_dependency
+    self.assertLess(script.index('desktop\\Ipc.Desktop.exe'), script.index('where pwsh.exe'))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: substring not found
+
+======================================================================
+FAIL: test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Run')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/scripts/test_runtime_identity.py", line 87, in test_allowed_dispatch_preserves_existing_launch_arguments
+    self.assertEqual(calls[0], ['Ipc.Assembly.exe', '--action', check])
+AssertionError: Lists differ: ['Ipc.Assembly.exe', '--action', 'runtime-check'] != ['Ipc.Assembly.exe', '--action', 'runtime-prepare']
+
+First differing element 2:
+'runtime-check'
+'runtime-prepare'
+
+- ['Ipc.Assembly.exe', '--action', 'runtime-check']
+?                                           ^^ ^^
+
++ ['Ipc.Assembly.exe', '--action', 'runtime-prepare']
+?                                           ^^ ^^^^
+
+
+======================================================================
+FAIL: test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Console')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/scripts/test_runtime_identity.py", line 87, in test_allowed_dispatch_preserves_existing_launch_arguments
+    self.assertEqual(calls[0], ['Ipc.Assembly.exe', '--action', check])
+AssertionError: Lists differ: ['Ipc.Assembly.exe', '--action', 'runtime-check'] != ['Ipc.Assembly.exe', '--action', 'runtime-prepare']
+
+First differing element 2:
+'runtime-check'
+'runtime-prepare'
+
+- ['Ipc.Assembly.exe', '--action', 'runtime-check']
+?                                           ^^ ^^
+
++ ['Ipc.Assembly.exe', '--action', 'runtime-prepare']
+?                                           ^^ ^^^^
+
+
+======================================================================
+FAIL: test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Run')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/scripts/test_runtime_identity.py", line 79, in test_denial_stops_every_runtime_entry_before_other_children
+    self.assertEqual(calls, [['Ipc.Assembly.exe', '--action', check]], result.stderr)
+AssertionError: Lists differ: [['Ipc.Assembly.exe', '--action', 'runtime-check']] != [['Ipc.Assembly.exe', '--action', 'runtime-prepare']]
+
+First differing element 0:
+['Ipc.Assembly.exe', '--action', 'runtime-check']
+['Ipc.Assembly.exe', '--action', 'runtime-prepare']
+
+- [['Ipc.Assembly.exe', '--action', 'runtime-check']]
+?                                            ^^ ^^
+
++ [['Ipc.Assembly.exe', '--action', 'runtime-prepare']]
+?                                            ^^ ^^^^
+ : Synthetic runtime identity denied
+Exception: [TEMP]:45
+Line |
+  45 |  … DE -ne 0) { throw "Application maintenance failed ($LASTEXITCODE). Or …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Application maintenance failed (42). Original data, release and
+     | incomplete output are retained.
+
+
+======================================================================
+FAIL: test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Console')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/scripts/test_runtime_identity.py", line 79, in test_denial_stops_every_runtime_entry_before_other_children
+    self.assertEqual(calls, [['Ipc.Assembly.exe', '--action', check]], result.stderr)
+AssertionError: Lists differ: [['Ipc.Assembly.exe', '--action', 'runtime-check']] != [['Ipc.Assembly.exe', '--action', 'runtime-prepare']]
+
+First differing element 0:
+['Ipc.Assembly.exe', '--action', 'runtime-check']
+['Ipc.Assembly.exe', '--action', 'runtime-prepare']
+
+- [['Ipc.Assembly.exe', '--action', 'runtime-check']]
+?                                            ^^ ^^
+
++ [['Ipc.Assembly.exe', '--action', 'runtime-prepare']]
+?                                            ^^ ^^^^
+ : Synthetic runtime identity denied
+Exception: [TEMP]:45
+Line |
+  45 |  … DE -ne 0) { throw "Application maintenance failed ($LASTEXITCODE). Or …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Application maintenance failed (42). Original data, release and
+     | incomplete output are retained.
+
+
+======================================================================
+FAIL: test_run_and_console_choose_the_same_default_root_without_manual_creation (test_runtime_identity.RuntimeIdentityTests.test_run_and_console_choose_the_same_default_root_without_manual_creation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/scripts/test_runtime_identity.py", line 103, in test_run_and_console_choose_the_same_default_root_without_manual_creation
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : Exception: [TEMP]:82
+Line |
+  82 |          if (-not $DataRoot) { throw 'Explicit DataRoot required' }
+     |                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Explicit DataRoot required
+
+
+======================================================================
+FAIL: test_setup_does_not_start_a_business_child (test_runtime_identity.RuntimeIdentityTests.test_setup_does_not_start_a_business_child)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[WORKTREE]/scripts/test_runtime_identity.py", line 113, in test_setup_does_not_start_a_business_child
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : application.ps1: Cannot validate argument on parameter 'Action'. The argument "Install" does not belong to the set "Verify,Diagnose,ProvisionData,Run,Console,Shortcut,Inspect,Backup,PlanRestore,Restore,Export" specified by the ValidateSet attribute. Supply an argument that is in the set and then try the command again.
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 18.992s
+
+FAILED (failures=6, errors=1)

@@ -1,0 +1,28 @@
+[
+  {
+    "Target": "portable",
+    "SourceCommit": "1760200b21199914d73db787c053eacb190d136d",
+    "Archive": "first-run-portable-1760200.zip",
+    "ZipSha256": "0147df13a015d934a0e99066562e54d411adc80abb89daada3d9c59ad92a89b1",
+    "SHA256SUMSSha256": "6654487ded58ddb7f6b77dd52a509b367a0f33747799b54e5afe0494cb92e66f",
+    "VerifiedFileCount": 104,
+    "WindowsRuntime": "NOT_RUN",
+    "SmokeExitCode": 0,
+    "NewDataDirectoryCreated": true,
+    "SQLiteIntegrity": "ok",
+    "RunDirectory": "/tmp",
+    "PhysicalCalls": "NONE_REFERENCE_ONLY",
+    "SnapshotOperationCount": 0
+  },
+  {
+    "Target": "win-x64",
+    "SourceCommit": "1760200b21199914d73db787c053eacb190d136d",
+    "Archive": "first-run-windows-1760200.zip",
+    "ZipSha256": "47127e448453fe229fe9e19f287f6e517f194b9e911c0c6f8274087e19cadf88",
+    "SHA256SUMSSha256": "7e6f7d949379e9763dd0191395a6ce7b58b2cf8c2a6aa27300a90aec60bff87f",
+    "VerifiedFileCount": 741,
+    "WindowsRuntime": "NOT_RUN",
+    "InstallerHostInBothDirectories": true,
+    "DesktopConsoleSetupAssemblyBytesMatch": true
+  }
+]

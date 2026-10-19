@@ -21,7 +21,7 @@ Files: `src/Ipc.Platform/MachineRuntimePolicy.cs`, new `MachineRuntimeSetup.cs`,
 - [x] 在既有`--runtime-identity`入口增加deny-only允许及安装顺序回归，先记录RED。
 - [x] 账户判定只把启用的管理员组算作提权，继续拒绝服务SID和其他账户。
 - [x] 实现`MachineRuntimeSetup.EnsureRuntimeIdentity(Action<string> install)`及`InstallForAccount(string sid)`。纯顺序函数接收调用者SID、策略存在性、安装回调和最终校验，供合成验证调用。Windows安装固定ProgramData路径、受保护ACL、独占安装锁及原子发布，不调用业务。
-- [x] `/Users/yuan/.local/share/ipc-dotnet/dotnet run --project tests/Ipc.Verification -- --runtime-identity`通过；Windows分支单列NOT_RUN。
+- [x] `dotnet build tests/Ipc.Verification/Ipc.Verification.csproj -m:1 -nr:false`及`dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll --runtime-identity`通过；Windows分支单列NOT_RUN。
 
 ### Task 2: 接通全部启动入口和默认路径
 
@@ -36,7 +36,7 @@ Files: new `src/Ipc.Assembly/ParcelRuntimeSetup.cs`, `Ipc.Assembly.csproj`, `Pro
 
 Files: `docs/INDEX.md`, `docs/design/framework.md`, `framework-decisions.md`, `docs/runtime/windows-application-delivery.md`, `getting-started.md`, `runtime-identity-preflight-01.md`, new results, `scripts/package-application.py`, `docs/manifest.json`及checksum。
 
-- [ ] 改当前指引，保留旧证据，说明首次UAC、默认数据根、现有策略错误、取消及重试；不再要求基本参考启动手工provision。
-- [ ] 更新随包启动说明，提交源码；从固定SHA构建portable和win-x64，解包核hash，portable新根snapshot/quit并检查SQLite integrity；不使用生产设备。
-- [ ] 结果记录实际命令/退出码/固定源码与媒介hash，更新manifest。`git diff --check`、指南测试及同基线归档差额核对。
+- [x] 改当前指引，保留旧证据，说明首次UAC、默认数据根、现有策略错误、取消及重试；不再要求基本参考启动手工provision。
+- [x] 更新随包启动说明，提交源码；从固定SHA构建portable和win-x64，解包核hash，portable新根snapshot/quit并检查SQLite integrity；不使用生产设备。
+- [x] 结果记录实际命令/退出码/固定源码与媒介hash，更新manifest。`git diff --check`、指南测试及同基线归档差额核对。
 - [ ] 开发分支推送、创建main PR并附加当前任务；不合并main，报告Windows实际NOT_RUN及现场BLOCKED。

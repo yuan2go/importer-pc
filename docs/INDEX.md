@@ -1,4 +1,4 @@
-> 当前Windows首次启动修复见[WINDOWS-FIRST-RUN-01](work-packages/WP-IPC-WINDOWS-FIRST-RUN-01.md)：软件自动准备机器策略及数据目录，指定账户在UAC未提权状态下可运行；deny-only管理员组不再单独构成拒绝。原SID修复的只读前置检查、维护隔离与历史证据保留，旧候选不自动获得新行为。Windows原生验证仍NOT_RUN。
+> 当前Windows首次启动修复见[WINDOWS-FIRST-RUN-01](work-packages/WP-IPC-WINDOWS-FIRST-RUN-01.md)及[结果/固定候选](runtime/windows-first-run-01-results.md)：软件自动准备机器策略及数据目录，指定账户在UAC未提权状态下可运行；deny-only管理员组不再单独构成拒绝。原SID修复的只读前置检查、维护隔离与历史证据保留，旧候选不自动获得新行为。Windows原生验证仍NOT_RUN。
 
 # 统一资料与实施入口
 

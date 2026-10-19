@@ -1,0 +1,27 @@
+  正在确定要还原的项目…
+  已还原 [WORKTREE]/.artifacts/first-run-portable-1760200/source-snapshot/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 940 毫秒)。
+  已还原 [WORKTREE]/.artifacts/first-run-portable-1760200/source-snapshot/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 935 毫秒)。
+  已还原 [WORKTREE]/.artifacts/first-run-portable-1760200/source-snapshot/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 936 毫秒)。
+  已还原 [WORKTREE]/.artifacts/first-run-portable-1760200/source-snapshot/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 935 毫秒)。
+  已还原 [WORKTREE]/.artifacts/first-run-portable-1760200/source-snapshot/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 935 毫秒)。
+  已还原 [WORKTREE]/.artifacts/first-run-portable-1760200/source-snapshot/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 936 毫秒)。
+  已还原 [WORKTREE]/.artifacts/first-run-portable-1760200/source-snapshot/src/Ipc.Components/Ipc.Components.csproj (用时 940 毫秒)。
+  已还原 [WORKTREE]/.artifacts/first-run-portable-1760200/source-snapshot/src/Ipc.Platform/Ipc.Platform.csproj (用时 935 毫秒)。
+  已还原 [WORKTREE]/.artifacts/first-run-portable-1760200/source-snapshot/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 4 毫秒)。
+  已还原 [WORKTREE]/.artifacts/first-run-portable-1760200/source-snapshot/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 7 毫秒)。
+  已还原 [WORKTREE]/.artifacts/first-run-portable-1760200/source-snapshot/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 19 毫秒)。
+  已还原 [WORKTREE]/.artifacts/first-run-portable-1760200/source-snapshot/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 20 毫秒)。
+  Ipc.Platform -> [WORKTREE]/.artifacts/first-run-portable-1760200/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> [WORKTREE]/.artifacts/first-run-portable-1760200/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> [WORKTREE]/.artifacts/first-run-portable-1760200/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> [WORKTREE]/.artifacts/first-run-portable-1760200/build-intermediates/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> [WORKTREE]/.artifacts/first-run-portable-1760200/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> [WORKTREE]/.artifacts/first-run-portable-1760200/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> [WORKTREE]/.artifacts/first-run-portable-1760200/build-intermediates/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> [WORKTREE]/.artifacts/first-run-portable-1760200/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> [WORKTREE]/.artifacts/first-run-portable-1760200/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> [WORKTREE]/.artifacts/first-run-portable-1760200/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Integrations -> [WORKTREE]/.artifacts/first-run-portable-1760200/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> [WORKTREE]/.artifacts/first-run-portable-1760200/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> [WORKTREE]/.artifacts/first-run-portable-1760200/app/
+{"Package": "[WORKTREE]/.artifacts/first-run-portable-1760200.zip", "Sha256": "0147df13a015d934a0e99066562e54d411adc80abb89daada3d9c59ad92a89b1", "SourceCommit": "1760200b21199914d73db787c053eacb190d136d", "Application": "sportmaster", "Target": "portable", "BusinessVersion": "1.3.3", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "59B26D7D84765F33ABC8EE4F87C852DE4E6889CE7E42A7320E8883659D7A44FD"}

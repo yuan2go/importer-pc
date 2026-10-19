@@ -32,10 +32,12 @@ public sealed partial class ParcelStartupMaintenance
         using var targetCopy = CopyForMaintenance(target);
         if (ParcelRepository.ReadStorageVersion(sourceCopy.Database, definition.Id) != 8 || ParcelRepository.ReadStorageVersion(targetCopy.Database, definition.Id) != 8)
             throw new InvalidDataException("原机接管要求两根均为DB8：先在原根按新发布清偿并受控迁移，再创建/恢复新的完整备份，防止不认识退役围栏的旧程序启动原根");
+        ParcelMachineOrigin.Require(source, c);
+        if (!manifest.Files.ContainsKey(ParcelMachineOrigin.FileName)) throw new InvalidDataException("该备份没有原机器来源保管证据，保持隔离；不能事后给旧备份补盖证明");
         if (ParcelRepository.HandoffDatabaseIdentity(sourceCopy.Database) != ParcelRepository.HandoffDatabaseIdentity(targetCopy.Database) ||
             Wire.FileHash(Path.Combine(source, "configuration.json")) != manifest.Files["configuration.json"] ||
             manifest.Files.Any(f => !File.Exists(RecoveryFiles.Resolve(source, f.Key)) || Wire.FileHash(RecoveryFiles.Resolve(source, f.Key)) != f.Value) ||
-            !new[] { "configuration.json", "overload.json" }.Where(n => File.Exists(Path.Combine(source, n))).Concat(RecoveryFiles.Enumerate(source, "receipts")).Concat(RecoveryFiles.Enumerate(source, "images", skipImageLeases: true))
+            !new[] { "configuration.json", "overload.json", ParcelMachineOrigin.FileName }.Where(n => File.Exists(Path.Combine(source, n))).Concat(RecoveryFiles.Enumerate(source, "receipts")).Concat(RecoveryFiles.Enumerate(source, "images", skipImageLeases: true))
                 .Concat(RecoveryFiles.MaintenanceEvidence(source))
                 .Order(StringComparer.Ordinal).SequenceEqual(manifest.Files.Keys.Order(StringComparer.Ordinal)))
             throw new InvalidDataException("原根在备份后已变化；先保全原责任，停机后创建并恢复新的完整备份。不能用旧备份退役较新的原根");
@@ -80,6 +82,13 @@ public sealed partial class ParcelRuntime
         var proof = Wire.Decode<StartupRestoreHandoff>(Read(handoff));
         if (!Path.IsPathFullyQualified(proof.SourceDirectory) || proof.SourceDirectory.StartsWith(@"\\", StringComparison.Ordinal)) throw new InvalidDataException("原机退役路径必须是本地绝对目录");
         RecoveryFiles.RequireOrdinaryAncestors(proof.SourceDirectory);
+        ParcelMachineOrigin.Require(proof.SourceDirectory, Effective);
+        var manifestFile = Path.Combine(directory!, "RESTORED-ISOLATED.json"); RecoveryFiles.RequireOrdinaryAncestors(manifestFile);
+        if (new FileInfo(manifestFile).Length > RecoveryFiles.MaximumManifestBytes) throw new InvalidDataException("恢复来源清单超出预算");
+        var manifest = Wire.Decode<ParcelRecoveryManifest>(File.ReadAllText(manifestFile));
+        if (!manifest.Files.TryGetValue(ParcelMachineOrigin.FileName, out var originHash) ||
+            Wire.FileHash(Path.Combine(directory!, ParcelMachineOrigin.FileName)) != originHash || Wire.FileHash(Path.Combine(proof.SourceDirectory, ParcelMachineOrigin.FileName)) != originHash)
+            throw new InvalidDataException("恢复集的原机器来源证据缺失或变化；不能解除隔离");
         var sourceFence = Path.Combine(proof.SourceDirectory, "MIGRATION-SOURCE-FENCED.json");
         var policy = Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json");
         var machine = OperatingSystem.IsWindows() ? Wire.FileHash(policy) : Effective.Mode == RunMode.Simulation ? "PortableSimulation" : "Unverified";

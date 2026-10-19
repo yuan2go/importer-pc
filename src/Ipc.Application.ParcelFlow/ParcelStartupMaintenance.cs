@@ -96,6 +96,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         candidate = ports.Normalize(candidate);
         using var references = ports.ProtectConfiguration(candidate);
         ports.Validate(candidate);
+        ParcelMachineOrigin.EnsureNew(state.Directory, state.Seed);
         var operation = Path.Combine(state.Directory, "startup-maintenance", Wire.Id()); Directory.CreateDirectory(operation);
         var source = state.Envelope is null ? Seed : state.File;
         using (var before = new FileStream(Path.Combine(operation, "original-configuration.json"), FileMode.CreateNew, FileAccess.Write, FileShare.None))

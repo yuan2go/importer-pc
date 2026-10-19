@@ -13,10 +13,10 @@ public sealed partial class ParcelStartupMaintenance
     {
         var database = Path.Combine(directory, definition.Id + ".db");
         if (!File.Exists(database)) throw new FileNotFoundException("原数据库不存在；不能用空库代替维护检查", database);
-        var names = new[] { "configuration.json", definition.Id + ".db", definition.Id + ".db-wal", "overload.json", "RESTORED-ISOLATED.json", "RESTORE-INCOMPLETE.json" }
+        var names = new[] { "configuration.json", ParcelMachineOrigin.FileName, definition.Id + ".db", definition.Id + ".db-wal", "overload.json", "RESTORED-ISOLATED.json", "RESTORE-INCOMPLETE.json" }
             .Where(n => File.Exists(Path.Combine(directory, n))).Concat(RecoveryFiles.Enumerate(directory, "receipts"))
             .Concat(RecoveryFiles.Enumerate(directory, "images", skipImageLeases: true)).Concat(RecoveryFiles.MaintenanceEvidence(directory)).Order(StringComparer.Ordinal).ToArray();
-        RecoveryFiles.ValidateNames(directory, names.Where(n => n is "configuration.json" or "overload.json" || n.StartsWith("receipts/") || n.StartsWith("images/") || n.StartsWith("startup-maintenance/")));
+        RecoveryFiles.ValidateNames(directory, names.Where(n => n is "configuration.json" or "overload.json" or ParcelMachineOrigin.FileName || n.StartsWith("receipts/") || n.StartsWith("images/") || n.StartsWith("startup-maintenance/")));
         var hashes = names.ToDictionary(n => n, n => Wire.FileHash(RecoveryFiles.Resolve(directory, n)));
         var scratch = MaintenanceWorkspace();
         try

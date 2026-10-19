@@ -48,7 +48,7 @@ internal static class RecoveryFiles
         {
             if (++count > MaximumFiles) throw new InvalidDataException("Recovery file inventory quota exceeded");
             _ = Resolve(root, name);
-            if (name is not ("configuration.json" or "overload.json") && !name.StartsWith("receipts/", StringComparison.Ordinal) && !name.StartsWith("images/", StringComparison.Ordinal) && !IsMaintenanceEvidence(name))
+            if (name is not ("configuration.json" or "overload.json" or ParcelMachineOrigin.FileName) && !name.StartsWith("receipts/", StringComparison.Ordinal) && !name.StartsWith("images/", StringComparison.Ordinal) && !IsMaintenanceEvidence(name))
                 throw new InvalidDataException("Unexpected recovery custody file: " + name);
             var parts = name.Split('/'); var prefix = "";
             for (int i = 0; i < parts.Length; i++)

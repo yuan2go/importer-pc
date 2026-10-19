@@ -31,3 +31,25 @@
 复审补充裁决（修正前）：定向构建暴露验证项目漏引既有DeploymentComponentReview实现；补齐同一源文件的Compile引用，不复制实现或弱化断言。新机器来源密文须沿现有草稿规则授予受保护政策中的指定运行SID读取权限，避免由维护账户首次配置后锁死日常账户；无政策的合成测试仍只用当前账户。
 
 2026-10-20合并前新审查线程 `PRRT_kwDOVLQU8s6uBL7f`（P2）：完整备份原样保全DPAPI草稿，换机无法解密时离线页在Render前失败。采用“保留原密文，明确草稿不可用，继续显示同一有效配置编辑/恢复入口”的修复；不能删除草稿、把解密失败伪称没有草稿或自动覆盖旧密文。使用真实Windows拒解的合成坏密文验证该分支，真实第二机器仍NOT_RUN。该追加UI修正将重新冻结，不发布前一批中间候选。
+
+## 复审修正与当前交付
+
+运行源码、三Application×Windows/portable及原生核心夹具冻结在 **`022c898f138a1326eec9134f8f18724a07fea5c4`**。实现修正`bb90598`、追加P2修正`a142817`、夹具实际控件核对`022c898`均保留可审查提交；文档裁决`ee769f0`在本轮代码之前。旧`bd86fbb`与中止的中间候选不改标。精确ZIP/清单/源码身份见[六介质身份](../runtime/evidence/pr47-commercial-productization-review/media-identities.json)，当前逐项结果、日志、复现及剩余见[证据入口](../runtime/evidence/pr47-commercial-productization-review/README.md)和[机器结果](../runtime/evidence/pr47-commercial-productization-review/checks.json)。
+
+|差额|修正及必要证据|结论边界|
+|---|---|---|
+|首配早于设备/运行实例|正常发布入口先只读同一独立配置契约；显式首配复用InitialRepair。核心新站→候选启动及实际首配WPF通过|真实安装后完整账户旅程NOT_RUN|
+|原DB缺账、原件缺DB|获取原owner后、配置/SQLite写入前拒绝；检查原DB散列/格式、原件字节及未生成替代账/库|不声明自动修复原账；须完整恢复集|
+|草稿局部恢复|先完整构造替代模型，再替换；缺精确提供者保全全部当前输入|原保存草稿与CAS不变|
+|卸载中断重入|原保护入口不变，清单内核先验证全部路径，已无根可完成，外来文件保留；实际Windows共享占用/解锁重入通过|重启队列为合成回调，特权卸载/实际重启NOT_RUN|
+|原机来源|新空站建账前DPAPI来源+原SID ACL，完整集保全，接管/确认均要求来源；复制目录拒绝、旧备份拒绝、原围栏及有界迁移链通过|旧库无来源不补盖证明，自动接管BLOCKED；第二机器/跨账户后验NOT_RUN|
+|恢复草稿无法解密|原生crypt32拒解时明确不可用、原密文保全、配置字段及保存/启动在Dispatcher空闲后仍可操作|仅非权威草稿降级；原机证明、真实秘密/外部编号/退役/资格门槛不解除|
+|验证项目缺引用|补齐原DeploymentComponentReview源文件链接；保留首轮失败日志；最终应用/桌面/WPF构建零警告零错误|不删断言、不跳过关键断言|
+
+COMM-00～10沿上表及原实施路径全部覆盖可执行核心范围；受影响关键旅程使用同一冻结Sportmaster Windows介质中的实际DLL。六套介质分别构建及检查清单/ZIP成员字节/CRC、源码/业务/契约/DB身份、app/desktop公共DLL一致性。实际旧冻结70ccedc DB7 DLL拒绝新DB8且原库散列不变。参考签名包新版本1.4.3仅Simulation/TestOnly静态审阅，旧包不改标，无插件/设备执行。没有重复与本轮风险无关的历史全量。
+
+工程结论是**可执行核心已完成复审修正，外部验收未完成**；不等同Windows安装交付、真实设备/客户协议或现场商用投产资格。原完整NOT_RUN/BLOCKED清单和D/RV仍保留，本轮局部PASS不能关闭历史RV、改写原HTML缺陷状态或宣称换机已获资格。历史`commercial_productization_01_execution`及未改动文件manifest记录按原语义保留，本轮另增复审对象。
+
+## main合并规则与回执
+
+复审时GitHub分支接口返回main未启用保护、状态检查为空，rulesets返回空数组；独立保护详情端点因连接缺少管理权限返回403，未将此当作已读取详情。原自动审查的一条P2线程在实际冻结WPF及补充可操作性通过后解决，不伪造独立批准或CI。合并前再次核对PR head/main、审查线程与实际检查，使用带expected_head_sha的服务器merge操作，不强推、不改保护、不绕过失败门禁。main合并号是后续服务器返回的GitHub PR事实及本机`.artifacts/comm-review-47/merge-receipt.json`；本页合并前提交号不冒作已运行介质源码或未发生的合并事实。

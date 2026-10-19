@@ -1,0 +1,11 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "022c898f138a1326eec9134f8f18724a07fea5c4",
+  "FixtureCommit": "022c898f138a1326eec9134f8f18724a07fea5c4",
+  "MediumInventorySha256": "B928EAF50ED1C9B9E3EA59292FB593DD031D9EB4C6FF01BE909901C7D06F34EC",
+  "PackageSha256": "45E61A836E68A4D841C65F76059D17632B061560BDCDFA557E773E60C18256E2",
+  "TrustSha256": "F137F9FB583B01FBCDD9E0AAD423CF929DEA8D86F5EC8F397215B3CF7DA4CCB4",
+  "UnchangedInputs": true,
+  "ExitCode": 0,
+  "Scope": "Simulation/TestOnly independent reference module; static signatures/closure only; no provider load/install/activation or device startup"
+}

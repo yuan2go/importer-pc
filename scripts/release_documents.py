@@ -4,6 +4,7 @@ import re
 from urllib.parse import quote, unquote, urlsplit
 
 PARCEL_GUIDES = {
+    'docs/runtime/windows-application-delivery.md': 'WINDOWS-APPLICATION.md',
     'docs/runtime/version-compatibility-01.md': 'VERSIONS.md',
     'docs/runtime/getting-started.md': 'GETTING-STARTED.md',
     'docs/runtime/architecture-quality-closure-01.md': 'QUALITY-CLOSURE-01.md',
@@ -23,7 +24,7 @@ SPORTMASTER_GUIDES = {**PARCEL_GUIDES, 'docs/runtime/sportmaster-rcs-task.md': '
     'docs/runtime/validation/sportmaster-alternate-ui-windows.md': 'SPORTMASTER-UI-WINDOWS.md'}
 ALL_GUIDES = {**GUIDES, **SPORTMASTER_GUIDES}
 
-ROOT_INPUTS = ['global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx']
+ROOT_INPUTS = ['global.json', 'Directory.Build.props', 'NuGet.Config', 'ImporterPc.slnx', 'docs/licenses/MIT.txt', 'docs/licenses/Apache-2.0.txt']
 SOURCE_DIRECTORIES = ['src', 'config', 'scripts', 'examples']
 SOURCE_PATHS = [*SOURCE_DIRECTORIES, *ROOT_INPUTS, *ALL_GUIDES]
 

@@ -52,7 +52,7 @@ public sealed class SportmasterRcsTaskService : IWcsPort, IWcsRequestPreparer
     { await StopAsync(token).ConfigureAwait(false); await StartAsync(token).ConfigureAwait(false); }
     public IntegrationRequestIdRange? GetRequestIdRange(CapabilityBinding binding)
     {
-        if (binding.Implementation != "sportmaster-rcs-task" || binding.Contract != Contract) return null;
+        if (binding.Contract != Contract) return null;
         var range = new RcsTaskOptions(binding);
         return new(checked(range.RequestIdBase + 1), checked(range.RequestIdBase + range.RequestIdCount));
     }

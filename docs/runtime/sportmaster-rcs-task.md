@@ -52,7 +52,7 @@ python3 scripts/configure-sportmaster-rcs.py \
 
 ## 兼容与验证边界
 
-公共契约1.8.0：新增字段为可省略，原参考请求/回包的null新增字段不改变序列化字节；扩展指纹已改变，旧包不可重签覆盖。Parcel数据库6追加SQL6，SQL1-5/hash原样继承新main的接收责任与原请求核对修复；实际runtime和消费者检查同一版本，旧reader拒读6。DB4/5未结责任在普通升级前保守拒绝；只有经原件核验、完整备份及原目标Query依据确认的custody-only责任可沿专用入口保留责任升级，DB2/3旧未结门禁不改；显式CLI custody-only迁移在同一证明/备份门禁下选择6（API旧调用默认5）。新UnpackRequired和Unknown不能靠降级清除。
+公共契约1.8.0新增纯数字范围描述，组件可按原binding解释配置范围；原1.7.0新增的可省略wire/HTTP/拆包字段保持原序列化。扩展精确指纹改变，旧包不重签。Parcel当前DB7，SQL1～6/hash原样继承；SQL7永久绑定数字ID→Operation/Request/hash、登记范围和恢复退役边界。普通DB2～6未结先用匹配发布清偿；窄custody CLI在原件/完整备份/权威Query门禁下显式7，旧API默认5。原Unknown/UnpackRequired及独立资料责任不能靠降级消除。
 
 运行定向验证：
 
@@ -63,7 +63,7 @@ python3 scripts/configure-sportmaster-rcs.py \
 
 验证结果、固定源码及候选身份见[本包证据](evidence/sportmaster-rcs-task/README.md)。真实RCS服务没有在本任务中联调；认证方式、幂等/查询、副作用和尺寸重量单位均未得到进一步合同证据，不补造接口。Windows实际NOT_RUN，真实RCS/设备/现场BLOCKED；本包不能关闭历史D/RV。
 
-编号范围按不可变历史序号判定；旧历史和既有索引更新可能留有序号空洞，因此request-id-count不是可处理件数承诺。范围耗尽或准备校验失败只持久阻断原实体，Wcs意图/attempt仍未创建；可暂停检查并本地处置后再受控修改配置，不使输入worker崩溃。
+编号范围按实际T1的持久高水位分配，入场序号只标识历史顺序；恢复退役及外部划分范围可能减少剩余可用编号，request-id-count不是吞吐承诺。范围耗尽或准备校验失败只持久阻断原实体，Wcs意图/attempt仍未创建；可暂停检查并本地处置后再受控修改配置，不使输入worker崩溃。
 
 并发整合兼容说明：当前CLI recover-legacy-receipt显式迁移至Parcel DB7；内部API默认DB5调用保持兼容。两者均保留永久回复身份、持久Query原件依据和完整备份，未清原raw/图像/包责任；普通启动在任何未来reader标记前拒绝DB2–6未结责任。原SQL1–5和历史发布指令按其固定版本保留。
 

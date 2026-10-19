@@ -7,23 +7,34 @@ using Microsoft.Data.Sqlite;
 
 static partial class SportmasterRcs
 {
-    public static async Task Audit03Checks(string workspace, string root)
+    public static async Task Audit03Checks(string workspace, string root, string? packageFile = null, string? trustFile = null)
     {
         await using var peer = new Peer();
+        PackageReference? signed = null;
+        ExtensionStore? store = null;
+        if (packageFile is not null)
+        {
+            ParcelCapabilityFactory.RegisterContracts();
+            store = new ExtensionStore(Path.Combine(root, "signed-rcs-store"), Wire.Decode<ExtensionTrust>(File.ReadAllText(trustFile!)), RunMode.Simulation, Path.Combine(root, "signed-rcs-leases"));
+            signed = store.Install(packageFile, Wire.FileHash(packageFile)).Package;
+        }
         var standard = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
         foreach (var delayedPosition in new[] { "left", "right" })
         {
             var binding = Binding(peer.Endpoint);
+            if (signed is not null) binding = binding with { Implementation = "extension:" + signed.Id + "/sportmaster-rcs-task", Version = signed.Version, Package = signed, Module = "sportmaster-rcs-task" };
             CapabilityBinding Camera(string p) => new("camera", "reference-camera", "1.0.0", "audit.camera." + p, standard.Topology!.Positions.Single(x => x.Id == p).ReaderDeviceId, "PARCEL-REFERENCE-v1", []);
             var leftCamera = Camera("left"); var rightCamera = Camera("right");
-            var c = standard with { Wcs = binding, TimeoutMs = 5000, Images = new(leftCamera, null), CapabilityInstances = [binding, standard.MaintenanceLogin!, leftCamera, rightCamera],
+            var c = standard with { Wcs = binding, Extensions = signed is null ? null : new([signed], []), TimeoutMs = 5000, Images = new(leftCamera, null), CapabilityInstances = [binding, standard.MaintenanceLogin!, leftCamera, rightCamera],
                 Topology = standard.Topology! with { Positions = [standard.Topology.Positions[0], standard.Topology.Positions[1] with { CameraInstanceId = rightCamera.InstanceId }] } };
             var run = Path.Combine(root, "rcs-t1-" + delayedPosition); Directory.CreateDirectory(run); ExtensionStore.AtomicWrite(Path.Combine(run, "business.json"), c);
+            if (signed is not null) ExtensionStore.AtomicWrite(Path.Combine(run, "extension-store.json"), new ParcelExtensionStoreConfiguration(store!.Root, trustFile!));
             var data = Path.Combine(run, "data");
             async Task<ParcelRuntime> Open(string dataRoot, HoldFactory? holder = null)
             {
                 var launch = new BusinessLaunch(run, dataRoot, null, null);
-                IParcelCapabilityFactory factory = new Factory(new ParcelCapabilityFactory(launch));
+                IParcelCapabilityFactory factory = signed is null ? new Factory(new ParcelCapabilityFactory(launch)) :
+                    new ParcelCapabilityFactory(launch, BusinessCompatibility.Read(typeof(SportmasterFlow).Assembly), typeof(SportmasterFlow).Assembly);
                 if (holder is not null) { holder.Inner = factory; factory = holder; }
                 var app = new ParcelRuntime(launch, new SportmasterFlow(), factory);
                 try { await app.StartAsync(default); return app; } catch { await app.DisposeAsync(); throw; }
@@ -94,7 +105,7 @@ static partial class SportmasterRcs
             q.CommandText = "SELECT count(*) FROM parcel_integration_id_owners";
             Check((long)q.ExecuteScalar()! == 3, "A03 persistent SQL unique owners include archived and post-restore T1 allocations");
         }
-        Console.WriteLine("PASS A03 RCS COMPLETE");
+        Console.WriteLine(signed is null ? "PASS A03 RCS COMPLETE" : "PASS A03 SIGNED RCS COMPLETE");
     }
     sealed class HoldFactory(string position) : IParcelCapabilityFactory
     {

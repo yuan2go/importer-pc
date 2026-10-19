@@ -13,8 +13,10 @@ var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--audit03-maintenance")) { await Audit03.Maintenance(workspace, root); return; }
 if (args.Contains("--audit03-snapshots")) { await Audit03.Snapshots(workspace, root); return; }
 if (args.Contains("--commercial-quality")) { await CommercialQuality.Run(workspace, root, args); return; }
+if (args.Contains("--audit03-rcs-signed")) { var i=Array.IndexOf(args,"--audit03-rcs-signed"); await SportmasterRcs.Audit03Checks(workspace, root, Path.GetFullPath(args[i+1]), Path.GetFullPath(args[i+2])); return; }
 if (args.Contains("--audit03-rcs")) { await SportmasterRcs.Audit03Checks(workspace, root); return; }
 if (args.Contains("--audit03-input")) { await Audit03.Inputs(workspace, root); return; }
 if (args.Contains("--sportmaster-window-lifecycle")) { await SportmasterWindowLifetime.Run(); return; }

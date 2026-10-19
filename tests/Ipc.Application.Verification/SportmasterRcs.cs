@@ -146,6 +146,8 @@ static partial class SportmasterRcs
     }
     static async Task PreparationGuards(SportmasterRcsTaskService service, CapabilityBinding binding, Peer peer)
     {
+        var signedStyle = binding with { Implementation = "extension:sportmaster.rcs-task/sportmaster-rcs-task" };
+        Check(service.GetRequestIdRange(signedStyle) == new IntegrationRequestIdRange(810000001, 810100000), "numeric range uses the actual signed binding contract, not a built-in implementation alias");
         var count = peer.Requests.Count; var original = Request(binding); var frozen = original with { IntegrationRequest = service.PrepareRequest(original, 11) };
         var alteredBody = frozen.IntegrationRequest!.Body + " ";
         try { await service.RequestDestinationAsync(frozen with { IntegrationRequest = frozen.IntegrationRequest with { Body = alteredBody, BodyHash = Wire.Hash(alteredBody) } }, CancellationToken.None); throw new Exception("Changed wire body accepted"); }

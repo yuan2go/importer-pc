@@ -2,6 +2,8 @@
 
 Sportmaster、DirectPlc、WcsToPlc使用`Ipc.Assembly`及`ParcelConfiguration`；Supply使用`Ipc.Product`及`StationConfig`，入口和命令分别读取。软件暂停不是安全急停。Windows实际NOT_RUN，真实SDK/合同/现场BLOCKED。
 
+Windows安装、普通账户、启动/快捷方式、升级中断/回退修复、保留数据卸载及备份/诊断的当前完整路径见[Windows交付指南](windows-application-delivery.md)。
+
 ## 三个Application
 
 固定SDK10.0.402；源码构建与发布入口见[Application运行指南](application-architecture-22.md)。发布ZIP解压到新目录，先核对SHA256SUMS与ASSEMBLY.json的SourceCommit和ApplicationId。portable需要.NET10运行时；win-x64含实际WPF但仍需Windows验收。

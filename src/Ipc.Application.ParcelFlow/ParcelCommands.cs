@@ -157,42 +157,9 @@ public sealed partial class ParcelRuntime
         try
         {
             if (repository is null || !repository.Paused || !MaintenanceAuthorized || externalWaits != 0) return new("Rejected", "Pause before reference maintenance backup", repository?.Revision ?? 0);
-            destination = Path.GetFullPath(destination);
-            RecoveryFiles.RequireOrdinaryAncestors(directory!);
-            RecoveryFiles.RequireOrdinaryAncestors(destination);
-            var relativeDestination = Path.GetRelativePath(directory!, destination);
-            if (!Path.IsPathRooted(relativeDestination) && relativeDestination != ".." && !relativeDestination.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal))
-                throw new IOException("Backup must be outside the live application directory");
-            var recovery = destination + ".recovery";
-            if (Directory.Exists(recovery) || File.Exists(recovery) || File.Exists(destination) || Directory.Exists(destination)) throw new IOException("Backup destination must be new");
-            var names = new List<string> { "configuration.json" };
-            names.AddRange(RecoveryFiles.Enumerate(directory!, "receipts"));
-            names.AddRange(RecoveryFiles.Enumerate(directory!, "images", skipImageLeases: true));
-            if (File.Exists(overloadMarker)) names.Add("overload.json");
-            RecoveryFiles.ValidateNames(directory!, names);
             foreach (var op in operations.Values.Where(x => x.Image is not null && !x.ImageReleased)) _ = ReadImage(op, op.Image!);
-            var expectedFiles = names.ToDictionary(x => x, x => Wire.FileHash(RecoveryFiles.Resolve(directory!, x)), StringComparer.Ordinal);
-            var backupBytes = checked(repository.StorageBytes + names.Sum(n => new FileInfo(RecoveryFiles.Resolve(directory!, n)).Length) + RecoveryFiles.MaximumManifestBytes);
-            if (!ParcelStorageVolume.Plan(destination, backupBytes, Retention.MinimumFreeBytes).Fits)
-                throw new IOException("Backup requires measured database/custody capacity plus manifest and configured reserve; choose a volume with sufficient space");
-            // Preserve any interrupted set; only COMPLETED.json makes a set restorable.
-            Directory.CreateDirectory(recovery);
-            RecoveryFiles.RequireOrdinaryAncestors(recovery);
-            RecoveryFiles.RequireOrdinaryAncestors(destination);
-            factory.RegisterBackup(destination, Effective);
-            if (configuration!.Current.Pending is { } pending) factory.RegisterBackup(destination, pending);
-            repository.Backup(destination);
-            foreach (var name in names)
-            {
-                var original = RecoveryFiles.Resolve(directory!, name); var target = RecoveryFiles.Resolve(recovery, name);
-                Directory.CreateDirectory(Path.GetDirectoryName(target)!); RecoveryFiles.CopyVerified(original, target, expectedFiles[name]);
-            }
-            var files = RecoveryFiles.Inventory(recovery);
-            var manifest = new ParcelRecoveryManifest(Id, Path.GetFileName(destination), Wire.FileHash(destination), files, DateTimeOffset.UtcNow,
-                "Isolated original-deployment restore; reconcile external effects before admission");
-            if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(manifest)) > RecoveryFiles.MaximumManifestBytes)
-                throw new InvalidDataException("Recovery manifest quota exceeded; incomplete backup retained");
-            ExtensionStore.AtomicWrite(Path.Combine(recovery, "COMPLETED.json"), manifest);
+            ParcelRecovery.CreateBackup(directory!, destination, Effective, configuration!.Current.Pending, repository.StorageBytes,
+                repository.Backup, factory.RegisterBackup);
             return new("BackupCreated", "Consistent database plus configuration/receipt custody; COMPLETED.json identifies the whole recovery set", repository.Revision);
         }
         finally { gate.Release(); }

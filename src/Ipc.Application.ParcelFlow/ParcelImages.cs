@@ -68,7 +68,8 @@ public sealed partial class ParcelRuntime
             finally { attachedRunning.Remove(op.Id); gate.Release(); }
         }));
     }
-    byte[] ReadImage(ParcelOperation op, ParcelImage image)
+    byte[] ReadImage(ParcelOperation op, ParcelImage image) => ReadOriginalImage(directory!, op, image);
+    internal static byte[] ReadOriginalImage(string directory, ParcelOperation op, ParcelImage image)
     {
         if (image.AdmissionId != op.AdmissionId || image.CaptureRequestId != op.Capture?.Request.Id || !ValidMediaType(image.MediaType) || !ExtensionSchema.IsHash(image.Sha256) ||
             image.Length is < 1 || image.Length > op.FrozenConfiguration.Images!.MaximumBytes ||

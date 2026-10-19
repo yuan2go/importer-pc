@@ -1,0 +1,28 @@
+Retained build workspace on failure: /tmp/ipc-publication-esxsvmwb
+  Determining projects to restore...
+  Restored /tmp/ipc-publication-esxsvmwb/source-snapshot/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (in 656 ms).
+  Restored /tmp/ipc-publication-esxsvmwb/source-snapshot/src/Ipc.Platform/Ipc.Platform.csproj (in 8 ms).
+  Restored /tmp/ipc-publication-esxsvmwb/source-snapshot/src/Ipc.Drivers/Ipc.Drivers.csproj (in 659 ms).
+  Restored /tmp/ipc-publication-esxsvmwb/source-snapshot/src/Ipc.Components/Ipc.Components.csproj (in 656 ms).
+  Restored /tmp/ipc-publication-esxsvmwb/source-snapshot/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (in 658 ms).
+  Restored /tmp/ipc-publication-esxsvmwb/source-snapshot/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (in 658 ms).
+  Restored /tmp/ipc-publication-esxsvmwb/source-snapshot/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (in 656 ms).
+  Restored /tmp/ipc-publication-esxsvmwb/source-snapshot/src/Ipc.Assembly/Ipc.Assembly.csproj (in 656 ms).
+  Restored /tmp/ipc-publication-esxsvmwb/source-snapshot/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (in 658 ms).
+  Restored /tmp/ipc-publication-esxsvmwb/source-snapshot/src/Ipc.Integrations/Ipc.Integrations.csproj (in 10 ms).
+  Restored /tmp/ipc-publication-esxsvmwb/source-snapshot/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (in 20 ms).
+  Restored /tmp/ipc-publication-esxsvmwb/source-snapshot/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (in 15 ms).
+  Ipc.Platform -> /tmp/ipc-publication-esxsvmwb/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-publication-esxsvmwb/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> /tmp/ipc-publication-esxsvmwb/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> /tmp/ipc-publication-esxsvmwb/build-intermediates/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> /tmp/ipc-publication-esxsvmwb/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> /tmp/ipc-publication-esxsvmwb/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> /tmp/ipc-publication-esxsvmwb/build-intermediates/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> /tmp/ipc-publication-esxsvmwb/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /tmp/ipc-publication-esxsvmwb/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /tmp/ipc-publication-esxsvmwb/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Integrations -> /tmp/ipc-publication-esxsvmwb/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> /tmp/ipc-publication-esxsvmwb/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> /workspace/scratch/7529011c39ef/release-7acbb2c/wcs-to-plc-portable/app/
+{"Package": "/workspace/scratch/7529011c39ef/release-7acbb2c/wcs-to-plc-portable.zip", "Sha256": "6d3ed1c4394b3a6c3a0fcdb9ed0017d981f133411da0945eb4e77efd784ae0da", "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042", "Application": "wcs-to-plc", "Target": "portable", "BusinessVersion": "1.3.3", "BusinessAssembly": "Ipc.Application.WcsToPlc.dll", "CompatibilitySha256": "8291F1669D20241501847CB2E0F9DB3D65C1AE8CF867049AD0A4A4271BC31F47"}

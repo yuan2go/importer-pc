@@ -1,0 +1,5 @@
+{
+  "Status": "PASS",
+  "Check": "Concurrent publisher rejected by real kernel lock; BUILD bytes unchanged",
+  "Windows": "NOT_RUN"
+}

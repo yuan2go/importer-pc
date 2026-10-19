@@ -1,0 +1,1 @@
+{"Status":"PASS","SourceCommit":"7acbb2c13d6b35d4aeff8b075b2ff52372aa2042","Checks":["7 synthetic identity policy cases; no Windows token/ACL claim","Offline read/validate/Pending stage/stale CAS/corruption preservation; synthetic authority, no device runtime"],"Windows":"NOT_RUN","SyntheticAuthority":true,"Temporary":"/tmp/ipc-release-probe-cbefd259424a48988837f18abb7dc1fa"}

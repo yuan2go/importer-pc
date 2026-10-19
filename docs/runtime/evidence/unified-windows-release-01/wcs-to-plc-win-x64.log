@@ -1,0 +1,49 @@
+Retained build workspace on failure: /tmp/ipc-publication-7m9wuhrd
+  Determining projects to restore...
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Platform/Ipc.Platform.csproj (in 632 ms).
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (in 632 ms).
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Drivers/Ipc.Drivers.csproj (in 632 ms).
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (in 632 ms).
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (in 632 ms).
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (in 631 ms).
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (in 632 ms).
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Assembly/Ipc.Assembly.csproj (in 631 ms).
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (in 31 ms).
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Components/Ipc.Components.csproj (in 31 ms).
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (in 30 ms).
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Integrations/Ipc.Integrations.csproj (in 34 ms).
+  Ipc.Platform -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Integrations -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Assembly/release_win-x64/Ipc.Assembly.dll
+  Ipc.Assembly -> /workspace/scratch/7529011c39ef/release-7acbb2c/wcs-to-plc-win-x64/app/
+  Determining projects to restore...
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (in 1.68 sec).
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Application.WcsToPlc.Desktop/Ipc.Application.WcsToPlc.Desktop.csproj (in 1.68 sec).
+  Restored /tmp/ipc-publication-7m9wuhrd/source-snapshot/src/Ipc.Desktop/Ipc.Desktop.csproj (in 1.68 sec).
+  12 of 15 projects are up-to-date for restore.
+  Ipc.Platform -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Integrations -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Assembly/release_win-x64/Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Application.ParcelFlow.Desktop/release/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.WcsToPlc.Desktop -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Application.WcsToPlc.Desktop/release/Ipc.Application.WcsToPlc.Desktop.dll
+  Ipc.Desktop -> /tmp/ipc-publication-7m9wuhrd/build-intermediates/bin/Ipc.Desktop/release_win-x64/Ipc.Desktop.dll
+  Ipc.Desktop -> /workspace/scratch/7529011c39ef/release-7acbb2c/wcs-to-plc-win-x64/desktop/
+{"Package": "/workspace/scratch/7529011c39ef/release-7acbb2c/wcs-to-plc-win-x64.zip", "Sha256": "8bea117a2b05c97fc8aa8b3a62607803d90bb1f57145a154b4c8f64cdfc27a4d", "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042", "Application": "wcs-to-plc", "Target": "win-x64", "BusinessVersion": "1.3.3", "BusinessAssembly": "Ipc.Application.WcsToPlc.dll", "CompatibilitySha256": "8291F1669D20241501847CB2E0F9DB3D65C1AE8CF867049AD0A4A4271BC31F47"}

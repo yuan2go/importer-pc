@@ -1,0 +1,9 @@
+{
+  "Status": "PASS",
+  "Checks": [
+    "test_direct_runtime_guard_precedes_configuration_and_storage",
+    "test_inspection_runtime_guard_precedes_configuration_and_ledger",
+    "test_supply_runtime_guard_precedes_configuration_extensions_and_storage"
+  ],
+  "Kind": "Static source order only; PowerShell tests and Windows identity not executed"
+}

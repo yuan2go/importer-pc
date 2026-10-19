@@ -1,0 +1,26 @@
+{
+  "SourceCommit": "d77e28f4469ead92d57c20f5133eabec9a603006",
+  "StartedUtc": "2026-10-19T17:02:46.839948+00:00",
+  "Platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "Python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "Status": "FAILED",
+  "Packages": [],
+  "WindowsAcceptance": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "CommercialAcceptance": "NOT_APPROVED",
+  "Sdk": "10.0.402",
+  "SdkInfo": ".NET SDK:\n Version:           10.0.402\n Commit:            a8dd0577c5\n Workload version:  10.0.400-manifests.da132f47\n MSBuild version:   18.9.15+a8dd0577c\n\nRuntime Environment:\n OS Name:     ubuntu\n OS Version:  24.04\n OS Platform: Linux\n RID:         linux-x64\n Base Path:   /workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/sdk/10.0.402/\n\n.NET workloads installed:\nThere are no installed workloads to display.\nConfigured to use workload sets when installing new manifests.\nNo workload sets are installed. Run \"dotnet workload restore\" to install a workload set.\n\nHost:\n  Version:      10.0.13\n  Architecture: x64\n  Commit:       4099f83977\n\n.NET SDKs installed:\n  10.0.402 [/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/sdk]\n\n.NET runtimes installed:\n  Microsoft.AspNetCore.App 10.0.13 [/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/shared/Microsoft.AspNetCore.App]\n  Microsoft.NETCore.App 10.0.13 [/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/shared/Microsoft.NETCore.App]\n\nOther architectures found:\n  None\n\nEnvironment variables:\n  DOTNET_CLI_HOME                          [/workspace/scratch/7529011c39ef/dotnet-home]\n  DOTNET_ROOT                              [/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet]\n\nglobal.json file:\n  /workspace/scratch/7529011c39ef/release-d77e28f/source/global.json\n\nLearn more:\n  https://aka.ms/dotnet/info\n\nDownload .NET:\n  https://aka.ms/dotnet/download\n",
+  "CurrentCommand": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "scripts/package-application.py",
+    "--application",
+    "sportmaster",
+    "--target",
+    "portable",
+    "--output",
+    "/workspace/scratch/7529011c39ef/release-d77e28f/sportmaster-portable",
+    "--dotnet",
+    "/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/dotnet"
+  ],
+  "Error": "Inventory does not cover exact media"
+}

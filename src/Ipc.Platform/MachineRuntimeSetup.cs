@@ -48,6 +48,21 @@ public static class MachineRuntimeSetup
         MachineRuntimePolicy.RequireExtensionInstallerAuthority();
         InstallWindows(MachineRoot, runtimeSid);
     }
+    public static string CreateMaintenanceWorkspace()
+    {
+        if (!OperatingSystem.IsWindows()) return Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "ipc-startup-inspect-" + Wire.Id())).FullName;
+        MachineRuntimePolicy.RequireExtensionInstallerAuthority();
+        _ = MachineRuntimePolicy.InstallerLeaseRoot("");
+        var policy = Wire.Decode<MachineRuntimePolicy>(File.ReadAllText(Path.Combine(MachineRoot, "runtime-policy.json")));
+        var path = Path.Combine(MachineRoot, "maintenance-workspaces");
+        DeploymentPaths.RequireOrdinaryAncestors(path);
+        if (!Directory.Exists(path)) new DirectoryInfo(path).Create(DirectoryAcl(new SecurityIdentifier(policy.RuntimeAccountSid), FileSystemRights.ReadAndExecute));
+        MachineRuntimePolicy.RequireProtectedAcl(new DirectoryInfo(path), null);
+        var workspace = Path.Combine(path, Wire.Id());
+        new DirectoryInfo(workspace).Create(DirectoryAcl(new SecurityIdentifier(policy.RuntimeAccountSid), FileSystemRights.ReadAndExecute));
+        MachineRuntimePolicy.RequireProtectedAcl(new DirectoryInfo(workspace), null);
+        return workspace;
+    }
 
     // The internal root is only for isolated Windows verification; no executable accepts a root override.
     [SupportedOSPlatform("windows")]
@@ -145,7 +160,7 @@ public static class MachineRuntimeSetup
     }
 
     [SupportedOSPlatform("windows")]
-    static DirectorySecurity DirectoryAcl(SecurityIdentifier account, FileSystemRights rights)
+    internal static DirectorySecurity DirectoryAcl(SecurityIdentifier account, FileSystemRights rights)
     {
         var acl = new DirectorySecurity();
         acl.SetAccessRuleProtection(true, false);
@@ -159,7 +174,7 @@ public static class MachineRuntimeSetup
     }
 
     [SupportedOSPlatform("windows")]
-    static FileSecurity FileAcl(SecurityIdentifier account)
+    internal static FileSecurity FileAcl(SecurityIdentifier account, FileSystemRights runtimeRights = FileSystemRights.Read)
     {
         var acl = new FileSecurity();
         acl.SetAccessRuleProtection(true, false);
@@ -167,7 +182,7 @@ public static class MachineRuntimeSetup
         acl.SetOwner(administrators);
         foreach (var sid in new[] { administrators, new SecurityIdentifier("S-1-5-18") })
             acl.AddAccessRule(new(sid, FileSystemRights.FullControl, AccessControlType.Allow));
-        acl.AddAccessRule(new(account, FileSystemRights.Read, AccessControlType.Allow));
+        acl.AddAccessRule(new(account, runtimeRights, AccessControlType.Allow));
         return acl;
     }
 }

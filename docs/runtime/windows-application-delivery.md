@@ -8,54 +8,30 @@
 
 ## 媒介与依赖诊断
 
-从独立交付记录核ZIP SHA256，将完整ZIP解压至新的独立目录，不覆盖旧发布；基本参考启动不需要手工创建ProgramData目录或策略。需要受保护扩展安装/维护时，再由维护部署至 `C:\Program Files\ImporterPc\releases\<source-sha>\<application>` 并保护发布权限。三个Application各有自己的ZIP，不借用Sportmaster媒介启动PLC业务。保留SHA256SUMS、app/desktop的application-release.json、composition.lock.json、离线包及原签名身份；包内hash不是独立发布者信任。
-
-Windows自包含候选带.NET/WPF运行时；双击application.cmd或desktop/Ipc.Desktop.exe即可启动，不需要PowerShell。显式脚本维护命令需要PowerShell7，不含在媒介中，Windows PowerShell5.1不能代替；带维护参数的application.cmd在找不到pwsh.exe时明确退出2。实际Runtime版本以各runtimeconfig.json和随包运行时文件为准，固定SDK10.0.402与锁定NuGet不代表客户自动得到维护更新。PowerShell从[官方Windows安装页](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell-on-windows)取得，离线安装包需维护者单独核来源/hash。OS生命周期仍按[官方.NET Windows支持矩阵](https://learn.microsoft.com/en-us/dotnet/core/install/windows)核具体SKU/build；框架支持不替代本产品、SDK及现场资格。
-
-在普通PowerShell7终端设置实际路径（以下站名为合成示例）：
-
-```powershell
-$release = 'C:\Program Files\ImporterPc\releases\SOURCE_SHA\sportmaster'
-$data = 'D:\ImporterPcData'
-& "$release\application.ps1" -Action Verify
-& "$release\application.ps1" -Action Diagnose -DataRoot $data
-```
-
-Verify检查完整文件集合、hash、越界及链接路径。Diagnose和`--action runtime-check`保持只读；尚未首次安装时报告未安装，可直接启动客户端或执行Install完成自动准备。Run/Console先调用`--action runtime-prepare`，直接EXE也走同一准备入口。
+本次启动/部署增量以[原生安装与启动修复指南](startup-deployment-02.md)及[STARTUP-DEPLOYMENT-02工作包](../work-packages/WP-IPC-STARTUP-DEPLOYMENT-02.md)为准。固定旧候选、旧验收记录和旧SourceCommit不重写。下面脚本为显式维护兼容入口，正常安装和启动不依赖PowerShell。
 
 ## 首次启动与自动配置
 
-1. 普通双击`application.cmd`或`desktop/Ipc.Desktop.exe`。不勾选“以管理员身份运行”，无需创建额外Windows账户。
-2. 软件取得原用户SID；仅机器策略不存在时，固定安装helper弹出一次Windows UAC授权。标准用户可输入另一个管理员的凭据；策略仍绑定发起启动的原用户。提升进程只创建固定ProgramData/ImporterPc中的策略、租约目录和受保护ACL，不读取业务配置/数据库、不加载扩展或启动设备。
-3. 授权成功后原未提权进程读回并完整检查策略，再由既有运行逻辑自动创建默认`%LOCALAPPDATA%\ImporterPc\data`下的应用目录、配置账、日志和数据库。后续启动不再请求UAC；旧数据根及原Effective/Pending配置按原恢复规则读取。
+完整解压可信Windows媒介后双击`Setup.cmd`；首次从未安装媒介双击`application.cmd`或`desktop/Ipc.Desktop.exe`也会进入原生四步向导。选择已有运行账户、原数据根、配置来源及可选独立信任/离线包，检查摘要后授权一次UAC。安装自动创建受保护策略、版本程序目录、新数据根和开始菜单入口；日常进程保持未提权。默认原用户及`%LOCALAPPDATA%\ImporterPc\data`，升级自动带入既有位置；不会以新seed覆盖数据账。已知机级政策/其他账户材料保持原值，身份冲突明确失败，不能删lease绕过。
 
-指定账户属于Administrators组但在UAC过滤令牌中为deny-only时允许正常运行；真正启用管理员权限的进程、SYSTEM/服务账户及与已安装策略不匹配的账户继续拒绝。此项替代旧SID前置包对deny-only成员的拒绝，旧候选和历史结果不变。直接API的RequireRuntimeIdentity及StartAsync仍在配置持久化/数据库访问/迁移/恢复前只读校验，不从领域API发起提权。
+开始菜单“运行”读取受保护的同版本部署位置；“启动修复”无需业务Start成功，提供配置/参数表单、待生效保存、摘要导出与完整备份隔离恢复。启动失败页也可进入维护、安装修复或重试。原Stop/Dispose未完成时不能创建第二个实例。详情及失败保旧、种子修复、精确扩展/Production边界见[随包向导指南](startup-deployment-02.md)。Windows原生交互、UAC、ACL、快捷方式与升级中断仍NOT_RUN。
 
-UAC取消或安装失败不会进入业务；取消后重新启动并授权即可重试。并发安装通过受保护目录内独占锁串行化；先落盘临时策略再原子发布，保留中断临时输出。已有策略永不覆盖/重绑。策略损坏、权限异常、丢失策略但存在租约/扩展材料时保留原目录并失败，交维护核对原账户和安装；不能删除策略/lease或换空根绕过。源码和Windows后验入口见[首次启动工作包](../work-packages/WP-IPC-WINDOWS-FIRST-RUN-01.md)。Windows原生执行仍NOT_RUN。
+指定账户属于Administrators组但仅有UAC deny-only成员身份时允许普通运行；真正提升的日常进程、SYSTEM/服务账户和非指定SID继续拒绝。业务/API身份守卫仍只读，不在领域API中提权。安装以ProgramFiles存放程序、ProgramData存放机级配置，数据独立；并排程序修复不回滚数据库。只读基本配置不要求可选扩展库存就绪，确实绑定的扩展缺失仍拒绝校验和启动。
 
-需要仅准备配置而不启动业务，或使用明确的数据卷时：
+### 可选脚本维护
+
+Windows候选自包含.NET/WPF；原生Setup、Maintenance和普通EXE不要求PowerShell。显式脚本命令仍需PowerShell7；脚本按SHA256SUMS验证媒介，并通过实际应用只读校验`deployment-location.json`。源码固定SDK10.0.402和锁定依赖不等于客户设备/OS生命周期或SDK资格。当前候选工程仍以Windows11 build26100+ x64为参考；实际Windows、SDK和现场必须另验。
 
 ```powershell
-& "$release\application.ps1" -Action Install
-& "$release\application.ps1" -Action Run -DataRoot 'D:\ImporterPcData' -Ui classic
-# 省略DataRoot使用同一默认目录；Console及直接EXE的默认值相同
+$release = 'C:\Program Files\ImporterPc\releases\APPLICATION-SOURCE-UNIQUE'
+& "$release\application.ps1" -Action Verify
+& "$release\application.ps1" -Action Install # 打开原生安装向导
+& "$release\application.ps1" -Action Diagnose -DataRoot 'D:\ImporterPcData'
+& "$release\application.ps1" -Action Run # 读取同版本部署位置；直接EXE也相同
 & "$release\application.ps1" -Action Console
-& "$release\application.ps1" -Action Shortcut -File "$env:USERPROFILE\Desktop\Sportmaster-candidate.lnk" -Ui supply-station
 ```
 
-基本参考启动不需要protect-release/provision-runtime/ProvisionData。它们保留为显式维护工具，用于部署至受保护发行目录、指定其他运行账户和预配置受保护数据卷。已有目录不覆盖。需要后装扩展时，独立可信的包/信任和发布保护仍必须由维护提供；软件不自动生成测试信任或将Production降级为Simulation。
-
-```powershell
-& "$release\protect-release.ps1" -Release $release -RuntimeAccount 'MACHINE\station-user'
-# 仅在有维护部署需求且尚未由首次启动安装策略时指定账户；不删除现有策略
-& "$release\provision-runtime.ps1" -RuntimeAccount 'MACHINE\station-user'
-& "$release\application.ps1" -Action ProvisionData -DataRoot 'D:\ImporterPcData' -RuntimeAccount 'MACHINE\station-user'
-& "$release\provision-extensions.ps1" -Mode Simulation -TrustFile 'D:\ApprovedMedia\trust.json'
-```
-
-配置无效、缺包/依赖或原SID错误明确失败；不覆盖旧configuration.json或改用空根。配置根参数可用`-Configuration <绝对配置目录>`，business.json只是seed，持久Effective/Pending仍属于唯一配置账。维护授权和Production准入保持独立。provision-extensions.ps1、安装/恢复/绑定/StageConfiguration/受控重启见[扩展指南](../extensions/developer-guide.md)；软件不会伪造批准信任或设备资格。
-
-快捷方式保存绝对程序/配置/数据路径及工作目录，从其他cwd启动仍指向同一目录。启动展示实际调用阶段与诊断，失败不进入作业。机级站点/设备租约继续阻止跨会话或不同数据根的第二所有者。DirectPlc完整UI延期、Sportmaster不新增图库；实际Windows交互另验。
+手工protect-release/provision-runtime/ProvisionData/provision-extensions保留为明确维护兼容工具；正常部署由向导完成，不要求用户执行它们。脚本高级参数`-Configuration`和`-DataRoot`仍可显式指向原位置；配置账Effective/Pending是唯一业务权威。独立信任轮换及旧库迁移须走各自现行守卫，不自动改政策、清责任或生成测试信任。
 
 ## 作业、故障与诊断
 

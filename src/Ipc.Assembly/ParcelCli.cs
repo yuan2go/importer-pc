@@ -14,6 +14,11 @@ static class ParcelCli
         if (map.Keys.Any(x => x is not ("--action" or "--mode" or "--file" or "--extension-trust" or "--dependency-files" or "--extension-root" or "--sha256" or "--destination" or "--data-root" or "--package" or "--operation" or "--reason" or "--original-release" or "--occurrence" or "--wal-sha256"))) throw new ArgumentException("Unknown extension option");
         var mode = Enum.Parse<RunMode>(map.GetValueOrDefault("--mode", "Simulation"));
         if (!Enum.IsDefined(mode)) throw new InvalidDataException("Unknown extension management mode");
+        if (map["--action"] == "installed-location")
+        {
+            Console.WriteLine(Wire.Encode(DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ParcelAssembly.Definition().Id)));
+            return true;
+        }
         if (map["--action"] is "runtime-check" or "runtime-prepare")
         {
             if (map["--action"] == "runtime-prepare") ParcelRuntimeSetup.Prepare();

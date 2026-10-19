@@ -13,6 +13,7 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationDraftState.cs" Link="Client/ConfigurationDraftState.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs" Link="Client/StructuredConfiguration.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs" Link="Client/CapabilityEditing.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/StartupConfigurationDraft.cs" Link="Client/StartupConfigurationDraft.cs"/>
  <Compile Include="../../src/Ipc.Desktop/DesktopLaunchOptions.cs" Link="Client/DesktopLaunchOptions.cs"/>
  <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs" Link="Client/SupplyStationViewModel.cs"/>
  <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs" Link="Client/SupplyStationWindow.xaml.cs"/>

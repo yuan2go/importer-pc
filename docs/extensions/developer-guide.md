@@ -1,3 +1,5 @@
+> Windows首次部署现由[原生安装向导](../runtime/startup-deployment-02.md)自动完成受保护程序目录及可选独立信任/离线包安装，不再要求手工复制和改ACL。基本配置独立于可选库存；实际扩展绑定、精确包/合同和Production资格仍严格校验。下文底层命令保留为明确维护/开发入口，原生Windows验收仍NOT_RUN。
+
 > 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 
 > 本分支UX修复改变公共契约字节，参考能力2.2.5、reader1.3.5、RCS1.1.5须用冻结宿主重新构建/签名；实际身份与运行资格另记。修改前说明固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)，旧包和原请求不重签或覆盖。

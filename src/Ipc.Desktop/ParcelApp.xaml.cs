@@ -10,30 +10,48 @@ namespace Ipc.Desktop;
 public partial class App : System.Windows.Application
 {
     IBusinessRuntime? runtime;
+    ParcelStartupWindow startup = null!;
+    DesktopLaunchOptions? selected;
+#if SPORTMASTER
+    const string ApplicationId = "sportmaster";
+#elif DIRECTPLC
+    const string ApplicationId = "direct-plc";
+#else
+    const string ApplicationId = "wcs-to-plc";
+#endif
     protected override async void OnStartup(StartupEventArgs e)
     {
-        base.OnStartup(e);
-        ShutdownMode = ShutdownMode.OnExplicitShutdown;
-        var startup = new ParcelStartupWindow();
-        MainWindow = startup; startup.Show();
-        await System.Windows.Threading.Dispatcher.Yield(DispatcherPriority.Background);
+        base.OnStartup(e); ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        startup = new ParcelStartupWindow(); MainWindow = startup; startup.Show();
+        await Dispatcher.Yield(DispatcherPriority.Background);
         try
         {
-#if SPORTMASTER
-            const string applicationId = "sportmaster";
-#elif DIRECTPLC
-            const string applicationId = "direct-plc";
-#else
-            const string applicationId = "wcs-to-plc";
-#endif
-            var options = DesktopLaunchOptions.Parse(e.Args, applicationId);
-            var launch = options.Business;
+            var mode = e.Args.FirstOrDefault() is "--setup" or "--maintenance" ? e.Args[0] : null;
+            selected = DesktopLaunchOptions.Parse(mode is null ? e.Args : e.Args[1..], ApplicationId);
+            var published = File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json"));
+            if (mode == "--setup" || mode is null && published && DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is null)
+            {
+                new StartupSetupWindow(selected.Business) { Owner = startup }.ShowDialog();
+                startup.AllowClose = true; Shutdown(); return;
+            }
+            if (mode == "--maintenance") { await Repair(); return; }
+            await StartSelected();
+        }
+        catch (Exception ex) { await Failed(ex); }
+    }
+    async Task StartSelected()
+    {
+        try
+        {
+            if (runtime is not null) throw new InvalidOperationException("原实例尚未完成停止，不创建第二个运行实例");
+            var options = selected!; var launch = options.Business;
+            startup.BeginAttempt();
             startup.Phase("读取配置与本地记录", "检查所选 Application、配置身份和本地恢复责任；尚未开放业务。", "参数校验完成");
             var starting = await Task.Run(() => ParcelAssembly.Create(launch)); runtime = starting;
             if (launch.View is not null && !starting.Presentation.Views.Contains(launch.View) || launch.Layout is not null && !starting.Presentation.Layouts.Contains(launch.Layout)) throw new InvalidDataException("页面或布局不属于本次选定业务");
-            startup.Phase("启动所选能力并恢复原请求", "正在调用应用启动流程。设备、存储、身份和未决请求由 Application 判定；不使用假进度百分比。", "配置和页面选择已读取");
+            startup.Phase("启动所选能力并恢复原请求", "正在调用应用启动流程。设备、存储、身份和未决请求由 Application 判定。", "配置和页面选择已读取");
             await Task.Run(() => starting.StartAsync(CancellationToken.None));
-            startup.Phase("读取当前运行状态", "启动调用已返回，正在读取应用快照；业务是否可用由实际阻断和许可决定。", "启动流程已返回");
+            startup.Phase("读取当前运行状态", "启动调用已返回，正在读取应用快照。", "启动流程已返回");
             var application = (IParcelApplication)starting.Application;
             var initial = await Task.Run(application.SnapshotAsync);
             startup.Phase("创建工作窗口", "应用状态：" + initial.State + "\n" + string.Join("\n", initial.BlockingReasons), "已取得运行实例 " + initial.RuntimeId);
@@ -47,15 +65,30 @@ public partial class App : System.Windows.Application
 #if !SPORTMASTER
             window.StopOwnerAsync = StopAsync;
 #endif
-            MainWindow = window; window.Show();
-            startup.AllowClose = true; startup.Close(); ShutdownMode = ShutdownMode.OnMainWindowClose;
+            MainWindow = window; window.Show(); startup.AllowClose = true; startup.Close(); ShutdownMode = ShutdownMode.OnMainWindowClose;
         }
-        catch (Exception ex)
-        {
-            Exception failure = ex;
-            try { await StopAsync(); } catch (Exception cleanup) { failure = new AggregateException("启动与清理失败，保留诊断", ex, cleanup); }
-            startup.Fail(failure.ToString(), async () => { await StopAsync(); startup.AllowClose = true; Shutdown(2); });
-        }
+        catch (Exception ex) { await Failed(ex); }
+    }
+    async Task Failed(Exception error)
+    {
+        selected ??= new(new(Path.Combine(AppContext.BaseDirectory, "config"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data"), null, null), "classic");
+        Exception failure = error;
+        try { await StopAsync(); } catch (Exception cleanup) { failure = new AggregateException("启动与清理失败，保留诊断", error, cleanup); }
+        startup.Fail(failure.ToString(), async () => { await StopAsync(); startup.AllowClose = true; Shutdown(2); },
+            async () => { await StopAsync(); await StartSelected(); },
+            async () => { await StopAsync(); await Repair(failure.Message); },
+            async () => { await StopAsync(); var setup = new StartupSetupWindow(selected.Business) { Owner = startup }; setup.ShowDialog(); if (setup.Launched) { startup.AllowClose = true; Shutdown(); } });
+    }
+    async Task Repair(string? failure = null)
+    {
+        // Stop and Dispose must both succeed before any repair UI can issue a mutation.
+        await StopAsync(); selected ??= DesktopLaunchOptions.Parse([], ApplicationId);
+        var repair = new StartupRepairWindow(selected.Business, failure) { Owner = startup };
+        repair.ShowDialog();
+        if (repair.ReplacementLaunched) { startup.AllowClose = true; Shutdown(); return; }
+        if (repair.RetryRequested) { selected = selected with { Business = repair.SelectedLaunch }; await StartSelected(); }
+        else startup.Fail("离线维护已关闭。可重试启动或重新打开维护。", async () => { await StopAsync(); startup.AllowClose = true; Shutdown(); },
+            StartSelected, () => Repair(), () => { new StartupSetupWindow(selected.Business) { Owner = startup }.ShowDialog(); return Task.CompletedTask; });
     }
     async Task StopAsync()
     {
@@ -73,7 +106,7 @@ sealed class ParcelStartupWindow : Window
     readonly TextBlock title = new() { FontSize = 24, FontWeight = FontWeights.Bold, Text = "正在启动客户端" };
     readonly TextBlock detail = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 12, 0, 12), Text = "校验启动参数，尚未创建业务或设备会话。" };
     readonly TextBox diagnostic = new() { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MinHeight = 120 };
-    readonly StackPanel actions = new() { Orientation = Orientation.Horizontal };
+    readonly WrapPanel actions = new();
     readonly List<string> completed = [];
     public bool AllowClose { get; set; }
     public ParcelStartupWindow()
@@ -93,8 +126,10 @@ sealed class ParcelStartupWindow : Window
         if (completedCall is not null) completed.Add(DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss zzz") + " · " + completedCall);
         diagnostic.Text = string.Join("\n", completed);
     }
-    public void Fail(string reason, Func<Task> close)
+    public void BeginAttempt() { actions.Children.Clear(); completed.Clear(); }
+    public void Fail(string reason, Func<Task> close, Func<Task> retry, Func<Task> repair, Func<Task> setup)
     {
+        actions.Children.Clear();
         title.Text = "启动未完成 / NotReady"; detail.Text = "保留诊断；未进入作业。若停止失败，窗口继续持有资源责任，可重试停止。";
         diagnostic.Text = string.Join("\n", completed) + "\n\n" + reason;
         var copy = new Button { Content = "复制诊断", MinHeight = 44 };
@@ -106,6 +141,19 @@ sealed class ParcelStartupWindow : Window
             try { await close(); }
             catch (Exception error) { diagnostic.Text += "\n\n停止未完成：" + error; exit.IsEnabled = true; }
         };
-        actions.Children.Add(copy); actions.Children.Add(exit);
+        actions.Children.Add(copy);
+        void Add(string label, Func<Task> action)
+        {
+            var button = new Button { Content = label, MinHeight = 44 };
+            button.Click += async (_, _) =>
+            {
+                actions.IsEnabled = false;
+                try { await action(); }
+                catch (Exception error) { diagnostic.Text += "\n\n操作未完成：" + error; }
+                finally { actions.IsEnabled = true; }
+            };
+            actions.Children.Add(button);
+        }
+        Add("重试启动", retry); Add("离线维护", repair); Add("安装 / 修复", setup); actions.Children.Add(exit);
     }
 }

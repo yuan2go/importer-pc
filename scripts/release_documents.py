@@ -4,6 +4,7 @@ import re
 from urllib.parse import quote, unquote, urlsplit
 
 PARCEL_GUIDES = {
+    'docs/runtime/startup-deployment-02.md': 'STARTUP-DEPLOYMENT.md',
     'docs/runtime/windows-application-delivery.md': 'WINDOWS-APPLICATION.md',
     'docs/runtime/version-compatibility-01.md': 'VERSIONS.md',
     'docs/runtime/getting-started.md': 'GETTING-STARTED.md',

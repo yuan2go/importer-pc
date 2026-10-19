@@ -21,9 +21,10 @@ public sealed record DesktopLaunchOptions(BusinessLaunch Business, string Ui)
         var ui = options.GetValueOrDefault("--ui", "classic");
         if (ui is not ("classic" or "supply-station") || ui == "supply-station" && applicationId != "sportmaster")
             throw new ArgumentException("此业务不支持指定UI：" + ui);
+        var installed = DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, applicationId);
         return new(new(
-            options.GetValueOrDefault("--config", Path.Combine(AppContext.BaseDirectory, "config")),
-            options.GetValueOrDefault("--data-root", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data")),
+            options.GetValueOrDefault("--config", installed?.ConfigurationDirectory ?? Path.Combine(AppContext.BaseDirectory, "config")),
+            options.GetValueOrDefault("--data-root", installed?.DataRoot ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "data")),
             options.GetValueOrDefault("--view"), options.GetValueOrDefault("--layout")), ui);
     }
 }

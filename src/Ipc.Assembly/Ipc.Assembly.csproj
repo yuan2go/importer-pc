@@ -9,7 +9,7 @@
  <PropertyGroup Condition="'$(BusinessModule)' == 'WcsToPlc'"><DefineConstants>$(DefineConstants);WCSTOPLC</DefineConstants></PropertyGroup>
  <ItemGroup Condition="'$(BusinessModule)' == 'Sportmaster' Or '$(BusinessModule)' == 'DirectPlc' Or '$(BusinessModule)' == 'WcsToPlc'">
   <Compile Include="ExtensionConsumerReaders.cs"/><ProjectReference Include="../Ipc.Application.Supply/Ipc.Application.Supply.csproj"/>
-  <Compile Include="ParcelAssembly.cs"/><Compile Include="ParcelRuntimeSetup.cs"/><Compile Include="ParcelCapabilityFactory.cs"/><Compile Include="OriginalParcelQuery.cs" /><Compile Include="ParcelCli.cs"/>
+  <Compile Include="ParcelAssembly.cs"/><Compile Include="ParcelRuntimeSetup.cs"/><Compile Include="ParcelStartupServices.cs"/><Compile Include="ParcelCapabilityFactory.cs"/><Compile Include="OriginalParcelQuery.cs" /><Compile Include="ParcelCli.cs"/>
   <Compile Include="../Ipc.Product/ExtensionBuildCheck.cs" Link="ExtensionBuildCheck.cs"/>
   <ProjectReference Include="../Ipc.Application.$(BusinessModule)/Ipc.Application.$(BusinessModule).csproj"/>
   <ProjectReference Include="../Ipc.Components/Ipc.Components.csproj"/><ProjectReference Include="../Ipc.Drivers/Ipc.Drivers.csproj"/><ProjectReference Include="../Ipc.Integrations/Ipc.Integrations.csproj" Condition="'$(BusinessModule)' != 'DirectPlc'"/>

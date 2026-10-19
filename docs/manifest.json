@@ -172,9 +172,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "8a7fb16e855fcf435ab9e836a24ad2e95cd37592e53a415735b577d946d14a60",
-      "size_bytes": 4734,
-      "git_blob": "08c517f918e0a05f59a2a8841eb7309140c68915",
+      "sha256": "555784eb24c5be3ead89485d7c54d14d4bc63bb9ecd0935d6424b2170592bd7b",
+      "size_bytes": 4834,
+      "git_blob": "4b0838c0216d1bafceaf48fa34697b4ba9a4659c",
       "version": "ux-maintenance-p2-04",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
@@ -371,9 +371,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "ea2f4920d40088bcde5d62cbdc94ba1bda368d07689e20f61303e3359b712f64",
-      "size_bytes": 9309,
-      "git_blob": "7d48da11a0265ad6e826c6b23043b9cfe67881c9",
+      "sha256": "eedc4be53ed70270ebd311b1aa2e644560788db0963b803a5323fc7fd643bf8c",
+      "size_bytes": 9433,
+      "git_blob": "f44b01331f248c2b0b57c9a1f9e91bc7fffbd688",
       "version": "ux-maintenance-p2-04",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
@@ -38264,9 +38264,9 @@
       "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
       "source": "WP-IPC-UX-MAINTENANCE-P2-04",
       "storage_scope": "public_repository",
-      "sha256": "86080391db02060c22eea37d12e89a3ae4e35ea5f9e2066f90f9cbabe50ac33c",
-      "size_bytes": 1811,
-      "git_blob": "4406b01145c63371715c30fa3859fa79a5be88a6"
+      "sha256": "dc1296439ded53be6d255e282a19d803e860f4e78d2e4856068d24fe319988b9",
+      "size_bytes": 2389,
+      "git_blob": "83043b56f2b1dd4ab04a3d6c06c526479b57647b"
     },
     {
       "path": "docs/runtime/evidence/ux-maintenance-p2-04/checks.json",
@@ -38275,9 +38275,9 @@
       "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
       "source": "WP-IPC-UX-MAINTENANCE-P2-04",
       "storage_scope": "public_repository",
-      "sha256": "23faf357d94e81866aed9a96c535a30919844fe332f990d0b2bd65b5bd442a05",
-      "size_bytes": 3477,
-      "git_blob": "818c80c130c98b11657752b31d84ebd3067aac44"
+      "sha256": "ac64da926aff2730f97b0f3ff77af19ca9545a14d6dcd1f5a0bbbb3ff66de8ec",
+      "size_bytes": 3736,
+      "git_blob": "967ab12c8b7a419a36b08fd8f0958c01ef05db8f"
     },
     {
       "path": "docs/runtime/evidence/ux-maintenance-p2-04/close-generation-first-failure.log",
@@ -38352,9 +38352,9 @@
       "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
       "source": "WP-IPC-UX-MAINTENANCE-P2-04",
       "storage_scope": "public_repository",
-      "sha256": "acf76e46cde18c00e1c8210774a20091cbe5b54125449709493913093a507e72",
-      "size_bytes": 4720,
-      "git_blob": "1b2149e8131c8166600a03049b612f6e2755c413"
+      "sha256": "782aeb613a6a01c20adc017c7f481ffe91414abd535ef106d8628c84d111f774",
+      "size_bytes": 11704,
+      "git_blob": "df19aa4b80dcd392de7e15681f20c1a3a6020568"
     },
     {
       "path": "docs/runtime/evidence/ux-maintenance-p2-04/native-build.log",
@@ -38440,9 +38440,9 @@
       "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
       "source": "WP-IPC-UX-MAINTENANCE-P2-04",
       "storage_scope": "public_repository",
-      "sha256": "b0567b96f947a776b86cc120d11b68a4d92dd581d0de66c3ae52aff4943f72c5",
-      "size_bytes": 3957,
-      "git_blob": "ae63eaed315e56c660ff8a3d3d3c25458551532c"
+      "sha256": "6495096dd9535ac1b1f542b8306a02015adb6c7a970131a53045d1cd6da99db0",
+      "size_bytes": 5553,
+      "git_blob": "e04a3690a3228a43db8f6be5f2b402d441614a79"
     },
     {
       "path": "docs/work-packages/WP-IPC-UX-MAINTENANCE-P2-04.md",
@@ -38451,9 +38451,9 @@
       "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
       "source": "WP-IPC-UX-MAINTENANCE-P2-04",
       "storage_scope": "public_repository",
-      "sha256": "edfccda99a1468635599c9ff5e38519b55ee65cb12ca254cbc7c3aee768a2316",
-      "size_bytes": 4922,
-      "git_blob": "bbecd90338d60e51544da87e9003645c7380cb93"
+      "sha256": "5e69fd22088cd33f9b1d19eabf3379693f91b492591374b1be44d7a3e5c88a4f",
+      "size_bytes": 5356,
+      "git_blob": "f7cab7323ef7cc2d23a2328c7871d244b5de2c0a"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationCloseGuard.cs",
@@ -38487,6 +38487,325 @@
       "sha256": "88ae04069c9000e8a44d3f3105f9ce3d398771f36aa6819405d02ba9c991af26",
       "size_bytes": 556,
       "git_blob": "338fb443a65383de8c2451f3a8f8b95ba8b7723f"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/ARTIFACTS.json",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "fd06f0b7b71c0ab893db95c99ba53d32cc651b870ffc07b4836566d54fbef600",
+      "size_bytes": 2487,
+      "git_blob": "4dd12e926d191c3fa72066e34fb29176c18844af"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/SHA256SUMS",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "d2f5d6adf2456c6c8c881bcd7c200d131619a994a6e40f576e8048ee853a87b3",
+      "size_bytes": 1240,
+      "git_blob": "e6bf5cff030f496dcfaf5598a0d3bde646fbf6ff"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/direct-plc-smoke-compatibility.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "6425fcea0ebb53fb626715ca748606a52be0af3365f9ec08034a4b5f6476084b",
+      "size_bytes": 121,
+      "git_blob": "4dc2c5730006784ee78191326179d44aad4fe136"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/direct-plc-smoke.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "c06da649238293bf1f4456e161dd631949c6e01685e5d0d07cb0ba0272862992",
+      "size_bytes": 545,
+      "git_blob": "bddd28c7780a6d4142713c559807031b3443a651"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/frozen-close.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "634d85fee6b10ffd756ba56caf568e6968396ad54b36ece5e76936e2202b5c89",
+      "size_bytes": 3373,
+      "git_blob": "cd91805fe2604310067f0bd809db414df0d08756"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/frozen-configuration.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "7c197061bd9f604cc2aadd87017308e580a3bfcd1739098905c7ca2d4b8e1437",
+      "size_bytes": 5479,
+      "git_blob": "d3328a8e82faf55185a1f999077f69eae5c634d3"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/frozen-presentation.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "d94a0d9c863a3459cd5f20548afe280cf50d41f45c2bc95accba660d9575eea7",
+      "size_bytes": 4715,
+      "git_blob": "d9d2654521619429eca84a94cff53f46ba971fe7"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/frozen-sportmaster-ui.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "a59583abb49479764b9d3db195fd8c9d28b959f6c816f06a3117ee7b9a51906c",
+      "size_bytes": 8782,
+      "git_blob": "a699f3672c8fb2bbcfcd97610b2d8209f3863dee"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/frozen-wpf-builds.json",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "c8ef90b0154a4f7422a48359762ed2085fec144452676dd4291353230c1375f3",
+      "size_bytes": 439,
+      "git_blob": "1defffba0368756739388296cde2bd67ca265246"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/media-verification.json",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "a327f70d2c4243410454e0b540ed54f6c648ed96333ae25f18cbbe0ac88a842d",
+      "size_bytes": 1104,
+      "git_blob": "55f956c2b20e38c71678ec210a0195a36431fc2e"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/native-release-build.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "db7056149c82b53aad8e287fd2d25cc2c7bcfb8d424a0bc0d2d0bc7516df879a",
+      "size_bytes": 3457,
+      "git_blob": "2ead703b4072734d318d17d70dc5290a03f53f06"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/publish-checks.json",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "edaf70187e5430145b86ba682bdffe1233c55bc200632b43c583ce71adf4b9db",
+      "size_bytes": 5825,
+      "git_blob": "c1f4bea60eec5c6257b848f5666c8ed659f0068c"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/python-compatibility.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "c12a4e192e7aa3f3013d100a8d400be52acc35477d119a46fe9008bd58fc8b6a",
+      "size_bytes": 116,
+      "git_blob": "84841765851aa76be985349036b9df762d63a16a"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/rcs-journey.json",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "a9f5c2253c7c1ee44756026707e86c835cc956a81fb850b2e131c32822bde45b",
+      "size_bytes": 446,
+      "git_blob": "1f86d531197c5aa4e211927eaa1223e216414759"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/reference-trust.json",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "646b510c511190a9ce64ccabf669a9d72c7de9ae1dbe4e5092f9631c42e10fcf",
+      "size_bytes": 786,
+      "git_blob": "8e5359730f4801d801e1044866044d1ea805e741"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/remote-publication.json",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "567046ddebdc47ece055a57365cff4264609b9d93f8af571744ea406b7d0c76c",
+      "size_bytes": 4888,
+      "git_blob": "4af9ba52fd1dc747a65478e7e720ca0569fb380e"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/selected-journey-summary.json",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "25422136c3f748947bbb3635f7b8cdec5bc1b7989623a1bbfd2e6d4bcc77eb20",
+      "size_bytes": 820,
+      "git_blob": "f1873c0c140507c966203df87a1b8c38c4a14300"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/selected-release-journey.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "20a9a32dc1ee50230c00b1c48baf9a4c779929bf0b9f1009d6be19184acf53d2",
+      "size_bytes": 573,
+      "git_blob": "43e70fb4be5a6bb6521cf267e7f7056ab355471a"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/selected-release-journey.py",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "cf22e74b8dcbfe4fa8a0d90b5b5375e0b464920b1dba3b0a2de3365efaca7a26",
+      "size_bytes": 14036,
+      "git_blob": "4292d748a707c1e3f86d596fa0160ea6b6e2f75d"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/smoke-results.json",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "29b146d04230dfa354cdcb1fb07de6d537e62aeb12dd1dd47b4b681c273e313c",
+      "size_bytes": 184,
+      "git_blob": "982ee5228c2a296ef62fdd91c28ba4b38fa30a97"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/source-parity.json",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "9bb544fecc37f0294205102d2b45f693258738de86747002029432b95a459f4c",
+      "size_bytes": 74432,
+      "git_blob": "dfe3756f49d55dd2d90959ad0f91896f70f5c678"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/sportmaster-smoke-compatibility.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "7507a069ded320c192fd4e4cdcba516e805a2494c242fbe5cf2b621de4e78a9a",
+      "size_bytes": 122,
+      "git_blob": "2a923a376a2d0bbb4af53660295c1d6a2f790f8c"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/sportmaster-smoke.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "a64cf96e75eada1e434d5f8b69ffcf9dfd3fed0cf37c5199f007e0f7b708c8a9",
+      "size_bytes": 560,
+      "git_blob": "e4061e1eeb907467f20c06c2873f5f00cc6901bd"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/version-compatibility.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "1aade0793d97949936b2a1900c6b65ebbcab5a38994022aa983c60e8e15d0356",
+      "size_bytes": 3954,
+      "git_blob": "b28889fecb5c69a88ae2f91d208d306651400f70"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/wcs-to-plc-smoke-compatibility.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "c81ac6b52958545efa867c32718d8dd11794e5ab5e3ef29e155301e591916818",
+      "size_bytes": 121,
+      "git_blob": "d69e1b6f4eb5b5c703520edb8798d0495f893252"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/wcs-to-plc-smoke.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "bfe784175409eedc76398a603dce38194ac904bcc883b7b5da3194ddb649f601",
+      "size_bytes": 545,
+      "git_blob": "d27118efa125009b20ca3aa1577b3914f0b028ff"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/wpf-release-direct-plc.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "27131e2e2e6902fa2d8522f46eaa2df120f7940d97458183e652bff46cf66a6b",
+      "size_bytes": 3262,
+      "git_blob": "f630fbbbc162cd856eba884734450015d81776ac"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/wpf-release-sportmaster.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "8c2967c5aff262330d54ab7f3eab06d443bfdf394d092b862a3755a736b2f82d",
+      "size_bytes": 3481,
+      "git_blob": "002d9fde2f252fe28f422ea8af4ecfefda03288d"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-maintenance-p2-04/wpf-release-wcs-to-plc.log",
+      "version": "ux-maintenance-p2-04",
+      "status": "implementation_or_synthetic_evidence",
+      "purpose": "Authorized three maintenance P2 fixes, source PR evidence; Windows native NOT_RUN",
+      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "storage_scope": "public_repository",
+      "sha256": "dde734edca4551659c058a3f42f4b2ac3d8c19448d36d2bf055701901e781aa1",
+      "size_bytes": 3457,
+      "git_blob": "81bb826987b9b5cb38a1444e39b2cb7fca8ddc09"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -39192,7 +39511,7 @@
     "candidates": "docs/runtime/evidence/capability-reliability-20/candidate-inventory.json",
     "reference_verification": "PASS"
   },
-  "runtime_source_commit": "6ce1d6d0b109bd6a3d9490fac176122b4670b90b",
+  "runtime_source_commit": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
   "application_architecture_22_publication": {
     "receipt": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/architecture22-reference-8981d54",
@@ -39672,8 +39991,17 @@
     "source_fix_commit": "ab8f4d40d10d13b545456e4b7b99b6291b9303ec",
     "results": "docs/runtime/ux-maintenance-p2-04-results.md",
     "evidence": "docs/runtime/evidence/ux-maintenance-p2-04/README.md",
-    "delivery": "SOURCE_PR_ONLY_NO_NEW_RELEASE",
-    "business_version_declaration_unchanged": "1.3.2",
+    "delivery": "REFERENCE_RELEASE_AND_SOURCE_PR_WINDOWS_NOT_RUN",
+    "product_source_commit": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+    "release": "https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-ff31b0e",
+    "artifacts": "docs/runtime/evidence/ux-maintenance-p2-04/ARTIFACTS.json",
+    "publication_receipt": "docs/runtime/evidence/ux-maintenance-p2-04/remote-publication.json",
+    "business_version": "1.3.3",
+    "extensions": {
+      "capabilities": "2.2.5",
+      "reader": "1.3.5",
+      "rcs": "1.1.5"
+    },
     "contracts": "1.9.0",
     "parcel_storage": 7,
     "reference_release_does_not_contain_fixes": "https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-6ce1d6d",

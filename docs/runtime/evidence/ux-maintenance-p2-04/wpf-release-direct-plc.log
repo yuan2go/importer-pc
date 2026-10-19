@@ -1,0 +1,35 @@
+  正在确定要还原的项目…
+  已还原 <isolated-worktree>/src/Ipc.Platform/Ipc.Platform.csproj (用时 652 毫秒)。
+  已还原 <isolated-worktree>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 651 毫秒)。
+  已还原 <isolated-worktree>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 651 毫秒)。
+  已还原 <isolated-worktree>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 652 毫秒)。
+  已还原 <isolated-worktree>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 651 毫秒)。
+  已还原 <isolated-worktree>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 651 毫秒)。
+  已还原 <isolated-worktree>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 630 毫秒)。
+  已还原 <isolated-worktree>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 651 毫秒)。
+  已还原 <isolated-worktree>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 14 毫秒)。
+  已还原 <isolated-worktree>/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 18 毫秒)。
+  已还原 <isolated-worktree>/src/Ipc.Components/Ipc.Components.csproj (用时 14 毫秒)。
+  已还原 <isolated-worktree>/src/Ipc.Application.ParcelFlow.Desktop/Ipc.Application.ParcelFlow.Desktop.csproj (用时 31 毫秒)。
+  已还原 <isolated-worktree>/src/Ipc.Desktop/Ipc.Desktop.csproj (用时 37 毫秒)。
+  1 个项目(共 14 个)是最新的，无法还原。
+  Ipc.Platform -> <isolated-worktree>/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> <isolated-worktree>/src/Ipc.Application.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> <isolated-worktree>/src/Ipc.Platform.Storage/bin/Release/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> <isolated-worktree>/src/Ipc.Application.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Application.Contracts -> <isolated-worktree>/src/Ipc.Application.Contracts/bin/Release/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> <isolated-worktree>/src/Ipc.Application.ParcelFlow/bin/Release/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.DirectPlc -> <isolated-worktree>/src/Ipc.Application.DirectPlc/bin/Release/net10.0/Ipc.Application.DirectPlc.dll
+  Ipc.Reference.Protocol -> <isolated-worktree>/src/Ipc.Reference.Protocol/bin/Release/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <isolated-worktree>/src/Ipc.Components/bin/Release/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> <isolated-worktree>/src/Ipc.Drivers/bin/Release/net10.0/Ipc.Drivers.dll
+  Ipc.Assembly -> <isolated-worktree>/src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.dll
+  Ipc.Application.ParcelFlow.Desktop -> <isolated-worktree>/src/Ipc.Application.ParcelFlow.Desktop/bin/Release/net10.0-windows/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.DirectPlc.Desktop -> <isolated-worktree>/src/Ipc.Application.DirectPlc.Desktop/bin/Release/net10.0-windows/Ipc.Application.DirectPlc.Desktop.dll
+  Ipc.Desktop -> <isolated-worktree>/src/Ipc.Desktop/bin/Release/net10.0-windows/Ipc.Desktop.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:03.96

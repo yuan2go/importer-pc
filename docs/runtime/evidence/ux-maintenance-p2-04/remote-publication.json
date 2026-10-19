@@ -1,0 +1,118 @@
+{
+  "ReleaseUrl": "https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-ff31b0e",
+  "Tag": "ux-reference-ff31b0e",
+  "ProductSource": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+  "Prerelease": true,
+  "PublishedAt": "2026-10-19T08:36:23Z",
+  "AssetCount": 15,
+  "RemoteReadback": "PASS_ALL_ASSETS_DOWNLOADED_BYTE_EQUAL",
+  "Assets": [
+    {
+      "File": "ARTIFACTS.json",
+      "Bytes": 2487,
+      "Sha256": "fd06f0b7b71c0ab893db95c99ba53d32cc651b870ffc07b4836566d54fbef600",
+      "GitHubAssetDigest": "sha256:fd06f0b7b71c0ab893db95c99ba53d32cc651b870ffc07b4836566d54fbef600",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "barcode.ipcx",
+      "Bytes": 7594,
+      "Sha256": "9d7ee21c8409406d950c5ca0b03d9d8e43fa7864e719689d913af3912ccd5059",
+      "GitHubAssetDigest": "sha256:9d7ee21c8409406d950c5ca0b03d9d8e43fa7864e719689d913af3912ccd5059",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "barcode.ipcx.identity.json",
+      "Bytes": 1191,
+      "Sha256": "ee9441ded23a31f78148d12afeb836d883b431a9834405fb94ce570b700cb2a3",
+      "GitHubAssetDigest": "sha256:ee9441ded23a31f78148d12afeb836d883b431a9834405fb94ce570b700cb2a3",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "capabilities.ipcx",
+      "Bytes": 20602,
+      "Sha256": "99cff37bfedfde2c6a2f4b850344284fde840b6cc7c17dab4a19975933fbab88",
+      "GitHubAssetDigest": "sha256:99cff37bfedfde2c6a2f4b850344284fde840b6cc7c17dab4a19975933fbab88",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "capabilities.ipcx.identity.json",
+      "Bytes": 1308,
+      "Sha256": "aa73dbe303c9272193c3be5ab9512f257351495315488ebf47ae79f9cf473aec",
+      "GitHubAssetDigest": "sha256:aa73dbe303c9272193c3be5ab9512f257351495315488ebf47ae79f9cf473aec",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "direct-plc-core.zip",
+      "Bytes": 18620015,
+      "Sha256": "5c370314754b785e138b304024bdc8e6aaa7377e69c52ee3e5fa91c0c9e345b0",
+      "GitHubAssetDigest": "sha256:5c370314754b785e138b304024bdc8e6aaa7377e69c52ee3e5fa91c0c9e345b0",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "raw-verification-evidence.zip",
+      "Bytes": 265516,
+      "Sha256": "3a5dc70846ab5bc62b0c073483b4575bd3a4d9019a1ebc28abcb7a2e0af07b26",
+      "GitHubAssetDigest": "sha256:3a5dc70846ab5bc62b0c073483b4575bd3a4d9019a1ebc28abcb7a2e0af07b26",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "rcs.ipcx",
+      "Bytes": 17734,
+      "Sha256": "b73b9bfb2bce37b40050468f41aba6fa3c27b566f8fab13214dc4c3c6f576803",
+      "GitHubAssetDigest": "sha256:b73b9bfb2bce37b40050468f41aba6fa3c27b566f8fab13214dc4c3c6f576803",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "rcs.ipcx.identity.json",
+      "Bytes": 1289,
+      "Sha256": "06bc9dc232321301e2f4adb3bd65896ac9893f42d105abc50c211635da6a7fa5",
+      "GitHubAssetDigest": "sha256:06bc9dc232321301e2f4adb3bd65896ac9893f42d105abc50c211635da6a7fa5",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "reference-trust.json",
+      "Bytes": 786,
+      "Sha256": "646b510c511190a9ce64ccabf669a9d72c7de9ae1dbe4e5092f9631c42e10fcf",
+      "GitHubAssetDigest": "sha256:646b510c511190a9ce64ccabf669a9d72c7de9ae1dbe4e5092f9631c42e10fcf",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "SHA256SUMS",
+      "Bytes": 1240,
+      "Sha256": "d2f5d6adf2456c6c8c881bcd7c200d131619a994a6e40f576e8048ee853a87b3",
+      "GitHubAssetDigest": "sha256:d2f5d6adf2456c6c8c881bcd7c200d131619a994a6e40f576e8048ee853a87b3",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "sportmaster-core.zip",
+      "Bytes": 18660769,
+      "Sha256": "2b4163ed7fe6f759b3f1033c21e9c3a42ac1782c1937bf4444d02aa0e91a52f8",
+      "GitHubAssetDigest": "sha256:2b4163ed7fe6f759b3f1033c21e9c3a42ac1782c1937bf4444d02aa0e91a52f8",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "sportmaster-selected-portable.zip",
+      "Bytes": 18708795,
+      "Sha256": "80055560f33fd66a244eed496ba89f3d2e125e8a2fdf9fc2b22e083ebe691c50",
+      "GitHubAssetDigest": "sha256:80055560f33fd66a244eed496ba89f3d2e125e8a2fdf9fc2b22e083ebe691c50",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "sportmaster-selected-win-x64.zip",
+      "Bytes": 104816123,
+      "Sha256": "8a26a33f3b7574053a9624bf156974fe20945fcc511fd0dd47eb9dca25b941ca",
+      "GitHubAssetDigest": "sha256:8a26a33f3b7574053a9624bf156974fe20945fcc511fd0dd47eb9dca25b941ca",
+      "ReadbackMatchesOriginal": true
+    },
+    {
+      "File": "wcs-to-plc-core.zip",
+      "Bytes": 18645538,
+      "Sha256": "fdd88e17a573ccbb4750f72f760accee10ba5f910f38a1aa248620002c0c554d",
+      "GitHubAssetDigest": "sha256:fdd88e17a573ccbb4750f72f760accee10ba5f910f38a1aa248620002c0c554d",
+      "ReadbackMatchesOriginal": true
+    }
+  ],
+  "WindowsNative": "NOT_RUN",
+  "Production": "NOT_READY"
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "File": "sportmaster-core.zip",
+    "CRC": "PASS",
+    "OuterAndApplicationHashes": "PASS",
+    "SourceCommit": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+    "NativeExecution": "REFERENCE_SMOKE_SEPARATE"
+  },
+  {
+    "File": "direct-plc-core.zip",
+    "CRC": "PASS",
+    "OuterAndApplicationHashes": "PASS",
+    "SourceCommit": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+    "NativeExecution": "REFERENCE_SMOKE_SEPARATE"
+  },
+  {
+    "File": "wcs-to-plc-core.zip",
+    "CRC": "PASS",
+    "OuterAndApplicationHashes": "PASS",
+    "SourceCommit": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+    "NativeExecution": "REFERENCE_SMOKE_SEPARATE"
+  },
+  {
+    "File": "sportmaster-selected-portable.zip",
+    "CRC": "PASS",
+    "OuterAndApplicationHashes": "PASS",
+    "SourceCommit": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+    "NativeExecution": "REFERENCE_SMOKE_SEPARATE"
+  },
+  {
+    "File": "sportmaster-selected-win-x64.zip",
+    "CRC": "PASS",
+    "OuterAndApplicationHashes": "PASS",
+    "SourceCommit": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+    "NativeExecution": "NOT_RUN"
+  }
+]

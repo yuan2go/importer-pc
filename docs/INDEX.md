@@ -1,6 +1,6 @@
 # 统一资料与实施入口
 
-> 本轮三项P2修复入口：[维护草稿与参数工作包](work-packages/WP-IPC-UX-MAINTENANCE-P2-04.md)。源码修复及定向回归见[04结果](runtime/ux-maintenance-p2-04-results.md)；1.3.2参考发布仍含这三项差额，不能以旧候选宣告已修。
+> 本轮三项P2修复入口：[维护草稿与参数工作包](work-packages/WP-IPC-UX-MAINTENANCE-P2-04.md)。源码修复及定向回归见[04结果](runtime/ux-maintenance-p2-04-results.md)；[1.3.3参考候选](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-ff31b0e)冻结ff31b0e，包含修复；原1.3.2仍含差额。main be79564与本分支产品身份分别读取。
 
 > PR39在1a34a1e复审的三项源码差额已续修，见[续修结果](runtime/ux-commercial-rereview-03-results.md)。原生Windows待验；固定参考发布不代表工程全部闭合或商用放行。
 

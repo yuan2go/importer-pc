@@ -1,0 +1,50 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-d6754c580da3482b855c5624cfcd5c3c
+PASS UX-PRESENTATION: reference observation A enters left position
+PASS UX-PRESENTATION: independent reference observation B follows A
+PASS UX-PRESENTATION: accepted current operation has explicit accepted semantics
+PASS UX-PRESENTATION: NoRead displays latest failed observation with no previous successful slot
+PASS UX-PRESENTATION: classic and alternate use the same rejected input fact
+PASS UX-PRESENTATION: rejected new input preserves original unresolved command target without borrowing its result
+PASS UX-PRESENTATION: A duplicate while B is current names original A and does not relabel B green with A time
+PASS UX-PRESENTATION: current operation observation time remains separate from latest duplicate source time in both layouts
+PASS UX-PRESENTATION: A to NoRead to A duplicate cannot silently restore green previous success
+PASS UX-PRESENTATION: presentation never changes original request bytes or identity
+PASS UX-PRESENTATION: normal, pending, accepted, rejected, unknown and stale have separate semantic backgrounds and text icons
+PASS UX-PRESENTATION: RCS lifecycle evidence never claims upstream readiness
+PASS UX-PRESENTATION: A to B during slow snapshot retains B row, details and command owner in classic
+PASS UX-PRESENTATION: query after interleaved snapshot uses exactly selected B in classic
+PASS UX-PRESENTATION: A to B during slow history rebinds current B to the replacement page in classic
+PASS UX-PRESENTATION: continue after interleaved history freezes B owner in classic
+PASS UX-PRESENTATION: explicit deselection clears command target in classic
+PASS UX-PRESENTATION: A to B during slow snapshot retains B row, details and command owner in Sportmaster 供包工作台
+PASS UX-PRESENTATION: query after interleaved snapshot uses exactly selected B in Sportmaster 供包工作台
+PASS UX-PRESENTATION: A to B during slow history rebinds current B to the replacement page in Sportmaster 供包工作台
+PASS UX-PRESENTATION: continue after interleaved history freezes B owner in Sportmaster 供包工作台
+PASS UX-PRESENTATION: explicit deselection clears command target in Sportmaster 供包工作台
+PASS UX-PRESENTATION: history exposes loading before service completion
+PASS UX-PRESENTATION: late history result cannot replace newer page or busy state
+PASS UX-PRESENTATION: history refresh retains original selection and detail identity
+PASS UX-PRESENTATION: history read failure keeps prior page and is not misreported as empty
+PASS UX-PRESENTATION: empty history has an explicit completed empty state
+PASS UX-PRESENTATION: structured details preserve operation/request/attempt/reply distinctions and full original JSON
+PASS UX-PRESENTATION: late original-operation query names its original A result and cannot replace selected B
+PASS UX-PRESENTATION: slow explicit open A cannot override later selection B
+PASS UX-PRESENTATION: ordinary operation publishes its name and disable reason before service completes
+PASS UX-PRESENTATION: busy duplicate operation never enters another service call
+PASS UX-PRESENTATION: software Pause has an independent path while ordinary action remains busy
+PASS UX-PRESENTATION: closing still owns busy workflow and original service
+PASS UX-PRESENTATION: completed action retains exact save result and releases only its busy lane
+PASS UX-PRESENTATION: ordinary failure stays visible and allows explicit retry
+PASS UX-PRESENTATION: bound feedback immediately identifies a slow read
+PASS UX-PRESENTATION: bound feedback retains successful no-message read completion after Busy and duplicate rejection
+PASS UX-PRESENTATION: same-text new receipt remains the exact command result instead of generic completion
+PASS UX-PRESENTATION: successful read cannot overwrite independent Pause result
+PASS UX-PRESENTATION: bound feedback retains the actual failed action after Busy ends
+PASS UX-PRESENTATION: completion cannot mask failed follow-up snapshot
+PASS UX-PRESENTATION: successful retry clears its own snapshot failure and retains the new completion
+PASS UX-PRESENTATION: synchronously blocking snapshot service returns control without occupying the UI caller thread
+PASS UX-PRESENTATION: close drain retains synchronous service ownership until actual completion
+PASS UX-PRESENTATION: snapshot collection/property projection resumes on captured UI context
+PASS UX-PRESENTATION: whole action and background service remain owned during close drain
+PASS UX-PRESENTATION: action completion restores Busy and projects on original context
+PASS UX-PRESENTATION COMPLETE; reference projection/service ownership only; Windows native NOT_RUN

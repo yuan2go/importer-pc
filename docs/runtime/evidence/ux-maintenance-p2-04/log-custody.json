@@ -75,5 +75,124 @@
     "PublishedSha256": "344d223af3d0903e9cd42d4b4cbec48ffd6e62db8faeb53e3498a1ce4977f1ef",
     "RawLocation": "local .artifacts/ux-maintenance-p2-04/native-build.log",
     "PublishedMeaning": "Explicit worktree-path-normalized derivative; raw remains local, no claim that published bytes are raw"
+  },
+  {
+    "Path": "frozen-configuration.log",
+    "RawSha256": "7c197061bd9f604cc2aadd87017308e580a3bfcd1739098905c7ca2d4b8e1437",
+    "PublishedSha256": "7c197061bd9f604cc2aadd87017308e580a3bfcd1739098905c7ca2d4b8e1437",
+    "RawLocation": "Release raw-verification-evidence.zip/frozen-configuration.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "frozen-close.log",
+    "RawSha256": "634d85fee6b10ffd756ba56caf568e6968396ad54b36ece5e76936e2202b5c89",
+    "PublishedSha256": "634d85fee6b10ffd756ba56caf568e6968396ad54b36ece5e76936e2202b5c89",
+    "RawLocation": "Release raw-verification-evidence.zip/frozen-close.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "frozen-sportmaster-ui.log",
+    "RawSha256": "a59583abb49479764b9d3db195fd8c9d28b959f6c816f06a3117ee7b9a51906c",
+    "PublishedSha256": "a59583abb49479764b9d3db195fd8c9d28b959f6c816f06a3117ee7b9a51906c",
+    "RawLocation": "Release raw-verification-evidence.zip/frozen-sportmaster-ui.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "frozen-presentation.log",
+    "RawSha256": "d94a0d9c863a3459cd5f20548afe280cf50d41f45c2bc95accba660d9575eea7",
+    "PublishedSha256": "d94a0d9c863a3459cd5f20548afe280cf50d41f45c2bc95accba660d9575eea7",
+    "RawLocation": "Release raw-verification-evidence.zip/frozen-presentation.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "wpf-release-wcs-to-plc.log",
+    "RawSha256": "2fb65f023ccf302fed28a69ca9ef4d4811f0e6475fa39d6d3464db42deeae0d3",
+    "PublishedSha256": "dde734edca4551659c058a3f42f4b2ac3d8c19448d36d2bf055701901e781aa1",
+    "RawLocation": "Release raw-verification-evidence.zip/wpf-release-wcs-to-plc.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "wpf-release-sportmaster.log",
+    "RawSha256": "98397dd5a4a24a85ac5ef3e2f06a60e9c18dc5c77e1fc043873132b751f03a08",
+    "PublishedSha256": "8c2967c5aff262330d54ab7f3eab06d443bfdf394d092b862a3755a736b2f82d",
+    "RawLocation": "Release raw-verification-evidence.zip/wpf-release-sportmaster.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "wpf-release-direct-plc.log",
+    "RawSha256": "7db9c5e65c2b556ee2d9f6fcdf4e96e322bcf9738b8aa047aa7b87810af9fe70",
+    "PublishedSha256": "27131e2e2e6902fa2d8522f46eaa2df120f7940d97458183e652bff46cf66a6b",
+    "RawLocation": "Release raw-verification-evidence.zip/wpf-release-direct-plc.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "native-release-build.log",
+    "RawSha256": "b036b89d84f4ce9631e6bffbf6038302b93b6046ff349b00685576286efc0d48",
+    "PublishedSha256": "db7056149c82b53aad8e287fd2d25cc2c7bcfb8d424a0bc0d2d0bc7516df879a",
+    "RawLocation": "Release raw-verification-evidence.zip/native-release-build.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "version-compatibility.log",
+    "RawSha256": "1aade0793d97949936b2a1900c6b65ebbcab5a38994022aa983c60e8e15d0356",
+    "PublishedSha256": "1aade0793d97949936b2a1900c6b65ebbcab5a38994022aa983c60e8e15d0356",
+    "RawLocation": "Release raw-verification-evidence.zip/version-compatibility.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "python-compatibility.log",
+    "RawSha256": "c12a4e192e7aa3f3013d100a8d400be52acc35477d119a46fe9008bd58fc8b6a",
+    "PublishedSha256": "c12a4e192e7aa3f3013d100a8d400be52acc35477d119a46fe9008bd58fc8b6a",
+    "RawLocation": "Release raw-verification-evidence.zip/python-compatibility.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "selected-release-journey.log",
+    "RawSha256": "b1ed05885817cc2f8331b09f7bcf5339f686a431f1686f9928d48e419486a2d1",
+    "PublishedSha256": "20a9a32dc1ee50230c00b1c48baf9a4c779929bf0b9f1009d6be19184acf53d2",
+    "RawLocation": "Release raw-verification-evidence.zip/selected-release-journey.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "wcs-to-plc-smoke.log",
+    "RawSha256": "bfe784175409eedc76398a603dce38194ac904bcc883b7b5da3194ddb649f601",
+    "PublishedSha256": "bfe784175409eedc76398a603dce38194ac904bcc883b7b5da3194ddb649f601",
+    "RawLocation": "Release raw-verification-evidence.zip/wcs-to-plc-smoke.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "sportmaster-smoke.log",
+    "RawSha256": "a64cf96e75eada1e434d5f8b69ffcf9dfd3fed0cf37c5199f007e0f7b708c8a9",
+    "PublishedSha256": "a64cf96e75eada1e434d5f8b69ffcf9dfd3fed0cf37c5199f007e0f7b708c8a9",
+    "RawLocation": "Release raw-verification-evidence.zip/sportmaster-smoke.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "direct-plc-smoke.log",
+    "RawSha256": "c06da649238293bf1f4456e161dd631949c6e01685e5d0d07cb0ba0272862992",
+    "PublishedSha256": "c06da649238293bf1f4456e161dd631949c6e01685e5d0d07cb0ba0272862992",
+    "RawLocation": "Release raw-verification-evidence.zip/direct-plc-smoke.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "direct-plc-smoke-compatibility.log",
+    "RawSha256": "6425fcea0ebb53fb626715ca748606a52be0af3365f9ec08034a4b5f6476084b",
+    "PublishedSha256": "6425fcea0ebb53fb626715ca748606a52be0af3365f9ec08034a4b5f6476084b",
+    "RawLocation": "Release raw-verification-evidence.zip/direct-plc-smoke-compatibility.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "wcs-to-plc-smoke-compatibility.log",
+    "RawSha256": "c81ac6b52958545efa867c32718d8dd11794e5ab5e3ef29e155301e591916818",
+    "PublishedSha256": "c81ac6b52958545efa867c32718d8dd11794e5ab5e3ef29e155301e591916818",
+    "RawLocation": "Release raw-verification-evidence.zip/wcs-to-plc-smoke-compatibility.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "sportmaster-smoke-compatibility.log",
+    "RawSha256": "7507a069ded320c192fd4e4cdcba516e805a2494c242fbe5cf2b621de4e78a9a",
+    "PublishedSha256": "7507a069ded320c192fd4e4cdcba516e805a2494c242fbe5cf2b621de4e78a9a",
+    "RawLocation": "Release raw-verification-evidence.zip/sportmaster-smoke-compatibility.log",
+    "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
   }
 ]

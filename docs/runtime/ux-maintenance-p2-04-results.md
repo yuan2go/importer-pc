@@ -14,7 +14,13 @@
 
 [本轮证据](evidence/ux-maintenance-p2-04/README.md)记录准确源码字节、命令、日志SHA及负证据。macOS arm64/.NET10.0.402，仅合成参考输入；配置CAS/恢复、窗口资源生命周期、Busy/Pause与两位共享实例投影定向通过，三业务WPF和原生验证工程交叉构建0警告/0错误。两轴[独立复核](evidence/ux-maintenance-p2-04/independent-review.md)未发现确定新增缺陷；不把静态复核记作原生执行。
 
-本次沿原WP-06准备新不可变候选，业务1.3.3/Contracts1.9.0/DB7；新精确参考能力2.2.5、reader1.3.5、RCS1.1.5按冻结宿主重建，最终产物及发布回执另记。原公开参考Release是[6ce1d6d](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-6ce1d6d)，它不包含本次修复。新发布须由package-application.py冻结新的完整Git输入，按目标公共DLL重新取得精确扩展/新不可变身份并执行同版旅程；旧ZIP不作为修复后产物或本轮同版冒烟证据。
+实际交付为[不可变参考预发布1.3.3](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-ff31b0e)，产品冻结 `ff31b0efaaebd7e5fae4254c7184e0640e2eea81`，UI功能实现ab8f4d4。业务1.3.3 / Contracts1.9.0 / DB7，新精确参考能力2.2.5、reader1.3.5、RCS1.1.5按冻结公共DLL构建并签名。五ZIP包括三个portable core及Sportmaster selected portable/win-x64，另有三IPCX/身份、公钥参考信任、原始证据ZIP和hash账；私钥未上传。原6ce1d6d的1.3.2不含本次修复，保持不覆盖。
+
+[ARTIFACTS](evidence/ux-maintenance-p2-04/ARTIFACTS.json)记录产品身份；[远端回读](evidence/ux-maintenance-p2-04/remote-publication.json)绑定实际资产。五ZIP CRC/文件hash/冻结SHA及Windows PE身份、三个core解包主链、签名选装/CAS/Pending激活/启动失败保旧/安全退休、RCS原报文与raw回执/重启不重POST均通过。四组定向回归、C#/Python版本组合和冻结源三业务WPF/原生验证器交叉构建通过。这里的参考执行不代表Windows原生或现场执行。
+
+产品冻结后的交付说明、证据和manifest有后续提交；[source-parity](evidence/ux-maintenance-p2-04/source-parity.json)核生产/配置/脚本/示例/随包指南与产品冻结逐字节相同。原始CombinationRun/事件及旅程在Release raw ZIP；公开替换路径副本另列Raw/Published hash。资料检查268→267项：修复本次manifest校验文件名格式，267项设计原件继承错误仍FAIL，新增0项，不扩大例外。
+
+开工main仍be79564。并行PR41的Windows账户预检不属于本包，候选不含该PR；业务源码无重叠，共用INDEX/manifest/Windows指南若后续整合须显式保留双方来源。本次正常推送并创建main PR，不自动合并。
 
 ## 复验与剩余
 
@@ -28,3 +34,6 @@ dotnet run --project tests/Ipc.Desktop.UiVerification -- .
 ```
 
 Windows原生控件/默认取消焦点、DPI/键盘/触摸、普通账户安装更新恢复及目标负载仍NOT_RUN；真实SDK/协议与权威Unknown处置BLOCKED_PER_CAPABILITY，商业输入账仍待确认，Production NOT_READY。WP-01/04/05/06原门禁不因修复三项P2关闭，WP-07新增可选建议仍单列。没有授予现场资格或D/RV批准。
+
+
+获取候选后先核SHA256SUMS，portable解包运行 `dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-reference-root>`；Windows按包内application.ps1、SPORTMASTER-UI.md和完整Windows后验说明使用 `--ui classic` 或 `--ui supply-station`。参考签名信任为TestOnly，不连接未授权设备。

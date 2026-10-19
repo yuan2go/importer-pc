@@ -12,10 +12,10 @@
 
 ## 实施计划
 
-- [ ] 在scripts/test_runtime_identity.py增加Supply/Inspection真实源码顺序断言，先执行取得RED；扩展既有合成维护分支回归，保留各维护入口参数。此断言只证明源码结构，不证明Windows拒绝或数据库不变性。
-- [ ] 修改src/Ipc.Product/ProductRuntime.cs和src/Ipc.Application.Inspection/InspectionRuntime.cs，在首个配置读取/扩展初始化/锁/账本访问之前执行`MachineRuntimePolicy.RequireRuntimeIdentity();`，不更改其他路径。
-- [ ] 同一PowerShell定向回归GREEN；构建并运行Ipc.Verification的`--runtime-identity`共享判定；分别构建五种Ipc.Assembly装配及受影响Supply WPF，0警告/错误。Supply与Inspection使用隔离新根执行snapshot/quit启动冒烟，不触及设备或现场数据。
-- [ ] 更新本包结果、Supply/Inspection部署说明、INDEX及manifest。证据保留命令、基线SHA、退出码和范围；提交开发分支并创建main PR，不自行合并。
+- [x] 在scripts/test_runtime_identity.py增加Supply/Inspection真实源码顺序断言，先执行取得RED；扩展既有合成维护分支回归，保留各维护入口参数。此断言只证明源码结构，不证明Windows拒绝或数据库不变性。
+- [x] 修改src/Ipc.Product/ProductRuntime.cs和src/Ipc.Application.Inspection/InspectionRuntime.cs，在首个配置读取/扩展初始化/锁/账本访问之前执行`MachineRuntimePolicy.RequireRuntimeIdentity();`，不更改其他路径。
+- [x] 同一PowerShell定向回归GREEN；构建并运行Ipc.Verification的`--runtime-identity`共享判定；分别构建五种Ipc.Assembly装配及受影响Supply WPF，0警告/错误。Supply与Inspection使用隔离新根执行snapshot/quit启动冒烟，不触及设备或现场数据。
+- [x] 更新本包结果、Supply/Inspection部署说明、INDEX及manifest。证据保留命令、基线SHA、退出码和范围；交付分支codex/runtime-identity-all-entrypoints，实际main PR由GitHub记录，不自行合并。
 
 命令入口：`IPC_TEST_PWSH=<pwsh7> python3 -m unittest discover -s scripts -p test_runtime_identity.py -v`；`dotnet build tests/Ipc.Verification/Ipc.Verification.csproj -p:RestoreLockedMode=true -m:1 -nr:false`后执行其DLL的`--runtime-identity`；装配构建使用`-p:BusinessModule=<Supply|Inspection|Sportmaster|DirectPlc|WcsToPlc> -p:RestoreLockedMode=true --artifacts-path <isolated-output> -m:1 -nr:false`。DirectPlc/WcsToPlc须显式指定`-p:NuGetLockFilePath=packages.direct-plc.lock.json`/`packages.wcs-to-plc.lock.json`，不使用未匹配既有文件的派生锁名。
 

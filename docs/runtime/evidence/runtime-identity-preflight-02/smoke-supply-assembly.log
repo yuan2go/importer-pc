@@ -1,0 +1,31 @@
+{
+  "Business": "supply",
+  "Presentation": {
+    "Views": [
+      "workstation",
+      "history",
+      "alarms",
+      "diagnostics",
+      "maintenance",
+      "engineering",
+      "extensions"
+    ],
+    "Layouts": [
+      "standard",
+      "compact"
+    ]
+  },
+  "Status": "Started"
+}
+{
+  "RuntimeId": "020aa0c5-e217-437b-ad56-9d0877ef093c",
+  "Revision": 7,
+  "State": "Running",
+  "Facts": {
+    "Business": "supply",
+    "AcceptedQuantity": "0",
+    "Session": "",
+    "Admission": "False",
+    "Blocks": "IdentityUnavailable; WcsUnavailable:station; WcsHealth:Health:Disconnected; NoActiveBoxOrCloseBarrier"
+  }
+}

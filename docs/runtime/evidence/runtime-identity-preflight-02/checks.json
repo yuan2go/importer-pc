@@ -109,5 +109,9 @@
     "green.log": "83f7ad0dfa6c7429e068feaf11d33548d0aa5a0b29afc1d3e542ec7399448146",
     "identity-build.log": "f0a716844f95f1e0f589c7c3ddee04a0fe6c4bbd4fe98fa2bc4d1df626f519a5",
     "identity-decisions.log": "de6ce0249691b70667577b134ba0eae327f19ea2d4cc5e3aca12d25cadf8972c"
-  }
+  },
+  "source_commit": "16ecb571cba32188f62a6e6e677030cd589dbf48",
+  "packaged_smoke": "PASS: 2 frozen portable archives, SHA256SUMS exact inventory, Started/snapshot/quit; Supply readonly integrity_check=ok, Inspection empty revision 0 ledger",
+  "first_smoke_harness": "Application exited 0; harness incorrectly parsed pretty-printed concatenated JSON as JSONL. Corrected parser, reran both in new roots; original local output retained.",
+  "archive": "FAIL; 267 inherited findings, introduced 0; baseline manifest checksum corrected"
 }

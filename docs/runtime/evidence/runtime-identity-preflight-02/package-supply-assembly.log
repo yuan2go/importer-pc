@@ -1,0 +1,28 @@
+  正在确定要还原的项目…
+  已还原 <workspace>/src/Ipc.Platform/Ipc.Platform.csproj (用时 509 毫秒)。
+  已还原 <workspace>/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 509 毫秒)。
+  已还原 <workspace>/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 509 毫秒)。
+  已还原 <workspace>/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 509 毫秒)。
+  已还原 <workspace>/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 509 毫秒)。
+  已还原 <workspace>/src/Ipc.Adapters/Ipc.Adapters.csproj (用时 509 毫秒)。
+  已还原 <workspace>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 509 毫秒)。
+  已还原 <workspace>/src/Ipc.Product/Ipc.Product.csproj (用时 509 毫秒)。
+  已还原 <workspace>/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 9 毫秒)。
+  已还原 <workspace>/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 11 毫秒)。
+  已还原 <workspace>/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 14 毫秒)。
+  已还原 <workspace>/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 13 毫秒)。
+  Ipc.Platform -> <workspace>/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <workspace>/src/Ipc.Application.Contracts/bin/Release/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Reference.Protocol -> <workspace>/src/Ipc.Reference.Protocol/bin/Release/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Drivers -> <workspace>/src/Ipc.Drivers/bin/Release/net10.0/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <workspace>/src/Ipc.Application.Supply.Contracts/bin/Release/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <workspace>/src/Ipc.Integrations/bin/Release/net10.0/Ipc.Integrations.dll
+  Ipc.Adapters -> <workspace>/src/Ipc.Adapters/bin/Release/net10.0/Ipc.Adapters.dll
+  Ipc.Platform.Storage -> <workspace>/src/Ipc.Platform.Storage/bin/Release/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> <workspace>/src/Ipc.Application.Supply/bin/Release/net10.0/Ipc.Supply.dll
+  Ipc.Application.ParcelFlow -> <workspace>/src/Ipc.Application.ParcelFlow/bin/Release/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Product -> <workspace>/src/Ipc.Product/bin/Release/net10.0/Ipc.Product.dll
+  Ipc.Assembly -> <workspace>/src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.dll
+  Ipc.Assembly -> <workspace>/.artifacts/identity02-supply-assembly/app/
+Sealed Simulation configuration: <workspace>/.artifacts/identity02-supply-assembly/app/config
+{"Package": "<workspace>/.artifacts/identity02-supply-assembly.zip", "Sha256": "1f23d40270c6cd7b7853e34adf38d670bcdfe879caebc81b793e7f0db78ab518", "SchemaVersion": 1, "Business": "supply", "Views": ["workstation", "history", "alarms", "diagnostics", "maintenance", "engineering", "extensions"], "Layouts": ["standard", "compact"], "EntryPoint": "app/Ipc.Assembly.dll", "SourceCommit": "16ecb571cba32188f62a6e6e677030cd589dbf48", "Windows": "WINDOWS_NOT_RUN", "Field": "BLOCKED", "Binaries": {"Ipc.Adapters.dll": "3518604b544f9a58930e6350e16a54018720505dae143f539e8060bfb2111d25", "Ipc.Application.Contracts.dll": "dbc6a05a5531d6dc684a36f136a91d5d5401d07c6dd9b7ed45aee91d3d1d33d1", "Ipc.Application.ParcelFlow.dll": "bf5a4406636c0de73746d30c484cc79abf76955e9af208e1a3bbd57c0758032a", "Ipc.Assembly.dll": "297d853cb5afe5fdf4746b6cfcf599e289e47fee3afc6ebdf4040a33e2b1bbe0", "Ipc.Drivers.dll": "063ec5358f9846efba298b55b1cebe33a8ff4ec512c46d913b28a77553ba3760", "Ipc.Integrations.dll": "afdce8a897b810636903a2aca70b737c57edc7c78a79bec031a872fbd64838ca", "Ipc.Platform.Storage.dll": "b2ba5a0cefe5b094472a23f1432d4d97e0a08d52eca7afc113af8732b6555680", "Ipc.Platform.dll": "592d7dededb231ff06e6043cd505823a3475900d3b4117af5c2afdb5c44b931c", "Ipc.Product.dll": "ab5f8c63036e5b82454eb22b099306f22e9fb39c5df192972089fb6033b52662", "Ipc.Reference.Protocol.dll": "c9bfd2453b97f36db37260b083420bdf1a8e95811e05feab8d89459d445d7c45", "Ipc.Supply.Contracts.dll": "a0436cc94876f7f36bbfc0367238dbfe12022b1e57603ee510c31d38fd3d020b", "Ipc.Supply.dll": "70e00e926306ac40dcd6b4fa073ce6429c335a91f3c1b29594d76d10da13fe0f"}}

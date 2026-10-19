@@ -36,6 +36,22 @@ dotnet build src/Ipc.Desktop/Ipc.Desktop.csproj -p:BusinessModule=Supply -p:Rest
 
 ## Windows与交付边界
 
+固定源码提交`16ecb571cba32188f62a6e6e677030cd589dbf48`生成Supply和Inspection portable包，均重新解包核SHA256SUMS完整文件集合；新Simulation根中Started → snapshot → quit退出0。Supply AcceptedQuantity=0/无Session，退出后只读SQLite integrity_check=ok；Inspection ledger Revision=0、Batches/Commands为空。[固定身份与运行命令](evidence/runtime-identity-preflight-02/startup-smoke.json)保留完整ZIP/SHA256SUMS hash和文件数；两包仅在本地.artifacts保留，不替换Release，也不构成Windows发行。首次冒烟应用已退出0，但验证脚本误将多行连续JSON当JSONL解析而失败；修正解析器后在另外两个全新根复跑通过，未改应用或覆盖原根。
+
+|组合|ZIP SHA256|
+|---|---|
+|supply-assembly|1f23d40270c6cd7b7853e34adf38d670bcdfe879caebc81b793e7f0db78ab518|
+|inspection-reference|cd08bac45bbf8bea53ce92c20549a63f702440d363f9b0dff6ebbacddc40e1e6|
+
+```sh
+python3 scripts/package-business.py --composition supply-assembly --target portable --output .artifacts/new-supply --dotnet <dotnet10>
+python3 scripts/package-business.py --composition inspection-reference --target portable --output .artifacts/new-inspection --dotnet <dotnet10>
+# 各ZIP另行解包并核SHA256SUMS后，以不存在的新绝对Simulation数据根运行：
+printf 'snapshot\nquit\n' | dotnet <unpacked>/app/Ipc.Assembly.dll --config <unpacked>/app/config --data-root <new-absolute-root>
+```
+
+后继证据提交只修改本结果、计划状态、证据及manifest，不改变固定媒介中的源码/配置/随包指南。业务1.3.3/Contracts1.9.0、Parcel DB7和Supply Storage5保持原版本，本包不另行宣布新版发布。
+
 同一带Pillow的Python对固定main快照及本分支执行归档检查，[差额](evidence/runtime-identity-preflight-02/archive-delta.json)无新增错误：main 268项，本分支更新manifest校验和后267项；265项历史PPTX媒介类型及2项历史metadata错误保留，归档整体仍FAIL。没有改历史资产或添加豁免。
 
 Windows原生SID/ACL/UAC、CMD/快捷方式/WPF及直接EXE拒绝、数据库迁移恢复前未打开/写入的文件访问跟踪与前后目录/hash/时间/ACL对照全部NOT_RUN。后验继承01矩阵，并增加Supply专用Product/Assembly/WPF/直接API和Inspection Assembly/直接API：正确普通SID允许；其他SID/提升管理员/服务/缺失或畸形策略拒绝。每项使用隔离新根及停止的旧版本/恢复标记实验根，维护者保全原DB/WAL/config/标记与JSON账本，不借删除现场策略或租约制造用例；维护权限另按原入口测试。

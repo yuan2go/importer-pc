@@ -1,0 +1,9 @@
+  正在确定要还原的项目…
+  已还原 <workspace>/src/Ipc.Application.Inspection/Ipc.Application.Inspection.csproj (用时 394 毫秒)。
+  已还原 <workspace>/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 394 毫秒)。
+  已还原 <workspace>/src/Ipc.Platform/Ipc.Platform.csproj (用时 394 毫秒)。
+  Ipc.Platform -> <workspace>/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Application.Inspection -> <workspace>/src/Ipc.Application.Inspection/bin/Release/net10.0/Ipc.Inspection.dll
+  Ipc.Assembly -> <workspace>/src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.dll
+  Ipc.Assembly -> <workspace>/.artifacts/identity02-inspection-reference/app/
+{"Package": "<workspace>/.artifacts/identity02-inspection-reference.zip", "Sha256": "cd08bac45bbf8bea53ce92c20549a63f702440d363f9b0dff6ebbacddc40e1e6", "SchemaVersion": 1, "Business": "inspection", "Views": ["inspection", "inspection-history"], "Layouts": ["standard", "compact"], "EntryPoint": "app/Ipc.Assembly.dll", "SourceCommit": "16ecb571cba32188f62a6e6e677030cd589dbf48", "Windows": "WINDOWS_NOT_RUN", "Field": "BLOCKED", "Binaries": {"Ipc.Assembly.dll": "a70dfc8b760bf3cc2ca76b71234863bd93dc613b41599f491d077386941782d5", "Ipc.Inspection.dll": "c6d8553aba01de22af20059276dbe59b51a0c5b7df524c79654d59032d85a0ba", "Ipc.Platform.dll": "592d7dededb231ff06e6043cd505823a3475900d3b4117af5c2afdb5c44b931c"}}

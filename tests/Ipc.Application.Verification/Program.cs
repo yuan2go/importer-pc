@@ -13,6 +13,7 @@ var root = Path.Combine(Path.GetTempPath(), "ipc17-verification-" + Wire.Id());
 if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordinal)) root = "/private" + root;
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
+if (args.Contains("--commercial-components")) { var i = Array.IndexOf(args, "--commercial-components"); CommercialComponentReview.Run(root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
 if (args.Contains("--commercial-productization")) { await CommercialProductization.Run(workspace, root); return; }
 if (args.Contains("--startup-deployment")) { await StartupDeployment.Run(workspace, root); return; }
 if (args.Contains("--ux-commercial-presentation")) { await UxCommercialPresentation.Run(workspace, root); return; }

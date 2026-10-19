@@ -17,6 +17,9 @@ static class CommercialProductization
     {
         readonly ParcelCapabilityFactory validation = new(launch);
         public int Sends;
+        public bool HoldHealth;
+        public readonly TaskCompletionSource HealthEntered = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public readonly TaskCompletionSource ReleaseHealth = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public ParcelConfiguration Normalize(ParcelConfiguration c) => validation.Normalize(c);
         public void Validate(ParcelConfiguration c) => validation.Validate(c);
         public void ValidateStructure(ParcelConfiguration c) => validation.ValidateStructure(c);
@@ -35,7 +38,11 @@ static class CommercialProductization
     {
         public string InstanceId => inner.InstanceId;
         public Task StartAsync(CancellationToken t) => inner.StartAsync(t);
-        public Task<CapabilityHealth> HealthAsync(CancellationToken t) => inner.HealthAsync(t);
+        public async Task<CapabilityHealth> HealthAsync(CancellationToken t)
+        {
+            if (owner.HoldHealth) { owner.HealthEntered.TrySetResult(); await owner.ReleaseHealth.Task.WaitAsync(t); }
+            return await inner.HealthAsync(t);
+        }
         public Task ReconnectAsync(CancellationToken t) => inner.ReconnectAsync(t);
         public Task<StageReply> ResolveSlotAsync(FrozenRequest r, CancellationToken t) { owner.Sends++; return inner.ResolveSlotAsync(r, t); }
         public Task<StageReply?> QueryAsync(FrozenRequest r, CancellationToken t) => inner.QueryAsync(r, t);
@@ -95,7 +102,15 @@ static class CommercialProductization
         Check(authority.Confirmation!.Required && authority.Effective.TimeoutMs == 1500 && authority.InitialRepair is not null &&
             authority.InitialRepair.CandidateHash == Wire.Hash(Wire.Encode(authority.Pending)), "repair intent keeps old Effective and confirmation until candidate resources succeed");
         var repairedEnvelope = authority.InitialRepair!.OriginalEnvelopeBase64;
-        await using (var repaired = Runtime())
+        // Use the existing monitor scheduling seam to own this maintenance
+        // window, and explicitly exercise the real in-flight write guard.
+        using var monitorPermit = new SemaphoreSlim(0);
+        var repairedFactory = new SyntheticFactory(launch, failOriginal: true);
+        await using (var repaired = new ParcelRuntime(launch, new SportmasterFlow(), repairedFactory)
+        {
+            RuntimeIdentityPreflight = () => { },
+            BeforeMonitorProbe = (instance, t) => instance == candidate.Wcs!.InstanceId ? monitorPermit.WaitAsync(t) : Task.Delay(Timeout.Infinite, t)
+        })
         {
             await repaired.StartAsync(default); var snapshot = await repaired.SnapshotAsync();
             Check(snapshot.Configuration is { Pending: null, Effective.TimeoutMs: 2000, Confirmation.Required: false, Activation.Outcome: "Activated" }, "correct candidate starts despite permanently broken original and confirms only after resource startup");
@@ -111,6 +126,19 @@ static class CommercialProductization
             Check((await repaired.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY")).Status == "Authorized" && (await repaired.SnapshotAsync()).Availability!.Configure, "synthetic maintenance authentication grants the existing backup permission");
             vm.StructuredPolicy!.Precision = "unfinished-precision";
             vm.NewCapabilityKind = "weight"; await vm.AddCapabilityInstanceAsync(); var extraInstance = vm.CapabilityDrafts.Last().InstanceId;
+            repairedFactory.HoldHealth = true; monitorPermit.Release();
+            await repairedFactory.HealthEntered.Task.WaitAsync(TimeSpan.FromSeconds(3));
+            var draftBeforeBusy = Wire.FileHash(Path.Combine(directory, "startup-maintenance/editor-draft.bin"));
+            try
+            {
+                Check(!(await repaired.SnapshotAsync()).Availability!.Configure, "actual in-flight health reservation blocks maintenance even after authentication");
+                await Reject<InvalidOperationException>(vm.SaveIncompleteEditorAsync, "live in-flight maintenance guard rejects draft persistence without bypassing authorization");
+                Check(Wire.FileHash(Path.Combine(directory, "startup-maintenance/editor-draft.bin")) == draftBeforeBusy && vm.StructuredPolicy.Precision == "unfinished-precision",
+                    "in-flight refusal preserves both encrypted draft bytes and current invalid editor input");
+            }
+            finally { repairedFactory.HoldHealth = false; repairedFactory.ReleaseHealth.TrySetResult(); }
+            for (var i = 0; i < 100 && !(await repaired.SnapshotAsync()).Availability!.Configure; i++) await Task.Delay(20);
+            Check((await repaired.SnapshotAsync()).Availability!.Configure, "maintenance becomes available only after the actual external reservation drains");
             await vm.SaveIncompleteEditorAsync();
             var resumedVm = new ParcelViewModel(repaired, "synthetic", "sportmaster"); await resumedVm.RefreshAsync(); await resumedVm.LoadCapabilitiesAsync(); await resumedVm.ContinueIncompleteEditorAsync();
             Check(resumedVm.StructuredPolicy!.Precision == "unfinished-precision" && resumedVm.CapabilityDrafts.Any(c => c.InstanceId == extraInstance) && (await repaired.SnapshotAsync()).Configuration.Effective.TimeoutMs == 2000,

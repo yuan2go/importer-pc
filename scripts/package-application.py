@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -43,7 +44,10 @@ build_source = output / 'source-snapshot'
 build_source.mkdir(parents=True)
 export = subprocess.Popen(['git', 'archive', '--format=tar', source], cwd=root, stdout=subprocess.PIPE)
 with tarfile.open(fileobj=export.stdout, mode='r|') as snapshot:
-    snapshot.extractall(build_source, filter='data')
+    # Historical evidence contains deep paths. Use the Windows extended path
+    # syntax for archive I/O only; do not change machine LongPaths/UAC policies.
+    extraction_root = ('\\\\?\\' + str(build_source)) if os.name == 'nt' else str(build_source)
+    snapshot.extractall(extraction_root, filter='data')
 if export.wait(): raise ValueError('Frozen source export failed')
 selection = resolve(build_source / 'config/compositions.json', a.composition or a.application + '-reference')
 if selection['product']['business'] != a.application:
@@ -104,7 +108,9 @@ if a.target == 'win-x64':
     for script in ['protect-release.ps1', 'provision-runtime.ps1', 'provision-extensions.ps1', 'application.ps1', 'application.cmd', 'Setup.cmd', 'Maintenance.cmd']:
         shutil.copyfile(build_source / 'scripts' / script, output / script)
 shutil.rmtree(artifacts)
-shutil.rmtree(build_source)
+if build_source.parent != output or build_source.name != 'source-snapshot':
+    raise ValueError('Refuse cleanup outside the generated frozen snapshot')
+shutil.rmtree(extraction_root)
 (output / 'APPLICATION-START.txt').write_text(
     'SIMULATION REFERENCE ONLY\nConsole: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'
     + ('Windows: double-click Setup.cmd; first launch from an unpacked package also opens the native installation wizard (no PowerShell required).\nChoose runtime account, original data root, configuration source and optional independent trust/offline packages; review then approve Windows UAC. Program files are installed side by side and data is retained.\nStart from the installed Start Menu shortcut. Offline startup repair: Maintenance.cmd or the installed startup-repair shortcut; business/devices do not need to start.\nDefault data: %LOCALAPPDATA%\\ImporterPc\\data; installer selections are retained for both desktop and console. Use PRODUCT-OPERATIONS.md for protected custom roots, first configuration repair, system maintenance, backup/migration and batch plans.\n' if a.target == 'win-x64' else '')

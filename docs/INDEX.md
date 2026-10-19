@@ -9,11 +9,11 @@
 
 > 已发布的历史 Windows 介质：[三业务下载与精确来源](runtime/windows-no-test-release-20261020.md)，运行源码 `939462bee40c9eebe8eb2aa60860217afd95fcdd`，原任务未运行测试/安装。既有[统一发行 cfe6c0e](runtime/unified-release-main-20261020.md)保持旧来源；两者不覆盖本次 Sportmaster 增量。
 
-当前实施、最终冻结介质和逐项结果见[Sportmaster 交付结果](runtime/sportmaster-commercial-delivery-01-results.md)，操作见[同版交付手册](runtime/sportmaster-commercial-delivery-01-operations.md)。
+继承商业交付组合的冻结介质和逐项结果见[Sportmaster 交付结果](runtime/sportmaster-commercial-delivery-01-results.md)，操作见[同版交付手册](runtime/sportmaster-commercial-delivery-01-operations.md)。后继UI实现与本轮介质以页首视觉产品化交付记录为准。
 
 ## 1. 当前阅读顺序
 
-1. [AGENTS](../AGENTS.md)、[本包基线与清理](reviews/sportmaster-commercial-delivery-01-baseline.md)、[产品设计](design/sportmaster-commercial-delivery-01.md)、[必要验收](runtime/validation/sportmaster-commercial-delivery-01.md)。
+1. [AGENTS](../AGENTS.md)、[本轮基准与清理](design/sportmaster-visual-productization-01.md)、[本轮运行与证据](runtime/sportmaster-visual-productization-01.md)，再读继承的[商业设计](design/sportmaster-commercial-delivery-01.md)、[必要验收](runtime/validation/sportmaster-commercial-delivery-01.md)。
 2. [框架](design/framework.md)、[F 决策](design/framework-decisions.md)、[19 职责](design/application-capability-19.md)、[20 可靠性](design/capability-reliability-20.md)、[22 独立 Application](design/application-architecture-22.md)。
 3. 继承 [COMM-00～10](work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md) 的设计/实现/验收及 [PR47/53 最终证据](runtime/evidence/pr47-main-integration/README.md)，再读下表相关指南和代码。
 4. [D 决策](readiness/decision-pack.md)、[RV 状态](reviews/STATUS.md)、[公开范围](baseline/PUBLICATION.md)及 [manifest](manifest.json)。原 D/RV 不倒写，UI 修改先读第4节全部实物与完整交接。
@@ -30,7 +30,7 @@
 |独立基础配置与原恢复机制|[启动部署源码/结果](runtime/startup-deployment-02-results.md)、[全部入口身份政策](runtime/runtime-identity-preflight-02.md)|
 |Application 配置、资源及维护|[Application 运行](runtime/application-architecture-22.md)、[配置/恢复/容量](runtime/architecture-quality-closure-01.md)、[永久恢复与原失败](runtime/parcel-recovery-p2.md)|
 |精确扩展、版本与部署资格|[扩展开发](extensions/developer-guide.md)、[受控装配设计](design/controlled-extensions.md)、[版本和组合证据](runtime/version-compatibility-01.md)|
-|Sportmaster 业务与可选 UI|[RCS 设计](design/sportmaster-rcs-task.md)/[运行](runtime/sportmaster-rcs-task.md)、[可选 UI](runtime/sportmaster-alternate-ui.md)|
+|Sportmaster 业务与默认原生 UI|[RCS 设计](design/sportmaster-rcs-task.md)/[运行](runtime/sportmaster-rcs-task.md)、[视觉产品化运行](runtime/sportmaster-visual-productization-01.md)、[旧可选UI入口替代说明](runtime/sportmaster-alternate-ui.md)|
 |Supply / Inspection 兼容入口|[Supply 首次操作](runtime/supply-getting-started.md)、[Supply 维护](runtime/operations.md)、[共同身份前置门禁](runtime/runtime-identity-preflight-02.md)|
 |本次文档发布范围|[文档交付记录](runtime/commercial-productization-01-docs-delivery.md)|
 

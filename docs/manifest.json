@@ -373,9 +373,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "5f272fa9aa96ccc6999970f4e1967ce906e8309e801eb596d2b5ab48c615617b",
-      "size_bytes": 13130,
-      "git_blob": "99ff55f9ad789a8cc9a42dc1d518f39262c5af6b",
+      "sha256": "f87de09a26a9362a8581037d023d2d27379efed227c45d69dbe98fd3c7b48166",
+      "size_bytes": 13393,
+      "git_blob": "cb9f0b20fc71a42b5441d9a39f86408fb5921615",
       "version": "sportmaster-visual-productization-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
@@ -26877,9 +26877,9 @@
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01; attribution and original evidence retain their identities",
       "storage_scope": "public_repository",
-      "sha256": "fc9787bade7a12b5c942573205f35fd86684d36ff39925c6e73778e4980e8c91",
-      "size_bytes": 3129,
-      "git_blob": "e19b91b71699d8e1106d5011219062edd5ff80c9"
+      "sha256": "513f93af8244ce782c427bc6f99b5124f144f6c4d94f66ad32954c2d5025fab5",
+      "size_bytes": 3171,
+      "git_blob": "8609646f0d0189557cc498a1329a39434116237a"
     },
     {
       "path": "docs/runtime/validation/ui-maintainability-16-windows.md",
@@ -27086,9 +27086,9 @@
     },
     {
       "path": "docs/ui/STATUS.md",
-      "git_blob": "fa942260172282199d29d27daf28af1116fe00a3",
-      "sha256": "c58706903ba7dcec9030b28d45c8e60b7ff39695dea089b32689d065fa059b84",
-      "size_bytes": 1418,
+      "git_blob": "5b54afc5db65c430eaacbea5abfabc5b4f11ab88",
+      "sha256": "3b1db616938a38bd5762e65375d86b8ae60cb9f27518c8c070a884c4473255ee",
+      "size_bytes": 1614,
       "version": "sportmaster-visual-productization-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
@@ -41056,9 +41056,9 @@
     },
     {
       "path": "scripts/verify-commercial-wpf.ps1",
-      "sha256": "c6e2b996d22492b08be3001c762e55b1023eb1ac7bc0f1a75cc980eb26d4d260",
-      "size_bytes": 5861,
-      "git_blob": "00d10d05a7f04c54eac035d9bcb9449815b509c9",
+      "sha256": "06cf2dd449aecb4d72d333473e5f14b40f0be3d4e2e337a5abdc727cbc273c4c",
+      "size_bytes": 5943,
+      "git_blob": "1bb1baa61cf46526f3401ce5d36451dc115096e9",
       "version": "sportmaster-visual-productization-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
@@ -45463,9 +45463,9 @@
     },
     {
       "path": "docs/runtime/evidence/sportmaster-visual-01/README.md",
-      "sha256": "72d9df916c55e21542f73384382ee729d5ff55ab70f62f1dd394cb00bff97ce9",
-      "size_bytes": 3768,
-      "git_blob": "219ea85d84be8f6b328db5715d942be96f441ae1",
+      "sha256": "2df4917182e68f4ab65372be41862122ae84c9f20d23a3ce89b523ff3d949975",
+      "size_bytes": 6442,
+      "git_blob": "99e315f6be0cf321a781fbe3ad2ea40ae5cb2ad3",
       "version": "sportmaster-visual-productization-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
@@ -45639,9 +45639,9 @@
     },
     {
       "path": "docs/runtime/sportmaster-visual-productization-01.md",
-      "sha256": "577f094981c62808c9e5206714f431972024f3bca3f4ff41986be536df563eed",
-      "size_bytes": 6623,
-      "git_blob": "f2423371118a77e3d7ab037637993bc235fb9d94",
+      "sha256": "bf09f6b79ead8f74088ea3ca325dfa081164a9ba65134fb44f71654e3a42c4bc",
+      "size_bytes": 8646,
+      "git_blob": "0f50f3e88b06d493da7ce47d532dd5991e104eab",
       "version": "sportmaster-visual-productization-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
@@ -45746,6 +45746,380 @@
       "sha256": "14ffb311b392a0c47d4ea0a684aa485827590d31b643be8b09a6e13b2c970e9c",
       "size_bytes": 2627,
       "git_blob": "cd8e291c72b56de6ee5f695dda5c44cef19ca7b2"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/MEDIA.json",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "df515ad6d113faaa7959ab4fcad5e2e44d1f625d0bfcd7cc6963fc60b32c086b",
+      "size_bytes": 2051,
+      "git_blob": "46c21cad9c486638d606e71b163d74b4d6d38d6c"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/archive-audit-summary.json",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "c3068428a48be927ce2c28a707574a3d566df423a51e5f9f8e688a9fe6b2adbc",
+      "size_bytes": 499,
+      "git_blob": "2a5589ed2cae11e2b124cb5567b8c2e6e77ba65b"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/development/dfc2ab6-preview-directory-failure/RESULT.json",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "d4f082262504c7b62941dca944baecdd1643582741c6f8554b3953a14ea4c218",
+      "size_bytes": 3042,
+      "git_blob": "383934e7a7350761f70e690bacb9add9c3acf8c7"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/development/dfc2ab6-preview-directory-failure/WINDOWS-WPF.log",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "b551c9ab1c55d9114b7bff4ba5f3cdc4fd7fe15df2514c978eb0cd274545d09a",
+      "size_bytes": 4212,
+      "git_blob": "8ed43017db435acc343b4d253ccaf9cd239f4298"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/development/integrated-commercial-gates.log",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "a77463c0b4b4023d3521ca897db22cf14413a28ac8688cc2e66ed214ce18fc14",
+      "size_bytes": 108,
+      "git_blob": "ff7cb445d0416536629d9cdae4d539d23cf7397a"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/development/integrated-release-documents.log",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "795076415e137d8a40bb5fd453ecf477f8a0770e06085981a168aa30310da45e",
+      "size_bytes": 105,
+      "git_blob": "a1993f4fd1e1d85707a1e0fd63de271f878a9d92"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/commercial-pages/RESULT.json",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "1b3c70ab07bfe054e2fd125692b35490351d80fc73b43189160fc108d43a22b0",
+      "size_bytes": 3042,
+      "git_blob": "996ee0806f764dc9340d3335959a05b9532909b5"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/commercial-pages/WINDOWS-WPF.log",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "2d361cfeedaf5240b4f41fc01c3e5ab8c72935e3ec3646aec29ded99364f05aa",
+      "size_bytes": 2425,
+      "git_blob": "d7232fc87549488b95f9c31befd92bf452c08100"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/commercial-pages/commercial-first-configuration.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "e29980d7635b85dd968511f75fbf2965af1f3d539bdcb826f5796b379e503126",
+      "size_bytes": 93719,
+      "git_blob": "aefd0c9409fc259978692ebb973a09ee24859a9e"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/commercial-pages/commercial-history-1100x600.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "bb84bc4e1944e6c4a7b236e77e6b86639f3cd5c94af03677897116cea8c3ae5a",
+      "size_bytes": 96177,
+      "git_blob": "6ee463647d91a2b095c4dc0ace0d5b6931f1ec12"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/commercial-pages/commercial-support.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "f902e2f33a22929dc37892ae76a63d99fbdbdfdb81defea8c3760327e4b1d90d",
+      "size_bytes": 59923,
+      "git_blob": "acffe268ac5d5aa2bac40136bcd6aea7a8fa14b5"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/manual-native.md",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "8c68b7342a4dcb5e9ffd904ca352830d7d9bd63929d5a8acb8c600b4d6888c3b",
+      "size_bytes": 2695,
+      "git_blob": "564e72f86c9601581594ebf821e8d89f960abde1"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/RESULT.json",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "1b3c70ab07bfe054e2fd125692b35490351d80fc73b43189160fc108d43a22b0",
+      "size_bytes": 3042,
+      "git_blob": "996ee0806f764dc9340d3335959a05b9532909b5"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/WINDOWS-WPF.log",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "1630990acd6e5ecf8dad0ba02aa2965c50b9c9581a31eed45d3003aac3513269",
+      "size_bytes": 2835,
+      "git_blob": "23c89d3c572d84819c6bbd7637d65fed0b249ba9"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-first-configuration-policy.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "0450d360070112232bdbc05aaf6e5656c7e5e2eafe5ce8a3f0f79564b3d1998a",
+      "size_bytes": 70822,
+      "git_blob": "53e6cb83e5896f6fc89e6bb866646ad71e320e6b"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-first-configuration.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "34d8656cec4756c1c10424028e481e500cd725dd80fa4bb849a002f1c402c7b1",
+      "size_bytes": 111101,
+      "git_blob": "d6f90f467a7c1b09e7dd3c3bacd479833e46aed7"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-history-1100.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "bfda2eeec3f0a946a6a9dfd8f68ebdcc8b31bda64961f7145c39042cda2dac4a",
+      "size_bytes": 108377,
+      "git_blob": "3c175400de5b4feef9b50cb0204980de32788e15"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-history-filters-1100.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "f2ee1b7af3cef1cab6524509730a1b09f831488115c10b1202706caa7891fd76",
+      "size_bytes": 94158,
+      "git_blob": "34fa0d50908deaad83b164592f1c8157ad1a0c9c"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-left-processing-right-valid-1366.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "d43e90b4f2f71006bec0c789933205728a7c6b548cd1af646f725cf6b1b80408",
+      "size_bytes": 92297,
+      "git_blob": "f690a53032bd49d866d836d0487c737cca68ccb4"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-long-content-1100.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "01e947d1229b472ab89235d04dceb2f7367903c9050876fc5bef086c0741ea6d",
+      "size_bytes": 75664,
+      "git_blob": "c1128ebe13ded5367bb9bdf3d1c520f3d4320ec9"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-maintenance-1100.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "bbf8e00ac71bd74c24789b4d54b2f0e1bddaf56bb769ee4ee78a0f812dcca54c",
+      "size_bytes": 97847,
+      "git_blob": "6e8376bd4c55e8ab6ff411c106f2408a199a0797"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-minimum-client-800x420.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "813fdcb53cf3de69c1a9e965bda1a986eff93f09feea18525e1673f71be7033e",
+      "size_bytes": 58011,
+      "git_blob": "de0a88169e56d383c1cc4541d189ab36fd47f7e7"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-normal-1100.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "b8e4222b2ee9f9627b6970b43cf0ef92029dde25bf35efe69490a8c6e229c64d",
+      "size_bytes": 67237,
+      "git_blob": "7836b8dc477e9c84715f3badbfd6b7fb585e75a0"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-normal-1366.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "34b4c0d55e1145cad67be845b49782ec6685c1361c804dedc54617caa3220694",
+      "size_bytes": 84674,
+      "git_blob": "33fc1208d5b9966fcc3136e4c85c7dcbe1171cf7"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-normal-900.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "57d1c706fe101e17c1822ebaaf748acd8c24c6ed64a2d156acf5dd1b62afb34c",
+      "size_bytes": 59200,
+      "git_blob": "7e37410ed975e4390171f9f4c8f5710113450cb0"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-stale-1100.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "feb39171a2e72c243137c597d713e1c78e3ce95a1b65fb301563eabb59ea62ff",
+      "size_bytes": 81469,
+      "git_blob": "25e65c346893ec3199d4b72310fca91593c88a44"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-support-help.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "9763d5e1dcac26a390a548835ae9542a066b297c8ab6e41eab1a57c554ca92ba",
+      "size_bytes": 59948,
+      "git_blob": "afed9450ffe55eb6d158bf80606b35b300f03e9a"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-support-preview.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "287be37b5a91c03d0a5a7e38aa56012795239ec3d3665889270316eb45da5590",
+      "size_bytes": 65387,
+      "git_blob": "810675680389112f0e1998bde56dada4eb6ce39b"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-unknown-rejected-1100.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "6eddb2bc27c46678c37f78970e4d5d9f576ecf3e19d4307a2de1caafffff9084",
+      "size_bytes": 92446,
+      "git_blob": "dfb55fa712f396b6ce22b654ada804852732eb3e"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/after-waiting-1366.png",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "d81a724fcd05b8e645089d079d3ff0abc7364eb2a28fe29595400da5430a7521",
+      "size_bytes": 79314,
+      "git_blob": "3f76f64489c854a9c51c368c077a607638cf4aa0"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/visible-hwnd-compact-125.jpg",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "ed976c62cb3c27d6d69c60d5fa72e8307977f3818e6ab7004316440b646b152f",
+      "size_bytes": 88667,
+      "git_blob": "9624bb75297bdbf06d9ca969340c34ec9b79b3b1"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/visible-hwnd-history-125.jpg",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "cc2f4d179233d5c9bf6b8e3e225f45ed8585e57509ff7e603097abf90b8b5f77",
+      "size_bytes": 142809,
+      "git_blob": "b37b99c4947f5340b04b446446cd0482de3a002f"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/visible-hwnd-maintenance-125.jpg",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "a7cf5cebcf897ce1a95e65b8c4fa4b0e89daf612fc116b4f6c009dcbfda9e9d4",
+      "size_bytes": 129754,
+      "git_blob": "b1105cafed8bc82c1dcbf5991e67f8d3ca952be9"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/final/visual/visible-hwnd-workbench-125.jpg",
+      "version": "visual-productization-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Native WPF visual productization, pinned development skill, synthetic verification or source-preserving archive",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit user authorization; no restricted customer inputs",
+      "storage_scope": "public_repository",
+      "sha256": "67895eba445e15ca6bb6e783d2b1785efd997c3749b15dc1d75227d6db659ec7",
+      "size_bytes": 93214,
+      "git_blob": "9da511da5c787b2034e1e0ef5ee0dd69f0a6549f"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -45825,7 +46199,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+  "current_implementation_work_package": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -45886,7 +46260,7 @@
     "application_code_changed": false,
     "remote_verification": "read exact main commit and file identities after merge"
   },
-  "next_implementation_work_package": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+  "next_implementation_work_package": null,
   "main_static_review_03": {
     "entry": "docs/reviews/main-static-review-03.md",
     "checks": "docs/reviews/main-static-review-03-checks.json",
@@ -46449,7 +46823,7 @@
     "candidates": "docs/runtime/evidence/capability-reliability-20/candidate-inventory.json",
     "reference_verification": "PASS"
   },
-  "runtime_source_commit": "b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5",
+  "runtime_source_commit": "dfc2ab68d263340037751651c442dd5b33023b32",
   "application_architecture_22_publication": {
     "receipt": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/architecture22-reference-8981d54",
@@ -46676,7 +47050,7 @@
     "release_assets": 8,
     "pr26_merge": "9a5d87ad41e3e936f56a7e58ec60de8f7aa53458"
   },
-  "updated_date": "2026-10-19",
+  "updated_date": "2026-10-20",
   "pr26_recovery_closure": {
     "baseline": "baac260214f910dca9ae4628ba6449b25188e2ac",
     "source": "0b6fe6a11fb53640cadddc86009293883bb77d71",
@@ -47540,6 +47914,18 @@
     "impeccable_commit": "46b822f7dda9f7dba799a9c7776fdc19b3a93559",
     "commercial_acceptance": "NOT_APPROVED",
     "real_sdk_devices_field": "BLOCKED",
-    "historical_d_rv": "UNCHANGED"
+    "historical_d_rv": "UNCHANGED",
+    "runtime_source_commit": "dfc2ab68d263340037751651c442dd5b33023b32",
+    "local_medium": "sportmaster-visual-dfc2ab6-win-x64.zip",
+    "local_medium_sha256": "f599db06205f0f1f782593654611839532c99ee27d6ee88dbb38393c63082ed9",
+    "inventory_sha256": "a4de300f7e90285119c22e1ff490f26d0745650e7a959066a1ebf594c8a5dd34",
+    "native_host_dpi": "Windows 22631 x64 / 125%; below target installation policy",
+    "next_acceptance": "Target Windows 26100+, 100/150% and mixed DPI, touch/HID/SDK/WCS/site remain unverified; no invented follow-up package"
+  },
+  "prior_current_pointers_before_sportmaster_visual_productization_01": {
+    "current_implementation_work_package": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+    "next_implementation_work_package": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+    "runtime_source_commit": "b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5",
+    "updated_date": "2026-10-19"
   }
 }

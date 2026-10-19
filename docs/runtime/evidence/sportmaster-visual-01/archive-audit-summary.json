@@ -1,0 +1,11 @@
+{
+  "source_commit": "9247db6f67183ce2d201ead917e18bfb65fff71f",
+  "status": "FAIL",
+  "command": "git -c core.autocrlf=false archive; bundled Python -X utf8 tools/verify_archive.py --root D:/v24-audit",
+  "errors_by_code": {
+    "pptx_media_type_mismatch": 265,
+    "private_metadata_marker": 2
+  },
+  "new_content_identity_or_checksum_errors": 0,
+  "scope": "Canonical Git blob export, not Windows autocrlf checkout. Original PPTX media types and original metadata retained; not a global PASS."
+}

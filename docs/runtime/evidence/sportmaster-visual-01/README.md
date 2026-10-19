@@ -2,7 +2,7 @@
 
 开工main f3059d499cd4dbc60b443f0a54cac939b2e5db2f。before/来自页面实现前的真实WPF运行，UI源为该main，使用本轮初始合成夹具；不是HTML、生成图或最终发布DLL。before/native.log保留当时状态/尺寸/125%DPI。基线夹具在工作区新增后执行，未冻结该次二进制；其范围只用于前后视觉比较，不赋予最终介质资格。
 
-最终介质固定源码、库存hash、同版夹具及逐项结果将在本目录的final/及MEDIA.json登记。中间开发构建不作为最终发布身份。
+最终介质固定源码为dfc2ab68d263340037751651c442dd5b33023b32，库存hash、包身份及版本见[MEDIA.json](MEDIA.json)，同版夹具与逐项结果在final/。中间开发构建不作为最终发布身份。
 
 本轮Impeccable Operate实际评审：
 
@@ -21,4 +21,26 @@ ui-ux-pro-max实际查询：`binding update focus selection --stack wpf`得到co
 
 本轮只发布合成包裹/参考设备与无秘密的界面，不包含真实SDK、客户原稿、新生产数据、账户凭据、机器窗口清单或用户未跟踪Excel。继承55025ce证据仍按原SHA/原范围读取；本轮不关闭旧HTML/D/RV、不构成现场/商用验收。
 
-整合增量：实施期间PR56合入main `1e97740f73fa1714505a128283f3df5bb96a5518`。最终组合完整继承其首配目录→设备→策略→检查启动四步及独立恢复页、未保存确认、检查失效/保存启动守卫、可搜索离线帮助、草稿和工程门禁修正与全部历史证据；本轮仅在其首配上补视觉分组/可复制诊断，未保留一套并行首配。原计划的三步组织由此替代，最终验证必须重冻新组合，不能拼接旧PASS。PR57仍为独立发行任务。
+整合增量：实施期间PR56合入main `1e97740f73fa1714505a128283f3df5bb96a5518`。最终组合完整继承其首配目录→设备→策略→检查启动四步及独立恢复页、未保存确认、检查失效/保存启动守卫、可搜索离线帮助、草稿和工程门禁修正与全部历史证据；本轮仅在其首配上补视觉分组/可复制诊断，未保留一套并行首配。原计划的三步组织由此替代，最终验证已重冻新组合，不能拼接旧PASS。PR57仍为独立发行任务。
+
+## 最终证据的读法
+
+- [首配/商业辅助页结果](final/commercial-pages/RESULT.json)及[原生日志](final/commercial-pages/WINDOWS-WPF.log)：PASS；包含未保存关闭拒绝、目录不可读禁止写、候选检查失效、草稿动作、可搜索帮助和共享Application。原9247夹具因按钮移入展开区而查找失败；保留原断言，先打开对应展开区后通过，旧失败在development/9247db6-stale-fixture/。
+- [主工作台最终结果](final/visual/RESULT.json)及[逐项日志](final/visual/WINDOWS-WPF.log)：PASS；证明本次观察/原作业/原请求关联，没有用格口取得替代物理完成。首次dfc预览缺输出标记目录，全部业务/布局断言已过但整次结果仍FAIL；失败在development/dfc2ab6-preview-directory-failure/，脚本创建目录后同版重跑通过，八分钟交互预览后正常释放窗口。
+- [同版实窗输入记录](final/manual-native.md)：真实HWND上的鼠标/键盘与可见区截图，独立于布局捕获。只发布合成目标窗口。
+- [全树归档检查摘要](archive-audit-summary.json)：仍FAIL，267项均在继承原稿；新增内容身份/清单checksum无错。保持原稿历史，不设豁免冒报全树PASS。
+
+布局图由同版实际WPF视图树RenderTargetBitmap捕获，DPI125%；1366×768、1100×650、900×520为窗口DIP，另有精确800×420客户区。超出本机工作区的布局图只能证明对应原生排版；实窗手动检查另在最大化可见区完成，不能拿布局图冒充该目标屏幕/缩放现场验收。
+
+|比较/状态|原生图像|
+|---|---|
+|实施前主台|[before](before/before-normal-1366.png)|
+|双位有效格口|[after](final/visual/after-normal-1366.png)|
+|左处理中/右已取得|[异步](final/visual/after-left-processing-right-valid-1366.png)|
+|Unknown与拒绝|[异常](final/visual/after-unknown-rejected-1100.png)|
+|长内容/失效|[长内容](final/visual/after-long-content-1100.png)、[失效](final/visual/after-stale-1100.png)|
+|最小实际客户区|[800×420](final/visual/after-minimum-client-800x420.png)|
+|历史/维护|[历史](final/visual/after-history-1100.png)、[维护](final/visual/after-maintenance-1100.png)|
+|首配/帮助|[首配](final/visual/after-first-configuration.png)、[帮助](final/visual/after-support-help.png)|
+
+NOT_RUN：100/150%与混合多屏DPI、触控/手套/HID/读屏/现场视距、目标Windows26100+提权安装/UAC/第二账户、真实SDK/WCS/实体和长时负载。当前Windows22631本机125%合成界面检查不授予Production或商用验收资格。

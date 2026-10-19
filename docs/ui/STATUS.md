@@ -1,6 +1,6 @@
 # UI 当前实现与证据入口
 
-本轮由 [视觉产品化基准](../design/sportmaster-visual-productization-01.md) 统一，任务为 WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01。业务1.4.0 / Application.Contracts1.10.0 / Parcel DB8，源码开工main f3059d4。本轮结果和Windows实测以[交付记录](../runtime/sportmaster-visual-productization-01.md)为准，尚未形成的结果不能提前声明PASS。
+本轮由 [视觉产品化基准](../design/sportmaster-visual-productization-01.md) 统一，任务为 WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01。业务1.4.0 / Application.Contracts1.10.0 / Parcel DB8，源码开工main f3059d4，整合最新main 1e97740，最终运行源码dfc2ab6。本轮结果和Windows实测以[交付记录](../runtime/sportmaster-visual-productization-01.md)及[同版介质证据](../runtime/evidence/sportmaster-visual-01/README.md)为准；Windows125%合成检查与实际输入已经执行，目标安装、多DPI和真实接口/现场资格另列。
 
 继续使用现有SupplyStationWindow/Position和共享Application。Sportmaster缺省转为supply-station，classic显式兼容；其他Application不改变缺省。当前观察、原作业、Unknown和失效守卫仍有效，格口取得不等于物理完成。标准/紧凑重排、客户区保护、原草稿CAS与原请求责任保持。
 

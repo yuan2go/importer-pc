@@ -36,6 +36,7 @@ $project='<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</Outpu
 [IO.File]::WriteAllText((Join-Path $Output 'NativeMedia.csproj'),$project)
 $workspace=Join-Path $Output 'workspace'
 New-Item -ItemType Directory -Path (Join-Path $workspace 'config/sportmaster') | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $workspace '.artifacts') | Out-Null
 Copy-Item -LiteralPath (Join-Path $Media 'app/config/business.json') -Destination (Join-Path $workspace 'config/sportmaster/business.json')
 $previousDesktop=$env:IPC_FROZEN_DESKTOP
 try {

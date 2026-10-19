@@ -40,4 +40,21 @@ standard纵向条码/大格口，compact横向字段；小客户区使用更紧�
 
 仍需现场/目标机补验：100/150%及混合DPI多屏、物理触控/手套/HID/读屏/声音/视距、长时负载、提权安装/UAC/第二账户及真实SDK/WCS/实体/现场。真实能力与生产资格仍BLOCKED/NOT_READY；本轮不宣布商业验收通过，也不关闭旧HTML的D/RV。
 
-整合增量：实施期间PR56合入main `1e97740f73fa1714505a128283f3df5bb96a5518`。最终组合完整继承其首配目录→设备→策略→检查启动四步及独立恢复页、未保存确认、检查失效/保存启动守卫、可搜索离线帮助、草稿和工程门禁修正与全部历史证据；本轮仅在其首配上补视觉分组/可复制诊断，未保留一套并行首配。原计划的三步组织由此替代，最终验证必须重冻新组合，不能拼接旧PASS。PR57仍为独立发行任务。
+整合增量：实施期间PR56合入main `1e97740f73fa1714505a128283f3df5bb96a5518`。最终组合完整继承其首配目录→设备→策略→检查启动四步及独立恢复页、未保存确认、检查失效/保存启动守卫、可搜索离线帮助、草稿和工程门禁修正与全部历史证据；本轮仅在其首配上补视觉分组/可复制诊断，未保留一套并行首配。原计划的三步组织由此替代，最终验证已重冻新组合，没有拼接旧PASS。PR57仍为独立发行任务。
+
+## 冻结交付身份与实测
+
+运行源码和同版原生夹具固定为 `dfc2ab68d263340037751651c442dd5b33023b32`；该提交相对9247db6仅修正维护展开区的验证定位，客户端代码相同。最终文档/证据及验证脚本的预览输出目录修正另行提交，不重标介质SourceCommit。
+
+本地介质 `.artifacts/sportmaster-visual-dfc2ab6-win-x64.zip`，SHA256 `f599db06205f0f1f782593654611839532c99ee27d6ee88dbb38393c63082ed9`。746项库存无变化、ZIP CRC通过；库存SHA、大小、版本及逐DLL身份见[MEDIA.json](evidence/sportmaster-visual-01/MEDIA.json)。本轮不覆盖旧Release。
+
+冻结原生入口（新输出目录）：
+
+```powershell
+./scripts/verify-commercial-wpf.ps1 -Media .artifacts/sportmaster-visual-dfc2ab6-win-x64 -Output .artifacts/new-commercial-pages -Dotnet D:/tools/dotnet/dotnet.exe
+./scripts/verify-commercial-wpf.ps1 -Media .artifacts/sportmaster-visual-dfc2ab6-win-x64 -Output .artifacts/new-visual-pages -Dotnet D:/tools/dotnet/dotnet.exe -VisualProductization -Interactive
+```
+
+验证机为Windows 11家庭中文版22631 x64，SDK10.0.402、WPF DPI1.25，低于安装目标26100+；不以本机界面测试授予目标安装资格。首配/维护/帮助与视觉工作台是分别运行的同版检查，日志和结果在证据final/；真实可见HWND输入与RenderTargetBitmap布局图分别标记。原生实测覆盖左右延迟/回执丢失/原请求核对、Unknown/拒绝/失效、长内容、800×420实际客户区、连续快照焦点/选择/滚动/展开/历史选择/草稿、显式时区和共享窗口资源。
+
+相关构建和生命周期回归通过；合并后发行文档2项、商业交付脚本5项回归通过。全树归档检查仍为FAIL：保留原稿PPTX的265项媒体类型不符及2项原元数据标记，规范Git字节导出未发现新增内容身份/manifest checksum错误；详见[检查摘要](evidence/sportmaster-visual-01/archive-audit-summary.json)。未删除原稿、压制检查或改写历史结果。

@@ -2,11 +2,11 @@
 
 ## 最新独立审查与实施交接
 
-[商业质量审查03原报告与证据](reviews/commercial-quality-audit-03/README.md) · [下一阶段Codex提示词](reviews/commercial-quality-audit-03/Codex-next-phase.md)。固定审查main为ec698bd；开放PR34的覆盖与剩余按发布交接分别读取。WP-A03-00～06待实施，先整理相关现行文档，再修改代码；本次报告发布不改变当前运行版本或商用准入。
+[商业质量审查03原报告与证据](reviews/commercial-quality-audit-03/README.md) · [下一阶段Codex提示词](reviews/commercial-quality-audit-03/Codex-next-phase.md)。固定审查main为ec698bd；开放PR34的覆盖与剩余按发布交接分别读取。现行实施入口为[审查03交付工作包](work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)，其中列明00～06的执行依赖、支持组合及待确认输入。原审查与报告发布按形成时身份保留。
 
 ## 当前有效阅读顺序
 
-1. [AGENTS](../AGENTS.md)、[本次整合工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-01.md)与[任务/冲突/验证/交付报告](runtime/parallel-task-reconciliation-01.md)。开工main713f23d，源PR27/29/30/32及执行期产物统一调查；原任务“不合并”仅由本次用户明确授权更新。
+1. [AGENTS](../AGENTS.md)、[审查03交付工作包](work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)；既有组合、来源PR及历史验证见[整合报告](runtime/parallel-task-reconciliation-01.md)。旧任务的合并授权只适用于其原PR和固定head。
 2. [框架](design/framework.md)、[F决策](design/framework-decisions.md)、[受控装配/扩展](design/controlled-extensions.md)、[19职责](design/application-capability-19.md)、[20可靠性](design/capability-reliability-20.md)、[22拓扑](design/application-architecture-22.md)和[质量/恢复设计](design/architecture-quality-closure-01.md)。仍是三个独立Application，无通用主流程、第二配置账或第二扩展设施。
 3. [首次运行](runtime/getting-started.md)、[Application配置](runtime/application-architecture-22.md)、[恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md)、[版本与组合证据](runtime/version-compatibility-01.md)、[扩展开发安装恢复](extensions/developer-guide.md)。当前业务1.2.4、Contracts1.7.0、Parcel DB6；schema1/2保留main兼容位，schema3显式双位。Supply Storage5仅按[Supply运行维护](runtime/operations.md)操作。
 4. [RCS设计](design/sportmaster-rcs-task.md)/[运行](runtime/sportmaster-rcs-task.md)、[Sportmaster可选UI](runtime/sportmaster-alternate-ui.md)、[永久恢复P2及原失败](runtime/parcel-recovery-p2.md)。原请求/版本/目标/合同/raw不因新部署改变，Unknown不自动重发。

@@ -172,9 +172,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "2e761df85dd7315861322f17f58136a09947dfc125c6ab598d22d66b5f6c776b",
-      "size_bytes": 3615,
-      "git_blob": "7d43e271edef2ab93aa3de8f854fc9da9f2603f3",
+      "sha256": "8962e15a50bbe7c76422338fa75987102490a849dd75e44fea8e0f02f403a732",
+      "size_bytes": 3777,
+      "git_blob": "03529c6e67bcf614ea582736b9252ce4ce65476d",
       "version": "architecture-quality-audit-02-rereview",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
@@ -371,9 +371,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "a8c11ef51604cf29f81fd6a1d259a41aa8d5f5c8dd7ec4df92ff52649b27d0a5",
-      "size_bytes": 6534,
-      "git_blob": "710def5e74f5e8c533dc9a705d691935f651fc73",
+      "sha256": "2d9fb0fbb2f389bda4858c8ee263422484790866b8307d66c77ed355e0884a61",
+      "size_bytes": 6568,
+      "git_blob": "426f016982446d29e82b08f72d038b59e803d8f9",
       "version": "commercial-quality-audit-03-publication",
       "status": "current_navigation",
       "purpose": "Authorized original audit publication and current-main/PR handoff; no product changes",
@@ -3757,9 +3757,9 @@
       "purpose": "Authorized generic architecture, synthetic configuration, evidence and operations; not field acceptance",
       "source": "WP-IPC-APPLICATION-ARCHITECTURE-22 explicit implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "280c86b50fb47476cc6ac123c851f93e10ceac86db7d5663949ffdbc5dac13c1",
-      "size_bytes": 5672,
-      "git_blob": "467c3a35012ddb91362919c1d7c7df9664bc5230",
+      "sha256": "bd56bca8d538b0694cfeac844077866ed5ed330d1b00dff8890961de86c23e7f",
+      "size_bytes": 5731,
+      "git_blob": "a89bf80836a0751b5e7e2dbf568b204ac2a15027",
       "previous_git_blob": "47615fe5ad48305b3410160261c62fdb9c13476c"
     },
     {
@@ -5155,9 +5155,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/architecture-quality-closure-01.md",
-      "sha256": "bd962d4d333c6ef82101fcb6b2a7b1e6029cb9ba756b3e1700d5a9a90cf4aef7",
-      "size_bytes": 23138,
-      "git_blob": "0545db41180400903ee2a7ae5cd44d079f1693e2",
+      "sha256": "3f914b0dbaa726631487b8275e865106b1944bce034c6150563afda3c3748c9a",
+      "size_bytes": 23276,
+      "git_blob": "a2df7ac6f463ccfb3dca1d1867a99f11e2033512",
       "previous_git_blob": "5697e9a5891f1c8c281f0d9dbe84108e63fb0db2"
     },
     {
@@ -26800,9 +26800,9 @@
       "source": "WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01 explicit user authorization",
       "storage_scope": "public_repository",
       "path": "docs/runtime/validation/architecture-quality-closure-01-windows.md",
-      "sha256": "dcd71f94cd09cfc7ab5833132c2e7b69350f5b71f7bfd97f611ca2c0a62b6a60",
-      "size_bytes": 4696,
-      "git_blob": "1cbe6661ffe9c22128984080e51d95f5c6ad621c",
+      "sha256": "3c814ede9103dc2864568b4ff158bb244e6944d3af4c0b4f1cf423706ba01045",
+      "size_bytes": 4854,
+      "git_blob": "e9d3ded010a7f9e83cf87dfa8230c2dd1f2d671d",
       "previous_git_blob": "c62a68b77d87f4c50beaec48b5ccb512b6f2cbcd"
     },
     {
@@ -33798,6 +33798,20 @@
       "purpose": "Authorized original audit publication and current-main/PR handoff; no product changes",
       "source": "2026-10-19 explicit user report upload and next-phase Codex prompt request",
       "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md",
+      "sha256": "469a551796e67a7c69e290b6c505f00c2eae146be1ae6cf68bec48bfb60217bd",
+      "size_bytes": 7294,
+      "git_blob": "6cc9d0c7e2f789c269a5b67dc007454525016e0a",
+      "version": "commercial-quality-audit-03-publication",
+      "status": "current_navigation",
+      "purpose": "Authorized original audit publication and current-main/PR handoff; no product changes",
+      "source": "2026-10-19 explicit user report upload and next-phase Codex prompt request",
+      "storage_scope": "public_repository",
+      "previous_git_blob": "f13c84ec32982cc0a88103086a7e0f908b7b919e",
+      "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
+      "pre_conformance_audit_git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

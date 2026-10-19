@@ -1,6 +1,6 @@
 # 质量闭环01 · Windows及现场后验
 
-所有条目当前NOT_RUN或BLOCKED，不能由WPF交叉构建、PNG、参考进程或TestOnly签名关闭。记录实际发布SHA、Parcel DB5/配置schema及ZIP、各公共DLL/包hash、机器/账户/站/模式、设备/位/合同及源时间。
+所有条目当前NOT_RUN或BLOCKED，不能由WPF交叉构建、PNG、参考进程或TestOnly签名关闭。记录实际发布SHA、Parcel DB6/配置schema及ZIP、各公共DLL/包hash、机器/账户/站/模式、设备/位/合同及源时间。
 
 |门禁|当前状态|具体步骤及通过依据|
 |---|---|---|
@@ -15,6 +15,6 @@
 |回执身份恢复|NOT_RUN|在隔离副本于raw落盘/RecoverRaw事务前后断进程；恢复原ID/hash后超过64次查询，再注入同ID不同内容应Conflict；归档BLOB缺索引补齐；既有假完成须OriginalReplyIdentityConflict阻断并保留原件，不能强制清账|
 |维护发送围栏|NOT_RUN|延迟共享WCS重连期间尝试Resume/新件/原Query，确认没有进入该端口；仅维护左设备时右位继续；SDK忽略取消直到迟到返回时围栏/租约仍保有，超时回执不得成功；选定服务的原业务/查询/健康/认证调用未排空时拒绝重连|
 |扩展安装/卸载|NOT_RUN|使用获批真实签名包验证中断安装原操作恢复；Pending/Effective、未结原图/回执、运行包、反向依赖和离线/备份消费者分别阻断；同机同模式注册Supply/Parcel/备份混合根，已知无引用根可卸载；schema1/2/3 × Effective/Pending/未结Frozen在All/Bound去重前注入同ID重复/矛盾库存、角色镜像和disabled悬挂包均应拒绝，原DB/config字节不改；全部清偿后正常卸载仍保留永久身份，不删除消费者登记绕过|
-|旧部署升级/回退|BLOCKED|盘点匹配旧发布、SQL版本/checksum、原包/配置/信任与完整备份；普通DB2/3未知业务先匹配旧发布核对；Attached缺raw用完整匹配原发布只Query，保留新Query原件、原Awaiting和原图/包引用，再显式升级DB5；模拟维护进程在raw/T3/升级前中断并验证可续作；DB4旧OutcomeReconciled恢复独立资料责任，已释放历史图不伪造恢复；旧程序拒读新库；回退前核对外部动作，不回滚业务事实|
+|旧部署升级/回退|BLOCKED|盘点匹配旧发布、SQL版本/checksum、原包/配置/信任与完整备份；普通DB2/3未知业务先匹配旧发布核对；Attached缺raw用完整匹配原发布只Query，保留新Query原件、原Awaiting和原图/包引用，在业务终结及每个缺raw均有可信独立Query依据后，由recover-legacy-receipt CLI显式升级DB6（旧API默认DB5）；普通DB2–5仍先只读拒绝未结责任；模拟维护进程在raw/T3/升级前中断并验证可续作；DB4旧OutcomeReconciled恢复独立资料责任，已释放历史图不伪造恢复；旧程序拒读新库；回退前核对外部动作，不回滚业务事实|
 
 完成每项须保留原输入、回执、命令/发生身份和失败证据；由真实责任方记录批准，不填写假批准人。原D/RV和历史HTML验收不自动关闭。

@@ -1,6 +1,6 @@
 # Application运行、维护与兼容
 
-本轮P1/P2整改见[结果与固定证据](pr26-recovery-closure-results.md)及[工作包](../work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)。普通DB4未结启动先用只读连接检查，拒绝时不打开写库、不checkpoint非空WAL，不写配置确认。原匹配DB4读者仍可清偿；即使实现Hash看似一致，也不自动放行跨DB升级。
+当前审查03实施范围见[工作包](../work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)。历史P1/P2整改见[结果与固定证据](pr26-recovery-closure-results.md)及[工作包](../work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)。普通DB4未结启动先用只读连接检查，拒绝时不打开写库、不checkpoint非空WAL，不写配置确认。原匹配DB4读者仍可清偿；即使实现Hash看似一致，也不自动放行跨DB升级。
 
 本页统一审查02 N01–N07后的实际操作。源码和包身份读取同包ASSEMBLY.json及SHA256SUMS；当前仓库交付见[统一入口](../INDEX.md)。[01工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)、[设计及本次差额](../design/architecture-quality-closure-01.md)与[01历史结果](architecture-quality-closure-01-results.md)保留形成时身份。22的三条独立主流程、19/20原请求规则和旧Supply/Inspection继续适用。Windows实机NOT_RUN，真实SDK/协议/现场BLOCKED。软件暂停不是安全急停。
 
@@ -58,9 +58,9 @@ dotnet app/Ipc.Assembly.dll --action extension-uninstall --package '{"Id":"appro
 
 ## 升级、回退与验证
 
-Parcel现行数据库6；SQL1～5/checksum逐字节继承main：SQL5的独立资料索引和原归档版本继续生效，SQL6仅追加RCS原报文/拆包语义屏障。DB4/5经既有raw库存核验后可保留原责任升级6；DB2/3未明主链/上传/原件仍按旧屏障拒绝，需匹配发布清偿或专用原Query证明后才升级。旧专用custody迁移2–5仍落5，已是6则保持6，不在外查后尝试降级。升级不重写原冻结请求、发送次数、目标、hash或合同，不把追加表结构当作精确实现兼容；旧5程序拒读6。升级前通过匹配发布做完整备份并保存原二进制、配置、信任与包；回退只能使用匹配原发布/升级前备份，并先核对期间外部动作，不能倒退业务账或盲重发。
+Parcel现行数据库6；SQL1～5/checksum逐字节继承main：SQL5的独立资料索引和原归档版本继续生效，SQL6仅追加RCS原报文/拆包语义屏障。普通DB2–5升级至6必须先只读证明主链、附加上传、图像和每次接收资料责任均已清偿；仅raw库存hash正确不足以授权升级。存在未结责任时拒绝写库及未来reader标记，使用匹配原发布清偿。repair-main-projection只修已由原件证明的主投影，保留旧schema；recover-legacy-receipt是有完整备份、原DB/WAL指纹和原目标权威Query依据的专用窄路径，CLI显式选择DB6，内部旧API默认DB5。窄路径可迁移已证明业务终结但仍缺原raw的Attached资料责任，原发生、图像和原包引用继续保留；无原依据不得升级。已为6的库不降级。升级不重写原冻结请求、发送次数、目标、hash或合同，不把追加表结构当作精确实现兼容；旧5程序拒读6。升级前通过匹配发布做完整备份并保存原二进制、配置、信任与包；回退只能使用匹配原发布/升级前备份，并先核对期间外部动作，不能倒退业务账或盲重发。
 
-Application.Contracts仍为ABI1.6.0；PR24能力包1.6.6/1.6.7保留原身份，本次能力、观察及兼容集成示例模板均不提供Version，每次构建显式指定`--version`的新不可变版本；准确发行物版本及manifest/包哈希读取媒介`composition.lock.json`与`.identity.json`，不得把模板或历史示例版本视为当前默认；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包同样使用显式新版本。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
+Application.Contracts当前为ABI1.7.0；PR24能力包1.6.6/1.6.7保留原身份，本次能力、观察及兼容集成示例模板均不提供Version，每次构建显式指定`--version`的新不可变版本；准确发行物版本及manifest/包哈希读取媒介`composition.lock.json`与`.identity.json`，不得把模板或历史示例版本视为当前默认；继承PR23的1.5.0原采集所有者协议。Platform字节变化，观察/兼容集成参考包同样使用显式新版本。所有扩展必须按目标宿主精确公共DLL重新构建/签名；旧1.4/1.5/1.0.9包和原请求不重签或覆盖。
 
 必要构建与定向选择器：
 
@@ -106,4 +106,3 @@ python3 scripts/package-application.py --application sportmaster --target portab
 
 解压后按SHA256SUMS及composition.lock.json核选中包；按EXTENSIONS.md inspect/install，保留原操作ID，编辑完整候选绑定，校验和StageConfiguration，受控重启后查Effective及健康。选装媒介不会隐式安装/激活。不同集合各用新不可变输出；运行/安装/原操作恢复/安全卸载沿同一Store和消费者政策。实际Windows及真实SDK/现场仍未验。
 
-并发整合兼容说明：当前CLI recover-legacy-receipt显式迁移至Parcel DB6；内部API默认DB5调用保持兼容。两者均保留永久回复身份、持久Query原件依据和完整备份，未清原raw/图像/包责任；普通启动在任何未来reader标记前拒绝DB2–5未结责任。原SQL1–5和历史发布指令按其固定版本保留。

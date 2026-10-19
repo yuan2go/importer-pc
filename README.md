@@ -12,6 +12,8 @@ Sportmaster支持 `--ui classic`（默认）和 `--ui supply-station`，导航�
 
 ## 开发、发布与维护
 
+本轮工程入口为[审查03交付工作包](docs/work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)，普通升级/窄恢复以现行维护正文为准。
+
 先读[统一入口](docs/INDEX.md)、[工作约束](AGENTS.md)、[首次运行](docs/runtime/getting-started.md)、[配置/恢复/扩展维护](docs/runtime/architecture-quality-closure-01.md)、[版本与组合证据](docs/runtime/version-compatibility-01.md)及[扩展开发](docs/extensions/developer-guide.md)。
 
 ```sh

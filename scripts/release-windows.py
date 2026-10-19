@@ -76,11 +76,13 @@ def cleanup_frozen_workspace(workspace):
         raise ValueError('Refuse cleanup outside generated frozen workspace')
     def retry_readonly(function, path, error):
         candidate = Path(path)
-        if os.name != 'nt' or not isinstance(error, PermissionError) or not candidate.resolve().is_relative_to(workspace) or not candidate.is_file() or candidate.stat().st_mode & stat.S_IWRITE:
+        if os.name != 'nt' or not isinstance(error, PermissionError) or not Path(str(candidate.resolve()).removeprefix('\\\\?\\')).is_relative_to(workspace) or not candidate.is_file() or candidate.stat().st_mode & stat.S_IWRITE:
             raise error
         candidate.chmod(candidate.stat().st_mode | stat.S_IWRITE)
         function(path)
-    shutil.rmtree(workspace, onexc=retry_readonly)
+    # Extended-length paths are required for nested tracked evidence on Windows.
+    deletion_path = '\\\\?\\' + str(workspace) if os.name == 'nt' else str(workspace)
+    shutil.rmtree(deletion_path, onexc=retry_readonly)
 
 
 def source_input_compatibility(source, main_baseline):

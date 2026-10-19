@@ -146,6 +146,11 @@ class ReleaseTests(unittest.TestCase):
         pack.parent.mkdir(parents=True)
         pack.write_bytes(b'git-like immutable object')
         pack.chmod(stat.S_IREAD)
+        # Exercise the real Windows long-path tree as well as a readonly Git object.
+        deep = workspace / 'source' / ('nested-evidence-' * 12) / 'child' / 'leaf.txt'
+        extended = Path('\\\\?\\' + str(deep)) if sys.platform == 'win32' else deep
+        extended.parent.mkdir(parents=True)
+        extended.write_bytes(b'long tracked path')
         release.cleanup_frozen_workspace(workspace)
         self.assertFalse(workspace.exists())
         with self.assertRaises(ValueError):

@@ -1,0 +1,451 @@
+{
+  "Task": "WP-IPC-COMMERCIAL-QUALITY-FIX-03",
+  "Baseline": "ec698bd4e11d06c13c097c77f90cc5ce145ab3ea",
+  "DocumentationFirstCommit": "c70dee269b03713c62f7a2680bb01cd575b58b9a",
+  "RuntimeSourceCommit": "8eee4c61082e1c7eeda245d17a2202556d233eab",
+  "BusinessVersion": "1.2.5",
+  "ApplicationContracts": "1.7.0",
+  "ParcelDatabase": 6,
+  "ConfigurationSchemas": [
+    1,
+    2,
+    3
+  ],
+  "Versions": {
+    "ReferenceCapabilities": "2.1.3",
+    "BarcodeReader": "1.2.3",
+    "SportmasterRcs": "1.0.5"
+  },
+  "Environment": {
+    "OS": "macOS-26.5.2-arm64-arm-64bit",
+    "Architecture": "arm64",
+    "DotnetSdk": "10.0.402",
+    "DotnetRuntime": "10.0.13"
+  },
+  "VerificationBuild": "Development build before source commit; same source content, separate Release packages below bind actual 8eee4c6 bytes. WPF event substitutes are not native UI evidence.",
+  "Receipts": [
+    {
+      "Kind": "BaselineRegression",
+      "Status": "EXPECTED_FAIL",
+      "ExitCode": -6,
+      "Log": "red-2-current.log",
+      "LogSha256": "f4e78d4f983ea18b0552e33f2a86bf6ec667955af1dc271d4c4f4e8e11dfa324",
+      "Selector": "--commercial-quality-current",
+      "Failure": "Unhandled exception. System.Exception: FAIL CQ03: classic current identity and empty slot match authoritative position despite reversed timestamps",
+      "LogCreatedUtc": "2026-10-19T01:30:33.561527+00:00",
+      "LogModifiedUtc": "2026-10-19T01:30:34.975330+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --commercial-quality-current"
+    },
+    {
+      "Kind": "BaselineRegression",
+      "Status": "EXPECTED_FAIL",
+      "ExitCode": -6,
+      "Log": "red-2-freshness.log",
+      "LogSha256": "3ab0172aeeec1fc70c69ab1372f06ca97c7060c5b52c65c1931c88c536697499",
+      "Selector": "--commercial-quality-freshness",
+      "Failure": "Unhandled exception. System.Exception: FAIL CQ03: classic failed read invalidates Ready, health and new actions",
+      "LogCreatedUtc": "2026-10-19T01:30:35.054144+00:00",
+      "LogModifiedUtc": "2026-10-19T01:30:35.294305+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --commercial-quality-freshness"
+    },
+    {
+      "Kind": "BaselineRegression",
+      "Status": "EXPECTED_FAIL",
+      "ExitCode": -6,
+      "Log": "red-2-recovery.log",
+      "LogSha256": "5884f10a87eb86f9b827a43e48a88564880167d9a69544995d1e6666a8506e10",
+      "Selector": "--commercial-quality-recovery",
+      "Failure": "Unhandled exception. System.Exception: FAIL CQ03: safe abandonment converges recovery flag without external send",
+      "LogCreatedUtc": "2026-10-19T01:30:35.368116+00:00",
+      "LogModifiedUtc": "2026-10-19T01:30:35.672220+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --commercial-quality-recovery"
+    },
+    {
+      "Kind": "DirectedVerification",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "final-commercial-quality.log",
+      "LogSha256": "8e50211ac323de4d7344270b36b05d0b455108780766cfcf9dde7d70ebf68fec",
+      "Selector": "--commercial-quality",
+      "LogCreatedUtc": "2026-10-19T01:37:30.879283+00:00",
+      "LogModifiedUtc": "2026-10-19T01:37:35.308972+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --commercial-quality"
+    },
+    {
+      "Kind": "DirectedVerification",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "final-sportmaster-ui.log",
+      "LogSha256": "8e275443fe64d4f664281bfabf13e58fc41bfffd04b87d37e2cd4cd30a93dde7",
+      "Selector": "--sportmaster-ui",
+      "LogCreatedUtc": "2026-10-19T01:37:35.317379+00:00",
+      "LogModifiedUtc": "2026-10-19T01:37:36.575171+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --sportmaster-ui"
+    },
+    {
+      "Kind": "DirectedVerification",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "final-parcel-recovery-p2.log",
+      "LogSha256": "bbcd1b38ee74bd6e136bcf1193a425bf54ada7def181156d99d304937d77476e",
+      "Selector": "--parcel-recovery-p2",
+      "LogCreatedUtc": "2026-10-19T01:37:36.580962+00:00",
+      "LogModifiedUtc": "2026-10-19T01:37:44.077675+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --parcel-recovery-p2"
+    },
+    {
+      "Kind": "DirectedVerification",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "final-receipt-custody.log",
+      "LogSha256": "ad6bd1a7daeb02d3f677acc56ac44b2c08fec0081562a3db5627ef81e0753ee3",
+      "Selector": "--receipt-custody",
+      "LogCreatedUtc": "2026-10-19T01:37:44.084381+00:00",
+      "LogModifiedUtc": "2026-10-19T01:37:45.343682+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --receipt-custody"
+    },
+    {
+      "Kind": "DirectedVerification",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "final-upgrade-conflict-closure.log",
+      "LogSha256": "8d70ef90a32680d121b9a53541f7edc7b10778f7c2cd24341faeea547222aaa4",
+      "Selector": "--upgrade-conflict-closure",
+      "LogCreatedUtc": "2026-10-19T01:37:45.349662+00:00",
+      "LogModifiedUtc": "2026-10-19T01:37:46.812362+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --upgrade-conflict-closure"
+    },
+    {
+      "Kind": "DirectedVerification",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "final-configuration-confirmation.log",
+      "LogSha256": "fa2e421687e21db164b7061ac1d62372bdeb2184a062efa47d0644c8aa45e701",
+      "Selector": "--configuration-confirmation",
+      "LogCreatedUtc": "2026-10-19T01:37:46.822656+00:00",
+      "LogModifiedUtc": "2026-10-19T01:37:48.168511+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --configuration-confirmation"
+    },
+    {
+      "Kind": "DirectedVerification",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "final-architecture-quality.log",
+      "LogSha256": "5d015cb1eefb43853370d92a9340aa811a9437e6e4974305d3945d9f2d63a72d",
+      "Selector": "--architecture-quality",
+      "LogCreatedUtc": "2026-10-19T01:37:48.173908+00:00",
+      "LogModifiedUtc": "2026-10-19T01:37:59.175343+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --architecture-quality"
+    },
+    {
+      "Kind": "DirectedVerification",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "final-version-compatibility.log",
+      "LogSha256": "bcb20961929f63118c192df00a7695c5a90f98fb3856c16f5c6212533d0be38a",
+      "Selector": "--version-compatibility",
+      "LogCreatedUtc": "2026-10-19T01:37:59.186851+00:00",
+      "LogModifiedUtc": "2026-10-19T01:37:59.636658+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --version-compatibility"
+    },
+    {
+      "Kind": "DirectedVerification",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "final-sportmaster-rcs.log",
+      "LogSha256": "035eb2e02dfb2878db325430ae45bd04e8faf19a6a852b1ac400ff71a0cc6bf4",
+      "Selector": "--sportmaster-rcs",
+      "LogCreatedUtc": "2026-10-19T01:37:59.642055+00:00",
+      "LogModifiedUtc": "2026-10-19T01:38:02.608559+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --sportmaster-rcs"
+    },
+    {
+      "Kind": "DirectedVerification",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "final-sportmaster-window-lifecycle.log",
+      "LogSha256": "a18c42ad82bf449dc2806198a282e4c77d66c7cdc0f55bb4612048106de5373a",
+      "Selector": "--sportmaster-window-lifecycle",
+      "LogCreatedUtc": "2026-10-19T01:38:02.617990+00:00",
+      "LogModifiedUtc": "2026-10-19T01:38:07.686846+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --sportmaster-window-lifecycle"
+    },
+    {
+      "Kind": "FinalAddedRegression",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "final-extra-commercial-quality.log",
+      "LogSha256": "8360411cc947cdbace324a883e769f7a584d9547bb5417a58007b64bd280eb50",
+      "Selector": "--commercial-quality",
+      "LogCreatedUtc": "2026-10-19T01:38:39.163368+00:00",
+      "LogModifiedUtc": "2026-10-19T01:38:43.517839+00:00",
+      "Command": "\"$DOTNET\" tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --commercial-quality"
+    },
+    {
+      "Kind": "WpfCrossBuild",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "wpf-locked-DirectPlc.log",
+      "LogSha256": "aa102be2081cbcd226a9a9aff530b20d397268666de8119c932f01c78ff2601e",
+      "Application": "DirectPlc",
+      "LogCreatedUtc": "2026-10-19T01:39:33.331238+00:00",
+      "LogModifiedUtc": "2026-10-19T01:39:38.606660+00:00",
+      "Command": "\"$DOTNET\" build src/Ipc.Desktop/Ipc.Desktop.csproj -p:Application=DirectPlc -p:NuGetLockFilePath=packages.direct-plc.lock.json -p:RestoreLockedMode=true -p:EnableWindowsTargeting=true -m:1 -nr:false --artifacts-path \"$EVIDENCE/wpf-locked-DirectPlc\""
+    },
+    {
+      "Kind": "WpfCrossBuild",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "wpf-locked-WcsToPlc.log",
+      "LogSha256": "83bbb80f9e6c3c46e96cffaab87dd76fdda13faa476990e74bb63ad24e377034",
+      "Application": "WcsToPlc",
+      "LogCreatedUtc": "2026-10-19T01:39:38.624068+00:00",
+      "LogModifiedUtc": "2026-10-19T01:39:43.552791+00:00",
+      "Command": "\"$DOTNET\" build src/Ipc.Desktop/Ipc.Desktop.csproj -p:Application=WcsToPlc -p:NuGetLockFilePath=packages.wcs-to-plc.lock.json -p:RestoreLockedMode=true -p:EnableWindowsTargeting=true -m:1 -nr:false --artifacts-path \"$EVIDENCE/wpf-locked-WcsToPlc\""
+    },
+    {
+      "Kind": "FrozenPackageBuild",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "package-sportmaster.log",
+      "LogSha256": "d2a0529e9494f53469f75e240c2657a219537e7f81f317b54d72b02650b0cc96",
+      "LogCreatedUtc": "2026-10-19T01:39:11.363252+00:00",
+      "LogModifiedUtc": "2026-10-19T01:39:18.367947+00:00",
+      "Command": "python3 scripts/package-application.py --application sportmaster --target portable --output \"$EVIDENCE/sportmaster-core\" --dotnet \"$DOTNET\""
+    },
+    {
+      "Kind": "FrozenPackageBuild",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "package-direct-plc.log",
+      "LogSha256": "9c95302fe5330ee1dae4317d9554a565d20ccf232b5889a19bbfa888a6324ef8",
+      "LogCreatedUtc": "2026-10-19T01:39:33.331276+00:00",
+      "LogModifiedUtc": "2026-10-19T01:39:40.584756+00:00",
+      "Command": "python3 scripts/package-application.py --application direct-plc --target portable --output \"$EVIDENCE/direct-plc-core\" --dotnet \"$DOTNET\""
+    },
+    {
+      "Kind": "FrozenPackageBuild",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "package-wcs-to-plc.log",
+      "LogSha256": "500e4bbb2b713a117888adf4fd3fd7dc258c96c1b649e97afd9737a6f5dae697",
+      "LogCreatedUtc": "2026-10-19T01:39:40.592594+00:00",
+      "LogModifiedUtc": "2026-10-19T01:39:47.588487+00:00",
+      "Command": "python3 scripts/package-application.py --application wcs-to-plc --target portable --output \"$EVIDENCE/wcs-to-plc-core\" --dotnet \"$DOTNET\""
+    },
+    {
+      "Kind": "FrozenPackageBuild",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "package-selected-portable.log",
+      "LogSha256": "e0d68df4d89256d38a1d51878bc9d5bcc47362c2dd891155e8d454e50d8163c0",
+      "LogCreatedUtc": "2026-10-19T01:40:51.561255+00:00",
+      "LogModifiedUtc": "2026-10-19T01:41:01.073756+00:00",
+      "Command": "python3 scripts/package-application.py --application sportmaster --target portable --output \"$EVIDENCE/sportmaster-selected-portable\" --dotnet \"$DOTNET\" --extension-package \"$EVIDENCE/capabilities.ipcx\" --extension-package \"$EVIDENCE/barcode.ipcx\" --extension-package \"$EVIDENCE/rcs.ipcx\" --extension-trust \"$EVIDENCE/test-public-trust.json\""
+    },
+    {
+      "Kind": "FrozenPackageBuild",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "package-selected-win-x64.log",
+      "LogSha256": "0070ce8e9f81d23da998da10672593a64e66718169103a67e83c43fe39add5a6",
+      "LogCreatedUtc": "2026-10-19T01:40:51.561283+00:00",
+      "LogModifiedUtc": "2026-10-19T01:41:14.293401+00:00",
+      "Command": "python3 scripts/package-application.py --application sportmaster --target win-x64 --output \"$EVIDENCE/sportmaster-selected-win-x64\" --dotnet \"$DOTNET\" --extension-package \"$EVIDENCE/capabilities.ipcx\" --extension-package \"$EVIDENCE/barcode.ipcx\" --extension-package \"$EVIDENCE/rcs.ipcx\" --extension-trust \"$EVIDENCE/test-public-trust.json\" --extension-check-host \"$EVIDENCE/sportmaster-core/app/Ipc.Assembly.dll\""
+    },
+    {
+      "Kind": "SignedExtensionBuild",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "extension-capabilities.log",
+      "LogSha256": "d840e7255d5f9029fbb163faeb15bf7e51d3d3e1954be36340a029b58aa8fb14",
+      "LogCreatedUtc": "2026-10-19T01:39:53.482353+00:00",
+      "LogModifiedUtc": "2026-10-19T01:39:55.752736+00:00",
+      "Command": "python3 scripts/build-extension.py --definition examples/ParcelCapabilitiesExtension/extension.build.json --contract \"$EVIDENCE/sportmaster-core/app/Ipc.Platform.dll\" --check-host \"$EVIDENCE/sportmaster-core/app/Ipc.Assembly.dll\" --output \"$EVIDENCE/capabilities.ipcx\" --key \"$PRIVATE_TEST_KEY\" --publisher cq03-reference-test-only --trust \"$EVIDENCE/test-public-trust.json\" --version 2.1.3 --dotnet \"$DOTNET\""
+    },
+    {
+      "Kind": "SignedExtensionBuild",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "extension-barcode.log",
+      "LogSha256": "e34a4d04ec885d028857d183236a1bc32e84a425f90bc3916babc17a5735f413",
+      "LogCreatedUtc": "2026-10-19T01:39:55.757951+00:00",
+      "LogModifiedUtc": "2026-10-19T01:39:57.729255+00:00",
+      "Command": "python3 scripts/build-extension.py --definition examples/BarcodeExtension/extension.build.json --contract \"$EVIDENCE/sportmaster-core/app/Ipc.Platform.dll\" --check-host \"$EVIDENCE/sportmaster-core/app/Ipc.Assembly.dll\" --output \"$EVIDENCE/barcode.ipcx\" --key \"$PRIVATE_TEST_KEY\" --publisher cq03-reference-test-only --trust \"$EVIDENCE/test-public-trust.json\" --version 1.2.3 --dotnet \"$DOTNET\""
+    },
+    {
+      "Kind": "SignedExtensionBuild",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "extension-rcs.log",
+      "LogSha256": "aebd023c892471c1c041990f692b68f6ad5894d0899ad0475bf90ef210641a4a",
+      "LogCreatedUtc": "2026-10-19T01:39:57.735163+00:00",
+      "LogModifiedUtc": "2026-10-19T01:39:59.855012+00:00",
+      "Command": "python3 scripts/build-extension.py --definition src/Ipc.Integrations.SportmasterRcs/extension.build.json --contract \"$EVIDENCE/sportmaster-core/app/Ipc.Platform.dll\" --check-host \"$EVIDENCE/sportmaster-core/app/Ipc.Assembly.dll\" --output \"$EVIDENCE/rcs.ipcx\" --key \"$PRIVATE_TEST_KEY\" --publisher cq03-reference-test-only --trust \"$EVIDENCE/test-public-trust.json\" --version 1.0.5 --dotnet \"$DOTNET\""
+    },
+    {
+      "Kind": "UnpackedCliSmoke",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "sportmaster-default.log",
+      "LogSha256": "b3f93f1dba0935219b204e43e7b5260fe58838dd1a8dff102f553da840d36adf",
+      "Record": "sportmaster-default.json",
+      "RecordSha256": "71e8437170f5c018f844c84913a836b8c13287834ab499038fa485b0b600adec",
+      "LogCreatedUtc": "2026-10-19T01:41:08.082775+00:00",
+      "LogModifiedUtc": "2026-10-19T01:41:09.935784+00:00",
+      "Command": "python3 scripts/smoke-application.py --package \"$EVIDENCE/sportmaster-unpacked\" --dotnet \"$DOTNET\" --output \"$EVIDENCE/sportmaster-default.json\""
+    },
+    {
+      "Kind": "UnpackedCliSmoke",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "direct-plc-default.log",
+      "LogSha256": "58750e438ecfdedd91226b0c5e53403929225dfe4e6823f5b9b835f5bea392fe",
+      "Record": "direct-plc-default.json",
+      "RecordSha256": "8402978b1652da3a083356e49dced6a8ce6be18d3434689763f129718f5cc497",
+      "LogCreatedUtc": "2026-10-19T01:41:10.091161+00:00",
+      "LogModifiedUtc": "2026-10-19T01:41:11.149073+00:00",
+      "Command": "python3 scripts/smoke-application.py --package \"$EVIDENCE/direct-plc-unpacked\" --dotnet \"$DOTNET\" --output \"$EVIDENCE/direct-plc-default.json\""
+    },
+    {
+      "Kind": "UnpackedCliSmoke",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "wcs-to-plc-default.log",
+      "LogSha256": "c028079e249653d4fb044342d605481ce3eb6ce75812193dbd28886c6827ec1b",
+      "Record": "wcs-to-plc-default.json",
+      "RecordSha256": "a43dcd55bf5163a09f067c7269c1caa1130702bda57b3cc6d57fa38f307fbdbb",
+      "LogCreatedUtc": "2026-10-19T01:41:11.321345+00:00",
+      "LogModifiedUtc": "2026-10-19T01:41:12.367895+00:00",
+      "Command": "python3 scripts/smoke-application.py --package \"$EVIDENCE/wcs-to-plc-unpacked\" --dotnet \"$DOTNET\" --output \"$EVIDENCE/wcs-to-plc-default.json\""
+    },
+    {
+      "Kind": "UnpackedCliSmoke",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "wcs-to-plc-attached.log",
+      "LogSha256": "4e48c5e2950916ad0e929f8de4d45ede77ad23dbd03e29e3d5f9161b3611998d",
+      "Record": "wcs-to-plc-attached.json",
+      "RecordSha256": "3dd79661422bad2f1174425e2c31cff4fb7e2fb5de6288536a8b907d19b905da",
+      "LogCreatedUtc": "2026-10-19T01:41:12.375051+00:00",
+      "LogModifiedUtc": "2026-10-19T01:41:13.504969+00:00",
+      "Command": "python3 scripts/smoke-application.py --package \"$EVIDENCE/wcs-to-plc-unpacked\" --dotnet \"$DOTNET\" --output \"$EVIDENCE/wcs-to-plc-attached.json\" --optional-features --attached-upload"
+    },
+    {
+      "Kind": "UnpackedSignedReleaseJourney",
+      "Status": "PASS",
+      "ExitCode": 0,
+      "Log": "selected-journey-2.log",
+      "LogSha256": "9dc4c4b700bb0561e8127b2f35df9e452066b0722637170d58f81ff6c9c3a06a",
+      "JourneySha256": "53543003a4827d5fa0d58610121164b3752c42d30cf864e48035650256d670db",
+      "RcsJourneySha256": "c4d0e0043558ce663c877f5cc8739261fd3da41f665f5387198bd965a91aea3b",
+      "LogCreatedUtc": "2026-10-19T01:43:13.842200+00:00",
+      "LogModifiedUtc": "2026-10-19T01:43:22.073273+00:00",
+      "Command": "python3 docs/runtime/evidence/commercial-quality-fix-03/selected-release-journey.py \"$EVIDENCE/release-journey-2\" \"$DOTNET\" \"$EVIDENCE/test-public-trust.json\" \"$EVIDENCE/frozen-source-8eee\""
+    }
+  ],
+  "Packages": [
+    {
+      "File": "sportmaster-core.zip",
+      "Bytes": 18396692,
+      "Sha256": "1a68d6be37479c7785d6176e41e9665428d359c9f60e104b0fa96cd082f70d75"
+    },
+    {
+      "File": "direct-plc-core.zip",
+      "Bytes": 18364544,
+      "Sha256": "dc64386a98600c46e764f5dc2d745a010f69ad28c92c1be7999def7bda04dad4"
+    },
+    {
+      "File": "wcs-to-plc-core.zip",
+      "Bytes": 18386058,
+      "Sha256": "c688dad51d208b123f92ea055105b10639a95063f05e9770cea7e1aa7d89e8f6"
+    },
+    {
+      "File": "sportmaster-selected-portable.zip",
+      "Bytes": 18444634,
+      "Sha256": "b3e2bf087de93eae5af28b7e23cfc5864fa9cb7308228ab9f5ed39a7c7e3c4ee"
+    },
+    {
+      "File": "sportmaster-selected-win-x64.zip",
+      "Bytes": 104176727,
+      "Sha256": "c36da7b74748236ed3fc619035a9029fd98e9cdb3253bb466eafbf9869cb60b9"
+    },
+    {
+      "File": "capabilities.ipcx",
+      "Bytes": 20605,
+      "Sha256": "2a6cce29536a58080b9a1493d328a7443d0dc5aaf0690605c643fe70beb3ebfd"
+    },
+    {
+      "File": "barcode.ipcx",
+      "Bytes": 7590,
+      "Sha256": "e0e8fde14406cef65cc09c4ec6f723312a4d17bd79a67f482cb6fb344e7ce2b3"
+    },
+    {
+      "File": "rcs.ipcx",
+      "Bytes": 17666,
+      "Sha256": "d7f0dc537cab5a0faf956da2f62dbb5a1b04fff344fa33aac6168da03d7d5176"
+    }
+  ],
+  "PackagedTerminalFlag": {
+    "Status": "PASS",
+    "SourceCommit": "8eee4c61082e1c7eeda245d17a2202556d233eab",
+    "Purpose": "Actual published WcsToPlc Attached restart and original query converge entity check",
+    "FlagWireDefault": "False is omitted by existing contract JsonIgnore.WhenWritingDefault",
+    "Final": [
+      {
+        "Id": "59c5ec31a33849758704b757c10617ec",
+        "State": "PhysicalCompleted",
+        "RecoveryRequired": false,
+        "PlcAttempts": 1,
+        "UploadState": "Accepted"
+      }
+    ]
+  },
+  "WindowsMedia": {
+    "Status": "PASS",
+    "Kind": "CrossBuildAndMediaOnly",
+    "SourceCommit": "8eee4c61082e1c7eeda245d17a2202556d233eab",
+    "Windows": "NOT_RUN",
+    "RealEquipment": "BLOCKED",
+    "ZipSha256": "c36da7b74748236ed3fc619035a9029fd98e9cdb3253bb466eafbf9869cb60b9",
+    "ExactCheckerContracts": true,
+    "WpfPresentationDelivered": true
+  },
+  "Boundaries": {
+    "WindowsNative": "NOT_RUN",
+    "RealSdkDeviceProtocols": "BLOCKED",
+    "FieldAcceptance": "NOT_RUN",
+    "Production": "NotReady"
+  },
+  "RetainedNegativeEvidence": [
+    "red-build.log: new test wrapper nullable signature compile error; corrected to actual interface signature",
+    "red-receipts.json: no test DLL due preceding build failure; excluded from baseline runtime proof",
+    "green-1-freshness.log: test expected Paused state string; actual contract has Paused bool and Blocked state; test corrected without changing existing assertions",
+    "selected-journey.log: signed reader/WCS PASS, RCS phase NOT_RUN because packaging removed its temporary source-snapshot; rerun in fresh root with independently exported exact source",
+    "wpf-receipts.json: initial generic DirectPlc/WcsToPlc command generated alternate lock filenames; these were removed, then checked-in lock paths explicitly verified by wpf-locked receipts"
+  ],
+  "HistoricalEvidence": "Prior audit, old packages and historical FAIL/PASS are unchanged. Original raw logs and media are retained outside the repository; private signing key is excluded.",
+  "CommandVariables": {
+    "DOTNET": "Pinned SDK dotnet executable",
+    "EVIDENCE": "Fresh isolated evidence root; exact original paths retained in local receipts",
+    "PRIVATE_TEST_KEY": "Independent TestOnly RSA signing key outside repository; never distributed"
+  },
+  "ArchiveErrorDelta": {
+    "Status": "PASS_NO_NEW_ERRORS",
+    "GlobalArchiveStatus": "FAIL",
+    "ExitCode": 1,
+    "BaselineCommit": "ec698bd4e11d06c13c097c77f90cc5ce145ab3ea",
+    "BaselineErrors": 267,
+    "CurrentErrors": 267,
+    "Added": 0,
+    "Removed": 0,
+    "ErrorTypes": {
+      "private_metadata_marker": 2,
+      "pptx_media_type_mismatch": 265
+    },
+    "BaselineRawSha256": "2afe617ccae1810d5e8753e38ab52d359a09fdd793be6351e05e36a3476a926a",
+    "CurrentRawSha256": "cce432c8e5b0f69fe3cf77401bf0a1fb1466cd3ee19eda851aa44c240d31b057",
+    "Command": "\"$PYTHON_WITH_PILLOW\" tools/verify_archive.py --root \"$SOURCE\" --scope public",
+    "Meaning": "No exceptions added and historical assets unchanged; not a global archive PASS"
+  }
+}

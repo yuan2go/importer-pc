@@ -371,9 +371,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "47d98ebe6fa51cb92b5d34060daa10bb76e87936ef0355cc301907d9e7686b62",
-      "size_bytes": 7042,
-      "git_blob": "ef3db106db892d1fba2d23fa99d5a595db313e6c",
+      "sha256": "5fc4666c54ccb9bd4389d93e9b9990add6305d287feb0b14dbc88f812e1733d5",
+      "size_bytes": 7340,
+      "git_blob": "52bda0a90bc1b383e4a5877ee263c6b0da35c461",
       "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized original audit publication and current-main/PR handoff; no product changes",
@@ -3834,9 +3834,9 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "b51ba06307efacdddc3ff82a0134940697a0c6fb749421b38bf833adeda3dac4",
+      "sha256": "9894c5f5bebbba63f62eb4f5895ce80284686894bd2ac6c157c3a13b3897b511",
       "size_bytes": 20220,
-      "git_blob": "4ddd3fe0b00e603c5fdff05cd21b740a86b489c5",
+      "git_blob": "dcf239996eef3b3a9e11be09b984bddab72d26fd",
       "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
@@ -3846,9 +3846,9 @@
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "86b5e0016a3f961010f35e001e7c232afc605e47dcd30ddaf5f41cdb940c1b9c",
+      "sha256": "95ee2e4571657bbe6d883a031e0e6aa2a5f7a4c1c788d89f82d2b6264feb02da",
       "size_bytes": 37932,
-      "git_blob": "06cf0044d9766d30cda7f376db7620aeb8c2c8cb",
+      "git_blob": "6e5fe3c8c4a6cbd2f7aa7e685960599caf55ce89",
       "version": "audit03-delivery-1.2.8",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized quality closure implementation, synthetic verification or preserved history",
@@ -26929,9 +26929,9 @@
     },
     {
       "path": "docs/runtime/windows-06.md",
-      "sha256": "9be31251d5738b193eea03a00544e5d7deee43be703afed5888c23727c9c7cb3",
-      "size_bytes": 2507,
-      "git_blob": "2c4fe9caf80e7f6854c1f210398f285e8049468d",
+      "sha256": "e008b50c8ee72ba18463f415762a9069841195cdb65d878ee8afc44f0f0d02c1",
+      "size_bytes": 2622,
+      "git_blob": "c5ee6c352fed2d095d00dc66f82e3cd0d59ff38c",
       "version": "operation-closure-15",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized P2 corrections, Product composite fault verification, synthetic evidence and same-source delivery",
@@ -35583,6 +35583,138 @@
       "sha256": "3a066ba04470588f30e77b9c930d22c91c6ca5fae438edf21b18bd3ffd20dfda",
       "size_bytes": 732,
       "git_blob": "66943edf1fd2e1abac83a02caf92bf1d11f9d06d"
+    },
+    {
+      "path": "docs/archive/publication-audit03-20261019/README.md",
+      "version": "audit03-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Authorized merge custody and retained historical task outputs",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "30bcfc9d53881f60d7c1dfd648d45b0ebf4a2db3f3de0a955db7f0c4b31b1311",
+      "size_bytes": 433,
+      "git_blob": "cbb93df3924b91d940d234da508485810b17bfc1"
+    },
+    {
+      "path": "docs/archive/publication-audit03-20261019/pr34/docs/design/version-compatibility-01.md.txt",
+      "version": "audit03-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Authorized merge custody and retained historical task outputs",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "53ef6a5e812c6e71aaf388daab9c6da384f00e53fe597883bce55dea4290e02b",
+      "size_bytes": 8047,
+      "git_blob": "905e3dfbee7cc2c36ec51ed323881033eac2a966"
+    },
+    {
+      "path": "docs/archive/publication-audit03-20261019/pr35/docs/design/framework-decisions.md.txt",
+      "version": "audit03-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Authorized merge custody and retained historical task outputs",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "b51ba06307efacdddc3ff82a0134940697a0c6fb749421b38bf833adeda3dac4",
+      "size_bytes": 20220,
+      "git_blob": "4ddd3fe0b00e603c5fdff05cd21b740a86b489c5"
+    },
+    {
+      "path": "docs/archive/publication-audit03-20261019/pr35/docs/design/framework.md.txt",
+      "version": "audit03-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Authorized merge custody and retained historical task outputs",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "86b5e0016a3f961010f35e001e7c232afc605e47dcd30ddaf5f41cdb940c1b9c",
+      "size_bytes": 37932,
+      "git_blob": "06cf0044d9766d30cda7f376db7620aeb8c2c8cb"
+    },
+    {
+      "path": "docs/runtime/commercial-quality-fix-03-results.md",
+      "version": "audit03-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Authorized merge custody and retained historical task outputs",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "4fddc4eb20cc297078559e73008a1c941fee82a83ca39b63f9924d1cea118ea1",
+      "size_bytes": 6570,
+      "git_blob": "484f8c7a4457ebfc5cf3c11644033dc2bb93f5b7"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-quality-fix-03/archive-error-delta.json",
+      "version": "audit03-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Authorized merge custody and retained historical task outputs",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "b4a89b932f1e213ae4ddf2c2675fe22f6627637eee2bb98d580dec75c1bdd486",
+      "size_bytes": 697,
+      "git_blob": "31737d0efddecba4bab476549768f81fd7d4c022"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-quality-fix-03/selected-release-journey.py",
+      "version": "audit03-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Authorized merge custody and retained historical task outputs",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "a437797eeca0018a14e280540bfcb3574b0b673dc85ef10c1e3e1d5f1a722878",
+      "size_bytes": 13836,
+      "git_blob": "c779d2827ae18a4b8e7a3da9003ba642fbf35686"
+    },
+    {
+      "path": "docs/runtime/evidence/commercial-quality-fix-03/verification.json",
+      "version": "audit03-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Authorized merge custody and retained historical task outputs",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "e8fbb7d686a78ed20a6cd50af6f9e143efcd9e3812ce135c74e9b2f4727acb63",
+      "size_bytes": 23154,
+      "git_blob": "9353ac06522c06e6944f2347e2f2896d3a174b43"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-audit03-20261019/merge-resolution.json",
+      "version": "audit03-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Authorized merge custody and retained historical task outputs",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "bddd374b43e21f5085fdfde5e8166939f016d090da4b8543a449c251b552b78c",
+      "size_bytes": 8056,
+      "git_blob": "27147818fcc0921910570036c9488e366fc78b6d"
+    },
+    {
+      "path": "docs/runtime/publication-audit03-20261019.md",
+      "version": "audit03-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Authorized merge custody and retained historical task outputs",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "c6d653cdb07876e02b38897b47c3d8b282b049225d6554ea717a1441a9fc0326",
+      "size_bytes": 2813,
+      "git_blob": "5096dc684e5aa8335e63d26bc715fbc7f5cca0d6"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md",
+      "version": "audit03-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Authorized merge custody and retained historical task outputs",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "780ae0a7d28f74b662e858149a5426d3b76784011b38c808816b38455bae4fd6",
+      "size_bytes": 3583,
+      "git_blob": "92593af3bce89aebb8b51570cb0a00a8a3a4c5d8"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-audit03-20261019/pr34-before.json",
+      "version": "audit03-publication-20261019",
+      "status": "publication_receipt_NOT_RUN",
+      "purpose": "Authorized merge custody and retained historical task outputs",
+      "source": "User no-test publication and all-open-PR merge request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "720299f8d85d9131d3c0e08f2c957907f660fe0a1be50a6ae48517614da149e1",
+      "size_bytes": 1858,
+      "git_blob": "8c538b2f579e842747ea11e94eef233cbd458948"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -36664,5 +36796,13 @@
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/audit03-reference-1401b7d",
     "publication_receipt": "docs/runtime/evidence/commercial-audit03-delivery/publication.json",
     "status": "WITHDRAWN_COMPOSITION_CONTRACT_METADATA"
+  },
+  "audit03_no_test_publication": {
+    "report": "docs/runtime/publication-audit03-20261019.md",
+    "resolution": "docs/runtime/evidence/publication-audit03-20261019/merge-resolution.json",
+    "tests": "NOT_RUN_BY_USER_REQUEST",
+    "runtime_source": "565abcc63b885dc60873aa21e25f2d4612963c0d",
+    "pr34_original": "c07304418aa68428331ba141418edfb3519a6939",
+    "pr35_original": "ec5b3d675e17a59b3d1f198d4aae24b306d1a89b"
   }
 }

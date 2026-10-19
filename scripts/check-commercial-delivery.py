@@ -10,6 +10,10 @@ from commercial_delivery import digest, evaluate, plan, distribution_signature
 
 
 def main():
+    # Native PowerShell redirection preserves bytes. The JSON contract must not
+    # depend on the operator's Windows legacy code page.
+    sys.stdout.reconfigure(encoding='utf-8')
+    sys.stderr.reconfigure(encoding='utf-8')
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--release', type=Path, required=True)
     parser.add_argument('--evidence', type=Path, required=True)

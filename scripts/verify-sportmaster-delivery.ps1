@@ -40,7 +40,11 @@ foreach($case in @(@('core','verify-commercial-media.ps1'),@('wpf','verify-comme
  $plan|ConvertTo-Json -Depth 12|Set-Content -LiteralPath (Join-Path $Output 'acceptance.json') -Encoding utf8NoBOM
 }
 & python (Join-Path $PSScriptRoot 'check-commercial-delivery.py') --release $Release --evidence (Join-Path $Output 'acceptance.json') --level engineering *> (Join-Path $Output 'engineering-gate.json')
-if($LASTEXITCODE -ne 0 -or $failed){throw 'Engineering candidate rejected; failures and NOT_RUN/BLOCKED retained'}
+$engineeringExit=$LASTEXITCODE
+$engineering=Get-Content -LiteralPath (Join-Path $Output 'engineering-gate.json') -Raw -Encoding utf8|ConvertFrom-Json
+if($engineeringExit -ne 0 -or $failed -or $engineering.Status -ne 'PASS' -or $engineering.Level -ne 'engineering' -or $engineering.SourceCommit -ne $record.SourceCommit -or $engineering.MediumInventorySha256 -ne $plan.MediumInventorySha256){throw 'Engineering candidate rejected; failures and NOT_RUN/BLOCKED retained'}
 & python (Join-Path $PSScriptRoot 'check-commercial-delivery.py') --release $Release --evidence (Join-Path $Output 'acceptance.json') --level production *> (Join-Path $Output 'production-gate.json')
-if($LASTEXITCODE -eq 0){throw 'Unexpected production PASS without lifecycle/field qualification'}
+$productionExit=$LASTEXITCODE
+$production=Get-Content -LiteralPath (Join-Path $Output 'production-gate.json') -Raw -Encoding utf8|ConvertFrom-Json
+if($productionExit -ne 1 -or $production.Status -ne 'FAIL' -or $production.Level -ne 'production' -or $production.SourceCommit -ne $record.SourceCommit -or $production.MediumInventorySha256 -ne $plan.MediumInventorySha256 -or @($production.Outstanding).Count -lt 1){throw 'Production refusal was not a valid matching policy decision; a crash/encoding error cannot count as expected rejection'}
 Write-Output 'Engineering journeys PASS; production rejected with individual NOT_RUN/BLOCKED. Follow the shipped lifecycle/support runbook in an authorized disposable environment.'

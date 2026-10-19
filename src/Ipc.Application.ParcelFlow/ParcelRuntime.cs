@@ -70,6 +70,14 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         var configurationFile = Path.Combine(directory, "configuration.json");
         if (!File.Exists(configurationFile) && File.Exists(Path.Combine(directory, Id + ".db")))
             throw new InvalidDataException("原数据库存在但配置账缺失；保留原目录，通过完整备份恢复，不允许使用种子补建配置账");
+        if (!File.Exists(Path.Combine(directory, Id + ".db")) && File.Exists(configurationFile))
+        {
+            RecoveryFiles.RequireOrdinaryAncestors(configurationFile);
+            if (new FileInfo(configurationFile).Length > 4 * 1024 * 1024) throw new InvalidDataException("原配置账超出检查预算；保留原件恢复");
+            var original = Wire.Decode<ConfigurationRevision<ParcelConfiguration>>(File.ReadAllText(configurationFile));
+            if (original.Confirmation is { Required: false } or { Attempts.Length: > 0 } || original.Activation is not null)
+                throw new InvalidDataException("原配置账已有启动事实但业务库缺失；保留原账，通过完整备份恢复，不能创建空库抹去原责任");
+        }
         if (!File.Exists(Path.Combine(directory, Id + ".db")) && new[] { "receipts", "images" }.Any(n => Directory.Exists(Path.Combine(directory, n)) && Directory.EnumerateFileSystemEntries(Path.Combine(directory, n)).Any()))
             throw new InvalidDataException("缺少业务库但存在原件；保留原根，不创建空库代替原责任");
         if (!File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json")) && !File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json")))

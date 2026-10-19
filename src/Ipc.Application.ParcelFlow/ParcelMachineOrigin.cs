@@ -15,7 +15,14 @@ internal static class ParcelMachineOrigin
         RecoveryFiles.RequireOrdinaryAncestors(file);
         if (File.Exists(file)) { Require(directory, c); return; }
         if (File.Exists(Path.Combine(directory, c.ApplicationId + ".db")) || File.Exists(Path.Combine(directory, "configuration.json"))) return;
-        ProtectedDraftPayload.Write(file, Wire.Encode(new Origin(1, c.ApplicationId, c.StationId, c.Mode, Path.GetFullPath(directory), Wire.Id(), !OperatingSystem.IsWindows())), c.Mode == RunMode.Simulation);
+        string? runtimeSid = null;
+        if (OperatingSystem.IsWindows() && File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json")))
+        {
+            var policy = Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json");
+            MachineRuntimePolicy.RequireProtectedEvidence(policy);
+            runtimeSid = Wire.Decode<MachineRuntimePolicy>(File.ReadAllText(policy)).RuntimeAccountSid;
+        }
+        ProtectedDraftPayload.Write(file, Wire.Encode(new Origin(1, c.ApplicationId, c.StationId, c.Mode, Path.GetFullPath(directory), Wire.Id(), !OperatingSystem.IsWindows())), c.Mode == RunMode.Simulation, runtimeSid);
         Require(directory, c);
     }
     internal static void Require(string directory, ParcelConfiguration c) => Require(directory, c, new HashSet<string>(OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal));

@@ -1,5 +1,7 @@
 
 # 统一资料与实施入口
+
+> PR47复审修正及最新main集成的当前源码/介质/逐项结果见[最终集成证据](runtime/evidence/pr47-main-integration/README.md)和[审查裁决](reviews/pr47-commercial-productization-review.md)。旧发行与上传记录按原源码身份保留，不能替代当前DB8交付。
 > COMM-00～10 当前操作见[产品操作指南](runtime/commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](runtime/commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。
 
 **当前工作：[WP-IPC-COMMERCIAL-PRODUCTIZATION-01](work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md) 的 COMM-00～10 实施。** 开工 main 为 c445b0e；[编码前裁决](implementation/commercial-productization-01-execution.md)已独立提交，实际软件路径、冻结身份和逐项结果见上方实施结果。文档任务 b8f449e 静态基线及原 NOT_RUN 按形成时语境保留。

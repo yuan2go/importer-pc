@@ -1,0 +1,45 @@
+using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Threading;
+using Ipc.Application.Contracts;
+using Ipc.Platform;
+static class Program
+{
+    [STAThread] static int Main(string[] args)
+    {
+        var app=new System.Windows.Application { ShutdownMode=ShutdownMode.OnExplicitShutdown };
+        app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source=new Uri("/Ipc.Desktop.UiVerification;component/Themes/Workstation.xaml",UriKind.Relative) });
+        app.Startup+=async (_,_)=>
+        {
+            try
+            {
+                var media=Path.GetFullPath(args[0]); var root=Path.GetFullPath(args[1]); Directory.CreateDirectory(root);
+                var cfg=Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(media,"app/config/business.json")));
+                var launch=new BusinessLaunch(Path.Combine(media,"app/config"),root,null,null);
+                var draft=Path.Combine(root,cfg.Mode.ToString(),cfg.StationId,cfg.ApplicationId,"startup-maintenance/editor-draft.bin");
+                Directory.CreateDirectory(Path.GetDirectoryName(draft)!); File.WriteAllBytes(draft,[1,2,3,4]); var before=Wire.FileHash(draft);
+                var desktop=Assembly.LoadFrom(Path.Combine(media,"desktop/Ipc.Desktop.dll"));
+                var first=(Window)Activator.CreateInstance(desktop.GetType("Ipc.Desktop.StartupRepairWindow",true)!,[launch,null,true])!;
+                first.Show();
+                for(int i=0;i<150;i++)
+                {
+                    await Task.Delay(20);
+                    if(Descendants(first).OfType<TextBlock>().Any(t=>t.Text.Contains("草稿不可用"))) break;
+                }
+                await Dispatcher.Yield(DispatcherPriority.ApplicationIdle);
+                var save=Descendants(first).OfType<Button>().Single(b=>Equals(b.Content,"保存首配待生效…"));
+                var start=Descendants(first).OfType<Button>().Single(b=>Equals(b.Content,"按当前首配启动"));
+                if(!save.IsEnabled||!start.IsEnabled||!Descendants(first).OfType<TextBox>().Any(t=>!t.IsReadOnly&&t.IsEnabled&&t.Text==cfg.TimeoutMs.ToString())||Wire.FileHash(draft)!=before)
+                    throw new Exception("Actual native editor/actions not enabled after unavailable-draft read");
+                Console.WriteLine("PASS actual frozen offline editor and save/start actions are enabled after Dispatcher idle; original refused DPAPI ciphertext unchanged");
+                first.Close(); app.Shutdown(0);
+            }
+            catch(Exception error){Console.WriteLine(error);app.Shutdown(1);}
+        };
+        return app.Run();
+    }
+    static IEnumerable<DependencyObject> Descendants(DependencyObject root)
+    {for(int i=0;i<VisualTreeHelper.GetChildrenCount(root);i++){var child=VisualTreeHelper.GetChild(root,i);yield return child;foreach(var nested in Descendants(child))yield return nested;}}
+}

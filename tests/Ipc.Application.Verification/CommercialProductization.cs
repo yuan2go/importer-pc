@@ -190,6 +190,12 @@ static class CommercialProductization
         await Reject<IOException>(() => { ParcelMachineOrigin.Require(copied, candidate); return Task.CompletedTask; }, "a copied origin file without a fenced handoff cannot certify another source directory");
         await using (var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new SyntheticFactory(launch, failOriginal: true)) { RuntimeIdentityPreflight = () => { } })
         { await runtime.StartAsync(default); Check((await runtime.SnapshotAsync()).Configuration is { Effective.TimeoutMs: 2000, Confirmation.Required: false }, "explicit new-site configuration starts the approved candidate without first starting the reference seed"); }
+        var firstDatabase = Path.Combine(directory, seed.ApplicationId + ".db"); var preserved = firstDatabase + ".preserved-synthetic";
+        File.Move(firstDatabase, preserved); var preservedHash = Wire.FileHash(preserved); var ledgerHash = Wire.FileHash(Path.Combine(directory, "configuration.json"));
+        await using (var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } })
+            await Reject<InvalidDataException>(() => runtime.StartAsync(default), "previous startup facts refuse a replacement empty database even without receipt or image custody");
+        Check(!File.Exists(firstDatabase) && Wire.FileHash(preserved) == preservedHash && Wire.FileHash(Path.Combine(directory, "configuration.json")) == ledgerHash,
+            "missing previously-started database preserves original ledger and retained database bytes without creating a new ledger");
         var missing = launch with { DataRoot = Path.Combine(root, "missing-ledger-data") };
         var original = Path.Combine(missing.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
         using (var prior = new ParcelRepository(original, seed.ApplicationId, 7)) { }
@@ -197,6 +203,13 @@ static class CommercialProductization
         await using (var runtime = new ParcelRuntime(missing, new SportmasterFlow(), new SyntheticFactory(missing)) { RuntimeIdentityPreflight = () => { } })
             await Reject<InvalidDataException>(() => runtime.StartAsync(default), "database without its original configuration ledger cannot start from a replacement seed");
         Check(Wire.FileHash(database) == hash && !File.Exists(Path.Combine(original, "configuration.json")) && !File.Exists(Path.Combine(original, "machine-origin.bin")), "missing-ledger startup preserves database bytes/format and creates no false configuration or machine claim");
+        var orphan = launch with { DataRoot = Path.Combine(root, "orphan-custody-data") };
+        var orphanDirectory = Path.Combine(orphan.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
+        Directory.CreateDirectory(Path.Combine(orphanDirectory, "receipts"));
+        var receipt = Path.Combine(orphanDirectory, "receipts", "original.txt"); File.WriteAllText(receipt, "synthetic original custody"); var receiptHash = Wire.FileHash(receipt);
+        await using (var runtime = new ParcelRuntime(orphan, new SportmasterFlow(), new SyntheticFactory(orphan)) { RuntimeIdentityPreflight = () => { } })
+            await Reject<InvalidDataException>(() => runtime.StartAsync(default), "original custody without a database cannot be replaced by a new empty business ledger");
+        Check(Wire.FileHash(receipt) == receiptHash && !File.Exists(Path.Combine(orphanDirectory, seed.ApplicationId + ".db")) && !File.Exists(Path.Combine(orphanDirectory, "configuration.json")), "missing-database rejection preserves raw custody and creates no replacement authority");
     }
     static async Task Unknown(ParcelConfiguration seed, string root)
     {

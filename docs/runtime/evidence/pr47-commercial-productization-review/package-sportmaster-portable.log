@@ -1,0 +1,27 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 1.97 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 1.99 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 1.89 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 1.91 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 1.89 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 1.84 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 1.91 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 2 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 19 毫秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 12 毫秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (用时 26 毫秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 28 毫秒)。
+  Ipc.Platform -> D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\build-intermediates\bin\Ipc.Assembly\release\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\projects\importer-pc\.artifacts\comm-review-47\releases\sportmaster-022c898-portable\app\
+{"Package": "D:\\projects\\importer-pc\\.artifacts\\comm-review-47\\releases\\sportmaster-022c898-portable.zip", "Sha256": "a96f2a49e1c990d19f26d33a1c47bb132f0bf7b5b9175d40ebf36f642eec8e31", "SourceCommit": "022c898f138a1326eec9134f8f18724a07fea5c4", "Application": "sportmaster", "Target": "portable", "BusinessVersion": "1.4.0", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "D80BA0B0C40F34E2E9C080C9D898C77214461BCEA394F43290CD9DDC9F473975"}

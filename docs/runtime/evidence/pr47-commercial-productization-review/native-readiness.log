@@ -1,0 +1,1 @@
+PASS actual frozen offline editor and save/start actions are enabled after Dispatcher idle; original refused DPAPI ciphertext unchanged

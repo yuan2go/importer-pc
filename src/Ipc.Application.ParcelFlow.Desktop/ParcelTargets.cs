@@ -63,7 +63,20 @@ public partial class ParcelViewModel
         historyLoading = true; historyFailure = null; NotifyHistory();
         try
         {
-            var page = await ServiceAsync(() => application.HistoryAsync(before));
+            var signature = HistoryFilterSignature();
+            ParcelHistoryPage page;
+            if (application is IParcelHistoryApplication query)
+            {
+                var selection = next ? historySelection : null;
+                selection ??= await ServiceAsync(() => query.SelectHistoryAsync(HistoryFilter()));
+                if (next && appliedHistorySignature != signature) throw new InvalidOperationException("筛选已改变，先重新查询；不能续读旧筛选");
+                page = await ServiceAsync(() => query.QueryHistoryAsync(selection, before));
+                var metrics = await ServiceAsync(() => query.HistoryMetricsAsync(selection));
+                if (generation != Volatile.Read(ref historyGeneration) || signature != HistoryFilterSignature()) return;
+                HistoryMetricsSummary = $"固定序号 ≤ {selection.UpperSequence} · 实体作业 {metrics.Operations} · WCS请求 {metrics.WcsRequests} · WCS接受 {metrics.WcsAccepted} · 待核对 {metrics.Unknown} · 实体完成 {metrics.PhysicalCompleted} · 发送尝试 {metrics.SendAttempts}（取得格口不等于实体完成）";
+                Changed(nameof(HistoryMetricsSummary)); appliedHistorySignature = signature; historySelection = selection;
+            }
+            else page = await ServiceAsync(() => application.HistoryAsync(before));
             if (generation != Volatile.Read(ref historyGeneration)) return;
             var current = Selected;
             rebindingHistory = true;
@@ -86,6 +99,7 @@ public partial class ParcelViewModel
     {
         Interlocked.Increment(ref historyGeneration); historyLoading = false; historyFailure = null; historyLoaded = false; historyReadAt = null;
         HistoryItems = []; nextHistory = null; selectedHistory = null;
+        historySelection = null; appliedHistorySignature = null; CancelHistoryExport();
         Changed(nameof(HistoryItems)); Changed(nameof(SelectedHistory)); NotifyHistory();
     }
     void NotifyHistory() { Changed(nameof(HistoryLoading)); Changed(nameof(HistoryStatus)); Changed(nameof(HasNextHistory)); }
@@ -150,6 +164,20 @@ public partial class ParcelViewModel
         Message = receipt.Status + " · " + receipt.Reason;
     }
     public string ReceiptOccurrenceId { get; set; } = "";
+    string? inspectedRestoreId;
+    public string RestoreInspection { get; private set; } = "完整恢复保持隔离。原机接管完成后读取交接证据；换机退役/权限/秘密/设备/资格/编号范围须真实交接。";
+    public string RestoreInspectionReason { get; set; } = "";
+    public async Task InspectRestoreAsync()
+    {
+        RequireFreshSnapshot(); var receipt = await ServiceAsync(() => application.CommandAsync(new(Wire.Id(), Snapshot!.Revision, "InspectRestore")));
+        RestoreInspection = receipt.Reason; inspectedRestoreId = receipt.Status == "RestoreHandoff" ? Wire.Decode<StartupRestoreHandoff>(receipt.Reason).Id : null; Changed(nameof(RestoreInspection));
+    }
+    public async Task ConfirmRestoreAsync()
+    {
+        RequireFreshSnapshot(); if (inspectedRestoreId is null) throw new InvalidOperationException("先读取当前原机交接证据");
+        var receipt = await ServiceAsync(() => application.CommandAsync(new(Wire.Id(), Snapshot!.Revision, "ConfirmRestore", inspectedRestoreId, RestoreInspectionReason)));
+        Message = receipt.Status + " · " + receipt.Reason;
+    }
     string? receiptInventoryOwner;
     string[] receiptInventoryIds = [];
     public string ReceiptInventory { get; private set; } = "先在记录页选择原作业，再读取原接收发生。";
@@ -181,6 +209,6 @@ public partial class ParcelViewModel
     }
     void NotifyTargets()
     {
-        foreach (var name in new[] { nameof(ViewportFits), nameof(ViewportReady), nameof(CanUseWorkspace), nameof(CanResumeInViewport), nameof(CanAcknowledgeViewport), nameof(ViewportWarningVisibility), nameof(ViewportStatus), nameof(Current), nameof(CurrentInput), nameof(CurrentInputUnadmitted), nameof(CurrentInputSummary), nameof(CurrentBarcode), nameof(CurrentInputReason), nameof(CurrentResponsibility), nameof(CurrentPresentation), nameof(StatusPresentation), nameof(StructuredDetails), nameof(HistorySelectionState), nameof(ConfigurationEditorState), nameof(CurrentSlot), nameof(CurrentStage), nameof(CurrentWeight), nameof(OperationOperator), nameof(CurrentImage), nameof(CaptureState), nameof(UploadState), nameof(PositionIds), nameof(PositionRows), nameof(CurrentCommandTarget), nameof(HistoryCommandTarget), nameof(CanQueryCurrent), nameof(CanHistoryContinue), nameof(CanHistoryQuery), nameof(CanContinue), nameof(CanContinueUpload), nameof(CanAbandon), nameof(Details), nameof(CapacityState), nameof(AuxiliaryState), nameof(EffectiveConfiguration), nameof(EffectiveConfigurationHeading), nameof(PendingConfiguration), nameof(ConfigurationConfirmationState), nameof(CanConfirmConfiguration) }) Changed(name);
+        foreach (var name in new[] { nameof(ViewportFits), nameof(ViewportReady), nameof(CanUseWorkspace), nameof(CanResumeInViewport), nameof(CanAcknowledgeViewport), nameof(ViewportWarningVisibility), nameof(ViewportStatus), nameof(Current), nameof(CurrentInput), nameof(CurrentInputUnadmitted), nameof(CurrentInputSummary), nameof(CurrentBarcode), nameof(CurrentInputReason), nameof(CurrentResponsibility), nameof(CurrentPresentation), nameof(NextAction), nameof(StatusPresentation), nameof(StructuredDetails), nameof(HistorySelectionState), nameof(ConfigurationEditorState), nameof(CurrentSlot), nameof(CurrentStage), nameof(CurrentWeight), nameof(OperationOperator), nameof(CurrentImage), nameof(CaptureState), nameof(UploadState), nameof(PositionIds), nameof(PositionRows), nameof(CurrentCommandTarget), nameof(HistoryCommandTarget), nameof(CanQueryCurrent), nameof(CanHistoryContinue), nameof(CanHistoryQuery), nameof(CanContinue), nameof(CanContinueUpload), nameof(CanAbandon), nameof(Details), nameof(CapacityState), nameof(AuxiliaryState), nameof(EffectiveConfiguration), nameof(EffectiveConfigurationHeading), nameof(PendingConfiguration), nameof(ConfigurationConfirmationState), nameof(CanConfirmConfiguration) }) Changed(name);
     }
 }

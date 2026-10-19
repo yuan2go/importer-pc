@@ -18,6 +18,23 @@ public sealed class CapabilityParameter(ParameterField field, string value) : IN
 }
 public sealed class CapabilityDraft : INotifyPropertyChanged
 {
+    readonly CapabilityBinding? originalBinding;
+    public sealed record Saved(string Kind, string Role, CapabilityBinding? Original, string ProviderIdentity, string Instance, string Target, string Contract, bool Enabled, bool Bound, Dictionary<string, string> Parameters);
+    static string Identity(CapabilityDescriptor? p) => p is null ? "" : Wire.Encode(new { p.Kind, p.Implementation, p.Version, p.Contract, p.Package, p.Module });
+    public Saved CaptureRaw() => new(Kind, Role, originalBinding, Identity(Provider), InstanceId, Target, Contract, Enabled, Bound, Parameters.ToDictionary(p => p.Field.Key, p => p.Value));
+    public static CapabilityDraft RestoreRaw(Saved state, CapabilityDescriptor[] providers)
+    {
+        var draft = new CapabilityDraft(state.Kind, providers, state.Original, state.Bound, state.Role);
+        if (state.ProviderIdentity.Length > 0)
+        {
+            var match = draft.Providers.SingleOrDefault(p => Identity(p) == state.ProviderIdentity) ?? throw new InvalidOperationException("草稿精确提供者缺失；原输入保留");
+            if (draft.Provider != match) draft.Provider = match;
+        }
+        else draft.Provider = null;
+        draft.InstanceId = state.Instance; draft.Target = state.Target; draft.Contract = state.Contract; draft.Enabled = state.Enabled;
+        foreach (var p in draft.Parameters) p.Value = state.Parameters.GetValueOrDefault(p.Field.Key, p.Value);
+        return draft;
+    }
     public event PropertyChangedEventHandler? PropertyChanged;
     CapabilityDescriptor? provider;
     public CapabilityDescriptor[] Providers { get; }
@@ -53,6 +70,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     }
     public CapabilityDraft(string kind, CapabilityDescriptor[] providers, CapabilityBinding? binding, bool bound, string? role = null)
     {
+        originalBinding = binding;
         Kind = kind; Role = role ?? kind; Providers = providers.Where(x => x.Kind == kind).ToArray();
         InstanceId = binding?.InstanceId ?? kind + ".one"; Target = binding?.Target ?? "reference://" + kind + "/one"; Contract = binding?.Contract ?? "";
         Provider = binding is null ? Providers.FirstOrDefault() : Providers.SingleOrDefault(x => x.Implementation == binding.Implementation && x.Version == binding.Version && x.Package == binding.Package && x.Module == binding.Module);
@@ -106,6 +124,7 @@ public partial class ParcelViewModel
         var loaded = Snapshot!;
         var c = loaded.Configuration.Pending ?? loaded.Configuration.Effective;
         var catalog = await ServiceAsync(() => application.CapabilitiesAsync());
+        await ReadEditorBaseline(loaded.Configuration.Revision);
         SetConfigurationDraft(c, loaded.Configuration.Revision, loaded.RuntimeId);
         ApplyInstalledCatalog(catalog);
         CapabilityDrafts.Clear();

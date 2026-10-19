@@ -1,12 +1,13 @@
+
 # importer-pc
 
 C#/.NET 10 Windows 工位运行基座与独立 Application 参考工程。Platform 提供机制，Application 拥有业务状态、守卫及 UI 契约，Driver 适配硬件，Component 适配外部服务。一个 Application 运行实例可服务多个页面和布局。
 
 ## 当前工作入口
 
-**下一阶段：[商业化产品交付完整工作包](docs/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)**。包含安装与首配、统一设置、连续操作与故障、历史导出、升级修复卸载、备份迁移、诊断帮助和整套交付。设计与实现逻辑已整理；该工作包的新增产品能力待实施，不能把文档提交视为产品完成。
+**当前实施：[商业化产品交付完整工作包](docs/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)**。操作以[产品操作指南](docs/runtime/commercial-productization-01-operations.md)为准；COMM-00～10 实现映射、精确冻结身份、必要验证和逐项环境缺口见[实施结果](docs/runtime/commercial-productization-01-results.md)。工程交付与现场投产资格分别判定。
 
-本次静态核对基线为 main [b8f449ec](https://github.com/yuan2go/importer-pc/commit/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5)（2026-10-19）。PR #44 已加入原生 WPF 安装向导、独立离线基本配置、启动修复和完整备份恢复入口；PR #45 补齐 Supply/Inspection 的运行身份前置门禁。指定 Windows 账户以非提权进程运行，允许 UAC 过滤后的管理员用户；正常安装、启动和维护不要求 PowerShell。详细已有能力及差额见[基线核对](docs/reviews/commercial-productization-01-baseline.md)。
+工作包文档阶段的静态核对基线为 main [b8f449ec](https://github.com/yuan2go/importer-pc/commit/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5)（2026-10-19）。PR #44 已加入原生 WPF 安装向导、独立离线基本配置、启动修复和完整备份恢复入口；PR #45 补齐 Supply/Inspection 的运行身份前置门禁。指定 Windows 账户以非提权进程运行，允许 UAC 过滤后的管理员用户；正常安装、启动和维护不要求 PowerShell。详细已有能力及差额见[基线核对](docs/reviews/commercial-productization-01-baseline.md)。
 
 开始工作先读[统一索引](docs/INDEX.md)、[AGENTS](AGENTS.md)、本包及关联设计/实施/验收。修改代码前先清理相关过期当前指引，保留历史证据；继承最新 main，避免重做已完成能力。
 
@@ -20,7 +21,7 @@ Sportmaster 支持默认 classic 与可选 supply-station 布局，导航及辅�
 
 ## 安装、开发与维护
 
-Windows 当前源码的原生流程、运行账户、配置来源及离线维护见[安装与启动修复](docs/runtime/startup-deployment-02.md)。首次使用见[首次运行](docs/runtime/getting-started.md)，升级/修复/恢复见[Windows 交付指南](docs/runtime/windows-application-delivery.md)和[配置、容量及恢复维护](docs/runtime/architecture-quality-closure-01.md)。系统安装登记、可选程序根和完整客户首配等增量仍按商业化工作包实施，不把现有 ZIP 向导称为已完成的 MSI 安装体系。
+Windows 当前源码的原生流程、运行账户、配置来源及离线维护见[安装与启动修复](docs/runtime/startup-deployment-02.md)。首次使用见[首次运行](docs/runtime/getting-started.md)，升级/修复/恢复见[Windows 交付指南](docs/runtime/windows-application-delivery.md)和[配置、容量及恢复维护](docs/runtime/architecture-quality-closure-01.md)。商业化增量已沿原生部署内核实施，系统安装项是唯一部署登记的派生投影；自选程序根、首配修复、备份迁移和保留数据卸载见产品操作指南。
 
 开发构建及发布入口见[Application 运行指南](docs/runtime/application-architecture-22.md)、[扩展开发](docs/extensions/developer-guide.md)。使用 global.json 固定 SDK 和锁定依赖，仅按受影响范围执行必要验证。发布时从固定源码生成新介质，读取 ASSEMBLY.json、application-release.json、依赖锁和 SHA256SUMS，不改标旧产物。
 

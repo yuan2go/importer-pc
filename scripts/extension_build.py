@@ -288,8 +288,8 @@ def build(args):
                         file.write(data)
                         file.flush()
                         os.fsync(file.fileno())
-                    # Windows refuses unlink of this open temporary file. This
-                    # scoped fix is inherited from PR47, without its product changes.
+                    # Windows does not allow unlinking an open NamedTemporaryFile.
+                    # Close before publishing/removing the fully flushed sibling.
                     os.link(pending, target)
                     created.append(target)
                 finally:

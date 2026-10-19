@@ -1,0 +1,7 @@
+Unhandled exception. System.IO.InvalidDataException: Unsafe extraction destination
+   at Ipc.Platform.ExtensionPackages.ExtractVerified(String archive, String destination, ExtensionTrust trust, RunMode mode, String expectedHash, Func`2 resolve) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 186
+   at Ipc.Assembly.DeploymentComponentReviewing.<>c__DisplayClass0_0.<Inspect>g__Resolve|2(PackageReference reference) in /_/src/src/Ipc.Assembly/DeploymentComponentReview.cs:line 53
+   at System.Linq.Utilities.<>c__DisplayClass2_0`3.<CombineSelectors>b__0(TSource x)
+   at System.Linq.Enumerable.IEnumerableSelectIterator`2.ToArray()
+   at Ipc.Assembly.DeploymentComponentReviewing.Inspect(WindowsDeploymentRequest request) in /_/src/src/Ipc.Assembly/DeploymentComponentReview.cs:line 60
+   at Program.<Main>$(String[] args) in D:\projects\importer-pc\.artifacts\comm\component-review-r1\Program.cs:line 13

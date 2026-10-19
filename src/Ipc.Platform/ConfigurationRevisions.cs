@@ -4,8 +4,10 @@ public sealed record ConfigurationActivationAttempt(string Id, DateTimeOffset St
 public sealed record ConfigurationEffectiveConfirmation(string Source, string EffectiveHash, bool Required, string State,
     string? OriginalEnvelopeBase64, string? OriginalEnvelopeSha256, ConfigurationActivationAttempt[] Attempts,
     string? ConfirmedBy = null, string? Reason = null, DateTimeOffset? ConfirmedAt = null);
+public sealed record ConfigurationInitialRepair(string Id, string OriginalEnvelopeBase64, string OriginalEnvelopeSha256,
+    string EffectiveHash, string CandidateHash, string Actor, string Reason, DateTimeOffset At);
 public sealed record ConfigurationRevision<T>(long Revision, T Effective, T? Pending, string Status, string? Failure, ConfigurationActivationAttempt? Activation = null,
-    ConfigurationEffectiveConfirmation? Confirmation = null) where T : class;
+    ConfigurationEffectiveConfirmation? Confirmation = null, ConfigurationInitialRepair? InitialRepair = null) where T : class;
 // No business fields: applications supply validation and activation barriers. One persisted
 // envelope is authoritative; invalid candidates never replace Effective or a previous Pending.
 public sealed class ConfigurationRevisions<T> where T : class
@@ -27,13 +29,35 @@ public sealed class ConfigurationRevisions<T> where T : class
     public ConfigurationRevision<T> Stage(long expectedRevision, T candidate)
     {
         if (expectedRevision != Current.Revision) throw new InvalidOperationException("Configuration revision conflict");
-        RequireValid(candidate); var next = Current with { Revision = Current.Revision + 1, Pending = candidate, Status = "PendingRestart", Failure = null, Activation = null };
+        RequireValid(candidate); var next = Current with { Revision = Current.Revision + 1, Pending = candidate, Status = "PendingRestart", Failure = null, Activation = null, InitialRepair = null };
         ExtensionStore.AtomicWrite(path, next); return Current = next;
+    }
+    public ConfigurationRevision<T> StageInitialRepair(long expectedRevision, T candidate, string actor, string reason)
+    {
+        if (Current.Revision != expectedRevision || Current.Confirmation is not { Required: true, State: not "InProgress" })
+            throw new InvalidOperationException("Repair requires the current unconfirmed configuration after complete resource release");
+        if (string.IsNullOrWhiteSpace(actor) || string.IsNullOrWhiteSpace(reason) || reason.Length > 1024)
+            throw new InvalidDataException("Explicit maintenance identity and repair reason required");
+        RequireValid(candidate);
+        var original = File.ReadAllBytes(path);
+        var repair = new ConfigurationInitialRepair(Wire.Id(), Convert.ToBase64String(original), Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(original)),
+            Wire.Hash(Wire.Encode(Current.Effective)), Wire.Hash(Wire.Encode(candidate)), actor, reason, DateTimeOffset.UtcNow);
+        var next = Current with { Revision = Current.Revision + 1, Pending = candidate, Status = "PendingRestart", Failure = null, Activation = null, InitialRepair = repair };
+        if (System.Text.Encoding.UTF8.GetByteCount(Wire.Encode(next)) > 4 * 1024 * 1024) throw new IOException("Preserved repair history exceeds envelope budget; retain originals and escalate maintenance, never truncate evidence");
+        ExtensionStore.AtomicWrite(path, next); return Current = next;
+    }
+    public void RequireInitialRepairIdentity()
+    {
+        var repair = Current.InitialRepair ?? throw new InvalidDataException("No explicit initial configuration repair intent");
+        if (Current.Confirmation?.Required != true || Current.Pending is null || repair.EffectiveHash != Wire.Hash(Wire.Encode(Current.Effective)) ||
+            repair.CandidateHash != Wire.Hash(Wire.Encode(Current.Pending)) || string.IsNullOrWhiteSpace(repair.Actor) || string.IsNullOrWhiteSpace(repair.Reason) ||
+            Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(Convert.FromBase64String(repair.OriginalEnvelopeBase64))) != repair.OriginalEnvelopeSha256)
+            throw new InvalidDataException("Initial repair identity changed; retain originals and restage explicitly");
     }
     public void FailActivation(T priorEffective, T candidate, Exception failure)
     {
         var failed = new ConfigurationRevision<T>(Current.Revision + 1, priorEffective, candidate, "ActivationFailed", failure.GetType().Name + ": " + failure.Message,
-            Current.Activation is { } attempt ? attempt with { FinishedAt = DateTimeOffset.UtcNow, Outcome = "Failed", Failure = failure.GetType().Name + ": " + failure.Message } : null, Current.Confirmation);
+            Current.Activation is { } attempt ? attempt with { FinishedAt = DateTimeOffset.UtcNow, Outcome = "Failed", Failure = failure.GetType().Name + ": " + failure.Message } : null, Current.Confirmation, Current.InitialRepair);
         ExtensionStore.AtomicWrite(path, failed); Current = failed;
     }
     // Applications that construct external resources confirm only after successful startup.
@@ -77,7 +101,7 @@ public sealed class ConfigurationRevisions<T> where T : class
             throw new InvalidOperationException("Configuration activation attempt changed");
         var next = new ConfigurationRevision<T>(Current.Revision + 1, candidate, null, "Effective", null,
             Current.Activation with { FinishedAt = DateTimeOffset.UtcNow, Outcome = "Activated" },
-            Current.Confirmation is { } confirmation ? confirmation with { EffectiveHash = Wire.Hash(Wire.Encode(candidate)), Required = false, State = "Confirmed", ConfirmedBy = "resource-startup", ConfirmedAt = DateTimeOffset.UtcNow } : null);
+            Current.Confirmation is { } confirmation ? confirmation with { EffectiveHash = Wire.Hash(Wire.Encode(candidate)), Required = false, State = "Confirmed", ConfirmedBy = "resource-startup", ConfirmedAt = DateTimeOffset.UtcNow } : null, Current.InitialRepair);
         ExtensionStore.AtomicWrite(path, next); Current = next;
     }
     // Opt-in for resource-owning applications. Supply keeps its existing Activate contract.

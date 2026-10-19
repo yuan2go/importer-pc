@@ -21,12 +21,14 @@ public partial class ShellWindow : Window
     public Func<Task>? StopOwnerAsync { get; set; }
     public ShellWindow(ParcelViewModel vm, Func<ParcelViewModel> newViewModel, Func<UserControl> workstation, string? view = null, string? layout = null, ShellWindow? owner = null)
     {
-        InitializeComponent(); this.vm = vm; this.newViewModel = newViewModel; this.workstation = workstation; DataContext = vm; work = workstation();
+        InitializeComponent(); ProductBrand.Apply(this); this.vm = vm; this.newViewModel = newViewModel; this.workstation = workstation; DataContext = vm; work = workstation();
         root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
         if (owner is not null) Owner = owner;
         var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : view?.EndsWith("-maintenance", StringComparison.Ordinal) == true ? "maintenance" : "work";
         PageHost.Content = initialPage == "history" ? history : initialPage == "maintenance" ? maintenance : work;
-        compact = layout == "compact"; ApplyLayout();
+        try { compact = layout is null ? Ipc.Platform.PresentationPreferences.Read(vm.PresentationId, "classic") ?? false : layout == "compact"; }
+        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { vm.Message = "展示偏好读取失败，原文件保留：" + error.GetType().Name; }
+        ApplyLayout();
         ClientArea.SizeChanged += (_, _) => UpdateViewport();
         timer.Tick += (_, _) => { vm.RefreshFreshness(); if (!closing && !closed && pendingRefresh.IsCompleted) pendingRefresh = RefreshAsync(); };
         Loaded += async (_, _) =>
@@ -52,10 +54,16 @@ public partial class ShellWindow : Window
     void ViewportPause_Click(object s, RoutedEventArgs e) => QueueViewportPause();
     void ViewportAcknowledge_Click(object s, RoutedEventArgs e) => vm.AcknowledgeViewport();
     void Workstation_Click(object s, RoutedEventArgs e) => PageHost.Content = work;
+    void Support_Click(object s, RoutedEventArgs e) => new ProductSupportWindow(vm.Application, vm.Selected?.Id) { Owner = this }.Show();
     async void History_Click(object s, RoutedEventArgs e) { PageHost.Content = history; await vm.RunAsync(() => vm.LoadHistoryAsync(), "作业记录"); }
     async void Maintenance_Click(object s, RoutedEventArgs e) { PageHost.Content = maintenance; await vm.RunAsync(vm.EnsureMaintenanceLoadedAsync, "设备与维护"); }
     void Window_Click(object s, RoutedEventArgs e) { if (!root.closing) new ShellWindow(newViewModel(), newViewModel, workstation, layout: compact ? "compact" : "standard", owner: root).Show(); }
-    void Layout_Click(object s, RoutedEventArgs e) { compact = !compact; ApplyLayout(); }
+    void Layout_Click(object s, RoutedEventArgs e)
+    {
+        compact = !compact; ApplyLayout();
+        try { Ipc.Platform.PresentationPreferences.Save(vm.PresentationId, "classic", compact); }
+        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { vm.Message = "本窗口布局已切换；展示偏好未保存，原文件保留：" + error.GetType().Name; }
+    }
     void ApplyLayout() { vm.IsCompact = compact || ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680; FontSize = vm.IsCompact ? 14 : 16; }
     async void Pause_Click(object s, RoutedEventArgs e) => await vm.PauseAsync();
     async void Resume_Click(object s, RoutedEventArgs e) { if (vm.CanResumeInViewport) await vm.RunAsync(() => vm.CommandAsync("Resume"), "恢复新入场"); }

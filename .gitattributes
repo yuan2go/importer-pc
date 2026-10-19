@@ -1,1 +1,5 @@
+# Preserve exact Windows verification receipts; CRLF is evidence, not trailing whitespace.
+docs/runtime/evidence/commercial-productization-01/** -text whitespace=cr-at-eol
+# Captured native fixture inputs retain their original terminal blank line.
+docs/runtime/evidence/commercial-productization-01/*.fixture.cs.txt whitespace=cr-at-eol,-blank-at-eof
 docs/runtime/evidence/unified-release-01/** -text

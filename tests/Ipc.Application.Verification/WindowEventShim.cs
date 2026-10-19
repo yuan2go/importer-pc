@@ -78,6 +78,9 @@ namespace Ipc.Application.ParcelFlow.Desktop
         public static bool ConfirmDiscard(System.Windows.Window window, int count) => false;
     }
     public class HistoryPage;
+    public static class ProductBrand { public static void Apply(System.Windows.Window window) { } }
+    public class ProductSupportWindow(Ipc.Application.Contracts.IParcelApplication application, string? operation) : System.Windows.Window
+    { public Ipc.Application.Contracts.IParcelApplication Application { get; } = application; public string? Operation { get; } = operation; }
     public class MaintenancePage;
 }
 namespace Ipc.Application.Sportmaster.Desktop

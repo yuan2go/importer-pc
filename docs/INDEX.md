@@ -1,6 +1,8 @@
-# 统一资料与实施入口
 
-**当前下一阶段： [WP-IPC-COMMERCIAL-PRODUCTIZATION-01](work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)。** 状态为设计/实施交接已形成，新增产品能力 PLANNED，验收 NOT_RUN。本次分析基线是 main [b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5](https://github.com/yuan2go/importer-pc/commit/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5)，执行时重新核对最新 main 与并行修改。
+# 统一资料与实施入口
+> COMM-00～10 当前操作见[产品操作指南](runtime/commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](runtime/commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。
+
+**当前工作：[WP-IPC-COMMERCIAL-PRODUCTIZATION-01](work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md) 的 COMM-00～10 实施。** 开工 main 为 c445b0e；[编码前裁决](implementation/commercial-productization-01-execution.md)已独立提交，实际软件路径、冻结身份和逐项结果见上方实施结果。文档任务 b8f449e 静态基线及原 NOT_RUN 按形成时语境保留。
 
 ## 1. 本包有效阅读顺序
 
@@ -14,7 +16,7 @@
 
 ## 2. 最新已实现源码与现行操作
 
-最新合并包含 PR #44 的原生四步安装、独立离线维护/基本配置、启动修复及备份恢复入口，和 PR #45 的全部运行入口身份门禁。指定 Windows 账户非提权日常运行，允许 UAC 过滤/deny-only 的管理员身份；真正提升、错误 SID、系统/服务账户仍拒绝。正常安装、启动与维护不依赖 PowerShell，显式高级脚本单独说明依赖。
+实施基座的 main 包含 PR #44 的原生四步安装、独立离线维护/基本配置、启动修复及备份恢复入口，和 PR #45 的全部运行入口身份门禁。指定 Windows 账户非提权日常运行，允许 UAC 过滤/deny-only 的管理员身份；真正提升、错误 SID、系统/服务账户仍拒绝。正常安装、启动与维护不依赖 PowerShell，显式高级脚本单独说明依赖。
 
 |任务|现行指南/代码证据|
 |---|---|
@@ -28,13 +30,11 @@
 
 Sportmaster 左右独立读码及取格口，无 PLC、图片展示或长期图库；DirectPlc 完整 UI 延期，WcsToPlc 独立主流程。登录/称重/采图/上传按实际产品组合和批准策略选装。Supply 使用自身 Storage/操作契约。业务/ABI/DB/schema/扩展版本从同一固定介质清单读取，不能仅凭版本号继承其他组合资格。
 
-本包产品设计是上述实现的增量目标。可选程序根、完整客户首配、系统登记及修复卸载等尚须按工作包完成，不按新文档提前宣称实现。
+上表保留实施基座与原来源。COMM-00～10当前实现、复审修正及冻结介质统一见[实施结果](runtime/commercial-productization-01-results.md)与[PR47复审](reviews/pr47-commercial-productization-review.md)，不从旧计划段落推断当前缺失或已验收。
 
 ## 3. 源码、发布介质与验收分开
 
-2026-10-20 新授权的发行整合按 [UNIFIED-RELEASE-01](work-packages/WP-IPC-UNIFIED-RELEASE-01.md) 从最新 main 执行；[实际收尾记录](runtime/unified-release-01.md)说明流程已提交、构建因用户后续“不测试并收尾”指令停止，尚无统一 Windows 媒介。原“不测试发布”回执仅限原任务。PR47 的未合并商业化增量与本次 main 发行分开，完整产品工作包保持其原状态。
-
-[PR #44/#45 合并与现成资产发布记录](runtime/publication-deployment-20261019.md)记录最新源码政策与两个冻结来源；本次文档任务没有创建统一组合介质。
+[PR #44/#45 历史发布记录](runtime/publication-deployment-20261019.md)记录当时政策与两个冻结来源；该文档任务未创建统一组合介质。下表仅为历史已发布资产，当前COMM候选/复审状态由本页顶部实施结果管理。
 
 |已发布对象|精确范围|
 |---|---|
@@ -76,3 +76,7 @@ Sportmaster 左右独立读码及取格口，无 PLC、图片展示或长期图�
 [工具说明](../tools/README.md)规定资料校验范围与原资产问题的记账，不通过新增例外掩盖历史失败。manifest 保存全树原条目与本次真实变更；本包文档检查不冒称全量历史资产 PASS。
 
 本次清理前的 README/INDEX/框架和相关运行指南原字节见[商业化整理前归档](archive/pre-commercial-productization-01/README.md)。更早的完整入口、历史细项仍保留于[并发整合前归档](archive/pre-parallel-task-reconciliation-01/README.md)及各阶段 pre-* 目录。原审查01 PDF 缺失、客户全量资料 PUBLIC_SUBSET_ONLY 和原 D/RV 状态分别保留。
+
+> 发行入口增量（PR48）：[原形成时范围](runtime/unified-windows-release-01.md)。本次整合不执行测试/构建，旧冻结结果不授予最终组合资格。
+
+> 统一发行当前工具及中断交付见[结果](runtime/unified-release-01.md)；全部合并裁决见[不测试合并记录](runtime/publication-merge-20261020.md)。最终 main 组合没有重新测试或出包，旧介质/原 PASS 保持原身份。

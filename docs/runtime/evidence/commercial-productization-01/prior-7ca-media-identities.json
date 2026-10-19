@@ -1,0 +1,92 @@
+[
+  {
+    "Application": "sportmaster",
+    "Target": "win-x64",
+    "SourceCommit": "7ca9a5d22ee9a463499060c8657f974620288739",
+    "Zip": "sportmaster-7ca9a5d-win-x64.zip",
+    "ZipSha256": "a81329a61884bf849afe9151140364d442f6e101aa438cbe94144c8730679d20",
+    "ZipBytes": 108616231,
+    "MediumInventorySha256": "8b90ee09c145140619f7f703fad0f5edda9eae1aec5b9207db6da3063154660e",
+    "RegisteredFiles": 745,
+    "Status": "PASS_FILE_INTEGRITY_CRC_BUSINESS_IDENTITY",
+    "Checks": {
+      "MatchingPrivilegedHelperAndDesktop": true
+    },
+    "FullInstallation": "NOT_RUN",
+    "Equipment": "BLOCKED"
+  },
+  {
+    "Application": "sportmaster",
+    "Target": "portable",
+    "SourceCommit": "7ca9a5d22ee9a463499060c8657f974620288739",
+    "Zip": "sportmaster-7ca9a5d-portable.zip",
+    "ZipSha256": "edcc196b516c193fc902ccbba66881fad0c72bbbf5a6e699df59f8f476d0d049",
+    "ZipBytes": 19322710,
+    "MediumInventorySha256": "7f34ab38c595c35f7ca40f14650e20116ba502e2aa92f691ec2eb18346341f24",
+    "RegisteredFiles": 106,
+    "Status": "PASS_FILE_INTEGRITY_CRC_BUSINESS_IDENTITY",
+    "Checks": {},
+    "FullInstallation": "NOT_RUN",
+    "Equipment": "BLOCKED"
+  },
+  {
+    "Application": "direct-plc",
+    "Target": "win-x64",
+    "SourceCommit": "7ca9a5d22ee9a463499060c8657f974620288739",
+    "Zip": "direct-plc-7ca9a5d-win-x64.zip",
+    "ZipSha256": "45bf54e26a4d2054cca79012c6866cc07a0045c763c979df18885d9556d9ad47",
+    "ZipBytes": 108506122,
+    "MediumInventorySha256": "248147bb497a210bafb269c7433ffa58355645583873711c3c2eb6642e7583b7",
+    "RegisteredFiles": 736,
+    "Status": "PASS_FILE_INTEGRITY_CRC_BUSINESS_IDENTITY",
+    "Checks": {
+      "MatchingPrivilegedHelperAndDesktop": true
+    },
+    "FullInstallation": "NOT_RUN",
+    "Equipment": "BLOCKED"
+  },
+  {
+    "Application": "direct-plc",
+    "Target": "portable",
+    "SourceCommit": "7ca9a5d22ee9a463499060c8657f974620288739",
+    "Zip": "direct-plc-7ca9a5d-portable.zip",
+    "ZipSha256": "affccac9265a9b77cfef8da829c7ec4b2e593b7b5c937400ad96cc17e73a99f9",
+    "ZipBytes": 19280908,
+    "MediumInventorySha256": "fd9a031c4eec491ad40d7ffdcfc26bcdb4fedaf0ea8507a8db282cd25bd40191",
+    "RegisteredFiles": 100,
+    "Status": "PASS_FILE_INTEGRITY_CRC_BUSINESS_IDENTITY",
+    "Checks": {},
+    "FullInstallation": "NOT_RUN",
+    "Equipment": "BLOCKED"
+  },
+  {
+    "Application": "wcs-to-plc",
+    "Target": "win-x64",
+    "SourceCommit": "7ca9a5d22ee9a463499060c8657f974620288739",
+    "Zip": "wcs-to-plc-7ca9a5d-win-x64.zip",
+    "ZipSha256": "a129be4a1d073da3664240e8464bb01be500dfee39f4557a6cf95a8300dd22ed",
+    "ZipBytes": 108558195,
+    "MediumInventorySha256": "b60a014987b78d4c5c472bdf513702a5a177dcc5a4a3785a5e2673f9b2d599ac",
+    "RegisteredFiles": 740,
+    "Status": "PASS_FILE_INTEGRITY_CRC_BUSINESS_IDENTITY",
+    "Checks": {
+      "MatchingPrivilegedHelperAndDesktop": true
+    },
+    "FullInstallation": "NOT_RUN",
+    "Equipment": "BLOCKED"
+  },
+  {
+    "Application": "wcs-to-plc",
+    "Target": "portable",
+    "SourceCommit": "7ca9a5d22ee9a463499060c8657f974620288739",
+    "Zip": "wcs-to-plc-7ca9a5d-portable.zip",
+    "ZipSha256": "217285b4c07d0313cd1a2bddc7b0c399ae69fe46736659912267e49375f687a1",
+    "ZipBytes": 19306912,
+    "MediumInventorySha256": "0a229b1fa6e7df31321b2d22e62b6d6ff262f5a6cb1e24134a1abddcf288e906",
+    "RegisteredFiles": 102,
+    "Status": "PASS_FILE_INTEGRITY_CRC_BUSINESS_IDENTITY",
+    "Checks": {},
+    "FullInstallation": "NOT_RUN",
+    "Equipment": "BLOCKED"
+  }
+]

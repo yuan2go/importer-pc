@@ -24,7 +24,7 @@ public partial class SupplyStationWindow : Window
 
     public SupplyStationWindow(IParcelApplication application, string? view, string? layout, Func<Task>? stopOwner = null, SupplyStationWindow? owner = null)
     {
-        InitializeComponent();
+        InitializeComponent(); ProductBrand.Apply(this);
         ViewModel = new(application); DataContext = ViewModel; this.stopOwner = stopOwner;
         ClientArea.SizeChanged += ViewportChanged;
         root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
@@ -33,7 +33,9 @@ public partial class SupplyStationWindow : Window
         var left = new SupplyStationPosition { DataContext = ViewModel.Left };
         var right = new SupplyStationPosition { DataContext = ViewModel.Right };
         Grid.SetColumn(right, 1); work.Children.Add(left); work.Children.Add(right);
-        compact = layout == "compact"; ApplyLayout();
+        try { compact = layout is null ? Ipc.Platform.PresentationPreferences.Read("sportmaster", "supply-station") ?? false : layout == "compact"; }
+        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.Message = "展示偏好读取失败，原文件保留：" + error.GetType().Name; }
+        ApplyLayout();
         var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : view?.EndsWith("-maintenance", StringComparison.Ordinal) == true ? "maintenance" : "workstation";
         SetPage(initialPage);
         timer.Tick += (_, _) =>
@@ -65,13 +67,19 @@ public partial class SupplyStationWindow : Window
         PageHost.Content = page switch { "history" => history, "maintenance" => maintenance, _ => work };
     }
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
+    void Support_Click(object sender, RoutedEventArgs e) => new ProductSupportWindow(ViewModel.Application, ViewModel.Selected?.Id) { Owner = this }.Show();
     async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync(), "作业记录"); }
     async void Maintenance_Click(object sender, RoutedEventArgs e) { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync, "设备与维护"); }
     void Window_Click(object sender, RoutedEventArgs e)
     {
         if (!root.closing) new SupplyStationWindow(ViewModel.Application, null, compact ? "compact" : "standard", owner: root).Show();
     }
-    void Layout_Click(object sender, RoutedEventArgs e) { compact = !compact; ApplyLayout(); }
+    void Layout_Click(object sender, RoutedEventArgs e)
+    {
+        compact = !compact; ApplyLayout();
+        try { Ipc.Platform.PresentationPreferences.Save("sportmaster", "supply-station", compact); }
+        catch (Exception error) when (error is System.IO.IOException or System.Text.Json.JsonException or UnauthorizedAccessException) { ViewModel.Message = "本窗口布局已切换；展示偏好未保存：" + error.GetType().Name; }
+    }
     void ApplyLayout()
     {
         ViewModel.IsCompact = compact || ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680;

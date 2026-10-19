@@ -135,6 +135,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--dotnet', default='dotnet')
+    p.add_argument('--source', help='Optional full frozen SHA; must equal this clean checkout HEAD')
     p.add_argument('--verify-only', action='store_true')
     a = p.parse_args()
     output = a.output.resolve()
@@ -155,6 +156,8 @@ def main():
     if git('status', '--porcelain', '--', *SOURCE_PATHS):
         raise ValueError('Commit exact runtime/configuration/packaging/guides before building')
     source = git('rev-parse', 'HEAD')
+    if a.source is not None and a.source != source:
+        raise ValueError('Use a clean checkout of the full frozen --source commit')
     for commit in MERGES.values():
         subprocess.run(['git', 'merge-base', '--is-ancestor', commit, source], cwd=ROOT, check=True)
     expected = read(ROOT / 'global.json')['sdk']['version']

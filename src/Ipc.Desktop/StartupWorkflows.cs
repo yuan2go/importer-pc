@@ -18,6 +18,7 @@ abstract class StartupWorkflowWindow : Window
     protected bool Busy;
     protected StartupWorkflowWindow(string title)
     {
+        ProductBrand.Apply(this);
         Title = title; Width = 960; Height = 760; MinWidth = 680; MinHeight = 500; WindowStartupLocation = WindowStartupLocation.CenterScreen;
         Background = new SolidColorBrush(Color.FromRgb(241, 244, 247)); Foreground = new SolidColorBrush(Color.FromRgb(25, 39, 54));
         var grid = new Grid { Margin = new(24) };
@@ -43,7 +44,8 @@ abstract class StartupWorkflowWindow : Window
     protected void Note(string text) => Body.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 8) });
     protected TextBox Field(string label, string value, Action<string> changed, bool readOnly = false)
     {
-        Note(label); var box = new TextBox { Text = value, MinHeight = 36, IsReadOnly = readOnly, MaxLength = 4096, Margin = new(0, 0, 0, 4) };
+        Note(label); var box = new TextBox { Text = value, MinHeight = 44, IsReadOnly = readOnly, MaxLength = 65536, Margin = new(0, 0, 0, 4) };
+        System.Windows.Automation.AutomationProperties.SetName(box, label);
         box.TextChanged += (_, _) => changed(box.Text); Body.Children.Add(box); return box;
     }
     protected TextBox Folder(string label, string value)
@@ -68,37 +70,94 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     IStartupMaintenance maintenance = null!;
     StartupMaintenanceDocument? document;
     StartupConfigurationDraft? draft;
+    StartupSavedDraft? savedDraft;
     StartupRecoveryPreview? recovery;
+    StartupRecoveryPreview? restoredPreview;
+    string? restoredBackup;
     readonly TextBox config, data;
-    string reason = "", backup = "", restoreRoot = "";
+    string reason = "", backup = "", restoreRoot = "", backupCatalogRoot = "";
     public BusinessLaunch SelectedLaunch { get; private set; }
     public bool RetryRequested { get; private set; }
     public bool ReplacementLaunched { get; private set; }
-    public StartupRepairWindow(BusinessLaunch launch, string? failure = null) : base("启动修复 · 离线维护")
+    public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次工位配置 · Importer PC" : "启动修复 · 离线维护")
     {
         SelectedLaunch = launch;
+        if (initialConfiguration) reason = "首次工位配置";
         Message("无需业务启动成功。检查和编辑不连接设备；保存为 Pending，正常启动仍检查原恢复责任。" + (failure is null ? "" : "\n启动诊断：" + failure));
         config = Folder("原配置目录（包含 business.json）", launch.ConfigurationDirectory);
         data = Folder("原数据根（保留 Simulation/Production、站和 Application 层级）", launch.DataRoot);
         Action("读取所选配置", Read);
-        Action("校验草稿", async () => { var receipt = await Task.Run(() => maintenance.ValidateAsync(RequireDraft())); Message(receipt.Status + " · " + receipt.Reason); });
-        Action("保存待生效修订…", async () =>
+        Action("分层检查与变更预览", async () => { var candidate = RequireDraft(); var report = await Task.Run(() => maintenance.CheckAsync(candidate)); Message("候选 " + report.CandidateHash + "\n" + string.Join("\n", report.Checks.Select(c => c.Layer + " · " + c.Status + " · " + c.Reason)) + "\n生效影响：设备、目标或策略变更须受控重启；原请求保持原配置。保存草稿不激活。"); });
+        Action("保存未完成草稿", async () =>
+        {
+            if (draft is null || document is null) throw new InvalidOperationException("先读取原配置");
+            savedDraft = await Task.Run(() => maintenance.SaveDraftAsync(document.ConfigurationHash, savedDraft?.DraftHash, draft.Capture()));
+            Message("未完成输入已保存；不要求连接/Production资格，不写Pending。Windows草稿使用DPAPI及私有ACL；换机需重新配置秘密。");
+        });
+        Action("继续已保存草稿", () =>
+        {
+            if (savedDraft is null || draft is null) throw new InvalidOperationException("没有可继续草稿");
+            if (savedDraft.BaseChanged) throw new InvalidOperationException("草稿基线已变化；先比较当前配置，不自动套用或覆盖。");
+            if (savedDraft.Editor.Values.GetValueOrDefault("editor") == "live-v1") throw new InvalidOperationException("这是运行内统一设置的草稿；在原Application的设备与维护页选择继续未完成设置。当前首配输入与加密原草稿均保留。");
+            draft = draft.WithRestored(savedDraft.Editor); Render(false); Message("已恢复未完成输入；参数改变后原检查失效。请重新检查候选。"); return Task.CompletedTask;
+        });
+        Action("导出新站模板…", () =>
+        {
+            if (draft is null || document?.Candidate is null) throw new InvalidOperationException("先读取配置");
+            var picker = new SaveFileDialog { FileName = "site-template.json", Filter = "无业务状态模板|*.json" };
+            if (picker.ShowDialog(this) == true) { using var file = new StreamWriter(new FileStream(picker.FileName, FileMode.CreateNew)); file.Write(Wire.Encode(StartupSiteTemplates.Export(document.Candidate.ApplicationId, draft.Capture()))); Message("已导出同版安全模板：只含非生效策略和提供者选择，不含原站/设备/目标/秘密/编号范围或业务数据。"); }
+            return Task.CompletedTask;
+        });
+        Action("导入同版安全模板…", () =>
+        {
+            if (draft is null || document?.Candidate is null) throw new InvalidOperationException("先读取配置");
+            var path = FilePick(this, "导入无业务状态模板", "模板|*.json"); if (path is null) return Task.CompletedTask;
+            if (new FileInfo(path).Length > 4 * 1024 * 1024) throw new InvalidDataException("模板超出配额");
+            var values = StartupSiteTemplates.Import(document.Candidate.ApplicationId, Wire.Decode<StartupSiteTemplate>(File.ReadAllText(path)));
+            draft = draft.WithRestored(values); Render(false); Message("模板只改变草稿；原站身份、设备绑定、目标和原责任保留，检查后再提交。"); return Task.CompletedTask;
+        });
+        Action(initialConfiguration ? "保存首配待生效…" : "保存待生效修订…", async () =>
         {
             var candidate = RequireDraft(); var expected = document!.ConfigurationHash;
-            document = await Task.Run(() => maintenance.StageAsync(expected, candidate, reason)); Render(); Message("保存后已读回状态：" + document.ConfigurationStatus + "。保存过程不改 Effective 或原数据库；重试启动时由业务决定能否激活。");
+            document = await Task.Run(() => initialConfiguration ? maintenance.RepairInitialAsync(expected, candidate, reason) : maintenance.StageAsync(expected, candidate, reason)); Render(); Message("保存后已读回状态：" + document.ConfigurationStatus + "。保存过程不改 Effective 或原数据库；重试启动时由业务决定能否激活。");
+        });
+        Action("受控修复未确认配置…", async () =>
+        {
+            var candidate = RequireDraft();
+            if (MessageBox.Show(this, "将保留原配置及确认/失败记录。仅在原实例已释放、原责任已清且候选严格校验通过时，允许下一次启动直接尝试候选。失败不会替换Effective。", "确认初始配置修复", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
+            document = await Task.Run(() => maintenance.RepairInitialAsync(document!.ConfigurationHash, candidate, reason)); Render();
+            Message("修复意图已保存并读回；重试正常启动会再次检查原责任及资格，资源全部成功后才确认Effective。");
         });
         Action("导出支持摘要…", async () =>
         {
+            if (MessageBox.Show(this, "将导出本版Application/源码/公共契约、配置hash/修订/状态及诊断计数。排除完整参数、诊断原文、条码、业务报文、数据库和原件；不自动上传。", "预览离线支持范围", MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
             var picker = new SaveFileDialog { FileName = "startup-support.json", Filter = "支持摘要|*.json", OverwritePrompt = true };
             if (picker.ShowDialog(this) == true) { if (File.Exists(picker.FileName)) throw new IOException("请选择新文件，保留既有摘要"); await Task.Run(() => maintenance.ExportAsync(picker.FileName)); Message("已导出摘要；不含配置参数、业务报文或数据库。"); }
         });
+        Action("创建完整备份…", async () =>
+        {
+            var picker = new SaveFileDialog { FileName = "complete-backup-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".db", Filter = "完整恢复集数据库|*.db" };
+            if (picker.ShowDialog(this) != true) return;
+            await Task.Run(() => maintenance.BackupAsync(picker.FileName)); backupCatalogRoot = Path.GetDirectoryName(picker.FileName)!;
+            Message("完整备份已完成；数据库和同名.recovery目录必须一起保留。可在备份列表重新校验并预检恢复。");
+        });
+        Action("接管已恢复的原机目录…", async () =>
+        {
+            if (restoredPreview is null || restoredBackup is null) throw new InvalidOperationException("先完成完整恢复；新根必须尚未启动，原根/新根均无运行实例");
+            var registration = WindowsDeploymentSetup.Registration(ParcelStartupServices.ApplicationId);
+            if (!File.Exists(registration)) throw new InvalidOperationException("缺少原机安装登记；换机恢复保持隔离，须取得来源退役和重新资格证据");
+            if (MessageBox.Show(this, "将先封存原根的新启动，再把受保护部署登记切到新根。原目录/数据不删除；新根继续隔离，仍须维护认证并核对原请求、设备、外部事实和编号范围。", "确认原机迁移接管", MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
+            await Task.Run(() => maintenance.AdoptRestoreAsync(restoredBackup, restoredPreview.DataRoot, restoredPreview.BackupSha256, Wire.FileHash(registration)));
+            Message("原机目录接管已提交。原根启动围栏保留，新根仍隔离；重试启动后先在维护页读取并核对交接。不能自动Resume或重发旧请求。");
+        });
+        Action("离线帮助", () => { new Window { Owner = this, Title = "Importer PC · 离线帮助", Width = 860, Height = 700, Content = new TextBox { Text = ProductHelp.QuickStart, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new(16), FontSize = 16 } }.Show(); return Task.CompletedTask; });
         Action("安装 / 修复程序…", async () =>
         {
             var setup = new StartupSetupWindow(SelectedLaunch) { Owner = this }; setup.ShowDialog();
             if (setup.Launched) { ReplacementLaunched = true; Busy = false; Close(); return; }
             if (setup.Installed is { } installed) { config.Text = installed.ConfigurationDirectory; data.Text = installed.DataRoot; await Read(); }
         });
-        Action("重试正常启动", () => { SelectedLaunch = SelectedLaunch with { ConfigurationDirectory = config.Text, DataRoot = data.Text }; RetryRequested = true; CompleteDialog(); return Task.CompletedTask; });
+        Action(initialConfiguration ? "按当前首配启动" : "重试正常启动", () => { SelectedLaunch = SelectedLaunch with { ConfigurationDirectory = config.Text, DataRoot = data.Text }; RetryRequested = true; CompleteDialog(); return Task.CompletedTask; });
         Loaded += async (_, _) => await Run(Read);
     }
     ParcelConfiguration RequireDraft()
@@ -112,20 +171,27 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         SelectedLaunch = SelectedLaunch with { ConfigurationDirectory = Path.GetFullPath(config.Text), DataRoot = Path.GetFullPath(data.Text) };
         config.Text = SelectedLaunch.ConfigurationDirectory; data.Text = SelectedLaunch.DataRoot;
         maintenance = ParcelStartupServices.Maintenance(SelectedLaunch);
-        document = await Task.Run(maintenance.ReadAsync); recovery = null; Render();
-        Message(string.Join("\n", document.Diagnostics) + "\n" + document.Catalog.InventoryDiagnostic);
+        document = await Task.Run(maintenance.ReadAsync); recovery = null; savedDraft = document.Candidate is null ? null : await Task.Run(maintenance.ReadDraftAsync); Render();
+        Message(string.Join("\n", document.Diagnostics) + "\n" + document.Catalog.InventoryDiagnostic + (savedDraft is null ? "" : "\n发现未完成草稿：" + savedDraft.At + (savedDraft.BaseChanged ? "，基线已变化，保留但不自动应用" : "，可选择继续")));
     }
-    void Render()
+    void Render(bool replaceDraft = true)
     {
         while (Body.Children.Count > 6) Body.Children.RemoveAt(6); // Preserve path selectors and their browse controls.
-        draft = document?.Candidate is { } candidate ? new(candidate, document.Catalog) : null;
+        if (replaceDraft) draft = document?.Candidate is { } candidate ? new(candidate, document.Catalog) : null;
         if (draft is not null)
         {
             var c = document!.Candidate!;
-            Note($"{c.ApplicationId} · {c.StationId} · {c.Mode} · 修订 {document.Revision} · {document.ConfigurationStatus}\n原账散列：{document.ConfigurationHash}\n身份、拓扑和精确提供者固定；此处修改现有参数和基本策略。");
+            Note($"{c.ApplicationId} · {c.StationId} · {c.Mode} · 修订 {document.Revision} · {document.ConfigurationStatus}\n原账散列：{document.ConfigurationHash}\n工位身份只读。设备与服务沿已交付精确目录选择；未枚举/未连接不等于已验证。\n设备尚未启动。可保存未完成草稿；审阅后显式启动仍受完整资格/原责任检查。");
             Field("输入队列容量", draft.QueueCapacity, v => draft.QueueCapacity = v);
             Field("调用超时（ms）", draft.TimeoutMs, v => draft.TimeoutMs = v);
             Field("作业容量", draft.MaximumOperations, v => draft.MaximumOperations = v);
+            Field("常驻历史条数（同库归档不释放磁盘）", draft.ResidentHistory, v => draft.ResidentHistory = v);
+            Field("关键写入保留空间（MiB）", draft.MinimumFreeMiB, v => draft.MinimumFreeMiB = v);
+            var scheduledBackup = new CheckBox { Content = "启用受控计划备份（仅在已暂停、维护授权有效且无在途外呼时触发；不会自动暂停业务）", IsChecked = draft.Policy.BackupEnabled, MinHeight = 44 };
+            scheduledBackup.Checked += (_, _) => draft.Policy.BackupEnabled = true; scheduledBackup.Unchecked += (_, _) => draft.Policy.BackupEnabled = false; Body.Children.Add(scheduledBackup);
+            var scheduleDirectory = Folder("计划备份目录（原业务目录以外；须有容量）", draft.Policy.BackupDirectory); scheduleDirectory.TextChanged += (_, _) => draft.Policy.BackupDirectory = scheduleDirectory.Text;
+            Field("计划备份周期（分钟，15～10080；未启用可留空）", draft.Policy.BackupIntervalMinutes, v => draft.Policy.BackupIntervalMinutes = v);
+            Field("备份容量份数上限（1～1000；到限保留所有旧备份并报错，不自动删除）", draft.Policy.BackupMaximumSets, v => draft.Policy.BackupMaximumSets = v);
             Choice("重量来源", draft.Policy.WeightSource, v => draft.Policy.WeightSource = v);
             Choice("重量单位", draft.Policy.Unit, v => draft.Policy.Unit = v);
             Field("配置重量（仅 Configured 使用）", draft.Policy.ConfiguredWeight, v => draft.Policy.ConfiguredWeight = v);
@@ -133,10 +199,18 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Field("测量最大年龄（ms）", draft.Policy.MaximumAgeMs, v => draft.Policy.MaximumAgeMs = v);
             Field("等待重量期限（ms）", draft.Policy.WaitTimeoutMs, v => draft.Policy.WaitTimeoutMs = v);
             Choice("重量有效期", draft.Policy.Validity, v => draft.Policy.Validity = v);
-            foreach (var capability in draft.Capabilities)
+            foreach (var capability in draft.Readers.Concat(draft.Capabilities))
             {
                 Note(capability.Role + " · " + capability.InstanceId + "\n" + capability.ProviderIdentity);
-                Field("目标", capability.Target, v => capability.Target = v, capability.IsTargetReadOnly || capability.Provider is null);
+                if (capability.Role is "operator-login" or "default-scale")
+                {
+                    var optional = new CheckBox { Content = capability.Role == "operator-login" ? "启用本组合的操作员登录（维护认证另有守卫）" : "绑定默认实测秤（仅选实测重量时生效）", IsChecked = capability.Bound, MinHeight = 44 };
+                    optional.Checked += (_, _) => capability.Bound = true; optional.Unchecked += (_, _) => capability.Bound = false; Body.Children.Add(optional);
+                }
+                var providers = new ComboBox { ItemsSource = capability.Providers, SelectedItem = capability.Provider, MinHeight = 44, DisplayMemberPath = "Implementation" };
+                System.Windows.Automation.AutomationProperties.SetName(providers, capability.Role + "精确提供者");
+                providers.SelectionChanged += (_, _) => { if (providers.SelectedItem is CapabilityDescriptor selected && selected != capability.Provider) { capability.Provider = selected; Render(false); } }; Body.Children.Add(providers);
+                Field(capability.Kind == "observation" ? "稳定设备身份（离线录入，待真实SDK核验；按上方业务位绑定）" : "目标（地址/实例由所选组件合同决定）", capability.Target, v => capability.Target = v, capability.Provider is null);
                 foreach (var parameter in capability.Parameters)
                 {
                     Note(parameter.Field.Label + " · " + parameter.EditorHelp);
@@ -156,7 +230,15 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             Field("维护原因（必填；保留审计与原配置字节）", reason, v => reason = v);
         }
         Note("完整备份恢复：验证原库和 .recovery 同伴目录，复制到新的隔离目录。恢复标记继续阻止自动业务恢复。");
+        var backupFolder = Folder("浏览完整备份目录（最多256份；校验整个恢复集，保留无效项）", backupCatalogRoot);
+        backupFolder.TextChanged += (_, _) => backupCatalogRoot = backupFolder.Text;
+        var backupRows = new DataGrid { AutoGenerateColumns = false, IsReadOnly = true, CanUserAddRows = false, MinHeight = 100, MaxHeight = 260, RowHeight = 44 };
+        foreach (var column in new[] { ("时间", "At"), ("完整性", "Status"), ("字节", "Bytes"), ("备份", "Path") }) backupRows.Columns.Add(new DataGridTextColumn { Header = column.Item1, Binding = new System.Windows.Data.Binding(column.Item2), Width = column.Item2 == "Path" ? new DataGridLength(1, DataGridLengthUnitType.Star) : DataGridLength.Auto });
+        var listBackups = new Button { Content = "读取并校验备份列表", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
+        listBackups.Click += async (_, _) => await Run(async () => { var selected = backupCatalogRoot; backupRows.ItemsSource = await Task.Run(() => maintenance.ListBackupsAsync(selected, CancellationToken.None)); Message("备份列表已读回；Verified表示完整字节集可预检恢复，不代表外部业务已经核对。"); });
+        Body.Children.Add(listBackups); Body.Children.Add(backupRows);
         var backupBox = Field("完整备份数据库", backup, v => { backup = v; recovery = null; });
+        backupRows.SelectionChanged += (_, _) => { if (backupRows.SelectedItem is StartupBackupItem item) { backupBox.Text = item.Path; Message(item.Status + " · " + item.Summary); } };
         var choose = new Button { Content = "选择完整备份…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         choose.Click += (_, _) => { var selected = FilePick(this, "选择完整备份数据库", "SQLite 备份|*.db;*.sqlite;*.backup|所有文件|*.*"); if (selected is not null) backupBox.Text = selected; }; Body.Children.Add(choose);
         var destination = Folder("新的隔离数据根（不覆盖原目录）", restoreRoot);
@@ -170,6 +252,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         {
             var selected = recovery ?? throw new InvalidOperationException("先检查恢复计划");
             await Task.Run(() => maintenance.RestoreAsync(backup, selected.Destination, selected.BackupSha256));
+            restoredPreview = selected; restoredBackup = backup;
             data.Text = selected.DataRoot; await Read();
             Message("完整备份已恢复并重新读取新目录。原目录保留；重试启动时隔离恢复责任仍由业务守卫处理。"); recovery = null;
         }); Body.Children.Add(restore);
@@ -181,23 +264,49 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
     readonly BusinessLaunch launch;
     DeploymentMedia? media;
     WindowsDeploymentRequest? reviewed;
+    DeploymentComponentReview[] components = [];
     DeploymentLocation? installed;
     public DeploymentLocation? Installed => installed;
     public bool Launched { get; private set; }
-    TextBox account = null!, data = null!, configuration = null!, trust = null!;
-    CheckBox repairSeed = null!;
+    TextBox account = null!, data = null!, configuration = null!, trust = null!, program = null!, station = null!, upgradeBackup = null!;
+    CheckBox repairSeed = null!, newSite = null!;
+    ComboBox siteMode = null!;
+    string newStation = "", selectedProgram = "", selectedBackup = "";
+    string? enteredAccount, enteredData, enteredConfiguration, enteredTrust;
+    bool? enteredNewSite, enteredRepair;
+    RunMode selectedMode = RunMode.Simulation;
     string[] packages = [];
     int step;
     readonly Button next, back;
     public StartupSetupWindow(BusinessLaunch launch) : base("安装与部署向导 · Importer PC")
     {
         this.launch = launch;
-        back = Action("上一步", () => { if (step > 0) step--; Render(); return Task.CompletedTask; });
+        back = Action("上一步", () => { CaptureInputs(); if (step > 0) step--; Render(); return Task.CompletedTask; });
         next = Action("检查安装媒介", Next);
         Action("关闭", () => { Busy = false; Close(); return Task.CompletedTask; });
+        Action("保存已审阅的无人值守计划…", () =>
+        {
+            if (reviewed is null || step != 2) throw new InvalidOperationException("先完成参数/组件检查并进入摘要");
+            var picker = new SaveFileDialog { FileName = "deployment-plan.json", Filter = "固定逐站部署计划|*.json" };
+            if (picker.ShowDialog(this) == true) { using var output = new StreamWriter(new FileStream(picker.FileName, FileMode.CreateNew)); output.Write(Wire.Encode(DeploymentBatch.Freeze(reviewed))); Message("逐站计划已保存；不含业务数据库或请求。配置来源/原登记/包字节均固定，变化后须重新审阅。无人值守执行需要明确的Windows管理员部署会话。"); }
+            return Task.CompletedTask;
+        });
+        Action("继续退役程序的中断清理…", async () =>
+        {
+            var cleanupMedia = await Task.Run(() => DeploymentMedia.Inspect(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..")), ApplicationId));
+            var registration = WindowsDeploymentSetup.Registration(ApplicationId);
+            var result = await Task.Run(() => ParcelStartupServices.ResumeRemovalAsync(cleanupMedia, Wire.FileHash(registration)));
+            Message(result.Status + "\n" + result.OperationFile + (result.RestartRequired ? "\n需重启Windows完成占用文件清理" : ""));
+        });
         Render();
     }
     string ApplicationId => ParcelStartupServices.ApplicationId;
+    void CaptureInputs()
+    {
+        if (step != 1) return;
+        enteredAccount = account.Text; enteredData = data.Text; enteredConfiguration = configuration.Text; enteredTrust = trust.Text;
+        selectedProgram = program.Text; selectedBackup = upgradeBackup.Text; enteredNewSite = newSite.IsChecked == true; enteredRepair = repairSeed.IsChecked == true;
+    }
     void Render()
     {
         Body.Children.Clear(); back.IsEnabled = step is 1 or 2;
@@ -213,11 +322,17 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
             var current = WindowsDeploymentSetup.Current(ApplicationId);
             Note("Application：" + ApplicationId + "\n来源：" + media!.SourceCommit);
             var defaultAccount = ParcelStartupServices.DefaultRuntimeAccount();
-            account = Field("运行账户（已有 Windows 用户，如 机器名\\用户名；普通启动即可使用 UAC 过滤账户）", reviewed?.RuntimeAccountSid ?? defaultAccount, _ => { });
-            data = Folder("数据根（升级时保留原数据位置）", reviewed?.DataRoot ?? current?.DataRoot ?? launch.DataRoot);
-            configuration = Folder("配置来源（初装复制；升级保留原种子）", reviewed?.ConfigurationSource ?? current?.ConfigurationDirectory ?? launch.ConfigurationDirectory);
-            repairSeed = new CheckBox { Content = "重新部署所选种子配置到新目录（用于种子损坏修复；原种子保留）", IsChecked = reviewed?.RepairSeed ?? false, MinHeight = 44 }; Body.Children.Add(repairSeed);
-            trust = Field("可选：独立离线信任文件（无扩展时可留空）", reviewed?.TrustFile ?? "", _ => { });
+            account = Field("运行账户（已有 Windows 用户，如 机器名\\用户名；普通启动即可使用 UAC 过滤账户）", enteredAccount ?? reviewed?.RuntimeAccountSid ?? defaultAccount, _ => { });
+            data = Folder("数据根（升级时保留原数据位置）", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? launch.DataRoot);
+            program = Folder("程序根（本地固定卷、维护所有、运行账户只读；与数据分离）", selectedProgram.Length > 0 ? selectedProgram : reviewed?.ProgramRoot ?? (current is null ? TrustedProgramRoots.Default : Directory.GetParent(Directory.GetParent(current.ReleaseRoot)!.FullName)!.FullName));
+            newSite = new CheckBox { Content = "新工位：从本介质的通用模板收集首配（无数据库、请求或旧编号）", IsChecked = enteredNewSite ?? (current is null && reviewed is null), IsEnabled = current is null, MinHeight = 44 }; Body.Children.Add(newSite);
+            station = Field("新工位标识（仅新工位填写；已部署身份只读）", newStation, v => newStation = v);
+            Note("新工位模式：Simulation仅模拟；Production缺真实能力/合同/精确资格仍不能运行。模式和站标识写入后受原身份守卫约束。");
+            siteMode = new ComboBox { ItemsSource = Enum.GetValues<RunMode>(), SelectedItem = selectedMode, MinHeight = 44 }; siteMode.SelectionChanged += (_, _) => { if (siteMode.SelectedItem is RunMode value) selectedMode = value; }; Body.Children.Add(siteMode);
+            configuration = Folder("高级：已有部署 / 批准的配置来源（初装复制，升级保留原种子）", enteredConfiguration ?? reviewed?.ConfigurationSource ?? current?.ConfigurationDirectory ?? Path.Combine(media!.Root, "app", "config"));
+            upgradeBackup = Folder("升级前完整备份目录（自动生成新的完整集合，不覆盖原备份）", selectedBackup.Length > 0 ? selectedBackup : Path.Combine(data.Text, "backups"));
+            repairSeed = new CheckBox { Content = "重新部署所选种子配置到新目录（用于种子损坏修复；原种子保留）", IsChecked = enteredRepair ?? reviewed?.RepairSeed ?? false, MinHeight = 44 }; Body.Children.Add(repairSeed);
+            trust = Field("可选：独立离线信任文件（无扩展时可留空）", enteredTrust ?? reviewed?.TrustFile ?? "", _ => { });
             var chooseTrust = new Button { Content = "选择信任文件…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
             chooseTrust.Click += (_, _) => { var selected = FilePick(this, "选择独立离线信任政策", "信任文件|*.json"); if (selected is not null) trust.Text = selected; }; Body.Children.Add(chooseTrust);
             Note("不创建测试或 Production 信任。已安装信任只允许相同字节；轮换须另行审查。需要真实 SDK 的部署仍需独立安装及资格证据。");
@@ -231,7 +346,8 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
             var r = reviewed!;
             Note("请核对部署摘要。下一步仅提升固定安装 helper；未提权客户端不会创建机级策略。");
             Note($"{r.ApplicationId}\n来源：{r.SourceCommit}\n运行账户 SID：{r.RuntimeAccountSid}\n数据：{r.DataRoot}\n种子来源：{r.ConfigurationSource}\n种子操作：{(r.RepairSeed ? "并排修复，原种子保留" : "初装复制，既有种子保留")}\n模式：{r.Mode}\n信任：{r.TrustFile ?? "未选择"}\n离线扩展：{r.Packages.Count}");
-            Note("程序目标：%ProgramFiles%\\ImporterPc\\releases\\新的版本目录\n机级策略与部署登记：%ProgramData%\\ImporterPc\n开始菜单会提供运行、启动修复和安装维护入口。完成后仍须由正常启动校验配置、身份、原责任及实际能力。");
+            Note("程序目标：" + r.ProgramRoot + "\\releases\\新的版本目录\n机级策略与部署登记：%ProgramData%\\ImporterPc\n升级备份：" + (r.BackupDestination ?? "新工位尚无原库") + "\n开始菜单和系统已安装应用提供同源维护入口。安装完成后仍须首配与开工检查。");
+            foreach (var component in components) Note("组件 " + component.Package + " @ " + component.Version + " · " + component.ExpandedBytes + "字节\n能力 " + string.Join(", ", component.Capabilities) + "\n精确依赖 " + string.Join(", ", component.Dependencies) + "\n系统前置条件 " + (component.Prerequisites.Length == 0 ? "本包未声明额外厂商安装项" : string.Join("；", component.Prerequisites)) + "\n仅签名/闭包检查；尚未绑定、激活、连接或允许业务。");
             next.Content = "授权并安装";
         }
         else
@@ -250,9 +366,26 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
         else if (step == 1)
         {
             if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException();
+            CaptureInputs();
             var selectedAccount = account.Text; var dataRoot = data.Text; var configPath = configuration.Text;
             var trustPath = trust.Text; var selected = packages.ToArray(); var repair = repairSeed.IsChecked == true;
-            reviewed = await Task.Run(() => ParcelStartupServices.Review(media!, selectedAccount, dataRoot, configPath, trustPath, selected, repair));
+            selectedProgram = program.Text; selectedBackup = upgradeBackup.Text;
+            if (newSite.IsChecked == true)
+            {
+                var seedDirectory = Path.Combine(Path.GetTempPath(), "ipc-new-site-" + Wire.Id());
+                await Task.Run(() => ParcelStartupServices.CreateSiteSeed(media!, seedDirectory, newStation, selectedMode)); configPath = seedDirectory;
+            }
+            reviewed = await Task.Run(() => ParcelStartupServices.Review(media!, selectedAccount, dataRoot, configPath, trustPath, selected, repair, selectedProgram));
+            components = await Task.Run(() => DeploymentComponentReviewing.Inspect(reviewed));
+            var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(reviewed.ConfigurationSource, "business.json")));
+            if (WindowsDeploymentSetup.Current(ApplicationId) is not null || File.Exists(Path.Combine(reviewed.DataRoot, seed.Mode.ToString(), seed.StationId, ApplicationId, ApplicationId + ".db")))
+            {
+                Directory.CreateDirectory(selectedBackup);
+                var destination = Path.Combine(Path.GetFullPath(selectedBackup), ApplicationId + "-pre-upgrade-" + Wire.Id() + ".db");
+                var plan = await Task.Run(() => ParcelStartupServices.ReviewDeploymentAsync(reviewed, destination));
+                if (!plan.Allowed) throw new InvalidOperationException("原责任阻止升级：" + plan.Summary);
+                reviewed = reviewed with { ChangePlanIdentity = plan.Identity, BackupDestination = destination };
+            }
             step = 2; Render();
         }
         else if (step == 2) { installed = await Task.Run(() => ParcelStartupServices.InstallAsync(reviewed!)); step = 3; Render(); }

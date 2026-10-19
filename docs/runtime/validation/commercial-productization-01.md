@@ -1,5 +1,6 @@
 # COMMERCIAL-PRODUCTIZATION-01：必要验收与证据计划
 
+> 实施接续：本页保留 c445b0e 文档任务/静态基线及原计划状态。当前 COMM-00～10 实现、实际结果与外部门槛见[实施结果](../commercial-productization-01-results.md)；不能把本页初始 NOT_RUN 或“仅文档”语境当作本次实施禁令。
 计划日期：2026-10-19。静态起点：[`b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5`](https://github.com/yuan2go/importer-pc/commit/b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5)。对应[主工作包](../../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)、[产品设计](../../design/commercial-productization-01.md)、[实施逻辑](../../implementation/commercial-productization-01.md)及[基线核对](../../reviews/commercial-productization-01-baseline.md)。
 
 **本文是未来实现的验收计划，全部计划项初始状态为 NOT_RUN。** 本次文档任务不运行应用测试、构建、安装或设备操作。原报告中的 PASS 保留其固定源码、介质和环境，不自动计为本包通过；当前 Windows 原生条件未验，真实 SDK/协议/设备/现场的既有阻塞继续保留。

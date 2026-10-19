@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import tempfile
 import sys
 import zipfile
 from release_build import frozen_export, build_properties, cleanup, archive_package
@@ -35,8 +36,10 @@ if subprocess.check_output(['git', 'status', '--porcelain', '--', *SOURCE_PATHS]
 source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
 business = selected['product']['business']
 module = {'inspection': 'Inspection', 'supply': 'Supply'}[business]
-snapshot = output / 'source-snapshot'
-artifacts = output / 'build-intermediates'
+workspace = Path(tempfile.mkdtemp(prefix='ipc-publication-'))
+print('Retained build workspace on failure: ' + str(workspace), flush=True)
+snapshot = workspace / 'source-snapshot'
+artifacts = workspace / 'build-intermediates'
 extraction = frozen_export(root, source, snapshot)
 app = output / 'app'
 subprocess.run([a.dotnet, 'publish', 'src/Ipc.Assembly/Ipc.Assembly.csproj', '-c', 'Release', '-m:1', '-nr:false',
@@ -59,6 +62,6 @@ selected['binaries'] = selection['Binaries']
 (output / 'composition.lock.json').write_text(json.dumps(selected, indent=2) + '\n')
 publish_guides(snapshot, output, source)
 publish_dependencies(snapshot, output, source)
-cleanup(snapshot, extraction, artifacts, output)
+cleanup(snapshot, extraction, artifacts, workspace)
 archive_package(output, archive, root, source)
 print(json.dumps(dict(Package=str(archive), Sha256=hashlib.sha256(archive.read_bytes()).hexdigest(), **selection)))

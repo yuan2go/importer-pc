@@ -2,6 +2,7 @@ using Ipc.Platform;
 using Ipc.Assembly;
 
 #if PARCEL
+if (DeploymentBatch.Handle(args)) return;
 if (ParcelStartupServices.Handle(args)) return;
 if (ParcelRuntimeSetup.HandleInstall(args)) return;
 if (ParcelCli.Management(args)) return;

@@ -1,0 +1,137 @@
+{
+  "schema": 2,
+  "composition": "sportmaster-reference",
+  "product": {
+    "business": "sportmaster",
+    "views": [
+      "sportmaster",
+      "sportmaster-history",
+      "sportmaster-maintenance"
+    ],
+    "layouts": [
+      "standard",
+      "compact"
+    ]
+  },
+  "definition_sha256": "b6f99dbc6d03718393dc42d20f75c50f9dcb0687961abb194ffd0503bb185e41",
+  "components": [
+    {
+      "id": "platform",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [],
+      "delivery": "core"
+    },
+    {
+      "id": "platform-storage",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "application-contracts",
+      "version": "1.9.0",
+      "contract": 1,
+      "dependencies": [
+        "platform"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "application.sportmaster",
+      "version": "1.3.3",
+      "contract": 1,
+      "dependencies": [
+        "platform-storage",
+        "application-contracts"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "reference-protocol",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "application-contracts"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "drivers",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "reference-protocol"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "supply-contracts",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "platform"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "integrations",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "reference-protocol",
+        "supply-contracts"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "optional-components",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "reference-protocol"
+      ],
+      "delivery": "core"
+    },
+    {
+      "id": "assembly.sportmaster",
+      "version": "1.0.0",
+      "contract": 1,
+      "dependencies": [
+        "application.sportmaster",
+        "drivers",
+        "integrations",
+        "optional-components"
+      ],
+      "delivery": "core"
+    }
+  ],
+  "offline_bundles": [],
+  "BusinessVersion": "1.3.3",
+  "BusinessAssembly": "Ipc.Application.Sportmaster.dll",
+  "CompatibilitySha256": "D80BA0B0C40F34E2E9C080C9D898C77214461BCEA394F43290CD9DDC9F473975",
+  "ApplicationId": "sportmaster",
+  "SourceCommit": "07e0f7ab1e884d355c79ce87d6848ed507a1bf27",
+  "Target": "portable",
+  "EntryPoint": "app/Ipc.Assembly.dll",
+  "DesktopEntryPoint": null,
+  "Windows": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "Binaries": {
+    "app\\Ipc.Application.Contracts.dll": "e3edc97474f0d2010c4d14bfd0347e185621554cb2c47f7552aa44b4b8a42e9d",
+    "app\\Ipc.Application.ParcelFlow.dll": "84316cbd5a7f502280d40b00047d572421dbdae11e0e16c754bdcceefc7f518a",
+    "app\\Ipc.Application.Sportmaster.dll": "c9d43615675ab2d39b6506a647e8d7aa1b14ed26bfb627260531ef3ffbbf8f13",
+    "app\\Ipc.Assembly.dll": "592162d0845738679500fad214aa333b3902aad248b02c3d8d6a8cb87815ac1a",
+    "app\\Ipc.Components.dll": "f0a732394ac867c37bc5ceb9bee511d56b91c406dde5d6b64c305adb7570dfea",
+    "app\\Ipc.Drivers.dll": "223fda35102e2b1aa70638fb8af79bdc2153f78a236cbbcc963e36c91a35bd37",
+    "app\\Ipc.Integrations.dll": "c660d59cccbd8e509ed75aea4a76d9eaff8cf943b35e74180ab3dad4459cea09",
+    "app\\Ipc.Platform.dll": "4ed207ea6cc5a62c6f00e8744ab09dc59a006b4368e6dcc47fa30cc937e030be",
+    "app\\Ipc.Platform.Storage.dll": "abe3d4cbac4adb1dc95059da2c31c695b533f79a9500011ee3244e36f3de3375",
+    "app\\Ipc.Reference.Protocol.dll": "5b4ee8d0a21f4ebd4e5a29e8591c2f4dd2b785c4622c3d5a8b89a48b399a19fd",
+    "app\\Ipc.Supply.Contracts.dll": "068f61ec29bb3824b680d22e349936868b8277bed1447e139f3acdc21e2e10d2",
+    "app\\Ipc.Supply.dll": "6a15a32a4cbc3e25afcc037e7fd9b5c368ab0eea78b5bbe22667993b46664a47"
+  }
+}

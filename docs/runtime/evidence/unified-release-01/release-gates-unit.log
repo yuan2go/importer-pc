@@ -1,0 +1,10 @@
+test_changed_missing_and_extra_files_rejected (test_unified_release.ReleaseTests.test_changed_missing_and_extra_files_rejected) ... ok
+test_path_escape_and_windows_alias_rejected (test_unified_release.ReleaseTests.test_path_escape_and_windows_alias_rejected) ... ok
+test_resealed_wrong_application_and_source_rejected (test_unified_release.ReleaseTests.test_resealed_wrong_application_and_source_rejected) ... ok
+test_stable_archive_across_timestamp_changes (test_unified_release.ReleaseTests.test_stable_archive_across_timestamp_changes) ... ok
+test_zip_mismatch_and_duplicate_rejected (test_unified_release.ReleaseTests.test_zip_mismatch_and_duplicate_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 2.313s
+
+OK

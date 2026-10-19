@@ -1,0 +1,26 @@
+EvidenceRoot=C:\Users\yuan\AppData\Local\Temp\ipc17-verification-0b5a1188d1d94db2b8e268af7c437ea7
+PASS built-in providers survive malformed optional inventory with an explicit diagnostic
+PASS catalog and basic validation create no runtime or database
+PASS Production still refuses absent real capabilities
+PASS offline read finds seed without creating runtime/data
+PASS unchanged offline form preserves complete original configuration
+PASS typed offline editor preserves schema/topology/identity and edits basic settings
+PASS offline static validation opens no runtime/database
+PASS authority checked before creating data
+PASS denied maintenance leaves absent root absent
+PASS first offline save preserves Effective and stages Pending without creating DB
+PASS original seed bytes retained before first stage
+PASS stale editor hash rejected
+PASS CAS rejection preserves configuration bytes
+PASS live application ownership blocks maintenance
+PASS offline editing cannot change station identity
+Unhandled exception. System.UnauthorizedAccessException: Extension writes require a separate elevated installer; ordinary runtime is read-only
+   at Ipc.Platform.MachineRuntimePolicy.RequireExtensionInstallerAuthority() in D:\w\ipc-release\src\Ipc.Platform\MachineRuntimePolicy.cs:line 36
+   at Ipc.Platform.MachineRuntimeSetup.CreateMaintenanceWorkspace() in D:\w\ipc-release\src\Ipc.Platform\MachineRuntimeSetup.cs:line 54
+   at Ipc.Application.ParcelFlow.ParcelStartupMaintenance.ReadVersionFromCopy(String database) in D:\w\ipc-release\src\Ipc.Application.ParcelFlow\ParcelStartupMaintenance.cs:line 112
+   at Ipc.Application.ParcelFlow.ParcelStartupMaintenance.StageAsync(String expectedHash, ParcelConfiguration candidate, String reason) in D:\w\ipc-release\src\Ipc.Application.ParcelFlow\ParcelStartupMaintenance.cs:line 87
+   at StartupDeployment.Offline(String config, String root, ParcelConfiguration seed) in D:\w\ipc-release\tests\Ipc.Application.Verification\StartupDeployment.cs:line 62
+   at StartupDeployment.Run(String workspace, String root) in D:\w\ipc-release\tests\Ipc.Application.Verification\StartupDeployment.cs:line 25
+   at StartupDeployment.Run(String workspace, String root) in D:\w\ipc-release\tests\Ipc.Application.Verification\StartupDeployment.cs:line 26
+   at Program.<Main>$(String[] args) in D:\w\ipc-release\tests\Ipc.Application.Verification\Program.cs:line 16
+   at Program.<Main>(String[] args)

@@ -1,0 +1,99 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "0eea4b3ef04dc2ef0f4b92a43af5ebefec64b0fe",
+  "MediumInventorySha256": "FA225777BC0F8A58857D9A4E4019FC9DE8F0785292B9274DB25973A7F21E8DFB",
+  "Cases": [
+    {
+      "Id": "core",
+      "Status": "PASS",
+      "Reason": "SYNTHETIC_APPLICATION_CORE_REAL_PUBLISHED_DLLS",
+      "Evidence": [
+        {
+          "Path": "core/RESULT.json",
+          "Sha256": "39B927F275B017473C155ACCBAA8B967FAD1B2782409E40A6BEFFE930EDD6BA3"
+        },
+        {
+          "Path": "core/RUN.log",
+          "Sha256": "2AEA72F195228E6D887952A10CB7DBED9C7B66E6D440961F4102F56A63FED893"
+        }
+      ]
+    },
+    {
+      "Id": "wpf",
+      "Status": "FAIL",
+      "Reason": "Frozen native WPF verification failed; original log retained",
+      "Evidence": [
+        {
+          "Path": "wpf/RESULT.json",
+          "Sha256": "93C9F4478977B52913C3756CF5B894BB19944634CF504CCB83F92D826D3DEE4E"
+        },
+        {
+          "Path": "wpf/RUN.log",
+          "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        }
+      ]
+    },
+    {
+      "Id": "media",
+      "Status": "PASS",
+      "Reason": "统一发行器双目标库存/ZIP/源码身份全部校验",
+      "Evidence": [
+        {
+          "Path": "media.json",
+          "Sha256": "0E4E9705031600D0F8C62E2338234BB62502950CE4EDB58930925709C7BC5035"
+        }
+      ]
+    },
+    {
+      "Id": "removal",
+      "Status": "PASS",
+      "Reason": "Internal inventory kernel only; real Windows sharing violation with synthetic restart queue",
+      "Evidence": [
+        {
+          "Path": "removal/RESULT.json",
+          "Sha256": "7DE27C78F1378D86558B6C06285079E31D3877B78A296700494B6D06BD8C861E"
+        },
+        {
+          "Path": "removal/RUN.log",
+          "Sha256": "2F630195C5D6C5DBBECF27427911C72B50EE1AD5401959F05D4981DCA7ACC58E"
+        }
+      ]
+    },
+    {
+      "Id": "windows-install",
+      "Status": "NOT_RUN",
+      "Reason": "隔离Windows：指定SID、非默认目录、helper ACL、登记/快捷方式、非提权启动、错误账户拒绝",
+      "Evidence": []
+    },
+    {
+      "Id": "windows-repair",
+      "Status": "NOT_RUN",
+      "Reason": "同一介质：未确认配置启动失败修复、系统登记修复、并排升级及中断继续、错误介质拒绝",
+      "Evidence": []
+    },
+    {
+      "Id": "windows-uninstall",
+      "Status": "NOT_RUN",
+      "Reason": "系统入口保留数据卸载、真实占用重启、中断恢复、共享组件及数据保留",
+      "Evidence": []
+    },
+    {
+      "Id": "windows-migration",
+      "Status": "NOT_RUN",
+      "Reason": "完整恢复集、新根隔离、旧根退役、双账户/换机DPAPI拒绝、原请求不重发",
+      "Evidence": []
+    },
+    {
+      "Id": "field",
+      "Status": "BLOCKED",
+      "Reason": "真实SDK/合同/设备/实体许可、连续运行与异常恢复、目标触控/DPI、部署资格",
+      "Evidence": []
+    },
+    {
+      "Id": "signoff",
+      "Status": "BLOCKED",
+      "Reason": "可信分发签名、逐项资格和获授权负责方放行；不能用手填PASS代替证书/批准",
+      "Evidence": []
+    }
+  ]
+}

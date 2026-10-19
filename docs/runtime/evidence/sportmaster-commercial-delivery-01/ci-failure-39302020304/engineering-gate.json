@@ -1,0 +1,16 @@
+{
+  "Status": "FAIL",
+  "Level": "engineering",
+  "SourceCommit": "7ab667e9e89006b17173b9fd02c6dc81f48d1303",
+  "MediumInventorySha256": "BA7D83A590282296885C60390C896052DAE560BE6CACAA3CBCD20329F47D7F29",
+  "Outstanding": [
+    {
+      "Id": "core",
+      "Status": "FAIL",
+      "Reason": "Frozen-medium verification failed; retained RUN.log and original evidence"
+    }
+  ],
+  "ProductionApproval": "NOT_GRANTED_BY_THIS_TOOL",
+  "TrustBoundary": "Hashes prove custody, not truth of test/qualification/approval attestations. Authorized release review remains mandatory.",
+  "Authenticode": "NOT_SIGNED_NO_CERTIFICATE_PROVIDED"
+}

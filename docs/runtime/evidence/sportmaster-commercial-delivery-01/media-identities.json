@@ -1,0 +1,52 @@
+{
+  "SourceCommit": "e45e9871b2ad3b85796ae74b4ac3e716996d4554",
+  "Profile": "sportmaster",
+  "Packages": [
+    {
+      "Application": "sportmaster",
+      "Target": "portable",
+      "File": "sportmaster-portable-e45e9871b2ad.zip",
+      "Sha256": "298333C995042685AB8AA6FA3B283529D3F5A55F46DFF0ECC1F05FB8F334075C",
+      "Bytes": 18505877,
+      "Files": 108,
+      "SourceCommit": "e45e9871b2ad3b85796ae74b4ac3e716996d4554",
+      "OfflineBundles": [],
+      "BusinessVersion": "1.4.0",
+      "CompatibilitySha256": "D80BA0B0C40F34E2E9C080C9D898C77214461BCEA394F43290CD9DDC9F473975",
+      "ApplicationContractVersion": "1.10.0"
+    },
+    {
+      "Application": "sportmaster",
+      "Target": "win-x64",
+      "File": "sportmaster-win-x64-e45e9871b2ad.zip",
+      "Sha256": "FE5A9D847E281A057BDAE9503C83FB6F667459C2B54590E98D81DAA46B25E96C",
+      "Bytes": 104290033,
+      "Files": 747,
+      "SourceCommit": "e45e9871b2ad3b85796ae74b4ac3e716996d4554",
+      "OfflineBundles": [],
+      "BusinessVersion": "1.4.0",
+      "CompatibilitySha256": "D80BA0B0C40F34E2E9C080C9D898C77214461BCEA394F43290CD9DDC9F473975",
+      "ApplicationContractVersion": "1.10.0",
+      "IdenticalSharedDlls": [
+        "Ipc.Application.Contracts.dll",
+        "Ipc.Application.ParcelFlow.dll",
+        "Ipc.Application.Sportmaster.dll",
+        "Ipc.Assembly.dll",
+        "Ipc.Components.dll",
+        "Ipc.Drivers.dll",
+        "Ipc.Integrations.dll",
+        "Ipc.Platform.dll",
+        "Ipc.Platform.Storage.dll",
+        "Ipc.Reference.Protocol.dll",
+        "Ipc.Supply.Contracts.dll",
+        "Ipc.Supply.dll"
+      ]
+    }
+  ],
+  "WindowsInventorySha256": "663A662B3708BE3633D1AFDBF6B1A7BDC9F77715C4005FE9A9B699A7274645B6",
+  "BusinessVersion": "1.4.0",
+  "ApplicationContractVersion": "1.10.0",
+  "DatabaseFormat": 8,
+  "Production": "NOT_APPROVED",
+  "Authenticode": "NOT_SIGNED_NO_CERTIFICATE_PROVIDED"
+}

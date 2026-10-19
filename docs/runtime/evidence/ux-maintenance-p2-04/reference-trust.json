@@ -1,0 +1,10 @@
+{
+  "SchemaVersion": 1,
+  "Publishers": [
+    {
+      "Id": "ux-closure-reference-only",
+      "PublicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAoHW83BUAmFi/tRE345+5\nJOfhCpYQCf9waVZpQoLrMwM/EBhNsFt+npT+39sIvjS69Z3e6eZyVehna04zU+SX\nI9m4Ua6KEFYtN0cFJ8yL/2gR+Bzh7inwONyadjW5mew1yC41dWI4JzeIc3IRK8R2\nul4rJknlz7/2eqWyXVKXuhYzJfBGuPV1zjn62AZgFfrRFXeN3PuJ+savK0Z6aA0z\nmBoVrIJQrmHL9tIZZ0Ui9ivDJbl4VHyZQsSPZWl1+fnrO9OKC7J4nkkUeOObihmc\nzHte+d3Fqm9XBmdJPE31TNGI0wXjZOCECPvQLwSZmVY9S09ccEUZp4rMzYuo/0HM\ntDoyyNrJT05thi23gFXdXM4/Wt85jt+aR8Qmt4v3kQDjqIaJTcH1og56ukjWUppG\nD9qH7G2Ob+iqPOhjt+ezbTMxnRwDdSjO9NtPWdFWVmU4FK4unNHxP8uyl4O95mI5\nTR5qzprQJXnru81YOz0wphza39TrGx/ByBCzxumTu17pAgMBAAE=\n-----END PUBLIC KEY-----\n",
+      "TestOnly": true
+    }
+  ]
+}

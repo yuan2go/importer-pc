@@ -1,4 +1,4 @@
-> 当前增量以[UX审查WP-01～07闭环](../../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮计划1.3.2/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
+> 当前增量以[UX审查WP-01～07闭环](../../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮计划1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 
 > 本分支口径见[UX修复工作包](../../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)，原清单固定字节见[索引](../../archive/pre-ux-commercial-fix-01/README.md)。既有Windows06显示/DPI矩阵全部保留，本清单只增加修复复验，不宣布验收通过。
 
@@ -41,3 +41,11 @@ UiVerification已按实际ClientArea尺寸检查classic与supply-station的1440�
 ### 1a34a1e复审后的续修要求（原生仍NOT_RUN）
 
 原脚本Busy断言误查父UserControl而非实际禁用Grid，会中断后续验收；交叉编译不能关闭该缺陷。续修须检查实际维护Grid/表格/保存控件及独立Pause，以finally释放挂起任务。完成后检查真正绑定的OperationFeedback，无消息成功不能重现旧失败。classic在每个支持客户区验证诊断Expander可见、展开可滚动且操作员登录/登出在启用组合可达、密码可聚焦；关闭诊断后继续完整工作台几何断言。源代码补齐和Windows实际执行分别记录。
+
+### 维护三项P2补验04（1.3.3候选源码已补，Windows NOT_RUN）
+
+本节按[04工作包](../../work-packages/WP-IPC-UX-MAINTENANCE-P2-04.md)覆盖当前源码，旧1.3.2下载媒介不含本增量。原第8项重叠关闭的现行行为更新为：主窗接管正在关闭的子窗，停止失败两窗均保留并恢复计时器；再独立关闭子窗后，它的计时器终止且主窗重试不能重新启动。原失败与旧版本验收记录不倒写。
+
+原生验证器增加两布局下的参数页签往返、独立提供者改变、合法长列表/空项/转义与只读默认值检查；表单无效数值字符串取消关窗保留原CAS和选择。另以实际schema2参考Application验证旧版int转换失败：模型不变但控件Validation有错时仍提示草稿；取消保留无效原文，再验证LostFocus绑定在关窗前提交，明确放弃后真实宿主仅停止一次，Close不重入Closing。合成参数描述只用于控件验证，不安装或激活模拟SDK。
+
+仍需Windows执行并记录：默认对话框“取消”的键盘焦点、Esc/Alt+F4、主辅窗口各有草稿时的汇总、主窗取消后子窗迟到完成、保存中编辑与停止失败重试；原生DataGrid仍在编辑单元格时关窗，取消保留文本/校验错误/选中行。手动验收不能以跨平台事件替身或交叉构建标PASS。原有显示、DPI、键盘/触摸、普通账户、更新恢复和负载矩阵全部保留。

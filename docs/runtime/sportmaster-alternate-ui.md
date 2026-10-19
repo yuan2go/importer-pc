@@ -1,4 +1,4 @@
-> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.2/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
+> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 
 > 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
 
@@ -76,3 +76,11 @@ python3 scripts/package-application.py --application sportmaster --target win-x6
 审查03：两布局的快照读取失败/超过3秒未成功时，共用失效显示和维护动作保护；时效同时使用单调时钟与显示时间。运行实例切换清本窗旧选择，退役实例不能回写；同实例修订倒退明确失效。当前件严格按Position.CurrentOperation定位，旧格口明确标旧，不从历史/时间排序猜目标。轮询失败时软件暂停仍以已显示修订到Application做CAS，成功回执与快照是否恢复分别显示；刷新成功不自动Resume/重发。Windows原生交互、DPI及截图另行验收。
 
 本轮闭环：历史列表显示查询完成时间，列表为查询时事实；详情可按同一Owner更新，页外原件明确标识。慢快照、历史换页和原件读取不能恢复等待前选择。普通慢动作显示操作名与阻断原因/回执；Pause独立。classic紧凑时应保留可展开的站位/会话诊断及操作员登录入口，默认折叠，维护认证仍独立；1a34a1e将其整体隐藏的复审缺陷已在续修中恢复；实际控件/客户区仍须Windows后验。保留本位来源/业务状态/原件责任；长码可局部滚动并完整选择，未决摘要先显示待核对状态再进入详情查原码/ID，不让长码挤走Unknown。
+
+### 三项P2增量（04，参考候选1.3.3）
+
+本次[维护修复](../work-packages/WP-IPC-UX-MAINTENANCE-P2-04.md)在原排空与停止预算之间检查所有受影响窗口的配置草稿。存在未保存或原生校验失败输入时默认取消，明确选择放弃才继续关闭；主窗覆盖其辅助窗，辅助窗只检查自身。取消保留选择、草稿和原CAS。停止失败仍保留内存草稿，重试重新确认。主窗接管重叠子窗关闭，取消后迟到子窗不得继续关闭；原生Closing先退出当前事件后再完成Close。已经独立关闭的子窗保持终态。
+
+读码与能力库存分别保留自己的参数选择；切换提供者只刷新相应表单。string-list采用多行JSON字符串数组，按原schema的单项长度/数量/序列化总界限编辑和校验，不删除空项或改写转义。schema1/2/3与高级JSON仍为同一配置账，保存只接受提交时基线，期间新增编辑继续未保存。
+
+本轮1.3.3候选包含以上源码行为；最终冻结SHA、产物及远端状态见[04结果](ux-maintenance-p2-04-results.md)。6ce1d6d的1.3.2参考Release不含本增量，旧ZIP不会取得这三项修复。Windows实际执行、目标负载及真实接入状态不变。

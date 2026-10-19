@@ -1,0 +1,16 @@
+{
+  "PullRequest": "https://github.com/yuan2go/importer-pc/pull/42",
+  "StateAtRead": "OPEN",
+  "MergeStateAtRead": "CLEAN",
+  "HeadBeforeReceipt": "7447971288ea20f9228a73ce92534342fa7dc1f5",
+  "MainAtRead": "be7956447054054dfdcfce725e8fbbbdfc87407a",
+  "ProductSource": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+  "Release": "https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-ff31b0e",
+  "RemoteAssetsReadback": "PASS_ALL_15",
+  "CIStatusChecks": [],
+  "AutomaticMergePerformed": false,
+  "ForcePushPerformed": false,
+  "ParallelPr41": "independent, not included; common delivery docs require explicit reconciliation",
+  "WindowsNative": "NOT_RUN",
+  "Production": "NOT_READY"
+}

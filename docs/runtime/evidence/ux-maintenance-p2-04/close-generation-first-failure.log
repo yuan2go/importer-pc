@@ -1,0 +1,37 @@
+EvidenceRoot=/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/ipc17-verification-a3c7f3f3b3d44ed780d2bb44e0c0535a
+PASS WINDOW-CONTROL: owner close defaults to retaining an auxiliary unsaved draft before stopping the Application
+PASS WINDOW-CONTROL: cancelling owner close resumes all surviving windows
+PASS WINDOW-CONTROL: auxiliary close can cancel without changing owner lifetime
+PASS WINDOW-CONTROL: overlapping auxiliary close hands its dirty draft to the still-draining root without an independent decision
+PASS WINDOW-CONTROL: owner decision includes the auxiliary draft exactly once
+PASS WINDOW-CONTROL: owner cancellation retains every overlapping draft
+PASS WINDOW-CONTROL: explicit owner discard closes the entire group and stops once
+PASS WINDOW-CONTROL: failed stop after explicit discard still retains the draft for retry
+PASS WINDOW-CONTROL: a later close retries the original stop and asks again for the retained draft
+PASS WINDOW-CONTROL: close waits for the complete save workflow before deciding draft status
+PASS WINDOW-CONTROL: completed save is evaluated after drain and needs no obsolete discard decision
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 0
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 1
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 2
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 3
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 4
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 5
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 6
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 7
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 8
+PASS WINDOW-CONTROL: root cancellation invalidates a late adopted child close, race 9
+PASS WINDOW-CONTROL: pendingRefresh drains before owner stop
+PASS WINDOW-CONTROL: pendingRefresh owner failure retains overlapping child and its live timer
+PASS WINDOW-CONTROL: pendingRefresh independently closed child cannot poll or restart
+PASS WINDOW-CONTROL: pendingRefresh successful retry leaves no orphan timer
+PASS WINDOW-CONTROL: pendingViewportPause drains before owner stop
+PASS WINDOW-CONTROL: pendingViewportPause owner failure retains overlapping child and its live timer
+PASS WINDOW-CONTROL: pendingViewportPause independently closed child cannot poll or restart
+PASS WINDOW-CONTROL: pendingViewportPause successful retry leaves no orphan timer
+PASS WINDOW-CONTROL: auxiliary close does not stop owner
+PASS WINDOW-CONTROL: owner stops exactly once after ordinary auxiliary close
+Unhandled exception. System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at SportmasterWindowLifetime.Until(Func`1 predicate, Int32 milliseconds) in <isolated-worktree>/tests/Ipc.Application.Verification/SportmasterWindowLifetime.cs:line 19
+   at SportmasterWindowLifetime.Run() in <isolated-worktree>/tests/Ipc.Application.Verification/SportmasterWindowLifetime.cs:line 109
+   at Program.<Main>$(String[] args) in <isolated-worktree>/tests/Ipc.Application.Verification/Program.cs:line 26
+   at Program.<Main>(String[] args)

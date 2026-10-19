@@ -10,6 +10,10 @@ public sealed class CapabilityParameter(ParameterField field, string value) : IN
     public event PropertyChangedEventHandler? PropertyChanged;
     string current = value;
     public ParameterField Field { get; } = field;
+    public bool IsList => Field.Type == "string-list";
+    public int EditorMaximumLength => IsList ? checked(Field.MaximumLength * Field.MaximumItems + 8 * Field.MaximumItems) : Field.MaximumLength;
+    public string EditorLabel => IsList ? Field.Label.Replace("（每行一项）", "") + "（JSON 数组）" : Field.Label;
+    public string EditorHelp => IsList ? "JSON字符串数组；最多" + Field.MaximumItems + "项，每项最多" + Field.MaximumLength + "字符；保留空项和转义。" : Field.Description ?? Field.Type;
     public string Value { get => current; set { current = value; PropertyChanged?.Invoke(this, new(nameof(Value))); } }
 }
 public sealed class CapabilityDraft : INotifyPropertyChanged
@@ -131,6 +135,7 @@ public partial class ParcelViewModel
         DraftUploadStrategy = c.Images?.Strategy ?? UploadStrategy.BeforeMain; DraftImageBytes = c.Images?.MaximumBytes ?? 4194304;
         DraftTotalBytes = c.Images?.TotalBytes ?? 33554432; DraftPending = c.Images?.MaximumPending ?? 32;
         foreach (var name in new[] { nameof(DraftWeightSource), nameof(DraftUnit), nameof(DraftPrecision), nameof(DraftConfiguredWeight), nameof(DraftWaitMs), nameof(DraftFreshMs), nameof(DraftUploadStrategy), nameof(DraftImageBytes), nameof(DraftTotalBytes), nameof(DraftPending) }) Changed(name);
+        AcceptEditorBaseline();
     }
     public async Task SaveCapabilitiesAsync()
     {
@@ -142,29 +147,35 @@ public partial class ParcelViewModel
             await SaveStructuredConfigurationAsync();
             return;
         }
+        var c = BuildLegacyConfiguration(); var submittedSignature = ConfigurationEditSignature();
+        var expected = RequireDraftRevision();
+        var reason = ConfigurationReason;
+        var receipt = await ServiceAsync(() => application.StageConfigurationAsync(expected, c, reason));
+        AdvanceOwnDraftRevision(expected, receipt);
+        if (receipt.Status == "PendingRestart") { savedEditorSignature = submittedSignature; savedCandidate = Wire.Encode(c); }
+        Message = receipt.Status + " · " + receipt.Reason;
+    }
+    ParcelConfiguration BuildLegacyConfiguration()
+    {
+        var loaded = Wire.Decode<ParcelConfiguration>(savedCandidate);
         var instances = CapabilityDrafts.Where(x => x.Kind != "observation").Select(x => x.Build()).ToArray();
         CapabilityBinding? Selected(string kind) => CapabilityDrafts.Where(x => x.Role == kind && x.Bound).Select(x => x.Build()).SingleOrDefault();
         var reader = Selected("observation") ?? throw new InvalidOperationException("读码来源必须绑定");
-        if (reader.Target != Snapshot.Configuration.Effective.Reader.DeviceId) throw new InvalidOperationException("稳定读码DeviceId不属于普通参数修改；清偿原件后使用受控迁移部署");
+        if (reader.Target != loaded.Reader.DeviceId) throw new InvalidOperationException("稳定读码DeviceId不属于普通参数修改；清偿原件后使用受控迁移部署");
         if (!reader.Enabled) throw new InvalidOperationException("读码来源必须启用");
         var camera = Selected("camera"); var upload = Selected("upload");
         if ((camera is null) != (upload is null)) throw new InvalidOperationException("采图和上传须同时绑定");
-        var c = (Snapshot.Configuration.Pending ?? Snapshot.Configuration.Effective) with
+        return loaded with
         {
             SchemaVersion = 2, WeightValidity = DraftWeightValidity,
             Login = Selected("login"), MaintenanceLogin = Selected("maintenance-auth"), Scale = Selected("weight"), Wcs = Selected("integration"), Plc = Selected("plc"),
             Weight = new(DraftWeightSource, DraftUnit, DraftPrecision, DraftWeightSource == WeightSource.Configured ? DraftConfiguredWeight : null, DraftFreshMs, DraftWaitMs),
             Images = camera is null ? null : new(camera, upload!, DraftImageBytes, DraftUploadStrategy, DraftTotalBytes, DraftPending),
-            Reader = Snapshot.Configuration.Effective.Reader with { Driver = reader.Package is null ? "manual" : "extension:" + reader.InstanceId },
+            Reader = loaded.Reader with { Driver = reader.Package is null ? "manual" : "extension:" + reader.InstanceId },
             CapabilityInstances = instances,
             Extensions = instances.Append(reader).Any(x => x.Package is not null) ? new(instances.Append(reader).Where(x => x.Package is not null).Select(x => x.Package!).Distinct().ToArray(),
-                reader.Package is null ? [] : [new(reader.InstanceId, reader.Package.Id, reader.Module!, Snapshot.Configuration.Effective.Reader.DeviceId, true, reader.Parameters)]) : null
+                reader.Package is null ? [] : [new(reader.InstanceId, reader.Package.Id, reader.Module!, loaded.Reader.DeviceId, true, reader.Parameters)]) : null
         };
-        var expected = RequireDraftRevision();
-        var reason = ConfigurationReason;
-        var receipt = await ServiceAsync(() => application.StageConfigurationAsync(expected, c, reason));
-        AdvanceOwnDraftRevision(expected, receipt);
-        Message = receipt.Status + " · " + receipt.Reason;
     }
     public async Task AuthorizeMaintenanceAsync(string proof) { RequireFreshSnapshot(); var subject = MaintenanceSubject; var r = await ServiceAsync(() => application.AuthorizeMaintenanceAsync(subject, proof)); Message = r.Status + " · " + r.Reason; }
     public async Task InstallAsync()

@@ -1,0 +1,85 @@
+{
+  "SourceCommit": "ab8f4d40d10d13b545456e4b7b99b6291b9303ec",
+  "MainAtStart": "be7956447054054dfdcfce725e8fbbbdfc87407a",
+  "Scope": "All changed source/test inputs, identical to checked Git source; deployment guides and delivery metadata have separate commits; no new release created",
+  "Files": [
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs",
+      "Sha256": "752b2a2774ffa0e6cfb86ef7fe723a5288e759c03e15df6bfe244f34bf70627c",
+      "SizeBytes": 14974,
+      "MatchesTestedSource": true
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationCloseGuard.cs",
+      "Sha256": "4ec390800257404ba90c161a3225e79af429042a097b81f86d378a903785624e",
+      "SizeBytes": 1877,
+      "MatchesTestedSource": true
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationDraftState.cs",
+      "Sha256": "c15fd89d250abad92dd5c21f91e9fac7e0213f98c5b62a117fe2d0a407d9e446",
+      "SizeBytes": 1645,
+      "MatchesTestedSource": true
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/MaintenancePage.xaml.cs",
+      "Sha256": "6503c39f64e0a099b16f0b9e68f1b354a80a5a339b2dcda200435f0838a0884b",
+      "SizeBytes": 9042,
+      "MatchesTestedSource": true
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/ShellWindow.xaml.cs",
+      "Sha256": "3a8d74895d67dc0a3650e5c880eb36fdf548a5be3a9728b49532a9cf840b0701",
+      "SizeBytes": 7365,
+      "MatchesTestedSource": true
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs",
+      "Sha256": "f5e8a1885dae3176fad8912408cc1bbb376fe2484213e7ee87d2909ae1b50269",
+      "SizeBytes": 28997,
+      "MatchesTestedSource": true
+    },
+    {
+      "Path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs",
+      "Sha256": "e0a9f5c0780f5c660e53df6b19b6335d281f42ecaa1321a1208b7188eaea742c",
+      "SizeBytes": 8470,
+      "MatchesTestedSource": true
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj",
+      "Sha256": "bf0c87595ff6accaf9a6de4768995ba03da02e93e5e12fa30f8b96248de70649",
+      "SizeBytes": 2559,
+      "MatchesTestedSource": true
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/SportmasterWindowLifetime.cs",
+      "Sha256": "21bc78cf9296cf8a70f09085fb056e2f7c9ee9c6325f9d8906ed4c52287e78f0",
+      "SizeBytes": 10663,
+      "MatchesTestedSource": true
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/UxCommercialConfiguration.cs",
+      "Sha256": "af046db2d97fd4731e31737ae9a6cc321e74a578c322b3069a9ba02c366694bf",
+      "SizeBytes": 24345,
+      "MatchesTestedSource": true
+    },
+    {
+      "Path": "tests/Ipc.Application.Verification/WindowEventShim.cs",
+      "Sha256": "9fd9d0506c42dae2ef6acf0571f64baf335925ec2be291eadb8c18afbfc509b7",
+      "SizeBytes": 4405,
+      "MatchesTestedSource": true
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "Sha256": "341f269e08fbc37da197ef8edaa1f676f3efa263cf3273df05b833c3f2c959cb",
+      "SizeBytes": 11622,
+      "MatchesTestedSource": true
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/UxCommercialClosure.cs",
+      "Sha256": "b46dc7835d84170765db02738a43336fc88c776d85237b80566bbfeedb0116e5",
+      "SizeBytes": 22973,
+      "MatchesTestedSource": true
+    }
+  ]
+}

@@ -114,15 +114,18 @@ static partial class Program
             failNextStop = true; remaining.Close(); alternate.Close();
             Check(stopCalls == 0, "overlapping child and owner close drain the original pending read first");
             pendingChildRead.SetResult();
-            for (var i = 0; i < 100 && (!alternate.IsEnabled || remaining.IsVisible); i++) await Task.Delay(20);
-            Check(alternate.IsVisible && alternate.IsEnabled && !remaining.IsVisible && !childTimer.IsEnabled && stops == 0,
-                "owner stop failure retains owner without restarting a closed child's native DispatcherTimer");
+            for (var i = 0; i < 100 && !alternate.IsEnabled; i++) await Task.Delay(20);
+            Check(alternate.IsVisible && alternate.IsEnabled && remaining.IsVisible && childTimer.IsEnabled && stops == 0,
+                "owner stop failure retains both overlapping windows and resumes their native timers");
+            remaining.Close(); await Task.Delay(100);
+            Check(!remaining.IsVisible && !childTimer.IsEnabled, "independent native auxiliary close after root failure is terminal");
             alternate.Close();
             for (var i = 0; i < 100 && alternate.IsVisible; i++) await Task.Delay(50);
             Check(stops == 1 && stopCalls == 2 && !alternate.IsVisible && !remaining.IsVisible && !childTimer.IsEnabled,
                 "owner retry stops business once and leaves closed auxiliary timer stopped");
             classic.Close();
         }
+        await VerifyLegacyDraftClose(evidence, config, Check);
         lines.Add("PASS WINDOWS WPF SMOKE; real SDK/WCS/device/field acceptance remains BLOCKED");
     }
     static void Click(DependencyObject root, string name) => Descendants(root).OfType<Button>().Single(x => Equals(x.Content, name)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));

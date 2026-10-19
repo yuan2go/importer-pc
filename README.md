@@ -2,15 +2,17 @@
 
 C#/.NET 10工位运行基座及独立Application参考工程。Platform负责机制，Application拥有状态和守卫，Driver适配设备，Component适配外部服务。一个Application运行实例可服务多个页面和布局。
 
-当前main继承PR37的有效实现和PR39续修。[不可变参考候选1.3.2](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-6ce1d6d)冻结源码为6ce1d6d0b109bd6a3d9490fac176122b4670b90b；原f1a655c候选、PR37本地1.3.0与原验证保持形成时身份。Windows/真实组合未放行。
+当前源码继承PR37/39，并整合[SID前置门禁](docs/runtime/runtime-identity-preflight-01.md)与[维护三项P2](docs/runtime/ux-maintenance-p2-04-results.md)。实际合并及媒介边界见[本次发布记录](docs/runtime/publication-maintenance-20261019.md)；Windows/真实组合未放行。
+
+[既有参考候选1.3.3](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-ff31b0e)冻结ff31b0e，含维护三项P2但不含SID修复；[SID portable参考](https://github.com/yuan2go/importer-pc/releases/tag/runtime-sid-reference-f354d3f)冻结f354d3f，含SID修复但不含维护P2。此次未构建同时包含两项修复的新媒介，不把旧产物改标为合并后的发布。
 
 ## 当前运行与组合
 
-当前业务版本1.3.2、Application.Contracts1.9.0、Parcel DB7（SQL1–6原样保留；SQL7为数字请求持久归属与范围退役）、配置schema1/2/3；Supply另用Storage5和原操作契约。三个主流程保持独立：Sportmaster左右两个独立reader/投递位，扫码取得WCS格口，不下PLC；DirectPlc与WcsToPlc各单reader/顺序位，分别PLC与WCS→PLC。登录/称重/采图/上传按已确认策略选装，DirectPlc完整UI继续延期。
+当前业务版本1.3.3、Application.Contracts1.9.0、Parcel DB7（SQL1–6原样保留；SQL7为数字请求持久归属与范围退役）、配置schema1/2/3；Supply另用Storage5和原操作契约。三个主流程保持独立：Sportmaster左右两个独立reader/投递位，扫码取得WCS格口，不下PLC；DirectPlc与WcsToPlc各单reader/顺序位，分别PLC与WCS→PLC。登录/称重/采图/上传按已确认策略选装，DirectPlc完整UI继续延期。
 
-Sportmaster支持 `--ui classic`（默认）和 `--ui supply-station`，导航与辅助窗共享Application、连接和原作业。RCS组件 `sportmaster.rcs-task` 1.1.4只实现 `sorter.task.dest_request`；正常、NEED_UNPACK、拒绝和Unknown分别处理，不自动重发、不提供未确认的拆包提交。图片展示与长期图库不在范围。
+Sportmaster支持 `--ui classic`（默认）和 `--ui supply-station`，导航与辅助窗共享Application、连接和原作业。RCS组件 `sportmaster.rcs-task` 1.1.5只实现 `sorter.task.dest_request`；正常、NEED_UNPACK、拒绝和Unknown分别处理，不自动重发、不提供未确认的拆包提交。图片展示与长期图库不在范围。
 
-[并发整合报告](docs/runtime/parallel-task-reconciliation-01.md)统一PR27/29/30/32、PR31恢复基线、冲突裁决及最终组合验证；历史候选、原失败与形成时结论保持原身份。当前精确参考扩展为能力包2.2.4与reader1.3.4，按实际目标公共DLL构建，版本号本身不构成加载/Production资格。
+[并发整合报告](docs/runtime/parallel-task-reconciliation-01.md)统一PR27/29/30/32、PR31恢复基线、冲突裁决及最终组合验证；历史候选、原失败与形成时结论保持原身份。本分支精确参考扩展为能力包2.2.5与reader1.3.5，按实际目标公共DLL构建，版本号本身不构成加载/Production资格。
 
 ## 开发、发布与维护
 

@@ -1,0 +1,23 @@
+{
+  "SourceCommit": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+  "Status": "CROSS_BUILD_ONLY",
+  "WindowsExecution": "NOT_RUN",
+  "Checks": [
+    {
+      "Name": "wpf-release-sportmaster",
+      "ExitCode": 0
+    },
+    {
+      "Name": "wpf-release-direct-plc",
+      "ExitCode": 0
+    },
+    {
+      "Name": "wpf-release-wcs-to-plc",
+      "ExitCode": 0
+    },
+    {
+      "Name": "native-release-build",
+      "ExitCode": 0
+    }
+  ]
+}

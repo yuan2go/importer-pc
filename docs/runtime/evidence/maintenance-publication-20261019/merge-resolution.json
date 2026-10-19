@@ -1,0 +1,184 @@
+{
+  "date": "2026-10-19",
+  "baseline_main": "be7956447054054dfdcfce725e8fbbbdfc87407a",
+  "pr41_head": "e274b5f9ca3ad645c4071eef480a3fe00c4b4bcb",
+  "pr41_merge": "9f4b32f319d3a66d993cfbafcdda90656e7fd687",
+  "pr42_original_head": "92834054fb583a3393b573d8a20d6e1a6f676341",
+  "conflicts": [
+    "docs/manifest.json",
+    "docs/manifest.sha256"
+  ],
+  "resolution": "Union tracked public manifest records, preserve both source implementations and evidence. INDEX and Windows guide auto-merged; current navigation/guide distinguishes the unbuilt combined source from separately frozen existing media.",
+  "functional_source_overlap": [],
+  "composed_source_git_identity": [
+    {
+      "path": "scripts/application.ps1",
+      "source_commit": "e274b5f9ca3ad645c4071eef480a3fe00c4b4bcb",
+      "git_blob": "55e207349ee23ad0025058d1991b81ffc47e3631"
+    },
+    {
+      "path": "scripts/test_runtime_identity.py",
+      "source_commit": "e274b5f9ca3ad645c4071eef480a3fe00c4b4bcb",
+      "git_blob": "0a59e3918e6873a16cb94006728a6e8cf6391081"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow/ParcelRuntime.cs",
+      "source_commit": "e274b5f9ca3ad645c4071eef480a3fe00c4b4bcb",
+      "git_blob": "7979420ed7d0bd9f7e1812b40654a38ec0b879d6"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelAssembly.cs",
+      "source_commit": "e274b5f9ca3ad645c4071eef480a3fe00c4b4bcb",
+      "git_blob": "aceaed876e4c98087a42986005e68aee7f990a15"
+    },
+    {
+      "path": "src/Ipc.Assembly/ParcelCli.cs",
+      "source_commit": "e274b5f9ca3ad645c4071eef480a3fe00c4b4bcb",
+      "git_blob": "bd918e66180ebefb49d2ba2e75aff243725b7577"
+    },
+    {
+      "path": "src/Ipc.Platform/MachineRuntimePolicy.cs",
+      "source_commit": "e274b5f9ca3ad645c4071eef480a3fe00c4b4bcb",
+      "git_blob": "bbd591093ef75790406289e6736b089a946e70cb"
+    },
+    {
+      "path": "tests/Ipc.Verification/Program.cs",
+      "source_commit": "e274b5f9ca3ad645c4071eef480a3fe00c4b4bcb",
+      "git_blob": "c1106aefda7a6c8557395a20ad0c9827946e7a54"
+    },
+    {
+      "path": "tests/Ipc.Verification/RuntimeIdentityVerification.cs",
+      "source_commit": "e274b5f9ca3ad645c4071eef480a3fe00c4b4bcb",
+      "git_blob": "e727d970a9a4cbed58e2f8b4872ed668c10e3770"
+    },
+    {
+      "path": "config/compatibility/direct-plc.json",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "415447ef28e1edd797f4e790377de88b18e276a7"
+    },
+    {
+      "path": "config/compatibility/sportmaster.json",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "05bf0feb0f939cef2125dd2101fc3c97a20ff428"
+    },
+    {
+      "path": "config/compatibility/wcs-to-plc.json",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "5118a7501ca5cce90319c543690df7bd731460fe"
+    },
+    {
+      "path": "config/compositions.json",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "3a2e764a2f4a35a2c3be44dbff4770d4b744a4ab"
+    },
+    {
+      "path": "scripts/test_application_compatibility.py",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "b8389b2709c9e90e6d8c6c328fad1c8305eac7f3"
+    },
+    {
+      "path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "a1e679e8836d8696f0e1f1d7199cbe93effe7d0f"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "3fd312d6479f348757c4ec86b5ddf3ae9b028380"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationCloseGuard.cs",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "247e1deb643644ac1b8205b8e6cf41616657a5b3"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationDraftState.cs",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "88b1fdd53712ff5a34c6ac7d5ea57c0001e9317e"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/MaintenancePage.xaml.cs",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "bca78958b3339945ea130d216f8b5949203033cd"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ShellWindow.xaml.cs",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "0015b46ae06c710e249fc779d879231ce0b413bd"
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "3e4e9d99290cbcfb1073cd6d1f569bf1a875b9ea"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "f4dde3c9a7ed91f31f00510127ac71794efe3da0"
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "9422eca0dc7f914a51c999cdc39726b058c16821"
+    },
+    {
+      "path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "b8dbd1665ce943d0a5615141aaff701ae2ad89c0"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "1dfe4b237b719d69c78759fc8814123bd322e05c"
+    },
+    {
+      "path": "src/Ipc.Integrations.SportmasterRcs/manifest.template.json",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "2812b4bdbbf4f16fd344d2e0b20d6995d00a828c"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "02c569964a9c970ebcfbe39a3ea7fd1b232330cf"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/SportmasterWindowLifetime.cs",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "6760c404b10d63074085ae02aee01fa6f4e89318"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/UxCommercialConfiguration.cs",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "8f17182626b2221721085a1fc151f344be407c25"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/VersionCompatibility.cs",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "5cdc998a9966db6c69efee14541e5edfa09a3a44"
+    },
+    {
+      "path": "tests/Ipc.Application.Verification/WindowEventShim.cs",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "125ba32bf4b293dd539d3f37867279a197ad0519"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "ed623b161ecf706304e04b9a4d33cdab0307d6e0"
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/UxCommercialClosure.cs",
+      "source_commit": "92834054fb583a3393b573d8a20d6e1a6f676341",
+      "git_blob": "d9f7c0932f681bd1bd42cc9f248ff71f1f8bfcec"
+    }
+  ],
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "builds": "NOT_RUN_BY_USER_REQUEST",
+  "repackaging": "NOT_RUN_BY_USER_REQUEST",
+  "hooks": "DISABLED_FOR_PUBLICATION",
+  "release_boundaries": {
+    "ux-reference-ff31b0e": "1.3.3 maintenance P2; does not contain SID preflight patch",
+    "runtime-sid-reference-f354d3f": "portable SID development reference; does not contain maintenance P2",
+    "combined_main": "Both source changes present; no combined media built, signed or run in this publication"
+  }
+}

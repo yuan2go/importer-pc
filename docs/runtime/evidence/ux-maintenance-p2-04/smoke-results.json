@@ -1,0 +1,14 @@
+[
+  {
+    "Application": "sportmaster",
+    "ExitCode": 0
+  },
+  {
+    "Application": "direct-plc",
+    "ExitCode": 0
+  },
+  {
+    "Application": "wcs-to-plc",
+    "ExitCode": 0
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "ProductSource": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+  "Status": "PASS_REFERENCE",
+  "SelectedPackages": {
+    "reader": "1.3.5",
+    "capabilities": "2.2.5",
+    "rcs": "1.1.5"
+  },
+  "Checks": [
+    "signed package install and original operation recovery",
+    "two distinct reader instances and positions",
+    "complete configuration CAS and controlled Pending activation",
+    "explicit start failure preserves old Effective and ActivationFailed recovery",
+    "safe retirement preserves original history",
+    "signed RCS exact request wire/raw receipt and guarded unpack",
+    "restart and unsupported Query do not repeat POST"
+  ],
+  "RawRecords": "Release raw-verification-evidence.zip/release/selected-journey.json and rcs-journey.json",
+  "WindowsNative": "NOT_RUN",
+  "Production": "NOT_READY"
+}

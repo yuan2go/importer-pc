@@ -32,6 +32,16 @@ public static class ParcelRuntimeSetup
             if (!File.Exists(dependency) || Wire.FileHash(dependency) != Wire.FileHash(assembly.Location))
                 throw new InvalidDataException("First-run installer differs from this client; extract the complete matching Windows package");
         }
+        var helperDirectory = Path.GetDirectoryName(helper)!;
+        var registration = Path.Combine(helperDirectory, "application-release.json");
+        if (File.Exists(registration))
+        {
+            var release = Wire.Decode<ApplicationRelease>(File.ReadAllText(registration));
+            if (!release.Files.ContainsKey("Ipc.Assembly.exe")) throw new InvalidDataException("Installer apphost is missing from release integrity registration");
+            var definition = ParcelAssembly.Definition();
+            ApplicationReleaseValidation.ValidateIfPublished(helperDirectory, definition.Id,
+                new(release.Views, release.Layouts), definition.GetType().Assembly);
+        }
         var start = new ProcessStartInfo(helper) { UseShellExecute = true, Verb = "runas", WorkingDirectory = Path.GetDirectoryName(helper)! };
         foreach (var argument in new[] { "--action", "runtime-install", "--runtime-sid", originalSid }) start.ArgumentList.Add(argument);
         try

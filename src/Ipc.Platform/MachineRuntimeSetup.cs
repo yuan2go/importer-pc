@@ -60,7 +60,9 @@ public static class MachineRuntimeSetup
         for (var current = parent; current is not null; current = current.Parent)
             MachineRuntimePolicy.RejectLinks(current.FullName);
         var root = new DirectoryInfo(machine);
-        if (root.Exists) MachineRuntimePolicy.RejectLinks(machine);
+        try { MachineRuntimePolicy.RejectLinks(machine); }
+        catch (FileNotFoundException) { }
+        catch (DirectoryNotFoundException) { }
         root.Create(DirectoryAcl(account, FileSystemRights.ReadAndExecute));
         MachineRuntimePolicy.RejectLinks(machine);
         MachineRuntimePolicy.RequireProtectedAcl(root, null);

@@ -5,6 +5,7 @@
  <Compile Include="../../src/Ipc.Assembly/OriginalParcelQuery.cs" Link="OriginalParcelQuery.cs"/>
  <Compile Include="../../src/Ipc.Assembly/ExtensionConsumerReaders.cs" Link="ExtensionConsumerReaders.cs"/>
  <Compile Include="../../src/Ipc.Assembly/ParcelCapabilityFactory.cs" Link="ParcelCapabilityFactory.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs" Link="Client/ParcelSnapshotValidity.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs" Link="Client/ParcelTargets.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs" Link="Client/ParcelViewModel.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs" Link="Client/CapabilityEditing.cs"/>

@@ -89,6 +89,7 @@ public sealed partial class ParcelRepository : IDisposable
             using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT revision,paused FROM parcel_meta WHERE id=1";
             using (var r = cmd.ExecuteReader())
             { if (!r.Read()) throw new InvalidDataException("Missing parcel metadata"); Revision = r.GetInt64(0); Paused = r.GetBoolean(1); }
+            RepairTerminalRecoveryFlags(application);
             InitializeIntegrationRequestHistory();
         }
         catch { db.Dispose(); throw; }

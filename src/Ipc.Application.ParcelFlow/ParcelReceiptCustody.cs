@@ -59,7 +59,7 @@ public sealed partial class ParcelRepository
         return pending.Length>0 && op.FrozenConfiguration.Images?.Strategy==UploadStrategy.Attached &&
             pending.All(x=>x.Stage=="image-upload" && x.Reply is null && HasReceiptOutcomeBasis(x.Id));
     }
-    static bool ExternalWorkComplete(ParcelOperation op,string application) => !op.RecoveryRequired &&
+    bool ExternalWorkComplete(ParcelOperation op,string application) => (!op.RecoveryRequired || HasTerminalRecoveryBasis(op,application)) &&
         (op.State is ParcelState.Abandoned or ParcelState.ImageRejected or ParcelState.WcsRejected or ParcelState.PlcRejected or ParcelState.PhysicalCompleted || application=="sportmaster" && op.State==ParcelState.SlotResolved) &&
         new[]{op.Wcs,op.Plc,op.Capture,op.Upload}.OfType<StageFact>().All(s=>s.State is StageState.Accepted or StageState.Rejected or StageState.Cancelled);
     bool LegacyCustodyUpgradeEligible(string application)

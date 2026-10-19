@@ -98,7 +98,7 @@ public sealed partial class ParcelRuntime
                     ScheduleAttached(imageOp); break;
                 case "AbandonUnsubmitted" when command.Owner is not null && operations.TryGetValue(command.Owner, out var abandoned) && CanAbandon(abandoned) &&
                     !string.IsNullOrWhiteSpace(command.Value):
-                    Save(abandoned with { State = ParcelState.Abandoned,
+                    Save(abandoned with { State = ParcelState.Abandoned, RecoveryRequired = false,
                         Wcs = CancelUnsent(abandoned.Wcs), Plc = CancelUnsent(abandoned.Plc),
                         Upload = abandoned.Upload is { State: StageState.Prepared, Attempts: 0 } u ? u with { State = StageState.Cancelled, Failure = "Local cancellation before any external upload attempt" } : abandoned.Upload,
                         Capture = abandoned.Capture is { State: StageState.Prepared, Attempts: 0 } c ? c with { State = StageState.Cancelled, Failure = "Local cancellation before acquisition" } : abandoned.Capture,

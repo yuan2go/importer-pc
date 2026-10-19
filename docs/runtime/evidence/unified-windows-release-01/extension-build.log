@@ -1,0 +1,28 @@
+  Determining projects to restore...
+  Restored /tmp/ipc-extension-build-3ygyi4mp/source/examples/BarcodeExtension/BarcodeExtension.csproj (in 157 ms).
+  BarcodeExtension -> /tmp/ipc-extension-build-3ygyi4mp/bin/Ipc.Reference.BarcodeExtension.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.26
+Verified OK
+Unhandled exception. System.Security.Cryptography.CryptographicException: Extension signature invalid
+   at Ipc.Platform.ExtensionPackages.VerifyMetadata(Byte[] manifestBytes, Byte[] signature, ExtensionTrust trust, RunMode mode, String packageHash) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 48
+   at Ipc.Platform.ExtensionPackages.Inspect(String archive, ExtensionTrust trust, RunMode mode, Func`2 resolve) in /_/src/src/Ipc.Platform/ExtensionPackages.cs:line 113
+   at Ipc.Product.ExtensionBuildCheck.Inspect(String archive, String trustFile, RunMode mode, String[] dependencyArchives) in /_/src/src/Ipc.Product/ExtensionBuildCheck.cs:line 38
+   at Ipc.Assembly.ParcelCli.Management(String[] args) in /_/src/src/Ipc.Assembly/ParcelCli.cs:line 108
+   at Program.<Main>$(String[] args) in /_/src/src/Ipc.Assembly/Program.cs:line 7
+   at Program.<Main>(String[] args)
+Traceback (most recent call last):
+  File "/workspace/scratch/7529011c39ef/importer-pc/scripts/build-extension.py", line 35, in <module>
+    main()
+  File "/workspace/scratch/7529011c39ef/importer-pc/scripts/build-extension.py", line 31, in main
+    print(json.dumps(build(args)))
+                     ^^^^^^^^^^^
+  File "/workspace/scratch/7529011c39ef/importer-pc/scripts/extension_build.py", line 257, in build
+    run([args.dotnet, str(host), '--action', 'extension-check', '--mode', manifest['Mode'], '--file', str(staged), '--extension-trust', str(args.trust.resolve()), '--dependency-files', str(dependency_file)])
+  File "/workspace/scratch/7529011c39ef/importer-pc/scripts/build_process.py", line 89, in run
+    raise subprocess.CalledProcessError(code, command)
+subprocess.CalledProcessError: Command '['/workspace/scratch/ff7a9cb2adf7/audit-work/dotnet/dotnet', '/workspace/scratch/7529011c39ef/release-7acbb2c/sportmaster-portable/app/Ipc.Assembly.dll', '--action', 'extension-check', '--mode', 'Simulation', '--file', '/tmp/ipc-extension-build-3ygyi4mp/package.ipcx', '--extension-trust', '/workspace/scratch/7529011c39ef/extension-private/trust.json', '--dependency-files', '/tmp/ipc-extension-build-3ygyi4mp/dependencies.json']' died with <Signals.SIGABRT: 6>.

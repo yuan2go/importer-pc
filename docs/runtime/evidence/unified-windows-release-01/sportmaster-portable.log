@@ -1,0 +1,28 @@
+Retained build workspace on failure: /tmp/ipc-publication-ov450uts
+  Determining projects to restore...
+  Restored /tmp/ipc-publication-ov450uts/source-snapshot/src/Ipc.Drivers/Ipc.Drivers.csproj (in 616 ms).
+  Restored /tmp/ipc-publication-ov450uts/source-snapshot/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (in 616 ms).
+  Restored /tmp/ipc-publication-ov450uts/source-snapshot/src/Ipc.Platform/Ipc.Platform.csproj (in 617 ms).
+  Restored /tmp/ipc-publication-ov450uts/source-snapshot/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (in 617 ms).
+  Restored /tmp/ipc-publication-ov450uts/source-snapshot/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (in 617 ms).
+  Restored /tmp/ipc-publication-ov450uts/source-snapshot/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (in 618 ms).
+  Restored /tmp/ipc-publication-ov450uts/source-snapshot/src/Ipc.Components/Ipc.Components.csproj (in 617 ms).
+  Restored /tmp/ipc-publication-ov450uts/source-snapshot/src/Ipc.Assembly/Ipc.Assembly.csproj (in 616 ms).
+  Restored /tmp/ipc-publication-ov450uts/source-snapshot/src/Ipc.Integrations/Ipc.Integrations.csproj (in 9 ms).
+  Restored /tmp/ipc-publication-ov450uts/source-snapshot/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (in 10 ms).
+  Restored /tmp/ipc-publication-ov450uts/source-snapshot/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (in 12 ms).
+  Restored /tmp/ipc-publication-ov450uts/source-snapshot/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (in 24 ms).
+  Ipc.Platform -> /tmp/ipc-publication-ov450uts/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> /tmp/ipc-publication-ov450uts/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> /tmp/ipc-publication-ov450uts/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> /tmp/ipc-publication-ov450uts/build-intermediates/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> /tmp/ipc-publication-ov450uts/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> /tmp/ipc-publication-ov450uts/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> /tmp/ipc-publication-ov450uts/build-intermediates/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> /tmp/ipc-publication-ov450uts/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> /tmp/ipc-publication-ov450uts/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> /tmp/ipc-publication-ov450uts/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Integrations -> /tmp/ipc-publication-ov450uts/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> /tmp/ipc-publication-ov450uts/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> /workspace/scratch/7529011c39ef/release-7acbb2c/sportmaster-portable/app/
+{"Package": "/workspace/scratch/7529011c39ef/release-7acbb2c/sportmaster-portable.zip", "Sha256": "fbe41d30cf005b4585333ed744305e735714abdadbec88946abd5fe610e2f2c5", "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042", "Application": "sportmaster", "Target": "portable", "BusinessVersion": "1.3.3", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "59B26D7D84765F33ABC8EE4F87C852DE4E6889CE7E42A7320E8883659D7A44FD"}

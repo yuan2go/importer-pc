@@ -1,0 +1,9 @@
+  Determining projects to restore...
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Platform/Ipc.Platform.csproj (in 517 ms).
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Application.Inspection/Ipc.Application.Inspection.csproj (in 517 ms).
+  Restored /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Assembly/Ipc.Assembly.csproj (in 516 ms).
+  Ipc.Platform -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Platform/bin/Release/net10.0/Ipc.Platform.dll
+  Ipc.Application.Inspection -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Application.Inspection/bin/Release/net10.0/Ipc.Inspection.dll
+  Ipc.Assembly -> /workspace/scratch/7529011c39ef/release-7acbb2c/source/src/Ipc.Assembly/bin/Release/net10.0/Ipc.Assembly.dll
+  Ipc.Assembly -> /workspace/scratch/7529011c39ef/release-7acbb2c/inspection-portable/app/
+{"Package": "/workspace/scratch/7529011c39ef/release-7acbb2c/inspection-portable.zip", "Sha256": "96ecb30908e784965d24e622a725d8f15ddd7c928cf0e745365164bbb095d515", "SchemaVersion": 1, "Business": "inspection", "Views": ["inspection", "inspection-history"], "Layouts": ["standard", "compact"], "EntryPoint": "app/Ipc.Assembly.dll", "SourceCommit": "7acbb2c13d6b35d4aeff8b075b2ff52372aa2042", "Windows": "WINDOWS_NOT_RUN", "Field": "BLOCKED", "Binaries": {"Ipc.Assembly.dll": "7c8b571f171fa496d01ae81525e80d96514969e1e42a7456485bc7e98d48a337", "Ipc.Inspection.dll": "84c99b4c3339aeadbd64ee7c15df49ea05478ace74562d6cad1f1d5fd7dbef24", "Ipc.Platform.dll": "20ecd3d3900b9ce549529e477edbf8b4528426d614fa592d8d533bc00ace4531"}}

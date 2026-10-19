@@ -9,3 +9,7 @@
 默认组合为参考模拟，不附带厂商SDK、签名私钥或生产信任。需要扩展的产品仍通过既有精确包/独立信任/依赖机制另行选装和验收，不把无扩展组合标为真实能力已就绪。Supply/Inspection portable 是兼容入口验证交付，不是独立 Windows 安装器。
 
 跨平台构建与静态验证不能证明 Windows UAC/ACL/账户切换/中断/升级恢复/交互。全部媒介 WindowsAcceptance=NOT_RUN、PhysicalIntegration=BLOCKED、CommercialAcceptance=NOT_APPROVED，即使在Windows构建也不自动升级结论。checksum不代表签名或发行者信任。字节可重复构建尚须独立重建比较，本流程保证固定输入及可重复执行，不声称ZIP字节复现。
+
+仓库另提供手动触发的 `.github/workflows/unified-windows-release.yml`，Windows 2025 runner使用global.json与Python3.12；只读仓库权限，构建失败仅保留日志，整批成功才上传媒介，名称含SHA/attempt且不覆盖旧资产。此工作流本轮未执行，保留30天的Actions产物不是永久Release；发行负责人仍需归档整套ZIP及校验清单。构建成功仍不等于Windows实机或商用验收。
+
+环境中断续建：在同一完整SHA、相同SDK和未改动冻结快照下加 `--resume`。内核文件锁阻止并发发布，进程退出自动释放；原BUILD回执按attempt独立保留。所有已登记ZIP先重新完整校验并比对原SHA，未登记半成品和日志移至独立interrupted路径后才构建剩余项。已成功的整套发行拒绝续建，原归档不覆盖。发行源码SHA和当前编排脚本SHA256分别记录；续建机制更新不把已完成二进制改标为新来源。

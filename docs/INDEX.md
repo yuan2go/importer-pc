@@ -78,3 +78,7 @@ Sportmaster 左右独立读码及取格口，无 PLC、图片展示或长期图�
 本次清理前的 README/INDEX/框架和相关运行指南原字节见[商业化整理前归档](archive/pre-commercial-productization-01/README.md)。更早的完整入口、历史细项仍保留于[并发整合前归档](archive/pre-parallel-task-reconciliation-01/README.md)及各阶段 pre-* 目录。原审查01 PDF 缺失、客户全量资料 PUBLIC_SUBSET_ONLY 和原 D/RV 状态分别保留。
 
 > 发行入口增量（PR48）：[原形成时范围](runtime/unified-windows-release-01.md)。本次整合不执行测试/构建，旧冻结结果不授予最终组合资格。
+
+## 统一发行补充回执
+
+[统一发行结果](runtime/unified-windows-release-01-results.md)保存本任务实际构建的7acbb2c冻结源、8个ZIP身份与定向验证。该媒介覆盖开工时PR44/45/46组合，早于任务中外部合并的PR47/DB8，不能冒充当前main或用于DB8；现行产品化/DB8指引及原证据保持。续建机制、内核锁与手动Windows工作流见[发行入口](runtime/unified-windows-release-01.md)。Windows实机仍NOT_RUN、真实能力BLOCKED、商用NOT_APPROVED。

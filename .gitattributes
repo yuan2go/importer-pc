@@ -5,3 +5,4 @@ docs/runtime/evidence/commercial-productization-01/*.fixture.cs.txt whitespace=c
 docs/runtime/evidence/pr47-commercial-productization-review/** -text whitespace=cr-at-eol
 docs/runtime/evidence/pr47-main-integration/** -text whitespace=cr-at-eol
 docs/runtime/evidence/unified-release-01/** -text
+docs/runtime/evidence/unified-main-20261020/** -text

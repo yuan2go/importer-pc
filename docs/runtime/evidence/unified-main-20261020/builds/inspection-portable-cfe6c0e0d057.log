@@ -1,0 +1,10 @@
+Retained build workspace on failure: C:\Users\yuan\AppData\Local\Temp\ipc-publication-xwpc9p61
+  正在确定要还原的项目…
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-xwpc9p61\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 1.4 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-xwpc9p61\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 1.4 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-xwpc9p61\source-snapshot\src\Ipc.Application.Inspection\Ipc.Application.Inspection.csproj (用时 1.4 秒)。
+  Ipc.Platform -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-xwpc9p61\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Inspection -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-xwpc9p61\build-intermediates\bin\Ipc.Application.Inspection\release\Ipc.Inspection.dll
+  Ipc.Assembly -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-xwpc9p61\build-intermediates\bin\Ipc.Assembly\release\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\r\main-cfe6\inspection-portable-cfe6c0e0d057\app\
+{"Package": "D:\\r\\main-cfe6\\inspection-portable-cfe6c0e0d057.zip", "Sha256": "b38187b415e2f0a264f644df629169d57dc4e16a9a17fd6d95746bdcfc6ab064", "SchemaVersion": 1, "Business": "inspection", "Views": ["inspection", "inspection-history"], "Layouts": ["standard", "compact"], "EntryPoint": "app/Ipc.Assembly.dll", "SourceCommit": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef", "Windows": "WINDOWS_NOT_RUN", "Field": "BLOCKED", "Binaries": {"Ipc.Assembly.dll": "6f3061b218f8c51caa29b8047e581ee10444c369eeed85d37d3458db5a9b9498", "Ipc.Inspection.dll": "d75d4ac80d52b9ebb8e7d98a24681fb536c35ceb20ec6c51fa6109a2be8a987a", "Ipc.Platform.dll": "47dc82fef412354141b2780887140d647385f6e02697f2ffc550771093fb9ad3"}}

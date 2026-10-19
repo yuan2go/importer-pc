@@ -1,0 +1,20 @@
+from pathlib import Path
+import json,subprocess,os,ctypes
+# Prevent unattended negative tests from waiting for a Windows crash dialog.
+ctypes.windll.kernel32.SetErrorMode(3)
+root=Path("D:/r/main-cfe6")
+r=json.loads((root/"RELEASE.json").read_bytes())
+out=[]
+if Path(os.environ.get("PROGRAMDATA","C:/ProgramData"),"ImporterPc/runtime-policy.json").exists():raise RuntimeError("Existing machine policy present; do not infer the unprovisioned-machine scenario")
+for item in r["Packages"]:
+ media=root/Path(item["File"]).stem
+ target=Path("D:/w/main-entry-denials")/(item["Application"]+"-"+item["Target"])
+ assert not target.exists()
+ command=[str(media/"app/Ipc.Assembly.exe")] if item["Target"]=="win-x64" else ["D:/tools/dotnet/dotnet.exe",str(media/"app/Ipc.Assembly.dll")]
+ command += ["--action","runtime-check"] if item["Application"] in ("sportmaster","direct-plc","wcs-to-plc") else ["--config",str(target/"nonexistent-config"),"--data-root",str(target/"data")]
+ result=subprocess.run(command,input="quit\n",text=True,capture_output=True,timeout=90,env=dict(os.environ,DOTNET_DbgEnableMiniDump="0"))
+ diagnostic=result.stdout+result.stderr
+ if result.returncode==0 or "maintainer-installed machine runtime policy" not in diagnostic or target.exists():raise RuntimeError("Identity failed to reject before config/data: "+item["File"])
+ out.append(dict(Application=item["Application"],Target=item["Target"],ReturnCode=result.returncode,PolicyFailure="maintainer-installed machine runtime policy",DataCreated=False,MediaSha256=item["Sha256"]))
+ print("PASS unprovisioned Windows readonly/runtime entry denied before config/data: "+item["Application"]+" "+item["Target"],flush=True)
+Path("D:/w/main-entry-results.json").write_text(json.dumps(dict(SourceCommit=r["SourceCommit"],Scope="Real Windows unprovisioned gate; no UAC/alternate-account/ACL acceptance",ErrorMode=3,MiniDumpEnabled=False,ParcelScope="explicit readonly runtime-check; normal first-run UAC not completed",Results=out),indent=2)+"\n")

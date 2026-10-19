@@ -1,0 +1,41 @@
+{
+  "SourceCommit": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef",
+  "AppHosts": [
+    {
+      "Application": "sportmaster",
+      "File": "app/Ipc.Assembly.exe",
+      "Machine": "AMD64/0x8664",
+      "Sha256": "b36fe338a27496154cf78240637ce7524fa48229a875db71682da55a4791e247"
+    },
+    {
+      "Application": "sportmaster",
+      "File": "desktop/Ipc.Desktop.exe",
+      "Machine": "AMD64/0x8664",
+      "Sha256": "def6397ca8fb7d6debe42447228cd4f3f1e392a2b5875c450104e520765be682"
+    },
+    {
+      "Application": "direct-plc",
+      "File": "app/Ipc.Assembly.exe",
+      "Machine": "AMD64/0x8664",
+      "Sha256": "b36fe338a27496154cf78240637ce7524fa48229a875db71682da55a4791e247"
+    },
+    {
+      "Application": "direct-plc",
+      "File": "desktop/Ipc.Desktop.exe",
+      "Machine": "AMD64/0x8664",
+      "Sha256": "def6397ca8fb7d6debe42447228cd4f3f1e392a2b5875c450104e520765be682"
+    },
+    {
+      "Application": "wcs-to-plc",
+      "File": "app/Ipc.Assembly.exe",
+      "Machine": "AMD64/0x8664",
+      "Sha256": "b36fe338a27496154cf78240637ce7524fa48229a875db71682da55a4791e247"
+    },
+    {
+      "Application": "wcs-to-plc",
+      "File": "desktop/Ipc.Desktop.exe",
+      "Machine": "AMD64/0x8664",
+      "Sha256": "def6397ca8fb7d6debe42447228cd4f3f1e392a2b5875c450104e520765be682"
+    }
+  ]
+}

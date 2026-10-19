@@ -1,6 +1,8 @@
 
 # 统一资料与实施入口
 
+> 2026-10-20 新版 Windows 不测试发布正在按[本轮记录](runtime/windows-no-test-release-20261020.md)从全部合并后的 main 构建。既有[统一发行 cfe6c0e](runtime/unified-release-main-20261020.md)保持旧源码身份，不代表 PR53 后继代码。
+
 > PR47复审修正及最新main集成的当前源码/介质/逐项结果见[最终集成证据](runtime/evidence/pr47-main-integration/README.md)和[审查裁决](reviews/pr47-commercial-productization-review.md)。旧发行与上传记录按原源码身份保留，不能替代当前DB8交付。
 > COMM-00～10 当前操作见[产品操作指南](runtime/commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](runtime/commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。
 

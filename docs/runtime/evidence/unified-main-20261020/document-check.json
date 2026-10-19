@@ -1,0 +1,9 @@
+{
+  "Scope": "Changed staged Git bytes/JSON/relative file links/manifest delta plus actual execution custody; no historical archive PASS inferred",
+  "ChangedFiles": 57,
+  "JsonFiles": 19,
+  "MarkdownFiles": 6,
+  "CustodyFiles": 47,
+  "Errors": [],
+  "Status": "PASS"
+}

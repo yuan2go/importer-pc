@@ -1,0 +1,240 @@
+{
+  "Scope": "Existing actual execution bytes; no private key/customer/production/SDK assets",
+  "Files": [
+    {
+      "File": "build-progress.log",
+      "Bytes": 339,
+      "Sha256": "9519b2613097ea0da944c170991b07d5722393d0276ac432daadc51b19c0bc75"
+    },
+    {
+      "File": "build-record.json",
+      "Bytes": 28542,
+      "Sha256": "8660a784aaedeedd3bcdc7620b04dfcbe89de0ba039b9f47e2b5e76396e58151"
+    },
+    {
+      "File": "builds/direct-plc-portable-cfe6c0e0d057.log",
+      "Bytes": 4177,
+      "Sha256": "23d6cdf756e6f90f295ef7ef4cb67a1a2e49625105d34df4511482445ada2f25"
+    },
+    {
+      "File": "builds/direct-plc-win-x64-cfe6c0e0d057.log",
+      "Bytes": 7209,
+      "Sha256": "9db7c394328550d87a8065fb9e9a598c20d313f9e9f582628b9384ad0dee90be"
+    },
+    {
+      "File": "builds/inspection-portable-cfe6c0e0d057.log",
+      "Bytes": 1818,
+      "Sha256": "10bcd4ea12aafc3c973c925d8cfd68af68ddd5a592e0ce16c5ccfd1c5300c2ba"
+    },
+    {
+      "File": "builds/sportmaster-portable-cfe6c0e0d057.log",
+      "Bytes": 4505,
+      "Sha256": "b39371f64a42eb35c6df425e1faec586f209965260bca372285c8498eade4c38"
+    },
+    {
+      "File": "builds/sportmaster-win-x64-cfe6c0e0d057.log",
+      "Bytes": 7689,
+      "Sha256": "3b655ac769f9fc91c22f283d742ae9b340c4b3606adad5449dfb35be42c90b87"
+    },
+    {
+      "File": "builds/supply-portable-cfe6c0e0d057.log",
+      "Bytes": 5663,
+      "Sha256": "3a8ae88ae84c5cc1502090ad7b4ba35d1ee23d1932122d9f66240693f421f433"
+    },
+    {
+      "File": "builds/wcs-to-plc-portable-cfe6c0e0d057.log",
+      "Bytes": 4482,
+      "Sha256": "7fe69e0b42b7a57405915f28e42793cb03c1fb18885f058bff8851780660a54a"
+    },
+    {
+      "File": "builds/wcs-to-plc-win-x64-cfe6c0e0d057.log",
+      "Bytes": 7652,
+      "Sha256": "2ae971b5f1e8a3997ab3a7ad8053a7ad9e0c03733217fa6635b1b379e5e7d872"
+    },
+    {
+      "File": "checks.json",
+      "Bytes": 1845,
+      "Sha256": "f7b2bc5dd4344a5dcba9264c8ad8701c5264b564ca18e6a9f1de62bea5f7ea07"
+    },
+    {
+      "File": "complete-frozen-probe.log",
+      "Bytes": 1487,
+      "Sha256": "29cef06442588cde7f81c86bb8f8e169c58a7a20f676e98667a01e94bd85043d"
+    },
+    {
+      "File": "dependencies/direct-plc-portable-cfe6c0e0d057.json",
+      "Bytes": 17894,
+      "Sha256": "aea4324c658092219b5d58a138cc78eb81018ffb7ad782129622390f5bc3229e"
+    },
+    {
+      "File": "dependencies/direct-plc-win-x64-cfe6c0e0d057.json",
+      "Bytes": 17894,
+      "Sha256": "aea4324c658092219b5d58a138cc78eb81018ffb7ad782129622390f5bc3229e"
+    },
+    {
+      "File": "dependencies/inspection-portable-cfe6c0e0d057.json",
+      "Bytes": 15020,
+      "Sha256": "efba0dd75b0e15621a29f6697bb1a8c10cbde2775580057f9d40e659a410d47b"
+    },
+    {
+      "File": "dependencies/sportmaster-portable-cfe6c0e0d057.json",
+      "Bytes": 17894,
+      "Sha256": "aea4324c658092219b5d58a138cc78eb81018ffb7ad782129622390f5bc3229e"
+    },
+    {
+      "File": "dependencies/sportmaster-win-x64-cfe6c0e0d057.json",
+      "Bytes": 17894,
+      "Sha256": "aea4324c658092219b5d58a138cc78eb81018ffb7ad782129622390f5bc3229e"
+    },
+    {
+      "File": "dependencies/supply-portable-cfe6c0e0d057.json",
+      "Bytes": 17894,
+      "Sha256": "aea4324c658092219b5d58a138cc78eb81018ffb7ad782129622390f5bc3229e"
+    },
+    {
+      "File": "dependencies/wcs-to-plc-portable-cfe6c0e0d057.json",
+      "Bytes": 17894,
+      "Sha256": "aea4324c658092219b5d58a138cc78eb81018ffb7ad782129622390f5bc3229e"
+    },
+    {
+      "File": "dependencies/wcs-to-plc-win-x64-cfe6c0e0d057.json",
+      "Bytes": 17894,
+      "Sha256": "aea4324c658092219b5d58a138cc78eb81018ffb7ad782129622390f5bc3229e"
+    },
+    {
+      "File": "entry-order-original-failure.log",
+      "Bytes": 1477,
+      "Sha256": "84d464f1ec25d3f0bce179e2c549753a28550a203dfced8184aa683daeaf6052"
+    },
+    {
+      "File": "entry-order-updated.log",
+      "Bytes": 843,
+      "Sha256": "f89b7f28c005bf902b0e5b18246d2389585e9fcbdc91d4f204a6aa2ce673a869"
+    },
+    {
+      "File": "extension-build.log",
+      "Bytes": 13407,
+      "Sha256": "f750bd540b47cd7180f9bf9b0783917eb3ef6fc07d91d3020ff1b35aa2b3abfc"
+    },
+    {
+      "File": "extension-checks.json",
+      "Bytes": 6691,
+      "Sha256": "64520b680343f7402d694da73799b567cf0a5d2fdf0accfb789dbf306bc564ed"
+    },
+    {
+      "File": "extension-key-risks.log",
+      "Bytes": 616,
+      "Sha256": "b4236a04568b0de8eae8edaeca1a0290f0135973bfbf7bf94ffc06292990e2c4"
+    },
+    {
+      "File": "extension-test-invocation-error.log",
+      "Bytes": 2278,
+      "Sha256": "afe8a9c963f1d00f56a8eaed521914a1f41c4f9fa41a56e8d79ba3307d609918"
+    },
+    {
+      "File": "extension.identity.json",
+      "Bytes": 1313,
+      "Sha256": "f5b4b18fc6fb78ba7857ff438fc9627a7c6cf85f1d14863539dbd863581910bc"
+    },
+    {
+      "File": "frozen-probe.cs.txt",
+      "Bytes": 6432,
+      "Sha256": "58c9647823dd5b4758b4194da22f6fee520b752e0390cac01084b73219e2b23e"
+    },
+    {
+      "File": "frozen-probe.csproj.txt",
+      "Bytes": 378,
+      "Sha256": "e53e7385d4391913146d68f9446d40d8f6a03fe179350d4736b215d8545cd8c1"
+    },
+    {
+      "File": "guides.log",
+      "Bytes": 427,
+      "Sha256": "d413ce67ee67336bd53d7d721820849505e8761b38b58cf27a229ad4204666bf"
+    },
+    {
+      "File": "initial-first-run-timeout.log",
+      "Bytes": 1073,
+      "Sha256": "88e68b6b34879356994e563a23620e77910e80a5995612ca297e355745354ad9"
+    },
+    {
+      "File": "interrupted-first-run-retry.log",
+      "Bytes": 1123,
+      "Sha256": "a1216d65820475b4789a77d8f17fc49f3791a8c83229c353bee93e3a7b62e7ad"
+    },
+    {
+      "File": "native-apphost-identities.json",
+      "Bytes": 1349,
+      "Sha256": "227a8b4a87cdb488aedab117211ae626eb87c7613c7b25579a3a99777df6a9da"
+    },
+    {
+      "File": "offline-frozen.log",
+      "Bytes": 799,
+      "Sha256": "b261bd3e9363222035d8b50d78b40b5e1e9eedf47274c7b24a3f528c42c61ffc"
+    },
+    {
+      "File": "prior-0f2cd71-extension-suite.log",
+      "Bytes": 4331,
+      "Sha256": "a0f5dc2c61fbd5031698f0552a1e0ecd622fc920952eaf3cc2a8aebff7156af3"
+    },
+    {
+      "File": "publication.log",
+      "Bytes": 640,
+      "Sha256": "55074fa3c5843cce65a5f52ea9564a6cc06ec3398c892cfbfe30bcced1415ce0"
+    },
+    {
+      "File": "readonly-entry-probe.py.txt",
+      "Bytes": 2025,
+      "Sha256": "90f05488c1ca31aaba6f2c06704ecc78e09ef6f3bf2c16f0084eb5c3c63d396b"
+    },
+    {
+      "File": "readonly-entry-results.json",
+      "Bytes": 2725,
+      "Sha256": "062d89645c213c28c0e6e826db574af961c42f0560713dfc5436dd4e7f9b4c94"
+    },
+    {
+      "File": "readonly-entry-smoke.log",
+      "Bytes": 779,
+      "Sha256": "cdf99d2b8061264ace4003f93d425976f36124d77255ada4fa4ec4d90ad3f906"
+    },
+    {
+      "File": "release-gates.log",
+      "Bytes": 1279,
+      "Sha256": "709931752b9183de6f06804ce595ba4c3777af7989727440cec4ebbb9db175c1"
+    },
+    {
+      "File": "release-SHA256SUMS",
+      "Bytes": 1801,
+      "Sha256": "aa0096ae785a75e0e4a52cc28f1a48bf7c4ab72bd5bb38672c3dbecdf5feabaf"
+    },
+    {
+      "File": "RELEASE.json",
+      "Bytes": 28542,
+      "Sha256": "8660a784aaedeedd3bcdc7620b04dfcbe89de0ba039b9f47e2b5e76396e58151"
+    },
+    {
+      "File": "remote-publication.json",
+      "Bytes": 6216,
+      "Sha256": "526b34e614af8a8bd437b1af8ce1909685d79262e2a1f95091eb685cb55f494b"
+    },
+    {
+      "File": "selected-media-and-repeat.json",
+      "Bytes": 2091,
+      "Sha256": "887c5bef0210ccf4da8cd995c82d271be249a0bf5c45052862249f7c417e7bb3"
+    },
+    {
+      "File": "selected-media-build.log",
+      "Bytes": 19307,
+      "Sha256": "ccce0f06249e1422f1b4b037b5e364fcf0e9cd90f554d1ecd93417bc3e26f248"
+    },
+    {
+      "File": "synthetic-trust.TESTONLY.json",
+      "Bytes": 793,
+      "Sha256": "a690e627fb04703b591f5a4883e52d26684099c493e1992ed75249725cd79c7d"
+    },
+    {
+      "File": "verify-release.log",
+      "Bytes": 95,
+      "Sha256": "92a12963bb59f9d01b505183d9da049392eea031cb6b52b1719a45d613d64067"
+    }
+  ]
+}

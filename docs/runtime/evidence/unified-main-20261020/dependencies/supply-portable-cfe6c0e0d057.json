@@ -1,0 +1,320 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef",
+  "Source": "Resolved app deps.json and restored NuGet nuspec metadata",
+  "Packages": [
+    {
+      "Id": "Microsoft.Data.Sqlite.Core",
+      "Version": "10.0.13",
+      "Sha512": "sha512-Gge8XsSCOwcbkbdmt2UDAe6kIv9Q0vA6yb3wsTStjjexaMFLTWfc/1gH4kbhJ+zWiXRTRA4lG2sOQNVfir204w==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Data.Sqlite.Core/10.0.13",
+      "NuspecSha256": "cae22388d3e0d116841a8285d4a6b922156c4bdb30b890687d40813f290767a6"
+    },
+    {
+      "Id": "Microsoft.Data.Sqlite",
+      "Version": "10.0.13",
+      "Sha512": "sha512-w37nz3WFmDtRfXxWEwIXX2OgqDRiwhD1JGbFwfpFCF8GkCrV/yO6Y2JF5058J2RGoI2sCcdn02wrk0yEcekWcw==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Data.Sqlite/10.0.13",
+      "NuspecSha256": "14548e9e520e10f9dc16261c64a59606731d962ffe8a90043fcf96dc33ffac40"
+    },
+    {
+      "Id": "Microsoft.Extensions.Configuration.Abstractions",
+      "Version": "10.0.13",
+      "Sha512": "sha512-DY4C2qzTt2lOIY3VoscBH/TCwTolI5DKOfgJLuI+k1QUvRNT5vTMS58AOerNiihdVRStO0wEpLeRWA8jytzHBQ==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Abstractions/10.0.13",
+      "NuspecSha256": "314facae64103f772925be66661866440ebdc87818d14150522460a4ebdb06c6"
+    },
+    {
+      "Id": "Microsoft.Extensions.Configuration.Binder",
+      "Version": "10.0.13",
+      "Sha512": "sha512-yJJl/b0+W+GEWbu+7viw6C3h2BoNkB69Vlz7s/4e+hm4mYbJqfhdcDSi9sCXJw47blsBaiQd3UDPgDtop92+ug==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Binder/10.0.13",
+      "NuspecSha256": "acb9686218062f4b17e3020004c27caf54f86c115c5d620cd7d124667a41ffff"
+    },
+    {
+      "Id": "Microsoft.Extensions.Configuration.CommandLine",
+      "Version": "10.0.13",
+      "Sha512": "sha512-RwdNZ9JdGs8eZmeL5qRe7ugp0Irk3KVkWpC/w1c8kjJwu1R4HvCXYz9kwHZxn45WiaRBG5lphQKtqnBaJOQC+Q==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Configuration.CommandLine/10.0.13",
+      "NuspecSha256": "1ab79d801c0f11504776f5518e78bf988d89ab4d68894347f57227b92dc88417"
+    },
+    {
+      "Id": "Microsoft.Extensions.Configuration.EnvironmentVariables",
+      "Version": "10.0.13",
+      "Sha512": "sha512-qJK2dm9/AxyPVfqqBaZtjkUFl2hnBR/CQnMJtSO5LdEoyATMqvZjeQVY+8l0oa6PM6qlVe28iMEyXIRQ0wyZjA==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Configuration.EnvironmentVariables/10.0.13",
+      "NuspecSha256": "feea0b599cd84cf5a2477e5fc3c02c2eff5dbc8ab6db92ece1079d0e5183693e"
+    },
+    {
+      "Id": "Microsoft.Extensions.Configuration.FileExtensions",
+      "Version": "10.0.13",
+      "Sha512": "sha512-kwC1DY55CsqPmDtJAz+7alD3G+gJcM+XwHSZrcRO8mJGYB9hRq1qC6ZH8DL0SPW9WtJ/Bae5ikzPic8SxSv6Vw==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Configuration.FileExtensions/10.0.13",
+      "NuspecSha256": "beb8e368577d981b995f47bc3695ace828664b0727d599879c0efbd497e68d9a"
+    },
+    {
+      "Id": "Microsoft.Extensions.Configuration.Json",
+      "Version": "10.0.13",
+      "Sha512": "sha512-acCWM2+WR67kBAz6gAhD2zG+IZH9Q2VpKv5le7Msiu0vAMsnnLXpnV3BAzxd8/i+uOEo/dfb2XRYTynRVTDvEg==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Json/10.0.13",
+      "NuspecSha256": "8f857d2a11483a46d2aa38b1c87b9a09cf248560d383399bb416dc5eda803ded"
+    },
+    {
+      "Id": "Microsoft.Extensions.Configuration.UserSecrets",
+      "Version": "10.0.13",
+      "Sha512": "sha512-kQ/Tx972unP+ueQL8SSninthIj6w6XP2o0VnJPFC5HQIimPMwEN704MOspEgDkmm4FUL5SuxLEU0bNiW4HEZFA==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Configuration.UserSecrets/10.0.13",
+      "NuspecSha256": "bcabf0dcfcbb3802273857980d52ee03891edc062b7126e2d88e388d419654c9"
+    },
+    {
+      "Id": "Microsoft.Extensions.Configuration",
+      "Version": "10.0.13",
+      "Sha512": "sha512-inhujYI/nikhmLxYI6ZEcaCgZ28ipJsKMPPxxr2XWf3vM0Q2P+E9R3hDHABZOLBxzD3gjpgcbSH/+hd2+gvI2A==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Configuration/10.0.13",
+      "NuspecSha256": "e4967350b756395033fe08ab827cdac2cb2144a0cd1bf77a44731884f6984f0c"
+    },
+    {
+      "Id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+      "Version": "10.0.13",
+      "Sha512": "sha512-G2GrGWNAPZBsii2F6AU8n+JT2tC1/I0Ml/e9ZyNCgPjf3hZqronP7o0X91aAynCmVeae8KkSIUNXXeXCNRmdVQ==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection.Abstractions/10.0.13",
+      "NuspecSha256": "ec1c51eb90a4226aa13870d456ccd34b6e80658ec314547ceb79e47ad3249069"
+    },
+    {
+      "Id": "Microsoft.Extensions.DependencyInjection",
+      "Version": "10.0.13",
+      "Sha512": "sha512-4tnWU9vrU/A8NwYe9Z6wvieZ0EBb/uM82LAT+edNhdepOBWREZ7M7mzb941EIDPJaeOFdbVrDd5+7s9e89U6bQ==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection/10.0.13",
+      "NuspecSha256": "39f0d9c0d603553c7d8045e6b8efb370ad21dafd12b98c18bd6964a9d9a09534"
+    },
+    {
+      "Id": "Microsoft.Extensions.Diagnostics.Abstractions",
+      "Version": "10.0.13",
+      "Sha512": "sha512-oZzqZze8ed1fLS20HtIrkPxQXGRG/koq09srIw2ptnDHm9RHfwB++d35hosB/cXc55TH7Pshv85O0txongjCIg==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Diagnostics.Abstractions/10.0.13",
+      "NuspecSha256": "b95e6ea1107ce70ad3a9edbdc9acbf25375da04f3b5419c91a779bf1238da64b"
+    },
+    {
+      "Id": "Microsoft.Extensions.Diagnostics",
+      "Version": "10.0.13",
+      "Sha512": "sha512-J9ODOrffj1mK3Et69elNsLGRguesPxvThTdVpFmQX7fLNPhIOgqHQfLdGnTBEwNAV3yf8yiyVlpDZNw2qN87Nw==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Diagnostics/10.0.13",
+      "NuspecSha256": "3da8bf7799ef96be1f61d28e6e24341ff44a118e6fc07bb36eaa11b567273927"
+    },
+    {
+      "Id": "Microsoft.Extensions.FileProviders.Abstractions",
+      "Version": "10.0.13",
+      "Sha512": "sha512-BZDwtN3uoWRghDi5lRRZPDjMMCg2Ds7J6YEYjqka/TLjqnzquEpXyvchrIMeoubwT1ns23ow6PPeAoBHJO81Rw==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.FileProviders.Abstractions/10.0.13",
+      "NuspecSha256": "aba3fca0a4996799cd1d7fee727d1cb4b414ba9b317b6f6c62bd5816f40d2978"
+    },
+    {
+      "Id": "Microsoft.Extensions.FileProviders.Physical",
+      "Version": "10.0.13",
+      "Sha512": "sha512-U7HkgGCNPICN5k7NVK6dmLsSPSPeO/EbNcuxOl/5qdC9Ahjp9UZWKOvlnUC+rYurmoxIlwyv9e5j0BaQlTOELA==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.FileProviders.Physical/10.0.13",
+      "NuspecSha256": "8a18baf7e216b651db571ca7d38f844f9f50666f79505f909dc29a10b8821385"
+    },
+    {
+      "Id": "Microsoft.Extensions.FileSystemGlobbing",
+      "Version": "10.0.13",
+      "Sha512": "sha512-vQVzmAbnzlhXSXA2caYnlxtG9GXxEwtj5bODiWLu06A6iqeJmfBtlfKjuOSJGRy0/CFaNUrm7u9nxEUlljc2Rg==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.FileSystemGlobbing/10.0.13",
+      "NuspecSha256": "9a20fe5aad794d92abaf55d33ff71dfbb58a07c8fe5a0d5b8fc1ab278d348005"
+    },
+    {
+      "Id": "Microsoft.Extensions.Hosting.Abstractions",
+      "Version": "10.0.13",
+      "Sha512": "sha512-zIrbe9vkIFXxW3mOApIOWXw+xMwX7Cgsptr3ZSlglJt4hW2qp4fB/JU1NHgAevteBNH4PicvU9DsFPHxlnnloA==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Hosting.Abstractions/10.0.13",
+      "NuspecSha256": "7e4e00cf603d2466dd86c0fe93f8a077d4e6a129b6948f7aff3dd9ab3ecbd446"
+    },
+    {
+      "Id": "Microsoft.Extensions.Hosting",
+      "Version": "10.0.13",
+      "Sha512": "sha512-Q+hmPoDqeHipHyJcY7mDCQiLDUcn9jIgjoCThcgaOgjLTTT3ApTe8p6M2+twsDyfKuuCsKhSNlnNjaaggtXxRA==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Hosting/10.0.13",
+      "NuspecSha256": "7b245a966ea4b474e4942e8478b2d4df59973c28187d8b305e01c19df8938d10"
+    },
+    {
+      "Id": "Microsoft.Extensions.Logging.Abstractions",
+      "Version": "10.0.13",
+      "Sha512": "sha512-aSZEhEig4fvNiw2zs8Z6NyDlniKtq6YjcF3DyHuqTEHcZ2VKA/6itMPZ+dW+yWABWExlDcQwwdbqX1Rcb7W8WQ==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Logging.Abstractions/10.0.13",
+      "NuspecSha256": "5cf07bdbf6c071a75f07908369d7d078a04ca012af8df71728ff748a1fd818e9"
+    },
+    {
+      "Id": "Microsoft.Extensions.Logging.Configuration",
+      "Version": "10.0.13",
+      "Sha512": "sha512-OyYJOaE9WbBx1Hp+Dd2zrqeFM0JwH5M/x0VL6tNUv3V18vIAVpix8UjhvY9eW/iXpguEHy68JO/Z9YkBOwftIw==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Logging.Configuration/10.0.13",
+      "NuspecSha256": "c337f20c454506a22f927c43ead55396f5d8cff376e66b3c83315227dd0d731a"
+    },
+    {
+      "Id": "Microsoft.Extensions.Logging.Console",
+      "Version": "10.0.13",
+      "Sha512": "sha512-i9rn0rHkiCxfNVbf4DRG7LOFcKPy/BioAxS07w6daWvIpLNRjskqDJcGGaYVFWndsq0iTRaS8Msry0t5fRYQug==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Logging.Console/10.0.13",
+      "NuspecSha256": "7f3dc7ced3ed20a842c7cb66d8a8584c893883042a54806af3a47c69ce5529a6"
+    },
+    {
+      "Id": "Microsoft.Extensions.Logging.Debug",
+      "Version": "10.0.13",
+      "Sha512": "sha512-yBig0DNMq+3UgliwxYlUC48dg0fPqvqI5B3ljzmLTrpR6maoKTOO5i9QnPgQUmQoaQWZMgu74fuF6oSDihb6pg==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Logging.Debug/10.0.13",
+      "NuspecSha256": "734c05aa4c9d0f6e491810408d559e85f5138e665268c5b780947cb402262a58"
+    },
+    {
+      "Id": "Microsoft.Extensions.Logging.EventLog",
+      "Version": "10.0.13",
+      "Sha512": "sha512-OAK40lXhgMuvyNwvzW3fxLvvucN8yr5XS7dQRcPmtnPf+Pt1lpbMgao5T4Wa6VdFagtIeDZNgPtV5Ig4xstziQ==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Logging.EventLog/10.0.13",
+      "NuspecSha256": "176f85e8c0f9507509fd104bda4c044986fedae6da5213a0b15f4542488b0b3e"
+    },
+    {
+      "Id": "Microsoft.Extensions.Logging.EventSource",
+      "Version": "10.0.13",
+      "Sha512": "sha512-SxJu3oczk+TJtHvpgAmCVzEkzx69/obA6GZCbGrbqYqc981YOAyfEprySBdFX7Yc5qatHJKHNTlpGeeBAQkZcA==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Logging.EventSource/10.0.13",
+      "NuspecSha256": "9874f2418f14bb4744cd722b48612d12361f22b9eddf6e4e60526eede2a572ae"
+    },
+    {
+      "Id": "Microsoft.Extensions.Logging",
+      "Version": "10.0.13",
+      "Sha512": "sha512-fqbiPy4nUp4H2XHKAVQXKN2y3T2h4cFIx1DAAgE6iY9OHkN/OA1cKFi+geJKRWGuX6pS5SFbsjIPWHJqrxE0eg==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Logging/10.0.13",
+      "NuspecSha256": "9c2c22321a3fb1b48a754c40d9af7cb3a443bf2cf13550c550aca5a527ff37db"
+    },
+    {
+      "Id": "Microsoft.Extensions.Options.ConfigurationExtensions",
+      "Version": "10.0.13",
+      "Sha512": "sha512-xVO5HhATc09WXuS/RaDmx8ZeWS0mTpT1L0tkEDMSBHtAnNpNsDr0ge0wIO2jinCWWqpq5dL1tRTzpYNVlvyqLw==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Options.ConfigurationExtensions/10.0.13",
+      "NuspecSha256": "1dde1090a100c2a30a370645516612804963998ec0bc19eeb4f3b5b50ffb58a2"
+    },
+    {
+      "Id": "Microsoft.Extensions.Options",
+      "Version": "10.0.13",
+      "Sha512": "sha512-tmMJgdrE4uhf1JcNs9CV9moAHW+hmDuvgMiPpnQxarKaUxqI2eN33sYK5S4l9Uw+rG9PJvlm4qPxMhvolTDTaQ==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Options/10.0.13",
+      "NuspecSha256": "a41380a2ce7eebbc668ef6635b0a452a3c72ef618892996422545df4345bc46b"
+    },
+    {
+      "Id": "Microsoft.Extensions.Primitives",
+      "Version": "10.0.13",
+      "Sha512": "sha512-ZjTwxzhiw2TMEzIbUDkMF0dfDB2I4NQgIfKD0ELu9/5Mk+SRGdKZcD0/lvBrRCAPo6KN2r0BW86MRancoyJkoA==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/Microsoft.Extensions.Primitives/10.0.13",
+      "NuspecSha256": "e82aab032c88deebaeb36aaf0f98504500b199b445b08158850a9fcc4bfccda0"
+    },
+    {
+      "Id": "SQLitePCLRaw.bundle_e_sqlite3",
+      "Version": "2.1.14",
+      "Sha512": "sha512-Y6K7m+7ODFmGwAC/ApJY3c68Rq4WPgoIj4GOceagaTow5tLzaJwD9invSWzU8bSMTcKOR101a1ZaU0LQ5SoX/Q==",
+      "LicenseExpression": "Apache-2.0",
+      "Copyright": "Copyright 2014-2024 SourceGear, LLC",
+      "Package": "https://www.nuget.org/packages/SQLitePCLRaw.bundle_e_sqlite3/2.1.14",
+      "NuspecSha256": "3c5ba0a870e25cc979e43506eef88ab4953366a3e3cc29f63b5374c4fb6428d0"
+    },
+    {
+      "Id": "SQLitePCLRaw.core",
+      "Version": "2.1.14",
+      "Sha512": "sha512-LqyPmc38sTnZGivatrJ918DhnohR4SUg+I+9ps+nYrh3VC1sRakjpbJfiRLHRstRT7O9l+BOP/zser8vw+qPPw==",
+      "LicenseExpression": "Apache-2.0",
+      "Copyright": "Copyright 2014-2024 SourceGear, LLC",
+      "Package": "https://www.nuget.org/packages/SQLitePCLRaw.core/2.1.14",
+      "NuspecSha256": "5f9d58e094bce12af35dcb6a2607519abd8f062533eb1624232fb73f5af6f07f"
+    },
+    {
+      "Id": "SQLitePCLRaw.lib.e_sqlite3",
+      "Version": "2.1.14",
+      "Sha512": "sha512-h32f78UhMGzr3l2kO8t1+qp7ItqfbmyAFTLjBHqL13/kNeKOR6K6FhOQe/gOzlHnUSFAYNUt3JoVPAEjFRIB9g==",
+      "LicenseExpression": "Apache-2.0",
+      "Copyright": "Copyright 2014-2024 SourceGear, LLC",
+      "Package": "https://www.nuget.org/packages/SQLitePCLRaw.lib.e_sqlite3/2.1.14",
+      "NuspecSha256": "add3ac54e9de2712168cf2f35819c383b4c371c53888830e188581ab1a62fbde"
+    },
+    {
+      "Id": "SQLitePCLRaw.provider.e_sqlite3",
+      "Version": "2.1.14",
+      "Sha512": "sha512-53lrHTKoz5jCmwUjiiYD/mZUr34XCAk+Cd2T5fBrCGs7zI956cBSouWoX5owO67QA45YlzsWKSUJE/Ajc5h1bQ==",
+      "LicenseExpression": "Apache-2.0",
+      "Copyright": "Copyright 2014-2024 SourceGear, LLC",
+      "Package": "https://www.nuget.org/packages/SQLitePCLRaw.provider.e_sqlite3/2.1.14",
+      "NuspecSha256": "5325f63b1a50e28398eccf895be6527f7e6efd249966c68a5ad74cb4f0b9218c"
+    },
+    {
+      "Id": "System.Diagnostics.EventLog",
+      "Version": "10.0.13",
+      "Sha512": "sha512-DkNjtQyPR5Ud/zHnWHdsOuKbFRL9nIC92Q76z0NmHVDoQm40toLtsGFTIWq7toBoVa6fo/DInL3PLxY3Asixyw==",
+      "LicenseExpression": "MIT",
+      "Copyright": "© Microsoft Corporation. All rights reserved.",
+      "Package": "https://www.nuget.org/packages/System.Diagnostics.EventLog/10.0.13",
+      "NuspecSha256": "143e1d07bab6d1b246ffe50eed5bb43e5e5d9c0b90f94ad1ac55f06e615398bf"
+    }
+  ],
+  "RuntimeNoticeFiles": [],
+  "ExternalPrerequisites": [
+    "PowerShell 7 only for explicit advanced .ps1 scripts; native Setup/Run/Maintenance do not require it",
+    "Approved vendor SDK/driver/runtime only for a qualified real combination"
+  ],
+  "VendorSdkRedistribution": "BLOCKED: no approved vendor SDK or redistribution grant supplied",
+  "ProductLicense": "No project-wide commercial license grant is inferred from third-party package declarations"
+}

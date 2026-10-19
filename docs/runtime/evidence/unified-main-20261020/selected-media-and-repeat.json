@@ -1,0 +1,53 @@
+{
+  "SourceCommit": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef",
+  "SelectedMedia": {
+    "Application": "sportmaster",
+    "Target": "win-x64",
+    "File": "main-selected.zip",
+    "Sha256": "689445552E78B5F6859BD0CF8BD7CA3B0724ADAE35F4A2590F4AD91CD04B6C25",
+    "Bytes": 104300177,
+    "Files": 748,
+    "SourceCommit": "cfe6c0e0d0570986ea8c63f619e328d3891b82ef",
+    "OfflineBundles": [
+      {
+        "Id": "sportmaster.rcs-task",
+        "Version": "1.4.100",
+        "ManifestSha256": "354CD1AD176AFBD9E7EFF682D566E94693866981F5C6C06CFA7F363C588548D9",
+        "PackageSha256": "D5231BD08F7571905C01E5310C43BA0AFDD63875E5CB5D5C30FFDC2208AB3522",
+        "File": "offline-extensions/sportmaster.rcs-task-1.4.100.ipcx",
+        "Mode": "Simulation",
+        "TrustSha256": "A690E627FB04703B591F5A4883E52D26684099C493E1992ED75249725CD79C7D",
+        "Installed": false,
+        "Activated": false,
+        "PublicContracts": {
+          "Ipc.Application.Contracts": "B1536C2E21CB718DC6B353A30359A96E24A6219EEE01AD3BB8ED496AFA11D9AC"
+        }
+      }
+    ],
+    "BusinessVersion": "1.4.0",
+    "CompatibilitySha256": "D80BA0B0C40F34E2E9C080C9D898C77214461BCEA394F43290CD9DDC9F473975",
+    "ApplicationContractVersion": "1.10.0",
+    "IdenticalSharedDlls": [
+      "Ipc.Application.Contracts.dll",
+      "Ipc.Application.ParcelFlow.dll",
+      "Ipc.Application.Sportmaster.dll",
+      "Ipc.Assembly.dll",
+      "Ipc.Components.dll",
+      "Ipc.Drivers.dll",
+      "Ipc.Integrations.dll",
+      "Ipc.Platform.dll",
+      "Ipc.Platform.Storage.dll",
+      "Ipc.Reference.Protocol.dll",
+      "Ipc.Supply.Contracts.dll",
+      "Ipc.Supply.dll"
+    ]
+  },
+  "CoreMediaSha256": "EB883CF959391277C0B90FE96F88A5C1A3E926A1AD3153030FC923E024BD3043",
+  "IndependentlyPublishedFileCount": 719,
+  "AllAppDesktopBytesIdentical": true,
+  "SelectedMediaInstalled": false,
+  "SelectedMediaActivated": false,
+  "TrustShipped": false,
+  "WholeZipIdentical": "NOT_EXPECTED: selected extension composition differs",
+  "AllEightRepeatedBuilds": "NOT_RUN"
+}

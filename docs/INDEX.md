@@ -4,6 +4,8 @@
 
 > 已发布的历史 Windows 介质：[三业务下载与精确来源](runtime/windows-no-test-release-20261020.md)，运行源码 `939462bee40c9eebe8eb2aa60860217afd95fcdd`，原任务未运行测试/安装。既有[统一发行 cfe6c0e](runtime/unified-release-main-20261020.md)保持旧来源；两者不覆盖本次 Sportmaster 增量。
 
+当前实施、最终冻结介质和逐项结果见[Sportmaster 交付结果](runtime/sportmaster-commercial-delivery-01-results.md)，操作见[同版交付手册](runtime/sportmaster-commercial-delivery-01-operations.md)。
+
 ## 1. 当前阅读顺序
 
 1. [AGENTS](../AGENTS.md)、[本包基线与清理](reviews/sportmaster-commercial-delivery-01-baseline.md)、[产品设计](design/sportmaster-commercial-delivery-01.md)、[必要验收](runtime/validation/sportmaster-commercial-delivery-01.md)。

@@ -1,0 +1,11 @@
+SYNTHETIC runtime identity/ports; native WPF page, resource, keyboard and window checks only. UAC/installation/real equipment NOT_RUN.
+PASS first configuration starts with directories and separates devices, policy, review and recovery tasks
+PASS low-frequency recovery actions do not crowd the initial directory task
+PASS actual published desktop first-configuration window exposes explicit save/start through the existing editor
+PASS first-configuration native read creates neither database nor authoritative configuration
+PASS actual Windows DPAPI refusal leaves the original ciphertext unchanged while the published offline editor loads configuration fields and an explicit unavailable-draft diagnosis
+PASS task navigation preserves the same incomplete editor input without reconstructing it
+FAIL System.InvalidOperationException: actual candidate check records the exact current editor input
+   at Program.<VerifyCommercialPages>g__Check|0_0(Boolean condition, String message, <>c__DisplayClass0_0&) in D:\ipc-scd-evidence-01\wpf\CommercialPages.cs:line 18
+   at Program.VerifyCommercialPages(String root, String evidence, List`1 lines) in D:\ipc-scd-evidence-01\wpf\CommercialPages.cs:line 54
+   at Program.<>c__DisplayClass1_0.<<Main>b__0>d.MoveNext() in D:\ipc-scd-evidence-01\wpf\Program.cs:line 31

@@ -1,0 +1,16 @@
+{
+  "Status": "FAIL",
+  "Level": "engineering",
+  "SourceCommit": "0eea4b3ef04dc2ef0f4b92a43af5ebefec64b0fe",
+  "MediumInventorySha256": "FA225777BC0F8A58857D9A4E4019FC9DE8F0785292B9274DB25973A7F21E8DFB",
+  "Outstanding": [
+    {
+      "Id": "wpf",
+      "Status": "FAIL",
+      "Reason": "Frozen native WPF verification failed; original log retained"
+    }
+  ],
+  "ProductionApproval": "NOT_GRANTED_BY_THIS_TOOL",
+  "TrustBoundary": "Hashes prove custody, not truth of test/qualification/approval attestations. Authorized release review remains mandatory.",
+  "Authenticode": "NOT_SIGNED_NO_CERTIFICATE_PROVIDED"
+}

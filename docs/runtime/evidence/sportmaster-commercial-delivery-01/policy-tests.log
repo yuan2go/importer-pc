@@ -1,0 +1,10 @@
+test_engineering_never_promotes_missing_field_acceptance (test_commercial_delivery.DeliveryGate.test_engineering_never_promotes_missing_field_acceptance) ... ok
+test_fail_not_run_blocked_stop_required_scope (test_commercial_delivery.DeliveryGate.test_fail_not_run_blocked_stop_required_scope) ... ok
+test_missing_duplicate_foreign_source_and_missing_evidence (test_commercial_delivery.DeliveryGate.test_missing_duplicate_foreign_source_and_missing_evidence) ... ok
+test_receipt_identity_and_bytes_are_checked (test_commercial_delivery.DeliveryGate.test_receipt_identity_and_bytes_are_checked) ... ok
+test_unsigned_manifest_or_manual_pass_cannot_substitute_signer (test_commercial_delivery.DeliveryGate.test_unsigned_manifest_or_manual_pass_cannot_substitute_signer) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.243s
+
+OK

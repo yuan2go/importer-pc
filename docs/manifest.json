@@ -371,9 +371,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "59858efce81f3e7ca68eb43157f0c485c3a51a9341a67bf9ebe13968e1c84905",
-      "size_bytes": 8743,
-      "git_blob": "87913f0fffab34101d3cf7324622485690936a11",
+      "sha256": "3431b649e62c44ad3a0cd19b9518c7ee478600875fb186cfb04d7f01d1d3e9cd",
+      "size_bytes": 8745,
+      "git_blob": "010d6863528604153c0f2945d2178ee15eaa3901",
       "version": "ux-commercial-rereview-03",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
@@ -37329,9 +37329,9 @@
       "purpose": "Authorized UX rereview corrections and synthetic evidence; Windows native and commercial gates remain separate",
       "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "8f205c1036a7a0cac1db11f5bd5b0f078e3c3e29fc7daee7884f7aa0feffb4d9",
-      "size_bytes": 463,
-      "git_blob": "22f5fe1887f1b44ff67598573f5540278ebf7878"
+      "sha256": "a2c1783bf8ae3e3f7b4e6f63c3f39895731186b734d858682b71f83f34657ab8",
+      "size_bytes": 508,
+      "git_blob": "2d3b1f7ecdeb590110deb9f799987fd853dea86b"
     },
     {
       "path": "docs/runtime/evidence/ux-commercial-rereview-03/independent-review.md",

@@ -4,7 +4,7 @@
 
 ## 本轮有效入口
 
-[UX审查WP-01～07工程闭环](work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为当前执行入口，[结果/身份/剩余](runtime/ux-commercial-closure-02-results.md)、[可取得参考候选](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-f1a655c)。开发分支显式依赖PR37固定2d60fdc，远端PR37未合并；main 1.2.8、PR37本地1.3.0和本轮候选分别记录。原审查及下列审查03记录按形成时身份保留。
+[UX审查WP-01～07工程闭环](work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为当前执行入口，[结果/身份/剩余](runtime/ux-commercial-closure-02-results.md)、[现行参考候选1.3.2](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-6ce1d6d)。开发分支显式依赖PR37固定2d60fdc，远端PR37未合并；main 1.2.8、PR37本地1.3.0和本轮候选分别记录。原审查及下列审查03记录按形成时身份保留。
 
 ## 最新独立审查与实施交接
 

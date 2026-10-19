@@ -30,11 +30,11 @@
 
 Sportmaster 左右独立读码及取格口，无 PLC、图片展示或长期图库；DirectPlc 完整 UI 延期，WcsToPlc 独立主流程。登录/称重/采图/上传按实际产品组合和批准策略选装。Supply 使用自身 Storage/操作契约。业务/ABI/DB/schema/扩展版本从同一固定介质清单读取，不能仅凭版本号继承其他组合资格。
 
-本包产品设计是上述实现的增量目标。可选程序根、完整客户首配、系统登记及修复卸载等尚须按工作包完成，不按新文档提前宣称实现。
+上表保留实施基座与原来源。COMM-00～10当前实现、复审修正及冻结介质统一见[实施结果](runtime/commercial-productization-01-results.md)与[PR47复审](reviews/pr47-commercial-productization-review.md)，不从旧计划段落推断当前缺失或已验收。
 
 ## 3. 源码、发布介质与验收分开
 
-[PR #44/#45 合并与现成资产发布记录](runtime/publication-deployment-20261019.md)记录最新源码政策与两个冻结来源；本次文档任务没有创建统一组合介质。
+[PR #44/#45 历史发布记录](runtime/publication-deployment-20261019.md)记录当时政策与两个冻结来源；该文档任务未创建统一组合介质。下表仅为历史已发布资产，当前COMM候选/复审状态由本页顶部实施结果管理。
 
 |已发布对象|精确范围|
 |---|---|

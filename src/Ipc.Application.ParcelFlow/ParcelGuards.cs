@@ -32,6 +32,8 @@ public sealed partial class ParcelRuntime
         var current = repository!.Latest(p.Id);
         var reasons = new List<string>();
         if (!PositionReady(p.Id)) reasons.Add("Position dependency/health or original responsibility blocked");
+        foreach (var conflict in identityConflicts.Values.Where(x => x.Positions.Contains(p.Id)))
+            reasons.Add("IdentityConflict:" + conflict.Id + "; original=" + conflict.OriginalOperation + "; pause and authenticate maintenance before inspecting this entity; " + conflict.Detail);
         if (!PositionMaintenanceClear(p.Id)) reasons.Add("Position resource maintenance in progress; original intent retained");
         if (current is not null && !MainTerminated(current)) reasons.Add("Current entity main result is incomplete");
         if (!CapacityAvailable) reasons.Add("Unresolved capacity exhausted");

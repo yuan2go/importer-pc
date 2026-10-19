@@ -306,12 +306,21 @@ public sealed partial class ParcelRepository : IDisposable
         if (cmd.ExecuteNonQuery() != 1) throw new InvalidDataException("Original recovery occurrence changed");
         RegisterReplyIdentity(OccurrenceRequest(id, tx), reply, tx); Boundary?.Invoke("BeforeRecoveredReplyIdentityCommit"); tx.Commit();
     }
-    public bool HasMeasurement(WeightMeasurement m)
+    public WeightMeasurement? ReadMeasurement(string id)
     {
-        using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT body FROM parcel_measurements WHERE id=$id"; cmd.Parameters.AddWithValue("$id", m.Id);
-        if (cmd.ExecuteScalar() is not string prior) return false;
-        if (prior != Wire.Encode(m)) throw new InvalidDataException("Measurement identity reused with different content");
-        return true;
+        using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT body FROM parcel_measurements WHERE id=$id"; cmd.Parameters.AddWithValue("$id", id);
+        return cmd.ExecuteScalar() is string body ? Wire.Decode<WeightMeasurement>(body) : null;
+    }
+    public bool HasMeasurement(WeightMeasurement measurement)
+    {
+        var prior = ReadMeasurement(measurement.Id);
+        if (prior is not null && Wire.Encode(prior) != Wire.Encode(measurement)) throw new InvalidDataException("Measurement identity reused with different content");
+        return prior is not null;
+    }
+    internal ParcelOperation FindMeasurementOwner(string admission)
+    {
+        using var cmd = db.CreateCommand(); cmd.CommandText = "SELECT id FROM parcel_history_index WHERE admission=$admission"; cmd.Parameters.AddWithValue("$admission", admission);
+        return cmd.ExecuteScalar() is string id && ReadOperation(id) is { } owner ? owner : throw new InvalidDataException("Original measurement owner is missing; preserve database custody");
     }
     public BusinessReceipt? PriorCommand(BusinessCommand c)
     {

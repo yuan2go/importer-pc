@@ -172,8 +172,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (overloadedPositions.ContainsKey(positionId)) return false;
         if (observation is not null)
         {
-            var identity = currentOperator;
-            if (!SessionValid) return false;
+            var identity = SessionValid ? currentOperator : null;
             // Driver buffers remain driver-owned after callback return.
             observation = observation with { Codes = observation.Codes?.ToArray() ?? [] };
             item = new ParcelObservation(observation, identity); Interlocked.Increment(ref pendingObservations);
@@ -217,8 +216,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     }
     async Task ObserveAsync(string position, Observation o, OperatorIdentity? admittedOperator)
     {
-        if (!CanAdmit(position) || Effective.Login is not null && admittedOperator is null)
-        { repository!.Commit(null, "ObservationBlocked", "Position=" + position + "; paused/faulted/unresolved responsibility; source event=" + o.SourceEventId); return; }
         if (!readers.TryGetValue(o.DeviceId, out var reader) || !reader.AcceptSequence(o) ||
             o.Kind != "Read" || o.Codes is not { Length: 1 } || string.IsNullOrWhiteSpace(o.SourceEventId) || o.SourceEventId.Length > 256 || o.SourceEventId.Any(char.IsControl) || o.Codes[0] is not { Length: > 0 and <= 256 } || o.Codes[0].Any(char.IsControl) ||
             !ExtensionSchema.IsId(o.AdmissionId) || o.ObservedAt > DateTimeOffset.UtcNow || DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) ||
@@ -232,6 +229,10 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             { RecordIdentityConflict(prior, position, "Observation/admission identity reused with changed content/position; source=" + o.SourceEventId + "; code=" + o.Codes[0]); }
             return;
         }
+        // Current-source evidence about an existing entity is processed even while
+        // admission is closed. Only genuinely new entities pass the admission gate.
+        if (!CanAdmit(position) || Effective.Login is not null && admittedOperator is null)
+        { repository.Commit(null, "ObservationBlocked", "Position=" + position + "; paused/faulted/unresolved responsibility; source event=" + o.SourceEventId); return; }
         ArchiveSettled();
         if (!CapacityAvailable)
         { repository!.Commit(null, "RetentionBudget", "Explicit archive/retention is required", paused: true); return; }
@@ -261,13 +262,31 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         if (scaleEpochs.GetValueOrDefault(observation.InstanceId) != observation.Epoch || observation.Sequence <= scaleSequences.GetValueOrDefault(observation.InstanceId))
         { repository!.Commit(null, "MeasurementRejected", "Old scale registration or sequence"); return; }
         scaleSequences[observation.InstanceId] = observation.Sequence;
+        var sourcePositions = positions.Values.Where(p => ParcelBindings.Scale(Effective, p.Id)?.InstanceId == observation.InstanceId).Select(p => p.Id).ToArray();
+        var sourceBinding = sourcePositions.Select(p => ParcelBindings.Scale(Effective, p)).OfType<CapabilityBinding>().FirstOrDefault();
+        if (sourceBinding is null || m.DeviceId != sourceBinding.Target || !Guid.TryParseExact(m.Id, "N", out _) ||
+            !capabilityHealth.TryGetValue(observation.InstanceId, out var sourceHealth) || !sourceHealth.Ready || sourceHealth.ValidUntil <= DateTimeOffset.UtcNow)
+        { repository!.Commit(null, "MeasurementRejected", "Unconfirmed scale source/device/measurement identity"); return; }
+        // Compare the durable identity before phase/admission/freshness guards can
+        // hide a contradiction. The original sample remains immutable.
+        var prior = repository!.ReadMeasurement(m.Id);
+        if (prior is not null)
+        {
+            if (Wire.Encode(prior) != Wire.Encode(m))
+            {
+                var original = repository.FindMeasurementOwner(prior.AdmissionId);
+                var affected = sourcePositions.Concat(new[] { original.PositionId ?? "main" }).Distinct(StringComparer.Ordinal).ToArray();
+                RecordIdentityConflict(original, affected, Wire.Encode(new { Kind = "MeasurementIdentityConflict", Original = prior, Incoming = observation }));
+            }
+            return;
+        }
         var op = operations.Values.SingleOrDefault(x => x.AdmissionId == m.AdmissionId);
         if (op is null || ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.InstanceId != observation.InstanceId) { repository!.Commit(null, "MeasurementRejected", "No matching admitted parcel"); return; }
         if (!capabilityHealth.TryGetValue(ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.InstanceId ?? "", out var scaleHealth) || !scaleHealth.Ready || scaleHealth.ValidUntil <= DateTimeOffset.UtcNow)
         { repository!.Commit(null, "MeasurementRejected", "Bound scale health is not confirmed"); return; }
         var reason = WeightRules.Invalid(m, op, ParcelBindings.Scale(op.FrozenConfiguration, op.PositionId)?.Target ?? "", DateTimeOffset.UtcNow);
         if (reason is not null) { repository!.Commit(null, "MeasurementRejected", reason); return; }
-        if (repository!.HasMeasurement(m) || !WeightPending(op) || op.State == ParcelState.WeightTimedOut ||
+        if (!WeightPending(op) || op.State == ParcelState.WeightTimedOut ||
             DateTimeOffset.UtcNow > op.ObservedAt.AddMilliseconds(op.WeightPolicy.WaitTimeoutMs)) return;
         op = op with { Weight = new(m.Value, m.Unit, m.Precision, WeightSource.Measured, m.Id, m.DeviceId + ":" + m.Quality, m.MeasuredAt), State = op.Capture is { State: StageState.Unknown or StageState.Conflict } ? op.State : ParcelState.Prepared, Reason = op.Capture is { State: StageState.Unknown or StageState.Conflict } ? op.Reason : null };
         Boundary?.Invoke("BeforeWeightAssociation");

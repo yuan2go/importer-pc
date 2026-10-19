@@ -30,6 +30,8 @@ public sealed partial class ParcelStartupMaintenance
         // contents on private copies (checkpoint/WAL byte layout may differ).
         using var sourceCopy = CopyForMaintenance(source);
         using var targetCopy = CopyForMaintenance(target);
+        if (ParcelRepository.ReadStorageVersion(sourceCopy.Database, definition.Id) != 8 || ParcelRepository.ReadStorageVersion(targetCopy.Database, definition.Id) != 8)
+            throw new InvalidDataException("原机接管要求两根均为DB8：先在原根按新发布清偿并受控迁移，再创建/恢复新的完整备份，防止不认识退役围栏的旧程序启动原根");
         if (ParcelRepository.HandoffDatabaseIdentity(sourceCopy.Database) != ParcelRepository.HandoffDatabaseIdentity(targetCopy.Database) ||
             Wire.FileHash(Path.Combine(source, "configuration.json")) != manifest.Files["configuration.json"] ||
             manifest.Files.Any(f => !File.Exists(RecoveryFiles.Resolve(source, f.Key)) || Wire.FileHash(RecoveryFiles.Resolve(source, f.Key)) != f.Value) ||

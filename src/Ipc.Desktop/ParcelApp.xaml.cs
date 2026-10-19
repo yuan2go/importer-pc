@@ -26,7 +26,8 @@ public partial class App : System.Windows.Application
         await Dispatcher.Yield(DispatcherPriority.Background);
         try
         {
-            var mode = e.Args.FirstOrDefault() is "--setup" or "--maintenance" ? e.Args[0] : null;
+            var mode = e.Args.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" ? e.Args[0] : null;
+            if (mode == "--product-maintenance") { new ProductMaintenanceWindow { Owner = startup }.ShowDialog(); startup.AllowClose = true; Shutdown(); return; }
             selected = DesktopLaunchOptions.Parse(mode is null ? e.Args : e.Args[1..], ApplicationId);
             var published = File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json"));
             if (mode == "--setup" || mode is null && published && DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is null)

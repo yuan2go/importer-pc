@@ -5,9 +5,10 @@ using Ipc.Platform.Storage;
 namespace Ipc.Application.ParcelFlow;
 
 // Application-owned offline operations. Never constructs a runtime, port or SDK.
-public sealed class ParcelStartupMaintenance(BusinessLaunch launch, FlowDefinition definition,
+public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, FlowDefinition definition,
     Func<IParcelCapabilityFactory> factory, Action? requireAuthority = null) : IStartupMaintenance
 {
+    internal Func<string> MaintenanceWorkspace { get; set; } = MachineRuntimeSetup.CreateMaintenanceWorkspace;
     string Seed => Path.Combine(Path.GetFullPath(launch.ConfigurationDirectory), "business.json");
     void Authorize() { if (requireAuthority is not null) requireAuthority(); else MachineRuntimePolicy.RequireExtensionInstallerAuthority(); }
     static byte[] ReadBytes(string path)
@@ -72,7 +73,9 @@ public sealed class ParcelStartupMaintenance(BusinessLaunch launch, FlowDefiniti
         candidate = ports.Normalize(candidate); ports.Validate(candidate);
         return new("Validated", "完整候选已静态校验；未启动设备、保存配置或改写数据库", state.Envelope?.Revision ?? 0);
     }
-    public async Task<StartupMaintenanceDocument> StageAsync(string expectedHash, ParcelConfiguration candidate, string reason)
+    public Task<StartupMaintenanceDocument> StageAsync(string expectedHash, ParcelConfiguration candidate, string reason) => StageCore(expectedHash, candidate, reason, false);
+    public Task<StartupMaintenanceDocument> RepairInitialAsync(string expectedHash, ParcelConfiguration candidate, string reason) => StageCore(expectedHash, candidate, reason, true);
+    async Task<StartupMaintenanceDocument> StageCore(string expectedHash, ParcelConfiguration candidate, string reason, bool initialRepair)
     {
         Authorize();
         if (string.IsNullOrWhiteSpace(reason) || reason.Length > 1024) throw new InvalidDataException("填写1～1024字符的维护变更原因");
@@ -84,8 +87,9 @@ public sealed class ParcelStartupMaintenance(BusinessLaunch launch, FlowDefiniti
         var locked = ReadState();
         if (locked.Hash != expectedHash) throw new InvalidOperationException("配置在获取所有权时变化；保留当前草稿并重新读取");
         var database = Path.Combine(state.Directory, definition.Id + ".db");
-        if (File.Exists(database) && ReadVersionFromCopy(database) != 7)
+        if (File.Exists(database) && ReadVersionFromCopy(database) != 8)
             throw new InvalidDataException("原库不是本发布格式；请先使用匹配发布完成原责任，不离线迁移旧库");
+        if (initialRepair) RequireInitialRepairClear(state.Directory, database);
         var errors = definition.Validate(candidate);
         if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
         await using var ports = factory();
@@ -99,7 +103,13 @@ public sealed class ParcelStartupMaintenance(BusinessLaunch launch, FlowDefiniti
         var audit = new { At = DateTimeOffset.UtcNow, Reason = reason, BeforeHash = expectedHash, CandidateHash = Wire.Hash(Wire.Encode(candidate)), Actor = Environment.UserName, Status = "Prepared" };
         ExtensionStore.AtomicWrite(Path.Combine(operation, "operation.json"), audit);
         var revisions = new ConfigurationRevisions<ParcelConfiguration>(state.File, state.Seed, definition.Validate);
-        revisions.Stage(state.Envelope?.Revision ?? 0, candidate);
+        if (initialRepair)
+        {
+            revisions.PrepareEffectiveConfirmation();
+            revisions.RecoverInterruptedActivation();
+            revisions.StageInitialRepair(revisions.Current.Revision, candidate, Environment.UserName, reason);
+        }
+        else revisions.Stage(state.Envelope?.Revision ?? 0, candidate);
         ExtensionStore.AtomicWrite(Path.Combine(operation, "operation.json"), new { audit.At, audit.Reason, audit.BeforeHash, audit.CandidateHash, audit.Actor, Status = "PendingRestart", AfterHash = Wire.FileHash(state.File) });
         return await ReadAsync();
     }
@@ -109,7 +119,7 @@ public sealed class ParcelStartupMaintenance(BusinessLaunch launch, FlowDefiniti
         // DB+WAL snapshot instead, while holding application-owner; never open the original DB.
         var sources = new[] { database, database + "-wal" }.Where(File.Exists).ToArray();
         foreach (var source in sources) RecoveryFiles.RequireOrdinaryAncestors(source);
-        var scratch = MachineRuntimeSetup.CreateMaintenanceWorkspace();
+        var scratch = MaintenanceWorkspace();
         try
         {
             if (!ParcelStorageVolume.Plan(scratch, sources.Sum(p => new FileInfo(p).Length), 67108864).Fits)
@@ -126,7 +136,10 @@ public sealed class ParcelStartupMaintenance(BusinessLaunch launch, FlowDefiniti
         // A support summary deliberately excludes configuration parameters, payloads and database bytes.
         using var output = new FileStream(destination, FileMode.CreateNew, FileAccess.Write, FileShare.None);
         var bytes = System.Text.Encoding.UTF8.GetBytes(Wire.Encode(new { Application = definition.Id, document.ConfigurationHash, document.Revision,
-            document.ExistingConfiguration, document.Diagnostics, Inventory = document.Catalog.InventoryDiagnostic, DeviceOrBusinessStarted = false }));
+            document.ExistingConfiguration, document.ConfigurationStatus, DiagnosticCount = document.Diagnostics.Length,
+            Inventory = document.Catalog.InventoryDiagnostic is null ? "Available" : "Unavailable; detailed local diagnostic intentionally excluded",
+            SourceIdentity = definition.GetType().Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false).OfType<System.Reflection.AssemblyInformationalVersionAttribute>().SingleOrDefault()?.InformationalVersion,
+            ApplicationContractSha256 = Wire.FileHash(typeof(IParcelApplication).Assembly.Location), DeviceOrBusinessStarted = false }));
         await output.WriteAsync(bytes); output.Flush(true);
     }
     public Task<StartupRecoveryPreview> PlanRestoreAsync(string backup, string destination)
@@ -145,6 +158,13 @@ public sealed class ParcelStartupMaintenance(BusinessLaunch launch, FlowDefiniti
         RecoveryFiles.RequireOrdinaryAncestors(originalDirectory);
         using var originalOwner = Directory.Exists(originalDirectory) ? new ResourceLease(originalDirectory, ["application-owner"]) : null;
         _ = ParcelRecovery.PlanRestore(backup, destination);
+        if (OperatingSystem.IsWindows() && File.Exists(Path.Combine(WindowsDeploymentSetup.MachineRoot, "runtime-policy.json")))
+        {
+            var suffix = Path.Combine(original.Mode.ToString(), original.StationId, definition.Id);
+            var full = Path.GetFullPath(destination);
+            if (!full.EndsWith(Path.DirectorySeparatorChar + suffix, StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("恢复目标须为已预览的模式/站/Application完整路径");
+            WindowsDeploymentSetup.PrepareRestoreDataRoot(full[..^(suffix.Length + 1)]);
+        }
         ParcelRecovery.Restore(backup, destination);
         return Task.CompletedTask;
     }

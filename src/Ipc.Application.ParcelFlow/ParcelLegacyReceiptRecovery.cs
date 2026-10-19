@@ -10,7 +10,7 @@ public static class ParcelLegacyReceiptRecovery
     internal static Action<string>? Boundary;
     public static async Task<object> RecoverAsync(string database,string expectedHash,string backup,string occurrence,string originalRelease,string reason,FlowDefinition definition,Func<string,string,string,CancellationToken,Task<StageReply?>> originalQuery,Action<string,ParcelConfiguration>? registerBackup=null,CancellationToken token=default,string? expectedWalHash=null,int targetStorageVersion=5)
     {
-        if (targetStorageVersion is not (5 or 6 or 7)) throw new ArgumentOutOfRangeException(nameof(targetStorageVersion));
+        if (targetStorageVersion is not (5 or 6 or 7 or 8)) throw new ArgumentOutOfRangeException(nameof(targetStorageVersion));
         database=Path.GetFullPath(database);backup=Path.GetFullPath(backup);
         RecoveryFiles.RequireOrdinaryAncestors(database);RecoveryFiles.RequireOrdinaryAncestors(backup);
         var directory=Path.GetDirectoryName(database)!;
@@ -133,7 +133,7 @@ public static class ParcelLegacyReceiptRecovery
     {
         var recovery=backup+".recovery";
         if(File.Exists(backup)||Directory.Exists(recovery))throw new IOException("Choose a new immutable full backup destination");
-        var names=new List<string>{"configuration.json"};names.AddRange(RecoveryFiles.Enumerate(directory,"receipts"));names.AddRange(RecoveryFiles.Enumerate(directory,"images",skipImageLeases:true));
+        var names=new List<string>{"configuration.json"};names.AddRange(RecoveryFiles.Enumerate(directory,"receipts"));names.AddRange(RecoveryFiles.Enumerate(directory,"images",skipImageLeases:true)); names.AddRange(RecoveryFiles.MaintenanceEvidence(directory));
         if(File.Exists(Path.Combine(directory,"overload.json")))names.Add("overload.json");
         RecoveryFiles.ValidateNames(directory,names);var hashes=names.ToDictionary(n=>n,n=>Wire.FileHash(RecoveryFiles.Resolve(directory,n)));
         var bytes=checked(repository.StorageBytes+RecoveryFiles.MaximumManifestBytes+names.Sum(n=>new FileInfo(RecoveryFiles.Resolve(directory,n)).Length));

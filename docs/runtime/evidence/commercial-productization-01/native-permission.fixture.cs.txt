@@ -1,0 +1,22 @@
+using Ipc.Assembly;
+using Ipc.Platform;
+if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException();
+var root=Path.GetFullPath(".artifacts/comm/native-permission-bd86fbb");
+var media=DeploymentMedia.Inspect(Path.GetFullPath(".artifacts/comm/releases/sportmaster-bd86fbb-win-x64"),"sportmaster");
+var custom=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),"ImporterPc.CommReadonly."+Wire.Id());
+TrustedProgramRoots.Preview(custom,Path.Combine(root,"new-data"));
+if(Directory.Exists(custom))throw new Exception("Readonly preflight created a program directory");
+Console.WriteLine("PASS native supported custom protected parent is reviewed without creating a directory");
+bool rejected=false;try{TrustedProgramRoots.Preview(Path.Combine(Path.GetTempPath(),"comm-user-program-"+Wire.Id()),Path.Combine(root,"new-data"));}catch(UnauthorizedAccessException){rejected=true;}
+if(!rejected)throw new Exception("User-writable parent accepted as elevated helper root");
+Console.WriteLine("PASS native user-writable program parent cannot become a protected helper root");
+using var identity=System.Security.Principal.WindowsIdentity.GetCurrent();
+if(new System.Security.Principal.WindowsPrincipal(identity).IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator))throw new Exception("NOT_RUN require a non-elevated session; never run an installation in this check");
+var request=ParcelStartupServices.Review(media,identity.User!.Value,Path.Combine(root,"new-data"),Path.Combine(media.Root,"app/config"),null,[],false);
+var registration=WindowsDeploymentSetup.Registration("sportmaster");var before=File.Exists(registration)?Wire.FileHash(registration):null;
+var plan=Path.Combine(root,"plan.private.json");File.WriteAllText(plan,Wire.Encode(DeploymentBatch.Freeze(request)));
+if(!DeploymentBatch.Handle(["--deployment-plan",plan,"--receipt",Path.Combine(root,"denied.private.json")])||Environment.ExitCode!=5)throw new Exception("Unattended deployment did not refuse missing elevation with exit5");
+Environment.ExitCode=0;
+if(Directory.Exists(request.DataRoot)||(File.Exists(registration)?Wire.FileHash(registration):null)!=before)throw new Exception("Unauthorized deployment mutated data or authoritative registration");
+Console.WriteLine("PASS native non-elevated batch deployment exits5 before data/registration creation; no hidden UAC or device start");
+

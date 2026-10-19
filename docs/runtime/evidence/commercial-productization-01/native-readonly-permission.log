@@ -1,0 +1,3 @@
+PASS native supported custom protected parent is reviewed without creating a directory
+PASS native user-writable program parent cannot become a protected helper root
+PASS native non-elevated batch deployment exits5 before data/registration creation; no hidden UAC or device start

@@ -16,7 +16,7 @@ public sealed partial class ParcelRepository
             if (r.GetString(0) != application || version > migrations.Length || r.GetInt64(1) != version || r.GetString(2) != Wire.Hash(migrations[version - 1].Sql))
                 throw new InvalidDataException("Unknown/changed original database; matching maintenance reader required");
         }
-        if (version is < 2 or > 7) throw new InvalidDataException("This maintenance reader supports exact Parcel DB2/3/4/5/6/7 only");
+        if (version is < 2 or > 8) throw new InvalidDataException("This maintenance reader supports exact Parcel DB2/3/4/5/6/7/8 only");
         return version;
     }
     // Offline, no provider construction or schema upgrade. Restores only a derived main
@@ -50,7 +50,7 @@ public sealed partial class ParcelRepository
         var recovery = backup + ".recovery";
         if (File.Exists(backup) || Directory.Exists(recovery)) throw new IOException("Preserve prior backup; choose a new destination");
         var names = new List<string> { "configuration.json" };
-        names.AddRange(RecoveryFiles.Enumerate(directory, "receipts")); names.AddRange(RecoveryFiles.Enumerate(directory, "images", skipImageLeases: true));
+        names.AddRange(RecoveryFiles.Enumerate(directory, "receipts")); names.AddRange(RecoveryFiles.Enumerate(directory, "images", skipImageLeases: true)); names.AddRange(RecoveryFiles.MaintenanceEvidence(directory));
         if (File.Exists(Path.Combine(directory, "overload.json"))) names.Add("overload.json");
         RecoveryFiles.ValidateNames(directory, names);
         var hashes = names.ToDictionary(n => n, n => Wire.FileHash(RecoveryFiles.Resolve(directory, n)));

@@ -42,6 +42,9 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     int externalWaits;
     TaskCompletionSource? externalDrained;
     internal Action<string>? Boundary { get; set; }
+    // Isolated synthetic verification can supply identity without provisioning this machine.
+    // No executable/configuration exposes this internal dependency.
+    internal Action RuntimeIdentityPreflight { get; set; } = MachineRuntimePolicy.RequireRuntimeIdentity;
     internal Func<string, CancellationToken, Task>? BeforeMonitorProbe { get; set; }
     Exception? terminalWorkerFailure;
     public string Id => definition.Id;
@@ -56,13 +59,14 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     public async Task StartAsync(CancellationToken token)
     {
         if (started || disposed) throw new InvalidOperationException("Application startup is single-use");
-        MachineRuntimePolicy.RequireRuntimeIdentity();
+        RuntimeIdentityPreflight();
         started = true;
         var seed = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(launch.ConfigurationDirectory, "business.json")));
         var errors = definition.Validate(seed); if (errors.Length > 0) throw new InvalidDataException(string.Join("; ", errors));
         seed = factory.Normalize(seed);
         directory = Path.Combine(launch.DataRoot, seed.Mode.ToString(), seed.StationId, Id);
         lease = new(directory, ["application-owner"]);
+        if (File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json"))) throw new InvalidOperationException("原数据根已在迁移中退役；保留原件，从部署登记的新根继续隔离核对，不能双活");
         overloadMarker = Path.Combine(directory, "overload.json"); overload = File.Exists(overloadMarker) ? 1 : 0;
         if (overload != 0)
         {
@@ -75,7 +79,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         ValidateDeploymentIdentity(seed);
         // Refuse old unresolved responsibilities before either future-reader markers
         // or confirmation/recovery writes can make the original release unusable.
-        repository = new(directory, Id, 7) { Boundary = point => Boundary?.Invoke(point) };
+        repository = new(directory, Id, 8) { Boundary = point => Boundary?.Invoke(point) };
         configuration.PrepareEffectiveConfirmation();
         configuration.RecoverInterruptedActivation();
         journal = new(Path.Combine(directory, "diagnostics"), detail => { Volatile.Write(ref failure, detail); Interlocked.Exchange(ref accepting, 0); });
@@ -100,12 +104,21 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             // Pending is activated only at a controlled startup, after recovery barriers.
             if (configuration.Current.Confirmation?.Required != true)
                 startupConfiguration = configuration.BeginActivation(candidate => { RequireSameIdentity(seed, candidate); return ConfigurationResponsibilitiesClear(); }, factory.Validate);
+            else if (configuration.Current.InitialRepair is not null && configuration.Current.Status == "PendingRestart")
+            {
+                startupConfiguration = configuration.BeginActivation(candidate =>
+                {
+                    configuration.RequireInitialRepairIdentity();
+                    RequireSameIdentity(seed, candidate);
+                    return overload == 0 && !File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json")) && repository.InitialRepairResponsibilitiesClear(definition);
+                }, factory.Validate);
+            }
         }
         catch (Exception ex) when (ex is InvalidDataException or InvalidOperationException)
         { _ = ex; /* Failure remains in the authoritative envelope; previous Effective is usable. */ }
         try
         {
-            configuration.BeginEffectiveStartup();
+            if (startupConfiguration is null) configuration.BeginEffectiveStartup();
             factory.Validate(Effective);
             ports = factory.Create(Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective))); // Factory owns partial construction if any step fails.
             var incompatibleOriginals = operations.Values.Where(op => RequiresOriginalExecution(op) && op.ImplementationHashes.Any(original =>

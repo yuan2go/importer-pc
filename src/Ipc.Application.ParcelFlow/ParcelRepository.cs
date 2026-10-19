@@ -52,12 +52,15 @@ public sealed partial class ParcelRepository : IDisposable
         CREATE TABLE parcel_integration_id_owners(id INTEGER PRIMARY KEY CHECK(id>0),operation TEXT NOT NULL UNIQUE,request TEXT NOT NULL UNIQUE,request_hash TEXT NOT NULL);
         CREATE TABLE parcel_integration_id_ranges(binding_hash TEXT PRIMARY KEY,first_id INTEGER NOT NULL CHECK(first_id>0),last_id INTEGER NOT NULL CHECK(last_id>=first_id));
         CREATE TABLE parcel_integration_id_restores(identity TEXT PRIMARY KEY,ceiling INTEGER NOT NULL CHECK(ceiling>=0));
+        """), new(8, """
+        CREATE TABLE parcel_commercial_semantics(version INTEGER PRIMARY KEY CHECK(version=8),description TEXT NOT NULL);
+        INSERT INTO parcel_commercial_semantics VALUES(8,'Explicit initial repair, protected restore handoff and configuration-bound backup schedule; prior readers must refuse');
         """)];
     public long Revision { get; private set; }
     public bool Paused { get; private set; }
-    public ParcelRepository(string directory, string application, int storageVersion = 7, bool allowCustodyUpgrade = false)
+    public ParcelRepository(string directory, string application, int storageVersion = 8, bool allowCustodyUpgrade = false)
     {
-        if (storageVersion is not (2 or 3 or 4 or 5 or 6 or 7)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
+        if (storageVersion is not (2 or 3 or 4 or 5 or 6 or 7 or 8)) throw new ArgumentOutOfRangeException(nameof(storageVersion));
         Directory.CreateDirectory(directory); rawRoot = Path.Combine(directory, "receipts"); Directory.CreateDirectory(rawRoot);
         var database = Path.Combine(directory, application + ".db");
         if (File.Exists(database) && new FileInfo(database).Length != 0)
@@ -69,6 +72,7 @@ public sealed partial class ParcelRepository : IDisposable
             {
                 db.Open();
                 StorageVersion = ReadStorageVersion(database, application);
+                if (StorageVersion > storageVersion) throw new InvalidDataException("Future reader required; retain original database and use its matching release");
                 RequireLegacySettlement(application, storageVersion, allowCustodyUpgrade);
                 if (StorageVersion >= 6 && StorageVersion < storageVersion) ValidateIntegrationRequestHistory();
             }

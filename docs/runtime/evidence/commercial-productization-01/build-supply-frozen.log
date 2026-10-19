@@ -1,0 +1,21 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc\src\Ipc.Desktop\Ipc.Desktop.csproj (用时 1.35 秒)。
+  11 个项目(共 12 个)是最新的，无法还原。
+  Ipc.Platform -> D:\projects\importer-pc\src\Ipc.Platform\bin\Debug\net10.0\Ipc.Platform.dll
+  Ipc.Platform.Storage -> D:\projects\importer-pc\src\Ipc.Platform.Storage\bin\Debug\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc\src\Ipc.Application.Contracts\bin\Debug\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc\src\Ipc.Application.Supply.Contracts\bin\Debug\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Reference.Protocol -> D:\projects\importer-pc\src\Ipc.Reference.Protocol\bin\Debug\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Application.ParcelFlow -> D:\projects\importer-pc\src\Ipc.Application.ParcelFlow\bin\Debug\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Supply -> D:\projects\importer-pc\src\Ipc.Application.Supply\bin\Debug\net10.0\Ipc.Supply.dll
+  Ipc.Integrations -> D:\projects\importer-pc\src\Ipc.Integrations\bin\Debug\net10.0\Ipc.Integrations.dll
+  Ipc.Drivers -> D:\projects\importer-pc\src\Ipc.Drivers\bin\Debug\net10.0\Ipc.Drivers.dll
+  Ipc.Adapters -> D:\projects\importer-pc\src\Ipc.Adapters\bin\Debug\net10.0\Ipc.Adapters.dll
+  Ipc.Product -> D:\projects\importer-pc\src\Ipc.Product\bin\Debug\net10.0\Ipc.Product.dll
+  Ipc.Desktop -> D:\projects\importer-pc\src\Ipc.Desktop\bin\Debug\net10.0-windows\Ipc.Desktop.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:01:26.51

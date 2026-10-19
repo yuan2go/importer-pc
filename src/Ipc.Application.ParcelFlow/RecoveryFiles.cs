@@ -48,7 +48,7 @@ internal static class RecoveryFiles
         {
             if (++count > MaximumFiles) throw new InvalidDataException("Recovery file inventory quota exceeded");
             _ = Resolve(root, name);
-            if (name is not ("configuration.json" or "overload.json") && !name.StartsWith("receipts/", StringComparison.Ordinal) && !name.StartsWith("images/", StringComparison.Ordinal))
+            if (name is not ("configuration.json" or "overload.json") && !name.StartsWith("receipts/", StringComparison.Ordinal) && !name.StartsWith("images/", StringComparison.Ordinal) && !IsMaintenanceEvidence(name))
                 throw new InvalidDataException("Unexpected recovery custody file: " + name);
             var parts = name.Split('/'); var prefix = "";
             for (int i = 0; i < parts.Length; i++)
@@ -89,6 +89,22 @@ internal static class RecoveryFiles
         using (var output = new FileStream(destination, FileMode.CreateNew, FileAccess.Write, FileShare.None))
         { input.CopyTo(output); output.Flush(flushToDisk: true); }
         if (Wire.FileHash(destination) != expectedHash) throw new InvalidDataException("Recovery copy differs from verified custody; incomplete set retained");
+    }
+    static bool IsMaintenanceEvidence(string name)
+    {
+        var p = name.Split('/');
+        return p.Length >= 3 && p[0] == "startup-maintenance" && Guid.TryParseExact(p[1], "N", out _) ||
+            p.Length == 2 && p[0] == "startup-maintenance" && (p[1] == "editor-draft.bin" || p[1].StartsWith("editor-draft.bin.", StringComparison.Ordinal) && p[1].EndsWith(".new", StringComparison.Ordinal)) ||
+            p.Length == 3 && p[0] == "startup-maintenance" && p[1] == "editor-history" && (p[2].EndsWith(".bin", StringComparison.Ordinal) || p[2].EndsWith(".new", StringComparison.Ordinal));
+    }
+    public static IEnumerable<string> MaintenanceEvidence(string root)
+    {
+        foreach (var name in Enumerate(root, "startup-maintenance"))
+        {
+            if (Path.GetExtension(name) == ".lease" && ExtensionSchema.IsHash(Path.GetFileNameWithoutExtension(name))) continue;
+            if (!IsMaintenanceEvidence(name)) throw new InvalidDataException("Unrecognized private maintenance evidence; preserve and inspect: " + name);
+            yield return name;
+        }
     }
     public static Dictionary<string, string> Inventory(string root)
     {

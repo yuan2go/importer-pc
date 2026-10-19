@@ -1,0 +1,7 @@
+PASS frozen static review accepts an independently built, signed reference module
+PASS static review does not load provider code or create business data
+PASS changed payload cannot pass signed static review
+PASS missing exact dependency cannot be accepted or substituted
+PASS conflicting signed versions cannot form an ambiguous selection
+PASS TestOnly trust cannot qualify Production
+PASS failed static reviews leave business data absent

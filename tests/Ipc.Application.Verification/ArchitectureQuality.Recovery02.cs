@@ -169,12 +169,12 @@ static partial class ArchitectureQuality
     }
     static async Task CurrentCustody07Checks(ParcelConfiguration c)
     {
-        var directory = DirectoryFor("current-db7-offline-custody", c);
+        var directory = DirectoryFor("current-db8-offline-custody", c);
         ParcelRecovery.Restore(Path.Combine(root, "legacy-before.backup.db"), directory);
-        await using (var app = await Open(c, "current-db7-offline-custody", factory => new FaultFactory(factory) { EmptyUploadQuery = true }))
+        await using (var app = await Open(c, "current-db8-offline-custody", factory => new FaultFactory(factory) { EmptyUploadQuery = true }))
             await Wait(app, snapshot => snapshot.Operations.Single(x => x.AdmissionId == "unrelated-right").ImageReleased);
         var database = Path.Combine(directory, "sportmaster.db"); string occurrence; ParcelOperation original;
-        using (var repository = new ParcelRepository(directory, "sportmaster", 7))
+        using (var repository = new ParcelRepository(directory, "sportmaster", 8))
         {
             original = repository.Load().Single(x => x.AdmissionId == "interrupted-attached");
             occurrence = repository.PendingReceipts().Single(x => x.Operation == original.Id && x.Stage == "image-upload" && x.Reply is null).Id;
@@ -187,15 +187,15 @@ static partial class ArchitectureQuality
             await uploader.StartAsync(token); return await uploader.QueryAsync(request, token);
         }
         var release = Path.GetDirectoryName(typeof(ArchitectureQuality).Assembly.Location)!;
-        var first = await ParcelLegacyReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current7-first.backup.db"), occurrence, release,
+        var first = await ParcelLegacyReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current8-first.backup.db"), occurrence, release,
             "Synthetic current-schema offline query; retain original missing raw", new SportmasterFlow(), Query, expectedWalHash: WalHash(database));
-        Check(calls == 1 && ParcelRepository.ReadStorageVersion(database, "sportmaster") == 7 && Wire.Encode(first).Contains("\"DatabaseVersion\": 7", StringComparison.Ordinal),
-            "current SQL7 offline receipt recovery performs one original Query and returns SQL7 without a post-query downgrade failure");
-        await ParcelLegacyReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current7-second.backup.db"), occurrence, release,
+        Check(calls == 1 && ParcelRepository.ReadStorageVersion(database, "sportmaster") == 8 && Wire.Encode(first).Contains("\"DatabaseVersion\": 8", StringComparison.Ordinal),
+            "current SQL8 offline receipt recovery performs one original Query and returns SQL8 without a post-query downgrade failure");
+        await ParcelLegacyReceiptRecovery.RecoverAsync(database, Wire.FileHash(database), Path.Combine(root, "current8-second.backup.db"), occurrence, release,
             "Synthetic repeat must reuse its committed original Query basis", new SportmasterFlow(), Query, expectedWalHash: WalHash(database));
-        using var readback = new ParcelRepository(directory, "sportmaster", 7); var current = readback.Load().Single(x => x.Id == original.Id);
+        using var readback = new ParcelRepository(directory, "sportmaster", 8); var current = readback.Load().Single(x => x.Id == original.Id);
         Check(calls == 1 && current.Wcs!.Attempts == 1 && current.Upload!.Attempts == 1 && !current.ImageReleased && readback.ReceiptById(occurrence) is { State: "Awaiting", RawHash: null, QueryOccurrence: not null },
-            "repeated SQL7 offline recovery reuses original Query, preserves missing raw/image custody and never resubmits WCS or upload");
+            "repeated SQL8 offline recovery reuses original Query, preserves missing raw/image custody and never resubmits WCS or upload");
     }
     static async Task LegacyProjection02Checks(ParcelConfiguration c,string id)
     {
@@ -204,7 +204,7 @@ static partial class ArchitectureQuality
         using(var db=new SqliteConnection("Data Source="+database))
         {
             db.Open(); using var q=db.CreateCommand(); q.CommandText="UPDATE parcel_operations SET body=json_set(body,'$.State','Blocked','$.Reason','RawUnavailable:old-version') WHERE id=$id"; q.Parameters.AddWithValue("$id",id); q.ExecuteNonQuery();
-            q.CommandText="DROP TABLE IF EXISTS parcel_integration_id_owners; DROP TABLE IF EXISTS parcel_integration_id_ranges; DROP TABLE IF EXISTS parcel_integration_id_restores; DROP TABLE parcel_integration_semantics; DELETE FROM platform_migrations WHERE version>=6; DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version=5; DROP TABLE parcel_history_index; DROP TABLE parcel_archives; DROP TABLE parcel_reply_identities; DROP TABLE parcel_archived_receipts; DROP TABLE parcel_overload_ack; DROP TABLE parcel_identity_conflicts; DROP TABLE parcel_configuration_audit; DELETE FROM platform_migrations WHERE version=4"; q.ExecuteNonQuery();
+            q.CommandText="DROP TABLE IF EXISTS parcel_commercial_semantics; DROP TABLE IF EXISTS parcel_integration_id_owners; DROP TABLE IF EXISTS parcel_integration_id_ranges; DROP TABLE IF EXISTS parcel_integration_id_restores; DROP TABLE parcel_integration_semantics; DELETE FROM platform_migrations WHERE version>=6; DROP TABLE parcel_receipt_custody; DROP TABLE parcel_archive_versions; DELETE FROM platform_migrations WHERE version=5; DROP TABLE parcel_history_index; DROP TABLE parcel_archives; DROP TABLE parcel_reply_identities; DROP TABLE parcel_archived_receipts; DROP TABLE parcel_overload_ack; DROP TABLE parcel_identity_conflicts; DROP TABLE parcel_configuration_audit; DELETE FROM platform_migrations WHERE version=4"; q.ExecuteNonQuery();
         }
         var hash=Wire.FileHash(database); var backup=Path.Combine(root,"legacy-repair-preserved.db");
         Check(ParcelRepository.RepairLegacyMain(database,hash,backup,new SportmasterFlow(),"Offline original receipt custody checked")==1 && File.Exists(backup+".recovery/COMPLETED.json"),"offline old-schema repair creates a full original recovery set before changing derived main projection");

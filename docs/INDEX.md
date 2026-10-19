@@ -79,6 +79,8 @@ Sportmaster 左右独立读码及取格口，无 PLC、图片展示或长期图�
 
 > 发行入口增量（PR48）：[原形成时范围](runtime/unified-windows-release-01.md)。本次整合不执行测试/构建，旧冻结结果不授予最终组合资格。
 
-## 统一发行补充回执
+> 统一发行当前工具及中断交付见[结果](runtime/unified-release-01.md)；全部合并裁决见[不测试合并记录](runtime/publication-merge-20261020.md)。最终 main 组合没有重新测试或出包，旧介质/原 PASS 保持原身份。
 
-[统一发行结果](runtime/unified-windows-release-01-results.md)保存本任务实际构建的7acbb2c冻结源、8个ZIP身份与定向验证。该媒介覆盖开工时PR44/45/46组合，早于任务中外部合并的PR47/DB8，不能冒充当前main或用于DB8；现行产品化/DB8指引及原证据保持。续建机制、内核锁与手动Windows工作流见[发行入口](runtime/unified-windows-release-01.md)。Windows实机仍NOT_RUN、真实能力BLOCKED、商用NOT_APPROVED。
+## 已完成的历史冻结发行回执
+
+[本轮7acbb2c发行结果](runtime/unified-windows-release-01-results.md)含8套实际媒介和完整原始校验；它覆盖开工PR44/45/46，早于运行中另合并的PR47/DB8，不可冒充最新main或用于DB8。并发整合保留后合入的统一发行实现、旧原件及所有现行产品指引；本轮实际续建编排源码仅按hash归档于证据目录，当前操作仍按[现行统一发行](runtime/unified-release-01.md)。Windows实机NOT_RUN、真实能力BLOCKED、商用NOT_APPROVED。

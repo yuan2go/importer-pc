@@ -10,3 +10,5 @@
 - first-failed与cancelled保存原本地尝试，不计入成功发行。attempt-*为环境中断前原BUILD，interrupted-*为原中断日志；原件身份不覆盖。
 
 后验仍按`docs/runtime/validation/startup-deployment-02-windows.md`执行。无Windows UAC/ACL/不同真实账户/中断/升级恢复/桌面操作结果；真实SDK/设备/生产资格BLOCKED，商用NOT_APPROVED。手动Actions工作流本轮NOT_RUN。
+
+并发整合后：当前活动发行机制来自aaa30b5及其后继，不以本档案覆盖。orchestrator-used-for-7acbb2c.py为历史实际编排源码（hash匹配RELEASE），供追溯，不是当前运行入口；不要从证据目录直接执行。

@@ -1,0 +1,8 @@
+test_complete_exact_closure_and_duplicates (test_application_bundles.ApplicationBundleTests.test_complete_exact_closure_and_duplicates) ... ok
+test_composition_bundle_cannot_disappear (test_application_bundles.ApplicationBundleTests.test_composition_bundle_cannot_disappear) ... ok
+test_product_guides_resolve_actual_operations (test_application_bundles.ApplicationBundleTests.test_product_guides_resolve_actual_operations) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.020s
+
+OK

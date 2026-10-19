@@ -1,0 +1,134 @@
+test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) ...
+  test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Run') ... FAIL
+  test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Console') ... FAIL
+  test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Diagnose') ... FAIL
+test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) ...
+  test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Run') ... FAIL
+  test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Console') ... FAIL
+  test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Diagnose') ... FAIL
+test_direct_runtime_guard_precedes_configuration_and_storage (test_runtime_identity.RuntimeIdentityTests.test_direct_runtime_guard_precedes_configuration_and_storage) ... ERROR
+test_maintenance_dispatch_does_not_require_runtime_identity (test_runtime_identity.RuntimeIdentityTests.test_maintenance_dispatch_does_not_require_runtime_identity) ... ok
+
+======================================================================
+ERROR: test_direct_runtime_guard_precedes_configuration_and_storage (test_runtime_identity.RuntimeIdentityTests.test_direct_runtime_guard_precedes_configuration_and_storage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 104, in test_direct_runtime_guard_precedes_configuration_and_storage
+    guard = source.index('MachineRuntimePolicy.RequireRuntimeIdentity();', start)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: substring not found
+
+======================================================================
+FAIL: test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Run')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 83, in test_allowed_dispatch_preserves_existing_launch_arguments
+    self.assertEqual(calls[0], ['Ipc.Assembly.exe', '--action', 'runtime-check'])
+AssertionError: Lists differ: ['Ipc[24 chars]n', 'deployment-check', '--file', '/private/va[91 chars]son'] != ['Ipc[24 chars]n', 'runtime-check']
+
+First differing element 2:
+'deployment-check'
+'runtime-check'
+
+First list contains 2 additional elements.
+First extra element 3:
+'--file'
+
++ ['Ipc.Assembly.exe', '--action', 'runtime-check']
+- ['Ipc.Assembly.exe',
+-  '--action',
+-  'deployment-check',
+-  '--file',
+-  '/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmp0thcdu33/release/desktop/config/business.json']
+
+======================================================================
+FAIL: test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Console')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 83, in test_allowed_dispatch_preserves_existing_launch_arguments
+    self.assertEqual(calls[0], ['Ipc.Assembly.exe', '--action', 'runtime-check'])
+AssertionError: Lists differ: ['Ipc[14 chars], '--config', '/private/var/folders/w_/lgbn5hq[149 chars]ata'] != ['Ipc[14 chars], '--action', 'runtime-check']
+
+First differing element 1:
+'--config'
+'--action'
+
+First list contains 2 additional elements.
+First extra element 3:
+'--data-root'
+
++ ['Ipc.Assembly.exe', '--action', 'runtime-check']
+- ['Ipc.Assembly.exe',
+-  '--config',
+-  '/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmp3zgsoa4_/release/desktop/config',
+-  '--data-root',
+-  '/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmp3zgsoa4_/data']
+
+======================================================================
+FAIL: test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) (action='Diagnose')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 82, in test_allowed_dispatch_preserves_existing_launch_arguments
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : Exception: /private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmp1d_f3kfo/release/application.ps1:60
+Line |
+  60 |  … $policy)) { throw 'Machine runtime policy missing: run provision-runt …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Machine runtime policy missing: run provision-runtime.ps1 in elevated
+     | maintenance with the designated ordinary account
+
+
+======================================================================
+FAIL: test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Run')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 75, in test_denial_stops_every_runtime_entry_before_other_children
+    self.assertNotEqual(result.returncode, 0)
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Console')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 75, in test_denial_stops_every_runtime_entry_before_other_children
+    self.assertNotEqual(result.returncode, 0)
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) (action='Diagnose')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<workspace>/scripts/test_runtime_identity.py", line 76, in test_denial_stops_every_runtime_entry_before_other_children
+    self.assertEqual(calls, [['Ipc.Assembly.exe', '--action', 'runtime-check']], result.stderr)
+AssertionError: Lists differ: [['Ip[25 chars]n', 'business-identity'], ['Ipc.Assembly.exe',[147 chars]on']] != [['Ip[25 chars]n', 'runtime-check']]
+
+First differing element 0:
+['Ipc.Assembly.exe', '--action', 'business-identity']
+['Ipc.Assembly.exe', '--action', 'runtime-check']
+
+First list contains 1 additional elements.
+First extra element 1:
+['Ipc.Assembly.exe', '--action', 'deployment-check', '--file', '/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmpy0jmw4ks/release/desktop/config/business.json']
+
+- [['Ipc.Assembly.exe', '--action', 'business-identity'],
+?                                    ^ ----------   ^^  ^
+
++ [['Ipc.Assembly.exe', '--action', 'runtime-check']]
+?                                    ^    ^^^^^^^^  ^
+
+-  ['Ipc.Assembly.exe',
+-   '--action',
+-   'deployment-check',
+-   '--file',
+-   '/private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmpy0jmw4ks/release/desktop/config/business.json']] : Exception: /private/var/folders/w_/lgbn5hqd16gf9xy9nhl32j7h0000gn/T/tmpy0jmw4ks/release/application.ps1:60
+Line |
+  60 |  … $policy)) { throw 'Machine runtime policy missing: run provision-runt …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Machine runtime policy missing: run provision-runtime.ps1 in elevated
+     | maintenance with the designated ordinary account
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 13.849s
+
+FAILED (failures=6, errors=1)

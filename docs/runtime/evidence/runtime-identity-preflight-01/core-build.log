@@ -1,0 +1,18 @@
+  Ipc.Platform -> <workspace>/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <workspace>/src/Ipc.Application.Contracts/bin/Debug/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Reference.Protocol -> <workspace>/src/Ipc.Reference.Protocol/bin/Debug/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Drivers -> <workspace>/src/Ipc.Drivers/bin/Debug/net10.0/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <workspace>/src/Ipc.Application.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <workspace>/src/Ipc.Integrations/bin/Debug/net10.0/Ipc.Integrations.dll
+  Ipc.Adapters -> <workspace>/src/Ipc.Adapters/bin/Debug/net10.0/Ipc.Adapters.dll
+  Ipc.Platform.Storage -> <workspace>/src/Ipc.Platform.Storage/bin/Debug/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> <workspace>/src/Ipc.Application.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Application.ParcelFlow -> <workspace>/src/Ipc.Application.ParcelFlow/bin/Debug/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Product -> <workspace>/src/Ipc.Product/bin/Debug/net10.0/Ipc.Product.dll
+  Ipc.Verification -> <workspace>/tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:05.00

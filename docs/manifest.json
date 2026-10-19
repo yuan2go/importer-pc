@@ -172,9 +172,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "2cfbcbe684bb2f4874cb5ed59828cb8d1995367fd9f1cce60bc0cb94fb32078a",
-      "size_bytes": 4839,
-      "git_blob": "00c7a8c03aaba6e78361a5e683d589fabdc890f5",
+      "sha256": "f5fe29e236b6c3ab0b8c31175466e1f6bc2c02d27c02be83c9e192e4b1af4a4e",
+      "size_bytes": 4880,
+      "git_blob": "a69834886509c66d615605afed15349612990638",
       "version": "ux-maintenance-p2-04",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
@@ -371,9 +371,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "543a0e7afb0bf434d00af1021b670c936e717371c72a40d56fe0ac5d78657f05",
-      "size_bytes": 9472,
-      "git_blob": "11cb9946ea2d7ae9023cd282ec9874ec5ce3856a",
+      "sha256": "2bf12919c547427565894ac1cf26ae4f9143cf15b133cc0a5cd663ff86ca8a9f",
+      "size_bytes": 9990,
+      "git_blob": "2e04929f32c839754413425833e5738ff44ed45b",
       "version": "ux-maintenance-p2-04",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
@@ -3834,9 +3834,9 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "bd8b631d563e4019b144d4de1093abf999e9c1a40289a3b8aac0f7e5127a6973",
+      "sha256": "3ac84f3e9f5374b7cf5cccc8ac160ce05c4216325ae775d4ac9d52125f1d04a5",
       "size_bytes": 20582,
-      "git_blob": "3df61599eb11d34beb0e33bac2ce9d7c89bd6adb",
+      "git_blob": "429d9e9a2c368a9e452de71010da35dda73ea5e7",
       "version": "ux-commercial-fix-01",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
@@ -3846,9 +3846,9 @@
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "18c3cecd8259a89e795a560f220cefbf5e07d749cae83e4e3bd28a8b90ddfe1f",
+      "sha256": "b185e461b4c63edc688005bf7b0e6663eacc7f36ef7775e13e5cce6155d28faa",
       "size_bytes": 38294,
-      "git_blob": "f05c1c6f1c7a29b33231774921732c23f47fa59c",
+      "git_blob": "c04433bda13b90a2071b7af6a7e3d691296ac117",
       "version": "ux-commercial-fix-01",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
@@ -29705,9 +29705,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
       "storage_scope": "public_repository",
-      "sha256": "9222370348a84c24e016bf236892294719ab19c9bde245be4bc8de733929c977",
-      "size_bytes": 30145,
-      "git_blob": "dfc2e1f60795df1899dbdeac6da4cd6469fd9db8",
+      "sha256": "049270562ae0fc7472634525a0369862da3cd9ddd6ee9a2af7290e27b0b67f27",
+      "size_bytes": 30200,
+      "git_blob": "7979420ed7d0bd9f7e1812b40654a38ec0b879d6",
       "previous_git_blob": "b25bcbfb544447fd06a6d8371a28e5e8819ee857"
     },
     {
@@ -31183,9 +31183,9 @@
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
       "source": "WP-IPC-CAPABILITY-RELIABILITY-CLOSURE-20 user implementation authorization",
       "storage_scope": "public_repository",
-      "sha256": "c45a64cbba5483ced3d399c3035b166b84e62dfc6ffb160b0a2912a48d995815",
-      "size_bytes": 1564,
-      "git_blob": "905a3f5ad33978d1cd3a7a57b3e7fc9027df3681",
+      "sha256": "26f94fe1e5417734fcac549b03127df53c013ef963c543fcf8291c9311684b76",
+      "size_bytes": 1619,
+      "git_blob": "aceaed876e4c98087a42986005e68aee7f990a15",
       "previous_git_blob": "a18be79bb73bf426ba5f22038b91ac944ea46ebd"
     },
     {
@@ -31207,9 +31207,9 @@
       "purpose": "Authorized audit02 implementation, synthetic verification and product operations; source identity retained",
       "source": "WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02 section11 user authorization",
       "storage_scope": "public_repository",
-      "sha256": "325b21bc24cf62e58a94452f064c16b4629cfdcb94dc618f5ec335866c0892e4",
-      "size_bytes": 12464,
-      "git_blob": "3eb567b63d36fd157f22bf6d657d2b848b4d7ffe",
+      "sha256": "101db39d97921a58df7b588a4a7d41ded4f06e0dc3d226e5c2d61bf80f8d9114",
+      "size_bytes": 12835,
+      "git_blob": "bd918e66180ebefb49d2ba2e75aff243725b7577",
       "previous_git_blob": "6ee96f682e627afc5ee0729fe4b19444ba5d293d"
     },
     {
@@ -32354,9 +32354,9 @@
     },
     {
       "path": "src/Ipc.Platform/MachineRuntimePolicy.cs",
-      "sha256": "a695178d96cd5ee27269dba78a5f0ac3f0fb20d9a9aaa7b63ffaae19f15028c1",
-      "size_bytes": 9612,
-      "git_blob": "479314a2d18138c668e4c45dba1b952dfb659230",
+      "sha256": "c0aa992ba2a147443f57c51e09e1ab71ec6a6889ccb11fe024bd9af6661c5855",
+      "size_bytes": 11288,
+      "git_blob": "bbd591093ef75790406289e6736b089a946e70cb",
       "version": "capability-reliability-20",
       "status": "implementation_evidence_or_historical_custody",
       "purpose": "Authorized generic reliability implementation, synthetic verification or original-byte custody",
@@ -33596,9 +33596,9 @@
     },
     {
       "path": "tests/Ipc.Verification/Program.cs",
-      "sha256": "d00e07efa97e8e9750d189d1504a4c35c9f3a4e451b2e5f93615a87add501c5d",
-      "size_bytes": 51859,
-      "git_blob": "45e76b681c8bf825063a6fc47a32f7a532a49ec4",
+      "sha256": "803d601c980743f18a7e3b9653bd7a77fbcc93fbdecabf6ad8f5574d9a1d90fe",
+      "size_bytes": 51966,
+      "git_blob": "c1106aefda7a6c8557395a20ad0c9827946e7a54",
       "version": "UI-MAINTAINABILITY-16",
       "status": "current_implementation_or_boundary_record",
       "purpose": "Authorized generic code, synthetic evidence, current operations or original-byte custody",
@@ -34733,9 +34733,9 @@
       "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
       "source": "WP-IPC-UX-MAINTENANCE-P2-04",
       "storage_scope": "public_repository",
-      "sha256": "16a1b3e053de2dad5bbbe7fa70e613c9e42a20ff94c981ec594a5d633cb62551",
-      "size_bytes": 12785,
-      "git_blob": "8e42fa5af24241130ecae605fa932120de61b1c4"
+      "sha256": "8c6df2da3eb77f3af516e5dfa87116da9ed92c099b7e433777003cbabfd7f9ab",
+      "size_bytes": 13664,
+      "git_blob": "a8608d77fd0385f1f953457593fc7147a4d476e7"
     },
     {
       "path": "scripts/application.cmd",
@@ -34755,9 +34755,9 @@
       "purpose": "Authorized generic implementation or synthetic delivery evidence",
       "source": "WP-A03-00..06 explicit implementation and publication authorization",
       "storage_scope": "public_repository",
-      "sha256": "11b39e4092b496fcf2ec9669e29cf22f2ac5a19e5b00c25cadd4dec515ff5f81",
-      "size_bytes": 9775,
-      "git_blob": "b8c33d111713f124a2eefb6882ae33857022dd43"
+      "sha256": "1f8facc5985b2717f0a93615d52c5de9e4c267c8dd05793c3f247d9dd3c44098",
+      "size_bytes": 9418,
+      "git_blob": "55e207349ee23ad0025058d1991b81ffc47e3631"
     },
     {
       "path": "scripts/release_dependencies.py",
@@ -38817,6 +38817,259 @@
       "sha256": "98eb424883d9f96cde756387d5950b950ce7c62e8325dc86697a6f2d114f8b4b",
       "size_bytes": 697,
       "git_blob": "1349e02c664554dc2d4588a4cce19049067837b8"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/after.log",
+      "sha256": "5148e4ed48c5a7689edb184fcce3da43deaf2a809e3a540c183f9559168585b8",
+      "size_bytes": 785,
+      "git_blob": "41a22905fd79d0c2e1b710796af49dc893c793aa",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/assembly-direct-plc.log",
+      "sha256": "3c9b2e472fd39af890ba16e8f622eb03d6f739bce7256ec80cdb4ab47810201a",
+      "size_bytes": 2531,
+      "git_blob": "afb5f5cd124d1144ecab1f3a89265a5292f1880a",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/assembly-sportmaster.log",
+      "sha256": "3f6730cc942bddb9559a8361504a6c5949b7f42dedfeb200d793fab37157db9b",
+      "size_bytes": 1611,
+      "git_blob": "510edba216fbccae7249816c3df3d9e9f6fe971a",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/assembly-wcs-to-plc.log",
+      "sha256": "856432f6797cb7c53f6ceae9c2e3566820a8ae7bffaec84cbf39db258e04d9e7",
+      "size_bytes": 2728,
+      "git_blob": "78aa7b4754f8b6dd9c6ac5a7a6cd5944f7a38b9a",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/before.log",
+      "sha256": "14d7f0f117c477e7c5481259b37ea55b119ce97daa1a9a6d1d83a2bdac95dedb",
+      "size_bytes": 8932,
+      "git_blob": "60cb17f4e94c7ed47c38b019039aa6c206442e47",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/bundle-guides.log",
+      "sha256": "0d527200d82f6933c900ca59579986886c5fb923fe55940d7869a25852c2a8fc",
+      "size_bytes": 529,
+      "git_blob": "a7e1ba48d718526be0b67df9d36009e6315b981c",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/checks.json",
+      "sha256": "8b8c12800d815a403cf6fca7a7db5d609ad4f080c896a52e403a567980a4d885",
+      "size_bytes": 3175,
+      "git_blob": "4c0dc916eb700ac60bee511a1563ba0ee4f9efa0",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/core-build.log",
+      "sha256": "2e2864ed587145c9796e1b3e44ccd3f590e8aa99314da36e35668cc3614dc7ef",
+      "size_bytes": 1283,
+      "git_blob": "ad0646095cf42f84373312976aa57a3f15abc046",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/core-restore.log",
+      "sha256": "e758dc4f89cdefaa48ac97fd0f98c0c1f406f1b6e6f797cb8f2d9a85194854ad",
+      "size_bytes": 1185,
+      "git_blob": "cd5dab9d1815065547e0d07b0a288ef09c816a96",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/desktop-sportmaster.log",
+      "sha256": "d9ba356926075ed87a9eba9d5d864054f17e10254470b2b852120b10851153c3",
+      "size_bytes": 1980,
+      "git_blob": "7fc03330133a4acc6ddd19963a63bbadb26e8b0e",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/harness-link-path-failure.log",
+      "sha256": "5d8c6d55ea9b51270db3bf08baa2d692db69d19e4e4c0fc80a2b25cb44ed7b30",
+      "size_bytes": 9585,
+      "git_blob": "9fa82d25facbb8e00846f33eceb5c6d1bc648a13",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/policy.log",
+      "sha256": "de6ce0249691b70667577b134ba0eae327f19ea2d4cc5e3aca12d25cadf8972c",
+      "size_bytes": 1240,
+      "git_blob": "8a0bf37b66bf885838d31ffa4e03fe329368328b",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/runtime-identity-preflight-01.md",
+      "sha256": "b519166975ebc073da3af92ec15c2154580be8981e4944a5446d825926e5d8e7",
+      "size_bytes": 7792,
+      "git_blob": "92d31ddece71e6b278da418cbebcfe967f4ed1dd",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-RUNTIME-IDENTITY-PREFLIGHT-01.md",
+      "sha256": "a4aa1798d9eb717dae3593d6ad3441aae944d69f51e9fbf5da3a14c2f7100c0c",
+      "size_bytes": 2132,
+      "git_blob": "dfce8f18d08ad014c695708a02d7d79ad0f6fac9",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "scripts/test_runtime_identity.py",
+      "sha256": "c839d401960cf61fdd3b8d40e0e2600a9f460dbce6ab2776ee8bae2a38da85f0",
+      "size_bytes": 6537,
+      "git_blob": "0a59e3918e6873a16cb94006728a6e8cf6391081",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "tests/Ipc.Verification/RuntimeIdentityVerification.cs",
+      "sha256": "7e3c4c01ae37c88d1c8b962f04dd364a17bc28afa25b9a4f6a5990d15696f015",
+      "size_bytes": 1977,
+      "git_blob": "e727d970a9a4cbed58e2f8b4872ed668c10e3770",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/archive-delta.json",
+      "sha256": "abd3162b9ea2b5e022cffdae8ef59b324e1f8743b986c22d620e5df9db6b863d",
+      "size_bytes": 607,
+      "git_blob": "ebac0268fc7deecc1bc052d095d0a12c670cb77e",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/package-portable.log",
+      "sha256": "868da9a5a6bc8a6044d0accb0522a0f2c89cab498178ac7e4124e934a8f03005",
+      "size_bytes": 3837,
+      "git_blob": "49e98c2507d58be7c3be6ae1c50af9bea355d1dd",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/smoke-startup.log",
+      "sha256": "031c09e94e91aed442e171103281db82aee87337d2322a52ec735eaf6cf432fb",
+      "size_bytes": 658,
+      "git_blob": "72dc2baedd593dcb035b1c84d9075e75a709084c",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/runtime-identity-preflight-01/startup-smoke.json",
+      "sha256": "031c09e94e91aed442e171103281db82aee87337d2322a52ec735eaf6cf432fb",
+      "size_bytes": 658,
+      "git_blob": "72dc2baedd593dcb035b1c84d9075e75a709084c",
+      "version": "runtime-identity-preflight-01",
+      "status": "current_implementation_or_boundary_record",
+      "purpose": "Runtime identity preflight fix, targeted synthetic verification and Windows acceptance boundary",
+      "source": "2026-10-19 user-authorized PR35 P1 remediation; generic code and synthetic evidence only",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/maintenance-publication-20261019/merge-resolution.json",
+      "version": "maintenance-publication-20261019",
+      "status": "publication_inventory_NOT_RUN",
+      "purpose": "User-authorized merged task inputs, original evidence or publication custody",
+      "source": "PR41/42 and user no-test publication request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "3e7b6113ac6a5dd0f1cf0cc4c2b1776a1d0b0b128b7898c18af69707b815affd",
+      "size_bytes": 7898,
+      "git_blob": "e5fb7626239054a30cd253abdca4b0c17359cf1b"
+    },
+    {
+      "path": "docs/runtime/evidence/maintenance-publication-20261019/pr42-before.json",
+      "version": "maintenance-publication-20261019",
+      "status": "publication_inventory_NOT_RUN",
+      "purpose": "User-authorized merged task inputs, original evidence or publication custody",
+      "source": "PR41/42 and user no-test publication request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "9af74a40f92dd43c3cf88431f09b72ae5255010b1c54408f845f6c8f3b78696c",
+      "size_bytes": 2119,
+      "git_blob": "07022c038b585b439eb63eb7ec83d9a9b12c76c3"
+    },
+    {
+      "path": "docs/runtime/publication-maintenance-20261019.md",
+      "version": "maintenance-publication-20261019",
+      "status": "publication_inventory_NOT_RUN",
+      "purpose": "User-authorized merged task inputs, original evidence or publication custody",
+      "source": "PR41/42 and user no-test publication request 2026-10-19",
+      "storage_scope": "public_repository",
+      "sha256": "78a1535e5c7cbab2d5ed488216ecbc54c40afc09c3e0dff065070cbf307cc839",
+      "size_bytes": 3255,
+      "git_blob": "8f3876ad8817c2277a2970c77c9d628973d94456"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -40021,5 +40274,19 @@
     "windows_native": "NOT_RUN",
     "real_sdk_protocol_field": "BLOCKED_PER_CAPABILITY",
     "production": "NOT_READY"
+  },
+  "runtime_identity_preflight_01": {
+    "baseline_main": "be7956447054054dfdcfce725e8fbbbdfc87407a",
+    "report": "docs/runtime/runtime-identity-preflight-01.md",
+    "checks": "docs/runtime/evidence/runtime-identity-preflight-01/checks.json",
+    "windows": "NOT_RUN",
+    "production": "NOT_READY",
+    "old_release_assets": "UNCHANGED"
+  },
+  "maintenance_no_test_publication_20261019": {
+    "report": "docs/runtime/publication-maintenance-20261019.md",
+    "resolution": "docs/runtime/evidence/maintenance-publication-20261019/merge-resolution.json",
+    "tests": "NOT_RUN_BY_USER_REQUEST",
+    "combined_media": "NOT_BUILT_BY_USER_REQUEST"
   }
 }

@@ -4,7 +4,7 @@
 
 # 三个Application的Windows候选与维护路径
 
-本页与实际媒介同一固定源码生成；SourceCommit、ApplicationId、业务1.3.3、ABI1.9.0、DB7、配置schema1/2/3分别读取ASSEMBLY.json、app/application-release.json和DEPENDENCIES.json。Supply仍用自己的station.ps1/Storage5，不能套用这里命令。候选工程基线沿现有Windows11 build26100+ x64/PowerShell7；客户SKU/build、设备/SDK及合同未确认，实际Windows全部NOT_RUN，真实组合和商用BLOCKED。不得把本页步骤写成已经执行的Windows验收。
+本文描述当前合并源码的操作；旧媒介必须按其固定SourceCommit及随包指南读取。ff31b0e的1.3.3媒介不包含SID前置修复，f354d3f的portable参考不含维护P2，本轮未生成二者组合的新媒介。SourceCommit、ApplicationId、业务1.3.3、ABI1.9.0、DB7、配置schema1/2/3分别读取ASSEMBLY.json、app/application-release.json和DEPENDENCIES.json。Supply仍用自己的station.ps1/Storage5，不能套用这里命令。候选工程基线沿现有Windows11 build26100+ x64/PowerShell7；客户SKU/build、设备/SDK及合同未确认，实际Windows全部NOT_RUN，真实组合和商用BLOCKED。不得把本页步骤写成已经执行的Windows验收。
 
 ## 媒介与依赖诊断
 
@@ -21,7 +21,9 @@ $data = 'D:\ImporterPcData'
 & "$release\application.ps1" -Action Diagnose -DataRoot $data
 ```
 
-Verify检查完整文件集合、hash、越界及链接路径；Diagnose调用真实业务版本/组合及deployment-check入口，不启动reader/SDK或Submit，再检查指定Windows运行SID。配置无效、缺包/依赖/机器策略或SID错误明确失败；没有用Simulation回退Production。坏配置不通过覆盖旧configuration.json或换空根恢复。配置根参数可用 `-Configuration <绝对配置目录>`，其business.json是seed，持久Effective/Pending仍属于数据根内唯一配置账。
+Verify检查完整文件集合、hash、越界及链接路径；Diagnose、Run、Console先调用`--action runtime-check`，复用MachineRuntimePolicy校验受保护的机器策略、schema/固定租约目录、ACL与当前SID，再执行业务版本/组合及deployment-check或启动程序。缺失/不可读/畸形策略、错误SID、管理员（包括UAC过滤令牌中的deny-only管理员组）或系统服务账户均拒绝日常启动。预检只读，不创建目录、租约或数据库；直接启动桌面/控制台EXE及直接调用ParcelRuntime.StartAsync也在配置持久化、数据库访问/迁移/恢复前执行相同门禁。完整修复范围与验证边界见[身份前置门禁](runtime-identity-preflight-01.md)。
+
+配置无效、缺包/依赖/机器策略或SID错误明确失败；没有用Simulation回退Production。坏配置不通过覆盖旧configuration.json或换空根恢复。配置根参数可用 `-Configuration <绝对配置目录>`，其business.json是seed，持久Effective/Pending仍属于数据根内唯一配置账。Verify和显式安装/维护分支保持原权限规则；runtime-check不授予维护权限，预检成功不证明设备/协议/现场可用。
 
 ## 安装与普通账户
 

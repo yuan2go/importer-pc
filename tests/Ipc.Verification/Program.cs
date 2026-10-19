@@ -10,6 +10,12 @@ using Ipc.Supply;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 
+if (args.FirstOrDefault() == "--runtime-identity")
+{
+    RuntimeIdentityVerification.Run();
+    return;
+}
+
 SupplyContractRegistration.Register();
 
 if (args.FirstOrDefault() == "--extension-interrupt")

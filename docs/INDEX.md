@@ -6,6 +6,10 @@
 
 ## 本轮有效入口
 
+[本次维护P2与SID不测试发布记录](runtime/publication-maintenance-20261019.md)：当前源码同时包含两项修复，既有两个候选分别保留原固定源码；本轮未生成组合媒介。
+
+[运行账户SID前置修复](runtime/runtime-identity-preflight-01.md) · [定向工作包](work-packages/WP-IPC-RUNTIME-IDENTITY-PREFLIGHT-01.md)：继承已合并PR37/39的UI与配置成果，修复PR35 P1的启动校验顺序。Windows实机仍NOT_RUN，旧发布媒介不因源码修改自动更新。
+
 [本次不测试发布与合并回执](runtime/publication-ux-20261019.md)：合并PR37/38/39，保留最终参考产物、原失败与Windows/现场门禁。
 
 [UX审查WP-01～07工程闭环](work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为当前执行入口，[结果/身份/剩余](runtime/ux-commercial-closure-02-results.md)、[现行参考候选1.3.2](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-6ce1d6d)。PR37/38/39均已实际合并；PR39继承原PR37固定2d60fdc并完成续修，实际merge及发布身份见本次回执。main版本为1.3.2，本分支新参考候选为1.3.3/Contracts1.9.0/DB7；实施开工main 1.2.8、PR37本地1.3.0及旧候选分别按形成时记录。原审查及下列审查03记录按形成时身份保留。

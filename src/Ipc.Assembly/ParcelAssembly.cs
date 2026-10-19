@@ -14,6 +14,7 @@ public static class ParcelAssembly
 #endif
     public static IBusinessRuntime Create(BusinessLaunch launch)
     {
+        MachineRuntimePolicy.RequireRuntimeIdentity();
         ParcelCapabilityFactory.RegisterContracts();
         var businessAssembly = Definition().GetType().Assembly;
         var compatibility = BusinessCompatibility.Read(businessAssembly);

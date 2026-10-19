@@ -79,9 +79,10 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     public BusinessLaunch SelectedLaunch { get; private set; }
     public bool RetryRequested { get; private set; }
     public bool ReplacementLaunched { get; private set; }
-    public StartupRepairWindow(BusinessLaunch launch, string? failure = null) : base("启动修复 · 离线维护")
+    public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次工位配置 · Importer PC" : "启动修复 · 离线维护")
     {
         SelectedLaunch = launch;
+        if (initialConfiguration) reason = "首次工位配置";
         Message("无需业务启动成功。检查和编辑不连接设备；保存为 Pending，正常启动仍检查原恢复责任。" + (failure is null ? "" : "\n启动诊断：" + failure));
         config = Folder("原配置目录（包含 business.json）", launch.ConfigurationDirectory);
         data = Folder("原数据根（保留 Simulation/Production、站和 Application 层级）", launch.DataRoot);
@@ -98,7 +99,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (savedDraft is null || draft is null) throw new InvalidOperationException("没有可继续草稿");
             if (savedDraft.BaseChanged) throw new InvalidOperationException("草稿基线已变化；先比较当前配置，不自动套用或覆盖。");
             if (savedDraft.Editor.Values.GetValueOrDefault("editor") == "live-v1") throw new InvalidOperationException("这是运行内统一设置的草稿；在原Application的设备与维护页选择继续未完成设置。当前首配输入与加密原草稿均保留。");
-            draft.Restore(savedDraft.Editor); Render(false); Message("已恢复未完成输入；参数改变后原检查失效。请重新检查候选。"); return Task.CompletedTask;
+            draft = draft.WithRestored(savedDraft.Editor); Render(false); Message("已恢复未完成输入；参数改变后原检查失效。请重新检查候选。"); return Task.CompletedTask;
         });
         Action("导出新站模板…", () =>
         {
@@ -113,13 +114,12 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             var path = FilePick(this, "导入无业务状态模板", "模板|*.json"); if (path is null) return Task.CompletedTask;
             if (new FileInfo(path).Length > 4 * 1024 * 1024) throw new InvalidDataException("模板超出配额");
             var values = StartupSiteTemplates.Import(document.Candidate.ApplicationId, Wire.Decode<StartupSiteTemplate>(File.ReadAllText(path)));
-            var replacement = new StartupConfigurationDraft(document.Candidate, document.Catalog); replacement.Restore(draft.Capture()); replacement.Restore(values);
-            draft = replacement; Render(false); Message("模板只改变草稿；原站身份、设备绑定、目标和原责任保留，检查后再提交。"); return Task.CompletedTask;
+            draft = draft.WithRestored(values); Render(false); Message("模板只改变草稿；原站身份、设备绑定、目标和原责任保留，检查后再提交。"); return Task.CompletedTask;
         });
-        Action("保存待生效修订…", async () =>
+        Action(initialConfiguration ? "保存首配待生效…" : "保存待生效修订…", async () =>
         {
             var candidate = RequireDraft(); var expected = document!.ConfigurationHash;
-            document = await Task.Run(() => maintenance.StageAsync(expected, candidate, reason)); Render(); Message("保存后已读回状态：" + document.ConfigurationStatus + "。保存过程不改 Effective 或原数据库；重试启动时由业务决定能否激活。");
+            document = await Task.Run(() => initialConfiguration ? maintenance.RepairInitialAsync(expected, candidate, reason) : maintenance.StageAsync(expected, candidate, reason)); Render(); Message("保存后已读回状态：" + document.ConfigurationStatus + "。保存过程不改 Effective 或原数据库；重试启动时由业务决定能否激活。");
         });
         Action("受控修复未确认配置…", async () =>
         {
@@ -157,7 +157,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             if (setup.Launched) { ReplacementLaunched = true; Busy = false; Close(); return; }
             if (setup.Installed is { } installed) { config.Text = installed.ConfigurationDirectory; data.Text = installed.DataRoot; await Read(); }
         });
-        Action("重试正常启动", () => { SelectedLaunch = SelectedLaunch with { ConfigurationDirectory = config.Text, DataRoot = data.Text }; RetryRequested = true; CompleteDialog(); return Task.CompletedTask; });
+        Action(initialConfiguration ? "按当前首配启动" : "重试正常启动", () => { SelectedLaunch = SelectedLaunch with { ConfigurationDirectory = config.Text, DataRoot = data.Text }; RetryRequested = true; CompleteDialog(); return Task.CompletedTask; });
         Loaded += async (_, _) => await Run(Read);
     }
     ParcelConfiguration RequireDraft()
@@ -181,7 +181,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         if (draft is not null)
         {
             var c = document!.Candidate!;
-            Note($"{c.ApplicationId} · {c.StationId} · {c.Mode} · 修订 {document.Revision} · {document.ConfigurationStatus}\n原账散列：{document.ConfigurationHash}\n工位身份只读。设备与服务沿已交付精确目录选择；未枚举/未连接不等于已验证。");
+            Note($"{c.ApplicationId} · {c.StationId} · {c.Mode} · 修订 {document.Revision} · {document.ConfigurationStatus}\n原账散列：{document.ConfigurationHash}\n工位身份只读。设备与服务沿已交付精确目录选择；未枚举/未连接不等于已验证。\n设备尚未启动。可保存未完成草稿；审阅后显式启动仍受完整资格/原责任检查。");
             Field("输入队列容量", draft.QueueCapacity, v => draft.QueueCapacity = v);
             Field("调用超时（ms）", draft.TimeoutMs, v => draft.TimeoutMs = v);
             Field("作业容量", draft.MaximumOperations, v => draft.MaximumOperations = v);

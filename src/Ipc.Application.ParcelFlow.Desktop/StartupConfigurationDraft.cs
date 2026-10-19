@@ -110,4 +110,11 @@ public sealed class StartupConfigurationDraft
             foreach (var parameter in draft.Parameters) parameter.Value = v.GetValueOrDefault(prefix + "parameter." + parameter.Field.Key, parameter.Value);
         }
     }
+    public StartupConfigurationDraft WithRestored(StartupEditorState state)
+    {
+        var replacement = new StartupConfigurationDraft(original, catalog);
+        replacement.Restore(Capture());
+        replacement.Restore(state);
+        return replacement;
+    }
 }

@@ -21,6 +21,20 @@ static partial class Program
         var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
         File.WriteAllText(Path.Combine(configRoot, "business.json"), Wire.Encode(config));
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
+        if (Environment.GetEnvironmentVariable("IPC_FROZEN_DESKTOP") is { } desktopPath)
+        {
+            var desktop = System.Reflection.Assembly.LoadFrom(desktopPath);
+            var type = desktop.GetType("Ipc.Desktop.StartupRepairWindow", throwOnError: true)!;
+            var first = (Window)Activator.CreateInstance(type, [launch, null, true])!;
+            first.Show();
+            for (var i = 0; i < 100 && !Descendants(first).OfType<TextBox>().Any(t => t.Text == config.StationId); i++) await Task.Delay(20);
+            first.UpdateLayout();
+            Check(first.Title.Contains("首次工位配置") && Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "保存首配待生效…")) &&
+                Descendants(first).OfType<Button>().Any(b => Equals(b.Content, "按当前首配启动")), "actual published desktop first-configuration window exposes explicit save/start through the existing editor");
+            Check(!Directory.GetFiles(launch.DataRoot, "*.db", SearchOption.AllDirectories).Any() && !Directory.GetFiles(launch.DataRoot, "configuration.json", SearchOption.AllDirectories).Any(),
+                "first-configuration native read creates neither database nor authoritative configuration");
+            Screenshot(first, Path.Combine(evidence, "commercial-first-configuration.png")); first.Close();
+        }
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); var identity = (await runtime.SnapshotAsync()).RuntimeId;
         var classic = (ShellWindow)Presentation.Create(runtime, null, "standard"); var alternate = (SupplyStationWindow)Presentation.Create(runtime, null, "standard", "supply-station");

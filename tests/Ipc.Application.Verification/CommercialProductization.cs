@@ -49,9 +49,11 @@ static class CommercialProductization
         File.WriteAllText(Path.Combine(config, "business.json"), Wire.Encode(seed));
         var launch = new BusinessLaunch(config, Path.Combine(root, "data"), null, null);
         var directory = Path.Combine(launch.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
+        await InitialConfiguration(seed, root);
         // Empty DB7 is a real prior format; migration precedes the deliberately
         // broken first resource startup, so independent initial repair remains usable.
         using (var prior = new ParcelRepository(directory, seed.ApplicationId, 7)) { }
+        File.WriteAllText(Path.Combine(directory, "configuration.json"), Wire.Encode(new ConfigurationRevision<ParcelConfiguration>(0, seed, null, "Effective", null)));
         ParcelRuntime Runtime(bool fail = true) => new(launch, new SportmasterFlow(), new SyntheticFactory(launch, fail)) { RuntimeIdentityPreflight = () => { } };
         Console.WriteLine("Isolated synthetic identity dependency; actual Windows UAC/runtime policy NOT_RUN by this fixture.");
         await using (var broken = Runtime()) await Reject<InvalidOperationException>(() => broken.StartAsync(default), "original unconfirmed configuration fails resource construction");
@@ -161,19 +163,47 @@ static class CommercialProductization
         await Reject<InvalidDataException>(() => legacyService.AdoptRestoreOwnedAsync(legacyBackup, legacyTarget, legacyRestore.BackupSha256, _ => Task.CompletedTask), "DB7 restore source cannot retire before old readers are fenced by DB8");
         Check(!File.Exists(Path.Combine(legacyDirectory, "MIGRATION-SOURCE-FENCED.json")) && ParcelRepository.ReadStorageVersion(Path.Combine(legacyDirectory, seed.ApplicationId + ".db"), seed.ApplicationId) == 7,
             "refused legacy handoff keeps the original reader and does not commit a false source fence");
-        // Handoff uses an explicitly synthetic machine proof here. Protected
-        // deployment registration/Windows account readback remain native NOT_RUN.
-        service.HandoffMachineIdentity = () => "SYNTHETIC-HANDOFF-MACHINE";
-        using (var changedSource = new ParcelRepository(directory, seed.ApplicationId)) changedSource.Commit(null, "SyntheticAfterBackup", "original advanced after snapshot");
-        await Reject<InvalidDataException>(() => service.AdoptRestoreOwnedAsync(sets[0].Path, target, restore.BackupSha256, _ => Task.CompletedTask), "historical backup cannot retire source with newer responsibility/evidence");
-        var freshBackup = Path.Combine(root, "handoff-fresh.db"); await service.BackupAsync(freshBackup);
-        var freshRoot = Path.Combine(root, "handoff-new-root"); var freshPlan = await service.PlanRestoreAsync(freshBackup, freshRoot); await service.RestoreAsync(freshBackup, freshPlan.Destination, freshPlan.BackupSha256);
-        bool committedHandoff = false;
-        await service.AdoptRestoreOwnedAsync(freshBackup, freshRoot, freshPlan.BackupSha256, proof => { committedHandoff = File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json")); return Task.CompletedTask; });
-        Check(committedHandoff && File.Exists(Path.Combine(freshPlan.Destination, "RESTORED-ISOLATED.json")), "matching full backup fences original before handoff commit and keeps restored root isolated");
-        await using (var fenced = Runtime(false)) await Reject<InvalidOperationException>(() => fenced.StartAsync(default), "retired original root cannot start a second business owner");
+        await Reject<InvalidDataException>(() => service.AdoptRestoreOwnedAsync(sets[0].Path, target, restore.BackupSha256, _ => throw new Exception("Must not commit")), "legacy root without original machine custody cannot be silently certified by copying a policy");
+        Check(!File.Exists(Path.Combine(directory, "machine-origin.bin")) && !File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json")), "legacy backup/repair never mints a new machine claim or a false source fence");
         Check(Convert.FromBase64String(repairedEnvelope).Length > original.Length, "repair preserves the full later envelope including ordinary stage and failed retry history");
         Console.WriteLine("PASS COMM CORE COMPLETE");
+    }
+    static async Task InitialConfiguration(ParcelConfiguration seed, string root)
+    {
+        var config = Path.Combine(root, "first-configuration"); Directory.CreateDirectory(config);
+        File.WriteAllText(Path.Combine(config, "business.json"), Wire.Encode(seed));
+        var launch = new BusinessLaunch(config, Path.Combine(root, "first-data"), null, null);
+        var directory = Path.Combine(launch.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
+        var service = new ParcelStartupMaintenance(launch, new SportmasterFlow(), () => new SyntheticFactory(launch), () => { });
+        var read = await service.ReadAsync();
+        Check(read is { Candidate: not null, ExistingConfiguration: false, ConfigurationStatus: "Seed" } && !File.Exists(Path.Combine(directory, seed.ApplicationId + ".db")), "new-site authoritative discovery offers first configuration without starting a runtime or creating a database");
+        var editor = new StartupConfigurationDraft(read.Candidate!, read.Catalog) { TimeoutMs = "my-unsaved-input" };
+        var before = Wire.Encode(editor.Capture()); var foreign = editor.Capture(); foreign.Values["timeout"] = "other-draft"; foreign.Values["cap.0.provider"] = "unavailable-precise-provider";
+        await Reject<InvalidOperationException>(() => { _ = editor.WithRestored(foreign); return Task.CompletedTask; }, "unavailable saved provider rejects the entire replacement draft");
+        Check(Wire.Encode(editor.Capture()) == before, "failed offline resume preserves every current unsaved field");
+        var candidate = read.Candidate! with { TimeoutMs = 2000 };
+        await service.RepairInitialAsync(read.ConfigurationHash, candidate, "explicit first site configuration");
+        Check(!File.Exists(Path.Combine(directory, seed.ApplicationId + ".db")) && File.Exists(Path.Combine(directory, "machine-origin.bin")), "first configuration uses the existing revision/repair authority and records machine custody before the first business database");
+        ParcelMachineOrigin.Require(directory, candidate);
+        var copied = Path.Combine(root, "copied-origin"); Directory.CreateDirectory(copied);
+        File.Copy(Path.Combine(directory, "machine-origin.bin"), Path.Combine(copied, "machine-origin.bin"));
+        await Reject<IOException>(() => { ParcelMachineOrigin.Require(copied, candidate); return Task.CompletedTask; }, "a copied origin file without a fenced handoff cannot certify another source directory");
+        await using (var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new SyntheticFactory(launch, failOriginal: true)) { RuntimeIdentityPreflight = () => { } })
+        { await runtime.StartAsync(default); Check((await runtime.SnapshotAsync()).Configuration is { Effective.TimeoutMs: 2000, Confirmation.Required: false }, "explicit new-site configuration starts the approved candidate without first starting the reference seed"); }
+        var missing = launch with { DataRoot = Path.Combine(root, "missing-ledger-data") };
+        var original = Path.Combine(missing.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
+        using (var prior = new ParcelRepository(original, seed.ApplicationId, 7)) { }
+        var database = Path.Combine(original, seed.ApplicationId + ".db"); var hash = Wire.FileHash(database);
+        await using (var runtime = new ParcelRuntime(missing, new SportmasterFlow(), new SyntheticFactory(missing)) { RuntimeIdentityPreflight = () => { } })
+            await Reject<InvalidDataException>(() => runtime.StartAsync(default), "database without its original configuration ledger cannot start from a replacement seed");
+        Check(Wire.FileHash(database) == hash && !File.Exists(Path.Combine(original, "configuration.json")) && !File.Exists(Path.Combine(original, "machine-origin.bin")), "missing-ledger startup preserves database bytes/format and creates no false configuration or machine claim");
+        var orphan = launch with { DataRoot = Path.Combine(root, "orphan-custody-data") };
+        var orphanDirectory = Path.Combine(orphan.DataRoot, seed.Mode.ToString(), seed.StationId, seed.ApplicationId);
+        Directory.CreateDirectory(Path.Combine(orphanDirectory, "receipts"));
+        var receipt = Path.Combine(orphanDirectory, "receipts", "original.txt"); File.WriteAllText(receipt, "synthetic original custody"); var receiptHash = Wire.FileHash(receipt);
+        await using (var runtime = new ParcelRuntime(orphan, new SportmasterFlow(), new SyntheticFactory(orphan)) { RuntimeIdentityPreflight = () => { } })
+            await Reject<InvalidDataException>(() => runtime.StartAsync(default), "original custody without a database cannot be replaced by a new empty business ledger");
+        Check(Wire.FileHash(receipt) == receiptHash && !File.Exists(Path.Combine(orphanDirectory, seed.ApplicationId + ".db")) && !File.Exists(Path.Combine(orphanDirectory, "configuration.json")), "missing-database rejection preserves raw custody and creates no replacement authority");
     }
     static async Task Unknown(ParcelConfiguration seed, string root)
     {
@@ -215,10 +245,29 @@ static class CommercialProductization
             await Reject<InvalidDataException>(() => blockedUpgrade.StartAsync(default), "DB7 Unknown remains on its original reader before the DB8 migration");
         Check(Wire.FileHash(oldDatabase) == oldHash && ParcelRepository.ReadStorageVersion(oldDatabase, c.ApplicationId) == 7, "refused DB7 upgrade preserves original request database and format");
         var reopenedFactory = new SyntheticFactory(launch);
-        await using var reopened = new ParcelRuntime(launch, new SportmasterFlow(), reopenedFactory) { RuntimeIdentityPreflight = () => { } };
-        await reopened.StartAsync(default); var recovered = (await reopened.SnapshotAsync()).Operations.Single();
-        Check(Wire.Encode(recovered.Wcs!.Request) == Wire.Encode(original.Wcs!.Request) && reopenedFactory.Sends == 0 && recovered.Wcs.State == StageState.Unknown,
-            "restart with changed candidate retains original request/payload/target/contract and never reexecutes Unknown");
+        await using (var reopened = new ParcelRuntime(launch, new SportmasterFlow(), reopenedFactory) { RuntimeIdentityPreflight = () => { } })
+        {
+            await reopened.StartAsync(default); var recovered = (await reopened.SnapshotAsync()).Operations.Single();
+            Check(Wire.Encode(recovered.Wcs!.Request) == Wire.Encode(original.Wcs!.Request) && reopenedFactory.Sends == 0 && recovered.Wcs.State == StageState.Unknown,
+                "restart with changed candidate retains original request/payload/target/contract and never reexecutes Unknown");
+        }
+        // Reuse this new-site Unknown owner for machine-bound full-set handoff,
+        // rather than minting provenance for the separate legacy migration fixture.
+        service.HandoffMachineIdentity = () => "SYNTHETIC-HANDOFF-MACHINE";
+        var backup = Path.Combine(root, "unknown-handoff-before.db"); await service.BackupAsync(backup);
+        var target = Path.Combine(root, "unknown-handoff-before-root"); var plan = await service.PlanRestoreAsync(backup, target); await service.RestoreAsync(backup, plan.Destination, plan.BackupSha256);
+        Check(File.ReadAllBytes(Path.Combine(read.RuntimeDirectory!, "machine-origin.bin")).SequenceEqual(File.ReadAllBytes(Path.Combine(plan.Destination, "machine-origin.bin"))), "full restore preserves the exact machine-bound source ciphertext");
+        using (var advanced = new ParcelRepository(read.RuntimeDirectory!, c.ApplicationId)) advanced.Commit(null, "SyntheticAfterBackup", "original advanced after snapshot");
+        try { await service.AdoptRestoreOwnedAsync(backup, target, plan.BackupSha256, _ => throw new Exception("Must not commit")); throw new Exception("Stale backup accepted"); }
+        catch (InvalidDataException error) { Check(error.Message.Contains("原根在备份后已变化"), "historical backup cannot retire a source containing newer facts; exact stale-data guard is exercised"); }
+        var fresh = Path.Combine(root, "unknown-handoff-fresh.db"); await service.BackupAsync(fresh);
+        var freshRoot = Path.Combine(root, "unknown-handoff-fresh-root"); var freshPlan = await service.PlanRestoreAsync(fresh, freshRoot); await service.RestoreAsync(fresh, freshPlan.Destination, freshPlan.BackupSha256);
+        bool committed = false;
+        await service.AdoptRestoreOwnedAsync(fresh, freshRoot, freshPlan.BackupSha256, _ => { committed = File.Exists(Path.Combine(read.RuntimeDirectory!, "MIGRATION-SOURCE-FENCED.json")); return Task.CompletedTask; });
+        Check(committed && File.Exists(Path.Combine(freshPlan.Destination, "RESTORED-ISOLATED.json")), "matching full backup fences the original Unknown owner before handoff commit and keeps the target isolated");
+        ParcelMachineOrigin.Require(freshPlan.Destination, c); Check(true, "same-machine source provenance follows the bounded original fenced lineage without issuing a replacement claim");
+        await using (var fenced = new ParcelRuntime(launch, new SportmasterFlow(), new SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } })
+            await Reject<InvalidOperationException>(() => fenced.StartAsync(default), "retired original Unknown root cannot start a second business owner");
     }
     static async Task History(ParcelConfiguration c, string root)
     {

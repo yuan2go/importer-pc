@@ -1,0 +1,60 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "6ce1d6d0b109bd6a3d9490fac176122b4670b90b",
+  "CorePackages": 0,
+  "SelectedPackages": [
+    {
+      "Id": "reference.barcode",
+      "Version": "1.3.4",
+      "ManifestSha256": "E47235740BF7B7C17AAB6D1481E8DBE015190BD6B48CFF620784F29755319D40",
+      "PackageSha256": "3FA672FF3431882A3C7AB8C721E5E2264FB7BD4A34A8A4F424E32FFFD4AF8D28",
+      "File": "offline-extensions/reference.barcode-1.3.4.ipcx",
+      "Mode": "Simulation",
+      "TrustSha256": "646B510C511190A9CE64CCABF669A9D72C7DE9AE1DBE4E5092F9631C42E10FCF",
+      "Installed": false,
+      "Activated": false,
+      "PublicContracts": {}
+    },
+    {
+      "Id": "reference.parcel-capabilities",
+      "Version": "2.2.4",
+      "ManifestSha256": "27FABD2DDD4A6183BF5A6EB722FCAE164FB248FC448FC8931F4B4D86CD027001",
+      "PackageSha256": "0EFB4F442D35AE631CA12D754A22D7D96F8D1E04D3BF2AEAEFB8B9F314F541E1",
+      "File": "offline-extensions/reference.parcel-capabilities-2.2.4.ipcx",
+      "Mode": "Simulation",
+      "TrustSha256": "646B510C511190A9CE64CCABF669A9D72C7DE9AE1DBE4E5092F9631C42E10FCF",
+      "Installed": false,
+      "Activated": false,
+      "PublicContracts": {
+        "Ipc.Application.Contracts": "F8E1A448BB9E7956A1369C9216BC643CECF7A39D9B34818DE7DD369F3C69D142"
+      }
+    },
+    {
+      "Id": "sportmaster.rcs-task",
+      "Version": "1.1.4",
+      "ManifestSha256": "74B40D7E742D97292E5DB7F18DDB98616BF1326DADA526AD6C85E65C2CD24C22",
+      "PackageSha256": "10D145903C79574D05C517EF335456FC39FB81F59E44B9C1DA4955A5B1AE9574",
+      "File": "offline-extensions/sportmaster.rcs-task-1.1.4.ipcx",
+      "Mode": "Simulation",
+      "TrustSha256": "646B510C511190A9CE64CCABF669A9D72C7DE9AE1DBE4E5092F9631C42E10FCF",
+      "Installed": false,
+      "Activated": false,
+      "PublicContracts": {
+        "Ipc.Application.Contracts": "F8E1A448BB9E7956A1369C9216BC643CECF7A39D9B34818DE7DD369F3C69D142"
+      }
+    }
+  ],
+  "InstalledActivatedRetired": true,
+  "Positions": [
+    "left",
+    "right"
+  ],
+  "FailedStartupRetainedPriorEffective": true,
+  "OriginalWcsAttempts": [
+    1,
+    1
+  ],
+  "Windows": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "CompleteRawRecordSha256": "e22f539120c9523b5d5f0b3f8fe7e8d87dc2c0e21ec82398b30c656138f024fc"
+}

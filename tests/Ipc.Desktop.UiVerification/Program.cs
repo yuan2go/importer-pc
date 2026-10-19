@@ -13,7 +13,7 @@ using Ipc.Assembly;
 using Ipc.Platform;
 
 // Run on Windows: exercises actual WPF resource loading, navigation and window ownership.
-static class Program
+static partial class Program
 {
     [STAThread]
     public static int Main(string[] args)
@@ -26,7 +26,7 @@ static class Program
         desktop.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Desktop.UiVerification;component/Themes/Workstation.xaml", UriKind.Relative) });
         desktop.Startup += async (_, _) =>
         {
-            try { await Verify(root, evidence, lines).WaitAsync(TimeSpan.FromSeconds(45)); desktop.Shutdown(0); }
+            try { await Verify(root, evidence, lines).WaitAsync(TimeSpan.FromSeconds(90)); desktop.Shutdown(0); }
             catch (Exception ex) { lines.Add("FAIL " + ex); desktop.Shutdown(1); }
             finally { File.WriteAllLines(Path.Combine(evidence, "WINDOWS-WPF.log"), lines); Directory.CreateDirectory(Path.Combine(root, ".artifacts")); File.WriteAllText(Path.Combine(root, ".artifacts/WINDOWS-WPF-EVIDENCE.txt"), evidence); }
         };
@@ -35,7 +35,12 @@ static class Program
     static async Task Verify(string root, string evidence, List<string> lines)
     {
         void Check(bool yes, string reason) { if (!yes) throw new InvalidOperationException(reason); lines.Add("PASS " + reason); }
-        var launch = new BusinessLaunch(Path.Combine(root, "config/sportmaster"), Path.Combine(evidence, "data"), null, null);
+        var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
+        var config = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(root, "config/sportmaster/business.json")));
+        config = config with { Login = config.MaintenanceLogin! with
+        { InstanceId = "native.operator", Target = "reference://native-operator", Parameters = new() { ["subjects"] = "alice" } } };
+        ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
+        var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
         var runtime = SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
         await using (runtime)
         {
@@ -49,6 +54,9 @@ static class Program
             Check(classic is ShellWindow && alternate.ViewModel.Fresh, "classic and alternate native windows load actual resources and snapshots");
             Check(ReferenceEquals(((ParcelViewModel)classic.DataContext).Application, alternate.ViewModel.Application), "two UI choices share the same actual Application");
             Check(Descendants(alternate).OfType<SupplyStationPosition>().Count() == 2, "both native position controls load their own theme dictionaries");
+            await ((ParcelViewModel)classic.DataContext).RunAsync(() => ((ParcelViewModel)classic.DataContext).LoginAsync("SIMULATION_ONLY"), "原生参考登录");
+            Check(((ParcelViewModel)classic.DataContext).Snapshot!.CurrentOperator?.Subject == "alice", "native fixture enables actual optional operator authentication");
+            await alternate.ViewModel.RefreshAsync();
             await alternate.ViewModel.EmitPositionAsync(alternate.ViewModel.Left);
             await alternate.ViewModel.EmitPositionAsync(alternate.ViewModel.Right);
             for (var i = 0; i < 100; i++)
@@ -66,6 +74,8 @@ static class Program
             Check(((ContentControl)alternate.FindName("PageHost")).Content is HistoryPage, "history navigation uses installed native page");
             Click(alternate, "设备与维护"); await Task.Delay(200);
             Check(((ContentControl)alternate.FindName("PageHost")).Content is MaintenancePage, "maintenance navigation uses installed native page");
+            await VerifyMaintenanceControls(classic, (ParcelViewModel)classic.DataContext, Check);
+            await VerifyMaintenanceControls(alternate, alternate.ViewModel, Check);
             Click(alternate, "工作台"); Click(alternate, "辅助窗口"); await Task.Delay(700);
             var child = alternate.OwnedWindows.OfType<SupplyStationWindow>().Single();
             Check(ReferenceEquals(child.ViewModel.Application, application) && !ReferenceEquals(child.ViewModel, alternate.ViewModel), "auxiliary window inherits UI and shares Application with independent model");
@@ -92,28 +102,9 @@ static class Program
                 Check(actions.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= client.ActualHeight,
                     "position recovery actions stay within the effective client area under diagnostic backlog");
             }
+            await VerifyClientGeometry(classic, (ParcelViewModel)classic.DataContext, probe, evidence, "classic", Check);
+            await VerifyClientGeometry(alternate, alternate.ViewModel, probe, evidence, "supply-station", Check);
             probe.Project = null; await alternate.ViewModel.RefreshDisplayAsync();
-            alternate.WindowState = WindowState.Normal;
-            foreach (var size in new[] { (1100, 650), (911, 512) })
-            {
-                alternate.Width = size.Item1; alternate.Height = size.Item2; await Task.Delay(200);
-                for (var i = 0; i < 30 && alternate.ViewModel.Snapshot?.Paused != true; i++) await Task.Delay(50);
-                Check(!alternate.ViewModel.ViewportFits && !alternate.ViewModel.CanUseWorkspace && alternate.ViewModel.Snapshot!.Paused,
-                    $"small {size.Item1}x{size.Item2} client protects view and invokes existing software Pause");
-            }
-            alternate.Width = 1440; alternate.Height = 980; await Task.Delay(200);
-            Check(alternate.ViewModel.ViewportFits && !alternate.ViewModel.ViewportReady && alternate.ViewModel.Snapshot!.Paused,
-                "restored geometry remains protected and never automatically resumes business");
-            Click(alternate, "确认视图，保持暂停");
-            Check(alternate.ViewModel.ViewportReady && alternate.ViewModel.Snapshot!.Paused,
-                "manual view confirmation clears only presentation protection");
-            foreach (var size in new[] { (1440, 980), (1366, 768) })
-            {
-                alternate.Width = size.Item1; alternate.Height = size.Item2; alternate.UpdateLayout();
-                var bitmap = new RenderTargetBitmap((int)alternate.ActualWidth, (int)alternate.ActualHeight, 96, 96, PixelFormats.Pbgra32);
-                bitmap.Render(alternate); var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap));
-                using var stream = File.Create(Path.Combine(evidence, $"supply-station-{size.Item1}x{size.Item2}.png")); png.Save(stream);
-            }
             Click(alternate, "辅助窗口"); await Task.Delay(200);
             var remaining = alternate.OwnedWindows.OfType<SupplyStationWindow>().Single();
             var fields = BindingFlags.Instance | BindingFlags.NonPublic;

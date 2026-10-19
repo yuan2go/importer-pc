@@ -2,7 +2,7 @@ using Ipc.Application.Contracts;
 using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
-public sealed record PositionPresentation(string Id, string DeviceId, string Availability, string Code, string Admission, string State, string Slot, string Reason, string MainResult, string Background, string StatusForeground, string StatusBackground, string StatusBorder, string StatusIcon, string InputSummary);
+public sealed record PositionPresentation(string Id, string DeviceId, string Availability, string Code, string Admission, string State, string Slot, string Reason, string MainResult, string Background, string StatusForeground, string StatusBackground, string StatusBorder, string StatusIcon, string InputSummary, string OriginalState);
 public partial class ParcelViewModel
 {
     string selectedPositionId = "main";
@@ -16,12 +16,12 @@ public partial class ParcelViewModel
         return new PositionPresentation(p.Id, p.ReaderDeviceId, !Fresh ? "快照失效" : p.Admit ? "允许新入场" : string.Join(" · ", p.BlockingReasons), failed ? ParcelPresentation.InputCode(input!) : op?.ParcelCode ?? "—", failed ? input!.Observation.AdmissionId : op?.AdmissionId ?? "—", style.Text,
             failed ? "本次未取得" : !Fresh ? "旧格口已失效 · " + (op?.Slot ?? "未取得") : op?.Wcs is { State: not StageState.Accepted } ? "未取得" : op?.Slot ?? "未取得", reason,
             failed ? "本次观察未创建新作业" : p.MainResultComplete ? "主结果已确认" : "主结果未完成", p.BackgroundComplete ? "后台责任已清偿" : "后台责任待清偿 · " + op?.Upload?.State + " · " + op?.Upload?.Failure,
-            style.Foreground, style.Background, style.Border, style.Icon, ParcelPresentation.InputSummary(input));
+            style.Foreground, style.Background, style.Border, style.Icon, ParcelPresentation.InputSummary(input), failed && op is not null ? "原件仍保留 · " + ParcelPresentation.Operation(op, Fresh).Text  : "");
     }).ToArray() ?? [];
     public string CurrentCommandTarget => "当前位命令目标：" + SelectedPositionId + " · " + (Current?.ParcelCode ?? "无作业") + " · " + (Current?.Id ?? "—");
     public string HistoryCommandTarget => "记录命令目标：" + (Selected?.PositionId ?? "—") + " · " + (Selected?.ParcelCode ?? "未选择") + " · " + (Selected?.Id ?? "—");
-    public bool CanHistoryContinue => Fresh && Selected is not null && Snapshot?.Availability?.ContinuePrepared.Contains(Selected.Id) == true;
-    public bool CanHistoryQuery => Fresh && Selected is not null && Snapshot?.Operations.Any(x => x.Id == Selected.Id && (x.Wcs?.State == StageState.Unknown || x.Plc?.State is StageState.Unknown or StageState.Accepted || x.Capture?.State == StageState.Unknown || x.Upload?.State == StageState.Unknown)) == true;
+    public bool CanHistoryContinue => !Busy && Fresh && Selected is not null && Snapshot?.Availability?.ContinuePrepared.Contains(Selected.Id) == true;
+    public bool CanHistoryQuery => !Busy && Fresh && Selected is not null && Snapshot?.Operations.Any(x => x.Id == Selected.Id && (x.Wcs?.State == StageState.Unknown || x.Plc?.State is StageState.Unknown or StageState.Accepted || x.Capture?.State == StageState.Unknown || x.Upload?.State == StageState.Unknown)) == true;
     public string CapacityState => Snapshot?.Capacity is { } c ? $"未结 {c.Unresolved}/{c.MaximumUnresolved} · 工作集 {c.Resident} · 归档 {c.Archived}（原件和去重保留）" : "容量未取得";
     public string AuxiliaryState => string.Join("\n", Snapshot?.AuxiliaryReasons ?? []);
     public string InstalledProviderParameters { get; private set; } = "";
@@ -32,29 +32,50 @@ public partial class ParcelViewModel
     public string IdentityConflictId { get; set; } = "";
     public ParcelHistoryItem[] HistoryItems { get; private set; } = [];
     ParcelHistoryItem? selectedHistory;
-    public ParcelHistoryItem? SelectedHistory { get => selectedHistory; set { selectedHistory = value; if (value is not null) Selected = value.Operation; Changed(); } }
+    bool rebindingHistory;
+    public ParcelHistoryItem? SelectedHistory
+    {
+        get => selectedHistory;
+        set
+        {
+            // WPF clears SelectedItem synchronously when ItemsSource changes. This
+            // is collection reconciliation, not an operator request to clear Owner.
+            if (rebindingHistory || ReferenceEquals(value, selectedHistory)) return;
+            SetSelection(value?.Operation, true);
+        }
+    }
     long? nextHistory;
     long historyGeneration;
     bool historyLoading;
     string? historyFailure;
     bool historyLoaded;
+    DateTimeOffset? historyReadAt;
+    public string HistorySelectionState => Selected is null ? "未选择原作业" : selectedHistory is null
+        ? "当前页外的原作业详情：" + Selected.Id + "；命令仅针对该原作业"
+        : "所选行 / 详情 / 命令目标：" + Selected.Id + "；列表为查询时快照，详情可由应用快照更新";
     public bool HistoryLoading => historyLoading;
     public bool HasNextHistory => !historyLoading && nextHistory is not null;
-    public string HistoryStatus => historyLoading ? "正在读取作业记录…" : historyFailure is { } failure ? "查询失败 · " + failure + "；之前读取的记录仅供参考，可重试" : !historyLoaded ? "尚未读取作业记录" : HistoryItems.Length == 0 ? "此页没有作业记录" : "已读取 " + HistoryItems.Length + " 条作业；时间使用本机时区，详情保留原请求与回执";
+    public string HistoryStatus => historyLoading ? "正在读取作业记录…" : historyFailure is { } failure ? "查询失败 · " + failure + "；之前读取的记录仅供参考，可重试" : !historyLoaded ? "尚未读取作业记录" : HistoryItems.Length == 0 ? "此页没有作业记录" : "已读取 " + HistoryItems.Length + " 条作业 · 查询完成 " + historyReadAt?.ToString("yyyy-MM-dd HH:mm:ss zzz") + "；列表为查询时快照，详情保留原请求与回执";
     public async Task LoadHistoryAsync(bool next = false)
     {
         var generation = Interlocked.Increment(ref historyGeneration);
-        var selectedId = Selected?.Id;
         var before = next ? nextHistory ?? long.MaxValue : long.MaxValue;
         historyLoading = true; historyFailure = null; NotifyHistory();
         try
         {
             var page = await ServiceAsync(() => application.HistoryAsync(before));
             if (generation != Volatile.Read(ref historyGeneration)) return;
-            HistoryItems = page.Items; nextHistory = page.NextBeforeSequence; historyLoaded = true; Changed(nameof(HistoryItems));
-            selectedHistory = selectedId is null ? null : HistoryItems.FirstOrDefault(x => x.Operation.Id == selectedId);
-            if (selectedHistory is not null) Selected = selectedHistory.Operation;
-            Changed(nameof(SelectedHistory));
+            var current = Selected;
+            rebindingHistory = true;
+            try
+            {
+                HistoryItems = page.Items; nextHistory = page.NextBeforeSequence; historyLoaded = true;
+                Changed(nameof(HistoryItems));
+                SetSelection(current, false);
+            }
+            finally { rebindingHistory = false; }
+            historyReadAt = DateTimeOffset.Now;
+            Changed(nameof(HistorySelectionState));
         }
         catch (Exception error)
         { if (generation == Volatile.Read(ref historyGeneration)) historyFailure = error.Message; throw; }
@@ -63,7 +84,7 @@ public partial class ParcelViewModel
     }
     void ResetHistoryForRuntime()
     {
-        Interlocked.Increment(ref historyGeneration); historyLoading = false; historyFailure = null; historyLoaded = false;
+        Interlocked.Increment(ref historyGeneration); historyLoading = false; historyFailure = null; historyLoaded = false; historyReadAt = null;
         HistoryItems = []; nextHistory = null; selectedHistory = null;
         Changed(nameof(HistoryItems)); Changed(nameof(SelectedHistory)); NotifyHistory();
     }
@@ -71,7 +92,7 @@ public partial class ParcelViewModel
     public async Task QuerySelectedAsync()
     {
         RequireFreshSnapshot(); var op = Selected ?? throw new InvalidOperationException("先选择详情中的原作业"); var generation = selectionGeneration;
-        var r = await ServiceAsync(() => application.ReconcileAsync(op.Id)); Message = r.Status + " · " + r.Reason;
+        var r = await ServiceAsync(() => application.ReconcileAsync(op.Id)); Message = r.Status + " · " + r.Reason + " · 原作业 " + op.Id;
         var detail = await ServiceAsync(() => application.OperationAsync(op.Id));
         if (generation == selectionGeneration && Selected?.Id == op.Id) Selected = detail;
     }
@@ -79,7 +100,7 @@ public partial class ParcelViewModel
     {
         RequireFreshSnapshot(); var op = Selected ?? throw new InvalidOperationException("先选择详情中的原作业"); var generation = selectionGeneration;
         var command = new BusinessCommand(Wire.Id(), Snapshot!.Revision, "ContinuePrepared", op.Id, InspectionReason);
-        var r = await ServiceAsync(() => application.CommandAsync(command)); Message = r.Status + " · " + r.Reason;
+        var r = await ServiceAsync(() => application.CommandAsync(command)); Message = r.Status + " · " + r.Reason + " · 原作业 " + op.Id;
         var detail = await ServiceAsync(() => application.OperationAsync(op.Id));
         if (generation == selectionGeneration && Selected?.Id == op.Id) Selected = detail;
     }
@@ -135,8 +156,10 @@ public partial class ParcelViewModel
     public async Task LoadReceiptResponsibilitiesAsync()
     { RequireFreshSnapshot();
         var op = Selected ?? throw new InvalidOperationException("先选择记录中的原作业");
+        var generation = selectionGeneration;
         var command = new BusinessCommand(Wire.Id(), Snapshot!.Revision, "ReceiptResponsibilities", op.Id);
         var r = await ServiceAsync(() => application.CommandAsync(command));
+        if (generation != selectionGeneration || Selected?.Id != op.Id) return;
         ReceiptInventory = r.Reason;
         receiptInventoryOwner = r.Status == "ReceiptResponsibilities" ? op.Id : null;
         if (receiptInventoryOwner is not null)
@@ -158,6 +181,6 @@ public partial class ParcelViewModel
     }
     void NotifyTargets()
     {
-        foreach (var name in new[] { nameof(ViewportFits), nameof(ViewportReady), nameof(CanUseWorkspace), nameof(CanResumeInViewport), nameof(CanAcknowledgeViewport), nameof(ViewportWarningVisibility), nameof(ViewportStatus), nameof(Current), nameof(CurrentInput), nameof(CurrentInputUnadmitted), nameof(CurrentInputSummary), nameof(CurrentBarcode), nameof(CurrentInputReason), nameof(CurrentResponsibility), nameof(CurrentPresentation), nameof(StatusPresentation), nameof(StructuredDetails), nameof(ConfigurationEditorState), nameof(CurrentSlot), nameof(CurrentStage), nameof(CurrentWeight), nameof(OperationOperator), nameof(CurrentImage), nameof(CaptureState), nameof(UploadState), nameof(PositionIds), nameof(PositionRows), nameof(CurrentCommandTarget), nameof(HistoryCommandTarget), nameof(CanQueryCurrent), nameof(CanHistoryContinue), nameof(CanHistoryQuery), nameof(CanContinue), nameof(CanContinueUpload), nameof(CanAbandon), nameof(Details), nameof(CapacityState), nameof(AuxiliaryState), nameof(EffectiveConfiguration), nameof(EffectiveConfigurationHeading), nameof(PendingConfiguration), nameof(ConfigurationConfirmationState), nameof(CanConfirmConfiguration) }) Changed(name);
+        foreach (var name in new[] { nameof(ViewportFits), nameof(ViewportReady), nameof(CanUseWorkspace), nameof(CanResumeInViewport), nameof(CanAcknowledgeViewport), nameof(ViewportWarningVisibility), nameof(ViewportStatus), nameof(Current), nameof(CurrentInput), nameof(CurrentInputUnadmitted), nameof(CurrentInputSummary), nameof(CurrentBarcode), nameof(CurrentInputReason), nameof(CurrentResponsibility), nameof(CurrentPresentation), nameof(StatusPresentation), nameof(StructuredDetails), nameof(HistorySelectionState), nameof(ConfigurationEditorState), nameof(CurrentSlot), nameof(CurrentStage), nameof(CurrentWeight), nameof(OperationOperator), nameof(CurrentImage), nameof(CaptureState), nameof(UploadState), nameof(PositionIds), nameof(PositionRows), nameof(CurrentCommandTarget), nameof(HistoryCommandTarget), nameof(CanQueryCurrent), nameof(CanHistoryContinue), nameof(CanHistoryQuery), nameof(CanContinue), nameof(CanContinueUpload), nameof(CanAbandon), nameof(Details), nameof(CapacityState), nameof(AuxiliaryState), nameof(EffectiveConfiguration), nameof(EffectiveConfigurationHeading), nameof(PendingConfiguration), nameof(ConfigurationConfirmationState), nameof(CanConfirmConfiguration) }) Changed(name);
     }
 }

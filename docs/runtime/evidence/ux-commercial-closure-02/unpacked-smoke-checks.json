@@ -1,0 +1,50 @@
+[
+  {
+    "Name": "sportmaster-core",
+    "ExitCode": 0,
+    "Seconds": 2.007658004760742,
+    "Command": [
+      "python3",
+      "scripts/smoke-application.py",
+      "--package",
+      "<source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/sportmaster-core-smoke-unpacked",
+      "--dotnet",
+      "dotnet",
+      "--output",
+      "<source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/sportmaster-core-smoke.json"
+    ],
+    "Output": "sportmaster-core-smoke.json"
+  },
+  {
+    "Name": "direct-plc-core",
+    "ExitCode": 0,
+    "Seconds": 1.0359268188476562,
+    "Command": [
+      "python3",
+      "scripts/smoke-application.py",
+      "--package",
+      "<source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core-smoke-unpacked",
+      "--dotnet",
+      "dotnet",
+      "--output",
+      "<source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/direct-plc-core-smoke.json"
+    ],
+    "Output": "direct-plc-core-smoke.json"
+  },
+  {
+    "Name": "wcs-to-plc-core",
+    "ExitCode": 0,
+    "Seconds": 1.1199030876159668,
+    "Command": [
+      "python3",
+      "scripts/smoke-application.py",
+      "--package",
+      "<source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core-smoke-unpacked",
+      "--dotnet",
+      "dotnet",
+      "--output",
+      "<source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core-smoke.json"
+    ],
+    "Output": "wcs-to-plc-core-smoke.json"
+  }
+]

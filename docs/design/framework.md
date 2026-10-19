@@ -1,4 +1,6 @@
-> 当前设计阅读顺序：[框架F决策](framework-decisions.md)与19/20职责可靠性 → [22独立Application拓扑](application-architecture-22.md) → [质量/恢复](architecture-quality-closure-01.md) → [RCS](sportmaster-rcs-task.md)与[版本兼容](version-compatibility-01.md)。[并发整合报告](../runtime/parallel-task-reconciliation-01.md)记录差额、来源和验证，不替代原D/RV或降低目标。UX修复分支业务1.3.0、Contracts1.9.0、Parcel DB7；下文历次版本/阶段说明保持形成时语境，历史原件见归档。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。实施开工main为1.2.8、PR37候选为1.3.0；本次合并后的当前版本为1.3.2/Contracts1.9.0/DB7，原候选及其形成时证据保持。Windows实际NOT_RUN，真实组合/合同BLOCKED。
+
+> 当前设计阅读顺序：[框架F决策](framework-decisions.md)与19/20职责可靠性 → [22独立Application拓扑](application-architecture-22.md) → [质量/恢复](architecture-quality-closure-01.md) → [RCS](sportmaster-rcs-task.md)与[版本兼容](version-compatibility-01.md)。[并发整合报告](../runtime/parallel-task-reconciliation-01.md)记录差额、来源和验证，不替代原D/RV或降低目标。当前业务1.3.2、Contracts1.9.0、Parcel DB7；下文历次版本/阶段说明保持形成时语境，历史原件见归档。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
 
 # 从CLOSURE-13继承的职责与决定
 

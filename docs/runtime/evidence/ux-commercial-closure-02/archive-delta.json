@@ -1,0 +1,27 @@
+{
+  "Baseline": "46343fa",
+  "ProductSource": "f1a655c7d14e4ee012ea17694533f996a03c9246",
+  "CheckedDelivery": "882bd31",
+  "BaselineErrors": 267,
+  "FrozenProductErrors": 268,
+  "DeliveryErrors": 267,
+  "Status": "FAIL",
+  "NewErrors": [],
+  "ResolvedBaselineErrors": [],
+  "FrozenProductMetadataIssue": "One command path label in checks-dev.json; public derivative corrected with raw/public SHA custody and raw archive retained",
+  "CheckerScope": "clean git archive; no change to generated-output policies or exceptions",
+  "RawReports": [
+    {
+      "File": "archive-baseline.json",
+      "Sha256": "182ab2e1c8c72c8998a0c5ce448799ceb1c2d343ffeea9386ca43e7d884519ee"
+    },
+    {
+      "File": "archive-product.json",
+      "Sha256": "1f94a5edaad0f7acb897e3d13b37419a9bb8239bad0e427f8181fb2292e15409"
+    },
+    {
+      "File": "archive-delivery.json",
+      "Sha256": "cb89e5507a04591026f0d5a3c6168ebae64013516d95d35cc2a4469acb290037"
+    }
+  ]
+}

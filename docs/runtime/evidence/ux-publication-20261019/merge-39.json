@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-19",
+  "pr39_original": "24d2650a61caf0f5f147daf6ed67789e33b65c4d",
+  "main_after_pr37": "07095fdf4e04519934076ede24bfa8607207f9bc",
+  "conflicts": [
+    "docs/manifest.json",
+    "docs/manifest.sha256"
+  ],
+  "resolution": "Use PR39 final UX metadata and union public inventories from merged PR37/38. Preserve all original PR37 source commits, project skill/AGENTS and audit inputs. Runtime, tests, configuration, scripts and shipped guides have no Git content delta from PR39.",
+  "current_navigation_updates": "README, INDEX and framework current-version headers corrected from first 1.3.1 candidate / PR37-open wording to actual final 1.3.2 and merged PR37. No shipped guide or historical result changed.",
+  "original_navigation_git_blobs": [
+    {
+      "path": "README.md",
+      "source": "24d2650a61caf0f5f147daf6ed67789e33b65c4d",
+      "git_blob": "054b98c0762e06a197e6161a18c7022b23edc96a",
+      "recovery": "git show 24d2650a61caf0f5f147daf6ed67789e33b65c4d:README.md"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "source": "24d2650a61caf0f5f147daf6ed67789e33b65c4d",
+      "git_blob": "010d6863528604153c0f2945d2178ee15eaa3901",
+      "recovery": "git show 24d2650a61caf0f5f147daf6ed67789e33b65c4d:docs/INDEX.md"
+    },
+    {
+      "path": "docs/design/framework.md",
+      "source": "24d2650a61caf0f5f147daf6ed67789e33b65c4d",
+      "git_blob": "a0f6c6c77fd05e61a78fbe128dc5b87cb414dc0a",
+      "recovery": "git show 24d2650a61caf0f5f147daf6ed67789e33b65c4d:docs/design/framework.md"
+    },
+    {
+      "path": "docs/design/framework-decisions.md",
+      "source": "24d2650a61caf0f5f147daf6ed67789e33b65c4d",
+      "git_blob": "22fcb8df6a3d85cffb49d10dc9ca4317dbaf3009",
+      "recovery": "git show 24d2650a61caf0f5f147daf6ed67789e33b65c4d:docs/design/framework-decisions.md"
+    }
+  ],
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "builds": "NOT_RUN_BY_USER_REQUEST",
+  "repackaging": "NOT_RUN_BY_USER_REQUEST",
+  "hooks": "DISABLED_FOR_PUBLICATION"
+}

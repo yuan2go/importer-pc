@@ -1,0 +1,13 @@
+{
+  "Baseline": "46343fa",
+  "Product": "f1a655c7d14e4ee012ea17694533f996a03c9246",
+  "BaselineErrors": 267,
+  "ProductErrors": 268,
+  "NewErrors": [
+    {
+      "code": "private_metadata_marker",
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/checks-dev.json"
+    }
+  ],
+  "Resolved": []
+}

@@ -1,0 +1,27 @@
+  正在确定要还原的项目…
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/source-snapshot/src/Ipc.Platform/Ipc.Platform.csproj (用时 566 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/source-snapshot/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 567 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/source-snapshot/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 566 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/source-snapshot/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 566 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/source-snapshot/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 566 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/source-snapshot/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 566 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/source-snapshot/src/Ipc.Components/Ipc.Components.csproj (用时 566 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/source-snapshot/src/Ipc.Assembly/Ipc.Assembly.csproj (用时 566 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/source-snapshot/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 3 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/source-snapshot/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 4 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/source-snapshot/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 4 毫秒)。
+  已还原 <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/source-snapshot/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 5 毫秒)。
+  Ipc.Platform -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/build-intermediates/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/build-intermediates/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/build-intermediates/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/build-intermediates/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Application.Contracts -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/build-intermediates/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/build-intermediates/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/build-intermediates/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/build-intermediates/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/build-intermediates/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/build-intermediates/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Integrations -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/build-intermediates/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Assembly -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/build-intermediates/bin/Ipc.Assembly/release/Ipc.Assembly.dll
+  Ipc.Assembly -> <source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core/app/
+{"Package": "<source-root>/.artifacts/ux-commercial-closure-02/release-f1a655c/wcs-to-plc-core.zip", "Sha256": "a5f73aaa87768b137a523f26481824a301c2e33903b3dff74fb5979fec9a4d85", "SourceCommit": "f1a655c7d14e4ee012ea17694533f996a03c9246", "Application": "wcs-to-plc", "Target": "portable", "BusinessVersion": "1.3.1", "BusinessAssembly": "Ipc.Application.WcsToPlc.dll", "CompatibilitySha256": "CC03A9C9F73999EDAD9C2234B02EEC66B7795F74D36F68FB39DBBA38595A22F2"}

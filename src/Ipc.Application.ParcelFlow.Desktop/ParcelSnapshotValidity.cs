@@ -14,7 +14,7 @@ public partial class ParcelViewModel
     public bool Fresh => fresh && MonotonicFresh && lastRead is { } at && DateTimeOffset.UtcNow >= at && DateTimeOffset.UtcNow-at < TimeSpan.FromSeconds(3);
     public string UpdatedAt => lastRead is { } at ? at.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") : "尚未取得快照";
     public string ReadStatus => !Fresh ? "快照已失效 · " + (readFailure ?? "正在读取或读取超时") + " · 最后成功读取：" + UpdatedAt : "状态更新时间 · " + UpdatedAt;
-    public bool CanQueryCurrent => Fresh && Current is not null;
+    public bool CanQueryCurrent => !Busy && Fresh && Current is not null;
     protected ParcelSnapshot RequireFreshSnapshot() => Fresh && Snapshot is { } value ? value : throw new InvalidOperationException(ReadStatus);
     public void MarkReadFailure(string reason)
     {
@@ -48,7 +48,7 @@ public partial class ParcelViewModel
     {
         var now=at??DateTimeOffset.UtcNow;
         fresh=MonotonicFresh && lastRead is { } read && now>=read && now-read<TimeSpan.FromSeconds(3) && readFailure is null;
-        foreach(var name in new[]{nameof(Fresh),nameof(UpdatedAt),nameof(ReadStatus),nameof(Status),nameof(Health),nameof(BlockingReasons),nameof(CanAdmit),nameof(CanResume),nameof(CanConfigure),nameof(CanContinue),nameof(CanContinueUpload),nameof(CanAbandon)})Changed(name);
+        foreach(var name in new[]{nameof(Fresh),nameof(CanStartFreshOperation),nameof(UpdatedAt),nameof(ReadStatus),nameof(Status),nameof(Health),nameof(BlockingReasons),nameof(CanAdmit),nameof(CanResume),nameof(CanConfigure),nameof(CanContinue),nameof(CanContinueUpload),nameof(CanAbandon)})Changed(name);
         NotifyTargets(); SnapshotValidityChanged(now);
     }
     protected virtual void SnapshotValidityChanged(DateTimeOffset now) { }

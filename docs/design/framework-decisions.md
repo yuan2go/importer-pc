@@ -1,10 +1,10 @@
-> 当前启动修复与安装闭环见[STARTUP-DEPLOYMENT-02](../work-packages/WP-IPC-STARTUP-DEPLOYMENT-02.md)。继承首次运行01，新增离线维护、独立基本配置和原生安装向导；旧手工脚本保留为维护工具，Windows原生验收仍NOT_RUN。
-
-> 当前Windows首次启动修复见[WINDOWS-FIRST-RUN-01](../work-packages/WP-IPC-WINDOWS-FIRST-RUN-01.md)：软件自动准备机器策略及数据目录，指定账户在UAC未提权状态下可运行；deny-only管理员组不再单独构成拒绝。原SID修复的只读前置检查、维护隔离与历史证据保留，旧候选不自动获得新行为。Windows原生验证仍NOT_RUN。
-
-> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。实施开工main为1.2.8、PR37候选为1.3.0；本次合并后的当前版本为1.3.3/Contracts1.9.0/DB7，原候选及其形成时证据保持。Windows实际NOT_RUN，真实组合/合同BLOCKED。
-
-> 当前设计阅读顺序：[框架F决策](framework-decisions.md)与19/20职责可靠性 → [22独立Application拓扑](application-architecture-22.md) → [质量/恢复](architecture-quality-closure-01.md) → [RCS](sportmaster-rcs-task.md)与[版本兼容](version-compatibility-01.md)。[并发整合报告](../runtime/parallel-task-reconciliation-01.md)记录差额、来源和验证，不替代原D/RV或降低目标。当前业务1.3.3、Contracts1.9.0、Parcel DB7；下文历次版本/阶段说明保持形成时语境，历史原件见归档。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
+> **当前商业化增量入口：**[完整工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)、[产品设计](commercial-productization-01.md)与[实现逻辑](../implementation/commercial-productization-01.md)。2026-10-19 核对源码 main b8f449ec；本增量为待实施设计，不表示已完成产品功能。
+>
+> 现行基础依次读取本框架/F 决策、[19 职责](application-capability-19.md)、[20 可靠性](capability-reliability-20.md)、[22 独立 Application](application-architecture-22.md)、[质量/恢复](architecture-quality-closure-01.md)、[RCS](sportmaster-rcs-task.md)及[版本兼容](version-compatibility-01.md)。四层职责、一个 Application 多页共享实例、唯一配置账和原请求责任持续有效。
+>
+> 当前源码已含原生安装、独立离线维护和全部运行入口身份门禁，操作见[启动部署](../runtime/startup-deployment-02.md)及[合并/介质身份](../runtime/publication-deployment-20261019.md)。指定账户非提权运行，允许 UAC deny-only 管理员身份；正常安装启动不要求 PowerShell。Windows 未验和真实组合门槛保持。
+>
+> 下文保留框架初始目标及各阶段增量的形成时语境；旧“当前/下一阶段/不测试”不覆盖本包或后续授权。初始 Supply 共享箱/数量模型不代替 22 的三个独立主流程，Sportmaster 无 PLC/图片，DirectPlc 完整 UI 延期。源码存在与历史 PASS 分别读取；清理前原字节见[归档](../archive/pre-commercial-productization-01/README.md)。
 
 # 从CLOSURE-13继承的职责与决定
 

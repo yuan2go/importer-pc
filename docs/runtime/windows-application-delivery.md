@@ -1,12 +1,10 @@
-> 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
-
-> 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
+> 现行商业化补差范围见[完整工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)及[基线核对](../reviews/commercial-productization-01-baseline.md)。本页保留已实现的操作；新设计尚待实施。正常安装/首次启动/独立维护以[原生启动部署指南](startup-deployment-02.md)为准，旧媒介按其固定源码和随包说明使用；源码与介质身份见[发布记录](publication-deployment-20261019.md)。历史任务/测试/候选保持原身份，Windows/真实组合未验部分不变。
 
 # 三个Application的Windows候选与维护路径
 
 当前合并源码同时包含PR44部署/修复向导及PR45全部运行入口门禁，共用最终MachineRuntimePolicy：指定未提权账户允许deny-only管理员组身份，已启用管理员权限/服务账户/非指定SID继续拒绝。此次发布的e79a8bf与16ecb57候选分别保留原范围，尚无包含两项增量的新组合媒介；详细身份与下载见[本次不测试发布记录](publication-deployment-20261019.md)。
 
-本文描述当前合并源码的操作；旧媒介必须按其固定SourceCommit及随包指南读取。ff31b0e的1.3.3媒介不包含SID前置修复，f354d3f的portable参考不含维护P2，本轮未生成二者组合的新媒介。SourceCommit、ApplicationId、业务1.3.3、ABI1.9.0、DB7、配置schema1/2/3分别读取ASSEMBLY.json、app/application-release.json和DEPENDENCIES.json。Supply仍用自己的station.ps1/Storage5，不能套用这里命令。候选工程基线沿现有Windows11 build26100+ x64/PowerShell7；客户SKU/build、设备/SDK及合同未确认，实际Windows全部NOT_RUN，真实组合和商用BLOCKED。不得把本页步骤写成已经执行的Windows验收。
+本文描述当前合并源码的操作；旧媒介按固定 SourceCommit 和随包指南读取，不能把旧 ZIP 改标为本包已完成版本。SourceCommit、ApplicationId、业务/ABI/DB/config 版本分别读取 ASSEMBLY.json、app/application-release.json 和 DEPENDENCIES.json；Supply 仍使用自己的 Storage/操作契约。候选工程的 Windows 参考范围和客户实际 OS/SDK/设备资格分别核对；正常原生流程不依赖 PowerShell，显式高级脚本依赖在对应章节列出。Windows 实际验收及真实组合未完成，不得把操作步骤写成已执行结果。
 
 ## 媒介与依赖诊断
 

@@ -1,13 +1,13 @@
 {
   "schema_version": "1.2",
-  "work_package": "WP-IPC-STARTUP-DEPLOYMENT-02",
+  "work_package": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
   "created_date": "2026-10-18",
   "repository": "yuan2go/importer-pc",
-  "branch": "codex/windows-first-run",
+  "branch": "main",
   "visibility_at_review": "public",
   "delivery_state": "PUBLIC_SUBSET_ONLY",
   "full_archive_in_main": false,
-  "framework_design_state": "STARTUP_REPAIR_OPTIONAL_CATALOG_GUIDED_INSTALL_REFERENCE_VERIFIED_WINDOWS_NOT_RUN_REAL_BLOCKED",
+  "framework_design_state": "COMMERCIAL_PRODUCTIZATION_DESIGN_READY_IMPLEMENTATION_PLANNED_WINDOWS_NOT_RUN_REAL_BLOCKED",
   "previous_manifest": {
     "commit": "2126ac2c06a0c352d96afbbf13ec1a719c352738",
     "snapshot": "docs/archive/pre-acquisition-lifecycle-p2/docs/manifest.json.txt",
@@ -106,7 +106,8 @@
     "implemented_runtime_unverified": "代码已实现，未构建或运行验证，不代表Windows或现场验收",
     "current_implementation_or_boundary_record": "当前工程实现、运行入口及未验证边界记录",
     "static_path_complete": "指定整改调用链静态可见且本轮未发现同级缺口；不表示编译/运行/Windows/现场PASS",
-    "partial_engineering_open": "部分实现但仍有可据源码定位的工程缺口，不归因于Windows或SDK环境"
+    "partial_engineering_open": "部分实现但仍有可据源码定位的工程缺口，不归因于Windows或SDK环境",
+    "document_verification_only": "仅本次文档来源、引用、哈希、范围和提交核验，不表示运行或现场验收"
   },
   "files": [
     {
@@ -172,17 +173,18 @@
     },
     {
       "path": "README.md",
-      "sha256": "f5fe29e236b6c3ab0b8c31175466e1f6bc2c02d27c02be83c9e192e4b1af4a4e",
-      "size_bytes": 4880,
-      "git_blob": "a69834886509c66d615605afed15349612990638",
-      "version": "ux-maintenance-p2-04",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "sha256": "101800f72c4ea14560187664d5ba31311434a79c28de2b41ccf202db9ec5f81d",
+      "size_bytes": 5646,
+      "git_blob": "fc5b52e8eb601f470ecf49c6971292efcd39c92b",
+      "version": "commercial-productization-01",
+      "status": "current_navigation",
+      "purpose": "Current routing and operating guidance reconciled with b8f449ec; historical evidence preserved.",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
       "storage_scope": "public_repository",
       "previous_git_blob": "25d9064e52b188fafd59b0ecbc910b2ec7860265",
       "prior_closure13_git_blob": "a305391de26301ca46bfee2a7060f69fbb751252",
-      "pre_conformance_audit_git_blob": "22bbdf4741bf3df550ec41159f57858b6326f4a4"
+      "pre_conformance_audit_git_blob": "22bbdf4741bf3df550ec41159f57858b6326f4a4",
+      "pre_commercial_productization_git_blob": "a69834886509c66d615605afed15349612990638"
     },
     {
       "path": "config/compatibility/direct-plc.json",
@@ -371,17 +373,18 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "994a14874ef743b215ad452f4f5af963081e4d9039e3814106695493f9ae3545",
-      "size_bytes": 11524,
-      "git_blob": "a6b807db04e55e76002ad89ed009b7c546af19df",
-      "version": "ux-maintenance-p2-04",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "sha256": "3301c5c5dfd37a5001c2116889169fb8a3ffbb9e1d06df68e92831491b6fa8fb",
+      "size_bytes": 11423,
+      "git_blob": "4784941f780af72477dbfd449e84986c532950d3",
+      "version": "commercial-productization-01",
+      "status": "current_navigation",
+      "purpose": "Current routing and operating guidance reconciled with b8f449ec; historical evidence preserved.",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
       "storage_scope": "public_repository",
       "previous_git_blob": "f13c84ec32982cc0a88103086a7e0f908b7b919e",
       "prior_closure13_git_blob": "4bf6c6b2941918914412081c0db93e40fb42f1ac",
-      "pre_conformance_audit_git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc"
+      "pre_conformance_audit_git_blob": "8c0ee6634b9ca6473e1bdd30c47a5befd12711cc",
+      "pre_commercial_productization_git_blob": "a6b807db04e55e76002ad89ed009b7c546af19df"
     },
     {
       "path": "docs/archive/pre-acquisition-lifecycle-p2/README.md",
@@ -3834,27 +3837,29 @@
     },
     {
       "path": "docs/design/framework-decisions.md",
-      "sha256": "a6b6d6318d672e3ccb1d0eec55f1b70b3da667c8c1e2e4fa11040a3bd5ea3d7f",
-      "size_bytes": 22512,
-      "git_blob": "65f6eeac856d27782e87eb2232896c9ac9d1bc22",
-      "version": "ux-commercial-fix-01",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "sha256": "116e49bbdfaba06e5f105ae96513be6c4f810d71cb896ce85fe88a7cbdb9fbde",
+      "size_bytes": 22421,
+      "git_blob": "26d52f0d1f13b7a619cc1cb951ffae35a1435440",
+      "version": "commercial-productization-01",
+      "status": "current_navigation",
+      "purpose": "Current routing and operating guidance reconciled with b8f449ec; historical evidence preserved.",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "7e47e26fcb6461ae1701d0402c6a9f455fdcac35"
+      "previous_git_blob": "7e47e26fcb6461ae1701d0402c6a9f455fdcac35",
+      "pre_commercial_productization_git_blob": "65f6eeac856d27782e87eb2232896c9ac9d1bc22"
     },
     {
       "path": "docs/design/framework.md",
-      "sha256": "52f6915ac9e1b87f70677547c3f196235c856e455f05e2acf8454966181b2c48",
-      "size_bytes": 39261,
-      "git_blob": "e9a077da5c69bc8c1f567651c7946f282883d83c",
-      "version": "ux-commercial-fix-01",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "sha256": "28b41a96d005a5608c100bc827ed81760db1fcea9425cf8d49d5596477a47f61",
+      "size_bytes": 39170,
+      "git_blob": "133842f38ab117be36c8d40863152d013f68af7e",
+      "version": "commercial-productization-01",
+      "status": "current_navigation",
+      "purpose": "Current routing and operating guidance reconciled with b8f449ec; historical evidence preserved.",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
       "storage_scope": "public_repository",
-      "previous_git_blob": "4a45d3fe92abb5622d9849a2047488a1bd106d52"
+      "previous_git_blob": "4a45d3fe92abb5622d9849a2047488a1bd106d52",
+      "pre_commercial_productization_git_blob": "e9a077da5c69bc8c1f567651c7946f282883d83c"
     },
     {
       "path": "docs/design/sportmaster-rcs-task.md",
@@ -5149,16 +5154,17 @@
       "previous_git_blob": "0abf652a38b83b8a1b9369ec7f4381a9dfd0e051"
     },
     {
-      "version": "ux-commercial-fix-01",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-COMMERCIAL-FIX-01 user follow-up",
+      "version": "commercial-productization-01",
+      "status": "current_navigation",
+      "purpose": "Current routing and operating guidance reconciled with b8f449ec; historical evidence preserved.",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
       "storage_scope": "public_repository",
       "path": "docs/runtime/architecture-quality-closure-01.md",
-      "sha256": "ac4fcbb3924ff6ebb5536798be72810910afb8ad40fd672b8f7e05af355eb20d",
-      "size_bytes": 24266,
-      "git_blob": "bdfa12c640300ee4a63c2e79856032722de386ba",
-      "previous_git_blob": "5697e9a5891f1c8c281f0d9dbe84108e63fb0db2"
+      "sha256": "29e25662a9b200394d4abb5d98014df669fb3319dab7dfe5f34053b670708de2",
+      "size_bytes": 24522,
+      "git_blob": "401f77cc97ad3526ffadfaca2ffbdc97dbcb2a1c",
+      "previous_git_blob": "5697e9a5891f1c8c281f0d9dbe84108e63fb0db2",
+      "pre_commercial_productization_git_blob": "bdfa12c640300ee4a63c2e79856032722de386ba"
     },
     {
       "path": "docs/runtime/backup-health-recovery.md",
@@ -26422,15 +26428,16 @@
     },
     {
       "path": "docs/runtime/getting-started.md",
-      "version": "ux-maintenance-p2-04",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "version": "commercial-productization-01",
+      "status": "current_navigation",
+      "purpose": "Current routing and operating guidance reconciled with b8f449ec; historical evidence preserved.",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
       "storage_scope": "public_repository",
-      "sha256": "467f6ce05149b040e867fa9018e8d60d41790182e906db0f771914106887a7c8",
-      "size_bytes": 5808,
-      "git_blob": "95c69365354f4a7a010f1a1709854d3462b6ce6e",
-      "previous_git_blob": "2e72810ecbe43f36491f6604066cfcea19de943d"
+      "sha256": "06c8ce5433a11b42672114d859bb64106ab53c6c8f66945c2fa4856203858241",
+      "size_bytes": 5750,
+      "git_blob": "d1096da2c54113f39cb72ee53e23f8b3b2a9bf2a",
+      "previous_git_blob": "2e72810ecbe43f36491f6604066cfcea19de943d",
+      "pre_commercial_productization_git_blob": "95c69365354f4a7a010f1a1709854d3462b6ce6e"
     },
     {
       "path": "docs/runtime/hardening-04-checks.json",
@@ -34728,14 +34735,15 @@
     },
     {
       "path": "docs/runtime/windows-application-delivery.md",
-      "version": "ux-maintenance-p2-04",
-      "status": "current_implementation_or_boundary_record",
-      "purpose": "Authorized UX corrections, synthetic regression or operational guidance; Windows/field acceptance remains deferred",
-      "source": "WP-IPC-UX-MAINTENANCE-P2-04",
+      "version": "commercial-productization-01",
+      "status": "current_navigation",
+      "purpose": "Current routing and operating guidance reconciled with b8f449ec; historical evidence preserved.",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
       "storage_scope": "public_repository",
-      "sha256": "c5ffceb09a50b7a3d1604190295111bd214919b6cac52e1812cc11f35458ac02",
-      "size_bytes": 12509,
-      "git_blob": "6e531e3bf7dd11dfb934d68652e44857f3728342"
+      "sha256": "c0bc1cb1d3a41d18a31979e64394b8f586f93f3bf4eb631d09603b80a2e3cd64",
+      "size_bytes": 12356,
+      "git_blob": "4c069fce01cece5f023a4ffd1dbbba51120d1dd2",
+      "pre_commercial_productization_git_blob": "6e531e3bf7dd11dfb934d68652e44857f3728342"
     },
     {
       "path": "scripts/application.cmd",
@@ -39994,6 +40002,182 @@
       "sha256": "073fce732427dfc72ee685368f69f51439d24f7536f21657fb5489a36305cf67",
       "size_bytes": 6929,
       "git_blob": "cd1704802460e82e16064a8fd4a571bd283f759a"
+    },
+    {
+      "path": "docs/archive/pre-commercial-productization-01/README.md",
+      "sha256": "8083a6c2fd04cba978a0a9d6dbbe29f0b7245f54be7ceb3562d2dd98569d34e2",
+      "size_bytes": 2685,
+      "git_blob": "0487af4cf5cc30710cbf92bc0d04ceac81b50894",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "historical_original",
+      "purpose": "Exact prior navigation/operations bytes or original metadata custody; historical scope only."
+    },
+    {
+      "path": "docs/archive/pre-commercial-productization-01/README.md.txt",
+      "sha256": "f5fe29e236b6c3ab0b8c31175466e1f6bc2c02d27c02be83c9e192e4b1af4a4e",
+      "size_bytes": 4880,
+      "git_blob": "a69834886509c66d615605afed15349612990638",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "historical_original",
+      "purpose": "Exact prior navigation/operations bytes or original metadata custody; historical scope only."
+    },
+    {
+      "path": "docs/archive/pre-commercial-productization-01/docs/INDEX.md.txt",
+      "sha256": "994a14874ef743b215ad452f4f5af963081e4d9039e3814106695493f9ae3545",
+      "size_bytes": 11524,
+      "git_blob": "a6b807db04e55e76002ad89ed009b7c546af19df",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "historical_original",
+      "purpose": "Exact prior navigation/operations bytes or original metadata custody; historical scope only."
+    },
+    {
+      "path": "docs/archive/pre-commercial-productization-01/docs/design/framework-decisions.md.txt",
+      "sha256": "a6b6d6318d672e3ccb1d0eec55f1b70b3da667c8c1e2e4fa11040a3bd5ea3d7f",
+      "size_bytes": 22512,
+      "git_blob": "65f6eeac856d27782e87eb2232896c9ac9d1bc22",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "historical_original",
+      "purpose": "Exact prior navigation/operations bytes or original metadata custody; historical scope only."
+    },
+    {
+      "path": "docs/archive/pre-commercial-productization-01/docs/design/framework.md.txt",
+      "sha256": "52f6915ac9e1b87f70677547c3f196235c856e455f05e2acf8454966181b2c48",
+      "size_bytes": 39261,
+      "git_blob": "e9a077da5c69bc8c1f567651c7946f282883d83c",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "historical_original",
+      "purpose": "Exact prior navigation/operations bytes or original metadata custody; historical scope only."
+    },
+    {
+      "path": "docs/archive/pre-commercial-productization-01/docs/runtime/architecture-quality-closure-01.md.txt",
+      "sha256": "ac4fcbb3924ff6ebb5536798be72810910afb8ad40fd672b8f7e05af355eb20d",
+      "size_bytes": 24266,
+      "git_blob": "bdfa12c640300ee4a63c2e79856032722de386ba",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "historical_original",
+      "purpose": "Exact prior navigation/operations bytes or original metadata custody; historical scope only."
+    },
+    {
+      "path": "docs/archive/pre-commercial-productization-01/docs/runtime/getting-started.md.txt",
+      "sha256": "467f6ce05149b040e867fa9018e8d60d41790182e906db0f771914106887a7c8",
+      "size_bytes": 5808,
+      "git_blob": "95c69365354f4a7a010f1a1709854d3462b6ce6e",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "historical_original",
+      "purpose": "Exact prior navigation/operations bytes or original metadata custody; historical scope only."
+    },
+    {
+      "path": "docs/archive/pre-commercial-productization-01/docs/runtime/windows-application-delivery.md.txt",
+      "sha256": "c5ffceb09a50b7a3d1604190295111bd214919b6cac52e1812cc11f35458ac02",
+      "size_bytes": 12509,
+      "git_blob": "6e531e3bf7dd11dfb934d68652e44857f3728342",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "historical_original",
+      "purpose": "Exact prior navigation/operations bytes or original metadata custody; historical scope only."
+    },
+    {
+      "path": "docs/archive/pre-commercial-productization-01/metadata-before.json",
+      "sha256": "44d31123a58cf7e00c1d593f325c3139cd170600bcbe71e8f7320ad9b94b42d3",
+      "size_bytes": 2551,
+      "git_blob": "a7020142977e3638334bec35e710849b568fddef",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "historical_original",
+      "purpose": "Exact prior navigation/operations bytes or original metadata custody; historical scope only."
+    },
+    {
+      "path": "docs/design/commercial-productization-01.md",
+      "sha256": "4b1405d28246e3eef41bd420fa5e1d7c281ba3a0a57e652eb5fe5dd6b659042a",
+      "size_bytes": 37142,
+      "git_blob": "5d30db01e2426e1c1e7bcff3c2237fbc86293595",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "target_design_recommended",
+      "purpose": "Complete commercialization product behavior and state/authority design; implementation pending."
+    },
+    {
+      "path": "docs/implementation/commercial-productization-01.md",
+      "sha256": "7c04170b273d236c8e7734787d5e50f519e743b14a5dc71fbe78dad13555d1d6",
+      "size_bytes": 36457,
+      "git_blob": "5781a0f4f562dcab84fc8a7f46bcf00498421d81",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "implementation_planned",
+      "purpose": "Complete commercialization work scope, implementation logic, static baseline, necessary acceptance or concise Codex handoff."
+    },
+    {
+      "path": "docs/reviews/commercial-productization-01-baseline.md",
+      "sha256": "1b34541f96d70253e6a0308bffe076a1ae3d448da88baa24f83802c18412c90a",
+      "size_bytes": 19347,
+      "git_blob": "bf9dcd7814fcaf85ca6e0ff36ada3c975b694d14",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "implementation_planned",
+      "purpose": "Complete commercialization work scope, implementation logic, static baseline, necessary acceptance or concise Codex handoff."
+    },
+    {
+      "path": "docs/runtime/commercial-productization-01-docs-delivery.md",
+      "sha256": "64aab8c6e52e9a2aa2591c2719254e27a7f3a0495921be32a2449551c8bdf2ee",
+      "size_bytes": 6782,
+      "git_blob": "1ab331d2b093eed1768e5fd4c691a26f35a6d870",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "document_verification_only",
+      "purpose": "Documentation delivery scope, targeted verification and source/media separation."
+    },
+    {
+      "path": "docs/runtime/validation/commercial-productization-01.md",
+      "sha256": "5720239efe11888db4f299e55313c3fc5267736d839baf2aeccabd9799128efa",
+      "size_bytes": 24996,
+      "git_blob": "419659ee00a7788c3f07a04c482dc2e98527b7e1",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "implementation_planned",
+      "purpose": "Complete commercialization work scope, implementation logic, static baseline, necessary acceptance or concise Codex handoff."
+    },
+    {
+      "path": "docs/work-packages/Codex-WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md",
+      "sha256": "8e108e9d24d41ec9856f9408be76c0aa633c68e8623b0c7b5c028a4d8470e883",
+      "size_bytes": 2301,
+      "git_blob": "eeeae3b3b10c8353059991238f89091ffc9ab29d",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "implementation_planned",
+      "purpose": "Complete commercialization work scope, implementation logic, static baseline, necessary acceptance or concise Codex handoff."
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md",
+      "sha256": "59476a6e777a2af5ccaa7cdbdc3018ba8d5152e9587afd5ad1e9b52d11138783",
+      "size_bytes": 21389,
+      "git_blob": "38e72975342d6f6425d446842e1160399413b6d8",
+      "version": "commercial-productization-01",
+      "source": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01 explicit user-authorized generic commercialization documentation; no new business implementation or restricted assets",
+      "storage_scope": "public_repository",
+      "status": "implementation_planned",
+      "purpose": "Complete commercialization work scope, implementation logic, static baseline, necessary acceptance or concise Codex handoff."
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -40026,13 +40210,11 @@
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/audit03-reference-565abcc",
     "publication_receipt": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/publication.json",
     "archive": "FAIL_267_INHERITED_NO_NEW_ERRORS",
-    "source_parity": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/source-parity.json"
+    "source_parity": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/source-parity.json",
+    "record_scope": "Historical audit03 reference release at the recorded source_commit; all version/PASS fields here retain that frozen identity. Latest merged source and lack of combined media are recorded in commercial_productization_01; this object is not the current combined product release."
   },
   "followup_work_packages": [
-    "WP-A03-03",
-    "WP-A03-04",
-    "WP-A03-05",
-    "WP-A03-06"
+    "WP-IPC-COMMERCIAL-PRODUCTIZATION-01"
   ],
   "hardening_publication": {
     "entry": "docs/runtime/hardening-04.md",
@@ -40075,7 +40257,7 @@
     "work_package_execution": "PLANNED_NOT_STARTED",
     "public_scope": "New generic review and work packages only; no restricted source text, images, credentials, SDK or fonts."
   },
-  "current_implementation_work_package": "WP-IPC-UX-MAINTENANCE-P2-04",
+  "current_implementation_work_package": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
   "engineering_closure_07": {
     "entry": "docs/runtime/engineering-closure-07.md",
     "checks": "docs/runtime/engineering-closure-07-checks.json",
@@ -40136,7 +40318,7 @@
     "application_code_changed": false,
     "remote_verification": "read exact main commit and file identities after merge"
   },
-  "next_implementation_work_package": "Windows native full matrix and ordinary-account install/update recovery; target load; commercial inputs and real per-capability contracts",
+  "next_implementation_work_package": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
   "main_static_review_03": {
     "entry": "docs/reviews/main-static-review-03.md",
     "checks": "docs/reviews/main-static-review-03-checks.json",
@@ -40699,7 +40881,7 @@
     "candidates": "docs/runtime/evidence/capability-reliability-20/candidate-inventory.json",
     "reference_verification": "PASS"
   },
-  "runtime_source_commit": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+  "runtime_source_commit": "b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5",
   "application_architecture_22_publication": {
     "receipt": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/architecture22-reference-8981d54",
@@ -41229,5 +41411,52 @@
     "tests": "NOT_RUN_BY_USER_REQUEST",
     "combined_media": "NOT_BUILT_BY_USER_REQUEST",
     "final_receipt": "docs/runtime/evidence/deployment-publication-20261019/final-publication-receipt.json"
+  },
+  "historical_followup_work_packages_before_commercial_productization_01": [
+    "WP-A03-03",
+    "WP-A03-04",
+    "WP-A03-05",
+    "WP-A03-06"
+  ],
+  "prior_manifest_state_before_commercial_productization_01": {
+    "source_commit": "b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5",
+    "metadata_snapshot": "docs/archive/pre-commercial-productization-01/metadata-before.json",
+    "original_manifest_git_blob": "e648404a8f9f8c93deba4c135831a5367ce5f490",
+    "original_manifest_sha256": "fdd76679c95a1f9335f874cea78b3957184da341db81bb26d46b74dcc2d2ccae",
+    "scope": "Historical current-routing metadata preserved; original full manifest remains at the fixed source commit."
+  },
+  "commercial_productization_01": {
+    "work_package": "WP-IPC-COMMERCIAL-PRODUCTIZATION-01",
+    "work_package_path": "docs/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md",
+    "baseline_main": "b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5",
+    "baseline_tree": "ae302db24364505bff782ec056b9066302914a4f",
+    "document_status": "DESIGN_AND_IMPLEMENTATION_HANDOFF_READY",
+    "implementation_status": "PLANNED",
+    "design": "docs/design/commercial-productization-01.md",
+    "implementation_logic": "docs/implementation/commercial-productization-01.md",
+    "baseline_review": "docs/reviews/commercial-productization-01-baseline.md",
+    "validation_plan": "docs/runtime/validation/commercial-productization-01.md",
+    "codex_prompt": "docs/work-packages/Codex-WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md",
+    "documentation_delivery": "docs/runtime/commercial-productization-01-docs-delivery.md",
+    "original_navigation_archive": "docs/archive/pre-commercial-productization-01/README.md",
+    "core_units": "COMM-00 through COMM-10",
+    "current_runtime_policy": "Designated Windows SID; non-elevated runtime; filtered/deny-only administrator membership permitted; normal native flows do not require PowerShell.",
+    "current_source_contains": [
+      44,
+      45
+    ],
+    "combined_media": "NOT_BUILT",
+    "frozen_reference_sources": [
+      "e79a8bfdc65328619c77013fb314eaaef4a35a2f",
+      "16ecb571cba32188f62a6e6e677030cd589dbf48"
+    ],
+    "media_identity_record": "docs/runtime/publication-deployment-20261019.md",
+    "code_test_build_package_changes": false,
+    "business_tests_this_document_task": "NOT_RUN_DOCUMENTATION_ONLY",
+    "document_validation": "CHANGED_DOCUMENTS_HASH_LINKS_ARCHIVE_AND_MANIFEST_DELTA",
+    "windows_actual": "NOT_RUN",
+    "real_sdk_protocol_devices_field": "BLOCKED_PER_CAPABILITY",
+    "historical_d_rv": "UNCHANGED",
+    "public_customer_archive": "PUBLIC_SUBSET_ONLY"
   }
 }

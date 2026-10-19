@@ -1,8 +1,8 @@
-> 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
+> 现行商业化补差范围见[完整工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)及[基线核对](../reviews/commercial-productization-01-baseline.md)。本页保留已实现的操作；新设计尚待实施。正常安装/首次启动/独立维护以[原生启动部署指南](startup-deployment-02.md)为准，旧媒介按其固定源码和随包说明使用；源码与介质身份见[发布记录](publication-deployment-20261019.md)。历史任务/测试/候选保持原身份，Windows/真实组合未验部分不变。
 
 # Application运行、维护与兼容
 
-当前审查03实施范围见[工作包](../work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)。历史P1/P2整改见[结果与固定证据](pr26-recovery-closure-results.md)及[工作包](../work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)。普通DB4未结启动先用只读连接检查，拒绝时不打开写库、不checkpoint非空WAL，不写配置确认。原匹配DB4读者仍可清偿；即使实现Hash看似一致，也不自动放行跨DB升级。
+审查03形成时实施范围见[原工作包](../work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)。历史P1/P2整改见[结果与固定证据](pr26-recovery-closure-results.md)及[工作包](../work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)。普通DB4未结启动先用只读连接检查，拒绝时不打开写库、不checkpoint非空WAL，不写配置确认。原匹配DB4读者仍可清偿；即使实现Hash看似一致，也不自动放行跨DB升级。
 
 本页统一审查02 N01–N07后的实际操作。源码和包身份读取同包ASSEMBLY.json及SHA256SUMS；当前仓库交付见[统一入口](../INDEX.md)。[01工作包](../work-packages/WP-IPC-ARCHITECTURE-QUALITY-CLOSURE-01.md)、[设计及本次差额](../design/architecture-quality-closure-01.md)与[01历史结果](architecture-quality-closure-01-results.md)保留形成时身份。22的三条独立主流程、19/20原请求规则和旧Supply/Inspection继续适用。Windows实机NOT_RUN，真实SDK/协议/现场BLOCKED。软件暂停不是安全急停。
 

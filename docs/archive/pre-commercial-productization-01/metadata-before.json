@@ -1,0 +1,46 @@
+{
+  "source_commit": "b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5",
+  "source_manifest_git_blob": "e648404a8f9f8c93deba4c135831a5367ce5f490",
+  "source_manifest_sha256": "fdd76679c95a1f9335f874cea78b3957184da341db81bb26d46b74dcc2d2ccae",
+  "record_scope": "Exact selected current-routing metadata before commercialization documentation; historical runtime publication retains original identity and does not describe latest merged source.",
+  "metadata": {
+    "work_package": "WP-IPC-STARTUP-DEPLOYMENT-02",
+    "branch": "codex/windows-first-run",
+    "framework_design_state": "STARTUP_REPAIR_OPTIONAL_CATALOG_GUIDED_INSTALL_REFERENCE_VERIFIED_WINDOWS_NOT_RUN_REAL_BLOCKED",
+    "current_implementation_work_package": "WP-IPC-UX-MAINTENANCE-P2-04",
+    "next_implementation_work_package": "Windows native full matrix and ordinary-account install/update recovery; target load; commercial inputs and real per-capability contracts",
+    "runtime_source_commit": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
+    "runtime_publication": {
+      "entry": "docs/runtime/commercial-audit03-delivery-results.md",
+      "operations": "docs/runtime/windows-application-delivery.md",
+      "checks": "docs/runtime/evidence/commercial-audit03-delivery/README.md",
+      "source_commit": "565abcc63b885dc60873aa21e25f2d4612963c0d",
+      "business_version": "1.2.8",
+      "parcel_storage": 7,
+      "supply_storage": 5,
+      "configuration_schema": [
+        1,
+        2,
+        3
+      ],
+      "application_contracts": "1.8.0",
+      "extension_contract": 1,
+      "core": "PASS_REFERENCE_TARGETED_AND_UNPACKED_JOURNEYS",
+      "wpf": "PASS_THREE_CROSS_BUILDS",
+      "windows": "NOT_RUN",
+      "field": "BLOCKED_PER_CAPABILITY",
+      "production": "NOT_READY",
+      "actual_wpf_screenshots": 0,
+      "private_keys_included": false,
+      "pull_request": "https://github.com/yuan2go/importer-pc/pull/35",
+      "artifacts": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/ARTIFACTS.json",
+      "real_combination": "UNCONFIRMED_SDK_DRIVER_AND_UNKNOWN_DISPOSITION_BLOCKED",
+      "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/audit03-reference-565abcc",
+      "publication_receipt": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/publication.json",
+      "archive": "FAIL_267_INHERITED_NO_NEW_ERRORS",
+      "source_parity": "docs/runtime/evidence/commercial-audit03-delivery/corrected-565abcc/source-parity.json"
+    },
+    "updated_date": "2026-10-19",
+    "last_updated": "2026-10-19"
+  }
+}

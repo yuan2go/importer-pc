@@ -33,3 +33,7 @@ main在开工时仍为业务1.2.8/Contracts1.8.0/DB7；PR37产品冻结c384c3bc4
 用户已授权完整工程判断与持续实施，本设计按既定任务直接执行，不新增批准门槛。商业组合问询已发出；没有回答不视为批准。真实合同/实体/权限和历史RV批准仍单独取得。
 
 公共API/SQL均未变，但冻结源码的公共DLL指纹仍须重新核验；本轮显式使用新的不可变参考能力2.2.1、reader1.3.1、RCS1.1.1并按精确Release重建/签名，保留PR37的2.2.0/1.3.0/1.1.0身份。
+
+## 实际交付与本包边界
+
+[最终逐包结果](../runtime/ux-commercial-closure-02-results.md)、[固定参考预发布](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-f1a655c)及[商业输入账](../runtime/ux-commercial-combination-02.json)为实际交付。WP-02/03/05代码及参考验证已完成，WP-06参考媒介与远端回读完成；WP-01商业输入待确认、WP-04真实SDK/权威合同受阻、WP-05/06 Windows及目标机验收NOT_RUN；WP-07新增可选建议未自动采纳。当前资料检查267项继承错误、新增0项，整体仍FAIL。原失败、原PDF/HTML/图册、D/RV及PR37原证据不倒写。

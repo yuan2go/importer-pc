@@ -36262,9 +36262,9 @@
       "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
       "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "3abc3a2ebaf58009da7f252a0c7867055c54b13391b5a675884dc5a1dc19c083",
-      "size_bytes": 5415,
-      "git_blob": "a4d2250ae4df1c2e6fcf2ba7a381259afb27a417"
+      "sha256": "40b3fa58194b0969c1f00f263f8ec36e9eadaa43b24c7ecc7aae2061d441cae5",
+      "size_bytes": 6069,
+      "git_blob": "0ca5277bf6db9638b9518b99586497ee00ea3a2e"
     },
     {
       "path": "docs/runtime/evidence/ux-commercial-closure-02/audit03-snapshots.log",
@@ -36614,9 +36614,9 @@
       "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
       "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "75d39d9519b5db74f33d04cc499936fd78d17a302be71d62db7b292c6af41a4b",
-      "size_bytes": 306,
-      "git_blob": "2e0ae6db6664da51f4ac0ea97a4c932d11c894c5"
+      "sha256": "e942055e3d54b93c9fe324d7ed5ea8f26eab16c0237a2f57057d0d139c82f4e7",
+      "size_bytes": 952,
+      "git_blob": "71f21ff050ddb2ddc67d012a170fd45de9f1e21b"
     },
     {
       "path": "docs/runtime/evidence/ux-commercial-closure-02/direct-plc-core-smoke.json",
@@ -36944,9 +36944,20 @@
       "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
       "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
       "storage_scope": "public_repository",
-      "sha256": "f0a7f7207a60eb44acd3184c4059c923178b869733e1dedc9078cfd6fccdb73b",
-      "size_bytes": 8110,
-      "git_blob": "70aec20ec6a23de5f62f06bb9726f2af3752d91a"
+      "sha256": "dc0e4cb34493dda1e665dcf5a498a596e2f358945e9a8e3477c6dab436ab5563",
+      "size_bytes": 8130,
+      "git_blob": "f0e298ea922846c7be13b5024006f8f81be45da5"
+    },
+    {
+      "path": "docs/runtime/evidence/ux-commercial-closure-02/archive-product-delta.json",
+      "version": "ux-commercial-closure-02",
+      "status": "implementation_or_evidence",
+      "purpose": "Authorized UX audit closure; synthetic evidence; Windows and real integration remain separate",
+      "source": "WP-IPC-UX-COMMERCIAL-CLOSURE-02",
+      "storage_scope": "public_repository",
+      "sha256": "75d39d9519b5db74f33d04cc499936fd78d17a302be71d62db7b292c6af41a4b",
+      "size_bytes": 306,
+      "git_blob": "2e0ae6db6664da51f4ac0ea97a4c932d11c894c5"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

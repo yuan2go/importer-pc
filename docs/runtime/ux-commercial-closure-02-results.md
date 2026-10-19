@@ -36,7 +36,7 @@
 
 保留两项负证据：第一，继承PR37的原选择交错真实RED，修后相同行/详情/Owner断言转绿；第二，配置首轮健康脉冲在途时被“Pause and authenticate maintenance before configuration”守卫提前拒绝，尚未进入预期CAS断言。夹具只对该精确前置拒绝有界重试、打印回执并保留原草稿Revision；最终仍严格要求Configuration revision conflict与原Pending未变，不改业务守卫或放宽断言。原失败未倒写。
 
-资料校验基线267项继承错误。产品冻结快照曾新增1项本地命令路径元数据；最终公开JSON以明确路径标签替换并记录原/公开SHA，原始字节完整保存在独立raw-verification-evidence.zip，未加资料例外。最终资料检查按独立记录读取，整体仍FAIL，不把原UI资产错误改成PASS。
+资料校验基线267项继承错误。产品冻结快照曾新增1项本地命令路径元数据；最终公开JSON以明确路径标签替换并记录原/公开SHA，原始字节完整保存在独立raw-verification-evidence.zip，未加资料例外。最终882bd31干净归档检查267项、对基线新增0项，整体仍FAIL，不把原UI资产错误改成PASS。
 
 实际ZIP/随包指南固定来自f1a655c；后继提交只更新状态、证据及版本勘误。[输入字节比较](evidence/ux-commercial-closure-02/source-parity.json)列出唯一当前指南差额；候选VERSIONS.md末段遗留PR37的1.3.0说明，其首段和实际清单均为1.3.1。[勘误](evidence/ux-commercial-closure-02/VERSIONS-ERRATA.md)独立追加，原ZIP不覆盖，不能说最终分支所有文档都与候选逐字节相同。
 

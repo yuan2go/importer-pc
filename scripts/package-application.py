@@ -136,12 +136,14 @@ publish_dependencies(build_source, output, source)
 if a.target == 'win-x64':
     for script in ['protect-release.ps1', 'provision-runtime.ps1', 'provision-extensions.ps1', 'application.ps1', 'application.cmd', 'Setup.cmd', 'Maintenance.cmd']:
         shutil.copyfile(build_source / 'scripts' / script, output / script)
+if artifacts.parent != workspace or build_source.parent != workspace or artifacts.name != 'build-intermediates' or build_source.name != 'source-snapshot':
+    raise ValueError('Refuse cleanup outside generated publication workspace')
 shutil.rmtree(artifacts)
 shutil.rmtree(extraction_root)
 (output / 'APPLICATION-START.txt').write_text(
     'SIMULATION REFERENCE ONLY\nConsole: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'
-    + ('Windows: double-click Setup.cmd; first launch from an unpacked package also opens the native installation wizard (no PowerShell required).\nChoose runtime account, original data root, configuration source and optional independent trust/offline packages; review then approve Windows UAC. Program files are installed side by side and data is retained.\nStart from the installed Start Menu shortcut. Offline startup repair: Maintenance.cmd or the installed startup-repair shortcut; business/devices do not need to start.\nDefault data: %LOCALAPPDATA%\\ImporterPc\\data; installer selections are retained for both desktop and console. See STARTUP-DEPLOYMENT.md.\n' if a.target == 'win-x64' else '')
-    + ('Sportmaster alternate native UI: desktop/Ipc.Desktop.exe --ui supply-station --config desktop/config --data-root <new-isolated-root>\nClassic default: omit --ui, or use --ui classic. Use SPORTMASTER-UI.md and SPORTMASTER-UI-WINDOWS.md.\n' if a.target == 'win-x64' and a.application == 'sportmaster' else '')
+    + ('Windows: double-click Setup.cmd; first launch from an unpacked package also opens the native installation wizard (no PowerShell required).\nChoose runtime account, original data root, configuration source and optional independent trust/offline packages; review then approve Windows UAC. Program files are installed side by side and data is retained.\nStart from the installed Start Menu shortcut. Offline startup repair: Maintenance.cmd or the installed startup-repair shortcut; business/devices do not need to start.\nDefault data: %LOCALAPPDATA%\\ImporterPc\\data; installer selections are retained for both desktop and console. Use PRODUCT-OPERATIONS.md for protected custom roots, first configuration repair, system maintenance, backup/migration and batch plans.\n' if a.target == 'win-x64' else '')
+    + ('Sportmaster alternate native UI: desktop/Ipc.Desktop.exe --ui supply-station\nClassic default: omit --ui, or use --ui classic. Use SPORTMASTER-UI.md and SPORTMASTER-UI-WINDOWS.md.\n' if a.target == 'win-x64' and a.application == 'sportmaster' else '')
     + 'Use APPLICATIONS.md for reference camera/weight input, original-stage reconciliation and recovery.\n')
 entries = sorted(f for f in output.rglob('*') if f.is_file())
 (output / 'SHA256SUMS').write_text(''.join(hashlib.sha256(f.read_bytes()).hexdigest() + '  ' + f.relative_to(output).as_posix() + '\n' for f in entries))

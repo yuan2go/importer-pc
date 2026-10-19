@@ -8,7 +8,7 @@ using Ipc.Platform;
 namespace Ipc.Application.ParcelFlow.Desktop;
 
 // Window owns selection/draft only; every command and fact belongs to the shared application.
-public partial class ParcelViewModel(IParcelApplication application, string title, string flow) : INotifyPropertyChanged
+public partial class ParcelViewModel(IParcelApplication application, string title, string flow, string presentationId = "parcel") : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
     public IParcelApplication Application => application;
@@ -16,6 +16,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public Visibility SimulationVisibility => Snapshot?.Configuration.Effective.Mode == RunMode.Simulation ? Visibility.Visible : Visibility.Collapsed;
     public string EnvironmentStatus => Snapshot?.Configuration.Effective.Mode == RunMode.Production ? "Production · 软件暂停不是安全急停 · 资格不代替现场安全联锁" : "Simulation · 软件暂停不是安全急停 · 不操作真实设备";
     public string Flow => flow;
+    public string PresentationId => presentationId;
     ParcelSnapshot? snapshot;
     ParcelOperation? selected;
     string message = "等待相机读码；模拟工程不操作真实设备。";

@@ -1,5 +1,6 @@
 > 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。开工main仍1.2.8，PR37本地1.3.0未远端发布，本轮声明1.3.3/Contracts1.9.0/DB7。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 
+> 商业化实施当前版本：业务1.4.0 / Application.Contracts 1.10.0 / DB8。SQL1～7未改，8为新配置/恢复语义的旧读取者门槛；7→8须先清原责任。当前操作见[产品指南](commercial-productization-01-operations.md)，精确冻结及验证见[实施结果](commercial-productization-01-results.md)。下文旧版本/原结果按形成时身份保留，不以旧EXE回读DB8。
 > 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
 
 > PR29 P1/P2整改：原head d954ba6的组合记录重验存在配置与原事件未关联缺口，Windows恢复/卸载漏传业务程序集。整改设计与执行计划见[本包](../work-packages/WP-IPC-VERSION-COMPATIBILITY-01.md)；旧候选与结果保持原身份，新验证另记，不以旧PASS替代。

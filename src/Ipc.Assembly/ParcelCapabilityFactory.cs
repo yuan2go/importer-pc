@@ -69,19 +69,20 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         return configuration with { CapabilityInstances = configuration.CapabilityInstances?.Select(x => Resolve(x)!).ToArray(), Wcs = Resolve(configuration.Wcs), Plc = Resolve(configuration.Plc), Images = configuration.Images is { } i ? i with { Uploader = Resolve(i.Uploader)! } : null };
     }
     public void Validate(ParcelConfiguration c) => _ = ValidateDeployment(c);
-    DeploymentQualification? ValidateDeployment(ParcelConfiguration c)
+    public void ValidateStructure(ParcelConfiguration c) => _ = ValidateDeployment(c, false);
+    DeploymentQualification? ValidateDeployment(ParcelConfiguration c, bool requireQualification = true)
     {
         var inventoryErrors = ParcelConfigurationRules.ValidateCapabilityInventory(c);
         if (inventoryErrors.Length != 0) throw new InvalidDataException(string.Join("; ", inventoryErrors));
         RegisterContracts();
         if (store is not null && mode != c.Mode) throw new InvalidDataException("Cannot change the extension store mode within a running owner");
         mode = c.Mode;
-        if (c.Mode == RunMode.Production && (ParcelBindings.Readers(c).Any(r => r.Driver == "manual") || c.MaintenanceLogin is null || c.SchemaVersion != 3))
+        if (requireQualification && c.Mode == RunMode.Production && (ParcelBindings.Readers(c).Any(r => r.Driver == "manual") || c.MaintenanceLogin is null || c.SchemaVersion != 3))
             throw new InvalidDataException("Production NotReady: real reader, maintenance authenticator and explicit schema3 topology policy are required");
         if (c.Extensions is { } malformed && (malformed.Packages is null || malformed.Instances is null || malformed.Packages.Any(x => x is null) || malformed.Instances.Any(x => x is null)))
             throw new InvalidDataException("Malformed application extension deployment");
         DeploymentQualification? candidateQualification = null;
-        if (c.Mode == RunMode.Production || c.Extensions?.Packages.Any(p => Store().VerifyInstalled(p).Manifest.Prerequisites.Length > 0) == true)
+        if (requireQualification && (c.Mode == RunMode.Production || c.Extensions?.Packages.Any(p => Store().VerifyInstalled(p).Manifest.Prerequisites.Length > 0) == true))
         {
             _ = Store();
             var hash = Wire.Hash(Wire.Encode(c));
@@ -107,14 +108,14 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
             // their own typed bindings below, never counterfeit observation DeviceIds.
             var observationInstances = c.Extensions.Instances.Where(x => readerBindings.Any(r => r.Driver == "extension:" + x.Id)).ToArray();
             var observationDeployment = c.Extensions with { Instances = observationInstances };
-            var errors = ExtensionDeployment.Validate(observationDeployment, readerBindings, Store(), p => DeploymentQualifications.RequirePrerequisites(candidateQualification, p));
+            var errors = ExtensionDeployment.Validate(observationDeployment, readerBindings, Store(), p => { if (requireQualification) DeploymentQualifications.RequirePrerequisites(candidateQualification, p); });
             if (errors.Length != 0) throw new InvalidDataException(string.Join("; ", errors));
             if (c.Extensions.Instances.Length != observationInstances.Length) throw new InvalidDataException("Unbound observation extension instance");
             foreach (var package in c.Extensions.Packages)
             {
                 var verified = Store().VerifyInstalled(package);
-                DeploymentQualifications.RequirePrerequisites(candidateQualification, verified);
-                if (c.Mode == RunMode.Production)
+                if (requireQualification) DeploymentQualifications.RequirePrerequisites(candidateQualification, verified);
+                if (requireQualification && c.Mode == RunMode.Production)
                     foreach (var instance in observationInstances.Where(x => x.PackageId == package.Id))
                         RequireReal(verified.Manifest.Modules.Single(x => x.Id == instance.ModuleId), candidateQualification);
             }
@@ -140,7 +141,7 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         if (bound.Any(x => !x.Enabled)) throw new InvalidDataException("A bound provider must be enabled");
         foreach (var b in bindings.Concat(c.CapabilityInstances ?? []).DistinctBy(x => x.InstanceId))
         {
-            if (c.Mode == RunMode.Production && b.Enabled && b.Package is null) throw new InvalidDataException("Production NotReady: reference capability " + b.InstanceId);
+            if (requireQualification && c.Mode == RunMode.Production && b.Enabled && b.Package is null) throw new InvalidDataException("Production NotReady: reference capability " + b.InstanceId);
             if (b.Package is null && !(b.Kind == "camera" && ParcelBindings.Readers(c).Any(r => r.DeviceId == b.Target)) && (!Uri.TryCreate(b.Target, UriKind.Absolute, out var target) || target.Scheme != "reference")) throw new InvalidDataException("Reference capability target must use explicit reference:// identity");
             if (b.Package is null && b.Parameters.TryGetValue("endpoint", out var endpoint) &&
                 (b.Kind is not ("integration" or "plc" or "upload") || !Uri.TryCreate(endpoint, UriKind.Absolute, out var peerUri) || peerUri.Scheme != "http" || peerUri.Host != "127.0.0.1" || peerUri.AbsolutePath != "/parcel-reference/" || peerUri.UserInfo.Length != 0 || peerUri.Query.Length != 0 || peerUri.Fragment.Length != 0))
@@ -164,8 +165,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
                 var manifest = Store().VerifyInstalled(b.Package).Manifest;
                 var module = manifest.Modules.SingleOrDefault(x => x.Id == b.Module && x.Kind == b.Kind) ?? throw new InvalidDataException("Typed capability/module missing");
                 var errors = ExtensionSchema.Validate(module.Parameters, b.Parameters);
-                if (c.Mode == RunMode.Production && b.Enabled) RequireReal(module, candidateQualification);
-                DeploymentQualifications.RequirePrerequisites(candidateQualification, Store().VerifyInstalled(b.Package));
+                if (requireQualification && c.Mode == RunMode.Production && b.Enabled) RequireReal(module, candidateQualification);
+                if (requireQualification) DeploymentQualifications.RequirePrerequisites(candidateQualification, Store().VerifyInstalled(b.Package));
                 if (module.ContractIdentity is not null && module.ContractIdentity != b.Contract) throw new InvalidDataException("Selected binding contract differs from signed provider contract");
                 if (bound.Any(x => x.InstanceId == b.InstanceId)) ValidateRequirements(c, module.Requirements ?? new(), b.Kind);
                 if (errors.Length != 0) throw new InvalidDataException("Capability schema/native SDK prerequisite evidence is unavailable: " + string.Join("; ", errors));

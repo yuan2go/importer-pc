@@ -1,7 +1,7 @@
 namespace Ipc.Platform;
 
 public sealed record DeploymentLocation(string ApplicationId, string SourceCommit, string ReleaseRoot,
-    string ConfigurationDirectory, string DataRoot, string RuntimeAccountSid);
+    string ConfigurationDirectory, string DataRoot, string RuntimeAccountSid, string LifecycleState = "Installed", string? MaintenanceOperation = null, string? RestoreHandoffHash = null, string? DeploymentPlanIdentity = null);
 public sealed record DeploymentMedia(string Root, string ApplicationId, string SourceCommit, Dictionary<string, string> Files)
 {
     // A byte inventory is integrity evidence, not publisher trust. The maintainer selects trusted media.
@@ -98,9 +98,20 @@ public sealed record DeploymentMedia(string Root, string ApplicationId, string S
     public static DeploymentLocation? ReadInstalled(string directory, string application)
     {
         var file = Path.GetFullPath(Path.Combine(directory, "..", "deployment-location.json"));
+        if (OperatingSystem.IsWindows() && WindowsDeploymentSetup.Current(application) is { } current &&
+            (string.Equals(Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar), Path.Combine(current.ReleaseRoot, "app"), StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar), Path.Combine(current.ReleaseRoot, "desktop"), StringComparison.OrdinalIgnoreCase)))
+        {
+            if (current.LifecycleState != "Installed") throw new InvalidOperationException("本发布已退役；从可信介质继续维护，原数据保留");
+            return current;
+        }
         if (!File.Exists(file)) return null;
         MachineRuntimePolicy.RequireProtectedEvidence(file);
         var location = Wire.Decode<DeploymentLocation>(File.ReadAllText(file));
+        if (OperatingSystem.IsWindows() && WindowsDeploymentSetup.Current(application) is { } authoritative &&
+            string.Equals(Path.GetFullPath(authoritative.ReleaseRoot), Path.GetFullPath(location.ReleaseRoot), StringComparison.OrdinalIgnoreCase)) location = authoritative;
+        if (location.LifecycleState != "Installed" || File.Exists(Path.Combine(location.ReleaseRoot, "deployment-retired.json")))
+            throw new InvalidOperationException("本发布已卸载/退役；原数据保留，请从可信介质重新安装后运行");
         if (location.ApplicationId != application || !string.Equals(Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar), Path.Combine(location.ReleaseRoot, "desktop"), StringComparison.OrdinalIgnoreCase) &&
             !string.Equals(Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar), Path.Combine(location.ReleaseRoot, "app"), StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("Deployment location differs from the selected executable");

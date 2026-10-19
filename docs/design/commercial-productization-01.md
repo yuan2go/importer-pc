@@ -1,5 +1,6 @@
 # 商业化产品设计 · COMMERCIAL-PRODUCTIZATION-01
 
+> 实施接续：本页保留 c445b0e 文档任务/静态基线及原计划状态。当前 COMM-00～10 实现、实际结果与外部门槛见[实施结果](../runtime/commercial-productization-01-results.md)；不能把本页初始 NOT_RUN 或“仅文档”语境当作本次实施禁令。
 状态：**DESIGNED，待实施**。分析日期：2026-10-19；代码基线：`b8f449ec91f8f7efd8bc5079ca38e19bc877ebf5`。本文定义客户可感知行为、状态及责任边界，不把目标设计写成已完成功能。实现任务和完成条件分别见[主工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)、[实现逻辑](../implementation/commercial-productization-01.md)、[必要验收](../runtime/validation/commercial-productization-01.md)。本轮未执行的运行、Windows、设备及现场验收均为 **NOT_RUN**；缺少真实接口/SDK/资格的生产路径继续 **BLOCKED / NotReady**。
 
 ## 1. 产品目标与继承边界

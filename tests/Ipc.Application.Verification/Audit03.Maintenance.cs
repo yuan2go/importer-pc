@@ -20,7 +20,7 @@ static partial class Audit03
         }
         var hash = Wire.FileHash(database);
         var before = ParcelRepository.InspectMaintenance(database, new DirectPlcFlow());
-        Check(!before.OrdinaryUpgradeAllowed && before.Unsettled == 1 && before.DatabaseVersion == 7 && before.DatabaseSha256 == hash && Wire.FileHash(database) == hash,
+        Check(!before.OrdinaryUpgradeAllowed && before.Unsettled == 1 && before.DatabaseVersion == 8 && before.DatabaseSha256 == hash && Wire.FileHash(database) == hash,
             "read-only maintenance reports original WaitingWeight and preserves exact database without upgrade or source startup");
         var diagnostic = Path.Combine(root, "diagnostic.zip");
         _ = ParcelRepository.ExportDiagnostics(database, diagnostic, new DirectPlcFlow());

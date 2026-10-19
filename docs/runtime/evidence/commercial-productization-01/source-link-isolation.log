@@ -1,0 +1,7 @@
+9692f4d/app: SourceLink=['{"documents":{"D:\\\\projects\\\\importer-pc\\\\*":"https://raw.githubusercontent.com/yuan2go/importer-pc/9692f4d5816c86db27bb0f714a2628c042d483b2/*"}}']; DLL_SHA256=6974d96d9b61e63b17fd84706b1e3f88c0fd6521502c068ef0c1717e27bbd5f9
+9692f4d/desktop: SourceLink=['{"documents":{"D:\\\\projects\\\\importer-pc\\\\*":"https://raw.githubusercontent.com/yuan2go/importer-pc/dcfb8b18e868e90be2b4e7c29e904f8061f34038/*"}}']; DLL_SHA256=3213db21e40212f7c9fc932c2e392b8e47c83d9edb12c152b90923400535aaf0
+bd86fbb/app: SourceLink=['{"documents": {"/_/src/*": "https://raw.githubusercontent.com/yuan2go/importer-pc/bd86fbb01b249f07e25fb12e003fed2a130a9c1c/*"}}']; DLL_SHA256=a984190092e6947c8ca4ec51f19737661b67c8a45a58e263406f63bcbc4a18f5
+bd86fbb/desktop: SourceLink=['{"documents": {"/_/src/*": "https://raw.githubusercontent.com/yuan2go/importer-pc/bd86fbb01b249f07e25fb12e003fed2a130a9c1c/*"}}']; DLL_SHA256=a984190092e6947c8ca4ec51f19737661b67c8a45a58e263406f63bcbc4a18f5
+PASS sportmaster: all common Ipc DLLs byte-identical
+PASS direct-plc: all common Ipc DLLs byte-identical
+PASS wcs-to-plc: all common Ipc DLLs byte-identical

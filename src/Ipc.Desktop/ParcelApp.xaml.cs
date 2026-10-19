@@ -26,7 +26,8 @@ public partial class App : System.Windows.Application
         await Dispatcher.Yield(DispatcherPriority.Background);
         try
         {
-            var mode = e.Args.FirstOrDefault() is "--setup" or "--maintenance" ? e.Args[0] : null;
+            var mode = e.Args.FirstOrDefault() is "--setup" or "--maintenance" or "--product-maintenance" ? e.Args[0] : null;
+            if (mode == "--product-maintenance") { new ProductMaintenanceWindow { Owner = startup }.ShowDialog(); startup.AllowClose = true; Shutdown(); return; }
             selected = DesktopLaunchOptions.Parse(mode is null ? e.Args : e.Args[1..], ApplicationId);
             var published = File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json"));
             if (mode == "--setup" || mode is null && published && DeploymentMedia.ReadInstalled(AppContext.BaseDirectory, ApplicationId) is null)
@@ -39,12 +40,18 @@ public partial class App : System.Windows.Application
         }
         catch (Exception ex) { await Failed(ex); }
     }
-    async Task StartSelected()
+    async Task StartSelected(bool firstConfigurationReviewed = false)
     {
         try
         {
             if (runtime is not null) throw new InvalidOperationException("原实例尚未完成停止，不创建第二个运行实例");
             var options = selected!; var launch = options.Business;
+            if (!firstConfigurationReviewed && File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json")))
+            {
+                var initialDocument = await Task.Run(() => ParcelStartupServices.Maintenance(launch).ReadAsync());
+                if (initialDocument is { Candidate: not null, ExistingConfiguration: false, ConfigurationStatus: "Seed" })
+                { await Repair(initialConfiguration: true); return; }
+            }
             startup.BeginAttempt();
             startup.Phase("读取配置与本地记录", "检查所选 Application、配置身份和本地恢复责任；尚未开放业务。", "参数校验完成");
             var starting = await Task.Run(() => ParcelAssembly.Create(launch)); runtime = starting;
@@ -79,16 +86,16 @@ public partial class App : System.Windows.Application
             async () => { await StopAsync(); await Repair(failure.Message); },
             async () => { await StopAsync(); var setup = new StartupSetupWindow(selected.Business) { Owner = startup }; setup.ShowDialog(); if (setup.Launched) { startup.AllowClose = true; Shutdown(); } });
     }
-    async Task Repair(string? failure = null)
+    async Task Repair(string? failure = null, bool initialConfiguration = false)
     {
         // Stop and Dispose must both succeed before any repair UI can issue a mutation.
         await StopAsync(); selected ??= DesktopLaunchOptions.Parse([], ApplicationId);
-        var repair = new StartupRepairWindow(selected.Business, failure) { Owner = startup };
+        var repair = new StartupRepairWindow(selected.Business, failure, initialConfiguration) { Owner = startup };
         repair.ShowDialog();
         if (repair.ReplacementLaunched) { startup.AllowClose = true; Shutdown(); return; }
-        if (repair.RetryRequested) { selected = selected with { Business = repair.SelectedLaunch }; await StartSelected(); }
+        if (repair.RetryRequested) { selected = selected with { Business = repair.SelectedLaunch }; await StartSelected(firstConfigurationReviewed: initialConfiguration); }
         else startup.Fail("离线维护已关闭。可重试启动或重新打开维护。", async () => { await StopAsync(); startup.AllowClose = true; Shutdown(); },
-            StartSelected, () => Repair(), () => { new StartupSetupWindow(selected.Business) { Owner = startup }.ShowDialog(); return Task.CompletedTask; });
+            () => StartSelected(), () => Repair(), () => { new StartupSetupWindow(selected.Business) { Owner = startup }.ShowDialog(); return Task.CompletedTask; });
     }
     async Task StopAsync()
     {

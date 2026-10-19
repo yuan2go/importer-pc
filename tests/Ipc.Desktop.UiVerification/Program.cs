@@ -26,13 +26,18 @@ static partial class Program
         desktop.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Desktop.UiVerification;component/Themes/Workstation.xaml", UriKind.Relative) });
         desktop.Startup += async (_, _) =>
         {
-            try { await Verify(root, evidence, lines).WaitAsync(TimeSpan.FromSeconds(90)); desktop.Shutdown(0); }
+            try
+            {
+                if (args.Contains("--comm-native-pages")) await VerifyCommercialPages(root, evidence, lines).WaitAsync(TimeSpan.FromSeconds(90));
+                else await Verify(root, evidence, lines, args.Contains("--commercial-productization-native")).WaitAsync(TimeSpan.FromSeconds(90));
+                desktop.Shutdown(0);
+            }
             catch (Exception ex) { lines.Add("FAIL " + ex); desktop.Shutdown(1); }
             finally { File.WriteAllLines(Path.Combine(evidence, "WINDOWS-WPF.log"), lines); Directory.CreateDirectory(Path.Combine(root, ".artifacts")); File.WriteAllText(Path.Combine(root, ".artifacts/WINDOWS-WPF-EVIDENCE.txt"), evidence); }
         };
         return desktop.Run();
     }
-    static async Task Verify(string root, string evidence, List<string> lines)
+    static async Task Verify(string root, string evidence, List<string> lines, bool syntheticIdentity = false)
     {
         void Check(bool yes, string reason) { if (!yes) throw new InvalidOperationException(reason); lines.Add("PASS " + reason); }
         var configRoot = Path.Combine(evidence, "config"); Directory.CreateDirectory(configRoot);
@@ -41,7 +46,13 @@ static partial class Program
         { InstanceId = "native.operator", Target = "reference://native-operator", Parameters = new() { ["subjects"] = "alice" } } };
         ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), config);
         var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "data"), null, null);
-        var runtime = SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
+        IBusinessRuntime runtime;
+        if (syntheticIdentity)
+        {
+            lines.Add("SYNTHETIC identity/ports injection: native WPF resources and interactions only; real UAC/policy/SDK/installation NOT_RUN");
+            runtime = new Ipc.Application.ParcelFlow.ParcelRuntime(launch, new Ipc.Application.Sportmaster.SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
+        }
+        else runtime = SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
         await using (runtime)
         {
             await runtime.StartAsync(CancellationToken.None);

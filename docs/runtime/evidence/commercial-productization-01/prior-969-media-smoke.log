@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "D:\projects\importer-pc\.artifacts\comm\media-smoke-9692f4d.py", line 20, in <module>
+    assert entries['app/'+dll]==entries['desktop/'+dll],dll
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Ipc.Assembly.dll

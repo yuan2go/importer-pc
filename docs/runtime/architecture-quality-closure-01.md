@@ -1,5 +1,6 @@
 > 现行商业化补差范围见[完整工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)及[基线核对](../reviews/commercial-productization-01-baseline.md)。本页保留已实现的操作；新设计尚待实施。正常安装/首次启动/独立维护以[原生启动部署指南](startup-deployment-02.md)为准，旧媒介按其固定源码和随包说明使用；源码与介质身份见[发布记录](publication-deployment-20261019.md)。历史任务/测试/候选保持原身份，Windows/真实组合未验部分不变。
 
+> 商业化实施当前版本：业务1.4.0 / Application.Contracts 1.10.0 / DB8。SQL1～7未改，8为新配置/恢复语义的旧读取者门槛；7→8须先清原责任。当前操作见[产品指南](commercial-productization-01-operations.md)，精确冻结及验证见[实施结果](commercial-productization-01-results.md)。下文旧版本/原结果按形成时身份保留，不以旧EXE回读DB8。
 # Application运行、维护与兼容
 
 审查03形成时实施范围见[原工作包](../work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)。历史P1/P2整改见[结果与固定证据](pr26-recovery-closure-results.md)及[工作包](../work-packages/WP-IPC-PR26-RECOVERY-CLOSURE.md)。普通DB4未结启动先用只读连接检查，拒绝时不打开写库、不checkpoint非空WAL，不写配置确认。原匹配DB4读者仍可清偿；即使实现Hash看似一致，也不自动放行跨DB升级。

@@ -16,6 +16,7 @@ public static partial class ParcelConfigurationRules
         if (c.SchemaVersion == 1 && c.WeightValidity is not null || c.SchemaVersion >= 2 && (c.WeightValidity is null || !Enum.IsDefined(c.WeightValidity.Value))) e.Add("Weight validity requires explicit configuration schema 2; legacy schema 1 retains UntilDispatch");
         if (c.QueueCapacity is < 1 or > 4096 || c.TimeoutMs is < 100 or > 30000 || c.MaximumOperations is < 1 or > 100000) e.Add("Invalid resource/time/retention budget");
         if (c.Retention is { } retention && (retention.ResidentHistory is < 1 or > 10000 || retention.MinimumFreeBytes is < 1048576 or > 1099511627776)) e.Add("Invalid resident history/storage reserve policy");
+        if (c.BackupSchedule is { } backup && (!Path.IsPathFullyQualified(backup.Directory) || backup.IntervalMinutes is < 15 or > 10080 || backup.MaximumSets is < 1 or > 1000)) e.Add("备份计划须指定绝对目录、15～10080分钟周期和1～1000份容量上限；不会自动删除原件");
         if (c.Reader is null || string.IsNullOrWhiteSpace(c.Reader.DeviceId) || c.Reader.Role != "parcel-reader" || string.IsNullOrWhiteSpace(c.Reader.Driver) || string.IsNullOrWhiteSpace(c.Reader.Revision)) e.Add("A stable parcel reader binding is required");
         if (c.Weight is not { } w || !Enum.IsDefined(w.Source) || !Enum.IsDefined(w.Unit) || w.Precision is < 0 or > 6 || w.MaximumAgeMs is < 100 or > 60000 || w.WaitTimeoutMs is < 100 or > 300000) e.Add("Invalid weight policy");
         else

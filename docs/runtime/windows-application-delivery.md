@@ -1,14 +1,16 @@
-> 现行商业化补差范围见[完整工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)及[基线核对](../reviews/commercial-productization-01-baseline.md)。本页保留已实现的操作；新设计尚待实施。正常安装/首次启动/独立维护以[原生启动部署指南](startup-deployment-02.md)为准，旧媒介按其固定源码和随包说明使用；源码与介质身份见[发布记录](publication-deployment-20261019.md)。历史任务/测试/候选保持原身份，Windows/真实组合未验部分不变。
+
+> 现行商业化补差范围见[完整工作包](../work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md)及[基线核对](../reviews/commercial-productization-01-baseline.md)。本页保留稳定操作；商业化增量按上方当前产品指南读取。正常安装/首次启动/独立维护以[原生启动部署指南](startup-deployment-02.md)为准，旧媒介按其固定源码和随包说明使用；源码与介质身份见[发布记录](publication-deployment-20261019.md)。历史任务/测试/候选保持原身份，Windows/真实组合未验部分不变。
+> COMM-00～10 当前操作见[产品操作指南](commercial-productization-01-operations.md)，实现与冻结验证见[实施结果](commercial-productization-01-results.md)。本页的历史版本/原验收不改写；当前边界仍受四层职责、唯一权威、指定账户和原请求守卫约束。
 
 # 三个Application的Windows候选与维护路径
 
-当前合并源码同时包含PR44部署/修复向导及PR45全部运行入口门禁，共用最终MachineRuntimePolicy：指定未提权账户允许deny-only管理员组身份，已启用管理员权限/服务账户/非指定SID继续拒绝。此次发布的e79a8bf与16ecb57候选分别保留原范围，尚无包含两项增量的新组合媒介；详细身份与下载见[本次不测试发布记录](publication-deployment-20261019.md)。
+历史合并记录（2026-10-19）：当时源码同时包含PR44部署/修复向导及PR45全部运行入口门禁，共用最终MachineRuntimePolicy：指定未提权账户允许deny-only管理员组身份，已启用管理员权限/服务账户/非指定SID继续拒绝。此次发布的e79a8bf与16ecb57候选分别保留原范围，尚无包含两项增量的新组合媒介；详细身份与下载见[本次不测试发布记录](publication-deployment-20261019.md)。
 
-本文描述当前合并源码的操作；旧媒介按固定 SourceCommit 和随包指南读取，不能把旧 ZIP 改标为本包已完成版本。SourceCommit、ApplicationId、业务/ABI/DB/config 版本分别读取 ASSEMBLY.json、app/application-release.json 和 DEPENDENCIES.json；Supply 仍使用自己的 Storage/操作契约。候选工程的 Windows 参考范围和客户实际 OS/SDK/设备资格分别核对；正常原生流程不依赖 PowerShell，显式高级脚本依赖在对应章节列出。Windows 实际验收及真实组合未完成，不得把操作步骤写成已执行结果。
+当前COMM增量、完整冻结介质和实际验证见顶部实施结果；下文继承基础操作与历史交付语境。旧媒介按固定 SourceCommit 和随包指南读取，不能把旧 ZIP 改标为本包已完成版本。SourceCommit、ApplicationId、业务/ABI/DB/config 版本分别读取 ASSEMBLY.json、app/application-release.json 和 DEPENDENCIES.json；Supply 仍使用自己的 Storage/操作契约。候选工程的 Windows 参考范围和客户实际 OS/SDK/设备资格分别核对；正常原生流程不依赖 PowerShell，显式高级脚本依赖在对应章节列出。Windows 实际验收及真实组合未完成，不得把操作步骤写成已执行结果。
 
 ## 媒介与依赖诊断
 
-本次启动/部署增量以[原生安装与启动修复指南](startup-deployment-02.md)及[STARTUP-DEPLOYMENT-02工作包](../work-packages/WP-IPC-STARTUP-DEPLOYMENT-02.md)为准。固定旧候选、旧验收记录和旧SourceCommit不重写。下面脚本为显式维护兼容入口，正常安装和启动不依赖PowerShell。
+启动/部署的原有基础见[原生安装与启动修复指南](startup-deployment-02.md)，商业化增量以本页顶部产品操作指南为准。固定旧候选、旧验收记录和旧SourceCommit不重写。下面脚本为显式维护兼容入口，正常安装和启动不依赖PowerShell。
 
 ## 首次启动与自动配置
 
@@ -16,7 +18,7 @@
 
 开始菜单“运行”读取受保护的同版本部署位置；“启动修复”无需业务Start成功，提供配置/参数表单、待生效保存、摘要导出与完整备份隔离恢复。启动失败页也可进入维护、安装修复或重试。原Stop/Dispose未完成时不能创建第二个实例。详情及失败保旧、种子修复、精确扩展/Production边界见[随包向导指南](startup-deployment-02.md)。Windows原生交互、UAC、ACL、快捷方式与升级中断仍NOT_RUN。
 
-指定账户属于Administrators组但仅有UAC deny-only成员身份时允许普通运行；真正提升的日常进程、SYSTEM/服务账户和非指定SID继续拒绝。业务/API身份守卫仍只读，不在领域API中提权。安装以ProgramFiles存放程序、ProgramData存放机级配置，数据独立；并排程序修复不回滚数据库。只读基本配置不要求可选扩展库存就绪，确实绑定的扩展缺失仍拒绝校验和启动。
+指定账户属于Administrators组但仅有UAC deny-only成员身份时允许普通运行；真正提升的日常进程、SYSTEM/服务账户和非指定SID继续拒绝。业务/API身份守卫仍只读，不在领域API中提权。安装默认ProgramFiles（或经维护批准的受保护根）存放程序、ProgramData存放机级配置，数据独立；并排程序修复不回滚数据库。只读基本配置不要求可选扩展库存就绪，确实绑定的扩展缺失仍拒绝校验和启动。
 
 ### 可选脚本维护
 

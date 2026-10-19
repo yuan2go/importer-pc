@@ -1,0 +1,27 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 2.65 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 2.58 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\source-snapshot\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 2.61 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 2.66 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 2.64 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 2.66 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 13 毫秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 11 毫秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 16 毫秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 73 毫秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 2.69 秒)。
+  已还原 D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (用时 2.68 秒)。
+  Ipc.Platform -> D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\build-intermediates\bin\Ipc.Application.Sportmaster\release\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\build-intermediates\bin\Ipc.Assembly\release\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\projects\importer-pc\.artifacts\comm\releases\sportmaster-bd86fbb-portable\app\
+{"Package": "D:\\projects\\importer-pc\\.artifacts\\comm\\releases\\sportmaster-bd86fbb-portable.zip", "Sha256": "727b8c82677dadc175e03929e1dd160edc2a88ccaca6cd54833a3dc9d2e4f6f7", "SourceCommit": "bd86fbb01b249f07e25fb12e003fed2a130a9c1c", "Application": "sportmaster", "Target": "portable", "BusinessVersion": "1.4.0", "BusinessAssembly": "Ipc.Application.Sportmaster.dll", "CompatibilitySha256": "D80BA0B0C40F34E2E9C080C9D898C77214461BCEA394F43290CD9DDC9F473975"}

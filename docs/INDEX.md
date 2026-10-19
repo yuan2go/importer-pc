@@ -1,5 +1,9 @@
 # 统一资料与实施入口
 
+## 本轮UX修复
+
+用户要求先修复、后验收。本次[UX修复工作包](work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)继承下列main1.2.8/ABI1.8/DB7，先修UXC-01～07的源码/页面/维护闭环，正式Windows/现场验收后置；实际完成与候选身份见[修复结果](runtime/ux-commercial-fix-01-results.md)和[证据](runtime/evidence/ux-commercial-fix-01/README.md)，不用计划版本替换既有发行事实。
+
 ## 最新独立审查与实施交接
 
 [UX商用质量审查01原PDF与发布时复核](reviews/ux-commercial-quality-audit-01/README.md) · [下一阶段Codex提示词](reviews/ux-commercial-quality-audit-01/Codex-next-phase.md)。原报告固定main为`8f886f44bec01779318ec078a569500ab1beab56`；发布时开放PR37已有UX整改，按实际行为继承并补差额，不能将其本地1.3.0候选当作main已交付。此次仅报告与交接发布，原结论不倒写。
@@ -12,9 +16,9 @@
 
 ## 当前有效阅读顺序
 
-1. [AGENTS](../AGENTS.md)、[审查03交付工作包](work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)；既有组合、来源PR及历史验证见[整合报告](runtime/parallel-task-reconciliation-01.md)。旧任务的合并授权只适用于其原PR和固定head。
+1. [AGENTS](../AGENTS.md)、[UX修复工作包](work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)及[实施计划](superpowers/plans/2026-10-19-ux-commercial-fix-01.md)，继承[审查03交付工作包](work-packages/WP-IPC-COMMERCIAL-AUDIT-03-DELIVERY.md)；既有组合、来源PR及历史验证见[整合报告](runtime/parallel-task-reconciliation-01.md)。旧任务的合并授权只适用于其原PR和固定head。
 2. [框架](design/framework.md)、[F决策](design/framework-decisions.md)、[受控装配/扩展](design/controlled-extensions.md)、[19职责](design/application-capability-19.md)、[20可靠性](design/capability-reliability-20.md)、[22拓扑](design/application-architecture-22.md)和[质量/恢复设计](design/architecture-quality-closure-01.md)。仍是三个独立Application，无通用主流程、第二配置账或第二扩展设施。
-3. [首次运行](runtime/getting-started.md)、[Windows交付与故障SOP](runtime/windows-application-delivery.md)、[Application配置](runtime/application-architecture-22.md)、[恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md)、[版本与组合证据](runtime/version-compatibility-01.md)、[扩展开发安装恢复](extensions/developer-guide.md)。当前业务1.2.8、Contracts1.8.0、Parcel DB7；schema1/2保留main兼容位，schema3显式双位。Supply Storage5仅按[Supply运行维护](runtime/operations.md)操作。
+3. [首次运行](runtime/getting-started.md)、[Windows交付与故障SOP](runtime/windows-application-delivery.md)、[Application配置](runtime/application-architecture-22.md)、[恢复/容量/扩展维护](runtime/architecture-quality-closure-01.md)、[版本与组合证据](runtime/version-compatibility-01.md)、[扩展开发安装恢复](extensions/developer-guide.md)。本分支业务1.3.0、Contracts1.9.0、Parcel DB7；schema1/2保留main兼容位，schema3显式双位。Supply Storage5仅按[Supply运行维护](runtime/operations.md)操作。
 4. [RCS设计](design/sportmaster-rcs-task.md)/[运行](runtime/sportmaster-rcs-task.md)、[Sportmaster可选UI](runtime/sportmaster-alternate-ui.md)、[永久恢复P2及原失败](runtime/parcel-recovery-p2.md)。原请求/版本/目标/合同/raw不因新部署改变，Unknown不自动重发。
 5. [D决策](readiness/decision-pack.md)、[技术基线](readiness/technical-baseline.json)、[RV状态](reviews/STATUS.md)/[原问题](reviews/issues.json)、[公开范围](baseline/PUBLICATION.md)、[缺失](baseline/MISSING.md)/[冲突](baseline/CONFLICTS.md)和[manifest](manifest.json)。客户全量资料仍PUBLIC_SUBSET_ONLY，原审查01 PDF未取得。
 

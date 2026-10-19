@@ -29,7 +29,7 @@ public sealed partial class ParcelRuntime
     bool CanAdmit() => positions.Keys.Any(CanAdmit);
     PositionSnapshot[] PositionSnapshots() => positions.Values.Select(p =>
     {
-        var current = repository!.Latest(p.Id);
+        var current = DisplayedOperation(p.Id);
         var reasons = new List<string>();
         if (!PositionReady(p.Id)) reasons.Add("Position dependency/health or original responsibility blocked");
         foreach (var conflict in identityConflicts.Values.Where(x => x.Positions.Contains(p.Id)))

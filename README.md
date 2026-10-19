@@ -4,7 +4,7 @@ C#/.NET 10工位运行基座及独立Application参考工程。Platform负责机
 
 ## 当前运行与组合
 
-业务版本1.2.8、Application.Contracts1.8.0、Parcel DB7（SQL1–6原样保留；SQL7为数字请求持久归属与范围退役）、配置schema1/2/3；Supply另用Storage5和原操作契约。三个主流程保持独立：Sportmaster左右两个独立reader/投递位，扫码取得WCS格口，不下PLC；DirectPlc与WcsToPlc各单reader/顺序位，分别PLC与WCS→PLC。登录/称重/采图/上传按已确认策略选装，DirectPlc完整UI继续延期。
+UX修复分支业务版本1.3.0、Application.Contracts1.9.0、Parcel DB7（SQL1–6原样保留；SQL7为数字请求持久归属与范围退役）、配置schema1/2/3；Supply另用Storage5和原操作契约。三个主流程保持独立：Sportmaster左右两个独立reader/投递位，扫码取得WCS格口，不下PLC；DirectPlc与WcsToPlc各单reader/顺序位，分别PLC与WCS→PLC。登录/称重/采图/上传按已确认策略选装，DirectPlc完整UI继续延期。
 
 Sportmaster支持 `--ui classic`（默认）和 `--ui supply-station`，导航与辅助窗共享Application、连接和原作业。RCS组件 `sportmaster.rcs-task` 1.0.8只实现 `sorter.task.dest_request`；正常、NEED_UNPACK、拒绝和Unknown分别处理，不自动重发、不提供未确认的拆包提交。图片展示与长期图库不在范围。
 

@@ -120,6 +120,8 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 positionQueues.Add(binding.Id, Channel.CreateBounded<object>(new BoundedChannelOptions(Effective.QueueCapacity)
                     { SingleReader = true, FullMode = BoundedChannelFullMode.Wait, AllowSynchronousContinuations = false }));
             }
+            foreach (var input in repository.LatestInputs(positions.Values.ToDictionary(p => p.Id, p => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == p.ReaderDeviceId))))
+                latestInputs.Add(input.PositionId, input);
             foreach (var reader in ReaderPorts()) readers.Add(reader.DeviceId, new(reader));
             worker = Task.WhenAll(positions.Keys.Select(position => Task.Run(() => ProcessIngressAsync(position), CancellationToken.None)));
             foreach (var port in CapabilityPorts()) await port.StartAsync(token).ConfigureAwait(false);
@@ -219,28 +221,36 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
     }
     async Task ObserveAsync(string position, Observation o, OperatorIdentity? admittedOperator)
     {
-        if (!readers.TryGetValue(o.DeviceId, out var reader) || !reader.AcceptSequence(o) ||
-            o.Kind != "Read" || o.Codes is not { Length: 1 } || string.IsNullOrWhiteSpace(o.SourceEventId) || o.SourceEventId.Length > 256 || o.SourceEventId.Any(char.IsControl) || o.Codes[0] is not { Length: > 0 and <= 256 } || o.Codes[0].Any(char.IsControl) ||
-            !ExtensionSchema.IsId(o.AdmissionId) || o.ObservedAt > DateTimeOffset.UtcNow || DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) ||
-            reader?.Health?.IsValid(DateTimeOffset.UtcNow) != true)
-        { repository!.Commit(null, "ObservationRejected", "Invalid identity/epoch/sequence/code/admission/freshness/reader confirmation"); return; }
+        if (!readers.TryGetValue(o.DeviceId, out var reader) ||
+            string.IsNullOrWhiteSpace(o.SourceEventId) || o.SourceEventId.Length > 256 || o.SourceEventId.Any(char.IsControl) ||
+            o.ObservedAt > DateTimeOffset.UtcNow || DateTimeOffset.UtcNow - o.ObservedAt > TimeSpan.FromMilliseconds(Effective.TimeoutMs) ||
+            reader?.Health?.IsValid(DateTimeOffset.UtcNow) != true || !reader.AcceptSequence(o))
+        { repository!.Commit(null, "ObservationRejected", "Untrusted source/epoch/sequence/event/freshness/reader confirmation; " + Wire.Encode(o)); return; }
+        var rejection = o.Kind != "Read" ? "ObservationKind:" + o.Kind : o.Codes.Length == 0 ? "NoCode" : o.Codes.Length > 1 ? "MultipleCodes" :
+            o.Codes[0] is not { Length: > 0 and <= 256 } || o.Codes[0].Any(char.IsControl) ? "InvalidCode" :
+            !ExtensionSchema.IsId(o.AdmissionId) ? "InvalidAdmissionId" : null;
+        if (rejection is not null)
+        { RecordInput(Input(position, o, ParcelInputOutcome.Rejected, rejection + "; no operation or external intent created"), "ObservationRejected"); return; }
         var observationId = Wire.Hash(o.DeviceId + ":" + o.Epoch + ":" + o.SourceEventId);
         var priors = repository!.FindIdentities(o.AdmissionId, observationId);
         if (priors.Length > 0)
         {
-            foreach (var prior in priors.Where(p => p.AdmissionId != o.AdmissionId || p.ParcelCode != o.Codes[0] || (p.PositionId ?? "main") != position))
+            var contradictions = priors.Where(p => p.AdmissionId != o.AdmissionId || p.ParcelCode != o.Codes[0] || (p.PositionId ?? "main") != position).ToArray();
+            foreach (var prior in contradictions)
             { RecordIdentityConflict(prior, position, "Observation/admission identity reused with changed content/position; source=" + o.SourceEventId + "; code=" + o.Codes[0]); }
+            RecordInput(Input(position, o, contradictions.Length == 0 ? ParcelInputOutcome.Duplicate : ParcelInputOutcome.Blocked,
+                contradictions.Length == 0 ? "DuplicateIdentity; original retained; no new operation or delivery" : "IdentityConflict; inspect original responsibility; no new delivery", priors[0].Id), "ObservationIdentityObserved");
             return;
         }
         // Current-source evidence about an existing entity is processed even while
         // admission is closed. Only genuinely new entities pass the admission gate.
         if (!CanAdmit(position) || Effective.Login is not null && admittedOperator is null)
-        { repository.Commit(null, "ObservationBlocked", "Position=" + position + "; paused/faulted/unresolved responsibility; source event=" + o.SourceEventId); return; }
+        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "Position=" + position + "; paused/faulted/unresolved responsibility or operator not authorized"), "ObservationBlocked"); return; }
         ArchiveSettled();
         if (!CapacityAvailable)
-        { repository!.Commit(null, "RetentionBudget", "Explicit archive/retention is required", paused: true); return; }
+        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "Explicit archive/retention is required"), "RetentionBudget", paused: true); return; }
         if (!AdmissionCapabilitiesReady(position) || !ImageCapacityAvailable())
-        { repository!.Commit(null, "AdmissionCapabilityBlocked", "Required capability unhealthy or temporary image quota exhausted"); return; }
+        { RecordInput(Input(position, o, ParcelInputOutcome.Blocked, "Required capability unhealthy or temporary image quota exhausted"), "AdmissionCapabilityBlocked"); return; }
         var weight = WeightRules.Configured(Effective.Weight);
         var op = new ParcelOperation(Wire.Id(), o.AdmissionId, o.Codes[0], observationId, o.ObservedAt,
             Wire.Hash(Wire.Encode(Effective)), Wire.Decode<ParcelConfiguration>(Wire.Encode(Effective)), new(ports!.ImplementationHashes),
@@ -251,7 +261,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         admissionPositions.TryAdd(op.AdmissionId, position);
         if (op.FrozenConfiguration.Images is not null && ParcelBindings.Camera(op.FrozenConfiguration, op.PositionId)?.Target == o.DeviceId)
             ((IReaderImageCapture)reader.Source).RetainAcquisition(op.Acquisition!, "operation:" + op.Id);
-        Save(op, "ParcelObserved", "One admitted parcel; code is not entity identity");
+        Save(op, "ParcelObserved", "One admitted parcel; code is not entity identity", input: Input(position, o, ParcelInputOutcome.Admitted, "Admitted; external result pending", op.Id));
         if (op.FrozenConfiguration.Images is not null)
         {
             op = await CaptureOriginalAsync(op).ConfigureAwait(false);
@@ -297,8 +307,12 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         operations[op.Id] = op;
         await AdvanceAsync(op).ConfigureAwait(false);
     }
-    void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null)
-    { repository!.Commit(op, eventName, detail, occurrence: occurrence); operations[op.Id] = op; journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision }); }
+    void Save(ParcelOperation op, string eventName, string detail, string? occurrence = null, ParcelInputSnapshot? input = null)
+    {
+        repository!.Commit(op, eventName, detail, occurrence: occurrence, input: input); operations[op.Id] = op;
+        if (input is not null) latestInputs[input.PositionId] = input;
+        journal?.Write(new { At = DateTimeOffset.UtcNow, Application = Id, Event = eventName, Operation = op.Id, State = op.State, Revision = repository.Revision });
+    }
     static bool NeedsReconciliation(ParcelOperation op) => op.State is ParcelState.WcsUnknown or ParcelState.PlcUnknown or ParcelState.Blocked or ParcelState.WeightTimedOut ||
         op.Capture?.State is StageState.Unknown or StageState.Conflict ||
         op.FrozenConfiguration.Images?.Strategy != UploadStrategy.Attached && op.Upload?.State is StageState.Unknown or StageState.Conflict;

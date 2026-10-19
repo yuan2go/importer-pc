@@ -8,6 +8,9 @@
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelSnapshotValidity.cs" Link="Client/ParcelSnapshotValidity.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelTargets.cs" Link="Client/ParcelTargets.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs" Link="Client/ParcelViewModel.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParcelPresentation.cs" Link="Client/ParcelPresentation.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/DesktopServiceCalls.cs" Link="Client/DesktopServiceCalls.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs" Link="Client/StructuredConfiguration.cs"/>
  <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/CapabilityEditing.cs" Link="Client/CapabilityEditing.cs"/>
  <Compile Include="../../src/Ipc.Desktop/DesktopLaunchOptions.cs" Link="Client/DesktopLaunchOptions.cs"/>
  <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs" Link="Client/SupplyStationViewModel.cs"/>

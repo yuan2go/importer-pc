@@ -1,0 +1,3 @@
+{"Status": "CandidateOnly", "File": "<artifacts>/selected-journey-c384c3b-attempt3/rcs-runtime/config/business.json", "ExternalCalls": 0, "Next": "Validate with selected host deployment-check; activate through controlled configuration/restart only"}
+PASS selected Release: two signed reference reader instances, signed WCS, complete CAS/activation, startup failure keeps old Effective, safe retirement and original history
+PASS actual selected Release CLI: signed RCS, typed original wire/raw, dual positions, restart/no resend and guarded unpack disposition

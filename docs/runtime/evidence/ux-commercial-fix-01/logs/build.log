@@ -1,0 +1,37 @@
+  正在确定要还原的项目…
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Platform/Ipc.Platform.csproj (用时 227 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Platform.Storage/Ipc.Platform.Storage.csproj (用时 227 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Application.ParcelFlow/Ipc.Application.ParcelFlow.csproj (用时 227 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Application.Contracts/Ipc.Application.Contracts.csproj (用时 226 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj (用时 227 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Components/Ipc.Components.csproj (用时 227 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj (用时 226 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/tests/Ipc.Application.Verification/Ipc.Application.Verification.csproj (用时 226 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Integrations.SportmasterRcs/Ipc.Integrations.SportmasterRcs.csproj (用时 3 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Drivers/Ipc.Drivers.csproj (用时 4 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Integrations/Ipc.Integrations.csproj (用时 7 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Application.Supply.Contracts/Ipc.Application.Supply.Contracts.csproj (用时 5 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Application.Supply/Ipc.Application.Supply.csproj (用时 7 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj (用时 6 毫秒)。
+  已还原 <artifacts>/frozen-verification/source/src/Ipc.Reference.Protocol/Ipc.Reference.Protocol.csproj (用时 13 毫秒)。
+  Ipc.Platform -> <artifacts>/frozen-verification/build/bin/Ipc.Platform/release/Ipc.Platform.dll
+  Ipc.Application.Contracts -> <artifacts>/frozen-verification/build/bin/Ipc.Application.Contracts/release/Ipc.Application.Contracts.dll
+  Ipc.Platform.Storage -> <artifacts>/frozen-verification/build/bin/Ipc.Platform.Storage/release/Ipc.Platform.Storage.dll
+  Ipc.Application.ParcelFlow -> <artifacts>/frozen-verification/build/bin/Ipc.Application.ParcelFlow/release/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> <artifacts>/frozen-verification/build/bin/Ipc.Application.Sportmaster/release/Ipc.Application.Sportmaster.dll
+  Ipc.Application.DirectPlc -> <artifacts>/frozen-verification/build/bin/Ipc.Application.DirectPlc/release/Ipc.Application.DirectPlc.dll
+  Ipc.Application.WcsToPlc -> <artifacts>/frozen-verification/build/bin/Ipc.Application.WcsToPlc/release/Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> <artifacts>/frozen-verification/build/bin/Ipc.Reference.Protocol/release/Ipc.Reference.Protocol.dll
+  Ipc.Components -> <artifacts>/frozen-verification/build/bin/Ipc.Components/release/Ipc.Components.dll
+  Ipc.Drivers -> <artifacts>/frozen-verification/build/bin/Ipc.Drivers/release/Ipc.Drivers.dll
+  Ipc.Application.Supply.Contracts -> <artifacts>/frozen-verification/build/bin/Ipc.Application.Supply.Contracts/release/Ipc.Supply.Contracts.dll
+  Ipc.Integrations -> <artifacts>/frozen-verification/build/bin/Ipc.Integrations/release/Ipc.Integrations.dll
+  Ipc.Application.Supply -> <artifacts>/frozen-verification/build/bin/Ipc.Application.Supply/release/Ipc.Supply.dll
+  Ipc.Integrations.SportmasterRcs -> <artifacts>/frozen-verification/build/bin/Ipc.Integrations.SportmasterRcs/release/Ipc.Integrations.SportmasterRcs.dll
+  Ipc.Application.Verification -> <artifacts>/frozen-verification/build/bin/Ipc.Application.Verification/release/Ipc.Application.Verification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:05.20

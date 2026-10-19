@@ -41,7 +41,15 @@ static partial class SportmasterRcs
             }
             async Task<BusinessReceipt> Command(ParcelRuntime app, string kind, string? owner = null, string? value = null)
             {
-                for (int i = 0; i < 10; i++) { var s = await app.SnapshotAsync(); var r = await app.CommandAsync(new(Wire.Id(), s.Revision, kind, owner, value)); if (r.Status != "Conflict") return r; }
+                for (int i = 0; i < 100; i++)
+                {
+                    var s = await app.SnapshotAsync();
+                    if (kind == "ArchiveHistory" && s.Availability?.Configure != true) { await Task.Delay(20); continue; }
+                    var r = await app.CommandAsync(new(Wire.Id(), s.Revision, kind, owner, value));
+                    if (r.Status == "Conflict" || kind == "ArchiveHistory" && r.Status == "Rejected" && r.Reason == "Unsupported command or an application guard is closed")
+                    { await Task.Delay(20); continue; } // Only definitive pre-mutation rejection; never an external delivery retry.
+                    return r;
+                }
                 throw new Exception("RCS fixture command CAS did not settle");
             }
             var hold = new HoldFactory(delayedPosition); string firstRequest, secondRequest; long lastId; var startPosts = peer.Requests.Count;
@@ -66,7 +74,7 @@ static partial class SportmasterRcs
                     ExtensionStore.AtomicWrite(Path.Combine(root, "rcs-t1-" + delayedPosition + ".json"), result);
                     await Command(app, "Pause"); await app.AuthorizeMaintenanceAsync("maintenance", "SIMULATION_ONLY"); await Wait(app, s => s.Availability!.Configure);
                     await Wait(app, x => x.Operations.All(o => o.ImageReleased));
-                    await Command(app, "ArchiveHistory", value: "Synthetic T1 owner archival");
+                    Check((await Command(app, "ArchiveHistory", value: "Synthetic T1 owner archival")).Status == "Persisted", "A03 explicit archival command receipt confirmed before restart assertions");
                     Check((await app.BackupAsync(backup)).Status == "BackupCreated", "A03 actual backup retains owner ledger, ranges and archived originals");
                 }
                 finally { hold.Release.TrySetResult(); }

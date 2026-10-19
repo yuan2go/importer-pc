@@ -84,11 +84,11 @@ static class CommercialQuality
         pending.SetResult(await app.SnapshotAsync()); await read;
         Check(vm.Fresh && vm.Snapshot!.Paused && vm.Status==vm.Snapshot.State && vm.CanResume,"new successful snapshot restores permitted actions");
         var old=new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
-        probe.Read=()=>old.Task; var oldRead=vm.RefreshAsync(); probe.Read=null; await vm.RefreshAsync();
+        probe.Read=()=>old.Task; var oldRead=vm.RefreshAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3)); probe.Read=null; await vm.RefreshAsync();
         old.SetException(new IOException("late old failure")); try {await oldRead;} catch(IOException){}
         Check(vm.CanResume,"older read failure cannot invalidate newer applied success");
         var oldSuccess=new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
-        probe.Read=()=>oldSuccess.Task; var oldSuccessRead=vm.RefreshAsync();
+        probe.Read=()=>oldSuccess.Task; var oldSuccessRead=vm.RefreshAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
         probe.Read=()=>Task.FromException<ParcelSnapshot>(new IOException("new failure")); await vm.RunAsync(vm.RefreshAsync);
         oldSuccess.SetResult(await app.SnapshotAsync()); await oldSuccessRead;
         Check(!vm.CanResume,"older success cannot revive snapshot after newer failure");

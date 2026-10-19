@@ -47,7 +47,7 @@ public partial class SupplyStationWindow : Window
             if (closing || closed) return;
             UpdateViewport();
             timer.Start();
-            if (initialPage == "maintenance") await ViewModel.RunAsync(ViewModel.LoadCapabilitiesAsync);
+            if (initialPage == "maintenance") await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync);
             if (initialPage == "history") await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync());
         };
         Closing += ClosingWindow;
@@ -65,17 +65,22 @@ public partial class SupplyStationWindow : Window
     }
     void Workstation_Click(object sender, RoutedEventArgs e) => SetPage("workstation");
     async void History_Click(object sender, RoutedEventArgs e) { SetPage("history"); await ViewModel.RunAsync(() => ViewModel.OpenHistoryAsync()); }
-    async void Maintenance_Click(object sender, RoutedEventArgs e) { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.LoadCapabilitiesAsync); }
+    async void Maintenance_Click(object sender, RoutedEventArgs e) { SetPage("maintenance"); await ViewModel.RunAsync(ViewModel.EnsureMaintenanceLoadedAsync); }
     void Window_Click(object sender, RoutedEventArgs e)
     {
         if (!root.closing) new SupplyStationWindow(ViewModel.Application, null, compact ? "compact" : "standard", owner: root).Show();
     }
     void Layout_Click(object sender, RoutedEventArgs e) { compact = !compact; ApplyLayout(); }
-    void ApplyLayout() { FontSize = compact ? 14 : 16; work.Margin = compact ? new Thickness(0) : new Thickness(4); }
+    void ApplyLayout()
+    {
+        ViewModel.IsCompact = compact || ClientArea.ActualWidth < 1280 || ClientArea.ActualHeight < 680;
+        FontSize = ViewModel.IsCompact ? 14 : 16; work.Margin = ViewModel.IsCompact ? new Thickness(0) : new Thickness(4);
+    }
     void ViewportChanged(object sender, SizeChangedEventArgs e) => UpdateViewport();
     void UpdateViewport()
     {
         if (closing || closed || ClientArea.ActualWidth <= 0 || ClientArea.ActualHeight <= 0) return;
+        ApplyLayout();
         if (ViewModel.SetViewport(ClientArea.ActualWidth, ClientArea.ActualHeight)) QueueViewportPause();
     }
     void QueueViewportPause()
@@ -110,7 +115,7 @@ public partial class SupplyStationWindow : Window
         foreach (var window in affected) { window.closing = true; window.timer.Stop(); window.IsEnabled = false; }
         try
         {
-            await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.pendingViewportPause })).WaitAsync(TimeSpan.FromSeconds(5));
+            await Task.WhenAll(affected.SelectMany(x => new[] { x.pendingRefresh, x.pendingViewportPause, x.ViewModel.DrainAsync() })).WaitAsync(TimeSpan.FromSeconds(5));
             if (stopOwner is not null) await stopOwner();
             closeReady = true;
             foreach (var child in affected.Where(x => x != this && !x.closed && windows.Contains(x))) { child.closeReady = true; child.Close(); }

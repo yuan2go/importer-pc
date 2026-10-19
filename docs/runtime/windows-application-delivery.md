@@ -1,6 +1,8 @@
+> 本分支按[UX修复工作包](../work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)更新现行操作；修改前说明的固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)。开发验证、最终媒介身份和Windows/现场验收分别记录，本文不宣告后者通过。
+
 # 三个Application的Windows候选与维护路径
 
-本页与实际媒介同一固定源码生成；SourceCommit、ApplicationId、业务1.2.8、ABI1.8.0、DB7、配置schema1/2/3分别读取ASSEMBLY.json、app/application-release.json和DEPENDENCIES.json。Supply仍用自己的station.ps1/Storage5，不能套用这里命令。候选工程基线沿现有Windows11 build26100+ x64/PowerShell7；客户SKU/build、设备/SDK及合同未确认，实际Windows全部NOT_RUN，真实组合和商用BLOCKED。不得把本页步骤写成已经执行的Windows验收。
+本页与实际媒介同一固定源码生成；SourceCommit、ApplicationId、业务1.3.0、ABI1.9.0、DB7、配置schema1/2/3分别读取ASSEMBLY.json、app/application-release.json和DEPENDENCIES.json。Supply仍用自己的station.ps1/Storage5，不能套用这里命令。候选工程基线沿现有Windows11 build26100+ x64/PowerShell7；客户SKU/build、设备/SDK及合同未确认，实际Windows全部NOT_RUN，真实组合和商用BLOCKED。不得把本页步骤写成已经执行的Windows验收。
 
 ## 媒介与依赖诊断
 
@@ -39,11 +41,11 @@ provision-extensions.ps1沿机器政策读取指定运行SID；安装/恢复原�
 & "$release\application.ps1" -Action Shortcut -DataRoot $data -File "$env:USERPROFILE\Desktop\Sportmaster-candidate.lnk" -Ui supply-station
 ```
 
-快捷方式保存绝对程序/配置/数据路径及工作目录；从其他cwd启动仍指向相同目录。启动前静态配置预检、启动中的持久账/原件/精确实现检查及真正设备Start是独立门禁。DirectPlc完整UI延期保留，共用classic仅作为现有参考HMI；指定商用场景的可操作性须另验。Sportmaster不新增展图/长期图库。
+快捷方式保存绝对程序/配置/数据路径及工作目录；从其他cwd启动仍指向相同目录。启动先展示真实阶段及诊断，配置预检、持久账/原件/精确实现检查及真正设备Start是独立门禁；不显示虚构百分比，启动失败不进入可作业状态。DirectPlc完整UI延期保留，共用classic仅作为现有参考HMI；指定商用场景的可操作性须另验。Sportmaster不新增展图/长期图库。
 
 ## 作业、故障与诊断
 
-初次运行先读快照：当前位/reader/Admission/Operation、重量来源、主链与附加责任、配置确认、容量。新实体依赖当前来源与全部业务守卫；相同码不证明同实体。PLC接受不等于物理完成；软件暂停不是安全急停。快照异常/挂起/乱序/实例变化时旧事实失效，新快照不会Resume或重发。故障和现场实物处置由授权人员执行。
+初次运行先读快照：当前位/reader/最新观察及分类、Admission/Operation、重量来源、主链与附加责任、配置确认、容量。无码等失败观察不沿用旧终结格口，原未决责任仍须处理；RCS仅本地生命周期证据时明确上游未确认。新实体依赖当前来源与全部业务守卫；相同码不证明同实体。PLC接受不等于物理完成；软件暂停不是安全急停。快照异常/挂起/乱序/实例变化时旧事实失效，新快照不会Resume或重发。故障和现场实物处置由授权人员执行。
 
 |故障|实际操作与清责依据|
 |---|---|

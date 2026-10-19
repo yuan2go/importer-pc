@@ -1,4 +1,6 @@
-> RCS增量01：[Sportmaster RCS分拣任务服务](../runtime/sportmaster-rcs-task.md)。已继承main PR26/28；公共契约1.8.0、Parcel数据库7（SQL1–6原样继承），旧请求/接收责任仍按获授权核对恢复链保留。初轮4c9d51c候选与最终整合候选分别记录；Windows实际NOT_RUN，真实RCS/设备/现场BLOCKED。
+> 本分支UX修复改变公共契约字节，参考能力2.2.0、reader1.3.0、RCS1.1.0须用冻结宿主重新构建/签名；实际身份与运行资格另记。修改前说明固定Git原字节见[索引](../archive/pre-ux-commercial-fix-01/README.md)，旧包和原请求不重签或覆盖。
+
+> RCS增量01：[Sportmaster RCS分拣任务服务](../runtime/sportmaster-rcs-task.md)。已继承main PR26/28；本分支公共契约1.9.0、Parcel数据库7（SQL1–6原样继承），旧请求/接收责任仍按获授权核对恢复链保留。初轮4c9d51c候选与最终整合候选分别记录；Windows实际NOT_RUN，真实RCS/设备/现场BLOCKED。
 
 > 当前业务版本/允许提供者见[版本管理指南](../runtime/version-compatibility-01.md)；扩展版本仍由显式--version指定，不覆盖旧包。
 
@@ -6,7 +8,7 @@
 
 新Application使用Ipc.Assembly、ParcelConfiguration和StageConfiguration；Supply的StationConfig/SaveConfig/ActivateConfig操作在[Supply扩展指南](supply-guide.md)。包格式、签名、精确公共DLL、不可变ID/version与Store机制共用。Driver拥有读码/称重/采图/PLC端口，Component拥有认证/WCS/上传端口；Application决定主流程，UI只调用契约。
 
-当前Application.Contracts ABI1.8.0，能力示例须以显式新版本按精确目标Release构建；历史1.7.0/1.7.2包不可复用身份，包含PR23的IReaderImageCapture.Retain/Release。观察、作业、活动采集各自保有原Acquisition；拒收撤销观察、消费finally释放观察、安全持久终态释放作业，Unknown/Conflict/原回执责任仍保有。不得取最新帧替代原件。包版本与ABI独立，PR24的Debug1.6.6/Release1.6.7属于其精确宿主；新公共DLL字节须新不可变包，不覆盖历史身份。
+当前Application.Contracts ABI1.9.0，能力示例须以显式新版本按精确目标Release构建；历史1.7.0/1.7.2包不可复用身份，包含PR23的IReaderImageCapture.Retain/Release。观察、作业、活动采集各自保有原Acquisition；拒收撤销观察、消费finally释放观察、安全持久终态释放作业，Unknown/Conflict/原回执责任仍保有。不得取最新帧替代原件。包版本与ABI独立，PR24的Debug1.6.6/Release1.6.7属于其精确宿主；新公共DLL字节须新不可变包，不覆盖历史身份。
 
 ## 一个独立工程的声明
 

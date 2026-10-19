@@ -1,0 +1,13 @@
+{
+  "BaselineSource": "8f886f44bec01779318ec078a569500ab1beab56",
+  "BaselineErrors": 268,
+  "FrozenErrors": 267,
+  "NewErrors": [],
+  "Resolved": [
+    {
+      "code": "manifest_checksum",
+      "path": "docs/manifest.sha256"
+    }
+  ],
+  "Meaning": "FAIL remains. Existing UI/source material issues are not suppressed or relabelled PASS."
+}

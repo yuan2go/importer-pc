@@ -32,7 +32,7 @@ static partial class Audit03
             Check(!vm.Fresh && vm.Snapshot!.Revision == b.Revision, "revision regression invalidates dependent facts without applying old state");
             probe.Read = () => Task.FromResult(b); await vm.RefreshAsync();
             var pending = new TaskCompletionSource<ParcelSnapshot>(TaskCreationOptions.RunContinuationsAsynchronously);
-            probe.Read = () => pending.Task; var older = vm.RefreshAsync();
+            probe.Read = () => pending.Task; var older = vm.RefreshAsync(); await probe.ReadEntered.WaitAsync(TimeSpan.FromSeconds(3));
             probe.Read = () => Task.FromResult(b); await vm.RefreshAsync(); pending.SetResult(a); await older;
             Check(vm.Fresh && vm.Snapshot!.RuntimeId == b.RuntimeId, "late older read cannot replace the latest valid runtime snapshot");
         }

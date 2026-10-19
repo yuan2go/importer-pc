@@ -1,0 +1,67 @@
+{
+  "SourceCommit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+  "BusinessVersion": "1.3.0",
+  "ApplicationContracts": "1.9.0",
+  "ParcelDatabase": 7,
+  "Files": [
+    {
+      "File": "barcode.ipcx",
+      "Bytes": 7591,
+      "Sha256": "0f07a02ceb87a6cd471b5bfa0cbbab5c02652b2647ca6dbbc7070b683286a4aa"
+    },
+    {
+      "File": "barcode.ipcx.identity.json",
+      "Bytes": 1194,
+      "Sha256": "af6f65ce9f450e980abcb87a4e6b788f953d2ebd83911b3c0dace16e67361b1d"
+    },
+    {
+      "File": "capabilities.ipcx",
+      "Bytes": 20604,
+      "Sha256": "b24825cc81f10e8c0ef3096d18154845e64f9cd0b033a98d8878ef85859e1380"
+    },
+    {
+      "File": "capabilities.ipcx.identity.json",
+      "Bytes": 1311,
+      "Sha256": "bb15b2a74e5e1bc49f4eb75a7e44c3b0f901fef47fd89cef392aa2b2a9e3a6eb"
+    },
+    {
+      "File": "direct-plc-core.zip",
+      "Bytes": 18619170,
+      "Sha256": "936317867349cae2267a49410a3d47130ff41e7b8c6b5f68d571abfb3bb9fbe5"
+    },
+    {
+      "File": "rcs.ipcx",
+      "Bytes": 17722,
+      "Sha256": "795f2a8ce9afe89a9d8ed9876fb7f477732dc75b36a70025396339313476e356"
+    },
+    {
+      "File": "rcs.ipcx.identity.json",
+      "Bytes": 1292,
+      "Sha256": "8c35632f2df9615f4e4a447a188e05ff79ba5b51fb57c3b9e9531a5fb3658d90"
+    },
+    {
+      "File": "sportmaster-core.zip",
+      "Bytes": 18656982,
+      "Sha256": "05cedc6c65c682e460110af9d487770d7baa7fd30ece572889e145fe14f88204"
+    },
+    {
+      "File": "sportmaster-selected-portable.zip",
+      "Bytes": 18704988,
+      "Sha256": "28f12e9cb60c732831f5484818646acb96ee01bd51626a0efce41d26ba0cd058"
+    },
+    {
+      "File": "sportmaster-selected-win-x64.zip",
+      "Bytes": 104792931,
+      "Sha256": "26d5f430bd10ae89f4c2c68559b69095a234a4e9e40ea7c8591a28161a4ed1d3"
+    },
+    {
+      "File": "wcs-to-plc-core.zip",
+      "Bytes": 18644686,
+      "Sha256": "64937e19a9289556b53f80b2fcfafb3552ac0c60f0153bdecf80668c3662c858"
+    }
+  ],
+  "Storage": "Local .artifacts/ux-commercial-fix-01/release-c384c3b; binaries not committed or remotely published",
+  "WindowsNative": "NOT_RUN",
+  "Field": "BLOCKED_PER_CAPABILITY",
+  "PrivateKeysIncluded": false
+}

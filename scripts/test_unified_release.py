@@ -132,7 +132,7 @@ class Pr48ReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             media = self.make(Path(temporary))
             for source,app in [('b'*40,'supply'),('a'*40,'inspection')]:
-                with self.assertRaisesRegex(ValueError,'Wrong source'): self.check(media,source,app,'portable')
+                with self.assertRaisesRegex(ValueError,'Wrong package source/application'): self.check(media,source,app,'portable')
 
 
 if __name__ == '__main__':

@@ -95,6 +95,8 @@ def verify_package(directory, application, target, source):
             release = read(base / 'application-release.json')
             if release['SourceCommit'] != source or release['ApplicationId'] != application:
                 raise ValueError('Wrong executable release identity')
+            if any(release.get(k) != identity.get(k) for k in ('BusinessVersion', 'BusinessAssembly', 'CompatibilitySha256')):
+                raise ValueError('Host identity differs')
             if {p.relative_to(base).as_posix() for p in base.rglob('*') if p.is_file()} != set(release['Files']) | {'application-release.json'}:
                 raise ValueError('Incomplete executable release')
             for n, digest in release['Files'].items():
@@ -110,6 +112,8 @@ def verify_package(directory, application, target, source):
             for name in ('Setup.cmd', 'Maintenance.cmd', 'application.cmd', 'app/Ipc.Assembly.exe', 'desktop/Ipc.Desktop.exe'):
                 if name not in inventory:
                     raise ValueError('Missing native entry: ' + name)
+            if '--setup' not in (directory / 'Setup.cmd').read_text(encoding='utf-8') or '--maintenance' not in (directory / 'Maintenance.cmd').read_text(encoding='utf-8'):
+                raise ValueError('Wrong native entry dispatch')
             peers = []
             for dll in (directory / 'app').glob('Ipc.*.dll'):
                 peer = directory / 'desktop' / dll.name
@@ -128,6 +132,8 @@ def verify_package(directory, application, target, source):
         if versions != [expected]:
             raise ValueError('Legacy compiled business and composition version differ')
         result['BusinessVersion'] = versions[0]
+    if any(not bundle for bundle in identity.get('offline_bundles', [])):
+        raise ValueError('Empty extension identity')
     return result
 
 

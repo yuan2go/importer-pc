@@ -41557,9 +41557,9 @@
       "purpose": "Authorized unified main release tooling and interrupted execution evidence",
       "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
       "storage_scope": "public_repository",
-      "sha256": "57438ef7bdab64059aeea63f384291e23e055ea5c02247cc28a0002fc49f160e",
-      "size_bytes": 11831,
-      "git_blob": "67979d3c324ce8de25e7f45d1b0f982d12352dae",
+      "sha256": "62e84463edb61fd462309ee5449d92df390ff07677a7ee87768f1c708eca4421",
+      "size_bytes": 12380,
+      "git_blob": "dde8f3a84935d7bb5af1c5d852329d0bf81761cc",
       "pre_publication_merge_git_blob": "91bfa81172620c630abda966d1031b1c730c4aaf"
     },
     {
@@ -41580,9 +41580,9 @@
       "purpose": "Authorized unified main release tooling and interrupted execution evidence",
       "source": "WP-IPC-UNIFIED-RELEASE-01 and explicit user stop/finalize instruction",
       "storage_scope": "public_repository",
-      "sha256": "9b7024069d1ec4ad81ea5c86921b77518feea74a80d4e9e27cae2fae00b431d9",
-      "size_bytes": 6505,
-      "git_blob": "cb175111b736048768b8fc96deb45b749561a39d",
+      "sha256": "0aefc3163b55abf52a1bce7d3c9e8f5b57371605f096ab97d9eefba3dbec9e67",
+      "size_bytes": 6525,
+      "git_blob": "e7cd2b20ddb8bf7e1ac04fc98b292a1096be0bf1",
       "pre_publication_merge_git_blob": "6152b97df7660b9ca82fec69ca5f2407d81a94a1"
     },
     {
@@ -41603,9 +41603,9 @@
       "status": "uploaded_source_or_preserved_evidence_unverified",
       "purpose": "Authorized source/evidence integration; no tests or build in this task",
       "source": "User-authorized merge of uploaded snapshots and all open PRs",
-      "sha256": "e0370bc80e0e7f1840b2b2988f503b77459218e4c3c418bec4a2094bf2bef427",
-      "size_bytes": 2063,
-      "git_blob": "8bc4e8a20479881d8852cdba104b7317832c163d"
+      "sha256": "88290910e618fc82856d373cc9d08935cd6a0644f85773625f653a86395d969f",
+      "size_bytes": 2298,
+      "git_blob": "adc4e431862cde631d0bac5f13c75c40e02209a1"
     },
     {
       "path": "docs/runtime/publication-snapshot-20261020-commercial.md",

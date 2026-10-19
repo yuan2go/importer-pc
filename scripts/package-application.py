@@ -8,6 +8,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import tarfile
+import tempfile
 import zipfile
 from composition import resolve
 from application_compatibility import read_business
@@ -38,9 +39,11 @@ module = APPLICATIONS[a.application]
 lock = 'packages.' + a.application + ('.win-x64' if a.target == 'win-x64' else '') + '.lock.json'
 properties = ['-p:Application=' + module, '-p:NuGetLockFilePath=' + lock]
 # Isolated artifacts avoid reusing another selection's intermediate WPF/assembly state.
-artifacts = output / 'build-intermediates'
+workspace = Path(tempfile.mkdtemp(prefix='ipc-publication-'))
+print('Retained build workspace on failure: ' + str(workspace), flush=True)
+artifacts = workspace / 'build-intermediates'
 # The SDK excludes its entire artifacts tree from default source globs.
-build_source = output / 'source-snapshot'
+build_source = workspace / 'source-snapshot'
 build_source.mkdir(parents=True)
 export = subprocess.Popen(['git', 'archive', '--format=tar', source], cwd=root, stdout=subprocess.PIPE)
 with tarfile.open(fileobj=export.stdout, mode='r|') as snapshot:
@@ -133,9 +136,9 @@ publish_dependencies(build_source, output, source)
 if a.target == 'win-x64':
     for script in ['protect-release.ps1', 'provision-runtime.ps1', 'provision-extensions.ps1', 'application.ps1', 'application.cmd', 'Setup.cmd', 'Maintenance.cmd']:
         shutil.copyfile(build_source / 'scripts' / script, output / script)
+if artifacts.parent != workspace or build_source.parent != workspace or artifacts.name != 'build-intermediates' or build_source.name != 'source-snapshot':
+    raise ValueError('Refuse cleanup outside generated publication workspace')
 shutil.rmtree(artifacts)
-if build_source.parent != output or build_source.name != 'source-snapshot':
-    raise ValueError('Refuse cleanup outside the generated frozen snapshot')
 shutil.rmtree(extraction_root)
 (output / 'APPLICATION-START.txt').write_text(
     'SIMULATION REFERENCE ONLY\nConsole: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'

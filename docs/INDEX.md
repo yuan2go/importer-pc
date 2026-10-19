@@ -32,6 +32,8 @@ Sportmaster 左右独立读码及取格口，无 PLC、图片展示或长期图�
 
 ## 3. 源码、发布介质与验收分开
 
+2026-10-20 新授权的发行整合按 [UNIFIED-RELEASE-01](work-packages/WP-IPC-UNIFIED-RELEASE-01.md) 从最新 main 执行；原“不测试发布”回执仅限原任务。PR47 的未合并商业化增量与本次 main 发行分开，完整产品工作包保持其原状态。
+
 [PR #44/#45 合并与现成资产发布记录](runtime/publication-deployment-20261019.md)记录最新源码政策与两个冻结来源；本次文档任务没有创建统一组合介质。
 
 |已发布对象|精确范围|

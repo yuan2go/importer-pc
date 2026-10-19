@@ -44561,9 +44561,9 @@
     },
     {
       "path": "docs/runtime/sportmaster-commercial-delivery-01-results.md",
-      "sha256": "731d9ab718aa7b024ffa31ec852c4033c6567dc6dbedb79b523d0342fbe1784e",
-      "size_bytes": 4550,
-      "git_blob": "ecf104b545658885065248d6ae1e7b01237b97f6",
+      "sha256": "b8d13d40902d119b891e678241f8221cbd075468ecd24a7605d80906fcd2628c",
+      "size_bytes": 4683,
+      "git_blob": "7d41449045429abd9926681b93747476944e70a1",
       "version": "SPORTMASTER-COMMERCIAL-DELIVERY-01",
       "status": "current_implementation_or_exact_evidence",
       "purpose": "Sportmaster first commercial composition; bounded engineering validation, lifecycle/field limitations retained",

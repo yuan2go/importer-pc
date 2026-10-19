@@ -24,7 +24,7 @@
 |portable|sportmaster-portable-e45e9871b2ad.zip|18505877|`298333C995042685AB8AA6FA3B283529D3F5A55F46DFF0ECC1F05FB8F334075C`|
 |win-x64|sportmaster-win-x64-e45e9871b2ad.zip|104290033|`FE5A9D847E281A057BDAE9503C83FB6F667459C2B54590E98D81DAA46B25E96C`|
 
-Windows 解压位置：`D:/ipc-scd-release-05/sportmaster-win-x64-e45e9871b2ad`。运行 `Setup.cmd`，审阅已有 Windows 账户、程序/数据根及保护 helper 后安装；指定账户普通令牌打开 `desktop/Ipc.Desktop.exe`。从原目录执行首配，失败用启动修复；系统修复/卸载用 `Maintenance.cmd`。便携开发运行要求同版 SDK/runtime，不能替代安装授权。
+Windows 解压位置：`D:/ipc-scd-release-05/sportmaster-win-x64-e45e9871b2ad`。运行 `Setup.cmd`，审阅已有 Windows 账户、程序/数据根及保护 helper 后安装；指定账户普通令牌从已安装快捷方式启动。首配失败使用 `Maintenance.cmd` 或已安装的启动修复快捷方式；系统修复/卸载从 Windows“已安装应用”进入本产品维护，或使用匹配安装的 `desktop/Ipc.Desktop.exe --product-maintenance`。便携开发运行要求同版 SDK/runtime，不能替代安装授权。
 
 复现：检出上述完整冻结 SHA，用 SDK10.0.402，运行 `python scripts/release-windows.py --profile sportmaster --source <完整SHA> --output <全新目录> --dotnet <SDK>`，再执行 `./scripts/verify-sportmaster-delivery.ps1 -Release <发行目录> -Output <全新证据目录> -Dotnet <SDK>`。脚本验证 UTF-8 结构化裁决，不将崩溃当预期拒绝。完整操作见随包[交付手册](sportmaster-commercial-delivery-01-operations.md)。
 

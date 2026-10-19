@@ -1,6 +1,6 @@
 # 统一资料与实施入口
 
-本次整改：[CQ03四项修复工作包](work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md)（文档先行；执行结果以同包记录为准）。
+本次整改：[CQ03四项修复工作包](work-packages/WP-IPC-COMMERCIAL-QUALITY-FIX-03.md)及[整改结果](runtime/commercial-quality-fix-03-results.md)（文档先行，历史审查不改）。
 
 ## 当前有效阅读顺序
 

@@ -24,3 +24,5 @@
 Windows原生交互、Dispatcher/HWND、DPI/触控/UAC/ACL为NOT_RUN；真实SDK、设备、WCS/PLC合同及现场BLOCKED。参考PASS不能授予商用资格。旧原件只能从匹配完整备份恢复，不能通过本包制造缺失字节。执行结果写入同包结果记录，不追加另一套当前规范。
 
 发行闭包决定：package-application.py将SourceRevisionId写入整个冻结构建，公共API未改也会改变公共DLL的精确字节。业务1.2.5因此声明新不可变参考能力2.1.3、reader1.2.3及RCS1.0.5；只更新原ProviderSets/发行版本，不覆盖或重签旧包。最终选装验证使用新宿主实际公共DLL及新签名包。SQL1–6/checksum与配置schema不变，旧终态标记修复前原JSON写审计，归档版本原件保留。
+
+执行完成：[四项整改结果及边界](../runtime/commercial-quality-fix-03-results.md)，冻结源码8eee4c6；后续证据/manifest更新不改变运行闭包。Windows与真实现场边界保持。

@@ -1,0 +1,18 @@
+{
+  "Status": "PASS_NO_NEW_ERRORS",
+  "GlobalArchiveStatus": "FAIL",
+  "ExitCode": 1,
+  "BaselineCommit": "ec698bd4e11d06c13c097c77f90cc5ce145ab3ea",
+  "BaselineErrors": 267,
+  "CurrentErrors": 267,
+  "Added": 0,
+  "Removed": 0,
+  "ErrorTypes": {
+    "private_metadata_marker": 2,
+    "pptx_media_type_mismatch": 265
+  },
+  "BaselineRawSha256": "2afe617ccae1810d5e8753e38ab52d359a09fdd793be6351e05e36a3476a926a",
+  "CurrentRawSha256": "cce432c8e5b0f69fe3cf77401bf0a1fb1466cd3ee19eda851aa44c240d31b057",
+  "Command": "\"$PYTHON_WITH_PILLOW\" tools/verify_archive.py --root \"$SOURCE\" --scope public",
+  "Meaning": "No exceptions added and historical assets unchanged; not a global archive PASS"
+}

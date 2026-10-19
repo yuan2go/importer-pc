@@ -2,6 +2,7 @@ using Ipc.Platform;
 using Ipc.Assembly;
 
 #if PARCEL
+if (ParcelRuntimeSetup.HandleInstall(args)) return;
 if (ParcelCli.Management(args)) return;
 #endif
 var options = args.Chunk(2).ToDictionary(x => x[0], x => x.Length == 2 ? x[1] : throw new ArgumentException("Missing option value"));

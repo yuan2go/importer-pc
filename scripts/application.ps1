@@ -1,6 +1,6 @@
 #requires -Version 7.0
 param(
-    [Parameter(Mandatory)][ValidateSet('Verify','Diagnose','ProvisionData','Run','Console','Shortcut','Inspect','Backup','PlanRestore','Restore','Export')][string]$Action,
+    [ValidateSet('Verify','Diagnose','Install','ProvisionData','Run','Console','Shortcut','Inspect','Backup','PlanRestore','Restore','Export')][string]$Action = 'Run',
     [string]$Release = $PSScriptRoot,
     [string]$DataRoot,
     [string]$Configuration,
@@ -48,16 +48,21 @@ function Invoke-App([string[]]$Arguments) {
 }
 if ($Action -eq 'Verify') { [ordered]@{Status='FilesVerified';Application=$assembly.ApplicationId;SourceCommit=$assembly.SourceCommit;ManifestSha256=(Get-FileHash -LiteralPath (Join-Path $Release 'SHA256SUMS')).Hash;Windows='NOT_RUN';Production='NOT_QUALIFIED'} | ConvertTo-Json; return }
 if ($Ui -eq 'supply-station' -and $assembly.ApplicationId -ne 'sportmaster') { throw 'supply-station belongs only to Sportmaster' }
+if (-not $DataRoot -and $Action -in @('Run','Console','Shortcut')) {
+    $DataRoot = Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'ImporterPc/data'
+}
 if ($DataRoot) {
     $DataRoot = [IO.Path]::GetFullPath($DataRoot); Ordinary $DataRoot
     if ($DataRoot.Equals($Release,[StringComparison]::OrdinalIgnoreCase) -or $DataRoot.StartsWith($Release + [IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)) { throw 'Runtime data must be outside immutable release' }
 }
 if (-not $Configuration) { $Configuration = Join-Path $Release 'desktop/config' }
 $Configuration = (Resolve-Path -LiteralPath $Configuration).Path; Ordinary $Configuration
-# Use the same protected policy/ACL/SID validation as direct executable startup.
-# This read-only helper must succeed before deployment checks or a runtime child.
-if ($Action -in @('Diagnose','Run','Console')) { Invoke-App @('--action','runtime-check') }
+# Runtime entry points install missing machine policy through the same UAC helper
+# as direct EXE startup, then revalidate it. Diagnose remains strictly read-only.
+if ($Action -in @('Install','Run','Console')) { Invoke-App @('--action','runtime-prepare') }
+if ($Action -eq 'Diagnose') { Invoke-App @('--action','runtime-check') }
 switch ($Action) {
+    Install { return }
     Diagnose {
         Invoke-App @('--action','business-identity')
         Invoke-App @('--action','deployment-check','--file',(Join-Path $Configuration 'business.json'))

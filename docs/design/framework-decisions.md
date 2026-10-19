@@ -139,3 +139,7 @@ F-10：局部编辑默认目标只读当前草稿目标，不要求所有临时�
 保留已存在的Supply.Contracts公共边界，Adapters不再引用Supply实现；Product/Assembly继续显式装配具体实现，Fixture声明自身数据库依赖。动作内部类型化而wire/audit原字符串不变；维护权限、箱资格、原因、独立接收责任/SQL及所属视图定义按业务所有权共用。页面保有本窗展示状态，业务仍唯一串行所有者。
 
 同状态健康续期是当前来源权威，不逐次重写业务聚合；状态/时效/失败变化仍持久，业务事务保存最新确认，重启清空并重新确认。不降低业务观察、T1/T2/T3/接收责任、过载和停止屏障。独立扩展声明进入已存在签名/安装/配置/激活链，不新建通用UI插件平台。StationConfig现有业务字段不迁移，原格式5/5和SQL/checksum保持。真实结果、取舍和后验见[16报告](../runtime/ui-maintainability-16.md)，外部D批准与RV不改。
+
+## WINDOWS-FIRST-RUN-01 工程决定
+
+由用户针对Windows实际启动失败授权：F-12交付补齐首次运行安装入口；F-03/机级资源租约与F-09业务数据保持。普通双击在策略缺失时请求一次UAC，固定helper仅建立机器策略/ACL，原未提权进程读回后自动初始化业务数据。允许指定账户的deny-only管理员身份，启用管理员权限及服务账户仍拒绝日常作业。此项替代旧SID前置包的账户组限制；历史证据及Windows实际NOT_RUN不倒写。安装使用[.NET创建时ACL](https://learn.microsoft.com/en-us/dotnet/api/system.io.filesystemaclextensions.create?view=net-10.0)和[ProcessStartInfo.Verb](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.processstartinfo.verb?view=net-10.0)的runas，软件不伪造授权或降级Production。

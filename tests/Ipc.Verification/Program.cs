@@ -15,6 +15,11 @@ if (args.FirstOrDefault() == "--runtime-identity")
     RuntimeIdentityVerification.Run();
     return;
 }
+if (args.FirstOrDefault() == "--windows-runtime-setup")
+{
+    RuntimeIdentityVerification.RunWindowsSetup();
+    return;
+}
 
 SupplyContractRegistration.Register();
 

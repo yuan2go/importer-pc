@@ -18,19 +18,19 @@
 
 Files: `src/Ipc.Platform/MachineRuntimePolicy.cs`, new `MachineRuntimeSetup.cs`, `tests/Ipc.Verification/RuntimeIdentityVerification.cs`。
 
-- [ ] 在既有`--runtime-identity`入口增加deny-only允许及安装顺序回归，先记录RED。
-- [ ] 账户判定只把启用的管理员组算作提权，继续拒绝服务SID和其他账户。
-- [ ] 实现`MachineRuntimeSetup.EnsureRuntimeIdentity(Action<string> install)`及`InstallForAccount(string sid)`。纯顺序函数接收调用者SID、策略存在性、安装回调和最终校验，供合成验证调用。Windows安装固定ProgramData路径、受保护ACL、独占安装锁及原子发布，不调用业务。
-- [ ] `/Users/yuan/.local/share/ipc-dotnet/dotnet run --project tests/Ipc.Verification -- --runtime-identity`通过；Windows分支单列NOT_RUN。
+- [x] 在既有`--runtime-identity`入口增加deny-only允许及安装顺序回归，先记录RED。
+- [x] 账户判定只把启用的管理员组算作提权，继续拒绝服务SID和其他账户。
+- [x] 实现`MachineRuntimeSetup.EnsureRuntimeIdentity(Action<string> install)`及`InstallForAccount(string sid)`。纯顺序函数接收调用者SID、策略存在性、安装回调和最终校验，供合成验证调用。Windows安装固定ProgramData路径、受保护ACL、独占安装锁及原子发布，不调用业务。
+- [x] `/Users/yuan/.local/share/ipc-dotnet/dotnet run --project tests/Ipc.Verification -- --runtime-identity`通过；Windows分支单列NOT_RUN。
 
 ### Task 2: 接通全部启动入口和默认路径
 
 Files: new `src/Ipc.Assembly/ParcelRuntimeSetup.cs`, `Ipc.Assembly.csproj`, `Program.cs`, `ParcelAssembly.cs`, `ParcelCli.cs`, `scripts/application.ps1`, `application.cmd`, `scripts/test_runtime_identity.py`。
 
-- [ ] 增加Run/Console执行`runtime-prepare`、Diagnose仅`runtime-check`与无参数默认路径用例，先记录RED。
-- [ ] 提升helper严格仅接受`--action runtime-install --runtime-sid SID`，在任何业务注册前分发。原用户SID传入helper，使用结构化ProcessStartInfo参数、runas、完整退出码及回读校验。
-- [ ] 直接Assembly构造前调用准备；StartAsync的只读门禁保持。Run/Console缺DataRoot时使用既有LocalApplicationData路径；双击CMD直接启动桌面，维护参数仍沿现有脚本。
-- [ ] `IPC_TEST_PWSH=/tmp/ipc-pwsh/pwsh python3 -m unittest discover -s scripts -p test_runtime_identity.py -v`通过。构建Sportmaster/DirectPlc/WcsToPlc装配和Sportmaster WPF。
+- [x] 增加Run/Console执行`runtime-prepare`、Diagnose仅`runtime-check`与无参数默认路径用例，先记录RED。
+- [x] 提升helper严格仅接受`--action runtime-install --runtime-sid SID`，在任何业务注册前分发。原用户SID传入helper，使用结构化ProcessStartInfo参数、runas、完整退出码及回读校验。
+- [x] 直接Assembly构造前调用准备；StartAsync的只读门禁保持。Run/Console缺DataRoot时使用既有LocalApplicationData路径；双击CMD直接启动桌面，维护参数仍沿现有脚本。
+- [x] `IPC_TEST_PWSH=/tmp/ipc-pwsh/pwsh python3 -m unittest discover -s scripts -p test_runtime_identity.py -v`通过。构建Sportmaster/DirectPlc/WcsToPlc装配和Sportmaster WPF。
 
 ### Task 3: 文档、固定媒介与PR
 

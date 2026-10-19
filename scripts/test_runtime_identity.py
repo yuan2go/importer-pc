@@ -24,7 +24,7 @@ class RuntimeIdentityTests(unittest.TestCase):
         if not PWSH:
             raise RuntimeError('PowerShell 7 required: set IPC_TEST_PWSH; tests must not silently skip')
 
-    def launch(self, action, deny=False):
+    def launch(self, action, deny=False, default_data=False):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary).resolve()
             release = root/'release'
@@ -42,7 +42,7 @@ class RuntimeIdentityTests(unittest.TestCase):
 import json, os, pathlib, sys
 with open(os.environ['IPC_TRACE'], 'a') as stream:
     stream.write(json.dumps([pathlib.Path(sys.argv[0]).name, *sys.argv[1:]])+'\\n')
-if sys.argv[1:] == ['--action', 'runtime-check'] and os.environ['IPC_DENY'] == '1':
+if sys.argv[1:] in (['--action', 'runtime-check'], ['--action', 'runtime-prepare']) and os.environ['IPC_DENY'] == '1':
     print('Synthetic runtime identity denied', file=sys.stderr)
     sys.exit(42)
 '''
@@ -58,9 +58,11 @@ if sys.argv[1:] == ['--action', 'runtime-check'] and os.environ['IPC_DENY'] == '
             data.mkdir()
             (data/'original.db').write_bytes(b'original synthetic database bytes')
             before = {p.relative_to(data).as_posix(): p.read_bytes() for p in data.rglob('*') if p.is_file()}
-            result = subprocess.run([PWSH, '-NoProfile', '-File', str(release/'application.ps1'),
-                                     '-Action', action, '-DataRoot', str(data),
-                                     '-Database', str(data/'original.db')],
+            arguments = [PWSH, '-NoProfile', '-File', str(release/'application.ps1'), '-Action', action,
+                         '-Database', str(data/'original.db')]
+            if not default_data:
+                arguments += ['-DataRoot', str(data)]
+            result = subprocess.run(arguments,
                                     env=dict(os.environ, IPC_TRACE=str(trace), IPC_DENY='1' if deny else '0'),
                                     capture_output=True, text=True, timeout=30)
             calls = [json.loads(line) for line in trace.read_text().splitlines()] if trace.exists() else []
@@ -73,14 +75,16 @@ if sys.argv[1:] == ['--action', 'runtime-check'] and os.environ['IPC_DENY'] == '
             with self.subTest(action=action):
                 result, calls = self.launch(action, deny=True)
                 self.assertNotEqual(result.returncode, 0)
-                self.assertEqual(calls, [['Ipc.Assembly.exe', '--action', 'runtime-check']], result.stderr)
+                check = 'runtime-check' if action == 'Diagnose' else 'runtime-prepare'
+                self.assertEqual(calls, [['Ipc.Assembly.exe', '--action', check]], result.stderr)
 
     def test_allowed_dispatch_preserves_existing_launch_arguments(self):
         for action in ['Run', 'Console', 'Diagnose']:
             with self.subTest(action=action):
                 result, calls = self.launch(action)
                 self.assertEqual(result.returncode, 0, result.stderr)
-                self.assertEqual(calls[0], ['Ipc.Assembly.exe', '--action', 'runtime-check'])
+                check = 'runtime-check' if action == 'Diagnose' else 'runtime-prepare'
+                self.assertEqual(calls[0], ['Ipc.Assembly.exe', '--action', check])
                 if action == 'Run':
                     self.assertEqual(calls[1][1:3], ['--action', 'deployment-check'])
                     self.assertEqual(calls[2][0], 'Ipc.Desktop.exe')
@@ -91,6 +95,28 @@ if sys.argv[1:] == ['--action', 'runtime-check'] and os.environ['IPC_DENY'] == '
                 else:
                     self.assertEqual(calls[1][1:], ['--action', 'business-identity'])
                     self.assertEqual(calls[2][1:3], ['--action', 'deployment-check'])
+
+    def test_run_and_console_choose_the_same_default_root_without_manual_creation(self):
+        roots = []
+        for action in ['Run', 'Console']:
+            result, calls = self.launch(action, default_data=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            launch = calls[-1]
+            data_root = launch[launch.index('--data-root') + 1]
+            roots.append(data_root)
+            self.assertTrue(Path(data_root).is_absolute())
+            self.assertEqual(Path(data_root).parts[-2:], ('ImporterPc', 'data'))
+        self.assertEqual(roots[0], roots[1])
+
+    def test_setup_does_not_start_a_business_child(self):
+        result, calls = self.launch('Install')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(calls, [['Ipc.Assembly.exe', '--action', 'runtime-prepare']])
+
+    def test_double_click_cmd_has_no_powershell_dependency(self):
+        script = (ROOT/'scripts/application.cmd').read_text()
+        self.assertLess(script.index('desktop\\Ipc.Desktop.exe'), script.index('where pwsh.exe'))
+        self.assertIn('if "%~1"==""', script)
 
     def test_maintenance_dispatch_does_not_require_runtime_identity(self):
         result, calls = self.launch('Inspect', deny=True)

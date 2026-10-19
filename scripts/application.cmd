@@ -1,4 +1,8 @@
 @echo off
+if "%~1"=="" (
+  "%~dp0desktop\Ipc.Desktop.exe"
+  exit /b
+)
 where pwsh.exe >nul 2>nul
 if errorlevel 1 (
   echo PowerShell 7 is required. See WINDOWS-APPLICATION.md in this release.

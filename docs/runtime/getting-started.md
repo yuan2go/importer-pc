@@ -10,6 +10,8 @@ Windows安装、普通账户、启动/快捷方式、升级中断/回退修复�
 
 ## 三个Application
 
+Windows用户核对完整媒介后双击`application.cmd`或`desktop/Ipc.Desktop.exe`。首次按Windows提示授权一次，软件自动建立机器策略、权限和数据目录；后续正常启动无需授权。无需手工创建目录/JSON或新增账户；UAC限权的管理员账户可正常运行。取消授权可重新启动重试；已有损坏/其他账户策略保留并明确失败。基本桌面启动不依赖PowerShell；脚本维护仍需PowerShell7。默认数据根为`%LOCALAPPDATA%\ImporterPc\data`，显式旧根不改变，详见[自动配置与维护](windows-application-delivery.md#首次启动与自动配置)。
+
 固定SDK10.0.402；源码构建与发布入口见[Application运行指南](application-architecture-22.md)。发布ZIP解压到新目录，先核对SHA256SUMS与ASSEMBLY.json的SourceCommit和ApplicationId。portable需要.NET10运行时；win-x64含实际WPF但仍需Windows验收。
 
 ```sh

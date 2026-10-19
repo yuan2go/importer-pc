@@ -107,7 +107,7 @@ shutil.rmtree(artifacts)
 shutil.rmtree(build_source)
 (output / 'APPLICATION-START.txt').write_text(
     'SIMULATION REFERENCE ONLY\nConsole: dotnet app/Ipc.Assembly.dll --config app/config --data-root <new-isolated-root>\n'
-    + ('Windows: pwsh -NoProfile -File <absolute-release>/application.ps1 -Action Diagnose -DataRoot <absolute-data-root>\nRun: pwsh -NoProfile -File <absolute-release>/application.ps1 -Action Run -DataRoot <absolute-data-root>\n' if a.target == 'win-x64' else '')
+    + ('Windows: double-click application.cmd or desktop/Ipc.Desktop.exe (no PowerShell required).\nFirst launch: approve one Windows UAC prompt; machine policy/permissions are installed automatically for the original user. Data/config/database initialize in the original unelevated process.\nDefault data: %LOCALAPPDATA%\\ImporterPc\\data. No manual directories, JSON, ACL, or extra account required. Existing policy/data are retained.\nMaintenance only (PowerShell 7): application.ps1 -Action Install; Diagnose is read-only.\n' if a.target == 'win-x64' else '')
     + ('Sportmaster alternate native UI: desktop/Ipc.Desktop.exe --ui supply-station --config desktop/config --data-root <new-isolated-root>\nClassic default: omit --ui, or use --ui classic. Use SPORTMASTER-UI.md and SPORTMASTER-UI-WINDOWS.md.\n' if a.target == 'win-x64' and a.application == 'sportmaster' else '')
     + 'Use APPLICATIONS.md for reference camera/weight input, original-stage reconciliation and recovery.\n')
 entries = sorted(f for f in output.rglob('*') if f.is_file())

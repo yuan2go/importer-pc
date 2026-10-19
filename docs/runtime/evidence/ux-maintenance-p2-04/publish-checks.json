@@ -13,7 +13,7 @@
       "--output",
       "<isolated-worktree>/.artifacts/ux-maintenance-p2-04/release/sportmaster-core",
       "--dotnet",
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet"
+      "<pinned-dotnet-10.0.402>"
     ]
   },
   {
@@ -30,7 +30,7 @@
       "--output",
       "<isolated-worktree>/.artifacts/ux-maintenance-p2-04/release/direct-plc-core",
       "--dotnet",
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet"
+      "<pinned-dotnet-10.0.402>"
     ]
   },
   {
@@ -47,7 +47,7 @@
       "--output",
       "<isolated-worktree>/.artifacts/ux-maintenance-p2-04/release/wcs-to-plc-core",
       "--dotnet",
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet"
+      "<pinned-dotnet-10.0.402>"
     ]
   },
   {
@@ -66,7 +66,7 @@
       "--output",
       "<isolated-worktree>/.artifacts/ux-maintenance-p2-04/release/barcode.ipcx",
       "--key",
-      "<reference-signing-directory>/reference-only-private.pem",
+      "<reference-key>",
       "--publisher",
       "ux-closure-reference-only",
       "--trust",
@@ -74,7 +74,7 @@
       "--version",
       "1.3.5",
       "--dotnet",
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet"
+      "<pinned-dotnet-10.0.402>"
     ]
   },
   {
@@ -93,7 +93,7 @@
       "--output",
       "<isolated-worktree>/.artifacts/ux-maintenance-p2-04/release/capabilities.ipcx",
       "--key",
-      "<reference-signing-directory>/reference-only-private.pem",
+      "<reference-key>",
       "--publisher",
       "ux-closure-reference-only",
       "--trust",
@@ -101,7 +101,7 @@
       "--version",
       "2.2.5",
       "--dotnet",
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet"
+      "<pinned-dotnet-10.0.402>"
     ]
   },
   {
@@ -120,7 +120,7 @@
       "--output",
       "<isolated-worktree>/.artifacts/ux-maintenance-p2-04/release/rcs.ipcx",
       "--key",
-      "<reference-signing-directory>/reference-only-private.pem",
+      "<reference-key>",
       "--publisher",
       "ux-closure-reference-only",
       "--trust",
@@ -128,7 +128,7 @@
       "--version",
       "1.1.5",
       "--dotnet",
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet"
+      "<pinned-dotnet-10.0.402>"
     ]
   },
   {
@@ -145,7 +145,7 @@
       "--output",
       "<isolated-worktree>/.artifacts/ux-maintenance-p2-04/release/sportmaster-selected-portable",
       "--dotnet",
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "<pinned-dotnet-10.0.402>",
       "--extension-trust",
       "<reference-signing-directory>/reference-trust.json",
       "--extension-package",
@@ -170,7 +170,7 @@
       "--output",
       "<isolated-worktree>/.artifacts/ux-maintenance-p2-04/release/sportmaster-selected-win-x64",
       "--dotnet",
-      "/Users/yuan/.local/share/ipc-dotnet/dotnet",
+      "<pinned-dotnet-10.0.402>",
       "--extension-trust",
       "<reference-signing-directory>/reference-trust.json",
       "--extension-check-host",

@@ -194,5 +194,12 @@
     "PublishedSha256": "7507a069ded320c192fd4e4cdcba516e805a2494c242fbe5cf2b621de4e78a9a",
     "RawLocation": "Release raw-verification-evidence.zip/sportmaster-smoke-compatibility.log",
     "PublishedMeaning": "Explicit path-normalized derivative; original byte record is in raw ZIP"
+  },
+  {
+    "Path": "publish-checks.json",
+    "RawSha256": "f0cb1710977bad9a573abaa2f37753e2af9fabfa1d3cc49e0d89ac19d8039b3d",
+    "PublishedSha256": "c83285a18bc177d2ce0734d840f694ca8e8e3ccfca486401370ab8e7154d46ce",
+    "RawLocation": "Release raw-verification-evidence.zip/release/publish-checks.json",
+    "PublishedMeaning": "Explicit path-normalized derivative, including pinned runtime and reference key path placeholders; original bytes remain in raw ZIP"
   }
 ]

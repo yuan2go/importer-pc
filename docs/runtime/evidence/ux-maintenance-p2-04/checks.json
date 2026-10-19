@@ -125,7 +125,8 @@
   "NegativeEvidence": {
     "close-red.log": "Original silent auxiliary draft loss, baseline business source be79564 plus new focused test",
     "close-generation-first-failure.log": "Local intermediate attempt suppressed a child diagnostic; original lifecycle regression failed, diagnostic ownership corrected without deleting assertion",
-    "close-reentrancy-red.log": "Window event substitute models actual WPF reentrant Close refusal; production close at19c2fda; corrected with Dispatcher.Yield inab8f4d4"
+    "close-reentrancy-red.log": "Window event substitute models actual WPF reentrant Close refusal; production close at19c2fda; corrected with Dispatcher.Yield inab8f4d4",
+    "archive-local-10f6ca4": "Final metadata check detected pinned SDK local path in public publish-checks derivative; path normalization corrected, original raw ZIP unchanged; validator assertions retained"
   },
   "ProductSource": "ff31b0efaaebd7e5fae4254c7184e0640e2eea81",
   "BusinessVersion": "1.3.3",

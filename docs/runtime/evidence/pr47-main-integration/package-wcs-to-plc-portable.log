@@ -1,0 +1,28 @@
+Retained build workspace on failure: C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob
+  正在确定要还原的项目…
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\source-snapshot\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 4.9 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\source-snapshot\src\Ipc.Components\Ipc.Components.csproj (用时 4.9 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\source-snapshot\src\Ipc.Platform\Ipc.Platform.csproj (用时 4.9 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\source-snapshot\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 4.9 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\source-snapshot\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 4.9 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\source-snapshot\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 4.89 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\source-snapshot\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 4.9 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\source-snapshot\src\Ipc.Application.WcsToPlc\Ipc.Application.WcsToPlc.csproj (用时 4.88 秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\source-snapshot\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 23 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\source-snapshot\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 16 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\source-snapshot\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 14 毫秒)。
+  已还原 C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\source-snapshot\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 22 毫秒)。
+  Ipc.Platform -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\build-intermediates\bin\Ipc.Platform\release\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\build-intermediates\bin\Ipc.Application.Supply.Contracts\release\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\build-intermediates\bin\Ipc.Platform.Storage\release\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\build-intermediates\bin\Ipc.Application.Supply\release\Ipc.Supply.dll
+  Ipc.Application.Contracts -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\build-intermediates\bin\Ipc.Application.Contracts\release\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\build-intermediates\bin\Ipc.Application.ParcelFlow\release\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.WcsToPlc -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\build-intermediates\bin\Ipc.Application.WcsToPlc\release\Ipc.Application.WcsToPlc.dll
+  Ipc.Reference.Protocol -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\build-intermediates\bin\Ipc.Reference.Protocol\release\Ipc.Reference.Protocol.dll
+  Ipc.Components -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\build-intermediates\bin\Ipc.Components\release\Ipc.Components.dll
+  Ipc.Drivers -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\build-intermediates\bin\Ipc.Drivers\release\Ipc.Drivers.dll
+  Ipc.Integrations -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\build-intermediates\bin\Ipc.Integrations\release\Ipc.Integrations.dll
+  Ipc.Assembly -> C:\Users\yuan\AppData\Local\Temp\ipc-publication-9506ujob\build-intermediates\bin\Ipc.Assembly\release\Ipc.Assembly.dll
+  Ipc.Assembly -> D:\projects\importer-pc\.artifacts\comm-review-47\final-releases\wcs-to-plc-55025ce-portable\app\
+{"Package": "D:\\projects\\importer-pc\\.artifacts\\comm-review-47\\final-releases\\wcs-to-plc-55025ce-portable.zip", "Sha256": "a53f21a9f55d1b19c0fa4b4403a3da2d3cd03490992e8da703673b7824075345", "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa", "Application": "wcs-to-plc", "Target": "portable", "BusinessVersion": "1.4.0", "BusinessAssembly": "Ipc.Application.WcsToPlc.dll", "CompatibilitySha256": "87DC2E0976EDDECE44D6E0A7B1E3DCA938C7F2475D1D7F7AF9D4E38930B87769"}

@@ -2,7 +2,7 @@
 
 ## 本轮UX修复
 
-用户要求先修复、后验收。本次[UX修复工作包](work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)继承下列main1.2.8/ABI1.8/DB7，先修UXC-01～07的源码/页面/维护闭环，正式Windows/现场验收后置；实际完成与候选身份以本包后续结果为准，不用计划版本替换既有发行事实。
+用户要求先修复、后验收。本次[UX修复工作包](work-packages/WP-IPC-UX-COMMERCIAL-FIX-01.md)继承下列main1.2.8/ABI1.8/DB7，先修UXC-01～07的源码/页面/维护闭环，正式Windows/现场验收后置；实际完成与候选身份见[修复结果](runtime/ux-commercial-fix-01-results.md)和[证据](runtime/evidence/ux-commercial-fix-01/README.md)，不用计划版本替换既有发行事实。
 
 ## 最新独立审查与实施交接
 

@@ -1,0 +1,23 @@
+[
+  {
+    "Application": "sportmaster",
+    "RawEvidenceSha256": "248cdbd69a829e08e8d90478e4113a980d8628e901079dd3a1014b4dd23d2a6b",
+    "Status": "PASS",
+    "SourceCommit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+    "Package": "sportmaster-core.zip"
+  },
+  {
+    "Application": "direct-plc",
+    "RawEvidenceSha256": "5d016179787a774b665e95c39282a47d7132e0e9f9d10a6b620f8881fee8e3dd",
+    "Status": "PASS",
+    "SourceCommit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+    "Package": "direct-plc-core.zip"
+  },
+  {
+    "Application": "wcs-to-plc",
+    "RawEvidenceSha256": "b599afe3271d510ea9217af9e041038a072871309872511a26ac317b3dec61bc",
+    "Status": "PASS",
+    "SourceCommit": "c384c3bc4750bbaafbcc3b834d3b12aa126c3b41",
+    "Package": "wcs-to-plc-core.zip"
+  }
+]

@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "<artifacts>/selected-release-journey.py", line 99, in <module>
+    maintenance(); s=snap(); assert cmd('StageConfiguration','Remove settled selected bindings through same full revision',json.dumps(seed),s['Configuration']['Revision'])['Status']=='PendingRestart'
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

@@ -1,0 +1,14 @@
+EvidenceRoot=<synthetic-evidence-root>
+PASS A03: both layouts explicitly invalidate old slot, status and maintenance actions
+PASS A03: poll failure cannot hide independent software pause; receipt does not claim fresh state
+PASS A03: recovering a fresh snapshot never resumes business or resends
+PASS A03: retired runtime response cannot revive a previous instance even at a larger revision
+PASS A03: revision regression invalidates dependent facts without applying old state
+PASS A03: late older read cannot replace the latest valid runtime snapshot
+PASS A03: both layouts explicitly invalidate old slot, status and maintenance actions
+PASS A03: poll failure cannot hide independent software pause; receipt does not claim fresh state
+PASS A03: recovering a fresh snapshot never resumes business or resends
+PASS A03: retired runtime response cannot revive a previous instance even at a larger revision
+PASS A03: revision regression invalidates dependent facts without applying old state
+PASS A03: late older read cannot replace the latest valid runtime snapshot
+PASS A03 SNAPSHOT COMPLETE

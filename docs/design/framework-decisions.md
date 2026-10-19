@@ -1,3 +1,7 @@
+> 当前启动修复与安装闭环见[STARTUP-DEPLOYMENT-02](../work-packages/WP-IPC-STARTUP-DEPLOYMENT-02.md)。继承首次运行01，新增离线维护、独立基本配置和原生安装向导；旧手工脚本保留为维护工具，Windows原生验收仍NOT_RUN。
+
+> 当前Windows首次启动修复见[WINDOWS-FIRST-RUN-01](../work-packages/WP-IPC-WINDOWS-FIRST-RUN-01.md)：软件自动准备机器策略及数据目录，指定账户在UAC未提权状态下可运行；deny-only管理员组不再单独构成拒绝。原SID修复的只读前置检查、维护隔离与历史证据保留，旧候选不自动获得新行为。Windows原生验证仍NOT_RUN。
+
 > 当前增量以[UX审查WP-01～07闭环](../work-packages/WP-IPC-UX-COMMERCIAL-CLOSURE-02.md)为准；继承PR37固定实现，旧阶段/候选记录保留。实施开工main为1.2.8、PR37候选为1.3.0；本次合并后的当前版本为1.3.3/Contracts1.9.0/DB7，原候选及其形成时证据保持。Windows实际NOT_RUN，真实组合/合同BLOCKED。
 
 > 当前设计阅读顺序：[框架F决策](framework-decisions.md)与19/20职责可靠性 → [22独立Application拓扑](application-architecture-22.md) → [质量/恢复](architecture-quality-closure-01.md) → [RCS](sportmaster-rcs-task.md)与[版本兼容](version-compatibility-01.md)。[并发整合报告](../runtime/parallel-task-reconciliation-01.md)记录差额、来源和验证，不替代原D/RV或降低目标。当前业务1.3.3、Contracts1.9.0、Parcel DB7；下文历次版本/阶段说明保持形成时语境，历史原件见归档。Windows实际NOT_RUN，真实设备/协议/现场BLOCKED。
@@ -137,3 +141,7 @@ F-10：局部编辑默认目标只读当前草稿目标，不要求所有临时�
 保留已存在的Supply.Contracts公共边界，Adapters不再引用Supply实现；Product/Assembly继续显式装配具体实现，Fixture声明自身数据库依赖。动作内部类型化而wire/audit原字符串不变；维护权限、箱资格、原因、独立接收责任/SQL及所属视图定义按业务所有权共用。页面保有本窗展示状态，业务仍唯一串行所有者。
 
 同状态健康续期是当前来源权威，不逐次重写业务聚合；状态/时效/失败变化仍持久，业务事务保存最新确认，重启清空并重新确认。不降低业务观察、T1/T2/T3/接收责任、过载和停止屏障。独立扩展声明进入已存在签名/安装/配置/激活链，不新建通用UI插件平台。StationConfig现有业务字段不迁移，原格式5/5和SQL/checksum保持。真实结果、取舍和后验见[16报告](../runtime/ui-maintainability-16.md)，外部D批准与RV不改。
+
+## WINDOWS-FIRST-RUN-01 工程决定
+
+由用户针对Windows实际启动失败授权：F-12交付补齐首次运行安装入口；F-03/机级资源租约与F-09业务数据保持。普通双击在策略缺失时请求一次UAC，固定helper仅建立机器策略/ACL，原未提权进程读回后自动初始化业务数据。允许指定账户的deny-only管理员身份，启用管理员权限及服务账户仍拒绝日常作业。此项替代旧SID前置包的账户组限制；历史证据及Windows实际NOT_RUN不倒写。安装使用[.NET创建时ACL](https://learn.microsoft.com/en-us/dotnet/api/system.io.filesystemaclextensions.create?view=net-10.0)和[ProcessStartInfo.Verb](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.processstartinfo.verb?view=net-10.0)的runas，软件不伪造授权或降级Production。

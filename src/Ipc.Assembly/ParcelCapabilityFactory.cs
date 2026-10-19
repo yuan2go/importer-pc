@@ -11,8 +11,11 @@ namespace Ipc.Assembly;
 
 public sealed record ParcelExtensionStoreConfiguration(string Root, string TrustFile);
 public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompatibility? compatibility = null,
-    System.Reflection.Assembly? businessAssembly = null) : IParcelCapabilityFactory
+    System.Reflection.Assembly? businessAssembly = null, bool installer = false) : IParcelCapabilityFactory
 {
+    // Preserve the existing host constructor for already compiled callers.
+    public ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompatibility? compatibility, System.Reflection.Assembly? businessAssembly)
+        : this(launch, compatibility, businessAssembly, false) { }
     ExtensionStore? store;
     ExtensionLoading? loading;
     PackageUseLease? use;
@@ -47,7 +50,8 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
         }
         if (new FileInfo(paths.TrustFile).Length > ExtensionPackages.MaximumManifestBytes) throw new InvalidDataException("Trust policy quota exceeded");
         var trust = Wire.Decode<ExtensionTrust>(File.ReadAllText(paths.TrustFile));
-        var leases = MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
+        var leases = installer && OperatingSystem.IsWindows() ? MachineRuntimePolicy.InstallerLeaseRoot("") :
+            MachineRuntimePolicy.ResolveLeaseRoot(OperatingSystem.IsWindows() ? null : Path.Combine(launch.DataRoot, "Simulation", "resource-leases"));
         trustPolicy = trust; trustFile = paths.TrustFile;
         return store = new(paths.Root, trust, mode, leases);
     }
@@ -228,13 +232,25 @@ public sealed class ParcelCapabilityFactory(BusinessLaunch launch, BusinessCompa
     public CapabilityCatalog Catalog()
     {
         RegisterContracts();
+        try { return InstalledCatalog(); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidDataException or System.Text.Json.JsonException or System.Security.Cryptography.CryptographicException)
+        {
+            // Inventory is an optional read model, never capability admission. Existing
+            // exact bindings remain unresolved and Validate/Create still fail closed.
+            return new(ReferenceProviders(), [], []) { InventoryDiagnostic = "扩展库存未配置或不可用：" + ex.Message + "。内置配置可读取；原扩展绑定仍须恢复同一可信包后才能保存或启动。" };
+        }
+    }
+    static CapabilityDescriptor[] ReferenceProviders() => ReferenceCapabilityCatalog.Providers.Append(
+        new("observation", "manual", "1.0.0", "CONTROLLED-OBSERVATION-v1", [], new())).ToArray();
+    CapabilityCatalog InstalledCatalog()
+    {
         var settingsFile = Path.Combine(launch.ConfigurationDirectory, "extension-store.json");
         var installed = store is not null || OperatingSystem.IsWindows() || File.Exists(settingsFile) ? Store().Inventory().Where(x => x.Status == "Installed").ToArray() : [];
         // Verify signed declarative manifests only. Catalog reads never load provider code.
         var manifests = installed.Select(x => (x.Package, Manifest: Store().VerifyInstalled(x.Package).Manifest)).ToArray();
         var descriptors = manifests.SelectMany(x => x.Manifest.Modules.Select(m =>
             new CapabilityDescriptor(m.Kind, "extension:" + x.Package.Id + "/" + m.Id, x.Package.Version, m.ContractIdentity ?? "PARCEL-REFERENCE-v1", m.Parameters, m.Requirements ?? new(), x.Package, m.Id)));
-        return new(ReferenceCapabilityCatalog.Providers.Append(new("observation", "manual", "1.0.0", "CONTROLLED-OBSERVATION-v1", [], new())).Concat(descriptors).ToArray(), installed.Select(x => x.Package.Id + "@" + x.Package.Version).ToArray(),
+        return new(ReferenceProviders().Concat(descriptors).ToArray(), installed.Select(x => x.Package.Id + "@" + x.Package.Version).ToArray(),
             manifests.Select(x => new CapabilityPackage(x.Package, x.Manifest.Dependencies)).ToArray());
     }
     internal ApplicationRelease ReadPublishedRelease(string appRoot)

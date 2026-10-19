@@ -1,3 +1,7 @@
+> 当前启动修复与安装闭环见[STARTUP-DEPLOYMENT-02](work-packages/WP-IPC-STARTUP-DEPLOYMENT-02.md)。继承首次运行01，新增离线维护、独立基本配置和原生安装向导；旧手工脚本保留为维护工具；[实施结果及固定候选](runtime/startup-deployment-02-results.md)、[操作指南](runtime/startup-deployment-02.md)与[Windows后验](runtime/validation/startup-deployment-02-windows.md)分别读取，原生验收仍NOT_RUN。
+
+> 当前Windows首次启动修复见[WINDOWS-FIRST-RUN-01](work-packages/WP-IPC-WINDOWS-FIRST-RUN-01.md)及[结果/固定候选](runtime/windows-first-run-01-results.md)：软件自动准备机器策略及数据目录，指定账户在UAC未提权状态下可运行；deny-only管理员组不再单独构成拒绝。原SID修复的只读前置检查、维护隔离与历史证据保留，旧候选不自动获得新行为。Windows原生验证仍NOT_RUN。
+
 # 统一资料与实施入口
 
 > 本轮三项P2修复入口：[维护草稿与参数工作包](work-packages/WP-IPC-UX-MAINTENANCE-P2-04.md)。源码修复及定向回归见[04结果](runtime/ux-maintenance-p2-04-results.md)；[1.3.3参考候选](https://github.com/yuan2go/importer-pc/releases/tag/ux-reference-ff31b0e)冻结ff31b0e，包含修复；原1.3.2仍含差额。main be79564与本分支产品身份分别读取。

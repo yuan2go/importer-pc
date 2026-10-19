@@ -19,7 +19,11 @@ public sealed record CapabilityDescriptor(string Kind, string Implementation, st
     ParameterField[] Parameters, CapabilityRequirements Requirements, PackageReference? Package = null, string? Module = null);
 public sealed record CapabilityPackage(PackageReference Package, PackageReference[] Dependencies);
 public sealed record CapabilityCatalog(CapabilityDescriptor[] Providers, string[] InstalledPackages,
-    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] CapabilityPackage[]? Packages = null);
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] CapabilityPackage[]? Packages = null)
+{
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? InventoryDiagnostic { get; init; }
+}
 public sealed class OperatorSession
 {
     OperatorIdentity? identity;

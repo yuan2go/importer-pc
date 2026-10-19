@@ -110,7 +110,7 @@ public partial class ParcelViewModel
     {
         installedCatalog = catalog;
         InstalledProviderParameters = Wire.Encode(catalog); Changed(nameof(InstalledProviderParameters));
-        InstalledPackages = "已安装签名包（安装不代表绑定、激活或健康）：" + string.Join(" · ", catalog.InstalledPackages); Changed(nameof(InstalledPackages));
+        InstalledPackages = (catalog.InventoryDiagnostic is null ? "" : catalog.InventoryDiagnostic + "\n") + "已安装签名包（安装不代表绑定、激活或健康）：" + string.Join(" · ", catalog.InstalledPackages); Changed(nameof(InstalledPackages));
         InstalledPackageReferences = (catalog.Packages?.Select(x => x.Package) ?? catalog.Providers.Select(x => x.Package).OfType<PackageReference>()).Distinct().ToArray();
         if (SelectedInstalledPackage is null || !InstalledPackageReferences.Contains(SelectedInstalledPackage)) SelectedInstalledPackage = InstalledPackageReferences.FirstOrDefault();
         Changed(nameof(InstalledPackageReferences)); Changed(nameof(SelectedInstalledPackage)); Changed(nameof(NewCapabilityKinds));

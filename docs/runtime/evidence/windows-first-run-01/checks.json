@@ -1,0 +1,80 @@
+{
+  "SourceCommit": "1760200b21199914d73db787c053eacb190d136d",
+  "Checks": [
+    {
+      "Check": "PowerShell baseline",
+      "Scope": "main 524916b; original four test methods",
+      "ExitCode": 0
+    },
+    {
+      "Check": "Identity/setup control flow",
+      "Command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll --runtime-identity",
+      "ExitCode": 0,
+      "PassLines": 22,
+      "WindowsTokenAndAcl": "NOT_RUN"
+    },
+    {
+      "Check": "PowerShell entry dispatch",
+      "Command": "IPC_TEST_PWSH=<PowerShell7> python3 -m unittest discover -s scripts -p test_runtime_identity.py -v",
+      "ExitCode": 0,
+      "TestMethods": 7,
+      "WindowsTokenAndAcl": "NOT_RUN"
+    },
+    {
+      "Check": "Standalone guide regression",
+      "Command": "python3 -m unittest discover -s scripts -p test_release_documents.py -v",
+      "ExitCode": 0,
+      "TestMethods": 2
+    },
+    {
+      "Check": "Three standalone Application guide inventories",
+      "ExitCode": 0
+    },
+    {
+      "Check": "Sportmaster/DirectPlc/WcsToPlc Assembly builds",
+      "SourceCommit": "1760200b21199914d73db787c053eacb190d136d",
+      "ExitCode": 0,
+      "Warnings": 0,
+      "Errors": 0
+    },
+    {
+      "Check": "Sportmaster self-contained win-x64 desktop publish",
+      "SourceCommit": "1760200b21199914d73db787c053eacb190d136d",
+      "ExitCode": 0,
+      "Warnings": 0,
+      "Errors": 0,
+      "WindowsExecution": "NOT_RUN"
+    },
+    {
+      "Check": "Native isolated setup verification source compiled",
+      "Command": "dotnet tests/Ipc.Verification/bin/Debug/net10.0/Ipc.Verification.dll --windows-runtime-setup",
+      "Execution": "NOT_RUN_REQUIRES_ELEVATED_WINDOWS"
+    },
+    {
+      "Check": "Actual portable duplicate owner exclusion",
+      "ExitCode": 0,
+      "FirstOwnerExitCode": 0,
+      "SecondOwnerRejected": true,
+      "FirstOwnerStillServedSnapshot": true,
+      "WindowsFileLockSemantics": "NOT_RUN"
+    }
+  ],
+  "PublishedLogs": "Local worktree/temp paths redacted and trailing whitespace trimmed; original logs retained locally with hashes below",
+  "OriginalLogSha256": {
+    "identity-build.log": "9b5cb1b9d9c94fa32f5b9b82869928e7a5191916e9a54995d034d0c9eb6f78a9",
+    "runtime-identity-green.log": "a058466b6b10a7dc2cd33e837977ea3328ac15bcce78772d5a50ccc6d678cac0",
+    "script-green.log": "083646d6cdd9cdf651edb5f7768faa5642589aad62f448b8e5e1eb5da6eff8e8",
+    "portable-smoke-original.log": "0f488e6119e8bbd0e33c13cf3ce8bea4a64def5f03b88a1a5c44c2cb9b7f2998",
+    "sportmaster-build.log": "2fb89c3f7ac78625fdbf87cd76a9ce4564660a58a1519dec7d07ae1142a6cc02",
+    "direct-plc-build.log": "d19ca3e7e8175cbfb1ca5286bbf80c40b76c69445f018cd77bdb71c4e49c102d",
+    "wcs-to-plc-build.log": "4cf2c306f3b8243eea19d6b3ad0d1ddc7e23d51bd96e3c30ffe40bd8189efb1d",
+    "final-portable-package.log": "dab0dddd2c3e4b2955d1710a659a9c379480fb7900f8dbc8499675d00c2610ee",
+    "final-windows-package.log": "552e7ef916814021b99868d076c98fe9bd29f6aa023956bfc91c818b44f2f7fd",
+    "identity-red.log": "84646ee027f8efc00c8b7697eb5aa3086b0e4bba5e0d6b15298df5da0f7c78fe",
+    "script-red.log": "54a59f01402c4f4837fdffb19003ce485097cdc13a3a58e4d2d5e5fb8d9c0aab"
+  },
+  "HarnessCorrection": "First smoke verifier incorrectly attempted line-by-line decoding of indented JSON after the process exited 0. Corrected to JSONDecoder.raw_decode over the original complete stdout. No product change or second runtime was needed.",
+  "WindowsNative": "NOT_RUN",
+  "RealSdkDeviceField": "BLOCKED",
+  "Production": "NOT_READY"
+}

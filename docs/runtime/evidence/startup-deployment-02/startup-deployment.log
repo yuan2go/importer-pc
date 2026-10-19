@@ -1,0 +1,38 @@
+EvidenceRoot=${SYNTHETIC_EVIDENCE_ROOT}
+PASS built-in providers survive malformed optional inventory with an explicit diagnostic
+PASS catalog and basic validation create no runtime or database
+PASS Production still refuses absent real capabilities
+PASS offline read finds seed without creating runtime/data
+PASS unchanged offline form preserves complete original configuration
+PASS typed offline editor preserves schema/topology/identity and edits basic settings
+PASS offline static validation opens no runtime/database
+PASS authority checked before creating data
+PASS denied maintenance leaves absent root absent
+PASS first offline save preserves Effective and stages Pending without creating DB
+PASS original seed bytes retained before first stage
+PASS stale editor hash rejected
+PASS CAS rejection preserves configuration bytes
+PASS live application ownership blocks maintenance
+PASS offline editing cannot change station identity
+PASS offline stage leaves original DB/WAL bytes and file set unchanged
+PASS corrupt original is diagnosed and preserved without replacement
+PASS complete backup preview makes no destination
+PASS restore requires original runtime ownership release
+PASS complete backup restores isolated custody while preserving corrupt original and source DB
+PASS restore cannot overwrite an existing target
+PASS restore pins complete backup manifest as well as DB
+PASS offline operations never construct reader/SDK ports
+PASS support summary omits configuration parameters and payloads
+PASS support export does not overwrite previous summary
+PASS missing extension fixture retains structurally valid binding identities
+PASS missing configured extension still refuses validation
+PASS fixed media is copied and reverified before deployment registration
+PASS installed release retains checksummed operating guides
+PASS side-by-side deployment refuses existing release destination
+PASS extra unregistered DLL is rejected
+PASS changed application binary is rejected
+PASS source mutation during copy refuses publication
+PASS incomplete media has no successful deployment location
+PASS linked media ancestor is refused
+PASS installer refuses test publisher in Production
+PASS installer refuses private signing material

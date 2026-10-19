@@ -1,0 +1,21 @@
+{
+  "ObservedPullRequest": {
+    "baseRefName": "main",
+    "headRefOid": "b3e9eb72e645004273912a049f3405901b77203f",
+    "mergeStateStatus": "CLEAN",
+    "mergeable": "MERGEABLE",
+    "state": "OPEN",
+    "title": "完善 Windows 启动修复与部署：离线维护、可选扩展隔离、原生安装向导",
+    "url": "https://github.com/yuan2go/importer-pc/pull/44"
+  },
+  "SourceCommit": "e79a8bfdc65328619c77013fb314eaaef4a35a2f",
+  "MainCommit": "524916b2088f267175bec46daf01e6df020932b7",
+  "Publication": "Branch pushed, PR44 title/body updated and attached; not merged; no GitHub Release created",
+  "Candidates": "Four locally retained immutable-name archives; identities in artifacts.json",
+  "WindowsNative": "NOT_RUN",
+  "PhysicalIntegration": "BLOCKED",
+  "Production": "NotReady",
+  "OriginalFirstRunCandidates": "Retained unchanged",
+  "ParallelPR45": "Not modified",
+  "ReceiptMeaning": "Observed published implementation/evidence head before this receipt-only commit; frozen source/media inputs remain e79a8bf"
+}

@@ -1,0 +1,12 @@
+test_allowed_dispatch_preserves_existing_launch_arguments (test_runtime_identity.RuntimeIdentityTests.test_allowed_dispatch_preserves_existing_launch_arguments) ... ok
+test_denial_stops_every_runtime_entry_before_other_children (test_runtime_identity.RuntimeIdentityTests.test_denial_stops_every_runtime_entry_before_other_children) ... ok
+test_direct_runtime_guard_precedes_configuration_and_storage (test_runtime_identity.RuntimeIdentityTests.test_direct_runtime_guard_precedes_configuration_and_storage) ... ok
+test_double_click_cmd_has_no_powershell_dependency (test_runtime_identity.RuntimeIdentityTests.test_double_click_cmd_has_no_powershell_dependency) ... ok
+test_maintenance_dispatch_does_not_require_runtime_identity (test_runtime_identity.RuntimeIdentityTests.test_maintenance_dispatch_does_not_require_runtime_identity) ... ok
+test_run_and_console_choose_the_same_default_root_without_manual_creation (test_runtime_identity.RuntimeIdentityTests.test_run_and_console_choose_the_same_default_root_without_manual_creation) ... ok
+test_setup_does_not_start_a_business_child (test_runtime_identity.RuntimeIdentityTests.test_setup_does_not_start_a_business_child) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 18.993s
+
+OK

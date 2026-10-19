@@ -1,6 +1,6 @@
 #requires -Version 7.0
 param(
-    [Parameter(Mandatory)][ValidateSet('Verify','Diagnose','ProvisionData','Run','Console','Shortcut','Inspect','Backup','PlanRestore','Restore','Export')][string]$Action,
+    [ValidateSet('Verify','Diagnose','Install','ProvisionData','Run','Console','Shortcut','Inspect','Backup','PlanRestore','Restore','Export')][string]$Action = 'Run',
     [string]$Release = $PSScriptRoot,
     [string]$DataRoot,
     [string]$Configuration,
@@ -38,7 +38,7 @@ foreach ($required in @('ASSEMBLY.json','app/Ipc.Assembly.exe','app/application-
 }
 foreach ($item in Get-ChildItem -LiteralPath $Release -Recurse -Force) {
     if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'Linked release entry refused' }
-    if (-not $item.PSIsContainer -and $item.Name -ne 'SHA256SUMS' -and -not $seen.Contains($item.FullName)) { throw "Unlisted release file: $($item.FullName)" }
+    if (-not $item.PSIsContainer -and $item.Name -ne 'SHA256SUMS' -and $item.FullName -ne (Join-Path $Release 'deployment-location.json') -and -not $seen.Contains($item.FullName)) { throw "Unlisted release file: $($item.FullName)" }
 }
 $assembly = Get-Content -LiteralPath (Join-Path $Release 'ASSEMBLY.json') -Raw | ConvertFrom-Json
 $app = Join-Path $Release 'app/Ipc.Assembly.exe'
@@ -46,18 +46,30 @@ function Invoke-App([string[]]$Arguments) {
     & $app @Arguments
     if ($LASTEXITCODE -ne 0) { throw "Application maintenance failed ($LASTEXITCODE). Original data, release and incomplete output are retained." }
 }
+$installed = Invoke-App @('--action','installed-location') | ConvertFrom-Json
 if ($Action -eq 'Verify') { [ordered]@{Status='FilesVerified';Application=$assembly.ApplicationId;SourceCommit=$assembly.SourceCommit;ManifestSha256=(Get-FileHash -LiteralPath (Join-Path $Release 'SHA256SUMS')).Hash;Windows='NOT_RUN';Production='NOT_QUALIFIED'} | ConvertTo-Json; return }
 if ($Ui -eq 'supply-station' -and $assembly.ApplicationId -ne 'sportmaster') { throw 'supply-station belongs only to Sportmaster' }
+if (-not $DataRoot -and $Action -in @('Run','Console','Shortcut')) {
+    $DataRoot = if ($null -ne $installed) { $installed.DataRoot } else { Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'ImporterPc/data' }
+}
 if ($DataRoot) {
     $DataRoot = [IO.Path]::GetFullPath($DataRoot); Ordinary $DataRoot
     if ($DataRoot.Equals($Release,[StringComparison]::OrdinalIgnoreCase) -or $DataRoot.StartsWith($Release + [IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)) { throw 'Runtime data must be outside immutable release' }
 }
-if (-not $Configuration) { $Configuration = Join-Path $Release 'desktop/config' }
+if (-not $Configuration) { $Configuration = if ($null -ne $installed) { $installed.ConfigurationDirectory } else { Join-Path $Release 'desktop/config' } }
 $Configuration = (Resolve-Path -LiteralPath $Configuration).Path; Ordinary $Configuration
-# Use the same protected policy/ACL/SID validation as direct executable startup.
-# This read-only helper must succeed before deployment checks or a runtime child.
-if ($Action -in @('Diagnose','Run','Console')) { Invoke-App @('--action','runtime-check') }
+# Runtime entry points install missing machine policy through the same UAC helper
+# as direct EXE startup, then revalidate it. Diagnose remains strictly read-only.
+if ($Action -eq 'Console') { Invoke-App @('--action','runtime-prepare') }
+if ($Action -eq 'Diagnose') { Invoke-App @('--action','runtime-check') }
 switch ($Action) {
+    Install {
+        $setupArgs = @('--setup','--config',$Configuration)
+        if ($DataRoot) { $setupArgs += @('--data-root',$DataRoot) }
+        & (Join-Path $Release 'desktop/Ipc.Desktop.exe') @setupArgs
+        if ($LASTEXITCODE -ne 0) { throw "Installation wizard failed ($LASTEXITCODE); existing data retained" }
+        return
+    }
     Diagnose {
         Invoke-App @('--action','business-identity')
         Invoke-App @('--action','deployment-check','--file',(Join-Path $Configuration 'business.json'))
@@ -82,7 +94,6 @@ switch ($Action) {
     }
     Run {
         if (-not $DataRoot) { throw 'Explicit DataRoot required' }
-        Invoke-App @('--action','deployment-check','--file',(Join-Path $Configuration 'business.json'))
         & (Join-Path $Release 'desktop/Ipc.Desktop.exe') --config $Configuration --data-root $DataRoot --ui $Ui
         if ($LASTEXITCODE -ne 0) { throw "Desktop failed ($LASTEXITCODE); retain original root and diagnose. No fallback root was created." }
     }

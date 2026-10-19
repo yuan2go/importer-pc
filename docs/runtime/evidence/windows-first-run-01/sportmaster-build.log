@@ -1,0 +1,20 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Ipc.Platform -> [WORKTREE]/.artifacts/first-run-checks/build-sportmaster/bin/Ipc.Platform/debug/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> [WORKTREE]/.artifacts/first-run-checks/build-sportmaster/bin/Ipc.Application.Supply.Contracts/debug/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> [WORKTREE]/.artifacts/first-run-checks/build-sportmaster/bin/Ipc.Platform.Storage/debug/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> [WORKTREE]/.artifacts/first-run-checks/build-sportmaster/bin/Ipc.Application.Supply/debug/Ipc.Supply.dll
+  Ipc.Application.Contracts -> [WORKTREE]/.artifacts/first-run-checks/build-sportmaster/bin/Ipc.Application.Contracts/debug/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> [WORKTREE]/.artifacts/first-run-checks/build-sportmaster/bin/Ipc.Application.ParcelFlow/debug/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> [WORKTREE]/.artifacts/first-run-checks/build-sportmaster/bin/Ipc.Application.Sportmaster/debug/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> [WORKTREE]/.artifacts/first-run-checks/build-sportmaster/bin/Ipc.Reference.Protocol/debug/Ipc.Reference.Protocol.dll
+  Ipc.Components -> [WORKTREE]/.artifacts/first-run-checks/build-sportmaster/bin/Ipc.Components/debug/Ipc.Components.dll
+  Ipc.Drivers -> [WORKTREE]/.artifacts/first-run-checks/build-sportmaster/bin/Ipc.Drivers/debug/Ipc.Drivers.dll
+  Ipc.Integrations -> [WORKTREE]/.artifacts/first-run-checks/build-sportmaster/bin/Ipc.Integrations/debug/Ipc.Integrations.dll
+  Ipc.Assembly -> [WORKTREE]/.artifacts/first-run-checks/build-sportmaster/bin/Ipc.Assembly/debug/Ipc.Assembly.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:02.83

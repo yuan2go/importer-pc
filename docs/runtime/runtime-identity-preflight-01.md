@@ -1,3 +1,5 @@
+> 当前Windows首次启动修复见[WINDOWS-FIRST-RUN-01](../work-packages/WP-IPC-WINDOWS-FIRST-RUN-01.md)：软件自动准备机器策略及数据目录，指定账户在UAC未提权状态下可运行；deny-only管理员组不再单独构成拒绝。原SID修复的只读前置检查、维护隔离与历史证据保留，旧候选不自动获得新行为。Windows原生验证仍NOT_RUN。
+
 # 运行账户SID前置修复 · 2026-10-19
 
 基线main `be7956447054054dfdcfce725e8fbbbdfc87407a`；PR37远端已MERGED，head `1d486b34d3e3bcce2c6f0040a347bd1a5264024c`，merge `07095fdf4e04519934076ede24bfa8607207f9bc`。PR39/40也已合并，无开放PR。工作范围见[本包](../work-packages/WP-IPC-RUNTIME-IDENTITY-PREFLIGHT-01.md)。

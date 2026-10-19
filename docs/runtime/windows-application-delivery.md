@@ -8,44 +8,30 @@
 
 ## 媒介与依赖诊断
 
-从独立交付记录核ZIP SHA256，解压至新的 `C:\Program Files\ImporterPc\releases\<source-sha>\<application>`，不覆盖旧发布。三个Application各有自己的ZIP，不借用Sportmaster媒介启动PLC业务。保留SHA256SUMS、app/desktop的application-release.json、composition.lock.json、离线包及原签名身份；包内hash不是独立发布者信任。
+本次启动/部署增量以[原生安装与启动修复指南](startup-deployment-02.md)及[STARTUP-DEPLOYMENT-02工作包](../work-packages/WP-IPC-STARTUP-DEPLOYMENT-02.md)为准。固定旧候选、旧验收记录和旧SourceCommit不重写。下面脚本为显式维护兼容入口，正常安装和启动不依赖PowerShell。
 
-Windows自包含候选带.NET/WPF运行时；PowerShell7为外部前置，不含在媒介中，Windows PowerShell5.1不能代替。application.cmd在找不到pwsh.exe时明确退出2并指向本页。实际Runtime版本以各runtimeconfig.json和随包运行时文件为准，固定SDK10.0.402与锁定NuGet不代表客户自动得到维护更新。PowerShell从[官方Windows安装页](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell-on-windows)取得，离线安装包需维护者单独核来源/hash。OS生命周期仍按[官方.NET Windows支持矩阵](https://learn.microsoft.com/en-us/dotnet/core/install/windows)核具体SKU/build；框架支持不替代本产品、SDK及现场资格。
+## 首次启动与自动配置
 
-在普通PowerShell7终端设置实际路径（以下站名为合成示例）：
+完整解压可信Windows媒介后双击`Setup.cmd`；首次从未安装媒介双击`application.cmd`或`desktop/Ipc.Desktop.exe`也会进入原生四步向导。选择已有运行账户、原数据根、配置来源及可选独立信任/离线包，检查摘要后授权一次UAC。安装自动创建受保护策略、版本程序目录、新数据根和开始菜单入口；日常进程保持未提权。默认原用户及`%LOCALAPPDATA%\ImporterPc\data`，升级自动带入既有位置；不会以新seed覆盖数据账。已知机级政策/其他账户材料保持原值，身份冲突明确失败，不能删lease绕过。
+
+开始菜单“运行”读取受保护的同版本部署位置；“启动修复”无需业务Start成功，提供配置/参数表单、待生效保存、摘要导出与完整备份隔离恢复。启动失败页也可进入维护、安装修复或重试。原Stop/Dispose未完成时不能创建第二个实例。详情及失败保旧、种子修复、精确扩展/Production边界见[随包向导指南](startup-deployment-02.md)。Windows原生交互、UAC、ACL、快捷方式与升级中断仍NOT_RUN。
+
+指定账户属于Administrators组但仅有UAC deny-only成员身份时允许普通运行；真正提升的日常进程、SYSTEM/服务账户和非指定SID继续拒绝。业务/API身份守卫仍只读，不在领域API中提权。安装以ProgramFiles存放程序、ProgramData存放机级配置，数据独立；并排程序修复不回滚数据库。只读基本配置不要求可选扩展库存就绪，确实绑定的扩展缺失仍拒绝校验和启动。
+
+### 可选脚本维护
+
+Windows候选自包含.NET/WPF；原生Setup、Maintenance和普通EXE不要求PowerShell。显式脚本命令仍需PowerShell7；脚本按SHA256SUMS验证媒介，并通过实际应用只读校验`deployment-location.json`。源码固定SDK10.0.402和锁定依赖不等于客户设备/OS生命周期或SDK资格。当前候选工程仍以Windows11 build26100+ x64为参考；实际Windows、SDK和现场必须另验。
 
 ```powershell
-$release = 'C:\Program Files\ImporterPc\releases\SOURCE_SHA\sportmaster'
-$data = 'D:\ImporterPcData'
+$release = 'C:\Program Files\ImporterPc\releases\APPLICATION-SOURCE-UNIQUE'
 & "$release\application.ps1" -Action Verify
-& "$release\application.ps1" -Action Diagnose -DataRoot $data
+& "$release\application.ps1" -Action Install # 打开原生安装向导
+& "$release\application.ps1" -Action Diagnose -DataRoot 'D:\ImporterPcData'
+& "$release\application.ps1" -Action Run # 读取同版本部署位置；直接EXE也相同
+& "$release\application.ps1" -Action Console
 ```
 
-Verify检查完整文件集合、hash、越界及链接路径；Diagnose、Run、Console先调用`--action runtime-check`，复用MachineRuntimePolicy校验受保护的机器策略、schema/固定租约目录、ACL与当前SID，再执行业务版本/组合及deployment-check或启动程序。缺失/不可读/畸形策略、错误SID、管理员（包括UAC过滤令牌中的deny-only管理员组）或系统服务账户均拒绝日常启动。预检只读，不创建目录、租约或数据库；直接启动桌面/控制台EXE及直接调用ParcelRuntime.StartAsync也在配置持久化、数据库访问/迁移/恢复前执行相同门禁。完整修复范围与验证边界见[身份前置门禁](runtime-identity-preflight-01.md)。
-
-配置无效、缺包/依赖/机器策略或SID错误明确失败；没有用Simulation回退Production。坏配置不通过覆盖旧configuration.json或换空根恢复。配置根参数可用 `-Configuration <绝对配置目录>`，其business.json是seed，持久Effective/Pending仍属于数据根内唯一配置账。Verify和显式安装/维护分支保持原权限规则；runtime-check不授予维护权限，预检成功不证明设备/协议/现场可用。
-
-## 安装与普通账户
-
-由提升的维护会话先执行protect-release.ps1，再provision-runtime.ps1指定实际普通RuntimeAccount；机器政策已存在时不删除重建，核原SID和ACL。安装脚本必须从保护后的可信Program Files发行目录执行。数据卷使用独立新目录，ProvisionData创建仅SYSTEM/Administrators及指定运行SID可写的目录；已有目录拒绝覆盖，转入ACL核对，不删除旧数据。
-
-```powershell
-& "$release\protect-release.ps1" -Release $release -RuntimeAccount 'MACHINE\station-user'
-& "$release\provision-runtime.ps1" -RuntimeAccount 'MACHINE\station-user'
-& "$release\application.ps1" -Action ProvisionData -DataRoot $data -RuntimeAccount 'MACHINE\station-user'
-# 仅使用独立渠道提供的批准信任；Simulation示例可为TestOnly，Production不能使用测试根
-& "$release\provision-extensions.ps1" -Mode Simulation -TrustFile 'D:\ApprovedMedia\trust.json'
-```
-
-provision-extensions.ps1沿机器政策读取指定运行SID；安装/恢复原操作/绑定/校验/StageConfiguration/受控重启见[扩展指南](../extensions/developer-guide.md)。安装不等于绑定或激活，资格/启用/健康/业务可用分别检查。提权拒绝或错误SID不得改成成功。日常以指定普通账户运行，不保留管理员桌面生产作业；机级站点/设备租约继续阻止另一个登录会话或不同数据根重复拥有设备，不能删lease绕过。
-
-```powershell
-& "$release\application.ps1" -Action Run -DataRoot $data -Ui classic
-# Sportmaster另可选择supply-station；DirectPlc/WcsToPlc只能classic
-& "$release\application.ps1" -Action Shortcut -DataRoot $data -File "$env:USERPROFILE\Desktop\Sportmaster-candidate.lnk" -Ui supply-station
-```
-
-快捷方式保存绝对程序/配置/数据路径及工作目录；从其他cwd启动仍指向相同目录。启动先展示真实阶段及诊断，配置预检、持久账/原件/精确实现检查及真正设备Start是独立门禁；不显示虚构百分比，启动失败不进入可作业状态。DirectPlc完整UI延期保留，共用classic仅作为现有参考HMI；指定商用场景的可操作性须另验。Sportmaster不新增展图/长期图库。
+手工protect-release/provision-runtime/ProvisionData/provision-extensions保留为明确维护兼容工具；正常部署由向导完成，不要求用户执行它们。脚本高级参数`-Configuration`和`-DataRoot`仍可显式指向原位置；配置账Effective/Pending是唯一业务权威。独立信任轮换及旧库迁移须走各自现行守卫，不自动改政策、清责任或生成测试信任。
 
 ## 作业、故障与诊断
 

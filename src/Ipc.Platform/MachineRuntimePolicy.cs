@@ -82,12 +82,12 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
     {
         if (string.IsNullOrWhiteSpace(currentSid) || string.IsNullOrWhiteSpace(designatedSid) || currentSid != designatedSid)
             throw new UnauthorizedAccessException("This Windows account is not the designated station runtime account");
-        // WindowsIdentity.Groups/IsInRole omit deny-only Administrators membership
-        // under UAC. WindowsIdentity emits that membership as DenyOnlySid claims.
+        // Deny-only Administrators membership cannot grant administrative access.
+        // Allow the original UAC-filtered user; reject enabled membership/elevation.
         var privileged = currentSid is "S-1-5-18" or "S-1-5-19" or "S-1-5-20" || claims.Any(claim =>
-            claim.Value == "S-1-5-32-544" && claim.Type is ClaimTypes.GroupSid or ClaimTypes.DenyOnlySid or ClaimTypes.PrimaryGroupSid or ClaimTypes.DenyOnlyPrimaryGroupSid);
+            claim.Value == "S-1-5-32-544" && claim.Type is ClaimTypes.GroupSid or ClaimTypes.PrimaryGroupSid);
         if (requireOrdinaryAccount && privileged)
-            throw new UnauthorizedAccessException("Daily runtime requires the designated ordinary Windows account; use a separate elevated session for maintenance");
+            throw new UnauthorizedAccessException("Daily runtime requires the designated Windows account without elevation. Start normally; use a separate elevated session for maintenance.");
     }
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     static string ResolveWindowsLeaseRoot(string? requestedRoot, bool requireOrdinaryAccount)
@@ -122,13 +122,13 @@ public sealed record MachineRuntimePolicy(int SchemaVersion, string RuntimeAccou
         for (var current = new FileInfo(path).Directory; current is not null && !string.Equals(current.FullName, boundary, StringComparison.OrdinalIgnoreCase); current = current.Parent)
         { RejectLinks(current.FullName); RequireProtectedAcl(current, null); }
     }
-    static void RejectLinks(string path)
+    internal static void RejectLinks(string path)
     {
         if ((File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0)
             throw new InvalidDataException("Machine ownership policy and lease paths must not be reparse points");
     }
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-    static void RequireProtectedAcl(FileSystemInfo item, string? writerSid)
+    internal static void RequireProtectedAcl(FileSystemInfo item, string? writerSid)
     {
         FileSystemSecurity acl = item is DirectoryInfo directory
             ? directory.GetAccessControl(AccessControlSections.Access | AccessControlSections.Owner)

@@ -67,6 +67,13 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
         directory = Path.Combine(launch.DataRoot, seed.Mode.ToString(), seed.StationId, Id);
         lease = new(directory, ["application-owner"]);
         if (File.Exists(Path.Combine(directory, "MIGRATION-SOURCE-FENCED.json"))) throw new InvalidOperationException("原数据根已在迁移中退役；保留原件，从部署登记的新根继续隔离核对，不能双活");
+        var configurationFile = Path.Combine(directory, "configuration.json");
+        if (!File.Exists(configurationFile) && File.Exists(Path.Combine(directory, Id + ".db")))
+            throw new InvalidDataException("原数据库存在但配置账缺失；保留原目录，通过完整备份恢复，不允许使用种子补建配置账");
+        if (!File.Exists(Path.Combine(directory, Id + ".db")) && new[] { "receipts", "images" }.Any(n => Directory.Exists(Path.Combine(directory, n)) && Directory.EnumerateFileSystemEntries(Path.Combine(directory, n)).Any()))
+            throw new InvalidDataException("缺少业务库但存在原件；保留原根，不创建空库代替原责任");
+        if (!File.Exists(Path.Combine(directory, "RESTORED-ISOLATED.json")) && !File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json")))
+            ParcelMachineOrigin.EnsureNew(directory, seed);
         overloadMarker = Path.Combine(directory, "overload.json"); overload = File.Exists(overloadMarker) ? 1 : 0;
         if (overload != 0)
         {
@@ -75,7 +82,7 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
                 foreach (var position in priorPositions.EnumerateArray()) overloadedPositions.TryAdd(position.GetString()!, 0);
         }
         if (File.Exists(Path.Combine(directory, "RESTORE-INCOMPLETE.json"))) throw new InvalidDataException("Interrupted restore remains isolated; preserve original recovery set");
-        configuration = new(Path.Combine(directory, "configuration.json"), seed, definition.Validate);
+        configuration = new(configurationFile, seed, definition.Validate);
         ValidateDeploymentIdentity(seed);
         // Refuse old unresolved responsibilities before either future-reader markers
         // or confirmation/recovery writes can make the original release unusable.

@@ -70,33 +70,51 @@ public static partial class WindowsDeploymentSetup
         if (Directory.Exists(location.ReleaseRoot)) WriteProtected(Path.Combine(location.ReleaseRoot, "deployment-retired.json"), retired, sid);
         WriteProtected(Registration(application), retired, sid); // one irreversible detach; reentry reads this state
         ProjectInstalledApplication(retired); removeShortcuts(location);
-        var restart = false; var remaining = new List<string>();
-        var files = plan.Files;
+        var cleanup = CleanRemovalInventory(location.ReleaseRoot, plan.Files, path => MoveFileEx(path, null, 4));
+        var status = cleanup.RestartRequired ? "RestartRequired" : cleanup.Remaining.Length == 0 ? "RemovedDataRetained" : "RemovedWithRetainedFiles";
+        WriteProtected(operation, plan with { Status = status, Remaining = cleanup.Remaining, RestartRequired = cleanup.RestartRequired }, sid);
+        return new(status, operation, [location.DataRoot, location.ConfigurationDirectory, .. cleanup.Remaining], cleanup.RestartRequired);
+    }
+    internal static (bool RestartRequired, string[] Remaining) CleanRemovalInventory(string root, string[] files, Func<string, bool> scheduleDelete)
+    {
+        root = Path.GetFullPath(root); DeploymentPaths.RequireOrdinaryAncestors(root);
+        if (files.Length > 16384 || files.Any(n => !ExtensionPackages.SafePath(n)) || files.Distinct(StringComparer.OrdinalIgnoreCase).Count() != files.Length)
+            throw new InvalidDataException("Unsafe removal inventory");
+        if (!Directory.Exists(root))
+        {
+            if (File.Exists(root)) throw new InvalidDataException("Removal directory was replaced by a file");
+            return (false, []); // Completed deletion/reboot, possibly before the journal's final write.
+        }
+        // Validate the entire fixed inventory before deleting the first file.
         foreach (var name in files)
         {
-            if (!ProductValidation.IsSafeRelativeFile(location.ReleaseRoot, name, out var path)) throw new InvalidDataException("Unsafe removal inventory");
+            if (!ProductValidation.IsSafeRelativeFile(root, name, out var path)) throw new InvalidDataException("Unsafe removal inventory");
+            DeploymentPaths.RequireOrdinaryAncestors(path);
+        }
+        var restart = false; var remaining = new List<string>();
+        foreach (var name in files)
+        {
+            if (!ProductValidation.IsSafeRelativeFile(root, name, out var path)) throw new InvalidDataException("Unsafe removal inventory");
             DeploymentPaths.RequireOrdinaryAncestors(path);
             if (!File.Exists(path)) continue;
             try { File.Delete(path); }
             catch (Exception error) when (error is IOException or UnauthorizedAccessException)
             {
-                if (!MoveFileEx(path, null, 4)) throw new Win32Exception(Marshal.GetLastWin32Error(), "卸载文件被占用且无法登记重启删除；保留操作回执");
-                restart = true; remaining.Add(Path.GetRelativePath(location.ReleaseRoot, path));
+                if (!scheduleDelete(path)) throw new Win32Exception(Marshal.GetLastWin32Error(), "卸载文件被占用且无法登记重启删除；保留操作回执");
+                restart = true; remaining.Add(Path.GetRelativePath(root, path));
             }
         }
         // Only empty, inventoried directories; no recursive delete, no shared drivers,
         // no other releases, policies, data, package consumers or arbitrary extra files.
-        var directories = files.Select(n => Path.GetDirectoryName(Path.Combine(location.ReleaseRoot, n))!).SelectMany(p => Parents(p, location.ReleaseRoot)).Distinct(StringComparer.OrdinalIgnoreCase).OrderByDescending(p => p.Length);
+        var directories = files.Select(n => Path.GetDirectoryName(Path.Combine(root, n))!).SelectMany(p => Parents(p, root)).Distinct(StringComparer.OrdinalIgnoreCase).OrderByDescending(p => p.Length);
         foreach (var directory in directories)
         {
             DeploymentPaths.RequireOrdinaryAncestors(directory);
             if (!Directory.Exists(directory)) continue;
             try { Directory.Delete(directory, false); }
-            catch (IOException) { if (restart && MoveFileEx(directory, null, 4)) continue; remaining.Add(directory); }
+            catch (IOException) { if (restart && scheduleDelete(directory)) continue; remaining.Add(directory); }
         }
-        var status = restart ? "RestartRequired" : remaining.Count == 0 ? "RemovedDataRetained" : "RemovedWithRetainedFiles";
-        WriteProtected(operation, plan with { Status = status, Remaining = remaining.ToArray(), RestartRequired = restart }, sid);
-        return new(status, operation, [location.DataRoot, location.ConfigurationDirectory, .. remaining], restart);
+        return (restart, remaining.ToArray());
     }
     static IEnumerable<string> Parents(string directory, string root)
     {

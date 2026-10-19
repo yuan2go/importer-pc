@@ -85,37 +85,37 @@
         {
           "Kind": "weight",
           "Implementation": "extension:reference.parcel-capabilities/parcel-weight",
-          "Version": "2.2.3",
+          "Version": "2.2.4",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "login",
           "Implementation": "extension:reference.parcel-capabilities/parcel-login",
-          "Version": "2.2.3",
+          "Version": "2.2.4",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "camera",
           "Implementation": "extension:reference.parcel-capabilities/parcel-camera",
-          "Version": "2.2.3",
+          "Version": "2.2.4",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "upload",
           "Implementation": "extension:reference.parcel-capabilities/parcel-upload",
-          "Version": "2.2.3",
+          "Version": "2.2.4",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "plc",
           "Implementation": "extension:reference.parcel-capabilities/parcel-plc",
-          "Version": "2.2.3",
+          "Version": "2.2.4",
           "Contract": "PARCEL-REFERENCE-v1"
         },
         {
           "Kind": "observation",
           "Implementation": "extension:reference.barcode/barcode-source",
-          "Version": "1.3.3",
+          "Version": "1.3.4",
           "Contract": "CONTROLLED-OBSERVATION-v1"
         }
       ]

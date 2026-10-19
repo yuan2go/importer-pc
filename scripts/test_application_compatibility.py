@@ -41,9 +41,9 @@ class CompatibilityTests(unittest.TestCase):
 
     def test_current_signed_provider_versions_do_not_relabel_old_packages(self):
         root = Path(__file__).resolve().parent.parent
-        versions = {'reference.parcel-capabilities': ('2.2.3', '2.2.2'),
-                    'reference.barcode': ('1.3.3', '1.3.2'),
-                    'sportmaster.rcs-task': ('1.1.3', '1.1.2')}
+        versions = {'reference.parcel-capabilities': ('2.2.4', '2.2.3'),
+                    'reference.barcode': ('1.3.4', '1.3.3'),
+                    'sportmaster.rcs-task': ('1.1.4', '1.1.3')}
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             policy = json.loads((root/'config/compatibility'/f'{application}.json').read_bytes())
             for group in policy['ProviderSets']:

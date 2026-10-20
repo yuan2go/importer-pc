@@ -48187,28 +48187,6 @@
       "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization"
     },
     {
-      "path": "src/Ipc.Installer/InstallerWindow.xaml",
-      "storage_scope": "public_repository",
-      "sha256": "5831b9c296d0f7281d8d9b50ebc139a5f1100fe2ce5d7f893bbfec9bde94f0aa",
-      "size_bytes": 2626,
-      "git_blob": "601fd646aab0793d7d31a5447a3e1616642bfed4",
-      "version": "parallel-reconciliation-20261020-02",
-      "status": "current_source_or_preserved_evidence",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
-    },
-    {
-      "path": "src/Ipc.Installer/InstallerWindow.xaml.cs",
-      "storage_scope": "public_repository",
-      "sha256": "5e09958bfc75931f4e44bc1f480ae2ef5f9d20533cf6f25e8f988b0406c59139",
-      "size_bytes": 6418,
-      "git_blob": "3a572efab482cecd40fb2b887370b17511673705",
-      "version": "parallel-reconciliation-20261020-02",
-      "status": "current_source_or_preserved_evidence",
-      "purpose": "Integrated task delivery; historical evidence retains its explicit original source",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
-    },
-    {
       "path": "src/Ipc.Installer/Ipc.Installer.csproj",
       "storage_scope": "public_repository",
       "sha256": "263ef934b8625065668b027d80a76c08864aaff70b4f8d2cfcb80d81b5ca7cec",
@@ -52269,9 +52247,9 @@
       "version": "PUBLICATION-NO-TEST-20261020",
       "status": "source_or_delivery_custody",
       "source": "User-authorized source and existing artifact publication; no tests or builds run",
-      "sha256": "9f9aca0e481fdcde4aa50ce8bb53affc2feb4b7093d87c8b58121be52baab9c2",
-      "size_bytes": 13472,
-      "git_blob": "5413116cc15a7b3c0e6b18ede45d158e88909ddc"
+      "sha256": "ef042f60afd9e285aa02a25e9c4cf59191d6f2d94f05404e8bb9a24e74dbf638",
+      "size_bytes": 13869,
+      "git_blob": "6bf1ef5164ef6c20bd055cc4e5310543def1548d"
     },
     {
       "path": "docs/runtime/publication-parameter-snapshot-20261020.md",
@@ -54904,6 +54882,14 @@
     "implementation": "completed parameter scope and necessary interactions; full UI work package remains partial",
     "windows": "synthetic native WPF HWND/Dispatcher and actual local input at 125%; target IPC NOT_RUN",
     "real_equipment": "NOT_RUN",
-    "field_validation": "NOT_RUN"
+    "field_validation": "NOT_RUN",
+    "inherited_obsolete_entries_removed": {
+      "paths": [
+        "src/Ipc.Installer/InstallerWindow.xaml",
+        "src/Ipc.Installer/InstallerWindow.xaml.cs"
+      ],
+      "deleted_by_existing_main_commit": "10c7335",
+      "reason": "#69 reuses the existing installation window; remove stale current-inventory rows, original historical source remains in Git"
+    }
   }
 }

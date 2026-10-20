@@ -98,3 +98,5 @@ python -m unittest discover -s scripts -p test_application_compatibility.py -v
 Windows Git 默认保护拒绝历史原型中的 aux.js，首次冻结导出因此失败；仅在发布子进程设置 Git core.protectNTFS=false，使用既有 extended-path 导出器保留原件后重试成功。没有删除/改名原设计资产、覆盖并行工作或把首次失败记录为PASS。历史 Codex 工作包在整合时恢复原 main 字节，最终无该文件业务变更。
 
 验证充分后停止扩大范围。当前参数范围已完成，完整 UI 余项和上述外部验收继续保留，不将其标为完成。
+
+最终清单核对发现 main 的 #69 已删除 InstallerWindow.xaml 及 .xaml.cs，而原 manifest 仍留两项当前条目；本包仅清除这两项过期清单记录，不恢复旧安装窗口。原文件/证据保留在 Git 历史（10c7335）。最终4725项索引原字节的 SHA256、大小及 Git blob 全部一致；这仅证明清单字节身份，不代替全量资产政策检查。

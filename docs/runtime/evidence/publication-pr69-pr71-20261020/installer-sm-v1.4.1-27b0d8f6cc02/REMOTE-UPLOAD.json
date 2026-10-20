@@ -1,0 +1,33 @@
+{
+  "source_commit": "27b0d8f6cc0281fd82ee68fcda350233cb0a45ff",
+  "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/installer-sm-v1.4.1-27b0d8f6cc02",
+  "tag": "installer-sm-v1.4.1-27b0d8f6cc02",
+  "assets": [
+    {
+      "name": "CainiaoSupplyStation_SM_Setup_v1.4.1_win-x64.exe",
+      "size": 177478140,
+      "sha256": "062bd4878ff5f5c6c03fc7b0d01a026c59b55703c5d35c04f218eb961b4954e6",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.4.1-27b0d8f6cc02/CainiaoSupplyStation_SM_Setup_v1.4.1_win-x64.exe"
+    },
+    {
+      "name": "DELIVERY.json",
+      "size": 1905,
+      "sha256": "717bc2c6baa9edc80ea6f45b7648f122b4bd37252bd57f446c4afa5e05a90d9d",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.4.1-27b0d8f6cc02/DELIVERY.json"
+    },
+    {
+      "name": "PUBLICATION.json",
+      "size": 568,
+      "sha256": "0f1b588eb2bb5ddd72fa9a5b149e32306e2a637e3c823b3220ef61ed3bc7ab9d",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.4.1-27b0d8f6cc02/PUBLICATION.json"
+    },
+    {
+      "name": "SHA256SUMS",
+      "size": 278,
+      "sha256": "ae60c19f425864fddae16bdcadbda788986336d8a7ee60254f237947a07fc02d",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.4.1-27b0d8f6cc02/SHA256SUMS"
+    }
+  ],
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "rebuild": false
+}

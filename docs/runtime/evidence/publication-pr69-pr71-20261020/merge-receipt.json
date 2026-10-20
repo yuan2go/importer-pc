@@ -1,0 +1,28 @@
+{
+  "baseline_main": "6784d08a7a8f5326607dda83e00d21bc2ed71632",
+  "main_after_pr71": "3af9065fb0634f39dd87bf82b106f3a2d46d13d9",
+  "merged_prs": [
+    {
+      "number": 69,
+      "merge_sha": "c837b1c9ec3bf2fa3ff0290b998b7f6b384c000a"
+    },
+    {
+      "number": 70,
+      "merge_sha": "0facaf9a14815c9762711066229eda9eea049fa9"
+    },
+    {
+      "number": 71,
+      "merge_sha": "3af9065fb0634f39dd87bf82b106f3a2d46d13d9"
+    }
+  ],
+  "unique_commits_before_this_receipt": 20,
+  "ordinary_commits_before_this_receipt": 13,
+  "merge_commits_before_this_receipt": 7,
+  "count_scope": "Canonical Git ancestry from baseline; excludes this receipt commit and its later PR merge. Final count will be queried after merging the receipt PR.",
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "build_repackage_install_runtime": "NOT_RUN_BY_USER_REQUEST",
+  "parameter_source": "5abe82071471d525686352c094dbb79dc7fea3ce",
+  "parameter_state": "IN_PROGRESS_UNTESTED_SNAPSHOT",
+  "parallel_task_contacted": false,
+  "original_workspace_head_and_index_modified_by_publication": false
+}

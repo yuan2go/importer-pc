@@ -1,0 +1,7 @@
+{
+  "source_commit": "3f8a58ba32887df07f6a7817b64afa693f903c50",
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "rebuild": false,
+  "old_versions_overwritten": false,
+  "scope": "PR70原任务生成的Sportmaster1.4.2便携CLI Simulation ZIP及RCS1.2.0合成签名夹具。源码3f8a58ba32887df07f6a7817b64afa693f903c50，原报告在docs/runtime/rcs-heartbeat-01.md。本轮仅上传原文件，不测试、不重建、不覆盖旧版；不是WPF Windows安装包，不含后续参数快照。签名夹具仅Simulation，不提供私钥或测试信任，不表示Production或真实RCS/设备验收。"
+}

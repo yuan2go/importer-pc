@@ -1,0 +1,26 @@
+{
+  "Package": "sportmaster-rcs-task-1.2.0.ipcx",
+  "PackageSha256": "b2c7d2e794630d7bcdde70df6f0b602d35528581792efb863b23de7c36857e44",
+  "PluginSourceCommit": "3f8a58ba32887df07f6a7817b64afa693f903c50",
+  "PluginSourceSha256": "5f231ca056a13a704b435dc744628850701070f96220aa791f8da696554bc572",
+  "DefinitionSha256": "85c8161f20f4bf40339e2b30500851bd2e6ef3eca0743c506a57186e91303514",
+  "HostContractSha256": "880df3699ba77dbbcd55ec5d07d9653badfb71e78acf541647e12e2296655da1",
+  "FrozenHostUnchanged": true,
+  "FrozenCheckerUnchanged": true,
+  "CheckerContractsSha256": {
+    "Ipc.Platform": "880df3699ba77dbbcd55ec5d07d9653badfb71e78acf541647e12e2296655da1",
+    "Ipc.Application.Contracts": "e226bdc43103b496f29d21e399964ef6e35ce52dfff6f8e63975ace380fbeec3"
+  },
+  "Publisher": "synthetic-rcs-heartbeat",
+  "Version": "1.2.0",
+  "ExtensionContract": 1,
+  "Signature": "RSA-PSS/SHA256",
+  "Mode": "Simulation",
+  "ManifestSha256": "437b41ad5daa0096e142ebde5fb3ad4030876b0ea3e499ad2f85471d3d5f28b3",
+  "TrustSha256": "a592ae3dfc2c81faf43b29989d1f97632170171703a1fc5e26c771056586aeb5",
+  "PayloadSha256": {
+    "Ipc.Integrations.SportmasterRcs.dll": "1b48638cbc913b68ab5d55db79f2496df63499536b9d1d63e1ca12f5fa423805"
+  },
+  "DependencyPackages": [],
+  "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK"
+}

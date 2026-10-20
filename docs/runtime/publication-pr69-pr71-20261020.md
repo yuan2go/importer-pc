@@ -16,4 +16,11 @@ PR71与main合并时，代码自动合并，唯一文本冲突为文档索引，
 
 原工作区另有活动任务，本轮采用独立index采集及独立集成工作树，不切换或重置原工作区，不将其后续改动冒充已上传。本轮不生成包含最终合并树的新安装包。既有安装器和心跳介质必须继续标注各自原SourceCommit，不能改标为main或参数1.5版本。
 
-最终远端合并回执、main去重提交数及既有介质上传回执以本轮后续发布记录为准。
+## 已上传的执行产物及实际合并结果
+
+PR71已实际合并为 `3af9065fb0634f39dd87bf82b106f3a2d46d13d9`。截至该提交，相对本轮起点 main 去重增加20个提交，其中13个普通提交、7个合并提交；不按各分支ahead数累加。该数尚不含本发布回执提交及其PR合并提交，最终数字在回执PR合并后重新读取。
+
+- [原单窗口安装器Release](https://github.com/yuan2go/importer-pc/releases/tag/installer-sm-v1.4.1-27b0d8f6cc02)：`CainiaoSupplyStation_SM_Setup_v1.4.1_win-x64.exe`，177478140字节，源码`27b0d8f6cc0281fd82ee68fcda350233cb0a45ff`，SHA256 `062bd4878ff5f5c6c03fc7b0d01a026c59b55703c5d35c04f218eb961b4954e6`。不含后续固定桌面名称及参数快照。
+- [原心跳Simulation产物Release](https://github.com/yuan2go/importer-pc/releases/tag/rcs-heartbeat-simulation-3f8a58ba3288)：源码`3f8a58ba32887df07f6a7817b64afa693f903c50`；便携CLI ZIP 18529462字节，SHA256 `f0491d1e02ce116703a233d1f3c560bb1969359a59ee92d7b5ae0a829535aba5`；RCS1.2.0合成签名夹具23862字节，SHA256 `b2c7d2e794630d7bcdde70df6f0b602d35528581792efb863b23de7c36857e44`。不是WPF安装包，不附私钥或测试信任，不能标为最终main产品包。
+
+Release均使用新独立标签，未覆盖旧版本。仅比对既有文件的大小、SHA256与原交付记录，以及远端上传回执，不运行包内程序。公开上传大小/hash/下载链接见[远端产物回执](evidence/publication-pr69-pr71-20261020/artifact-upload-receipts.json)，合并与计数范围见[合并回执](evidence/publication-pr69-pr71-20261020/merge-receipt.json)。

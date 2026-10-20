@@ -1,0 +1,21 @@
+2026-10-20T02:24:10.0687095Z ##[group]Run python scripts/release-windows.py --profile sportmaster --source '94639550701c4305cf4bdca094b1a8ed8eada067' --output C:/scd-release
+2026-10-20T02:24:10.0687985Z [36;1mpython scripts/release-windows.py --profile sportmaster --source '94639550701c4305cf4bdca094b1a8ed8eada067' --output C:/scd-release[0m
+2026-10-20T02:24:10.0688868Z [36;1mif ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }[0m
+2026-10-20T02:24:10.0749759Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-20T02:24:10.0750040Z env:
+2026-10-20T02:24:10.0750265Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-20T02:24:10.0750639Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-20T02:24:10.0751337Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-20T02:24:10.0751652Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-20T02:24:10.0751996Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-20T02:24:10.0752253Z   DOTNET_ROOT: C:\Program Files\dotnet
+2026-10-20T02:24:10.0752448Z ##[endgroup]
+2026-10-20T02:24:10.7006361Z Traceback (most recent call last):
+2026-10-20T02:24:10.7011876Z   File "D:\a\importer-pc\importer-pc\scripts\release-windows.py", line 313, in <module>
+2026-10-20T02:24:10.7012274Z     main()
+2026-10-20T02:24:10.7093528Z   File "D:\a\importer-pc\importer-pc\scripts\release-windows.py", line 230, in main
+2026-10-20T02:24:10.7095617Z     subprocess.run(['git', 'merge-base', '--is-ancestor', source, main_baseline], cwd=ROOT, check=True)
+2026-10-20T02:24:10.7096358Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\subprocess.py", line 571, in run
+2026-10-20T02:24:10.7198850Z     raise CalledProcessError(retcode, process.args,
+2026-10-20T02:24:10.7199705Z subprocess.CalledProcessError: Command '['git', 'merge-base', '--is-ancestor', '94639550701c4305cf4bdca094b1a8ed8eada067', 'e0beb5d32c6a24a7799ba698731566bca6a6833a']' returned non-zero exit status 1.
+2026-10-20T02:24:10.7706872Z ##[error]Process completed with exit code 1.

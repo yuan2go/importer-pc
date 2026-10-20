@@ -2,6 +2,8 @@
 
 # 已合并实现基线：Sportmaster 原生视觉产品化
 
+最新 main 续核：[设计增量](design/sportmaster-visual-main-closure-01.md)与[同版原生结果/精确介质](runtime/sportmaster-visual-main-closure-01.md)。PR58整套界面及PR57发行整合已继承；修复记录/支持的非法日期被日历关闭恢复为旧条件，并把完整视觉旅程接入既有Windows PR门禁。历史介质、D/RV及NOT_RUN/BLOCKED分别保留。
+
 [本轮工作包](work-packages/WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01.md) · [编码前基准与替代关系](design/sportmaster-visual-productization-01.md) · [运行及本轮证据](runtime/sportmaster-visual-productization-01.md)。Sportmaster新UI为本轮实现后的缺省；旧版本/旧候选策略和原始验证保持原身份。以下商业化、架构、安装和恢复规范仍有效，历史发行不代表本轮源码已发布。
 
 

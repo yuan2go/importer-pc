@@ -2,6 +2,8 @@
 
 工作包：[WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01](../work-packages/WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01.md)。开工main `e0beb5d32c6a24a7799ba698731566bca6a6833a`，继承已合并PR57发行和PR58视觉实现。本页记录本轮实施和实测，不替换原审查及历史验收。
 
+提交前main新增PR59并推进至`ad6dc2e2faf74a11bab148fcfa893eb379f87d5c`。已整合其原生非法日期/关闭日历修复、历史及支持新增断言和冻结介质CI门禁；两边原断言全部保留。下列ff2e7a7是R-02分析介质，性能样本不重标。PR59仅日期视图及相关测试/CI/文档变化，实测涉及的业务、Snapshot/Capacity/历史查询、主窗口刷新路径未改；最终整合介质另列原生结果，不据继承分析宣布新介质性能合格。
+
 业务1.4.0、Application.Contracts1.10.0、Parcel DB8、配置schema3、Sportmaster默认supply-station；classic显式保留。没有业务协议、迁移SQL、运行资格或准入规则变更。原型D编号和独立审查D-01～03分开管理。
 
 ## 当前操作裁决

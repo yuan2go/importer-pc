@@ -1,0 +1,31 @@
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using Ipc.Application.ParcelFlow.Desktop;
+class Program
+{
+    [STAThread] static void Main()
+    {
+        var app = new System.Windows.Application();
+        var input = new DateTimeInput { Timestamp = "2026-10-19T08:09:10+05:30" };
+        var panel = new StackPanel(); panel.Children.Add(input); var button = new Button { Content = "commit date", MinHeight = 44 }; panel.Children.Add(button);
+        var window = new Window { Content = panel, Width = 700, Height = 400 };
+        window.Loaded += async (_, _) =>
+        {
+            try
+            {
+                var date = Descendants(input).OfType<DatePicker>().Single();
+                date.DateValidationError += (_, e) => Console.WriteLine("NATIVE VALIDATION " + e.Text);
+                date.Focus(); date.Text = "not-a-date"; button.Focus(); await Task.Delay(300);
+                Console.WriteLine($"AFTER INVALID timestamp={input.Timestamp} selected={date.SelectedDate:O} text={date.Text}");
+                date.IsDropDownOpen = true; await Task.Delay(150); date.IsDropDownOpen = false; await Task.Delay(150);
+                Console.WriteLine($"AFTER CALENDAR CLOSE timestamp={input.Timestamp} selected={date.SelectedDate:O} text={date.Text}");
+            }
+            catch(Exception e) { Console.WriteLine(e); Environment.ExitCode = 1; }
+            finally { window.Close(); }
+        };
+        app.Run(window);
+    }
+    static IEnumerable<DependencyObject> Descendants(DependencyObject root)
+    { for(int i=0;i<VisualTreeHelper.GetChildrenCount(root);i++){ var child=VisualTreeHelper.GetChild(root,i); yield return child; foreach(var next in Descendants(child))yield return next; } }
+}

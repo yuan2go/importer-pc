@@ -116,6 +116,24 @@ static partial class Program
             Check(clock.Text == "08:09:10" && offset.Text == "+05:30", "native calendar editor preserves the original wall time and explicit nonlocal UTC offset");
             clock.Text = "25:99:00";
             Check(dateInput.Timestamp.Contains("25:99:00") && vm.HistoryFrom.Contains("25:99:00"), "invalid native time propagates as invalid input instead of retaining an older query time");
+            dateInput.Timestamp = "2026-10-19T08:09:10+05:30";
+            var calendarDate = Descendants(dateInput).OfType<DatePicker>().Single();
+            calendarDate.Text = "not-a-date"; await Task.Delay(80);
+            Check(dateInput.Timestamp.StartsWith("无效日期：") && vm.HistoryFrom == dateInput.Timestamp && calendarDate.SelectedDate is null,
+                "rejected native date invalidates the bound history filter and removes the stale calendar selection");
+            var invalidTimestamp = dateInput.Timestamp;
+            calendarDate.IsDropDownOpen = true; await Task.Delay(80); calendarDate.IsDropDownOpen = false; await Task.Delay(80);
+            clock.Text = "09:10:11"; offset.Text = "+08:00";
+            Check(dateInput.Timestamp == invalidTimestamp && vm.HistoryFrom == invalidTimestamp,
+                "calendar dismissal and clock edits cannot restore a rejected date or broaden the query");
+            Capture("history-invalid-date-1100");
+            calendarDate.SelectedDate = new DateTime(2026, 10, 19);
+            Check(dateInput.Timestamp == "2026-10-19T09:10:11+08:00" && vm.HistoryFrom == dateInput.Timestamp,
+                "explicitly selecting the original date corrects the error with the current clock and offset");
+            calendarDate.Text = "not-a-date";
+            calendarDate.Text = "2026-10-19";
+            Check(dateInput.Timestamp == "2026-10-19T09:10:11+08:00" && vm.HistoryFrom == dateInput.Timestamp,
+                "valid typed date corrects the rejected value without reviving an older time or offset");
             Click(history, "不限时间"); Check(vm.HistoryFrom.Length == 0 && vm.HistoryToExclusive.Length == 0, "native clear-time action removes both exact time boundaries");
             Capture("history-filters-1100"); filter.IsExpanded = false;
             var rows = (DataGrid)history.FindName("HistoryRows");
@@ -147,7 +165,19 @@ static partial class Program
             Check(ReferenceEquals(child.ViewModel.Application, vm.Application) && child.ViewModel.Snapshot?.RuntimeId == vm.Snapshot?.RuntimeId, "auxiliary native window shares the same Application and device lifetime");
             child.Close(); await Task.Delay(100);
             var support = new ProductSupportWindow(runtime, vm.Left.Operation?.Id) { Owner = window }; support.Show(); await Task.Delay(120);
-            Capture("support-help", support); ((TabControl)support.Content).SelectedIndex = 1; support.UpdateLayout(); Capture("support-preview", support); support.Close();
+            Capture("support-help", support); ((TabControl)support.Content).SelectedIndex = 1; support.UpdateLayout(); Capture("support-preview", support);
+            var supportFrom = Descendants(support).OfType<DateTimeInput>().First();
+            var supportDate = Descendants(supportFrom).OfType<DatePicker>().Single();
+            supportDate.Text = "not-a-date"; await Task.Delay(80);
+            supportDate.IsDropDownOpen = true; await Task.Delay(80); supportDate.IsDropDownOpen = false; await Task.Delay(80);
+            Click(support, "预览本次支持内容"); await Task.Delay(120);
+            Check(supportFrom.Timestamp.StartsWith("无效日期：") && Descendants(support).OfType<TextBlock>().Any(t => t.Text.StartsWith("预览未完成：")) &&
+                !Descendants(support).OfType<Button>().Single(b => Equals(b.Content, "保存预览的支持摘要…")).IsEnabled,
+                "support preview refuses a rejected date after calendar dismissal and keeps export disabled");
+            Capture("support-invalid-date", support);
+            Click(supportFrom, "清除");
+            Check(supportFrom.Timestamp.Length == 0, "explicit native clear removes the invalid support boundary");
+            support.Close();
         }
         var original = (await runtime.SnapshotAsync()).Operations;
         probe.Project = s => s with { Operations = s.Operations.Select(o => o.PositionId == "left" ? o with { State = ParcelState.WcsUnknown, Slot = null, Wcs = o.Wcs! with { State = StageState.Unknown, Failure = "SYNTHETIC 回执未确认；保持原请求，只查询核对。" } } : o with { State = ParcelState.WcsRejected, Slot = null, Wcs = o.Wcs! with { State = StageState.Rejected, Failure = "SYNTHETIC 上游明确拒绝，检查原回执原因。" } }).ToArray() };

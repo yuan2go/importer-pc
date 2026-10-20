@@ -1,0 +1,110 @@
+{
+  "Application": "sportmaster",
+  "Target": "win-x64",
+  "File": "sm-visual-closure-media-01.zip",
+  "Sha256": "2642299524EFB2B51E9F3223C7EB1D97A7D3D9800CCA7D0E659E9EDD5B1FF40F",
+  "Bytes": 104296788,
+  "Files": 747,
+  "SourceCommit": "1744f398720b405448d975ab9d440cd24feeef74",
+  "OfflineBundles": [],
+  "BusinessVersion": "1.4.0",
+  "CompatibilitySha256": "D80BA0B0C40F34E2E9C080C9D898C77214461BCEA394F43290CD9DDC9F473975",
+  "ApplicationContractVersion": "1.10.0",
+  "IdenticalSharedDlls": [
+    "Ipc.Application.Contracts.dll",
+    "Ipc.Application.ParcelFlow.dll",
+    "Ipc.Application.Sportmaster.dll",
+    "Ipc.Assembly.dll",
+    "Ipc.Components.dll",
+    "Ipc.Drivers.dll",
+    "Ipc.Integrations.dll",
+    "Ipc.Platform.dll",
+    "Ipc.Platform.Storage.dll",
+    "Ipc.Reference.Protocol.dll",
+    "Ipc.Supply.Contracts.dll",
+    "Ipc.Supply.dll"
+  ],
+  "InventorySha256": "5498ba2fc8f95aed3c1303db74e0dc289970d66600005167513f14f3119d69f7",
+  "Distribution": "Local frozen verification candidate; not uploaded or commercially approved",
+  "WindowsLifecycle": "NOT_RUN: host 22631 is below target 26100+; no disposable UAC/two-account/reboot environment",
+  "Field": "BLOCKED: no real SDK/contract/device/entity qualification or approved signer",
+  "ActualNativeScope": "Windows 22631 x64 / 125% DPI / WPF Dispatcher / synthetic identity and ports",
+  "NativeReferenceOrigins": [
+    {
+      "Path": "app/Ipc.Application.Contracts.dll",
+      "Sha256": "481908D2E9C45F5EF40121CF36C03030E0305D6B58490D028D7B0BF8541F3D9D"
+    },
+    {
+      "Path": "app/Ipc.Application.ParcelFlow.dll",
+      "Sha256": "F3D02C11335243C9E12FDC229BE13596C8C83D03E448D5301633221299D9C717"
+    },
+    {
+      "Path": "app/Ipc.Application.Sportmaster.dll",
+      "Sha256": "BBD5034BC68A4205AFEC8CC57EF54DF73FE609ED654659B836A8198898B55072"
+    },
+    {
+      "Path": "app/Ipc.Assembly.dll",
+      "Sha256": "E2EB004D703073A29E96B88FEC0882D4045FA3243F3614FFF99C00D4613A1656"
+    },
+    {
+      "Path": "app/Ipc.Components.dll",
+      "Sha256": "7B521E79743A853D558809E00925334B8F5E7350B8373E579D3B8BD444C69C8B"
+    },
+    {
+      "Path": "app/Ipc.Drivers.dll",
+      "Sha256": "7F40BBF52D8286DC0A9459E7E1CF298FE416D3FFF878A4EB066BF1DF685A1ABE"
+    },
+    {
+      "Path": "app/Ipc.Integrations.dll",
+      "Sha256": "02210BF6D0662EFC5993479107E9427F8BB38FCC5E7FBD7CD29B66ED595F3EED"
+    },
+    {
+      "Path": "app/Ipc.Platform.dll",
+      "Sha256": "3ED9A371998BCD1E998088653747D2C16A8F14941CAFA365FC99E3514C131CDD"
+    },
+    {
+      "Path": "app/Ipc.Platform.Storage.dll",
+      "Sha256": "BC0D564846F571A25F6180AFAD0364ADCD5208792B843A414810B36CC599E609"
+    },
+    {
+      "Path": "app/Ipc.Reference.Protocol.dll",
+      "Sha256": "BC030C20B01B688D09F7E6CF97AFB67B334149D47F64A92638346E257F38BDA4"
+    },
+    {
+      "Path": "app/Ipc.Supply.Contracts.dll",
+      "Sha256": "7C4085278EB61439E69035CB8E94BED3B75DE38679D130C14E708719277A55AC"
+    },
+    {
+      "Path": "app/Ipc.Supply.dll",
+      "Sha256": "24BC3D364C23340EAFA10976419464C3A7BEC7FED58843045605089B92A50D9A"
+    },
+    {
+      "Path": "desktop/Ipc.Application.ParcelFlow.Desktop.dll",
+      "Sha256": "8EA70C4A2480CEB893DBAAD4A0093F2A17B1974AF9CEC04C321FEE4AB612760F"
+    },
+    {
+      "Path": "desktop/Ipc.Application.Sportmaster.Desktop.dll",
+      "Sha256": "3D1FAFA1238A16993A2260E2C0B842468E2C47954C2CCCD99C4538CF761185BB"
+    },
+    {
+      "Path": "app/Microsoft.Data.Sqlite.dll",
+      "Sha256": "9F1FE804321767B6CC8DB751ECEDD56AB308E5F15492A7F40D7093BB61AB7638"
+    },
+    {
+      "Path": "app/SQLitePCLRaw.batteries_v2.dll",
+      "Sha256": "29C9CF3060789066682BA5FBF81DEA584563E6AB60B5D9861C73BA8B29ED1142"
+    },
+    {
+      "Path": "app/SQLitePCLRaw.core.dll",
+      "Sha256": "E60E22452BA79C306A59ECC01A97C29BAFE69D9FA612F40253852ED450AD27E8"
+    },
+    {
+      "Path": "app/SQLitePCLRaw.provider.e_sqlite3.dll",
+      "Sha256": "82238D46BCA0CA8B2D57C3EC6FD6F0BCBD7A2DC2F7343A5377E0469112DBA474"
+    },
+    {
+      "Path": "desktop/Ipc.Desktop.dll",
+      "Sha256": "0B1A421B91DD320C080B7C883FF218DAD0112AD9DCCE600A5D58E85C12B0C8AA"
+    }
+  ]
+}

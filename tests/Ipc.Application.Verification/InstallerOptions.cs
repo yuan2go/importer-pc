@@ -44,7 +44,9 @@ static class InstallerOptions
         finally { Marshal.FinalReleaseComObject(shell); }
         var unrelated = Path.Combine(desktop, "unrelated.txt"); File.WriteAllText(unrelated, "keep");
         DeploymentShortcuts.Remove(chosen, programs, desktop);
-        Check(DeploymentShortcuts.Plan(chosen, programs, desktop).All(p => !File.Exists(p.Path)) && File.ReadAllText(unrelated) == "keep", "removal handles both selected locations and preserves unrelated files");
+        var retained = DeploymentShortcuts.Plan(chosen, programs, desktop).Last();
+        Check(DeploymentShortcuts.Plan(chosen, programs, desktop).SkipLast(1).All(p => !File.Exists(p.Path)) &&
+            File.Exists(retained.Path) && File.ReadAllText(unrelated) == "keep", "removal deletes owned links and preserves a retargeted desktop link and unrelated files");
         Console.WriteLine("NOT_RUN machine-wide installation, UAC, devices and field acceptance; shortcut COM operations used isolated temporary roots only.");
     }
 }

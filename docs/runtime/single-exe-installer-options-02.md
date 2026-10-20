@@ -11,3 +11,5 @@
 `WindowsDeploymentRequest`、固定计划和 `DeploymentLocation` 携带 `DeploymentShortcutOptions`；`DeploymentBatch` 复核时保持选项。缺省 null 不序列化，历史固定请求散列及原开始菜单默认行为保持。`DeploymentShortcuts` 沿原 WScript.Shell 实现创建版本专用入口，指向安装目录中的桌面 EXE；运行入口无 `--setup` 参数，维护入口分别使用原参数。旧版入口仍保留，避免登记提交前替换原入口；移除精确处理开始菜单、桌面和旧 Importer PC 名称。
 
 本轮使用项目 ui-ux-pro-max 的 WPF 查询及 Impeccable Operate/WPF 适配；保持原实物基线、系统字体、业务信息和守卫，没有用网页/CDP结果代替原生 WPF 检查。原生检查区分真实分发 EXE 和反射设置的合成界面状态。真实 UAC 安装/升级/卸载、SDK/设备/RCS及现场若未执行继续 NOT_RUN；旧 D/RV 保持原身份。精确构建及验证结果随后登记于本页，不覆盖[旧证据](evidence/single-exe-installer-01/README.md)。
+
+并发整合复核补修：卸载只移除目标与参数仍属于本版本的快捷方式；用户已改指向的同名桌面入口保留，与创建时“保留不同目标”语义一致。原18项选项/COM断言保留并加强移除断言，不把该用户入口当可删除安装产物。最终组合EXE及运行证据见续轮整合报告；de105a5旧ZIP不重标。

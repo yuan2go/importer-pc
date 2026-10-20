@@ -45,3 +45,7 @@ EXE：`CainiaoSupplyStation_SM_Setup_v1.4.1_win-x64.exe`，172493384字节，SHA
 本机是Windows11家庭中文版23H2 build22631 x64，已不在微软当前支持周期；实际本机成功不能代替受支持系统资格或干净系统验证。现场应使用仍受支持的Windows11 x64具体版本，生命周期见[微软说明](https://learn.microsoft.com/en-us/lifecycle/products/windows-11-home-and-pro)。本轮未在受支持的新系统、干净虚拟机或真实海康设备重验。EXE自带CLR/WPF10.0.13、SQLite，海康依赖仍按上文单列。
 
 本节与证据在7c源码冻结后补充，不声称已写入此前生成的EXE随包指南；随包指南/源码记录保持7c原字节，原129成果及旧D/RV保留。
+
+## 后续原字节公开上传
+
+2026-10-20 用户另行授权发布既有任务产物。源码7c及EXE原字节已上传[新Release](https://github.com/yuan2go/importer-pc/releases/tag/installer-sm-v1.4.1-7c384540393b)；本次不重建、不测试，详细[PR合并与上传回执](publication-installer-release-info-20261020.md)与原验证记录分开。

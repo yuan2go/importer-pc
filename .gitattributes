@@ -43,3 +43,4 @@ docs/runtime/evidence/parallel-reconciliation-20261020-02/completion-probe.cs.tx
 
 # Exact captured installer verification evidence; hashes describe original bytes.
 docs/runtime/evidence/installer-release-info-01/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+docs/runtime/evidence/publication-installer-release-info-20261020/** -text

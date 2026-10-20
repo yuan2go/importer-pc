@@ -116,5 +116,17 @@
     "MaximumLength": 64,
     "RequiredWhenKey": "specified-chute",
     "RequiredWhenEquals": "true"
+  },
+  {
+    "Key": "heartbeat-interval-seconds",
+    "Group": "RCS 心跳",
+    "Label": "心跳请求间隔",
+    "Type": "integer",
+    "Default": "5",
+    "Minimum": 1,
+    "Maximum": 3600,
+    "MaximumLength": 4,
+    "Unit": "秒",
+    "Description": "默认5秒，受控重启后生效。供包台编码读取系统StationCode，相机编码读取各Reader驱动参数bcr-code；超时不重发旧心跳。"
   }
 ]

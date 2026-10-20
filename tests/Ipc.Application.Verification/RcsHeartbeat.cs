@@ -1,0 +1,156 @@
+using System.Diagnostics;
+using System.Text.Json;
+using Ipc.Application.Contracts;
+using Ipc.Integrations.SportmasterRcs;
+using Ipc.Assembly;
+using Ipc.Platform;
+
+static partial class SportmasterRcs
+{
+    static ParcelConfiguration HeartbeatConfiguration(string workspace, CapabilityBinding binding) =>
+        Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json"))) with
+        { StationCode = "SYNTH-STATION", Wcs = binding };
+
+    public static async Task HeartbeatChecks(string workspace)
+    {
+        await using var peer = new Peer();
+        var binding = Binding(peer.Endpoint) with { Parameters = new(Binding(peer.Endpoint).Parameters.Where(p => p.Key != "heartbeat-interval-seconds")) };
+        var config = HeartbeatConfiguration(workspace, binding);
+        await using (var service = new SportmasterRcsTaskService(binding))
+        {
+            try { await service.StartAsync(default); throw new Exception("Started without runtime context"); }
+            catch (InvalidDataException) { Check(peer.Requests.IsEmpty, "missing station/driver configuration refuses start before network I/O"); }
+            service.ConfigureRuntime(config);
+            var clock = Stopwatch.StartNew();
+            await Task.WhenAll(Enumerable.Range(0, 8).Select(_ => service.StartAsync(default)));
+            await Task.Delay(300);
+            Check(peer.Requests.IsEmpty, "repeated start owns one timer and default heartbeat waits for its interval");
+            await Until(() => peer.Requests.Count == 1);
+            Check(clock.Elapsed >= TimeSpan.FromSeconds(4.7), "omitted component interval defaults to five seconds");
+            var exchange = peer.Requests.Single();
+            using var json = JsonDocument.Parse(exchange.Body); var envelope = json.RootElement;
+            var data = envelope.GetProperty("data").EnumerateArray().ToArray();
+            Check(exchange.Method == "POST" && exchange.ContentType.StartsWith("application/json", StringComparison.Ordinal) &&
+                envelope.GetProperty("source").GetString() == "TEST_READER" && envelope.GetProperty("version").GetInt32() == 1 && envelope.GetProperty("locale").GetString() == "zh_CN",
+                "heartbeat uses the configured RCS endpoint and envelope with numeric version/requestId");
+            Check(data.Length == 2 && data.Select((item, i) => item.GetProperty("index").GetInt32() == i + 1 &&
+                item.GetProperty("command").GetString() == "sorter.task.station_heartbeat" &&
+                item.GetProperty("params").GetProperty("stationCode").GetString() == config.StationCode &&
+                item.GetProperty("params").GetProperty("bcrCode").GetString() == config.Topology!.Readers[i].DeviceId).All(x => x),
+                "one batch uses system StationCode and every synthetic manual reader identity with distinct indexes, without destination mapping copies");
+            var timestamp = data[0].GetProperty("params").GetProperty("timestamp").GetInt64();
+            Check(Math.Abs(timestamp - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) < 2000 &&
+                data.All(i => i.GetProperty("params").GetProperty("timestamp").GetInt64() == timestamp), "batch timestamp is numeric UTC Unix milliseconds");
+            await Healthy(service);
+            Check((await service.HealthAsync(default)).Detail.Contains("unconfirmed", StringComparison.Ordinal), "HTTP delivery never fabricates an application acknowledgement");
+            try { service.ConfigureRuntime(config); throw new Exception("Reconfigured running timer"); }
+            catch (InvalidOperationException) { Check(true, "running component rejects context replacement"); }
+            await service.StopAsync(default);
+            var count = peer.Requests.Count; await Task.Delay(200);
+            Check(peer.Requests.Count == count && !(await service.HealthAsync(default)).Ready, "stop drains the timer and reports stopped");
+        }
+        binding = binding with { Parameters = new(binding.Parameters) { ["heartbeat-interval-seconds"] = "1" } };
+        config = HeartbeatConfiguration(workspace, binding);
+        var schema = Wire.Decode<ParameterField[]>(File.ReadAllText(Path.Combine(workspace, "src/Ipc.Integrations.SportmasterRcs/parameters.json")));
+        Check(ExtensionSchema.ValidateDefinition(schema).Length == 0 && schema.Single(f => f.Key == "heartbeat-interval-seconds") is { Default: "5", Minimum: 1, Maximum: 3600 } &&
+            ExtensionSchema.Validate(schema, binding.Parameters).Length == 0, "component parameter schema exposes a valid five-second default and bounded editable interval");
+        await using (var service = new SportmasterRcsTaskService(binding))
+        {
+            service.ConfigureRuntime(config); peer.Mode = "http-error";
+            var count = peer.Requests.Count; await service.StartAsync(default);
+            await Until(async () => peer.Requests.Count > count && !(await service.HealthAsync(default)).Ready);
+            Check((await service.HealthAsync(default)).Detail.Contains("503", StringComparison.Ordinal), "configured one-second schedule exposes HTTP failures");
+            peer.Mode = "assigned"; await Healthy(service);
+            var first = peer.Requests.Last().Body;
+            peer.Mode = "redirect"; await Until(async () => !(await service.HealthAsync(default)).Ready);
+            Check((await service.HealthAsync(default)).Detail.Contains("302", StringComparison.Ordinal), "heartbeat does not follow redirects");
+            peer.Mode = "timeout"; await Until(async () => (await service.HealthAsync(default)).Detail.Contains("timeout", StringComparison.Ordinal));
+            Check(true, "stalled heartbeat times out and leaves destination outcomes untouched");
+            peer.Mode = "assigned"; await service.ReconnectAsync(default); await Healthy(service);
+            var last = peer.Requests.Last().Body;
+            using var before = JsonDocument.Parse(first); using var after = JsonDocument.Parse(last);
+            Check(after.RootElement.GetProperty("requestId").GetInt64() > before.RootElement.GetProperty("requestId").GetInt64(), "reconnect restarts a single loop with fresh increasing heartbeat IDs");
+            var original = Request(binding); var prepared = service.PrepareRequest(original, 7);
+            var reply = await service.RequestDestinationAsync(original with { IntegrationRequest = prepared }, default);
+            Check(prepared.RequestId == 810000007 && reply.BusinessAccepted == true && reply.PhysicalCompleted != true,
+                "heartbeat neither consumes durable destination IDs nor changes destination acceptance semantics");
+            await service.StopAsync(default); count = peer.Requests.Count; await Task.Delay(1300);
+            Check(peer.Requests.Count == count, "stopped component performs no later scheduled requests");
+        }
+        foreach (var invalid in new[] { "0", "-1", "1.5", "3601", "bad" })
+        {
+            try { await using var service = new SportmasterRcsTaskService(binding with { Parameters = new(binding.Parameters) { ["heartbeat-interval-seconds"] = invalid } }); throw new Exception("Invalid interval accepted"); }
+            catch (InvalidDataException) { Check(true, "invalid interval refused: " + invalid); }
+        }
+        await using (var service = new SportmasterRcsTaskService(binding))
+        {
+            var readers = config.Topology!.Readers;
+            try { service.ConfigureRuntime(config with { StationCode = null }); throw new Exception("Missing station code accepted"); }
+            catch (InvalidDataException) { Check(true, "missing system StationCode refuses configuration"); }
+            try { service.ConfigureRuntime(config with { Topology = config.Topology with { Readers = [readers[0], readers[0]] } }); throw new Exception("Duplicate reader code accepted"); }
+            catch (InvalidDataException) { Check(true, "duplicate driver codes refuse configuration"); }
+            var hardware = readers[0] with { Driver = "extension:synthetic-reader" };
+            var instance = new ExtensionInstance("synthetic-reader", "synthetic.reader", "reader", hardware.DeviceId, true, new() { ["bcr-code"] = "SYNTH-NEW-BCR" });
+            var selected = config with { StationCode = "SYNTH-NEW-STATION", Topology = config.Topology with { Readers = [hardware] }, Extensions = new([], [instance]) };
+            try { service.ConfigureRuntime(selected with { Extensions = new([], [instance with { Parameters = new() }]) }); throw new Exception("Missing driver code accepted"); }
+            catch (InvalidDataException) { Check(true, "hardware reader without driver bcr-code refuses configuration"); }
+            service.ConfigureRuntime(selected);
+            var count = peer.Requests.Count; await service.StartAsync(default); await Until(() => peer.Requests.Count > count);
+            using var json = JsonDocument.Parse(peer.Requests.Last().Body); var data = json.RootElement.GetProperty("data");
+            Check(data.GetArrayLength() == 1 && data[0].GetProperty("params").GetProperty("stationCode").GetString() == "SYNTH-NEW-STATION" &&
+                data[0].GetProperty("params").GetProperty("bcrCode").GetString() == "SYNTH-NEW-BCR", "effective system and driver edits determine the next runtime's heartbeat");
+        }
+        var collision = binding with { Parameters = new(binding.Parameters) { ["request-id-base"] = "0", ["request-id-count"] = long.MaxValue.ToString(System.Globalization.CultureInfo.InvariantCulture) } };
+        await using (var service = new SportmasterRcsTaskService(collision))
+        {
+            service.ConfigureRuntime(HeartbeatConfiguration(workspace, collision));
+            var count = peer.Requests.Count; await service.StartAsync(default);
+            await Until(async () => !(await service.HealthAsync(default)).Ready);
+            Check(peer.Requests.Count == count && (await service.HealthAsync(default)).Detail.Contains("overlaps", StringComparison.Ordinal),
+                "heartbeat refuses destination-ID range collisions before HTTP without consuming business IDs");
+        }
+        Console.WriteLine("PASS RCS HEARTBEAT COMPLETE");
+    }
+
+    static async Task Until(Func<bool> predicate) => await Until(() => Task.FromResult(predicate()));
+    static async Task Until(Func<Task<bool>> predicate)
+    {
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(8));
+        while (!await predicate()) await Task.Delay(20, deadline.Token);
+    }
+    static Task Healthy(SportmasterRcsTaskService service) => Until(async () =>
+    {
+        var health = await service.HealthAsync(default);
+        return health.Ready && health.Detail.Contains("heartbeat HTTP", StringComparison.Ordinal);
+    });
+
+    public static async Task HeartbeatSignedChecks(string workspace, string root, string packageFile, string trustFile)
+    {
+        await using var peer = new Peer();
+        ParcelCapabilityFactory.RegisterContracts();
+        var store = new ExtensionStore(Path.Combine(root, "heartbeat-signed-store"), Wire.Decode<ExtensionTrust>(File.ReadAllText(trustFile)), RunMode.Simulation, Path.Combine(root, "heartbeat-signed-leases"));
+        var installed = store.Install(packageFile, Wire.FileHash(packageFile));
+        var module = store.VerifyInstalled(installed.Package).Manifest.Modules.Single(x => x.Id == "sportmaster-rcs-task");
+        Check(installed.Package.Version == "1.2.0" && module.Requirements?.Query == false && module.Parameters.Single(p => p.Key == "heartbeat-interval-seconds").Default == "5",
+            "signed immutable RCS package declares heartbeat schema and still has no original-query capability");
+        var original = Binding(peer.Endpoint);
+        var binding = original with { Version = installed.Package.Version, Package = installed.Package, Module = module.Id,
+            Implementation = "extension:" + installed.Package.Id + "/" + module.Id,
+            Parameters = new(original.Parameters) { ["heartbeat-interval-seconds"] = "1" } };
+        using var lease = store.AcquireUse([installed.Package]);
+        using var loading = new ExtensionLoading(store);
+        await using var port = loading.CreateFactory<IWcsExtension>(installed.Package, module, "integration").Create(binding);
+        Check(port is IWcsRuntimeConfiguration && ExtensionSchema.Validate(module.Parameters, binding.Parameters).Length == 0,
+            "signed provider loads through the real shared public-contract boundary with valid component parameters");
+        ((IWcsRuntimeConfiguration)port).ConfigureRuntime(HeartbeatConfiguration(workspace, binding));
+        await port.StartAsync(default); await Until(() => peer.Requests.Count == 1);
+        using var json = JsonDocument.Parse(peer.Requests.Single().Body);
+        Check(json.RootElement.GetProperty("data").GetArrayLength() == 2 && json.RootElement.GetProperty("data")[0].GetProperty("command").GetString() == "sorter.task.station_heartbeat",
+            "installed signed component starts the actual two-reader heartbeat loop");
+        var request = Request(binding); request = request with { IntegrationRequest = ((IWcsRequestPreparer)port).PrepareRequest(request, 7) };
+        Check((await port.ResolveSlotAsync(request, default)).BusinessAccepted == true, "signed provider retains exact destination delivery alongside heartbeat");
+        await port.StopAsync(default); var count = peer.Requests.Count; await Task.Delay(1200);
+        Check(peer.Requests.Count == count, "signed component stops network work before package/load-context release");
+        Console.WriteLine("PASS SIGNED RCS HEARTBEAT COMPLETE");
+    }
+}

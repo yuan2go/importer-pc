@@ -94,9 +94,25 @@ static partial class Program
         Check(Descendants(page).OfType<Button>().Any(b => (b.Content as string)?.Contains("导出") == true), "native history exposes bounded CSV export with cancel entry");
         Screenshot(classic, Path.Combine(evidence, "commercial-history-1100x600.png"));
         Click(classic, "设备与维护"); await Task.Delay(250);
-        var draftActions = Descendants(page).OfType<Expander>().Single(e => Equals(e.Header, "草稿、重新读取与设备连接"));
-        draftActions.IsExpanded = true; classic.UpdateLayout();
-        Check(Descendants(page).OfType<Button>().Any(b => Equals(b.Content, "加密保存未完成设置")) && Descendants(page).OfType<Button>().Any(b => Equals(b.Content, "继续未完成设置")), "native settings exposes persistent draft actions without replacing configuration authority");
+        for (var i = 0; i < 100 && ((ParcelViewModel)classic.DataContext).Busy; i++) await Task.Delay(50);
+        Check(!((ParcelViewModel)classic.DataContext).Busy, "native parameter loading completes before opening protected save preparation");
+        var draftActionsVisible = false;
+        var preparationTimer = new System.Windows.Threading.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+        preparationTimer.Tick += (_, _) =>
+        {
+            var dialog = classic.OwnedWindows.OfType<Window>().SingleOrDefault(w => w.Title == "保存准备");
+            if (dialog is null) return;
+            var draftActions = Descendants(dialog).OfType<Expander>().SingleOrDefault(e => Equals(e.Header, "草稿与重新读取"));
+            if (draftActions is not null) draftActions.IsExpanded = true;
+            dialog.UpdateLayout();
+            draftActionsVisible = Descendants(dialog).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "加密保存未完成设置")) &&
+                Descendants(dialog).OfType<Button>().Any(b => b.IsVisible && Equals(b.Content, "继续未完成设置"));
+            dialog.Close();
+        };
+        preparationTimer.Start();
+        try { Click(page, "保存准备…"); }
+        finally { preparationTimer.Stop(); }
+        Check(draftActionsVisible, "native settings exposes persistent draft actions without replacing configuration authority");
         var support = new ProductSupportWindow(runtime, null) { Owner = classic }; support.Show(); await Task.Delay(200); support.UpdateLayout();
         Check(support.Icon is not null && support.Content is TabControl tabs && tabs.Items.Count == 2, "offline help and preview/about load as native owned tabs");
         var helpSearch = Descendants(support).OfType<TextBox>().Single(b => AutomationProperties.GetName(b) == "搜索离线帮助");

@@ -41486,9 +41486,9 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/CommercialPages.cs",
-      "sha256": "02f9252a00dab93a21ce51041441fa3b23b6cf1579853c2e33cb4d2619ffa9c3",
-      "size_bytes": 13024,
-      "git_blob": "59c024d05b06537ce425c18f8716fec65718f909",
+      "sha256": "00577291cacff41cd374c0c6077a848d759dccfe281aed2eaa3f033e3b6294f2",
+      "size_bytes": 13957,
+      "git_blob": "27032c7055060673632c4266a2052514dae473b0",
       "version": "UIR-00-06-V2-20261020",
       "status": "implementation_source",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",

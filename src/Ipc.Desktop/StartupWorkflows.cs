@@ -500,8 +500,9 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
         {
             Note("菜鸟供包台已安装到：\n" + installed!.ReleaseRoot);
             Note("快捷方式已按所选选项处理。数据目录：\n" + installed.DataRoot);
-            runAfter = new CheckBox { Content = "安装完成后运行菜鸟供包台", IsChecked = ParcelStartupServices.IsRuntimeAccount(installed), IsEnabled = ParcelStartupServices.IsRuntimeAccount(installed), MinHeight = 44 }; Body.Children.Add(runAfter);
-            if (!runAfter.IsEnabled) Note("请登录指定运行账户后运行程序。");
+            var canRun = ParcelStartupServices.IsRuntimeAccount(installed);
+            runAfter = new CheckBox { Content = "安装完成后运行菜鸟供包台", IsChecked = canRun, IsEnabled = canRun, MinHeight = 44 }; Body.Children.Add(runAfter);
+            if (!canRun) Note("请登录指定运行账户后运行程序。");
             next.Content = "完成";
         }
     }

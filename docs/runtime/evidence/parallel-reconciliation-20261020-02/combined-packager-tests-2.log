@@ -1,0 +1,10 @@
+test_corrupted_file_is_rejected (test_installer_package.InstallerPackageTests.test_corrupted_file_is_rejected) ... ok
+test_different_runtime_source_is_rejected (test_installer_package.InstallerPackageTests.test_different_runtime_source_is_rejected) ... ok
+test_unlisted_and_case_duplicate_files_rejected (test_installer_package.InstallerPackageTests.test_unlisted_and_case_duplicate_files_rejected) ... ok
+test_unsafe_archive_paths_rejected (test_installer_package.InstallerPackageTests.test_unsafe_archive_paths_rejected) ... ok
+test_valid_same_source_medium (test_installer_package.InstallerPackageTests.test_valid_same_source_medium) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.420s
+
+OK

@@ -18,7 +18,7 @@
 
 ## 首次启动与自动配置
 
-完整解压可信Windows媒介后双击`Setup.cmd`；首次从未安装媒介双击`application.cmd`或`desktop/Ipc.Desktop.exe`也会进入原生四步向导。选择已有运行账户、原数据根、配置来源及可选独立信任/离线包，检查摘要后授权一次UAC。安装自动创建受保护策略、版本程序目录、新数据根和开始菜单入口；日常进程保持未提权。默认原用户及`%LOCALAPPDATA%\ImporterPc\data`，升级自动带入既有位置；不会以新seed覆盖数据账。已知机级政策/其他账户材料保持原值，身份冲突明确失败，不能删lease绕过。
+Sportmaster 当前主入口为同源[单 EXE 安装程序](single-exe-installer-01.md)，准备后进入同一原生向导。高级兼容路径为完整解压可信Windows媒介后双击`Setup.cmd`；首次从未安装媒介双击`application.cmd`或`desktop/Ipc.Desktop.exe`也会进入原生四步向导。选择已有运行账户、原数据根、配置来源及可选独立信任/离线包，检查摘要后授权一次UAC。安装自动创建受保护策略、版本程序目录、新数据根和开始菜单入口；日常进程保持未提权。默认原用户及`%LOCALAPPDATA%\ImporterPc\data`，升级自动带入既有位置；不会以新seed覆盖数据账。已知机级政策/其他账户材料保持原值，身份冲突明确失败，不能删lease绕过。
 
 开始菜单“运行”读取受保护的同版本部署位置；“启动修复”无需业务Start成功，提供配置/参数表单、待生效保存、摘要导出与完整备份隔离恢复。启动失败页也可进入维护、安装修复或重试。原Stop/Dispose未完成时不能创建第二个实例。详情及失败保旧、种子修复、精确扩展/Production边界见[随包向导指南](startup-deployment-02.md)。Windows原生交互、UAC、ACL、快捷方式与升级中断仍NOT_RUN。
 

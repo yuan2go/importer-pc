@@ -1,0 +1,12 @@
+{
+  "CodeCommit": "2b216de43acb715a496e7c8c172569db08eee3f8",
+  "Scope": "Intermediate combined code before execution-discovered installer options; synthetic tests only",
+  "Build": "PASS_0_WARNINGS_0_ERRORS",
+  "HikrobotAssertions": 26,
+  "NativePolicyGroups": 5,
+  "InstallerPayloadAssertions": 27,
+  "PackagerTests": 5,
+  "CameraReadFrames": "NOT_RUN",
+  "UacInstall": "NOT_RUN",
+  "Production": "NOT_APPROVED"
+}

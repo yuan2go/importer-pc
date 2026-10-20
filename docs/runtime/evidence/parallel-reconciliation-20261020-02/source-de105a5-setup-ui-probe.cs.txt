@@ -1,0 +1,73 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Security.Principal;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Ipc.Platform;
+using Ipc.Application.Contracts;
+
+static class Program
+{
+    [STAThread] static int Main(string[] args)
+    {
+        var output = Path.GetFullPath(args[1]); Directory.CreateDirectory(output); var lines = new List<string>();
+        var app = new System.Windows.Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+        app.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/Ipc.Desktop;component/Themes/Workstation.xaml", UriKind.Relative) });
+        app.Startup += async (_, _) =>
+        {
+            try { await Verify(args[0], output, lines); app.Shutdown(0); }
+            catch (Exception e) { lines.Add("FAIL " + e); app.Shutdown(1); }
+            finally { File.WriteAllLines(Path.Combine(output, "UI.log"), lines); }
+        };
+        return app.Run();
+    }
+    static IEnumerable<T> All<T>(DependencyObject parent) where T : DependencyObject
+    {
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++) { var child = VisualTreeHelper.GetChild(parent, i); if (child is T value) yield return value; foreach (var nested in All<T>(child)) yield return nested; }
+    }
+    static async Task Verify(string mediaRoot, string output, List<string> log)
+    {
+        void Check(bool yes, string name) { if (!yes) throw new Exception(name); log.Add("PASS " + name); }
+        var type = System.Reflection.Assembly.Load("Ipc.Desktop").GetType("Ipc.Desktop.StartupSetupWindow")!;
+        var window = (Window)Activator.CreateInstance(type, new BusinessLaunch(Path.Combine(mediaRoot, "app", "config"), "D:\\SYNTHETIC\\data", null, null))!;
+        void Set(string name, object value) => type.GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(window, value);
+        T Get<T>(string name) => (T)type.GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(window)!;
+        void Render() => type.GetMethod("Render", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly)!.Invoke(window, null);
+        void Click(string name) => All<Button>(window).Single(b => Equals(b.Content, name)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        window.Show(); await Task.Delay(1200); // The probe has no installed media; use an explicit synthetic UI state below.
+        Set("media", DeploymentMedia.Inspect(mediaRoot, "sportmaster")); Set("step", 1); Set("selectedProgram", "D:\\SYNTHETIC\\Programs");
+        Set("enteredAccount", "SYNTHETIC\\operator"); Set("newStation", "synthetic-station"); Render(); await Task.Delay(200);
+        Check(Get<TextBox>("program").Text == "D:\\SYNTHETIC\\Programs" && All<CheckBox>(window).Count(b => b.IsVisible && (Equals(b.Content, "在开始菜单创建快捷方式") || Equals(b.Content, "在桌面创建快捷方式"))) == 2, "directory and both shortcut choices visible without expanding advanced settings");
+        Check(!Get<TextBox>("account").IsVisible && All<Button>(window).Any(b => Equals(b.Content, "浏览…") && b.IsVisible), "advanced account hidden while native directory browse remains visible");
+        Get<CheckBox>("startMenu").IsChecked = false; Get<CheckBox>("desktopIcon").IsChecked = true; Get<TextBox>("program").Text = "D:\\SYNTHETIC\\Chosen";
+        type.GetMethod("CaptureInputs", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, null);
+        var sid = WindowsIdentity.GetCurrent().User!.Value;
+        var request = new WindowsDeploymentRequest(mediaRoot, "sportmaster", new string('a', 40), sid, "D:\\SYNTHETIC\\data", "D:\\SYNTHETIC\\config", RunMode.Simulation, null, null, [], ProgramRoot: "D:\\SYNTHETIC\\Chosen", Shortcuts: new(false, true));
+        Set("reviewed", request); Set("step", 2); Render(); await Task.Delay(100);
+        Check(All<TextBlock>(window).Any(t => t.Text.Contains("开始菜单快捷方式：不创建") && t.Text.Contains("桌面快捷方式：创建")), "summary displays chosen shortcut flags");
+        Click("上一步"); await Task.Delay(100);
+        Check(Get<TextBox>("program").Text == request.ProgramRoot && Get<CheckBox>("startMenu").IsChecked == false && Get<CheckBox>("desktopIcon").IsChecked == true, "back navigation preserves directory and both selections");
+        Capture(window, Path.Combine(output, "options-synthetic.png"));
+        window.Width = 760; window.Height = 560; await Task.Delay(150);
+        Check(All<Button>(window).Where(b => b.IsVisible && (Equals(b.Content, "下一步") || Equals(b.Content, "取消"))).All(b => b.TranslatePoint(new Point(0, b.ActualHeight), window).Y <= window.ActualHeight), "primary actions fit minimum native window size");
+        Capture(window, Path.Combine(output, "options-small-synthetic.png"));
+        Set("installed", new DeploymentLocation("sportmaster", new string('a', 40), "D:\\SYNTHETIC\\release-12345678", "D:\\SYNTHETIC\\config", "D:\\SYNTHETIC\\data", sid, Shortcuts: new(false, true))); Set("step", 3); Render(); await Task.Delay(100);
+        Check(Get<CheckBox>("runAfter").IsChecked == true && All<Button>(window).Any(b => Equals(b.Content, "完成")) && !All<Button>(window).Any(b => b.IsVisible && Equals(b.Content, "上一步")), "completion offers run checkbox and Finish without returning to installation");
+        Get<CheckBox>("runAfter").IsChecked = false; Capture(window, Path.Combine(output, "complete-synthetic.png")); Click("完成"); await Task.Delay(100);
+        Check(!window.IsVisible && !(bool)type.GetProperty("Launched")!.GetValue(window)!, "Finish unchecked closes setup without starting application");
+        log.Add("SYNTHETIC UI states injected by test reflection only. No production install bypass, machine registration, UAC, device or actual installation success.");
+    }
+    static void Capture(Window window, string path)
+    {
+        window.UpdateLayout(); var bitmap = new RenderTargetBitmap((int)window.ActualWidth, (int)window.ActualHeight, 96, 96, PixelFormats.Pbgra32); bitmap.Render(window);
+        var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(bitmap)); using var file = File.Create(path); png.Save(file);
+    }
+}
+
+

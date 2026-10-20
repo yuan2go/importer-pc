@@ -8,6 +8,8 @@
 
 ## 安装和首次配置
 
+现行 Sportmaster 现场主交付为同源 `菜鸟供包台安装程序.exe`，核对交付回执的 SHA-256 后双击，按准备页和原生四步向导继续；不要求手工解压或 PowerShell。见[单 EXE 说明](single-exe-installer-01.md)。以下 ZIP / Setup.cmd 仅为高级兼容入口，保留原安全和数据守卫；DirectPlc/WcsToPlc 仍按各自介质说明。
+
 1. 从可信离线渠道取得完整 win-x64 ZIP，解压到新目录，核对交付回执中的 ZIP SHA256；`SHA256SUMS`、`ASSEMBLY.json` 和 app/desktop 的 `application-release.json` 固定同一源码。散列用于完整性，不代替发布者信任或商业代码签名。
 2. 双击 `Setup.cmd`，或首次打开 `desktop/Ipc.Desktop.exe`。选择程序根、独立数据根和已存在的 Windows 运行账户。默认 `%ProgramFiles%\ImporterPc`；自选程序根须是本地固定卷、已有受保护父目录下的目录，无重解析点、运行账户不可修改，且与数据/机器政策根不重叠。不支持网络盘、移动盘、用户可改写的父目录；拒绝时明确处理父目录权限，不自动改道。
 3. 新站明确填写唯一站号、选择 Simulation/Production，沿介质的通用结构生成首配种子；没有复制数据库、请求或已用编号。已有站使用原配置来源，保留原账户/站/模式/根。种子损坏可显式并排修复；原种子保留。不要通过新站、换站号或空根绕过原责任。

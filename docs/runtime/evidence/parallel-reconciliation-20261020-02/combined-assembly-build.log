@@ -1,0 +1,31 @@
+  正在确定要还原的项目…
+  已还原 D:\w\rec2\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 1.89 秒)。
+  已还原 D:\w\rec2\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 1.88 秒)。
+  已还原 D:\w\rec2\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 1.87 秒)。
+  已还原 D:\w\rec2\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 1.87 秒)。
+  已还原 D:\w\rec2\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 1.87 秒)。
+  已还原 D:\w\rec2\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 1.91 秒)。
+  已还原 D:\w\rec2\src\Ipc.Platform\Ipc.Platform.csproj (用时 1.77 秒)。
+  已还原 D:\w\rec2\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 16 毫秒)。
+  已还原 D:\w\rec2\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 88 毫秒)。
+  已还原 D:\w\rec2\src\Ipc.Components\Ipc.Components.csproj (用时 1.87 秒)。
+  已还原 D:\w\rec2\src\Ipc.Assembly\Ipc.Assembly.csproj (用时 99 毫秒)。
+  已还原 D:\w\rec2\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 16 毫秒)。
+  Ipc.Platform -> D:\w\rec2\src\Ipc.Platform\bin\Debug\net10.0\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\w\rec2\src\Ipc.Application.Supply.Contracts\bin\Debug\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\w\rec2\src\Ipc.Platform.Storage\bin\Debug\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\w\rec2\src\Ipc.Application.Supply\bin\Debug\net10.0\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\w\rec2\src\Ipc.Application.Contracts\bin\Debug\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\w\rec2\src\Ipc.Application.ParcelFlow\bin\Debug\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\w\rec2\src\Ipc.Application.Sportmaster\bin\Debug\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> D:\w\rec2\src\Ipc.Reference.Protocol\bin\Debug\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\w\rec2\src\Ipc.Components\bin\Debug\net10.0\Ipc.Components.dll
+  Ipc.Drivers -> D:\w\rec2\src\Ipc.Drivers\bin\Debug\net10.0\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\w\rec2\src\Ipc.Integrations\bin\Debug\net10.0\Ipc.Integrations.dll
+  Ipc.Assembly -> D:\w\rec2\src\Ipc.Assembly\bin\Debug\net10.0\Ipc.Assembly.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:38.35

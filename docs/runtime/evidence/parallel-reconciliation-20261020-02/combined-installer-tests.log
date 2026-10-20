@@ -1,0 +1,28 @@
+PASS complete payload and Unicode paths retain exact bytes
+PASS real byte progress is monotonic and reaches verified handoff
+PASS existing media is never overwritten
+PASS aggregate byte tampering refuses preparation
+PASS unpacked size bound rejects inconsistent payload
+PASS file count mismatch fails closed
+PASS cancellation prevents completed handoff
+PASS cancellation during verification cannot launch an unverified executable
+PASS unsafe path rejected: ../escape
+PASS unsafe path rejected: /absolute
+PASS unsafe path rejected: C:/drive
+PASS unsafe path rejected: a\escape
+PASS unsafe path rejected: a/../escape
+PASS unsafe path rejected: a//file
+PASS unsafe path rejected: a/file.
+PASS unsafe path rejected: a/file 
+PASS unsafe path rejected: CON.txt
+PASS unsafe path rejected: AUX/file
+PASS unsafe path rejected: a/evil:stream
+PASS unsafe path rejected: a/COM1
+PASS Windows case-insensitive duplicate paths rejected
+PASS symbolic-link archive entry rejected
+PASS missing inventoried executable rejected
+PASS unlisted program file rejected
+PASS per-file mismatch rejected even with matching aggregate descriptor
+PASS mixed source identity rejected
+PASS rejected archive entries do not escape the preparation root
+PASS 27 installer preparation checks; no executable launched or machine policy modified

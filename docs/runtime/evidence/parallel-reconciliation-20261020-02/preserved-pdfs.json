@@ -1,0 +1,26 @@
+{
+  "Baseline": "9e5b6ab5be9cf70284acdbaa84b84994ca2377e9",
+  "PdfCount": 5,
+  "Pdfs": [
+    {
+      "Path": "docs/reviews/architecture-quality-audit-02/WP-IPC-ARCHITECTURE-QUALITY-AUDIT-02.pdf",
+      "UnchangedGitBlob": "68c7416b64398a4d4a98488e537442cba4c2a5a5"
+    },
+    {
+      "Path": "docs/reviews/audit-reconciliation-01/WP-IPC-AUDIT-RECONCILIATION-01_8cabf06d_20261017.pdf",
+      "UnchangedGitBlob": "9c1ecc0e061fa7c3f997754246c2f65fdc5cb0a4"
+    },
+    {
+      "Path": "docs/reviews/commercial-quality-audit-03/WP-IPC-COMMERCIAL-QUALITY-AUDIT-03.pdf",
+      "UnchangedGitBlob": "2a9601de71139e034b60b2199dda535461e78bda"
+    },
+    {
+      "Path": "docs/reviews/project-conformance-audit-01/WP-IPC-PROJECT-CONFORMANCE-AUDIT-01_8cabf06d_20261017.pdf",
+      "UnchangedGitBlob": "e4bcde9d3d7185c396a0a40ddc1ab66962b8ffbb"
+    },
+    {
+      "Path": "docs/reviews/ux-commercial-quality-audit-01/WP-IPC-UX-COMMERCIAL-QUALITY-AUDIT-01.pdf",
+      "UnchangedGitBlob": "e032cc631abb8147687eaf9d8fd40a3d7b43ac8c"
+    }
+  ]
+}

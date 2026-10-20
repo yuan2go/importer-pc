@@ -1,0 +1,6 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "b33fd4972a9c3e582a06db4a88a0a1431212d092",
+  "Assertions": 26,
+  "Scope": "Actual unprivileged single-EXE install with native options, original Windows helper, protected registration, selected shortcuts, initial Simulation configuration and normal installed-app startup. No devices or production qualification."
+}

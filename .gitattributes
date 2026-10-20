@@ -22,7 +22,21 @@ docs/runtime/evidence/sportmaster-audit-remediation-01/** -text whitespace=cr-at
 docs/archive/pre-parallel-reconciliation-20261020/** -text whitespace=cr-at-eol
 docs/archive/parallel-reconciliation-20261020-inflight-ui/** -text whitespace=cr-at-eol
 docs/runtime/evidence/parallel-reconciliation-20261020/** -text whitespace=cr-at-eol whitespace=cr-at-eol
+docs/runtime/evidence/sportmaster-clear-01/** -text whitespace=cr-at-eol
+
+# Actual Windows driver verification stdout preserves captured bytes.
+docs/runtime/evidence/hikrobot-reader-01/** -text whitespace=cr-at-eol
+
+docs/archive/pre-parallel-reconciliation-20261020-02/** -text whitespace=cr-at-eol
+docs/archive/sportmaster-native-gallery-20261020-0e79e73/** -text whitespace=cr-at-eol
+docs/runtime/evidence/parallel-reconciliation-20261020-02/** -text whitespace=cr-at-eol
+docs/runtime/evidence/single-exe-installer-01/payload-tests.log -text whitespace=-blank-at-eol,cr-at-eol
 
 # Actual Windows driver verification stdout preserves captured bytes.
 docs/runtime/evidence/hikrobot-reader-01/** -text whitespace=cr-at-eol
 docs/runtime/evidence/sportmaster-clear-01/** -text whitespace=cr-at-eol
+
+docs/runtime/evidence/parallel-reconciliation-20261020-02/combined-installer-tests.log -text whitespace=-blank-at-eol,cr-at-eol
+docs/runtime/evidence/parallel-reconciliation-20261020-02/source-de105a5-setup-ui-probe.cs.txt -text whitespace=cr-at-eol,-blank-at-eof
+docs/runtime/evidence/parallel-reconciliation-20261020-02/final-installer-tests.log -text whitespace=-blank-at-eol,cr-at-eol
+docs/runtime/evidence/parallel-reconciliation-20261020-02/completion-probe.cs.txt -text whitespace=cr-at-eol,-blank-at-eof

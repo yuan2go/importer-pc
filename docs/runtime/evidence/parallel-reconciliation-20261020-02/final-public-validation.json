@@ -1,0 +1,20 @@
+{
+  "ImplementationCommit": "12946f5beee51d448c44b1bfbb0669178d57eaf7",
+  "BaselineCommit": "9e5b6ab5be9cf70284acdbaa84b84994ca2377e9",
+  "CanonicalScope": "Full exported Git index candidate including final reports and real-install evidence; subsequent formatting-only .gitattributes/manifest refresh checked incrementally",
+  "BaselineErrors": 267,
+  "CandidateErrors": 267,
+  "ErrorSetsEqual": true,
+  "NewErrors": [],
+  "Counts": {
+    "files": 4490,
+    "references": 2399,
+    "json": 1279,
+    "images": 171,
+    "boards": 18,
+    "slides": 18,
+    "pptx": 1
+  },
+  "PrivateInstallationFilesUploaded": false,
+  "FinalHeadRecheck": "Repeat immutable HEAD export after final report commit; final response gives remote main result"
+}

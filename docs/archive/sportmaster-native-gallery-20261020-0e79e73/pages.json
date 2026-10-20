@@ -1,0 +1,296 @@
+{
+  "SourceCommit": "0e79e73bdb6d7a1702373963295b192a803f28e7",
+  "Kind": "Native WPF rendering; synthetic identity and ports; local export",
+  "Images": [
+    {
+      "File": "images/01-workstation-waiting.png",
+      "Title": "工作台 · 等待读码",
+      "Group": "工作台",
+      "Sha256": "08b3af4d0310d2c24b76185a165e6ceaf174913cac05cf40c0617f16307ff381",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/02-workstation-normal.png",
+      "Title": "工作台 · 取得格口",
+      "Group": "工作台",
+      "Sha256": "02e4a1d1b97d6c1b3e413d59f4980428e0c6d159b291b55f28d75b1927f52462",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/03-workstation-details.png",
+      "Title": "工作台 · 作业详情",
+      "Group": "工作台",
+      "Sha256": "c81fb09dfb223b0eaf9ed42d17bb55026d9526644d48d5d73bd758533f52f27b",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/04-history.png",
+      "Title": "作业记录",
+      "Group": "作业记录",
+      "Sha256": "311ccfbd60882e0c1936ec40e311abcbae9b761f301295fa0b0f6cb59b1856a0",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/05-history-filters.png",
+      "Title": "作业记录 · 筛选条件",
+      "Group": "作业记录",
+      "Sha256": "9c7eb97074609182bd342875c9f121e1b716edb28b6bb054603b07248e04506e",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/10-maintenance-1.png",
+      "Title": "设备与维护 · 结构化拓扑与策略",
+      "Group": "设备与维护",
+      "Sha256": "f8c965300746d219f77887040dcb778d72e008f6bdee7427d0303d2c75372cb5",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/11-maintenance-2.png",
+      "Title": "设备与维护 · 完整候选配置（高级）",
+      "Group": "设备与维护",
+      "Sha256": "d6af37f1b152db815cb1552c01f2eeaf6f0736b2e3d53a57121fe5ae072c5044",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/12-maintenance-3.png",
+      "Title": "设备与维护 · 运行输入 / 待重启",
+      "Group": "设备与维护",
+      "Sha256": "5faa78c68f4e0af2144355c97bc35f2203f883affa3689c41b961622ad6929b7",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/13-maintenance-4.png",
+      "Title": "设备与维护 · 已安装模块参数",
+      "Group": "设备与维护",
+      "Sha256": "a26ad62216c2c98c16f31f7d460234ccb86a85e181dad6d82e887b8dc382ba45",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/14-maintenance-5.png",
+      "Title": "设备与维护 · 能力库存与参数",
+      "Group": "设备与维护",
+      "Sha256": "3568ad22eba373afe9560b3c9493adc27b89b2152cd24953ddccdc2460bf081d",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/15-maintenance-6.png",
+      "Title": "设备与维护 · 旧schema1/2策略",
+      "Group": "设备与维护",
+      "Sha256": "7880ad2f3a9d4203f91ac6c00686825ed32e70216d940f2eeb2d1e3eb8d59a76",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/16-maintenance-7.png",
+      "Title": "设备与维护 · 恢复交接",
+      "Group": "设备与维护",
+      "Sha256": "4709eb9b5b5a5b28361d7d3dd325d526e6ddddf6e8c0669dfa923e7aaca797fe",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/17-maintenance-8.png",
+      "Title": "设备与维护 · 安装管理",
+      "Group": "设备与维护",
+      "Sha256": "8635a8dd8944ee5670e03cc1b008d77316c6b1973c6a485069c90e651eda76c2",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/18-maintenance-9.png",
+      "Title": "设备与维护 · 异常与恢复",
+      "Group": "设备与维护",
+      "Sha256": "b44eb13a00e100e8f4bc61ef9c0aa1a7abfb656d75b2d551c6fcdb79a6f24555",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/22-auxiliary.png",
+      "Title": "辅助工作台",
+      "Group": "诊断与辅助窗口",
+      "Sha256": "02e4a1d1b97d6c1b3e413d59f4980428e0c6d159b291b55f28d75b1927f52462",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/23-support-1.png",
+      "Title": "帮助与支持 · 离线帮助",
+      "Group": "帮助与支持",
+      "Sha256": "e49c936477b41f85a94996f712061a00c5556f54412b8675c49afb4618f86b55",
+      "Width": 1100,
+      "Height": 900
+    },
+    {
+      "File": "images/24-support-2.png",
+      "Title": "帮助与支持 · 支持预览与关于",
+      "Group": "帮助与支持",
+      "Sha256": "c06b540b6fb123e438b1ce922980da8c2836c8f7243864f304e133a8490f2430",
+      "Width": 1100,
+      "Height": 900
+    },
+    {
+      "File": "images/30-first-configuration-1.png",
+      "Title": "首次工位配置 · 1 目录与工位",
+      "Group": "首次工位配置",
+      "Sha256": "4a567b64a850ebb26b505bc8004067c4e78824ef61242442b540ae2817567ff5",
+      "Width": 1200,
+      "Height": 950
+    },
+    {
+      "File": "images/31-first-configuration-2.png",
+      "Title": "首次工位配置 · 2 设备与服务",
+      "Group": "首次工位配置",
+      "Sha256": "b5c31f343d517e4e4c88dee8f616016d8d1b6c0e65dd0d30b07122af15401c16",
+      "Width": 1200,
+      "Height": 950
+    },
+    {
+      "File": "images/32-first-configuration-3.png",
+      "Title": "首次工位配置 · 3 运行策略",
+      "Group": "首次工位配置",
+      "Sha256": "b5003600cd4c73df90df03ade90d9174bb67c35f0215f46f645bbe67f58566b9",
+      "Width": 1200,
+      "Height": 950
+    },
+    {
+      "File": "images/33-first-configuration-4.png",
+      "Title": "首次工位配置 · 4 检查与启动",
+      "Group": "首次工位配置",
+      "Sha256": "90408415baba6a5f21b5ac0e45d4a8ce3cde32705092956065dbaa1ba6c252e0",
+      "Width": 1200,
+      "Height": 950
+    },
+    {
+      "File": "images/34-first-configuration-5.png",
+      "Title": "首次工位配置 · 恢复与维护",
+      "Group": "首次工位配置",
+      "Sha256": "a19fbc2744cf3d79cef683edd6ca43bc5c49e38075e8cfa55fe2ab9b6525bb9c",
+      "Width": 1200,
+      "Height": 950
+    },
+    {
+      "File": "images/after-normal-1100.png",
+      "Title": "紧凑工作台 · 1100",
+      "Group": "布局与异常状态",
+      "Sha256": "7bee844d2ee39869f16265163d660908699bee362435868e2016850fc0121fe8",
+      "Width": 1375,
+      "Height": 813
+    },
+    {
+      "File": "images/after-normal-900.png",
+      "Title": "紧凑工作台 · 900",
+      "Group": "布局与异常状态",
+      "Sha256": "2b2b14aeee3d28c28cee02ccdfc09590c73e68abfa7a283c2b7001b900b5411f",
+      "Width": 1125,
+      "Height": 650
+    },
+    {
+      "File": "images/after-minimum-client-800x420.png",
+      "Title": "最小客户区 · 800×420",
+      "Group": "布局与异常状态",
+      "Sha256": "04003cefdd84b0982f3fdf82416e3bdce49827e14050200bc159ae4365104aeb",
+      "Width": 1018,
+      "Height": 572
+    },
+    {
+      "File": "images/after-left-processing-right-valid-1366.png",
+      "Title": "左位处理中 · 右位已取得格口",
+      "Group": "布局与异常状态",
+      "Sha256": "c1570716684878f56b42b6ec9008b8a8367ff4cf195515c6dae3f0d8dff58e92",
+      "Width": 1708,
+      "Height": 960
+    },
+    {
+      "File": "images/after-unknown-rejected-1100.png",
+      "Title": "结果待核对与业务拒绝",
+      "Group": "布局与异常状态",
+      "Sha256": "a15fe2764b6039a9123e8d47205e98b37e2c217ca3ae80db3bd53c13d9c6623e",
+      "Width": 1375,
+      "Height": 813
+    },
+    {
+      "File": "images/after-stale-1100.png",
+      "Title": "状态读取失效",
+      "Group": "布局与异常状态",
+      "Sha256": "7a3a88670bb2d4600045c3578f44c8b671b0e19d95bc4c7e4e643d3cde8436f4",
+      "Width": 1375,
+      "Height": 813
+    },
+    {
+      "File": "images/after-long-content-1100.png",
+      "Title": "长条码与长格口",
+      "Group": "布局与异常状态",
+      "Sha256": "88df187f88eaaa1cc8624874768da1ab320bb4d66e7cbf1b49055516e32252a7",
+      "Width": 1375,
+      "Height": 813
+    },
+    {
+      "File": "images/after-workstation-blocked-login.png",
+      "Title": "作业阻断与操作员登录入口",
+      "Group": "布局与异常状态",
+      "Sha256": "c7e40d9629f04a5623f2c8ef262f7649ae06df116743a09c3aa6d2f14b914a97",
+      "Width": 1708,
+      "Height": 960
+    },
+    {
+      "File": "images/after-history-filters-minimum.png",
+      "Title": "最小窗口 · 记录筛选",
+      "Group": "布局与异常状态",
+      "Sha256": "e8068287da025b2cc1895f769ef0e43d7357255fd16f8d38cae7191237c1fceb",
+      "Width": 1018,
+      "Height": 572
+    },
+    {
+      "File": "images/after-history-expanded-minimum.png",
+      "Title": "最小窗口 · 原作业详情",
+      "Group": "布局与异常状态",
+      "Sha256": "7aba1cdcac99b86547e0b4bf86fca892ae23640cb810451fb4c3ea3517b6177c",
+      "Width": 1018,
+      "Height": 572
+    },
+    {
+      "File": "images/after-history-invalid-date-1100.png",
+      "Title": "记录查询 · 无效日期",
+      "Group": "布局与异常状态",
+      "Sha256": "c97fa764d00ce1da7cafb53f16e4fa35496bd10dd858edc2f27ba0091494dc5f",
+      "Width": 1375,
+      "Height": 813
+    },
+    {
+      "File": "images/after-support-invalid-date.png",
+      "Title": "支持预览 · 无效日期",
+      "Group": "布局与异常状态",
+      "Sha256": "2bc87f3effb9ece68c2e8e4a87235cd3861f9da99a024043bc7194252c438996",
+      "Width": 1100,
+      "Height": 900
+    },
+    {
+      "File": "images/after-classic-1366.png",
+      "Title": "经典兼容工作台",
+      "Group": "兼容页面",
+      "Sha256": "214c24a26b8248acba75ce29c7952516b25d8e87de03b48153af52d1bd7eb4ab",
+      "Width": 1938,
+      "Height": 1038
+    },
+    {
+      "File": "images/published-startup.jpg",
+      "Title": "安装与部署向导 · 初始页面",
+      "Group": "安装入口",
+      "Sha256": "789d3e3dd788a7cfb69574853cab3fc89b8a136948b70958850913513953b7b4"
+    }
+  ],
+  "PageCaptures": 22,
+  "AdditionalCaptures": 14,
+  "CaptureNote": "Real WPF rendering from frozen source; synthetic data. Main pages exported after loading completed.",
+  "ExcludedDialog": "Station diagnostics window failed to open due to a read-only Station property using a TwoWay binding; no replacement image was fabricated."
+}

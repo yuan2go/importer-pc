@@ -1,0 +1,35 @@
+{
+  "installer": "D:\\releases\\cainiao-final-b33fd49\\菜鸟供包台安装程序.exe",
+  "installer_bytes": 172487752,
+  "installer_sha256": "e7295de46aeffd236dd29e2dcc2344b5255a7fb35f0ae3219d5bb8e9e9b39c19",
+  "source_commit": "b33fd4972a9c3e582a06db4a88a0a1431212d092",
+  "business_version": "1.4.1",
+  "media_zip": "D:/releases/cainiao-final-b33fd49-media.zip",
+  "media_sha256": "d192a88e49d2d735ee93b7dbae1581ed1d4addd60c69960e0a0a5af8893d354b",
+  "delivery_files": 1,
+  "actual_windows_installation": "PASS",
+  "native_end_to_end_assertions": 26,
+  "custom_directory_and_windows_folder_picker": "PASS",
+  "start_menu_and_desktop_options": "PASS",
+  "actual_helper_registration_and_shortcuts": "PASS",
+  "finish_launch": "PASS",
+  "first_configuration_through_original_maintenance": "PASS",
+  "actual_workstation_and_two_shortcut_restarts": "PASS",
+  "windows_uac_path": "Original runas helper completed successfully; no bypass",
+  "execution_mode": "Simulation",
+  "real_devices_and_field_qualification": "NOT_RUN",
+  "authenticode": "NotSigned",
+  "fixture_sha256": "4b9434dbeda16746dccb095757ac57bf148f369fd11e7f4ab4acacff71b173f5",
+  "fixture_project_sha256": "cf4386271104d97da1d67da4dfb33fe045bb9484114f577bd10cb56c873fd67e",
+  "raw_log_sha256": "b0760b827879c6c1ffd7b6d1605a7dc660c29f08f9333f6df80cec673b901ad6",
+  "installation_details": "INSTALLATION.json is local-only and contains machine paths; do not upload",
+  "screenshots_public_candidate": [
+    "actual-workstation.png"
+  ],
+  "screenshots_local_only": [
+    "actual-options.png",
+    "actual-review.png",
+    "actual-complete.png"
+  ],
+  "prior_probe_failure": "D:/releases/cainiao-e2e-b33fd49-01/E2E.log retained; welcome access-key label assumption corrected to existing AutomationId Next; EXE unchanged"
+}

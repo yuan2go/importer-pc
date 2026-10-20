@@ -1,0 +1,10 @@
+{
+  "ImplementationCommit": "12946f5beee51d448c44b1bfbb0669178d57eaf7",
+  "HostContractSha256": "107d0d58b0a3a79fb41445821106c26f892747dd5988ffa3f7d3f9996e46e153",
+  "FixtureSource": "tests/Ipc.Drivers.Hikrobot.Probe at implementation commit",
+  "Mode": "Actual self-contained win-x64 executable, frozen Platform DLL; synthetic SDK only",
+  "DriverAssertions": 26,
+  "NativePolicyGroups": 5,
+  "Result": "PASS",
+  "RealSdkOrDevice": "NOT_RUN"
+}

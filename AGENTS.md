@@ -13,11 +13,13 @@
 
 ## UI实现必须读取的实物基线
 
-Sportmaster 本轮 UI 的现行任务与视觉目标为 `docs/ui/sportmaster-task-redesign-v2-20261020/README.md`。修改页面前实际查看 V2 交互原型、全部界面、HANDOFF、当前字段映射及原 58 项字段/状态和 39 项操作的迁移去向，再读 `docs/design/sportmaster-task-redesign-01.md` 与 `docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md`。V2 参数分为系统、业务模块、驱动、组件四类；首次配置是五步独立启动流程，不在日常导航中；左右相机框固定相机、扫描、任务三组信息。用户已确认的字段归属和新增 RCS 响应字段通过必要契约补齐；原型示例值、版本号和模拟成功不能成为生产默认或验收证据。
+参数页从2026-10-20本轮用户纠偏起采用 [PARAM-UX-02](docs/design/parameter-settings-experience-02.md) 和 [参数设置V3](docs/ui/parameter-settings-v3-20261020/README.md)。它们替代下述V2的参数布局、保存按钮组织及“维护与迁移”入口；四类归属、原业务合同、原型/原生/现场证据边界继续有效。先读本轮决定再改参数代码，不重复实现PR74已完成的响应字段或重写历史证据。
+
+Sportmaster 作业、首次启动和既有任务合同的实物基线为 `docs/ui/sportmaster-task-redesign-v2-20261020/README.md`。修改页面前实际查看 V2 交互原型、全部界面、HANDOFF、当前字段映射及原 58 项字段/状态和 39 项操作的迁移去向，再读 `docs/design/sportmaster-task-redesign-01.md` 与 `docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md`。V2 参数分为系统、业务模块、驱动、组件四类；首次配置是五步独立启动流程，不在日常导航中；左右相机框固定相机、扫描、任务三组信息。用户已确认的字段归属和新增 RCS 响应字段通过必要契约补齐；原型示例值、版本号和模拟成功不能成为生产默认或验收证据。
 
 旧 `docs/ui/sportmaster-task-redesign-20261020/`（V1）、`docs/ui/ss-ui-vis-001-v1.1/` 及历次视觉方案保留为历史参考，不再是本包并列页面主定义。编码前先清理相关过期当前指引及冲突字段归属，修正索引和替代关系；原件、编号、原哈希与历史证据保留，已正确内容不重复改写。四类页面仍编辑同一完整候选，复用唯一配置账、Application 守卫及原请求责任，采用工业级完整任务闭环，不选择最小演示实现。必要测试覆盖实际改动风险；Windows 实机、原型模拟与真实设备验收分别记录。
 
-当前main已并入PR69单窗口安装、PR70心跳、PR71参数快照与PR72发布；PR73已完成原PARAM-01范围；本包继续完成V2，原验证不扩张为完整V2验收。修改参数前读 `docs/design/parameter-refactor-01.md`、`docs/runtime/parameter-refactor-01.md` 及上述增量记录，复用参数/首配共模、条码筛选、保存核对、心跳和安装。用户本轮四类字段归属优先于快照临时摆放；取格口与心跳编码按真实用途保留，不静默互换。历史PASS和介质保留原SourceCommit，不扩张到最新合并树或V2。
+当前参数修订读取并整合main `bf61337`：PR69～73、PR74 V2及PR76操作员会话时长修复已合入，PR75/77保留各自发布记录。本包完成PARAM-UX-02，不重复实现V2，也不将历史验证扩张为V3验收。修改参数前读 `docs/design/parameter-refactor-01.md`、`docs/runtime/parameter-refactor-01.md` 及上述增量记录，复用参数/首配共模、条码筛选、保存核对、心跳和安装。用户本轮四类字段归属优先于快照临时摆放；取格口与心跳编码按真实用途保留，不静默互换。历史PASS和介质保留原SourceCommit，不扩张到最新合并树或V2。
 
 ## 项目级 UI/UX skill
 

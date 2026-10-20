@@ -1,0 +1,50 @@
+﻿category,object,page_group,original_key,chinese_label,control,unit,required_when,validation,effect,documented_default,source,notes
+系统,当前供包台,本地身份 / 技术信息,StationId,本地工作站标识,只读,,始终,不能被外部编码替代,运行内只读,,src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs; ParameterSettingsControl.Policy.cs,
+系统,当前供包台,供包台标识 / 心跳身份,StationCode,心跳工位编码,文本,,必填,1～256 非控制字符,保存后受控重启,,src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs; ParameterSettingsControl.Policy.cs,与取格口 stationCode 分别维护，不静默互换；原值null时才从本地StationId显式补入未保存候选
+系统,当前供包台,数据与记录,ResidentHistory,常驻历史条数,数值,条,必填,1～10000,保存后受控重启,200（源码默认；已有配置不覆盖）,src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs; ParameterSettingsControl.Policy.cs; src/Ipc.Application.Contracts/SystemParameterDefaults.cs; ParcelContracts.cs,
+系统,当前供包台,数据与记录,MinimumFreeMiB,关键写入保留空间,数值,MiB,必填,1～1048576,保存后受控重启,64（源码默认；已有配置不覆盖）,src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs; ParameterSettingsControl.Policy.cs; src/Ipc.Application.Contracts/SystemParameterDefaults.cs; ParcelContracts.cs,
+系统,当前供包台,数据与记录,ConfigurationDirectory,配置目录,只读路径,,宿主提供位置投影时,未提供就明确说明，不猜当前工作目录,运行内只读,,IParcelConfigurationLocationApplication.ConfigurationLocations,
+系统,当前供包台,数据与记录,DataDirectory,数据目录,只读路径,,宿主提供位置投影时,未提供就明确说明，不猜当前工作目录,运行内只读,,IParcelConfigurationLocationApplication.ConfigurationLocations,
+系统,操作员登录角色,数据与记录,SessionLifetimeMs,操作员会话有效时长,数值,ms,绑定操作员登录或该字段已有错误,100～86400000，无条件校验,保存后受控重启,28800000（源码默认；已有配置不覆盖）,src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs; ParameterSettingsControl.Policy.cs; src/Ipc.Application.Contracts/SystemParameterDefaults.cs; ParcelContracts.cs,日常读取 ConfigurationRoles 登录选择；首配读取 Bound；解绑保留值，已有错误仍可定位；维护认证不用此时长。不新增强制登录。
+系统,当前供包台,自动备份,BackupEnabled,启用自动备份,开关,,可选,关闭时提交 BackupSchedule=null,保存后受控重启,无计划时关闭；保留已有计划,src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs; ParameterSettingsControl.Policy.cs,关闭不删除已有恢复集
+系统,当前供包台,自动备份,BackupDirectory,备份目录,绝对路径,,开启计划时,本机或共享绝对路径；目标事先存在，普通目录且无链接祖先,保存后受控重启,LocalAppData/ImporterPc/backups/<ApplicationId>（仅空计划编辑初值）,src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs; ParameterSettingsControl.Policy.cs,不自动创建或改道；计划仅在暂停、维护授权有效、无在途外呼时执行
+系统,当前供包台,自动备份,BackupIntervalMinutes,备份间隔,数值,分钟,开启计划时,15～10080,保存后受控重启,60（仅空计划编辑初值）,src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs; ParameterSettingsControl.Policy.cs,
+系统,当前供包台,自动备份,BackupMaximumSets,备份份数上限,数值,份,开启计划时,1～1000,保存后受控重启,10（仅空计划编辑初值）,src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs; ParameterSettingsControl.Policy.cs,达到上限停止创建，不自动删除原备份
+系统,当前 Windows 用户,显示偏好,PresentationPreferences,作业页布局偏好,现有布局切换,,本机用户,标准 / 优先紧凑，空间不足自动适配,本机单独保存,,src/Ipc.Platform/PresentationPreferences.cs,不产生业务配置修订；不新增主题或语言后台能力
+业务模块,Sportmaster,条码筛选,BarcodePattern,条码匹配规则,正则文本,,现有规则不可清空,1～2048字符；完整匹配；单次25ms、总计100ms,保存后受控重启,,src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs; ParameterSettingsControl.Policy.cs,旧 null 保持原严格单码兼容；原型JS不是.NET正则验收
+业务模块,Sportmaster,条码筛选,LocalCandidateSample,本地候选条码,多行文本,,按需检查,每行一个，一次完整观察，最多300项完整候选；不完整/零匹配/多匹配拒绝选择；结果随输入改变过期,本地检查，不保存不外呼,,ParameterSettingsControl.Preview,
+业务模块,当前 Application,处理参数,QueueCapacity,输入队列容量,数值,条,必填,1～4096,保存后受控重启,64（源码默认；已有配置不覆盖）,src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs; ParameterSettingsControl.Policy.cs; src/Ipc.Application.Contracts/SystemParameterDefaults.cs; ParcelContracts.cs,
+业务模块,当前 Application,处理参数,TimeoutMs,单次调用预算,数值,ms,必填,100～30000,保存后受控重启,1500（源码默认；已有配置不覆盖）,src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs; ParameterSettingsControl.Policy.cs; src/Ipc.Application.Contracts/SystemParameterDefaults.cs; ParcelContracts.cs,
+业务模块,当前 Application,处理参数,MaximumOperations,未清偿作业容量,数值,件,必填,1～100000,保存后受控重启,10000（源码默认；已有配置不覆盖）,src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs; ParameterSettingsControl.Policy.cs; src/Ipc.Application.Contracts/SystemParameterDefaults.cs; ParcelContracts.cs,
+驱动,左相机,连接,device.ip,相机 IPv4 地址,文本,,必填,规范 IPv4；跨实例不能重复；不新增端口字段; 最多15字符,保存后受控重启,未提供，不推断,src/Ipc.Drivers.Hikrobot/parameters.json,按明确IP枚举唯一GigE设备，不使用枚举下标，不修改设备IP。驱动与业务左右位置无关。
+驱动,左相机,连接,device.serial,预期序列号（可选）,文本,,按驱动描述,最多32字符,保存后受控重启,未提供，不推断,src/Ipc.Drivers.Hikrobot/parameters.json,填写时同时验证IP与序列号；空值仍使用实际序列号防止同设备重复占用。
+驱动,左相机,识别与缓冲,entity.mode,实体关联方式,枚举,,按驱动描述,observe-only / trigger,保存后受控重启,observe-only,src/Ipc.Drivers.Hikrobot/parameters.json,observe-only只报告不可准入的观察。trigger须已有TriggerMode=On，且部署资格证明一触发一实体、重复帧及重连实体处置；驱动不改变触发设置。
+驱动,左相机,识别与缓冲,code.encoding,条码字节编码,枚举,,按驱动描述,utf-8 / ascii,保存后受控重启,utf-8,src/Ipc.Drivers.Hikrobot/parameters.json,严格解码，非法字节故障；不猜编码或替换字符。
+驱动,左相机,识别与缓冲,queue.capacity,回调队列容量,数值,,按驱动描述,1～1024,保存后受控重启,128,src/Ipc.Drivers.Hikrobot/parameters.json,有界队列；溢出锁定Faulted，检查原实体后显式重连。
+驱动,左相机,相机编码,bcr-code,心跳相机编码,文本,,绑定 RCS 运行时,最多256字符; 非空、无控制字符、最多256字符；左右区分大小写不得重复,保存后受控重启,未提供，不推断,src/Ipc.Drivers.Hikrobot/parameters.json,上报RCS心跳时必填。保存外部业务编码，保留大小写；不代替设备IP、序列号或内部DeviceId。；无独立心跳启用开关，手工模拟驱动例外使用显式 DeviceId
+驱动,右相机,连接,device.ip,相机 IPv4 地址,文本,,必填,规范 IPv4；跨实例不能重复；不新增端口字段; 最多15字符,保存后受控重启,未提供，不推断,src/Ipc.Drivers.Hikrobot/parameters.json,按明确IP枚举唯一GigE设备，不使用枚举下标，不修改设备IP。驱动与业务左右位置无关。
+驱动,右相机,连接,device.serial,预期序列号（可选）,文本,,按驱动描述,最多32字符,保存后受控重启,未提供，不推断,src/Ipc.Drivers.Hikrobot/parameters.json,填写时同时验证IP与序列号；空值仍使用实际序列号防止同设备重复占用。
+驱动,右相机,识别与缓冲,entity.mode,实体关联方式,枚举,,按驱动描述,observe-only / trigger,保存后受控重启,observe-only,src/Ipc.Drivers.Hikrobot/parameters.json,observe-only只报告不可准入的观察。trigger须已有TriggerMode=On，且部署资格证明一触发一实体、重复帧及重连实体处置；驱动不改变触发设置。
+驱动,右相机,识别与缓冲,code.encoding,条码字节编码,枚举,,按驱动描述,utf-8 / ascii,保存后受控重启,utf-8,src/Ipc.Drivers.Hikrobot/parameters.json,严格解码，非法字节故障；不猜编码或替换字符。
+驱动,右相机,识别与缓冲,queue.capacity,回调队列容量,数值,,按驱动描述,1～1024,保存后受控重启,128,src/Ipc.Drivers.Hikrobot/parameters.json,有界队列；溢出锁定Faulted，检查原实体后显式重连。
+驱动,右相机,相机编码,bcr-code,心跳相机编码,文本,,绑定 RCS 运行时,最多256字符; 非空、无控制字符、最多256字符；左右区分大小写不得重复,保存后受控重启,未提供，不推断,src/Ipc.Drivers.Hikrobot/parameters.json,上报RCS心跳时必填。保存外部业务编码，保留大小写；不代替设备IP、序列号或内部DeviceId。；无独立心跳启用开关，手工模拟驱动例外使用显式 DeviceId
+组件,共享 RCS 连接,协议与心跳,source,协议来源,文本,,必填,最多64字符,保存后受控重启,未提供，不推断,src/Ipc.Integrations.SportmasterRcs/parameters.json,
+组件,共享 RCS 连接,协议与心跳,locale,协议语言,文本,,必填,最多64字符,保存后受控重启,未提供，不推断,src/Ipc.Integrations.SportmasterRcs/parameters.json,
+系统,当前供包台,供包台标识 / 取格口身份,zone-id,区域 ID,数值,,必填,1～9223372036854775807; 最多32字符,保存后受控重启,未提供，不推断,src/Ipc.Integrations.SportmasterRcs/parameters.json,
+系统,当前供包台,供包台标识 / 取格口身份,project-id,项目 ID,数值,,必填,1～9223372036854775807; 最多32字符,保存后受控重启,未提供，不推断,src/Ipc.Integrations.SportmasterRcs/parameters.json,
+业务模块,Sportmaster,取格口请求,quantity,每次请求数量,数值,,必填,1～2147483647; 最多10字符,保存后受控重启,未提供，不推断,src/Ipc.Integrations.SportmasterRcs/parameters.json,请求数量与响应quantity分离；指定格口关闭时从候选移除chute-code，实际请求为null
+组件,共享 RCS 连接,请求编号区间,request-id-base,独占请求编号区间起点（不含）,数值,,必填,0～9223372036854775806; 最多32字符,保存后受控重启,未提供，不推断,src/Ipc.Integrations.SportmasterRcs/parameters.json,
+组件,共享 RCS 连接,请求编号区间,request-id-count,独占请求编号区间容量,数值,,必填,1～9223372036854775807; 最多32字符; 与起点之和不能溢出；原持久编号责任保持,保存后受控重启,未提供，不推断,src/Ipc.Integrations.SportmasterRcs/parameters.json,
+系统,当前供包台,供包台标识 / 取格口身份,left-station-code,共同供包台编码,文本,,必填,最多256字符,保存后受控重启,未提供，不推断,src/Ipc.Integrations.SportmasterRcs/parameters.json,同一个可写投影映射原左右参数；原值冲突先显示两值，由用户明确统一；不是两套可写输入
+驱动,左相机,相机编码,left-bcr-code,取格口相机编码,文本,,必填,最多256字符,保存后受控重启,未提供，不推断,src/Ipc.Integrations.SportmasterRcs/parameters.json,写入原 RCS schema，对应驱动实例唯一可写；与驱动心跳bcr-code不同用途
+系统,当前供包台,供包台标识 / 取格口身份,right-station-code,共同供包台编码,文本,,必填,最多256字符,保存后受控重启,未提供，不推断,src/Ipc.Integrations.SportmasterRcs/parameters.json,同一个可写投影映射原左右参数；原值冲突先显示两值，由用户明确统一；不是两套可写输入
+驱动,右相机,相机编码,right-bcr-code,取格口相机编码,文本,,必填,最多256字符,保存后受控重启,未提供，不推断,src/Ipc.Integrations.SportmasterRcs/parameters.json,写入原 RCS schema，对应驱动实例唯一可写；与驱动心跳bcr-code不同用途
+业务模块,Sportmaster,取格口请求,specified-chute,指定格口,开关,,必填,false / true,保存后受控重启,未提供，不推断,src/Ipc.Integrations.SportmasterRcs/parameters.json,请求数量与响应quantity分离；指定格口关闭时从候选移除chute-code，实际请求为null
+业务模块,Sportmaster,取格口请求,chute-code,指定格口编码,文本,,指定格口为 true,最多64字符,保存后受控重启,未提供，不推断,src/Ipc.Integrations.SportmasterRcs/parameters.json,请求数量与响应quantity分离；指定格口关闭时从候选移除chute-code，实际请求为null
+组件,共享 RCS 连接,协议与心跳,heartbeat-interval-seconds,心跳请求间隔,数值,秒,按组件描述,1～3600; 最多4字符,保存后受控重启,5,src/Ipc.Integrations.SportmasterRcs/parameters.json,默认5秒，受控重启后生效。供包台编码读取系统StationCode，相机编码读取各Reader驱动参数bcr-code；超时不重发旧心跳。
+组件,共享 RCS 连接,服务连接,Target,服务地址,地址,,必填,HTTP(S) /rcs/sorter/api；禁止凭据、query、fragment,保存后受控重启,,ParameterEditorModel.cs; RcsTaskOptions.cs; ParameterSettingsControl.Capabilities.cs,地址只有一个可写来源，不再新增重复endpoint
+驱动,左右驱动实例,安装与技术信息,Provider / InstanceId / DeviceId / Role,安装类型、精确版本、原实例与绑定,精确提供者选择 + 只读身份,,按实际安装描述,缺失精确依赖时说明原因；不猜替代版本,保存后受控重启,,CapabilityDraft; ParameterSettingsControl.Capabilities.cs,schema3固定left/right两个读码位置，绑定共享Wcs（选用RCS时一连接）；组件依真实绑定/库存呈现，含维护认证，非组件总数为1；旧schema1/2原Reader兼容保留
+组件,各实际适用组件,安装与技术信息,Provider / InstanceId / Target / Contract / Role,安装类型、精确版本、原实例与绑定,精确提供者选择 + 可编辑连接目标 + 只读身份/合同,,按实际安装描述,缺失精确依赖时说明原因；不猜替代版本,保存后受控重启,,CapabilityDraft; ParameterSettingsControl.Capabilities.cs,schema3固定left/right两个读码位置，绑定共享Wcs（选用RCS时一连接）；组件依真实绑定/库存呈现，含维护认证，非组件总数为1；旧schema1/2原Reader兼容保留
+业务模块,其他独立 Application,原适用业务策略,WeightSource/Unit/Precision/ConfiguredWeight/MaximumAgeMs/WaitTimeoutMs/Validity,原重量策略,沿原枚举与数值,,仅实际业务适用,沿原完整校验，不更改语义,保存后受控重启,,ParameterSettingsControl.Policy.cs,不因重设计给 Sportmaster 新增称重
+业务模块,其他独立 Application,原适用图像策略,UploadStrategy/ImageBytes/TotalBytes/MaximumPending,原图像策略与容量,沿原枚举与数值,,仅实际业务适用,沿原完整校验，不更改语义,保存后受控重启,,ParameterSettingsControl.Policy.cs,不因重设计给 Sportmaster 新增预览或传图
+组件,其他实际安装并适用的组件,所属组件对象 / 高级参数,Parameters[key],按安装描述的组件参数,按真实类型生成控件,,按角色、安装schema和依赖,沿 Required/Choices/Range/Secret 等真实描述，不推断未来字段,保存后受控重启,,CapabilityDraft; ParameterSettingsControl.Capabilities.cs,兜底保留如 reference integration 的 slot、维护登录 subjects 等实际参数；敏感字段隐藏，技术键可定位；不因RCS示例删其他组件

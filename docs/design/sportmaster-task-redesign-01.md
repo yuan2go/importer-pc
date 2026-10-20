@@ -1,3 +1,5 @@
+> 参数页面当前修订：[PARAM-UX-02](parameter-settings-experience-02.md) 与 [V3交付](../ui/parameter-settings-v3-20261020/README.md) 替代本文参数版式、底部保存步骤和“维护与迁移”入口。PR74已实现的作业/首配合同及PR76会话修复继续复用；下文旧实施状态保留形成时身份，不要求重复实现。
+
 > 当前实施：[V2 实施与验证记录](../runtime/ui-task-redesign-01.md)。实施基准 main `de2b045`；此前设计、PR73及其他介质验证各守原版本。
 
 > PR73 参数实施补充：原 PARAM-01 参数及必要联动已完成，原提交验证见[实施记录](../runtime/parameter-refactor-01.md)；PR73 发布阶段只做不测试的合并/上传（历史范围）。原 PARAM-01 不自动代表 V2；本版完成范围与新证据见顶部实施记录。

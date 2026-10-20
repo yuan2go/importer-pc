@@ -1,0 +1,389 @@
+{
+  "kind": "synthetic-browser-prototype",
+  "nativeWindows": false,
+  "baseLogicalViewport": [
+    1600,
+    900
+  ],
+  "pixelExport": "2×",
+  "screens": [
+    {
+      "file": "screens/01-left-camera.png",
+      "scene": "left",
+      "title": "左相机：对象、连接与编码",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 667,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/02-system.png",
+      "scene": "system",
+      "title": "系统：供包台身份",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 667,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/03-business-request.png",
+      "scene": "request",
+      "title": "业务模块：取格口请求",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 777,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/04-rcs-component.png",
+      "scene": "rcs",
+      "title": "组件：共享 RCS 连接",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 788,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/05-validation-error.png",
+      "scene": "invalid",
+      "title": "字段错误：保留其他输入",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 742,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/06-save-review.png",
+      "scene": "review",
+      "title": "统一保存审阅",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 667,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/07-saved-pending.png",
+      "scene": "pending",
+      "title": "已保存：运行版本未变化",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 742,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/08-connection-failed.png",
+      "scene": "connection",
+      "title": "连接检查：分层结果",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 1004,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/09-automatic-backup.png",
+      "scene": "backup",
+      "title": "自动备份与完整备份",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 690,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/10-template-preview.png",
+      "scene": "template",
+      "title": "安全模板导入预览",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 667,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/11-search.png",
+      "scene": "search",
+      "title": "设置搜索与对象定位",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 667,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/12-unsaved-close.png",
+      "scene": "leave",
+      "title": "关闭前处理草稿",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 667,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/13-save-unknown.png",
+      "scene": "unknown",
+      "title": "保存结果待确认",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 742,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/14-camera-advanced.png",
+      "scene": "advanced",
+      "title": "识别、编码与缓冲",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 875,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/15-barcode-filter.png",
+      "scene": "filter",
+      "title": "条码筛选与本地样例",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 667,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/16-work-rcs-fault.png",
+      "scene": "work-fault",
+      "title": "作业：RCS 异常影响范围",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": null,
+        "mainClientHeight": null
+      }
+    },
+    {
+      "file": "screens/17-work-normal.png",
+      "scene": "work",
+      "title": "作业：相机、扫描、任务三组",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": null,
+        "mainClientHeight": null
+      }
+    },
+    {
+      "file": "screens/18-data-records.png",
+      "scene": "data",
+      "title": "数据位置与记录",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 667,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/19-processing.png",
+      "scene": "processing",
+      "title": "处理参数",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 667,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/20-display.png",
+      "scene": "display",
+      "title": "本机显示偏好",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 667,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/21-driver-unavailable.png",
+      "scene": "missing",
+      "title": "驱动不可用：保留原参数",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 1208,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/22-legacy-conflict.png",
+      "scene": "legacy",
+      "title": "检测到旧设置冲突",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 766,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/23-saving.png",
+      "scene": "saving",
+      "title": "正在保存与核对",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 667,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/24-save-failed.png",
+      "scene": "save-failed",
+      "title": "已确认未保存：保留输入",
+      "width": 1600,
+      "height": 900,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 667,
+        "mainClientHeight": 667
+      }
+    },
+    {
+      "file": "screens/25-1366x768.png",
+      "scene": "left",
+      "title": "布局：1366×768 逻辑像素",
+      "width": 1366,
+      "height": 768,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 646,
+        "mainClientHeight": 558
+      }
+    },
+    {
+      "file": "screens/26-1092x614.png",
+      "scene": "left",
+      "title": "布局：1092×614 DIP；对应约1366×768 /125%可用空间",
+      "width": 1092,
+      "height": 614,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 646,
+        "mainClientHeight": 404
+      }
+    },
+    {
+      "file": "screens/27-800x420.png",
+      "scene": "left",
+      "title": "布局：800×420 最小工作区",
+      "width": 800,
+      "height": 420,
+      "scale": 2,
+      "geometry": {
+        "documentOverflow": false,
+        "bodyOverflow": false,
+        "mainScrollHeight": 857,
+        "mainClientHeight": 226
+      }
+    }
+  ]
+}

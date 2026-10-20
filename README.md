@@ -6,13 +6,13 @@
 
 C#/.NET 10 Windows 工位客户端与独立 Application 工程。Platform 提供机制，Application 拥有业务状态和命令守卫，Driver 连接设备，Component 适配外部服务；同一业务实例服务多个页面与窗口。
 
-## 当前任务：Sportmaster V2 任务与配置体验重设计
+## 当前任务：参数设置 V3
 
-从 [V2 设计入口](docs/ui/sportmaster-task-redesign-v2-20261020/README.md)查看原型、逐张高清图、字段映射和交接，再读 [实施裁决](docs/design/sportmaster-task-redesign-01.md)、[UIR 工作包](docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)与 [Codex 实施提示](docs/work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)。本轮材料范围见 [V2 发布记录](docs/runtime/ui-task-redesign-v2-publication-20261020.md)；[前一版入库记录](docs/runtime/ui-task-redesign-01-publication.md)保留原提交事实。
+从 [新版参数界面、可点击原型与27张高清图](docs/ui/parameter-settings-v3-20261020/README.md)直接查看本轮成果；[设计决定](docs/design/parameter-settings-experience-02.md)、[开发交接](docs/ui/parameter-settings-v3-20261020/HANDOFF.md)、[实际验证](docs/ui/parameter-settings-v3-20261020/QA.md)和[下一步Codex提示](docs/ui/parameter-settings-v3-20261020/CODEX-NEXT.md)统一在此。
 
-**当前已获授权实施 UIR-00～06 并执行必要验证，继承 PR73 已完成的 PARAM-01。设计入库阶段的“仅设计／不测试”不限制本实施包；实际完成状态与证据以 V2 实施记录为准。** 参数配置为系统、业务模块、驱动、组件四类；首配为首次启动的五步独立流程；每个左右相机框固定相机信息、扫描候选/业务选中码、RCS任务信息，展示格口、波次、任务、SKU 与返回数量。界面状态/PNG 数量见 V2 索引，源码与格式副本不计作额外页面。
+参数采用同窗专注工作区、一个四类对象目录、自动校验与统一保存审阅。“维护与迁移”由模板、备份、安装、原账核对等具体任务入口替代。四类仍编辑同一完整候选；已保存与运行中分别显示。读取基准为main `837370e`，已整合最新 `bf61337` 的PR76/77会话修复与发布记录。本包实现与原生待验见[实施记录](docs/runtime/parameter-settings-experience-02.md)。上面的1.6.1安装包保留原源身份，并不包含本轮V3。
 
-实施基准为最新 main `de2b045a6eb66c66cc22a237fb2c4e0f84f98e78`，已含PR69单窗口安装/固定桌面名称、PR70心跳、PR71参数快照和PR72发布。复用[PARAM已有模型与保存核对](docs/runtime/parameter-refactor-01.md)、条码筛选、首配共模和已合入机制；按用户本轮字段归属完善[参数实施](docs/design/parameter-refactor-01.md)、三组任务展示、对象编辑及异常返回，不回滚或重做并行成果。完整导航见 [文档索引](docs/INDEX.md)，协作规则见 [AGENTS](AGENTS.md)。
+[V2](docs/ui/sportmaster-task-redesign-v2-20261020/README.md)继续作为三组作业信息、首次启动和原业务合同的基线；其中参数版式和旧保存步骤已由V3替代。原资料、原哈希和历史验收保持，不重复导出或累计作新页面数。完整导航见 [文档索引](docs/INDEX.md)，工程约束见 [AGENTS](AGENTS.md)。
 
 ## 已实现能力与业务边界
 

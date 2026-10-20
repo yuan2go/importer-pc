@@ -1,0 +1,134 @@
+{
+  "kind": "frozen-source-file-identities",
+  "initial_read_main": "837370e3c21a4b83ca0f20dc9a606e760ba9acac",
+  "integrated_main": "bf61337230202db6c3a994968ad0a277d9f3cc92",
+  "development_branch": "codex/parameter-settings-v3-20261020",
+  "native_windows": "NOT_RUN",
+  "files": [
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationCloseGuard.cs",
+      "sha256": "6e00d4b42a1ee7999bd77ffc6f26e309d8bddfe0867b7f6578e41aa666d7122e",
+      "size_bytes": 4521
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationReviewPresentation.cs",
+      "sha256": "79a57df737259bb1d62bbfba368a6acb82dc7b6c23c5f04ab50e4270a0489220",
+      "size_bytes": 12923
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSaveReviewWindow.cs",
+      "sha256": "c216a930a6b41da40b59f2a6f377429074360acdcbf3e2f45e21358b15811eba",
+      "size_bytes": 17955
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSubmission.cs",
+      "sha256": "96e6cb3b6aa6f5606f038013e9b977eb26fafc066f867cbe9bcb4fb98cb5a0f4",
+      "size_bytes": 4526
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/MaintenancePage.xaml",
+      "sha256": "6b262f99bfc91001089810e611d45283ebc30c5a1322ce0e0d378eec27d41882",
+      "size_bytes": 23591
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/MaintenancePage.xaml.cs",
+      "sha256": "58f8edcb7bad11a1edb2c4bf5f3434cab5e6cc898a79ee359247328ba1a3d0fd",
+      "size_bytes": 17864
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Capabilities.cs",
+      "sha256": "40b4c21b7e348aa9170c9758a2176d631fa8274017e79ce9345cb8c6a3eea04d",
+      "size_bytes": 10666
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Policy.cs",
+      "sha256": "cec757d4529f8d36dfe7fc15ea19a9cac9530dd4156b63c8a6a358b784f5e1b3",
+      "size_bytes": 12427
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Search.cs",
+      "sha256": "34255537b3108ec2d6568fc2eb6990f3fc3d36c48bf83f46debce90b1cc3c644",
+      "size_bytes": 4791
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.cs",
+      "sha256": "582d1501179b94e8ced2161464290988bd15e92a1fa4854835877e7bada080ea",
+      "size_bytes": 17922
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsTheme.xaml",
+      "sha256": "cc4d4ec5cc1cb9e40b6f9ab0b8e765f89ad0872b518e056d5e8367789141819b",
+      "size_bytes": 7962
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelViewModel.cs",
+      "sha256": "43fabd578c1987c7b77ea6dd500ed347cb789c1a310fb15b5c86b2a4e38cd2ed",
+      "size_bytes": 21155
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ProductHelp.cs",
+      "sha256": "630e092bc35011e590bde479d514db5d43882bddc1a91af4ec001ee287eff0f2",
+      "size_bytes": 9619
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/ShellWindow.xaml.cs",
+      "sha256": "d1c5149daf32d71d0275a419113d5009d6c1865b2e5fb6e6af75f2bf8f7f8df4",
+      "size_bytes": 8422
+    },
+    {
+      "path": "src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs",
+      "sha256": "e97e8718db6113c98d25e46aea29a1f03c44d7e1b9a120a3e07264678f89e52a",
+      "size_bytes": 36836
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs",
+      "sha256": "cfeaff16b8bafd75e61ac79bc7c8a464523ffb62aa2c0b0eeacf95bee25b0f74",
+      "size_bytes": 22139
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.Diagnostics.cs",
+      "sha256": "40e8d078efa69195e36fae0685fb20474af817b9161ed7073af4e79061c30b9e",
+      "size_bytes": 7260
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
+      "sha256": "32566b3b7d0c76dffe30920e93f9ecc4e9be468e523b75222bd394e24a38674a",
+      "size_bytes": 15388
+    },
+    {
+      "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs",
+      "sha256": "9a23aba11d2a6f8a7091517ad473ad5c03cc2d06022208ff452aa72c07895013",
+      "size_bytes": 9695
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/CommercialPages.cs",
+      "sha256": "b349536fdcefbe9a90035ccdcfa8623bbe4c541cecd19257d528605a5b8419ec",
+      "size_bytes": 14780
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/LoginSession.cs",
+      "sha256": "8a65ecf676deaf99d82b572958786e77d2ccffe1174417b94a66648ffb923861",
+      "size_bytes": 11758
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/ParameterRefactor.cs",
+      "sha256": "b2a717008532f796e4faa08782e4d0ebec6deb1409a03b8d5f3cc1a56a637be1",
+      "size_bytes": 11084
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "sha256": "f9391f77566e506a7f703a1e2275ba8d234e12d0d739a453d42e278795c18252",
+      "size_bytes": 16645
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/TaskRedesign.cs",
+      "sha256": "25e94028b7b8f2dbf52466e6bdfee0baa8b58888f04a0002d7caf97de2808c16",
+      "size_bytes": 26482
+    },
+    {
+      "path": "tests/Ipc.Desktop.UiVerification/UxCommercialClosure.cs",
+      "sha256": "1dbbdf77fc98086112e6fb083fca325d5c74e3f120fd1ecf2fce69322bf4ca8c",
+      "size_bytes": 27881
+    }
+  ]
+}

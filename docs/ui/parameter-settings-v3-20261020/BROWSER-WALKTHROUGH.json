@@ -1,0 +1,52 @@
+{
+  "kind": "browser-simulation-only",
+  "timeUtc": "2026-10-20T16:13:42.893Z",
+  "prototypeSha256": "d87b87dcd419a9295357f37e43024a812bd492c9d203a2fc1e5814e2ffb3f941",
+  "browser": "155.0.8059.84",
+  "nativeWindows": "NOT_RUN",
+  "realDevices": "NOT_RUN",
+  "pageErrors": [],
+  "unexpectedHttpRequests": [],
+  "journeys": [
+    {
+      "name": "选择右相机、修改后切回左相机；对象草稿相互独立",
+      "result": "PASS"
+    },
+    {
+      "name": "非法IP定位、修正、审阅、暂停、维护授权、保存；运行值保持原版本",
+      "result": "PASS"
+    },
+    {
+      "name": "按技术键搜索并展开真实字段；Ctrl+F/Enter/Escape可用",
+      "result": "PASS"
+    },
+    {
+      "name": "返回作业保留无效输入；关闭草稿可取消或明确放弃",
+      "result": "PASS"
+    },
+    {
+      "name": "RCS连接检查保留编辑地址；不保存、不应用、不发送业务请求",
+      "result": "PASS"
+    },
+    {
+      "name": "安全模板先预览再入草稿；不改变IP、站码、目标或运行配置",
+      "result": "PASS"
+    },
+    {
+      "name": "保存结果未知时禁止重复提交；核对后区分已保存与运行中",
+      "result": "PASS"
+    },
+    {
+      "name": "左右当前条码、任务与格口对应；RCS异常不残留上一格口",
+      "result": "PASS"
+    },
+    {
+      "name": "本地条码样例异步检查与结果过期提示",
+      "result": "PASS"
+    },
+    {
+      "name": "1366×768、1092×614和800×420逻辑视口保留底栏且无页面横向溢出",
+      "result": "PASS"
+    }
+  ]
+}

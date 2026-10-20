@@ -15,25 +15,29 @@
 > 历史完整安装体验：SM业务模块v1.4.1单EXE，冻结源码`27b0d8f6cc0281fd82ee68fcda350233cb0a45ff`。[单窗口/一次授权及58项实际安装启动记录](runtime/installer-single-window-01.md)；本机Simulation通过，Win10 22H2/其他CPU/海康现场待验。该旧包不包含UIR-01～06移植，不能把其58项结果记为当前1.6.0通过，原7c发行身份保留。
 > 2026-10-20 RCS心跳实施增量见[配置、实现与验证](runtime/rcs-heartbeat-01.md)。本增量由用户另行授权；下文“本次只做设计”专指UIR设计入库任务，不限制本次RCS开发。
 
-# 文档索引：Sportmaster V2 任务与配置体验重设计
+# 文档索引：参数设置 V3 与 Sportmaster 作业
 
-当前V2目标与完整工作包由下列入口管理。**当前已获授权实施 UIR-00～06 并执行必要验证，继承 PR73 已完成的 PARAM-01。设计入库阶段的“仅设计／不测试”不限制本实施包；实际完成状态与证据以 V2 实施记录为准。** 实施基准为最新 main `de2b045a6eb66c66cc22a237fb2c4e0f84f98e78`；继续继承最新main，用户本轮字段归属优先于快照临时摆放。
+**参数体验当前修订：** 用户针对实际参数页提出新的美学与操作纠偏，现采用 [PARAM-UX-02](design/parameter-settings-experience-02.md) 和 [参数设置V3](ui/parameter-settings-v3-20261020/README.md)。此修订替代V2参数版式、底部步骤按钮和“维护与迁移”总入口。PR74实现与发行记录继续保留真实来源，不因新设计而倒写。
+
+当前参数工作包为 [PS-00～05](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)，读取并整合main `bf61337`。本轮已实施的源码与Windows待验边界见[参数V3实施记录](runtime/parameter-settings-experience-02.md)。PR74和PR76已完成内容复用，历史V2工作包不再要求重复改写已经实现的功能。
 
 ## 1. 当前阅读顺序
 
 | 顺序 | 入口与用途 |
 | --- | --- |
 | 1 | [AGENTS](../AGENTS.md)：工作范围、分支、现有机制与证据规则。 |
-| 2 | [V2 设计入口](ui/sportmaster-task-redesign-v2-20261020/README.md)：可点击原型、逐页高清图、字段/动作迁移、源码与QA。 |
-| 3 | [V2实施裁决](design/sportmaster-task-redesign-01.md)：目标、已有代码与差距；[PARAM-01裁决](design/parameter-refactor-01.md)及[实施快照](runtime/parameter-refactor-01.md)说明复用模型和待迁移范围。 |
-| 4 | [UIR-00～06工作包](work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)与[实施提示](work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)：本包完整范围、六任务及六项商业 UI 质量要求。 |
-| 5 | [本版实施与运行](runtime/ui-task-redesign-01.md)、[验收证据](runtime/evidence/ui-task-redesign-v2/ACCEPTANCE.md)、[同源 WPF 图集](ui/sportmaster-v2-wpf-20261020/README.md)；[V2 设计入库记录](runtime/ui-task-redesign-v2-publication-20261020.md)与[V1 入库记录](runtime/ui-task-redesign-01-publication.md)保留原范围。 |
+| 2 | [V3设计入口](ui/parameter-settings-v3-20261020/README.md)、[参数决定](design/parameter-settings-experience-02.md)、[交接](ui/parameter-settings-v3-20261020/HANDOFF.md)：当前参数布局、字段去向和保存流程。 |
+| 3 | [参数工作包](work-packages/WP-IPC-PARAMETER-SETTINGS-02.md)、[简洁Codex提示](ui/parameter-settings-v3-20261020/CODEX-NEXT.md)、[V3实际验证](ui/parameter-settings-v3-20261020/QA.md)：当前实施和收口。 |
+| 4 | [V2设计](ui/sportmaster-task-redesign-v2-20261020/README.md)、[原V2裁决](design/sportmaster-task-redesign-01.md)、[UIR-00～06](work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)：三组作业、首配、原合同和历史任务，参数入口以V3为准。 |
+| 5 | [V2实施](runtime/ui-task-redesign-01.md)、[原验收](runtime/evidence/ui-task-redesign-v2/ACCEPTANCE.md)、[同源WPF图](ui/sportmaster-v2-wpf-20261020/README.md)、[PR76会话修复](runtime/login-session-lifetime-fix-01.md)：保持各自源码及环境身份。 |
 
 V2 以命名界面状态和导出图片分别计数，实际数量见本版索引；源码、交接格式及归档文件不重复计作页面。原 58 项字段/状态、39 项操作的可辨认事实保留，当前迁移表明确各项在 V2 的去向。
 
 日常导航为作业、作业记录、参数配置、诊断与恢复。参数配置顶层为系统、业务模块、驱动、组件：系统保留区域/项目/供包台编码及本机设置，业务模块维护当前Sportmaster已有条码筛选、请求规则与应用预算，驱动按安装类型及业务要求显示左右实例，组件只有一个 RCS 连接。首次配置仅在首次启动出现，五步为业务模块、系统、驱动、组件、检查与完成。每个相机框固定相机信息、扫描信息、任务信息三组；相机候选经Application筛选形成选中码，匹配RCS回应后更新任务，旧任务整组退出当前显示。
 
 ## 2. 当前代码已具备什么
+
+最新主线还已包含PR74的V2实现、PR76会话时长修复与对应发布；下列机制继续保留。
 
 基准已包含PR62/63/64/66/67/68的工作台、独立IP Reader、品牌/安装、布局与发布；另已并入PR69单窗口安装/固定桌面名称、PR70 RCS心跳、PR71参数实施快照和PR72发布回执。已完成机制不重新列为缺失，未完成快照不标为验收通过。[组合报告](runtime/parallel-task-reconciliation-20261020-02.md)、[安装发行说明](runtime/installer-release-info-01.md)、[最新发布范围](runtime/publication-pr69-pr71-20261020.md)保留精确来源。
 
@@ -65,7 +69,7 @@ V2 以命名界面状态和导出图片分别计数，实际数量见本版索�
 | --- | --- |
 | 当前 SM v1.6.1 安装包 | [登录会话修复与发布](runtime/publication-login-session-20261020.md)。固定main源92586bf，734文件介质、最终DLL聚焦24项和实际键盘输入、安装准备/取消通过；完整安装/设备/现场待验。 |
 | 历史 SM v1.6.0 安装包 | [PR74合并与发布回执](runtime/publication-pr74-20261020.md)。固定源1878be50d5be，原733文件及会话字段未修复记录保持原身份。 |
-| 新设计与模拟QA | [V2 设计入口](ui/sportmaster-task-redesign-v2-20261020/README.md)、[UI状态](ui/STATUS.md)。只证明目标呈现和模拟交互，不证明WPF或生产链路。 |
+| 当前参数设计与模拟QA | [V3设计入口](ui/parameter-settings-v3-20261020/README.md)、[UI状态](ui/STATUS.md)。27张PNG为24个命名状态加3个尺寸，原型与Windows/生产链路分开。 |
 | 现有WPF及组合 | [工作台原证据与补修](runtime/sportmaster-clear-workstation-01.md)、[组合报告](runtime/parallel-task-reconciliation-20261020-02.md)。原233项组合/9项完成页回归各守原源码、方法和环境。 |
 | V2 当前 WPF 实现 | [UIR-00～06 实施](runtime/ui-task-redesign-01.md)、[本版验收](runtime/evidence/ui-task-redesign-v2/ACCEPTANCE.md)。固定源 `26bb7b9` 完成参数、首配、三组作业和相关维护闭环；32 张 WPF PNG、本机输入和发布启动各记边界。 |
 | PARAM历史实施及快照 | [PR73实施记录](runtime/parameter-refactor-01.md)、[PR71历史范围](runtime/publication-parameter-snapshot-20261020.md)。保留原参数实施和不测试发布身份，不扩张为本轮验证。 |

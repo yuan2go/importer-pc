@@ -1,0 +1,20 @@
+[
+  {
+    "file": "noto-ui-400.woff",
+    "sha256": "bb71183aee2042d5ea860977d17b0180887cd48cc32d25bf233f658b662b1625",
+    "bytes": 197532,
+    "source": "importer-v3-NotoSansCJKsc-Regular.otf",
+    "sourceSha256": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b",
+    "license": "SIL OFL 1.1; Noto-OFL.txt",
+    "purpose": "Offline synthetic UI; native Windows uses system fonts"
+  },
+  {
+    "file": "noto-ui-700.woff",
+    "sha256": "2a6ce008ed32f7d1e1512114f2a8a9349b586ab43f931e3900f3c1498b8f529b",
+    "bytes": 201420,
+    "source": "importer-v3-NotoSansCJKsc-Bold.otf",
+    "sourceSha256": "b5f0d1a190a7f9b43c310a8850630af12553df32c4c050543f9059732d9b4c0a",
+    "license": "SIL OFL 1.1; Noto-OFL.txt",
+    "purpose": "Offline synthetic UI; native Windows uses system fonts"
+  }
+]

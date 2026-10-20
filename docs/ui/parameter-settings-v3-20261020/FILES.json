@@ -1,0 +1,283 @@
+{
+  "schema": 1,
+  "scope": "parameter-settings-v3-20261020 only",
+  "physical_file_count": 54,
+  "listed_file_count": 53,
+  "self_exclusion": [
+    "FILES.json"
+  ],
+  "self_exclusion_reason": "No recursive self-hash; verify FILES.json as a Git blob",
+  "png_count": 27,
+  "named_visual_states": 24,
+  "additional_viewport_exports": 3,
+  "mapping_records": 49,
+  "prototype_sha256": "d87b87dcd419a9295357f37e43024a812bd492c9d203a2fc1e5814e2ffb3f941",
+  "native_windows": "NOT_RUN",
+  "files": [
+    {
+      "path": "BROWSER-WALKTHROUGH.json",
+      "size_bytes": 1612,
+      "sha256": "ce475832ff8b1f4093dfcff6fd1e4e43aab17e06082f893079859203df999bdd"
+    },
+    {
+      "path": "CODEX-NEXT.md",
+      "size_bytes": 2479,
+      "sha256": "590da4f00a2e4235ef927bc3f2fe727c99cd48405ef26966cc2dfb89cd5d197f"
+    },
+    {
+      "path": "CROSSBUILD.json",
+      "size_bytes": 643,
+      "sha256": "53581d0377c49d26295c03adcd70e6ee1cb6fff75d04d6d65eff4732d3ce7f70"
+    },
+    {
+      "path": "CROSSBUILD.log",
+      "size_bytes": 1688,
+      "sha256": "440869d84557575a8ca8ac5d4f0f1a0b3ded4609a81a9f1ab66d15a4860acd7c"
+    },
+    {
+      "path": "FIELD-MIGRATION.csv",
+      "size_bytes": 16434,
+      "sha256": "1783227485b0749450f9b6a84340b5fe6332c76195482b141d1754fb5161c72c"
+    },
+    {
+      "path": "Gallery.html",
+      "size_bytes": 7124,
+      "sha256": "75c608b8493d907b4a57e533a431f98a9db02d7f6fc41a6855f4da9fba25862f"
+    },
+    {
+      "path": "HANDOFF.md",
+      "size_bytes": 13611,
+      "sha256": "586d63058a9e438518929870b78b039f5c8fad9962c6e1574a7ab0b3e11d6a53"
+    },
+    {
+      "path": "Prototype.html",
+      "size_bytes": 626814,
+      "sha256": "d87b87dcd419a9295357f37e43024a812bd492c9d203a2fc1e5814e2ffb3f941"
+    },
+    {
+      "path": "QA.md",
+      "size_bytes": 6231,
+      "sha256": "ecfc8143f227d9fe8267f28cfd80b2384b224cc0da2bd168b2b2ab4ec763a326"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 6988,
+      "sha256": "201627708e876f098fd6026153ebde4e87ad883208c12ed7e17e432d40a1189f"
+    },
+    {
+      "path": "REFERENCES.md",
+      "size_bytes": 2844,
+      "sha256": "ffd258f8c658d1adec4ec7d1a1b97cd9962f1b7d4d51e447b2fcd2c7fff511cb"
+    },
+    {
+      "path": "SOURCE-STATE.json",
+      "size_bytes": 5360,
+      "sha256": "4d101fbcc361ae4a4b6d4f8392f8b37bc23c0d9b9b764caab8881212c91ea6e3"
+    },
+    {
+      "path": "screens/01-left-camera.png",
+      "size_bytes": 327898,
+      "sha256": "3508fd2ae58bfeee3aa2cc90d9a4a7f4bf241fd19167c737f5daac01e0b4c839"
+    },
+    {
+      "path": "screens/02-system.png",
+      "size_bytes": 266612,
+      "sha256": "e05eb3795e30b2416c3c3fba62210911d2c52407f49f6b1d8a1739585e7b72ec"
+    },
+    {
+      "path": "screens/03-business-request.png",
+      "size_bytes": 285138,
+      "sha256": "32685c4b72ad05e3e24a1e22ad387ab058b11766903fed2bf72abcb74bd7eee6"
+    },
+    {
+      "path": "screens/04-rcs-component.png",
+      "size_bytes": 309010,
+      "sha256": "321acadf8cc9949540a7e74212e717a2e1b94e1822e9bfe07f263a27e36cf932"
+    },
+    {
+      "path": "screens/05-validation-error.png",
+      "size_bytes": 346459,
+      "sha256": "6eaea93709b8a8072540e4581f3b8533d6e88c126a5a5e34d3db9866b3678b65"
+    },
+    {
+      "path": "screens/06-save-review.png",
+      "size_bytes": 448825,
+      "sha256": "ec63223e4f95afa94690945afd43c7baf1e293ffff7a7ef1289bc93aed3a32b1"
+    },
+    {
+      "path": "screens/07-saved-pending.png",
+      "size_bytes": 334172,
+      "sha256": "2b6af172eac9200f601bbefd72a26fe54fb65773d89781688ba7d8bc7975e186"
+    },
+    {
+      "path": "screens/08-connection-failed.png",
+      "size_bytes": 333666,
+      "sha256": "6e00914055d669a38254361da4cc5dc39288eeefa6f97349e81900c95ff2ee20"
+    },
+    {
+      "path": "screens/09-automatic-backup.png",
+      "size_bytes": 330310,
+      "sha256": "56f3d85461abbf3a19b81bda77557b235ed74649a6deaeeec56f206923563360"
+    },
+    {
+      "path": "screens/10-template-preview.png",
+      "size_bytes": 447992,
+      "sha256": "73b263d1fde7e68976a80bd621c77313d000152fea22032d9b540aff3fa8ed4d"
+    },
+    {
+      "path": "screens/11-search.png",
+      "size_bytes": 332930,
+      "sha256": "cc0a25b37ebb9db5ae737eda4c5710ada9f8d153d3f37056c64995596d73e4ec"
+    },
+    {
+      "path": "screens/12-unsaved-close.png",
+      "size_bytes": 405596,
+      "sha256": "dd13f2f0fd51a44f5d4488e51d4792d28e7fa5d6764ba4e8a829f67d3bcf598f"
+    },
+    {
+      "path": "screens/13-save-unknown.png",
+      "size_bytes": 339242,
+      "sha256": "28d90b76d925bc6405dc3e562e3fe0132fc8c201d3eeb7457a2b719d5393594a"
+    },
+    {
+      "path": "screens/14-camera-advanced.png",
+      "size_bytes": 340766,
+      "sha256": "d3d25167db525883ccabe319886c3942bdd8cf51350bc45e55c887a407ff8191"
+    },
+    {
+      "path": "screens/15-barcode-filter.png",
+      "size_bytes": 271770,
+      "sha256": "f8705699c433a4f65816ffb753b762e15d95007adfcdc215257b70f2e6e9c1b8"
+    },
+    {
+      "path": "screens/16-work-rcs-fault.png",
+      "size_bytes": 259184,
+      "sha256": "aba731a4953e9fdef2a1bffeff9e4b9682b479624c540249a1fa40d0e11b80f7"
+    },
+    {
+      "path": "screens/17-work-normal.png",
+      "size_bytes": 220440,
+      "sha256": "5b4881a07957867fec805e31032fd8656449b28177eade812bc8150305f4312c"
+    },
+    {
+      "path": "screens/18-data-records.png",
+      "size_bytes": 319715,
+      "sha256": "36c0a44827ea9a5cc4a3106113088f9481ecaf416fa2f6ed2ccef4196d0fd540"
+    },
+    {
+      "path": "screens/19-processing.png",
+      "size_bytes": 289149,
+      "sha256": "901da4f373abcb4c66fb84cc7bf8f4cacb9f8451ebaf09158538a77885570d35"
+    },
+    {
+      "path": "screens/20-display.png",
+      "size_bytes": 297250,
+      "sha256": "c602e427e0232ebf41414c0d4ebced891fabafacbc6c446140b1cea75a0df268"
+    },
+    {
+      "path": "screens/21-driver-unavailable.png",
+      "size_bytes": 336778,
+      "sha256": "c0c1906ebf2c8ad357fe514604e327e91403eeacd41ed8ec138f521358e8da8e"
+    },
+    {
+      "path": "screens/22-legacy-conflict.png",
+      "size_bytes": 302357,
+      "sha256": "e5865105c3640068599c0d5856b0ac93ff51bf916ed455c4a2548105c22ab6da"
+    },
+    {
+      "path": "screens/23-saving.png",
+      "size_bytes": 385197,
+      "sha256": "bcfc8a5cb3517e67c3e415a04a2328e5ed92782c3da59641be43ef10eb221c48"
+    },
+    {
+      "path": "screens/24-save-failed.png",
+      "size_bytes": 382394,
+      "sha256": "3d2378e3bbde1673e2430ea1be8d99778e70320f610c7a150c89851d6ad4dd62"
+    },
+    {
+      "path": "screens/25-1366x768.png",
+      "size_bytes": 287654,
+      "sha256": "0ecb189ed1ef81ba2cf83a2da1d98634edfb4f34f97c1c9abdad024e45bfe701"
+    },
+    {
+      "path": "screens/26-1092x614.png",
+      "size_bytes": 234066,
+      "sha256": "b221fc3918b68e5b69eaac0644262c6551ea3a28b5849a1f3a18987d64c1fcf5"
+    },
+    {
+      "path": "screens/27-800x420.png",
+      "size_bytes": 128797,
+      "sha256": "faa4b0fba43b82f8e0f8a0f16f10c5965b7146857811d17c325d22b8ce904b1b"
+    },
+    {
+      "path": "screens.json",
+      "size_bytes": 9599,
+      "sha256": "bba10ede053cdd9757b8403a6575e53b1773c61e1af18340ef87c8c3a2ba8192"
+    },
+    {
+      "path": "source/app.js",
+      "size_bytes": 31283,
+      "sha256": "03707ab3bf324a2b4f9cf5db9c9dd7ee8b2f0ab9fb3feb8a361066355be7ba2b"
+    },
+    {
+      "path": "source/assets/Noto-OFL.txt",
+      "size_bytes": 4301,
+      "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+    },
+    {
+      "path": "source/assets/fonts-manifest.json",
+      "size_bytes": 806,
+      "sha256": "00466972cf14b8730e3574427deef33fd6cb6ff30a86d6db692438a44323733c"
+    },
+    {
+      "path": "source/assets/noto-ui-400.woff",
+      "size_bytes": 197532,
+      "sha256": "bb71183aee2042d5ea860977d17b0180887cd48cc32d25bf233f658b662b1625"
+    },
+    {
+      "path": "source/assets/noto-ui-700.woff",
+      "size_bytes": 201420,
+      "sha256": "2a6ce008ed32f7d1e1512114f2a8a9349b586ab43f931e3900f3c1498b8f529b"
+    },
+    {
+      "path": "source/build_field_inventory.py",
+      "size_bytes": 11229,
+      "sha256": "fea4eb9fc8d12dd416b20b10ccd83e9b555f35ac87cf3417b06fe55e106507b1"
+    },
+    {
+      "path": "source/build_prototype.py",
+      "size_bytes": 2585,
+      "sha256": "cbea2181d79e51b252cb534e984dd190f7f3581213d4bbb9cdc9979db530074d"
+    },
+    {
+      "path": "source/model.js",
+      "size_bytes": 12395,
+      "sha256": "3d3d9aa6492ea9fdca6bd42500128c1da96c176b4c1149ff0b0b04a3f94e2afd"
+    },
+    {
+      "path": "source/render_screens.cjs",
+      "size_bytes": 5165,
+      "sha256": "11618e432dc8fe64a2b3e3deccfae0da6e8385526ade1de50388334b9186599d"
+    },
+    {
+      "path": "source/styles.css",
+      "size_bytes": 24709,
+      "sha256": "9eea8a29ea89a6be71da62fae5f4c9dcd1798dd88170b776d9434b3f93fd0afe"
+    },
+    {
+      "path": "source/template.html",
+      "size_bytes": 664,
+      "sha256": "919d4bad1618df458e522fef3b88d40c2a1728e504a6c7cca16fb8369cc0b98b"
+    },
+    {
+      "path": "source/views.js",
+      "size_bytes": 25879,
+      "sha256": "388575b6f66bff7d7da9d8b8e35b166165be7d4d70ce3a3dfa3dcd75045ed822"
+    },
+    {
+      "path": "source/walkthrough.cjs",
+      "size_bytes": 9712,
+      "sha256": "928a0b0418956c23722278fd63b503c358bdd760beb284de3ae71963ede32f99"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "start_utc": "2026-10-20T16:09:47.740303+00:00",
+  "end_utc": "2026-10-20T16:10:24.332625+00:00",
+  "base_main": "bf61337230202db6c3a994968ad0a277d9f3cc92",
+  "exit_code": 0,
+  "command": [
+    "/tmp/importer-v3-dotnet/dotnet",
+    "build",
+    "tests/Ipc.Desktop.UiVerification/Ipc.Desktop.UiVerification.csproj",
+    "-p:BusinessModule=Sportmaster",
+    "-p:EnableWindowsTargeting=true",
+    "-p:UseSharedCompilation=false",
+    "--no-restore",
+    "--disable-build-servers",
+    "-m:1",
+    "-nodeReuse:false",
+    "-v:minimal"
+  ],
+  "environment": "Linux .NET 10.0.402 Windows-targeting compile only",
+  "native_windows_run": false
+}

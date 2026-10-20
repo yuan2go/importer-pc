@@ -1,0 +1,20 @@
+  Ipc.Platform -> $REPOSITORY/src/Ipc.Platform/bin/Debug/net10.0/Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> $REPOSITORY/src/Ipc.Application.Supply.Contracts/bin/Debug/net10.0/Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> $REPOSITORY/src/Ipc.Platform.Storage/bin/Debug/net10.0/Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> $REPOSITORY/src/Ipc.Application.Supply/bin/Debug/net10.0/Ipc.Supply.dll
+  Ipc.Application.Contracts -> $REPOSITORY/src/Ipc.Application.Contracts/bin/Debug/net10.0/Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> $REPOSITORY/src/Ipc.Application.ParcelFlow/bin/Debug/net10.0/Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> $REPOSITORY/src/Ipc.Application.Sportmaster/bin/Debug/net10.0/Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> $REPOSITORY/src/Ipc.Reference.Protocol/bin/Debug/net10.0/Ipc.Reference.Protocol.dll
+  Ipc.Components -> $REPOSITORY/src/Ipc.Components/bin/Debug/net10.0/Ipc.Components.dll
+  Ipc.Drivers -> $REPOSITORY/src/Ipc.Drivers/bin/Debug/net10.0/Ipc.Drivers.dll
+  Ipc.Integrations -> $REPOSITORY/src/Ipc.Integrations/bin/Debug/net10.0/Ipc.Integrations.dll
+  Ipc.Application.ParcelFlow.Desktop -> $REPOSITORY/src/Ipc.Application.ParcelFlow.Desktop/bin/Debug/net10.0-windows/Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> $REPOSITORY/src/Ipc.Application.Sportmaster.Desktop/bin/Debug/net10.0-windows/Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop.UiVerification -> $REPOSITORY/tests/Ipc.Desktop.UiVerification/bin/Debug/net10.0-windows/Ipc.Desktop.UiVerification.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:36.28

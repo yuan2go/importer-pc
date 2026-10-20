@@ -1,5 +1,7 @@
 # Sportmaster V2 · UIR-00～06 实施与运行
 
+后续局部修复：[日常参数页登录会话时长](login-session-lifetime-fix-01.md)。日常schema-3按原登录角色选择显示/隐藏，首配沿原绑定草稿；共享配置账、范围校验与保存守卫不变。下述1.6.0实现及原图集/验证保留形成时身份。
+
 实施基准 main `de2b045a6eb66c66cc22a237fb2c4e0f84f98e78`，实现分支 `codex/sportmaster-v2-ui`。本包完成 V2 原生 UI 及必要契约补足，继承 PARAM-01、周期心跳、完整配置 CAS、原请求责任、原生安装及独立维护。精确构建来源、验证结果与介质身份以[本版验收记录](evidence/ui-task-redesign-v2/ACCEPTANCE.md)为准。原型模拟与 Windows/设备验收分别记录，不把新局部验证写成旧 HTML 修复或历史 RV 全部关闭。
 
 ## 交付与入口

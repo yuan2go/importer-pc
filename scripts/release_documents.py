@@ -25,6 +25,7 @@ SPORTMASTER_GUIDES = {**PARCEL_GUIDES, 'docs/runtime/sportmaster-rcs-task.md': '
     'docs/runtime/rcs-heartbeat-01.md': 'RCS-HEARTBEAT.md',
     'docs/runtime/parameter-refactor-01.md': 'PARAMETERS.md',
     'docs/runtime/ui-task-redesign-01.md': 'SPORTMASTER-V2.md',
+    'docs/runtime/login-session-lifetime-fix-01.md': 'LOGIN-SESSION-FIX.md',
     'docs/runtime/installer-release-info-01.md': 'INSTALLATION-REQUIREMENTS.md',
     'docs/runtime/installer-single-window-01.md': 'INSTALLATION-EXPERIENCE.md',
     'docs/runtime/windows-client-compatibility-01.md': 'WINDOWS-COMPATIBILITY.md',

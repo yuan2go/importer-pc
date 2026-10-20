@@ -21,7 +21,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     readonly List<ListBox> navigators = [];
     sealed record ObjectPage(int Category, string Title, StackPanel Body, ScrollViewer Scroll)
     { public override string ToString() => Title; }
-    sealed record Location(ObjectPage Page, FrameworkElement Control, TextBlock Error, string Label, string Help);
+    sealed record Location(ObjectPage Page, FrameworkElement Control, TextBlock Error, string Label, string Help, Func<bool>? Applicable = null);
     int? categoryScope;
     public event EventHandler? MaintenanceRequested;
     public ParameterSettingsControl()
@@ -47,7 +47,7 @@ public sealed partial class ParameterSettingsControl : UserControl
     }
     public bool NavigateTo(string path)
     {
-        if (!locations.TryGetValue(path, out var location)) return false;
+        if (!locations.TryGetValue(path, out var location) || location.Applicable?.Invoke() == false) return false;
         search.Clear();
         if (categoryScope is not null && categoryScope != location.Page.Category) ShowCategory(location.Page.Category);
         categories.SelectedIndex = location.Page.Category;

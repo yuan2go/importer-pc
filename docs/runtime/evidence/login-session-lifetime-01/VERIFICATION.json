@@ -1,0 +1,100 @@
+{
+  "BaselineMain": "837370e3c21a4b83ca0f20dc9a606e760ba9acac",
+  "Scope": "Focused working-tree native WPF fixture; no device/SDK/RCS/site approval",
+  "Status": "PASS",
+  "NativeAssertions": 24,
+  "VersionCompatibilityTests": 17,
+  "ShippedGuideTests": 2,
+  "Builds": {
+    "Sportmaster": "PASS_0_WARNINGS_0_ERRORS",
+    "DirectPlc": "PASS_0_WARNINGS_0_ERRORS",
+    "WcsToPlc": "PASS_0_WARNINGS_0_ERRORS"
+  },
+  "Versions": {
+    "Sportmaster": "1.6.1",
+    "DirectPlc": "1.4.4",
+    "WcsToPlc": "1.4.4",
+    "ApplicationContracts": "1.13.0"
+  },
+  "BaselineReproduction": "First fixture failed missing daily field against pre-fix production code; original log retained",
+  "InitialFixtureFailure": "Compared canonical complete candidate with seed; corrected to pre-edit canonical candidate; full other-field byte equality retained",
+  "Sources": [
+    {
+      "Path": "config/compositions.json",
+      "GitBlob": "49c75b0b9d09fa22875e948f00ea5aeb1321ff10",
+      "Sha256": "5a92227d80ae0b44b9af8fc9f0042eaa4773c2afc0fcad1c9d68d31a1dabc869"
+    },
+    {
+      "Path": "scripts/release_documents.py",
+      "GitBlob": "ddc0e8fd22b82b322f9ee31112ae5da2b147678f",
+      "Sha256": "e8f882d40141eedc940170e5fe086b22c77c5665bb0633cdb203f7b8c558c06a"
+    },
+    {
+      "Path": "scripts/test_application_compatibility.py",
+      "GitBlob": "f421580d3745a8ee831253d724c24eb11b215441",
+      "Sha256": "118f72bdf97b49bb3caca7b241bdee5972eedd69e2fd70e0a43fe0f58c6114e3"
+    },
+    {
+      "Path": "src/Ipc.Application.DirectPlc/Ipc.Application.DirectPlc.csproj",
+      "GitBlob": "d0a57bf9dd3b785cb7281458c852b2551d06c463",
+      "Sha256": "94f5b99396be7cb6018d9ace566988f0a8d6243d6e02d60683b9456ad3ba1cbc"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs",
+      "GitBlob": "fe572e4abdd0586930cf1df2217f62c2c81c1b6f",
+      "Sha256": "3ed5ade470f9a6e26b9f55438a5bdc1df97041acdc13a0baa91e3d01b239564f"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Policy.cs",
+      "GitBlob": "b01d4c6b46c216bd69d371f42282a8223fcec526",
+      "Sha256": "8fabd663bdd8c3e624edacb2bc3407de8a488c8de72e12c6441cfcc1bfd528f2"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.Search.cs",
+      "GitBlob": "7e5cec9fbb1740519e4f0fc284c8f21aed90cde0",
+      "Sha256": "f4052ac57ef8679a53543a889ce0f73edf02d082e37720bd535130e7305e8a80"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.cs",
+      "GitBlob": "096cd3d9494e16db4223afe8d77f5bde30703c35",
+      "Sha256": "5f435ac1d85e78418ae13338dab4fd31c2b18535f9a1187e20d07ff83b939a74"
+    },
+    {
+      "Path": "src/Ipc.Application.ParcelFlow.Desktop/StructuredConfiguration.cs",
+      "GitBlob": "0ceabc571771b84cc8d92164fac9478900a662a9",
+      "Sha256": "dc1944e36991ea374667e728033885c80fafef41b777c452e52e4e7473c09426"
+    },
+    {
+      "Path": "src/Ipc.Application.Sportmaster/Ipc.Application.Sportmaster.csproj",
+      "GitBlob": "6213d567c8fbed48a313ec7100fd95240a95ea97",
+      "Sha256": "8982c3cc940976cf29ebf6a5d467c54c1c9567ab0232bd896a361fe3175aa504"
+    },
+    {
+      "Path": "src/Ipc.Application.WcsToPlc/Ipc.Application.WcsToPlc.csproj",
+      "GitBlob": "9325d05865efcfbf9e0365d43f6296d6625a364a",
+      "Sha256": "6d983aae909a7d327511898a1519dc06a9c79b24efbc198ba32909ab270bb1af"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/LoginSession.cs",
+      "GitBlob": "79fdd56078f446840f2d5f9655059c5af504757c",
+      "Sha256": "d5ca910f0b0f87423941741bdab1776e0f2dbc335e30f15d2da491f9308d2aad"
+    },
+    {
+      "Path": "tests/Ipc.Desktop.UiVerification/Program.cs",
+      "GitBlob": "f78b085b9b6a4bf181b2620b334b8bf0a28a5bfa",
+      "Sha256": "3ab4a6c0d3e205f86d920fcd90afbea91bb1a6c9a9c6459a7488d60e28394c2b"
+    }
+  ],
+  "NativeImages": [
+    {
+      "File": "daily-session-lifetime.png",
+      "Sha256": "1328de36aeef52d5c69a9aedb29564e6d13f36509c02a79ff44923969a4e3ead"
+    }
+  ],
+  "NotRun": [
+    "Real SDK/device/RCS/site",
+    "Target industrial PC and other OS/DPI/touch",
+    "Installation/UAC/upgrade"
+  ],
+  "ExactPublishedAssemblies": "To be separately verified after actual merged-source publication"
+}

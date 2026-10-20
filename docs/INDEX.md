@@ -1,6 +1,6 @@
 > 当前下载：[SM v1.6.0 Windows 单 EXE](https://github.com/yuan2go/importer-pc/releases/download/installer-sm-v1.6.0-1878be50d5be/CainiaoSupplyStation_SM_Setup_v1.6.0_win-x64.exe)。PR74已合并main，固定源`1878be50d5be`；[发布记录、SHA256、已知问题与待验边界](runtime/publication-pr74-20261020.md)。未签名预发布。
 >
-> 当前实施：[V2 实施与验证记录](runtime/ui-task-redesign-01.md)。实施基准 main `de2b045`；此前设计、PR73及其他介质验证各守原版本。
+> 当前局部修复：[已绑定登录的会话时长字段](runtime/login-session-lifetime-fix-01.md)，基于main `837370e`，原1.6.0发布及其未修复记录保留原身份。V2原实施、设计、PR73及其他介质验证各守原版本。
 
 > PR73历史不测试发布、源码及产物下载边界见[发布报告](runtime/publication-pr73-20261020.md)。
 

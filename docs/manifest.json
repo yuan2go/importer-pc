@@ -41061,15 +41061,15 @@
     },
     {
       "path": "scripts/verify-commercial-wpf.ps1",
-      "sha256": "3cd336e040488ac788c5de4556358f1d1e8e2869f28ac9f3863da07f0c0c66ee",
-      "size_bytes": 6536,
-      "git_blob": "76aeea31248dfc73de835d85e655e46766230abc",
+      "sha256": "6c4eebff44ce28e766f8fedc8bbab678723bb4ed1f55a95bf49c4a91a7baa1d0",
+      "size_bytes": 6896,
+      "git_blob": "70f3c60d708a1b567a45bbfe3aadb38eddde06a7",
       "version": "sportmaster-audit-remediation-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized audit remediation, directed synthetic analysis, or preserved original guide",
       "source": "WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01; historical evidence retains its original scope",
       "storage_scope": "public_repository",
-      "previous_git_blob": "1bb1baa61cf46526f3401ce5d36451dc115096e9"
+      "previous_git_blob": "76aeea31248dfc73de835d85e655e46766230abc"
     },
     {
       "path": "src/Ipc.Application.Contracts/ParcelProductServices.cs",
@@ -46563,10 +46563,10 @@
       "purpose": "Authorized audit remediation, directed synthetic analysis, or preserved original guide",
       "source": "WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01; historical evidence retains its original scope",
       "storage_scope": "public_repository",
-      "sha256": "041ea5b7f38f36da96ee6cebdc7a24f28e11029970eae497bf91a8327ba0d45c",
+      "sha256": "1b885b7b7013f25da06bc1c8cc889b43fccfc9d660fc708a05515b21cac91aa7",
       "size_bytes": 10419,
-      "git_blob": "e516d96db7a5c25adaf80c521d009888c8e38467",
-      "previous_git_blob": "276b10cd4c362a32d65c6c04d25f9dd7cf2a57d0"
+      "git_blob": "96cb70ee3acc0559fbdafa4ed7831fef6957de80",
+      "previous_git_blob": "e516d96db7a5c25adaf80c521d009888c8e38467"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

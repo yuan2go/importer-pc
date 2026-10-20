@@ -37,7 +37,7 @@ static partial class Program
             for (var n = inputSamples.Count; n < total; n++)
             {
                 var position = n % 2 == 0 ? "left" : "right";
-                var entity = "SYNTHETIC-PERF-" + n; var watch = Stopwatch.StartNew();
+                var entity = "synthetic-perf-" + n; var watch = Stopwatch.StartNew();
                 if (!runtime.EmitReferenceAt(position, entity, "000" + n.ToString("D10"), Wire.Id())) throw new InvalidOperationException("Synthetic input was not accepted by the reader");
                 var terminal = false;
                 for (var poll = 0; poll < 300; poll++)

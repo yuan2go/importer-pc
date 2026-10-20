@@ -41,9 +41,15 @@ python -m unittest discover -s scripts -p test_application_compatibility.py -v
 
 ## 本次验证记录
 
-Windows本机模拟验证已通过：心跳26项、既有RCS121项、版本兼容56项、Application架构63项；Python兼容17项、发行指南2项；海康fake API自测26项。验证工程、Sportmaster WPF Release及装配宿主构建均为0警告/0错误。心跳覆盖默认/配置周期、双Reader合并、编码/时间/索引、HTTP失败/超时/重定向、停止/重连、业务编号隔离和缺配置拒绝。签名装配和冻结发布启动尚待源码提交后验证，结果另补。
+Windows本机模拟验证已通过：心跳26项、既有RCS121项、版本兼容56项、Application架构63项；Python兼容17项、发行指南2项；海康fake API自测26项。验证工程、Sportmaster WPF Release及装配宿主构建均为0警告/0错误。心跳覆盖默认/配置周期、双Reader合并、编码/时间/索引、HTTP失败/超时/重定向、停止/重连、业务编号隔离和缺配置拒绝。RCS签名包通过冻结宿主的实际extension-check；验签/精确哈希后从临时目录加载真实包，5项心跳/取格口/停止验证通过。Windows普通进程调用扩展安装被原有提权门禁拒绝，未绕过、未改机器信任/安装登记；临时验签包加载仅为测试夹具，不宣称受保护安装激活通过。
 
 开工原RCS回归在SQL7断言失败：main实际已用SQL8，本次保留严格版本断言并更新为8。后续Windows迁移夹具的辅助SQLite连接默认池化导致文件哈希读取共享冲突，改用不池化的检查连接，保留原字节/hash/SQL历史断言。旧兼容测试仍写1.3.3且漏列已存在海康包，按当前精确声明更新，继续拒绝旧包及篡改。RCS恢复夹具旧流程试图在未交接的恢复根直接准入；按当前DB8语义改为严格验证Resume拒绝、观察不产生请求，并直接调用实际编号分配器确认原范围退役、原归档编号保留；未移除恢复围栏或伪造交接。Application架构的原SQL7升级断言同样更新为8。
+
+源码冻结为 `3f8a58ba32887df07f6a7817b64afa693f903c50`。Simulation RCS签名包SHA256为 `b2c7d2e794630d7bcdde70df6f0b602d35528581792efb863b23de7c36857e44`；独立TestOnly测试信任与私钥未提交。签名包绑定的公共Application.Contracts SHA256为 `e226bdc43103b496f29d21e399964ef6e35ce52dfff6f8e63975ace380fbeec3`。后续提交仅补充测试夹具及此验证记录，不将介质改标为后续文档提交。
+
+同源码按既有package-application构建portable Sportmaster1.4.2，ZIP SHA256为 `f0491d1e02ce116703a233d1f3c560bb1969359a59ee92d7b5ae0a829535aba5`；解包后实际启动、双Reader参考链、持久原阶段重启及有序停止6类冒烟检查全部通过。这是Windows主机运行的portable CLI Simulation；原冒烟字段Windows=NOT_RUN/RealEquipment=BLOCKED保持，不能扩展为WPF图形、Windows安装升级或真实设备验收。
+
+可在仓库根目录用 `dotnet tests/Ipc.Application.Verification/bin/Debug/net10.0/Ipc.Application.Verification.dll . --rcs-heartbeat-signed <本次ipcx> <独立Simulation信任JSON>` 复验签名包夹具。所有运行原件位于本地 `.artifacts/rcs-heartbeat-01/`；不发布私钥、真实配置或SDK。公开manifest按UTF-8 Git原字节核验，避免Windows CRLF工作副本造成虚假哈希差异。全量归档检查仍报告既存UI资产的字体、引用协议及元数据问题；这些文件与main字节一致，本轮未新增豁免、上传资产或改写原件。全库归档结果不宣称PASS；本次变更的文件清单、大小、SHA与引用单独核对。
 
 额外 `--ux-commercial-presentation` 在NoRead显示断言失败；对未修改的最新main `6784d08` 单独导出、构建并运行，复现完全相同断言。该项记录为基线已有失败，不修改页面或删除断言，不纳入本轮PASS。Windows验证使用独立测试进程串行执行：机器级资源租约会拒绝并行占用相同合成设备；早期并行运行产生的租约冲突未作为功能失败或绕过理由。
 

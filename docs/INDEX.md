@@ -3,8 +3,9 @@
 [本轮工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020-02.md) · [编码前裁决](design/parallel-task-reconciliation-20261020-02.md) · [任务/成果/验证/合并报告](runtime/parallel-task-reconciliation-20261020-02.md)。整合#62工作台、#63驱动、#64品牌/单EXE和#65普通安装文档；原稿、原失败与前轮统计分别保留。此前仅合并现有代码的限制属于前轮，本次以重新授权的工作包为准。
 
 ## 前轮整合记录（历史）
+> 当前 UI 增量：[工作台精简工作包](work-packages/WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01.md)与[原生验证记录](runtime/sportmaster-clear-workstation-01.md)。主屏突出状态、条码、格口与操作，工程明细按需查看。本轮继承下述 PR61 整合基线；归档草稿和旧视觉证据保持原身份。
 
-# 当前整合入口 · 2026-10-20
+# 前轮整合记录 · 2026-10-20（历史）
 
 [本次工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020.md) · [编码前设计与冲突裁决](design/parallel-task-reconciliation-20261020.md) · [任务/成果/验证/合并报告](runtime/parallel-task-reconciliation-20261020.md)。本轮只整合现有代码/PR，继承 PR58/59 功能、日期守卫和原生门禁，整合 #60 审查整改；未完成 UI 仅 [原字节归档](archive/parallel-reconciliation-20261020-inflight-ui/README.md)，不改变现行视觉基准。
 
@@ -17,6 +18,8 @@
 > 已发布的历史 Windows 介质：[三业务下载与精确来源](runtime/windows-no-test-release-20261020.md)，运行源码 `939462bee40c9eebe8eb2aa60860217afd95fcdd`，原任务未运行测试/安装。既有[统一发行 cfe6c0e](runtime/unified-release-main-20261020.md)保持旧来源；两者不覆盖本次 Sportmaster 增量。
 
 继承商业交付组合的冻结介质和逐项结果见[Sportmaster 交付结果](runtime/sportmaster-commercial-delivery-01-results.md)，操作见[同版交付手册](runtime/sportmaster-commercial-delivery-01-operations.md)。后继UI实现与本轮介质以页首视觉产品化交付记录为准。
+
+安装交付范围修订（2026-10-20）：[普通安装包与必要说明、过度设计检查](runtime/installation-delivery-scope-01.md)。该修订优先于旧商业计划中的批量/无人值守安装要求；不改变历史源码、发行物和原验证结果。
 
 ## 1. 当前阅读顺序
 

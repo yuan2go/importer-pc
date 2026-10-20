@@ -54,7 +54,6 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           try {
-            ./scripts/prepare-ci-wpf-display.ps1
             $release = Get-Content C:/scd-release/RELEASE.json -Raw | ConvertFrom-Json
             $package = @($release.Packages | Where-Object { $_.Application -eq 'sportmaster' -and $_.Target -eq 'win-x64' })
             if ($package.Count -ne 1) { throw 'Expected one verified Sportmaster Windows medium' }

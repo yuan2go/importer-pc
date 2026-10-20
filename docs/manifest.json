@@ -29972,9 +29972,9 @@
       "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "4a110f7e069ea0c37c2207efbb386f16db7c759ffd1e02e39b1cac7f86e29678",
-      "size_bytes": 8052,
-      "git_blob": "49a7967fd8ebc530b459cb54f929e433f6eb57cd",
+      "sha256": "8f7ad5151840ec425852b225ae78cec87a076ce145b8524a628f60c221a63d77",
+      "size_bytes": 8514,
+      "git_blob": "51e462b426965bd0aa200a8cc0d8b1e787841afc",
       "previous_git_blob": "742ddd5b943c2ef3021170fe8cc60015c954912c"
     },
     {
@@ -30151,14 +30151,14 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationPosition.xaml",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization",
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "2a56a6e96d324926d6b33b88956c6c49e7384e5866682bc4b63d9a08fda8afbd",
-      "size_bytes": 9916,
-      "git_blob": "cf3433cba6c9fc0d26d56576a79f43f0a42222e2",
+      "sha256": "59cee3a12110d4b3d1ca86a23d5e6ce501db0c654d9e549ae8b26724028e2375",
+      "size_bytes": 10378,
+      "git_blob": "26781263293d2321afb63373990e023a871251d9",
       "previous_git_blob": "698d9e8f700ea8eff88f2fba28eb5300e823056e"
     },
     {
@@ -30197,14 +30197,14 @@
     },
     {
       "path": "src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization",
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "fba5717e7444370cacd1f835d2369371e47836a1f5c02151b3749eebd57801d0",
-      "size_bytes": 8874,
-      "git_blob": "11c7cf42873a1cedfe30af3f5d1bdc0e97832de9",
+      "sha256": "c44d9c19c9a670ad87617b033a5f5d1b650e8cf815394729194fbd417508fb02",
+      "size_bytes": 10107,
+      "git_blob": "4e7e47f46b74cfd5816ce9eba97e1b0548bc0058",
       "previous_git_blob": "6528af261a22c598589cb204a66397154e5a991f"
     },
     {
@@ -33437,9 +33437,9 @@
       "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
       "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "c71dd6431a864a7779ad729428a5897e682900ca3466500b9b4575b6cca5ae27",
-      "size_bytes": 13203,
-      "git_blob": "b344dc6a29c492180a0696b16aea7327759c5253",
+      "sha256": "8aca6bd325d30bdf904fb2f0c1c6a2a32d66f571e8d184c4d08025ed72aa81c7",
+      "size_bytes": 13222,
+      "git_blob": "335dcc7fc5aaa492160e73040f6587e25b119915",
       "previous_git_blob": "882debfcfaf788c6fc1db895795c41bfcb952aeb"
     },
     {
@@ -36595,14 +36595,14 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/UxCommercialClosure.cs",
-      "version": "sportmaster-clear-workstation-01",
+      "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
-      "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization",
+      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
+      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "e3a110802eec74f78d21cc9a95287c39e10755f2f1fc9f78d5fc7e8651268afd",
-      "size_bytes": 24100,
-      "git_blob": "640cff317d82e1de3b754ed60aae327f666f8610"
+      "sha256": "fff314ea06eb659ad22b1534013240bb8ac1bcb92359b2943716318329c2ca70",
+      "size_bytes": 27654,
+      "git_blob": "276a076a4744ee082c6d914066344752cdd61a99"
     },
     {
       "path": "docs/runtime/evidence/ux-commercial-closure-02/python-guides.log",
@@ -43424,9 +43424,9 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "1d4b177c9322af2695a7468987d95621b4bd3e2f014db9044da9fc79ad0aca81",
-      "size_bytes": 4084,
-      "git_blob": "a3584bd428933880841fc3bd41ff565844207a54",
+      "sha256": "58a128eb96be562626ce8d3014d4836fd9196e62d9dc19ad5de5ca04349b0b10",
+      "size_bytes": 4035,
+      "git_blob": "1b896733cad41fd7aa654468aa8f757808929fbe",
       "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
       "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
@@ -47970,9 +47970,9 @@
     {
       "path": "docs/runtime/sportmaster-clear-workstation-01.md",
       "storage_scope": "public_repository",
-      "sha256": "330d615da425e76e1fd4a6c3dbbc042fcd01d1847334a24103c10fa56dd97f5e",
-      "size_bytes": 6334,
-      "git_blob": "708d2705ac8657a342c9e3cc57c041a96037efd2",
+      "sha256": "a2b25504fa6ab2c3fe4cf0e7a5fea92ad829697c3d8615a7209d89cd34258929",
+      "size_bytes": 7101,
+      "git_blob": "456b4c927cd5ea28c19f83ad160d97b41672003e",
       "version": "parallel-reconciliation-20261020",
       "status": "current_source_or_preserved_evidence",
       "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
@@ -47988,17 +47988,6 @@
       "status": "current_source_or_preserved_evidence",
       "purpose": "Essential workstation information hierarchy and exact synthetic native verification",
       "source": "WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01 explicit user authorization"
-    },
-    {
-      "path": "scripts/prepare-ci-wpf-display.ps1",
-      "storage_scope": "public_repository",
-      "sha256": "d39f92cdb211f97a34adba4a70ee81570fa3c45510e0e31517d705f4a9d9bbd0",
-      "size_bytes": 1779,
-      "git_blob": "e9636a62f321c0e094a17022582c23b2da6134c2",
-      "version": "parallel-reconciliation-20261020",
-      "status": "current_source_or_preserved_evidence",
-      "purpose": "Concurrent task integration; exact historical source and synthetic evidence retain original identities",
-      "source": "WP-IPC-PARALLEL-TASK-RECONCILIATION-01 explicit user authorization"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

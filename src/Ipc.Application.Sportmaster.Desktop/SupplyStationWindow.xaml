@@ -24,23 +24,23 @@
     </Grid>
    </DockPanel>
   </Border>
-  <ScrollViewer x:Name="HeaderDiagnostics" Grid.Row="1" MaxHeight="64" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Visibility="{Binding LoginVisibility}">
-   <TextBlock Text="{Binding Session}" FontSize="16" Margin="20,4"/>
+  <ScrollViewer x:Name="HeaderDiagnostics" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Visibility="{Binding LoginVisibility}">
+   <ScrollViewer.Style><Style TargetType="ScrollViewer"><Setter Property="MaxHeight" Value="64"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="22"/></DataTrigger></Style.Triggers></Style></ScrollViewer.Style><TextBlock Text="{Binding Session}" FontSize="16"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Margin" Value="20,4"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Margin" Value="20,0"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
   </ScrollViewer>
   <Grid Grid.Row="2"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-   <Border Background="{Binding StatusPresentation.Background}" BorderBrush="{Binding StatusPresentation.Border}" BorderThickness="0,0,0,1" Padding="16,8">
+   <Border Background="{Binding StatusPresentation.Background}" BorderBrush="{Binding StatusPresentation.Border}" BorderThickness="0,0,0,1"><Border.Style><Style TargetType="Border"><Setter Property="Padding" Value="16,8"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="Padding" Value="16,0"/></DataTrigger></Style.Triggers></Style></Border.Style>
     <StackPanel>
-     <ScrollViewer x:Name="StatusDiagnostics" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="80">
+     <ScrollViewer x:Name="StatusDiagnostics" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><ScrollViewer.Style><Style TargetType="ScrollViewer"><Setter Property="MaxHeight" Value="80"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="28"/></DataTrigger></Style.Triggers></Style></ScrollViewer.Style>
       <StackPanel><TextBlock x:Name="WorkStatus" Text="{Binding WorkStatus}" FontSize="22" FontWeight="SemiBold" Foreground="{Binding StatusPresentation.Foreground}"/>
        <TextBlock x:Name="ActiveBlockingReasons" Text="{Binding WorkNotice}" Style="{StaticResource StationNotice}" Foreground="{StaticResource Warning}" AutomationProperties.Name="当前作业阻断原因"/>
       </StackPanel>
      </ScrollViewer>
-     <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="40"><TextBlock x:Name="OperationFeedback" Text="{Binding WorkFeedback}" Style="{StaticResource StationNotice}" ToolTip="{Binding Feedback}" AutomationProperties.LiveSetting="Polite"/></ScrollViewer>
+     <ScrollViewer VerticalScrollBarVisibility="Auto"><ScrollViewer.Style><Style TargetType="ScrollViewer"><Setter Property="MaxHeight" Value="40"/><Style.Triggers><DataTrigger Binding="{Binding IsTight}" Value="True"><Setter Property="MaxHeight" Value="20"/></DataTrigger></Style.Triggers></Style></ScrollViewer.Style><TextBlock x:Name="OperationFeedback" Text="{Binding WorkFeedback}" Style="{StaticResource StationNotice}" ToolTip="{Binding Feedback}" AutomationProperties.LiveSetting="Polite"/></ScrollViewer>
     </StackPanel>
    </Border>
    <ContentControl x:Name="PageHost" Grid.Row="1" IsEnabled="{Binding ViewportReady}"><ContentControl.Style><Style TargetType="ContentControl"><Setter Property="Margin" Value="8"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="Margin" Value="4"/></DataTrigger></Style.Triggers></Style></ContentControl.Style></ContentControl>
   </Grid>
-  <Border Grid.Row="3" Background="White" BorderBrush="#E5E7EB" BorderThickness="0,1,0,0"><Border.Style><Style TargetType="Border"><Setter Property="Padding" Value="20,8"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="Padding" Value="12,2"/></DataTrigger></Style.Triggers></Style></Border.Style><TextBlock Text="{Binding EnvironmentStatus}" FontSize="14" Foreground="{StaticResource StationMuted}" ToolTip="{Binding UpdatedAt,StringFormat=最后读取：{0}}"/></Border>
+  <Border Grid.Row="3" Background="White" BorderBrush="#E5E7EB" BorderThickness="0,1,0,0"><Border.Style><Style TargetType="Border"><Setter Property="Padding" Value="20,8"/><Style.Triggers><DataTrigger Binding="{Binding IsCompact}" Value="True"><Setter Property="Padding" Value="12,1"/></DataTrigger></Style.Triggers></Style></Border.Style><TextBlock Text="{Binding EnvironmentStatus}" FontSize="14" Foreground="{StaticResource StationMuted}" ToolTip="{Binding UpdatedAt,StringFormat=最后读取：{0}}"/></Border>
   <Border x:Name="ViewportWarning" Grid.RowSpan="4" Background="{StaticResource StationBackground}" BorderBrush="{StaticResource Danger}" BorderThickness="2" Padding="24" Visibility="{Binding ViewportWarningVisibility}">
    <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
     <TextBlock Text="{Binding ViewportStatus}" FontSize="24" FontWeight="Bold"/>

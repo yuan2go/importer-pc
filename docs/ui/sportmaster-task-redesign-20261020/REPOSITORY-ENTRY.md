@@ -1,6 +1,6 @@
 # Sportmaster 重设计：仓库阅读与实施入口
 
-设计交付v1 · 2026-10-20 · C#/WPF目标。**本目录是新UI的设计成果，尚未移植为生产WPF。** 原交付内容保持原字节，最新源码差异在[实施裁决](../../design/sportmaster-task-redesign-01.md)中说明；下一步按[UIR-00～06](../../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)及[精简Codex提示](../../work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)实施。
+设计交付v1 · 2026-10-20 · C#/WPF目标。本目录保留原始设计成果；当前参数及必要联动已按 [PARAM-01](../../runtime/parameter-refactor-01.md) 完成WPF实现与本地定向验证，四分类及业务规则以该现行裁决为准。完整UI余项、真实设备及现场验收仍待执行。 原交付内容保持原字节，最新源码差异在[实施裁决](../../design/sportmaster-task-redesign-01.md)中说明；下一步按[UIR-00～06](../../work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)及[精简Codex提示](../../work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)实施。
 
 ## 1. 先打开这些文件
 

@@ -1,0 +1,7 @@
+EvidenceRoot=C:\Users\yuan\AppData\Local\Temp\ipc17-verification-df63bc3a092a4599a76cc17c93767cf1
+PASS RCS20: signed immutable RCS package declares heartbeat schema and still has no original-query capability
+PASS RCS20: verified signed payload shares exact public contracts and valid component parameters in a separate load context
+PASS RCS20: verified signed payload starts the actual two-reader heartbeat loop
+PASS RCS20: signed provider retains exact destination delivery alongside heartbeat
+PASS RCS20: signed component stops network work before package/load-context release
+PASS SIGNED RCS HEARTBEAT COMPLETE

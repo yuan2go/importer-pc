@@ -1,0 +1,56 @@
+[
+  {
+    "Package": "sportmaster-rcs-task-1.2.1.ipcx",
+    "PackageSha256": "da02fde4ce44aa2074a75f878823eb70eb421819372ead3d879c6997119c43c3",
+    "PluginSourceCommit": "5cd89bd6a1a89004a663b62d25b1f707acd8ce1c",
+    "PluginSourceSha256": "042dca458bc49690d0a280dab75c5979896d4fca823bc22f36fb337093f692bc",
+    "DefinitionSha256": "85c8161f20f4bf40339e2b30500851bd2e6ef3eca0743c506a57186e91303514",
+    "HostContractSha256": "13e95b57c6290ba666abc8fc8d9572363eb9a6aac0c9a772d7ef3c12542dbed3",
+    "FrozenHostUnchanged": true,
+    "FrozenCheckerUnchanged": true,
+    "CheckerContractsSha256": {
+      "Ipc.Platform": "13e95b57c6290ba666abc8fc8d9572363eb9a6aac0c9a772d7ef3c12542dbed3",
+      "Ipc.Application.Contracts": "c60b4d9872627ad6dbf4f605b43f86801b03300a8013c46aa6a08458ebcbb609"
+    },
+    "Publisher": "synthetic-rcs-heartbeat",
+    "Version": "1.2.1",
+    "ExtensionContract": 1,
+    "Signature": "RSA-PSS/SHA256",
+    "Mode": "Simulation",
+    "ManifestSha256": "2bed517eae1f9fde3b280e5ebb21538447ae643709dc72d401a6e496c49f48fb",
+    "TrustSha256": "a592ae3dfc2c81faf43b29989d1f97632170171703a1fc5e26c771056586aeb5",
+    "PayloadSha256": {
+      "Ipc.Integrations.SportmasterRcs.dll": "bd0b894850fcc4970d41b367505fe82776d54ccb24154d4c06cbec4ec168a78f"
+    },
+    "DependencyPackages": [],
+    "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK",
+    "TestOnly": true
+  },
+  {
+    "Package": "hikrobot-idmvs-reader-1.0.3.ipcx",
+    "PackageSha256": "ac1aeaa2177819cd06dc1673955b7cf73163ebac9ae7534a66e796f3a0b5e319",
+    "PluginSourceCommit": "5cd89bd6a1a89004a663b62d25b1f707acd8ce1c",
+    "PluginSourceSha256": "473fff63ce4aafe402892eb573a4ac4e04511ec24edae456174da1bed5243d68",
+    "DefinitionSha256": "fbee297f179c7434444b1237fe47cdadf29fdb8816773c7983f718f0b88447eb",
+    "HostContractSha256": "13e95b57c6290ba666abc8fc8d9572363eb9a6aac0c9a772d7ef3c12542dbed3",
+    "FrozenHostUnchanged": true,
+    "FrozenCheckerUnchanged": true,
+    "CheckerContractsSha256": {
+      "Ipc.Platform": "13e95b57c6290ba666abc8fc8d9572363eb9a6aac0c9a772d7ef3c12542dbed3"
+    },
+    "Publisher": "synthetic-rcs-heartbeat",
+    "Version": "1.0.3",
+    "ExtensionContract": 1,
+    "Signature": "RSA-PSS/SHA256",
+    "Mode": "Simulation",
+    "ManifestSha256": "8e6098733b263eead1044d3980cdb80147124e317bb18dbe98cdc5500aa218d5",
+    "TrustSha256": "a592ae3dfc2c81faf43b29989d1f97632170171703a1fc5e26c771056586aeb5",
+    "PayloadSha256": {
+      "Ipc.Drivers.Hikrobot.dll": "15d8b1c129a1ba90b18bbcf06ced458834d44293f2fda55b6709f23cbc9fd317",
+      "sdk-boundary.json": "5a4b9f5d550cc267343e3491df633aca53b2aaa22e7b8a70c5284f3b633f6190"
+    },
+    "DependencyPackages": [],
+    "StaticAcceptance": "PASS_FROZEN_HOST_EXTENSION_CHECK",
+    "TestOnly": true
+  }
+]

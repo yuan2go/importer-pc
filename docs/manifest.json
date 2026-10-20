@@ -389,9 +389,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "e3ee168f02eb37d488738e61e608c154293675d22f125303f16db00dc487688d",
-      "size_bytes": 10112,
-      "git_blob": "b5b6a70e0d4ecdc7186e679f6adef7c4bfb1cde1",
+      "sha256": "7f418fdb6f3816059094c0e414cfae64d7beb23061cdfe538a834942c47518ad",
+      "size_bytes": 10127,
+      "git_blob": "1f70ec22c52b1e92a6e4170bc1028daea8dd627e",
       "version": "ui-task-redesign-01",
       "status": "design_publication_and_implementation_plan",
       "purpose": "Authorized design publication, current entry cleanup, source comparison and next implementation plan; no new production UI claim",
@@ -50596,9 +50596,9 @@
     },
     {
       "path": "docs/ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md",
-      "sha256": "6aa89e2414fae198e93101e03cc33c30be4e3042fee15086ec4f9e06a48a8e62",
-      "size_bytes": 8982,
-      "git_blob": "13fe8e7ba6a6415aff0c0162739b43ad5e0cb336",
+      "sha256": "da210bb82cb22d3bd91d3dc0e1b99796ce8a825b33f481ea53da136654de0733",
+      "size_bytes": 9186,
+      "git_blob": "f01922d0f84dad07962a7e5e67c012e5fff5e1a9",
       "version": "ui-task-redesign-01",
       "status": "synthetic_design_reference_preserved_bytes",
       "purpose": "Authorized design publication, current entry cleanup, source comparison and next implementation plan; no new production UI claim",
@@ -51790,9 +51790,9 @@
     },
     {
       "path": "docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md",
-      "sha256": "a8bacb91e4feeef3ad610b82c3b4a90f65689d467b11470e8b66c01345987432",
-      "size_bytes": 12455,
-      "git_blob": "eeb2c403190aa3019aa6e74cdea99dc62020c959",
+      "sha256": "a0d52e77fac001c3543385ca64a8031eabc68da6af6b11c0997518e8b4a4b0c7",
+      "size_bytes": 12473,
+      "git_blob": "cacac8c434d0bc53b1f40a15f674109cebdbe03e",
       "version": "ui-task-redesign-01-observable-quality",
       "status": "design_publication_and_implementation_plan",
       "purpose": "Add six user-defined observable commercial UI quality criteria to implementation and acceptance requirements",
@@ -52259,9 +52259,9 @@
       "version": "PUBLICATION-NO-TEST-20261020",
       "status": "source_or_delivery_custody",
       "source": "User-authorized source and existing artifact publication; no tests or builds run",
-      "sha256": "01d88a4aeca51f16a2be4297b74005a7f36b457d9117ca95ae2143661a49756e",
-      "size_bytes": 5793,
-      "git_blob": "0e918d1d7b3d713251c3753d6a794447b3bf370b"
+      "sha256": "f4f514ec1ce5e5a6156e3b3c9132b5b13b11b5073b9a9d127edbc72485231858",
+      "size_bytes": 10050,
+      "git_blob": "42bb75cc7c93315353ac23abd59d2fcbfd450d48"
     },
     {
       "path": "docs/runtime/parameter-refactor-01.md",
@@ -52269,9 +52269,9 @@
       "version": "PUBLICATION-NO-TEST-20261020",
       "status": "source_or_delivery_custody",
       "source": "User-authorized source and existing artifact publication; no tests or builds run",
-      "sha256": "336ad669bcdc9249503f3d382ec7bdbd174675a821aa0407f9594f7f9c787a57",
-      "size_bytes": 10658,
-      "git_blob": "079e5424ee26dbbe92f0edf00f3eccd20375083c"
+      "sha256": "9f9aca0e481fdcde4aa50ce8bb53affc2feb4b7093d87c8b58121be52baab9c2",
+      "size_bytes": 13472,
+      "git_blob": "5413116cc15a7b3c0e6b18ede45d158e88909ddc"
     },
     {
       "path": "docs/runtime/publication-parameter-snapshot-20261020.md",
@@ -52330,9 +52330,9 @@
       "version": "PUBLICATION-NO-TEST-20261020",
       "status": "source_or_delivery_custody",
       "source": "User-authorized source and existing artifact publication; no tests or builds run",
-      "sha256": "6aa5d6bbf6e90af22bff9d8fd517f751f06874ae4a998c9451f4b32e17276b40",
-      "size_bytes": 4076,
-      "git_blob": "8179279149ee86aa99b5d63518df5e9ae66e96af"
+      "sha256": "5e701f3439554d49dc2a2dbe1472f0d4892ec550513946c85cac9521bc69944c",
+      "size_bytes": 4711,
+      "git_blob": "c2e98bc5c7d88aaae41430a420da3fbb724d7203"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParameterSettingsControl.cs",
@@ -52380,9 +52380,9 @@
       "version": "PUBLICATION-NO-TEST-20261020",
       "status": "source_or_delivery_custody",
       "source": "User-authorized source and existing artifact publication; no tests or builds run",
-      "sha256": "8e2965fe3d6471e5a7d512c114da9e1ea194e7a116a7ccd5568fc23d2dcb7bad",
-      "size_bytes": 16565,
-      "git_blob": "6cbac3090e1ae9f37236f94fc268ca358a3ad931"
+      "sha256": "3b067e925828026649501a432b957a069aba0073a3f0602421f2803eef62d1f3",
+      "size_bytes": 17364,
+      "git_blob": "4f236bcee60cc74dc3707da8da9d5b4e4915d3ef"
     },
     {
       "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/artifact-upload-receipts.json",
@@ -52497,9 +52497,9 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-refactor-01/build-core.log",
-      "sha256": "3470958fadaf0eaa819f2aa0c1e824b85a894b0ec933e37cea2bab20ac088bc1",
+      "sha256": "55929294d386e467948175c17a4daf615446d9a1b486fe74946892ab3686bdf0",
       "size_bytes": 78,
-      "git_blob": "01bb964dba426fc17c70466c590034524abbc24e",
+      "git_blob": "c53082cf5edd91546e910bad600c1f5d7ada0c68",
       "version": "parameter-refactor-01",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized Sportmaster parameter refactor, synthetic native verification and operator guidance",
@@ -52508,9 +52508,9 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-refactor-01/build-desktop.log",
-      "sha256": "a2621eda53a0b642d7ae5a5b4103215da8ccd8ef913ffe8a56e179d8c69e35cd",
+      "sha256": "d41387c8bfbc8fc4bd4891ad17eecc159d49b571e78ecd62aeaefcedcfc1af78",
       "size_bytes": 78,
-      "git_blob": "c21e728c937d150aaf017e26ba437b4aaa2fb6fa",
+      "git_blob": "af652589e8ccd0977af1f7912e6205ea5ad722a8",
       "version": "parameter-refactor-01",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized Sportmaster parameter refactor, synthetic native verification and operator guidance",
@@ -52541,9 +52541,9 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-refactor-01/build-native.log",
-      "sha256": "e0b495708039ed2351eed4dc2b5107fbf0e8ba7b8fc116934676c62524757110",
+      "sha256": "68d52dc481a830972b7b9372296b01ef9a82c6e2841e1f2509337c83c67a5e64",
       "size_bytes": 78,
-      "git_blob": "07f80c942b0545cde172416277c8c06f2d444f6e",
+      "git_blob": "a3af45d641c2476e7de7b14b9dd0308fa4e7c16d",
       "version": "parameter-refactor-01",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized Sportmaster parameter refactor, synthetic native verification and operator guidance",
@@ -52585,9 +52585,9 @@
     },
     {
       "path": "docs/runtime/evidence/parameter-refactor-01/parameter-refactor.log",
-      "sha256": "e879edc28794709f5932e09957a328c6452ee04f2ba892e94c47c26687bf0f10",
-      "size_bytes": 3166,
-      "git_blob": "a1c9bb67bed778dec513b17f581a75f8e145ccbe",
+      "sha256": "808d27cbbcd13e7063900138ddd0a8fad17b7c345ac035b26e5c248c2b3916b1",
+      "size_bytes": 3292,
+      "git_blob": "548fa0526e213e78ba43c6d1425c537210a80e5f",
       "version": "parameter-refactor-01",
       "status": "current_navigation_or_verification",
       "purpose": "Authorized Sportmaster parameter refactor, synthetic native verification and operator guidance",
@@ -52735,6 +52735,61 @@
       "status": "current_navigation_or_verification",
       "purpose": "Authorized Sportmaster parameter refactor, synthetic native verification and operator guidance",
       "source": "2026-10-20 user-authorized PARAM-01; synthetic identifiers only; no restricted SDK/customer assets",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-refactor-01/extension-static.json",
+      "sha256": "b93185f713e05a1bcfe07e8760802ec6ee103040b9d6718ad5c1b2955fa96739",
+      "size_bytes": 2755,
+      "git_blob": "7082a5dbcf7b3159fbd6524d56387f6f28f5093c",
+      "version": "parameter-refactor-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized PARAM-01 synthetic release verification evidence",
+      "source": "2026-10-20 PARAM-01; no SDK/private signing material or production data",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-refactor-01/rcs-signed.log",
+      "sha256": "0ec97eb7023118b17c1e6917837603d7220f092d66b4e9087884876d90520a9f",
+      "size_bytes": 614,
+      "git_blob": "cba33b71e23b6760b96aa9e0290007f529cc1d68",
+      "version": "parameter-refactor-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized PARAM-01 synthetic release verification evidence",
+      "source": "2026-10-20 PARAM-01; no SDK/private signing material or production data",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-refactor-01/release-identity.json",
+      "sha256": "4f546aa87e2e7b6357dfb8c903948c9ead8babd12ec38a1e6dd7a7ed14fdcc11",
+      "size_bytes": 423,
+      "git_blob": "c9ea09a91283fd27f64f325868f98a0f91b98c81",
+      "version": "parameter-refactor-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized PARAM-01 synthetic release verification evidence",
+      "source": "2026-10-20 PARAM-01; no SDK/private signing material or production data",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-refactor-01/release-smoke.json",
+      "sha256": "961e671fba94b9c473287e5389080e162b21d7732b4eb67c241c6c312f85c714",
+      "size_bytes": 7553,
+      "git_blob": "aa5f62488c516f914ad054553cd0d8aaac23d4ae",
+      "version": "parameter-refactor-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized PARAM-01 synthetic release verification evidence",
+      "source": "2026-10-20 PARAM-01; no SDK/private signing material or production data",
+      "storage_scope": "public_repository"
+    },
+    {
+      "path": "docs/runtime/evidence/parameter-refactor-01/signed-fixture.json",
+      "sha256": "9b9c6e1a2b6fd97deb87e2ed15361857ec13581db2a45fd3c34e239a2ff41a9c",
+      "size_bytes": 401,
+      "git_blob": "4b544c2185518060e405f1c5dddef3b675807798",
+      "version": "parameter-refactor-01",
+      "status": "current_navigation_or_verification",
+      "purpose": "Authorized PARAM-01 synthetic release verification evidence",
+      "source": "2026-10-20 PARAM-01; no SDK/private signing material or production data",
       "storage_scope": "public_repository"
     }
   ],

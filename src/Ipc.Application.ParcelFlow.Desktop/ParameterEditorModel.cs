@@ -40,7 +40,19 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
             Issue("系统", nameof(Policy.MinimumFreeMiB), "磁盘保留须为1～1048576 MiB");
         if (Policy.StationCode.Length > 256 || Policy.StationCode.Any(char.IsControl) || string.IsNullOrWhiteSpace(Policy.StationCode))
             Issue("系统", nameof(Policy.StationCode), "工位外部编码须为1～256个非控制字符");
-        try { _ = Policy.BuildBackup(); } catch (InvalidOperationException ex) { Issue("系统", nameof(Policy.BackupDirectory), ex.Message); }
+        if (Policy.BackupEnabled)
+        {
+            Number(nameof(Policy.BackupIntervalMinutes), Policy.BackupIntervalMinutes, 15, 10080);
+            Number(nameof(Policy.BackupMaximumSets), Policy.BackupMaximumSets, 1, 1000);
+            try
+            {
+                if (string.IsNullOrWhiteSpace(Policy.BackupDirectory) || !System.IO.Path.IsPathFullyQualified(Policy.BackupDirectory))
+                    throw new ArgumentException("计划备份须指定绝对目录");
+                _ = System.IO.Path.GetFullPath(Policy.BackupDirectory);
+            }
+            catch (Exception ex) when (ex is ArgumentException or NotSupportedException or System.IO.PathTooLongException)
+            { Issue("系统", nameof(Policy.BackupDirectory), ex.Message); }
+        }
         foreach (var (draft, category) in Readers.Select(x => (x, "驱动")).Concat(Components.Where(x => x.Bound || x.Enabled).Select(x => (x, "组件"))))
         {
             if (draft.Provider is null) { Issue(category, draft.InstanceId, draft.ProviderIdentity); continue; }

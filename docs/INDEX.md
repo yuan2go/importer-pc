@@ -1,6 +1,6 @@
 > 本轮不测试发布与PR69～71合并记录、原执行产物下载及边界见[发布报告](runtime/publication-pr69-pr71-20261020.md)。该次发行包含参数实施中的早期快照，原介质保留各自SourceCommit；本次正式参数实现与验证见 [PARAM-01](runtime/parameter-refactor-01.md)。
 
-当前已授权进入 PARAM-01 参数正式重构，四分类、业务条码筛选及配置闭环以 [实施裁决](design/parameter-refactor-01.md) 为准；原“本次只做设计”是设计入库阶段记录。完整 UI 工作包其余范围不因本包实施自动完成。
+当前已完成 PARAM-01 参数正式重构及本地定向验证，四分类、业务条码筛选及配置闭环以 [实施裁决](design/parameter-refactor-01.md) 为准；原“本次只做设计”是设计入库阶段记录。完整 UI 工作包其余范围不因本包实施自动完成。
 
 > 桌面名称增量：[固定显示“菜鸟供包台”与旧测试资源清理](runtime/desktop-shortcut-name-01.md)，新构建与下面原生结果分开记录。
 

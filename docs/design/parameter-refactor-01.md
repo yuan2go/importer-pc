@@ -36,3 +36,57 @@ UIR-00：先更新当前入口及上述裁决；UIR-01：四分类与固定实�
 缺少参数、无效正则、驱动/组件未安装不能阻止软件打开：直接复用既有“首次配置”页面补全，不新建缺配专用窗口。日常设置与首配共用模型、控件和静态校验。不能连接时仍保留原配置/维护入口，只有作业和外呼受守卫限制。缺少整个 Sportmaster 种子时提供 Application 拥有的固定双位 Production 引导草稿，不悄悄运行模拟。缺少原身份且已有业务数据时不能以新身份覆盖责任，仍可打开界面选择原配置/恢复。
 
 系统必需值均有软件默认：队列64、调用预算1500ms、未清偿作业10000、常驻历史200、写入保留64MiB；工位外部编码默认取当前工作站标识（独立字段，可修改），首次新站标识station-01。计划备份默认关闭，启用时提供60分钟/10份及当前用户数据目录下的默认备份路径。旧配置明确给出的值不被默认覆盖；原账缺字段的默认显示与待保存候选有区别，保存与应用仍分开。真实IP、实体关联资格、组件取格口编码和业务筛选规则不属于软件级系统默认，不编造客户值。
+
+## 实际字段盘点
+
+所有可编辑运行字段均通过同一完整候选、静态校验、权限/审计/CAS 保存，受控重启生效；没有单独热写设备。下表不是安装描述的新权威。
+
+| 分类 / 字段 | 编辑与默认 | 静态校验 / 作用 |
+|---|---|---|
+| 系统 StationCode | 可编辑；默认当前 StationId | 1～256非控制字符；RCS心跳联合校验 |
+| 系统 QueueCapacity | 可编辑；64 | 1～4096；软件入口队列 |
+| 系统 TimeoutMs | 可编辑；1500 | 100～30000ms |
+| 系统 MaximumOperations | 可编辑；10000 | 1～100000；未清偿容量 |
+| 系统 Retention.ResidentHistory | 可编辑；200 | 1～10000；常驻历史 |
+| 系统 Retention.MinimumFreeBytes | MiB表单；64MiB | 1～1048576MiB；未改原字节值无损保留 |
+| 系统 BackupSchedule | 启用可编辑；默认关闭 | 原后台权限及暂停守卫 |
+| 系统 BackupSchedule.Directory | 可编辑；当前用户 ImporterPc/backups/ApplicationId | 绝对路径及原完整候选目录约束 |
+| 系统 BackupSchedule.IntervalMinutes | 可编辑；60 | 15～10080分钟 |
+| 系统 BackupSchedule.MaximumSets | 可编辑；10 | 1～1000份 |
+| 系统 SessionLifetimeMs | 既有高级完整候选保留；28800000 | 100～86400000ms；仅已有登录策略适用，不新增强制登录 |
+| 业务 BarcodeFilter.Pattern | Sportmaster左右共用；新首配无生产默认 | 1～2048字符、语法/整串/预算；旧null严格单码兼容 |
+| 业务 Weight / WeightValidity / Images | Sportmaster保持原不适用值 | 其他Application按已有能力显示重量、图像策略；旧字段无损往返 |
+| 固定 SchemaVersion / ApplicationId / StationId / Mode /目录 | 当前身份与责任只读；新站由Application默认 | 迁移沿原受控入口，不作为普通参数修改 |
+| 固定 Topology.Readers / Positions / ReaderDeviceId / InstanceId /用途 /数量 | Sportmaster双位固定、稳定身份只读 | 禁止扁平化/重复设备/改变责任；旧请求原绑定 |
+| 用户显示偏好 /布局选择 | 原用户作用域 | 不加入运行配置修订 |
+| 部署 Extensions / CapabilityInstances /角色绑定 | 原安装目录与完整候选 | 精确包/版本/模块/描述；无第二登记权威 |
+
+驱动样例为 hikrobot.idmvs-reader 1.0.3，左右独立两份；下列真实参数均可编辑。组件样例 sportmaster.rcs-task 1.2.1，一个逻辑连接左右共用。缺精确依赖显示不可用，不用此文档代替安装描述。
+
+| 驱动字段 | 默认 / 必填与静态校验 |
+|---|---|
+| `device.ip` | 必填；最多15字符；规范IPv4；左右不得同IP |
+| `device.serial` | 最多32字符 |
+| `entity.mode` | 默认 `observe-only`；observe-only / trigger；trigger实际资格留给部署/SDK启动；observe-only不准入 |
+| `code.encoding` | 默认 `utf-8`；utf-8 / ascii |
+| `queue.capacity` | 默认 `128`；1～1024 |
+| `bcr-code` | 最多256字符；RCS心跳必填且各Reader不重复；区分大小写 |
+
+| 组件字段 | 默认 / 必填与静态校验 |
+|---|---|
+| `source` | 必填；最多64字符 |
+| `locale` | 必填；最多64字符 |
+| `zone-id` | 必填；1～9223372036854775807；最多32字符 |
+| `project-id` | 必填；1～9223372036854775807；最多32字符 |
+| `quantity` | 必填；1～2147483647；最多10字符 |
+| `request-id-base` | 必填；0～9223372036854775806；最多32字符 |
+| `request-id-count` | 必填；1～9223372036854775807；最多32字符；base+count不得溢出；原持久编号责任不变 |
+| `left-station-code` | 必填；最多256字符 |
+| `left-bcr-code` | 必填；最多256字符 |
+| `right-station-code` | 必填；最多256字符 |
+| `right-bcr-code` | 必填；最多256字符 |
+| `specified-chute` | 必填；false / true |
+| `chute-code` | specified-chute=true时必填；false时必须不提供；最多64字符 |
+| `heartbeat-interval-seconds` | 默认 `5`；1～3600；最多4字符 |
+
+组件 Target 可编辑，须为显式 HTTP(S) `/rcs/sorter/api`，禁止凭据/query/fragment。RCS文本拒绝空白/控制字符；原左右取格口编码与系统 StationCode、驱动 bcr-code 独立保存，不互相覆盖。其他已安装版本只呈现其实际描述，未声明参数不补造。

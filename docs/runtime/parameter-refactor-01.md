@@ -45,7 +45,7 @@ RCS 参数和跨类别映射由组件纯静态代码校验，装配调用同一�
 | 验证 | 结果 |
 |---|---|
 | Application.Verification Release、UiVerification Release、Sportmaster Desktop Release、DirectPlc Desktop Release、WcsToPlc Desktop Release、Hikrobot Probe Release | 全部0警告/0错误 |
-| --parameter-refactor | 34项：第三候选、多匹配、非法/超时、不完整、旧规则/原请求、静态RCS校验、首配同源、CAS/未知、异步新输入保护 |
+| --parameter-refactor | 35项：第三候选、多匹配、非法/超时、不完整、旧规则/原请求、静态RCS校验、首配同源、CAS/未知、异步新输入保护 |
 | --ux-commercial-configuration / --ux-commercial-inputs | 62 / 26项 |
 | --configuration-confirmation / --parcel-recovery-p2 | 32 / 100项，包含应用失败、运行未知、原请求恢复和确认身份 |
 | --version-compatibility / --sportmaster-rcs / --rcs-heartbeat | 56 / 121 / 26项 |
@@ -79,3 +79,22 @@ python -m unittest discover -s scripts -p test_application_compatibility.py -v
 ## 外部验证与发行边界
 
 真实 SDK/设备帧、触发与实体资格、真实RCS取格口/心跳合同与编号作用域、目标工控机分辨率/DPI/触摸、完整Windows安装升级与现场验收均未执行。没有将本机合成WPF或portable参考链宣称为这些验收。D批准和历史RV保持原证据状态。全库归档已有UI资产字体、引用协议与元数据问题仍需单独治理，本包不增加豁免；本次manifest与引用按Git规范字节独立核验。
+
+## 冻结发布与最终回执
+
+冻结源码 `220d35931a6e2174d35629a65a01a1b61cc39b21`，业务1.5.0。其后仅补充桌面备份数值错误的字段定位及文档/证据，未改变 portable 中的业务、驱动、组件或公共契约；最终桌面与原生定向检查另行构建通过。按既有 package-application 构建 portable 包，SHA256 `0f78368ed20ed2a8f3898eaf353c239a0347997e60b332a6d82e56a91f5e96f6`，见 [发行身份](evidence/parameter-refactor-01/release-identity.json)。这是必要的发布启动验证候选，不覆盖既有安装器介质或宣称完整安装升级通过。其 PARAMETERS.md 为同一冻结提交的操作指南，后续回执提交不改变原包 SourceCommit。
+
+[实际解包冒烟](evidence/parameter-refactor-01/release-smoke.json)通过6类检查：候选文件SHA、实际所选程序集启动、参考相机到最终格口链、重启保持原阶段、有序停止、左右两个读码器。原字段 Windows=NOT_RUN、RealEquipment=BLOCKED 保持；Windows主机执行 portable CLI Simulation 不等于图形或真实设备验收。
+
+两个新包均用独立 TestOnly Simulation 信任构建，经冻结宿主 extension-check 接受且冻结宿主/检查器未改变，见 [静态验签回执](evidence/parameter-refactor-01/extension-static.json)：
+
+| 包 | SHA256 |
+|---|---|
+| sportmaster.rcs-task 1.2.1 | da02fde4ce44aa2074a75f878823eb70eb421819372ead3d879c6997119c43c3 |
+| hikrobot.idmvs-reader 1.0.3 | ac1aeaa2177819cd06dc1673955b7cf73163ebac9ae7534a66e796f3a0b5e319 |
+
+公共 Platform SHA256 `13e95b57c6290ba666abc8fc8d9572363eb9a6aac0c9a772d7ef3c12542dbed3`，Application.Contracts SHA256 `c60b4d9872627ad6dbf4f605b43f86801b03300a8013c46aa6a08458ebcbb609`。原本地测试输出的不同公共DLL被精确哈希守卫正确拒绝；改用隔离测试输出和上述冻结DLL复验，未改守卫或冻结宿主。[签名包实际加载的5项检查](evidence/parameter-refactor-01/rcs-signed.log)全部通过：元数据/无查询能力、精确契约、实际双读码心跳、取格口、停止排空。夹具[绑定身份](evidence/parameter-refactor-01/signed-fixture.json)可复核。未安装到机器登记、未修改信任、未提交私钥或真实SDK；TestOnly 包不能用于Production。
+
+Windows Git 默认保护拒绝历史原型中的 aux.js，首次冻结导出因此失败；仅在发布子进程设置 Git core.protectNTFS=false，使用既有 extended-path 导出器保留原件后重试成功。没有删除/改名原设计资产、覆盖并行工作或把首次失败记录为PASS。历史 Codex 工作包在整合时恢复原 main 字节，最终无该文件业务变更。
+
+验证充分后停止扩大范围。当前参数范围已完成，完整 UI 余项和上述外部验收继续保留，不将其标为完成。

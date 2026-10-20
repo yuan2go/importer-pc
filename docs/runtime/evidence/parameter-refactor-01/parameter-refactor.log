@@ -1,4 +1,4 @@
-EvidenceRoot=C:\Users\yuan\AppData\Local\Temp\ipc17-verification-06d06dedf9fb45a5aeb1e83e99e9adce
+EvidenceRoot=C:\Users\yuan\AppData\Local\Temp\ipc17-verification-3e0e586205194b81a4c0f86be5efbc70
 PASS PARAM01: save-time static preflight rejects StationCode without constructing a component
 PASS PARAM01: save-time static preflight rejects distinct without constructing a component
 PASS PARAM01: save-time static preflight rejects bcr-code without constructing a component
@@ -29,6 +29,7 @@ PASS PARAM01: uncertain result prevents a second stage submission
 PASS PARAM01: later authority inspection confirms the original submission without resubmitting
 PASS PARAM01: CAS conflict preserves input and cannot replace the saved candidate
 PASS PARAM01: field errors are locatable and static validation cannot save or contact a device
+PASS PARAM01: backup numeric errors locate their actual fields, retain invalid text and never blame a valid directory or save
 PASS PARAM01: late authority inspection accepts only the pre-validation submission while newer input remains unsaved
 PASS PARAM01: returning to the inspected original candidate restores its exact clean baseline without resubmission
 PASS PARAM01: sample test shares the bounded matcher and has no configuration side effect

@@ -53522,9 +53522,9 @@
       "purpose": "Single installation window, one guarded consent and exact native verification",
       "source": "WP-IPC-INSTALLER-SINGLE-WINDOW-01 explicit user authorization",
       "storage_scope": "public_repository",
-      "sha256": "fc2778793763fbf612a20323c50edb22f5b84c5abd3fa35fa58d040ffece0789",
-      "size_bytes": 11660,
-      "git_blob": "c8a43819a7b6ffd122ef30906d0f62bcf802dea1",
+      "sha256": "37162d661052219cfb4c7987b6eeeac5dab6a7ace705472fd50262b417a79387",
+      "size_bytes": 11669,
+      "git_blob": "cb5d50926c6375724072b38e38bd4170b533ef62",
       "previous_git_blob": "9af6d5fca5831890ed448cf79c50c1c73c78f7a4",
       "pre_publication_merge_git_blob": "863bf9812b82e08d8fbf66e70006ab1241da6fef",
       "pre_publication_no_test_git_blob": "0f193e84f334655a4eaa2398645da1cb6454f2ff"

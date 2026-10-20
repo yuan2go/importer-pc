@@ -21,13 +21,17 @@ static partial class Program
         var startup = Stopwatch.StartNew();
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new VisualFactory(launch, false)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default);
+        var startReturnedMs = startup.Elapsed.TotalMilliseconds;
+        ParcelSnapshot snapshot = await runtime.SnapshotAsync();
+        for (var i = 0; snapshot.Availability?.Admit != true && i < 1500; i++)
+        { await Task.Delay(20); snapshot = await Task.Run(runtime.SnapshotAsync); }
+        if (snapshot.Availability?.Admit != true) throw new InvalidOperationException("Synthetic reader health never became ready for admission");
         var startMs = startup.Elapsed.TotalMilliseconds;
         var gate = (SemaphoreSlim)typeof(ParcelRuntime).GetField("gate", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(runtime)!;
         var repository = typeof(ParcelRuntime).GetField("repository", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(runtime)!;
         var pending = repository.GetType().GetMethod("PendingReceipts")!;
         var capacity = typeof(ParcelRuntime).GetMethod("Capacity", BindingFlags.Instance | BindingFlags.NonPublic)!;
         var datasets = new List<object>(); var inputSamples = new List<double>();
-        ParcelSnapshot snapshot = await runtime.SnapshotAsync();
         foreach (var total in new[] { 0, 50, 199, 300 })
         {
             for (var n = inputSamples.Count; n < total; n++)
@@ -43,7 +47,11 @@ static partial class Program
                     if (operation?.State == ParcelState.SlotResolved) { terminal = true; break; }
                     await Task.Delay(10);
                 }
-                if (!terminal) throw new InvalidOperationException("Synthetic operation never reached its own terminal result: " + entity);
+                if (!terminal)
+                {
+                    File.WriteAllText(Path.Combine(evidence, "failed-input-snapshot.json"), Wire.Encode(snapshot));
+                    throw new InvalidOperationException("Synthetic operation never reached its own terminal result: " + entity);
+                }
                 inputSamples.Add(watch.Elapsed.TotalMilliseconds);
             }
             var snapshotMs = new List<double>(); var cloneMs = new List<double>(); var capacityMs = new List<double>(); var pendingMs = new List<double>();
@@ -105,7 +113,7 @@ static partial class Program
         }
         foreach (var owned in windows.AsEnumerable().Reverse()) { owned.ConfirmDiscardDrafts = _ => true; owned.Close(); }
         var result = new { Scope = "Synthetic only; no device, upstream contract, production identity or target hardware qualification. Single process, sequential inputs; no same-side in-flight admission decision.",
-            RuntimeStartMs = startMs, WindowShowToAppliedSnapshotAndIdleMs = windowToReadyMs,
+            RuntimeStartReturnedMs = startReturnedMs, RuntimeStartToAdmissionReadyMs = startMs, WindowShowToAppliedSnapshotAndIdleMs = windowToReadyMs,
             InputToOwnTerminalPoll = Stats(inputSamples), Datasets = datasets, Controlled50MsGateHold = Stats(contention),
             NativeRefreshThroughDispatcherIdle = Stats(refresh), NativeRefreshNotifications = notifications, Idle = idle,
             Environment = new { OS = Environment.OSVersion.ToString(), Framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription, CpuCount = Environment.ProcessorCount, Is64Bit = Environment.Is64BitProcess },

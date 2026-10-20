@@ -237,6 +237,100 @@
           "Contract": "SPORTMASTER-RCS-SORTER-v1"
         }
       ]
+    },
+    {
+      "Id": "hikrobot-engineering",
+      "Providers": [
+        {
+          "Kind": "observation",
+          "Implementation": "manual",
+          "Version": "1.0.0",
+          "Contract": "CONTROLLED-OBSERVATION-v1"
+        },
+        {
+          "Kind": "weight",
+          "Implementation": "reference-weight",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "reference-integration",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "observation",
+          "Implementation": "extension:hikrobot.idmvs-reader/idmvs-reader",
+          "Version": "1.0.1",
+          "Contract": "HIKROBOT-IDMVS-OBSERVATION-v1"
+        }
+      ]
+    },
+    {
+      "Id": "hikrobot-rcs-engineering",
+      "Providers": [
+        {
+          "Kind": "observation",
+          "Implementation": "manual",
+          "Version": "1.0.0",
+          "Contract": "CONTROLLED-OBSERVATION-v1"
+        },
+        {
+          "Kind": "weight",
+          "Implementation": "reference-weight",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "login",
+          "Implementation": "reference-login",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "camera",
+          "Implementation": "reference-camera",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "upload",
+          "Implementation": "reference-upload",
+          "Version": "1.0.0",
+          "Contract": "PARCEL-REFERENCE-v1"
+        },
+        {
+          "Kind": "integration",
+          "Implementation": "extension:sportmaster.rcs-task/sportmaster-rcs-task",
+          "Version": "1.1.5",
+          "Contract": "SPORTMASTER-RCS-SORTER-v1"
+        },
+        {
+          "Kind": "observation",
+          "Implementation": "extension:hikrobot.idmvs-reader/idmvs-reader",
+          "Version": "1.0.1",
+          "Contract": "HIKROBOT-IDMVS-OBSERVATION-v1"
+        }
+      ]
     }
   ]
 }

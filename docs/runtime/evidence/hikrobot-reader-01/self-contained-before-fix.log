@@ -1,0 +1,7 @@
+PASS: x64 callback prefix ABI matches SDK evidence
+PASS: no-code frame preserves its own trigger
+PASS: length-aware decode removes only terminal NUL and preserves spaces
+PASS: multiple codes remain multiple without selecting a winner
+PASS: out-of-ABI code count rejected before reading records
+PASS: out-of-ABI code length rejected before copy
+PASS: invalid configured encoding never replaces bytes into a valid code

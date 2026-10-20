@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "idmvs-reader",
+    "Assembly": "Ipc.Drivers.Hikrobot.dll",
+    "EntryType": "Ipc.Drivers.Hikrobot.HikrobotModule",
+    "Kind": "observation",
+    "MaximumInstances": 8,
+    "ContractIdentity": "HIKROBOT-IDMVS-OBSERVATION-v1",
+    "Requirements": {
+      "BusinessAcceptance": false
+    },
+    "Assurance": {
+      "SchemaVersion": 1,
+      "Simulation": false,
+      "ProtocolEvidence": "5A4B9F5D550CC267343E3491DF633ACA53B2AAA22E7B8A70C5284F3B633F6190"
+    }
+  }
+]

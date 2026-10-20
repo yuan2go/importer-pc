@@ -1,3 +1,5 @@
+> 海康原生SDK边界增量：[接入说明](../runtime/hikrobot-reader-01.md)。仅签名vendor-sdk声明、win-x64及独立精确本地文件资格允许受控P/Invoke；未声明导入仍拒绝，SDK不进入扩展包。本文原无条件原生限制仅由此增量替代，历史验证不倒写。
+
 > 2026-10-20操作裁决：[审查整改](../runtime/sportmaster-audit-remediation-01.md)固定业务1.4.0 / Contracts1.10.0 / Parcel DB8；recover-legacy-receipt CLI显式目标8，旧API缺省5保持兼容。下文旧版本、候选和验证均保留形成时身份，不能使用旧程序回读DB8。
 
 > Windows首次部署现由[原生安装向导](../runtime/startup-deployment-02.md)自动完成受保护程序目录及可选独立信任/离线包安装，不再要求手工复制和改ACL。基本配置独立于可选库存；实际扩展绑定、精确包/合同和Production资格仍严格校验。下文底层命令保留为明确维护/开发入口，原生Windows验收仍NOT_RUN。

@@ -17,3 +17,8 @@ docs/archive/pre-sportmaster-visual-01/** -text
 docs/runtime/evidence/sportmaster-commercial-delivery-01/** -text whitespace=cr-at-eol
 docs/archive/pre-sportmaster-audit-remediation-01/** -text whitespace=cr-at-eol,-blank-at-eof
 docs/runtime/evidence/sportmaster-audit-remediation-01/** -text whitespace=cr-at-eol
+
+# Reconciliation custody preserves original Git blobs and uncommitted source bytes.
+docs/archive/pre-parallel-reconciliation-20261020/** -text whitespace=cr-at-eol
+docs/archive/parallel-reconciliation-20261020-inflight-ui/** -text whitespace=cr-at-eol
+docs/runtime/evidence/parallel-reconciliation-20261020/** -text whitespace=cr-at-eol whitespace=cr-at-eol

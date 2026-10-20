@@ -1,0 +1,26 @@
+[
+  {
+    "path": "README.md",
+    "source_commit": "ad6dc2e2faf74a11bab148fcfa893eb379f87d5c",
+    "sha256": "50e678517a844adff3206b8e5880575ffe5c5e46910ef8d2d6d0e67648c9ccb4",
+    "size_bytes": 5732
+  },
+  {
+    "path": "docs/INDEX.md",
+    "source_commit": "ad6dc2e2faf74a11bab148fcfa893eb379f87d5c",
+    "sha256": "cf44da8c1e061de48481e8fe2e5466b103f27ea15716326ceacfd668db794ed5",
+    "size_bytes": 14122
+  },
+  {
+    "path": "docs/design/sportmaster-visual-productization-01.md",
+    "source_commit": "ad6dc2e2faf74a11bab148fcfa893eb379f87d5c",
+    "sha256": "7a523d1ad52e52d0a8ce064da9f586651855efbc508a03dbe7fc5563c0395629",
+    "size_bytes": 3797
+  },
+  {
+    "path": "docs/ui/STATUS.md",
+    "source_commit": "ad6dc2e2faf74a11bab148fcfa893eb379f87d5c",
+    "sha256": "3b1db616938a38bd5762e65375d86b8ae60cb9f27518c8c070a884c4473255ee",
+    "size_bytes": 1614
+  }
+]

@@ -91,7 +91,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
     public BusinessLaunch SelectedLaunch { get; private set; }
     public bool RetryRequested { get; private set; }
     public bool ReplacementLaunched { get; private set; }
-    public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次工位配置 · Importer PC" : "启动修复 · 离线维护")
+    public StartupRepairWindow(BusinessLaunch launch, string? failure = null, bool initialConfiguration = false) : base(initialConfiguration ? "首次工位配置 · 菜鸟供包台" : "启动修复 · 离线维护")
     {
         SelectedLaunch = launch;
         ConfirmDiscardInputs = () => MessageBox.Show(this, "有尚未保存的输入。返回可保存加密草稿；继续将放弃当前未保存输入，既有配置账和已保存草稿保留。", "保护未完成配置", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK;
@@ -166,7 +166,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             await Task.Run(() => maintenance.AdoptRestoreAsync(restoredBackup, restoredPreview.DataRoot, restoredPreview.BackupSha256, Wire.FileHash(registration)));
             Message("原机目录接管已提交。原根启动围栏保留，新根仍隔离；重试启动后先在维护页读取并核对交接。不能自动Resume或重发旧请求。");
         });
-        Action("离线帮助", () => { new Window { Owner = this, Title = "Importer PC · 离线帮助", Width = 860, Height = 700, Content = ProductHelp.CreateView() }.Show(); return Task.CompletedTask; });
+        Action("离线帮助", () => { new Window { Owner = this, Title = "菜鸟供包台 · 离线帮助", Width = 860, Height = 700, Content = ProductHelp.CreateView() }.Show(); return Task.CompletedTask; });
         Action("安装 / 修复程序…", async () =>
         {
             if (!MayDiscard()) return;
@@ -384,7 +384,7 @@ sealed class StartupSetupWindow : StartupWorkflowWindow
     string[] packages = [];
     int step;
     readonly Button next, back;
-    public StartupSetupWindow(BusinessLaunch launch) : base("安装与部署向导 · Importer PC")
+    public StartupSetupWindow(BusinessLaunch launch) : base("安装与部署向导 · 菜鸟供包台")
     {
         this.launch = launch;
         back = Action("上一步", () => { CaptureInputs(); if (step > 0) step--; Render(); return Task.CompletedTask; });

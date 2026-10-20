@@ -1,3 +1,5 @@
+> 品牌显示增量：[菜鸟供包台名称与图标](runtime/cainiao-branding-01.md)。用户于2026-10-20指定新名称与图片并明确允许公开提交；历史设计和原验收保留其原身份。
+
 # 当前整合入口 · 2026-10-20
 
 [本次工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020.md) · [编码前设计与冲突裁决](design/parallel-task-reconciliation-20261020.md) · [任务/成果/验证/合并报告](runtime/parallel-task-reconciliation-20261020.md)。本轮只整合现有代码/PR，继承 PR58/59 功能、日期守卫和原生门禁，整合 #60 审查整改；未完成 UI 仅 [原字节归档](archive/parallel-reconciliation-20261020-inflight-ui/README.md)，不改变现行视觉基准。

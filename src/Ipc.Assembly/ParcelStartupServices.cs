@@ -273,7 +273,7 @@ public static class ParcelStartupServices
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     static void CreateShortcuts(DeploymentLocation location)
     {
-        var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "Importer PC");
+        var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "菜鸟供包台");
         DeploymentPaths.RequireOrdinaryAncestors(folder); Directory.CreateDirectory(folder);
         var shellType = Type.GetTypeFromProgID("WScript.Shell") ?? throw new InvalidOperationException("Windows shortcut service unavailable");
         dynamic shell = Activator.CreateInstance(shellType)!;
@@ -284,7 +284,7 @@ public static class ParcelStartupServices
                 var path = Path.Combine(folder, location.ApplicationId + " · " + location.SourceCommit[..8] + " · " + Path.GetFileName(location.ReleaseRoot)[^8..] + " · " + entry.Name + ".lnk");
                 DeploymentPaths.RequireOrdinaryAncestors(path);
                 dynamic shortcut = shell.CreateShortcut(path);
-                try { shortcut.TargetPath = Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe"); shortcut.Arguments = entry.Args; shortcut.WorkingDirectory = location.ReleaseRoot; shortcut.Description = "Importer PC " + location.ApplicationId; shortcut.Save(); }
+                try { shortcut.TargetPath = Path.Combine(location.ReleaseRoot, "desktop", "Ipc.Desktop.exe"); shortcut.Arguments = entry.Args; shortcut.WorkingDirectory = location.ReleaseRoot; shortcut.Description = "菜鸟供包台 " + location.ApplicationId; shortcut.Save(); }
                 finally { System.Runtime.InteropServices.Marshal.FinalReleaseComObject(shortcut); }
             }
         }
@@ -293,10 +293,10 @@ public static class ParcelStartupServices
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     static void RemoveShortcuts(DeploymentLocation location)
     {
-        var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), "Importer PC");
+        foreach (var folderName in new[] { "菜鸟供包台", "Importer PC" })
         foreach (var name in new[] { "运行", "启动修复", "安装维护" })
         {
-            var file = Path.Combine(folder, location.ApplicationId + " · " + location.SourceCommit[..8] + " · " + Path.GetFileName(location.ReleaseRoot)[^8..] + " · " + name + ".lnk");
+            var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), folderName, location.ApplicationId + " · " + location.SourceCommit[..8] + " · " + Path.GetFileName(location.ReleaseRoot)[^8..] + " · " + name + ".lnk");
             DeploymentPaths.RequireOrdinaryAncestors(file); if (File.Exists(file)) File.Delete(file);
         }
     }

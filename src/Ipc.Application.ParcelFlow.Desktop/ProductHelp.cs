@@ -32,7 +32,7 @@ public static class ProductHelp
         search.TextChanged += (_, _) => Filter(); Filter(); return panel;
     }
     public const string QuickStart = """
-Importer PC · 离线快速开始
+菜鸟供包台 · 离线快速开始
 
 安装与首配
 从可信渠道取得完整同版介质。运行Setup，选择程序/数据位置和已有Windows运行账户；检查实际安装摘要后授权。日常运行使用指定账户的非提权进程。安装完成不等于已具备生产资格。

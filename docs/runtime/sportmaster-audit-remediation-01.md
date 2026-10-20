@@ -6,6 +6,20 @@
 
 业务1.4.0、Application.Contracts1.10.0、Parcel DB8、配置schema3、Sportmaster默认supply-station；classic显式保留。没有业务协议、迁移SQL、运行资格或准入规则变更。原型D编号和独立审查D-01～03分开管理。
 
+## 最新main初次整合候选（后续D-01布局补验将替代）
+
+整合PR59后的运行源码、配置、随包说明与原生夹具固定为`892a40478d548fccd01dfb4543efeac48ff38d38`。新本地ZIP SHA256 `133f7ec04bed9078a9888c215b3c8078655851f02156da41b3b6d2543c443b86`，747项库存、库存SHA256 `b2d0b58330487aa7cd589816efba65af2c600919bc8c33887cc3a780b418f3ec`。同SHA包内原生完整视觉旅程及首配/商业辅助页均PASS，前后库存未变；包含PR59非法日期/日历关闭/显式恢复和支持拒绝，以及本轮固定动作/中文回执/初始焦点/刷新保留断言。
+
+详见证据入口的integrated结果、身份、日志与图像。后继提交仅整理独立证据、报告和manifest，不重标旧ZIP；CI按其最终PR检查SHA另验。性能样本仍属ff2e7a7 / 独立夹具504c187，未重跑为新二进制成绩。[路径继承证据](evidence/sportmaster-audit-remediation-01/performance-inheritance.json)保存代码对象身份：与分析介质相比，生产源码仅PR59的DateTimeInput变化；快照/容量/历史/主工作台刷新未变。阶段资格如下：
+
+|阶段|本轮判断|
+|---|---|
+|源码候选|D-01～03在声明范围完成，PR59保留；最终PR CI状态另记|
+|本地介质可用|可构建、747项库存核验和包内WPF合成旅程通过；未发布Release、未签名|
+|原生体验|当前Windows125%与已声明尺寸的合成旅程通过；完整多DPI/HID/触控/现场用户旅程未验|
+|受控现场试运行|缺真实SDK/精确组合/RCS合同、R-01和Unknown SOP，未批准|
+|正式商业发布|NOT_READY；目标安装迁移恢复、性能预算/长时、签名/支持及现场资格仍待关闭|
+
 ## 当前操作裁决
 
 ParcelRepository缺省storageVersion=8，ParcelCli recover-legacy-receipt明确targetStorageVersion:8；旧API缺省5是兼容路径，不能当作当前CLI目标。新库不能交旧读者回滚。SQL1～7原字节不变；版本8由当前仓库迁移表定义，安装介质必须另核精确来源。
@@ -16,7 +30,7 @@ MachineRuntimePolicy.ValidateRuntimeIdentity要求指定SID；非提权UAC过滤
 
 |审查项|已继承与本轮补差|验证与关闭边界|
 |---|---|---|
-|D-01|PR58已加入日期/时间/显式时区、无效输入保留、中文枚举、时间列分行；本轮将历史恢复动作移出原实体说明滚动区，长命令归属/选择状态换行|包内WPF DLL：保留+05:30，非法25:99不沿用旧时间；清除边界、选择/原owner保持，800×420 DIP滚动长说明时恢复按钮固定。最小尺寸只证明动作几何；完整历史处置旅程在1100×650窗口复验，不能宣称最小客户区全部内容同时可读|
+|D-01|PR58已加入日期/时间/显式时区、无效输入保留、中文枚举、时间列分行；继承PR59非法日期失焦防回退；本轮将历史恢复动作移出原实体说明滚动区，长命令归属/选择状态换行；最终补差让展开筛选成为有界编辑区并固定查询动作，收起后返回原记录/原件责任|包内WPF DLL验证日期/时区、非法值、选择/原owner和固定动作；最后筛选模式补差须以其新冻结结果为准。最小尺寸只证明对应模式动作几何；完整历史处置旅程在1100×650窗口复验，不能宣称最小客户区全部内容同时可读|
 |D-02|继承新版默认supply-station及按需诊断；把已有中文操作回执投影移入共享VM，classic也使用；classic诊断/原观察默认收起，Blocked/PartiallyReady中文显示|原Message/Feedback和权限事实未改；完整技术回执在诊断中可复制；暂停、独立左右结果、Unknown原请求Query、拒绝/失效、焦点/选择/滚动/草稿和共享辅助窗均定向复验|
 |D-03|归档受影响指南的原Git blob与hash；统一当前DB8、Contracts1.10、CLI目标8及实际UAC过滤政策；形成时PR44/DB7/NOT_RUN标明历史|当前指导不与旧验收混用；原版本/D/RV不倒写；[清理前原件](../archive/pre-sportmaster-audit-remediation-01/README.md)可逐字复核。原全树检查仍FAIL，本轮无新增错误|
 |R-02|独立合成分析夹具和固定DLL验证入口；无生产性能算法修改|分析完成不等于性能风险关闭，见下表和后续工作|
@@ -29,7 +43,7 @@ MachineRuntimePolicy.ValidateRuntimeIdentity要求指定SID；非提权UAC过滤
 
 Windows 11 Home 22631 x64，Ryzen 5 3550H / 4核8线程 / 约16GB内存，.NET SDK10.0.402 / .NET与WPF10.0.13。显示器1920×1080、125%/120DPI、系统中文字体；原生窗口覆盖1366×768、1100×650、900×520及实际800×420 DIP客户区。非客户硬件，非目标26100+安装资格。系统字体未打包，无新生产依赖。
 
-候选为win-x64自包含Sportmaster参考core，Mode=Simulation、双manual reader、reference WCS、禁用称重/传图/普通作业登录，维护reference身份保留。默认supply-station，classic显式；Parcel DB8 / 配置schema3。ZIP和完整库存身份见证据。未上传二进制、创建Release或执行安装；没有连接真实设备/服务。
+R-02分析候选为win-x64自包含Sportmaster参考core，Mode=Simulation、双manual reader、reference WCS、禁用称重/传图/普通作业登录，维护reference身份保留。默认supply-station，classic显式；Parcel DB8 / 配置schema3。ZIP和完整库存身份见证据。未上传二进制、创建Release或执行安装；没有连接真实设备/服务。
 
 必要验证：WPF源码构建0警告/错误；包内DLL原生定向验证通过；独立性能夹具的每个输入须关联到自身实体的SlotResolved才计样，拒绝/超时使分析失败。现有`--ux-commercial-presentation`在Windows机器政策缺失处拒绝启动，记为受阻，未改原测试/业务政策换PASS。无全量测试/现场性能通过声明。
 

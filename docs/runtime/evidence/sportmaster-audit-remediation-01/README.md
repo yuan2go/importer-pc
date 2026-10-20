@@ -2,7 +2,9 @@
 
 [结果与R-02分析](../../sportmaster-audit-remediation-01.md) · [任务范围](../../../work-packages/WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01.md)。原独立审查D-01～03和原型D编号分开；R-01未决不改。
 
-介质来源`ff2e7a7459db148d0ed8dd4537489710b402635f`，独立夹具`504c187e1eeb87fa993424f11ee3406f1b06b56a`。夹具以包内DLL为引用，使用已有internal合成身份/端口接缝，客户端未增加绕过。两者生产源码/配置无差异，源码/介质/夹具三账独立。ZIP仅在本地`.artifacts/auditfix-final.zip`，746项库存、两个EXE均NotSigned，不能据此宣布商业发布。
+R-02分析介质来源`ff2e7a7459db148d0ed8dd4537489710b402635f`，独立夹具`504c187e1eeb87fa993424f11ee3406f1b06b56a`。夹具以包内DLL为引用，使用已有internal合成身份/端口接缝，客户端未增加绕过。两者生产源码/配置无差异，源码/介质/夹具三账独立。该ZIP仅在本地`.artifacts/auditfix-final.zip`，746项库存，不能据此宣布商业发布。
+
+提交前整合新main PR59（ad6dc2e）后，最终本地候选与同版夹具为`892a40478d548fccd01dfb4543efeac48ff38d38`，`.artifacts/integrated-final.zip`，747项库存；两个EXE均NotSigned。同版完整视觉、首配/商业辅助页均通过，原PR59日期/支持断言与本轮断言并存。[最终身份](integrated-media-identity.json)、[视觉来源/DLL](integrated-native-result.json)、[视觉日志](integrated-native.log)、[辅助页结果](integrated-pages-result.json)、[辅助页日志](integrated-pages.log)、[构建日志](integrated-build.log)分别记录。R-02数据不改来源；[代码路径继承](performance-inheritance.json)解释分析与最终候选的边界。
 
 |证据|解决的风险与限制|
 |---|---|
@@ -26,6 +28,8 @@
 * [最小客户区固定动作](history-expanded-minimum.png)：只用于恢复按钮几何，不作为完整历史任务可用性或全部字段可见通过
 * [Unknown/拒绝](unknown-rejected-1100.png)、[读取失效](stale-1100.png)
 
+最终整合892a404重新导出：[默认](integrated-normal-1366.png)、[classic](integrated-classic-1366.png)、[非法日期保留](integrated-history-invalid-date-1100.png)、[固定动作](integrated-history-expanded-minimum.png)、[支持拒绝非法日期](integrated-support-invalid-date.png)。旧图不重标。
+
 ## 复跑
 
 以候选SHA的隔离checkout构建新输出（不要覆盖原ZIP），SDK10.0.402：
@@ -40,6 +44,8 @@ python scripts/package-application.py --application sportmaster --target win-x64
 ./scripts/verify-commercial-wpf.ps1 -Media <candidate> -Output <new-native> -Dotnet <dotnet10> -VisualProductization -FixtureCommit 504c187e1eeb87fa993424f11ee3406f1b06b56a
 ./scripts/verify-commercial-wpf.ps1 -Media <same-candidate> -Output <new-performance> -Dotnet <dotnet10> -AuditPerformance -FixtureCommit 504c187e1eeb87fa993424f11ee3406f1b06b56a
 ```
+
+上述独立性能夹具对应ff2e7a7分析介质。最终892a404介质的同版原生复验省略FixtureCommit，分别执行`-VisualProductization`和无该开关的辅助页模式；RESULT中的FixtureMatchesMedium应为true。不要用504c187夹具省掉PR59新增日期断言。
 
 入口先核库存，测试前后不改变Media；结果分别写来源、FixtureMatchesMedium和引用DLL散列。没有FixtureCommit时沿介质同SHA夹具。不要把新夹具作为介质本身已包含的修复。
 

@@ -110,6 +110,14 @@ static partial class Program
             await vm.OpenHistoryAsync();
             var history = (HistoryPage)((ContentControl)window.FindName("PageHost")).Content;
             var filter = (Expander)history.FindName("HistoryFilters"); filter.IsExpanded = true; window.UpdateLayout();
+            var filterRows = (DataGrid)history.FindName("HistoryRows"); filterRows.SelectedItem = vm.HistoryItems.FirstOrDefault();
+            var filterOwner = vm.Selected?.Id;
+            await SetClient(window, 800, 420); window.UpdateLayout();
+            var queryActions = (WrapPanel)history.FindName("HistoryQueryActions");
+            Check(filterRows.Visibility == Visibility.Collapsed && !((WrapPanel)history.FindName("HistoryActions")).IsVisible &&
+                Descendants(queryActions).OfType<Button>().All(b => { var bounds = b.TransformToAncestor(history).TransformBounds(new Rect(b.RenderSize)); return b.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= history.ActualHeight; }),
+                "expanded filters use a bounded editing pane with full fixed query actions at minimum client size instead of clipping record/recovery controls");
+            Capture("history-filters-minimum"); await Fit(1100, 650);
             var dateInput = Descendants(history).OfType<DateTimeInput>().First(); dateInput.Timestamp = "2026-10-19T08:09:10+05:30";
             var clock = Descendants(dateInput).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "时间");
             var offset = Descendants(dateInput).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "UTC偏移");
@@ -136,6 +144,9 @@ static partial class Program
                 "valid typed date corrects the rejected value without reviving an older time or offset");
             Click(history, "不限时间"); Check(vm.HistoryFrom.Length == 0 && vm.HistoryToExclusive.Length == 0, "native clear-time action removes both exact time boundaries");
             Capture("history-filters-1100"); filter.IsExpanded = false;
+            window.UpdateLayout();
+            Check(filterRows.Visibility == Visibility.Visible && vm.Selected?.Id == filterOwner && filterOwner is not null,
+                "closing filter editing restores records and original command ownership without a new query or selection reset");
             var rows = (DataGrid)history.FindName("HistoryRows");
             rows.SelectedItem = vm.HistoryItems.FirstOrDefault();
             var selected = vm.Selected?.Id;

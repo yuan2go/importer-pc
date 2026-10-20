@@ -137,7 +137,7 @@ static partial class Program
         }
     }
 
-    static async Task VerifyLegacyDraftClose(string evidence, ParcelConfiguration config, Action<bool, string> check)
+    static async Task VerifyLegacyDraftClose(string evidence, ParcelConfiguration config, Action<bool, string> check, bool syntheticIdentity)
     {
         foreach (var ui in new[] { "classic", "supply-station" })
         {
@@ -145,7 +145,9 @@ static partial class Program
             var legacy = config with { SchemaVersion = 2, Topology = null, StationId = "native-legacy-" + ui };
             ExtensionStore.AtomicWrite(Path.Combine(configRoot, "business.json"), legacy);
             var launch = new BusinessLaunch(configRoot, Path.Combine(evidence, "legacy-" + ui, "data"), null, null);
-            await using var runtime = SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
+            await using var runtime = syntheticIdentity
+                ? new Ipc.Application.ParcelFlow.ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } }
+                : (Ipc.Application.ParcelFlow.ParcelRuntime)SportmasterApplication.Create(launch, new ParcelCapabilityFactory(launch));
             await runtime.StartAsync(CancellationToken.None);
             var stops = 0; var decisions = 0;
             var window = Presentation.Create((IParcelApplication)runtime.Application, "sportmaster-maintenance", null, ui,
@@ -236,6 +238,45 @@ static partial class Program
         window.Width = width + window.ActualWidth - client.ActualWidth;
         window.Height = height + window.ActualHeight - client.ActualHeight;
         await Task.Delay(150); window.UpdateLayout();
+        if (Math.Abs(client.ActualWidth - width) >= 1 || Math.Abs(client.ActualHeight - height) >= 1)
+        {
+            // A headless runner can expose a 1024-pixel desktop without an enumerable
+            // display mode. Exercise a real, larger HWND backing surface there. This
+            // fixture-only hook preserves product minimums; all exact client/content
+            // assertions below still run. It is not physical-monitor acceptance.
+            var dpi = VisualTreeHelper.GetDpi(window);
+            var pixelsWide = (int)Math.Round((width + window.ActualWidth - client.ActualWidth) * dpi.DpiScaleX);
+            var pixelsHigh = (int)Math.Round((height + window.ActualHeight - client.ActualHeight) * dpi.DpiScaleY);
+            var handle = new System.Windows.Interop.WindowInteropHelper(window).Handle;
+            var source = System.Windows.Interop.HwndSource.FromHwnd(handle)!;
+            System.Windows.Interop.HwndSourceHook hook = (IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled) =>
+            {
+                if (message != 0x24) return IntPtr.Zero; // WM_GETMINMAXINFO
+                NativeGeometry.DefWindowProc(hwnd, message, wParam, lParam);
+                System.Runtime.InteropServices.Marshal.WriteInt32(lParam, 24, (int)Math.Ceiling(window.MinWidth * dpi.DpiScaleX));
+                System.Runtime.InteropServices.Marshal.WriteInt32(lParam, 28, (int)Math.Ceiling(window.MinHeight * dpi.DpiScaleY));
+                System.Runtime.InteropServices.Marshal.WriteInt32(lParam, 32, Math.Max(pixelsWide, System.Runtime.InteropServices.Marshal.ReadInt32(lParam, 32)));
+                System.Runtime.InteropServices.Marshal.WriteInt32(lParam, 36, Math.Max(pixelsHigh, System.Runtime.InteropServices.Marshal.ReadInt32(lParam, 36)));
+                handled = true; return IntPtr.Zero;
+            };
+            source.AddHook(hook);
+            try
+            {
+                if (!NativeGeometry.SetWindowPos(handle, IntPtr.Zero, 0, 0, pixelsWide, pixelsHigh, 0x16))
+                    throw new System.ComponentModel.Win32Exception(System.Runtime.InteropServices.Marshal.GetLastWin32Error());
+                await Task.Delay(150); window.UpdateLayout();
+                Console.WriteLine($"Native backing client={client.ActualWidth}x{client.ActualHeight}; physical work area={SystemParameters.WorkArea}; no physical-screen claim");
+            }
+            finally { source.RemoveHook(hook); }
+        }
+    }
+    static class NativeGeometry
+    {
+        [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "DefWindowProcW")]
+        internal static extern IntPtr DefWindowProc(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam);
+        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
+        internal static extern bool SetWindowPos(IntPtr hwnd, IntPtr after, int x, int y, int width, int height, uint flags);
     }
     static async Task VerifyClientGeometry(Window window, ParcelViewModel vm, ProjectionProbe probe, string evidence, string ui, Action<bool, string> check)
     {
@@ -250,7 +291,10 @@ static partial class Program
         };
         await vm.RefreshAsync();
         var client = (Grid)window.FindName("ClientArea");
-        foreach (var target in new[] { (1440, 900), (1100, 600), (911, 512), (800, 420) })
+        // A native top-level window is bounded by the active monitor. Reserve the
+        // non-client frame rather than requesting an impossible client at 125% DPI.
+        var large = ((int)Math.Min(1440, SystemParameters.WorkArea.Width - 32), (int)Math.Min(900, SystemParameters.WorkArea.Height - 48));
+        foreach (var target in new[] { large, (1100, 600), (911, 512), (800, 420) })
         {
             await SetClient(window, target.Item1, target.Item2);
             check(Math.Abs(client.ActualWidth - target.Item1) < 1 && Math.Abs(client.ActualHeight - target.Item2) < 1 && vm.ViewportFits,
@@ -266,6 +310,20 @@ static partial class Program
                     $"{ui} {target} barcode/result remains inside actual client without scrolling the entire page");
                 if (text.Name == "CurrentBarcode" || Equals(text.Tag, "CurrentBarcode"))
                 { text.SelectAll(); check(text.SelectedText == longCode, "long leading-zero barcode remains fully selectable for copy"); }
+            }
+            if (window is SupplyStationWindow)
+            {
+                foreach (var position in Descendants(host).OfType<SupplyStationPosition>())
+                {
+                    var body = (ScrollViewer)position.FindName("PositionBody");
+                    check(new[] { "CurrentBarcode", "CurrentSlot" }.All(name =>
+                    {
+                        var field = (TextBox)position.FindName(name);
+                        var bounds = field.TransformToAncestor(body).TransformBounds(new Rect(field.RenderSize));
+                        File.AppendAllText(Path.Combine(evidence, "CLIENT-MATRIX.log"), $"FIELD {name} top={bounds.Top} bottom={bounds.Bottom} height={field.ActualHeight} body={body.ActualHeight} target={target}\n");
+                        return bounds.Top >= 0 && bounds.Bottom <= body.ActualHeight && field.ActualHeight >= 36;
+                    }), "failed-input barcode and unavailable slot remain inside the body viewport beside retained original responsibility");
+                }
             }
             var summaries = Descendants(host).OfType<TextBlock>().Where(x => x.Name == "RetainedResponsibility" || Equals(x.Tag, "RetainedResponsibility")).ToArray();
             check(summaries.Length == 2 && summaries.All(x => x.IsVisible && Inside(x, client) && x.Text.Contains("待核对")), "both retained Unknown responsibilities remain visible alongside the new input rejection");

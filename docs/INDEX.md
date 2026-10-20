@@ -1,4 +1,5 @@
 > 海康驱动增量：[工作包](work-packages/WP-IPC-HIKROBOT-READER-01.md) · [独立IP驱动设计](design/hikrobot-reader-01.md) · [运行与真实验证边界](runtime/hikrobot-reader-01.md)。保持现有业务与UI，真实读码、RCS和现场验收分别记录。
+> 当前 UI 增量：[工作台精简工作包](work-packages/WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01.md)与[原生验证记录](runtime/sportmaster-clear-workstation-01.md)。主屏突出状态、条码、格口与操作，工程明细按需查看。本轮继承下述 PR61 整合基线；归档草稿和旧视觉证据保持原身份。
 
 # 当前整合入口 · 2026-10-20
 
@@ -13,6 +14,8 @@
 > 已发布的历史 Windows 介质：[三业务下载与精确来源](runtime/windows-no-test-release-20261020.md)，运行源码 `939462bee40c9eebe8eb2aa60860217afd95fcdd`，原任务未运行测试/安装。既有[统一发行 cfe6c0e](runtime/unified-release-main-20261020.md)保持旧来源；两者不覆盖本次 Sportmaster 增量。
 
 继承商业交付组合的冻结介质和逐项结果见[Sportmaster 交付结果](runtime/sportmaster-commercial-delivery-01-results.md)，操作见[同版交付手册](runtime/sportmaster-commercial-delivery-01-operations.md)。后继UI实现与本轮介质以页首视觉产品化交付记录为准。
+
+安装交付范围修订（2026-10-20）：[普通安装包与必要说明、过度设计检查](runtime/installation-delivery-scope-01.md)。该修订优先于旧商业计划中的批量/无人值守安装要求；不改变历史源码、发行物和原验证结果。
 
 ## 1. 当前阅读顺序
 

@@ -5,11 +5,13 @@
 ## 可直接复制
 
 ~~~text
-在 yuan2go/importer-pc 最新 main 上，完整实施 docs/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md 的 COMM-00～10，按工业级最佳实践完成工程闭环，不做最小实现。
+在 yuan2go/importer-pc 最新 main 上，完整实施 docs/work-packages/WP-IPC-COMMERCIAL-PRODUCTIZATION-01.md 的 COMM-00～10，按已确认业务风险完成工程闭环，不为“工业级”或未来可能性增加交付范围。
 
 先核对工作区、最新代码及并行 PR，详细阅读 AGENTS.md、docs/INDEX.md、工作包及其基线核对、产品设计、实现逻辑、验收文档，再读框架/F 决策、相关运行指南和代码；UI 修改前读实物 HTML/CSS/JS、图册与完整交接。编码前清理本包过期当前指引、重复和冲突设计，保留原件、历史证据及 D/RV 状态。先形成可审查的文档差异，再开始代码。
 
 继承现有安装向导、独立维护、配置账、扩展、恢复和 UI，补齐安装/首配/设置、连续操作与故障、历史导出、升级修复卸载、备份迁移、诊断帮助及整套交付。重点打通未确认配置启动失败后的首配修复路径；目录选择必须贯穿权限、受保护 helper、登记及维护。实现方式和拆分自行论证，不重建第二套配置或部署权威。
+
+安装范围按 docs/runtime/installation-delivery-scope-01.md 收敛：复用现有原生向导，提供普通人工安装包、依赖/权限与安装启动/升级卸载/失败处理说明；不要求无人值守、响应文件、逐站编排、更换安装器或选型 ADR。既有数据保护和失败恢复守卫继续有效。
 
 保持四层职责、独立 Application 和多页面共享运行实例；Sportmaster 不加 PLC/图片，DirectPlc 完整 UI 继续延期。登录按组合可选，指定 Windows 账户非提权运行。原请求身份/目标/合同不变，Unknown 不自动重发；不编造 SDK、协议、资格或生产默认。
 

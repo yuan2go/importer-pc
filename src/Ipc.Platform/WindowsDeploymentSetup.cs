@@ -145,10 +145,11 @@ public static partial class WindowsDeploymentSetup
                 RestoreHandoffHash: before?.RestoreHandoffHash, DeploymentPlanIdentity: Wire.Hash(Wire.Encode(request)), Shortcuts: request.Shortcuts);
             WriteProtected(Path.Combine(releaseRoot, "deployment-location.json"), location, sid);
             MachineRuntimePolicy.RequireProtectedApplicationInstaller(Path.Combine(releaseRoot, "app"), ["Ipc.Assembly.exe", "Ipc.Assembly.dll", "Ipc.Platform.dll"]);
-            // The new shortcut is version-specific; existing shortcut remains usable on any failure.
-            createShortcuts(location);
             WriteProtected(operation, new { Status = "ReadyToCommit", Location = location, Previous = before, BusinessStarted = false }, sid);
             WriteProtected(Registration(request.ApplicationId), location, sid); // Sole authoritative deployment commit.
+            // Stable desktop entry is a repairable projection of the committed deployment.
+            // No failed pre-commit installation can switch the user's existing entry.
+            createShortcuts(location);
             // ARP is a repairable projection. A crash here is recovered from this
             // registration, never by choosing a registry value as a second authority.
             ProjectInstalledApplication(location);

@@ -221,14 +221,14 @@ public static class ParcelStartupServices
                     if (install.ChangePlanIdentity is null || install.BackupDestination is null) throw new InvalidOperationException("升级/修复须先审阅原责任及完整备份计划");
                     var originalLaunch = previous is null ? new BusinessLaunch(install.ConfigurationSource, install.DataRoot, null, null) : new(previous.ConfigurationDirectory, previous.DataRoot, null, null);
                     await Core(originalLaunch, installer: true).ExecuteChangeAsync(install.ChangePlanIdentity, previous?.SourceCommit == install.SourceCommit ? "Repair" : "Upgrade", install.BackupDestination,
-                        () => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, CreateShortcuts); return Task.CompletedTask; });
+                        () => { if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException(); _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, location => CreateShortcuts(location, previous)); return Task.CompletedTask; });
                 }
                 else
                 {
                     _ = DeploymentMedia.Inspect(install.MediaRoot, ApplicationId);
                     WindowsDeploymentSetup.PrepareInitialDataRoot(install.DataRoot, install.RuntimeAccountSid);
                     using var owner = new ResourceLease(ownerDirectory, ["application-owner"]);
-                    _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, CreateShortcuts);
+                    _ = WindowsDeploymentSetup.Install(install, ValidateSeed, InstallPackages, location => CreateShortcuts(location, previous));
                 }
                 break;
             default: throw new InvalidDataException("Unknown maintenance action");
@@ -300,6 +300,15 @@ public static class ParcelStartupServices
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     static void CreateShortcuts(DeploymentLocation location) => DeploymentShortcuts.Create(location,
         Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory));
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    static void CreateShortcuts(DeploymentLocation location, DeploymentLocation? previous)
+    {
+        var programs = Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms);
+        var desktop = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
+        DeploymentShortcuts.Create(location, programs, desktop, previous);
+        if (previous is not null && previous.ReleaseRoot != location.ReleaseRoot)
+            DeploymentShortcuts.Remove(previous, programs, desktop);
+    }
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     static void RemoveShortcuts(DeploymentLocation location) => DeploymentShortcuts.Remove(location,
         Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms), Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory));

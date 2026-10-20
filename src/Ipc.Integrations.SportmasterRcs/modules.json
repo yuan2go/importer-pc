@@ -13,7 +13,7 @@
     "Assurance": {
       "SchemaVersion": 1,
       "Simulation": true,
-      "ProtocolEvidence": "Destination request v1 implementation; synthetic HTTP verification only; production qualification unavailable"
+      "ProtocolEvidence": "Destination request v1 and periodic station heartbeat; synthetic HTTP verification only; heartbeat application acknowledgement and production qualification unavailable"
     }
   }
 ]

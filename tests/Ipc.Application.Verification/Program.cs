@@ -35,6 +35,8 @@ if (args.Contains("--historical-db4-upgrade")) { var i=Array.IndexOf(args,"--his
 if (args.Contains("--upgrade-conflict-closure")) { await ArchitectureQuality.UpgradeConflictClosureChecks(workspace,root); return; }
 
 if (args.Contains("--sportmaster-rcs-signed")) { var i = Array.IndexOf(args, "--sportmaster-rcs-signed"); await SportmasterRcs.SignedChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
+if (args.Contains("--rcs-heartbeat")) { await SportmasterRcs.HeartbeatChecks(workspace); return; }
+if (args.Contains("--rcs-heartbeat-signed")) { var i = Array.IndexOf(args, "--rcs-heartbeat-signed"); await SportmasterRcs.HeartbeatSignedChecks(workspace, root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
 if (args.Contains("--sportmaster-rcs")) { await SportmasterRcs.Run(workspace, root); return; }
 
 if (args.Contains("--version-compatibility")) { await VersionCompatibility.Run(workspace, root); return; }

@@ -13,6 +13,7 @@ internal sealed class RcsTaskOptions
     internal readonly int Quantity;
     internal readonly bool SpecifiedChute;
     internal readonly string? ChuteCode;
+    internal readonly int HeartbeatIntervalSeconds;
     internal static readonly string[] RequiredKeys = ["source", "locale", "zone-id", "project-id", "quantity", "specified-chute",
         "request-id-base", "request-id-count", "left-station-code", "left-bcr-code", "right-station-code", "right-bcr-code"];
 
@@ -25,7 +26,7 @@ internal sealed class RcsTaskOptions
             endpoint.AbsolutePath != "/rcs/sorter/api" || endpoint.Query.Length != 0 || endpoint.Fragment.Length != 0 || endpoint.UserInfo.Length != 0)
             throw new InvalidDataException("RCS requires an enabled integration binding and an explicit HTTP(S) /rcs/sorter/api target without credentials/query/fragment");
         Endpoint = endpoint;
-        if (Binding.Parameters.Keys.Except(RequiredKeys.Append("chute-code"), StringComparer.Ordinal).Any())
+        if (Binding.Parameters.Keys.Except(RequiredKeys.Concat(["chute-code", "heartbeat-interval-seconds"]), StringComparer.Ordinal).Any())
             throw new InvalidDataException("Unknown RCS parameter");
         foreach (var key in RequiredKeys) _ = Text(key, key is "source" or "locale" ? 64 : 256);
         Source = Text("source", 64); Locale = Text("locale", 64);
@@ -33,6 +34,8 @@ internal sealed class RcsTaskOptions
         Quantity = checked((int)Number("quantity", 1, int.MaxValue));
         RequestIdBase = Number("request-id-base", 0, long.MaxValue - 1);
         RequestIdCount = Number("request-id-count", 1, long.MaxValue - RequestIdBase);
+        HeartbeatIntervalSeconds = Binding.Parameters.ContainsKey("heartbeat-interval-seconds")
+            ? checked((int)Number("heartbeat-interval-seconds", 1, 3600)) : 5;
         SpecifiedChute = Text("specified-chute", 5) switch { "true" => true, "false" => false, _ => throw new InvalidDataException("specified-chute must be true or false") };
         ChuteCode = Binding.Parameters.ContainsKey("chute-code") ? Text("chute-code", 64) : null;
         if (SpecifiedChute != (ChuteCode is not null)) throw new InvalidDataException("chute-code is required exactly when specified-chute=true");

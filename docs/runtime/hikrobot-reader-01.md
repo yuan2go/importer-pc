@@ -1,3 +1,5 @@
+> RCS心跳配置增量：新构建驱动1.0.2的参数描述新增 `bcr-code`（RCS相机编码）；不改变IP、序列号、SDK调用及实体关联。原1.0.1包不改写。心跳选用真实Reader时要求该参数，完整配置/验证边界见[RCS心跳](rcs-heartbeat-01.md)。
+
 # 海康读码驱动 · 运行与验证
 
 [本工作包](../work-packages/WP-IPC-HIKROBOT-READER-01.md) · [设计与边界](../design/hikrobot-reader-01.md)。本驱动独立于左右位，通过 `device.ip` 选择相机，业务拓扑仍由原配置绑定。本轮不是Production或现场放行。

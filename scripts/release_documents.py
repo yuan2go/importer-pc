@@ -22,6 +22,7 @@ GUIDES = {
     'docs/runtime/validation/ui-maintainability-16-windows.md': 'WINDOWS-VALIDATION.md',
 }
 SPORTMASTER_GUIDES = {**PARCEL_GUIDES, 'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',
+    'docs/runtime/rcs-heartbeat-01.md': 'RCS-HEARTBEAT.md',
     'docs/runtime/installer-release-info-01.md': 'INSTALLATION-REQUIREMENTS.md',
     'docs/runtime/installer-single-window-01.md': 'INSTALLATION-EXPERIENCE.md',
     'docs/runtime/windows-client-compatibility-01.md': 'WINDOWS-COMPATIBILITY.md',

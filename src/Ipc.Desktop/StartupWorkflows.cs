@@ -18,6 +18,7 @@ public abstract class StartupWorkflowWindow : Window
     protected readonly TextBlock Status = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 12) };
     protected readonly TextBlock VersionLabel = new() { FontSize = 14, Margin = new(0, 8, 0, 0), Visibility = Visibility.Collapsed };
     protected bool Busy;
+    protected bool CloseAfterCancellation;
     protected StartupWorkflowWindow(string title, bool installation = false)
     {
         Form = Body;
@@ -62,6 +63,7 @@ public abstract class StartupWorkflowWindow : Window
     {
         if (Busy) return; Busy = true; Actions.IsEnabled = false; Body.IsEnabled = false;
         try { await action(); }
+        catch (OperationCanceledException) when (CloseAfterCancellation) { Busy = false; Close(); }
         catch (Exception ex) { Status.Text = "未完成：" + ex.Message + "\n已有数据与配置保留。可修正输入后重试。"; Status.Foreground = Brushes.Firebrick; }
         finally { Busy = false; Actions.IsEnabled = true; Body.IsEnabled = true; }
     }
@@ -420,7 +422,7 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         next.IsDefault = true; cancel.IsCancel = true;
         Render();
         Loaded += async (_, _) => await Run(Next);
-        Closing += (_, _) => preparing?.Cancel();
+        Closing += (_, _) => { if (preparing is not null) { CloseAfterCancellation = true; preparing.Cancel(); } };
     }
     Task SavePlan()
     {

@@ -28,7 +28,7 @@ public partial class App : System.Windows.Application
         // WinExe installation helper: dispatch before creating any WPF window.
         if (e.Args.FirstOrDefault() == "--startup-command")
         {
-            try { ParcelStartupServices.Handle(e.Args); Shutdown(Environment.ExitCode); }
+            try { await Task.Run(() => ParcelStartupServices.Handle(e.Args)); Shutdown(Environment.ExitCode); }
             catch { Shutdown(2); }
             return;
         }

@@ -14,6 +14,7 @@ if (OperatingSystem.IsMacOS() && root.StartsWith("/var/", StringComparison.Ordin
 Directory.CreateDirectory(root);
 Console.WriteLine("EvidenceRoot=" + root);
 if (args.Contains("--installer-options")) { InstallerOptions.Run(root); return; }
+if (args.Contains("--installer-change-guards")) { await InstallerChangeGuards.Run(workspace, root); return; }
 if (args.Contains("--commercial-components")) { var i = Array.IndexOf(args, "--commercial-components"); CommercialComponentReview.Run(root, Path.GetFullPath(args[i + 1]), Path.GetFullPath(args[i + 2])); return; }
 if (args.Contains("--commercial-productization")) { await CommercialProductization.Run(workspace, root); return; }
 if (args.Contains("--startup-deployment")) { await StartupDeployment.Run(workspace, root); return; }

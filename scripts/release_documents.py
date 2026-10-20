@@ -23,6 +23,7 @@ GUIDES = {
 }
 SPORTMASTER_GUIDES = {**PARCEL_GUIDES, 'docs/runtime/sportmaster-rcs-task.md': 'SPORTMASTER-RCS.md',
     'docs/runtime/installer-release-info-01.md': 'INSTALLATION-REQUIREMENTS.md',
+    'docs/runtime/installer-single-window-01.md': 'INSTALLATION-EXPERIENCE.md',
     'docs/runtime/hikrobot-reader-01.md': 'HIKROBOT-READER.md',
     'docs/runtime/sportmaster-commercial-delivery-01-operations.md': 'SPORTMASTER-DELIVERY.md',
     'docs/runtime/sportmaster-visual-productization-01.md': 'SPORTMASTER-UI.md',

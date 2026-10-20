@@ -21,6 +21,13 @@ public partial class App : System.Windows.Application
 #endif
     protected override async void OnStartup(StartupEventArgs e)
     {
+        // WinExe installation helper: dispatch before creating any WPF window.
+        if (e.Args.FirstOrDefault() == "--startup-command")
+        {
+            try { ParcelStartupServices.Handle(e.Args); Shutdown(Environment.ExitCode); }
+            catch { Shutdown(2); }
+            return;
+        }
         base.OnStartup(e); ShutdownMode = ShutdownMode.OnExplicitShutdown;
         startup = new ParcelStartupWindow(); MainWindow = startup;
         try

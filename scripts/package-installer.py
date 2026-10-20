@@ -8,8 +8,21 @@ import subprocess
 import tempfile
 import zipfile
 from release_provenance import capture as capture_provenance, installer_name, MODULE_SHORT_NAMES
+from release_build import frozen_export, build_properties
+from application_compatibility import APPLICATIONS
 
 ROOT = Path(__file__).resolve().parents[1]
+
+def verify_shared_binaries(media, binaries):
+    """The UI is reused in-process; every shared DLL must equal the verified medium."""
+    with zipfile.ZipFile(media) as archive:
+        selected = [name for name in archive.namelist() if name.startswith('desktop/Ipc.') and name.endswith('.dll')]
+        if not selected:
+            raise ValueError('Missing selected desktop assembly closure')
+        for name in selected:
+            file = binaries / Path(name).name
+            if not file.is_file() or hashlib.sha256(file.read_bytes()).digest() != hashlib.sha256(archive.read(name)).digest():
+                raise ValueError('Installer UI and embedded desktop bytes differ: ' + name)
 
 
 def safe_name(name):
@@ -96,20 +109,20 @@ def main():
         raise ValueError('Choose a new immutable installer output')
     workspace = Path(tempfile.mkdtemp(prefix='ipc-installer-build-'))
     print('Installer build workspace: ' + str(workspace), flush=True)
-    snapshot = workspace / 'source'; snapshot.mkdir()
-    files = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', source, '--', 'src/Ipc.Installer'], cwd=ROOT, text=True).splitlines()
-    files += ['Directory.Build.props', 'global.json', 'NuGet.Config', 'src/Ipc.Desktop/Assets/importer-pc.ico', 'src/Ipc.Desktop/Assets/cainiao.png']
-    for name in files:
-        target = snapshot / name; target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(subprocess.check_output(['git', 'show', source + ':' + name], cwd=ROOT))
+    snapshot = workspace / 'source-snapshot'
+    frozen_export(ROOT, source, snapshot)
     payload = workspace / 'payload.zip'; shutil.copyfile(args.media, payload)
     metadata = workspace / 'payload.json'; metadata.write_text(json.dumps(descriptor, ensure_ascii=False), encoding='utf-8')
     publish = workspace / 'publish'
-    subprocess.run([args.dotnet, 'publish', 'src/Ipc.Installer/Ipc.Installer.csproj', '-c', 'Release', '-m:1', '-nr:false',
+    artifacts = workspace / 'intermediates'
+    module = APPLICATIONS[descriptor['ApplicationId']]
+    subprocess.run([args.dotnet, 'publish', 'src/Ipc.Installer/Ipc.Installer.csproj', '-c', 'Release', '-m:1', '-nr:false', '-r', 'win-x64', '--self-contained', 'true',
                     '-p:InstallerPayload=' + str(payload), '-p:InstallerDescriptor=' + str(metadata),
-                    '-p:ArtifactsPath=' + str(workspace / 'intermediates'), '-p:SourceRevisionId=' + source,
-                    '-p:EnableSourceControlManagerQueries=false', '-p:Version=' + descriptor['BusinessVersion'],
-                    '-p:FileVersion=' + descriptor['BusinessVersion'] + '.0', '-o', str(publish)], cwd=snapshot, check=True)
+                    '-p:Application=' + module, '-p:NuGetLockFilePath=packages.' + descriptor['ApplicationId'] + '.win-x64.lock.json',
+                    '-p:RestoreLockedMode=true', *build_properties(source, snapshot, artifacts),
+                    '-p:ArtifactsPath=' + str(artifacts), '-p:InstallerBusinessVersion=' + descriptor['BusinessVersion'],
+                    '-o', str(publish)], cwd=snapshot, check=True)
+    verify_shared_binaries(args.media, artifacts / 'bin/Ipc.Installer/release_win-x64')
     published = [file for file in publish.iterdir() if file.is_file()]
     if len(published) != 1 or published[0].name != 'Ipc.Installer.exe':
         raise ValueError('Installer is not a standalone EXE: ' + repr([p.name for p in published]))

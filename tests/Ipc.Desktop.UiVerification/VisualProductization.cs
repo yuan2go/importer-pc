@@ -33,6 +33,13 @@ static partial class Program
             Ipc.Desktop.DesktopLaunchOptions.Parse([], "direct-plc").Ui == "classic" && Ipc.Desktop.DesktopLaunchOptions.Parse([], "wcs-to-plc").Ui == "classic", "actual desktop parser and presentation default use product-specific routing with explicit classic compatibility");
         window.Show(); await Task.Delay(650); await window.ViewModel.RefreshAsync();
         var vm = window.ViewModel;
+        Click(window, "站位与设备诊断"); await Task.Delay(100);
+        var diagnosticWindow = window.OwnedWindows.Cast<Window>().Single(x => x.Title == "站位与设备诊断 · 只读");
+        var diagnosticFields = Descendants(diagnosticWindow).OfType<TextBox>().ToArray();
+        Check(diagnosticFields.Length == 10 && diagnosticFields.All(x => x.IsReadOnly &&
+            x.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Mode == System.Windows.Data.BindingMode.OneWay) &&
+            diagnosticFields.Any(x => x.Text == vm.Station), "native read-only diagnostics open and bind current facts without writing read-only properties");
+        diagnosticWindow.Close();
         if (!baseline)
         {
             await vm.PauseAsync();
@@ -208,6 +215,17 @@ static partial class Program
             support.Close();
         }
         var original = (await runtime.SnapshotAsync()).Operations;
+        foreach (var scenario in new[] { (Codes: Array.Empty<string>(), Status: "未识别到条码"),
+            (Codes: new[] { "SYNTHETIC-INVALID" }, Status: "校验未通过"), (Codes: new[] { "A", "B" }, Status: "识别到多个条码") })
+        {
+            probe.Project = s => s with { Inputs = s.Inputs!.Select(input => input with {
+                Outcome = ParcelInputOutcome.Rejected, Reason = "SYNTHETIC InvalidCode or InvalidAdmissionId",
+                Observation = input.Observation with { Codes = scenario.Codes } }).ToArray() };
+            await RefreshUntil(() => vm.Left.Status == scenario.Status && vm.Right.Status == scenario.Status);
+            Check(vm.Left.Slot == "未取得" && vm.Right.Slot == "未取得" && !vm.Left.SlotAvailable &&
+                original.Any(x => x.Id == vm.Left.Operation?.Id),
+                "rejected input distinguishes recognition from validation and retains the original owner: " + scenario.Status);
+        }
         probe.Project = s => s with { Operations = s.Operations.Select(o => o.PositionId == "left" ? o with { State = ParcelState.WcsUnknown, Slot = null, Wcs = o.Wcs! with { State = StageState.Unknown, Failure = "SYNTHETIC 回执未确认；保持原请求，只查询核对。" } } : o with { State = ParcelState.WcsRejected, Slot = null, Wcs = o.Wcs! with { State = StageState.Rejected, Failure = "SYNTHETIC 上游明确拒绝，检查原回执原因。" } }).ToArray() };
         // The window's timer can supersede this explicit read. Wait for the projected
         // facts, not merely the completion of a read that intentionally lost its generation.

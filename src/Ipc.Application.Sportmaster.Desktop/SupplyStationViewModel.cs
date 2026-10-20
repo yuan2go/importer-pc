@@ -118,7 +118,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public double SlotFontSize => !SlotAvailable ? 24 : (Operation!.Slot!.Length, IsCompact) switch
     { (<= 6, false) => 64, (<= 6, true) => 44, (<= 16, false) => 40, (<= 16, true) => 28, (_, false) => 28, _ => 24 };
     public string OperatorInstruction => !owner.Fresh ? "等待有效状态；保留原件，不重复放货。" :
-        InputUnadmitted ? (InputFailed ? Input!.Reason + "；检查本次识别，原请求仍归原作业。" : "本次未创建新作业；核对下方原件责任。") :
+        InputUnadmitted ? (InputFailed ? Input!.Reason + "；检查本次输入及准入条件，原请求仍归原作业。" : "本次未创建新作业；核对下方原件责任。") :
         Operation?.State switch
         {
             ParcelState.WcsUnknown => "请勿重复放货，核对原请求。",
@@ -130,7 +130,7 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public ParcelStatusPresentation Presentation { get; private set; } = ParcelPresentation.Pending("正在初始化");
     public string Status => !owner.Fresh ? "状态已失效" : InputUnadmitted ? Input!.Outcome switch
     {
-        ParcelInputOutcome.Rejected => Input.Observation.Codes.Length > 1 ? "识别到多个条码" : "识别失败",
+        ParcelInputOutcome.Rejected => Input.Observation.Codes.Length switch { 0 => "未识别到条码", 1 => "校验未通过", _ => "识别到多个条码" },
         ParcelInputOutcome.Blocked => "本次输入未准入",
         ParcelInputOutcome.Duplicate => "重复输入",
         _ => Presentation.Text

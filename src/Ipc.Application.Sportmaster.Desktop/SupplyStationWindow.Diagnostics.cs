@@ -27,7 +27,7 @@ public partial class SupplyStationWindow
         foreach (var property in new[] { nameof(ViewModel.Station), nameof(ViewModel.TopologyStatus), nameof(ViewModel.Session), nameof(ViewModel.ConfigurationState), nameof(ViewModel.Health), nameof(ViewModel.CapacityState), nameof(ViewModel.BlockingReasons), nameof(ViewModel.AuxiliaryState), nameof(ViewModel.ReadStatus), nameof(ViewModel.Message) })
         {
             var text = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, BorderThickness = new(0), Background = System.Windows.Media.Brushes.Transparent, Margin = new(0, 0, 0, 12) };
-            text.SetBinding(TextBox.TextProperty, new Binding(property)); body.Children.Add(text);
+            text.SetBinding(TextBox.TextProperty, new Binding(property) { Mode = BindingMode.OneWay }); body.Children.Add(text);
         }
         new Window { Owner = this, Title = "站位与设备诊断 · 只读", DataContext = ViewModel, Width = 760, Height = 560, MinWidth = 520, MinHeight = 360,
             WindowStartupLocation = WindowStartupLocation.CenterOwner, Content = new ScrollViewer { Content = body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } }.Show();

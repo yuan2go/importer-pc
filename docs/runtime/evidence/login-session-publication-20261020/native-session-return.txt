@@ -1,0 +1,52 @@
+Window: "会话时长 · 原生 WPF 聚焦验证（合成数据）", App: dotnet.exe.
+	0 窗口 会话时长 · 原生 WPF 聚焦验证（合成数据） Secondary Actions: Raise
+		1 标题栏 (settable, string) Value: 会话时长 · 原生 WPF 聚焦验证（合成数据）
+			2 菜单栏 系统 ID: MenuBar
+				3 菜单项目 系统
+			4 按钮 最小化
+			5 按钮 最大化
+			6 按钮 关闭
+		7 自定义
+			8 编辑 (settable, string) 搜索参数 Description: 按名称、字段键、分类或对象搜索。回车定位第一个结果，Esc 返回表单；输入与草稿不会改变。
+			53 文本 搜索参数名称、编码或对象 · Ctrl+F
+			10 文本
+			11 窗格
+			54 选项卡 ID: ParameterCategories
+				55 选项卡项 (selectable) 系统
+					56 文本 系统
+					57 列表视图 系统对象
+						58 列表项 (selectable) 站点标识
+							59 文本 站点标识
+						60 列表项 (selectable) 数据与记录
+							61 文本 数据与记录
+						62 列表项 (selectable) 计划备份
+							63 文本 计划备份
+						64 列表项 (selectable) 维护与迁移
+							65 文本 维护与迁移
+					66 窗格
+						67 文本 数据与记录
+						68 文本 保留空间不足时阻断新准入；同库归档不会释放磁盘。
+						69 文本 常驻历史条数
+						70 编辑 (settable, string) ResidentHistory Description: 1～10000 条 Value: 200
+						71 文本 1～10000 条
+						72 文本 关键写入保留空间
+						73 编辑 (settable, string) MinimumFreeMiB Description: 1～1048576 MiB Value: 64
+						74 文本 1～1048576 MiB
+						75 文本 操作员会话有效时长
+						76 编辑 (settable, string) SessionLifetimeMs Description: 100～86400000 ms；用于已绑定的操作员登录。维护认证不使用此时长；解绑保留原策略，已有错误仍须纠正。 Value: 610000
+						77 文本 100～86400000 ms；用于已绑定的操作员登录。维护认证不使用此时长；解绑保留原策略，已有错误仍须纠正。
+						78 文本 配置目录
+						79 编辑 配置目录 Value: C:\Users\yuan\AppData\Local\Temp\ipc-sportmaster-wpf-13530654aac540e995cfb3af9eb95ae3\config
+						80 文本 数据目录
+						81 编辑 数据目录 Value: C:\Users\yuan\AppData\Local\Temp\ipc-sportmaster-wpf-13530654aac540e995cfb3af9eb95ae3\data\Simulation\reference-17\sportmaster
+						82 文本 运行内只读。迁移须从独立维护处理原目录、完整备份及资源责任。
+				83 选项卡项 (selectable) 业务模块
+					84 文本 业务模块
+				85 选项卡项 (selectable) 驱动
+					86 文本 驱动
+				87 选项卡项 (selectable) 组件
+					88 文本 组件
+
+Document text: ```
+C:\Users\yuan\AppData\Local\Temp\ipc-sportmaster-wpf-13530654aac540e995cfb3af9eb95ae3\data\Simulation\reference-17\sportmaster
+```

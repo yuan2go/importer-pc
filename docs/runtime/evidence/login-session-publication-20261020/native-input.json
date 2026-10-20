@@ -1,0 +1,49 @@
+{
+  "SourceCommit": "92586bf44cde7efb6cec1538d7b9654ee518c0fb",
+  "Environment": "Windows 11 Home 10.0.22631 x64; desktop 125%",
+  "ActualKeyboard": {
+    "Original": "600000",
+    "Typed": "610000",
+    "Shortcut": "Ctrl+F",
+    "Search": "SessionLifetimeMs",
+    "Result": "One session parameter",
+    "ReturnKey": "Actual session editor; value 610000 retained",
+    "SaveAfterTyping": "NOT_RUN"
+  },
+  "Installer": {
+    "Version": "1.6.1",
+    "Observation": "Final EXE automatically prepared; options visible; cancelled normally",
+    "ObservedHwnd": 6554818,
+    "PreparationTransitionSampling": "NOT_RUN",
+    "InstallationUacUpgrade": "NOT_RUN"
+  },
+  "PostExit": {
+    "RegistrationUnchanged": true,
+    "PreparedMediaDirectories": 0,
+    "InstallerProcessExited": true,
+    "FixtureProcessExited": true
+  },
+  "Files": [
+    {
+      "File": "native-session-edited.jpg",
+      "Bytes": 86939,
+      "Sha256": "d704f032687c4fe6c3c161ae55a3e964e8ce02d9d2540e596e860d92554eac98"
+    },
+    {
+      "File": "native-session-return.jpg",
+      "Bytes": 89727,
+      "Sha256": "b0cca4726b6626db7cf5ea537156102b4d7a5e4495bd03858942e37685f26396"
+    },
+    {
+      "File": "native-session-search.jpg",
+      "Bytes": 46000,
+      "Sha256": "36f6bdf3ea36ca88d13a5910f8e2a577ce96990f4ab8fa2d16e0d0129ba09a54"
+    },
+    {
+      "File": "installer-observed.jpg",
+      "Bytes": 58122,
+      "Sha256": "f726780544862e066f9338e2ca5c82d74468f6e75d2ee518c12aa4765eb95abe"
+    }
+  ],
+  "Method": "Original native @oai/sky window captures and SendInput; no image editing; isolated synthetic fixture"
+}

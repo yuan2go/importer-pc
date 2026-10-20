@@ -1,0 +1,70 @@
+{
+  "ProductionSourceCommit": "92586bf44cde7efb6cec1538d7b9654ee518c0fb",
+  "FixtureSha256": "6e2947b281853665258b48d2cd5f14c73f52c873f4ff65d6739ab14d9f47e012",
+  "OverlaidAssemblies": [
+    {
+      "File": "Ipc.Application.Contracts.dll",
+      "Sha256": "c20c3b02a9326641f14b138dfd93d23370fc1f06b4d00b7b7c935bae09dca89f"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.Desktop.dll",
+      "Sha256": "2c7768954e58c57babdfba64ff6b81f9fde0e16520070490e2fe9da60cbac2cb"
+    },
+    {
+      "File": "Ipc.Application.ParcelFlow.dll",
+      "Sha256": "638426fc8b83f20deb123c5af3ca5adf2be7c568c1543d8a10f0ace9b0e96465"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.Desktop.dll",
+      "Sha256": "4e53cd38907e5f47734ac69c1097fe01feba26e848cf4c9edf31ef90a620280b"
+    },
+    {
+      "File": "Ipc.Application.Sportmaster.dll",
+      "Sha256": "48dc48d8696b9a008af2494a23e27a72dc382c0b36c38720b0ceca4b4399eb49"
+    },
+    {
+      "File": "Ipc.Assembly.dll",
+      "Sha256": "61cd973fd97db7b014c2139387da2db2b1074cd29c58bbe77e517a43cffc3052"
+    },
+    {
+      "File": "Ipc.Components.dll",
+      "Sha256": "2d8844da4fe7da0f40e15695e8f9af5ee1ba14952ae03cb54ee947e4e7cd9b19"
+    },
+    {
+      "File": "Ipc.Desktop.dll",
+      "Sha256": "6d081eab450da96b1db0a4dba31de0731a336d36177f0eb33ba2e29621c4b446"
+    },
+    {
+      "File": "Ipc.Drivers.dll",
+      "Sha256": "83889a2df95c591d3d43e962478db96494052373a54fa8dc995689d5f5cbeb69"
+    },
+    {
+      "File": "Ipc.Integrations.dll",
+      "Sha256": "cafaf03648b04099397f8fef7eebf5fa8d0e1a049d2803d7a0499d118407da52"
+    },
+    {
+      "File": "Ipc.Platform.dll",
+      "Sha256": "8a5390dbbd2b242547fd3411f9a63ce227872cb67ca90fd9b6c89e6861fb480b"
+    },
+    {
+      "File": "Ipc.Platform.Storage.dll",
+      "Sha256": "2c118bd124d608f5ae0746bc120f68df5d26c43dbbf5efcef5868c7689d3ff59"
+    },
+    {
+      "File": "Ipc.Reference.Protocol.dll",
+      "Sha256": "ba02e1f3f7da8e6e198ea4246c74e692c27e1e846428bfac1d7cae7b5af1a480"
+    },
+    {
+      "File": "Ipc.Supply.Contracts.dll",
+      "Sha256": "3b271c14328b84a124a022191cfae6de2427cca9c5b2a2b88c99bc52c03181da"
+    },
+    {
+      "File": "Ipc.Supply.dll",
+      "Sha256": "ba0f33aa12548787d575e2a07e48d2e3a21d12ba6322d5fe45f92472bce329de"
+    }
+  ],
+  "Method": "Compiled verification host with byte-identical final published production DLLs; no runtime source substitution",
+  "FixtureDefinitionCommit": "280f76883c32d1c68cc7f029b6918d5eb1a65bb2",
+  "FixtureCompilationBaseCommit": "837370e3c21a4b83ca0f20dc9a606e760ba9acac",
+  "FixtureCompilationNote": "Built before implementation commit; definition files equal that commit; final production DLL overlay recorded separately"
+}

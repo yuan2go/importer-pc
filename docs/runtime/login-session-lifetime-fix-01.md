@@ -1,5 +1,7 @@
 # 日常参数页登录会话时长修复
 
+后续交付：修复PR76已合并，实际main源`92586bf44cde7efb6cec1538d7b9654ee518c0fb`。最终发布DLL聚焦24项及Windows实际输入、安装准备/取消结果和1.6.1下载见[发布记录](publication-login-session-20261020.md)。本段为冻结源码后的补记，EXE随包指南保留92586bf原字节。
+
 本增量基于 main `837370e3c21a4b83ca0f20dc9a606e760ba9acac`，处理[PR74原审查](https://github.com/yuan2go/importer-pc/pull/74#discussion_r4326168214)。原1.6.0发布记录保留当时“已知未修复”的事实；当前修复、必要验证与新安装包来源在本页补记，不倒写旧包及原验收结果。
 
 ## 裁决与配置边界

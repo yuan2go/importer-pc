@@ -32,4 +32,14 @@
 
 `package-application.py` 在分支上构建时自动核对该分支指向当前HEAD。detached CI介质明确记为 `DETACHED`，不猜main；正式单EXE要求 `--source-branch <实际可核实分支>` 与当前commit一致。随后 `package-installer.py --media <同源码ZIP> --output <新的交付目录>` 自动生成规范英文EXE名，并再次核对分支/commit。源码与随包指南须先提交，任何代码变化都生成新的commit后重新出包。
 
-必要验证与本轮精确交付身份随后记录，不将原129的30项实际升级结果重新标为新源码。真实海康/RCS/现场仍按各能力证据单列，原D/RV不倒写。
+必要验证与本轮精确交付身份见下节，不将原129的30项实际升级结果重新标为新源码。真实海康/RCS/现场仍按各能力证据单列，原D/RV不倒写。
+
+## 本轮最终交付与实际结果（源码冻结后补记）
+
+EXE：`CainiaoSupplyStation_SM_Setup_v1.4.1_win-x64.exe`，172493384字节，SHA256 `826f7ff47fd8bcddbe785a4a9e3cdbc92ec91cc512ca108e5de8050ca9a6b5f2`。源码 `7c384540393b1e77ceeba048a87a3916dd1af63c`，分支 `codex/installer-release-metadata`。文件版本1.4.1.0，业务模块版本1.4.1；精确来源记录位于安装发布根/app/desktop。签名状态NOT_SIGNED。
+
+[逐项证据与边界](evidence/installer-release-info-01/README.md)、[交付身份](evidence/installer-release-info-01/delivery.json)和[41项实际结果](evidence/installer-release-info-01/RESULT.json)：以原Simulation部署实际升级到 `C:\Program Files\CainiaoSupplyStation`，原数据和配置保持、完整备份核对，两个图标真实创建，完成后和两个快捷方式各自正常启动新工作台并关闭。两处发布库存中的来源记录哈希和三处JSON/TXT实际读回一致。5+6+2+14项相关脚本测试PASS，冻结源码10个Git blob与manifest自校验PASS。
+
+本机是Windows11家庭中文版23H2 build22631 x64，已不在微软当前支持周期；实际本机成功不能代替受支持系统资格或干净系统验证。现场应使用仍受支持的Windows11 x64具体版本，生命周期见[微软说明](https://learn.microsoft.com/en-us/lifecycle/products/windows-11-home-and-pro)。本轮未在受支持的新系统、干净虚拟机或真实海康设备重验。EXE自带CLR/WPF10.0.13、SQLite，海康依赖仍按上文单列。
+
+本节与证据在7c源码冻结后补充，不声称已写入此前生成的EXE随包指南；随包指南/源码记录保持7c原字节，原129成果及旧D/RV保留。

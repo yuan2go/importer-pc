@@ -1,4 +1,4 @@
-> 后续发行规范：[英文安装包、依赖与Git源码记录](runtime/installer-release-info-01.md)。本轮新增需求独立于下述已完成整合，旧安装包与原验证保持其精确身份。
+> 当前后续交付：Sportmaster/SM业务模块v1.4.1英文EXE，源码`7c384540393b1e77ceeba048a87a3916dd1af63c`，实际升级及正常启动41项PASS（本机Simulation，受支持系统/海康现场待验）。发行规范：[英文安装包、依赖与Git源码记录](runtime/installer-release-info-01.md)。本轮新增需求独立于下述已完成整合，旧安装包与原验证保持其精确身份。
 
 # 当前整合入口 · 2026-10-20 13:09续轮
 

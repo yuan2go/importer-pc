@@ -39,6 +39,24 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     readonly Dictionary<string, object?> values = [];
     T Get<T>([CallerMemberName] string key = "") => values.TryGetValue(key, out var v) && v is T typed ? typed : default!;
     void Set<T>(T value, [CallerMemberName] string key = "") { values[key] = value; PropertyChanged?.Invoke(this, new(key)); }
+    public string StationCode { get => Get<string>(); set => Set(value); }
+    public string BarcodePattern { get => Get<string>(); set => Set(value); }
+    public string QueueCapacity { get => Get<string>(); set => Set(value); }
+    public string TimeoutMs { get => Get<string>(); set => Set(value); }
+    public string MaximumOperations { get => Get<string>(); set => Set(value); }
+    public string ResidentHistory { get => Get<string>(); set => Set(value); }
+    public string MinimumFreeMiB { get => Get<string>(); set => Set(value); }
+    internal ParcelConfiguration ApplyParameters(ParcelConfiguration c)
+    {
+        if (!decimal.TryParse(MinimumFreeMiB, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
+            throw new InvalidOperationException("系统/MinimumFreeMiB: 磁盘保留空间须为1～1048576 MiB");
+        var retention = new ParcelRetentionPolicy(Integer(ResidentHistory, "系统/ResidentHistory", 1, 10000), checked((long)(reserve * 1048576)));
+        return c with { StationCode = StationCode,
+            BarcodeFilter = BarcodePattern.Length == 0 && c.BarcodeFilter is null ? null : new(BarcodePattern),
+            QueueCapacity = Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096), TimeoutMs = Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
+            MaximumOperations = Integer(MaximumOperations, "系统/MaximumOperations", 1, 100000),
+            Retention = c.Retention is null && retention == new ParcelRetentionPolicy() ? null : retention, BackupSchedule = BuildBackup() };
+    }
     public WeightSource WeightSource { get => Get<WeightSource>(); set => Set(value); }
     public WeightUnit Unit { get => Get<WeightUnit>(); set => Set(value); }
     public WeightValidity Validity { get => Get<WeightValidity>(); set => Set(value); }
@@ -56,10 +74,13 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     public string BackupMaximumSets { get => Get<string>(); set => Set(value); }
     internal static ConfigurationPolicyDraft From(ParcelConfiguration c) => new()
     {
+        StationCode = c.StationCode ?? SystemParameterDefaults.StationCode(c.StationId), BarcodePattern = c.BarcodeFilter?.Pattern ?? "",
+        QueueCapacity = c.QueueCapacity.ToString(CultureInfo.InvariantCulture), TimeoutMs = c.TimeoutMs.ToString(CultureInfo.InvariantCulture), MaximumOperations = c.MaximumOperations.ToString(CultureInfo.InvariantCulture),
+        ResidentHistory = (c.Retention?.ResidentHistory ?? SystemParameterDefaults.ResidentHistory).ToString(CultureInfo.InvariantCulture), MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes) / 1048576m).ToString(CultureInfo.InvariantCulture),
         WeightSource = c.Weight.Source, Unit = c.Weight.Unit, Validity = c.WeightValidity ?? WeightValidity.UntilDispatch,
         Precision = c.Weight.Precision.ToString(CultureInfo.InvariantCulture), ConfiguredWeight = c.Weight.ConfiguredValue?.ToString(CultureInfo.InvariantCulture) ?? "",
         MaximumAgeMs = c.Weight.MaximumAgeMs.ToString(CultureInfo.InvariantCulture), WaitTimeoutMs = c.Weight.WaitTimeoutMs.ToString(CultureInfo.InvariantCulture),
-        BackupEnabled = c.BackupSchedule is not null, BackupDirectory = c.BackupSchedule?.Directory ?? "", BackupIntervalMinutes = c.BackupSchedule?.IntervalMinutes.ToString(CultureInfo.InvariantCulture) ?? "", BackupMaximumSets = c.BackupSchedule?.MaximumSets.ToString(CultureInfo.InvariantCulture) ?? "",
+        BackupEnabled = c.BackupSchedule is not null, BackupDirectory = c.BackupSchedule?.Directory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "backups", c.ApplicationId), BackupIntervalMinutes = c.BackupSchedule?.IntervalMinutes.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.BackupIntervalMinutes.ToString(CultureInfo.InvariantCulture), BackupMaximumSets = c.BackupSchedule?.MaximumSets.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.MaximumBackupSets.ToString(CultureInfo.InvariantCulture),
         UploadStrategy = c.Images?.Strategy ?? UploadStrategy.BeforeMain, ImageBytes = (c.Images?.MaximumBytes ?? 4194304).ToString(CultureInfo.InvariantCulture),
         TotalBytes = (c.Images?.TotalBytes ?? 33554432).ToString(CultureInfo.InvariantCulture), MaximumPending = (c.Images?.MaximumPending ?? 32).ToString(CultureInfo.InvariantCulture)
     };
@@ -88,6 +109,8 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
 public partial class ParcelViewModel
 {
     ParcelConfiguration? structuredBase;
+    public ParameterEditorModel? ParameterEditor { get; private set; }
+    void RebuildParameterEditor() { ParameterEditor = StructuredPolicy is null ? null : new(StructuredPolicy, structuredBase!.ApplicationId, ReaderDrafts.Select(r => r.Capability).ToArray(), CapabilityDrafts.ToArray(), (p, samples) => ServiceAsync(() => application.TestBarcodeFilterAsync(p, samples))); Changed(nameof(ParameterEditor)); }
     CapabilityCatalog? installedCatalog;
     string configurationAuthority = "未加载", savedCandidate = "", validationState = "尚未校验";
     public bool HasLoadedConfiguration => configurationAuthority != "未加载";
@@ -109,6 +132,10 @@ public partial class ParcelViewModel
     public System.Windows.Visibility ImageSettingsVisibility => (structuredBase?.ApplicationId ?? Snapshot?.ApplicationId) != "sportmaster" || structuredBase?.Images is not null ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
     public string[] NewCapabilityKinds => installedCatalog?.Providers.Where(x => SupportsNewKind(x.Kind)).Select(x => x.Kind).Distinct().ToArray() ?? [];
     public string NewCapabilityKind { get; set; } = "weight";
+    public string ParameterConfigurationSummary => (HasUnsavedConfiguration ? "有未保存修改" : "未修改") + " · " + validationState + " · " +
+        (Snapshot?.Configuration.Pending is not null ? "已保存待生效" : "无待生效修订") + " · " +
+        (!Fresh || Snapshot?.Configuration.Confirmation?.Required == true || Snapshot?.Configuration.Status == "ActivationFailed" ? "运行状态需核对" : "最后启动配置已确认；当前准入见作业状态") +
+        (Snapshot?.Configuration.Failure is { } failure ? " · 应用失败：" + failure : "");
     public string ConfigurationEditorState
     {
         get
@@ -121,7 +148,7 @@ public partial class ParcelViewModel
             return "编辑来源：" + configurationAuthority + " · " + state + " · " + validationState + "\n" + DraftRevisionState + "\n当前应用：" + (Snapshot?.Configuration.Status ?? "未读取") + " · Effective修订与Pending内容见运行输入页；保存不代表生效。";
         }
     }
-    void EditorChanged() { validationState = "修改后需重新校验"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(HasUnsavedConfiguration)); }
+    void EditorChanged() { validationState = "修改后需重新校验"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Changed(nameof(HasUnsavedConfiguration)); }
     void ApplyInstalledCatalog(CapabilityCatalog catalog)
     {
         installedCatalog = catalog;
@@ -138,7 +165,7 @@ public partial class ParcelViewModel
         NotifyConfigurationEditorState();
     }
     public void NotifyConfigurationEditorState()
-    { Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditLegacyConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ImageSettingsVisibility)); Changed(nameof(ConfigurationEditorState)); }
+    { Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditLegacyConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ImageSettingsVisibility)); Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); }
     void LoadStructuredConfiguration(ParcelConfiguration c, CapabilityCatalog catalog)
     {
         // Construct every reference and selection before changing the current editing
@@ -160,7 +187,7 @@ public partial class ParcelViewModel
             var descriptor = package is null ? null : catalog.Providers.SingleOrDefault(x => x.Package == package && x.Module == instance!.ModuleId);
             var binding = instance is null ? new CapabilityBinding("observation", "manual", "1.0.0", "reader." + (++readerIndex), reader.DeviceId, "CONTROLLED-OBSERVATION-v1", [])
                 : new("observation", "extension:" + package!.Id + "/" + instance.ModuleId, package.Version, instance.Id, reader.DeviceId, descriptor?.Contract ?? "CONTROLLED-OBSERVATION-v1", instance.Parameters, package, instance.ModuleId, instance.Enabled);
-            readers.Add(new(reader, new("observation", catalog.Providers, binding, true, reader.Role)));
+            readers.Add(new(reader, new("observation", catalog.Providers, binding, true, ParcelBindings.Positions(c).Single(p => p.ReaderDeviceId == reader.DeviceId).Id)));
         }
         CapabilityRoleDraft[] roles = [LocalRole("登录", "login", c.Login), LocalRole("维护认证", "login", c.MaintenanceLogin), LocalRole("默认秤", "weight", c.Scale),
             LocalRole("上游格口", "integration", c.Wcs), LocalRole("PLC", "plc", c.Plc), LocalRole("默认相机", "camera", c.Images?.Camera), LocalRole("图片上传", "upload", c.Images?.Uploader)];
@@ -175,7 +202,7 @@ public partial class ParcelViewModel
         StructuredPolicy = policy; StructuredPolicy.PropertyChanged += (_, _) => EditorChanged();
         try { savedCandidate = Wire.Encode(BuildStructuredConfiguration()); }
         catch (InvalidOperationException) { savedCandidate = Wire.Encode(c); }
-        AcceptEditorBaseline(); NotifyConfigurationEditorState();
+        AcceptEditorBaseline(); if (c.StationCode is null) { savedEditorSignature = ""; validationState = "系统缺省值已补入候选，待明确保存；原账未修改"; } RebuildParameterEditor(); NotifyConfigurationEditorState();
     }
     CapabilityChoice[] Choices(string kind, string empty = "不绑定") => [new(empty, null), .. CapabilityDrafts.Where(x => x.Kind == kind).Select(x => new CapabilityChoice(x.InstanceId, x))];
     void AddRole(string role, string kind, CapabilityBinding? binding)
@@ -236,11 +263,11 @@ public partial class ParcelViewModel
         var originalAll = ParcelBindings.All(c).Select(x => x.InstanceId).ToHashSet();
         var roleIds = ConfigurationRoles.Select(x => x.Selection.Capability?.InstanceId).OfType<string>().ToHashSet();
         var inventory = bindings.Where(x => originalInventory.Contains(x.InstanceId) || !originalAll.Contains(x.InstanceId) || !roleIds.Contains(x.InstanceId)).ToArray();
-        return c with
+        return policy.ApplyParameters(c) with
         {
             Reader = readers.Single(x => x.DeviceId == c.Reader.DeviceId), Topology = new(readers, PositionDrafts.Select(x => x.Build()).ToArray()),
             CapabilityInstances = inventory.Length == 0 && c.CapabilityInstances is null ? null : inventory, Login = Role("登录"), MaintenanceLogin = Role("维护认证"), Scale = Role("默认秤"), Wcs = Role("上游格口"), Plc = Role("PLC"),
-            Weight = policy.BuildWeight(), WeightValidity = policy.Validity, Images = image, Extensions = extensions, BackupSchedule = policy.BuildBackup()
+            Weight = policy.BuildWeight(), WeightValidity = policy.Validity, Images = image, Extensions = extensions
         };
     }
     public Task AddCapabilityInstanceAsync()
@@ -250,14 +277,14 @@ public partial class ParcelViewModel
         if (!NewCapabilityKinds.Contains(NewCapabilityKind)) throw new InvalidOperationException("选择已安装的能力类型");
         var number = 1; while (CapabilityDrafts.Any(x => x.InstanceId == NewCapabilityKind + "." + number)) number++;
         var draft = new CapabilityDraft(NewCapabilityKind, catalog.Providers, null, false) { LegacyBindingEditable = false, InstanceId = NewCapabilityKind + "." + number };
-        draft.PropertyChanged += (_, _) => EditorChanged(); CapabilityDrafts.Add(draft); RebuildConfigurationSelections(); EditorChanged();
+        draft.PropertyChanged += (_, _) => EditorChanged(); CapabilityDrafts.Add(draft); RebuildConfigurationSelections(); RebuildParameterEditor(); EditorChanged();
         Message = "已增加未绑定实例；填写目标与参数，在角色或本位绑定中选择，完整校验后保存。"; return Task.CompletedTask;
     }
     public Task RemoveCapabilityInstanceAsync(CapabilityDraft? draft)
     {
         if (configurationAuthority != "结构化表单" || draft is null) throw new InvalidOperationException("选择结构化库存中的实例");
         if (ConfigurationRoles.Any(x => x.Selection.Capability == draft) || PositionDrafts.Any(x => x.Scale.Capability == draft || x.Camera.Capability == draft)) throw new InvalidOperationException("先解除角色和本位绑定；不能直接移除仍被引用的实例");
-        CapabilityDrafts.Remove(draft); RebuildConfigurationSelections(); EditorChanged(); Message = "已从候选库存移除未绑定实例；已安装原包和Effective不变。"; return Task.CompletedTask;
+        CapabilityDrafts.Remove(draft); RebuildConfigurationSelections(); RebuildParameterEditor(); EditorChanged(); Message = "已从候选库存移除未绑定实例；已安装原包和Effective不变。"; return Task.CompletedTask;
     }
     void RebuildConfigurationSelections()
     {
@@ -276,19 +303,19 @@ public partial class ParcelViewModel
     }
     public async Task ValidateStructuredConfigurationAsync()
     {
+        if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留，点击错误定位"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); return; }
         var candidate = BuildStructuredConfiguration(); var receipt = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
-        validationState = receipt.Status + " · " + receipt.Reason; Changed(nameof(ConfigurationEditorState)); Message = "表单完整候选校验：" + validationState + "；未保存。";
+        validationState = receipt.Status + " · " + receipt.Reason;
+        if (receipt.Status != "Validated") ParameterEditor?.Report(receipt.Reason);
+        Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = "完整候选校验：" + validationState + "；未保存。";
     }
     public async Task SaveStructuredConfigurationAsync()
     {
-        RequireFreshSnapshot(); var expected = RequireDraftRevision(); var candidate = BuildStructuredConfiguration(); var submittedSignature = ConfigurationEditSignature();
-        var validation = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
-        if (validation.Status != "Validated") { validationState = validation.Status + " · " + validation.Reason; Changed(nameof(ConfigurationEditorState)); Message = validationState; return; }
-        var reason = ConfigurationReason;
-        var receipt = await ServiceAsync(() => application.StageConfigurationAsync(expected, candidate, reason));
-        AdvanceOwnDraftRevision(expected, receipt);
-        if (receipt.Status == "PendingRestart") { savedEditorSignature = submittedSignature; savedCandidate = Wire.Encode(candidate); ConfigurationDraft = savedCandidate; Changed(nameof(ConfigurationDraft)); }
-        validationState = receipt.Status + " · " + receipt.Reason; Changed(nameof(ConfigurationEditorState)); Message = validationState;
+        RequireFreshSnapshot();
+        if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); return; }
+        var expected = RequireDraftRevision(); var candidate = BuildStructuredConfiguration(); var signature = ConfigurationEditSignature();
+        var result = await SubmitConfigurationAsync(expected, candidate);
+        if (result.Status == "PendingRestart") { savedEditorSignature = signature; savedCandidate = Wire.Encode(candidate); ConfigurationDraft = savedCandidate; }
     }
     public async Task LoadStructuredFromJsonAsync()
     {
@@ -317,10 +344,8 @@ public partial class ParcelViewModel
     {
         RequireAdvancedConfigurationAuthority(); RequireFreshSnapshot(); var expected = RequireDraftRevision();
         var submittedJson = ConfigurationDraft; var candidate = Wire.Decode<ParcelConfiguration>(submittedJson); var reason = ConfigurationReason;
-        var receipt = await ServiceAsync(() => application.StageConfigurationAsync(expected, candidate, reason));
-        AdvanceOwnDraftRevision(expected, receipt);
+        var receipt = await SubmitConfigurationAsync(expected, candidate);
         if (receipt.Status == "PendingRestart") savedCandidate = submittedJson;
-        validationState = receipt.Status + " · " + receipt.Reason; Changed(nameof(ConfigurationEditorState)); Message = validationState;
     }
     void RequireFormConfigurationAuthority()
     { if (!CanEditFormConfiguration) throw new InvalidOperationException("表单当前不是编辑来源；请显式加载JSON到表单，或重新读取当前配置"); }

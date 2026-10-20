@@ -1,3 +1,5 @@
+执行 PARAM-01 时，以用户本轮参数正式重构要求及 [现行裁决](../design/parameter-refactor-01.md) 为范围；本提示的全部 UI 改造是后续完整包，不应借参数任务重复改造安装器或宣布全包完成。
+
 # 下一步 Codex 提示：完成 Sportmaster UI 优化
 
 以下提示与[完整工作包](WP-IPC-UI-TASK-REDESIGN-01.md)配合使用。详细字段、交互和验收留在设计交接及源码裁决中，避免重复成多套规范。

@@ -30,6 +30,7 @@ public sealed partial class ParcelRepository
 
 public sealed partial class ParcelStartupMaintenance
 {
+    public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy policy, string[] candidates) => Task.FromResult(BarcodeFiltering.Select(policy, candidates.ToArray()));
     public async Task<StartupCheckReport> CheckAsync(ParcelConfiguration candidate)
     {
         var state = ReadState(); RequireIdentity(state.Envelope?.Effective ?? state.Seed, candidate);

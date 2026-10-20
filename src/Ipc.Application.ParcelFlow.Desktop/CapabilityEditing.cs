@@ -80,6 +80,7 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
     }
     public CapabilityBinding Build()
     {
+        if (originalBinding is not null && InstanceId != originalBinding.InstanceId) throw new InvalidOperationException("稳定实例身份只读；不能通过普通参数修改身份：" + originalBinding.InstanceId);
         var p = Provider ?? throw new InvalidOperationException("选择已安装的能力提供者：" + Kind);
         // Keep original insertion order and explicitly omitted defaults. Reordering
         // unrelated parameter bytes would change the frozen configuration hash.
@@ -169,8 +170,7 @@ public partial class ParcelViewModel
         var c = BuildLegacyConfiguration(); var submittedSignature = ConfigurationEditSignature();
         var expected = RequireDraftRevision();
         var reason = ConfigurationReason;
-        var receipt = await ServiceAsync(() => application.StageConfigurationAsync(expected, c, reason));
-        AdvanceOwnDraftRevision(expected, receipt);
+        var receipt = await SubmitConfigurationAsync(expected, c);
         if (receipt.Status == "PendingRestart") { savedEditorSignature = submittedSignature; savedCandidate = Wire.Encode(c); }
         Message = receipt.Status + " · " + receipt.Reason;
     }

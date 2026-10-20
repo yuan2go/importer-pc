@@ -47,11 +47,17 @@ public partial class App : System.Windows.Application
             startup.Show(); MainWindow = startup;
             if (runtime is not null) throw new InvalidOperationException("原实例尚未完成停止，不创建第二个运行实例");
             var options = selected!; var launch = options.Business;
-            if (!firstConfigurationReviewed && File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json")))
+            if (!firstConfigurationReviewed)
             {
-                var initialDocument = await Task.Run(() => ParcelStartupServices.Maintenance(launch).ReadAsync());
-                if (initialDocument is { Candidate: not null, ExistingConfiguration: false, ConfigurationStatus: "Seed" })
-                { await Repair(initialConfiguration: true); return; }
+                var maintenance = ParcelStartupServices.Maintenance(launch);
+                var initialDocument = await Task.Run(maintenance.ReadAsync);
+                if (initialDocument.Candidate is { } candidate)
+                {
+                    var check = await Task.Run(() => maintenance.CheckAsync(candidate));
+                    if (!initialDocument.ExistingConfiguration || check.Checks.Any(c => c.Status == "FAIL"))
+                    { await Repair(initialConfiguration: true); return; }
+                }
+                else { await Repair(initialConfiguration: true); return; }
             }
             startup.BeginAttempt();
             startup.Phase("读取配置与本地记录", "检查所选 Application、配置身份和本地恢复责任；尚未开放业务。", "参数校验完成");
@@ -147,7 +153,7 @@ sealed class ParcelStartupWindow : Window
     public void Fail(string reason, Func<Task> close, Func<Task> retry, Func<Task> repair, Func<Task> setup)
     {
         actions.Children.Clear();
-        title.Text = "启动未完成 / NotReady"; detail.Text = "保留诊断；未进入作业。若停止失败，窗口继续持有资源责任，可重试停止。";
+        title.Text = "客户端已打开 · 业务尚未就绪"; detail.Text = "可修改参数、查看诊断；未进入作业。若停止失败，窗口继续持有资源责任，可重试停止。";
         diagnostic.Text = string.Join("\n", completed) + "\n\n" + reason;
         var copy = new Button { Content = "复制诊断", MinHeight = 44 };
         copy.Click += (_, _) => { try { Clipboard.SetText(diagnostic.Text); } catch (Exception error) { detail.Text = "复制失败，可选择诊断文本复制：" + error.Message; } };
@@ -171,6 +177,6 @@ sealed class ParcelStartupWindow : Window
             };
             actions.Children.Add(button);
         }
-        Add("重试启动", retry); Add("离线维护", repair); Add("安装 / 修复", setup); actions.Children.Add(exit);
+        Add("重试启动", retry); Add("修改参数 / 离线维护", repair); Add("安装 / 修复", setup); actions.Children.Add(exit);
     }
 }

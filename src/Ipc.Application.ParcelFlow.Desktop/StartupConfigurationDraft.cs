@@ -10,13 +10,13 @@ public sealed class StartupConfigurationDraft
     readonly Dictionary<string, CapabilityBinding> bindings;
     readonly CapabilityCatalog catalog;
     public CapabilityDraft[] Readers { get; }
-    public string ResidentHistory { get; set; }
-    public string MinimumFreeMiB { get; set; }
+    public string ResidentHistory { get => Policy.ResidentHistory; set => Policy.ResidentHistory = value; }
+    public string MinimumFreeMiB { get => Policy.MinimumFreeMiB; set => Policy.MinimumFreeMiB = value; }
     public ConfigurationPolicyDraft Policy { get; }
     public CapabilityDraft[] Capabilities { get; }
-    public string QueueCapacity { get; set; }
-    public string TimeoutMs { get; set; }
-    public string MaximumOperations { get; set; }
+    public string QueueCapacity { get => Policy.QueueCapacity; set => Policy.QueueCapacity = value; }
+    public string TimeoutMs { get => Policy.TimeoutMs; set => Policy.TimeoutMs = value; }
+    public string MaximumOperations { get => Policy.MaximumOperations; set => Policy.MaximumOperations = value; }
     public StartupConfigurationDraft(ParcelConfiguration configuration, CapabilityCatalog catalog)
     {
         original = configuration; this.catalog = catalog; Policy = ConfigurationPolicyDraft.From(configuration);
@@ -43,6 +43,7 @@ public sealed class StartupConfigurationDraft
         QueueCapacity = c.QueueCapacity.ToString(); TimeoutMs = c.TimeoutMs.ToString(); MaximumOperations = c.MaximumOperations.ToString();
         ResidentHistory = (c.Retention?.ResidentHistory ?? 200).ToString(); MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? 67108864) / 1048576m).ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
+    public ParameterEditorModel CreateParameterEditor(Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> preview) => new(Policy, original.ApplicationId, Readers, Capabilities, preview);
     public ParcelConfiguration Build()
     {
         // Missing inventory remains visible and the exact binding is preserved for application validation.
@@ -59,7 +60,7 @@ public sealed class StartupConfigurationDraft
         if (!decimal.TryParse(MinimumFreeMiB, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
             throw new InvalidOperationException("磁盘保留空间须为1～1048576 MiB");
         var retention = new ParcelRetentionPolicy(ConfigurationPolicyDraft.Integer(ResidentHistory, "常驻历史作业", 1, 10000), checked((long)(reserve * 1048576)));
-        return c with
+        return Policy.ApplyParameters(c) with
         {
             Reader = devices[0], Topology = c.Topology is null ? null : c.Topology with { Readers = devices, Positions = c.Topology.Positions.Select((p, i) => p with { ReaderDeviceId = devices[Array.FindIndex(ParcelBindings.Readers(c), r => r.DeviceId == p.ReaderDeviceId)].DeviceId }).ToArray() },
             Retention = c.Retention is null && retention == new ParcelRetentionPolicy() ? null : retention, BackupSchedule = Policy.BuildBackup(),

@@ -5,7 +5,9 @@ namespace Ipc.Application.ParcelFlow;
 public abstract class FlowDefinition
 {
     public abstract string Id { get; }
+    public virtual ParcelConfiguration InitialConfiguration() => throw new InvalidDataException("本Application未声明缺配引导模板；仍可选择原配置或完整备份");
     public virtual string[] PositionRoles => ["main"];
+    public virtual BarcodeFilterResult SelectBarcode(ParcelConfiguration configuration, Observation observation) => BarcodeFiltering.Select(null, observation.Codes, observation.CandidateIssue);
     public abstract Task AdvanceAsync(IParcelExecution execution, ParcelOperation operation);
     public abstract ParcelOperation ApplyBusinessReply(IParcelExecution execution, ParcelOperation operation, ParcelStage stage, StageReply reply);
     public abstract bool PredecessorsAccepted(ParcelOperation operation, ParcelStage stage);

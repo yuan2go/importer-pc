@@ -21,7 +21,7 @@ internal sealed class RcsTaskOptions
     {
         if (binding.Parameters is null) throw new InvalidDataException("RCS parameters are required");
         Binding = binding with { Parameters = new(binding.Parameters, StringComparer.Ordinal) };
-        if (binding.Kind != "integration" || binding.Contract != SportmasterRcsTaskService.Contract || !binding.Enabled ||
+        if (binding.Kind != "integration" || binding.Contract != RcsConfigurationValidation.Contract || !binding.Enabled ||
             !Uri.TryCreate(binding.Target, UriKind.Absolute, out var endpoint) || endpoint.Scheme is not ("http" or "https") ||
             endpoint.AbsolutePath != "/rcs/sorter/api" || endpoint.Query.Length != 0 || endpoint.Fragment.Length != 0 || endpoint.UserInfo.Length != 0)
             throw new InvalidDataException("RCS requires an enabled integration binding and an explicit HTTP(S) /rcs/sorter/api target without credentials/query/fragment");

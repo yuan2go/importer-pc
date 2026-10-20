@@ -73,6 +73,7 @@ static class UxCommercialInputs
         recovered = await Wait(restarted, s => s.Inputs!.Any(i => i.Outcome == ParcelInputOutcome.Duplicate));
         Check(recovered.Positions!.Single(p => p.Id == "left").CurrentOperation == newest.Id && recovered.Operations.Length == 3,
             "late duplicate of older admission neither regresses current result nor creates delivery");
+        await restarted.DisposeAsync(); // Release exact synthetic readers before the next independent fixture.
         await UnknownOriginal(workspace, root);
         await ReaderRebinding(workspace, root, true);
         await ReaderRebinding(workspace, root, false);
@@ -129,10 +130,11 @@ static class UxCommercialInputs
             "blocked next entity records input without resending Unknown");
         ExtensionStore.AtomicWrite(Path.Combine(root, "unknown-input.json"), new { Before = before, After = after });
     }
-    sealed class InputFactory(ParcelCapabilityFactory inner, bool loseReply = false) : IParcelCapabilityFactory
+    internal sealed class InputFactory(ParcelCapabilityFactory inner, bool loseReply = false) : IParcelCapabilityFactory
     {
         public Dictionary<string, InputSource> Readers { get; } = [];
         public bool Emit(string device, string kind, string admission, string[] codes, string source) => Readers[device].Emit(kind, admission, codes, null, source);
+        public CapabilityCatalog Catalog() => inner.Catalog();
         public ParcelConfiguration Normalize(ParcelConfiguration c) => inner.Normalize(c);
         public void Validate(ParcelConfiguration c) => inner.Validate(c);
         public CapabilityRequirements Requirements(CapabilityBinding b) => inner.Requirements(b);
@@ -143,7 +145,7 @@ static class UxCommercialInputs
         }
         public ValueTask DisposeAsync() => inner.DisposeAsync();
     }
-    sealed class InputSource(IControlledObservationSource inner) : IControlledObservationSource, ISyntheticObservationInput
+    internal sealed class InputSource(IControlledObservationSource inner) : IControlledObservationSource, ISyntheticObservationInput
     {
         Func<Observation, bool>? receive;
         public string DeviceId => inner.DeviceId;

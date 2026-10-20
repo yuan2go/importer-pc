@@ -25,6 +25,14 @@ public partial class MaintenancePage : UserControl
         SelectReader(reader is not null && vm.ReaderDrafts.Contains(reader) ? reader.Capability : null);
         SelectInstance(instance is not null && vm.CapabilityDrafts.Contains(instance) ? instance : null);
     }
+    void AdvancedMaintenance_Click(object s, RoutedEventArgs e)
+    {
+        var show = TechnicalTabs.Visibility != Visibility.Visible;
+        TechnicalTabs.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        MainParameterEditor.Visibility = show ? Visibility.Collapsed : Visibility.Visible;
+        AdvancedToggle.Content = show ? "返回参数" : "高级维护…";
+    }
+    async void InspectSave_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.InspectLastSaveAsync, "核对原配置保存结果"); }
     async void Load_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.LoadCapabilitiesAsync, "重新读取并替换本窗草稿"); }
     async void SaveEditor_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.SaveIncompleteEditorAsync, "加密保存未完成设置"); }
     async void ContinueEditor_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) await vm.RunAsync(vm.ContinueIncompleteEditorAsync, "继续未完成设置"); }

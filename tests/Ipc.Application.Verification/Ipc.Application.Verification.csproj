@@ -22,4 +22,8 @@
  <Compile Include="../../src/Ipc.Desktop/DesktopLaunchOptions.cs" Link="Client/DesktopLaunchOptions.cs"/>
  <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/SupplyStationViewModel.cs" Link="Client/SupplyStationViewModel.cs"/>
  <Compile Include="../../src/Ipc.Application.Sportmaster.Desktop/SupplyStationWindow.xaml.cs" Link="Client/SupplyStationWindow.xaml.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ParameterEditorModel.cs" Link="Client/ParameterEditorModel.cs"/>
+ <Compile Include="../../src/Ipc.Application.ParcelFlow.Desktop/ConfigurationSubmission.cs" Link="Client/ConfigurationSubmission.cs"/>
+ <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsConfigurationValidation.cs" Link="RcsConfigurationValidation.cs"/>
+ <Compile Include="../../src/Ipc.Integrations.SportmasterRcs/RcsTaskOptions.cs" Link="RcsTaskOptions.cs"/>
 </ItemGroup></Project>

@@ -16,11 +16,11 @@ static partial class ArchitectureQuality
             var before = await app.SnapshotAsync(); var effective = before.Configuration.Effective;
             Check(first.ReaderDrafts.Count == 2 && first.PositionDrafts.Count == 2 && first.CapabilityDrafts.Count == effective.CapabilityInstances!.Length,
                 "UXC03 actual VM loads every schema3 reader, position and optional capability without clearing the form");
-            Check(!first.HasUnsavedConfiguration && !second.HasUnsavedConfiguration, "P2 initial full form is clean without normalizing its source");
+            Check(first.HasUnsavedConfiguration == (effective.StationCode is null) && second.HasUnsavedConfiguration == (effective.StationCode is null), "PARAM01 omitted mandatory system default is explicitly unsaved; declared values otherwise remain clean");
             var diagnostics = Path.Combine(root, "uxc03-diagnostics"); Directory.CreateDirectory(diagnostics);
             File.WriteAllText(Path.Combine(diagnostics, "effective-before.json"), Wire.Encode(effective));
             File.WriteAllText(Path.Combine(diagnostics, "form-no-edit.json"), Wire.Encode(first.BuildStructuredConfiguration()));
-            Check(Wire.Encode(first.BuildStructuredConfiguration()) == Wire.Encode(effective), "UXC03 no-edit form round trip retains exact topology, role anchors, optional policies, retention and omitted parameter defaults");
+            Check(Wire.Encode(first.BuildStructuredConfiguration()) == Wire.Encode(effective with { StationCode = effective.StationCode ?? SystemParameterDefaults.StationCode(effective.StationId) }), "PARAM01 round trip adds only the declared missing system default; topology, policies and omitted driver parameters remain exact");
             var right = first.CapabilityDrafts.Single(x => x.InstanceId == c.Topology!.Positions.Single(x => x.Id == "right").ScaleInstanceId);
             right.Target += "/edited";
             Check(first.HasUnsavedConfiguration, "P2 raw structured parameter edits are protected before validation");
@@ -53,7 +53,7 @@ static partial class ArchitectureQuality
                 await Wait(app, state => state.Availability?.Configure == true);
             }
             File.WriteAllText(Path.Combine(diagnostics, "stale-window-result.txt"), second.Message);
-            Check(second.Message.StartsWith("Rejected") && second.Message.Contains("Configuration revision conflict", StringComparison.Ordinal) && Wire.Encode((await app.SnapshotAsync()).Configuration.Pending) == Wire.Encode(pending),
+            Check(second.Message.StartsWith("Conflict") && second.Message.Contains("配置修订已变化", StringComparison.Ordinal) && Wire.Encode((await app.SnapshotAsync()).Configuration.Pending) == Wire.Encode(pending),
                 "UXC03 automatic refresh cannot replace a second window's loaded configuration CAS");
             Check(second.HasUnsavedConfiguration, "P2 stale CAS rejection retains the unsaved second-window draft");
             first.StructuredPolicy!.Precision = "bad";
@@ -223,6 +223,8 @@ static partial class ArchitectureQuality
         public int CatalogReads;
         public TaskCompletionSource StageEntered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         public TaskCompletionSource StageRelease { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public Task<ConfigurationSubmissionResult> InspectConfigurationSubmissionAsync(Guid owner, long revision, ParcelConfiguration candidate) => inner.InspectConfigurationSubmissionAsync(owner, revision, candidate);
+        public Task<BarcodeFilterResult> TestBarcodeFilterAsync(BarcodeFilterPolicy policy, string[] samples) => inner.TestBarcodeFilterAsync(policy, samples);
         public Task<ParcelSnapshot> SnapshotAsync() => inner.SnapshotAsync();
         public Task<ParcelHistoryPage> HistoryAsync(long beforeSequence = long.MaxValue, int limit = 50) => inner.HistoryAsync(beforeSequence, limit);
         public Task<ParcelOperation?> OperationAsync(string id) => inner.OperationAsync(id);

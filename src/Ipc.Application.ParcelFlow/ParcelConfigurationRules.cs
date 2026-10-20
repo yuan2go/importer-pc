@@ -10,6 +10,7 @@ public static partial class ParcelConfigurationRules
         List<string> e = [];
         if (c.Reader is null || c.Weight is null || c.CapabilityInstances?.Any(x => x is null) == true || c.Images is { Camera: null })
             return ["Malformed configuration: missing reader/weight/camera or null capability inventory"];
+        if (application != "sportmaster" && c.BarcodeFilter is not null) e.Add("BarcodeFilter belongs to the Sportmaster Application");
         e.AddRange(ValidateCapabilityInventory(c));
         if (e.Count != 0) return e.ToArray(); // No topology/binding deduplication may hide invalid originals.
         if (c.SchemaVersion is not (1 or 2 or 3) || c.ApplicationId != application || !ExtensionSchema.IsId(c.StationId) || !Enum.IsDefined(c.Mode)) e.Add("Invalid application/station/schema/mode");

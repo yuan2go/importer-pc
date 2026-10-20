@@ -26,8 +26,8 @@ public sealed partial class ParcelRepository
 public sealed partial class ParcelRuntime
 {
     readonly Dictionary<string, ParcelInputSnapshot> latestInputs = new(StringComparer.Ordinal);
-    ParcelInputSnapshot Input(string position, Observation observation, ParcelInputOutcome outcome, string reason, string? operation = null) =>
-        new(position, observation, outcome, reason, operation, DateTimeOffset.UtcNow, ReaderBinding(position));
+    ParcelInputSnapshot Input(string position, Observation observation, ParcelInputOutcome outcome, string reason, string? operation = null, BarcodeFilterResult? selection = null) =>
+        new(position, observation, outcome, reason, operation, DateTimeOffset.UtcNow, ReaderBinding(position), selection);
     DeviceBinding ReaderBinding(string position) => ParcelBindings.Readers(Effective).Single(r => r.DeviceId == positions[position].ReaderDeviceId);
     void RecordInput(ParcelInputSnapshot input, string eventName, bool? paused = null)
     {

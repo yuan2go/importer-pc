@@ -47772,12 +47772,12 @@
     {
       "path": "docs/runtime/cainiao-branding-01.md",
       "storage_scope": "public_repository",
-      "sha256": "17cd3c8448ade1167b319b4cc864180b0061535aa084eefa559b72cd456379d0",
-      "size_bytes": 2155,
-      "git_blob": "7959b444a34f45130011c78299ca525944321b2b",
+      "sha256": "1d2378cd0399cd9ca98e46db5030269b8178eda813591d32bc25b323746c2d0a",
+      "size_bytes": 3453,
+      "git_blob": "51fae07c57ab3bbd66e7bcde2f91375d54cb01cd",
       "version": "cainiao-branding-01",
       "status": "current_source_or_preserved_evidence",
-      "purpose": "User-authorized software name and image replacement; historical evidence retains original identity",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
       "source": "2026-10-20 user request and explicit public artwork permission"
     },
     {
@@ -47800,6 +47800,226 @@
       "version": "cainiao-branding-01",
       "status": "current_source_or_preserved_evidence",
       "purpose": "User-authorized software name and image replacement; historical evidence retains original identity",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/README.md",
+      "storage_scope": "public_repository",
+      "sha256": "bc5933f47e014ba33d31a0810afcf234b75e6bf70caafbe0b6f580ab01234631",
+      "size_bytes": 3688,
+      "git_blob": "05f231c8587c5329944a3b1adb47a27a513f2840",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/archive-initial-encoding-failure.json",
+      "storage_scope": "public_repository",
+      "sha256": "ab136100548e25919828cbbde29fc71d5ae0f462a691d28671e5200173de2d84",
+      "size_bytes": 151,
+      "git_blob": "f86bd10aae8268e657356daaef6264325bd9b493",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/development-build.log",
+      "storage_scope": "public_repository",
+      "sha256": "4769860e01e3a30089b6ccd2f94c3fb42a5c9fde205c3ef40077fc934ff574fa",
+      "size_bytes": 3496,
+      "git_blob": "bd6c407f129b7492b62d1b61f74b4f6194387f54",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/development-wpf.log",
+      "storage_scope": "public_repository",
+      "sha256": "54d3f6c18f338633930ec1ab2fcfc243acf48132a9cbd281b7cece13c86683a1",
+      "size_bytes": 3802,
+      "git_blob": "a4166ca1fbcc06f32ead995f8ccd5d1d6cc35b61",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/exe-metadata-first-failure.json",
+      "storage_scope": "public_repository",
+      "sha256": "e348ec8083e2c8cf1d9e94ac2ed5d8042d6a72a7a616cef2fce5c65866bd2478",
+      "size_bytes": 305,
+      "git_blob": "ddbe6f90358539d91f1dd3ab576126700985c910",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/exe-smoke-result.json",
+      "storage_scope": "public_repository",
+      "sha256": "bedbe73116bf4c73c476172a60cd3257961633e75fbb76d8b31b3436158b73b6",
+      "size_bytes": 313,
+      "git_blob": "ae0d9d7c7ce260a47325551072ed9e8232a7e097",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/exe-smoke.ps1",
+      "storage_scope": "public_repository",
+      "sha256": "99581539b1268c14f0b03038e0a0de4a94aeb5d79a8a708eabc5e197ecee4783",
+      "size_bytes": 3483,
+      "git_blob": "c8f8f642a4be97a64000f1fff283f332b7cd9824",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/final-first-configuration.png",
+      "storage_scope": "public_repository",
+      "sha256": "d7ab3fcb8677b492a1938c2016e701a2189fb69485cb7e1161103cac785479e2",
+      "size_bytes": 111336,
+      "git_blob": "61d268314bfc2c182872023010c5260385f0d2d4",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/final-workstation-1366.png",
+      "storage_scope": "public_repository",
+      "sha256": "488726dac3035f2b96b0567233b76ce0ffacd885e82074f3372a75aa7394fe59",
+      "size_bytes": 87902,
+      "git_blob": "e95beec24c1ee0a2922f6dc9cdcd9ad22b8194c9",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/final-workstation-minimum.png",
+      "storage_scope": "public_repository",
+      "sha256": "0d4392ca61721b36098f49bc471a0e62805e5d4d25563635e0f3c53f394e1508",
+      "size_bytes": 61079,
+      "git_blob": "79862d09df4952d404ce51f26880f6e7d34bf3a7",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/frozen-wpf-build.log",
+      "storage_scope": "public_repository",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/frozen-wpf-result.json",
+      "storage_scope": "public_repository",
+      "sha256": "db1a50c9b2b61651184cd572bd1e4b28e49c97c80709c39ed9eccfb39e0351e1",
+      "size_bytes": 3058,
+      "git_blob": "3ecb5550f12cacff35dd31d06294a6e74ed439d1",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/frozen-wpf.log",
+      "storage_scope": "public_repository",
+      "sha256": "3ca54cc7ceea2e7ef9fc3e9a0a845959bb6a9daf4b188aefa31dc68c75c23ebc",
+      "size_bytes": 4257,
+      "git_blob": "ad0d6c4d623bbc25363096dde136038a85999fb0",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/package-final.log",
+      "storage_scope": "public_repository",
+      "sha256": "4b77dc26aa380266ea881f1cf4da16747658462ddc7f5a7874935f3224034d45",
+      "size_bytes": 7605,
+      "git_blob": "2274ce727d91ac265cf3a893d9cdd1f2dccd9e71",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/package-first-file-lock-failure.log",
+      "storage_scope": "public_repository",
+      "sha256": "9ae231275a56e66894e7b79a053a08507728098bc1b324fa172cc61c5255c800",
+      "size_bytes": 8311,
+      "git_blob": "5afdd3b5294bec08cd61bd2988cf12b4d6848518",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/package-result.json",
+      "storage_scope": "public_repository",
+      "sha256": "b1f44ed73619b5a6746541fcaf14c5b781776a129045a088d69991af6dee9c0f",
+      "size_bytes": 482,
+      "git_blob": "49fbcf6cacb7c4982564c2ba4fb6ffb94e3af3f0",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/probe-development-notes.json",
+      "storage_scope": "public_repository",
+      "sha256": "1f263f9e5465fb35d5ae13a439ec9804b2172e730b3584324c9c11f896955469",
+      "size_bytes": 694,
+      "git_blob": "f01929183ec3a65dc63dc14cb5368af9828216e1",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/supply-build.log",
+      "storage_scope": "public_repository",
+      "sha256": "360ef5cc66ebb46b6617824177dd7ef9c159c9ba7349b394e2a21729df9a61d9",
+      "size_bytes": 2963,
+      "git_blob": "63fe728744b9ecec328f7665984e3d9422b5426e",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/workstation-1366.png",
+      "storage_scope": "public_repository",
+      "sha256": "93c779916419cfcad9db2f89242cf309eefdab5d91f754d6719fa25e4ed083d9",
+      "size_bytes": 87875,
+      "git_blob": "cb720898955bae0ade318f43fe6229a09ae3612d",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
+      "source": "2026-10-20 user request and explicit public artwork permission"
+    },
+    {
+      "path": "docs/runtime/evidence/cainiao-branding-01/workstation-minimum.png",
+      "storage_scope": "public_repository",
+      "sha256": "ec97d5f5c8b652457b9c86bd8351310b87ab125ec2cad9333e929c2c64ca6e57",
+      "size_bytes": 61050,
+      "git_blob": "272697823877cafc7fff46bb51f70eac263ae3de",
+      "version": "cainiao-branding-01",
+      "status": "current_source_or_preserved_evidence",
+      "purpose": "Software branding implementation and exact synthetic Windows verification evidence",
       "source": "2026-10-20 user request and explicit public artwork permission"
     }
   ],
@@ -49671,6 +49891,15 @@
     "artwork_sha256": "b12c9b143941ca20cb316e05d89b8cc9d412bd1d25a146e0c46c8a016cad3f87",
     "public_permission": "User explicitly replied 允许公开提交 on 2026-10-20",
     "report": "docs/runtime/cainiao-branding-01.md",
-    "historical_d_rv": "UNCHANGED"
+    "historical_d_rv": "UNCHANGED",
+    "runtime_source_commit": "967ebc8daf377a99561914d57bd807017dcf2d14",
+    "native_frozen_assertions": 38,
+    "native_frozen_result": "PASS",
+    "exe_smoke": "PASS",
+    "package_sha256": "c6a31dcd1ff90979cfc767748c6bbb6ea12f5c9b8f90dcd0b878844474503579",
+    "inventory_files": 746,
+    "windows_install_uac": "NOT_RUN",
+    "sdk_equipment_rcs_field": "NOT_RUN",
+    "production": "NOT_APPROVED"
   }
 }

@@ -1,0 +1,8 @@
+{
+  "Status": "FAIL",
+  "SourceCommit": "afc52a469e2f084cbfaa2def4f7d66a34444e491",
+  "ProductName": "菜鸟供包台",
+  "FileDescription": "Ipc.Desktop",
+  "ExpectedFileDescription": "菜鸟供包台",
+  "Fix": "Set AssemblyTitle; keep product metadata assertion and rebuild from a new source commit"
+}

@@ -10,4 +10,8 @@
 
 原生合成验证：`D:/tools/dotnet/dotnet.exe run --project tests/Ipc.Desktop.UiVerification -p:Application=Sportmaster -- . --visual-productization`。发行沿既有 `scripts/package-application.py --application sportmaster --target win-x64`；安装仍从完整介质 `Setup.cmd` 进入，日常运行仍用指定 Windows 账户和安装后的入口。
 
-本次验证结果将在完成后补充。Windows 安装/UAC、真实 SDK、设备、RCS 和现场验收不属于此次品牌变更的通过结论；原 D/RV 状态保持。
+最终运行源码冻结为 `967ebc8daf377a99561914d57bd807017dcf2d14`。Sportmaster、Supply 构建均为 0 警告/错误；最终发布 DLL 的 38 项原生合成检查 PASS，包含首配、双位、页面/布局切换、焦点/选择/草稿、异常及 800×420 客户区。实际 EXE 的 ProductName、FileDescription 均为“菜鸟供包台”，提取图标与生成 ICO 逐像素一致；原生安装向导按精确进程/窗口标题确认后正常退出（0），未安装或配置机器政策。
+
+本机完整介质 `D:/releases/cainiao-branding-03.zip`，SHA-256 为 `c6a31dcd1ff90979cfc767748c6bbb6ea12f5c9b8f90dcd0b878844474503579`；746 项库存哈希和 ZIP CRC 通过。解压后运行 `Setup.cmd`，继续沿原安装与身份政策；此次未向 GitHub Release 发布二进制。早期文件占用打包失败、EXE 文件说明错误及验证探针修正均保留在[证据索引](evidence/cainiao-branding-01/README.md)，最终介质未覆盖原件或使用旧 PASS。
+
+当前图标原图来自本次用户附件；原 HTML/CSS/JS、完整交接及同源 PNG 仍是 SS-UI-VIS-001 v1.1 历史设计。本次截图来自实际 WPF/Dispatcher 的合成夹具，125% DPI，标准与最小客户区均已查看。Windows 安装/UAC、真实 SDK、设备、RCS 和现场验收未做；其他业务完整运行未验，历史 D/RV 状态保持。本次新增 manifest 项及新增 Markdown 相对引用单独核验，不宣称全量历史资料通过。

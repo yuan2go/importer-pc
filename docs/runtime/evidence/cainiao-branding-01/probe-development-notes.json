@@ -1,0 +1,14 @@
+{
+  "Status": "INVALID_PROBE_ATTEMPTS_RETAINED",
+  "Attempts": [
+    {
+      "Observed": "Process.MainWindowTitle returned 启动与恢复 · 菜鸟供包台 while the owned setup dialog was open",
+      "Correction": "Locate the exact setup HWND by title and process ID; preserve the exact title assertion"
+    },
+    {
+      "Observed": "A process object attached after initial launch did not retain a usable exit code after closing the dialog",
+      "Correction": "Run a fresh owned process, retain its handle, close its exact setup window, and require exit code zero"
+    }
+  ],
+  "ProductCodeChange": "None for these probe corrections; AssemblyTitle product fix is recorded separately"
+}

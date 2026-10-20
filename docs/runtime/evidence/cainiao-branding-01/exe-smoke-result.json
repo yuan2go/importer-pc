@@ -1,0 +1,9 @@
+{
+  "Status": "PASS",
+  "ProductName": "菜鸟供包台",
+  "FileDescription": "菜鸟供包台",
+  "NativeWindowTitle": "安装与部署向导 · 菜鸟供包台",
+  "Icon": "Exact pixel match to generated ICO",
+  "Setup": "Opened and closed without installing, provisioning or device access",
+  "ExitCode": 0
+}

@@ -1,4 +1,6 @@
-# 当前实施入口：Sportmaster 原生视觉产品化
+> 当前增量：[Sportmaster审查整改工作包](work-packages/WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01.md)与[整改及R-02分析](runtime/sportmaster-audit-remediation-01.md)。继承已合并PR57/58；原视觉任务和历史证据保留各自身份。
+
+# 已合并实现基线：Sportmaster 原生视觉产品化
 
 最新 main 续核：[设计增量](design/sportmaster-visual-main-closure-01.md)与[同版原生结果/精确介质](runtime/sportmaster-visual-main-closure-01.md)。PR58整套界面及PR57发行整合已继承；修复记录/支持的非法日期被日历关闭恢复为旧条件，并把完整视觉旅程接入既有Windows PR门禁。历史介质、D/RV及NOT_RUN/BLOCKED分别保留。
 

@@ -74,6 +74,28 @@ static partial class Program
         for (var i = 0; i < 100; i++) { await vm.RefreshAsync(); if (vm.Left.Operation?.State == ParcelState.SlotResolved && vm.Right.Operation?.State == ParcelState.SlotResolved) break; await Task.Delay(40); }
         Check(vm.Left.Operation?.Id != vm.Right.Operation?.Id && vm.Left.Slot != "未取得" && vm.Right.Slot != "未取得", "left and right resolve independent operations on the shared live Application");
         Capture("normal-1366");
+        var classic = (ShellWindow)Presentation.Create(application, null, "standard", "classic");
+        classic.Show(); await Task.Delay(250);
+        var classicVm = (ParcelViewModel)classic.DataContext; await classicVm.RefreshAsync();
+        Check(!((Expander)classic.FindName("StationDiagnostics")).IsExpanded &&
+            Descendants(classic).OfType<Expander>().Where(e => Equals(e.Header, "观察、原作业与原因详情")).All(e => !e.IsExpanded),
+            "classic ordinary operation starts with technical diagnostics and per-position originals disclosed on demand");
+        classicVm.Message = "Persisted · SYNTHETIC full original receipt with request owner";
+        Check(((TextBlock)classic.FindName("OperationFeedback")).Text.Contains("操作已提交") && classicVm.Message.Contains("SYNTHETIC full original"),
+            "classic and default share the friendly receipt projection while preserving the complete technical receipt");
+        probe.Project = s => s with { State = "PartiallyReady" }; await classicVm.RefreshAsync();
+        Check(classicVm.Status == "部分投递位可作业", "partial readiness is translated without changing the authoritative state or permissions");
+        probe.Project = s => s with { State = "NotReady", BlockingReasons = ["SYNTHETIC operator authentication required", "SYNTHETIC maintenance in progress"],
+            Configuration = s.Configuration with { Effective = s.Configuration.Effective with { Login = s.Configuration.Effective.MaintenanceLogin } } };
+        await classicVm.RefreshAsync(); classic.UpdateLayout();
+        var blockers = (TextBlock)classic.FindName("ActiveBlockingReasons");
+        var login = (WrapPanel)classic.FindName("OperationalLogin");
+        Check(blockers.IsVisible && blockers.Text.Contains("authentication required") && blockers.Text.Contains("maintenance in progress") &&
+            login.IsVisible && ((PasswordBox)classic.FindName("LoginProof")).IsVisible &&
+            !((Expander)classic.FindName("StationDiagnostics")).IsExpanded,
+            "active blockers and optional operator login remain visible while technical diagnostics are collapsed");
+        Capture("classic-blocked-login", classic);
+        probe.Project = null; await classicVm.RefreshAsync(); Capture("classic-1366", classic); classic.Close();
         await Fit(1100, 650); Capture("normal-1100");
         if (!baseline)
         {
@@ -87,7 +109,9 @@ static partial class Program
             var left = positions.Single(p => ReferenceEquals(p.DataContext, vm.Left));
             var details = Descendants(left).OfType<Expander>().First(); details.IsExpanded = true;
             var code = (TextBox)left.FindName("CurrentBarcode");
-            code.Focus(); code.Select(1, 4); var text = code.SelectedText;
+            window.Activate(); await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.Input);
+            Check(code.Focus() && code.IsKeyboardFocused, "active native window grants initial keyboard focus before the refresh retention experiment");
+            code.Select(1, 4); var text = code.SelectedText;
             var scroll = (ScrollViewer)left.FindName("PositionDetailsScroll"); scroll.ScrollToVerticalOffset(20); await System.Windows.Threading.Dispatcher.Yield(); var offsetBefore = scroll.VerticalOffset;
             vm.Left.InspectionReason = "SYNTHETIC unsaved inspection";
             for (var i = 0; i < 8; i++) { await vm.RefreshDisplayAsync(); await Task.Delay(80); }
@@ -96,6 +120,14 @@ static partial class Program
             await vm.OpenHistoryAsync();
             var history = (HistoryPage)((ContentControl)window.FindName("PageHost")).Content;
             var filter = (Expander)history.FindName("HistoryFilters"); filter.IsExpanded = true; window.UpdateLayout();
+            var filterRows = (DataGrid)history.FindName("HistoryRows"); filterRows.SelectedItem = vm.HistoryItems.FirstOrDefault();
+            var filterOwner = vm.Selected?.Id;
+            await SetClient(window, 800, 420); window.UpdateLayout();
+            var queryActions = (WrapPanel)history.FindName("HistoryQueryActions");
+            Check(filterRows.Visibility == Visibility.Collapsed && !((WrapPanel)history.FindName("HistoryActions")).IsVisible &&
+                Descendants(queryActions).OfType<Button>().All(b => { var bounds = b.TransformToAncestor(history).TransformBounds(new Rect(b.RenderSize)); return b.ActualHeight >= 44 && bounds.Top >= 0 && bounds.Bottom <= history.ActualHeight; }),
+                "expanded filters use a bounded editing pane with full fixed query actions at minimum client size instead of clipping record/recovery controls");
+            Capture("history-filters-minimum"); await Fit(1100, 650);
             var dateInput = Descendants(history).OfType<DateTimeInput>().First(); dateInput.Timestamp = "2026-10-19T08:09:10+05:30";
             var clock = Descendants(dateInput).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "时间");
             var offset = Descendants(dateInput).OfType<TextBox>().Single(t => AutomationProperties.GetName(t) == "UTC偏移");
@@ -122,12 +154,28 @@ static partial class Program
                 "valid typed date corrects the rejected value without reviving an older time or offset");
             Click(history, "不限时间"); Check(vm.HistoryFrom.Length == 0 && vm.HistoryToExclusive.Length == 0, "native clear-time action removes both exact time boundaries");
             Capture("history-filters-1100"); filter.IsExpanded = false;
+            window.UpdateLayout();
+            Check(filterRows.Visibility == Visibility.Visible && vm.Selected?.Id == filterOwner && filterOwner is not null,
+                "closing filter editing restores records and original command ownership without a new query or selection reset");
             var rows = (DataGrid)history.FindName("HistoryRows");
             rows.SelectedItem = vm.HistoryItems.FirstOrDefault();
             var selected = vm.Selected?.Id;
             for (var i = 0; i < 4; i++) await vm.RefreshAsync();
             Check(vm.Selected?.Id == selected && selected is not null, "native history row and command owner survive live snapshot refresh");
             Capture("history-1100");
+            var actions = (WrapPanel)history.FindName("HistoryActions");
+            var inspection = (Expander)history.FindName("HistoryInspection");
+            var historyScroll = (ScrollViewer)history.FindName("HistoryDetailsScroll");
+            vm.InspectionReason = string.Concat(Enumerable.Repeat("SYNTHETIC 原实体检查说明 ", 40));
+            await SetClient(window, 800, 420); window.UpdateLayout();
+            var before = actions.TranslatePoint(new Point(), history);
+            inspection.IsExpanded = true; historyScroll.ScrollToBottom(); window.UpdateLayout();
+            var after = actions.TranslatePoint(new Point(), history);
+            Check(before == after && after.Y >= 0 && after.Y + actions.ActualHeight <= history.ActualHeight &&
+                Descendants(actions).OfType<Button>().All(b => b.ActualHeight >= 44),
+                "history recovery actions remain fixed and fully visible at minimum client size while long inspection details scroll");
+            Capture("history-expanded-minimum");
+            inspection.IsExpanded = false; vm.InspectionReason = ""; await Fit(1100, 650);
             Click(window, "设备与维护"); await Task.Delay(200); vm.ConfigurationReason = "SYNTHETIC unsaved settings";
             Capture("maintenance-1100");
             Click(window, "工作台"); await Task.Delay(100);

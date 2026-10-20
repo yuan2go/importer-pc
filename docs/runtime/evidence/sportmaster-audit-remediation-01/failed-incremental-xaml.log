@@ -1,0 +1,18 @@
+SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.
+FAIL System.Windows.Markup.XamlParseException: “设置 connectionId 时引发了异常。”，行号为“17”，行位置为“5”。
+ ---> System.InvalidCastException: Unable to cast object of type 'System.Windows.Controls.WrapPanel' to type 'System.Windows.Controls.Button'.
+   at Ipc.Application.ParcelFlow.Desktop.HistoryPage.System.Windows.Markup.IComponentConnector.Connect(Int32 connectionId, Object target) in <workspace>\src\Ipc.Application.ParcelFlow.Desktop\HistoryPage.xaml:line 17
+   at MS.Internal.Xaml.Runtime.ClrObjectRuntime.SetConnectionId(Object root, Int32 connectionId, Object instance)
+   --- End of inner exception stack trace ---
+   at System.Windows.Markup.XamlReader.RewrapException(Exception e, IXamlLineInfo lineInfo, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.Load(XamlReader xamlReader, IXamlObjectWriterFactory writerFactory, Boolean skipJournaledProperties, Object rootObject, XamlObjectWriterSettings settings, Uri baseUri)
+   at System.Windows.Markup.WpfXamlLoader.LoadBaml(XamlReader xamlReader, Boolean skipJournaledProperties, Object rootObject, XamlAccessLevel accessLevel, Uri baseUri)
+   at System.Windows.Markup.XamlReader.LoadBaml(Stream stream, ParserContext parserContext, Object parent, Boolean closeStream)
+   at System.Windows.Application.LoadComponent(Object component, Uri resourceLocator)
+   at Ipc.Application.ParcelFlow.Desktop.HistoryPage.InitializeComponent() in <workspace>\src\Ipc.Application.ParcelFlow.Desktop\HistoryPage.xaml:line 1
+   at Ipc.Application.ParcelFlow.Desktop.HistoryPage..ctor() in <workspace>\src\Ipc.Application.ParcelFlow.Desktop\HistoryPage.xaml.cs:line 6
+   at Ipc.Application.Sportmaster.Desktop.SupplyStationWindow..ctor(IParcelApplication application, String view, String layout, Func`1 stopOwner, SupplyStationWindow owner) in <workspace>\src\Ipc.Application.Sportmaster.Desktop\SupplyStationWindow.xaml.cs:line 14
+   at Ipc.Application.Sportmaster.Desktop.Presentation.Create(IParcelApplication application, String view, String layout, String ui, Func`1 stopOwner) in <workspace>\src\Ipc.Application.Sportmaster.Desktop\Presentation.cs:line 11
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in <workspace>\tests\Ipc.Desktop.UiVerification\VisualProductization.cs:line 30
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in <workspace>\tests\Ipc.Desktop.UiVerification\VisualProductization.cs:line 180
+   at Program.<>c__DisplayClass2_0.<<Main>b__0>d.MoveNext() in <workspace>\tests\Ipc.Desktop.UiVerification\Program.cs:line 32

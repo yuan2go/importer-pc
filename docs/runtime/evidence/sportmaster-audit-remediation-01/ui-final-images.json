@@ -1,0 +1,125 @@
+{
+  "scope": "Pixel extent is not a separately measured HWND/client rectangle. Classic filename is a journey label; exact classic client rectangle was not captured.",
+  "images": [
+    {
+      "file": "ui-final-classic-1366.png",
+      "pixels": [
+        1938,
+        1038
+      ],
+      "dpi": [
+        119.9896,
+        119.9896
+      ],
+      "method": "Opened WPF window RenderTargetBitmap; no OS nonclient desktop capture"
+    },
+    {
+      "file": "ui-final-history-1100.png",
+      "pixels": [
+        1375,
+        813
+      ],
+      "dpi": [
+        119.9896,
+        119.9896
+      ],
+      "method": "Opened WPF window RenderTargetBitmap; no OS nonclient desktop capture"
+    },
+    {
+      "file": "ui-final-history-expanded-minimum.png",
+      "pixels": [
+        1018,
+        572
+      ],
+      "dpi": [
+        119.9896,
+        119.9896
+      ],
+      "method": "Opened WPF window RenderTargetBitmap; no OS nonclient desktop capture"
+    },
+    {
+      "file": "ui-final-history-filters-1100.png",
+      "pixels": [
+        1375,
+        813
+      ],
+      "dpi": [
+        119.9896,
+        119.9896
+      ],
+      "method": "Opened WPF window RenderTargetBitmap; no OS nonclient desktop capture"
+    },
+    {
+      "file": "ui-final-history-filters-minimum.png",
+      "pixels": [
+        1018,
+        572
+      ],
+      "dpi": [
+        119.9896,
+        119.9896
+      ],
+      "method": "Opened WPF window RenderTargetBitmap; no OS nonclient desktop capture"
+    },
+    {
+      "file": "ui-final-history-invalid-date-1100.png",
+      "pixels": [
+        1375,
+        813
+      ],
+      "dpi": [
+        119.9896,
+        119.9896
+      ],
+      "method": "Opened WPF window RenderTargetBitmap; no OS nonclient desktop capture"
+    },
+    {
+      "file": "ui-final-normal-1366.png",
+      "pixels": [
+        1708,
+        960
+      ],
+      "dpi": [
+        119.9896,
+        119.9896
+      ],
+      "method": "Opened WPF window RenderTargetBitmap; no OS nonclient desktop capture"
+    },
+    {
+      "file": "ui-final-stale-1100.png",
+      "pixels": [
+        1375,
+        813
+      ],
+      "dpi": [
+        119.9896,
+        119.9896
+      ],
+      "method": "Opened WPF window RenderTargetBitmap; no OS nonclient desktop capture"
+    },
+    {
+      "file": "ui-final-support-invalid-date.png",
+      "pixels": [
+        1100,
+        900
+      ],
+      "dpi": [
+        119.9896,
+        119.9896
+      ],
+      "method": "Opened WPF window RenderTargetBitmap; no OS nonclient desktop capture"
+    },
+    {
+      "file": "ui-final-unknown-rejected-1100.png",
+      "pixels": [
+        1375,
+        813
+      ],
+      "dpi": [
+        119.9896,
+        119.9896
+      ],
+      "method": "Opened WPF window RenderTargetBitmap; no OS nonclient desktop capture"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "source_commit": "e0beb5d32c6a24a7799ba698731566bca6a6833a",
+  "files": [
+    {
+      "source": "docs/runtime/application-architecture-22.md",
+      "snapshot": "docs/archive/pre-sportmaster-audit-remediation-01/docs/runtime/application-architecture-22.md.txt",
+      "sha256": "1fe0807048d58549fabef7f2cf40328ef810a4e43fda81a55167ab7072c7f62d",
+      "bytes": 12541
+    },
+    {
+      "source": "docs/runtime/windows-application-delivery.md",
+      "snapshot": "docs/archive/pre-sportmaster-audit-remediation-01/docs/runtime/windows-application-delivery.md.txt",
+      "sha256": "6f26156f98bb9876fa28cd950de338a7340bb31a0535ca249edc6ea3833e4adb",
+      "bytes": 13120
+    },
+    {
+      "source": "docs/runtime/runtime-identity-preflight-02.md",
+      "snapshot": "docs/archive/pre-sportmaster-audit-remediation-01/docs/runtime/runtime-identity-preflight-02.md.txt",
+      "sha256": "06e2d12f4ec54899182082ffafd7659c20136fa7de17dcb0b29b0925dd0837b3",
+      "bytes": 8353
+    },
+    {
+      "source": "docs/runtime/sportmaster-rcs-task.md",
+      "snapshot": "docs/archive/pre-sportmaster-audit-remediation-01/docs/runtime/sportmaster-rcs-task.md.txt",
+      "sha256": "29c03798674041a2316221b72f1f8e010b7992d8ae8f98289aeba982fd97ce8f",
+      "bytes": 9112
+    },
+    {
+      "source": "docs/extensions/developer-guide.md",
+      "snapshot": "docs/archive/pre-sportmaster-audit-remediation-01/docs/extensions/developer-guide.md.txt",
+      "sha256": "6d234315c52f1b112312cff5b52808b3eb44217642fd905258b6292070ccc2aa",
+      "bytes": 12463
+    },
+    {
+      "source": "docs/design/application-architecture-22.md",
+      "snapshot": "docs/archive/pre-sportmaster-audit-remediation-01/docs/design/application-architecture-22.md.txt",
+      "sha256": "81550eae7c12adb1a048768c3880a65d03340bff2ae89b70f7c708bc18f02441",
+      "bytes": 5762
+    },
+    {
+      "source": "docs/runtime/architecture-quality-closure-01.md",
+      "snapshot": "docs/archive/pre-sportmaster-audit-remediation-01/docs/runtime/architecture-quality-closure-01.md.txt",
+      "sha256": "8ebde8e412637474bdfac01b8c802b834b13ce9d17bdb6a4f71fe69ab136a4d4",
+      "bytes": 24933
+    },
+    {
+      "source": "docs/INDEX.md",
+      "snapshot": "docs/archive/pre-sportmaster-audit-remediation-01/docs/INDEX.md.txt",
+      "sha256": "835f5da3167454254ab133fa8c85f9c3a328d4d1cbb920ae50563ad321f556ba",
+      "bytes": 13729
+    }
+  ],
+  "capture": "Exact Git blob bytes at source_commit; independent of Windows checkout newline conversion"
+}

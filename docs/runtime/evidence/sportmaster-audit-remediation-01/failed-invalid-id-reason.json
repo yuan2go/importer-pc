@@ -1,0 +1,38 @@
+{
+  "tables": [
+    "platform_migrations",
+    "parcel_meta",
+    "parcel_operations",
+    "parcel_audit",
+    "sqlite_sequence",
+    "parcel_commands",
+    "parcel_receipts",
+    "parcel_measurements",
+    "parcel_semantics",
+    "parcel_topology_semantics",
+    "parcel_history_index",
+    "parcel_archives",
+    "parcel_reply_identities",
+    "parcel_archived_receipts",
+    "parcel_overload_ack",
+    "parcel_identity_conflicts",
+    "parcel_configuration_audit",
+    "parcel_receipt_custody",
+    "parcel_archive_versions",
+    "parcel_integration_semantics",
+    "parcel_integration_id_owners",
+    "parcel_integration_id_ranges",
+    "parcel_integration_id_restores",
+    "parcel_commercial_semantics"
+  ],
+  "last_audit": [
+    [
+      "InputObserved",
+      "{\r\n  \"PositionId\": \"left\",\r\n  \"Observation\": {\r\n    \"Id\": \"d5b093b1b87a4874b54ab21ea9b2b9b4\",\r\n    \"DeviceId\": \"sportmaster.camera.left\",\r\n    \"Epoch\": \"5012695e11e2488ea9362380c6c1fbd6\",\r\n    \"SourceEventId\": \"20d4f65d356c47e0974467b6d37df98a\",\r\n    \"Sequence\": 1,\r\n    \"AdmissionId\": \"SYNTHETIC-PERF-0\",\r\n    \"Kind\": \"Read\",\r\n    \"Codes\": [\r\n      \"0000000000000\"\r\n    ],\r\n    \"PackageQuantity\": null,\r\n    \"ObservedAt\": \"2026-10-20T02:22:54.2488294+00:00\"\r\n  },\r\n  \"Outcome\": \"Rejected\",\r\n  \"Reason\": \"InvalidAdmissionId; no operation or external intent created\",\r\n  \"OperationId\": null,\r\n  \"RecordedAt\": \"2026-10-20T02:22:54.2811316+00:00\",\r\n  \"ReaderBinding\": {\r\n    \"Role\": \"parcel-reader\",\r\n    \"Driver\": \"manual\",\r\n    \"DeviceId\": \"sportmaster.camera.left\",\r\n    \"Revision\": \"1\",\r\n    \"ReplayFile\": null\r\n  }\r\n}"
+    ],
+    [
+      "ObservationRejected",
+      "InvalidAdmissionId; no operation or external intent created"
+    ]
+  ]
+}

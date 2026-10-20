@@ -1,3 +1,5 @@
+> 2026-10-20现行裁决：业务1.4.0 / Contracts1.10.0 / Parcel DB8；默认supply-station，classic显式保留。指定SID的非提权UAC过滤账户允许deny-only管理员组，提升/启用管理员权限及服务/其他SID拒绝。当前操作与形成时验证分别见[审查整改](sportmaster-audit-remediation-01.md)，[清理前原字节](../archive/pre-sportmaster-audit-remediation-01/README.md)保留。
+
 # 全部运行入口身份门禁 · 2026-10-19
 
 基线main `524916b2088f267175bec46daf01e6df020932b7`，业务1.3.3；[本工作包](../work-packages/WP-IPC-RUNTIME-IDENTITY-PREFLIGHT-02.md)继承[原修复与Windows后验](runtime-identity-preflight-01.md)。本次重新读取GitHub及源码，题述P1对旧PR35源码成立；当前main已经包含PR41（merge `9f4b32f319d3a66d993cfbafcdda90656e7fd687`）的Parcel前置修复。PR42为维护P2，PR43为发布回执。PR35原线程仍isResolved=false，这不代表当前main仍缺原修复，也不证明Windows发生过数据库修改。
@@ -14,7 +16,7 @@
 
 Supply原来在数据锁和数据库前比较指定SID，因此未发现“其他SID先改库”的同一旧缺陷；剩余为指定SID错误配置为管理员时没有日常普通账户约束，且扩展初始化早于完整身份门禁。Inspection没有机器账户门禁，任何可写数据根的账户均可建立其Simulation账本。两处均复用既有MachineRuntimePolicy.RequireRuntimeIdentity，无新政策格式/配置开关或测试绕过。基座、Application、驱动及组件职责不变，业务/Contracts/Storage版本不变，原SQL及请求身份未改。
 
-当前主线政策拒绝指定SID之外账户、管理员启用/deny-only组及SYSTEM/本地/网络服务。UAC限制令牌下IsInRole可能返回false，依据[微软WindowsPrincipal文档](https://learn.microsoft.com/en-us/dotnet/api/system.security.principal.windowsprincipal.isinrole?view=net-10.0)；本包不改变已存在的claims判定。开放PR44拟调整首次安装及UAC政策，本包不纳入或重写其代码；后续整合仍须保留所有入口的统一前置门禁并复验最终政策。
+形成时主线政策拒绝指定SID之外账户、管理员启用/deny-only组及SYSTEM/本地/网络服务。UAC限制令牌下IsInRole可能返回false，依据[微软WindowsPrincipal文档](https://learn.microsoft.com/en-us/dotnet/api/system.security.principal.windowsprincipal.isinrole?view=net-10.0)；本包不改变已存在的claims判定。形成时开放PR44拟调整首次安装及UAC政策，本包不纳入或重写其代码；后续整合仍须保留所有入口的统一前置门禁并复验最终政策。
 
 ## 定向验证
 

@@ -1,0 +1,32 @@
+{
+  "SourceCommit": "ff2e7a7459db148d0ed8dd4537489710b402635f",
+  "BusinessVersion": "1.4.0",
+  "ApplicationId": "sportmaster",
+  "ZipName": "auditfix-final.zip",
+  "ZipSha256": "3188eaf115ccfc51e654e27aae01f65364b31e2485332a5ad40f7159b66a5940",
+  "InventorySha256": "7deb4b10cc8f2d8d8c2d2686207ac3b674327913dedd2c7856a0c78b00a7e168",
+  "InventoryFiles": 746,
+  "Executables": [
+    {
+      "File": "desktop/Ipc.Desktop.exe",
+      "Sha256": "20E7B65349D7603BE4E72DE8D0261169743739A44447BC74EC20CB2049FEEF29",
+      "Length": 195072,
+      "ProductVersion": "1.0.0+ff2e7a7459db148d0ed8dd4537489710b402635f",
+      "Signature": "NotSigned"
+    },
+    {
+      "File": "app/Ipc.Assembly.exe",
+      "Sha256": "EC47FB4FFF761104C70BDF9AAC28575660E1500D0642316B94F55AF02DA3AB23",
+      "Length": 162304,
+      "ProductVersion": "1.0.0+ff2e7a7459db148d0ed8dd4537489710b402635f",
+      "Signature": "NotSigned"
+    }
+  ],
+  "DefaultUi": "supply-station",
+  "Mode": "Simulation",
+  "Database": 8,
+  "ConfigurationSchema": 3,
+  "Components": "reference core; two manual readers; reference WCS; no weight/image/operator-login; reference maintenance",
+  "Publication": "local candidate only; no GitHub Release or binary upload",
+  "Note": "WPF windows instantiated from the hashed package DLLs by an independent synthetic fixture. Real Ipc.Desktop.exe normal-account installation startup is not claimed."
+}

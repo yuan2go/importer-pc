@@ -389,9 +389,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "18518d19afbf51785af11f62add4cc56cdb2cde5c216f9502942a4655cb2ae1a",
-      "size_bytes": 9659,
-      "git_blob": "f5911a3c2f09432818eba5eaf1d0adf3668442d4",
+      "sha256": "ba653f76b23a72eabda3abd4a5137de4ae83869c027b5ac3def97e8b4764ce8b",
+      "size_bytes": 9870,
+      "git_blob": "16ce28bf6c5c5e89e7ab83eb0e54f349756cc9b7",
       "version": "ui-task-redesign-01",
       "status": "design_publication_and_implementation_plan",
       "purpose": "Authorized design publication, current entry cleanup, source comparison and next implementation plan; no new production UI claim",
@@ -52289,9 +52289,10 @@
       "version": "PUBLICATION-NO-TEST-20261020",
       "status": "source_or_delivery_custody",
       "source": "User-authorized source and existing artifact publication; no tests or builds run",
-      "sha256": "a7c0620ac4e502cf5b69fc975ca8b884198c895d82a42e59615d527be0db70fa",
-      "size_bytes": 2634,
-      "git_blob": "43d95cbed6d93e893d27718b9ba5c406c807ae04"
+      "sha256": "5934059703313094fb3a678189e76e5d7ed0358bd14c1af14443e1f5887a79de",
+      "size_bytes": 4155,
+      "git_blob": "a1356c2f3beacb5c5b9552115b73cec9e287878c",
+      "pre_publication_no_test_git_blob": "43d95cbed6d93e893d27718b9ba5c406c807ae04"
     },
     {
       "path": "src/Ipc.Application.Contracts/BarcodeFiltering.cs",
@@ -52382,6 +52383,106 @@
       "sha256": "5cd944294904ccac80f88b03034ad1d724c48cbb204018b1789966b829f113af",
       "size_bytes": 10495,
       "git_blob": "253c271aabb4e193523bddd631f0f5a918925cfa"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/artifact-upload-receipts.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "2f922b75291e3e129f5b9abc00b0b5778a63e9d56b53dc12aa16af6e37106104",
+      "size_bytes": 3347,
+      "git_blob": "2b865b2000f8522d98c53b2ba9013220ae447559"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/installer-sm-v1.4.1-27b0d8f6cc02/DELIVERY.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "717bc2c6baa9edc80ea6f45b7648f122b4bd37252bd57f446c4afa5e05a90d9d",
+      "size_bytes": 1905,
+      "git_blob": "935720426b8456a0cb87fd321528bb5260ccf782"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/installer-sm-v1.4.1-27b0d8f6cc02/PUBLICATION.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "0f1b588eb2bb5ddd72fa9a5b149e32306e2a637e3c823b3220ef61ed3bc7ab9d",
+      "size_bytes": 568,
+      "git_blob": "52add5af2f3df335b244ca8e46f1f8322dad10db"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/installer-sm-v1.4.1-27b0d8f6cc02/REMOTE-UPLOAD.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "671795e9c0995e26a2ccf4d8504c5a6070b93027d045902b48786764dbadd96f",
+      "size_bytes": 1433,
+      "git_blob": "cd2d5336fa0aade82500027026cf023e2205f228"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/installer-sm-v1.4.1-27b0d8f6cc02/SHA256SUMS",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "ae60c19f425864fddae16bdcadbda788986336d8a7ee60254f237947a07fc02d",
+      "size_bytes": 278,
+      "git_blob": "7ef634fd8c34692277e13d03f1352724c81aa676"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/merge-receipt.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "64aecbb1addffe90b1643e6ffee2efa7440ba47dc37823f69e3bab52811321b6",
+      "size_bytes": 1067,
+      "git_blob": "3b86fed5947fe990a0d6bf43d432dc6183041489"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/rcs-heartbeat-simulation-3f8a58ba3288/PUBLICATION.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "faaf332b5369a5bbac1a861b406be10826409751ed79ac4f2b629c158a7449a9",
+      "size_bytes": 599,
+      "git_blob": "4bf1fb3223211bdcb665f2f59887666d1aa3b26c"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/rcs-heartbeat-simulation-3f8a58ba3288/REMOTE-UPLOAD.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "a6f92157c8db4b55defa740333e4e99ce655760424576bfc37f7ea4bf54bd7e6",
+      "size_bytes": 1765,
+      "git_blob": "e45c23d7d0c2e18bcda7c6185b9f083ade5686fb"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/rcs-heartbeat-simulation-3f8a58ba3288/SHA256SUMS",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "1d4df3df1e3b8a5917110428eb5a4d998c248de5391a2c6c1c16e2c58462efd6",
+      "size_bytes": 373,
+      "git_blob": "47d5fd7c13a2c71e82f6a0f6f5511d0401c4a839"
+    },
+    {
+      "path": "docs/runtime/evidence/publication-pr69-pr71-20261020/rcs-heartbeat-simulation-3f8a58ba3288/sportmaster-rcs-task-1.2.0.ipcx.identity.json",
+      "storage_scope": "public_repository",
+      "version": "PUBLICATION-NO-TEST-20261020",
+      "status": "source_or_delivery_custody",
+      "source": "User-authorized source and existing artifact publication; no tests or builds run",
+      "sha256": "1ffa32587464cc240a14888586af0e5456dcc7609d16c01a5172f4d6671bd5ea",
+      "size_bytes": 1310,
+      "git_blob": "9ec59ee998fcc8e607af17dc4a00f20d23f1c2c6"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",

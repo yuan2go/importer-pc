@@ -1,0 +1,7 @@
+{
+  "source_commit": "27b0d8f6cc0281fd82ee68fcda350233cb0a45ff",
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "rebuild": false,
+  "old_versions_overwritten": false,
+  "scope": "PR69原任务已构建的单窗口安装EXE，源码27b0d8f6cc0281fd82ee68fcda350233cb0a45ff。原本机Simulation验证记录保留原身份；后续桌面名称修正1ad0307和参数快照未包含在这个EXE。本轮仅上传原文件，不测试、不重建、不覆盖旧版。EXE未签名；Win10、其他CPU、干净系统、真实SDK/设备/现场仍待验。生产资格未批准。"
+}

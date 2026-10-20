@@ -1,0 +1,39 @@
+{
+  "source_commit": "3f8a58ba32887df07f6a7817b64afa693f903c50",
+  "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/rcs-heartbeat-simulation-3f8a58ba3288",
+  "tag": "rcs-heartbeat-simulation-3f8a58ba3288",
+  "assets": [
+    {
+      "name": "published.zip",
+      "size": 18529462,
+      "sha256": "f0491d1e02ce116703a233d1f3c560bb1969359a59ee92d7b5ae0a829535aba5",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/rcs-heartbeat-simulation-3f8a58ba3288/published.zip"
+    },
+    {
+      "name": "sportmaster-rcs-task-1.2.0.ipcx",
+      "size": 23862,
+      "sha256": "b2c7d2e794630d7bcdde70df6f0b602d35528581792efb863b23de7c36857e44",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/rcs-heartbeat-simulation-3f8a58ba3288/sportmaster-rcs-task-1.2.0.ipcx"
+    },
+    {
+      "name": "sportmaster-rcs-task-1.2.0.ipcx.identity.json",
+      "size": 1310,
+      "sha256": "1ffa32587464cc240a14888586af0e5456dcc7609d16c01a5172f4d6671bd5ea",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/rcs-heartbeat-simulation-3f8a58ba3288/sportmaster-rcs-task-1.2.0.ipcx.identity.json"
+    },
+    {
+      "name": "PUBLICATION.json",
+      "size": 599,
+      "sha256": "faaf332b5369a5bbac1a861b406be10826409751ed79ac4f2b629c158a7449a9",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/rcs-heartbeat-simulation-3f8a58ba3288/PUBLICATION.json"
+    },
+    {
+      "name": "SHA256SUMS",
+      "size": 373,
+      "sha256": "1d4df3df1e3b8a5917110428eb5a4d998c248de5391a2c6c1c16e2c58462efd6",
+      "url": "https://github.com/yuan2go/importer-pc/releases/download/rcs-heartbeat-simulation-3f8a58ba3288/SHA256SUMS"
+    }
+  ],
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "rebuild": false
+}

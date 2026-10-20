@@ -1,91 +1,79 @@
-# Sportmaster 审查整改与定向性能分析
+# Sportmaster 审查整改与R-02定向分析
 
-工作包：[WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01](../work-packages/WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01.md)。开工main `e0beb5d32c6a24a7799ba698731566bca6a6833a`，继承已合并PR57发行和PR58视觉实现。本页记录本轮实施和实测，不替换原审查及历史验收。
+[工作包](../work-packages/WP-IPC-SPORTMASTER-AUDIT-REMEDIATION-01.md) · [证据与复跑](evidence/sportmaster-audit-remediation-01/README.md)。D-01～D-03在下述范围整改完成；R-02完成合成定向分析，性能风险尚未获客户预算/长时证据关闭。R-01规则未改，正式商业发布仍NOT_READY。
 
-提交前main新增PR59并推进至`ad6dc2e2faf74a11bab148fcfa893eb379f87d5c`。已整合其原生非法日期/关闭日历修复、历史及支持新增断言和冻结介质CI门禁；两边原断言全部保留。下列ff2e7a7是R-02分析介质，性能样本不重标。PR59仅日期视图及相关测试/CI/文档变化，实测涉及的业务、Snapshot/Capacity/历史查询、主窗口刷新路径未改；最终整合介质另列原生结果，不据继承分析宣布新介质性能合格。
+## 冻结、环境和实际范围
 
-业务1.4.0、Application.Contracts1.10.0、Parcel DB8、配置schema3、Sportmaster默认supply-station；classic显式保留。没有业务协议、迁移SQL、运行资格或准入规则变更。原型D编号和独立审查D-01～03分开管理。
+开工main `e0beb5d32c6a24a7799ba698731566bca6a6833a`已含PR57/58，开工无开放PR；保留原工作区与无关未跟踪报价表，在短路径隔离分支`codex/sportmaster-audit-remediation-01`实施。提交前main推进至`ad6dc2e2faf74a11bab148fcfa893eb379f87d5c`（PR59），先读其设计/结果再整合，保留日期失焦修复、全部日期/支持断言与冻结介质CI门禁。
 
-## 最新main初次整合候选（后续D-01布局补验将替代）
+最终本地运行源码、配置、随包说明与夹具为同一SHA **`934fd4af6a5b5587021892c0f9df169510115db8`**。视觉、首配/商业辅助页和R-02均引用此介质DLL，三个RESULT的SourceCommit与FixtureSourceCommit相同、FixtureMatchesMedium=true。后继仅整理独立证据、报告及manifest，不重标介质；CI按其实际PR检查SHA另记。
 
-整合PR59后的运行源码、配置、随包说明与原生夹具固定为`892a40478d548fccd01dfb4543efeac48ff38d38`。新本地ZIP SHA256 `133f7ec04bed9078a9888c215b3c8078655851f02156da41b3b6d2543c443b86`，747项库存、库存SHA256 `b2d0b58330487aa7cd589816efba65af2c600919bc8c33887cc3a780b418f3ec`。同SHA包内原生完整视觉旅程及首配/商业辅助页均PASS，前后库存未变；包含PR59非法日期/日历关闭/显式恢复和支持拒绝，以及本轮固定动作/中文回执/初始焦点/刷新保留断言。
+`ui-final.zip` SHA256 `3f0a3c09753615168a76a2d50885cdefc37b6dcbb3553bd91959e8f7928a6fbf`；746项库存，库存SHA256 `39e100e98fe45fbef145d489202554da4543ae3407bbfacf52a1641b53999b24`。本地候选未上传Release，EXE为NotSigned。Sportmaster参考core / win-x64自包含 / Simulation / 双manual reader / reference WCS，禁用称重、图像和普通作业登录，reference维护身份保留。业务1.4.0、Application.Contracts1.10.0、Parcel DB8、配置schema3；默认supply-station，classic显式保留。没有新增生产依赖或更改业务/驱动/协议/SQL/配置/准入/重试/恢复规则。
 
-详见证据入口的integrated结果、身份、日志与图像。后继提交仅整理独立证据、报告和manifest，不重标旧ZIP；CI按其最终PR检查SHA另验。性能样本仍属ff2e7a7 / 独立夹具504c187，未重跑为新二进制成绩。[路径继承证据](evidence/sportmaster-audit-remediation-01/performance-inheritance.json)保存代码对象身份：与分析介质相比，生产源码仅PR59的DateTimeInput变化；快照/容量/历史/主工作台刷新未变。阶段资格如下：
+Windows 11 Home 22631 x64，Ryzen 5 3550H四核八线程、约16GB内存；SDK10.0.402，.NET/WPF10.0.13。1920×1080、125%/120DPI、系统字体；窗口约1366×768、1100×650、900×520及实际800×420 DIP客户区。非目标Windows26100+安装资格、非客户硬件。真实WPF窗口的RenderTargetBitmap导出属于控件渲染证据，不是HTML/效果图或含非客户区的OS桌面录像；操作为程序化原生输入，无现场用户观察。
 
-|阶段|本轮判断|
-|---|---|
-|源码候选|D-01～03在声明范围完成，PR59保留；最终PR CI状态另记|
-|本地介质可用|可构建、747项库存核验和包内WPF合成旅程通过；未发布Release、未签名|
-|原生体验|当前Windows125%与已声明尺寸的合成旅程通过；完整多DPI/HID/触控/现场用户旅程未验|
-|受控现场试运行|缺真实SDK/精确组合/RCS合同、R-01和Unknown SOP，未批准|
-|正式商业发布|NOT_READY；目标安装迁移恢复、性能预算/长时、签名/支持及现场资格仍待关闭|
+## 整改与必要验证
 
-## 当前操作裁决
-
-ParcelRepository缺省storageVersion=8，ParcelCli recover-legacy-receipt明确targetStorageVersion:8；旧API缺省5是兼容路径，不能当作当前CLI目标。新库不能交旧读者回滚。SQL1～7原字节不变；版本8由当前仓库迁移表定义，安装介质必须另核精确来源。
-
-MachineRuntimePolicy.ValidateRuntimeIdentity要求指定SID；非提权UAC过滤令牌的deny-only管理员组可以通过，启用的管理员组、提升、服务和其他SID拒绝。runtime-identity-preflight-02中PR44尚开放/deny-only拒绝属于形成时记录；当前操作以实际政策及startup-deployment-02为准。源码判定与真实Windows令牌/ACL/安装验收分开。
-
-## 本轮结果
-
-|审查项|已继承与本轮补差|验证与关闭边界|
+|审查项|实际补差|触发与关闭证据|
 |---|---|---|
-|D-01|PR58已加入日期/时间/显式时区、无效输入保留、中文枚举、时间列分行；继承PR59非法日期失焦防回退；本轮将历史恢复动作移出原实体说明滚动区，长命令归属/选择状态换行；最终补差让展开筛选成为有界编辑区并固定查询动作，收起后返回原记录/原件责任|包内WPF DLL验证日期/时区、非法值、选择/原owner和固定动作；最后筛选模式补差须以其新冻结结果为准。最小尺寸只证明对应模式动作几何；完整历史处置旅程在1100×650窗口复验，不能宣称最小客户区全部内容同时可读|
-|D-02|继承新版默认supply-station及按需诊断；把已有中文操作回执投影移入共享VM，classic也使用；classic诊断/原观察默认收起，Blocked/PartiallyReady中文显示|原Message/Feedback和权限事实未改；完整技术回执在诊断中可复制；暂停、独立左右结果、Unknown原请求Query、拒绝/失效、焦点/选择/滚动/草稿和共享辅助窗均定向复验|
-|D-03|归档受影响指南的原Git blob与hash；统一当前DB8、Contracts1.10、CLI目标8及实际UAC过滤政策；形成时PR44/DB7/NOT_RUN标明历史|当前指导不与旧验收混用；原版本/D/RV不倒写；[清理前原件](../archive/pre-sportmaster-audit-remediation-01/README.md)可逐字复核。原全树检查仍FAIL，本轮无新增错误|
-|R-02|独立合成分析夹具和固定DLL验证入口；无生产性能算法修改|分析完成不等于性能风险关闭，见下表和后续工作|
+|D-01|继承PR58日历/时钟/明确偏移、中文枚举、时间列分行和PR59非法日期失焦防回退；历史原件恢复动作移出说明滚动区，命令归属换行；展开筛选进入有界编辑区，查询动作固定，明确收起后返回记录/原件区|+05:30保留；非法时间/日期、开关日历、支持拒绝与显式纠正；800×420展开筛选时查询按钮完整≥44DIP且无被挤压的记录动作，收起保留原选择/owner；长检查说明滚动时恢复动作固定。完整历史旅程在1100×650复验，最小尺寸不宣称全部字段同时可见或完整处置旅程合格|
+|D-02|已有中文操作回执投影移入共享VM，classic与默认界面共用；classic低频诊断/原观察默认收起，Blocked/PartiallyReady中文显示；完整原回执仍在诊断可复制|原Message/Feedback、业务状态/权限未变；暂停、左右独立、真实合成丢回执Unknown只Query不再发、拒绝/失效、焦点/选择/滚动/草稿及共享辅助窗通过|
+|D-03|受影响指南原Git blob与hash归档；当前ABI1.10、DB8、CLI恢复目标8和实际账户政策一致；形成时DB7/PR44/NOT_RUN明确为历史|[清理前原件](../archive/pre-sportmaster-audit-remediation-01/README.md)可复核，原D/RV/旧验收不倒写；完整归档检查仍有历史失败，未加豁免|
+|R-02|独立合成夹具、同版包内DLL测量、原始逐项样本和热点分析；无生产性能算法修改|300个输入须到其自身实体的SlotResolved才计样；无同侧在途重叠，不替R-01定规则；分布和长期边界如下|
 
-原始结果、逐次耗时、散列、主要WPF图像与失败记录见[证据索引](evidence/sportmaster-audit-remediation-01/README.md)。图像由已打开原生WPF窗口的RenderTargetBitmap导出，不是HTML/原型或重新绘图，也不是含桌面/非客户区的屏幕录像。判断属于工程师检查，无现场用户观察。
+同版完整视觉与首配/商业辅助页均PASS，前后库存未变；开发构建0警告/错误。原始日志、图像、逐DLL及来源见证据。旧`--ux-commercial-presentation`在缺机器政策时拒绝启动，记录为受阻，未改测试/政策换PASS。初次错误大写合成ID、未确认初始焦点的复合断言、开发BAML增量加载失败均保留原失败；合法ID、显式初始焦点及完整重建后保留原断言复验。
 
-### 冻结与验证环境
+## R-02测量与解释
 
-开工main包含PR57和58，未覆盖原工作区或其未跟踪报价表；本轮分支`codex/sportmaster-audit-remediation-01`。候选源码`ff2e7a7459db148d0ed8dd4537489710b402635f`，后续独立夹具`504c187e1eeb87fa993424f11ee3406f1b06b56a`，二者的生产源码/配置无差异。实际测试DLL从候选介质取出；RESULT分别保存SourceCommit、FixtureSourceCommit、FixtureMatchesMedium=false和逐DLL hash，不能把夹具提交写作介质来源。
-
-Windows 11 Home 22631 x64，Ryzen 5 3550H / 4核8线程 / 约16GB内存，.NET SDK10.0.402 / .NET与WPF10.0.13。显示器1920×1080、125%/120DPI、系统中文字体；原生窗口覆盖1366×768、1100×650、900×520及实际800×420 DIP客户区。非客户硬件，非目标26100+安装资格。系统字体未打包，无新生产依赖。
-
-R-02分析候选为win-x64自包含Sportmaster参考core，Mode=Simulation、双manual reader、reference WCS、禁用称重/传图/普通作业登录，维护reference身份保留。默认supply-station，classic显式；Parcel DB8 / 配置schema3。ZIP和完整库存身份见证据。未上传二进制、创建Release或执行安装；没有连接真实设备/服务。
-
-必要验证：WPF源码构建0警告/错误；包内DLL原生定向验证通过；独立性能夹具的每个输入须关联到自身实体的SlotResolved才计样，拒绝/超时使分析失败。现有`--ux-commercial-presentation`在Windows机器政策缺失处拒绝启动，记为受阻，未改原测试/业务政策换PASS。无全量测试/现场性能通过声明。
-
-### R-02 样本和解释
-
-使用默认ResidentHistory=200、MaximumOperations=10000，300个不同合法小写实体、唯一观察，左右交替且逐件等自身终态，不制造R-01同侧在途决策。合成ReferenceWcs也有本地文件IO；没有真实RCS网络。每档40次快照、深复制/容量/单次待回执查询探针，20次旧分页及20次实际UI冻结筛选/查询；原始样本和nearest-rank P50/P95/P99均保留。探针是不同实验，不能相加或用减法伪造分阶段归因。
+默认ResidentHistory=200、MaximumOperations=10000；300个不同合法实体/观察，左右交替，逐件等自身终态。ReferenceWcs也执行本地文件IO，没有真实网络。每档40次快照及深复制/容量/单次待回执探针，20次旧分页和20次实际UI冻结筛选/查询；nearest-rank P50/P95/P99与全部样本保留。各探针是独立实验，不能相加/相减伪造阶段归因。
 
 |累计实体 / 驻留|快照P50 / P95 ms|深复制P50 ms|容量投影P50 ms|UI筛选查询P50 / P95 ms|
 |---|---|---|---|---|
-|0 / 0|1.87 / 2.99|0.27|0.03|3.93 / 10.16|
-|50 / 50|41.20 / 53.11|8.97|5.56|8.85 / 11.47|
-|199 / 199|138.27 / 203.97|20.91|23.79|26.70 / 35.14|
-|300 / 101|76.12 / 92.40|8.58|12.25|40.46 / 61.44|
+|0 / 0|1.80 / 3.13|0.27|0.03|3.60 / 10.31|
+|50 / 50|38.99 / 50.98|5.72|5.45|9.11 / 12.39|
+|199 / 199|138.30 / 164.17|17.42|20.55|26.95 / 34.35|
+|300 / 101|67.08 / 80.48|8.53|10.44|37.23 / 46.35|
 
-300件自身终态轮询P50/P95/P99为187.53/519.66/700.66ms，max875.86ms；单次冷启动602.12ms返回、716.16ms准入就绪，窗口显示至有效快照与Dispatcher空闲1435.78ms（均只有一次，不作分布）。原生显式刷新30次P50/P95为97.64/365.88ms。受控50ms持gate实验10次总读取P50/P95为129.57/142.00ms，不是现场竞争样本。
+300件自身终态轮询P50/P95/P99为179.20/662.49/980.59ms，max1419.97ms。30次原生显式刷新至Dispatcher空闲P50/P95为80.93/167.94ms。受控50ms持gate实验10次总读取P50/P95为130.97/142.28ms，不是现场竞争分布。
 
-|原生空闲窗口|实际秒数|进程CPU秒|分配MB（十进制）|Private MB起→止|数据字节增长|50ms心跳P95 ms|
+一次新根StartAsync返回569.98ms、准入就绪688.40ms；同进程完成300件后，新窗口Show至有效快照与Dispatcher空闲1146.29ms。均单次、排除进程初始化/安装，不能写为完整EXE启动分布。
+
+|空闲窗口|实际秒数|进程CPU秒|分配MB（十进制）|Private MB起→止|数据增长字节|50ms心跳P95 ms|
 |---|---|---|---|---|---|---|
-|1|26.64|8.88|524.9|140.6→156.4|0|83.94|
-|2|23.96|3.47|1011.9|181.7→154.1|0|65.02|
+|1|24.04|2.39|441.0|150.5→134.9|0|64.67|
+|2|24.29|5.52|946.2|166.3→149.8|0|65.09|
 
-计划每段400×50ms，实际时长以上表为准。双窗分配约42.2MB/s，单窗约19.7MB/s；CPU不单调，受首段预热/渲染/GC及开发机后台负载影响，不能据此声称双窗CPU更低。Private下降也不证明无泄漏。数据总量为8,747,158字节且两段空闲未增长；仅正常终态/无待回执条件，不代表异常积压日志已受控。VM通知23,817次覆盖订阅后显式刷新和两段计时器刷新，不能除以30解释为每次显式刷新数。199驻留的JSON快照约1.47MB，深复制及重复同步责任查询足以形成需继续追踪的门锁/分配热点。
+计划每段400×50ms，实际时长以上表为准；单/双窗分配约18.3/39.0MB/s。顺序样本有JIT/渲染/GC和系统后台干扰，不能作严格双窗成本比例或长期结论。计时器与显式刷新订阅期累计VM通知23,052次，不能除以30当单次通知。199驻留JSON快照约1.47MB；单次PendingReceipts探针P50约0.145ms，不代表累计重复查询成本。空闲数据无增长仅针对正常终态/无待回执，未证明异常积压容量受控。
 
-`InputToOwnTerminalPoll`含本地处理、合成对端文件IO、快照与10ms轮询，不是扫码到屏幕呈现的精确延迟，也不是上游网络耗时。`NativeRefreshThroughDispatcherIdle`包含ServiceAsync调度、快照、VM通知和Dispatcher空闲边界，是刷新实验；50ms心跳含系统计时器量化。分配/CPU按整个测量段计，包含后台工作，内存升高不能据此判泄漏。
+终态轮询包含本地处理、合成对端IO、快照和10ms轮询，不是精确扫码到屏幕反馈，也不是上游网络耗时。原生刷新包含ServiceAsync、VM与Dispatcher空闲边界；50ms心跳含系统计时器量化。CPU/分配包括后台工作；短时Private变化不能证明泄漏或无泄漏。没有目标节拍、延迟、数据量或资源预算，不设通用毫秒门槛，也不宣称长期稳定性通过。
 
-源码热点可复核：
+可复核热点：
 
-* `ParcelCommands.SnapshotAsync`在同一gate内建投影并Wire.Encode/Decode全量深复制；该副本隔离保护可变原件，不能简单删复制或提前释放锁。
-* `ParcelHistory.CapacityAvailable/Capacity/ArchiveEligible`、`ParcelGuards.Availability/PositionSnapshots`反复遍历驻留作业；`IsSettled`和ArchiveEligible各自读取PendingReceipts。后者是同步SQLite查询，待raw时还读/解码/hash文件。容量/准入、每位状态及全局快照重复调用，门锁内成本随驻留与资料责任增加。单次SQL探针不等于整段累计查询成本。
-* 两窗口共享Application但各500ms刷新，业务连接未重建；快照成本按读取次数重复。PR58已减少位置重复通知，本轮不把旧UI问题重复实施。Snapshot设置仍通知共享字段；本轮保留了实际原生刷新通知数。
-* `ParcelHistoryQuery.cs / ParcelHistoryReader`在冻结selection下执行JSON字段筛选；当前300条样本只覆盖小库存，不能说明客户保留期大历史已达标。启动验证原件/请求历史也未做长库负载。
+* [SnapshotAsync](../../src/Ipc.Application.ParcelFlow/ParcelCommands.cs)在gate内构造投影并全量JSON深复制。副本保护可变原件隔离，不能直接删复制或提前释放锁。
+* [Capacity/ArchiveEligible](../../src/Ipc.Application.ParcelFlow/ParcelHistory.cs)、[Availability/PositionSnapshots](../../src/Ipc.Application.ParcelFlow/ParcelGuards.cs)重复遍历驻留作业；IsSettled与ArchiveEligible各读PendingReceipts。[该查询](../../src/Ipc.Application.ParcelFlow/ParcelRepository.cs)是同步SQLite，待raw时还读/解码/hash文件；单次探针不能代替累计调用成本。
+* 两窗共享Application/连接，但各500ms刷新，重复竞争同一gate。PR58已减少位置通知，本轮继承；共享Snapshot仍发布多字段通知。通知数含显式与计时器刷新，不能直接除以30当每次显式刷新数。
+* [ParcelHistoryReader](../../src/Ipc.Application.ParcelFlow/ParcelHistoryQuery.cs)以冻结selection执行JSON字段筛选；300条只证明小库存。最大保留量、资料积压、长库启动原件验证、配置保存及峰值并发未测。
 
-### 后续工作与验收
+此前ff2e7a7/独立夹具504c187的样本与初次892a404整合候选保留各自身份，只用于追溯；不是新介质成绩，不构成受控A/B对比。
 
-发布前：保持R-01未决，由客户/上游确认实体识别和同侧在途规则；R-03由仓库管理者决定main保护和必需检查。SDK/RCS合同/真实组合与Unknown SOP、目标Windows完整安装/账户/迁移/恢复、签名/支持责任仍须分别取得。
+## 当前操作裁决与阶段判断
 
-性能工程下一包：先取得目标硬件、峰值读码节奏、双窗口使用方式、积压/原件/历史规模与延迟/资源预算；按本次探针定位gate等待、投影、SQLite调用次数和深复制分配。可优先评估**同一次gate内**批量读取待回执/资料责任与复用只读容量计算，禁止跨修订缓存准入结果；再评估隔离副本与按需投影。必须保留返回快照可变隔离、原请求/原报文/原目标、Unknown不重发、容量/身份/配置守卫及崩溃恢复回归，比较同硬件同DLL模式的原始分布；不得通过增大队列、删历史/校验或吞错取得性能改善。
+ParcelRepository缺省storageVersion=8，ParcelCli recover-legacy-receipt明确targetStorageVersion:8；旧API缺省5仅兼容路径，不能当当前CLI目标。新库不能交旧读者回滚，SQL1～7原字节未改。MachineRuntimePolicy要求指定SID：非提权UAC过滤令牌的deny-only管理员组可通过，提升/启用管理员组、服务及其他SID拒绝；形成时PR44开放/deny-only拒绝不作当前指令。源码判定与真实安装账户验收分开。
 
-试运行期间：按批准节拍和客户保留量回放、监测队列/回执资料/日志增长，覆盖峰值并发、上游慢/超时/Unknown和恢复；执行约定时长的CPU/内存/句柄/订阅清理/长期容量观察。关闭条件是合同规则与目标预算有负责人、目标Windows和真实组合证据完整；合成PASS不代替。
+|阶段|本轮判断|
+|---|---|
+|源码候选|声明范围D-01～03完成，最新PR59并存；最终PR CI另记|
+|本地介质可用|构建、完整库存和包内原生合成验证通过；未安装/签名/发布|
+|原生体验|当前Windows125%及声明尺寸通过；目标多DPI、HID/触控/现场用户未验|
+|受控现场试运行|SDK/精确组合/RCS合同、R-01及Unknown SOP未取得，未批准|
+|正式商业发布|NOT_READY；下列阻塞与运维资格未关闭|
 
-精简执行提示词：读取本工作包、原独立审查及本页证据，冻结最新main并核对并行PR；保持一个业务Application及原请求守卫。先按实测热点做gate内批量读取的等价性设计，再在隔离分支实施最小优化；同硬件/负载比较快照与实际UI延迟、SQL次数和分配，保留异常/恢复/资源验证与原失败。未获真实合同不得修改R-01、重试或去重规则；未做目标长时/现场不宣称商业性能通过。
+## 剩余阻塞与后续工作包
 
-## 剩余发布阻塞
+发布前必须：R-01由客户/上游确认同侧在途实体归属与准入规则，原审查失败不由UI/PASS覆盖；真实SDK、设备、许可、RCS认证/查询/幂等与Unknown SOP及精确组合联调；目标Windows安装/指定普通账户/第二账户/重启/升级迁移/失败恢复/备份恢复/卸载保留数据；签名、支持责任和现场资格。R-03 main保护及必需检查由仓库管理者决定，本轮未改仓库策略。
 
-R-01需客户/上游确认同侧在途观察的准入归属和新实体规则，保留原审查失败，不用UI或合成样本替代。R-02无目标硬件、峰值节拍、历史规模与延迟预算，本轮仅软件分析和短时测量。真实SDK、设备、RCS合同/Unknown处置SOP和受控现场验证未取得；目标Windows版本上的完整安装/普通账户/双账户/重启/升级迁移/备份恢复需另验；签名、支持责任及商业资格未取得。正式商业发布仍NOT_READY。
+性能工程下一包：取得目标硬件、峰值扫码节拍、双窗使用方式、积压/历史规模和延迟/资源预算。先跟踪gate等待、投影、SQL调用次数与分配，评估**同一次gate内**批量读取责任、复用只读容量计算；不跨修订缓存准入结果。再评估隔离副本/按需投影。保留返回快照隔离、原报文/目标/合同/请求关联、Unknown不重发、容量/身份/CAS守卫和崩溃恢复；同硬件同负载比较原始分布，不增大队列、删校验/历史或吞错换改善。
+
+试运行期间：按批准节拍与保留量回放，覆盖并发、慢上游/超时/Unknown和恢复，监测队列、资料责任、日志/磁盘增长及约定时长的CPU/内存/句柄/订阅清理。后续优化：现场用户的多DPI、键盘/扫码/HID/触控、最小客户区任务负担；文档按各新证据更新，原D/RV/历史版本不倒写。
+
+精简执行提示词：读取本工作包、原审查与证据，冻结最新main并核对并行PR；保持独立Application与原请求守卫。按R-02热点先做gate内批量读取的等价性设计，再最小实施，同硬件/负载测快照与实际UI延迟、SQL次数、分配及关键异常/恢复。未获真实合同不得修改R-01、重试或去重；未做目标长时/现场不宣布商业性能通过。

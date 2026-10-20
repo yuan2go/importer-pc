@@ -1,0 +1,67 @@
+2026-10-20T14:53:45.7096863+08:00 PASS English filename contains the selected SM business-module version and no commit suffix
+2026-10-20T14:53:45.7614314+08:00 PASS actual installer Windows version resources match the packaged business module version
+2026-10-20T14:53:45.7730899+08:00 PASS upgrade test uses the existing isolated Simulation deployment
+2026-10-20T14:53:45.8025309+08:00 PASS upgrade retains only this test's independent data root
+2026-10-20T14:53:45.8104553+08:00 PASS prior installed Simulation database exists before upgrade
+2026-10-20T14:53:45.8169406+08:00 CANCEL_PREPARATION_WITH_ONE_CLOSE_REQUEST
+2026-10-20T14:53:52.7996365+08:00 PASS own process exited with code zero
+2026-10-20T14:53:52.8063677+08:00 PASS one close during preparation exits without elevation or changing the original deployment
+2026-10-20T14:53:52.8097481+08:00 PASS cancelled preparation removes only its new private temporary workspace
+2026-10-20T14:53:52.8475875+08:00 START_ACTUAL_STANDALONE_EXE
+2026-10-20T14:53:55.3482142+08:00 PASS no separate welcome/preparation window or welcome Next click
+2026-10-20T14:53:55.4519523+08:00 PASS same installation header shows selected business version during preparation
+2026-10-20T14:54:13.3093259+08:00 PASS actual EXE automatically reaches directory and both shortcut choices
+2026-10-20T14:54:13.3127308+08:00 PASS no blank startup window behind setup
+2026-10-20T14:54:16.3110969+08:00 PASS installation directory Browse opens the real Windows folder chooser
+2026-10-20T14:54:18.5461260+08:00 PASS real installation reviewed with both shortcuts enabled
+2026-10-20T14:54:18.6107263+08:00 PASS preparation, directory selection, Browse and local review request no UAC
+2026-10-20T14:54:19.2105422+08:00 PASS back preserves the reviewed directories and both shortcut flags
+2026-10-20T14:54:19.6509199+08:00 PASS return and repeated local review still require no UAC
+2026-10-20T14:54:19.6522667+08:00 READY_FOR_REAL_INSTALLATION_WINDOWS_UAC
+2026-10-20T14:55:01.6482930+08:00 PASS real helper committed the authoritative machine registration
+2026-10-20T14:55:01.6504509+08:00 PASS installed registration matches frozen source and both selected directories
+2026-10-20T14:55:01.6556749+08:00 PASS chosen program root is English ASCII
+2026-10-20T14:55:01.6584162+08:00 PASS installed build identity binds actual branch, full commit, SM business version and target: 
+2026-10-20T14:55:01.6595999+08:00 PASS installed JSON and human-readable source records are complete and identical across entry points: 
+2026-10-20T14:55:01.6642349+08:00 PASS installed build identity binds actual branch, full commit, SM business version and target: app
+2026-10-20T14:55:01.6660785+08:00 PASS installed JSON and human-readable source records are complete and identical across entry points: app
+2026-10-20T14:55:01.6698969+08:00 PASS installed source records match protected Application file inventory: app
+2026-10-20T14:55:01.6718480+08:00 PASS installed build identity binds actual branch, full commit, SM business version and target: desktop
+2026-10-20T14:55:01.6729359+08:00 PASS installed JSON and human-readable source records are complete and identical across entry points: desktop
+2026-10-20T14:55:01.6752657+08:00 PASS installed source records match protected Application file inventory: desktop
+2026-10-20T14:55:01.6762723+08:00 PASS machine registration retains both selected shortcut options
+2026-10-20T14:55:01.6791800+08:00 PASS upgrade preserves seed and original configuration ledger byte for byte before startup
+2026-10-20T14:55:01.6837358+08:00 PASS side-by-side upgrade retains the prior installed release and receipt
+2026-10-20T14:55:01.6871346+08:00 PASS actual original installation change plan creates one new complete pre-upgrade backup
+2026-10-20T14:55:01.6981806+08:00 PASS actual pre-upgrade database and all recovery companions match completed manifest hashes
+2026-10-20T14:55:01.7239823+08:00 PASS actual selected shortcut exists: 菜鸟供包台 · sportmaster · 27b0d8f6 · d4e9066b.lnk
+2026-10-20T14:55:02.0848057+08:00 PASS actual shortcut targets installed normal app with no setup argument
+2026-10-20T14:55:02.0988028+08:00 PASS actual selected shortcut exists: sportmaster · 27b0d8f6 · d4e9066b · 运行.lnk
+2026-10-20T14:55:02.1076075+08:00 PASS actual shortcut targets installed normal app with no setup argument
+2026-10-20T14:55:02.1668017+08:00 PASS completion offers checked normal app launch for the selected runtime account
+2026-10-20T14:55:02.2899751+08:00 PASS correct runtime account completion has no misleading account-switch instruction
+2026-10-20T14:55:02.3069891+08:00 PASS one actual Windows consent process covers original preflight, full backup and deployment
+2026-10-20T14:55:02.3118092+08:00 PASS same single installation HWND remains visible across preparation, review and installation
+2026-10-20T14:55:02.3133995+08:00 PASS no new visible console window appears during the monitored installation interval
+2026-10-20T14:55:02.3286669+08:00 FINISH_AND_START_INSTALLED_APPLICATION
+2026-10-20T14:55:05.1430881+08:00 PASS own process exited with code zero
+2026-10-20T14:55:10.1452953+08:00 PASS installed normal app reaches the real workstation and closes startup/setup surfaces
+2026-10-20T14:55:10.3719512+08:00 PASS actual workstation is distinct from startup failure surface
+2026-10-20T14:55:11.2607569+08:00 PASS actual Simulation workstation reads its live snapshot and both independent positions
+2026-10-20T14:55:11.8073409+08:00 PASS own process exited with code zero
+2026-10-20T14:55:11.8088381+08:00 START_FROM_ACTUAL_SHORTCUT 菜鸟供包台 · sportmaster · 27b0d8f6 · d4e9066b.lnk
+2026-10-20T14:55:16.1537534+08:00 PASS actual shortcut starts workstation rather than installer
+2026-10-20T14:55:16.6484177+08:00 PASS own process exited with code zero
+2026-10-20T14:55:16.6498335+08:00 START_FROM_ACTUAL_SHORTCUT sportmaster · 27b0d8f6 · d4e9066b · 运行.lnk
+2026-10-20T14:55:20.9974884+08:00 PASS actual shortcut starts workstation rather than installer
+2026-10-20T14:55:21.5155185+08:00 PASS own process exited with code zero
+2026-10-20T14:55:21.5173044+08:00 READ_ONLY_INSTALLED_ENVIRONMENT_DIAGNOSTICS
+2026-10-20T14:55:22.3404981+08:00 PASS read-only environment report exits normally without starting a workstation or UAC; conservative=False
+2026-10-20T14:55:22.3416740+08:00 PASS actual installed environment report identifies native x64 and functional baseline
+2026-10-20T14:55:24.1075737+08:00 PASS read-only environment report exits normally without starting a workstation or UAC; conservative=True
+2026-10-20T14:55:24.1092586+08:00 PASS actual installed environment report identifies native x64 and functional baseline
+2026-10-20T14:55:24.1109941+08:00 PASS actual managed intrinsic-disabled process reports SSE2/AVX/AVX2 optimizations disabled without rejecting x64
+2026-10-20T14:55:24.1217767+08:00 ACTUAL_CONSERVATIVE_MANAGED_WORKSTATION_STARTUP
+2026-10-20T14:55:30.6789099+08:00 PASS actual installed Simulation workstation starts with managed hardware intrinsics and ReadyToRun disabled on this same CPU
+2026-10-20T14:55:31.1788895+08:00 PASS own process exited with code zero
+2026-10-20T14:55:31.1880546+08:00 ALL_REAL_INSTALLATION_AND_STARTUP_CHECKS_PASSED

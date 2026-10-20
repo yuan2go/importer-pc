@@ -1,0 +1,7 @@
+test_current_links_standalone_and_evidence_links_immutable (test_release_documents.ReleaseDocumentTests.test_current_links_standalone_and_evidence_links_immutable) ... ok
+test_missing_and_escaping_links_stop_publication (test_release_documents.ReleaseDocumentTests.test_missing_and_escaping_links_stop_publication) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.037s
+
+OK

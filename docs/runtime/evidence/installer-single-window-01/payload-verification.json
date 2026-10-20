@@ -1,0 +1,157 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "27b0d8f6cc0281fd82ee68fcda350233cb0a45ff",
+  "BuildInfo": {
+    "SchemaVersion": 1,
+    "Product": "CainiaoSupplyStation",
+    "ApplicationId": "sportmaster",
+    "BusinessModuleShortName": "SM",
+    "BusinessVersion": "1.4.1",
+    "Target": "win-x64",
+    "SourceBranch": "codex/installer-single-window",
+    "SourceCommit": "27b0d8f6cc0281fd82ee68fcda350233cb0a45ff",
+    "SourceBranchVerified": true,
+    "SourceCommitUtc": "2026-10-20T06:48:35+00:00",
+    "PackagedUtc": "2026-10-20T06:48:54+00:00",
+    "SourceRepository": "https://github.com/yuan2go/importer-pc",
+    "FrozenGitExport": true
+  },
+  "SharedApplicationIL": {
+    "app/Ipc.Application.Contracts.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "app/Ipc.Application.ParcelFlow.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "app/Ipc.Application.Sportmaster.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "app/Ipc.Assembly.dll": {
+      "Machine": "0x8664",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "app/Ipc.Components.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "app/Ipc.Drivers.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "app/Ipc.Integrations.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "app/Ipc.Platform.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "app/Ipc.Platform.Storage.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "app/Ipc.Reference.Protocol.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "app/Ipc.Supply.Contracts.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "app/Ipc.Supply.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Application.Contracts.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Application.ParcelFlow.Desktop.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Application.ParcelFlow.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Application.Sportmaster.Desktop.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Application.Sportmaster.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Assembly.dll": {
+      "Machine": "0x8664",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Components.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Desktop.dll": {
+      "Machine": "0x8664",
+      "Subsystem": 2,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Drivers.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Integrations.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Platform.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Platform.Storage.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Reference.Protocol.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Supply.Contracts.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    },
+    "desktop/Ipc.Supply.dll": {
+      "Machine": "0x14c",
+      "Subsystem": 3,
+      "ManagedNativeHeaderBytes": 0
+    }
+  },
+  "Scope": "Actual published generic managed IL, no application ReadyToRun header, native x64 host/CLR/SQLite, GUI helper apphost, embedded symbols, protected provenance inventories and shipped guides. Not Win10 or alternative CPU execution."
+}

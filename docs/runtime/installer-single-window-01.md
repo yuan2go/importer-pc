@@ -20,6 +20,14 @@
 
 准备校验28项、封装7项与原计划/Unknown/配置变化/完整备份的聚焦8项已通过；三种业务选择均可编译，快捷方式隔离COM检查通过。一次完整commercial-productization运行在本机普通令牌执行Windows恢复授权时被原门禁拒绝，原失败保留，不声明该全套通过；本轮没有为了换PASS提升整个套件、删除断言或修改生产权限守卫。针对本轮调用的原计划与备份风险单独执行聚焦检查。
 
-最终冻结EXE与实际原生验证另行补记：需记录安装窗口HWND、授权前后次数、可见控制台窗口、原数据/配置/备份、快捷方式和普通启动。未把编译/准备当实际安装，也不把本机Simulation当干净受支持Windows或海康/WCS/RCS现场验收；旧D/RV保持。
+最终冻结EXE与实际原生结果见下节，原始断言、监测和源码fixture分别存档。未把编译/准备当实际安装，也不把本机Simulation当干净受支持Windows或海康/WCS/RCS现场验收；旧D/RV保持。
 
 用户补充的Win10 22H2 Home/Pro与多CPU功能兼容目标、只读诊断、通用IL措施及实际待验矩阵见[Windows兼容](windows-client-compatibility-01.md)。单窗口首次d93封装已通过共享DLL同字节检查，但额外PDB输出被单EXE约束拒绝，未交付；仅设置CopyOutputSymbolsToPublishDirectory=false仍不足以排除引用符号，985尝试同样被拒绝；IncludeSymbolsInSingleFile实验被.NET10 SDK明确拒绝。最终对应用和包装器统一使用DebugType=embedded，将源码符号嵌入DLL并逐字节核对共用库；独立实验已确认输出只有一个EXE。未删除单EXE断言，原失败保留。
+
+## 最终交付与实际结果（冻结27b0d8f）
+
+源码`27b0d8f6cc0281fd82ee68fcda350233cb0a45ff`，业务SM/v1.4.1，最终单EXE177478140字节，SHA256 `062bd4878ff5f5c6c03fc7b0d01a026c59b55703c5d35c04f218eb961b4954e6`，未签名。实际EXE/730文件介质身份、原始探针与58项PASS见[交付证据](evidence/installer-single-window-01/README.md)。本次源码记录后的提交仅补证据/文档，随包BUILD-INFO继续精确标记27b0d8f；随包指南在实际结果前冻结，未伪称包含后补回执。
+
+本机实际升级：自动准备和安装选项复用一个HWND；选目录、两种图标、浏览与返回保留输入通过；准备/预览零UAC，点击安装一次真实UAC（用户确认）；1043次名义20ms采样为零安装窗口隐藏、零新增可见控制台，不覆盖所有亚20ms事件。原配置/数据库保留、旧版本保留、完整备份、部署登记与根/app/desktop源码记录通过；完成及两个实际快捷方式均进入正常双位Simulation工作台。准备中一次关闭安全取消且不改登记、只清理自身临时目录。没有操作真实设备。
+
+额外兼容验证：实际介质27个应用托管DLL无ReadyToRun头；本机正常与关闭托管intrinsic/R2R两种工作台启动均通过。仍仅Windows11 Home23H2/build22631和同一AMD Ryzen5 3550H；Win10 22H2/其他CPU/干净系统/海康SDK及现场待验。原完整commercial-productization普通令牌恢复授权失败及早先封装失败独立保留，不宣称完整套件或所有历史RV关闭。

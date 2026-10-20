@@ -1,0 +1,39 @@
+import struct,hashlib,json
+from pathlib import Path
+
+def pe(path):
+ data=path.read_bytes();offset=struct.unpack_from('<I',data,60)[0];assert data[offset:offset+4]==b'PE\0\0'
+ machine,sections=struct.unpack_from('<HH',data,offset+4);size=struct.unpack_from('<H',data,offset+20)[0];optional=offset+24;magic=struct.unpack_from('<H',data,optional)[0];dirs=optional+(112 if magic==0x20b else 96)
+ rows=[]
+ for i in range(sections):
+  h=optional+size+40*i;virtual_size,rva,raw_size,raw=struct.unpack_from('<IIII',data,h+8);rows.append((rva,max(virtual_size,raw_size),raw))
+ def file_offset(rva):
+  for start,length,raw in rows:
+   if start<=rva<start+length:return raw+rva-start
+  raise ValueError('Unmapped PE RVA')
+ cli_rva,cli_size=struct.unpack_from('<II',data,dirs+14*8)
+ native_size=None
+ if cli_rva:native_rva,native_size=struct.unpack_from('<II',data,file_offset(cli_rva)+64)
+ return {'Machine':hex(machine),'Subsystem':struct.unpack_from('<H',data,optional+68)[0],'ManagedNativeHeaderBytes':native_size}
+
+def verify(root, source):
+ records={};build=json.loads((root/'BUILD-INFO.json').read_bytes());assert build['SourceCommit']==source and build['BusinessModuleShortName']=='SM' and build['BusinessVersion']=='1.4.1'
+ for area in ('app','desktop'):
+  directory=root/area
+  assert (directory/'BUILD-INFO.json').read_bytes()==(root/'BUILD-INFO.json').read_bytes()
+  assert (directory/'BUILD-INFO.txt').read_bytes()==(root/'BUILD-INFO.txt').read_bytes()
+  inventory=json.loads((directory/'application-release.json').read_bytes())
+  for name in ['BUILD-INFO.json','BUILD-INFO.txt']:assert inventory['Files'][name]==hashlib.sha256((directory/name).read_bytes()).hexdigest().upper()
+  assert not list(directory.glob('*.pdb')),'Symbols must be embedded consistently'
+  for f in directory.glob('Ipc.*.dll'):
+   record=pe(f);assert record['ManagedNativeHeaderBytes']==0, f
+   records[area+'/'+f.name]=record
+  for name in ('coreclr.dll','e_sqlite3.dll'):
+   assert pe(directory/name)['Machine']=='0x8664',name
+ for name in ('app/Ipc.Assembly.exe','desktop/Ipc.Desktop.exe'):assert pe(root/name)['Machine']=='0x8664'
+ assert pe(root/'desktop/Ipc.Desktop.exe')['Subsystem']==2,'Headless helper must use a GUI apphost, not a console apphost'
+ for guide in ['WINDOWS-COMPATIBILITY.md','INSTALLATION-EXPERIENCE.md','INSTALLATION-REQUIREMENTS.md']:assert (root/guide).is_file()
+ return {'Status':'PASS','SourceCommit':source,'BuildInfo':build,'SharedApplicationIL':records,'Scope':'Actual published generic managed IL, no application ReadyToRun header, native x64 host/CLR/SQLite, GUI helper apphost, embedded symbols, protected provenance inventories and shipped guides. Not Win10 or alternative CPU execution.'}
+if __name__=='__main__':
+ import sys
+ result=verify(Path(sys.argv[1]),sys.argv[2]);Path(sys.argv[3]).write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8');print('PASS',len(result['SharedApplicationIL']),'actual generic IL files and x64 native closure/provenance')

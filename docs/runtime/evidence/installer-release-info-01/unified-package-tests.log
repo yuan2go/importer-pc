@@ -1,0 +1,19 @@
+test_hash_and_exact_inventory_and_zip (test_unified_release.Pr48ReleaseTests.test_hash_and_exact_inventory_and_zip) ... ok
+test_identity_cannot_be_relabelled (test_unified_release.Pr48ReleaseTests.test_identity_cannot_be_relabelled) ... ok
+test_zip_cannot_be_stale_or_duplicated (test_unified_release.Pr48ReleaseTests.test_zip_cannot_be_stale_or_duplicated) ... ok
+test_changed_missing_and_extra_files_rejected (test_unified_release.ReleaseTests.test_changed_missing_and_extra_files_rejected) ... ok
+test_cli_reuse_options_parse_without_duplicate_source_flag (test_unified_release.ReleaseTests.test_cli_reuse_options_parse_without_duplicate_source_flag) ... ok
+test_generated_checkout_cleanup_handles_windows_readonly_git_objects (test_unified_release.ReleaseTests.test_generated_checkout_cleanup_handles_windows_readonly_git_objects) ... ok
+test_path_escape_and_windows_alias_rejected (test_unified_release.ReleaseTests.test_path_escape_and_windows_alias_rejected) ... ok
+test_resealed_wrong_application_and_source_rejected (test_unified_release.ReleaseTests.test_resealed_wrong_application_and_source_rejected) ... ok
+test_resealed_wrong_legacy_version_rejected (test_unified_release.ReleaseTests.test_resealed_wrong_legacy_version_rejected) ... ok
+test_reuse_refuses_duplicate_or_escaping_original_names (test_unified_release.ReleaseTests.test_reuse_refuses_duplicate_or_escaping_original_names) ... ok
+test_reuse_requires_original_source_hash_and_exact_expanded_inventory (test_unified_release.ReleaseTests.test_reuse_requires_original_source_hash_and_exact_expanded_inventory) ... ok
+test_source_pin_refuses_runtime_and_functional_packager_differences (test_unified_release.ReleaseTests.test_source_pin_refuses_runtime_and_functional_packager_differences) ... ok
+test_stable_archive_across_timestamp_changes (test_unified_release.ReleaseTests.test_stable_archive_across_timestamp_changes) ... ok
+test_zip_mismatch_and_duplicate_rejected (test_unified_release.ReleaseTests.test_zip_mismatch_and_duplicate_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 3.728s
+
+OK

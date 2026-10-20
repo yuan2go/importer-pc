@@ -15,6 +15,7 @@ from application_compatibility import read_business
 from application_bundles import read_packages, publish_packages
 from release_documents import SOURCE_PATHS, publish as publish_guides
 from release_dependencies import publish as publish_dependencies
+from release_provenance import capture as capture_provenance, publish as publish_provenance
 
 APPLICATIONS = {'sportmaster': 'Sportmaster', 'direct-plc': 'DirectPlc', 'wcs-to-plc': 'WcsToPlc'}
 p = argparse.ArgumentParser()
@@ -22,6 +23,7 @@ p.add_argument('--application', choices=APPLICATIONS, required=True)
 p.add_argument('--target', choices=['portable', 'win-x64'], required=True)
 p.add_argument('--output', type=Path, required=True)
 p.add_argument('--dotnet', default='dotnet')
+p.add_argument('--source-branch', help='Verifiable branch for detached release builds; otherwise detached CI records DETACHED')
 p.add_argument('--composition', help='Existing composition matching the selected Application; defaults to its reference core')
 p.add_argument('--extension-package', type=Path, action='append', default=[], help='Exact signed offline Driver/Component package; repeat for its complete dependency closure')
 p.add_argument('--extension-trust', type=Path, help='Independent trust used only for static acceptance; never copied into the candidate')
@@ -35,6 +37,7 @@ if output.exists() or archive.exists():
 if subprocess.check_output(['git', 'status', '--porcelain', '--', *SOURCE_PATHS], cwd=root, text=True).strip():
     raise ValueError('Commit exact runtime, configuration, packaging and shipped guides before publication')
 source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
+provenance = capture_provenance(root, source, a.source_branch, a.application, '', a.target)
 module = APPLICATIONS[a.application]
 lock = 'packages.' + a.application + ('.win-x64' if a.target == 'win-x64' else '') + '.lock.json'
 properties = ['-p:Application=' + module, '-p:NuGetLockFilePath=' + lock]
@@ -52,6 +55,7 @@ bundles = read_packages(a.extension_package, selection)
 if bundles and a.extension_trust is None:
     raise ValueError('Selected offline packages require independent trust for target-host acceptance')
 business, compatibility_source = read_business(build_source, a.application, selection)
+provenance['BusinessVersion'] = business['BusinessVersion']
 frozen_properties = build_properties(source, build_source, artifacts)
 for project, destination in [('Ipc.Assembly', 'app'), *([('Ipc.Desktop', 'desktop')] if a.target == 'win-x64' else [])]:
     command = [a.dotnet, 'publish', f'src/{project}/{project}.csproj', '-c', 'Release', '-m:1', '-nr:false',
@@ -88,6 +92,7 @@ if a.target == 'win-x64':
         if peer.exists() and hashlib.sha256(binary.read_bytes()).digest() != hashlib.sha256(peer.read_bytes()).digest():
             raise ValueError('Console/helper and desktop bytes differ: ' + binary.name)
 publish_packages(bundles, selection, output, a.dotnet, a.extension_trust, a.extension_check_host)
+publish_provenance(output, provenance)
 selection.update(business)
 for directory in [output / 'app', output / 'desktop']:
     if not directory.exists(): continue

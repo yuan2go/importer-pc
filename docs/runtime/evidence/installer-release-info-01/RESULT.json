@@ -1,0 +1,6 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "7c384540393b1e77ceeba048a87a3916dd1af63c",
+  "Assertions": 41,
+  "Scope": "Actual unprivileged single-EXE side-by-side upgrade, original Windows change plan and complete backup, configuration preservation, selected shortcuts, corrected completion guidance and installed Simulation workstation startup. No devices or production qualification."
+}

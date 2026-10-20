@@ -1,0 +1,21 @@
+from pathlib import Path
+import json,hashlib
+root=Path('D:/releases/cainiao-sm-release-01-media')
+record=json.loads((root/'BUILD-INFO.json').read_bytes())
+assert record['SourceCommit']=='7c384540393b1e77ceeba048a87a3916dd1af63c'
+assert record['BusinessModuleShortName']=='SM' and record['BusinessVersion']=='1.4.1'
+for area in ['app','desktop']:
+ assert (root/area/'BUILD-INFO.json').read_bytes()==(root/'BUILD-INFO.json').read_bytes()
+ assert (root/area/'BUILD-INFO.txt').read_bytes()==(root/'BUILD-INFO.txt').read_bytes()
+ release=json.loads((root/area/'application-release.json').read_bytes())
+ for name in ['BUILD-INFO.json','BUILD-INFO.txt']:
+  assert release['Files'][name]==hashlib.sha256((root/area/name).read_bytes()).hexdigest().upper()
+ assert release['BusinessVersion']=='1.4.1' and release['ApplicationId']=='sportmaster'
+ assert not any((root/area/('Ipc.Application.'+other+'.dll')).exists() for other in ['DirectPlc','WcsToPlc'])
+ for name in ['coreclr.dll','hostfxr.dll','e_sqlite3.dll']:
+  assert (root/area/name).is_file(),name
+for name in ['vcruntime140_cor3.dll','PresentationNative_cor3.dll','wpfgfx_cor3.dll','D3DCompiler_47_cor3.dll']:
+ assert (root/'desktop'/name).is_file(),name
+assert (root/'INSTALLATION-REQUIREMENTS.md').is_file()
+print(json.dumps(record,indent=2))
+Path('D:/releases/cainiao-release-info-tools/payload-metadata-verification.json').write_text(json.dumps({'Status':'PASS','Scope':['Selected SM Application only','Business version matches both Application release records','Three identical JSON/TXT source records','Build records match protected inventories','Core runtime and SQLite included for both entry points; WPF native closure included for desktop','Installation dependencies guide shipped'],'BuildInfo':record},indent=2)+'\n',encoding='utf-8')

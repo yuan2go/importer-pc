@@ -17,9 +17,15 @@ class InstallerPackageTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.path = Path(self.temporary.name) / 'medium.zip'
         self.source = 'a' * 40
-        release = json.dumps(dict(ApplicationId='sportmaster', SourceCommit=self.source, BusinessVersion='test')).encode()
+        release = json.dumps(dict(ApplicationId='sportmaster', SourceCommit=self.source, BusinessVersion='1.4.1')).encode()
         self.files = {'app/application-release.json': release, 'desktop/application-release.json': release,
                       'desktop/Ipc.Desktop.exe': b'SYNTHETIC NEVER EXECUTED'}
+        record = json.dumps(dict(ApplicationId='sportmaster', SourceCommit=self.source, BusinessVersion='1.4.1',
+                                 BusinessModuleShortName='SM',
+                                 SourceBranch='main', SourceBranchVerified=True, FrozenGitExport=True, Target='win-x64')).encode()
+        for area in ('', 'app/', 'desktop/'):
+            self.files[area + 'BUILD-INFO.json'] = record
+            self.files[area + 'BUILD-INFO.txt'] = b'SYNTHETIC build source information'
 
     def tearDown(self):
         self.temporary.cleanup()
@@ -39,13 +45,33 @@ class InstallerPackageTests(unittest.TestCase):
         self.write()
         descriptor = installer.inspect_medium(self.path, self.source)
         self.assertEqual(descriptor['SourceCommit'], self.source)
-        self.assertEqual(descriptor['FileCount'], 4)
+        self.assertEqual(descriptor['FileCount'], 10)
+        self.assertEqual(descriptor['SourceBranch'], 'main')
+        self.assertEqual(descriptor['BusinessModuleShortName'], 'SM')
         self.assertEqual(descriptor['ZipBytes'], self.path.stat().st_size)
 
     def test_different_runtime_source_is_rejected(self):
         self.write()
         with self.assertRaisesRegex(ValueError, 'same frozen source'):
             installer.inspect_medium(self.path, 'b' * 40)
+
+    def test_missing_detached_or_different_provenance_refused(self):
+        original = dict(self.files)
+        for change in ('missing', 'detached', 'different', 'module', 'version', 'divergent-copy'):
+            self.files = dict(original)
+            if change == 'missing': del self.files['BUILD-INFO.json']
+            else:
+                record = json.loads(self.files['BUILD-INFO.json'])
+                if change == 'detached': record['SourceBranchVerified'] = False
+                elif change == 'different': record['SourceCommit'] = 'b' * 40
+                elif change == 'module': record['BusinessModuleShortName'] = 'OTHER'
+                elif change == 'version': record['BusinessVersion'] = '9.9.9'
+                else: record['PackagedUtc'] = 'CHANGED'
+                name = 'desktop/BUILD-INFO.json' if change == 'divergent-copy' else 'BUILD-INFO.json'
+                self.files[name] = json.dumps(record).encode()
+            self.write()
+            with self.assertRaisesRegex(ValueError, 'source record|source records'):
+                installer.inspect_medium(self.path, self.source)
 
     def test_corrupted_file_is_rejected(self):
         self.write(tamper=True)

@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import tempfile
 import zipfile
+from release_provenance import capture as capture_provenance, installer_name, MODULE_SHORT_NAMES
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -48,13 +49,27 @@ def inspect_medium(path, source):
                 if hashlib.file_digest(stream, 'sha256').hexdigest() != expected:
                     raise ValueError('Payload hash mismatch: ' + name)
         releases = [json.loads(archive.read(area + '/application-release.json')) for area in ('app', 'desktop')]
-        if any(r['SourceCommit'] != source for r in releases) or releases[0]['ApplicationId'] != releases[1]['ApplicationId']:
+        if any(r['SourceCommit'] != source for r in releases) or any(releases[0][key] != releases[1][key] for key in ('ApplicationId', 'BusinessVersion')):
             raise ValueError('Installer and embedded medium must use the same frozen source')
         if releases[0]['ApplicationId'] not in ('sportmaster', 'direct-plc', 'wcs-to-plc') or 'desktop/ipc.desktop.exe' not in names:
             raise ValueError('Expected a complete supported Windows Application')
+        if 'build-info.json' not in names or archive.getinfo(names['build-info.json']).file_size > 65536:
+            raise ValueError('Expected the packaged BUILD-INFO source record')
+        provenance_bytes = archive.read(names['build-info.json'])
+        provenance = json.loads(provenance_bytes)
+        if (provenance.get('SourceCommit') != source or provenance.get('BusinessVersion') != releases[0]['BusinessVersion']
+                or provenance.get('ApplicationId') != releases[0]['ApplicationId'] or provenance.get('Target') != 'win-x64'
+                or provenance.get('BusinessModuleShortName') != MODULE_SHORT_NAMES[releases[0]['ApplicationId']]
+                or not provenance.get('SourceBranch') or provenance.get('SourceBranchVerified') is not True
+                or provenance.get('FrozenGitExport') is not True):
+            raise ValueError('Packaged build source record differs from this release')
+        for area in ('app', 'desktop'):
+            if archive.read(area + '/BUILD-INFO.json') != provenance_bytes:
+                raise ValueError('Packaged build source records disagree')
         with Path(path).open('rb') as stream:
             digest = hashlib.file_digest(stream, 'sha256').hexdigest()
-        return dict(ApplicationId=releases[0]['ApplicationId'], SourceCommit=source,
+        return dict(ApplicationId=releases[0]['ApplicationId'], SourceCommit=source, SourceBranch=provenance['SourceBranch'],
+                    BusinessModuleShortName=provenance['BusinessModuleShortName'],
                     BusinessVersion=releases[0]['BusinessVersion'], Sha256=digest,
                     ZipBytes=Path(path).stat().st_size, UnpackedBytes=total, FileCount=len(names))
 
@@ -62,16 +77,23 @@ def inspect_medium(path, source):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--media', type=Path, required=True, help='Frozen win-x64 ZIP from package-application.py')
-    parser.add_argument('--output', type=Path, required=True, help='New .exe filename; no sidecar files are required')
+    parser.add_argument('--output', type=Path, required=True, help='New delivery directory, or the canonical English versioned EXE path')
     parser.add_argument('--dotnet', default='dotnet')
     args = parser.parse_args()
-    output = args.output.resolve()
-    if output.suffix.lower() != '.exe' or output.exists():
-        raise ValueError('Choose a new immutable .exe output')
     if subprocess.check_output(['git', 'status', '--porcelain', '--', 'src', 'scripts', 'Directory.Build.props', 'global.json'], cwd=ROOT, text=True).strip():
         raise ValueError('Commit installer, payload runtime and packaging sources first')
     source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     descriptor = inspect_medium(args.media.resolve(), source)
+    capture_provenance(ROOT, source, descriptor['SourceBranch'], descriptor['ApplicationId'], descriptor['BusinessVersion'], 'win-x64')
+    name = installer_name(descriptor['ApplicationId'], descriptor['BusinessVersion'])
+    output = args.output.resolve()
+    if output.suffix.lower() == '.exe':
+        if output.name != name:
+            raise ValueError('Use the versioned English installer filename: ' + name)
+    else:
+        output = output / name
+    if output.exists():
+        raise ValueError('Choose a new immutable installer output')
     workspace = Path(tempfile.mkdtemp(prefix='ipc-installer-build-'))
     print('Installer build workspace: ' + str(workspace), flush=True)
     snapshot = workspace / 'source'; snapshot.mkdir()
@@ -86,7 +108,8 @@ def main():
     subprocess.run([args.dotnet, 'publish', 'src/Ipc.Installer/Ipc.Installer.csproj', '-c', 'Release', '-m:1', '-nr:false',
                     '-p:InstallerPayload=' + str(payload), '-p:InstallerDescriptor=' + str(metadata),
                     '-p:ArtifactsPath=' + str(workspace / 'intermediates'), '-p:SourceRevisionId=' + source,
-                    '-p:EnableSourceControlManagerQueries=false', '-o', str(publish)], cwd=snapshot, check=True)
+                    '-p:EnableSourceControlManagerQueries=false', '-p:Version=' + descriptor['BusinessVersion'],
+                    '-p:FileVersion=' + descriptor['BusinessVersion'] + '.0', '-o', str(publish)], cwd=snapshot, check=True)
     published = [file for file in publish.iterdir() if file.is_file()]
     if len(published) != 1 or published[0].name != 'Ipc.Installer.exe':
         raise ValueError('Installer is not a standalone EXE: ' + repr([p.name for p in published]))

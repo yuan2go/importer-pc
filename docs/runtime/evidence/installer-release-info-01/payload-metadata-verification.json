@@ -1,0 +1,26 @@
+{
+  "Status": "PASS",
+  "Scope": [
+    "Selected SM Application only",
+    "Business version matches both Application release records",
+    "Three identical JSON/TXT source records",
+    "Build records match protected inventories",
+    "Core runtime and SQLite included for both entry points; WPF native closure included for desktop",
+    "Installation dependencies guide shipped"
+  ],
+  "BuildInfo": {
+    "SchemaVersion": 1,
+    "Product": "CainiaoSupplyStation",
+    "ApplicationId": "sportmaster",
+    "BusinessModuleShortName": "SM",
+    "BusinessVersion": "1.4.1",
+    "Target": "win-x64",
+    "SourceBranch": "codex/installer-release-metadata",
+    "SourceCommit": "7c384540393b1e77ceeba048a87a3916dd1af63c",
+    "SourceBranchVerified": true,
+    "SourceCommitUtc": "2026-10-20T06:06:02+00:00",
+    "PackagedUtc": "2026-10-20T06:06:09+00:00",
+    "SourceRepository": "https://github.com/yuan2go/importer-pc",
+    "FrozenGitExport": true
+  }
+}

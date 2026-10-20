@@ -1,0 +1,35 @@
+  正在确定要还原的项目…
+  已还原 D:\w\sm-visual-closure\src\Ipc.Application.Supply.Contracts\Ipc.Application.Supply.Contracts.csproj (用时 1.75 秒)。
+  已还原 D:\w\sm-visual-closure\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 1.75 秒)。
+  已还原 D:\w\sm-visual-closure\src\Ipc.Application.ParcelFlow\Ipc.Application.ParcelFlow.csproj (用时 1.75 秒)。
+  已还原 D:\w\sm-visual-closure\src\Ipc.Reference.Protocol\Ipc.Reference.Protocol.csproj (用时 1.75 秒)。
+  已还原 D:\w\sm-visual-closure\src\Ipc.Platform\Ipc.Platform.csproj (用时 1.75 秒)。
+  已还原 D:\w\sm-visual-closure\src\Ipc.Components\Ipc.Components.csproj (用时 1.75 秒)。
+  已还原 D:\w\sm-visual-closure\src\Ipc.Application.Sportmaster\Ipc.Application.Sportmaster.csproj (用时 1.75 秒)。
+  已还原 D:\w\sm-visual-closure\tests\Ipc.Desktop.UiVerification\Ipc.Desktop.UiVerification.csproj (用时 1.75 秒)。
+  已还原 D:\w\sm-visual-closure\src\Ipc.Platform.Storage\Ipc.Platform.Storage.csproj (用时 15 毫秒)。
+  已还原 D:\w\sm-visual-closure\src\Ipc.Application.Supply\Ipc.Application.Supply.csproj (用时 33 毫秒)。
+  已还原 D:\w\sm-visual-closure\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop.csproj (用时 25 毫秒)。
+  已还原 D:\w\sm-visual-closure\src\Ipc.Application.Sportmaster.Desktop\Ipc.Application.Sportmaster.Desktop.csproj (用时 34 毫秒)。
+  已还原 D:\w\sm-visual-closure\src\Ipc.Drivers\Ipc.Drivers.csproj (用时 12 毫秒)。
+  已还原 D:\w\sm-visual-closure\src\Ipc.Integrations\Ipc.Integrations.csproj (用时 33 毫秒)。
+  Ipc.Platform -> D:\w\sm-visual-closure\src\Ipc.Platform\bin\Debug\net10.0\Ipc.Platform.dll
+  Ipc.Application.Supply.Contracts -> D:\w\sm-visual-closure\src\Ipc.Application.Supply.Contracts\bin\Debug\net10.0\Ipc.Supply.Contracts.dll
+  Ipc.Platform.Storage -> D:\w\sm-visual-closure\src\Ipc.Platform.Storage\bin\Debug\net10.0\Ipc.Platform.Storage.dll
+  Ipc.Application.Supply -> D:\w\sm-visual-closure\src\Ipc.Application.Supply\bin\Debug\net10.0\Ipc.Supply.dll
+  Ipc.Application.Contracts -> D:\w\sm-visual-closure\src\Ipc.Application.Contracts\bin\Debug\net10.0\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow -> D:\w\sm-visual-closure\src\Ipc.Application.ParcelFlow\bin\Debug\net10.0\Ipc.Application.ParcelFlow.dll
+  Ipc.Application.Sportmaster -> D:\w\sm-visual-closure\src\Ipc.Application.Sportmaster\bin\Debug\net10.0\Ipc.Application.Sportmaster.dll
+  Ipc.Reference.Protocol -> D:\w\sm-visual-closure\src\Ipc.Reference.Protocol\bin\Debug\net10.0\Ipc.Reference.Protocol.dll
+  Ipc.Components -> D:\w\sm-visual-closure\src\Ipc.Components\bin\Debug\net10.0\Ipc.Components.dll
+  Ipc.Drivers -> D:\w\sm-visual-closure\src\Ipc.Drivers\bin\Debug\net10.0\Ipc.Drivers.dll
+  Ipc.Integrations -> D:\w\sm-visual-closure\src\Ipc.Integrations\bin\Debug\net10.0\Ipc.Integrations.dll
+  Ipc.Application.ParcelFlow.Desktop -> D:\w\sm-visual-closure\src\Ipc.Application.ParcelFlow.Desktop\bin\Debug\net10.0-windows\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.Sportmaster.Desktop -> D:\w\sm-visual-closure\src\Ipc.Application.Sportmaster.Desktop\bin\Debug\net10.0-windows\Ipc.Application.Sportmaster.Desktop.dll
+  Ipc.Desktop.UiVerification -> D:\w\sm-visual-closure\tests\Ipc.Desktop.UiVerification\bin\Debug\net10.0-windows\Ipc.Desktop.UiVerification.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:36.07

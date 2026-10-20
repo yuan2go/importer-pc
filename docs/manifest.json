@@ -373,9 +373,9 @@
     },
     {
       "path": "docs/INDEX.md",
-      "sha256": "835f5da3167454254ab133fa8c85f9c3a328d4d1cbb920ae50563ad321f556ba",
-      "size_bytes": 13729,
-      "git_blob": "8acc3cca0c5be52d0581caa878a28b7929c81a9f",
+      "sha256": "cf44da8c1e061de48481e8fe2e5466b103f27ea15716326ceacfd668db794ed5",
+      "size_bytes": 14122,
+      "git_blob": "dc2cdce2041e442f5aa600af56d1ff9a573322fb",
       "version": "sportmaster-visual-productization-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
@@ -387,7 +387,8 @@
       "pre_commercial_productization_git_blob": "a6b807db04e55e76002ad89ed009b7c546af19df",
       "pre_publication_merge_git_blob": "da0145028454b93ca30dd01b4ce866fc92ba40b9",
       "pre_windows_no_test_release_git_blob": "c5a9f0fb5345857b12570fc25568ec1f4603a801",
-      "pre_publication_pr57_pr58_git_blob": "cb9f0b20fc71a42b5441d9a39f86408fb5921615"
+      "pre_publication_pr57_pr58_git_blob": "cb9f0b20fc71a42b5441d9a39f86408fb5921615",
+      "previous_git_blob_before_visual_main_closure_01": "8acc3cca0c5be52d0581caa878a28b7929c81a9f"
     },
     {
       "path": "docs/archive/pre-acquisition-lifecycle-p2/README.md",
@@ -43420,14 +43421,15 @@
     },
     {
       "path": ".github/workflows/sportmaster-commercial.yml",
-      "sha256": "daaf7c6a168031535cff5dbe0bcc42efe38d423e204619a18b163a732bc89fcc",
-      "size_bytes": 2610,
-      "git_blob": "afa35ec61e535f14e45b6ad7691796c5d98b3148",
+      "sha256": "cc1ba42fe3fb0f000181acfa1a86ef0110d1b367cabc0fbd4f4e10b4c03ec74e",
+      "size_bytes": 3688,
+      "git_blob": "1434d2b62543172decb4c37a1e3c389471353599",
       "version": "SPORTMASTER-COMMERCIAL-DELIVERY-01",
       "status": "current_implementation_or_exact_evidence",
       "purpose": "Sportmaster first commercial composition; bounded engineering validation, lifecycle/field limitations retained",
       "source": "User-authorized Sportmaster delivery package; design before code 7b631b0; freeze e45e9871b2ad3b85796ae74b4ac3e716996d4554",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob_before_visual_main_closure_01": "afa35ec61e535f14e45b6ad7691796c5d98b3148"
     },
     {
       "path": "docs/archive/pre-sportmaster-commercial-delivery-01/INDEX.md.txt",
@@ -45642,36 +45644,39 @@
     },
     {
       "path": "docs/runtime/sportmaster-visual-productization-01.md",
-      "sha256": "bf09f6b79ead8f74088ea3ca325dfa081164a9ba65134fb44f71654e3a42c4bc",
-      "size_bytes": 8646,
-      "git_blob": "0f50f3e88b06d493da7ce47d532dd5991e104eab",
+      "sha256": "21aa525da4f5d908253df35d94b04ddd50d7ff14e59cccac823c60e222a7708f",
+      "size_bytes": 9270,
+      "git_blob": "fb6ffeefb3a6560d9ebaff01bebbbb5d4cfc68cd",
       "version": "sportmaster-visual-productization-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01; attribution and original evidence retain their identities",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob_before_visual_main_closure_01": "0f50f3e88b06d493da7ce47d532dd5991e104eab"
     },
     {
       "path": "docs/work-packages/WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01.md",
-      "sha256": "66bc44c0b9eff01b7cd96f47db70584a6a7da9d899b42c507a2351bafb039181",
-      "size_bytes": 627,
-      "git_blob": "8339eda709f17275bee19d007303ec4045acfc0e",
+      "sha256": "c806e7284a187864f6645e09a74e495480bb42c18321865ae4483b06718f187f",
+      "size_bytes": 1254,
+      "git_blob": "bbd3e5914996376f7451d5c1d59b56052e539afc",
       "version": "sportmaster-visual-productization-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01; attribution and original evidence retain their identities",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob_before_visual_main_closure_01": "8339eda709f17275bee19d007303ec4045acfc0e"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/DateTimeInput.cs",
-      "sha256": "5c99a71c0b6bbcd34e50d1137cf74835cf98296dd5617401218706a8dd8d513a",
-      "size_bytes": 4373,
-      "git_blob": "047f428a74dcaac77c158209c64d08897176ad4b",
+      "sha256": "e0ed6c95e8e24a19608f13c73bee8b18faf26a01bf9d7e6b6e9d1666bb562ee3",
+      "size_bytes": 5089,
+      "git_blob": "bd2f603eafbd02a3ba5b4dc6342c14d29b34f463",
       "version": "sportmaster-visual-productization-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01; attribution and original evidence retain their identities",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob_before_visual_main_closure_01": "047f428a74dcaac77c158209c64d08897176ad4b"
     },
     {
       "path": "src/Ipc.Application.ParcelFlow.Desktop/ParcelStateTextConverter.cs",
@@ -45697,14 +45702,15 @@
     },
     {
       "path": "tests/Ipc.Desktop.UiVerification/VisualProductization.cs",
-      "sha256": "03828ac929e669c077da5e19d6d2cef627ec69243d069dd6a09661e5efa49fc5",
-      "size_bytes": 18718,
-      "git_blob": "940341ba73a4359294e26e62a7aac86d12949261",
+      "sha256": "ed965c553f3a0abe2c9b36b159274a1a93666b40d29d748099815dfec131d22e",
+      "size_bytes": 21376,
+      "git_blob": "7df2a021905a6dd6aaed690a248f2feccf8eb071",
       "version": "sportmaster-visual-productization-01",
       "status": "current_source_or_synthetic_evidence",
       "purpose": "Authorized WPF UI refinement, project skills, synthetic verification or preserved source",
       "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01; attribution and original evidence retain their identities",
-      "storage_scope": "public_repository"
+      "storage_scope": "public_repository",
+      "previous_git_blob_before_visual_main_closure_01": "940341ba73a4359294e26e62a7aac86d12949261"
     },
     {
       "path": "docs/runtime/evidence/sportmaster-visual-01/development/9247db6-stale-fixture/RESULT.json",
@@ -46430,6 +46436,292 @@
       "sha256": "cafb16f547d3a0c42ce156810496e584084c713a5ae3f12bc89f90f5e4a2a538",
       "size_bytes": 2767,
       "git_blob": "398ea640dbcb8542877c24563b5384f2c048fb0e"
+    },
+    {
+      "path": "docs/design/sportmaster-visual-main-closure-01.md",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "f9c91ac0c2ce80f22c8040aad9720c48c516979cdb1d61943074a4467662b0a1",
+      "size_bytes": 3651,
+      "git_blob": "741ec5cd5e2fbea345464b3089627f9682b610f7"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/MEDIA.json",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "c896570a1ce398cb5e3e5d5a9034e7a268b31cc256665f3c329bec375998cb2d",
+      "size_bytes": 4221,
+      "git_blob": "e168fa7632938a021ab7163383532d8c73623a3f"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/README.md",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "8f9455343b69a509c0f535aee8358ff7e8da20b8ea96ad3ccc0a470f926056a6",
+      "size_bytes": 4563,
+      "git_blob": "ea6b303dcc872ffeee079eb2060173c5c8a14039"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/before-date-repro.cs.txt",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "3226769a9b4262098c86c85a337a37c2db327bdd9dc39d5488caa56f4bbc4378",
+      "size_bytes": 1748,
+      "git_blob": "eff52eb04df454e2937167899edc481e8d65cbd3"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/before-date-repro.csproj.txt",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "f6805035c80bbb07ee8645e2b252da5dafdda75b60cca87b43ba99d0f599ed66",
+      "size_bytes": 468,
+      "git_blob": "50c40b0cd9087facd0f9b24b51fcad76b793a50c"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/before-date-repro.log",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "16d5d6a0dfd21a9cc5676902cd4e7b67c1ff494135e26af6760f7a2e8321a185",
+      "size_bytes": 245,
+      "git_blob": "d6283d0d380d59df2f06418478ba01aec957ce8c"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/checks.json",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "d817899fa03aafef4aec290cffea923cf8b6e17a9af424db18746855b959c139",
+      "size_bytes": 2119,
+      "git_blob": "e0872fc052e4c239d6cbbf76a34325cef6595d51"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/commercial-gates.log",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "e9aed13a65bdb4ed5a19387a3943e846c732dd0d9f8c12cb9f60c63bbdadace6",
+      "size_bytes": 881,
+      "git_blob": "2835de36e77ccca59ec1c1a2ba1fa76e6f46a32d"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/commercial-pages/RESULT.json",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "aadf2902d00f818d69f9843a6b7166cd38caaa1dc80e49ac7f24b6bbb2504566",
+      "size_bytes": 3042,
+      "git_blob": "61e50f82cc77c65249c3ed805f800680a1fce423"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/commercial-pages/RUN.log",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/commercial-pages/WINDOWS-WPF.log",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "2d361cfeedaf5240b4f41fc01c3e5ab8c72935e3ec3646aec29ded99364f05aa",
+      "size_bytes": 2425,
+      "git_blob": "d7232fc87549488b95f9c31befd92bf452c08100"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/custody-helper-correction.json",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "6ecdd5346cb2efe8996b69319f7ce096b1b18c4636a4ae15a620dca07ee03ef1",
+      "size_bytes": 1222,
+      "git_blob": "94ede52db08b89650b693d4014e865a6706b873f"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/development-build.log",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "307d8c74f2f1867791e161d0518b9e8a5fcdd4c20d07c1a1dc90c1d7dd16c181",
+      "size_bytes": 3533,
+      "git_blob": "d10bdc00d97ff9cd49a2e13dd925b73172e1a63a"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/package.log",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "899a8868e33d30610d1b50ab9ee2ab0d85efb1eeb9b9cf5d00376e3041d42ea6",
+      "size_bytes": 7641,
+      "git_blob": "a19bb0715b8aff3c0dd79490a90b55db98d051b0"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/release-documents.log",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "3df5dc6cbef8869d59dff4b1bcaed306fd6d638f02622c96142d9fb71fef8565",
+      "size_bytes": 427,
+      "git_blob": "28cfdbe587e000d5721e4e5e2ff033f26fbbfe96"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/verify.py",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "6b54e425c9432e92dd7f3989476ad886e1b8e844d43c8ed569fe8dfde1253b31",
+      "size_bytes": 3686,
+      "git_blob": "ab9264e8c9fcd140960686db7d4afad994f9d553"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/visual/RESULT.json",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "aadf2902d00f818d69f9843a6b7166cd38caaa1dc80e49ac7f24b6bbb2504566",
+      "size_bytes": 3042,
+      "git_blob": "61e50f82cc77c65249c3ed805f800680a1fce423"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/visual/RUN.log",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/visual/WINDOWS-WPF.log",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "31c6ed8c9afcb4e03ea8960adac835e658cd398c38f082a163234372561b274e",
+      "size_bytes": 3289,
+      "git_blob": "8d76a13da4ad09745e8d41ad61a68eb946e1473f"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/visual/after-first-configuration.png",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "6115b01067365635b25ad13f5f648bffa6f10102591021ffd33a294ee206d332",
+      "size_bytes": 111539,
+      "git_blob": "37922b9114dcc9fc25a07ca9c66a619464b56692"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/visual/after-history-invalid-date-1100.png",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "7180bbd06053c58a03330648498e51052aff701f0a7432d5cbef0bd2726afb8a",
+      "size_bytes": 99924,
+      "git_blob": "34f8800c650b3a49e6c6f2975139f8d28679e364"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/visual/after-maintenance-1100.png",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "ef8746f4c6d35da70993aac6d5d5e2a73d865d994a2a3733e8c3cc3087f83caa",
+      "size_bytes": 94538,
+      "git_blob": "299994ab2433b4c3a14958ec41d1df55e0f814d0"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/visual/after-minimum-client-800x420.png",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "f404e645255897842ad21af3d27573bf6a122bf827caaf8c4481f9ffeb626dfb",
+      "size_bytes": 57891,
+      "git_blob": "8e9150dcd442ad2c81606fc275998df0889c3f42"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/visual/after-normal-1366.png",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "2f06c8b6ba4031dbc3c70f29a1e403c8456818edba3642a71dfc6c875bc18650",
+      "size_bytes": 84532,
+      "git_blob": "6192586981be41ee9b705e1479940da5a07694c7"
+    },
+    {
+      "path": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/visual/after-support-invalid-date.png",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "6423e40adb3904bf56cefbf87334e5856c76a4806322ec9107d5a712196df8ab",
+      "size_bytes": 75925,
+      "git_blob": "d6dc2c5093436578d7a88920c87592040ea09009"
+    },
+    {
+      "path": "docs/runtime/sportmaster-visual-main-closure-01.md",
+      "version": "sportmaster-visual-main-closure-01",
+      "status": "current_implementation_or_synthetic_verification",
+      "purpose": "Source-preserving Sportmaster visual main closure, native invalid-date recovery, delivery evidence or CI gate",
+      "source": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01 explicit authorization; generic code and synthetic data only",
+      "storage_scope": "public_repository",
+      "sha256": "a7e0535865bf490cc62fa04ee826de89d2e3e0bdcf51ecc8cc9f97a861c583fc",
+      "size_bytes": 6507,
+      "git_blob": "53d867830abbef35f996c5c9635bd35e6b23e1ff"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -47133,7 +47425,7 @@
     "candidates": "docs/runtime/evidence/capability-reliability-20/candidate-inventory.json",
     "reference_verification": "PASS"
   },
-  "runtime_source_commit": "dfc2ab68d263340037751651c442dd5b33023b32",
+  "runtime_source_commit": "1744f398720b405448d975ab9d440cd24feeef74",
   "application_architecture_22_publication": {
     "receipt": "docs/runtime/evidence/application-architecture-22/remote-publication-receipt.json",
     "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/architecture22-reference-8981d54",
@@ -48272,5 +48564,25 @@
     "original_failure_evidence": "PRESERVED",
     "historical_release_identities_and_d_rv": "UNCHANGED",
     "evidence": "docs/runtime/evidence/unified-latest-55025ce/README.md"
+  },
+  "sportmaster_visual_main_closure_01": {
+    "work_package": "WP-IPC-SPORTMASTER-VISUAL-PRODUCTIZATION-01",
+    "base_main": "e0beb5d32c6a24a7799ba698731566bca6a6833a",
+    "design_commit": "86b9a06",
+    "runtime_source_commit": "1744f398720b405448d975ab9d440cd24feeef74",
+    "state": "EXECUTABLE_VISUAL_SCOPE_COMPLETE_NATIVE_SYNTHETIC_PASS",
+    "inherits": "PR58 full visual implementation and PR57 release integration",
+    "report": "docs/runtime/sportmaster-visual-main-closure-01.md",
+    "evidence": "docs/runtime/evidence/sportmaster-visual-01/main-closure-01/README.md",
+    "local_medium": "sm-visual-closure-media-01.zip",
+    "local_medium_sha256": "2642299524EFB2B51E9F3223C7EB1D97A7D3D9800CCA7D0E659E9EDD5B1FF40F",
+    "inventory_sha256": "5498ba2fc8f95aed3c1303db74e0dc289970d66600005167513f14f3119d69f7",
+    "native_commercial_assertions": 24,
+    "native_visual_assertions": 30,
+    "windows_privileged_lifecycle": "NOT_RUN",
+    "physical_input_and_additional_dpi": "NOT_RUN",
+    "sdk_contract_equipment_and_field": "BLOCKED",
+    "production": "NOT_APPROVED",
+    "historical_d_rv": "UNCHANGED"
   }
 }

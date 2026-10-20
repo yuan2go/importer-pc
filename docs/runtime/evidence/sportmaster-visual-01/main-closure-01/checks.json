@@ -1,0 +1,23 @@
+{
+  "before-date-repro.cs.txt": "3226769a9b4262098c86c85a337a37c2db327bdd9dc39d5488caa56f4bbc4378",
+  "before-date-repro.csproj.txt": "f6805035c80bbb07ee8645e2b252da5dafdda75b60cca87b43ba99d0f599ed66",
+  "before-date-repro.log": "16d5d6a0dfd21a9cc5676902cd4e7b67c1ff494135e26af6760f7a2e8321a185",
+  "commercial-gates.log": "e9aed13a65bdb4ed5a19387a3943e846c732dd0d9f8c12cb9f60c63bbdadace6",
+  "custody-helper-correction.json": "6ecdd5346cb2efe8996b69319f7ce096b1b18c4636a4ae15a620dca07ee03ef1",
+  "development-build.log": "307d8c74f2f1867791e161d0518b9e8a5fcdd4c20d07c1a1dc90c1d7dd16c181",
+  "MEDIA.json": "c896570a1ce398cb5e3e5d5a9034e7a268b31cc256665f3c329bec375998cb2d",
+  "package.log": "899a8868e33d30610d1b50ab9ee2ab0d85efb1eeb9b9cf5d00376e3041d42ea6",
+  "release-documents.log": "3df5dc6cbef8869d59dff4b1bcaed306fd6d638f02622c96142d9fb71fef8565",
+  "commercial-pages/RESULT.json": "aadf2902d00f818d69f9843a6b7166cd38caaa1dc80e49ac7f24b6bbb2504566",
+  "commercial-pages/RUN.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "commercial-pages/WINDOWS-WPF.log": "2d361cfeedaf5240b4f41fc01c3e5ab8c72935e3ec3646aec29ded99364f05aa",
+  "visual/after-first-configuration.png": "6115b01067365635b25ad13f5f648bffa6f10102591021ffd33a294ee206d332",
+  "visual/after-history-invalid-date-1100.png": "7180bbd06053c58a03330648498e51052aff701f0a7432d5cbef0bd2726afb8a",
+  "visual/after-maintenance-1100.png": "ef8746f4c6d35da70993aac6d5d5e2a73d865d994a2a3733e8c3cc3087f83caa",
+  "visual/after-minimum-client-800x420.png": "f404e645255897842ad21af3d27573bf6a122bf827caaf8c4481f9ffeb626dfb",
+  "visual/after-normal-1366.png": "2f06c8b6ba4031dbc3c70f29a1e403c8456818edba3642a71dfc6c875bc18650",
+  "visual/after-support-invalid-date.png": "6423e40adb3904bf56cefbf87334e5856c76a4806322ec9107d5a712196df8ab",
+  "visual/RESULT.json": "aadf2902d00f818d69f9843a6b7166cd38caaa1dc80e49ac7f24b6bbb2504566",
+  "visual/RUN.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "visual/WINDOWS-WPF.log": "31c6ed8c9afcb4e03ea8960adac835e658cd398c38f082a163234372561b274e"
+}

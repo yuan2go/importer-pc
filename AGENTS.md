@@ -13,7 +13,9 @@
 
 ## UI实现必须读取的实物基线
 
-修改页面前先读 `docs/ui/ss-ui-vis-001-v1.1/README.md`、`GALLERY.md`、原HTML、分离CSS/JS和完整UI交接，不得仅凭文字或现有调试页面猜设计。保留专业作业信息层级；原HTML是模拟设计，不照抄已知业务缺陷；PNG为同源重新导出，Windows交互和截图须另行验收。原文件和当前业务实现的来源、版本与验证边界分别报告。
+Sportmaster本轮UI的现行任务与视觉目标为 `docs/ui/sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md`。修改页面前完整查看新交互原型、48张PNG、完整交接、58项字段/状态与39项操作迁移，再读 `docs/design/sportmaster-task-redesign-01.md` 的最新代码裁决和 `docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md`。原型中的示例值、保存/运行版本号和模拟成功不得直接成为生产逻辑；真实Driver/Integration参数与能力、唯一配置账和Application守卫优先。
+
+旧 `docs/ui/ss-ui-vis-001-v1.1/` 及历次视觉方案保留为历史参考，不再是本包并列的页面主定义。编码前先清理本包相关过期当前指引，修正索引和替代关系；保留原件、编号及历史证据，已正确内容不重复改写。采用工业级、可维护的完整任务闭环，不做最小演示实现，也不为UI另造配置/部署/业务权威。Windows实机、原型模拟与真实设备验收分别记录。
 
 ## 项目级 UI/UX skill
 

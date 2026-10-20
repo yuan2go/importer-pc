@@ -1,0 +1,289 @@
+{
+  "scope": "design_artifacts_documentation_only",
+  "baseline_commit": "e2e69292899c709056ce9ab6159bf01f6f18de6c",
+  "original_delivery": {
+    "file_count": 95,
+    "total_bytes_including_duplicate_zip": 91802090,
+    "direct_files": 94,
+    "original_zip_reconstructed": true,
+    "sha256_mismatches": [],
+    "zip_entries": 94,
+    "zip_crc_bad_member": null,
+    "zip_payload_matches_original": true,
+    "original_zip_sha256": "b6b7cfd3eb2567fb83cbae2dd15f21e85de703d07f3e3a635a398fe2047d5971",
+    "png_count": 48,
+    "named_scenes": 45
+  },
+  "archived_entries": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "dba269f3ccb3b89b50f70452263a2715408e6e12fa99ca1a5accae60cf08a504",
+      "matches_baseline_bytes": true,
+      "matches_inventory": true
+    },
+    {
+      "path": "README.md",
+      "sha256": "5215b4ac79a3c3190da85e1e7ee9b5463c12586a2fd3881545a4a366639e1fdf",
+      "matches_baseline_bytes": true,
+      "matches_inventory": true
+    },
+    {
+      "path": "docs/INDEX.md",
+      "sha256": "5dc8026c7bc63b63cf0408702798e0a887a8ba77f430ceaf27208c900bf558b0",
+      "matches_baseline_bytes": true,
+      "matches_inventory": true
+    },
+    {
+      "path": "docs/ui/STATUS.md",
+      "sha256": "880e51ea6a3c095badb23839dbd336d703ca46271eaadfa2994be883e53ff33d",
+      "matches_baseline_bytes": true,
+      "matches_inventory": true
+    },
+    {
+      "path": "docs/baseline/PUBLICATION.md",
+      "sha256": "727668c6b24486f6d4d55d8637d2dbec658e27035909470b84ef8970a673b681",
+      "matches_baseline_bytes": true,
+      "matches_inventory": true
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/README.md",
+      "sha256": "5b4dae9929e0aee49d715fa66b9c55f72f81a0f1f14edc2bc9c431ee7252c9f9",
+      "matches_baseline_bytes": true,
+      "matches_inventory": true
+    }
+  ],
+  "candidate_archive_check": {
+    "command": "python3 tools/verify_archive.py --root . --scope public",
+    "baseline_status": "FAIL",
+    "baseline_counts": {
+      "files": 4515,
+      "references": 2424,
+      "json": 1287,
+      "images": 172,
+      "boards": 18,
+      "slides": 18,
+      "pptx": 1
+    },
+    "baseline_error_counts": {
+      "private_metadata_marker": 2,
+      "pptx_media_type_mismatch": 265
+    },
+    "candidate_status": "FAIL",
+    "candidate_counts_at_first_complete_scan": {
+      "files": 4637,
+      "references": 2455,
+      "json": 1304,
+      "images": 220,
+      "boards": 18,
+      "slides": 18,
+      "pptx": 1
+    },
+    "candidate_error_counts": {
+      "credential_review_required": 1,
+      "unsupported_reference_scheme": 22,
+      "excluded_binary": 2,
+      "private_metadata_marker": 2,
+      "pptx_media_type_mismatch": 265
+    },
+    "added_reports": [
+      {
+        "code": "credential_review_required",
+        "path": "docs/ui/sportmaster-task-redesign-20261020/Sportmaster-UI-Gallery.html",
+        "count": 1
+      },
+      {
+        "code": "excluded_binary",
+        "path": "docs/ui/sportmaster-task-redesign-20261020/source/assets/noto-ui-400.woff",
+        "count": 1
+      },
+      {
+        "code": "excluded_binary",
+        "path": "docs/ui/sportmaster-task-redesign-20261020/source/assets/noto-ui-700.woff",
+        "count": 1
+      },
+      {
+        "code": "unsupported_reference_scheme",
+        "path": "docs/ui/sportmaster-task-redesign-20261020/handoff/data/source-gallery.md",
+        "count": 22
+      }
+    ],
+    "removed_historical_reports": [],
+    "new_content_identity_json_image_or_current_entry_reference_errors": 0,
+    "no_new_verifier_exceptions": true,
+    "gallery_marker_review": {
+      "file": "docs/ui/sportmaster-task-redesign-20261020/Sportmaster-UI-Gallery.html",
+      "sha256": "c1edd03fe5da4ac27d5e00ed45a1410cdc1caf9a760936072dbe76efaad7b0fd",
+      "matches": [
+        {
+          "offset": 2227091,
+          "length": 20,
+          "match_sha256": "4d2f748947d76cb27ea5600a9d84aab4e95d26aa13ec7cf4265b494430815722",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "64ae911301c8c35aa7a24655a15fc5a313603a223cf998473b51ba1acd87b9a6"
+        },
+        {
+          "offset": 2356243,
+          "length": 20,
+          "match_sha256": "17127703fa7fcb347335cdf07ceef83dbcde32889664563f3f3b524cbb22a7ce",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "9bf4fa9c972f8c38876822c0c20207f44d6354aac856efbab953124295515cf4"
+        },
+        {
+          "offset": 2927901,
+          "length": 20,
+          "match_sha256": "3f3b96cfccef67b6609c1bee3e1a3d98f83f0b10cc0681c7c7568b6a61cbfe43",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "eb55d0404223b4ff754f6a948ac84a683a67617db8b1779c5c67c77061902566"
+        },
+        {
+          "offset": 3101296,
+          "length": 20,
+          "match_sha256": "07daeb75545cd0c138944f57b5a0857d2227a9038a4dff006990dd15c79690d8",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "6315cde3a75c23654236cd1c94dc99c6a3c759b86fd156b9b1d9c9459baa0a44"
+        },
+        {
+          "offset": 3567393,
+          "length": 20,
+          "match_sha256": "e17d90f63333d1f13e24390a2a2b4915bdcbf474c83ba7c05e1ba6eda1c3a758",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "a6cfcd170367c6b43c0b99fa25c6916502181fbbaed358bc46d5fc973c2d9795"
+        },
+        {
+          "offset": 3941537,
+          "length": 20,
+          "match_sha256": "14a9b3b25afb1b88b414b40e1dc064a97ae7582927bf2654349bff74dee7f546",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "b1ff4653a180465c87183d290670bededbf52889200df6bd8288819be3ac659e"
+        },
+        {
+          "offset": 4613151,
+          "length": 20,
+          "match_sha256": "5050fc8c4b1a8962d87b904e6d9c036934da951166561c91824545e99c2b7eb4",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "2f83c1952cb9e316755f20e8f471be09d42119f557aa53e79aa2922dd692b05c"
+        },
+        {
+          "offset": 7393746,
+          "length": 20,
+          "match_sha256": "b6628977fcf972a16d6f4657418d77fb2ca6be1b5af5f2bf96d92eaf5ed7e16a",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "e19dd2f7ca6dc9d599688b34d5128d0c7624d268f10cf7dcc663e63ebe430d24"
+        },
+        {
+          "offset": 7748086,
+          "length": 20,
+          "match_sha256": "297a878e108eba1cf656a4b408e5650129ef12f7b7da78c638cee0401b233457",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "8794c8577cc3abafa8cafa6c090b25c9568c3cb254ae59eea25416dcf5570db6"
+        },
+        {
+          "offset": 7862726,
+          "length": 20,
+          "match_sha256": "c206c31ae45e6245176d0243b49f2940de898246fb26d789eb422f3cd4669f5f",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "8794c8577cc3abafa8cafa6c090b25c9568c3cb254ae59eea25416dcf5570db6"
+        },
+        {
+          "offset": 8605457,
+          "length": 20,
+          "match_sha256": "970d15cf8078b8eaf5b57169b1dd811e94ac54ff6ee1721b035a5c9cbb4d2b54",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "cf499b1614bf181d44fc2efeaec78cd7ab3af1206ff2244cafad4cb7cebabe58"
+        },
+        {
+          "offset": 9811300,
+          "length": 20,
+          "match_sha256": "be3f2cca82e1ac973ad56f835be345e8d7f6602a257ab47b03b9bcf3a1f38bb3",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "d70dc6c08b100fbb95000a5d9edf3a32b597e4ab2465a3d1c2a0ce33e9426507"
+        },
+        {
+          "offset": 10713015,
+          "length": 20,
+          "match_sha256": "3ae91a993acd50d2a0c818fe01d8d2bc90bbe857d6bc765a0f7c67e5f2de3404",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "235df025c8cb1784549f1165c67ab72155ad95254799a83e7b6ac80e82ec378f"
+        },
+        {
+          "offset": 11218199,
+          "length": 20,
+          "match_sha256": "774dea16279e1f2657950365933be147279270ac6dc9a07336f1e14e5b54d728",
+          "inside_webp_data_uri": true,
+          "decoded_image_dimensions": [
+            1600,
+            900
+          ],
+          "decoded_image_sha256": "7490d404d31aa8b239c0d3b9fbd454a9c65538219ddee69ad8a118abcf052704"
+        }
+      ],
+      "matches_outside_image_data": 0,
+      "conclusion": "Matches occur in compressed raster base64; not credential assignments"
+    },
+    "source_gallery_review": {
+      "file": "docs/ui/sportmaster-task-redesign-20261020/handoff/data/source-gallery.md",
+      "count": 22,
+      "reason": "Preserved original attachment D-drive development paths; current entry uses existing repository archive index"
+    },
+    "font_review": {
+      "count": 2,
+      "reason": "Original Noto design subset fonts with adjacent OFL and font metadata, covered by explicit design publication scope; verifier binary rule unchanged"
+    }
+  },
+  "production_build": "NOT_RUN_THIS_DOCUMENT_TASK",
+  "new_windows_ui_verification": "NOT_RUN_NEW_UI_NOT_IMPLEMENTED",
+  "real_device_or_service_operations": "NOT_RUN",
+  "production_source_diff": []
+}

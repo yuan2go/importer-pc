@@ -1,0 +1,309 @@
+{
+  "source": "/workspace/scratch/69927969969a/deliverables/Sportmaster-Prototype.html",
+  "sourceSha256": "50e9efb8efe30325ffcd8c42fe3b47fda0930e02a056e2f24304e7592252a4c8",
+  "sourceBytes": 1030631,
+  "startedAt": "2026-10-20T04:43:36.495Z",
+  "scope": "只复核最终新增的状态文案、错误滚动与未知运行提示；其他已验收7组不重复；追加空历史与筛选后选择失效的定向检查",
+  "viewport": {
+    "width": 1366,
+    "height": 768
+  },
+  "browser": "Chromium 155.0.8059.84",
+  "checks": [
+    {
+      "id": "F01",
+      "title": "启用登录但未认证：底栏明确等待登录",
+      "scene": "work-login",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "底栏显示等待操作员登录",
+          "evidence": {
+            "text": "左位 · 格口 A-07 · #128\n右位 · 格口 B-12 · #127\nWCS · 连接可达\n等待操作员登录\n运行 v12\n模拟数据 · 2026-10-20 11:46 +08:00\n演示控制"
+          }
+        },
+        {
+          "pass": true,
+          "message": "底栏不误报接收中"
+        }
+      ]
+    },
+    {
+      "id": "F02",
+      "title": "状态失效：底栏明确待核实",
+      "scene": "work-stale",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "底栏显示状态待核实",
+          "evidence": {
+            "text": "左位 · 状态失效\n右位 · 状态失效\nWCS · 连接可达\n状态待核实\n最后确认 v12\n模拟数据 · 2026-10-20 11:46 +08:00\n演示控制"
+          }
+        },
+        {
+          "pass": true,
+          "message": "失效状态不显示接收中"
+        },
+        {
+          "pass": true,
+          "message": "失效状态不把旧版本当当前已确认版本"
+        }
+      ]
+    },
+    {
+      "id": "F03",
+      "title": "安装完成：底栏使用安装任务状态",
+      "scene": "install-complete",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "安装任务与作业就绪分开",
+          "evidence": {
+            "text": " 安装任务\n安装完成后还需首次配置与现场检查\n安装进度不代表作业就绪 · 模拟数据\n演示控制"
+          }
+        },
+        {
+          "pass": true,
+          "message": "安装完成不虚报正在接收包裹"
+        }
+      ]
+    },
+    {
+      "id": "F04",
+      "title": "恢复核对场景保持暂停",
+      "scene": "reconcile",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "reconcile 场景 paused=true",
+          "evidence": {
+            "state": {
+              "paused": true,
+              "view": "advanced"
+            },
+            "text": "左位 · 格口 A-07 · #128\n右位 · 格口 B-12 · #127\nWCS · 连接可达\n接收已暂停\n运行 v12\n模拟数据 · 2026-10-20 11:46 +08:00\n演示控制"
+          }
+        },
+        {
+          "pass": true,
+          "message": "底栏准确显示暂停"
+        }
+      ]
+    },
+    {
+      "id": "F05",
+      "title": "1366×768：错误情景字段整体位于固定保存栏上方",
+      "scene": "camera-invalid",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "错误字段整体未被保存栏遮挡",
+          "evidence": {
+            "geometry": {
+              "field": {
+                "top": 544.515625,
+                "bottom": 654.953125
+              },
+              "error": {
+                "top": 615.015625,
+                "bottom": 633.015625
+              },
+              "saveBar": {
+                "top": 666.5,
+                "bottom": 732
+              },
+              "workspace": {
+                "top": 44,
+                "bottom": 732
+              },
+              "activeField": "left.port",
+              "scrollTop": 48
+            }
+          }
+        },
+        {
+          "pass": true,
+          "message": "错误文案完整位于保存栏上方"
+        },
+        {
+          "pass": true,
+          "message": "错误字段顶端在可视工作区域"
+        },
+        {
+          "pass": true,
+          "message": "焦点定位左相机端口"
+        }
+      ]
+    },
+    {
+      "id": "F06",
+      "title": "1366×768：实际校验流程滚动到错误字段",
+      "scene": "camera-clean",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "实际校验后的字段整体在保存栏上方可见",
+          "evidence": {
+            "geometry": {
+              "field": {
+                "top": 544.515625,
+                "bottom": 654.953125
+              },
+              "error": {
+                "top": 615.015625,
+                "bottom": 633.015625
+              },
+              "saveBar": {
+                "top": 666.5,
+                "bottom": 732
+              },
+              "workspace": {
+                "top": 44,
+                "bottom": 732
+              },
+              "activeField": "left.port",
+              "scrollTop": 48
+            }
+          }
+        },
+        {
+          "pass": true,
+          "message": "实际校验错误文案未被遮挡"
+        },
+        {
+          "pass": true,
+          "message": "实际校验焦点定位端口"
+        }
+      ]
+    },
+    {
+      "id": "F07",
+      "title": "WCS测试失败文案只表达已检查层次",
+      "scene": "wcs-failed",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "只声称地址格式有效",
+          "evidence": {
+            "text": "WCS 格口服务连接未建立\n\n模拟结果：地址格式有效，传输连接被拒绝。请检查地址、端口以及服务是否正在监听。\n\n定位连接参数\n本次测试目标\nhttp://wcs.example.test:8080\n已验证：地址格式\n通过\n传输连接\n拒绝连接\n读取设备 / WCS 业务响应\n未执行\n当前编辑值 · 测试未写入配置\n复制技术详情"
+          }
+        },
+        {
+          "pass": true,
+          "message": "明确本次测试没有写入配置"
+        },
+        {
+          "pass": true,
+          "message": "不声称已执行DNS解析"
+        },
+        {
+          "pass": true,
+          "message": "不将测试目标描述为一定未保存的编辑值"
+        }
+      ]
+    },
+    {
+      "id": "F08",
+      "title": "运行未知T08保持修正后的行为",
+      "scene": "runtime-unknown",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "弹窗表达最后确认与当前待核实",
+          "evidence": {
+            "text": "应用已保存配置 v13\n\n本次变更 1 项。最后确认 v12，当前运行版本待核实；应用期间需要暂停整个工作站接收新包裹，并受控重启 Sportmaster。\n\n对象 / 参数\t变更前\t变更后\n左位相机\n连接端口\t9000\t9001\n影响左右两路新包裹接收\n\n已有包裹和原请求保留。软件暂停不表示输送设备已停止；请在现场允许的维护时机执行。\n\n运行归属\n\n先核实运行端实际状态。\n\n待核对\n原请求已核对\n\n此演示状态没有未决原请求。\n\n已通过\n维护身份校验：演示已通过；正式应用沿用现有认证机制。\n暂停接收并应用\n稍后应用"
+          }
+        },
+        {
+          "pass": true,
+          "message": "没有虚报当前仍运行旧版"
+        },
+        {
+          "pass": true,
+          "message": "应用门禁仍有效"
+        },
+        {
+          "pass": true,
+          "message": "三个对象仍显示运行待确认",
+          "evidence": {
+            "summary": "左位相机\n相机读码驱动 · 示例\n左投递位\nCAM-L-021\n运行待确认\n最后确认 v12\n配置参数\n右位相机\n相机读码驱动 · 示例\n右投递位\nCAM-R-022\n运行待确认\n最后确认 v12\n配置参数\nWCS 格口服务\nWCS 集成 · 示例\n左右位共用\nwcs-01\n运行待确认\n最后确认 v12\n配置参数"
+          }
+        }
+      ]
+    },
+    {
+      "id": "F09",
+      "title": "空记录时清空旧详情并禁用导出",
+      "scene": "history-empty",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "无结果状态详情区说明没有选中记录",
+          "evidence": {
+            "text": "没有选中记录\n\n当前筛选没有记录；清除或调整筛选后再查询。"
+          }
+        },
+        {
+          "pass": true,
+          "message": "详情中没有旧包裹号或旧请求身份"
+        },
+        {
+          "pass": true,
+          "message": "无结果时导出按钮禁用"
+        }
+      ]
+    },
+    {
+      "id": "F10",
+      "title": "筛选排除原选择时无旧详情且不改变当前包裹",
+      "scene": "history",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "有筛选结果但不包含原选择时，等待重新选择而不显示旧详情",
+          "evidence": {
+            "rows": 3,
+            "text": "没有选中记录\n\n请从当前查询结果中选择一条记录。"
+          }
+        },
+        {
+          "pass": true,
+          "message": "旧包裹号与请求不残留在详情"
+        },
+        {
+          "pass": true,
+          "message": "记录筛选不改变左右当前作业包裹"
+        },
+        {
+          "pass": true,
+          "message": "有筛选结果时仍可导出当前结果"
+        },
+        {
+          "pass": true,
+          "message": "选择当前结果后正常展示对应详情"
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "externalRequests": [],
+  "endedAt": "2026-10-20T04:44:38.004Z",
+  "sourceCurrentSha256": "50e9efb8efe30325ffcd8c42fe3b47fda0930e02a056e2f24304e7592252a4c8",
+  "sourceChangedDuringReview": false,
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "pageErrors": 0,
+    "externalRequests": 0
+  }
+}

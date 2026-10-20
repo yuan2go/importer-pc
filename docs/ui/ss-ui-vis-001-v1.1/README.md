@@ -1,3 +1,5 @@
+> 历史设计参考：本目录保持v1.1形成时语境。Sportmaster本轮任务结构与视觉目标改由[2026-10-20重设计](../sportmaster-task-redesign-20261020/REPOSITORY-ENTRY.md)及[最新代码裁决](../../design/sportmaster-task-redesign-01.md)管理；下文“必须先读/布局保持”不作为新包并列指令。原入口字节见[治理前归档](../../archive/pre-ui-task-redesign-20261020/README.md)。
+
 # 供包工作站最终交付 UI 设计基线 · v1.1
 
 本目录实际保存 SS-UI-VIS-001 v1.1 的设计原文件、可编辑画板和全部34个页面/状态/窗口图位。版本依据是本设计会话最后一次完整交付，不以另一会话的版本号或未导出的Canva更新时间判断更晚定稿。

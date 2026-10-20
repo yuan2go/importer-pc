@@ -1,0 +1,35 @@
+{
+  "source_commit": "e2e69292899c709056ce9ab6159bf01f6f18de6c",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "archived_path": "docs/archive/pre-ui-task-redesign-20261020/AGENTS.md.txt",
+      "sha256": "dba269f3ccb3b89b50f70452263a2715408e6e12fa99ca1a5accae60cf08a504"
+    },
+    {
+      "path": "README.md",
+      "archived_path": "docs/archive/pre-ui-task-redesign-20261020/README.md.txt",
+      "sha256": "5215b4ac79a3c3190da85e1e7ee9b5463c12586a2fd3881545a4a366639e1fdf"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "archived_path": "docs/archive/pre-ui-task-redesign-20261020/docs/INDEX.md.txt",
+      "sha256": "5dc8026c7bc63b63cf0408702798e0a887a8ba77f430ceaf27208c900bf558b0"
+    },
+    {
+      "path": "docs/ui/STATUS.md",
+      "archived_path": "docs/archive/pre-ui-task-redesign-20261020/docs/ui/STATUS.md.txt",
+      "sha256": "880e51ea6a3c095badb23839dbd336d703ca46271eaadfa2994be883e53ff33d"
+    },
+    {
+      "path": "docs/baseline/PUBLICATION.md",
+      "archived_path": "docs/archive/pre-ui-task-redesign-20261020/docs/baseline/PUBLICATION.md.txt",
+      "sha256": "727668c6b24486f6d4d55d8637d2dbec658e27035909470b84ef8970a673b681"
+    },
+    {
+      "path": "docs/ui/ss-ui-vis-001-v1.1/README.md",
+      "archived_path": "docs/archive/pre-ui-task-redesign-20261020/docs/ui/ss-ui-vis-001-v1.1/README.md.txt",
+      "sha256": "5b4dae9929e0aee49d715fa66b9c55f72f81a0f1f14edc2bc9c431ee7252c9f9"
+    }
+  ]
+}

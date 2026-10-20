@@ -1,0 +1,494 @@
+{
+  "scope": "仅原型必要交互走查；不连接真实设备或生产服务，不修改设计源文件",
+  "source": "/workspace/scratch/69927969969a/deliverables/Sportmaster-Prototype.html",
+  "sourceSha256": "f225840bd0148f8533911ecda2c57cf8a75e2fe54705f9d877d66b13f910ff4b",
+  "startedAt": "2026-10-20T04:30:58.923Z",
+  "browser": "Chromium 155.0.8059.84",
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "checks": [
+    {
+      "id": "T01",
+      "title": "左右连续模拟独立更新，新包处理中隐藏上一格口",
+      "scene": "work-normal",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "左位新包处理中清空旧格口",
+          "evidence": {
+            "left": {
+              "status": "processing",
+              "barcode": "000123456780",
+              "chute": "",
+              "seq": 130,
+              "time": "11:46:10"
+            }
+          }
+        },
+        {
+          "pass": true,
+          "message": "左位更新时右位当前包裹、序号和格口不变",
+          "evidence": {
+            "right": {
+              "status": "success",
+              "barcode": "000123456782",
+              "chute": "B-12",
+              "seq": 127,
+              "time": "11:46:12"
+            }
+          }
+        },
+        {
+          "pass": true,
+          "message": "左位可见界面不再显示上一个格口",
+          "evidence": {
+            "leftText": "L\n左投递位\n相机在线\n已收到本次条码 · 正在请求 WCS\n11:46:10\n本次处理结果\n正在获取格口\n本次包裹号\n000123456780\n本次序号 #130 · 左位读码\n不显示上一包的格口\n请等待本次结果，不重复扫码"
+          }
+        },
+        {
+          "pass": true,
+          "message": "右位可独立进入处理且清空旧格口"
+        },
+        {
+          "pass": true,
+          "message": "两路各自完成下一包",
+          "evidence": {
+            "left": {
+              "status": "success",
+              "barcode": "000123456780",
+              "chute": "A-11",
+              "seq": 130,
+              "time": "11:46:10"
+            },
+            "right": {
+              "status": "success",
+              "barcode": "000123456779",
+              "chute": "B-10",
+              "seq": 129,
+              "time": "11:46:09"
+            }
+          }
+        }
+      ],
+      "observations": []
+    },
+    {
+      "id": "T02",
+      "title": "左相机断线时右位可继续，左位不可接收",
+      "scene": "work-camera-outage",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "右位处理成功且左位不变",
+          "evidence": {
+            "left": {
+              "status": "offline",
+              "barcode": "000123456781",
+              "chute": "A-07",
+              "seq": 128,
+              "time": "11:46:14"
+            },
+            "right": {
+              "status": "success",
+              "barcode": "000123456779",
+              "chute": "B-10",
+              "seq": 129,
+              "time": "11:46:09"
+            }
+          }
+        },
+        {
+          "pass": true,
+          "message": "左位断线时未创建新包"
+        }
+      ],
+      "observations": []
+    },
+    {
+      "id": "T03",
+      "title": "选择右相机，错误定位保留输入，修正保存待生效",
+      "scene": "settings-summary",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "通过对象列表明确选择右位相机"
+        },
+        {
+          "pass": true,
+          "message": "页面标题明确右位相机"
+        },
+        {
+          "pass": true,
+          "message": "非法端口定位到右位端口字段",
+          "evidence": {
+            "errors": {
+              "right.port": "请输入 1–65535 的整数端口，不要混用字母 O 与数字 0。"
+            }
+          }
+        },
+        {
+          "pass": true,
+          "message": "校验失败保留其他字段及错误原始输入"
+        },
+        {
+          "pass": true,
+          "message": "错误字段有可访问性无效状态"
+        },
+        {
+          "pass": true,
+          "message": "错误不会产生保存或运行变更"
+        },
+        {
+          "pass": true,
+          "message": "保存只提升已保存版本，运行版本不变",
+          "evidence": {
+            "savedRev": 13,
+            "runtimeRev": 12
+          }
+        },
+        {
+          "pass": true,
+          "message": "新端口为已保存值，运行仍使用原端口"
+        },
+        {
+          "pass": true,
+          "message": "右相机编辑不会改动左相机参数"
+        },
+        {
+          "pass": true,
+          "message": "可见状态栏区分已保存待生效与实际运行",
+          "evidence": {
+            "text": "编辑状态未修改\n已保存v13 · 待生效\n实际运行v12"
+          }
+        }
+      ],
+      "observations": []
+    },
+    {
+      "id": "T04",
+      "title": "WCS异常诊断、模拟修复、重新检查、查询原请求、返回",
+      "scene": "work-wcs-outage",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "从作业异常进入诊断"
+        },
+        {
+          "pass": true,
+          "message": "连接未恢复前原请求查询不可执行"
+        },
+        {
+          "pass": true,
+          "message": "模拟修复仅改变外部情景，未检查前不虚报在线"
+        },
+        {
+          "pass": true,
+          "message": "连接恢复后未知包裹仍待核对",
+          "evidence": {
+            "wcsOnline": true,
+            "hasUnknown": true
+          }
+        },
+        {
+          "pass": true,
+          "message": "连接检查不保存或应用配置"
+        },
+        {
+          "pass": true,
+          "message": "查询原请求完成后解除该原请求未知状态"
+        },
+        {
+          "pass": true,
+          "message": "原请求查询保留原包裹与序号，没有创建新包",
+          "evidence": {
+            "before": {
+              "status": "unknown",
+              "barcode": "000123456781",
+              "chute": "A-07",
+              "seq": 128,
+              "time": "11:46:14"
+            },
+            "after": {
+              "status": "success",
+              "barcode": "000123456781",
+              "chute": "A-07",
+              "seq": 128,
+              "time": "11:46:14"
+            }
+          }
+        },
+        {
+          "pass": true,
+          "message": "结果反馈明确没有新请求"
+        },
+        {
+          "pass": true,
+          "message": "查询后返回作业"
+        }
+      ],
+      "observations": [
+        "未连接真实WCS；此项证明演示状态与UI串联，不证明实际Query接口幂等或资格。"
+      ]
+    },
+    {
+      "id": "T05",
+      "title": "离开未保存内容：继续编辑、保留草稿、放弃修改",
+      "scene": "settings-summary",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "离开未保存配置触发选择对话框"
+        },
+        {
+          "pass": true,
+          "message": "继续编辑留在原对象并保留输入"
+        },
+        {
+          "pass": true,
+          "message": "保留草稿并离开保留会话草稿"
+        },
+        {
+          "pass": true,
+          "message": "草稿不会成为已保存或运行配置"
+        },
+        {
+          "pass": true,
+          "message": "返回右相机继续看到保留草稿"
+        },
+        {
+          "pass": true,
+          "message": "放弃修改后回到工作页且草稿还原已保存值"
+        }
+      ],
+      "observations": []
+    },
+    {
+      "id": "T06",
+      "title": "保存失败时保留输入和已保存/实际运行状态",
+      "scene": "camera-clean",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "失败保留本次输入"
+        },
+        {
+          "pass": true,
+          "message": "失败不虚增已保存版本，也不改变运行值"
+        },
+        {
+          "pass": true,
+          "message": "明确显示保存失败及输入保留"
+        }
+      ],
+      "observations": []
+    },
+    {
+      "id": "T07",
+      "title": "运行版本未知时阻止恢复接收",
+      "scene": "runtime-unknown",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "运行版本未知情景保持暂停"
+        },
+        {
+          "pass": true,
+          "message": "恢复接收入口给出明确阻断"
+        },
+        {
+          "pass": true,
+          "message": "没有可绕过核验的确认恢复按钮"
+        },
+        {
+          "pass": true,
+          "message": "检查后仍保持暂停"
+        }
+      ],
+      "observations": [
+        "本项验证原型恢复门禁，不证明真实资源归属检测。"
+      ]
+    },
+    {
+      "id": "T08",
+      "title": "运行版本未知时应用预览的文案一致性",
+      "scene": "runtime-unknown",
+      "status": "FAIL",
+      "assertions": [
+        {
+          "pass": false,
+          "message": "运行未知时不应宣称“当前仍运行 v12”",
+          "evidence": {
+            "text": "应用已保存配置 v13\n\n本次变更 1 项。当前仍运行 v12；应用期间需要暂停整个工作站接收新包裹，并受控重启 Sportmaster。\n\n对象 / 参数\t变更前\t变更后\n左位相机\n连接端口\t9000\t9001\n影响左右两路新包裹接收\n\n已有包裹和原请求保留。软件暂停不表示输送设备已停止；请在现场允许的维护时机执行。\n\n当前运行归属已确认\n\n先核实运行端实际状态。\n\n待核对\n原请求已核对\n\n此演示状态没有未决原请求。\n\n已通过\n维护身份校验：演示已通过；正式应用沿用现有认证机制。\n暂停接收并应用\n稍后应用"
+          }
+        }
+      ],
+      "observations": [],
+      "error": "运行未知时不应宣称“当前仍运行 v12”"
+    }
+  ],
+  "pageErrors": [],
+  "externalRequests": [],
+  "endedAt": "2026-10-20T04:31:08.909Z",
+  "sourceCurrentSha256": "f225840bd0148f8533911ecda2c57cf8a75e2fe54705f9d877d66b13f910ff4b",
+  "sourceChangedDuringReview": false,
+  "summary": {
+    "pass": 7,
+    "fail": 1,
+    "pageErrors": 0,
+    "externalRequests": 0
+  },
+  "retests": [
+    {
+      "startedAt": "2026-10-20T04:36:04.331Z",
+      "sourceSha256": "335d499ea20276b9b8c41785930e6efc4ea15bd79cb51b760254223c291d554e",
+      "browser": "Chromium 155.0.8059.84",
+      "scope": "只复测T08未知运行应用弹窗及关联配置对象摘要，不重跑其余7组",
+      "status": "HARNESS_ASSERTION_REVISED",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "未知运行弹窗不再宣称当前仍运行旧版本",
+          "evidence": {
+            "text": "应用已保存配置 v13\n\n本次变更 1 项。最后确认 v12，当前运行版本待核实；应用期间需要暂停整个工作站接收新包裹，并受控重启 Sportmaster。\n\n对象 / 参数\t变更前\t变更后\n左位相机\n连接端口\t9000\t9001\n影响左右两路新包裹接收\n\n已有包裹和原请求保留。软件暂停不表示输送设备已停止；请在现场允许的维护时机执行。\n\n运行归属\n\n先核实运行端实际状态。\n\n待核对\n原请求已核对\n\n此演示状态没有未决原请求。\n\n已通过\n维护身份校验：演示已通过；正式应用沿用现有认证机制。\n暂停接收并应用\n稍后应用"
+          }
+        },
+        {
+          "pass": false,
+          "message": "弹窗同时表达最后确认版本与当前待确认状态"
+        },
+        {
+          "pass": true,
+          "message": "检查项不再用标题虚报归属已确认"
+        },
+        {
+          "pass": true,
+          "message": "未知运行时应用操作仍被阻断"
+        },
+        {
+          "pass": true,
+          "message": "左相机、右相机、WCS对象摘要均显示运行待确认",
+          "evidence": {
+            "text": "尚不能确认当前实际运行配置\n\n请先核实运行状态；不能把最近保存的配置当作运行配置。\n\n查看待生效变更\n示例工作站 17\n\n固定业务：Sportmaster · 左右相机 → WCS → 显示格口\n\n配置示例\n左位相机\n相机读码驱动 · 示例\n左投递位\nCAM-L-021\n运行待确认\n最后确认 v12\n配置参数\n右位相机\n相机读码驱动 · 示例\n右投递位\nCAM-R-022\n运行待确认\n最后确认 v12\n配置参数\nWCS 格口服务\nWCS 集成 · 示例\n左右位共用\nwcs-01\n运行待确认\n最后确认 v12\n配置参数\n工作站身份与数据\n业务模块\nSportmaster\n运行模式\n离线模拟\n工作站标识\nreference-17\n数据根目录\nD:\\ImporterPC\\Data\n目录为设计示例。改变工作站身份或数据位置属于迁移任务。\n当前适用能力\n操作员登录\n未启用 · 不要求登录\n称重\n本 Sportmaster 方案不启用\n传图\n待需求与组件适用性确认\nPLC 下发\n不属于本业务流程\n首次配置\n新站准备、绑定与投入运行检查\n备份与迁移\n配置模板、修改记录和隔离恢复\n安装与维护程序\n程序目录、运行账户和组件安装\n高级与兼容配置\n原始配置、旧版格式与恢复证据"
+          }
+        },
+        {
+          "pass": true,
+          "message": "对象摘要不显示未经当前确认的运行版本"
+        }
+      ],
+      "pageErrors": [],
+      "externalRequests": [],
+      "endedAt": "2026-10-20T04:36:04.812Z",
+      "sourceCurrentSha256": "335d499ea20276b9b8c41785930e6efc4ea15bd79cb51b760254223c291d554e",
+      "sourceChangedDuringRetest": false,
+      "rawStatus": "FAIL",
+      "note": "测试断言最初只接受“待确认”，实际界面使用同义“待核实”。这是断言措辞过严，非产品缺陷；同一原型SHA下修正断言后复测通过。原始逐项结果保留。"
+    },
+    {
+      "startedAt": "2026-10-20T04:36:34.454Z",
+      "sourceSha256": "335d499ea20276b9b8c41785930e6efc4ea15bd79cb51b760254223c291d554e",
+      "browser": "Chromium 155.0.8059.84",
+      "scope": "只复测T08未知运行应用弹窗及关联配置对象摘要，不重跑其余7组",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "未知运行弹窗不再宣称当前仍运行旧版本",
+          "evidence": {
+            "text": "应用已保存配置 v13\n\n本次变更 1 项。最后确认 v12，当前运行版本待核实；应用期间需要暂停整个工作站接收新包裹，并受控重启 Sportmaster。\n\n对象 / 参数\t变更前\t变更后\n左位相机\n连接端口\t9000\t9001\n影响左右两路新包裹接收\n\n已有包裹和原请求保留。软件暂停不表示输送设备已停止；请在现场允许的维护时机执行。\n\n运行归属\n\n先核实运行端实际状态。\n\n待核对\n原请求已核对\n\n此演示状态没有未决原请求。\n\n已通过\n维护身份校验：演示已通过；正式应用沿用现有认证机制。\n暂停接收并应用\n稍后应用"
+          }
+        },
+        {
+          "pass": true,
+          "message": "弹窗同时表达最后确认版本与当前待确认状态"
+        },
+        {
+          "pass": true,
+          "message": "检查项不再用标题虚报归属已确认"
+        },
+        {
+          "pass": true,
+          "message": "未知运行时应用操作仍被阻断"
+        },
+        {
+          "pass": true,
+          "message": "左相机、右相机、WCS对象摘要均显示运行待确认",
+          "evidence": {
+            "text": "尚不能确认当前实际运行配置\n\n请先核实运行状态；不能把最近保存的配置当作运行配置。\n\n查看待生效变更\n示例工作站 17\n\n固定业务：Sportmaster · 左右相机 → WCS → 显示格口\n\n配置示例\n左位相机\n相机读码驱动 · 示例\n左投递位\nCAM-L-021\n运行待确认\n最后确认 v12\n配置参数\n右位相机\n相机读码驱动 · 示例\n右投递位\nCAM-R-022\n运行待确认\n最后确认 v12\n配置参数\nWCS 格口服务\nWCS 集成 · 示例\n左右位共用\nwcs-01\n运行待确认\n最后确认 v12\n配置参数\n工作站身份与数据\n业务模块\nSportmaster\n运行模式\n离线模拟\n工作站标识\nreference-17\n数据根目录\nD:\\ImporterPC\\Data\n目录为设计示例。改变工作站身份或数据位置属于迁移任务。\n当前适用能力\n操作员登录\n未启用 · 不要求登录\n称重\n本 Sportmaster 方案不启用\n传图\n待需求与组件适用性确认\nPLC 下发\n不属于本业务流程\n首次配置\n新站准备、绑定与投入运行检查\n备份与迁移\n配置模板、修改记录和隔离恢复\n安装与维护程序\n程序目录、运行账户和组件安装\n高级与兼容配置\n原始配置、旧版格式与恢复证据"
+          }
+        },
+        {
+          "pass": true,
+          "message": "对象摘要不显示未经当前确认的运行版本"
+        }
+      ],
+      "pageErrors": [],
+      "externalRequests": [],
+      "endedAt": "2026-10-20T04:36:34.794Z",
+      "sourceCurrentSha256": "335d499ea20276b9b8c41785930e6efc4ea15bd79cb51b760254223c291d554e",
+      "sourceChangedDuringRetest": false
+    },
+    {
+      "startedAt": "2026-10-20T04:37:25.721Z",
+      "sourceSha256": "1df228bed36ff95ca6c2ed9ebe5c11abec7d6cde7cdbee7fb4533bf83719ca9b",
+      "browser": "Chromium 155.0.8059.84",
+      "scope": "只复测T08未知运行应用弹窗及关联配置对象摘要，不重跑其余7组",
+      "status": "PASS",
+      "assertions": [
+        {
+          "pass": true,
+          "message": "未知运行弹窗不再宣称当前仍运行旧版本",
+          "evidence": {
+            "text": "应用已保存配置 v13\n\n本次变更 1 项。最后确认 v12，当前运行版本待核实；应用期间需要暂停整个工作站接收新包裹，并受控重启 Sportmaster。\n\n对象 / 参数\t变更前\t变更后\n左位相机\n连接端口\t9000\t9001\n影响左右两路新包裹接收\n\n已有包裹和原请求保留。软件暂停不表示输送设备已停止；请在现场允许的维护时机执行。\n\n运行归属\n\n先核实运行端实际状态。\n\n待核对\n原请求已核对\n\n此演示状态没有未决原请求。\n\n已通过\n维护身份校验：演示已通过；正式应用沿用现有认证机制。\n暂停接收并应用\n稍后应用"
+          }
+        },
+        {
+          "pass": true,
+          "message": "弹窗同时表达最后确认版本与当前待确认状态"
+        },
+        {
+          "pass": true,
+          "message": "检查项不再用标题虚报归属已确认"
+        },
+        {
+          "pass": true,
+          "message": "未知运行时应用操作仍被阻断"
+        },
+        {
+          "pass": true,
+          "message": "左相机、右相机、WCS对象摘要均显示运行待确认",
+          "evidence": {
+            "text": "尚不能确认当前实际运行配置\n\n请先核实运行状态；不能把最近保存的配置当作运行配置。\n\n查看待生效变更\n示例工作站 17\n\n固定业务：Sportmaster · 左右相机 → WCS → 显示格口\n\n配置示例\n左位相机\n相机读码驱动 · 示例\n左投递位\nCAM-L-021\n运行待确认\n最后确认 v12\n配置参数\n右位相机\n相机读码驱动 · 示例\n右投递位\nCAM-R-022\n运行待确认\n最后确认 v12\n配置参数\nWCS 格口服务\nWCS 集成 · 示例\n左右位共用\nwcs-01\n运行待确认\n最后确认 v12\n配置参数\n工作站身份与数据\n业务模块\nSportmaster\n运行模式\n离线模拟\n工作站标识\nreference-17\n数据根目录\nD:\\ImporterPC\\Data\n目录为设计示例。改变工作站身份或数据位置属于迁移任务。\n当前适用能力\n操作员登录\n未启用 · 不要求登录\n称重\n本 Sportmaster 方案不启用\n传图\n待需求与组件适用性确认\nPLC 下发\n不属于本业务流程\n首次配置\n新站准备、绑定与投入运行检查\n备份与迁移\n配置模板、修改记录和隔离恢复\n安装与维护程序\n程序目录、运行账户和组件安装\n高级与兼容配置\n原始配置、旧版格式与恢复证据"
+          }
+        },
+        {
+          "pass": true,
+          "message": "对象摘要不显示未经当前确认的运行版本"
+        }
+      ],
+      "pageErrors": [],
+      "externalRequests": [],
+      "endedAt": "2026-10-20T04:37:26.059Z",
+      "sourceCurrentSha256": "1df228bed36ff95ca6c2ed9ebe5c11abec7d6cde7cdbee7fb4533bf83719ca9b",
+      "sourceChangedDuringRetest": false
+    }
+  ],
+  "finalAssessment": {
+    "initialGroupsPassed": 7,
+    "initialGroupsFailed": 1,
+    "retestedFailedGroups": 1,
+    "retestPassed": true,
+    "remainingOpenDefects": 0,
+    "currentSourceSha256": "1df228bed36ff95ca6c2ed9ebe5c11abec7d6cde7cdbee7fb4533bf83719ca9b",
+    "note": "保留初次T08失败原始证据；仅对明确修复范围做定向复测，不将复测视为其余7组在新构建上的重新执行。"
+  }
+}

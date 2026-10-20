@@ -1,0 +1,274 @@
+[
+  {
+    "file": "index.html",
+    "bytes": 13628
+  },
+  {
+    "file": "README.txt",
+    "bytes": 519
+  },
+  {
+    "file": "pages.json",
+    "bytes": 10615
+  },
+  {
+    "file": "页面图集.md",
+    "bytes": 3760
+  },
+  {
+    "file": "images/01-workstation-waiting.png",
+    "bytes": 76393,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/02-workstation-normal.png",
+    "bytes": 77871,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/03-workstation-details.png",
+    "bytes": 104590,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/04-history.png",
+    "bytes": 111681,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/05-history-filters.png",
+    "bytes": 113991,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/10-maintenance-1.png",
+    "bytes": 155397,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/11-maintenance-2.png",
+    "bytes": 137716,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/12-maintenance-3.png",
+    "bytes": 117087,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/13-maintenance-4.png",
+    "bytes": 119045,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/14-maintenance-5.png",
+    "bytes": 130161,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/15-maintenance-6.png",
+    "bytes": 120873,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/16-maintenance-7.png",
+    "bytes": 122234,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/17-maintenance-8.png",
+    "bytes": 119491,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/18-maintenance-9.png",
+    "bytes": 143292,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/22-auxiliary.png",
+    "bytes": 77871,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/23-support-1.png",
+    "bytes": 59861,
+    "width": 1100,
+    "height": 900,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/24-support-2.png",
+    "bytes": 64961,
+    "width": 1100,
+    "height": 900,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/30-first-configuration-1.png",
+    "bytes": 109966,
+    "width": 1200,
+    "height": 950,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/31-first-configuration-2.png",
+    "bytes": 94992,
+    "width": 1200,
+    "height": 950,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/32-first-configuration-3.png",
+    "bytes": 75739,
+    "width": 1200,
+    "height": 950,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/33-first-configuration-4.png",
+    "bytes": 78135,
+    "width": 1200,
+    "height": 950,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/34-first-configuration-5.png",
+    "bytes": 123673,
+    "width": 1200,
+    "height": 950,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/after-normal-1100.png",
+    "bytes": 63193,
+    "width": 1375,
+    "height": 813,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/after-normal-900.png",
+    "bytes": 58620,
+    "width": 1125,
+    "height": 650,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/after-minimum-client-800x420.png",
+    "bytes": 57052,
+    "width": 1018,
+    "height": 572,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/after-left-processing-right-valid-1366.png",
+    "bytes": 84240,
+    "width": 1708,
+    "height": 960,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/after-unknown-rejected-1100.png",
+    "bytes": 77055,
+    "width": 1375,
+    "height": 813,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/after-stale-1100.png",
+    "bytes": 94856,
+    "width": 1375,
+    "height": 813,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/after-long-content-1100.png",
+    "bytes": 73671,
+    "width": 1375,
+    "height": 813,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/after-workstation-blocked-login.png",
+    "bytes": 86902,
+    "width": 1708,
+    "height": 960,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/after-history-filters-minimum.png",
+    "bytes": 58781,
+    "width": 1018,
+    "height": 572,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/after-history-expanded-minimum.png",
+    "bytes": 71288,
+    "width": 1018,
+    "height": 572,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/after-history-invalid-date-1100.png",
+    "bytes": 97982,
+    "width": 1375,
+    "height": 813,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/after-support-invalid-date.png",
+    "bytes": 74410,
+    "width": 1100,
+    "height": 900,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/after-classic-1366.png",
+    "bytes": 120745,
+    "width": 1938,
+    "height": 1038,
+    "mode": "RGBA"
+  },
+  {
+    "file": "images/published-startup.jpg",
+    "bytes": 61994,
+    "width": 947,
+    "height": 754,
+    "mode": "RGB"
+  },
+  {
+    "file": "SHA256SUMS",
+    "bytes": 3901
+  }
+]

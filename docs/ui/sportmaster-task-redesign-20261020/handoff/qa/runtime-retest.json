@@ -1,0 +1,44 @@
+{
+  "startedAt": "2026-10-20T04:37:25.721Z",
+  "sourceSha256": "1df228bed36ff95ca6c2ed9ebe5c11abec7d6cde7cdbee7fb4533bf83719ca9b",
+  "browser": "Chromium 155.0.8059.84",
+  "scope": "只复测T08未知运行应用弹窗及关联配置对象摘要，不重跑其余7组",
+  "status": "PASS",
+  "assertions": [
+    {
+      "pass": true,
+      "message": "未知运行弹窗不再宣称当前仍运行旧版本",
+      "evidence": {
+        "text": "应用已保存配置 v13\n\n本次变更 1 项。最后确认 v12，当前运行版本待核实；应用期间需要暂停整个工作站接收新包裹，并受控重启 Sportmaster。\n\n对象 / 参数\t变更前\t变更后\n左位相机\n连接端口\t9000\t9001\n影响左右两路新包裹接收\n\n已有包裹和原请求保留。软件暂停不表示输送设备已停止；请在现场允许的维护时机执行。\n\n运行归属\n\n先核实运行端实际状态。\n\n待核对\n原请求已核对\n\n此演示状态没有未决原请求。\n\n已通过\n维护身份校验：演示已通过；正式应用沿用现有认证机制。\n暂停接收并应用\n稍后应用"
+      }
+    },
+    {
+      "pass": true,
+      "message": "弹窗同时表达最后确认版本与当前待确认状态"
+    },
+    {
+      "pass": true,
+      "message": "检查项不再用标题虚报归属已确认"
+    },
+    {
+      "pass": true,
+      "message": "未知运行时应用操作仍被阻断"
+    },
+    {
+      "pass": true,
+      "message": "左相机、右相机、WCS对象摘要均显示运行待确认",
+      "evidence": {
+        "text": "尚不能确认当前实际运行配置\n\n请先核实运行状态；不能把最近保存的配置当作运行配置。\n\n查看待生效变更\n示例工作站 17\n\n固定业务：Sportmaster · 左右相机 → WCS → 显示格口\n\n配置示例\n左位相机\n相机读码驱动 · 示例\n左投递位\nCAM-L-021\n运行待确认\n最后确认 v12\n配置参数\n右位相机\n相机读码驱动 · 示例\n右投递位\nCAM-R-022\n运行待确认\n最后确认 v12\n配置参数\nWCS 格口服务\nWCS 集成 · 示例\n左右位共用\nwcs-01\n运行待确认\n最后确认 v12\n配置参数\n工作站身份与数据\n业务模块\nSportmaster\n运行模式\n离线模拟\n工作站标识\nreference-17\n数据根目录\nD:\\ImporterPC\\Data\n目录为设计示例。改变工作站身份或数据位置属于迁移任务。\n当前适用能力\n操作员登录\n未启用 · 不要求登录\n称重\n本 Sportmaster 方案不启用\n传图\n待需求与组件适用性确认\nPLC 下发\n不属于本业务流程\n首次配置\n新站准备、绑定与投入运行检查\n备份与迁移\n配置模板、修改记录和隔离恢复\n安装与维护程序\n程序目录、运行账户和组件安装\n高级与兼容配置\n原始配置、旧版格式与恢复证据"
+      }
+    },
+    {
+      "pass": true,
+      "message": "对象摘要不显示未经当前确认的运行版本"
+    }
+  ],
+  "pageErrors": [],
+  "externalRequests": [],
+  "endedAt": "2026-10-20T04:37:26.059Z",
+  "sourceCurrentSha256": "1df228bed36ff95ca6c2ed9ebe5c11abec7d6cde7cdbee7fb4533bf83719ca9b",
+  "sourceChangedDuringRetest": false
+}

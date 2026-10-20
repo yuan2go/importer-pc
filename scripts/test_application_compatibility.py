@@ -32,7 +32,7 @@ class CompatibilityTests(unittest.TestCase):
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             selected = resolve(root/'config/compositions.json', application+'-reference')
             version, policy = read_business(root, application, selected)
-            self.assertEqual(version['BusinessVersion'], {'sportmaster': '1.5.0', 'direct-plc': '1.4.2', 'wcs-to-plc': '1.4.2'}[application])
+            self.assertEqual(version['BusinessVersion'], {'sportmaster': '1.6.0', 'direct-plc': '1.4.3', 'wcs-to-plc': '1.4.3'}[application])
             self.assertEqual(version['CompatibilitySha256'], sha(policy))
             selected['components'][-2]['version'] = '9.0.0'
             # Change the actual business declaration regardless of topological order.
@@ -41,9 +41,9 @@ class CompatibilityTests(unittest.TestCase):
 
     def test_current_signed_provider_versions_do_not_relabel_old_packages(self):
         root = Path(__file__).resolve().parent.parent
-        versions = {'reference.parcel-capabilities': ('2.2.6', '2.2.5'),
+        versions = {'reference.parcel-capabilities': ('2.2.7', '2.2.6'),
                     'reference.barcode': ('1.3.5', '1.3.4'),
-                    'sportmaster.rcs-task': ('1.2.1', '1.2.0'),
+                    'sportmaster.rcs-task': ('1.3.0', '1.2.1'),
                     'hikrobot.idmvs-reader': ('1.0.3', '1.0.2')}
         for application in ['sportmaster', 'direct-plc', 'wcs-to-plc']:
             policy = json.loads((root/'config/compatibility'/f'{application}.json').read_bytes())

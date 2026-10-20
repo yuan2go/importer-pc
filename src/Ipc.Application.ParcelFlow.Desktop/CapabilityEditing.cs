@@ -13,7 +13,15 @@ public sealed class CapabilityParameter(ParameterField field, string value) : IN
     public bool IsList => Field.Type == "string-list";
     public int EditorMaximumLength => IsList ? checked(Field.MaximumLength * Field.MaximumItems + 8 * Field.MaximumItems) : Field.MaximumLength;
     public string EditorLabel => IsList ? Field.Label.Replace("（每行一项）", "") + "（JSON 数组）" : Field.Label;
-    public string EditorHelp => IsList ? "JSON字符串数组；最多" + Field.MaximumItems + "项，每项最多" + Field.MaximumLength + "字符；保留空项和转义。" : Field.Description ?? Field.Type;
+    public string EditorHelp => IsList ? "JSON字符串数组；最多" + Field.MaximumItems + "项，每项最多" + Field.MaximumLength + "字符；保留空项和转义。" :
+        Field.Description ?? (Field.Type switch
+        {
+            "integer" => "整数" + (Field.Minimum is { } min ? "，最小 " + min : "") + (Field.Maximum is { } max ? "，最大 " + max : ""),
+            "ipv4" => "IPv4 地址",
+            "boolean" => "true：启用；false：关闭",
+            "choice" => "选择已声明的可用值",
+            _ => "最多 " + Field.MaximumLength + " 个字符"
+        });
     public string Value { get => current; set { current = value; PropertyChanged?.Invoke(this, new(nameof(Value))); } }
 }
 public sealed class CapabilityDraft : INotifyPropertyChanged
@@ -87,9 +95,12 @@ public sealed class CapabilityDraft : INotifyPropertyChanged
         var parameters = new Dictionary<string, string>(originalParameters);
         foreach (var item in Parameters)
         {
+            if (!ParameterOwnership.Applicable(this, item.Field.Key)) { parameters.Remove(item.Field.Key); continue; }
             if (item.Value.Length == 0 && originalParameters.GetValueOrDefault(item.Field.Key) != "") { parameters.Remove(item.Field.Key); continue; }
             if (!preserveOmittedDefaults || originalParameters.ContainsKey(item.Field.Key) || item.Value != item.Field.Default) parameters[item.Field.Key] = item.Value;
         }
+        if (ParameterOwnership.StationConflict(this))
+            throw new InvalidOperationException("left-station-code / right-station-code 不一致；请在系统配置明确填写共同取格口站码，原值保留供核对");
         var errors = ExtensionSchema.Validate(p.Parameters, parameters);
         if (errors.Length != 0) throw new InvalidOperationException(string.Join("; ", errors));
         return new(Kind, p.Implementation, p.Version, InstanceId, Target, Contract, parameters, p.Package, p.Module, Enabled);

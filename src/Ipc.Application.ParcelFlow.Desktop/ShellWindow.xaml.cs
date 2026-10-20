@@ -22,6 +22,7 @@ public partial class ShellWindow : Window
     public ShellWindow(ParcelViewModel vm, Func<ParcelViewModel> newViewModel, Func<UserControl> workstation, string? view = null, string? layout = null, ShellWindow? owner = null)
     {
         InitializeComponent(); ProductBrand.Apply(this); this.vm = vm; this.newViewModel = newViewModel; this.workstation = workstation; DataContext = vm; work = workstation();
+        maintenance.DataContext = vm; history.DataContext = vm; work.DataContext = vm;
         root = owner?.root ?? this; windows = owner?.windows ?? []; windows.Add(this);
         if (owner is not null) Owner = owner;
         var initialPage = view?.EndsWith("-history", StringComparison.Ordinal) == true ? "history" : view?.EndsWith("-maintenance", StringComparison.Ordinal) == true ? "maintenance" : "work";

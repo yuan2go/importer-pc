@@ -7,6 +7,7 @@ namespace System.Windows
     public delegate void SizeChangedEventHandler(object sender, SizeChangedEventArgs e);
     public readonly struct Thickness { public Thickness(double value) { } }
     public enum WindowState { Normal, Maximized }
+    public class FrameworkElement;
     public static class SystemParameters { public static (double Width, double Height) WorkArea => (1440, 980); }
     public class Window
     {
@@ -76,12 +77,13 @@ namespace Ipc.Application.ParcelFlow.Desktop
     {
         public static bool HasUnsaved(ParcelViewModel vm, MaintenancePage page) => vm.HasUnsavedConfiguration;
         public static bool ConfirmDiscard(System.Windows.Window window, int count) => false;
+        public static Task<bool> ReviewUnsavedAsync(System.Windows.Window window, int count, Func<Task>? save, string action) => Task.FromResult(false);
     }
-    public class HistoryPage;
+    public class HistoryPage { public object? DataContext { get; set; } }
     public static class ProductBrand { public static void Apply(System.Windows.Window window) { } }
     public class ProductSupportWindow(Ipc.Application.Contracts.IParcelApplication application, string? operation) : System.Windows.Window
     { public Ipc.Application.Contracts.IParcelApplication Application { get; } = application; public string? Operation { get; } = operation; }
-    public class MaintenancePage;
+    public class MaintenancePage { public object? DataContext { get; set; } }
 }
 namespace Ipc.Application.Sportmaster.Desktop
 {
@@ -92,5 +94,6 @@ namespace Ipc.Application.Sportmaster.Desktop
         readonly System.Windows.Controls.ContentControl PageHost = new();
         readonly System.Windows.Controls.PasswordBox LoginProof = new();
         void InitializeComponent() { }
+        System.Windows.FrameworkElement CreateDiagnostics() => new();
     }
 }

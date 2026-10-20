@@ -45,6 +45,9 @@ static partial class SportmasterRcs
         var response = "{\"requestId\":" + (mode == "wrong-id" ? id + 1 : id) + ",\"result\":[{\"index\":" + (mode == "wrong-index" ? 2 : 1) + ",\"success\":" + (mode is "unpack" or "reject" ? "false" : "true") + ",\"code\":" + code + ",\"message\":" + code + ",\"args\":null,\"command\":\"" + (mode == "wrong-command" ? "synthetic.other" : "sorter.task.dest_request") + "\",\"data\":" + data + "}]}";
         return mode switch
         {
+            "task-fields" => response.Replace("\"taskId\":", "\"waveNo\":\"0007-WAVE\",\"quantity\":\"0002\",\"taskId\":", StringComparison.Ordinal),
+            "numeric-response-quantity" => response.Replace("\"taskId\":", "\"quantity\":2,\"taskId\":", StringComparison.Ordinal),
+            "numeric-wave" => response.Replace("\"taskId\":", "\"waveNo\":7,\"taskId\":", StringComparison.Ordinal),
             "duplicate" => response.Replace("\"requestId\":", "\"requestId\":0,\"requestId\":", StringComparison.Ordinal),
             "missing-chute" => response.Replace("\"chuteCode\":\"SYNTH-CHUTE\",", "", StringComparison.Ordinal),
             "blank-chute" => response.Replace("\"chuteCode\":\"SYNTH-CHUTE\"", "\"chuteCode\":\" \"", StringComparison.Ordinal),
@@ -60,7 +63,7 @@ static partial class SportmasterRcs
             service.ConfigureRuntime(HeartbeatConfiguration(workspace, binding));
             await service.StartAsync(CancellationToken.None);
             Check((await service.HealthAsync(CancellationToken.None)).Ready && peer.Requests.Count == 0, "lifecycle readiness sends no fabricated remote health request");
-            foreach (var mode in new[] { "assigned", "unpack", "reject", "malformed", "wrong-id", "wrong-index", "wrong-command", "http-error", "redirect", "duplicate", "missing-chute", "blank-chute", "measured" })
+            foreach (var mode in new[] { "assigned", "task-fields", "numeric-response-quantity", "numeric-wave", "unpack", "reject", "malformed", "wrong-id", "wrong-index", "wrong-command", "http-error", "redirect", "duplicate", "missing-chute", "blank-chute", "measured" })
             {
                 peer.Mode = mode; var postCount = peer.Requests.Count; var original = Request(binding); var frozen = original with { IntegrationRequest = service.PrepareRequest(original, 7) };
                 var reply = await service.RequestDestinationAsync(frozen, CancellationToken.None);
@@ -78,8 +81,16 @@ static partial class SportmasterRcs
                 Check(reply.RequestId == frozen.Id && reply.PayloadHash == frozen.PayloadHash && reply.PhysicalCompleted != true, mode + " retains original local correlation without physical completion");
                 switch (mode)
                 {
+                    case "task-fields":
+                        Check(reply.BusinessAccepted == true && reply.Destination is { WaveNo: "0007-WAVE", Quantity: "0002" }, "optional response wave/quantity preserve strings including leading zeros independently of request quantity");
+                        Check(Wire.Decode<StageReply>(Wire.Encode(reply)).Destination == reply.Destination, "new task fields survive persisted StageReply round trip");
+                        break;
                     case "measured": Check(reply.BusinessAccepted == true && reply.Destination is { Length: 12.34m, Width: 5.6m, Height: 7m, Weight: 0.89m } && reply.Destination.ArgsJson == "{\"synthetic\":[1,\"alpha\"]}", "non-null args and positive measurements preserve exact values without inferred units/conversion"); break;
-                    case "assigned": Check(reply.BusinessAccepted == true && reply.Slot == "SYNTH-CHUTE" && reply.Destination is { Outcome: WcsDestinationOutcome.Assigned, TaskId: "SYNTH-TASK", SkuId: "SYNTH-SKU", Length: null, Width: null, Height: null, Weight: null }, "assigned reply preserves task/SKU and nullable measurements"); break;
+                    case "assigned":
+                        Check(reply.BusinessAccepted == true && reply.Slot == "SYNTH-CHUTE" && reply.Destination is { Outcome: WcsDestinationOutcome.Assigned, TaskId: "SYNTH-TASK", SkuId: "SYNTH-SKU", Length: null, Width: null, Height: null, Weight: null, WaveNo: null, Quantity: null }, "older assigned reply preserves task/SKU and leaves added response fields absent");
+                        var legacy = Wire.Encode(new { reply.Destination!.Outcome, reply.Destination.Code, reply.Destination.Message, reply.Destination.ArgsJson, reply.Destination.TaskId, reply.Destination.SkuId, reply.Destination.Length, reply.Destination.Width, reply.Destination.Height, reply.Destination.Weight, reply.Destination.Unpack });
+                        Check(Wire.Encode(reply.Destination) == legacy && Wire.Encode(Wire.Decode<WcsDestinationResult>(legacy)) == legacy, "old destination bytes and identity hash are unchanged when new fields are absent");
+                        break;
                     case "unpack": Check(reply.BusinessAccepted != true && reply.Destination is { Outcome: WcsDestinationOutcome.UnpackRequired, Code: "NEED_UNPACK", Unpack: { Barcode: "SYNTH-0001", SkuId: "SYNTH-SKU", ScanQty: 1 } } && reply.Destination.Unpack.Chutes.Single() == new WcsUnpackChute("SYNTH-CHUTE", "SYNTH-ORDER", 0, "ASSIGNED"), "NEED_UNPACK preserves all typed split-package details"); break;
                     case "reject": Check(reply.BusinessAccepted == false && reply.Destination is { Outcome: WcsDestinationOutcome.Rejected, Code: "SYNTH_OTHER_ERROR", Message: "SYNTH_OTHER_ERROR" }, "other explicit errors remain business rejections with original codes/messages"); break;
                     default: Check(reply.BusinessAccepted is null && reply.ProtocolAcknowledged != true && reply.Slot is null, mode + " remains unknown and cannot manufacture acceptance"); break;

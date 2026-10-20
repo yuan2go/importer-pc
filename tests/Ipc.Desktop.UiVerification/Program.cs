@@ -19,7 +19,9 @@ static partial class Program
     public static int Main(string[] args)
     {
         var root = Path.GetFullPath(args.FirstOrDefault() ?? ".");
-        var evidence = Path.Combine(Path.GetTempPath(), "ipc-sportmaster-wpf-" + Wire.Id());
+        var evidence = args.Contains("--task-redesign")
+            ? Path.Combine(root, ".artifacts", "wpf-v2-" + Wire.Id())
+            : Path.Combine(Path.GetTempPath(), "ipc-sportmaster-wpf-" + Wire.Id());
         Directory.CreateDirectory(evidence);
         var lines = new List<string>();
         var desktop = new System.Windows.Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
@@ -28,7 +30,8 @@ static partial class Program
         {
             try
             {
-                if (args.Contains("--parameter-refactor")) await VerifyParameterRefactor(root, evidence, lines, args.Contains("--interactive"));
+                if (args.Contains("--task-redesign")) await VerifyTaskRedesign(root, evidence, lines, args.Contains("--interactive"));
+                else if (args.Contains("--parameter-refactor")) await VerifyParameterRefactor(root, evidence, lines, args.Contains("--interactive"));
                 else if (args.Contains("--audit-performance")) await VerifyAuditPerformance(root, evidence, lines);
                 else if (args.Contains("--visual-productization")) await VerifyVisualProductization(root, evidence, lines, args.Contains("--baseline"), args.Contains("--interactive"));
                 else if (args.Contains("--comm-native-pages")) await VerifyCommercialPages(root, evidence, lines).WaitAsync(TimeSpan.FromSeconds(90));
@@ -93,8 +96,9 @@ static partial class Program
             Click(alternate, "工作台"); Click(alternate, "辅助窗口"); await Task.Delay(700);
             var child = alternate.OwnedWindows.OfType<SupplyStationWindow>().Single();
             Check(ReferenceEquals(child.ViewModel.Application, application) && !ReferenceEquals(child.ViewModel, alternate.ViewModel), "auxiliary window inherits UI and shares Application with independent model");
-            child.Close(); await Task.Delay(100);
-            Check(stops == 0 && !child.IsVisible, "closing auxiliary window keeps business owner alive");
+            child.Close();
+            for (var i = 0; i < 100 && child.IsVisible; i++) await Task.Delay(50);
+            Check(stops == 0 && !child.IsVisible, "closing auxiliary window keeps business owner alive; " + child.ViewModel.Message);
             probe.Project = snapshot => snapshot with
             {
                 AuxiliaryReasons = Enumerable.Range(0, 50).Select(i => $"SYNTHETIC retained receipt {i}: original custody and upload failure detail").ToArray(),
@@ -131,7 +135,7 @@ static partial class Program
             for (var i = 0; i < 100 && !alternate.IsEnabled; i++) await Task.Delay(20);
             Check(alternate.IsVisible && alternate.IsEnabled && remaining.IsVisible && childTimer.IsEnabled && stops == 0,
                 "owner stop failure retains both overlapping windows and resumes their native timers");
-            remaining.Close(); await Task.Delay(100);
+            remaining.Close(); for (var i = 0; i < 100 && remaining.IsVisible; i++) await Task.Delay(50);
             Check(!remaining.IsVisible && !childTimer.IsEnabled, "independent native auxiliary close after root failure is terminal");
             alternate.Close();
             for (var i = 0; i < 100 && alternate.IsVisible; i++) await Task.Delay(50);
@@ -144,6 +148,7 @@ static partial class Program
     }
     static void Click(DependencyObject root, string name)
     {
+        if (root is SupplyStationWindow) name = name switch { "设备与维护" => "参数配置", "工作台" => "作业", _ => name };
         var button = Descendants(root).OfType<Button>().SingleOrDefault(x => Equals(x.Content, name));
         if (button is not null) button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         else Descendants(root).OfType<Menu>().SelectMany(m => m.Items.OfType<MenuItem>().SelectMany(MenuItems)).Single(x => Equals(x.Header, name)).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));

@@ -1,0 +1,1064 @@
+{
+  "fieldCount": 54,
+  "originalFieldCount": 58,
+  "actionCount": 39,
+  "rows": [
+    {
+      "id": "S01",
+      "field": "本地工作站ID",
+      "destination": "系统 / 站点标识 / 本地工作站标识（只读）",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S02",
+      "field": "业务模块 / 运行环境",
+      "destination": "全局页脚 / 运行环境；业务模块 / 当前业务（固定）；独立维护 / 部署身份",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S03",
+      "field": "区域ID",
+      "destination": "系统 / 站点标识 / 区域ID",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S04",
+      "field": "项目ID",
+      "destination": "系统 / 站点标识 / 项目ID",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S05",
+      "field": "供包台编码（取格口）",
+      "destination": "系统 / 站点标识 / 共同取格口站码（旧左右冲突显式迁移）",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S06",
+      "field": "输入队列容量",
+      "destination": "业务模块 / 处理预算 / 输入队列容量",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S07",
+      "field": "调用等待上限",
+      "destination": "业务模块 / 处理预算 / 调用预算",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S08",
+      "field": "未清偿作业容量",
+      "destination": "业务模块 / 处理预算 / 未清偿作业容量",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S09",
+      "field": "常驻历史条数",
+      "destination": "系统 / 数据与记录 / 常驻历史条数",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S10",
+      "field": "磁盘保留空间",
+      "destination": "系统 / 数据与记录 / 关键写入保留空间",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S11",
+      "field": "计划备份文件夹",
+      "destination": "系统 / 计划备份 / 备份绝对目录",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S12",
+      "field": "备份间隔",
+      "destination": "系统 / 计划备份 / 周期",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S13",
+      "field": "最多保留备份份数",
+      "destination": "系统 / 计划备份 / 容量上限",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S14",
+      "field": "会话有效时长",
+      "destination": "系统 / 数据与记录 / 操作员会话有效时长（已绑定时）",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S15",
+      "field": "配置文件夹",
+      "destination": "系统 / 数据与记录（只读）；独立启动维护 / 本机目录与配置身份（受控修改）",
+      "implementation": "ConfigurationLocations.cs / StartupWorkflows.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S16",
+      "field": "作业数据文件夹",
+      "destination": "系统 / 数据与记录（只读）；独立启动维护 / 本机目录与配置身份（受控修改）",
+      "implementation": "ConfigurationLocations.cs / StartupWorkflows.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S17",
+      "field": "窗口布局 / 显示偏好",
+      "destination": "更多 / 标准与紧凑布局；维护 / 模板与显示",
+      "implementation": "SupplyStationWindow.xaml.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S18",
+      "field": "每次请求数量",
+      "destination": "业务模块 / 请求规则 / 请求数量",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S19",
+      "field": "指定目标格口",
+      "destination": "业务模块 / 请求规则 / 指定格口开关",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S20",
+      "field": "指定格口",
+      "destination": "业务模块 / 请求规则 / 指定格口编码",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S21",
+      "field": "启用计划备份",
+      "destination": "系统 / 计划备份 / 启用受控计划备份",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "D01",
+      "field": "Hikrobot ID-MVS",
+      "destination": "驱动 / 左相机或右相机 / 安装版本与设备身份 / 已安装类型与精确版本",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / CapabilityEditing.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "D02",
+      "field": "配置实例ID",
+      "destination": "驱动 / 本位 / 安装版本与设备身份（稳定实例只读）",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / CapabilityEditing.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "D03",
+      "field": "稳定设备ID",
+      "destination": "驱动 / 本位 / 安装版本与设备身份（DeviceId只读）",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / CapabilityEditing.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "D04",
+      "field": "相机编码（取格口）",
+      "destination": "驱动 / 本位 / 取格口业务映射",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / CapabilityEditing.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "D05",
+      "field": "相机IPv4地址",
+      "destination": "驱动 / 本位 / 相机IPv4地址",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / CapabilityEditing.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "D06",
+      "field": "预期序列号",
+      "destination": "驱动 / 本位 / 预期序列号",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / CapabilityEditing.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "D07",
+      "field": "实体关联策略",
+      "destination": "驱动 / 本位 / 实体关联策略",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / CapabilityEditing.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "D08",
+      "field": "条码编码",
+      "destination": "驱动 / 本位 / 条码编码",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / CapabilityEditing.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "D09",
+      "field": "回调队列容量",
+      "destination": "驱动 / 本位 / 回调队列容量",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / CapabilityEditing.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "D10",
+      "field": "绑定投递位",
+      "destination": "驱动 / 左右对象名称；维护 / 高级绑定与兼容策略 / 原角色（固定）",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / CapabilityEditing.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "C01",
+      "field": "RCS服务地址",
+      "destination": "组件 / RCS 连接 / 组件连接目标",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / ParameterEditorModel.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "C02",
+      "field": "协议来源",
+      "destination": "组件 / RCS 连接 / 协议来源",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / ParameterEditorModel.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "C03",
+      "field": "协议语言",
+      "destination": "组件 / RCS 连接 / 协议语言",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / ParameterEditorModel.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "C04",
+      "field": "独占编号区间起点（不含）",
+      "destination": "组件 / RCS 连接 / 请求编号区间起点",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / ParameterEditorModel.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "C05",
+      "field": "独占编号区间容量",
+      "destination": "组件 / RCS 连接 / 请求编号区间容量",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / ParameterEditorModel.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "C06",
+      "field": "组件参与当前业务",
+      "destination": "维护与迁移 / 高级绑定与兼容策略 / 库存启用与角色绑定；必需能力由 Application 守卫",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / ParameterEditorModel.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "C07",
+      "field": "组件来源与实例身份",
+      "destination": "组件 / RCS 连接 / 安装版本与设备身份",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / ParameterEditorModel.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "U01",
+      "field": "当前包裹号",
+      "destination": "作业 / 本位扫描信息 / 当前包裹号",
+      "implementation": "SupplyStationPosition.xaml / SupplyStationViewModel.cs / ParcelViewModel.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "U02",
+      "field": "读码来源",
+      "destination": "作业 / 本位扫描信息 / 读码来源",
+      "implementation": "SupplyStationPosition.xaml / SupplyStationViewModel.cs / ParcelViewModel.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "U03",
+      "field": "扫描时间",
+      "destination": "作业 / 本位扫描信息 / 扫描时间",
+      "implementation": "SupplyStationPosition.xaml / SupplyStationViewModel.cs / ParcelViewModel.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "U04",
+      "field": "本次观察序号",
+      "destination": "作业 / 本位扫描信息 / 本次观察序号",
+      "implementation": "SupplyStationPosition.xaml / SupplyStationViewModel.cs / ParcelViewModel.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "U05",
+      "field": "任务号",
+      "destination": "作业 / 本位任务信息 / 任务号",
+      "implementation": "SupplyStationPosition.xaml / SupplyStationViewModel.cs / ParcelViewModel.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "U06",
+      "field": "SKU",
+      "destination": "作业 / 本位任务信息 / SKU",
+      "implementation": "SupplyStationPosition.xaml / SupplyStationViewModel.cs / ParcelViewModel.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "U07",
+      "field": "波次号",
+      "destination": "作业 / 本位任务信息 / 波次号",
+      "implementation": "SupplyStationPosition.xaml / SupplyStationViewModel.cs / ParcelViewModel.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "U08",
+      "field": "任务数量",
+      "destination": "作业 / 本位任务信息 / 任务数量",
+      "implementation": "SupplyStationPosition.xaml / SupplyStationViewModel.cs / ParcelViewModel.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "U09",
+      "field": "目标格口",
+      "destination": "作业 / 本位任务信息 / 目标格口",
+      "implementation": "SupplyStationPosition.xaml / SupplyStationViewModel.cs / ParcelViewModel.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "U10",
+      "field": "RCS附加测量信息",
+      "destination": "原作业详情 / 回执语义（值与null原样，不发明单位）",
+      "implementation": "SupplyStationPosition.xaml / SupplyStationViewModel.cs / ParcelViewModel.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "S22",
+      "field": "工位编码（心跳）",
+      "destination": "系统 / 站点标识 / 心跳工位编码",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "B01",
+      "field": "条码筛选规则",
+      "destination": "业务模块 / 条码筛选 / 左右共用条码筛选正则",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "B02",
+      "field": "本地候选样例",
+      "destination": "业务模块 / 条码筛选 / 本地候选样例",
+      "implementation": "ParameterSettingsControl.Policy.cs / ParameterOwnership.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "D11",
+      "field": "相机编码（心跳）",
+      "destination": "驱动 / 本位 / 心跳 bcr-code",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / CapabilityEditing.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "C08",
+      "field": "心跳间隔",
+      "destination": "组件 / RCS 连接 / 心跳请求间隔",
+      "implementation": "ParameterSettingsControl.Capabilities.cs / ParameterEditorModel.cs",
+      "status": "已适配；真实设备/服务资格另验"
+    },
+    {
+      "id": "U11",
+      "field": "候选与筛选详情",
+      "destination": "作业与记录 / 本次相机输入 / 候选与筛选详情",
+      "implementation": "SupplyStationPosition.xaml / SupplyStationViewModel.cs / ParcelViewModel.cs",
+      "status": "已实现/复用"
+    },
+    {
+      "id": "P01",
+      "field": "维护账号",
+      "destination": "参数配置 / 保存准备 / 维护账号",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P02",
+      "field": "维护口令",
+      "destination": "参数配置 / 保存准备 / 维护口令",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P03",
+      "field": "维护变更原因",
+      "destination": "参数配置 / 保存准备 / 变更原因",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P04",
+      "field": "编辑来源",
+      "destination": "参数配置 / 维护与迁移 / 完整候选配置（高级）；单一编辑来源",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P05",
+      "field": "配置修订 / 草稿CAS",
+      "destination": "查看跨对象修改 / 草稿修订；维护 / 完整候选配置（高级）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P06",
+      "field": "Effective / Pending",
+      "destination": "参数顶部草稿状态；维护 / 运行输入与待重启（完整状态）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P07",
+      "field": "稳定设备ID",
+      "destination": "驱动配置 → 本位实例 → 稳定设备标识",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P08",
+      "field": "原角色",
+      "destination": "驱动配置 → 本位实例 → 业务用途",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P09",
+      "field": "已安装提供者 / 精确组件来源",
+      "destination": "驱动配置 → 已安装类型 → 实例",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P10",
+      "field": "实例身份",
+      "destination": "驱动配置 → 本位实例 → 实例身份",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P11",
+      "field": "完整候选配置（高级）JSON",
+      "destination": "参数配置 / 维护与迁移 / 完整候选配置（高级）；单一编辑来源",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P12",
+      "field": "SchemaVersion",
+      "destination": "参数配置 / 维护与迁移 / 完整候选配置（高级）；单一编辑来源",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P13",
+      "field": "维护核对说明",
+      "destination": "参数配置 / 维护与迁移 / 运行输入与待重启 / 旧配置账核对",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P14",
+      "field": "原字节SHA256 / 原账状态",
+      "destination": "参数配置 / 维护与迁移 / 运行输入与待重启 / 旧配置账核对",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P15",
+      "field": "Providers.Kind",
+      "destination": "驱动或组件 / 安装版本与设备身份；维护 / 已安装模块参数（完整描述）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P16",
+      "field": "Providers.Implementation",
+      "destination": "驱动或组件 / 安装版本与设备身份；维护 / 已安装模块参数（完整描述）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P17",
+      "field": "Providers.Version",
+      "destination": "驱动或组件 / 安装版本与设备身份；维护 / 已安装模块参数（完整描述）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P18",
+      "field": "Providers.Contract",
+      "destination": "驱动或组件 / 安装版本与设备身份；维护 / 已安装模块参数（完整描述）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P19",
+      "field": "Providers.Parameters",
+      "destination": "驱动或组件 / 安装版本与设备身份；维护 / 已安装模块参数（完整描述）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P20",
+      "field": "Requirements.MeasuredWeight",
+      "destination": "驱动或组件 / 安装版本与设备身份；维护 / 已安装模块参数（完整描述）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P21",
+      "field": "Requirements.ImageAddress",
+      "destination": "驱动或组件 / 安装版本与设备身份；维护 / 已安装模块参数（完整描述）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P22",
+      "field": "Requirements.Query",
+      "destination": "驱动或组件 / 安装版本与设备身份；维护 / 已安装模块参数（完整描述）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P23",
+      "field": "Requirements.PhysicalConfirmation",
+      "destination": "驱动或组件 / 安装版本与设备身份；维护 / 已安装模块参数（完整描述）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P24",
+      "field": "能力（新增类型下拉）",
+      "destination": "维护 / 能力库存与参数；必需能力、角色与数量仍由Application校验",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P25",
+      "field": "启用",
+      "destination": "维护 / 能力库存与参数；必需能力、角色与数量仍由Application校验",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P26",
+      "field": "旧版绑定",
+      "destination": "维护 / 能力库存与参数；必需能力、角色与数量仍由Application校验",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P27",
+      "field": "已安装提供者",
+      "destination": "驱动配置/组件配置 → 已安装类型选择",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P28",
+      "field": "实例身份",
+      "destination": "驱动配置/组件配置 → 实例技术详情",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P29",
+      "field": "协议目标 / 读码身份",
+      "destination": "驱动配置 → 设备身份；组件配置 → 连接目标",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P30",
+      "field": "合同版本",
+      "destination": "驱动配置/组件配置 → 接口技术详情",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P31",
+      "field": "称重来源",
+      "destination": "业务模块配置 → 适用业务策略/旧配置迁移 → 重量来源",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P32",
+      "field": "称重单位",
+      "destination": "业务模块配置 → 适用业务策略/旧配置迁移 → 重量单位",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P33",
+      "field": "精度",
+      "destination": "业务模块配置 → 适用业务策略/旧配置迁移 → 重量小数位",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P34",
+      "field": "配置值",
+      "destination": "业务模块配置 → 适用业务策略/旧配置迁移 → 配置重量",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P35",
+      "field": "本件等待期限(ms)",
+      "destination": "业务模块配置 → 适用业务策略/旧配置迁移 → 等待称重期限",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P36",
+      "field": "测量新鲜度(ms)",
+      "destination": "业务模块配置 → 适用业务策略/旧配置迁移 → 测量新鲜度",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P37",
+      "field": "重量有效期",
+      "destination": "业务模块配置 → 适用业务策略/旧配置迁移 → 重量有效期",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P38",
+      "field": "图片上传策略",
+      "destination": "业务模块配置 → 适用业务策略/旧配置迁移 → 上传策略",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P39",
+      "field": "离线签名包路径",
+      "destination": "维护 / 安装管理；真实签名及独立安装帮助程序",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P40",
+      "field": "原包 SHA256",
+      "destination": "维护 / 安装管理；真实签名及独立安装帮助程序",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P41",
+      "field": "扩展库存状态",
+      "destination": "维护 / 安装管理；真实签名及独立安装帮助程序",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P42",
+      "field": "原配置目录（包含business.json）",
+      "destination": "系统 / 数据与记录（只读）；独立启动维护 / 本机目录与配置身份（受控修改）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P43",
+      "field": "原数据根（保留Simulation/Production、站和Application层级）",
+      "destination": "系统 / 数据与记录（只读）；独立启动维护 / 本机目录与配置身份（受控修改）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P44",
+      "field": "工位身份摘要",
+      "destination": "系统 / 站点标识；独立维护 / 本机目录与配置身份",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P45",
+      "field": "读码来源 · sportmaster.camera.left / right",
+      "destination": "驱动配置 → 固定两个实例与投递位对应；首次启动 → 驱动实例",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P46",
+      "field": "稳定设备身份（离线录入，待真实SDK核验）",
+      "destination": "首次启动 → 驱动实例；后续驱动配置 → 标识/受控迁移",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P47",
+      "field": "输入队列容量",
+      "destination": "业务模块 / 处理预算",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P48",
+      "field": "调用超时（ms）",
+      "destination": "业务模块 / 处理预算",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P49",
+      "field": "作业容量",
+      "destination": "业务模块 / 处理预算",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P50",
+      "field": "常驻历史条数（同库归档不释放磁盘）",
+      "destination": "系统 / 数据与记录",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P51",
+      "field": "计划备份维护限制（文案）",
+      "destination": "系统 / 计划备份",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P52",
+      "field": "维护原因（必填；保留审计与原配置字节）",
+      "destination": "首次启动配置 → 检查并保存",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P53",
+      "field": "浏览完整备份目录（最多256份；校验整个恢复集，保留无效项）",
+      "destination": "独立维护 / 完整备份与隔离恢复（列表、完整性与目标预检）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P54",
+      "field": "备份列表：时间 / 完整性 / 字节 / 备份",
+      "destination": "独立维护 / 完整备份与隔离恢复（列表、完整性与目标预检）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P55",
+      "field": "恢复交接证据",
+      "destination": "维护 / 恢复交接、异常与恢复（原确切ID）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P56",
+      "field": "记录命令目标",
+      "destination": "作业记录 → 固定原作业 → 处置详情",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P57",
+      "field": "确认已检查身份冲突旁输入框",
+      "destination": "维护 / 恢复交接、异常与恢复（原确切ID）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "P58",
+      "field": "原接收发生 / 确切ID / RawDurable",
+      "destination": "维护 / 恢复交接、异常与恢复（原确切ID）",
+      "implementation": "MaintenancePage.xaml / StartupWorkflows.cs / 共享参数及历史模型",
+      "status": "复用并适配；历史证据不倒写"
+    },
+    {
+      "id": "A01",
+      "field": "验证维护身份",
+      "destination": "参数配置 / 保存准备 / 认证维护权限",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A02",
+      "field": "保存修改",
+      "destination": "参数配置 / 保存修改（待重启）",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A03",
+      "field": "草稿与读取 / 检查连接",
+      "destination": "参数配置 / 保存准备 / 草稿与重新读取",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A04",
+      "field": "检查修改",
+      "destination": "参数配置 / 检查完整候选",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A05",
+      "field": "查看配置文本",
+      "destination": "维护 / 完整候选配置（高级）",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A06",
+      "field": "编辑配置文本",
+      "destination": "维护 / 显式切换高级JSON编辑",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A07",
+      "field": "转为表单编辑",
+      "destination": "维护 / 将当前高级JSON加载到表单",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A08",
+      "field": "检查配置文本",
+      "destination": "维护 / 校验完整候选",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A09",
+      "field": "保存关联修改",
+      "destination": "查看跨对象修改 → 保存修改（待重启）；高级编辑沿完整修订保存",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A10",
+      "field": "备份与恢复",
+      "destination": "维护 / 完整备份；独立维护 / 隔离恢复",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A11",
+      "field": "添加组件实例",
+      "destination": "维护 / 能力库存；Sportmaster无第二RCS/第三Reader入口",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A12",
+      "field": "移除此实例",
+      "destination": "维护 / 移除所选未绑定实例",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A13",
+      "field": "读取恢复证据",
+      "destination": "维护 / 恢复交接 / 读取原机交接证据",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A14",
+      "field": "确认恢复核对",
+      "destination": "维护 / 确认已核对恢复，保持暂停",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A15",
+      "field": "检查并安装",
+      "destination": "维护 / 安装管理 / 验证签名并安装",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A16",
+      "field": "继续本次未尝试的图片上传",
+      "destination": "维护 / 异常与恢复（仅既有可选上传组合，Sportmaster不新增图片）",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A17",
+      "field": "取消尚未发送的请求",
+      "destination": "记录固定原件 → 维护 / 检查后取消未发送意图",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A18",
+      "field": "记录现场过载检查",
+      "destination": "维护 / 确认已检查过载现场",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A19",
+      "field": "归档已完成的原始记录",
+      "destination": "维护 / 受控归档已清偿原件",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A20",
+      "field": "记录身份冲突核对",
+      "destination": "维护 / 确认已检查身份冲突",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A21",
+      "field": "选择文件夹",
+      "destination": "首次系统 / 本机目录与配置身份",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A22",
+      "field": "读取配置",
+      "destination": "首次检查与完成 / 维护操作 / 读取所选配置",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A23",
+      "field": "暂存设置",
+      "destination": "首配固定操作 / 保存未完成草稿",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A24",
+      "field": "继续上次设置",
+      "destination": "首配业务模块 / 继续已保存草稿",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A25",
+      "field": "从模板配置",
+      "destination": "首配业务模块或日常维护 / 导入模板与差异预览",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A26",
+      "field": "上一步 / 下一步",
+      "destination": "首配固定底栏 / 上一步、下一步（共用模型）",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A27",
+      "field": "查看本步帮助",
+      "destination": "帮助与支持 / 离线帮助；首配 / 离线帮助",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A28",
+      "field": "检查配置",
+      "destination": "首配检查与完成 / 分层检查与预览",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A29",
+      "field": "保存设置",
+      "destination": "首配检查与完成 / 保存首配待生效",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A30",
+      "field": "应用并检查运行",
+      "destination": "首配检查与完成 / 按当前首配启动",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A31",
+      "field": "选择备份文件夹",
+      "destination": "独立维护 / 完整备份目录",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A32",
+      "field": "扫描备份",
+      "destination": "独立维护 / 读取并校验备份列表",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A33",
+      "field": "导出工作站模板",
+      "destination": "维护 / 模板与显示；独立维护 / 导出工作站模板",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A34",
+      "field": "修复未确认配置",
+      "destination": "独立维护 / 受控修复未确认配置",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A35",
+      "field": "导出诊断摘要",
+      "destination": "帮助与支持 / 支持预览与关于；独立维护 / 导出支持摘要",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A36",
+      "field": "创建完整备份",
+      "destination": "维护 / 完整备份；独立维护 / 创建完整备份",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A37",
+      "field": "核对并接管恢复目录",
+      "destination": "独立维护 / 接管已恢复的原机目录",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A38",
+      "field": "打开安装维护",
+      "destination": "独立维护 / 安装修复；沿单窗口安装流程",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    },
+    {
+      "id": "A39",
+      "field": "暂停接收新包裹 / 恢复接收",
+      "destination": "全局顶部 / 暂停新入场、恢复新入场（软件准入）",
+      "implementation": "MaintenancePage / StartupWorkflows / ProductSupportWindow / Application原命令",
+      "status": "复用并适配；外部能力按真实合同守卫"
+    }
+  ]
+}

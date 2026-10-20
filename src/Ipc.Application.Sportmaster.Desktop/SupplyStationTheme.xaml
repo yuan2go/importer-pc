@@ -1,11 +1,11 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:pf="clr-namespace:Ipc.Application.ParcelFlow.Desktop;assembly=Ipc.Application.ParcelFlow.Desktop">
  <pf:ParcelStateTextConverter x:Key="ParcelStateText"/>
  <!-- Native UI derived under explicit user authorization. No HTML, CDN or font binaries. -->
- <SolidColorBrush x:Key="StationBackground" Color="#F1F4F7"/>
- <SolidColorBrush x:Key="StationInk" Color="#192736"/>
- <SolidColorBrush x:Key="StationMuted" Color="#536577"/>
- <SolidColorBrush x:Key="StationLine" Color="#D8E0E7"/>
- <Style x:Key="StationCard" TargetType="Border"><Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="{StaticResource StationLine}"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/><Setter Property="Padding" Value="16"/></Style>
+ <SolidColorBrush x:Key="StationBackground" Color="#F2F5F8"/>
+ <SolidColorBrush x:Key="StationInk" Color="#183047"/>
+ <SolidColorBrush x:Key="StationMuted" Color="#586B80"/>
+ <SolidColorBrush x:Key="StationLine" Color="#CCD6E1"/>
+ <Style x:Key="StationCard" TargetType="Border"><Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="{StaticResource StationLine}"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="16"/></Style>
  <Style x:Key="StationLabel" TargetType="TextBlock"><Setter Property="Foreground" Value="{StaticResource StationMuted}"/><Setter Property="FontSize" Value="16"/><Setter Property="Margin" Value="0,0,0,6"/></Style>
  <Style x:Key="StationValue" TargetType="TextBox" BasedOn="{StaticResource ReadonlyValue}"><Setter Property="VerticalScrollBarVisibility" Value="Auto"/><Setter Property="FontSize" Value="16"/><Setter Property="Margin" Value="0,0,0,12"/><Setter Property="IsTabStop" Value="True"/><Setter Property="AutomationProperties.Name" Value="只读作业标识，可选择复制"/></Style>
  <Style x:Key="StationButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="BorderBrush" Value="{StaticResource StationLine}"/><Setter Property="Foreground" Value="{StaticResource StationInk}"/><Setter Property="MinHeight" Value="44"/><Setter Property="FontSize" Value="16"/><Setter Property="Padding" Value="8,6"/><Setter Property="Margin" Value="0,0,4,0"/></Style>

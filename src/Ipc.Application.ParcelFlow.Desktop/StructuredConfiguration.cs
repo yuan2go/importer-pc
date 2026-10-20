@@ -40,6 +40,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     T Get<T>([CallerMemberName] string key = "") => values.TryGetValue(key, out var v) && v is T typed ? typed : default!;
     void Set<T>(T value, [CallerMemberName] string key = "") { values[key] = value; PropertyChanged?.Invoke(this, new(key)); }
     public string StationCode { get => Get<string>(); set => Set(value); }
+    public string SessionLifetimeMs { get => Get<string>(); set => Set(value); }
     public string BarcodePattern { get => Get<string>(); set => Set(value); }
     public string QueueCapacity { get => Get<string>(); set => Set(value); }
     public string TimeoutMs { get => Get<string>(); set => Set(value); }
@@ -51,7 +52,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
         if (!decimal.TryParse(MinimumFreeMiB, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var reserve) || reserve < 1 || reserve > 1048576)
             throw new InvalidOperationException("系统/MinimumFreeMiB: 磁盘保留空间须为1～1048576 MiB");
         var retention = new ParcelRetentionPolicy(Integer(ResidentHistory, "系统/ResidentHistory", 1, 10000), checked((long)(reserve * 1048576)));
-        return c with { StationCode = StationCode,
+        return c with { StationCode = StationCode, SessionLifetimeMs = Integer(SessionLifetimeMs, "系统/SessionLifetimeMs", 100, 86400000),
             BarcodeFilter = BarcodePattern.Length == 0 && c.BarcodeFilter is null ? null : new(BarcodePattern),
             QueueCapacity = Integer(QueueCapacity, "系统/QueueCapacity", 1, 4096), TimeoutMs = Integer(TimeoutMs, "系统/TimeoutMs", 100, 30000),
             MaximumOperations = Integer(MaximumOperations, "系统/MaximumOperations", 1, 100000),
@@ -74,7 +75,7 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     public string BackupMaximumSets { get => Get<string>(); set => Set(value); }
     internal static ConfigurationPolicyDraft From(ParcelConfiguration c) => new()
     {
-        StationCode = c.StationCode ?? SystemParameterDefaults.StationCode(c.StationId), BarcodePattern = c.BarcodeFilter?.Pattern ?? "",
+        StationCode = c.StationCode ?? SystemParameterDefaults.StationCode(c.StationId), SessionLifetimeMs = c.SessionLifetimeMs.ToString(CultureInfo.InvariantCulture), BarcodePattern = c.BarcodeFilter?.Pattern ?? "",
         QueueCapacity = c.QueueCapacity.ToString(CultureInfo.InvariantCulture), TimeoutMs = c.TimeoutMs.ToString(CultureInfo.InvariantCulture), MaximumOperations = c.MaximumOperations.ToString(CultureInfo.InvariantCulture),
         ResidentHistory = (c.Retention?.ResidentHistory ?? SystemParameterDefaults.ResidentHistory).ToString(CultureInfo.InvariantCulture), MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes) / 1048576m).ToString(CultureInfo.InvariantCulture),
         WeightSource = c.Weight.Source, Unit = c.Weight.Unit, Validity = c.WeightValidity ?? WeightValidity.UntilDispatch,
@@ -110,7 +111,7 @@ public partial class ParcelViewModel
 {
     ParcelConfiguration? structuredBase;
     public ParameterEditorModel? ParameterEditor { get; private set; }
-    void RebuildParameterEditor() { ParameterEditor = StructuredPolicy is null ? null : new(StructuredPolicy, structuredBase!.ApplicationId, ReaderDrafts.Select(r => r.Capability).ToArray(), CapabilityDrafts.ToArray(), (p, samples) => ServiceAsync(() => application.TestBarcodeFilterAsync(p, samples))); Changed(nameof(ParameterEditor)); }
+    void RebuildParameterEditor() { ParameterEditor = StructuredPolicy is null ? null : new(StructuredPolicy, structuredBase!.ApplicationId, ReaderDrafts.Select(r => r.Capability).ToArray(), CapabilityDrafts.ToArray(), (p, samples) => ServiceAsync(() => application.TestBarcodeFilterAsync(p, samples)), structuredBase.StationId, (application as IParcelConfigurationLocationApplication)?.ConfigurationLocations); Changed(nameof(ParameterEditor)); }
     CapabilityCatalog? installedCatalog;
     string configurationAuthority = "未加载", savedCandidate = "", validationState = "尚未校验";
     public bool HasLoadedConfiguration => configurationAuthority != "未加载";
@@ -128,14 +129,22 @@ public partial class ParcelViewModel
     public PackageReference? SelectedInstalledPackage { get; set; }
     public string OriginalRecoveryOperationId { get; set; } = "";
     bool SupportsNewKind(string kind) => kind != "observation" && ((structuredBase?.ApplicationId ?? Snapshot?.ApplicationId) switch
-    { "sportmaster" => kind is not ("plc" or "camera" or "upload"), "direct-plc" => kind != "integration", _ => true });
+    { "sportmaster" => kind is not ("plc" or "camera" or "upload" or "integration"), "direct-plc" => kind != "integration", _ => true });
     public System.Windows.Visibility ImageSettingsVisibility => (structuredBase?.ApplicationId ?? Snapshot?.ApplicationId) != "sportmaster" || structuredBase?.Images is not null ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
     public string[] NewCapabilityKinds => installedCatalog?.Providers.Where(x => SupportsNewKind(x.Kind)).Select(x => x.Kind).Distinct().ToArray() ?? [];
     public string NewCapabilityKind { get; set; } = "weight";
     public string ParameterConfigurationSummary => (HasUnsavedConfiguration ? "有未保存修改" : "未修改") + " · " + validationState + " · " +
         (Snapshot?.Configuration.Pending is not null ? "已保存待生效" : "无待生效修订") + " · " +
-        (!Fresh || Snapshot?.Configuration.Confirmation?.Required == true || Snapshot?.Configuration.Status == "ActivationFailed" ? "运行状态需核对" : "最后启动配置已确认；当前准入见作业状态") +
+        (!Fresh || Snapshot?.Configuration.Confirmation is not { Required: false } || Snapshot?.Configuration.Status == "ActivationFailed" ? "运行状态需核对" : "最后启动配置已确认；当前准入见作业状态") +
         (Snapshot?.Configuration.Failure is { } failure ? " · 应用失败：" + failure : "");
+    public string ParameterEditStatus => (HasUnsavedConfiguration ? "未保存修改" : "当前草稿未修改") + "  ·  " + validationState +
+        (Snapshot?.Configuration.Pending is not null ? "  ·  已保存修订待重启" : "") +
+        (!Fresh ? "  ·  状态已失效" : Snapshot?.Configuration.Failure is { } failure ? "  ·  应用失败：" + failure :
+            Snapshot?.Configuration.Confirmation is not { Required: false } ? "  ·  运行配置待核对" : "");
+    public string ConfigurationSaveGuidance => !Fresh ? "状态已失效。恢复状态读取后再校验和保存；当前输入保留。" :
+        Busy ? "当前操作处理中；可以继续查看和编辑，完成后重新检查候选。" :
+        !CanConfigure ? "保存前需暂停新入场并取得有效维护授权；Application 将再次检查资源和原件责任。可先检查完整候选。" :
+        "维护保存入口可用。填写变更原因并核对跨对象修改；提交仍由 Application 校验，保存后待受控重启。";
     public string ConfigurationEditorState
     {
         get

@@ -27,9 +27,9 @@ public sealed class SupplyStationViewModel : ParcelViewModel
     public string SelectedPage
     {
         get => selectedPage;
-        set { if (value is not ("workstation" or "history" or "maintenance")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); }
+        set { if (value is not ("workstation" or "history" or "maintenance" or "diagnostics")) throw new ArgumentException("未安装的页面"); if (selectedPage == value) return; selectedPage = value; Changed(); Changed(nameof(PageTitle)); Changed(nameof(WorkFeedback)); }
     }
-    public string PageTitle => SelectedPage switch { "history" => "作业记录", "maintenance" => "设备与维护", _ => "工作台" };
+    public string PageTitle => SelectedPage switch { "history" => "作业记录", "maintenance" => "参数配置", "diagnostics" => "诊断与恢复", _ => "作业" };
     public SupplyStationViewModel(IParcelApplication application) : base(application, "Sportmaster 供包工作台", "扫码 → WCS 格口")
     {
         Left = new(this, "left"); Right = new(this, "right");
@@ -113,8 +113,28 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
     public bool IsTight => owner.IsTight;
     public bool CanStartOperation => owner.CanStartOperation;
     public string Barcode => InputUnadmitted ? ParcelPresentation.InputCode(Input!) : Operation?.ParcelCode ?? "等待包裹";
-    public string Slot => InputUnadmitted ? "未取得" : !owner.Fresh ? "旧格口已失效" : Operation?.Wcs?.State == StageState.Accepted ? Operation.Slot ?? "未取得" : "未取得";
-    public bool SlotAvailable => !InputUnadmitted && owner.Fresh && Operation?.Wcs?.State == StageState.Accepted && Operation.Slot is not null;
+    public bool CurrentTaskAvailable => !InputUnadmitted && owner.Fresh && Operation?.Wcs?.State == StageState.Accepted &&
+        (Input is null || Input.OperationId == Operation.Id && (Operation.Acquisition is null ||
+            Input.Observation.DeviceId == Operation.Acquisition.DeviceId && Input.Observation.Epoch == Operation.Acquisition.Epoch &&
+            Input.Observation.SourceEventId == Operation.Acquisition.SourceEventId && Input.Observation.AdmissionId == Operation.Acquisition.AdmissionId));
+    public string Slot => !owner.Fresh ? "旧格口已失效" : CurrentTaskAvailable ? Operation!.Slot ?? "未取得" : "未取得";
+    public bool SlotAvailable => CurrentTaskAvailable && Operation!.Slot is not null;
+    WcsDestinationResult? CurrentDestination => CurrentTaskAvailable
+        ? Operation!.Wcs!.Replies.LastOrDefault(r => r.BusinessAccepted == true && r.RequestId == Operation.Wcs.Request.Id &&
+            r.PayloadHash == Operation.Wcs.Request.PayloadHash)?.Destination : null;
+    string TaskValue(string? value) => !owner.Fresh ? "已失效" : !CurrentTaskAvailable ? "—" : value ?? "回执未包含";
+    public string WaveNo => TaskValue(CurrentDestination?.WaveNo);
+    public string TaskId => TaskValue(CurrentDestination?.TaskId);
+    public string SkuId => TaskValue(CurrentDestination?.SkuId);
+    public string ResponseQuantity => TaskValue(CurrentDestination?.Quantity);
+    public string RawCandidates => Input is null ? "尚无观察" : Input.Observation.Codes.Length == 0 ? "未识别到条码" : string.Join("\n", Input.Observation.Codes);
+    public string SelectionSummary => Input?.BarcodeSelection is { } selection
+        ? selection.Detail + " · 有效候选 " + selection.Matches
+        : Input is null ? "等待相机输入" : "旧单码规则 · " + ParcelPresentation.InputText(Input);
+    public string SelectedCode => Input?.BarcodeSelection?.SelectedCode ??
+        (Input is { Outcome: ParcelInputOutcome.Admitted } && Operation is { } op && Input.OperationId == op.Id ? op.ParcelCode : "未选中");
+    public string ScanTime => Input?.Observation.ObservedAt.ToLocalTime().ToString("HH:mm:ss.fff") ?? "尚无观察";
+    public string ObservationIdentity => Input is null ? "尚无观察" : "连接周期 " + Input.Observation.Epoch + " · 本周期序号 " + Input.Observation.SourceEventId;
     public double SlotFontSize => !SlotAvailable ? 24 : (Operation!.Slot!.Length, IsCompact) switch
     { (<= 6, false) => 64, (<= 6, true) => 44, (<= 16, false) => 40, (<= 16, true) => 28, (_, false) => 28, _ => 24 };
     public string OperatorInstruction => !owner.Fresh ? "等待有效状态；保留原件，不重复放货。" :
@@ -200,6 +220,9 @@ public sealed class SupplyStationPositionViewModel : INotifyPropertyChanged
         foreach (var (name, value) in new (string, object?)[] {
             (nameof(PositionId), PositionId), (nameof(Heading), Heading), (nameof(ReaderId), ReaderId),
             (nameof(Barcode), Barcode), (nameof(Slot), Slot), (nameof(SlotAvailable), SlotAvailable), (nameof(SlotFontSize), SlotFontSize),
+            (nameof(CurrentTaskAvailable), CurrentTaskAvailable), (nameof(WaveNo), WaveNo), (nameof(TaskId), TaskId),
+            (nameof(SkuId), SkuId), (nameof(ResponseQuantity), ResponseQuantity), (nameof(RawCandidates), RawCandidates),
+            (nameof(SelectionSummary), SelectionSummary), (nameof(SelectedCode), SelectedCode), (nameof(ScanTime), ScanTime), (nameof(ObservationIdentity), ObservationIdentity),
             (nameof(Presentation), Presentation), (nameof(Status), Status), (nameof(OperatorInstruction), OperatorInstruction),
             (nameof(OriginalResultSummary), OriginalResultSummary), (nameof(OriginalResponsibility), OriginalResponsibility),
             (nameof(DeviceStatus), DeviceStatus), (nameof(DeviceLabel), DeviceLabel), (nameof(BlockingReasons), BlockingReasons), (nameof(OperationId), OperationId),

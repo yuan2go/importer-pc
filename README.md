@@ -1,3 +1,5 @@
+> 当前实施：[V2 实施与验证记录](docs/runtime/ui-task-redesign-01.md)。实施基准 main `de2b045`；此前设计、PR73及其他介质验证各守原版本。
+
 # importer-pc
 
 C#/.NET 10 Windows 工位客户端与独立 Application 工程。Platform 提供机制，Application 拥有业务状态和命令守卫，Driver 连接设备，Component 适配外部服务；同一业务实例服务多个页面与窗口。
@@ -6,9 +8,9 @@ C#/.NET 10 Windows 工位客户端与独立 Application 工程。Platform 提供
 
 从 [V2 设计入口](docs/ui/sportmaster-task-redesign-v2-20261020/README.md)查看原型、逐张高清图、字段映射和交接，再读 [实施裁决](docs/design/sportmaster-task-redesign-01.md)、[UIR 工作包](docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md)与 [Codex 实施提示](docs/work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md)。本轮材料范围见 [V2 发布记录](docs/runtime/ui-task-redesign-v2-publication-20261020.md)；[前一版入库记录](docs/runtime/ui-task-redesign-01-publication.md)保留原提交事实。
 
-**本次交付V2设计、离线模拟与实施指引，不修改生产代码或执行构建/测试。PARAM-01已合入部分WPF和参数逻辑，仍是未完成实施快照；不能声明全部UIR未移植或完整V2已完成。** 参数配置为系统、业务模块、驱动、组件四类；首配为首次启动的五步独立流程；每个左右相机框固定相机信息、扫描候选/业务选中码、RCS任务信息，展示格口、波次、任务、SKU 与返回数量。界面状态/PNG 数量见 V2 索引，源码与格式副本不计作额外页面。
+**当前已获授权实施 UIR-00～06 并执行必要验证，继承 PR73 已完成的 PARAM-01。设计入库阶段的“仅设计／不测试”不限制本实施包；实际完成状态与证据以 V2 实施记录为准。** 参数配置为系统、业务模块、驱动、组件四类；首配为首次启动的五步独立流程；每个左右相机框固定相机信息、扫描候选/业务选中码、RCS任务信息，展示格口、波次、任务、SKU 与返回数量。界面状态/PNG 数量见 V2 索引，源码与格式副本不计作额外页面。
 
-最新复核基准为 `ba80d0ea90d86b24f9d9eebd20d075da34320972`，已含PR69单窗口安装/固定桌面名称、PR70心跳、PR71参数快照和PR72发布。复用[PARAM已有模型与保存核对](docs/runtime/parameter-refactor-01.md)、条码筛选、首配共模和已合入机制；按用户本轮字段归属完善[参数实施](docs/design/parameter-refactor-01.md)、三组任务展示、对象编辑及异常返回，不回滚或重做并行成果。完整导航见 [文档索引](docs/INDEX.md)，协作规则见 [AGENTS](AGENTS.md)。
+实施基准为最新 main `de2b045a6eb66c66cc22a237fb2c4e0f84f98e78`，已含PR69单窗口安装/固定桌面名称、PR70心跳、PR71参数快照和PR72发布。复用[PARAM已有模型与保存核对](docs/runtime/parameter-refactor-01.md)、条码筛选、首配共模和已合入机制；按用户本轮字段归属完善[参数实施](docs/design/parameter-refactor-01.md)、三组任务展示、对象编辑及异常返回，不回滚或重做并行成果。完整导航见 [文档索引](docs/INDEX.md)，协作规则见 [AGENTS](AGENTS.md)。
 
 ## 已实现能力与业务边界
 

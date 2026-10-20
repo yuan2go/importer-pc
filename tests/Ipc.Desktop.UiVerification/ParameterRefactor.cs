@@ -55,8 +55,8 @@ static partial class Program
         Capture("parameters-business");
         vm.StructuredPolicy!.QueueCapacity = "bad"; vm.ParameterEditor!.ValidateFields(); window.UpdateLayout();
         var error = Descendants(control).OfType<Button>().Single(x => x.Content is TextBlock text && text.Text.Contains("QueueCapacity"));
-        error.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); window.UpdateLayout();
-        Check(categories.SelectedIndex == 0 && Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "QueueCapacity").IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary locates the invalid field while preserving business inputs");
+        error.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
+        Check(categories.SelectedIndex == 1 && Descendants(control).OfType<TextBox>().Single(x => AutomationProperties.GetName(x) == "QueueCapacity").IsKeyboardFocused && pattern.Text == "OK[0-9]+", "error summary selects business budget object and focuses the invalid field while preserving barcode inputs");
         Capture("parameters-error"); vm.StructuredPolicy.QueueCapacity = "64"; vm.ParameterEditor.ValidateFields();
         foreach (var size in new[] { (1366d, 768d), (900d, 640d), (800d, 420d) })
         {
@@ -73,9 +73,13 @@ static partial class Program
         var offline = new StartupConfigurationDraft(driverConfig, new([descriptor], [package.Id], Packages: [new(package, [])]));
         var offlineEditor = new ParameterSettingsControl { Model = offline.CreateParameterEditor(runtime.TestBarcodeFilterAsync) }; window.Content = offlineEditor; window.Width = 1366; window.Height = 768; window.Left = 24; window.Top = 24; window.UpdateLayout();
         var offlineTabs = Descendants(offlineEditor).OfType<TabControl>().Single(); offlineTabs.SelectedIndex = 2; window.UpdateLayout();
-        var ips = Descendants(offlineEditor).OfType<TextBox>().Where(x => AutomationProperties.GetName(x).EndsWith("/device.ip")).ToArray();
-        Check(ips.Length == 2 && ips[0].Text != ips[1].Text && offline.Readers[0].Provider == offline.Readers[1].Provider, "fixed two readers use one package with independent parameter objects and IPs");
-        ips[1].Text = "192.0.2.99"; Check(offline.Readers[0].Parameters.Single(p => p.Field.Key == "device.ip").Value == "192.0.2.21", "editing right driver never changes left driver parameters");
+        var leftIp = Descendants(offlineEditor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x).EndsWith("/device.ip"));
+        Check(leftIp.Text == "192.0.2.21" && offline.Readers.Length == 2 && offline.Readers[0].Provider == offline.Readers[1].Provider, "fixed two readers use one package and display only the selected object's parameters");
+        Check(offlineEditor.NavigateTo("reader.1/device.ip"), "right instance is directly addressable by stable field path");
+        await System.Windows.Threading.Dispatcher.Yield(); window.UpdateLayout();
+        var rightIp = Descendants(offlineEditor).OfType<TextBox>().Single(x => AutomationProperties.GetName(x).EndsWith("/device.ip"));
+        Check(rightIp.Text == "192.0.2.22" && !ReferenceEquals(leftIp, rightIp), "object selection preserves distinct native editors and initial addresses");
+        rightIp.Text = "192.0.2.99"; Check(offline.Readers[0].Parameters.Single(p => p.Field.Key == "device.ip").Value == "192.0.2.21", "editing right driver never changes left driver parameters");
         Capture("parameters-drivers");
         if (interactive)
         {

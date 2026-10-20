@@ -86,6 +86,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
         {
             "原 RCS 回执 · " + outcome + "（作业状态以原快照为准）",
             "任务 " + Known(result.TaskId) + " · SKU " + Known(result.SkuId) + " · 格口 " + Known(reply.Slot),
+            "波次 " + (result.WaveNo ?? "原回执未包含") + " · 返回数量 " + (result.Quantity ?? "原回执未包含") + "（原字符串；不等于请求数量）",
             "长度 " + Measure(result.Length) + " · 宽度 " + Measure(result.Width) + " · 高度 " + Measure(result.Height) + " · 重量 " + Measure(result.Weight) + "（接口未提供单位）"
         };
         if (result.Code is not null || result.Message is not null) lines.Add("业务码 " + Known(result.Code) + " · 原因 " + Known(result.Message));
@@ -263,5 +264,8 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     {
         PropertyChanged?.Invoke(this, new(name));
         if (name == nameof(Feedback)) PropertyChanged?.Invoke(this, new(nameof(OperatorFeedback)));
+        if (name == nameof(ParameterConfigurationSummary)) PropertyChanged?.Invoke(this, new(nameof(ParameterEditStatus)));
+        if (name is nameof(ParameterConfigurationSummary) or nameof(Busy) or nameof(CanConfigure))
+            PropertyChanged?.Invoke(this, new(nameof(ConfigurationSaveGuidance)));
     }
 }

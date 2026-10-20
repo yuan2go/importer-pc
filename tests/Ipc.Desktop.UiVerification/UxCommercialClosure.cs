@@ -25,10 +25,10 @@ static partial class Program
         {
             await System.Windows.Threading.Dispatcher.Yield();
             var scope = (Grid)page.FindName("MaintenanceScope");
-            var save = Descendants(page).OfType<Button>().Single(x => Equals(x.Content, "保存表单待重启修订"));
+            var save = Descendants(page).OfType<Button>().Single(x => Equals(x.Content, "保存修改（待重启）"));
             check(((TextBlock)window.FindName("OperationFeedback")).Text.Contains("正在原生慢维护读取") &&
-                !scope.IsEnabled && !((DataGrid)page.FindName("ReaderInstances")).IsEnabled && !save.IsEnabled,
-                "native feedback is immediate and actual maintenance scope, reader grid and save control are disabled");
+                scope.IsEnabled && ((ParameterSettingsControl)page.FindName("MainParameterEditor")).IsEnabled && !save.IsEnabled,
+                "native feedback is immediate; navigation and draft editing stay available while guarded save is disabled");
             check(Descendants(window).OfType<Button>().Single(x => Equals(x.Content, "暂停新入场")).IsEnabled,
                 "native Pause remains enabled outside the busy maintenance scope");
             await vm.PauseAsync();
@@ -40,6 +40,7 @@ static partial class Program
         await System.Windows.Threading.Dispatcher.Yield();
         check(((TextBlock)window.FindName("OperationFeedback")).Text.Contains("原生维护读取已完成"),
             "native bound feedback retains read completion after Busy instead of a prior failure");
+        page.ShowTechnicalMaintenance(); page.UpdateLayout();
         var readers = (DataGrid)page.FindName("ReaderInstances");
         check(!readers.IsReadOnly && readers.Columns[0].IsReadOnly && readers.Columns[1].IsReadOnly,
             window.GetType().Name + " native reader grid allows ordinary edits and protects stable device/role identity");
@@ -47,13 +48,8 @@ static partial class Program
         var item = vm.ReaderDrafts[0]; var original = item.Capability.InstanceId;
         var column = readers.Columns.Single(x => Equals(x.Header, "实例身份"));
         readers.SelectedItem = item; readers.CurrentCell = new(item, column); readers.ScrollIntoView(item, column); readers.UpdateLayout();
-        check(readers.BeginEdit(), "native reader text cell enters edit mode under actual global theme");
-        await System.Windows.Threading.Dispatcher.Yield();
-        var editor = Descendants(readers).OfType<TextBox>().Single(x => !x.IsReadOnly && x.IsKeyboardFocusWithin);
-        editor.Text = original + ".ux";
-        editor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
-        check(readers.CommitEdit(DataGridEditingUnit.Row, true) && item.Capability.InstanceId == original + ".ux", "native text editor commits instance identity to the single draft model");
-        item.Capability.InstanceId = original;
+        check(column.IsReadOnly && !readers.BeginEdit() && item.Capability.InstanceId == original,
+            "native stable instance identity cannot be edited through the legacy inventory");
         check(vm.ReaderDrafts.Select(x => x.Original.DeviceId).SequenceEqual(vm.Snapshot!.Configuration.Effective.Topology!.Readers.Select(x => x.DeviceId)), "native controls retain all stable reader bindings and original configuration");
         var tab = Descendants(page).OfType<TabItem>().Single(x => Equals(x.Header, "能力库存与参数")); tab.IsSelected = true; page.UpdateLayout();
         var instances = (DataGrid)page.FindName("Instances");
@@ -98,41 +94,37 @@ static partial class Program
 
     static async Task VerifyParameterForms(MaintenancePage page, ParcelViewModel vm, Action<bool, string> check)
     {
-        var readers = (DataGrid)page.FindName("ReaderInstances");
-        var instances = (DataGrid)page.FindName("Instances");
         var reader = vm.ReaderDrafts[0].Capability; var inventory = vm.CapabilityDrafts.First();
         var readerProvider = reader.Provider!; var inventoryProvider = inventory.Provider!;
-        var topologyTab = Descendants(page).OfType<TabItem>().Single(x => Equals(x.Header, "结构化拓扑与策略"));
-        var inventoryTab = Descendants(page).OfType<TabItem>().Single(x => Equals(x.Header, "能力库存与参数"));
-        var readerForm = (StackPanel)page.FindName("ReaderParameterForm");
-        var inventoryForm = (StackPanel)page.FindName("ParameterForm");
+        var control = (ParameterSettingsControl)page.FindName("MainParameterEditor");
         var field = new ParameterField("input.labels", "输入", "来源标签（每行一项）", "string-list", Default: "[]", MaximumLength: 256, MaximumItems: 16);
         try
         {
-            topologyTab.IsSelected = true; readers.SelectedItem = vm.ReaderDrafts[0];
-            // Synthetic descriptor exercises the real schema-driven native editor; no package is installed or activated.
-            reader.Provider = readerProvider with { Parameters = [field] }; page.UpdateLayout(); await Dispatcher.Yield();
-            var editor = Descendants(readerForm).OfType<TextBox>().Single();
+            reader.Provider = readerProvider with { Parameters = [field] };
+            page.NavigateToParameter(reader.InstanceId + "/input.labels"); page.UpdateLayout(); await Dispatcher.Yield();
+            var editor = Descendants(control).OfType<TextBox>().Single(t => System.Windows.Automation.AutomationProperties.GetName(t) == reader.InstanceId + "/input.labels");
             var json = Wire.Encode(new[] { new string('a', 256), new string('b', 150), "", "quote\"slash\\" });
             editor.Text = json; editor.GetBindingExpression(TextBox.TextProperty)!.UpdateSource();
             check(editor.AcceptsReturn && editor.MaxLength >= json.Length && reader.Parameters.Single().Value == json,
-                "native list editor accepts a legal multi-item JSON value longer than the per-item bound without truncation");
-            inventoryTab.IsSelected = true; instances.SelectedItem = inventory; page.UpdateLayout(); await Dispatcher.Yield();
-            check(inventoryForm.Children.Count > 0 && readerForm.Children.Count > 0, "reader and inventory selections retain independent parameter forms");
+                "native list editor accepts legal multi-item JSON beyond the per-item bound without truncation");
             inventory.Provider = inventoryProvider with { Parameters = [field with { Key = "synthetic.inventory", Label = "库存参数" }] };
-            page.UpdateLayout(); await Dispatcher.Yield(); topologyTab.IsSelected = true; page.UpdateLayout(); await Dispatcher.Yield();
-            check(ReferenceEquals(readers.SelectedItem, vm.ReaderDrafts[0]) && Descendants(readerForm).OfType<TextBox>().Single().Text == json &&
-                inventory.Parameters.Single().Field.Key == "synthetic.inventory", "native tab return and provider change preserve the selected reader's original parameter editor and value");
-            reader.Provider = readerProvider with { Parameters = [field with { ReadOnly = true }] }; page.UpdateLayout(); await Dispatcher.Yield();
-            var readOnly = Descendants(readerForm).OfType<TextBox>().Single();
+            page.NavigateToParameter(inventory.InstanceId + "/synthetic.inventory"); page.UpdateLayout(); await Dispatcher.Yield();
+            check(reader.Parameters.Single().Value == json && inventory.Parameters.Single().Field.Key == "synthetic.inventory", "reader and inventory objects retain independent parameter values");
+            page.NavigateToParameter(reader.InstanceId + "/input.labels"); page.UpdateLayout(); await Dispatcher.Yield();
+            check(Descendants(control).OfType<TextBox>().Single(t => System.Windows.Automation.AutomationProperties.GetName(t) == reader.InstanceId + "/input.labels").Text == json,
+                "native object return and another provider change preserve the reader list value");
+            reader.Provider = readerProvider with { Parameters = [field with { ReadOnly = true }] };
+            page.NavigateToParameter(reader.InstanceId + "/input.labels"); page.UpdateLayout(); await Dispatcher.Yield();
+            var readOnly = Descendants(control).OfType<TextBox>().Single(t => System.Windows.Automation.AutomationProperties.GetName(t) == reader.InstanceId + "/input.labels");
             check(readOnly.IsReadOnly && !readOnly.IsEnabled && readOnly.Text == "[]", "native list defaults and schema read-only protection survive provider rerender");
         }
         finally
         {
             reader.Provider = readerProvider; inventory.Provider = inventoryProvider;
-            // Restore original configuration bytes after the UI-only synthetic schema fixture.
-            await vm.LoadCapabilitiesAsync();
-            topologyTab.IsSelected = true; readers.SelectedItem = vm.ReaderDrafts[0]; instances.SelectedItem = vm.CapabilityDrafts.First();
+            await vm.LoadCapabilitiesAsync(); page.ShowTechnicalMaintenance();
+            var tabs = (TabControl)page.FindName("TechnicalTabs"); tabs.SelectedIndex = 0;
+            ((DataGrid)page.FindName("ReaderInstances")).SelectedItem = vm.ReaderDrafts[0];
+            ((DataGrid)page.FindName("Instances")).SelectedItem = vm.CapabilityDrafts.First();
             page.UpdateLayout(); await Dispatcher.Yield();
         }
     }
@@ -163,6 +155,7 @@ static partial class Program
                 var vm = (ParcelViewModel)window.DataContext;
                 for (var i = 0; i < 100 && (!vm.HasLoadedConfiguration || vm.Busy); i++) await Task.Delay(20);
                 var page = (MaintenancePage)((ContentControl)window.FindName("PageHost")).Content;
+                page.ShowTechnicalMaintenance(); page.UpdateLayout();
                 var tab = Descendants(page).OfType<TabItem>().Single(x => Equals(x.Header, "旧schema1/2策略"));
                 tab.IsSelected = true; window.UpdateLayout(); await Dispatcher.Yield();
                 var editor = Descendants(page).OfType<TextBox>().Single(x => x.GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path.Path == nameof(vm.DraftPrecision));

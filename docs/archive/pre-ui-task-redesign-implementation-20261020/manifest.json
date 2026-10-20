@@ -1,0 +1,45 @@
+{
+  "sourceCommit": "de2b045a6eb66c66cc22a237fb2c4e0f84f98e78",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "archive": "AGENTS.md.txt",
+      "sha256": "1b80e24fbaf551af8873dfa501b143fbb5e06b4a0dee7e2a3862609c0f2415b5"
+    },
+    {
+      "path": "README.md",
+      "archive": "README.md.txt",
+      "sha256": "a5e89a406e0610410c9f979f2bf632e2eae557bfdddbd4039fa01d75a88fd009"
+    },
+    {
+      "path": "docs/INDEX.md",
+      "archive": "docs__INDEX.md.txt",
+      "sha256": "af8fa3ada66c76aabca93b130919e52c080789ae37117086b218023261d761be"
+    },
+    {
+      "path": "docs/ui/STATUS.md",
+      "archive": "docs__ui__STATUS.md.txt",
+      "sha256": "c27883c040e41042af9ae9d0317f984c67c519a1b8aadf22d556bff9c4f99449"
+    },
+    {
+      "path": "docs/design/sportmaster-task-redesign-01.md",
+      "archive": "docs__design__sportmaster-task-redesign-01.md.txt",
+      "sha256": "6a422d91a5b0825ac0e2fe1f0fa3a18b7b368fb518e779ffaabf18aa296fac9f"
+    },
+    {
+      "path": "docs/work-packages/WP-IPC-UI-TASK-REDESIGN-01.md",
+      "archive": "docs__work-packages__WP-IPC-UI-TASK-REDESIGN-01.md.txt",
+      "sha256": "68ddb66912f2fbac7fa7836c08b8f19503433abfc0ee3bc53360e993edd5fb5a"
+    },
+    {
+      "path": "docs/work-packages/Codex-WP-IPC-UI-TASK-REDESIGN-01.md",
+      "archive": "docs__work-packages__Codex-WP-IPC-UI-TASK-REDESIGN-01.md.txt",
+      "sha256": "72d4caf9056fbc31b021825fe5100fb2641d42d9f94f8b5399bb59f07d4cc8a2"
+    },
+    {
+      "path": "docs/baseline/PUBLICATION.md",
+      "archive": "docs__baseline__PUBLICATION.md.txt",
+      "sha256": "cdf9fa6e208ccfe5ed6bcfce53d266d3be0a48a2d5d674839321b4201455b4cd"
+    }
+  ]
+}

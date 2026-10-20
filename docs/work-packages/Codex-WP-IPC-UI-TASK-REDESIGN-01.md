@@ -1,4 +1,6 @@
-> PR73 参数实施补充：原 PARAM-01 参数及必要联动已完成，原提交验证见[实施记录](../runtime/parameter-refactor-01.md)；本轮只做不测试的合并/上传。V2 字段重排、五步首配、三组作业信息及其余 UI 仍按本页后续目标实施，不据此宣布 V2 完成。
+> 当前实施：[V2 实施与验证记录](../runtime/ui-task-redesign-01.md)。实施基准 main `de2b045`；此前设计、PR73及其他介质验证各守原版本。
+
+> PR73 参数实施补充：原 PARAM-01 参数及必要联动已完成，原提交验证见[实施记录](../runtime/parameter-refactor-01.md)；PR73 发布阶段只做不测试的合并/上传（历史范围）。原 PARAM-01 不自动代表 V2；本版完成范围与新证据见顶部实施记录。
 
 # 下一步 Codex 提示：完成 Sportmaster V2 UI 优化
 

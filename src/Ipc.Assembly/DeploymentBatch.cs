@@ -36,7 +36,7 @@ public static class DeploymentBatch
                 Environment.ExitCode = 0; return true;
             }
             var reviewed = ParcelStartupServices.Review(media, request.RuntimeAccountSid, request.DataRoot, request.ConfigurationSource, request.TrustFile, request.Packages.Keys.ToArray(), request.RepairSeed, request.ProgramRoot)
-                with { ChangePlanIdentity = request.ChangePlanIdentity, BackupDestination = request.BackupDestination };
+                with { ChangePlanIdentity = request.ChangePlanIdentity, BackupDestination = request.BackupDestination, Shortcuts = request.Shortcuts };
             if (!System.Text.Json.Nodes.JsonNode.DeepEquals(System.Text.Json.Nodes.JsonNode.Parse(Wire.Encode(reviewed)), System.Text.Json.Nodes.JsonNode.Parse(Wire.Encode(request)))) throw new InvalidDataException("计划输入/原登记已变化；重新预检并审阅逐站差异");
             var components = DeploymentComponentReviewing.Inspect(request);
             if (args.Length == 5)

@@ -9,6 +9,7 @@
 > 海康驱动增量：[工作包](work-packages/WP-IPC-HIKROBOT-READER-01.md) · [独立IP驱动设计](design/hikrobot-reader-01.md) · [运行与真实验证边界](runtime/hikrobot-reader-01.md)。保持现有业务与UI，真实读码、RCS和现场验收分别记录。
 
 > 品牌及现场安装增量：[菜鸟供包台名称与图标](runtime/cainiao-branding-01.md)、[单 EXE 安装程序](runtime/single-exe-installer-01.md)。用户于2026-10-20指定名称与图片、明确允许公开提交，并要求单 EXE 人工安装交付；历史设计和原验收保留其原身份。
+> 品牌及现场安装增量：[菜鸟供包台名称与图标](runtime/cainiao-branding-01.md)、[单 EXE 安装程序](runtime/single-exe-installer-01.md)、[安装选项与空白启动窗口修正](runtime/single-exe-installer-options-02.md)。用户于2026-10-20指定名称与图片、明确允许公开提交，并要求单 EXE 人工安装交付；历史设计和原验收保留其原身份。
 > 海康驱动增量：[工作包](work-packages/WP-IPC-HIKROBOT-READER-01.md) · [独立IP驱动设计](design/hikrobot-reader-01.md) · [运行与真实验证边界](runtime/hikrobot-reader-01.md)。保持现有业务与UI，真实读码、RCS和现场验收分别记录。
 > 当前 UI 增量：[工作台精简工作包](work-packages/WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01.md)与[原生验证记录](runtime/sportmaster-clear-workstation-01.md)。主屏突出状态、条码、格口与操作，工程明细按需查看。本轮继承下述 PR61 整合基线；归档草稿和旧视觉证据保持原身份。
 

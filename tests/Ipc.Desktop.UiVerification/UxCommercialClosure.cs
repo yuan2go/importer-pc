@@ -257,11 +257,16 @@ static partial class Program
                 System.Runtime.InteropServices.Marshal.WriteInt32(lParam, 28, (int)Math.Ceiling(window.MinHeight * dpi.DpiScaleY));
                 System.Runtime.InteropServices.Marshal.WriteInt32(lParam, 32, Math.Max(pixelsWide, System.Runtime.InteropServices.Marshal.ReadInt32(lParam, 32)));
                 System.Runtime.InteropServices.Marshal.WriteInt32(lParam, 36, Math.Max(pixelsHigh, System.Runtime.InteropServices.Marshal.ReadInt32(lParam, 36)));
-                handled = true; return IntPtr.Zero;
+                // Let WPF's original Window hook cache these native tracking bounds
+                // as well; suppressing it leaves MeasureOverride clamped to 1024.
+                handled = false; return IntPtr.Zero;
             };
             source.AddHook(hook);
             try
             {
+                var limits = System.Runtime.InteropServices.Marshal.AllocHGlobal(40);
+                try { NativeGeometry.SendMessage(handle, 0x24, IntPtr.Zero, limits); }
+                finally { System.Runtime.InteropServices.Marshal.FreeHGlobal(limits); }
                 if (!NativeGeometry.SetWindowPos(handle, IntPtr.Zero, 0, 0, pixelsWide, pixelsHigh, 0x16))
                     throw new System.ComponentModel.Win32Exception(System.Runtime.InteropServices.Marshal.GetLastWin32Error());
                 await Task.Delay(150); window.UpdateLayout();
@@ -274,6 +279,8 @@ static partial class Program
     {
         [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "DefWindowProcW")]
         internal static extern IntPtr DefWindowProc(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam);
+        [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "SendMessageW")]
+        internal static extern IntPtr SendMessage(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam);
         [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.Bool)]
         internal static extern bool SetWindowPos(IntPtr hwnd, IntPtr after, int x, int y, int width, int height, uint flags);
@@ -294,7 +301,8 @@ static partial class Program
         // A native top-level window is bounded by the active monitor. Reserve the
         // non-client frame rather than requesting an impossible client at 125% DPI.
         var large = ((int)Math.Min(1440, SystemParameters.WorkArea.Width - 32), (int)Math.Min(900, SystemParameters.WorkArea.Height - 48));
-        foreach (var target in new[] { large, (1100, 600), (911, 512), (800, 420) })
+        // 1600x900 also verifies the native backing-surface path on the local 125% desktop.
+        foreach (var target in new[] { large, (1600, 900), (1100, 600), (911, 512), (800, 420) })
         {
             await SetClient(window, target.Item1, target.Item2);
             check(Math.Abs(client.ActualWidth - target.Item1) < 1 && Math.Abs(client.ActualHeight - target.Item2) < 1 && vm.ViewportFits,

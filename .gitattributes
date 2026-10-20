@@ -6,6 +6,8 @@ docs/runtime/evidence/pr47-commercial-productization-review/** -text whitespace=
 docs/runtime/evidence/pr47-main-integration/** -text whitespace=cr-at-eol
 docs/runtime/evidence/unified-release-01/** -text
 docs/runtime/evidence/unified-main-20261020/** -text
+
+docs/runtime/evidence/unified-latest-55025ce/** -text whitespace=cr-at-eol
 docs/runtime/evidence/windows-no-test-release-20261020/** -text
 
 # Pinned upstream skill and captured native evidence keep original bytes.

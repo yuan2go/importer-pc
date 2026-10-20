@@ -1,0 +1,85 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+  "ReleaseUrl": "https://github.com/yuan2go/importer-pc/releases/tag/unified-main-reference-55025ce",
+  "Assets": [
+    {
+      "File": "sportmaster-55025ce-portable.zip",
+      "Bytes": 18501079,
+      "Sha256": "1dfb654161746a7235dd78d134b9f52d8b63414f81f422be84eef4c658d322ce",
+      "Status": "PUBLIC_API_READBACK_MATCH",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-55025ce/sportmaster-55025ce-portable.zip"
+    },
+    {
+      "File": "sportmaster-55025ce-win-x64.zip",
+      "Bytes": 104281721,
+      "Sha256": "6b84f8abdf534fba418c5d043f2e4a949ee6177c40a4421afa2a7660ac27d051",
+      "Status": "PUBLIC_API_READBACK_MATCH",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-55025ce/sportmaster-55025ce-win-x64.zip"
+    },
+    {
+      "File": "direct-plc-55025ce-portable.zip",
+      "Bytes": 18463903,
+      "Sha256": "9e3f0107d0ef759d57cb0c5bb1feaa72620f75e94055bdf4545605f4a96a9f84",
+      "Status": "PUBLIC_API_READBACK_MATCH",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-55025ce/direct-plc-55025ce-portable.zip"
+    },
+    {
+      "File": "direct-plc-55025ce-win-x64.zip",
+      "Bytes": 104197137,
+      "Sha256": "93867243c91a7af6b8f30d66f6111faae9fd302c9822bd8bbb3f7005a36da697",
+      "Status": "PUBLIC_API_READBACK_MATCH",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-55025ce/direct-plc-55025ce-win-x64.zip"
+    },
+    {
+      "File": "wcs-to-plc-55025ce-portable.zip",
+      "Bytes": 18485650,
+      "Sha256": "a53f21a9f55d1b19c0fa4b4403a3da2d3cd03490992e8da703673b7824075345",
+      "Status": "PUBLIC_API_READBACK_MATCH",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-55025ce/wcs-to-plc-55025ce-portable.zip"
+    },
+    {
+      "File": "wcs-to-plc-55025ce-win-x64.zip",
+      "Bytes": 104240487,
+      "Sha256": "0f3df4d6697f906a163785061f5c0459bdf67273984eaf31d0aaff5cf1df33f5",
+      "Status": "PUBLIC_API_READBACK_MATCH",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-55025ce/wcs-to-plc-55025ce-win-x64.zip"
+    },
+    {
+      "File": "supply-portable-55025ce9c621.zip",
+      "Bytes": 18513321,
+      "Sha256": "4575669fa312588179ecd08081883e1cbf81c6d31dd4db84e8114ba05748ff51",
+      "Status": "PUBLIC_API_READBACK_MATCH",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-55025ce/supply-portable-55025ce9c621.zip"
+    },
+    {
+      "File": "inspection-portable-55025ce9c621.zip",
+      "Bytes": 991033,
+      "Sha256": "c71fa4f2e1501a8de043e8eceecd2971b9cf366cea9edb603ac5d68f6ae17320",
+      "Status": "PUBLIC_API_READBACK_MATCH",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-55025ce/inspection-portable-55025ce9c621.zip"
+    },
+    {
+      "File": "RELEASE.json",
+      "Bytes": 29742,
+      "Sha256": "d7223fce971ce33a011b73f8b859682849beaec369dd2f5c516fae5e93f9ba85",
+      "Status": "PUBLIC_API_READBACK_MATCH",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-55025ce/RELEASE.json"
+    },
+    {
+      "File": "SHA256SUMS",
+      "Bytes": 952,
+      "Sha256": "31f62cfa6fc7ee872c14ce2a5c5824583fa5305df980a85234bb018dabdf9113",
+      "Status": "PUBLIC_API_READBACK_MATCH",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-55025ce/SHA256SUMS"
+    },
+    {
+      "File": "build-record.json",
+      "Bytes": 29742,
+      "Sha256": "d7223fce971ce33a011b73f8b859682849beaec369dd2f5c516fae5e93f9ba85",
+      "Status": "PUBLIC_API_READBACK_MATCH",
+      "Url": "https://github.com/yuan2go/importer-pc/releases/download/unified-main-reference-55025ce/build-record.json"
+    }
+  ],
+  "Scope": "Public GitHub API digest/size readback; local ZIP content/CRC independently verified; no full binary redownload claimed"
+}

@@ -1,0 +1,7 @@
+{
+  "ReceiptMainBaseline": "f3059d499cd4dbc60b443f0a54cac939b2e5db2f",
+  "FollowupMain": "f3059d499cd4dbc60b443f0a54cac939b2e5db2f",
+  "ComparedPaths": "src config scripts global.json Directory.Build.props product operations",
+  "Diff": [],
+  "Meaning": "Subsequent main documentation/publication only; media SourceCommit remains 55025ce"
+}

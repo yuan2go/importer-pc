@@ -90,3 +90,5 @@ Sportmaster 左右独立读码及取格口，无 PLC、图片展示或长期图�
 ## 已完成的历史冻结发行回执
 
 [本轮7acbb2c发行结果](runtime/unified-windows-release-01-results.md)含8套实际媒介和完整原始校验；它覆盖开工PR44/45/46，早于运行中另合并的PR47/DB8，不可冒充最新main或用于DB8。并发整合保留后合入的统一发行实现、旧原件及所有现行产品指引；本轮实际续建编排源码仅按hash归档于证据目录，当前操作仍按[现行统一发行](runtime/unified-release-01.md)。Windows实机NOT_RUN、真实能力BLOCKED、商用NOT_APPROVED。
+
+> [PR57 的55025ce历史八包交付](runtime/unified-release-latest-55025ce.md)保留原运行源码与原校验，不包含后继 PR56/58 的商业交付及新视觉成果。本轮只合并，不测试、不出包；[合并裁决与计数](runtime/publication-no-test-20261020-pr57-pr58.md)分别记录当前源码与历史介质。

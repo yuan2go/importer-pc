@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "D:\w\ipc-release\scripts\release-windows.py", line 278, in <module>
+    main()
+    ~~~~^^
+  File "D:\w\ipc-release\scripts\release-windows.py", line 170, in main
+    p.add_argument('--source', help='Exact main-ancestor commit with package inputs identical to current main')
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\argparse.py", line 1559, in add_argument
+    return self._add_action(action)
+           ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\argparse.py", line 1983, in _add_action
+    self._optionals._add_action(action)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\argparse.py", line 1782, in _add_action
+    action = super(_ArgumentGroup, self)._add_action(action)
+  File "C:\Scoop\apps\python\current\Lib\argparse.py", line 1573, in _add_action
+    self._check_conflict(action)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\argparse.py", line 1715, in _check_conflict
+    conflict_handler(action, confl_optionals)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Scoop\apps\python\current\Lib\argparse.py", line 1724, in _handle_conflict_error
+    raise ArgumentError(action, message % conflict_string)
+argparse.ArgumentError: argument --source: conflicting option string: --source

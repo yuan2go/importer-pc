@@ -1,0 +1,121 @@
+{
+  "Status": "PASS_TARGETED_RELEASE_CHECKS",
+  "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+  "MainBaseline": "f3059d499cd4dbc60b443f0a54cac939b2e5db2f",
+  "BuildControllerCommit": "c32f33bf8d6d8ead3e68d5a1d185e8040f371cc2",
+  "NonRuntimeMainInputDifferences": [
+    {
+      "Path": "scripts/package-application.py",
+      "Kind": "SCRIPT_TEXT_ONLY_IDENTICAL_AST"
+    },
+    {
+      "Path": "scripts/test_runtime_identity.py",
+      "Kind": "NON_RUNTIME_TEST_OR_CONTROLLER"
+    }
+  ],
+  "Checks": [
+    {
+      "Check": "ORIGINAL_IDENTITY_UNCHANGED",
+      "File": "sportmaster-55025ce-win-x64.zip",
+      "Sha256": "6B84F8ABDF534FBA418C5D043F2E4A949EE6177C40A4421AFA2A7660AC27D051"
+    },
+    {
+      "Check": "ORIGINAL_IDENTITY_UNCHANGED",
+      "File": "sportmaster-55025ce-portable.zip",
+      "Sha256": "1DFB654161746A7235DD78D134B9F52D8B63414F81F422BE84EEF4C658D322CE"
+    },
+    {
+      "Check": "ORIGINAL_IDENTITY_UNCHANGED",
+      "File": "direct-plc-55025ce-win-x64.zip",
+      "Sha256": "93867243C91A7AF6B8F30D66F6111FAAE9FD302C9822BD8BBB3F7005A36DA697"
+    },
+    {
+      "Check": "ORIGINAL_IDENTITY_UNCHANGED",
+      "File": "direct-plc-55025ce-portable.zip",
+      "Sha256": "9E3F0107D0EF759D57CB0C5BB1FEAA72620F75E94055BDF4545605F4A96A9F84"
+    },
+    {
+      "Check": "ORIGINAL_IDENTITY_UNCHANGED",
+      "File": "wcs-to-plc-55025ce-win-x64.zip",
+      "Sha256": "0F3DF4D6697F906A163785061F5C0459BDF67273984EAF31D0AAFF5CF1DF33F5"
+    },
+    {
+      "Check": "ORIGINAL_IDENTITY_UNCHANGED",
+      "File": "wcs-to-plc-55025ce-portable.zip",
+      "Sha256": "A53F21A9F55D1B19C0FA4B4403A3DA2D3CD03490992E8DA703673B7824075345"
+    },
+    {
+      "Check": "INHERITED_SAME_BYTE_MEDIA_EVIDENCE",
+      "Path": "docs/runtime/evidence/pr47-main-integration/core-result.json",
+      "EvidenceSha256": "C8822E2FE792B2D0DD18A79DC471D2B73227A9C27CEF37B95697B9703FB0BD32",
+      "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+      "MediumInventorySha256": "303CD5E2EAAB2A915E7BE6575A3C1AC686B8875736FCCE65965948869895A0BE",
+      "Scope": "SYNTHETIC_APPLICATION_CORE_REAL_PUBLISHED_DLLS"
+    },
+    {
+      "Check": "INHERITED_SAME_BYTE_MEDIA_EVIDENCE",
+      "Path": "docs/runtime/evidence/pr47-main-integration/wpf-result.json",
+      "EvidenceSha256": "6911981B6BC49939726F976DF9FA7B79B36D39728828741C486E26BF3A0BFF09",
+      "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+      "MediumInventorySha256": "303CD5E2EAAB2A915E7BE6575A3C1AC686B8875736FCCE65965948869895A0BE",
+      "Scope": "Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning"
+    },
+    {
+      "Check": "INHERITED_SAME_BYTE_MEDIA_EVIDENCE",
+      "Path": "docs/runtime/evidence/pr47-main-integration/removal-result.json",
+      "EvidenceSha256": "0C9E9095796403E34510687F7D5C097E32518D1773DC2A165CFCA4627D268BBB",
+      "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+      "MediumInventorySha256": "303CD5E2EAAB2A915E7BE6575A3C1AC686B8875736FCCE65965948869895A0BE",
+      "Scope": "Internal inventory kernel only; real Windows sharing violation with synthetic restart queue"
+    },
+    {
+      "Check": "INHERITED_SAME_BYTE_MEDIA_EVIDENCE",
+      "Path": "docs/runtime/evidence/pr47-main-integration/component-result.json",
+      "EvidenceSha256": "FF8EF6EB5891C4DDEA5467F7C8823DB8963B864121BE7BF52D8D8B2432E26D5D",
+      "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+      "MediumInventorySha256": "303CD5E2EAAB2A915E7BE6575A3C1AC686B8875736FCCE65965948869895A0BE",
+      "Scope": "Simulation/TestOnly independent reference module; static signatures/closure only; no provider load/install/activation or device startup"
+    },
+    {
+      "Check": "PE_X64_ENTRY",
+      "File": "sportmaster-55025ce-win-x64.zip/app/Ipc.Assembly.exe",
+      "Sha256": "BE1CFEB0B122936F8EC4A2EB110BF64AB744ED43B76FAE5BC1388F542C271F8D"
+    },
+    {
+      "Check": "PE_X64_ENTRY",
+      "File": "sportmaster-55025ce-win-x64.zip/desktop/Ipc.Desktop.exe",
+      "Sha256": "63E813ECA73A7ACE8332E44CA2EF30ED3131D71CC61524C92C5AD66D5C9745E1"
+    },
+    {
+      "Check": "PE_X64_ENTRY",
+      "File": "direct-plc-55025ce-win-x64.zip/app/Ipc.Assembly.exe",
+      "Sha256": "BE1CFEB0B122936F8EC4A2EB110BF64AB744ED43B76FAE5BC1388F542C271F8D"
+    },
+    {
+      "Check": "PE_X64_ENTRY",
+      "File": "direct-plc-55025ce-win-x64.zip/desktop/Ipc.Desktop.exe",
+      "Sha256": "63E813ECA73A7ACE8332E44CA2EF30ED3131D71CC61524C92C5AD66D5C9745E1"
+    },
+    {
+      "Check": "PE_X64_ENTRY",
+      "File": "wcs-to-plc-55025ce-win-x64.zip/app/Ipc.Assembly.exe",
+      "Sha256": "BE1CFEB0B122936F8EC4A2EB110BF64AB744ED43B76FAE5BC1388F542C271F8D"
+    },
+    {
+      "Check": "PE_X64_ENTRY",
+      "File": "wcs-to-plc-55025ce-win-x64.zip/desktop/Ipc.Desktop.exe",
+      "Sha256": "63E813ECA73A7ACE8332E44CA2EF30ED3131D71CC61524C92C5AD66D5C9745E1"
+    },
+    {
+      "Check": "WINDOWS_READONLY_OR_LEGACY_ENTRY_GATE",
+      "ReceiptSha256": "FB0A9FD70E92ED7DC75EBD59C78054608D8458AF504DD247C1BF2E5D4E036C48",
+      "Count": 8,
+      "Scope": "Real Windows unprovisioned gate; no UAC/alternate-account/ACL acceptance"
+    }
+  ],
+  "InheritedEvidence": "Explicitly bound by unchanged actual inventory and binary hashes; not represented as rerun",
+  "WindowsFullAcceptance": "NOT_RUN",
+  "CommercialQualification": false,
+  "RealSDKEquipmentField": "BLOCKED",
+  "WholeEightArchiveRepeatBuild": "NOT_RUN"
+}

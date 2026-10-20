@@ -5,6 +5,9 @@ from pathlib import Path
 import tempfile
 import unittest
 import zipfile
+import subprocess
+import sys
+from unittest.mock import patch
 from release_build import archive_package, frozen_export
 
 spec = importlib.util.spec_from_file_location('unified_release', Path(__file__).with_name('release-windows.py'))
@@ -89,6 +92,70 @@ class ReleaseTests(unittest.TestCase):
         self.seal()
         with self.assertRaises(ValueError):
             self.verify()
+
+    def test_reuse_requires_original_source_hash_and_exact_expanded_inventory(self):
+        archive = self.seal()
+        row = dict(Application='inspection', Target='portable', SourceCommit=self.source,
+                   Zip=archive.name, ZipSha256=release.sha(archive))
+        manifest = self.output.parent / 'reuse.json'
+        release.write(manifest, [row])
+        self.assertEqual(release.reuse_candidates(self.output.parent, manifest, self.source),
+                         {('inspection', 'portable'): self.output})
+        release.write(manifest, [dict(row, SourceCommit='b' * 40)])
+        with self.assertRaises(ValueError):
+            release.reuse_candidates(self.output.parent, manifest, self.source)
+        release.write(manifest, [dict(row, ZipSha256='A' * 64)])
+        with self.assertRaises(ValueError):
+            release.reuse_candidates(self.output.parent, manifest, self.source)
+        release.write(manifest, [row])
+        (self.output / 'injection.dll').write_bytes(b'extra')
+        with self.assertRaises(ValueError):
+            release.reuse_candidates(self.output.parent, manifest, self.source)
+
+    def test_reuse_refuses_duplicate_or_escaping_original_names(self):
+        archive = self.seal()
+        row = dict(Application='inspection', Target='portable', SourceCommit=self.source,
+                   Zip=archive.name, ZipSha256=release.sha(archive))
+        manifest = self.output.parent / 'reuse.json'
+        for records in ([row, row], [dict(row, Zip='../candidate.zip')]):
+            release.write(manifest, records)
+            with self.assertRaises(ValueError):
+                release.reuse_candidates(self.output.parent, manifest, self.source)
+
+    def test_cli_reuse_options_parse_without_duplicate_source_flag(self):
+        result = subprocess.run([sys.executable, str(Path(__file__).with_name('release-windows.py')), '--help'], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('--reuse-directory', result.stdout)
+
+    def test_source_pin_refuses_runtime_and_functional_packager_differences(self):
+        path = 'scripts/package-application.py'
+        def query(*args):
+            if args[0] == 'diff': return path
+            return 'x = 1' if args[1].startswith('old:') else '# comment only\nx = 1'
+        with patch.object(release, 'git', side_effect=query):
+            self.assertEqual(release.source_input_compatibility('old', 'new')[0]['Kind'], 'SCRIPT_TEXT_ONLY_IDENTICAL_AST')
+        with patch.object(release, 'git', side_effect=lambda *a: path if a[0] == 'diff' else ('x=1' if a[1].startswith('old:') else 'x=2')):
+            with self.assertRaises(ValueError): release.source_input_compatibility('old', 'new')
+        with patch.object(release, 'git', return_value='src/Ipc.Platform/Runtime.cs'):
+            with self.assertRaises(ValueError): release.source_input_compatibility('old', 'new')
+
+    def test_generated_checkout_cleanup_handles_windows_readonly_git_objects(self):
+        import stat
+        workspace = Path(tempfile.mkdtemp(prefix='ipc-unified-frozen-'))
+        pack = workspace / 'source/.git/objects/pack/frozen.idx'
+        pack.parent.mkdir(parents=True)
+        pack.write_bytes(b'git-like immutable object')
+        pack.chmod(stat.S_IREAD)
+        # Exercise the real Windows long-path tree as well as a readonly Git object.
+        deep = workspace / 'source' / ('nested-evidence-' * 12) / 'child' / 'leaf.txt'
+        extended = Path('\\\\?\\' + str(deep)) if sys.platform == 'win32' else deep
+        extended.parent.mkdir(parents=True)
+        extended.write_bytes(b'long tracked path')
+        release.cleanup_frozen_workspace(workspace)
+        self.assertFalse(workspace.exists())
+        with self.assertRaises(ValueError):
+            release.cleanup_frozen_workspace(self.output)
+        self.assertTrue(self.output.exists())
 
 
 class Pr48ReleaseTests(unittest.TestCase):

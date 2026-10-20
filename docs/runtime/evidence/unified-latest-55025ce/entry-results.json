@@ -1,0 +1,73 @@
+{
+  "SourceCommit": "55025ce9c62173fea5cdc5ceecfb29453ed5e7fa",
+  "Scope": "Real Windows unprovisioned gate; no UAC/alternate-account/ACL acceptance",
+  "ErrorMode": 3,
+  "MiniDumpEnabled": false,
+  "ParcelScope": "explicit readonly runtime-check; normal first-run UAC not completed",
+  "Results": [
+    {
+      "Application": "sportmaster",
+      "Target": "portable",
+      "ReturnCode": 3762504530,
+      "PolicyFailure": "maintainer-installed machine runtime policy",
+      "DataCreated": false,
+      "MediaSha256": "1DFB654161746A7235DD78D134B9F52D8B63414F81F422BE84EEF4C658D322CE"
+    },
+    {
+      "Application": "sportmaster",
+      "Target": "win-x64",
+      "ReturnCode": 3762504530,
+      "PolicyFailure": "maintainer-installed machine runtime policy",
+      "DataCreated": false,
+      "MediaSha256": "6B84F8ABDF534FBA418C5D043F2E4A949EE6177C40A4421AFA2A7660AC27D051"
+    },
+    {
+      "Application": "direct-plc",
+      "Target": "portable",
+      "ReturnCode": 3762504530,
+      "PolicyFailure": "maintainer-installed machine runtime policy",
+      "DataCreated": false,
+      "MediaSha256": "9E3F0107D0EF759D57CB0C5BB1FEAA72620F75E94055BDF4545605F4A96A9F84"
+    },
+    {
+      "Application": "direct-plc",
+      "Target": "win-x64",
+      "ReturnCode": 3762504530,
+      "PolicyFailure": "maintainer-installed machine runtime policy",
+      "DataCreated": false,
+      "MediaSha256": "93867243C91A7AF6B8F30D66F6111FAAE9FD302C9822BD8BBB3F7005A36DA697"
+    },
+    {
+      "Application": "wcs-to-plc",
+      "Target": "portable",
+      "ReturnCode": 3762504530,
+      "PolicyFailure": "maintainer-installed machine runtime policy",
+      "DataCreated": false,
+      "MediaSha256": "A53F21A9F55D1B19C0FA4B4403A3DA2D3CD03490992E8DA703673B7824075345"
+    },
+    {
+      "Application": "wcs-to-plc",
+      "Target": "win-x64",
+      "ReturnCode": 3762504530,
+      "PolicyFailure": "maintainer-installed machine runtime policy",
+      "DataCreated": false,
+      "MediaSha256": "0F3DF4D6697F906A163785061F5C0459BDF67273984EAF31D0AAFF5CF1DF33F5"
+    },
+    {
+      "Application": "supply",
+      "Target": "portable",
+      "ReturnCode": 3762504530,
+      "PolicyFailure": "maintainer-installed machine runtime policy",
+      "DataCreated": false,
+      "MediaSha256": "4575669FA312588179ECD08081883E1CBF81C6D31DD4DB84E8114BA05748FF51"
+    },
+    {
+      "Application": "inspection",
+      "Target": "portable",
+      "ReturnCode": 3762504530,
+      "PolicyFailure": "maintainer-installed machine runtime policy",
+      "DataCreated": false,
+      "MediaSha256": "C71FA4F2E1501A8DE043E8ECEECD2971B9CF366CEA9EDB603AC5D68F6AE17320"
+    }
+  ]
+}

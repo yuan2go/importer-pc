@@ -21,7 +21,9 @@
 | 参数及原账风险 | [parameter-v2.log](parameter-v2.log) **35 项 PASS**。真实 Application/配置账结合合成端口；后写入 Rejected、异常丢回执、Unknown 原账核对、防重复提交、CAS、筛选、首配共模等。执行于开发树，之后该受测应用逻辑未再改变 |
 | RCS 协议和责任 | [rcs-v2.log](rcs-v2.log) **139 条 PASS 记录**（含完成标记）。合成 HTTP/响应、实际本地持久化；响应字符串/前导零/空值及非字符串拒绝、旧字节、独立位、原请求和数量号段恢复。不是客户 RCS 联调 |
 | 共享原生窗口 | [shared-window.log](shared-window.log) **231 条 PASS 记录**（含完成标记）。经典与供包台共享页、严格几何、焦点/原责任、停止/关闭/多窗生命周期；在独立保存准备窗口续修前执行。续修由最终 115 项覆盖，不把旧日志改标为最终二进制 |
-| 版本与发行文档 | `python -m unittest test_application_compatibility test_release_documents`：19 项通过；在 `scripts/` 运行。最终修改只补证据和索引，不重复此套件 |
+| 版本与发行文档 | `python -m unittest test_application_compatibility test_release_documents`：19 项通过；在 `scripts/` 运行。后续未改受测版本与发行文档机制，不重复此套件 |
+| 冻结介质页面续验 | [26 项 PASS](frozen-pages.log)、[结果与 DLL 身份](frozen-pages.json)。夹具 `5753ad7`、实际介质 `26bb7b9`；验证修正后的 CI 装配、五步首配和独立保存准备入口 |
+| 冻结介质视觉续验 | [119 项 PASS](frozen-visual.log)、[结果与 DLL 身份](frozen-visual.json)。夹具 `0e43d49`、实际介质 `26bb7b9`；原生诊断 OneWay、首配、焦点/选择、日期筛选、Unknown 原请求及完整最小视口矩阵 |
 | Windows 实际输入 | Windows 11 家庭中文版 **10.0.22631 x64 / 125%**，工作区 **1536×816 DIP**。鼠标打开参数/保存准备，键盘输入、Ctrl+F、Enter 定位和返回；具体步骤见 [INPUT-RECORD](../../../ui/sportmaster-v2-wpf-20261020/native/INPUT-RECORD.txt) |
 | 实际发布 EXE 启动 | [startup-smoke.json](startup-smoke.json)：独立空目录启动 `desktop/Ipc.Desktop.exe --maintenance`，缺包明确阻断业务；关闭维护回到恢复页，“停止并退出”关闭进程。未保存配置、未启动设备，隔离目录没有业务数据库 |
 | 图片与交接 | 32 张 WPF PNG、8 张 Windows 原生 JPEG；[图集](../../../ui/sportmaster-v2-wpf-20261020/README.md)。[151 项迁移](../../ui-task-redesign-v2-migration.md) = 54 个 V2 字段 + 58 个原字段/状态 + 39 个操作，保留原编号 |
@@ -51,6 +53,12 @@
 | 真实显示可靠 | 精确 1600×900、1366.4×768、1440×768、1100×600、911.2×512、800×420 DIP；不足空间保护/恢复人工确认保留；[客户区矩阵](CLIENT-MATRIX.log)。PNG 是 WPF backing，125% 本机输入另列 |
 
 开发过程中发现并实际修复了控件脱离视觉树导致重建、搜索结果/长对象对齐、保存准备挤压视口、原生捕获偏移以及测试关闭等待竞态。保留原最小视口与原责任断言，仅将无依据的固定短等待改为有界状态等待；旧文案断言随现行标签调整。开发失败输出保留在本机 `.artifacts`，最终结果不覆盖历史报告。
+
+## PR CI 衔接记录
+
+[PR #74](https://github.com/yuan2go/importer-pc/pull/74) 的[初次 CI](https://github.com/yuan2go/importer-pc/actions/runs/39438762411)在合并候选 `77a5b94896dfa0d7a6eb2fd1d46263a4855298f2` 的 WPF 夹具编译失败：冻结脚本手写源文件列表漏掉 `VerifyParameterRefactor` 与 `VerifyTaskRedesign` 的实现；核心业务和移除内核已通过。该次失败没有改写为成功，见 [原失败日志的可读副本](initial-ci-wpf.log)，仅规范化 UTF-8 BOM/换行。原日志 SHA256 `a36600f341b86910f9ccacbb635243cf168d0a5b7774f596faabb98d43052e62`；原 artifact ZIP SHA256 `18eaaac1a7f19a649cfa5c7b1ceb1cb93e625fa47cb366c5a9b26ef6551bae11`。
+
+脚本现在枚举同一固定 Git 提交的完整顶层 WPF 测试源文件。旧首配/诊断/草稿入口与识别文案断言已迁到现行五步、只读诊断页及保存准备窗口；原完整配置、DPAPI 原字节、目录守卫、关闭、焦点、选择与最小视口断言全部保留。上述 26/119 项来自修正夹具对原固定介质的实际执行，`FixtureMatchesMedium=false` 如实登记，因为仅测试代码晚于生产代码。PR 后续 CI 会重新冻结其精确合并候选，最终远端结果以 PR 检查页为准，不把本机结果改标为 GitHub runner 验证。
 
 ## 未验及部署条件
 

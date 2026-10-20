@@ -54458,9 +54458,9 @@
       "version": "UIR-00-06-V2-20261020",
       "status": "synthetic_validation_or_implementation",
       "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
-      "sha256": "a6e4073b913b61c503a42a1ffc944b636ce92a7ca41d6da4cc94a779e0a8f3bf",
-      "size_bytes": 8943,
-      "git_blob": "ad179a576cf8d1dcec2d1665ae0d99a175677753"
+      "sha256": "203db6ab1a8338eaaf76bacc5e9ffbcde6f209309fc928f22b2740dbe7ab0487",
+      "size_bytes": 10747,
+      "git_blob": "04739149dd45aa01978850b45f488e4ab92874f5"
     },
     {
       "path": "docs/runtime/evidence/ui-task-redesign-v2/BUILD-INFO.json",
@@ -55111,6 +55111,56 @@
       "sha256": "7a436570c09e100a9c20106bf70c99e14a20ab79d490941e6c94ce8fb29a65b2",
       "size_bytes": 23882,
       "git_blob": "6bffac926bf443853453d830c31277a0dc380b7d"
+    },
+    {
+      "path": "docs/runtime/evidence/ui-task-redesign-v2/frozen-pages.json",
+      "storage_scope": "public_repository",
+      "version": "UIR-00-06-V2-20261020",
+      "status": "synthetic_validation_or_implementation",
+      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "sha256": "56aa78d9d58911ced30303c920d2139db58fdce0c245d15c4b72fa1514f3a14d",
+      "size_bytes": 3059,
+      "git_blob": "bc58dc235c09cc7bc2ea09eef78902f4c6ca0703"
+    },
+    {
+      "path": "docs/runtime/evidence/ui-task-redesign-v2/frozen-pages.log",
+      "storage_scope": "public_repository",
+      "version": "UIR-00-06-V2-20261020",
+      "status": "synthetic_validation_or_implementation",
+      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "sha256": "6ba9db39431f9ef3905e15d34ce01f2dad03ce0372998eb53fed0eb5b03728e1",
+      "size_bytes": 2578,
+      "git_blob": "2eb5c1b3c23a7be322f584d3fb53216837aa59e8"
+    },
+    {
+      "path": "docs/runtime/evidence/ui-task-redesign-v2/frozen-visual.json",
+      "storage_scope": "public_repository",
+      "version": "UIR-00-06-V2-20261020",
+      "status": "synthetic_validation_or_implementation",
+      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "sha256": "e4683f1fc881f73b4d7ac6a1912abb7e744c5d3e3e465306668f36e4758e9a6d",
+      "size_bytes": 3059,
+      "git_blob": "b45136a0003bfb41dd5d559399d729686ae006b0"
+    },
+    {
+      "path": "docs/runtime/evidence/ui-task-redesign-v2/frozen-visual.log",
+      "storage_scope": "public_repository",
+      "version": "UIR-00-06-V2-20261020",
+      "status": "synthetic_validation_or_implementation",
+      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "sha256": "1290c9d1f2521142f696540a074a3e57e88d09c49b12438699e0d60acc89aab8",
+      "size_bytes": 11603,
+      "git_blob": "4f8d264aa61ea0a8dbb2c7267cda5d82f034d5fe"
+    },
+    {
+      "path": "docs/runtime/evidence/ui-task-redesign-v2/initial-ci-wpf.log",
+      "storage_scope": "public_repository",
+      "version": "UIR-00-06-V2-20261020",
+      "status": "synthetic_validation_or_implementation",
+      "source": "User-authorized UIR-00 through UIR-06 and parameter usability implementation; synthetic data only",
+      "sha256": "fe67e7d64f081f07f25cb396f43b9e0003e149726deb928cab4f2600b5cf76d7",
+      "size_bytes": 384,
+      "git_blob": "35ef475d97e49c64cc12e5d2bc8cbd8e80693cab"
     }
   ],
   "runtime_state": "INDEPENDENT_REFERENCE_NOT_SITE_MIGRATION",
@@ -57352,7 +57402,16 @@
       "parameter_pass_lines": 35,
       "rcs_pass_lines_including_completion": 139,
       "shared_native_pass_lines_including_completion_before_save_dialog_refinement": 231,
-      "compatibility_and_release_document_tests": 19
+      "compatibility_and_release_document_tests": 19,
+      "frozen_native_pages_after_fixture_reconciliation": 26,
+      "frozen_visual_after_fixture_reconciliation": 119
+    },
+    "ci_reconciliation": {
+      "pull_request": "https://github.com/yuan2go/importer-pc/pull/74",
+      "initial_failure_run": 39438762411,
+      "reason": "Incomplete frozen fixture source list; legacy UI selectors subsequently aligned without dropping safety assertions",
+      "final_remote_status": "See PR checks; local 26/119 results recorded separately",
+      "production_code_unchanged_since": "26bb7b9488b98cc0ce44ef6cf74df7c493153b0a"
     },
     "not_run": [
       "target industrial PC",

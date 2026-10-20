@@ -1,0 +1,57 @@
+{
+  "source_commit": "dfc2ab68d263340037751651c442dd5b33023b32",
+  "package_name": "sportmaster-visual-dfc2ab6-win-x64.zip",
+  "package_sha256": "f599db06205f0f1f782593654611839532c99ee27d6ee88dbb38393c63082ed9",
+  "package_bytes": 104295623,
+  "inventory_sha256": "a4de300f7e90285119c22e1ff490f26d0745650e7a959066a1ebf594c8a5dd34",
+  "inventory_files": 746,
+  "inventory_mismatches": [],
+  "zip_crc_bad_member": null,
+  "runtime_skill_members": [],
+  "impeccable_commit": "46b822f7dda9f7dba799a9c7776fdc19b3a93559",
+  "impeccable_unmodified_file_hash_drift": [],
+  "impeccable_adapted_files": [
+    "SKILL.md"
+  ],
+  "local_additions": [
+    "WPF.md",
+    "UPSTREAM.json",
+    "LICENSE",
+    "NOTICE.md"
+  ],
+  "business_version": "1.4.0",
+  "application_contract_version": "1.10.0",
+  "database_format": 8,
+  "sdk": "10.0.402",
+  "host": "Windows 11 Home China 10.0.22631 x64",
+  "native_dpi": 1.25,
+  "native_work_area_dip": "1536x816",
+  "target_installation_policy": "26100+; current host below target baseline, no target installation qualification",
+  "production": "NOT_APPROVED",
+  "real_sdk_devices_field": "BLOCKED",
+  "native_results": {
+    "visual": "final/visual/RESULT.json",
+    "commercial_pages": "final/commercial-pages/RESULT.json",
+    "same_source_inventory_and_binary_hashes": true,
+    "status": "PASS",
+    "visual_pass_assertions": 24,
+    "commercial_pass_assertions": 24,
+    "manual_visible_hwnd_captures": 4
+  },
+  "manual_inspection": "final/manual-native.md",
+  "package_distribution": "Local verification medium; no release upload or replacement",
+  "upstream_license_files": [
+    {
+      "path": "LICENSE",
+      "sha256": "02bb8c3b4e70190e3986c0404ad2fd8d639b4f534252d82379cc1b502b6d1812",
+      "exact_upstream_git_blob": true
+    },
+    {
+      "path": "NOTICE.md",
+      "sha256": "c60a093c2845fd9fb82f9c6f742ece31f379f8190b535309d32d66c45ccffdcb",
+      "exact_upstream_git_blob": true
+    }
+  ],
+  "archived_current_guides_unchanged": 5,
+  "archive_source_commit": "f3059d499cd4dbc60b443f0a54cac939b2e5db2f"
+}

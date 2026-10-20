@@ -30,7 +30,9 @@ static class SportmasterUi
 
     public static async Task Run(string workspace, string root)
     {
-        Check(DesktopLaunchOptions.Parse([], "sportmaster").Ui == "classic", "omitted --ui preserves classic default");
+        Check(DesktopLaunchOptions.Parse([], "sportmaster").Ui == "supply-station", "omitted --ui selects productized Sportmaster UI");
+        foreach (var application in new[] { "direct-plc", "wcs-to-plc", "supply" })
+            Check(DesktopLaunchOptions.Parse([], application).Ui == "classic", application + " retains its own default");
         var launch = DesktopLaunchOptions.Parse(["--ui", "supply-station", "--config", "config-path", "--data-root", "data-path", "--view", "sportmaster-history", "--layout", "compact"], "sportmaster");
         Check(launch.Ui == "supply-station" && launch.Business == new BusinessLaunch("config-path", "data-path", "sportmaster-history", "compact"), "UI selection preserves configuration, data, page and layout arguments");
         foreach (var application in new[] { "sportmaster", "direct-plc", "wcs-to-plc", "supply" })

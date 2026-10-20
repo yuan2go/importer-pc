@@ -75,7 +75,7 @@ static partial class Program
         }
         await using var runtime = new ParcelRuntime(launch, new SportmasterFlow(), new CommercialProductization.SyntheticFactory(launch)) { RuntimeIdentityPreflight = () => { } };
         await runtime.StartAsync(default); var identity = (await runtime.SnapshotAsync()).RuntimeId;
-        var classic = (ShellWindow)Presentation.Create(runtime, null, "standard"); var alternate = (SupplyStationWindow)Presentation.Create(runtime, null, "standard", "supply-station");
+        var classic = (ShellWindow)Presentation.Create(runtime, null, "standard", "classic"); var alternate = (SupplyStationWindow)Presentation.Create(runtime, null, "standard", "supply-station");
         classic.Show(); alternate.Show(); await Task.Delay(400);
         Check(classic.Icon is not null && alternate.Icon is not null, "both native layouts load the repository-owned shared product icon");
         Check(ReferenceEquals(((ParcelViewModel)classic.DataContext).Application, alternate.ViewModel.Application), "native shared pages keep one Application instance");
@@ -91,6 +91,8 @@ static partial class Program
         Check(Descendants(page).OfType<Button>().Any(b => (b.Content as string)?.Contains("导出") == true), "native history exposes bounded CSV export with cancel entry");
         Screenshot(classic, Path.Combine(evidence, "commercial-history-1100x600.png"));
         Click(classic, "设备与维护"); await Task.Delay(250);
+        var draftActions = Descendants(page).OfType<Expander>().Single(e => Equals(e.Header, "草稿、重新读取与设备连接"));
+        draftActions.IsExpanded = true; classic.UpdateLayout();
         Check(Descendants(page).OfType<Button>().Any(b => Equals(b.Content, "加密保存未完成设置")) && Descendants(page).OfType<Button>().Any(b => Equals(b.Content, "继续未完成设置")), "native settings exposes persistent draft actions without replacing configuration authority");
         var support = new ProductSupportWindow(runtime, null) { Owner = classic }; support.Show(); await Task.Delay(200); support.UpdateLayout();
         Check(support.Icon is not null && support.Content is TabControl tabs && tabs.Items.Count == 2, "offline help and preview/about load as native owned tabs");

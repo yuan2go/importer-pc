@@ -14,17 +14,22 @@ abstract class StartupWorkflowWindow : Window
 {
     protected readonly StackPanel Body = new();
     protected readonly WrapPanel Actions = new();
+    protected StackPanel Form;
     protected readonly TextBlock Status = new() { TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 12) };
     protected bool Busy;
     protected StartupWorkflowWindow(string title)
     {
+        Form = Body;
         ProductBrand.Apply(this);
         Title = title; FontSize = 16; Width = 960; Height = 760; MinWidth = 680; MinHeight = 500; WindowStartupLocation = WindowStartupLocation.CenterScreen;
         Background = new SolidColorBrush(Color.FromRgb(241, 244, 247)); Foreground = new SolidColorBrush(Color.FromRgb(25, 39, 54));
         var grid = new Grid { Margin = new(24) };
         grid.RowDefinitions.Add(new() { Height = GridLength.Auto }); grid.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) }); grid.RowDefinitions.Add(new() { Height = GridLength.Auto });
         var heading = new StackPanel(); heading.Children.Add(new TextBlock { Text = title, FontSize = 24, FontWeight = FontWeights.Bold });
-        heading.Children.Add(new ScrollViewer { Content = Status, MaxHeight = 140, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
+        heading.Children.Add(new ScrollViewer { Content = Status, MaxHeight = 116, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
+        var diagnostic = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 200, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+        diagnostic.SetBinding(TextBox.TextProperty, new System.Windows.Data.Binding(nameof(TextBlock.Text)) { Source = Status });
+        heading.Children.Add(new Expander { Header = "完整诊断（可选择复制）", Content = diagnostic });
         var scroll = new ScrollViewer { Content = Body, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }; Grid.SetRow(scroll, 1); Grid.SetRow(Actions, 2);
         grid.Children.Add(heading); grid.Children.Add(scroll); grid.Children.Add(Actions); Content = grid;
         Closing += (_, e) => { if (Busy) e.Cancel = true; };
@@ -42,24 +47,24 @@ abstract class StartupWorkflowWindow : Window
         finally { Busy = false; Actions.IsEnabled = true; Body.IsEnabled = true; }
     }
     protected void Message(string text) { Status.Text = text; Status.Foreground = Foreground; }
-    protected void Note(string text) => Body.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 8) });
+    protected void Note(string text) => Form.Children.Add(new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Margin = new(0, 10, 0, 8) });
     protected TextBox Field(string label, string value, Action<string> changed, bool readOnly = false)
     {
         Note(label); var box = new TextBox { Text = value, MinHeight = 44, IsReadOnly = readOnly, MaxLength = 65536, Margin = new(0, 0, 0, 4) };
         System.Windows.Automation.AutomationProperties.SetName(box, label);
-        box.TextChanged += (_, _) => changed(box.Text); Body.Children.Add(box); return box;
+        box.TextChanged += (_, _) => changed(box.Text); Form.Children.Add(box); return box;
     }
     protected TextBox Folder(string label, string value)
     {
         var box = Field(label, value, _ => { });
         var browse = new Button { Content = "选择文件夹…", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         browse.Click += (_, _) => { var picker = new OpenFolderDialog { Title = label }; if (picker.ShowDialog(this) == true) box.Text = picker.FolderName; };
-        Body.Children.Add(browse); return box;
+        Form.Children.Add(browse); return box;
     }
     protected void Choice<T>(string label, T selected, Action<T> changed) where T : struct, Enum
     {
         Note(label); var box = new ComboBox { ItemsSource = Enum.GetValues<T>(), SelectedItem = selected, MinHeight = 36 };
-        box.SelectionChanged += (_, _) => { if (box.SelectedItem is T value) changed(value); }; Body.Children.Add(box);
+        box.SelectionChanged += (_, _) => { if (box.SelectedItem is T value) changed(value); }; Form.Children.Add(box);
     }
     protected static string? FilePick(Window owner, string title, string filter = "所有文件|*.*")
     { var picker = new OpenFileDialog { Title = title, Filter = filter }; return picker.ShowDialog(owner) == true ? picker.FileName : null; }
@@ -249,7 +254,7 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
         {
             var c = document!.Candidate!;
             Note($"{c.ApplicationId} · {c.StationId} · {c.Mode} · 修订 {document.Revision} · {document.ConfigurationStatus}\n工位身份只读；设备尚未启动。可先保存未完成草稿。");
-            Body.Children.Add(new Expander { Header = "配置身份与检查边界", Content = new TextBlock { Text = $"原账散列：{document.ConfigurationHash}\n设备与服务沿已交付精确目录选择；未枚举/未连接不等于已验证。显式启动仍受完整资格和原责任检查。", TextWrapping = TextWrapping.Wrap }, Margin = new(0, 8, 0, 8) });
+            Body.Children.Add(new Expander { Header = "配置身份与检查边界", Content = new TextBox { IsReadOnly = true, Text = $"原账散列：{document.ConfigurationHash}\n设备与服务沿已交付精确目录选择；未枚举/未连接不等于已验证。显式启动仍受完整资格和原责任检查。", TextWrapping = TextWrapping.Wrap }, Margin = new(0, 8, 0, 8) });
             policyStart = Body.Children.Count;
             Field("输入队列容量", draft.QueueCapacity, v => draft.QueueCapacity = v);
             Field("调用超时（ms）", draft.TimeoutMs, v => draft.TimeoutMs = v);
@@ -271,15 +276,18 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
             deviceStart = Body.Children.Count;
             foreach (var capability in draft.Readers.Concat(draft.Capabilities))
             {
-                Note(capability.Role + " · " + capability.InstanceId + "\n" + capability.ProviderIdentity);
+                var previousForm = Form; Form = new StackPanel { Margin = new(12) };
+                var role = capability.Role switch { "operator-login" => "操作员登录（可选）", "maintenance-auth" => "维护认证", "default-scale" => "默认实测秤（可选）", _ => capability.Kind == "observation" ? "读码来源 · " + capability.Target : capability.InstanceId == c.Wcs?.InstanceId ? "WCS 格口服务" : capability.Role };
+                previousForm.Children.Add(new GroupBox { Header = role, Content = Form, Margin = new(0, 12, 0, 4) });
+                Form.Children.Add(new Expander { Header = "精确组件来源", Content = new TextBox { Text = capability.InstanceId + "\n" + capability.ProviderIdentity, IsReadOnly = true, TextWrapping = TextWrapping.Wrap } });
                 if (capability.Role is "operator-login" or "default-scale")
                 {
                     var optional = new CheckBox { Content = capability.Role == "operator-login" ? "启用本组合的操作员登录（维护认证另有守卫）" : "绑定默认实测秤（仅选实测重量时生效）", IsChecked = capability.Bound, MinHeight = 44 };
-                    optional.Checked += (_, _) => capability.Bound = true; optional.Unchecked += (_, _) => capability.Bound = false; Body.Children.Add(optional);
+                    optional.Checked += (_, _) => capability.Bound = true; optional.Unchecked += (_, _) => capability.Bound = false; Form.Children.Add(optional);
                 }
                 var providers = new ComboBox { ItemsSource = capability.Providers, SelectedItem = capability.Provider, MinHeight = 44, DisplayMemberPath = "Implementation" };
                 System.Windows.Automation.AutomationProperties.SetName(providers, capability.Role + "精确提供者");
-                providers.SelectionChanged += (_, _) => { if (providers.SelectedItem is CapabilityDescriptor selected && selected != capability.Provider) { capability.Provider = selected; Render(false); } }; Body.Children.Add(providers);
+                providers.SelectionChanged += (_, _) => { if (providers.SelectedItem is CapabilityDescriptor selected && selected != capability.Provider) { capability.Provider = selected; Render(false); } }; Form.Children.Add(providers);
                 Field(capability.Kind == "observation" ? "稳定设备身份（离线录入，待真实SDK核验；按上方业务位绑定）" : "目标（地址/实例由所选组件合同决定）", capability.Target, v => capability.Target = v, capability.Provider is null);
                 foreach (var parameter in capability.Parameters)
                 {
@@ -287,15 +295,16 @@ sealed class StartupRepairWindow : StartupWorkflowWindow
                     if (parameter.Field.Sensitive)
                     {
                         var password = new PasswordBox { Password = parameter.Value, MinHeight = 36, IsEnabled = !parameter.Field.ReadOnly };
-                        password.PasswordChanged += (_, _) => parameter.Value = password.Password; Body.Children.Add(password);
+                        password.PasswordChanged += (_, _) => parameter.Value = password.Password; Form.Children.Add(password);
                     }
                     else if (parameter.Field.Choices is { Length: > 0 } choices)
                     {
                         var selected = new ComboBox { ItemsSource = choices, SelectedItem = parameter.Value, MinHeight = 36, IsEnabled = !parameter.Field.ReadOnly };
-                        selected.SelectionChanged += (_, _) => parameter.Value = selected.SelectedItem as string ?? ""; Body.Children.Add(selected);
+                        selected.SelectionChanged += (_, _) => parameter.Value = selected.SelectedItem as string ?? ""; Form.Children.Add(selected);
                     }
                     else Field(parameter.Field.Key, parameter.Value, v => parameter.Value = v, parameter.Field.ReadOnly);
                 }
+                Form = previousForm;
             }
             reviewStart = Body.Children.Count;
             Field("维护原因（必填；保留审计与原配置字节）", reason, v => reason = v);

@@ -26,7 +26,12 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
     public ParcelOperation? CurrentAt(string position) => Snapshot?.Positions?.SingleOrDefault(p => p.Id == position)?.CurrentOperation is { } id
         ? Snapshot.Operations.SingleOrDefault(x => x.Id == id && (x.PositionId ?? "main") == position) : null;
     public string BlockingReasons => !Fresh ? ReadStatus : string.Join("\n", Snapshot?.BlockingReasons ?? []);
-    public string Status => !Fresh ? "快照已失效 · 旧状态仅供参考" : Snapshot?.State ?? "正在初始化";
+    public string Status => !Fresh ? "快照已失效 · 旧状态仅供参考" : Snapshot?.State switch
+    {
+        "Ready" => "作业就绪", "Paused" => "已暂停新入场", "NotReady" => "暂不可作业",
+        "Starting" => "正在启动", "Stopping" => "正在停止", "Stopped" => "已停止",
+        null => "正在初始化", var state => state
+    };
     public string Health => !Fresh ? "设备旧状态已失效 · " + ReadStatus : string.Join("\n", Snapshot?.Health.Select(x => ParcelPresentation.Health(x, DateTimeOffset.UtcNow)) ?? []);
     public Visibility LoginVisibility => Snapshot?.Configuration.Effective.Login is null ? Visibility.Collapsed : Visibility.Visible;
     public string OperatorSubject { get; set; } = "alice";

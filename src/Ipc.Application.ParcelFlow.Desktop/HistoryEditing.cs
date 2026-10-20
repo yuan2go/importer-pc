@@ -9,8 +9,10 @@ public partial class ParcelViewModel
     public string HistoryBarcode { get; set; } = "";
     public string HistoryPosition { get; set; } = "";
     public string HistoryState { get; set; } = "";
-    public string HistoryFrom { get; set; } = "";
-    public string HistoryToExclusive { get; set; } = "";
+    string historyFrom = "";
+    public string HistoryFrom { get => historyFrom; set { if (historyFrom == value) return; historyFrom = value; Changed(); } }
+    string historyTo = "";
+    public string HistoryToExclusive { get => historyTo; set { if (historyTo == value) return; historyTo = value; Changed(); } }
     public string HistoryRequest { get; set; } = "";
     public string[] HistoryStates => ["", .. Enum.GetNames<ParcelState>()];
     public string HistoryMetricsSummary { get; private set; } = "指标口径：实体作业 / WCS请求 / WCS接受 / 待核对 / 实体完成 / 发送尝试，均不合并同码实体。";

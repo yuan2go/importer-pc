@@ -90,7 +90,7 @@ if sys.argv[1:] in (['--action', 'runtime-check'], ['--action', 'runtime-prepare
                 if action == 'Run':
                     self.assertEqual(calls[1][1:3], ['--action', 'deployment-check'])
                     self.assertEqual(calls[2][0], 'Ipc.Desktop.exe')
-                    self.assertEqual(calls[2][-2:], ['--ui', 'classic'])
+                    self.assertEqual(calls[2][-2:], ['--ui', 'supply-station'])
                 elif action == 'Console':
                     self.assertEqual(calls[1][1], '--config')
                     self.assertIn('--data-root', calls[1])

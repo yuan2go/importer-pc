@@ -4,6 +4,9 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public partial class HistoryPage : UserControl
 {
     public HistoryPage() => InitializeComponent();
+    void Today_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var day = new DateTimeOffset(DateTime.Today); vm.HistoryFrom = day.ToString("O"); vm.HistoryToExclusive = day.AddDays(1).ToString("O"); } }
+    void LastDay_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) { var now = DateTimeOffset.Now; vm.HistoryFrom = now.AddDays(-1).ToString("O"); vm.HistoryToExclusive = now.ToString("O"); } }
+    void AnyTime_Click(object s, RoutedEventArgs e) { if (DataContext is ParcelViewModel vm) vm.HistoryFrom = vm.HistoryToExclusive = ""; }
     void Copy_Click(object s, RoutedEventArgs e)
     {
         if (DataContext is not ParcelViewModel vm) return;

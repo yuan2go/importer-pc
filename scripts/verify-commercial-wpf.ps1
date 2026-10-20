@@ -1,5 +1,5 @@
 #requires -Version 7.0
-param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet')
+param([Parameter(Mandatory)][string]$Media,[Parameter(Mandatory)][string]$Output,[string]$Dotnet='dotnet',[switch]$VisualProductization,[switch]$Interactive)
 $ErrorActionPreference='Stop'
 if (-not $IsWindows) { throw 'Run native WPF verification on Windows; it does not provision policy or operate equipment' }
 $Media=(Resolve-Path -LiteralPath $Media).Path
@@ -21,7 +21,7 @@ $refs=@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'Ipc.*.dll')
 $refs+=@(Get-ChildItem -LiteralPath (Join-Path $Media 'app') -Filter 'SQLitePCLRaw*.dll')
 $refs+=@(Get-Item -LiteralPath (Join-Path $Media 'desktop/Ipc.Desktop.dll'))
 $xml=($refs | Sort-Object FullName -Unique | ForEach-Object {'<Reference Include="'+$_.BaseName+'"><HintPath>'+[Security.SecurityElement]::Escape($_.FullName)+'</HintPath><Private>true</Private></Reference>'}) -join "`n"
-foreach($source in @('Program.cs','UxCommercialClosure.cs','CommercialPages.cs')){
+foreach($source in @('Program.cs','UxCommercialClosure.cs','CommercialPages.cs','VisualProductization.cs')){
  $content=& git -C $repo show ($release.SourceCommit+':tests/Ipc.Desktop.UiVerification/'+$source)
  if($LASTEXITCODE -ne 0){throw 'Missing fixed native fixture'}
  [IO.File]::WriteAllLines((Join-Path $Output $source),[string[]]$content)
@@ -36,19 +36,26 @@ $project='<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</Outpu
 [IO.File]::WriteAllText((Join-Path $Output 'NativeMedia.csproj'),$project)
 $workspace=Join-Path $Output 'workspace'
 New-Item -ItemType Directory -Path (Join-Path $workspace 'config/sportmaster') | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $workspace '.artifacts') | Out-Null
 Copy-Item -LiteralPath (Join-Path $Media 'app/config/business.json') -Destination (Join-Path $workspace 'config/sportmaster/business.json')
 $previousDesktop=$env:IPC_FROZEN_DESKTOP
 try {
  $env:IPC_FROZEN_DESKTOP=Join-Path $Media 'desktop/Ipc.Desktop.dll'
- & $Dotnet run --project (Join-Path $Output 'NativeMedia.csproj') -- $workspace --comm-native-pages *> (Join-Path $Output 'RUN.log')
+ $mode=if($VisualProductization){'--visual-productization'}else{'--comm-native-pages'}
+ $nativeArguments=@('run','--project',(Join-Path $Output 'NativeMedia.csproj'),'--',$workspace,$mode)
+ if($Interactive){$nativeArguments += '--interactive'}
+ & $Dotnet @nativeArguments *> (Join-Path $Output 'RUN.log')
 } finally { $env:IPC_FROZEN_DESKTOP=$previousDesktop }
 $result=$LASTEXITCODE
 foreach($relative in $inventory.Keys){if((Get-FileHash -LiteralPath (Join-Path $Media $relative)).Hash -ne $inventory[$relative]){throw "Verification changed medium: $relative"}}
 if(Test-Path -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE.txt')){
  $evidence=Get-Content -LiteralPath (Join-Path $workspace '.artifacts/WINDOWS-WPF-EVIDENCE.txt')
  Copy-Item -LiteralPath (Join-Path $evidence 'WINDOWS-WPF.log') -Destination $Output
- foreach($screen in @('commercial-history-1100x600.png','commercial-support.png','commercial-first-configuration.png')){
+ if($VisualProductization){Get-ChildItem -LiteralPath $evidence -Filter 'after-*.png' | Copy-Item -Destination $Output}
+ else { foreach($screen in @('commercial-history-1100x600.png','commercial-support.png','commercial-first-configuration.png')){
   if(Test-Path -LiteralPath (Join-Path $evidence $screen)){Copy-Item -LiteralPath (Join-Path $evidence $screen) -Destination $Output}
+ }
+
  }
 }
 [ordered]@{Status=if($result -eq 0){'PASS'}else{'FAIL'};SourceCommit=$release.SourceCommit;MediumInventorySha256=(Get-FileHash -LiteralPath (Join-Path $Media 'SHA256SUMS')).Hash;Scope='Native WPF pages with frozen published DLLs; synthetic identity/ports; no machine provisioning';ExitCode=$result;Binaries=@($refs|ForEach-Object{[ordered]@{File=$_.Name;Sha256=(Get-FileHash -LiteralPath $_.FullName).Hash}})}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $Output 'RESULT.json') -Encoding utf8NoBOM

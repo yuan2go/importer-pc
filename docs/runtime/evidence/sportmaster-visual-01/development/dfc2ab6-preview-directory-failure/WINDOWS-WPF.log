@@ -1,0 +1,41 @@
+SYNTHETIC identity/ports and explicitly projected abnormal facts. Real WPF/Dispatcher/HWND. No policy provisioning, device or network actions.
+PASS actual desktop parser and presentation default use product-specific routing with explicit classic compatibility
+PASS operator feedback is Chinese while original command receipt and authoritative pause fact remain available
+PASS frozen desktop first configuration exposes task steps and existing guarded save
+PASS offline first configuration never starts the Application or creates a business database
+PASS first-configuration native form becomes enabled and accepts keyboard focus after the read completes
+PASS first-configuration step navigation retains the same native unsaved form controls
+PASS integrated first-configuration guard refuses to discard an unsaved native draft
+SIZE window=1366.4x768 client=1352x730.4 DPI=1.25
+PASS delayed left request does not block right result or change its owner
+PASS left and right resolve independent operations on the shared live Application
+SIZE window=1100x650.4 client=1085.6x612.8 DPI=1.25
+PASS real lost left reply preserves Unknown while right continues independently
+PASS query reconciles the exact original request once without another send or replacing the right owner
+PASS repeated native snapshots retain focus, barcode selection, disclosure, scroll and unsaved inspection
+PASS native calendar editor preserves the original wall time and explicit nonlocal UTC offset
+PASS invalid native time propagates as invalid input instead of retaining an older query time
+PASS native clear-time action removes both exact time boundaries
+PASS native history row and command owner survive live snapshot refresh
+PASS page navigation preserves existing controls and independent drafts
+PASS auxiliary native window shares the same Application and device lifetime
+PASS Unknown/rejection never reuse a slot and retain the original request owner
+PASS failed snapshot invalidates displayed slot and new commands without clearing original responsibility
+SIZE window=900x520 client=885.6x482.4 DPI=1.25
+PASS compact recovery actions remain in actual client area
+MINIMUM 左投递位 barcode=28 slot=62.4 actionsBottom=280.8 positionHeight=293.6
+PASS minimum native client keeps barcode, slot and full action buttons visible inside each position
+PASS compact recovery actions remain in actual client area
+MINIMUM 右投递位 barcode=28 slot=62.4 actionsBottom=280.8 positionHeight=293.6
+PASS minimum native client keeps barcode, slot and full action buttons visible inside each position
+SIZE window=1366.4x768 client=1352x730.4 DPI=1.25
+INTERACTIVE preview ready; application timers remain active for human/native input inspection.
+FAIL System.IO.DirectoryNotFoundException: Could not find a part of the path 'D:\projects\importer-pc\.artifacts\visual-delivery-native-dfc2ab6\workspace\.artifacts\visual-preview.txt'.
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.WriteToFile(String path, FileMode mode, ReadOnlySpan`1 contents, Encoding encoding)
+   at System.IO.File.WriteAllText(String path, String contents, Encoding encoding)
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in D:\projects\importer-pc\.artifacts\visual-delivery-native-dfc2ab6\VisualProductization.cs:line 151
+   at Program.VerifyVisualProductization(String root, String evidence, List`1 lines, Boolean baseline, Boolean interactive) in D:\projects\importer-pc\.artifacts\visual-delivery-native-dfc2ab6\VisualProductization.cs:line 155
+   at Program.<>c__DisplayClass1_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc\.artifacts\visual-delivery-native-dfc2ab6\Program.cs:line 31

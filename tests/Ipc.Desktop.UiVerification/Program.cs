@@ -28,7 +28,8 @@ static partial class Program
         {
             try
             {
-                if (args.Contains("--comm-native-pages")) await VerifyCommercialPages(root, evidence, lines).WaitAsync(TimeSpan.FromSeconds(90));
+                if (args.Contains("--visual-productization")) await VerifyVisualProductization(root, evidence, lines, args.Contains("--baseline"), args.Contains("--interactive"));
+                else if (args.Contains("--comm-native-pages")) await VerifyCommercialPages(root, evidence, lines).WaitAsync(TimeSpan.FromSeconds(90));
                 else await Verify(root, evidence, lines, args.Contains("--commercial-productization-native")).WaitAsync(TimeSpan.FromSeconds(90));
                 desktop.Shutdown(0);
             }
@@ -59,7 +60,7 @@ static partial class Program
             var application = DispatchProxy.Create<IParcelApplication, ProjectionProbe>();
             var probe = (ProjectionProbe)(object)application; probe.Inner = (IParcelApplication)runtime.Application;
             var stops = 0; var stopCalls = 0; var failNextStop = false;
-            var classic = Presentation.Create(application, null, null);
+            var classic = Presentation.Create(application, null, null, "classic");
             var alternate = (SupplyStationWindow)Presentation.Create(application, null, "standard", "supply-station", async () => { stopCalls++; if (failNextStop) { failNextStop = false; throw new IOException("SYNTHETIC owner stop failed"); } await runtime.StopAsync(CancellationToken.None); stops++; });
             classic.Show(); alternate.Show(); await Task.Delay(1200);
             Check(classic is ShellWindow && alternate.ViewModel.Fresh, "classic and alternate native windows load actual resources and snapshots");
@@ -139,7 +140,17 @@ static partial class Program
         await VerifyLegacyDraftClose(evidence, config, Check);
         lines.Add("PASS WINDOWS WPF SMOKE; real SDK/WCS/device/field acceptance remains BLOCKED");
     }
-    static void Click(DependencyObject root, string name) => Descendants(root).OfType<Button>().Single(x => Equals(x.Content, name)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+    static void Click(DependencyObject root, string name)
+    {
+        var button = Descendants(root).OfType<Button>().SingleOrDefault(x => Equals(x.Content, name));
+        if (button is not null) button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        else Descendants(root).OfType<Menu>().SelectMany(m => m.Items.OfType<MenuItem>().SelectMany(MenuItems)).Single(x => Equals(x.Header, name)).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        static IEnumerable<MenuItem> MenuItems(MenuItem item)
+        {
+            yield return item;
+            foreach (var child in item.Items.OfType<MenuItem>()) foreach (var nested in MenuItems(child)) yield return nested;
+        }
+    }
     static IEnumerable<DependencyObject> Descendants(DependencyObject root)
     {
         for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)

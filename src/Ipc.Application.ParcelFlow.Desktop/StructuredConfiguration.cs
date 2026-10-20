@@ -76,11 +76,11 @@ public sealed class ConfigurationPolicyDraft : INotifyPropertyChanged
     {
         StationCode = c.StationCode ?? SystemParameterDefaults.StationCode(c.StationId), BarcodePattern = c.BarcodeFilter?.Pattern ?? "",
         QueueCapacity = c.QueueCapacity.ToString(CultureInfo.InvariantCulture), TimeoutMs = c.TimeoutMs.ToString(CultureInfo.InvariantCulture), MaximumOperations = c.MaximumOperations.ToString(CultureInfo.InvariantCulture),
-        ResidentHistory = (c.Retention?.ResidentHistory ?? 200).ToString(CultureInfo.InvariantCulture), MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? 67108864) / 1048576m).ToString(CultureInfo.InvariantCulture),
+        ResidentHistory = (c.Retention?.ResidentHistory ?? SystemParameterDefaults.ResidentHistory).ToString(CultureInfo.InvariantCulture), MinimumFreeMiB = ((c.Retention?.MinimumFreeBytes ?? SystemParameterDefaults.MinimumFreeBytes) / 1048576m).ToString(CultureInfo.InvariantCulture),
         WeightSource = c.Weight.Source, Unit = c.Weight.Unit, Validity = c.WeightValidity ?? WeightValidity.UntilDispatch,
         Precision = c.Weight.Precision.ToString(CultureInfo.InvariantCulture), ConfiguredWeight = c.Weight.ConfiguredValue?.ToString(CultureInfo.InvariantCulture) ?? "",
         MaximumAgeMs = c.Weight.MaximumAgeMs.ToString(CultureInfo.InvariantCulture), WaitTimeoutMs = c.Weight.WaitTimeoutMs.ToString(CultureInfo.InvariantCulture),
-        BackupEnabled = c.BackupSchedule is not null, BackupDirectory = c.BackupSchedule?.Directory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "backups", c.ApplicationId), BackupIntervalMinutes = c.BackupSchedule?.IntervalMinutes.ToString(CultureInfo.InvariantCulture) ?? "60", BackupMaximumSets = c.BackupSchedule?.MaximumSets.ToString(CultureInfo.InvariantCulture) ?? "10",
+        BackupEnabled = c.BackupSchedule is not null, BackupDirectory = c.BackupSchedule?.Directory ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ImporterPc", "backups", c.ApplicationId), BackupIntervalMinutes = c.BackupSchedule?.IntervalMinutes.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.BackupIntervalMinutes.ToString(CultureInfo.InvariantCulture), BackupMaximumSets = c.BackupSchedule?.MaximumSets.ToString(CultureInfo.InvariantCulture) ?? SystemParameterDefaults.MaximumBackupSets.ToString(CultureInfo.InvariantCulture),
         UploadStrategy = c.Images?.Strategy ?? UploadStrategy.BeforeMain, ImageBytes = (c.Images?.MaximumBytes ?? 4194304).ToString(CultureInfo.InvariantCulture),
         TotalBytes = (c.Images?.TotalBytes ?? 33554432).ToString(CultureInfo.InvariantCulture), MaximumPending = (c.Images?.MaximumPending ?? 32).ToString(CultureInfo.InvariantCulture)
     };
@@ -132,6 +132,10 @@ public partial class ParcelViewModel
     public System.Windows.Visibility ImageSettingsVisibility => (structuredBase?.ApplicationId ?? Snapshot?.ApplicationId) != "sportmaster" || structuredBase?.Images is not null ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
     public string[] NewCapabilityKinds => installedCatalog?.Providers.Where(x => SupportsNewKind(x.Kind)).Select(x => x.Kind).Distinct().ToArray() ?? [];
     public string NewCapabilityKind { get; set; } = "weight";
+    public string ParameterConfigurationSummary => (HasUnsavedConfiguration ? "有未保存修改" : "未修改") + " · " + validationState + " · " +
+        (Snapshot?.Configuration.Pending is not null ? "已保存待生效" : "无待生效修订") + " · " +
+        (!Fresh || Snapshot?.Configuration.Confirmation?.Required == true || Snapshot?.Configuration.Status == "ActivationFailed" ? "运行状态需核对" : "最后启动配置已确认；当前准入见作业状态") +
+        (Snapshot?.Configuration.Failure is { } failure ? " · 应用失败：" + failure : "");
     public string ConfigurationEditorState
     {
         get
@@ -144,7 +148,7 @@ public partial class ParcelViewModel
             return "编辑来源：" + configurationAuthority + " · " + state + " · " + validationState + "\n" + DraftRevisionState + "\n当前应用：" + (Snapshot?.Configuration.Status ?? "未读取") + " · Effective修订与Pending内容见运行输入页；保存不代表生效。";
         }
     }
-    void EditorChanged() { validationState = "修改后需重新校验"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(HasUnsavedConfiguration)); }
+    void EditorChanged() { validationState = "修改后需重新校验"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Changed(nameof(HasUnsavedConfiguration)); }
     void ApplyInstalledCatalog(CapabilityCatalog catalog)
     {
         installedCatalog = catalog;
@@ -161,7 +165,7 @@ public partial class ParcelViewModel
         NotifyConfigurationEditorState();
     }
     public void NotifyConfigurationEditorState()
-    { Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditLegacyConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ImageSettingsVisibility)); Changed(nameof(ConfigurationEditorState)); }
+    { Changed(nameof(HasUnsavedConfiguration)); Changed(nameof(HasLoadedConfiguration)); Changed(nameof(CanEditLegacyConfiguration)); Changed(nameof(CanEditFormConfiguration)); Changed(nameof(CanEditStructuredConfiguration)); Changed(nameof(HasStructuredConfiguration)); Changed(nameof(AdvancedConfigurationReadOnly)); Changed(nameof(StructuredPolicy)); Changed(nameof(ImageSettingsVisibility)); Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); }
     void LoadStructuredConfiguration(ParcelConfiguration c, CapabilityCatalog catalog)
     {
         // Construct every reference and selection before changing the current editing
@@ -299,16 +303,17 @@ public partial class ParcelViewModel
     }
     public async Task ValidateStructuredConfigurationAsync()
     {
-        if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留，点击错误定位"; Changed(nameof(ConfigurationEditorState)); return; }
-        var candidate = BuildStructuredConfiguration(); var receipt = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
+        if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留，点击错误定位"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
+        var candidate = BuildStructuredConfiguration(); var signature = ConfigurationEditSignature(); var receipt = await ServiceAsync(() => application.ValidateConfigurationAsync(candidate));
+        if (ConfigurationEditSignature() != signature) { validationState = "输入已改变，原校验结果过期；请重新检查"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
         validationState = receipt.Status + " · " + receipt.Reason;
         if (receipt.Status != "Validated") ParameterEditor?.Report(receipt.Reason);
-        Changed(nameof(ConfigurationEditorState)); Message = "完整候选校验：" + validationState + "；未保存。";
+        Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = "完整候选校验：" + validationState + "；未保存。";
     }
     public async Task SaveStructuredConfigurationAsync()
     {
         RequireFreshSnapshot();
-        if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留"; Changed(nameof(ConfigurationEditorState)); return; }
+        if (ParameterEditor?.ValidateFields() == false) { validationState = "校验失败；输入保留"; Changed(nameof(ConfigurationEditorState)); Changed(nameof(ParameterConfigurationSummary)); Message = validationState; return; }
         var expected = RequireDraftRevision(); var candidate = BuildStructuredConfiguration(); var signature = ConfigurationEditSignature();
         var result = await SubmitConfigurationAsync(expected, candidate);
         if (result.Status == "PendingRestart") { savedEditorSignature = signature; savedCandidate = Wire.Encode(candidate); ConfigurationDraft = savedCandidate; }

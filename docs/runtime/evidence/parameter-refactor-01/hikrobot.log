@@ -1,0 +1,34 @@
+PASS: x64 callback prefix ABI matches SDK evidence
+PASS: SDK no-code flag permits an absent optional code list
+PASS: reported code without its native list faults instead of inventing no-code
+PASS: no-code frame preserves its own trigger
+PASS: length-aware decode removes only terminal NUL and preserves spaces
+PASS: multiple codes remain multiple without selecting a winner
+PASS: third candidate is preserved in original order for business filtering
+PASS: out-of-ABI code count rejected before reading records
+PASS: out-of-ABI code length rejected before copy
+PASS: invalid configured encoding never replaces bytes into a valid code
+PASS: signed declared vendor import accepted statically without loading SDK
+PASS: missing/wrong/duplicate native prerequisite and portable native package rejected
+PASS: actual ALC reader startup refuses native SDK without independent qualification
+PASS: signed preload declaration retains value equality across independent JSON decoding
+PASS: expired qualification, wrong prerequisite owner and missing native entry bytes rejected
+NATIVE_POLICY_PASS
+PASS: same trigger retains entity candidate; same code on new trigger stays distinct
+PASS: frame identities and monotonic ingress sequence retained
+PASS: SDK health uses registered epoch and explicit source
+PASS: stop drains before close/destroy and ignores late callbacks
+PASS: reconnect uses new host epoch without reusing old admission identity
+PASS: old registration callback cannot be relabeled into the new epoch
+PASS: trigger counter reversal/wrap faults rather than merging different entities
+PASS: default observation cannot become business admission
+PASS: trigger mode mismatch fails without changing camera or leaking handle/lease
+PASS: IP matching never falls back to first enumerated device
+PASS: same physical serial rejects different business aliases, then becomes available after original teardown
+PASS: bounded overflow faults instead of silently continuing Ready
+PASS: blocked consumer retains SDK and lease during stop
+PASS: faulted queued observation counted and teardown finishes after consumer
+PASS: failed native stop retains resources
+PASS: explicit stop retry releases original owner once
+PASS: failed real health roundtrip closes readiness without reconnect/retrigger
+SELF_TEST_PASS checks=27

@@ -28,7 +28,8 @@ static partial class Program
         {
             try
             {
-                if (args.Contains("--audit-performance")) await VerifyAuditPerformance(root, evidence, lines);
+                if (args.Contains("--parameter-refactor")) await VerifyParameterRefactor(root, evidence, lines, args.Contains("--interactive"));
+                else if (args.Contains("--audit-performance")) await VerifyAuditPerformance(root, evidence, lines);
                 else if (args.Contains("--visual-productization")) await VerifyVisualProductization(root, evidence, lines, args.Contains("--baseline"), args.Contains("--interactive"));
                 else if (args.Contains("--comm-native-pages")) await VerifyCommercialPages(root, evidence, lines).WaitAsync(TimeSpan.FromSeconds(90));
                 else await Verify(root, evidence, lines, args.Contains("--commercial-productization-native")).WaitAsync(TimeSpan.FromSeconds(90));

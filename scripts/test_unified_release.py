@@ -157,6 +157,38 @@ class ReleaseTests(unittest.TestCase):
             release.cleanup_frozen_workspace(self.output)
         self.assertTrue(self.output.exists())
 
+    def test_reserved_historical_blob_survives_sparse_checkout_and_frozen_export(self):
+        import shutil
+        repo = self.output.parent / 'reserved.git'
+        subprocess.run(['git', 'init', '--bare', str(repo)], check=True, capture_output=True)
+        def git(*args, data=None):
+            return subprocess.check_output(['git', '--git-dir=' + str(repo), *args], input=data).strip()
+        git('config', 'core.autocrlf', 'false')
+        original = b'// synthetic historical design source\n'
+        blob = git('hash-object', '-w', '--stdin', data=original).decode()
+        tree = git('mktree', data=('100644 blob ' + blob + '\taux.js\n100644 blob ' + blob + '\tsafe.js\n').encode()).decode()
+        commit = git('-c', 'user.name=Synthetic', '-c', 'user.email=synthetic@example.invalid', 'commit-tree', tree, data=b'synthetic archive fixture\n').decode()
+        git('update-ref', 'refs/heads/main', commit); git('symbolic-ref', 'HEAD', 'refs/heads/main')
+        checkout = self.output.parent / 'sparse'
+        subprocess.run(['git', 'clone', '--no-checkout', str(repo), str(checkout)], check=True, capture_output=True)
+        def working(*args, data=None):
+            return subprocess.check_output(['git', '-c', 'core.protectNTFS=false', *args], cwd=checkout, input=data)
+        working('config', 'core.autocrlf', 'false')
+        working('sparse-checkout', 'set', '--no-cone', '--stdin', data=b'/*\n!/aux.js\n')
+        working('checkout', '--force', '--detach', commit)
+        self.assertEqual((checkout / 'safe.js').read_bytes(), original)
+        self.assertTrue(working('ls-files', '-v', 'aux.js').startswith(b'S '))
+        self.assertEqual(working('show', 'HEAD:aux.js'), original)
+        destination = self.output.parent / 'source-export'
+        extraction = frozen_export(repo, commit, destination)
+        try:
+            self.assertEqual((Path(extraction) / 'aux.js').read_bytes(), original)
+            self.assertEqual((Path(extraction) / 'safe.js').read_bytes(), original)
+        finally:
+            # Remove only this test's generated extended-path export directory.
+            self.assertEqual(destination.parent, self.output.parent)
+            shutil.rmtree(extraction)
+
 
 class Pr48ReleaseTests(unittest.TestCase):
     def make(self, root):

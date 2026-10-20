@@ -1,0 +1,10 @@
+{
+  "Package": "release-220d359-final.zip",
+  "Sha256": "0f78368ed20ed2a8f3898eaf353c239a0347997e60b332a6d82e56a91f5e96f6",
+  "SourceCommit": "220d35931a6e2174d35629a65a01a1b61cc39b21",
+  "Application": "sportmaster",
+  "Target": "portable",
+  "BusinessVersion": "1.5.0",
+  "BusinessAssembly": "Ipc.Application.Sportmaster.dll",
+  "CompatibilitySha256": "EF684B2B778F4AF5292A814096FC39B59EE334C3769B8483AA57C02B9AE160C4"
+}

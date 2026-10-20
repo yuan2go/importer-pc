@@ -16,6 +16,7 @@ static class ParameterRefactor
     }
     public static async Task Run(string workspace, string root)
     {
+        SportmasterRcs.ParameterStaticChecks(workspace);
         var c = Wire.Decode<ParcelConfiguration>(File.ReadAllText(Path.Combine(workspace, "config/sportmaster/business.json")));
         Check(!Wire.Encode(c).Contains("BarcodeFilter") && Wire.Encode(Wire.Decode<ParcelConfiguration>(Wire.Encode(c))) == Wire.Encode(c), "missing legacy policy is omitted and round-trips without manufacturing a production rule");
         Check(BarcodeFiltering.Select(null, ["X", "Y"]).Outcome == "MultipleCodes", "legacy policy retains strict single-code compatibility");
@@ -27,6 +28,19 @@ static class ParameterRefactor
         Check(BarcodeFiltering.Select(new("(a+)+$"), [new string('a', 500) + "!"]).Outcome == "FilterTimeout", "catastrophic backtracking times out and does not select a code");
         Check(BarcodeFiltering.Select(new("OK.*"), ["OK003"], "truncated").Outcome == "IncompleteCandidates" && BarcodeFiltering.Select(new("OK.*"), Enumerable.Repeat("noise", 300).Append("OK003").ToArray()).Outcome == "IncompleteCandidates", "incomplete and oversized candidate sets can never imply uniqueness");
         Check(new SportmasterFlow().Validate(c with { BarcodeFilter = new("[") }).Any(x => x.Contains("BarcodeFilter.Pattern")), "business configuration validation rejects malformed rules before save");
+        var missingPath = Path.Combine(root, "missing-config");
+        var missingLaunch = new BusinessLaunch(missingPath, Path.Combine(root, "missing-data"), null, null);
+        var maintenance = new ParcelStartupMaintenance(missingLaunch, new SportmasterFlow(), () => new ParcelCapabilityFactory(missingLaunch), () => { });
+        var missing = await maintenance.ReadAsync();
+        Check(missing.Candidate is { Mode: RunMode.Production, QueueCapacity: 64, TimeoutMs: 1500, MaximumOperations: 10000, StationCode: "station-01" } && missing.ConfigurationStatus == "MissingConfiguration" && !File.Exists(Path.Combine(missingPath, "business.json")), "missing configuration opens an editable fixed-dual-position draft with system defaults, without implicit persistence or simulation runtime");
+        var created = await maintenance.RepairInitialAsync(missing.ConfigurationHash, missing.Candidate! with { BarcodeFilter = new("OK[0-9]+") }, "Synthetic initial defaults and explicit synthetic business rule");
+        Check(created.Candidate is not null && File.Exists(Path.Combine(missingPath, "business.json")) && !Directory.Exists(missingLaunch.DataRoot), "explicit first save persists parameters without starting SDK, creating a business database, or inventing qualification");
+        var invalidPath = Path.Combine(root, "invalid-config"); Directory.CreateDirectory(invalidPath); ExtensionStore.AtomicWrite(Path.Combine(invalidPath, "business.json"), c with { BarcodeFilter = new("[") });
+        var invalidLaunch = new BusinessLaunch(invalidPath, Path.Combine(root, "invalid-data"), null, null);
+        var invalidMaintenance = new ParcelStartupMaintenance(invalidLaunch, new SportmasterFlow(), () => new ParcelCapabilityFactory(invalidLaunch), () => { });
+        Check((await invalidMaintenance.ReadAsync()).Candidate?.BarcodeFilter?.Pattern == "[", "invalid business parameters remain editable while business startup is blocked");
+        var defaults = new StartupConfigurationDraft(c with { StationCode = null }, (await maintenance.ReadAsync()).Catalog);
+        Check(defaults.Policy.StationCode == c.StationId && defaults.Build().StationCode == c.StationId && defaults.Policy.BackupIntervalMinutes == "60" && defaults.Policy.BackupMaximumSets == "10" && !defaults.Policy.BackupEnabled, "mandatory system values have explicit defaults; optional scheduled backup remains off");
         var path = Path.Combine(root, "parameters"); Directory.CreateDirectory(path); ExtensionStore.AtomicWrite(Path.Combine(path, "business.json"), c with { BarcodeFilter = new("OK[0-9]+") });
         var launch = new BusinessLaunch(path, Path.Combine(path, "data"), null, null);
         var factory = new UxCommercialInputs.InputFactory(new ParcelCapabilityFactory(launch));
@@ -73,20 +87,61 @@ static class ParameterRefactor
         Check(stale.Message.StartsWith("Conflict") && stale.HasUnsavedConfiguration && stale.StructuredPolicy.TimeoutMs == "1900", "CAS conflict preserves input and cannot replace the saved candidate");
         var invalidRevision = (await app.SnapshotAsync()).Configuration.Revision; stale.StructuredPolicy.QueueCapacity = "bad"; await stale.SaveStructuredConfigurationAsync();
         Check(stale.ParameterEditor!.Issues.Any(i => i.Path == "QueueCapacity") && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision, "field errors are locatable and static validation cannot save or contact a device");
+        stale.StructuredPolicy.QueueCapacity = "64"; stale.StructuredPolicy.BackupEnabled = true;
+        stale.StructuredPolicy.BackupIntervalMinutes = "bad"; stale.StructuredPolicy.BackupMaximumSets = "0";
+        stale.ParameterEditor.ValidateFields();
+        Check(stale.ParameterEditor.Issues.Any(i => i.Path == "BackupIntervalMinutes") && stale.ParameterEditor.Issues.Any(i => i.Path == "BackupMaximumSets") && !stale.ParameterEditor.Issues.Any(i => i.Path == "BackupDirectory") && stale.StructuredPolicy.BackupIntervalMinutes == "bad" && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision,
+            "backup numeric errors locate their actual fields, retain invalid text and never blame a valid directory or save");
+        stale.StructuredPolicy.BackupEnabled = false;
+        var heldProxy = DispatchProxy.Create<IParcelApplication, SaveProbe>(); var heldProbe = (SaveProbe)(object)heldProxy; heldProbe.Inner = app; heldProbe.FailInspection = true;
+        var heldVm = new ParcelViewModel(heldProxy, "校验期间编辑", "合成验证"); await heldVm.RefreshAsync(); await heldVm.LoadCapabilitiesAsync(); heldVm.ConfigurationReason = "Synthetic validation race";
+        heldVm.StructuredPolicy!.TimeoutMs = "2000"; heldProbe.HoldValidation = true; var heldSave = heldVm.SaveStructuredConfigurationAsync(); await heldProbe.ValidationEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        heldVm.StructuredPolicy.TimeoutMs = "2100"; heldProbe.ValidationRelease.TrySetResult(); await heldSave;
+        heldProbe.FailInspection = false; await heldVm.InspectLastSaveAsync();
+        Check(heldVm.HasUnsavedConfiguration && heldVm.StructuredPolicy.TimeoutMs == "2100" && (await app.SnapshotAsync()).Configuration.Pending!.TimeoutMs == 2000, "late authority inspection accepts only the pre-validation submission while newer input remains unsaved");
+        heldVm.StructuredPolicy.TimeoutMs = "2000"; Check(!heldVm.HasUnsavedConfiguration && heldProbe.StageCalls == 1, "returning to the inspected original candidate restores its exact clean baseline without resubmission");
+        var previewRevision = (await app.SnapshotAsync()).Configuration.Revision;
         var policy = new BarcodeFilterPolicy("OK[0-9]+"); var preview = await app.TestBarcodeFilterAsync(policy, ["bad", "OK003"]);
-        Check(preview.SelectedCode == "OK003" && (await app.SnapshotAsync()).Configuration.Revision == invalidRevision, "sample test shares the bounded matcher and has no configuration side effect");
+        Check(preview.SelectedCode == "OK003" && (await app.SnapshotAsync()).Configuration.Revision == previewRevision, "sample test shares the bounded matcher and has no configuration side effect");
         factory.Emit(reader, "Read", "third-entity", ["OK003"], "duplicate-original");
         var duplicate = await Wait(app, s => s.Inputs!.Any(x => x.Observation.SourceEventId == "duplicate-original"));
         Check(duplicate.Inputs!.Single(x => x.PositionId == "left").Outcome == ParcelInputOutcome.Duplicate && Wire.Encode(duplicate.Operations.Single(o => o.Id == original.Id).Wcs) == frozen, "existing entity uses frozen policy while paused and cannot replay its original request");
     }
     public class SaveProbe : DispatchProxy
     {
-        public IParcelApplication Inner = null!; public bool FailInspection; public int StageCalls;
+        public IParcelApplication Inner = null!; public bool FailInspection, HoldValidation; public int StageCalls;
+        public TaskCompletionSource ValidationEntered = new(TaskCreationOptions.RunContinuationsAsynchronously), ValidationRelease = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        async Task<BusinessReceipt> Validate(ParcelConfiguration candidate)
+        { if (HoldValidation) { HoldValidation = false; ValidationEntered.TrySetResult(); await ValidationRelease.Task; } return await Inner.ValidateConfigurationAsync(candidate); }
         protected override object? Invoke(MethodInfo? method, object?[]? args)
         {
             if (method!.Name == nameof(IParcelApplication.InspectConfigurationSubmissionAsync) && FailInspection) throw new IOException("Synthetic authority read failure");
+            if (method.Name == nameof(IParcelApplication.ValidateConfigurationAsync)) return Validate((ParcelConfiguration)args![0]!);
             if (method.Name == nameof(IParcelApplication.StageConfigurationAsync)) StageCalls++;
             try { return method.Invoke(Inner, args); } catch (TargetInvocationException ex) { System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException!).Throw(); throw; }
         }
+    }
+}
+
+static partial class SportmasterRcs
+{
+    public static void ParameterStaticChecks(string workspace)
+    {
+        var binding = Binding("http://127.0.0.1:1/rcs/sorter/api");
+        var c = HeartbeatConfiguration(workspace, binding);
+        var launch = new BusinessLaunch(workspace, Path.Combine(Path.GetTempPath(), "ipc-static-" + Wire.Id()), null, null);
+        void Reject(ParcelConfiguration candidate, string expected)
+        {
+            var factory = new ParcelCapabilityFactory(launch);
+            try { factory.ValidateStructure(candidate); throw new Exception("Expected static preflight rejection: " + expected); }
+            catch (InvalidDataException ex) when (ex.Message.Contains(expected, StringComparison.Ordinal)) { Console.WriteLine("PASS PARAM01: save-time static preflight rejects " + expected + " without constructing a component"); }
+        }
+        Reject(c with { StationCode = null }, "StationCode");
+        var devices = c.Topology!.Readers.Select((r, i) => r with { Driver = "extension:reader." + i }).ToArray();
+        var instances = devices.Select((r, i) => new ExtensionInstance("reader." + i, "test.reader", "test-reader", r.DeviceId, true, new() { ["bcr-code"] = "same" })).ToArray();
+        c = c with { Reader = devices[0], Topology = c.Topology with { Readers = devices }, Extensions = new([new("test.reader", "1.0.0", new string('a', 64))], instances) };
+        Reject(c, "distinct");
+        instances[1] = instances[1] with { Parameters = [] }; Reject(c, "bcr-code");
+        Reject(c with { Wcs = binding with { Target = "http://127.0.0.1:1/wrong" } }, "/rcs/sorter/api");
     }
 }

@@ -73,7 +73,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         var errors = definition.Validate(candidate);
         if (errors.Length != 0) return new("Rejected", string.Join("; ", errors), state.Envelope?.Revision ?? 0);
         await using var ports = factory();
-        candidate = ports.Normalize(candidate); ports.Validate(candidate);
+        candidate = ports.Normalize(candidate); ports.ValidateStructure(candidate);
         return new("Validated", "完整候选已静态校验；未启动设备、保存配置或改写数据库", state.Envelope?.Revision ?? 0);
     }
     public Task<StartupMaintenanceDocument> StageAsync(string expectedHash, ParcelConfiguration candidate, string reason) => StageCore(expectedHash, candidate, reason, false);
@@ -118,7 +118,7 @@ public sealed partial class ParcelStartupMaintenance(BusinessLaunch launch, Flow
         await using var ports = factory();
         candidate = ports.Normalize(candidate);
         using var references = ports.ProtectConfiguration(candidate);
-        ports.Validate(candidate);
+        ports.ValidateStructure(candidate);
         ParcelMachineOrigin.EnsureNew(state.Directory, state.Seed);
         var operation = Path.Combine(state.Directory, "startup-maintenance", Wire.Id()); Directory.CreateDirectory(operation);
         var source = state.Envelope is null ? Seed : state.File;

@@ -1,0 +1,7 @@
+{
+  "source_commit": "220d35931a6e2174d35629a65a01a1b61cc39b21",
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "rebuild": false,
+  "old_versions_overwritten": false,
+  "scope": "按用户授权上传PR73原任务已有执行产物。本轮不测试、不构建、不重打包、不安装或启动。原便携CLI Simulation ZIP源码220d35931a6e2174d35629a65a01a1b61cc39b21；RCS1.2.1和Hikrobot1.0.3合成签名夹具的PluginSourceCommit分别保留5cd89bd6a1a89004a663b62d25b1f707acd8ce1c，以identity.json为准。原运行证据见docs/runtime/parameter-refactor-01.md，不能作为本轮最终合并树的新PASS。\n\n这是portable CLI及TestOnly夹具，不是包含全部最终main成果的新Windows安装包；不包含后续桌面错误定位、CI导出修复或V2目标实现。TestOnly不用于Production，不提供私钥、测试信任、真实SDK、客户资料或生产数据。新独立标签，不覆盖任何旧版本。"
+}

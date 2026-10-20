@@ -1,0 +1,8 @@
+{
+  "FrozenSource": "220d35931a6e2174d35629a65a01a1b61cc39b21",
+  "Fixture": "isolated existing verification assembly with byte-identical frozen public contracts; no guard changes",
+  "Contracts": {
+    "Ipc.Platform.dll": "13e95b57c6290ba666abc8fc8d9572363eb9a6aac0c9a772d7ef3c12542dbed3",
+    "Ipc.Application.Contracts.dll": "c60b4d9872627ad6dbf4f605b43f86801b03300a8013c46aa6a08458ebcbb609"
+  }
+}

@@ -73,6 +73,7 @@ static class UxCommercialInputs
         recovered = await Wait(restarted, s => s.Inputs!.Any(i => i.Outcome == ParcelInputOutcome.Duplicate));
         Check(recovered.Positions!.Single(p => p.Id == "left").CurrentOperation == newest.Id && recovered.Operations.Length == 3,
             "late duplicate of older admission neither regresses current result nor creates delivery");
+        await restarted.DisposeAsync(); // Release exact synthetic readers before the next independent fixture.
         await UnknownOriginal(workspace, root);
         await ReaderRebinding(workspace, root, true);
         await ReaderRebinding(workspace, root, false);

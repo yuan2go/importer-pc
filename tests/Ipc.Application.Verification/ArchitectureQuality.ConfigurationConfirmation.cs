@@ -140,7 +140,9 @@ static partial class ArchitectureQuality
                 firstWindow.ConfigurationConfirmationEvidence == originalEvidence && firstWindow.ConfigurationDraft == unsavedDraft &&
                 firstWindow.ConfigurationConfirmationReason == "Window A inspected original before concurrent configuration change",
                 "two real maintenance VMs reject stale confirmation after refresh without advancing Owner or erasing evidence, reason or draft");
+            await Wait(app, state => state.Availability!.Configure); await firstWindow.RefreshAsync();
             await firstWindow.LoadConfigurationConfirmationAsync();
+            for (var retry = 0; retry < 100 && !firstWindow.CanConfirmConfiguration; retry++) { await Task.Delay(20); await firstWindow.RefreshAsync(); }
             Check(firstWindow.ConfigurationConfirmationEvidence != originalEvidence && firstWindow.ConfigurationDraft == unsavedDraft && firstWindow.CanConfirmConfiguration,
                 "explicit re-read updates confirmation identity while keeping independent edit draft");
             await firstWindow.RunAsync(firstWindow.ConfirmConfigurationAsync);

@@ -1,9 +1,11 @@
+> PR73 参数实施补充：原 PARAM-01 参数及必要联动已完成，原提交验证见[实施记录](../runtime/parameter-refactor-01.md)；本轮只做不测试的合并/上传。V2 字段重排、五步首配、三组作业信息及其余 UI 仍按本页后续目标实施，不据此宣布 V2 完成。
+
 # 下一步 Codex 提示：完成 Sportmaster V2 UI 优化
 
 本提示规定目标与完成标准，具体字段、状态、迁移和验收以[工作包](WP-IPC-UI-TASK-REDESIGN-01.md)、[V2实施裁决](../design/sportmaster-task-redesign-01.md)、[设计交接](../ui/sportmaster-task-redesign-v2-20261020/HANDOFF.md)及[PARAM-01现状](../runtime/parameter-refactor-01.md)为准。
 
 ```text
-在 yuan2go/importer-pc 最新 main 上完整完成 WP-IPC-UI-TASK-REDESIGN-01 的 UIR-00～06，优先参数配置和双相机作业闭环。最新main已有PARAM-01参数编辑、条码筛选、RCS心跳及单窗口安装；复用并完善，不能从零重做，也不能把未完成快照当已验收。
+在 yuan2go/importer-pc 最新 main 上完整完成 WP-IPC-UI-TASK-REDESIGN-01 的 UIR-00～06，优先参数配置和双相机作业闭环。最新main已有PARAM-01参数编辑、条码筛选、RCS心跳及单窗口安装；复用并完善，不能从零重做，也不能把原参数范围完成当作V2完整验收。
 
 编码前先核对工作区、最新main与并行PR，详细阅读 AGENTS.md、docs/INDEX.md、框架/决策、参数/心跳/安装/发布文档及本工作包，实际查看 docs/ui/sportmaster-task-redesign-v2-20261020/ 的原型、全部界面、HANDOFF、字段迁移，再核对相关源码契约。先清理过期或冲突的当前设计、文档与索引，保留有效实现、原件和历史证据，再开始代码工作。
 

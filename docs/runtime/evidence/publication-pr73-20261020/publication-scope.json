@@ -1,0 +1,12 @@
+{
+  "baseline_main": "2c2b5f137084eedfd30800fb5b1b7262b4560800",
+  "pr": 73,
+  "original_pr_head": "5fca596f552a1cd53fdc23ed2853b075869a2383",
+  "integration_commit": "168d56d95753a6a4e89663d8f14bdab4c7410a41",
+  "code_merge_conflicts": false,
+  "conflict_resolution_scope": "Documentation and manifest only; retain V2 original assets and targets plus PR73 implementation and original evidence",
+  "tests": "NOT_RUN_BY_USER_REQUEST",
+  "build_repackage_install_runtime": "NOT_RUN_BY_USER_REQUEST",
+  "final_count_scope": "Query baseline..origin/main after GitHub PR merge; this receipt does not predeclare a merge SHA or test result",
+  "release_url": "https://github.com/yuan2go/importer-pc/releases/tag/parameters-sm-v1.5.0-220d35931a6e"
+}

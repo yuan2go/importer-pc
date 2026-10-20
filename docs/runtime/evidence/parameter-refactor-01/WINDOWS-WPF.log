@@ -1,0 +1,18 @@
+PASS PARAM01-NATIVE missing configuration opens the existing first-configuration page with shared system defaults, without an extra missing-configuration window
+PASS PARAM01-NATIVE opening first configuration neither saves parameters nor creates a runtime database/device owner
+PASS PARAM01-NATIVE one shared native editor exposes exactly the four parameter categories
+PASS PARAM01-NATIVE system parameter receives native keyboard focus
+PASS PARAM01-NATIVE repeated real snapshots preserve input, focus and selection
+CAPTURE parameters-system 1553.6000000000001x881.6 DIP scale=1.25,1.25
+PASS PARAM01-NATIVE native sample test evaluates the third candidate without stopping runtime or saving configuration
+CAPTURE parameters-business 1553.6000000000001x881.6 DIP scale=1.25,1.25
+PASS PARAM01-NATIVE error summary locates the invalid field while preserving business inputs
+CAPTURE parameters-error 1553.6000000000001x881.6 DIP scale=1.25,1.25
+PASS PARAM01-NATIVE parameter fields remain scrollable at (1366, 768)
+PASS PARAM01-NATIVE parameter fields remain scrollable at (900, 640)
+PASS PARAM01-NATIVE parameter fields remain scrollable at (800, 420)
+CAPTURE parameters-compact 800x420 DIP scale=1.25,1.25
+PASS PARAM01-NATIVE fixed two readers use one package with independent parameter objects and IPs
+PASS PARAM01-NATIVE editing right driver never changes left driver parameters
+CAPTURE parameters-drivers 1366.4x768 DIP scale=1.25,1.25
+SYNTHETIC native WPF/Dispatcher and geometry; real SDK, RCS, target IPC resolution/DPI/touch/site NOT_RUN.

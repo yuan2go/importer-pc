@@ -37,7 +37,7 @@ public interface ISyntheticWeightInput { bool Emit(WeightMeasurement measurement
 public enum WeightValidity { UntilDispatch, AtAssociation }
 public sealed record ParcelConfiguration(int SchemaVersion, string ApplicationId, string StationId, RunMode Mode,
     WeightPolicy Weight, DeviceBinding Reader, CapabilityBinding? Scale, CapabilityBinding? Wcs, CapabilityBinding? Plc,
-    DeploymentExtensions? Extensions = null, int QueueCapacity = 64, int TimeoutMs = 1500, int MaximumOperations = 10000,
+    DeploymentExtensions? Extensions = null, int QueueCapacity = SystemParameterDefaults.QueueCapacity, int TimeoutMs = SystemParameterDefaults.TimeoutMs, int MaximumOperations = SystemParameterDefaults.MaximumOperations,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] CapabilityBinding? Login = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] ImagePolicy? Images = null, int SessionLifetimeMs = 28800000,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] CapabilityBinding[]? CapabilityInstances = null,

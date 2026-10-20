@@ -60,7 +60,7 @@ public sealed class ParameterSettingsControl : UserControl
         business.Children.Add(Text(m.ApplicationId + " 业务参数", true));
         if (m.ApplicationId == "sportmaster")
         {
-            Input(business, "左右共用条码筛选正则", m.Policy, "BarcodePattern", "BarcodePattern", 1, "整串匹配；单次25ms、总计100ms预算。旧配置留空保持严格单码兼容，不自动生成生产规则。新规则仅影响新准入。", true);
+            Input(business, "左右共用条码筛选正则", m.Policy, "BarcodePattern", "BarcodePattern", 1, "整串匹配；单次25ms、总计100ms预算。旧配置未声明规则时保持严格单码兼容；新首配须填写规则，可暂存未完成输入。不自动生成生产规则，新规则仅影响新准入。", true);
             var sample = new TextBox { AcceptsReturn = true, MinHeight = 96, MaxLength = 65536, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
             AutomationProperties.SetName(sample, "条码筛选样例"); business.Children.Add(Text("本地候选样例（每行一个，同一次观察；不外呼、不保存）")); business.Children.Add(sample);
             var result = Text("尚未测试"); var test = new Button { Content = "测试候选筛选", MinHeight = 40, HorizontalAlignment = HorizontalAlignment.Left, Margin = new(0, 8, 0, 4) };
@@ -77,12 +77,34 @@ public sealed class ParameterSettingsControl : UserControl
             };
             business.Children.Add(test); business.Children.Add(result);
         }
-        else business.Children.Add(Text("业务处理策略保留于原兼容表单；不为分类创造参数。"));
+        else
+        {
+            EnumChoice(business, "重量来源", m.Policy, nameof(m.Policy.WeightSource), Enum.GetValues<WeightSource>());
+            EnumChoice(business, "重量单位", m.Policy, nameof(m.Policy.Unit), Enum.GetValues<WeightUnit>());
+            Input(business, "重量精度（0～6）", m.Policy, "Precision", "Precision", 1);
+            Input(business, "配置重量（所选kg/g）", m.Policy, "ConfiguredWeight", "ConfiguredWeight", 1, "仅配置重量模式生效；不等于实测重量");
+            Input(business, "测量新鲜度（ms）", m.Policy, "MaximumAgeMs", "MaximumAgeMs", 1);
+            Input(business, "本件等待期限（ms）", m.Policy, "WaitTimeoutMs", "WaitTimeoutMs", 1);
+            EnumChoice(business, "重量有效性时机", m.Policy, nameof(m.Policy.Validity), Enum.GetValues<WeightValidity>());
+            if (m.Components.Any(x => x.Kind == "camera"))
+            {
+                EnumChoice(business, "图像上传时机", m.Policy, nameof(m.Policy.UploadStrategy), Enum.GetValues<UploadStrategy>());
+                Input(business, "单件图像最大字节", m.Policy, "ImageBytes", "ImageBytes", 1);
+                Input(business, "图像缓存总字节", m.Policy, "TotalBytes", "TotalBytes", 1);
+                Input(business, "图像待处理件数", m.Policy, "MaximumPending", "MaximumPending", 1);
+            }
+        }
         drivers.Children.Add(Text("Application 声明的读码实例", true)); drivers.Children.Add(Text("Sportmaster 固定左右两个实例；可共用同一驱动包，连接和参数独立。身份与数量只读，参数只来自精确安装描述。"));
         foreach (var reader in m.Readers) Capability(drivers, reader, 2);
         components.Children.Add(Text("业务组件", true)); components.Children.Add(Text("Sportmaster 左右共用一个逻辑RCS连接。quantity、指定格口、左右取格口编码及心跳间隔均归组件。"));
         foreach (var component in m.Components.Where(x => x.Bound || x.Enabled)) Capability(components, component, 3);
         categories.SelectedIndex = Math.Clamp(selected, 0, 3); ShowIssues(this, EventArgs.Empty);
+    }
+    static void EnumChoice(Panel panel, string label, object source, string property, Array values)
+    {
+        panel.Children.Add(Text(label)); var choice = new ComboBox { ItemsSource = values, MinHeight = 36 };
+        choice.SetBinding(ComboBox.SelectedItemProperty, new Binding(property) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+        AutomationProperties.SetName(choice, property); panel.Children.Add(choice);
     }
     void Capability(Panel panel, CapabilityDraft draft, int category)
     {
@@ -91,13 +113,20 @@ public sealed class ParameterSettingsControl : UserControl
         System.ComponentModel.PropertyChangedEventHandler handler = (_, e) => { if (e.PropertyName == nameof(CapabilityDraft.Provider)) RenderSection(); };
         draft.PropertyChanged += handler; subscriptions.Add((draft, handler)); RenderSection();
     }
+    sealed record ProviderChoice(string Label, Ipc.Platform.CapabilityDescriptor Provider);
     void CapabilityFields(Panel panel, CapabilityDraft draft, int category)
     {
         panel.Children.Add(Text((draft.Kind == "observation" ? draft.Role + " · 读码实例 " : "组件实例 ") + draft.InstanceId, true));
         panel.Children.Add(Text("稳定身份/目标：" + draft.Target + "\n" + draft.ProviderIdentity));
-        var providers = new ComboBox { ItemsSource = draft.Providers, SelectedItem = draft.Provider, DisplayMemberPath = "Implementation", MinHeight = 36 };
+        if (draft.Role is "operator-login" or "default-scale")
+        {
+            var optional = new CheckBox { Content = "绑定此可选能力（仍需业务策略适用）", MinHeight = 36 };
+            optional.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(draft.Bound)) { Source = draft, Mode = BindingMode.TwoWay }); panel.Children.Add(optional);
+        }
+        var choices = draft.Providers.Select(p => new ProviderChoice(p.Implementation + " @ " + p.Version + " · " + p.Module, p)).ToArray();
+        var providers = new ComboBox { ItemsSource = choices, SelectedItem = choices.SingleOrDefault(x => x.Provider == draft.Provider), DisplayMemberPath = "Label", MinHeight = 36 };
         AutomationProperties.SetName(providers, draft.InstanceId + "/Provider"); providers.ToolTip = "只选择已安装的精确版本；身份/数量/用途保持Application声明";
-        providers.SelectionChanged += (_, _) => { if (providers.SelectedItem is Ipc.Platform.CapabilityDescriptor selected && selected != draft.Provider) draft.Provider = selected; };
+        providers.SelectionChanged += (_, _) => { if (providers.SelectedItem is ProviderChoice selected && selected.Provider != draft.Provider) draft.Provider = selected.Provider; };
         panel.Children.Add(providers);
         if (draft.Provider is null) { panel.Children.Add(Text("缺少精确依赖：恢复原包或在高级维护中受控选择兼容版本。当前输入和绑定保留。")); return; }
         if (draft.Kind != "observation") Input(panel, "组件连接目标", draft, "Target", draft.InstanceId + "/Target", category, draft.TargetBoundary);

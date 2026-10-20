@@ -1,3 +1,7 @@
+> PR73本轮不测试发布、源码及产物下载边界见[发布报告](runtime/publication-pr73-20261020.md)。
+
+> PR73 参数实施补充：原 PARAM-01 参数及必要联动已完成，原提交验证见[实施记录](runtime/parameter-refactor-01.md)；本轮只做不测试的合并/上传。V2 字段重排、五步首配、三组作业信息及其余 UI 仍按本页后续目标实施，不据此宣布 V2 完成。
+
 > 本轮不测试发布与PR69～71合并记录、原执行产物下载及边界见[发布报告](runtime/publication-pr69-pr71-20261020.md)。参数仍为实施中快照，原介质保留各自SourceCommit。
 
 当前已授权进入 PARAM-01 参数正式重构，四分类、业务条码筛选及配置闭环以 [实施裁决](design/parameter-refactor-01.md) 为准；原“本次只做设计”是设计入库阶段记录。完整 UI 工作包其余范围不因本包实施自动完成。
@@ -9,7 +13,7 @@
 
 # 文档索引：Sportmaster V2 任务与配置体验重设计
 
-当前V2目标与完整工作包由下列入口管理。**本次仅交付设计、离线模拟、源码对照与指引，不修改生产代码或运行构建/测试。PARAM-01已有四分类WPF控件、条码筛选、首配共模和保存核对，仍是未完成实施快照；不能说全部UIR尚未移植，也不能宣布全包完成。** 最新复核基准为 `ba80d0ea90d86b24f9d9eebd20d075da34320972`；继续继承最新main，用户本轮字段归属优先于快照临时摆放。
+当前V2目标与完整工作包由下列入口管理。**本次仅交付设计、离线模拟、源码对照与指引，不修改生产代码或运行构建/测试。PARAM-01在ba80时为四分类WPF控件、条码筛选、首配共模和保存核对的未完成快照；PR73现已完成原参数范围，V2新要求仍需继续实施；不能说全部UIR尚未移植，也不能宣布全包完成。** 最新复核基准为 `ba80d0ea90d86b24f9d9eebd20d075da34320972`；继续继承最新main，用户本轮字段归属优先于快照临时摆放。
 
 ## 1. 当前阅读顺序
 
@@ -57,7 +61,7 @@ V2 以命名界面状态和导出图片分别计数，实际数量见本版索�
 | --- | --- |
 | 新设计与模拟QA | [V2 设计入口](ui/sportmaster-task-redesign-v2-20261020/README.md)、[UI状态](ui/STATUS.md)。只证明目标呈现和模拟交互，不证明WPF或生产链路。 |
 | 现有WPF及组合 | [工作台原证据与补修](runtime/sportmaster-clear-workstation-01.md)、[组合报告](runtime/parallel-task-reconciliation-20261020-02.md)。原233项组合/9项完成页回归各守原源码、方法和环境。 |
-| PARAM实施快照 | [实施中记录](runtime/parameter-refactor-01.md)、[PR71范围](runtime/publication-parameter-snapshot-20261020.md)。已有代码复用；V2字段重排与完整交互仍需完成，没有最终合并树PASS。 |
+| PARAM当前实现及历史快照 | [PR73实施记录](runtime/parameter-refactor-01.md)、[PR71历史范围](runtime/publication-parameter-snapshot-20261020.md)。原参数范围已完成，V2字段重排与完整交互仍需完成；本轮最终合并树不测试。 |
 | 已发布单窗口SM v1.4.1 | [27b0d8f及58项原生记录](runtime/installer-single-window-01.md)、[下载/上传回执](runtime/publication-pr69-pr71-20261020.md)。原SourceCommit保留，不含后续固定名称、心跳或参数快照。 |
 | 已发布心跳Simulation | [3f8a58ba原验证](runtime/rcs-heartbeat-01.md)及[发布范围](runtime/publication-pr69-pr71-20261020.md)。portable CLI/签名夹具不是WPF安装包，不改标为最新main。 |
 | 历史7c安装发行 | [原41项证据](runtime/installer-release-info-01.md)、[原字节发布回执](runtime/publication-installer-release-info-20261020.md)。原SourceCommit和验收边界保留。 |

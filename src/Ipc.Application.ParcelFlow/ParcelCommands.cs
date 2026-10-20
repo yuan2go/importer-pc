@@ -137,7 +137,7 @@ public sealed partial class ParcelRuntime
             using var configurationUse = factory.ProtectConfiguration(candidate);
             audit = audit with { CandidateHash = Wire.Hash(Wire.Encode(candidate)), Candidate = candidate };
             repository.Commit(null, "ConfigurationCandidateNormalized", Wire.Encode(audit), configurationAudit: audit);
-            factory.Validate(candidate);
+            factory.ValidateStructure(candidate);
             if (configuration.Current.Revision == expectedRevision && configuration.Current.Pending is { } pending && Wire.Encode(pending) == Wire.Encode(candidate))
             {
                 audit = audit with { AfterRevision = expectedRevision, Status = "PendingRestart", Result = "Existing identical Pending retained; no second configuration revision" };

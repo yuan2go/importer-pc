@@ -48,7 +48,7 @@ public partial class ParcelViewModel
     {
         var now=at??DateTimeOffset.UtcNow;
         fresh=MonotonicFresh && lastRead is { } read && now>=read && now-read<TimeSpan.FromSeconds(3) && readFailure is null;
-        foreach(var name in new[]{nameof(Fresh),nameof(CanStartFreshOperation),nameof(UpdatedAt),nameof(ReadStatus),nameof(Status),nameof(Health),nameof(BlockingReasons),nameof(CanAdmit),nameof(CanResume),nameof(CanConfigure),nameof(CanContinue),nameof(CanContinueUpload),nameof(CanAbandon)})Changed(name);
+        foreach(var name in new[]{nameof(Fresh),nameof(CanStartFreshOperation),nameof(UpdatedAt),nameof(ReadStatus),nameof(Status),nameof(Health),nameof(BlockingReasons),nameof(CanAdmit),nameof(CanResume),nameof(CanConfigure),nameof(CanContinue),nameof(CanContinueUpload),nameof(CanAbandon),nameof(ParameterConfigurationSummary)})Changed(name);
         NotifyTargets(); SnapshotValidityChanged(now);
     }
     protected virtual void SnapshotValidityChanged(DateTimeOffset now) { }

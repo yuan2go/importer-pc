@@ -253,7 +253,7 @@ public partial class ParcelViewModel(IParcelApplication application, string titl
             ? "模拟测量已排队，等待应用关联和校验。" : "测量未接纳；原作业仍保留。";
     }
     public async Task SaveConfigurationAsync()
-    { RequireFreshSnapshot(); var expected = RequireDraftRevision(); var candidate = Wire.Decode<ParcelConfiguration>(ConfigurationDraft); var reason = ConfigurationReason; var r = await ServiceAsync(() => application.StageConfigurationAsync(expected, candidate, reason)); AdvanceOwnDraftRevision(expected, r); Message = r.Status + " · " + r.Reason; }
+    { RequireFreshSnapshot(); var expected = RequireDraftRevision(); var candidate = Wire.Decode<ParcelConfiguration>(ConfigurationDraft); _ = await SubmitConfigurationAsync(expected, candidate); }
     public async Task ReconcileAsync()
     { RequireFreshSnapshot(); var op = Current ?? throw new InvalidOperationException("当前投递位没有作业"); var r = await ServiceAsync(() => application.ReconcileAsync(op.Id)); Message = r.Status + " · " + r.Reason; }
     public async Task ContinueAsync() { RequireFreshSnapshot(); var op = Current ?? throw new InvalidOperationException("当前投递位没有作业"); var command = new BusinessCommand(Wire.Id(), Snapshot!.Revision, "ContinuePrepared", op.Id, InspectionReason); var r = await ServiceAsync(() => application.CommandAsync(command)); Message = r.Status + " · " + r.Reason; }

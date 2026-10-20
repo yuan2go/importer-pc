@@ -58,12 +58,17 @@ public partial class App : System.Windows.Application
             startup.Show(); MainWindow = startup;
             if (runtime is not null) throw new InvalidOperationException("原实例尚未完成停止，不创建第二个运行实例");
             var options = selected!; var launch = options.Business;
-            if (!File.Exists(Path.Combine(launch.ConfigurationDirectory, "business.json"))) { await Repair(initialConfiguration: true); return; }
-            if (!firstConfigurationReviewed && File.Exists(Path.Combine(AppContext.BaseDirectory, "application-release.json")))
+            if (!firstConfigurationReviewed)
             {
-                var initialDocument = await Task.Run(() => ParcelStartupServices.Maintenance(launch).ReadAsync());
-                if (initialDocument is { Candidate: not null, ExistingConfiguration: false, ConfigurationStatus: "Seed" or "MissingConfiguration" })
-                { await Repair(initialConfiguration: true); return; }
+                var maintenance = ParcelStartupServices.Maintenance(launch);
+                var initialDocument = await Task.Run(maintenance.ReadAsync);
+                if (initialDocument.Candidate is { } candidate)
+                {
+                    var check = await Task.Run(() => maintenance.CheckAsync(candidate));
+                    if (!initialDocument.ExistingConfiguration || check.Checks.Any(c => c.Status == "FAIL"))
+                    { await Repair(initialConfiguration: true); return; }
+                }
+                else { await Repair(initialConfiguration: true); return; }
             }
             startup.BeginAttempt();
             startup.Phase("读取配置与本地记录", "检查所选 Application、配置身份和本地恢复责任；尚未开放业务。", "参数校验完成");

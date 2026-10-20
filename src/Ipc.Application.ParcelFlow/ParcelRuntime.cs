@@ -267,7 +267,6 @@ public sealed partial class ParcelRuntime(BusinessLaunch launch, FlowDefinition 
             !ExtensionSchema.IsId(o.AdmissionId) ? "InvalidAdmissionId" : code is null ? selection.Outcome : null;
         if (rejection is not null)
         {
-            foreach (var prior in priors) RecordIdentityConflict(prior, position, "Existing entity re-observed with rejected/ambiguous candidate evidence: " + selection.Outcome);
             RecordInput(Input(position, o, ParcelInputOutcome.Rejected, rejection + "; no operation or external intent created", selection: selection), "ObservationRejected"); return;
         }
         if (priors.Length > 0)

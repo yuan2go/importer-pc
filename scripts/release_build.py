@@ -41,7 +41,8 @@ def build_properties(source, snapshot, artifacts):
     link = artifacts / 'frozen-source-link.json'
     link.write_text(json.dumps({'documents': {'/_/src/*':
         'https://raw.githubusercontent.com/yuan2go/importer-pc/' + source + '/*'}}), encoding='utf-8')
-    return ['-p:PathMap=' + str(snapshot) + '=/_/src%2C' + str(artifacts) + '=/_/build',
+    return ['-p:PublishReadyToRun=false', '-p:PublishAot=false',
+            '-p:PathMap=' + str(snapshot) + '=/_/src%2C' + str(artifacts) + '=/_/build',
             '-p:SourceRevisionId=' + source, '-p:EnableSourceControlManagerQueries=false',
             '-p:EnableSourceLink=false', '-p:SourceLink=' + str(link)]
 

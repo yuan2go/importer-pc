@@ -475,6 +475,8 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
             desktopIcon = new CheckBox { Content = "在桌面创建快捷方式", IsChecked = selectedDesktop, MinHeight = 44 }; Body.Children.Add(desktopIcon);
             data = InstallationFolder("数据目录", enteredData ?? reviewed?.DataRoot ?? current?.DataRoot ?? launch.DataRoot);
             var advanced = new StackPanel(); Body.Children.Add(new Expander { Header = "高级设置（运行账户、工位与维护）", Content = advanced, Margin = new(0, 20, 0, 12) }); Form = advanced;
+            var environment = WindowsClientCompatibility.Capture();
+            Form.Children.Add(new Expander { Header = "运行环境（可复制）", Content = new TextBox { Text = Wire.Encode(environment), IsReadOnly = true, TextWrapping = TextWrapping.Wrap, MaxHeight = 180, VerticalScrollBarVisibility = ScrollBarVisibility.Auto } });
             var defaultAccount = ParcelStartupServices.DefaultRuntimeAccount();
             account = Field("运行账户（已有 Windows 用户，如 机器名\\用户名；普通启动即可使用 UAC 过滤账户）", enteredAccount ?? reviewed?.RuntimeAccountSid ?? defaultAccount, _ => { });
             newSite = new CheckBox { Content = "新工位：使用介质通用模板", IsChecked = enteredNewSite ?? (current is null && reviewed is null), IsEnabled = current is null, MinHeight = 44 }; Form.Children.Add(newSite);
@@ -523,6 +525,8 @@ public sealed class StartupSetupWindow : StartupWorkflowWindow
         if (step == 0)
         {
             if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("安装向导需要 Windows");
+            var environment = WindowsClientCompatibility.Capture();
+            if (!environment.Assessment.CanStart) throw new PlatformNotSupportedException(environment.Assessment.Reason);
             var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, ".."));
             if (prepareMedia is not null)
             {

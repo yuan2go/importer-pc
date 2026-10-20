@@ -120,6 +120,7 @@ def main():
                     '-p:InstallerPayload=' + str(payload), '-p:InstallerDescriptor=' + str(metadata),
                     '-p:Application=' + module, '-p:NuGetLockFilePath=packages.' + descriptor['ApplicationId'] + '.win-x64.lock.json',
                     '-p:RestoreLockedMode=true', *build_properties(source, snapshot, artifacts),
+                    '-p:CopyOutputSymbolsToPublishDirectory=false',
                     '-p:ArtifactsPath=' + str(artifacts), '-p:InstallerBusinessVersion=' + descriptor['BusinessVersion'],
                     '-o', str(publish)], cwd=snapshot, check=True)
     verify_shared_binaries(args.media, artifacts / 'bin/Ipc.Installer/release_win-x64')

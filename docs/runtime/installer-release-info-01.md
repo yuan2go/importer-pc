@@ -1,3 +1,5 @@
+> 现场系统已补充为Win10 22H2 Home/Pro x64为主，兼容目标及待实机项见[Windows兼容](windows-client-compatibility-01.md)。原7c/Win11验证记录保持历史身份。
+
 > 后继安装体验以[单窗口与一次授权](installer-single-window-01.md)为准。下文7c构建和41项结果保持原历史身份。
 
 # 菜鸟供包台安装、依赖与源码记录

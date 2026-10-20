@@ -1,0 +1,26 @@
+PASS LOGIN-SESSION schema-3 bound operator login exposes an addressable daily session field
+PASS LOGIN-SESSION daily native field shows the existing configured value and unit
+PASS LOGIN-SESSION typing changes the original complete candidate and shared policy only
+PASS LOGIN-SESSION editing session lifetime preserves every other binding, topology and policy byte
+PASS LOGIN-SESSION snapshot refresh preserves the native control, raw input and selection
+PASS LOGIN-SESSION unbinding operator login hides the inapplicable field while retaining its complete-candidate value
+PASS LOGIN-SESSION maintenance authentication alone never makes an operator session applicable
+PASS LOGIN-SESSION search excludes the inapplicable session field
+PASS LOGIN-SESSION rebinding reveals the same control and unsaved session value without rebuilding the editor
+PASS LOGIN-SESSION search locates the actual bound session editor and restores its object page
+PASS LOGIN-SESSION invalid raw text is retained with an addressable field error
+PASS LOGIN-SESSION a session validation error remains correctable after operator unbinding
+PASS LOGIN-SESSION correcting an unbound session policy removes its error-only field exposure
+PASS LOGIN-SESSION rejects out-of-range session lifetime 99
+PASS LOGIN-SESSION rejects out-of-range session lifetime 86400001
+PASS LOGIN-SESSION accepts session boundary 100
+PASS LOGIN-SESSION accepts session boundary 86400000
+PASS LOGIN-SESSION Application rejects a session change without pause and maintenance authorization
+PASS LOGIN-SESSION authorized save stages one complete revision; Effective session policy is unchanged until controlled restart
+PASS LOGIN-SESSION original receipt reconciliation confirms the draft with no business sends
+PASS LOGIN-SESSION the complete session input remains reachable inside the compact 800x420 native window
+PASS LOGIN-SESSION first configuration with no operator login does not expose a maintenance-only session
+PASS LOGIN-SESSION first configuration follows its own authoritative Bound draft
+PASS LOGIN-SESSION first configuration unbinding updates applicability without a second candidate
+CAPTURE daily-session-lifetime 1366.4x768 DIP; scale=1.25,1.25; real HWND, synthetic ports
+BOUNDARY real SDK/device/RCS, target IPC, installation/UAC and site acceptance NOT_RUN by this fixture.

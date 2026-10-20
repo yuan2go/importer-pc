@@ -1,0 +1,57 @@
+[
+  {
+    "Name": "Ipc.Desktop.UiVerification",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\tests\\Ipc.Desktop.UiVerification\\bin\\Debug\\net10.0-windows\\Ipc.Desktop.UiVerification.dll",
+    "Sha256": "6E2947B281853665258B48D2CD5F14C73F52C873F4FF65D6739AB14D9F47E012"
+  },
+  {
+    "Name": "Ipc.Platform",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\tests\\Ipc.Desktop.UiVerification\\bin\\Debug\\net10.0-windows\\Ipc.Platform.dll",
+    "Sha256": "9D5A13BECEFE969730652C634284B0A6766DB1E818FD63A8DF9A44C6A4ED4E1C"
+  },
+  {
+    "Name": "Ipc.Application.Contracts",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\tests\\Ipc.Desktop.UiVerification\\bin\\Debug\\net10.0-windows\\Ipc.Application.Contracts.dll",
+    "Sha256": "D15E6A57AE5AB056F3C96B56D262D1BE9F1A72082046CD944CC29CCD9BE1230E"
+  },
+  {
+    "Name": "Ipc.Application.ParcelFlow",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\tests\\Ipc.Desktop.UiVerification\\bin\\Debug\\net10.0-windows\\Ipc.Application.ParcelFlow.dll",
+    "Sha256": "D96C89E3B4961921D52F2BC7914077E34E3A2051A0EB1ABDB8730DFD43BFAD0F"
+  },
+  {
+    "Name": "Ipc.Application.ParcelFlow.Desktop",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\tests\\Ipc.Desktop.UiVerification\\bin\\Debug\\net10.0-windows\\Ipc.Application.ParcelFlow.Desktop.dll",
+    "Sha256": "011BDF977EECE9AB971BBE81C7C7737F88A1DD296AB6BE52C2483986251B578C"
+  },
+  {
+    "Name": "Ipc.Application.Sportmaster",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\tests\\Ipc.Desktop.UiVerification\\bin\\Debug\\net10.0-windows\\Ipc.Application.Sportmaster.dll",
+    "Sha256": "56A84AD5221834AE7D9B25C281B1002C2EB7B619934FBA5E610B1688908D2227"
+  },
+  {
+    "Name": "Ipc.Platform.Storage",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\tests\\Ipc.Desktop.UiVerification\\bin\\Debug\\net10.0-windows\\Ipc.Platform.Storage.dll",
+    "Sha256": "138FBD317B83F96E3748889F608EFD621D3E5ECAD49E996B0899B795599B5FDF"
+  },
+  {
+    "Name": "Ipc.Components",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\tests\\Ipc.Desktop.UiVerification\\bin\\Debug\\net10.0-windows\\Ipc.Components.dll",
+    "Sha256": "8C6A56448DFFC24E9EC285A13E2EC7D134EEB5101EE11EC02F0A19DBA39FB558"
+  },
+  {
+    "Name": "Ipc.Integrations",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\tests\\Ipc.Desktop.UiVerification\\bin\\Debug\\net10.0-windows\\Ipc.Integrations.dll",
+    "Sha256": "7586C9F356836A37E5D383C19D078417A36CC7E3CDA89B98ED39FA6317D243CC"
+  },
+  {
+    "Name": "Ipc.Drivers",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\tests\\Ipc.Desktop.UiVerification\\bin\\Debug\\net10.0-windows\\Ipc.Drivers.dll",
+    "Sha256": "63F7C5881A1DD032F9E39B7C74E5A34BA3F1AD81552EC5A6F27FEC428F50DE19"
+  },
+  {
+    "Name": "Ipc.Reference.Protocol",
+    "Path": "D:\\projects\\importer-pc-v2-ui\\tests\\Ipc.Desktop.UiVerification\\bin\\Debug\\net10.0-windows\\Ipc.Reference.Protocol.dll",
+    "Sha256": "A5E5B077111A904DDDC3E052254889AB8D4497116FA3ADF72FAE3F73150A5AAE"
+  }
+]

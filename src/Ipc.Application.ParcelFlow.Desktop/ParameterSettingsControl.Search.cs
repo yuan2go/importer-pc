@@ -46,7 +46,7 @@ public sealed partial class ParameterSettingsControl
         searchCount.Text = "";
         if (query.Length == 0) return;
         var terms = query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        var hits = locations.Where(x => categoryScope is null || x.Value.Page.Category == categoryScope)
+        var hits = locations.Where(x => (categoryScope is null || x.Value.Page.Category == categoryScope) && x.Value.Applicable?.Invoke() != false)
             .GroupBy(x => x.Value.Control).Select(g => g.First())
             .Where(x => terms.All(term => (x.Value.Label + " " + x.Key + " " + x.Value.Page.Title + " " +
                 ParameterOwnership.CategoryName(x.Value.Page.Category) + " " + x.Value.Help).Contains(term, StringComparison.OrdinalIgnoreCase))).ToArray();

@@ -7,7 +7,8 @@ namespace Ipc.Application.ParcelFlow.Desktop;
 public sealed record ParameterIssue(string Category, string Path, string Message);
 // An editor over the existing complete draft, never a separately persisted configuration.
 public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string applicationId,
-    CapabilityDraft[] readers, CapabilityDraft[] components, Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> preview, string stationId = "", ParcelConfigurationLocations? locations = null)
+    CapabilityDraft[] readers, CapabilityDraft[] components, Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> preview, string stationId = "", ParcelConfigurationLocations? locations = null,
+    CapabilityRoleDraft? operatorLoginRole = null)
 {
     public ConfigurationPolicyDraft Policy { get; } = policy;
     public string ApplicationId { get; } = applicationId;
@@ -15,6 +16,11 @@ public sealed class ParameterEditorModel(ConfigurationPolicyDraft policy, string
     public ParcelConfigurationLocations? Locations { get; } = locations;
     public CapabilityDraft[] Readers { get; } = readers;
     public CapabilityDraft[] Components { get; } = components;
+    // Daily schema-3 roles and startup bindings already own their respective candidate.
+    // This is a read-only projection; never copy role state into the component inventory.
+    public CapabilityRoleDraft? OperatorLoginRole { get; } = operatorLoginRole;
+    public bool HasOperatorLogin => OperatorLoginRole is { } role ? role.Selection.Capability is not null
+        : Components.Any(c => c.Role == "operator-login" && c.Bound);
     public ObservableCollection<ParameterIssue> Issues { get; } = [];
     public Func<BarcodeFilterPolicy, string[], Task<BarcodeFilterResult>> Preview { get; } = preview;
     public event EventHandler? ValidationChanged;

@@ -1,0 +1,5 @@
+FAIL System.InvalidOperationException: schema-3 bound operator login exposes an addressable daily session field
+   at Program.<VerifyLoginSession>g__Check|2_0(Boolean valid, String reason, <>c__DisplayClass2_0&) in D:\projects\importer-pc-v2-ui\tests\Ipc.Desktop.UiVerification\LoginSession.cs:line 16
+   at Program.VerifyLoginSession(String root, String evidence, List`1 lines, Boolean interactive) in D:\projects\importer-pc-v2-ui\tests\Ipc.Desktop.UiVerification\LoginSession.cs:line 33
+   at Program.VerifyLoginSession(String root, String evidence, List`1 lines, Boolean interactive) in D:\projects\importer-pc-v2-ui\tests\Ipc.Desktop.UiVerification\LoginSession.cs:line 101
+   at Program.<>c__DisplayClass4_0.<<Main>b__0>d.MoveNext() in D:\projects\importer-pc-v2-ui\tests\Ipc.Desktop.UiVerification\Program.cs:line 33

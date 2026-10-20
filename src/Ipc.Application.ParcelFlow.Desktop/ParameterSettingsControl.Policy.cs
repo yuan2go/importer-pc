@@ -32,8 +32,7 @@ public sealed partial class ParameterSettingsControl
         data.Body.Children.Add(Text("运行内只读。迁移须从独立维护处理原目录、完整备份及资源责任。"));
         Input(form, "常驻历史条数", m.Policy, "ResidentHistory", "ResidentHistory", data, "1～10000 条");
         Input(form, "关键写入保留空间", m.Policy, "MinimumFreeMiB", "MinimumFreeMiB", data, "1～1048576 MiB");
-        if (m.Components.Any(c => c.Role == "operator-login" && c.Bound))
-            Input(form, "操作员会话有效时长", m.Policy, "SessionLifetimeMs", "SessionLifetimeMs", data, "100～86400000 ms；只用于已绑定的操作员登录。");
+        SessionLifetime(form, data, m);
         var backup = Page(0, "计划备份", "只在已暂停、维护授权有效且无外呼时执行；完整恢复集和原责任保持。");
         var enabled = new CheckBox { Content = "启用受控计划备份", MinHeight = 44 };
         enabled.SetBinding(CheckBox.IsCheckedProperty, new Binding("BackupEnabled") { Source = m.Policy, Mode = BindingMode.TwoWay }); backup.Body.Children.Add(enabled);
@@ -45,6 +44,28 @@ public sealed partial class ParameterSettingsControl
         var open = new Button { Content = "打开维护与迁移", MinHeight = 44, HorizontalAlignment = HorizontalAlignment.Left };
         open.Click += (_, _) => MaintenanceRequested?.Invoke(this, EventArgs.Empty); maintenance.Body.Children.Add(open);
         maintenance.Body.Children.Add(Text("维护入口包含显示偏好、加密草稿、模板差异、备份、已安装包与高级配置。首配中请使用本窗的维护操作。"));
+    }
+    void SessionLifetime(Panel form, ObjectPage page, ParameterEditorModel m)
+    {
+        const string path = "SessionLifetimeMs";
+        var input = Input(form, "操作员会话有效时长", m.Policy, path, path, page,
+            "100～86400000 ms；用于已绑定的操作员登录。维护认证不使用此时长；解绑保留原策略，已有错误仍须纠正。");
+        var field = (FrameworkElement)input.Parent;
+        bool Applicable() => m.HasOperatorLogin || m.Issues.Any(i => i.Path == path);
+        locations[path] = locations[path] with { Applicable = Applicable };
+        void Refresh() { field.Visibility = Applicable() ? Visibility.Visible : Visibility.Collapsed; RefreshSearch(); }
+        PropertyChangedEventHandler changed = (_, _) => Refresh();
+        if (m.OperatorLoginRole is { } role)
+        {
+            role.PropertyChanged += changed; unsubscribe.Add(() => role.PropertyChanged -= changed);
+        }
+        else foreach (var draft in m.Components.Where(c => c.Role == "operator-login"))
+        {
+            draft.PropertyChanged += changed; unsubscribe.Add(() => draft.PropertyChanged -= changed);
+        }
+        EventHandler validated = (_, _) => Refresh();
+        m.ValidationChanged += validated; unsubscribe.Add(() => m.ValidationChanged -= validated);
+        Refresh();
     }
     void BuildBusiness(ParameterEditorModel m)
     {

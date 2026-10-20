@@ -1,0 +1,15 @@
+  正在确定要还原的项目…
+  已还原 D:\projects\importer-pc-v2-ui\src\Ipc.Application.ParcelFlow.Desktop\Ipc.Application.ParcelFlow.Desktop.csproj (用时 901 毫秒)。
+  已还原 D:\projects\importer-pc-v2-ui\src\Ipc.Application.Contracts\Ipc.Application.Contracts.csproj (用时 901 毫秒)。
+  已还原 D:\projects\importer-pc-v2-ui\src\Ipc.Platform\Ipc.Platform.csproj (用时 901 毫秒)。
+  已还原 D:\projects\importer-pc-v2-ui\src\Ipc.Application.WcsToPlc.Desktop\Ipc.Application.WcsToPlc.Desktop.csproj (用时 901 毫秒)。
+  Ipc.Platform -> D:\projects\importer-pc-v2-ui\.artifacts\login-session\wcs-build\bin\Ipc.Platform\debug\Ipc.Platform.dll
+  Ipc.Application.Contracts -> D:\projects\importer-pc-v2-ui\.artifacts\login-session\wcs-build\bin\Ipc.Application.Contracts\debug\Ipc.Application.Contracts.dll
+  Ipc.Application.ParcelFlow.Desktop -> D:\projects\importer-pc-v2-ui\.artifacts\login-session\wcs-build\bin\Ipc.Application.ParcelFlow.Desktop\debug\Ipc.Application.ParcelFlow.Desktop.dll
+  Ipc.Application.WcsToPlc.Desktop -> D:\projects\importer-pc-v2-ui\.artifacts\login-session\wcs-build\bin\Ipc.Application.WcsToPlc.Desktop\debug\Ipc.Application.WcsToPlc.Desktop.dll
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:10.19

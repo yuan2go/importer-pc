@@ -30,3 +30,20 @@
 执行期间品牌源任务被新用户消息唤醒，新增107b82e（文档）、de105a5（安装选项/窗口衔接）及d10c51a（#65合并）。新用户原文要求安装目录与两个快捷方式选项，以及修复安装后遗留技术窗口；已读记录与源码，不从标题推断。初始快照之外再次保全Git外refs.bundle、暂存/未暂存补丁和冲突文件；已发支持的任务消息请源任务停止写入并交接。该后继成果纳入本轮，旧EXE不重标。
 
 组合中间点2b216de（尚未包含上述新安装选项）已构建0警告/错误、驱动26项及5组政策、安装准备27项与封装5项PASS，原stdout保留；完整最终冻结验证另记，不能据此宣告最终通过。首次封装测试用错discover文件名导致0项/exit5，已用test_installer_package.py重跑5项PASS，不把空运行算通过。
+
+## 已确认要求与最终实现位置
+
+|确认要求|最终实现/来源|验证口径|
+|---|---|---|
+|Platform、Application、Driver、Component四类职责；一业务一实例、多页共享|既有framework/architecture22；ParcelRuntime、各独立Flow、Presentation；#62/#63不新建通用流程|源码对照；原生共享Application、辅助窗口/关闭重试断言|
+|Sportmaster左右reader隔离，扫码到WCS格口，无PLC/图片展示或长期存储|SportmasterFlow、ParcelBindings、SupplyStationPosition；#62/63|双位延迟/Unknown核对、原请求归属、观察/准入拒绝/格口失效原生及核心冻结回归|
+|DirectPlc、WcsToPlc独立单相机单投递位；DirectPlc UI延期|原独立项目/Flow及发布选择，源码未改变边界|源码核实；本次不重复现场测试/扩展开发UI|
+|可选认证/称重/上传组合；业务语义在Application|原能力factory/ports/独立流程；#63 reader仅IP和SDK观察|factory原资格、驱动26断言及5组签名政策；Production缺资格拒绝|
+|恢复/持久化/配置激活不回退|原DB8、schema3、ABI1.10.0、ParcelTargets、Startup/ExtensionStore；#63精确扩展边界|核心冻结恢复/防重/旧请求/配置/生命周期，UI失败不清原件|
+|精简放大专业双位UI且设备诊断可达|#62布局、SupplyStationViewModel/Diagnostics、ShellWindow紧凑状态区|原生最小客户区、长内容、诊断OneWay、拒绝区分、焦点/选择/滚动/草稿|
+|驱动与左右无关，只配置IP|#63 Ipc.Drivers.Hikrobot及原机级资源租约/资格化装配|同触发多帧/同码新触发/旧epoch/队列满/Stop失败/健康失败；真读码仍缺证据|
+|菜鸟供包台名称及获准公开图片|#64 ProductBrand、cainiao.png/icon及桌面/安装资源|同源发布资源和实际原生启动；原图片/图标来源许可见源报告|
+|一个可双击EXE、可选目录和两个快捷方式、完成正确关闭/启动|#64 Ipc.Installer、原StartupSetupWindow/ParcelStartupServices/DeploymentShortcuts、后继de105a5；整合767bf30保留已改指向入口|准备27/封装5、选项18及实际临时COM；最终EXE黑盒与真实安装另列，不能借合成完成页通过|
+|仅普通人工安装，不要求无人值守/二次选型|#65文档及本轮现行操作入口|逐项文字/链接/manifest核实，保留高级已有机制和数据保护|
+
+源任务已确认暂停写入并交接，新增三个源提交未推送的成果已保全并合入#64；d10c51a遗留manifest.sha256冲突标记及新代码记录缺失已由整合重建，未在远端合入失效清单。后继包装继续在独立目录进行，Git/PR由本整合任务统一负责。

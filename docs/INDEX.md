@@ -2,17 +2,14 @@
 
 [本轮工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020-02.md) · [编码前裁决](design/parallel-task-reconciliation-20261020-02.md) · [任务/成果/验证/合并报告](runtime/parallel-task-reconciliation-20261020-02.md)。整合#62工作台、#63驱动、#64品牌/单EXE和#65普通安装文档；原稿、原失败与前轮统计分别保留。此前仅合并现有代码的限制属于前轮，本次以重新授权的工作包为准。
 
+## 本轮纳入的现行增量
+
+- [工作台精简与原生验证](runtime/sportmaster-clear-workstation-01.md)：双位信息、原件与命令守卫。
+- [独立IP海康驱动](runtime/hikrobot-reader-01.md)：真实SDK/实体资格边界，左右由应用拓扑配置。
+- [名称与图标](runtime/cainiao-branding-01.md)、[单 EXE](runtime/single-exe-installer-01.md)和[安装选项/窗口衔接](runtime/single-exe-installer-options-02.md)：普通人工安装；最终组合身份见本轮报告。
+- [简化安装交付范围](runtime/installation-delivery-scope-01.md)：取消无人值守/批量的强制要求。
+
 ## 前轮整合记录（历史）
-> 当前 UI 增量：[工作台精简工作包](work-packages/WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01.md)与[原生验证记录](runtime/sportmaster-clear-workstation-01.md)。主屏突出状态、条码、格口与操作，工程明细按需查看。本轮继承下述 PR61 整合基线；归档草稿和旧视觉证据保持原身份。
-
-# 前轮整合记录 · 2026-10-20（历史）
-> 海康驱动增量：[工作包](work-packages/WP-IPC-HIKROBOT-READER-01.md) · [独立IP驱动设计](design/hikrobot-reader-01.md) · [运行与真实验证边界](runtime/hikrobot-reader-01.md)。保持现有业务与UI，真实读码、RCS和现场验收分别记录。
-
-> 品牌及现场安装增量：[菜鸟供包台名称与图标](runtime/cainiao-branding-01.md)、[单 EXE 安装程序](runtime/single-exe-installer-01.md)。用户于2026-10-20指定名称与图片、明确允许公开提交，并要求单 EXE 人工安装交付；历史设计和原验收保留其原身份。
-> 品牌及现场安装增量：[菜鸟供包台名称与图标](runtime/cainiao-branding-01.md)、[单 EXE 安装程序](runtime/single-exe-installer-01.md)、[安装选项与空白启动窗口修正](runtime/single-exe-installer-options-02.md)。用户于2026-10-20指定名称与图片、明确允许公开提交，并要求单 EXE 人工安装交付；历史设计和原验收保留其原身份。
-> 海康驱动增量：[工作包](work-packages/WP-IPC-HIKROBOT-READER-01.md) · [独立IP驱动设计](design/hikrobot-reader-01.md) · [运行与真实验证边界](runtime/hikrobot-reader-01.md)。保持现有业务与UI，真实读码、RCS和现场验收分别记录。
-> 当前 UI 增量：[工作台精简工作包](work-packages/WP-IPC-SPORTMASTER-CLEAR-WORKSTATION-01.md)与[原生验证记录](runtime/sportmaster-clear-workstation-01.md)。主屏突出状态、条码、格口与操作，工程明细按需查看。本轮继承下述 PR61 整合基线；归档草稿和旧视觉证据保持原身份。
-
 
 [本次工作包](work-packages/WP-IPC-PARALLEL-TASK-RECONCILIATION-20261020.md) · [编码前设计与冲突裁决](design/parallel-task-reconciliation-20261020.md) · [任务/成果/验证/合并报告](runtime/parallel-task-reconciliation-20261020.md)。本轮只整合现有代码/PR，继承 PR58/59 功能、日期守卫和原生门禁，整合 #60 审查整改；未完成 UI 仅 [原字节归档](archive/parallel-reconciliation-20261020-inflight-ui/README.md)，不改变现行视觉基准。
 

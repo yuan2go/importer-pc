@@ -37,3 +37,4 @@ docs/runtime/evidence/hikrobot-reader-01/** -text whitespace=cr-at-eol
 docs/runtime/evidence/sportmaster-clear-01/** -text whitespace=cr-at-eol
 
 docs/runtime/evidence/parallel-reconciliation-20261020-02/combined-installer-tests.log -text whitespace=-blank-at-eol,cr-at-eol
+docs/runtime/evidence/parallel-reconciliation-20261020-02/source-de105a5-setup-ui-probe.cs.txt -text whitespace=cr-at-eol,-blank-at-eof

@@ -1,0 +1,8 @@
+PASS directory and both shortcut choices visible without expanding advanced settings
+PASS advanced account hidden while native directory browse remains visible
+PASS summary displays chosen shortcut flags
+PASS back navigation preserves directory and both selections
+PASS primary actions fit minimum native window size
+PASS completion offers run checkbox and Finish without returning to installation
+PASS Finish unchecked closes setup without starting application
+SYNTHETIC UI states injected by test reflection only. No production install bypass, machine registration, UAC, device or actual installation success.

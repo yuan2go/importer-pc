@@ -1,0 +1,25 @@
+FIELD CurrentBarcode top=38.4 bottom=114.4 height=76 body=373.6 target=(1440, 768)
+FIELD CurrentSlot top=157.6 bottom=205.6 height=48 body=373.6 target=(1440, 768)
+FIELD CurrentBarcode top=38.4 bottom=114.4 height=76 body=373.6 target=(1440, 768)
+FIELD CurrentSlot top=157.6 bottom=205.6 height=48 body=373.6 target=(1440, 768)
+supply-station target=(1440, 768) client=1440x768 dpi=1.25/1.25 os=Microsoft Windows NT 10.0.22631.0 account=yuan
+FIELD CurrentBarcode top=38.4 bottom=114.4 height=76 body=505.6 target=(1600, 900)
+FIELD CurrentSlot top=157.6 bottom=205.6 height=48 body=505.6 target=(1600, 900)
+FIELD CurrentBarcode top=38.4 bottom=114.4 height=76 body=505.6 target=(1600, 900)
+FIELD CurrentSlot top=157.6 bottom=205.6 height=48 body=505.6 target=(1600, 900)
+supply-station target=(1600, 900) client=1600x900 dpi=1.25/1.25 os=Microsoft Windows NT 10.0.22631.0 account=yuan
+FIELD CurrentBarcode top=38.4 bottom=114.4 height=76 body=243.2 target=(1100, 600)
+FIELD CurrentSlot top=38.4 bottom=115.19999999999999 height=76.8 body=243.2 target=(1100, 600)
+FIELD CurrentBarcode top=38.4 bottom=114.4 height=76 body=243.2 target=(1100, 600)
+FIELD CurrentSlot top=38.4 bottom=115.19999999999999 height=76.8 body=243.2 target=(1100, 600)
+supply-station target=(1100, 600) client=1100x600 dpi=1.25/1.25 os=Microsoft Windows NT 10.0.22631.0 account=yuan
+FIELD CurrentBarcode top=26.4 bottom=74.4 height=48 body=211.2 target=(911, 512)
+FIELD CurrentSlot top=26.4 bottom=75.19999999999999 height=48.8 body=211.2 target=(911, 512)
+FIELD CurrentBarcode top=26.4 bottom=74.4 height=48 body=211.2 target=(911, 512)
+FIELD CurrentSlot top=26.4 bottom=75.19999999999999 height=48.8 body=211.2 target=(911, 512)
+supply-station target=(911, 512) client=911.2x512 dpi=1.25/1.25 os=Microsoft Windows NT 10.0.22631.0 account=yuan
+FIELD CurrentBarcode top=26.4 bottom=74.4 height=48 body=119.2 target=(800, 420)
+FIELD CurrentSlot top=26.4 bottom=75.19999999999999 height=48.8 body=119.2 target=(800, 420)
+FIELD CurrentBarcode top=26.4 bottom=74.4 height=48 body=119.2 target=(800, 420)
+FIELD CurrentSlot top=26.4 bottom=75.19999999999999 height=48.8 body=119.2 target=(800, 420)
+supply-station target=(800, 420) client=800x420 dpi=1.25/1.25 os=Microsoft Windows NT 10.0.22631.0 account=yuan
